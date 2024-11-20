@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core>=0.9.1", "pybind11"]
+requires = ["scikit-build-core>=0.9.1", "nanobind"]
 build-backend = "scikit_build_core.build"
 
 # To bebug build backend, replace by:
@@ -70,7 +70,7 @@ profile = "black"
 build-verbosity = 1
 
 # Target python versions:
-build = ["cp310-*", "cp311-*", "cp312-*"]
+build = ["cp311-*", "cp312-*", "cp313-*"]
 
 # Tests
 test-requires = "pytest"

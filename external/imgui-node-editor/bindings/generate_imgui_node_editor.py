@@ -20,6 +20,8 @@ def main():
     # Configure options
     # options = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=True)
     options = litgen.LitgenOptions()
+    options.use_nanobind()
+
     options.srcmlcpp_options.ignored_warning_parts = [
         "explicit SafePointerType",
         "Colors[StyleColor_Count]",

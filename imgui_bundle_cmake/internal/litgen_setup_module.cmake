@@ -121,7 +121,7 @@ function(litgen_setup_module
     # Also copy the python module to the site-packages folder (for non-editable mode)
     # First, ask python for site-packages folder
     execute_process(
-        COMMAND "${Python_EXECUTABLE}" -c "import site; print(site.getsitepackages()[0])"
+        COMMAND "${Python_EXECUTABLE}" -c "import site, os; print([p.replace('\\\\', '/') for p in site.getsitepackages() if 'site-packages' in p][0])"
         OUTPUT_VARIABLE python_site_packages
         OUTPUT_STRIP_TRAILING_WHITESPACE COMMAND_ECHO STDOUT
         RESULT_VARIABLE _result_python_site_packages

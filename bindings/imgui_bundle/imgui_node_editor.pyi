@@ -490,7 +490,11 @@ def pop_style_var(count: int = 1) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void Begin(const char* id, const ImVec2& size = ImVec2(0, 0));    /* original C++ signature */
-def begin(id: str, size: ImVec2 = ImVec2(0, 0)) -> None:
+def begin(id: str, size: Optional[ImVec2] = None) -> None:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_NODE_EDITOR_API void End();    /* original C++ signature */
@@ -571,9 +575,13 @@ def link(
     id: LinkId,
     start_pin_id: PinId,
     end_pin_id: PinId,
-    color: ImVec4 = ImVec4(1, 1, 1, 1),
+    color: Optional[ImVec4] = None,
     thickness: float = 1.0,
 ) -> bool:
+    """---
+    Python bindings defaults:
+        If color is None, then its default value will be: ImVec4(1, 1, 1, 1)
+    """
     pass
 
 # IMGUI_NODE_EDITOR_API void Flow(LinkId linkId, FlowDirection direction = FlowDirection::Forward);    /* original C++ signature */
@@ -581,7 +589,11 @@ def flow(link_id: LinkId, direction: FlowDirection = FlowDirection.forward) -> N
     pass
 
 # IMGUI_NODE_EDITOR_API bool BeginCreate(const ImVec4& color = ImVec4(1, 1, 1, 1), float thickness = 1.0f);    /* original C++ signature */
-def begin_create(color: ImVec4 = ImVec4(1, 1, 1, 1), thickness: float = 1.0) -> bool:
+def begin_create(color: Optional[ImVec4] = None, thickness: float = 1.0) -> bool:
+    """---
+    Python bindings defaults:
+        If color is None, then its default value will be: ImVec4(1, 1, 1, 1)
+    """
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewLink(PinId* startId, PinId* endId);    /* original C++ signature */

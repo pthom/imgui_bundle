@@ -727,15 +727,23 @@ def end() -> None:
 # IMGUI_API bool          BeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0), ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);    /* original C++ signature */
 @overload
 def begin_child(
-    str_id: str, size: ImVec2 = ImVec2(0, 0), child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
+    str_id: str, size: Optional[ImVec2] = None, child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
 ) -> bool:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API bool          BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);    /* original C++ signature */
 @overload
 def begin_child(
-    id_: ID, size: ImVec2 = ImVec2(0, 0), child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
+    id_: ID, size: Optional[ImVec2] = None, child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
 ) -> bool:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API void          EndChild();    /* original C++ signature */
@@ -800,8 +808,13 @@ def get_window_viewport() -> Viewport:
 # Window manipulation
 # - Prefer using SetNextXXX functions (before Begin) rather that SetXXX functions (after Begin).
 # IMGUI_API void          SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0, const ImVec2& pivot = ImVec2(0, 0));     /* original C++ signature */
-def set_next_window_pos(pos: ImVec2, cond: Cond = 0, pivot: ImVec2 = ImVec2(0, 0)) -> None:
-    """set next window position. call before Begin(). use pivot=(0.5,0.5) to center on given point, etc."""
+def set_next_window_pos(pos: ImVec2, cond: Cond = 0, pivot: Optional[ImVec2] = None) -> None:
+    """---
+    Python bindings defaults:
+        If pivot is None, then its default value will be: ImVec2(0, 0)
+
+     set next window position. call before Begin(). use pivot=(0.5,0.5) to center on given point, etc.
+    """
     pass
 
 # IMGUI_API void          SetNextWindowSize(const ImVec2& size, ImGuiCond cond = 0);                      /* original C++ signature */
@@ -1318,8 +1331,13 @@ def separator_text(label: str) -> None:
 # - Most widgets return True when the value has been changed or when pressed/selected
 # - You may also use one of the many IsItemXXX functions (e.g. IsItemActive, IsItemHovered, etc.) to query widget state.
 # IMGUI_API bool          Button(const char* label, const ImVec2& size = ImVec2(0, 0));       /* original C++ signature */
-def button(label: str, size: ImVec2 = ImVec2(0, 0)) -> bool:
-    """button"""
+def button(label: str, size: Optional[ImVec2] = None) -> bool:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+
+     button
+    """
     pass
 
 # IMGUI_API bool          SmallButton(const char* label);                                     /* original C++ signature */
@@ -1364,9 +1382,11 @@ def radio_button(label: str, v: int, v_button: int) -> Tuple[bool, int]:
     pass
 
 # IMGUI_API void          ProgressBar(float fraction, const ImVec2& size_arg = ImVec2(-FLT_MIN, 0), const char* overlay = NULL);    /* original C++ signature */
-def progress_bar(
-    fraction: float, size_arg: ImVec2 = ImVec2(-sys.float_info.min, 0), overlay: Optional[str] = None
-) -> None:
+def progress_bar(fraction: float, size_arg: Optional[ImVec2] = None, overlay: Optional[str] = None) -> None:
+    """---
+    Python bindings defaults:
+        If size_arg is None, then its default value will be: ImVec2(-sys.float_info.min, 0)
+    """
     pass
 
 # IMGUI_API void          Bullet();                                                           /* original C++ signature */
@@ -1392,11 +1412,19 @@ def text_link_open_url(label: str, url: Optional[str] = None) -> None:
 def image(
     user_texture_id: ImTextureID,
     image_size: ImVec2,
-    uv0: ImVec2 = ImVec2(0, 0),
-    uv1: ImVec2 = ImVec2(1, 1),
-    tint_col: ImVec4 = ImVec4(1, 1, 1, 1),
-    border_col: ImVec4 = ImVec4(0, 0, 0, 0),
+    uv0: Optional[ImVec2] = None,
+    uv1: Optional[ImVec2] = None,
+    tint_col: Optional[ImVec4] = None,
+    border_col: Optional[ImVec4] = None,
 ) -> None:
+    """---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            uv0: ImVec2(0, 0)
+            uv1: ImVec2(1, 1)
+            tint_col: ImVec4(1, 1, 1, 1)
+            border_col: ImVec4(0, 0, 0, 0)
+    """
     pass
 
 # IMGUI_API bool          ImageButton(const char* str_id, ImTextureID user_texture_id, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& bg_col = ImVec4(0, 0, 0, 0), const ImVec4& tint_col = ImVec4(1, 1, 1, 1));    /* original C++ signature */
@@ -1404,11 +1432,19 @@ def image_button(
     str_id: str,
     user_texture_id: ImTextureID,
     image_size: ImVec2,
-    uv0: ImVec2 = ImVec2(0, 0),
-    uv1: ImVec2 = ImVec2(1, 1),
-    bg_col: ImVec4 = ImVec4(0, 0, 0, 0),
-    tint_col: ImVec4 = ImVec4(1, 1, 1, 1),
+    uv0: Optional[ImVec2] = None,
+    uv1: Optional[ImVec2] = None,
+    bg_col: Optional[ImVec4] = None,
+    tint_col: Optional[ImVec4] = None,
 ) -> bool:
+    """---
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            uv0: ImVec2(0, 0)
+            uv1: ImVec2(1, 1)
+            bg_col: ImVec4(0, 0, 0, 0)
+            tint_col: ImVec4(1, 1, 1, 1)
+    """
     pass
 
 # Widgets: Combo Box (Dropdown)
@@ -1812,8 +1848,13 @@ def color_picker4(
 #
 
 # IMGUI_API bool          ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
-def color_button(desc_id: str, col: ImVec4, flags: ColorEditFlags = 0, size: ImVec2 = ImVec2(0, 0)) -> bool:
-    """display a color square/button, hover for details, return True when pressed."""
+def color_button(desc_id: str, col: ImVec4, flags: ColorEditFlags = 0, size: Optional[ImVec2] = None) -> bool:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+
+     display a color square/button, hover for details, return True when pressed.
+    """
     pass
 
 # IMGUI_API void          SetColorEditOptions(ImGuiColorEditFlags flags);                         /* original C++ signature */
@@ -1906,9 +1947,14 @@ def set_next_item_storage_id(storage_id: ID) -> None:
 # - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.
 # IMGUI_API bool          Selectable(const char* label, bool* p_selected, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));          /* original C++ signature */
 def selectable(
-    label: str, p_selected: bool, flags: SelectableFlags = 0, size: ImVec2 = ImVec2(0, 0)
+    label: str, p_selected: bool, flags: SelectableFlags = 0, size: Optional[ImVec2] = None
 ) -> Tuple[bool, bool]:
-    """ "bool* p_selected" point to the selection state (read-write), as a convenient helper."""
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+
+     "bool* p_selected" point to the selection state (read-write), as a convenient helper.
+    """
     pass
 
 # [/ADAPT_IMGUI_BUNDLE]
@@ -1944,8 +1990,13 @@ def is_item_toggled_selection() -> bool:
 # - Choose frame width:   size.x > 0.0: custom  /  size.x < 0.0 or -FLT_MIN: right-align   /  size.x = 0.0 (default): use current ItemWidth
 # - Choose frame height:  size.y > 0.0: custom  /  size.y < 0.0 or -FLT_MIN: bottom-align  /  size.y = 0.0 (default): arbitrary default height which can fit ~7 items
 # IMGUI_API bool          BeginListBox(const char* label, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
-def begin_list_box(label: str, size: ImVec2 = ImVec2(0, 0)) -> bool:
-    """open a framed scrolling region"""
+def begin_list_box(label: str, size: Optional[ImVec2] = None) -> bool:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+
+     open a framed scrolling region
+    """
     pass
 
 # IMGUI_API void          EndListBox();                                                           /* original C++ signature */
@@ -1967,9 +2018,13 @@ def plot_lines(
     overlay_text: Optional[str] = None,
     scale_min: float = sys.float_info.max,
     scale_max: float = sys.float_info.max,
-    graph_size: ImVec2 = ImVec2(0, 0),
+    graph_size: Optional[ImVec2] = None,
     stride: int = -1,
 ) -> None:
+    """---
+    Python bindings defaults:
+        If graph_size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API void          PlotHistogram(const char* label, const float* values, int values_count, int values_offset = 0, const char* overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = sizeof(float));    /* original C++ signature */
@@ -1980,9 +2035,13 @@ def plot_histogram(
     overlay_text: Optional[str] = None,
     scale_min: float = sys.float_info.max,
     scale_max: float = sys.float_info.max,
-    graph_size: ImVec2 = ImVec2(0, 0),
+    graph_size: Optional[ImVec2] = None,
     stride: int = -1,
 ) -> None:
+    """---
+    Python bindings defaults:
+        If graph_size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # Widgets: Value() Helpers.
@@ -2200,8 +2259,12 @@ def is_popup_open(str_id: str, flags: PopupFlags = 0) -> bool:
 # - 5. Call EndTable()
 # IMGUI_API bool          BeginTable(const char* str_id, int columns, ImGuiTableFlags flags = 0, const ImVec2& outer_size = ImVec2(0.0f, 0.0f), float inner_width = 0.0f);    /* original C++ signature */
 def begin_table(
-    str_id: str, columns: int, flags: TableFlags = 0, outer_size: ImVec2 = ImVec2(0.0, 0.0), inner_width: float = 0.0
+    str_id: str, columns: int, flags: TableFlags = 0, outer_size: Optional[ImVec2] = None, inner_width: float = 0.0
 ) -> bool:
+    """---
+    Python bindings defaults:
+        If outer_size is None, then its default value will be: ImVec2(0.0, 0.0)
+    """
     pass
 
 # IMGUI_API void          EndTable();                                             /* original C++ signature */
@@ -2405,8 +2468,15 @@ def set_tab_item_closed(tab_or_docked_window_label: str) -> None:
 #   e.g. if you have multiple tabs with a dockspace inside each tab: submit the non-visible dockspaces with ImGuiDockNodeFlags_KeepAliveOnly.
 # IMGUI_API ImGuiID       DockSpace(ImGuiID dockspace_id, const ImVec2& size = ImVec2(0, 0), ImGuiDockNodeFlags flags = 0, const ImGuiWindowClass* window_class = NULL);    /* original C++ signature */
 def dock_space(
-    dockspace_id: ID, size: ImVec2 = ImVec2(0, 0), flags: DockNodeFlags = 0, window_class: Optional[WindowClass] = None
+    dockspace_id: ID,
+    size: Optional[ImVec2] = None,
+    flags: DockNodeFlags = 0,
+    window_class: Optional[WindowClass] = None,
 ) -> ID:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API ImGuiID       DockSpaceOverViewport(ImGuiID dockspace_id = 0, const ImGuiViewport* viewport = NULL, ImGuiDockNodeFlags flags = 0, const ImGuiWindowClass* window_class = NULL);    /* original C++ signature */
@@ -8852,9 +8922,16 @@ class SizeCallbackData:
     )
     # ImGuiSizeCallbackData(ImVec2 Pos = ImVec2(), ImVec2 CurrentSize = ImVec2(), ImVec2 DesiredSize = ImVec2());    /* original C++ signature */
     def __init__(
-        self, pos: ImVec2 = ImVec2(), current_size: ImVec2 = ImVec2(), desired_size: ImVec2 = ImVec2()
+        self, pos: Optional[ImVec2] = None, current_size: Optional[ImVec2] = None, desired_size: Optional[ImVec2] = None
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                Pos: ImVec2()
+                CurrentSize: ImVec2()
+                DesiredSize: ImVec2()
+        """
         pass
 
 class WindowClass:
@@ -9412,14 +9489,21 @@ class MultiSelectIO:
     # ImGuiMultiSelectIO(ImVector<ImGuiSelectionRequest> Requests = ImVector<ImGuiSelectionRequest>(), ImGuiSelectionUserData RangeSrcItem = ImGuiSelectionUserData(), ImGuiSelectionUserData NavIdItem = ImGuiSelectionUserData(), bool NavIdSelected = bool(), bool RangeSrcReset = bool(), int ItemsCount = int());    /* original C++ signature */
     def __init__(
         self,
-        requests: ImVector_SelectionRequest = ImVector_SelectionRequest(),
-        range_src_item: SelectionUserData = SelectionUserData(),
-        nav_id_item: SelectionUserData = SelectionUserData(),
+        requests: Optional[ImVector_SelectionRequest] = None,
+        range_src_item: Optional[SelectionUserData] = None,
+        nav_id_item: Optional[SelectionUserData] = None,
         nav_id_selected: bool = bool(),
         range_src_reset: bool = bool(),
         items_count: int = int(),
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                Requests: ImVector_SelectionRequest()
+                RangeSrcItem: SelectionUserData()
+                NavIdItem: SelectionUserData()
+        """
         pass
 
 class SelectionRequestType(enum.Enum):
@@ -9456,10 +9540,16 @@ class SelectionRequest:
         type: SelectionRequestType = SelectionRequestType(),
         selected: bool = bool(),
         range_direction: ImS8 = ImS8(),
-        range_first_item: SelectionUserData = SelectionUserData(),
-        range_last_item: SelectionUserData = SelectionUserData(),
+        range_first_item: Optional[SelectionUserData] = None,
+        range_last_item: Optional[SelectionUserData] = None,
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                RangeFirstItem: SelectionUserData()
+                RangeLastItem: SelectionUserData()
+        """
         pass
 
 class SelectionBasicStorage:
@@ -9607,8 +9697,14 @@ class ImDrawVert:
     # ImU32   col;    /* original C++ signature */
     col: ImU32
     # ImDrawVert(ImVec2 pos = ImVec2(), ImVec2 uv = ImVec2(), ImU32 col = ImU32());    /* original C++ signature */
-    def __init__(self, pos: ImVec2 = ImVec2(), uv: ImVec2 = ImVec2(), col: ImU32 = ImU32()) -> None:
-        """Auto-generated default constructor with named params"""
+    def __init__(self, pos: Optional[ImVec2] = None, uv: Optional[ImVec2] = None, col: ImU32 = ImU32()) -> None:
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                pos: ImVec2()
+                uv: ImVec2()
+        """
         pass
 
 # #else
@@ -9626,8 +9722,14 @@ class ImDrawCmdHeader:
     # unsigned int    VtxOffset;    /* original C++ signature */
     vtx_offset: int
     # ImDrawCmdHeader(ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID());    /* original C++ signature */
-    def __init__(self, clip_rect: ImVec4 = ImVec4(), texture_id: ImTextureID = ImTextureID()) -> None:
-        """Auto-generated default constructor with named params"""
+    def __init__(self, clip_rect: Optional[ImVec4] = None, texture_id: Optional[ImTextureID] = None) -> None:
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                ClipRect: ImVec4()
+                TextureId: ImTextureID()
+        """
         pass
 
 class ImDrawChannel:
@@ -9639,11 +9741,15 @@ class ImDrawChannel:
     _idx_buffer: ImVector_ImDrawIdx
     # ImDrawChannel(ImVector<ImDrawCmd> _CmdBuffer = ImVector<ImDrawCmd>(), ImVector<ImDrawIdx> _IdxBuffer = ImVector<ImDrawIdx>());    /* original C++ signature */
     def __init__(
-        self,
-        _cmd_buffer: ImVector_ImDrawCmd = ImVector_ImDrawCmd(),
-        _idx_buffer: ImVector_ImDrawIdx = ImVector_ImDrawIdx(),
+        self, _cmd_buffer: Optional[ImVector_ImDrawCmd] = None, _idx_buffer: Optional[ImVector_ImDrawIdx] = None
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                _CmdBuffer: ImVector_ImDrawCmd()
+                _IdxBuffer: ImVector_ImDrawIdx()
+        """
         pass
 
 class ImDrawListSplitter:
@@ -9978,10 +10084,16 @@ class ImDrawList:
         user_texture_id: ImTextureID,
         p_min: ImVec2,
         p_max: ImVec2,
-        uv_min: ImVec2 = ImVec2(0, 0),
-        uv_max: ImVec2 = ImVec2(1, 1),
+        uv_min: Optional[ImVec2] = None,
+        uv_max: Optional[ImVec2] = None,
         col: ImU32 = IM_COL32_WHITE,
     ) -> None:
+        """---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                uv_min: ImVec2(0, 0)
+                uv_max: ImVec2(1, 1)
+        """
         pass
     # IMGUI_API void  AddImageQuad(ImTextureID user_texture_id, const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, const ImVec2& uv1 = ImVec2(0, 0), const ImVec2& uv2 = ImVec2(1, 0), const ImVec2& uv3 = ImVec2(1, 1), const ImVec2& uv4 = ImVec2(0, 1), ImU32 col = IM_COL32_WHITE);    /* original C++ signature */
     def add_image_quad(
@@ -9991,12 +10103,20 @@ class ImDrawList:
         p2: ImVec2,
         p3: ImVec2,
         p4: ImVec2,
-        uv1: ImVec2 = ImVec2(0, 0),
-        uv2: ImVec2 = ImVec2(1, 0),
-        uv3: ImVec2 = ImVec2(1, 1),
-        uv4: ImVec2 = ImVec2(0, 1),
+        uv1: Optional[ImVec2] = None,
+        uv2: Optional[ImVec2] = None,
+        uv3: Optional[ImVec2] = None,
+        uv4: Optional[ImVec2] = None,
         col: ImU32 = IM_COL32_WHITE,
     ) -> None:
+        """---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                uv1: ImVec2(0, 0)
+                uv2: ImVec2(1, 0)
+                uv3: ImVec2(1, 1)
+                uv4: ImVec2(0, 1)
+        """
         pass
     # IMGUI_API void  AddImageRounded(ImTextureID user_texture_id, const ImVec2& p_min, const ImVec2& p_max, const ImVec2& uv_min, const ImVec2& uv_max, ImU32 col, float rounding, ImDrawFlags flags = 0);    /* original C++ signature */
     def add_image_rounded(
@@ -10061,19 +10181,6 @@ class ImDrawList:
         pass
     # IMGUI_API void  PathRect(const ImVec2& rect_min, const ImVec2& rect_max, float rounding = 0.0f, ImDrawFlags flags = 0);    /* original C++ signature */
     def path_rect(self, rect_min: ImVec2, rect_max: ImVec2, rounding: float = 0.0, flags: ImDrawFlags = 0) -> None:
-        pass
-    # IMGUI_API void  AddCallback(ImDrawCallback callback, void* userdata, size_t userdata_size = 0);    /* original C++ signature */
-    def add_callback(self, callback: ImDrawCallback, userdata: Any, userdata_size: int = 0) -> None:
-        """Advanced: Draw Callbacks
-        - May be used to alter render state (change sampler, blending, current shader). May be used to emit custom rendering commands (difficult to do correctly, but possible).
-        - Use special ImDrawCallback_ResetRenderState callback to instruct backend to reset its render state to the default.
-        - Your rendering loop must check for 'UserCallback' in ImDrawCmd and call the function instead of rendering triangles. All standard backends are honoring this.
-        - For some backends, the callback may access selected render-states exposed by the backend in a ImGui_ImplXXXX_RenderState structure pointed to by platform_io.Renderer_RenderState.
-        - IMPORTANT: please be mindful of the different level of indirection between using size==0 (copying argument) and using size>0 (copying pointed data into a buffer).
-          - If userdata_size == 0: we copy/store the 'userdata' argument as-is. It will be available unmodified in ImDrawCmd::UserCallbackData during render.
-          - If userdata_size > 0,  we copy/store 'userdata_size' bytes pointed to by 'userdata'. We store them in a buffer stored inside the drawlist. ImDrawCmd::UserCallbackData will point inside that buffer so you have to retrieve data from there. Your callback may need to use ImDrawCmd::UserCallbackDataSize if you expect dynamically-sized data.
-          - Support for userdata_size > 0 was added in v1.91.4, October 2024. So earlier code always only allowed to copy/store a simple None*.
-        """
         pass
     # Advanced: Miscellaneous
     # IMGUI_API void  AddDrawCmd();                                                   /* original C++ signature */
@@ -10595,8 +10702,12 @@ class ImFontAtlas:
         pass
     # IMGUI_API int               AddCustomRectFontGlyph(ImFont* font, ImWchar id, int width, int height, float advance_x, const ImVec2& offset = ImVec2(0, 0));    /* original C++ signature */
     def add_custom_rect_font_glyph(
-        self, font: ImFont, id_: ImWchar, width: int, height: int, advance_x: float, offset: ImVec2 = ImVec2(0, 0)
+        self, font: ImFont, id_: ImWchar, width: int, height: int, advance_x: float, offset: Optional[ImVec2] = None
     ) -> int:
+        """---
+        Python bindings defaults:
+            If offset is None, then its default value will be: ImVec2(0, 0)
+        """
         pass
     # ImFontAtlasCustomRect*      GetCustomRectByIndex(int index) { IM_ASSERT(index >= 0); return &CustomRects[index]; }    /* original C++ signature */
     def get_custom_rect_by_index(self, index: int) -> ImFontAtlasCustomRect:
@@ -11133,17 +11244,29 @@ class PlatformImeData:
 
 # IMGUI_API void BeginHorizontal(const char* str_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
 @overload
-def begin_horizontal(str_id: str, size: ImVec2 = ImVec2(0, 0), align: float = -1.0) -> None:
+def begin_horizontal(str_id: str, size: Optional[ImVec2] = None, align: float = -1.0) -> None:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API void BeginHorizontal(const void* ptr_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
 @overload
-def begin_horizontal(ptr_id: Any, size: ImVec2 = ImVec2(0, 0), align: float = -1.0) -> None:
+def begin_horizontal(ptr_id: Any, size: Optional[ImVec2] = None, align: float = -1.0) -> None:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API void BeginHorizontal(int id, const ImVec2& size = ImVec2(0, 0), float align = -1);    /* original C++ signature */
 @overload
-def begin_horizontal(id_: int, size: ImVec2 = ImVec2(0, 0), align: float = -1) -> None:
+def begin_horizontal(id_: int, size: Optional[ImVec2] = None, align: float = -1) -> None:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API void EndHorizontal();    /* original C++ signature */
@@ -11152,17 +11275,29 @@ def end_horizontal() -> None:
 
 # IMGUI_API void BeginVertical(const char* str_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
 @overload
-def begin_vertical(str_id: str, size: ImVec2 = ImVec2(0, 0), align: float = -1.0) -> None:
+def begin_vertical(str_id: str, size: Optional[ImVec2] = None, align: float = -1.0) -> None:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API void BeginVertical(const void* ptr_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
 @overload
-def begin_vertical(ptr_id: Any, size: ImVec2 = ImVec2(0, 0), align: float = -1.0) -> None:
+def begin_vertical(ptr_id: Any, size: Optional[ImVec2] = None, align: float = -1.0) -> None:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API void BeginVertical(int id, const ImVec2& size = ImVec2(0, 0), float align = -1);    /* original C++ signature */
 @overload
-def begin_vertical(id_: int, size: ImVec2 = ImVec2(0, 0), align: float = -1) -> None:
+def begin_vertical(id_: int, size: Optional[ImVec2] = None, align: float = -1) -> None:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API void EndVertical();    /* original C++ signature */
@@ -11231,11 +11366,15 @@ def input_text(
 def input_text_multiline(
     label: str,
     str: str,
-    size: ImVec2 = ImVec2(0, 0),
+    size: Optional[ImVec2] = None,
     flags: InputTextFlags = 0,
     callback: InputTextCallback = None,
     user_data: Optional[Any] = None,
 ) -> Tuple[bool, str]:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
+    """
     pass
 
 # IMGUI_API bool  InputTextWithHint(const char* label, const char* hint, std::string* str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void* user_data = nullptr);    /* original C++ signature */
@@ -11265,8 +11404,12 @@ class Payload_PyId:
     # A string representing the type of payload. It cannot exceed 32 characters.
     type: str
     # ImGuiPayload_PyId(ImGuiPayloadId DataId = ImGuiPayloadId(), std::string Type = std::string());    /* original C++ signature */
-    def __init__(self, data_id: PayloadId = PayloadId(), type: str = "") -> None:
-        """Auto-generated default constructor with named params"""
+    def __init__(self, data_id: Optional[PayloadId] = None, type: str = "") -> None:
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If DataId is None, then its default value will be: PayloadId()
+        """
         pass
 
 # Note: the drag and drop API differs a bit between C++ and Python.

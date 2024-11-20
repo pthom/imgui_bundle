@@ -3,7 +3,7 @@ Python bindings for https://github.com/cmdwtf/imgui_toggle
 """
 
 # ruff: noqa: B008
-from typing import Tuple, overload
+from typing import Tuple, overload, Optional
 import enum
 
 from imgui_bundle.imgui import ImVec2, ImVec4
@@ -96,26 +96,42 @@ class ToggleConstants:
 # - The overload taking a reference to an ImGuiToggleConfig structure allows for more complete control over the widget.
 # IMGUI_API bool Toggle(const char* label, bool* v, const ImVec2& size = ImVec2());    /* original C++ signature */
 @overload
-def toggle(label: str, v: bool, size: ImVec2 = ImVec2()) -> Tuple[bool, bool]:
+def toggle(label: str, v: bool, size: Optional[ImVec2] = None) -> Tuple[bool, bool]:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2()
+    """
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, const ImVec2& size = ImVec2());    /* original C++ signature */
 @overload
-def toggle(label: str, v: bool, flags: ToggleFlags, size: ImVec2 = ImVec2()) -> Tuple[bool, bool]:
+def toggle(label: str, v: bool, flags: ToggleFlags, size: Optional[ImVec2] = None) -> Tuple[bool, bool]:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2()
+    """
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float animation_duration, const ImVec2& size = ImVec2());    /* original C++ signature */
 @overload
 def toggle(
-    label: str, v: bool, flags: ToggleFlags, animation_duration: float, size: ImVec2 = ImVec2()
+    label: str, v: bool, flags: ToggleFlags, animation_duration: float, size: Optional[ImVec2] = None
 ) -> Tuple[bool, bool]:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2()
+    """
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float frame_rounding, float knob_rounding, const ImVec2& size = ImVec2());    /* original C++ signature */
 @overload
 def toggle(
-    label: str, v: bool, flags: ToggleFlags, frame_rounding: float, knob_rounding: float, size: ImVec2 = ImVec2()
+    label: str, v: bool, flags: ToggleFlags, frame_rounding: float, knob_rounding: float, size: Optional[ImVec2] = None
 ) -> Tuple[bool, bool]:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2()
+    """
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float animation_duration, float frame_rounding, float knob_rounding, const ImVec2& size = ImVec2());    /* original C++ signature */
@@ -127,8 +143,12 @@ def toggle(
     animation_duration: float,
     frame_rounding: float,
     knob_rounding: float,
-    size: ImVec2 = ImVec2(),
+    size: Optional[ImVec2] = None,
 ) -> Tuple[bool, bool]:
+    """---
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2()
+    """
     pass
 
 # IMGUI_API bool Toggle(const char* label, bool* v, const ImGuiToggleConfig& config);    /* original C++ signature */

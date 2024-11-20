@@ -23,6 +23,8 @@ def main():
     options = litgen_options_imgui.litgen_options_imgui(
         litgen_options_imgui.ImguiOptionsType.imgui_h, True
     )
+    options.use_nanobind()
+
     options.srcmlcpp_options.flag_show_progress = False
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_non_api = False

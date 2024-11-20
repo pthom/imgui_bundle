@@ -2,7 +2,6 @@
 // Handwritten wrappers around parts of the imgui API, when needed for the python bindings
 #include "imgui.h"
 #include "imgui_internal.h"
-#include <pybind11/pybind11.h>
 #include <optional>
 #include <tuple>
 

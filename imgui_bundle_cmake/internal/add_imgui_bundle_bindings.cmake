@@ -10,7 +10,37 @@ function(_target_set_rpath target relative_path)
 endfunction()
 
 
+function(_nanobind_hack_disable_forceinline)
+    # Hack to disable forceinline in nanobind under Windows
+    # This speeds up compilation by a factor of 60x during the optimization phase for MSVC in Release mode
+    # (see https://github.com/wjakob/nanobind/discussions/791#discussioncomment-11309473)
+    execute_process(
+        COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+        OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT)
+    set(nanobind_include_dir ${nanobind_ROOT}/../include)
+    set(nb_defs_file ${nanobind_include_dir}/nanobind/nb_defs.h)
+    # Replace
+    #     #  define NB_INLINE          __forceinline
+    # By
+    #     #  define NB_INLINE          inline
+    if (NOT EXISTS ${nb_defs_file})
+        message(FATAL_ERROR "_nanobind_hack_disable_forceinline, file not found: ${nb_defs_file}")
+    endif()
+    file(READ ${nb_defs_file} nb_defs_content)
+    string(REPLACE
+        "#  define NB_INLINE          __forceinline"
+        "#  define NB_INLINE          inline"
+        nb_defs_content
+        "${nb_defs_content}")
+    file(WRITE ${nb_defs_file} "${nb_defs_content}")
+endfunction()
+
+
 function(add_imgui_bundle_bindings)
+    include(${IMGUI_BUNDLE_PATH}/imgui_bundle_cmake/internal/litgen_setup_module.cmake)
+    litgen_find_nanobind()
+    _nanobind_hack_disable_forceinline()
+
     set(bindings_main_folder ${IMGUI_BUNDLE_PATH}/external/bindings_generation/cpp/)
     include(${bindings_main_folder}/all_pybind_files.cmake)
 
@@ -26,15 +56,17 @@ function(add_imgui_bundle_bindings)
         ${all_pybind_files}
         )
 
-    pybind11_add_module(${python_native_module_name} ${python_module_sources})
+    nanobind_add_module(${python_native_module_name} ${python_module_sources})
     target_compile_definitions(${python_native_module_name} PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
     litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} ${IMGUI_BUNDLE_PATH}/bindings)
 
     # add cvnp for immvision
     if (IMGUI_BUNDLE_WITH_IMMVISION)
-        add_subdirectory(external/immvision/cvnp)
-        target_link_libraries(${python_native_module_name} PUBLIC cvnp)
+        set(cvnp_nano_dir ${IMGUI_BUNDLE_PATH}/external/immvision/cvnp_nano)
+        target_sources(${python_native_module_name} PRIVATE ${cvnp_nano_dir}/cvnp_nano/cvnp_nano.h)
+        target_include_directories(${python_native_module_name} PRIVATE ${cvnp_nano_dir})
+
         target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
 
@@ -45,4 +77,19 @@ function(add_imgui_bundle_bindings)
     endif()
 
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
+
+    # Link with OpenGL (necessary for nanobind)
+    find_package(OpenGL REQUIRED)
+    target_link_libraries(${python_native_module_name} PUBLIC OpenGL::GL)
+
+    # Disable optimizations on release build for msvc
+    # (leads to compilation times of > 3 hours!!!)
+    if (MSVC)
+        target_compile_options(${python_native_module_name} PRIVATE $<$<CONFIG:Release>:/Od>)
+    endif()
+
+    if (WIN32)
+        # Band aid for windows debug build, where the python lib may not be found...
+        target_link_directories(${python_native_module_name} PRIVATE ${Python_LIBRARY_DIRS})
+    endif()
 endfunction()

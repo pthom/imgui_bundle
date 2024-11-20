@@ -35,6 +35,7 @@ jobs:
       run: |
         python3 -m venv venv
         source venv/bin/activate
+        pip install nanobind
         pip install pybind11
         mkdir build && cd build
         cmake .. -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release
@@ -46,6 +47,7 @@ jobs:
       run: |
         python3 -m venv venv
         source venv/Scripts/activate # only difference from *nixes...
+        pip install nanobind
         pip install pybind11
         mkdir build && cd build
         cmake .. -DIMGUI_BUNDLE_BUILD_PYTHON=ON -DCMAKE_BUILD_TYPE=Release

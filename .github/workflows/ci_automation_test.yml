@@ -27,7 +27,7 @@ jobs:
       - name: install libglfw3-dev xorg-dev & start Xvfb (ubuntu only)
         if: ${{ matrix.platform == 'ubuntu-latest' }}
         run: |
-          sudo apt-get update && sudo apt-get install -y xorg-dev
+          sudo apt-get update && sudo apt-get install -y xorg-dev libgl1-mesa-dev libglfw3-dev libglew-dev
           sudo apt-get install -y xvfb
           sudo apt-get install -y libglfw3-dev
           Xvfb :99 &

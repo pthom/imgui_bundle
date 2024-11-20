@@ -6,8 +6,8 @@ from imgui_bundle.demos_python import demo_utils
 from imgui_bundle import hello_imgui
 hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
 
-from imgui_bundle.python_backends.examples import example_python_backend_glfw3
-example_python_backend_glfw3.main()
+from imgui_bundle.demos_python.demos_immapp import demo_docking
+demo_docking.main()
 
 # # "Call any function from the library which you want to debug
 # hello_imgui.run(lambda: imgui.text("hello"))

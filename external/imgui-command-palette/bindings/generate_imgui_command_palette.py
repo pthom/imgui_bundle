@@ -16,6 +16,8 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.use_nanobind()
+
     options.namespaces_root = ["ImCmd"]
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     options.python_run_black_formatter = False

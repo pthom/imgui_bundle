@@ -17,6 +17,8 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.use_nanobind()
+
     options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_WITH_NANOVG"
     options.original_signature_flag_show = True
     options.type_replacements.add_last_replacement("unsigned char", "UChar")
@@ -35,6 +37,8 @@ def main():
         options.type_replacements.add_last_replacement(
             "NVG" + letter, letter.upper()
         )
+
+    options.fn_return_force_policy_reference_for_pointers__regex = "CreateNvgContext_HelloImGui"
 
     options.srcmlcpp_options.ignored_warning_parts.append("C style function pointers are poorly supported")
 

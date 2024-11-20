@@ -1,6 +1,6 @@
 import enum
 import numpy as np
-from typing import Any, Callable, Tuple, List
+from typing import Any, Callable, Tuple, List, Optional
 
 from imgui_bundle import ImVec4
 from imgui_bundle.imgui import ImTextureID
@@ -87,11 +87,17 @@ class Paint:
         self,
         radius: float = float(),
         feather: float = float(),
-        inner_color: Color = Color(),
-        outer_color: Color = Color(),
+        inner_color: Optional[Color] = None,
+        outer_color: Optional[Color] = None,
         image: int = int()
         ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                innerColor: Color()
+                outerColor: Color()
+        """
         pass
 
 class Winding(enum.Enum):
@@ -1267,11 +1273,14 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
     def render_nvg_to_background(
         vg: Context,
         nvg_drawing_function: NvgDrawingFunction,
-        clear_color: ImVec4 = ImVec4(0., 0., 0., 1.)
+        clear_color: Optional[ImVec4] = None
         ) -> None:
         """ Render the given drawing function to the background of the application
          (i.e. the main viewport)
          If clearColor.w > 0., the background will be cleared with this color
+        ---
+        Python bindings defaults:
+            If clearColor is None, then its default value will be: ImVec4(0., 0., 0., 1.)
         """
         pass
 
@@ -1286,10 +1295,13 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
         vg: Context,
         texture: NvgFramebuffer,
         draw_func: NvgDrawingFunction,
-        clear_color: ImVec4 = ImVec4(0., 0., 0., 1.)
+        clear_color: Optional[ImVec4] = None
         ) -> None:
         """ Render the given drawing function to the given framebuffer
          If clearColor.w > 0., the background will be cleared with this color
+        ---
+        Python bindings defaults:
+            If clearColor is None, then its default value will be: ImVec4(0., 0., 0., 1.)
         """
         pass
 

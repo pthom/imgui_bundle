@@ -104,7 +104,11 @@ class MarkdownOptions:
 #        runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
 #
 #        hello_imgui.run(runner_params)
-def initialize_markdown(options: MarkdownOptions = MarkdownOptions()) -> None:
+def initialize_markdown(options: Optional[MarkdownOptions] = None) -> None:
+    """---
+    Python bindings defaults:
+        If options is None, then its default value will be: MarkdownOptions()
+    """
     pass
 
 def de_initialize_markdown() -> None:

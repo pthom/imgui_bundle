@@ -19,6 +19,7 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.use_nanobind()
     options.srcmlcpp_options.ignored_warnings = [
         WarningType.LitgenClassMemberSkipBitfield
     ]

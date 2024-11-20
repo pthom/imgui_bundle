@@ -16,6 +16,8 @@ def main():
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.use_nanobind()
+
     options.original_signature_flag_show = True
     options.original_location_flag_show = False
     options.namespaces_root = ["ImmVision"]

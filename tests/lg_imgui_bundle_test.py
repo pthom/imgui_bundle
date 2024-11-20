@@ -15,6 +15,7 @@ import sys
 def test_version():
     if sys.platform == "win32":
         return
+
     import imgui_bundle
     assert imgui_bundle.__version__ >= "0.6.0"
 
@@ -23,8 +24,13 @@ def test_imgui_context_creation():
     if sys.platform == "win32":
         return
 
+    if sys.platform == "darwin":
+        # Still working on macOS
+        pass
+
     # Check that this complex issue is fixed:
     #     https://github.com/pthom/imgui_bundle/issues/170#issuecomment-1900100904
+    #     (not testable automatically on GitHub CI anymore, since the issue happened on Ubuntu)
     from imgui_bundle import imgui
 
     ctx = imgui.create_context()

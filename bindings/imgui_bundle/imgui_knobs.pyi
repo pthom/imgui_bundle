@@ -49,11 +49,15 @@ def knob(
     v_max: float,
     speed: float = 0,
     format: Optional[str] = None,
-    variant: ImGuiKnobVariant = ImGuiKnobVariant_.tick,
+    variant: Optional[ImGuiKnobVariant] = None,
     size: float = 0,
     flags: ImGuiKnobFlags = 0,
     steps: int = 10,
 ) -> Tuple[bool, float]:
+    """---
+    Python bindings defaults:
+        If variant is None, then its default value will be: ImGuiKnobVariant_.tick
+    """
     pass
 
 def knob_int(
@@ -63,11 +67,15 @@ def knob_int(
     v_max: int,
     speed: float = 0,
     format: Optional[str] = None,
-    variant: ImGuiKnobVariant = ImGuiKnobVariant_.tick,
+    variant: Optional[ImGuiKnobVariant] = None,
     size: float = 0,
     flags: ImGuiKnobFlags = 0,
     steps: int = 10,
 ) -> Tuple[bool, int]:
+    """---
+    Python bindings defaults:
+        If variant is None, then its default value will be: ImGuiKnobVariant_.tick
+    """
     pass
 
 ####################    </generated_from:imgui-knobs.h>    ####################

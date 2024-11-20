@@ -1,9 +1,11 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-#include <pybind11/functional.h>
-
-#include <pybind11/stl_bind.h>
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/array.h>
+#include <nanobind/stl/optional.h>
+#include <nanobind/stl/vector.h>
+#include <nanobind/stl/function.h>
+#include <nanobind/ndarray.h>
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "immapp/immapp.h"
@@ -26,7 +28,7 @@ namespace ax
 #endif
 
 
-namespace py = pybind11;
+namespace nb = nanobind;
 
 
 
@@ -41,7 +43,7 @@ namespace py = pybind11;
 #include <vector>
 
 
-void py_init_module_immapp_cpp(py::module& m)
+void py_init_module_immapp_cpp(nb::module_& m)
 {
     using namespace ImmApp;
     using namespace Snippets;
@@ -57,19 +59,38 @@ void py_init_module_immapp_cpp(py::module& m)
     //
 
     m.def("begin_plot_in_node_editor",
-        ImmApp::BeginPlotInNodeEditor, py::arg("title_id"), py::arg("size") = ImVec2(-1,0), py::arg("flags") = 0);
+        [](const char * title_id, const std::optional<const ImVec2> & size = std::nullopt, ImPlotFlags flags = 0) -> bool
+        {
+            auto BeginPlotInNodeEditor_adapt_mutable_param_with_default_value = [](const char * title_id, const std::optional<const ImVec2> & size = std::nullopt, ImPlotFlags flags = 0) -> bool
+            {
+
+                const ImVec2& size_or_default = [&]() -> const ImVec2 {
+                    if (size.has_value())
+                        return size.value();
+                    else
+                        return ImVec2(-1,0);
+                }();
+
+                auto lambda_result = ImmApp::BeginPlotInNodeEditor(title_id, size_or_default, flags);
+                return lambda_result;
+            };
+
+            return BeginPlotInNodeEditor_adapt_mutable_param_with_default_value(title_id, size, flags);
+        },
+        nb::arg("title_id"), nb::arg("size") = nb::none(), nb::arg("flags") = 0,
+        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
 
     m.def("end_plot_in_node_editor",
         ImmApp::EndPlotInNodeEditor);
 
     m.def("show_resizable_plot_in_node_editor",
         ImmApp::ShowResizablePlotInNodeEditor,
-        py::arg("title_id"), py::arg("size_pixels"), py::arg("plot_function"), py::arg("flags") = 0, py::arg("resize_handle_size_em") = 1.0f,
+        nb::arg("title_id"), nb::arg("size_pixels"), nb::arg("plot_function"), nb::arg("flags") = 0, nb::arg("resize_handle_size_em") = 1.0f,
         " ShowResizablePlotInNodeEditor: shows a resizable plot inside a node\n Returns the new size of the plot");
 
     m.def("show_resizable_plot_in_node_editor_em",
         ImmApp::ShowResizablePlotInNodeEditor_Em,
-        py::arg("title_id"), py::arg("size_em"), py::arg("plot_function"), py::arg("flags") = 0, py::arg("resize_handle_size_em") = 1.0f,
+        nb::arg("title_id"), nb::arg("size_em"), nb::arg("plot_function"), nb::arg("flags") = 0, nb::arg("resize_handle_size_em") = 1.0f,
         " ShowResizablePlotInNodeEditor_Em: shows a resizable plot inside a node\n Returns the new size of the plot. Units are in em.");
     // #endif
     // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
@@ -77,12 +98,12 @@ void py_init_module_immapp_cpp(py::module& m)
 
     m.def("widget_with_resize_handle_in_node_editor",
         ImmApp::WidgetWithResizeHandle_InNodeEditor,
-        py::arg("id"), py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
+        nb::arg("id"), nb::arg("gui_function"), nb::arg("resize_handle_size_em") = 1.0f,
         " WidgetWithResizeHandle_InNodeEditor: shows a resizable widget inside a node\n Returns the new size of the widget.");
 
     m.def("widget_with_resize_handle_in_node_editor_em",
         ImmApp::WidgetWithResizeHandle_InNodeEditor_Em,
-        py::arg("id"), py::arg("gui_function"), py::arg("resize_handle_size_em") = 1.0f,
+        nb::arg("id"), nb::arg("gui_function"), nb::arg("resize_handle_size_em") = 1.0f,
         " WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node\n Returns the new size of the widget. Size is in em.");
     // #endif
     ////////////////////    </generated_from:immapp_widgets.h>    ////////////////////
@@ -102,12 +123,12 @@ void py_init_module_immapp_cpp(py::module& m)
 
 
     auto pyClassAddOnsParams =
-        py::class_<ImmApp::AddOnsParams>
+        nb::class_<ImmApp::AddOnsParams>
             (m, "AddOnsParams", "///////////////////////////////////////////////////////////////////////////////////////\n\n AddOnParams: require specific ImGuiBundle packages (markdown, node editor, texture viewer)\n to be initialized at startup.\n\n/////////////////////////////////////////////////////////////////////////////////////")
-        .def(py::init<>([](
-        bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, bool updateNodeEditorColorsFromImguiColors = true, std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt)
+        .def("__init__", [](ImmApp::AddOnsParams * self, bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, bool updateNodeEditorColorsFromImguiColors = true, std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt)
         {
-            auto r = std::make_unique<ImmApp::AddOnsParams>();
+            new (self) ImmApp::AddOnsParams();  // placement new
+            auto r = self;
             r->withImplot = withImplot;
             r->withMarkdown = withMarkdown;
             r->withNodeEditor = withNodeEditor;
@@ -115,85 +136,152 @@ void py_init_module_immapp_cpp(py::module& m)
             r->withNodeEditorConfig = withNodeEditorConfig;
             r->updateNodeEditorColorsFromImguiColors = updateNodeEditorColorsFromImguiColors;
             r->withMarkdownOptions = withMarkdownOptions;
-            return r;
-        })
-        , py::arg("with_implot") = false, py::arg("with_markdown") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("update_node_editor_colors_from_imgui_colors") = true, py::arg("with_markdown_options") = py::none()
+        },
+        nb::arg("with_implot") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("update_node_editor_colors_from_imgui_colors") = true, nb::arg("with_markdown_options") = nb::none()
         )
-        .def_readwrite("with_implot", &ImmApp::AddOnsParams::withImplot, "Set withImplot=True if you need to plot graphs")
-        .def_readwrite("with_markdown", &ImmApp::AddOnsParams::withMarkdown, " Set withMarkdown=True if you need to render Markdown\n (alternatively, you can set withMarkdownOptions)")
-        .def_readwrite("with_node_editor", &ImmApp::AddOnsParams::withNodeEditor, " Set withNodeEditor=True if you need to render a node editor\n (alternatively, you can set withNodeEditorConfig)")
-        .def_readwrite("with_tex_inspect", &ImmApp::AddOnsParams::withTexInspect, "Set withTexInspect=True if you need to use imgui_tex_inspect")
+        .def_rw("with_implot", &ImmApp::AddOnsParams::withImplot, "Set withImplot=True if you need to plot graphs")
+        .def_rw("with_markdown", &ImmApp::AddOnsParams::withMarkdown, " Set withMarkdown=True if you need to render Markdown\n (alternatively, you can set withMarkdownOptions)")
+        .def_rw("with_node_editor", &ImmApp::AddOnsParams::withNodeEditor, " Set withNodeEditor=True if you need to render a node editor\n (alternatively, you can set withNodeEditorConfig)")
+        .def_rw("with_tex_inspect", &ImmApp::AddOnsParams::withTexInspect, "Set withTexInspect=True if you need to use imgui_tex_inspect")
         // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         //
-        .def_readwrite("with_node_editor_config", &ImmApp::AddOnsParams::withNodeEditorConfig, "You can tweak NodeEditorConfig (but this is optional)")
-        .def_readwrite("update_node_editor_colors_from_imgui_colors", &ImmApp::AddOnsParams::updateNodeEditorColorsFromImguiColors, " If True, the node editor colors will be updated from the ImGui colors\n (i.e. if using a light theme, the node editor will use a light theme, etc.)\n This is called after runnerParams.callbacks.SetupImGuiStyle, in which you can set the ImGui style.\n If you set this to False, you can set the node editor style manually.\n (Note: you can also the theme via RunnerParams.imguiParams.tweakedTheme)")
+        .def_rw("with_node_editor_config", &ImmApp::AddOnsParams::withNodeEditorConfig, "You can tweak NodeEditorConfig (but this is optional)")
+        .def_rw("update_node_editor_colors_from_imgui_colors", &ImmApp::AddOnsParams::updateNodeEditorColorsFromImguiColors, " If True, the node editor colors will be updated from the ImGui colors\n (i.e. if using a light theme, the node editor will use a light theme, etc.)\n This is called after runnerParams.callbacks.SetupImGuiStyle, in which you can set the ImGui style.\n If you set this to False, you can set the node editor style manually.\n (Note: you can also the theme via RunnerParams.imguiParams.tweakedTheme)")
         // #endif
         //
-        .def_readwrite("with_markdown_options", &ImmApp::AddOnsParams::withMarkdownOptions, "You can tweak MarkdownOptions (but this is optional)")
+        .def_rw("with_markdown_options", &ImmApp::AddOnsParams::withMarkdownOptions, "You can tweak MarkdownOptions (but this is optional)")
         ;
 
 
     m.def("run",
-        py::overload_cast<HelloImGui::RunnerParams &, const ImmApp::AddOnsParams &>(ImmApp::Run), py::arg("runner_params"), py::arg("add_ons_params") = ImmApp::AddOnsParams());
+        [](HelloImGui::RunnerParams & runnerParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+        {
+            auto Run_adapt_mutable_param_with_default_value = [](HelloImGui::RunnerParams & runnerParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+            {
+
+                const ImmApp::AddOnsParams& addOnsParams_or_default = [&]() -> const ImmApp::AddOnsParams {
+                    if (addOnsParams.has_value())
+                        return addOnsParams.value();
+                    else
+                        return ImmApp::AddOnsParams();
+                }();
+
+                ImmApp::Run(runnerParams, addOnsParams_or_default);
+            };
+
+            Run_adapt_mutable_param_with_default_value(runnerParams, addOnsParams);
+        },
+        nb::arg("runner_params"), nb::arg("add_ons_params") = nb::none(),
+        "---\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
     m.def("run",
-        py::overload_cast<const HelloImGui::SimpleRunnerParams &, const ImmApp::AddOnsParams &>(ImmApp::Run), py::arg("simple_params"), py::arg("add_ons_params") = ImmApp::AddOnsParams());
+        [](const HelloImGui::SimpleRunnerParams & simpleParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+        {
+            auto Run_adapt_mutable_param_with_default_value = [](const HelloImGui::SimpleRunnerParams & simpleParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+            {
+
+                const ImmApp::AddOnsParams& addOnsParams_or_default = [&]() -> const ImmApp::AddOnsParams {
+                    if (addOnsParams.has_value())
+                        return addOnsParams.value();
+                    else
+                        return ImmApp::AddOnsParams();
+                }();
+
+                ImmApp::Run(simpleParams, addOnsParams_or_default);
+            };
+
+            Run_adapt_mutable_param_with_default_value(simpleParams, addOnsParams);
+        },
+        nb::arg("simple_params"), nb::arg("add_ons_params") = nb::none(),
+        "---\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
     m.def("run",
-        py::overload_cast<const VoidFunction &, const std::string &, bool, bool, const ScreenSize &, float, bool, bool, bool, bool, const std::optional<NodeEditorConfig> &, const std::optional<ImGuiMd::MarkdownOptions> &>(ImmApp::Run),
-        py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = DefaultWindowSize, py::arg("fps_idle") = 10.f, py::arg("with_implot") = false, py::arg("with_markdown") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none(),
-        "///////////////////////////////////////////////////////////////////////////////////////\n\n Helpers to run an app from Python (using named parameters)\n\n/////////////////////////////////////////////////////////////////////////////////////\n Helper to run an app inside imgui_bundle, using HelloImGui:\n\n (HelloImGui::SimpleRunnerParams)\n     - `guiFunction`: the function that will render the ImGui widgets\n     - `windowTitle`: title of the window\n     - `windowSizeAuto`: if True, autosize the window from its inner widgets\n     - `windowRestorePreviousGeometry`: if True, restore window size and position from last run\n     - `windowSize`: size of the window\n     - `fpsIdle`: fps of the application when idle\n\n (ImmApp::AddOnsParams)\n     - `with_implot`: if True, then a context for implot will be created/destroyed automatically\n     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized\n       (i.e. required fonts will be loaded)\n     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor\n       will be created automatically.");
+        [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+        {
+            auto Run_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool withImplot = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+            {
+
+                const ScreenSize& windowSize_or_default = [&]() -> const ScreenSize {
+                    if (windowSize.has_value())
+                        return windowSize.value();
+                    else
+                        return DefaultWindowSize;
+                }();
+
+                ImmApp::Run(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle, withImplot, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+            };
+
+            Run_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, withImplot, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+        },
+        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("with_markdown_options") = nb::none(),
+        "///////////////////////////////////////////////////////////////////////////////////////\n\n Helpers to run an app from Python (using named parameters)\n\n/////////////////////////////////////////////////////////////////////////////////////\n Helper to run an app inside imgui_bundle, using HelloImGui:\n\n (HelloImGui::SimpleRunnerParams)\n     - `guiFunction`: the function that will render the ImGui widgets\n     - `windowTitle`: title of the window\n     - `windowSizeAuto`: if True, autosize the window from its inner widgets\n     - `windowRestorePreviousGeometry`: if True, restore window size and position from last run\n     - `windowSize`: size of the window\n     - `fpsIdle`: fps of the application when idle\n\n (ImmApp::AddOnsParams)\n     - `with_implot`: if True, then a context for implot will be created/destroyed automatically\n     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized\n       (i.e. required fonts will be loaded)\n     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor\n       will be created automatically.\n---\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("run_with_markdown",
-        ImmApp::RunWithMarkdown,
-        py::arg("gui_function"), py::arg("window_title") = "", py::arg("window_size_auto") = false, py::arg("window_restore_previous_geometry") = false, py::arg("window_size") = DefaultWindowSize, py::arg("fps_idle") = 10.f, py::arg("with_implot") = false, py::arg("with_node_editor") = false, py::arg("with_tex_inspect") = false, py::arg("with_node_editor_config") = py::none(), py::arg("with_markdown_options") = py::none(),
-        "Run an application with markdown");
+        [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool withImplot = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+        {
+            auto RunWithMarkdown_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool withImplot = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+            {
+
+                const ScreenSize& windowSize_or_default = [&]() -> const ScreenSize {
+                    if (windowSize.has_value())
+                        return windowSize.value();
+                    else
+                        return DefaultWindowSize;
+                }();
+
+                ImmApp::RunWithMarkdown(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle, withImplot, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+            };
+
+            RunWithMarkdown_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, withImplot, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+        },
+        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("with_markdown_options") = nb::none(),
+        " Run an application with markdown\n---\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("em_size",
-        py::overload_cast<>(ImmApp::EmSize), " EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your\n widgets and windows relatively to this size.\n It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).\n EmSize() = ImGui::GetFontSize()");
+        nb::overload_cast<>(ImmApp::EmSize), " EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your\n widgets and windows relatively to this size.\n It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).\n EmSize() = ImGui::GetFontSize()");
 
     m.def("em_size",
-        py::overload_cast<float>(ImmApp::EmSize),
-        py::arg("nb_lines"),
+        nb::overload_cast<float>(ImmApp::EmSize),
+        nb::arg("nb_lines"),
         "EmSize(nbLines) returns a size corresponding to nbLines text lines");
 
     m.def("em_to_vec2",
-        py::overload_cast<float, float>(ImmApp::EmToVec2), py::arg("x"), py::arg("y"));
+        nb::overload_cast<float, float>(ImmApp::EmToVec2), nb::arg("x"), nb::arg("y"));
 
     m.def("em_to_vec2",
-        py::overload_cast<ImVec2>(ImmApp::EmToVec2), py::arg("v"));
+        nb::overload_cast<ImVec2>(ImmApp::EmToVec2), nb::arg("v"));
 
     m.def("pixels_to_em",
         ImmApp::PixelsToEm,
-        py::arg("pixels"),
+        nb::arg("pixels"),
         "PixelsToEm() converts a Vec2 in pixels to a Vec2 in em");
 
     m.def("pixel_size_to_em",
         ImmApp::PixelSizeToEm,
-        py::arg("pixel_size"),
+        nb::arg("pixel_size"),
         "PixelSizeToEm() converts a size in pixels to a size in em");
     // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     //
 
     m.def("default_node_editor_context",
-        ImmApp::DefaultNodeEditorContext, py::return_value_policy::reference);
+        ImmApp::DefaultNodeEditorContext, nb::rv_policy::reference);
 
     m.def("default_node_editor_config",
-        ImmApp::DefaultNodeEditorConfig, py::return_value_policy::reference);
+        ImmApp::DefaultNodeEditorConfig, nb::rv_policy::reference);
 
     m.def("node_editor_settings_location",
         ImmApp::NodeEditorSettingsLocation,
-        py::arg("runner_params"),
+        nb::arg("runner_params"),
         "NodeEditorSettingsLocation returns the path to the json file for the node editor settings.");
 
     m.def("has_node_editor_settings",
         ImmApp::HasNodeEditorSettings,
-        py::arg("runner_params"),
+        nb::arg("runner_params"),
         "HasNodeEditorSettings returns True if the json file for the node editor settings exists.");
 
     m.def("delete_node_editor_settings",
         ImmApp::DeleteNodeEditorSettings,
-        py::arg("runner_params"),
+        nb::arg("runner_params"),
         "DeleteNodeEditorSettings deletes the json file for the node editor settings.");
     // #endif
     // }
@@ -209,15 +297,15 @@ void py_init_module_immapp_cpp(py::module& m)
     ////////////////////    <generated_from:code_utils.h>    ////////////////////
 
     { // <namespace CodeUtils>
-        py::module_ pyNsCodeUtils = m.def_submodule("code_utils", "namespace CodeUtils");
+        nb::module_ pyNsCodeUtils = m.def_submodule("code_utils", "namespace CodeUtils");
         pyNsCodeUtils.def("unindent",
-            CodeUtils::Unindent, py::arg("code"), py::arg("is_markdown"));
+            CodeUtils::Unindent, nb::arg("code"), nb::arg("is_markdown"));
 
         pyNsCodeUtils.def("unindent_code",
-            CodeUtils::UnindentCode, py::arg("code"));
+            CodeUtils::UnindentCode, nb::arg("code"));
 
         pyNsCodeUtils.def("unindent_markdown",
-            CodeUtils::UnindentMarkdown, py::arg("code"));
+            CodeUtils::UnindentMarkdown, nb::arg("code"));
     } // </namespace CodeUtils>
     ////////////////////    </generated_from:code_utils.h>    ////////////////////
 
@@ -225,9 +313,9 @@ void py_init_module_immapp_cpp(py::module& m)
     ////////////////////    <generated_from:snippets.h>    ////////////////////
 
     { // <namespace Snippets>
-        py::module_ pyNsSnippets = m.def_submodule("snippets", "");
+        nb::module_ pyNsSnippets = m.def_submodule("snippets", "");
         auto pyEnumSnippetLanguage =
-            py::enum_<Snippets::SnippetLanguage>(pyNsSnippets, "SnippetLanguage", py::arithmetic(), "")
+            nb::enum_<Snippets::SnippetLanguage>(pyNsSnippets, "SnippetLanguage", nb::is_arithmetic(), "")
                 .value("cpp", Snippets::SnippetLanguage::Cpp, "")
                 .value("hlsl", Snippets::SnippetLanguage::Hlsl, "")
                 .value("glsl", Snippets::SnippetLanguage::Glsl, "")
@@ -239,7 +327,7 @@ void py_init_module_immapp_cpp(py::module& m)
 
 
         auto pyEnumSnippetTheme =
-            py::enum_<Snippets::SnippetTheme>(pyNsSnippets, "SnippetTheme", py::arithmetic(), "")
+            nb::enum_<Snippets::SnippetTheme>(pyNsSnippets, "SnippetTheme", nb::is_arithmetic(), "")
                 .value("dark", Snippets::SnippetTheme::Dark, "")
                 .value("light", Snippets::SnippetTheme::Light, "")
                 .value("retro_blue", Snippets::SnippetTheme::RetroBlue, "")
@@ -251,12 +339,12 @@ void py_init_module_immapp_cpp(py::module& m)
 
 
         auto pyNsSnippets_ClassSnippetData =
-            py::class_<Snippets::SnippetData>
+            nb::class_<Snippets::SnippetData>
                 (pyNsSnippets, "SnippetData", "")
-            .def(py::init<>([](
-            std::string Code = "", Snippets::SnippetLanguage Language = Snippets::DefaultSnippetLanguage(), Snippets::SnippetTheme Palette = Snippets::SnippetTheme::Light, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = {}, int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = false, bool Border = false, bool DeIndentCode = true, bool AddFinalEmptyLine = false)
+            .def("__init__", [](Snippets::SnippetData * self, std::string Code = "", Snippets::SnippetLanguage Language = Snippets::DefaultSnippetLanguage(), Snippets::SnippetTheme Palette = Snippets::SnippetTheme::Light, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = {}, int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = false, bool Border = false, bool DeIndentCode = true, bool AddFinalEmptyLine = false)
             {
-                auto r = std::make_unique<Snippets::SnippetData>();
+                new (self) Snippets::SnippetData();  // placement new
+                auto r = self;
                 r->Code = Code;
                 r->Language = Language;
                 r->Palette = Palette;
@@ -269,36 +357,35 @@ void py_init_module_immapp_cpp(py::module& m)
                 r->Border = Border;
                 r->DeIndentCode = DeIndentCode;
                 r->AddFinalEmptyLine = AddFinalEmptyLine;
-                return r;
-            })
-            , py::arg("code") = "", py::arg("language") = Snippets::DefaultSnippetLanguage(), py::arg("palette") = Snippets::SnippetTheme::Light, py::arg("show_copy_button") = true, py::arg("show_cursor_position") = true, py::arg("displayed_filename") = std::string{}, py::arg("height_in_lines") = 0, py::arg("max_height_in_lines") = 40, py::arg("read_only") = false, py::arg("border") = false, py::arg("de_indent_code") = true, py::arg("add_final_empty_line") = false
+            },
+            nb::arg("code") = "", nb::arg("language") = Snippets::DefaultSnippetLanguage(), nb::arg("palette") = Snippets::SnippetTheme::Light, nb::arg("show_copy_button") = true, nb::arg("show_cursor_position") = true, nb::arg("displayed_filename") = std::string{}, nb::arg("height_in_lines") = 0, nb::arg("max_height_in_lines") = 40, nb::arg("read_only") = false, nb::arg("border") = false, nb::arg("de_indent_code") = true, nb::arg("add_final_empty_line") = false
             )
-            .def_readwrite("code", &Snippets::SnippetData::Code, "")
-            .def_readwrite("language", &Snippets::SnippetData::Language, "")
-            .def_readwrite("palette", &Snippets::SnippetData::Palette, "")
-            .def_readwrite("show_copy_button", &Snippets::SnippetData::ShowCopyButton, "Displayed on top of the editor (Top Right corner)")
-            .def_readwrite("show_cursor_position", &Snippets::SnippetData::ShowCursorPosition, "Show line and column number")
-            .def_readwrite("displayed_filename", &Snippets::SnippetData::DisplayedFilename, "Displayed on top of the editor")
-            .def_readwrite("height_in_lines", &Snippets::SnippetData::HeightInLines, "Number of visible lines in the editor")
-            .def_readwrite("max_height_in_lines", &Snippets::SnippetData::MaxHeightInLines, "If the number of lines in the code exceeds this, the editor will scroll. Set to 0 to disable.")
-            .def_readwrite("read_only", &Snippets::SnippetData::ReadOnly, "Snippets are read-only by default")
-            .def_readwrite("border", &Snippets::SnippetData::Border, "Draw a border around the editor")
-            .def_readwrite("de_indent_code", &Snippets::SnippetData::DeIndentCode, "Keep the code indentation, but remove main indentation,")
-            .def_readwrite("add_final_empty_line", &Snippets::SnippetData::AddFinalEmptyLine, "Add an empty line at the end of the code if missing")
+            .def_rw("code", &Snippets::SnippetData::Code, "")
+            .def_rw("language", &Snippets::SnippetData::Language, "")
+            .def_rw("palette", &Snippets::SnippetData::Palette, "")
+            .def_rw("show_copy_button", &Snippets::SnippetData::ShowCopyButton, "Displayed on top of the editor (Top Right corner)")
+            .def_rw("show_cursor_position", &Snippets::SnippetData::ShowCursorPosition, "Show line and column number")
+            .def_rw("displayed_filename", &Snippets::SnippetData::DisplayedFilename, "Displayed on top of the editor")
+            .def_rw("height_in_lines", &Snippets::SnippetData::HeightInLines, "Number of visible lines in the editor")
+            .def_rw("max_height_in_lines", &Snippets::SnippetData::MaxHeightInLines, "If the number of lines in the code exceeds this, the editor will scroll. Set to 0 to disable.")
+            .def_rw("read_only", &Snippets::SnippetData::ReadOnly, "Snippets are read-only by default")
+            .def_rw("border", &Snippets::SnippetData::Border, "Draw a border around the editor")
+            .def_rw("de_indent_code", &Snippets::SnippetData::DeIndentCode, "Keep the code indentation, but remove main indentation,")
+            .def_rw("add_final_empty_line", &Snippets::SnippetData::AddFinalEmptyLine, "Add an empty line at the end of the code if missing")
             ;
 
 
         pyNsSnippets.def("show_editable_code_snippet",
-            Snippets::ShowEditableCodeSnippet, py::arg("label_id"), py::arg("snippet_data"), py::arg("width") = 0.f, py::arg("override_height_in_lines") = 0);
+            Snippets::ShowEditableCodeSnippet, nb::arg("label_id"), nb::arg("snippet_data"), nb::arg("width") = 0.f, nb::arg("override_height_in_lines") = 0);
 
         pyNsSnippets.def("show_code_snippet",
-            Snippets::ShowCodeSnippet, py::arg("snippet_data"), py::arg("width") = 0.f, py::arg("override_height_in_lines") = 0);
+            Snippets::ShowCodeSnippet, nb::arg("snippet_data"), nb::arg("width") = 0.f, nb::arg("override_height_in_lines") = 0);
 
         pyNsSnippets.def("show_side_by_side_snippets",
-            py::overload_cast<const Snippets::SnippetData &, const Snippets::SnippetData &, bool, bool>(Snippets::ShowSideBySideSnippets), py::arg("snippet1"), py::arg("snippet2"), py::arg("hide_if_empty") = true, py::arg("equal_visible_lines") = true);
+            nb::overload_cast<const Snippets::SnippetData &, const Snippets::SnippetData &, bool, bool>(Snippets::ShowSideBySideSnippets), nb::arg("snippet1"), nb::arg("snippet2"), nb::arg("hide_if_empty") = true, nb::arg("equal_visible_lines") = true);
 
         pyNsSnippets.def("show_side_by_side_snippets",
-            py::overload_cast<const std::vector<Snippets::SnippetData> &, bool, bool>(Snippets::ShowSideBySideSnippets), py::arg("snippets"), py::arg("hide_if_empty") = true, py::arg("equal_visible_lines") = true);
+            nb::overload_cast<const std::vector<Snippets::SnippetData> &, bool, bool>(Snippets::ShowSideBySideSnippets), nb::arg("snippets"), nb::arg("hide_if_empty") = true, nb::arg("equal_visible_lines") = true);
     } // </namespace Snippets>
     ////////////////////    </generated_from:snippets.h>    ////////////////////
 

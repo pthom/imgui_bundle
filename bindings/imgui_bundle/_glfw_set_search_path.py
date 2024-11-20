@@ -19,10 +19,25 @@ def _glfw_set_search_path() -> None:
     this_dir = os.path.dirname(__file__)
     if platform.system() == "Darwin":
         lib_file = "libglfw.3.dylib"
+        if not os.path.exists(f"{this_dir}/{lib_file}"):
+            msg = f"Cannot find {lib_file} in {this_dir}\n"
+            raise FileNotFoundError(msg)
     elif platform.system() == "Windows":
-        lib_file = "glfw3.dll"
+        if os.path.exists(f"{this_dir}/glfw3.dll"):
+            lib_file = "glfw3.dll"
+        else:
+            msg = f"Cannot find glfw3.dll in {this_dir}\n"
+            raise FileNotFoundError(msg)
     elif platform.system() == "Linux":
-        lib_file = "libglfw.so.3"
+        if os.path.exists(f"{this_dir}/libglfw.so.3"):
+            lib_file = "libglfw.so.3"
+        elif os.path.exists(f"{this_dir}/libglfw.3.so"):
+            lib_file = "libglfw.3.so"
+        if os.path.exists(f"{this_dir}/libglfw.so.3.3"):
+            lib_file = "libglfw.so.3.3"
+        else:
+            msg = f"Cannot find libglfw.so.3 or libglfw.3.so in {this_dir}\n"
+            raise FileNotFoundError(msg)
     else:
         msg = f"Please implement set_pip_glfw_search_path() for your os: {platform.system()}\n"
         raise NotImplementedError(msg)

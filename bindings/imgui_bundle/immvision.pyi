@@ -166,10 +166,14 @@ class ColormapSettingsData:
         colormap: str = "None",
         colormap_scale_min: float = 0.0,
         colormap_scale_max: float = 1.0,
-        colormap_scale_from_stats: ColormapScaleFromStatsData = ColormapScaleFromStatsData(),
+        colormap_scale_from_stats: Optional[ColormapScaleFromStatsData] = None,
         internal_colormap_hovered: str = "",
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If ColormapScaleFromStats is None, then its default value will be: ColormapScaleFromStatsData()
+        """
         pass
 
 class MouseInformation:
@@ -199,10 +203,16 @@ class MouseInformation:
     def __init__(
         self,
         is_mouse_hovering: bool = False,
-        mouse_position: Point2d = (-1.0, -1.0),
-        mouse_position_displayed: Point = (-1, -1),
+        mouse_position: Optional[Point2d] = None,
+        mouse_position_displayed: Optional[cv.Point] = None,
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                MousePosition: Point2(-1., -1.)
+                MousePosition_Displayed: Point(-1, -1)
+        """
         pass
 
 class ImageParams:
@@ -335,10 +345,10 @@ class ImageParams:
     def __init__(
         self,
         refresh_image: bool = False,
-        image_display_size: Size = (0, 0),
-        zoom_pan_matrix: Matx33d = np.eye(3),
+        image_display_size: Optional[Size] = None,
+        zoom_pan_matrix: Optional[Matx33d] = None,
         zoom_key: str = "",
-        colormap_settings: ColormapSettingsData = ColormapSettingsData(),
+        colormap_settings: Optional[ColormapSettingsData] = None,
         colormap_key: str = "",
         pan_with_mouse: bool = True,
         zoom_with_mouse_wheel: bool = True,
@@ -355,12 +365,21 @@ class ImageParams:
         show_options_panel: bool = False,
         show_options_in_tooltip: bool = False,
         show_options_button: bool = True,
-        watched_pixels: List[Point] = List[Point](),
+        watched_pixels: Optional[List[Point]] = None,
         add_watched_pixel_on_double_click: bool = True,
         highlight_watched_pixels: bool = True,
-        mouse_info: MouseInformation = MouseInformation(),
+        mouse_info: Optional[MouseInformation] = None,
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                ImageDisplaySize: Size()
+                ZoomPanMatrix: Matx33.eye()
+                ColormapSettings: ColormapSettingsData()
+                WatchedPixels: List[Point]()
+                MouseInfo: MouseInformation()
+        """
         pass
 
 # #ifdef IMMVISION_SERIALIZE_JSON
@@ -463,7 +482,7 @@ def image(label: str, mat: Mat, params: ImageParams) -> None:
 def image_display(
     label_id: str,
     mat: Mat,
-    image_display_size: Size = (0, 0),
+    image_display_size: Optional[Size] = None,
     refresh_image: bool = False,
     show_options_button: bool = False,
 ) -> Point2d:
@@ -513,6 +532,9 @@ def image_display(
      Note: this function requires that both imgui and OpenGL were initialized.
            (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)
 
+    ---
+    Python bindings defaults:
+        If imageDisplaySize is None, then its default value will be: Size()
     """
     pass
 
@@ -593,9 +615,13 @@ def inspector_add_image(
     legend: str,
     zoom_key: str = "",
     colormap_key: str = "",
-    zoom_center: Point2d = (0, 0),
+    zoom_center: Optional[Point2d] = None,
     zoom_ratio: float = -1.0,
 ) -> None:
+    """---
+    Python bindings defaults:
+        If zoomCenter is None, then its default value will be: Point2()
+    """
     pass
 
 # IMMVISION_API void Inspector_Show();    /* original C++ signature */

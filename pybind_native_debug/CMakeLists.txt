@@ -58,4 +58,7 @@ if(WIN32)
         set_property(TARGET pybind_native_debug PROPERTY VS_DEBUGGER_ENVIRONMENT "PATH=%PATH%;${python_dll_path}")
         message(STATUS "set_property(TARGET pybind_native_debug PROPERTY VS_DEBUGGER_ENVIRONMENT \"PATH=%PATH%;${python_dll_path}\"")
     endif()
+
+    # Band aid for windows debug build, where the python lib may not be found...
+    target_link_directories(pybind_native_debug PRIVATE ${Python_LIBRARY_DIRS})
 endif()

@@ -278,8 +278,12 @@ class Arrow:
         self,
         x_vector_index: int = 0,
         y_vector_index: int = 1,
-        line_scale: ImVec2 = ImVec2(1, 1)
+        line_scale: Optional[ImVec2] = None
         ) -> None:
+        """---
+        Python bindings defaults:
+            If lineScale is None, then its default value will be: ImVec2(1, 1)
+        """
         pass
     def use_preset(self, param_0: Arrow.Preset) -> Arrow:
         pass
@@ -307,8 +311,18 @@ class Transform2D:
     def inverse(self) -> Transform2D:
         """ Return an inverse transform such that transform.Inverse() * transform * vector == vector"""
         pass
-    def __init__(self, scale: ImVec2 = ImVec2(), translate: ImVec2 = ImVec2()) -> None:
-        """Auto-generated default constructor with named params"""
+    def __init__(
+        self,
+        scale: Optional[ImVec2] = None,
+        translate: Optional[ImVec2] = None
+        ) -> None:
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                Scale: ImVec2()
+                Translate: ImVec2()
+        """
         pass
 
 
@@ -331,10 +345,16 @@ class Texture:
     size: ImVec2
     def __init__(
         self,
-        texture: ImTextureID = ImTextureID(),
-        size: ImVec2 = ImVec2()
+        texture: Optional[ImTextureID] = None,
+        size: Optional[ImVec2] = None
         ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                texture: ImTextureID()
+                size: ImVec2()
+        """
         pass
 
 

@@ -775,11 +775,15 @@ class TestOutput:
     def __init__(
         self,
         status: TestStatus = TestStatus_Unknown,
-        log: TestLog = TestLog(),
+        log: Optional[TestLog] = None,
         start_time: ImU64 = 0,
         end_time: ImU64 = 0,
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If Log is None, then its default value will be: TestLog()
+        """
         pass
 
 class Test:
@@ -1424,10 +1428,14 @@ class TestContext:
         self,
         window_ref: Union[TestRef, str],
         pos: ImVec2,
-        pivot: ImVec2 = ImVec2(0.0, 0.0),
+        pivot: Optional[ImVec2] = None,
         flags: TestOpFlags = TestOpFlags_None,
     ) -> None:
-        """(private API)"""
+        """---
+        Python bindings defaults:
+            If pivot is None, then its default value will be: ImVec2(0.0, 0.0)
+        (private API)
+        """
         pass
     # void        WindowResize(ImGuiTestRef window_ref, ImVec2 sz);    /* original C++ signature */
     def window_resize(self, window_ref: Union[TestRef, str], sz: ImVec2) -> None:
@@ -1992,11 +2000,15 @@ class TestContext:
         self,
         src_id: Union[TestRef, str],
         dst_id: Union[TestRef, str],
-        split_dir: Dir = Dir_None,
+        split_dir: Optional[Dir] = None,
         is_outer_docking: bool = False,
         flags: TestOpFlags = 0,
     ) -> None:
-        """(private API)"""
+        """---
+        Python bindings defaults:
+            If split_dir is None, then its default value will be: Dir_None
+        (private API)
+        """
         pass
     # void        UndockNode(ImGuiID dock_id);    /* original C++ signature */
     def undock_node(self, dock_id: ID) -> None:
@@ -2052,7 +2064,7 @@ class TestContext:
     # ImGuiTestContext(ImGuiTestGenericVars GenericVars = ImGuiTestGenericVars(), ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, ImGuiInputSource InputMode = ImGuiInputSource_Mouse, ImVector<char> Clipboard = ImVector<char>(), ImVector<ImGuiWindow*> ForeignWindowsToHide = ImVector<ImGuiWindow*>(), ImGuiTestItemInfo DummyItemInfoNull = ImGuiTestItemInfo(), bool CachedLinesPrintedToTTY = false);    /* original C++ signature */
     def __init__(
         self,
-        generic_vars: TestGenericVars = TestGenericVars(),
+        generic_vars: Optional[TestGenericVars] = None,
         op_flags: TestOpFlags = TestOpFlags_None,
         perf_stress_amount: int = 0,
         frame_count: int = 0,
@@ -2070,13 +2082,22 @@ class TestContext:
         perf_iterations: int = 400,
         ref_id: ID = 0,
         ref_window_id: ID = 0,
-        input_mode: InputSource = InputSource_Mouse,
-        clipboard: ImVector_char = ImVector_char(),
-        foreign_windows_to_hide: ImVector_Window_ptr = ImVector_Window_ptr(),
-        dummy_item_info_null: TestItemInfo = TestItemInfo(),
+        input_mode: Optional[InputSource] = None,
+        clipboard: Optional[ImVector_int] = None,
+        foreign_windows_to_hide: Optional[ImVector_Window] = None,
+        dummy_item_info_null: Optional[TestItemInfo] = None,
         cached_lines_printed_to_tty: bool = False,
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                GenericVars: TestGenericVars()
+                InputMode: InputSource_Mouse
+                Clipboard: ImVector_char()
+                ForeignWindowsToHide: ImVector_Window_ptr()
+                DummyItemInfoNull: TestItemInfo()
+        """
         pass
 
 # -------------------------------------------------------------------------
@@ -2130,8 +2151,12 @@ class TestInfoTask:
     # Output
     result: TestItemInfo
     # ImGuiTestInfoTask(ImGuiID ID = 0, int FrameCount = -1, ImGuiTestItemInfo Result = ImGuiTestItemInfo());    /* original C++ signature */
-    def __init__(self, id_: ID = 0, frame_count: int = -1, result: TestItemInfo = TestItemInfo()) -> None:
-        """Auto-generated default constructor with named params"""
+    def __init__(self, id_: ID = 0, frame_count: int = -1, result: Optional[TestItemInfo] = None) -> None:
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If Result is None, then its default value will be: TestItemInfo()
+        """
         pass
 
 class TestGatherTask:
@@ -2304,13 +2329,19 @@ class TestInput:
     def __init__(
         self,
         type: TestInputType = TestInputType_None,
-        key_chord: KeyChord = Key_None,
+        key_chord: Optional[KeyChord] = None,
         char: ImWchar = 0,
         down: bool = False,
         viewport_id: ID = 0,
-        viewport_pos_size: ImVec2 = ImVec2(),
+        viewport_pos_size: Optional[ImVec2] = None,
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                KeyChord: Key_None
+                ViewportPosSize: ImVec2()
+        """
         pass
 
 class TestInputs:
@@ -2329,14 +2360,20 @@ class TestInputs:
     # ImGuiTestInputs(ImVec2 MousePosValue = ImVec2(), ImVec2 MouseWheel = ImVec2(), ImGuiID MouseHoveredViewport = 0, int MouseButtonsValue = 0x00, bool HostEscDown = false, float HostEscDownDuration = -1.0f);    /* original C++ signature */
     def __init__(
         self,
-        mouse_pos_value: ImVec2 = ImVec2(),
-        mouse_wheel: ImVec2 = ImVec2(),
+        mouse_pos_value: Optional[ImVec2] = None,
+        mouse_wheel: Optional[ImVec2] = None,
         mouse_hovered_viewport: ID = 0,
         mouse_buttons_value: int = 0x00,
         host_esc_down: bool = False,
         host_esc_down_duration: float = -1.0,
     ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+        ---
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                MousePosValue: ImVec2()
+                MouseWheel: ImVec2()
+        """
         pass
 
 class TestEngine:

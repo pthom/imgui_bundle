@@ -1,32 +1,35 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 #include <string>
+#include <vector>
 
-namespace py = pybind11;
+#include <nanobind/nanobind.h>
+#include <nanobind/stl/string.h>
+#include <nanobind/stl/vector.h>
 
-void py_init_module_hello_imgui(py::module& m);
-void py_init_module_imgui_main(py::module& m);
-void py_init_module_imgui_internal(py::module& m);
-void py_init_module_imgui_test_engine(py::module& m);
-void py_init_module_implot(py::module& m);
-void py_init_module_imgui_color_text_edit(py::module& m);
-void py_init_module_imgui_node_editor(py::module& m);
-void py_init_module_imgui_knobs(py::module& m);
-void py_init_module_im_file_dialog(py::module& m);
-void py_init_module_imspinner(py::module& m);
-void py_init_module_imgui_md(py::module& m);
-void py_init_module_immvision(py::module& m);
-void py_init_module_imgui_backends(py::module& m);
-void py_init_module_imguizmo(py::module& m);
-void py_init_module_imgui_tex_inspect(py::module& m);
-void py_init_module_immapp_cpp(py::module& m);
-void py_init_module_imgui_toggle(py::module& m);
-void py_init_module_portable_file_dialogs(py::module& m);
-void py_init_module_imgui_command_palette(py::module& m);
-void py_init_module_implot_internal(py::module& m);
-void py_init_module_imcoolbar(py::module& m);
-void py_init_module_nanovg(py::module& m);
+namespace nb = nanobind;
+
+void py_init_module_hello_imgui(nb::module_& m);
+void py_init_module_imgui_main(nb::module_& m);
+void py_init_module_imgui_internal(nb::module_& m);
+void py_init_module_imgui_test_engine(nb::module_& m);
+void py_init_module_implot(nb::module_& m);
+void py_init_module_imgui_color_text_edit(nb::module_& m);
+void py_init_module_imgui_node_editor(nb::module_& m);
+void py_init_module_imgui_knobs(nb::module_& m);
+void py_init_module_im_file_dialog(nb::module_& m);
+void py_init_module_imspinner(nb::module_& m);
+void py_init_module_imgui_md(nb::module_& m);
+void py_init_module_immvision(nb::module_& m);
+void py_init_module_imgui_backends(nb::module_& m);
+void py_init_module_imguizmo(nb::module_& m);
+void py_init_module_imgui_tex_inspect(nb::module_& m);
+void py_init_module_immapp_cpp(nb::module_& m);
+void py_init_module_imgui_toggle(nb::module_& m);
+void py_init_module_portable_file_dialogs(nb::module_& m);
+void py_init_module_imgui_command_palette(nb::module_& m);
+void py_init_module_implot_internal(nb::module_& m);
+void py_init_module_imcoolbar(nb::module_& m);
+void py_init_module_nanovg(nb::module_& m);
 
 
 std::vector<std::string> gAllSubmodules;
@@ -37,8 +40,10 @@ void _register_submodule(const std::string& submodule_name)
 }
 
 
-void py_init_module_imgui_bundle(py::module& m)
+void py_init_module_imgui_bundle(nb::module_& m)
 {
+    // Disable leak warnings (we may have a few, to be fixed later)
+    nb::set_leak_warnings(false);
 
     m.def("compilation_time", []() {
         return std::string("imgui_bundle, compiled on ") + __DATE__ + " at " + __TIME__;

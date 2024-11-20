@@ -5,7 +5,7 @@ https://github.com/samhocevar/portable-file-dialogs
 # ruff: noqa: B008
 import enum
 
-from typing import List
+from typing import List, Optional
 
 # Process wait timeout, in milliseconds
 default_wait_timeout = 20
@@ -102,9 +102,13 @@ class open_file:
         self,
         title: str,
         default_path: str = "",
-        filters: List[str] = all_files_filter(),
+        filters: Optional[List[str]] = None,
         options: opt = opt.none,
     ) -> None:
+        """---
+        Python bindings defaults:
+            If filters is None, then its default value will be: all_files_filter()
+        """
         pass
 
     def ready(self, timeout: int = default_wait_timeout) -> bool:
@@ -121,9 +125,13 @@ class save_file:
         self,
         title: str,
         default_path: str = "",
-        filters: List[str] = all_files_filter(),
+        filters: Optional[List[str]] = None,
         options: opt = opt.none,
     ) -> None:
+        """---
+        Python bindings defaults:
+            If filters is None, then its default value will be: all_files_filter()
+        """
         pass
 
     def ready(self, timeout: int = default_wait_timeout) -> bool:
