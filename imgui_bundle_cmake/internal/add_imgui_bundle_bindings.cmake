@@ -87,4 +87,9 @@ function(add_imgui_bundle_bindings)
     if (MSVC)
         target_compile_options(${python_native_module_name} PRIVATE $<$<CONFIG:Release>:/Od>)
     endif()
+
+    if (WIN32)
+        # Band aid for windows debug build, where the python lib may not be found...
+        target_link_directories(${python_native_module_name} PRIVATE ${Python_LIBRARY_DIRS})
+    endif()
 endfunction()
