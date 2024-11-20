@@ -11,6 +11,9 @@ endfunction()
 
 
 function(add_imgui_bundle_bindings)
+    include(${IMGUI_BUNDLE_PATH}/imgui_bundle_cmake/internal/litgen_setup_module.cmake)
+    litgen_find_nanobind()
+
     set(bindings_main_folder ${IMGUI_BUNDLE_PATH}/external/bindings_generation/cpp/)
     include(${bindings_main_folder}/all_pybind_files.cmake)
 

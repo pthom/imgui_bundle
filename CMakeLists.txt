@@ -316,14 +316,6 @@ if (WIN32 AND IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR)
 endif()
 
-
-# find pybind11
-# -----------------------------------------------------------------------------
-if (IMGUI_BUNDLE_BUILD_PYTHON)
-    include(imgui_bundle_cmake/internal/litgen_setup_module.cmake)
-    litgen_find_nanobind()
-endif()
-
 # Fake main library (imgui_bundle is just an interface to define common options)
 # -----------------------------------------------------------------------------
 add_library(imgui_bundle INTERFACE)
