@@ -1,9 +1,9 @@
-from PIL import Image
 import numpy as np
 
 
 def imread_pil(image_file: str, convert_to_bgr: bool = False, load_alpha: bool = False) -> np.ndarray:
     """Read an image from a file using PIL, returns a numpy array."""
+    from PIL import Image
     image_pil = Image.open(image_file)
 
     def rgb_to_bgr(image: np.ndarray) -> np.ndarray:
