@@ -10,9 +10,36 @@ function(_target_set_rpath target relative_path)
 endfunction()
 
 
+function(_nanobind_hack_disable_forceinline)
+    # Hack to disable forceinline in nanobind under Windows
+    # This speeds up compilation by a factor of 60x during the optimization phase for MSVC in Release mode
+    # (see https://github.com/wjakob/nanobind/discussions/791#discussioncomment-11309473)
+    execute_process(
+        COMMAND "${Python_EXECUTABLE}" -m nanobind --cmake_dir
+        OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE nanobind_ROOT)
+    set(nanobind_include_dir ${nanobind_ROOT}/../include)
+    set(nb_defs_file ${nanobind_include_dir}/nanobind/nb_defs.h)
+    # Replace
+    #     #  define NB_INLINE          __forceinline
+    # By
+    #     #  define NB_INLINE          inline
+    if (NOT EXISTS ${nb_defs_file})
+        message(FATAL_ERROR "_nanobind_hack_disable_forceinline, file not found: ${nb_defs_file}")
+    endif()
+    file(READ ${nb_defs_file} nb_defs_content)
+    string(REPLACE
+        "#  define NB_INLINE          __forceinline"
+        "#  define NB_INLINE          inline"
+        nb_defs_content
+        "${nb_defs_content}")
+    file(WRITE ${nb_defs_file} "${nb_defs_content}")
+endfunction()
+
+
 function(add_imgui_bundle_bindings)
     include(${IMGUI_BUNDLE_PATH}/imgui_bundle_cmake/internal/litgen_setup_module.cmake)
     litgen_find_nanobind()
+    _nanobind_hack_disable_forceinline()
 
     set(bindings_main_folder ${IMGUI_BUNDLE_PATH}/external/bindings_generation/cpp/)
     include(${bindings_main_folder}/all_pybind_files.cmake)
