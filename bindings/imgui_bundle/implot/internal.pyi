@@ -84,7 +84,8 @@ time_t = int
 
 
 
-
+# #ifndef IMGUI_DISABLE
+#
 
 # Support for pre-1.84 versions. ImPool's GetSize() -> GetBufSize()
 
@@ -2350,6 +2351,9 @@ class Formatter_Time_Data:
 
 
 
+# namespace ImPlot
+
+# #endif
 ####################    </generated_from:implot_internal.h>    ####################
 
 # </litgen_stub>

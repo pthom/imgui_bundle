@@ -170,6 +170,9 @@ Bin_Sturges = Bin_.sturges
 # [SECTION] Demo
 # [SECTION] Obsolete API
 
+# #ifndef IMGUI_DISABLE
+#
+
 # IMGUI_BUNDLE_PYTHON_API is defined when building the python bindings.
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
@@ -2427,6 +2430,7 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
 # If you absolutely must use these functions and do not want to receive compiler
 # warnings, set '#define IMPLOT_DISABLE_OBSOLETE_WARNINGS'.
 
+# #endif
 ####################    </generated_from:implot.h>    ####################
 
 # </litgen_stub>
