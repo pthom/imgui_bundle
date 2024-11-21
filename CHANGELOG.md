@@ -1,6 +1,25 @@
 Version numbers are synced between hello_imgui and imgui_bundle.
 
-# v1.5.xxx
+# v1.6.0b1
+
+### ImGui
+* Updated ImGui to : this includes duplicate ID detection
+
+### Hello ImGui: updated to v1.6.0b
+* SVG Font rendering: plutosvg replaces lunasvg (option HELLOIMGUI_USE_FREETYPE_PLUTOSVG on by default)
+* Added AddDockableWindow / RemoveDockableWindow
+* demo_docking: better demonstration / theme customization
+* Add `HelloImGui::ManualRender: a namespace that groups functions, allowing fine-grained control over the rendering process
+* Work on pyodide integration (for ImGui Bundle)
+* Improve font rendering on iOS
+
+### Node editor
+* better handle popup placement and child windows: see https://github.com/thedmd/imgui-node-editor/issues/310
+* InputTextMultiline compatible with imgui-node-editor
+* Node theme colors will try to be coherent with the main theme
+
+### ImGuiMd
+* Add ImGuiMd: add ImFont* GetFont(const MarkdownFontSpec& fontSpec);
 
 ### ImmVision
 - **Breaking Change - October 2024**: Color Order Must Be Set
@@ -12,6 +31,28 @@ Version numbers are synced between hello_imgui and imgui_bundle.
   This change ensures that you are explicitly aware of the color order used throughout your program.
   If the color order is not configured, an error will be thrown when attempting to display images.
   Note: The `IsColorOrderBGR` member in `ImageParams` and the corresponding `isBgrOrBgra` parameter in `ImageDisplay` have been **removed**.
+* Publish GlTexture in the API
+* Refuse zoom if too extreme
+
+### Python bindings
+#### **Switched binding library from pybind11 to nanobind - Nov 2024**:
+This change should be almost transparent to users. However, if you encounter any issues, please report them.
+#### Other
+* python glfw_backend: updated clipboard handling to new api
+* enum Key bindings:  remove prefix im_gui_ in values
+* Flags enums (InputTextFlagsPrivate_, TreeNodeFlagsPrivate_, etc.): remove unwanted prefixes
+* ImFontGlyph: publish get_codepoint(), is_visible(), is_colored()
+* imgui_fig: let the user change matplotlib renderer
+* add stubs for ImVec2/4 math operators (fix #267)
+* pyglet backend: fix version checking (thks @DragonMoffon)
+* implot: fix binding for setup_axis_links()
+* delay loading PIL and matplotlib to make startup faster
+
+### Demos
+* demo docking: improve demo / setup customized theme
+* demos python: do not require opencv (use pillow to load images)
+* suppressed demos / ImGuizmo curve edit (we only maintain the 3D gizmo compatibility)
+
 
 # v1.5.0
 
