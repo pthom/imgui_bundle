@@ -1,6 +1,6 @@
 Version numbers are synced between hello_imgui and imgui_bundle.
 
-# v1.6.0b1
+# v1.6.0
 
 ### ImGui
 * Updated ImGui to v1.91.5
@@ -52,6 +52,7 @@ This change should be almost transparent to users. However, if you encounter any
 * pyglet backend: fix version checking (thks @DragonMoffon)
 * implot: fix binding for setup_axis_links()
 * delay loading PIL and matplotlib to make startup faster
+* Initial efforts to support pyodide
 
 ### Demos
 * demo docking: improve demo / setup customized theme
