@@ -4,6 +4,7 @@ project(imgui_bundle VERSION "1.6.0") # 1.6.0 beta1 Remember to mirror changes t
 # imgui_bundle_build_lib contains the main logic to build imgui_bundle
 set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
 include(imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
+include(imgui_bundle_cmake/imgui_bundle_pyodide.cmake)
 
 # -----------------------------------------------------------------------------
 # About imgui_bundle_add_app:
@@ -36,6 +37,10 @@ ibd_clone_submodules_if_needed()
 # Import a few cmake utility functions from hello_imgui
 include(${CMAKE_CURRENT_LIST_DIR}/external/hello_imgui/hello_imgui/hello_imgui_cmake/utils/cache_hello_imgui_paths.cmake)
 include(${HELLOIMGUI_CMAKE_PATH}/hello_imgui_build_lib.cmake)
+
+# Pyodide
+# -----------------------------------------------------------------------------
+ibd_pyodide_set_build_options_if_needed()
 
 
 # Backends
@@ -95,8 +100,10 @@ else()
     set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
 
+
 # For python bindings, we force the usage of Glfw+OpenGL3
-if(IMGUI_BUNDLE_BUILD_PYTHON)
+# (pyodide is handled by hello_imgui_pyodide.cmake)
+if(IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
     set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
     set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
 
@@ -448,6 +455,7 @@ message(STATUS "
     IMGUI_BUNDLE_WITH_IMMVISION:   ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_FETCH_OPENCV: ${IMMVISION_FETCH_OPENCV})
     IMGUI_BUNDLE_WITH_TEST_ENGINE: ${IMGUI_BUNDLE_WITH_TEST_ENGINE}
     IMGUI_BUNDLE_BUILD_PYTHON:     ${IMGUI_BUNDLE_BUILD_PYTHON}
+    IMGUI_BUNDLE_BUILD_PYODIDE:    ${IMGUI_BUNDLE_BUILD_PYODIDE}
     IMGUI_BUNDLE_BUILD_DEMOS:      ${IMGUI_BUNDLE_BUILD_DEMOS}
     IMGUI_BUNDLE_BUILD_DOC:        ${IMGUI_BUNDLE_BUILD_DOC}
 ")

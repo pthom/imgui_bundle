@@ -19,7 +19,10 @@ Version numbers are synced between hello_imgui and imgui_bundle.
 * Node theme colors will try to be coherent with the main theme
 
 ### ImGuiMd
-* Add ImGuiMd: add ImFont* GetFont(const MarkdownFontSpec& fontSpec);
+* Add ImGuiMd::GetFont(const MarkdownFontSpec& fontSpec)
+
+### ImmApp
+* Add namespace Immapp::ManualRender: functions allowing fine-grained control over the rendering process
 
 ### ImmVision
 - **Breaking Change - October 2024**: Color Order Must Be Set
@@ -37,6 +40,8 @@ Version numbers are synced between hello_imgui and imgui_bundle.
 ### Python bindings
 #### **Switched binding library from pybind11 to nanobind - Nov 2024**:
 This change should be almost transparent to users. However, if you encounter any issues, please report them.
+#### Support Python 3.13
+* Binary wheels are provided for Python 3.11, 3.12, and 3.13 (3.10 is still supported, building from source)
 #### Other
 * python glfw_backend: updated clipboard handling to new api
 * enum Key bindings:  remove prefix im_gui_ in values

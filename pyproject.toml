@@ -55,8 +55,8 @@ wheel.expand-macos-universal-tags = true
 wheel.packages = ["bindings/imgui_bundle"]
 
 cmake.version = ">=3.26.1"
-# cmake.verbose = true
-# logging.level = "INFO"
+cmake.verbose = true
+logging.level = "INFO"
 
 
 [tool.isort]
