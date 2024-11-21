@@ -342,6 +342,8 @@ void py_init_module_immvision(nb::module_& m)
         .def(nb::init<const cv::Mat &, bool>(),
             nb::arg("image"), nb::arg("is_color_order_bgr") = false,
             " Create a texture from an image (cv::Mat in C++, numpy array in Python)\n isColorOrderBGR: if True, the image is assumed to be in BGR order (OpenCV default)")
+        .def(nb::init<ImmVision::GlTexture &&>(),
+            nb::arg("other"))
         .def("update_from_image",
             &ImmVision::GlTexture::UpdateFromImage,
             nb::arg("image"), nb::arg("is_color_order_bgr") = false,

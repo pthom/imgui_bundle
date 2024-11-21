@@ -659,6 +659,10 @@ class GlTexture:
         isColorOrderBGR: if True, the image is assumed to be in BGR order (OpenCV default)
         """
         pass
+    # GlTexture(GlTexture&& other) noexcept = default;    /* original C++ signature */
+    @overload
+    def __init__(self, other: GlTexture) -> None:
+        pass
     #
     # Methods
     #
