@@ -1557,7 +1557,7 @@ namespace ImSpinner
         const float start = ImFmod((float)ImGui::GetTime() * speed, PI_2);
         const char *last_symbol = ImGui::FindRenderedTextEnd(text);
         const ImVec2 text_size = ImGui::CalcTextSize(text, last_symbol);
-        const ImFont* font = ImGui::GetCurrentContext()->Font;
+        ImFont* font = ImGui::GetCurrentContext()->Font;
 
         ImVec2 pp(centre.x - text_size.x / 2.f, centre.y - text_size.y / 2.f);
 
