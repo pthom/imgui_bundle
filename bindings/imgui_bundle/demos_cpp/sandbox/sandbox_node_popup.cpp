@@ -6,6 +6,7 @@
 // - Handle InputTextMultiline
 //
 // Source for https://github.com/thedmd/imgui-node-editor/issues/310
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #include "immapp/immapp.h"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
@@ -135,3 +136,6 @@ int main(int, char**)
     ImmApp::Run(runnerParams, addOnsParams);
     return 0;
 }
+#else
+int main() {}
+#endif
