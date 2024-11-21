@@ -110,7 +110,7 @@ class _ImColorPydanticAnnotation:
             _source_type: Any,
             _handler: GetCoreSchemaHandler,
     ) -> core_schema.CoreSchema:
-        def validate_from_tuple(value: tuple[float, float, float, float]) -> ImVec4:
+        def validate_from_tuple(value: tuple[float, float, float, float]) -> ImColor:
             result = ImColor()
             result.value.x = value[0]
             result.value.y = value[1]

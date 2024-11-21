@@ -2,7 +2,7 @@
 https://github.com/andyborrell/imgui_tex_inspect
 """
 # ruff: noqa: F821, B008
-from typing import overload
+from typing import overload, Optional
 import enum
 
 import imgui_bundle

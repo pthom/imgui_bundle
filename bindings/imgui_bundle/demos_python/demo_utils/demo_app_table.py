@@ -115,10 +115,10 @@ class DemoAppTable:
 
         def fn_table_gui():
             table_flags = (
-                imgui.TableFlags_.row_bg
-                | imgui.TableFlags_.borders
-                | imgui.TableFlags_.resizable
-                | imgui.TableFlags_.sizing_stretch_same
+                imgui.TableFlags_.row_bg.value
+                | imgui.TableFlags_.borders.value
+                | imgui.TableFlags_.resizable.value
+                | imgui.TableFlags_.sizing_stretch_same.value
             )
             nb_columns = 3
             if imgui.begin_table("Apps", nb_columns, table_flags):

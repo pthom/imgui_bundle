@@ -1,9 +1,11 @@
+import numpy as np
 from imgui_bundle import immapp, implot, hello_imgui
 from imgui_bundle.immapp.runnable_code_cell import show_runnable_code_cell
-from numpy.typing import ArrayLike
+from typing import Any
+from numpy.typing import NDArray
 
 
-def plot_renderer(array: ArrayLike) -> None:
+def plot_renderer(array: NDArray[Any]) -> None:
     implot.begin_plot("My Plot", hello_imgui.em_to_vec2(20, 10))
     implot.plot_line("My Line", array)
     implot.end_plot()

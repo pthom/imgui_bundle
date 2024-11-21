@@ -26,7 +26,7 @@ class DemoDragRectState:
         self.y_data2 = self.y_data1 - 0.6 + np.sin(arg * 2) * 0.4
         self.y_data3 = self.y_data2 - 0.6 + np.sin(arg * 3) * 0.4
         self.rect = implot.Rect(0.0025, 0.0075, -2.7, 1.1)  # type: ignore
-        self.flags = implot.DragToolFlags_.none
+        self.flags = implot.DragToolFlags_.none.value
 
 
 @immapp.static(state=DemoDragRectState())
@@ -35,15 +35,15 @@ def demo_drag_rects():
 
     imgui.bullet_text("Click and drag the edges, corners, and center of the rect.")
     _, state.flags = imgui.checkbox_flags(
-        "NoCursors", state.flags, implot.DragToolFlags_.no_cursors
+        "NoCursors", state.flags, implot.DragToolFlags_.no_cursors.value
     )
     imgui.same_line()
     _, state.flags = imgui.checkbox_flags(
-        "NoFit", state.flags, implot.DragToolFlags_.no_fit
+        "NoFit", state.flags, implot.DragToolFlags_.no_fit.value
     )
     imgui.same_line()
     _, state.flags = imgui.checkbox_flags(
-        "NoInput", state.flags, implot.DragToolFlags_.no_inputs
+        "NoInput", state.flags, implot.DragToolFlags_.no_inputs.value
     )
 
     plot_height = immapp.em_size() * 15
@@ -73,18 +73,18 @@ def demo_drag_rects():
         )
 
         # Example showing how to use implot_internal
-        implot.internal.fit_point((0, -3.5))
-        implot.internal.fit_point((0, 1.5))
+        implot.internal.fit_point(implot.Point(0, -3.5))
+        implot.internal.fit_point(implot.Point(0, 1.5))
 
         implot.end_plot()
-    if implot.begin_plot("##rect", ImVec2(-1, plot_height), implot.Flags_.canvas_only):
+    if implot.begin_plot("##rect", ImVec2(-1, plot_height), implot.Flags_.canvas_only.value):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_decorations, implot.ImPlotAxisFlags_.no_decorations)
         implot.setup_axes_limits(
             state.rect.x.min,
             state.rect.x.max,
             state.rect.y.min,
             state.rect.y.max,
-            imgui.Cond_.always,
+            imgui.Cond_.always.value,
         )
         implot.plot_line("Signal 1", state.x_data, state.y_data1)
         implot.plot_line("Signal 2", state.x_data, state.y_data2)
@@ -93,7 +93,7 @@ def demo_drag_rects():
 
 
 def demo_mixed_plot():
-    implot.push_colormap(implot.Colormap_.deep)
+    implot.push_colormap(implot.Colormap_.deep.value)
     plot_height = immapp.em_size() * 30
     if implot.begin_plot("Mixed plot", ImVec2(-1, plot_height)):
         implot.setup_axes("x-axis", "y-axis")
@@ -128,22 +128,22 @@ def demo_heatmap():
     data = demo_heatmap.data
 
     axis_flags = (
-        implot.AxisFlags_.lock
-        | implot.AxisFlags_.no_grid_lines
-        | implot.AxisFlags_.no_tick_marks
+        implot.AxisFlags_.lock.value
+        | implot.AxisFlags_.no_grid_lines.value
+        | implot.AxisFlags_.no_tick_marks.value
     )
-    cmap = implot.Colormap_.viridis
+    cmap = implot.Colormap_.viridis.value
     implot.push_colormap(cmap)
     imgui.begin_group()
     plot_size = (imgui.get_content_region_avail().x - immapp.em_size() * 5, -1)
-    plot_flags = implot.Flags_.no_legend | implot.Flags_.no_mouse_text
-    if implot.begin_plot("Sinc Function", plot_size, plot_flags):
+    plot_flags = implot.Flags_.no_legend.value | implot.Flags_.no_mouse_text.value
+    if implot.begin_plot("Sinc Function", plot_size, plot_flags):  # type: ignore
         implot.setup_axes("", "", axis_flags, axis_flags)
         implot.setup_axis_ticks(
-            implot.ImAxis_.x1, 0, 1, data.n_ticks, data.x_ticks, False
+            implot.ImAxis_.x1.value, 0, 1, data.n_ticks, data.x_ticks, False
         )
         implot.setup_axis_ticks(
-            implot.ImAxis_.y1, 0, 1, data.n_ticks, data.y_ticks, False
+            implot.ImAxis_.y1.value, 0, 1, data.n_ticks, data.y_ticks, False
         )
         implot.plot_heatmap(
             "##heatmap",
@@ -151,8 +151,8 @@ def demo_heatmap():
             data.values.min(),
             data.values.max(),
             "",  # no label
-            [0, 1],
-            [1, 0],
+            [0, 1],   # type: ignore
+            [1, 0],  # type: ignore
             0,
         )
         implot.end_plot()
@@ -186,7 +186,7 @@ def demo_gui():
 
     if imgui.collapsing_header("Drag Rects"):
         demo_drag_rects()
-    if imgui.collapsing_header("Mixed plot##2", imgui.TreeNodeFlags_.default_open):
+    if imgui.collapsing_header("Mixed plot##2", imgui.TreeNodeFlags_.default_open.value):
         demo_mixed_plot()
     if imgui.collapsing_header("Heatmap"):
         demo_heatmap()

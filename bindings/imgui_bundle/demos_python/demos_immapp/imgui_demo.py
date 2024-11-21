@@ -635,10 +635,10 @@ def show_demo_window_widgets():
         if not hasattr(static, "counter"): static.counter = 0
         spacing = imgui.get_style().item_inner_spacing.x
         imgui.push_item_flag(imgui.ItemFlags_.button_repeat.value, True)
-        if imgui.arrow_button("##left", imgui.Dir.left.value):
+        if imgui.arrow_button("##left", imgui.Dir.left):
             static.counter -= 1
         imgui.same_line(0.0, spacing)
-        if imgui.arrow_button("##right", imgui.Dir.right.value):
+        if imgui.arrow_button("##right", imgui.Dir.right):
             static.counter += 1
         imgui.pop_item_flag()
         imgui.same_line()
@@ -924,7 +924,7 @@ def show_demo_window_widgets():
                 node_flags = static.base_flags
                 is_selected = (static.selection_mask & (1 << i)) != 0
                 if is_selected:
-                    node_flags |= imgui.TreeNodeFlags_.selected
+                    node_flags |= imgui.TreeNodeFlags_.selected.value
                 if i < 3:
                     # Items 0..2 are Tree Nodes.
                     node_open = imgui.tree_node_ex(str(i), node_flags, f"Selectable Node {i}")
@@ -1118,7 +1118,7 @@ def show_demo_window_widgets():
         tint_col = imgui.get_style_color_vec4(imgui.Col_.text.value) if static.use_text_color_for_tint else (1.0, 1.0, 1.0, 1.0)
         border_col = imgui.get_style_color_vec4(imgui.Col_.border.value)
 
-        imgui.image(my_tex_id, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)
+        imgui.image(my_tex_id, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)  # type: ignore
         if imgui.begin_item_tooltip():
             # Define the region for the zoomed tooltip
             region_sz = 32.0
@@ -1128,7 +1128,7 @@ def show_demo_window_widgets():
             imgui.text(f"Max: ({region_x + region_sz:.2f}, {region_y + region_sz:.2f})")
             uv0 = ImVec2((region_x) / my_tex_w, (region_y) / my_tex_h)
             uv1 = ImVec2((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h)
-            imgui.image(my_tex_id, ImVec2(region_sz * 4.0, region_sz * 4.0), uv0, uv1, tint_col, border_col)
+            imgui.image(my_tex_id, ImVec2(region_sz * 4.0, region_sz * 4.0), uv0, uv1, tint_col, border_col)  # type: ignore
             imgui.end_tooltip()
 
         # Textured buttons
@@ -1589,7 +1589,7 @@ def show_demo_window_widgets():
                 static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_.value ^ imgui.TabBarFlags_.fitting_policy_resize_down.value)
             changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_scroll.value)
             if changed:
-                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_.value ^ imgui.TabBarFlags_.fitting_policy_scroll)
+                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_.value ^ imgui.TabBarFlags_.fitting_policy_scroll)  # type: ignore
 
             if imgui.begin_tab_bar("MyTabBar", static.lead_trail_tab_bar_flags):
                 # Demo a Leading TabItemButton(): click the "?" button to open a menu
@@ -2282,12 +2282,12 @@ def show_demo_window_popups():
         # When used after an item that has an ID (e.g. Button), we can skip providing an ID to BeginPopupContextItem(),
         # and BeginPopupContextItem() will use the last item ID as the popup ID.
         names = ["Label1", "Label2", "Label3", "Label4", "Label5"]
-        selected = -1
+        selected_2 = -1
         for n in range(5):
-            if imgui.selectable(names[n], selected == n):
-                selected = n
+            if imgui.selectable(names[n], selected_2 == n):
+                selected_2 = n
             if imgui.begin_popup_context_item():  # <-- use last item id as popup id
-                selected = n
+                selected_2 = n   # type: ignore
                 imgui.text(f"This a popup for \"{names[n]}\"!")
                 if imgui.button("Close"):
                     imgui.close_current_popup()
@@ -3093,12 +3093,12 @@ def imgui_demo_marker_callback_default(marker):
 # It always occupies the full width of the current window.
 class _ZoneBoundings:
     source_line_number: int # Source code location
-    min_y: int; max_y: int  # Location of this zone inside its parent window
+    min_y: float; max_y: float  # Location of this zone inside its parent window
     window: Optional[imgui.internal.Window]  # Current window when IMGUI_DEMO_MARKER was called
     def __init__(self):
         self.source_line_number = -1
-        self.min_y = 1
-        self.max_y = -1
+        self.min_y = 1.0
+        self.max_y = -1.0
         self.Window = None
 
 

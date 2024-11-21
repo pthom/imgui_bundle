@@ -10,7 +10,7 @@ y = 13 * np.cos(vals) - 5 * np.cos(2 * vals) - 2 * np.cos(3 * vals) - np.cos(4 *
 # Heart pulse rate and time tracking
 phase = 0.0
 t0 = time.time() + 0.2
-heart_pulse_rate = 80
+heart_pulse_rate = 80.0
 
 
 def gui():

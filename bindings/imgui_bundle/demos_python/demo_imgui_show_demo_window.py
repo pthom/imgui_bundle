@@ -33,14 +33,14 @@ def demo_gui():
     # SetImGuiDemoCodeWindowPos(ImVec2(ImGui::GetCursorScreenPos().x + windowSize.x, ImGui::GetCursorScreenPos().y) ,
     # windowSize, ImGuiCond_Appearing);
     window_size = ImVec2(imgui.get_content_region_avail().x / 2, imgui.get_content_region_avail().y)
-    imgui.set_imgui_demo_window_pos(imgui.get_cursor_screen_pos(), window_size, imgui.Cond_.appearing)
+    imgui.set_imgui_demo_window_pos(imgui.get_cursor_screen_pos(), window_size, imgui.Cond_.appearing.value)
     imgui.set_imgui_demo_code_window_pos(
         ImVec2(
             imgui.get_cursor_screen_pos().x + window_size.x,
             imgui.get_cursor_screen_pos().y,
         ),
         window_size,
-        imgui.Cond_.appearing,
+        imgui.Cond_.appearing.value,
     )
     imgui.show_demo_window()
 

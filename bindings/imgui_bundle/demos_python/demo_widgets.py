@@ -44,7 +44,7 @@ def demo_knobs():
                 v_max=1.0,
                 speed=0,
                 format="%.2f",
-                variant=knob_type,
+                variant=knob_type.value,
                 size=knob_size,
                 flags=0,
                 steps=100,
@@ -63,7 +63,7 @@ def demo_knobs():
                 v_max=15,
                 speed=0,
                 format="%02i",
-                variant=knob_type,
+                variant=knob_type.value,
                 steps=10,
                 size=knob_size,
             )
@@ -136,7 +136,7 @@ def demo_toggle():
     imgui.same_line()
 
     _changed, static.flag = imgui_toggle.toggle(
-        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated
+        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated.value
     )
     imgui.same_line()
 
@@ -398,12 +398,12 @@ def demo_cool_bar():
         w = im_cool_bar.get_cool_bar_item_width()
 
         # Display transparent image and check if clicked
-        hello_imgui.image_from_asset("images/bear_transparent.png", (w, w))
+        hello_imgui.image_from_asset("images/bear_transparent.png", ImVec2(w, w))
         clicked = imgui.is_item_hovered() and imgui.is_mouse_clicked(0)
 
         # Optional: add a label on the image
         top_left_corner = imgui.get_item_rect_min()
-        text_pos = (
+        text_pos = ImVec2(
             top_left_corner.x + immapp.em_size(1.0),
             top_left_corner.y + immapp.em_size(1.0),
         )
@@ -424,7 +424,7 @@ def demo_cool_bar():
         0.5, 0.07
     )  #  position in the window (ratio of window size)
     if im_cool_bar.begin_cool_bar(
-        "##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config
+        "##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal.value, cool_bar_config
     ):
         for label in button_labels:
             if im_cool_bar.cool_bar_item():

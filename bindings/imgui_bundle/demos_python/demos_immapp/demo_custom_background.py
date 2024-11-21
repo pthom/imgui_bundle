@@ -547,8 +547,8 @@ def custom_background(app_state: AppState):
 
 def gui(app_state: AppState):
     """GUI for modifying shader parameters."""
-    imgui.set_next_window_pos(hello_imgui.em_to_vec2(0.0, 0.0), imgui.Cond_.appearing)
-    imgui.set_next_window_size(hello_imgui.em_to_vec2(31.0, 14.0), imgui.Cond_.appearing)
+    imgui.set_next_window_pos(hello_imgui.em_to_vec2(0.0, 0.0), imgui.Cond_.appearing.value)
+    imgui.set_next_window_size(hello_imgui.em_to_vec2(31.0, 14.0), imgui.Cond_.appearing.value)
     imgui.begin("Shader parameters")
 
     imgui_md.render_unindented("""

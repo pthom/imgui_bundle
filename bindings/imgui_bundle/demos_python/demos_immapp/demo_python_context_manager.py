@@ -81,6 +81,7 @@ def demo_push_pop():
 
     # Example of push_font
     imgui.separator_text("Push Font")
+    assert SOURCE_FONT is not None
     with imgui_ctx.push_font(SOURCE_FONT):  # noqa
         imgui.text("This is Source Code Pro!")
 

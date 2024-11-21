@@ -65,10 +65,10 @@ def main() -> None:
     imgui.create_context()
     io = imgui.get_io()
     io.config_flags |= (
-        imgui.ConfigFlags_.nav_enable_keyboard
+        imgui.ConfigFlags_.nav_enable_keyboard.value
     )  # Enable Keyboard Controls
     # io.config_flags |= imgui.ConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
-    io.config_flags |= imgui.ConfigFlags_.docking_enable  # Enable docking
+    io.config_flags |= imgui.ConfigFlags_.docking_enable.value  # Enable docking
     # io.config_flags |= imgui.ConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
     # io.config_viewports_no_auto_merge = True
     # io.config_viewports_no_task_bar_icon = True
@@ -79,11 +79,11 @@ def main() -> None:
 
     # When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     style = imgui.get_style()
-    if io.config_flags & imgui.ConfigFlags_.viewports_enable:
+    if io.config_flags & imgui.ConfigFlags_.viewports_enable.value:
         style.window_rounding = 0.0
-        window_bg_color = style.color_(imgui.Col_.window_bg)
+        window_bg_color = style.color_(imgui.Col_.window_bg.value)
         window_bg_color.w = 1.0
-        style.set_color_(imgui.Col_.window_bg, window_bg_color)
+        style.set_color_(imgui.Col_.window_bg.value, window_bg_color)
 
     # Setup Platform/Renderer backends
     import ctypes
@@ -91,6 +91,7 @@ def main() -> None:
     # You need to transfer the window address to imgui.backends.glfw_init_for_opengl
     # proceed as shown below to get it.
     window_address = ctypes.cast(window, ctypes.c_void_p).value
+    assert window_address is not None
     imgui.backends.glfw_init_for_opengl(window_address, True)
 
     imgui.backends.opengl3_init(glsl_version)
@@ -141,7 +142,7 @@ def main() -> None:
     )
 
     # Our state
-    show_demo_window = True
+    show_demo_window: bool | None = True
     show_another_window = False
     clear_color = [0.45, 0.55, 0.60, 1.00]
     f = 0.0
@@ -164,7 +165,7 @@ def main() -> None:
 
         # 1. Show the big demo window (Most of the sample code is in imgui.ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if show_demo_window:
-            show_demo_window = imgui.show_demo_window(show_demo_window)
+            _show_demo_window = imgui.show_demo_window(show_demo_window)
 
         # 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
         def show_simple_window() -> None:
@@ -184,6 +185,7 @@ def main() -> None:
             imgui.text(
                 "This is some useful text."
             )  # Display some text (you can use a format strings too)
+            assert show_demo_window is not None
             _, show_demo_window = imgui.checkbox(
                 "Demo Window", show_demo_window
             )  # Edit bools storing our window open/close state
@@ -243,7 +245,7 @@ def main() -> None:
         # Update and Render additional Platform Windows
         # (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
         #  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
-        if io.config_flags & imgui.ConfigFlags_.viewports_enable > 0:
+        if io.config_flags & imgui.ConfigFlags_.viewports_enable.value > 0:
             backup_current_context = glfw.get_current_context()
             imgui.update_platform_windows()
             imgui.render_platform_windows_default()

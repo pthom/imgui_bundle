@@ -19,9 +19,9 @@ except ModuleNotFoundError:
     exit(1)
 
 
-Matrix16 = NDArray[np.float64]
-Matrix6 = NDArray[np.float64]
-Matrix3 = NDArray[np.float64]
+Matrix16 = NDArray[np.float32]
+Matrix6 = NDArray[np.float32]
+Matrix3 = NDArray[np.float32]
 
 
 gizmo = imguizmo.im_guizmo
@@ -308,12 +308,12 @@ def make_closure_demo_guizmo() -> GuiFunction:
         gizmo.set_orthographic(not isPerspective)
         gizmo.begin_frame()
 
-        imgui.set_next_window_pos(ImVec2(1024, 100), imgui.Cond_.appearing)
-        imgui.set_next_window_size(ImVec2(256, 256), imgui.Cond_.appearing)
+        imgui.set_next_window_pos(ImVec2(1024, 100), imgui.Cond_.appearing.value)
+        imgui.set_next_window_size(ImVec2(256, 256), imgui.Cond_.appearing.value)
 
         # create a window and insert the inspector
-        imgui.set_next_window_pos(ImVec2(10, 10), imgui.Cond_.appearing)
-        imgui.set_next_window_size(ImVec2(320, 340), imgui.Cond_.appearing)
+        imgui.set_next_window_pos(ImVec2(10, 10), imgui.Cond_.appearing.value)
+        imgui.set_next_window_size(ImVec2(320, 340), imgui.Cond_.appearing.value)
         imgui.begin("Editor")
         if imgui.radio_button("Full view", not useWindow):
             useWindow = False
@@ -357,20 +357,20 @@ def make_closure_demo_guizmo() -> GuiFunction:
             imgui.text("Using gizmo")
         else:
             imgui.text("Over gizmo" if gizmo.is_over() else "")
-            imgui.same_line()
-            imgui.text(
-                "Over translate gizmo"
-                if gizmo.is_over(gizmo.OPERATION.translate)
-                else ""
-            )
-            imgui.same_line()
-            imgui.text(
-                "Over rotate gizmo" if gizmo.is_over(gizmo.OPERATION.rotate) else ""
-            )
-            imgui.same_line()
-            imgui.text(
-                "Over scale gizmo" if gizmo.is_over(gizmo.OPERATION.scale) else ""
-            )
+            # imgui.same_line()
+            # imgui.text(
+            #     "Over translate gizmo"
+            #     if gizmo.is_over(gizmo.OPERATION.translate)
+            #     else ""
+            # )
+            # imgui.same_line()
+            # imgui.text(
+            #     "Over rotate gizmo" if gizmo.is_over(gizmo.OPERATION.rotate) else ""
+            # )
+            # imgui.same_line()
+            # imgui.text(
+            #     "Over scale gizmo" if gizmo.is_over(gizmo.OPERATION.scale) else ""
+            # )
 
         imgui.separator()
 

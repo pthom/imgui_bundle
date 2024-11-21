@@ -1,7 +1,7 @@
 from imgui_bundle import imgui_node_editor as ed, imgui, immapp, hello_imgui, ImVec2, imgui_md
 
 
-g_node_width = 400
+g_node_width = 400.0
 g_value = 5.0
 g_reset_node_layout = False
 

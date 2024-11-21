@@ -35,7 +35,7 @@ def gui():
 
     imgui.show_id_stack_tool_window()
     imgui.test_engine.show_test_engine_windows(
-        hello_imgui.get_imgui_test_engine(), None
+        hello_imgui.get_imgui_test_engine(), True
     )
 
 

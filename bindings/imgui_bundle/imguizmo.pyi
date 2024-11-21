@@ -6,6 +6,7 @@ from typing import List, Optional, Any, overload
 from imgui_bundle.imgui import ImVec2
 import enum
 import numpy as np
+from numpy.typing import NDArray
 
 from imgui_bundle.imgui import ImU32, ImDrawList
 
@@ -14,9 +15,9 @@ ImGuiContext = Any
 ImGuiZoomSliderFlags = int
 ImGuiZoomSliderFlags_None = im_zoom_slider.ImGuiZoomSliderFlags_.none  # noqa
 
-Matrix16 = np.ndarray  # np.type=float, shape=[4, 4]
-Matrix6 = np.ndarray  # np.type=float, shape=[6]
-Matrix3 = np.ndarray  # np.type=float, shape=[3]
+Matrix16 = NDArray[np.float32]  # np.type=float, shape=[4, 4]
+Matrix6 = NDArray[np.float32]  # np.type=float, shape=[6]
+Matrix3 = NDArray[np.float32]  # np.type=float, shape=[3]
 
 SelectedPoints = List[im_curve_edit.EditPoint]
 

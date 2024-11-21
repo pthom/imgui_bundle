@@ -15,7 +15,7 @@ import time
 
 from imgui_bundle import hello_imgui, icons_fontawesome_6, imgui, immapp, imgui_ctx, ImVec4, ImVec2
 from imgui_bundle.demos_python import demo_utils
-from typing import List
+from typing import List, Any
 
 
 ##########################################################################
@@ -105,7 +105,7 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
 
 # Warning, the save/load function below are quite simplistic!
 def my_app_settings_to_string(settings: MyAppSettings) -> str:
-    as_dict = {}
+    as_dict: dict[str, Any] = {}
     as_dict["motto"] = hello_imgui.input_text_data_to_dict(settings.motto)
     as_dict["value"] = settings.value
     return json.dumps(as_dict)
@@ -713,7 +713,7 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar
+    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar.value
     dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
 
     # alternativeThemeWindow
@@ -783,8 +783,8 @@ def setup_my_theme():
     # Apply the tweaked theme
     hello_imgui.apply_tweaked_theme(tweaked_theme)  # Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui:  hello_imgui.push_tweaked_theme(tweaked_theme) / hello_imgui.pop_tweaked_theme()
     # Then apply further modifications to ImGui style
-    imgui.get_style().item_spacing = (6, 4)  # Reduce spacing between items ((8, 4) by default)
-    imgui.get_style().set_color_(imgui.Col_.text, ImVec4(0.8, 0.8, 0.85, 1.0))  # Change text color
+    imgui.get_style().item_spacing = ImVec2(6, 4)  # Reduce spacing between items ((8, 4) by default)
+    imgui.get_style().set_color_(imgui.Col_.text.value, ImVec4(0.8, 0.8, 0.85, 1.0))  # Change text color
 
 
 ##########################################################################

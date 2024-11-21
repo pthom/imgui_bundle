@@ -87,7 +87,7 @@ locations = [
 
 def fill_inspector():
     for location in locations:
-        name = location["name"]
+        name: str = location["name"]  # type: ignore
         print(f"Computing {name}")
         width = 400
         height = 300

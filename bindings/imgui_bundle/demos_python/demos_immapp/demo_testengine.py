@@ -24,7 +24,7 @@ from typing import List
 # Our tests, that will automate the application
 test_open_popup: imgui.test_engine.Test
 test_capture_screenshot: imgui.test_engine.Test
-test_custom_gui = imgui.test_engine.Test
+test_custom_gui: imgui.test_engine.Test
 
 g_show_stack_tool_window = False
 nb_alt_a = 0
