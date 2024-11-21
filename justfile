@@ -33,3 +33,11 @@ imgui_rebase:
 
 imgui_te_rebase:
     cd external/imgui_test_engine/imgui_test_engine && git fetch official && git rebase official/main
+
+# Runs a musllinux docker container (to test the musllinux cibuild)
+cibuild_docker_musllinux:
+    docker run -it --rm quay.io/pypa/musllinux_1_1_x86_64 bash
+
+# Runs a manylinux docker container (to test the manylinux cibuild)
+cibuild_docker_manylinux:
+    docker run -it --rm quay.io/pypa/manylinux2014_x86_64 bash

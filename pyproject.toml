@@ -130,10 +130,15 @@ environment-pass = ["IMMVISION_OPENCV_GIT_REPO"]  # pass alternative git repo to
 # * manylinux_2_24 (Debian 8) uses apt (and is stuck on GCC 6),
 #     => apt install xorg-dev
 # * musllinux_1_1 MUSL based distributions of Linux (like Alpine). uses apk
-before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel"
+#
+# Also, do the equivalent of:
+# sudo apt-get install -y xorg-dev libgl1-mesa-dev libglfw3-dev libglew-dev xvfb
+
+# sudo apt-get install -y libgl1-mesa-dev
+before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel mesa-libGL-devel"
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux*"
-before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev"
+before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev mesa-dev mesa-gl"
 
 #------------------------------------
 # windows wheels options
