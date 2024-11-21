@@ -49,7 +49,7 @@ class _ImVec4PydanticAnnotation:
     def __get_pydantic_json_schema__(
             cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
     ) -> JsonSchemaValue:
-        return handler(core_schema.tuple_schema())
+        return handler(core_schema.tuple_schema([core_schema.float_schema(), core_schema.float_schema(), core_schema.float_schema(), core_schema.float_schema()]))
 
 # ImVec4_Pydantic is a synonym for ImVec4, which is compatible with Pydantic
 ImVec4_Pydantic = Annotated[
@@ -94,7 +94,7 @@ class _ImVec2PydanticAnnotation:
     def __get_pydantic_json_schema__(
             cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
     ) -> JsonSchemaValue:
-        return handler(core_schema.tuple_schema())
+        return handler(core_schema.tuple_schema([core_schema.float_schema(), core_schema.float_schema()]))
 
 
 # ImVec2_Pydantic is a synonym for ImVec2, which is compatible with Pydantic
@@ -142,7 +142,7 @@ class _ImColorPydanticAnnotation:
     def __get_pydantic_json_schema__(
             cls, _core_schema: core_schema.CoreSchema, handler: GetJsonSchemaHandler
     ) -> JsonSchemaValue:
-        return handler(core_schema.tuple_schema())
+        return handler(core_schema.tuple_schema([core_schema.float_schema(), core_schema.float_schema(), core_schema.float_schema(), core_schema.float_schema()]))
 
 # ImColor_Pydantic is a synonym for ImColor, which is compatible with Pydantic
 ImColor_Pydantic = Annotated[
