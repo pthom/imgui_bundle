@@ -61,13 +61,13 @@ namespace Snippets
       auto ctrl = io.KeySuper || io.KeyCtrl;
 
       bool shallFillBrowserClipboard = false;
-      if (ctrl && !shift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Insert)))
+      if (ctrl && !shift && ImGui::IsKeyPressed(ImGuiKey_Insert))
           shallFillBrowserClipboard = true;
-      else if (ctrl && !shift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C)))
+      else if (ctrl && !shift && ImGui::IsKeyPressed(ImGuiKey_C))
           shallFillBrowserClipboard = true;
-      else if (ctrl && !shift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_X)))
+      else if (ctrl && !shift && ImGui::IsKeyPressed(ImGuiKey_X))
           shallFillBrowserClipboard = true;
-      else if (!ctrl && shift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Delete)))
+      else if (!ctrl && shift && ImGui::IsKeyPressed(ImGuiKey_Delete))
           shallFillBrowserClipboard = true;
 
       if (shallFillBrowserClipboard)
