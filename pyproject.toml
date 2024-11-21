@@ -2,7 +2,7 @@
 requires = ["scikit-build-core>=0.9.1", "nanobind"]
 build-backend = "scikit_build_core.build"
 
-# To bebug build backend, replace by:
+# To debug build backend, replace by:
 # cf https://peps.python.org/pep-0517/#in-tree-build-backends
 #    requires = ["pybind11", "packaging", "pathspec"]
 #    build-backend = "scikit_build_core.build"

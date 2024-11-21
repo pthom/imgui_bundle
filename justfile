@@ -28,9 +28,11 @@ imgui_tag:
 imgui_te_tag:
     cd external/imgui_test_engine/imgui_test_engine && git tag `date +'bundle_%Y%m%d'` && git push --tags
 
+# Rebase the imgui fork repository on the official repository (push a new tag before!)
 imgui_rebase:
     cd external/imgui/imgui && git fetch official && git rebase official/docking
 
+# Rebase the imgui_test_engine fork repository on the official repository (push a new tag before!)
 imgui_te_rebase:
     cd external/imgui_test_engine/imgui_test_engine && git fetch official && git rebase official/main
 
