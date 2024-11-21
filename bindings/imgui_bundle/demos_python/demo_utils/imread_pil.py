@@ -1,12 +1,13 @@
 import numpy as np
+from numpy.typing import NDArray
 
 
-def imread_pil(image_file: str, convert_to_bgr: bool = False, load_alpha: bool = False) -> np.ndarray:
+def imread_pil(image_file: str, convert_to_bgr: bool = False, load_alpha: bool = False) -> NDArray[np.uint]:
     """Read an image from a file using PIL, returns a numpy array."""
     from PIL import Image
     image_pil = Image.open(image_file)
 
-    def rgb_to_bgr(image: np.ndarray) -> np.ndarray:
+    def rgb_to_bgr(image: NDArray[np.uint]) -> NDArray[np.uint]:
         assert len(image.shape) == 3
         if image.shape[2] == 3:
             return np.ascontiguousarray(image[:, :, ::-1])

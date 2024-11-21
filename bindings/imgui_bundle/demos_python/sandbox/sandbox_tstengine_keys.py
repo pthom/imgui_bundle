@@ -8,13 +8,13 @@ def my_register_tests():
         ctx.item_click("**/Increment")
     test_inc.test_func = test_inc_func
 
-    test_inc = imgui.test_engine.register_test(engine, "Demo Tests", "Press keys")
-    def test_inc_func(ctx: imgui.test_engine.TestContext) -> None:
+    test_press = imgui.test_engine.register_test(engine, "Demo Tests", "Press keys")
+    def test_press_func(ctx: imgui.test_engine.TestContext) -> None:
         ctx.key_down(imgui.Key.left_alt.value)
         ctx.key_down(imgui.Key.a.value)
         ctx.key_up(imgui.Key.a.value)
         ctx.key_up(imgui.Key.left_alt.value)
-    test_inc.test_func = test_inc_func
+    test_press.test_func = test_press_func
 
 
 count = 0

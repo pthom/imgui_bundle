@@ -36,7 +36,7 @@ class LaplacianData:
         blur_width = self.blur_half_size * 2 + 1
         kernel_size = self.kernel_half_size * 2 + 1
         blur = cv2.GaussianBlur(self.src_gray, (blur_width, blur_width), 0)
-        self.laplacian = cv2.Laplacian(blur, ddepth, ksize=kernel_size)
+        self.laplacian = cv2.Laplacian(blur, ddepth, ksize=kernel_size)  # type: ignore
 
 
 # Then let's define `gui_laplacian` (a gui that display and manipulates LaplacianData)

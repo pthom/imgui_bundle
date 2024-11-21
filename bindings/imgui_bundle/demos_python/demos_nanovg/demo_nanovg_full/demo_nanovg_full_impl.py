@@ -1,4 +1,5 @@
 # Port of bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full/demo_nanovg_full_impl.cpp
+# type: ignore
 from imgui_bundle import nanovg as nvg, hello_imgui
 
 from typing import List

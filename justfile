@@ -41,3 +41,7 @@ cibuild_docker_musllinux:
 # Runs a manylinux docker container (to test the manylinux cibuild)
 cibuild_docker_manylinux:
     docker run -it --rm quay.io/pypa/manylinux2014_x86_64 bash
+
+# Run mypy on the bindings
+mypy:
+    cd bindings && ./mypy_bindings.sh

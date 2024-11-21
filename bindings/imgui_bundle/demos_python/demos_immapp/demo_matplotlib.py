@@ -5,12 +5,13 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from imgui_bundle import immapp, imgui, imgui_fig, imgui_ctx
 import numpy as np
+from numpy.typing import NDArray
 
 
 class AnimatedFigure:
     """A class that encapsulates a Matplotlib figure, and provides a method to animate it."""
-    x: np.ndarray
-    y: np.ndarray
+    x: NDArray[np.float32]
+    y: NDArray[np.float32]
     amplitude: float = 1.0
     plotted_curve: matplotlib.lines.Line2D
     phase: float

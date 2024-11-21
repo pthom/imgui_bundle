@@ -10,12 +10,18 @@ Important:
 
 """
 import numpy  # noqa: E402
+import numpy as np
+from numpy.typing import NDArray
 from imgui_bundle.immapp import static  # noqa: E402
 from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import matplotlib.figure
 
 
 @static(fig_image_cache=dict())
-def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_image: bool = False) -> numpy.ndarray:
+def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_image: bool = False) -> NDArray[np.uint8]:
     """
     Convert a Matplotlib figure to an RGB image.
 
@@ -47,7 +53,7 @@ def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_ima
         figure.canvas.draw()
         # Get the RGBA buffer from the figure
         w, h = figure.canvas.get_width_height()
-        buf = numpy.fromstring(figure.canvas.tostring_rgb(), dtype=numpy.uint8)
+        buf = numpy.fromstring(figure.canvas.tostring_rgb(), dtype=numpy.uint8)  # type: ignore
 
         try:
             buf.shape = (h, w, 3)
@@ -59,7 +65,7 @@ def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_ima
         except Exception as e:
             print(f"Error: {e}")
 
-    return statics.fig_image_cache[fig_id]
+    return statics.fig_image_cache[fig_id]  # type: ignore
 
 
 

@@ -39,7 +39,7 @@ IM_VEC2_ZERO = ImVec2(0.0, 0.0)
 class _BeginEndChild:
     visible: bool
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self,
                  str_id: str,
@@ -80,7 +80,7 @@ class _BeginEnd:
     expanded: bool
     opened: bool
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, name: str, p_open: Optional[bool] = None, flags: WindowFlags = 0) -> None:
         self._enter_callback = lambda: imgui.begin(name, p_open, flags)
@@ -123,7 +123,7 @@ def begin(name: str, p_open: Optional[bool] = None, flags: WindowFlags = 0) -> _
 class _BeginEndListBox:
     opened: bool
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, label: str, size: ImVec2 = IM_VEC2_ZERO) -> None:
         self._enter_callback = lambda: imgui.begin_list_box(label, size)
@@ -157,7 +157,7 @@ def begin_list_box(label: str, size: ImVec2 = IM_VEC2_ZERO) -> _BeginEndListBox:
 class _BeginEndTooltip:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self) -> None:
         self._enter_callback = lambda: imgui.begin_tooltip()
@@ -191,7 +191,7 @@ def begin_tooltip() -> _BeginEndTooltip:
 class _BeginEndMenuMainBar:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self) -> None:
         self._enter_callback = lambda: imgui.begin_main_menu_bar()
@@ -225,7 +225,7 @@ def begin_main_menu_bar() -> _BeginEndMenuMainBar:
 class _BeginEndMenuBar:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self) -> None:
         self._enter_callback = lambda: imgui.begin_menu_bar()
@@ -259,7 +259,7 @@ def begin_menu_bar() -> _BeginEndMenuBar:
 class _BeginEndMenu:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, label: str, enabled: bool = True) -> None:
         self._enter_callback = lambda: imgui.begin_menu(label, enabled)
@@ -293,7 +293,7 @@ def begin_menu(label: str, enabled: bool = True) -> _BeginEndMenu:
 class _BeginEndPopup:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, str_id: str, flags: WindowFlags = 0) -> None:
         self._enter_callback = lambda: imgui.begin_popup(str_id, flags)
@@ -327,7 +327,7 @@ def begin_popup(str_id: str, flags: WindowFlags = 0) -> _BeginEndPopup:
 class _BeginEndPopupModal:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, name: str, flags: WindowFlags = 0) -> None:
         self._enter_callback = lambda: imgui.begin_popup_modal(name, None, flags)
@@ -361,7 +361,7 @@ def begin_popup_modal(name: str, flags: WindowFlags = 0) -> _BeginEndPopupModal:
 class _BeginEndTable:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self,
                  str_id: str,
@@ -404,7 +404,7 @@ def begin_table(str_id: str,
 class _BeginEndTabBar:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, str_id: str, flags: TabBarFlags = 0) -> None:
         self._enter_callback = lambda: imgui.begin_tab_bar(str_id, flags)
@@ -438,7 +438,7 @@ def begin_tab_bar(str_id: str, flags: TabBarFlags = 0) -> _BeginEndTabBar:
 class _BeginEndTabItem:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, label: str, flags: TabItemFlags = 0) -> None:
         self._enter_callback = lambda: imgui.begin_tab_item(label, None, flags)
@@ -472,7 +472,7 @@ def begin_tab_item(label: str, flags: TabItemFlags = 0) -> _BeginEndTabItem:
 class _BeginEndDragDropSource:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     is_dragging: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, flags: DragDropFlags = 0) -> None:
         self._enter_callback = lambda: imgui.begin_drag_drop_source(flags)
@@ -506,7 +506,7 @@ def begin_drag_drop_source(flags: DragDropFlags = 0) -> _BeginEndDragDropSource:
 class _BeginEndDragDropTarget:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     is_receiving: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self) -> None:
         self._enter_callback = lambda: imgui.begin_drag_drop_target()
@@ -539,7 +539,7 @@ def begin_drag_drop_target() -> _BeginEndDragDropTarget:
 
 class _BeginEndGroup:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self) -> None:
         self._enter_callback = lambda: imgui.begin_group()
@@ -561,7 +561,7 @@ def begin_group() -> _BeginEndGroup:
 
 class _BeginHorizontal:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> None:
         if size is None:
@@ -585,7 +585,7 @@ def begin_horizontal(str_id: str, size: ImVec2 | None = None, align: float = -1.
 
 class _BeginVertical:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> None:
         if size is None:
@@ -610,7 +610,7 @@ def begin_vertical(str_id: str, size: ImVec2 | None = None, align: float = -1.0)
 class _WithTreeNode:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     visible: bool
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, label: str) -> None:
         self._enter_callback = lambda: imgui.tree_node(label)
@@ -642,7 +642,7 @@ def tree_node(label: str) -> _WithTreeNode:
 
 
 class _WithPushID:
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, str_id: str) -> None:
         self._enter_callback = lambda: imgui.push_id(str_id)
@@ -667,7 +667,7 @@ def push_obj_id(obj: Any) -> _WithPushID:
 
 
 class _WithPushFont:
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, font: imgui.ImFont) -> None:
         self._enter_callback = lambda: imgui.push_font(font)
@@ -688,7 +688,7 @@ def push_font(font: imgui.ImFont) -> _WithPushFont:
 
 
 class _WithPushStyleColor:
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, idx: int, col: ImVec4) -> None:
         self._enter_callback = lambda: imgui.push_style_color(idx, col)
@@ -709,7 +709,7 @@ def push_style_color(idx: int, col: ImVec4) -> _WithPushStyleColor:
 
 
 class _WithPushStyleVar:
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, idx: int, val: Any) -> None:
         self._enter_callback = lambda: imgui.push_style_var(idx, val)
@@ -730,7 +730,7 @@ def push_style_var(idx: int, val: Any) -> _WithPushStyleVar:
 
 
 class _WithPushItemWidth:
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, item_width: float) -> None:
         self._enter_callback = lambda: imgui.push_item_width(item_width)
@@ -751,7 +751,7 @@ def push_item_width(item_width: float) -> _WithPushItemWidth:
 
 
 class _WithPushTextWrapPos:
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, wrap_pos_x: float = 0.0) -> None:
         self._enter_callback = lambda: imgui.push_text_wrap_pos(wrap_pos_x)
@@ -772,7 +772,7 @@ def push_text_wrap_pos(wrap_pos_x: float = 0.0) -> _WithPushTextWrapPos:
 
 
 class _WithPushButtonRepeat:
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, repeat: bool = True) -> None:
         self._enter_callback = lambda: imgui.push_item_flag(imgui.ItemFlags_.button_repeat.value, True)
@@ -793,7 +793,7 @@ def push_button_repeat(repeat: bool = True) -> _WithPushButtonRepeat:
 
 
 class _WithPushClipRect:
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, clip_rect_min: ImVec2, clip_rect_max: ImVec2, intersect_with_current_clip_rect: bool) -> None:
         self._enter_callback = lambda: imgui.push_clip_rect(
@@ -819,7 +819,7 @@ def push_clip_rect(
 
 
 class _WithPushTabStop:
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, tab_stop: bool) -> None:
         self._enter_callback = lambda: imgui.push_tab_stop(tab_stop)

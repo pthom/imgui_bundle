@@ -48,7 +48,7 @@ def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
     r = cv2.Sobel(
         blurred, ddepth=cv2.CV_64F, dx=dx, dy=dy, ksize=params.k_size, scale=good_scale
     )
-    return r
+    return r  # type: ignore
 
 
 def gui_sobel_params(params: SobelParams) -> bool:

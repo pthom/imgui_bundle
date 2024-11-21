@@ -36,7 +36,7 @@ def _default_result_renderer(result: Any) -> None:
 
 
 
-class _CaptureStdout(list):
+class _CaptureStdout(list[str]):
     def __enter__(self):
         self._stdout = sys.stdout
         sys.stdout = self._stringio = io.StringIO()
@@ -86,7 +86,7 @@ def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Resu
         last_ran_code: str
 
     if not hasattr(statics, "s_code_cells"):
-        statics.s_code_cells: dict[str, CodeAndResult] = {}
+        statics.s_code_cells: dict[str, CodeAndResult] = {}  # type: ignore
 
     if label_id not in statics.s_code_cells:
         snippet_data = immapp.snippets.SnippetData()

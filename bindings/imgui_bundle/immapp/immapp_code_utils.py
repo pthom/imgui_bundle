@@ -23,13 +23,13 @@ def show_python_code(
 
     statics = show_python_code
     if not hasattr(statics, "_ALL_PYTHON_SNIPPETS"):
-        statics._ALL_PYTHON_SNIPPETS: dict[object, SnippetData] = {}
+        statics._ALL_PYTHON_SNIPPETS: dict[object, SnippetData] = {}  # type: ignore
 
     if python_object not in statics._ALL_PYTHON_SNIPPETS:
         snippet_data = SnippetData()
 
         snippet_data.displayed_filename = str(python_object)
-        snippet_data.code = inspect.getsource(python_object)
+        snippet_data.code = inspect.getsource(python_object)  # type: ignore
         snippet_data.language = immapp.snippets.SnippetLanguage.python
 
         if read_only is not None:

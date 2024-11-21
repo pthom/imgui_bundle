@@ -135,7 +135,7 @@ def compile_shader(shader_type: int, source: str) -> int:
     GL.glShaderSource(shader, source)
     GL.glCompileShader(shader)
     fail_on_shader_compile_error(shader)
-    return shader
+    return shader  # type: ignore
 
 
 def create_shader_program(vertex_shader_source: str, fragment_shader_source: str) -> int:
@@ -156,7 +156,7 @@ def create_shader_program(vertex_shader_source: str, fragment_shader_source: str
     # Check for any OpenGL errors
     fail_on_opengl_error()
 
-    return shader_program
+    return shader_program  # type: ignore
 
 
 def create_full_screen_quad_vao() -> int:
@@ -195,7 +195,7 @@ def create_full_screen_quad_vao() -> int:
     # Check for any OpenGL errors
     fail_on_opengl_error()
 
-    return vao
+    return vao  # type: ignore
 
 
 # ******************************************************************************

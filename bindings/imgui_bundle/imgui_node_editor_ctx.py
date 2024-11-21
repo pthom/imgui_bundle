@@ -24,7 +24,7 @@ IM_VEC4_ONE = ImVec4(1.0, 1.0, 1.0, 1.0)
 
 class _Begin:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, editor_id: str, size: ImVec2 = IM_VEC2_ZERO) -> None:
         self._enter_callback = lambda: ed.begin(editor_id, size)
@@ -46,7 +46,7 @@ def begin(editor_id: str, size: ImVec2 = IM_VEC2_ZERO) -> _Begin:
 
 class _BeginNode:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, node_id: ed.NodeId) -> None:
         self._enter_callback = lambda: ed.begin_node(node_id)
@@ -68,7 +68,7 @@ def begin_node(node_id: ed.NodeId) -> _BeginNode:
 
 class _BeginPin:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, pin_id: ed.PinId, kind: ed.PinKind) -> None:
         self._enter_callback = lambda: ed.begin_pin(pin_id, kind)
@@ -90,7 +90,7 @@ def begin_pin(pin_id: ed.PinId, kind: ed.PinKind) -> _BeginPin:
 
 class _BeginCreate:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, color: ImVec4 = IM_VEC4_ONE, thickness: float = 1.0) -> None:
         self._enter_callback = lambda: ed.begin_create(color, thickness)
@@ -112,7 +112,7 @@ def begin_create(color: ImVec4 = IM_VEC4_ONE, thickness: float = 1.0) -> _BeginC
 
 class _BeginDelete:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self) -> None:
         self._enter_callback = lambda: ed.begin_delete()
@@ -134,7 +134,7 @@ def begin_delete() -> _BeginDelete:
 
 class _BeginGroupHint:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self, node_id: ed.NodeId) -> None:
         self._enter_callback = lambda: ed.begin_group_hint(node_id)
@@ -156,7 +156,7 @@ def begin_group_hint(node_id: ed.NodeId) -> _BeginGroupHint:
 
 class _BeginShortcut:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
-    _enter_callback: _EnterCallback = None
+    _enter_callback: _EnterCallback
 
     def __init__(self) -> None:
         self._enter_callback = lambda: ed.begin_shortcut()

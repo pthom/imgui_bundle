@@ -1,16 +1,16 @@
 from imgui_bundle import immapp, implot, hello_imgui
 from imgui_bundle.immapp.runnable_code_cell import show_runnable_code_cell
-import numpy as np
+from numpy.typing import ArrayLike
 
 
-def plot_renderer(array: np.ndarray) -> None:
+def plot_renderer(array: ArrayLike) -> None:
     implot.begin_plot("My Plot", hello_imgui.em_to_vec2(20, 10))
     implot.plot_line("My Line", array)
     implot.end_plot()
 
 
 def approx_pi(n: int) -> float:
-    return 4 * sum((-1) ** k / (2 * k + 1) for k in range(n))
+    return 4 * sum((-1) ** k / (2 * k + 1) for k in range(n))  # type: ignore
 
 
 def sandbox_code_cell():
