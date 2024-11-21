@@ -776,13 +776,14 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("vertical", ImGuiLayoutType_Vertical, "");
 
 
-    auto pyEnumLogType =
-        nb::enum_<ImGuiLogType>(m, "LogType", nb::is_arithmetic(), "")
-            .value("none", ImGuiLogType_None, "")
-            .value("tty", ImGuiLogType_TTY, "")
-            .value("file", ImGuiLogType_File, "")
-            .value("buffer", ImGuiLogType_Buffer, "")
-            .value("clipboard", ImGuiLogType_Clipboard, "");
+    auto pyEnumLogFlags_ =
+        nb::enum_<ImGuiLogFlags_>(m, "LogFlags_", nb::is_arithmetic(), "Flags for LogBegin() text capturing function")
+            .value("none", ImGuiLogFlags_None, "")
+            .value("output_tty", ImGuiLogFlags_OutputTTY, "")
+            .value("output_file", ImGuiLogFlags_OutputFile, "")
+            .value("output_buffer", ImGuiLogFlags_OutputBuffer, "")
+            .value("output_clipboard", ImGuiLogFlags_OutputClipboard, "")
+            .value("output_mask_", ImGuiLogFlags_OutputMask_, "");
 
 
     auto pyEnumAxis =
@@ -952,11 +953,11 @@ void py_init_module_imgui_internal(nb::module_& m)
             (m, "InputTextState", " Internal state of the currently focused/edited text input box\n For a given item ID, access with ImGui::GetInputTextState()")
         .def_rw("ctx", &ImGuiInputTextState::Ctx, "parent UI context (needs to be set explicitly by parent).")
         .def_rw("id_", &ImGuiInputTextState::ID, "widget id owning the text state")
-        .def_rw("cur_len_a", &ImGuiInputTextState::CurLenA, "UTF-8 length of the string in TextA (in bytes)")
-        .def_rw("text_a", &ImGuiInputTextState::TextA, "main UTF8 buffer.")
-        .def_rw("initial_text_a", &ImGuiInputTextState::InitialTextA, "value to revert to when pressing Escape = backup of end-user buffer at the time of focus (in UTF-8, unaltered)")
+        .def_rw("text_len", &ImGuiInputTextState::TextLen, "UTF-8 length of the string in TextA (in bytes)")
+        .def_rw("text_a", &ImGuiInputTextState::TextA, "main UTF8 buffer. TextA.Size is a buffer size! Should always be >= buf_size passed by user (and of course >= CurLenA + 1).")
+        .def_rw("text_to_revert_to", &ImGuiInputTextState::TextToRevertTo, "value to revert to when pressing Escape = backup of end-user buffer at the time of focus (in UTF-8, unaltered)")
         .def_rw("callback_text_backup", &ImGuiInputTextState::CallbackTextBackup, "temporary storage for callback to support automatic reconcile of undo-stack")
-        .def_rw("buf_capacity_a", &ImGuiInputTextState::BufCapacityA, "end-user buffer capacity")
+        .def_rw("buf_capacity", &ImGuiInputTextState::BufCapacity, "end-user buffer capacity (include zero terminator)")
         .def_rw("scroll", &ImGuiInputTextState::Scroll, "horizontal offset (managed manually) + vertical scrolling (pulled from child window's own Scroll.y)")
         .def_rw("cursor_anim", &ImGuiInputTextState::CursorAnim, "timer for cursor blink, reset on every user action so the cursor reappears immediately")
         .def_rw("cursor_follow", &ImGuiInputTextState::CursorFollow, "set when we want scrolling to follow the current cursor position (not always!)")
@@ -2386,7 +2387,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("settings_handlers", &ImGuiContext::SettingsHandlers, "List of .ini settings handlers")
         .def_rw("hook_id_next", &ImGuiContext::HookIdNext, "Next available HookId")
         .def_rw("log_enabled", &ImGuiContext::LogEnabled, "Currently capturing")
-        .def_rw("log_type", &ImGuiContext::LogType, "Capture target")
+        .def_rw("log_flags", &ImGuiContext::LogFlags, "Capture flags/type")
+        .def_rw("log_window", &ImGuiContext::LogWindow, "")
         .def_rw("log_buffer", &ImGuiContext::LogBuffer, "Accumulation buffer when log to clipboard. This is pointer so our GImGui static constructor doesn't call heap allocators.")
         .def_ro("log_next_prefix", &ImGuiContext::LogNextPrefix, "")
         .def_ro("log_next_suffix", &ImGuiContext::LogNextSuffix, "")
@@ -3085,6 +3087,12 @@ void py_init_module_imgui_internal(nb::module_& m)
         ;
 
 
+    m.def("get_io_ex",
+        ImGui::GetIOEx,
+        nb::arg("ctx"),
+        " Windows\n We should always have a CurrentWindow in the stack (there is an implicit \"Debug\" window)\n If this ever crashes because g.CurrentWindow is None, it means that either:\n - ImGui::NewFrame() has never been called, which is illegal.\n - You are calling ImGui functions after ImGui::EndFrame()/ImGui::Render() and before the next ImGui::NewFrame(), which is also illegal.",
+        nb::rv_policy::reference);
+
     m.def("get_current_window_read",
         ImGui::GetCurrentWindowRead,
         "(private API)",
@@ -3443,7 +3451,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("log_begin",
         ImGui::LogBegin,
-        nb::arg("type"), nb::arg("auto_open_depth"),
+        nb::arg("flags"), nb::arg("auto_open_depth"),
         "-> BeginCapture() when we design v2 api, for now stay under the radar by using the old name.");
 
     m.def("log_to_buffer",

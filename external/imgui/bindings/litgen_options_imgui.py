@@ -114,6 +114,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImWchar32=uint",
         "ImWchar=ImWchar32",
         "ImGuiItemFlags=int",
+        "ImU8=uchar",
     ]
     ignored_types = [
         "const char*",

@@ -3,7 +3,7 @@ Version numbers are synced between hello_imgui and imgui_bundle.
 # v1.6.0b1
 
 ### ImGui
-* Updated ImGui to : this includes duplicate ID detection
+* Updated ImGui to v1.91.5
 
 ### Hello ImGui: updated to v1.6.0b
 * SVG Font rendering: plutosvg replaces lunasvg (option HELLOIMGUI_USE_FREETYPE_PLUTOSVG on by default)
