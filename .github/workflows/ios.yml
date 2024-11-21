@@ -35,6 +35,7 @@ jobs:
         cmake .. \
           -GXcode \
           -DCMAKE_TOOLCHAIN_FILE=../external/imgui_bundle/external/hello_imgui/hello_imgui/hello_imgui_cmake/ios-cmake/ios.toolchain.cmake \
+          -DHELLOIMGUI_FREETYPE_STATIC=ON \
           -DPLATFORM=SIMULATOR64
 
     - name: Build for simulator
