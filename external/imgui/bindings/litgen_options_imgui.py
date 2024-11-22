@@ -216,6 +216,8 @@ def litgen_options_imgui(
 
     options.fn_params_adapt_mutable_param_with_default_value__fn_is_known_immutable_type = is_immutable_cpp_type
 
+    options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
+
     options.srcmlcpp_options.ignored_warnings = [
         WarningType.LitgenClassMemberSkipBitfield,
         WarningType.LitgenClassMemberUnparsableSize,

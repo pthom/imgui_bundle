@@ -38,6 +38,7 @@ def main():
     # Configure options
     options = litgen.LitgenOptions()
     options.use_nanobind()
+    options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
     options.class_override_virtual_methods_in_python__regex = r".*"
     options.struct_create_default_named_ctor__regex = ""

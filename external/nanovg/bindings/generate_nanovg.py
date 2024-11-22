@@ -18,6 +18,7 @@ def main():
     # Configure options
     options = litgen.LitgenOptions()
     options.use_nanobind()
+    options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
     options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_WITH_NANOVG"
     options.original_signature_flag_show = True

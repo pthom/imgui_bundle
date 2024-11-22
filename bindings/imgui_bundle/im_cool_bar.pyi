@@ -4,7 +4,7 @@ Python bindings for https://github.com/aiekick/ImCoolBar
 # ruff: noqa: B008
 import enum
 from typing import Optional
-from imgui_bundle.imgui import ImVec2, WindowFlags, WindowFlags_
+from imgui_bundle.imgui import ImVec2, ImVec2Like, WindowFlags, WindowFlags_
 
 ImCoolBarFlags = int
 ImGuiWindowFlags = WindowFlags
@@ -54,7 +54,7 @@ class ImCoolBarConfig:
     effect_strength: float = 0.5
     def __init__(
         self,
-        v_anchor: Optional[ImVec2] = None,
+        v_anchor: Optional[ImVec2Like] = None,
         v_normal_size: float = 40.0,
         v_hovered_size: float = 60.0,
         v_anim_step: float = 0.15,

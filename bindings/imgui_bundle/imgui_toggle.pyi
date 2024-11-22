@@ -6,7 +6,7 @@ Python bindings for https://github.com/cmdwtf/imgui_toggle
 from typing import Tuple, overload, Optional
 import enum
 
-from imgui_bundle.imgui import ImVec2, ImVec4
+from imgui_bundle.imgui import ImVec2, ImVec4, ImVec2Like, ImVec4Like
 
 ToggleFlags = int
 ToggleFlags_Default = ToggleFlags_.default  # noqa
@@ -96,7 +96,7 @@ class ToggleConstants:
 # - The overload taking a reference to an ImGuiToggleConfig structure allows for more complete control over the widget.
 # IMGUI_API bool Toggle(const char* label, bool* v, const ImVec2& size = ImVec2());    /* original C++ signature */
 @overload
-def toggle(label: str, v: bool, size: Optional[ImVec2] = None) -> Tuple[bool, bool]:
+def toggle(label: str, v: bool, size: Optional[ImVec2Like] = None) -> Tuple[bool, bool]:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2()
@@ -105,7 +105,7 @@ def toggle(label: str, v: bool, size: Optional[ImVec2] = None) -> Tuple[bool, bo
 
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, const ImVec2& size = ImVec2());    /* original C++ signature */
 @overload
-def toggle(label: str, v: bool, flags: ToggleFlags, size: Optional[ImVec2] = None) -> Tuple[bool, bool]:
+def toggle(label: str, v: bool, flags: ToggleFlags, size: Optional[ImVec2Like] = None) -> Tuple[bool, bool]:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2()
@@ -115,7 +115,7 @@ def toggle(label: str, v: bool, flags: ToggleFlags, size: Optional[ImVec2] = Non
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float animation_duration, const ImVec2& size = ImVec2());    /* original C++ signature */
 @overload
 def toggle(
-    label: str, v: bool, flags: ToggleFlags, animation_duration: float, size: Optional[ImVec2] = None
+    label: str, v: bool, flags: ToggleFlags, animation_duration: float, size: Optional[ImVec2Like] = None
 ) -> Tuple[bool, bool]:
     """---
     Python bindings defaults:
@@ -126,7 +126,12 @@ def toggle(
 # IMGUI_API bool Toggle(const char* label, bool* v, ImGuiToggleFlags flags, float frame_rounding, float knob_rounding, const ImVec2& size = ImVec2());    /* original C++ signature */
 @overload
 def toggle(
-    label: str, v: bool, flags: ToggleFlags, frame_rounding: float, knob_rounding: float, size: Optional[ImVec2] = None
+    label: str,
+    v: bool,
+    flags: ToggleFlags,
+    frame_rounding: float,
+    knob_rounding: float,
+    size: Optional[ImVec2Like] = None,
 ) -> Tuple[bool, bool]:
     """---
     Python bindings defaults:
@@ -143,7 +148,7 @@ def toggle(
     animation_duration: float,
     frame_rounding: float,
     knob_rounding: float,
-    size: Optional[ImVec2] = None,
+    size: Optional[ImVec2Like] = None,
 ) -> Tuple[bool, bool]:
     """---
     Python bindings defaults:
@@ -377,7 +382,7 @@ class TogglePalette:
         pass
 
 # void UnionPalette(ImGuiTogglePalette* target, const ImGuiTogglePalette* candidate, const ImVec4 colors[], bool v);    /* original C++ signature */
-def union_palette(target: TogglePalette, candidate: TogglePalette, colors: ImVec4, v: bool) -> None:
+def union_palette(target: TogglePalette, candidate: TogglePalette, colors: ImVec4Like, v: bool) -> None:
     """(private API)"""
     pass
 
@@ -400,11 +405,11 @@ class ImOffsetRect:
         pass
     # constexpr ImOffsetRect(const ImVec2& topLeft, const ImVec2& bottomRight)    : ImOffsetRect(topLeft.y, topLeft.x, bottomRight.y, bottomRight.x)  {}    /* original C++ signature */
     @overload
-    def __init__(self, top_left: ImVec2, bottom_right: ImVec2) -> None:
+    def __init__(self, top_left: ImVec2Like, bottom_right: ImVec2Like) -> None:
         pass
     # constexpr ImOffsetRect(const ImVec4& v)                                     : ImOffsetRect(v.x, v.y, v.z, v.w)                                  {}    /* original C++ signature */
     @overload
-    def __init__(self, v: ImVec4) -> None:
+    def __init__(self, v: ImVec4Like) -> None:
         pass
     # constexpr ImOffsetRect(float top, float left, float bottom, float right)    : Top(top), Left(left), Bottom(bottom), Right(right)                {}    /* original C++ signature */
     @overload

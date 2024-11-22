@@ -7,7 +7,7 @@ from typing import List, Tuple, TypeAlias, Optional, overload
 import enum
 import numpy as np
 from numpy.typing import NDArray
-from imgui_bundle import ImVec2
+from imgui_bundle import ImVec2, ImVec2Like
 
 import cv2 as cv
 
@@ -549,7 +549,7 @@ def image_display(
 def image_display_resizable(
     label_id: str,
     mat: Mat,
-    size: Optional[ImVec2] = None,
+    size: Optional[ImVec2Like] = None,
     refresh_image: bool = False,
     resizable: bool = True,
     show_options_button: bool = False,

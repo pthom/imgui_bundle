@@ -4,7 +4,7 @@
 # ruff: noqa: B008, F821
 from typing import Tuple, Optional, Callable, List, overload, Any
 import enum
-from imgui_bundle import imgui_md, hello_imgui, ImVec2
+from imgui_bundle import imgui_md, hello_imgui, ImVec2, ImVec2Like
 from imgui_bundle.imgui_node_editor import (
     Config as NodeEditorConfig,
     EditorContext as NodeEditorContext,
@@ -28,7 +28,7 @@ DefaultScreenSize = (800, 600)
 # #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
 #
 def begin_plot_in_node_editor(
-    title_id: str, size: Optional[ImVec2] = None, flags: ImPlotFlags = 0
+    title_id: str, size: Optional[ImVec2Like] = None, flags: ImPlotFlags = 0
 ) -> bool:
     """---
     Python bindings defaults:
@@ -41,7 +41,7 @@ def end_plot_in_node_editor() -> None:
 
 def show_resizable_plot_in_node_editor(
     title_id: str,
-    size_pixels: ImVec2,
+    size_pixels: ImVec2Like,
     plot_function: VoidFunction,
     flags: ImPlotFlags = 0,
     resize_handle_size_em: float = 1.0,
@@ -53,7 +53,7 @@ def show_resizable_plot_in_node_editor(
 
 def show_resizable_plot_in_node_editor_em(
     title_id: str,
-    size_em: ImVec2,
+    size_em: ImVec2Like,
     plot_function: VoidFunction,
     flags: ImPlotFlags = 0,
     resize_handle_size_em: float = 1.0,
@@ -266,10 +266,10 @@ def em_to_vec2(x: float, y: float) -> ImVec2:
     pass
 
 @overload
-def em_to_vec2(v: ImVec2) -> ImVec2:
+def em_to_vec2(v: ImVec2Like) -> ImVec2:
     pass
 
-def pixels_to_em(pixels: ImVec2) -> ImVec2:
+def pixels_to_em(pixels: ImVec2Like) -> ImVec2:
     """PixelsToEm() converts a Vec2 in pixels to a Vec2 in em"""
     pass
 

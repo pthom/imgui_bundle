@@ -1427,8 +1427,8 @@ class TestContext:
     def window_move(
         self,
         window_ref: Union[TestRef, str],
-        pos: ImVec2,
-        pivot: Optional[ImVec2] = None,
+        pos: ImVec2Like,
+        pivot: Optional[ImVec2Like] = None,
         flags: TestOpFlags = TestOpFlags_None,
     ) -> None:
         """---
@@ -1438,11 +1438,11 @@ class TestContext:
         """
         pass
     # void        WindowResize(ImGuiTestRef window_ref, ImVec2 sz);    /* original C++ signature */
-    def window_resize(self, window_ref: Union[TestRef, str], sz: ImVec2) -> None:
+    def window_resize(self, window_ref: Union[TestRef, str], sz: ImVec2Like) -> None:
         """(private API)"""
         pass
     # bool        WindowTeleportToMakePosVisible(ImGuiTestRef window_ref, ImVec2 pos_in_window);    /* original C++ signature */
-    def window_teleport_to_make_pos_visible(self, window_ref: Union[TestRef, str], pos_in_window: ImVec2) -> bool:
+    def window_teleport_to_make_pos_visible(self, window_ref: Union[TestRef, str], pos_in_window: ImVec2Like) -> bool:
         """(private API)"""
         pass
     # ImGuiWindow*GetWindowByRef(ImGuiTestRef window_ref);    /* original C++ signature */
@@ -1553,11 +1553,11 @@ class TestContext:
         """(private API)"""
         pass
     # void        MouseMoveToPos(ImVec2 pos);    /* original C++ signature */
-    def mouse_move_to_pos(self, pos: ImVec2) -> None:
+    def mouse_move_to_pos(self, pos: ImVec2Like) -> None:
         """(private API)"""
         pass
     # void        MouseTeleportToPos(ImVec2 pos, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
-    def mouse_teleport_to_pos(self, pos: ImVec2, flags: TestOpFlags = TestOpFlags_None) -> None:
+    def mouse_teleport_to_pos(self, pos: ImVec2Like, flags: TestOpFlags = TestOpFlags_None) -> None:
         """(private API)"""
         pass
     # void        MouseClick(ImGuiMouseButton button = 0);    /* original C++ signature */
@@ -1585,11 +1585,11 @@ class TestContext:
         """(private API)"""
         pass
     # void        MouseDragWithDelta(ImVec2 delta, ImGuiMouseButton button = 0);    /* original C++ signature */
-    def mouse_drag_with_delta(self, delta: ImVec2, button: MouseButton = 0) -> None:
+    def mouse_drag_with_delta(self, delta: ImVec2Like, button: MouseButton = 0) -> None:
         """(private API)"""
         pass
     # void        MouseWheel(ImVec2 delta);    /* original C++ signature */
-    def mouse_wheel(self, delta: ImVec2) -> None:
+    def mouse_wheel(self, delta: ImVec2Like) -> None:
         """(private API)"""
         pass
     # void        MouseWheelX(float dx) { MouseWheel(ImVec2(dx, 0.0f)); }    /* original C++ signature */
@@ -1609,11 +1609,11 @@ class TestContext:
         """(private API)"""
         pass
     # ImGuiWindow*FindHoveredWindowAtPos(const ImVec2& pos);    /* original C++ signature */
-    def find_hovered_window_at_pos(self, pos: ImVec2) -> Window:
+    def find_hovered_window_at_pos(self, pos: ImVec2Like) -> Window:
         """(private API)"""
         pass
     # bool        FindExistingVoidPosOnViewport(ImGuiViewport* viewport, ImVec2* out);    /* original C++ signature */
-    def find_existing_void_pos_on_viewport(self, viewport: Viewport, out: ImVec2) -> bool:
+    def find_existing_void_pos_on_viewport(self, viewport: Viewport, out: ImVec2Like) -> bool:
         """(private API)"""
         pass
     # Mouse inputs: Viewports
@@ -1916,7 +1916,7 @@ class TestContext:
         """(private API)"""
         pass
     # void        ItemDragWithDelta(ImGuiTestRef ref_src, ImVec2 pos_delta);    /* original C++ signature */
-    def item_drag_with_delta(self, ref_src: Union[TestRef, str], pos_delta: ImVec2) -> None:
+    def item_drag_with_delta(self, ref_src: Union[TestRef, str], pos_delta: ImVec2Like) -> None:
         """(private API)"""
         pass
     # Helpers for Tab Bars widgets
@@ -2048,7 +2048,7 @@ class TestContext:
 
     # [Internal]
     # void        _MakeAimingSpaceOverPos(ImGuiViewport* viewport, ImGuiWindow* over_window, const ImVec2& over_pos);     /* original C++ signature */
-    def _make_aiming_space_over_pos(self, viewport: Viewport, over_window: Window, over_pos: ImVec2) -> None:
+    def _make_aiming_space_over_pos(self, viewport: Viewport, over_window: Window, over_pos: ImVec2Like) -> None:
         """(private API)
 
         Move windows covering 'window' at pos.
@@ -2299,7 +2299,7 @@ class TestInput:
     #         return inp;
     #     }
     @staticmethod
-    def for_viewport_set_pos(viewport_id: ID, pos: ImVec2) -> TestInput:
+    def for_viewport_set_pos(viewport_id: ID, pos: ImVec2Like) -> TestInput:
         """(private API)"""
         pass
     # static ImGuiTestInput   ForViewportSetSize(ImGuiID viewport_id, const ImVec2& size)    /* original C++ signature */
@@ -2311,7 +2311,7 @@ class TestInput:
     #         return inp;
     #     }
     @staticmethod
-    def for_viewport_set_size(viewport_id: ID, size: ImVec2) -> TestInput:
+    def for_viewport_set_size(viewport_id: ID, size: ImVec2Like) -> TestInput:
         """(private API)"""
         pass
     # static ImGuiTestInput   ForViewportClose(ImGuiID viewport_id)    /* original C++ signature */
@@ -2333,7 +2333,7 @@ class TestInput:
         char: ImWchar = 0,
         down: bool = False,
         viewport_id: ID = 0,
-        viewport_pos_size: Optional[ImVec2] = None,
+        viewport_pos_size: Optional[ImVec2Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
         ---
@@ -2360,8 +2360,8 @@ class TestInputs:
     # ImGuiTestInputs(ImVec2 MousePosValue = ImVec2(), ImVec2 MouseWheel = ImVec2(), ImGuiID MouseHoveredViewport = 0, int MouseButtonsValue = 0x00, bool HostEscDown = false, float HostEscDownDuration = -1.0f);    /* original C++ signature */
     def __init__(
         self,
-        mouse_pos_value: Optional[ImVec2] = None,
-        mouse_wheel: Optional[ImVec2] = None,
+        mouse_pos_value: Optional[ImVec2Like] = None,
+        mouse_wheel: Optional[ImVec2Like] = None,
         mouse_hovered_viewport: ID = 0,
         mouse_buttons_value: int = 0x00,
         host_esc_down: bool = False,

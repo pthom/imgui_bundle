@@ -30,7 +30,7 @@ class MyAppSettings:
             "Hello, Dear ImGui\n"
             "Unleash your creativity!\n",
             True, # multiline
-            ImVec2(14.0, 3.0) # initial size (in em)
+            (14.0, 3.0) # initial size (in em)
         )
 
 class RocketState(Enum):
@@ -404,7 +404,7 @@ def gui_window_alternative_theme(app_state: AppState):
             # Display a image of the haiku below with Japanese characters
             # with an informative tooltip
             haiku_image_height = hello_imgui.em_size(5.0)
-            hello_imgui.image_from_asset("images/haiku.png", ImVec2(0.0, haiku_image_height))
+            hello_imgui.image_from_asset("images/haiku.png", (0.0, haiku_image_height))
             imgui.set_item_tooltip("""
 Extract from Wikipedia
 -------------------------------------------------------------------------------
@@ -452,7 +452,7 @@ Handling Japanese font is of course possible within ImGui / Hello ImGui!
 
             if imgui.tree_node("Text Display"):
                 imgui.text("Hello, world!")
-                imgui.text_colored(ImVec4(1.0, 0.5, 0.5, 1.0), "Some text")
+                imgui.text_colored((1.0, 0.5, 0.5, 1.0), "Some text")
                 imgui.text_disabled("Disabled text")
                 imgui.text_wrapped("This is a long text that will be wrapped in the window")
                 imgui.tree_pop()
@@ -784,7 +784,7 @@ def setup_my_theme():
     hello_imgui.apply_tweaked_theme(tweaked_theme)  # Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui:  hello_imgui.push_tweaked_theme(tweaked_theme) / hello_imgui.pop_tweaked_theme()
     # Then apply further modifications to ImGui style
     imgui.get_style().item_spacing = ImVec2(6, 4)  # Reduce spacing between items ((8, 4) by default)
-    imgui.get_style().set_color_(imgui.Col_.text.value, ImVec4(0.8, 0.8, 0.85, 1.0))  # Change text color
+    imgui.get_style().set_color_(imgui.Col_.text.value, (0.8, 0.8, 0.85, 1.0))  # Change text color
 
 
 ##########################################################################

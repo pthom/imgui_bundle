@@ -5,7 +5,7 @@ Python bindings for https://github.com/thedmd/imgui-node-editor
 # ruff: noqa: B008
 from typing import Any, Optional, overload
 import enum
-from imgui_bundle.imgui import ImVec2, ImVec4, ImDrawList
+from imgui_bundle.imgui import ImVec2, ImVec4, ImDrawList, ImVec2Like, ImVec4Like
 from imgui_bundle import imgui
 
 ImGuiMouseButton = imgui.MouseButton
@@ -375,7 +375,7 @@ class Style:
     def color_(self, idx_color: StyleColor) -> ImVec4:
         pass
     # inline IMGUI_NODE_EDITOR_API void SetColor_(StyleColor idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < StyleColor_Count)); Colors[idxColor] = color; }    /* original C++ signature */
-    def set_color_(self, idx_color: StyleColor, color: ImVec4) -> None:
+    def set_color_(self, idx_color: StyleColor, color: ImVec4Like) -> None:
         pass
     #                            #endif
     #
@@ -463,7 +463,7 @@ def get_style_color_name(color_index: StyleColor) -> str:
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleColor(StyleColor colorIndex, const ImVec4& color);    /* original C++ signature */
-def push_style_color(color_index: StyleColor, color: ImVec4) -> None:
+def push_style_color(color_index: StyleColor, color: ImVec4Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PopStyleColor(int count = 1);    /* original C++ signature */
@@ -477,12 +477,12 @@ def push_style_var(var_index: StyleVar, value: float) -> None:
 
 # IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec2& value);    /* original C++ signature */
 @overload
-def push_style_var(var_index: StyleVar, value: ImVec2) -> None:
+def push_style_var(var_index: StyleVar, value: ImVec2Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec4& value);    /* original C++ signature */
 @overload
-def push_style_var(var_index: StyleVar, value: ImVec4) -> None:
+def push_style_var(var_index: StyleVar, value: ImVec4Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PopStyleVar(int count = 1);    /* original C++ signature */
@@ -490,7 +490,7 @@ def pop_style_var(count: int = 1) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void Begin(const char* id, const ImVec2& size = ImVec2(0, 0));    /* original C++ signature */
-def begin(id: str, size: Optional[ImVec2] = None) -> None:
+def begin(id: str, size: Optional[ImVec2Like] = None) -> None:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -510,23 +510,23 @@ def begin_pin(id: PinId, kind: PinKind) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinRect(const ImVec2& a, const ImVec2& b);    /* original C++ signature */
-def pin_rect(a: ImVec2, b: ImVec2) -> None:
+def pin_rect(a: ImVec2Like, b: ImVec2Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinPivotRect(const ImVec2& a, const ImVec2& b);    /* original C++ signature */
-def pin_pivot_rect(a: ImVec2, b: ImVec2) -> None:
+def pin_pivot_rect(a: ImVec2Like, b: ImVec2Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinPivotSize(const ImVec2& size);    /* original C++ signature */
-def pin_pivot_size(size: ImVec2) -> None:
+def pin_pivot_size(size: ImVec2Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinPivotScale(const ImVec2& scale);    /* original C++ signature */
-def pin_pivot_scale(scale: ImVec2) -> None:
+def pin_pivot_scale(scale: ImVec2Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void PinPivotAlignment(const ImVec2& alignment);    /* original C++ signature */
-def pin_pivot_alignment(alignment: ImVec2) -> None:
+def pin_pivot_alignment(alignment: ImVec2Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void EndPin();    /* original C++ signature */
@@ -534,7 +534,7 @@ def end_pin() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void Group(const ImVec2& size);    /* original C++ signature */
-def group(size: ImVec2) -> None:
+def group(size: ImVec2Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void EndNode();    /* original C++ signature */
@@ -575,7 +575,7 @@ def link(
     id: LinkId,
     start_pin_id: PinId,
     end_pin_id: PinId,
-    color: Optional[ImVec4] = None,
+    color: Optional[ImVec4Like] = None,
     thickness: float = 1.0,
 ) -> bool:
     """---
@@ -589,7 +589,7 @@ def flow(link_id: LinkId, direction: FlowDirection = FlowDirection.forward) -> N
     pass
 
 # IMGUI_NODE_EDITOR_API bool BeginCreate(const ImVec4& color = ImVec4(1, 1, 1, 1), float thickness = 1.0f);    /* original C++ signature */
-def begin_create(color: Optional[ImVec4] = None, thickness: float = 1.0) -> bool:
+def begin_create(color: Optional[ImVec4Like] = None, thickness: float = 1.0) -> bool:
     """---
     Python bindings defaults:
         If color is None, then its default value will be: ImVec4(1, 1, 1, 1)
@@ -604,7 +604,7 @@ def query_new_link(start_id: PinId, end_id: PinId) -> bool:
 # IMGUI_NODE_EDITOR_API bool QueryNewLink(PinId* startId, PinId* endId, const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
 def query_new_link(
-    start_id: PinId, end_id: PinId, color: ImVec4, thickness: float = 1.0
+    start_id: PinId, end_id: PinId, color: ImVec4Like, thickness: float = 1.0
 ) -> bool:
     pass
 
@@ -615,7 +615,7 @@ def query_new_node(pin_id: PinId) -> bool:
 
 # IMGUI_NODE_EDITOR_API bool QueryNewNode(PinId* pinId, const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
-def query_new_node(pin_id: PinId, color: ImVec4, thickness: float = 1.0) -> bool:
+def query_new_node(pin_id: PinId, color: ImVec4Like, thickness: float = 1.0) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptNewItem();    /* original C++ signature */
@@ -625,7 +625,7 @@ def accept_new_item() -> bool:
 
 # IMGUI_NODE_EDITOR_API bool AcceptNewItem(const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
-def accept_new_item(color: ImVec4, thickness: float = 1.0) -> bool:
+def accept_new_item(color: ImVec4Like, thickness: float = 1.0) -> bool:
     pass
 
 # IMGUI_NODE_EDITOR_API void RejectNewItem();    /* original C++ signature */
@@ -635,7 +635,7 @@ def reject_new_item() -> None:
 
 # IMGUI_NODE_EDITOR_API void RejectNewItem(const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
-def reject_new_item(color: ImVec4, thickness: float = 1.0) -> None:
+def reject_new_item(color: ImVec4Like, thickness: float = 1.0) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void EndCreate();    /* original C++ signature */
@@ -669,11 +669,11 @@ def end_delete() -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void SetNodePosition(NodeId nodeId, const ImVec2& editorPosition);    /* original C++ signature */
-def set_node_position(node_id: NodeId, editor_position: ImVec2) -> None:
+def set_node_position(node_id: NodeId, editor_position: ImVec2Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API void SetGroupSize(NodeId nodeId, const ImVec2& size);    /* original C++ signature */
-def set_group_size(node_id: NodeId, size: ImVec2) -> None:
+def set_group_size(node_id: NodeId, size: ImVec2Like) -> None:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 GetNodePosition(NodeId nodeId);    /* original C++ signature */
@@ -944,11 +944,11 @@ def get_screen_size() -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 ScreenToCanvas(const ImVec2& pos);    /* original C++ signature */
-def screen_to_canvas(pos: ImVec2) -> ImVec2:
+def screen_to_canvas(pos: ImVec2Like) -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 CanvasToScreen(const ImVec2& pos);    /* original C++ signature */
-def canvas_to_screen(pos: ImVec2) -> ImVec2:
+def canvas_to_screen(pos: ImVec2Like) -> ImVec2:
     pass
 
 # IMGUI_NODE_EDITOR_API int GetNodeCount();                                    /* original C++ signature */

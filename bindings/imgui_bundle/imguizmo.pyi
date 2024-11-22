@@ -3,7 +3,6 @@ https://github.com/CedricGuillemet/ImGuizmo
 """
 # ruff: noqa: F821
 from typing import List, Optional, Any, overload
-from imgui_bundle.imgui import ImVec2
 import enum
 import numpy as np
 from numpy.typing import NDArray
@@ -423,8 +422,8 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     def view_manipulate(
         view: Matrix16,
         length: float,
-        position: ImVec2,
-        size: ImVec2,
+        position: ImVec2Like,
+        size: ImVec2Like,
         background_color: ImU32
         ) -> EditableMatrix16:
         """
@@ -445,8 +444,8 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         mode: MODE,
         matrix: Matrix16,
         length: float,
-        position: ImVec2,
-        size: ImVec2,
+        position: ImVec2Like,
+        size: ImVec2Like,
         background_color: ImU32
         ) -> EditableMatrix16:
         """ use this version if you did not call Manipulate before and you are just using ViewManipulate

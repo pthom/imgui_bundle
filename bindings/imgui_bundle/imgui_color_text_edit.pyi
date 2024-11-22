@@ -44,7 +44,7 @@ from __future__ import annotations
 from typing import List, Any, Dict, Set, overload, Optional
 import enum
 
-from imgui_bundle.imgui import ImVec2, ImVec4, ImU32
+from imgui_bundle.imgui import ImVec4, ImU32, ImVec2Like
 
 String = str
 Identifiers = Dict[
@@ -267,7 +267,7 @@ class TextEditor:
         self,
         a_title: str,
         a_parent_is_focused: bool = False,
-        a_size: Optional[ImVec2] = None,
+        a_size: Optional[ImVec2Like] = None,
         a_border: bool = False
         ) -> bool:
         """---

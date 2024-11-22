@@ -334,6 +334,9 @@ class VecProtocol(Protocol[TVec]):
     def __truediv__(self: TVec, other: Union[TVec, float]) -> TVec: ...
     def __neg__(self: TVec) -> TVec: ...
 
+ImVec2Like = Union[ImVec2, Tuple[int | float, int | float], List[int | float]]
+ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | float], List[int | float]]
+
 ##################################################
 #    AUTO GENERATED CODE BELOW
 ##################################################
@@ -727,7 +730,7 @@ def end() -> None:
 # IMGUI_API bool          BeginChild(const char* str_id, const ImVec2& size = ImVec2(0, 0), ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);    /* original C++ signature */
 @overload
 def begin_child(
-    str_id: str, size: Optional[ImVec2] = None, child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
+    str_id: str, size: Optional[ImVec2Like] = None, child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
 ) -> bool:
     """---
     Python bindings defaults:
@@ -738,7 +741,7 @@ def begin_child(
 # IMGUI_API bool          BeginChild(ImGuiID id, const ImVec2& size = ImVec2(0, 0), ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0);    /* original C++ signature */
 @overload
 def begin_child(
-    id_: ID, size: Optional[ImVec2] = None, child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
+    id_: ID, size: Optional[ImVec2Like] = None, child_flags: ChildFlags = 0, window_flags: WindowFlags = 0
 ) -> bool:
     """---
     Python bindings defaults:
@@ -808,7 +811,7 @@ def get_window_viewport() -> Viewport:
 # Window manipulation
 # - Prefer using SetNextXXX functions (before Begin) rather that SetXXX functions (after Begin).
 # IMGUI_API void          SetNextWindowPos(const ImVec2& pos, ImGuiCond cond = 0, const ImVec2& pivot = ImVec2(0, 0));     /* original C++ signature */
-def set_next_window_pos(pos: ImVec2, cond: Cond = 0, pivot: Optional[ImVec2] = None) -> None:
+def set_next_window_pos(pos: ImVec2Like, cond: Cond = 0, pivot: Optional[ImVec2Like] = None) -> None:
     """---
     Python bindings defaults:
         If pivot is None, then its default value will be: ImVec2(0, 0)
@@ -818,19 +821,22 @@ def set_next_window_pos(pos: ImVec2, cond: Cond = 0, pivot: Optional[ImVec2] = N
     pass
 
 # IMGUI_API void          SetNextWindowSize(const ImVec2& size, ImGuiCond cond = 0);                      /* original C++ signature */
-def set_next_window_size(size: ImVec2, cond: Cond = 0) -> None:
+def set_next_window_size(size: ImVec2Like, cond: Cond = 0) -> None:
     """set next window size. set axis to 0.0 to force an auto-fit on this axis. call before Begin()"""
     pass
 
 # IMGUI_API void          SetNextWindowSizeConstraints(const ImVec2& size_min, const ImVec2& size_max, ImGuiSizeCallback custom_callback = NULL, void* custom_callback_data = NULL);     /* original C++ signature */
 def set_next_window_size_constraints(
-    size_min: ImVec2, size_max: ImVec2, custom_callback: SizeCallback = None, custom_callback_data: Optional[Any] = None
+    size_min: ImVec2Like,
+    size_max: ImVec2Like,
+    custom_callback: SizeCallback = None,
+    custom_callback_data: Optional[Any] = None,
 ) -> None:
     """set next window size limits. use 0.0 or FLT_MAX if you don't want limits. Use -1 for both min and max of same axis to preserve current size (which itself is a constraint). Use callback to apply non-trivial programmatic constraints."""
     pass
 
 # IMGUI_API void          SetNextWindowContentSize(const ImVec2& size);                                   /* original C++ signature */
-def set_next_window_content_size(size: ImVec2) -> None:
+def set_next_window_content_size(size: ImVec2Like) -> None:
     """set next window content size (~ scrollable client area, which enforce the range of scrollbars). Not including window decorations (title bar, menu bar, etc.) nor WindowPadding. set an axis to 0.0 to leave it automatic. call before Begin()"""
     pass
 
@@ -845,7 +851,7 @@ def set_next_window_focus() -> None:
     pass
 
 # IMGUI_API void          SetNextWindowScroll(const ImVec2& scroll);                                      /* original C++ signature */
-def set_next_window_scroll(scroll: ImVec2) -> None:
+def set_next_window_scroll(scroll: ImVec2Like) -> None:
     """set next window scrolling value (use < 0.0 to not affect a given axis)."""
     pass
 
@@ -861,13 +867,13 @@ def set_next_window_viewport(viewport_id: ID) -> None:
 
 # IMGUI_API void          SetWindowPos(const ImVec2& pos, ImGuiCond cond = 0);                            /* original C++ signature */
 @overload
-def set_window_pos(pos: ImVec2, cond: Cond = 0) -> None:
+def set_window_pos(pos: ImVec2Like, cond: Cond = 0) -> None:
     """(not recommended) set current window position - call within Begin()/End(). prefer using SetNextWindowPos(), as this may incur tearing and side-effects."""
     pass
 
 # IMGUI_API void          SetWindowSize(const ImVec2& size, ImGuiCond cond = 0);                          /* original C++ signature */
 @overload
-def set_window_size(size: ImVec2, cond: Cond = 0) -> None:
+def set_window_size(size: ImVec2Like, cond: Cond = 0) -> None:
     """(not recommended) set current window size - call within Begin()/End(). set to ImVec2(0, 0) to force an auto-fit. prefer using SetNextWindowSize(), as this may incur tearing and minor side-effects."""
     pass
 
@@ -890,13 +896,13 @@ def set_window_font_scale(scale: float) -> None:
 
 # IMGUI_API void          SetWindowPos(const char* name, const ImVec2& pos, ImGuiCond cond = 0);          /* original C++ signature */
 @overload
-def set_window_pos(name: str, pos: ImVec2, cond: Cond = 0) -> None:
+def set_window_pos(name: str, pos: ImVec2Like, cond: Cond = 0) -> None:
     """set named window position."""
     pass
 
 # IMGUI_API void          SetWindowSize(const char* name, const ImVec2& size, ImGuiCond cond = 0);        /* original C++ signature */
 @overload
-def set_window_size(name: str, size: ImVec2, cond: Cond = 0) -> None:
+def set_window_size(name: str, size: ImVec2Like, cond: Cond = 0) -> None:
     """set named window size. set axis to 0.0 to force an auto-fit on this axis."""
     pass
 
@@ -983,7 +989,7 @@ def push_style_color(idx: Col, col: ImU32) -> None:
 
 # IMGUI_API void          PushStyleColor(ImGuiCol idx, const ImVec4& col);    /* original C++ signature */
 @overload
-def push_style_color(idx: Col, col: ImVec4) -> None:
+def push_style_color(idx: Col, col: ImVec4Like) -> None:
     pass
 
 # IMGUI_API void          PopStyleColor(int count = 1);    /* original C++ signature */
@@ -998,7 +1004,7 @@ def push_style_var(idx: StyleVar, val: float) -> None:
 
 # IMGUI_API void          PushStyleVar(ImGuiStyleVar idx, const ImVec2& val);                 /* original C++ signature */
 @overload
-def push_style_var(idx: StyleVar, val: ImVec2) -> None:
+def push_style_var(idx: StyleVar, val: ImVec2Like) -> None:
     """modify a style ImVec2 variable. " """
     pass
 
@@ -1079,7 +1085,7 @@ def get_color_u32(idx: Col, alpha_mul: float = 1.0) -> ImU32:
 
 # IMGUI_API ImU32         GetColorU32(const ImVec4& col);                                     /* original C++ signature */
 @overload
-def get_color_u32(col: ImVec4) -> ImU32:
+def get_color_u32(col: ImVec4Like) -> ImU32:
     """retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList"""
     pass
 
@@ -1110,7 +1116,7 @@ def get_cursor_screen_pos() -> ImVec2:
     pass
 
 # IMGUI_API void          SetCursorScreenPos(const ImVec2& pos);                              /* original C++ signature */
-def set_cursor_screen_pos(pos: ImVec2) -> None:
+def set_cursor_screen_pos(pos: ImVec2Like) -> None:
     """cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND."""
     pass
 
@@ -1135,7 +1141,7 @@ def get_cursor_pos_y() -> float:
     pass
 
 # IMGUI_API void          SetCursorPos(const ImVec2& local_pos);                              /* original C++ signature */
-def set_cursor_pos(local_pos: ImVec2) -> None:
+def set_cursor_pos(local_pos: ImVec2Like) -> None:
     """[window-local] " """
     pass
 
@@ -1176,7 +1182,7 @@ def spacing() -> None:
     pass
 
 # IMGUI_API void          Dummy(const ImVec2& size);                                          /* original C++ signature */
-def dummy(size: ImVec2) -> None:
+def dummy(size: ImVec2Like) -> None:
     """add a dummy item of given size. unlike InvisibleButton(), Dummy() won't take the mouse click or be navigable into."""
     pass
 
@@ -1298,7 +1304,7 @@ def text(fmt: str) -> None:
     pass
 
 # IMGUI_API void          TextColored(const ImVec4& col, const char* fmt, ...)            ;     /* original C++ signature */
-def text_colored(col: ImVec4, fmt: str) -> None:
+def text_colored(col: ImVec4Like, fmt: str) -> None:
     """shortcut for PushStyleColor(ImGuiCol_Text, col); Text(fmt, ...); PopStyleColor();"""
     pass
 
@@ -1331,7 +1337,7 @@ def separator_text(label: str) -> None:
 # - Most widgets return True when the value has been changed or when pressed/selected
 # - You may also use one of the many IsItemXXX functions (e.g. IsItemActive, IsItemHovered, etc.) to query widget state.
 # IMGUI_API bool          Button(const char* label, const ImVec2& size = ImVec2(0, 0));       /* original C++ signature */
-def button(label: str, size: Optional[ImVec2] = None) -> bool:
+def button(label: str, size: Optional[ImVec2Like] = None) -> bool:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -1346,7 +1352,7 @@ def small_button(label: str) -> bool:
     pass
 
 # IMGUI_API bool          InvisibleButton(const char* str_id, const ImVec2& size, ImGuiButtonFlags flags = 0);     /* original C++ signature */
-def invisible_button(str_id: str, size: ImVec2, flags: ButtonFlags = 0) -> bool:
+def invisible_button(str_id: str, size: ImVec2Like, flags: ButtonFlags = 0) -> bool:
     """flexible button behavior without the visuals, frequently useful to build custom behaviors using the public api (along with IsItemActive, IsItemHovered, etc.)"""
     pass
 
@@ -1382,7 +1388,7 @@ def radio_button(label: str, v: int, v_button: int) -> Tuple[bool, int]:
     pass
 
 # IMGUI_API void          ProgressBar(float fraction, const ImVec2& size_arg = ImVec2(-FLT_MIN, 0), const char* overlay = NULL);    /* original C++ signature */
-def progress_bar(fraction: float, size_arg: Optional[ImVec2] = None, overlay: Optional[str] = None) -> None:
+def progress_bar(fraction: float, size_arg: Optional[ImVec2Like] = None, overlay: Optional[str] = None) -> None:
     """---
     Python bindings defaults:
         If size_arg is None, then its default value will be: ImVec2(-sys.float_info.min, 0)
@@ -1411,11 +1417,11 @@ def text_link_open_url(label: str, url: Optional[str] = None) -> None:
 # IMGUI_API void          Image(ImTextureID user_texture_id, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& tint_col = ImVec4(1, 1, 1, 1), const ImVec4& border_col = ImVec4(0, 0, 0, 0));    /* original C++ signature */
 def image(
     user_texture_id: ImTextureID,
-    image_size: ImVec2,
-    uv0: Optional[ImVec2] = None,
-    uv1: Optional[ImVec2] = None,
-    tint_col: Optional[ImVec4] = None,
-    border_col: Optional[ImVec4] = None,
+    image_size: ImVec2Like,
+    uv0: Optional[ImVec2Like] = None,
+    uv1: Optional[ImVec2Like] = None,
+    tint_col: Optional[ImVec4Like] = None,
+    border_col: Optional[ImVec4Like] = None,
 ) -> None:
     """---
     Python bindings defaults:
@@ -1431,11 +1437,11 @@ def image(
 def image_button(
     str_id: str,
     user_texture_id: ImTextureID,
-    image_size: ImVec2,
-    uv0: Optional[ImVec2] = None,
-    uv1: Optional[ImVec2] = None,
-    bg_col: Optional[ImVec4] = None,
-    tint_col: Optional[ImVec4] = None,
+    image_size: ImVec2Like,
+    uv0: Optional[ImVec2Like] = None,
+    uv1: Optional[ImVec2Like] = None,
+    bg_col: Optional[ImVec4Like] = None,
+    tint_col: Optional[ImVec4Like] = None,
 ) -> bool:
     """---
     Python bindings defaults:
@@ -1724,20 +1730,20 @@ def slider_scalar_n(
 
 # IMGUI_API bool          VSliderFloat(const char* label, const ImVec2& size, float* v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def v_slider_float(
-    label: str, size: ImVec2, v: float, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+    label: str, size: ImVec2Like, v: float, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
 ) -> Tuple[bool, float]:
     pass
 
 # IMGUI_API bool          VSliderInt(const char* label, const ImVec2& size, int* v, int v_min, int v_max, const char* format = "%d", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def v_slider_int(
-    label: str, size: ImVec2, v: int, v_min: int, v_max: int, format: str = "%d", flags: SliderFlags = 0
+    label: str, size: ImVec2Like, v: int, v_min: int, v_max: int, format: str = "%d", flags: SliderFlags = 0
 ) -> Tuple[bool, int]:
     pass
 
 # IMGUI_API bool          VSliderScalar(const char* label, const ImVec2& size, ImGuiDataType data_type, void* p_data, const void* p_min, const void* p_max, const char* format = NULL, ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def v_slider_scalar(
     label: str,
-    size: ImVec2,
+    size: ImVec2Like,
     data_type: DataType,
     p_data: Any,
     p_min: Any,
@@ -1840,7 +1846,7 @@ def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tu
 #
 # IMGUI_API std::tuple<bool, ImVec4> ColorPicker4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0, std::optional<ImVec4> ref_col = std::nullopt);    /* original C++ signature */
 def color_picker4(
-    label: str, col: ImVec4, flags: ColorEditFlags = 0, ref_col: Optional[ImVec4] = None
+    label: str, col: ImVec4Like, flags: ColorEditFlags = 0, ref_col: Optional[ImVec4Like] = None
 ) -> Tuple[bool, ImVec4]:
     pass
 
@@ -1848,7 +1854,7 @@ def color_picker4(
 #
 
 # IMGUI_API bool          ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
-def color_button(desc_id: str, col: ImVec4, flags: ColorEditFlags = 0, size: Optional[ImVec2] = None) -> bool:
+def color_button(desc_id: str, col: ImVec4Like, flags: ColorEditFlags = 0, size: Optional[ImVec2Like] = None) -> bool:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -1947,7 +1953,7 @@ def set_next_item_storage_id(storage_id: ID) -> None:
 # - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.
 # IMGUI_API bool          Selectable(const char* label, bool* p_selected, ImGuiSelectableFlags flags = 0, const ImVec2& size = ImVec2(0, 0));          /* original C++ signature */
 def selectable(
-    label: str, p_selected: bool, flags: SelectableFlags = 0, size: Optional[ImVec2] = None
+    label: str, p_selected: bool, flags: SelectableFlags = 0, size: Optional[ImVec2Like] = None
 ) -> Tuple[bool, bool]:
     """---
     Python bindings defaults:
@@ -1990,7 +1996,7 @@ def is_item_toggled_selection() -> bool:
 # - Choose frame width:   size.x > 0.0: custom  /  size.x < 0.0 or -FLT_MIN: right-align   /  size.x = 0.0 (default): use current ItemWidth
 # - Choose frame height:  size.y > 0.0: custom  /  size.y < 0.0 or -FLT_MIN: bottom-align  /  size.y = 0.0 (default): arbitrary default height which can fit ~7 items
 # IMGUI_API bool          BeginListBox(const char* label, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
-def begin_list_box(label: str, size: Optional[ImVec2] = None) -> bool:
+def begin_list_box(label: str, size: Optional[ImVec2Like] = None) -> bool:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -2018,7 +2024,7 @@ def plot_lines(
     overlay_text: Optional[str] = None,
     scale_min: float = sys.float_info.max,
     scale_max: float = sys.float_info.max,
-    graph_size: Optional[ImVec2] = None,
+    graph_size: Optional[ImVec2Like] = None,
     stride: int = -1,
 ) -> None:
     """---
@@ -2035,7 +2041,7 @@ def plot_histogram(
     overlay_text: Optional[str] = None,
     scale_min: float = sys.float_info.max,
     scale_max: float = sys.float_info.max,
-    graph_size: Optional[ImVec2] = None,
+    graph_size: Optional[ImVec2Like] = None,
     stride: int = -1,
 ) -> None:
     """---
@@ -2259,7 +2265,7 @@ def is_popup_open(str_id: str, flags: PopupFlags = 0) -> bool:
 # - 5. Call EndTable()
 # IMGUI_API bool          BeginTable(const char* str_id, int columns, ImGuiTableFlags flags = 0, const ImVec2& outer_size = ImVec2(0.0f, 0.0f), float inner_width = 0.0f);    /* original C++ signature */
 def begin_table(
-    str_id: str, columns: int, flags: TableFlags = 0, outer_size: Optional[ImVec2] = None, inner_width: float = 0.0
+    str_id: str, columns: int, flags: TableFlags = 0, outer_size: Optional[ImVec2Like] = None, inner_width: float = 0.0
 ) -> bool:
     """---
     Python bindings defaults:
@@ -2469,7 +2475,7 @@ def set_tab_item_closed(tab_or_docked_window_label: str) -> None:
 # IMGUI_API ImGuiID       DockSpace(ImGuiID dockspace_id, const ImVec2& size = ImVec2(0, 0), ImGuiDockNodeFlags flags = 0, const ImGuiWindowClass* window_class = NULL);    /* original C++ signature */
 def dock_space(
     dockspace_id: ID,
-    size: Optional[ImVec2] = None,
+    size: Optional[ImVec2Like] = None,
     flags: DockNodeFlags = 0,
     window_class: Optional[WindowClass] = None,
 ) -> ID:
@@ -2585,7 +2591,9 @@ def end_disabled() -> None:
 # Clipping
 # - Mouse hovering is affected by ImGui::PushClipRect() calls, unlike direct calls to ImDrawList::PushClipRect() which are render only.
 # IMGUI_API void          PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect);    /* original C++ signature */
-def push_clip_rect(clip_rect_min: ImVec2, clip_rect_max: ImVec2, intersect_with_current_clip_rect: bool) -> None:
+def push_clip_rect(
+    clip_rect_min: ImVec2Like, clip_rect_max: ImVec2Like, intersect_with_current_clip_rect: bool
+) -> None:
     pass
 
 # IMGUI_API void          PopClipRect();    /* original C++ signature */
@@ -2726,13 +2734,13 @@ def get_foreground_draw_list(viewport: Optional[Viewport] = None) -> ImDrawList:
 # Miscellaneous Utilities
 # IMGUI_API bool          IsRectVisible(const ImVec2& size);                                      /* original C++ signature */
 @overload
-def is_rect_visible(size: ImVec2) -> bool:
+def is_rect_visible(size: ImVec2Like) -> bool:
     """test if rectangle (of given size, starting from cursor position) is visible / not clipped."""
     pass
 
 # IMGUI_API bool          IsRectVisible(const ImVec2& rect_min, const ImVec2& rect_max);          /* original C++ signature */
 @overload
-def is_rect_visible(rect_min: ImVec2, rect_max: ImVec2) -> bool:
+def is_rect_visible(rect_min: ImVec2Like, rect_max: ImVec2Like) -> bool:
     """test if rectangle (in screen space) is visible / not clipped. to perform coarse clipping on user's side."""
     pass
 
@@ -2778,7 +2786,7 @@ def color_convert_u32_to_float4(in_: ImU32) -> ImVec4:
     pass
 
 # IMGUI_API ImU32         ColorConvertFloat4ToU32(const ImVec4& in);    /* original C++ signature */
-def color_convert_float4_to_u32(in_: ImVec4) -> ImU32:
+def color_convert_float4_to_u32(in_: ImVec4Like) -> ImU32:
     pass
 
 # IMGUI_API void          ColorConvertRGBtoHSV(float r, float g, float b, float& out_h, float& out_s, float& out_v);    /* original C++ signature */
@@ -2896,12 +2904,12 @@ def get_mouse_clicked_count(button: MouseButton) -> int:
     pass
 
 # IMGUI_API bool          IsMouseHoveringRect(const ImVec2& r_min, const ImVec2& r_max, bool clip = true);    /* original C++ signature */
-def is_mouse_hovering_rect(r_min: ImVec2, r_max: ImVec2, clip: bool = True) -> bool:
+def is_mouse_hovering_rect(r_min: ImVec2Like, r_max: ImVec2Like, clip: bool = True) -> bool:
     """is mouse hovering given bounding rect (in screen space). clipped by current clipping settings, but disregarding of other consideration of focus/window ordering/popup-block."""
     pass
 
 # IMGUI_API bool          IsMousePosValid(const ImVec2* mouse_pos = NULL);                        /* original C++ signature */
-def is_mouse_pos_valid(mouse_pos: Optional[ImVec2] = None) -> bool:
+def is_mouse_pos_valid(mouse_pos: Optional[ImVec2Like] = None) -> bool:
     """by convention we use (-FLT_MAX,-FLT_MAX) to denote that there is no mouse available"""
     pass
 
@@ -5746,7 +5754,7 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
         pass
     # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
     @overload
-    def __init__(self, src: ImVector_ImVec4) -> None:
+    def __init__(self, src: ImVector_ImVec4Like) -> None:
         pass
     # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
     def clear(self) -> None:
@@ -5780,7 +5788,7 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
     # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
-    def push_back(self, v: ImVec4) -> None:
+    def push_back(self, v: ImVec4Like) -> None:
         """(private API)"""
         pass
     # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
@@ -5788,7 +5796,7 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
         """(private API)"""
         pass
     # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
-    def push_front(self, v: ImVec4) -> None:
+    def push_front(self, v: ImVec4Like) -> None:
         """(private API)"""
         pass
 
@@ -5814,7 +5822,7 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
         pass
     # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
     @overload
-    def __init__(self, src: ImVector_ImVec2) -> None:
+    def __init__(self, src: ImVector_ImVec2Like) -> None:
         pass
     # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
     def clear(self) -> None:
@@ -5848,7 +5856,7 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
     # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
-    def push_back(self, v: ImVec2) -> None:
+    def push_back(self, v: ImVec2Like) -> None:
         """(private API)"""
         pass
     # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
@@ -5856,7 +5864,7 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
         """(private API)"""
         pass
     # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
-    def push_front(self, v: ImVec2) -> None:
+    def push_front(self, v: ImVec2Like) -> None:
         """(private API)"""
         pass
 
@@ -8352,7 +8360,7 @@ class Style:
     def color_(self, idx_color: int) -> ImVec4:
         pass
     # inline IMGUI_API  void SetColor_(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
-    def set_color_(self, idx_color: int, color: ImVec4) -> None:
+    def set_color_(self, idx_color: int, color: ImVec4Like) -> None:
         pass
     #                                            #endif
     #
@@ -8924,7 +8932,10 @@ class SizeCallbackData:
     )
     # ImGuiSizeCallbackData(ImVec2 Pos = ImVec2(), ImVec2 CurrentSize = ImVec2(), ImVec2 DesiredSize = ImVec2());    /* original C++ signature */
     def __init__(
-        self, pos: Optional[ImVec2] = None, current_size: Optional[ImVec2] = None, desired_size: Optional[ImVec2] = None
+        self,
+        pos: Optional[ImVec2Like] = None,
+        current_size: Optional[ImVec2Like] = None,
+        desired_size: Optional[ImVec2Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
         ---
@@ -9328,7 +9339,7 @@ class ImColor:
         pass
     # constexpr ImColor(const ImVec4& col)                            : Value(col) {}    /* original C++ signature */
     @overload
-    def __init__(self, col: ImVec4) -> None:
+    def __init__(self, col: ImVec4Like) -> None:
         pass
     # constexpr ImColor(int r, int g, int b, int a = 255)             : Value((float)r * (1.0f / 255.0f), (float)g * (1.0f / 255.0f), (float)b * (1.0f / 255.0f), (float)a* (1.0f / 255.0f)) {}    /* original C++ signature */
     @overload
@@ -9699,7 +9710,7 @@ class ImDrawVert:
     # ImU32   col;    /* original C++ signature */
     col: ImU32
     # ImDrawVert(ImVec2 pos = ImVec2(), ImVec2 uv = ImVec2(), ImU32 col = ImU32());    /* original C++ signature */
-    def __init__(self, pos: Optional[ImVec2] = None, uv: Optional[ImVec2] = None, col: ImU32 = ImU32()) -> None:
+    def __init__(self, pos: Optional[ImVec2Like] = None, uv: Optional[ImVec2Like] = None, col: ImU32 = ImU32()) -> None:
         """Auto-generated default constructor with named params
         ---
         Python bindings defaults:
@@ -9724,7 +9735,7 @@ class ImDrawCmdHeader:
     # unsigned int    VtxOffset;    /* original C++ signature */
     vtx_offset: int
     # ImDrawCmdHeader(ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID());    /* original C++ signature */
-    def __init__(self, clip_rect: Optional[ImVec4] = None, texture_id: Optional[ImTextureID] = None) -> None:
+    def __init__(self, clip_rect: Optional[ImVec4Like] = None, texture_id: Optional[ImTextureID] = None) -> None:
         """Auto-generated default constructor with named params
         ---
         Python bindings defaults:
@@ -9926,7 +9937,7 @@ class ImDrawList:
         pass
     # IMGUI_API void  PushClipRect(const ImVec2& clip_rect_min, const ImVec2& clip_rect_max, bool intersect_with_current_clip_rect = false);      /* original C++ signature */
     def push_clip_rect(
-        self, clip_rect_min: ImVec2, clip_rect_max: ImVec2, intersect_with_current_clip_rect: bool = False
+        self, clip_rect_min: ImVec2Like, clip_rect_max: ImVec2Like, intersect_with_current_clip_rect: bool = False
     ) -> None:
         """Render-level scissoring. This is passed down to your render function but not used for CPU-side coarse clipping. Prefer using higher-level ImGui::PushClipRect() to affect logic (hit-testing and widget culling)"""
         pass
@@ -9958,13 +9969,13 @@ class ImDrawList:
     #   In future versions we will use textures to provide cheaper and higher-quality circles.
     #   Use AddNgon() and AddNgonFilled() functions if you need to guarantee a specific number of sides.
     # IMGUI_API void  AddLine(const ImVec2& p1, const ImVec2& p2, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
-    def add_line(self, p1: ImVec2, p2: ImVec2, col: ImU32, thickness: float = 1.0) -> None:
+    def add_line(self, p1: ImVec2Like, p2: ImVec2Like, col: ImU32, thickness: float = 1.0) -> None:
         pass
     # IMGUI_API void  AddRect(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, ImDrawFlags flags = 0, float thickness = 1.0f);       /* original C++ signature */
     def add_rect(
         self,
-        p_min: ImVec2,
-        p_max: ImVec2,
+        p_min: ImVec2Like,
+        p_max: ImVec2Like,
         col: ImU32,
         rounding: float = 0.0,
         flags: ImDrawFlags = 0,
@@ -9974,15 +9985,15 @@ class ImDrawList:
         pass
     # IMGUI_API void  AddRectFilled(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, ImDrawFlags flags = 0);                         /* original C++ signature */
     def add_rect_filled(
-        self, p_min: ImVec2, p_max: ImVec2, col: ImU32, rounding: float = 0.0, flags: ImDrawFlags = 0
+        self, p_min: ImVec2Like, p_max: ImVec2Like, col: ImU32, rounding: float = 0.0, flags: ImDrawFlags = 0
     ) -> None:
         """a: upper-left, b: lower-right (== upper-left + size)"""
         pass
     # IMGUI_API void  AddRectFilledMultiColor(const ImVec2& p_min, const ImVec2& p_max, ImU32 col_upr_left, ImU32 col_upr_right, ImU32 col_bot_right, ImU32 col_bot_left);    /* original C++ signature */
     def add_rect_filled_multi_color(
         self,
-        p_min: ImVec2,
-        p_max: ImVec2,
+        p_min: ImVec2Like,
+        p_max: ImVec2Like,
         col_upr_left: ImU32,
         col_upr_right: ImU32,
         col_bot_right: ImU32,
@@ -9990,36 +10001,40 @@ class ImDrawList:
     ) -> None:
         pass
     # IMGUI_API void  AddQuad(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
-    def add_quad(self, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32, thickness: float = 1.0) -> None:
+    def add_quad(
+        self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, p4: ImVec2Like, col: ImU32, thickness: float = 1.0
+    ) -> None:
         pass
     # IMGUI_API void  AddQuadFilled(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col);    /* original C++ signature */
-    def add_quad_filled(self, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32) -> None:
+    def add_quad_filled(self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, p4: ImVec2Like, col: ImU32) -> None:
         pass
     # IMGUI_API void  AddTriangle(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
-    def add_triangle(self, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32, thickness: float = 1.0) -> None:
+    def add_triangle(self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, col: ImU32, thickness: float = 1.0) -> None:
         pass
     # IMGUI_API void  AddTriangleFilled(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col);    /* original C++ signature */
-    def add_triangle_filled(self, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32) -> None:
+    def add_triangle_filled(self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, col: ImU32) -> None:
         pass
     # IMGUI_API void  AddCircle(const ImVec2& center, float radius, ImU32 col, int num_segments = 0, float thickness = 1.0f);    /* original C++ signature */
     def add_circle(
-        self, center: ImVec2, radius: float, col: ImU32, num_segments: int = 0, thickness: float = 1.0
+        self, center: ImVec2Like, radius: float, col: ImU32, num_segments: int = 0, thickness: float = 1.0
     ) -> None:
         pass
     # IMGUI_API void  AddCircleFilled(const ImVec2& center, float radius, ImU32 col, int num_segments = 0);    /* original C++ signature */
-    def add_circle_filled(self, center: ImVec2, radius: float, col: ImU32, num_segments: int = 0) -> None:
+    def add_circle_filled(self, center: ImVec2Like, radius: float, col: ImU32, num_segments: int = 0) -> None:
         pass
     # IMGUI_API void  AddNgon(const ImVec2& center, float radius, ImU32 col, int num_segments, float thickness = 1.0f);    /* original C++ signature */
-    def add_ngon(self, center: ImVec2, radius: float, col: ImU32, num_segments: int, thickness: float = 1.0) -> None:
+    def add_ngon(
+        self, center: ImVec2Like, radius: float, col: ImU32, num_segments: int, thickness: float = 1.0
+    ) -> None:
         pass
     # IMGUI_API void  AddNgonFilled(const ImVec2& center, float radius, ImU32 col, int num_segments);    /* original C++ signature */
-    def add_ngon_filled(self, center: ImVec2, radius: float, col: ImU32, num_segments: int) -> None:
+    def add_ngon_filled(self, center: ImVec2Like, radius: float, col: ImU32, num_segments: int) -> None:
         pass
     # IMGUI_API void  AddEllipse(const ImVec2& center, const ImVec2& radius, ImU32 col, float rot = 0.0f, int num_segments = 0, float thickness = 1.0f);    /* original C++ signature */
     def add_ellipse(
         self,
-        center: ImVec2,
-        radius: ImVec2,
+        center: ImVec2Like,
+        radius: ImVec2Like,
         col: ImU32,
         rot: float = 0.0,
         num_segments: int = 0,
@@ -10028,12 +10043,12 @@ class ImDrawList:
         pass
     # IMGUI_API void  AddEllipseFilled(const ImVec2& center, const ImVec2& radius, ImU32 col, float rot = 0.0f, int num_segments = 0);    /* original C++ signature */
     def add_ellipse_filled(
-        self, center: ImVec2, radius: ImVec2, col: ImU32, rot: float = 0.0, num_segments: int = 0
+        self, center: ImVec2Like, radius: ImVec2Like, col: ImU32, rot: float = 0.0, num_segments: int = 0
     ) -> None:
         pass
     # IMGUI_API void  AddText(const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL);    /* original C++ signature */
     @overload
-    def add_text(self, pos: ImVec2, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
+    def add_text(self, pos: ImVec2Like, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
         pass
     # IMGUI_API void  AddText(ImFont* font, float font_size, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL, float wrap_width = 0.0f, const ImVec4* cpu_fine_clip_rect = NULL);    /* original C++ signature */
     @overload
@@ -10041,23 +10056,30 @@ class ImDrawList:
         self,
         font: ImFont,
         font_size: float,
-        pos: ImVec2,
+        pos: ImVec2Like,
         col: ImU32,
         text_begin: str,
         text_end: Optional[str] = None,
         wrap_width: float = 0.0,
-        cpu_fine_clip_rect: Optional[ImVec4] = None,
+        cpu_fine_clip_rect: Optional[ImVec4Like] = None,
     ) -> None:
         pass
     # IMGUI_API void  AddBezierCubic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness, int num_segments = 0);     /* original C++ signature */
     def add_bezier_cubic(
-        self, p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, col: ImU32, thickness: float, num_segments: int = 0
+        self,
+        p1: ImVec2Like,
+        p2: ImVec2Like,
+        p3: ImVec2Like,
+        p4: ImVec2Like,
+        col: ImU32,
+        thickness: float,
+        num_segments: int = 0,
     ) -> None:
         """Cubic Bezier (4 control points)"""
         pass
     # IMGUI_API void  AddBezierQuadratic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness, int num_segments = 0);                   /* original C++ signature */
     def add_bezier_quadratic(
-        self, p1: ImVec2, p2: ImVec2, p3: ImVec2, col: ImU32, thickness: float, num_segments: int = 0
+        self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, col: ImU32, thickness: float, num_segments: int = 0
     ) -> None:
         pass
     # Quadratic Bezier (3 control points)
@@ -10067,13 +10089,13 @@ class ImDrawList:
     # - Only simple polygons are supported by filling functions (no self-intersections, no holes).
     # - Concave polygon fill is more expensive than convex one: it has O(N^2) complexity. Provided as a convenience fo user but not used by main library.
     # IMGUI_API void  AddPolyline(const std::vector<ImVec2>& points, ImU32 col, ImDrawFlags flags, float thickness);    /* original C++ signature */
-    def add_polyline(self, points: List[ImVec2], col: ImU32, flags: ImDrawFlags, thickness: float) -> None:
+    def add_polyline(self, points: List[ImVec2Like], col: ImU32, flags: ImDrawFlags, thickness: float) -> None:
         pass
     # IMGUI_API void  AddConvexPolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
-    def add_convex_poly_filled(self, points: List[ImVec2], col: ImU32) -> None:
+    def add_convex_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
         pass
     # IMGUI_API void  AddConcavePolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
-    def add_concave_poly_filled(self, points: List[ImVec2], col: ImU32) -> None:
+    def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
         pass
     #                                        #endif
     #
@@ -10086,10 +10108,10 @@ class ImDrawList:
     def add_image(
         self,
         user_texture_id: ImTextureID,
-        p_min: ImVec2,
-        p_max: ImVec2,
-        uv_min: Optional[ImVec2] = None,
-        uv_max: Optional[ImVec2] = None,
+        p_min: ImVec2Like,
+        p_max: ImVec2Like,
+        uv_min: Optional[ImVec2Like] = None,
+        uv_max: Optional[ImVec2Like] = None,
         col: ImU32 = IM_COL32_WHITE,
     ) -> None:
         """---
@@ -10103,14 +10125,14 @@ class ImDrawList:
     def add_image_quad(
         self,
         user_texture_id: ImTextureID,
-        p1: ImVec2,
-        p2: ImVec2,
-        p3: ImVec2,
-        p4: ImVec2,
-        uv1: Optional[ImVec2] = None,
-        uv2: Optional[ImVec2] = None,
-        uv3: Optional[ImVec2] = None,
-        uv4: Optional[ImVec2] = None,
+        p1: ImVec2Like,
+        p2: ImVec2Like,
+        p3: ImVec2Like,
+        p4: ImVec2Like,
+        uv1: Optional[ImVec2Like] = None,
+        uv2: Optional[ImVec2Like] = None,
+        uv3: Optional[ImVec2Like] = None,
+        uv4: Optional[ImVec2Like] = None,
         col: ImU32 = IM_COL32_WHITE,
     ) -> None:
         """---
@@ -10126,10 +10148,10 @@ class ImDrawList:
     def add_image_rounded(
         self,
         user_texture_id: ImTextureID,
-        p_min: ImVec2,
-        p_max: ImVec2,
-        uv_min: ImVec2,
-        uv_max: ImVec2,
+        p_min: ImVec2Like,
+        p_max: ImVec2Like,
+        uv_min: ImVec2Like,
+        uv_max: ImVec2Like,
         col: ImU32,
         rounding: float,
         flags: ImDrawFlags = 0,
@@ -10143,11 +10165,11 @@ class ImDrawList:
         """(private API)"""
         pass
     # inline    void  PathLineTo(const ImVec2& pos)                               { _Path.push_back(pos); }    /* original C++ signature */
-    def path_line_to(self, pos: ImVec2) -> None:
+    def path_line_to(self, pos: ImVec2Like) -> None:
         """(private API)"""
         pass
     # inline    void  PathLineToMergeDuplicate(const ImVec2& pos)                 { if (_Path.Size == 0 || memcmp(&_Path.Data[_Path.Size - 1], &pos, 8) != 0) _Path.push_back(pos); }    /* original C++ signature */
-    def path_line_to_merge_duplicate(self, pos: ImVec2) -> None:
+    def path_line_to_merge_duplicate(self, pos: ImVec2Like) -> None:
         """(private API)"""
         pass
     # inline    void  PathFillConvex(ImU32 col)                                   { AddConvexPolyFilled(_Path.Data, _Path.Size, col); _Path.Size = 0; }    /* original C++ signature */
@@ -10163,28 +10185,30 @@ class ImDrawList:
         """(private API)"""
         pass
     # IMGUI_API void  PathArcTo(const ImVec2& center, float radius, float a_min, float a_max, int num_segments = 0);    /* original C++ signature */
-    def path_arc_to(self, center: ImVec2, radius: float, a_min: float, a_max: float, num_segments: int = 0) -> None:
+    def path_arc_to(self, center: ImVec2Like, radius: float, a_min: float, a_max: float, num_segments: int = 0) -> None:
         pass
     # IMGUI_API void  PathArcToFast(const ImVec2& center, float radius, int a_min_of_12, int a_max_of_12);                    /* original C++ signature */
-    def path_arc_to_fast(self, center: ImVec2, radius: float, a_min_of_12: int, a_max_of_12: int) -> None:
+    def path_arc_to_fast(self, center: ImVec2Like, radius: float, a_min_of_12: int, a_max_of_12: int) -> None:
         """Use precomputed angles for a 12 steps circle"""
         pass
     # IMGUI_API void  PathEllipticalArcTo(const ImVec2& center, const ImVec2& radius, float rot, float a_min, float a_max, int num_segments = 0);     /* original C++ signature */
     def path_elliptical_arc_to(
-        self, center: ImVec2, radius: ImVec2, rot: float, a_min: float, a_max: float, num_segments: int = 0
+        self, center: ImVec2Like, radius: ImVec2Like, rot: float, a_min: float, a_max: float, num_segments: int = 0
     ) -> None:
         """Ellipse"""
         pass
     # IMGUI_API void  PathBezierCubicCurveTo(const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, int num_segments = 0);     /* original C++ signature */
-    def path_bezier_cubic_curve_to(self, p2: ImVec2, p3: ImVec2, p4: ImVec2, num_segments: int = 0) -> None:
+    def path_bezier_cubic_curve_to(self, p2: ImVec2Like, p3: ImVec2Like, p4: ImVec2Like, num_segments: int = 0) -> None:
         """Cubic Bezier (4 control points)"""
         pass
     # IMGUI_API void  PathBezierQuadraticCurveTo(const ImVec2& p2, const ImVec2& p3, int num_segments = 0);                   /* original C++ signature */
-    def path_bezier_quadratic_curve_to(self, p2: ImVec2, p3: ImVec2, num_segments: int = 0) -> None:
+    def path_bezier_quadratic_curve_to(self, p2: ImVec2Like, p3: ImVec2Like, num_segments: int = 0) -> None:
         """Quadratic Bezier (3 control points)"""
         pass
     # IMGUI_API void  PathRect(const ImVec2& rect_min, const ImVec2& rect_max, float rounding = 0.0f, ImDrawFlags flags = 0);    /* original C++ signature */
-    def path_rect(self, rect_min: ImVec2, rect_max: ImVec2, rounding: float = 0.0, flags: ImDrawFlags = 0) -> None:
+    def path_rect(
+        self, rect_min: ImVec2Like, rect_max: ImVec2Like, rounding: float = 0.0, flags: ImDrawFlags = 0
+    ) -> None:
         pass
     # Advanced: Miscellaneous
     # IMGUI_API void  AddDrawCmd();                                                   /* original C++ signature */
@@ -10223,28 +10247,28 @@ class ImDrawList:
     def prim_unreserve(self, idx_count: int, vtx_count: int) -> None:
         pass
     # IMGUI_API void  PrimRect(const ImVec2& a, const ImVec2& b, ImU32 col);          /* original C++ signature */
-    def prim_rect(self, a: ImVec2, b: ImVec2, col: ImU32) -> None:
+    def prim_rect(self, a: ImVec2Like, b: ImVec2Like, col: ImU32) -> None:
         """Axis aligned rectangle (composed of two triangles)"""
         pass
     # IMGUI_API void  PrimRectUV(const ImVec2& a, const ImVec2& b, const ImVec2& uv_a, const ImVec2& uv_b, ImU32 col);    /* original C++ signature */
-    def prim_rect_uv(self, a: ImVec2, b: ImVec2, uv_a: ImVec2, uv_b: ImVec2, col: ImU32) -> None:
+    def prim_rect_uv(self, a: ImVec2Like, b: ImVec2Like, uv_a: ImVec2Like, uv_b: ImVec2Like, col: ImU32) -> None:
         pass
     # IMGUI_API void  PrimQuadUV(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& d, const ImVec2& uv_a, const ImVec2& uv_b, const ImVec2& uv_c, const ImVec2& uv_d, ImU32 col);    /* original C++ signature */
     def prim_quad_uv(
         self,
-        a: ImVec2,
-        b: ImVec2,
-        c: ImVec2,
-        d: ImVec2,
-        uv_a: ImVec2,
-        uv_b: ImVec2,
-        uv_c: ImVec2,
-        uv_d: ImVec2,
+        a: ImVec2Like,
+        b: ImVec2Like,
+        c: ImVec2Like,
+        d: ImVec2Like,
+        uv_a: ImVec2Like,
+        uv_b: ImVec2Like,
+        uv_c: ImVec2Like,
+        uv_d: ImVec2Like,
         col: ImU32,
     ) -> None:
         pass
     # inline    void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)    { _VtxWritePtr->pos = pos; _VtxWritePtr->uv = uv; _VtxWritePtr->col = col; _VtxWritePtr++; _VtxCurrentIdx++; }    /* original C++ signature */
-    def prim_write_vtx(self, pos: ImVec2, uv: ImVec2, col: ImU32) -> None:
+    def prim_write_vtx(self, pos: ImVec2Like, uv: ImVec2Like, col: ImU32) -> None:
         """(private API)"""
         pass
     # inline    void  PrimWriteIdx(ImDrawIdx idx)                                     { *_IdxWritePtr = idx; _IdxWritePtr++; }    /* original C++ signature */
@@ -10252,7 +10276,7 @@ class ImDrawList:
         """(private API)"""
         pass
     # inline    void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)         { PrimWriteIdx((ImDrawIdx)_VtxCurrentIdx); PrimWriteVtx(pos, uv, col); }     /* original C++ signature */
-    def prim_vtx(self, pos: ImVec2, uv: ImVec2, col: ImU32) -> None:
+    def prim_vtx(self, pos: ImVec2Like, uv: ImVec2Like, col: ImU32) -> None:
         """(private API)
 
         Write vertex with unique index
@@ -10295,11 +10319,11 @@ class ImDrawList:
         pass
     # IMGUI_API void  _PathArcToFastEx(const ImVec2& center, float radius, int a_min_sample, int a_max_sample, int a_step);    /* original C++ signature */
     def _path_arc_to_fast_ex(
-        self, center: ImVec2, radius: float, a_min_sample: int, a_max_sample: int, a_step: int
+        self, center: ImVec2Like, radius: float, a_min_sample: int, a_max_sample: int, a_step: int
     ) -> None:
         pass
     # IMGUI_API void  _PathArcToN(const ImVec2& center, float radius, float a_min, float a_max, int num_segments);    /* original C++ signature */
-    def _path_arc_to_n(self, center: ImVec2, radius: float, a_min: float, a_max: float, num_segments: int) -> None:
+    def _path_arc_to_n(self, center: ImVec2Like, radius: float, a_min: float, a_max: float, num_segments: int) -> None:
         pass
 
 class ImDrawData:
@@ -10345,7 +10369,7 @@ class ImDrawData:
         """Helper to convert all buffers from indexed to non-indexed, in case you cannot render indexed. Note: this is slow and most likely a waste of resources. Always prefer indexed rendering!"""
         pass
     # IMGUI_API void  ScaleClipRects(const ImVec2& fb_scale);     /* original C++ signature */
-    def scale_clip_rects(self, fb_scale: ImVec2) -> None:
+    def scale_clip_rects(self, fb_scale: ImVec2Like) -> None:
         """Helper to scale the ClipRect field of each ImDrawCmd. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution."""
         pass
 
@@ -10704,7 +10728,7 @@ class ImFontAtlas:
         pass
     # IMGUI_API int               AddCustomRectFontGlyph(ImFont* font, ImWchar id, int width, int height, float advance_x, const ImVec2& offset = ImVec2(0, 0));    /* original C++ signature */
     def add_custom_rect_font_glyph(
-        self, font: ImFont, id_: ImWchar, width: int, height: int, advance_x: float, offset: Optional[ImVec2] = None
+        self, font: ImFont, id_: ImWchar, width: int, height: int, advance_x: float, offset: Optional[ImVec2Like] = None
     ) -> int:
         """---
         Python bindings defaults:
@@ -10717,11 +10741,16 @@ class ImFontAtlas:
         pass
     # [Internal]
     # IMGUI_API void              CalcCustomRectUV(const ImFontAtlasCustomRect* rect, ImVec2* out_uv_min, ImVec2* out_uv_max) const;    /* original C++ signature */
-    def calc_custom_rect_uv(self, rect: ImFontAtlasCustomRect, out_uv_min: ImVec2, out_uv_max: ImVec2) -> None:
+    def calc_custom_rect_uv(self, rect: ImFontAtlasCustomRect, out_uv_min: ImVec2Like, out_uv_max: ImVec2Like) -> None:
         pass
     # IMGUI_API bool              GetMouseCursorTexData(ImGuiMouseCursor cursor, ImVec2* out_offset, ImVec2* out_size, ImVec2 out_uv_border[2], ImVec2 out_uv_fill[2]);    /* original C++ signature */
     def get_mouse_cursor_tex_data(
-        self, cursor: MouseCursor, out_offset: ImVec2, out_size: ImVec2, out_uv_border: ImVec2, out_uv_fill: ImVec2
+        self,
+        cursor: MouseCursor,
+        out_offset: ImVec2Like,
+        out_size: ImVec2Like,
+        out_uv_border: ImVec2Like,
+        out_uv_fill: ImVec2Like,
     ) -> bool:
         pass
     # -------------------------------------------
@@ -10859,16 +10888,16 @@ class ImFont:
     def calc_word_wrap_position_a(self, scale: float, text: str, text_end: str, wrap_width: float) -> str:
         pass
     # IMGUI_API void              RenderChar(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, ImWchar c);    /* original C++ signature */
-    def render_char(self, draw_list: ImDrawList, size: float, pos: ImVec2, col: ImU32, c: ImWchar) -> None:
+    def render_char(self, draw_list: ImDrawList, size: float, pos: ImVec2Like, col: ImU32, c: ImWchar) -> None:
         pass
     # IMGUI_API void              RenderText(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, const ImVec4& clip_rect, const char* text_begin, const char* text_end, float wrap_width = 0.0f, bool cpu_fine_clip = false);    /* original C++ signature */
     def render_text(
         self,
         draw_list: ImDrawList,
         size: float,
-        pos: ImVec2,
+        pos: ImVec2Like,
         col: ImU32,
-        clip_rect: ImVec4,
+        clip_rect: ImVec4Like,
         text_begin: str,
         text_end: str,
         wrap_width: float = 0.0,
@@ -11246,7 +11275,7 @@ class PlatformImeData:
 
 # IMGUI_API void BeginHorizontal(const char* str_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
 @overload
-def begin_horizontal(str_id: str, size: Optional[ImVec2] = None, align: float = -1.0) -> None:
+def begin_horizontal(str_id: str, size: Optional[ImVec2Like] = None, align: float = -1.0) -> None:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -11255,7 +11284,7 @@ def begin_horizontal(str_id: str, size: Optional[ImVec2] = None, align: float = 
 
 # IMGUI_API void BeginHorizontal(const void* ptr_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
 @overload
-def begin_horizontal(ptr_id: Any, size: Optional[ImVec2] = None, align: float = -1.0) -> None:
+def begin_horizontal(ptr_id: Any, size: Optional[ImVec2Like] = None, align: float = -1.0) -> None:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -11264,7 +11293,7 @@ def begin_horizontal(ptr_id: Any, size: Optional[ImVec2] = None, align: float = 
 
 # IMGUI_API void BeginHorizontal(int id, const ImVec2& size = ImVec2(0, 0), float align = -1);    /* original C++ signature */
 @overload
-def begin_horizontal(id_: int, size: Optional[ImVec2] = None, align: float = -1) -> None:
+def begin_horizontal(id_: int, size: Optional[ImVec2Like] = None, align: float = -1) -> None:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -11277,7 +11306,7 @@ def end_horizontal() -> None:
 
 # IMGUI_API void BeginVertical(const char* str_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
 @overload
-def begin_vertical(str_id: str, size: Optional[ImVec2] = None, align: float = -1.0) -> None:
+def begin_vertical(str_id: str, size: Optional[ImVec2Like] = None, align: float = -1.0) -> None:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -11286,7 +11315,7 @@ def begin_vertical(str_id: str, size: Optional[ImVec2] = None, align: float = -1
 
 # IMGUI_API void BeginVertical(const void* ptr_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
 @overload
-def begin_vertical(ptr_id: Any, size: Optional[ImVec2] = None, align: float = -1.0) -> None:
+def begin_vertical(ptr_id: Any, size: Optional[ImVec2Like] = None, align: float = -1.0) -> None:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -11295,7 +11324,7 @@ def begin_vertical(ptr_id: Any, size: Optional[ImVec2] = None, align: float = -1
 
 # IMGUI_API void BeginVertical(int id, const ImVec2& size = ImVec2(0, 0), float align = -1);    /* original C++ signature */
 @overload
-def begin_vertical(id_: int, size: Optional[ImVec2] = None, align: float = -1) -> None:
+def begin_vertical(id_: int, size: Optional[ImVec2Like] = None, align: float = -1) -> None:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0, 0)
@@ -11368,7 +11397,7 @@ def input_text(
 def input_text_multiline(
     label: str,
     str: str,
-    size: Optional[ImVec2] = None,
+    size: Optional[ImVec2Like] = None,
     flags: InputTextFlags = 0,
     callback: InputTextCallback = None,
     user_data: Optional[Any] = None,
@@ -11460,3 +11489,6 @@ def get_imgui_demo_marker_is_active() -> bool:
 
 def set_imgui_demo_show_python_code(b: bool) -> None:
     pass
+
+ImVector_ImVec4Like = ImVector_ImVec4
+ImVector_ImVec2Like = ImVector_ImVec2

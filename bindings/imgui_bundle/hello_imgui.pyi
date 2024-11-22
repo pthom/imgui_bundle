@@ -11,6 +11,8 @@ from imgui_bundle.imgui.internal import DockNodeFlags_, DockNodeFlags
 from imgui_bundle.imgui import (
     ImVec2,
     ImVec4,
+    ImVec2Like,
+    ImVec4Like,
     ImFontConfig,
     ImFont,
     ImTextureID,
@@ -214,7 +216,7 @@ def em_to_vec2(x: float, y: float) -> ImVec2:
 
 # ImVec2 EmToVec2(ImVec2 v);    /* original C++ signature */
 @overload
-def em_to_vec2(v: ImVec2) -> ImVec2:
+def em_to_vec2(v: ImVec2Like) -> ImVec2:
     pass
 
 # float EmSize();    /* original C++ signature */
@@ -230,7 +232,7 @@ def em_size(nb_lines: float) -> float:
     pass
 
 # ImVec2 PixelsToEm(ImVec2 pixels);    /* original C++ signature */
-def pixels_to_em(pixels: ImVec2) -> ImVec2:
+def pixels_to_em(pixels: ImVec2Like) -> ImVec2:
     """__HelloImGui::PixelToEm()__ converts a Vec2 in pixels coord to a Vec2 in em units"""
     pass
 
@@ -515,7 +517,7 @@ def log_clear() -> None:
 
 # void LogGui(ImVec2 size=ImVec2(0.f, 0.f));    /* original C++ signature */
 # }
-def log_gui(size: Optional[ImVec2] = None) -> None:
+def log_gui(size: Optional[ImVec2Like] = None) -> None:
     """---
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0., 0.)
@@ -552,11 +554,11 @@ def log_gui(size: Optional[ImVec2] = None) -> None:
 #                     const ImVec4& border_col = ImVec4(0,0,0,0));
 def image_from_asset(
     asset_path: str,
-    size: Optional[ImVec2] = None,
-    uv0: Optional[ImVec2] = None,
-    uv1: Optional[ImVec2] = None,
-    tint_col: Optional[ImVec4] = None,
-    border_col: Optional[ImVec4] = None,
+    size: Optional[ImVec2Like] = None,
+    uv0: Optional[ImVec2Like] = None,
+    uv1: Optional[ImVec2Like] = None,
+    tint_col: Optional[ImVec4Like] = None,
+    border_col: Optional[ImVec4Like] = None,
 ) -> None:
     """`HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
      will display a static image from the assets.
@@ -578,12 +580,12 @@ def image_from_asset(
 #                           const ImVec4& tint_col = ImVec4(1,1,1,1));
 def image_button_from_asset(
     asset_path: str,
-    size: Optional[ImVec2] = None,
-    uv0: Optional[ImVec2] = None,
-    uv1: Optional[ImVec2] = None,
+    size: Optional[ImVec2Like] = None,
+    uv0: Optional[ImVec2Like] = None,
+    uv1: Optional[ImVec2Like] = None,
     frame_padding: int = -1,
-    bg_col: Optional[ImVec4] = None,
-    tint_col: Optional[ImVec4] = None,
+    bg_col: Optional[ImVec4Like] = None,
+    tint_col: Optional[ImVec4Like] = None,
 ) -> bool:
     """`bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`:
      will display a button using an image from the assets.
@@ -623,7 +625,9 @@ class ImageAndSize:
     size: ImVec2 = ImVec2(0.0, 0.0)
     # ImageAndSize(ImTextureID textureId = ImTextureID(0), ImVec2 size = ImVec2(0.f, 0.f));    /* original C++ signature */
     def __init__(
-        self, texture_id: Optional[ImTextureID] = None, size: Optional[ImVec2] = None
+        self,
+        texture_id: Optional[ImTextureID] = None,
+        size: Optional[ImVec2Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
         ---
@@ -639,7 +643,7 @@ def image_and_size_from_asset(asset_path: str) -> ImageAndSize:
     pass
 
 # ImVec2 ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize);    /* original C++ signature */
-def image_proportional_size(asked_size: ImVec2, image_size: ImVec2) -> ImVec2:
+def image_proportional_size(asked_size: ImVec2Like, image_size: ImVec2Like) -> ImVec2:
     """`ImVec2 HelloImGui::ImageProportionalSize(askedSize, imageSize)`:
     will return the displayed size of an image.
        - if askedSize.x or askedSize.y is 0, then the corresponding dimension
@@ -1422,7 +1426,7 @@ class AppWindowParams:
         borderless_movable: bool = True,
         borderless_resizable: bool = True,
         borderless_closable: bool = True,
-        borderless_highlight_color: Optional[ImVec4] = None,
+        borderless_highlight_color: Optional[ImVec4Like] = None,
         edge_insets: Optional[EdgeInsets] = None,
         handle_edge_insets: bool = True,
         repaint_during_resize_gotcha_reentrant_repaint: bool = False,
@@ -1595,10 +1599,10 @@ class ImGuiWindowParams:
         show_status_bar: bool = False,
         show_status_fps: bool = True,
         remember_status_bar_settings: bool = True,
-        full_screen_window_margin_top_left: Optional[ImVec2] = None,
-        full_screen_window_margin_bottom_right: Optional[ImVec2] = None,
+        full_screen_window_margin_top_left: Optional[ImVec2Like] = None,
+        full_screen_window_margin_bottom_right: Optional[ImVec2Like] = None,
         tweaked_theme: Optional[ImGuiTweakedTheme] = None,
-        background_color: Optional[ImVec4] = None,
+        background_color: Optional[ImVec4Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
         ---
@@ -1735,8 +1739,8 @@ class EdgeToolbarOptions:
     def __init__(
         self,
         size_em: float = 2.5,
-        window_padding_em: Optional[ImVec2] = None,
-        window_bg: Optional[ImVec4] = None,
+        window_padding_em: Optional[ImVec2Like] = None,
+        window_bg: Optional[ImVec4Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
         ---
@@ -3317,7 +3321,10 @@ class InputTextData:
 
     # InputTextData(const std::string& text = "", bool multiline = false, ImVec2 size_em = ImVec2(0, 0)) : Text(text), Multiline(multiline), SizeEm(size_em) {}    /* original C++ signature */
     def __init__(
-        self, text: str = "", multiline: bool = False, size_em: Optional[ImVec2] = None
+        self,
+        text: str = "",
+        multiline: bool = False,
+        size_em: Optional[ImVec2Like] = None,
     ) -> None:
         """---
         Python bindings defaults:

@@ -2,6 +2,7 @@
 import os
 from imgui_bundle._imgui_bundle import __bundle_submodules__ # type: ignore
 from imgui_bundle._imgui_bundle import __version__, compilation_time
+from typing import Union, Tuple, List
 
 
 def has_submodule(submodule_name):
@@ -16,7 +17,7 @@ __all__ = ["__version__", "compilation_time"]
 #
 if has_submodule("imgui"):
     from imgui_bundle._imgui_bundle import imgui as imgui
-    from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX  # type: ignore # noqa: F401
+    from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX  # noqa: F401
     from imgui_bundle import imgui_pydantic as imgui_pydantic
     from imgui_bundle.imgui_pydantic import (
         ImVec4_Pydantic as ImVec4_Pydantic,
@@ -26,9 +27,17 @@ if has_submodule("imgui"):
     from imgui_bundle.im_col32 import IM_COL32  # noqa: F401, E402
     from imgui_bundle import imgui_ctx as imgui_ctx  # noqa: E402
 
+    ImVec2Like = Union[ImVec2, Tuple[int | float, int | float], List[int | float]]
+    ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | float], List[int | float]]
+
+    imgui.ImVec2Like = ImVec2Like
+    imgui.ImVec4Like = ImVec4Like
+
     __all__.extend([
         "imgui",
         "ImVec2",
+        "ImVec2Like",
+        "ImVec4Like",
         "ImVec4",
         "ImColor",
         "FLT_MIN",
@@ -121,8 +130,9 @@ if has_submodule("immapp_cpp"):  # immapp is a Python wrapper around immapp_cpp
 #
 # Import Python submodules
 #
-from imgui_bundle import imgui_fig as imgui_fig
-__all__.extend(["imgui_fig"])
+if has_submodule("immvision"):
+    from imgui_bundle import imgui_fig as imgui_fig
+    __all__.extend(["imgui_fig"])
 
 
 # Glfw setup:

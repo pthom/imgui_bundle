@@ -6,7 +6,7 @@ from typing import overload, Optional
 import enum
 
 import imgui_bundle
-from imgui_bundle.imgui import ImVec4, ImVec2, ImTextureID, ImDrawList, ImU32
+from imgui_bundle.imgui import ImVec2, ImTextureID, ImDrawList, ImU32, ImVec2Like, ImVec4Like
 from imgui_bundle import imgui
 
 ImGuiTexInspect = imgui_bundle.imgui_tex_inspect
@@ -71,11 +71,11 @@ class InspectorFlags_(enum.Enum):
 #
 class SizeIncludingBorder:
     size: ImVec2
-    def __init__(self, size: ImVec2) -> None:
+    def __init__(self, size: ImVec2Like) -> None:
         pass
 class SizeExcludingBorder:
     size: ImVec2
-    def __init__(self, size: ImVec2) -> None:
+    def __init__(self, size: ImVec2Like) -> None:
         pass
 # BeginInspectorPanel
 # * Returns True if panel is drawn.  Note that flags will only be considered on the first call
@@ -83,7 +83,7 @@ class SizeExcludingBorder:
 def begin_inspector_panel(
     name: str,
     param_1: ImTextureID,
-    texture_size: ImVec2,
+    texture_size: ImVec2Like,
     flags: InspectorFlags = 0
     ) -> bool:
     pass
@@ -91,7 +91,7 @@ def begin_inspector_panel(
 def begin_inspector_panel(
     name: str,
     param_1: ImTextureID,
-    texture_size: ImVec2,
+    texture_size: ImVec2Like,
     flags: InspectorFlags,
     size: SizeIncludingBorder
     ) -> bool:
@@ -100,7 +100,7 @@ def begin_inspector_panel(
 def begin_inspector_panel(
     name: str,
     param_1: ImTextureID,
-    texture_size: ImVec2,
+    texture_size: ImVec2Like,
     flags: InspectorFlags,
     size: SizeExcludingBorder
     ) -> bool:
@@ -162,7 +162,7 @@ def current_inspector_invalidate_texture_cache() -> None:
 # * blended as the background where alpha is less than one.
 #
 @overload
-def current_inspector_set_custom_background_color(color: ImVec4) -> None:
+def current_inspector_set_custom_background_color(color: ImVec4Like) -> None:
     pass
 @overload
 def current_inspector_set_custom_background_color(color: ImU32) -> None:
@@ -207,8 +207,8 @@ def set_zoom_rate(factor: float) -> None:
 
 def draw_annotation_line(
     draw_list: ImDrawList,
-    from_texel: ImVec2,
-    to_texel: ImVec2,
+    from_texel: ImVec2Like,
+    to_texel: ImVec2Like,
     texels_to_pixels: Transform2D,
     color: ImU32
     ) -> None:
@@ -239,9 +239,9 @@ class ValueText:
     def draw_annotation(
         self,
         draw_list: ImDrawList,
-        texel: ImVec2,
+        texel: ImVec2Like,
         texels_to_pixels: Transform2D,
-        value: ImVec4
+        value: ImVec4Like
         ) -> None:
         pass
 
@@ -278,7 +278,7 @@ class Arrow:
         self,
         x_vector_index: int = 0,
         y_vector_index: int = 1,
-        line_scale: Optional[ImVec2] = None
+        line_scale: Optional[ImVec2Like] = None
         ) -> None:
         """---
         Python bindings defaults:
@@ -290,9 +290,9 @@ class Arrow:
     def draw_annotation(
         self,
         draw_list: ImDrawList,
-        texel: ImVec2,
+        texel: ImVec2Like,
         texels_to_pixels: Transform2D,
-        value: ImVec4
+        value: ImVec4Like
         ) -> None:
         pass
 
@@ -304,7 +304,7 @@ class Transform2D:
     scale: ImVec2
     translate: ImVec2
 
-    def __mul__(self, rhs: ImVec2) -> ImVec2:
+    def __mul__(self, rhs: ImVec2Like) -> ImVec2:
         """ Transform a vector by this transform.  Scale is applied first"""
         pass
 
@@ -313,8 +313,8 @@ class Transform2D:
         pass
     def __init__(
         self,
-        scale: Optional[ImVec2] = None,
-        translate: Optional[ImVec2] = None
+        scale: Optional[ImVec2Like] = None,
+        translate: Optional[ImVec2Like] = None
         ) -> None:
         """Auto-generated default constructor with named params
         ---
@@ -346,7 +346,7 @@ class Texture:
     def __init__(
         self,
         texture: Optional[ImTextureID] = None,
-        size: Optional[ImVec2] = None
+        size: Optional[ImVec2Like] = None
         ) -> None:
         """Auto-generated default constructor with named params
         ---

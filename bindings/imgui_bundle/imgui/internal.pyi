@@ -61,7 +61,6 @@ NavHighlightFlags_None = 0
 NavRenderCursorFlags_None = 0
 ImFileHandle = Any
 
-
 # // Our current column maximum is 64 but we may raise that in the future.
 # typedef ImS8 ImGuiTableColumnIdx;
 # typedef ImU8 ImGuiTableDrawChannelIdx;
@@ -296,37 +295,37 @@ def im_text_count_lines(in_text: str, in_text_end: str) -> int:
 # - Misc maths helpers
 # static inline ImVec2 ImMin(const ImVec2& lhs, const ImVec2& rhs)                { return ImVec2(lhs.x < rhs.x ? lhs.x : rhs.x, lhs.y < rhs.y ? lhs.y : rhs.y); }    /* original C++ signature */
 @overload
-def im_min(lhs: ImVec2, rhs: ImVec2) -> ImVec2:
+def im_min(lhs: ImVec2Like, rhs: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImMax(const ImVec2& lhs, const ImVec2& rhs)                { return ImVec2(lhs.x >= rhs.x ? lhs.x : rhs.x, lhs.y >= rhs.y ? lhs.y : rhs.y); }    /* original C++ signature */
 @overload
-def im_max(lhs: ImVec2, rhs: ImVec2) -> ImVec2:
+def im_max(lhs: ImVec2Like, rhs: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImClamp(const ImVec2& v, const ImVec2&mn, const ImVec2&mx) { return ImVec2((v.x < mn.x) ? mn.x : (v.x > mx.x) ? mx.x : v.x, (v.y < mn.y) ? mn.y : (v.y > mx.y) ? mx.y : v.y); }    /* original C++ signature */
 @overload
-def im_clamp(v: ImVec2, mn: ImVec2, mx: ImVec2) -> ImVec2:
+def im_clamp(v: ImVec2Like, mn: ImVec2Like, mx: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImLerp(const ImVec2& a, const ImVec2& b, float t)          { return ImVec2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t); }    /* original C++ signature */
 @overload
-def im_lerp(a: ImVec2, b: ImVec2, t: float) -> ImVec2:
+def im_lerp(a: ImVec2Like, b: ImVec2Like, t: float) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImLerp(const ImVec2& a, const ImVec2& b, const ImVec2& t)  { return ImVec2(a.x + (b.x - a.x) * t.x, a.y + (b.y - a.y) * t.y); }    /* original C++ signature */
 @overload
-def im_lerp(a: ImVec2, b: ImVec2, t: ImVec2) -> ImVec2:
+def im_lerp(a: ImVec2Like, b: ImVec2Like, t: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
 # static inline ImVec4 ImLerp(const ImVec4& a, const ImVec4& b, float t)          { return ImVec4(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, a.w + (b.w - a.w) * t); }    /* original C++ signature */
 @overload
-def im_lerp(a: ImVec4, b: ImVec4, t: float) -> ImVec4:
+def im_lerp(a: ImVec4Like, b: ImVec4Like, t: float) -> ImVec4:
     """(private API)"""
     pass
 
@@ -337,18 +336,18 @@ def im_saturate(f: float) -> float:
 
 # static inline float  ImLengthSqr(const ImVec2& lhs)                             { return (lhs.x * lhs.x) + (lhs.y * lhs.y); }    /* original C++ signature */
 @overload
-def im_length_sqr(lhs: ImVec2) -> float:
+def im_length_sqr(lhs: ImVec2Like) -> float:
     """(private API)"""
     pass
 
 # static inline float  ImLengthSqr(const ImVec4& lhs)                             { return (lhs.x * lhs.x) + (lhs.y * lhs.y) + (lhs.z * lhs.z) + (lhs.w * lhs.w); }    /* original C++ signature */
 @overload
-def im_length_sqr(lhs: ImVec4) -> float:
+def im_length_sqr(lhs: ImVec4Like) -> float:
     """(private API)"""
     pass
 
 # static inline float  ImInvLength(const ImVec2& lhs, float fail_value)           { float d = (lhs.x * lhs.x) + (lhs.y * lhs.y); if (d > 0.0f) return ImRsqrt(d); return fail_value; }    /* original C++ signature */
-def im_inv_length(lhs: ImVec2, fail_value: float) -> float:
+def im_inv_length(lhs: ImVec2Like, fail_value: float) -> float:
     """(private API)"""
     pass
 
@@ -360,7 +359,7 @@ def im_trunc(f: float) -> float:
 
 # static inline ImVec2 ImTrunc(const ImVec2& v)                                   { return ImVec2((float)(int)(v.x), (float)(int)(v.y)); }    /* original C++ signature */
 @overload
-def im_trunc(v: ImVec2) -> ImVec2:
+def im_trunc(v: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
@@ -375,7 +374,7 @@ def im_floor(f: float) -> float:
 
 # static inline ImVec2 ImFloor(const ImVec2& v)                                   { return ImVec2(ImFloor(v.x), ImFloor(v.y)); }    /* original C++ signature */
 @overload
-def im_floor(v: ImVec2) -> ImVec2:
+def im_floor(v: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
@@ -385,12 +384,12 @@ def im_mod_positive(a: int, b: int) -> int:
     pass
 
 # static inline float  ImDot(const ImVec2& a, const ImVec2& b)                    { return a.x * b.x + a.y * b.y; }    /* original C++ signature */
-def im_dot(a: ImVec2, b: ImVec2) -> float:
+def im_dot(a: ImVec2Like, b: ImVec2Like) -> float:
     """(private API)"""
     pass
 
 # static inline ImVec2 ImRotate(const ImVec2& v, float cos_a, float sin_a)        { return ImVec2(v.x * cos_a - v.y * sin_a, v.x * sin_a + v.y * cos_a); }    /* original C++ signature */
-def im_rotate(v: ImVec2, cos_a: float, sin_a: float) -> ImVec2:
+def im_rotate(v: ImVec2Like, cos_a: float, sin_a: float) -> ImVec2:
     """(private API)"""
     pass
 
@@ -405,7 +404,7 @@ def im_linear_remap_clamp(s0: float, s1: float, d0: float, d1: float, x: float) 
     pass
 
 # static inline ImVec2 ImMul(const ImVec2& lhs, const ImVec2& rhs)                { return ImVec2(lhs.x * rhs.x, lhs.y * rhs.y); }    /* original C++ signature */
-def im_mul(lhs: ImVec2, rhs: ImVec2) -> ImVec2:
+def im_mul(lhs: ImVec2Like, rhs: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
@@ -421,52 +420,52 @@ def im_exponential_moving_average(avg: float, sample: float, n: int) -> float:
 
 # Helpers: Geometry
 # IMGUI_API ImVec2     ImBezierCubicCalc(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, float t);    /* original C++ signature */
-def im_bezier_cubic_calc(p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, t: float) -> ImVec2:
+def im_bezier_cubic_calc(p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, p4: ImVec2Like, t: float) -> ImVec2:
     pass
 
 # IMGUI_API ImVec2     ImBezierCubicClosestPoint(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, const ImVec2& p, int num_segments);           /* original C++ signature */
 def im_bezier_cubic_closest_point(
-    p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, p: ImVec2, num_segments: int
+    p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, p4: ImVec2Like, p: ImVec2Like, num_segments: int
 ) -> ImVec2:
     """For curves with explicit number of segments"""
     pass
 
 # IMGUI_API ImVec2     ImBezierCubicClosestPointCasteljau(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, const ImVec2& p, float tess_tol);    /* original C++ signature */
 def im_bezier_cubic_closest_point_casteljau(
-    p1: ImVec2, p2: ImVec2, p3: ImVec2, p4: ImVec2, p: ImVec2, tess_tol: float
+    p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, p4: ImVec2Like, p: ImVec2Like, tess_tol: float
 ) -> ImVec2:
     """For auto-tessellated curves you can use tess_tol = style.CurveTessellationTol"""
     pass
 
 # IMGUI_API ImVec2     ImBezierQuadraticCalc(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, float t);    /* original C++ signature */
-def im_bezier_quadratic_calc(p1: ImVec2, p2: ImVec2, p3: ImVec2, t: float) -> ImVec2:
+def im_bezier_quadratic_calc(p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, t: float) -> ImVec2:
     pass
 
 # IMGUI_API ImVec2     ImLineClosestPoint(const ImVec2& a, const ImVec2& b, const ImVec2& p);    /* original C++ signature */
-def im_line_closest_point(a: ImVec2, b: ImVec2, p: ImVec2) -> ImVec2:
+def im_line_closest_point(a: ImVec2Like, b: ImVec2Like, p: ImVec2Like) -> ImVec2:
     pass
 
 # IMGUI_API bool       ImTriangleContainsPoint(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& p);    /* original C++ signature */
-def im_triangle_contains_point(a: ImVec2, b: ImVec2, c: ImVec2, p: ImVec2) -> bool:
+def im_triangle_contains_point(a: ImVec2Like, b: ImVec2Like, c: ImVec2Like, p: ImVec2Like) -> bool:
     pass
 
 # IMGUI_API ImVec2     ImTriangleClosestPoint(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& p);    /* original C++ signature */
-def im_triangle_closest_point(a: ImVec2, b: ImVec2, c: ImVec2, p: ImVec2) -> ImVec2:
+def im_triangle_closest_point(a: ImVec2Like, b: ImVec2Like, c: ImVec2Like, p: ImVec2Like) -> ImVec2:
     pass
 
 # IMGUI_API void       ImTriangleBarycentricCoords(const ImVec2& a, const ImVec2& b, const ImVec2& c, const ImVec2& p, float& out_u, float& out_v, float& out_w);    /* original C++ signature */
 def im_triangle_barycentric_coords(
-    a: ImVec2, b: ImVec2, c: ImVec2, p: ImVec2, out_u: float, out_v: float, out_w: float
+    a: ImVec2Like, b: ImVec2Like, c: ImVec2Like, p: ImVec2Like, out_u: float, out_v: float, out_w: float
 ) -> Tuple[float, float, float]:
     pass
 
 # inline float         ImTriangleArea(const ImVec2& a, const ImVec2& b, const ImVec2& c)          { return ImFabs((a.x * (b.y - c.y)) + (b.x * (c.y - a.y)) + (c.x * (a.y - b.y))) * 0.5f; }    /* original C++ signature */
-def im_triangle_area(a: ImVec2, b: ImVec2, c: ImVec2) -> float:
+def im_triangle_area(a: ImVec2Like, b: ImVec2Like, c: ImVec2Like) -> float:
     """(private API)"""
     pass
 
 # inline bool          ImTriangleIsClockwise(const ImVec2& a, const ImVec2& b, const ImVec2& c)   { return ((b.x - a.x) * (c.y - b.y)) - ((c.x - b.x) * (b.y - a.y)) > 0.0f; }    /* original C++ signature */
-def im_triangle_is_clockwise(a: ImVec2, b: ImVec2, c: ImVec2) -> bool:
+def im_triangle_is_clockwise(a: ImVec2Like, b: ImVec2Like, c: ImVec2Like) -> bool:
     """(private API)"""
     pass
 
@@ -499,7 +498,7 @@ class ImVec2ih:
         pass
     # constexpr explicit ImVec2ih(const ImVec2& rhs) : x((short)rhs.x), y((short)rhs.y) {}    /* original C++ signature */
     @overload
-    def __init__(self, rhs: ImVec2) -> None:
+    def __init__(self, rhs: ImVec2Like) -> None:
         pass
 
 class ImRect:
@@ -518,11 +517,11 @@ class ImRect:
         pass
     # constexpr ImRect(const ImVec2& min, const ImVec2& max)    : Min(min), Max(max)                {}    /* original C++ signature */
     @overload
-    def __init__(self, min: ImVec2, max: ImVec2) -> None:
+    def __init__(self, min: ImVec2Like, max: ImVec2Like) -> None:
         pass
     # constexpr ImRect(const ImVec4& v)                         : Min(v.x, v.y), Max(v.z, v.w)      {}    /* original C++ signature */
     @overload
-    def __init__(self, v: ImVec4) -> None:
+    def __init__(self, v: ImVec4Like) -> None:
         pass
     # constexpr ImRect(float x1, float y1, float x2, float y2)  : Min(x1, y1), Max(x2, y2)          {}    /* original C++ signature */
     @overload
@@ -578,7 +577,7 @@ class ImRect:
         pass
     # bool        Contains(const ImVec2& p) const     { return p.x     >= Min.x && p.y     >= Min.y && p.x     <  Max.x && p.y     <  Max.y; }    /* original C++ signature */
     @overload
-    def contains(self, p: ImVec2) -> bool:
+    def contains(self, p: ImVec2Like) -> bool:
         """(private API)"""
         pass
     # bool        Contains(const ImRect& r) const     { return r.Min.x >= Min.x && r.Min.y >= Min.y && r.Max.x <= Max.x && r.Max.y <= Max.y; }    /* original C++ signature */
@@ -587,7 +586,7 @@ class ImRect:
         """(private API)"""
         pass
     # bool        ContainsWithPad(const ImVec2& p, const ImVec2& pad) const { return p.x >= Min.x - pad.x && p.y >= Min.y - pad.y && p.x < Max.x + pad.x && p.y < Max.y + pad.y; }    /* original C++ signature */
-    def contains_with_pad(self, p: ImVec2, pad: ImVec2) -> bool:
+    def contains_with_pad(self, p: ImVec2Like, pad: ImVec2Like) -> bool:
         """(private API)"""
         pass
     # bool        Overlaps(const ImRect& r) const     { return r.Min.y <  Max.y && r.Max.y >  Min.y && r.Min.x <  Max.x && r.Max.x >  Min.x; }    /* original C++ signature */
@@ -596,7 +595,7 @@ class ImRect:
         pass
     # void        Add(const ImVec2& p)                { if (Min.x > p.x)     Min.x = p.x;     if (Min.y > p.y)     Min.y = p.y;     if (Max.x < p.x)     Max.x = p.x;     if (Max.y < p.y)     Max.y = p.y; }    /* original C++ signature */
     @overload
-    def add(self, p: ImVec2) -> None:
+    def add(self, p: ImVec2Like) -> None:
         """(private API)"""
         pass
     # void        Add(const ImRect& r)                { if (Min.x > r.Min.x) Min.x = r.Min.x; if (Min.y > r.Min.y) Min.y = r.Min.y; if (Max.x < r.Max.x) Max.x = r.Max.x; if (Max.y < r.Max.y) Max.y = r.Max.y; }    /* original C++ signature */
@@ -611,11 +610,11 @@ class ImRect:
         pass
     # void        Expand(const ImVec2& amount)        { Min.x -= amount.x; Min.y -= amount.y; Max.x += amount.x; Max.y += amount.y; }    /* original C++ signature */
     @overload
-    def expand(self, amount: ImVec2) -> None:
+    def expand(self, amount: ImVec2Like) -> None:
         """(private API)"""
         pass
     # void        Translate(const ImVec2& d)          { Min.x += d.x; Min.y += d.y; Max.x += d.x; Max.y += d.y; }    /* original C++ signature */
-    def translate(self, d: ImVec2) -> None:
+    def translate(self, d: ImVec2Like) -> None:
         """(private API)"""
         pass
     # void        TranslateX(float dx)                { Min.x += dx; Max.x += dx; }    /* original C++ signature */
@@ -1251,7 +1250,7 @@ class ColorMod:
     # ImVec4          BackupValue;    /* original C++ signature */
     backup_value: ImVec4
     # ImGuiColorMod(ImGuiCol Col = ImGuiCol(), ImVec4 BackupValue = ImVec4());    /* original C++ signature */
-    def __init__(self, col: Optional[Col] = None, backup_value: Optional[ImVec4] = None) -> None:
+    def __init__(self, col: Optional[Col] = None, backup_value: Optional[ImVec4Like] = None) -> None:
         """Auto-generated default constructor with named params
         ---
         Python bindings defaults:
@@ -1276,7 +1275,7 @@ class StyleMod:
         pass
     # ImGuiStyleMod(ImGuiStyleVar idx, ImVec2 v)  { VarIdx = idx; BackupFloat[0] = v.x; BackupFloat[1] = v.y; }    /* original C++ signature */
     @overload
-    def __init__(self, idx: StyleVar, v: ImVec2) -> None:
+    def __init__(self, idx: StyleVar, v: ImVec2Like) -> None:
         pass
 
 class ComboPreviewData:
@@ -1332,12 +1331,12 @@ class GroupData:
     def __init__(
         self,
         window_id: ID = ID(),
-        backup_cursor_pos: Optional[ImVec2] = None,
-        backup_cursor_max_pos: Optional[ImVec2] = None,
-        backup_cursor_pos_prev_line: Optional[ImVec2] = None,
+        backup_cursor_pos: Optional[ImVec2Like] = None,
+        backup_cursor_max_pos: Optional[ImVec2Like] = None,
+        backup_cursor_pos_prev_line: Optional[ImVec2Like] = None,
         backup_indent: Optional[ImVec1] = None,
         backup_group_offset: Optional[ImVec1] = None,
-        backup_curr_line_size: Optional[ImVec2] = None,
+        backup_curr_line_size: Optional[ImVec2Like] = None,
         backup_curr_line_text_base_offset: float = float(),
         backup_active_id_is_alive: ID = ID(),
         backup_active_id_previous_frame_is_alive: bool = bool(),
@@ -3010,11 +3009,11 @@ class ViewportP:
         pass
     # Calculate work rect pos/size given a set of offset (we have 1 pair of offset for rect locked from last frame data, and 1 pair for currently building rect)
     # ImVec2  CalcWorkRectPos(const ImVec2& inset_min) const                           { return ImVec2(Pos.x + inset_min.x, Pos.y + inset_min.y); }    /* original C++ signature */
-    def calc_work_rect_pos(self, inset_min: ImVec2) -> ImVec2:
+    def calc_work_rect_pos(self, inset_min: ImVec2Like) -> ImVec2:
         """(private API)"""
         pass
     # ImVec2  CalcWorkRectSize(const ImVec2& inset_min, const ImVec2& inset_max) const { return ImVec2(ImMax(0.0f, Size.x - inset_min.x - inset_max.x), ImMax(0.0f, Size.y - inset_min.y - inset_max.y)); }    /* original C++ signature */
-    def calc_work_rect_size(self, inset_min: ImVec2, inset_max: ImVec2) -> ImVec2:
+    def calc_work_rect_size(self, inset_min: ImVec2Like, inset_max: ImVec2Like) -> ImVec2:
         """(private API)"""
         pass
     # void    UpdateWorkRect()            { WorkPos = CalcWorkRectPos(WorkInsetMin); WorkSize = CalcWorkRectSize(WorkInsetMin, WorkInsetMax); }     /* original C++ signature */
@@ -4173,13 +4172,13 @@ class WindowTempData:
     # ImGuiWindowTempData(ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), ImU32 ModalDimBgColor = ImU32(), float ItemWidth = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>());    /* original C++ signature */
     def __init__(
         self,
-        cursor_pos: Optional[ImVec2] = None,
-        cursor_pos_prev_line: Optional[ImVec2] = None,
-        cursor_start_pos: Optional[ImVec2] = None,
-        cursor_max_pos: Optional[ImVec2] = None,
-        ideal_max_pos: Optional[ImVec2] = None,
-        curr_line_size: Optional[ImVec2] = None,
-        prev_line_size: Optional[ImVec2] = None,
+        cursor_pos: Optional[ImVec2Like] = None,
+        cursor_pos_prev_line: Optional[ImVec2Like] = None,
+        cursor_start_pos: Optional[ImVec2Like] = None,
+        cursor_max_pos: Optional[ImVec2Like] = None,
+        ideal_max_pos: Optional[ImVec2Like] = None,
+        curr_line_size: Optional[ImVec2Like] = None,
+        prev_line_size: Optional[ImVec2Like] = None,
         curr_line_text_base_offset: float = float(),
         prev_line_text_base_offset: float = float(),
         is_same_line: bool = bool(),
@@ -4187,7 +4186,7 @@ class WindowTempData:
         indent: Optional[ImVec1] = None,
         columns_offset: Optional[ImVec1] = None,
         group_offset: Optional[ImVec1] = None,
-        cursor_start_pos_lossyness: Optional[ImVec2] = None,
+        cursor_start_pos_lossyness: Optional[ImVec2Like] = None,
         nav_layer_current: NavLayer = NavLayer(),
         nav_layers_active_mask: int = int(),
         nav_layers_active_mask_next: int = int(),
@@ -4195,7 +4194,7 @@ class WindowTempData:
         nav_hide_highlight_one_frame: bool = bool(),
         nav_window_has_scroll_y: bool = bool(),
         menu_bar_appending: bool = bool(),
-        menu_bar_offset: Optional[ImVec2] = None,
+        menu_bar_offset: Optional[ImVec2Like] = None,
         menu_columns: Optional[MenuColumns] = None,
         tree_depth: int = int(),
         tree_has_stack_data_depth_mask: ImU32 = ImU32(),
@@ -4519,7 +4518,7 @@ class Window:
         """(private API)"""
         pass
     # ImGuiID     GetIDFromPos(const ImVec2& p_abs);    /* original C++ signature */
-    def get_id_from_pos(self, p_abs: ImVec2) -> ID:
+    def get_id_from_pos(self, p_abs: ImVec2Like) -> ID:
         """(private API)"""
         pass
     # ImGuiID     GetIDFromRectangle(const ImRect& r_abs);    /* original C++ signature */
@@ -5275,11 +5274,11 @@ def is_window_nav_focusable(window: Window) -> bool:
     pass
 
 # IMGUI_API void          SetWindowPos(ImGuiWindow* window, const ImVec2& pos, ImGuiCond cond = 0);    /* original C++ signature */
-def set_window_pos(window: Window, pos: ImVec2, cond: Cond = 0) -> None:
+def set_window_pos(window: Window, pos: ImVec2Like, cond: Cond = 0) -> None:
     pass
 
 # IMGUI_API void          SetWindowSize(ImGuiWindow* window, const ImVec2& size, ImGuiCond cond = 0);    /* original C++ signature */
-def set_window_size(window: Window, size: ImVec2, cond: Cond = 0) -> None:
+def set_window_size(window: Window, size: ImVec2Like, cond: Cond = 0) -> None:
     pass
 
 # IMGUI_API void          SetWindowCollapsed(ImGuiWindow* window, bool collapsed, ImGuiCond cond = 0);    /* original C++ signature */
@@ -5287,7 +5286,7 @@ def set_window_collapsed(window: Window, collapsed: bool, cond: Cond = 0) -> Non
     pass
 
 # IMGUI_API void          SetWindowHitTestHole(ImGuiWindow* window, const ImVec2& pos, const ImVec2& size);    /* original C++ signature */
-def set_window_hit_test_hole(window: Window, pos: ImVec2, size: ImVec2) -> None:
+def set_window_hit_test_hole(window: Window, pos: ImVec2Like, size: ImVec2Like) -> None:
     pass
 
 # IMGUI_API void          SetWindowHiddenAndSkipItemsForCurrentFrame(ImGuiWindow* window);    /* original C++ signature */
@@ -5313,12 +5312,12 @@ def window_rect_rel_to_abs(window: Window, r: ImRect) -> ImRect:
     pass
 
 # inline ImVec2           WindowPosAbsToRel(ImGuiWindow* window, const ImVec2& p)  { ImVec2 off = window->DC.CursorStartPos; return ImVec2(p.x - off.x, p.y - off.y); }    /* original C++ signature */
-def window_pos_abs_to_rel(window: Window, p: ImVec2) -> ImVec2:
+def window_pos_abs_to_rel(window: Window, p: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
 # inline ImVec2           WindowPosRelToAbs(ImGuiWindow* window, const ImVec2& p)  { ImVec2 off = window->DC.CursorStartPos; return ImVec2(p.x + off.x, p.y + off.y); }    /* original C++ signature */
-def window_pos_rel_to_abs(window: Window, p: ImVec2) -> ImVec2:
+def window_pos_rel_to_abs(window: Window, p: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
@@ -5434,7 +5433,7 @@ def call_context_hooks(context: Context, type: ContextHookType) -> None:
 # Viewports
 # IMGUI_API void          TranslateWindowsInViewport(ImGuiViewportP* viewport, const ImVec2& old_pos, const ImVec2& new_pos, const ImVec2& old_size, const ImVec2& new_size);    /* original C++ signature */
 def translate_windows_in_viewport(
-    viewport: ViewportP, old_pos: ImVec2, new_pos: ImVec2, old_size: ImVec2, new_size: ImVec2
+    viewport: ViewportP, old_pos: ImVec2Like, new_pos: ImVec2Like, old_size: ImVec2Like, new_size: ImVec2Like
 ) -> None:
     pass
 
@@ -5459,7 +5458,7 @@ def get_viewport_platform_monitor(viewport: Viewport) -> PlatformMonitor:
     pass
 
 # IMGUI_API ImGuiViewportP*               FindHoveredViewportFromPlatformWindowStack(const ImVec2& mouse_platform_pos);    /* original C++ signature */
-def find_hovered_viewport_from_platform_window_stack(mouse_platform_pos: ImVec2) -> ViewportP:
+def find_hovered_viewport_from_platform_window_stack(mouse_platform_pos: ImVec2Like) -> ViewportP:
     pass
 
 # Settings
@@ -5622,7 +5621,7 @@ def get_id_with_seed(n: int, seed: ID) -> ID:
 
 # IMGUI_API void          ItemSize(const ImVec2& size, float text_baseline_y = -1.0f);    /* original C++ signature */
 @overload
-def item_size(size: ImVec2, text_baseline_y: float = -1.0) -> None:
+def item_size(size: ImVec2Like, text_baseline_y: float = -1.0) -> None:
     """Basic Helpers for widget code"""
     pass
 
@@ -5656,11 +5655,11 @@ def set_last_item_data(item_id: ID, in_flags: ItemFlags, status_flags: ItemStatu
     pass
 
 # IMGUI_API ImVec2        CalcItemSize(ImVec2 size, float default_w, float default_h);    /* original C++ signature */
-def calc_item_size(size: ImVec2, default_w: float, default_h: float) -> ImVec2:
+def calc_item_size(size: ImVec2Like, default_w: float, default_h: float) -> ImVec2:
     pass
 
 # IMGUI_API float         CalcWrapWidthForPos(const ImVec2& pos, float wrap_pos_x);    /* original C++ signature */
-def calc_wrap_width_for_pos(pos: ImVec2, wrap_pos_x: float) -> float:
+def calc_wrap_width_for_pos(pos: ImVec2Like, wrap_pos_x: float) -> float:
     pass
 
 # IMGUI_API void          PushMultiItemsWidths(int components, float width_full);    /* original C++ signature */
@@ -5696,7 +5695,7 @@ def log_to_buffer(auto_open_depth: int = -1) -> None:
     pass
 
 # IMGUI_API void          LogRenderedText(const ImVec2* ref_pos, const char* text, const char* text_end = NULL);    /* original C++ signature */
-def log_rendered_text(ref_pos: ImVec2, text: str, text_end: Optional[str] = None) -> None:
+def log_rendered_text(ref_pos: ImVec2Like, text: str, text_end: Optional[str] = None) -> None:
     pass
 
 # IMGUI_API void          LogSetNextTextDecoration(const char* prefix, const char* suffix);    /* original C++ signature */
@@ -5704,7 +5703,9 @@ def log_set_next_text_decoration(prefix: str, suffix: str) -> None:
     pass
 
 # IMGUI_API bool          BeginChildEx(const char* name, ImGuiID id, const ImVec2& size_arg, ImGuiChildFlags child_flags, ImGuiWindowFlags window_flags);    /* original C++ signature */
-def begin_child_ex(name: str, id_: ID, size_arg: ImVec2, child_flags: ChildFlags, window_flags: WindowFlags) -> bool:
+def begin_child_ex(
+    name: str, id_: ID, size_arg: ImVec2Like, child_flags: ChildFlags, window_flags: WindowFlags
+) -> bool:
     """Childs"""
     pass
 
@@ -5755,7 +5756,7 @@ def find_best_window_pos_for_popup(window: Window) -> ImVec2:
 
 # IMGUI_API ImVec2        FindBestWindowPosForPopupEx(const ImVec2& ref_pos, const ImVec2& size, ImGuiDir* last_dir, const ImRect& r_outer, const ImRect& r_avoid, ImGuiPopupPositionPolicy policy);    /* original C++ signature */
 def find_best_window_pos_for_popup_ex(
-    ref_pos: ImVec2, size: ImVec2, last_dir: Dir, r_outer: ImRect, r_avoid: ImRect, policy: PopupPositionPolicy
+    ref_pos: ImVec2Like, size: ImVec2Like, last_dir: Dir, r_outer: ImRect, r_avoid: ImRect, policy: PopupPositionPolicy
 ) -> ImVec2:
     pass
 
@@ -5974,7 +5975,7 @@ def get_typematic_repeat_rate(flags: InputFlags, repeat_delay: float, repeat_rat
     pass
 
 # IMGUI_API void          TeleportMousePos(const ImVec2& pos);    /* original C++ signature */
-def teleport_mouse_pos(pos: ImVec2) -> None:
+def teleport_mouse_pos(pos: ImVec2Like) -> None:
     pass
 
 # IMGUI_API void          SetActiveIdUsingAllKeyboardKeys();    /* original C++ signature */
@@ -6165,7 +6166,7 @@ def dock_context_calc_drop_pos_for_docking(
     payload_node: DockNode,
     split_dir: Dir,
     split_outer: bool,
-    out_pos: ImVec2,
+    out_pos: ImVec2Like,
 ) -> bool:
     pass
 
@@ -6271,11 +6272,11 @@ def dock_builder_remove_node_child_nodes(node_id: ID) -> None:
     pass
 
 # IMGUI_API void          DockBuilderSetNodePos(ImGuiID node_id, ImVec2 pos);    /* original C++ signature */
-def dock_builder_set_node_pos(node_id: ID, pos: ImVec2) -> None:
+def dock_builder_set_node_pos(node_id: ID, pos: ImVec2Like) -> None:
     pass
 
 # IMGUI_API void          DockBuilderSetNodeSize(ImGuiID node_id, ImVec2 size);    /* original C++ signature */
-def dock_builder_set_node_size(node_id: ID, size: ImVec2) -> None:
+def dock_builder_set_node_size(node_id: ID, size: ImVec2Like) -> None:
     pass
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -6503,7 +6504,7 @@ def begin_table_ex(
     id_: ID,
     columns_count: int,
     flags: TableFlags = 0,
-    outer_size: Optional[ImVec2] = None,
+    outer_size: Optional[ImVec2Like] = None,
     inner_width: float = 0.0,
 ) -> bool:
     """---
@@ -6732,7 +6733,7 @@ def tab_bar_queue_reorder(tab_bar: TabBar, tab: TabItem, offset: int) -> None:
     pass
 
 # IMGUI_API void          TabBarQueueReorderFromMousePos(ImGuiTabBar* tab_bar, ImGuiTabItem* tab, ImVec2 mouse_pos);    /* original C++ signature */
-def tab_bar_queue_reorder_from_mouse_pos(tab_bar: TabBar, tab: TabItem, mouse_pos: ImVec2) -> None:
+def tab_bar_queue_reorder_from_mouse_pos(tab_bar: TabBar, tab: TabItem, mouse_pos: ImVec2Like) -> None:
     pass
 
 # IMGUI_API bool          TabBarProcessReorder(ImGuiTabBar* tab_bar);    /* original C++ signature */
@@ -6764,7 +6765,7 @@ def tab_item_label_and_close_button(
     draw_list: ImDrawList,
     bb: ImRect,
     flags: TabItemFlags,
-    frame_padding: ImVec2,
+    frame_padding: ImVec2Like,
     label: str,
     tab_id: ID,
     close_button_id: ID,
@@ -6778,21 +6779,21 @@ def tab_item_label_and_close_button(
 # AVOID USING OUTSIDE OF IMGUI.CPP! NOT FOR PUBLIC CONSUMPTION. THOSE FUNCTIONS ARE A MESS. THEIR SIGNATURE AND BEHAVIOR WILL CHANGE, THEY NEED TO BE REFACTORED INTO SOMETHING DECENT.
 # NB: All position are in absolute pixels coordinates (we are never using window coordinates internally)
 # IMGUI_API void          RenderText(ImVec2 pos, const char* text, const char* text_end = NULL, bool hide_text_after_hash = true);    /* original C++ signature */
-def render_text(pos: ImVec2, text: str, text_end: Optional[str] = None, hide_text_after_hash: bool = True) -> None:
+def render_text(pos: ImVec2Like, text: str, text_end: Optional[str] = None, hide_text_after_hash: bool = True) -> None:
     pass
 
 # IMGUI_API void          RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end, float wrap_width);    /* original C++ signature */
-def render_text_wrapped(pos: ImVec2, text: str, text_end: str, wrap_width: float) -> None:
+def render_text_wrapped(pos: ImVec2Like, text: str, text_end: str, wrap_width: float) -> None:
     pass
 
 # IMGUI_API void          RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2& align = ImVec2(0, 0), const ImRect* clip_rect = NULL);    /* original C++ signature */
 def render_text_clipped(
-    pos_min: ImVec2,
-    pos_max: ImVec2,
+    pos_min: ImVec2Like,
+    pos_max: ImVec2Like,
     text: str,
     text_end: str,
-    text_size_if_known: ImVec2,
-    align: Optional[ImVec2] = None,
+    text_size_if_known: ImVec2Like,
+    align: Optional[ImVec2Like] = None,
     clip_rect: Optional[ImRect] = None,
 ) -> None:
     """---
@@ -6804,12 +6805,12 @@ def render_text_clipped(
 # IMGUI_API void          RenderTextClippedEx(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2& align = ImVec2(0, 0), const ImRect* clip_rect = NULL);    /* original C++ signature */
 def render_text_clipped_ex(
     draw_list: ImDrawList,
-    pos_min: ImVec2,
-    pos_max: ImVec2,
+    pos_min: ImVec2Like,
+    pos_max: ImVec2Like,
     text: str,
     text_end: str,
-    text_size_if_known: ImVec2,
-    align: Optional[ImVec2] = None,
+    text_size_if_known: ImVec2Like,
+    align: Optional[ImVec2Like] = None,
     clip_rect: Optional[ImRect] = None,
 ) -> None:
     """---
@@ -6821,32 +6822,34 @@ def render_text_clipped_ex(
 # IMGUI_API void          RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, float clip_max_x, float ellipsis_max_x, const char* text, const char* text_end, const ImVec2* text_size_if_known);    /* original C++ signature */
 def render_text_ellipsis(
     draw_list: ImDrawList,
-    pos_min: ImVec2,
-    pos_max: ImVec2,
+    pos_min: ImVec2Like,
+    pos_max: ImVec2Like,
     clip_max_x: float,
     ellipsis_max_x: float,
     text: str,
     text_end: str,
-    text_size_if_known: ImVec2,
+    text_size_if_known: ImVec2Like,
 ) -> None:
     pass
 
 # IMGUI_API void          RenderFrame(ImVec2 p_min, ImVec2 p_max, ImU32 fill_col, bool borders = true, float rounding = 0.0f);    /* original C++ signature */
-def render_frame(p_min: ImVec2, p_max: ImVec2, fill_col: ImU32, borders: bool = True, rounding: float = 0.0) -> None:
+def render_frame(
+    p_min: ImVec2Like, p_max: ImVec2Like, fill_col: ImU32, borders: bool = True, rounding: float = 0.0
+) -> None:
     pass
 
 # IMGUI_API void          RenderFrameBorder(ImVec2 p_min, ImVec2 p_max, float rounding = 0.0f);    /* original C++ signature */
-def render_frame_border(p_min: ImVec2, p_max: ImVec2, rounding: float = 0.0) -> None:
+def render_frame_border(p_min: ImVec2Like, p_max: ImVec2Like, rounding: float = 0.0) -> None:
     pass
 
 # IMGUI_API void          RenderColorRectWithAlphaCheckerboard(ImDrawList* draw_list, ImVec2 p_min, ImVec2 p_max, ImU32 fill_col, float grid_step, ImVec2 grid_off, float rounding = 0.0f, ImDrawFlags flags = 0);    /* original C++ signature */
 def render_color_rect_with_alpha_checkerboard(
     draw_list: ImDrawList,
-    p_min: ImVec2,
-    p_max: ImVec2,
+    p_min: ImVec2Like,
+    p_max: ImVec2Like,
     fill_col: ImU32,
     grid_step: float,
-    grid_off: ImVec2,
+    grid_off: ImVec2Like,
     rounding: float = 0.0,
     flags: ImDrawFlags = 0,
 ) -> None:
@@ -6864,29 +6867,31 @@ def find_rendered_text_end(text: str, text_end: Optional[str] = None) -> str:
 
 # IMGUI_API void          RenderMouseCursor(ImVec2 pos, float scale, ImGuiMouseCursor mouse_cursor, ImU32 col_fill, ImU32 col_border, ImU32 col_shadow);    /* original C++ signature */
 def render_mouse_cursor(
-    pos: ImVec2, scale: float, mouse_cursor: MouseCursor, col_fill: ImU32, col_border: ImU32, col_shadow: ImU32
+    pos: ImVec2Like, scale: float, mouse_cursor: MouseCursor, col_fill: ImU32, col_border: ImU32, col_shadow: ImU32
 ) -> None:
     pass
 
 # Render helpers (those functions don't access any ImGui state!)
 # IMGUI_API void          RenderArrow(ImDrawList* draw_list, ImVec2 pos, ImU32 col, ImGuiDir dir, float scale = 1.0f);    /* original C++ signature */
-def render_arrow(draw_list: ImDrawList, pos: ImVec2, col: ImU32, dir: Dir, scale: float = 1.0) -> None:
+def render_arrow(draw_list: ImDrawList, pos: ImVec2Like, col: ImU32, dir: Dir, scale: float = 1.0) -> None:
     pass
 
 # IMGUI_API void          RenderBullet(ImDrawList* draw_list, ImVec2 pos, ImU32 col);    /* original C++ signature */
-def render_bullet(draw_list: ImDrawList, pos: ImVec2, col: ImU32) -> None:
+def render_bullet(draw_list: ImDrawList, pos: ImVec2Like, col: ImU32) -> None:
     pass
 
 # IMGUI_API void          RenderCheckMark(ImDrawList* draw_list, ImVec2 pos, ImU32 col, float sz);    /* original C++ signature */
-def render_check_mark(draw_list: ImDrawList, pos: ImVec2, col: ImU32, sz: float) -> None:
+def render_check_mark(draw_list: ImDrawList, pos: ImVec2Like, col: ImU32, sz: float) -> None:
     pass
 
 # IMGUI_API void          RenderArrowPointingAt(ImDrawList* draw_list, ImVec2 pos, ImVec2 half_sz, ImGuiDir direction, ImU32 col);    /* original C++ signature */
-def render_arrow_pointing_at(draw_list: ImDrawList, pos: ImVec2, half_sz: ImVec2, direction: Dir, col: ImU32) -> None:
+def render_arrow_pointing_at(
+    draw_list: ImDrawList, pos: ImVec2Like, half_sz: ImVec2Like, direction: Dir, col: ImU32
+) -> None:
     pass
 
 # IMGUI_API void          RenderArrowDockMenu(ImDrawList* draw_list, ImVec2 p_min, float sz, ImU32 col);    /* original C++ signature */
-def render_arrow_dock_menu(draw_list: ImDrawList, p_min: ImVec2, sz: float, col: ImU32) -> None:
+def render_arrow_dock_menu(draw_list: ImDrawList, p_min: ImVec2Like, sz: float, col: ImU32) -> None:
     pass
 
 # IMGUI_API void          RenderRectFilledRangeH(ImDrawList* draw_list, const ImRect& rect, ImU32 col, float x_start_norm, float x_end_norm, float rounding);    /* original C++ signature */
@@ -6911,7 +6916,7 @@ def text_ex(text: str, text_end: Optional[str] = None, flags: TextFlags = 0) -> 
     pass
 
 # IMGUI_API bool          ButtonEx(const char* label, const ImVec2& size_arg = ImVec2(0, 0), ImGuiButtonFlags flags = 0);    /* original C++ signature */
-def button_ex(label: str, size_arg: Optional[ImVec2] = None, flags: ButtonFlags = 0) -> bool:
+def button_ex(label: str, size_arg: Optional[ImVec2Like] = None, flags: ButtonFlags = 0) -> bool:
     """---
     Python bindings defaults:
         If size_arg is None, then its default value will be: ImVec2(0, 0)
@@ -6919,18 +6924,18 @@ def button_ex(label: str, size_arg: Optional[ImVec2] = None, flags: ButtonFlags 
     pass
 
 # IMGUI_API bool          ArrowButtonEx(const char* str_id, ImGuiDir dir, ImVec2 size_arg, ImGuiButtonFlags flags = 0);    /* original C++ signature */
-def arrow_button_ex(str_id: str, dir: Dir, size_arg: ImVec2, flags: ButtonFlags = 0) -> bool:
+def arrow_button_ex(str_id: str, dir: Dir, size_arg: ImVec2Like, flags: ButtonFlags = 0) -> bool:
     pass
 
 # IMGUI_API bool          ImageButtonEx(ImGuiID id, ImTextureID texture_id, const ImVec2& image_size, const ImVec2& uv0, const ImVec2& uv1, const ImVec4& bg_col, const ImVec4& tint_col, ImGuiButtonFlags flags = 0);    /* original C++ signature */
 def image_button_ex(
     id_: ID,
     texture_id: ImTextureID,
-    image_size: ImVec2,
-    uv0: ImVec2,
-    uv1: ImVec2,
-    bg_col: ImVec4,
-    tint_col: ImVec4,
+    image_size: ImVec2Like,
+    uv0: ImVec2Like,
+    uv1: ImVec2Like,
+    bg_col: ImVec4Like,
+    tint_col: ImVec4Like,
     flags: ButtonFlags = 0,
 ) -> bool:
     pass
@@ -6955,11 +6960,11 @@ def checkbox_flags(label: str, flags: ImU64, flags_value: ImU64) -> bool:
 
 # Widgets: Window Decorations
 # IMGUI_API bool          CloseButton(ImGuiID id, const ImVec2& pos);    /* original C++ signature */
-def close_button(id_: ID, pos: ImVec2) -> bool:
+def close_button(id_: ID, pos: ImVec2Like) -> bool:
     pass
 
 # IMGUI_API bool          CollapseButton(ImGuiID id, const ImVec2& pos, ImGuiDockNode* dock_node);    /* original C++ signature */
-def collapse_button(id_: ID, pos: ImVec2, dock_node: DockNode) -> bool:
+def collapse_button(id_: ID, pos: ImVec2Like, dock_node: DockNode) -> bool:
     pass
 
 # IMGUI_API void          Scrollbar(ImGuiAxis axis);    /* original C++ signature */
@@ -7065,7 +7070,7 @@ def tree_node_update_next_open(storage_id: ID, flags: TreeNodeFlags) -> bool:
 #
 # IMGUI_API bool          InputTextEx(const char* label, const char* hint, std::string* s, const ImVec2& size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL);    /* original C++ signature */
 def input_text_ex(
-    label: str, hint: str, s: str, size_arg: ImVec2, flags: InputTextFlags, callback: InputTextCallback = None
+    label: str, hint: str, s: str, size_arg: ImVec2Like, flags: InputTextFlags, callback: InputTextCallback = None
 ) -> Tuple[bool, str]:
     pass
 
@@ -7116,8 +7121,8 @@ def shade_verts_linear_color_gradient_keep_alpha(
     draw_list: ImDrawList,
     vert_start_idx: int,
     vert_end_idx: int,
-    gradient_p0: ImVec2,
-    gradient_p1: ImVec2,
+    gradient_p0: ImVec2Like,
+    gradient_p1: ImVec2Like,
     col0: ImU32,
     col1: ImU32,
 ) -> None:
@@ -7128,10 +7133,10 @@ def shade_verts_linear_uv(
     draw_list: ImDrawList,
     vert_start_idx: int,
     vert_end_idx: int,
-    a: ImVec2,
-    b: ImVec2,
-    uv_a: ImVec2,
-    uv_b: ImVec2,
+    a: ImVec2Like,
+    b: ImVec2Like,
+    uv_a: ImVec2Like,
+    uv_b: ImVec2Like,
     clamp: bool,
 ) -> None:
     pass
@@ -7141,10 +7146,10 @@ def shade_verts_transform_pos(
     draw_list: ImDrawList,
     vert_start_idx: int,
     vert_end_idx: int,
-    pivot_in: ImVec2,
+    pivot_in: ImVec2Like,
     cos_a: float,
     sin_a: float,
-    pivot_out: ImVec2,
+    pivot_out: ImVec2Like,
 ) -> None:
     pass
 

@@ -2,7 +2,7 @@ import enum
 import numpy as np
 from typing import Any, Callable, Tuple, List, Optional
 
-from imgui_bundle import ImVec4
+from imgui_bundle import ImVec4Like
 from imgui_bundle.imgui import ImTextureID
 
 
@@ -1273,7 +1273,7 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
     def render_nvg_to_background(
         vg: Context,
         nvg_drawing_function: NvgDrawingFunction,
-        clear_color: Optional[ImVec4] = None
+        clear_color: Optional[ImVec4Like] = None
         ) -> None:
         """ Render the given drawing function to the background of the application
          (i.e. the main viewport)
@@ -1295,7 +1295,7 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
         vg: Context,
         texture: NvgFramebuffer,
         draw_func: NvgDrawingFunction,
-        clear_color: Optional[ImVec4] = None
+        clear_color: Optional[ImVec4Like] = None
         ) -> None:
         """ Render the given drawing function to the given framebuffer
          If clearColor.w > 0., the background will be cleared with this color

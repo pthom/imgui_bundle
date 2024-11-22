@@ -11,7 +11,9 @@ from . import internal as internal
 from imgui_bundle import imgui
 from imgui_bundle.imgui import (
     ImVec2,
+    ImVec2Like,
     ImVec4,
+    ImVec4Like,
     MouseButton,
     ImU32,
     DragDropFlags,
@@ -853,7 +855,7 @@ class Point:
         pass
     # constexpr ImPlotPoint(const ImVec2& p)      : x((double)p.x), y((double)p.y) { }    /* original C++ signature */
     @overload
-    def __init__(self, p: ImVec2) -> None:
+    def __init__(self, p: ImVec2Like) -> None:
         pass
     # double& operator[] (size_t idx)             { IM_ASSERT(idx == 0 || idx == 1); return ((double*)(void*)(char*)this)[idx]; }    /* original C++ signature */
     @overload
@@ -1017,7 +1019,7 @@ class Style:
         """Array of styling colors (index from implot.Col_.xxx)"""
         pass
     # inline IMPLOT_API  void SetColor_(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImPlotCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
-    def set_color_(self, idx_color: int, color: ImVec4) -> None:
+    def set_color_(self, idx_color: int, color: ImVec4Like) -> None:
         """Array of styling colors (index from implot.Col_.xxx)"""
         pass
     #                             #endif
@@ -1117,7 +1119,7 @@ def set_imgui_context(ctx: ImGui_Context) -> None:
 # -----------------------------------------------------------------------------
 
 # IMPLOT_API bool BeginPlot(const char* title_id, const ImVec2& size=ImVec2(-1,0), ImPlotFlags flags=0);    /* original C++ signature */
-def begin_plot(title_id: str, size: Optional[ImVec2] = None, flags: Flags = 0) -> bool:
+def begin_plot(title_id: str, size: Optional[ImVec2Like] = None, flags: Flags = 0) -> bool:
     """Starts a 2D plotting context. If this function returns True, EndPlot() MUST
      be called! You are encouraged to use the following convention:
 
@@ -1230,7 +1232,7 @@ def begin_subplots(
     title_id: str,
     rows: int,
     cols: int,
-    size: ImVec2,
+    size: ImVec2Like,
     flags: SubplotFlags = 0,
     row_col_ratios: Optional[SubplotsRowColRatios] = None,
 ) -> bool:
@@ -1666,9 +1668,9 @@ def plot_image(
     user_texture_id: ImTextureID,
     bounds_min: Point,
     bounds_max: Point,
-    uv0: Optional[ImVec2] = None,
-    uv1: Optional[ImVec2] = None,
-    tint_col: Optional[ImVec4] = None,
+    uv0: Optional[ImVec2Like] = None,
+    uv1: Optional[ImVec2Like] = None,
+    tint_col: Optional[ImVec4Like] = None,
     flags: ImageFlags = 0,
 ) -> None:
     """Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).
@@ -1682,7 +1684,7 @@ def plot_image(
     pass
 
 # IMPLOT_API void PlotText(const char* text, double x, double y, const ImVec2& pix_offset=ImVec2(0,0), ImPlotTextFlags flags=0);    /* original C++ signature */
-def plot_text(text: str, x: float, y: float, pix_offset: Optional[ImVec2] = None, flags: TextFlags = 0) -> None:
+def plot_text(text: str, x: float, y: float, pix_offset: Optional[ImVec2Like] = None, flags: TextFlags = 0) -> None:
     """Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).
     ---
     Python bindings defaults:
@@ -1710,7 +1712,7 @@ def drag_point(
     id_: int,
     x: float,
     y: float,
-    col: ImVec4,
+    col: ImVec4Like,
     size: float = 4,
     flags: DragToolFlags = 0,
     out_clicked: Optional[bool] = None,
@@ -1724,7 +1726,7 @@ def drag_point(
 def drag_line_x(
     id_: int,
     x: float,
-    col: ImVec4,
+    col: ImVec4Like,
     thickness: float = 1,
     flags: DragToolFlags = 0,
     out_clicked: Optional[bool] = None,
@@ -1738,7 +1740,7 @@ def drag_line_x(
 def drag_line_y(
     id_: int,
     y: float,
-    col: ImVec4,
+    col: ImVec4Like,
     thickness: float = 1,
     flags: DragToolFlags = 0,
     out_clicked: Optional[bool] = None,
@@ -1755,7 +1757,7 @@ def drag_rect(
     y1: float,
     x2: float,
     y2: float,
-    col: ImVec4,
+    col: ImVec4Like,
     flags: DragToolFlags = 0,
     out_clicked: Optional[bool] = None,
     out_hovered: Optional[bool] = None,
@@ -1767,34 +1769,34 @@ def drag_rect(
 # Shows an annotation callout at a chosen point. Clamping keeps annotations in the plot area. Annotations are always rendered on top.
 # IMPLOT_API void Annotation(double x, double y, const ImVec4& col, const ImVec2& pix_offset, bool clamp, bool round = false);    /* original C++ signature */
 @overload
-def annotation(x: float, y: float, col: ImVec4, pix_offset: ImVec2, clamp: bool, round: bool = False) -> None:
+def annotation(x: float, y: float, col: ImVec4Like, pix_offset: ImVec2Like, clamp: bool, round: bool = False) -> None:
     pass
 
 # IMPLOT_API void Annotation(double x, double y, const ImVec4& col, const ImVec2& pix_offset, bool clamp, const char* fmt, ...)           ;    /* original C++ signature */
 @overload
-def annotation(x: float, y: float, col: ImVec4, pix_offset: ImVec2, clamp: bool, fmt: str) -> None:
+def annotation(x: float, y: float, col: ImVec4Like, pix_offset: ImVec2Like, clamp: bool, fmt: str) -> None:
     pass
 
 # Shows a x-axis tag at the specified coordinate value.
 # IMPLOT_API void TagX(double x, const ImVec4& col, bool round = false);    /* original C++ signature */
 @overload
-def tag_x(x: float, col: ImVec4, round: bool = False) -> None:
+def tag_x(x: float, col: ImVec4Like, round: bool = False) -> None:
     pass
 
 # IMPLOT_API void TagX(double x, const ImVec4& col, const char* fmt, ...)           ;    /* original C++ signature */
 @overload
-def tag_x(x: float, col: ImVec4, fmt: str) -> None:
+def tag_x(x: float, col: ImVec4Like, fmt: str) -> None:
     pass
 
 # Shows a y-axis tag at the specified coordinate value.
 # IMPLOT_API void TagY(double y, const ImVec4& col, bool round = false);    /* original C++ signature */
 @overload
-def tag_y(y: float, col: ImVec4, round: bool = False) -> None:
+def tag_y(y: float, col: ImVec4Like, round: bool = False) -> None:
     pass
 
 # IMPLOT_API void TagY(double y, const ImVec4& col, const char* fmt, ...)           ;    /* original C++ signature */
 @overload
-def tag_y(y: float, col: ImVec4, fmt: str) -> None:
+def tag_y(y: float, col: ImVec4Like, fmt: str) -> None:
     pass
 
 # -----------------------------------------------------------------------------
@@ -1813,7 +1815,7 @@ def set_axes(x_axis: ImAxis, y_axis: ImAxis) -> None:
 # Convert pixels to a position in the current plot's coordinate system. Passing IMPLOT_AUTO uses the current axes.
 # IMPLOT_API ImPlotPoint PixelsToPlot(const ImVec2& pix, ImAxis x_axis = IMPLOT_AUTO, ImAxis y_axis = IMPLOT_AUTO);    /* original C++ signature */
 @overload
-def pixels_to_plot(pix: ImVec2, x_axis: Optional[ImAxis] = None, y_axis: Optional[ImAxis] = None) -> Point:
+def pixels_to_plot(pix: ImVec2Like, x_axis: Optional[ImAxis] = None, y_axis: Optional[ImAxis] = None) -> Point:
     """---
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
@@ -2087,7 +2089,7 @@ def push_style_color(idx: Col, col: ImU32) -> None:
 
 # IMPLOT_API void PushStyleColor(ImPlotCol idx, const ImVec4& col);    /* original C++ signature */
 @overload
-def push_style_color(idx: Col, col: ImVec4) -> None:
+def push_style_color(idx: Col, col: ImVec4Like) -> None:
     pass
 
 # IMPLOT_API void PopStyleColor(int count = 1);    /* original C++ signature */
@@ -2109,7 +2111,7 @@ def push_style_var(idx: StyleVar, val: int) -> None:
 
 # IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, const ImVec2& val);    /* original C++ signature */
 @overload
-def push_style_var(idx: StyleVar, val: ImVec2) -> None:
+def push_style_var(idx: StyleVar, val: ImVec2Like) -> None:
     """Temporarily modify a style variable of ImVec2 type. Don't forget to call PopStyleVar!"""
     pass
 
@@ -2124,7 +2126,7 @@ def pop_style_var(count: int = 1) -> None:
 # values in your ImPlotStyle or from Colormap data.
 
 # IMPLOT_API void SetNextLineStyle(const ImVec4& col = IMPLOT_AUTO_COL, float weight = IMPLOT_AUTO);    /* original C++ signature */
-def set_next_line_style(col: Optional[ImVec4] = None, weight: float = IMPLOT_AUTO) -> None:
+def set_next_line_style(col: Optional[ImVec4Like] = None, weight: float = IMPLOT_AUTO) -> None:
     """Set the line color and weight for the next item only.
     ---
     Python bindings defaults:
@@ -2133,7 +2135,7 @@ def set_next_line_style(col: Optional[ImVec4] = None, weight: float = IMPLOT_AUT
     pass
 
 # IMPLOT_API void SetNextFillStyle(const ImVec4& col = IMPLOT_AUTO_COL, float alpha_mod = IMPLOT_AUTO);    /* original C++ signature */
-def set_next_fill_style(col: Optional[ImVec4] = None, alpha_mod: float = IMPLOT_AUTO) -> None:
+def set_next_fill_style(col: Optional[ImVec4Like] = None, alpha_mod: float = IMPLOT_AUTO) -> None:
     """Set the fill color for the next item only.
     ---
     Python bindings defaults:
@@ -2145,9 +2147,9 @@ def set_next_fill_style(col: Optional[ImVec4] = None, alpha_mod: float = IMPLOT_
 def set_next_marker_style(
     marker: Optional[Marker] = None,
     size: float = IMPLOT_AUTO,
-    fill: Optional[ImVec4] = None,
+    fill: Optional[ImVec4Like] = None,
     weight: float = IMPLOT_AUTO,
-    outline: Optional[ImVec4] = None,
+    outline: Optional[ImVec4Like] = None,
 ) -> None:
     """Set the marker style for the next item only.
     ---
@@ -2161,7 +2163,7 @@ def set_next_marker_style(
 
 # IMPLOT_API void SetNextErrorBarStyle(const ImVec4& col = IMPLOT_AUTO_COL, float size = IMPLOT_AUTO, float weight = IMPLOT_AUTO);    /* original C++ signature */
 def set_next_error_bar_style(
-    col: Optional[ImVec4] = None, size: float = IMPLOT_AUTO, weight: float = IMPLOT_AUTO
+    col: Optional[ImVec4Like] = None, size: float = IMPLOT_AUTO, weight: float = IMPLOT_AUTO
 ) -> None:
     """Set the error bar style for the next item only.
     ---
@@ -2279,7 +2281,7 @@ def colormap_scale(
     label: str,
     scale_min: float,
     scale_max: float,
-    size: Optional[ImVec2] = None,
+    size: Optional[ImVec2Like] = None,
     format: str = "%g",
     flags: ColormapScaleFlags = 0,
     cmap: Optional[Colormap] = None,
@@ -2295,7 +2297,7 @@ def colormap_scale(
 
 # IMPLOT_API bool ColormapSlider(const char* label, float* t, ImVec4* out = nullptr, const char* format = "", ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
 def colormap_slider(
-    label: str, t: float, out: Optional[ImVec4] = None, format: str = "", cmap: Optional[Colormap] = None
+    label: str, t: float, out: Optional[ImVec4Like] = None, format: str = "", cmap: Optional[Colormap] = None
 ) -> Tuple[bool, float]:
     """Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1].
     ---
@@ -2305,7 +2307,7 @@ def colormap_slider(
     pass
 
 # IMPLOT_API bool ColormapButton(const char* label, const ImVec2& size = ImVec2(0,0), ImPlotColormap cmap = IMPLOT_AUTO);    /* original C++ signature */
-def colormap_button(label: str, size: Optional[ImVec2] = None, cmap: Optional[Colormap] = None) -> bool:
+def colormap_button(label: str, size: Optional[ImVec2Like] = None, cmap: Optional[Colormap] = None) -> bool:
     """Shows a button with a colormap gradient brackground.
     ---
     Python bindings defaults:
@@ -2353,7 +2355,7 @@ def map_input_reverse(dst: Optional[InputMap] = None) -> None:
 # Render icons similar to those that appear in legends (nifty for data lists).
 # IMPLOT_API void ItemIcon(const ImVec4& col);    /* original C++ signature */
 @overload
-def item_icon(col: ImVec4) -> None:
+def item_icon(col: ImVec4Like) -> None:
     pass
 
 # IMPLOT_API void ItemIcon(ImU32 col);    /* original C++ signature */
