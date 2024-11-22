@@ -53,10 +53,14 @@ TypingSelectFlags = int
 FocusRequestFlags = int
 WindowRefreshFlags = int
 MultiSelectFlags = int
+LogFlags = int
+NavRenderCursorFlags = int
 
 TypingSelectFlags_None = 0
 NavHighlightFlags_None = 0
+NavRenderCursorFlags_None = 0
 ImFileHandle = Any
+
 
 # // Our current column maximum is 64 but we may raise that in the future.
 # typedef ImS8 ImGuiTableColumnIdx;
