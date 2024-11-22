@@ -305,8 +305,8 @@ def IM_COL32(r: ImU32, g: ImU32, b: ImU32, a: ImU32) -> ImU32:
     r = (a << IM_COL32_A_SHIFT) | (b << IM_COL32_B_SHIFT) | (g << IM_COL32_G_SHIFT) | (r << IM_COL32_R_SHIFT)
     return r
 
-IM_COL32_WHITE = IM_COL32(255, 255, 255, 255)
-IM_COL32_BLACK = IM_COL32(0, 0, 0, 255)
+IM_COL32_WHITE: int  #  = IM_COL32(255, 255, 255, 255)
+IM_COL32_BLACK: int  #  = IM_COL32(0, 0, 0, 255)
 
 """
 Additional customizations
@@ -11443,7 +11443,7 @@ def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
 ##################################################
 #    Manually inserted code (additional methods, etc.)
 ##################################################
-ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32
+ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32  # type: ignore
 
 # API for imgui_demo.cpp (specific to ImGui Bundle)
 def set_imgui_demo_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
