@@ -54,17 +54,19 @@ async function loadPyodideAndPackages() {
             'pandas',
             'matplotlib',
             'opencv-python',
+            baseUrl + `/pyodide_dist/fiatlight-0.1.0-py3-none-any.whl`,
 
+            // For scatter_widget_bundle
+            // --------------------------
+            "scikit-learn",
+            "scipy",
+            baseUrl + "/pyodide_dist/scatter_widget_bundle-0.1.0-py3-none-any.whl",
+
+            // Disabled since long
             // Loading Pygments, asttokens, decorator, executing, ipython, matplotlib-inline, pandas, prompt_toolkit, pure_eval, sqlite3, stack_data, traitlets, wcwidth
             // 'Pygments',
             // 'ipython',
             // 'sqlite3',
-
-            baseUrl + `/pyodide_dist/fiatlight-0.1.0-py3-none-any.whl`,
-
-            "scikit-learn",
-            "scipy",
-            baseUrl + "/pyodide_dist/scatter_widget_bundle-0.1.0-py3-none-any.whl",
         ];
 
         const totalSteps = packages.length;
