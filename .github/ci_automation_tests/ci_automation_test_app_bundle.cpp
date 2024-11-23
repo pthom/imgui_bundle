@@ -1,3 +1,4 @@
+#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/immapp.h"
 
@@ -116,3 +117,9 @@ int main(int, char *[])
     printf("Exiting ci_automation_test_app with success!\n");
     return 0;
 }
+#else // IMGUI_BUNDLE_WITH_TEST_ENGINE
+#include <cstdio>
+int main() {
+    fprintf(stderr, "This app is not built with IMGUI_BUNDLE_WITH_TEST_ENGINE\n");
+}
+#endif // IMGUI_BUNDLE_WITH_TEST_ENGINE

@@ -117,7 +117,9 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         show_gui.nb_frames += 1
 
     runner_params.callbacks.show_gui = show_gui
-    runner_params.use_imgui_test_engine = True
+
+    if "test_engine" in dir(imgui):  # only enable test engine if available (i.e. if imgui bundle was compiled with it)
+        runner_params.use_imgui_test_engine = True
 
     ################################################################################################
     # Part 3: Run the app

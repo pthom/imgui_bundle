@@ -301,9 +301,6 @@ set(HELLOIMGUI_WITH_TEST_ENGINE ${IMGUI_BUNDLE_WITH_TEST_ENGINE} CACHE BOOL "" F
 if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
     add_compile_definitions(IMGUI_BUNDLE_WITH_TEST_ENGINE)
 endif()
-if (NOT IMGUI_BUNDLE_WITH_TEST_ENGINE AND IMGUI_BUNDLE_BUILD_PYTHON)
-    message(FATAL_ERROR "When building python (IMGUI_BUNDLE_BUILD_PYTHON), support for imgui_test_engine (IMGUI_BUNDLE_WITH_TEST_ENGINE) should be ON")
-endif()
 
 # emscripten build additional settings
 if (EMSCRIPTEN)
