@@ -167,8 +167,9 @@ vcpkg*/
 /fiatlux
 
 # pyodide
-.pyodide-xbuildenv
+.pyodide-xbuildenv*
 pyodide_tests/
 hello_imgui.ini
 # temp / remove me
 _backends
+emsdk/

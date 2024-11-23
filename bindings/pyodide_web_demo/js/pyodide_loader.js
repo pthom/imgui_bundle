@@ -34,6 +34,10 @@ async function loadPyodideAndPackages() {
         // SDL support in Pyodide is experimental. The flag is used to bypass certain issues.
         pyodide._api._skip_unwind_fatal_error = true;
 
+        // Determine the base URL dynamically
+        const baseUrl = window.location.origin;
+        console.log('Base URL:', baseUrl);
+
         // List of packages to install
         const packages = [
             // For imgui_bundle below
@@ -56,11 +60,11 @@ async function loadPyodideAndPackages() {
             // 'ipython',
             // 'sqlite3',
 
-            "pyodide_dist/fiatlight-0.1.0-py3-none-any.whl",
+            baseUrl + `/pyodide_dist/fiatlight-0.1.0-py3-none-any.whl`,
 
             "scikit-learn",
             "scipy",
-            "pyodide_dist/scatter_widget_bundle-0.1.0-py3-none-any.whl",
+            baseUrl + "/pyodide_dist/scatter_widget_bundle-0.1.0-py3-none-any.whl",
         ];
 
         const totalSteps = packages.length;
