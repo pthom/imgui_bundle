@@ -50,6 +50,7 @@ function(_ibd_pyodide_set_build_options)
     if (NOT IMGUI_BUNDLE_BUILD_PYODIDE)
         message(FATAL_ERROR "ibd_pyodide_set_build_options: IMGUI_BUNDLE_BUILD_PYODIDE is not set")
     endif()
+    add_compile_definitions(IMGUI_BUNDLE_BUILD_PYODIDE)
 
     # No native demos for pyodide
     set(IMGUI_BUNDLE_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
