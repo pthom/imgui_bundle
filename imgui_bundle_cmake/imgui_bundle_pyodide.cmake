@@ -22,9 +22,15 @@ function(ibd_pyodide_manually_link_sdl_to_bindings)
     # Important: SDL2 link notes
     # ==========================
     # SDL2 must be linked to the native bindings _imgui_bundle.
-    # For whatever reason, this does not work with find_package.
+    # We are already linked to sdl.js (via -s USE_SDL=2) in the emscripten bindings.
+    # However, we need to link to the native SDL2 library as well (other we will get a runtime error: "SDL_SetHint" not found).
     # This has something to do with the fact that this is a SIDE library, with dynamic linking.
+    # For whatever reason, this does not work with find_package.
     # Also, libsdl2.a is not in the default search path, so we need to specify the path to it.
+
+    # We also need to link to html5.a, which contains emscripten_compute_dom_pk_code
+    # (cf https://github.com/pyodide/pyodide/issues/5029:
+    #     emscripten_compute_dom_pk_code is in html5.a (not html5.js))
 
     # This will not work:
     # find_package(SDL2 REQUIRED)
@@ -35,7 +41,7 @@ function(ibd_pyodide_manually_link_sdl_to_bindings)
         set(sdl_lib_path ${EMSCRIPTEN_SYSROOT}/lib/wasm32-emscripten/lto/)
         target_link_directories(_imgui_bundle PUBLIC ${sdl_lib_path})
         target_link_libraries(_imgui_bundle PUBLIC SDL2)
-        target_link_libraries(_imgui_bundle PUBLIC html5)  # cf https://github.com/pyodide/pyodide/issues/5029: emscripten_compute_dom_pk_code is in html5.a (not html5.js)
+        target_link_libraries(_imgui_bundle PUBLIC html5)
     endif()
 endfunction()
 
