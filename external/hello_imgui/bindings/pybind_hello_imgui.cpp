@@ -799,6 +799,15 @@ void py_init_module_hello_imgui(nb::module_& m)
             .value("from_coords", HelloImGui::WindowPositionMode::FromCoords, "");
 
 
+    auto pyEnumEmscriptenKeyboardElement =
+        nb::enum_<HelloImGui::EmscriptenKeyboardElement>(m, "EmscriptenKeyboardElement", nb::is_arithmetic(), "")
+            .value("window", HelloImGui::EmscriptenKeyboardElement::Window, "")
+            .value("document", HelloImGui::EmscriptenKeyboardElement::Document, "")
+            .value("screen", HelloImGui::EmscriptenKeyboardElement::Screen, "")
+            .value("canvas", HelloImGui::EmscriptenKeyboardElement::Canvas, "")
+            .value("default", HelloImGui::EmscriptenKeyboardElement::Default, "");
+
+
     auto pyEnumWindowSizeMeasureMode =
         nb::enum_<HelloImGui::WindowSizeMeasureMode>(m, "WindowSizeMeasureMode", nb::is_arithmetic(), "")
             .value("screen_coords", HelloImGui::WindowSizeMeasureMode::ScreenCoords, " ScreenCoords: measure window size in screen coords.\n     Note: screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.\n         - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen\n           coordinates\n         - Under windows, and if the application is DPI aware, ScreenCoordinates correspond to real pixels,\n           even on high density screens")
@@ -866,7 +875,7 @@ void py_init_module_hello_imgui(nb::module_& m)
     auto pyClassAppWindowParams =
         nb::class_<HelloImGui::AppWindowParams>
             (m, "AppWindowParams", " @@md#AppWindowParams\n\n AppWindowParams is a struct that defines the application window display params.\nSee https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg\n for details.")
-        .def("__init__", [](HelloImGui::AppWindowParams * self, std::string windowTitle = std::string(), const std::optional<const HelloImGui::WindowGeometry> & windowGeometry = std::nullopt, bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, const std::optional<const ImVec4> & borderlessHighlightColor = std::nullopt, const std::optional<const HelloImGui::EdgeInsets> & edgeInsets = std::nullopt, bool handleEdgeInsets = true, bool repaintDuringResize_GotchaReentrantRepaint = false)
+        .def("__init__", [](HelloImGui::AppWindowParams * self, std::string windowTitle = std::string(), const std::optional<const HelloImGui::WindowGeometry> & windowGeometry = std::nullopt, bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, const std::optional<const ImVec4> & borderlessHighlightColor = std::nullopt, const std::optional<const HelloImGui::EdgeInsets> & edgeInsets = std::nullopt, bool handleEdgeInsets = true, HelloImGui::EmscriptenKeyboardElement emscriptenKeyboardElement = HelloImGui::EmscriptenKeyboardElement::Default, bool repaintDuringResize_GotchaReentrantRepaint = false)
         {
             new (self) HelloImGui::AppWindowParams();  // placement new
             auto r = self;
@@ -891,9 +900,10 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r->edgeInsets = HelloImGui::EdgeInsets();
             r->handleEdgeInsets = handleEdgeInsets;
+            r->emscriptenKeyboardElement = emscriptenKeyboardElement;
             r->repaintDuringResize_GotchaReentrantRepaint = repaintDuringResize_GotchaReentrantRepaint;
         },
-        nb::arg("window_title") = std::string(), nb::arg("window_geometry") = nb::none(), nb::arg("restore_previous_geometry") = false, nb::arg("resizable") = true, nb::arg("hidden") = false, nb::arg("borderless") = false, nb::arg("borderless_movable") = true, nb::arg("borderless_resizable") = true, nb::arg("borderless_closable") = true, nb::arg("borderless_highlight_color") = nb::none(), nb::arg("edge_insets") = nb::none(), nb::arg("handle_edge_insets") = true, nb::arg("repaint_during_resize_gotcha_reentrant_repaint") = false
+        nb::arg("window_title") = std::string(), nb::arg("window_geometry") = nb::none(), nb::arg("restore_previous_geometry") = false, nb::arg("resizable") = true, nb::arg("hidden") = false, nb::arg("borderless") = false, nb::arg("borderless_movable") = true, nb::arg("borderless_resizable") = true, nb::arg("borderless_closable") = true, nb::arg("borderless_highlight_color") = nb::none(), nb::arg("edge_insets") = nb::none(), nb::arg("handle_edge_insets") = true, nb::arg("emscripten_keyboard_element") = HelloImGui::EmscriptenKeyboardElement::Default, nb::arg("repaint_during_resize_gotcha_reentrant_repaint") = false
         )
         .def_rw("window_title", &HelloImGui::AppWindowParams::windowTitle, "`windowTitle`: _string, default=\"\"_. Title of the application window")
         .def_rw("window_geometry", &HelloImGui::AppWindowParams::windowGeometry, " `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size,\n  full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._")
@@ -907,6 +917,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def_rw("borderless_highlight_color", &HelloImGui::AppWindowParams::borderlessHighlightColor, " `borderlessHighlightColor`:\n   Color of the highlight displayed on resize/move zones.\n   If borderlessHighlightColor.w==0, then the highlightColor will be automatically\n   set to ImGui::GetColorU32(ImGuiCol_TitleBgActive, 0.6)")
         .def_rw("edge_insets", &HelloImGui::AppWindowParams::edgeInsets, " `edgeInsets`: _EdgeInsets_. iOS only, out values filled by HelloImGui.\n If there is a notch on the iPhone, you should not display inside these insets.\n HelloImGui handles this automatically, if handleEdgeInsets is True and\n if runnerParams.imGuiWindowParams.defaultImGuiWindowType is not NoDefaultWindow.\n (warning, these values are updated only after a few frames,\n  they are typically 0 for the first 4 frames)")
         .def_rw("handle_edge_insets", &HelloImGui::AppWindowParams::handleEdgeInsets, " `handleEdgeInsets`: _bool, default = true_. iOS only.\n If True, HelloImGui will handle the edgeInsets on iOS.")
+        .def_rw("emscripten_keyboard_element", &HelloImGui::AppWindowParams::emscriptenKeyboardElement, " --------------- Emscripten ------------------\n `emscriptenKeyboardElement`: _EmscriptenKeyboardElement, default=Default_. HTML element in which SDL will capture the keyboard events.\n (For Emscripten only)\n Choose between: Window, Document, Screen, Canvas, Default.\n If Default:\n - the default SDL behavior is used, which is to capture the keyboard events for the window,\n   if no previous hint was set in the javascript code.\n - under Pyodide, the default behavior is to capture the keyboard events for the canvas.")
         .def_rw("repaint_during_resize_gotcha_reentrant_repaint", &HelloImGui::AppWindowParams::repaintDuringResize_GotchaReentrantRepaint, " ----------------- repaint the window during resize -----------------\n Very advanced and reserved for advanced C++ users.\n If you set this to True, the window will be repainted during resize.\n Do read https://github.com/pthom/hello_imgui/issues/112 for info about the possible gotchas\n (This API is not stable, as the name suggests, and this is not supported)")
         ;
 
@@ -1272,7 +1283,7 @@ void py_init_module_hello_imgui(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, initialDock_, newDock_, direction_, ratio_, nodeFlags_);
             },
             nb::arg("initial_dock_") = "", nb::arg("new_dock_") = "", nb::arg("direction_") = nb::none(), nb::arg("ratio_") = 0.25f, nb::arg("node_flags_") = nb::none(),
-            " Constructor\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        direction_: Dir.down\n        nodeFlags_: DockNodeFlags_.none")
+            " Constructor\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        direction_: ImGuiDir_Down\n        nodeFlags_: ImGuiDockNodeFlags_None")
         ;
 
 

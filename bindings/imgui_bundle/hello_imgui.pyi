@@ -1175,6 +1175,19 @@ class WindowPositionMode(enum.Enum):
     # }
     from_coords = enum.auto()  # (= 2)
 
+class EmscriptenKeyboardElement(enum.Enum):
+    # Window,    /* original C++ signature */
+    window = enum.auto()  # (= 0)
+    # Document,    /* original C++ signature */
+    document = enum.auto()  # (= 1)
+    # Screen,    /* original C++ signature */
+    screen = enum.auto()  # (= 2)
+    # Canvas,    /* original C++ signature */
+    canvas = enum.auto()  # (= 3)
+    # Default    /* original C++ signature */
+    # }
+    default = enum.auto()  # (= 4)
+
 class WindowSizeMeasureMode(enum.Enum):
     # ScreenCoords,    /* original C++ signature */
     # ScreenCoords: measure window size in screen coords.
@@ -1407,6 +1420,19 @@ class AppWindowParams:
     # If True, HelloImGui will handle the edgeInsets on iOS.
     handle_edge_insets: bool = True
 
+    # EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default;    /* original C++ signature */
+    # --------------- Emscripten ------------------
+    # `emscriptenKeyboardElement`: _EmscriptenKeyboardElement, default=Default_. HTML element in which SDL will capture the keyboard events.
+    # (For Emscripten only)
+    # Choose between: Window, Document, Screen, Canvas, Default.
+    # If Default:
+    # - the default SDL behavior is used, which is to capture the keyboard events for the window,
+    #   if no previous hint was set in the javascript code.
+    # - under Pyodide, the default behavior is to capture the keyboard events for the canvas.
+    emscripten_keyboard_element: EmscriptenKeyboardElement = (
+        EmscriptenKeyboardElement.default
+    )
+
     # bool repaintDuringResize_GotchaReentrantRepaint = false;    /* original C++ signature */
     # ----------------- repaint the window during resize -----------------
     # Very advanced and reserved for advanced C++ users.
@@ -1414,7 +1440,7 @@ class AppWindowParams:
     # Do read https://github.com/pthom/hello_imgui/issues/112 for info about the possible gotchas
     # (This API is not stable, as the name suggests, and this is not supported)
     repaint_during_resize_gotcha_reentrant_repaint: bool = False
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true, bool repaintDuringResize_GotchaReentrantRepaint = false);    /* original C++ signature */
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true, EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default, bool repaintDuringResize_GotchaReentrantRepaint = false);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
@@ -1429,6 +1455,7 @@ class AppWindowParams:
         borderless_highlight_color: Optional[ImVec4Like] = None,
         edge_insets: Optional[EdgeInsets] = None,
         handle_edge_insets: bool = True,
+        emscripten_keyboard_element: EmscriptenKeyboardElement = EmscriptenKeyboardElement.default,
         repaint_during_resize_gotcha_reentrant_repaint: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
@@ -2231,7 +2258,7 @@ class DockingSplit:
     # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
     #  Flags to apply to the new dock space
     #  (enable/disable resizing, splitting, tab bar, etc.)
-    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
+    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
@@ -2249,8 +2276,8 @@ class DockingSplit:
         ---
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                direction_: Dir.down
-                nodeFlags_: DockNodeFlags_.none
+                direction_: ImGuiDir_Down
+                nodeFlags_: ImGuiDockNodeFlags_None
         """
         pass
 
@@ -2329,7 +2356,7 @@ class DockableWindow:
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window size.
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
@@ -2339,7 +2366,7 @@ class DockableWindow:
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window position.
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -2415,7 +2442,7 @@ class DockingParams:
     #  Most flags are inherited by children dock spaces.
     #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        DockNodeFlags_.passthru_central_node
+        ImGuiDockNodeFlags_PassthruCentralNode
     )
 
     # --------------- Layout handling -----------------------------
@@ -2470,7 +2497,7 @@ class DockingParams:
             If any of the params below is None, then its default value below will be used:
                 dockingSplits: List[DockingSplit]()
                 dockableWindows: List[DockableWindow]()
-                mainDockSpaceNodeFlags: DockNodeFlags_.passthru_central_node
+                mainDockSpaceNodeFlags: ImGuiDockNodeFlags_PassthruCentralNode
         """
         pass
 

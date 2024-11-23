@@ -854,6 +854,16 @@ enum class WindowPositionMode
 };
 
 
+enum class EmscriptenKeyboardElement
+{
+    Window,
+    Document,
+    Screen,
+    Canvas,
+    Default
+};
+
+
 enum class WindowSizeMeasureMode
 {
     // ScreenCoords: measure window size in screen coords.
@@ -1034,6 +1044,18 @@ struct AppWindowParams
     // `handleEdgeInsets`: _bool, default = true_. iOS only.
     // If true, HelloImGui will handle the edgeInsets on iOS.
     bool       handleEdgeInsets = true;
+
+
+    // --------------- Emscripten ------------------
+    // `emscriptenKeyboardElement`: _EmscriptenKeyboardElement, default=Default_. HTML element in which SDL will capture the keyboard events.
+    // (For Emscripten only)
+    // Choose between: Window, Document, Screen, Canvas, Default.
+    // If Default:
+    // - the default SDL behavior is used, which is to capture the keyboard events for the window,
+    //   if no previous hint was set in the javascript code.
+    // - under Pyodide, the default behavior is to capture the keyboard events for the canvas.
+    EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default;
+
 
     // ----------------- repaint the window during resize -----------------
     // Very advanced and reserved for advanced C++ users.
