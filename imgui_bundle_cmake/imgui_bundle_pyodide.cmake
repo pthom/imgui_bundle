@@ -63,9 +63,13 @@ function(_ibd_pyodide_set_build_options)
     set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
     set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "" FORCE)
 
-    # test engine for pyodide
+    # No test engine for pyodide
+    # (We cannot afford to have test engines, because severe headaches would happen
+    #  since we would need to handle threads in between javascript, python and C++...)
+    set(IMGUI_BUNDLE_WITH_TEST_ENGINE OFF CACHE BOOL "" FORCE)
+
+    # We need to keep the pthreads enabled, for compatibility with precompiled emscripten OpenCV
     set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)
-    set(IMGUI_BUNDLE_WITH_TEST_ENGINE ON CACHE BOOL "" FORCE)
 
     # Disable some features
     set(IMGUI_BUNDLE_DISABLE_IMFILEDIALOG ON CACHE BOOL "" FORCE)
