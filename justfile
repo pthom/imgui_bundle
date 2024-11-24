@@ -12,7 +12,7 @@ ems_build:
 
 # Serve emscripten with CORS
 ems_serve:
-    python ./ci_scripts/webserver_multithread_policy
+    python ./ci_scripts/webserver_multithread_policy.py
 
 
 # Reattach all submodules to branches and remotes (fork + official)
