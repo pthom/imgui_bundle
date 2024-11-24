@@ -1,11 +1,8 @@
 # Demo ImGuizmo (only the 3D gizmo)
 # See equivalent python program: demos_cpp/demos_imguizmo/demo_guizmo_stl.main.cpp
 from typing import List, Tuple
-from dataclasses import dataclass
-import numpy as np
 import math
 import munch  # type: ignore
-from numpy.typing import NDArray
 
 from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
@@ -19,12 +16,11 @@ except ModuleNotFoundError:
     exit(1)
 
 
-Matrix16 = NDArray[np.float32]
-Matrix6 = NDArray[np.float32]
-Matrix3 = NDArray[np.float32]
-
-
 gizmo = imguizmo.im_guizmo
+
+Matrix3 = gizmo.Matrix3
+Matrix6 = gizmo.Matrix6
+Matrix16 = gizmo.Matrix16
 
 useWindow = True
 gizmoCount = 1
@@ -32,36 +28,39 @@ camDistance = 8.0
 mCurrentGizmoOperation = gizmo.OPERATION.translate
 
 # fmt: off
-gObjectMatrix: List[Matrix6] = [
-    np.array([
+gObjectMatrix: List[Matrix16] = [
+    Matrix16([
         1.0, 0.0, 0.0, 0.0,
         0.0, 1.0, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
-        0.0, 0.0, 0.0, 1.0
-    ], np.float32),
-    np.array([
+        0.0, 0.0, 0.0, 1.0]
+    ),
+    Matrix16([
         1.0, 0.0, 0.0, 0.0,
         0.0, 1.0, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         2.0, 0.0, 0.0, 1.0
-    ], np.float32),
-    np.array([
+    ]),
+    Matrix16([
         1.0, 0.0, 0.0, 0.0,
         0.0, 1.0, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         2.0, 0.0, 2.0, 1.0
-    ], np.float32),
-    np.array([
+    ]),
+    Matrix16([
         1.0, 0.0, 0.0, 0.0,
         0.0, 1.0, 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 2.0, 1.0
-    ], np.float32),
+    ]),
 ]
 # fmt: on
 
-identityMatrix = np.eye(4, dtype=np.float32)
-
+identityMatrix = Matrix16(
+    [1.0, 0.0, 0.0, 0.0,
+     0.0, 1.0, 0.0, 0.0,
+     0.0, 0.0, 1.0, 0.0,
+     0.0, 0.0, 0.0, 1.0])
 
 """
 The following functions from the C++ example need not to be ported, we use glm instead
@@ -79,10 +78,10 @@ The following functions from the C++ example need not to be ported, we use glm i
 # This function does not exist in the C++ example, but we need to add it to support
 # editing Matrix3 (aka numpy array)
 def input_matrix3(label: str, matrix3: Matrix3) -> Tuple[bool, Matrix3]:
-    mat_values = list(matrix3)
+    mat_values = matrix3.values.tolist()
     changed, new_values = imgui.input_float3(label, mat_values)
     if changed:
-        matrix3 = np.array(new_values, np.float32)
+        matrix3 = Matrix3(new_values)
     return changed, matrix3
 
 
@@ -91,28 +90,20 @@ def input_matrix3(label: str, matrix3: Matrix3) -> Tuple[bool, Matrix3]:
 def input_only_first_value_matrix3(
     label: str, matrix3: Matrix3
 ) -> Tuple[bool, Matrix3]:
-    value = matrix3[0]
+    value = float(matrix3.values[0])
     changed, new_value = imgui.input_float(label, value)
     if changed:
-        matrix3[0] = new_value
+        matrix3.values[0] = new_value
     return changed, matrix3
-
-
-# Change from the original version: returns a tuple (changed, newCameraView)
-@dataclass
-class EditTransformResult:
-    changed: bool
-    objectMatrix: Matrix16
-    cameraView: Matrix16
 
 
 @immapp.static(statics=None)  # type: ignore
 def EditTransform(
-    cameraView: Matrix16,
+    cameraView: Matrix16,  # may be modified
     cameraProjection: Matrix16,
-    objectMatrix: Matrix16,
+    objectMatrix: Matrix16,  # may be modified
     editTransformDecomposition: bool,
-) -> EditTransformResult:
+) -> None:
     statics = EditTransform.statics
     global mCurrentGizmoOperation
     if statics is None:
@@ -120,16 +111,12 @@ def EditTransform(
         statics = EditTransform.statics
         statics.mCurrentGizmoMode = gizmo.MODE.local
         statics.useSnap = False
-        statics.snap = np.array([1.0, 1.0, 1.0], np.float32)
-        statics.bounds = np.array([-0.5, -0.5, -0.5, 0.5, 0.5, 0.5], np.float32)
-        statics.boundsSnap = np.array([0.1, 0.1, 0.1], np.float32)
+        statics.snap = Matrix3([1.0, 1.0, 1.0])
+        statics.bounds = Matrix6([-0.5, -0.5, -0.5, 0.5, 0.5, 0.5])
+        statics.boundsSnap = Matrix3([0.1, 0.1, 0.1])
         statics.boundSizing = False
         statics.boundSizingSnap = False
         statics.gizmoWindowFlags = 0
-
-    r = EditTransformResult(
-        changed=False, objectMatrix=objectMatrix, cameraView=cameraView
-    )
 
     if editTransformDecomposition:
         if imgui.is_key_pressed(imgui.Key.t):
@@ -167,9 +154,11 @@ def EditTransform(
         edited |= edit_one
         edit_one, matrixComponents.scale = input_matrix3("Sc", matrixComponents.scale)
         edited |= edit_one
+
         if edited:
-            r.changed = True
-            r.objectMatrix = gizmo.recompose_matrix_from_components(matrixComponents)
+            recomposed = gizmo.recompose_matrix_from_components(matrixComponents).values
+            for i in range(16):
+                objectMatrix.values[i] = recomposed[i]
 
         if mCurrentGizmoOperation != gizmo.OPERATION.scale:
             if imgui.radio_button(
@@ -240,7 +229,7 @@ def EditTransform(
 
     gizmo.draw_cubes(cameraView, cameraProjection, gObjectMatrix[:gizmoCount])
 
-    manip_result = gizmo.manipulate(
+    gizmo.manipulate(
         cameraView,
         cameraProjection,
         mCurrentGizmoOperation,
@@ -251,36 +240,35 @@ def EditTransform(
         statics.bounds if statics.boundSizing else None,
         statics.boundsSnap if statics.boundSizingSnap else None,
     )
-    if manip_result:
-        r.changed = True
-        r.objectMatrix = manip_result.value
 
-    view_manip_result = gizmo.view_manipulate(
+    gizmo.view_manipulate(
         cameraView,
         camDistance,
         ImVec2(viewManipulateRight - 128, viewManipulateTop),
         ImVec2(128, 128),
         0x10101010,
     )
-    if view_manip_result:
-        r.changed = True
-        r.cameraView = view_manip_result.value
 
     if useWindow:
         imgui.end()
         imgui.pop_style_color()
 
-    return r
+
+def glm_mat4x4_to_float_list(mat: glm.mat4x4) -> List[float]:
+    return mat[0].to_list() + mat[1].to_list() + mat[2].to_list() + mat[3].to_list() # type: ignore
 
 
 # This returns a closure function that will later be invoked to run the app
 def make_closure_demo_guizmo() -> GuiFunction:
     lastUsing = 0
-    cameraView = np.array(
-        [1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+    cameraView = Matrix16(
+        [1.0, 0.0, 0.0, 0.0,
+         0.0, 1.0, 0.0, 0.0,
+         0.0, 0.0, 1.0, 0.0,
+         0.0, 0.0, 0.0, 1.0]
     )
 
-    cameraProjection = np.zeros((4, 4), np.float32)  # remove me?
+    cameraProjection = Matrix16()  # Filled with zeros by default
 
     # Camera projection
     isPerspective = True
@@ -298,12 +286,12 @@ def make_closure_demo_guizmo() -> GuiFunction:
         io = imgui.get_io()
         if isPerspective:
             radians = glm.radians(fov)  # The gui is in degree, we need radians for glm
-            cameraProjection = glm.perspective(radians, io.display_size.x / io.display_size.y, 0.1, 100.0)  # type: ignore
-            cameraProjection = np.array(cameraProjection)
+            cameraProjection_glm = glm.perspective(radians, io.display_size.x / io.display_size.y, 0.1, 100.0)
+            cameraProjection = Matrix16(glm_mat4x4_to_float_list(cameraProjection_glm))
         else:
             viewHeight = viewWidth * io.display_size.y / io.display_size.x
-            cameraProjection = glm.ortho(-viewWidth, viewWidth, -viewHeight, viewHeight, 1000.0, -1000.0)  # type: ignore
-            cameraProjection = np.array(cameraProjection)
+            cameraProjection_glm = glm.ortho(-viewWidth, viewWidth, -viewHeight, viewHeight, 1000.0, -1000.0)
+            cameraProjection = Matrix16(glm_mat4x4_to_float_list(cameraProjection_glm))
 
         gizmo.set_orthographic(not isPerspective)
         gizmo.begin_frame()
@@ -346,8 +334,8 @@ def make_closure_demo_guizmo() -> GuiFunction:
             )
             at = glm.vec3(0.0, 0.0, 0.0)
             up = glm.vec3(0.0, 1.0, 0.0)
-            cameraView = glm.lookAt(eye, at, up)  # type: ignore
-            cameraView = np.array(cameraView)
+            cameraView_glm: glm.mat4x4 = glm.lookAt(eye, at, up)
+            cameraView = Matrix16(glm_mat4x4_to_float_list(cameraView_glm))
             firstFrame = False
 
         imgui.text(
@@ -357,32 +345,26 @@ def make_closure_demo_guizmo() -> GuiFunction:
             imgui.text("Using gizmo")
         else:
             imgui.text("Over gizmo" if gizmo.is_over() else "")
-            # imgui.same_line()
-            # imgui.text(
-            #     "Over translate gizmo"
-            #     if gizmo.is_over(gizmo.OPERATION.translate)
-            #     else ""
-            # )
-            # imgui.same_line()
-            # imgui.text(
-            #     "Over rotate gizmo" if gizmo.is_over(gizmo.OPERATION.rotate) else ""
-            # )
-            # imgui.same_line()
-            # imgui.text(
-            #     "Over scale gizmo" if gizmo.is_over(gizmo.OPERATION.scale) else ""
-            # )
+            imgui.same_line()
+            imgui.text(
+                "Over translate gizmo"
+                if gizmo.is_over(gizmo.OPERATION.translate)  # type: ignore
+                else ""
+            )
+            imgui.same_line()
+            imgui.text(
+                "Over rotate gizmo" if gizmo.is_over(gizmo.OPERATION.rotate) else ""  # type: ignore
+            )
+            imgui.same_line()
+            imgui.text(
+                "Over scale gizmo" if gizmo.is_over(gizmo.OPERATION.scale) else ""  # type: ignore
+            )
 
         imgui.separator()
 
         for matId in range(gizmoCount):
             gizmo.set_id(matId)
-
-            result = EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId)  # type: ignore
-            if result.changed:
-                gObjectMatrix[matId] = result.objectMatrix
-                cameraView = result.cameraView
-            if gizmo.is_using():
-                lastUsing = matId
+            EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId)
 
         imgui.end()
 
