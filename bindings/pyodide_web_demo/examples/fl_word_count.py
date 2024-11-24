@@ -27,7 +27,18 @@ import fiatlight as fl
 
 
 def text_source() -> str:
+    """Return the text to be analyzed."""
+    # Here, we simply return the __doc__ string of this file, i.e., the long explanation at the beginning of this file.
     return __doc__
+
+    # We could also read a file from the web
+    # (warning, when using Pyodide, security restrictions may apply: a web client cannot fetch resources
+    # from a different domain than the one it was loaded from, unless the server allows it)
+    #
+    # import requests
+    # hamlet_url = "http://localhost:8005/examples/hamlet.txt"
+    # response = requests.get(hamlet_url)
+    # return response.text
 
 
 def str_lower(text: str) -> str:
