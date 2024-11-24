@@ -1,4 +1,4 @@
-#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
 #include "imgui.h"
 #include "hello_imgui/hello_imgui.h"
 #include "imgui_test_engine/imgui_te_ui.h"
@@ -62,6 +62,6 @@ int main(int, char**)
     HelloImGui::Run(runnerParams);
 }
 
-#else // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
+#else // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 int main(int, char**) {}
 #endif

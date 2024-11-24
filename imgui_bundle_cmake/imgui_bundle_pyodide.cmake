@@ -66,7 +66,7 @@ function(_ibd_pyodide_set_build_options)
     # No test engine for pyodide
     # (We cannot afford to have test engines, because severe headaches would happen
     #  since we would need to handle threads in between javascript, python and C++...)
-    set(IMGUI_BUNDLE_WITH_TEST_ENGINE OFF CACHE BOOL "" FORCE)
+    set(HELLOIMGUI_WITH_TEST_ENGINE OFF CACHE BOOL "" FORCE)
 
     # We need to keep the pthreads enabled, for compatibility with precompiled emscripten OpenCV
     set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)

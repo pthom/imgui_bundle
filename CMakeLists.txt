@@ -158,13 +158,22 @@ endif()
 option(IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE "Fail if immvision unavailable (OpenCV not found)" OFF)
 
 
-# IMGUI_BUNDLE_WITH_TEST_ENGINE: include support for imgui_test_engine
+# HELLOIMGUI_WITH_TEST_ENGINE: include support for imgui_test_engine
 # -----------------------------------------------------------------------------
-if (NOT ANDROID AND NOT IOS)
-    option(IMGUI_BUNDLE_WITH_TEST_ENGINE "include support for imgui_test_engine" ON)
-else()
-    set(IMGUI_BUNDLE_WITH_TEST_ENGINE OFF)
+# i. Backward compatibility with old option (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+if (DEFINED IMGUI_BUNDLE_WITH_TEST_ENGINE AND NOT DEFINED HELLOIMGUI_WITH_TEST_ENGINE)
+    message(WARNING "IMGUI_BUNDLE_WITH_TEST_ENGINE is deprecated. Use HELLOIMGUI_WITH_TEST_ENGINE instead.")
+    set(HELLOIMGUI_WITH_TEST_ENGINE ${IMGUI_BUNDLE_WITH_TEST_ENGINE} CACHE BOOL "Include support for imgui_test_engine" FORCE)
 endif()
+# ii. Define the new option (if not already defined)
+if (NOT DEFINED HELLOIMGUI_WITH_TEST_ENGINE)
+    if (NOT ANDROID AND NOT IOS)
+        option(HELLOIMGUI_WITH_TEST_ENGINE "Include support for imgui_test_engine" ON)
+    else()
+        set(HELLOIMGUI_WITH_TEST_ENGINE OFF)
+    endif()
+endif()
+
 
 #------------------------------------------------------------------------------
 # Options / Freetype (this is an option for hello_imgui, reproduced here for convenience)
@@ -296,11 +305,6 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     ibd_disable_system_libraries_for_python()
 endif()
 
-# IMGUI_BUNDLE_WITH_TEST_ENGINE is propagated to HELLOIMGUI_WITH_TEST_ENGINE
-set(HELLOIMGUI_WITH_TEST_ENGINE ${IMGUI_BUNDLE_WITH_TEST_ENGINE} CACHE BOOL "" FORCE)
-if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
-    add_compile_definitions(IMGUI_BUNDLE_WITH_TEST_ENGINE)
-endif()
 
 # emscripten build additional settings
 if (EMSCRIPTEN)
@@ -331,7 +335,8 @@ endif()
 
 # configure imgui_test_engine (*before* adding hello_imgui)
 # -----------------------------------------------------------------------------
-if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+if (HELLOIMGUI_WITH_TEST_ENGINE)
+    # We use a specific version of imgui_test_engine in ImGui Bundle
     set(HELLOIMGUI_FETCH_IMGUI_TEST_ENGINE OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_IMGUI_TEST_ENGINE_SOURCE_DIR
         ${CMAKE_CURRENT_LIST_DIR}/external/imgui_test_engine/imgui_test_engine
@@ -349,10 +354,10 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
     include(imgui_bundle_cmake/internal/add_imgui_bundle_bindings.cmake)
     add_imgui_bundle_bindings()
 
-    if (IMGUI_BUNDLE_WITH_TEST_ENGINE)
+    if (HELLOIMGUI_WITH_TEST_ENGINE)
         include(${CMAKE_CURRENT_LIST_DIR}/external/hello_imgui/hello_imgui/src/hello_imgui_test_engine_integration/hello_imgui_test_engine_cmake.cmake)
         configure_imgui_test_engine_with_python_gil()
-    endif(IMGUI_BUNDLE_WITH_TEST_ENGINE)
+    endif(HELLOIMGUI_WITH_TEST_ENGINE)
 endif()
 
 # C++ Apps
@@ -450,7 +455,7 @@ message(STATUS "
     Options:
     ---------------------------------------------------------------------------
     IMGUI_BUNDLE_WITH_IMMVISION:   ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_FETCH_OPENCV: ${IMMVISION_FETCH_OPENCV})
-    IMGUI_BUNDLE_WITH_TEST_ENGINE: ${IMGUI_BUNDLE_WITH_TEST_ENGINE}
+    HELLOIMGUI_WITH_TEST_ENGINE:   ${HELLOIMGUI_WITH_TEST_ENGINE}
     IMGUI_BUNDLE_BUILD_PYTHON:     ${IMGUI_BUNDLE_BUILD_PYTHON}
     IMGUI_BUNDLE_BUILD_PYODIDE:    ${IMGUI_BUNDLE_BUILD_PYODIDE}
     IMGUI_BUNDLE_BUILD_DEMOS:      ${IMGUI_BUNDLE_BUILD_DEMOS}

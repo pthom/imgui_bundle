@@ -64,7 +64,7 @@ void py_init_module_imgui_bundle(nb::module_& m)
     auto module_imgui_backends =  module_imgui.def_submodule("backends");
     py_init_module_imgui_backends(module_imgui_backends);
 
-#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
     // Submodule imgui.test_engine
     _register_submodule("imgui.test_engine");
     auto module_imgui_test_engine =  module_imgui.def_submodule("test_engine");

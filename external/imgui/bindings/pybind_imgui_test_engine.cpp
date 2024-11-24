@@ -1,5 +1,5 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
 #include <nanobind/nanobind.h>
 #include <nanobind/trampoline.h>
 #include <nanobind/stl/array.h>
@@ -1812,4 +1812,4 @@ void py_init_module_imgui_test_engine(nb::module_& m)
     nb::implicitly_convertible<ImGuiID, ImGuiTestRef>();
     nb::implicitly_convertible<const char*, ImGuiTestRef>();
 }
-#endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
+#endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
