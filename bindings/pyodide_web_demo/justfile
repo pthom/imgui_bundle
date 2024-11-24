@@ -48,3 +48,6 @@ srv:
 
 rsync_tq:
     rsync -avz --delete . pascal@traineq.org:HTML/probabl/
+
+gpt_files_content:
+    for f in $(cat f.txt); do echo "===========================================================================";echo "File $f"; echo "==========================================================================="; echo '```'; cat $f; echo '```'; done
