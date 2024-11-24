@@ -975,28 +975,38 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-p">}</span>
 <span class="tok-p">}</span>
 
-<span class="tok-c1">// Display a button that will show an additional window</span>
+<span class="tok-c1">// Display a button that will add another dockable window during execution</span>
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-n">DemoShowAdditionalWindow</span><span class="tok-p">(</span><span class="tok-n">AppState</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">)</span>
 <span class="tok-p">{</span>
-<span class="tok-w">    </span><span class="tok-c1">// Notes:</span>
-<span class="tok-w">    </span><span class="tok-c1">//     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows</span>
-<span class="tok-w">    </span><span class="tok-c1">//       from the code inside a window&#39;s `GuiFunction` (since this GuiFunction will be called while iterating on this vector!)</span>
-<span class="tok-w">    </span><span class="tok-c1">//     - there are two ways to dynamically add windows:</span>
-<span class="tok-w">    </span><span class="tok-c1">//           * either make them initially invisible, and exclude them from the view menu (such as shown here)</span>
-<span class="tok-w">    </span><span class="tok-c1">//           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame</span>
-<span class="tok-w">    </span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">windowName</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Additional Window&quot;</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-c1">// In order to add a dockable window during execution, you should use</span>
+<span class="tok-w">    </span><span class="tok-c1">//     HelloImGui::AddDockableWindow()</span>
+<span class="tok-w">    </span><span class="tok-c1">// Note: you should not modify manually the content of runnerParams.dockingParams.dockableWindows</span>
+<span class="tok-w">    </span><span class="tok-c1">//       (since HelloImGui is constantly looping on it)</span>
+
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PushFont</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">TitleFont</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Dynamically add window&quot;</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PopFont</span><span class="tok-p">();</span>
+
+<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">currentWindow</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetCurrentWindow</span><span class="tok-p">();</span>
+
+<span class="tok-w">    </span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">*</span><span class="tok-w"> </span><span class="tok-n">windowName</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Additional Window&quot;</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Show additional window&quot;</span><span class="tok-p">))</span>
 <span class="tok-w">    </span><span class="tok-p">{</span>
-<span class="tok-w">        </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">additionalWindowPtr</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">GetRunnerParams</span><span class="tok-p">()</span><span class="tok-o">-&gt;</span><span class="tok-n">dockingParams</span><span class="tok-p">.</span><span class="tok-n">dockableWindowOfName</span><span class="tok-p">(</span><span class="tok-n">windowName</span><span class="tok-p">);</span>
-<span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">additionalWindowPtr</span><span class="tok-p">)</span>
-<span class="tok-w">        </span><span class="tok-p">{</span>
-<span class="tok-w">            </span><span class="tok-c1">// additionalWindowPtr-&gt;includeInViewMenu = true;</span>
-<span class="tok-w">            </span><span class="tok-n">additionalWindowPtr</span><span class="tok-o">-&gt;</span><span class="tok-n">isVisible</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
-<span class="tok-w">        </span><span class="tok-p">}</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockableWindow</span><span class="tok-w"> </span><span class="tok-n">additionalWindow</span><span class="tok-p">;</span>
+<span class="tok-w">        </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">label</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">windowName</span><span class="tok-p">;</span>
+<span class="tok-w">        </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">includeInViewMenu</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w">       </span><span class="tok-c1">// this window is not shown in the view menu,</span>
+<span class="tok-w">        </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">rememberIsVisible</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span><span class="tok-w">       </span><span class="tok-c1">// its visibility is not saved in the settings file,</span>
+<span class="tok-w">        </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">dockSpaceName</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;MiscSpace&quot;</span><span class="tok-p">;</span><span class="tok-w">     </span><span class="tok-c1">// when shown, it will appear in MiscSpace.</span>
+<span class="tok-w">        </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">GuiFunction</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;This is the additional window&quot;</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-p">};</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">AddDockableWindow</span><span class="tok-p">(</span>
+<span class="tok-w">            </span><span class="tok-n">additionalWindow</span><span class="tok-p">,</span>
+<span class="tok-w">            </span><span class="tok-nb">false</span><span class="tok-w">  </span><span class="tok-c1">// forceDockspace=false: means that the window will be docked to the last space it was docked to</span>
+<span class="tok-w">                   </span><span class="tok-c1">// i.e. dockSpaceName is ignored if the user previously moved the window to another space</span>
+<span class="tok-w">        </span><span class="tok-p">);</span>
 <span class="tok-w">    </span><span class="tok-p">}</span>
-<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">IsItemHovered</span><span class="tok-p">())</span>
-<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SetTooltip</span><span class="tok-p">(</span><span class="tok-s">&quot;By clicking this button, you can show an additional window&quot;</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SetItemTooltip</span><span class="tok-p">(</span><span class="tok-s">&quot;By clicking this button, you can show an additional window&quot;</span><span class="tok-p">);</span>
+
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Remove additional window&quot;</span><span class="tok-p">))</span>
+<span class="tok-w">        </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">RemoveDockableWindow</span><span class="tok-p">(</span><span class="tok-n">windowName</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SetItemTooltip</span><span class="tok-p">(</span><span class="tok-s">&quot;By clicking this button, you can remove the additional window&quot;</span><span class="tok-p">);</span>
 <span class="tok-p">}</span>
 
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-n">DemoLogs</span><span class="tok-p">(</span><span class="tok-n">AppState</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">)</span>
@@ -1278,7 +1288,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-cp">#ifdef IMGUI_ENABLE_FREETYPE</span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Colored Fonts&quot;</span><span class="tok-p">);</span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PushFont</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">ColorFont</span><span class="tok-p">);</span>
-<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;C O L O R !&quot;</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;COLOR!&quot;</span><span class="tok-p">);</span>
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PopFont</span><span class="tok-p">();</span>
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">IsItemHovered</span><span class="tok-p">())</span>
 <span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SetTooltip</span><span class="tok-p">(</span><span class="tok-s">&quot;Example with Playbox-FREE.otf font&quot;</span><span class="tok-p">);</span>
@@ -1515,16 +1525,6 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-n">dearImGuiDemoWindow</span><span class="tok-p">.</span><span class="tok-n">imGuiWindowFlags</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiWindowFlags_MenuBar</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-n">dearImGuiDemoWindow</span><span class="tok-p">.</span><span class="tok-n">GuiFunction</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">ShowDemoWindow</span><span class="tok-p">();</span><span class="tok-w"> </span><span class="tok-p">};</span>
 
-<span class="tok-w">    </span><span class="tok-c1">// additionalWindow is initially not visible (and not mentioned in the view menu).</span>
-<span class="tok-w">    </span><span class="tok-c1">// it will be opened only if the user chooses to display it</span>
-<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockableWindow</span><span class="tok-w"> </span><span class="tok-n">additionalWindow</span><span class="tok-p">;</span>
-<span class="tok-w">    </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">label</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Additional Window&quot;</span><span class="tok-p">;</span>
-<span class="tok-w">    </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">isVisible</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w">               </span><span class="tok-c1">// this window is initially hidden,</span>
-<span class="tok-w">    </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">includeInViewMenu</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w">       </span><span class="tok-c1">// it is not shown in the view menu,</span>
-<span class="tok-w">    </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">rememberIsVisible</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">false</span><span class="tok-p">;</span><span class="tok-w">       </span><span class="tok-c1">// its visibility is not saved in the settings file,</span>
-<span class="tok-w">    </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">dockSpaceName</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;MiscSpace&quot;</span><span class="tok-p">;</span><span class="tok-w">     </span><span class="tok-c1">// when shown, it will appear in MiscSpace.</span>
-<span class="tok-w">    </span><span class="tok-n">additionalWindow</span><span class="tok-p">.</span><span class="tok-n">GuiFunction</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;This is the additional window&quot;</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-p">};</span>
-
 <span class="tok-w">    </span><span class="tok-c1">// alternativeThemeWindow</span>
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockableWindow</span><span class="tok-w"> </span><span class="tok-n">alternativeThemeWindow</span><span class="tok-p">;</span>
 <span class="tok-w">    </span><span class="tok-c1">// Since this window applies a theme, We need to call &quot;ImGui::Begin&quot; ourselves so</span>
@@ -1539,7 +1539,6 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">        </span><span class="tok-n">layoutCustomizationWindow</span><span class="tok-p">,</span>
 <span class="tok-w">        </span><span class="tok-n">logsWindow</span><span class="tok-p">,</span>
 <span class="tok-w">        </span><span class="tok-n">dearImGuiDemoWindow</span><span class="tok-p">,</span>
-<span class="tok-w">        </span><span class="tok-n">additionalWindow</span><span class="tok-p">,</span>
 <span class="tok-w">        </span><span class="tok-n">alternativeThemeWindow</span>
 <span class="tok-w">    </span><span class="tok-p">};</span>
 <span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">dockableWindows</span><span class="tok-p">;</span>
@@ -1578,6 +1577,29 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">        </span><span class="tok-n">tabsLayout</span><span class="tok-p">.</span><span class="tok-n">dockingSplits</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">{};</span>
 <span class="tok-w">    </span><span class="tok-p">}</span>
 <span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-n">alternativeLayout</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">tabsLayout</span><span class="tok-p">};</span>
+<span class="tok-p">}</span>
+
+
+<span class="tok-c1">//////////////////////////////////////////////////////////////////////////</span>
+<span class="tok-c1">// Define the app initial theme</span>
+<span class="tok-c1">//////////////////////////////////////////////////////////////////////////</span>
+<span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-n">SetupMyTheme</span><span class="tok-p">()</span>
+<span class="tok-p">{</span>
+<span class="tok-w">    </span><span class="tok-c1">// Example of theme customization at App startup</span>
+<span class="tok-w">    </span><span class="tok-c1">// This function is called in the callback `SetupImGuiStyle` in order to apply a custom theme:</span>
+<span class="tok-w">    </span><span class="tok-c1">//     runnerParams.callbacks.SetupImGuiStyle = SetupMyTheme;</span>
+
+<span class="tok-w">    </span><span class="tok-c1">// Apply default style</span>
+<span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ImGuiDefaultSettings</span><span class="tok-o">::</span><span class="tok-n">SetupDefaultImGuiStyle</span><span class="tok-p">();</span>
+<span class="tok-w">    </span><span class="tok-c1">// Create a tweaked theme</span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiTheme</span><span class="tok-o">::</span><span class="tok-n">ImGuiTweakedTheme</span><span class="tok-w"> </span><span class="tok-n">tweakedTheme</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">tweakedTheme</span><span class="tok-p">.</span><span class="tok-n">Theme</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiTheme</span><span class="tok-o">::</span><span class="tok-n">ImGuiTheme_MaterialFlat</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">tweakedTheme</span><span class="tok-p">.</span><span class="tok-n">Tweaks</span><span class="tok-p">.</span><span class="tok-n">Rounding</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">10.0f</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-c1">// Apply the tweaked theme</span>
+<span class="tok-w">    </span><span class="tok-n">ImGuiTheme</span><span class="tok-o">::</span><span class="tok-n">ApplyTweakedTheme</span><span class="tok-p">(</span><span class="tok-n">tweakedTheme</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-c1">// Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui: ImGuiTheme::PushTweakedTheme(tweakedTheme) / ImGuiTheme::PopTweakedTheme()</span>
+<span class="tok-w">    </span><span class="tok-c1">// Then apply further modifications to ImGui style</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetStyle</span><span class="tok-p">().</span><span class="tok-n">ItemSpacing</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mi">6</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">4</span><span class="tok-p">);</span><span class="tok-w">  </span><span class="tok-c1">// Reduce spacing between items ((8, 4) by default)</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetStyle</span><span class="tok-p">().</span><span class="tok-n">Colors</span><span class="tok-p">[</span><span class="tok-n">ImGuiCol_Text</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImVec4</span><span class="tok-p">(</span><span class="tok-mf">0.8</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.8</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">0.85</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.0</span><span class="tok-p">);</span><span class="tok-w">  </span><span class="tok-c1">// Change text color</span>
 <span class="tok-p">}</span>
 
 
@@ -1661,18 +1683,8 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">PostInit</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">]</span><span class="tok-w">   </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">LoadMyAppSettings</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);};</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">BeforeExit</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[</span><span class="tok-o">&amp;</span><span class="tok-n">appState</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-p">{</span><span class="tok-w"> </span><span class="tok-n">SaveMyAppSettings</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">);};</span>
 
-<span class="tok-w">    </span><span class="tok-c1">//</span>
 <span class="tok-w">    </span><span class="tok-c1">// Change style</span>
-<span class="tok-w">    </span><span class="tok-c1">//</span>
-<span class="tok-w">    </span><span class="tok-c1">// 1. Change theme</span>
-<span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">tweakedTheme</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">imGuiWindowParams</span><span class="tok-p">.</span><span class="tok-n">tweakedTheme</span><span class="tok-p">;</span>
-<span class="tok-w">    </span><span class="tok-n">tweakedTheme</span><span class="tok-p">.</span><span class="tok-n">Theme</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImGuiTheme</span><span class="tok-o">::</span><span class="tok-n">ImGuiTheme_MaterialFlat</span><span class="tok-p">;</span>
-<span class="tok-w">    </span><span class="tok-n">tweakedTheme</span><span class="tok-p">.</span><span class="tok-n">Tweaks</span><span class="tok-p">.</span><span class="tok-n">Rounding</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mf">10.f</span><span class="tok-p">;</span>
-<span class="tok-w">    </span><span class="tok-c1">// 2. Customize ImGui style at startup</span>
-<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">SetupImGuiStyle</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]()</span><span class="tok-w"> </span><span class="tok-p">{</span>
-<span class="tok-w">        </span><span class="tok-c1">// Reduce spacing between items ((8, 4) by default)</span>
-<span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">GetStyle</span><span class="tok-p">().</span><span class="tok-n">ItemSpacing</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">6.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">4.f</span><span class="tok-p">);</span>
-<span class="tok-w">    </span><span class="tok-p">};</span>
+<span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-p">.</span><span class="tok-n">callbacks</span><span class="tok-p">.</span><span class="tok-n">SetupImGuiStyle</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">SetupMyTheme</span><span class="tok-p">;</span>
 
 <span class="tok-w">    </span><span class="tok-c1">//#############################################################################################</span>
 <span class="tok-w">    </span><span class="tok-c1">// Part 2: Define the application layout and windows</span>
@@ -1759,7 +1771,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">hello_imgui</span><span class="tok-p">,</span> <span class="tok-n">icons_fontawesome_6</span><span class="tok-p">,</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">imgui_ctx</span><span class="tok-p">,</span> <span class="tok-n">ImVec4</span><span class="tok-p">,</span> <span class="tok-n">ImVec2</span>
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>
-<span class="tok-kn">from</span> <span class="tok-nn">typing</span> <span class="tok-kn">import</span> <span class="tok-n">List</span>
+<span class="tok-kn">from</span> <span class="tok-nn">typing</span> <span class="tok-kn">import</span> <span class="tok-n">List</span><span class="tok-p">,</span> <span class="tok-n">Any</span>
 
 
 <span class="tok-c1">##########################################################################</span>
@@ -1774,7 +1786,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
             <span class="tok-s2">&quot;Hello, Dear ImGui</span><span class="tok-se">\n</span><span class="tok-s2">&quot;</span>
             <span class="tok-s2">&quot;Unleash your creativity!</span><span class="tok-se">\n</span><span class="tok-s2">&quot;</span><span class="tok-p">,</span>
             <span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-c1"># multiline</span>
-            <span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">14.0</span><span class="tok-p">,</span> <span class="tok-mf">3.0</span><span class="tok-p">)</span> <span class="tok-c1"># initial size (in em)</span>
+            <span class="tok-p">(</span><span class="tok-mf">14.0</span><span class="tok-p">,</span> <span class="tok-mf">3.0</span><span class="tok-p">)</span> <span class="tok-c1"># initial size (in em)</span>
         <span class="tok-p">)</span>
 
 <span class="tok-k">class</span> <span class="tok-nc">RocketState</span><span class="tok-p">(</span><span class="tok-n">Enum</span><span class="tok-p">):</span>
@@ -1849,7 +1861,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
 <span class="tok-c1"># Warning, the save/load function below are quite simplistic!</span>
 <span class="tok-k">def</span> <span class="tok-nf">my_app_settings_to_string</span><span class="tok-p">(</span><span class="tok-n">settings</span><span class="tok-p">:</span> <span class="tok-n">MyAppSettings</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-nb">str</span><span class="tok-p">:</span>
-    <span class="tok-n">as_dict</span> <span class="tok-o">=</span> <span class="tok-p">{}</span>
+    <span class="tok-n">as_dict</span><span class="tok-p">:</span> <span class="tok-nb">dict</span><span class="tok-p">[</span><span class="tok-nb">str</span><span class="tok-p">,</span> <span class="tok-n">Any</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-p">{}</span>
     <span class="tok-n">as_dict</span><span class="tok-p">[</span><span class="tok-s2">&quot;motto&quot;</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">input_text_data_to_dict</span><span class="tok-p">(</span><span class="tok-n">settings</span><span class="tok-o">.</span><span class="tok-n">motto</span><span class="tok-p">)</span>
     <span class="tok-n">as_dict</span><span class="tok-p">[</span><span class="tok-s2">&quot;value&quot;</span><span class="tok-p">]</span> <span class="tok-o">=</span> <span class="tok-n">settings</span><span class="tok-o">.</span><span class="tok-n">value</span>
     <span class="tok-k">return</span> <span class="tok-n">json</span><span class="tok-o">.</span><span class="tok-n">dumps</span><span class="tok-p">(</span><span class="tok-n">as_dict</span><span class="tok-p">)</span>
@@ -1905,31 +1917,35 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
             <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_runner_params</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">app_window_params</span><span class="tok-o">.</span><span class="tok-n">hidden</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
 
 
-<span class="tok-c1"># Display a button that will show an additional window</span>
+<span class="tok-c1"># Display a button that will add another dockable window during execution</span>
 <span class="tok-k">def</span> <span class="tok-nf">demo_show_additional_window</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>
-    <span class="tok-c1"># Notes:</span>
-    <span class="tok-c1">#     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows</span>
-    <span class="tok-c1">#       from the code inside a window&#39;s `GuiFunction` (since this GuiFunction will be called while iterating</span>
-    <span class="tok-c1">#       on this vector!)</span>
-    <span class="tok-c1">#     - there are two ways to dynamically add windows:</span>
-    <span class="tok-c1">#           * either make them initially invisible, and exclude them from the view menu (such as shown here)</span>
-    <span class="tok-c1">#           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame</span>
-    <span class="tok-n">window_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Additional Window&quot;</span>
+    <span class="tok-c1"># In order to add a dockable window during execution, you should use</span>
+    <span class="tok-c1">#     hello_imgui.add_dockable_window()</span>
+    <span class="tok-c1"># Note: you should not modify manually the content of runnerParams.docking_params.dockable_windows</span>
+    <span class="tok-c1">#       (since HelloImGui is constantly looping on it)</span>
 
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_font</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">title_font</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Dynamically add window&quot;</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">pop_font</span><span class="tok-p">()</span>
 
+    <span class="tok-n">window_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Additional Window&quot;</span>
     <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Show additional window&quot;</span><span class="tok-p">):</span>
-        <span class="tok-n">runner_params</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_runner_params</span><span class="tok-p">()</span>
-        <span class="tok-n">additional_window_ptr</span> <span class="tok-o">=</span> <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">docking_params</span><span class="tok-o">.</span><span class="tok-n">dockable_window_of_name</span><span class="tok-p">(</span>
-            <span class="tok-n">window_name</span>
+        <span class="tok-n">additional_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
+        <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">label</span> <span class="tok-o">=</span> <span class="tok-n">window_name</span>
+        <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">include_in_view_menu</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>  <span class="tok-c1"># this window is not shown in the view menu,</span>
+        <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">remember_is_visible</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>  <span class="tok-c1"># its visibility is not saved in the settings file,</span>
+        <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">dock_space_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MiscSpace&quot;</span>  <span class="tok-c1"># when shown, it will appear in MiscSpace.</span>
+        <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;This is the additional window&quot;</span><span class="tok-p">)</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">add_dockable_window</span><span class="tok-p">(</span>
+            <span class="tok-n">additional_window</span><span class="tok-p">,</span>
+            <span class="tok-n">force_dockspace</span><span class="tok-o">=</span><span class="tok-kc">False</span>  <span class="tok-c1"># means that the window will be docked to the last space it was docked to</span>
+                                   <span class="tok-c1"># i.e. dock_space_name is ignored if the user previously moved the window to another space</span>
         <span class="tok-p">)</span>
-        <span class="tok-k">if</span> <span class="tok-n">additional_window_ptr</span><span class="tok-p">:</span>
-            <span class="tok-c1"># additional_window_ptr.include_in_view_menu = True</span>
-            <span class="tok-n">additional_window_ptr</span><span class="tok-o">.</span><span class="tok-n">is_visible</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
-    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">is_item_hovered</span><span class="tok-p">():</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_tooltip</span><span class="tok-p">(</span><span class="tok-s2">&quot;By clicking this button, you can show an additional window&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_item_tooltip</span><span class="tok-p">(</span><span class="tok-s2">&quot;By clicking this button, you can show an additional window&quot;</span><span class="tok-p">)</span>
+
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Remove additional window&quot;</span><span class="tok-p">):</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">remove_dockable_window</span><span class="tok-p">(</span><span class="tok-n">window_name</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_item_tooltip</span><span class="tok-p">(</span><span class="tok-s2">&quot;By clicking this button, you can remove the additional window&quot;</span><span class="tok-p">)</span>
 
 
 <span class="tok-k">def</span> <span class="tok-nf">demo_basic_widgets</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>
@@ -2144,7 +2160,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
             <span class="tok-c1"># Display a image of the haiku below with Japanese characters</span>
             <span class="tok-c1"># with an informative tooltip</span>
             <span class="tok-n">haiku_image_height</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mf">5.0</span><span class="tok-p">)</span>
-            <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/haiku.png&quot;</span><span class="tok-p">,</span> <span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mf">0.0</span><span class="tok-p">,</span> <span class="tok-n">haiku_image_height</span><span class="tok-p">))</span>
+            <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/haiku.png&quot;</span><span class="tok-p">,</span> <span class="tok-p">(</span><span class="tok-mf">0.0</span><span class="tok-p">,</span> <span class="tok-n">haiku_image_height</span><span class="tok-p">))</span>
             <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_item_tooltip</span><span class="tok-p">(</span><span class="tok-s2">&quot;&quot;&quot;</span>
 <span class="tok-s2">Extract from Wikipedia</span>
 <span class="tok-s2">-------------------------------------------------------------------------------</span>
@@ -2192,7 +2208,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
             <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">tree_node</span><span class="tok-p">(</span><span class="tok-s2">&quot;Text Display&quot;</span><span class="tok-p">):</span>
                 <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Hello, world!&quot;</span><span class="tok-p">)</span>
-                <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text_colored</span><span class="tok-p">(</span><span class="tok-n">ImVec4</span><span class="tok-p">(</span><span class="tok-mf">1.0</span><span class="tok-p">,</span> <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">1.0</span><span class="tok-p">),</span> <span class="tok-s2">&quot;Some text&quot;</span><span class="tok-p">)</span>
+                <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text_colored</span><span class="tok-p">((</span><span class="tok-mf">1.0</span><span class="tok-p">,</span> <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">1.0</span><span class="tok-p">),</span> <span class="tok-s2">&quot;Some text&quot;</span><span class="tok-p">)</span>
                 <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text_disabled</span><span class="tok-p">(</span><span class="tok-s2">&quot;Disabled text&quot;</span><span class="tok-p">)</span>
                 <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text_wrapped</span><span class="tok-p">(</span><span class="tok-s2">&quot;This is a long text that will be wrapped in the window&quot;</span><span class="tok-p">)</span>
                 <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">tree_pop</span><span class="tok-p">()</span>
@@ -2228,20 +2244,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
     <span class="tok-k">with</span> <span class="tok-n">imgui_ctx</span><span class="tok-o">.</span><span class="tok-n">begin_group</span><span class="tok-p">():</span>
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_font</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">emoji_font</span><span class="tok-p">)</span>
-        <span class="tok-c1"># ✌️ (Victory Hand Emoji)</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;</span><span class="tok-se">\U0000270C\U0000FE0F</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
-
-        <span class="tok-c1"># ❤️ (Red Heart Emoji)</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;</span><span class="tok-se">\U00002764\U0000FE0F</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
-
-        <span class="tok-c1"># 🌴 (Palm Tree Emoji)</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;</span><span class="tok-se">\U0001F334</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
-
-        <span class="tok-c1"># 🚀 (Rocket Emoji)</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;</span><span class="tok-se">\U0001F680</span><span class="tok-s2">&quot;</span><span class="tok-p">)</span>
+        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;✌❤🌴🚀&quot;</span><span class="tok-p">)</span>
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">pop_font</span><span class="tok-p">()</span>
 
     <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">is_item_hovered</span><span class="tok-p">():</span>
@@ -2249,7 +2252,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Colored Fonts&quot;</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_font</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">color_font</span><span class="tok-p">)</span>
-    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;C O L O R !&quot;</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;COLOR!&quot;</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">pop_font</span><span class="tok-p">()</span>
     <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">is_item_hovered</span><span class="tok-p">():</span>
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_tooltip</span><span class="tok-p">(</span><span class="tok-s2">&quot;Example with Playbox-FREE.otf font&quot;</span><span class="tok-p">)</span>
@@ -2382,21 +2385,21 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">split_main_misc</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
     <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
     <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MiscSpace&quot;</span>
-    <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">down</span>
+    <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir</span><span class="tok-o">.</span><span class="tok-n">down</span>
     <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.25</span>
 
     <span class="tok-c1"># Then, add a space to the left which occupies a column whose width is 25% of the app width</span>
     <span class="tok-n">split_main_command</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
     <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
     <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;CommandSpace&quot;</span>
-    <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">left</span>
+    <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir</span><span class="tok-o">.</span><span class="tok-n">left</span>
     <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.25</span>
 
     <span class="tok-c1"># Then, add CommandSpace2 below MainDockSpace</span>
     <span class="tok-n">split_main_command2</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
     <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
     <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;CommandSpace2&quot;</span>
-    <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">down</span>
+    <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir</span><span class="tok-o">.</span><span class="tok-n">down</span>
     <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.5</span>
 
     <span class="tok-n">splits</span> <span class="tok-o">=</span> <span class="tok-p">[</span><span class="tok-n">split_main_misc</span><span class="tok-p">,</span> <span class="tok-n">split_main_command</span><span class="tok-p">,</span> <span class="tok-n">split_main_command2</span><span class="tok-p">]</span>
@@ -2419,19 +2422,19 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">split_main_command</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
     <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
     <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;CommandSpace&quot;</span>
-    <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">down</span>
+    <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir</span><span class="tok-o">.</span><span class="tok-n">down</span>
     <span class="tok-n">split_main_command</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.5</span>
 
     <span class="tok-n">split_main_command2</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
     <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;CommandSpace&quot;</span>
     <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;CommandSpace2&quot;</span>
-    <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">right</span>
+    <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir</span><span class="tok-o">.</span><span class="tok-n">right</span>
     <span class="tok-n">split_main_command2</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.4</span>
 
     <span class="tok-n">split_main_misc</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
     <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
     <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MiscSpace&quot;</span>
-    <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">left</span>
+    <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir</span><span class="tok-o">.</span><span class="tok-n">left</span>
     <span class="tok-n">split_main_misc</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.5</span>
 
     <span class="tok-n">splits</span> <span class="tok-o">=</span> <span class="tok-p">[</span><span class="tok-n">split_main_command</span><span class="tok-p">,</span> <span class="tok-n">split_main_command2</span><span class="tok-p">,</span> <span class="tok-n">split_main_misc</span><span class="tok-p">]</span>
@@ -2466,22 +2469,8 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">dear_imgui_demo_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
     <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">label</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Dear ImGui Demo&quot;</span>
     <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">dock_space_name</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
-    <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">imgui_window_flags</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">WindowFlags_</span><span class="tok-o">.</span><span class="tok-n">menu_bar</span>
+    <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">imgui_window_flags</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">WindowFlags_</span><span class="tok-o">.</span><span class="tok-n">menu_bar</span><span class="tok-o">.</span><span class="tok-n">value</span>
     <span class="tok-n">dear_imgui_demo_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">show_demo_window</span>  <span class="tok-c1"># type: ignore</span>
-
-    <span class="tok-c1"># additional_window is initially not visible (and not mentioned in the view menu).</span>
-    <span class="tok-c1"># it will be opened only if the user chooses to display it</span>
-    <span class="tok-n">additional_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
-    <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">label</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;Additional Window&quot;</span>
-    <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">is_visible</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>  <span class="tok-c1"># this window is initially hidden,</span>
-    <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">include_in_view_menu</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>  <span class="tok-c1"># it is not shown in the view menu,</span>
-    <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">remember_is_visible</span> <span class="tok-o">=</span> <span class="tok-p">(</span>
-        <span class="tok-kc">False</span>  <span class="tok-c1"># its visibility is not saved in the settings file,</span>
-    <span class="tok-p">)</span>
-    <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">dock_space_name</span> <span class="tok-o">=</span> <span class="tok-p">(</span>
-        <span class="tok-s2">&quot;MiscSpace&quot;</span>  <span class="tok-c1"># when shown, it will appear in MiscSpace.</span>
-    <span class="tok-p">)</span>
-    <span class="tok-n">additional_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;This is the additional window&quot;</span><span class="tok-p">)</span>
 
     <span class="tok-c1"># alternativeThemeWindow</span>
     <span class="tok-n">alternative_theme_window</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockableWindow</span><span class="tok-p">()</span>
@@ -2497,7 +2486,6 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
         <span class="tok-n">layout_customization_window</span><span class="tok-p">,</span>
         <span class="tok-n">logs_window</span><span class="tok-p">,</span>
         <span class="tok-n">dear_imgui_demo_window</span><span class="tok-p">,</span>
-        <span class="tok-n">additional_window</span><span class="tok-p">,</span>
         <span class="tok-n">alternative_theme_window</span><span class="tok-p">,</span>
     <span class="tok-p">]</span>
     <span class="tok-k">return</span> <span class="tok-n">dockable_windows</span>
@@ -2532,6 +2520,27 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">tabs_layout</span><span class="tok-o">.</span><span class="tok-n">docking_splits</span> <span class="tok-o">=</span> <span class="tok-p">[]</span>
 
     <span class="tok-k">return</span> <span class="tok-p">[</span><span class="tok-n">alternative_layout</span><span class="tok-p">,</span> <span class="tok-n">tabs_layout</span><span class="tok-p">]</span>
+
+
+<span class="tok-c1">##########################################################################</span>
+<span class="tok-c1">#    Define the app initial theme</span>
+<span class="tok-c1">##########################################################################</span>
+<span class="tok-k">def</span> <span class="tok-nf">setup_my_theme</span><span class="tok-p">():</span>
+<span class="tok-w">    </span><span class="tok-sd">&quot;&quot;&quot;Example of theme customization at App startup</span>
+<span class="tok-sd">    This function is called in the callback `setup_imgui_style` in order to apply a custom theme:</span>
+<span class="tok-sd">        runner_params.callbacks.setup_imgui_style = setup_my_theme()</span>
+<span class="tok-sd">    &quot;&quot;&quot;</span>
+    <span class="tok-c1"># Apply default style</span>
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">imgui_default_settings</span><span class="tok-o">.</span><span class="tok-n">setup_default_imgui_style</span><span class="tok-p">()</span>
+    <span class="tok-c1"># Create a tweaked theme</span>
+    <span class="tok-n">tweaked_theme</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">ImGuiTweakedTheme</span><span class="tok-p">()</span>
+    <span class="tok-n">tweaked_theme</span><span class="tok-o">.</span><span class="tok-n">theme</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">ImGuiTheme_</span><span class="tok-o">.</span><span class="tok-n">material_flat</span>
+    <span class="tok-n">tweaked_theme</span><span class="tok-o">.</span><span class="tok-n">tweaks</span><span class="tok-o">.</span><span class="tok-n">rounding</span> <span class="tok-o">=</span> <span class="tok-mf">10.0</span>
+    <span class="tok-c1"># Apply the tweaked theme</span>
+    <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">apply_tweaked_theme</span><span class="tok-p">(</span><span class="tok-n">tweaked_theme</span><span class="tok-p">)</span>  <span class="tok-c1"># Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui:  hello_imgui.push_tweaked_theme(tweaked_theme) / hello_imgui.pop_tweaked_theme()</span>
+    <span class="tok-c1"># Then apply further modifications to ImGui style</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_style</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">item_spacing</span> <span class="tok-o">=</span> <span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mi">6</span><span class="tok-p">,</span> <span class="tok-mi">4</span><span class="tok-p">)</span>  <span class="tok-c1"># Reduce spacing between items ((8, 4) by default)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_style</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">set_color_</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Col_</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-p">(</span><span class="tok-mf">0.8</span><span class="tok-p">,</span> <span class="tok-mf">0.8</span><span class="tok-p">,</span> <span class="tok-mf">0.85</span><span class="tok-p">,</span> <span class="tok-mf">1.0</span><span class="tok-p">))</span>  <span class="tok-c1"># Change text color</span>
 
 
 <span class="tok-c1">##########################################################################</span>
@@ -2616,18 +2625,8 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">post_init</span> <span class="tok-o">=</span> <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">load_my_app_settings</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">)</span>
     <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">before_exit</span> <span class="tok-o">=</span> <span class="tok-k">lambda</span><span class="tok-p">:</span> <span class="tok-n">save_my_app_settings</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">)</span>
 
-    <span class="tok-c1">#</span>
     <span class="tok-c1"># Change style</span>
-    <span class="tok-c1">#</span>
-    <span class="tok-c1"># 1. Change theme</span>
-    <span class="tok-n">tweaked_theme</span> <span class="tok-o">=</span> <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">imgui_window_params</span><span class="tok-o">.</span><span class="tok-n">tweaked_theme</span>
-    <span class="tok-n">tweaked_theme</span><span class="tok-o">.</span><span class="tok-n">theme</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">ImGuiTheme_</span><span class="tok-o">.</span><span class="tok-n">material_flat</span>
-    <span class="tok-n">tweaked_theme</span><span class="tok-o">.</span><span class="tok-n">tweaks</span><span class="tok-o">.</span><span class="tok-n">rounding</span> <span class="tok-o">=</span> <span class="tok-mf">10.0</span>
-    <span class="tok-c1"># 2. Customize ImGui style at startup</span>
-    <span class="tok-k">def</span> <span class="tok-nf">setup_imgui_style</span><span class="tok-p">():</span>
-        <span class="tok-c1"># Reduce spacing between items ((8, 4) by default)</span>
-        <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_style</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">item_spacing</span> <span class="tok-o">=</span> <span class="tok-p">(</span><span class="tok-mi">6</span><span class="tok-p">,</span> <span class="tok-mi">4</span><span class="tok-p">)</span>
-    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">setup_imgui_style</span> <span class="tok-o">=</span> <span class="tok-n">setup_imgui_style</span>
+    <span class="tok-n">runner_params</span><span class="tok-o">.</span><span class="tok-n">callbacks</span><span class="tok-o">.</span><span class="tok-n">setup_imgui_style</span> <span class="tok-o">=</span> <span class="tok-n">setup_my_theme</span>
 
     <span class="tok-c1">#</span>
     <span class="tok-c1"># Part 2: Define the application layout and windows</span>
@@ -2807,7 +2806,8 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)</span>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE</span>
+<span class="tok-c1">// A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)</span>
 <span class="tok-c1">//</span>
 <span class="tok-c1">// It demonstrates how to:</span>
 <span class="tok-c1">// - enable ImGui Test Engine via runnerParams.useImGuiTestEngine</span>
@@ -3051,7 +3051,10 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">dockingParams</span><span class="tok-p">.</span><span class="tok-n">dockingSplits</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">CreateDefaultDockingSplits</span><span class="tok-p">();</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">dockingParams</span><span class="tok-p">.</span><span class="tok-n">dockableWindows</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">CreateDockableWindows</span><span class="tok-p">();</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">dockingParams</span><span class="tok-p">.</span><span class="tok-n">layoutCondition</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockingLayoutCondition</span><span class="tok-o">::</span><span class="tok-n">ApplicationStart</span><span class="tok-p">;</span>
-<span class="tok-p">}</span></code></pre>
+<span class="tok-p">}</span>
+<span class="tok-cp">#else</span>
+<span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">**</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{}</span>
+<span class="tok-cp">#endif </span><span class="tok-c1">// #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE</span></code></pre>
 </div>
 </div>
 </div>
@@ -3090,7 +3093,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-c1"># Our tests, that will automate the application</span>
 <span class="tok-n">test_open_popup</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">Test</span>
 <span class="tok-n">test_capture_screenshot</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">Test</span>
-<span class="tok-n">test_custom_gui</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">Test</span>
+<span class="tok-n">test_custom_gui</span><span class="tok-p">:</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">Test</span>
 
 <span class="tok-n">g_show_stack_tool_window</span> <span class="tok-o">=</span> <span class="tok-kc">False</span>
 <span class="tok-n">nb_alt_a</span> <span class="tok-o">=</span> <span class="tok-mi">0</span>
@@ -3258,13 +3261,13 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-n">split_main_demo</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
     <span class="tok-n">split_main_demo</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
     <span class="tok-n">split_main_demo</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;ImGuiDemoSpace&quot;</span>
-    <span class="tok-n">split_main_demo</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">right</span>
+    <span class="tok-n">split_main_demo</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir</span><span class="tok-o">.</span><span class="tok-n">right</span>
     <span class="tok-n">split_main_demo</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.5</span>
 
     <span class="tok-n">split_main_test</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">DockingSplit</span><span class="tok-p">()</span>
     <span class="tok-n">split_main_test</span><span class="tok-o">.</span><span class="tok-n">initial_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;MainDockSpace&quot;</span>
     <span class="tok-n">split_main_test</span><span class="tok-o">.</span><span class="tok-n">new_dock</span> <span class="tok-o">=</span> <span class="tok-s2">&quot;TestEngineSpace&quot;</span>
-    <span class="tok-n">split_main_test</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir_</span><span class="tok-o">.</span><span class="tok-n">down</span>
+    <span class="tok-n">split_main_test</span><span class="tok-o">.</span><span class="tok-n">direction</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">Dir</span><span class="tok-o">.</span><span class="tok-n">down</span>
     <span class="tok-n">split_main_test</span><span class="tok-o">.</span><span class="tok-n">ratio</span> <span class="tok-o">=</span> <span class="tok-mf">0.7</span>
 
     <span class="tok-k">return</span> <span class="tok-p">[</span><span class="tok-n">split_main_demo</span><span class="tok-p">,</span> <span class="tok-n">split_main_test</span><span class="tok-p">]</span>
@@ -3288,7 +3291,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 
     <span class="tok-k">def</span> <span class="tok-nf">show_test_engine_windows</span><span class="tok-p">():</span>
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">test_engine</span><span class="tok-o">.</span><span class="tok-n">show_test_engine_windows</span><span class="tok-p">(</span>
-            <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_imgui_test_engine</span><span class="tok-p">(),</span> <span class="tok-kc">None</span>
+            <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_imgui_test_engine</span><span class="tok-p">(),</span> <span class="tok-kc">True</span>
         <span class="tok-p">)</span>
 
     <span class="tok-n">test_engine_window</span><span class="tok-o">.</span><span class="tok-n">gui_function</span> <span class="tok-o">=</span> <span class="tok-n">show_test_engine_windows</span>
@@ -3479,6 +3482,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">    </span><span class="tok-n">ImmVision</span><span class="tok-o">::</span><span class="tok-n">ImageParams</span><span class="tok-w"> </span><span class="tok-n">immvisionParamsSobel</span><span class="tok-p">;</span>
 
 <span class="tok-w">    </span><span class="tok-n">AppStateProcess</span><span class="tok-p">(</span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">image_file</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{</span>
+<span class="tok-w">        </span><span class="tok-n">ImmVision</span><span class="tok-o">::</span><span class="tok-n">UseBgrColorOrder</span><span class="tok-p">();</span>
 <span class="tok-w">        </span><span class="tok-n">image</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">cv</span><span class="tok-o">::</span><span class="tok-n">imread</span><span class="tok-p">(</span><span class="tok-n">image_file</span><span class="tok-p">);</span>
 <span class="tok-w">        </span><span class="tok-n">sobelParams</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">SobelParams</span><span class="tok-p">();</span>
 <span class="tok-w">        </span><span class="tok-n">imageSobel</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">ComputeSobel</span><span class="tok-p">(</span><span class="tok-n">image</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">sobelParams</span><span class="tok-p">);</span>
@@ -3533,9 +3537,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">os.path</span>
-
-<span class="tok-kn">import</span> <span class="tok-nn">numpy</span> <span class="tok-k">as</span> <span class="tok-nn">np</span>
+<pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">numpy</span> <span class="tok-k">as</span> <span class="tok-nn">np</span>
 <span class="tok-kn">from</span> <span class="tok-nn">typing</span> <span class="tok-kn">import</span> <span class="tok-n">Any</span>
 <span class="tok-kn">from</span> <span class="tok-nn">numpy.typing</span> <span class="tok-kn">import</span> <span class="tok-n">NDArray</span>
 <span class="tok-kn">from</span> <span class="tok-nn">enum</span> <span class="tok-kn">import</span> <span class="tok-n">Enum</span>
@@ -3545,6 +3547,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui</span><span class="tok-p">,</span> <span class="tok-n">immvision</span><span class="tok-p">,</span> <span class="tok-n">immapp</span><span class="tok-p">,</span> <span class="tok-n">imgui_md</span>
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>
 
+<span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">use_rgb_color_order</span><span class="tok-p">()</span>
 
 <span class="tok-n">ImageRgb</span> <span class="tok-o">=</span> <span class="tok-n">NDArray</span><span class="tok-p">[</span><span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">uint8</span><span class="tok-p">]</span>
 <span class="tok-n">ImageFloat</span> <span class="tok-o">=</span> <span class="tok-n">NDArray</span><span class="tok-p">[</span><span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">floating</span><span class="tok-p">[</span><span class="tok-n">Any</span><span class="tok-p">]]</span>
@@ -3582,7 +3585,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-n">r</span> <span class="tok-o">=</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">Sobel</span><span class="tok-p">(</span>
         <span class="tok-n">blurred</span><span class="tok-p">,</span> <span class="tok-n">ddepth</span><span class="tok-o">=</span><span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">CV_64F</span><span class="tok-p">,</span> <span class="tok-n">dx</span><span class="tok-o">=</span><span class="tok-n">dx</span><span class="tok-p">,</span> <span class="tok-n">dy</span><span class="tok-o">=</span><span class="tok-n">dy</span><span class="tok-p">,</span> <span class="tok-n">ksize</span><span class="tok-o">=</span><span class="tok-n">params</span><span class="tok-o">.</span><span class="tok-n">k_size</span><span class="tok-p">,</span> <span class="tok-n">scale</span><span class="tok-o">=</span><span class="tok-n">good_scale</span>
     <span class="tok-p">)</span>
-    <span class="tok-k">return</span> <span class="tok-n">r</span>
+    <span class="tok-k">return</span> <span class="tok-n">r</span>  <span class="tok-c1"># type: ignore</span>
 
 
 <span class="tok-k">def</span> <span class="tok-nf">gui_sobel_params</span><span class="tok-p">(</span><span class="tok-n">params</span><span class="tok-p">:</span> <span class="tok-n">SobelParams</span><span class="tok-p">)</span> <span class="tok-o">-&gt;</span> <span class="tok-nb">bool</span><span class="tok-p">:</span>
@@ -3643,7 +3646,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-n">immvision_params_sobel</span><span class="tok-p">:</span> <span class="tok-n">immvision</span><span class="tok-o">.</span><span class="tok-n">ImageParams</span>
 
     <span class="tok-k">def</span> <span class="tok-fm">__init__</span><span class="tok-p">(</span><span class="tok-bp">self</span><span class="tok-p">,</span> <span class="tok-n">image_file</span><span class="tok-p">:</span> <span class="tok-nb">str</span><span class="tok-p">):</span>
-        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">image</span> <span class="tok-o">=</span> <span class="tok-n">cv2</span><span class="tok-o">.</span><span class="tok-n">imread</span><span class="tok-p">(</span><span class="tok-n">image_file</span><span class="tok-p">)</span>
+        <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">image</span> <span class="tok-o">=</span> <span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">imread_pil</span><span class="tok-p">(</span><span class="tok-n">image_file</span><span class="tok-p">)</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">sobel_params</span> <span class="tok-o">=</span> <span class="tok-n">SobelParams</span><span class="tok-p">()</span>
         <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">image_sobel</span> <span class="tok-o">=</span> <span class="tok-n">compute_sobel</span><span class="tok-p">(</span><span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">image</span><span class="tok-p">,</span> <span class="tok-bp">self</span><span class="tok-o">.</span><span class="tok-n">sobel_params</span><span class="tok-p">)</span>
 
@@ -3664,8 +3667,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_gui</span>
 
     <span class="tok-k">if</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span> <span class="tok-ow">is</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
-        <span class="tok-n">this_dir</span> <span class="tok-o">=</span> <span class="tok-n">os</span><span class="tok-o">.</span><span class="tok-n">path</span><span class="tok-o">.</span><span class="tok-n">dirname</span><span class="tok-p">(</span><span class="tok-vm">__file__</span><span class="tok-p">)</span>
-        <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span> <span class="tok-o">=</span> <span class="tok-n">AppState</span><span class="tok-p">(</span><span class="tok-n">this_dir</span> <span class="tok-o">+</span> <span class="tok-s2">&quot;/../../demos_assets/images/house.jpg&quot;</span><span class="tok-p">)</span>
+        <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">app_state</span> <span class="tok-o">=</span> <span class="tok-n">AppState</span><span class="tok-p">(</span><span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">demos_assets_folder</span><span class="tok-p">()</span> <span class="tok-o">+</span> <span class="tok-s2">&quot;/images/house.jpg&quot;</span><span class="tok-p">)</span>
 
     <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span>
 <span class="tok-w">        </span><span class="tok-sd">&quot;&quot;&quot;</span>
@@ -3693,10 +3695,14 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-p">)</span>
 
 
+<span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">():</span>
+    <span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">set_hello_imgui_demo_assets_folder</span><span class="tok-p">()</span>
+    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run_with_markdown</span><span class="tok-p">(</span><span class="tok-n">demo_gui</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">1000</span><span class="tok-p">,</span> <span class="tok-mi">1000</span><span class="tok-p">))</span>
+
+
 <span class="tok-c1"># The main entry point will run our GUI function</span>
 <span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
-    <span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">set_hello_imgui_demo_assets_folder</span><span class="tok-p">()</span>
-    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run_with_markdown</span><span class="tok-p">(</span><span class="tok-n">demo_gui</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">1000</span><span class="tok-p">,</span> <span class="tok-mi">1000</span><span class="tok-p">))</span></code></pre>
+    <span class="tok-n">main</span><span class="tok-p">()</span></code></pre>
 </div>
 </div>
 </div>
@@ -4291,7 +4297,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
                 <span class="tok-n">v_max</span><span class="tok-o">=</span><span class="tok-mf">1.0</span><span class="tok-p">,</span>
                 <span class="tok-n">speed</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">,</span>
                 <span class="tok-nb">format</span><span class="tok-o">=</span><span class="tok-s2">&quot;</span><span class="tok-si">%.2f</span><span class="tok-s2">&quot;</span><span class="tok-p">,</span>
-                <span class="tok-n">variant</span><span class="tok-o">=</span><span class="tok-n">knob_type</span><span class="tok-p">,</span>
+                <span class="tok-n">variant</span><span class="tok-o">=</span><span class="tok-n">knob_type</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span>
                 <span class="tok-n">size</span><span class="tok-o">=</span><span class="tok-n">knob_size</span><span class="tok-p">,</span>
                 <span class="tok-n">flags</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">,</span>
                 <span class="tok-n">steps</span><span class="tok-o">=</span><span class="tok-mi">100</span><span class="tok-p">,</span>
@@ -4310,7 +4316,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
                 <span class="tok-n">v_max</span><span class="tok-o">=</span><span class="tok-mi">15</span><span class="tok-p">,</span>
                 <span class="tok-n">speed</span><span class="tok-o">=</span><span class="tok-mi">0</span><span class="tok-p">,</span>
                 <span class="tok-nb">format</span><span class="tok-o">=</span><span class="tok-s2">&quot;</span><span class="tok-si">%02i</span><span class="tok-s2">&quot;</span><span class="tok-p">,</span>
-                <span class="tok-n">variant</span><span class="tok-o">=</span><span class="tok-n">knob_type</span><span class="tok-p">,</span>
+                <span class="tok-n">variant</span><span class="tok-o">=</span><span class="tok-n">knob_type</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span>
                 <span class="tok-n">steps</span><span class="tok-o">=</span><span class="tok-mi">10</span><span class="tok-p">,</span>
                 <span class="tok-n">size</span><span class="tok-o">=</span><span class="tok-n">knob_size</span><span class="tok-p">,</span>
             <span class="tok-p">)</span>
@@ -4383,7 +4389,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
 
     <span class="tok-n">_changed</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">flag</span> <span class="tok-o">=</span> <span class="tok-n">imgui_toggle</span><span class="tok-o">.</span><span class="tok-n">toggle</span><span class="tok-p">(</span>
-        <span class="tok-s2">&quot;Animated Toggle&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">flag</span><span class="tok-p">,</span> <span class="tok-n">imgui_toggle</span><span class="tok-o">.</span><span class="tok-n">ToggleFlags_</span><span class="tok-o">.</span><span class="tok-n">animated</span>
+        <span class="tok-s2">&quot;Animated Toggle&quot;</span><span class="tok-p">,</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">flag</span><span class="tok-p">,</span> <span class="tok-n">imgui_toggle</span><span class="tok-o">.</span><span class="tok-n">ToggleFlags_</span><span class="tok-o">.</span><span class="tok-n">animated</span><span class="tok-o">.</span><span class="tok-n">value</span>
     <span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
 
@@ -4513,6 +4519,9 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-nd">@immapp</span><span class="tok-o">.</span><span class="tok-n">static</span><span class="tok-p">(</span><span class="tok-n">selected_filename</span><span class="tok-o">=</span><span class="tok-s2">&quot;&quot;</span><span class="tok-p">)</span>
 <span class="tok-k">def</span> <span class="tok-nf">demo_imfile_dialog</span><span class="tok-p">():</span>
     <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_imfile_dialog</span>  <span class="tok-c1"># Access to static variable via static</span>
+    <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">has_submodule</span>
+    <span class="tok-k">if</span> <span class="tok-ow">not</span> <span class="tok-n">has_submodule</span><span class="tok-p">(</span><span class="tok-s2">&quot;im_file_dialog&quot;</span><span class="tok-p">):</span>
+        <span class="tok-k">return</span>
     <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">im_file_dialog</span> <span class="tok-k">as</span> <span class="tok-n">ifd</span>
 
     <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span>
@@ -4642,12 +4651,12 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
         <span class="tok-n">w</span> <span class="tok-o">=</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">get_cool_bar_item_width</span><span class="tok-p">()</span>
 
         <span class="tok-c1"># Display transparent image and check if clicked</span>
-        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/bear_transparent.png&quot;</span><span class="tok-p">,</span> <span class="tok-p">(</span><span class="tok-n">w</span><span class="tok-p">,</span> <span class="tok-n">w</span><span class="tok-p">))</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">image_from_asset</span><span class="tok-p">(</span><span class="tok-s2">&quot;images/bear_transparent.png&quot;</span><span class="tok-p">,</span> <span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-n">w</span><span class="tok-p">,</span> <span class="tok-n">w</span><span class="tok-p">))</span>
         <span class="tok-n">clicked</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">is_item_hovered</span><span class="tok-p">()</span> <span class="tok-ow">and</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">is_mouse_clicked</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">)</span>
 
         <span class="tok-c1"># Optional: add a label on the image</span>
         <span class="tok-n">top_left_corner</span> <span class="tok-o">=</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_item_rect_min</span><span class="tok-p">()</span>
-        <span class="tok-n">text_pos</span> <span class="tok-o">=</span> <span class="tok-p">(</span>
+        <span class="tok-n">text_pos</span> <span class="tok-o">=</span> <span class="tok-n">ImVec2</span><span class="tok-p">(</span>
             <span class="tok-n">top_left_corner</span><span class="tok-o">.</span><span class="tok-n">x</span> <span class="tok-o">+</span> <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mf">1.0</span><span class="tok-p">),</span>
             <span class="tok-n">top_left_corner</span><span class="tok-o">.</span><span class="tok-n">y</span> <span class="tok-o">+</span> <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">em_size</span><span class="tok-p">(</span><span class="tok-mf">1.0</span><span class="tok-p">),</span>
         <span class="tok-p">)</span>
@@ -4668,7 +4677,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
         <span class="tok-mf">0.5</span><span class="tok-p">,</span> <span class="tok-mf">0.07</span>
     <span class="tok-p">)</span>  <span class="tok-c1">#  position in the window (ratio of window size)</span>
     <span class="tok-k">if</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">begin_cool_bar</span><span class="tok-p">(</span>
-        <span class="tok-s2">&quot;##CoolBarMain&quot;</span><span class="tok-p">,</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">ImCoolBarFlags_</span><span class="tok-o">.</span><span class="tok-n">horizontal</span><span class="tok-p">,</span> <span class="tok-n">cool_bar_config</span>
+        <span class="tok-s2">&quot;##CoolBarMain&quot;</span><span class="tok-p">,</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">ImCoolBarFlags_</span><span class="tok-o">.</span><span class="tok-n">horizontal</span><span class="tok-o">.</span><span class="tok-n">value</span><span class="tok-p">,</span> <span class="tok-n">cool_bar_config</span>
     <span class="tok-p">):</span>
         <span class="tok-k">for</span> <span class="tok-n">label</span> <span class="tok-ow">in</span> <span class="tok-n">button_labels</span><span class="tok-p">:</span>
             <span class="tok-k">if</span> <span class="tok-n">im_cool_bar</span><span class="tok-o">.</span><span class="tok-n">cool_bar_item</span><span class="tok-p">():</span>
@@ -5048,7 +5057,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-07-05 12:09:36 +0200
+Last updated 2024-11-24 13:30:59 +0100
 </div>
 </div>
 </body>

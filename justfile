@@ -47,3 +47,7 @@ cibuild_docker_manylinux:
 # Run mypy on the bindings
 mypy:
     cd bindings && ./mypy_bindings.sh
+
+# Build the doc
+doc:
+    cd bindings/imgui_bundle/doc/scripts/ && ./build_doc.sh

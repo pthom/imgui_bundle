@@ -7,7 +7,7 @@
 #     gem install pygments.rb
 #     brew install pandoc
 
-this_dir=$(dirname -- "$0")
+this_dir=$(cd "$(dirname "$0")"; pwd)
 doc_dir=$this_dir/..
 repo_dir=$doc_dir/../../..
 gh_pages_dir=$repo_dir/docs
@@ -26,6 +26,9 @@ pandoc -f docbook -t markdown_strict Readme_source_pypi.xml -o ../Readme_pypi.md
 
 
 # Generate multipage html doc for github pages (env_gh_pages)
+echo "gh_pages_dir: $gh_pages_dir"
+#exit
+
 echo "Generating $gh_pages_dir/index.html (for github pages)"
 cp Readme_source.adoc index.adoc  # first copy to index.adoc, so that the main page is index.html
 asciidoctor-multipage --attribute env_gh_pages=1 -D $gh_pages_dir index.adoc

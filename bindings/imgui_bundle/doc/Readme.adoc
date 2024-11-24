@@ -855,28 +855,38 @@ void DemoHideWindow(AppState& appState)
     }
 }
 
-// Display a button that will show an additional window
+// Display a button that will add another dockable window during execution
 void DemoShowAdditionalWindow(AppState& appState)
 {
-    // Notes:
-    //     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
-    //       from the code inside a window's `GuiFunction` (since this GuiFunction will be called while iterating on this vector!)
-    //     - there are two ways to dynamically add windows:
-    //           * either make them initially invisible, and exclude them from the view menu (such as shown here)
-    //           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
-    const char* windowName = "Additional Window";
+    // In order to add a dockable window during execution, you should use
+    //     HelloImGui::AddDockableWindow()
+    // Note: you should not modify manually the content of runnerParams.dockingParams.dockableWindows
+    //       (since HelloImGui is constantly looping on it)
+
     ImGui::PushFont(appState.TitleFont); ImGui::Text("Dynamically add window"); ImGui::PopFont();
+
+    auto currentWindow = ImGui::GetCurrentWindow();
+
+    const char* windowName = "Additional Window";
     if (ImGui::Button("Show additional window"))
     {
-        auto additionalWindowPtr = HelloImGui::GetRunnerParams()->dockingParams.dockableWindowOfName(windowName);
-        if (additionalWindowPtr)
-        {
-            // additionalWindowPtr->includeInViewMenu = true;
-            additionalWindowPtr->isVisible = true;
-        }
+        HelloImGui::DockableWindow additionalWindow;
+        additionalWindow.label = windowName;
+        additionalWindow.includeInViewMenu = false;       // this window is not shown in the view menu,
+        additionalWindow.rememberIsVisible = true;       // its visibility is not saved in the settings file,
+        additionalWindow.dockSpaceName = "MiscSpace";     // when shown, it will appear in MiscSpace.
+        additionalWindow.GuiFunction = [] { ImGui::Text("This is the additional window"); };
+        HelloImGui::AddDockableWindow(
+            additionalWindow,
+            false  // forceDockspace=false: means that the window will be docked to the last space it was docked to
+                   // i.e. dockSpaceName is ignored if the user previously moved the window to another space
+        );
     }
-    if (ImGui::IsItemHovered())
-        ImGui::SetTooltip("By clicking this button, you can show an additional window");
+    ImGui::SetItemTooltip("By clicking this button, you can show an additional window");
+
+    if (ImGui::Button("Remove additional window"))
+        HelloImGui::RemoveDockableWindow(windowName);
+    ImGui::SetItemTooltip("By clicking this button, you can remove the additional window");
 }
 
 void DemoLogs(AppState& appState)
@@ -1158,7 +1168,7 @@ void DemoFonts(AppState& appState)
 #ifdef IMGUI_ENABLE_FREETYPE
     ImGui::Text("Colored Fonts");
     ImGui::PushFont(appState.ColorFont);
-    ImGui::Text("C O L O R !");
+    ImGui::Text("COLOR!");
     ImGui::PopFont();
     if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Example with Playbox-FREE.otf font");
@@ -1395,16 +1405,6 @@ std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState
     dearImGuiDemoWindow.imGuiWindowFlags = ImGuiWindowFlags_MenuBar;
     dearImGuiDemoWindow.GuiFunction = [] { ImGui::ShowDemoWindow(); };
 
-    // additionalWindow is initially not visible (and not mentioned in the view menu).
-    // it will be opened only if the user chooses to display it
-    HelloImGui::DockableWindow additionalWindow;
-    additionalWindow.label = "Additional Window";
-    additionalWindow.isVisible = false;               // this window is initially hidden,
-    additionalWindow.includeInViewMenu = false;       // it is not shown in the view menu,
-    additionalWindow.rememberIsVisible = false;       // its visibility is not saved in the settings file,
-    additionalWindow.dockSpaceName = "MiscSpace";     // when shown, it will appear in MiscSpace.
-    additionalWindow.GuiFunction = [] { ImGui::Text("This is the additional window"); };
-
     // alternativeThemeWindow
     HelloImGui::DockableWindow alternativeThemeWindow;
     // Since this window applies a theme, We need to call "ImGui::Begin" ourselves so
@@ -1419,7 +1419,6 @@ std::vector<HelloImGui::DockableWindow> CreateDockableWindows(AppState& appState
         layoutCustomizationWindow,
         logsWindow,
         dearImGuiDemoWindow,
-        additionalWindow,
         alternativeThemeWindow
     };
     return dockableWindows;
@@ -1458,6 +1457,29 @@ std::vector<HelloImGui::DockingParams> CreateAlternativeLayouts(AppState& appSta
         tabsLayout.dockingSplits = {};
     }
     return {alternativeLayout, tabsLayout};
+}
+
+
+//////////////////////////////////////////////////////////////////////////
+// Define the app initial theme
+//////////////////////////////////////////////////////////////////////////
+void SetupMyTheme()
+{
+    // Example of theme customization at App startup
+    // This function is called in the callback `SetupImGuiStyle` in order to apply a custom theme:
+    //     runnerParams.callbacks.SetupImGuiStyle = SetupMyTheme;
+
+    // Apply default style
+    HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle();
+    // Create a tweaked theme
+    ImGuiTheme::ImGuiTweakedTheme tweakedTheme;
+    tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_MaterialFlat;
+    tweakedTheme.Tweaks.Rounding = 10.0f;
+    // Apply the tweaked theme
+    ImGuiTheme::ApplyTweakedTheme(tweakedTheme); // Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui: ImGuiTheme::PushTweakedTheme(tweakedTheme) / ImGuiTheme::PopTweakedTheme()
+    // Then apply further modifications to ImGui style
+    ImGui::GetStyle().ItemSpacing = ImVec2(6, 4);  // Reduce spacing between items ((8, 4) by default)
+    ImGui::GetStyle().Colors[ImGuiCol_Text] = ImVec4(0.8, 0.8, 0.85, 1.0);  // Change text color
 }
 
 
@@ -1541,18 +1563,8 @@ int main(int, char**)
     runnerParams.callbacks.PostInit = [&appState]   { LoadMyAppSettings(appState);};
     runnerParams.callbacks.BeforeExit = [&appState] { SaveMyAppSettings(appState);};
 
-    //
     // Change style
-    //
-    // 1. Change theme
-    auto& tweakedTheme = runnerParams.imGuiWindowParams.tweakedTheme;
-    tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_MaterialFlat;
-    tweakedTheme.Tweaks.Rounding = 10.f;
-    // 2. Customize ImGui style at startup
-    runnerParams.callbacks.SetupImGuiStyle = []() {
-        // Reduce spacing between items ((8, 4) by default)
-        ImGui::GetStyle().ItemSpacing = ImVec2(6.f, 4.f);
-    };
+    runnerParams.callbacks.SetupImGuiStyle = SetupMyTheme;
 
     //#############################################################################################
     // Part 2: Define the application layout and windows
@@ -1638,7 +1650,7 @@ import time
 
 from imgui_bundle import hello_imgui, icons_fontawesome_6, imgui, immapp, imgui_ctx, ImVec4, ImVec2
 from imgui_bundle.demos_python import demo_utils
-from typing import List
+from typing import List, Any
 
 
 ##########################################################################
@@ -1653,7 +1665,7 @@ class MyAppSettings:
             "Hello, Dear ImGui\n"
             "Unleash your creativity!\n",
             True, # multiline
-            ImVec2(14.0, 3.0) # initial size (in em)
+            (14.0, 3.0) # initial size (in em)
         )
 
 class RocketState(Enum):
@@ -1728,7 +1740,7 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
 
 # Warning, the save/load function below are quite simplistic!
 def my_app_settings_to_string(settings: MyAppSettings) -> str:
-    as_dict = {}
+    as_dict: dict[str, Any] = {}
     as_dict["motto"] = hello_imgui.input_text_data_to_dict(settings.motto)
     as_dict["value"] = settings.value
     return json.dumps(as_dict)
@@ -1784,31 +1796,35 @@ def demo_hide_window(app_state: AppState):
             hello_imgui.get_runner_params().app_window_params.hidden = False
 
 
-# Display a button that will show an additional window
+# Display a button that will add another dockable window during execution
 def demo_show_additional_window(app_state: AppState):
-    # Notes:
-    #     - it is *not* possible to modify the content of the vector runnerParams.dockingParams.dockableWindows
-    #       from the code inside a window's `GuiFunction` (since this GuiFunction will be called while iterating
-    #       on this vector!)
-    #     - there are two ways to dynamically add windows:
-    #           * either make them initially invisible, and exclude them from the view menu (such as shown here)
-    #           * or modify runnerParams.dockingParams.dockableWindows inside the callback RunnerCallbacks.PreNewFrame
-    window_name = "Additional Window"
+    # In order to add a dockable window during execution, you should use
+    #     hello_imgui.add_dockable_window()
+    # Note: you should not modify manually the content of runnerParams.docking_params.dockable_windows
+    #       (since HelloImGui is constantly looping on it)
 
     imgui.push_font(app_state.title_font)
     imgui.text("Dynamically add window")
     imgui.pop_font()
 
+    window_name = "Additional Window"
     if imgui.button("Show additional window"):
-        runner_params = hello_imgui.get_runner_params()
-        additional_window_ptr = runner_params.docking_params.dockable_window_of_name(
-            window_name
+        additional_window = hello_imgui.DockableWindow()
+        additional_window.label = window_name
+        additional_window.include_in_view_menu = False  # this window is not shown in the view menu,
+        additional_window.remember_is_visible = False  # its visibility is not saved in the settings file,
+        additional_window.dock_space_name = "MiscSpace"  # when shown, it will appear in MiscSpace.
+        additional_window.gui_function = lambda: imgui.text("This is the additional window")
+        hello_imgui.add_dockable_window(
+            additional_window,
+            force_dockspace=False  # means that the window will be docked to the last space it was docked to
+                                   # i.e. dock_space_name is ignored if the user previously moved the window to another space
         )
-        if additional_window_ptr:
-            # additional_window_ptr.include_in_view_menu = True
-            additional_window_ptr.is_visible = True
-    if imgui.is_item_hovered():
-        imgui.set_tooltip("By clicking this button, you can show an additional window")
+    imgui.set_item_tooltip("By clicking this button, you can show an additional window")
+
+    if imgui.button("Remove additional window"):
+        hello_imgui.remove_dockable_window(window_name)
+    imgui.set_item_tooltip("By clicking this button, you can remove the additional window")
 
 
 def demo_basic_widgets(app_state: AppState):
@@ -2023,7 +2039,7 @@ def gui_window_alternative_theme(app_state: AppState):
             # Display a image of the haiku below with Japanese characters
             # with an informative tooltip
             haiku_image_height = hello_imgui.em_size(5.0)
-            hello_imgui.image_from_asset("images/haiku.png", ImVec2(0.0, haiku_image_height))
+            hello_imgui.image_from_asset("images/haiku.png", (0.0, haiku_image_height))
             imgui.set_item_tooltip("""
 Extract from Wikipedia
 -------------------------------------------------------------------------------
@@ -2071,7 +2087,7 @@ Handling Japanese font is of course possible within ImGui / Hello ImGui!
 
             if imgui.tree_node("Text Display"):
                 imgui.text("Hello, world!")
-                imgui.text_colored(ImVec4(1.0, 0.5, 0.5, 1.0), "Some text")
+                imgui.text_colored((1.0, 0.5, 0.5, 1.0), "Some text")
                 imgui.text_disabled("Disabled text")
                 imgui.text_wrapped("This is a long text that will be wrapped in the window")
                 imgui.tree_pop()
@@ -2107,20 +2123,7 @@ def demo_fonts(app_state: AppState):
 
     with imgui_ctx.begin_group():
         imgui.push_font(app_state.emoji_font)
-        # ✌️ (Victory Hand Emoji)
-        imgui.text("\U0000270C\U0000FE0F")
-        imgui.same_line()
-
-        # ❤️ (Red Heart Emoji)
-        imgui.text("\U00002764\U0000FE0F")
-        imgui.same_line()
-
-        # 🌴 (Palm Tree Emoji)
-        imgui.text("\U0001F334")
-        imgui.same_line()
-
-        # 🚀 (Rocket Emoji)
-        imgui.text("\U0001F680")
+        imgui.text("✌❤🌴🚀")
         imgui.pop_font()
 
     if imgui.is_item_hovered():
@@ -2128,7 +2131,7 @@ def demo_fonts(app_state: AppState):
 
     imgui.text("Colored Fonts")
     imgui.push_font(app_state.color_font)
-    imgui.text("C O L O R !")
+    imgui.text("COLOR!")
     imgui.pop_font()
     if imgui.is_item_hovered():
         imgui.set_tooltip("Example with Playbox-FREE.otf font")
@@ -2345,22 +2348,8 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar
+    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar.value
     dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
-
-    # additional_window is initially not visible (and not mentioned in the view menu).
-    # it will be opened only if the user chooses to display it
-    additional_window = hello_imgui.DockableWindow()
-    additional_window.label = "Additional Window"
-    additional_window.is_visible = False  # this window is initially hidden,
-    additional_window.include_in_view_menu = False  # it is not shown in the view menu,
-    additional_window.remember_is_visible = (
-        False  # its visibility is not saved in the settings file,
-    )
-    additional_window.dock_space_name = (
-        "MiscSpace"  # when shown, it will appear in MiscSpace.
-    )
-    additional_window.gui_function = lambda: imgui.text("This is the additional window")
 
     # alternativeThemeWindow
     alternative_theme_window = hello_imgui.DockableWindow()
@@ -2376,7 +2365,6 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
         layout_customization_window,
         logs_window,
         dear_imgui_demo_window,
-        additional_window,
         alternative_theme_window,
     ]
     return dockable_windows
@@ -2411,6 +2399,27 @@ def create_alternative_layouts(app_state: AppState) -> List[hello_imgui.DockingP
     tabs_layout.docking_splits = []
 
     return [alternative_layout, tabs_layout]
+
+
+##########################################################################
+#    Define the app initial theme
+##########################################################################
+def setup_my_theme():
+    """Example of theme customization at App startup
+    This function is called in the callback `setup_imgui_style` in order to apply a custom theme:
+        runner_params.callbacks.setup_imgui_style = setup_my_theme()
+    """
+    # Apply default style
+    hello_imgui.imgui_default_settings.setup_default_imgui_style()
+    # Create a tweaked theme
+    tweaked_theme = hello_imgui.ImGuiTweakedTheme()
+    tweaked_theme.theme = hello_imgui.ImGuiTheme_.material_flat
+    tweaked_theme.tweaks.rounding = 10.0
+    # Apply the tweaked theme
+    hello_imgui.apply_tweaked_theme(tweaked_theme)  # Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui:  hello_imgui.push_tweaked_theme(tweaked_theme) / hello_imgui.pop_tweaked_theme()
+    # Then apply further modifications to ImGui style
+    imgui.get_style().item_spacing = ImVec2(6, 4)  # Reduce spacing between items ((8, 4) by default)
+    imgui.get_style().set_color_(imgui.Col_.text.value, (0.8, 0.8, 0.85, 1.0))  # Change text color
 
 
 ##########################################################################
@@ -2495,18 +2504,8 @@ def main():
     runner_params.callbacks.post_init = lambda: load_my_app_settings(app_state)
     runner_params.callbacks.before_exit = lambda: save_my_app_settings(app_state)
 
-    #
     # Change style
-    #
-    # 1. Change theme
-    tweaked_theme = runner_params.imgui_window_params.tweaked_theme
-    tweaked_theme.theme = hello_imgui.ImGuiTheme_.material_flat
-    tweaked_theme.tweaks.rounding = 10.0
-    # 2. Customize ImGui style at startup
-    def setup_imgui_style():
-        # Reduce spacing between items ((8, 4) by default)
-        imgui.get_style().item_spacing = (6, 4)
-    runner_params.callbacks.setup_imgui_style = setup_imgui_style
+    runner_params.callbacks.setup_imgui_style = setup_my_theme
 
     #
     # Part 2: Define the application layout and windows
@@ -2656,6 +2655,7 @@ NOTE: See link:https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test
 {cpp}
 [source, cpp]
 ----
+#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
 // A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)
 //
 // It demonstrates how to:
@@ -2901,6 +2901,9 @@ void ApplyApplicationLayout(HelloImGui::RunnerParams* runnerParams)
     runnerParams->dockingParams.dockableWindows = CreateDockableWindows();
     runnerParams->dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
 }
+#else
+int main(int, const char**) {}
+#endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
 ----
 ====
 
@@ -2936,7 +2939,7 @@ from typing import List
 # Our tests, that will automate the application
 test_open_popup: imgui.test_engine.Test
 test_capture_screenshot: imgui.test_engine.Test
-test_custom_gui = imgui.test_engine.Test
+test_custom_gui: imgui.test_engine.Test
 
 g_show_stack_tool_window = False
 nb_alt_a = 0
@@ -3134,7 +3137,7 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
 
     def show_test_engine_windows():
         imgui.test_engine.show_test_engine_windows(
-            hello_imgui.get_imgui_test_engine(), None
+            hello_imgui.get_imgui_test_engine(), True
         )
 
     test_engine_window.gui_function = show_test_engine_windows
@@ -3321,6 +3324,7 @@ struct AppStateProcess {
     ImmVision::ImageParams immvisionParamsSobel;
 
     AppStateProcess(const std::string& image_file) {
+        ImmVision::UseBgrColorOrder();
         image = cv::imread(image_file);
         sobelParams = SobelParams();
         imageSobel = ComputeSobel(image, sobelParams);
@@ -3372,8 +3376,6 @@ void demo_immvision_process()
 Python:
 [source, python]
 ----
-import os.path
-
 import numpy as np
 from typing import Any
 from numpy.typing import NDArray
@@ -3384,6 +3386,7 @@ import math
 from imgui_bundle import imgui, immvision, immapp, imgui_md
 from imgui_bundle.demos_python import demo_utils
 
+immvision.use_rgb_color_order()
 
 ImageRgb = NDArray[np.uint8]
 ImageFloat = NDArray[np.floating[Any]]
@@ -3421,7 +3424,7 @@ def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
     r = cv2.Sobel(
         blurred, ddepth=cv2.CV_64F, dx=dx, dy=dy, ksize=params.k_size, scale=good_scale
     )
-    return r
+    return r  # type: ignore
 
 
 def gui_sobel_params(params: SobelParams) -> bool:
@@ -3482,7 +3485,7 @@ class AppState:
     immvision_params_sobel: immvision.ImageParams
 
     def __init__(self, image_file: str):
-        self.image = cv2.imread(image_file)
+        self.image = demo_utils.imread_pil(image_file)
         self.sobel_params = SobelParams()
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
 
@@ -3503,8 +3506,7 @@ def demo_gui():
     static = demo_gui
 
     if static.app_state is None:
-        this_dir = os.path.dirname(__file__)
-        static.app_state = AppState(this_dir + "/../../demos_assets/images/house.jpg")
+        static.app_state = AppState(demo_utils.demos_assets_folder() + "/images/house.jpg")
 
     imgui_md.render_unindented(
         """
@@ -3532,10 +3534,14 @@ def demo_gui():
     )
 
 
-# The main entry point will run our GUI function
-if __name__ == "__main__":
+def main():
     demo_utils.set_hello_imgui_demo_assets_folder()
     immapp.run_with_markdown(demo_gui, window_size=(1000, 1000))
+
+
+# The main entry point will run our GUI function
+if __name__ == "__main__":
+    main()
 ----
 ====
 
@@ -4123,7 +4129,7 @@ def demo_knobs():
                 v_max=1.0,
                 speed=0,
                 format="%.2f",
-                variant=knob_type,
+                variant=knob_type.value,
                 size=knob_size,
                 flags=0,
                 steps=100,
@@ -4142,7 +4148,7 @@ def demo_knobs():
                 v_max=15,
                 speed=0,
                 format="%02i",
-                variant=knob_type,
+                variant=knob_type.value,
                 steps=10,
                 size=knob_size,
             )
@@ -4215,7 +4221,7 @@ def demo_toggle():
     imgui.same_line()
 
     _changed, static.flag = imgui_toggle.toggle(
-        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated
+        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated.value
     )
     imgui.same_line()
 
@@ -4345,6 +4351,9 @@ def demo_portable_file_dialogs():
 @immapp.static(selected_filename="")
 def demo_imfile_dialog():
     static = demo_imfile_dialog  # Access to static variable via static
+    from imgui_bundle import has_submodule
+    if not has_submodule("im_file_dialog"):
+        return
     from imgui_bundle import im_file_dialog as ifd
 
     imgui_md.render_unindented(
@@ -4474,12 +4483,12 @@ def demo_cool_bar():
         w = im_cool_bar.get_cool_bar_item_width()
 
         # Display transparent image and check if clicked
-        hello_imgui.image_from_asset("images/bear_transparent.png", (w, w))
+        hello_imgui.image_from_asset("images/bear_transparent.png", ImVec2(w, w))
         clicked = imgui.is_item_hovered() and imgui.is_mouse_clicked(0)
 
         # Optional: add a label on the image
         top_left_corner = imgui.get_item_rect_min()
-        text_pos = (
+        text_pos = ImVec2(
             top_left_corner.x + immapp.em_size(1.0),
             top_left_corner.y + immapp.em_size(1.0),
         )
@@ -4500,7 +4509,7 @@ def demo_cool_bar():
         0.5, 0.07
     )  #  position in the window (ratio of window size)
     if im_cool_bar.begin_cool_bar(
-        "##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal, cool_bar_config
+        "##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal.value, cool_bar_config
     ):
         for label in button_labels:
             if im_cool_bar.cool_bar_item():
