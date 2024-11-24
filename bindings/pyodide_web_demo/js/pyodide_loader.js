@@ -35,7 +35,7 @@ async function loadPyodideAndPackages() {
         pyodide._api._skip_unwind_fatal_error = true;
 
         // Determine the base URL dynamically
-        const baseUrl = window.location.origin;
+        const baseUrl = `${window.location.origin}${window.location.pathname}`;
         console.log('Base URL:', baseUrl);
 
         // List of packages to install
