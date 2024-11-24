@@ -53,9 +53,10 @@ imgui_bundle_demo="imgui_bundle.demos_python.demo_imgui_bundle:main"
 [tool.scikit-build]
 wheel.expand-macos-universal-tags = true
 wheel.packages = ["bindings/imgui_bundle"]
+sdist.exclude = ["bindings/imgui_bundle/doc"]
 
 cmake.version = ">=3.26.1"
-cmake.verbose = true
+build.verbose = true
 logging.level = "INFO"
 
 

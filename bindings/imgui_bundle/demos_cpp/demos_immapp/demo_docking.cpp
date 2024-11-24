@@ -85,11 +85,9 @@ void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.L
     HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
 
     // Load the title font. Also manually merge FontAwesome icons to it
-    appState.TitleFont = HelloImGui::LoadFont("fonts/DroidSans.ttf", 18.f);
     HelloImGui::FontLoadingParams fontLoadingParamsTitleIcons;
-    fontLoadingParamsTitleIcons.mergeToLastFont = true;
-    fontLoadingParamsTitleIcons.useFullGlyphRange = true;
-    appState.TitleFont = HelloImGui::LoadFont("fonts/Font_Awesome_6_Free-Solid-900.otf", 18.f, fontLoadingParamsTitleIcons);
+    fontLoadingParamsTitleIcons.mergeFontAwesome = true;
+    appState.TitleFont = HelloImGui::LoadFont("fonts/Roboto/Roboto-BoldItalic.ttf", 18.f, fontLoadingParamsTitleIcons);
 
     // Load an Emoji font
     HelloImGui::FontLoadingParams fontLoadingParamsEmoji;
@@ -458,7 +456,7 @@ void DemoAssets(AppState& appState)
 
 void DemoFonts(AppState& appState)
 {
-    ImGui::PushFont(appState.TitleFont); ImGui::Text("Fonts - "  ICON_FA_PEN_NIB); ImGui::PopFont();
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Fonts - " ICON_FA_ROCKET); ImGui::PopFont();
 
     ImGui::TextWrapped("Mix icons " ICON_FA_FACE_SMILE " and text " ICON_FA_ROCKET "");
     if (ImGui::IsItemHovered())

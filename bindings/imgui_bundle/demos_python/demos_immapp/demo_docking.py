@@ -72,12 +72,10 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
     hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
 
     # Load the title font
-    app_state.title_font = hello_imgui.load_font("fonts/DroidSans.ttf", 18.0)
+    # app_state.title_font = hello_imgui.load_font("fonts/DroidSans.ttf", 18.0)
     font_loading_params_title_icons = hello_imgui.FontLoadingParams()
-    font_loading_params_title_icons.merge_to_last_font = True
-    font_loading_params_title_icons.use_full_glyph_range = True
-    app_state.title_font = hello_imgui.load_font("fonts/Font_Awesome_6_Free-Solid-900.otf",
-                                                 18.0, font_loading_params_title_icons)
+    font_loading_params_title_icons.merge_font_awesome = True
+    app_state.title_font = hello_imgui.load_font("fonts/Roboto/Roboto-BoldItalic.ttf", 18, font_loading_params_title_icons)
 
     # Load the emoji font
     font_loading_params_emoji = hello_imgui.FontLoadingParams()
@@ -477,7 +475,7 @@ def demo_assets(app_state: AppState):
 
 def demo_fonts(app_state: AppState):
     imgui.push_font(app_state.title_font)
-    imgui.text("Fonts - " + icons_fontawesome_6.ICON_FA_PEN_NIB)
+    imgui.text("Fonts - " + icons_fontawesome_6.ICON_FA_ROCKET)
     imgui.pop_font()
 
     imgui.text_wrapped("Mix icons " + icons_fontawesome_6.ICON_FA_FACE_SMILE + " and text " + icons_fontawesome_6.ICON_FA_ROCKET)
