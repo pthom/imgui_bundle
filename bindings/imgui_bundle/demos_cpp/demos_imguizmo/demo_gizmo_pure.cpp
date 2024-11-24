@@ -97,22 +97,22 @@ void Frustum(float left, float right, float bottom, float top, float znear, floa
     temp2 = right - left;
     temp3 = top - bottom;
     temp4 = zfar - znear;
-    m16[0] = temp / temp2;
-    m16[1] = 0.0;
-    m16[2] = 0.0;
-    m16[3] = 0.0;
-    m16[4] = 0.0;
-    m16[5] = temp / temp3;
-    m16[6] = 0.0;
-    m16[7] = 0.0;
-    m16[8] = (right + left) / temp2;
-    m16[9] = (top + bottom) / temp3;
-    m16[10] = (-zfar - znear) / temp4;
-    m16[11] = -1.0f;
-    m16[12] = 0.0;
-    m16[13] = 0.0;
-    m16[14] = (-temp * zfar) / temp4;
-    m16[15] = 0.0;
+    m16.values[0] = temp / temp2;
+    m16.values[1] = 0.0;
+    m16.values[2] = 0.0;
+    m16.values[3] = 0.0;
+    m16.values[4] = 0.0;
+    m16.values[5] = temp / temp3;
+    m16.values[6] = 0.0;
+    m16.values[7] = 0.0;
+    m16.values[8] = (right + left) / temp2;
+    m16.values[9] = (top + bottom) / temp3;
+    m16.values[10] = (-zfar - znear) / temp4;
+    m16.values[11] = -1.0f;
+    m16.values[12] = 0.0;
+    m16.values[13] = 0.0;
+    m16.values[14] = (-temp * zfar) / temp4;
+    m16.values[15] = 0.0;
 }
 
 void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar, Matrix16& m16)
@@ -125,31 +125,31 @@ void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar
 
 void Cross(const Matrix3& a, const Matrix3& b, Matrix3& r)
 {
-    r[0] = a[1] * b[2] - a[2] * b[1];
-    r[1] = a[2] * b[0] - a[0] * b[2];
-    r[2] = a[0] * b[1] - a[1] * b[0];
+    r.values[0] = a.values[1] * b.values[2] - a.values[2] * b.values[1];
+    r.values[1] = a.values[2] * b.values[0] - a.values[0] * b.values[2];
+    r.values[2] = a.values[0] * b.values[1] - a.values[1] * b.values[0];
 }
 
 float Dot(const Matrix3& a, const Matrix3& b)
 {
-    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    return a.values[0] * b.values[0] + a.values[1] * b.values[1] + a.values[2] * b.values[2];
 }
 
 void Normalize(const Matrix3& a, Matrix3& r)
 {
     float il = 1.f / (sqrtf(Dot(a, a)) + FLT_EPSILON);
-    r[0] = a[0] * il;
-    r[1] = a[1] * il;
-    r[2] = a[2] * il;
+    r.values[0] = a.values[0] * il;
+    r.values[1] = a.values[1] * il;
+    r.values[2] = a.values[2] * il;
 }
 
 void LookAt(const Matrix3& eye, const Matrix3& at, const Matrix3& up, Matrix16& m16)
 {
     Matrix3 X, Y, Z, tmp;
 
-    tmp[0] = eye[0] - at[0];
-    tmp[1] = eye[1] - at[1];
-    tmp[2] = eye[2] - at[2];
+    tmp.values[0] = eye.values[0] - at.values[0];
+    tmp.values[1] = eye.values[1] - at.values[1];
+    tmp.values[2] = eye.values[2] - at.values[2];
     Normalize(tmp, Z);
     Normalize(up, Y);
 
@@ -159,42 +159,42 @@ void LookAt(const Matrix3& eye, const Matrix3& at, const Matrix3& up, Matrix16& 
     Cross(Z, X, tmp);
     Normalize(tmp, Y);
 
-    m16[0] = X[0];
-    m16[1] = Y[0];
-    m16[2] = Z[0];
-    m16[3] = 0.0f;
-    m16[4] = X[1];
-    m16[5] = Y[1];
-    m16[6] = Z[1];
-    m16[7] = 0.0f;
-    m16[8] = X[2];
-    m16[9] = Y[2];
-    m16[10] = Z[2];
-    m16[11] = 0.0f;
-    m16[12] = -Dot(X, eye);
-    m16[13] = -Dot(Y, eye);
-    m16[14] = -Dot(Z, eye);
-    m16[15] = 1.0f;
+    m16.values[0] = X.values[0];
+    m16.values[1] = Y.values[0];
+    m16.values[2] = Z.values[0];
+    m16.values[3] = 0.0f;
+    m16.values[4] = X.values[1];
+    m16.values[5] = Y.values[1];
+    m16.values[6] = Z.values[1];
+    m16.values[7] = 0.0f;
+    m16.values[8] = X.values[2];
+    m16.values[9] = Y.values[2];
+    m16.values[10] = Z.values[2];
+    m16.values[11] = 0.0f;
+    m16.values[12] = -Dot(X, eye);
+    m16.values[13] = -Dot(Y, eye);
+    m16.values[14] = -Dot(Z, eye);
+    m16.values[15] = 1.0f;
 }
 
 void OrthoGraphic(const float l, float r, float b, const float t, float zn, const float zf, Matrix16& m16)
 {
-    m16[0] = 2 / (r - l);
-    m16[1] = 0.0f;
-    m16[2] = 0.0f;
-    m16[3] = 0.0f;
-    m16[4] = 0.0f;
-    m16[5] = 2 / (t - b);
-    m16[6] = 0.0f;
-    m16[7] = 0.0f;
-    m16[8] = 0.0f;
-    m16[9] = 0.0f;
-    m16[10] = 1.0f / (zf - zn);
-    m16[11] = 0.0f;
-    m16[12] = (l + r) / (l - r);
-    m16[13] = (t + b) / (b - t);
-    m16[14] = zn / (zn - zf);
-    m16[15] = 1.0f;
+    m16.values[0] = 2 / (r - l);
+    m16.values[1] = 0.0f;
+    m16.values[2] = 0.0f;
+    m16.values[3] = 0.0f;
+    m16.values[4] = 0.0f;
+    m16.values[5] = 2 / (t - b);
+    m16.values[6] = 0.0f;
+    m16.values[7] = 0.0f;
+    m16.values[8] = 0.0f;
+    m16.values[9] = 0.0f;
+    m16.values[10] = 1.0f / (zf - zn);
+    m16.values[11] = 0.0f;
+    m16.values[12] = (l + r) / (l - r);
+    m16.values[13] = (t + b) / (b - t);
+    m16.values[14] = zn / (zn - zf);
+    m16.values[15] = 1.0f;
 }
 
 inline void rotationY(const float angle, Matrix16& m16)
@@ -202,22 +202,22 @@ inline void rotationY(const float angle, Matrix16& m16)
     float c = cosf(angle);
     float s = sinf(angle);
 
-    m16[0] = c;
-    m16[1] = 0.0f;
-    m16[2] = -s;
-    m16[3] = 0.0f;
-    m16[4] = 0.0f;
-    m16[5] = 1.f;
-    m16[6] = 0.0f;
-    m16[7] = 0.0f;
-    m16[8] = s;
-    m16[9] = 0.0f;
-    m16[10] = c;
-    m16[11] = 0.0f;
-    m16[12] = 0.f;
-    m16[13] = 0.f;
-    m16[14] = 0.f;
-    m16[15] = 1.0f;
+    m16.values[0] = c;
+    m16.values[1] = 0.0f;
+    m16.values[2] = -s;
+    m16.values[3] = 0.0f;
+    m16.values[4] = 0.0f;
+    m16.values[5] = 1.f;
+    m16.values[6] = 0.0f;
+    m16.values[7] = 0.0f;
+    m16.values[8] = s;
+    m16.values[9] = 0.0f;
+    m16.values[10] = c;
+    m16.values[11] = 0.0f;
+    m16.values[12] = 0.f;
+    m16.values[13] = 0.f;
+    m16.values[14] = 0.f;
+    m16.values[15] = 1.0f;
 }
 
 template<typename T>
@@ -229,21 +229,12 @@ std::optional<T> ifFlag(bool flag, const T& value)
         return std::nullopt;
 }
 
-// Change from the original version: returns a tuple (changed, newCameraView)
-struct EditTransformResult
+void EditTransform(
+    Matrix16& cameraView, // may be modified
+    const Matrix16& cameraProjection,
+    Matrix16& objectMatrix, // may be modified
+    bool editTransformDecomposition)
 {
-    bool changed = false;
-    Matrix16 objectMatrix;
-    Matrix16 cameraView;
-};
-[[nodiscard]] EditTransformResult EditTransform(const Matrix16& cameraView, const Matrix16& cameraProjection, const Matrix16& objectMatrix, bool editTransformDecomposition)
-{
-    EditTransformResult r {
-        .changed = false,
-        .objectMatrix = objectMatrix,
-        .cameraView = cameraView
-    };
-
     static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
     static bool useSnap = false;
     static Matrix3 snap({ 1.f, 1.f, 1.f });
@@ -276,8 +267,7 @@ struct EditTransformResult
         edited |= ImGui::InputFloat3("Rt", matrixComponents.Rotation.values);
         edited |= ImGui::InputFloat3("Sc", matrixComponents.Scale.values);
         if (edited) {
-            r.objectMatrix = ImGuizmo::RecomposeMatrixFromComponents(matrixComponents);
-            r.changed = true;
+            objectMatrix = ImGuizmo::RecomposeMatrixFromComponents(matrixComponents);
         }
 
         if (mCurrentGizmoOperation != ImGuizmo::SCALE)
@@ -296,13 +286,13 @@ struct EditTransformResult
         switch (mCurrentGizmoOperation)
         {
             case ImGuizmo::TRANSLATE:
-                ImGui::InputFloat3("Snap", &snap[0]);
+                ImGui::InputFloat3("Snap", &snap.values[0]);
                 break;
             case ImGuizmo::ROTATE:
-                ImGui::InputFloat("Angle Snap", &snap[0]);
+                ImGui::InputFloat("Angle Snap", &snap.values[0]);
                 break;
             case ImGuizmo::SCALE:
-                ImGui::InputFloat("Scale Snap", &snap[0]);
+                ImGui::InputFloat("Scale Snap", &snap.values[0]);
                 break;
             default:
                 break;
@@ -346,7 +336,7 @@ struct EditTransformResult
 
     ImGuizmo::DrawCubes(cameraView, cameraProjection, vec_n_first(gObjectMatrix, gizmoCount));
 
-    auto manipResult = ImGuizmo::Manipulate(
+    ImGuizmo::Manipulate(
         cameraView,
         cameraProjection,
         mCurrentGizmoOperation,
@@ -356,30 +346,20 @@ struct EditTransformResult
         ifFlag(useSnap, snap),
         ifFlag(boundSizing, bounds),
         ifFlag(boundSizingSnap, boundsSnap)
-        );
-    if (manipResult) {
-        r.changed = true;
-        r.objectMatrix = manipResult.Value;
-    }
+    );
 
-    auto viewManipResult = ImGuizmo::ViewManipulate(
+    ImGuizmo::ViewManipulate(
         cameraView,
         camDistance,
         ImVec2(viewManipulateRight - 128, viewManipulateTop),
         ImVec2(128, 128),
         0x10101010);
-    if (viewManipResult) {
-        r.cameraView = viewManipResult.Value;
-        r.changed = true;
-    }
 
     if (useWindow)
     {
         ImGui::End();
         ImGui::PopStyleColor(1);
     }
-
-    return r;
 }
 
 // This returns a closure function that will later be invoked to run the app
@@ -475,12 +455,7 @@ GuiFunction make_closure_demo_guizmo_pure()
         {
             ImGuizmo::SetID(matId);
 
-            auto result = EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId);
-            if (result.changed)
-            {
-                cameraView = result.cameraView;
-                gObjectMatrix[matId] = result.objectMatrix;
-            }
+            EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId);
             if (ImGuizmo::IsUsing())
             {
                 lastUsing = matId;

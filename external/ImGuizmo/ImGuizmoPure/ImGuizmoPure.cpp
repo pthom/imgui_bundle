@@ -42,44 +42,40 @@ namespace IMGUIZMO_NAMESPACE
         DrawGrid(view.values, projection.values, matrix.values, gridSize);
     }
 
-    Editable<Matrix16> Manipulate(
+    bool Manipulate(
         const Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
         MODE mode,
-        const Matrix16& objectMatrix,
+        Matrix16& objectMatrix,
         std::optional<Matrix16> deltaMatrix,
         std::optional<Matrix3> snap,
         std::optional<Matrix6> localBounds,
         std::optional<Matrix3> boundsSnap
     )
     {
-        Matrix16 newMatrix = objectMatrix;
         bool changed = Manipulate(
             view.values,
             projection.values,
             operation,
             mode,
-            newMatrix.values,
+            objectMatrix.values,
             deltaMatrix ? deltaMatrix->values : NULL,
             snap ? snap->values : NULL,
             localBounds ? localBounds->values : NULL,
             boundsSnap ? boundsSnap-> values : NULL
             );
-        return Editable(newMatrix, changed);
+        return changed;
     }
 
-    Editable<Matrix16> ViewManipulate(const Matrix16& view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
+    void ViewManipulate(Matrix16& view, float length, ImVec2 position, ImVec2 size, ImU32 backgroundColor)
     {
-        Matrix16 newView = view;
-        ViewManipulate(newView.values, length, position, size, backgroundColor);
-        bool changed = (newView != view);
-        return Editable(newView, changed);
+        ViewManipulate(view.values, length, position, size, backgroundColor);
     }
 
     // use this version if you did not call Manipulate before and you are just using ViewManipulate
-    Editable<Matrix16> ViewManipulate(
-        const Matrix16& view,
+    void ViewManipulate(
+        Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
         MODE mode,
@@ -89,10 +85,7 @@ namespace IMGUIZMO_NAMESPACE
         ImVec2 size,
         ImU32 backgroundColor)
     {
-        Matrix16 newView = view;
-        ViewManipulate(newView.values, projection.values, operation, mode, matrix.values, length, position, size, backgroundColor);
-        bool changed = (newView != view);
-        return Editable(newView, changed);
+        ViewManipulate(view.values, projection.values, operation, mode, matrix.values, length, position, size, backgroundColor);
     }
 
 

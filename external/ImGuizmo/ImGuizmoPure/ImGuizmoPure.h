@@ -3,7 +3,6 @@
 
 #include "imgui.h"
 #include "ImGuizmo/ImGuizmo.h"
-#include "ImGuizmoPure/Editable.h"
 
 #include <optional>
 #include <vector>
@@ -18,32 +17,24 @@
 
 namespace IMGUIZMO_NAMESPACE
 {
-    template<int N>
-    struct MatrixFixedSize
+    struct Matrix16
     {
-    public:
-        float values[N];
-
-        MatrixFixedSize() { for (int i = 0; i < N; ++i) values[i] = 0.; }
-
-        explicit MatrixFixedSize(const std::array<float, N>& v) {
-            for (int i = 0; i < N; ++i) values[i] = v[i]; }
-
-        // access via [] like with a standard C array
-        float operator[](size_t i) const { return values[i]; }
-        float& operator[](size_t i) { return values[i]; }
-
-        // == and !=
-        bool operator==(const MatrixFixedSize<N>&o){
-            for (int i = 0; i < N; ++i) if (values[i] != o[i]) return false;
-            return true; }
-        bool operator!=(const MatrixFixedSize<N>&o){ return ! (*this == o); }
+        float values[16]{};
+        Matrix16() { for (float & value : values) value = 0.f; }
+        explicit Matrix16(const std::array<float, 16>& v) { for (int i = 0; i < 16; ++i) values[i] = v[i]; }
     };
-
-    using Matrix16 = MatrixFixedSize<16>;
-    using Matrix6 = MatrixFixedSize<6>;
-    using Matrix3 = MatrixFixedSize<3>;
-
+    struct Matrix6
+    {
+        float values[6]{};
+        Matrix6() { for (float & value : values) value = 0.f; }
+        explicit Matrix6(const std::array<float, 6>& v) { for (int i = 0; i < 6; ++i) values[i] = v[i]; }
+    };
+    struct Matrix3
+    {
+        float values[3]{};
+        Matrix3() { for (float & value : values) value = 0.f; }
+        explicit Matrix3(const std::array<float, 3>& v) { for (int i = 0; i < 3; ++i) values[i] = v[i]; }
+    };
 
     struct MatrixComponents
     {
@@ -71,14 +62,13 @@ namespace IMGUIZMO_NAMESPACE
     IMGUI_API void DrawCubes(const Matrix16& view, const Matrix16& projection, const std::vector<Matrix16> & matrices);
     IMGUI_API void DrawGrid(const Matrix16& view, const Matrix16& projection, const Matrix16& matrix, const float gridSize);
 
-    // Manipulate may change the objectMatrix parameter:
-    // if it was changed, it will return (true, newObjectMatrix)
-    [[nodiscard]] IMGUI_API  Editable<Matrix16> Manipulate(
+    // Manipulate may change the objectMatrix parameter (return true if modified)
+    IMGUI_API  bool Manipulate(
         const Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
         MODE mode,
-        const Matrix16& objectMatrix, // This is edited and returned as new_matrix if changed
+        Matrix16& objectMatrix, // This matrix may be modified!
         std::optional<Matrix16> deltaMatrix = std::nullopt,
         std::optional<Matrix3> snap = std::nullopt,
         std::optional<Matrix6> localBounds = std::nullopt,
@@ -90,18 +80,18 @@ namespace IMGUIZMO_NAMESPACE
     // It seems to be a defensive patent in the US. I don't think it will bring troubles using it as
     // other software are using the same mechanics. But just in case, you are now warned!
     //
-    // ViewManipulate may change the view parameter: if it was changed, it will return (true, newView)
-    [[nodiscard]] IMGUI_API Editable<Matrix16> ViewManipulate(
-        const Matrix16& view, //
+    // ViewManipulate may change the view parameter
+    IMGUI_API void ViewManipulate(
+        Matrix16& view, // This matrix may be modified!
         float length,
         ImVec2 position,
         ImVec2 size,
         ImU32 backgroundColor);
 
-    // use this version if you did not call Manipulate before and you are just using ViewManipulate
-    // ViewManipulate may change the view parameter: if it was changed, it will return (true, newView)
-    [[nodiscard]] IMGUI_API Editable<Matrix16> ViewManipulate(
-        const Matrix16& view,
+    // use this version if you did not call Manipulate before, and you are just using ViewManipulate.
+    // ViewManipulate may change the view parameter!
+    IMGUI_API void ViewManipulate(
+        Matrix16& view,
         const Matrix16& projection,
         OPERATION operation,
         MODE mode,

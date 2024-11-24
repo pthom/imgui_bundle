@@ -25,172 +25,11 @@ namespace nb = nanobind;
 using namespace ImGuizmo;
 
 
-// ============================================================================
-// Hairy conversions between MatrixXX and numpy arrays, with shared memory
-// (inspired by my previous work on cvnp (https://github.com/pthom/cvnp)
-// ============================================================================
-
-// ----------------------------------------------------------------------------
-// Part 1 : Conversion utilities
-// ----------------------------------------------------------------------------
-namespace matrix_to_numpy
-{
-    template<int N>
-    std::vector<size_t> matrix_shape()
-    {
-        // we will transcribe a Matrix16 into a 4x4 matrix on python side
-        // But the others will stay flat
-        if (N == 3)
-            return {3};
-        else if (N == 6)
-            return {6};
-        else if (N == 16)
-            return {4, 4};
-        else
-            throw std::runtime_error("pybind_imguizmo.cpp: matrix_to_numpy::matrix_shape => bad N");
-    }
-
-    template<int N>
-    std::vector<int64_t> matrix_strides()
-    {
-        nb::ssize_t s = sizeof(float);
-        if ((N == 3) || (N == 6))
-            return {s};
-        else if (N == 16)
-            return { 4 * s, s };
-        else
-            throw std::runtime_error("pybind_imguizmo.cpp: matrix_to_numpy::matrix_strides => bad N");
-    }
-
-    template<int N>
-    nb::ndarray<> matrix_to_nparray(const MatrixFixedSize<N>& m)
-    {
-        std::vector<size_t> shape = matrix_shape<N>();
-        std::vector<int64_t> strides = matrix_strides<N>();
-
-        // old pybind11 code
-        // static std::string float_numpy_str = nb::format_descriptor<float>::format();
-        // static auto dtype_float = nb::dtype(float_numpy_str);
-        // return nb::array(dtype_float, shape, strides, m.values);
-
-        // new nanobind code:
-        // ndarray constructor signature:
-        //        ndarray(VoidPtr data,
-        //            size_t ndim,
-        //            const size_t *shape,
-        //            handle owner = { },
-        //            const int64_t *strides = nullptr,
-        //            dlpack::dtype dtype = nanobind::dtype<Scalar>(),
-        //            int device_type = DeviceType,
-        //            int device_id = 0,
-        //            char order = Order)
-        nb::ndarray<> a(
-            const_cast<void*>(static_cast<const void*>(m.values)), // Ensure non-const void*
-            shape.size(), // ndim
-            shape.data(), // shape
-            {}, // owner
-            strides.data(), // strides as initializer_list
-            nb::dtype<float>()
-        );
-        return a;
-    }
-
-    template<int N>
-    MatrixFixedSize<N> nparray_to_matrix(nb::ndarray<>& a)
-    {
-        MatrixFixedSize<N> r;
-
-        if (a.itemsize() != sizeof(float))
-            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type np.float32 are supported!");
-
-        // Check input array type
-
-        // old pybind11 code
-        //        if (a.dtype().kind() != nb::format_descriptor<float>::c)
-        //            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type np.float32 are supported!");
-
-        // new nanobind code:
-        if (! (a.dtype().code == static_cast<uint8_t>(nb::dlpack::dtype_code::Float) && a.dtype().bits / 8 == sizeof(float)))
-            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / only numpy arrays of type np.float32 are supported!");
-
-        // Check input array total length
-        if (a.size() != N)
-            throw std::runtime_error("pybind_imguizmo.cpp::nparray_to_matrix / bad size!");
-
-        // ...and then copy its values
-        const float* np_values_ptr = static_cast<const float*>(a.data());
-        for (int i = 0; i < N; ++i)
-            r.values[i] = np_values_ptr[i];
-
-        return r;
-    }
-
-}
-
-// ----------------------------------------------------------------------------
-// Part 1 : Type casters numpy.array <=> MatrixXX
-// ----------------------------------------------------------------------------
-namespace nanobind
-{
-    namespace detail
-    {
-        template<int N>
-        struct type_caster<MatrixFixedSize<N>>
-        {
-            NB_TYPE_CASTER(MatrixFixedSize<N>, const_name("MatrixFixedSize"))
-
-            bool from_python(handle src, uint8_t flags, cleanup_list *cleanup) noexcept
-            {
-                // Check if the source is a numpy.ndarray
-                if (!isinstance<ndarray<>>(src))
-                {
-                    PyErr_WarnFormat(PyExc_Warning, 1, "nanobind: MatrixFixedSize type_caster from_python: expected a numpy.ndarray");
-                    return false;
-                }
-
-                try
-                {
-                    auto a = nb::cast<ndarray<>>(src);
-                    // Store the conversion into the member
-                    // value (of type MatrixFixedSize<N>)
-                    value = matrix_to_numpy::nparray_to_matrix<N>(a);
-                    return true;
-                }
-                catch (const std::runtime_error& e) {
-                    PyErr_WarnFormat(PyExc_Warning, 1, "nanobind: exception in MatrixFixedSize type_caster from_python: %s", e.what());
-                    return false;
-                }
-            }
-
-            static handle from_cpp(const MatrixFixedSize<N> &m, rv_policy policy, cleanup_list *cleanup) noexcept
-            {
-                try {
-                    ndarray<> a = matrix_to_numpy::matrix_to_nparray<N>(m); // This succeeds
-                    // inspired by ndarray.h caster:
-                    // We need to call ndarray_export to export a python handle for the ndarray
-                    auto r = ndarray_export(
-                        a.handle(), // internal array handle
-                        nb::numpy::value, // framework (i.e numpy, pytorch, etc)
-                        policy,
-                        cleanup);
-                    return r;
-                }
-                catch (const std::runtime_error& e) {
-                    PyErr_WarnFormat(PyExc_Warning, 1, "nanobind: exception in MatrixFixedSize type_caster from_cpp: %s", e.what());
-                    return {};
-                }
-            }
-        };
-    }
-}
-
-
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // <litgen_glue_code>  // Autogenerated code below! Do not edit!
 
 // </litgen_glue_code> // Autogenerated code end
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE END !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 
 void py_init_module_imguizmo(nb::module_& m)
@@ -201,50 +40,6 @@ void py_init_module_imguizmo(nb::module_& m)
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     // <litgen_pydef> // Autogenerated code below! Do not edit!
-    ////////////////////    <generated_from:Editable.h>    ////////////////////
-    auto pyClassEditable_SelectedPoints =
-        nb::class_<Editable<SelectedPoints>>
-            (m, "Editable_SelectedPoints", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
-        .def(nb::init<const SelectedPoints &, bool>(),
-            nb::arg("value"), nb::arg("edited") = false)
-        .def("__bool__",
-            &Editable<SelectedPoints>::operator bool, "Invoke this operator to check for user modification")
-        .def_rw("value", &Editable<SelectedPoints>::Value, "")
-        .def_rw("edited", &Editable<SelectedPoints>::Edited, "")
-        ;
-    auto pyClassEditable_int =
-        nb::class_<Editable<int>>
-            (m, "Editable_int", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
-        .def(nb::init<const int &, bool>(),
-            nb::arg("value"), nb::arg("edited") = false)
-        .def("__bool__",
-            &Editable<int>::operator bool, "Invoke this operator to check for user modification")
-        .def_rw("value", &Editable<int>::Value, "")
-        .def_rw("edited", &Editable<int>::Edited, "")
-        ;
-    auto pyClassEditable_Matrix16 =
-        nb::class_<Editable<Matrix16>>
-            (m, "Editable_Matrix16", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
-        .def(nb::init<const Matrix16 &, bool>(),
-            nb::arg("value"), nb::arg("edited") = false)
-        .def("__bool__",
-            &Editable<Matrix16>::operator bool, "Invoke this operator to check for user modification")
-        .def_rw("value", &Editable<Matrix16>::Value, "")
-        .def_rw("edited", &Editable<Matrix16>::Edited, "")
-        ;
-    auto pyClassEditable_Range =
-        nb::class_<Editable<Range>>
-            (m, "Editable_Range", " Editable: a simple structure to extend ImGui's policy of \"returning True when changed\",\n by adding with a modified return value to the functions output")
-        .def(nb::init<const Range &, bool>(),
-            nb::arg("value"), nb::arg("edited") = false)
-        .def("__bool__",
-            &Editable<Range>::operator bool, "Invoke this operator to check for user modification")
-        .def_rw("value", &Editable<Range>::Value, "")
-        .def_rw("edited", &Editable<Range>::Edited, "")
-        ;
-    ////////////////////    </generated_from:Editable.h>    ////////////////////
-
-
     ////////////////////    <generated_from:ImGuizmoPure.h>    ////////////////////
 
     { // <namespace ImGuizmo>
@@ -376,6 +171,51 @@ void py_init_module_imguizmo(nb::module_& m)
 
         pyNsImGuizmo.def("get_style",
             ImGuizmo::GetStyle);
+        auto pyNsImGuizmo_ClassMatrix16 =
+            nb::class_<ImGuizmo::Matrix16>
+                (pyNsImGuizmo, "Matrix16", "")
+            .def_prop_ro("values",
+                [](ImGuizmo::Matrix16 &self) -> nb::ndarray<float, nb::numpy, nb::shape<16>, nb::c_contig>
+                {
+                    return self.values;
+                },
+                "")
+            .def(nb::init<>())
+            .def(nb::init<const std::array<float, 16> &>(),
+                nb::arg("v"))
+            ;
+
+
+        auto pyNsImGuizmo_ClassMatrix6 =
+            nb::class_<ImGuizmo::Matrix6>
+                (pyNsImGuizmo, "Matrix6", "")
+            .def_prop_ro("values",
+                [](ImGuizmo::Matrix6 &self) -> nb::ndarray<float, nb::numpy, nb::shape<6>, nb::c_contig>
+                {
+                    return self.values;
+                },
+                "")
+            .def(nb::init<>())
+            .def(nb::init<const std::array<float, 6> &>(),
+                nb::arg("v"))
+            ;
+
+
+        auto pyNsImGuizmo_ClassMatrix3 =
+            nb::class_<ImGuizmo::Matrix3>
+                (pyNsImGuizmo, "Matrix3", "")
+            .def_prop_ro("values",
+                [](ImGuizmo::Matrix3 &self) -> nb::ndarray<float, nb::numpy, nb::shape<3>, nb::c_contig>
+                {
+                    return self.values;
+                },
+                "")
+            .def(nb::init<>())
+            .def(nb::init<const std::array<float, 3> &>(),
+                nb::arg("v"))
+            ;
+
+
         auto pyNsImGuizmo_ClassMatrixComponents =
             nb::class_<ImGuizmo::MatrixComponents>
                 (pyNsImGuizmo, "MatrixComponents", "")
@@ -387,31 +227,31 @@ void py_init_module_imguizmo(nb::module_& m)
 
 
         pyNsImGuizmo.def("decompose_matrix_to_components",
-            nb::overload_cast<const Matrix16 &>(ImGuizmo::DecomposeMatrixToComponents), nb::arg("matrix"));
+            nb::overload_cast<const ImGuizmo::Matrix16 &>(ImGuizmo::DecomposeMatrixToComponents), nb::arg("matrix"));
 
         pyNsImGuizmo.def("recompose_matrix_from_components",
             nb::overload_cast<const ImGuizmo::MatrixComponents &>(ImGuizmo::RecomposeMatrixFromComponents), nb::arg("matrix_components"));
 
         pyNsImGuizmo.def("draw_cubes",
-            nb::overload_cast<const Matrix16 &, const Matrix16 &, const std::vector<Matrix16> &>(ImGuizmo::DrawCubes), nb::arg("view"), nb::arg("projection"), nb::arg("matrices"));
+            nb::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const std::vector<ImGuizmo::Matrix16> &>(ImGuizmo::DrawCubes), nb::arg("view"), nb::arg("projection"), nb::arg("matrices"));
 
         pyNsImGuizmo.def("draw_grid",
-            nb::overload_cast<const Matrix16 &, const Matrix16 &, const Matrix16 &, const float>(ImGuizmo::DrawGrid), nb::arg("view"), nb::arg("projection"), nb::arg("matrix"), nb::arg("grid_size"));
+            nb::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, const float>(ImGuizmo::DrawGrid), nb::arg("view"), nb::arg("projection"), nb::arg("matrix"), nb::arg("grid_size"));
 
         pyNsImGuizmo.def("manipulate",
-            nb::overload_cast<const Matrix16 &, const Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, const Matrix16 &, std::optional<Matrix16>, std::optional<Matrix3>, std::optional<Matrix6>, std::optional<Matrix3>>(ImGuizmo::Manipulate),
+            nb::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, ImGuizmo::Matrix16 &, std::optional<ImGuizmo::Matrix16>, std::optional<ImGuizmo::Matrix3>, std::optional<ImGuizmo::Matrix6>, std::optional<ImGuizmo::Matrix3>>(ImGuizmo::Manipulate),
             nb::arg("view"), nb::arg("projection"), nb::arg("operation"), nb::arg("mode"), nb::arg("object_matrix"), nb::arg("delta_matrix") = nb::none(), nb::arg("snap") = nb::none(), nb::arg("local_bounds") = nb::none(), nb::arg("bounds_snap") = nb::none(),
-            " Manipulate may change the objectMatrix parameter:\n if it was changed, it will return (True, newObjectMatrix)");
+            "Manipulate may change the objectMatrix parameter (return True if modified)");
 
         pyNsImGuizmo.def("view_manipulate",
-            nb::overload_cast<const Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
+            nb::overload_cast<ImGuizmo::Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
             nb::arg("view"), nb::arg("length"), nb::arg("position"), nb::arg("size"), nb::arg("background_color"),
-            "\n Please note that this cubeview is patented by Autodesk : https://patents.google.com/patent/US7782319B2/en\n It seems to be a defensive patent in the US. I don't think it will bring troubles using it as\n other software are using the same mechanics. But just in case, you are now warned!\n\n ViewManipulate may change the view parameter: if it was changed, it will return (True, newView)");
+            "\n Please note that this cubeview is patented by Autodesk : https://patents.google.com/patent/US7782319B2/en\n It seems to be a defensive patent in the US. I don't think it will bring troubles using it as\n other software are using the same mechanics. But just in case, you are now warned!\n\n ViewManipulate may change the view parameter");
 
         pyNsImGuizmo.def("view_manipulate",
-            nb::overload_cast<const Matrix16 &, const Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
+            nb::overload_cast<ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, ImGuizmo::Matrix16 &, float, ImVec2, ImVec2, ImU32>(ImGuizmo::ViewManipulate),
             nb::arg("view"), nb::arg("projection"), nb::arg("operation"), nb::arg("mode"), nb::arg("matrix"), nb::arg("length"), nb::arg("position"), nb::arg("size"), nb::arg("background_color"),
-            " use this version if you did not call Manipulate before and you are just using ViewManipulate\n ViewManipulate may change the view parameter: if it was changed, it will return (True, newView)");
+            " use this version if you did not call Manipulate before, and you are just using ViewManipulate.\n ViewManipulate may change the view parameter!");
     } // </namespace ImGuizmo>
     ////////////////////    </generated_from:ImGuizmoPure.h>    ////////////////////
 
