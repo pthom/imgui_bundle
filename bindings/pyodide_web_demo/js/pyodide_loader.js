@@ -51,6 +51,7 @@ async function loadPyodideAndPackages() {
 
             // For fiatlight below
             // --------------------
+            'requests',  // For word count demo (we download the Hamlet text)
             'pandas',
             'matplotlib',
             'opencv-python',
@@ -61,12 +62,6 @@ async function loadPyodideAndPackages() {
             "scikit-learn",
             "scipy",
             baseUrl + "/pyodide_dist/scatter_widget_bundle-0.1.0-py3-none-any.whl",
-
-            // Disabled since long
-            // Loading Pygments, asttokens, decorator, executing, ipython, matplotlib-inline, pandas, prompt_toolkit, pure_eval, sqlite3, stack_data, traitlets, wcwidth
-            // 'Pygments',
-            // 'ipython',
-            // 'sqlite3',
         ];
 
         const totalSteps = packages.length;
