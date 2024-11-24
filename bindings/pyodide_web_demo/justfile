@@ -44,7 +44,8 @@ build_and_copy_dist: build_dist copy_dist
 
 # Run the a webserver on port 8005
 srv:
-    python3 -m http.server 8005
+    # python3 -m http.server 8005
+    python3 ../../ci_scripts/webserver_multithread_policy.py -p 8005
 
 rsync_tq:
     rsync -avz --delete . pascal@traineq.org:HTML/probabl/
