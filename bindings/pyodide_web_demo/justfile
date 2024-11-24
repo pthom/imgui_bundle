@@ -9,10 +9,10 @@ default:
 
 
 fiatlight_wheel:
-    cd {{FIATLIGHT_FOLDER}} && python -m build --wheel
+    cd {{FIATLIGHT_FOLDER}} && pipx run build
 
 scatter_wheel:
-    cd {{PROBABL_FOLDER}}/scatter && python -m build --wheel
+    cd {{PROBABL_FOLDER}}/scatter && pipx run build
 
 
 # Copy the dist folder from the remote machine
