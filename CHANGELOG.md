@@ -1,5 +1,17 @@
 Version numbers are synced between hello_imgui and imgui_bundle.
 
+# v1.6.1 (work in progress)
+
+### ImGuizmo
+
+* **Breaking change on ImGuizmo Python API**: Added classes Matrix3/6/16, modifiable by manipulate and view_manipulate
+See [changes in demo_gizmo.py](https://github.com/pthom/imgui_bundle/commit/a455607381eeaa65e05cfa7eac39f68e516b1ec4) to see how to adapt to the new API
+Basically:
+- use `gizmo.Matrix3` / `Matrix6` / `Matrix16` instead of `np.array`
+- `gizmo.manipulate` and `view_manipulate` will modify the matrices they receive
+- if using glm, you will to need to convert to Matrix16, see `glm_mat4x4_to_float_list` in demo_gizmo.py
+
+
 # v1.6.0
 
 ### ImGui
