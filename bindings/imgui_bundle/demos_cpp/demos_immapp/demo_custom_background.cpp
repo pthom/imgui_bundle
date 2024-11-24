@@ -250,6 +250,7 @@ GLuint CreateFullScreenQuadVAO()
 
 // See https://www.shadertoy.com/view/Ms2SD1 / Many thanks to Alexander Alekseev aka TDM
 // This is an old shader, so it uses GLSL 100
+// (See V330 code in python version of this demo: bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py)
 
 
 const char* GVertexShaderSource = R"(#version 100

@@ -205,16 +205,12 @@ def create_full_screen_quad_vao() -> int:
 # ******************************************************************************/
 
 # See https://www.shadertoy.com/view/Ms2SD1 / Many thanks to Alexander Alekseev aka TDM
-# This is an old shader, so it uses GLSL 100
 
+VERTEX_SHADER_SOURCE = """#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec2 aTexCoord;
 
-VERTEX_SHADER_SOURCE = """#version 100
-precision mediump float;
-attribute vec3 aPos;
-attribute vec2 aTexCoord;
-
-varying vec2 TexCoord;
-
+out vec2 TexCoord;
 
 void main()
 {
@@ -224,17 +220,15 @@ void main()
 """
 
 # See https://www.shadertoy.com/view/Ms2SD1 / Many thanks to Alexander Alekseev aka TDM
-FRAGMENT_SHADER_SOURCE = """#version 100
-precision mediump float;
+FRAGMENT_SHADER_SOURCE = """#version 330 core
 /*
  * "Seascape" by Alexander Alekseev aka TDM - 2014
  * License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
  * Contact: tdmaav@gmail.com
  */
 
-
-varying vec2 TexCoord;
-vec4 FragColor;
+in vec2 TexCoord;
+out vec4 FragColor;
 
 
 uniform vec2 iResolution;  // Window resolution
@@ -434,14 +428,8 @@ void main()
     vec2 fragCoord = TexCoord * iResolution;
     float time = iTime * 0.3 + iMouse.x * 0.01;
 
-    // Compute uv based on fragCoord
-    //    vec2 uv = fragCoord / iResolution.xy;
-    //    uv = uv * 2.0 - 1.0;
-    //    uv.x *= iResolution.x / iResolution.y;
-
 #ifdef AA
     vec3 color = vec3(0.0);
-    // Anti-aliasing loop (optional, can be removed for performance)
     for(int i = -1; i <= 1; i++) {
         for(int j = -1; j <= 1; j++) {
             vec2 uv = fragCoord + vec2(i, j) / 3.0;
@@ -453,12 +441,8 @@ void main()
     vec3 color = getPixel(fragCoord, time);
 #endif
 
-    // Post-processing (adjust as needed)
     FragColor = vec4(pow(color, vec3(0.65)), 1.0);
-
-    gl_FragColor = FragColor;
 }
-
 """
 
 
