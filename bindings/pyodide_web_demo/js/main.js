@@ -2,6 +2,10 @@
 // Layouting: tooltips, editor
 // ===========================
 
+
+// =====================================
+// Initialize Split.js and CodeMirror
+// =====================================
 // Initialize Split.js for resizable panes
 Split(['#editor-container', '#canvas-container'], {
     sizes: [25, 75], // Adjusted sizes as per user's update
