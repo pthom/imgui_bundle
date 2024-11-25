@@ -1,13 +1,32 @@
 // js/examples.js
 
-function initial_example_code() {
-    code = `# Write your Python code here
-from imgui_bundle import immapp, imgui_md
+// Initial code in example/_initial_code.py
+// ========================================
 
-immapp.run(lambda: imgui_md.render("# Hello, Pyodide!"), with_markdown=True)
-    `
-    return code;
+// load the initial example code
+async function initial_example_code() {
+    try {
+        const response = await fetch('examples/_initial_code.py');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const content = await response.text();
+        return content; // Return the fetched code
+    } catch (error) {
+        console.error('Error loading initial code:', error);
+        return `# Fallback initial code\nprint("Failed to load initial code.")`;
+    }
 }
+
+// Run this function on page load
+document.addEventListener('DOMContentLoaded', async () => {
+    const initialCode = await initial_example_code();
+    editor.setValue(initialCode); // Set the editor's value to the loaded code
+});
+
+
+// Populate the example selector
+// ==============================
 
 // Function to fetch example metadata from JSON
 async function fetchExampleMetadata() {
@@ -51,7 +70,6 @@ async function populateExampleSelector() {
         exampleSelector.appendChild(option);
     });
 }
-
 
 // Initialize the example selector on page load
 document.addEventListener('DOMContentLoaded', () => {

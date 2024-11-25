@@ -23,7 +23,7 @@ const editor = CodeMirror(document.getElementById('editor'), {
     mode: 'python',
     lineNumbers: true,
     theme: 'eclipse', // Optional: Change theme as desired
-    value: initial_example_code(),
+    value: ""
 });
 
 // Adjust CodeMirror size to fill the container
