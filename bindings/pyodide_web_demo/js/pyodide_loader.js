@@ -49,19 +49,19 @@ async function loadPyodideAndPackages() {
             'imgui_bundle', // 9.7 MB (with 3 MB for demos_assets, 6 MB native)
             'pillow', // 964 KB
 
-            // For fiatlight below
-            // --------------------
-            'requests',  // 61KB, For word count demo (we download the Hamlet text)
-            'pandas', // 5.4 MB
-            'matplotlib', // 6.2 MB
-            'opencv-python', // 11 MB
-            baseUrl + `/pyodide_dist/fiatlight-0.1.0-py3-none-any.whl`, // 3.5 MB
-
-            // For scatter_widget_bundle
-            // --------------------------
-            "scikit-learn", // 6.3 MB
-            "scipy", // 13 MB
-            baseUrl + "/pyodide_dist/scatter_widget_bundle-0.1.0-py3-none-any.whl", // 8.3 KB
+            // // For fiatlight below
+            // // --------------------
+            // 'requests',  // 61KB, For word count demo (we download the Hamlet text)
+            // 'pandas', // 5.4 MB
+            // 'matplotlib', // 6.2 MB
+            // 'opencv-python', // 11 MB
+            // baseUrl + `/pyodide_dist/fiatlight-0.1.0-py3-none-any.whl`, // 3.5 MB
+            //
+            // // For scatter_widget_bundle
+            // // --------------------------
+            // "scikit-learn", // 6.3 MB
+            // "scipy", // 13 MB
+            // baseUrl + "/pyodide_dist/scatter_widget_bundle-0.1.0-py3-none-any.whl", // 8.3 KB
         ];
 
         const totalSteps = packages.length;

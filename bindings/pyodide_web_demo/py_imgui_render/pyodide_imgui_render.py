@@ -17,7 +17,8 @@ logger.setLevel(logging.INFO)
 
 def _log(msg: str):
     # logger.info(msg)
-    js.console.log("pyodide_imgui_render: " + msg)
+    # js.console.log("pyodide_imgui_render: " + msg)
+    pass
 
 
 class _JsAnimationRenderer:
