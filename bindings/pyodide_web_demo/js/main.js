@@ -33,17 +33,26 @@ const editor = CodeMirror(document.getElementById('editor'), {
 // Adjust CodeMirror size to fill the container
 editor.setSize('100%', '100%');
 
+
+// =====================================
+// Initialize Tippy.js tooltips with HTML content
+// =====================================
+
 // Initialize Tippy.js tooltips with HTML content
 document.addEventListener('DOMContentLoaded', () => {
-    tippy('.logo', {
-        allowHTML: true, // Allow HTML content in tooltips
-        placement: 'bottom',
-        animation: 'scale',
-        arrow: true,
-        delay: [100, 100],
-        theme: 'light-border',
-        // Optional: You can customize the tooltip further here
-    });
+    console.log('Initializing Tippy.js tooltips');
+    try {
+        tippy('.logo', { // now this should work
+            allowHTML: true,
+            placement: 'bottom',
+            animation: 'scale',
+            arrow: true,
+            delay: [100, 100],
+            theme: 'light-border',
+        });
+    } catch (error) {
+        console.error('Error loading Tippy.js:', error);
+    }
 });
 
 // =====================================
