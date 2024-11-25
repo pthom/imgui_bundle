@@ -52,3 +52,9 @@ rsync_tq:
 
 gpt_files_content:
     for f in $(cat f.txt); do echo "===========================================================================";echo "File $f"; echo "==========================================================================="; echo '```'; cat $f; echo '```'; done
+
+# Run a git server for imgui_bundle
+git_server_bundle:
+    # (to use on another pc:
+    #     git remote add mac git://192.168.1.22/imgui_bundle)
+    git daemon --reuseaddr --base-path=$(pwd)/../../.. --export-all --verbose --enable=receive-pack
