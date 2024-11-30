@@ -52,8 +52,6 @@ if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
     set(IMMVISION_SERIALIZE_JSON ON CACHE INTERNAL "" FORCE)
     add_subdirectory(immvision)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
-        target_link_libraries(immvision PUBLIC nlohmann_json)
-
         target_link_libraries(imgui_bundle INTERFACE immvision)
         hello_imgui_msvc_target_group_sources(immvision)
         target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMMVISION)
