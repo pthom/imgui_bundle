@@ -8,9 +8,10 @@
 
 from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 import OpenGL.GL as gl  # type: ignore
+# When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard glfw, not the one provided by imgui_bundle)
+import glfw  # type: ignore
 from imgui_bundle import imgui, imgui_ctx
 from imgui_bundle import imgui_md
-import glfw  # type: ignore
 import sys
 
 
