@@ -33,7 +33,7 @@ def _glfw_set_search_path() -> None:
             lib_file = "libglfw.so.3"
         elif os.path.exists(f"{this_dir}/libglfw.3.so"):
             lib_file = "libglfw.3.so"
-        if os.path.exists(f"{this_dir}/libglfw.so.3.3"):
+        elif os.path.exists(f"{this_dir}/libglfw.so.3.3"):
             lib_file = "libglfw.so.3.3"
         else:
             msg = f"Cannot find libglfw.so.3 or libglfw.3.so in {this_dir}\n"
