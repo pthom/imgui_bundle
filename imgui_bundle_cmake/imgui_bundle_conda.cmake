@@ -6,5 +6,7 @@ function(ibd_conda_set_build_options_if_needed)
     if (DEFINED ENV{CONDA_BUILD})
         # With conda, we can rely on finding system libraries (from conda packages)
         set(IMGUI_BUNDLE_PYTHON_USE_SYSTEM_LIBS ON CACHE BOOL "" FORCE)
+        # With conda, we can rely on finding python in the path
+        set(Python_EXECUTABLE "python" CACHE STRING "" FORCE)
     endif()
 endfunction()
