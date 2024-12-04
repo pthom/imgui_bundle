@@ -35,11 +35,13 @@ function(ibd_force_freetype_static_for_python)
 endfunction()
 
 # See https://github.com/pthom/imgui_bundle/issues/261 and https://chatgpt.com/share/66ffb718-6408-8004-be5b-9e74064a8709
-function(ibd_disable_system_libraries_for_python)
-    if(IMGUI_BUNDLE_BUILD_PYTHON AND
-       (NOT "$ENV{CMAKE_TOOLCHAIN_FILE}" MATCHES "vcpkg" AND NOT DEFINED CONAN_BUILD)  # Not using vcpkg or conan
+function(ibd_disable_system_libraries_for_python_for_pure_pip)
+    if( IMGUI_BUNDLE_BUILD_PYTHON
+        AND NOT "$ENV{CMAKE_TOOLCHAIN_FILE}" MATCHES "vcpkg" # Not using vcpkg
+        AND NOT DEFINED CONAN_BUILD  # Not using conan
+        AND NOT IMGUI_BUNDLE_PYTHON_USE_SYSTEM_LIBS  # Not using system libraries (for conda)
        )
-        message(STATUS "ibd_disable_system_libraries_for_python: Disabling system libraries for python bindings")
+        message(STATUS "ibd_disable_system_libraries_for_python_for_pure_pip: Disabling system libraries for python bindings")
         set(CMAKE_FIND_FRAMEWORK NEVER CACHE STRING "" FORCE)
         set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY CACHE STRING "" FORCE)
     endif()

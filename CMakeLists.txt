@@ -267,11 +267,6 @@ if(TARGET imgui_bundle)
     return()
 endif()
 
-# Disable system libraries for python bindings (only if not using vcpkg or conan)
-if (IMGUI_BUNDLE_BUILD_PYTHON)
-    ibd_disable_system_libraries_for_python()
-endif()
-
 
 # Reset installable dependencies at startup
 ibd_reset_installable_dependencies()
@@ -307,7 +302,8 @@ set(CMAKE_CXX_STANDARD 17)
 if (IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(IMGUI_BUNDLE_PYTHON_API)
-    ibd_disable_system_libraries_for_python()
+    # Disable system libraries for python bindings if using pure pip (i.e. not using vcpkg, conan or conda)
+    ibd_disable_system_libraries_for_python_for_pure_pip()
 endif()
 
 
