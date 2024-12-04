@@ -1,6 +1,17 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 
 
+def _is_conda_environment():
+    import os
+    import sys
+    conda_prefix = os.environ.get('CONDA_PREFIX', None)
+    if conda_prefix:
+        # Check if sys.prefix matches CONDA_PREFIX
+        return os.path.normpath(sys.prefix) == os.path.normpath(conda_prefix)
+    return False
+
+
+
 def _glfw_set_search_path() -> None:
     """Sets os.environ["PYGLFW_LIBRARY"] so that glfw provided by pip uses our glfw library.
 
@@ -15,30 +26,40 @@ def _glfw_set_search_path() -> None:
     """
     import os
     import platform
+    import sys
 
-    this_dir = os.path.dirname(__file__)
+    if _is_conda_environment():
+        # use glfw shared library provided by conda
+        if platform.system() == "Windows":
+            search_dir = os.path.join(sys.exec_prefix, "Library", "bin")
+        else:
+            search_dir = os.path.join(sys.exec_prefix, "lib")
+    else:
+        # use glfw shared library provided by imgui_bundle
+        search_dir = os.path.dirname(__file__)
+
     if platform.system() == "Darwin":
         lib_file = "libglfw.3.dylib"
-        if not os.path.exists(f"{this_dir}/{lib_file}"):
-            msg = f"Cannot find {lib_file} in {this_dir}\n"
+        if not os.path.exists(f"{search_dir}/{lib_file}"):
+            msg = f"Cannot find {lib_file} in {search_dir}\n"
             raise FileNotFoundError(msg)
     elif platform.system() == "Windows":
-        if os.path.exists(f"{this_dir}/glfw3.dll"):
+        if os.path.exists(f"{search_dir}/glfw3.dll"):
             lib_file = "glfw3.dll"
         else:
-            msg = f"Cannot find glfw3.dll in {this_dir}\n"
+            msg = f"Cannot find glfw3.dll in {search_dir}\n"
             raise FileNotFoundError(msg)
     elif platform.system() == "Linux":
-        if os.path.exists(f"{this_dir}/libglfw.so.3"):
+        if os.path.exists(f"{search_dir}/libglfw.so.3"):
             lib_file = "libglfw.so.3"
-        elif os.path.exists(f"{this_dir}/libglfw.3.so"):
+        elif os.path.exists(f"{search_dir}/libglfw.3.so"):
             lib_file = "libglfw.3.so"
-        if os.path.exists(f"{this_dir}/libglfw.so.3.3"):
+        elif os.path.exists(f"{search_dir}/libglfw.so.3.3"):
             lib_file = "libglfw.so.3.3"
         else:
-            msg = f"Cannot find libglfw.so.3 or libglfw.3.so in {this_dir}\n"
+            msg = f"Cannot find libglfw.so.3 or libglfw.3.so in {search_dir}\n"
             raise FileNotFoundError(msg)
     else:
         msg = f"Please implement set_pip_glfw_search_path() for your os: {platform.system()}\n"
         raise NotImplementedError(msg)
-    os.environ["PYGLFW_LIBRARY"] = f"{this_dir}/{lib_file}"
+    os.environ["PYGLFW_LIBRARY"] = f"{search_dir}/{lib_file}"
