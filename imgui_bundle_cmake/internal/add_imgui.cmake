@@ -35,7 +35,7 @@ function(add_imgui imgui_dir)
         target_compile_definitions(imgui PUBLIC IMGUI_USER_CONFIG="${IMGUI_BUNDLE_CMAKE_PATH}/imgui_bundle_config.h")
         lg_disable_warning_exception_in_destructor(imgui)
         if(PROJECT_IS_TOP_LEVEL AND NOT SKBUILD)
-            install(TARGETS imgui DESTINATION ./lib/)
+            install(TARGETS imgui DESTINATION lib)
         endif()
 
         if(IMGUI_BUNDLE_BUILD_PYTHON)
