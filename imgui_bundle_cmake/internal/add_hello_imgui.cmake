@@ -20,14 +20,17 @@ function (add_hello_imgui)
 
     # 2. Specific options for python bindings:
     #    i.   Use Glfw + OpenGL3 backend
-    #    ii.  enable null backend
-    #    iii. Build our own glfw as a shared library (see cmake/add_glfw.cmake)
-    #         (the reason is that we need to deploy this library with the python bindings)
+    #    ii. Build our own glfw as a shared library (see cmake/add_glfw.cmake)
+    #         The reason is that we need to deploy this library with the python bindings,
+    #         except for conda, which can deploy it as a conda package (see condition IMGUI_BUNDLE_PYTHON_USE_SYSTEM_LIBS)
     if (IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
         #    i.   Use Opengl3 + glfw backend
         set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
         set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
-        add_glfw_as_python_shared_library()
+        #    ii.  build glfw
+        if (NOT IMGUI_BUNDLE_PYTHON_USE_SYSTEM_LIBS)
+            add_glfw_as_python_shared_library()
+        endif()
     endif()
 
     # 3. Configure hello-imgui with the following options:

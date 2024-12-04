@@ -26,7 +26,7 @@ endfunction()
 
 function(ibd_force_freetype_static_for_python)
     # For python bindings, we force the usage of a static version of freetype
-    if(IMGUI_BUNDLE_BUILD_PYTHON AND HELLOIMGUI_USE_FREETYPE)
+    if(IMGUI_BUNDLE_BUILD_PYTHON AND HELLOIMGUI_USE_FREETYPE AND NOT IMGUI_BUNDLE_PYTHON_USE_SYSTEM_LIBS)
         # if using vcpkg, we suppose it uses the static version of freetype
         if(NOT "$ENV{CMAKE_TOOLCHAIN_FILE}" MATCHES "vcpkg")
             set(HELLOIMGUI_FREETYPE_STATIC ON CACHE BOOL "" FORCE)

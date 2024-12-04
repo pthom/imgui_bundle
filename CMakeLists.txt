@@ -42,6 +42,11 @@ include(${HELLOIMGUI_CMAKE_PATH}/hello_imgui_build_lib.cmake)
 # -----------------------------------------------------------------------------
 ibd_pyodide_set_build_options_if_needed()
 
+# Conda
+# -----------------------------------------------------------------------------
+include(imgui_bundle_cmake/imgui_bundle_conda.cmake)
+ibd_conda_set_build_options_if_needed()
+
 
 # Backends
 # -----------------------------------------------------------------------------
