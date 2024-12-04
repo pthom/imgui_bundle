@@ -7,7 +7,7 @@ cf https://pyodide.org/en/stable/development/building-from-sources.html:
 >    brew install gpatch gnu-sed
 > and re-defining them as patch and sed (in the PATH)
 
-# Clone and buikd
+# Clone and build
 ```
 git clone https://github.com/pyodide/pyodide.git
 git submodule update --init --recursive
