@@ -52,7 +52,14 @@ if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
     set(IMMVISION_SERIALIZE_JSON ON CACHE INTERNAL "" FORCE)
     add_subdirectory(immvision)
     if (IMGUI_BUNDLE_WITH_IMMVISION)
-        target_link_libraries(immvision PUBLIC nlohmann_json)
+
+        find_package(nlohmann_json CONFIG QUIET)
+        if(nlohmann_json_FOUND)
+            target_link_libraries(${HELLOIMGUI_TARGET} PRIVATE nlohmann_json::nlohmann_json)
+        else()
+            # use nlohmann_json provided by hello_imgui if not found in package
+            target_link_libraries(immvision PRIVATE nlohmann_json)
+        endif()
 
         target_link_libraries(imgui_bundle INTERFACE immvision)
         hello_imgui_msvc_target_group_sources(immvision)
