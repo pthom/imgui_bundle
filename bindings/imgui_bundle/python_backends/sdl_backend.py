@@ -36,7 +36,8 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         self.io.display_size = width_ptr[0], height_ptr[0]
 
         def get_clipboard_text(_imgui_context: Any) -> str:
-            return SDL_GetClipboardText()
+            r: ctypes.c_char_p = SDL_GetClipboardText()
+            return r.decode() if r else ""
 
         def set_clipboard_text(_imgui_context: Any, text: str) -> None:
             SDL_SetClipboardText(ctypes.c_char_p(text.encode()))
