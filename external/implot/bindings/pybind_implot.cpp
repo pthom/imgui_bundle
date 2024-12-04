@@ -18,6 +18,7 @@
 
 namespace nb = nanobind;
 
+
 nb::class_<ImPlotPoint>* pyClassImPlotPointPtr  = nullptr;
 
 
@@ -1764,11 +1765,13 @@ void py_init_module_implot(nb::module_& m)
 
             PlotBars_adapt_exclude_params(label_id, xs, ys, bar_size, flags, offset);
         },     nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("bar_size"), nb::arg("flags") = 0, nb::arg("offset") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("plot_bar_groups",
-        [](const std::vector<std::string> & label_ids, const nb::ndarray<> & values, int group_count, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
+        [](const std::vector<std::string> & label_ids, const nb::ndarray<> & values, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
         {
-            auto PlotBarGroups_adapt_c_buffers = [](const char * const label_ids[], const nb::ndarray<> & values, int group_count, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
+            auto PlotBarGroups_adapt_c_buffers = [](const std::vector<std::string> & label_ids, const nb::ndarray<> & values, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -1804,47 +1807,40 @@ void py_init_module_implot(nb::module_& m)
 
                 // call the correct template version by casting
                 if (values_type == 'B')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const uint8_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const uint8_t *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'b')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const int8_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const int8_t *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'H')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const uint16_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const uint16_t *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'h')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const int16_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const int16_t *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'I')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const uint32_t *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'i')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const int32_t *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'L')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const np_uint_l *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'l')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const np_int_l *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'f')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'd')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const double *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const double *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'g')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const long double *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const long double *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 else if (values_type == 'q')
-                    ImPlot::PlotBarGroups(label_ids, static_cast<const long long *>(values_from_pyarray), static_cast<int>(values_count), group_count, group_size, shift, flags);
+                    ImPlot::PlotBarGroups(label_ids, static_cast<const long long *>(values_from_pyarray), static_cast<int>(values_count), group_size, shift, flags);
                 // If we reach this point, the array type is not supported!
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotBarGroups_adapt_c_string_list_no_count = [&PlotBarGroups_adapt_c_buffers](const std::vector<std::string> & label_ids, const nb::ndarray<> & values, int group_count, double group_size = 0.67, double shift = 0, ImPlotBarGroupsFlags flags = 0)
-            {
-                std::vector<const char *> label_ids_ptrs;
-                label_ids_ptrs.reserve(label_ids.size());
-                for (const auto& v: label_ids)
-                    label_ids_ptrs.push_back(v.c_str());
 
-                PlotBarGroups_adapt_c_buffers(label_ids_ptrs.data(), values, group_count, group_size, shift, flags);
-            };
-
-            PlotBarGroups_adapt_c_string_list_no_count(label_ids, values, group_count, group_size, shift, flags);
+            PlotBarGroups_adapt_c_buffers(label_ids, values, group_size, shift, flags);
         },
-        nb::arg("label_ids"), nb::arg("values"), nb::arg("group_count"), nb::arg("group_size") = 0.67, nb::arg("shift") = 0, nb::arg("flags") = 0,
-        "Plots a group of bars. #values is a row-major matrix with #item_count rows and #group_count cols. #label_ids should have #item_count elements.");
+        nb::arg("label_ids"), nb::arg("values"), nb::arg("group_size") = 0.67, nb::arg("shift") = 0, nb::arg("flags") = 0,
+        " Plots a group of bars.\n - values should be a **1 dimension** numpy array of values.\n - label_ids should be a list of strings corresponding to bars labels");
+    // #endif
+    //
 
     m.def("plot_error_bars",
         [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & err, ImPlotErrorBarsFlags flags = 0, int offset = 0)
