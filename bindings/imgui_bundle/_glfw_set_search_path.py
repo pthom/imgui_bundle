@@ -11,7 +11,6 @@ def _is_conda_environment():
     return False
 
 
-
 def _glfw_set_search_path() -> None:
     """Sets os.environ["PYGLFW_LIBRARY"] so that glfw provided by pip uses our glfw library.
 
@@ -24,19 +23,15 @@ def _glfw_set_search_path() -> None:
             glfw = None
 
     """
+    if _is_conda_environment():
+        # let conda handle glfw
+        return
+
     import os
     import platform
-    import sys
 
-    if _is_conda_environment():
-        # use glfw shared library provided by conda
-        if platform.system() == "Windows":
-            search_dir = os.path.join(sys.exec_prefix, "Library", "bin")
-        else:
-            search_dir = os.path.join(sys.exec_prefix, "lib")
-    else:
-        # use glfw shared library provided by imgui_bundle
-        search_dir = os.path.dirname(__file__)
+    # use glfw shared library provided by imgui_bundle
+    search_dir = os.path.dirname(__file__)
 
     if platform.system() == "Darwin":
         lib_file = "libglfw.3.dylib"
