@@ -1,16 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 
 
-def _is_conda_environment():
-    import os
-    import sys
-    conda_prefix = os.environ.get('CONDA_PREFIX', None)
-    if conda_prefix:
-        # Check if sys.prefix matches CONDA_PREFIX
-        return os.path.normpath(sys.prefix) == os.path.normpath(conda_prefix)
-    return False
-
-
 def _glfw_set_search_path() -> None:
     """Sets os.environ["PYGLFW_LIBRARY"] so that glfw provided by pip uses our glfw library.
 
@@ -23,10 +13,6 @@ def _glfw_set_search_path() -> None:
             glfw = None
 
     """
-    if _is_conda_environment():
-        # let conda handle glfw
-        return
-
     import os
     import platform
 
