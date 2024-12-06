@@ -1,6 +1,6 @@
 Version numbers are synced between hello_imgui and imgui_bundle.
 
-# v1.6.1 (work in progress)
+# v1.6.1
 
 ### ImGuizmo
 
@@ -11,6 +11,12 @@ Basically:
 - `gizmo.manipulate` and `view_manipulate` will modify the matrices they receive
 - if using glm, you will to need to convert to Matrix16, see `glm_mat4x4_to_float_list` in demo_gizmo.py
 
+### Python
+- fix bindings for implot.plot_bar_groups
+- sdl pure backend: fix get_clipboard_text
+
+### iOs
+- Improved font rendering on iOS (use static freetype, use retina resolution)
 
 # v1.6.0
 
