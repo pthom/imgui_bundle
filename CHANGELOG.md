@@ -14,6 +14,7 @@ Basically:
 ### Python
 - fix bindings for implot.plot_bar_groups
 - sdl pure backend: fix get_clipboard_text
+- patches for [conda-forge package](https://github.com/conda-forge/imgui-bundle-feedstock) (in preparation)
 
 ### iOs
 - Improved font rendering on iOS (use static freetype, use retina resolution)
