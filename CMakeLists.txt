@@ -186,7 +186,7 @@ endif()
 ibd_check_freetype_availability(freetype_default)
 # Note: to reduce wasm size, you may want to disable freetype on emscripten.
 option(HELLOIMGUI_USE_FREETYPE "Use freetype for text rendering" ${freetype_default})
-ibd_force_freetype_static_for_python()
+ibd_force_freetype_static_for_python()  # Will do **nothing** if IMGUI_BUNDLE_PYTHON_USE_SYSTEM_LIBS (conda) is set
 
 # IMGUI_BUNDLE_BUILD_DEMOS: Build demos
 # -----------------------------------------------------------------------------
