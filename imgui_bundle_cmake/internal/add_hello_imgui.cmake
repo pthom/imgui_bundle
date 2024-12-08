@@ -11,7 +11,7 @@ function (add_hello_imgui)
     #   i. Build static libraries
     set(BUILD_SHARED_LIBS OFF)
     # 1. Build imgui (lib used by hello_imgui)
-    set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/imgui/imgui)
+    set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/hello_imgui/hello_imgui/external/imgui)
     add_imgui(${imgui_dir})
 
     if (APPLE)
@@ -35,7 +35,6 @@ function (add_hello_imgui)
 
     # 3. Configure hello-imgui with the following options:
     #     i. use our own imgui submodule
-    set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/imgui/imgui)
     set(HELLOIMGUI_BUILD_IMGUI OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_IMGUI_SOURCE_DIR ${imgui_dir} CACHE STRING "" FORCE)
 
