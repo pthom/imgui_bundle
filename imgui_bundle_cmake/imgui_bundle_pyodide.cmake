@@ -17,12 +17,13 @@ function(ibd_pyodide_set_build_options_if_needed)
     endif()
 endfunction()
 
-
 function(ibd_pyodide_manually_link_sdl_to_bindings)
     # Important: SDL2 link notes
     # ==========================
+    # See https://github.com/pyodide/pyodide/issues/5248
+
     # SDL2 must be linked to the native bindings _imgui_bundle.
-    # We are already linked to sdl.js (via -s USE_SDL=2) in the emscripten bindings.
+    # We are already linked to library_sdl.js (via -s USE_SDL=2) in the emscripten bindings.
     # However, we need to link to the native SDL2 library as well (other we will get a runtime error: "SDL_SetHint" not found).
     # This has something to do with the fact that this is a SIDE library, with dynamic linking.
     # For whatever reason, this does not work with find_package.
@@ -32,16 +33,26 @@ function(ibd_pyodide_manually_link_sdl_to_bindings)
     # (cf https://github.com/pyodide/pyodide/issues/5029:
     #     emscripten_compute_dom_pk_code is in html5.a (not html5.js))
 
-    # This will not work:
-    # find_package(SDL2 REQUIRED)
-    # target_link_libraries(_imgui_bundle PUBLIC SDL2::SDL2)
 
     # instead we link manually libSDL2.a:
     if(IMGUI_BUNDLE_BUILD_PYODIDE AND EMSCRIPTEN)
-        set(sdl_lib_path ${EMSCRIPTEN_SYSROOT}/lib/wasm32-emscripten/lto/)
-        target_link_directories(_imgui_bundle PUBLIC ${sdl_lib_path})
-        target_link_libraries(_imgui_bundle PUBLIC SDL2)
-        target_link_libraries(_imgui_bundle PUBLIC html5)
+
+        # See https://github.com/pyodide/pyodide/issues/5248#issuecomment-2527421669
+        # (this force the compilation of SDL as a relocatable library)
+        target_compile_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
+        target_link_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
+
+        # Manually link native side of html5
+        set(ems_lib_path_pic ${EMSCRIPTEN_SYSROOT}/lib/wasm32-emscripten/pic)
+        target_link_libraries(_imgui_bundle PUBLIC ${ems_lib_path_pic}/libhtml5.a)
+
+        # Manually link native side of SDL2
+        # Unfortunately, we cannot use the emscripten version of SDL2, because it is broken
+        # (see https://github.com/pyodide/pyodide/issues/5248#issuecomment-2527713044)
+
+        # Instead, we use a custom **manual** build of SDL2 for pyodide with fPIC
+        set(sdl_lib_file ${IMGUI_BUNDLE_PATH}/bindings/pyodide_web_demo/build_resources/libSDL2_emscripten_fPIC/libSDL2.a)
+        target_link_libraries(_imgui_bundle PUBLIC ${sdl_lib_file})
     endif()
 endfunction()
 
