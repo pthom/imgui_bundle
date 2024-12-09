@@ -1,10 +1,10 @@
 add_this_folder_demos()
 if(EMSCRIPTEN)
-    target_link_libraries(imgui_example_glfw_opengl3 PUBLIC GL)
+    target_link_libraries(imgui_example_glfw_opengl3 PRIVATE GL)
 else()
     if (UNIX OR (APPLE AND NOT IOS))
         find_package(OpenGL REQUIRED)
-        target_link_libraries(imgui_example_glfw_opengl3 PUBLIC OpenGL::GL)
+        target_link_libraries(imgui_example_glfw_opengl3 PRIVATE OpenGL::GL)
     endif()
 endif()
 

@@ -7,7 +7,7 @@ set(IMGUIBUNDLE_EXTERNAL_PATH ${IMGUI_BUNDLE_PATH}/external CACHE STRING "" FORC
 ####################################################
 function(add_simple_external_library lib_target_name lib_folder)
     add_library(${lib_target_name} STATIC)
-    target_link_libraries(${lib_target_name} PUBLIC imgui)
+    target_link_libraries(${lib_target_name} PRIVATE imgui)
 
     set(lib_parent_folder ${IMGUIBUNDLE_EXTERNAL_PATH}/${lib_folder})
     target_include_directories(${lib_target_name} PUBLIC $<BUILD_INTERFACE:${lib_parent_folder}>)
