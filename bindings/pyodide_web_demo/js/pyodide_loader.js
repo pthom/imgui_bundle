@@ -18,6 +18,43 @@ async function load_pyodide_imgui_render() {
     }
 }
 
+
+// Debug function to test that SDL is correctly linked
+// see https://github.com/pyodide/pyodide/issues/5248
+async function loadPyodideAndPackages_test_daft_lib() {
+    showLoadingModal();
+    updateProgress(0, 'Loading Pyodide...');
+    pyodide = await loadPyodide();
+    const pythonVersion = pyodide.runPython("import sys; sys.version");
+    updateProgress(7, 'Pyodide loaded.');
+    console.log("Python version:", pythonVersion);
+    await pyodide.loadPackage("micropip");
+    await pyodide.loadPackage("micropip"); // firefox needs this to be loaded twice...
+    updateProgress(10, 'micropip loaded.');
+
+    // SDL support in Pyodide is experimental. The flag is used to bypass certain issues.
+    pyodide._api._skip_unwind_fatal_error = true;
+
+    // Determine the base URL dynamically
+    const baseUrl = `${window.location.origin}${window.location.pathname}`;
+    console.log('Base URL:', baseUrl);
+
+    await pyodide.runPythonAsync(`
+print("Before import micropip")
+import micropip;
+print("Before micropip.install")
+await micropip.install('daft-lib')
+
+print("Before import daft_lib")
+import daft_lib
+print("Before daft_lib.dummy_sdl_call")
+daft_lib.dummy_sdl_call()
+print("After daft_lib.dummy_sdl_call")
+            `);
+
+}
+
+
 // Initialize Pyodide and load packages with progress updates
 async function loadPyodideAndPackages() {
     try {
