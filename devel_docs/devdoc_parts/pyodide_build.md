@@ -18,7 +18,6 @@ git submodule update --init --recursive
 ```bash
 conda env create -f environment.yml
 conda activate pyodide-env
-pip install -r requirements.txt
 ```
 
 * Build minimal packages
@@ -54,29 +53,12 @@ A module which links with SDL will link with library_sdl.js but not libSDL2.a :
 * Attempting to use functions which are defined in libSDL2.a fails (such as as SDL_SetHint)
 
 See https://github.com/pyodide/pyodide/issues/5248:
-and imgui_bundle_cmake/imgui_bundle_pyodide.cmake:ibd_pyodide_manually_link_sdl_to_bindings()
-=> We need to build a custom built SDL2 library with -fPIC
-  and to place it in bindings/pyodide_web_demo/build_resources/libSDL2_emscripten_fPIC/libSDL2.a
-
-How to build a new version of the custom SDL2 library with -fPIC
-(this file is versioned in git, 1.3MB)
+=> We need to trigger the build of a SDL2 library with -fPIC
+Use this command to trigger it (from inside the pyodide repository):
 ```bash
-# Go to pyodide directory
-cd path/to/pyodide
-# Activate emsdk environment
+# Activate emscripten
 source emsdk/emsdk/emsdk_env.sh
-export SDL_PIC_INSTALL_DIR=$(pwd)/temp_install_sdl2_pic
-
-# Go to SDL2 directory inside emsdk
-cd emsdk/emsdk/upstream/emscripten/cache/ports/sdl2/SDL-release-2.28.4
-# Configure and build SDL2 with -fPIC with install prefix=$SDL_PIC_INSTALL_DIR
-chmod +x ./configure
-emconfigure ./configure --host=wasm32-unknown-emscripten --disable-pthreads --disable-assembly --disable-cpuinfo --prefix="$SDL_PIC_INSTALL_DIR" CFLAGS="-fPIC -sUSE_SDL=0 -O3" CXXFLAGS="-fPIC -sUSE_SDL=0 -O3"
-emmake make -j
-emmake make install
-
-# Then copy libSDL2.a from
-#   pyodide/temp_install_sdl2_pic/lib/libSDL2.a
-# to
-#   imgui_bundle/bindings/pyodide_web_demo/build_resources/libSDL2_emscripten_fPIC/
+# Create a fake project to trigger the build of the custom SDL2 library with -fPIC
+# (aka RELOCATABLE=1, within emscripten)
+echo 'int main() {}' | emcc -x c -sUSE_SDL=2 -sRELOCATABLE=1  - -o output.js && rm output.js
 ```
