@@ -26,33 +26,51 @@ function(ibd_pyodide_manually_link_sdl_to_bindings)
     # We are already linked to library_sdl.js (via -s USE_SDL=2) in the emscripten bindings.
     # However, we need to link to the native SDL2 library as well (other we will get a runtime error: "SDL_SetHint" not found).
     # This has something to do with the fact that this is a SIDE library, with dynamic linking.
-    # For whatever reason, this does not work with find_package.
     # Also, libsdl2.a is not in the default search path, so we need to specify the path to it.
 
     # We also need to link to html5.a, which contains emscripten_compute_dom_pk_code
     # (cf https://github.com/pyodide/pyodide/issues/5029:
     #     emscripten_compute_dom_pk_code is in html5.a (not html5.js))
 
-
     # instead we link manually libSDL2.a:
     if(IMGUI_BUNDLE_BUILD_PYODIDE AND EMSCRIPTEN)
-
-        # See https://github.com/pyodide/pyodide/issues/5248#issuecomment-2527421669
-        # (this force the compilation of SDL as a relocatable library)
-        target_compile_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
-        target_link_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
-
-        # Manually link native side of html5
+        # Path to where emscripten stores the pic libraries where pic stands for position independent code
+        # (pic <=> -fPIC (gcc) <=> -sRELOCATABLE=1 (for emscripten))
         set(ems_lib_path_pic ${EMSCRIPTEN_SYSROOT}/lib/wasm32-emscripten/pic)
-        target_link_libraries(_imgui_bundle PUBLIC ${ems_lib_path_pic}/libhtml5.a)
+
+        set(error_message "
+            imgui_bundle pyodide package: manual action required
+            ====================================================
+            Before building this package, you need to trigger the build of
+            a sdl library with -fPIC (aka RELOCATABLE=1, within emscripten).
+
+            Use this command to trigger it, from inside the pyodide repository:
+
+            ```bash
+                # Activate emscripten
+                source emsdk/emsdk/emsdk_env.sh
+                # Create a fake project to trigger the build of the custom SDL2 library with -fPIC
+                # (aka RELOCATABLE=1, within emscripten)
+                echo 'int main() {}' | emcc -x c -sUSE_SDL=2 -sRELOCATABLE=1  - -o output.js && rm output.js && rm output.wasm
+            ```
+
+            See https://github.com/pyodide/pyodide/issues/5248:
+        ")
 
         # Manually link native side of SDL2
-        # Unfortunately, we cannot use the emscripten version of SDL2, because it is broken
-        # (see https://github.com/pyodide/pyodide/issues/5248#issuecomment-2527713044)
-
-        # Instead, we use a custom **manual** build of SDL2 for pyodide with fPIC
-        set(sdl_lib_file ${IMGUI_BUNDLE_PATH}/bindings/pyodide_web_demo/build_resources/libSDL2_emscripten_fPIC/libSDL2.a)
+        set(sdl_lib_file ${ems_lib_path_pic}/libSDL2.a)
+        if (NOT EXISTS ${sdl_lib_file})
+            message(FATAL_ERROR "ibd_pyodide_manually_link_sdl_to_bindings: ${error_message}")
+        endif()
         target_link_libraries(_imgui_bundle PUBLIC ${sdl_lib_file})
+
+        # Manually link native side of html5
+        target_link_libraries(_imgui_bundle PUBLIC ${ems_lib_path_pic}/libhtml5.a)
+
+        # Add -sRELOCATABLE=1 to the target:
+        # This is not useful for the moment, but may become if/when pyodide correctly handles SDL and html native link.
+        target_compile_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
+        target_link_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
     endif()
 endfunction()
 
