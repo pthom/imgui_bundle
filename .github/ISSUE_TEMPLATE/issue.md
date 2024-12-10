@@ -11,17 +11,29 @@ INSTRUCTIONS
 ============
 
 Please read these instructions before submitting your issue.
+Also, please check existing issues and discussions for similar reports before submitting a new one.
 
-If this is the first time you interact on this project, welcome to the community!
-In this case, please give a bit of information on how you are using Dear ImGui Bundle (which project, how long you have been using it, etc.).
+**Start your issue with a greeting**
+If this is the first time you interact on this project, welcome to the community! :-) We’d love to hear a bit about how you are using Dear ImGui Bundle: which project are you working on, how long have you been using Dear ImGui Bundle, etc. Providing context is a good way to get more attention to your issue.
 
-Please check existing issues and discussions for similar reports before submitting a new one.
+**Inform about the status after receiving an answer**
+Please follow up after you receive an answer to confirm whether the solution worked or if you need further assistance.
 
 
 Describe the issue
 ------------------
-Provide a clear and concise description of what the issue is. Include logs or code snippets if necessary. Also, please make sure that your issue's title reflects this concise description.
+Provide a clear and concise description of what the issue is. Include logs or code snippets if necessary.
 
+Also, please make sure that your issue's title reflects this description: use a short and descriptive title that summarizes your issue.
+
+If providing logs, please include them as text, not as a screenshot. Use the snippet below so that they are shown nicely.
+
+Logs for xxx:
+```
+Place your logs here
+```
+
+If the log is long, only include the interesting parts!
 
 
 Version & Platform
