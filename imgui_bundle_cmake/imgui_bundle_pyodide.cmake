@@ -39,22 +39,8 @@ function(ibd_pyodide_manually_link_sdl_to_bindings)
         set(ems_lib_path_pic ${EMSCRIPTEN_SYSROOT}/lib/wasm32-emscripten/pic)
 
         set(error_message "
-            imgui_bundle pyodide package: manual action required
-            ====================================================
-            Before building this package, you need to trigger the build of
-            a sdl library with -fPIC (aka RELOCATABLE=1, within emscripten).
-
-            Use this command to trigger it, from inside the pyodide repository:
-
-            ```bash
-                # Activate emscripten
-                source emsdk/emsdk/emsdk_env.sh
-                # Create a fake project to trigger the build of the custom SDL2 library with -fPIC
-                # (aka RELOCATABLE=1, within emscripten)
-                echo 'int main() {}' | emcc -x c -sUSE_SDL=2 -sRELOCATABLE=1  - -o output.js && rm output.js && rm output.wasm
-            ```
-
-            See https://github.com/pyodide/pyodide/issues/5248:
+        imgui_bundle pyodide package: could not find fPIC SDL2 library
+            See https://github.com/pyodide/pyodide/issues/5248
         ")
 
         # Manually link native side of SDL2
