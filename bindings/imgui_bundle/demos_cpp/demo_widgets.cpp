@@ -1,5 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 #include "imspinner/imspinner.h"
 #include "imgui_toggle/imgui_toggle.h"
 #include "imgui_toggle/imgui_toggle_presets.h"
@@ -298,9 +299,18 @@ void DemoImFileDialog()
 
     ImGuiMd::RenderUnindented(R"(
         # ImFileDialog
-         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.
-         *Not (yet) adapted for High DPI resolution under windows*
+         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui.
         )");
+    ImGui::SameLine();
+    ImGui::Text(ICON_FA_EXCLAMATION_TRIANGLE);
+    ImGui::SetItemTooltip(
+        "It is advised to use Portable File Dialogs instead, which offer native dialogs on each platform, "
+        "as well as notifications and messages.\n\n"
+        "Known limitations of ImFileDialog:\n"
+        "  * Not adapted for High DPI resolution under windows\n"
+        "  * No support for multi-selection\n"
+        "  * Will not work under python with a pure python backend (requires to use `immapp.run()`)"
+    );
 
     if (ImGui::Button("Open file"))
         ifd::FileDialog::Instance().Open(

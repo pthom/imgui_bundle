@@ -9,6 +9,7 @@ from imgui_bundle import (
     immapp,
     ImVec4,
     im_cool_bar,
+    icons_fontawesome,
 )
 from imgui_bundle import imgui_command_palette as imcmd
 from imgui_bundle import portable_file_dialogs as pfd
@@ -270,14 +271,24 @@ def demo_imfile_dialog():
     if not has_submodule("im_file_dialog"):
         return
     from imgui_bundle import im_file_dialog as ifd
-
     imgui_md.render_unindented(
         """
         # ImFileDialog
-         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.
-         *Not (yet) adapted for High DPI resolution under windows*
+         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui.
         """
     )
+    # Warning / low support
+    imgui.same_line()
+    imgui.text(icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE)
+    imgui.set_item_tooltip("""
+    It is advised to use Portable File Dialogs instead, which offer native dialogs on each platform,
+    as well as notifications and messages.
+
+    Known limitations of ImFileDialog:
+    * Not adapted for High DPI resolution under windows
+    * No support for multi-selection
+    * Will not work under python with a pure python backend (requires to use `immapp.run()`)
+    """)
 
     if imgui.button("Open file"):
         ifd.FileDialog.instance().open(
