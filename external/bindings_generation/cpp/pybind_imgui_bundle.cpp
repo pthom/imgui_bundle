@@ -162,6 +162,12 @@ void py_init_module_imgui_bundle(nb::module_& m)
 #endif
 
     m.attr("__bundle_submodules__") = gAllSubmodules;
+
+#ifdef IMGUI_BUNDLE_BUILD_PYODIDE
+    m.attr("__bundle_pyodide__") = true;
+#else
+    m.attr("__bundle_pyodide__") = false;
+#endif
 }
 
 

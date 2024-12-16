@@ -1,6 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
-from imgui_bundle._imgui_bundle import __bundle_submodules__ # type: ignore
+from imgui_bundle._imgui_bundle import __bundle_submodules__, __bundle_pyodide__ # type: ignore
 from imgui_bundle._imgui_bundle import __version__, compilation_time
 from typing import Union, Tuple, List
 
@@ -144,9 +144,15 @@ if has_submodule("with_glfw"):
     _glfw_set_search_path()
     from imgui_bundle import glfw_utils as glfw_utils  # noqa: E402
 
+#
+# Pyodide: patch hello_imgui.run and immapp.run to work with Pyodide
+#
+if __bundle_pyodide__:
+    from imgui_bundle.pyodide_patch_runners import pyodide_do_patch_runners
+    pyodide_do_patch_runners()
+
 
 #
-
 # Override assets folder
 #
 THIS_DIR = os.path.dirname(__file__)
