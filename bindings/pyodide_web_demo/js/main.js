@@ -67,7 +67,6 @@ runButton.addEventListener('click', runEditorPythonCode);
 // =====================================
 async function initialize() {
     await loadPyodideAndPackages();
-    await load_pyodide_imgui_render();
     await passCanvasToPyodide();
 }
 
