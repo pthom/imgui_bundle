@@ -55,7 +55,7 @@ if(HELLOIMGUI_HAS_OPENGL AND NOT IMGUI_BUNDLE_DISABLE_IMMVISION)
 
         find_package(nlohmann_json CONFIG QUIET)
         if(nlohmann_json_FOUND)
-            target_link_libraries(${HELLOIMGUI_TARGET} PRIVATE nlohmann_json::nlohmann_json)
+            target_link_libraries(immvision PRIVATE nlohmann_json::nlohmann_json)
         else()
             # use nlohmann_json provided by hello_imgui if not found in package
             target_link_libraries(immvision PRIVATE nlohmann_json)
