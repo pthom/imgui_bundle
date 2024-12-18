@@ -548,8 +548,9 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImDrawListSharedData =
         nb::class_<ImDrawListSharedData>
-            (m, "ImDrawListSharedData", " Data shared between all ImDrawList instances\n You may want to create your own instance of this if you want to use ImDrawList completely without ImGui. In that case, watch out for future changes to this structure.")
+            (m, "ImDrawListSharedData", " Data shared between all ImDrawList instances\n Conceptually this could have been called e.g. ImDrawListSharedContext\n Typically one ImGui context would create and maintain one of this.\n You may want to create your own instance of you try to ImDrawList completely without ImGui. In that case, watch out for future changes to this structure.")
         .def_rw("tex_uv_white_pixel", &ImDrawListSharedData::TexUvWhitePixel, "UV of white pixel in the atlas")
+        .def_ro("tex_uv_lines", &ImDrawListSharedData::TexUvLines, "UV of anti-aliased lines in the atlas")
         .def_rw("font", &ImDrawListSharedData::Font, "Current/default font (optional, for simplified AddText overload)")
         .def_rw("font_size", &ImDrawListSharedData::FontSize, "Current/default font size (optional, for simplified AddText overload)")
         .def_rw("font_scale", &ImDrawListSharedData::FontScale, "Current/default font scale (== FontSize / Font->FontSize)")
@@ -557,7 +558,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("circle_segment_max_error", &ImDrawListSharedData::CircleSegmentMaxError, "Number of circle segments to use per pixel of radius for AddCircle() etc")
         .def_rw("clip_rect_fullscreen", &ImDrawListSharedData::ClipRectFullscreen, "Value for PushClipRectFullscreen()")
         .def_rw("initial_flags", &ImDrawListSharedData::InitialFlags, "Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)")
-        .def_rw("temp_buffer", &ImDrawListSharedData::TempBuffer, "[Internal] Temp write buffer")
+        .def_rw("temp_buffer", &ImDrawListSharedData::TempBuffer, "Temporary write buffer")
         .def_rw("arc_fast_radius_cutoff", &ImDrawListSharedData::ArcFastRadiusCutoff, "Cutoff radius after which arc drawing will fallback to slower PathArcTo()")
         .def_prop_ro("circle_segment_counts",
             [](ImDrawListSharedData &self) -> nb::ndarray<ImU8, nb::numpy, nb::shape<64>, nb::c_contig>
@@ -565,7 +566,6 @@ void py_init_module_imgui_internal(nb::module_& m)
                 return self.CircleSegmentCounts;
             },
             "Precomputed segment count for given radius before we calculate it dynamically (to avoid calculation overhead)")
-        .def_ro("tex_uv_lines", &ImDrawListSharedData::TexUvLines, "UV of anti-aliased lines in the atlas")
         .def(nb::init<>())
         .def("set_circle_tessellation_max_error",
             &ImDrawListSharedData::SetCircleTessellationMaxError,
@@ -952,8 +952,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::class_<ImGuiInputTextState>
             (m, "InputTextState", " Internal state of the currently focused/edited text input box\n For a given item ID, access with ImGui::GetInputTextState()")
         .def_rw("ctx", &ImGuiInputTextState::Ctx, "parent UI context (needs to be set explicitly by parent).")
+        .def_rw("flags", &ImGuiInputTextState::Flags, "copy of InputText() flags. may be used to check if e.g. ImGuiInputTextFlags_Password is set.")
         .def_rw("id_", &ImGuiInputTextState::ID, "widget id owning the text state")
         .def_rw("text_len", &ImGuiInputTextState::TextLen, "UTF-8 length of the string in TextA (in bytes)")
+        .def_ro("text_src", &ImGuiInputTextState::TextSrc, "== TextA.Data unless read-only, in which case == buf passed to InputText(). Field only set and valid _inside_ the call InputText() call.")
         .def_rw("text_a", &ImGuiInputTextState::TextA, "main UTF8 buffer. TextA.Size is a buffer size! Should always be >= buf_size passed by user (and of course >= CurLenA + 1).")
         .def_rw("text_to_revert_to", &ImGuiInputTextState::TextToRevertTo, "value to revert to when pressing Escape = backup of end-user buffer at the time of focus (in UTF-8, unaltered)")
         .def_rw("callback_text_backup", &ImGuiInputTextState::CallbackTextBackup, "temporary storage for callback to support automatic reconcile of undo-stack")
@@ -963,9 +965,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("cursor_follow", &ImGuiInputTextState::CursorFollow, "set when we want scrolling to follow the current cursor position (not always!)")
         .def_rw("selected_all_mouse_lock", &ImGuiInputTextState::SelectedAllMouseLock, "after a double-click to select all, we ignore further mouse drags to update selection")
         .def_rw("edited", &ImGuiInputTextState::Edited, "edited this frame")
-        .def_rw("flags", &ImGuiInputTextState::Flags, "copy of InputText() flags. may be used to check if e.g. ImGuiInputTextFlags_Password is set.")
-        .def_rw("reload_user_buf", &ImGuiInputTextState::ReloadUserBuf, "force a reload of user buf so it may be modified externally. may be automatic in future version.")
-        .def_rw("reload_selection_start", &ImGuiInputTextState::ReloadSelectionStart, "POSITIONS ARE IN IMWCHAR units *NOT* UTF-8 this is why this is not exposed yet.")
+        .def_rw("want_reload_user_buf", &ImGuiInputTextState::WantReloadUserBuf, "force a reload of user buf so it may be modified externally. may be automatic in future version.")
+        .def_rw("reload_selection_start", &ImGuiInputTextState::ReloadSelectionStart, "")
         .def_rw("reload_selection_end", &ImGuiInputTextState::ReloadSelectionEnd, "")
         .def(nb::init<>())
         .def("clear_text",
@@ -1994,7 +1995,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumDebugLogFlags_ =
-        nb::enum_<ImGuiDebugLogFlags_>(m, "DebugLogFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiDebugLogFlags_>(m, "DebugLogFlags_", nb::is_arithmetic(), "See IMGUI_DEBUG_LOG() and IMGUI_DEBUG_LOG_XXX() macros.")
             .value("none", ImGuiDebugLogFlags_None, "")
             .value("event_error", ImGuiDebugLogFlags_EventError, "Error submitted by IM_ASSERT_USER_ERROR()")
             .value("event_active_id", ImGuiDebugLogFlags_EventActiveId, "")
@@ -2004,6 +2005,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("event_clipper", ImGuiDebugLogFlags_EventClipper, "")
             .value("event_selection", ImGuiDebugLogFlags_EventSelection, "")
             .value("event_io", ImGuiDebugLogFlags_EventIO, "")
+            .value("event_font", ImGuiDebugLogFlags_EventFont, "")
             .value("event_input_routing", ImGuiDebugLogFlags_EventInputRouting, "")
             .value("event_docking", ImGuiDebugLogFlags_EventDocking, "")
             .value("event_viewport", ImGuiDebugLogFlags_EventViewport, "")
@@ -2208,6 +2210,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("active_id_previous_frame_is_alive", &ImGuiContext::ActiveIdPreviousFrameIsAlive, "")
         .def_rw("active_id_previous_frame_has_been_edited_before", &ImGuiContext::ActiveIdPreviousFrameHasBeenEditedBefore, "")
         .def_rw("active_id_previous_frame_window", &ImGuiContext::ActiveIdPreviousFrameWindow, "")
+        .def_rw("active_id_value_on_activation", &ImGuiContext::ActiveIdValueOnActivation, "Backup of initial value at the time of activation. ONLY SET BY SPECIFIC WIDGETS: DragXXX and SliderXXX.")
         .def_rw("last_active_id", &ImGuiContext::LastActiveId, "Store the last non-zero ActiveId, useful for animation.")
         .def_rw("last_active_id_timer", &ImGuiContext::LastActiveIdTimer, "Store the last non-zero ActiveId timer since the beginning of activation, useful for animation.")
         .def_rw("last_key_mods_change_time", &ImGuiContext::LastKeyModsChangeTime, "Record the last time key mods changed (affect repeat delay when using shortcut logic)")
@@ -3090,7 +3093,11 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("get_io_ex",
         ImGui::GetIOEx,
         nb::arg("ctx"),
-        " Windows\n We should always have a CurrentWindow in the stack (there is an implicit \"Debug\" window)\n If this ever crashes because g.CurrentWindow is None, it means that either:\n - ImGui::NewFrame() has never been called, which is illegal.\n - You are calling ImGui functions after ImGui::EndFrame()/ImGui::Render() and before the next ImGui::NewFrame(), which is also illegal.",
+        nb::rv_policy::reference);
+
+    m.def("get_platform_io_ex",
+        ImGui::GetPlatformIOEx,
+        nb::arg("ctx"),
         nb::rv_policy::reference);
 
     m.def("get_current_window_read",
@@ -4540,7 +4547,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::ArrowButtonEx, nb::arg("str_id"), nb::arg("dir"), nb::arg("size_arg"), nb::arg("flags") = 0);
 
     m.def("image_button_ex",
-        ImGui::ImageButtonEx, nb::arg("id_"), nb::arg("texture_id"), nb::arg("image_size"), nb::arg("uv0"), nb::arg("uv1"), nb::arg("bg_col"), nb::arg("tint_col"), nb::arg("flags") = 0);
+        ImGui::ImageButtonEx, nb::arg("id_"), nb::arg("user_texture_id"), nb::arg("image_size"), nb::arg("uv0"), nb::arg("uv1"), nb::arg("bg_col"), nb::arg("tint_col"), nb::arg("flags") = 0);
 
     m.def("separator_ex",
         ImGui::SeparatorEx, nb::arg("flags"), nb::arg("thickness") = 1.0f);
@@ -4564,7 +4571,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::Scrollbar, nb::arg("axis"));
 
     m.def("scrollbar_ex",
-        ImGui::ScrollbarEx, nb::arg("bb"), nb::arg("id_"), nb::arg("axis"), nb::arg("p_scroll_v"), nb::arg("avail_v"), nb::arg("contents_v"), nb::arg("flags"));
+        ImGui::ScrollbarEx, nb::arg("bb"), nb::arg("id_"), nb::arg("axis"), nb::arg("p_scroll_v"), nb::arg("avail_v"), nb::arg("contents_v"), nb::arg("draw_rounding_flags") = 0);
 
     m.def("get_window_scrollbar_rect",
         ImGui::GetWindowScrollbarRect, nb::arg("window"), nb::arg("axis"));
@@ -4854,7 +4861,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImFontBuilderIO =
         nb::class_<ImFontBuilderIO>
-            (m, "ImFontBuilderIO", "This structure is likely to evolve as we add support for incremental atlas updates")
+            (m, "ImFontBuilderIO", " This structure is likely to evolve as we add support for incremental atlas updates.\n Conceptually this could be in ImGuiPlatformIO, but we are far from ready to make this public.")
         .def(nb::init<>()) // implicit default constructor
         ;
 
