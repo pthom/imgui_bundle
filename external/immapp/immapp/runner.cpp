@@ -48,8 +48,36 @@ namespace ImmApp
 
     ImmAppContext gImmAppContext;
 
-    static void Priv_Setup(HelloImGui::RunnerParams& runnerParams, AddOnsParams& addOnsParams)
+    // Only one instance of `Renderer` can exist at a time
+    // ---------------------------------------------------
+    static int gRendererInstanceCount = 0;
+    static AddOnsParams gAddOnsParamsAtSetup;
+
+    static void Priv_TearDown();
+
+
+    static void Priv_Setup(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& passedAddOnsParams)
     {
+        gAddOnsParamsAtSetup = passedAddOnsParams;
+        AddOnsParams& addOnsParams = gAddOnsParamsAtSetup; // We may modify those
+
+        // Check if we are already running
+#ifdef IMGUI_BUNDLE_BUILD_PYTHON
+        // For python, we forgive the user for not calling TearDown() before calling Renderer()
+        // since it might be due to a Python exception, which might be recoverable, if running
+        // in a Python REPL, a notebook, or Pyodide.
+        if (gRendererInstanceCount > 0)
+        {
+            printf("ImmApp: calling TearDown() prior to Setup (probable prior exception in Python).\n");
+            Priv_TearDown();
+        }
+#else
+        if (gRendererInstanceCount > 0)
+        throw std::runtime_error("Only one instance of `ImmApp::Renderer` can exist at a time.");
+#endif
+        gRendererInstanceCount++;
+
+
         // create implot context if required
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
         if (addOnsParams.withImplot)
@@ -95,7 +123,6 @@ namespace ImmApp
                 runnerParams.callbacks.BeforeImGuiRender,
                 fnUpdateNodeEditorColorsFromImguiColors
             );
-
         }
 #endif
 
@@ -165,8 +192,12 @@ namespace ImmApp
 #endif
     }
 
-    void Priv_Teardown(AddOnsParams& addOnsParams)
+    static void Priv_TearDown()
     {
+        AddOnsParams& addOnsParams = gAddOnsParamsAtSetup;
+
+        gRendererInstanceCount = 0;
+
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
         if (addOnsParams.withImplot)
             ImPlot::DestroyContext();
@@ -185,12 +216,11 @@ namespace ImmApp
             ImGuiMd::DeInitializeMarkdown();
     }
 
-    void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams_)
+    void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
     {
-        AddOnsParams addOnsParams = addOnsParams_;
         Priv_Setup(runnerParams, addOnsParams);
         HelloImGui::Run(runnerParams);
-        Priv_Teardown(addOnsParams);
+        Priv_TearDown();
     }
 
     void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)
@@ -372,8 +402,6 @@ namespace ManualRender  // namespace ImmApp::ManualRender
     };
     RendererStatus sCurrentStatus = RendererStatus::NotInitialized;
 
-    static AddOnsParams sAddOnsParams;
-
     // Changes the current status to Initialized if it was NotInitialized,
     // otherwise raises an error (assert or exception)
     void TrySwitchToInitialized()
@@ -396,9 +424,8 @@ namespace ManualRender  // namespace ImmApp::ManualRender
     void SetupFromRunnerParams(const HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
     {
         TrySwitchToInitialized();
-        sAddOnsParams = addOnsParams;
         HelloImGui::RunnerParams runnerParamsCopy = runnerParams;
-        Priv_Setup(runnerParamsCopy, sAddOnsParams);
+        Priv_Setup(runnerParamsCopy, addOnsParams);
         HelloImGui::ManualRender::SetupFromRunnerParams(runnerParamsCopy);
     }
 
@@ -457,8 +484,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
     {
         TrySwitchToNotInitialized();
         HelloImGui::ManualRender::TearDown();
-        Priv_Teardown(sAddOnsParams);
-        sAddOnsParams = AddOnsParams();
+        Priv_TearDown();
     }
 } // namespace ManualRender
 
