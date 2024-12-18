@@ -84,9 +84,26 @@ def run_nb(
             thumbnail_image = image
         return thumbnail_image
 
+    # def display_image(image):
+    #     pil_image = PIL.Image.fromarray(image)
+    #     display(pil_image)
+
     def display_image(image):
+        from IPython.display import Image
+
+        # Convert the input image to a PIL image
         pil_image = PIL.Image.fromarray(image)
-        display(pil_image)
+
+        # Save the PIL image to a bytes buffer in PNG format
+        import io
+        buffer = io.BytesIO()
+        pil_image.save(buffer, format="JPEG")
+        buffer.seek(0)
+
+        # Create an IPython display Image object and specify PNG format
+        jpeg_image = Image(data=buffer.getvalue(), format="jpeg")
+        display(jpeg_image)
+
 
     def run_app_and_display_thumb():
         nonlocal thumbnail_ratio
