@@ -23,6 +23,8 @@ from imgui_bundle.demos_python import demo_utils  # this will set the assets fol
 
 
 def show_module_demo(demo_filename: str, demo_function: Callable[[], None]) -> None:
+    if imgui.get_frame_count() < 2:  # cf https://github.com/pthom/imgui_bundle/issues/293
+        return
     if imgui.collapsing_header("Code for this demo"):
         demo_utils.show_python_vs_cpp_file(demo_filename)
     demo_function()
