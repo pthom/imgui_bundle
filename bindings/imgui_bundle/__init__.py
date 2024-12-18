@@ -151,6 +151,12 @@ if __bundle_pyodide__:
     from imgui_bundle.pyodide_patch_runners import pyodide_do_patch_runners
     pyodide_do_patch_runners()
 
+#
+# Jupyter notebook: patch hello_imgui.run and immapp.run to work with Jupyter notebook
+#
+from imgui_bundle.notebook_patch_runners import notebook_do_patch_runners_if_needed  # noqa: E402
+notebook_do_patch_runners_if_needed()
+
 
 #
 # Override assets folder
