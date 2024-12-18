@@ -51,3 +51,14 @@ mypy:
 # Build the doc
 doc:
     cd bindings/imgui_bundle/doc/scripts/ && ./build_doc.sh
+
+# Build bundle doc in pdf, copy the pdf to the ramdisk
+doc_pdf:
+    cd bindings/imgui_bundle/doc && asciidoctor-pdf Readme_source.adoc
+    mv bindings/imgui_bundle/doc/Readme_source.pdf /Volumes/ramdisk/imgui_bundle_manual.pdf
+
+# Build hello_imgui doc in pdf, copy the pdf to the ramdisk
+doc_him_pdf:
+    cd external/hello_imgui/hello_imgui/docs_src && jupyter-book build --builder pdfhtml .
+    cp external/hello_imgui/hello_imgui/docs_src/_build/pdf/book.pdf /Volumes/ramdisk/hello_imgui_manual.pdf
+
