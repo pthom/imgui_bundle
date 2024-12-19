@@ -156,7 +156,8 @@ if __bundle_pyodide__:
 #
 from imgui_bundle.notebook_patch_runners import notebook_do_patch_runners_if_needed  # noqa: E402
 notebook_do_patch_runners_if_needed()
-
+from imgui_bundle._patch_runners_add_save_screenshot_param import patch_runners_add_save_screenshot_param  # noqa: E402
+patch_runners_add_save_screenshot_param()
 
 #
 # Override assets folder
