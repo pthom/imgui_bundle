@@ -202,6 +202,7 @@ endif()
 # -----------------------------------------------------------------------------
 # (reserved for this library authors)
 option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
+option(IMGUI_BUNDLE_BUILD_TUTORIAL "Build ImGui Bundle tutorial" OFF)
 
 # Options / Install
 # By default, hello_imgui install its targets only if it is the top level project
@@ -396,6 +397,9 @@ endif()
 if (IMGUI_BUNDLE_BUILD_DOC)
     add_subdirectory(bindings/imgui_bundle/doc)
     add_subdirectory(devel_docs)
+endif()
+if (IMGUI_BUNDLE_BUILD_TUTORIAL)
+    add_subdirectory(tutorial)
 endif()
 
 #------------------------------------------------------------------------------

@@ -1,0 +1,8 @@
+# Syntax inspired from jupyter-book
+format: jb-book
+root: intro
+
+chapters:
+  - file: discover/discover_immediate
+    sections:
+      - file: discover/hello_world
