@@ -1,4 +1,4 @@
-## Handling button events
+# Handling button events
 
 We will now create an application which handles clicks on a button, and updates a counter each time the button is clicked:
 

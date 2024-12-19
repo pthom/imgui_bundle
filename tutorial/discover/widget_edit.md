@@ -1,4 +1,4 @@
-# Widgets in Python and C++
+# Edition widgets in Python and C++
 
 We will now create an application which allows to interactively change the size of an image.
 We will use a slider to change this size, and store it in the application state.
@@ -15,6 +15,7 @@ We will use a slider to change this size, and store it in the application state.
 Here, we use Hello ImGui to display images. See the doc about Hello ImGui for more information.
 image_from_asset will keep the aspect ratio of the image if one of the dimensions is set to 0.
 
+
 **Python**
 ```{literalinclude} widget_edit.py
 ```
@@ -23,3 +24,15 @@ image_from_asset will keep the aspect ratio of the image if one of the dimension
 **C++**
 ```{literalinclude} widget_edit.cpp
 ```
+
+## Looking for more widgets?
+**Other widgets?**
+There are **many** widgets in Dear ImGui, and Dear ImGui Bundle. Look at the next pages of this tutorial for more examples.
+
+If you are in a hurry, you can look at the [Dear ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html),
+for which you can find a preview below:
+
+<video controls width="600">
+  <source src="https://github.com/pthom/imgui_bundle/releases/download/v1.6.1/imgui_manual.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>

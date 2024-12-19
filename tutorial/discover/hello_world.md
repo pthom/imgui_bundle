@@ -1,4 +1,8 @@
-# Hello, World!
+# Discover Immediate Mode GUIs
+
+We'll start by creating a simple applications, where we will demonstrate several aspects of ImGui and Hello ImGui.
+
+## Hello, World!
 
 We will start by running a simple Hello World application, which displays:
 ![](hello_world.jpg)

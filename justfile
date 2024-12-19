@@ -65,6 +65,9 @@ doc_him_pdf:
 tutorial_book:
     cd tutorial && jupyter-book build .
 
+tutorial_book_pdf:
+    cd tutorial && jupyter-book build --builder pdfhtml .
+
 # Create a new tutorial page from the template (pass a name relative to tutorial/)
 tutorial_new name:
     python tutorial/_tpl/instantiate_tutorial_template.py {{name}}

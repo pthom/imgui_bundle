@@ -1,6 +1,6 @@
-# Discover Immediate Mode GUIs
+# Intro
 
-## Intro
+## What is an Immediate Mode GUI
 
 Graphical User Interfaces (GUIs) handle how your application is presented to the user.
 
@@ -10,17 +10,15 @@ Most GUI frameworks rely on complex patterns like **MVC**, which separate applic
 
 The example below illustrates this concept, where an application could display a counter, together with a button to increase it:
 
-![example](images/demo_immediate.png)
+![example](discover/button.jpg)
 
 **Python**:
 ```python
 # on_frame is called at each frame
 def on_frame():
-    # Display a text widget
-    imgui.text(f"Counter: {counter}")
-    # Display a button, and return true if clicked
-    if imgui.button("Increment"):
-        counter += 1  # Perform an action immediately on interaction
+    imgui.text(f"Counter: {counter}") # Display a text widget
+    if imgui.button("Increment"):     # Display a button, and return true if clicked
+        counter += 1                  # Perform an action immediately on interaction
 ```
 
 **C++**:
@@ -68,5 +66,4 @@ Let’s dive in and explore the straightforward yet powerful world of Immediate 
 
 ## Deploy web applications in Python with Dear ImGui Bundle
 
-![Jack](images/jack_tangled_frameworks.jpg)
-![Tom](images/tom_tangled_frameworks.webp)
+TODO: Add content

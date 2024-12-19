@@ -17,7 +17,7 @@ def _process(tutorial_name: str):
     shutil.copyfile(f"{TPL_DIR}/tpl.py",f"{TUTORIAL_DIR}/{tutorial_name}.py")
 
     # Read content of TPL_DIR/tpl.md
-    with open(f"{TPL_DIR}/tpl.md", "r") as f:
+    with open(f"{TPL_DIR}/tpl_md", "r") as f:
         tpl_md = f.read()
     basename = os.path.basename(tutorial_name)
     tpl_md = tpl_md.replace("tpl", basename)
