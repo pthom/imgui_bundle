@@ -1,4 +1,4 @@
-## Hello, World!
+# Hello, World!
 
 We will start by running a simple Hello World application, which displays:
 ![](hello_world.jpg)

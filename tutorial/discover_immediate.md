@@ -1,4 +1,4 @@
-# Discovering Immediate Mode GUIs
+# Discover Immediate Mode GUIs
 
 ## Intro
 

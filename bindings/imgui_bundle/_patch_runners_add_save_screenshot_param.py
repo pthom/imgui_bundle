@@ -16,6 +16,7 @@ def _save_hello_imgui_screenshot(image_file: str) -> None:
     app_image = hello_imgui.final_app_window_screenshot()
     scale = 1.0 / hello_imgui.final_app_window_screenshot_framebuffer_scale()
     thumbnail = cv2.resize(app_image, (0, 0), fx=scale, fy=scale, interpolation=cv2.INTER_AREA)
+    thumbnail = cv2.cvtColor(thumbnail, cv2.COLOR_RGBA2BGR)
     cv2.imwrite(image_file, thumbnail)
 
 

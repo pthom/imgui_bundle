@@ -1,8 +1,11 @@
 # Syntax inspired from jupyter-book
 format: jb-book
-root: intro
+root: discover_immediate
 
 chapters:
-  - file: discover/discover_immediate
+  - file: discover/intro
     sections:
       - file: discover/hello_world
+      - file: discover/button
+      - file: discover/widget_edit
+
