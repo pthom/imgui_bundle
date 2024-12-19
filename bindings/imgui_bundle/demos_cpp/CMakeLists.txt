@@ -19,7 +19,7 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
 add_subdirectory(sandbox)
 
-ibd_add_this_folder_auto_demos()
+ibd_add_this_folder_auto_demos("")
 ibd_add_this_folder_as_demos_library()
 
 if (EMSCRIPTEN)

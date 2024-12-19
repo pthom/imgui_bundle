@@ -1,4 +1,4 @@
-ibd_add_this_folder_demos()
+ibd_add_this_folder_demos("")
 if(EMSCRIPTEN)
     target_link_libraries(imgui_example_glfw_opengl3 PRIVATE GL)
 else()

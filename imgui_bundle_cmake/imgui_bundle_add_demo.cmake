@@ -19,22 +19,24 @@ function(ibd_add_demo_cpp)
     endif()
 endfunction()
 
-function(ibd_add_single_file_demo_cpp demo_cpp_file)
+function(ibd_add_single_file_demo_cpp demo_cpp_file optional_prefix)
     # Creates a demo app
     # Usage:
     #     ibd_add_single_file_demo_cpp(demo_file.cpp)
+    # or
+    #    ibd_add_single_file_demo_cpp(demo_file.cpp prefix_)
     get_filename_component(demo_name "${demo_cpp_file}" NAME_WE)
-    ibd_add_demo_cpp(${demo_name} ${demo_cpp_file})
+    ibd_add_demo_cpp(${optional_prefix}${demo_name} ${demo_cpp_file})
 endfunction()
 
-function(ibd_add_auto_demo demo_cpp_file)
+function(ibd_add_auto_demo demo_cpp_file optional_prefix)
     # Creates a demo app, and provides main() automatically
     # Usage:
     #     ibd_add_auto_demo(demo_file.cpp)
     # (demo_file.cpp should provide a function named according to the containing file, e.g. `void demo_file()`)
     get_filename_component(demo_cpp_file "${demo_cpp_file}" NAME)
     get_filename_component(demo_name "${demo_cpp_file}" NAME_WE)
-    ibd_add_demo_cpp(${demo_name} ${demo_cpp_file})
+    ibd_add_demo_cpp(${optional_prefix}${demo_name} ${demo_cpp_file})
 
     # Read the contents of the cpp file
     file(READ "${demo_cpp_file}" demo_cpp_file_content)
@@ -49,19 +51,19 @@ function(ibd_add_auto_demo demo_cpp_file)
 
 endfunction()
 
-function(ibd_add_this_folder_demos)
+function(ibd_add_this_folder_demos optional_prefix)
     # Creates demo apps for all cpp files in the current folder
     FILE(GLOB demo_cpp_files *.cpp)
     FOREACH(demo_cpp_file ${demo_cpp_files})
-        ibd_add_single_file_demo_cpp(${demo_cpp_file})
+        ibd_add_single_file_demo_cpp(${demo_cpp_file} "${optional_prefix}")
     ENDFOREACH()
 endfunction()
 
-function(ibd_add_this_folder_auto_demos)
+function(ibd_add_this_folder_auto_demos optional_prefix)
     # Creates demo apps for all cpp files in the current folder, and provide a main for them
     FILE(GLOB demo_cpp_files *.cpp)
     FOREACH(demo_cpp_file ${demo_cpp_files})
-        ibd_add_auto_demo(${demo_cpp_file})
+        ibd_add_auto_demo(${demo_cpp_file} "${optional_prefix}")
     ENDFOREACH()
 endfunction()
 
