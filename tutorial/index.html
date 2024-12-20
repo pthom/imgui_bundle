@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Immediate GUI Tutorial</title>
-    <link rel="stylesheet" href="resources_singlepage/pico.min.css" />
     <link rel="stylesheet" href="resources_singlepage/style.css" />
 </head>
 <body>
+<header class="main-header">
+    <button id="toggle-sidebar">☰</button>
+    <div class="header-buttons">
+        <!-- Placeholder for additional buttons -->
+        <a href="https://github.com" target="_blank" class="header-btn">GitHub</a>
+    </div>
+</header>
 <div class="layout-container">
     <nav id="toc-sidebar">
         <h1>Immediate GUI Tutorial</h1>
@@ -16,13 +22,10 @@
         </ul>
     </nav>
     <main id="content-area-wrapper">
-        <div id="breadcrumb-container" style="margin-bottom:1em;"></div>
         <div id="content-area"></div>
     </main>
-    <div id="resizer"></div>
     <aside id="code-panel">
-        <!-- Dummy code execution panel -->
-        <img src="resources_singlepage/dummy_app.jpg" alt="Code panel placeholder" style="max-width:100%;">
+        <div id="breadcrumb-container" class="vertical-breadcrumbs"></div>
     </aside>
 </div>
 <div id="canvas-window" class="draggable-resizable">

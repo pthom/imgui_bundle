@@ -1,73 +1,148 @@
-body {
-    font-size: 14px;
+/* ==========================
+   Global Styles
+========================== */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent overall page scrolling */
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* ==========================
+   Header and Buttons
+========================== */
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ccc;
+    padding: 0.5rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0; /* Ensure header doesn't shrink */
+}
+
+#toggle-sidebar {
+    font-size: 1.5rem;
+    color: #007bff;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+#toggle-sidebar:hover {
+    color: #0056b3;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.header-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.header-btn:hover {
+    background-color: #0056b3;
+}
+
+/* ==========================
+   Layout Container
+========================== */
 .layout-container {
     display: grid;
-    grid-template-columns: 200px auto 5px 33%; /* TOC | content | resizer | code */
-    height: 100vh; /* Full height of the viewport */
-    overflow: hidden; /* Avoid overflow for the entire layout */
+    grid-template-columns: 200px auto 300px; /* Sidebar | Content | Canvas */
+    grid-template-areas: "sidebar content canvas";
+    gap: 1rem;
+    height: calc(100% - 3rem); /* Remaining height after the header */
+    overflow: hidden; /* Prevent scrolling of the layout itself */
 }
 
+/* ==========================
+   Sidebar
+========================== */
 #toc-sidebar {
-    display: block; /* Reset flex to block layout */
-    padding: 1rem; /* Add padding for spacing inside the sidebar */
-    border-right: 1px solid #ccc; /* Adds the divider line */
-    box-sizing: border-box; /* Ensures padding doesn’t overflow */
+    grid-area: sidebar;
+    background-color: #fff;
+    border-right: 1px solid #ccc;
+    padding: 1rem;
+    overflow-y: auto; /* Sidebar scrolls independently */
+    height: 100%; /* Fill the layout container */
+    box-sizing: border-box;
 }
 
 #toc-sidebar h1 {
-    margin-bottom: 1rem; /* Add spacing below the title */
-    font-size: 1.3rem; /* Slightly smaller title */
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
 }
 
-#toc-sidebar ul, #toc-sidebar li {
-    display: block; /* Ensures vertical stacking of items */
-    margin: 0.25rem 0rem; /* Adds spacing between items and ensures they are not too close to the left */
-    padding: 0; /* Removes extra padding causing large gaps between items */
+#toc-sidebar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#toc-sidebar li {
+    margin-bottom: 0.5rem;
 }
 
 #toc-sidebar a {
-    display: block; /* Ensures consistent vertical spacing for links */
-    padding: 0.25rem 0.5rem; /* Adds padding inside links for better appearance */
+    display: block;
+    padding: 0.25rem 0.5rem;
+    color: #007bff;
+    border-radius: 4px;
+    text-decoration: none;
 }
 
+#toc-sidebar a:hover {
+    background-color: #f0f8ff;
+}
+
+/* ==========================
+   Content Area
+========================== */
 #content-area-wrapper {
-    overflow: hidden; /* Prevents double scrolling issues */
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Ensure it occupies the full height of its parent */
+    grid-area: content;
+    overflow-y: auto; /* Content scrolls independently */
+    padding: 1rem;
+    height: 100%; /* Ensure it spans the full height of the container */
+    box-sizing: border-box;
 }
 
 #content-area {
     padding: 1rem;
-    overflow-y: auto; /* Scroll when content exceeds available height */
-    flex-grow: 1; /* Make this area take up the remaining vertical space */
-    max-height: 100%; /* Prevent overflow of the area itself */
-    box-sizing: border-box;
+    background-color: #f9f9f9;
+    border-radius: 4px;
 }
 
-#resizer {
-    background: #ccc;
-    cursor: col-resize;
-    width: 5px; /* Matches the grid template size */
-    height: 100%;
-}
-
-#code-panel {
-    border-left: 1px solid #ccc;
-    padding: 1rem;
-    overflow-y: auto;
-}
-
+/* ==========================
+   Canvas Panel
+========================== */
 .draggable-resizable {
-    position: absolute;
+    position: fixed; /* Independent of grid layout */
     bottom: 1rem; /* Initial position */
     right: 1rem; /* Initial position */
     width: 20%; /* Default width */
     height: 20%; /* Default height */
     border: 1px solid #ccc;
-    background-color: blue; /* Make its position noticeable */
+    background-color: blue; /* Debug: Make position noticeable */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     resize: both; /* Enable resizing */
     overflow: hidden; /* Prevent content overflow */
@@ -87,4 +162,73 @@ body {
 #canvas-content {
     width: 100%;
     height: calc(100% - 2rem); /* Subtract title bar height */
+}
+/* ==========================
+   Breadcrumbs
+========================== */
+.vertical-breadcrumbs {
+    grid-area: canvas;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+    background-color: #fff;
+    border-left: 1px solid #ccc;
+    overflow-y: auto; /* Breadcrumb scrolls independently */
+    height: 100%; /* Fill the layout container */
+}
+
+.vertical-breadcrumbs a {
+    color: #007bff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.vertical-breadcrumbs a:hover {
+    background-color: #f0f8ff;
+}
+
+/* ==========================
+   Responsive Layout
+========================== */
+@media (max-width: 1024px) {
+    .layout-container {
+        grid-template-columns: 200px auto; /* Hide canvas */
+        grid-template-areas: "sidebar content"; /* 2-column layout */
+    }
+
+    .draggable-resizable {
+        display: none; /* Hide canvas on smaller screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .layout-container {
+        grid-template-columns: auto;
+        grid-template-areas: "content"; /* Only main content visible */
+    }
+
+    #toggle-sidebar {
+        display: block; /* Show toggle button on small screens */
+        position: fixed;
+        top: 1rem;
+        left: 1rem;
+        z-index: 1001; /* Above sidebar */
+    }
+
+    #toc-sidebar {
+        position: fixed; /* Allow sliding */
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: 1000;
+        transform: translateX(-200px);
+        visibility: hidden;
+    }
+
+    #toc-sidebar.active {
+        transform: translateX(0); /* Slide in */
+        visibility: visible;
+    }
 }
