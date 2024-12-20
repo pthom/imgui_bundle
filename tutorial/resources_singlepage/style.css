@@ -4,15 +4,32 @@ body {
 
 .layout-container {
     display: grid;
-    grid-template-columns: 400px auto 5px 33%; /* TOC | content | resizer | code */
+    grid-template-columns: 200px auto 5px 33%; /* TOC | content | resizer | code */
     height: 100vh; /* Full height of the viewport */
     overflow: hidden; /* Avoid overflow for the entire layout */
 }
 
 #toc-sidebar {
-    border-right: 1px solid #ccc;
-    padding: 1rem;
-    overflow-y: auto;
+    display: block; /* Reset flex to block layout */
+    padding: 1rem; /* Add padding for spacing inside the sidebar */
+    border-right: 1px solid #ccc; /* Adds the divider line */
+    box-sizing: border-box; /* Ensures padding doesn’t overflow */
+}
+
+#toc-sidebar h1 {
+    margin-bottom: 1rem; /* Add spacing below the title */
+    font-size: 1.3rem; /* Slightly smaller title */
+}
+
+#toc-sidebar ul, #toc-sidebar li {
+    display: block; /* Ensures vertical stacking of items */
+    margin: 0.25rem 0rem; /* Adds spacing between items and ensures they are not too close to the left */
+    padding: 0; /* Removes extra padding causing large gaps between items */
+}
+
+#toc-sidebar a {
+    display: block; /* Ensures consistent vertical spacing for links */
+    padding: 0.25rem 0.5rem; /* Adds padding inside links for better appearance */
 }
 
 #content-area-wrapper {

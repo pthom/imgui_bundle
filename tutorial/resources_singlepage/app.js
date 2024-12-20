@@ -8,7 +8,6 @@ async function initializeAll() {
 
     const rootPage = tocRoot()
     loadPage(rootPage.file + ".md");
-    // loadPage("discover/hello_world.md")
 }
 
 document.addEventListener("DOMContentLoaded", initializeAll);
