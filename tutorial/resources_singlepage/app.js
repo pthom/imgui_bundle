@@ -1,4 +1,3 @@
-// app.js (just an outline)
 async function loadToc() {
     const response = await fetch("toc.json");
     const toc = await response.json();
@@ -6,6 +5,7 @@ async function loadToc() {
 }
 
 async function loadPage(mdPath) {
+    console.log("loadPage " + mdPath);
     const response = await fetch(mdPath);
     const mdText = await response.text();
     const html = marked.parse(mdText);
@@ -18,8 +18,12 @@ function buildBreadcrumbs() {
     // scan content for h2 headings
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
+// Initialize all parts of the app
+async function initializeAll() {
     await loadToc();
-    // load default page
+    initResizer();
+    // In the future, initTOC(), initMarkdownLoading(), etc.
     loadPage("discover/hello_world.md");
-});
+}
+
+document.addEventListener("DOMContentLoaded", initializeAll);

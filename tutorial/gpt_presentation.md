@@ -320,3 +320,166 @@ See:
 I'll want the canvas to be resizable in a later step, and to apply some styling to the page.
 I guess this is the next step. Do you agree?
 
+===========================================================================
+
+The resizer work well, and the columns width seem ok.
+
+In your proposed css, there is no more #toc-sidebar, is that normal?
+At the moment, I kept it as before.
+
+As far as the separation of concerns, I'm afraid that app.js will quickly get huge and difficult to navigate.
+I started to split it:
+
+```bash
+ls -1 resources_singlepage
+app.js
+resizer.js     # Contains the resizer code you provided (and referenced in html)
+style.css
+```
+We will continue to split it in several files as needed: I suspect that the navigation handling will deserve its own file.
+
+Also, please note that I refactored resizer.js like this, which is more readable:
+```javascript
+let isResizing = false;
+let startX = 0;
+let startContentWidth = 0;
+
+function _onResizerMouseDown(e)
+{
+  const layout = document.querySelector('.layout-container');
+  isResizing = true;
+  startX = e.clientX;
+  // Get current width of content area (second column)
+  // We assume something like: [TOC:200px] [content:auto] [handle:5px] [code:33%]
+  // We'll convert the content column to a fixed width during resizing
+  const computedStyle = window.getComputedStyle(layout);
+  const columns = computedStyle.getPropertyValue('grid-template-columns').split(' ');
+  // columns[1] is the content area width
+  startContentWidth = parseFloat(columns[1]);
+  // If it's 'auto', we might need to set a default width or measure #content-area’s offsetWidth
+  if (isNaN(startContentWidth)) {
+    const contentArea = document.getElementById('content-area');
+    startContentWidth = contentArea.offsetWidth;
+  }
+  document.body.style.userSelect = 'none'; // Prevent text selection
+}
+
+function _onResizerMouseMove(e)
+{
+  const layout = document.querySelector('.layout-container');
+
+  if (!isResizing) return;
+  const dx = e.clientX - startX;
+  const newContentWidth = startContentWidth + dx;
+  if (newContentWidth > 100) { // A minimum width for content area
+    layout.style.gridTemplateColumns = `200px ${newContentWidth}px 5px auto`;
+  }
+}
+
+function _onResizerMouseUp()
+{
+  isResizing = false;
+  document.body.style.userSelect = 'auto';
+}
+
+function initResizer()
+{
+  const resizer = document.getElementById('resizer');
+  resizer.addEventListener('mousedown', _onResizerMouseDown);
+  document.addEventListener('mousemove', _onResizerMouseMove);
+  document.addEventListener('mouseup', _onResizerMouseUp);
+}
+
+document.addEventListener('DOMContentLoaded', initResizer);
+```
+I do not like to use long anonymous functions, it makes the code difficult to read.
+
+Also, note that once we will have added pyodide, we will need to be extremely precise about the order of operations:
+pyodide is loaded in async mode, and python code is also executed in async mode.
+Thus, we cannot rely on using document.addEventListener('DOMContentLoaded') in too many places; because it makes the initialization sequence of the code difficult to follow. The app is ought to become complex, and we need to be organized.
+I'd like us to work towards having an `initializeAll()` function in app.js, which will call every js file initialization function in the right order.
+
+===========================================================================
+
+OK, it works.
+
+Notes:
+1. I had to refactor a bit:
+
+app.js
+```
+// Initialize all parts of the app
+async function initializeAll() {
+    await loadToc();
+    initResizer();
+    // In the future, initTOC(), initMarkdownLoading(), etc.
+    loadPage("discover/hello_world.md");
+}
+
+document.addEventListener("DOMContentLoaded", initializeAll);
+```
+
+2. When using export/import, I get errors:
+```
+export function initResizer()
+{
+...
+}
+```
+==> Uncaught SyntaxError: export declarations may only appear at top level of a module
+==> Uncaught SyntaxError: import declarations may only appear at top level of a module
+
+At the moment, I removed those keywords, and it works. I'm not proficient with this. I don't know if it is important.
+If it is complex, maybe we can keep that for a later time.
+
+3. I see issues in the java console:
+```
+The resource at “https://unpkg.com/@picocss/pico@latest/css/pico.min.css” was blocked due to its Cross-Origin-Resource-Policy header (or lack thereof). See https://developer.mozilla.org/docs/Web/HTTP/Cross-Origin_Resource_Policy_(CORP)# index_singlepage.html
+
+==> I'm using a local webserver where I activated CORS. I do not know why this error appears.
+    Anyhow, let's download the css file and put it in the resources_singlepage folder. Please provide me with the link to download it.
+
+
+GET
+   http://localhost:8005/favicon.ico
+   [HTTP/1 404 File not found 1ms]
+   ==> not important
+
+GET
+http://localhost:8005/hello_world.jpg
+[HTTP/1 404 File not found 1ms]
+GET
+http://localhost:8005/button.jpg
+[HTTP/1 404 File not found 2ms]
+
+==> We have to account for the fact that they are inside the discover folder. There will be other folders in the future, so we have to be careful about that. Image paths are to be considered relative to the md file.
+
+(I did add a dummy image of the app and it works)
+```
+
+Let's fix the issues, and then move on to the next step.
+
+===========================================================================
+
+discover/hello_world.jpg does exist.
+
+However, loadPage() is executed in the top folder:
+we probably need to scan for relative paths in the markdown file, and adjust them accordingly.
+```
+async function loadPage(mdPath) {
+  console.log("loadPage " + mdPath); // will receive discover/hello_world.md
+  const response = await fetch(mdPath);
+  const mdText = await response.text();
+  const html = marked.parse(mdText);
+  const contentArea = document.getElementById("content-area");
+  contentArea.innerHTML = html;
+  buildBreadcrumbs();
+}
+```
+
+I downloaded pico.css, and the style is now better. The default font size is too big. I have to display the page at 70% to have a good view.
+
+Let's correct these issues, and move to the next step. Is it navigation and breadcrumbs?
+
+===========================================================================
+

@@ -1,6 +1,10 @@
+body {
+    font-size: 14px;
+}
+
 .layout-container {
     display: grid;
-    grid-template-columns: 200px 2fr 1fr;
+    grid-template-columns: 200px auto 5px 33% /* TOC | content | handle | code */;
     height: 100vh;
     overflow: hidden;
 }
@@ -16,9 +20,15 @@
     overflow-y: auto;
 }
 
+#resizer {
+    background: #ccc;
+    cursor: col-resize;
+    width: 5px; /* Matches the grid template size */
+    height: 100%;
+}
+
 #code-panel {
     border-left: 1px solid #ccc;
     padding: 1rem;
     overflow-y: auto;
-    /* later we can add resizable behavior */
 }
