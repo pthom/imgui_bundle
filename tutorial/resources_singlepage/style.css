@@ -4,7 +4,7 @@ body {
 
 .layout-container {
     display: grid;
-    grid-template-columns: 200px auto 5px 33% /* TOC | content | handle | code */;
+    grid-template-columns: 400px auto 5px 33% /* TOC | content | handle | code */;
     height: 100vh;
     overflow: hidden;
 }

@@ -483,7 +483,9 @@ Let's correct these issues, and move to the next step. Is it navigation and brea
 
 ===========================================================================
 
-I solved the issues on my side. Here is what I did:
+I solved the issues on my side. The default font size is 14, and the images show correctly.
+
+Here is what I did:
 
 * Switched to npm + modules
 Here is my package.json:
@@ -560,3 +562,91 @@ document.addEventListener("DOMContentLoaded", initializeAll);
 Note: app.js might grow quickly. It should only be an orchestrator. We will need to place the navigation and breadcrumbs logic in their own file(s).
 
 
+Let's continue!
+
+===========================================================================
+
+This separation in js files is good. It starts to work.
+
+Some issues:
+
+## error with breadcrumbs:
+I did the changes you specified, but I get an error:
+```
+Uncaught SyntaxError: export declarations may only appear at top level of a module resizer.js:43:1
+[vite] connecting... client:742:8
+[vite] connected. client:861:14
+GET
+http://localhost:5173/favicon.ico
+[HTTP/1.1 404 Not Found 0ms]
+
+Uncaught (in promise) TypeError: breadcrumbContainer is null
+    updateBreadcrumbs breadcrumbs.js:7
+    loadPage page_loader.js:16
+    initializeAll app.js:8
+    async* app.js:11
+breadcrumbs.js:7:4
+```
+I do have this in html
+```html
+    <main id="content-area">
+        <div id="breadcrumb-container" style="margin-bottom:1em;"></div>
+        <!-- The main markdown content will be inserted after this -->
+    </main>
+```
+and this in breadcrumbs.js
+```js
+export function updateBreadcrumbs() {
+    const contentArea = document.getElementById("content-area");
+    const h2Elements = contentArea.querySelectorAll("h2");
+    const breadcrumbContainer = document.getElementById("breadcrumb-container");
+
+    // Clear previous breadcrumbs
+    breadcrumbContainer.innerHTML = "";
+
+    // Create a simple list of H2 headings as links
+    // Each H2 can have an id (if not, we add one)
+    h2Elements.forEach((h2, index) => {
+        if (!h2.id) {
+            // create a slug from the text
+            const slug = h2.textContent.toLowerCase().replace(/\s+/g, '-');
+            h2.id = slug;
+        }
+
+        const link = document.createElement('a');
+        link.href = `#${h2.id}`;
+        link.textContent = h2.textContent;
+        breadcrumbContainer.appendChild(link);
+        breadcrumbContainer.appendChild(document.createTextNode(" | "));
+    });
+
+    if (breadcrumbContainer.lastChild) {
+        breadcrumbContainer.removeChild(breadcrumbContainer.lastChild); // remove trailing separator
+    }
+}
+```
+
+## Issue in the main navigation:
+Let's give an example:
+
+I updated toc.yml to have two chapters (+ the intro: discover_immediate.md)
+```
+format: jb-book
+root: discover_immediate
+
+chapters:
+- file: discover/hello_world
+  sections:
+  - file: discover/widget_edit
+  - file: discover/layout_advices
+  - file: discover/whats_next
+- file: imgui/intro
+# Possibly some sections here
+```
+
+In that case, the main navigation should display the H1 titles of the intro + the 2 chapters, i.e.:
+- Intro (first H1 from discover_immediate.md)
+- Hello, World! (first H1 from discover/hello_world.md)
+- Discover ImGui (first H1 from imgui/intro.md)
+
+At the moment it display all file names (discover/hello_world, discover/widget_edit, discover/layout_advices, discover/whats_next, imgui/intro)

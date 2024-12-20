@@ -40,7 +40,7 @@ function _onResizerMouseUp()
     document.body.style.userSelect = 'auto';
 }
 
-function initResizer()
+export function initResizer()
 {
     const resizer = document.getElementById('resizer');
     resizer.addEventListener('mousedown', _onResizerMouseDown);

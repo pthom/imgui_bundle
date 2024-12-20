@@ -15,6 +15,9 @@
           "file": "discover/whats_next"
         }
       ]
+    },
+    {
+      "file": "imgui/intro"
     }
   ]
 }
