@@ -18,36 +18,28 @@ copyright: "2025"
 execute:
   execute_notebooks: off
 
-# Note: we could also do
-  #  execute_notebooks: force
-  #  exclude_patterns:
-  #    - 'pattern1'
-  #    - 'pattern2'
-  #    - '*pattern3withwildcard'
-
-
 # Information about where the book exists on the web
 # -----------------------------------------------------------
-repository:
-  url: https://github.com/pthom/fiatlight  # Online location of your book
-  path_to_book: src/python/fiatlight/doc  # Optional path to your book, relative to the repository root
-  branch: master  # Which branch of the repository should be used when creating links (optional)
-
-#launch_buttons:
-#  notebook_interface: "jupyterlab"  # or "classic"
-#  binderhub_url: "https://mybinder.org"  # The URL for your BinderHub (e.g., https://mybinder.org)
-
-# Add GitHub buttons to your book
-# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
-html:
-  use_issues_button: true
-  use_repository_button: true
-
-# Misc
-# -----------------------------------------------------------
-# Define the name of the latex output file for PDF builds
-latex:
-  latex_documents:
-    targetname: book.tex
+#repository:
+#  url: https://github.com/pthom/fiatlight  # Online location of your book
+#  path_to_book: src/python/fiatlight/doc  # Optional path to your book, relative to the repository root
+#  branch: master  # Which branch of the repository should be used when creating links (optional)
+#
+##launch_buttons:
+##  notebook_interface: "jupyterlab"  # or "classic"
+##  binderhub_url: "https://mybinder.org"  # The URL for your BinderHub (e.g., https://mybinder.org)
+#
+## Add GitHub buttons to your book
+## See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+#html:
+#  use_issues_button: true
+#  use_repository_button: true
+#
+## Misc
+## -----------------------------------------------------------
+## Define the name of the latex output file for PDF builds
+#latex:
+#  latex_documents:
+#    targetname: book.tex
 
 

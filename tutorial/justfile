@@ -1,0 +1,17 @@
+default:
+  just --list
+
+# Run the a webserver on port 8005
+srv:
+    # python3 -m http.server 8005
+    python3 ../ci_scripts/webserver_multithread_policy.py -p 8005
+
+
+gpt_files_content:
+    for f in $(cat f.txt); do echo "===========================================================================";echo "File $f"; echo "==========================================================================="; echo '```'; cat $f; echo '```'; done
+
+tutorial_book:
+    jupyter-book build .
+
+tutorial_book_pdf:
+    jupyter-book build --builder pdfhtml .
