@@ -23,6 +23,10 @@ include(imgui_bundle_cmake/imgui_bundle_pyodide.cmake)
 #     * It will automatically link the target to the required libraries (imgui_bundle, OpenGl, glad, etc)
 #     * It will embed the assets (for desktop, mobile, and emscripten apps)
 #     * It will perform additional customization (app icon and name on mobile platforms, etc)
+#     * On desktop platforms, it will perform a "portable install" (i.e. assets and executable are in the same folder)
+#
+# If you want to control the install of your app, you can set HELLOIMGUI_ADD_APP_WITH_INSTALL to OFF
+# See an example in https://github.com/pthom/imgui_bundle_template/blob/main/CMakeLists.txt
 
 
 ###############################################################################
