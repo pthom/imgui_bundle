@@ -59,3 +59,32 @@ body {
     padding: 1rem;
     overflow-y: auto;
 }
+
+.draggable-resizable {
+    position: absolute;
+    bottom: 1rem; /* Initial position */
+    right: 1rem; /* Initial position */
+    width: 20%; /* Default width */
+    height: 20%; /* Default height */
+    border: 1px solid #ccc;
+    background-color: blue; /* Make its position noticeable */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    resize: both; /* Enable resizing */
+    overflow: hidden; /* Prevent content overflow */
+    z-index: 1000; /* Ensure it appears above other elements */
+}
+
+#canvas-title-bar {
+    cursor: move; /* Show a move cursor for the title bar */
+    background: #333;
+    color: #fff;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#canvas-content {
+    width: 100%;
+    height: calc(100% - 2rem); /* Subtract title bar height */
+}
