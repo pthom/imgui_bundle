@@ -483,3 +483,80 @@ Let's correct these issues, and move to the next step. Is it navigation and brea
 
 ===========================================================================
 
+I solved the issues on my side. Here is what I did:
+
+* Switched to npm + modules
+Here is my package.json:
+  {
+  "name": "tutorial",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+  "marked": "^15.0.4",
+  "marked-base-url": "^1.1.6"
+  },
+  "devDependencies": {
+  "vite": "^6.0.5"
+  }
+  }
+
+* use of marked-base-url to handle relative paths in markdown files
+* now, we have:
+app.js
+```js
+import { marked } from "marked";
+import { baseUrl } from "marked-base-url";
+
+async function loadToc() {
+    const response = await fetch("toc.json");
+    const toc = await response.json();
+    // Build sidebar navigation from toc
+}
+
+async function loadPage(mdPath) {
+    console.log("loadPage " + mdPath);
+
+    const baseUrlPath = mdPath.substring(0, mdPath.lastIndexOf('/') + 1);
+
+    marked.use(baseUrl(baseUrlPath));
+
+    // Fetch and parse the Markdown
+    const response = await fetch(mdPath);
+    const mdText = await response.text();
+    const html = marked.parse(mdText);
+
+    // Update the content area
+    const contentArea = document.getElementById("content-area");
+    contentArea.innerHTML = html;
+
+    buildBreadcrumbs();
+}
+function buildBreadcrumbs() {
+    // scan content for h2 headings
+}
+
+// Initialize all parts of the app
+async function initializeAll() {
+    await loadToc();
+    initResizer();
+    // In the future, initTOC(), initMarkdownLoading(), etc.
+    loadPage("discover/hello_world.md");
+}
+
+document.addEventListener("DOMContentLoaded", initializeAll);
+```
+* I now run a server with npm run dev, and it works well.
+
+
+Note: app.js might grow quickly. It should only be an orchestrator. We will need to place the navigation and breadcrumbs logic in their own file(s).
+
+

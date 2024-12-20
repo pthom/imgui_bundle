@@ -1,10 +1,11 @@
 default:
   just --list
 
-# Run the a webserver on port 8005
-srv:
+# Run the npm dev server
+srv_dev:
     # python3 -m http.server 8005
-    python3 ../ci_scripts/webserver_multithread_policy.py -p 8005
+    # python3 ../ci_scripts/webserver_multithread_policy.py -p 8005
+    npm run dev
 
 
 gpt_files_content:

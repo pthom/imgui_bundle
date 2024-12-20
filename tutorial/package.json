@@ -1,0 +1,21 @@
+{
+  "name": "tutorial",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "marked": "^15.0.4",
+    "marked-base-url": "^1.1.6"
+  },
+  "devDependencies": {
+    "vite": "^6.0.5"
+  }
+}
