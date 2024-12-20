@@ -1,0 +1,24 @@
+.layout-container {
+    display: grid;
+    grid-template-columns: 200px 2fr 1fr;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#toc-sidebar {
+    border-right: 1px solid #ccc;
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+#content-area {
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+#code-panel {
+    border-left: 1px solid #ccc;
+    padding: 1rem;
+    overflow-y: auto;
+    /* later we can add resizable behavior */
+}

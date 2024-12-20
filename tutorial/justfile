@@ -10,8 +10,13 @@ srv:
 gpt_files_content:
     for f in $(cat f.txt); do echo "===========================================================================";echo "File $f"; echo "==========================================================================="; echo '```'; cat $f; echo '```'; done
 
+# Create a json version of the table of content (for Single Page HTML)
+tutorial-json_toc:
+    python scripts/convert_toc.py
+
 tutorial_book:
     jupyter-book build .
 
 tutorial_book_pdf:
     jupyter-book build --builder pdfhtml .
+
