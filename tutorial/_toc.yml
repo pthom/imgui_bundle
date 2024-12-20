@@ -5,7 +5,6 @@ root: discover_immediate
 chapters:
   - file: discover/hello_world
     sections:
-      - file: discover/button
       - file: discover/widget_edit
       - file: discover/layout_advices
       - file: discover/whats_next
