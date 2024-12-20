@@ -4,9 +4,9 @@ body {
 
 .layout-container {
     display: grid;
-    grid-template-columns: 400px auto 5px 33% /* TOC | content | handle | code */;
-    height: 100vh;
-    overflow: hidden;
+    grid-template-columns: 400px auto 5px 33%; /* TOC | content | resizer | code */
+    height: 100vh; /* Full height of the viewport */
+    overflow: hidden; /* Avoid overflow for the entire layout */
 }
 
 #toc-sidebar {
@@ -15,9 +15,19 @@ body {
     overflow-y: auto;
 }
 
+#content-area-wrapper {
+    overflow: hidden; /* Prevents double scrolling issues */
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensure it occupies the full height of its parent */
+}
+
 #content-area {
     padding: 1rem;
-    overflow-y: auto;
+    overflow-y: auto; /* Scroll when content exceeds available height */
+    flex-grow: 1; /* Make this area take up the remaining vertical space */
+    max-height: 100%; /* Prevent overflow of the area itself */
+    box-sizing: border-box;
 }
 
 #resizer {
