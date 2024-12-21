@@ -100,7 +100,8 @@ body {
 }
 
 #toc-sidebar li {
-    margin-bottom: 0.5rem;
+    margin: 0.5rem 0;
+    padding-left: 0.5rem;
 }
 
 #toc-sidebar a {
@@ -113,6 +114,67 @@ body {
 
 #toc-sidebar a:hover {
     background-color: #f0f8ff;
+}
+
+/* Style for expanded chapters */
+#toc-sidebar li.expanded > a {
+    font-weight: bold; /* Highlight expanded chapters */
+}
+
+#toc-sidebar ul.subsections {
+    margin-left: 1rem; /* Indent subsections */
+    padding-left: 0.5rem;
+    border-left: 1px solid #ddd; /* Optional: Visual separation */
+}
+
+/* Wrapper for label and toggle button */
+.toc-item-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Align button to the right */
+}
+
+/* Toggle Button */
+.toc-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 0.5rem; /* Add space between label and button */
+    padding: 0;
+}
+
+
+
+.toc-toggle-btn:hover {
+    color: #0056b3;
+}
+
+/* Subsections */
+.subsections {
+    margin-left: 1.5rem; /* Indent subsections */
+    padding-left: 0; /* Remove extra padding */
+    border-left: 1px solid #ddd; /* Optional: Vertical line for visual separation */
+    list-style: none; /* Remove bullet points */
+}
+
+/* Style for parent list item when expanded */
+.toc-item-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+/* Highlight expanded chapters */
+#toc-sidebar li.expanded > .toc-item-wrapper > a {
+    font-weight: bold;
+}
+
+/* Optional: Add spacing between parent and subsections */
+#toc-sidebar li.expanded .subsections {
+    margin-top: 0.5rem;
 }
 
 /* ==========================

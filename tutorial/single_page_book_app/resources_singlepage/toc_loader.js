@@ -1,7 +1,5 @@
 import { loadPage } from "./page_loader.js";
 
-
-// The global `gToc` variable will store the TOC data (from generated_toc.json)
 let gToc;
 
 export function tocRoot() {
@@ -13,52 +11,74 @@ export async function initTOC() {
     gToc = await response.json();
     const tocSidebar = document.getElementById("toc-sidebar");
 
-    // Build a simple TOC list from toc's `chapters`
-    // toc format example:
-    // {
-    //   "format": "jb-book",
-    //   "root": "discover_immediate",
-    //   "chapters": [
-    //     { "file": "discover/hello_world", "sections": [...] }
-    //   ]
-    // }
     _buildTocList(gToc, tocSidebar);
 }
 
 function _buildTocList(toc, container) {
     const ul = document.createElement("ul");
 
-    // root page
+    // Root page
     const rootLi = _createTocItem(toc.root);
     ul.appendChild(rootLi);
 
-    // chapters
+    // Chapters
     toc.chapters.forEach(chapter => {
-        const li = _createTocItem(chapter);
+        const li = _createTocItem(chapter, true); // Add `true` for collapsible chapters
         ul.appendChild(li);
 
         if (chapter.sections) {
             const subUl = document.createElement("ul");
+            subUl.classList.add("subsections"); // Add class for styling
+            subUl.style.display = "none"; // Initially hide subsections
+
             chapter.sections.forEach(section => {
-                const subLi = _createTocItem(section.file);
+                const subLi = _createTocItem(section);
                 subUl.appendChild(subLi);
             });
+
             li.appendChild(subUl);
+
+            // Attach toggle behavior and page load to chapter link
+            const chapterLink = li.querySelector("a");
+            chapterLink.addEventListener("click", (e) => {
+                e.preventDefault();
+                _toggleSubsections(subUl, li); // Expand or collapse subsections
+                loadPage(chapter.file + ".md"); // Load chapter page
+            });
         }
     });
 
     container.appendChild(ul);
 }
 
-function _createTocItem(item) {
+function _createTocItem(item, isChapter = false) {
     const li = document.createElement("li");
     const link = document.createElement("a");
     link.href = "#";
-    link.textContent = item.title || item.file; // fallback if title not found
+    link.textContent = item.title || item.file; // Fallback if title not found
+    link.classList.add(isChapter ? "chapter-link" : "section-link");
     link.addEventListener("click", (e) => {
         e.preventDefault();
-        loadPage(item.file + ".md");
+        if (!isChapter) {
+            loadPage(item.file + ".md"); // Load page if it's a section
+        }
     });
     li.appendChild(link);
     return li;
+}
+
+function _toggleSubsections(subUl, currentLi) {
+    // Collapse all other subsections
+    const allSubsections = document.querySelectorAll(".subsections");
+    allSubsections.forEach(ul => {
+        if (ul !== subUl) {
+            ul.style.display = "none";
+            ul.parentElement.classList.remove("expanded");
+        }
+    });
+
+    // Toggle the current subsection
+    const isVisible = subUl.style.display === "block";
+    subUl.style.display = isVisible ? "none" : "block";
+    currentLi.classList.toggle("expanded", !isVisible);
 }
