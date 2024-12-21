@@ -5,7 +5,7 @@ default:
 srv_dev:
     # python3 -m http.server 8005
     # python3 ../ci_scripts/webserver_multithread_policy.py -p 8005
-    npm run dev
+    cd single_page_book_app && npm run dev
 
 
 gpt_files_content:
@@ -16,8 +16,8 @@ tutorial-json_toc:
     python scripts/convert_toc.py
 
 tutorial_book:
-    jupyter-book build .
+    cd jbook && jupyter-book build .
 
 tutorial_book_pdf:
-    jupyter-book build --builder pdfhtml .
+    cd jbook && jupyter-book build --builder pdfhtml .
 

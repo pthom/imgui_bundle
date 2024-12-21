@@ -1,7 +1,7 @@
 import { loadPage } from "./page_loader.js";
 
 
-// The global `gToc` variable will store the TOC data (from toc.json)
+// The global `gToc` variable will store the TOC data (from generated_toc.json)
 let gToc;
 
 export function tocRoot() {
@@ -9,7 +9,7 @@ export function tocRoot() {
 }
 
 export async function initTOC() {
-    const response = await fetch("toc.json");
+    const response = await fetch("resources_singlepage/generated_toc.json");
     gToc = await response.json();
     const tocSidebar = document.getElementById("toc-sidebar");
 

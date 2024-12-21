@@ -2,7 +2,7 @@
   "format": "jb-book",
   "root": {
     "file": "discover_immediate",
-    "title": "Intro"
+    "title": "discover_immediate"
   },
   "chapters": [
     {
@@ -10,22 +10,22 @@
       "sections": [
         {
           "file": "discover/widget_edit",
-          "title": "Edit value with widgets"
+          "title": "widget_edit"
         },
         {
           "file": "discover/layout_advices",
-          "title": "Advices to layout your GUI"
+          "title": "layout_advices"
         },
         {
           "file": "discover/whats_next",
-          "title": "What's next?"
+          "title": "whats_next"
         }
       ],
-      "title": "Discover Immediate Mode GUIs"
+      "title": "hello_world"
     },
     {
       "file": "imgui/intro",
-      "title": "Discover ImGui"
+      "title": "intro"
     }
   ]
 }

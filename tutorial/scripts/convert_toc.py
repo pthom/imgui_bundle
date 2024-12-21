@@ -5,8 +5,8 @@ from pathlib import Path
 THIS_DIR = Path(__file__).parent
 TUTORIAL_DIR = THIS_DIR.parent
 
-input_file = TUTORIAL_DIR / "_toc.yml"
-output_file = TUTORIAL_DIR / "toc.json"
+input_file = TUTORIAL_DIR / "jbook/_toc.yml"
+output_file = TUTORIAL_DIR / "single_page_book_app/resources_singlepage/generated_toc.json"
 
 def get_md_title(md_path: Path) -> str:
     """

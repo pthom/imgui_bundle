@@ -403,7 +403,7 @@ if (IMGUI_BUNDLE_BUILD_DOC)
     add_subdirectory(devel_docs)
 endif()
 if (IMGUI_BUNDLE_BUILD_TUTORIAL)
-    add_subdirectory(tutorial)
+    add_subdirectory(tutorial/jbook)
 endif()
 
 #------------------------------------------------------------------------------

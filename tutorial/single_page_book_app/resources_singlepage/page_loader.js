@@ -3,6 +3,7 @@ import { baseUrl } from "marked-base-url";
 import { updateBreadcrumbs } from "./breadcrumbs.js";
 
 export async function loadPage(mdPath) {
+    mdPath = "jbook/" + mdPath;
     const baseUrlPath = mdPath.substring(0, mdPath.lastIndexOf('/') + 1);
     marked.use(baseUrl(baseUrlPath));
 
