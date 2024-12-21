@@ -15,6 +15,10 @@ gpt_files_content:
 tutorial-json_toc:
     python scripts/convert_toc.py
 
+
+tutorial_prepare: tutorial-json_toc
+    cd single_page_book_app && npm install
+
 tutorial_book:
     cd jbook && rm -rf _build && export PYTHONPATH=$(pwd)/sphinx_ext_imgui && jupyter-book build .
 

@@ -248,60 +248,73 @@ body {
 /* ==========================
    Code Editor Tabs
 ========================== */
+
 .code-editor-tab-container {
-    border: 1px solid #ccc;
+    border: 1px solid #007bff; /* Blue border for the container */
     border-radius: 4px;
     overflow: hidden;
     margin-bottom: 1rem;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
 }
 
 .code-editor-tab-buttons {
     display: flex;
-    background-color: #f9f9f9;
+    justify-content: flex-start; /* Align tabs to the left */
+    padding: 0.2rem; /* Small padding around tabs */
+    background-color: #f9f9f9; /* Light gray for the tab bar */
     border-bottom: 1px solid #ccc;
+    gap: 0.2rem; /* Add small gap between tabs */
 }
 
 .code-editor-tab-button {
-    flex: 1;
-    padding: 0.5rem;
-    text-align: center;
-    background-color: #e9ecef;
+    padding: 0.5rem 1rem; /* Adjust padding for a compact look */
     border: none;
+    border-radius: 4px 4px 0 0; /* Rounded top corners */
+    background-color: #e9ecef; /* Light gray background for inactive tabs */
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: bold;
+    color: #333; /* Neutral dark text for inactive tabs */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .code-editor-tab-button.active {
+    background-color: #007bff; /* Blue background for active tab */
+    color: white; /* White text for active tab */
     font-weight: bold;
-    background-color: #007bff;
-    color: white;
-    border-bottom: 2px solid white;
+    border-bottom: 2px solid #ffffff; /* Seamless transition to the content area */
 }
 
 .code-editor-tab-button:hover {
-    background-color: #0056b3;
+    background-color: #0056b3; /* Darker blue on hover */
     color: white;
 }
 
 .code-editor-tab-content {
-    padding: 0;
-    background-color: white;
+    padding: 1rem;
+    background-color: #ffffff; /* White background for content area */
+    border-top: none;
 }
 
 .code-editor-tab-pane {
-    display: none; /* All panes are hidden by default */
-    padding: 1rem;
+    display: block;
+    animation: fadeIn 0.2s ease-in; /* Smooth fade-in animation for content */
 }
 
-.code-editor-tab-pane:not(.hidden) {
-    display: block; /* Only the active pane is shown */
+.code-editor-tab-pane.hidden {
+    display: none;
 }
 
-.code-editor-tab-button.active {
-    background-color: #007bff;
-    color: white;
+/* Subtle animation for tab switching */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ==========================

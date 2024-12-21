@@ -18,25 +18,10 @@ async function _processCodesIncludeInMarkdown(mdText, baseUrlPath) {
         if (line.trim().startsWith("```{codes_include}")) {
             const match = line.match(/```{codes_include}\s+(.*)/);
             if (match) {
-                console.log("Found codes_include directive:", match[1]); // Log matched directive
+                // console.log("Found codes_include directive:", match[1]); // Log matched directive
                 const baseName = match[1].trim();
 
                 // Generate HTML as a string
-//                 const tabsHtml = `
-// <div class="code-editor-tab-container" data-base-name="${baseName}">
-//     <div class="code-editor-tab-buttons">
-//         <button class="code-editor-tab-button active" data-tab="Python">Python</button>
-//         <button class="code-editor-tab-button" data-tab="C++">C++</button>
-//     </div>
-//     <div class="code-editor-tab-content">
-//         <div class="code-editor-tab-pane" data-language="Python" data-file="${baseName}.py">
-//             <div class="codemirror-placeholder" data-language="python"></div>
-//         </div>
-//         <div class="code-editor-tab-pane hidden" data-language="C++" data-file="${baseName}.cpp">
-//             <div class="codemirror-placeholder" data-language="cpp"></div>
-//         </div>
-//     </div>
-// </div>`;
                 const tabsHtml = `
 <div class="code-editor-tab-container" data-base-name="${baseName}">
     <div class="code-editor-tab-buttons">
@@ -52,9 +37,7 @@ async function _processCodesIncludeInMarkdown(mdText, baseUrlPath) {
         </div>
     </div>
 </div>`;
-
-
-                console.log("Generated HTML for tabs:", tabsHtml); // Debug log
+                // console.log("Generated HTML for tabs:", tabsHtml); // Debug log
                 processedLines.push(tabsHtml);
             }
             insideCodesIncludeBlock = true;
@@ -68,31 +51,37 @@ async function _processCodesIncludeInMarkdown(mdText, baseUrlPath) {
     return processedLines.join("\n");
 }
 
+
 async function _initializeCodeMirrorEditors(baseUrlPath) {
     const containers = document.querySelectorAll(".code-editor-tab-container");
 
-    console.log("Found Code Editor Containers:", containers.length); // Debug log
+    // console.log("Found Code Editor Containers:", containers.length); // Debug log
 
     for (const container of containers) {
         const tabPanes = container.querySelectorAll(".code-editor-tab-pane");
 
-        console.log("Found Tab Panes:", tabPanes.length); // Debug log
+        // console.log("Found Tab Panes:", tabPanes.length); // Debug log
 
         for (const tabPane of tabPanes) {
             const filePath = tabPane.dataset.file;
             const language = tabPane.dataset.language.toLowerCase();
 
-            console.log(`Initializing CodeMirror for file: ${filePath}, language: ${language}`); // Debug log
+            // console.log(`Initializing CodeMirror for file: ${filePath}, language: ${language}`); // Debug log
 
             try {
-                const fileResponse = await fetch(`${baseUrlPath}${filePath}`);
+                // Correctly handle baseUrlPath and filePath to avoid duplication
+                // Relative path; combine with baseUrlPath
+                let fullPath = new URL(filePath, `${window.location.origin}/${baseUrlPath}/`).toString();
+                // console.log(`Full Path for Fetch: ${fullPath}`); // Debug log
+
+                const fileResponse = await fetch(fullPath);
                 if (!fileResponse.ok) {
-                    console.warn(`File not found: ${baseUrlPath}${filePath}`);
+                    console.warn(`File not found: ${fullPath}`);
                     continue;
                 }
 
                 const codeContent = await fileResponse.text();
-                console.log(`Fetched Code Content for ${filePath}:\n`, codeContent); // Debug log
+                // console.log(`Fetched Code Content for ${filePath}:\n`, codeContent); // Debug log
 
                 const cmPlaceholder = tabPane.querySelector(".codemirror-placeholder");
 
@@ -129,16 +118,17 @@ async function _initializeCodeMirrorEditors(baseUrlPath) {
     _setupCodeEditorTabs(containers); // Ensure tab setup is called
 }
 
+
 function _setupCodeEditorTabs(containers) {
     containers.forEach((container) => {
         const buttons = container.querySelectorAll(".code-editor-tab-button");
         const panes = container.querySelectorAll(".code-editor-tab-pane");
 
         buttons.forEach((button) => {
-            console.log(`Attaching click event to button: ${button.dataset.tab}`); // Debugging log
+            // console.log(`Attaching click event to button: ${button.dataset.tab}`); // Debugging log
             button.addEventListener("click", () => {
                 const targetTab = button.dataset.tab;
-                console.log(`Tab clicked: ${targetTab}`); // Debugging log
+                // console.log(`Tab clicked: ${targetTab}`); // Debugging log
 
                 // Deactivate all buttons and panes
                 buttons.forEach((btn) => btn.classList.remove("active"));
@@ -191,12 +181,13 @@ export async function prepareCodeEditors(mdText, baseUrlPath) {
     const renderedHtml = marked(processedMdText);
 
     // Debug log: Final rendered HTML
-    console.log("Final Rendered HTML:", renderedHtml);
+    // console.log("Final Rendered HTML:", renderedHtml);
 
     // Update the content area with the rendered HTML
     const contentArea = document.getElementById("content-area");
     contentArea.innerHTML = renderedHtml;
 
     // Initialize CodeMirror editors for the placeholders
-    await _initializeCodeMirrorEditors(baseUrlPath);
+    //await _initializeCodeMirrorEditors(baseUrlPath);
+    await _initializeCodeMirrorEditors("jbook");
 }
