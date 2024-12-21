@@ -63,10 +63,7 @@ doc_him_pdf:
     cp external/hello_imgui/hello_imgui/docs_src/_build/pdf/book.pdf /Volumes/ramdisk/hello_imgui_manual.pdf
 
 tutorial_book:
-    cd tutorial && jupyter-book build .
-
-tutorial_book_pdf:
-    cd tutorial && jupyter-book build --builder pdfhtml .
+    cd tutorial && just tutorial_book
 
 # Create a new tutorial page from the template (pass a name relative to tutorial/)
 tutorial_new name:

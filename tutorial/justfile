@@ -16,7 +16,7 @@ tutorial-json_toc:
     python scripts/convert_toc.py
 
 tutorial_book:
-    cd jbook && jupyter-book build .
+    cd jbook && rm -rf _build && export PYTHONPATH=$(pwd)/sphinx_ext_imgui && jupyter-book build .
 
 tutorial_book_pdf:
     cd jbook && jupyter-book build --builder pdfhtml .

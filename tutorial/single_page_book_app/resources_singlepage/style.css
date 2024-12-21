@@ -116,50 +116,11 @@ body {
     background-color: #f0f8ff;
 }
 
-/* Style for expanded chapters */
 #toc-sidebar li.expanded > a {
     font-weight: bold; /* Highlight expanded chapters */
 }
 
-#toc-sidebar ul.subsections {
-    margin-left: 1rem; /* Indent subsections */
-    padding-left: 0.5rem;
-    border-left: 1px solid #ddd; /* Optional: Visual separation */
-}
-
-/* Wrapper for label and toggle button */
-.toc-item-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between; /* Align button to the right */
-}
-
-/* Toggle Button */
-.toc-toggle-btn {
-    background: none;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-    color: #007bff;
-    margin-left: 0.5rem; /* Add space between label and button */
-    padding: 0;
-}
-
-
-
-.toc-toggle-btn:hover {
-    color: #0056b3;
-}
-
-/* Subsections */
-.subsections {
-    margin-left: 1.5rem; /* Indent subsections */
-    padding-left: 0; /* Remove extra padding */
-    border-left: 1px solid #ddd; /* Optional: Vertical line for visual separation */
-    list-style: none; /* Remove bullet points */
-}
-
-/* Style for parent list item when expanded */
+/* Toggle button for chapters */
 .toc-item-wrapper {
     display: flex;
     justify-content: space-between;
@@ -167,14 +128,25 @@ body {
     cursor: pointer;
 }
 
-/* Highlight expanded chapters */
-#toc-sidebar li.expanded > .toc-item-wrapper > a {
-    font-weight: bold;
+.toc-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 0.5rem;
+    padding: 0;
 }
 
-/* Optional: Add spacing between parent and subsections */
-#toc-sidebar li.expanded .subsections {
-    margin-top: 0.5rem;
+.toc-toggle-btn:hover {
+    color: #0056b3;
+}
+
+#toc-sidebar ul.subsections {
+    margin-left: 1.5rem;
+    padding-left: 0;
+    border-left: 1px solid #ddd;
+    list-style: none;
 }
 
 /* ==========================
@@ -198,21 +170,21 @@ body {
    Canvas Panel
 ========================== */
 .draggable-resizable {
-    position: fixed; /* Independent of grid layout */
-    bottom: 1rem; /* Initial position */
-    right: 1rem; /* Initial position */
-    width: 20%; /* Default width */
-    height: 20%; /* Default height */
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    width: 20%;
+    height: 20%;
     border: 1px solid #ccc;
-    background-color: blue; /* Debug: Make position noticeable */
+    background-color: blue;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    resize: both; /* Enable resizing */
-    overflow: hidden; /* Prevent content overflow */
-    z-index: 1000; /* Ensure it appears above other elements */
+    resize: both;
+    overflow: hidden;
+    z-index: 1000;
 }
 
 #canvas-title-bar {
-    cursor: move; /* Show a move cursor for the title bar */
+    cursor: move;
     background: #333;
     color: #fff;
     padding: 0.5rem;
@@ -223,8 +195,9 @@ body {
 
 #canvas-content {
     width: 100%;
-    height: calc(100% - 2rem); /* Subtract title bar height */
+    height: calc(100% - 2rem);
 }
+
 /* ==========================
    Breadcrumbs
 ========================== */
@@ -236,8 +209,8 @@ body {
     padding: 1rem;
     background-color: #fff;
     border-left: 1px solid #ccc;
-    overflow-y: auto; /* Breadcrumb scrolls independently */
-    height: 100%; /* Fill the layout container */
+    overflow-y: auto;
+    height: 100%;
 }
 
 .vertical-breadcrumbs a {
@@ -251,63 +224,55 @@ body {
     background-color: #f0f8ff;
 }
 
-
 /* ==========================
    Code Editor
 ========================== */
-
 .editor-container {
-   position: relative;
-   resize: vertical; /* Allow vertical resizing */
-   overflow: hidden; /* Prevent overflow during resizing */
-   max-width: 100%;
-   border: 1px solid #ccc;
-   border-radius: 4px;
-   margin-bottom: 1rem;
-}
-
-.cm-editor {
+    position: relative;
+    resize: vertical;
+    overflow: hidden;
+    max-width: 100%;
     border: 1px solid #ccc;
     border-radius: 4px;
-    padding: 0.5rem;
-    font-size: 14px;
+    margin-bottom: 1rem;
 }
 
-.cm-editor pre {
-    margin: 0;
+.codemirror-placeholder {
+    min-height: 200px;
+    min-width: 100%;
+    border: 1px solid #ccc;
 }
-
 
 /* ==========================
    Responsive Layout
 ========================== */
 @media (max-width: 1024px) {
     .layout-container {
-        grid-template-columns: 200px auto; /* Hide canvas */
-        grid-template-areas: "sidebar content"; /* 2-column layout */
+        grid-template-columns: 200px auto;
+        grid-template-areas: "sidebar content";
     }
 
     .draggable-resizable {
-        display: none; /* Hide canvas on smaller screens */
+        display: none;
     }
 }
 
 @media (max-width: 768px) {
     .layout-container {
         grid-template-columns: auto;
-        grid-template-areas: "content"; /* Only main content visible */
+        grid-template-areas: "content";
     }
 
     #toggle-sidebar {
-        display: block; /* Show toggle button on small screens */
+        display: block;
         position: fixed;
         top: 1rem;
         left: 1rem;
-        z-index: 1001; /* Above sidebar */
+        z-index: 1001;
     }
 
     #toc-sidebar {
-        position: fixed; /* Allow sliding */
+        position: fixed;
         top: 0;
         left: 0;
         height: 100%;
@@ -317,7 +282,7 @@ body {
     }
 
     #toc-sidebar.active {
-        transform: translateX(0); /* Slide in */
+        transform: translateX(0);
         visibility: visible;
     }
 }
