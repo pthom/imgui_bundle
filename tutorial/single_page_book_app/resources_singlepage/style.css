@@ -251,6 +251,33 @@ body {
     background-color: #f0f8ff;
 }
 
+
+/* ==========================
+   Code Editor
+========================== */
+
+.editor-container {
+   position: relative;
+   resize: vertical; /* Allow vertical resizing */
+   overflow: hidden; /* Prevent overflow during resizing */
+   max-width: 100%;
+   border: 1px solid #ccc;
+   border-radius: 4px;
+   margin-bottom: 1rem;
+}
+
+.cm-editor {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.5rem;
+    font-size: 14px;
+}
+
+.cm-editor pre {
+    margin: 0;
+}
+
+
 /* ==========================
    Responsive Layout
 ========================== */

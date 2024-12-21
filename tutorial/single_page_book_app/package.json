@@ -12,6 +12,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@codemirror/lang-cpp": "^6.0.2",
+    "@codemirror/lang-python": "^6.1.6",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.36.1",
+    "codemirror": "^6.0.1",
     "marked": "^15.0.4",
     "marked-base-url": "^1.1.6"
   },
