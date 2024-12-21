@@ -13,7 +13,8 @@ class CodesIncludeDirective(Directive):
     option_spec = {}  # No specific options
 
     def run(self):
-        base_name = self.arguments[0]
+        base_name = self.arguments[0]  # The filename provided in the directive
+
         content = []
 
         # Generate tab-set Markdown syntax

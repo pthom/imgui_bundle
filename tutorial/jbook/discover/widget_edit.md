@@ -16,12 +16,5 @@ Here, we use Hello ImGui to display images. See the doc about Hello ImGui for mo
 image_from_asset will keep the aspect ratio of the image if one of the dimensions is set to 0.
 
 
-**Python**
-```{literalinclude} widget_edit.py
+```{codes_include} discover/widget_edit
 ```
-
-
-**C++**
-```{literalinclude} widget_edit.cpp
-```
-

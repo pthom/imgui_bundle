@@ -30,11 +30,5 @@ The code below demonstrates these advices and create this application:
 ![](layout_advices.jpg)
 
 
-**Python**
-```{literalinclude} layout_advices.py
-```
-
-
-**C++**
-```{literalinclude} layout_advices.cpp
+```{codes_include} discover/layout_advices
 ```

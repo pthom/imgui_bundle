@@ -12,14 +12,7 @@ We will follow the steps below:
 2. We use the `imgui.text()` (Python) or `ImGui::Text` (C++) function to display a text in the window.
 3. We call `hello_imgui.run()` (Python) or `HelloImGui::Run()` (C++) to start the application, optionally specifying the window title and size, or if we want it to set its size automatically.
 
-
-**Python**
-```{literalinclude} hello_world.py
-```
-
-
-**C++**
-```{literalinclude} hello_world.cpp
+```{codes_include} discover/hello_world
 ```
 
 
@@ -43,11 +36,5 @@ We will follow the steps below:
 *Note: In the case of a web application, such as in this tutorial, the "exit" button will not have any effect. In the case of a desktop application, it will close the window.*
 
 
-**Python**
-```{literalinclude} button.py
-```
-
-
-**C++**
-```{literalinclude} button.cpp
+```{codes_include} discover/button
 ```
