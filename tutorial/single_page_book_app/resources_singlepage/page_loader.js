@@ -1,6 +1,6 @@
 import { marked } from "marked";
 import { baseUrl } from "marked-base-url";
-import { initializeCodeMirrorEditors, processLiteralIncludesInMarkdown } from "./code_editor.js";
+import { prepareCodeEditors } from "./code_editor.js";
 import { updateBreadcrumbs } from "./breadcrumbs.js";
 
 // Custom renderer to preserve `{literalinclude}` directives
@@ -19,19 +19,9 @@ export async function loadPage(mdPath) {
     const response = await fetch(mdPath);
     let mdText = await response.text();
 
-    // Process `{literalinclude}` before parsing Markdown
-    mdText = await processLiteralIncludesInMarkdown(mdText, baseUrlPath);
+    // Process and render Markdown with Code Editors
+    await prepareCodeEditors(mdText, baseUrlPath);
 
-    // Parse the Markdown into HTML
-    marked.use(baseUrl(baseUrlPath));
-    const html = marked.parse(mdText);
-
-    // Update the content area
-    const contentArea = document.getElementById("content-area");
-    contentArea.innerHTML = html;
-
-    initializeCodeMirrorEditors();
-
-    updateBreadcrumbs(); // after content is loaded
+    // Update breadcrumbs after the content is loaded
+    updateBreadcrumbs();
 }
-
