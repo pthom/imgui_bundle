@@ -1,37 +1,38 @@
 /* ==========================
    Global Styles
 ========================== */
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
-    overflow: hidden; /* Prevent overall page scrolling */
+    overflow: hidden; /* no page-level scrollbars */
 }
 
 body {
     display: flex;
     flex-direction: column;
     font-family: Arial, sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    color: #333;
 }
 
 /* ==========================
    Header and Buttons
 ========================== */
 .main-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-shrink: 0; /* Ensure header doesn't shrink */
+    height: 3rem;
     background-color: #f9f9f9;
     border-bottom: 1px solid #ccc;
     padding: 0.5rem 1rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
     position: sticky;
     top: 0;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    flex-shrink: 0; /* Ensure header doesn't shrink */
 }
 
 #toggle-sidebar {
@@ -67,12 +68,13 @@ body {
    Layout Container
 ========================== */
 .layout-container {
+    flex: 1;                     /* fill the rest of the window below the header */
     display: grid;
-    grid-template-columns: 200px auto 300px; /* Sidebar | Content | Canvas */
-    grid-template-areas: "sidebar content canvas";
+    grid-template-columns: 200px auto 300px; /* sidebar - content - breadcrumb */
+    grid-template-areas: "sidebar content aside";
     gap: 1rem;
-    height: calc(100% - 3rem); /* Remaining height after the header */
-    overflow: hidden; /* Prevent scrolling of the layout itself */
+    overflow: hidden;            /* no scrolling for the container itself */
+    /*height: calc(100% - 3rem); !* using flex:1 now *!*/
 }
 
 /* ==========================
@@ -80,7 +82,7 @@ body {
 ========================== */
 #toc-sidebar {
     grid-area: sidebar;
-    background-color: #fff;
+    background: white;
     border-right: 1px solid #ccc;
     padding: 1rem;
     overflow-y: auto; /* Sidebar scrolls independently */
@@ -158,6 +160,7 @@ body {
     padding: 1rem;
     height: 100%; /* Ensure it spans the full height of the container */
     box-sizing: border-box;
+    background-color: #f9f9f9;
 }
 
 #content-area {
