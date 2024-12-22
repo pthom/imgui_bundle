@@ -59,36 +59,25 @@ function _createEditorRunPythonCodeButton(editorView) {
     runButton.classList.add("run-python-button");
 
     runButton.addEventListener("click", () => {
-        // Get the current text from the editor
         const currentCode = editorView.state.doc.toString();
         runPythonCode(currentCode);
     });
-
     return runButton;
 }
 
 async function _initializeCodeMirrorEditors(baseUrlPath) {
     const containers = document.querySelectorAll(".code-editor-tab-container");
 
-    // console.log("Found Code Editor Containers:", containers.length); // Debug log
-
     for (const container of containers) {
         const tabPanes = container.querySelectorAll(".code-editor-tab-pane");
-
-        // console.log("Found Tab Panes:", tabPanes.length); // Debug log
 
         for (const tabPane of tabPanes) {
             const filePath = tabPane.dataset.file;
             const language = tabPane.dataset.language.toLowerCase();
 
-            // console.log(`Initializing CodeMirror for file: ${filePath}, language: ${language}`); // Debug log
-
             try {
-                // Correctly handle baseUrlPath and filePath to avoid duplication
-                // Relative path; combine with baseUrlPath
+                // Combine baseUrlPath + filePath properly
                 let fullPath = new URL(filePath, `${window.location.origin}/${baseUrlPath}/`).toString();
-                // console.log(`Full Path for Fetch: ${fullPath}`); // Debug log
-
                 const fileResponse = await fetch(fullPath);
                 if (!fileResponse.ok) {
                     console.warn(`File not found: ${fullPath}`);
@@ -96,10 +85,16 @@ async function _initializeCodeMirrorEditors(baseUrlPath) {
                 }
 
                 const codeContent = await fileResponse.text();
-                // console.log(`Fetched Code Content for ${filePath}:\n`, codeContent); // Debug log
 
+                // Create a wrapper for CodeMirror so we can set resize/height on it
+                const wrapper = document.createElement("div");
+                wrapper.classList.add("codemirror-wrapper");
+
+                // Append this wrapper to the pane’s placeholder
                 const cmPlaceholder = tabPane.querySelector(".codemirror-placeholder");
+                cmPlaceholder.appendChild(wrapper);
 
+                // Build up CodeMirror extensions
                 const extensions = [
                     lineNumbers(),
                     syntaxHighlighting(defaultHighlightStyle),
@@ -116,15 +111,31 @@ async function _initializeCodeMirrorEditors(baseUrlPath) {
                     extensions.push(cpp());
                 }
 
+                // Create the editor in the wrapper
                 const editorView = new EditorView({
                     state: EditorState.create({
                         doc: codeContent,
                         extensions,
                     }),
-                    parent: cmPlaceholder,
+                    parent: wrapper, // set the parent as our new wrapper
                 });
 
-                // If it's a Python editor, add a "Run" button below it
+                // *** Adjust initial height based on line count ***
+                const lineCount = codeContent.split("\n").length;
+                const maxLines = 20; // limit to 20 lines
+                const chosenLines = Math.min(lineCount, maxLines);
+
+                // We'll assume ~1.4em line height. Adjust as needed or measure programmatically
+                const lineHeightPx = 22; // approx
+                const initialHeightPx = chosenLines * lineHeightPx;
+
+                // Now style the wrapper
+                wrapper.style.resize = "vertical";
+                wrapper.style.overflow = "auto";
+                wrapper.style.maxHeight = "600px"; // some overall maximum if you like
+                wrapper.style.height = `${initialHeightPx}px`; // initial size
+
+                // If it's a Python editor, add a run button
                 if (language === "python") {
                     const runButton = _createEditorRunPythonCodeButton(editorView);
                     tabPane.appendChild(runButton);
@@ -137,9 +148,8 @@ async function _initializeCodeMirrorEditors(baseUrlPath) {
         }
     }
 
-    _setupCodeEditorTabs(containers); // Ensure tab setup is called
+    _setupCodeEditorTabs(containers);
 }
-
 
 function _setupCodeEditorTabs(containers) {
     containers.forEach((container) => {

@@ -254,6 +254,16 @@ body {
     border-radius: 4px;
 }
 
+/* Container which handles scrolling for code editor */
+.codemirror-wrapper {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    /* initial height is set by js, so no need for height or max-height here*/
+    min-height: 100px;
+    overflow-x: auto;
+    box-sizing: border-box;
+}
 
 /* ==========================
    Code Editor Tabs
