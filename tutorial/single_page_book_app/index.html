@@ -35,9 +35,10 @@
         <button id="maximize-btn">Maximize</button>
     </div>
     <div id="canvas-content" style="background-color: blue;">
-        <!-- Canvas or placeholder content goes here -->
+        <canvas class="canvas-emscripten" id="canvas" tabindex="0" oncontextmenu="event.preventDefault()"></canvas>
     </div>
 </div>
+<script src="pyodide_dist/pyodide.js"></script>
 <script type="module" src="resources_singlepage/app.js"></script>
 </body>
 </html>

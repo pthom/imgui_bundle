@@ -1,5 +1,8 @@
 # Intro
 
+```{codes_include} discover/widget_edit
+```
+
 ## What is an Immediate Mode GUI
 
 Graphical User Interfaces (GUIs) handle how your application is presented to the user.

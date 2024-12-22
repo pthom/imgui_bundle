@@ -4,6 +4,8 @@ import { defaultHighlightStyle, syntaxHighlighting } from "@codemirror/language"
 import { python } from "@codemirror/lang-python";
 import { cpp } from "@codemirror/lang-cpp";
 import { marked } from "marked";
+import { runPythonCode } from "./pyodide_helper.js";
+
 
 // _ stands for private function to this module. Let's adopt this convention!
 
@@ -51,6 +53,19 @@ async function _processCodesIncludeInMarkdown(mdText, baseUrlPath) {
     return processedLines.join("\n");
 }
 
+function _createEditorRunPythonCodeButton(editorView) {
+    const runButton = document.createElement("button");
+    runButton.textContent = "Run Python Code";
+    runButton.classList.add("run-python-button");
+
+    runButton.addEventListener("click", () => {
+        // Get the current text from the editor
+        const currentCode = editorView.state.doc.toString();
+        runPythonCode(currentCode);
+    });
+
+    return runButton;
+}
 
 async function _initializeCodeMirrorEditors(baseUrlPath) {
     const containers = document.querySelectorAll(".code-editor-tab-container");
@@ -101,13 +116,20 @@ async function _initializeCodeMirrorEditors(baseUrlPath) {
                     extensions.push(cpp());
                 }
 
-                new EditorView({
+                const editorView = new EditorView({
                     state: EditorState.create({
                         doc: codeContent,
                         extensions,
                     }),
                     parent: cmPlaceholder,
                 });
+
+                // If it's a Python editor, add a "Run" button below it
+                if (language === "python") {
+                    const runButton = _createEditorRunPythonCodeButton(editorView);
+                    tabPane.appendChild(runButton);
+                }
+
             } catch (error) {
                 console.error(`Failed to fetch file: ${filePath}`, error);
                 tabPane.innerHTML = `<div class="code-editor-tab-error">Error loading file: ${filePath}</div>`;
