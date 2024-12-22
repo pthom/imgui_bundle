@@ -3397,14 +3397,14 @@ class Context:
     frame_count_platform_ended: int
     # int                     FrameCountRendered;    /* original C++ signature */
     frame_count_rendered: int
+    # ImGuiID                 WithinEndChildID;    /* original C++ signature */
+    within_end_child_id: ID  # Set within EndChild()
     # bool                    WithinFrameScope;    /* original C++ signature */
     within_frame_scope: bool  # Set by NewFrame(), cleared by EndFrame()
     # bool                    WithinFrameScopeWithImplicitWindow;    /* original C++ signature */
     within_frame_scope_with_implicit_window: (
         bool  # Set by NewFrame(), cleared by EndFrame() when the implicit debug window has been pushed
     )
-    # bool                    WithinEndChild;    /* original C++ signature */
-    within_end_child: bool  # Set within EndChild()
     # bool                    GcCompactAll;    /* original C++ signature */
     gc_compact_all: bool  # Request full GC
     # bool                    TestEngineHookItems;    /* original C++ signature */
