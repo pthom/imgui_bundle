@@ -214,7 +214,7 @@ body {
 /* ==========================
    Breadcrumbs
 ========================== */
-.vertical-breadcrumbs {
+.sections-sidebar {
     grid-area: canvas;
     display: flex;
     flex-direction: column;
@@ -226,14 +226,14 @@ body {
     height: 100%;
 }
 
-.vertical-breadcrumbs a {
+.sections-sidebar a {
     color: #007bff;
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     text-decoration: none;
 }
 
-.vertical-breadcrumbs a:hover {
+.sections-sidebar a:hover {
     background-color: #f0f8ff;
 }
 

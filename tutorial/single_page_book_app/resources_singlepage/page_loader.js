@@ -1,7 +1,7 @@
 import { marked } from "marked";
 import { baseUrl } from "marked-base-url";
 import { prepareCodeEditors } from "./code_editor.js";
-import { updateBreadcrumbs } from "./breadcrumbs.js";
+import { updatePageSections } from "./page_sections.js";
 
 // Custom renderer to preserve `{literalinclude}` directives
 const renderer = new marked.Renderer();
@@ -23,5 +23,5 @@ export async function loadPage(mdPath) {
     await prepareCodeEditors(mdText, baseUrlPath);
 
     // Update breadcrumbs after the content is loaded
-    updateBreadcrumbs();
+    updatePageSections();
 }
