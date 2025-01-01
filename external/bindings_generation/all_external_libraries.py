@@ -178,6 +178,15 @@ def lib_implot() -> ExternalLibrary:
         fork_branch="imgui_bundle"
     )
 
+def lib_implot3d() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="implot3d",
+        official_git_url="https://github.com/brenocq/implot3d.git",
+        fork_git_url="https://github.com/pthom/implot3d.git",
+        official_branch="main",
+        fork_branch="imgui_bundle"
+    )
+
 
 def lib_imspinner() -> ExternalLibrary:
     # We use a copy of the library source for the moment, instead of a fork
@@ -229,6 +238,7 @@ ALL_LIBS = [
     lib_immvision(),
     lib_cvnp(),
     lib_implot(),
+    lib_implot3d(),
     lib_imspinner(),
     lib_portable_file_dialogs(),
     lib_nanovg(),

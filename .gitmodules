@@ -80,3 +80,6 @@
 [submodule "external/immvision/cvnp_nano"]
 	path = external/immvision/cvnp_nano
 	url = https://github.com/pthom/cvnp_nano.git
+[submodule "external/implot3d/implot3d"]
+	path = external/implot3d/implot3d
+	url = https://github.com/pthom/implot3d.git
