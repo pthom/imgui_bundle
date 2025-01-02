@@ -91,7 +91,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         DemoDetails("Dear ImGui Bundle", demo_imgui_bundle_intro),
         DemoDetails("Dear ImGui", demo_imgui_show_demo_window),
         DemoDetails("Immediate Apps", demo_immapp_launcher),
-        DemoDetails("Implot", demo_implot),
+        DemoDetails("Implot [3D]", demo_implot),
         DemoDetails("Node Editor", demo_node_editor_launcher),
         DemoDetails("Markdown", demo_imgui_md),
         DemoDetails("Text Editor", demo_text_edit),
@@ -131,6 +131,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     addons.with_node_editor = True
     addons.with_markdown = True
     addons.with_implot = True
+    addons.with_implot3d = True
     addons.with_tex_inspect = True
 
     return runner_params, addons

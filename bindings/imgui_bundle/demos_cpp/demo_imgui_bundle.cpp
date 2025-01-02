@@ -95,7 +95,7 @@ int main(int, char **)
         DEMO_DETAILS("Dear ImGui Bundle", demo_imgui_bundle_intro),
         DEMO_DETAILS("Dear ImGui", demo_imgui_show_demo_window),
         DEMO_DETAILS("Immediate Apps", demo_immapp_launcher),
-        DEMO_DETAILS("Implot", demo_implot),
+        DEMO_DETAILS("Implot [3D]", demo_implot),
         DEMO_DETAILS("Node Editor", demo_node_editor_launcher),
         DEMO_DETAILS("Markdown", demo_imgui_md),
         DEMO_DETAILS("Text Editor", demo_text_edit),
@@ -139,6 +139,7 @@ int main(int, char **)
     addons.withNodeEditor = true;
     addons.withMarkdown = true;
     addons.withImplot = true;
+    addons.withImplot3d = true;
     addons.withTexInspect = true;
     ImmApp::Run(runnerParams, addons);
 
