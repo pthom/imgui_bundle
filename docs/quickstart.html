@@ -877,11 +877,9 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">ImGuiDefaultSettings</span><span class="tok-o">::</span><span class="tok-n">LoadDefaultFont_WithFontAwesomeIcons</span><span class="tok-p">();</span>
 
 <span class="tok-w">    </span><span class="tok-c1">// Load the title font. Also manually merge FontAwesome icons to it</span>
-<span class="tok-w">    </span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">TitleFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LoadFont</span><span class="tok-p">(</span><span class="tok-s">&quot;fonts/DroidSans.ttf&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">18.f</span><span class="tok-p">);</span>
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">FontLoadingParams</span><span class="tok-w"> </span><span class="tok-n">fontLoadingParamsTitleIcons</span><span class="tok-p">;</span>
-<span class="tok-w">    </span><span class="tok-n">fontLoadingParamsTitleIcons</span><span class="tok-p">.</span><span class="tok-n">mergeToLastFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
-<span class="tok-w">    </span><span class="tok-n">fontLoadingParamsTitleIcons</span><span class="tok-p">.</span><span class="tok-n">useFullGlyphRange</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
-<span class="tok-w">    </span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">TitleFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LoadFont</span><span class="tok-p">(</span><span class="tok-s">&quot;fonts/Font_Awesome_6_Free-Solid-900.otf&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">18.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontLoadingParamsTitleIcons</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">fontLoadingParamsTitleIcons</span><span class="tok-p">.</span><span class="tok-n">mergeFontAwesome</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-nb">true</span><span class="tok-p">;</span>
+<span class="tok-w">    </span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">TitleFont</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">LoadFont</span><span class="tok-p">(</span><span class="tok-s">&quot;fonts/Roboto/Roboto-BoldItalic.ttf&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">18.f</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">fontLoadingParamsTitleIcons</span><span class="tok-p">);</span>
 
 <span class="tok-w">    </span><span class="tok-c1">// Load an Emoji font</span>
 <span class="tok-w">    </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">FontLoadingParams</span><span class="tok-w"> </span><span class="tok-n">fontLoadingParamsEmoji</span><span class="tok-p">;</span>
@@ -1250,7 +1248,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
 <span class="tok-kt">void</span><span class="tok-w"> </span><span class="tok-n">DemoFonts</span><span class="tok-p">(</span><span class="tok-n">AppState</span><span class="tok-o">&amp;</span><span class="tok-w"> </span><span class="tok-n">appState</span><span class="tok-p">)</span>
 <span class="tok-p">{</span>
-<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PushFont</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">TitleFont</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Fonts - &quot;</span><span class="tok-w">  </span><span class="tok-n">ICON_FA_PEN_NIB</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PopFont</span><span class="tok-p">();</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PushFont</span><span class="tok-p">(</span><span class="tok-n">appState</span><span class="tok-p">.</span><span class="tok-n">TitleFont</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-s">&quot;Fonts - &quot;</span><span class="tok-w"> </span><span class="tok-n">ICON_FA_ROCKET</span><span class="tok-p">);</span><span class="tok-w"> </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">PopFont</span><span class="tok-p">();</span>
 
 <span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">TextWrapped</span><span class="tok-p">(</span><span class="tok-s">&quot;Mix icons &quot;</span><span class="tok-w"> </span><span class="tok-n">ICON_FA_FACE_SMILE</span><span class="tok-w"> </span><span class="tok-s">&quot; and text &quot;</span><span class="tok-w"> </span><span class="tok-n">ICON_FA_ROCKET</span><span class="tok-w"> </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">);</span>
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">IsItemHovered</span><span class="tok-p">())</span>
@@ -1828,12 +1826,10 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
     <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">imgui_default_settings</span><span class="tok-o">.</span><span class="tok-n">load_default_font_with_font_awesome_icons</span><span class="tok-p">()</span>
 
     <span class="tok-c1"># Load the title font</span>
-    <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">title_font</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">load_font</span><span class="tok-p">(</span><span class="tok-s2">&quot;fonts/DroidSans.ttf&quot;</span><span class="tok-p">,</span> <span class="tok-mf">18.0</span><span class="tok-p">)</span>
+    <span class="tok-c1"># app_state.title_font = hello_imgui.load_font(&quot;fonts/DroidSans.ttf&quot;, 18.0)</span>
     <span class="tok-n">font_loading_params_title_icons</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">FontLoadingParams</span><span class="tok-p">()</span>
-    <span class="tok-n">font_loading_params_title_icons</span><span class="tok-o">.</span><span class="tok-n">merge_to_last_font</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
-    <span class="tok-n">font_loading_params_title_icons</span><span class="tok-o">.</span><span class="tok-n">use_full_glyph_range</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
-    <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">title_font</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">load_font</span><span class="tok-p">(</span><span class="tok-s2">&quot;fonts/Font_Awesome_6_Free-Solid-900.otf&quot;</span><span class="tok-p">,</span>
-                                                 <span class="tok-mf">18.0</span><span class="tok-p">,</span> <span class="tok-n">font_loading_params_title_icons</span><span class="tok-p">)</span>
+    <span class="tok-n">font_loading_params_title_icons</span><span class="tok-o">.</span><span class="tok-n">merge_font_awesome</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
+    <span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">title_font</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">load_font</span><span class="tok-p">(</span><span class="tok-s2">&quot;fonts/Roboto/Roboto-BoldItalic.ttf&quot;</span><span class="tok-p">,</span> <span class="tok-mi">18</span><span class="tok-p">,</span> <span class="tok-n">font_loading_params_title_icons</span><span class="tok-p">)</span>
 
     <span class="tok-c1"># Load the emoji font</span>
     <span class="tok-n">font_loading_params_emoji</span> <span class="tok-o">=</span> <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">FontLoadingParams</span><span class="tok-p">()</span>
@@ -2233,7 +2229,7 @@ As shown in the screenshot, Dear ImGui Bundle provides a variety of predefined t
 
 <span class="tok-k">def</span> <span class="tok-nf">demo_fonts</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-p">:</span> <span class="tok-n">AppState</span><span class="tok-p">):</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_font</span><span class="tok-p">(</span><span class="tok-n">app_state</span><span class="tok-o">.</span><span class="tok-n">title_font</span><span class="tok-p">)</span>
-    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Fonts - &quot;</span> <span class="tok-o">+</span> <span class="tok-n">icons_fontawesome_6</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_PEN_NIB</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s2">&quot;Fonts - &quot;</span> <span class="tok-o">+</span> <span class="tok-n">icons_fontawesome_6</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_ROCKET</span><span class="tok-p">)</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">pop_font</span><span class="tok-p">()</span>
 
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text_wrapped</span><span class="tok-p">(</span><span class="tok-s2">&quot;Mix icons &quot;</span> <span class="tok-o">+</span> <span class="tok-n">icons_fontawesome_6</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_FACE_SMILE</span> <span class="tok-o">+</span> <span class="tok-s2">&quot; and text &quot;</span> <span class="tok-o">+</span> <span class="tok-n">icons_fontawesome_6</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_ROCKET</span><span class="tok-p">)</span>
@@ -2806,7 +2802,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE</span>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp">#ifdef HELLOIMGUI_WITH_TEST_ENGINE</span>
 <span class="tok-c1">// A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)</span>
 <span class="tok-c1">//</span>
 <span class="tok-c1">// It demonstrates how to:</span>
@@ -3052,9 +3048,9 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">dockingParams</span><span class="tok-p">.</span><span class="tok-n">dockableWindows</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">CreateDockableWindows</span><span class="tok-p">();</span>
 <span class="tok-w">    </span><span class="tok-n">runnerParams</span><span class="tok-o">-&gt;</span><span class="tok-n">dockingParams</span><span class="tok-p">.</span><span class="tok-n">layoutCondition</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">HelloImGui</span><span class="tok-o">::</span><span class="tok-n">DockingLayoutCondition</span><span class="tok-o">::</span><span class="tok-n">ApplicationStart</span><span class="tok-p">;</span>
 <span class="tok-p">}</span>
-<span class="tok-cp">#else</span>
+<span class="tok-cp">#else </span><span class="tok-c1">// #ifdef HELLOIMGUI_WITH_TEST_ENGINE</span>
 <span class="tok-kt">int</span><span class="tok-w"> </span><span class="tok-n">main</span><span class="tok-p">(</span><span class="tok-kt">int</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-k">const</span><span class="tok-w"> </span><span class="tok-kt">char</span><span class="tok-o">**</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-p">{}</span>
-<span class="tok-cp">#endif </span><span class="tok-c1">// #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE</span></code></pre>
+<span class="tok-cp">#endif </span><span class="tok-c1">// #ifdef HELLOIMGUI_WITH_TEST_ENGINE</span></code></pre>
 </div>
 </div>
 </div>
@@ -3768,6 +3764,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <div class="content">
 <pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-c1">// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle</span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;hello_imgui/hello_imgui.h&quot;</span>
+<span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;hello_imgui/icons_font_awesome_4.h&quot;</span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imspinner/imspinner.h&quot;</span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui_toggle/imgui_toggle.h&quot;</span>
 <span class="tok-cp">#include</span><span class="tok-w"> </span><span class="tok-cpf">&quot;imgui_toggle/imgui_toggle_presets.h&quot;</span>
@@ -4066,9 +4063,18 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 
 <span class="tok-w">    </span><span class="tok-n">ImGuiMd</span><span class="tok-o">::</span><span class="tok-n">RenderUnindented</span><span class="tok-p">(</span><span class="tok-sa">R</span><span class="tok-s">&quot;</span><span class="tok-dl">(</span>
 <span class="tok-s">        # ImFileDialog</span>
-<span class="tok-s">         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.</span>
-<span class="tok-s">         *Not (yet) adapted for High DPI resolution under windows*</span>
+<span class="tok-s">         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui.</span>
 <span class="tok-s">        </span><span class="tok-dl">)</span><span class="tok-s">&quot;</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Text</span><span class="tok-p">(</span><span class="tok-n">ICON_FA_EXCLAMATION_TRIANGLE</span><span class="tok-p">);</span>
+<span class="tok-w">    </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SetItemTooltip</span><span class="tok-p">(</span>
+<span class="tok-w">        </span><span class="tok-s">&quot;It is advised to use Portable File Dialogs instead, which offer native dialogs on each platform, &quot;</span>
+<span class="tok-w">        </span><span class="tok-s">&quot;as well as notifications and messages.</span><span class="tok-se">\n\n</span><span class="tok-s">&quot;</span>
+<span class="tok-w">        </span><span class="tok-s">&quot;Known limitations of ImFileDialog:</span><span class="tok-se">\n</span><span class="tok-s">&quot;</span>
+<span class="tok-w">        </span><span class="tok-s">&quot;  * Not adapted for High DPI resolution under windows</span><span class="tok-se">\n</span><span class="tok-s">&quot;</span>
+<span class="tok-w">        </span><span class="tok-s">&quot;  * No support for multi-selection</span><span class="tok-se">\n</span><span class="tok-s">&quot;</span>
+<span class="tok-w">        </span><span class="tok-s">&quot;  * Will not work under python with a pure python backend (requires to use `immapp.run()`)&quot;</span>
+<span class="tok-w">    </span><span class="tok-p">);</span>
 
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">Button</span><span class="tok-p">(</span><span class="tok-s">&quot;Open file&quot;</span><span class="tok-p">))</span>
 <span class="tok-w">        </span><span class="tok-n">ifd</span><span class="tok-o">::</span><span class="tok-n">FileDialog</span><span class="tok-o">::</span><span class="tok-n">Instance</span><span class="tok-p">().</span><span class="tok-n">Open</span><span class="tok-p">(</span>
@@ -4262,6 +4268,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-n">immapp</span><span class="tok-p">,</span>
     <span class="tok-n">ImVec4</span><span class="tok-p">,</span>
     <span class="tok-n">im_cool_bar</span><span class="tok-p">,</span>
+    <span class="tok-n">icons_fontawesome</span><span class="tok-p">,</span>
 <span class="tok-p">)</span>
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">imgui_command_palette</span> <span class="tok-k">as</span> <span class="tok-n">imcmd</span>
 <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">portable_file_dialogs</span> <span class="tok-k">as</span> <span class="tok-n">pfd</span>
@@ -4523,14 +4530,24 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
     <span class="tok-k">if</span> <span class="tok-ow">not</span> <span class="tok-n">has_submodule</span><span class="tok-p">(</span><span class="tok-s2">&quot;im_file_dialog&quot;</span><span class="tok-p">):</span>
         <span class="tok-k">return</span>
     <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">im_file_dialog</span> <span class="tok-k">as</span> <span class="tok-n">ifd</span>
-
     <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span>
 <span class="tok-w">        </span><span class="tok-sd">&quot;&quot;&quot;</span>
 <span class="tok-sd">        # ImFileDialog</span>
-<span class="tok-sd">         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.</span>
-<span class="tok-sd">         *Not (yet) adapted for High DPI resolution under windows*</span>
+<span class="tok-sd">         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui.</span>
 <span class="tok-sd">        &quot;&quot;&quot;</span>
     <span class="tok-p">)</span>
+    <span class="tok-c1"># Warning / low support</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-n">icons_fontawesome</span><span class="tok-o">.</span><span class="tok-n">ICON_FA_EXCLAMATION_TRIANGLE</span><span class="tok-p">)</span>
+    <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">set_item_tooltip</span><span class="tok-p">(</span><span class="tok-s2">&quot;&quot;&quot;</span>
+<span class="tok-s2">    It is advised to use Portable File Dialogs instead, which offer native dialogs on each platform,</span>
+<span class="tok-s2">    as well as notifications and messages.</span>
+
+<span class="tok-s2">    Known limitations of ImFileDialog:</span>
+<span class="tok-s2">    * Not adapted for High DPI resolution under windows</span>
+<span class="tok-s2">    * No support for multi-selection</span>
+<span class="tok-s2">    * Will not work under python with a pure python backend (requires to use `immapp.run()`)</span>
+<span class="tok-s2">    &quot;&quot;&quot;</span><span class="tok-p">)</span>
 
     <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Open file&quot;</span><span class="tok-p">):</span>
         <span class="tok-n">ifd</span><span class="tok-o">.</span><span class="tok-n">FileDialog</span><span class="tok-o">.</span><span class="tok-n">instance</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">open</span><span class="tok-p">(</span>
@@ -5057,7 +5074,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-11-24 13:30:59 +0100
+Last updated 2025-01-02 15:11:02 +0100
 </div>
 </div>
 </body>

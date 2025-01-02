@@ -1280,9 +1280,10 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 
 <span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-p">.</span><span class="tok-n">python_backends</span><span class="tok-p">.</span><span class="tok-n">glfw_backend</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">GlfwRenderer</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">OpenGL</span><span class="tok-p">.</span><span class="tok-n">GL</span><span class="tok-w"> </span><span class="tok-n">as</span><span class="tok-w"> </span><span class="tok-n">gl</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
+<span class="tok-cp"># When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard glfw, not the one provided by imgui_bundle)</span>
+<span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">glfw</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
 <span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imgui_ctx</span>
 <span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">imgui_md</span>
-<span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">glfw</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">sys</span>
 
 
@@ -1459,7 +1460,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-11-24 13:30:59 +0100
+Last updated 2025-01-02 15:11:02 +0100
 </div>
 </div>
 </body>

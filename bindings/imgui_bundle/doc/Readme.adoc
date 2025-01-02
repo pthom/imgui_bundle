@@ -249,6 +249,9 @@ Dear ImGui Bundle includes the following libraries, which are available in {cpp}
 |https://github.com/epezent/implot[ImPlot]: Immediate Mode Plotting
 |image:{url-demo-images}/battery_implot.jpg[width=200]
 
+|https://github.com/brenocq/implot3d[ImPlot3D]: Immediate Mode 3D Plotting
+|image:{url-demo-images}/battery_implot3d.jpg[width=200]
+
 
 |https://github.com/CedricGuillemet/ImGuizmo.git[ImGuizmo]: Immediate mode 3D gizmo for scene editing and other controls based on Dear ImGui
 |image:{url-demo-images}/demo_gizmo.jpg[width=200]
@@ -757,11 +760,9 @@ void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.L
     HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
 
     // Load the title font. Also manually merge FontAwesome icons to it
-    appState.TitleFont = HelloImGui::LoadFont("fonts/DroidSans.ttf", 18.f);
     HelloImGui::FontLoadingParams fontLoadingParamsTitleIcons;
-    fontLoadingParamsTitleIcons.mergeToLastFont = true;
-    fontLoadingParamsTitleIcons.useFullGlyphRange = true;
-    appState.TitleFont = HelloImGui::LoadFont("fonts/Font_Awesome_6_Free-Solid-900.otf", 18.f, fontLoadingParamsTitleIcons);
+    fontLoadingParamsTitleIcons.mergeFontAwesome = true;
+    appState.TitleFont = HelloImGui::LoadFont("fonts/Roboto/Roboto-BoldItalic.ttf", 18.f, fontLoadingParamsTitleIcons);
 
     // Load an Emoji font
     HelloImGui::FontLoadingParams fontLoadingParamsEmoji;
@@ -1130,7 +1131,7 @@ void DemoAssets(AppState& appState)
 
 void DemoFonts(AppState& appState)
 {
-    ImGui::PushFont(appState.TitleFont); ImGui::Text("Fonts - "  ICON_FA_PEN_NIB); ImGui::PopFont();
+    ImGui::PushFont(appState.TitleFont); ImGui::Text("Fonts - " ICON_FA_ROCKET); ImGui::PopFont();
 
     ImGui::TextWrapped("Mix icons " ICON_FA_FACE_SMILE " and text " ICON_FA_ROCKET "");
     if (ImGui::IsItemHovered())
@@ -1707,12 +1708,10 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
     hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
 
     # Load the title font
-    app_state.title_font = hello_imgui.load_font("fonts/DroidSans.ttf", 18.0)
+    # app_state.title_font = hello_imgui.load_font("fonts/DroidSans.ttf", 18.0)
     font_loading_params_title_icons = hello_imgui.FontLoadingParams()
-    font_loading_params_title_icons.merge_to_last_font = True
-    font_loading_params_title_icons.use_full_glyph_range = True
-    app_state.title_font = hello_imgui.load_font("fonts/Font_Awesome_6_Free-Solid-900.otf",
-                                                 18.0, font_loading_params_title_icons)
+    font_loading_params_title_icons.merge_font_awesome = True
+    app_state.title_font = hello_imgui.load_font("fonts/Roboto/Roboto-BoldItalic.ttf", 18, font_loading_params_title_icons)
 
     # Load the emoji font
     font_loading_params_emoji = hello_imgui.FontLoadingParams()
@@ -2112,7 +2111,7 @@ def demo_assets(app_state: AppState):
 
 def demo_fonts(app_state: AppState):
     imgui.push_font(app_state.title_font)
-    imgui.text("Fonts - " + icons_fontawesome_6.ICON_FA_PEN_NIB)
+    imgui.text("Fonts - " + icons_fontawesome_6.ICON_FA_ROCKET)
     imgui.pop_font()
 
     imgui.text_wrapped("Mix icons " + icons_fontawesome_6.ICON_FA_FACE_SMILE + " and text " + icons_fontawesome_6.ICON_FA_ROCKET)
@@ -2655,7 +2654,7 @@ NOTE: See link:https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test
 {cpp}
 [source, cpp]
 ----
-#ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
 // A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)
 //
 // It demonstrates how to:
@@ -2901,9 +2900,9 @@ void ApplyApplicationLayout(HelloImGui::RunnerParams* runnerParams)
     runnerParams->dockingParams.dockableWindows = CreateDockableWindows();
     runnerParams->dockingParams.layoutCondition = HelloImGui::DockingLayoutCondition::ApplicationStart;
 }
-#else
+#else // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 int main(int, const char**) {}
-#endif // #ifdef IMGUI_BUNDLE_WITH_TEST_ENGINE
+#endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 ----
 ====
 
@@ -3601,6 +3600,7 @@ link:https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html[Try these 
 ----
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 #include "imspinner/imspinner.h"
 #include "imgui_toggle/imgui_toggle.h"
 #include "imgui_toggle/imgui_toggle_presets.h"
@@ -3899,9 +3899,18 @@ void DemoImFileDialog()
 
     ImGuiMd::RenderUnindented(R"(
         # ImFileDialog
-         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.
-         *Not (yet) adapted for High DPI resolution under windows*
+         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui.
         )");
+    ImGui::SameLine();
+    ImGui::Text(ICON_FA_EXCLAMATION_TRIANGLE);
+    ImGui::SetItemTooltip(
+        "It is advised to use Portable File Dialogs instead, which offer native dialogs on each platform, "
+        "as well as notifications and messages.\n\n"
+        "Known limitations of ImFileDialog:\n"
+        "  * Not adapted for High DPI resolution under windows\n"
+        "  * No support for multi-selection\n"
+        "  * Will not work under python with a pure python backend (requires to use `immapp.run()`)"
+    );
 
     if (ImGui::Button("Open file"))
         ifd::FileDialog::Instance().Open(
@@ -4094,6 +4103,7 @@ from imgui_bundle import (
     immapp,
     ImVec4,
     im_cool_bar,
+    icons_fontawesome,
 )
 from imgui_bundle import imgui_command_palette as imcmd
 from imgui_bundle import portable_file_dialogs as pfd
@@ -4355,14 +4365,24 @@ def demo_imfile_dialog():
     if not has_submodule("im_file_dialog"):
         return
     from imgui_bundle import im_file_dialog as ifd
-
     imgui_md.render_unindented(
         """
         # ImFileDialog
-         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui, with images preview.
-         *Not (yet) adapted for High DPI resolution under windows*
+         [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui.
         """
     )
+    # Warning / low support
+    imgui.same_line()
+    imgui.text(icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE)
+    imgui.set_item_tooltip("""
+    It is advised to use Portable File Dialogs instead, which offer native dialogs on each platform,
+    as well as notifications and messages.
+
+    Known limitations of ImFileDialog:
+    * Not adapted for High DPI resolution under windows
+    * No support for multi-selection
+    * Will not work under python with a pure python backend (requires to use `immapp.run()`)
+    """)
 
     if imgui.button("Open file"):
         ifd.FileDialog.instance().open(
@@ -6162,9 +6182,10 @@ if __name__ == "__main__":
 
 from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 import OpenGL.GL as gl  # type: ignore
+# When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard glfw, not the one provided by imgui_bundle)
+import glfw  # type: ignore
 from imgui_bundle import imgui, imgui_ctx
 from imgui_bundle import imgui_md
-import glfw  # type: ignore
 import sys
 
 

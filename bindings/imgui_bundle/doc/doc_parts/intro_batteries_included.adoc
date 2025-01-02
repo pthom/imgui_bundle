@@ -16,6 +16,9 @@ Dear ImGui Bundle includes the following libraries, which are available in {cpp}
 |https://github.com/epezent/implot[ImPlot]: Immediate Mode Plotting
 |image:{url-demo-images}/battery_implot.jpg[width=200]
 
+|https://github.com/brenocq/implot3d[ImPlot3D]: Immediate Mode 3D Plotting
+|image:{url-demo-images}/battery_implot3d.jpg[width=200]
+
 
 |https://github.com/CedricGuillemet/ImGuizmo.git[ImGuizmo]: Immediate mode 3D gizmo for scene editing and other controls based on Dear ImGui
 |image:{url-demo-images}/demo_gizmo.jpg[width=200]
