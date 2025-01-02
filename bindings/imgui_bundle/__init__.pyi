@@ -2,6 +2,7 @@ from . import imgui as imgui
 
 from . import hello_imgui as hello_imgui
 from . import implot as implot
+from . import implot3d as implot3d
 from . import imgui_color_text_edit as imgui_color_text_edit
 from . import imgui_node_editor as imgui_node_editor
 from . import imgui_knobs as imgui_knobs

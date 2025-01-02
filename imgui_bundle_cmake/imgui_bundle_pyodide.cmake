@@ -88,20 +88,4 @@ function(_ibd_pyodide_set_build_options)
 
     # Disable some features
     set(IMGUI_BUNDLE_DISABLE_IMFILEDIALOG ON CACHE BOOL "" FORCE)
-
-    # Those features are now available in pyodide
-    # set(IMGUI_BUNDLE_DISABLE_IMMVISION OFF CACHE BOOL "" FORCE)
-    # set(IMGUI_BUNDLE_DISABLE_IMPLOT ON CACHE BOOL "" FORCE)
-    # set(IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR ON CACHE BOOL "" FORCE)
-    # set(IMGUI_BUNDLE_DISABLE_IMGUIZMO ON CACHE BOOL "" FORCE)
-    # set(IMGUI_BUNDLE_DISABLE_IMGUI_TEX_INSPECT ON CACHE BOOL "" FORCE)
-    # set(IMGUI_BUNDLE_DISABLE_NANOVG ON CACHE BOOL "" FORCE)
-
-    # Failed attempts to try to reduce the link time for pyodide (which takes 10 minutes, be patient...)
-    # add_link_options("-flto=auto")  # run link time optimization on several threads (no clear benefit)
-    # add_link_options("-fno-lto")  # disable link time optimization
-    # if (CMAKE_BUILD_TYPE STREQUAL "Release")
-    #     add_compile_options("-O0")
-    #     add_link_options("-O0")
-    # endif()
 endfunction()

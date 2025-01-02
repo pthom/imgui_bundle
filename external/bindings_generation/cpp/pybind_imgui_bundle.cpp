@@ -13,6 +13,9 @@ void py_init_module_imgui_main(nb::module_& m);
 void py_init_module_imgui_internal(nb::module_& m);
 void py_init_module_imgui_test_engine(nb::module_& m);
 void py_init_module_implot(nb::module_& m);
+void py_init_module_implot_internal(nb::module_& m);
+void py_init_module_implot3d(nb::module_& m);
+void py_init_module_implot3d_internal(nb::module_& m);
 void py_init_module_imgui_color_text_edit(nb::module_& m);
 void py_init_module_imgui_node_editor(nb::module_& m);
 void py_init_module_imgui_knobs(nb::module_& m);
@@ -27,7 +30,6 @@ void py_init_module_immapp_cpp(nb::module_& m);
 void py_init_module_imgui_toggle(nb::module_& m);
 void py_init_module_portable_file_dialogs(nb::module_& m);
 void py_init_module_imgui_command_palette(nb::module_& m);
-void py_init_module_implot_internal(nb::module_& m);
 void py_init_module_imcoolbar(nb::module_& m);
 void py_init_module_nanovg(nb::module_& m);
 
@@ -83,6 +85,16 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("implot.internal");
     auto module_implot_internal = module_implot.def_submodule("internal");
     py_init_module_implot_internal(module_implot_internal);
+#endif
+
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
+    _register_submodule("implot3d");
+    auto module_implot3d =  m.def_submodule("implot3d");
+    py_init_module_implot3d(module_implot3d);
+
+    _register_submodule("implot3d.internal");
+    auto module_implot3d_internal = module_implot3d.def_submodule("internal");
+    py_init_module_implot3d_internal(module_implot3d_internal);
 #endif
 
     _register_submodule("imgui_color_text_edit");

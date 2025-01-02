@@ -73,6 +73,9 @@ if has_submodule("implot"):
     implot.BarsFlags = int  # see implot.BarsFlags_
     implot.PieChartFlags = int  # see implot.PieChartFlags_
     implot.HistogramFlags = int  # see implot.HistogramFlags_
+if has_submodule("implot3d"):
+    from imgui_bundle._imgui_bundle import implot3d as implot3d
+    __all__.extend(["implot3d"])
 if has_submodule("imgui_color_text_edit"):
     from imgui_bundle._imgui_bundle import imgui_color_text_edit as imgui_color_text_edit
     __all__.extend(["imgui_color_text_edit"])

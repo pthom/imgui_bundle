@@ -90,6 +90,17 @@ if(NOT IMGUI_BUNDLE_DISABLE_IMPLOT)
     set(IMGUI_BUNDLE_WITH_IMPLOT ON CACHE INTERNAL "" FORCE)
 endif()
 
+# Build implot3d
+if(NOT IMGUI_BUNDLE_DISABLE_IMPLOT3D)
+    add_simple_external_library_with_sources(implot3d implot3d)
+    target_compile_definitions(implot3d PRIVATE "IMPLOT3D_CUSTOM_NUMERIC_TYPES=(signed char)(unsigned char)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)")
+    _target_force_include(implot3d ${IMGUI_BUNDLE_CMAKE_PATH}/imgui_bundle_config.h)
+#    lg_disable_warning_exception_in_destructor(implot3d)
+    target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMPLOT3D)
+    set(IMGUI_BUNDLE_WITH_IMPLOT3D ON CACHE INTERNAL "" FORCE)
+endif()
+
+
 # Build imgui-node-editor
 if(NOT IMGUI_BUNDLE_DISABLE_IMGUI_NODE_EDITOR)
     add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
