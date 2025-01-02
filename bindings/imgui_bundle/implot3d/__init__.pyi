@@ -639,12 +639,28 @@ def plot_quad(
 ) -> None:
     pass
 
-# IMPLOT3D_TMP void PlotSurface(const char* label_id, const T* xs, const T* ys, const T* zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, ImPlot3DSurfaceFlags flags = 0, int offset = 0, int stride = sizeof(T));    /* original C++ signature */
+# [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# A version of PlotSurface whose API is easier to port to Python
+#    (params xs_count, ys_count and zs_count are removed in the Python API, but are used in the bindings code generation)
+
+# IMPLOT3D_TMP void PlotSurface(    /* original C++ signature */
+#     const char* label_id,
+#     const T* xs, int xs_count,
+#     const T* ys, int ys_count,
+#     const T* zs, int zs_count,
+#     int x_count, int y_count,
+#     double scale_min = 0.0, double scale_max = 0.0,
+#     ImPlot3DSurfaceFlags flags = 0,
+#     int offset = 0,
+#     int stride = sizeof(T));
 def plot_surface(
     label_id: str,
     xs: np.ndarray,
     ys: np.ndarray,
     zs: np.ndarray,
+    x_count: int,
     y_count: int,
     scale_min: float = 0.0,
     scale_max: float = 0.0,
@@ -652,8 +668,16 @@ def plot_surface(
     offset: int = 0,
     stride: int = -1,
 ) -> None:
-    """Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays, and the z array contains the height of each vertex. A total of x_count * y_count vertices are expected for each array. Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range."""
+    """Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays,
+    and the z array contains the height of each vertex.
+    A total of x_count * y_count vertices are expected for each array.
+    Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.
+    """
     pass
+
+# #endif
+#
+# [/ADAPT_IMGUI_BUNDLE]
 
 # IMPLOT3D_API void PlotMesh(const char* label_id, const ImPlot3DPoint* vtx, const unsigned int* idx, int vtx_count, int idx_count, ImPlot3DMeshFlags flags = 0);    /* original C++ signature */
 def plot_mesh(label_id: str, vtx: Point, idx: int, vtx_count: int, idx_count: int, flags: MeshFlags = 0) -> None:

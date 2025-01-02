@@ -701,11 +701,13 @@ void py_init_module_implot3d(nb::module_& m)
 
             PlotQuad_adapt_c_buffers(label_id, xs, ys, zs, flags, offset, stride);
         },     nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("plot_surface",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int y_count, double scale_min = 0.0, double scale_max = 0.0, ImPlot3DSurfaceFlags flags = 0, int offset = 0, int stride = -1)
+        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, ImPlot3DSurfaceFlags flags = 0, int offset = 0, int stride = -1)
         {
-            auto PlotSurface_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int y_count, double scale_min = 0.0, double scale_max = 0.0, ImPlot3DSurfaceFlags flags = 0, int offset = 0, int stride = -1)
+            auto PlotSurface_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, ImPlot3DSurfaceFlags flags = 0, int offset = 0, int stride = -1)
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -762,38 +764,40 @@ void py_init_module_implot3d(nb::module_& m)
 
                 // call the correct template version by casting
                 if (zs_type == 'B')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'b')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const int8_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'H')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'h')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const int16_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'I')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'i')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'L')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'l')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'f')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'd')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const double *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'g')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const long double *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 else if (zs_type == 'q')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const long long *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
                 // If we reach this point, the array type is not supported!
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
 
-            PlotSurface_adapt_c_buffers(label_id, xs, ys, zs, y_count, scale_min, scale_max, flags, offset, stride);
+            PlotSurface_adapt_c_buffers(label_id, xs, ys, zs, x_count, y_count, scale_min, scale_max, flags, offset, stride);
         },
-        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("y_count"), nb::arg("scale_min") = 0.0, nb::arg("scale_max") = 0.0, nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
-        "Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays, and the z array contains the height of each vertex. A total of x_count * y_count vertices are expected for each array. Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.");
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("x_count"), nb::arg("y_count"), nb::arg("scale_min") = 0.0, nb::arg("scale_max") = 0.0, nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
+        " Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays,\n and the z array contains the height of each vertex.\n A total of x_count * y_count vertices are expected for each array.\n Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.");
+    // #endif
+    //
 
     m.def("plot_mesh",
         ImPlot3D::PlotMesh, nb::arg("label_id"), nb::arg("vtx"), nb::arg("idx"), nb::arg("vtx_count"), nb::arg("idx_count"), nb::arg("flags") = 0);
