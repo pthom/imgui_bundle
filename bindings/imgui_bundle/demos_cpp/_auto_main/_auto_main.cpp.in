@@ -22,6 +22,7 @@ int main(int, char **)
     addons.withMarkdown = true;
     addons.withNodeEditor = true;
     addons.withImplot = true;
+    addons.withImplot3d = true;
     addons.withTexInspect = true;
 
     ImmApp::Run(runnerParams, addons);

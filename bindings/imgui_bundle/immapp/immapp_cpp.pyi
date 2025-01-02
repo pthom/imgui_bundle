@@ -106,8 +106,10 @@ class AddOnsParams:
     /////////////////////////////////////////////////////////////////////////////////////
     """
 
-    # Set withImplot=True if you need to plot graphs
+    # Set withImplot=True if you need to plot graphs with implot
     with_implot: bool = False
+    # Set withImplot3=True if you need to plot 3 graphs with implot3
+    with_implot3d: bool = False
 
     # Set withMarkdown=True if you need to render Markdown
     # (alternatively, you can set withMarkdownOptions)
@@ -139,6 +141,7 @@ class AddOnsParams:
     def __init__(
         self,
         with_implot: bool = False,
+        with_implot3d: bool = False,
         with_markdown: bool = False,
         with_node_editor: bool = False,
         with_tex_inspect: bool = False,
@@ -186,6 +189,7 @@ def run(
     window_size: Optional[ScreenSize] = None,
     fps_idle: float = 10.0,
     with_implot: bool = False,
+    with_implot3d: bool = False,
     with_markdown: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
@@ -227,6 +231,7 @@ def run_with_markdown(
     window_size: Optional[ScreenSize] = None,
     fps_idle: float = 10.0,
     with_implot: bool = False,
+    with_implot3d: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
@@ -356,6 +361,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
         window_size: Optional[ScreenSize] = None,
         fps_idle: float = 10.0,
         with_implot: bool = False,
+        with_implot3d: bool = False,
         with_markdown: bool = False,
         with_node_editor: bool = False,
         with_tex_inspect: bool = False,

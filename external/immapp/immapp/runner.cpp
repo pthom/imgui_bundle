@@ -3,6 +3,9 @@
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
 #endif
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
+#include "implot3d/implot3d.h"
+#endif
 #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
 #include "bundle_integration/ImFileDialogTextureHelper.h"
 #endif
@@ -82,6 +85,11 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
         if (addOnsParams.withImplot)
             ImPlot::CreateContext();
+#endif
+        // create implot3d context if required
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
+        if (addOnsParams.withImplot3d)
+            ImPlot3D::CreateContext();
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
@@ -202,6 +210,10 @@ namespace ImmApp
         if (addOnsParams.withImplot)
             ImPlot::DestroyContext();
 #endif
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
+        if (addOnsParams.withImplot3d)
+            ImPlot3D::DestroyContext();
+#endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         if (addOnsParams.withNodeEditor)
@@ -241,6 +253,7 @@ namespace ImmApp
 
         // ImGuiBundle_AddOnsParams below:
         bool withImplot,
+        bool withImplot3d,
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
@@ -260,6 +273,7 @@ namespace ImmApp
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
+        addOnsParams.withImplot3d = withImplot3d;
         addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
@@ -283,6 +297,7 @@ namespace ImmApp
 
         // ImGuiBundle_AddOnsParams below:
         bool withImplot,
+        bool withImplot3d,
         bool withNodeEditor,
         bool withTexInspect,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
@@ -301,6 +316,7 @@ namespace ImmApp
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
+        addOnsParams.withImplot3d = withImplot3d;
         addOnsParams.withMarkdown = true;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
@@ -445,6 +461,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
 
         // AddOnsParams below:
         bool withImplot,
+        bool withImplot3d,
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
@@ -464,6 +481,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
+        addOnsParams.withImplot3d = withImplot3d;
         addOnsParams.withMarkdown = true;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;

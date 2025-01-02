@@ -28,8 +28,10 @@ namespace ImmApp
     /////////////////////////////////////////////////////////////////////////////////////////
     struct AddOnsParams
     {
-        // Set withImplot=true if you need to plot graphs
+        // Set withImplot=true if you need to plot graphs with implot
         bool withImplot = false;
+        // Set withImplot3d=true if you need to plot 3d graphs with implot3d
+        bool withImplot3d = false;
 
         // Set withMarkdown=true if you need to render Markdown
         // (alternatively, you can set withMarkdownOptions)
@@ -100,6 +102,7 @@ namespace ImmApp
 
         // AddOnsParams below:
         bool withImplot = false,
+        bool withImplot3d = false,
         bool withMarkdown = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
@@ -121,6 +124,7 @@ namespace ImmApp
 
         // AddOnsParams below:
         bool withImplot = false,
+        bool withImplot3d = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
@@ -208,6 +212,7 @@ namespace ImmApp
 
             // AddOnsParams below:
             bool withImplot = false,
+            bool withImplot3d = false,
             bool withMarkdown = false,
             bool withNodeEditor = false,
             bool withTexInspect = false,
