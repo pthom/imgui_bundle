@@ -23,7 +23,7 @@ jobs:
           base-repo: project
 
       - name: Create draft release and add artifacts
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           draft: true
           files: srcs-full-*
