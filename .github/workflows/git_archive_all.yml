@@ -1,0 +1,29 @@
+name: git-archive-all
+
+on:
+  push:
+    tags:
+      - '**'
+
+jobs:
+  draft-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout project source code
+        uses: actions/checkout@v3
+        with:
+          path: project
+
+      - name: Package source code including submodules
+        uses: qmonnet/git-archive-all-action@v1
+        with:
+          output-files: srcs-full-${{ github.ref_name }}.tar.gz
+          base-repo: project
+
+      - name: Create draft release and add artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: srcs-full-*
