@@ -1,5 +1,21 @@
 Version numbers are synced between hello_imgui and imgui_bundle.
 
+# v1.6.2
+
+## New library: ImPlot3D
+- The excellent [ImPlot3D](https://github.com/brenocq/implot3d) library is now included!
+
+## Fixes
+- Fix [#293](https://github.com/pthom/imgui_bundle/issues/293): IM_ASSERT( g.CurrentDpiScale > 0.0f && g.CurrentDpiScale < 99.0f )
+- Fix initial window positioning / HighDPI on windows (demo window origin was offscreen)
+
+## Build
+- Some fixes for conda-forge package
+
+## Python
+- make it possible to recover from exceptions in notebooks
+- preliminary work on pyodide support
+
 # v1.6.1
 
 ### ImGuizmo
