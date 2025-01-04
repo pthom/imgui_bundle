@@ -29,16 +29,13 @@ std::function<void()> makeGui()
         DemoApp{
             "demo_powersave", "How to have smooth animations, and how spare the CPU when idling"
         },
-        DemoApp{
-            "demo_font_common_glyph_range",
-            "How to load fonts with specific glyph ranges (e.g., Chinese, Japanese, Korean)",
-        },
         DemoApp{"demo_testengine", "How to use ImGui Test Engine to test and automate your application"},
         DemoApp{"demo_python_context_manager",
                 "How to use a python context manager for `imgui.begin()`, `imgui.end()`, etc."},
         DemoApp{"demo_command_palette", "a Sublime Text or VSCode style command palette in ImGui"},
         DemoApp{"demo_parametric_curve","Illustration of the Immediate GUI paradigm, with a simple parametric curve"},
         DemoApp{"haiku_implot_heart", "Share some love for ImGui and ImPlot"},
+        DemoApp{"haiku_butterfly", "Haiku: Butterfly effect using ImPlot3D"},
         DemoApp{"demo_drag_and_drop", "Drag and drop demo"},
         DemoApp{"demo_implot_markdown", "How to quickly run an app that uses implot and/or markdown with ImmApp"},
         DemoApp{
@@ -48,6 +45,10 @@ std::function<void()> makeGui()
         DemoApp{
             "demo_pydantic",
             "Python: How to use ImVec2 and ImVec4 with Pydantic",
+        },
+        DemoApp{
+            "demo_font_common_glyph_range",
+            "How to load fonts with specific glyph ranges (e.g., Chinese, Japanese, Korean)",
         },
         DemoApp{
             "imgui_example_glfw_opengl3",
