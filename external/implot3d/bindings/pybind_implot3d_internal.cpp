@@ -344,14 +344,6 @@ void py_init_module_implot3d_internal(nb::module_& m)
             "(private API)")
         .def("apply_fit",
             &ImPlot3DAxis::ApplyFit, "(private API)")
-        .def("plot_to_ndc",
-            &ImPlot3DAxis::PlotToNDC,
-            nb::arg("value"),
-            "(private API)")
-        .def("ndc_to_plot",
-            &ImPlot3DAxis::NDCToPlot,
-            nb::arg("value"),
-            "(private API)")
         ;
 
 
@@ -366,7 +358,8 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("frame_rect", &ImPlot3DPlot::FrameRect, "Outermost bounding rectangle that encapsulates whole the plot/title/padding/etc")
         .def_rw("canvas_rect", &ImPlot3DPlot::CanvasRect, "Frame rectangle reduced by padding")
         .def_rw("plot_rect", &ImPlot3DPlot::PlotRect, "Bounding rectangle for the actual plot area")
-        .def_rw("rotation", &ImPlot3DPlot::Rotation, "")
+        .def_rw("rotation", &ImPlot3DPlot::Rotation, "Current rotation quaternion")
+        .def_rw("box_scale", &ImPlot3DPlot::BoxScale, "Scale factor for plot box X, Y, Z axes")
         .def_rw("animation_time", &ImPlot3DPlot::AnimationTime, "Remaining animation time")
         .def_rw("rotation_animation_end", &ImPlot3DPlot::RotationAnimationEnd, "End rotation for animation")
         .def_rw("setup_locked", &ImPlot3DPlot::SetupLocked, "")
@@ -404,6 +397,8 @@ void py_init_module_implot3d_internal(nb::module_& m)
             &ImPlot3DPlot::SetRange,
             nb::arg("min"), nb::arg("max"),
             "(private API)")
+        .def("get_box_zoom",
+            &ImPlot3DPlot::GetBoxZoom, "(private API)")
         ;
 
 

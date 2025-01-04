@@ -335,6 +335,11 @@ void py_init_module_implot3d(nb::module_& m)
         nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("z_min"), nb::arg("z_max"), nb::arg("cond") = nb::none(),
         " Sets the X/Y/Z axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)\n---\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
+    m.def("setup_box_scale",
+        ImPlot3D::SetupBoxScale,
+        nb::arg("x"), nb::arg("y"), nb::arg("z"),
+        "Sets the plot box X/Y/Z scale. A scale of 1.0 is the default. Values greater than 1.0 enlarge the plot, while values between 0.0 and 1.0 shrink it.");
+
     m.def("setup_legend",
         ImPlot3D::SetupLegend, nb::arg("location"), nb::arg("flags") = 0);
 

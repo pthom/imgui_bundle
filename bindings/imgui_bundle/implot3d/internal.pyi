@@ -688,14 +688,6 @@ class Axis:
     def apply_fit(self) -> None:
         """(private API)"""
         pass
-    # float PlotToNDC(float value) const;    /* original C++ signature */
-    def plot_to_ndc(self, value: float) -> float:
-        """(private API)"""
-        pass
-    # float NDCToPlot(float value) const;    /* original C++ signature */
-    def ndc_to_plot(self, value: float) -> float:
-        """(private API)"""
-        pass
 
 class Plot:
     """ Holds plot state information that must persist after EndPlot"""
@@ -716,9 +708,11 @@ class Plot:
     canvas_rect: ImRect           # Frame rectangle reduced by padding
     # ImRect PlotRect;    /* original C++ signature */
     plot_rect: ImRect             # Bounding rectangle for the actual plot area
-    # Rotation & Axes
+    # Rotation & axes & box
     # ImPlot3DQuat Rotation;    /* original C++ signature */
-    rotation: Quat
+    rotation: Quat                # Current rotation quaternion
+    # ImPlot3DPoint BoxScale;    /* original C++ signature */
+    box_scale: Point              # Scale factor for plot box X, Y, Z axes
     # Animation
     # float AnimationTime;    /* original C++ signature */
     animation_time: float         # Remaining animation time
@@ -756,6 +750,7 @@ class Plot:
     #         Rotation = ImPlot3DQuat(0.0f, 0.0f, 0.0f, 1.0f);
     #         for (int i = 0; i < 3; i++)
     #             Axes[i] = ImPlot3DAxis();
+    #         BoxScale = ImPlot3DPoint(1.0f, 1.0f, 1.0f);
     #         AnimationTime = 0.0f;
     #         RotationAnimationEnd = Rotation;
     #         SetupLocked = false;
@@ -805,6 +800,10 @@ class Plot:
         pass
     # void SetRange(const ImPlot3DPoint& min, const ImPlot3DPoint& max);    /* original C++ signature */
     def set_range(self, min: Point, max: Point) -> None:
+        """(private API)"""
+        pass
+    # float GetBoxZoom() const;    /* original C++ signature */
+    def get_box_zoom(self) -> float:
         """(private API)"""
         pass
 

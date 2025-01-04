@@ -583,6 +583,11 @@ def setup_axes_limits(
     """
     pass
 
+# IMPLOT3D_API void SetupBoxScale(float x, float y, float z);    /* original C++ signature */
+def setup_box_scale(x: float, y: float, z: float) -> None:
+    """Sets the plot box X/Y/Z scale. A scale of 1.0 is the default. Values greater than 1.0 enlarge the plot, while values between 0.0 and 1.0 shrink it."""
+    pass
+
 # IMPLOT3D_API void SetupLegend(ImPlot3DLocation location, ImPlot3DLegendFlags flags = 0);    /* original C++ signature */
 def setup_legend(location: Location, flags: LegendFlags = 0) -> None:
     pass
