@@ -6,7 +6,6 @@ The term **butterfly effect** in popular media may stem from the real-world impl
 of the Lorenz attractor, namely that tiny changes in initial conditions evolve to
 completely different trajectories.
 """
-# TODO: HANDLE NEWLINES IN MARKDOWN AS SPACE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 import numpy as np
 from imgui_bundle import implot3d, immapp, imgui, imgui_md, hello_imgui
