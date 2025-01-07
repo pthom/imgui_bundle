@@ -242,6 +242,29 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
                 io.add_input_character(ord(char))
             return True
 
+        if event.type == SDL_CONTROLLERBUTTONDOWN or event.type == SDL_CONTROLLERBUTTONUP:
+            button = event.cbutton.button
+            is_pressed = event.type == SDL_CONTROLLERBUTTONDOWN
+
+            # Map SDL_CONTROLLER_BUTTON_* to imgui keys
+            if button == SDL_CONTROLLER_BUTTON_A:
+                imgui.get_io().add_key_event(imgui.Key.gamepad_face_down, is_pressed)
+            elif button == SDL_CONTROLLER_BUTTON_B:
+                imgui.get_io().add_key_event(imgui.Key.gamepad_face_right, is_pressed)
+            elif button == SDL_CONTROLLER_BUTTON_X:
+                imgui.get_io().add_key_event(imgui.Key.gamepad_face_left, is_pressed)
+            elif button == SDL_CONTROLLER_BUTTON_Y:
+                imgui.get_io().add_key_event(imgui.Key.gamepad_face_up, is_pressed)
+            elif button == SDL_CONTROLLER_BUTTON_DPAD_UP:
+                imgui.get_io().add_key_event(imgui.Key.gamepad_dpad_up, is_pressed)
+            elif button == SDL_CONTROLLER_BUTTON_DPAD_DOWN:
+                imgui.get_io().add_key_event(imgui.Key.gamepad_dpad_down, is_pressed)
+            elif button == SDL_CONTROLLER_BUTTON_DPAD_LEFT:
+                imgui.get_io().add_key_event(imgui.Key.gamepad_dpad_left, is_pressed)
+            elif button == SDL_CONTROLLER_BUTTON_DPAD_RIGHT:
+                imgui.get_io().add_key_event(imgui.Key.gamepad_dpad_right, is_pressed)
+            return True
+
     def process_inputs(self):
         io = imgui.get_io()
 
