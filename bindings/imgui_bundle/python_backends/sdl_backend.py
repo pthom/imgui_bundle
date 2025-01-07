@@ -19,7 +19,6 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
     """Basic SDL2 integration implementation."""
 
     key_map: Dict[SdlKey, imgui.Key]
-    modifier_map: Dict[SdlKey, imgui.Key]
     MOUSE_WHEEL_OFFSET_SCALE = 0.5
 
     def __init__(self, window):
@@ -73,15 +72,14 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         key_map[SDL_SCANCODE_Y] = imgui.Key.y
         key_map[SDL_SCANCODE_Z] = imgui.Key.z
 
-        self.modifier_map = {}
-        self.modifier_map[SDL_SCANCODE_LCTRL] = imgui.Key.mod_ctrl
-        self.modifier_map[SDL_SCANCODE_RCTRL] = imgui.Key.mod_ctrl
-        self.modifier_map[SDL_SCANCODE_LSHIFT] = imgui.Key.mod_shift
-        self.modifier_map[SDL_SCANCODE_RSHIFT] = imgui.Key.mod_shift
-        self.modifier_map[SDL_SCANCODE_LALT] = imgui.Key.mod_alt
-        self.modifier_map[SDL_SCANCODE_RALT] = imgui.Key.mod_alt
-        self.modifier_map[SDL_SCANCODE_LGUI] = imgui.Key.mod_super
-        self.modifier_map[SDL_SCANCODE_RGUI] = imgui.Key.mod_super
+        key_map[SDL_SCANCODE_LCTRL] = imgui.Key.mod_ctrl
+        key_map[SDL_SCANCODE_RCTRL] = imgui.Key.mod_ctrl
+        key_map[SDL_SCANCODE_LSHIFT] = imgui.Key.mod_shift
+        key_map[SDL_SCANCODE_RSHIFT] = imgui.Key.mod_shift
+        key_map[SDL_SCANCODE_LALT] = imgui.Key.mod_alt
+        key_map[SDL_SCANCODE_RALT] = imgui.Key.mod_alt
+        key_map[SDL_SCANCODE_LGUI] = imgui.Key.mod_super
+        key_map[SDL_SCANCODE_RGUI] = imgui.Key.mod_super
 
     def process_event(self, event):
         io = self.io
@@ -116,10 +114,6 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
                 imgui_key = self.key_map[sdl_key]
                 down = event.type == SDL_KEYDOWN
                 io.add_key_event(imgui_key, down)
-
-            if sdl_key in self.modifier_map:
-                imgui_key = self.modifier_map[sdl_key]
-                io.add_key_event(imgui_key, event.type == SDL_KEYDOWN)
 
             return True
 
