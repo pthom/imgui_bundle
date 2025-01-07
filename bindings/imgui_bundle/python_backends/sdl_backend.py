@@ -190,17 +190,6 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         key_map[SDL_SCANCODE_PRINTSCREEN] = imgui.Key.print_screen
         key_map[SDL_SCANCODE_PAUSE] = imgui.Key.pause
 
-        # Gamepad Keys
-        # key_map[SDL_SCANCODE_GAMEPAD_A] = imgui.Key.gamepad_face_down  # Example mapping
-        # key_map[SDL_SCANCODE_GAMEPAD_B] = imgui.Key.gamepad_face_right
-        # key_map[SDL_SCANCODE_GAMEPAD_X] = imgui.Key.gamepad_face_left
-        # key_map[SDL_SCANCODE_GAMEPAD_Y] = imgui.Key.gamepad_face_up
-        # key_map[SDL_SCANCODE_GAMEPAD_DPAD_UP] = imgui.Key.gamepad_dpad_up
-        # key_map[SDL_SCANCODE_GAMEPAD_DPAD_DOWN] = imgui.Key.gamepad_dpad_down
-        # key_map[SDL_SCANCODE_GAMEPAD_DPAD_LEFT] = imgui.Key.gamepad_dpad_left
-        # key_map[SDL_SCANCODE_GAMEPAD_DPAD_RIGHT] = imgui.Key.gamepad_dpad_right
-
-
     def process_event(self, event):
         io = self.io
 
@@ -234,6 +223,16 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
                 imgui_key = self.key_map[sdl_key]
                 down = event.type == SDL_KEYDOWN
                 io.add_key_event(imgui_key, down)
+
+                # Handle modifiers, since ImGui has an additional mod_ctrl / shift / etc
+                if imgui_key == imgui.Key.left_ctrl or imgui_key == imgui.Key.right_ctrl:
+                    io.add_key_event(imgui.Key.mod_ctrl, down)
+                if imgui_key == imgui.Key.left_shift or imgui_key == imgui.Key.right_shift:
+                    io.add_key_event(imgui.Key.mod_shift, down)
+                if imgui_key == imgui.Key.left_alt or imgui_key == imgui.Key.right_alt:
+                    io.add_key_event(imgui.Key.mod_alt, down)
+                if imgui_key == imgui.Key.left_super or imgui_key == imgui.Key.right_super:
+                    io.add_key_event(imgui.Key.mod_super, down)
 
             return True
 
