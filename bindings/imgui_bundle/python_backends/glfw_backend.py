@@ -181,6 +181,16 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         down = action != glfw.RELEASE
         io.add_key_event(imgui_key, down)
 
+        # Handle modifiers, since ImGui has an additional mod_ctrl / shift / etc
+        if imgui_key == imgui.Key.left_ctrl or imgui_key == imgui.Key.right_ctrl:
+            io.add_key_event(imgui.Key.mod_ctrl, down)
+        if imgui_key == imgui.Key.left_shift or imgui_key == imgui.Key.right_shift:
+            io.add_key_event(imgui.Key.mod_shift, down)
+        if imgui_key == imgui.Key.left_alt or imgui_key == imgui.Key.right_alt:
+            io.add_key_event(imgui.Key.mod_alt, down)
+        if imgui_key == imgui.Key.left_super or imgui_key == imgui.Key.right_super:
+            io.add_key_event(imgui.Key.mod_super, down)
+
     def char_callback(self, window, char):
         io = imgui.get_io()
 

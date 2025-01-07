@@ -75,7 +75,7 @@ def main():
             imgui.end_main_menu_bar()
 
         if show_custom_window:
-            imgui.set_next_window_size((400, 400))
+            imgui.set_next_window_size((400, 600))
 
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:
