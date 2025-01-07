@@ -49,7 +49,37 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
     def _map_keys(self):
         self.key_map = {}
         key_map = self.key_map
+        key_map[SDL_SCANCODE_KP_ENTER] = imgui.Key.keypad_enter
+
+
+    def _map_keys(self):
+        self.key_map = {}
+        key_map = self.key_map
+
+        # Control Keys
         key_map[SDL_SCANCODE_TAB] = imgui.Key.tab
+        key_map[SDL_SCANCODE_BACKSPACE] = imgui.Key.backspace
+        key_map[SDL_SCANCODE_RETURN] = imgui.Key.enter
+        key_map[SDL_SCANCODE_ESCAPE] = imgui.Key.escape
+        key_map[SDL_SCANCODE_INSERT] = imgui.Key.insert
+        key_map[SDL_SCANCODE_DELETE] = imgui.Key.delete
+        key_map[SDL_SCANCODE_SPACE] = imgui.Key.space
+
+        # Function Keys
+        key_map[SDL_SCANCODE_F1] = imgui.Key.f1
+        key_map[SDL_SCANCODE_F2] = imgui.Key.f2
+        key_map[SDL_SCANCODE_F3] = imgui.Key.f3
+        key_map[SDL_SCANCODE_F4] = imgui.Key.f4
+        key_map[SDL_SCANCODE_F5] = imgui.Key.f5
+        key_map[SDL_SCANCODE_F6] = imgui.Key.f6
+        key_map[SDL_SCANCODE_F7] = imgui.Key.f7
+        key_map[SDL_SCANCODE_F8] = imgui.Key.f8
+        key_map[SDL_SCANCODE_F9] = imgui.Key.f9
+        key_map[SDL_SCANCODE_F10] = imgui.Key.f10
+        key_map[SDL_SCANCODE_F11] = imgui.Key.f11
+        key_map[SDL_SCANCODE_F12] = imgui.Key.f12
+
+        # Navigation Keys
         key_map[SDL_SCANCODE_LEFT] = imgui.Key.left_arrow
         key_map[SDL_SCANCODE_RIGHT] = imgui.Key.right_arrow
         key_map[SDL_SCANCODE_UP] = imgui.Key.up_arrow
@@ -58,28 +88,118 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         key_map[SDL_SCANCODE_PAGEDOWN] = imgui.Key.page_down
         key_map[SDL_SCANCODE_HOME] = imgui.Key.home
         key_map[SDL_SCANCODE_END] = imgui.Key.end
-        key_map[SDL_SCANCODE_INSERT] = imgui.Key.insert
-        key_map[SDL_SCANCODE_DELETE] = imgui.Key.delete
-        key_map[SDL_SCANCODE_BACKSPACE] = imgui.Key.backspace
-        key_map[SDL_SCANCODE_SPACE] = imgui.Key.space
-        key_map[SDL_SCANCODE_RETURN] = imgui.Key.enter
-        key_map[SDL_SCANCODE_ESCAPE] = imgui.Key.escape
+
+        # Numeric Keys
+        key_map[SDL_SCANCODE_0] = imgui.Key._0
+        key_map[SDL_SCANCODE_1] = imgui.Key._1
+        key_map[SDL_SCANCODE_2] = imgui.Key._2
+        key_map[SDL_SCANCODE_3] = imgui.Key._3
+        key_map[SDL_SCANCODE_4] = imgui.Key._4
+        key_map[SDL_SCANCODE_5] = imgui.Key._5
+        key_map[SDL_SCANCODE_6] = imgui.Key._6
+        key_map[SDL_SCANCODE_7] = imgui.Key._7
+        key_map[SDL_SCANCODE_8] = imgui.Key._8
+        key_map[SDL_SCANCODE_9] = imgui.Key._9
+
+        # Keypad Keys
         key_map[SDL_SCANCODE_KP_ENTER] = imgui.Key.keypad_enter
+        key_map[SDL_SCANCODE_KP_0] = imgui.Key.keypad0
+        key_map[SDL_SCANCODE_KP_1] = imgui.Key.keypad1
+        key_map[SDL_SCANCODE_KP_2] = imgui.Key.keypad2
+        key_map[SDL_SCANCODE_KP_3] = imgui.Key.keypad3
+        key_map[SDL_SCANCODE_KP_4] = imgui.Key.keypad4
+        key_map[SDL_SCANCODE_KP_5] = imgui.Key.keypad5
+        key_map[SDL_SCANCODE_KP_6] = imgui.Key.keypad6
+        key_map[SDL_SCANCODE_KP_7] = imgui.Key.keypad7
+        key_map[SDL_SCANCODE_KP_8] = imgui.Key.keypad8
+        key_map[SDL_SCANCODE_KP_9] = imgui.Key.keypad9
+        key_map[SDL_SCANCODE_KP_DECIMAL] = imgui.Key.keypad_decimal
+        key_map[SDL_SCANCODE_KP_DIVIDE] = imgui.Key.keypad_divide
+        key_map[SDL_SCANCODE_KP_MULTIPLY] = imgui.Key.keypad_multiply
+        key_map[SDL_SCANCODE_KP_MINUS] = imgui.Key.keypad_subtract
+        key_map[SDL_SCANCODE_KP_PLUS] = imgui.Key.keypad_add
+        key_map[SDL_SCANCODE_KP_EQUALS] = imgui.Key.keypad_equal
+
+        # Alphabetic Keys
         key_map[SDL_SCANCODE_A] = imgui.Key.a
+        key_map[SDL_SCANCODE_B] = imgui.Key.b
         key_map[SDL_SCANCODE_C] = imgui.Key.c
+        key_map[SDL_SCANCODE_D] = imgui.Key.d
+        key_map[SDL_SCANCODE_E] = imgui.Key.e
+        key_map[SDL_SCANCODE_F] = imgui.Key.f
+        key_map[SDL_SCANCODE_G] = imgui.Key.g
+        key_map[SDL_SCANCODE_H] = imgui.Key.h
+        key_map[SDL_SCANCODE_I] = imgui.Key.i
+        key_map[SDL_SCANCODE_J] = imgui.Key.j
+        key_map[SDL_SCANCODE_K] = imgui.Key.k
+        key_map[SDL_SCANCODE_L] = imgui.Key.l
+        key_map[SDL_SCANCODE_M] = imgui.Key.m
+        key_map[SDL_SCANCODE_N] = imgui.Key.n
+        key_map[SDL_SCANCODE_O] = imgui.Key.o
+        key_map[SDL_SCANCODE_P] = imgui.Key.p
+        key_map[SDL_SCANCODE_Q] = imgui.Key.q
+        key_map[SDL_SCANCODE_R] = imgui.Key.r
+        key_map[SDL_SCANCODE_S] = imgui.Key.s
+        key_map[SDL_SCANCODE_T] = imgui.Key.t
+        key_map[SDL_SCANCODE_U] = imgui.Key.u
         key_map[SDL_SCANCODE_V] = imgui.Key.v
+        key_map[SDL_SCANCODE_W] = imgui.Key.w
         key_map[SDL_SCANCODE_X] = imgui.Key.x
         key_map[SDL_SCANCODE_Y] = imgui.Key.y
         key_map[SDL_SCANCODE_Z] = imgui.Key.z
 
-        key_map[SDL_SCANCODE_LCTRL] = imgui.Key.mod_ctrl
-        key_map[SDL_SCANCODE_RCTRL] = imgui.Key.mod_ctrl
-        key_map[SDL_SCANCODE_LSHIFT] = imgui.Key.mod_shift
-        key_map[SDL_SCANCODE_RSHIFT] = imgui.Key.mod_shift
-        key_map[SDL_SCANCODE_LALT] = imgui.Key.mod_alt
-        key_map[SDL_SCANCODE_RALT] = imgui.Key.mod_alt
-        key_map[SDL_SCANCODE_LGUI] = imgui.Key.mod_super
-        key_map[SDL_SCANCODE_RGUI] = imgui.Key.mod_super
+        # Modifier Keys
+        key_map[SDL_SCANCODE_LCTRL] = imgui.Key.left_ctrl
+        key_map[SDL_SCANCODE_RCTRL] = imgui.Key.right_ctrl
+        key_map[SDL_SCANCODE_LSHIFT] = imgui.Key.left_shift
+        key_map[SDL_SCANCODE_RSHIFT] = imgui.Key.right_shift
+        key_map[SDL_SCANCODE_LALT] = imgui.Key.left_alt
+        key_map[SDL_SCANCODE_RALT] = imgui.Key.right_alt
+        key_map[SDL_SCANCODE_LGUI] = imgui.Key.left_super
+        key_map[SDL_SCANCODE_RGUI] = imgui.Key.right_super
+
+        # Media Keys
+        key_map[SDL_SCANCODE_AUDIONEXT] = imgui.Key.app_forward
+        key_map[SDL_SCANCODE_AUDIOPREV] = imgui.Key.app_back
+        # key_map[SDL_SCANCODE_AUDIOSTOP] = imgui.Key.none
+        # key_map[SDL_SCANCODE_AUDIOPLAY] = imgui.Key.none
+        # key_map[SDL_SCANCODE_AUDIOMUTE] = imgui.Key.none
+
+        # Application Keys
+        key_map[SDL_SCANCODE_APPLICATION] = imgui.Key.menu
+
+        # Lock Keys
+        key_map[SDL_SCANCODE_CAPSLOCK] = imgui.Key.caps_lock
+        key_map[SDL_SCANCODE_SCROLLLOCK] = imgui.Key.scroll_lock
+        key_map[SDL_SCANCODE_NUMLOCKCLEAR] = imgui.Key.num_lock
+
+        # Symbol Keys
+        key_map[SDL_SCANCODE_GRAVE] = imgui.Key.grave_accent  # `
+        key_map[SDL_SCANCODE_MINUS] = imgui.Key.minus         # -
+        key_map[SDL_SCANCODE_EQUALS] = imgui.Key.equal       # =
+        key_map[SDL_SCANCODE_LEFTBRACKET] = imgui.Key.left_bracket  # [
+        key_map[SDL_SCANCODE_RIGHTBRACKET] = imgui.Key.right_bracket  # ]
+        key_map[SDL_SCANCODE_BACKSLASH] = imgui.Key.backslash  # \
+        key_map[SDL_SCANCODE_SEMICOLON] = imgui.Key.semicolon  # ;
+        key_map[SDL_SCANCODE_APOSTROPHE] = imgui.Key.apostrophe  # '
+        key_map[SDL_SCANCODE_COMMA] = imgui.Key.comma  # ,
+        key_map[SDL_SCANCODE_PERIOD] = imgui.Key.period  # .
+        key_map[SDL_SCANCODE_SLASH] = imgui.Key.slash  # /
+
+        # Miscellaneous Keys
+        key_map[SDL_SCANCODE_PRINTSCREEN] = imgui.Key.print_screen
+        key_map[SDL_SCANCODE_PAUSE] = imgui.Key.pause
+
+        # Gamepad Keys
+        # key_map[SDL_SCANCODE_GAMEPAD_A] = imgui.Key.gamepad_face_down  # Example mapping
+        # key_map[SDL_SCANCODE_GAMEPAD_B] = imgui.Key.gamepad_face_right
+        # key_map[SDL_SCANCODE_GAMEPAD_X] = imgui.Key.gamepad_face_left
+        # key_map[SDL_SCANCODE_GAMEPAD_Y] = imgui.Key.gamepad_face_up
+        # key_map[SDL_SCANCODE_GAMEPAD_DPAD_UP] = imgui.Key.gamepad_dpad_up
+        # key_map[SDL_SCANCODE_GAMEPAD_DPAD_DOWN] = imgui.Key.gamepad_dpad_down
+        # key_map[SDL_SCANCODE_GAMEPAD_DPAD_LEFT] = imgui.Key.gamepad_dpad_left
+        # key_map[SDL_SCANCODE_GAMEPAD_DPAD_RIGHT] = imgui.Key.gamepad_dpad_right
+
 
     def process_event(self, event):
         io = self.io
