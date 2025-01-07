@@ -91,8 +91,7 @@ class PygletMixin(object):
         key.PAGEUP: imgui.Key.page_up,
         key.PAGEDOWN: imgui.Key.page_down,
         key.PAUSE: imgui.Key.pause,
-    }
-    modifier_map = {
+
         key.LCTRL: imgui.Key.mod_ctrl,
         key.RCTRL: imgui.Key.mod_ctrl,
         key.LSHIFT: imgui.Key.mod_shift,
@@ -174,10 +173,6 @@ class PygletMixin(object):
     def _on_key(self, key_pressed, down):
         if key_pressed in self.key_map:
             imgui_key = self.key_map[key_pressed]
-            self.io.add_key_event(imgui_key, down=down)
-
-        if key_pressed in self.modifier_map:
-            imgui_key = self.modifier_map[key_pressed]
             self.io.add_key_event(imgui_key, down=down)
 
     def on_key_press(self, key_pressed, mods):

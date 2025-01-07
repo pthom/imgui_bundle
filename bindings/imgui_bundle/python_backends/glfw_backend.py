@@ -14,7 +14,6 @@ GlfwKey = int
 
 class GlfwRenderer(ProgrammablePipelineRenderer):
     key_map: Dict[GlfwKey, imgui.Key]
-    modifier_map: Dict[GlfwKey, imgui.Key]
 
     def __init__(self, window, attach_callbacks: bool = True):
         super(GlfwRenderer, self).__init__()
@@ -80,30 +79,23 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         key_map[glfw.KEY_Y] = imgui.Key.y
         key_map[glfw.KEY_Z] = imgui.Key.z
 
-        self.modifier_map = {}
-        self.modifier_map[glfw.KEY_LEFT_CONTROL] = imgui.Key.mod_ctrl
-        self.modifier_map[glfw.KEY_RIGHT_CONTROL] = imgui.Key.mod_ctrl
-        self.modifier_map[glfw.KEY_LEFT_SHIFT] = imgui.Key.mod_shift
-        self.modifier_map[glfw.KEY_RIGHT_SHIFT] = imgui.Key.mod_shift
-        self.modifier_map[glfw.KEY_LEFT_ALT] = imgui.Key.mod_alt
-        self.modifier_map[glfw.KEY_RIGHT_ALT] = imgui.Key.mod_alt
-        self.modifier_map[glfw.KEY_LEFT_SUPER] = imgui.Key.mod_super
-        self.modifier_map[glfw.KEY_RIGHT_SUPER] = imgui.Key.mod_super
+        key_map[glfw.KEY_LEFT_CONTROL] = imgui.Key.mod_ctrl
+        key_map[glfw.KEY_RIGHT_CONTROL] = imgui.Key.mod_ctrl
+        key_map[glfw.KEY_LEFT_SHIFT] = imgui.Key.mod_shift
+        key_map[glfw.KEY_RIGHT_SHIFT] = imgui.Key.mod_shift
+        key_map[glfw.KEY_LEFT_ALT] = imgui.Key.mod_alt
+        key_map[glfw.KEY_RIGHT_ALT] = imgui.Key.mod_alt
+        key_map[glfw.KEY_LEFT_SUPER] = imgui.Key.mod_super
+        key_map[glfw.KEY_RIGHT_SUPER] = imgui.Key.mod_super
 
     def keyboard_callback(self, window, glfw_key: int, scancode, action, mods):
         # perf: local for faster access
         io = self.io
-
         if glfw_key not in self.key_map:
             return
         imgui_key = self.key_map[glfw_key]
-
         down = action != glfw.RELEASE
         io.add_key_event(imgui_key, down)
-
-        if glfw_key in self.modifier_map:
-            imgui_key = self.modifier_map[glfw_key]
-            io.add_key_event(imgui_key, down)
 
     def char_callback(self, window, char):
         io = imgui.get_io()
