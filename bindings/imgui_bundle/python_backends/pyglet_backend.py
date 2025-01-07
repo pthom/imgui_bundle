@@ -17,90 +17,6 @@ from imgui_bundle.python_backends.opengl_backend import (
 
 
 class PygletMixin(object):
-    key_map = {
-        key.TAB: imgui.Key.tab,
-        key.LEFT: imgui.Key.left_arrow,
-        key.RIGHT: imgui.Key.right_arrow,
-        key.UP: imgui.Key.up_arrow,
-        key.DOWN: imgui.Key.down_arrow,
-        key.PAGEUP: imgui.Key.page_up,
-        key.PAGEDOWN: imgui.Key.page_down,
-        key.HOME: imgui.Key.home,
-        key.END: imgui.Key.end,
-        key.INSERT: imgui.Key.insert,
-        key.DELETE: imgui.Key.delete,
-        key.BACKSPACE: imgui.Key.backspace,
-        key.SPACE: imgui.Key.space,
-        key.RETURN: imgui.Key.enter,
-        key.ESCAPE: imgui.Key.escape,
-        key.NUM_ENTER: imgui.Key.keypad_enter,
-        key.A: imgui.Key.a,
-        key.B: imgui.Key.b,
-        key.C: imgui.Key.c,
-        key.D: imgui.Key.d,
-        key.E: imgui.Key.e,
-        key.F: imgui.Key.f,
-        key.G: imgui.Key.g,
-        key.H: imgui.Key.h,
-        key.I: imgui.Key.i,
-        key.J: imgui.Key.j,
-        key.K: imgui.Key.k,
-        key.L: imgui.Key.l,
-        key.M: imgui.Key.m,
-        key.N: imgui.Key.n,
-        key.O: imgui.Key.o,
-        key.P: imgui.Key.p,
-        key.Q: imgui.Key.q,
-        key.R: imgui.Key.r,
-        key.S: imgui.Key.s,
-        key.T: imgui.Key.t,
-        key.U: imgui.Key.u,
-        key.V: imgui.Key.v,
-        key.W: imgui.Key.w,
-        key.X: imgui.Key.x,
-        key.Y: imgui.Key.y,
-        key.Z: imgui.Key.z,
-        key._0: imgui.Key._0,
-        key._1: imgui.Key._1,
-        key._2: imgui.Key._2,
-        key._3: imgui.Key._3,
-        key._4: imgui.Key._4,
-        key._5: imgui.Key._5,
-        key._6: imgui.Key._6,
-        key._7: imgui.Key._7,
-        key._8: imgui.Key._8,
-        key._9: imgui.Key._9,
-        key.NUM_0: imgui.Key.keypad0,
-        key.NUM_1: imgui.Key.keypad1,
-        key.NUM_2: imgui.Key.keypad2,
-        key.NUM_3: imgui.Key.keypad3,
-        key.NUM_4: imgui.Key.keypad4,
-        key.NUM_5: imgui.Key.keypad5,
-        key.NUM_6: imgui.Key.keypad6,
-        key.NUM_7: imgui.Key.keypad7,
-        key.NUM_8: imgui.Key.keypad8,
-        key.NUM_9: imgui.Key.keypad9,
-        key.NUM_ADD: imgui.Key.keypad_add,
-        key.NUM_SUBTRACT: imgui.Key.keypad_subtract,
-        key.NUM_MULTIPLY: imgui.Key.keypad_multiply,
-        key.NUM_DIVIDE: imgui.Key.keypad_divide,
-        key.NUM_DECIMAL: imgui.Key.keypad_decimal,
-        key.NUM_SUBTRACT: imgui.Key.keypad_subtract,
-        key.BRACKETLEFT: imgui.Key.left_bracket,
-        key.BRACKETRIGHT: imgui.Key.right_bracket,
-        key.PAGEUP: imgui.Key.page_up,
-        key.PAGEDOWN: imgui.Key.page_down,
-        key.PAUSE: imgui.Key.pause,
-
-        key.LCTRL: imgui.Key.mod_ctrl,
-        key.RCTRL: imgui.Key.mod_ctrl,
-        key.LSHIFT: imgui.Key.mod_shift,
-        key.RSHIFT: imgui.Key.mod_shift,
-        key.LALT: imgui.Key.mod_alt,
-        key.RALT: imgui.Key.mod_alt,
-        key.LCOMMAND: imgui.Key.mod_super,
-        key.RCOMMAND: imgui.Key.mod_super,
-    }
     _gui_time = None
 
     MOUSE_CURSORS = {
@@ -121,6 +37,134 @@ class PygletMixin(object):
         # Let Dear imgui know we have mouse cursor support
         self.io = imgui.get_io()
         self.io.backend_flags |= imgui.BackendFlags_.has_mouse_cursors
+        self._map_keys()
+
+    def _map_keys(self):
+        self.key_map = {}
+        key_map = self.key_map
+
+        # Control Keys
+        key_map[key.TAB] = imgui.Key.tab
+        key_map[key.BACKSPACE] = imgui.Key.backspace
+        key_map[key.RETURN] = imgui.Key.enter
+        key_map[key.ESCAPE] = imgui.Key.escape
+        key_map[key.INSERT] = imgui.Key.insert
+        key_map[key.DELETE] = imgui.Key.delete
+        key_map[key.SPACE] = imgui.Key.space
+
+        # Function Keys
+        key_map[key.F1] = imgui.Key.f1
+        key_map[key.F2] = imgui.Key.f2
+        key_map[key.F3] = imgui.Key.f3
+        key_map[key.F4] = imgui.Key.f4
+        key_map[key.F5] = imgui.Key.f5
+        key_map[key.F6] = imgui.Key.f6
+        key_map[key.F7] = imgui.Key.f7
+        key_map[key.F8] = imgui.Key.f8
+        key_map[key.F9] = imgui.Key.f9
+        key_map[key.F10] = imgui.Key.f10
+        key_map[key.F11] = imgui.Key.f11
+        key_map[key.F12] = imgui.Key.f12
+
+        # Navigation Keys
+        key_map[key.LEFT] = imgui.Key.left_arrow
+        key_map[key.RIGHT] = imgui.Key.right_arrow
+        key_map[key.UP] = imgui.Key.up_arrow
+        key_map[key.DOWN] = imgui.Key.down_arrow
+        key_map[key.PAGEUP] = imgui.Key.page_up
+        key_map[key.PAGEDOWN] = imgui.Key.page_down
+        key_map[key.HOME] = imgui.Key.home
+        key_map[key.END] = imgui.Key.end
+
+        # Numeric Keys
+        key_map[key._0] = imgui.Key._0
+        key_map[key._1] = imgui.Key._1
+        key_map[key._2] = imgui.Key._2
+        key_map[key._3] = imgui.Key._3
+        key_map[key._4] = imgui.Key._4
+        key_map[key._5] = imgui.Key._5
+        key_map[key._6] = imgui.Key._6
+        key_map[key._7] = imgui.Key._7
+        key_map[key._8] = imgui.Key._8
+        key_map[key._9] = imgui.Key._9
+
+        # Keypad Keys
+        key_map[key.NUM_ENTER] = imgui.Key.keypad_enter
+        key_map[key.NUM_0] = imgui.Key.keypad0
+        key_map[key.NUM_1] = imgui.Key.keypad1
+        key_map[key.NUM_2] = imgui.Key.keypad2
+        key_map[key.NUM_3] = imgui.Key.keypad3
+        key_map[key.NUM_4] = imgui.Key.keypad4
+        key_map[key.NUM_5] = imgui.Key.keypad5
+        key_map[key.NUM_6] = imgui.Key.keypad6
+        key_map[key.NUM_7] = imgui.Key.keypad7
+        key_map[key.NUM_8] = imgui.Key.keypad8
+        key_map[key.NUM_9] = imgui.Key.keypad9
+        key_map[key.NUM_DECIMAL] = imgui.Key.keypad_decimal
+        key_map[key.NUM_DIVIDE] = imgui.Key.keypad_divide
+        key_map[key.NUM_MULTIPLY] = imgui.Key.keypad_multiply
+        key_map[key.NUM_SUBTRACT] = imgui.Key.keypad_subtract
+        key_map[key.NUM_ADD] = imgui.Key.keypad_add
+
+        # Alphabetic Keys
+        key_map[key.A] = imgui.Key.a
+        key_map[key.B] = imgui.Key.b
+        key_map[key.C] = imgui.Key.c
+        key_map[key.D] = imgui.Key.d
+        key_map[key.E] = imgui.Key.e
+        key_map[key.F] = imgui.Key.f
+        key_map[key.G] = imgui.Key.g
+        key_map[key.H] = imgui.Key.h
+        key_map[key.I] = imgui.Key.i
+        key_map[key.J] = imgui.Key.j
+        key_map[key.K] = imgui.Key.k
+        key_map[key.L] = imgui.Key.l
+        key_map[key.M] = imgui.Key.m
+        key_map[key.N] = imgui.Key.n
+        key_map[key.O] = imgui.Key.o
+        key_map[key.P] = imgui.Key.p
+        key_map[key.Q] = imgui.Key.q
+        key_map[key.R] = imgui.Key.r
+        key_map[key.S] = imgui.Key.s
+        key_map[key.T] = imgui.Key.t
+        key_map[key.U] = imgui.Key.u
+        key_map[key.V] = imgui.Key.v
+        key_map[key.W] = imgui.Key.w
+        key_map[key.X] = imgui.Key.x
+        key_map[key.Y] = imgui.Key.y
+        key_map[key.Z] = imgui.Key.z
+
+        # Modifier Keys
+        key_map[key.LCTRL] = imgui.Key.left_ctrl
+        key_map[key.RCTRL] = imgui.Key.right_ctrl
+        key_map[key.LSHIFT] = imgui.Key.left_shift
+        key_map[key.RSHIFT] = imgui.Key.right_shift
+        key_map[key.LALT] = imgui.Key.left_alt
+        key_map[key.RALT] = imgui.Key.right_alt
+        key_map[key.LCOMMAND] = imgui.Key.left_super
+        key_map[key.RCOMMAND] = imgui.Key.right_super
+
+        # Symbol Keys
+        key_map[key.GRAVE] = imgui.Key.grave_accent  # `
+        key_map[key.MINUS] = imgui.Key.minus         # -
+        key_map[key.EQUAL] = imgui.Key.equal         # =
+        key_map[key.BRACKETLEFT] = imgui.Key.left_bracket  # [
+        key_map[key.BRACKETRIGHT] = imgui.Key.right_bracket  # ]
+        key_map[key.BACKSLASH] = imgui.Key.backslash  # \
+        key_map[key.SEMICOLON] = imgui.Key.semicolon  # ;
+        key_map[key.APOSTROPHE] = imgui.Key.apostrophe  # '
+        key_map[key.COMMA] = imgui.Key.comma  # ,
+        key_map[key.PERIOD] = imgui.Key.period  # .
+        key_map[key.SLASH] = imgui.Key.slash  # /
+
+        # Miscellaneous Keys
+        key_map[key.PRINT] = imgui.Key.print_screen
+        key_map[key.PAUSE] = imgui.Key.pause
+
+        # Lock Keys
+        key_map[key.CAPSLOCK] = imgui.Key.caps_lock
+        key_map[key.NUMLOCK] = imgui.Key.num_lock
+        key_map[key.SCROLLLOCK] = imgui.Key.scroll_lock
 
     def _set_pixel_ratio(self, window):
         window_size = window.get_size()
@@ -174,6 +218,16 @@ class PygletMixin(object):
         if key_pressed in self.key_map:
             imgui_key = self.key_map[key_pressed]
             self.io.add_key_event(imgui_key, down=down)
+
+            # Handle modifiers, since ImGui has an additional mod_ctrl / shift / etc
+            if imgui_key == imgui.Key.left_ctrl or imgui_key == imgui.Key.right_ctrl:
+                self.io.add_key_event(imgui.Key.mod_ctrl, down)
+            if imgui_key == imgui.Key.left_shift or imgui_key == imgui.Key.right_shift:
+                self.io.add_key_event(imgui.Key.mod_shift, down)
+            if imgui_key == imgui.Key.left_alt or imgui_key == imgui.Key.right_alt:
+                self.io.add_key_event(imgui.Key.mod_alt, down)
+            if imgui_key == imgui.Key.left_super or imgui_key == imgui.Key.right_super:
+                self.io.add_key_event(imgui.Key.mod_super, down)
 
     def on_key_press(self, key_pressed, mods):
         self._on_key(key_pressed, True)
