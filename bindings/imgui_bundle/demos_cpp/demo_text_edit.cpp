@@ -14,7 +14,7 @@ TextEditor _PrepareTextEditor()
     std::string this_file_code = fplus::read_text_file("/demos_cpp/demo_text_edit.cpp")();
 #endif
     editor.SetText(this_file_code);
-    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+    editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Cpp);
     return editor;
 }
 
@@ -31,16 +31,16 @@ void demo_text_edit()
     auto ShowPaletteButtons = []()
     {
         if (ImGui::SmallButton("Dark palette"))
-            editor.SetPalette(TextEditor::GetDarkPalette());
+            editor.SetPalette(TextEditor::PaletteId::Dark);
         ImGui::SameLine();
         if (ImGui::SmallButton("Light palette"))
-            editor.SetPalette(TextEditor::GetLightPalette());
+            editor.SetPalette(TextEditor::PaletteId::Light);
         ImGui::SameLine();
         if (ImGui::SmallButton("Retro blue palette"))
-            editor.SetPalette(TextEditor::GetRetroBluePalette());
+            editor.SetPalette(TextEditor::PaletteId::RetroBlue);
         ImGui::SameLine();
         if (ImGui::SmallButton("Mariana palette"))
-            editor.SetPalette(TextEditor::GetMarianaPalette());
+            editor.SetPalette(TextEditor::PaletteId::Mariana);
     };
 
     ShowPaletteButtons();

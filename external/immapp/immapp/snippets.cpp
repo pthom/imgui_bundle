@@ -18,33 +18,33 @@ namespace Snippets
     void _SetTheme(TextEditor& editor, SnippetTheme palette)
     {
         if (palette == SnippetTheme::Dark)
-            editor.SetPalette(TextEditor::GetDarkPalette());
+            editor.SetPalette(TextEditor::PaletteId::Dark);
         else if (palette == SnippetTheme::Light)
-            editor.SetPalette(TextEditor::GetLightPalette());
+            editor.SetPalette(TextEditor::PaletteId::Light);
         else if (palette == SnippetTheme::RetroBlue)
-            editor.SetPalette(TextEditor::GetRetroBluePalette());
+            editor.SetPalette(TextEditor::PaletteId::RetroBlue);
         else if (palette == SnippetTheme::Mariana)
-            editor.SetPalette(TextEditor::GetMarianaPalette());
+            editor.SetPalette(TextEditor::PaletteId::Mariana);
     }
 
     void _SetLanguage(TextEditor& editor, SnippetLanguage lang)
     {
         if (lang == SnippetLanguage::Cpp)
-            editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+            editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Cpp);
         else if (lang == SnippetLanguage::Hlsl)
-            editor.SetLanguageDefinition(TextEditor::LanguageDefinition::HLSL());
+            editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Hlsl);
         else if (lang == SnippetLanguage::Glsl)
-            editor.SetLanguageDefinition(TextEditor::LanguageDefinition::GLSL());
+            editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Glsl);
         else if (lang == SnippetLanguage::C)
-            editor.SetLanguageDefinition(TextEditor::LanguageDefinition::C());
+            editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::C);
         else if (lang == SnippetLanguage::Sql)
-            editor.SetLanguageDefinition(TextEditor::LanguageDefinition::SQL());
+            editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Sql);
         else if (lang == SnippetLanguage::AngelScript)
-            editor.SetLanguageDefinition(TextEditor::LanguageDefinition::AngelScript());
+            editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::AngelScript);
         else if (lang == SnippetLanguage::Lua)
-            editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
+            editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Lua);
         else if (lang == SnippetLanguage::Python)
-            editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Python());
+            editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Python);
     }
 
 #ifdef __EMSCRIPTEN__
@@ -165,8 +165,8 @@ namespace Snippets
             {
                 float textX = snippetData.ShowCopyButton ? topRight.x - lineHeight * 6.f : topRight.x - lineHeight * 4.5f;
                 ImGui::SetCursorPos({textX, textY});
-                auto pos = editor.GetCursorPosition();
-                ImGui::Text("L:%02i C:%02i", pos.mLine + 1, pos.mColumn + 1);
+                int cursorLine, cursorColumn; editor.GetCursorPosition(cursorLine, cursorColumn);
+                ImGui::Text("L:%02i C:%02i", cursorLine + 1, cursorColumn + 1);
             }
 
             if (snippetData.ShowCopyButton)

@@ -44,7 +44,7 @@ from __future__ import annotations
 from typing import List, Any, Dict, Set, overload, Optional
 import enum
 
-from imgui_bundle.imgui import ImVec4, ImU32, ImVec2Like
+from imgui_bundle.imgui import ImVec2Like
 
 String = str
 Identifiers = Dict[
@@ -63,203 +63,156 @@ Char = int
 
 
 class TextEditor:
-    class PaletteIndex(enum.Enum):
-        default = enum.auto()                    # (= 0)
-        keyword = enum.auto()                    # (= 1)
-        number = enum.auto()                     # (= 2)
-        string = enum.auto()                     # (= 3)
-        char_literal = enum.auto()               # (= 4)
-        punctuation = enum.auto()                # (= 5)
-        preprocessor = enum.auto()               # (= 6)
-        identifier = enum.auto()                 # (= 7)
-        known_identifier = enum.auto()           # (= 8)
-        preproc_identifier = enum.auto()         # (= 9)
-        comment = enum.auto()                    # (= 10)
-        multi_line_comment = enum.auto()         # (= 11)
-        background = enum.auto()                 # (= 12)
-        cursor = enum.auto()                     # (= 13)
-        selection = enum.auto()                  # (= 14)
-        error_marker = enum.auto()               # (= 15)
-        control_character = enum.auto()          # (= 16)
-        breakpoint = enum.auto()                 # (= 17)
-        line_number = enum.auto()                # (= 18)
-        current_line_fill = enum.auto()          # (= 19)
-        current_line_fill_inactive = enum.auto() # (= 20)
-        current_line_edge = enum.auto()          # (= 21)
-        max = enum.auto()                        # (= 22)
-
-    class SelectionMode(enum.Enum):
-        normal = enum.auto()                     # (= 0)
-        word = enum.auto()                       # (= 1)
-        line = enum.auto()                       # (= 2)
-
-    class Breakpoint:
-        m_line: int
-        m_enabled: bool
-        m_condition: str
-
-        def __init__(self) -> None:
-            pass
-
-    class Coordinates:
-        """ Represents a character coordinate from the user's point of view,
-         i. e. consider an uniform grid (assuming fixed-width font) on the
-         screen as it is rendered, and each cell has its own coordinate, starting from 0.
-         Tabs are counted as [1..mTabSize] count empty spaces, depending on
-         how many space is necessary to reach the next tab stop.
-         For example, coordinate (1, 5) represents the character 'B' in a line "\tABC", when mTabSize = 4,
-         because it is rendered as "    ABC" on the screen.
-        """
-        m_line: int
-        m_column: int
-        @overload
-        def __init__(self) -> None:
-            pass
-        @overload
-        def __init__(self, a_line: int, a_column: int) -> None:
-            pass
-        @staticmethod
-        def invalid() -> TextEditor.Coordinates:
-            pass
-
-        def __eq__(self, o: TextEditor.Coordinates) -> bool:
-            pass
-
-        def __ne__(self, o: TextEditor.Coordinates) -> bool:
-            pass
-
-        def __lt__(self, o: TextEditor.Coordinates) -> bool:
-            pass
-
-        def __gt__(self, o: TextEditor.Coordinates) -> bool:
-            pass
-
-        def __le__(self, o: TextEditor.Coordinates) -> bool:
-            pass
-
-        def __ge__(self, o: TextEditor.Coordinates) -> bool:
-            pass
-
-        def __sub__(self, o: TextEditor.Coordinates) -> TextEditor.Coordinates:
-            pass
-
-    class Identifier:
-        m_location: Coordinates
-        m_declaration: str
-        def __init__(
-            self,
-            m_location: Optional[Coordinates] = None,
-            m_declaration: str = ""
-            ) -> None:
-            """Auto-generated default constructor with named params
-            ---
-            Python bindings defaults:
-                If mLocation is None, then its default value will be: TextEditor.Coordinates()
-            """
-            pass
-
-
-    class Glyph:
-        m_char: Char
-        m_color_index: PaletteIndex = PaletteIndex.default
-
-        def __init__(self, a_char: Char, a_color_index: PaletteIndex) -> None:
-            pass
-
-
-    class LanguageDefinition:
-
-        m_name: str
-        m_keywords: Keywords
-        m_identifiers: Identifiers
-        m_preproc_identifiers: Identifiers
-        m_comment_start: str
-        m_comment_end: str
-        m_single_line_comment: str
-        m_auto_indentation: bool
-
-
-        m_token_regex_strings: TokenRegexStrings
-
-        m_case_sensitive: bool
-
-        def __init__(self) -> None:
-            pass
-
-        @staticmethod
-        def c_plus_plus() -> TextEditor.LanguageDefinition:
-            pass
-        @staticmethod
-        def hlsl() -> TextEditor.LanguageDefinition:
-            pass
-        @staticmethod
-        def glsl() -> TextEditor.LanguageDefinition:
-            pass
-        @staticmethod
-        def python() -> TextEditor.LanguageDefinition:
-            pass
-        @staticmethod
-        def c() -> TextEditor.LanguageDefinition:
-            pass
-        @staticmethod
-        def sql() -> TextEditor.LanguageDefinition:
-            pass
-        @staticmethod
-        def angel_script() -> TextEditor.LanguageDefinition:
-            pass
-        @staticmethod
-        def lua() -> TextEditor.LanguageDefinition:
-            pass
-        @staticmethod
-        def c_sharp() -> TextEditor.LanguageDefinition:
-            pass
-        @staticmethod
-        def json() -> TextEditor.LanguageDefinition:
-            pass
-
-    class UndoOperationType(enum.Enum):
-        add = enum.auto()                        # (= 0)
-        delete = enum.auto()                     # (= 1)
-    class UndoOperation:
-        m_text: str
-        m_start: TextEditor.Coordinates
-        m_end: TextEditor.Coordinates
-        m_type: UndoOperationType
-        def __init__(
-            self,
-            m_text: str = "",
-            m_start: Optional[Coordinates] = None,
-            m_end: Optional[Coordinates] = None,
-            m_type: UndoOperationType = UndoOperationType()
-            ) -> None:
-            """Auto-generated default constructor with named params
-            ---
-            Python bindings defaults:
-                If any of the params below is None, then its default value below will be used:
-                    mStart: TextEditor.Coordinates()
-                    mEnd: TextEditor.Coordinates()
-            """
-            pass
+    # ------------- Exposed API ------------- //
 
     def __init__(self) -> None:
         pass
 
-    def set_language_definition(
-        self,
-        a_language_def: TextEditor.LanguageDefinition
-        ) -> None:
+    class PaletteId(enum.Enum):
+        dark = enum.auto()               # (= 0)
+        light = enum.auto()              # (= 1)
+        mariana = enum.auto()            # (= 2)
+        retro_blue = enum.auto()         # (= 3)
+    class LanguageDefinitionId(enum.Enum):
+        none = enum.auto()               # (= 0)
+        cpp = enum.auto()                # (= 1)
+        c = enum.auto()                  # (= 2)
+        cs = enum.auto()                 # (= 3)
+        python = enum.auto()             # (= 4)
+        lua = enum.auto()                # (= 5)
+        json = enum.auto()               # (= 6)
+        sql = enum.auto()                # (= 7)
+        angel_script = enum.auto()       # (= 8)
+        glsl = enum.auto()               # (= 9)
+        hlsl = enum.auto()               # (= 10)
+    class SetViewAtLineMode(enum.Enum):
+        first_visible_line = enum.auto() # (= 0)
+        centered = enum.auto()           # (= 1)
+        last_visible_line = enum.auto()  # (= 2)
+
+    def set_read_only_enabled(self, a_value: bool) -> None:
+        pass
+    def is_read_only_enabled(self) -> bool:
+        pass
+    def set_auto_indent_enabled(self, a_value: bool) -> None:
+        pass
+    def is_auto_indent_enabled(self) -> bool:
+        pass
+    def set_show_whitespaces_enabled(self, a_value: bool) -> None:
+        pass
+    def is_show_whitespaces_enabled(self) -> bool:
+        pass
+    def set_show_line_numbers_enabled(self, a_value: bool) -> None:
+        pass
+    def is_show_line_numbers_enabled(self) -> bool:
+        pass
+    def set_short_tabs_enabled(self, a_value: bool) -> None:
+        pass
+    def is_short_tabs_enabled(self) -> bool:
+        pass
+    def get_line_count(self) -> int:
+        pass
+    def is_overwrite_enabled(self) -> bool:
+        pass
+    def set_palette(self, a_value: TextEditor.PaletteId) -> None:
+        pass
+    def get_palette(self) -> TextEditor.PaletteId:
+        pass
+    def set_language_definition(self, a_value: TextEditor.LanguageDefinitionId) -> None:
+        pass
+    def get_language_definition(self) -> TextEditor.LanguageDefinitionId:
         pass
     def get_language_definition_name(self) -> str:
         pass
+    def set_tab_size(self, a_value: int) -> None:
+        pass
+    def get_tab_size(self) -> int:
+        pass
+    def set_line_spacing(self, a_value: float) -> None:
+        pass
+    def get_line_spacing(self) -> float:
+        pass
 
-    def get_palette(self) -> Palette:
+    @staticmethod
+    def set_default_palette(a_value: TextEditor.PaletteId) -> None:
         pass
-    def set_palette(self, a_value: Palette) -> None:
+    @staticmethod
+    def get_default_palette() -> TextEditor.PaletteId:
         pass
 
-    def set_error_markers(self, a_markers: ErrorMarkers) -> None:
+    def select_all(self) -> None:
         pass
-    def set_breakpoints(self, a_markers: Breakpoints) -> None:
+    def select_line(self, a_line: int) -> None:
+        pass
+    def select_region(
+        self,
+        a_start_line: int,
+        a_start_char: int,
+        a_end_line: int,
+        a_end_char: int
+        ) -> None:
+        pass
+    @overload
+    def select_next_occurrence_of(
+        self,
+        a_text: str,
+        a_text_size: int,
+        a_case_sensitive: bool = True
+        ) -> None:
+        pass
+    def select_all_occurrences_of(
+        self,
+        a_text: str,
+        a_text_size: int,
+        a_case_sensitive: bool = True
+        ) -> None:
+        pass
+    def any_cursor_has_selection(self) -> bool:
+        pass
+    def all_cursors_have_selection(self) -> bool:
+        pass
+    def clear_extra_cursors(self) -> None:
+        pass
+    def clear_selections(self) -> None:
+        pass
+    @overload
+    def set_cursor_position(self, a_line: int, a_char_index: int) -> None:
+        pass
+    def get_cursor_position(self, out_line: int, out_column: int) -> None:
+        pass
+    def get_first_visible_line(self) -> int:
+        pass
+    def get_last_visible_line(self) -> int:
+        pass
+    def set_view_at_line(self, a_line: int, a_mode: TextEditor.SetViewAtLineMode) -> None:
+        pass
+
+    def copy(self) -> None:
+        pass
+    def cut(self) -> None:
+        pass
+    def paste(self) -> None:
+        pass
+    def undo(self, a_steps: int = 1) -> None:
+        pass
+    def redo(self, a_steps: int = 1) -> None:
+        pass
+    def can_undo(self) -> bool:
+        pass
+    def can_redo(self) -> bool:
+        pass
+    def get_undo_index(self) -> int:
+        pass
+
+    def set_text(self, a_text: str) -> None:
+        pass
+    @overload
+    def get_text(self) -> str:
+        pass
+
+    def set_text_lines(self, a_lines: List[str]) -> None:
+        pass
+    def get_text_lines(self) -> List[str]:
         pass
 
     @overload
@@ -275,240 +228,12 @@ class TextEditor:
             If aSize is None, then its default value will be: ImVec2()
         """
         pass
-    def set_text(self, a_text: str) -> None:
-        pass
-    @overload
-    def get_text(self) -> str:
-        pass
-
-    def set_text_lines(self, a_lines: List[str]) -> None:
-        pass
-    def get_text_lines(self) -> List[str]:
-        pass
-
-    def get_clipboard_text(self) -> str:
-        pass
-    def get_selected_text(self, a_cursor: int = -1) -> str:
-        pass
-    def get_current_line_text(self) -> str:
-        pass
-
-    def get_total_lines(self) -> int:
-        pass
-    def is_overwrite(self) -> bool:
-        pass
-
-    def set_read_only(self, a_value: bool) -> None:
-        pass
-    def is_read_only(self) -> bool:
-        pass
-    def is_text_changed(self) -> bool:
-        pass
-
-    def on_cursor_position_changed(self, a_cursor: int) -> None:
-        pass
-
-    def is_colorizer_enabled(self) -> bool:
-        pass
-    def set_colorizer_enable(self, a_value: bool) -> None:
-        pass
-
-    def get_cursor_position(self) -> TextEditor.Coordinates:
-        pass
-    @overload
-    def set_cursor_position(
-        self,
-        a_position: TextEditor.Coordinates,
-        a_cursor: int = -1
-        ) -> None:
-        pass
-    @overload
-    def set_cursor_position(
-        self,
-        a_line: int,
-        a_char_index: int,
-        a_cursor: int = -1
-        ) -> None:
-        pass
-
-    def on_line_deleted(
-        self,
-        a_line_index: int,
-        a_handled_cursors: Optional[std.unordered_set[int]] = None
-        ) -> None:
-        pass
-    def on_lines_deleted(self, a_first_line_index: int, a_last_line_index: int) -> None:
-        pass
-    def on_line_added(self, a_line_index: int) -> None:
-        pass
-
-    def set_handle_mouse_inputs(self, a_value: bool) -> None:
-        pass
-    def is_handle_mouse_inputs_enabled(self) -> bool:
-        pass
-
-    def set_handle_keyboard_inputs(self, a_value: bool) -> None:
-        pass
-    def is_handle_keyboard_inputs_enabled(self) -> bool:
-        pass
-
-    def set_im_gui_child_ignored(self, a_value: bool) -> None:
-        pass
-    def is_im_gui_child_ignored(self) -> bool:
-        pass
-
-    def set_show_whitespaces(self, a_value: bool) -> None:
-        pass
-    def is_showing_whitespaces(self) -> bool:
-        pass
-
-    def set_show_short_tab_glyphs(self, a_value: bool) -> None:
-        pass
-    def is_showing_short_tab_glyphs(self) -> bool:
-        pass
-
-    def u32_color_to_vec4(self, in_: ImU32) -> ImVec4:
-        pass
-
-    def set_tab_size(self, a_value: int) -> None:
-        pass
-    def get_tab_size(self) -> int:
-        pass
-
-    @overload
-    def insert_text(self, a_value: str, a_cursor: int = -1) -> None:
-        pass
-    @overload
-    def insert_text(self, a_value: str, a_cursor: int = -1) -> None:
-        pass
-
-    def move_up(self, a_amount: int = 1, a_select: bool = False) -> None:
-        pass
-    def move_down(self, a_amount: int = 1, a_select: bool = False) -> None:
-        pass
-    def move_left(
-        self,
-        a_amount: int = 1,
-        a_select: bool = False,
-        a_word_mode: bool = False
-        ) -> None:
-        pass
-    def move_right(
-        self,
-        a_amount: int = 1,
-        a_select: bool = False,
-        a_word_mode: bool = False
-        ) -> None:
-        pass
-    def move_top(self, a_select: bool = False) -> None:
-        pass
-    def move_bottom(self, a_select: bool = False) -> None:
-        pass
-    def move_home(self, a_select: bool = False) -> None:
-        pass
-    def move_end(self, a_select: bool = False) -> None:
-        pass
-
-    def set_selection_start(
-        self,
-        a_position: TextEditor.Coordinates,
-        a_cursor: int = -1
-        ) -> None:
-        pass
-    def set_selection_end(
-        self,
-        a_position: TextEditor.Coordinates,
-        a_cursor: int = -1
-        ) -> None:
-        pass
-    def get_selection_start(self, a_cursor: int = -1) -> TextEditor.Coordinates:
-        pass
-    def get_selection_end(self, a_cursor: int = -1) -> TextEditor.Coordinates:
-        pass
-    @overload
-    def set_selection(
-        self,
-        a_start: TextEditor.Coordinates,
-        a_end: TextEditor.Coordinates,
-        a_mode: TextEditor.SelectionMode = TextEditor.SelectionMode.normal,
-        a_cursor: int = -1,
-        is_spawning_new_cursor: bool = False
-        ) -> None:
-        pass
-    @overload
-    def set_selection(
-        self,
-        a_start_line: int,
-        a_start_char_index: int,
-        a_end_line: int,
-        a_end_char_index: int,
-        a_mode: TextEditor.SelectionMode = TextEditor.SelectionMode.normal,
-        a_cursor: int = -1,
-        is_spawning_new_cursor: bool = False
-        ) -> None:
-        pass
-    def select_word_under_cursor(self) -> None:
-        pass
-    def select_all(self) -> None:
-        pass
-    def has_selection(self) -> bool:
-        pass
-
-    def copy(self) -> None:
-        pass
-    def cut(self) -> None:
-        pass
-    def paste(self) -> None:
-        pass
-    def delete(self, a_word_mode: bool = False) -> None:
-        pass
-
-    def get_undo_index(self) -> int:
-        pass
-    def can_undo(self) -> bool:
-        pass
-    def can_redo(self) -> bool:
-        pass
-    def undo(self, a_steps: int = 1) -> None:
-        pass
-    def redo(self, a_steps: int = 1) -> None:
-        pass
-
-    def clear_extra_cursors(self) -> None:
-        pass
-    def clear_selections(self) -> None:
-        pass
-    def select_next_occurrence_of(
-        self,
-        a_text: str,
-        a_text_size: int,
-        a_cursor: int = -1
-        ) -> None:
-        pass
-    def add_cursor_for_next_occurrence(self) -> None:
-        pass
-
-    @staticmethod
-    def get_mariana_palette() -> Palette:
-        pass
-    @staticmethod
-    def get_dark_palette() -> Palette:
-        pass
-    @staticmethod
-    def get_light_palette() -> Palette:
-        pass
-    @staticmethod
-    def get_retro_blue_palette() -> Palette:
-        pass
-
-    @staticmethod
-    def is_glyph_word_char(a_glyph: TextEditor.Glyph) -> bool:
-        pass
 
     def im_gui_debug_panel(self, panel_name: str = "Debug") -> None:
         pass
     def unit_tests(self) -> None:
         pass
+
 ####################    </generated_from:TextEditor.h>    ####################
 
 # </litgen_stub> // Autogenerated code end!
