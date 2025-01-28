@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        submodules: true
+        submodules: recursive
 
     - name: install xorg-dev on ubuntu
       run: ./ci_scripts/install_xorg_dev.sh

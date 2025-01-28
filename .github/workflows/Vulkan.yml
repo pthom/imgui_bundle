@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
 
       - name: apt install xorg-dev  libglfw3-dev libsdl2-dev (ubuntu only)
         if: ${{ matrix.platform == 'ubuntu-latest' }}

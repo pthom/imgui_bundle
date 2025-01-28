@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: true
+          submodules: recursive
 
       - name: install libglfw3-dev xorg-dev & start Xvfb (ubuntu only)
         if: ${{ matrix.platform == 'ubuntu-latest' }}
