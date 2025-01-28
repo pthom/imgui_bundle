@@ -190,6 +190,14 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::ImGuiDebugPanel, nb::arg("panel_name") = "Debug")
         .def("unit_tests",
             &TextEditor::UnitTests)
+        .def("set_selection",
+            nb::overload_cast<int, int, int, int, int>(&TextEditor::SetSelection), nb::arg("a_start_line"), nb::arg("a_start_char"), nb::arg("a_end_line"), nb::arg("a_end_char"), nb::arg("a_cursor") = -1)
+        .def("get_selection_start",
+            &TextEditor::GetSelectionStart, nb::arg("a_cursor") = -1)
+        .def("get_selection_end",
+            &TextEditor::GetSelectionEnd, nb::arg("a_cursor") = -1)
+        .def("get_selected_text",
+            &TextEditor::GetSelectedText, nb::arg("a_cursor") = -1)
         ;
     ////////////////////    </generated_from:TextEditor.h>    ////////////////////
 
