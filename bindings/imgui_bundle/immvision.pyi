@@ -16,9 +16,9 @@ Point: TypeAlias = Tuple[int, int]
 Size: TypeAlias = Tuple[int, int]
 Size2d: TypeAlias = Tuple[float, float]
 Mat: TypeAlias = NDArray[np.number]
-Matx33d: TypeAlias = NDArray[np.number]
 Image_RGBA: TypeAlias = NDArray[np.uint8]
 Image_RGB: TypeAlias = NDArray[np.uint8]
+Matx33d: TypeAlias = List[List[float]]  # This contains a 3x3 matrix which represents an affine transformation (for zoom/pan)
 Scalar: TypeAlias = Tuple[float, float, float, float]
 ImTextureID: TypeAlias = int
 
