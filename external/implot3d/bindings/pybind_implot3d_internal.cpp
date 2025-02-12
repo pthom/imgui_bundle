@@ -489,7 +489,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
             return BeginItem_adapt_mutable_param_with_default_value(label_id, flags, recolor_from);
         },
         nb::arg("label_id"), nb::arg("flags") = 0, nb::arg("recolor_from") = nb::none(),
-        "---\nPython bindings defaults:\n    If recolor_from is None, then its default value will be: IMPLOT3D_AUTO");
+        "Python bindings defaults:\n    If recolor_from is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("end_item",
         ImPlot3D::EndItem);

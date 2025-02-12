@@ -60,8 +60,7 @@ class ImCoolBarConfig:
         v_anim_step: float = 0.15,
         v_effect_strength: float = 0.5
         ) -> None:
-        """---
-        Python bindings defaults:
+        """Python bindings defaults:
             If vAnchor is None, then its default value will be: ImVec2(-1.0, -1.0)
 
          //
@@ -73,12 +72,11 @@ def begin_cool_bar(
     v_config: Optional[ImCoolBarConfig] = None,
     v_flags: Optional[ImGuiWindowFlags] = None
     ) -> bool:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            vCBFlags: ImCoolBarFlags_.vertical
-            vConfig: initialized with default value
-            vFlags: WindowFlags_.none
+            * vCBFlags: ImCoolBarFlags_.vertical
+            * vConfig: initialized with default value
+            * vFlags: WindowFlags_.none
     """
     pass
 def end_cool_bar() -> None:

@@ -105,9 +105,8 @@ class MarkdownOptions:
 #
 #        hello_imgui.run(runner_params)
 def initialize_markdown(options: Optional[MarkdownOptions] = None) -> None:
-    """---
-    Python bindings defaults:
-        If options is None, then its default value will be: MarkdownOptions()
+    """Python bindings defaults:
+    If options is None, then its default value will be: MarkdownOptions()
     """
     pass
 

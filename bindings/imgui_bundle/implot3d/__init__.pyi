@@ -512,9 +512,8 @@ def set_current_context(ctx: Context) -> None:
 # - #size is the **frame** size of the plot widget, not the plot area.
 # IMPLOT3D_API bool BeginPlot(const char* title_id, const ImVec2& size = ImVec2(-1, 0), ImPlot3DFlags flags = 0);    /* original C++ signature */
 def begin_plot(title_id: str, size: Optional[ImVec2Like] = None, flags: Flags = 0) -> bool:
-    """---
-    Python bindings defaults:
-        If size is None, then its default value will be: ImVec2(-1, 0)
+    """Python bindings defaults:
+    If size is None, then its default value will be: ImVec2(-1, 0)
     """
     pass
 
@@ -559,9 +558,8 @@ def setup_axis(axis: ImAxis3D, label: Optional[str] = None, flags: AxisFlags = 0
 
 # IMPLOT3D_API void SetupAxisLimits(ImAxis3D axis, double v_min, double v_max, ImPlot3DCond cond = ImPlot3DCond_Once);    /* original C++ signature */
 def setup_axis_limits(axis: ImAxis3D, v_min: float, v_max: float, cond: Optional[Cond] = None) -> None:
-    """---
-    Python bindings defaults:
-        If cond is None, then its default value will be: Cond_Once
+    """Python bindings defaults:
+    If cond is None, then its default value will be: Cond_Once
     """
     pass
 
@@ -577,7 +575,8 @@ def setup_axes_limits(
     x_min: float, x_max: float, y_min: float, y_max: float, z_min: float, z_max: float, cond: Optional[Cond] = None
 ) -> None:
     """Sets the X/Y/Z axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)
-    ---
+
+
     Python bindings defaults:
         If cond is None, then its default value will be: Cond_Once
     """
@@ -693,7 +692,8 @@ def plot_text(
     text: str, x: float, y: float, z: float, angle: float = 0.0, pix_offset: Optional[ImVec2Like] = None
 ) -> None:
     """Plots a centered text label at point x,y,z. It is possible to set the text angle in radians and offset in pixels
-    ---
+
+
     Python bindings defaults:
         If pix_offset is None, then its default value will be: ImVec2(0, 0)
     """
@@ -826,7 +826,8 @@ def pop_style_var(count: int = 1) -> None:
 # IMPLOT3D_API void SetNextLineStyle(const ImVec4& col = IMPLOT3D_AUTO_COL, float weight = IMPLOT3D_AUTO);    /* original C++ signature */
 def set_next_line_style(col: Optional[ImVec4Like] = None, weight: float = IMPLOT3D_AUTO) -> None:
     """Set the line color and weight for the next item only
-    ---
+
+
     Python bindings defaults:
         If col is None, then its default value will be: IMPLOT3D_AUTO_COL
     """
@@ -835,7 +836,8 @@ def set_next_line_style(col: Optional[ImVec4Like] = None, weight: float = IMPLOT
 # IMPLOT3D_API void SetNextFillStyle(const ImVec4& col = IMPLOT3D_AUTO_COL, float alpha_mod = IMPLOT3D_AUTO);    /* original C++ signature */
 def set_next_fill_style(col: Optional[ImVec4Like] = None, alpha_mod: float = IMPLOT3D_AUTO) -> None:
     """Set the fill color for the next item only
-    ---
+
+
     Python bindings defaults:
         If col is None, then its default value will be: IMPLOT3D_AUTO_COL
     """
@@ -850,12 +852,13 @@ def set_next_marker_style(
     outline: Optional[ImVec4Like] = None,
 ) -> None:
     """Set the marker style for the next item only
-    ---
+
+
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            marker: IMPLOT3D_AUTO
-            fill: IMPLOT3D_AUTO_COL
-            outline: IMPLOT3D_AUTO_COL
+            * marker: IMPLOT3D_AUTO
+            * fill: IMPLOT3D_AUTO_COL
+            * outline: IMPLOT3D_AUTO_COL
     """
     pass
 
@@ -939,7 +942,8 @@ def next_colormap_color() -> ImVec4:
 # IMPLOT3D_API int GetColormapSize(ImPlot3DColormap cmap = IMPLOT3D_AUTO);    /* original C++ signature */
 def get_colormap_size(cmap: Optional[Colormap] = None) -> int:
     """Returns the size of a colormap
-    ---
+
+
     Python bindings defaults:
         If cmap is None, then its default value will be: IMPLOT3D_AUTO
     """
@@ -948,7 +952,8 @@ def get_colormap_size(cmap: Optional[Colormap] = None) -> int:
 # IMPLOT3D_API ImVec4 GetColormapColor(int idx, ImPlot3DColormap cmap = IMPLOT3D_AUTO);    /* original C++ signature */
 def get_colormap_color(idx: int, cmap: Optional[Colormap] = None) -> ImVec4:
     """Returns a color from a colormap given an index >= 0 (modulo will be performed)
-    ---
+
+
     Python bindings defaults:
         If cmap is None, then its default value will be: IMPLOT3D_AUTO
     """
@@ -957,7 +962,8 @@ def get_colormap_color(idx: int, cmap: Optional[Colormap] = None) -> ImVec4:
 # IMPLOT3D_API ImVec4 SampleColormap(float t, ImPlot3DColormap cmap = IMPLOT3D_AUTO);    /* original C++ signature */
 def sample_colormap(t: float, cmap: Optional[Colormap] = None) -> ImVec4:
     """Sample a color from the current colormap given t between 0 and 1
-    ---
+
+
     Python bindings defaults:
         If cmap is None, then its default value will be: IMPLOT3D_AUTO
     """
@@ -1116,11 +1122,12 @@ class Ray:
     # ImPlot3DRay(ImPlot3DPoint Origin = ImPlot3DPoint(), ImPlot3DPoint Direction = ImPlot3DPoint());    /* original C++ signature */
     def __init__(self, origin: Optional[Point] = None, direction: Optional[Point] = None) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                Origin: Point()
-                Direction: Point()
+                * Origin: Point()
+                * Direction: Point()
         """
         pass
 
@@ -1136,11 +1143,12 @@ class Plane:
     # ImPlot3DPlane(ImPlot3DPoint Point = ImPlot3DPoint(), ImPlot3DPoint Normal = ImPlot3DPoint());    /* original C++ signature */
     def __init__(self, point: Optional[Point] = None, normal: Optional[Point] = None) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                Point: Point()
-                Normal: Point()
+                * Point: Point()
+                * Normal: Point()
         """
         pass
 

@@ -30,9 +30,8 @@ DefaultScreenSize = (800, 600)
 def begin_plot_in_node_editor(
     title_id: str, size: Optional[ImVec2Like] = None, flags: ImPlotFlags = 0
 ) -> bool:
-    """---
-    Python bindings defaults:
-        If size is None, then its default value will be: ImVec2(-1,0)
+    """Python bindings defaults:
+    If size is None, then its default value will be: ImVec2(-1,0)
     """
     pass
 
@@ -163,9 +162,8 @@ def run(
     runner_params: HelloImGui.RunnerParams,
     add_ons_params: Optional[AddOnsParams] = None,
 ) -> None:
-    """---
-    Python bindings defaults:
-        If addOnsParams is None, then its default value will be: AddOnsParams()
+    """Python bindings defaults:
+    If addOnsParams is None, then its default value will be: AddOnsParams()
     """
     pass
 
@@ -174,9 +172,8 @@ def run(
     simple_params: HelloImGui.SimpleRunnerParams,
     add_ons_params: Optional[AddOnsParams] = None,
 ) -> None:
-    """---
-    Python bindings defaults:
-        If addOnsParams is None, then its default value will be: AddOnsParams()
+    """Python bindings defaults:
+    If addOnsParams is None, then its default value will be: AddOnsParams()
     """
     pass
 
@@ -217,7 +214,8 @@ def run(
            (i.e. required fonts will be loaded)
          - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor
            will be created automatically.
-    ---
+
+
     Python bindings defaults:
         If windowSize is None, then its default value will be: DefaultWindowSize
     """
@@ -238,7 +236,8 @@ def run_with_markdown(
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
     """Run an application with markdown
-    ---
+
+
     Python bindings defaults:
         If windowSize is None, then its default value will be: DefaultWindowSize
     """
@@ -333,7 +332,8 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
         """Initializes the rendering with the full customizable `RunnerParams`.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
          A distinct copy of `RunnerParams` is stored internally.
-        ---
+
+
         Python bindings defaults:
             If addOnsParams is None, then its default value will be: AddOnsParams()
         """
@@ -346,7 +346,8 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     ) -> None:
         """Initializes the rendering with `SimpleRunnerParams`.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-        ---
+
+
         Python bindings defaults:
             If addOnsParams is None, then its default value will be: AddOnsParams()
         """
@@ -370,7 +371,8 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     ) -> None:
         """Initializes the renderer with a simple GUI function and additional parameters.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-        ---
+
+
         Python bindings defaults:
             If windowSize is None, then its default value will be: DefaultWindowSize
         """

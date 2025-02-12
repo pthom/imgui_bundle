@@ -97,7 +97,7 @@ void py_init_module_imgui_md(nb::module_& m)
             InitializeMarkdown_adapt_mutable_param_with_default_value(options);
         },
         nb::arg("options") = nb::none(),
-        "---\nPython bindings defaults:\n    If options is None, then its default value will be: MarkdownOptions()");
+        "Python bindings defaults:\n    If options is None, then its default value will be: MarkdownOptions()");
 
     m.def("de_initialize_markdown",
         ImGuiMd::DeInitializeMarkdown);

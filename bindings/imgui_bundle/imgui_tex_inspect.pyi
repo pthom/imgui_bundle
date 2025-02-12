@@ -280,8 +280,7 @@ class Arrow:
         y_vector_index: int = 1,
         line_scale: Optional[ImVec2Like] = None
         ) -> None:
-        """---
-        Python bindings defaults:
+        """Python bindings defaults:
             If lineScale is None, then its default value will be: ImVec2(1, 1)
         """
         pass
@@ -317,11 +316,12 @@ class Transform2D:
         translate: Optional[ImVec2Like] = None
         ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                Scale: ImVec2()
-                Translate: ImVec2()
+                * Scale: ImVec2()
+                * Translate: ImVec2()
         """
         pass
 
@@ -349,11 +349,12 @@ class Texture:
         size: Optional[ImVec2Like] = None
         ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                texture: ImTextureID()
-                size: ImVec2()
+                * texture: ImTextureID()
+                * size: ImVec2()
         """
         pass
 

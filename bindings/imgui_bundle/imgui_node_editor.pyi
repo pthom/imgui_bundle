@@ -491,9 +491,8 @@ def pop_style_var(count: int = 1) -> None:
 
 # IMGUI_NODE_EDITOR_API void Begin(const char* id, const ImVec2& size = ImVec2(0, 0));    /* original C++ signature */
 def begin(id: str, size: Optional[ImVec2Like] = None) -> None:
-    """---
-    Python bindings defaults:
-        If size is None, then its default value will be: ImVec2(0, 0)
+    """Python bindings defaults:
+    If size is None, then its default value will be: ImVec2(0, 0)
     """
     pass
 
@@ -578,9 +577,8 @@ def link(
     color: Optional[ImVec4Like] = None,
     thickness: float = 1.0,
 ) -> bool:
-    """---
-    Python bindings defaults:
-        If color is None, then its default value will be: ImVec4(1, 1, 1, 1)
+    """Python bindings defaults:
+    If color is None, then its default value will be: ImVec4(1, 1, 1, 1)
     """
     pass
 
@@ -590,9 +588,8 @@ def flow(link_id: LinkId, direction: FlowDirection = FlowDirection.forward) -> N
 
 # IMGUI_NODE_EDITOR_API bool BeginCreate(const ImVec4& color = ImVec4(1, 1, 1, 1), float thickness = 1.0f);    /* original C++ signature */
 def begin_create(color: Optional[ImVec4Like] = None, thickness: float = 1.0) -> bool:
-    """---
-    Python bindings defaults:
-        If color is None, then its default value will be: ImVec4(1, 1, 1, 1)
+    """Python bindings defaults:
+    If color is None, then its default value will be: ImVec4(1, 1, 1, 1)
     """
     pass
 

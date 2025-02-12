@@ -64,7 +64,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
             return Toggle_adapt_modifiable_immutable_to_return(label, v, size);
         },
         nb::arg("label"), nb::arg("v"), nb::arg("size") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
         [](const char * label, bool v, ImGuiToggleFlags flags, const std::optional<const ImVec2> & size = std::nullopt) -> std::tuple<bool, bool>
@@ -93,7 +93,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
             return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, size);
         },
         nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("size") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
         [](const char * label, bool v, ImGuiToggleFlags flags, float animation_duration, const std::optional<const ImVec2> & size = std::nullopt) -> std::tuple<bool, bool>
@@ -122,7 +122,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
             return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, animation_duration, size);
         },
         nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("animation_duration"), nb::arg("size") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
         [](const char * label, bool v, ImGuiToggleFlags flags, float frame_rounding, float knob_rounding, const std::optional<const ImVec2> & size = std::nullopt) -> std::tuple<bool, bool>
@@ -151,7 +151,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
             return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, frame_rounding, knob_rounding, size);
         },
         nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("frame_rounding"), nb::arg("knob_rounding"), nb::arg("size") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
         [](const char * label, bool v, ImGuiToggleFlags flags, float animation_duration, float frame_rounding, float knob_rounding, const std::optional<const ImVec2> & size = std::nullopt) -> std::tuple<bool, bool>
@@ -180,7 +180,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
             return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, animation_duration, frame_rounding, knob_rounding, size);
         },
         nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("animation_duration"), nb::arg("frame_rounding"), nb::arg("knob_rounding"), nb::arg("size") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
         [](const char * label, bool v, const ImGuiToggleConfig & config) -> std::tuple<bool, bool>

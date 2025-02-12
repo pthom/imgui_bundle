@@ -979,7 +979,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
                 WindowMove_adapt_mutable_param_with_default_value(window_ref, pos, pivot, flags);
             },
             nb::arg("window_ref"), nb::arg("pos"), nb::arg("pivot") = nb::none(), nb::arg("flags") = ImGuiTestOpFlags_None,
-            "---\nPython bindings defaults:\n    If pivot is None, then its default value will be: ImVec2(0.0, 0.0)\n(private API)")
+            "Python bindings defaults:\n    If pivot is None, then its default value will be: ImVec2(0.0, 0.0)\n(private API)")
         .def("window_resize",
             &ImGuiTestContext::WindowResize,
             nb::arg("window_ref"), nb::arg("sz"),
@@ -1469,7 +1469,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
                 DockInto_adapt_mutable_param_with_default_value(src_id, dst_id, split_dir, is_outer_docking, flags);
             },
             nb::arg("src_id"), nb::arg("dst_id"), nb::arg("split_dir") = nb::none(), nb::arg("is_outer_docking") = false, nb::arg("flags") = 0,
-            "---\nPython bindings defaults:\n    If split_dir is None, then its default value will be: Dir_None\n(private API)")
+            "Python bindings defaults:\n    If split_dir is None, then its default value will be: Dir_None\n(private API)")
         .def("undock_node",
             &ImGuiTestContext::UndockNode,
             nb::arg("dock_id"),

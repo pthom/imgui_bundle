@@ -621,7 +621,7 @@ void py_init_module_implot(nb::module_& m)
             return BeginPlot_adapt_mutable_param_with_default_value(title_id, size, flags);
         },
         nb::arg("title_id"), nb::arg("size") = nb::none(), nb::arg("flags") = 0,
-        " Starts a 2D plotting context. If this function returns True, EndPlot() MUST\n be called! You are encouraged to use the following convention:\n\n if (BeginPlot(...)) {\n     PlotLine(...);\n     ...\n     EndPlot();\n }\n\n Important notes:\n\n - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID\n   collisions or don't want to display a title in the plot, use double hashes\n   (e.g. \"MyPlot##HiddenIdText\" or \"##NoTitle\").\n - #size is the **frame** size of the plot widget, not the plot area. The default\n   size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.\n---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
+        " Starts a 2D plotting context. If this function returns True, EndPlot() MUST\n be called! You are encouraged to use the following convention:\n\n if (BeginPlot(...)) {\n     PlotLine(...);\n     ...\n     EndPlot();\n }\n\n Important notes:\n\n - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID\n   collisions or don't want to display a title in the plot, use double hashes\n   (e.g. \"MyPlot##HiddenIdText\" or \"##NoTitle\").\n - #size is the **frame** size of the plot widget, not the plot area. The default\n   size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
 
     m.def("end_plot",
         ImPlot::EndPlot, " Only call EndPlot() if BeginPlot() returns True! Typically called at the end\n of an if statement conditioned on BeginPlot(). See example above.");
@@ -696,7 +696,7 @@ void py_init_module_implot(nb::module_& m)
             SetupAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
         nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond") = nb::none(),
-        " Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead.\n---\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead.\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -759,7 +759,7 @@ void py_init_module_implot(nb::module_& m)
             SetupAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, cond);
         },
         nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("cond") = nb::none(),
-        " Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n---\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_legend",
         ImPlot::SetupLegend,
@@ -793,7 +793,7 @@ void py_init_module_implot(nb::module_& m)
             SetNextAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
         nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond") = nb::none(),
-        " Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.\n---\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -836,7 +836,7 @@ void py_init_module_implot(nb::module_& m)
             SetNextAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, cond);
         },
         nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("cond") = nb::none(),
-        " Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n---\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("set_next_axes_to_fit",
         ImPlot::SetNextAxesToFit, "Sets all upcoming axes to auto fit to their data.");
@@ -2449,7 +2449,7 @@ void py_init_module_implot(nb::module_& m)
             return PlotHistogram_adapt_mutable_param_with_default_value(label_id, values, bins, bar_scale, range, flags);
         },
         nb::arg("label_id"), nb::arg("values"), nb::arg("bins") = ImPlotBin_Sturges, nb::arg("bar_scale") = 1.0, nb::arg("range") = nb::none(), nb::arg("flags") = 0,
-        " Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.\n---\nPython bindings defaults:\n    If range is None, then its default value will be: Range()");
+        " Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.\n\n\nPython bindings defaults:\n    If range is None, then its default value will be: Range()");
 
     m.def("plot_histogram_2d",
         [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, const std::optional<const ImPlotRect> & range = std::nullopt, ImPlotHistogramFlags flags = 0) -> double
@@ -2542,7 +2542,7 @@ void py_init_module_implot(nb::module_& m)
             return PlotHistogram2D_adapt_mutable_param_with_default_value(label_id, xs, ys, x_bins, y_bins, range, flags);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("x_bins") = ImPlotBin_Sturges, nb::arg("y_bins") = ImPlotBin_Sturges, nb::arg("range") = nb::none(), nb::arg("flags") = 0,
-        " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.\n---\nPython bindings defaults:\n    If range is None, then its default value will be: Rect()");
+        " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.\n\n\nPython bindings defaults:\n    If range is None, then its default value will be: Rect()");
 
     m.def("plot_digital",
         [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, ImPlotDigitalFlags flags = 0, int offset = 0)
@@ -2664,7 +2664,7 @@ void py_init_module_implot(nb::module_& m)
             PlotImage_adapt_mutable_param_with_default_value(label_id, user_texture_id, bounds_min, bounds_max, uv0, uv1, tint_col, flags);
         },
         nb::arg("label_id"), nb::arg("user_texture_id"), nb::arg("bounds_min"), nb::arg("bounds_max"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("flags") = 0,
-        " Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        uv0: ImVec2(0,0)\n        uv1: ImVec2(1,1)\n        tint_col: ImVec4(1,1,1,1)");
+        " Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0,0)\n        * uv1: ImVec2(1,1)\n        * tint_col: ImVec4(1,1,1,1)");
 
     m.def("plot_text",
         [](const char * text, double x, double y, const std::optional<const ImVec2> & pix_offset = std::nullopt, ImPlotTextFlags flags = 0)
@@ -2685,7 +2685,7 @@ void py_init_module_implot(nb::module_& m)
             PlotText_adapt_mutable_param_with_default_value(text, x, y, pix_offset, flags);
         },
         nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("pix_offset") = nb::none(), nb::arg("flags") = 0,
-        " Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).\n---\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0,0)");
+        " Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).\n\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0,0)");
 
     m.def("plot_dummy",
         ImPlot::PlotDummy,
@@ -2871,7 +2871,7 @@ void py_init_module_implot(nb::module_& m)
             return PixelsToPlot_adapt_mutable_param_with_default_value(pix, x_axis, y_axis);
         },
         nb::arg("pix"), nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
-        "---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        x_axis: IMPLOT_AUTO\n        y_axis: IMPLOT_AUTO");
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("pixels_to_plot",
         [](float x, float y, const std::optional<const ImAxis> & x_axis = std::nullopt, const std::optional<const ImAxis> & y_axis = std::nullopt) -> ImPlotPoint
@@ -2900,7 +2900,7 @@ void py_init_module_implot(nb::module_& m)
             return PixelsToPlot_adapt_mutable_param_with_default_value(x, y, x_axis, y_axis);
         },
         nb::arg("x"), nb::arg("y"), nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
-        "---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        x_axis: IMPLOT_AUTO\n        y_axis: IMPLOT_AUTO");
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("plot_to_pixels",
         [](const ImPlotPoint & plt, const std::optional<const ImAxis> & x_axis = std::nullopt, const std::optional<const ImAxis> & y_axis = std::nullopt) -> ImVec2
@@ -2929,7 +2929,7 @@ void py_init_module_implot(nb::module_& m)
             return PlotToPixels_adapt_mutable_param_with_default_value(plt, x_axis, y_axis);
         },
         nb::arg("plt"), nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
-        "---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        x_axis: IMPLOT_AUTO\n        y_axis: IMPLOT_AUTO");
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("plot_to_pixels",
         [](double x, double y, const std::optional<const ImAxis> & x_axis = std::nullopt, const std::optional<const ImAxis> & y_axis = std::nullopt) -> ImVec2
@@ -2958,7 +2958,7 @@ void py_init_module_implot(nb::module_& m)
             return PlotToPixels_adapt_mutable_param_with_default_value(x, y, x_axis, y_axis);
         },
         nb::arg("x"), nb::arg("y"), nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
-        "---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        x_axis: IMPLOT_AUTO\n        y_axis: IMPLOT_AUTO");
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("get_plot_pos",
         ImPlot::GetPlotPos, "Get the current Plot position (top-left) in pixels.");
@@ -2993,7 +2993,7 @@ void py_init_module_implot(nb::module_& m)
             return GetPlotMousePos_adapt_mutable_param_with_default_value(x_axis, y_axis);
         },
         nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
-        " Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes.\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        x_axis: IMPLOT_AUTO\n        y_axis: IMPLOT_AUTO");
+        " Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("get_plot_limits",
         [](const std::optional<const ImAxis> & x_axis = std::nullopt, const std::optional<const ImAxis> & y_axis = std::nullopt) -> ImPlotRect
@@ -3022,7 +3022,7 @@ void py_init_module_implot(nb::module_& m)
             return GetPlotLimits_adapt_mutable_param_with_default_value(x_axis, y_axis);
         },
         nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
-        " Returns the current plot axis range.\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        x_axis: IMPLOT_AUTO\n        y_axis: IMPLOT_AUTO");
+        " Returns the current plot axis range.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("is_plot_hovered",
         ImPlot::IsPlotHovered, "Returns True if the plot area in the current plot is hovered.");
@@ -3065,7 +3065,7 @@ void py_init_module_implot(nb::module_& m)
             return GetPlotSelection_adapt_mutable_param_with_default_value(x_axis, y_axis);
         },
         nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
-        " Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes.\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        x_axis: IMPLOT_AUTO\n        y_axis: IMPLOT_AUTO");
+        " Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("cancel_plot_selection",
         ImPlot::CancelPlotSelection, "Cancels a the current plot box selection.");
@@ -3089,7 +3089,7 @@ void py_init_module_implot(nb::module_& m)
             HideNextItem_adapt_mutable_param_with_default_value(hidden, cond);
         },
         nb::arg("hidden") = true, nb::arg("cond") = nb::none(),
-        " Hides or shows the next plot item (i.e. as if it were toggled from the legend).\n Use ImPlotCond_Always if you need to forcefully set this every frame.\n---\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Hides or shows the next plot item (i.e. as if it were toggled from the legend).\n Use ImPlotCond_Always if you need to forcefully set this every frame.\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("begin_aligned_plots",
         ImPlot::BeginAlignedPlots,
@@ -3219,7 +3219,7 @@ void py_init_module_implot(nb::module_& m)
             SetNextLineStyle_adapt_mutable_param_with_default_value(col, weight);
         },
         nb::arg("col") = nb::none(), nb::arg("weight") = IMPLOT_AUTO,
-        " Set the line color and weight for the next item only.\n---\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT_AUTO_COL");
+        " Set the line color and weight for the next item only.\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT_AUTO_COL");
 
     m.def("set_next_fill_style",
         [](const std::optional<const ImVec4> & col = std::nullopt, float alpha_mod = IMPLOT_AUTO)
@@ -3240,7 +3240,7 @@ void py_init_module_implot(nb::module_& m)
             SetNextFillStyle_adapt_mutable_param_with_default_value(col, alpha_mod);
         },
         nb::arg("col") = nb::none(), nb::arg("alpha_mod") = IMPLOT_AUTO,
-        " Set the fill color for the next item only.\n---\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT_AUTO_COL");
+        " Set the fill color for the next item only.\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT_AUTO_COL");
 
     m.def("set_next_marker_style",
         [](const std::optional<const ImPlotMarker> & marker = std::nullopt, float size = IMPLOT_AUTO, const std::optional<const ImVec4> & fill = std::nullopt, float weight = IMPLOT_AUTO, const std::optional<const ImVec4> & outline = std::nullopt)
@@ -3275,7 +3275,7 @@ void py_init_module_implot(nb::module_& m)
             SetNextMarkerStyle_adapt_mutable_param_with_default_value(marker, size, fill, weight, outline);
         },
         nb::arg("marker") = nb::none(), nb::arg("size") = IMPLOT_AUTO, nb::arg("fill") = nb::none(), nb::arg("weight") = IMPLOT_AUTO, nb::arg("outline") = nb::none(),
-        " Set the marker style for the next item only.\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        marker: IMPLOT_AUTO\n        fill: IMPLOT_AUTO_COL\n        outline: IMPLOT_AUTO_COL");
+        " Set the marker style for the next item only.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * marker: IMPLOT_AUTO\n        * fill: IMPLOT_AUTO_COL\n        * outline: IMPLOT_AUTO_COL");
 
     m.def("set_next_error_bar_style",
         [](const std::optional<const ImVec4> & col = std::nullopt, float size = IMPLOT_AUTO, float weight = IMPLOT_AUTO)
@@ -3296,7 +3296,7 @@ void py_init_module_implot(nb::module_& m)
             SetNextErrorBarStyle_adapt_mutable_param_with_default_value(col, size, weight);
         },
         nb::arg("col") = nb::none(), nb::arg("size") = IMPLOT_AUTO, nb::arg("weight") = IMPLOT_AUTO,
-        " Set the error bar style for the next item only.\n---\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT_AUTO_COL");
+        " Set the error bar style for the next item only.\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT_AUTO_COL");
 
     m.def("get_last_item_color",
         ImPlot::GetLastItemColor, "Gets the last item primary color (i.e. its legend icon color)");
@@ -3365,7 +3365,7 @@ void py_init_module_implot(nb::module_& m)
             return GetColormapSize_adapt_mutable_param_with_default_value(cmap);
         },
         nb::arg("cmap") = nb::none(),
-        " Returns the size of a colormap.\n---\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
+        " Returns the size of a colormap.\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("get_colormap_color",
         [](int idx, const std::optional<const ImPlotColormap> & cmap = std::nullopt) -> ImVec4
@@ -3387,7 +3387,7 @@ void py_init_module_implot(nb::module_& m)
             return GetColormapColor_adapt_mutable_param_with_default_value(idx, cmap);
         },
         nb::arg("idx"), nb::arg("cmap") = nb::none(),
-        " Returns a color from a colormap given an index >= 0 (modulo will be performed).\n---\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
+        " Returns a color from a colormap given an index >= 0 (modulo will be performed).\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("sample_colormap",
         [](float t, const std::optional<const ImPlotColormap> & cmap = std::nullopt) -> ImVec4
@@ -3409,7 +3409,7 @@ void py_init_module_implot(nb::module_& m)
             return SampleColormap_adapt_mutable_param_with_default_value(t, cmap);
         },
         nb::arg("t"), nb::arg("cmap") = nb::none(),
-        " Sample a color from the current colormap given t between 0 and 1.\n---\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
+        " Sample a color from the current colormap given t between 0 and 1.\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("colormap_scale",
         [](const char * label, double scale_min, double scale_max, const std::optional<const ImVec2> & size = std::nullopt, const char * format = "%g", ImPlotColormapScaleFlags flags = 0, const std::optional<const ImPlotColormap> & cmap = std::nullopt)
@@ -3437,7 +3437,7 @@ void py_init_module_implot(nb::module_& m)
             ColormapScale_adapt_mutable_param_with_default_value(label, scale_min, scale_max, size, format, flags, cmap);
         },
         nb::arg("label"), nb::arg("scale_min"), nb::arg("scale_max"), nb::arg("size") = nb::none(), nb::arg("format") = "%g", nb::arg("flags") = 0, nb::arg("cmap") = nb::none(),
-        " Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. \"##NoLabel\"). If scale_min > scale_max, the scale to color mapping will be reversed.\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        size: ImVec2(0,0)\n        cmap: IMPLOT_AUTO");
+        " Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. \"##NoLabel\"). If scale_min > scale_max, the scale to color mapping will be reversed.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
 
     m.def("colormap_slider",
         [](const char * label, float t, ImVec4 * out = nullptr, const char * format = "", const std::optional<const ImPlotColormap> & cmap = std::nullopt) -> std::tuple<bool, float>
@@ -3466,7 +3466,7 @@ void py_init_module_implot(nb::module_& m)
             return ColormapSlider_adapt_modifiable_immutable_to_return(label, t, out, format, cmap);
         },
         nb::arg("label"), nb::arg("t"), nb::arg("out") = nb::none(), nb::arg("format") = "", nb::arg("cmap") = nb::none(),
-        " Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1].\n---\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
+        " Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1].\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("colormap_button",
         [](const char * label, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImPlotColormap> & cmap = std::nullopt) -> bool
@@ -3495,7 +3495,7 @@ void py_init_module_implot(nb::module_& m)
             return ColormapButton_adapt_mutable_param_with_default_value(label, size, cmap);
         },
         nb::arg("label"), nb::arg("size") = nb::none(), nb::arg("cmap") = nb::none(),
-        " Shows a button with a colormap gradient brackground.\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        size: ImVec2(0,0)\n        cmap: IMPLOT_AUTO");
+        " Shows a button with a colormap gradient brackground.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
 
     m.def("bust_color_cache",
         [](std::optional<std::string> plot_title_id = std::nullopt)

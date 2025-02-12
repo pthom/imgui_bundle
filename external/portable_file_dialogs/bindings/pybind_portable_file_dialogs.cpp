@@ -125,7 +125,7 @@ void py_init_module_portable_file_dialogs(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, title, default_path, filters, options);
             },
             nb::arg("title"), nb::arg("default_path") = "", nb::arg("filters") = nb::none(), nb::arg("options") = pfd::opt::none,
-            "---\nPython bindings defaults:\n    If filters is None, then its default value will be: all_files_filter()")
+            "Python bindings defaults:\n    If filters is None, then its default value will be: all_files_filter()")
         .def("ready",
             &pfd::open_file::ready, nb::arg("timeout") = default_wait_timeout)
         .def("kill",
@@ -161,7 +161,7 @@ void py_init_module_portable_file_dialogs(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, title, default_path, filters, options);
             },
             nb::arg("title"), nb::arg("default_path") = "", nb::arg("filters") = nb::none(), nb::arg("options") = pfd::opt::none,
-            "---\nPython bindings defaults:\n    If filters is None, then its default value will be: all_files_filter()")
+            "Python bindings defaults:\n    If filters is None, then its default value will be: all_files_filter()")
         .def("ready",
             &pfd::save_file::ready, nb::arg("timeout") = default_wait_timeout)
         .def("kill",

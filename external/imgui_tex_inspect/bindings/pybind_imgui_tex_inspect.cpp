@@ -227,7 +227,7 @@ void py_init_module_imgui_tex_inspect(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, xVectorIndex, yVectorIndex, lineScale);
             },
             nb::arg("x_vector_index") = 0, nb::arg("y_vector_index") = 1, nb::arg("line_scale") = nb::none(),
-            "---\nPython bindings defaults:\n    If lineScale is None, then its default value will be: ImVec2(1, 1)")
+            "Python bindings defaults:\n    If lineScale is None, then its default value will be: ImVec2(1, 1)")
         .def("use_preset",
             &ImGuiTexInspect::Arrow::UsePreset, nb::arg("param_0"))
         .def("draw_annotation",

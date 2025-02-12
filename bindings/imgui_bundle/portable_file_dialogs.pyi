@@ -105,9 +105,8 @@ class open_file:
         filters: Optional[List[str]] = None,
         options: opt = opt.none,
     ) -> None:
-        """---
-        Python bindings defaults:
-            If filters is None, then its default value will be: all_files_filter()
+        """Python bindings defaults:
+        If filters is None, then its default value will be: all_files_filter()
         """
         pass
 
@@ -128,9 +127,8 @@ class save_file:
         filters: Optional[List[str]] = None,
         options: opt = opt.none,
     ) -> None:
-        """---
-        Python bindings defaults:
-            If filters is None, then its default value will be: all_files_filter()
+        """Python bindings defaults:
+        If filters is None, then its default value will be: all_files_filter()
         """
         pass
 

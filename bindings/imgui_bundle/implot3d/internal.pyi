@@ -821,12 +821,13 @@ class Context:
     # ImPlot3DContext(ImPlot3DNextItemData NextItemData = ImPlot3DNextItemData(), ImPlot3DStyle Style = ImPlot3DStyle(), ImPlot3DColormapData ColormapData = ImPlot3DColormapData());    /* original C++ signature */
     def __init__(self, next_item_data: Optional[NextItemData] = None, style: Optional[Style] = None, colormap_data: Optional[ColormapData] = None) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                NextItemData: NextItemData()
-                Style: Style()
-                ColormapData: ColormapData()
+                * NextItemData: NextItemData()
+                * Style: Style()
+                * ColormapData: ColormapData()
         """
         pass
 
@@ -889,8 +890,7 @@ def next_colormap_color_u32() -> ImU32:
 
 # IMPLOT3D_API bool BeginItem(const char* label_id, ImPlot3DItemFlags flags = 0, ImPlot3DCol recolor_from = IMPLOT3D_AUTO);    /* original C++ signature */
 def begin_item(label_id: str, flags: ItemFlags = 0, recolor_from: Optional[Col] = None) -> bool:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If recolor_from is None, then its default value will be: IMPLOT3D_AUTO
     """
     pass

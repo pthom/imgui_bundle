@@ -92,11 +92,12 @@ class Paint:
         image: int = int()
         ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                innerColor: Color()
-                outerColor: Color()
+                * innerColor: Color()
+                * outerColor: Color()
         """
         pass
 
@@ -1278,7 +1279,8 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
         """ Render the given drawing function to the background of the application
          (i.e. the main viewport)
          If clearColor.w > 0., the background will be cleared with this color
-        ---
+
+
         Python bindings defaults:
             If clearColor is None, then its default value will be: ImVec4(0., 0., 0., 1.)
         """
@@ -1299,7 +1301,8 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
         ) -> None:
         """ Render the given drawing function to the given framebuffer
          If clearColor.w > 0., the background will be cleared with this color
-        ---
+
+
         Python bindings defaults:
             If clearColor is None, then its default value will be: ImVec4(0., 0., 0., 1.)
         """

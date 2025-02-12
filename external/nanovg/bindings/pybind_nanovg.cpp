@@ -871,7 +871,7 @@ void py_init_module_nanovg(nb::module_& m)
                 RenderNvgToBackground_adapt_mutable_param_with_default_value(vg, nvgDrawingFunction, clearColor);
             },
             nb::arg("vg"), nb::arg("nvg_drawing_function"), nb::arg("clear_color") = nb::none(),
-            " Render the given drawing function to the background of the application\n (i.e. the main viewport)\n If clearColor.w > 0., the background will be cleared with this color\n---\nPython bindings defaults:\n    If clearColor is None, then its default value will be: ImVec4(0., 0., 0., 1.)");
+            " Render the given drawing function to the background of the application\n (i.e. the main viewport)\n If clearColor.w > 0., the background will be cleared with this color\n\n\nPython bindings defaults:\n    If clearColor is None, then its default value will be: ImVec4(0., 0., 0., 1.)");
 
         pyNsNvgImgui.def("render_nvg_to_frame_buffer",
             [](NVGcontext * vg, NvgImgui::NvgFramebuffer & texture, NvgDrawingFunction drawFunc, const std::optional<const ImVec4> & clearColor = std::nullopt)
@@ -892,7 +892,7 @@ void py_init_module_nanovg(nb::module_& m)
                 RenderNvgToFrameBuffer_adapt_mutable_param_with_default_value(vg, texture, drawFunc, clearColor);
             },
             nb::arg("vg"), nb::arg("texture"), nb::arg("draw_func"), nb::arg("clear_color") = nb::none(),
-            " Render the given drawing function to the given framebuffer\n If clearColor.w > 0., the background will be cleared with this color\n---\nPython bindings defaults:\n    If clearColor is None, then its default value will be: ImVec4(0., 0., 0., 1.)");
+            " Render the given drawing function to the given framebuffer\n If clearColor.w > 0., the background will be cleared with this color\n\n\nPython bindings defaults:\n    If clearColor is None, then its default value will be: ImVec4(0., 0., 0., 1.)");
     } // </namespace NvgImgui>
     ////////////////////    </generated_from:nvg_imgui.h>    ////////////////////
 

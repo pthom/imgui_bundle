@@ -18,7 +18,9 @@ Size2d: TypeAlias = Tuple[float, float]
 Mat: TypeAlias = NDArray[np.number]
 Image_RGBA: TypeAlias = NDArray[np.uint8]
 Image_RGB: TypeAlias = NDArray[np.uint8]
-Matx33d: TypeAlias = List[List[float]]  # This contains a 3x3 matrix which represents an affine transformation (for zoom/pan)
+Matx33d: TypeAlias = List[
+    List[float]
+]  # This contains a 3x3 matrix which represents an affine transformation (for zoom/pan)
 Scalar: TypeAlias = Tuple[float, float, float, float]
 ImTextureID: TypeAlias = int
 
@@ -170,7 +172,8 @@ class ColormapSettingsData:
         internal_colormap_hovered: str = "",
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If ColormapScaleFromStats is None, then its default value will be: ColormapScaleFromStatsData()
         """
@@ -189,7 +192,7 @@ class MouseInformation:
     # cv::Point2d MousePosition = cv::Point2d(-1., -1.);    /* original C++ signature */
     # Mouse position in the original image/matrix
     # This position is given with float coordinates, and will be (-1., -1.) if the mouse is not hovering the image
-    mouse_position: Point2d = (-1.0, -1.0)
+    mouse_position: Point2d = Point2d(-1.0, -1.0)
     # cv::Point MousePosition_Displayed = cv::Point(-1, -1);    /* original C++ signature */
     # Mouse position in the displayed portion of the image (the original image can be zoomed,
     # and only show a subset if it may be shown).
@@ -207,11 +210,12 @@ class MouseInformation:
         mouse_position_displayed: Optional[cv.Point] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                MousePosition: Point2(-1., -1.)
-                MousePosition_Displayed: Point(-1, -1)
+                * MousePosition: Point2(-1., -1.)
+                * MousePosition_Displayed: Point(-1, -1)
         """
         pass
 
@@ -253,7 +257,7 @@ class ImageParams:
 
     # cv::Matx33d ZoomPanMatrix = cv::Matx33d::eye();    /* original C++ signature */
     # ZoomPanMatrix can be created using MakeZoomPanMatrix to create a view centered around a given point
-    zoom_pan_matrix: Matx33d = np.eye(3)
+    zoom_pan_matrix: Matx33d = Matx33d.eye()
     # std::string ZoomKey = "";    /* original C++ signature */
     # If displaying several images, those with the same ZoomKey will zoom and pan together
     zoom_key: str = ""
@@ -371,14 +375,15 @@ class ImageParams:
         mouse_info: Optional[MouseInformation] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                ImageDisplaySize: Size()
-                ZoomPanMatrix: Matx33.eye()
-                ColormapSettings: ColormapSettingsData()
-                WatchedPixels: List[Point]()
-                MouseInfo: MouseInformation()
+                * ImageDisplaySize: Size()
+                * ZoomPanMatrix: Matx33.eye()
+                * ColormapSettings: ColormapSettingsData()
+                * WatchedPixels: List[Point]()
+                * MouseInfo: MouseInformation()
         """
         pass
 
@@ -532,7 +537,8 @@ def image_display(
      Note: this function requires that both imgui and OpenGL were initialized.
            (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)
 
-    ---
+
+
     Python bindings defaults:
         If imageDisplaySize is None, then its default value will be: Size()
     """
@@ -618,9 +624,8 @@ def inspector_add_image(
     zoom_center: Optional[Point2d] = None,
     zoom_ratio: float = -1.0,
 ) -> None:
-    """---
-    Python bindings defaults:
-        If zoomCenter is None, then its default value will be: Point2()
+    """Python bindings defaults:
+    If zoomCenter is None, then its default value will be: Point2()
     """
     pass
 

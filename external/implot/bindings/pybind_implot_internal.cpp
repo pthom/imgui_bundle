@@ -1026,7 +1026,7 @@ void py_init_module_implot_internal(nb::module_& m)
             return BeginItem_adapt_mutable_param_with_default_value(label_id, flags, recolor_from);
         },
         nb::arg("label_id"), nb::arg("flags") = 0, nb::arg("recolor_from") = nb::none(),
-        " Begins a new item. Returns False if the item should not be plotted. Pushes PlotClipRect.\n---\nPython bindings defaults:\n    If recolor_from is None, then its default value will be: IMPLOT_AUTO");
+        " Begins a new item. Returns False if the item should not be plotted. Pushes PlotClipRect.\n\n\nPython bindings defaults:\n    If recolor_from is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("end_item",
         ImPlot::EndItem, "Ends an item (call only if BeginItem returns True). Pops PlotClipRect.");
@@ -1132,7 +1132,7 @@ void py_init_module_implot_internal(nb::module_& m)
             return GetLocationPos_adapt_mutable_param_with_default_value(outer_rect, inner_size, location, pad);
         },
         nb::arg("outer_rect"), nb::arg("inner_size"), nb::arg("location"), nb::arg("pad") = nb::none(),
-        " Gets the position of an inner rect that is located inside of an outer rect according to an ImPlotLocation and padding amount.\n---\nPython bindings defaults:\n    If pad is None, then its default value will be: ImVec2(0,0)");
+        " Gets the position of an inner rect that is located inside of an outer rect according to an ImPlotLocation and padding amount.\n\n\nPython bindings defaults:\n    If pad is None, then its default value will be: ImVec2(0,0)");
 
     m.def("calc_legend_size",
         ImPlot::CalcLegendSize,
@@ -1168,7 +1168,7 @@ void py_init_module_implot_internal(nb::module_& m)
             ShowAltLegend_adapt_mutable_param_with_default_value(title_id, vertical, size, interactable);
         },
         nb::arg("title_id"), nb::arg("vertical") = true, nb::arg("size") = nb::none(), nb::arg("interactable") = true,
-        " Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window! This is not thoroughly tested nor scrollable!).\n---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0,0)");
+        " Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window! This is not thoroughly tested nor scrollable!).\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0,0)");
 
     m.def("show_legend_context_menu",
         ImPlot::ShowLegendContextMenu,

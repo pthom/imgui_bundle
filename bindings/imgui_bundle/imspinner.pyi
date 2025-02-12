@@ -158,11 +158,12 @@ def spinner_ang(
     mode: int = 0
     ) -> None:
     """ SpinnerAng is a function that draws a spinner widget with a given angle.
-    ---
+
+
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: white
+            * color: white
+            * bg: white
     """
     pass
 
@@ -178,8 +179,7 @@ def spinner_ang_mix(
     arcs: int = 4,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -193,11 +193,10 @@ def spinner_loading_ring(
     speed: float = 2.8,
     segments: int = 5
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: half_white
+            * color: white
+            * bg: half_white
     """
     pass
 
@@ -209,11 +208,10 @@ def spinner_clock(
     bg: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: half_white
+            * color: white
+            * bg: half_white
     """
     pass
 
@@ -227,8 +225,7 @@ def spinner_pulsar(
     angle: float = 0.,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If bg is None, then its default value will be: half_white
     """
     pass
@@ -240,8 +237,7 @@ def spinner_double_fade_pulsar(
     bg: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If bg is None, then its default value will be: half_white
     """
     pass
@@ -254,8 +250,7 @@ def spinner_twin_pulsar(
     speed: float = 2.8,
     rings: int = 2
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -267,8 +262,7 @@ def spinner_fade_pulsar(
     speed: float = 2.8,
     rings: int = 2
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -280,8 +274,7 @@ def spinner_circular_lines(
     speed: float = 1.8,
     lines: int = 8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -297,8 +290,7 @@ def spinner_dots(
     minth: float = -1.,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -313,11 +305,10 @@ def spinner_v_dots(
     dots: int = 12,
     mdots: int = 6
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bgcolor: white
+            * color: white
+            * bgcolor: white
     """
     pass
 
@@ -330,8 +321,7 @@ def spinner_bounce_dots(
     dots: int = 3,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -344,8 +334,7 @@ def spinner_zip_dots(
     speed: float = 2.8,
     dots: int = 5
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -359,8 +348,7 @@ def spinner_dots_to_points(
     speed: float = 1.8,
     dots: int = 5
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -375,8 +363,7 @@ def spinner_dots_to_bar(
     speed: float = 2.8,
     dots: int = 5
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -389,8 +376,7 @@ def spinner_wave_dots(
     speed: float = 2.8,
     lt: int = 8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -404,8 +390,7 @@ def spinner_fade_dots(
     lt: int = 8,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -418,8 +403,7 @@ def spinner_three_dots(
     speed: float = 2.8,
     lt: int = 8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -452,8 +436,7 @@ def spinner_multi_fade_dots(
     speed: float = 2.8,
     lt: int = 8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -466,8 +449,7 @@ def spinner_scale_dots(
     speed: float = 2.8,
     lt: int = 8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -479,8 +461,7 @@ def spinner_square_spins(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -493,8 +474,7 @@ def spinner_moving_dots(
     speed: float = 2.8,
     dots: int = 3
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -508,8 +488,7 @@ def spinner_rotate_dots(
     dots: int = 2,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -522,8 +501,7 @@ def spinner_orion_dots(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -536,8 +514,7 @@ def spinner_galaxy_dots(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -553,11 +530,10 @@ def spinner_twin_ang(
     angle: float = IM_PI,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color1: white
-            color2: red
+            * color1: white
+            * color2: red
     """
     pass
 
@@ -569,11 +545,10 @@ def spinner_filling(
     color2: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color1: white
-            color2: red
+            * color1: white
+            * color2: red
     """
     pass
 
@@ -596,12 +571,11 @@ def spinner_topup(
     bg: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: red
-            fg: white
-            bg: white
+            * color: red
+            * fg: white
+            * bg: white
     """
     pass
 
@@ -616,11 +590,10 @@ def spinner_twin_ang180(
     angle: float = PI_DIV_4,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color1: white
-            color2: red
+            * color1: white
+            * color2: red
     """
     pass
 
@@ -635,11 +608,10 @@ def spinner_twin_ang360(
     speed2: float = 2.5,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color1: white
-            color2: red
+            * color1: white
+            * color2: red
     """
     pass
 
@@ -651,8 +623,7 @@ def spinner_inc_dots(
     speed: float = 2.8,
     dots: int = 6
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -665,8 +636,7 @@ def spinner_inc_full_dots(
     speed: float = 2.8,
     dots: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -679,8 +649,7 @@ def spinner_fade_bars(
     bars: int = 3,
     scale: bool = False
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -693,8 +662,7 @@ def spinner_fade_tris(
     dim: int = 2,
     scale: bool = False
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -708,8 +676,7 @@ def spinner_bars_rotate_fade(
     speed: float = 2.8,
     bars: int = 6
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -721,8 +688,7 @@ def spinner_bars_scale_middle(
     speed: float = 2.8,
     bars: int = 3
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -739,11 +705,10 @@ def spinner_ang_twin(
     arcs: int = 1,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: half_white
+            * color: white
+            * bg: half_white
     """
     pass
 
@@ -756,8 +721,7 @@ def spinner_arc_rotation(
     arcs: int = 4,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -770,8 +734,7 @@ def spinner_arc_fade(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -783,8 +746,7 @@ def spinner_simple_arc_fade(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -796,8 +758,7 @@ def spinner_square_stroke_fade(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -810,8 +771,7 @@ def spinner_ascii_symbol_points(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -824,8 +784,7 @@ def spinner_text_fading(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -838,8 +797,7 @@ def spinner_seven_segments(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -851,8 +809,7 @@ def spinner_square_stroke_fill(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -864,8 +821,7 @@ def spinner_square_stroke_loading(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -877,8 +833,7 @@ def spinner_square_loading(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -891,8 +846,7 @@ def spinner_filled_arc_fade(
     arcs: int = 4,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -907,8 +861,7 @@ def spinner_points_arc_bounce(
     circles: int = 2,
     rspeed: float = 0.
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -921,11 +874,10 @@ def spinner_filled_arc_color(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: red
-            bg: white
+            * color: red
+            * bg: white
     """
     pass
 
@@ -938,11 +890,10 @@ def spinner_filled_arc_ring(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: red
-            bg: white
+            * color: red
+            * bg: white
     """
     pass
 
@@ -953,8 +904,7 @@ def spinner_arc_wedges(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: red
     """
     pass
@@ -970,11 +920,10 @@ def spinner_twin_ball(
     speed: float = 2.8,
     balls: int = 2
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            ball: white
-            bg: half_white
+            * ball: white
+            * bg: half_white
     """
     pass
 
@@ -987,11 +936,10 @@ def spinner_solar_balls(
     speed: float = 2.8,
     balls: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            ball: white
-            bg: half_white
+            * ball: white
+            * bg: half_white
     """
     pass
 
@@ -1003,8 +951,7 @@ def spinner_solar_scale_balls(
     speed: float = 2.8,
     balls: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If ball is None, then its default value will be: white
     """
     pass
@@ -1018,11 +965,10 @@ def spinner_solar_arcs(
     speed: float = 2.8,
     balls: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            ball: white
-            bg: half_white
+            * ball: white
+            * bg: half_white
     """
     pass
 
@@ -1034,8 +980,7 @@ def spinner_moving_arcs(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1049,8 +994,7 @@ def spinner_rainbow_circle(
     arcs: int = 4,
     mode: float = 1
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1064,8 +1008,7 @@ def spinner_bounce_ball(
     dots: int = 1,
     shadow: bool = False
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1079,8 +1022,7 @@ def spinner_pulsar_ball(
     shadow: bool = False,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1095,8 +1037,7 @@ def spinner_inc_scale_dots(
     angle: float = 0.,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1110,8 +1051,7 @@ def spinner_some_scale_dots(
     dots: int = 6,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1128,12 +1068,11 @@ def spinner_ang_triple(
     speed: float = 2.8,
     angle: float = IM_PI
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            c1: white
-            c2: half_white
-            c3: white
+            * c1: white
+            * c2: half_white
+            * c3: white
     """
     pass
 
@@ -1145,8 +1084,7 @@ def spinner_ang_eclipse(
     speed: float = 2.8,
     angle: float = IM_PI
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1162,11 +1100,10 @@ def spinner_ing_yang(
     speed: float = 2.8,
     angle: float = math.pi * 0.7
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            colorI: white
-            colorY: white
+            * colorI: white
+            * colorY: white
     """
     pass
 
@@ -1258,11 +1195,10 @@ def spinner_moon_line(
     speed: float = 2.8,
     angle: float = IM_PI
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: red
+            * color: white
+            * bg: red
     """
     pass
 
@@ -1276,11 +1212,10 @@ def spinner_circle_drop(
     speed: float = 2.8,
     angle: float = IM_PI
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: half_white
+            * color: white
+            * bg: half_white
     """
     pass
 
@@ -1292,11 +1227,10 @@ def spinner_surrounded_indicator(
     bg: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: half_white
+            * color: white
+            * bg: half_white
     """
     pass
 
@@ -1310,11 +1244,10 @@ def spinner_wifi_indicator(
     cangle: float = 0.,
     dots: int = 3
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: red
-            bg: half_white
+            * color: red
+            * bg: half_white
     """
     pass
 
@@ -1327,11 +1260,10 @@ def spinner_triangles_selector(
     speed: float = 2.8,
     bars: int = 8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: half_white
+            * color: white
+            * bg: half_white
     """
     pass
 
@@ -1345,11 +1277,10 @@ def spinner_flowing_gradient(
     speed: float = 2.8,
     angle: float = IM_PI
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: red
+            * color: white
+            * bg: red
     """
     pass
 
@@ -1362,8 +1293,7 @@ def spinner_rotate_segments(
     arcs: int = 4,
     layers: int = 1
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1376,8 +1306,7 @@ def spinner_lemniscate(
     speed: float = 2.8,
     angle: float = IM_PI / 2.0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1390,8 +1319,7 @@ def spinner_rotate_gear(
     speed: float = 2.8,
     pins: int = 12
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1405,11 +1333,10 @@ def spinner_rotate_wheel(
     speed: float = 2.8,
     pins: int = 12
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            bg_color: white
-            color: white
+            * bg_color: white
+            * color: white
     """
     pass
 
@@ -1421,8 +1348,7 @@ def spinner_atom(
     speed: float = 2.8,
     elipses: int = 3
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1435,8 +1361,7 @@ def spinner_pattern_rings(
     speed: float = 2.8,
     elipses: int = 3
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1451,8 +1376,7 @@ def spinner_pattern_eclipse(
     delta_a: float = 2.,
     delta_y: float = 0.
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1465,8 +1389,7 @@ def spinner_pattern_sphere(
     speed: float = 2.8,
     elipses: int = 3
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1479,8 +1402,7 @@ def spinner_ring_synchronous(
     speed: float = 2.8,
     elipses: int = 3
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1493,8 +1415,7 @@ def spinner_ring_watermarks(
     speed: float = 2.8,
     elipses: int = 3
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1507,8 +1428,7 @@ def spinner_rotated_atom(
     speed: float = 2.8,
     elipses: int = 3
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1541,8 +1461,7 @@ def spinner_spiral(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1554,8 +1473,7 @@ def spinner_spiral_eye(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1685,8 +1603,7 @@ def spinner_arc_polar_fade(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1698,8 +1615,7 @@ def spinner_arc_polar_radius(
     speed: float = 2.8,
     arcs: int = 4
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1713,8 +1629,7 @@ def spinner_caleidoscope(
     arcs: int = 6,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1730,7 +1645,8 @@ def spinner_hbo_dots(
     dots: int = 6
     ) -> None:
     """ spinner idea by nitz 'Chris Dailey'
-    ---
+
+
     Python bindings defaults:
         If color is None, then its default value will be: white
     """
@@ -1757,8 +1673,7 @@ def spinner_twin_hbo_dots(
     dots: int = 6,
     delta: float = 0.
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1773,8 +1688,7 @@ def spinner_three_dots_star(
     speed: float = 1.1,
     delta: float = 0.
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1786,8 +1700,7 @@ def spinner_sine_arcs(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1801,11 +1714,10 @@ def spinner_triangles_shift(
     speed: float = 2.8,
     bars: int = 8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: half_white
+            * color: white
+            * bg: half_white
     """
     pass
 
@@ -1818,11 +1730,10 @@ def spinner_points_shift(
     speed: float = 2.8,
     bars: int = 8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: half_white
+            * color: white
+            * bg: half_white
     """
     pass
 
@@ -1833,8 +1744,7 @@ def spinner_swing_dots(
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1847,8 +1757,7 @@ def spinner_circular_points(
     speed: float = 1.8,
     lines: int = 8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1861,8 +1770,7 @@ def spinner_curved_circle(
     speed: float = 2.8,
     circles: int = 1
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1876,8 +1784,7 @@ def spinner_mod_circle(
     ang_max: float = 1.,
     speed: float = 2.8
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1892,8 +1799,7 @@ def spinner_dna_dots(
     delta: float = 0.5,
     mode: bool = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1908,8 +1814,7 @@ def spinner3_smuggle_dots(
     delta: float = 0.5,
     mode: bool = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1923,8 +1828,7 @@ def spinner_rotate_segments_pulsar(
     arcs: int = 4,
     layers: int = 1
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
@@ -1939,11 +1843,10 @@ def spinner_spline_ang(
     angle: float = IM_PI,
     mode: int = 0
     ) -> None:
-    """---
-    Python bindings defaults:
+    """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            color: white
-            bg: white
+            * color: white
+            * bg: white
     """
     pass
 

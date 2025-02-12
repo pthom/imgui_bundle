@@ -620,7 +620,8 @@ class Tag:
     # ImPlotTag(ImAxis Axis = ImAxis(), double Value = double(), ImU32 ColorBg = ImU32(), ImU32 ColorFg = ImU32(), int TextOffset = int());    /* original C++ signature */
     def __init__(self, axis: Optional[ImAxis] = None, value: float = float(), color_bg: ImU32 = ImU32(), color_fg: ImU32 = ImU32(), text_offset: int = int()) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If Axis is None, then its default value will be: ImAxis()
         """
@@ -1761,21 +1762,22 @@ class Context:
     # ImPlotContext(ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImVector<ImGuiColorMod> ColorModifiers = ImVector<ImGuiColorMod>(), ImVector<ImGuiStyleMod> StyleModifiers = ImVector<ImGuiStyleMod>(), ImPlotColormapData ColormapData = ImPlotColormapData(), ImVector<int> TempInt1 = ImVector<int>(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer(), bool CanDragPlotInNodeEditor = false);    /* original C++ signature */
     def __init__(self, c_ticker: Optional[Ticker] = None, annotations: Optional[AnnotationCollection] = None, tags: Optional[TagCollection] = None, style: Optional[Style] = None, color_modifiers: Optional[ImVector_ColorMod] = None, style_modifiers: Optional[ImVector_StyleMod] = None, colormap_data: Optional[ColormapData] = None, temp_int1: Optional[ImVector_int] = None, digital_plot_item_cnt: int = int(), digital_plot_offset: int = int(), next_plot_data: Optional[NextPlotData] = None, next_item_data: Optional[NextItemData] = None, input_map: Optional[InputMap] = None, open_context_this_frame: bool = bool(), mouse_pos_string_builder: Optional[TextBuffer] = None, can_drag_plot_in_node_editor: bool = False) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                CTicker: Ticker()
-                Annotations: AnnotationCollection()
-                Tags: TagCollection()
-                Style: Style()
-                ColorModifiers: ImVector_ColorMod()
-                StyleModifiers: ImVector_StyleMod()
-                ColormapData: ColormapData()
-                TempInt1: ImVector_int()
-                NextPlotData: NextPlotData()
-                NextItemData: NextItemData()
-                InputMap: InputMap()
-                MousePosStringBuilder: TextBuffer()
+                * CTicker: Ticker()
+                * Annotations: AnnotationCollection()
+                * Tags: TagCollection()
+                * Style: Style()
+                * ColorModifiers: ImVector_ColorMod()
+                * StyleModifiers: ImVector_StyleMod()
+                * ColormapData: ColormapData()
+                * TempInt1: ImVector_int()
+                * NextPlotData: NextPlotData()
+                * NextItemData: NextItemData()
+                * InputMap: InputMap()
+                * MousePosStringBuilder: TextBuffer()
         """
         pass
 
@@ -1865,7 +1867,8 @@ def show_subplots_context_menu(subplot: Subplot) -> None:
 # IMPLOT_API bool BeginItem(const char* label_id, ImPlotItemFlags flags=0, ImPlotCol recolor_from=IMPLOT_AUTO);    /* original C++ signature */
 def begin_item(label_id: str, flags: ItemFlags = 0, recolor_from: Optional[Col] = None) -> bool:
     """ Begins a new item. Returns False if the item should not be plotted. Pushes PlotClipRect.
-    ---
+
+
     Python bindings defaults:
         If recolor_from is None, then its default value will be: IMPLOT_AUTO
     """
@@ -2010,7 +2013,8 @@ def show_axis_context_menu(axis: Axis, equal_axis: Axis, time_allowed: bool = Fa
 # IMPLOT_API ImVec2 GetLocationPos(const ImRect& outer_rect, const ImVec2& inner_size, ImPlotLocation location, const ImVec2& pad = ImVec2(0,0));    /* original C++ signature */
 def get_location_pos(outer_rect: ImRect, inner_size: ImVec2Like, location: Location, pad: Optional[ImVec2Like] = None) -> ImVec2:
     """ Gets the position of an inner rect that is located inside of an outer rect according to an ImPlotLocation and padding amount.
-    ---
+
+
     Python bindings defaults:
         If pad is None, then its default value will be: ImVec2(0,0)
     """
@@ -2030,7 +2034,8 @@ def show_legend_entries(items: ItemGroup, legend_bb: ImRect, interactable: bool,
 # IMPLOT_API void ShowAltLegend(const char* title_id, bool vertical = true, const ImVec2 size = ImVec2(0,0), bool interactable = true);    /* original C++ signature */
 def show_alt_legend(title_id: str, vertical: bool = True, size: Optional[ImVec2Like] = None, interactable: bool = True) -> None:
     """ Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window! This is not thoroughly tested nor scrollable!).
-    ---
+
+
     Python bindings defaults:
         If size is None, then its default value will be: ImVec2(0,0)
     """
@@ -2336,11 +2341,12 @@ class Formatter_Time_Data:
     # Formatter_Time_Data(ImPlotTime Time = ImPlotTime(), ImPlotDateTimeSpec Spec = ImPlotDateTimeSpec());    /* original C++ signature */
     def __init__(self, time: Optional[Time] = None, spec: Optional[DateTimeSpec] = None) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                Time: Time()
-                Spec: DateTimeSpec()
+                * Time: Time()
+                * Spec: DateTimeSpec()
         """
         pass
 

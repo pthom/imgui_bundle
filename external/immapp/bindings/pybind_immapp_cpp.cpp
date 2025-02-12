@@ -78,7 +78,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
             return BeginPlotInNodeEditor_adapt_mutable_param_with_default_value(title_id, size, flags);
         },
         nb::arg("title_id"), nb::arg("size") = nb::none(), nb::arg("flags") = 0,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
 
     m.def("end_plot_in_node_editor",
         ImmApp::EndPlotInNodeEditor);
@@ -174,7 +174,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
             Run_adapt_mutable_param_with_default_value(runnerParams, addOnsParams);
         },
         nb::arg("runner_params"), nb::arg("add_ons_params") = nb::none(),
-        "---\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
+        "Python bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
     m.def("run",
         [](const HelloImGui::SimpleRunnerParams & simpleParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
@@ -195,7 +195,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
             Run_adapt_mutable_param_with_default_value(simpleParams, addOnsParams);
         },
         nb::arg("simple_params"), nb::arg("add_ons_params") = nb::none(),
-        "---\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
+        "Python bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
     m.def("run",
         [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
@@ -216,7 +216,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
             Run_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, withImplot, withImplot3d, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
         },
         nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("with_markdown_options") = nb::none(),
-        "///////////////////////////////////////////////////////////////////////////////////////\n\n Helpers to run an app from Python (using named parameters)\n\n/////////////////////////////////////////////////////////////////////////////////////\n Helper to run an app inside imgui_bundle, using HelloImGui:\n\n (HelloImGui::SimpleRunnerParams)\n     - `guiFunction`: the function that will render the ImGui widgets\n     - `windowTitle`: title of the window\n     - `windowSizeAuto`: if True, autosize the window from its inner widgets\n     - `windowRestorePreviousGeometry`: if True, restore window size and position from last run\n     - `windowSize`: size of the window\n     - `fpsIdle`: fps of the application when idle\n\n (ImmApp::AddOnsParams)\n     - `with_implot`: if True, then a context for implot will be created/destroyed automatically\n     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized\n       (i.e. required fonts will be loaded)\n     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor\n       will be created automatically.\n---\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
+        "///////////////////////////////////////////////////////////////////////////////////////\n\n Helpers to run an app from Python (using named parameters)\n\n/////////////////////////////////////////////////////////////////////////////////////\n Helper to run an app inside imgui_bundle, using HelloImGui:\n\n (HelloImGui::SimpleRunnerParams)\n     - `guiFunction`: the function that will render the ImGui widgets\n     - `windowTitle`: title of the window\n     - `windowSizeAuto`: if True, autosize the window from its inner widgets\n     - `windowRestorePreviousGeometry`: if True, restore window size and position from last run\n     - `windowSize`: size of the window\n     - `fpsIdle`: fps of the application when idle\n\n (ImmApp::AddOnsParams)\n     - `with_implot`: if True, then a context for implot will be created/destroyed automatically\n     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized\n       (i.e. required fonts will be loaded)\n     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor\n       will be created automatically.\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("run_with_markdown",
         [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool withImplot = false, bool withImplot3d = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
@@ -237,7 +237,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
             RunWithMarkdown_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, withImplot, withImplot3d, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
         },
         nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("with_markdown_options") = nb::none(),
-        " Run an application with markdown\n---\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
+        " Run an application with markdown\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("em_size",
         nb::overload_cast<>(ImmApp::EmSize), " EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your\n widgets and windows relatively to this size.\n It is somewhat comparable to the [em CSS Unit](https://lyty.dev/css/css-unit.html).\n EmSize() = ImGui::GetFontSize()");
@@ -309,7 +309,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
                 SetupFromRunnerParams_adapt_mutable_param_with_default_value(runnerParams, addOnsParams);
             },
             nb::arg("runner_params"), nb::arg("add_ons_params") = nb::none(),
-            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A distinct copy of `RunnerParams` is stored internally.\n---\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
+            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A distinct copy of `RunnerParams` is stored internally.\n\n\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
         pyNsManualRender.def("setup_from_simple_runner_params",
             [](const HelloImGui::SimpleRunnerParams & simpleParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
@@ -330,7 +330,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
                 SetupFromSimpleRunnerParams_adapt_mutable_param_with_default_value(simpleParams, addOnsParams);
             },
             nb::arg("simple_params"), nb::arg("add_ons_params") = nb::none(),
-            " Initializes the rendering with `SimpleRunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n---\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
+            " Initializes the rendering with `SimpleRunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n\n\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
         pyNsManualRender.def("setup_from_gui_function",
             [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
@@ -351,7 +351,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
                 SetupFromGuiFunction_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, withImplot, withImplot3d, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
             },
             nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("with_markdown_options") = nb::none(),
-            " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n---\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
+            " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
         pyNsManualRender.def("render",
             ImmApp::ManualRender::Render, "Renders the current frame. Should be called regularly to maintain the application's responsiveness.");

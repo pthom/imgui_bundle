@@ -728,7 +728,8 @@ class ImBitVector:
     # ImBitVector(ImVector<ImU32> Storage = ImVector<ImU32>());    /* original C++ signature */
     def __init__(self, storage: Optional[ImVector_ImU32] = None) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If Storage is None, then its default value will be: ImVector_ImU32()
         """
@@ -767,7 +768,8 @@ class TextIndex:
     # ImGuiTextIndex(ImVector<int> LineOffsets = ImVector<int>(), int EndOffset = 0);    /* original C++ signature */
     def __init__(self, line_offsets: Optional[ImVector_int] = None, end_offset: int = 0) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If LineOffsets is None, then its default value will be: ImVector_int()
         """
@@ -867,7 +869,8 @@ class DataVarInfo:
     # ImGuiDataVarInfo(ImGuiDataType Type = ImGuiDataType(), ImU32 Count = ImU32(), ImU32 Offset = ImU32());    /* original C++ signature */
     def __init__(self, type: Optional[DataType] = None, count: ImU32 = ImU32(), offset: ImU32 = ImU32()) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If Type is None, then its default value will be: DataType()
         """
@@ -1253,11 +1256,12 @@ class ColorMod:
     # ImGuiColorMod(ImGuiCol Col = ImGuiCol(), ImVec4 BackupValue = ImVec4());    /* original C++ signature */
     def __init__(self, col: Optional[Col] = None, backup_value: Optional[ImVec4Like] = None) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                Col: Col()
-                BackupValue: ImVec4()
+                * Col: Col()
+                * BackupValue: ImVec4()
         """
         pass
 
@@ -1346,15 +1350,16 @@ class GroupData:
         emit_item: bool = bool(),
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                BackupCursorPos: ImVec2()
-                BackupCursorMaxPos: ImVec2()
-                BackupCursorPosPrevLine: ImVec2()
-                BackupIndent: ImVec1()
-                BackupGroupOffset: ImVec1()
-                BackupCurrLineSize: ImVec2()
+                * BackupCursorPos: ImVec2()
+                * BackupCursorMaxPos: ImVec2()
+                * BackupCursorPosPrevLine: ImVec2()
+                * BackupIndent: ImVec1()
+                * BackupGroupOffset: ImVec1()
+                * BackupCurrLineSize: ImVec2()
         """
         pass
 
@@ -1737,7 +1742,8 @@ class TreeNodeStackData:
         nav_rect: Optional[ImRect] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If NavRect is None, then its default value will be: ImRect()
         """
@@ -1792,11 +1798,12 @@ class WindowStackData:
         disabled_override_reenable: bool = bool(),
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                ParentLastItemDataBackup: LastItemData()
-                StackSizesInBegin: ErrorRecoveryState()
+                * ParentLastItemDataBackup: LastItemData()
+                * StackSizesInBegin: ErrorRecoveryState()
         """
         pass
 
@@ -1920,7 +1927,8 @@ class InputEventMousePos:
         self, pos_x: float = float(), pos_y: float = float(), mouse_source: Optional[MouseSource] = None
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If MouseSource is None, then its default value will be: MouseSource()
         """
@@ -1938,7 +1946,8 @@ class InputEventMouseWheel:
         self, wheel_x: float = float(), wheel_y: float = float(), mouse_source: Optional[MouseSource] = None
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If MouseSource is None, then its default value will be: MouseSource()
         """
@@ -1954,7 +1963,8 @@ class InputEventMouseButton:
     # ImGuiInputEventMouseButton(int Button = int(), bool Down = bool(), ImGuiMouseSource MouseSource = ImGuiMouseSource());    /* original C++ signature */
     def __init__(self, button: int = int(), down: bool = bool(), mouse_source: Optional[MouseSource] = None) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If MouseSource is None, then its default value will be: MouseSource()
         """
@@ -4220,27 +4230,28 @@ class WindowTempData:
         text_wrap_pos_stack: Optional[ImVector_float] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                CursorPos: ImVec2()
-                CursorPosPrevLine: ImVec2()
-                CursorStartPos: ImVec2()
-                CursorMaxPos: ImVec2()
-                IdealMaxPos: ImVec2()
-                CurrLineSize: ImVec2()
-                PrevLineSize: ImVec2()
-                Indent: ImVec1()
-                ColumnsOffset: ImVec1()
-                GroupOffset: ImVec1()
-                CursorStartPosLossyness: ImVec2()
-                MenuBarOffset: ImVec2()
-                MenuColumns: MenuColumns()
-                ChildWindows: ImVector_Window_ptr()
-                LayoutType: LayoutType()
-                ParentLayoutType: LayoutType()
-                ItemWidthStack: ImVector_float()
-                TextWrapPosStack: ImVector_float()
+                * CursorPos: ImVec2()
+                * CursorPosPrevLine: ImVec2()
+                * CursorStartPos: ImVec2()
+                * CursorMaxPos: ImVec2()
+                * IdealMaxPos: ImVec2()
+                * CurrLineSize: ImVec2()
+                * PrevLineSize: ImVec2()
+                * Indent: ImVec1()
+                * ColumnsOffset: ImVec1()
+                * GroupOffset: ImVec1()
+                * CursorStartPosLossyness: ImVec2()
+                * MenuBarOffset: ImVec2()
+                * MenuColumns: MenuColumns()
+                * ChildWindows: ImVector_Window_ptr()
+                * LayoutType: LayoutType()
+                * ParentLayoutType: LayoutType()
+                * ItemWidthStack: ImVector_float()
+                * TextWrapPosStack: ImVector_float()
         """
         pass
 
@@ -4828,7 +4839,8 @@ class TableCellData:
     # ImGuiTableCellData(ImU32 BgColor = ImU32(), ImGuiTableColumnIdx Column = ImGuiTableColumnIdx());    /* original C++ signature */
     def __init__(self, bg_color: ImU32 = ImU32(), column: Optional[TableColumnIdx] = None) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If Column is None, then its default value will be: TableColumnIdx()
         """
@@ -4857,7 +4869,8 @@ class TableHeaderData:
         bg_color1: ImU32 = ImU32(),
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If Index is None, then its default value will be: TableColumnIdx()
         """
@@ -6521,9 +6534,8 @@ def begin_table_ex(
     outer_size: Optional[ImVec2Like] = None,
     inner_width: float = 0.0,
 ) -> bool:
-    """---
-    Python bindings defaults:
-        If outer_size is None, then its default value will be: ImVec2(0, 0)
+    """Python bindings defaults:
+    If outer_size is None, then its default value will be: ImVec2(0, 0)
     """
     pass
 
@@ -6810,9 +6822,8 @@ def render_text_clipped(
     align: Optional[ImVec2Like] = None,
     clip_rect: Optional[ImRect] = None,
 ) -> None:
-    """---
-    Python bindings defaults:
-        If align is None, then its default value will be: ImVec2(0, 0)
+    """Python bindings defaults:
+    If align is None, then its default value will be: ImVec2(0, 0)
     """
     pass
 
@@ -6827,9 +6838,8 @@ def render_text_clipped_ex(
     align: Optional[ImVec2Like] = None,
     clip_rect: Optional[ImRect] = None,
 ) -> None:
-    """---
-    Python bindings defaults:
-        If align is None, then its default value will be: ImVec2(0, 0)
+    """Python bindings defaults:
+    If align is None, then its default value will be: ImVec2(0, 0)
     """
     pass
 
@@ -6931,9 +6941,8 @@ def text_ex(text: str, text_end: Optional[str] = None, flags: TextFlags = 0) -> 
 
 # IMGUI_API bool          ButtonEx(const char* label, const ImVec2& size_arg = ImVec2(0, 0), ImGuiButtonFlags flags = 0);    /* original C++ signature */
 def button_ex(label: str, size_arg: Optional[ImVec2Like] = None, flags: ButtonFlags = 0) -> bool:
-    """---
-    Python bindings defaults:
-        If size_arg is None, then its default value will be: ImVec2(0, 0)
+    """Python bindings defaults:
+    If size_arg is None, then its default value will be: ImVec2(0, 0)
     """
     pass
 

@@ -780,7 +780,8 @@ class TestOutput:
         end_time: ImU64 = 0,
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If Log is None, then its default value will be: TestLog()
         """
@@ -1431,8 +1432,7 @@ class TestContext:
         pivot: Optional[ImVec2Like] = None,
         flags: TestOpFlags = TestOpFlags_None,
     ) -> None:
-        """---
-        Python bindings defaults:
+        """Python bindings defaults:
             If pivot is None, then its default value will be: ImVec2(0.0, 0.0)
         (private API)
         """
@@ -2004,8 +2004,7 @@ class TestContext:
         is_outer_docking: bool = False,
         flags: TestOpFlags = 0,
     ) -> None:
-        """---
-        Python bindings defaults:
+        """Python bindings defaults:
             If split_dir is None, then its default value will be: Dir_None
         (private API)
         """
@@ -2089,14 +2088,15 @@ class TestContext:
         cached_lines_printed_to_tty: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                GenericVars: TestGenericVars()
-                InputMode: InputSource_Mouse
-                Clipboard: ImVector_char()
-                ForeignWindowsToHide: ImVector_Window_ptr()
-                DummyItemInfoNull: TestItemInfo()
+                * GenericVars: TestGenericVars()
+                * InputMode: InputSource_Mouse
+                * Clipboard: ImVector_char()
+                * ForeignWindowsToHide: ImVector_Window_ptr()
+                * DummyItemInfoNull: TestItemInfo()
         """
         pass
 
@@ -2153,7 +2153,8 @@ class TestInfoTask:
     # ImGuiTestInfoTask(ImGuiID ID = 0, int FrameCount = -1, ImGuiTestItemInfo Result = ImGuiTestItemInfo());    /* original C++ signature */
     def __init__(self, id_: ID = 0, frame_count: int = -1, result: Optional[TestItemInfo] = None) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If Result is None, then its default value will be: TestItemInfo()
         """
@@ -2336,11 +2337,12 @@ class TestInput:
         viewport_pos_size: Optional[ImVec2Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                KeyChord: Key_None
-                ViewportPosSize: ImVec2()
+                * KeyChord: Key_None
+                * ViewportPosSize: ImVec2()
         """
         pass
 
@@ -2368,11 +2370,12 @@ class TestInputs:
         host_esc_down_duration: float = -1.0,
     ) -> None:
         """Auto-generated default constructor with named params
-        ---
+
+
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                MousePosValue: ImVec2()
-                MouseWheel: ImVec2()
+                * MousePosValue: ImVec2()
+                * MouseWheel: ImVec2()
         """
         pass
 

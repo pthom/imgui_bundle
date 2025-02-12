@@ -266,7 +266,7 @@ void py_init_module_implot3d(nb::module_& m)
             return BeginPlot_adapt_mutable_param_with_default_value(title_id, size, flags);
         },
         nb::arg("title_id"), nb::arg("size") = nb::none(), nb::arg("flags") = 0,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1, 0)");
 
     m.def("end_plot",
         ImPlot3D::EndPlot, "Only call if BeginPlot() returns True!");
@@ -307,7 +307,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetupAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
         nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond") = nb::none(),
-        "---\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        "Python bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_axes",
         ImPlot3D::SetupAxes,
@@ -333,7 +333,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetupAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, z_min, z_max, cond);
         },
         nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("z_min"), nb::arg("z_max"), nb::arg("cond") = nb::none(),
-        " Sets the X/Y/Z axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)\n---\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the X/Y/Z axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_scale",
         ImPlot3D::SetupBoxScale,
@@ -826,7 +826,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotText_adapt_mutable_param_with_default_value(text, x, y, z, angle, pix_offset);
         },
         nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("z"), nb::arg("angle") = 0.0f, nb::arg("pix_offset") = nb::none(),
-        " Plots a centered text label at point x,y,z. It is possible to set the text angle in radians and offset in pixels\n---\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0, 0)");
+        " Plots a centered text label at point x,y,z. It is possible to set the text angle in radians and offset in pixels\n\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("plot_to_pixels",
         nb::overload_cast<const ImPlot3DPoint &>(ImPlot3D::PlotToPixels), nb::arg("point"));
@@ -930,7 +930,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetNextLineStyle_adapt_mutable_param_with_default_value(col, weight);
         },
         nb::arg("col") = nb::none(), nb::arg("weight") = IMPLOT3D_AUTO,
-        " Set the line color and weight for the next item only\n---\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT3D_AUTO_COL");
+        " Set the line color and weight for the next item only\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT3D_AUTO_COL");
 
     m.def("set_next_fill_style",
         [](const std::optional<const ImVec4> & col = std::nullopt, float alpha_mod = IMPLOT3D_AUTO)
@@ -951,7 +951,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetNextFillStyle_adapt_mutable_param_with_default_value(col, alpha_mod);
         },
         nb::arg("col") = nb::none(), nb::arg("alpha_mod") = IMPLOT3D_AUTO,
-        " Set the fill color for the next item only\n---\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT3D_AUTO_COL");
+        " Set the fill color for the next item only\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT3D_AUTO_COL");
 
     m.def("set_next_marker_style",
         [](const std::optional<const ImPlot3DMarker> & marker = std::nullopt, float size = IMPLOT3D_AUTO, const std::optional<const ImVec4> & fill = std::nullopt, float weight = IMPLOT3D_AUTO, const std::optional<const ImVec4> & outline = std::nullopt)
@@ -986,7 +986,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetNextMarkerStyle_adapt_mutable_param_with_default_value(marker, size, fill, weight, outline);
         },
         nb::arg("marker") = nb::none(), nb::arg("size") = IMPLOT3D_AUTO, nb::arg("fill") = nb::none(), nb::arg("weight") = IMPLOT3D_AUTO, nb::arg("outline") = nb::none(),
-        " Set the marker style for the next item only\n---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        marker: IMPLOT3D_AUTO\n        fill: IMPLOT3D_AUTO_COL\n        outline: IMPLOT3D_AUTO_COL");
+        " Set the marker style for the next item only\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * marker: IMPLOT3D_AUTO\n        * fill: IMPLOT3D_AUTO_COL\n        * outline: IMPLOT3D_AUTO_COL");
 
     m.def("get_style_color_vec4",
         ImPlot3D::GetStyleColorVec4, nb::arg("idx"));
@@ -1052,7 +1052,7 @@ void py_init_module_implot3d(nb::module_& m)
             return GetColormapSize_adapt_mutable_param_with_default_value(cmap);
         },
         nb::arg("cmap") = nb::none(),
-        " Returns the size of a colormap\n---\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
+        " Returns the size of a colormap\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("get_colormap_color",
         [](int idx, const std::optional<const ImPlot3DColormap> & cmap = std::nullopt) -> ImVec4
@@ -1074,7 +1074,7 @@ void py_init_module_implot3d(nb::module_& m)
             return GetColormapColor_adapt_mutable_param_with_default_value(idx, cmap);
         },
         nb::arg("idx"), nb::arg("cmap") = nb::none(),
-        " Returns a color from a colormap given an index >= 0 (modulo will be performed)\n---\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
+        " Returns a color from a colormap given an index >= 0 (modulo will be performed)\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("sample_colormap",
         [](float t, const std::optional<const ImPlot3DColormap> & cmap = std::nullopt) -> ImVec4
@@ -1096,7 +1096,7 @@ void py_init_module_implot3d(nb::module_& m)
             return SampleColormap_adapt_mutable_param_with_default_value(t, cmap);
         },
         nb::arg("t"), nb::arg("cmap") = nb::none(),
-        " Sample a color from the current colormap given t between 0 and 1\n---\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
+        " Sample a color from the current colormap given t between 0 and 1\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("show_demo_window",
         [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>

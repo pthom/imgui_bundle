@@ -334,7 +334,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return BeginChild_adapt_mutable_param_with_default_value(str_id, size, child_flags, window_flags);
         },
         nb::arg("str_id"), nb::arg("size") = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags") = 0,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_child",
         [](ImGuiID id, const std::optional<const ImVec2> & size = std::nullopt, ImGuiChildFlags child_flags = 0, ImGuiWindowFlags window_flags = 0) -> bool
@@ -356,7 +356,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return BeginChild_adapt_mutable_param_with_default_value(id, size, child_flags, window_flags);
         },
         nb::arg("id_"), nb::arg("size") = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags") = 0,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("end_child",
         ImGui::EndChild);
@@ -421,7 +421,7 @@ void py_init_module_imgui_main(nb::module_& m)
             SetNextWindowPos_adapt_mutable_param_with_default_value(pos, cond, pivot);
         },
         nb::arg("pos"), nb::arg("cond") = 0, nb::arg("pivot") = nb::none(),
-        "---\nPython bindings defaults:\n    If pivot is None, then its default value will be: ImVec2(0, 0)\n\n set next window position. call before Begin(). use pivot=(0.5,0.5) to center on given point, etc.");
+        "Python bindings defaults:\n    If pivot is None, then its default value will be: ImVec2(0, 0)\n\n set next window position. call before Begin(). use pivot=(0.5,0.5) to center on given point, etc.");
 
     m.def("set_next_window_size",
         ImGui::SetNextWindowSize,
@@ -897,7 +897,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return Button_adapt_mutable_param_with_default_value(label, size);
         },
         nb::arg("label"), nb::arg("size") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n button");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n button");
 
     m.def("small_button",
         ImGui::SmallButton,
@@ -1004,7 +1004,7 @@ void py_init_module_imgui_main(nb::module_& m)
             ProgressBar_adapt_const_char_pointer_with_default_null(fraction, size_arg, overlay);
         },
         nb::arg("fraction"), nb::arg("size_arg") = nb::none(), nb::arg("overlay") = nb::none(),
-        "---\nPython bindings defaults:\n    If size_arg is None, then its default value will be: ImVec2(-sys.float_info.min, 0)");
+        "Python bindings defaults:\n    If size_arg is None, then its default value will be: ImVec2(-sys.float_info.min, 0)");
 
     m.def("bullet",
         ImGui::Bullet, "draw a small circle + keep the cursor on the same line. advance cursor x position by GetTreeNodeToLabelSpacing(), same distance that TreeNode() uses");
@@ -1071,7 +1071,7 @@ void py_init_module_imgui_main(nb::module_& m)
             Image_adapt_mutable_param_with_default_value(user_texture_id, image_size, uv0, uv1, tint_col, border_col);
         },
         nb::arg("user_texture_id"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("border_col") = nb::none(),
-        "---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        uv0: ImVec2(0, 0)\n        uv1: ImVec2(1, 1)\n        tint_col: ImVec4(1, 1, 1, 1)\n        border_col: ImVec4(0, 0, 0, 0)");
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * border_col: ImVec4(0, 0, 0, 0)");
 
     m.def("image_button",
         [](const char * str_id, ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt) -> bool
@@ -1114,7 +1114,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return ImageButton_adapt_mutable_param_with_default_value(str_id, user_texture_id, image_size, uv0, uv1, bg_col, tint_col);
         },
         nb::arg("str_id"), nb::arg("user_texture_id"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("bg_col") = nb::none(), nb::arg("tint_col") = nb::none(),
-        "---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        uv0: ImVec2(0, 0)\n        uv1: ImVec2(1, 1)\n        bg_col: ImVec4(0, 0, 0, 0)\n        tint_col: ImVec4(1, 1, 1, 1)");
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * bg_col: ImVec4(0, 0, 0, 0)\n        * tint_col: ImVec4(1, 1, 1, 1)");
 
     m.def("begin_combo",
         ImGui::BeginCombo, nb::arg("label"), nb::arg("preview_value"), nb::arg("flags") = 0);
@@ -1790,7 +1790,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return ColorButton_adapt_mutable_param_with_default_value(desc_id, col, flags, size);
         },
         nb::arg("desc_id"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("size") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n display a color square/button, hover for details, return True when pressed.");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n display a color square/button, hover for details, return True when pressed.");
 
     m.def("set_color_edit_options",
         ImGui::SetColorEditOptions,
@@ -1927,7 +1927,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return Selectable_adapt_modifiable_immutable_to_return(label, p_selected, flags, size);
         },
         nb::arg("label"), nb::arg("p_selected"), nb::arg("flags") = 0, nb::arg("size") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n \"bool* p_selected\" point to the selection state (read-write), as a convenient helper.");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n \"bool* p_selected\" point to the selection state (read-write), as a convenient helper.");
 
     m.def("begin_multi_select",
         ImGui::BeginMultiSelect,
@@ -1963,7 +1963,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return BeginListBox_adapt_mutable_param_with_default_value(label, size);
         },
         nb::arg("label"), nb::arg("size") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n open a framed scrolling region");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n open a framed scrolling region");
 
     m.def("end_list_box",
         ImGui::EndListBox, "only call EndListBox() if BeginListBox() returned True!");
@@ -2052,7 +2052,7 @@ void py_init_module_imgui_main(nb::module_& m)
             PlotLines_adapt_const_char_pointer_with_default_null(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
         },
         nb::arg("label"), nb::arg("values"), nb::arg("values_offset") = 0, nb::arg("overlay_text") = nb::none(), nb::arg("scale_min") = FLT_MAX, nb::arg("scale_max") = FLT_MAX, nb::arg("graph_size") = nb::none(), nb::arg("stride") = -1,
-        "---\nPython bindings defaults:\n    If graph_size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If graph_size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("plot_histogram",
         [](const char * label, const nb::ndarray<> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
@@ -2113,7 +2113,7 @@ void py_init_module_imgui_main(nb::module_& m)
             PlotHistogram_adapt_const_char_pointer_with_default_null(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
         },
         nb::arg("label"), nb::arg("values"), nb::arg("values_offset") = 0, nb::arg("overlay_text") = nb::none(), nb::arg("scale_min") = FLT_MAX, nb::arg("scale_max") = FLT_MAX, nb::arg("graph_size") = nb::none(), nb::arg("stride") = -1,
-        "---\nPython bindings defaults:\n    If graph_size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If graph_size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("value",
         nb::overload_cast<const char *, bool>(ImGui::Value), nb::arg("prefix"), nb::arg("b"));
@@ -2367,7 +2367,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return BeginTable_adapt_mutable_param_with_default_value(str_id, columns, flags, outer_size, inner_width);
         },
         nb::arg("str_id"), nb::arg("columns"), nb::arg("flags") = 0, nb::arg("outer_size") = nb::none(), nb::arg("inner_width") = 0.0f,
-        "---\nPython bindings defaults:\n    If outer_size is None, then its default value will be: ImVec2(0.0, 0.0)");
+        "Python bindings defaults:\n    If outer_size is None, then its default value will be: ImVec2(0.0, 0.0)");
 
     m.def("end_table",
         ImGui::EndTable, "only call EndTable() if BeginTable() returns True!");
@@ -2550,7 +2550,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return DockSpace_adapt_mutable_param_with_default_value(dockspace_id, size, flags, window_class);
         },
         nb::arg("dockspace_id"), nb::arg("size") = nb::none(), nb::arg("flags") = 0, nb::arg("window_class") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("dock_space_over_viewport",
         ImGui::DockSpaceOverViewport, nb::arg("dockspace_id") = 0, nb::arg("viewport") = nb::none(), nb::arg("flags") = 0, nb::arg("window_class") = nb::none());
@@ -6938,7 +6938,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 AddImage_adapt_mutable_param_with_default_value(user_texture_id, p_min, p_max, uv_min, uv_max, col);
             },
             nb::arg("user_texture_id"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("uv_min") = nb::none(), nb::arg("uv_max") = nb::none(), nb::arg("col") = IM_COL32_WHITE,
-            "---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        uv_min: ImVec2(0, 0)\n        uv_max: ImVec2(1, 1)")
+            "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv_min: ImVec2(0, 0)\n        * uv_max: ImVec2(1, 1)")
         .def("add_image_quad",
             [](ImDrawList & self, ImTextureID user_texture_id, const ImVec2 & p1, const ImVec2 & p2, const ImVec2 & p3, const ImVec2 & p4, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec2> & uv4 = std::nullopt, ImU32 col = IM_COL32_WHITE)
             {
@@ -6979,7 +6979,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 AddImageQuad_adapt_mutable_param_with_default_value(user_texture_id, p1, p2, p3, p4, uv1, uv2, uv3, uv4, col);
             },
             nb::arg("user_texture_id"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("uv1") = nb::none(), nb::arg("uv2") = nb::none(), nb::arg("uv3") = nb::none(), nb::arg("uv4") = nb::none(), nb::arg("col") = IM_COL32_WHITE,
-            "---\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        uv1: ImVec2(0, 0)\n        uv2: ImVec2(1, 0)\n        uv3: ImVec2(1, 1)\n        uv4: ImVec2(0, 1)")
+            "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv1: ImVec2(0, 0)\n        * uv2: ImVec2(1, 0)\n        * uv3: ImVec2(1, 1)\n        * uv4: ImVec2(0, 1)")
         .def("add_image_rounded",
             &ImDrawList::AddImageRounded, nb::arg("user_texture_id"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("uv_min"), nb::arg("uv_max"), nb::arg("col"), nb::arg("rounding"), nb::arg("flags") = 0)
         .def("path_clear",
@@ -7325,7 +7325,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 return AddCustomRectFontGlyph_adapt_mutable_param_with_default_value(font, id, width, height, advance_x, offset);
             },
             nb::arg("font"), nb::arg("id_"), nb::arg("width"), nb::arg("height"), nb::arg("advance_x"), nb::arg("offset") = nb::none(),
-            "---\nPython bindings defaults:\n    If offset is None, then its default value will be: ImVec2(0, 0)")
+            "Python bindings defaults:\n    If offset is None, then its default value will be: ImVec2(0, 0)")
         .def("get_custom_rect_by_index",
             &ImFontAtlas::GetCustomRectByIndex,
             nb::arg("index"),
@@ -7543,7 +7543,7 @@ void py_init_module_imgui_main(nb::module_& m)
             BeginHorizontal_adapt_mutable_param_with_default_value(str_id, size, align);
         },
         nb::arg("str_id"), nb::arg("size") = nb::none(), nb::arg("align") = -1.0f,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_horizontal",
         [](const void * ptr_id, const std::optional<const ImVec2> & size = std::nullopt, float align = -1.0f)
@@ -7564,7 +7564,7 @@ void py_init_module_imgui_main(nb::module_& m)
             BeginHorizontal_adapt_mutable_param_with_default_value(ptr_id, size, align);
         },
         nb::arg("ptr_id"), nb::arg("size") = nb::none(), nb::arg("align") = -1.0f,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_horizontal",
         [](int id, const std::optional<const ImVec2> & size = std::nullopt, float align = -1)
@@ -7585,7 +7585,7 @@ void py_init_module_imgui_main(nb::module_& m)
             BeginHorizontal_adapt_mutable_param_with_default_value(id, size, align);
         },
         nb::arg("id_"), nb::arg("size") = nb::none(), nb::arg("align") = -1,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("end_horizontal",
         ImGui::EndHorizontal);
@@ -7609,7 +7609,7 @@ void py_init_module_imgui_main(nb::module_& m)
             BeginVertical_adapt_mutable_param_with_default_value(str_id, size, align);
         },
         nb::arg("str_id"), nb::arg("size") = nb::none(), nb::arg("align") = -1.0f,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_vertical",
         [](const void * ptr_id, const std::optional<const ImVec2> & size = std::nullopt, float align = -1.0f)
@@ -7630,7 +7630,7 @@ void py_init_module_imgui_main(nb::module_& m)
             BeginVertical_adapt_mutable_param_with_default_value(ptr_id, size, align);
         },
         nb::arg("ptr_id"), nb::arg("size") = nb::none(), nb::arg("align") = -1.0f,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_vertical",
         [](int id, const std::optional<const ImVec2> & size = std::nullopt, float align = -1)
@@ -7651,7 +7651,7 @@ void py_init_module_imgui_main(nb::module_& m)
             BeginVertical_adapt_mutable_param_with_default_value(id, size, align);
         },
         nb::arg("id_"), nb::arg("size") = nb::none(), nb::arg("align") = -1,
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("end_vertical",
         ImGui::EndVertical);
@@ -7717,7 +7717,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return InputTextMultiline_adapt_modifiable_immutable_to_return(label, str, size, flags, callback, user_data);
         },
         nb::arg("label"), nb::arg("str"), nb::arg("size") = nb::none(), nb::arg("flags") = 0, nb::arg("callback") = nb::none(), nb::arg("user_data") = nb::none(),
-        "---\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("input_text_with_hint",
         [](const char * label, const char * hint, std::string str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void * user_data = nullptr) -> std::tuple<bool, std::string>

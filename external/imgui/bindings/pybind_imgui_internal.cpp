@@ -4156,7 +4156,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             return BeginTableEx_adapt_mutable_param_with_default_value(name, id, columns_count, flags, outer_size, inner_width);
         },
         nb::arg("name"), nb::arg("id_"), nb::arg("columns_count"), nb::arg("flags") = 0, nb::arg("outer_size") = nb::none(), nb::arg("inner_width") = 0.0f,
-        "---\nPython bindings defaults:\n    If outer_size is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If outer_size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("table_begin_init_memory",
         nb::overload_cast<ImGuiTable *, int>(ImGui::TableBeginInitMemory), nb::arg("table"), nb::arg("columns_count"));
@@ -4422,7 +4422,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             RenderTextClipped_adapt_mutable_param_with_default_value(pos_min, pos_max, text, text_end, text_size_if_known, align, clip_rect);
         },
         nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"), nb::arg("align") = nb::none(), nb::arg("clip_rect") = nb::none(),
-        "---\nPython bindings defaults:\n    If align is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If align is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("render_text_clipped_ex",
         [](ImDrawList * draw_list, const ImVec2 & pos_min, const ImVec2 & pos_max, const char * text, const char * text_end, const ImVec2 * text_size_if_known, const std::optional<const ImVec2> & align = std::nullopt, const ImRect * clip_rect = NULL)
@@ -4443,7 +4443,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             RenderTextClippedEx_adapt_mutable_param_with_default_value(draw_list, pos_min, pos_max, text, text_end, text_size_if_known, align, clip_rect);
         },
         nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"), nb::arg("align") = nb::none(), nb::arg("clip_rect") = nb::none(),
-        "---\nPython bindings defaults:\n    If align is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If align is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("render_text_ellipsis",
         ImGui::RenderTextEllipsis, nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("clip_max_x"), nb::arg("ellipsis_max_x"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"));
@@ -4541,7 +4541,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             return ButtonEx_adapt_mutable_param_with_default_value(label, size_arg, flags);
         },
         nb::arg("label"), nb::arg("size_arg") = nb::none(), nb::arg("flags") = 0,
-        "---\nPython bindings defaults:\n    If size_arg is None, then its default value will be: ImVec2(0, 0)");
+        "Python bindings defaults:\n    If size_arg is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("arrow_button_ex",
         ImGui::ArrowButtonEx, nb::arg("str_id"), nb::arg("dir"), nb::arg("size_arg"), nb::arg("flags") = 0);

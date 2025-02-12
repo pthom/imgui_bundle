@@ -223,8 +223,7 @@ class TextEditor:
         a_size: Optional[ImVec2Like] = None,
         a_border: bool = False
         ) -> bool:
-        """---
-        Python bindings defaults:
+        """Python bindings defaults:
             If aSize is None, then its default value will be: ImVec2()
         """
         pass
