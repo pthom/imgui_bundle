@@ -10888,11 +10888,17 @@ class ImFont:
     def get_debug_name(self) -> str:
         """(private API)"""
         pass
-    # 'max_width' stops rendering after a certain width (could be turned into a 2 size). FLT_MAX to disable.
-    # 'wrap_width' enable automatic word-wrapping across multiple lines to fit into given width. 0.0 to disable.
-    # IMGUI_API const char*       CalcWordWrapPositionA(float scale, const char* text, const char* text_end, float wrap_width);    /* original C++ signature */
-    def calc_word_wrap_position_a(self, scale: float, text: str, text_end: str, wrap_width: float) -> str:
+    # utf8
+
+    #                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # IMGUI_API int               CalcWordWrapPositionAPython(float scale, const char* text, float wrap_width);    /* original C++ signature */
+    def calc_word_wrap_position_a_python(self, scale: float, text: str, wrap_width: float) -> int:
+        """Python API for CalcWordWrapPositionA (will return an index in the text, not a pointer)"""
         pass
+    #                                #endif
+    #
+
     # IMGUI_API void              RenderChar(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, ImWchar c);    /* original C++ signature */
     def render_char(self, draw_list: ImDrawList, size: float, pos: ImVec2Like, col: ImU32, c: ImWchar) -> None:
         pass

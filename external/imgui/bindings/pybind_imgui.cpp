@@ -7399,10 +7399,14 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImFont::GetDebugName,
             "(private API)",
             nb::rv_policy::reference)
-        .def("calc_word_wrap_position_a",
-            &ImFont::CalcWordWrapPositionA,
-            nb::arg("scale"), nb::arg("text"), nb::arg("text_end"), nb::arg("wrap_width"),
-            nb::rv_policy::reference)
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("calc_word_wrap_position_a_python",
+            &ImFont::CalcWordWrapPositionAPython,
+            nb::arg("scale"), nb::arg("text"), nb::arg("wrap_width"),
+            "Python API for CalcWordWrapPositionA (will return an index in the text, not a pointer)")
+        // #endif
+        //
         .def("render_char",
             &ImFont::RenderChar, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("c"))
         .def("render_text",
