@@ -2,7 +2,7 @@
 Python bindings for https://github.com/epezent/implot
 """
 
-# ruff: noqa: B008, F821
+# ruff: noqa: B008, F821, F811
 from typing import Any, Optional, Tuple, List, overload
 import numpy as np
 import enum
@@ -2478,16 +2478,27 @@ def add_colormap(name: str, cols: np.ndarray, qual: bool = True) -> Colormap:
     pass
 
 # Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
-# IMPLOT_API void SetupAxisTicks(ImAxis axis, const double* values, int n_ticks, const char* const labels[]=NULL, bool keep_default=false);    /* original C++ signature */
+# IMPLOT_API void SetupAxisTicks(ImAxis axis, double v_min, double v_max, int n_ticks, const char* const labels[]=nullptr, bool keep_default=false);
 def setup_axis_ticks(
     axis: ImAxis,
     v_min: float,
     v_max: float,
     n_ticks: int,
-    labels: List[str],
+    labels: List[str] | None=None,
     keep_default: bool = False,
 ):
     pass
+
+# Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
+# IMPLOT_API void SetupAxisTicks(ImAxis axis, const double* values, int n_ticks, const char* const labels[]=nullptr, bool keep_default=false);
+def setup_axis_ticks(
+        axis: ImAxis,
+        values: List[float],
+        labels: List[str] | None=None,
+        keep_default: bool = False,
+):
+    pass
+
 
 # Plots a 2D heatmap chart. Values are expected to be in row-major order by default. Leave #scale_min and scale_max both at 0 for automatic color scaling, or set them to a predefined range. #label_fmt can be set to NULL for no labels.
 # IMPLOT_TMP void PlotHeatmap(const char* label_id, const T* values, int rows, int cols, double scale_min=0, double scale_max=0, const char* label_fmt="%.1f", const ImPlotPoint& bounds_min=ImPlotPoint(0,0), const ImPlotPoint& bounds_max=ImPlotPoint(1,1), ImPlotHeatmapFlags flags=0);    /* original C++ signature */

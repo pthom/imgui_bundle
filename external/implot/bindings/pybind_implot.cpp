@@ -3680,14 +3680,40 @@ void implot_binding_manual(nb::module_& m)
 
     // SetupAxisTicks, cf https://github.com/pthom/imgui_bundle/issues/81
     m.def("setup_axis_ticks",
-          [](ImAxis axis, double v_min, double v_max, int n_ticks, const std::vector<std::string>& labels, bool keep_default=false)
+          [](ImAxis axis, double v_min, double v_max, int n_ticks,
+              const std::optional<std::vector<std::string>>& labels = std::nullopt, bool keep_default=false)
           {
-              std::vector<const char*> label_char;
-              for (std::string const& str : labels){
-                  label_char.push_back(str.data());
+              if (!labels.has_value())
+                  ImPlot::SetupAxisTicks(axis, v_min, v_max, n_ticks, nullptr, keep_default);
+              else
+              {
+                  IM_ASSERT(labels.value().size() == n_ticks && "The number of labels should match the number of ticks");
+                  std::vector<const char*> label_char;
+                  for (std::string const& str : labels.value()){
+                      label_char.push_back(str.c_str());
+                  }
+                  ImPlot::SetupAxisTicks(axis, v_min, v_max, n_ticks, label_char.data(), keep_default);
               }
-              ImPlot::SetupAxisTicks(axis, v_min, v_max, n_ticks, label_char.data(), keep_default);
           }, nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("n_ticks"), nb::arg("labels"), nb::arg("keep_default"),
+          "Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true."
+    );
+    m.def("setup_axis_ticks",
+          [](ImAxis axis, std::vector<double> values,
+              const std::optional<std::vector<std::string>>& labels = std::nullopt, bool keep_default=false)
+          {
+              int n_ticks = static_cast<int>(values.size());
+
+              if (!labels.has_value())
+                  ImPlot::SetupAxisTicks(axis, values.data(), n_ticks, nullptr, keep_default);
+              else
+              {
+                  std::vector<const char*> label_char;
+                  for (std::string const& str : labels.value()){
+                      label_char.push_back(str.c_str());
+                  }
+                  ImPlot::SetupAxisTicks(axis, values.data(), n_ticks, label_char.data(), keep_default);
+              }
+          }, nb::arg("axis"), nb::arg("values"), nb::arg("labels"), nb::arg("keep_default"),
           "Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true."
     );
 
