@@ -717,9 +717,33 @@ def plot_surface(
 #
 # [/ADAPT_IMGUI_BUNDLE]
 
-# IMPLOT3D_API void PlotMesh(const char* label_id, const ImPlot3DPoint* vtx, const unsigned int* idx, int vtx_count, int idx_count, ImPlot3DMeshFlags flags = 0);    /* original C++ signature */
-def plot_mesh(label_id: str, vtx: Point, idx: int, vtx_count: int, idx_count: int, flags: MeshFlags = 0) -> None:
+# [ADAPT_IMGUI_BUNDLE]
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+class Mesh:
+    # std::vector<ImPlot3DPoint> Points;    /* original C++ signature */
+    points: List[Point]
+    # std::vector<UInt> Idx;    /* original C++ signature */
+    idx: List[UInt]
+    # Mesh(std::vector<ImPlot3DPoint> Points = std::vector<ImPlot3DPoint>(), std::vector<UInt> Idx = std::vector<UInt>());    /* original C++ signature */
+    def __init__(self, points: Optional[List[Point]] = None, idx: Optional[List[UInt]] = None) -> None:
+        """Auto-generated default constructor with named params
+
+
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                * Points: List[Point]()
+                * Idx: List[UInt]()
+        """
+        pass
+
+# IMPLOT3D_API void PlotMesh(const char* label_id, const Mesh& mesh, ImPlot3DMeshFlags flags=0);    /* original C++ signature */
+def plot_mesh(label_id: str, mesh: Mesh, flags: MeshFlags = 0) -> None:
     pass
+
+# #endif
+#
+# [/ADAPT_IMGUI_BUNDLE]
 
 # IMPLOT3D_API void PlotText(const char* text, float x, float y, float z, float angle = 0.0f, const ImVec2& pix_offset = ImVec2(0, 0));    /* original C++ signature */
 def plot_text(
@@ -1397,21 +1421,21 @@ class Style:
 # Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
 # IMPLOT3D_API void SetupAxisTicks(ImAxis3D axis, double v_min, double v_max, int n_ticks, const char* const labels[] = nullptr, bool keep_default = false);
 def setup_axis_ticks(
-        axis: ImAxis3D,
-        v_min: float,
-        v_max: float,
-        n_ticks: int,
-        labels: List[str] | None=None,
-        keep_default: bool = False,
+    axis: ImAxis3D,
+    v_min: float,
+    v_max: float,
+    n_ticks: int,
+    labels: List[str] | None = None,
+    keep_default: bool = False,
 ):
     pass
 
 # Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
 # IMPLOT3D_API void SetupAxisTicks(ImAxis3D axis, const double* values, int n_ticks, const char* const labels[] = nullptr, bool keep_default = false);
 def setup_axis_ticks(
-        axis: ImAxis3D,
-        values: List[float],
-        labels: List[str] | None=None,
-        keep_default: bool = False,
+    axis: ImAxis3D,
+    values: List[float],
+    labels: List[str] | None = None,
+    keep_default: bool = False,
 ):
     pass
