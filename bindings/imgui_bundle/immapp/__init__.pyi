@@ -19,6 +19,8 @@ from .immapp_cpp import (
 from .immapp_utils import (
     static as static,
     run_anon_block as run_anon_block,
+    add_static as add_static,
+    add_static_values as add_static_values,
 )
 from .immapp_notebook import run_nb as run_nb
 
