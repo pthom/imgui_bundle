@@ -2,8 +2,8 @@
 Python bindings for https://github.com/brenocq/implot3d
 """
 
-# ruff: noqa: B008, F821
-from typing import Any, Optional, overload
+# ruff: noqa: B008, F821, F811
+from typing import Any, Optional, List, overload
 import numpy as np
 import enum
 from . import internal as internal
@@ -1393,3 +1393,25 @@ class Style:
 ###############################################################################
 # MANUAL BINDINGS BELOW
 ###############################################################################
+
+# Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
+# IMPLOT3D_API void SetupAxisTicks(ImAxis3D axis, double v_min, double v_max, int n_ticks, const char* const labels[] = nullptr, bool keep_default = false);
+def setup_axis_ticks(
+        axis: ImAxis3D,
+        v_min: float,
+        v_max: float,
+        n_ticks: int,
+        labels: List[str] | None=None,
+        keep_default: bool = False,
+):
+    pass
+
+# Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
+# IMPLOT3D_API void SetupAxisTicks(ImAxis3D axis, const double* values, int n_ticks, const char* const labels[] = nullptr, bool keep_default = false);
+def setup_axis_ticks(
+        axis: ImAxis3D,
+        values: List[float],
+        labels: List[str] | None=None,
+        keep_default: bool = False,
+):
+    pass
