@@ -24,6 +24,8 @@ ImGui_Context = imgui.internal.Context
 #    Manually inserted code (typedefs, etc.)
 ##################################################
 IMPLOT3D_AUTO = -1
+AUTO = -1
+
 Context = Any
 ImAxis3D = int  # enum ImAxis3D_
 
