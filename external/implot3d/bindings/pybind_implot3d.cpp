@@ -333,12 +333,64 @@ void py_init_module_implot3d(nb::module_& m)
             SetupAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, z_min, z_max, cond);
         },
         nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("z_min"), nb::arg("z_max"), nb::arg("cond") = nb::none(),
-        " Sets the X/Y/Z axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the X/Y/Z axes range limits. If ImPlot3DCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+
+    m.def("setup_box_rotation",
+        [](float elevation, float azimuth, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
+        {
+            auto SetupBoxRotation_adapt_mutable_param_with_default_value = [](float elevation, float azimuth, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
+            {
+
+                const ImPlot3DCond& cond_or_default = [&]() -> const ImPlot3DCond {
+                    if (cond.has_value())
+                        return cond.value();
+                    else
+                        return ImPlot3DCond_Once;
+                }();
+
+                ImPlot3D::SetupBoxRotation(elevation, azimuth, animate, cond_or_default);
+            };
+
+            SetupBoxRotation_adapt_mutable_param_with_default_value(elevation, azimuth, animate, cond);
+        },
+        nb::arg("elevation"), nb::arg("azimuth"), nb::arg("animate") = false, nb::arg("cond") = nb::none(),
+        " Sets the plot box rotation given the elevation and azimuth angles in degrees. If ImPlot3DCond_Always is used, the rotation will be locked\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+
+    m.def("setup_box_rotation",
+        [](ImPlot3DQuat rotation, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
+        {
+            auto SetupBoxRotation_adapt_mutable_param_with_default_value = [](ImPlot3DQuat rotation, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
+            {
+
+                const ImPlot3DCond& cond_or_default = [&]() -> const ImPlot3DCond {
+                    if (cond.has_value())
+                        return cond.value();
+                    else
+                        return ImPlot3DCond_Once;
+                }();
+
+                ImPlot3D::SetupBoxRotation(rotation, animate, cond_or_default);
+            };
+
+            SetupBoxRotation_adapt_mutable_param_with_default_value(rotation, animate, cond);
+        },
+        nb::arg("rotation"), nb::arg("animate") = false, nb::arg("cond") = nb::none(),
+        " Sets the plot box rotation given a quaternion. If ImPlot3DCond_Always is used, the rotation will be locked\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+
+    m.def("setup_box_initial_rotation",
+        nb::overload_cast<float, float>(ImPlot3D::SetupBoxInitialRotation),
+        nb::arg("elevation"), nb::arg("azimuth"),
+        "Sets the plot box initial rotation given the elevation and azimuth angles in degrees. The initial rotation is the rotation the plot goes back to when a left mouse button double click happens");
+
+    m.def("setup_box_initial_rotation",
+        nb::overload_cast<ImPlot3DQuat>(ImPlot3D::SetupBoxInitialRotation),
+        nb::arg("rotation"),
+        "Sets the plot box initial rotation given a quaternion. The initial rotation is the rotation the plot goes back to when a left mouse button double click happens");
 
     m.def("setup_box_scale",
         ImPlot3D::SetupBoxScale,
         nb::arg("x"), nb::arg("y"), nb::arg("z"),
-        "Sets the plot box X/Y/Z scale. A scale of 1.0 is the default. Values greater than 1.0 enlarge the plot, while values between 0.0 and 1.0 shrink it.");
+        "Sets the plot box X/Y/Z scale. A scale of 1.0 is the default. Values greater than 1.0 enlarge the plot, while values between 0.0 and 1.0 shrink it");
 
     m.def("setup_legend",
         ImPlot3D::SetupLegend, nb::arg("location"), nb::arg("flags") = 0);
@@ -1325,6 +1377,10 @@ void py_init_module_implot3d(nb::module_& m)
             &ImPlot3DQuat::FromTwoVectors,
             nb::arg("v0"), nb::arg("v1"),
             "Set quaternion from two vectors")
+        .def_static("from_el_az",
+            &ImPlot3DQuat::FromElAz,
+            nb::arg("elevation"), nb::arg("azimuth"),
+            "Set quaternion given elevation and azimuth angles in radians")
         .def("length",
             &ImPlot3DQuat::Length, "Get quaternion length")
         .def("normalized",

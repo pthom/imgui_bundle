@@ -20,7 +20,7 @@ def litgen_options_implot3d() -> LitgenOptions:
     options.function_names_replacements.add_first_replacement("ImGui", "Imgui")
     options.type_replacements.add_last_replacement(r"ImPlot3D([A-Z][a-zA-Z0-9]*)", r"\1")
 
-    options.fn_exclude_by_name__regex = "Formatter_Default"
+    options.fn_exclude_by_name__regex = "Formatter_Default|SetupAxisTicks"
     options.fn_exclude_by_param_type__regex = "ImPlot3DFormatter"
     options.class_exclude_by_name__regex = "ImDrawList3D"
     options.member_exclude_by_type__regex = r"^ImVector|TextBuffer|Storage|ImPool|ImPlot3DFormatter|ImPlot3DLocator|ImDrawList3D"

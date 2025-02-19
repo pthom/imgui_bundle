@@ -295,11 +295,15 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("range_cond", &ImPlot3DAxis::RangeCond, "")
         .def_rw("ticker", &ImPlot3DAxis::Ticker, "")
         .def_rw("formatter_data", &ImPlot3DAxis::FormatterData, "")
+        .def_rw("show_default_ticks", &ImPlot3DAxis::ShowDefaultTicks, "")
         .def_rw("fit_this_frame", &ImPlot3DAxis::FitThisFrame, "")
         .def_rw("fit_extents", &ImPlot3DAxis::FitExtents, "")
-        .def_rw("held", &ImPlot3DAxis::Held, "User input")
+        .def_rw("hovered", &ImPlot3DAxis::Hovered, "")
+        .def_rw("held", &ImPlot3DAxis::Held, "")
         .def(nb::init<>(),
             "Constructor")
+        .def("reset",
+            &ImPlot3DAxis::Reset, "(private API)")
         .def("set_range",
             &ImPlot3DAxis::SetRange,
             nb::arg("v1"), nb::arg("v2"),
@@ -320,6 +324,12 @@ void py_init_module_implot3d_internal(nb::module_& m)
             &ImPlot3DAxis::IsLockedMax, "(private API)")
         .def("is_locked",
             &ImPlot3DAxis::IsLocked, "(private API)")
+        .def("is_input_locked_min",
+            &ImPlot3DAxis::IsInputLockedMin, "(private API)")
+        .def("is_input_locked_max",
+            &ImPlot3DAxis::IsInputLockedMax, "(private API)")
+        .def("is_input_locked",
+            &ImPlot3DAxis::IsInputLocked, "(private API)")
         .def("set_label",
             &ImPlot3DAxis::SetLabel,
             nb::arg("label"),
@@ -358,7 +368,9 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("frame_rect", &ImPlot3DPlot::FrameRect, "Outermost bounding rectangle that encapsulates whole the plot/title/padding/etc")
         .def_rw("canvas_rect", &ImPlot3DPlot::CanvasRect, "Frame rectangle reduced by padding")
         .def_rw("plot_rect", &ImPlot3DPlot::PlotRect, "Bounding rectangle for the actual plot area")
+        .def_rw("initial_rotation", &ImPlot3DPlot::InitialRotation, "Initial rotation quaternion")
         .def_rw("rotation", &ImPlot3DPlot::Rotation, "Current rotation quaternion")
+        .def_rw("rotation_cond", &ImPlot3DPlot::RotationCond, "")
         .def_rw("box_scale", &ImPlot3DPlot::BoxScale, "Scale factor for plot box X, Y, Z axes")
         .def_rw("animation_time", &ImPlot3DPlot::AnimationTime, "Remaining animation time")
         .def_rw("rotation_animation_end", &ImPlot3DPlot::RotationAnimationEnd, "End rotation for animation")
@@ -383,6 +395,8 @@ void py_init_module_implot3d_internal(nb::module_& m)
             &ImPlot3DPlot::GetTitle,
             "(private API)",
             nb::rv_policy::reference)
+        .def("is_rotation_locked",
+            &ImPlot3DPlot::IsRotationLocked, "(private API)")
         .def("extend_fit",
             &ImPlot3DPlot::ExtendFit,
             nb::arg("point"),
