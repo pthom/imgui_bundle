@@ -70,7 +70,11 @@ std::function<void()> makeGui()
             "Python: how to use ImGui with pyglet using a *full python* backend",
             true
         },
-
+        DemoApp{
+            "example_python_backend_wgpu",
+            "Python: how to use ImGui with wgpu (WebGPU for Python)",
+            true,
+        },
     };
     std::string demoPythonBackendFolder = DemoPythonFolder() + + "/../python_backends/examples";
     DemoAppTable demoAppTable(

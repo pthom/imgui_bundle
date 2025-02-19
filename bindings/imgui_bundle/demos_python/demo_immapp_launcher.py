@@ -90,6 +90,11 @@ def make_gui() -> GuiFunction:
             "Python: how to use ImGui with pyglet using a *full python* backend",
             is_python_backend_demo=True,
         ),
+        DemoApp(
+            "example_python_backend_wgpu",
+            "Python: how to use ImGui with wgpu (WebGPU for Python)",
+            is_python_backend_demo=True,
+        ),
     ]
 
     this_dir = os.path.dirname(__file__)
