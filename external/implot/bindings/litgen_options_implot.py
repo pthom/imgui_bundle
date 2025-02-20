@@ -36,6 +36,9 @@ def litgen_options_implot() -> LitgenOptions:
 
     options.type_replacements.add_last_replacement(r"ImPlot([A-Z][a-zA-Z0-9]*)", r"\1")
 
+    options.class_copy__regex = "ImPlotStyle|Style"
+    options.class_copy_add_info_in_stub = True
+
     options.fn_params_buffer_types = join_string_by_pipe_char(
         [
             # // Scalar data types defined by imgui.h

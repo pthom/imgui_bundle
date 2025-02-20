@@ -111,8 +111,13 @@ Bin = int  # -> enum Bin_
 # ImPlotContext is an opaque structure
 Context = Any
 #
-IMPLOT_AUTO = -1
-IMPLOT_AUTO_COL = ImVec4(0, 0, 0, -1)
+IMPLOT_AUTO = -1  # Deduce variable automatically
+IMPLOT_AUTO_COL = ImVec4(0, 0, 0, -1)  # Deduce color automatically
+AUTO = IMPLOT_AUTO
+AUTO_COL = IMPLOT_AUTO_COL
+
+version: str
+
 #
 VoidPtr = Any
 ImTextureID = VoidPtr
@@ -945,7 +950,9 @@ class Rect:
         pass
 
 class Style:
-    """Plot style structure"""
+    """Plot style structure
+    (has support for copy.copy)
+    """
 
     # item styling variables
     # float   LineWeight;    /* original C++ signature */
@@ -2065,9 +2072,13 @@ def end_drag_drop_source() -> None:
 #        manually set these colors to whatever you like, and further can Push/Pop
 #        them around individual plots for plot-specific styling (e.g. coloring axes).
 
+# Provides access to plot style structure for permanant modifications to colors, sizes, etc.
 # IMPLOT_API ImPlotStyle& GetStyle();    /* original C++ signature */
 def get_style() -> Style:
-    """Provides access to plot style structure for permanant modifications to colors, sizes, etc."""
+    pass
+
+# IMPLOT_API void SetStyle(const ImPlotStyle& style);    /* original C++ signature */
+def set_style(style: Style) -> None:
     pass
 
 # IMPLOT_API void StyleColorsAuto(ImPlotStyle* dst = nullptr);    /* original C++ signature */
