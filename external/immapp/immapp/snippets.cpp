@@ -94,7 +94,7 @@ namespace Snippets
         SnippetData& snippetData = *snippetDataPtr;
 
         if (width == 0.f)
-            width = (ImGui::GetContentRegionMax().x  - ImGui::GetWindowContentRegionMin().x - ImGui::GetStyle().ItemSpacing.x);
+            width = (ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x);
 
         auto id = ImGui::GetID(label_id.c_str());
         ImGui::PushID(label_id.c_str());
@@ -230,7 +230,7 @@ namespace Snippets
     float _EditorWidth(int nbSideBySideEditors)
     {
         float margins_x = (nbSideBySideEditors + 1) * ImGui::GetStyle().ItemSpacing.x;
-        float windowContentWidth = ImGui::GetContentRegionMax().x  - ImGui::GetWindowContentRegionMin().x;
+        float windowContentWidth = ImGui::GetContentRegionAvail().x;
         float editorWidth= (windowContentWidth - margins_x) / nbSideBySideEditors;
         return editorWidth;
     }
