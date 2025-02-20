@@ -1,6 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import List
 import math
+import webbrowser
 import numpy as np
 from numpy.typing import NDArray
 from imgui_bundle import imgui, implot, implot3d, imgui_md, immapp, ImVec2, ImVec4
@@ -306,12 +307,13 @@ def demo_gui():
         You can see lots of demos together with their code [online](https://traineq.org/implot_demo/src/implot_demo.html)
         """
     )
-    if imgui.button("View the full demo"):
-        import webbrowser
 
-        webbrowser.open("https://traineq.org/implot_demo/src/implot_demo.html")
-    imgui.new_line()
-
+    if imgui.collapsing_header("ImPlot: Full Demo"):
+        imgui.text("View on GitHub:")
+        imgui.same_line()
+        if imgui.button("C++ demo code"):
+            webbrowser.open("https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp")
+        implot.show_all_demos()
     if imgui.collapsing_header("ImPlot: Drag Rects"):
         demo_drag_rects()
     if imgui.collapsing_header("ImPlot: Mixed plot##2"):
@@ -320,6 +322,13 @@ def demo_gui():
         demo_heatmap()
 
     if imgui.collapsing_header("ImPlot3D: Full Demo"):
+        imgui.text("View on GitHub:")
+        imgui.same_line()
+        if imgui.button("C++ demo code"):
+            webbrowser.open("https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp")
+        imgui.same_line()
+        if imgui.button("Python demo code"):
+            webbrowser.open("https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py")
         implot3d_demo.demo_gui()
     if imgui.collapsing_header("ImPlot3D: Line plots ##2"):
         demo3d_lineplots()

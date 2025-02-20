@@ -5,6 +5,7 @@
 #include "implot/implot.h"
 #include "implot3d/implot3d.h"
 #include "immapp/immapp.h"
+#include "immapp/browse_to_url.h"
 #include "demo_utils/api_demos.h"
 #include "imgui_internal.h"
 
@@ -237,11 +238,15 @@ void demo_implot()
 
         You can see lots of demos together with their code [online](https://traineq.org/implot_demo/src/implot_demo.html)
     )");
-    if (ImGui::Button("View the full demo"))
-    {
-        BrowseToUrl("https://traineq.org/implot_demo/src/implot_demo.html");
-    }
     ImGui::NewLine();
+    if (ImGui::CollapsingHeader("ImPlot: Full Demo"))
+    {
+        ImGui::Text("View on GitHub:");
+        ImGui::SameLine();
+        if (ImGui::Button("C++ demo code"))
+            ImmApp::BrowseToUrl("https://github.com/epezent/implot/blob/master/implot_demo.cpp");
+        ImPlot::ShowAllDemos();
+    }
     if (ImGui::CollapsingHeader("ImPlot: Mixed plot##2"))
         DemoMixedPlot();
     if (ImGui::CollapsingHeader("ImPlot: Heatmap"))
@@ -249,7 +254,16 @@ void demo_implot()
 
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
     if (ImGui::CollapsingHeader("ImPlot3D: Full Demo"))
+    {
+        ImGui::Text("View on GitHub:");
+        ImGui::SameLine();
+        if (ImGui::Button("C++ demo code"))
+            ImmApp::BrowseToUrl("https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp");
+        ImGui::SameLine();
+        if (ImGui::Button("Python demo code"))
+            ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py");
         ImPlot3D::ShowAllDemos();
+    }
     if (ImGui::CollapsingHeader("ImPlot3D: Line plots##2"))
         Demo3D_LinePlots();
     if (ImGui::CollapsingHeader("ImPlot3D: Surface Plots##2"))
