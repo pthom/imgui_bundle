@@ -245,6 +245,9 @@ void demo_implot()
         ImGui::SameLine();
         if (ImGui::Button("C++ demo code"))
             ImmApp::BrowseToUrl("https://github.com/epezent/implot/blob/master/implot_demo.cpp");
+        ImGui::SameLine();
+        if (ImGui::Button("Python demo code"))
+            ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py");
         ImPlot::ShowAllDemos();
     }
     if (ImGui::CollapsingHeader("ImPlot: Mixed plot##2"))

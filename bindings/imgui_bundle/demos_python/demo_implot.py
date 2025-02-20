@@ -313,7 +313,12 @@ def demo_gui():
         imgui.same_line()
         if imgui.button("C++ demo code"):
             webbrowser.open("https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp")
-        implot.show_all_demos()
+        imgui.same_line()
+        if imgui.button("Python demo code"):
+            webbrowser.open("https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py")
+        from imgui_bundle.demos_python.demos_implot import implot_demo
+        implot_demo.show_all_demos()
+        #implot.show_all_demos()
     if imgui.collapsing_header("ImPlot: Drag Rects"):
         demo_drag_rects()
     if imgui.collapsing_header("ImPlot: Mixed plot##2"):
