@@ -1209,8 +1209,150 @@ def demo_auto_fitting_data():
         implot.end_plot()
 
 
-#-----------------------------------------------------------------------------
-# Demo_DragPoints
+@immapp.add_static
+def demo_subplots_sizing():
+    static = demo_subplots_sizing.static
+
+    if not hasattr(static, "flags"):
+        static.flags = implot.SubplotFlags_.share_items.value | implot.SubplotFlags_.no_legend.value
+
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_NoResize", static.flags, implot.SubplotFlags_.no_resize.value)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_NoTitle", static.flags, implot.SubplotFlags_.no_title.value)
+
+    if not hasattr(static, "rows"):
+        static.rows = 3
+        static.cols = 3
+
+    _, static.rows = imgui.slider_int("Rows", static.rows, 1, 5)
+    _, static.cols = imgui.slider_int("Cols", static.cols, 1, 5)
+
+    if static.rows < 1 or static.cols < 1:
+        imgui.text_colored("Nice try, but the number of rows and columns must be greater than 0!", (1, 0, 0, 1))
+        return
+
+    if not hasattr(static, "rratios"):
+        static.rratios = [5, 1, 1, 1, 1, 1]
+        static.cratios = [5, 1, 1, 1, 1, 1]
+
+    # imgui.drag_scalar_n("Row Ratios", static.rratios, static.rows, 0.01)
+    # imgui.drag_scalar_n("Col Ratios", static.cratios, static.cols, 0.01)
+
+    row_col_ratios = implot.SubplotsRowColRatios(static.rratios, static.cratios)
+    if implot.begin_subplots(
+            title_id="My Subplots",
+            rows=static.rows, cols=static.cols,
+            size=(-1, 400),
+            flags=static.flags,
+            row_col_ratios=row_col_ratios):
+        id_counter = 0
+        for i in range(static.rows * static.cols):
+            if implot.begin_plot("", size=(0, 0), flags=implot.Flags_.no_legend.value):
+                implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
+
+                # Compute sinewave data
+                fi = 0.01 * (i + 1)
+                x_values = np.linspace(0, 1000, 1000, dtype=np.float32)
+                y_values = np.sin(fi * x_values)
+
+                # Apply colormap based on subplot index
+                if static.rows * static.cols > 1:
+                    col = implot.sample_colormap(i / float(static.rows * static.cols - 1), implot.Colormap_.jet.value)
+                    implot.set_next_line_style(col)
+
+                # Label and plot line
+                label = f"data{id_counter}"
+                id_counter += 1
+                implot.plot_line(label, x_values, y_values)
+
+                implot.end_plot()
+        implot.end_subplots()
+
+
+@immapp.add_static
+def demo_subplot_item_sharing():
+    static = demo_subplot_item_sharing.static
+
+    if not hasattr(static, "flags"):
+        static.flags = implot.SubplotFlags_.share_items.value
+
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_ShareItems", static.flags, implot.SubplotFlags_.share_items.value)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_ColMajor", static.flags, implot.SubplotFlags_.col_major.value)
+
+    imgui.bullet_text("Drag and drop items from the legend onto plots (except for 'common')")
+
+    if not hasattr(static, "rows"):
+        static.rows = 2
+        static.cols = 3
+        static.id = [0, 1, 2, 3, 4, 5]
+        static.curj = -1  # Current dataset being dragged
+
+    if implot.begin_subplots("##ItemSharing", static.rows, static.cols, size=(-1, 400), flags=static.flags):
+        implot.setup_legend(implot.Location_.south.value, implot.LegendFlags_.sort.value | implot.LegendFlags_.horizontal.value)
+
+        for i in range(static.rows * static.cols):
+            if implot.begin_plot(""):
+                # Common sinewave plot
+                x_values = np.linspace(0, 1000, 1000, dtype=np.float32)
+                y_values = np.sin(0.01 * x_values)
+                implot.plot_line("common", x_values, y_values)
+
+                for j in range(6):
+                    if static.id[j] == i:
+                        label = f"data{j}"
+                        y_j_values = np.sin((0.01 * (j + 2)) * x_values)
+                        implot.plot_line(label, x_values, y_j_values)
+
+                        # Drag source
+                        if imgui.begin_drag_drop_source():
+                            static.curj = j
+                            imgui.set_drag_drop_payload_py_id("MY_DND", 0, 0)
+                            implot.item_icon(implot.get_last_item_color())
+                            imgui.same_line()
+                            imgui.text(label)
+                            imgui.end_drag_drop_source()
+
+                # Drop target
+                if imgui.begin_drag_drop_target():
+                    payload = imgui.accept_drag_drop_payload_py_id("MY_DND")
+                    if payload:
+                        static.id[static.curj] = i
+                    imgui.end_drag_drop_target()
+
+                implot.end_plot()
+        implot.end_subplots()
+
+
+@immapp.add_static
+def demo_subplot_axis_linking():
+    static = demo_subplot_axis_linking.static
+
+    if not hasattr(static, "flags"):
+        static.flags = implot.SubplotFlags_.link_rows.value | implot.SubplotFlags_.link_cols.value
+
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkRows", static.flags, implot.SubplotFlags_.link_rows.value)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkCols", static.flags, implot.SubplotFlags_.link_cols.value)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkAllX", static.flags, implot.SubplotFlags_.link_all_x.value)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkAllY", static.flags, implot.SubplotFlags_.link_all_y.value)
+
+    if not hasattr(static, "rows"):
+        static.rows = 2
+        static.cols = 2
+
+    if implot.begin_subplots("##AxisLinking", static.rows, static.cols, size=(-1, 400), flags=static.flags):
+        for _ in range(static.rows * static.cols):
+            if implot.begin_plot(""):
+                implot.setup_axes_limits(0, 1000, -1, 1)
+
+                # Generate sine wave data
+                x_values = np.linspace(0, 1000, 1000, dtype=np.float32)
+                y_values = np.sin(0.01 * x_values)
+
+                implot.plot_line("common", x_values, y_values)
+
+                implot.end_plot()
+        implot.end_subplots()
+
+
 #-----------------------------------------------------------------------------
 @immapp.add_static
 def demo_drag_points():
@@ -1764,9 +1906,9 @@ def show_all_demos():
             imgui.end_tab_item()
 
         if imgui.begin_tab_item_simple("Subplots"):
-            # demo_header("Sizing", demo_subplots_sizing)
-            # demo_header("Item Sharing", demo_subplot_item_sharing)
-            # demo_header("Axis Linking", demo_subplot_axis_linking)
+            demo_header("Sizing", demo_subplots_sizing)
+            demo_header("Item Sharing", demo_subplot_item_sharing)
+            demo_header("Axis Linking", demo_subplot_axis_linking)
             demo_header("Tables", demo_tables)
             imgui.end_tab_item()
 
