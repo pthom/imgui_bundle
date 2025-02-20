@@ -2444,6 +2444,11 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
     """Shows the ImPlot demo window (add implot_demo.cpp to your sources!)"""
     pass
 
+# IMPLOT_API void ShowAllDemos();    /* original C++ signature */
+def show_all_demos() -> None:
+    """Bundle: ShowAllDemos is extracted from ShowDemoWindow, so that it can be used without creating an ImGui window."""
+    pass
+
 # namespace ImPlot
 
 # -----------------------------------------------------------------------------

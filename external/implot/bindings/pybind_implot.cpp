@@ -3609,6 +3609,9 @@ void py_init_module_implot(nb::module_& m)
         },
         nb::arg("p_open") = nb::none(),
         "Shows the ImPlot demo window (add implot_demo.cpp to your sources!)");
+
+    m.def("show_all_demos",
+        ImPlot::ShowAllDemos, "Bundle: ShowAllDemos is extracted from ShowDemoWindow, so that it can be used without creating an ImGui window.");
     // #endif
     ////////////////////    </generated_from:implot.h>    ////////////////////
 
