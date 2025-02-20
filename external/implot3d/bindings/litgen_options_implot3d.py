@@ -18,6 +18,8 @@ def litgen_options_implot3d() -> LitgenOptions:
     options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API"
 
     options.function_names_replacements.add_first_replacement("ImGui", "Imgui")
+    options.function_names_replacements.add_first_replacement("NaN", "Nan")
+    options.var_names_replacements.add_first_replacement("NaN", "Nan")
     options.type_replacements.add_last_replacement(r"ImPlot3D([A-Z][a-zA-Z0-9]*)", r"\1")
 
     options.fn_exclude_by_name__regex = "Formatter_Default|SetupAxisTicks"

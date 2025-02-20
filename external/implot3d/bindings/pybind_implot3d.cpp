@@ -41,6 +41,7 @@ void py_init_module_implot3d(nb::module_& m)
     // #ifndef IMGUI_DISABLE
     //
 
+
     auto pyEnumFlags_ =
         nb::enum_<ImPlot3DFlags_>(m, "Flags_", nb::is_arithmetic(), "Flags for ImPlot3D::BeginPlot()")
             .value("none", ImPlot3DFlags_None, "Default")
@@ -133,7 +134,7 @@ void py_init_module_implot3d(nb::module_& m)
             .value("no_fit", ImPlot3DLineFlags_NoFit, "")
             .value("segments", ImPlot3DLineFlags_Segments, "A line segment will be rendered from every two consecutive points")
             .value("loop", ImPlot3DLineFlags_Loop, "The last and first point will be connected to form a closed loop")
-            .value("skip_na_n", ImPlot3DLineFlags_SkipNaN, "NaNs values will be skipped instead of rendered as missing data");
+            .value("skip_nan", ImPlot3DLineFlags_SkipNaN, "NaNs values will be skipped instead of rendered as missing data");
 
 
     auto pyEnumTriangleFlags_ =
@@ -1288,7 +1289,7 @@ void py_init_module_implot3d(nb::module_& m)
             &ImPlot3DPoint::Normalize, "Normalize to unit length")
         .def("normalized",
             &ImPlot3DPoint::Normalized, "Return vector normalized to unit length")
-        .def("is_na_n",
+        .def("is_nan",
             &ImPlot3DPoint::IsNaN, "Check if the point is NaN")
         ;
 

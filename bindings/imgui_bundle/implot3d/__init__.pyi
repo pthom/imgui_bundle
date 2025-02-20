@@ -25,7 +25,7 @@ ImGui_Context = imgui.internal.Context
 ##################################################
 IMPLOT3D_AUTO = -1
 AUTO = -1
-
+UInt = int
 Context = Any
 ImAxis3D = int  # enum ImAxis3D_
 
@@ -300,7 +300,7 @@ class LineFlags_(enum.Enum):
     # ImPlot3DLineFlags_Loop = 1 << 11,         /* original C++ signature */
     loop = enum.auto()  # (= 1 << 11)  # The last and first point will be connected to form a closed loop
     # ImPlot3DLineFlags_SkipNaN = 1 << 12,      /* original C++ signature */
-    skip_na_n = enum.auto()  # (= 1 << 12)  # NaNs values will be skipped instead of rendered as missing data
+    skip_nan = enum.auto()  # (= 1 << 12)  # NaNs values will be skipped instead of rendered as missing data
 
 class TriangleFlags_(enum.Enum):
     """Flags for PlotTriangle"""
@@ -1166,7 +1166,7 @@ class Point:
         """Return vector normalized to unit length"""
         pass
     # IMPLOT3D_API bool IsNaN() const;    /* original C++ signature */
-    def is_na_n(self) -> bool:
+    def is_nan(self) -> bool:
         """Check if the point is NaN"""
         pass
 

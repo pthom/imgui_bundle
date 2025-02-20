@@ -175,7 +175,7 @@ void py_init_module_implot(nb::module_& m)
             .value("none", ImPlotLineFlags_None, "default")
             .value("segments", ImPlotLineFlags_Segments, "a line segment will be rendered from every two consecutive points")
             .value("loop", ImPlotLineFlags_Loop, "the last and first point will be connected to form a closed loop")
-            .value("skip_na_n", ImPlotLineFlags_SkipNaN, "NaNs values will be skipped instead of rendered as missing data")
+            .value("skip_nan", ImPlotLineFlags_SkipNaN, "NaNs values will be skipped instead of rendered as missing data")
             .value("no_clip", ImPlotLineFlags_NoClip, "markers (if displayed) on the edge of a plot will not be clipped")
             .value("shaded", ImPlotLineFlags_Shaded, "a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases");
 
