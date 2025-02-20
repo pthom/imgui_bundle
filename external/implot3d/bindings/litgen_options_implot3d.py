@@ -28,6 +28,9 @@ def litgen_options_implot3d() -> LitgenOptions:
     options.class_exclude_by_name__regex = "ImDrawList3D"
     options.member_exclude_by_type__regex = r"^ImVector|TextBuffer|Storage|ImPool|ImPlot3DFormatter|ImPlot3DLocator|ImDrawList3D"
 
+    options.class_copy__regex = "ImPlot3DStyle|Style"
+    options.class_copy_add_info_in_stub = True
+
     options.fn_params_buffer_types = join_string_by_pipe_char(
         [
             # // Scalar data types defined by imgui.h

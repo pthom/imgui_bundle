@@ -3683,7 +3683,7 @@ void implot_binding_manual(nb::module_& m)
           [](ImAxis axis, double v_min, double v_max, int n_ticks,
               const std::optional<std::vector<std::string>>& labels = std::nullopt, bool keep_default=false)
           {
-              if (!labels.has_value())
+              if (!labels.has_value() || labels.value().empty())
                   ImPlot::SetupAxisTicks(axis, v_min, v_max, n_ticks, nullptr, keep_default);
               else
               {
@@ -3703,7 +3703,7 @@ void implot_binding_manual(nb::module_& m)
           {
               int n_ticks = static_cast<int>(values.size());
 
-              if (!labels.has_value())
+              if (!labels.has_value() || labels.value().empty())
                   ImPlot::SetupAxisTicks(axis, values.data(), n_ticks, nullptr, keep_default);
               else
               {

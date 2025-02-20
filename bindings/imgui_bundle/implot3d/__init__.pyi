@@ -23,8 +23,13 @@ ImGui_Context = imgui.internal.Context
 ##################################################
 #    Manually inserted code (typedefs, etc.)
 ##################################################
-IMPLOT3D_AUTO = -1
-AUTO = -1
+IMPLOT3D_AUTO = -1  # Deduce variable automatically
+IMPLOT3D_AUTO_COL = ImVec4(0, 0, 0, -1)  # Deduce color automatically
+AUTO = IMPLOT3D_AUTO
+AUTO_COL = IMPLOT3D_AUTO_COL
+
+VERSION: str
+
 UInt = int
 Context = Any
 ImAxis3D = int  # enum ImAxis3D_
@@ -818,9 +823,13 @@ def get_plot_draw_list() -> ImDrawList:
 # [SECTION] Styles
 # -----------------------------------------------------------------------------
 
+# Get current style
 # IMPLOT3D_API ImPlot3DStyle& GetStyle();    /* original C++ signature */
 def get_style() -> Style:
-    """Get current style"""
+    pass
+
+# IMPLOT3D_API void SetStyle(const ImPlot3DStyle& style);    /* original C++ signature */
+def set_style(style: Style) -> None:
     pass
 
 # Set color styles
@@ -1363,6 +1372,10 @@ class Quat:
 # -----------------------------------------------------------------------------
 
 class Style:
+    """
+    (has support for copy.copy)
+    """
+
     # Item style
     # float LineWeight;    /* original C++ signature */
     line_weight: float  # Line weight in pixels
@@ -1390,12 +1403,25 @@ class Style:
     legend_inner_padding: ImVec2  # Legend inner padding from legend edges
     # ImVec2 LegendSpacing;    /* original C++ signature */
     legend_spacing: ImVec2  # Spacing between legend entries
+    # inline ImVec4 GetColor(ImPlot3DCol idx) const { return Colors[idx]; }    /* original C++ signature */
+    def get_color(self, idx: Col) -> ImVec4:
+        """(private API)"""
+        pass
+    # inline void SetColor(ImPlot3DCol idx, const ImVec4& col) { Colors[idx] = col; }    /* original C++ signature */
+    def set_color(self, idx: Col, col: ImVec4Like) -> None:
+        """(private API)"""
+        pass
     # Colormap
     # ImPlot3DColormap Colormap;    /* original C++ signature */
     colormap: Colormap  # The current colormap. Set this to either an ImPlot3DColormap_ enum or an index returned by AddColormap
     # IMPLOT3D_API ImPlot3DStyle();    /* original C++ signature */
+    @overload
     def __init__(self) -> None:
         """Constructor"""
+        pass
+    # ImPlot3DStyle(const ImPlot3DStyle& other) = default;    /* original C++ signature */
+    @overload
+    def __init__(self, other: Style) -> None:
         pass
 
 # -----------------------------------------------------------------------------
