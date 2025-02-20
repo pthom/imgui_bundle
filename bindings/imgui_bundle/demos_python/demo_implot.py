@@ -4,6 +4,7 @@ import math
 import numpy as np
 from numpy.typing import NDArray
 from imgui_bundle import imgui, implot, implot3d, imgui_md, immapp, ImVec2, ImVec4
+from imgui_bundle.demos_python.demos_implot3d import implot3d_demo
 
 
 # ========================
@@ -318,11 +319,12 @@ def demo_gui():
     if imgui.collapsing_header("ImPlot: Heatmap"):
         demo_heatmap()
 
+    if imgui.collapsing_header("ImPlot3D: Full Demo"):
+        implot3d_demo.demo_gui()
     if imgui.collapsing_header("ImPlot3D: Line plots ##2"):
         demo3d_lineplots()
     if imgui.collapsing_header("ImPlot3D: Surface Plots##2"):
         demo3d_surfaceplots()
-
 
 
 def main():
