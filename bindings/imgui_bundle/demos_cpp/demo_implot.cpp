@@ -3,6 +3,7 @@
 #include <vector>
 #include <cmath>
 #include "implot/implot.h"
+#include "implot3d/implot3d.h"
 #include "immapp/immapp.h"
 #include "demo_utils/api_demos.h"
 #include "imgui_internal.h"
@@ -247,6 +248,8 @@ void demo_implot()
         DemoHeatmap();
 
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
+    if (ImGui::CollapsingHeader("ImPlot3D: Full Demo"))
+        ImPlot3D::ShowAllDemos();
     if (ImGui::CollapsingHeader("ImPlot3D: Line plots##2"))
         Demo3D_LinePlots();
     if (ImGui::CollapsingHeader("ImPlot3D: Surface Plots##2"))

@@ -1048,6 +1048,13 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
     """Shows the ImPlot3D demo window"""
     pass
 
+# IMPLOT3D_API void ShowAllDemos();    /* original C++ signature */
+def show_all_demos() -> None:
+    """Bundle: ShowAllDemos is extracted from ShowDemoWindow,
+    so that it can be used without creating an ImGui window.
+    """
+    pass
+
 # IMPLOT3D_API void ShowStyleEditor(ImPlot3DStyle* ref = nullptr);    /* original C++ signature */
 def show_style_editor(ref: Optional[Style] = None) -> None:
     """Shows ImPlot3D style editor block (not a window)"""

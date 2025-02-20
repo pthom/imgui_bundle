@@ -1212,6 +1212,9 @@ void py_init_module_implot3d(nb::module_& m)
         nb::arg("p_open") = nb::none(),
         "Shows the ImPlot3D demo window");
 
+    m.def("show_all_demos",
+        ImPlot3D::ShowAllDemos, " Bundle: ShowAllDemos is extracted from ShowDemoWindow,\n so that it can be used without creating an ImGui window.");
+
     m.def("show_style_editor",
         ImPlot3D::ShowStyleEditor,
         nb::arg("ref") = nb::none(),
