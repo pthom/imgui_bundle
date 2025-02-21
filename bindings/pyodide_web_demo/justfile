@@ -21,7 +21,6 @@ scatter_wheel:
 # Copy the dist folder from the remote machine
 copy_dist: fiatlight_wheel scatter_wheel
     mkdir -p pyodide_dist
-    mkdir -p pyodide_dist
     rsync -avz --delete {{REMOTE_USER_HOST}}:{{REMOTE_FOLDER}}/dist/ pyodide_dist/
     cp {{FIATLIGHT_FOLDER}}/dist/*.whl pyodide_dist/
     cp {{PROBABL_FOLDER}}/scatter/dist/*.whl pyodide_dist/
