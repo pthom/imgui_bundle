@@ -421,8 +421,6 @@ def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
             imgui.same_line(); help_marker("Enable keyboard controls.")
             _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NavEnableGamepad", io.config_flags, imgui.ConfigFlags_.nav_enable_gamepad.value)
             imgui.same_line(); help_marker("Enable gamepad controls. Require backend to set io.BackendFlags |= ImGuiBackendFlags_HasGamepad.\n\nRead instructions in imgui.cpp for details.")
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NavEnableSetMousePos", io.config_flags, imgui.ConfigFlags_.nav_enable_set_mouse_pos.value)
-            imgui.same_line(); help_marker("Instruct navigation to move the mouse cursor. See comment for ImGuiConfigFlags_NavEnableSetMousePos.")
             _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouse", io.config_flags, imgui.ConfigFlags_.no_mouse.value)
             if io.config_flags & imgui.ConfigFlags_.no_mouse.value:
                 # The "NoMouse" option can get us stuck with a disabled mouse! Let's provide an alternative way to fix it:
@@ -2028,7 +2026,7 @@ def show_demo_window_layout():
         imgui.text("Manual wrapping:")
         style = imgui.get_style()
         buttons_count = 20
-        window_visible_x2 = imgui.get_window_pos().x + imgui.get_window_content_region_max().x
+        window_visible_x2 = imgui.get_window_pos().x + imgui.get_content_region_avail().x
         for n in range(buttons_count):
             imgui.push_id(n)
             imgui.button("Box", button_sz)
@@ -3231,7 +3229,7 @@ def imgui_demo_marker_highlight_zone(line_number: int) -> bool:
 # -----------------------------------------------------------------------------
 
 def main():
-    from imgui_bundle import hello_imgui, imgui_color_text_edit as ed
+    from imgui_bundle import hello_imgui, immapp,  imgui_color_text_edit as ed, imgui_ctx, imgui_md
 
     global CALLBACK_NAVIGATE_TO_MARKER
 
@@ -3245,7 +3243,8 @@ def main():
         show_demo_window(True)
 
     def gui_code():
-        code_editor.render("Code")
+        with imgui_ctx.push_font(imgui_md.get_code_font()):
+            code_editor.render("Code")
 
     def navigate_to_marker(marker):
         for i, line in enumerate(code_lines):
@@ -3253,14 +3252,12 @@ def main():
                 tokens = line.split('"')
                 line_marker = tokens[1]
                 if line_marker == marker:
-                    coords_start = ed.TextEditor.Coordinates()
-                    coords_start.m_line = i
-                    coords_start.m_column = 1
-                    coords_end = ed.TextEditor.Coordinates()
-                    coords_end.m_line = i
-                    coords_end.m_column = len(line)
-                    code_editor.set_cursor_position(coords_start)
-                    code_editor.set_selection(coords_start, coords_end)
+                    line_start = i
+                    col_start = 1
+                    line_end = i
+                    col_end = len(line)
+                    code_editor.set_cursor_position(line_start, col_start)
+                    code_editor.set_selection(line_start, col_start, line_end, col_end)
 
     CALLBACK_NAVIGATE_TO_MARKER = navigate_to_marker
 
@@ -3289,8 +3286,9 @@ def main():
     )
 
     runner_params.docking_params.dockable_windows = [win_demo, win_code]
-
-    hello_imgui.run(runner_params)
+    addons = immapp.AddOnsParams()
+    addons.with_markdown = True
+    immapp.run(runner_params, addons)
 
 
 if __name__ == "__main__":
