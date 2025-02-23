@@ -47,8 +47,8 @@ def notebook_do_patch_runners_if_needed() -> None:
             _run_app_function_and_display_image_in_notebook(app_function)
         return patched_run
 
-    immapp_run_backup = immapp.run
-    immapp.run = patch_runner(immapp_run_backup)
+    immapp.run_original = immapp.run
+    immapp.run = patch_runner(immapp.run_original)  # noqa
 
-    hello_imgui_run_backup = hello_imgui.run
-    hello_imgui.run = patch_runner(hello_imgui_run_backup)
+    hello_imgui.run_original = hello_imgui.run
+    hello_imgui.run = patch_runner(hello_imgui.run_original)  # noqa
