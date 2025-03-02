@@ -1,7 +1,7 @@
 [submodule "external/imgui/imgui"]
 	path = external/imgui/imgui
-	url = https://github.com/pthom/imgui.git
-	branch = imgui_bundle
+	url = https://github.com/uzoochogu/imgui.git
+	branch = browse-code-with-ImGuiColorTextEdit
 [submodule "external/glfw/glfw"]
 	path = external/glfw/glfw
 	url = https://github.com/glfw/glfw.git
@@ -40,8 +40,8 @@
 	branch = master
 [submodule "external/ImGuiColorTextEdit/ImGuiColorTextEdit"]
 	path = external/ImGuiColorTextEdit/ImGuiColorTextEdit
-	url = https://github.com/pthom/ImGuiColorTextEdit.git
-	branch = imgui_bundle
+	url = https://github.com/uzoochogu/ImGuiColorTextEdit.git
+	branch = disable-auto-scroll-up-on-text-set
 [submodule "external/ImGuizmo/ImGuizmo"]
 	path = external/ImGuizmo/ImGuizmo
 	url = https://github.com/pthom/ImGuizmo.git

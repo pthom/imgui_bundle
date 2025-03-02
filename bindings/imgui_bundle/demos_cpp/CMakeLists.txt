@@ -37,7 +37,7 @@ if (EMSCRIPTEN)
     target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${python_backends_folder}@/python_backends")
 endif()
 
-
+target_compile_definitions(your_target PRIVATE INSIDE_IMGUI_BUNDLE)
 target_link_libraries(demo_imguizmo_launcher PRIVATE demos_imguizmo)
 target_link_libraries(demo_node_editor_launcher PRIVATE demos_node_editor)
 target_link_libraries(demo_tex_inspect_launcher PRIVATE demos_tex_inspect)
