@@ -29,7 +29,7 @@ ImGuiZoomSliderFlags_None = im_zoom_slider.ImGuiZoomSliderFlags_.none  # noqa
 #                       ImGuizmo/ImGuizmo.h included by ImGuizmoPure/ImGuizmoPure.h                            //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # https://github.com/CedricGuillemet/ImGuizmo
-# v 1.89 WIP
+# v1.91.3 WIP
 #
 # The MIT License(MIT)
 #
@@ -77,6 +77,7 @@ ImGuiZoomSliderFlags_None = im_zoom_slider.ImGuiZoomSliderFlags_.none  # noqa
 
 
 
+
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       ImGuizmoPure/ImGuizmoPure.h continued                                                  //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -119,6 +120,15 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     @staticmethod
     def is_using() -> bool:
         """ return True if mouse IsOver or if the gizmo is in moving state"""
+        pass
+
+    @staticmethod
+    def is_using_view_manipulate() -> bool:
+        """ return True if the view gizmo is in moving state"""
+        pass
+    @staticmethod
+    def is_view_manipulate_hovered() -> bool:
+        """ only check if your mouse is over the view manipulator - no matter whether it's active or not"""
         pass
 
     @staticmethod
@@ -191,7 +201,60 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
 
 
     @staticmethod
+    def set_alternative_window(window: ImGuiWindow) -> None:
+        pass
+
+    @staticmethod
     def set_id(id: int) -> None:
+        pass
+
+    # ID stack/scopes
+    # Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about how ID are handled in dear imgui.
+    # - Those questions are answered and impacted by understanding of the ID stack system:
+    #   - "Q: Why is my widget not reacting when I click on it?"
+    #   - "Q: How can I have widgets with an empty label?"
+    #   - "Q: How can I have multiple widgets with the same label?"
+    # - Short version: ID are hashes of the entire ID stack. If you are creating widgets in a loop you most likely
+    #   want to push a unique identifier (e.g. object pointer, loop index) to uniquely differentiate them.
+    # - You can also use the "Label##foobar" syntax within widget label to distinguish them from each others.
+    # - In this header file we use the "label"/"name" terminology to denote a string that will be displayed + used as an ID,
+    #   whereas "str_id" denote a string that is only used as an ID and not normally displayed.
+    @staticmethod
+    @overload
+    def push_id(str_id: str) -> None:
+        """ push string into the ID stack (will hash string)."""
+        pass
+    @staticmethod
+    @overload
+    def push_id(str_id_begin: str, str_id_end: str) -> None:
+        """ push string into the ID stack (will hash string)."""
+        pass
+    @staticmethod
+    @overload
+    def push_id(ptr_id: Any) -> None:
+        """ push pointer into the ID stack (will hash pointer)."""
+        pass
+    @staticmethod
+    @overload
+    def push_id(int_id: int) -> None:
+        """ push integer into the ID stack (will hash integer)."""
+        pass
+    @staticmethod
+    def pop_id() -> None:
+        """ pop from the ID stack."""
+        pass
+    @staticmethod
+    @overload
+    def get_id(str_id: str) -> ImGuiID:
+        """ calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself"""
+        pass
+    @staticmethod
+    @overload
+    def get_id(str_id_begin: str, str_id_end: str) -> ImGuiID:
+        pass
+    @staticmethod
+    @overload
+    def get_id(ptr_id: Any) -> ImGuiID:
         pass
 
     # return True if the cursor is over the operation's gizmo
@@ -214,6 +277,10 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     @staticmethod
     def set_axis_limit(value: float) -> None:
         """ Configure the limit where axis are hidden"""
+        pass
+    @staticmethod
+    def set_axis_mask(x: bool, y: bool, z: bool) -> None:
+        """ Set an axis mask to permanently hide a given axis (True -> hidden, False -> shown)"""
         pass
     @staticmethod
     def set_plane_limit(value: float) -> None:

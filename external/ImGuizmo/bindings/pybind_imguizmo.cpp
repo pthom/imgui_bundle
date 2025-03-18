@@ -63,6 +63,12 @@ void py_init_module_imguizmo(nb::module_& m)
         pyNsImGuizmo.def("is_using",
             ImGuizmo::IsUsing, "return True if mouse IsOver or if the gizmo is in moving state");
 
+        pyNsImGuizmo.def("is_using_view_manipulate",
+            nb::overload_cast<>(ImGuizmo::IsUsingViewManipulate), "return True if the view gizmo is in moving state");
+
+        pyNsImGuizmo.def("is_view_manipulate_hovered",
+            nb::overload_cast<>(ImGuizmo::IsViewManipulateHovered), "only check if your mouse is over the view manipulator - no matter whether it's active or not");
+
         pyNsImGuizmo.def("is_using_any",
             ImGuizmo::IsUsingAny, "return True if any gizmo is in moving state");
 
@@ -109,8 +115,45 @@ void py_init_module_imguizmo(nb::module_& m)
                 .value("world", ImGuizmo::WORLD, "");
 
 
+        pyNsImGuizmo.def("set_alternative_window",
+            ImGuizmo::SetAlternativeWindow, nb::arg("window"));
+
         pyNsImGuizmo.def("set_id",
             ImGuizmo::SetID, nb::arg("id"));
+
+        pyNsImGuizmo.def("push_id",
+            nb::overload_cast<const char *>(ImGuizmo::PushID),
+            nb::arg("str_id"),
+            "push string into the ID stack (will hash string).");
+
+        pyNsImGuizmo.def("push_id",
+            nb::overload_cast<const char *, const char *>(ImGuizmo::PushID),
+            nb::arg("str_id_begin"), nb::arg("str_id_end"),
+            "push string into the ID stack (will hash string).");
+
+        pyNsImGuizmo.def("push_id",
+            nb::overload_cast<const void *>(ImGuizmo::PushID),
+            nb::arg("ptr_id"),
+            "push pointer into the ID stack (will hash pointer).");
+
+        pyNsImGuizmo.def("push_id",
+            nb::overload_cast<int>(ImGuizmo::PushID),
+            nb::arg("int_id"),
+            "push integer into the ID stack (will hash integer).");
+
+        pyNsImGuizmo.def("pop_id",
+            ImGuizmo::PopID, "pop from the ID stack.");
+
+        pyNsImGuizmo.def("get_id",
+            nb::overload_cast<const char *>(ImGuizmo::GetID),
+            nb::arg("str_id"),
+            "calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself");
+
+        pyNsImGuizmo.def("get_id",
+            nb::overload_cast<const char *, const char *>(ImGuizmo::GetID), nb::arg("str_id_begin"), nb::arg("str_id_end"));
+
+        pyNsImGuizmo.def("get_id",
+            nb::overload_cast<const void *>(ImGuizmo::GetID), nb::arg("ptr_id"));
 
         pyNsImGuizmo.def("is_over",
             nb::overload_cast<ImGuizmo::OPERATION>(ImGuizmo::IsOver), nb::arg("op"));
@@ -127,6 +170,11 @@ void py_init_module_imguizmo(nb::module_& m)
             ImGuizmo::SetAxisLimit,
             nb::arg("value"),
             "Configure the limit where axis are hidden");
+
+        pyNsImGuizmo.def("set_axis_mask",
+            ImGuizmo::SetAxisMask,
+            nb::arg("x"), nb::arg("y"), nb::arg("z"),
+            "Set an axis mask to permanently hide a given axis (True -> hidden, False -> shown)");
 
         pyNsImGuizmo.def("set_plane_limit",
             ImGuizmo::SetPlaneLimit,
