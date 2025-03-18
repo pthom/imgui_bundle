@@ -139,12 +139,12 @@ void py_init_module_imgui_main(nb::module_& m)
         ImGui::SetCurrentContext, nb::arg("ctx"));
 
     m.def("get_io",
-        ImGui::GetIO,
+        nb::overload_cast<>(ImGui::GetIO),
         "access the ImGuiIO structure (mouse/keyboard/gamepad inputs, time, various configuration options/flags)",
         nb::rv_policy::reference);
 
     m.def("get_platform_io",
-        ImGui::GetPlatformIO,
+        nb::overload_cast<>(ImGui::GetPlatformIO),
         "access the ImGuiPlatformIO structure (mostly hooks/functions to connect to platform/renderer and OS Clipboard, IME etc.)",
         nb::rv_policy::reference);
 
@@ -875,7 +875,7 @@ void py_init_module_imgui_main(nb::module_& m)
     m.def("separator_text",
         ImGui::SeparatorText,
         nb::arg("label"),
-        "currently: formatted text with an horizontal line");
+        "currently: formatted text with a horizontal line");
 
     m.def("button",
         [](const char * label, const std::optional<const ImVec2> & size = std::nullopt) -> bool
@@ -1032,9 +1032,9 @@ void py_init_module_imgui_main(nb::module_& m)
         "hyperlink text button, automatically open file/url when clicked");
 
     m.def("image",
-        [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImVec4> & border_col = std::nullopt)
+        [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt)
         {
-            auto Image_adapt_mutable_param_with_default_value = [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImVec4> & border_col = std::nullopt)
+            auto Image_adapt_mutable_param_with_default_value = [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt)
             {
 
                 const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
@@ -1051,6 +1051,41 @@ void py_init_module_imgui_main(nb::module_& m)
                         return ImVec2(1, 1);
                 }();
 
+                ImGui::Image(user_texture_id, image_size, uv0_or_default, uv1_or_default);
+            };
+
+            Image_adapt_mutable_param_with_default_value(user_texture_id, image_size, uv0, uv1);
+        },
+        nb::arg("user_texture_id"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(),
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)");
+
+    m.def("image_with_bg",
+        [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt)
+        {
+            auto ImageWithBg_adapt_mutable_param_with_default_value = [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt)
+            {
+
+                const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
+                    if (uv0.has_value())
+                        return uv0.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                const ImVec2& uv1_or_default = [&]() -> const ImVec2 {
+                    if (uv1.has_value())
+                        return uv1.value();
+                    else
+                        return ImVec2(1, 1);
+                }();
+
+                const ImVec4& bg_col_or_default = [&]() -> const ImVec4 {
+                    if (bg_col.has_value())
+                        return bg_col.value();
+                    else
+                        return ImVec4(0, 0, 0, 0);
+                }();
+
                 const ImVec4& tint_col_or_default = [&]() -> const ImVec4 {
                     if (tint_col.has_value())
                         return tint_col.value();
@@ -1058,20 +1093,13 @@ void py_init_module_imgui_main(nb::module_& m)
                         return ImVec4(1, 1, 1, 1);
                 }();
 
-                const ImVec4& border_col_or_default = [&]() -> const ImVec4 {
-                    if (border_col.has_value())
-                        return border_col.value();
-                    else
-                        return ImVec4(0, 0, 0, 0);
-                }();
-
-                ImGui::Image(user_texture_id, image_size, uv0_or_default, uv1_or_default, tint_col_or_default, border_col_or_default);
+                ImGui::ImageWithBg(user_texture_id, image_size, uv0_or_default, uv1_or_default, bg_col_or_default, tint_col_or_default);
             };
 
-            Image_adapt_mutable_param_with_default_value(user_texture_id, image_size, uv0, uv1, tint_col, border_col);
+            ImageWithBg_adapt_mutable_param_with_default_value(user_texture_id, image_size, uv0, uv1, bg_col, tint_col);
         },
-        nb::arg("user_texture_id"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("border_col") = nb::none(),
-        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * border_col: ImVec4(0, 0, 0, 0)");
+        nb::arg("user_texture_id"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("bg_col") = nb::none(), nb::arg("tint_col") = nb::none(),
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * bg_col: ImVec4(0, 0, 0, 0)\n        * tint_col: ImVec4(1, 1, 1, 1)");
 
     m.def("image_button",
         [](const char * str_id, ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt) -> bool
@@ -2649,7 +2677,7 @@ void py_init_module_imgui_main(nb::module_& m)
         ImGui::PopClipRect);
 
     m.def("set_item_default_focus",
-        ImGui::SetItemDefaultFocus, "make last item the default focused item of of a newly appearing window.");
+        ImGui::SetItemDefaultFocus, "make last item the default focused item of a newly appearing window.");
 
     m.def("set_keyboard_focus_here",
         ImGui::SetKeyboardFocusHere,
@@ -2855,7 +2883,7 @@ void py_init_module_imgui_main(nb::module_& m)
     m.def("get_key_name",
         ImGui::GetKeyName,
         nb::arg("key"),
-        "[DEBUG] returns English name of the key. Those names a provided for debugging purpose and are not meant to be saved persistently not compared.",
+        "[DEBUG] returns English name of the key. Those names are provided for debugging purpose and are not meant to be saved persistently nor compared.",
         nb::rv_policy::reference);
 
     m.def("set_next_frame_want_capture_keyboard",
@@ -2893,6 +2921,11 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::overload_cast<ImGuiMouseButton>(ImGui::IsMouseDoubleClicked),
         nb::arg("button"),
         "did mouse button double-clicked? Same as GetMouseClickedCount() == 2. (note that a double-click will also report IsMouseClicked() == True)");
+
+    m.def("is_mouse_released_with_delay",
+        nb::overload_cast<ImGuiMouseButton, float>(ImGui::IsMouseReleasedWithDelay),
+        nb::arg("button"), nb::arg("delay"),
+        "delayed mouse release (use very sparingly!). Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test. This is a very rarely used UI idiom, but some apps use this: e.g. MS Explorer single click on an icon to rename.");
 
     m.def("get_mouse_clicked_count",
         ImGui::GetMouseClickedCount,
@@ -3041,12 +3074,12 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("no_nav", ImGuiWindowFlags_NoNav, "")
             .value("no_decoration", ImGuiWindowFlags_NoDecoration, "")
             .value("no_inputs", ImGuiWindowFlags_NoInputs, "")
+            .value("dock_node_host", ImGuiWindowFlags_DockNodeHost, "Don't use! For internal use by Begin()/NewFrame()")
             .value("child_window", ImGuiWindowFlags_ChildWindow, "Don't use! For internal use by BeginChild()")
             .value("tooltip", ImGuiWindowFlags_Tooltip, "Don't use! For internal use by BeginTooltip()")
             .value("popup", ImGuiWindowFlags_Popup, "Don't use! For internal use by BeginPopup()")
             .value("modal", ImGuiWindowFlags_Modal, "Don't use! For internal use by BeginPopupModal()")
-            .value("child_menu", ImGuiWindowFlags_ChildMenu, "Don't use! For internal use by BeginMenu()")
-            .value("dock_node_host", ImGuiWindowFlags_DockNodeHost, "Don't use! For internal use by Begin()/NewFrame()");
+            .value("child_menu", ImGuiWindowFlags_ChildMenu, "Don't use! For internal use by BeginMenu()");
 
 
     auto pyEnumChildFlags_ =
@@ -3100,7 +3133,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("callback_always", ImGuiInputTextFlags_CallbackAlways, "Callback on each iteration. User code may query cursor position, modify text buffer.")
             .value("callback_char_filter", ImGuiInputTextFlags_CallbackCharFilter, "Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.")
             .value("callback_resize", ImGuiInputTextFlags_CallbackResize, "Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)")
-            .value("callback_edit", ImGuiInputTextFlags_CallbackEdit, "Callback on any edit (note that InputText() already returns True on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)");
+            .value("callback_edit", ImGuiInputTextFlags_CallbackEdit, "Callback on any edit. Note that InputText() already returns True on edit + you can always use IsItemEdited(). The callback is useful to manipulate the underlying buffer while focus is active.");
 
 
     auto pyEnumTreeNodeFlags_ =
@@ -3119,10 +3152,11 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("frame_padding", ImGuiTreeNodeFlags_FramePadding, "Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding() before the node.")
             .value("span_avail_width", ImGuiTreeNodeFlags_SpanAvailWidth, "Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line without using AllowOverlap mode.")
             .value("span_full_width", ImGuiTreeNodeFlags_SpanFullWidth, "Extend hit box to the left-most and right-most edges (cover the indent area).")
-            .value("span_text_width", ImGuiTreeNodeFlags_SpanTextWidth, "Narrow hit box + narrow hovering highlight, will only cover the label text.")
-            .value("span_all_columns", ImGuiTreeNodeFlags_SpanAllColumns, "Frame will span all columns of its container table (text will still fit in current column)")
+            .value("span_label_width", ImGuiTreeNodeFlags_SpanLabelWidth, "Narrow hit box + narrow hovering highlight, will only cover the label text.")
+            .value("span_all_columns", ImGuiTreeNodeFlags_SpanAllColumns, "Frame will span all columns of its container table (label will still fit in current column)")
+            .value("label_span_all_columns", ImGuiTreeNodeFlags_LabelSpanAllColumns, "Label will span all columns of its container table")
             .value("nav_left_jumps_back_here", ImGuiTreeNodeFlags_NavLeftJumpsBackHere, "(WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)")
-            .value("collapsing_header", ImGuiTreeNodeFlags_CollapsingHeader, "ImGuiTreeNodeFlags_NoScrollOnOpen     = 1 << 16,  // FIXME: TODO: Disable automatic scroll on TreePop() if node got just open and contents is not visible");
+            .value("collapsing_header", ImGuiTreeNodeFlags_CollapsingHeader, "");
 
 
     auto pyEnumPopupFlags_ =
@@ -3274,6 +3308,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("float", ImGuiDataType_Float, "float")
             .value("double", ImGuiDataType_Double, "double")
             .value("bool", ImGuiDataType_Bool, "bool (provided for user convenience, not supported by scalar widgets)")
+            .value("string", ImGuiDataType_String, "char* (provided for user convenience, not supported by scalar widgets)")
             .value("count", ImGuiDataType_COUNT, "");
 
 
@@ -3417,6 +3452,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("keypad_equal", ImGuiKey_KeypadEqual, "")
             .value("app_back", ImGuiKey_AppBack, "Available on some keyboard/mouses. Often referred as \"Browser Back\"")
             .value("app_forward", ImGuiKey_AppForward, "")
+            .value("oem102", ImGuiKey_Oem102, "Non-US backslash.")
             .value("gamepad_start", ImGuiKey_GamepadStart, "Menu (Xbox)      + (Switch)   Start/Options (PS)")
             .value("gamepad_back", ImGuiKey_GamepadBack, "View (Xbox)      - (Switch)   Share (PS)")
             .value("gamepad_face_left", ImGuiKey_GamepadFaceLeft, "X (Xbox)         Y (Switch)   Square (PS)        // Tap: Toggle Menu. Hold: Windowing mode (Focus/Move/Resize windows)")
@@ -3592,6 +3628,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("scrollbar_rounding", ImGuiStyleVar_ScrollbarRounding, "float     ScrollbarRounding")
             .value("grab_min_size", ImGuiStyleVar_GrabMinSize, "float     GrabMinSize")
             .value("grab_rounding", ImGuiStyleVar_GrabRounding, "float     GrabRounding")
+            .value("image_border_size", ImGuiStyleVar_ImageBorderSize, "float     ImageBorderSize")
             .value("layout_align", ImGuiStyleVar_LayoutAlign, "float     LayoutAlign")
             .value("tab_rounding", ImGuiStyleVar_TabRounding, "float     TabRounding")
             .value("tab_border_size", ImGuiStyleVar_TabBorderSize, "float     TabBorderSize")
@@ -3631,9 +3668,10 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("no_side_preview", ImGuiColorEditFlags_NoSidePreview, "// ColorPicker: disable bigger color preview on right side of the picker, use small color square preview instead.")
             .value("no_drag_drop", ImGuiColorEditFlags_NoDragDrop, "// ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.")
             .value("no_border", ImGuiColorEditFlags_NoBorder, "// ColorButton: disable border (which is enforced by default)")
+            .value("alpha_opaque", ImGuiColorEditFlags_AlphaOpaque, "// ColorEdit, ColorPicker, ColorButton: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling ColorEdit4()/ColorPicker4(). For ColorButton() this does the same as _NoAlpha.")
+            .value("alpha_no_bg", ImGuiColorEditFlags_AlphaNoBg, "// ColorEdit, ColorPicker, ColorButton: disable rendering a checkerboard background behind transparent color.")
+            .value("alpha_preview_half", ImGuiColorEditFlags_AlphaPreviewHalf, "// ColorEdit, ColorPicker, ColorButton: display half opaque / half transparent preview.")
             .value("alpha_bar", ImGuiColorEditFlags_AlphaBar, "// ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.")
-            .value("alpha_preview", ImGuiColorEditFlags_AlphaPreview, "// ColorEdit, ColorPicker, ColorButton: display preview as a transparent color over a checkerboard, instead of opaque.")
-            .value("alpha_preview_half", ImGuiColorEditFlags_AlphaPreviewHalf, "// ColorEdit, ColorPicker, ColorButton: display half opaque / half checkerboard, instead of opaque.")
             .value("hdr", ImGuiColorEditFlags_HDR, "// (WIP) ColorEdit: Currently only disable 0.0..1.0 limits in RGBA edition (note: you probably want to use ImGuiColorEditFlags_Float flag as well).")
             .value("display_rgb", ImGuiColorEditFlags_DisplayRGB, "[Display]    // ColorEdit: override _display_ type among RGB/HSV/Hex. ColorPicker: select any combination using one or more of RGB/HSV/Hex.")
             .value("display_hsv", ImGuiColorEditFlags_DisplayHSV, "[Display]    // \"")
@@ -3645,6 +3683,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("input_rgb", ImGuiColorEditFlags_InputRGB, "[Input]      // ColorEdit, ColorPicker: input and output data in RGB format.")
             .value("input_hsv", ImGuiColorEditFlags_InputHSV, "[Input]      // ColorEdit, ColorPicker: input and output data in HSV format.")
             .value("default_options_", ImGuiColorEditFlags_DefaultOptions_, " Defaults Options. You can set application defaults using SetColorEditOptions(). The intent is that you probably don't want to\n override them in most of your calls. Let the user choose via the option menu and/or call SetColorEditOptions() once during startup.")
+            .value("alpha_mask_", ImGuiColorEditFlags_AlphaMask_, "")
             .value("display_mask_", ImGuiColorEditFlags_DisplayMask_, "")
             .value("data_type_mask_", ImGuiColorEditFlags_DataTypeMask_, "")
             .value("picker_mask_", ImGuiColorEditFlags_PickerMask_, "")
@@ -3684,6 +3723,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("resize_nesw", ImGuiMouseCursor_ResizeNESW, "When hovering over the bottom-left corner of a window")
             .value("resize_nwse", ImGuiMouseCursor_ResizeNWSE, "When hovering over the bottom-right corner of a window")
             .value("hand", ImGuiMouseCursor_Hand, "(Unused by Dear ImGui functions. Use for e.g. hyperlinks)")
+            .value("wait", ImGuiMouseCursor_Wait, "When waiting for something to process/load.")
+            .value("progress", ImGuiMouseCursor_Progress, "When waiting for something to process/load, but application is still interactive.")
             .value("not_allowed", ImGuiMouseCursor_NotAllowed, "When hovering something with disallowed interaction. Usually a crossed circle.")
             .value("count", ImGuiMouseCursor_COUNT, "");
 
@@ -5826,6 +5867,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("window_padding", &ImGuiStyle::WindowPadding, "Padding within a window.")
         .def_rw("window_rounding", &ImGuiStyle::WindowRounding, "Radius of window corners rounding. Set to 0.0 to have rectangular windows. Large values tend to lead to variety of artifacts and are not recommended.")
         .def_rw("window_border_size", &ImGuiStyle::WindowBorderSize, "Thickness of border around windows. Generally set to 0.0 or 1.0. (Other values are not well tested and more CPU/GPU costly).")
+        .def_rw("window_border_hover_padding", &ImGuiStyle::WindowBorderHoverPadding, "Hit-testing extent outside/inside resizing border. Also extend determination of hovered window. Generally meaningfully larger than WindowBorderSize to make it easy to reach borders.")
         .def_rw("window_min_size", &ImGuiStyle::WindowMinSize, "Minimum window size. This is a global setting. If you want to constrain individual windows, use SetNextWindowSizeConstraints().")
         .def_rw("window_title_align", &ImGuiStyle::WindowTitleAlign, "Alignment for title bar text. Defaults to (0.0,0.5) for left-aligned,vertically centered.")
         .def_rw("window_menu_button_position", &ImGuiStyle::WindowMenuButtonPosition, "Side of the collapsing/docking button in the title bar (None/Left/Right). Defaults to ImGuiDir_Left.")
@@ -5848,9 +5890,11 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("grab_rounding", &ImGuiStyle::GrabRounding, "Radius of grabs corners rounding. Set to 0.0 to have rectangular slider grabs.")
         .def_rw("layout_align", &ImGuiStyle::LayoutAlign, "Element alignment inside horizontal and vertical layouts (0.0 - left/top, 1.0 - right/bottom, 0.5 - center).")
         .def_rw("log_slider_deadzone", &ImGuiStyle::LogSliderDeadzone, "The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.")
+        .def_rw("image_border_size", &ImGuiStyle::ImageBorderSize, "Thickness of border around Image() calls.")
         .def_rw("tab_rounding", &ImGuiStyle::TabRounding, "Radius of upper corners of a tab. Set to 0.0 to have rectangular tabs.")
         .def_rw("tab_border_size", &ImGuiStyle::TabBorderSize, "Thickness of border around tabs.")
-        .def_rw("tab_min_width_for_close_button", &ImGuiStyle::TabMinWidthForCloseButton, "Minimum width for close button to appear on an unselected tab when hovered. Set to 0.0 to always show when hovering, set to FLT_MAX to never show close button unless selected.")
+        .def_rw("tab_close_button_min_width_selected", &ImGuiStyle::TabCloseButtonMinWidthSelected, "-1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width.")
+        .def_rw("tab_close_button_min_width_unselected", &ImGuiStyle::TabCloseButtonMinWidthUnselected, "-1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width. FLT_MAX: never show close button when unselected.")
         .def_rw("tab_bar_border_size", &ImGuiStyle::TabBarBorderSize, "Thickness of tab-bar separator, which takes on the tab active color to denote focus.")
         .def_rw("tab_bar_overline_size", &ImGuiStyle::TabBarOverlineSize, "Thickness of tab-bar overline, which highlights the selected tab-bar.")
         .def_rw("table_angled_headers_angle", &ImGuiStyle::TableAngledHeadersAngle, "Angle of angled headers (supported values range from -50.0 degrees to +50.0 degrees).")
@@ -5962,7 +6006,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_error_recovery_enable_debug_log", &ImGuiIO::ConfigErrorRecoveryEnableDebugLog, "= True       // Enable debug log output on recoverable errors.")
         .def_rw("config_error_recovery_enable_tooltip", &ImGuiIO::ConfigErrorRecoveryEnableTooltip, "= True       // Enable tooltip on recoverable errors. The tooltip include a way to enable asserts if they were disabled.")
         .def_rw("config_debug_is_debugger_present", &ImGuiIO::ConfigDebugIsDebuggerPresent, "= False          // Enable various tools calling IM_DEBUG_BREAK().")
-        .def_rw("config_debug_highlight_id_conflicts", &ImGuiIO::ConfigDebugHighlightIdConflicts, "= True           // Highlight and show an error message when multiple items have conflicting identifiers.")
+        .def_rw("config_debug_highlight_id_conflicts", &ImGuiIO::ConfigDebugHighlightIdConflicts, "= True           // Highlight and show an error message popup when multiple items have conflicting identifiers.")
+        .def_rw("config_debug_highlight_id_conflicts_show_item_picker", &ImGuiIO::ConfigDebugHighlightIdConflictsShowItemPicker, "=True // Show \"Item Picker\" button in aforementioned popup.")
         .def_rw("config_debug_begin_return_value_once", &ImGuiIO::ConfigDebugBeginReturnValueOnce, "= False          // First-time calls to Begin()/BeginChild() will return False. NEEDS TO BE SET AT APPLICATION BOOT TIME if you don't want to miss windows.")
         .def_rw("config_debug_begin_return_value_loop", &ImGuiIO::ConfigDebugBeginReturnValueLoop, "= False          // Some calls to Begin()/BeginChild() will return False. Will cycle through window depths then repeat. Suggested use: add \"io.ConfigDebugBeginReturnValue = io.KeyShift\" in your main loop then occasionally press SHIFT. Windows should be flickering while running.")
         .def_rw("config_debug_ignore_focus_loss", &ImGuiIO::ConfigDebugIgnoreFocusLoss, "= False          // Ignore io.AddFocusEvent(False), consequently not calling io.ClearInputKeys()/io.ClearInputMouse() in input processing.")
@@ -6098,6 +6143,12 @@ void py_init_module_imgui_main(nb::module_& m)
                 return self.MouseReleased;
             },
             "Mouse button went from Down to !Down")
+        .def_prop_ro("mouse_released_time",
+            [](ImGuiIO &self) -> nb::ndarray<double, nb::numpy, nb::shape<5>, nb::c_contig>
+            {
+                return self.MouseReleasedTime;
+            },
+            "Time of last released (rarely used! but useful to handle delayed single-click when trying to disambiguate them from double-click).")
         .def_prop_ro("mouse_down_owned",
             [](ImGuiIO &self) -> nb::ndarray<bool, nb::numpy, nb::shape<5>, nb::c_contig>
             {
@@ -6111,7 +6162,7 @@ void py_init_module_imgui_main(nb::module_& m)
             },
             "Track if button was clicked inside a dear imgui window.")
         .def_rw("mouse_wheel_request_axis_swap", &ImGuiIO::MouseWheelRequestAxisSwap, "On a non-Mac system, holding SHIFT requests WheelY to perform the equivalent of a WheelX event. On a Mac system this is already enforced by the system.")
-        .def_rw("mouse_ctrl_left_as_right_click", &ImGuiIO::MouseCtrlLeftAsRightClick, "(OSX) Set to True when the current click was a ctrl-click that spawned a simulated right click")
+        .def_rw("mouse_ctrl_left_as_right_click", &ImGuiIO::MouseCtrlLeftAsRightClick, "(OSX) Set to True when the current click was a Ctrl+click that spawned a simulated right click")
         .def_prop_ro("mouse_down_duration",
             [](ImGuiIO &self) -> nb::ndarray<float, nb::numpy, nb::shape<5>, nb::c_contig>
             {
@@ -6153,7 +6204,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
     auto pyClassImGuiInputTextCallbackData =
         nb::class_<ImGuiInputTextCallbackData>
-            (m, "InputTextCallbackData", " Shared state of InputText(), passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.\n The callback function should return 0 by default.\n Callbacks (follow a flag name and see comments in ImGuiInputTextFlags_ declarations for more details)\n - ImGuiInputTextFlags_CallbackEdit:        Callback on buffer edit (note that InputText() already returns True on edit, the callback is useful mainly to manipulate the underlying buffer while focus is active)\n - ImGuiInputTextFlags_CallbackAlways:      Callback on each iteration\n - ImGuiInputTextFlags_CallbackCompletion:  Callback on pressing TAB\n - ImGuiInputTextFlags_CallbackHistory:     Callback on pressing Up/Down arrows\n - ImGuiInputTextFlags_CallbackCharFilter:  Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.\n - ImGuiInputTextFlags_CallbackResize:      Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow.")
+            (m, "InputTextCallbackData", " Shared state of InputText(), passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.\n The callback function should return 0 by default.\n Callbacks (follow a flag name and see comments in ImGuiInputTextFlags_ declarations for more details)\n - ImGuiInputTextFlags_CallbackEdit:        Callback on buffer edit. Note that InputText() already returns True on edit + you can always use IsItemEdited(). The callback is useful to manipulate the underlying buffer while focus is active.\n - ImGuiInputTextFlags_CallbackAlways:      Callback on each iteration\n - ImGuiInputTextFlags_CallbackCompletion:  Callback on pressing TAB\n - ImGuiInputTextFlags_CallbackHistory:     Callback on pressing Up/Down arrows\n - ImGuiInputTextFlags_CallbackCharFilter:  Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.\n - ImGuiInputTextFlags_CallbackResize:      Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow.")
         .def_rw("ctx", &ImGuiInputTextCallbackData::Ctx, "Parent UI context")
         .def_rw("event_flag", &ImGuiInputTextCallbackData::EventFlag, "One ImGuiInputTextFlags_Callback*    // Read-only")
         .def_rw("flags", &ImGuiInputTextCallbackData::Flags, "What user passed to InputText()      // Read-only")
@@ -6345,6 +6396,10 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImGuiTextBuffer::empty, "(private API)")
         .def("clear",
             &ImGuiTextBuffer::clear, "(private API)")
+        .def("resize",
+            &ImGuiTextBuffer::resize,
+            nb::arg("size"),
+            "(private API)\n\n Similar to resize(0) on ImVector: empty string but don't free buffer.")
         .def("reserve",
             &ImGuiTextBuffer::reserve,
             nb::arg("capacity"),
@@ -7120,24 +7175,24 @@ void py_init_module_imgui_main(nb::module_& m)
 
     auto pyClassImFontConfig =
         nb::class_<ImFontConfig>
-            (m, "ImFontConfig", "")
+            (m, "ImFontConfig", "A font input/source (we may rename this to ImFontSource in the future)")
         .def_rw("font_data", &ImFontConfig::FontData, "// TTF/OTF data")
         .def_rw("font_data_size", &ImFontConfig::FontDataSize, "// TTF/OTF data size")
         .def_rw("font_data_owned_by_atlas", &ImFontConfig::FontDataOwnedByAtlas, "True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).")
-        .def_rw("font_no", &ImFontConfig::FontNo, "0        // Index of font within TTF/OTF file")
-        .def_rw("size_pixels", &ImFontConfig::SizePixels, "// Size in pixels for rasterizer (more or less maps to the resulting font height).")
-        .def_rw("oversample_h", &ImFontConfig::OversampleH, "2        // Rasterize at higher quality for sub-pixel positioning. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.")
-        .def_rw("oversample_v", &ImFontConfig::OversampleV, "1        // Rasterize at higher quality for sub-pixel positioning. This is not really useful as we don't use sub-pixel positions on the Y axis.")
+        .def_rw("merge_mode", &ImFontConfig::MergeMode, "False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.")
         .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH, "False    // Align every glyph AdvanceX to pixel boundaries. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.")
-        .def_rw("glyph_extra_spacing", &ImFontConfig::GlyphExtraSpacing, "0, 0     // Extra spacing (in pixels) between glyphs when rendered: essentially add to glyph->AdvanceX. Only X axis is supported for now.")
+        .def_rw("font_no", &ImFontConfig::FontNo, "0        // Index of font within TTF/OTF file")
+        .def_rw("oversample_h", &ImFontConfig::OversampleH, "0 (2)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1 or 2 depending on size. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.")
+        .def_rw("oversample_v", &ImFontConfig::OversampleV, "0 (1)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1. This is not really useful as we don't use sub-pixel positions on the Y axis.")
+        .def_rw("size_pixels", &ImFontConfig::SizePixels, "// Size in pixels for rasterizer (more or less maps to the resulting font height).")
         .def_rw("glyph_offset", &ImFontConfig::GlyphOffset, "0, 0     // Offset all glyphs from this font input.")
         .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX, "0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font")
         .def_rw("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX, "FLT_MAX  // Maximum AdvanceX for glyphs")
-        .def_rw("merge_mode", &ImFontConfig::MergeMode, "False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.")
+        .def_rw("glyph_extra_advance_x", &ImFontConfig::GlyphExtraAdvanceX, "0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this.")
         .def_rw("font_builder_flags", &ImFontConfig::FontBuilderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")
         .def_rw("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.")
         .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity, "1.0     // DPI scale for rasterization, not altering other font metrics: make it easy to swap between e.g. a 100% and a 400% fonts for a zooming display. IMPORTANT: If you increase this it is expected that you increase font scale accordingly, otherwise quality may look lowered.")
-        .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
+        .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
         .def_rw("dst_font", &ImFontConfig::DstFont, "")
         .def(nb::init<>())
         ;
@@ -7162,7 +7217,7 @@ void py_init_module_imgui_main(nb::module_& m)
         },
         nb::arg("advance_x") = float(), nb::arg("x0") = float(), nb::arg("y0") = float(), nb::arg("x1") = float(), nb::arg("y1") = float(), nb::arg("u0") = float(), nb::arg("v0") = float(), nb::arg("u1") = float(), nb::arg("v1") = float()
         )
-        .def_rw("advance_x", &ImFontGlyph::AdvanceX, "Distance to next character (= data from font + ImFontConfig::GlyphExtraSpacing.x baked in)")
+        .def_rw("advance_x", &ImFontGlyph::AdvanceX, "Horizontal distance to advance layout with")
         .def_rw("x0", &ImFontGlyph::X0, "Glyph corners")
         .def_rw("y0", &ImFontGlyph::Y0, "Glyph corners")
         .def_rw("x1", &ImFontGlyph::X1, "Glyph corners")
@@ -7263,10 +7318,10 @@ void py_init_module_imgui_main(nb::module_& m)
             nb::rv_policy::reference)
         .def("clear_input_data",
             &ImFontAtlas::ClearInputData, "Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.")
+        .def("clear_fonts",
+            &ImFontAtlas::ClearFonts, "Clear input+output font data (same as ClearInputData() + glyphs storage, UV coordinates).")
         .def("clear_tex_data",
             &ImFontAtlas::ClearTexData, "Clear output texture data (CPU side). Saves RAM once the texture has been copied to graphics memory.")
-        .def("clear_fonts",
-            &ImFontAtlas::ClearFonts, "Clear output font data (glyphs storage, UV coordinates).")
         .def("clear",
             &ImFontAtlas::Clear, "Clear all input and output.")
         .def("build",
@@ -7332,15 +7387,15 @@ void py_init_module_imgui_main(nb::module_& m)
             "(private API)",
             nb::rv_policy::reference)
         .def("calc_custom_rect_uv",
-            &ImFontAtlas::CalcCustomRectUV, nb::arg("rect"), nb::arg("out_uv_min"), nb::arg("out_uv_max"))
-        .def("get_mouse_cursor_tex_data",
-            &ImFontAtlas::GetMouseCursorTexData, nb::arg("cursor"), nb::arg("out_offset"), nb::arg("out_size"), nb::arg("out_uv_border"), nb::arg("out_uv_fill"))
+            &ImFontAtlas::CalcCustomRectUV,
+            nb::arg("rect"), nb::arg("out_uv_min"), nb::arg("out_uv_max"),
+            "[Internal]")
         .def_rw("flags", &ImFontAtlas::Flags, "Build flags (see ImFontAtlasFlags_)")
         .def_rw("tex_id", &ImFontAtlas::TexID, "User data to refer to the texture once it has been uploaded to user's graphic systems. It is passed back to you during rendering via the ImDrawCmd structure.")
         .def_rw("tex_desired_width", &ImFontAtlas::TexDesiredWidth, "Texture width desired by user before Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height.")
         .def_rw("tex_glyph_padding", &ImFontAtlas::TexGlyphPadding, "FIXME: Should be called \"TexPackPadding\". Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method doesn't rely on bilinear filtering you may set this to 0 (will also need to set AntiAliasedLinesUseTex = False).")
-        .def_rw("locked", &ImFontAtlas::Locked, "Marked as Locked by ImGui::NewFrame() so attempt to modify the atlas will assert.")
         .def_rw("user_data", &ImFontAtlas::UserData, "Store your own atlas related user-data (if e.g. you have multiple font atlas).")
+        .def_rw("locked", &ImFontAtlas::Locked, "Marked as Locked by ImGui::NewFrame() so attempt to modify the atlas will assert.")
         .def_rw("tex_ready", &ImFontAtlas::TexReady, "Set when texture was built matching current font input")
         .def_rw("tex_pixels_use_colors", &ImFontAtlas::TexPixelsUseColors, "Tell whether our texture data is known to use colors (rather than just alpha channel), in order to help backend select a format.")
         .def_rw("tex_width", &ImFontAtlas::TexWidth, "Texture width calculated during Build().")
@@ -7349,7 +7404,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tex_uv_white_pixel", &ImFontAtlas::TexUvWhitePixel, "Texture coordinates to a white pixel")
         .def_rw("fonts", &ImFontAtlas::Fonts, "Hold all the fonts returned by AddFont*. Fonts[0] is the default font upon calling ImGui::NewFrame(), use ImGui::PushFont()/PopFont() to change the current font.")
         .def_rw("custom_rects", &ImFontAtlas::CustomRects, "Rectangles for packing custom texture data into the atlas.")
-        .def_rw("config_data", &ImFontAtlas::ConfigData, "Configuration data")
+        .def_rw("sources", &ImFontAtlas::Sources, "Source/configuration data")
         .def_ro("font_builder_io", &ImFontAtlas::FontBuilderIO, "Opaque interface to a font builder (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE).")
         .def_rw("font_builder_flags", &ImFontAtlas::FontBuilderFlags, "Shared flags (for all fonts) for custom font builder. THIS IS BUILD IMPLEMENTATION DEPENDENT. Per-font override is also available in ImFontConfig.")
         .def_rw("pack_id_mouse_cursors", &ImFontAtlas::PackIdMouseCursors, "Custom texture rectangle ID for white pixel and mouse cursors")
@@ -7360,25 +7415,24 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImFont =
         nb::class_<ImFont>
             (m, "ImFont", " Font runtime data and rendering\n ImFontAtlas automatically loads a default embedded font for you when you call GetTexDataAsAlpha8() or GetTexDataAsRGBA32().")
-        .def_rw("index_advance_x", &ImFont::IndexAdvanceX, "12-16 // out //            // Sparse. Glyphs->AdvanceX in a directly indexable way (cache-friendly for CalcTextSize functions which only this info, and are often bottleneck in large UI).")
+        .def_rw("index_advance_x", &ImFont::IndexAdvanceX, "12-16 // out // Sparse. Glyphs->AdvanceX in a directly indexable way (cache-friendly for CalcTextSize functions which only this info, and are often bottleneck in large UI).")
         .def_rw("fallback_advance_x", &ImFont::FallbackAdvanceX, "4     // out // = FallbackGlyph->AdvanceX")
-        .def_rw("font_size", &ImFont::FontSize, "4     // in  //            // Height of characters/line, set during loading (don't change after loading)")
-        .def_rw("index_lookup", &ImFont::IndexLookup, "12-16 // out //            // Sparse. Index glyphs by Unicode code-point.")
-        .def_rw("glyphs", &ImFont::Glyphs, "12-16 // out //            // All glyphs.")
-        .def_ro("fallback_glyph", &ImFont::FallbackGlyph, "4-8   // out // = FindGlyph(FontFallbackChar)")
-        .def_rw("container_atlas", &ImFont::ContainerAtlas, "4-8   // out //            // What we has been loaded into")
-        .def_ro("config_data", &ImFont::ConfigData, "4-8   // in  //            // Pointer within ContainerAtlas->ConfigData to ConfigDataCount instances")
-        .def_rw("config_data_count", &ImFont::ConfigDataCount, "2     // in  // ~ 1        // Number of ImFontConfig involved in creating this font. Bigger than 1 when merging multiple font sources into one ImFont.")
+        .def_rw("font_size", &ImFont::FontSize, "4     // in  // Height of characters/line, set during loading (don't change after loading)")
+        .def_rw("glyphs", &ImFont::Glyphs, "12-16 // out // All glyphs.")
+        .def_rw("fallback_glyph", &ImFont::FallbackGlyph, "4-8   // out // = FindGlyph(FontFallbackChar)")
+        .def_rw("container_atlas", &ImFont::ContainerAtlas, "4-8   // out // What we has been loaded into")
+        .def_rw("sources", &ImFont::Sources, "4-8   // in  // Pointer within ContainerAtlas->Sources[], to SourcesCount instances")
+        .def_rw("sources_count", &ImFont::SourcesCount, "2     // in  // Number of ImFontConfig involved in creating this font. Usually 1, or >1 when merging multiple font sources into one ImFont.")
         .def_rw("ellipsis_char_count", &ImFont::EllipsisCharCount, "1     // out // 1 or 3")
-        .def_rw("ellipsis_char", &ImFont::EllipsisChar, "2-4   // out // = '...'/'.'// Character used for ellipsis rendering.")
-        .def_rw("fallback_char", &ImFont::FallbackChar, "2-4   // out // = FFFD/'?' // Character used if a glyph isn't found.")
-        .def_rw("ellipsis_width", &ImFont::EllipsisWidth, "4     // out               // Width")
-        .def_rw("ellipsis_char_step", &ImFont::EllipsisCharStep, "4     // out               // Step between characters when EllipsisCount > 0")
+        .def_rw("ellipsis_char", &ImFont::EllipsisChar, "2-4   // out // Character used for ellipsis rendering ('...').")
+        .def_rw("fallback_char", &ImFont::FallbackChar, "2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')")
+        .def_rw("ellipsis_width", &ImFont::EllipsisWidth, "4     // out // Total ellipsis Width")
+        .def_rw("ellipsis_char_step", &ImFont::EllipsisCharStep, "4     // out // Step between characters when EllipsisCount > 0")
+        .def_rw("scale", &ImFont::Scale, "4     // in  // Base font scale (1.0), multiplied by the per-window font scale which you can adjust with SetWindowFontScale()")
+        .def_rw("ascent", &ImFont::Ascent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
+        .def_rw("descent", &ImFont::Descent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
+        .def_rw("metrics_total_surface", &ImFont::MetricsTotalSurface, "4     // out // Total surface in pixels to get an idea of the font rasterization/texture cost (not exact, we approximate the cost of padding between glyphs)")
         .def_rw("dirty_lookup_tables", &ImFont::DirtyLookupTables, "1     // out //")
-        .def_rw("scale", &ImFont::Scale, "4     // in  // = 1.      // Base font scale, multiplied by the per-window font scale which you can adjust with SetWindowFontScale()")
-        .def_rw("ascent", &ImFont::Ascent, "4+4   // out //            // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
-        .def_rw("descent", &ImFont::Descent, "4+4   // out //            // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
-        .def_rw("metrics_total_surface", &ImFont::MetricsTotalSurface, "4     // out //            // Total surface in pixels to get an idea of the font rasterization/texture cost (not exact, we approximate the cost of padding between glyphs)")
         .def(nb::init<>(),
             "Methods")
         .def("find_glyph",
@@ -7423,8 +7477,6 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImFont::AddRemapChar,
             nb::arg("dst"), nb::arg("src"), nb::arg("overwrite_dst") = true,
             "Makes 'dst' character/glyph points to 'src' character/glyph. Currently needs to be called AFTER fonts have been built.")
-        .def("set_glyph_visible",
-            &ImFont::SetGlyphVisible, nb::arg("c"), nb::arg("visible"))
         .def("is_glyph_range_unused",
             &ImFont::IsGlyphRangeUnused, nb::arg("c_begin"), nb::arg("c_last"))
         ;
@@ -7463,8 +7515,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("draw_data", &ImGuiViewport::DrawData, "The ImDrawData corresponding to this viewport. Valid after Render() and until the next call to NewFrame().")
         .def_rw("renderer_user_data", &ImGuiViewport::RendererUserData, "None* to hold custom data structure for the renderer (e.g. swap chain, framebuffers etc.). generally set by your Renderer_CreateWindow function.")
         .def_rw("platform_user_data", &ImGuiViewport::PlatformUserData, "None* to hold custom data structure for the OS / platform (e.g. windowing info, render context). generally set by your Platform_CreateWindow function.")
-        .def_rw("platform_handle", &ImGuiViewport::PlatformHandle, "None* to hold higher-level, platform window handle (e.g. HWND, GLFWWindow*, SDL_Window*), for FindViewportByPlatformHandle().")
-        .def_rw("platform_handle_raw", &ImGuiViewport::PlatformHandleRaw, "None* to hold lower-level, platform-native window handle (under Win32 this is expected to be a HWND, unused for other platforms), when using an abstraction layer like GLFW or SDL (where PlatformHandle would be a SDL_Window*)")
+        .def_rw("platform_handle", &ImGuiViewport::PlatformHandle, "None* to hold higher-level, platform window handle (e.g. HWND for Win32 backend, Uint32 WindowID for SDL, GLFWWindow* for GLFW), for FindViewportByPlatformHandle().")
+        .def_rw("platform_handle_raw", &ImGuiViewport::PlatformHandleRaw, "None* to hold lower-level, platform-native window handle (always HWND on Win32 platform, unused for other platforms).")
         .def_rw("platform_window_created", &ImGuiViewport::PlatformWindowCreated, "Platform window has been created (Platform_CreateWindow() has been called). This is False during the first frame where a viewport is being created.")
         .def_rw("platform_request_move", &ImGuiViewport::PlatformRequestMove, "Platform window requested move (e.g. window was moved by the OS / host window manager, authoritative position will be OS window position)")
         .def_rw("platform_request_resize", &ImGuiViewport::PlatformRequestResize, "Platform window requested resize (e.g. window was resized by the OS / host window manager, authoritative size will be OS window size)")
@@ -7484,7 +7536,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("platform_get_clipboard_text_fn", &ImGuiPlatformIO::Platform_GetClipboardTextFn, "")
         .def_rw("platform_set_clipboard_text_fn", &ImGuiPlatformIO::Platform_SetClipboardTextFn, "")
         .def_rw("platform_clipboard_user_data", &ImGuiPlatformIO::Platform_ClipboardUserData, "[/ADAPT_IMGUI_BUNDLE]")
-        .def_rw("platform_open_in_shell_fn", &ImGuiPlatformIO::Platform_OpenInShellFn, " Optional: Open link/folder/file in OS Shell\n (default to use ShellExecuteA() on Windows, system() on Linux/Mac)\n [ADAPT_IMGUI_BUNDLE]\nbool        (*Platform_OpenInShellFn)(ImGuiContext* ctx, const char* path);")
+        .def_rw("platform_open_in_shell_fn", &ImGuiPlatformIO::Platform_OpenInShellFn, " Optional: Open link/folder/file in OS Shell\n (default to use ShellExecuteW() on Windows, system() on Linux/Mac)\n [ADAPT_IMGUI_BUNDLE]\nbool        (*Platform_OpenInShellFn)(ImGuiContext* ctx, const char* path);")
         .def_rw("platform_open_in_shell_user_data", &ImGuiPlatformIO::Platform_OpenInShellUserData, "[/ADAPT_IMGUI_BUNDLE]")
         .def_rw("platform_ime_user_data", &ImGuiPlatformIO::Platform_ImeUserData, "")
         .def_rw("platform_locale_decimal_point", &ImGuiPlatformIO::Platform_LocaleDecimalPoint, "'.'")
@@ -7680,6 +7732,10 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     ////////////////////    <generated_from:imgui_stdlib.h>    ////////////////////
+    // #ifndef IMGUI_DISABLE
+    //
+
+
     m.def("input_text",
         [](const char * label, std::string str, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = nullptr, void * user_data = nullptr) -> std::tuple<bool, std::string>
         {
@@ -7736,6 +7792,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputTextWithHint_adapt_modifiable_immutable_to_return(label, hint, str, flags, callback, user_data);
         },     nb::arg("label"), nb::arg("hint"), nb::arg("str"), nb::arg("flags") = 0, nb::arg("callback") = nb::none(), nb::arg("user_data") = nb::none());
+    // #endif
     ////////////////////    </generated_from:imgui_stdlib.h>    ////////////////////
 
 

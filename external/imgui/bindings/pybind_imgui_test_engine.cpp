@@ -149,6 +149,25 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             .value("share_test_context", ImGuiTestRunFlags_ShareTestContext, "Share ImGuiTestContext instead of creating a new one (unsure what purpose this may be useful for yet)");
 
 
+    auto pyClassImGuiTestEngineResultSummary =
+        nb::class_<ImGuiTestEngineResultSummary>
+            (m, "TestEngineResultSummary", "")
+        .def("__init__", [](ImGuiTestEngineResultSummary * self, int CountTested = 0, int CountSuccess = 0, int CountInQueue = 0)
+        {
+            new (self) ImGuiTestEngineResultSummary();  // placement new
+            auto r = self;
+            r->CountTested = CountTested;
+            r->CountSuccess = CountSuccess;
+            r->CountInQueue = CountInQueue;
+        },
+        nb::arg("count_tested") = 0, nb::arg("count_success") = 0, nb::arg("count_in_queue") = 0
+        )
+        .def_rw("count_tested", &ImGuiTestEngineResultSummary::CountTested, "Number of tests executed")
+        .def_rw("count_success", &ImGuiTestEngineResultSummary::CountSuccess, "Number of tests succeeded")
+        .def_rw("count_in_queue", &ImGuiTestEngineResultSummary::CountInQueue, "Number of tests remaining in queue (e.g. aborted, crashed)")
+        ;
+
+
     m.def("hook_item_add",
         ImGuiTestEngineHook_ItemAdd,
         nb::arg("ui_ctx"), nb::arg("id_"), nb::arg("bb"), nb::arg("item_data"),
@@ -260,6 +279,9 @@ void py_init_module_imgui_test_engine(nb::module_& m)
     m.def("unregister_test",
         ImGuiTestEngine_UnregisterTest, nb::arg("engine"), nb::arg("test"));
 
+    m.def("unregister_all_tests",
+        ImGuiTestEngine_UnregisterAllTests, nb::arg("engine"));
+
     m.def("queue_test",
         ImGuiTestEngine_QueueTest, nb::arg("engine"), nb::arg("test"), nb::arg("run_flags") = 0);
 
@@ -295,20 +317,8 @@ void py_init_module_imgui_test_engine(nb::module_& m)
     m.def("is_using_simulated_inputs",
         ImGuiTestEngine_IsUsingSimulatedInputs, nb::arg("engine"));
 
-    m.def("get_result",
-        [](ImGuiTestEngine * engine, int count_tested, int success_count) -> std::tuple<int, int>
-        {
-            auto ImGuiTestEngine_GetResult_adapt_modifiable_immutable_to_return = [](ImGuiTestEngine * engine, int count_tested, int success_count) -> std::tuple<int, int>
-            {
-                int & count_tested_adapt_modifiable = count_tested;
-                int & success_count_adapt_modifiable = success_count;
-
-                ImGuiTestEngine_GetResult(engine, count_tested_adapt_modifiable, success_count_adapt_modifiable);
-                return std::make_tuple(count_tested, success_count);
-            };
-
-            return ImGuiTestEngine_GetResult_adapt_modifiable_immutable_to_return(engine, count_tested, success_count);
-        },     nb::arg("engine"), nb::arg("count_tested"), nb::arg("success_count"));
+    m.def("get_result_summary",
+        ImGuiTestEngine_GetResultSummary, nb::arg("engine"), nb::arg("out_results"));
 
     m.def("install_default_crash_handler",
         ImGuiTestEngine_InstallDefaultCrashHandler, "Install default crash handler (if you don't have one)");
@@ -524,14 +534,14 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("category", &ImGuiTest::Category, "Stored on the stack if len<30")
         .def_rw("name", &ImGuiTest::Name, "Stored on the stack if len<30")
         .def_rw("group", &ImGuiTest::Group, "Coarse groups: 'Tests' or 'Perf'")
-        .def_rw("source_file", &ImGuiTest::SourceFile, "__FILE__, stored on the stack if len<256")
-        .def_rw("source_line", &ImGuiTest::SourceLine, "__LINE__")
-        .def_rw("source_line_end", &ImGuiTest::SourceLineEnd, "Calculated by ImGuiTestEngine_StartCalcSourceLineEnds()")
         .def_rw("arg_variant", &ImGuiTest::ArgVariant, "User parameter. Generally we use it to run variations of a same test by sharing GuiFunc/TestFunc")
         .def_rw("flags", &ImGuiTest::Flags, "See ImGuiTestFlags_")
         .def_rw("gui_func", &ImGuiTest::GuiFunc, "GUI function (optional if your test are running over an existing GUI application)")
         .def_rw("test_func", &ImGuiTest::TestFunc, "Test function")
         .def_rw("user_data", &ImGuiTest::UserData, "General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to use this)")
+        .def_rw("source_file", &ImGuiTest::SourceFile, "__FILE__")
+        .def_rw("source_line", &ImGuiTest::SourceLine, "__LINE__")
+        .def_rw("source_line_end", &ImGuiTest::SourceLineEnd, "end of line (when calculated by ImGuiTestEngine_StartCalcSourceLineEnds())")
         .def_rw("output", &ImGuiTest::Output, " Last Test Output/Status\n (this is the only part that may change after registration)")
         .def_rw("vars_size", &ImGuiTest::VarsSize, "")
         .def_rw("vars_post_constructor_user_fn", &ImGuiTest::VarsPostConstructorUserFn, "")
@@ -653,6 +663,8 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             &ImGuiTestGenericItemStatus::QueryInc,
             nb::arg("ret_val") = false,
             "(private API)")
+        .def("draw",
+            &ImGuiTestGenericItemStatus::Draw, "(private API)")
         ;
 
 
@@ -718,7 +730,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
     auto pyClassImGuiTestContext =
         nb::class_<ImGuiTestContext>
             (m, "TestContext", "")
-        .def("__init__", [](ImGuiTestContext * self, const std::optional<const ImGuiTestGenericVars> & GenericVars = std::nullopt, ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, const std::optional<const ImGuiInputSource> & InputMode = std::nullopt, const std::optional<const ImVector<char>> & Clipboard = std::nullopt, const std::optional<const ImVector<ImGuiWindow*>> & ForeignWindowsToHide = std::nullopt, const std::optional<const ImGuiTestItemInfo> & DummyItemInfoNull = std::nullopt, bool CachedLinesPrintedToTTY = false)
+        .def("__init__", [](ImGuiTestContext * self, const std::optional<const ImGuiTestGenericVars> & GenericVars = std::nullopt, ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, const std::optional<const ImGuiInputSource> & InputMode = std::nullopt, const std::optional<const ImVector<char>> & TempString = std::nullopt, const std::optional<const ImVector<char>> & Clipboard = std::nullopt, const std::optional<const ImVector<ImGuiWindow*>> & ForeignWindowsToHide = std::nullopt, const std::optional<const ImGuiTestItemInfo> & DummyItemInfoNull = std::nullopt, bool CachedLinesPrintedToTTY = false)
         {
             new (self) ImGuiTestContext();  // placement new
             auto r = self;
@@ -747,6 +759,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
                 r->InputMode = InputMode.value();
             else
                 r->InputMode = ImGuiInputSource_Mouse;
+            if (TempString.has_value())
+                r->TempString = TempString.value();
+            else
+                r->TempString = ImVector<char>();
             if (Clipboard.has_value())
                 r->Clipboard = Clipboard.value();
             else
@@ -761,7 +777,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
                 r->DummyItemInfoNull = ImGuiTestItemInfo();
             r->CachedLinesPrintedToTTY = CachedLinesPrintedToTTY;
         },
-        nb::arg("generic_vars") = nb::none(), nb::arg("op_flags") = ImGuiTestOpFlags_None, nb::arg("perf_stress_amount") = 0, nb::arg("frame_count") = 0, nb::arg("first_test_frame_count") = 0, nb::arg("first_gui_frame") = false, nb::arg("has_dock") = false, nb::arg("run_flags") = ImGuiTestRunFlags_None, nb::arg("active_func") = ImGuiTestActiveFunc_None, nb::arg("running_time") = 0.0, nb::arg("action_depth") = 0, nb::arg("capture_counter") = 0, nb::arg("error_counter") = 0, nb::arg("abort") = false, nb::arg("perf_ref_dt") = -1.0, nb::arg("perf_iterations") = 400, nb::arg("ref_id") = 0, nb::arg("ref_window_id") = 0, nb::arg("input_mode") = nb::none(), nb::arg("clipboard") = nb::none(), nb::arg("foreign_windows_to_hide") = nb::none(), nb::arg("dummy_item_info_null") = nb::none(), nb::arg("cached_lines_printed_to_tty") = false
+        nb::arg("generic_vars") = nb::none(), nb::arg("op_flags") = ImGuiTestOpFlags_None, nb::arg("perf_stress_amount") = 0, nb::arg("frame_count") = 0, nb::arg("first_test_frame_count") = 0, nb::arg("first_gui_frame") = false, nb::arg("has_dock") = false, nb::arg("run_flags") = ImGuiTestRunFlags_None, nb::arg("active_func") = ImGuiTestActiveFunc_None, nb::arg("running_time") = 0.0, nb::arg("action_depth") = 0, nb::arg("capture_counter") = 0, nb::arg("error_counter") = 0, nb::arg("abort") = false, nb::arg("perf_ref_dt") = -1.0, nb::arg("perf_iterations") = 400, nb::arg("ref_id") = 0, nb::arg("ref_window_id") = 0, nb::arg("input_mode") = nb::none(), nb::arg("temp_string") = nb::none(), nb::arg("clipboard") = nb::none(), nb::arg("foreign_windows_to_hide") = nb::none(), nb::arg("dummy_item_info_null") = nb::none(), nb::arg("cached_lines_printed_to_tty") = false
         )
         .def_rw("generic_vars", &ImGuiTestContext::GenericVars, "Generic variables holder for convenience.")
         .def_rw("user_vars", &ImGuiTestContext::UserVars, "Access using ctx->GetVars<Type>(). Setup with test->SetVarsDataType<>().")
@@ -789,6 +805,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("ref_id", &ImGuiTestContext::RefID, "Reference ID over which all named references are based")
         .def_rw("ref_window_id", &ImGuiTestContext::RefWindowID, "ID of a window that contains RefID item")
         .def_rw("input_mode", &ImGuiTestContext::InputMode, "Prefer interacting with mouse/keyboard/gamepad")
+        .def_rw("temp_string", &ImGuiTestContext::TempString, "")
         .def_rw("clipboard", &ImGuiTestContext::Clipboard, "Private clipboard for the test instance")
         .def_rw("foreign_windows_to_hide", &ImGuiTestContext::ForeignWindowsToHide, "")
         .def_rw("dummy_item_info_null", &ImGuiTestContext::DummyItemInfoNull, "Storage for ItemInfoNull()")
@@ -1305,39 +1322,17 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             nb::overload_cast<ImGuiTestRef, const char *>(&ImGuiTestContext::ItemInputValue),
             nb::arg("ref"), nb::arg("str"),
             "(private API)")
-        .def("item_select_and_read_value",
-            nb::overload_cast<ImGuiTestRef, ImGuiDataType, void *, ImGuiTestOpFlags>(&ImGuiTestContext::ItemSelectAndReadValue),
+        .def("item_read_as_int",
+            &ImGuiTestContext::ItemReadAsInt,
+            nb::arg("ref"),
+            "(private API)")
+        .def("item_read_as_float",
+            &ImGuiTestContext::ItemReadAsFloat,
+            nb::arg("ref"),
+            "(private API)")
+        .def("item_read_as_scalar",
+            &ImGuiTestContext::ItemReadAsScalar,
             nb::arg("ref"), nb::arg("data_type"), nb::arg("out_data"), nb::arg("flags") = ImGuiTestOpFlags_None,
-            "(private API)")
-        .def("item_select_and_read_value",
-            [](ImGuiTestContext & self, ImGuiTestRef ref, int out_v) -> int
-            {
-                auto ItemSelectAndReadValue_adapt_modifiable_immutable_to_return = [&self](ImGuiTestRef ref, int out_v) -> int
-                {
-                    int * out_v_adapt_modifiable = & out_v;
-
-                    self.ItemSelectAndReadValue(ref, out_v_adapt_modifiable);
-                    return out_v;
-                };
-
-                return ItemSelectAndReadValue_adapt_modifiable_immutable_to_return(ref, out_v);
-            },
-            nb::arg("ref"), nb::arg("out_v"),
-            "(private API)")
-        .def("item_select_and_read_value",
-            [](ImGuiTestContext & self, ImGuiTestRef ref, float out_v) -> float
-            {
-                auto ItemSelectAndReadValue_adapt_modifiable_immutable_to_return = [&self](ImGuiTestRef ref, float out_v) -> float
-                {
-                    float * out_v_adapt_modifiable = & out_v;
-
-                    self.ItemSelectAndReadValue(ref, out_v_adapt_modifiable);
-                    return out_v;
-                };
-
-                return ItemSelectAndReadValue_adapt_modifiable_immutable_to_return(ref, out_v);
-            },
-            nb::arg("ref"), nb::arg("out_v"),
             "(private API)")
         .def("item_exists",
             &ImGuiTestContext::ItemExists,
@@ -1706,6 +1701,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("frame_count", &ImGuiTestEngine::FrameCount, "")
         .def_rw("override_delta_time", &ImGuiTestEngine::OverrideDeltaTime, "Inject custom delta time into imgui context to simulate clock passing faster than wall clock time.")
         .def_rw("test_context", &ImGuiTestEngine::TestContext, "Running test context")
+        .def_rw("tests_source_lines_dirty", &ImGuiTestEngine::TestsSourceLinesDirty, "")
         .def_rw("gather_task", &ImGuiTestEngine::GatherTask, "")
         .def_rw("find_by_label_task", &ImGuiTestEngine::FindByLabelTask, "")
         .def_rw("inputs", &ImGuiTestEngine::Inputs, "Inputs")
@@ -1761,8 +1757,23 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         nb::arg("engine"), nb::arg("ctx"), nb::arg("test"), nb::arg("run_flags"),
         "(private API)");
 
+    m.def("bind_im_gui_context",
+        ImGuiTestEngine_BindImGuiContext,
+        nb::arg("engine"), nb::arg("ui_ctx"),
+        "(private API)");
+
+    m.def("unbind_im_gui_context",
+        ImGuiTestEngine_UnbindImGuiContext,
+        nb::arg("engine"), nb::arg("ui_ctx"),
+        "(private API)");
+
     m.def("reboot_ui_context",
         ImGuiTestEngine_RebootUiContext,
+        nb::arg("engine"),
+        "(private API)");
+
+    m.def("update_tests_source_lines",
+        ImGuiTestEngine_UpdateTestsSourceLines,
         nb::arg("engine"),
         "(private API)");
 

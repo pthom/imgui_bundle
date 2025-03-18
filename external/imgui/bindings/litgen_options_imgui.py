@@ -176,7 +176,7 @@ def add_imgui_test_engine_options(options: LitgenOptions):
     options.function_names_replacements.add_last_replacement(
         "^ImGuiTestEngineHook_", "hook_"
     )
-    options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$"
+    options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$|^ItemReadAsString$"
     options.member_exclude_by_name__regex += "|Coroutine|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter"
     options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs"
     options.fn_exclude_by_param_type__regex += "|^ImGuiCaptureArgs"
@@ -426,7 +426,9 @@ def litgen_options_imgui(
             r"^AddConcavePolyFilled",
             r"^ColorPicker4",
             r"^Shortcut",
-            r"^SetItemKeyOwner"
+            r"^SetItemKeyOwner",
+            r"^GetIO",
+            r"^GetPlatformIO",
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(

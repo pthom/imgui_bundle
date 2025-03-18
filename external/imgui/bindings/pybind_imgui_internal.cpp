@@ -70,6 +70,11 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::arg("v"),
         "(private API)");
 
+    m.def("im_count_set_bits",
+        ImCountSetBits,
+        nb::arg("v"),
+        "(private API)");
+
     m.def("im_char_is_blank_w",
         ImCharIsBlankW,
         nb::arg("c"),
@@ -556,8 +561,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("font_scale", &ImDrawListSharedData::FontScale, "Current/default font scale (== FontSize / Font->FontSize)")
         .def_rw("curve_tessellation_tol", &ImDrawListSharedData::CurveTessellationTol, "Tessellation tolerance when using PathBezierCurveTo()")
         .def_rw("circle_segment_max_error", &ImDrawListSharedData::CircleSegmentMaxError, "Number of circle segments to use per pixel of radius for AddCircle() etc")
-        .def_rw("clip_rect_fullscreen", &ImDrawListSharedData::ClipRectFullscreen, "Value for PushClipRectFullscreen()")
+        .def_rw("initial_fringe_scale", &ImDrawListSharedData::InitialFringeScale, "Initial scale to apply to AA fringe")
         .def_rw("initial_flags", &ImDrawListSharedData::InitialFlags, "Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)")
+        .def_rw("clip_rect_fullscreen", &ImDrawListSharedData::ClipRectFullscreen, "Value for PushClipRectFullscreen()")
         .def_rw("temp_buffer", &ImDrawListSharedData::TempBuffer, "Temporary write buffer")
         .def_rw("arc_fast_radius_cutoff", &ImDrawListSharedData::ArcFastRadiusCutoff, "Cutoff radius after which arc drawing will fallback to slower PathArcTo()")
         .def_prop_ro("circle_segment_counts",
@@ -582,30 +588,51 @@ void py_init_module_imgui_internal(nb::module_& m)
         ;
 
 
-    auto pyClassImGuiDataVarInfo =
-        nb::class_<ImGuiDataVarInfo>
-            (m, "DataVarInfo", "")
-        .def("__init__", [](ImGuiDataVarInfo * self, const std::optional<const ImGuiDataType> & Type = std::nullopt, ImU32 Count = ImU32(), ImU32 Offset = ImU32())
-        {
-            new (self) ImGuiDataVarInfo();  // placement new
-            auto r = self;
-            if (Type.has_value())
-                r->Type = Type.value();
-            else
-                r->Type = ImGuiDataType();
-            r->Count = Count;
-            r->Offset = Offset;
-        },
-        nb::arg("type") = nb::none(), nb::arg("count") = ImU32(), nb::arg("offset") = ImU32()
-        )
-        .def_rw("type", &ImGuiDataVarInfo::Type, "")
-        .def_rw("count", &ImGuiDataVarInfo::Count, "1+")
-        .def_rw("offset", &ImGuiDataVarInfo::Offset, "Offset in parent structure")
+    auto pyClassImGuiStyleVarInfo =
+        nb::class_<ImGuiStyleVarInfo>
+            (m, "StyleVarInfo", "")
+        .def(nb::init<>()) // implicit default constructor
         .def("get_var_ptr",
-            &ImGuiDataVarInfo::GetVarPtr,
+            &ImGuiStyleVarInfo::GetVarPtr,
             nb::arg("parent"),
             "(private API)",
             nb::rv_policy::reference)
+        ;
+
+
+    auto pyClassImGuiColorMod =
+        nb::class_<ImGuiColorMod>
+            (m, "ColorMod", "Stacked color modifier, backup of modified data so we can restore it")
+        .def("__init__", [](ImGuiColorMod * self, const std::optional<const ImGuiCol> & Col = std::nullopt, const std::optional<const ImVec4> & BackupValue = std::nullopt)
+        {
+            new (self) ImGuiColorMod();  // placement new
+            auto r = self;
+            if (Col.has_value())
+                r->Col = Col.value();
+            else
+                r->Col = ImGuiCol();
+            if (BackupValue.has_value())
+                r->BackupValue = BackupValue.value();
+            else
+                r->BackupValue = ImVec4();
+        },
+        nb::arg("col") = nb::none(), nb::arg("backup_value") = nb::none()
+        )
+        .def_rw("col", &ImGuiColorMod::Col, "")
+        .def_rw("backup_value", &ImGuiColorMod::BackupValue, "")
+        ;
+
+
+    auto pyClassImGuiStyleMod =
+        nb::class_<ImGuiStyleMod>
+            (m, "StyleMod", "Stacked style modifier, backup of modified data so we can restore it. Data type inferred from the variable.")
+        .def_rw("var_idx", &ImGuiStyleMod::VarIdx, "")
+        .def(nb::init<ImGuiStyleVar, int>(),
+            nb::arg("idx"), nb::arg("v"))
+        .def(nb::init<ImGuiStyleVar, float>(),
+            nb::arg("idx"), nb::arg("v"))
+        .def(nb::init<ImGuiStyleVar, ImVec2>(),
+            nb::arg("idx"), nb::arg("v"))
         ;
 
 
@@ -642,7 +669,6 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyEnumDataTypePrivate_ =
         nb::enum_<ImGuiDataTypePrivate_>(m, "DataTypePrivate_", nb::is_arithmetic(), "Extend ImGuiDataType_")
-            .value("string", ImGuiDataType_String, "")
             .value("pointer", ImGuiDataType_Pointer, "")
             .value("id_", ImGuiDataType_ID, "");
 
@@ -799,42 +825,6 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("histogram", ImGuiPlotType_Histogram, "");
 
 
-    auto pyClassImGuiColorMod =
-        nb::class_<ImGuiColorMod>
-            (m, "ColorMod", "Stacked color modifier, backup of modified data so we can restore it")
-        .def("__init__", [](ImGuiColorMod * self, const std::optional<const ImGuiCol> & Col = std::nullopt, const std::optional<const ImVec4> & BackupValue = std::nullopt)
-        {
-            new (self) ImGuiColorMod();  // placement new
-            auto r = self;
-            if (Col.has_value())
-                r->Col = Col.value();
-            else
-                r->Col = ImGuiCol();
-            if (BackupValue.has_value())
-                r->BackupValue = BackupValue.value();
-            else
-                r->BackupValue = ImVec4();
-        },
-        nb::arg("col") = nb::none(), nb::arg("backup_value") = nb::none()
-        )
-        .def_rw("col", &ImGuiColorMod::Col, "")
-        .def_rw("backup_value", &ImGuiColorMod::BackupValue, "")
-        ;
-
-
-    auto pyClassImGuiStyleMod =
-        nb::class_<ImGuiStyleMod>
-            (m, "StyleMod", "Stacked style modifier, backup of modified data so we can restore it. Data type inferred from the variable.")
-        .def_rw("var_idx", &ImGuiStyleMod::VarIdx, "")
-        .def(nb::init<ImGuiStyleVar, int>(),
-            nb::arg("idx"), nb::arg("v"))
-        .def(nb::init<ImGuiStyleVar, float>(),
-            nb::arg("idx"), nb::arg("v"))
-        .def(nb::init<ImGuiStyleVar, ImVec2>(),
-            nb::arg("idx"), nb::arg("v"))
-        ;
-
-
     auto pyClassImGuiComboPreviewData =
         nb::class_<ImGuiComboPreviewData>
             (m, "ComboPreviewData", "Storage data for BeginComboPreview()/EndComboPreview()")
@@ -851,7 +841,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImGuiGroupData =
         nb::class_<ImGuiGroupData>
             (m, "GroupData", "Stacked storage data for BeginGroup()/EndGroup()")
-        .def("__init__", [](ImGuiGroupData * self, ImGuiID WindowID = ImGuiID(), const std::optional<const ImVec2> & BackupCursorPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorMaxPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorPosPrevLine = std::nullopt, const std::optional<const ImVec1> & BackupIndent = std::nullopt, const std::optional<const ImVec1> & BackupGroupOffset = std::nullopt, const std::optional<const ImVec2> & BackupCurrLineSize = std::nullopt, float BackupCurrLineTextBaseOffset = float(), ImGuiID BackupActiveIdIsAlive = ImGuiID(), bool BackupActiveIdPreviousFrameIsAlive = bool(), bool BackupHoveredIdIsAlive = bool(), bool BackupIsSameLine = bool(), bool EmitItem = bool())
+        .def("__init__", [](ImGuiGroupData * self, ImGuiID WindowID = ImGuiID(), const std::optional<const ImVec2> & BackupCursorPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorMaxPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorPosPrevLine = std::nullopt, const std::optional<const ImVec1> & BackupIndent = std::nullopt, const std::optional<const ImVec1> & BackupGroupOffset = std::nullopt, const std::optional<const ImVec2> & BackupCurrLineSize = std::nullopt, float BackupCurrLineTextBaseOffset = float(), ImGuiID BackupActiveIdIsAlive = ImGuiID(), bool BackupDeactivatedIdIsAlive = bool(), bool BackupHoveredIdIsAlive = bool(), bool BackupIsSameLine = bool(), bool EmitItem = bool())
         {
             new (self) ImGuiGroupData();  // placement new
             auto r = self;
@@ -882,12 +872,12 @@ void py_init_module_imgui_internal(nb::module_& m)
                 r->BackupCurrLineSize = ImVec2();
             r->BackupCurrLineTextBaseOffset = BackupCurrLineTextBaseOffset;
             r->BackupActiveIdIsAlive = BackupActiveIdIsAlive;
-            r->BackupActiveIdPreviousFrameIsAlive = BackupActiveIdPreviousFrameIsAlive;
+            r->BackupDeactivatedIdIsAlive = BackupDeactivatedIdIsAlive;
             r->BackupHoveredIdIsAlive = BackupHoveredIdIsAlive;
             r->BackupIsSameLine = BackupIsSameLine;
             r->EmitItem = EmitItem;
         },
-        nb::arg("window_id") = ImGuiID(), nb::arg("backup_cursor_pos") = nb::none(), nb::arg("backup_cursor_max_pos") = nb::none(), nb::arg("backup_cursor_pos_prev_line") = nb::none(), nb::arg("backup_indent") = nb::none(), nb::arg("backup_group_offset") = nb::none(), nb::arg("backup_curr_line_size") = nb::none(), nb::arg("backup_curr_line_text_base_offset") = float(), nb::arg("backup_active_id_is_alive") = ImGuiID(), nb::arg("backup_active_id_previous_frame_is_alive") = bool(), nb::arg("backup_hovered_id_is_alive") = bool(), nb::arg("backup_is_same_line") = bool(), nb::arg("emit_item") = bool()
+        nb::arg("window_id") = ImGuiID(), nb::arg("backup_cursor_pos") = nb::none(), nb::arg("backup_cursor_max_pos") = nb::none(), nb::arg("backup_cursor_pos_prev_line") = nb::none(), nb::arg("backup_indent") = nb::none(), nb::arg("backup_group_offset") = nb::none(), nb::arg("backup_curr_line_size") = nb::none(), nb::arg("backup_curr_line_text_base_offset") = float(), nb::arg("backup_active_id_is_alive") = ImGuiID(), nb::arg("backup_deactivated_id_is_alive") = bool(), nb::arg("backup_hovered_id_is_alive") = bool(), nb::arg("backup_is_same_line") = bool(), nb::arg("emit_item") = bool()
         )
         .def_rw("window_id", &ImGuiGroupData::WindowID, "")
         .def_rw("backup_cursor_pos", &ImGuiGroupData::BackupCursorPos, "")
@@ -898,7 +888,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("backup_curr_line_size", &ImGuiGroupData::BackupCurrLineSize, "")
         .def_rw("backup_curr_line_text_base_offset", &ImGuiGroupData::BackupCurrLineTextBaseOffset, "")
         .def_rw("backup_active_id_is_alive", &ImGuiGroupData::BackupActiveIdIsAlive, "")
-        .def_rw("backup_active_id_previous_frame_is_alive", &ImGuiGroupData::BackupActiveIdPreviousFrameIsAlive, "")
+        .def_rw("backup_deactivated_id_is_alive", &ImGuiGroupData::BackupDeactivatedIdIsAlive, "")
         .def_rw("backup_hovered_id_is_alive", &ImGuiGroupData::BackupHoveredIdIsAlive, "")
         .def_rw("backup_is_same_line", &ImGuiGroupData::BackupIsSameLine, "")
         .def_rw("emit_item", &ImGuiGroupData::EmitItem, "")
@@ -1025,6 +1015,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("has_focus", ImGuiNextWindowDataFlags_HasFocus, "")
             .value("has_bg_alpha", ImGuiNextWindowDataFlags_HasBgAlpha, "")
             .value("has_scroll", ImGuiNextWindowDataFlags_HasScroll, "")
+            .value("has_window_flags", ImGuiNextWindowDataFlags_HasWindowFlags, "")
             .value("has_child_flags", ImGuiNextWindowDataFlags_HasChildFlags, "")
             .value("has_refresh_policy", ImGuiNextWindowDataFlags_HasRefreshPolicy, "")
             .value("has_viewport", ImGuiNextWindowDataFlags_HasViewport, "")
@@ -1035,7 +1026,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImGuiNextWindowData =
         nb::class_<ImGuiNextWindowData>
             (m, "NextWindowData", "Storage for SetNexWindow** functions")
-        .def_rw("flags", &ImGuiNextWindowData::Flags, "")
+        .def_rw("has_flags", &ImGuiNextWindowData::HasFlags, "")
         .def_rw("pos_cond", &ImGuiNextWindowData::PosCond, "")
         .def_rw("size_cond", &ImGuiNextWindowData::SizeCond, "")
         .def_rw("collapsed_cond", &ImGuiNextWindowData::CollapsedCond, "")
@@ -1045,6 +1036,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("size_val", &ImGuiNextWindowData::SizeVal, "")
         .def_rw("content_size_val", &ImGuiNextWindowData::ContentSizeVal, "")
         .def_rw("scroll_val", &ImGuiNextWindowData::ScrollVal, "")
+        .def_rw("window_flags", &ImGuiNextWindowData::WindowFlags, "Only honored by BeginTable()")
         .def_rw("child_flags", &ImGuiNextWindowData::ChildFlags, "")
         .def_rw("pos_undock", &ImGuiNextWindowData::PosUndock, "")
         .def_rw("collapsed_val", &ImGuiNextWindowData::CollapsedVal, "")
@@ -1097,7 +1089,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::class_<ImGuiLastItemData>
             (m, "LastItemData", "Status storage for the last submitted item")
         .def_rw("id_", &ImGuiLastItemData::ID, "")
-        .def_rw("item_flags", &ImGuiLastItemData::ItemFlags, "See ImGuiItemFlags_")
+        .def_rw("item_flags", &ImGuiLastItemData::ItemFlags, "See ImGuiItemFlags_ (called 'InFlags' before v1.91.4).")
         .def_rw("status_flags", &ImGuiLastItemData::StatusFlags, "See ImGuiItemStatusFlags_")
         .def_rw("rect", &ImGuiLastItemData::Rect, "Full rectangle")
         .def_rw("nav_rect", &ImGuiLastItemData::NavRect, "Navigation scoring rectangle (not displayed)")
@@ -1153,7 +1145,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImGuiWindowStackData =
         nb::class_<ImGuiWindowStackData>
             (m, "WindowStackData", "Data saved for each window pushed into the stack")
-        .def("__init__", [](ImGuiWindowStackData * self, const std::optional<const ImGuiLastItemData> & ParentLastItemDataBackup = std::nullopt, const std::optional<const ImGuiErrorRecoveryState> & StackSizesInBegin = std::nullopt, bool DisabledOverrideReenable = bool())
+        .def("__init__", [](ImGuiWindowStackData * self, const std::optional<const ImGuiLastItemData> & ParentLastItemDataBackup = std::nullopt, const std::optional<const ImGuiErrorRecoveryState> & StackSizesInBegin = std::nullopt, bool DisabledOverrideReenable = bool(), float DisabledOverrideReenableAlphaBackup = float())
         {
             new (self) ImGuiWindowStackData();  // placement new
             auto r = self;
@@ -1166,13 +1158,15 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r->StackSizesInBegin = ImGuiErrorRecoveryState();
             r->DisabledOverrideReenable = DisabledOverrideReenable;
+            r->DisabledOverrideReenableAlphaBackup = DisabledOverrideReenableAlphaBackup;
         },
-        nb::arg("parent_last_item_data_backup") = nb::none(), nb::arg("stack_sizes_in_begin") = nb::none(), nb::arg("disabled_override_reenable") = bool()
+        nb::arg("parent_last_item_data_backup") = nb::none(), nb::arg("stack_sizes_in_begin") = nb::none(), nb::arg("disabled_override_reenable") = bool(), nb::arg("disabled_override_reenable_alpha_backup") = float()
         )
         .def_rw("window", &ImGuiWindowStackData::Window, "")
         .def_rw("parent_last_item_data_backup", &ImGuiWindowStackData::ParentLastItemDataBackup, "")
         .def_rw("stack_sizes_in_begin", &ImGuiWindowStackData::StackSizesInBegin, "Store size of various stacks for asserting")
         .def_rw("disabled_override_reenable", &ImGuiWindowStackData::DisabledOverrideReenable, "Non-child window override disabled flag")
+        .def_rw("disabled_override_reenable_alpha_backup", &ImGuiWindowStackData::DisabledOverrideReenableAlphaBackup, "")
         ;
 
 
@@ -1204,6 +1198,27 @@ void py_init_module_imgui_internal(nb::module_& m)
             nb::arg("ptr"))
         .def(nb::init<int>(),
             nb::arg("index"))
+        ;
+
+
+    auto pyClassImGuiDeactivatedItemData =
+        nb::class_<ImGuiDeactivatedItemData>
+            (m, "DeactivatedItemData", "Data used by IsItemDeactivated()/IsItemDeactivatedAfterEdit() functions")
+        .def("__init__", [](ImGuiDeactivatedItemData * self, ImGuiID ID = ImGuiID(), int ElapseFrame = int(), bool HasBeenEditedBefore = bool(), bool IsAlive = bool())
+        {
+            new (self) ImGuiDeactivatedItemData();  // placement new
+            auto r = self;
+            r->ID = ID;
+            r->ElapseFrame = ElapseFrame;
+            r->HasBeenEditedBefore = HasBeenEditedBefore;
+            r->IsAlive = IsAlive;
+        },
+        nb::arg("id_") = ImGuiID(), nb::arg("elapse_frame") = int(), nb::arg("has_been_edited_before") = bool(), nb::arg("is_alive") = bool()
+        )
+        .def_rw("id_", &ImGuiDeactivatedItemData::ID, "")
+        .def_rw("elapse_frame", &ImGuiDeactivatedItemData::ElapseFrame, "")
+        .def_rw("has_been_edited_before", &ImGuiDeactivatedItemData::HasBeenEditedBefore, "")
+        .def_rw("is_alive", &ImGuiDeactivatedItemData::IsAlive, "")
         ;
 
 
@@ -2046,7 +2061,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImGuiMetricsConfig =
         nb::class_<ImGuiMetricsConfig>
             (m, "MetricsConfig", "")
-        .def("__init__", [](ImGuiMetricsConfig * self, bool ShowDebugLog = false, bool ShowIDStackTool = false, bool ShowWindowsRects = false, bool ShowWindowsBeginOrder = false, bool ShowTablesRects = false, bool ShowDrawCmdMesh = true, bool ShowDrawCmdBoundingBoxes = true, bool ShowTextEncodingViewer = false, bool ShowAtlasTintedWithTextColor = false, bool ShowDockingNodes = false, int ShowWindowsRectsType = -1, int ShowTablesRectsType = -1, int HighlightMonitorIdx = -1, ImGuiID HighlightViewportID = 0)
+        .def("__init__", [](ImGuiMetricsConfig * self, bool ShowDebugLog = false, bool ShowIDStackTool = false, bool ShowWindowsRects = false, bool ShowWindowsBeginOrder = false, bool ShowTablesRects = false, bool ShowDrawCmdMesh = true, bool ShowDrawCmdBoundingBoxes = true, bool ShowTextEncodingViewer = false, bool ShowDockingNodes = false, int ShowWindowsRectsType = -1, int ShowTablesRectsType = -1, int HighlightMonitorIdx = -1, ImGuiID HighlightViewportID = 0)
         {
             new (self) ImGuiMetricsConfig();  // placement new
             auto r = self;
@@ -2058,14 +2073,13 @@ void py_init_module_imgui_internal(nb::module_& m)
             r->ShowDrawCmdMesh = ShowDrawCmdMesh;
             r->ShowDrawCmdBoundingBoxes = ShowDrawCmdBoundingBoxes;
             r->ShowTextEncodingViewer = ShowTextEncodingViewer;
-            r->ShowAtlasTintedWithTextColor = ShowAtlasTintedWithTextColor;
             r->ShowDockingNodes = ShowDockingNodes;
             r->ShowWindowsRectsType = ShowWindowsRectsType;
             r->ShowTablesRectsType = ShowTablesRectsType;
             r->HighlightMonitorIdx = HighlightMonitorIdx;
             r->HighlightViewportID = HighlightViewportID;
         },
-        nb::arg("show_debug_log") = false, nb::arg("show_id_stack_tool") = false, nb::arg("show_windows_rects") = false, nb::arg("show_windows_begin_order") = false, nb::arg("show_tables_rects") = false, nb::arg("show_draw_cmd_mesh") = true, nb::arg("show_draw_cmd_bounding_boxes") = true, nb::arg("show_text_encoding_viewer") = false, nb::arg("show_atlas_tinted_with_text_color") = false, nb::arg("show_docking_nodes") = false, nb::arg("show_windows_rects_type") = -1, nb::arg("show_tables_rects_type") = -1, nb::arg("highlight_monitor_idx") = -1, nb::arg("highlight_viewport_id") = 0
+        nb::arg("show_debug_log") = false, nb::arg("show_id_stack_tool") = false, nb::arg("show_windows_rects") = false, nb::arg("show_windows_begin_order") = false, nb::arg("show_tables_rects") = false, nb::arg("show_draw_cmd_mesh") = true, nb::arg("show_draw_cmd_bounding_boxes") = true, nb::arg("show_text_encoding_viewer") = false, nb::arg("show_docking_nodes") = false, nb::arg("show_windows_rects_type") = -1, nb::arg("show_tables_rects_type") = -1, nb::arg("highlight_monitor_idx") = -1, nb::arg("highlight_viewport_id") = 0
         )
         .def_rw("show_debug_log", &ImGuiMetricsConfig::ShowDebugLog, "")
         .def_rw("show_id_stack_tool", &ImGuiMetricsConfig::ShowIDStackTool, "")
@@ -2075,7 +2089,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("show_draw_cmd_mesh", &ImGuiMetricsConfig::ShowDrawCmdMesh, "")
         .def_rw("show_draw_cmd_bounding_boxes", &ImGuiMetricsConfig::ShowDrawCmdBoundingBoxes, "")
         .def_rw("show_text_encoding_viewer", &ImGuiMetricsConfig::ShowTextEncodingViewer, "")
-        .def_rw("show_atlas_tinted_with_text_color", &ImGuiMetricsConfig::ShowAtlasTintedWithTextColor, "")
         .def_rw("show_docking_nodes", &ImGuiMetricsConfig::ShowDockingNodes, "")
         .def_rw("show_windows_rects_type", &ImGuiMetricsConfig::ShowWindowsRectsType, "")
         .def_rw("show_tables_rects_type", &ImGuiMetricsConfig::ShowTablesRectsType, "")
@@ -2103,6 +2116,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("results", &ImGuiIDStackTool::Results, "")
         .def_rw("copy_to_clipboard_on_ctrl_c", &ImGuiIDStackTool::CopyToClipboardOnCtrlC, "")
         .def_rw("copy_to_clipboard_last_time", &ImGuiIDStackTool::CopyToClipboardLastTime, "")
+        .def_rw("result_path_buf", &ImGuiIDStackTool::ResultPathBuf, "")
         .def(nb::init<>())
         ;
 
@@ -2169,7 +2183,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("current_window_stack", &ImGuiContext::CurrentWindowStack, "")
         .def_rw("windows_by_id", &ImGuiContext::WindowsById, "Map window's ImGuiID to ImGuiWindow*")
         .def_rw("windows_active_count", &ImGuiContext::WindowsActiveCount, "Number of unique windows submitted by frame")
-        .def_rw("windows_hover_padding", &ImGuiContext::WindowsHoverPadding, "Padding around resizable windows for which hovering on counts as hovering the window == ImMax(style.TouchExtraPadding, WINDOWS_HOVER_PADDING).")
+        .def_rw("windows_border_hover_padding", &ImGuiContext::WindowsBorderHoverPadding, "Padding around resizable windows for which hovering on counts as hovering the window == ImMax(style.TouchExtraPadding, style.WindowBorderHoverPadding). This isn't so multi-dpi friendly.")
         .def_rw("debug_break_in_window", &ImGuiContext::DebugBreakInWindow, "Set to break in Begin() call.")
         .def_rw("current_window", &ImGuiContext::CurrentWindow, "Window being drawn into")
         .def_rw("hovered_window", &ImGuiContext::HoveredWindow, "Window the mouse is hovering. Will typically catch mouse inputs.")
@@ -2207,9 +2221,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("active_id_window", &ImGuiContext::ActiveIdWindow, "")
         .def_rw("active_id_source", &ImGuiContext::ActiveIdSource, "Activating source: ImGuiInputSource_Mouse OR ImGuiInputSource_Keyboard OR ImGuiInputSource_Gamepad")
         .def_rw("active_id_previous_frame", &ImGuiContext::ActiveIdPreviousFrame, "")
-        .def_rw("active_id_previous_frame_is_alive", &ImGuiContext::ActiveIdPreviousFrameIsAlive, "")
-        .def_rw("active_id_previous_frame_has_been_edited_before", &ImGuiContext::ActiveIdPreviousFrameHasBeenEditedBefore, "")
-        .def_rw("active_id_previous_frame_window", &ImGuiContext::ActiveIdPreviousFrameWindow, "")
+        .def_rw("deactivated_item_data", &ImGuiContext::DeactivatedItemData, "")
         .def_rw("active_id_value_on_activation", &ImGuiContext::ActiveIdValueOnActivation, "Backup of initial value at the time of activation. ONLY SET BY SPECIFIC WIDGETS: DragXXX and SliderXXX.")
         .def_rw("last_active_id", &ImGuiContext::LastActiveId, "Store the last non-zero ActiveId, useful for animation.")
         .def_rw("last_active_id_timer", &ImGuiContext::LastActiveIdTimer, "Store the last non-zero ActiveId timer since the beginning of activation, useful for animation.")
@@ -2447,7 +2459,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImGuiWindowTempData =
         nb::class_<ImGuiWindowTempData>
             (m, "WindowTempData", " Transient per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the DC variable name in ImGuiWindow.\n (That's theory, in practice the delimitation between ImGuiWindow and ImGuiWindowTempData is quite tenuous and could be reconsidered..)\n (This doesn't need a constructor because we zero-clear it as part of ImGuiWindow and all frame-temporary data are setup on Begin)")
-        .def("__init__", [](ImGuiWindowTempData * self, const std::optional<const ImVec2> & CursorPos = std::nullopt, const std::optional<const ImVec2> & CursorPosPrevLine = std::nullopt, const std::optional<const ImVec2> & CursorStartPos = std::nullopt, const std::optional<const ImVec2> & CursorMaxPos = std::nullopt, const std::optional<const ImVec2> & IdealMaxPos = std::nullopt, const std::optional<const ImVec2> & CurrLineSize = std::nullopt, const std::optional<const ImVec2> & PrevLineSize = std::nullopt, float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), const std::optional<const ImVec1> & Indent = std::nullopt, const std::optional<const ImVec1> & ColumnsOffset = std::nullopt, const std::optional<const ImVec1> & GroupOffset = std::nullopt, const std::optional<const ImVec2> & CursorStartPosLossyness = std::nullopt, ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), const std::optional<const ImVec2> & MenuBarOffset = std::nullopt, const std::optional<const ImGuiMenuColumns> & MenuColumns = std::nullopt, int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), const std::optional<const ImVector<ImGuiWindow*>> & ChildWindows = std::nullopt, int CurrentTableIdx = int(), const std::optional<const ImGuiLayoutType> & LayoutType = std::nullopt, const std::optional<const ImGuiLayoutType> & ParentLayoutType = std::nullopt, ImU32 ModalDimBgColor = ImU32(), float ItemWidth = float(), float TextWrapPos = float(), const std::optional<const ImVector<float>> & ItemWidthStack = std::nullopt, const std::optional<const ImVector<float>> & TextWrapPosStack = std::nullopt)
+        .def("__init__", [](ImGuiWindowTempData * self, const std::optional<const ImVec2> & CursorPos = std::nullopt, const std::optional<const ImVec2> & CursorPosPrevLine = std::nullopt, const std::optional<const ImVec2> & CursorStartPos = std::nullopt, const std::optional<const ImVec2> & CursorMaxPos = std::nullopt, const std::optional<const ImVec2> & IdealMaxPos = std::nullopt, const std::optional<const ImVec2> & CurrLineSize = std::nullopt, const std::optional<const ImVec2> & PrevLineSize = std::nullopt, float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), const std::optional<const ImVec1> & Indent = std::nullopt, const std::optional<const ImVec1> & ColumnsOffset = std::nullopt, const std::optional<const ImVec1> & GroupOffset = std::nullopt, const std::optional<const ImVec2> & CursorStartPosLossyness = std::nullopt, ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), const std::optional<const ImVec2> & MenuBarOffset = std::nullopt, const std::optional<const ImGuiMenuColumns> & MenuColumns = std::nullopt, int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), const std::optional<const ImVector<ImGuiWindow*>> & ChildWindows = std::nullopt, int CurrentTableIdx = int(), const std::optional<const ImGuiLayoutType> & LayoutType = std::nullopt, const std::optional<const ImGuiLayoutType> & ParentLayoutType = std::nullopt, ImU32 ModalDimBgColor = ImU32(), ImGuiItemStatusFlags WindowItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags ChildItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags DockTabItemStatusFlags = ImGuiItemStatusFlags(), const std::optional<const ImRect> & DockTabItemRect = std::nullopt, float ItemWidth = float(), float TextWrapPos = float(), const std::optional<const ImVector<float>> & ItemWidthStack = std::nullopt, const std::optional<const ImVector<float>> & TextWrapPosStack = std::nullopt)
         {
             new (self) ImGuiWindowTempData();  // placement new
             auto r = self;
@@ -2530,6 +2542,13 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r->ParentLayoutType = ImGuiLayoutType();
             r->ModalDimBgColor = ModalDimBgColor;
+            r->WindowItemStatusFlags = WindowItemStatusFlags;
+            r->ChildItemStatusFlags = ChildItemStatusFlags;
+            r->DockTabItemStatusFlags = DockTabItemStatusFlags;
+            if (DockTabItemRect.has_value())
+                r->DockTabItemRect = DockTabItemRect.value();
+            else
+                r->DockTabItemRect = ImRect();
             r->ItemWidth = ItemWidth;
             r->TextWrapPos = TextWrapPos;
             if (ItemWidthStack.has_value())
@@ -2541,7 +2560,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r->TextWrapPosStack = ImVector<float>();
         },
-        nb::arg("cursor_pos") = nb::none(), nb::arg("cursor_pos_prev_line") = nb::none(), nb::arg("cursor_start_pos") = nb::none(), nb::arg("cursor_max_pos") = nb::none(), nb::arg("ideal_max_pos") = nb::none(), nb::arg("curr_line_size") = nb::none(), nb::arg("prev_line_size") = nb::none(), nb::arg("curr_line_text_base_offset") = float(), nb::arg("prev_line_text_base_offset") = float(), nb::arg("is_same_line") = bool(), nb::arg("is_set_pos") = bool(), nb::arg("indent") = nb::none(), nb::arg("columns_offset") = nb::none(), nb::arg("group_offset") = nb::none(), nb::arg("cursor_start_pos_lossyness") = nb::none(), nb::arg("nav_layer_current") = ImGuiNavLayer(), nb::arg("nav_layers_active_mask") = short(), nb::arg("nav_layers_active_mask_next") = short(), nb::arg("nav_is_scroll_pushable_x") = bool(), nb::arg("nav_hide_highlight_one_frame") = bool(), nb::arg("nav_window_has_scroll_y") = bool(), nb::arg("menu_bar_appending") = bool(), nb::arg("menu_bar_offset") = nb::none(), nb::arg("menu_columns") = nb::none(), nb::arg("tree_depth") = int(), nb::arg("tree_has_stack_data_depth_mask") = ImU32(), nb::arg("child_windows") = nb::none(), nb::arg("current_table_idx") = int(), nb::arg("layout_type") = nb::none(), nb::arg("parent_layout_type") = nb::none(), nb::arg("modal_dim_bg_color") = ImU32(), nb::arg("item_width") = float(), nb::arg("text_wrap_pos") = float(), nb::arg("item_width_stack") = nb::none(), nb::arg("text_wrap_pos_stack") = nb::none()
+        nb::arg("cursor_pos") = nb::none(), nb::arg("cursor_pos_prev_line") = nb::none(), nb::arg("cursor_start_pos") = nb::none(), nb::arg("cursor_max_pos") = nb::none(), nb::arg("ideal_max_pos") = nb::none(), nb::arg("curr_line_size") = nb::none(), nb::arg("prev_line_size") = nb::none(), nb::arg("curr_line_text_base_offset") = float(), nb::arg("prev_line_text_base_offset") = float(), nb::arg("is_same_line") = bool(), nb::arg("is_set_pos") = bool(), nb::arg("indent") = nb::none(), nb::arg("columns_offset") = nb::none(), nb::arg("group_offset") = nb::none(), nb::arg("cursor_start_pos_lossyness") = nb::none(), nb::arg("nav_layer_current") = ImGuiNavLayer(), nb::arg("nav_layers_active_mask") = short(), nb::arg("nav_layers_active_mask_next") = short(), nb::arg("nav_is_scroll_pushable_x") = bool(), nb::arg("nav_hide_highlight_one_frame") = bool(), nb::arg("nav_window_has_scroll_y") = bool(), nb::arg("menu_bar_appending") = bool(), nb::arg("menu_bar_offset") = nb::none(), nb::arg("menu_columns") = nb::none(), nb::arg("tree_depth") = int(), nb::arg("tree_has_stack_data_depth_mask") = ImU32(), nb::arg("child_windows") = nb::none(), nb::arg("current_table_idx") = int(), nb::arg("layout_type") = nb::none(), nb::arg("parent_layout_type") = nb::none(), nb::arg("modal_dim_bg_color") = ImU32(), nb::arg("window_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("child_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_rect") = nb::none(), nb::arg("item_width") = float(), nb::arg("text_wrap_pos") = float(), nb::arg("item_width_stack") = nb::none(), nb::arg("text_wrap_pos_stack") = nb::none()
         )
         .def_rw("cursor_pos", &ImGuiWindowTempData::CursorPos, "Current emitting position, in absolute coordinates.")
         .def_rw("cursor_pos_prev_line", &ImGuiWindowTempData::CursorPosPrevLine, "")
@@ -2576,6 +2595,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("layout_type", &ImGuiWindowTempData::LayoutType, "")
         .def_rw("parent_layout_type", &ImGuiWindowTempData::ParentLayoutType, "Layout type of parent window at the time of Begin()")
         .def_rw("modal_dim_bg_color", &ImGuiWindowTempData::ModalDimBgColor, "")
+        .def_rw("window_item_status_flags", &ImGuiWindowTempData::WindowItemStatusFlags, "")
+        .def_rw("child_item_status_flags", &ImGuiWindowTempData::ChildItemStatusFlags, "")
+        .def_rw("dock_tab_item_status_flags", &ImGuiWindowTempData::DockTabItemStatusFlags, "")
+        .def_rw("dock_tab_item_rect", &ImGuiWindowTempData::DockTabItemRect, "")
         .def_rw("item_width", &ImGuiWindowTempData::ItemWidth, "Current item width (>0.0: width in pixels, <0.0: align xx pixels to the right of window).")
         .def_rw("text_wrap_pos", &ImGuiWindowTempData::TextWrapPos, "Current text wrap pos.")
         .def_rw("item_width_stack", &ImGuiWindowTempData::ItemWidthStack, "Store item widths to restore (attention: .back() is not == ItemWidth)")
@@ -2627,6 +2650,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("scrollbar_sizes", &ImGuiWindow::ScrollbarSizes, "Size taken by each scrollbars on their smaller axis. Pay attention! ScrollbarSizes.x == width of the vertical scrollbar, ScrollbarSizes.y = height of the horizontal scrollbar.")
         .def_rw("scrollbar_x", &ImGuiWindow::ScrollbarX, "Are scrollbars visible?")
         .def_rw("scrollbar_y", &ImGuiWindow::ScrollbarY, "Are scrollbars visible?")
+        .def_rw("scrollbar_x_stabilize_enabled", &ImGuiWindow::ScrollbarXStabilizeEnabled, "Was ScrollbarX previously auto-stabilized?")
+        .def_rw("scrollbar_x_stabilize_toggled_history", &ImGuiWindow::ScrollbarXStabilizeToggledHistory, "Used to stabilize scrollbar visibility in case of feedback loops")
         .def_rw("viewport_owned", &ImGuiWindow::ViewportOwned, "")
         .def_rw("active", &ImGuiWindow::Active, "Set to True on Begin(), unless Collapsed")
         .def_rw("was_active", &ImGuiWindow::WasActive, "")
@@ -2675,7 +2700,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("state_storage", &ImGuiWindow::StateStorage, "")
         .def_rw("columns_storage", &ImGuiWindow::ColumnsStorage, "")
         .def_rw("font_window_scale", &ImGuiWindow::FontWindowScale, "User scale multiplier per-window, via SetWindowFontScale()")
+        .def_rw("font_window_scale_parents", &ImGuiWindow::FontWindowScaleParents, "")
         .def_rw("font_dpi_scale", &ImGuiWindow::FontDpiScale, "")
+        .def_rw("font_ref_size", &ImGuiWindow::FontRefSize, "This is a copy of window->CalcFontSize() at the time of Begin(), trying to phase out CalcFontSize() especially as it may be called on non-current window.")
         .def_rw("settings_offset", &ImGuiWindow::SettingsOffset, "Offset into SettingsWindows[] (offsets are always valid as we only grow the array from the back)")
         .def_rw("draw_list", &ImGuiWindow::DrawList, "== &DrawListInst (for backward compatibility reason with code using imgui_internal.h we keep this a pointer)")
         .def_rw("draw_list_inst", &ImGuiWindow::DrawListInst, "")
@@ -2697,8 +2724,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("dock_node", &ImGuiWindow::DockNode, "Which node are we docked into. Important: Prefer testing DockIsActive in many cases as this will still be set when the dock node is hidden.")
         .def_rw("dock_node_as_host", &ImGuiWindow::DockNodeAsHost, "Which node are we owning (for parent windows)")
         .def_rw("dock_id", &ImGuiWindow::DockId, "Backup of last valid DockNode->ID, so single window remember their dock node id even when they are not bound any more")
-        .def_rw("dock_tab_item_status_flags", &ImGuiWindow::DockTabItemStatusFlags, "")
-        .def_rw("dock_tab_item_rect", &ImGuiWindow::DockTabItemRect, "")
         .def(nb::init<ImGuiContext *, const char *>(),
             nb::arg("context"), nb::arg("name"))
         .def("get_id",
@@ -2757,6 +2782,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("section_mask_", ImGuiTabItemFlags_SectionMask_, "")
             .value("no_close_button", ImGuiTabItemFlags_NoCloseButton, "Track whether p_open was set or not (we'll need this info on the next frame to recompute ContentWidth during layout)")
             .value("button", ImGuiTabItemFlags_Button, "Used by TabItemButton, change the tab item behavior to mimic a button")
+            .value("invisible", ImGuiTabItemFlags_Invisible, "To reserve space e.g. with ImGuiTabItemFlags_Leading")
             .value("unsorted", ImGuiTabItemFlags_Unsorted, "[Docking] Trailing tabs with the _Unsorted flag will be sorted based on the DockOrder of their Window.");
 
 
@@ -2929,7 +2955,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             (m, "Table", "sizeof() ~ 592 bytes + heap allocs described in TableBeginInitMemory()")
         .def_rw("id_", &ImGuiTable::ID, "")
         .def_rw("flags", &ImGuiTable::Flags, "")
-        .def_rw("raw_data", &ImGuiTable::RawData, "Single allocation to hold Columns[], DisplayOrderToIndex[] and RowCellData[]")
+        .def_rw("raw_data", &ImGuiTable::RawData, "Single allocation to hold Columns[], DisplayOrderToIndex[], and RowCellData[]")
         .def_rw("temp_data", &ImGuiTable::TempData, "Transient data while table is active. Point within g.CurrentTableStack[]")
         .def_rw("settings_loaded_flags", &ImGuiTable::SettingsLoadedFlags, "Which data were loaded from the .ini file (e.g. when order is not altered we won't save order)")
         .def_rw("settings_offset", &ImGuiTable::SettingsOffset, "Offset in g.SettingsTables")
@@ -2937,7 +2963,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("columns_count", &ImGuiTable::ColumnsCount, "Number of columns declared in BeginTable()")
         .def_rw("current_row", &ImGuiTable::CurrentRow, "")
         .def_rw("current_column", &ImGuiTable::CurrentColumn, "")
-        .def_rw("instance_current", &ImGuiTable::InstanceCurrent, "Count of BeginTable() calls with same ID in the same frame (generally 0). This is a little bit similar to BeginCount for a window, but multiple table with same ID look are multiple tables, they are just synched.")
+        .def_rw("instance_current", &ImGuiTable::InstanceCurrent, "Count of BeginTable() calls with same ID in the same frame (generally 0). This is a little bit similar to BeginCount for a window, but multiple tables with the same ID are multiple tables, they are just synced.")
         .def_rw("instance_interacted", &ImGuiTable::InstanceInteracted, "Mark which instance (generally 0) of the same ID is being interacted with")
         .def_rw("row_pos_y1", &ImGuiTable::RowPosY1, "")
         .def_rw("row_pos_y2", &ImGuiTable::RowPosY2, "")
@@ -2972,7 +2998,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("angled_headers_height", &ImGuiTable::AngledHeadersHeight, "Set by TableAngledHeadersRow(), used in TableUpdateLayout()")
         .def_rw("angled_headers_slope", &ImGuiTable::AngledHeadersSlope, "Set by TableAngledHeadersRow(), used in TableUpdateLayout()")
         .def_rw("outer_rect", &ImGuiTable::OuterRect, "Note: for non-scrolling table, OuterRect.Max.y is often FLT_MAX until EndTable(), unless a height has been specified in BeginTable().")
-        .def_rw("inner_rect", &ImGuiTable::InnerRect, "InnerRect but without decoration. As with OuterRect, for non-scrolling tables, InnerRect.Max.y is")
+        .def_rw("inner_rect", &ImGuiTable::InnerRect, "InnerRect but without decoration. As with OuterRect, for non-scrolling tables, InnerRect.Max.y is \"")
         .def_rw("work_rect", &ImGuiTable::WorkRect, "")
         .def_rw("inner_clip_rect", &ImGuiTable::InnerClipRect, "")
         .def_rw("bg_clip_rect", &ImGuiTable::BgClipRect, "We use this to cpu-clip cell background color fill, evolve during the frame as we cross frozen rows boundaries")
@@ -3016,6 +3042,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("dummy_draw_channel", &ImGuiTable::DummyDrawChannel, "Redirect non-visible columns here.")
         .def_rw("bg2_draw_channel_current", &ImGuiTable::Bg2DrawChannelCurrent, "For Selectable() and other widgets drawing across columns after the freezing line. Index within DrawSplitter.Channels[]")
         .def_rw("bg2_draw_channel_unfrozen", &ImGuiTable::Bg2DrawChannelUnfrozen, "")
+        .def_rw("nav_layer", &ImGuiTable::NavLayer, "ImGuiNavLayer at the time of BeginTable().")
         .def_rw("is_layout_locked", &ImGuiTable::IsLayoutLocked, "Set by TableUpdateLayout() which is called when beginning the first row.")
         .def_rw("is_inside_row", &ImGuiTable::IsInsideRow, "Set when inside TableBeginRow()/TableEndRow().")
         .def_rw("is_initializing", &ImGuiTable::IsInitializing, "")
@@ -3063,7 +3090,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImGuiTableColumnSettings =
         nb::class_<ImGuiTableColumnSettings>
-            (m, "TableColumnSettings", "sizeof() ~ 12")
+            (m, "TableColumnSettings", "sizeof() ~ 16")
         .def_rw("width_or_weight", &ImGuiTableColumnSettings::WidthOrWeight, "")
         .def_rw("user_id", &ImGuiTableColumnSettings::UserID, "")
         .def_rw("index", &ImGuiTableColumnSettings::Index, "")
@@ -3090,13 +3117,13 @@ void py_init_module_imgui_internal(nb::module_& m)
         ;
 
 
-    m.def("get_io_ex",
-        ImGui::GetIOEx,
+    m.def("get_io",
+        nb::overload_cast<ImGuiContext *>(ImGui::GetIO),
         nb::arg("ctx"),
         nb::rv_policy::reference);
 
-    m.def("get_platform_io_ex",
-        ImGui::GetPlatformIOEx,
+    m.def("get_platform_io",
+        nb::overload_cast<ImGuiContext *>(ImGui::GetPlatformIO),
         nb::arg("ctx"),
         nb::rv_policy::reference);
 
@@ -3219,6 +3246,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::GetDefaultFont,
         "(private API)",
         nb::rv_policy::reference);
+
+    m.def("push_password_font",
+        ImGui::PushPasswordFont);
 
     m.def("get_foreground_draw_list",
         nb::overload_cast<ImGuiWindow *>(ImGui::GetForegroundDrawList),
@@ -3431,7 +3461,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::IsClippedEx, nb::arg("bb"), nb::arg("id_"));
 
     m.def("set_last_item_data",
-        ImGui::SetLastItemData, nb::arg("item_id"), nb::arg("in_flags"), nb::arg("status_flags"), nb::arg("item_rect"));
+        ImGui::SetLastItemData, nb::arg("item_id"), nb::arg("item_flags"), nb::arg("status_flags"), nb::arg("item_rect"));
 
     m.def("calc_item_size",
         ImGui::CalcItemSize, nb::arg("size"), nb::arg("default_w"), nb::arg("default_h"));
@@ -3491,6 +3521,9 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("begin_popup_ex",
         nb::overload_cast<ImGuiID, ImGuiWindowFlags>(ImGui::BeginPopupEx), nb::arg("id_"), nb::arg("extra_window_flags"));
+
+    m.def("begin_popup_menu_ex",
+        nb::overload_cast<ImGuiID, const char *, ImGuiWindowFlags>(ImGui::BeginPopupMenuEx), nb::arg("id_"), nb::arg("label"), nb::arg("extra_window_flags"));
 
     m.def("open_popup_ex",
         nb::overload_cast<ImGuiID, ImGuiPopupFlags>(ImGui::OpenPopupEx), nb::arg("id_"), nb::arg("popup_flags") = ImGuiPopupFlags_None);
@@ -4361,6 +4394,9 @@ void py_init_module_imgui_internal(nb::module_& m)
             return TabItemEx_adapt_modifiable_immutable_to_return(tab_bar, label, p_open, flags, docked_window);
         },     nb::arg("tab_bar"), nb::arg("label"), nb::arg("p_open"), nb::arg("flags"), nb::arg("docked_window"));
 
+    m.def("tab_item_spacing",
+        ImGui::TabItemSpacing, nb::arg("str_id"), nb::arg("flags"), nb::arg("width"));
+
     m.def("tab_item_calc_size",
         nb::overload_cast<const char *, bool>(ImGui::TabItemCalcSize), nb::arg("label"), nb::arg("has_close_button_or_unsaved_marker"));
 
@@ -4702,6 +4738,9 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("set_next_item_ref_val",
         ImGui::SetNextItemRefVal, nb::arg("data_type"), nb::arg("p_data"));
 
+    m.def("is_item_active_as_input_text",
+        ImGui::IsItemActiveAsInputText, "(private API)\n\n This may be useful to apply workaround that a based on distinguish whenever an item is active as a text input field.");
+
     m.def("color_tooltip",
         ImGui::ColorTooltip, nb::arg("text"), nb::arg("col"), nb::arg("flags"));
 
@@ -4866,8 +4905,11 @@ void py_init_module_imgui_internal(nb::module_& m)
         ;
 
 
-    m.def("im_font_atlas_update_config_data_pointers",
-        ImFontAtlasUpdateConfigDataPointers, nb::arg("atlas"));
+    m.def("im_font_atlas_update_sources_pointers",
+        ImFontAtlasUpdateSourcesPointers, nb::arg("atlas"));
+
+    m.def("im_font_atlas_get_mouse_cursor_tex_data",
+        ImFontAtlasGetMouseCursorTexData, nb::arg("atlas"), nb::arg("cursor_type"), nb::arg("out_offset"), nb::arg("out_size"), nb::arg("out_uv_border"), nb::arg("out_uv_fill"));
 
 
     auto pyEnumDockRequestType =
