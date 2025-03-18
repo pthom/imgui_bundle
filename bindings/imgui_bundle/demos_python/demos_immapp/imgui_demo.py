@@ -3234,7 +3234,7 @@ def main():
     global CALLBACK_NAVIGATE_TO_MARKER
 
     code_editor = ed.TextEditor()
-    with open(__file__) as f:
+    with open(__file__, encoding="utf-8") as f:
         code = f.read()
         code_lines = code.splitlines()
         code_editor.set_text(code)
