@@ -55,6 +55,8 @@ def main():
         "Ignoring template class",
         "float values[N]",
     ]
+    options.fn_return_force_policy_reference_for_pointers__regex = r".*"
+    options.fn_return_force_policy_reference_for_references__regex = r".*"
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_by_param_type__regex = r"float[ ]*\*"
     options.fn_force_overload__regex = "DecomposeMatrixToComponents|RecomposeMatrixFromComponents|DrawCubes|DrawGrid|Manipulate"

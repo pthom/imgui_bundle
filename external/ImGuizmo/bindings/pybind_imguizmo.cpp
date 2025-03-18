@@ -170,7 +170,7 @@ void py_init_module_imguizmo(nb::module_& m)
 
 
         pyNsImGuizmo.def("get_style",
-            ImGuizmo::GetStyle);
+            ImGuizmo::GetStyle, nb::rv_policy::reference);
         auto pyNsImGuizmo_ClassMatrix16 =
             nb::class_<ImGuizmo::Matrix16>
                 (pyNsImGuizmo, "Matrix16", "")
