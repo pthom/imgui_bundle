@@ -2949,6 +2949,83 @@ def show_demo_window_tables():
 
         imgui.tree_pop()
 
+    if imgui.tree_node("Angled headers"):
+        column_names = ["Track", "cabasa", "ride", "smash", "tom-hi", "tom-mid", "tom-low",
+                        "hihat-o", "hihat-c", "snare-s", "snare-c", "clap", "rim", "kick"]
+        columns_count = len(column_names)
+        rows_count = 12
+
+        if not hasattr(static, "table_flags_ah"):
+            static.table_flags_ah = (imgui.TableFlags_.sizing_fixed_fit.value | imgui.TableFlags_.scroll_x.value | imgui.TableFlags_.scroll_y.value |
+                                     imgui.TableFlags_.borders_outer.value | imgui.TableFlags_.borders_inner_h.value |
+                                     imgui.TableFlags_.hideable.value | imgui.TableFlags_.resizable.value |
+                                     imgui.TableFlags_.reorderable.value | imgui.TableFlags_.highlight_hovered_column.value)
+
+            static.column_flags_ah = imgui.TableColumnFlags_.angled_header.value | imgui.TableColumnFlags_.width_fixed.value
+            static.bools_ah = [False] * (columns_count * rows_count)  # Dummy selection storage
+            static.frozen_cols_ah = 1
+            static.frozen_rows_ah = 2
+
+        _, static.table_flags_ah = imgui.checkbox_flags("_ScrollX", static.table_flags_ah, imgui.TableFlags_.scroll_x.value)
+        _, static.table_flags_ah = imgui.checkbox_flags("_ScrollY", static.table_flags_ah, imgui.TableFlags_.scroll_y.value)
+        _, static.table_flags_ah = imgui.checkbox_flags("_Resizable", static.table_flags_ah, imgui.TableFlags_.resizable.value)
+        _, static.table_flags_ah = imgui.checkbox_flags("_Sortable", static.table_flags_ah, imgui.TableFlags_.sortable.value)
+        _, static.table_flags_ah = imgui.checkbox_flags("_NoBordersInBody", static.table_flags_ah, imgui.TableFlags_.no_borders_in_body.value)
+        _, static.table_flags_ah = imgui.checkbox_flags("_HighlightHoveredColumn", static.table_flags_ah, imgui.TableFlags_.highlight_hovered_column.value)
+
+        imgui.set_next_item_width(imgui.get_font_size() * 8)
+        _, static.frozen_cols_ah = imgui.slider_int("Frozen columns", static.frozen_cols_ah, 0, 2)
+
+        imgui.set_next_item_width(imgui.get_font_size() * 8)
+        _, static.frozen_rows_ah = imgui.slider_int("Frozen rows", static.frozen_rows_ah, 0, 2)
+
+        _, static.column_flags_ah = imgui.checkbox_flags("Disable header contributing to column width",
+                                                         static.column_flags_ah, imgui.TableColumnFlags_.no_header_width.value)
+
+        if imgui.tree_node("Style settings"):
+            imgui.same_line()
+            imgui.set_next_item_width(imgui.get_font_size() * 8)
+            _, imgui.get_style().table_angled_headers_angle = imgui.slider_angle(
+                "style.TableAngledHeadersAngle", imgui.get_style().table_angled_headers_angle, -50.0, +50.0)
+
+            imgui.set_next_item_width(imgui.get_font_size() * 8)
+            _, imgui.get_style().table_angled_headers_text_align = imgui.slider_float2(
+                "style.TableAngledHeadersTextAlign",
+                imgui.get_style().table_angled_headers_text_align, 0.0, 1.0, "%.2f")
+
+            imgui.tree_pop()
+
+        text_base_height = imgui.get_text_line_height_with_spacing()
+        if imgui.begin_table("table_angled_headers", columns_count, static.table_flags_ah, (0.0, text_base_height * 12)):
+            imgui.table_setup_column(column_names[0], imgui.TableColumnFlags_.no_hide.value | imgui.TableColumnFlags_.no_reorder.value)
+
+            for n in range(1, columns_count):
+                imgui.table_setup_column(column_names[n], static.column_flags_ah)
+
+            imgui.table_setup_scroll_freeze(static.frozen_cols_ah, static.frozen_rows_ah)
+
+            imgui.table_angled_headers_row()  # Draw angled headers for all columns with angled header flag
+            imgui.table_headers_row()  # Draw remaining headers
+
+            for row in range(rows_count):
+                imgui.push_id(row)
+                imgui.table_next_row()
+                imgui.table_set_column_index(0)
+                imgui.align_text_to_frame_padding()
+                imgui.text(f"Track {row}")
+
+                for column in range(1, columns_count):
+                    if imgui.table_set_column_index(column):
+                        imgui.push_id(column)
+                        _, static.bools_ah[row * columns_count + column] = imgui.checkbox("", static.bools_ah[row * columns_count + column])
+                        imgui.pop_id()
+
+                imgui.pop_id()
+
+            imgui.end_table()
+
+        imgui.tree_pop()
+
     if imgui.tree_node("etc. ..."):
         imgui.text("There are lots of other examples in the imgui C++ demo.")
         imgui.text("You can see it online within ImGui Manual:")
