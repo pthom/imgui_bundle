@@ -104,12 +104,16 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiTableHeaderData",  # new in v1.90.7
         "ImGuiTreeNodeStackData",
         "ImGuiMultiSelectTempData",
+        "ImTextureData*",
+        "ImTextureRef",
+        "ImTextureRect",
     ]
     cpp_synonyms_list_str = [
         "ImTextureID=int",
         "ImDrawIdx=uint",
         "ImGuiID=uint",
         "ImU32=uint",
+        "ImU16=uint",
         "ImWchar32=uint",
         "ImWchar=ImWchar32",
         "ImGuiItemFlags=int",
@@ -129,6 +133,10 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiTestLogLineInfo",
         "ImGuiTestRunTask",
         "ImGuiTestRunTask",
+        "ImFontAtlasRectEntry",
+        "stbrp_node",
+        "ImDrawListSharedData*",
+        "ImFontStackData",
     ]
 
     options.class_template_options.add_specialization(
@@ -143,6 +151,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
     options.srcmlcpp_options.ignored_warning_parts += [
         "Excluding template type const ImVector<T>",
         "Excluding template type ImVector<T>",
+        "Ignoring template class ImStableVector",
     ]
 
     for instantiated_type in instantiated_types:
@@ -391,7 +400,9 @@ def litgen_options_imgui(
         r"^char\s*\*",
     ])
 
-    options.class_exclude_by_name__regex = join_string_by_pipe_char([])
+    options.class_exclude_by_name__regex = join_string_by_pipe_char([
+        "ImStableVector"
+    ])
 
     options.member_numeric_c_array_types += "|" + join_string_by_pipe_char(
         [
