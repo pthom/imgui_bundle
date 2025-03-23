@@ -7341,7 +7341,7 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImTextureData::DestroyPixels, "(private API)")
         .def("get_pixels",
             &ImTextureData::GetPixels,
-            "(private API)",
+            " Note: in Python, use imgui.im_texture_data_get_pixels(tex) to get the data as a numpy array.\n(private API)",
             nb::rv_policy::reference)
         .def("get_pixels_at",
             &ImTextureData::GetPixelsAt,
@@ -7540,6 +7540,10 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tex_max_height", &ImFontAtlas::TexMaxHeight, "Maximum desired texture height. Must be a power of two. Default to 8096.")
         .def_rw("user_data", &ImFontAtlas::UserData, "")
         .def_rw("tex_data", &ImFontAtlas::TexData, "Current texture.")
+        .def("python_set_texture_id",
+            &ImFontAtlas::Python_SetTextureID,
+            nb::arg("id_"),
+            " Convenience method for python in order to set the font texture Id\n Note: this uses the old way of setting the fonts texture.\n Newer backends should implement ImGuiBackendFlags_RendererHasTextures\n and be able to handle Texture updates\n See https://github.com/ocornut/imgui/issues/8465\n For inspiration, look at\n        def _update_texture(self, tex: imgui.ImTextureData):\n inside ImGui Bundle (bindings/imgui_bundle/python_backends/opengl_xxx_backend.py)\n(private API)")
         .def_rw("tex_list", &ImFontAtlas::TexList, "Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetPlatformIO().Textures[] instead!")
         .def_rw("locked", &ImFontAtlas::Locked, "Marked as locked during ImGui::NewFrame()..EndFrame() scope if TexUpdates are not supported. Any attempt to modify the atlas will assert.")
         .def_rw("renderer_has_textures", &ImFontAtlas::RendererHasTextures, "Copy of (BackendFlags & ImGuiBackendFlags_RendererHasTextures) from supporting context.")
