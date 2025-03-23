@@ -118,9 +118,6 @@ void py_init_module_imguizmo(nb::module_& m)
         pyNsImGuizmo.def("set_alternative_window",
             ImGuizmo::SetAlternativeWindow, nb::arg("window"));
 
-        pyNsImGuizmo.def("set_id",
-            ImGuizmo::SetID, nb::arg("id"));
-
         pyNsImGuizmo.def("push_id",
             nb::overload_cast<const char *>(ImGuizmo::PushID),
             nb::arg("str_id"),
