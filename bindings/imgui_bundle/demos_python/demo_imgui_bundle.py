@@ -118,6 +118,13 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
             runner_params.docking_params.focus_dockable_window("Dear ImGui Bundle")
         show_gui.nb_frames += 1
 
+    def show_edit_font_scale_in_status_bar():
+        imgui.set_next_item_width(imgui.get_content_region_avail().x / 10)
+        _, imgui.get_io().font_global_scale = imgui.slider_float(
+            "Font scale", imgui.get_io().font_global_scale, 0.5, 5)
+
+    runner_params.callbacks.show_status = show_edit_font_scale_in_status_bar
+
     runner_params.callbacks.show_gui = show_gui
 
     if "test_engine" in dir(imgui):  # only enable test engine if available (i.e. if imgui bundle was compiled with it)
