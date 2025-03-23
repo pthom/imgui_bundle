@@ -58,41 +58,8 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         self._elements_handle = None
         self._vao_handle = None
 
+
         super(ProgrammablePipelineRenderer, self).__init__()
-
-    def refresh_font_texture(self):
-        # save texture state
-        last_texture = gl.glGetIntegerv(gl.GL_TEXTURE_BINDING_2D)
-
-        # width, height, pixels = self.io.fonts.get_tex_data_as_rgba32()
-        font_matrix: np.ndarray = self.io.fonts.get_tex_data_as_rgba32()
-        width = font_matrix.shape[1]
-        height = font_matrix.shape[0]
-        pixels = font_matrix.data
-
-        if self._font_texture is not None:
-            gl.glDeleteTextures([self._font_texture])
-
-        self._font_texture = gl.glGenTextures(1)
-
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self._font_texture)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-        gl.glTexImage2D(
-            gl.GL_TEXTURE_2D,
-            0,
-            gl.GL_RGBA,
-            width,
-            height,
-            0,
-            gl.GL_RGBA,
-            gl.GL_UNSIGNED_BYTE,
-            pixels,
-        )
-
-        self.io.fonts.tex_id = self._font_texture
-        gl.glBindTexture(gl.GL_TEXTURE_2D, last_texture)
-        self.io.fonts.clear_tex_data()
 
     def _create_device_objects(self):
         # save state
@@ -181,6 +148,9 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         fb_width = int(display_width * io.display_framebuffer_scale[0])
         fb_height = int(display_height * io.display_framebuffer_scale[1])
 
+        # Honor RendererHasTextures
+        self._update_textures()
+
         if fb_width == 0 or fb_height == 0:
             return
 
@@ -252,7 +222,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
 
             # todo: allow to iterate over _CmdList
             for command in commands.cmd_buffer:
-                gl.glBindTexture(gl.GL_TEXTURE_2D, command.texture_id)
+                gl.glBindTexture(gl.GL_TEXTURE_2D, command.tex_ref.get_tex_id())
 
                 # todo: use named tuple
                 x, y, z, w = command.clip_rect
@@ -291,8 +261,3 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
 
         gl.glDeleteProgram(self._shader_handle)
         self._shader_handle = 0
-
-        if self._font_texture > -1:
-            gl.glDeleteTextures([self._font_texture])
-        self.io.fonts.tex_id = 0
-        self._font_texture = 0
