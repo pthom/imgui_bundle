@@ -32,11 +32,8 @@ void py_init_module_imgui_backends(nb::module_& m)
     m.def("opengl3_render_draw_data",
         ImGui_ImplOpenGL3_RenderDrawData, nb::arg("draw_data"));
 
-    m.def("opengl3_create_fonts_texture",
-        ImGui_ImplOpenGL3_CreateFontsTexture);
-
-    m.def("opengl3_destroy_fonts_texture",
-        ImGui_ImplOpenGL3_DestroyFontsTexture);
+    m.def("opengl3_update_texture",
+        ImGui_ImplOpenGL3_UpdateTexture);
 
     m.def("opengl3_create_device_objects",
         ImGui_ImplOpenGL3_CreateDeviceObjects);
@@ -60,11 +57,8 @@ void py_init_module_imgui_backends(nb::module_& m)
     m.def("opengl2_render_draw_data",
           ImGui_ImplOpenGL2_RenderDrawData, nb::arg("draw_data"));
 
-    m.def("opengl2_create_fonts_texture",
-          ImGui_ImplOpenGL2_CreateFontsTexture);
-
-    m.def("opengl2_destroy_fonts_texture",
-          ImGui_ImplOpenGL2_DestroyFontsTexture);
+    m.def("opengl2_update_texture",
+          ImGui_ImplOpenGL2_UpdateTexture);
 
     m.def("opengl2_create_device_objects",
           ImGui_ImplOpenGL2_CreateDeviceObjects);
