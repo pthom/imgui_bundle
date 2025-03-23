@@ -305,7 +305,7 @@ def litgen_options_imgui(
         "|IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT"
     )
     options.srcmlcpp_options.header_filter_acceptable__regex += (
-        "|^IMGUI_BUNDLE_PYTHON_API$"
+        "|^IMGUI_BUNDLE_PYTHON_API$|^IMGUI_HAS_TEXTURES$"
     )
     if docking_branch:
         options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_HAS_DOCK$"
