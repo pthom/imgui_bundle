@@ -237,7 +237,8 @@ void py_init_module_implot(nb::module_& m)
         nb::enum_<ImPlotPieChartFlags_>(m, "PieChartFlags_", nb::is_arithmetic(), "Flags for PlotPieChart")
             .value("none", ImPlotPieChartFlags_None, "default")
             .value("normalize", ImPlotPieChartFlags_Normalize, "force normalization of pie chart values (i.e. always make a full circle if sum < 0)")
-            .value("ignore_hidden", ImPlotPieChartFlags_IgnoreHidden, "ignore hidden slices when drawing the pie chart (as if they were not there)");
+            .value("ignore_hidden", ImPlotPieChartFlags_IgnoreHidden, "ignore hidden slices when drawing the pie chart (as if they were not there)")
+            .value("exploding", ImPlotPieChartFlags_Exploding, "Explode legend-hovered slice");
 
 
     auto pyEnumHeatmapFlags_ =
@@ -2636,41 +2637,45 @@ void py_init_module_implot(nb::module_& m)
 
             PlotDigital_adapt_exclude_params(label_id, xs, ys, flags, offset);
         },     nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("flags") = 0, nb::arg("offset") = 0);
+    // #ifdef IMGUI_HAS_TEXTURES
+    //
 
     m.def("plot_image",
-        [](const char * label_id, ImTextureID user_texture_id, const ImPlotPoint & bounds_min, const ImPlotPoint & bounds_max, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlotImageFlags flags = 0)
+        [](const char * label_id, ImTextureRef tex_ref, const ImPlotPoint & bounds_min, const ImPlotPoint & bounds_max, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlotImageFlags flags = 0)
         {
-            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureID user_texture_id, const ImPlotPoint & bounds_min, const ImPlotPoint & bounds_max, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlotImageFlags flags = 0)
+            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureRef tex_ref, const ImPlotPoint & bounds_min, const ImPlotPoint & bounds_max, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlotImageFlags flags = 0)
             {
 
                 const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
                     if (uv0.has_value())
                         return uv0.value();
                     else
-                        return ImVec2(0,0);
+                        return ImVec2(0, 0);
                 }();
 
                 const ImVec2& uv1_or_default = [&]() -> const ImVec2 {
                     if (uv1.has_value())
                         return uv1.value();
                     else
-                        return ImVec2(1,1);
+                        return ImVec2(1, 1);
                 }();
 
                 const ImVec4& tint_col_or_default = [&]() -> const ImVec4 {
                     if (tint_col.has_value())
                         return tint_col.value();
                     else
-                        return ImVec4(1,1,1,1);
+                        return ImVec4(1, 1, 1, 1);
                 }();
 
-                ImPlot::PlotImage(label_id, user_texture_id, bounds_min, bounds_max, uv0_or_default, uv1_or_default, tint_col_or_default, flags);
+                ImPlot::PlotImage(label_id, tex_ref, bounds_min, bounds_max, uv0_or_default, uv1_or_default, tint_col_or_default, flags);
             };
 
-            PlotImage_adapt_mutable_param_with_default_value(label_id, user_texture_id, bounds_min, bounds_max, uv0, uv1, tint_col, flags);
+            PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, bounds_min, bounds_max, uv0, uv1, tint_col, flags);
         },
-        nb::arg("label_id"), nb::arg("user_texture_id"), nb::arg("bounds_min"), nb::arg("bounds_max"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("flags") = 0,
-        " Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0,0)\n        * uv1: ImVec2(1,1)\n        * tint_col: ImVec4(1,1,1,1)");
+        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("bounds_min"), nb::arg("bounds_max"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("flags") = 0,
+        " Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)");
+    // #endif
+    //
 
     m.def("plot_text",
         [](const char * text, double x, double y, const std::optional<const ImVec2> & pix_offset = std::nullopt, ImPlotTextFlags flags = 0)

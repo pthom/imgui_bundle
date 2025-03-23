@@ -15,7 +15,7 @@ def litgen_options_implot() -> LitgenOptions:
     options = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=True)
     options.namespaces_root = ["ImPlot"]
     options.srcmlcpp_options.functions_api_prefixes = "IMPLOT_API|IMPLOT_TMP"
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API"
+    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API|IMGUI_HAS_TEXTURES"
 
     options.fn_force_overload__regex = "BeginPlot"
     options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$", "^SetupAxisLinks$", "^SetNextAxisLinks$"])
