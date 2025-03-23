@@ -8031,6 +8031,47 @@ void imgui_manual_binding(nb::module_& m)
     nb::class_<ImColor>& pyClassImColor = *pyClassImColorPtr;
     nb::class_<ImFontAtlas>& pyClassImFontAtlas = *pyClassImFontAtlasPtr;
 
+    // Function to retrieve ImTextureData Pixels as a numpy array
+    auto im_texture_data_get_pixels = [](ImTextureData* tex) -> nb::handle
+    {
+        if (tex->Width <= 0 || tex->Height <= 0 || tex->BytesPerPixel <= 0 || (!tex->Pixels))
+            throw std::runtime_error("im_texture_data_get_pixels: Invalid ImTextureData.");
+
+        // The returned data is a pointer to the texture data, which is owned by the ImTextureData.
+        // so, we set the owner to the ImTextureData object to ensure that the data is not deallocated
+        nb::object owner = nb::cast(tex);
+
+        // Create and return the ndarray using the initializer list constructor
+        // We will use this constructor:
+        //    ndarray(VoidPtr data,
+        //        std::initializer_list<size_t> shape = { },
+        //        handle owner = { },
+        //        std::initializer_list<int64_t> strides = { },
+        //        dlpack::dtype dtype = nanobind::dtype<Scalar>(),
+        //        int device_type = DeviceType,
+        //        int device_id = 0,
+        //        char order = Order) {
+        auto tex_as_array = nb::ndarray<uint8_t>(
+            tex->Pixels,                  // VoidPtr data
+            {(size_t)(tex->Width * tex->Height * tex->BytesPerPixel)},      // Shape
+            owner,                  // Owner
+            {(int64_t)1},       // Strides in **elements** (not bytes)
+            nb::dtype<uint8_t>(),    // Data type
+            0,                       // device_type (default to CPU)
+            0,                       // device_id (default to 0)
+            'C'                      // Order ('C' for C-contiguous)
+        );
+
+        // Properly export the ndarray
+        return nb::detail::ndarray_export(
+            tex_as_array.handle(),
+            nb::numpy::value,
+            nb::rv_policy::move, // Transfer ownership to Python (which will manage the lifetime of the ndarray, and the capsule will manage the lifetime of the data)
+            nullptr // cleanup
+        );
+    };
+    m.def("im_texture_data_get_pixels", im_texture_data_get_pixels);
+
     // Function to retrieve RGBA32 texture data as a numpy array
     auto font_atlas_get_tex_data_as_rgba32= [](ImFontAtlas* self) -> nb::handle
     {
@@ -8076,6 +8117,7 @@ void imgui_manual_binding(nb::module_& m)
             nullptr // cleanup
         );
     };
+    m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
 
 
 // these are internal functions that should only be called with a tuple, list or array argument
@@ -8109,7 +8151,6 @@ void imgui_manual_binding(nb::module_& m)
     m.attr("FLT_MIN") = (float)FLT_MIN;
     m.attr("FLT_MAX") = (float)FLT_MAX;
 
-    m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
 
     //
     //  Patches to ImVec2
