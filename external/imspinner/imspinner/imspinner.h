@@ -1522,7 +1522,14 @@ namespace ImSpinner
             return;
 
         const float start = ImFmod((float)ImGui::GetTime() * speed, (float)strlen(text));
+
+#ifdef IMGUI_HAS_TEXTURES
+        auto & g = *ImGui::GetCurrentContext();
+        ImFontBaked* fontBaked = g.Font->GetFontBaked(g.FontSize);
+        ImFontGlyph* glyph = fontBaked->FindGlyph(text[(int)start]);
+#else
         const ImFontGlyph* glyph = ImGui::GetCurrentContext()->Font->FindGlyph(text[(int)start]);
+#endif
 
         ImVec2 pp(centre.x - radius, centre.y - radius);
         ImFontAtlas* atlas = ImGui::GetIO().Fonts;
@@ -1565,7 +1572,13 @@ namespace ImSpinner
         float out_h, out_s, out_v;
         ImGui::ColorConvertRGBtoHSV(color.Value.x, color.Value.y, color.Value.z, out_h, out_s, out_v);
         for (int i = 0; text != last_symbol; ++text, ++i) {
+#ifdef IMGUI_HAS_TEXTURES
+            auto & g = *ImGui::GetCurrentContext();
+            ImFontBaked* fontBaked = g.Font->GetFontBaked(g.FontSize);
+            const ImFontGlyph* glyph = fontBaked->FindGlyph(*text);
+#else
             const ImFontGlyph* glyph = ImGui::GetCurrentContext()->Font->FindGlyph(*text);
+#endif
             const float alpha = ImClamp(ImSin(-start + (i / (float)text_len * PI_DIV_2)), 0.f, 1.f);
             ImColor c = ImColor::HSV(out_h + i * (1.f / text_len), out_s, out_v);
             font->RenderChar(window->DrawList, fsize, pp, color_alpha(c, alpha), (ImWchar)*text);
