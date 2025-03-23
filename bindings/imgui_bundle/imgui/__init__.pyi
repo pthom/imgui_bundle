@@ -78,7 +78,6 @@ def im_texture_data_get_pixels(tex: ImTextureData) -> np.ndarray:
     """Manual binding for ImTextureData::GetPixels"""
     pass
 
-
 # -----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
 # -----------------------------------------------------------------------------
@@ -10778,7 +10777,9 @@ class ImTextureData:
         pass
     # uchar*      GetPixels()                 { IM_ASSERT(Pixels != NULL); return Pixels; }    /* original C++ signature */
     def get_pixels(self) -> uchar:
-        """(private API)"""
+        """Note: in Python, use imgui.im_texture_data_get_pixels(tex) to get the data as a numpy array.
+        (private API)
+        """
         pass
     # uchar*      GetPixelsAt(int x, int y)   { IM_ASSERT(Pixels != NULL); return Pixels + (x + y * Width) * BytesPerPixel; }    /* original C++ signature */
     def get_pixels_at(self, x: int, y: int) -> uchar:
@@ -11167,6 +11168,19 @@ class ImFontAtlas:
     # ImTextureData*              TexData;    /* original C++ signature */
     tex_data: ImTextureData  # Current texture.
 
+    # void Python_SetTextureID(ImTextureID id) { TexRef = ImTextureRef(id); }    /* original C++ signature */
+    def python_set_texture_id(self, id_: ImTextureID) -> None:
+        """Convenience method for python in order to set the font texture Id
+         Note: this uses the old way of setting the fonts texture.
+         Newer backends should implement ImGuiBackendFlags_RendererHasTextures
+         and be able to handle Texture updates
+         See https://github.com/ocornut/imgui/issues/8465
+         For inspiration, look at
+                def _update_texture(self, tex: imgui.ImTextureData):
+         inside ImGui Bundle (bindings/imgui_bundle/python_backends/opengl_xxx_backend.py)
+        (private API)
+        """
+        pass
     # [Internal]
     # ImVector<ImTextureData*>    TexList;    /* original C++ signature */
     tex_list: ImVector_ImTextureData_ptr  # Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetPlatformIO().Textures[] instead!
