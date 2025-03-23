@@ -108,26 +108,22 @@ void py_init_module_hello_imgui(nb::module_& m)
     ////////////////////    <generated_from:hello_imgui_amalgamation.h>    ////////////////////
     auto pyClassDpiAwareParams =
         nb::class_<HelloImGui::DpiAwareParams>
-            (m, "DpiAwareParams", "\n Hello ImGui will try its best to automatically handle DPI scaling for you.\n\n Parameters to change the scaling behavior:\n ------------------------------------------\n - `dpiWindowSizeFactor`:\n        factor by which window size should be multiplied\n\n - `fontRenderingScale`:\n     factor by which fonts glyphs should be scaled at rendering time\n     (typically 1 on windows, and 0.5 on macOS retina screens)\n\n    By default, Hello ImGui will compute them automatically,\n    when dpiWindowSizeFactor and fontRenderingScale are set to 0.\n\n Parameters to improve font rendering quality:\n ---------------------------------------------\n - `fontOversampleH` and `fontOversampleV` : Font oversampling parameters\n     Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.\n     If not zero, these values will be used to set the oversampling factor when loading fonts.\n\n\n How to set those values manually:\n ---------------------------------\n If it fails (i.e. your window and/or fonts are too big or too small),\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.dpiAwareParams`)\n    (2) Either by setting them in a `hello_imgui.ini` file. See hello_imgui/hello_imgui_example.ini for more info\n Note: if several methods are used, the order of priority is (1) > (2)\n\n For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi\n")
-        .def("__init__", [](HelloImGui::DpiAwareParams * self, float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f, bool onlyUseFontDpiResponsive = false, int fontOversampleH = 0, int fontOversampleV = 0)
+            (m, "DpiAwareParams", "\n Hello ImGui will try its best to automatically handle DPI scaling for you.\n\n Parameters to change the scaling behavior:\n ------------------------------------------\n - `dpiWindowSizeFactor`:\n        factor by which window size should be multiplied\n\n - `fontRenderingScale`:\n     factor by which fonts glyphs should be scaled at rendering time\n     (typically 1 on windows, and 0.5 on macOS retina screens)\n\n    By default, Hello ImGui will compute them automatically,\n    when dpiWindowSizeFactor and fontRenderingScale are set to 0.\n\n\n How to set those values manually:\n ---------------------------------\n If it fails (i.e. your window and/or fonts are too big or too small),\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.dpiAwareParams`)\n    (2) Either by setting them in a `hello_imgui.ini` file. See hello_imgui/hello_imgui_example.ini for more info\n Note: if several methods are used, the order of priority is (1) > (2)\n\n For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi\n")
+        .def("__init__", [](HelloImGui::DpiAwareParams * self, float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f)
         {
             new (self) HelloImGui::DpiAwareParams();  // placement new
             auto r = self;
             r->dpiWindowSizeFactor = dpiWindowSizeFactor;
             r->fontRenderingScale = fontRenderingScale;
-            r->onlyUseFontDpiResponsive = onlyUseFontDpiResponsive;
-            r->fontOversampleH = fontOversampleH;
-            r->fontOversampleV = fontOversampleV;
         },
-        nb::arg("dpi_window_size_factor") = 0.0f, nb::arg("font_rendering_scale") = 0.0f, nb::arg("only_use_font_dpi_responsive") = false, nb::arg("font_oversample_h") = 0, nb::arg("font_oversample_v") = 0
+        nb::arg("dpi_window_size_factor") = 0.0f, nb::arg("font_rendering_scale") = 0.0f
         )
         .def_rw("dpi_window_size_factor", &HelloImGui::DpiAwareParams::dpiWindowSizeFactor, " `dpiWindowSizeFactor`\n     factor by which window size should be multiplied to get a similar\n     physical size on different OSes (as if they were all displayed on a 96 PPI screen).\n     This affects the size of native app windows,\n     but *not* imgui Windows, and *not* the size of widgets and text.\n  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,\n  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.\n\n  Inside Hello ImGui, the window size is always treated as targeting a 96 PPI screen, so that its size will\n  look similar whatever the OS and the screen DPI.\n  In our example, our 960x480 pixels window will try to correspond to a 10x5 inches window\n\n  Hello ImGui does its best to compute it on all OSes.\n  However, if it fails you may set its value manually.\n  If it is set to 0, Hello ImGui will compute it automatically,\n  and the resulting value will be stored in `dpiWindowSizeFactor`.")
-        .def_rw("font_rendering_scale", &HelloImGui::DpiAwareParams::fontRenderingScale, " `fontRenderingScale`\n     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.\n  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.\n  Changing this value will *not* change the visible font size on the screen, however it will\n  affect the size of the loaded glyphs.\n  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),\n  a font size of 16 will be loaded as if it was 32, and will be rendered at half size.\n   This leads to a better rendering quality on some platforms.\n (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)")
-        .def_rw("only_use_font_dpi_responsive", &HelloImGui::DpiAwareParams::onlyUseFontDpiResponsive, " `onlyUseFontDpiResponsive`\n If True, guarantees that only HelloImGui::LoadDpiResponsiveFont will be used to load fonts.\n (also for the default font)")
-        .def_rw("font_oversample_h", &HelloImGui::DpiAwareParams::fontOversampleH, "Default is 2 in ImFontConfig")
-        .def_rw("font_oversample_v", &HelloImGui::DpiAwareParams::fontOversampleV, "Default is 1 in ImFontConfig")
+        .def_rw("font_rendering_scale", &HelloImGui::DpiAwareParams::fontRenderingScale, " `fontRenderingScale`\n     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.\n  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.\n  Changing this value will *not* change the visible font size on the screen, however it will\n  affect the size of font textures that are loaded.\n  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),\n  the font texture will be rasterized at 1/0.5 = 2 times the size of the font.\n   This leads to a better rendering quality on some platforms.\n (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)")
         .def("dpi_font_loading_factor",
-            &HelloImGui::DpiAwareParams::DpiFontLoadingFactor, " `dpiFontLoadingFactor`\n     factor by which font size should be multiplied at loading time to get a similar\n     visible size on different OSes.\n  The size will be equivalent to a size given for a 96 PPI screen")
+            &HelloImGui::DpiAwareParams::DpiFontLoadingFactor, " `DpiFontLoadingFactor`\n     factor by which font size should be multiplied at loading time to get a similar visible size on different OSes.\n     This is equal to dpiWindowSizeFactor\n  The size will be equivalent to a size given for a 96 PPI screen")
+        .def("dpi_font_rasterizer_density",
+            &HelloImGui::DpiAwareParams::DpiFontRasterizerDensity, " `DpiFontRasterizerDensity`\n     Rasterizer density to use when loading fonts (applied to ImFontConfig.RasterizerDensity)")
         ;
 
 
@@ -166,9 +162,6 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     m.def("dpi_window_size_factor",
         HelloImGui::DpiWindowSizeFactor, " DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.\n It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.");
-
-    m.def("imgui_default_font_global_scale",
-        HelloImGui::ImGuiDefaultFontGlobalScale, "returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`");
 
 
     auto pyClassAssetFileData =
@@ -541,74 +534,29 @@ void py_init_module_hello_imgui(nb::module_& m)
         },     nb::arg("p_open") = nb::none());
 
 
-    m.def("translate_common_glyph_ranges",
-        HelloImGui::translate_common_glyph_ranges,
-        nb::arg("glyph_ranges"),
-        " Utility to translate DearImGui common Unicode ranges to ImWcharPair (Python)\n   (get_glyph_ranges_chinese_simplified_common, get_glyph_ranges_japanese, ...)");
-
-
     auto pyClassFontLoadingParams =
         nb::class_<HelloImGui::FontLoadingParams>
             (m, "FontLoadingParams", "\n Font loading parameters: several options are available (color, merging, range, ...)")
-        .def("__init__", [](HelloImGui::FontLoadingParams * self, bool adjustSizeToDpi = true, bool useFullGlyphRange = false, bool reduceMemoryUsageIfFullGlyphRange = true, bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, const std::optional<const std::vector<ImWcharPair>> & glyphRanges = std::nullopt, const std::optional<const ImFontConfig> & fontConfig = std::nullopt, bool mergeFontAwesome = false, const std::optional<const ImFontConfig> & fontConfigFontAwesome = std::nullopt)
+        .def("__init__", [](HelloImGui::FontLoadingParams * self, bool adjustSizeToDpi = true, bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, const std::optional<const ImFontConfig> & fontConfig = std::nullopt)
         {
             new (self) HelloImGui::FontLoadingParams();  // placement new
             auto r = self;
             r->adjustSizeToDpi = adjustSizeToDpi;
-            r->useFullGlyphRange = useFullGlyphRange;
-            r->reduceMemoryUsageIfFullGlyphRange = reduceMemoryUsageIfFullGlyphRange;
             r->mergeToLastFont = mergeToLastFont;
             r->loadColor = loadColor;
             r->insideAssets = insideAssets;
-            if (glyphRanges.has_value())
-                r->glyphRanges = glyphRanges.value();
-            else
-                r->glyphRanges = {};
             if (fontConfig.has_value())
                 r->fontConfig = fontConfig.value();
             else
                 r->fontConfig = ImFontConfig();
-            r->mergeFontAwesome = mergeFontAwesome;
-            if (fontConfigFontAwesome.has_value())
-                r->fontConfigFontAwesome = fontConfigFontAwesome.value();
-            else
-                r->fontConfigFontAwesome = ImFontConfig();
         },
-        nb::arg("adjust_size_to_dpi") = true, nb::arg("use_full_glyph_range") = false, nb::arg("reduce_memory_usage_if_full_glyph_range") = true, nb::arg("merge_to_last_font") = false, nb::arg("load_color") = false, nb::arg("inside_assets") = true, nb::arg("glyph_ranges") = nb::none(), nb::arg("font_config") = nb::none(), nb::arg("merge_font_awesome") = false, nb::arg("font_config_font_awesome") = nb::none()
+        nb::arg("adjust_size_to_dpi") = true, nb::arg("merge_to_last_font") = false, nb::arg("load_color") = false, nb::arg("inside_assets") = true, nb::arg("font_config") = nb::none()
         )
-        .def_rw("adjust_size_to_dpi", &HelloImGui::FontLoadingParams::adjustSizeToDpi, "if True, the font size will be adjusted automatically to account for HighDPI")
-        .def_rw("use_full_glyph_range", &HelloImGui::FontLoadingParams::useFullGlyphRange, "if True, the font will be loaded with the full glyph range")
-        .def_rw("reduce_memory_usage_if_full_glyph_range", &HelloImGui::FontLoadingParams::reduceMemoryUsageIfFullGlyphRange, " if set, fontConfig.GlyphRanges, and\n   fontConfig.OversampleH / fontConfig.OversampleV will be set to 1\n   when useFullGlyphRange is True (this is useful to save memory)")
+        .def_rw("adjust_size_to_dpi", &HelloImGui::FontLoadingParams::adjustSizeToDpi, " if True, the font size will be adjusted automatically to account for HighDPI\n")
         .def_rw("merge_to_last_font", &HelloImGui::FontLoadingParams::mergeToLastFont, "if True, the font will be merged to the last font")
         .def_rw("load_color", &HelloImGui::FontLoadingParams::loadColor, " if True, the font will be loaded using colors\n (requires freetype, enabled by IMGUI_ENABLE_FREETYPE)")
         .def_rw("inside_assets", &HelloImGui::FontLoadingParams::insideAssets, " if True, the font will be loaded using HelloImGui asset system.\n Otherwise, it will be loaded from the filesystem")
-        .def_rw("glyph_ranges", &HelloImGui::FontLoadingParams::glyphRanges, " the ranges of glyphs to load, as a list of pairs of ImWchar\n    - if empty, the default glyph range will be used\n    - you can specify several ranges\n    - intervals bounds are inclusive\n Note: in order to use common ranges defined by ImGui (GetGlyphRangesJapanese, GetGlyphRangesChinese, ...)\n       use TranslateCommonGlyphRanges (or translate_common_glyph_ranges in Python)")
         .def_rw("font_config", &HelloImGui::FontLoadingParams::fontConfig, "ImGui native font config to use")
-        .def_rw("merge_font_awesome", &HelloImGui::FontLoadingParams::mergeFontAwesome, "")
-        .def_rw("font_config_font_awesome", &HelloImGui::FontLoadingParams::fontConfigFontAwesome, "")
-        ;
-
-
-    auto pyClassFontDpiResponsive =
-        nb::class_<HelloImGui::FontDpiResponsive>
-            (m, "FontDpiResponsive", " A font that will be automatically resized to account for changes in DPI\n Use LoadAdaptiveFont instead of LoadFont to get this behavior.\n Fonts loaded with LoadAdaptiveFont will be reloaded during execution\n if ImGui::GetIO().FontGlobalScale is changed.")
-        .def("__init__", [](HelloImGui::FontDpiResponsive * self, std::string fontFilename = std::string(), float fontSize = 0.f, const std::optional<const HelloImGui::FontLoadingParams> & fontLoadingParams = std::nullopt)
-        {
-            new (self) HelloImGui::FontDpiResponsive();  // placement new
-            auto r = self;
-            r->fontFilename = fontFilename;
-            r->fontSize = fontSize;
-            if (fontLoadingParams.has_value())
-                r->fontLoadingParams = fontLoadingParams.value();
-            else
-                r->fontLoadingParams = HelloImGui::FontLoadingParams();
-        },
-        nb::arg("font_filename") = std::string(), nb::arg("font_size") = 0.f, nb::arg("font_loading_params") = nb::none()
-        )
-        .def_rw("font", &HelloImGui::FontDpiResponsive::font, "")
-        .def_rw("font_filename", &HelloImGui::FontDpiResponsive::fontFilename, "")
-        .def_rw("font_size", &HelloImGui::FontDpiResponsive::fontSize, "")
-        .def_rw("font_loading_params", &HelloImGui::FontDpiResponsive::fontLoadingParams, "")
         ;
 
 
@@ -635,33 +583,10 @@ void py_init_module_hello_imgui(nb::module_& m)
         "Python bindings defaults:\n    If params is None, then its default value will be: initialized with default value",
         nb::rv_policy::reference);
 
-    m.def("load_font_dpi_responsive",
-        [](const std::string & fontFilename, float fontSize, const std::optional<const HelloImGui::FontLoadingParams> & params = std::nullopt) -> HelloImGui::FontDpiResponsive *
-        {
-            auto LoadFontDpiResponsive_adapt_mutable_param_with_default_value = [](const std::string & fontFilename, float fontSize, const std::optional<const HelloImGui::FontLoadingParams> & params = std::nullopt) -> HelloImGui::FontDpiResponsive *
-            {
-
-                const HelloImGui::FontLoadingParams& params_or_default = [&]() -> const HelloImGui::FontLoadingParams {
-                    if (params.has_value())
-                        return params.value();
-                    else
-                        return {};
-                }();
-
-                auto lambda_result = HelloImGui::LoadFontDpiResponsive(fontFilename, fontSize, params_or_default);
-                return lambda_result;
-            };
-
-            return LoadFontDpiResponsive_adapt_mutable_param_with_default_value(fontFilename, fontSize, params);
-        },
-        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("params") = nb::none(),
-        "Python bindings defaults:\n    If params is None, then its default value will be: initialized with default value",
-        nb::rv_policy::reference);
-
     m.def("load_font_ttf",
-        [](const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, const std::optional<const ImFontConfig> & config = std::nullopt) -> ImFont *
+        [](const std::string & fontFilename, float fontSize, const std::optional<const ImFontConfig> & config = std::nullopt) -> ImFont *
         {
-            auto LoadFontTTF_adapt_mutable_param_with_default_value = [](const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, const std::optional<const ImFontConfig> & config = std::nullopt) -> ImFont *
+            auto LoadFontTTF_adapt_mutable_param_with_default_value = [](const std::string & fontFilename, float fontSize, const std::optional<const ImFontConfig> & config = std::nullopt) -> ImFont *
             {
 
                 const ImFontConfig& config_or_default = [&]() -> const ImFontConfig {
@@ -671,20 +596,20 @@ void py_init_module_hello_imgui(nb::module_& m)
                         return ImFontConfig();
                 }();
 
-                auto lambda_result = HelloImGui::LoadFontTTF(fontFilename, fontSize, useFullGlyphRange, config_or_default);
+                auto lambda_result = HelloImGui::LoadFontTTF(fontFilename, fontSize, config_or_default);
                 return lambda_result;
             };
 
-            return LoadFontTTF_adapt_mutable_param_with_default_value(fontFilename, fontSize, useFullGlyphRange, config);
+            return LoadFontTTF_adapt_mutable_param_with_default_value(fontFilename, fontSize, config);
         },
-        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("use_full_glyph_range") = false, nb::arg("config") = nb::none(),
+        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("config") = nb::none(),
         "Python bindings defaults:\n    If config is None, then its default value will be: ImFontConfig()",
         nb::rv_policy::reference);
 
     m.def("load_font_ttf_with_font_awesome_icons",
-        [](const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, const std::optional<const ImFontConfig> & configFont = std::nullopt, const std::optional<const ImFontConfig> & configIcons = std::nullopt) -> ImFont *
+        [](const std::string & fontFilename, float fontSize, const std::optional<const ImFontConfig> & configFont = std::nullopt) -> ImFont *
         {
-            auto LoadFontTTF_WithFontAwesomeIcons_adapt_mutable_param_with_default_value = [](const std::string & fontFilename, float fontSize, bool useFullGlyphRange = false, const std::optional<const ImFontConfig> & configFont = std::nullopt, const std::optional<const ImFontConfig> & configIcons = std::nullopt) -> ImFont *
+            auto LoadFontTTF_WithFontAwesomeIcons_adapt_mutable_param_with_default_value = [](const std::string & fontFilename, float fontSize, const std::optional<const ImFontConfig> & configFont = std::nullopt) -> ImFont *
             {
 
                 const ImFontConfig& configFont_or_default = [&]() -> const ImFontConfig {
@@ -694,48 +619,15 @@ void py_init_module_hello_imgui(nb::module_& m)
                         return ImFontConfig();
                 }();
 
-                const ImFontConfig& configIcons_or_default = [&]() -> const ImFontConfig {
-                    if (configIcons.has_value())
-                        return configIcons.value();
-                    else
-                        return ImFontConfig();
-                }();
-
-                auto lambda_result = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFilename, fontSize, useFullGlyphRange, configFont_or_default, configIcons_or_default);
+                auto lambda_result = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFilename, fontSize, configFont_or_default);
                 return lambda_result;
             };
 
-            return LoadFontTTF_WithFontAwesomeIcons_adapt_mutable_param_with_default_value(fontFilename, fontSize, useFullGlyphRange, configFont, configIcons);
+            return LoadFontTTF_WithFontAwesomeIcons_adapt_mutable_param_with_default_value(fontFilename, fontSize, configFont);
         },
-        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("use_full_glyph_range") = false, nb::arg("config_font") = nb::none(), nb::arg("config_icons") = nb::none(),
-        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * configFont: ImFontConfig()\n        * configIcons: ImFontConfig()",
+        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("config_font") = nb::none(),
+        "Python bindings defaults:\n    If configFont is None, then its default value will be: ImFontConfig()",
         nb::rv_policy::reference);
-
-    m.def("merge_font_awesome_to_last_font",
-        [](float fontSize, const std::optional<const ImFontConfig> & config = std::nullopt) -> ImFont *
-        {
-            auto MergeFontAwesomeToLastFont_adapt_mutable_param_with_default_value = [](float fontSize, const std::optional<const ImFontConfig> & config = std::nullopt) -> ImFont *
-            {
-
-                const ImFontConfig& config_or_default = [&]() -> const ImFontConfig {
-                    if (config.has_value())
-                        return config.value();
-                    else
-                        return ImFontConfig();
-                }();
-
-                auto lambda_result = HelloImGui::MergeFontAwesomeToLastFont(fontSize, config_or_default);
-                return lambda_result;
-            };
-
-            return MergeFontAwesomeToLastFont_adapt_mutable_param_with_default_value(fontSize, config);
-        },
-        nb::arg("font_size"), nb::arg("config") = nb::none(),
-        "Python bindings defaults:\n    If config is None, then its default value will be: ImFontConfig()",
-        nb::rv_policy::reference);
-
-    m.def("did_call_hello_imgui_load_font_ttf",
-        HelloImGui::DidCallHelloImGuiLoadFontTTF, " indicates that fonts were loaded using HelloImGui::LoadFont. In that case, fonts may have been resized to\n account for HighDPI (on macOS and emscripten)");
 
 
     auto pyClassScreenBounds =

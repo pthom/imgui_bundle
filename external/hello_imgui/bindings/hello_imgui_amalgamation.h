@@ -34,12 +34,6 @@ namespace HelloImGui
 //    By default, Hello ImGui will compute them automatically,
 //    when dpiWindowSizeFactor and fontRenderingScale are set to 0.
 //
-// Parameters to improve font rendering quality:
-// ---------------------------------------------
-// - `fontOversampleH` and `fontOversampleV` : Font oversampling parameters
-//     Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.
-//     If not zero, these values will be used to set the oversampling factor when loading fonts.
-//
 //
 // How to set those values manually:
 // ---------------------------------
@@ -76,38 +70,27 @@ struct DpiAwareParams
     //     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.
     //  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.
     //  Changing this value will *not* change the visible font size on the screen, however it will
-    //  affect the size of the loaded glyphs.
+    //  affect the size of font textures that are loaded.
     //  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),
-    //  a font size of 16 will be loaded as if it was 32, and will be rendered at half size.
+    //  the font texture will be rasterized at 1/0.5 = 2 times the size of the font.
     //   This leads to a better rendering quality on some platforms.
     // (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)
     float fontRenderingScale = 0.0f;
 
-    // `onlyUseFontDpiResponsive`
-    // If true, guarantees that only HelloImGui::LoadDpiResponsiveFont will be used to load fonts.
-    // (also for the default font)
-    bool onlyUseFontDpiResponsive = false;
-
-    // `fontOversampleH` and `fontOversampleV` : Font oversampling parameters
-    // Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.
-    // If not zero, these values will be used to set the oversampling factor when loading fonts.
-    // (i.e. they will be set in ImFontConfig::OversampleH and ImFontConfig::OversampleV)
-    // OversampleH: The difference between 2 and 3 for OversampleH is minimal.
-    //              You can reduce this to 1 for large glyphs save memory.
-    // OversampleV: This is not really useful as we don't use sub-pixel positions on the Y axis.
-    // Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.
-    int             fontOversampleH = 0;  // Default is 2 in ImFontConfig
-    int             fontOversampleV = 0;  // Default is 1 in ImFontConfig
-
-
-    // `dpiFontLoadingFactor`
-    //     factor by which font size should be multiplied at loading time to get a similar
-    //     visible size on different OSes.
+    // `DpiFontLoadingFactor`
+    //     factor by which font size should be multiplied at loading time to get a similar visible size on different OSes.
+    //     This is equal to dpiWindowSizeFactor
     //  The size will be equivalent to a size given for a 96 PPI screen
     float DpiFontLoadingFactor() const {
-        float r = dpiWindowSizeFactor / fontRenderingScale;
-        return r;
-    };
+        return dpiWindowSizeFactor;
+    }
+
+    // `DpiFontRasterizerDensity`
+    //     Rasterizer density to use when loading fonts (applied to ImFontConfig.RasterizerDensity)
+    float DpiFontRasterizerDensity() const {
+        return 1.f / fontRenderingScale;
+    }
+
 };
 
 // ----------------------------------------------------------------------------
@@ -124,7 +107,7 @@ Using ImVec2 with fixed values is *almost always a bad idea* if you intend your
 application to be used on high DPI screens!
 Otherwise, widgets might be misplaced or too small on different screens and/or OS.
 
-Instead you should use scale your widgets and windows relatively to the font size,
+Instead, you should use scale your widgets and windows relatively to the font size,
 as is done with the [em CSS Unit](https://lyty.dev/css/css-unit.html).
 
 @@md
@@ -160,21 +143,20 @@ DpiAwareParams* GetDpiAwareParams();
 // ----------------------------------------------------------------------------
 
 //
-// Legacy API, you should use RunnerParams.dpAwareParams instead
+// Legacy API, you should use RunnerParams.dpiAwareParams instead
 //
 namespace HelloImGui
 {
-// Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
-// (HelloImGui::LoadFontTTF does this by default)
-float DpiFontLoadingFactor();
+    // Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
+    // (HelloImGui::LoadFontTTF does this by default)
+    float DpiFontLoadingFactor();
 
-// DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
-// It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
-float DpiWindowSizeFactor();
+    // DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
+    // It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
+    float DpiWindowSizeFactor();
 
-// returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`
-float ImGuiDefaultFontGlobalScale();
 } // namespace HelloImGui
+
 
 
 // ----------------------------------------------------------------------------
@@ -235,31 +217,16 @@ Notes:
 - You cannot change DisplayFramebufferScale manually, it will be reset at each new frame, by asking the platform backend.
 
 
-## FontGlobalScale
-
-`ImGui::GetIO().FontGlobalScale` is a factor by which fonts glyphs should be scaled at rendering time.
-It is typically 1 on windows, and 0.5 on macOS retina screens.
-
-
 ## How to load fonts with the correct size
 
 ### Using HelloImGui (recommended)
 
-[`HelloImGui::LoadFont()` and `HelloImGui::LoadFontDpiResponsive`](https://pthom.github.io/hello_imgui/book/doc_api.html#load-fonts) will load fonts
+[`HelloImGui::LoadFont()`](https://pthom.github.io/hello_imgui/book/doc_api.html#load-fonts) will load fonts
  with the correct size, taking into account the DPI scaling.
 
 ### Using Dear ImGui
 `ImGui::GetIO().Fonts->AddFontFromFileTTF()` loads a font with a given size, in *physical pixels*.
-
-If for example, DisplayFramebufferScale is (2,2), and you load a font with a size of 16, it will by default be rendered
- with size of 16 *virtual screen coordinate pixels* (i.e. 32 physical pixels). This will lead to blurry text.
-To solve this, you should load your font with a size of 16 *virtual screen coordinate pixels* (i.e. 32 physical pixels),
-and set `ImGui::GetIO().FontGlobalScale` to 0.5.
-
-Helpers if using `ImGui::GetIO().Fonts->AddFontFromFileTTF()`:
-- `HelloImGui::ImGuiDefaultFontGlobalScale()` returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`.
-- `HelloImGui::DpiFontLoadingFactor()` returns a factor by which you shall multiply your font sizes when loading them.
-
+KKDYNFONT: TBC...
 
 ## Reproducible physical window sizes (in mm or inches)
 
@@ -647,20 +614,10 @@ namespace HelloImGui
 //                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <vector>
-#include <array>
+
 
 namespace HelloImGui
 {
-    using ImWcharPair = std::array<ImWchar, 2>;
-
-    // Utility to translate DearImGui common Unicode ranges to ImWcharPair (Python)
-    //   (get_glyph_ranges_chinese_simplified_common, get_glyph_ranges_japanese, ...)
-    std::vector<ImWcharPair> translate_common_glyph_ranges(const std::vector<ImWchar> & glyphRanges);
-
-    // Utility to translate DearImGui common Unicode ranges to ImWcharPair (C++)
-    //   (GetGlyphRangesChineseSimplifiedCommon, GetGlyphRangesJapanese, ...)
-    std::vector<ImWcharPair> TranslateCommonGlyphRanges(const ImWchar* glyphRanges);
-
     // @@md#Fonts
 
     // When loading fonts, use
@@ -677,14 +634,8 @@ namespace HelloImGui
     struct FontLoadingParams
     {
         // if true, the font size will be adjusted automatically to account for HighDPI
+        //
         bool adjustSizeToDpi = true;
-
-        // if true, the font will be loaded with the full glyph range
-        bool useFullGlyphRange = false;
-        // if set, fontConfig.GlyphRanges, and
-        //   fontConfig.OversampleH / fontConfig.OversampleV will be set to 1
-        //   when useFullGlyphRange is true (this is useful to save memory)
-        bool reduceMemoryUsageIfFullGlyphRange = true;
 
         // if true, the font will be merged to the last font
         bool mergeToLastFont = false;
@@ -697,76 +648,31 @@ namespace HelloImGui
         // Otherwise, it will be loaded from the filesystem
         bool insideAssets = true;
 
-        // the ranges of glyphs to load, as a list of pairs of ImWchar
-        //    - if empty, the default glyph range will be used
-        //    - you can specify several ranges
-        //    - intervals bounds are inclusive
-        // Note: in order to use common ranges defined by ImGui (GetGlyphRangesJapanese, GetGlyphRangesChinese, ...)
-        //       use TranslateCommonGlyphRanges (or translate_common_glyph_ranges in Python)
-        std::vector<ImWcharPair> glyphRanges = {};
-
         // ImGui native font config to use
         ImFontConfig fontConfig = ImFontConfig();
-
-        // if true, the font will be loaded and then FontAwesome icons will be merged to it
-        // (deprecated, use mergeToLastFont instead, and load in two steps)
-        // This will use an old version of FontAwesome (FontAwesome 4)
-        bool mergeFontAwesome = false;
-        ImFontConfig fontConfigFontAwesome = ImFontConfig();
-    };
-
-    // A font that will be automatically resized to account for changes in DPI
-    // Use LoadAdaptiveFont instead of LoadFont to get this behavior.
-    // Fonts loaded with LoadAdaptiveFont will be reloaded during execution
-    // if ImGui::GetIO().FontGlobalScale is changed.
-    struct FontDpiResponsive
-    {
-        ImFont* font = nullptr;
-        std::string fontFilename;
-        float fontSize = 0.f;
-        FontLoadingParams fontLoadingParams;
     };
 
 
     // Loads a font with the specified parameters
-    // (this font will not adapt to DPI changes after startup)
     ImFont* LoadFont(
         const std::string & fontFilename, float fontSize,
         const FontLoadingParams & params = {});
 
-    // Loads a font with the specified parameters
-    // This font will adapt to DPI changes after startup.
-    // Only fonts loaded with LoadAdaptiveFont will adapt to DPI changes:
-    // avoid mixing LoadFont/LoadFontDpiResponsive)
-    FontDpiResponsive* LoadFontDpiResponsive(
-        const std::string & fontFilename, float fontSize,
-        const FontLoadingParams & params = {});
-
-    // @@md
-
-    //
-    // Deprecated API below, kept for compatibility (uses LoadFont internally)
-    //
     ImFont* LoadFontTTF(
         const std::string & fontFilename,
         float fontSize,
-        bool useFullGlyphRange = false,
         ImFontConfig config = ImFontConfig()
-        );
+    );
+
     ImFont* LoadFontTTF_WithFontAwesomeIcons(
         const std::string & fontFilename,
         float fontSize,
-        bool useFullGlyphRange = false,
-        ImFontConfig configFont = ImFontConfig(),
-        ImFontConfig configIcons = ImFontConfig()
-        );
-    ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontConfig());
+        ImFontConfig configFont = ImFontConfig()
+    );
 
-
-    // indicates that fonts were loaded using HelloImGui::LoadFont. In that case, fonts may have been resized to
-    // account for HighDPI (on macOS and emscripten)
-    bool DidCallHelloImGuiLoadFontTTF();
+    // @@md
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/runner_params.h included by hello_imgui.h                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -779,6 +685,7 @@ namespace HelloImGui
 //                       hello_imgui/screen_bounds.h included by hello_imgui/app_window_params.h                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <array>
 #include <stddef.h>
 
 
