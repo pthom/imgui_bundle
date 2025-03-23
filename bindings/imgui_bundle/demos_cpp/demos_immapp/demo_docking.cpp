@@ -85,18 +85,14 @@ void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.L
     HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
 
     // Load the title font. Also manually merge FontAwesome icons to it
-    HelloImGui::FontLoadingParams fontLoadingParamsTitleIcons;
-    fontLoadingParamsTitleIcons.mergeFontAwesome = true;
-    appState.TitleFont = HelloImGui::LoadFont("fonts/Roboto/Roboto-BoldItalic.ttf", 18.f, fontLoadingParamsTitleIcons);
+    appState.TitleFont = HelloImGui::LoadFontTTF_WithFontAwesomeIcons("fonts/Roboto/Roboto-BoldItalic.ttf", 18.f);
 
     // Load an Emoji font
     HelloImGui::FontLoadingParams fontLoadingParamsEmoji;
-    fontLoadingParamsEmoji.useFullGlyphRange = true;
     appState.EmojiFont = HelloImGui::LoadFont("fonts/NotoEmoji-Regular.ttf", 24.f, fontLoadingParamsEmoji);
 
     // Load a large icon font
     HelloImGui::FontLoadingParams fontLoadingParamsLargeIcon;
-    fontLoadingParamsLargeIcon.useFullGlyphRange = true;
     appState.LargeIconFont = HelloImGui::LoadFont("fonts/Font_Awesome_6_Free-Solid-900.otf", 24.f, fontLoadingParamsLargeIcon);
 
 #ifdef IMGUI_ENABLE_FREETYPE
