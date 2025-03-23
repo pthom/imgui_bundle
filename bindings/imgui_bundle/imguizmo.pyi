@@ -204,9 +204,6 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     def set_alternative_window(window: ImGuiWindow) -> None:
         pass
 
-    @staticmethod
-    def set_id(id: int) -> None:
-        pass
 
     # ID stack/scopes
     # Read the FAQ (docs/FAQ.md or http://dearimgui.org/faq) for more details about how ID are handled in dear imgui.
