@@ -135,7 +135,9 @@ def main():
         assert app_state.nvg_framebuffer is not None
         nvg_imgui.render_nvg_to_frame_buffer(app_state.vg, app_state.nvg_framebuffer, draw_scene)
         assert app_state.nvg_framebuffer is not None
-        imgui.image(app_state.nvg_framebuffer.texture_id, hello_imgui.em_to_vec2(50, 30))
+        imgui.image(
+            imgui.ImTextureRef(app_state.nvg_framebuffer.texture_id),
+            hello_imgui.em_to_vec2(50, 30))
 
         _, gDrawingState.heart_color = imgui.color_edit4("Heart color", gDrawingState.heart_color)
 
