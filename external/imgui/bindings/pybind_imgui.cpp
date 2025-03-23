@@ -5833,6 +5833,141 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiMultiSelectTempData> &v) { return v.size(); })
         ;
+    auto pyClassImVector_ImTextureData_ptr =
+        nb::class_<ImVector<ImTextureData *>>
+            (m, "ImVector_ImTextureData_ptr", "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("data_address",
+            &ImVector<ImTextureData *>::DataAddress, "(private API)")
+        // #endif
+        //
+        .def(nb::init<>())
+        .def(nb::init<const ImVector<ImTextureData *> &>(),
+            nb::arg("src"))
+        .def("clear",
+            &ImVector<ImTextureData *>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImTextureData *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImTextureData *>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImTextureData *>::size, "(private API)")
+        .def("__getitem__",
+            nb::overload_cast<int>(&ImVector<ImTextureData *>::operator[], nb::const_),
+            nb::arg("i"),
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("__getitem__",
+            nb::overload_cast<int>(&ImVector<ImTextureData *>::operator[]),
+            nb::arg("i"),
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("push_back",
+            &ImVector<ImTextureData *>::push_back,
+            nb::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImTextureData *>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImTextureData *>::push_front,
+            nb::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImTextureData *> &v) {
+                return nb::make_iterator(nb::type<ImVector<ImTextureData *>>(), "iterator", v.begin(), v.end());
+            }, nb::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImTextureData *> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImTextureRef =
+        nb::class_<ImVector<ImTextureRef>>
+            (m, "ImVector_ImTextureRef", "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("data_address",
+            &ImVector<ImTextureRef>::DataAddress, "(private API)")
+        // #endif
+        //
+        .def(nb::init<>())
+        .def(nb::init<const ImVector<ImTextureRef> &>(),
+            nb::arg("src"))
+        .def("clear",
+            &ImVector<ImTextureRef>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImTextureRef>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImTextureRef>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImTextureRef>::size, "(private API)")
+        .def("__getitem__",
+            nb::overload_cast<int>(&ImVector<ImTextureRef>::operator[], nb::const_),
+            nb::arg("i"),
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("__getitem__",
+            nb::overload_cast<int>(&ImVector<ImTextureRef>::operator[]),
+            nb::arg("i"),
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("push_back",
+            &ImVector<ImTextureRef>::push_back,
+            nb::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImTextureRef>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImTextureRef>::push_front,
+            nb::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImTextureRef> &v) {
+                return nb::make_iterator(nb::type<ImVector<ImTextureRef>>(), "iterator", v.begin(), v.end());
+            }, nb::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImTextureRef> &v) { return v.size(); })
+        ;
+    auto pyClassImVector_ImTextureRect =
+        nb::class_<ImVector<ImTextureRect>>
+            (m, "ImVector_ImTextureRect", "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("data_address",
+            &ImVector<ImTextureRect>::DataAddress, "(private API)")
+        // #endif
+        //
+        .def(nb::init<>())
+        .def(nb::init<const ImVector<ImTextureRect> &>(),
+            nb::arg("src"))
+        .def("clear",
+            &ImVector<ImTextureRect>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImTextureRect>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImTextureRect>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImTextureRect>::size, "(private API)")
+        .def("__getitem__",
+            nb::overload_cast<int>(&ImVector<ImTextureRect>::operator[], nb::const_),
+            nb::arg("i"),
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("__getitem__",
+            nb::overload_cast<int>(&ImVector<ImTextureRect>::operator[]),
+            nb::arg("i"),
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("push_back",
+            &ImVector<ImTextureRect>::push_back,
+            nb::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImTextureRect>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImTextureRect>::push_front,
+            nb::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImTextureRect> &v) {
+                return nb::make_iterator(nb::type<ImVector<ImTextureRect>>(), "iterator", v.begin(), v.end());
+            }, nb::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImTextureRect> &v) { return v.size(); })
+        ;
 
 
     auto pyClassImGuiStyle =
@@ -6844,6 +6979,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("_cmd_header", &ImDrawList::_CmdHeader, "[Internal] template of active commands. Fields should match those of CmdBuffer.back().")
         .def_rw("_splitter", &ImDrawList::_Splitter, "[Internal] for channels api (note: prefer using your own persistent instance of ImDrawListSplitter!)")
         .def_rw("_clip_rect_stack", &ImDrawList::_ClipRectStack, "[Internal]")
+        .def_rw("_texture_stack", &ImDrawList::_TextureStack, "[Internal]")
         .def_rw("_callbacks_data_buf", &ImDrawList::_CallbacksDataBuf, "[Internal]")
         .def_rw("_fringe_scale", &ImDrawList::_FringeScale, "[Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content")
         .def_ro("_owner_name", &ImDrawList::_OwnerName, "Pointer to owner window's name for debugging")
@@ -7190,6 +7326,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("backend_user_data", &ImTextureData::BackendUserData, "Convenience storage for backend. Some backends may have enough with TexID.")
         .def_rw("used_rect", &ImTextureData::UsedRect, "Bounding box encompassing all past and queued Updates[].")
         .def_rw("update_rect", &ImTextureData::UpdateRect, "Bounding box encompassing all queued Updates[].")
+        .def_rw("updates", &ImTextureData::Updates, "Array of individual updates.")
         .def_rw("unused_frames", &ImTextureData::UnusedFrames, "In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used.")
         .def_rw("ref_count", &ImTextureData::RefCount, "Number of contexts using this texture.")
         .def_rw("use_colors", &ImTextureData::UseColors, "Tell whether our texture data is known to use colors (rather than just white + alpha).")
@@ -7403,6 +7540,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tex_max_height", &ImFontAtlas::TexMaxHeight, "Maximum desired texture height. Must be a power of two. Default to 8096.")
         .def_rw("user_data", &ImFontAtlas::UserData, "")
         .def_rw("tex_data", &ImFontAtlas::TexData, "Current texture.")
+        .def_rw("tex_list", &ImFontAtlas::TexList, "Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetPlatformIO().Textures[] instead!")
         .def_rw("locked", &ImFontAtlas::Locked, "Marked as locked during ImGui::NewFrame()..EndFrame() scope if TexUpdates are not supported. Any attempt to modify the atlas will assert.")
         .def_rw("renderer_has_textures", &ImFontAtlas::RendererHasTextures, "Copy of (BackendFlags & ImGuiBackendFlags_RendererHasTextures) from supporting context.")
         .def_rw("tex_is_built", &ImFontAtlas::TexIsBuilt, "Set when texture was built matching current font input. Mostly useful for legacy IsBuilt() call.")
@@ -7427,6 +7565,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("index_advance_x", &ImFontBaked::IndexAdvanceX, "12-16 // out // Sparse. Glyphs->AdvanceX in a directly indexable way (cache-friendly for CalcTextSize functions which only this info, and are often bottleneck in large UI).")
         .def_rw("fallback_advance_x", &ImFontBaked::FallbackAdvanceX, "4     // out // FindGlyph(FallbackChar)->AdvanceX")
         .def_rw("size", &ImFontBaked::Size, "4     // in  // Height of characters/line, set during loading (doesn't change after loading)")
+        .def_rw("index_lookup", &ImFontBaked::IndexLookup, "12-16 // out // Sparse. Index glyphs by Unicode code-point.")
         .def_rw("glyphs", &ImFontBaked::Glyphs, "12-16 // out // All glyphs.")
         .def_rw("fallback_glyph_index", &ImFontBaked::FallbackGlyphIndex, "4     // out // Index of FontFallbackChar")
         .def_rw("ascent", &ImFontBaked::Ascent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
@@ -7578,6 +7717,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("renderer_texture_max_height", &ImGuiPlatformIO::Renderer_TextureMaxHeight, "")
         .def_rw("renderer_render_state", &ImGuiPlatformIO::Renderer_RenderState, "Written by some backends during ImGui_ImplXXXX_RenderDrawData() call to point backend_specific ImGui_ImplXXXX_RenderState* structure.")
         .def_rw("monitors", &ImGuiPlatformIO::Monitors, " (Optional) Monitor list\n - Updated by: app/backend. Update every frame to dynamically support changing monitor or DPI configuration.\n - Used by: dear imgui to query DPI info, clamp popups/tooltips within same monitor and not have them straddle monitors.")
+        .def_rw("textures", &ImGuiPlatformIO::Textures, "Texture list (most often Textures.Size == 1).")
         .def_rw("viewports", &ImGuiPlatformIO::Viewports, "Main viewports, followed by all secondary viewports.")
         ;
 

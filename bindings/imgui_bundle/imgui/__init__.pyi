@@ -8216,6 +8216,210 @@ class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiM
     def __len__(self) -> int:
         pass
 
+class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextureData *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
+    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    @overload
+    def __init__(self, src: ImVector_ImTextureData_ptr) -> None:
+        pass
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    def clear(self) -> None:
+        """Important: does not destruct anything
+        (private API)
+        """
+        pass
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    def clear_destruct(self) -> None:
+        """Important: never called automatically! always explicit.
+        (private API)
+        """
+        pass
+    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> ImTextureData:
+        """(private API)"""
+        pass
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> ImTextureData:
+        """(private API)"""
+        pass
+    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    def push_back(self, v: ImTextureData) -> None:
+        """(private API)"""
+        pass
+    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    def pop_back(self) -> None:
+        """(private API)"""
+        pass
+    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    def push_front(self, v: ImTextureData) -> None:
+        """(private API)"""
+        pass
+
+    def __iter__(self) -> Iterator[ImTextureData]:
+        pass
+
+    def __len__(self) -> int:
+        pass
+
+class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
+    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    @overload
+    def __init__(self, src: ImVector_ImTextureRef) -> None:
+        pass
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    def clear(self) -> None:
+        """Important: does not destruct anything
+        (private API)
+        """
+        pass
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    def clear_destruct(self) -> None:
+        """Important: never called automatically! always explicit.
+        (private API)
+        """
+        pass
+    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> ImTextureRef:
+        """(private API)"""
+        pass
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> ImTextureRef:
+        """(private API)"""
+        pass
+    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    def push_back(self, v: ImTextureRef) -> None:
+        """(private API)"""
+        pass
+    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    def pop_back(self) -> None:
+        """(private API)"""
+        pass
+    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    def push_front(self, v: ImTextureRef) -> None:
+        """(private API)"""
+        pass
+
+    def __iter__(self) -> Iterator[ImTextureRef]:
+        pass
+
+    def __len__(self) -> int:
+        pass
+
+class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRect>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
+    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    @overload
+    def __init__(self, src: ImVector_ImTextureRect) -> None:
+        pass
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    def clear(self) -> None:
+        """Important: does not destruct anything
+        (private API)
+        """
+        pass
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    def clear_destruct(self) -> None:
+        """Important: never called automatically! always explicit.
+        (private API)
+        """
+        pass
+    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> ImTextureRect:
+        """(private API)"""
+        pass
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> ImTextureRect:
+        """(private API)"""
+        pass
+    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    def push_back(self, v: ImTextureRect) -> None:
+        """(private API)"""
+        pass
+    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    def pop_back(self) -> None:
+        """(private API)"""
+        pass
+    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    def push_front(self, v: ImTextureRect) -> None:
+        """(private API)"""
+        pass
+
+    def __iter__(self) -> Iterator[ImTextureRect]:
+        pass
+
+    def __len__(self) -> int:
+        pass
+
 ImVector_ImTextureID = ImVector_int
 
 ImVector_ImDrawIdx = ImVector_uint
@@ -8223,6 +8427,8 @@ ImVector_ImDrawIdx = ImVector_uint
 ImVector_ID = ImVector_uint
 
 ImVector_ImU32 = ImVector_uint
+
+ImVector_ImU16 = ImVector_uint
 
 ImVector_ImWchar32 = ImVector_uint
 
@@ -9999,6 +10205,8 @@ class ImDrawList:
     _splitter: ImDrawListSplitter  # [Internal] for channels api (note: prefer using your own persistent instance of ImDrawListSplitter!)
     # ImVector<ImVec4>        _ClipRectStack;    /* original C++ signature */
     _clip_rect_stack: ImVector_ImVec4  # [Internal]
+    # ImVector<ImTextureRef>  _TextureStack;    /* original C++ signature */
+    _texture_stack: ImVector_ImTextureRef  # [Internal]
     # ImVector<ImU8>          _CallbacksDataBuf;    /* original C++ signature */
     _callbacks_data_buf: ImVector_ImU8  # [Internal]
     # float                   _FringeScale;    /* original C++ signature */
@@ -10161,7 +10369,7 @@ class ImDrawList:
         pass
     # Quadratic Bezier (3 control points)
 
-    #                                   #ifdef IMGUI_BUNDLE_PYTHON_API
+    #                                      #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # - Only simple polygons are supported by filling functions (no self-intersections, no holes).
     # - Concave polygon fill is more expensive than convex one: it has O(N^2) complexity. Provided as a convenience fo user but not used by main library.
@@ -10174,7 +10382,7 @@ class ImDrawList:
     # IMGUI_API void  AddConcavePolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
     def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
         pass
-    #                                   #endif
+    #                                      #endif
     #
 
     # Image primitives
@@ -10538,6 +10746,8 @@ class ImTextureData:
     used_rect: ImTextureRect  # Bounding box encompassing all past and queued Updates[].
     # ImTextureRect       UpdateRect;    /* original C++ signature */
     update_rect: ImTextureRect  # Bounding box encompassing all queued Updates[].
+    # ImVector<ImTextureRect> Updates;    /* original C++ signature */
+    updates: ImVector_ImTextureRect  # Array of individual updates.
     # int                 UnusedFrames;    /* original C++ signature */
     unused_frames: int  # In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used.
     # unsigned short      RefCount;    /* original C++ signature */
@@ -10831,7 +11041,7 @@ class ImFontAtlas:
     # [ADAPT_IMGUI_BUNDLE]
     # -------------------------------------------
 
-    #                                    #ifdef IMGUI_BUNDLE_PYTHON_API
+    #                                     #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # IMGUI_API ImFont* _AddFontFromFileTTF(    /* original C++ signature */
     #         const char* filename,
@@ -10891,7 +11101,7 @@ class ImFontAtlas:
     def get_glyph_ranges_vietnamese(self) -> List[ImWchar]:
         """// Default + Vietnamese characters"""
         pass
-    #                                    #endif
+    #                                     #endif
     #
     # [/ADAPT_IMGUI_BUNDLE]
 
@@ -10953,6 +11163,8 @@ class ImFontAtlas:
     tex_data: ImTextureData  # Current texture.
 
     # [Internal]
+    # ImVector<ImTextureData*>    TexList;    /* original C++ signature */
+    tex_list: ImVector_ImTextureData_ptr  # Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetPlatformIO().Textures[] instead!
     # bool                        Locked;    /* original C++ signature */
     locked: bool  # Marked as locked during ImGui::NewFrame()..EndFrame() scope if TexUpdates are not supported. Any attempt to modify the atlas will assert.
     # bool                        RendererHasTextures;    /* original C++ signature */
@@ -11009,6 +11221,8 @@ class ImFontBaked:
     size: float  # 4     // in  // Height of characters/line, set during loading (doesn't change after loading)
 
     # [Internal] Members: Hot ~28/36 bytes (for RenderText loop)
+    # ImVector<ImU16>             IndexLookup;    /* original C++ signature */
+    index_lookup: ImVector_ImU16  # 12-16 // out // Sparse. Index glyphs by Unicode code-point.
     # ImVector<ImFontGlyph>       Glyphs;    /* original C++ signature */
     glyphs: ImVector_ImFontGlyph  # 12-16 // out // All glyphs.
     # int                         FallbackGlyphIndex;    /* original C++ signature */
@@ -11432,6 +11646,8 @@ class PlatformIO:
     # ------------------------------------------------------------------
 
     # Textures list (the list is updated by calling ImGui::EndFrame or ImGui::Render)
+    # ImVector<ImTextureData*>        Textures;    /* original C++ signature */
+    textures: ImVector_ImTextureData_ptr  # Texture list (most often Textures.Size == 1).
 
     # Viewports list (the list is updated by calling ImGui::EndFrame or ImGui::Render)
     # (in the future we will attempt to organize this feature to remove the need for a "main viewport")

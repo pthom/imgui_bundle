@@ -3478,6 +3478,8 @@ class Context:
     current_dpi_scale: float  # Current window/viewport DpiScale == CurrentViewport->DpiScale
     # ImDrawListSharedData    DrawListSharedData;    /* original C++ signature */
     draw_list_shared_data: ImDrawListSharedData
+    # ImVector<ImTextureData*>Textures;    /* original C++ signature */
+    textures: ImVector_ImTextureData_ptr
     # double                  Time;    /* original C++ signature */
     time: float
     # int                     FrameCount;    /* original C++ signature */
@@ -7591,6 +7593,8 @@ class stbrp_context_opaque:
 class ImFontAtlasBuilder:
     # stbrp_context_opaque        PackContext;    /* original C++ signature */
     pack_context: stbrp_context_opaque  # Actually 'stbrp_context' but we don't want to define this in the header file.
+    # ImVector<ImTextureRect>     Rects;    /* original C++ signature */
+    rects: ImVector_ImTextureRect
     # ImVector<uchar>     TempBuffer;    /* original C++ signature */
     temp_buffer: ImVector_uchar  # Misc scratch buffer
     # int                         RectsIndexFreeListStart;    /* original C++ signature */
