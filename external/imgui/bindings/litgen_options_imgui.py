@@ -76,7 +76,6 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiPlatformMonitor",
         "ImGuiViewport*",
         "ImGuiWindow*",
-        "ImFontAtlasCustomRect",
         "ImFontConfig",
         "ImGuiFocusScopeData",
         "ImGuiSelectionRequest",
@@ -364,6 +363,7 @@ def litgen_options_imgui(
             r"^TexPixelsAlpha8$",
             r"^Stb$",
             r"^ErrorCallback$",  # callback with C function pointers
+            r"^BakedPool$",
         ]
     )
 
@@ -382,6 +382,8 @@ def litgen_options_imgui(
             r"::STB_",
             r"ImGuiStoragePair",
             r"^ImFileHandle$",
+            r"^ImFontLoader",
+            r"^ImFontAtlasBuilder",
         ]
     )
 
