@@ -74,6 +74,11 @@ def font_atlas_get_tex_data_as_rgba32(
     """
     pass
 
+def im_texture_data_get_pixels(tex: ImTextureData) -> np.ndarray:
+    """Manual binding for ImTextureData::GetPixels"""
+    pass
+
+
 # -----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
 # -----------------------------------------------------------------------------
