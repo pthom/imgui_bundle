@@ -1,5 +1,4 @@
-"""ImmApp: Immediate App Toolkit for ImGui Bundle
-"""
+"""ImmApp: Immediate App Toolkit for ImGui Bundle"""
 
 # ruff: noqa: B008, F821
 from typing import Tuple, Optional, Callable, List, overload, Any
