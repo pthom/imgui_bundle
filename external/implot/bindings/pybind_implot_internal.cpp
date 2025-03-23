@@ -1322,6 +1322,17 @@ void py_init_module_implot_internal(nb::module_& m)
         nb::arg("year"), nb::arg("month"),
         " Returns the number of days in a month, accounting for Feb. leap years. #month is zero indexed.\n(private API)");
 
+    m.def("mk_time",
+        ImPlot::MkTime,
+        nb::arg("ptm"),
+        " // Make a UNIX timestamp from a tm struct according to the current ImPlotStyle.UseLocalTime setting.\n(private API)");
+
+    m.def("get_time",
+        ImPlot::GetTime,
+        nb::arg("t"), nb::arg("ptm"),
+        " Get a tm struct from a UNIX timestamp according to the current ImPlotStyle.UseLocalTime setting.\n(private API)",
+        nb::rv_policy::reference);
+
     m.def("make_time",
         ImPlot::MakeTime,
         nb::arg("year"), nb::arg("month") = 0, nb::arg("day") = 1, nb::arg("hour") = 0, nb::arg("min") = 0, nb::arg("sec") = 0, nb::arg("us") = 0,
@@ -1331,6 +1342,11 @@ void py_init_module_implot_internal(nb::module_& m)
         ImPlot::GetYear,
         nb::arg("t"),
         "Get year component from timestamp [1970-3000]");
+
+    m.def("get_month",
+        ImPlot::GetMonth,
+        nb::arg("t"),
+        "Get month component from timestamp [0-11]");
 
     m.def("add_time",
         ImPlot::AddTime,
@@ -1356,6 +1372,12 @@ void py_init_module_implot_internal(nb::module_& m)
         ImPlot::CombineDateTime,
         nb::arg("date_part"), nb::arg("time_part"),
         "Combines the date of one timestamp with the time-of-day of another timestamp.");
+
+    m.def("now",
+        ImPlot::Now, " Get the current time as a timestamp.\n(private API)");
+
+    m.def("today",
+        ImPlot::Today, " Get the current date as a timestamp.\n(private API)");
 
     m.def("show_date_picker",
         [](const char * id, int level, ImPlotTime * t, const ImPlotTime * t1 = nullptr, const ImPlotTime * t2 = nullptr) -> std::tuple<bool, int>

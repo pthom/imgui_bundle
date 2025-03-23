@@ -543,10 +543,12 @@ class PieChartFlags_(enum.Enum):
     normalize = (
         enum.auto()
     )  # (= 1 << 10)  # force normalization of pie chart values (i.e. always make a full circle if sum < 0)
-    # ImPlotPieChartFlags_IgnoreHidden = 1 << 11      /* original C++ signature */
+    # ImPlotPieChartFlags_IgnoreHidden = 1 << 11,     /* original C++ signature */
     ignore_hidden = (
         enum.auto()
     )  # (= 1 << 11)  # ignore hidden slices when drawing the pie chart (as if they were not there)
+    # ImPlotPieChartFlags_Exploding    = 1 << 12      /* original C++ signature */
+    exploding = enum.auto()  # (= 1 << 12)  # Explode legend-hovered slice
 
 class HeatmapFlags_(enum.Enum):
     """Flags for PlotHeatmap"""
@@ -1456,7 +1458,7 @@ def set_next_axes_to_fit() -> None:
 #    an ImPlot function post-fixed with a G (e.g. PlotScatterG). This has a slight performance
 #    cost, but probably not enough to worry about unless your data is very large. Examples:
 #
-#    ImPlotPoint MyDataGetter(None* data, int idx) {
+#    ImPlotPoint MyDataGetter(int idx, None* data) {
 #        MyData* my_data = (MyData*)data;
 #        ImPlotPoint p;
 #        p.x = my_data->GetTime(idx);
@@ -1680,10 +1682,12 @@ def plot_histogram_2d(
 def plot_digital(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: DigitalFlags = 0, offset: int = 0) -> None:
     pass
 
-# IMPLOT_API void PlotImage(const char* label_id, ImTextureID user_texture_id, const ImPlotPoint& bounds_min, const ImPlotPoint& bounds_max, const ImVec2& uv0=ImVec2(0,0), const ImVec2& uv1=ImVec2(1,1), const ImVec4& tint_col=ImVec4(1,1,1,1), ImPlotImageFlags flags=0);    /* original C++ signature */
+# #ifdef IMGUI_HAS_TEXTURES
+#
+# IMPLOT_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlotPoint& bounds_min, const ImPlotPoint& bounds_max, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& tint_col = ImVec4(1, 1, 1, 1), ImPlotImageFlags flags = 0);    /* original C++ signature */
 def plot_image(
     label_id: str,
-    user_texture_id: ImTextureID,
+    tex_ref: ImTextureRef,
     bounds_min: Point,
     bounds_max: Point,
     uv0: Optional[ImVec2Like] = None,
@@ -1696,11 +1700,14 @@ def plot_image(
 
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            * uv0: ImVec2(0,0)
-            * uv1: ImVec2(1,1)
-            * tint_col: ImVec4(1,1,1,1)
+            * uv0: ImVec2(0, 0)
+            * uv1: ImVec2(1, 1)
+            * tint_col: ImVec4(1, 1, 1, 1)
     """
     pass
+
+# #endif
+#
 
 # IMPLOT_API void PlotText(const char* text, double x, double y, const ImVec2& pix_offset=ImVec2(0,0), ImPlotTextFlags flags=0);    /* original C++ signature */
 def plot_text(text: str, x: float, y: float, pix_offset: Optional[ImVec2Like] = None, flags: TextFlags = 0) -> None:
