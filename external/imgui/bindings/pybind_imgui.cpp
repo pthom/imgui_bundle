@@ -122,6 +122,19 @@ void py_init_module_imgui_main(nb::module_& m)
         })    ;
 
 
+    auto pyClassImTextureRef =
+        nb::class_<ImTextureRef>
+            (m, "ImTextureRef", "")
+        .def(nb::init<>())
+        .def(nb::init<ImTextureID>(),
+            nb::arg("tex_id"))
+        .def("get_tex_id",
+            &ImTextureRef::GetTexID, "(private API)\n\n == (_TexData ? _TexData->TexID : _TexID) // Implemented below in the file.")
+        .def_rw("_tex_data", &ImTextureRef::_TexData, "A texture, generally owned by a ImFontAtlas. Will convert to ImTextureID during render loop, after texture has been uploaded.")
+        .def_rw("_tex_id", &ImTextureRef::_TexID, "_OR_ Low-level backend texture identifier, if already uploaded or created by user/app. Generally provided to e.g. ImGui::Image() calls.")
+        ;
+
+
     m.def("create_context",
         ImGui::CreateContext,
         nb::arg("shared_font_atlas") = nb::none(),
@@ -548,11 +561,17 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("push_font",
         ImGui::PushFont,
-        nb::arg("font"),
-        "use None as a shortcut to push default font");
+        nb::arg("font"), nb::arg("font_size") = -1,
+        "use None as a shortcut to push default font. Use <0.0 to keep current font size. Use font->DefaultSize to revert to font default size.");
 
     m.def("pop_font",
         ImGui::PopFont);
+
+    m.def("push_font_size",
+        ImGui::PushFontSize, nb::arg("font_size"));
+
+    m.def("pop_font_size",
+        ImGui::PopFontSize);
 
     m.def("push_style_color",
         nb::overload_cast<ImGuiCol, ImU32>(ImGui::PushStyleColor),
@@ -1032,9 +1051,9 @@ void py_init_module_imgui_main(nb::module_& m)
         "hyperlink text button, automatically open file/url when clicked");
 
     m.def("image",
-        [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt)
+        [](ImTextureRef tex_ref, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt)
         {
-            auto Image_adapt_mutable_param_with_default_value = [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt)
+            auto Image_adapt_mutable_param_with_default_value = [](ImTextureRef tex_ref, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt)
             {
 
                 const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
@@ -1051,18 +1070,18 @@ void py_init_module_imgui_main(nb::module_& m)
                         return ImVec2(1, 1);
                 }();
 
-                ImGui::Image(user_texture_id, image_size, uv0_or_default, uv1_or_default);
+                ImGui::Image(tex_ref, image_size, uv0_or_default, uv1_or_default);
             };
 
-            Image_adapt_mutable_param_with_default_value(user_texture_id, image_size, uv0, uv1);
+            Image_adapt_mutable_param_with_default_value(tex_ref, image_size, uv0, uv1);
         },
-        nb::arg("user_texture_id"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(),
+        nb::arg("tex_ref"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)");
 
     m.def("image_with_bg",
-        [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt)
+        [](ImTextureRef tex_ref, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt)
         {
-            auto ImageWithBg_adapt_mutable_param_with_default_value = [](ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt)
+            auto ImageWithBg_adapt_mutable_param_with_default_value = [](ImTextureRef tex_ref, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt)
             {
 
                 const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
@@ -1093,18 +1112,18 @@ void py_init_module_imgui_main(nb::module_& m)
                         return ImVec4(1, 1, 1, 1);
                 }();
 
-                ImGui::ImageWithBg(user_texture_id, image_size, uv0_or_default, uv1_or_default, bg_col_or_default, tint_col_or_default);
+                ImGui::ImageWithBg(tex_ref, image_size, uv0_or_default, uv1_or_default, bg_col_or_default, tint_col_or_default);
             };
 
-            ImageWithBg_adapt_mutable_param_with_default_value(user_texture_id, image_size, uv0, uv1, bg_col, tint_col);
+            ImageWithBg_adapt_mutable_param_with_default_value(tex_ref, image_size, uv0, uv1, bg_col, tint_col);
         },
-        nb::arg("user_texture_id"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("bg_col") = nb::none(), nb::arg("tint_col") = nb::none(),
+        nb::arg("tex_ref"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("bg_col") = nb::none(), nb::arg("tint_col") = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * bg_col: ImVec4(0, 0, 0, 0)\n        * tint_col: ImVec4(1, 1, 1, 1)");
 
     m.def("image_button",
-        [](const char * str_id, ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt) -> bool
+        [](const char * str_id, ImTextureRef tex_ref, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt) -> bool
         {
-            auto ImageButton_adapt_mutable_param_with_default_value = [](const char * str_id, ImTextureID user_texture_id, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt) -> bool
+            auto ImageButton_adapt_mutable_param_with_default_value = [](const char * str_id, ImTextureRef tex_ref, const ImVec2 & image_size, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt) -> bool
             {
 
                 const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
@@ -1135,13 +1154,13 @@ void py_init_module_imgui_main(nb::module_& m)
                         return ImVec4(1, 1, 1, 1);
                 }();
 
-                auto lambda_result = ImGui::ImageButton(str_id, user_texture_id, image_size, uv0_or_default, uv1_or_default, bg_col_or_default, tint_col_or_default);
+                auto lambda_result = ImGui::ImageButton(str_id, tex_ref, image_size, uv0_or_default, uv1_or_default, bg_col_or_default, tint_col_or_default);
                 return lambda_result;
             };
 
-            return ImageButton_adapt_mutable_param_with_default_value(str_id, user_texture_id, image_size, uv0, uv1, bg_col, tint_col);
+            return ImageButton_adapt_mutable_param_with_default_value(str_id, tex_ref, image_size, uv0, uv1, bg_col, tint_col);
         },
-        nb::arg("str_id"), nb::arg("user_texture_id"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("bg_col") = nb::none(), nb::arg("tint_col") = nb::none(),
+        nb::arg("str_id"), nb::arg("tex_ref"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("bg_col") = nb::none(), nb::arg("tint_col") = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * bg_col: ImVec4(0, 0, 0, 0)\n        * tint_col: ImVec4(1, 1, 1, 1)");
 
     m.def("begin_combo",
@@ -3536,6 +3555,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("has_mouse_cursors", ImGuiBackendFlags_HasMouseCursors, "Backend Platform supports honoring GetMouseCursor() value to change the OS cursor shape.")
             .value("has_set_mouse_pos", ImGuiBackendFlags_HasSetMousePos, "Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if io.ConfigNavMoveSetMousePos is set).")
             .value("renderer_has_vtx_offset", ImGuiBackendFlags_RendererHasVtxOffset, "Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.")
+            .value("renderer_has_textures", ImGuiBackendFlags_RendererHasTextures, "Backend Renderer supports ImTextureData requests to create/update/destroy textures. This enables incremental texture updates and texture reloads.")
             .value("platform_has_viewports", ImGuiBackendFlags_PlatformHasViewports, "Backend Platform supports multiple viewports.")
             .value("has_mouse_hovered_viewport", ImGuiBackendFlags_HasMouseHoveredViewport, "Backend Platform supports calling io.AddMouseViewportEvent() with the viewport under the mouse. IF POSSIBLE, ignore viewports with the ImGuiViewportFlags_NoInputs flag (Win32 backend, GLFW 3.30+ backend can do this, SDL backend cannot). If this cannot be done, Dear ImGui needs to use a flawed heuristic to find the viewport under.")
             .value("renderer_has_viewports", ImGuiBackendFlags_RendererHasViewports, "Backend Renderer supports multiple viewports.");
@@ -3576,6 +3596,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("resize_grip", ImGuiCol_ResizeGrip, "Resize grip in lower-right and lower-left corners of windows.")
             .value("resize_grip_hovered", ImGuiCol_ResizeGripHovered, "")
             .value("resize_grip_active", ImGuiCol_ResizeGripActive, "")
+            .value("input_text_cursor", ImGuiCol_InputTextCursor, "InputText cursor/caret")
             .value("tab_hovered", ImGuiCol_TabHovered, "Tab background, when hovered")
             .value("tab", ImGuiCol_Tab, "Tab background, when tab-bar is focused & tab is unselected")
             .value("tab_selected", ImGuiCol_TabSelected, "Tab background, when tab-bar is focused & tab is selected")
@@ -4596,51 +4617,6 @@ void py_init_module_imgui_main(nb::module_& m)
                 return nb::make_iterator(nb::type<ImVector<ImGuiWindow *>>(), "iterator", v.begin(), v.end());
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiWindow *> &v) { return v.size(); })
-        ;
-    auto pyClassImVector_ImFontAtlasCustomRect =
-        nb::class_<ImVector<ImFontAtlasCustomRect>>
-            (m, "ImVector_ImFontAtlasCustomRect", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImFontAtlasCustomRect>::DataAddress, "(private API)")
-        // #endif
-        //
-        .def(nb::init<>())
-        .def(nb::init<const ImVector<ImFontAtlasCustomRect> &>(),
-            nb::arg("src"))
-        .def("clear",
-            &ImVector<ImFontAtlasCustomRect>::clear, " Important: does not destruct anything\n(private API)")
-        .def("clear_destruct",
-            &ImVector<ImFontAtlasCustomRect>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
-        .def("empty",
-            &ImVector<ImFontAtlasCustomRect>::empty, "(private API)")
-        .def("size",
-            &ImVector<ImFontAtlasCustomRect>::size, "(private API)")
-        .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontAtlasCustomRect>::operator[], nb::const_),
-            nb::arg("i"),
-            "(private API)",
-            nb::rv_policy::reference)
-        .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontAtlasCustomRect>::operator[]),
-            nb::arg("i"),
-            "(private API)",
-            nb::rv_policy::reference)
-        .def("push_back",
-            &ImVector<ImFontAtlasCustomRect>::push_back,
-            nb::arg("v"),
-            "(private API)")
-        .def("pop_back",
-            &ImVector<ImFontAtlasCustomRect>::pop_back, "(private API)")
-        .def("push_front",
-            &ImVector<ImFontAtlasCustomRect>::push_front,
-            nb::arg("v"),
-            "(private API)")
-        .def("__iter__", [](const ImVector<ImFontAtlasCustomRect> &v) {
-                return nb::make_iterator(nb::type<ImVector<ImFontAtlasCustomRect>>(), "iterator", v.begin(), v.end());
-            }, nb::keep_alive<0, 1>())
-        .def("__len__", [](const ImVector<ImFontAtlasCustomRect> &v) { return v.size(); })
         ;
     auto pyClassImVector_ImFontConfig =
         nb::class_<ImVector<ImFontConfig>>
@@ -6714,7 +6690,7 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::class_<ImDrawCmd>
             (m, "ImDrawCmd", " Typically, 1 command = 1 GPU draw call (unless command is a callback)\n - VtxOffset: When 'io.BackendFlags & ImGuiBackendFlags_RendererHasVtxOffset' is enabled,\n   this fields allow us to render meshes larger than 64K vertices while keeping 16-bit indices.\n   Backends made for <1.71. will typically ignore the VtxOffset fields.\n - The ClipRect/TextureId/VtxOffset fields must be contiguous as we memcmp() them together (this is asserted for).")
         .def_rw("clip_rect", &ImDrawCmd::ClipRect, "4*4  // Clipping rectangle (x1, y1, x2, y2). Subtract ImDrawData->DisplayPos to get clipping rectangle in \"viewport\" coordinates")
-        .def_rw("texture_id", &ImDrawCmd::TextureId, "4-8  // User-provided texture ID. Set by user in ImfontAtlas::SetTexID() for fonts or passed to Image*() functions. Ignore if never using images or multiple fonts atlas.")
+        .def_rw("tex_ref", &ImDrawCmd::TexRef, "16   // User-provided texture ID. Set by user in ImFontAtlas::SetTexID() for fonts or passed to Image*() functions. Ignore if never using images or multiple fonts atlas.")
         .def_rw("vtx_offset", &ImDrawCmd::VtxOffset, "4    // Start offset in vertex buffer. ImGuiBackendFlags_RendererHasVtxOffset: always 0, otherwise may be >0 to support meshes larger than 64K vertices with 16-bit indices.")
         .def_rw("idx_offset", &ImDrawCmd::IdxOffset, "4    // Start offset in index buffer.")
         .def_rw("elem_count", &ImDrawCmd::ElemCount, "4    // Number of indices (multiple of 3) to be rendered as triangles. Vertices are stored in the callee ImDrawList's vtx_buffer[] array, indices in idx_buffer[].")
@@ -6724,7 +6700,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def(nb::init<>(),
             "Also ensure our padding fields are zeroed")
         .def("get_tex_id",
-            &ImDrawCmd::GetTexID, " Since 1.83: returns ImTextureID associated with this draw call. Warning: DO NOT assume this is always same as 'TextureId' (we will change this function for an upcoming feature)\n(private API)")
+            &ImDrawCmd::GetTexID, "(private API)\n\n == (TexRef._TexData ? TexRef._TexData->TexID : TexRef._TexID")
         ;
     // #ifndef IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT
     //
@@ -6762,7 +6738,7 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImDrawCmdHeader =
         nb::class_<ImDrawCmdHeader>
             (m, "ImDrawCmdHeader", "[Internal] For use by ImDrawList")
-        .def("__init__", [](ImDrawCmdHeader * self, const std::optional<const ImVec4> & ClipRect = std::nullopt, const std::optional<const ImTextureID> & TextureId = std::nullopt)
+        .def("__init__", [](ImDrawCmdHeader * self, const std::optional<const ImVec4> & ClipRect = std::nullopt, const std::optional<const ImTextureRef> & TexRef = std::nullopt)
         {
             new (self) ImDrawCmdHeader();  // placement new
             auto r = self;
@@ -6770,15 +6746,15 @@ void py_init_module_imgui_main(nb::module_& m)
                 r->ClipRect = ClipRect.value();
             else
                 r->ClipRect = ImVec4();
-            if (TextureId.has_value())
-                r->TextureId = TextureId.value();
+            if (TexRef.has_value())
+                r->TexRef = TexRef.value();
             else
-                r->TextureId = ImTextureID();
+                r->TexRef = ImTextureRef();
         },
-        nb::arg("clip_rect") = nb::none(), nb::arg("texture_id") = nb::none()
+        nb::arg("clip_rect") = nb::none(), nb::arg("tex_ref") = nb::none()
         )
         .def_rw("clip_rect", &ImDrawCmdHeader::ClipRect, "")
-        .def_rw("texture_id", &ImDrawCmdHeader::TextureId, "")
+        .def_rw("tex_ref", &ImDrawCmdHeader::TexRef, "")
         .def_rw("vtx_offset", &ImDrawCmdHeader::VtxOffset, "")
         ;
 
@@ -6868,7 +6844,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("_cmd_header", &ImDrawList::_CmdHeader, "[Internal] template of active commands. Fields should match those of CmdBuffer.back().")
         .def_rw("_splitter", &ImDrawList::_Splitter, "[Internal] for channels api (note: prefer using your own persistent instance of ImDrawListSplitter!)")
         .def_rw("_clip_rect_stack", &ImDrawList::_ClipRectStack, "[Internal]")
-        .def_rw("_texture_id_stack", &ImDrawList::_TextureIdStack, "[Internal]")
         .def_rw("_callbacks_data_buf", &ImDrawList::_CallbacksDataBuf, "[Internal]")
         .def_rw("_fringe_scale", &ImDrawList::_FringeScale, "[Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content")
         .def_ro("_owner_name", &ImDrawList::_OwnerName, "Pointer to owner window's name for debugging")
@@ -6883,10 +6858,10 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::PushClipRectFullScreen)
         .def("pop_clip_rect",
             &ImDrawList::PopClipRect)
-        .def("push_texture_id",
-            &ImDrawList::PushTextureID, nb::arg("texture_id"))
-        .def("pop_texture_id",
-            &ImDrawList::PopTextureID)
+        .def("push_texture",
+            &ImDrawList::PushTexture, nb::arg("tex_ref"))
+        .def("pop_texture",
+            &ImDrawList::PopTexture)
         .def("get_clip_rect_min",
             &ImDrawList::GetClipRectMin, "(private API)")
         .def("get_clip_rect_max",
@@ -6968,9 +6943,9 @@ void py_init_module_imgui_main(nb::module_& m)
         // #endif
         //
         .def("add_image",
-            [](ImDrawList & self, ImTextureID user_texture_id, const ImVec2 & p_min, const ImVec2 & p_max, const std::optional<const ImVec2> & uv_min = std::nullopt, const std::optional<const ImVec2> & uv_max = std::nullopt, ImU32 col = IM_COL32_WHITE)
+            [](ImDrawList & self, ImTextureRef tex_ref, const ImVec2 & p_min, const ImVec2 & p_max, const std::optional<const ImVec2> & uv_min = std::nullopt, const std::optional<const ImVec2> & uv_max = std::nullopt, ImU32 col = IM_COL32_WHITE)
             {
-                auto AddImage_adapt_mutable_param_with_default_value = [&self](ImTextureID user_texture_id, const ImVec2 & p_min, const ImVec2 & p_max, const std::optional<const ImVec2> & uv_min = std::nullopt, const std::optional<const ImVec2> & uv_max = std::nullopt, ImU32 col = IM_COL32_WHITE)
+                auto AddImage_adapt_mutable_param_with_default_value = [&self](ImTextureRef tex_ref, const ImVec2 & p_min, const ImVec2 & p_max, const std::optional<const ImVec2> & uv_min = std::nullopt, const std::optional<const ImVec2> & uv_max = std::nullopt, ImU32 col = IM_COL32_WHITE)
                 {
 
                     const ImVec2& uv_min_or_default = [&]() -> const ImVec2 {
@@ -6987,17 +6962,17 @@ void py_init_module_imgui_main(nb::module_& m)
                             return ImVec2(1, 1);
                     }();
 
-                    self.AddImage(user_texture_id, p_min, p_max, uv_min_or_default, uv_max_or_default, col);
+                    self.AddImage(tex_ref, p_min, p_max, uv_min_or_default, uv_max_or_default, col);
                 };
 
-                AddImage_adapt_mutable_param_with_default_value(user_texture_id, p_min, p_max, uv_min, uv_max, col);
+                AddImage_adapt_mutable_param_with_default_value(tex_ref, p_min, p_max, uv_min, uv_max, col);
             },
-            nb::arg("user_texture_id"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("uv_min") = nb::none(), nb::arg("uv_max") = nb::none(), nb::arg("col") = IM_COL32_WHITE,
+            nb::arg("tex_ref"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("uv_min") = nb::none(), nb::arg("uv_max") = nb::none(), nb::arg("col") = IM_COL32_WHITE,
             "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv_min: ImVec2(0, 0)\n        * uv_max: ImVec2(1, 1)")
         .def("add_image_quad",
-            [](ImDrawList & self, ImTextureID user_texture_id, const ImVec2 & p1, const ImVec2 & p2, const ImVec2 & p3, const ImVec2 & p4, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec2> & uv4 = std::nullopt, ImU32 col = IM_COL32_WHITE)
+            [](ImDrawList & self, ImTextureRef tex_ref, const ImVec2 & p1, const ImVec2 & p2, const ImVec2 & p3, const ImVec2 & p4, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec2> & uv4 = std::nullopt, ImU32 col = IM_COL32_WHITE)
             {
-                auto AddImageQuad_adapt_mutable_param_with_default_value = [&self](ImTextureID user_texture_id, const ImVec2 & p1, const ImVec2 & p2, const ImVec2 & p3, const ImVec2 & p4, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec2> & uv4 = std::nullopt, ImU32 col = IM_COL32_WHITE)
+                auto AddImageQuad_adapt_mutable_param_with_default_value = [&self](ImTextureRef tex_ref, const ImVec2 & p1, const ImVec2 & p2, const ImVec2 & p3, const ImVec2 & p4, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec2> & uv4 = std::nullopt, ImU32 col = IM_COL32_WHITE)
                 {
 
                     const ImVec2& uv1_or_default = [&]() -> const ImVec2 {
@@ -7028,15 +7003,15 @@ void py_init_module_imgui_main(nb::module_& m)
                             return ImVec2(0, 1);
                     }();
 
-                    self.AddImageQuad(user_texture_id, p1, p2, p3, p4, uv1_or_default, uv2_or_default, uv3_or_default, uv4_or_default, col);
+                    self.AddImageQuad(tex_ref, p1, p2, p3, p4, uv1_or_default, uv2_or_default, uv3_or_default, uv4_or_default, col);
                 };
 
-                AddImageQuad_adapt_mutable_param_with_default_value(user_texture_id, p1, p2, p3, p4, uv1, uv2, uv3, uv4, col);
+                AddImageQuad_adapt_mutable_param_with_default_value(tex_ref, p1, p2, p3, p4, uv1, uv2, uv3, uv4, col);
             },
-            nb::arg("user_texture_id"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("uv1") = nb::none(), nb::arg("uv2") = nb::none(), nb::arg("uv3") = nb::none(), nb::arg("uv4") = nb::none(), nb::arg("col") = IM_COL32_WHITE,
+            nb::arg("tex_ref"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("uv1") = nb::none(), nb::arg("uv2") = nb::none(), nb::arg("uv3") = nb::none(), nb::arg("uv4") = nb::none(), nb::arg("col") = IM_COL32_WHITE,
             "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv1: ImVec2(0, 0)\n        * uv2: ImVec2(1, 0)\n        * uv3: ImVec2(1, 1)\n        * uv4: ImVec2(0, 1)")
         .def("add_image_rounded",
-            &ImDrawList::AddImageRounded, nb::arg("user_texture_id"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("uv_min"), nb::arg("uv_max"), nb::arg("col"), nb::arg("rounding"), nb::arg("flags") = 0)
+            &ImDrawList::AddImageRounded, nb::arg("tex_ref"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("uv_min"), nb::arg("uv_max"), nb::arg("col"), nb::arg("rounding"), nb::arg("flags") = 0)
         .def("path_clear",
             &ImDrawList::PathClear, "(private API)")
         .def("path_line_to",
@@ -7118,7 +7093,9 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("prim_vtx",
             &ImDrawList::PrimVtx,
             nb::arg("pos"), nb::arg("uv"), nb::arg("col"),
-            "(private API)\n\n Write vertex with unique index")
+            "(private API)")
+        .def("_set_draw_list_shared_data",
+            nb::overload_cast<ImDrawListSharedData *>(&ImDrawList::_SetDrawListSharedData), nb::arg("data"))
         .def("_reset_for_new_frame",
             &ImDrawList::_ResetForNewFrame)
         .def("_clear_free_memory",
@@ -7133,8 +7110,8 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::_OnChangedTextureID)
         .def("_on_changed_vtx_offset",
             &ImDrawList::_OnChangedVtxOffset)
-        .def("_set_texture_id",
-            &ImDrawList::_SetTextureID, nb::arg("texture_id"))
+        .def("_set_texture_ref",
+            &ImDrawList::_SetTextureRef, nb::arg("tex_ref"))
         .def("_calc_circle_auto_segment_count",
             &ImDrawList::_CalcCircleAutoSegmentCount, nb::arg("radius"))
         .def("_path_arc_to_fast_ex",
@@ -7173,6 +7150,82 @@ void py_init_module_imgui_main(nb::module_& m)
         ;
 
 
+    auto pyEnumImTextureFormat =
+        nb::enum_<ImTextureFormat>(m, "ImTextureFormat", nb::is_arithmetic(), " We intentionally support a limited amount of texture formats to limit burden on CPU-side code and extension.\n Most standard backends only support RGBA32 but we provide a single channel option for low-resource/embedded systems.")
+            .value("rgba32", ImTextureFormat_RGBA32, "4 components per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight * 4")
+            .value("alpha8", ImTextureFormat_Alpha8, "1 component per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight");
+
+
+    auto pyEnumImTextureStatus =
+        nb::enum_<ImTextureStatus>(m, "ImTextureStatus", nb::is_arithmetic(), "Status of a texture to communicate with Renderer Backend.")
+            .value("ok", ImTextureStatus_OK, "")
+            .value("destroyed", ImTextureStatus_Destroyed, "Backend destroyed the texture.")
+            .value("want_create", ImTextureStatus_WantCreate, "Requesting backend to create the texture. Set status OK when done.")
+            .value("want_updates", ImTextureStatus_WantUpdates, "Requesting backend to update specific blocks of pixels (write to texture portions which have never been used before). Set status OK when done.")
+            .value("want_destroy", ImTextureStatus_WantDestroy, "Requesting backend to destroy the texture. Set status to Destroyed when done.");
+
+
+    auto pyClassImTextureRect =
+        nb::class_<ImTextureRect>
+            (m, "ImTextureRect", " Coordinates of a rectangle within a texture.\n When a texture is in ImTextureStatus_WantUpdates state, we provide a list of individual rectangles to copy to the graphics system.\n You may use ImTextureData::Updates[] for the list, or ImTextureData::UpdateBox for a single bounding box.")
+        .def(nb::init<>()) // implicit default constructor
+        .def_rw("x", &ImTextureRect::x, "Upper-left coordinates of rectangle to update")
+        .def_rw("y", &ImTextureRect::y, "Upper-left coordinates of rectangle to update")
+        .def_rw("w", &ImTextureRect::w, "Size of rectangle to update (in pixels)")
+        .def_rw("h", &ImTextureRect::h, "Size of rectangle to update (in pixels)")
+        ;
+
+
+    auto pyClassImTextureData =
+        nb::class_<ImTextureData>
+            (m, "ImTextureData", " Specs and pixel storage for a texture used by Dear ImGui.\n This is only useful for (1) core library and (2) backends. End-user/applications do not need to care about this.\n Renderer Backends will create a GPU-side version of this.\n Why does we store two identifiers: TexID and BackendUserData?\n - ImTextureID    TexID           = lower-level identifier stored in ImDrawCmd. ImDrawCmd can refer to textures not created by the backend, and for which there's no ImTextureData.\n - None*          BackendUserData = higher-level opaque storage for backend own book-keeping. Some backends may have enough with TexID and not need both.")
+        .def_rw("status", &ImTextureData::Status, "ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy")
+        .def_rw("format", &ImTextureData::Format, "ImTextureFormat_RGBA32 (default) or ImTextureFormat_Alpha8")
+        .def_rw("width", &ImTextureData::Width, "Texture width")
+        .def_rw("height", &ImTextureData::Height, "Texture height")
+        .def_rw("bytes_per_pixel", &ImTextureData::BytesPerPixel, "4 or 1")
+        .def_rw("unique_id", &ImTextureData::UniqueID, "Sequential index to facilitate identifying a texture when debugging/printing. Only unique per atlas.")
+        .def_rw("pixels", &ImTextureData::Pixels, "Pointer to buffer holding 'Width*Height' pixels and 'Width*Height*BytesPerPixels' bytes.")
+        .def_rw("tex_id", &ImTextureData::TexID, "Always use SetTexID() to modify: Identifier stored in ImDrawCmd::GetTexID() and passed to backend RenderDrawData loop.")
+        .def_rw("backend_user_data", &ImTextureData::BackendUserData, "Convenience storage for backend. Some backends may have enough with TexID.")
+        .def_rw("used_rect", &ImTextureData::UsedRect, "Bounding box encompassing all past and queued Updates[].")
+        .def_rw("update_rect", &ImTextureData::UpdateRect, "Bounding box encompassing all queued Updates[].")
+        .def_rw("unused_frames", &ImTextureData::UnusedFrames, "In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used.")
+        .def_rw("ref_count", &ImTextureData::RefCount, "Number of contexts using this texture.")
+        .def_rw("use_colors", &ImTextureData::UseColors, "Tell whether our texture data is known to use colors (rather than just white + alpha).")
+        .def_rw("want_destroy_next_frame", &ImTextureData::WantDestroyNextFrame, "[Internal] Queued to set ImTextureStatus_WantDestroy next frame. May still be used in the current frame.")
+        .def(nb::init<>(),
+            "Functions")
+        .def("create",
+            &ImTextureData::Create,
+            nb::arg("format"), nb::arg("w"), nb::arg("h"),
+            "(private API)")
+        .def("destroy_pixels",
+            &ImTextureData::DestroyPixels, "(private API)")
+        .def("get_pixels",
+            &ImTextureData::GetPixels,
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("get_pixels_at",
+            &ImTextureData::GetPixelsAt,
+            nb::arg("x"), nb::arg("y"),
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("get_size_in_bytes",
+            &ImTextureData::GetSizeInBytes, "(private API)")
+        .def("get_pitch",
+            &ImTextureData::GetPitch, "(private API)")
+        .def("get_tex_ref",
+            &ImTextureData::GetTexRef, "(private API)")
+        .def("get_tex_id",
+            &ImTextureData::GetTexID, "(private API)")
+        .def("set_tex_id",
+            &ImTextureData::SetTexID,
+            nb::arg("tex_id"),
+            "(private API)\n\n Called by the Renderer backend after creating or destroying the texture. Never modify TexID directly!")
+        ;
+
+
     auto pyClassImFontConfig =
         nb::class_<ImFontConfig>
             (m, "ImFontConfig", "A font input/source (we may rename this to ImFontSource in the future)")
@@ -7181,19 +7234,23 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("font_data_owned_by_atlas", &ImFontConfig::FontDataOwnedByAtlas, "True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).")
         .def_rw("merge_mode", &ImFontConfig::MergeMode, "False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.")
         .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH, "False    // Align every glyph AdvanceX to pixel boundaries. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.")
+        .def_rw("pixel_snap_v", &ImFontConfig::PixelSnapV, "True     // Align Scaled GlyphOffset.y to pixel boundaries.")
         .def_rw("font_no", &ImFontConfig::FontNo, "0        // Index of font within TTF/OTF file")
         .def_rw("oversample_h", &ImFontConfig::OversampleH, "0 (2)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1 or 2 depending on size. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.")
         .def_rw("oversample_v", &ImFontConfig::OversampleV, "0 (1)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1. This is not really useful as we don't use sub-pixel positions on the Y axis.")
         .def_rw("size_pixels", &ImFontConfig::SizePixels, "// Size in pixels for rasterizer (more or less maps to the resulting font height).")
-        .def_rw("glyph_offset", &ImFontConfig::GlyphOffset, "0, 0     // Offset all glyphs from this font input.")
-        .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX, "0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font")
+        .def_rw("glyph_offset", &ImFontConfig::GlyphOffset, "0, 0     // Offset (in pixels) all glyphs from this font input. Absolute value for default size, other sizes will scale this value.")
+        .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX, "0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font. Absolute value for default size, other sizes will scale this value.")
         .def_rw("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX, "FLT_MAX  // Maximum AdvanceX for glyphs")
         .def_rw("glyph_extra_advance_x", &ImFontConfig::GlyphExtraAdvanceX, "0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this.")
         .def_rw("font_builder_flags", &ImFontConfig::FontBuilderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")
         .def_rw("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.")
         .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity, "1.0     // DPI scale for rasterization, not altering other font metrics: make it easy to swap between e.g. a 100% and a 400% fonts for a zooming display. IMPORTANT: If you increase this it is expected that you increase font scale accordingly, otherwise quality may look lowered.")
         .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
-        .def_rw("dst_font", &ImFontConfig::DstFont, "")
+        .def_rw("flags", &ImFontConfig::Flags, "Font flags (don't use just yet)")
+        .def_rw("dst_font", &ImFontConfig::DstFont, "Target font (as we merging fonts, multiple ImFontConfig may target the same font)")
+        .def_ro("font_loader", &ImFontConfig::FontLoader, "Custom font backend for this source (other use one stored in ImFontAtlas)")
+        .def_rw("font_loader_data", &ImFontConfig::FontLoaderData, "Font loader opaque storage (per font config)")
         .def(nb::init<>())
         ;
 
@@ -7201,31 +7258,17 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImFontGlyph =
         nb::class_<ImFontGlyph>
             (m, "ImFontGlyph", " Hold rendering data for one glyph.\n (Note: some language parsers may fail to convert the 31+1 bitfield members, in this case maybe drop store a single u32 or we can rework this)")
-        .def("__init__", [](ImFontGlyph * self, float AdvanceX = float(), float X0 = float(), float Y0 = float(), float X1 = float(), float Y1 = float(), float U0 = float(), float V0 = float(), float U1 = float(), float V1 = float())
-        {
-            new (self) ImFontGlyph();  // placement new
-            auto r = self;
-            r->AdvanceX = AdvanceX;
-            r->X0 = X0;
-            r->Y0 = Y0;
-            r->X1 = X1;
-            r->Y1 = Y1;
-            r->U0 = U0;
-            r->V0 = V0;
-            r->U1 = U1;
-            r->V1 = V1;
-        },
-        nb::arg("advance_x") = float(), nb::arg("x0") = float(), nb::arg("y0") = float(), nb::arg("x1") = float(), nb::arg("y1") = float(), nb::arg("u0") = float(), nb::arg("v0") = float(), nb::arg("u1") = float(), nb::arg("v1") = float()
-        )
         .def_rw("advance_x", &ImFontGlyph::AdvanceX, "Horizontal distance to advance layout with")
         .def_rw("x0", &ImFontGlyph::X0, "Glyph corners")
         .def_rw("y0", &ImFontGlyph::Y0, "Glyph corners")
         .def_rw("x1", &ImFontGlyph::X1, "Glyph corners")
         .def_rw("y1", &ImFontGlyph::Y1, "Glyph corners")
-        .def_rw("u0", &ImFontGlyph::U0, "")
-        .def_rw("v0", &ImFontGlyph::V0, "")
-        .def_rw("u1", &ImFontGlyph::U1, "")
-        .def_rw("v1", &ImFontGlyph::V1, "")
+        .def_rw("u0", &ImFontGlyph::U0, "Texture coordinates")
+        .def_rw("v0", &ImFontGlyph::V0, "Texture coordinates")
+        .def_rw("u1", &ImFontGlyph::U1, "Texture coordinates")
+        .def_rw("v1", &ImFontGlyph::V1, "Texture coordinates")
+        .def_rw("pack_id", &ImFontGlyph::PackId, "[Internal] ImFontAtlasRectId value (FIXME: Cold data, could be moved elsewhere?)")
+        .def(nb::init<>())
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("is_colored",
@@ -7280,22 +7323,6 @@ void py_init_module_imgui_main(nb::module_& m)
         ;
 
 
-    auto pyClassImFontAtlasCustomRect =
-        nb::class_<ImFontAtlasCustomRect>
-            (m, "ImFontAtlasCustomRect", "See ImFontAtlas::AddCustomRectXXX functions.")
-        .def_rw("x", &ImFontAtlasCustomRect::X, "Output   // Packed position in Atlas")
-        .def_rw("y", &ImFontAtlasCustomRect::Y, "Output   // Packed position in Atlas")
-        .def_rw("width", &ImFontAtlasCustomRect::Width, "Input    // Desired rectangle dimension")
-        .def_rw("height", &ImFontAtlasCustomRect::Height, "Input    // Desired rectangle dimension")
-        .def_rw("glyph_advance_x", &ImFontAtlasCustomRect::GlyphAdvanceX, "Input    // For custom font glyphs only: glyph xadvance")
-        .def_rw("glyph_offset", &ImFontAtlasCustomRect::GlyphOffset, "Input    // For custom font glyphs only: glyph display offset")
-        .def_rw("font", &ImFontAtlasCustomRect::Font, "Input    // For custom font glyphs only: target font")
-        .def(nb::init<>())
-        .def("is_packed",
-            &ImFontAtlasCustomRect::IsPacked, "(private API)")
-        ;
-
-
     auto pyEnumImFontAtlasFlags_ =
         nb::enum_<ImFontAtlasFlags_>(m, "ImFontAtlasFlags_", nb::is_arithmetic(), "Flags for ImFontAtlas build")
             .value("none", ImFontAtlasFlags_None, "")
@@ -7306,7 +7333,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
     auto pyClassImFontAtlas =
         nb::class_<ImFontAtlas>
-            (m, "ImFontAtlas", " Load and rasterize multiple TTF/OTF fonts into a same texture. The font atlas will build a single texture holding:\n  - One or more fonts.\n  - Custom graphics data needed to render the shapes needed by Dear ImGui.\n  - Mouse cursor shapes for software cursor rendering (unless setting 'Flags |= ImFontAtlasFlags_NoMouseCursors' in the font atlas).\n It is the user-code responsibility to setup/build the atlas, then upload the pixel data into a texture accessible by your graphics api.\n  - Optionally, call any of the AddFont*** functions. If you don't call any, the default font embedded in the code will be loaded for you.\n  - Call GetTexDataAsAlpha8() or GetTexDataAsRGBA32() to build and retrieve pixels data.\n  - Upload the pixels data into a texture within your graphics system (see imgui_impl_xxxx.cpp examples)\n  - Call SetTexID(my_tex_id); and pass the pointer/identifier to your texture in a format natural to your graphics API.\n    This value will be passed back to you during rendering to identify the texture. Read FAQ entry about ImTextureID for more details.\n Common pitfalls:\n - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persist up until the\n   atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.\n - Important: By default, AddFontFromMemoryTTF() takes ownership of the data. Even though we are not writing to it, we will free the pointer on destruction.\n   You can set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed,\n - Even though many functions are suffixed with \"TTF\", OTF data is supported just as well.\n - This is an old API and it is currently awkward for those and various other reasons! We will address them in the future!")
+            (m, "ImFontAtlas", " Load and rasterize multiple TTF/OTF fonts into a same texture. The font atlas will build a single texture holding:\n  - One or more fonts.\n  - Custom graphics data needed to render the shapes needed by Dear ImGui.\n  - Mouse cursor shapes for software cursor rendering (unless setting 'Flags |= ImFontAtlasFlags_NoMouseCursors' in the font atlas).\n  - If you don't call any AddFont*** functions, the default font embedded in the code will be loaded for you.\n It is the rendering backend responsibility to upload texture into your graphics API:\n  - ImGui_ImplXXXX_RenderDrawData() functions generally iterate platform_io->Textures[] to create/update/destroy each ImTextureData instance.\n  - Backend then set ImTextureData's TexID and BackendUserData.\n  - Texture id are passed back to you during rendering to identify the texture. Read FAQ entry about ImTextureID/ImTextureRef for more details.\n Legacy path:\n  - Call Build() + GetTexDataAsAlpha8() or GetTexDataAsRGBA32() to build and retrieve pixels data.\n  - Call SetTexID(my_tex_id); and pass the pointer/identifier to your texture in a format natural to your graphics API.\n Common pitfalls:\n - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persist up until the\n   atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.\n - Important: By default, AddFontFromMemoryTTF() takes ownership of the data. Even though we are not writing to it, we will free the pointer on destruction.\n   You can set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed,\n - Even though many functions are suffixed with \"TTF\", OTF data is supported just as well.\n - This is an old API and it is currently awkward for those and various other reasons! We will address them in the future!")
         .def(nb::init<>())
         .def("add_font",
             &ImFontAtlas::AddFont,
@@ -7316,22 +7343,18 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImFontAtlas::AddFontDefault,
             nb::arg("font_cfg") = nb::none(),
             nb::rv_policy::reference)
-        .def("clear_input_data",
-            &ImFontAtlas::ClearInputData, "Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.")
-        .def("clear_fonts",
-            &ImFontAtlas::ClearFonts, "Clear input+output font data (same as ClearInputData() + glyphs storage, UV coordinates).")
-        .def("clear_tex_data",
-            &ImFontAtlas::ClearTexData, "Clear output texture data (CPU side). Saves RAM once the texture has been copied to graphics memory.")
+        .def("remove_font",
+            &ImFontAtlas::RemoveFont, nb::arg("font"))
         .def("clear",
-            &ImFontAtlas::Clear, "Clear all input and output.")
-        .def("build",
-            &ImFontAtlas::Build, "Build pixels data. This is called automatically for you by the GetTexData*** functions.")
-        .def("is_built",
-            &ImFontAtlas::IsBuilt, "(private API)\n\n Bit ambiguous: used to detect when user didn't build texture but effectively we should check TexID != 0 except that would be backend dependent...")
-        .def("set_tex_id",
-            &ImFontAtlas::SetTexID,
-            nb::arg("id_"),
-            "(private API)")
+            &ImFontAtlas::Clear, "Clear everything (input fonts, output glyphs/textures)")
+        .def("compact_cache",
+            &ImFontAtlas::CompactCache, "Compact cached glyphs and texture.")
+        .def("clear_input_data",
+            &ImFontAtlas::ClearInputData, "[OBSOLETE] Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.")
+        .def("clear_fonts",
+            &ImFontAtlas::ClearFonts, "[OBSOLETE] Clear input+output font data (same as ClearInputData() + glyphs storage, UV coordinates).")
+        .def("clear_tex_data",
+            &ImFontAtlas::ClearTexData)
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("add_font_from_file_ttf",
@@ -7359,120 +7382,131 @@ void py_init_module_imgui_main(nb::module_& m)
         // #endif
         //
         .def("add_custom_rect_regular",
-            &ImFontAtlas::AddCustomRectRegular, nb::arg("width"), nb::arg("height"))
-        .def("add_custom_rect_font_glyph",
-            [](ImFontAtlas & self, ImFont * font, ImWchar id, int width, int height, float advance_x, const std::optional<const ImVec2> & offset = std::nullopt) -> int
-            {
-                auto AddCustomRectFontGlyph_adapt_mutable_param_with_default_value = [&self](ImFont * font, ImWchar id, int width, int height, float advance_x, const std::optional<const ImVec2> & offset = std::nullopt) -> int
-                {
-
-                    const ImVec2& offset_or_default = [&]() -> const ImVec2 {
-                        if (offset.has_value())
-                            return offset.value();
-                        else
-                            return ImVec2(0, 0);
-                    }();
-
-                    auto lambda_result = self.AddCustomRectFontGlyph(font, id, width, height, advance_x, offset_or_default);
-                    return lambda_result;
-                };
-
-                return AddCustomRectFontGlyph_adapt_mutable_param_with_default_value(font, id, width, height, advance_x, offset);
-            },
-            nb::arg("font"), nb::arg("id_"), nb::arg("width"), nb::arg("height"), nb::arg("advance_x"), nb::arg("offset") = nb::none(),
-            "Python bindings defaults:\n    If offset is None, then its default value will be: ImVec2(0, 0)")
-        .def("get_custom_rect_by_index",
-            &ImFontAtlas::GetCustomRectByIndex,
-            nb::arg("index"),
-            "(private API)",
+            &ImFontAtlas::AddCustomRectRegular,
+            nb::arg("width"), nb::arg("height"),
+            "Register a rectangle. Return -1 on error.")
+        .def("get_custom_rect",
+            &ImFontAtlas::GetCustomRect,
+            nb::arg("id_"),
+            "Get rectangle coordinate in current texture.",
             nb::rv_policy::reference)
-        .def("calc_custom_rect_uv",
-            &ImFontAtlas::CalcCustomRectUV,
-            nb::arg("rect"), nb::arg("out_uv_min"), nb::arg("out_uv_max"),
-            "[Internal]")
+        .def("get_custom_rect_uv",
+            &ImFontAtlas::GetCustomRectUV,
+            nb::arg("r"), nb::arg("out_uv_min"), nb::arg("out_uv_max"),
+            "Get UV coordinates for a given rectangle")
         .def_rw("flags", &ImFontAtlas::Flags, "Build flags (see ImFontAtlasFlags_)")
-        .def_rw("tex_id", &ImFontAtlas::TexID, "User data to refer to the texture once it has been uploaded to user's graphic systems. It is passed back to you during rendering via the ImDrawCmd structure.")
-        .def_rw("tex_desired_width", &ImFontAtlas::TexDesiredWidth, "Texture width desired by user before Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height.")
+        .def_rw("tex_desired_format", &ImFontAtlas::TexDesiredFormat, "Desired texture format (default to ImTextureFormat_RGBA32 but may be changed to ImTextureFormat_Alpha8).")
         .def_rw("tex_glyph_padding", &ImFontAtlas::TexGlyphPadding, "FIXME: Should be called \"TexPackPadding\". Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method doesn't rely on bilinear filtering you may set this to 0 (will also need to set AntiAliasedLinesUseTex = False).")
-        .def_rw("user_data", &ImFontAtlas::UserData, "Store your own atlas related user-data (if e.g. you have multiple font atlas).")
-        .def_rw("locked", &ImFontAtlas::Locked, "Marked as Locked by ImGui::NewFrame() so attempt to modify the atlas will assert.")
-        .def_rw("tex_ready", &ImFontAtlas::TexReady, "Set when texture was built matching current font input")
-        .def_rw("tex_pixels_use_colors", &ImFontAtlas::TexPixelsUseColors, "Tell whether our texture data is known to use colors (rather than just alpha channel), in order to help backend select a format.")
-        .def_rw("tex_width", &ImFontAtlas::TexWidth, "Texture width calculated during Build().")
-        .def_rw("tex_height", &ImFontAtlas::TexHeight, "Texture height calculated during Build().")
-        .def_rw("tex_uv_scale", &ImFontAtlas::TexUvScale, "= (1.0/TexWidth, 1.0/TexHeight)")
+        .def_rw("tex_min_width", &ImFontAtlas::TexMinWidth, "Minimum desired texture width. Must be a power of two. Default to 512.")
+        .def_rw("tex_min_height", &ImFontAtlas::TexMinHeight, "Minimum desired texture height. Must be a power of two. Default to 128.")
+        .def_rw("tex_max_width", &ImFontAtlas::TexMaxWidth, "Maximum desired texture width. Must be a power of two. Default to 8096.")
+        .def_rw("tex_max_height", &ImFontAtlas::TexMaxHeight, "Maximum desired texture height. Must be a power of two. Default to 8096.")
+        .def_rw("user_data", &ImFontAtlas::UserData, "")
+        .def_rw("tex_data", &ImFontAtlas::TexData, "Current texture.")
+        .def_rw("locked", &ImFontAtlas::Locked, "Marked as locked during ImGui::NewFrame()..EndFrame() scope if TexUpdates are not supported. Any attempt to modify the atlas will assert.")
+        .def_rw("renderer_has_textures", &ImFontAtlas::RendererHasTextures, "Copy of (BackendFlags & ImGuiBackendFlags_RendererHasTextures) from supporting context.")
+        .def_rw("tex_is_built", &ImFontAtlas::TexIsBuilt, "Set when texture was built matching current font input. Mostly useful for legacy IsBuilt() call.")
+        .def_rw("tex_pixels_use_colors", &ImFontAtlas::TexPixelsUseColors, "Tell whether our texture data is known to use colors (rather than just alpha channel), in order to help backend select a format or conversion process.")
+        .def_rw("tex_uv_scale", &ImFontAtlas::TexUvScale, "= (1.0/TexData->TexWidth, 1.0/TexData->TexHeight)")
         .def_rw("tex_uv_white_pixel", &ImFontAtlas::TexUvWhitePixel, "Texture coordinates to a white pixel")
         .def_rw("fonts", &ImFontAtlas::Fonts, "Hold all the fonts returned by AddFont*. Fonts[0] is the default font upon calling ImGui::NewFrame(), use ImGui::PushFont()/PopFont() to change the current font.")
-        .def_rw("custom_rects", &ImFontAtlas::CustomRects, "Rectangles for packing custom texture data into the atlas.")
         .def_rw("sources", &ImFontAtlas::Sources, "Source/configuration data")
-        .def_ro("font_builder_io", &ImFontAtlas::FontBuilderIO, "Opaque interface to a font builder (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE).")
-        .def_rw("font_builder_flags", &ImFontAtlas::FontBuilderFlags, "Shared flags (for all fonts) for custom font builder. THIS IS BUILD IMPLEMENTATION DEPENDENT. Per-font override is also available in ImFontConfig.")
-        .def_rw("pack_id_mouse_cursors", &ImFontAtlas::PackIdMouseCursors, "Custom texture rectangle ID for white pixel and mouse cursors")
-        .def_rw("pack_id_lines", &ImFontAtlas::PackIdLines, "Custom texture rectangle ID for baked anti-aliased lines")
+        .def_rw("tex_next_unique_id", &ImFontAtlas::TexNextUniqueID, "Next value to be stored in TexData->UniqueID")
+        .def_rw("font_next_unique_id", &ImFontAtlas::FontNextUniqueID, "Next value to be stored in ImFont->SourceID")
+        .def_ro("font_loader", &ImFontAtlas::FontLoader, "Font loader opaque interface (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE). Don't set directly!")
+        .def_ro("font_loader_name", &ImFontAtlas::FontLoaderName, "Font loader name (for display e.g. in About box) == FontLoader->Name")
+        .def_rw("font_loader_data", &ImFontAtlas::FontLoaderData, "Font backend opaque storage")
+        .def_rw("font_builder_flags", &ImFontAtlas::FontBuilderFlags, "[FIXME: Should be called FontLoaderFlags] Shared flags (for all fonts) for font loader. THIS IS BUILD IMPLEMENTATION DEPENDENT (e.g. . Per-font override is also available in ImFontConfig.")
+        .def_rw("ref_count", &ImFontAtlas::RefCount, "")
         ;
+
+
+    auto pyClassImFontBaked =
+        nb::class_<ImFontBaked>
+            (m, "ImFontBaked", " Font runtime data for a given size\n Important: pointers to ImFontBaked are only valid for the current frame.")
+        .def_rw("index_advance_x", &ImFontBaked::IndexAdvanceX, "12-16 // out // Sparse. Glyphs->AdvanceX in a directly indexable way (cache-friendly for CalcTextSize functions which only this info, and are often bottleneck in large UI).")
+        .def_rw("fallback_advance_x", &ImFontBaked::FallbackAdvanceX, "4     // out // FindGlyph(FallbackChar)->AdvanceX")
+        .def_rw("size", &ImFontBaked::Size, "4     // in  // Height of characters/line, set during loading (doesn't change after loading)")
+        .def_rw("glyphs", &ImFontBaked::Glyphs, "12-16 // out // All glyphs.")
+        .def_rw("fallback_glyph_index", &ImFontBaked::FallbackGlyphIndex, "4     // out // Index of FontFallbackChar")
+        .def_rw("ascent", &ImFontBaked::Ascent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
+        .def_rw("descent", &ImFontBaked::Descent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
+        .def_rw("last_used_frame", &ImFontBaked::LastUsedFrame, "4     //     // Record of that time this was bounds")
+        .def_rw("baked_id", &ImFontBaked::BakedId, "4     //")
+        .def_rw("container_font", &ImFontBaked::ContainerFont, "4-8   // in  // Parent font")
+        .def_rw("font_loader_datas", &ImFontBaked::FontLoaderDatas, "4-8   //     // Font loader opaque storage (per baked font * sources): single contiguous buffer allocated by imgui, passed to loader.")
+        .def(nb::init<>())
+        .def("clear_output_data",
+            &ImFontBaked::ClearOutputData)
+        .def("find_glyph",
+            &ImFontBaked::FindGlyph,
+            nb::arg("c"),
+            "Return U+FFFD glyph if requested glyph doesn't exists.",
+            nb::rv_policy::reference)
+        .def("find_glyph_no_fallback",
+            &ImFontBaked::FindGlyphNoFallback,
+            nb::arg("c"),
+            "Return None if glyph doesn't exist",
+            nb::rv_policy::reference)
+        .def("get_char_advance",
+            &ImFontBaked::GetCharAdvance, nb::arg("c"))
+        .def("is_glyph_loaded",
+            &ImFontBaked::IsGlyphLoaded, nb::arg("c"))
+        ;
+
+
+    auto pyEnumImFontFlags_ =
+        nb::enum_<ImFontFlags_>(m, "ImFontFlags_", nb::is_arithmetic(), " Font flags\n (in future versions as we redesign font loading API, this will become more important and better documented. for now please consider this as internal/advanced use)")
+            .value("none", ImFontFlags_None, "")
+            .value("lock_baked_sizes", ImFontFlags_LockBakedSizes, "Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size.")
+            .value("no_load_glyphs", ImFontFlags_NoLoadGlyphs, "Disable loading new glyphs.")
+            .value("no_load_error", ImFontFlags_NoLoadError, "Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.")
+            .value("use_default_size", ImFontFlags_UseDefaultSize, "Legacy compatibility: make PushFont() calls without explicit size use font->DefaultSize instead of current font size.");
 
 
     auto pyClassImFont =
         nb::class_<ImFont>
-            (m, "ImFont", " Font runtime data and rendering\n ImFontAtlas automatically loads a default embedded font for you when you call GetTexDataAsAlpha8() or GetTexDataAsRGBA32().")
-        .def_rw("index_advance_x", &ImFont::IndexAdvanceX, "12-16 // out // Sparse. Glyphs->AdvanceX in a directly indexable way (cache-friendly for CalcTextSize functions which only this info, and are often bottleneck in large UI).")
-        .def_rw("fallback_advance_x", &ImFont::FallbackAdvanceX, "4     // out // = FallbackGlyph->AdvanceX")
-        .def_rw("font_size", &ImFont::FontSize, "4     // in  // Height of characters/line, set during loading (don't change after loading)")
-        .def_rw("glyphs", &ImFont::Glyphs, "12-16 // out // All glyphs.")
-        .def_rw("fallback_glyph", &ImFont::FallbackGlyph, "4-8   // out // = FindGlyph(FontFallbackChar)")
-        .def_rw("container_atlas", &ImFont::ContainerAtlas, "4-8   // out // What we has been loaded into")
-        .def_rw("sources", &ImFont::Sources, "4-8   // in  // Pointer within ContainerAtlas->Sources[], to SourcesCount instances")
+            (m, "ImFont", " Font runtime data and rendering\n - ImFontAtlas automatically loads a default embedded font for you if you didn't load one manually.\n - Since 1.92.X a font may be rendered as any size! Therefore a font doesn't have one specific size.\n - Use 'font->GetFontBaked(size)' to retrieve the ImFontBaked* corresponding to a given size.\n - If you used g.Font + g.FontSize (which is frequent from the ImGui layer), you can use g.FontBaked as a shortcut, as g.FontBaked == g.Font->GetFontBaked(g.FontSize).")
+        .def_rw("last_baked", &ImFont::LastBaked, "4-8   // Cache last bound baked. DO NOT USE. Use GetFontBaked().")
+        .def_rw("container_atlas", &ImFont::ContainerAtlas, "4-8   // What we has been loaded into")
+        .def_rw("flags", &ImFont::Flags, "4     // Font flags")
+        .def_rw("font_id", &ImFont::FontId, "Unique identifier for the font")
+        .def_rw("default_size", &ImFont::DefaultSize, "4     // in  // Default font size")
         .def_rw("sources_count", &ImFont::SourcesCount, "2     // in  // Number of ImFontConfig involved in creating this font. Usually 1, or >1 when merging multiple font sources into one ImFont.")
-        .def_rw("ellipsis_char_count", &ImFont::EllipsisCharCount, "1     // out // 1 or 3")
+        .def_rw("sources", &ImFont::Sources, "4-8   // in  // Pointer within ContainerAtlas->Sources[], to SourcesCount instances")
         .def_rw("ellipsis_char", &ImFont::EllipsisChar, "2-4   // out // Character used for ellipsis rendering ('...').")
         .def_rw("fallback_char", &ImFont::FallbackChar, "2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')")
-        .def_rw("ellipsis_width", &ImFont::EllipsisWidth, "4     // out // Total ellipsis Width")
-        .def_rw("ellipsis_char_step", &ImFont::EllipsisCharStep, "4     // out // Step between characters when EllipsisCount > 0")
-        .def_rw("scale", &ImFont::Scale, "4     // in  // Base font scale (1.0), multiplied by the per-window font scale which you can adjust with SetWindowFontScale()")
-        .def_rw("ascent", &ImFont::Ascent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
-        .def_rw("descent", &ImFont::Descent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
-        .def_rw("metrics_total_surface", &ImFont::MetricsTotalSurface, "4     // out // Total surface in pixels to get an idea of the font rasterization/texture cost (not exact, we approximate the cost of padding between glyphs)")
-        .def_rw("dirty_lookup_tables", &ImFont::DirtyLookupTables, "1     // out //")
+        .def_rw("scale", &ImFont::Scale, "4     // in  // Base font scale (~1.0), multiplied by the per-window font scale which you can adjust with SetWindowFontScale()")
+        .def_rw("ellipsis_auto_bake", &ImFont::EllipsisAutoBake, "1     //     // Mark when the \"...\" glyph needs to be generated.")
         .def(nb::init<>(),
             "Methods")
-        .def("find_glyph",
-            &ImFont::FindGlyph,
-            nb::arg("c"),
+        .def("get_font_baked",
+            &ImFont::GetFontBaked,
+            nb::arg("font_size"),
+            "Get or create baked data for given size",
             nb::rv_policy::reference)
-        .def("find_glyph_no_fallback",
-            &ImFont::FindGlyphNoFallback,
-            nb::arg("c"),
-            nb::rv_policy::reference)
-        .def("get_char_advance",
-            &ImFont::GetCharAdvance,
-            nb::arg("c"),
-            "(private API)")
+        .def("is_glyph_in_font",
+            &ImFont::IsGlyphInFont, nb::arg("c"))
         .def("is_loaded",
             &ImFont::IsLoaded, "(private API)")
         .def("get_debug_name",
             &ImFont::GetDebugName,
-            "(private API)",
+            "(private API)\n\n Fill ImFontConfig::Name.",
             nb::rv_policy::reference)
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
-        .def("calc_word_wrap_position_a_python",
-            &ImFont::CalcWordWrapPositionAPython,
-            nb::arg("scale"), nb::arg("text"), nb::arg("wrap_width"),
-            "Python API for CalcWordWrapPositionA (will return an index in the text, not a pointer)")
+        .def("calc_word_wrap_position_python",
+            &ImFont::CalcWordWrapPositionPython,
+            nb::arg("size"), nb::arg("text"), nb::arg("wrap_width"),
+            "Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)")
         // #endif
         //
         .def("render_char",
             &ImFont::RenderChar, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("c"))
         .def("render_text",
             &ImFont::RenderText, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("clip_rect"), nb::arg("text_begin"), nb::arg("text_end"), nb::arg("wrap_width") = 0.0f, nb::arg("cpu_fine_clip") = false)
-        .def("build_lookup_table",
-            &ImFont::BuildLookupTable)
         .def("clear_output_data",
             &ImFont::ClearOutputData)
-        .def("grow_index",
-            &ImFont::GrowIndex, nb::arg("new_size"))
-        .def("add_glyph",
-            &ImFont::AddGlyph, nb::arg("src_cfg"), nb::arg("c"), nb::arg("x0"), nb::arg("y0"), nb::arg("x1"), nb::arg("y1"), nb::arg("u0"), nb::arg("v0"), nb::arg("u1"), nb::arg("v1"), nb::arg("advance_x"))
         .def("add_remap_char",
             &ImFont::AddRemapChar,
             nb::arg("dst"), nb::arg("src"), nb::arg("overwrite_dst") = true,
@@ -7540,6 +7574,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("platform_open_in_shell_user_data", &ImGuiPlatformIO::Platform_OpenInShellUserData, "[/ADAPT_IMGUI_BUNDLE]")
         .def_rw("platform_ime_user_data", &ImGuiPlatformIO::Platform_ImeUserData, "")
         .def_rw("platform_locale_decimal_point", &ImGuiPlatformIO::Platform_LocaleDecimalPoint, "'.'")
+        .def_rw("renderer_texture_max_width", &ImGuiPlatformIO::Renderer_TextureMaxWidth, "")
+        .def_rw("renderer_texture_max_height", &ImGuiPlatformIO::Renderer_TextureMaxHeight, "")
         .def_rw("renderer_render_state", &ImGuiPlatformIO::Renderer_RenderState, "Written by some backends during ImGui_ImplXXXX_RenderDrawData() call to point backend_specific ImGui_ImplXXXX_RenderState* structure.")
         .def_rw("monitors", &ImGuiPlatformIO::Monitors, " (Optional) Monitor list\n - Updated by: app/backend. Update every frame to dynamically support changing monitor or DPI configuration.\n - Used by: dear imgui to query DPI info, clamp popups/tooltips within same monitor and not have them straddle monitors.")
         .def_rw("viewports", &ImGuiPlatformIO::Viewports, "Main viewports, followed by all secondary viewports.")
