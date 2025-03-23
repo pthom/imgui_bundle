@@ -7,7 +7,7 @@ import cocos  # type: ignore
 
 from imgui_bundle.python_backends import compute_fb_scale
 from imgui_bundle.python_backends.pyglet_backend import PygletMixin
-from imgui_bundle.python_backends.opengl_backend import FixedPipelineRenderer
+from imgui_bundle.python_backends.opengl_backend_fixed import FixedPipelineRenderer
 
 
 class ImguiLayer(PygletMixin, cocos.layer.Layer):

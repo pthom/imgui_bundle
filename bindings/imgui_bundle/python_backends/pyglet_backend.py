@@ -10,10 +10,8 @@ import pyglet.clock
 
 
 from imgui_bundle.python_backends import compute_fb_scale
-from imgui_bundle.python_backends.opengl_backend import (
-    FixedPipelineRenderer,
-    ProgrammablePipelineRenderer,
-)
+from imgui_bundle.python_backends.opengl_backend_fixed import FixedPipelineRenderer
+from imgui_bundle.python_backends.opengl_backend_programmable import ProgrammablePipelineRenderer
 
 
 class PygletMixin(object):
