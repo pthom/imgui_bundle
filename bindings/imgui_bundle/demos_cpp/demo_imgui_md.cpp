@@ -8,17 +8,19 @@
 std::string exampleMarkdownString()
 {
     return R"(
-# Markdown example
+# Markdown example (H1)
 
 Hello World! <br>
 ![World](images/world.png)
 
-## Acknowledgments
+## Acknowledgments (H2)
 This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
 
-### Supported features
+### Supported features (H3)
 
-imgui_md currently supports the following markdown functionality:
+imgui_md currently supports the following markdown functionality.
+
+#### Text formatting (H4)
 
 * Wrapped text
 * Headers
@@ -45,6 +47,8 @@ int answer()
 * Separator (see below)
 
 ----
+
+#### Tables (H4)
 
 *Warning about tables layout*: the first row will impose the columns widths.
 Use nbsp\; to increase the columns sizes on the first row if required.

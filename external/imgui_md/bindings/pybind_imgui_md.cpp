@@ -33,9 +33,13 @@ void py_init_module_imgui_md(nb::module_& m)
             (m, "MarkdownFontOptions", "")
         .def(nb::init<>()) // implicit default constructor
         .def_rw("font_base_path", &ImGuiMd::MarkdownFontOptions::fontBasePath, "")
-        .def_rw("max_header_level", &ImGuiMd::MarkdownFontOptions::maxHeaderLevel, "")
-        .def_rw("size_diff_between_levels", &ImGuiMd::MarkdownFontOptions::sizeDiffBetweenLevels, "")
         .def_rw("regular_size", &ImGuiMd::MarkdownFontOptions::regularSize, "")
+        .def_prop_ro("header_size_factors",
+            [](ImGuiMd::MarkdownFontOptions &self) -> nb::ndarray<float, nb::numpy, nb::shape<6>, nb::c_contig>
+            {
+                return self.headerSizeFactors;
+            },
+            "Multipliers for header sizes, from h1 to h6")
         ;
 
 
@@ -133,7 +137,7 @@ void py_init_module_imgui_md(nb::module_& m)
             (m, "MarkdownFontSpec", "")
         .def_rw("italic", &ImGuiMd::MarkdownFontSpec::italic, "")
         .def_rw("bold", &ImGuiMd::MarkdownFontSpec::bold, "")
-        .def_rw("header_level", &ImGuiMd::MarkdownFontSpec::headerLevel, "")
+        .def_rw("header_level", &ImGuiMd::MarkdownFontSpec::headerLevel, "0 means no header, 1 means h1, 2 means h2, etc.")
         .def(nb::init<bool, bool, int>(),
             nb::arg("italic_") = false, nb::arg("bold_") = false, nb::arg("header_level_") = 0)
         ;

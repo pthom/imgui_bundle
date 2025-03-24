@@ -60,14 +60,11 @@ namespace ImGuiMd
                 return self.regularSize;
             else
             {
-                // maxHeaderLevel = 4, headerLevel = 4
-                // => multiplicationFactor = 1
-                // maxHeaderLevel = 4, headerLevel = 1
-                // => multiplicationFactor = 4
-                if (headerLevel > self.maxHeaderLevel)
-                    headerLevel = self.maxHeaderLevel;
-                int multiplicationFactor = self.maxHeaderLevel - headerLevel + 1;
-                float fontSize = self.regularSize + (float)multiplicationFactor * self.sizeDiffBetweenLevels;
+                int idxSizeFactors = headerLevel - 1;
+                if (idxSizeFactors >= 6)
+                    idxSizeFactors = 5;
+                float multiplicationFactor = self.headerSizeFactors[idxSizeFactors];
+                float fontSize = self.regularSize * multiplicationFactor;
                 return fontSize;
             }
         };
@@ -116,8 +113,6 @@ namespace ImGuiMd
                 MarkdownTextStyle markdownTextStyle = _markdownTextStyle;
                 if (markdownTextStyle.headerLevel < 0)
                     markdownTextStyle.headerLevel = 0;
-                if (markdownTextStyle.headerLevel > mMarkdownFontOptions.maxHeaderLevel)
-                    markdownTextStyle.headerLevel = mMarkdownFontOptions.maxHeaderLevel;
 
                 float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, markdownTextStyle.headerLevel);
 
