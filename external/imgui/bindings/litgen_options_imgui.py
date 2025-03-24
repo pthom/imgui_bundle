@@ -401,7 +401,8 @@ def litgen_options_imgui(
     ])
 
     options.class_exclude_by_name__regex = join_string_by_pipe_char([
-        "ImStableVector"
+        "ImStableVector",
+        "ImGuiNpBuffer",  # Will be cast to numpy array (see pybind_imgui.cpp)
     ])
 
     options.member_numeric_c_array_types += "|" + join_string_by_pipe_char(
