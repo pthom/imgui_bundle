@@ -44,7 +44,8 @@ void demo_text_edit()
     };
 
     ShowPaletteButtons();
-    ImGui::PushFont(ImGuiMd::GetCodeFont());
+    auto codeFont = ImGuiMd::GetCodeFont();
+    ImGui::PushFont(codeFont.font, codeFont.size);
     editor.Render("Code");
     ImGui::PopFont();
 }

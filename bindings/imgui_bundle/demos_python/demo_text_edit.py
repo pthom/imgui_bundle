@@ -41,7 +41,8 @@ def demo_gui():
             editor.set_palette(TextEditor.PaletteId.mariana)
 
     show_palette_buttons()
-    imgui.push_font(imgui_md.get_code_font())
+    code_font = imgui_md.get_code_font()
+    imgui.push_font(code_font.font, code_font.size)
     editor.render("Code")
     imgui.pop_font()
 
