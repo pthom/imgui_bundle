@@ -425,7 +425,7 @@ def demo_cool_bar():
     button_labels = ["A", "B", "C", "D", "E", "F"]
     imgui_md.render_unindented(
         """
-        # ImCoolBar:
+        # ImCoolBar
         ImCoolBar provides a dock-like Cool bar for Dear ImGui
         """
     )

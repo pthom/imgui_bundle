@@ -451,7 +451,7 @@ void DemoCoolBar()
 
     std::vector<std::string> buttonLabels {"A", "B", "C", "D", "E", "F"};
     ImGuiMd::RenderUnindented(R"(
-        # ImCoolBar:
+        # ImCoolBar
         ImCoolBar provides a dock-like Cool bar for Dear ImGui
     )");
 
