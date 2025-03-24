@@ -16,7 +16,7 @@ namespace ImGuiMd
     {
         std::string fontBasePath = "fonts/Roboto/Roboto";
         int maxHeaderLevel = 2;
-        float sizeDiffBetweenLevels = 2.f;
+        float sizeDiffBetweenLevels = 4.f;
         float regularSize = 16.f;
     };
 
@@ -29,6 +29,15 @@ namespace ImGuiMd
         ImVec2	uv1;
         ImVec4	col_tint;
         ImVec4	col_border;
+    };
+
+    // Note: Since v1.92, Fonts can be displayed at any size:
+    // in order to display a font at a given size, we need to call
+    //   ImGui::PushFont(font, size) (or call separately ImGui::PushFontSize)
+    struct SizedFont
+    {
+        ImFont* font;
+        float size;
     };
 
     using VoidFunction = std::function<void(void)>;
@@ -110,7 +119,7 @@ namespace ImGuiMd
     // Renders a markdown string (after having unindented its main indentation)
     void RenderUnindented(const std::string& markdownString);
 
-    ImFont* GetCodeFont();
+    SizedFont GetCodeFont();
 
     struct MarkdownFontSpec
     {
@@ -121,5 +130,5 @@ namespace ImGuiMd
         MarkdownFontSpec(bool italic_ = false, bool bold_ = false, int headerLevel_ = 0) :
             italic(italic_), bold(bold_), headerLevel(headerLevel_) {}
     };
-    ImFont* GetFont(const MarkdownFontSpec& fontSpec);
+    SizedFont GetFont(const MarkdownFontSpec& fontSpec);
 }

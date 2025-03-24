@@ -86,14 +86,9 @@ namespace ImGuiMd
             return r;
         }
 
-        bool operator==(const MarkdownTextStyle& lhs, const MarkdownTextStyle& rhs)
+        bool IsDefaultMarkdownEmphasis(const MarkdownEmphasis& style)
         {
-            return (lhs.markdownEmphasis == rhs.markdownEmphasis) && (lhs.headerLevel == rhs.headerLevel);
-        }
-
-        bool IsDefaultMarkdownTextStyle(const MarkdownTextStyle& style)
-        {
-            return (style.headerLevel == 0) && !style.markdownEmphasis.bold && !style.markdownEmphasis.italic;
+            return !style.bold && !style.italic;
         }
 
 
@@ -105,18 +100,18 @@ namespace ImGuiMd
                 LoadFonts();
             }
 
-            ImFont* GetFontCode() const
+            SizedFont GetFontCode() const
             {
-                return mFontCode;
+                return {mFontCode, mMarkdownFontOptions.regularSize};
             }
 
-            ImFont* GetDefaultFont() const
+            SizedFont GetDefaultFont() const
             {
                 auto defaultMarkdownStyle = MarkdownTextStyle{};
                 return GetFont(defaultMarkdownStyle);
             }
 
-            ImFont* GetFont(const MarkdownTextStyle& _markdownTextStyle) const
+            SizedFont GetFont(const MarkdownTextStyle& _markdownTextStyle) const
             {
                 MarkdownTextStyle markdownTextStyle = _markdownTextStyle;
                 if (markdownTextStyle.headerLevel < 0)
@@ -124,13 +119,14 @@ namespace ImGuiMd
                 if (markdownTextStyle.headerLevel > mMarkdownFontOptions.maxHeaderLevel)
                     markdownTextStyle.headerLevel = mMarkdownFontOptions.maxHeaderLevel;
 
+                float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, markdownTextStyle.headerLevel);
+
                 for (auto pair: mFonts)
                 {
-                    if (pair.first == markdownTextStyle)
-                        return pair.second;
+                    if (pair.first == markdownTextStyle.markdownEmphasis)
+                        return SizedFont{ pair.second, fontSize };
                 }
-                assert(false);
-                return nullptr;
+                IM_ASSERT(false && "Could not find font for markdown style");
             }
         private:
             void LoadFonts()
@@ -153,33 +149,26 @@ assets/
     └── markdown_broken_image.png
 
 )";
-                for (int header_level = 0; header_level <= mMarkdownFontOptions.maxHeaderLevel; ++header_level)
+                for (auto emphasisVariant: AllEmphasisVariants())
                 {
-                    for (auto emphasisVariant: AllEmphasisVariants())
+                    std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
+
+                    // we shall not load the icons for all the fonts variants, since the font atlas
+                    // texture might end up too big to fit in the GPU.
+                    ImFont * font;
+                    float defaultFontLoadingSize = 16.f;  // size at loading time (then Fonts can be resized to any size)
+                    if (IsDefaultMarkdownEmphasis(emphasisVariant))
+                        font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, defaultFontLoadingSize);
+                    else
+                        font = HelloImGui::LoadFontTTF(fontFile, defaultFontLoadingSize);
+
+                    if (font == nullptr)
                     {
-                        MarkdownTextStyle markdownTextStyle;
-                        markdownTextStyle.markdownEmphasis = emphasisVariant;
-                        markdownTextStyle.headerLevel = header_level;
-
-                        float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, header_level);
-                        std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
-
-                        // we shall not load the icons for all the fonts variants, since the font atlas
-                        // texture might end up too big to fit in the GPU.
-                        ImFont * font;
-                        if (IsDefaultMarkdownTextStyle(markdownTextStyle))
-                            font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
-                        else
-                            font = HelloImGui::LoadFontTTF(fontFile, fontSize);
-
-                        if (font == nullptr)
-                        {
-                            fprintf(stderr, "%s", error_message.c_str());
-                            IM_ASSERT(false);
-                        }
-
-                        mFonts.push_back(std::make_pair(markdownTextStyle, font) );
+                        fprintf(stderr, "%s", error_message.c_str());
+                        IM_ASSERT(false);
                     }
+
+                    mFonts.push_back(std::make_pair(emphasisVariant, font) );
                 }
 
                 float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, 0);
@@ -200,7 +189,7 @@ assets/
             }
 
             MarkdownFontOptions mMarkdownFontOptions;
-            std::vector<std::pair<MarkdownTextStyle, ImFont*>> mFonts;
+            std::vector<std::pair<MarkdownEmphasis, ImFont*>> mFonts;
             ImFont* mFontCode;
         };
 
@@ -241,19 +230,23 @@ assets/
 
         void Render(const std::string& s)
         {
-            ImGui::PushFont(mMarkdownCollection.mFontCollection.GetDefaultFont());
+            auto defaultSizedFont = mMarkdownCollection.mFontCollection.GetDefaultFont();
+            ImGui::PushFont(defaultSizedFont.font);
+            ImGui::PushFontSize(defaultSizedFont.size);
+
             const char * start = s.c_str();
             const char * end = start + s.size();
             this->print(start, end);
+            ImGui::PopFontSize();
             ImGui::PopFont();
         }
 
-        ImFont* get_font_code()
+        SizedFont get_font_code()
         {
             return mMarkdownCollection.mFontCollection.GetFontCode();
         }
 
-        ImFont* GetFont(const MarkdownFontSpec& fontSpec)
+        SizedFont GetFont(const MarkdownFontSpec& fontSpec)
         {
             ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
             markdownTextStyle.headerLevel = fontSpec.headerLevel;
@@ -264,13 +257,14 @@ assets/
 
 
     private:
-        ImFont* get_font() const override
+        imgui_md::MdSizedFont get_font() const override
         {
             if (m_is_code)
             {
                 // https://github.com/mekhontsev/imgui_md does not handle correctly code blocks
                 // so that we will never reach here...
-                return mMarkdownCollection.mFontCollection.GetFontCode();
+                auto fontCode = mMarkdownCollection.mFontCollection.GetFontCode();
+                return imgui_md::MdSizedFont{ fontCode.font, fontCode.size };
             }
             else
             {
@@ -278,7 +272,8 @@ assets/
                 markdownTextStyle.headerLevel = m_hlevel;
                 markdownTextStyle.markdownEmphasis.bold = m_is_strong;
                 markdownTextStyle.markdownEmphasis.italic = m_is_em;
-                return mMarkdownCollection.mFontCollection.GetFont(markdownTextStyle);
+                auto font  = mMarkdownCollection.mFontCollection.GetFont(markdownTextStyle);
+                return imgui_md::MdSizedFont{ font.font, font.size };
             }
         };
 
@@ -470,12 +465,12 @@ assets/
 #endif
     }
 
-    ImFont* GetCodeFont()
+    SizedFont GetCodeFont()
     {
         return gMarkdownRenderer->get_font_code();
     }
 
-    ImFont* GetFont(const MarkdownFontSpec& fontSpec)
+    SizedFont GetFont(const MarkdownFontSpec& fontSpec)
     {
         return gMarkdownRenderer->GetFont(fontSpec);
     }

@@ -127,8 +127,11 @@ namespace Snippets
 
         float lineHeight;
         {
-            ImGui::PushFont(ImGuiMd::GetCodeFont());
+            auto codeFont = ImGuiMd::GetCodeFont();
+            ImGui::PushFont(codeFont.font);
+            ImGui::PushFontSize(codeFont.size);
             lineHeight = ImGui::GetFontSize();
+            ImGui::PopFontSize();
             ImGui::PopFont();
         }
 
@@ -199,7 +202,8 @@ namespace Snippets
             ImGui::NewLine();
         }
 
-        ImGui::PushFont(ImGuiMd::GetCodeFont());
+        auto codeFont = ImGuiMd::GetCodeFont();
+        ImGui::PushFont(codeFont.font, codeFont.size);
 
         bool changed = editor.Render(std::to_string(id).c_str(), false, editorSize, snippetData.Border);
         if (changed && !snippetData.ReadOnly)
