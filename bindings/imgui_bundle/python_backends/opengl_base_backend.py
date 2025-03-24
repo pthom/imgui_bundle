@@ -47,7 +47,7 @@ class BaseOpenGLRenderer(object):
         # cf https://github.com/ocornut/imgui/commit/ff3f471ab2af25f1cc11c20356711aaa4e6833f8
         # This method is a port of the C++ function ImGui_ImplOpenGL3_UpdateTexture
         # where we use
-        #     pixels = imgui.im_texture_data_get_pixels(tex)
+        #     pixels = tex.get_pixels_array()
         # to get a numpy array of the pixel data
         # When doing updates, we use a sub-view of the full_pixels array to avoid copying data
 
@@ -70,9 +70,7 @@ class BaseOpenGLRenderer(object):
             if hasattr(gl, "GL_UNPACK_ROW_LENGTH"):
                 gl.glPixelStorei(gl.GL_UNPACK_ROW_LENGTH, 0)
 
-            # Retrieve pixel data (im_texture_data_get_pixels returns a numpy array)
-            pixels = imgui.im_texture_data_get_pixels(tex)
-
+            pixels_array = tex.get_pixels_array()
             gl.glTexImage2D(
                 gl.GL_TEXTURE_2D,
                 0,
@@ -82,7 +80,7 @@ class BaseOpenGLRenderer(object):
                 0,
                 gl.GL_RGBA,
                 gl.GL_UNSIGNED_BYTE,
-                pixels,
+                pixels_array,
             )
 
             # Store identifiers: store the new GL texture ID back into ImGui's structure
@@ -104,7 +102,7 @@ class BaseOpenGLRenderer(object):
             gl.glPixelStorei(gl.GL_UNPACK_ROW_LENGTH, tex.width)
 
             # Get the full 1D array of pixels (shape=(width*height*bpp,))
-            full_pixels = imgui.im_texture_data_get_pixels(tex)
+            full_pixels = tex.get_pixels_array()
 
             for r in tex.updates:
                 # Compute offset into the 1D array for the sub-rectangle's top-left pixel:

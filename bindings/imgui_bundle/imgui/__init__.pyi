@@ -74,10 +74,6 @@ def font_atlas_get_tex_data_as_rgba32(
     """
     pass
 
-def im_texture_data_get_pixels(tex: ImTextureData) -> np.ndarray:
-    """Manual binding for ImTextureData::GetPixels"""
-    pass
-
 # -----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
 # -----------------------------------------------------------------------------
@@ -340,6 +336,8 @@ class VecProtocol(Protocol[TVec]):
 ImVec2Like = Union[ImVec2, Tuple[int | float, int | float], List[int | float]]
 ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | float], List[int | float]]
 
+NpBuffer = np.ndarray  # used to transfer texture data as a 1D numpy array of bytes
+
 ##################################################
 #    AUTO GENERATED CODE BELOW
 ##################################################
@@ -382,6 +380,7 @@ ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | fl
 # [ADAPT_IMGUI_BUNDLE]
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
+
 # #endif
 #
 
@@ -10775,16 +10774,20 @@ class ImTextureData:
     def destroy_pixels(self) -> None:
         """(private API)"""
         pass
-    # uchar*      GetPixels()                 { IM_ASSERT(Pixels != NULL); return Pixels; }    /* original C++ signature */
-    def get_pixels(self) -> uchar:
-        """Note: in Python, use imgui.im_texture_data_get_pixels(tex) to get the data as a numpy array.
+    #                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # ImGuiNpBuffer       GetPixelsArray()          { return ImGuiNpBuffer{Pixels, Width * Height * BytesPerPixel}; }    /* original C++ signature */
+    def get_pixels_array(self) -> NpBuffer:
+        """GetPixelsArray(): returns the pixel data as a NumPy array.
+
+         Note: GetPixelsAt(x, y) is not implemented for Python, but you can use the offset below:
+            offset = (y * tex.width + x) * tex.bytes_per_pixel
         (private API)
         """
         pass
-    # uchar*      GetPixelsAt(int x, int y)   { IM_ASSERT(Pixels != NULL); return Pixels + (x + y * Width) * BytesPerPixel; }    /* original C++ signature */
-    def get_pixels_at(self, x: int, y: int) -> uchar:
-        """(private API)"""
-        pass
+    #                                #endif
+    #
+
     # int                 GetSizeInBytes() const      { return Width * Height * BytesPerPixel; }    /* original C++ signature */
     def get_size_in_bytes(self) -> int:
         """(private API)"""
