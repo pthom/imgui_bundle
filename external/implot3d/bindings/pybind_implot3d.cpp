@@ -169,6 +169,13 @@ void py_init_module_implot3d(nb::module_& m)
             .value("no_fit", ImPlot3DMeshFlags_NoFit, "");
 
 
+    auto pyEnumImageFlags_ =
+        nb::enum_<ImPlot3DImageFlags_>(m, "ImageFlags_", nb::is_arithmetic(), "Flags for PlotImage")
+            .value("none", ImPlot3DImageFlags_None, "Default")
+            .value("no_legend", ImPlot3DImageFlags_NoLegend, "")
+            .value("no_fit", ImPlot3DImageFlags_NoFit, "");
+
+
     auto pyEnumLegendFlags_ =
         nb::enum_<ImPlot3DLegendFlags_>(m, "LegendFlags_", nb::is_arithmetic(), "Flags for legends")
             .value("none", ImPlot3DLegendFlags_None, "Default")
@@ -387,12 +394,12 @@ void py_init_module_implot3d(nb::module_& m)
     m.def("setup_box_initial_rotation",
         nb::overload_cast<float, float>(ImPlot3D::SetupBoxInitialRotation),
         nb::arg("elevation"), nb::arg("azimuth"),
-        "Sets the plot box initial rotation given the elevation and azimuth angles in degrees. The initial rotation is the rotation the plot goes back to when a left mouse button double click happens");
+        " Sets the plot box initial rotation given the elevation and azimuth angles in degrees. The initial rotation is the rotation the plot goes back to\n when a left mouse button double click happens");
 
     m.def("setup_box_initial_rotation",
         nb::overload_cast<ImPlot3DQuat>(ImPlot3D::SetupBoxInitialRotation),
         nb::arg("rotation"),
-        "Sets the plot box initial rotation given a quaternion. The initial rotation is the rotation the plot goes back to when a left mouse button double click happens");
+        " Sets the plot box initial rotation given a quaternion. The initial rotation is the rotation the plot goes back to when a left mouse button double\n click happens");
 
     m.def("setup_box_scale",
         ImPlot3D::SetupBoxScale,
@@ -902,6 +909,90 @@ void py_init_module_implot3d(nb::module_& m)
     // #endif
     //
 
+    m.def("plot_image",
+        [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & center, const ImPlot3DPoint & axis_u, const ImPlot3DPoint & axis_v, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlot3DImageFlags flags = 0)
+        {
+            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & center, const ImPlot3DPoint & axis_u, const ImPlot3DPoint & axis_v, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlot3DImageFlags flags = 0)
+            {
+
+                const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
+                    if (uv0.has_value())
+                        return uv0.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                const ImVec2& uv1_or_default = [&]() -> const ImVec2 {
+                    if (uv1.has_value())
+                        return uv1.value();
+                    else
+                        return ImVec2(1, 1);
+                }();
+
+                const ImVec4& tint_col_or_default = [&]() -> const ImVec4 {
+                    if (tint_col.has_value())
+                        return tint_col.value();
+                    else
+                        return ImVec4(1, 1, 1, 1);
+                }();
+
+                ImPlot3D::PlotImage(label_id, tex_ref, center, axis_u, axis_v, uv0_or_default, uv1_or_default, tint_col_or_default, flags);
+            };
+
+            PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, center, axis_u, axis_v, uv0, uv1, tint_col, flags);
+        },
+        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("center"), nb::arg("axis_u"), nb::arg("axis_v"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("flags") = 0,
+        " Plots a rectangular image in 3D defined by its center and two direction vectors (axes).\n #center is the center of the rectangle in plot coordinates.\n #axis_u and #axis_v define the local axes and half-extents of the rectangle in 3D space.\n The rectangle is formed by moving from the center along ±axis_u and ±axis_v.\n #uv0 and #uv1 define the texture mapping.\n #tint_col can be used to tint the image.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)");
+
+    m.def("plot_image",
+        [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & p0, const ImPlot3DPoint & p1, const ImPlot3DPoint & p2, const ImPlot3DPoint & p3, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlot3DImageFlags flags = 0)
+        {
+            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & p0, const ImPlot3DPoint & p1, const ImPlot3DPoint & p2, const ImPlot3DPoint & p3, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlot3DImageFlags flags = 0)
+            {
+
+                const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
+                    if (uv0.has_value())
+                        return uv0.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                const ImVec2& uv1_or_default = [&]() -> const ImVec2 {
+                    if (uv1.has_value())
+                        return uv1.value();
+                    else
+                        return ImVec2(1, 0);
+                }();
+
+                const ImVec2& uv2_or_default = [&]() -> const ImVec2 {
+                    if (uv2.has_value())
+                        return uv2.value();
+                    else
+                        return ImVec2(1, 1);
+                }();
+
+                const ImVec2& uv3_or_default = [&]() -> const ImVec2 {
+                    if (uv3.has_value())
+                        return uv3.value();
+                    else
+                        return ImVec2(0, 1);
+                }();
+
+                const ImVec4& tint_col_or_default = [&]() -> const ImVec4 {
+                    if (tint_col.has_value())
+                        return tint_col.value();
+                    else
+                        return ImVec4(1, 1, 1, 1);
+                }();
+
+                ImPlot3D::PlotImage(label_id, tex_ref, p0, p1, p2, p3, uv0_or_default, uv1_or_default, uv2_or_default, uv3_or_default, tint_col_or_default, flags);
+            };
+
+            PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, p0, p1, p2, p3, uv0, uv1, uv2, uv3, tint_col, flags);
+        },
+        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("p0"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("uv2") = nb::none(), nb::arg("uv3") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("flags") = 0,
+        " Plots an image using four arbitrary 3D points that define a quad in space.\n Each corner (p0 to p3) corresponds to a corner in the image, and #uv0 to #uv3 are the texture coordinates for each.\n This overload allows full control over orientation, shape, and distortion.\n Note: The quad is internally split into two triangles, so non-rectangular quads may produce rendering artifacts\n since distortion is interpolated per triangle rather than over the full quad.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 0)\n        * uv2: ImVec2(1, 1)\n        * uv3: ImVec2(0, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)");
+
     m.def("plot_text",
         [](const char * text, float x, float y, float z, float angle = 0.0f, const std::optional<const ImVec2> & pix_offset = std::nullopt)
         {
@@ -1113,12 +1204,12 @@ void py_init_module_implot3d(nb::module_& m)
     m.def("push_colormap",
         nb::overload_cast<ImPlot3DColormap>(ImPlot3D::PushColormap),
         nb::arg("cmap"),
-        "Temporarily switch to one of the built-in (i.e. ImPlot3DColormap_XXX) or user-added colormaps (i.e. a return value of AddColormap). Don't forget to call PopColormap!");
+        " Temporarily switch to one of the built-in (i.e. ImPlot3DColormap_XXX) or user-added colormaps (i.e. a return value of AddColormap). Don't forget to\n call PopColormap!");
 
     m.def("push_colormap",
         nb::overload_cast<const char *>(ImPlot3D::PushColormap),
         nb::arg("name"),
-        "Push a colormap by string name. Use built-in names such as \"Default\", \"Deep\", \"Jet\", etc. or a string you provided to AddColormap. Don't forget to call PopColormap!");
+        " Push a colormap by string name. Use built-in names such as \"Default\", \"Deep\", \"Jet\", etc. or a string you provided to AddColormap. Don't forget to\n call PopColormap!");
 
     m.def("pop_colormap",
         ImPlot3D::PopColormap,

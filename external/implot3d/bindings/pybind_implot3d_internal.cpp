@@ -380,8 +380,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("held_edge_idx", &ImPlot3DPlot::HeldEdgeIdx, "Index of the edge being held")
         .def_rw("held_plane_idx", &ImPlot3DPlot::HeldPlaneIdx, "Index of the plane being held")
         .def_rw("fit_this_frame", &ImPlot3DPlot::FitThisFrame, "Fit data")
-        .def_rw("items", &ImPlot3DPlot::Items, "")
-        .def_rw("current_item", &ImPlot3DPlot::CurrentItem, "")
+        .def_rw("items", &ImPlot3DPlot::Items, "Items")
         .def_rw("context_click", &ImPlot3DPlot::ContextClick, "True if context button was clicked (to distinguish from double click)")
         .def_rw("open_context_this_frame", &ImPlot3DPlot::OpenContextThisFrame, "")
         .def(nb::init<>())
@@ -440,6 +439,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
         )
         .def_rw("current_plot", &ImPlot3DContext::CurrentPlot, "")
         .def_rw("current_items", &ImPlot3DContext::CurrentItems, "")
+        .def_rw("current_item", &ImPlot3DContext::CurrentItem, "")
         .def_rw("next_item_data", &ImPlot3DContext::NextItemData, "")
         .def_rw("style", &ImPlot3DContext::Style, "")
         .def_rw("colormap_data", &ImPlot3DContext::ColormapData, "")
@@ -527,6 +527,11 @@ void py_init_module_implot3d_internal(nb::module_& m)
         "Register or get an existing item from the current plot",
         nb::rv_policy::reference);
 
+    m.def("get_current_item",
+        ImPlot3D::GetCurrentItem,
+        "Gets the current item from ImPlot3DContext",
+        nb::rv_policy::reference);
+
     m.def("bust_item_cache",
         ImPlot3D::BustItemCache, "Busts the cache for every item for every plot in the current context");
 
@@ -549,7 +554,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
 
     m.def("get_current_plot",
         ImPlot3D::GetCurrentPlot,
-        "Gets the current plot from the current ImPlot3DContext",
+        "Gets the current plot from ImPlot3DContext",
         nb::rv_policy::reference);
 
     m.def("bust_plot_cache",
