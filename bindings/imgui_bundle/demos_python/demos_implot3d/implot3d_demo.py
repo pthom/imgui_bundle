@@ -10,6 +10,71 @@ import numpy as np
 set_hello_imgui_demo_assets_folder()
 
 #-----------------------------------------------------------------------------
+# [SECTION] Demo Textures
+#-----------------------------------------------------------------------------
+
+def rgba_image_to_texture(image: np.ndarray) -> int:
+    """Upload an RGBA image to the GPU as a texture, returns the OpenGL texture ID."""
+    from OpenGL import GL
+    assert image.dtype == np.uint8 and image.ndim == 3 and image.shape[2] == 4
+
+    height, width = image.shape[:2]
+
+    # Generate a texture ID
+    texture_id = GL.glGenTextures(1)
+    GL.glBindTexture(GL.GL_TEXTURE_2D, texture_id)
+
+    # Set texture parameters (you may want to adjust this)
+    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR)
+    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR)
+    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE)
+    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE)
+
+    # Upload the image
+    GL.glTexImage2D(
+        GL.GL_TEXTURE_2D,
+        0,                  # level
+        GL.GL_RGBA,            # internal format
+        width,
+        height,
+        0,                  # border
+        GL.GL_RGBA,            # input format
+        GL.GL_UNSIGNED_BYTE,   # input type
+        image
+    )
+
+    GL.glBindTexture(GL.GL_TEXTURE_2D, 0)
+    return texture_id
+
+
+def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> np.ndarray:
+    """Create a checkerboard RGBA texture as a numpy array."""
+    img = np.zeros((size, size, 4), dtype=np.uint8)
+    for y in range(size):
+        for x in range(size):
+            if ((x // tile_size) + (y // tile_size)) % 2 == 0:
+                color = (255, 255, 255, 255)
+            else:
+                color = (64, 64, 64, 255)
+            img[y, x] = color
+    return img
+
+
+def make_gradient_circle_texture(size: int = 256) -> np.ndarray:
+    """Create a circular gradient texture with transparency and a color tint."""
+    img = np.zeros((size, size, 4), dtype=np.uint8)
+    center = size / 2
+    for y in range(size):
+        for x in range(size):
+            dx = x - center
+            dy = y - center
+            dist = np.sqrt(dx * dx + dy * dy) / (size / 2)
+            dist = np.clip(dist, 0.0, 1.0)
+            alpha = int((1.0 - dist) * 255)
+            img[y, x] = (30, 144, 255, alpha)  # DodgerBlue with radial alpha
+    return img
+
+#-----------------------------------------------------------------------------
 # [SECTION] Helpers
 #-----------------------------------------------------------------------------
 
@@ -400,7 +465,7 @@ def slider_implot3d_point(
 def demo_image_plots():
     static = demo_image_plots
 
-    imgui.bullet_text("Below we are displaying the font texture, which is the only texture we have\naccess to in this demo.")
+     # imgui.bullet_text("Below we are displaying the font texture, which is the only texture we have\naccess to in this demo.")
     imgui.bullet_text("Use the 'ImTextureID' type as storage to pass pointers or identifiers to your\nown texture data.")
     imgui.bullet_text("See ImGui Wiki page 'Image Loading and Displaying Examples'.")
 
@@ -423,6 +488,12 @@ def demo_image_plots():
         static.uv1 = ImVec2(1.0, 0.0)
         static.uv2 = ImVec2(1.0, 1.0)
         static.uv3 = ImVec2(0.0, 1.0)
+
+        checker_img = make_checkerboard_texture()
+        circle_img = make_gradient_circle_texture()
+
+        static.tex_id_checker = imgui.ImTextureRef(rgba_image_to_texture(checker_img))
+        static.tex_id_circle = imgui.ImTextureRef(rgba_image_to_texture(circle_img))
 
         static.initialized = True
 
@@ -453,10 +524,10 @@ def demo_image_plots():
         _, static.tint2 = imgui.color_edit4("Tint##2", static.tint2)
         imgui.tree_pop()
 
-    tex_id = imgui.ImTextureRef(imgui.get_io().fonts.python_get_texture_id())
+    # tex_id = imgui.ImTextureRef(imgui.get_io().fonts.python_get_texture_id())
 
     if implot3d.begin_plot("Image Plot", size=(-1, 0), flags=implot3d.Flags_.no_clip.value):
-        implot3d.plot_image("Image 1", tex_id,
+        implot3d.plot_image("Image 1", static.tex_id_checker,
                             center=static.center1,
                             axis_u=static.axis_u1,
                             axis_v=static.axis_v1,
@@ -464,7 +535,7 @@ def demo_image_plots():
                             uv1=static.uv1_1,
                             tint_col=static.tint1)
 
-        implot3d.plot_image("Image 2", tex_id,
+        implot3d.plot_image("Image 2", static.tex_id_circle,
                             p0=static.p0, p1=static.p1, p2=static.p2, p3=static.p3,
                             uv0=static.uv0, uv1=static.uv1, uv2=static.uv2, uv3=static.uv3,
                             tint_col=static.tint2)
