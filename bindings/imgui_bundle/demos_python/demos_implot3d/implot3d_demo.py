@@ -2,7 +2,6 @@
 # ( https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp )
 
 from imgui_bundle import imgui, immapp, implot3d, imgui_ctx, ImVec4, ImVec2, IM_COL32
-from imgui_bundle.immapp import add_static, add_static_values
 from imgui_bundle.demos_python.demos_implot3d.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
 from imgui_bundle.demos_python.demo_utils.api_demos import set_hello_imgui_demo_assets_folder
 
@@ -44,9 +43,8 @@ class CircularBuffer:
         return np.roll(self.data, -self.offset)
 
 
-@add_static
 def demo_line_plots():
-    static = demo_line_plots.static
+    static = demo_line_plots
 
     # Update static values every frame since they depend on `imgui.get_time()`
     static.xs1 = np.linspace(0, 1, 1001)
@@ -65,9 +63,8 @@ def demo_line_plots():
         implot3d.end_plot()
 
 
-@add_static
 def demo_scatter_plots():
-    static = demo_scatter_plots.static
+    static = demo_scatter_plots
 
     if not hasattr(static, "xs1"):  # Initialize static data only once
         np.random.seed(0)
@@ -97,9 +94,8 @@ def demo_scatter_plots():
         implot3d.end_plot()
 
 
-@add_static
 def demo_triangle_plots():
-    static = demo_triangle_plots.static
+    static = demo_triangle_plots
 
     if not hasattr(static, "xs"):  # Initialize static data only once
         # Pyramid coordinates
@@ -147,9 +143,8 @@ def demo_triangle_plots():
         implot3d.end_plot()
 
 
-@add_static
 def demo_quad_plots():
-    static = demo_quad_plots.static
+    static = demo_quad_plots
 
     if not hasattr(static, "xs"):  # Initialize static data only once
         # Cube vertex coordinates for +x, -x, +y, -y, +z, -z faces
@@ -232,19 +227,18 @@ def demo_quad_plots():
         implot3d.end_plot()
 
 
-@add_static
 def demo_surface_plots():
-    static = demo_surface_plots.static
+    static = demo_surface_plots
 
     # Constants
-    N = 20
+    n = 20
     min_val, max_val = -1.0, 1.0
     # step = (max_val - min_val) / (N - 1)
 
     # Initialize static variables
     if not hasattr(static, "xs"):
         # Meshgrid for X and Y values
-        xs, ys = np.meshgrid(np.linspace(min_val, max_val, N), np.linspace(min_val, max_val, N))
+        xs, ys = np.meshgrid(np.linspace(min_val, max_val, n), np.linspace(min_val, max_val, n))
 
         static.xs = xs.flatten()
         static.ys = ys.flatten()
@@ -313,10 +307,10 @@ def demo_surface_plots():
 
         # Plot the surface
         if static.custom_range:
-            implot3d.plot_surface("Wave Surface", static.xs, static.ys, static.zs, N, N,
+            implot3d.plot_surface("Wave Surface", static.xs, static.ys, static.zs, n, n,
                                   scale_min=float(static.range_min), scale_max=float(static.range_max))
         else:
-            implot3d.plot_surface("Wave Surface", static.xs, static.ys, static.zs, N, N)
+            implot3d.plot_surface("Wave Surface", static.xs, static.ys, static.zs, n, n)
 
         implot3d.pop_style_var()
         implot3d.end_plot()
@@ -325,9 +319,8 @@ def demo_surface_plots():
         implot3d.pop_colormap()
 
 
-@add_static
 def demo_mesh_plots():
-    static = demo_mesh_plots.static
+    static = demo_mesh_plots
 
     # Initialize static variables only once
     if not hasattr(static, "mesh_id"):
@@ -397,6 +390,7 @@ def demo_mesh_plots():
 @add_static
 def demo_realtime_plots():
     static = demo_realtime_plots.static
+    static = demo_realtime_plots
 
     if not hasattr(static, "t"):
         static.t = 0.0
@@ -445,9 +439,8 @@ def demo_realtime_plots():
         implot3d.end_plot()
 
 
-@add_static
 def demo_markers_and_text():
-    static = demo_markers_and_text.static
+    static = demo_markers_and_text
 
     # Initialize static variables only once
     if not hasattr(static, "mk_size"):
@@ -509,9 +502,8 @@ def demo_markers_and_text():
         implot3d.end_plot()
 
 
-@add_static
 def demo_nan_values():
-    static = demo_nan_values.static
+    static = demo_nan_values
 
     # Initialize static variables only once
     if not hasattr(static, "include_nan"):
@@ -542,15 +534,14 @@ def demo_nan_values():
 # [SECTION] Axes
 #-----------------------------------------------------------------------------
 
-@add_static
 def demo_box_scale():
-    static = demo_box_scale.static
+    static = demo_box_scale
 
     # Constants
-    N = 100
+    n = 100
 
     # Generate curve data
-    t = np.linspace(0, 1, N, dtype=np.float32)
+    t = np.linspace(0, 1, n, dtype=np.float32)
     xs = np.sin(t * 2.0 * np.pi)
     ys = np.cos(t * 4.0 * np.pi)
     zs = t * 2.0 - 1.0
@@ -568,9 +559,8 @@ def demo_box_scale():
         implot3d.end_plot()
 
 
-@add_static
 def demo_box_rotation():
-    static = demo_box_rotation.static
+    static = demo_box_rotation
 
     # Initialize state variables
     if not hasattr(static, "elevation"):
@@ -625,9 +615,8 @@ def demo_box_rotation():
         implot3d.end_plot()
 
 
-@add_static
 def demo_tick_labels():
-    static = demo_tick_labels.static
+    static = demo_tick_labels
     if not hasattr(static, "custom_ticks"):
         static.custom_ticks = True
         static.custom_labels = True
@@ -799,9 +788,11 @@ def demo_help():
     imgui.bullet_text("Click legend label icons to show/hide plot items.")
 
 
-@add_static_values(fn_snippets = {})
 def demo_header(label, demo_function):
-    static = demo_header.static
+    static = demo_header
+    if not hasattr(static, "fn_snippets"):
+        static.fn_snippets = {}
+
     fn_id = id(demo_function)
     if fn_id not in static.fn_snippets:
         import inspect
@@ -857,9 +848,8 @@ def show_all_demos():
         imgui.end_tab_bar()
 
 
-@add_static
 def show_demo_window():
-    static = show_demo_window.static
+    static = show_demo_window
 
     # Initialize static state variables
     if not hasattr(static, "show_implot3d_style_editor"):
