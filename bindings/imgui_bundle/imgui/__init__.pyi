@@ -11169,21 +11169,31 @@ class ImFontAtlas:
 
     # Output
     # ImTextureData*              TexData;    /* original C++ signature */
-    tex_data: ImTextureData  # Current texture.
+    tex_data: ImTextureData
+    # Current texture.
 
-    # void Python_SetTextureID(ImTextureID id) { TexRef = ImTextureRef(id); }    /* original C++ signature */
+    #                                     #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # Convenience methods for python in order to get/set the font texture Id
+    # (because currently TexID is in a union and we can't access it directly)
+    # Note: this uses the old way of setting the fonts texture.
+    # Newer backends should implement ImGuiBackendFlags_RendererHasTextures
+    # and be able to handle Texture updates
+    # See https://github.com/ocornut/imgui/issues/8465
+    # For inspiration, look at
+    #        def _update_texture(self, tex: imgui.ImTextureData):
+    # inside ImGui Bundle (bindings/imgui_bundle/python_backends/opengl_xxx_backend.py)
+    # void        Python_SetTextureID(ImTextureID id) { TexRef = ImTextureRef(id); }    /* original C++ signature */
     def python_set_texture_id(self, id_: ImTextureID) -> None:
-        """Convenience method for python in order to set the font texture Id
-         Note: this uses the old way of setting the fonts texture.
-         Newer backends should implement ImGuiBackendFlags_RendererHasTextures
-         and be able to handle Texture updates
-         See https://github.com/ocornut/imgui/issues/8465
-         For inspiration, look at
-                def _update_texture(self, tex: imgui.ImTextureData):
-         inside ImGui Bundle (bindings/imgui_bundle/python_backends/opengl_xxx_backend.py)
-        (private API)
-        """
+        """(private API)"""
         pass
+    # ImTextureID Python_GetTextureID() { return TexRef.GetTexID(); }    /* original C++ signature */
+    def python_get_texture_id(self) -> ImTextureID:
+        """(private API)"""
+        pass
+    #                                     #endif
+    #
+
     # [Internal]
     # ImVector<ImTextureData*>    TexList;    /* original C++ signature */
     tex_list: ImVector_ImTextureData_ptr  # Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetPlatformIO().Textures[] instead!

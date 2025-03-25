@@ -5353,6 +5353,10 @@ def get_current_window_read() -> Window:
 
 # IMGUI_API ImGuiWindow*  GetCurrentWindow()    /* original C++ signature */
 #     {
+#         #ifdef IMGUI_BUNDLE_PYTHON_API
+#         // Help python users, because otherwise, this leads to an un-debuggable segfault
+#         IM_ASSERT(GImGui != NULL && "ImGui::GetCurrentWindow() -> ImGuiContext is NULL. This is likely because you are calling ImGui functions even before ImGui::CreateContext().");
+#         #endif
 #         ImGuiContext& g = *GImGui;
 #         #ifdef IMGUI_BUNDLE_PYTHON_API
 #         // Help python users, because otherwise, this leads to an un-debuggable segfault
