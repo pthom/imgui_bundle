@@ -58,6 +58,7 @@ def main():
     options.srcmlcpp_options.header_filter_acceptable__regex += (
         "|^IMGUI_BUNDLE_PYTHON_API$"
     )
+    options.fn_force_lambda__regex = r"GetSelectedNodes|GetSelectedLinks|GetActionContextNodes|GetActionContextLinks|GetOrderedNodeIds"
 
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_node_editor.h")
