@@ -16,7 +16,9 @@ from imgui_bundle.imgui import (
     ImVec4Like,
     ImU32,
     ImDrawList,
+    ImTextureRef,
 )
+ImageFlags = int # enum ImageFlags_
 
 ImGui_Context = imgui.internal.Context
 
