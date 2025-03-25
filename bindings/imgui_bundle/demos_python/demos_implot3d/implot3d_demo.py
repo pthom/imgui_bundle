@@ -397,9 +397,7 @@ def slider_implot3d_point(
     return changed, implot3d.Point(as_floats[0], as_floats[1], as_floats[2])
 
 
-# @immapp.add_static
 def demo_image_plots():
-    # static = demo_image_plots.static
     static = demo_image_plots
 
     imgui.bullet_text("Below we are displaying the font texture, which is the only texture we have\naccess to in this demo.")
@@ -962,7 +960,7 @@ def show_demo_window():
     # Set window properties
     imgui.set_next_window_pos((100, 100), imgui.Cond_.first_use_ever.value)
     imgui.set_next_window_size((600, 750), imgui.Cond_.first_use_ever.value)
-
+    imgui.begin("ImPlot3D Demo", None, imgui.WindowFlags_.menu_bar.value)
     if imgui.begin_menu_bar():
         if imgui.begin_menu("Tools"):
             _, static.show_implot3d_style_editor = imgui.menu_item("Style Editor", "", static.show_implot3d_style_editor)
@@ -974,6 +972,8 @@ def show_demo_window():
         imgui.end_menu_bar()
 
     show_all_demos()
+
+    imgui.end()
 
 
 def demo_gui():
