@@ -21,6 +21,8 @@ def autogenerate_implot3d():
     # Configure options
     options = litgen_options_implot3d()
     options.srcmlcpp_options.flag_show_progress = True
+    options.fn_return_force_policy_reference_for_references__regex = r".*"
+    options.fn_return_force_policy_reference_for_pointers__regex = r".*"
 
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
