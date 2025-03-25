@@ -387,9 +387,93 @@ def demo_mesh_plots():
         implot3d.end_plot()
 
 
-@add_static
+def slider_implot3d_point(
+        label: str, v: implot3d.Point,
+        v_min: float, v_max: float, format: str = "%.3",
+        flags: int = 0
+) -> [bool, implot3d.Point]:
+    as_floats = [v.x, v.y, v.z]
+    changed, as_floats = imgui.slider_float3(label, as_floats, v_min, v_max, format, flags)
+    return changed, implot3d.Point(as_floats[0], as_floats[1], as_floats[2])
+
+
+# @immapp.add_static
+def demo_image_plots():
+    # static = demo_image_plots.static
+    static = demo_image_plots
+
+    imgui.bullet_text("Below we are displaying the font texture, which is the only texture we have\naccess to in this demo.")
+    imgui.bullet_text("Use the 'ImTextureID' type as storage to pass pointers or identifiers to your\nown texture data.")
+    imgui.bullet_text("See ImGui Wiki page 'Image Loading and Displaying Examples'.")
+
+    if not hasattr(static, "initialized"):
+        static.tint1 = ImVec4(1.0, 1.0, 1.0, 1.0)
+        static.tint2 = ImVec4(1.0, 1.0, 1.0, 1.0)
+
+        static.center1 = implot3d.Point(0.0, 0.0, 1.0)
+        static.axis_u1 = implot3d.Point(1.0, 0.0, 0.0)
+        static.axis_v1 = implot3d.Point(0.0, 1.0, 0.0)
+        static.uv0_1 = ImVec2(0.0, 0.0)
+        static.uv1_1 = ImVec2(1.0, 1.0)
+
+        static.p0 = implot3d.Point(-1.0, -1.0, 0.0)
+        static.p1 = implot3d.Point(1.0, -1.0, 0.0)
+        static.p2 = implot3d.Point(1.0, 1.0, 0.0)
+        static.p3 = implot3d.Point(-1.0, 1.0, 0.0)
+
+        static.uv0 = ImVec2(0.0, 0.0)
+        static.uv1 = ImVec2(1.0, 0.0)
+        static.uv2 = ImVec2(1.0, 1.0)
+        static.uv3 = ImVec2(0.0, 1.0)
+
+        static.initialized = True
+
+    imgui.dummy((0, 10))  # vertical spacing
+
+    # Image 1 Controls
+    if imgui.tree_node_ex("Image 1 Controls: Center + Axes"):
+        _, static.center1 = slider_implot3d_point("Center", static.center1, -2.0, 2.0, "%.1f")
+        _, static.axis_u1 = slider_implot3d_point("Axis U", static.axis_u1, -2.0, 2.0, "%.1f")
+        _, static.axis_v1 = slider_implot3d_point("Axis V", static.axis_v1, -2.0, 2.0, "%.1f")
+        _, static.uv0_1 = imgui.slider_float2("UV0", static.uv0_1, 0.0, 1.0, "%.2f")
+        _, static.uv1_1 = imgui.slider_float2("UV1", static.uv1_1, 0.0, 1.0, "%.2f")
+        _, static.tint1 = imgui.color_edit4("Tint", static.tint1)
+        imgui.tree_pop()
+
+    # Image 2 Controls
+    if imgui.tree_node_ex("Image 2 Controls: Full Quad"):
+        _, static.p0 = slider_implot3d_point("P0", static.p0, -2.0, 2.0, "%.1f")
+        _, static.p1 = slider_implot3d_point("P1", static.p1, -2.0, 2.0, "%.1f")
+        _, static.p2 = slider_implot3d_point("P2", static.p2, -2.0, 2.0, "%.1f")
+        _, static.p3 = slider_implot3d_point("P3", static.p3, -2.0, 2.0, "%.1f")
+
+        _, static.uv0 = imgui.slider_float2("UV0", static.uv0, 0.0, 1.0, "%.2f")
+        _, static.uv1 = imgui.slider_float2("UV1", static.uv1, 0.0, 1.0, "%.2f")
+        _, static.uv2 = imgui.slider_float2("UV2", static.uv2, 0.0, 1.0, "%.2f")
+        _, static.uv3 = imgui.slider_float2("UV3", static.uv3, 0.0, 1.0, "%.2f")
+
+        _, static.tint2 = imgui.color_edit4("Tint##2", static.tint2)
+        imgui.tree_pop()
+
+    tex_id = imgui.ImTextureRef(imgui.get_io().fonts.python_get_texture_id())
+
+    if implot3d.begin_plot("Image Plot", size=(-1, 0), flags=implot3d.Flags_.no_clip.value):
+        implot3d.plot_image("Image 1", tex_id,
+                            center=static.center1,
+                            axis_u=static.axis_u1,
+                            axis_v=static.axis_v1,
+                            uv0=static.uv0_1,
+                            uv1=static.uv1_1,
+                            tint_col=static.tint1)
+
+        implot3d.plot_image("Image 2", tex_id,
+                            p0=static.p0, p1=static.p1, p2=static.p2, p3=static.p3,
+                            uv0=static.uv0, uv1=static.uv1, uv2=static.uv2, uv3=static.uv3,
+                            tint_col=static.tint2)
+        implot3d.end_plot()
+
+
 def demo_realtime_plots():
-    static = demo_realtime_plots.static
     static = demo_realtime_plots
 
     if not hasattr(static, "t"):
