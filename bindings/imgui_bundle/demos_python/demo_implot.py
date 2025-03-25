@@ -32,7 +32,7 @@ def demo_gui():
         imgui.same_line()
         if imgui.button("Python demo code"):
             webbrowser.open("https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py")
-        implot3d_demo.demo_gui()
+        implot3d_demo.show_all_demos()
 
 
 def main():
