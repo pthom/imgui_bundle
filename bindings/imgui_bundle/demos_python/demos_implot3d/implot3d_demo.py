@@ -629,7 +629,7 @@ def demo_box_rotation():
 def demo_tick_labels():
     static = demo_tick_labels.static
     if not hasattr(static, "custom_ticks"):
-        static.custom_ticks = False
+        static.custom_ticks = True
         static.custom_labels = True
 
     _, static.custom_ticks = imgui.checkbox("Show Custom Ticks", static.custom_ticks)
@@ -820,6 +820,43 @@ def demo_header(label, demo_function):
         imgui.tree_pop()
 
 
+def show_all_demos():
+    imgui.text(f"ImPlot3D says olá! ({implot3d.VERSION})")
+    imgui.spacing()
+
+    # Tab Bar
+    if imgui.begin_tab_bar("ImPlot3DDemoTabs"):
+        if imgui.begin_tab_item_simple("Plots"):
+            demo_header("Line Plots", demo_line_plots)
+            demo_header("Scatter Plots", demo_scatter_plots)
+            demo_header("Triangle Plots", demo_triangle_plots)
+            demo_header("Quad Plots", demo_quad_plots)
+            demo_header("Surface Plots", demo_surface_plots)
+            demo_header("Mesh Plots", demo_mesh_plots)
+            demo_header("Realtime Plots", demo_realtime_plots)
+            demo_header("Image Plots", demo_image_plots)
+            demo_header("Markers and Text", demo_markers_and_text)
+            demo_header("NaN Values", demo_nan_values)
+            imgui.end_tab_item()
+
+        if imgui.begin_tab_item_simple("Axes"):
+            demo_header("Box Scale", demo_box_scale)
+            demo_header("Box Rotation", demo_box_rotation)
+            demo_header("Tick Labels", demo_tick_labels)
+            imgui.end_tab_item()
+
+        if imgui.begin_tab_item_simple("Custom"):
+            demo_header("Custom Styles", demo_custom_styles)
+            demo_header("Custom Rendering", demo_custom_rendering)
+            imgui.end_tab_item()
+
+        if imgui.begin_tab_item_simple("Help"):
+            demo_help()
+            imgui.end_tab_item()
+
+        imgui.end_tab_bar()
+
+
 @add_static
 def show_demo_window():
     static = show_demo_window.static
@@ -862,40 +899,7 @@ def show_demo_window():
             imgui.end_menu()
         imgui.end_menu_bar()
 
-    imgui.text(f"ImPlot3D says olá! ({implot3d.VERSION})")
-
-    imgui.spacing()
-
-    # Tab Bar
-    if imgui.begin_tab_bar("ImPlot3DDemoTabs"):
-        if imgui.begin_tab_item_simple("Plots"):
-            demo_header("Line Plots", demo_line_plots)
-            demo_header("Scatter Plots", demo_scatter_plots)
-            demo_header("Triangle Plots", demo_triangle_plots)
-            demo_header("Quad Plots", demo_quad_plots)
-            demo_header("Surface Plots", demo_surface_plots)
-            demo_header("Mesh Plots", demo_mesh_plots)
-            demo_header("Realtime Plots", demo_realtime_plots)
-            demo_header("Markers and Text", demo_markers_and_text)
-            demo_header("NaN Values", demo_nan_values)
-            imgui.end_tab_item()
-
-        if imgui.begin_tab_item_simple("Axes"):
-            demo_header("Box Scale", demo_box_scale)
-            demo_header("Box Rotation", demo_box_rotation)
-            demo_header("Tick Labels", demo_tick_labels)
-            imgui.end_tab_item()
-
-        if imgui.begin_tab_item_simple("Custom"):
-            demo_header("Custom Styles", demo_custom_styles)
-            demo_header("Custom Rendering", demo_custom_rendering)
-            imgui.end_tab_item()
-
-        if imgui.begin_tab_item_simple("Help"):
-            demo_help()
-            imgui.end_tab_item()
-
-        imgui.end_tab_bar()
+    show_all_demos()
 
 
 def demo_gui():
