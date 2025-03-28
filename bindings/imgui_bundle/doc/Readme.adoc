@@ -4755,7 +4755,7 @@ TextEditor _PrepareTextEditor()
     std::string this_file_code = fplus::read_text_file("/demos_cpp/demo_text_edit.cpp")();
 #endif
     editor.SetText(this_file_code);
-    editor.SetLanguageDefinition(TextEditor::LanguageDefinition::CPlusPlus());
+    editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Cpp);
     return editor;
 }
 
@@ -4772,16 +4772,16 @@ void demo_text_edit()
     auto ShowPaletteButtons = []()
     {
         if (ImGui::SmallButton("Dark palette"))
-            editor.SetPalette(TextEditor::GetDarkPalette());
+            editor.SetPalette(TextEditor::PaletteId::Dark);
         ImGui::SameLine();
         if (ImGui::SmallButton("Light palette"))
-            editor.SetPalette(TextEditor::GetLightPalette());
+            editor.SetPalette(TextEditor::PaletteId::Light);
         ImGui::SameLine();
         if (ImGui::SmallButton("Retro blue palette"))
-            editor.SetPalette(TextEditor::GetRetroBluePalette());
+            editor.SetPalette(TextEditor::PaletteId::RetroBlue);
         ImGui::SameLine();
         if (ImGui::SmallButton("Mariana palette"))
-            editor.SetPalette(TextEditor::GetMarianaPalette());
+            editor.SetPalette(TextEditor::PaletteId::Mariana);
     };
 
     ShowPaletteButtons();
@@ -4809,14 +4809,15 @@ def _prepare_text_editor():
         this_file_code = f.read()
     editor = TextEditor()
     editor.set_text(this_file_code)
-    editor.set_language_definition(TextEditor.LanguageDefinition.python())
+    editor.set_language_definition(TextEditor.LanguageDefinitionId.python)
     return editor
 
 
-@static(editor=_prepare_text_editor())
+@static(editor=None)
 def demo_gui():
-    static = demo_gui
-    editor = static.editor
+    if demo_gui.editor is None:
+        demo_gui.editor = _prepare_text_editor()
+    editor = demo_gui.editor
 
     imgui_md.render(
         """
@@ -4827,16 +4828,16 @@ def demo_gui():
 
     def show_palette_buttons():
         if imgui.small_button("Dark palette"):
-            editor.set_palette(ed.TextEditor.get_dark_palette())
+            editor.set_palette(ed.TextEditor.PaletteId.dark)
         imgui.same_line()
         if imgui.small_button("Light palette"):
-            editor.set_palette(TextEditor.get_light_palette())
+            editor.set_palette(TextEditor.PaletteId.light)
         imgui.same_line()
         if imgui.small_button("Retro blue palette"):
-            editor.set_palette(TextEditor.get_retro_blue_palette())
+            editor.set_palette(TextEditor.PaletteId.retro_blue)
         imgui.same_line()
         if imgui.small_button("Mariana palette"):
-            editor.set_palette(TextEditor.get_mariana_palette())
+            editor.set_palette(TextEditor.PaletteId.mariana)
 
     show_palette_buttons()
     imgui.push_font(imgui_md.get_code_font())
@@ -5984,13 +5985,13 @@ Note: if left empty, the name of the ini file will be derived from `appWindowPar
 
 The settings file contains, standard ImGui settings (window position, size, etc.), as well as additional settings defined by HelloImGui:
 
-* Application status: app window location, opened windows, status bar settings, etc. See members named `remember_xxx` in the link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md[Hello Imgui API] for a complete list.
+* Application status: app window location, opened windows, status bar settings, etc. See members named `remember_xxx` in the link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/doc_params.md[parameters doc] for a complete list.
 * Settings for each application layout (see link:https://www.youtube.com/watch?v=XKxmz__F4ow[video] for an example)
 
 
 ==== Store custom settings
 
-You may store additional user settings in the application settings. This is provided as a convenience only, and it is not intended to store large quantities of text data. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#store-user-settings-in-the-ini-file[related doc] for more details.
+You may store additional user settings in the application settings. This is provided as a convenience only, and it is not intended to store large quantities of text data. See link:https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/doc_api.md#store-user-settings-in-the-ini-file[related doc] for more details.
 
 === Python: alternative backends
 
@@ -6055,6 +6056,8 @@ def main():
         impl.process_inputs()
 
         imgui.new_frame()
+
+        imgui.show_demo_window()
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
@@ -6233,6 +6236,7 @@ def main():
         glfw.poll_events()
         impl.process_inputs()
         imgui.new_frame()
+        imgui.show_demo_window()
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
@@ -6248,7 +6252,7 @@ def main():
             imgui.end_main_menu_bar()
 
         if show_custom_window:
-            imgui.set_next_window_size((400, 400))
+            imgui.set_next_window_size((400, 600))
 
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:

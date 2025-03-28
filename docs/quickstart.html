@@ -4929,7 +4929,7 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">    </span><span class="tok-n">std</span><span class="tok-o">::</span><span class="tok-n">string</span><span class="tok-w"> </span><span class="tok-n">this_file_code</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">fplus</span><span class="tok-o">::</span><span class="tok-n">read_text_file</span><span class="tok-p">(</span><span class="tok-s">&quot;/demos_cpp/demo_text_edit.cpp&quot;</span><span class="tok-p">)();</span>
 <span class="tok-cp">#endif</span>
 <span class="tok-w">    </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetText</span><span class="tok-p">(</span><span class="tok-n">this_file_code</span><span class="tok-p">);</span>
-<span class="tok-w">    </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetLanguageDefinition</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">LanguageDefinition</span><span class="tok-o">::</span><span class="tok-n">CPlusPlus</span><span class="tok-p">());</span>
+<span class="tok-w">    </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetLanguageDefinition</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">LanguageDefinitionId</span><span class="tok-o">::</span><span class="tok-n">Cpp</span><span class="tok-p">);</span>
 <span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">editor</span><span class="tok-p">;</span>
 <span class="tok-p">}</span>
 
@@ -4946,16 +4946,16 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 <span class="tok-w">    </span><span class="tok-k">auto</span><span class="tok-w"> </span><span class="tok-n">ShowPaletteButtons</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-p">[]()</span>
 <span class="tok-w">    </span><span class="tok-p">{</span>
 <span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SmallButton</span><span class="tok-p">(</span><span class="tok-s">&quot;Dark palette&quot;</span><span class="tok-p">))</span>
-<span class="tok-w">            </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetPalette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">GetDarkPalette</span><span class="tok-p">());</span>
+<span class="tok-w">            </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetPalette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">PaletteId</span><span class="tok-o">::</span><span class="tok-n">Dark</span><span class="tok-p">);</span>
 <span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span>
 <span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SmallButton</span><span class="tok-p">(</span><span class="tok-s">&quot;Light palette&quot;</span><span class="tok-p">))</span>
-<span class="tok-w">            </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetPalette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">GetLightPalette</span><span class="tok-p">());</span>
+<span class="tok-w">            </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetPalette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">PaletteId</span><span class="tok-o">::</span><span class="tok-n">Light</span><span class="tok-p">);</span>
 <span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span>
 <span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SmallButton</span><span class="tok-p">(</span><span class="tok-s">&quot;Retro blue palette&quot;</span><span class="tok-p">))</span>
-<span class="tok-w">            </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetPalette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">GetRetroBluePalette</span><span class="tok-p">());</span>
+<span class="tok-w">            </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetPalette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">PaletteId</span><span class="tok-o">::</span><span class="tok-n">RetroBlue</span><span class="tok-p">);</span>
 <span class="tok-w">        </span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SameLine</span><span class="tok-p">();</span>
 <span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-p">(</span><span class="tok-n">ImGui</span><span class="tok-o">::</span><span class="tok-n">SmallButton</span><span class="tok-p">(</span><span class="tok-s">&quot;Mariana palette&quot;</span><span class="tok-p">))</span>
-<span class="tok-w">            </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetPalette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">GetMarianaPalette</span><span class="tok-p">());</span>
+<span class="tok-w">            </span><span class="tok-n">editor</span><span class="tok-p">.</span><span class="tok-n">SetPalette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">::</span><span class="tok-n">PaletteId</span><span class="tok-o">::</span><span class="tok-n">Mariana</span><span class="tok-p">);</span>
 <span class="tok-w">    </span><span class="tok-p">};</span>
 
 <span class="tok-w">    </span><span class="tok-n">ShowPaletteButtons</span><span class="tok-p">();</span>
@@ -4984,14 +4984,15 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
         <span class="tok-n">this_file_code</span> <span class="tok-o">=</span> <span class="tok-n">f</span><span class="tok-o">.</span><span class="tok-n">read</span><span class="tok-p">()</span>
     <span class="tok-n">editor</span> <span class="tok-o">=</span> <span class="tok-n">TextEditor</span><span class="tok-p">()</span>
     <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_text</span><span class="tok-p">(</span><span class="tok-n">this_file_code</span><span class="tok-p">)</span>
-    <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_language_definition</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">LanguageDefinition</span><span class="tok-o">.</span><span class="tok-n">python</span><span class="tok-p">())</span>
+    <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_language_definition</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">LanguageDefinitionId</span><span class="tok-o">.</span><span class="tok-n">python</span><span class="tok-p">)</span>
     <span class="tok-k">return</span> <span class="tok-n">editor</span>
 
 
-<span class="tok-nd">@static</span><span class="tok-p">(</span><span class="tok-n">editor</span><span class="tok-o">=</span><span class="tok-n">_prepare_text_editor</span><span class="tok-p">())</span>
+<span class="tok-nd">@static</span><span class="tok-p">(</span><span class="tok-n">editor</span><span class="tok-o">=</span><span class="tok-kc">None</span><span class="tok-p">)</span>
 <span class="tok-k">def</span> <span class="tok-nf">demo_gui</span><span class="tok-p">():</span>
-    <span class="tok-n">static</span> <span class="tok-o">=</span> <span class="tok-n">demo_gui</span>
-    <span class="tok-n">editor</span> <span class="tok-o">=</span> <span class="tok-n">static</span><span class="tok-o">.</span><span class="tok-n">editor</span>
+    <span class="tok-k">if</span> <span class="tok-n">demo_gui</span><span class="tok-o">.</span><span class="tok-n">editor</span> <span class="tok-ow">is</span> <span class="tok-kc">None</span><span class="tok-p">:</span>
+        <span class="tok-n">demo_gui</span><span class="tok-o">.</span><span class="tok-n">editor</span> <span class="tok-o">=</span> <span class="tok-n">_prepare_text_editor</span><span class="tok-p">()</span>
+    <span class="tok-n">editor</span> <span class="tok-o">=</span> <span class="tok-n">demo_gui</span><span class="tok-o">.</span><span class="tok-n">editor</span>
 
     <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render</span><span class="tok-p">(</span>
 <span class="tok-w">        </span><span class="tok-sd">&quot;&quot;&quot;</span>
@@ -5002,16 +5003,16 @@ See <a href="https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_e
 
     <span class="tok-k">def</span> <span class="tok-nf">show_palette_buttons</span><span class="tok-p">():</span>
         <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">small_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Dark palette&quot;</span><span class="tok-p">):</span>
-            <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_palette</span><span class="tok-p">(</span><span class="tok-n">ed</span><span class="tok-o">.</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">get_dark_palette</span><span class="tok-p">())</span>
+            <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_palette</span><span class="tok-p">(</span><span class="tok-n">ed</span><span class="tok-o">.</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">PaletteId</span><span class="tok-o">.</span><span class="tok-n">dark</span><span class="tok-p">)</span>
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
         <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">small_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Light palette&quot;</span><span class="tok-p">):</span>
-            <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_palette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">get_light_palette</span><span class="tok-p">())</span>
+            <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_palette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">PaletteId</span><span class="tok-o">.</span><span class="tok-n">light</span><span class="tok-p">)</span>
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
         <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">small_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Retro blue palette&quot;</span><span class="tok-p">):</span>
-            <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_palette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">get_retro_blue_palette</span><span class="tok-p">())</span>
+            <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_palette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">PaletteId</span><span class="tok-o">.</span><span class="tok-n">retro_blue</span><span class="tok-p">)</span>
         <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">same_line</span><span class="tok-p">()</span>
         <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">small_button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Mariana palette&quot;</span><span class="tok-p">):</span>
-            <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_palette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">get_mariana_palette</span><span class="tok-p">())</span>
+            <span class="tok-n">editor</span><span class="tok-o">.</span><span class="tok-n">set_palette</span><span class="tok-p">(</span><span class="tok-n">TextEditor</span><span class="tok-o">.</span><span class="tok-n">PaletteId</span><span class="tok-o">.</span><span class="tok-n">mariana</span><span class="tok-p">)</span>
 
     <span class="tok-n">show_palette_buttons</span><span class="tok-p">()</span>
     <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">push_font</span><span class="tok-p">(</span><span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">get_code_font</span><span class="tok-p">())</span>
@@ -5074,7 +5075,7 @@ Tip: use the interactive manual as an inspiration
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-01-02 15:11:02 +0100
+Last updated 2025-03-28 12:31:06 +0100
 </div>
 </div>
 </body>

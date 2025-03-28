@@ -1058,7 +1058,7 @@ It can include a subfolder, in which case it will be created under the folder de
 <div class="ulist">
 <ul>
 <li>
-<p>Application status: app window location, opened windows, status bar settings, etc. See members named <code>remember_xxx</code> in the <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md">Hello Imgui API</a> for a complete list.</p>
+<p>Application status: app window location, opened windows, status bar settings, etc. See members named <code>remember_xxx</code> in the <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/doc_params.md">parameters doc</a> for a complete list.</p>
 </li>
 <li>
 <p>Settings for each application layout (see <a href="https://www.youtube.com/watch?v=XKxmz__F4ow">video</a> for an example)</p>
@@ -1069,7 +1069,7 @@ It can include a subfolder, in which case it will be created under the folder de
 <div class="sect3">
 <h4 id="_store_custom_settings">Store custom settings</h4>
 <div class="paragraph">
-<p>You may store additional user settings in the application settings. This is provided as a convenience only, and it is not intended to store large quantities of text data. See <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/hello_imgui_api.md#store-user-settings-in-the-ini-file">related doc</a> for more details.</p>
+<p>You may store additional user settings in the application settings. This is provided as a convenience only, and it is not intended to store large quantities of text data. See <a href="https://github.com/pthom/hello_imgui/blob/master/src/hello_imgui/doc_api.md#store-user-settings-in-the-ini-file">related doc</a> for more details.</p>
 </div>
 </div>
 </div>
@@ -1152,6 +1152,8 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-w">        </span><span class="tok-n">impl</span><span class="tok-p">.</span><span class="tok-n">process_inputs</span><span class="tok-p">()</span>
 
 <span class="tok-w">        </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">new_frame</span><span class="tok-p">()</span>
+
+<span class="tok-w">        </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">show_demo_window</span><span class="tok-p">()</span>
 
 <span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin_main_menu_bar</span><span class="tok-p">()</span><span class="tok-o">:</span>
 <span class="tok-w">            </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin_menu</span><span class="tok-p">(</span><span class="tok-s">&quot;File&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">True</span><span class="tok-p">)</span><span class="tok-o">:</span>
@@ -1331,6 +1333,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-w">        </span><span class="tok-n">glfw</span><span class="tok-p">.</span><span class="tok-n">poll_events</span><span class="tok-p">()</span>
 <span class="tok-w">        </span><span class="tok-n">impl</span><span class="tok-p">.</span><span class="tok-n">process_inputs</span><span class="tok-p">()</span>
 <span class="tok-w">        </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">new_frame</span><span class="tok-p">()</span>
+<span class="tok-w">        </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">show_demo_window</span><span class="tok-p">()</span>
 
 <span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin_main_menu_bar</span><span class="tok-p">()</span><span class="tok-o">:</span>
 <span class="tok-w">            </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin_menu</span><span class="tok-p">(</span><span class="tok-s">&quot;File&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">True</span><span class="tok-p">)</span><span class="tok-o">:</span>
@@ -1346,7 +1349,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">end_main_menu_bar</span><span class="tok-p">()</span>
 
 <span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">show_custom_window</span><span class="tok-o">:</span>
-<span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">set_next_window_size</span><span class="tok-p">((</span><span class="tok-mi">400</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">400</span><span class="tok-p">))</span>
+<span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">set_next_window_size</span><span class="tok-p">((</span><span class="tok-mi">400</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">600</span><span class="tok-p">))</span>
 
 <span class="tok-w">            </span><span class="tok-n">is_expand</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">show_custom_window</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin</span><span class="tok-p">(</span><span class="tok-s">&quot;Custom window&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">True</span><span class="tok-p">)</span>
 <span class="tok-w">            </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">is_expand</span><span class="tok-o">:</span>
@@ -1460,7 +1463,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-01-02 15:11:02 +0100
+Last updated 2025-03-28 12:31:06 +0100
 </div>
 </div>
 </body>
