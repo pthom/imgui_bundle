@@ -158,6 +158,11 @@ function(ibd_clone_submodules_if_needed)
                 COMMAND git submodule update --init
                 WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
             )
+            execute_process(
+                COMMAND git submodule update --init
+                # needed since ImGuiColorTextEdit  added a dependency to boost/regex.hpp
+                WORKING_DIRECTORY ${IMGUI_BUNDLE_PATH}/external/ImGuiColorTextEdit/ImGuiColorTextEdit
+            )
         endif()
     endif()
 endfunction()
