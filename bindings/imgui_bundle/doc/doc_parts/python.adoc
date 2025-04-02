@@ -16,7 +16,7 @@ See link:{url-bindings-python}/demos_python/demos_immapp/demo_matplotlib.py[demo
 
 === Pure python backends
 
-link:{url-bindings-python}/python_backends[python_backends] contains pure python backends for glfw, pyglet and sdl2. They do not offer the same DPI handling as HelloImGui, but they are a good starting point if you want to use alternative backends.
+link:{url-bindings-python}/python_backends[python_backends] contains pure python backends for glfw, pyglet, sdl2 and sdl3. They do not offer the same DPI handling as HelloImGui, but they are a good starting point if you want to use alternative backends.
 
 See link:{url-bindings-python}/python_backends/examples[examples] for more information.
 

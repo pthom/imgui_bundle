@@ -62,7 +62,12 @@ std::function<void()> makeGui()
         },
         DemoApp{
             "example_python_backend_sdl2",
-            "Python: how to use ImGui with SDL using a *full python* backend",
+            "Python: how to use ImGui with SDL2 using a *full python* backend",
+            true
+        },
+        DemoApp{
+            "example_python_backend_sdl3",
+            "Python: how to use ImGui with SDL3 using a *full python* backend",
             true
         },
         DemoApp{

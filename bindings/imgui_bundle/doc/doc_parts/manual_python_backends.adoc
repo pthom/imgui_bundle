@@ -22,6 +22,15 @@ include::../../python_backends/examples/example_python_backend_sdl2.py[]
 ----
 ====
 
+.Example with a pure python sdl3 backend (click to expand)
+[%collapsible]
+====
+[source, cpp]
+----
+include::../../python_backends/examples/example_python_backend_sdl3.py[]
+----
+====
+
 .Example with a pure python glfw backend (click to expand)
 [%collapsible]
 ====

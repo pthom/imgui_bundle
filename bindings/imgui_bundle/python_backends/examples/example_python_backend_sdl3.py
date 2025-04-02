@@ -1,16 +1,16 @@
-# An example of using Dear ImGui with SDL2 using a *full python* backend.
+# An example of using Dear ImGui with SDL3 using a *full python* backend.
 # This mode is inspired from [pyimgui](https://github.com/pyimgui/pyimgui) backends, and is still experimental.
 #
 # See full python backends implementations here:
 # https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
 
-# You will need to install sdl2:
-#    pip install pysdl2 pysdl2-dll
+# You will need to install sdl3:
+#    pip install pysdl3
 
 from imgui_bundle import imgui
-from imgui_bundle.python_backends.sdl2_backend import SDL2Renderer
+from imgui_bundle.python_backends.sdl3_backend import SDL3Renderer
 import OpenGL.GL as gl  # type: ignore
-from sdl2 import *  # type: ignore
+from sdl3 import *  # type: ignore
 import ctypes
 import sys
 
@@ -24,9 +24,9 @@ app_state = AppState()
 
 
 def main():
-    window, gl_context = impl_pysdl2_init()
+    window, gl_context = impl_pysdl3_init()
     imgui.create_context()
-    impl = SDL2Renderer(window)
+    impl = SDL3Renderer(window)
 
     show_custom_window = True
 
@@ -34,7 +34,7 @@ def main():
     event = SDL_Event()
     while running:
         while SDL_PollEvent(ctypes.byref(event)) != 0:
-            if event.type == SDL_QUIT:
+            if event.type == SDL_EVENT_QUIT:
                 running = False
                 break
             impl.process_event(event)
@@ -86,16 +86,16 @@ def main():
         SDL_GL_SwapWindow(window)
 
     impl.shutdown()
-    SDL_GL_DeleteContext(gl_context)
+    SDL_GL_DestroyContext(gl_context)
     SDL_DestroyWindow(window)
     SDL_Quit()
 
 
-def impl_pysdl2_init():
+def impl_pysdl3_init():
     width, height = 1280, 720
-    window_name = "minimal ImGui/SDL2 example"
+    window_name = "minimal ImGui/SDL3 example"
 
-    if SDL_Init(SDL_INIT_EVERYTHING) < 0:
+    if SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) < 0:
         print(
             "Error: SDL could not initialize! SDL Error: "
             + SDL_GetError().decode("utf-8")
@@ -114,12 +114,9 @@ def impl_pysdl2_init():
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE)
 
     SDL_SetHint(SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, b"1")
-    SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED, b"1")
 
     window = SDL_CreateWindow(
         window_name.encode("utf-8"),
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
         width,
         height,
         SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE,
@@ -141,7 +138,7 @@ def impl_pysdl2_init():
         sys.exit(1)
 
     SDL_GL_MakeCurrent(window, gl_context)
-    if SDL_GL_SetSwapInterval(1) < 0:
+    if not SDL_GL_SetSwapInterval(1):
         print(
             "Warning: Unable to set VSync! SDL Error: " + SDL_GetError().decode("utf-8")
         )
