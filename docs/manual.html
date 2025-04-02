@@ -1109,7 +1109,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <div class="content">
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp"># An example of using Dear ImGui with SDL using a *full python* backend.</span>
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp"># An example of using Dear ImGui with SDL2 using a *full python* backend.</span>
 <span class="tok-cp"># This mode is inspired from [pyimgui](https:</span><span class="tok-c1">//github.com/pyimgui/pyimgui) backends, and is still experimental.</span>
 <span class="tok-cp">#</span>
 <span class="tok-cp"># See full python backends implementations here:</span>
@@ -1119,7 +1119,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-cp">#    pip install pysdl2 pysdl2-dll</span>
 
 <span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">imgui</span>
-<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-p">.</span><span class="tok-n">python_backends</span><span class="tok-p">.</span><span class="tok-n">sdl_backend</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">SDL2Renderer</span>
+<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-p">.</span><span class="tok-n">python_backends</span><span class="tok-p">.</span><span class="tok-n">sdl2_backend</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">SDL2Renderer</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">OpenGL</span><span class="tok-p">.</span><span class="tok-n">GL</span><span class="tok-w"> </span><span class="tok-n">as</span><span class="tok-w"> </span><span class="tok-n">gl</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
 <span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">sdl2</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">ctypes</span>
@@ -1253,6 +1253,166 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 
 <span class="tok-w">    </span><span class="tok-n">SDL_GL_MakeCurrent</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">gl_context</span><span class="tok-p">)</span>
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">SDL_GL_SetSwapInterval</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-o">:</span>
+<span class="tok-w">        </span><span class="tok-n">print</span><span class="tok-p">(</span>
+<span class="tok-w">            </span><span class="tok-s">&quot;Warning: Unable to set VSync! SDL Error: &quot;</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-n">SDL_GetError</span><span class="tok-p">().</span><span class="tok-n">decode</span><span class="tok-p">(</span><span class="tok-s">&quot;utf-8&quot;</span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-n">sys</span><span class="tok-p">.</span><span class="tok-n">exit</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-k">return</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">gl_context</span>
+
+
+<span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">__name__</span><span class="tok-w"> </span><span class="tok-o">==</span><span class="tok-w"> </span><span class="tok-s">&quot;__main__&quot;</span><span class="tok-o">:</span>
+<span class="tok-w">    </span><span class="tok-n">main</span><span class="tok-p">()</span></code></pre>
+</div>
+</div>
+</div>
+</details>
+<details>
+<summary class="title">Example with a pure python sdl3 backend (click to expand)</summary>
+<div class="content">
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span></span><span class="tok-cp"># An example of using Dear ImGui with SDL3 using a *full python* backend.</span>
+<span class="tok-cp"># This mode is inspired from [pyimgui](https:</span><span class="tok-c1">//github.com/pyimgui/pyimgui) backends, and is still experimental.</span>
+<span class="tok-cp">#</span>
+<span class="tok-cp"># See full python backends implementations here:</span>
+<span class="tok-cp"># https:</span><span class="tok-c1">//github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends</span>
+
+<span class="tok-cp"># You will need to install sdl3:</span>
+<span class="tok-cp">#    pip install pysdl3</span>
+
+<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">imgui</span>
+<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-p">.</span><span class="tok-n">python_backends</span><span class="tok-p">.</span><span class="tok-n">sdl3_backend</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">SDL3Renderer</span>
+<span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">OpenGL</span><span class="tok-p">.</span><span class="tok-n">GL</span><span class="tok-w"> </span><span class="tok-n">as</span><span class="tok-w"> </span><span class="tok-n">gl</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
+<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">sdl3</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-o">*</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
+<span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">ctypes</span>
+<span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">sys</span>
+
+
+<span class="tok-k">class</span><span class="tok-w"> </span><span class="tok-nc">AppState</span><span class="tok-o">:</span>
+<span class="tok-w">    </span><span class="tok-nl">text</span><span class="tok-p">:</span><span class="tok-w"> </span><span class="tok-n">str</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;&quot;&quot;Hello, World</span><span class="tok-se">\n</span><span class="tok-s">Lorem ipsum, etc.</span><span class="tok-se">\n</span><span class="tok-s">etc.&quot;&quot;&quot;</span>
+<span class="tok-w">    </span><span class="tok-nl">text2</span><span class="tok-p">:</span><span class="tok-w"> </span><span class="tok-n">str</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;Ahh&quot;</span>
+
+
+<span class="tok-n">app_state</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">AppState</span><span class="tok-p">()</span>
+
+
+<span class="tok-n">def</span><span class="tok-w"> </span><span class="tok-n">main</span><span class="tok-p">()</span><span class="tok-o">:</span>
+<span class="tok-w">    </span><span class="tok-n">window</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">gl_context</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">impl_pysdl3_init</span><span class="tok-p">()</span>
+<span class="tok-w">    </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">create_context</span><span class="tok-p">()</span>
+<span class="tok-w">    </span><span class="tok-n">impl</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">SDL3Renderer</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-n">show_custom_window</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">True</span>
+
+<span class="tok-w">    </span><span class="tok-n">running</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">True</span>
+<span class="tok-w">    </span><span class="tok-n">event</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">SDL_Event</span><span class="tok-p">()</span>
+<span class="tok-w">    </span><span class="tok-k">while</span><span class="tok-w"> </span><span class="tok-n">running</span><span class="tok-o">:</span>
+<span class="tok-w">        </span><span class="tok-k">while</span><span class="tok-w"> </span><span class="tok-n">SDL_PollEvent</span><span class="tok-p">(</span><span class="tok-n">ctypes</span><span class="tok-p">.</span><span class="tok-n">byref</span><span class="tok-p">(</span><span class="tok-n">event</span><span class="tok-p">))</span><span class="tok-w"> </span><span class="tok-o">!=</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-o">:</span>
+<span class="tok-w">            </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">event</span><span class="tok-p">.</span><span class="tok-n">type</span><span class="tok-w"> </span><span class="tok-o">==</span><span class="tok-w"> </span><span class="tok-n">SDL_EVENT_QUIT</span><span class="tok-o">:</span>
+<span class="tok-w">                </span><span class="tok-n">running</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">False</span>
+<span class="tok-w">                </span><span class="tok-k">break</span>
+<span class="tok-w">            </span><span class="tok-n">impl</span><span class="tok-p">.</span><span class="tok-n">process_event</span><span class="tok-p">(</span><span class="tok-n">event</span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-n">impl</span><span class="tok-p">.</span><span class="tok-n">process_inputs</span><span class="tok-p">()</span>
+
+<span class="tok-w">        </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">new_frame</span><span class="tok-p">()</span>
+
+<span class="tok-w">        </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">show_demo_window</span><span class="tok-p">()</span>
+
+<span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin_main_menu_bar</span><span class="tok-p">()</span><span class="tok-o">:</span>
+<span class="tok-w">            </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin_menu</span><span class="tok-p">(</span><span class="tok-s">&quot;File&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">True</span><span class="tok-p">)</span><span class="tok-o">:</span>
+
+<span class="tok-w">                </span><span class="tok-n">clicked_quit</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">selected_quit</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">menu_item</span><span class="tok-p">(</span>
+<span class="tok-w">                    </span><span class="tok-s">&quot;Quit&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-s">&quot;Cmd+Q&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">False</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">True</span>
+<span class="tok-w">                </span><span class="tok-p">)</span>
+
+<span class="tok-w">                </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">clicked_quit</span><span class="tok-o">:</span>
+<span class="tok-w">                    </span><span class="tok-n">sys</span><span class="tok-p">.</span><span class="tok-n">exit</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">)</span>
+
+<span class="tok-w">                </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">end_menu</span><span class="tok-p">()</span>
+<span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">end_main_menu_bar</span><span class="tok-p">()</span>
+
+<span class="tok-w">        </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">show_custom_window</span><span class="tok-o">:</span>
+<span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">set_next_window_size</span><span class="tok-p">((</span><span class="tok-mi">400</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">400</span><span class="tok-p">))</span>
+<span class="tok-w">            </span><span class="tok-n">is_expand</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">show_custom_window</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">begin</span><span class="tok-p">(</span><span class="tok-s">&quot;Custom window&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">True</span><span class="tok-p">)</span>
+<span class="tok-w">            </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">is_expand</span><span class="tok-o">:</span>
+<span class="tok-w">                </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-s">&quot;Example Text&quot;</span><span class="tok-p">)</span>
+<span class="tok-w">                </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s">&quot;Hello&quot;</span><span class="tok-p">)</span><span class="tok-o">:</span>
+<span class="tok-w">                    </span><span class="tok-n">print</span><span class="tok-p">(</span><span class="tok-s">&quot;World&quot;</span><span class="tok-p">)</span>
+<span class="tok-w">                </span><span class="tok-n">_</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">input_text_multiline</span><span class="tok-p">(</span>
+<span class="tok-w">                    </span><span class="tok-s">&quot;Edit&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">ImVec2</span><span class="tok-p">(</span><span class="tok-mi">200</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">200</span><span class="tok-p">)</span>
+<span class="tok-w">                </span><span class="tok-p">)</span>
+<span class="tok-w">                </span><span class="tok-n">_</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">text2</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">input_text</span><span class="tok-p">(</span><span class="tok-s">&quot;Text2&quot;</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">app_state</span><span class="tok-p">.</span><span class="tok-n">text2</span><span class="tok-p">)</span>
+
+<span class="tok-w">                </span><span class="tok-n">io</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">get_io</span><span class="tok-p">()</span>
+<span class="tok-w">                </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">text</span><span class="tok-p">(</span><span class="tok-n">f</span><span class="tok-s">&quot;&quot;&quot;</span>
+<span class="tok-w">                </span><span class="tok-n">Keyboard</span><span class="tok-w"> </span><span class="tok-n">modifiers</span><span class="tok-o">:</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_ctrl</span><span class="tok-o">=</span><span class="tok-p">}</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_alt</span><span class="tok-o">=</span><span class="tok-p">}</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_shift</span><span class="tok-o">=</span><span class="tok-p">}</span>
+<span class="tok-w">                    </span><span class="tok-p">{</span><span class="tok-n">io</span><span class="tok-p">.</span><span class="tok-n">key_super</span><span class="tok-o">=</span><span class="tok-p">}</span><span class="tok-s">&quot;&quot;&quot;)</span>
+<span class="tok-w">            </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">end</span><span class="tok-p">()</span>
+
+<span class="tok-w">        </span><span class="tok-n">gl</span><span class="tok-p">.</span><span class="tok-n">glClearColor</span><span class="tok-p">(</span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mf">1.0</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-n">gl</span><span class="tok-p">.</span><span class="tok-n">glClear</span><span class="tok-p">(</span><span class="tok-n">gl</span><span class="tok-p">.</span><span class="tok-n">GL_COLOR_BUFFER_BIT</span><span class="tok-p">)</span>
+
+<span class="tok-w">        </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">render</span><span class="tok-p">()</span>
+<span class="tok-w">        </span><span class="tok-n">impl</span><span class="tok-p">.</span><span class="tok-n">render</span><span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">get_draw_data</span><span class="tok-p">())</span>
+<span class="tok-w">        </span><span class="tok-n">SDL_GL_SwapWindow</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-n">impl</span><span class="tok-p">.</span><span class="tok-n">shutdown</span><span class="tok-p">()</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_DestroyContext</span><span class="tok-p">(</span><span class="tok-n">gl_context</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_DestroyWindow</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_Quit</span><span class="tok-p">()</span>
+
+
+<span class="tok-n">def</span><span class="tok-w"> </span><span class="tok-n">impl_pysdl3_init</span><span class="tok-p">()</span><span class="tok-o">:</span>
+<span class="tok-w">    </span><span class="tok-n">width</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">height</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-mi">1280</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">720</span>
+<span class="tok-w">    </span><span class="tok-n">window_name</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;minimal ImGui/SDL3 example&quot;</span>
+
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">SDL_Init</span><span class="tok-p">(</span><span class="tok-n">SDL_INIT_VIDEO</span><span class="tok-w"> </span><span class="tok-o">|</span><span class="tok-w"> </span><span class="tok-n">SDL_INIT_EVENTS</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-o">:</span>
+<span class="tok-w">        </span><span class="tok-n">print</span><span class="tok-p">(</span>
+<span class="tok-w">            </span><span class="tok-s">&quot;Error: SDL could not initialize! SDL Error: &quot;</span>
+<span class="tok-w">            </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-n">SDL_GetError</span><span class="tok-p">().</span><span class="tok-n">decode</span><span class="tok-p">(</span><span class="tok-s">&quot;utf-8&quot;</span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-n">sys</span><span class="tok-p">.</span><span class="tok-n">exit</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_DOUBLEBUFFER</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_DEPTH_SIZE</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">24</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_STENCIL_SIZE</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">8</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_ACCELERATED_VISUAL</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_MULTISAMPLEBUFFERS</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_MULTISAMPLESAMPLES</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">8</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_CONTEXT_FLAGS</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_CONTEXT_MAJOR_VERSION</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">4</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_CONTEXT_MINOR_VERSION</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-mi">1</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_SetAttribute</span><span class="tok-p">(</span><span class="tok-n">SDL_GL_CONTEXT_PROFILE_MASK</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">SDL_GL_CONTEXT_PROFILE_CORE</span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-n">SDL_SetHint</span><span class="tok-p">(</span><span class="tok-n">SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">b</span><span class="tok-s">&quot;1&quot;</span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-n">window</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">SDL_CreateWindow</span><span class="tok-p">(</span>
+<span class="tok-w">        </span><span class="tok-n">window_name</span><span class="tok-p">.</span><span class="tok-n">encode</span><span class="tok-p">(</span><span class="tok-s">&quot;utf-8&quot;</span><span class="tok-p">),</span>
+<span class="tok-w">        </span><span class="tok-n">width</span><span class="tok-p">,</span>
+<span class="tok-w">        </span><span class="tok-n">height</span><span class="tok-p">,</span>
+<span class="tok-w">        </span><span class="tok-n">SDL_WINDOW_OPENGL</span><span class="tok-w"> </span><span class="tok-o">|</span><span class="tok-w"> </span><span class="tok-n">SDL_WINDOW_RESIZABLE</span><span class="tok-p">,</span>
+<span class="tok-w">    </span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">window</span><span class="tok-w"> </span><span class="tok-n">is</span><span class="tok-w"> </span><span class="tok-n">None</span><span class="tok-o">:</span>
+<span class="tok-w">        </span><span class="tok-n">print</span><span class="tok-p">(</span>
+<span class="tok-w">            </span><span class="tok-s">&quot;Error: Window could not be created! SDL Error: &quot;</span>
+<span class="tok-w">            </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-n">SDL_GetError</span><span class="tok-p">().</span><span class="tok-n">decode</span><span class="tok-p">(</span><span class="tok-s">&quot;utf-8&quot;</span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-n">sys</span><span class="tok-p">.</span><span class="tok-n">exit</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-n">gl_context</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">SDL_GL_CreateContext</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">gl_context</span><span class="tok-w"> </span><span class="tok-n">is</span><span class="tok-w"> </span><span class="tok-n">None</span><span class="tok-o">:</span>
+<span class="tok-w">        </span><span class="tok-n">print</span><span class="tok-p">(</span>
+<span class="tok-w">            </span><span class="tok-s">&quot;Error: Cannot create OpenGL Context! SDL Error: &quot;</span>
+<span class="tok-w">            </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-n">SDL_GetError</span><span class="tok-p">().</span><span class="tok-n">decode</span><span class="tok-p">(</span><span class="tok-s">&quot;utf-8&quot;</span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-p">)</span>
+<span class="tok-w">        </span><span class="tok-n">sys</span><span class="tok-p">.</span><span class="tok-n">exit</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span>
+
+<span class="tok-w">    </span><span class="tok-n">SDL_GL_MakeCurrent</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">gl_context</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">not</span><span class="tok-w"> </span><span class="tok-n">SDL_GL_SetSwapInterval</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span><span class="tok-o">:</span>
 <span class="tok-w">        </span><span class="tok-n">print</span><span class="tok-p">(</span>
 <span class="tok-w">            </span><span class="tok-s">&quot;Warning: Unable to set VSync! SDL Error: &quot;</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-n">SDL_GetError</span><span class="tok-p">().</span><span class="tok-n">decode</span><span class="tok-p">(</span><span class="tok-s">&quot;utf-8&quot;</span><span class="tok-p">)</span>
 <span class="tok-w">        </span><span class="tok-p">)</span>
@@ -1463,7 +1623,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-03-28 12:31:06 +0100
+Last updated 2025-04-02 16:31:06 +0200
 </div>
 </div>
 </body>

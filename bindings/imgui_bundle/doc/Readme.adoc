@@ -5997,7 +5997,7 @@ You may store additional user settings in the application settings. This is prov
 
 HelloImGui and ImmApp use glfw as a default backend.
 
-If you wish to use a different backend, it is possible to use sdl2, sdl3 or pyglet, via _pure python backends_.
+If you wish to use a different backend, it is possible to use sdl2 or pyglet, via _pure python backends_.
 
 The link:{url-bundle-doc-tree}/bindings/imgui_bundle/python_backends[python backends] folder contains a set of python backends, that can be used as a replacement for the default glfw backend. This way you will have complete control on your application (they are inspired from link:https://github.com/pyimgui/pyimgui[pyimgui] backends).
 
@@ -6615,7 +6615,7 @@ See link:{url-bindings-python}/demos_python/demos_immapp/demo_matplotlib.py[demo
 
 === Pure python backends
 
-link:{url-bindings-python}/python_backends[python_backends] contains pure python backends for glfw, pyglet and sdl2. They do not offer the same DPI handling as HelloImGui, but they are a good starting point if you want to use alternative backends.
+link:{url-bindings-python}/python_backends[python_backends] contains pure python backends for glfw, pyglet, sdl2 and sdl3. They do not offer the same DPI handling as HelloImGui, but they are a good starting point if you want to use alternative backends.
 
 See link:{url-bindings-python}/python_backends/examples[examples] for more information.
 
