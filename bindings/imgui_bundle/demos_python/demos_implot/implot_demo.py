@@ -68,9 +68,8 @@ def demo_help():
 
 # -----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_config():
-    static = demo_config.static
+    static = demo_config
 
     if not hasattr(static, "now"):
         static.now = time.time()
@@ -106,9 +105,8 @@ def demo_config():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_line_plots():
-    static = demo_line_plots.static
+    static = demo_line_plots
 
     if not hasattr(static, "xs1"):
         static.xs1 = np.linspace(0, 1, 1001, dtype=np.float32)
@@ -136,9 +134,8 @@ def random_range(min_val, max_val, size=1):
     return np.random.uniform(min_val, max_val, size)
 
 
-@immapp.add_static
 def demo_filled_line_plots():
-    static = demo_filled_line_plots.static
+    static = demo_filled_line_plots
 
     if not hasattr(static, "xs1"):
         np.random.seed(0)
@@ -196,9 +193,8 @@ def demo_filled_line_plots():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_shaded_plots():
-    static = demo_shaded_plots.static
+    static = demo_shaded_plots
 
     if not hasattr(static, "xs"):
         np.random.seed(0)
@@ -227,9 +223,8 @@ def demo_shaded_plots():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_scatter_plots():
-    static = demo_scatter_plots.static
+    static = demo_scatter_plots
 
     if not hasattr(static, "xs1"):
         np.random.seed(0)
@@ -257,9 +252,8 @@ def demo_scatter_plots():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_stairstep_plots():
-    static = demo_stairstep_plots.static
+    static = demo_stairstep_plots
 
     if not hasattr(static, "ys1"):
         static.ys1 = 0.75 + 0.2 * np.sin(10 * np.arange(21) * 0.05)
@@ -290,9 +284,8 @@ def demo_stairstep_plots():
         implot.end_plot()
 
 
-@immapp.add_static
 def demo_bar_plots():
-    static = demo_bar_plots.static
+    static = demo_bar_plots
 
     if not hasattr(static, "data"):
         static.data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.int8)
@@ -305,9 +298,8 @@ def demo_bar_plots():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_bar_groups():
-    static = demo_bar_groups.static
+    static = demo_bar_groups
 
     if not hasattr(static, "data"):
         static.data = np.array([
@@ -370,9 +362,8 @@ def demo_bar_groups():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_bar_stacks():
-    static = demo_bar_stacks.static
+    static = demo_bar_stacks
 
     if not hasattr(static, "liars"):
         static.liars = -1
@@ -434,9 +425,9 @@ def demo_bar_stacks():
 
     implot.pop_colormap()
 
-@immapp.add_static
+
 def demo_error_bars():
-    static = demo_error_bars.static
+    static = demo_error_bars
 
     if not hasattr(static, "xs"):
         static.xs = np.array([1, 2, 3, 4, 5], dtype=np.float64)
@@ -471,9 +462,8 @@ def demo_error_bars():
         implot.end_plot()
 
 
-@immapp.add_static
 def demo_stem_plots():
-    static = demo_stem_plots.static
+    static = demo_stem_plots
 
     if not hasattr(static, "xs"):
         static.xs = np.linspace(0, 1, 51, dtype=np.float64)
@@ -493,10 +483,8 @@ def demo_stem_plots():
 # Demo_InfiniteLines
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_infinite_lines():
-    static = demo_infinite_lines.static
-
+    static = demo_infinite_lines
     if not hasattr(static, "vals"):
         static.vals = np.array([0.25, 0.5, 0.75], dtype=np.float64)
 
@@ -507,9 +495,8 @@ def demo_infinite_lines():
         implot.end_plot()
 
 
-@immapp.add_static
 def demo_pie_charts():
-    static = demo_pie_charts.static
+    static = demo_pie_charts
 
     if not hasattr(static, "data1"):
         static.labels1 = ["Frogs", "Hogs", "Dogs", "Logs"]
@@ -543,9 +530,8 @@ def demo_pie_charts():
     implot.pop_colormap()
 
 
-@immapp.add_static
 def demo_heatmaps():
-    static = demo_heatmaps.static
+    static = demo_heatmaps
 
     if not hasattr(static, "values1"):
         static.values1 = np.array([
@@ -613,9 +599,8 @@ def demo_heatmaps():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_histogram():
-    static = demo_histogram.static
+    static = demo_histogram
 
     if not hasattr(static, "hist_flags"):
         static.hist_flags = implot.HistogramFlags_.density.value
@@ -687,9 +672,8 @@ def demo_histogram():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_histogram2d():
-    static = demo_histogram2d.static
+    static = demo_histogram2d
 
     if not hasattr(static, "count"):
         static.count = 50000
@@ -723,9 +707,8 @@ def demo_histogram2d():
     implot.pop_colormap()
 
 
-@immapp.add_static
 def demo_digital_plots():
-    static = demo_digital_plots.static
+    static = demo_digital_plots
 
     if not hasattr(static, "paused"):
         static.paused = False
@@ -777,9 +760,8 @@ def demo_digital_plots():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_images():
-    static = demo_images.static
+    static = demo_images
 
     if not hasattr(static, "bmin"):
         static.bmin = [0.0, 0.0]
@@ -827,9 +809,8 @@ class RollingBuffer:
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_markers_and_text():
-    static = demo_markers_and_text.static
+    static = demo_markers_and_text
 
     if not hasattr(static, "mk_size"):
         static.mk_size = implot.get_style().marker_size
@@ -874,9 +855,8 @@ def demo_markers_and_text():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_nan_values():
-    static = demo_nan_values.static
+    static = demo_nan_values
 
     if not hasattr(static, "include_nan"):
         static.include_nan = True
@@ -901,9 +881,8 @@ def demo_nan_values():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_log_scale():
-    static = demo_log_scale.static
+    static = demo_log_scale
 
     if not hasattr(static, "xs"):
         static.xs = np.linspace(0.1, 100, 1001, dtype=np.float64)
@@ -925,9 +904,8 @@ def demo_log_scale():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_symmetric_log_scale():
-    static = demo_symmetric_log_scale.static
+    static = demo_symmetric_log_scale
 
     if not hasattr(static, "xs"):
         static.xs = np.linspace(-50, 50, 1001, dtype=np.float64)
@@ -958,9 +936,8 @@ class HugeTimeData:
         return 0.5 + 0.25 * np.sin(t / (86400 * 12)) + 0.005 * np.sin(t / 3600)
 
 
-@immapp.add_static
 def demo_time_scale():
-    static = demo_time_scale.static
+    static = demo_time_scale
 
     if not hasattr(static, "t_min"):
         static.t_min = 1609459200  # 01/01/2021 @ 12:00:00am (UTC)
@@ -1025,9 +1002,8 @@ def demo_time_scale():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_multiple_axes():
-    static = demo_multiple_axes.static
+    static = demo_multiple_axes
 
     if not hasattr(static, "xs"):
         static.xs = np.linspace(0, 100, 1001, dtype=np.float64)
@@ -1085,9 +1061,8 @@ def demo_multiple_axes():
 #-----------------------------------------------------------------------------
 # Demo_LinkedAxes
 #-----------------------------------------------------------------------------
-@immapp.add_static
 def demo_linked_axes():
-    static = demo_linked_axes.static
+    static = demo_linked_axes
 
     if not hasattr(static, "x_min"):
         static.x_min = 0.0
@@ -1123,9 +1098,8 @@ def demo_linked_axes():
         implot.end_aligned_plots()
 
 
-@immapp.add_static
 def demo_axis_constraints():
-    static = demo_axis_constraints.static
+    static = demo_axis_constraints
 
     if not hasattr(static, "constraints"):
         static.constraints = [-10, 10, 1, 20]  # X_min, X_max, Zoom_min, Zoom_max
@@ -1149,9 +1123,8 @@ def demo_axis_constraints():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_equal_axes():
-    static = demo_equal_axes.static
+    static = demo_equal_axes
 
     if not hasattr(static, "xs1"):
         angles = np.linspace(0, 2 * np.pi, 360)
@@ -1177,9 +1150,8 @@ def demo_equal_axes():
 
 #-----------------------------------------------------------------------------
 
-@immapp.add_static
 def demo_auto_fitting_data():
-    static = demo_auto_fitting_data.static
+    static = demo_auto_fitting_data
 
     if not hasattr(static, "xflags"):
         static.xflags = implot.AxisFlags_.none.value
@@ -1209,9 +1181,8 @@ def demo_auto_fitting_data():
         implot.end_plot()
 
 
-@immapp.add_static
 def demo_subplots_sizing():
-    static = demo_subplots_sizing.static
+    static = demo_subplots_sizing
 
     if not hasattr(static, "flags"):
         static.flags = implot.SubplotFlags_.share_items.value | implot.SubplotFlags_.no_legend.value
@@ -1268,9 +1239,8 @@ def demo_subplots_sizing():
         implot.end_subplots()
 
 
-@immapp.add_static
 def demo_subplot_item_sharing():
-    static = demo_subplot_item_sharing.static
+    static = demo_subplot_item_sharing
 
     if not hasattr(static, "flags"):
         static.flags = implot.SubplotFlags_.share_items.value
@@ -1322,9 +1292,8 @@ def demo_subplot_item_sharing():
         implot.end_subplots()
 
 
-@immapp.add_static
 def demo_subplot_axis_linking():
-    static = demo_subplot_axis_linking.static
+    static = demo_subplot_axis_linking
 
     if not hasattr(static, "flags"):
         static.flags = implot.SubplotFlags_.link_rows.value | implot.SubplotFlags_.link_cols.value
@@ -1354,9 +1323,8 @@ def demo_subplot_axis_linking():
 
 
 #-----------------------------------------------------------------------------
-@immapp.add_static
 def demo_drag_points():
-    static = demo_drag_points.static
+    static = demo_drag_points
     imgui.bullet_text("Click and drag each point.")
 
     if not hasattr(static, "flags"):
@@ -1395,9 +1363,8 @@ def demo_drag_points():
         implot.end_plot()
 
 
-@immapp.add_static
 def demo_drag_lines():
-    static = demo_drag_lines.static
+    static = demo_drag_lines
 
     imgui.bullet_text("Click and drag the horizontal and vertical lines.")
 
@@ -1464,9 +1431,11 @@ class DemoDragRectState:
         self.flags = implot.DragToolFlags_.none.value
 
 
-@immapp.static(state=DemoDragRectState())
 def demo_drag_rects():
-    state = demo_drag_rects.state
+    static = demo_drag_rects
+    if not hasattr(static, "state"):
+        static.state = DemoDragRectState()
+    state = static.state
 
     imgui.bullet_text("Click and drag the edges, corners, and center of the rect.")
     _, state.flags = imgui.checkbox_flags(
@@ -1527,9 +1496,8 @@ def demo_drag_rects():
         implot.end_plot()
 
 
-@immapp.add_static
 def demo_annotations():
-    static = demo_annotations.static
+    static = demo_annotations
     if not hasattr(static, "clamp"):
         static.clamp = False
 
@@ -1565,9 +1533,8 @@ def demo_annotations():
         implot.end_plot()
 
 
-@immapp.add_static
 def demo_tags():
-    static = demo_tags.static
+    static = demo_tags
 
     if not hasattr(static, "show"):
         static.show = True
@@ -1607,9 +1574,8 @@ def sparkline(id, values, y_min, y_max, offset, color, size):
     implot.pop_style_var()
 
 
-@immapp.add_static
 def demo_tables():
-    static = demo_tables.static
+    static = demo_tables
 
     if not hasattr(static, "anim"):
         static.anim = True
@@ -1742,9 +1708,8 @@ def demo_custom_rendering():
         implot.end_plot()
 
 
-@immapp.add_static
 def demo_legend_popups():
-    static = demo_legend_popups.static
+    static = demo_legend_popups
 
     imgui.bullet_text("You can implement legend context menus to inject per-item controls and widgets.")
     imgui.bullet_text("Right-click the legend label/icon to edit custom item attributes.")
@@ -1796,9 +1761,8 @@ def demo_legend_popups():
         implot.end_plot()
 
 
-@immapp.add_static
 def demo_colormap_widgets():
-    static = demo_colormap_widgets.static
+    static = demo_colormap_widgets
 
     if not hasattr(static, "cmap"):
         static.cmap = implot.Colormap_.viridis.value
@@ -1841,10 +1805,11 @@ def demo_colormap_widgets():
 #-----------------------------------------------------------------------------
 # DEMO WINDOW
 #-----------------------------------------------------------------------------
-@immapp.add_static_values(fn_snippets = {})
 def demo_header(label, demo_function):
-    static = demo_header.static
+    static = demo_header
     fn_id = id(demo_function)
+    if not hasattr(static, "fn_snippets"):
+        static.fn_snippets = {}
     if fn_id not in static.fn_snippets:
         import inspect
         source = inspect.getsource(demo_function)
@@ -1862,10 +1827,9 @@ def demo_header(label, demo_function):
         imgui.tree_pop()
 
 
-@immapp.add_static
 def show_all_demos():
     """Main function to display all ImPlot demos with categorized tabs."""
-    static = show_all_demos.static
+    static = show_all_demos
 
     imgui.text(f"ImPlot says hello. ({implot.version})")
 
@@ -1957,10 +1921,9 @@ def show_all_demos():
         imgui.end_tab_bar()
 
 
-@immapp.add_static
 def show_demo_window():
     """Main ImPlot Demo Window with menu options for various ImPlot and ImGui tools."""
-    static = show_demo_window.static
+    static = show_demo_window
 
     if not hasattr(static, "show_implot_metrics"):
         static.show_implot_metrics = False
