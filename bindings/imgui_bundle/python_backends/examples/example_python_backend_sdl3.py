@@ -137,7 +137,10 @@ def impl_pysdl3_init():
         )
         sys.exit(1)
 
-    SDL_GL_MakeCurrent(window, gl_context)
+    if SDL_GL_MakeCurrent(window, gl_context) < 0:
+        print("Error: SDL_GL_MakeCurrent failed: " + SDL_GetError().decode("utf-8"))
+        sys.exit(1)
+
     if not SDL_GL_SetSwapInterval(1):
         print(
             "Warning: Unable to set VSync! SDL Error: " + SDL_GetError().decode("utf-8")
