@@ -1,3 +1,10 @@
+# Workaround issue when using wayland ("Attempt to retrieve context when no valid context", in PyOpenGL)
+# (see https://github.com/pthom/imgui_bundle/issues/321)
+import os
+if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFORM"):
+    os.environ["PYOPENGL_PLATFORM"] = "x11"
+
+
 from imgui_bundle import hello_imgui, imgui, immapp, ImVec2, ImVec4, imgui_md
 from imgui_bundle.demos_python import demo_utils
 

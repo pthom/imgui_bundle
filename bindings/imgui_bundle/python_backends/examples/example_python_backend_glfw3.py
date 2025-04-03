@@ -6,8 +6,16 @@
 # See full python backends implementations here:
 # https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
 
-from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
+
+# Workaround issue when using wayland ("Attempt to retrieve context when no valid context", in PyOpenGL)
+# (see https://github.com/pthom/imgui_bundle/issues/321)
+import os
+if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFORM"):
+    os.environ["PYOPENGL_PLATFORM"] = "x11"
+
+
 import OpenGL.GL as gl  # type: ignore
+from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 # When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard glfw, not the one provided by imgui_bundle)
 import glfw  # type: ignore
 from imgui_bundle import imgui, imgui_ctx
