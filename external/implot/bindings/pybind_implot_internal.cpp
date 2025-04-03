@@ -30,6 +30,10 @@ void py_init_module_implot_internal(nb::module_& m)
     ////////////////////    <generated_from:implot_internal.h>    ////////////////////
     // #ifndef IMGUI_DISABLE
     //
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+    // #endif
+    //
 
     m.def("im_log10",
         nb::overload_cast<float>(ImLog10),
@@ -1378,6 +1382,25 @@ void py_init_module_implot_internal(nb::module_& m)
 
     m.def("today",
         ImPlot::Today, " Get the current date as a timestamp.\n(private API)");
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("format_time_str",
+        ImPlot::FormatTimeStr,
+        nb::arg("t"), nb::arg("fmt"), nb::arg("use_24_hr_clk"),
+        "Formats the time part of timestamp t into a buffer according to #fmt");
+
+    m.def("format_date_str",
+        ImPlot::FormatDateStr,
+        nb::arg("t"), nb::arg("fmt"), nb::arg("use_iso_8601"),
+        "Formats the date part of timestamp t into a buffer according to #fmt");
+
+    m.def("format_date_time_str",
+        ImPlot::FormatDateTimeStr,
+        nb::arg("t"), nb::arg("fmt"),
+        "Formats the time and/or date parts of a timestamp t into a buffer according to #fmt");
+    // #endif
+    //
 
     m.def("show_date_picker",
         [](const char * id, int level, ImPlotTime * t, const ImPlotTime * t1 = nullptr, const ImPlotTime * t2 = nullptr) -> std::tuple<bool, int>

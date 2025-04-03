@@ -89,6 +89,11 @@ time_t = int
 
 # Support for pre-1.84 versions. ImPool's GetSize() -> GetBufSize()
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
+
 #-----------------------------------------------------------------------------
 # [SECTION] Constants
 #-----------------------------------------------------------------------------
@@ -2297,6 +2302,23 @@ def today() -> Time:
     """
     pass
 
+
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# IMPLOT_API std::string FormatTimeStr(const ImPlotTime& t, ImPlotTimeFmt fmt, bool use_24_hr_clk);    /* original C++ signature */
+def format_time_str(t: Time, fmt: TimeFmt, use_24_hr_clk: bool) -> str:
+    """ Formats the time part of timestamp t into a buffer according to #fmt"""
+    pass
+# IMPLOT_API std::string FormatDateStr(const ImPlotTime& t, ImPlotDateFmt fmt, bool use_iso_8601);    /* original C++ signature */
+def format_date_str(t: Time, fmt: DateFmt, use_iso_8601: bool) -> str:
+    """ Formats the date part of timestamp t into a buffer according to #fmt"""
+    pass
+# IMPLOT_API std::string FormatDateTimeStr(const ImPlotTime& t, ImPlotDateTimeSpec fmt);    /* original C++ signature */
+def format_date_time_str(t: Time, fmt: DateTimeSpec) -> str:
+    """ Formats the time and/or date parts of a timestamp t into a buffer according to #fmt"""
+    pass
+# #endif
+#
 
 # IMPLOT_API bool ShowDatePicker(const char* id, int* level, ImPlotTime* t, const ImPlotTime* t1 = nullptr, const ImPlotTime* t2 = nullptr);    /* original C++ signature */
 def show_date_picker(id_: str, level: int, t: Time, t1: Optional[Time] = None, t2: Optional[Time] = None) -> Tuple[bool, int]:
