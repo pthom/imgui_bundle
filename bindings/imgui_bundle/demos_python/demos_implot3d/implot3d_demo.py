@@ -492,8 +492,8 @@ def demo_image_plots():
         checker_img = make_checkerboard_texture()
         circle_img = make_gradient_circle_texture()
 
-        static.tex_id_checker = imgui.ImTextureRef(rgba_image_to_texture(checker_img))
-        static.tex_id_circle = imgui.ImTextureRef(rgba_image_to_texture(circle_img))
+        static.tex_id_checker = rgba_image_to_texture(checker_img)
+        static.tex_id_circle = rgba_image_to_texture(circle_img)
 
         static.initialized = True
 
