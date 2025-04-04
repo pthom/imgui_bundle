@@ -16,7 +16,7 @@ from imgui_bundle.imgui import (
     ImVec4Like,
     ImU32,
     ImDrawList,
-    ImTextureID,
+    ImTextureRef,
 )
 ImageFlags = int # enum ImageFlags_
 
@@ -779,13 +779,13 @@ def plot_mesh(label_id: str, mesh: Mesh, flags: MeshFlags = 0) -> None:
 #
 # [/ADAPT_IMGUI_BUNDLE]
 
-# IMPLOT3D_API void PlotImage(const char* label_id, ImTextureID tex_ref, const ImPlot3DPoint& center, const ImPlot3DPoint& axis_u,    /* original C++ signature */
+# IMPLOT3D_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint& center, const ImPlot3DPoint& axis_u,    /* original C++ signature */
 #                             const ImPlot3DPoint& axis_v, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 #                             const ImVec4& tint_col = ImVec4(1, 1, 1, 1), ImPlot3DImageFlags flags = 0);
 @overload
 def plot_image(
     label_id: str,
-    tex_ref: ImTextureID,
+    tex_ref: ImTextureRef,
     center: Point,
     axis_u: Point,
     axis_v: Point,
@@ -810,14 +810,14 @@ def plot_image(
     """
     pass
 
-# IMPLOT3D_API void PlotImage(const char* label_id, ImTextureID tex_ref, const ImPlot3DPoint& p0, const ImPlot3DPoint& p1, const ImPlot3DPoint& p2,    /* original C++ signature */
+# IMPLOT3D_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint& p0, const ImPlot3DPoint& p1, const ImPlot3DPoint& p2,    /* original C++ signature */
 #                             const ImPlot3DPoint& p3, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 0),
 #                             const ImVec2& uv2 = ImVec2(1, 1), const ImVec2& uv3 = ImVec2(0, 1), const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 #                             ImPlot3DImageFlags flags = 0);
 @overload
 def plot_image(
     label_id: str,
-    tex_ref: ImTextureID,
+    tex_ref: ImTextureRef,
     p0: Point,
     p1: Point,
     p2: Point,

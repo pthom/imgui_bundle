@@ -1687,7 +1687,7 @@ def plot_digital(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: DigitalFl
 # IMPLOT_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlotPoint& bounds_min, const ImPlotPoint& bounds_max, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& tint_col = ImVec4(1, 1, 1, 1), ImPlotImageFlags flags = 0);    /* original C++ signature */
 def plot_image(
     label_id: str,
-    tex_ref: ImTextureID,
+    tex_ref: ImTextureRef,
     bounds_min: Point,
     bounds_max: Point,
     uv0: Optional[ImVec2Like] = None,
