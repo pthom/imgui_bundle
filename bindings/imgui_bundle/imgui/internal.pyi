@@ -179,7 +179,8 @@ KeyRoutingIndex = int
 #
 # #endif
 #
-# [/ADAPT_IMGUI_BUNDLE]
+
+# Table column indexing
 
 # -----------------------------------------------------------------------------
 # [SECTION] Context pointer
@@ -1232,6 +1233,8 @@ class SelectableFlagsPrivate_(enum.Enum):
 class TreeNodeFlagsPrivate_(enum.Enum):
     """Extend ImGuiTreeNodeFlags_"""
 
+    # ImGuiTreeNodeFlags_NoNavFocus                 = 1 << 27,    /* original C++ signature */
+    no_nav_focus = enum.auto()  # (= 1 << 27)  # Don't claim nav focus when interacting with this item (#8551)
     # ImGuiTreeNodeFlags_ClipLabelForTrailingButton = 1 << 28,    /* original C++ signature */
     clip_label_for_trailing_button = enum.auto()  # (= 1 << 28)  # FIXME-WIP: Hard-coded for CollapsingHeader()
     # ImGuiTreeNodeFlags_UpsideDownArrow            = 1 << 29,    /* original C++ signature */
@@ -1239,8 +1242,12 @@ class TreeNodeFlagsPrivate_(enum.Enum):
         enum.auto()
     )  # (= 1 << 29)  # FIXME-WIP: Turn Down arrow into an Up arrow, for reversed trees (#6517)
     # ImGuiTreeNodeFlags_OpenOnMask_                = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow,    /* original C++ signature */
-    # }
     open_on_mask_ = enum.auto()  # (= TreeNodeFlags_OpenOnDoubleClick | TreeNodeFlags_OpenOnArrow)
+    # ImGuiTreeNodeFlags_DrawLinesMask_             = ImGuiTreeNodeFlags_DrawLinesNone | ImGuiTreeNodeFlags_DrawLinesFull | ImGuiTreeNodeFlags_DrawLinesToNodes,    /* original C++ signature */
+    # }
+    draw_lines_mask_ = (
+        enum.auto()
+    )  # (= TreeNodeFlags_DrawLinesNone | TreeNodeFlags_DrawLinesFull | TreeNodeFlags_DrawLinesToNodes)
 
 class SeparatorFlags_(enum.Enum):
     # ImGuiSeparatorFlags_None                    = 0,    /* original C++ signature */
@@ -1786,19 +1793,30 @@ class TreeNodeStackData:
     item_flags: ItemFlags  # Used for nav landing
     # ImRect                  NavRect;    /* original C++ signature */
     nav_rect: ImRect  # Used for nav landing
-    # ImGuiTreeNodeStackData(ImGuiID ID = ImGuiID(), ImGuiTreeNodeFlags TreeFlags = ImGuiTreeNodeFlags(), ImGuiItemFlags ItemFlags = ImGuiItemFlags(), ImRect NavRect = ImRect());    /* original C++ signature */
+    # float                   DrawLinesX1;    /* original C++ signature */
+    draw_lines_x1: float
+    # float                   DrawLinesToNodesY2;    /* original C++ signature */
+    draw_lines_to_nodes_y2: float
+    # ImGuiTableColumnIdx     DrawLinesTableColumn;    /* original C++ signature */
+    draw_lines_table_column: TableColumnIdx
+    # ImGuiTreeNodeStackData(ImGuiID ID = ImGuiID(), ImGuiTreeNodeFlags TreeFlags = ImGuiTreeNodeFlags(), ImGuiItemFlags ItemFlags = ImGuiItemFlags(), ImRect NavRect = ImRect(), float DrawLinesX1 = float(), float DrawLinesToNodesY2 = float(), ImGuiTableColumnIdx DrawLinesTableColumn = ImGuiTableColumnIdx());    /* original C++ signature */
     def __init__(
         self,
         id_: ID = ID(),
         tree_flags: TreeNodeFlags = TreeNodeFlags(),
         item_flags: ItemFlags = ItemFlags(),
         nav_rect: Optional[ImRect] = None,
+        draw_lines_x1: float = float(),
+        draw_lines_to_nodes_y2: float = float(),
+        draw_lines_table_column: Optional[TableColumnIdx] = None,
     ) -> None:
         """Auto-generated default constructor with named params
 
 
         Python bindings defaults:
-            If NavRect is None, then its default value will be: ImRect()
+            If any of the params below is None, then its default value below will be used:
+                * NavRect: ImRect()
+                * DrawLinesTableColumn: TableColumnIdx()
         """
         pass
 
@@ -3474,12 +3492,12 @@ class Context:
     font_size_before_scaling: float  # == value passed to PushFontSize()
     # float                   FontScale;    /* original C++ signature */
     font_scale: float  # == FontBaked->Size / Font->FontSize. Scale factor over baked size.
+    # float                   FontRasterizerDensity;    /* original C++ signature */
+    font_rasterizer_density: float  # Current font density. Used by all calls to GetFontBaked().
     # float                   CurrentDpiScale;    /* original C++ signature */
     current_dpi_scale: float  # Current window/viewport DpiScale == CurrentViewport->DpiScale
     # ImDrawListSharedData    DrawListSharedData;    /* original C++ signature */
     draw_list_shared_data: ImDrawListSharedData
-    # ImVector<ImTextureData*>Textures;    /* original C++ signature */
-    textures: ImVector_ImTextureData_ptr
     # double                  Time;    /* original C++ signature */
     time: float
     # int                     FrameCount;    /* original C++ signature */
@@ -3830,6 +3848,8 @@ class Context:
     nav_just_moved_to_has_selection_data: bool  # Copy of move result's ItemFlags & ImGuiItemFlags_HasSelectionUserData). Maybe we should just store ImGuiNavItemData.
 
     # Navigation: Windowing (CTRL+TAB for list, or Menu button + keys or directional pads to move/resize)
+    # bool                    ConfigNavWindowingWithGamepad;    /* original C++ signature */
+    config_nav_windowing_with_gamepad: bool  # = True. Enable CTRL+TAB by holding ImGuiKey_GamepadFaceLeft (== ImGuiKey_NavGamepadMenu). When False, the button may still be used to toggle Menu layer.
     # ImGuiKeyChord           ConfigNavWindowingKeyNext;    /* original C++ signature */
     config_nav_windowing_key_next: KeyChord  # = ImGuiMod_Ctrl | ImGuiKey_Tab (or ImGuiMod_Super | ImGuiKey_Tab on OS X). For reconfiguration (see #4828)
     # ImGuiKeyChord           ConfigNavWindowingKeyPrev;    /* original C++ signature */
@@ -3844,6 +3864,8 @@ class Context:
     nav_windowing_timer: float
     # float                   NavWindowingHighlightAlpha;    /* original C++ signature */
     nav_windowing_highlight_alpha: float
+    # ImGuiInputSource        NavWindowingInputSource;    /* original C++ signature */
+    nav_windowing_input_source: InputSource
     # bool                    NavWindowingToggleLayer;    /* original C++ signature */
     nav_windowing_toggle_layer: bool
     # ImGuiKey                NavWindowingToggleKey;    /* original C++ signature */
@@ -4043,7 +4065,7 @@ class Context:
 
     # Platform support
     # ImGuiPlatformImeData    PlatformImeData;    /* original C++ signature */
-    platform_ime_data: PlatformImeData  # Data updated by current frame
+    platform_ime_data: PlatformImeData  # Data updated by current frame. Will be applied at end of the frame. For some backends, this is required to have WantVisible=True in order to receive text message.
     # ImGuiPlatformImeData    PlatformImeDataPrev;    /* original C++ signature */
     platform_ime_data_prev: (
         PlatformImeData  # Previous frame data. When changed we call the platform_io.Platform_SetImeDataFn() handler.
@@ -4167,7 +4189,7 @@ class Context:
     # int                     WantCaptureKeyboardNextFrame;    /* original C++ signature */
     want_capture_keyboard_next_frame: int  # "
     # int                     WantTextInputNextFrame;    /* original C++ signature */
-    want_text_input_next_frame: int
+    want_text_input_next_frame: int  # Copied in EndFrame() from g.PlatformImeData.WanttextInput. Needs to be set for some backends (SDL3) to emit character inputs.
     # ImVector<char>          TempBuffer;    /* original C++ signature */
     temp_buffer: ImVector_char  # Temporary text buffer
 
@@ -4244,6 +4266,8 @@ class WindowTempData:
     tree_has_stack_data_depth_mask: (
         ImU32  # Store whether given depth has ImGuiTreeNodeStackData data. Could be turned into a ImU64 if necessary.
     )
+    # ImU32                   TreeRecordsClippedNodesY2Mask;    /* original C++ signature */
+    tree_records_clipped_nodes_y2_mask: ImU32  # Store whether we should keep recording Y2. Cleared when passing clip max. Equivalent TreeHasStackDataDepthMask value should always be set.
     # ImVector<ImGuiWindow*>  ChildWindows;    /* original C++ signature */
     child_windows: ImVector_Window_ptr
     # ImGuiStorage*           StateStorage;    /* original C++ signature */
@@ -4279,7 +4303,7 @@ class WindowTempData:
     item_width_stack: ImVector_float  # Store item widths to restore (attention: .back() is not == ItemWidth)
     # ImVector<float>         TextWrapPosStack;    /* original C++ signature */
     text_wrap_pos_stack: ImVector_float  # Store text wrap pos to restore (attention: .back() is not == TextWrapPos)
-    # ImGuiWindowTempData(ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), ImU32 ModalDimBgColor = ImU32(), ImGuiItemStatusFlags WindowItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags ChildItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags DockTabItemStatusFlags = ImGuiItemStatusFlags(), ImRect DockTabItemRect = ImRect(), float ItemWidth = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>());    /* original C++ signature */
+    # ImGuiWindowTempData(ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), ImU32 TreeRecordsClippedNodesY2Mask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), ImU32 ModalDimBgColor = ImU32(), ImGuiItemStatusFlags WindowItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags ChildItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags DockTabItemStatusFlags = ImGuiItemStatusFlags(), ImRect DockTabItemRect = ImRect(), float ItemWidth = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>());    /* original C++ signature */
     def __init__(
         self,
         cursor_pos: Optional[ImVec2Like] = None,
@@ -4308,6 +4332,7 @@ class WindowTempData:
         menu_columns: Optional[MenuColumns] = None,
         tree_depth: int = int(),
         tree_has_stack_data_depth_mask: ImU32 = ImU32(),
+        tree_records_clipped_nodes_y2_mask: ImU32 = ImU32(),
         child_windows: Optional[ImVector_Window] = None,
         current_table_idx: int = int(),
         layout_type: Optional[LayoutType] = None,
@@ -4812,8 +4837,6 @@ class TabBar:
 # -----------------------------------------------------------------------------
 # [SECTION] Table support
 # -----------------------------------------------------------------------------
-
-# Our current column maximum is 64 but we may raise that in the future.
 
 class TableColumn:
     """[Internal] sizeof() ~ 112
@@ -5497,6 +5520,10 @@ def set_next_window_refresh_policy(flags: WindowRefreshFlags) -> None:
 def set_current_font(font: ImFont, font_size: float) -> None:
     pass
 
+# IMGUI_API void          SetFontRasterizerDensity(float rasterizer_density);    /* original C++ signature */
+def set_font_rasterizer_density(rasterizer_density: float) -> None:
+    pass
+
 # IMGUI_API void          UpdateCurrentFontSize();    /* original C++ signature */
 def update_current_font_size() -> None:
     pass
@@ -5545,8 +5572,8 @@ def shutdown() -> None:
 def update_input_events(trickle_fast_inputs: bool) -> None:
     pass
 
-# IMGUI_API void          UpdateHoveredWindowAndCaptureFlags();    /* original C++ signature */
-def update_hovered_window_and_capture_flags() -> None:
+# IMGUI_API void          UpdateHoveredWindowAndCaptureFlags(const ImVec2& mouse_pos);    /* original C++ signature */
+def update_hovered_window_and_capture_flags(mouse_pos: ImVec2Like) -> None:
     pass
 
 # IMGUI_API void          StartMouseMovingWindow(ImGuiWindow* window);    /* original C++ signature */
@@ -5974,7 +6001,7 @@ def nav_move_request_forward(move_dir: Dir, clip_dir: Dir, move_flags: NavMoveFl
 def nav_move_request_resolve_with_last_item(result: NavItemData) -> None:
     pass
 
-# IMGUI_API void          NavMoveRequestResolveWithPastTreeNode(ImGuiNavItemData* result, ImGuiTreeNodeStackData* tree_node_data);    /* original C++ signature */
+# IMGUI_API void          NavMoveRequestResolveWithPastTreeNode(ImGuiNavItemData* result, const ImGuiTreeNodeStackData* tree_node_data);    /* original C++ signature */
 def nav_move_request_resolve_with_past_tree_node(result: NavItemData, tree_node_data: TreeNodeStackData) -> None:
     pass
 
@@ -6633,6 +6660,14 @@ def table_push_background_channel() -> None:
 def table_pop_background_channel() -> None:
     pass
 
+# IMGUI_API void          TablePushColumnChannel(int column_n);    /* original C++ signature */
+def table_push_column_channel(column_n: int) -> None:
+    pass
+
+# IMGUI_API void          TablePopColumnChannel();    /* original C++ signature */
+def table_pop_column_channel() -> None:
+    pass
+
 # IMGUI_API void          TableAngledHeadersRowEx(ImGuiID row_id, float angle, float max_label_width, const ImGuiTableHeaderData* data, int data_count);    /* original C++ signature */
 def table_angled_headers_row_ex(
     row_id: ID, angle: float, max_label_width: float, data: TableHeaderData, data_count: int
@@ -6972,12 +7007,11 @@ def render_text_clipped_ex(
     """
     pass
 
-# IMGUI_API void          RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, float clip_max_x, float ellipsis_max_x, const char* text, const char* text_end, const ImVec2* text_size_if_known);    /* original C++ signature */
+# IMGUI_API void          RenderTextEllipsis(ImDrawList* draw_list, const ImVec2& pos_min, const ImVec2& pos_max, float ellipsis_max_x, const char* text, const char* text_end, const ImVec2* text_size_if_known);    /* original C++ signature */
 def render_text_ellipsis(
     draw_list: ImDrawList,
     pos_min: ImVec2Like,
     pos_max: ImVec2Like,
-    clip_max_x: float,
     ellipsis_max_x: float,
     text: str,
     text_end: str,
@@ -7063,11 +7097,17 @@ def render_rect_filled_with_hole(
 def calc_rounding_flags_for_rect_in_rect(r_in: ImRect, r_outer: ImRect, threshold: float) -> ImDrawFlags:
     pass
 
-# Widgets
+# Widgets: Text
 # IMGUI_API void          TextEx(const char* text, const char* text_end = NULL, ImGuiTextFlags flags = 0);    /* original C++ signature */
 def text_ex(text: str, text_end: Optional[str] = None, flags: TextFlags = 0) -> None:
     pass
 
+# IMGUI_API void          TextAligned(float align_x, float size_x, const char* fmt, ...);                   /* original C++ signature */
+def text_aligned(align_x: float, size_x: float, fmt: str) -> None:
+    """FIXME-WIP: Works but API is likely to be reworked. This is designed for 1 item on the line. (#7024)"""
+    pass
+
+# Widgets
 # IMGUI_API bool          ButtonEx(const char* label, const ImVec2& size_arg = ImVec2(0, 0), ImGuiButtonFlags flags = 0);    /* original C++ signature */
 def button_ex(label: str, size_arg: Optional[ImVec2Like] = None, flags: ButtonFlags = 0) -> bool:
     """Python bindings defaults:
@@ -7197,6 +7237,14 @@ def splitter_behavior(
 # Widgets: Tree Nodes
 # IMGUI_API bool          TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* label, const char* label_end = NULL);    /* original C++ signature */
 def tree_node_behavior(id_: ID, flags: TreeNodeFlags, label: str, label_end: Optional[str] = None) -> bool:
+    pass
+
+# IMGUI_API void          TreeNodeDrawLineToChildNode(const ImVec2& target_pos);    /* original C++ signature */
+def tree_node_draw_line_to_child_node(target_pos: ImVec2Like) -> None:
+    pass
+
+# IMGUI_API void          TreeNodeDrawLineToTreePop(const ImGuiTreeNodeStackData* data);    /* original C++ signature */
+def tree_node_draw_line_to_tree_pop(data: TreeNodeStackData) -> None:
     pass
 
 # IMGUI_API void          TreePushOverrideID(ImGuiID id);    /* original C++ signature */
@@ -7443,12 +7491,16 @@ def debug_node_draw_cmd_show_mesh_and_bounding_box(
 def debug_node_font(font: ImFont) -> None:
     pass
 
+# IMGUI_API void          DebugNodeFontGlyphesForSrcMask(ImFont* font, ImFontBaked* baked, int src_mask);    /* original C++ signature */
+def debug_node_font_glyphes_for_src_mask(font: ImFont, baked: ImFontBaked, src_mask: int) -> None:
+    pass
+
 # IMGUI_API void          DebugNodeFontGlyph(ImFont* font, const ImFontGlyph* glyph);    /* original C++ signature */
 def debug_node_font_glyph(font: ImFont, glyph: ImFontGlyph) -> None:
     pass
 
-# IMGUI_API void          DebugNodeTexture(ImTextureData* tex, int int_id);     /* original C++ signature */
-def debug_node_texture(tex: ImTextureData, int_id: int) -> None:
+# IMGUI_API void          DebugNodeTexture(ImTextureData* tex, int int_id, const ImFontAtlasRect* highlight_rect = NULL);     /* original C++ signature */
+def debug_node_texture(tex: ImTextureData, int_id: int, highlight_rect: Optional[ImFontAtlasRect] = None) -> None:
     """ID used to facilitate persisting the "current" texture."""
     pass
 
@@ -7535,6 +7587,22 @@ class ImFontLoader:
 # -----------------------------------------------------------------------------
 # [SECTION] ImFontAtlas internal API
 # -----------------------------------------------------------------------------
+
+# Refer to ImFontAtlasPackGetRect() to better understand how this works.
+# inline int               ImFontAtlasRectId_GetIndex(ImFontAtlasRectId id)       { return id & ImFontAtlasRectId_IndexMask_; }    /* original C++ signature */
+def im_font_atlas_rect_id_get_index(id_: ImFontAtlasRectId) -> int:
+    """(private API)"""
+    pass
+
+# inline int               ImFontAtlasRectId_GetGeneration(ImFontAtlasRectId id)  { return (id & ImFontAtlasRectId_GenerationMask_) >> ImFontAtlasRectId_GenerationShift_; }    /* original C++ signature */
+def im_font_atlas_rect_id_get_generation(id_: ImFontAtlasRectId) -> int:
+    """(private API)"""
+    pass
+
+# inline ImFontAtlasRectId ImFontAtlasRectId_Make(int index_idx, int gen_idx)     { IM_ASSERT(index_idx < ImFontAtlasRectId_IndexMask_ && gen_idx < (ImFontAtlasRectId_GenerationMask_ >> ImFontAtlasRectId_GenerationShift_)); return (ImFontAtlasRectId)(index_idx | (gen_idx << ImFontAtlasRectId_GenerationShift_)); }    /* original C++ signature */
+def im_font_atlas_rect_id_make(index_idx: int, gen_idx: int) -> ImFontAtlasRectId:
+    """(private API)"""
+    pass
 
 class ImFontAtlasRectEntry:
     """Packed rectangle lookup entry (we need an indirection to allow removing/reordering rectangles)
@@ -7628,7 +7696,7 @@ class ImFontAtlasBuilder:
 
     # Cache of all ImFontBaked
     # ImGuiStorage                BakedMap;    /* original C++ signature */
-    baked_map: Storage
+    baked_map: Storage  # BakedId --> ImFontBaked*
     # int                         BakedDiscardedCount;    /* original C++ signature */
     baked_discarded_count: int
 
@@ -7640,10 +7708,91 @@ class ImFontAtlasBuilder:
     # ImFontAtlasRectId           PackIdLinesTexData;    /* original C++ signature */
     pack_id_lines_tex_data: ImFontAtlasRectId
 
+# IMGUI_API ImTextureData*    ImFontAtlasTextureAdd(ImFontAtlas* atlas, int w, int h);    /* original C++ signature */
+def im_font_atlas_texture_add(atlas: ImFontAtlas, w: int, h: int) -> ImTextureData:
+    pass
+
+# IMGUI_API void              ImFontAtlasTextureMakeSpace(ImFontAtlas* atlas);    /* original C++ signature */
+def im_font_atlas_texture_make_space(atlas: ImFontAtlas) -> None:
+    pass
+
+# IMGUI_API void              ImFontAtlasTextureRepack(ImFontAtlas* atlas, int w, int h);    /* original C++ signature */
+def im_font_atlas_texture_repack(atlas: ImFontAtlas, w: int, h: int) -> None:
+    pass
+
+# IMGUI_API void              ImFontAtlasTextureGrow(ImFontAtlas* atlas, int old_w = -1, int old_h = -1);    /* original C++ signature */
+def im_font_atlas_texture_grow(atlas: ImFontAtlas, old_w: int = -1, old_h: int = -1) -> None:
+    pass
+
+# IMGUI_API void              ImFontAtlasTextureCompact(ImFontAtlas* atlas);    /* original C++ signature */
+def im_font_atlas_texture_compact(atlas: ImFontAtlas) -> None:
+    pass
+
+# IMGUI_API ImVec2i           ImFontAtlasTextureGetSizeEstimate(ImFontAtlas* atlas);    /* original C++ signature */
+def im_font_atlas_texture_get_size_estimate(atlas: ImFontAtlas) -> ImVec2i:
+    pass
+
+# IMGUI_API bool              ImFontAtlasFontSourceInit(ImFontAtlas* atlas, ImFontConfig* src);    /* original C++ signature */
+def im_font_atlas_font_source_init(atlas: ImFontAtlas, src: ImFontConfig) -> bool:
+    pass
+
+# IMGUI_API void              ImFontAtlasFontSourceAddToFont(ImFontAtlas* atlas, ImFont* font, ImFontConfig* src);    /* original C++ signature */
+def im_font_atlas_font_source_add_to_font(atlas: ImFontAtlas, font: ImFont, src: ImFontConfig) -> None:
+    pass
+
+# IMGUI_API void              ImFontAtlasFontDestroySourceData(ImFontAtlas* atlas, ImFontConfig* src);    /* original C++ signature */
+def im_font_atlas_font_destroy_source_data(atlas: ImFontAtlas, src: ImFontConfig) -> None:
+    pass
+
+# IMGUI_API bool              ImFontAtlasFontInitOutput(ImFontAtlas* atlas, ImFont* font);     /* original C++ signature */
+def im_font_atlas_font_init_output(atlas: ImFontAtlas, font: ImFont) -> bool:
+    """Using FontDestroyOutput/FontInitOutput sequence useful notably if font loader params have changed"""
+    pass
+
+# IMGUI_API void              ImFontAtlasFontDestroyOutput(ImFontAtlas* atlas, ImFont* font);    /* original C++ signature */
+def im_font_atlas_font_destroy_output(atlas: ImFontAtlas, font: ImFont) -> None:
+    pass
+
+# IMGUI_API void              ImFontAtlasFontDiscardOutputBakes(ImFontAtlas* atlas, ImFont* font);    /* original C++ signature */
+def im_font_atlas_font_discard_output_bakes(atlas: ImFontAtlas, font: ImFont) -> None:
+    pass
+
+# IMGUI_API ImGuiID           ImFontAtlasBakedGetId(ImGuiID font_id, float baked_size, float rasterizer_density);    /* original C++ signature */
+def im_font_atlas_baked_get_id(font_id: ID, baked_size: float, rasterizer_density: float) -> ID:
+    pass
+
+# IMGUI_API ImFontBaked*      ImFontAtlasBakedGetOrAdd(ImFontAtlas* atlas, ImFont* font, float font_size, float font_rasterizer_density);    /* original C++ signature */
+def im_font_atlas_baked_get_or_add(
+    atlas: ImFontAtlas, font: ImFont, font_size: float, font_rasterizer_density: float
+) -> ImFontBaked:
+    pass
+
+# IMGUI_API ImFontBaked*      ImFontAtlasBakedGetClosestMatch(ImFontAtlas* atlas, ImFont* font, float font_size, float font_rasterizer_density);    /* original C++ signature */
+def im_font_atlas_baked_get_closest_match(
+    atlas: ImFontAtlas, font: ImFont, font_size: float, font_rasterizer_density: float
+) -> ImFontBaked:
+    pass
+
+# IMGUI_API ImFontBaked*      ImFontAtlasBakedAdd(ImFontAtlas* atlas, ImFont* font, float font_size, float font_rasterizer_density, ImGuiID baked_id);    /* original C++ signature */
+def im_font_atlas_baked_add(
+    atlas: ImFontAtlas, font: ImFont, font_size: float, font_rasterizer_density: float, baked_id: ID
+) -> ImFontBaked:
+    pass
+
+# IMGUI_API void              ImFontAtlasBakedDiscard(ImFontAtlas* atlas, ImFont* font, ImFontBaked* baked);    /* original C++ signature */
+def im_font_atlas_baked_discard(atlas: ImFontAtlas, font: ImFont, baked: ImFontBaked) -> None:
+    pass
+
 # IMGUI_API ImFontGlyph*      ImFontAtlasBakedAddFontGlyph(ImFontAtlas* atlas, ImFontBaked* baked, ImFontConfig* src, const ImFontGlyph* in_glyph);    /* original C++ signature */
 def im_font_atlas_baked_add_font_glyph(
     atlas: ImFontAtlas, baked: ImFontBaked, src: ImFontConfig, in_glyph: ImFontGlyph
 ) -> ImFontGlyph:
+    pass
+
+# IMGUI_API void              ImFontAtlasBakedDiscardFontGlyph(ImFontAtlas* atlas, ImFont* font, ImFontBaked* baked, ImFontGlyph* glyph);    /* original C++ signature */
+def im_font_atlas_baked_discard_font_glyph(
+    atlas: ImFontAtlas, font: ImFont, baked: ImFontBaked, glyph: ImFontGlyph
+) -> None:
     pass
 
 # IMGUI_API void              ImFontAtlasBakedSetFontGlyphBitmap(ImFontAtlas* atlas, ImFontBaked* baked, ImFontConfig* src, ImFontGlyph* glyph, ImTextureRect* r, const uchar* src_pixels, ImTextureFormat src_fmt, int src_pitch);    /* original C++ signature */
@@ -7659,10 +7808,6 @@ def im_font_atlas_baked_set_font_glyph_bitmap(
 ) -> None:
     pass
 
-# IMGUI_API ImGuiID           ImFontAtlasBakedGetId(ImGuiID font_id, float baked_size);    /* original C++ signature */
-def im_font_atlas_baked_get_id(font_id: ID, baked_size: float) -> ID:
-    pass
-
 # IMGUI_API void              ImFontAtlasPackInit(ImFontAtlas* atlas);    /* original C++ signature */
 def im_font_atlas_pack_init(atlas: ImFontAtlas) -> None:
     pass
@@ -7675,6 +7820,10 @@ def im_font_atlas_pack_add_rect(
 
 # IMGUI_API ImTextureRect*    ImFontAtlasPackGetRect(ImFontAtlas* atlas, ImFontAtlasRectId id);    /* original C++ signature */
 def im_font_atlas_pack_get_rect(atlas: ImFontAtlas, id_: ImFontAtlasRectId) -> ImTextureRect:
+    pass
+
+# IMGUI_API ImTextureRect*    ImFontAtlasPackGetRectSafe(ImFontAtlas* atlas, ImFontAtlasRectId id);    /* original C++ signature */
+def im_font_atlas_pack_get_rect_safe(atlas: ImFontAtlas, id_: ImFontAtlasRectId) -> ImTextureRect:
     pass
 
 # IMGUI_API void              ImFontAtlasPackDiscardRect(ImFontAtlas* atlas, ImFontAtlasRectId id);    /* original C++ signature */

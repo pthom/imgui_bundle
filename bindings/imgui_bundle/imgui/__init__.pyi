@@ -2050,7 +2050,7 @@ def is_item_toggled_selection() -> bool:
 # - This is essentially a thin wrapper to using BeginChild/EndChild with the ImGuiChildFlags_FrameStyle flag for stylistic changes + displaying a label.
 # - If you don't need a label you can probably simply use BeginChild() with the ImGuiChildFlags_FrameStyle flag for the same result.
 # - You can submit contents and manage your selection state however you want it, by creating e.g. Selectable() or any other items.
-# - The simplified/old ListBox() api are helpers over BeginListBox()/EndListBox() which are kept available for convenience purpose. This is analoguous to how Combos are created.
+# - The simplified/old ListBox() api are helpers over BeginListBox()/EndListBox() which are kept available for convenience purpose. This is analogous to how Combos are created.
 # - Choose frame width:   size.x > 0.0: custom  /  size.x < 0.0 or -FLT_MIN: right-align   /  size.x = 0.0 (default): use current ItemWidth
 # - Choose frame height:  size.y > 0.0: custom  /  size.y < 0.0 or -FLT_MIN: bottom-align  /  size.y = 0.0 (default): arbitrary default height which can fit ~7 items
 # IMGUI_API bool          BeginListBox(const char* label, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
@@ -3012,7 +3012,7 @@ def set_mouse_cursor(cursor_type: MouseCursor) -> None:
 
 # IMGUI_API void          SetNextFrameWantCaptureMouse(bool want_capture_mouse);                  /* original C++ signature */
 def set_next_frame_want_capture_mouse(want_capture_mouse: bool) -> None:
-    """Override io.WantCaptureMouse flag next frame (said flag is left for your application to handle, typical when True it instucts your app to ignore inputs). This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse;" after the next NewFrame() call."""
+    """Override io.WantCaptureMouse flag next frame (said flag is left for your application to handle, typical when True it instructs your app to ignore inputs). This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse;" after the next NewFrame() call."""
     pass
 
 # Clipboard Utilities
@@ -3443,6 +3443,19 @@ class TreeNodeFlags_(enum.Enum):
     collapsing_header = (
         enum.auto()
     )  # (= TreeNodeFlags_Framed | TreeNodeFlags_NoTreePushOnOpen | TreeNodeFlags_NoAutoOpenOnLog)
+
+    # [EXPERIMENTAL] Draw lines connecting TreeNode hierarchy. Discuss in GitHub issue #2920.
+    # Default value is pulled from style.TreeLinesFlags. May be overridden in TreeNode calls.
+    # ImGuiTreeNodeFlags_DrawLinesNone        = 1 << 18,      /* original C++ signature */
+    draw_lines_none = enum.auto()  # (= 1 << 18)  # No lines drawn
+    # ImGuiTreeNodeFlags_DrawLinesFull        = 1 << 19,      /* original C++ signature */
+    draw_lines_full = (
+        enum.auto()
+    )  # (= 1 << 19)  # Horizontal lines to child nodes. Vertical line drawn down to TreePop() position: cover full contents. Faster (for large trees).
+    # ImGuiTreeNodeFlags_DrawLinesToNodes     = 1 << 20,      /* original C++ signature */
+    draw_lines_to_nodes = (
+        enum.auto()
+    )  # (= 1 << 20)  # Horizontal lines to child nodes. Vertical line drawn down to bottom-most child node. Slower (for large trees).
 
 class PopupFlags_(enum.Enum):
     """Flags for OpenPopup*(), BeginPopupContext*(), IsPopupOpen() functions.
@@ -4530,24 +4543,26 @@ class Col_(enum.Enum):
     table_row_bg_alt = enum.auto()  # (= 51)  # Table row background (odd rows)
     # ImGuiCol_TextLink,                  /* original C++ signature */
     text_link = enum.auto()  # (= 52)  # Hyperlink color
-    # ImGuiCol_TextSelectedBg,    /* original C++ signature */
-    text_selected_bg = enum.auto()  # (= 53)
+    # ImGuiCol_TextSelectedBg,            /* original C++ signature */
+    text_selected_bg = enum.auto()  # (= 53)  # Selected text inside an InputText
+    # ImGuiCol_TreeLines,                 /* original C++ signature */
+    tree_lines = enum.auto()  # (= 54)  # Tree node hierarchy outlines when using ImGuiTreeNodeFlags_DrawLines
     # ImGuiCol_DragDropTarget,            /* original C++ signature */
-    drag_drop_target = enum.auto()  # (= 54)  # Rectangle highlighting a drop target
+    drag_drop_target = enum.auto()  # (= 55)  # Rectangle highlighting a drop target
     # ImGuiCol_NavCursor,                 /* original C++ signature */
-    nav_cursor = enum.auto()  # (= 55)  # Color of keyboard/gamepad navigation cursor/rectangle, when visible
+    nav_cursor = enum.auto()  # (= 56)  # Color of keyboard/gamepad navigation cursor/rectangle, when visible
     # ImGuiCol_NavWindowingHighlight,     /* original C++ signature */
-    nav_windowing_highlight = enum.auto()  # (= 56)  # Highlight window when using CTRL+TAB
+    nav_windowing_highlight = enum.auto()  # (= 57)  # Highlight window when using CTRL+TAB
     # ImGuiCol_NavWindowingDimBg,         /* original C++ signature */
     nav_windowing_dim_bg = (
         enum.auto()
-    )  # (= 57)  # Darken/colorize entire screen behind the CTRL+TAB window list, when active
+    )  # (= 58)  # Darken/colorize entire screen behind the CTRL+TAB window list, when active
     # ImGuiCol_ModalWindowDimBg,          /* original C++ signature */
     modal_window_dim_bg = (
         enum.auto()
-    )  # (= 58)  # Darken/colorize entire screen behind a modal window, when one is active
+    )  # (= 59)  # Darken/colorize entire screen behind a modal window, when one is active
     # ImGuiCol_COUNT,    /* original C++ signature */
-    count = enum.auto()  # (= 59)
+    count = enum.auto()  # (= 60)
 
 class StyleVar_(enum.Enum):
     """Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.
@@ -4621,21 +4636,25 @@ class StyleVar_(enum.Enum):
     table_angled_headers_angle = enum.auto()  # (= 28)  # float     TableAngledHeadersAngle
     # ImGuiStyleVar_TableAngledHeadersTextAlign,    /* original C++ signature */
     table_angled_headers_text_align = enum.auto()  # (= 29)  # ImVec2  TableAngledHeadersTextAlign
+    # ImGuiStyleVar_TreeLinesSize,                /* original C++ signature */
+    tree_lines_size = enum.auto()  # (= 30)  # float     TreeLinesSize
+    # ImGuiStyleVar_TreeLinesRounding,            /* original C++ signature */
+    tree_lines_rounding = enum.auto()  # (= 31)  # float     TreeLinesRounding
     # ImGuiStyleVar_ButtonTextAlign,              /* original C++ signature */
-    button_text_align = enum.auto()  # (= 30)  # ImVec2    ButtonTextAlign
+    button_text_align = enum.auto()  # (= 32)  # ImVec2    ButtonTextAlign
     # ImGuiStyleVar_SelectableTextAlign,          /* original C++ signature */
-    selectable_text_align = enum.auto()  # (= 31)  # ImVec2    SelectableTextAlign
+    selectable_text_align = enum.auto()  # (= 33)  # ImVec2    SelectableTextAlign
     # ImGuiStyleVar_SeparatorTextBorderSize,      /* original C++ signature */
-    separator_text_border_size = enum.auto()  # (= 32)  # float     SeparatorTextBorderSize
+    separator_text_border_size = enum.auto()  # (= 34)  # float     SeparatorTextBorderSize
     # ImGuiStyleVar_SeparatorTextAlign,           /* original C++ signature */
-    separator_text_align = enum.auto()  # (= 33)  # ImVec2    SeparatorTextAlign
+    separator_text_align = enum.auto()  # (= 35)  # ImVec2    SeparatorTextAlign
     # ImGuiStyleVar_SeparatorTextPadding,         /* original C++ signature */
-    separator_text_padding = enum.auto()  # (= 34)  # ImVec2    SeparatorTextPadding
+    separator_text_padding = enum.auto()  # (= 36)  # ImVec2    SeparatorTextPadding
     # ImGuiStyleVar_DockingSeparatorSize,         /* original C++ signature */
-    docking_separator_size = enum.auto()  # (= 35)  # float     DockingSeparatorSize
+    docking_separator_size = enum.auto()  # (= 37)  # float     DockingSeparatorSize
     # ImGuiStyleVar_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 36)
+    count = enum.auto()  # (= 38)
 
 class ButtonFlags_(enum.Enum):
     """Flags for InvisibleButton() [extended in imgui_internal.h]"""
@@ -6400,6 +6419,74 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
     # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImFontConfig) -> None:
+        pass
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    def clear(self) -> None:
+        """Important: does not destruct anything
+        (private API)
+        """
+        pass
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    def clear_destruct(self) -> None:
+        """Important: never called automatically! always explicit.
+        (private API)
+        """
+        pass
+    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> ImFontConfig:
+        """(private API)"""
+        pass
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> ImFontConfig:
+        """(private API)"""
+        pass
+    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    def push_back(self, v: ImFontConfig) -> None:
+        """(private API)"""
+        pass
+    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    def pop_back(self) -> None:
+        """(private API)"""
+        pass
+    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    def push_front(self, v: ImFontConfig) -> None:
+        """(private API)"""
+        pass
+
+    def __iter__(self) -> Iterator[ImFontConfig]:
+        pass
+
+    def __len__(self) -> int:
+        pass
+
+class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontConfig *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
+    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    @overload
+    def __init__(self, src: ImVector_ImFontConfig_ptr) -> None:
         pass
     # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
     def clear(self) -> None:
@@ -8543,6 +8630,12 @@ class Style:
     )
     # ImVec2      TableAngledHeadersTextAlign;    /* original C++ signature */
     table_angled_headers_text_align: ImVec2  # Alignment of angled headers within the cell
+    # ImGuiTreeNodeFlags TreeLinesFlags;    /* original C++ signature */
+    tree_lines_flags: TreeNodeFlags  # Default way to draw lines connecting TreeNode hierarchy. ImGuiTreeNodeFlags_DrawLinesNone or ImGuiTreeNodeFlags_DrawLinesFull or ImGuiTreeNodeFlags_DrawLinesToNodes.
+    # float       TreeLinesSize;    /* original C++ signature */
+    tree_lines_size: float  # Thickness of outlines when using ImGuiTreeNodeFlags_DrawLines.
+    # float       TreeLinesRounding;    /* original C++ signature */
+    tree_lines_rounding: float  # Radius of lines connecting child nodes to the vertical line.
     # ImGuiDir    ColorButtonPosition;    /* original C++ signature */
     color_button_position: (
         Dir  # Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.
@@ -9954,7 +10047,7 @@ class ImDrawCmd:
     # ImVec4          ClipRect;    /* original C++ signature */
     clip_rect: ImVec4  # 4*4  // Clipping rectangle (x1, y1, x2, y2). Subtract ImDrawData->DisplayPos to get clipping rectangle in "viewport" coordinates
     # ImTextureRef    TexRef;    /* original C++ signature */
-    tex_ref: ImTextureRef  # 16   // User-provided texture ID. Set by user in ImFontAtlas::SetTexID() for fonts or passed to Image*() functions. Ignore if never using images or multiple fonts atlas.
+    tex_ref: ImTextureRef  # 16   // Reference to a font/texture atlas (where backend called ImTextureData::SetTexID()) or to a user-provided texture ID (via e.g. ImGui::Image() calls). Both will lead to a ImTextureID value.
     # unsigned int    VtxOffset;    /* original C++ signature */
     vtx_offset: int  # 4    // Start offset in vertex buffer. ImGuiBackendFlags_RendererHasVtxOffset: always 0, otherwise may be >0 to support meshes larger than 64K vertices with 16-bit indices.
     # unsigned int    IdxOffset;    /* original C++ signature */
@@ -10723,56 +10816,56 @@ class ImTextureData:
     Why does we store two identifiers: TexID and BackendUserData?
     - ImTextureID    TexID           = lower-level identifier stored in ImDrawCmd. ImDrawCmd can refer to textures not created by the backend, and for which there's no ImTextureData.
     - None*          BackendUserData = higher-level opaque storage for backend own book-keeping. Some backends may have enough with TexID and not need both.
+    In columns below: who reads/writes each fields? 'r'=read, 'w'=write, 'core'=main library, 'backend'=renderer backend
     """
 
-    # ImTextureStatus     Status;    /* original C++ signature */
-    status: ImTextureStatus  # ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy
-    # ImTextureFormat     Format;    /* original C++ signature */
-    format: ImTextureFormat  # ImTextureFormat_RGBA32 (default) or ImTextureFormat_Alpha8
-    # int                 Width;    /* original C++ signature */
-    width: int  # Texture width
-    # int                 Height;    /* original C++ signature */
-    height: int  # Texture height
-    # int                 BytesPerPixel;    /* original C++ signature */
-    bytes_per_pixel: int  # 4 or 1
+    # ------------------------------------------ core / backend ---------------------------------------
     # int                 UniqueID;    /* original C++ signature */
-    unique_id: (
-        int  # Sequential index to facilitate identifying a texture when debugging/printing. Only unique per atlas.
-    )
-    # uchar*      Pixels;    /* original C++ signature */
-    pixels: uchar  # Pointer to buffer holding 'Width*Height' pixels and 'Width*Height*BytesPerPixels' bytes.
-    # ImTextureID         TexID;    /* original C++ signature */
-    tex_id: ImTextureID  # Always use SetTexID() to modify: Identifier stored in ImDrawCmd::GetTexID() and passed to backend RenderDrawData loop.
+    unique_id: int  # w    -   // Sequential index to facilitate identifying a texture when debugging/printing. Unique per atlas.
+    # ImTextureStatus     Status;    /* original C++ signature */
+    status: ImTextureStatus  # rw   rw  // ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy
     # void*               BackendUserData;    /* original C++ signature */
-    backend_user_data: Any  # Convenience storage for backend. Some backends may have enough with TexID.
-    # ImTextureRect       UsedRect;    /* original C++ signature */
-    used_rect: ImTextureRect  # Bounding box encompassing all past and queued Updates[].
-    # ImTextureRect       UpdateRect;    /* original C++ signature */
-    update_rect: ImTextureRect  # Bounding box encompassing all queued Updates[].
-    # ImVector<ImTextureRect> Updates;    /* original C++ signature */
-    updates: ImVector_ImTextureRect  # Array of individual updates.
-    # int                 UnusedFrames;    /* original C++ signature */
-    unused_frames: int  # In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used.
-    # unsigned short      RefCount;    /* original C++ signature */
-    ref_count: int  # Number of contexts using this texture.
-    # bool                UseColors;    /* original C++ signature */
-    use_colors: bool  # Tell whether our texture data is known to use colors (rather than just white + alpha).
-    # bool                WantDestroyNextFrame;    /* original C++ signature */
-    want_destroy_next_frame: (
-        bool  # [Internal] Queued to set ImTextureStatus_WantDestroy next frame. May still be used in the current frame.
+    backend_user_data: Any  # -    rw  // Convenience storage for backend. Some backends may have enough with TexID.
+    # ImTextureID         TexID;    /* original C++ signature */
+    tex_id: ImTextureID  # r    w   // Backend-specific texture identifier. Always use SetTexID() to modify. The identifier will stored in ImDrawCmd::GetTexID() and passed to backend's RenderDrawData function.
+    # ImTextureFormat     Format;    /* original C++ signature */
+    format: ImTextureFormat  # w    r   // ImTextureFormat_RGBA32 (default) or ImTextureFormat_Alpha8
+    # int                 Width;    /* original C++ signature */
+    width: int  # w    r   // Texture width
+    # int                 Height;    /* original C++ signature */
+    height: int  # w    r   // Texture height
+    # int                 BytesPerPixel;    /* original C++ signature */
+    bytes_per_pixel: int  # w    r   // 4 or 1
+    # uchar*      Pixels;    /* original C++ signature */
+    pixels: (
+        uchar  # w    r   // Pointer to buffer holding 'Width*Height' pixels and 'Width*Height*BytesPerPixels' bytes.
     )
+    # ImTextureRect       UsedRect;    /* original C++ signature */
+    used_rect: ImTextureRect  # w    r   // Bounding box encompassing all past and queued Updates[].
+    # ImTextureRect       UpdateRect;    /* original C++ signature */
+    update_rect: ImTextureRect  # w    r   // Bounding box encompassing all queued Updates[].
+    # ImVector<ImTextureRect> Updates;    /* original C++ signature */
+    updates: ImVector_ImTextureRect  # w    r   // Array of individual updates.
+    # int                 UnusedFrames;    /* original C++ signature */
+    unused_frames: int  # w    r   // In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used.
+    # unsigned short      RefCount;    /* original C++ signature */
+    ref_count: int  # w    r   // Number of contexts using this texture. Used during backend shutdown.
+    # bool                UseColors;    /* original C++ signature */
+    use_colors: (
+        bool  # w    r   // Tell whether our texture data is known to use colors (rather than just white + alpha).
+    )
+    # bool                WantDestroyNextFrame;    /* original C++ signature */
+    want_destroy_next_frame: bool  # rw   -   // [Internal] Queued to set ImTextureStatus_WantDestroy next frame. May still be used in the current frame.
 
     # ImTextureData()     { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         """Functions"""
         pass
-    # void                Create(ImTextureFormat format, int w, int h);    /* original C++ signature */
+    # IMGUI_API void      Create(ImTextureFormat format, int w, int h);    /* original C++ signature */
     def create(self, format: ImTextureFormat, w: int, h: int) -> None:
-        """(private API)"""
         pass
-    # void                DestroyPixels();    /* original C++ signature */
+    # IMGUI_API void      DestroyPixels();    /* original C++ signature */
     def destroy_pixels(self) -> None:
-        """(private API)"""
         pass
     #                                #ifdef IMGUI_BUNDLE_PYTHON_API
     #
@@ -10857,7 +10950,7 @@ class ImFontConfig:
     # float           RasterizerMultiply;    /* original C++ signature */
     rasterizer_multiply: float  # 1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.
     # float           RasterizerDensity;    /* original C++ signature */
-    rasterizer_density: float  # 1.0     // DPI scale for rasterization, not altering other font metrics: make it easy to swap between e.g. a 100% and a 400% fonts for a zooming display. IMPORTANT: If you increase this it is expected that you increase font scale accordingly, otherwise quality may look lowered.
+    rasterizer_density: float  # 1.0     // DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.
     # ImWchar         EllipsisChar;    /* original C++ signature */
     ellipsis_char: ImWchar  # 0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.
 
@@ -10877,27 +10970,27 @@ class ImFontConfig:
 
 class ImFontGlyph:
     """Hold rendering data for one glyph.
-    (Note: some language parsers may fail to convert the 31+1 bitfield members, in this case maybe drop store a single u32 or we can rework this)
+    (Note: some language parsers may fail to convert the bitfield members, in this case maybe drop store a single u32 or we can rework this)
     """
 
     # float           AdvanceX;    /* original C++ signature */
-    advance_x: float  # Horizontal distance to advance layout with
+    advance_x: float  # Horizontal distance to advance cursor/layout position.
     # float           X0,     /* original C++ signature */
-    x0: float  # Glyph corners
+    x0: float  # Glyph corners. Offsets from current cursor/layout position.
     # Y0,     /* original C++ signature */
-    y0: float  # Glyph corners
+    y0: float  # Glyph corners. Offsets from current cursor/layout position.
     # X1,     /* original C++ signature */
-    x1: float  # Glyph corners
+    x1: float  # Glyph corners. Offsets from current cursor/layout position.
     # Y1;    /* original C++ signature */
-    y1: float  # Glyph corners
+    y1: float  # Glyph corners. Offsets from current cursor/layout position.
     # float           U0,     /* original C++ signature */
-    u0: float  # Texture coordinates
+    u0: float  # Texture coordinates for the current value of ImFontAtlas->TexRef. Cached equivalent of calling GetCustomRect() with PackId.
     # V0,     /* original C++ signature */
-    v0: float  # Texture coordinates
+    v0: float  # Texture coordinates for the current value of ImFontAtlas->TexRef. Cached equivalent of calling GetCustomRect() with PackId.
     # U1,     /* original C++ signature */
-    u1: float  # Texture coordinates
+    u1: float  # Texture coordinates for the current value of ImFontAtlas->TexRef. Cached equivalent of calling GetCustomRect() with PackId.
     # V1;    /* original C++ signature */
-    v1: float  # Texture coordinates
+    v1: float  # Texture coordinates for the current value of ImFontAtlas->TexRef. Cached equivalent of calling GetCustomRect() with PackId.
     # int             PackId;    /* original C++ signature */
     pack_id: int  # [Internal] ImFontAtlasRectId value (FIXME: Cold data, could be moved elsewhere?)
 
@@ -10966,6 +11059,29 @@ class ImFontGlyphRangesBuilder:
     # IMGUI_API void  BuildRanges(ImVector<ImWchar>* out_ranges);                     /* original C++ signature */
     def build_ranges(self, out_ranges: ImVector_ImWchar) -> None:
         """Output new ranges"""
+        pass
+
+class ImFontAtlasRect:
+    """Output of ImFontAtlas::GetCustomRect() when using custom rectangles.
+    Those values may not be cached/stored as they are only valid for the current value of atlas->TexRef
+    (this is in theory derived from ImTextureRect but we use separate structures for reasons)
+    """
+
+    # unsigned short  x,     /* original C++ signature */
+    x: int  # Position (in current texture)
+    # y;    /* original C++ signature */
+    y: int  # Position (in current texture)
+    # unsigned short  w,     /* original C++ signature */
+    w: int  # Size
+    # h;    /* original C++ signature */
+    h: int  # Size
+    # ImVec2          uv0,     /* original C++ signature */
+    uv0: ImVec2  # UV coordinates (in current texture)
+    # uv1;    /* original C++ signature */
+    uv1: ImVec2  # UV coordinates (in current texture)
+
+    # ImFontAtlasRect() { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
+    def __init__(self) -> None:
         pass
 
 class ImFontAtlasFlags_(enum.Enum):
@@ -11120,29 +11236,32 @@ class ImFontAtlas:
 
     # Register and retrieve custom rectangles
     # - You can request arbitrary rectangles to be packed into the atlas, for your own purpose.
-    # - You can request your rectangles to be mapped as font glyph (given a font + Unicode point),
-    #   so you can render e.g. custom colorful icons and use them as regular glyphs.
-    # - Since 1.92.X, packing is done immediately in the function call.
-    # - You can render your pixels into the texture right after calling the AddCustomRectXXX() functions.
-    # - Texture may be resized, so you cannot cache UV coordinates: always use GetCustomRectUV()!
-    # - If you render colored output into your AddCustomRectRegular() rectangle: set 'atlas->TexPixelsUseColors = True' as this may help some backends decide of preferred texture format.
+    # - Since 1.92.X, packing is done immediately in the function call (previously packing was done during the Build call)
+    # - You can render your pixels into the texture right after calling the AddCustomRect() functions.
+    # - VERY IMPORTANT:
+    #   - Texture may be created/resized at any time when calling ImGui or ImFontAtlas functions.
+    #   - IT WILL INVALIDATE RECTANGLE DATA SUCH AS UV COORDINATES. Always use latest values from GetCustomRect().
+    #   - UV coordinates are associated to the current texture identifier aka 'atlas->TexRef'. Both TexRef and UV coordinates are typically changed at the same time.
+    # - If you render colored output into your custom rectangles: set 'atlas->TexPixelsUseColors = True' as this may help some backends decide of preferred texture format.
     # - Read docs/FONTS.md for more details about using colorful icons.
     # - Note: this API may be reworked further in order to facilitate supporting e.g. multi-monitor, varying DPI settings.
-    # - Pre-1.92 names:
-    #   - AddCustomRectFontGlyph() --> Use custom ImFontLoader inside ImFontConfig
+    # - (Pre-1.92 names) ------------> (1.92 names)
     #   - GetCustomRectByIndex()   --> Use GetCustomRect()
-    #   - CalcCustomRectUV()       --> Use GetCustomRectUV()
-    # IMGUI_API int                   AddCustomRectRegular(int width, int height);        /* original C++ signature */
-    def add_custom_rect_regular(self, width: int, height: int) -> int:
-        """Register a rectangle. Return -1 on error."""
+    #   - CalcCustomRectUV()       --> Use GetCustomRect() and read uv0, uv1 fields.
+    #   - AddCustomRectRegular()   --> Renamed to AddCustomRect()
+    #   - AddCustomRectFontGlyph() --> Prefer using custom ImFontLoader inside ImFontConfig
+    #   - ImFontAtlasCustomRect    --> Renamed to ImFontAtlasRect
+    # IMGUI_API ImFontAtlasRectId AddCustomRect(int width, int height, ImFontAtlasRect* out_r = NULL);    /* original C++ signature */
+    def add_custom_rect(self, width: int, height: int, out_r: Optional[ImFontAtlasRect] = None) -> ImFontAtlasRectId:
+        """Register a rectangle. Return -1 (ImFontAtlasRectId_Invalid) on error."""
         pass
-    # IMGUI_API const ImTextureRect*  GetCustomRect(int id);                              /* original C++ signature */
-    def get_custom_rect(self, id_: int) -> ImTextureRect:
-        """Get rectangle coordinate in current texture."""
+    # IMGUI_API void              RemoveCustomRect(ImFontAtlasRectId id);                                 /* original C++ signature */
+    def remove_custom_rect(self, id_: ImFontAtlasRectId) -> None:
+        """Unregister a rectangle. Existing pixels will stay in texture until resized / garbage collected."""
         pass
-    # IMGUI_API void                  GetCustomRectUV(const ImTextureRect* r, ImVec2* out_uv_min, ImVec2* out_uv_max) const;     /* original C++ signature */
-    def get_custom_rect_uv(self, r: ImTextureRect, out_uv_min: ImVec2Like, out_uv_max: ImVec2Like) -> None:
-        """Get UV coordinates for a given rectangle"""
+    # IMGUI_API bool              GetCustomRect(ImFontAtlasRectId id, ImFontAtlasRect* out_r) const;      /* original C++ signature */
+    def get_custom_rect(self, id_: ImFontAtlasRectId, out_r: ImFontAtlasRect) -> bool:
+        """Get rectangle coordinates for current texture. Valid immediately, never store this (read above)!"""
         pass
     # -------------------------------------------
     # Members
@@ -11168,9 +11287,11 @@ class ImFontAtlas:
     # Store your own atlas related user-data (if e.g. you have multiple font atlas).
 
     # Output
+    # - Because textures are dynamically created/resized, the current texture identifier may changed at *ANY TIME* during the frame.
+    # - This should not affect you as you can always use the latest value. But note that any precomputed UV coordinates are only valid for the current TexRef.
     # ImTextureData*              TexData;    /* original C++ signature */
     tex_data: ImTextureData
-    # Current texture.
+    # Latest texture.
 
     #                                     #ifdef IMGUI_BUNDLE_PYTHON_API
     #
@@ -11210,9 +11331,9 @@ class ImFontAtlas:
     # bool                        TexPixelsUseColors;    /* original C++ signature */
     tex_pixels_use_colors: bool  # Tell whether our texture data is known to use colors (rather than just alpha channel), in order to help backend select a format or conversion process.
     # ImVec2                      TexUvScale;    /* original C++ signature */
-    tex_uv_scale: ImVec2  # = (1.0/TexData->TexWidth, 1.0/TexData->TexHeight)
+    tex_uv_scale: ImVec2  # = (1.0/TexData->TexWidth, 1.0/TexData->TexHeight). May change as new texture gets created.
     # ImVec2                      TexUvWhitePixel;    /* original C++ signature */
-    tex_uv_white_pixel: ImVec2  # Texture coordinates to a white pixel
+    tex_uv_white_pixel: ImVec2  # Texture coordinates to a white pixel. May change as new texture gets created.
     # ImVector<ImFont*>           Fonts;    /* original C++ signature */
     fonts: ImVector_ImFont_ptr  # Hold all the fonts returned by AddFont*. Fonts[0] is the default font upon calling ImGui::NewFrame(), use ImGui::PushFont()/PopFont() to change the current font.
     # ImVector<ImFontConfig>      Sources;    /* original C++ signature */
@@ -11220,7 +11341,7 @@ class ImFontAtlas:
     # int                         TexNextUniqueID;    /* original C++ signature */
     tex_next_unique_id: int  # Next value to be stored in TexData->UniqueID
     # int                         FontNextUniqueID;    /* original C++ signature */
-    font_next_unique_id: int  # Next value to be stored in ImFont->SourceID
+    font_next_unique_id: int  # Next value to be stored in ImFont->FontID
     # const ImFontLoader*         FontLoader;    /* original C++ signature */
     font_loader: ImFontLoader  # Font loader opaque interface (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE). Don't set directly! # (const)
     # const char*                 FontLoaderName;    /* original C++ signature */
@@ -11235,7 +11356,7 @@ class ImFontAtlas:
 
     # [Obsolete]
     # int                               TexDesiredWidth;         // OBSOLETED in 1.92.X (force texture width before calling Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height)
-    # typedef ImTextureRect             ImFontAtlasCustomRect;   // OBSOLETED in 1.92.X
+    # typedef ImFontAtlasRect           ImFontAtlasCustomRect;   // OBSOLETED in 1.92.X
     # typedef ImFontAtlasCustomRect     CustomRect;              // OBSOLETED in 1.72+
     # typedef ImFontGlyphRangesBuilder  GlyphRangesBuilder;      // OBSOLETED in 1.67+
 
@@ -11251,6 +11372,8 @@ class ImFontBaked:
     fallback_advance_x: float  # 4     // out // FindGlyph(FallbackChar)->AdvanceX
     # float                       Size;    /* original C++ signature */
     size: float  # 4     // in  // Height of characters/line, set during loading (doesn't change after loading)
+    # float                       RasterizerDensity;    /* original C++ signature */
+    rasterizer_density: float  # 4     // in  // Density this is baked at
 
     # [Internal] Members: Hot ~28/36 bytes (for RenderText loop)
     # ImVector<ImU16>             IndexLookup;    /* original C++ signature */
@@ -11328,11 +11451,13 @@ class ImFont:
 
     # [Internal] Members: Hot ~12-20 bytes
     # ImFontBaked*                LastBaked;    /* original C++ signature */
-    last_baked: ImFontBaked  # 4-8   // Cache last bound baked. DO NOT USE. Use GetFontBaked().
+    last_baked: ImFontBaked  # 4-8   // Cache last bound baked. NEVER USE DIRECTLY. Use GetFontBaked().
     # ImFontAtlas*                ContainerAtlas;    /* original C++ signature */
-    container_atlas: ImFontAtlas  # 4-8   // What we has been loaded into
+    container_atlas: ImFontAtlas  # 4-8   // What we have been loaded into.
     # ImFontFlags                 Flags;    /* original C++ signature */
-    flags: ImFontFlags  # 4     // Font flags
+    flags: ImFontFlags  # 4     // Font flags.
+    # float                       CurrentRasterizerDensity;    /* original C++ signature */
+    current_rasterizer_density: float  # Current rasterizer density. This is a varying state of the font.
 
     # [Internal] Members: Cold ~24-52 bytes
     # Conceptually Sources[] is the list of font sources merged to create this font.
@@ -11340,10 +11465,8 @@ class ImFont:
     font_id: ID  # Unique identifier for the font
     # float                       DefaultSize;    /* original C++ signature */
     default_size: float  # 4     // in  // Default font size
-    # short                       SourcesCount;    /* original C++ signature */
-    sources_count: int  # 2     // in  // Number of ImFontConfig involved in creating this font. Usually 1, or >1 when merging multiple font sources into one ImFont.
-    # ImFontConfig*               Sources;    /* original C++ signature */
-    sources: ImFontConfig  # 4-8   // in  // Pointer within ContainerAtlas->Sources[], to SourcesCount instances
+    # ImVector<ImFontConfig*>     Sources;    /* original C++ signature */
+    sources: ImVector_ImFontConfig_ptr  # 16    // in  // List of sources. Pointers within ContainerAtlas->Sources[]
     # ImWchar                     EllipsisChar;    /* original C++ signature */
     ellipsis_char: ImWchar  # 2-4   // out // Character used for ellipsis rendering ('...').
     # ImWchar                     FallbackChar;    /* original C++ signature */
@@ -11368,7 +11491,7 @@ class ImFont:
     def is_loaded(self) -> bool:
         """(private API)"""
         pass
-    # const char*                 GetDebugName() const            { return Sources ? Sources[0].Name : "<unknown>"; }     /* original C++ signature */
+    # const char*                 GetDebugName() const            { return Sources.Size ? Sources[0]->Name : "<unknown>"; }     /* original C++ signature */
     def get_debug_name(self) -> str:
         """(private API)
 
@@ -11377,17 +11500,25 @@ class ImFont:
         pass
     # utf8
 
-    #                             #ifdef IMGUI_BUNDLE_PYTHON_API
+    #                                   #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # IMGUI_API int               CalcWordWrapPositionPython(float size, const char* text, float wrap_width);    /* original C++ signature */
     def calc_word_wrap_position_python(self, size: float, text: str, wrap_width: float) -> int:
         """Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)"""
         pass
-    #                             #endif
+    #                                   #endif
     #
 
-    # IMGUI_API void              RenderChar(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, ImWchar c);    /* original C++ signature */
-    def render_char(self, draw_list: ImDrawList, size: float, pos: ImVec2Like, col: ImU32, c: ImWchar) -> None:
+    # IMGUI_API void              RenderChar(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, ImWchar c, const ImVec4* cpu_fine_clip = NULL);    /* original C++ signature */
+    def render_char(
+        self,
+        draw_list: ImDrawList,
+        size: float,
+        pos: ImVec2Like,
+        col: ImU32,
+        c: ImWchar,
+        cpu_fine_clip: Optional[ImVec4Like] = None,
+    ) -> None:
         pass
     # IMGUI_API void              RenderText(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, const ImVec4& clip_rect, const char* text_begin, const char* text_end, float wrap_width = 0.0f, bool cpu_fine_clip = false);    /* original C++ signature */
     def render_text(
@@ -11708,14 +11839,18 @@ class PlatformMonitor:
         pass
 
 class PlatformImeData:
-    """(Optional) Support for IME (Input Method Editor) via the platform_io.Platform_SetImeDataFn() function."""
+    """(Optional) Support for IME (Input Method Editor) via the platform_io.Platform_SetImeDataFn() function. Handler is called during EndFrame()."""
 
     # bool    WantVisible;    /* original C++ signature */
-    want_visible: bool  # A widget wants the IME to be visible
+    want_visible: bool  # A widget wants the IME to be visible.
+    # bool    WantTextInput;    /* original C++ signature */
+    want_text_input: bool  # A widget wants text input, not necessarily IME to be visible. This is automatically set to the upcoming value of io.WantTextInput.
     # ImVec2  InputPos;    /* original C++ signature */
-    input_pos: ImVec2  # Position of the input cursor
+    input_pos: ImVec2  # Position of input cursor (for IME).
     # float   InputLineHeight;    /* original C++ signature */
-    input_line_height: float  # Line height
+    input_line_height: float  # Line height (for IME).
+    # ImGuiID ViewportId;    /* original C++ signature */
+    viewport_id: ID  # ID of platform window/viewport.
 
     # ImGuiPlatformImeData()          { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:

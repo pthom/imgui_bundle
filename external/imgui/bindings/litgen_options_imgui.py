@@ -77,6 +77,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiViewport*",
         "ImGuiWindow*",
         "ImFontConfig",
+        "ImFontConfig*",
         "ImGuiFocusScopeData",
         "ImGuiSelectionRequest",
         # from imgui_internal.h

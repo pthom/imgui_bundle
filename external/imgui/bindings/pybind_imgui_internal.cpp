@@ -801,9 +801,11 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyEnumTreeNodeFlagsPrivate_ =
         nb::enum_<ImGuiTreeNodeFlagsPrivate_>(m, "TreeNodeFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiTreeNodeFlags_")
+            .value("no_nav_focus", ImGuiTreeNodeFlags_NoNavFocus, "Don't claim nav focus when interacting with this item (#8551)")
             .value("clip_label_for_trailing_button", ImGuiTreeNodeFlags_ClipLabelForTrailingButton, "FIXME-WIP: Hard-coded for CollapsingHeader()")
             .value("upside_down_arrow", ImGuiTreeNodeFlags_UpsideDownArrow, "FIXME-WIP: Turn Down arrow into an Up arrow, for reversed trees (#6517)")
-            .value("open_on_mask_", ImGuiTreeNodeFlags_OpenOnMask_, "");
+            .value("open_on_mask_", ImGuiTreeNodeFlags_OpenOnMask_, "")
+            .value("draw_lines_mask_", ImGuiTreeNodeFlags_DrawLinesMask_, "");
 
 
     auto pyEnumSeparatorFlags_ =
@@ -1140,7 +1142,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImGuiTreeNodeStackData =
         nb::class_<ImGuiTreeNodeStackData>
             (m, "TreeNodeStackData", " Store data emitted by TreeNode() for usage by TreePop()\n - To implement ImGuiTreeNodeFlags_NavLeftJumpsBackHere: store the minimum amount of data\n   which we can't infer in TreePop(), to perform the equivalent of NavApplyItemToResult().\n   Only stored when the node is a potential candidate for landing on a Left arrow jump.")
-        .def("__init__", [](ImGuiTreeNodeStackData * self, ImGuiID ID = ImGuiID(), ImGuiTreeNodeFlags TreeFlags = ImGuiTreeNodeFlags(), ImGuiItemFlags ItemFlags = ImGuiItemFlags(), const std::optional<const ImRect> & NavRect = std::nullopt)
+        .def("__init__", [](ImGuiTreeNodeStackData * self, ImGuiID ID = ImGuiID(), ImGuiTreeNodeFlags TreeFlags = ImGuiTreeNodeFlags(), ImGuiItemFlags ItemFlags = ImGuiItemFlags(), const std::optional<const ImRect> & NavRect = std::nullopt, float DrawLinesX1 = float(), float DrawLinesToNodesY2 = float(), const std::optional<const ImGuiTableColumnIdx> & DrawLinesTableColumn = std::nullopt)
         {
             new (self) ImGuiTreeNodeStackData();  // placement new
             auto r = self;
@@ -1151,13 +1153,22 @@ void py_init_module_imgui_internal(nb::module_& m)
                 r->NavRect = NavRect.value();
             else
                 r->NavRect = ImRect();
+            r->DrawLinesX1 = DrawLinesX1;
+            r->DrawLinesToNodesY2 = DrawLinesToNodesY2;
+            if (DrawLinesTableColumn.has_value())
+                r->DrawLinesTableColumn = DrawLinesTableColumn.value();
+            else
+                r->DrawLinesTableColumn = ImGuiTableColumnIdx();
         },
-        nb::arg("id_") = ImGuiID(), nb::arg("tree_flags") = ImGuiTreeNodeFlags(), nb::arg("item_flags") = ImGuiItemFlags(), nb::arg("nav_rect") = nb::none()
+        nb::arg("id_") = ImGuiID(), nb::arg("tree_flags") = ImGuiTreeNodeFlags(), nb::arg("item_flags") = ImGuiItemFlags(), nb::arg("nav_rect") = nb::none(), nb::arg("draw_lines_x1") = float(), nb::arg("draw_lines_to_nodes_y2") = float(), nb::arg("draw_lines_table_column") = nb::none()
         )
         .def_rw("id_", &ImGuiTreeNodeStackData::ID, "")
         .def_rw("tree_flags", &ImGuiTreeNodeStackData::TreeFlags, "")
         .def_rw("item_flags", &ImGuiTreeNodeStackData::ItemFlags, "Used for nav landing")
         .def_rw("nav_rect", &ImGuiTreeNodeStackData::NavRect, "Used for nav landing")
+        .def_rw("draw_lines_x1", &ImGuiTreeNodeStackData::DrawLinesX1, "")
+        .def_rw("draw_lines_to_nodes_y2", &ImGuiTreeNodeStackData::DrawLinesToNodesY2, "")
+        .def_rw("draw_lines_table_column", &ImGuiTreeNodeStackData::DrawLinesTableColumn, "")
         ;
 
 
@@ -2202,9 +2213,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("font_size", &ImGuiContext::FontSize, "== FontSizeBeforeScaling * io.FontGlobalScale * font->Scale * g.CurrentWindow->FontWindowScale. Current text height.")
         .def_rw("font_size_before_scaling", &ImGuiContext::FontSizeBeforeScaling, "== value passed to PushFontSize()")
         .def_rw("font_scale", &ImGuiContext::FontScale, "== FontBaked->Size / Font->FontSize. Scale factor over baked size.")
+        .def_rw("font_rasterizer_density", &ImGuiContext::FontRasterizerDensity, "Current font density. Used by all calls to GetFontBaked().")
         .def_rw("current_dpi_scale", &ImGuiContext::CurrentDpiScale, "Current window/viewport DpiScale == CurrentViewport->DpiScale")
         .def_rw("draw_list_shared_data", &ImGuiContext::DrawListSharedData, "")
-        .def_rw("textures", &ImGuiContext::Textures, "")
         .def_rw("time", &ImGuiContext::Time, "")
         .def_rw("frame_count", &ImGuiContext::FrameCount, "")
         .def_rw("frame_count_ended", &ImGuiContext::FrameCountEnded, "")
@@ -2349,6 +2360,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_just_moved_to_key_mods", &ImGuiContext::NavJustMovedToKeyMods, "")
         .def_rw("nav_just_moved_to_is_tabbing", &ImGuiContext::NavJustMovedToIsTabbing, "Copy of ImGuiNavMoveFlags_IsTabbing. Maybe we should store whole flags.")
         .def_rw("nav_just_moved_to_has_selection_data", &ImGuiContext::NavJustMovedToHasSelectionData, "Copy of move result's ItemFlags & ImGuiItemFlags_HasSelectionUserData). Maybe we should just store ImGuiNavItemData.")
+        .def_rw("config_nav_windowing_with_gamepad", &ImGuiContext::ConfigNavWindowingWithGamepad, "= True. Enable CTRL+TAB by holding ImGuiKey_GamepadFaceLeft (== ImGuiKey_NavGamepadMenu). When False, the button may still be used to toggle Menu layer.")
         .def_rw("config_nav_windowing_key_next", &ImGuiContext::ConfigNavWindowingKeyNext, "= ImGuiMod_Ctrl | ImGuiKey_Tab (or ImGuiMod_Super | ImGuiKey_Tab on OS X). For reconfiguration (see #4828)")
         .def_rw("config_nav_windowing_key_prev", &ImGuiContext::ConfigNavWindowingKeyPrev, "= ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab (or ImGuiMod_Super | ImGuiMod_Shift | ImGuiKey_Tab on OS X)")
         .def_rw("nav_windowing_target", &ImGuiContext::NavWindowingTarget, "Target window when doing CTRL+Tab (or Pad Menu + FocusPrev/Next), this window is temporarily displayed top-most!")
@@ -2356,6 +2368,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_windowing_list_window", &ImGuiContext::NavWindowingListWindow, "Internal window actually listing the CTRL+Tab contents")
         .def_rw("nav_windowing_timer", &ImGuiContext::NavWindowingTimer, "")
         .def_rw("nav_windowing_highlight_alpha", &ImGuiContext::NavWindowingHighlightAlpha, "")
+        .def_rw("nav_windowing_input_source", &ImGuiContext::NavWindowingInputSource, "")
         .def_rw("nav_windowing_toggle_layer", &ImGuiContext::NavWindowingToggleLayer, "")
         .def_rw("nav_windowing_toggle_key", &ImGuiContext::NavWindowingToggleKey, "")
         .def_rw("nav_windowing_accum_delta_pos", &ImGuiContext::NavWindowingAccumDeltaPos, "")
@@ -2435,7 +2448,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("clipboard_handler_data", &ImGuiContext::ClipboardHandlerData, "If no custom clipboard handler is defined")
         .def_rw("menus_id_submitted_this_frame", &ImGuiContext::MenusIdSubmittedThisFrame, "A list of menu IDs that were rendered at least once")
         .def_rw("typing_select_state", &ImGuiContext::TypingSelectState, "State for GetTypingSelectRequest()")
-        .def_rw("platform_ime_data", &ImGuiContext::PlatformImeData, "Data updated by current frame")
+        .def_rw("platform_ime_data", &ImGuiContext::PlatformImeData, "Data updated by current frame. Will be applied at end of the frame. For some backends, this is required to have WantVisible=True in order to receive text message.")
         .def_rw("platform_ime_data_prev", &ImGuiContext::PlatformImeDataPrev, "Previous frame data. When changed we call the platform_io.Platform_SetImeDataFn() handler.")
         .def_rw("platform_ime_viewport", &ImGuiContext::PlatformImeViewport, "")
         .def_rw("dock_context", &ImGuiContext::DockContext, " Extensions\n FIXME: We could provide an API to register one slot in an array held in ImGuiContext?")
@@ -2492,7 +2505,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("framerate_sec_per_frame_accum", &ImGuiContext::FramerateSecPerFrameAccum, "")
         .def_rw("want_capture_mouse_next_frame", &ImGuiContext::WantCaptureMouseNextFrame, "Explicit capture override via SetNextFrameWantCaptureMouse()/SetNextFrameWantCaptureKeyboard(). Default to -1.")
         .def_rw("want_capture_keyboard_next_frame", &ImGuiContext::WantCaptureKeyboardNextFrame, "\"")
-        .def_rw("want_text_input_next_frame", &ImGuiContext::WantTextInputNextFrame, "")
+        .def_rw("want_text_input_next_frame", &ImGuiContext::WantTextInputNextFrame, "Copied in EndFrame() from g.PlatformImeData.WanttextInput. Needs to be set for some backends (SDL3) to emit character inputs.")
         .def_rw("temp_buffer", &ImGuiContext::TempBuffer, "Temporary text buffer")
         .def(nb::init<ImFontAtlas *>(),
             nb::arg("shared_font_atlas"))
@@ -2502,7 +2515,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImGuiWindowTempData =
         nb::class_<ImGuiWindowTempData>
             (m, "WindowTempData", " Transient per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the DC variable name in ImGuiWindow.\n (That's theory, in practice the delimitation between ImGuiWindow and ImGuiWindowTempData is quite tenuous and could be reconsidered..)\n (This doesn't need a constructor because we zero-clear it as part of ImGuiWindow and all frame-temporary data are setup on Begin)")
-        .def("__init__", [](ImGuiWindowTempData * self, const std::optional<const ImVec2> & CursorPos = std::nullopt, const std::optional<const ImVec2> & CursorPosPrevLine = std::nullopt, const std::optional<const ImVec2> & CursorStartPos = std::nullopt, const std::optional<const ImVec2> & CursorMaxPos = std::nullopt, const std::optional<const ImVec2> & IdealMaxPos = std::nullopt, const std::optional<const ImVec2> & CurrLineSize = std::nullopt, const std::optional<const ImVec2> & PrevLineSize = std::nullopt, float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), const std::optional<const ImVec1> & Indent = std::nullopt, const std::optional<const ImVec1> & ColumnsOffset = std::nullopt, const std::optional<const ImVec1> & GroupOffset = std::nullopt, const std::optional<const ImVec2> & CursorStartPosLossyness = std::nullopt, ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), const std::optional<const ImVec2> & MenuBarOffset = std::nullopt, const std::optional<const ImGuiMenuColumns> & MenuColumns = std::nullopt, int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), const std::optional<const ImVector<ImGuiWindow*>> & ChildWindows = std::nullopt, int CurrentTableIdx = int(), const std::optional<const ImGuiLayoutType> & LayoutType = std::nullopt, const std::optional<const ImGuiLayoutType> & ParentLayoutType = std::nullopt, ImU32 ModalDimBgColor = ImU32(), ImGuiItemStatusFlags WindowItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags ChildItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags DockTabItemStatusFlags = ImGuiItemStatusFlags(), const std::optional<const ImRect> & DockTabItemRect = std::nullopt, float ItemWidth = float(), float TextWrapPos = float(), const std::optional<const ImVector<float>> & ItemWidthStack = std::nullopt, const std::optional<const ImVector<float>> & TextWrapPosStack = std::nullopt)
+        .def("__init__", [](ImGuiWindowTempData * self, const std::optional<const ImVec2> & CursorPos = std::nullopt, const std::optional<const ImVec2> & CursorPosPrevLine = std::nullopt, const std::optional<const ImVec2> & CursorStartPos = std::nullopt, const std::optional<const ImVec2> & CursorMaxPos = std::nullopt, const std::optional<const ImVec2> & IdealMaxPos = std::nullopt, const std::optional<const ImVec2> & CurrLineSize = std::nullopt, const std::optional<const ImVec2> & PrevLineSize = std::nullopt, float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), const std::optional<const ImVec1> & Indent = std::nullopt, const std::optional<const ImVec1> & ColumnsOffset = std::nullopt, const std::optional<const ImVec1> & GroupOffset = std::nullopt, const std::optional<const ImVec2> & CursorStartPosLossyness = std::nullopt, ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), const std::optional<const ImVec2> & MenuBarOffset = std::nullopt, const std::optional<const ImGuiMenuColumns> & MenuColumns = std::nullopt, int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), ImU32 TreeRecordsClippedNodesY2Mask = ImU32(), const std::optional<const ImVector<ImGuiWindow*>> & ChildWindows = std::nullopt, int CurrentTableIdx = int(), const std::optional<const ImGuiLayoutType> & LayoutType = std::nullopt, const std::optional<const ImGuiLayoutType> & ParentLayoutType = std::nullopt, ImU32 ModalDimBgColor = ImU32(), ImGuiItemStatusFlags WindowItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags ChildItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags DockTabItemStatusFlags = ImGuiItemStatusFlags(), const std::optional<const ImRect> & DockTabItemRect = std::nullopt, float ItemWidth = float(), float TextWrapPos = float(), const std::optional<const ImVector<float>> & ItemWidthStack = std::nullopt, const std::optional<const ImVector<float>> & TextWrapPosStack = std::nullopt)
         {
             new (self) ImGuiWindowTempData();  // placement new
             auto r = self;
@@ -2571,6 +2584,7 @@ void py_init_module_imgui_internal(nb::module_& m)
                 r->MenuColumns = ImGuiMenuColumns();
             r->TreeDepth = TreeDepth;
             r->TreeHasStackDataDepthMask = TreeHasStackDataDepthMask;
+            r->TreeRecordsClippedNodesY2Mask = TreeRecordsClippedNodesY2Mask;
             if (ChildWindows.has_value())
                 r->ChildWindows = ChildWindows.value();
             else
@@ -2603,7 +2617,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r->TextWrapPosStack = ImVector<float>();
         },
-        nb::arg("cursor_pos") = nb::none(), nb::arg("cursor_pos_prev_line") = nb::none(), nb::arg("cursor_start_pos") = nb::none(), nb::arg("cursor_max_pos") = nb::none(), nb::arg("ideal_max_pos") = nb::none(), nb::arg("curr_line_size") = nb::none(), nb::arg("prev_line_size") = nb::none(), nb::arg("curr_line_text_base_offset") = float(), nb::arg("prev_line_text_base_offset") = float(), nb::arg("is_same_line") = bool(), nb::arg("is_set_pos") = bool(), nb::arg("indent") = nb::none(), nb::arg("columns_offset") = nb::none(), nb::arg("group_offset") = nb::none(), nb::arg("cursor_start_pos_lossyness") = nb::none(), nb::arg("nav_layer_current") = ImGuiNavLayer(), nb::arg("nav_layers_active_mask") = short(), nb::arg("nav_layers_active_mask_next") = short(), nb::arg("nav_is_scroll_pushable_x") = bool(), nb::arg("nav_hide_highlight_one_frame") = bool(), nb::arg("nav_window_has_scroll_y") = bool(), nb::arg("menu_bar_appending") = bool(), nb::arg("menu_bar_offset") = nb::none(), nb::arg("menu_columns") = nb::none(), nb::arg("tree_depth") = int(), nb::arg("tree_has_stack_data_depth_mask") = ImU32(), nb::arg("child_windows") = nb::none(), nb::arg("current_table_idx") = int(), nb::arg("layout_type") = nb::none(), nb::arg("parent_layout_type") = nb::none(), nb::arg("modal_dim_bg_color") = ImU32(), nb::arg("window_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("child_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_rect") = nb::none(), nb::arg("item_width") = float(), nb::arg("text_wrap_pos") = float(), nb::arg("item_width_stack") = nb::none(), nb::arg("text_wrap_pos_stack") = nb::none()
+        nb::arg("cursor_pos") = nb::none(), nb::arg("cursor_pos_prev_line") = nb::none(), nb::arg("cursor_start_pos") = nb::none(), nb::arg("cursor_max_pos") = nb::none(), nb::arg("ideal_max_pos") = nb::none(), nb::arg("curr_line_size") = nb::none(), nb::arg("prev_line_size") = nb::none(), nb::arg("curr_line_text_base_offset") = float(), nb::arg("prev_line_text_base_offset") = float(), nb::arg("is_same_line") = bool(), nb::arg("is_set_pos") = bool(), nb::arg("indent") = nb::none(), nb::arg("columns_offset") = nb::none(), nb::arg("group_offset") = nb::none(), nb::arg("cursor_start_pos_lossyness") = nb::none(), nb::arg("nav_layer_current") = ImGuiNavLayer(), nb::arg("nav_layers_active_mask") = short(), nb::arg("nav_layers_active_mask_next") = short(), nb::arg("nav_is_scroll_pushable_x") = bool(), nb::arg("nav_hide_highlight_one_frame") = bool(), nb::arg("nav_window_has_scroll_y") = bool(), nb::arg("menu_bar_appending") = bool(), nb::arg("menu_bar_offset") = nb::none(), nb::arg("menu_columns") = nb::none(), nb::arg("tree_depth") = int(), nb::arg("tree_has_stack_data_depth_mask") = ImU32(), nb::arg("tree_records_clipped_nodes_y2_mask") = ImU32(), nb::arg("child_windows") = nb::none(), nb::arg("current_table_idx") = int(), nb::arg("layout_type") = nb::none(), nb::arg("parent_layout_type") = nb::none(), nb::arg("modal_dim_bg_color") = ImU32(), nb::arg("window_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("child_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_rect") = nb::none(), nb::arg("item_width") = float(), nb::arg("text_wrap_pos") = float(), nb::arg("item_width_stack") = nb::none(), nb::arg("text_wrap_pos_stack") = nb::none()
         )
         .def_rw("cursor_pos", &ImGuiWindowTempData::CursorPos, "Current emitting position, in absolute coordinates.")
         .def_rw("cursor_pos_prev_line", &ImGuiWindowTempData::CursorPosPrevLine, "")
@@ -2631,6 +2645,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("menu_columns", &ImGuiWindowTempData::MenuColumns, "Simplified columns storage for menu items measurement")
         .def_rw("tree_depth", &ImGuiWindowTempData::TreeDepth, "Current tree depth.")
         .def_rw("tree_has_stack_data_depth_mask", &ImGuiWindowTempData::TreeHasStackDataDepthMask, "Store whether given depth has ImGuiTreeNodeStackData data. Could be turned into a ImU64 if necessary.")
+        .def_rw("tree_records_clipped_nodes_y2_mask", &ImGuiWindowTempData::TreeRecordsClippedNodesY2Mask, "Store whether we should keep recording Y2. Cleared when passing clip max. Equivalent TreeHasStackDataDepthMask value should always be set.")
         .def_rw("child_windows", &ImGuiWindowTempData::ChildWindows, "")
         .def_rw("state_storage", &ImGuiWindowTempData::StateStorage, "Current persistent per-window storage (store e.g. tree node open/close state)")
         .def_rw("current_columns", &ImGuiWindowTempData::CurrentColumns, "Current columns set")
@@ -3281,6 +3296,9 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("set_current_font",
         ImGui::SetCurrentFont, nb::arg("font"), nb::arg("font_size"));
 
+    m.def("set_font_rasterizer_density",
+        ImGui::SetFontRasterizerDensity, nb::arg("rasterizer_density"));
+
     m.def("update_current_font_size",
         ImGui::UpdateCurrentFontSize);
 
@@ -3319,7 +3337,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::UpdateInputEvents, nb::arg("trickle_fast_inputs"));
 
     m.def("update_hovered_window_and_capture_flags",
-        ImGui::UpdateHoveredWindowAndCaptureFlags);
+        ImGui::UpdateHoveredWindowAndCaptureFlags, nb::arg("mouse_pos"));
 
     m.def("start_mouse_moving_window",
         ImGui::StartMouseMovingWindow, nb::arg("window"));
@@ -4206,6 +4224,12 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("table_pop_background_channel",
         nb::overload_cast<>(ImGui::TablePopBackgroundChannel));
 
+    m.def("table_push_column_channel",
+        nb::overload_cast<int>(ImGui::TablePushColumnChannel), nb::arg("column_n"));
+
+    m.def("table_pop_column_channel",
+        nb::overload_cast<>(ImGui::TablePopColumnChannel));
+
     m.def("table_angled_headers_row_ex",
         nb::overload_cast<ImGuiID, float, float, const ImGuiTableHeaderData *, int>(ImGui::TableAngledHeadersRowEx), nb::arg("row_id"), nb::arg("angle"), nb::arg("max_label_width"), nb::arg("data"), nb::arg("data_count"));
 
@@ -4532,7 +4556,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         "Python bindings defaults:\n    If align is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("render_text_ellipsis",
-        ImGui::RenderTextEllipsis, nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("clip_max_x"), nb::arg("ellipsis_max_x"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"));
+        ImGui::RenderTextEllipsis, nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("ellipsis_max_x"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"));
 
     m.def("render_frame",
         ImGui::RenderFrame, nb::arg("p_min"), nb::arg("p_max"), nb::arg("fill_col"), nb::arg("borders") = true, nb::arg("rounding") = 0.0f);
@@ -4606,6 +4630,19 @@ void py_init_module_imgui_internal(nb::module_& m)
 
             TextEx_adapt_const_char_pointer_with_default_null(text, text_end, flags);
         },     nb::arg("text"), nb::arg("text_end") = nb::none(), nb::arg("flags") = 0);
+
+    m.def("text_aligned",
+        [](float align_x, float size_x, const char * fmt)
+        {
+            auto TextAligned_adapt_variadic_format = [](float align_x, float size_x, const char * fmt)
+            {
+                ImGui::TextAligned(align_x, size_x, "%s", fmt);
+            };
+
+            TextAligned_adapt_variadic_format(align_x, size_x, fmt);
+        },
+        nb::arg("align_x"), nb::arg("size_x"), nb::arg("fmt"),
+        "FIXME-WIP: Works but API is likely to be reworked. This is designed for 1 item on the line. (#7024)");
 
     m.def("button_ex",
         [](const char * label, const std::optional<const ImVec2> & size_arg = std::nullopt, ImGuiButtonFlags flags = 0) -> bool
@@ -4724,6 +4761,12 @@ void py_init_module_imgui_internal(nb::module_& m)
 
             return TreeNodeBehavior_adapt_const_char_pointer_with_default_null(id, flags, label, label_end);
         },     nb::arg("id_"), nb::arg("flags"), nb::arg("label"), nb::arg("label_end") = nb::none());
+
+    m.def("tree_node_draw_line_to_child_node",
+        ImGui::TreeNodeDrawLineToChildNode, nb::arg("target_pos"));
+
+    m.def("tree_node_draw_line_to_tree_pop",
+        ImGui::TreeNodeDrawLineToTreePop, nb::arg("data"));
 
     m.def("tree_push_override_id",
         ImGui::TreePushOverrideID, nb::arg("id_"));
@@ -4902,12 +4945,15 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("debug_node_font",
         ImGui::DebugNodeFont, nb::arg("font"));
 
+    m.def("debug_node_font_glyphes_for_src_mask",
+        ImGui::DebugNodeFontGlyphesForSrcMask, nb::arg("font"), nb::arg("baked"), nb::arg("src_mask"));
+
     m.def("debug_node_font_glyph",
         ImGui::DebugNodeFontGlyph, nb::arg("font"), nb::arg("glyph"));
 
     m.def("debug_node_texture",
         ImGui::DebugNodeTexture,
-        nb::arg("tex"), nb::arg("int_id"),
+        nb::arg("tex"), nb::arg("int_id"), nb::arg("highlight_rect") = nb::none(),
         "ID used to facilitate persisting the \"current\" texture.");
 
     m.def("debug_node_storage",
@@ -4960,6 +5006,22 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("font_baked_src_loader_data_size", &ImFontLoader::FontBakedSrcLoaderDataSize, " Size of backend data, Per Baked * Per Source. Buffers are managed by core to avoid excessive allocations.\n FIXME: At this point the two other types of buffers may be managed by core to be consistent?")
         .def(nb::init<>())
         ;
+
+
+    m.def("im_font_atlas_rect_id_get_index",
+        ImFontAtlasRectId_GetIndex,
+        nb::arg("id_"),
+        "(private API)");
+
+    m.def("im_font_atlas_rect_id_get_generation",
+        ImFontAtlasRectId_GetGeneration,
+        nb::arg("id_"),
+        "(private API)");
+
+    m.def("im_font_atlas_rect_id_make",
+        ImFontAtlasRectId_Make,
+        nb::arg("index_idx"), nb::arg("gen_idx"),
+        "(private API)");
 
 
     auto pyClassImFontAtlasRectEntry =
@@ -5022,23 +5084,84 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("max_rect_bounds", &ImFontAtlasBuilder::MaxRectBounds, "Bottom-right most used pixels")
         .def_rw("lock_disable_resize", &ImFontAtlasBuilder::LockDisableResize, "Disable resizing texture")
         .def_rw("preloaded_all_glyphs_ranges", &ImFontAtlasBuilder::PreloadedAllGlyphsRanges, "Set when missing ImGuiBackendFlags_RendererHasTextures features forces atlas to preload everything.")
-        .def_rw("baked_map", &ImFontAtlasBuilder::BakedMap, "")
+        .def_rw("baked_map", &ImFontAtlasBuilder::BakedMap, "BakedId --> ImFontBaked*")
         .def_rw("baked_discarded_count", &ImFontAtlasBuilder::BakedDiscardedCount, "")
         .def_rw("pack_id_mouse_cursors", &ImFontAtlasBuilder::PackIdMouseCursors, "White pixel + mouse cursors. Also happen to be fallback in case of packing failure.")
         .def_rw("pack_id_lines_tex_data", &ImFontAtlasBuilder::PackIdLinesTexData, "")
         ;
 
 
+    m.def("im_font_atlas_texture_add",
+        ImFontAtlasTextureAdd,
+        nb::arg("atlas"), nb::arg("w"), nb::arg("h"),
+        nb::rv_policy::reference);
+
+    m.def("im_font_atlas_texture_make_space",
+        ImFontAtlasTextureMakeSpace, nb::arg("atlas"));
+
+    m.def("im_font_atlas_texture_repack",
+        ImFontAtlasTextureRepack, nb::arg("atlas"), nb::arg("w"), nb::arg("h"));
+
+    m.def("im_font_atlas_texture_grow",
+        ImFontAtlasTextureGrow, nb::arg("atlas"), nb::arg("old_w") = -1, nb::arg("old_h") = -1);
+
+    m.def("im_font_atlas_texture_compact",
+        ImFontAtlasTextureCompact, nb::arg("atlas"));
+
+    m.def("im_font_atlas_texture_get_size_estimate",
+        ImFontAtlasTextureGetSizeEstimate, nb::arg("atlas"));
+
+    m.def("im_font_atlas_font_source_init",
+        ImFontAtlasFontSourceInit, nb::arg("atlas"), nb::arg("src"));
+
+    m.def("im_font_atlas_font_source_add_to_font",
+        ImFontAtlasFontSourceAddToFont, nb::arg("atlas"), nb::arg("font"), nb::arg("src"));
+
+    m.def("im_font_atlas_font_destroy_source_data",
+        ImFontAtlasFontDestroySourceData, nb::arg("atlas"), nb::arg("src"));
+
+    m.def("im_font_atlas_font_init_output",
+        ImFontAtlasFontInitOutput,
+        nb::arg("atlas"), nb::arg("font"),
+        "Using FontDestroyOutput/FontInitOutput sequence useful notably if font loader params have changed");
+
+    m.def("im_font_atlas_font_destroy_output",
+        ImFontAtlasFontDestroyOutput, nb::arg("atlas"), nb::arg("font"));
+
+    m.def("im_font_atlas_font_discard_output_bakes",
+        ImFontAtlasFontDiscardOutputBakes, nb::arg("atlas"), nb::arg("font"));
+
+    m.def("im_font_atlas_baked_get_id",
+        ImFontAtlasBakedGetId, nb::arg("font_id"), nb::arg("baked_size"), nb::arg("rasterizer_density"));
+
+    m.def("im_font_atlas_baked_get_or_add",
+        ImFontAtlasBakedGetOrAdd,
+        nb::arg("atlas"), nb::arg("font"), nb::arg("font_size"), nb::arg("font_rasterizer_density"),
+        nb::rv_policy::reference);
+
+    m.def("im_font_atlas_baked_get_closest_match",
+        ImFontAtlasBakedGetClosestMatch,
+        nb::arg("atlas"), nb::arg("font"), nb::arg("font_size"), nb::arg("font_rasterizer_density"),
+        nb::rv_policy::reference);
+
+    m.def("im_font_atlas_baked_add",
+        ImFontAtlasBakedAdd,
+        nb::arg("atlas"), nb::arg("font"), nb::arg("font_size"), nb::arg("font_rasterizer_density"), nb::arg("baked_id"),
+        nb::rv_policy::reference);
+
+    m.def("im_font_atlas_baked_discard",
+        ImFontAtlasBakedDiscard, nb::arg("atlas"), nb::arg("font"), nb::arg("baked"));
+
     m.def("im_font_atlas_baked_add_font_glyph",
         ImFontAtlasBakedAddFontGlyph,
         nb::arg("atlas"), nb::arg("baked"), nb::arg("src"), nb::arg("in_glyph"),
         nb::rv_policy::reference);
 
+    m.def("im_font_atlas_baked_discard_font_glyph",
+        ImFontAtlasBakedDiscardFontGlyph, nb::arg("atlas"), nb::arg("font"), nb::arg("baked"), nb::arg("glyph"));
+
     m.def("im_font_atlas_baked_set_font_glyph_bitmap",
         ImFontAtlasBakedSetFontGlyphBitmap, nb::arg("atlas"), nb::arg("baked"), nb::arg("src"), nb::arg("glyph"), nb::arg("r"), nb::arg("src_pixels"), nb::arg("src_fmt"), nb::arg("src_pitch"));
-
-    m.def("im_font_atlas_baked_get_id",
-        ImFontAtlasBakedGetId, nb::arg("font_id"), nb::arg("baked_size"));
 
     m.def("im_font_atlas_pack_init",
         ImFontAtlasPackInit, nb::arg("atlas"));
@@ -5048,6 +5171,11 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("im_font_atlas_pack_get_rect",
         ImFontAtlasPackGetRect,
+        nb::arg("atlas"), nb::arg("id_"),
+        nb::rv_policy::reference);
+
+    m.def("im_font_atlas_pack_get_rect_safe",
+        ImFontAtlasPackGetRectSafe,
         nb::arg("atlas"), nb::arg("id_"),
         nb::rv_policy::reference);
 
