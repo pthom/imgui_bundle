@@ -848,8 +848,6 @@ class ImDrawListSharedData:
     tex_uv_white_pixel: ImVec2  # UV of white pixel in the atlas (== FontAtlas->TexUvWhitePixel)
     # const ImVec4*   TexUvLines;    /* original C++ signature */
     tex_uv_lines: ImVec4  # UV of anti-aliased lines in the atlas (== FontAtlas->TexUvLines) # (const)
-    # ImFontAtlas*    FontAtlas;    /* original C++ signature */
-    font_atlas: ImFontAtlas  # Current font atlas
     # ImFont*         Font;    /* original C++ signature */
     font: ImFont  # Current/default font (optional, for simplified AddText overload)
     # float           FontSize;    /* original C++ signature */
@@ -3470,8 +3468,6 @@ class ContextHook:
 class Context:
     # bool                    Initialized;    /* original C++ signature */
     initialized: bool
-    # bool                    FontAtlasOwnedByContext;    /* original C++ signature */
-    font_atlas_owned_by_context: bool  # IO.Fonts-> is owned by the ImGuiContext and will be destructed along with it.
     # ImGuiIO                 IO;    /* original C++ signature */
     io: IO
     # ImGuiPlatformIO         PlatformIO;    /* original C++ signature */
@@ -4073,9 +4069,11 @@ class Context:
     # ImGuiID                 PlatformImeViewport;    /* original C++ signature */
     platform_ime_viewport: ID
 
-    # ImGuiDockContext        DockContext;    /* original C++ signature */
     # Extensions
     # FIXME: We could provide an API to register one slot in an array held in ImGuiContext?
+    # ImVector<ImTextureData*> UserTextures;    /* original C++ signature */
+    user_textures: ImVector_ImTextureData_ptr  # List of textures created/managed by user or third-party extension. Automatically appended into platform_io.Textures[].
+    # ImGuiDockContext        DockContext;    /* original C++ signature */
     dock_context: DockContext
 
     # Settings
@@ -5516,6 +5514,23 @@ def set_next_window_refresh_policy(flags: WindowRefreshFlags) -> None:
     pass
 
 # Fonts, drawing
+# IMGUI_API void          RegisterUserTexture(ImTextureData* tex);     /* original C++ signature */
+def register_user_texture(tex: ImTextureData) -> None:
+    """Register external texture"""
+    pass
+
+# IMGUI_API void          UnregisterUserTexture(ImTextureData* tex);    /* original C++ signature */
+def unregister_user_texture(tex: ImTextureData) -> None:
+    pass
+
+# IMGUI_API void          RegisterFontAtlas(ImFontAtlas* atlas);    /* original C++ signature */
+def register_font_atlas(atlas: ImFontAtlas) -> None:
+    pass
+
+# IMGUI_API void          UnregisterFontAtlas(ImFontAtlas* atlas);    /* original C++ signature */
+def unregister_font_atlas(atlas: ImFontAtlas) -> None:
+    pass
+
 # IMGUI_API void          SetCurrentFont(ImFont* font, float font_size);    /* original C++ signature */
 def set_current_font(font: ImFont, font_size: float) -> None:
     pass
@@ -7569,7 +7584,7 @@ def debug_render_viewport_thumbnail(draw_list: ImDrawList, viewport: ViewportP, 
 class ImFontLoader:
     """Hooks and storage for a given font backend.
     This structure is likely to evolve as we add support for incremental atlas updates.
-    Conceptually this could be in ImGuiPlatformIO, but we are far from ready to make this public.
+    Conceptually this could be public, but API is still going to be evolve.
     """
 
     # const char*     Name;    /* original C++ signature */
@@ -7587,6 +7602,9 @@ class ImFontLoader:
 # -----------------------------------------------------------------------------
 # [SECTION] ImFontAtlas internal API
 # -----------------------------------------------------------------------------
+
+# Helpers: ImTextureRef ==/!= operators provided as convenience
+# (note that _TexID and _TexData are never set simultaneously)
 
 # Refer to ImFontAtlasPackGetRect() to better understand how this works.
 # inline int               ImFontAtlasRectId_GetIndex(ImFontAtlasRectId id)       { return id & ImFontAtlasRectId_IndexMask_; }    /* original C++ signature */
@@ -7891,6 +7909,10 @@ def im_font_atlas_texture_block_queue_upload(
 
 # IMGUI_API int               ImTextureDataGetFormatBytesPerPixel(ImTextureFormat format);    /* original C++ signature */
 def im_texture_data_get_format_bytes_per_pixel(format: ImTextureFormat) -> int:
+    pass
+
+# IMGUI_API const char*       ImTextureDataGetStatusName(ImTextureStatus status);    /* original C++ signature */
+def im_texture_data_get_status_name(status: ImTextureStatus) -> str:
     pass
 
 # IMGUI_API const char*       ImTextureDataGetFormatName(ImTextureFormat format);    /* original C++ signature */

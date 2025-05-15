@@ -660,7 +660,7 @@ def render() -> None:
 
 # IMGUI_API ImDrawData*   GetDrawData();                                  /* original C++ signature */
 def get_draw_data() -> ImDrawData:
-    """valid after Render() and until the next call to NewFrame(). this is what you have to render."""
+    """valid after Render() and until the next call to NewFrame(). Call ImGui_ImplXXXX_RenderDrawData() function in your Renderer Backend to render."""
     pass
 
 # Demo, Debug, Information
@@ -8760,7 +8760,11 @@ class IO:
     # ImGuiBackendFlags  BackendFlags;    /* original C++ signature */
     backend_flags: BackendFlags  # = 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.
     # ImVec2      DisplaySize;    /* original C++ signature */
-    display_size: ImVec2  # <unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.
+    display_size: (
+        ImVec2  # <unset>          // Main display size, in pixels (== GetMainViewport()->Size). May change every frame.
+    )
+    # ImVec2      DisplayFramebufferScale;    /* original C++ signature */
+    display_framebuffer_scale: ImVec2  # = (1, 1)         // Main display density. For retina display where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.
     # float       DeltaTime;    /* original C++ signature */
     delta_time: float  # = 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.
     # float       IniSavingRate;    /* original C++ signature */
@@ -8782,8 +8786,6 @@ class IO:
     )
     # ImFont*     FontDefault;    /* original C++ signature */
     font_default: ImFont  # = None           // Font to use on NewFrame(). Use None to uses Fonts->Fonts[0].
-    # ImVec2      DisplayFramebufferScale;    /* original C++ signature */
-    display_framebuffer_scale: ImVec2  # = (1, 1)         // For retina display or other situations where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.
 
     # Keyboard/Gamepad Navigation options
     # bool        ConfigNavSwapGamepadButtons;    /* original C++ signature */
@@ -9675,13 +9677,6 @@ class ListClipper:
 # - Add '#define IMGUI_DEFINE_MATH_OPERATORS' before including this file (or in imconfig.h) to access courtesy maths operators for ImVec2 and ImVec4.
 # - We intentionally provide ImVec2*float but not float*ImVec2: this is rare enough and we want to reduce the surface for possible user mistake.
 
-# Helpers: ImTextureRef ==/!= operators provided as convenience
-# (note that _TexID and _TexData are never set simultaneously)
-##ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS // For legacy backends
-# static inline bool operator==(ImTextureID lhs, const ImTextureRef& rhs)    { return lhs == rhs._TexID && rhs._TexData == None; }
-# static inline bool operator==(const ImTextureRef& lhs, ImTextureID rhs)    { return lhs._TexID == rhs && lhs._TexData == None; }
-##endif
-
 # Helpers macros to generate 32-bit encoded colors
 # - User can declare their own format by #defining the 5 _SHIFT/_MASK macros in their imconfig file.
 # - Any setting other than the default will need custom backend support. The only standard backend that supports anything else than the default is DirectX9.
@@ -10041,7 +10036,7 @@ class ImDrawCmd:
     - VtxOffset: When 'io.BackendFlags & ImGuiBackendFlags_RendererHasVtxOffset' is enabled,
       this fields allow us to render meshes larger than 64K vertices while keeping 16-bit indices.
       Backends made for <1.71. will typically ignore the VtxOffset fields.
-    - The ClipRect/TextureId/VtxOffset fields must be contiguous as we memcmp() them together (this is asserted for).
+    - The ClipRect/TexRef/VtxOffset fields must be contiguous as we memcmp() them together (this is asserted for).
     """
 
     # ImVec4          ClipRect;    /* original C++ signature */
@@ -10686,8 +10681,8 @@ class ImDrawList:
     # IMGUI_API void  _OnChangedClipRect();    /* original C++ signature */
     def _on_changed_clip_rect(self) -> None:
         pass
-    # IMGUI_API void  _OnChangedTextureID();    /* original C++ signature */
-    def _on_changed_texture_id(self) -> None:
+    # IMGUI_API void  _OnChangedTexture();    /* original C++ signature */
+    def _on_changed_texture(self) -> None:
         pass
     # IMGUI_API void  _OnChangedVtxOffset();    /* original C++ signature */
     def _on_changed_vtx_offset(self) -> None:
@@ -10716,7 +10711,7 @@ class ImDrawData:
     # bool                Valid;    /* original C++ signature */
     valid: bool  # Only valid after Render() is called and before the next NewFrame() is called.
     # int                 CmdListsCount;    /* original C++ signature */
-    cmd_lists_count: int  # Number of ImDrawList* to render
+    cmd_lists_count: int  # Number of ImDrawList* to render. (== CmdLists.Size). Exists for legacy reason.
     # int                 TotalIdxCount;    /* original C++ signature */
     total_idx_count: int  # For convenience, sum of all ImDrawList's IdxBuffer.Size
     # int                 TotalVtxCount;    /* original C++ signature */
@@ -10733,6 +10728,8 @@ class ImDrawData:
     owner_viewport: (
         Viewport  # Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).
     )
+    # ImVector<ImTextureData*>* Textures;    /* original C++ signature */
+    textures: ImVector_ImTextureData_ptr  # List of textures to update. Most of the times the list is shared by all ImDrawData, has only 1 texture and it doesn't need any update. This almost always points to ImGui::GetPlatformIO().Textures[]. May be overriden or set to None if you want to manually update textures.
 
     # ImDrawData()    { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -10823,11 +10820,11 @@ class ImTextureData:
     # int                 UniqueID;    /* original C++ signature */
     unique_id: int  # w    -   // Sequential index to facilitate identifying a texture when debugging/printing. Unique per atlas.
     # ImTextureStatus     Status;    /* original C++ signature */
-    status: ImTextureStatus  # rw   rw  // ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy
+    status: ImTextureStatus  # rw   rw  // ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy. Always use SetStatus() to modify!
     # void*               BackendUserData;    /* original C++ signature */
     backend_user_data: Any  # -    rw  // Convenience storage for backend. Some backends may have enough with TexID.
     # ImTextureID         TexID;    /* original C++ signature */
-    tex_id: ImTextureID  # r    w   // Backend-specific texture identifier. Always use SetTexID() to modify. The identifier will stored in ImDrawCmd::GetTexID() and passed to backend's RenderDrawData function.
+    tex_id: ImTextureID  # r    w   // Backend-specific texture identifier. Always use SetTexID() to modify! The identifier will stored in ImDrawCmd::GetTexID() and passed to backend's RenderDrawData function.
     # ImTextureFormat     Format;    /* original C++ signature */
     format: ImTextureFormat  # w    r   // ImTextureFormat_RGBA32 (default) or ImTextureFormat_Alpha8
     # int                 Width;    /* original C++ signature */
@@ -10897,11 +10894,19 @@ class ImTextureData:
     def get_tex_id(self) -> ImTextureID:
         """(private API)"""
         pass
-    # void                SetTexID(ImTextureID tex_id){ TexID = tex_id; }     /* original C++ signature */
+    # Called by Renderer backend
+    # void                SetTexID(ImTextureID tex_id)      { TexID = tex_id; }       /* original C++ signature */
     def set_tex_id(self, tex_id: ImTextureID) -> None:
         """(private API)
 
-        Called by the Renderer backend after creating or destroying the texture. Never modify TexID directly!
+        Call after creating or destroying the texture. Never modify TexID directly!
+        """
+        pass
+    # void                SetStatus(ImTextureStatus status) { Status = status; }      /* original C++ signature */
+    def set_status(self, status: ImTextureStatus) -> None:
+        """(private API)
+
+        Call after honoring a request. Never modify Status directly!
         """
         pass
 
@@ -10950,7 +10955,7 @@ class ImFontConfig:
     # float           RasterizerMultiply;    /* original C++ signature */
     rasterizer_multiply: float  # 1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.
     # float           RasterizerDensity;    /* original C++ signature */
-    rasterizer_density: float  # 1.0     // DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.
+    rasterizer_density: float  # 1.0     // (Legacy: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported). DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.
     # ImWchar         EllipsisChar;    /* original C++ signature */
     ellipsis_char: ImWchar  # 0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.
 
@@ -11279,9 +11284,9 @@ class ImFontAtlas:
     # int                         TexMinHeight;    /* original C++ signature */
     tex_min_height: int  # Minimum desired texture height. Must be a power of two. Default to 128.
     # int                         TexMaxWidth;    /* original C++ signature */
-    tex_max_width: int  # Maximum desired texture width. Must be a power of two. Default to 8096.
+    tex_max_width: int  # Maximum desired texture width. Must be a power of two. Default to 8192.
     # int                         TexMaxHeight;    /* original C++ signature */
-    tex_max_height: int  # Maximum desired texture height. Must be a power of two. Default to 8096.
+    tex_max_height: int  # Maximum desired texture height. Must be a power of two. Default to 8192.
     # void*                       UserData;    /* original C++ signature */
     user_data: Any
     # Store your own atlas related user-data (if e.g. you have multiple font atlas).
@@ -11317,7 +11322,7 @@ class ImFontAtlas:
 
     # [Internal]
     # ImVector<ImTextureData*>    TexList;    /* original C++ signature */
-    tex_list: ImVector_ImTextureData_ptr  # Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetPlatformIO().Textures[] instead!
+    tex_list: ImVector_ImTextureData_ptr  # Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetDrawData().Textures[]/GetPlatformIO().Textures[] instead!
     # bool                        Locked;    /* original C++ signature */
     locked: bool  # Marked as locked during ImGui::NewFrame()..EndFrame() scope if TexUpdates are not supported. Any attempt to modify the atlas will assert.
     # bool                        RendererHasTextures;    /* original C++ signature */
@@ -11351,8 +11356,10 @@ class ImFontAtlas:
     # unsigned int                FontBuilderFlags;    /* original C++ signature */
     font_builder_flags: int  # [FIXME: Should be called FontLoaderFlags] Shared flags (for all fonts) for font loader. THIS IS BUILD IMPLEMENTATION DEPENDENT (e.g. . Per-font override is also available in ImFontConfig.
     # int                         RefCount;    /* original C++ signature */
-    ref_count: int
-    # Number of contexts using this atlas
+    ref_count: int  # Number of contexts using this atlas
+    # ImGuiContext*               OwnerContext;    /* original C++ signature */
+    owner_context: Context
+    # Context which own the atlas will be in charge of updating and destroying it.
 
     # [Obsolete]
     # int                               TexDesiredWidth;         // OBSOLETED in 1.92.X (force texture width before calling Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height)
@@ -11426,20 +11433,20 @@ class ImFontFlags_(enum.Enum):
 
     # ImFontFlags_None                    = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
-    # ImFontFlags_LockBakedSizes          = 1 << 0,       /* original C++ signature */
-    lock_baked_sizes = (
-        enum.auto()
-    )  # (= 1 << 0)  # Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size.
-    # ImFontFlags_NoLoadGlyphs            = 1 << 1,       /* original C++ signature */
-    no_load_glyphs = enum.auto()  # (= 1 << 1)  # Disable loading new glyphs.
-    # ImFontFlags_NoLoadError             = 1 << 2,       /* original C++ signature */
-    no_load_error = (
-        enum.auto()
-    )  # (= 1 << 2)  # Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.
-    # ImFontFlags_UseDefaultSize          = 1 << 3,       /* original C++ signature */
+    # ImFontFlags_UseDefaultSize          = 1 << 0,       /* original C++ signature */
     use_default_size = (
         enum.auto()
-    )  # (= 1 << 3)  # Legacy compatibility: make PushFont() calls without explicit size use font->DefaultSize instead of current font size.
+    )  # (= 1 << 0)  # Legacy compatibility: make PushFont() calls without explicit size use font->DefaultSize instead of current font size.
+    # ImFontFlags_NoLoadError             = 1 << 1,       /* original C++ signature */
+    no_load_error = (
+        enum.auto()
+    )  # (= 1 << 1)  # Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.
+    # ImFontFlags_NoLoadGlyphs            = 1 << 2,       /* original C++ signature */
+    no_load_glyphs = enum.auto()  # (= 1 << 2)  # Disable loading new glyphs.
+    # ImFontFlags_LockBakedSizes          = 1 << 3,       /* original C++ signature */
+    lock_baked_sizes = (
+        enum.auto()
+    )  # (= 1 << 3)  # Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size.
 
 class ImFont:
     """Font runtime data and rendering
@@ -11475,6 +11482,8 @@ class ImFont:
     scale: float  # 4     // in  // Base font scale (~1.0), multiplied by the per-window font scale which you can adjust with SetWindowFontScale()
     # bool                        EllipsisAutoBake;    /* original C++ signature */
     ellipsis_auto_bake: bool  # 1     //     // Mark when the "..." glyph needs to be generated.
+    # ImGuiStorage                RemapPairs;    /* original C++ signature */
+    remap_pairs: Storage  # 16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.
 
     # IMGUI_API ImFont();    /* original C++ signature */
     def __init__(self) -> None:
@@ -11538,15 +11547,13 @@ class ImFont:
     # IMGUI_API void              ClearOutputData();    /* original C++ signature */
     def clear_output_data(self) -> None:
         pass
-    # IMGUI_API void              AddRemapChar(ImWchar dst, ImWchar src, bool overwrite_dst = true);     /* original C++ signature */
-    def add_remap_char(self, dst: ImWchar, src: ImWchar, overwrite_dst: bool = True) -> None:
-        """Makes 'dst' character/glyph points to 'src' character/glyph. Currently needs to be called AFTER fonts have been built."""
+    # IMGUI_API void              AddRemapChar(ImWchar from_codepoint, ImWchar to_codepoint);     /* original C++ signature */
+    def add_remap_char(self, from_codepoint: ImWchar, to_codepoint: ImWchar) -> None:
+        """Makes 'from_codepoint' character points to 'to_codepoint' glyph."""
         pass
     # IMGUI_API bool              IsGlyphRangeUnused(unsigned int c_begin, unsigned int c_last);    /* original C++ signature */
     def is_glyph_range_unused(self, c_begin: int, c_last: int) -> bool:
         pass
-
-# We added an indirection to avoid patching ImDrawCmd after texture updates but this could be a solution too.
 
 # -----------------------------------------------------------------------------
 # [SECTION] Viewports
@@ -11624,6 +11631,10 @@ class Viewport:
     pos: ImVec2  # Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)
     # ImVec2              Size;    /* original C++ signature */
     size: ImVec2  # Main Area: Size of the viewport.
+    # ImVec2              FramebufferScale;    /* original C++ signature */
+    framebuffer_scale: (
+        ImVec2  # Density of the viewport for Retina display (always 1,1 on Windows, may be 2,2 etc on macOS/iOS).
+    )
     # ImVec2              WorkPos;    /* original C++ signature */
     work_pos: ImVec2  # Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)
     # ImVec2              WorkSize;    /* original C++ signature */
@@ -11809,8 +11820,9 @@ class PlatformIO:
     # ------------------------------------------------------------------
 
     # Textures list (the list is updated by calling ImGui::EndFrame or ImGui::Render)
+    # The ImGui_ImplXXXX_RenderDrawData() function of each backend generally access this via ImDrawData::Textures which points to this. The array is available here mostly because backends will want to destroy textures on shutdown.
     # ImVector<ImTextureData*>        Textures;    /* original C++ signature */
-    textures: ImVector_ImTextureData_ptr  # Texture list (most often Textures.Size == 1).
+    textures: ImVector_ImTextureData_ptr  # List of textures used by Dear ImGui (most often 1) + contents of external texture list is automatically appended into this.
 
     # Viewports list (the list is updated by calling ImGui::EndFrame or ImGui::Render)
     # (in the future we will attempt to organize this feature to remove the need for a "main viewport")

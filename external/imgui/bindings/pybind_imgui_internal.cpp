@@ -574,7 +574,6 @@ void py_init_module_imgui_internal(nb::module_& m)
             (m, "ImDrawListSharedData", " Data shared between all ImDrawList instances\n Conceptually this could have been called e.g. ImDrawListSharedContext\n Typically one ImGui context would create and maintain one of this.\n You may want to create your own instance of you try to ImDrawList completely without ImGui. In that case, watch out for future changes to this structure.")
         .def_rw("tex_uv_white_pixel", &ImDrawListSharedData::TexUvWhitePixel, "UV of white pixel in the atlas (== FontAtlas->TexUvWhitePixel)")
         .def_ro("tex_uv_lines", &ImDrawListSharedData::TexUvLines, "UV of anti-aliased lines in the atlas (== FontAtlas->TexUvLines)")
-        .def_rw("font_atlas", &ImDrawListSharedData::FontAtlas, "Current font atlas")
         .def_rw("font", &ImDrawListSharedData::Font, "Current/default font (optional, for simplified AddText overload)")
         .def_rw("font_size", &ImDrawListSharedData::FontSize, "Current/default font size (optional, for simplified AddText overload)")
         .def_rw("font_scale", &ImDrawListSharedData::FontScale, "Current/default font scale (== FontSize / Font->FontSize)")
@@ -2202,7 +2201,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::class_<ImGuiContext>
             (m, "Context", "")
         .def_rw("initialized", &ImGuiContext::Initialized, "")
-        .def_rw("font_atlas_owned_by_context", &ImGuiContext::FontAtlasOwnedByContext, "IO.Fonts-> is owned by the ImGuiContext and will be destructed along with it.")
         .def_rw("io", &ImGuiContext::IO, "")
         .def_rw("platform_io", &ImGuiContext::PlatformIO, "")
         .def_rw("style", &ImGuiContext::Style, "")
@@ -2451,7 +2449,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("platform_ime_data", &ImGuiContext::PlatformImeData, "Data updated by current frame. Will be applied at end of the frame. For some backends, this is required to have WantVisible=True in order to receive text message.")
         .def_rw("platform_ime_data_prev", &ImGuiContext::PlatformImeDataPrev, "Previous frame data. When changed we call the platform_io.Platform_SetImeDataFn() handler.")
         .def_rw("platform_ime_viewport", &ImGuiContext::PlatformImeViewport, "")
-        .def_rw("dock_context", &ImGuiContext::DockContext, " Extensions\n FIXME: We could provide an API to register one slot in an array held in ImGuiContext?")
+        .def_rw("user_textures", &ImGuiContext::UserTextures, "List of textures created/managed by user or third-party extension. Automatically appended into platform_io.Textures[].")
+        .def_rw("dock_context", &ImGuiContext::DockContext, "")
         .def_rw("settings_loaded", &ImGuiContext::SettingsLoaded, "")
         .def_rw("settings_dirty_timer", &ImGuiContext::SettingsDirtyTimer, "Save .ini Settings to memory when time reaches zero")
         .def_rw("settings_ini_data", &ImGuiContext::SettingsIniData, "In memory .ini settings")
@@ -3292,6 +3291,20 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::SetNextWindowRefreshPolicy,
         nb::arg("flags"),
         "Windows: Idle, Refresh Policies [EXPERIMENTAL]");
+
+    m.def("register_user_texture",
+        ImGui::RegisterUserTexture,
+        nb::arg("tex"),
+        "Register external texture");
+
+    m.def("unregister_user_texture",
+        ImGui::UnregisterUserTexture, nb::arg("tex"));
+
+    m.def("register_font_atlas",
+        ImGui::RegisterFontAtlas, nb::arg("atlas"));
+
+    m.def("unregister_font_atlas",
+        ImGui::UnregisterFontAtlas, nb::arg("atlas"));
 
     m.def("set_current_font",
         ImGui::SetCurrentFont, nb::arg("font"), nb::arg("font_size"));
@@ -5001,7 +5014,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImFontLoader =
         nb::class_<ImFontLoader>
-            (m, "ImFontLoader", " Hooks and storage for a given font backend.\n This structure is likely to evolve as we add support for incremental atlas updates.\n Conceptually this could be in ImGuiPlatformIO, but we are far from ready to make this public.")
+            (m, "ImFontLoader", " Hooks and storage for a given font backend.\n This structure is likely to evolve as we add support for incremental atlas updates.\n Conceptually this could be public, but API is still going to be evolve.")
         .def_ro("name", &ImFontLoader::Name, "")
         .def_rw("font_baked_src_loader_data_size", &ImFontLoader::FontBakedSrcLoaderDataSize, " Size of backend data, Per Baked * Per Source. Buffers are managed by core to avoid excessive allocations.\n FIXME: At this point the two other types of buffers may be managed by core to be consistent?")
         .def(nb::init<>())
@@ -5217,6 +5230,11 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("im_texture_data_get_format_bytes_per_pixel",
         ImTextureDataGetFormatBytesPerPixel, nb::arg("format"));
+
+    m.def("im_texture_data_get_status_name",
+        ImTextureDataGetStatusName,
+        nb::arg("status"),
+        nb::rv_policy::reference);
 
     m.def("im_texture_data_get_format_name",
         ImTextureDataGetFormatName,

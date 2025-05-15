@@ -223,7 +223,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("get_draw_data",
         ImGui::GetDrawData,
-        "valid after Render() and until the next call to NewFrame(). this is what you have to render.",
+        "valid after Render() and until the next call to NewFrame(). Call ImGui_ImplXXXX_RenderDrawData() function in your Renderer Backend to render.",
         nb::rv_policy::reference);
 
     m.def("show_demo_window",
@@ -6172,7 +6172,8 @@ void py_init_module_imgui_main(nb::module_& m)
             (m, "IO", "")
         .def_rw("config_flags", &ImGuiIO::ConfigFlags, "= 0              // See ImGuiConfigFlags_ enum. Set by user/application. Keyboard/Gamepad navigation options, etc.")
         .def_rw("backend_flags", &ImGuiIO::BackendFlags, "= 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.")
-        .def_rw("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.")
+        .def_rw("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (== GetMainViewport()->Size). May change every frame.")
+        .def_rw("display_framebuffer_scale", &ImGuiIO::DisplayFramebufferScale, "= (1, 1)         // Main display density. For retina display where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.")
         .def_rw("delta_time", &ImGuiIO::DeltaTime, "= 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.")
         .def_rw("ini_saving_rate", &ImGuiIO::IniSavingRate, "")
         .def_rw("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")
@@ -6180,7 +6181,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("font_global_scale", &ImGuiIO::FontGlobalScale, "= 1.0           // Global scale all fonts")
         .def_rw("font_allow_user_scaling", &ImGuiIO::FontAllowUserScaling, "= False          // [OBSOLETE] Allow user scaling text of individual window with CTRL+Wheel.")
         .def_rw("font_default", &ImGuiIO::FontDefault, "= None           // Font to use on NewFrame(). Use None to uses Fonts->Fonts[0].")
-        .def_rw("display_framebuffer_scale", &ImGuiIO::DisplayFramebufferScale, "= (1, 1)         // For retina display or other situations where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.")
         .def_rw("config_nav_swap_gamepad_buttons", &ImGuiIO::ConfigNavSwapGamepadButtons, "= False          // Swap Activate<>Cancel (A<>B) buttons, matching typical \"Nintendo/Japanese style\" gamepad layout.")
         .def_rw("config_nav_move_set_mouse_pos", &ImGuiIO::ConfigNavMoveSetMousePos, "= False          // Directional/tabbing navigation teleports the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is difficult. Will update io.MousePos and set io.WantSetMousePos=True.")
         .def_rw("config_nav_capture_keyboard", &ImGuiIO::ConfigNavCaptureKeyboard, "= True           // Sets io.WantCaptureKeyboard when io.NavActive is set.")
@@ -6923,7 +6923,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
     auto pyClassImDrawCmd =
         nb::class_<ImDrawCmd>
-            (m, "ImDrawCmd", " Typically, 1 command = 1 GPU draw call (unless command is a callback)\n - VtxOffset: When 'io.BackendFlags & ImGuiBackendFlags_RendererHasVtxOffset' is enabled,\n   this fields allow us to render meshes larger than 64K vertices while keeping 16-bit indices.\n   Backends made for <1.71. will typically ignore the VtxOffset fields.\n - The ClipRect/TextureId/VtxOffset fields must be contiguous as we memcmp() them together (this is asserted for).")
+            (m, "ImDrawCmd", " Typically, 1 command = 1 GPU draw call (unless command is a callback)\n - VtxOffset: When 'io.BackendFlags & ImGuiBackendFlags_RendererHasVtxOffset' is enabled,\n   this fields allow us to render meshes larger than 64K vertices while keeping 16-bit indices.\n   Backends made for <1.71. will typically ignore the VtxOffset fields.\n - The ClipRect/TexRef/VtxOffset fields must be contiguous as we memcmp() them together (this is asserted for).")
         .def_rw("clip_rect", &ImDrawCmd::ClipRect, "4*4  // Clipping rectangle (x1, y1, x2, y2). Subtract ImDrawData->DisplayPos to get clipping rectangle in \"viewport\" coordinates")
         .def_rw("tex_ref", &ImDrawCmd::TexRef, "16   // Reference to a font/texture atlas (where backend called ImTextureData::SetTexID()) or to a user-provided texture ID (via e.g. ImGui::Image() calls). Both will lead to a ImTextureID value.")
         .def_rw("vtx_offset", &ImDrawCmd::VtxOffset, "4    // Start offset in vertex buffer. ImGuiBackendFlags_RendererHasVtxOffset: always 0, otherwise may be >0 to support meshes larger than 64K vertices with 16-bit indices.")
@@ -7342,8 +7342,8 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::_TryMergeDrawCmds)
         .def("_on_changed_clip_rect",
             &ImDrawList::_OnChangedClipRect)
-        .def("_on_changed_texture_id",
-            &ImDrawList::_OnChangedTextureID)
+        .def("_on_changed_texture",
+            &ImDrawList::_OnChangedTexture)
         .def("_on_changed_vtx_offset",
             &ImDrawList::_OnChangedVtxOffset)
         .def("_set_texture_ref",
@@ -7361,7 +7361,7 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::class_<ImDrawData>
             (m, "ImDrawData", " All draw data to render a Dear ImGui frame\n (NB: the style and the naming convention here is a little inconsistent, we currently preserve them for backward compatibility purpose,\n as this is one of the oldest structure exposed by the library! Basically, ImDrawList == CmdList)")
         .def_rw("valid", &ImDrawData::Valid, "Only valid after Render() is called and before the next NewFrame() is called.")
-        .def_rw("cmd_lists_count", &ImDrawData::CmdListsCount, "Number of ImDrawList* to render")
+        .def_rw("cmd_lists_count", &ImDrawData::CmdListsCount, "Number of ImDrawList* to render. (== CmdLists.Size). Exists for legacy reason.")
         .def_rw("total_idx_count", &ImDrawData::TotalIdxCount, "For convenience, sum of all ImDrawList's IdxBuffer.Size")
         .def_rw("total_vtx_count", &ImDrawData::TotalVtxCount, "For convenience, sum of all ImDrawList's VtxBuffer.Size")
         .def_rw("cmd_lists", &ImDrawData::CmdLists, "Array of ImDrawList* to render. The ImDrawLists are owned by ImGuiContext and only pointed to from here.")
@@ -7369,6 +7369,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("display_size", &ImDrawData::DisplaySize, "Size of the viewport to render (== GetMainViewport()->Size for the main viewport, == io.DisplaySize in most single-viewport applications)")
         .def_rw("framebuffer_scale", &ImDrawData::FramebufferScale, "Amount of pixels for each unit of DisplaySize. Based on io.DisplayFramebufferScale. Generally (1,1) on normal display, (2,2) on OSX with Retina display.")
         .def_rw("owner_viewport", &ImDrawData::OwnerViewport, "Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).")
+        .def_rw("textures", &ImDrawData::Textures, "List of textures to update. Most of the times the list is shared by all ImDrawData, has only 1 texture and it doesn't need any update. This almost always points to ImGui::GetPlatformIO().Textures[]. May be overriden or set to None if you want to manually update textures.")
         .def(nb::init<>(),
             "Functions")
         .def("clear",
@@ -7416,9 +7417,9 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::class_<ImTextureData>
             (m, "ImTextureData", " Specs and pixel storage for a texture used by Dear ImGui.\n This is only useful for (1) core library and (2) backends. End-user/applications do not need to care about this.\n Renderer Backends will create a GPU-side version of this.\n Why does we store two identifiers: TexID and BackendUserData?\n - ImTextureID    TexID           = lower-level identifier stored in ImDrawCmd. ImDrawCmd can refer to textures not created by the backend, and for which there's no ImTextureData.\n - None*          BackendUserData = higher-level opaque storage for backend own book-keeping. Some backends may have enough with TexID and not need both.\n In columns below: who reads/writes each fields? 'r'=read, 'w'=write, 'core'=main library, 'backend'=renderer backend")
         .def_rw("unique_id", &ImTextureData::UniqueID, "w    -   // Sequential index to facilitate identifying a texture when debugging/printing. Unique per atlas.")
-        .def_rw("status", &ImTextureData::Status, "rw   rw  // ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy")
+        .def_rw("status", &ImTextureData::Status, "rw   rw  // ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy. Always use SetStatus() to modify!")
         .def_rw("backend_user_data", &ImTextureData::BackendUserData, "-    rw  // Convenience storage for backend. Some backends may have enough with TexID.")
-        .def_rw("tex_id", &ImTextureData::TexID, "r    w   // Backend-specific texture identifier. Always use SetTexID() to modify. The identifier will stored in ImDrawCmd::GetTexID() and passed to backend's RenderDrawData function.")
+        .def_rw("tex_id", &ImTextureData::TexID, "r    w   // Backend-specific texture identifier. Always use SetTexID() to modify! The identifier will stored in ImDrawCmd::GetTexID() and passed to backend's RenderDrawData function.")
         .def_rw("format", &ImTextureData::Format, "w    r   // ImTextureFormat_RGBA32 (default) or ImTextureFormat_Alpha8")
         .def_rw("width", &ImTextureData::Width, "w    r   // Texture width")
         .def_rw("height", &ImTextureData::Height, "w    r   // Texture height")
@@ -7454,7 +7455,11 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("set_tex_id",
             &ImTextureData::SetTexID,
             nb::arg("tex_id"),
-            "(private API)\n\n Called by the Renderer backend after creating or destroying the texture. Never modify TexID directly!")
+            "(private API)\n\n Call after creating or destroying the texture. Never modify TexID directly!")
+        .def("set_status",
+            &ImTextureData::SetStatus,
+            nb::arg("status"),
+            "(private API)\n\n Call after honoring a request. Never modify Status directly!")
         ;
 
 
@@ -7477,7 +7482,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("glyph_extra_advance_x", &ImFontConfig::GlyphExtraAdvanceX, "0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this.")
         .def_rw("font_builder_flags", &ImFontConfig::FontBuilderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")
         .def_rw("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.")
-        .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity, "1.0     // DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.")
+        .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity, "1.0     // (Legacy: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported). DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.")
         .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
         .def_rw("flags", &ImFontConfig::Flags, "Font flags (don't use just yet)")
         .def_rw("dst_font", &ImFontConfig::DstFont, "Target font (as we merging fonts, multiple ImFontConfig may target the same font)")
@@ -7643,8 +7648,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tex_glyph_padding", &ImFontAtlas::TexGlyphPadding, "FIXME: Should be called \"TexPackPadding\". Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method doesn't rely on bilinear filtering you may set this to 0 (will also need to set AntiAliasedLinesUseTex = False).")
         .def_rw("tex_min_width", &ImFontAtlas::TexMinWidth, "Minimum desired texture width. Must be a power of two. Default to 512.")
         .def_rw("tex_min_height", &ImFontAtlas::TexMinHeight, "Minimum desired texture height. Must be a power of two. Default to 128.")
-        .def_rw("tex_max_width", &ImFontAtlas::TexMaxWidth, "Maximum desired texture width. Must be a power of two. Default to 8096.")
-        .def_rw("tex_max_height", &ImFontAtlas::TexMaxHeight, "Maximum desired texture height. Must be a power of two. Default to 8096.")
+        .def_rw("tex_max_width", &ImFontAtlas::TexMaxWidth, "Maximum desired texture width. Must be a power of two. Default to 8192.")
+        .def_rw("tex_max_height", &ImFontAtlas::TexMaxHeight, "Maximum desired texture height. Must be a power of two. Default to 8192.")
         .def_rw("user_data", &ImFontAtlas::UserData, "")
         .def_rw("tex_data", &ImFontAtlas::TexData, "")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -7657,7 +7662,7 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImFontAtlas::Python_GetTextureID, "(private API)")
         // #endif
         //
-        .def_rw("tex_list", &ImFontAtlas::TexList, "Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetPlatformIO().Textures[] instead!")
+        .def_rw("tex_list", &ImFontAtlas::TexList, "Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetDrawData().Textures[]/GetPlatformIO().Textures[] instead!")
         .def_rw("locked", &ImFontAtlas::Locked, "Marked as locked during ImGui::NewFrame()..EndFrame() scope if TexUpdates are not supported. Any attempt to modify the atlas will assert.")
         .def_rw("renderer_has_textures", &ImFontAtlas::RendererHasTextures, "Copy of (BackendFlags & ImGuiBackendFlags_RendererHasTextures) from supporting context.")
         .def_rw("tex_is_built", &ImFontAtlas::TexIsBuilt, "Set when texture was built matching current font input. Mostly useful for legacy IsBuilt() call.")
@@ -7672,7 +7677,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_ro("font_loader_name", &ImFontAtlas::FontLoaderName, "Font loader name (for display e.g. in About box) == FontLoader->Name")
         .def_rw("font_loader_data", &ImFontAtlas::FontLoaderData, "Font backend opaque storage")
         .def_rw("font_builder_flags", &ImFontAtlas::FontBuilderFlags, "[FIXME: Should be called FontLoaderFlags] Shared flags (for all fonts) for font loader. THIS IS BUILD IMPLEMENTATION DEPENDENT (e.g. . Per-font override is also available in ImFontConfig.")
-        .def_rw("ref_count", &ImFontAtlas::RefCount, "")
+        .def_rw("ref_count", &ImFontAtlas::RefCount, "Number of contexts using this atlas")
+        .def_rw("owner_context", &ImFontAtlas::OwnerContext, "")
         ;
 
 
@@ -7715,10 +7721,10 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyEnumImFontFlags_ =
         nb::enum_<ImFontFlags_>(m, "ImFontFlags_", nb::is_arithmetic(), " Font flags\n (in future versions as we redesign font loading API, this will become more important and better documented. for now please consider this as internal/advanced use)")
             .value("none", ImFontFlags_None, "")
-            .value("lock_baked_sizes", ImFontFlags_LockBakedSizes, "Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size.")
-            .value("no_load_glyphs", ImFontFlags_NoLoadGlyphs, "Disable loading new glyphs.")
+            .value("use_default_size", ImFontFlags_UseDefaultSize, "Legacy compatibility: make PushFont() calls without explicit size use font->DefaultSize instead of current font size.")
             .value("no_load_error", ImFontFlags_NoLoadError, "Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.")
-            .value("use_default_size", ImFontFlags_UseDefaultSize, "Legacy compatibility: make PushFont() calls without explicit size use font->DefaultSize instead of current font size.");
+            .value("no_load_glyphs", ImFontFlags_NoLoadGlyphs, "Disable loading new glyphs.")
+            .value("lock_baked_sizes", ImFontFlags_LockBakedSizes, "Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size.");
 
 
     auto pyClassImFont =
@@ -7735,6 +7741,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("fallback_char", &ImFont::FallbackChar, "2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')")
         .def_rw("scale", &ImFont::Scale, "4     // in  // Base font scale (~1.0), multiplied by the per-window font scale which you can adjust with SetWindowFontScale()")
         .def_rw("ellipsis_auto_bake", &ImFont::EllipsisAutoBake, "1     //     // Mark when the \"...\" glyph needs to be generated.")
+        .def_rw("remap_pairs", &ImFont::RemapPairs, "16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.")
         .def(nb::init<>(),
             "Methods")
         .def("get_font_baked",
@@ -7766,8 +7773,8 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImFont::ClearOutputData)
         .def("add_remap_char",
             &ImFont::AddRemapChar,
-            nb::arg("dst"), nb::arg("src"), nb::arg("overwrite_dst") = true,
-            "Makes 'dst' character/glyph points to 'src' character/glyph. Currently needs to be called AFTER fonts have been built.")
+            nb::arg("from_codepoint"), nb::arg("to_codepoint"),
+            "Makes 'from_codepoint' character points to 'to_codepoint' glyph.")
         .def("is_glyph_range_unused",
             &ImFont::IsGlyphRangeUnused, nb::arg("c_begin"), nb::arg("c_last"))
         ;
@@ -7799,6 +7806,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("flags", &ImGuiViewport::Flags, "See ImGuiViewportFlags_")
         .def_rw("pos", &ImGuiViewport::Pos, "Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)")
         .def_rw("size", &ImGuiViewport::Size, "Main Area: Size of the viewport.")
+        .def_rw("framebuffer_scale", &ImGuiViewport::FramebufferScale, "Density of the viewport for Retina display (always 1,1 on Windows, may be 2,2 etc on macOS/iOS).")
         .def_rw("work_pos", &ImGuiViewport::WorkPos, "Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)")
         .def_rw("work_size", &ImGuiViewport::WorkSize, "Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)")
         .def_rw("dpi_scale", &ImGuiViewport::DpiScale, "1.0 = 96 DPI = No extra scale.")
@@ -7835,7 +7843,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("renderer_texture_max_height", &ImGuiPlatformIO::Renderer_TextureMaxHeight, "")
         .def_rw("renderer_render_state", &ImGuiPlatformIO::Renderer_RenderState, "Written by some backends during ImGui_ImplXXXX_RenderDrawData() call to point backend_specific ImGui_ImplXXXX_RenderState* structure.")
         .def_rw("monitors", &ImGuiPlatformIO::Monitors, " (Optional) Monitor list\n - Updated by: app/backend. Update every frame to dynamically support changing monitor or DPI configuration.\n - Used by: dear imgui to query DPI info, clamp popups/tooltips within same monitor and not have them straddle monitors.")
-        .def_rw("textures", &ImGuiPlatformIO::Textures, "Texture list (most often Textures.Size == 1).")
+        .def_rw("textures", &ImGuiPlatformIO::Textures, "List of textures used by Dear ImGui (most often 1) + contents of external texture list is automatically appended into this.")
         .def_rw("viewports", &ImGuiPlatformIO::Viewports, "Main viewports, followed by all secondary viewports.")
         ;
 
