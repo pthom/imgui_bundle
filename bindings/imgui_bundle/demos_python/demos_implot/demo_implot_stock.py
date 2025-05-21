@@ -65,10 +65,10 @@ def plot_candlestick(
                 dt = datetime.fromtimestamp(xs[idx])
                 date_str = dt.strftime("%Y-%m-%d")
                 imgui.text(f"Day:   {date_str}")
-                imgui.text(f"Open:  ${opens[idx]:.2f}")
-                imgui.text(f"Close: ${closes[idx]:.2f}")
-                imgui.text(f"Low:   ${lows[idx]:.2f}")
-                imgui.text(f"High:  ${highs[idx]:.2f}")
+                imgui.text(f"Open:  $ {opens[idx]:.2f}")
+                imgui.text(f"Close: $ {closes[idx]:.2f}")
+                imgui.text(f"Low:   $ {lows[idx]:.2f}")
+                imgui.text(f"High:  $ {highs[idx]:.2f}")
 
     # begin plot item
     if implot.internal.begin_item(label_id):
