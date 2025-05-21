@@ -1,5 +1,51 @@
 Version numbers are synced between hello_imgui and imgui_bundle.
 
+# v1.6.3
+
+## ImGui
+- update imgui to v1.91.9b
+- Python: adapt API for ImFont:: CalcWordWrapPositionA  (cf #308)
+
+## Fixes
+- update imgui_md (fix soft break handling). Cf #306
+- ImGui / Python: adapt API for ImFont:: CalcWordWrapPositionA  (cf #308)
+- Fix documentation rendering (cf #316)
+- Fixes for compat with CMake 4
+
+## ImPlot
+- update implot
+- Add implot_demo.py (full python transcription of implot_demo.cpp)
+- add demo_implot_stock.py
+- python Bindings: improve  setup_axis_ticks
+
+## ImPlot3d
+- Update implot3d: added PlotImage & bindings
+- implot3d_demo.py: provide nice demo textures
+- add implot3d_demo.py: full transcription of implot3d_demo.cpp
+- improve python bindings
+- adapt bindings for PlotMesh (cf #320)
+- manual bindings for  setup_axis_ticks
+
+## Pure Python Backends
+- Review keyboard handling
+- Sdl: handle SDL_GL_MakeCurrent errors
+- Add SDL3 python backend
+- Add an example using wgpu (WebGPU for Python)
+
+## ImmVision
+- update immvision (fix for compat with OpenCV 4.11)
+
+## ImGuizmo
+- update ImGuizmo to v1.91.3
+- Fix customization of styles (cf #329)
+
+## ImGuiColorTextEdit
+- Update ImGuiColorTextEdit (from santaclose fork)
+
+## ImGuiMd
+- fix soft break handling. Cf https://github.com/pthom/imgui_bundle/issues/306
+
+
 # v1.6.2
 
 ## New library: ImPlot3D
