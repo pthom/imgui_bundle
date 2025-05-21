@@ -10,8 +10,8 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "imgui-bundle"
-version = "1.6.2"  # Remember to mirror changes on line 2 of main CMakeLists!
-description="Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!"
+version = "1.6.3"  # Remember to mirror changes on line 2 of main CMakeLists!
+description="Dear ImGui Bundle: From expressive code to powerful GUIs in no time. A fast, feature-rich, cross-platform toolkit for C++ and Python."
 readme = "bindings/imgui_bundle/Readme_pypi.md"
 authors = [ { name = "Pascal Thomet", email = "pthomet@gmail.com" } ]
 requires-python = ">=3.10"
