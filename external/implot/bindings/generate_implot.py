@@ -51,6 +51,7 @@ def autogenerate_implot_internal() -> None:
             "^FormatDateTime$",
             "^FormatTime$",
             "^LabelAxisValue$",
+            "^MkTime$",
             "^MkGmtTime$",
             "^GetGmtTime$",
             "^MkLocTime$",
