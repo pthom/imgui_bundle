@@ -1326,11 +1326,6 @@ void py_init_module_implot_internal(nb::module_& m)
         nb::arg("year"), nb::arg("month"),
         " Returns the number of days in a month, accounting for Feb. leap years. #month is zero indexed.\n(private API)");
 
-    m.def("mk_time",
-        ImPlot::MkTime,
-        nb::arg("ptm"),
-        " // Make a UNIX timestamp from a tm struct according to the current ImPlotStyle.UseLocalTime setting.\n(private API)");
-
     m.def("get_time",
         ImPlot::GetTime,
         nb::arg("t"), nb::arg("ptm"),

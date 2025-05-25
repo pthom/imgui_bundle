@@ -2234,15 +2234,6 @@ def get_days_in_month(year: int, month: int) -> int:
 # NB: The following functions only work if there is a current ImPlotContext because the
 # internal tm struct is owned by the context! They are aware of ImPlotStyle.UseLocalTime.
 
-# static inline ImPlotTime MkTime(struct tm *ptm) {    /* original C++ signature */
-#     if (GetStyle().UseLocalTime) return MkLocTime(ptm);
-#     else                         return MkGmtTime(ptm);
-# }
-def mk_time(ptm: struct tm) -> Time:
-    """ // Make a UNIX timestamp from a tm struct according to the current ImPlotStyle.UseLocalTime setting.
-    (private API)
-    """
-    pass
 # static inline tm* GetTime(const ImPlotTime& t, tm* ptm) {    /* original C++ signature */
 #     if (GetStyle().UseLocalTime) return GetLocTime(t,ptm);
 #     else                         return GetGmtTime(t,ptm);
