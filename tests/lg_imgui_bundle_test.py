@@ -37,16 +37,21 @@ def test_imgui_context_creation():
 
 def test_pyi_files_syntax() -> None:
     """Test that all .pyi files in the bindings directory have valid Python syntax."""
-    repo_root = Path(__file__).parent.parent
-    bindings_dir = repo_root / "bindings"
+    import imgui_bundle
+    
+    root = Path(imgui_bundle.__file__).parent
 
     errors: list[str] = []
-    for pyi_file in bindings_dir.rglob("*.pyi"):
+    pyi_files = list(root.rglob("*.pyi"))
+    if not pyi_files:
+        raise AssertionError("No .pyi files found in the bindings directory.")
+
+    for pyi_file in root.rglob("*.pyi"):
         try:
             # try to parse the .pyi file
             ast.parse(pyi_file.read_text(encoding="utf-8"), filename=str(pyi_file))
         except Exception as e:
-            msg = f"{type(e).__name__} parsing {pyi_file.relative_to(repo_root)}:\n{e}"
+            msg = f"{type(e).__name__} parsing {pyi_file.relative_to(root)}:\n{e}"
             errors.append(msg)
             
 
