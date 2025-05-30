@@ -4,7 +4,6 @@ import numpy as np
 from dataclasses import dataclass
 from imgui_bundle import implot, ImVec4, ImVec2, imgui, imgui_ctx, IM_COL32, immapp
 from typing import Optional, Union
-from functools import cached_property
 
 
 # ArrayFloat: 1D array of float64
@@ -120,23 +119,23 @@ class StockData:
     highs: ArrayFloat
     volumes: ArrayFloat
 
-    @cached_property
+    @property
     def ema_20(self) -> ArrayFloat:
         return exponential_moving_average(self.closes, 20)
 
-    @cached_property
+    @property
     def ema_50(self) -> ArrayFloat:
         return exponential_moving_average(self.closes, 50)
 
-    @cached_property
+    @property
     def volume_ema_20(self) -> ArrayFloat:
         return exponential_moving_average(self.volumes, 20)
 
-    @cached_property
+    @property
     def volume_ema_50(self) -> ArrayFloat:
         return exponential_moving_average(self.volumes, 50)
 
-    @cached_property
+    @property
     def rsi_14(self) -> ArrayFloat:
         prices = self.closes
         delta = np.diff(prices, prepend=prices[0])
