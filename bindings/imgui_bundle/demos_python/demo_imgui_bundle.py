@@ -1,5 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from typing import List, Callable
+from typing import List, Callable, Tuple
 from types import ModuleType
 from dataclasses import dataclass
 
@@ -30,7 +30,7 @@ def show_module_demo(demo_filename: str, demo_function: Callable[[], None]) -> N
     demo_function()
 
 
-def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
+def make_params() -> Tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     print(
         f"For information, demos sources are available in {demo_utils.api_demos.demos_python_folder()}"
     )

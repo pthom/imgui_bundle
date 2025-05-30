@@ -6,7 +6,7 @@ from pydantic import (
     GetJsonSchemaHandler,
 )
 from pydantic.json_schema import JsonSchemaValue
-from typing import Any
+from typing import Any, Tuple
 
 
 
@@ -17,7 +17,7 @@ class _ImVec4PydanticAnnotation:
             _source_type: Any,
             _handler: GetCoreSchemaHandler,
     ) -> core_schema.CoreSchema:
-        def validate_from_tuple(value: tuple[float, float, float, float]) -> ImVec4:
+        def validate_from_tuple(value: Tuple[float, float, float, float]) -> ImVec4:
             result = ImVec4()
             result.x = value[0]
             result.y = value[1]
@@ -64,7 +64,7 @@ class _ImVec2PydanticAnnotation:
             _source_type: Any,
             _handler: GetCoreSchemaHandler,
     ) -> core_schema.CoreSchema:
-        def validate_from_tuple(value: tuple[float, float]) -> ImVec2:
+        def validate_from_tuple(value: Tuple[float, float]) -> ImVec2:
             result = ImVec2()
             result.x = value[0]
             result.y = value[1]
@@ -110,7 +110,7 @@ class _ImColorPydanticAnnotation:
             _source_type: Any,
             _handler: GetCoreSchemaHandler,
     ) -> core_schema.CoreSchema:
-        def validate_from_tuple(value: tuple[float, float, float, float]) -> ImColor:
+        def validate_from_tuple(value: Tuple[float, float, float, float]) -> ImColor:
             result = ImColor()
             result.value.x = value[0]
             result.value.y = value[1]
