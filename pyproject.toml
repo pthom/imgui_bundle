@@ -14,7 +14,7 @@ version = "1.6.3"  # Remember to mirror changes on line 2 of main CMakeLists!
 description="Dear ImGui Bundle: From expressive code to powerful GUIs in no time. A fast, feature-rich, cross-platform toolkit for C++ and Python."
 readme = "bindings/imgui_bundle/Readme_pypi.md"
 authors = [ { name = "Pascal Thomet", email = "pthomet@gmail.com" } ]
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
@@ -22,6 +22,8 @@ classifiers = [
     "Typing :: Typed",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -71,7 +73,7 @@ profile = "black"
 build-verbosity = 1
 
 # Target python versions:
-build = ["cp311-*", "cp312-*", "cp313-*"]
+build = ["cp38-*", "cp39-*", "cp10-*", "cp311-*", "cp312-*", "cp313-*"]
 
 # Tests
 test-requires = "pytest"

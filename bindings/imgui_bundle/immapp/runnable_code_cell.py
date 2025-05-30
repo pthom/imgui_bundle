@@ -11,7 +11,7 @@ This is very much a work in progress.
 
 import sys
 import io
-from typing import Any, Callable
+from typing import Any, Callable, Union
 
 from imgui_bundle import immapp, imgui_md, imgui, imgui_ctx, hello_imgui, ImVec2
 import textwrap
@@ -47,7 +47,7 @@ class _CaptureStdout(list[str]):
         sys.stdout = self._stdout
 
 
-def _execute_and_capture_last_expr(code: str) -> Any | _NoResult:
+def _execute_and_capture_last_expr(code: str) -> Union[Any, _NoResult]:
     with _CaptureStdout() as output:
         code = textwrap.dedent(code).strip()  # De-indent and strip code
         lines = code.splitlines()
@@ -76,7 +76,7 @@ class RunnableCodeCellResult:
     was_just_run: bool = False
 
 
-def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: ResultRenderer | None = None) -> RunnableCodeCellResult:
+def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Union[ResultRenderer, None] = None) -> RunnableCodeCellResult:
     statics = show_runnable_code_cell
 
     @dataclass

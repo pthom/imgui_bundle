@@ -1,6 +1,6 @@
 from imgui_bundle import hello_imgui, imgui, nanovg as nvg, ImVec2
 import math
-from typing import List
+from typing import List, Union
 
 nvg_imgui = nvg.nvg_imgui
 
@@ -95,8 +95,8 @@ def draw_scene(vg: nvg.Context, width: float, height: float):
 
 
 class AppStateNvgHeart:
-    vg: nvg.Context | None = None
-    nvg_framebuffer: nvg_imgui.NvgFramebuffer | None = None  # type: ignore
+    vg: Union[nvg.Context, None] = None
+    nvg_framebuffer: Union[nvg_imgui.NvgFramebuffer, None] = None  # type: ignore
 
     def __init__(self):
         # Our NanoVG context

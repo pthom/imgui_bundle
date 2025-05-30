@@ -1,6 +1,7 @@
 """Demonstrates how to load a font with Chinese characters and display them in the GUI,
 using the common glyph ranges defined in by ImGui.
 """
+from typing import Optional
 from imgui_bundle import imgui, hello_imgui, imgui_ctx
 from imgui_bundle.demos_python import demo_utils
 
@@ -8,7 +9,7 @@ from imgui_bundle.demos_python import demo_utils
 demo_utils.set_hello_imgui_demo_assets_folder()
 
 
-font_cn: imgui.ImFont | None = None
+font_cn: Optional[imgui.ImFont] = None
 
 
 def load_font():

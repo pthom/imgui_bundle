@@ -14,7 +14,7 @@ import numpy as np
 from numpy.typing import NDArray
 from imgui_bundle.immapp import static  # noqa: E402
 from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
 if TYPE_CHECKING:
     import matplotlib.figure
@@ -72,7 +72,7 @@ def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_ima
 
 def fig(label_id: str,
         figure: "matplotlib.figure.Figure",
-        size: ImVec2 | None = None,
+        size: Union[ImVec2, None] = None,
         refresh_image: bool = False,
         resizable: bool = True,
         show_options_button: bool = False) -> ImVec2:

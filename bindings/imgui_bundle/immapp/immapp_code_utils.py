@@ -2,7 +2,7 @@ from imgui_bundle import immapp
 
 import inspect
 import json
-from typing import Any
+from typing import Any, Union
 
 
 SnippetData = immapp.snippets.SnippetData
@@ -11,13 +11,13 @@ SnippetData = immapp.snippets.SnippetData
 def show_python_code(
         python_object: object,  # can be a class, function, module, etc.
         read_only: bool = True,
-        height_in_lines: int | None = None,
-        max_height_in_lines: int | None = None,
-        show_cursor_position: bool | None = None,
-        de_indent_code: bool | None = None,
-        show_copy_button: bool | None = None,
-        palette: immapp.snippets.SnippetTheme | None = immapp.snippets.SnippetTheme.mariana,
-        border: bool | None = None,
+        height_in_lines: Union[int, None] = None,
+        max_height_in_lines: Union[int, None] = None,
+        show_cursor_position: Union[bool, None] = None,
+        de_indent_code: Union[bool, None] = None,
+        show_copy_button: Union[bool, None] = None,
+        palette: Union[immapp.snippets.SnippetTheme, None] = immapp.snippets.SnippetTheme.mariana,
+        border: Union[bool, None] = None,
     ) -> None:
     """Render the code of an object as a markdown code block"""
 

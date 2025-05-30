@@ -16,7 +16,7 @@ imgui_ctx provide context managers to simplify the use of functions pairs like
 
 from imgui_bundle import imgui, ImVec2, ImVec4
 from types import TracebackType
-from typing import Optional, Callable, Any, Type
+from typing import Optional, Callable, Any, Type, Union
 
 
 ChildFlags = int     # see enum imgui.ChildFlags_
@@ -563,7 +563,7 @@ class _BeginHorizontal:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     _enter_callback: _EnterCallback
 
-    def __init__(self, str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> None:
+    def __init__(self, str_id: str, size: Union[ImVec2, None] = None, align: float = -1.0) -> None:
         if size is None:
             size = ImVec2(0, 0)
         self._enter_callback = lambda: imgui.begin_horizontal(str_id, size, align)
@@ -579,7 +579,7 @@ class _BeginHorizontal:
         return "{}".format(self.__class__.__name__)
 
 
-def begin_horizontal(str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> _BeginHorizontal:
+def begin_horizontal(str_id: str, size: Union[ImVec2, None] = None, align: float = -1.0) -> _BeginHorizontal:
     return _BeginHorizontal(str_id, size, align)
 
 
@@ -587,7 +587,7 @@ class _BeginVertical:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     _enter_callback: _EnterCallback
 
-    def __init__(self, str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> None:
+    def __init__(self, str_id: str, size: Union[ImVec2, None] = None, align: float = -1.0) -> None:
         if size is None:
             size = ImVec2(0, 0)
         self._enter_callback = lambda: imgui.begin_vertical(str_id, size, align)
@@ -603,7 +603,7 @@ class _BeginVertical:
         return "{}".format(self.__class__.__name__)
 
 
-def begin_vertical(str_id: str, size: ImVec2 | None = None, align: float = -1.0) -> _BeginVertical:
+def begin_vertical(str_id: str, size: Union[ImVec2, None] = None, align: float = -1.0) -> _BeginVertical:
     return _BeginVertical(str_id, size, align)
 
 

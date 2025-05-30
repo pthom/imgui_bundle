@@ -5,6 +5,8 @@ from imgui_bundle import imgui, immapp, implot, imgui_ctx, ImVec4, ImVec2, IM_CO
 import numpy as np
 from numpy.typing import NDArray
 import datetime
+from typing import Union
+
 
 def plot_candlestick(
         label_id: str,
@@ -15,8 +17,8 @@ def plot_candlestick(
         highs: NDArray,
         tooltip: bool,
         width_percent: float,
-        positive_color: ImVec4 | None = None,
-        negative_color: ImVec4 | None = None) -> None:
+        positive_color: Union[ImVec4, None] = None,
+        negative_color: Union[ImVec4, None] = None) -> None:
     """Custom plotter for candlestick charts."""
     from datetime import datetime
 

@@ -3,7 +3,7 @@ It works by monkey patching the `hello_imgui.run` and `immapp.run` functions to 
 that integrates with the browser's requestAnimationFrame API.
 """
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Union
 from imgui_bundle import hello_imgui, immapp
 from enum import Enum
 from pyodide.ffi import create_proxy  # type: ignore
@@ -108,9 +108,9 @@ def _arg_to_render_lifecycle_functions(himgui_or_immapp: _HelloImGuiOrImmApp, *a
 
 class _ManualRenderJs:
     """Manages the ManualRender lifecycle (from HelloImGui or ImmApp) and integrates with _JsAnimationRenderer."""
-    js_animation_renderer: _JsAnimationRenderer | None = None
+    js_animation_renderer: Union[_JsAnimationRenderer, None] = None
     is_running: bool = False
-    render_lifecycle_functions: _RenderLifeCycleFunctions | None = None
+    render_lifecycle_functions: Union[_RenderLifeCycleFunctions, None] = None
 
     def _stop(self):
         """Stops the current rendering loop and tears down the renderer."""
@@ -149,7 +149,7 @@ class _ManualRenderJs:
         self._run(_HelloImGuiOrImmApp.HELLO_IMGUI, *args, **kwargs)
 
 
-_MANUAL_RENDER_JS: _ManualRenderJs | None = None
+_MANUAL_RENDER_JS: Union[_ManualRenderJs, None] = None
 
 
 def pyodide_do_patch_runners():

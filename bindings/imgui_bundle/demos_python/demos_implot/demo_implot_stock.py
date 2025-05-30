@@ -3,7 +3,7 @@ import yfinance as yf
 import numpy as np
 from dataclasses import dataclass
 from imgui_bundle import implot, ImVec4, ImVec2, imgui, imgui_ctx, IM_COL32, immapp
-from typing import Optional
+from typing import Optional, Union
 from functools import cached_property
 
 
@@ -23,8 +23,8 @@ def plot_candlestick(
         highs: ArrayFloat,
         tooltip: bool = True,
         width_percent: float = 0.38,
-        positive_color: ImVec4 | None = None,
-        negative_color: ImVec4 | None = None) -> None:
+        positive_color: Union[ImVec4, None] = None,
+        negative_color: Union[ImVec4, None] = None) -> None:
     """Custom plotter for candlestick charts."""
     from datetime import datetime
 

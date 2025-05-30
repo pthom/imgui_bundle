@@ -27,8 +27,8 @@ if has_submodule("imgui"):
     from imgui_bundle.im_col32 import IM_COL32  # noqa: F401, E402
     from imgui_bundle import imgui_ctx as imgui_ctx  # noqa: E402
 
-    ImVec2Like = Union[ImVec2, Tuple[int | float, int | float], List[int | float]]
-    ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | float], List[int | float]]
+    ImVec2Like = Union[ImVec2, Tuple[Union[int, float]], Union[int, float], List[Union[int, float]]]
+    ImVec4Like = Union[ImVec4, Tuple[Union[int, float]], Union[int, float], Union[int, float], Union[int, float], List[Union[int, float]]]
 
     imgui.ImVec2Like = ImVec2Like
     imgui.ImVec4Like = ImVec4Like

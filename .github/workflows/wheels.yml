@@ -41,6 +41,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.8", "3.10"]
 
     steps:
     - uses: actions/checkout@v4
@@ -56,7 +57,7 @@ jobs:
     - name: Upload wheels
       uses: actions/upload-artifact@v4
       with:
-        name: dist-${{ matrix.os }}
+        name: dist-${{ matrix.os }}-${{ matrix.python }}
         path: wheelhouse/*.whl
 
 
@@ -69,7 +70,7 @@ jobs:
     steps:
     - uses: actions/setup-python@v5
       with:
-        python-version: "3.x"
+        python-version: "${{ matrix.python }}"
 
     - uses: actions/download-artifact@v4
       with:

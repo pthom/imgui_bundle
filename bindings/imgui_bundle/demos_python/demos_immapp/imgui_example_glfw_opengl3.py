@@ -14,6 +14,7 @@ import sys
 import platform
 import OpenGL.GL as GL  # type: ignore
 from imgui_bundle import imgui
+from typing import Union
 
 # Always import glfw *after* imgui_bundle
 # (since imgui_bundle will set the correct path where to look for the correct version of the glfw dynamic library)
@@ -142,7 +143,7 @@ def main() -> None:
     )
 
     # Our state
-    show_demo_window: bool | None = True
+    show_demo_window: Union[bool, None] = True
     show_another_window = False
     clear_color = [0.45, 0.55, 0.60, 1.00]
     f = 0.0

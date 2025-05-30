@@ -10,6 +10,7 @@ import pandas as pd
 import numpy as np
 from enum import Enum
 import fiatlight as fl
+from typing import Union
 
 
 from scatter_widget_bundle import ScatterData
@@ -19,7 +20,7 @@ class DecisionStrategy(Enum):
     decision_tree = DecisionTreeClassifier
 
 
-def plot_boundary(df: pd.DataFrame, strategy: DecisionStrategy, eps: float=1.0) -> Figure | None:
+def plot_boundary(df: pd.DataFrame, strategy: DecisionStrategy, eps: float=1.0) -> Union[Figure, None]:
     if len(df) and (df['color'].nunique() > 1):
         X = df[['x', 'y']].values
         y = df['color']
