@@ -15,7 +15,7 @@ import time
 
 from imgui_bundle import hello_imgui, icons_fontawesome_6, imgui, immapp, imgui_ctx, ImVec4, ImVec2
 from imgui_bundle.demos_python import demo_utils
-from typing import List, Any
+from typing import List, Any, Dict
 
 
 ##########################################################################
@@ -103,7 +103,7 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
 
 # Warning, the save/load function below are quite simplistic!
 def my_app_settings_to_string(settings: MyAppSettings) -> str:
-    as_dict: dict[str, Any] = {}
+    as_dict: Dict[str, Any] = {}
     as_dict["motto"] = hello_imgui.input_text_data_to_dict(settings.motto)
     as_dict["value"] = settings.value
     return json.dumps(as_dict)

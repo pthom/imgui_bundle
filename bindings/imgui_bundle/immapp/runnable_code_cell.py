@@ -11,7 +11,7 @@ This is very much a work in progress.
 
 import sys
 import io
-from typing import Any, Callable, Union
+from typing import Any, Callable, Dict, Union
 
 from imgui_bundle import immapp, imgui_md, imgui, imgui_ctx, hello_imgui, ImVec2
 import textwrap
@@ -86,7 +86,7 @@ def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Unio
         last_ran_code: str
 
     if not hasattr(statics, "s_code_cells"):
-        statics.s_code_cells: dict[str, CodeAndResult] = {}  # type: ignore
+        statics.s_code_cells: Dict[str, CodeAndResult] = {}  # type: ignore
 
     if label_id not in statics.s_code_cells:
         snippet_data = immapp.snippets.SnippetData()

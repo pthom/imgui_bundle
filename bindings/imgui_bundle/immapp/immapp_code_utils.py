@@ -2,7 +2,7 @@ from imgui_bundle import immapp
 
 import inspect
 import json
-from typing import Any, Union
+from typing import Any, Dict, Union
 
 
 SnippetData = immapp.snippets.SnippetData
@@ -23,7 +23,7 @@ def show_python_code(
 
     statics = show_python_code
     if not hasattr(statics, "_ALL_PYTHON_SNIPPETS"):
-        statics._ALL_PYTHON_SNIPPETS: dict[object, SnippetData] = {}  # type: ignore
+        statics._ALL_PYTHON_SNIPPETS: Dict[object, SnippetData] = {}  # type: ignore
 
     if python_object not in statics._ALL_PYTHON_SNIPPETS:
         snippet_data = SnippetData()
@@ -77,7 +77,7 @@ def _compact_json(data, indent=4):
     return _compact_dict(data, 1)
 
 
-def show_json_dict(json_dict: dict[str, Any]):
+def show_json_dict(json_dict: Dict[str, Any]):
     from imgui_bundle import imgui_md
     """Render a json dict as a markdown code block"""
     md_string = "```\n" +  _compact_json(json_dict, indent=4) + "\n```"
