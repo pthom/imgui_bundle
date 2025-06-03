@@ -25,6 +25,7 @@ TableFlags = int     # see enum imgui.TableFlags_
 TabBarFlags = int    # see enum imgui.TabBarFlags_
 TabItemFlags = int   # see enum imgui.TabItemFlags_
 DragDropFlags = int  # see enum imgui.DragDropFlags_
+TreeNodeFlags = int  # see enum imgui.TreeNodeFlags_
 
 
 OptExceptType = Optional[Type[BaseException]]
@@ -639,6 +640,39 @@ class _WithTreeNode:
 
 def tree_node(label: str) -> _WithTreeNode:
     return _WithTreeNode(label)
+
+
+class _WithTreeNodeEx:
+    visible: bool
+    _enter_callback: _EnterCallback
+
+    def __init__(self, label: str, flags: TreeNodeFlags = 0) -> None:
+        self._enter_callback = lambda: imgui.tree_node_ex(label, flags)
+
+    def __enter__(self) -> "_WithTreeNodeEx":
+        self.visible = self._enter_callback()
+        return self
+
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:
+            imgui.tree_pop()
+
+    def __bool__(self) -> bool:
+        return self.visible
+
+    def __repr__(self) -> str:
+        return "{}(opened={})".format(
+            self.__class__.__qualname__, self.visible
+        )
+
+    def __eq__(self, other) -> bool:
+        if other.__class__ is self.__class__:
+            return self.visible is other.visible
+        return self.visible is other
+
+
+def tree_node_ex(label: str, flags: TreeNodeFlags = 0) -> _WithTreeNodeEx:
+    return _WithTreeNodeEx(label, flags)
 
 
 class _WithPushID:
