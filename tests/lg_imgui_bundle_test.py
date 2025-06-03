@@ -9,7 +9,9 @@
 # (the error is: "ImportError: DLL load failed while importing imgui_bundle: The specified module could not be found.")
 # GH Runners probably don't have the OpenGL DLLs required by imgui_bundle
 # (this issue is solved in the pip.yml workflow, by installing the OpenGL DLLs)
+import ast
 import sys
+from pathlib import Path
 
 
 def test_version():
@@ -31,3 +33,32 @@ def test_imgui_context_creation():
     ctx = imgui.create_context()
     assert ctx is not None
     imgui.destroy_context(ctx)
+
+
+def test_pyi_files_syntax() -> None:
+    """Test that all .pyi files in the bindings directory have valid Python syntax."""
+    import imgui_bundle
+    
+    root = Path(imgui_bundle.__file__).parent
+
+    errors: list[str] = []
+    pyi_files = list(root.rglob("*.pyi"))
+    if not pyi_files:
+        raise AssertionError("No .pyi files found in the bindings directory.")
+
+    for pyi_file in root.rglob("*.pyi"):
+        try:
+            # try to parse the .pyi file
+            ast.parse(pyi_file.read_text(encoding="utf-8"), filename=str(pyi_file))
+        except Exception as e:
+            msg = f"{type(e).__name__} parsing {pyi_file.relative_to(root)}:\n{e}"
+            errors.append(msg)
+            
+
+    # Report all syntax errors found
+    if errors:
+        error_summary = (
+            f"Found {len(errors)} .pyi files with syntax errors:\n\n"
+            + "\n".join(errors)
+        )
+        raise AssertionError(error_summary)
