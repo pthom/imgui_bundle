@@ -173,3 +173,4 @@ hello_imgui.ini
 # temp / remove me
 _backends
 emsdk/
+.aider*
