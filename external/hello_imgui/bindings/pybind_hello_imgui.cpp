@@ -108,22 +108,18 @@ void py_init_module_hello_imgui(nb::module_& m)
     ////////////////////    <generated_from:hello_imgui_amalgamation.h>    ////////////////////
     auto pyClassDpiAwareParams =
         nb::class_<HelloImGui::DpiAwareParams>
-            (m, "DpiAwareParams", "\n Hello ImGui will try its best to automatically handle DPI scaling for you.\n\n Parameters to change the scaling behavior:\n ------------------------------------------\n - `dpiWindowSizeFactor`:\n        factor by which window size should be multiplied\n\n - `fontRenderingScale`:\n     factor by which fonts glyphs should be scaled at rendering time\n     (typically 1 on windows, and 0.5 on macOS retina screens)\n\n    By default, Hello ImGui will compute them automatically,\n    when dpiWindowSizeFactor and fontRenderingScale are set to 0.\n\n\n How to set those values manually:\n ---------------------------------\n If it fails (i.e. your window and/or fonts are too big or too small),\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.dpiAwareParams`)\n    (2) Either by setting them in a `hello_imgui.ini` file. See hello_imgui/hello_imgui_example.ini for more info\n Note: if several methods are used, the order of priority is (1) > (2)\n\n For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi\n")
-        .def("__init__", [](HelloImGui::DpiAwareParams * self, float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f)
+            (m, "DpiAwareParams", "\n Hello ImGui will try its best to automatically handle DPI scaling for you.\n\n Parameter to change the scaling behavior:\n ------------------------------------------\n - `dpiWindowSizeFactor`:\n        factor by which window size should be multiplied\n    By default, Hello ImGui will compute it automatically, when it is set to 0.\n\n\n How to set manually:\n ---------------------------------\n If it fails (i.e. your window and/or fonts are too big or too small),\n you may set them manually:\n    (1) Either by setting them programmatically in your application\n        (set their values in `runnerParams.dpiAwareParams`)\n    (2) Either by setting them in a `hello_imgui.ini` file. See hello_imgui/hello_imgui_example.ini for more info\n Note: if several methods are used, the order of priority is (1) > (2)\n\n For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi\n")
+        .def("__init__", [](HelloImGui::DpiAwareParams * self, float dpiWindowSizeFactor = 0.0f)
         {
             new (self) HelloImGui::DpiAwareParams();  // placement new
             auto r = self;
             r->dpiWindowSizeFactor = dpiWindowSizeFactor;
-            r->fontRenderingScale = fontRenderingScale;
         },
-        nb::arg("dpi_window_size_factor") = 0.0f, nb::arg("font_rendering_scale") = 0.0f
+        nb::arg("dpi_window_size_factor") = 0.0f
         )
         .def_rw("dpi_window_size_factor", &HelloImGui::DpiAwareParams::dpiWindowSizeFactor, " `dpiWindowSizeFactor`\n     factor by which window size should be multiplied to get a similar\n     physical size on different OSes (as if they were all displayed on a 96 PPI screen).\n     This affects the size of native app windows,\n     but *not* imgui Windows, and *not* the size of widgets and text.\n  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,\n  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.\n\n  Inside Hello ImGui, the window size is always treated as targeting a 96 PPI screen, so that its size will\n  look similar whatever the OS and the screen DPI.\n  In our example, our 960x480 pixels window will try to correspond to a 10x5 inches window\n\n  Hello ImGui does its best to compute it on all OSes.\n  However, if it fails you may set its value manually.\n  If it is set to 0, Hello ImGui will compute it automatically,\n  and the resulting value will be stored in `dpiWindowSizeFactor`.")
-        .def_rw("font_rendering_scale", &HelloImGui::DpiAwareParams::fontRenderingScale, " `fontRenderingScale`\n     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.\n  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.\n  Changing this value will *not* change the visible font size on the screen, however it will\n  affect the size of font textures that are loaded.\n  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),\n  the font texture will be rasterized at 1/0.5 = 2 times the size of the font.\n   This leads to a better rendering quality on some platforms.\n (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)")
         .def("dpi_font_loading_factor",
             &HelloImGui::DpiAwareParams::DpiFontLoadingFactor, " `DpiFontLoadingFactor`\n     factor by which font size should be multiplied at loading time to get a similar visible size on different OSes.\n     This is equal to dpiWindowSizeFactor\n  The size will be equivalent to a size given for a 96 PPI screen")
-        .def("dpi_font_rasterizer_density",
-            &HelloImGui::DpiAwareParams::DpiFontRasterizerDensity, " `DpiFontRasterizerDensity`\n     Rasterizer density to use when loading fonts (applied to ImFontConfig.RasterizerDensity)")
         ;
 
 
@@ -161,7 +157,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         HelloImGui::DpiFontLoadingFactor, " Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...\n (HelloImGui::LoadFontTTF does this by default)");
 
     m.def("dpi_window_size_factor",
-        HelloImGui::DpiWindowSizeFactor, " DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.\n It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.");
+        HelloImGui::DpiWindowSizeFactor, " DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.\n It returns ApplicationScreenPixelPerInch / 96 under windows and linux. Under macOS, it will return 1.");
 
 
     auto pyClassAssetFileData =

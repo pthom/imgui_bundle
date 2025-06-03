@@ -80,20 +80,14 @@ class DpiAwareParams:
     """
     Hello ImGui will try its best to automatically handle DPI scaling for you.
 
-    Parameters to change the scaling behavior:
+    Parameter to change the scaling behavior:
     ------------------------------------------
     - `dpiWindowSizeFactor`:
            factor by which window size should be multiplied
-
-    - `fontRenderingScale`:
-        factor by which fonts glyphs should be scaled at rendering time
-        (typically 1 on windows, and 0.5 on macOS retina screens)
-
-       By default, Hello ImGui will compute them automatically,
-       when dpiWindowSizeFactor and fontRenderingScale are set to 0.
+       By default, Hello ImGui will compute it automatically, when it is set to 0.
 
 
-    How to set those values manually:
+    How to set manually:
     ---------------------------------
     If it fails (i.e. your window and/or fonts are too big or too small),
     you may set them manually:
@@ -125,18 +119,6 @@ class DpiAwareParams:
     #  and the resulting value will be stored in `dpiWindowSizeFactor`.
     dpi_window_size_factor: float = 0.0
 
-    # float fontRenderingScale = 0.0f;    /* original C++ signature */
-    # `fontRenderingScale`
-    #     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.
-    #  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.
-    #  Changing this value will *not* change the visible font size on the screen, however it will
-    #  affect the size of font textures that are loaded.
-    #  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),
-    #  the font texture will be rasterized at 1/0.5 = 2 times the size of the font.
-    #   This leads to a better rendering quality on some platforms.
-    # (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)
-    font_rendering_scale: float = 0.0
-
     # float DpiFontLoadingFactor() const {    /* original C++ signature */
     #         return dpiWindowSizeFactor;
     #     }
@@ -147,18 +129,8 @@ class DpiAwareParams:
         The size will be equivalent to a size given for a 96 PPI screen
         """
         pass
-    # float DpiFontRasterizerDensity() const {    /* original C++ signature */
-    #         return 1.f / fontRenderingScale;
-    #     }
-    def dpi_font_rasterizer_density(self) -> float:
-        """`DpiFontRasterizerDensity`
-        Rasterizer density to use when loading fonts (applied to ImFontConfig.RasterizerDensity)
-        """
-        pass
-    # DpiAwareParams(float dpiWindowSizeFactor = 0.0f, float fontRenderingScale = 0.0f);    /* original C++ signature */
-    def __init__(
-        self, dpi_window_size_factor: float = 0.0, font_rendering_scale: float = 0.0
-    ) -> None:
+    # DpiAwareParams(float dpiWindowSizeFactor = 0.0f);    /* original C++ signature */
+    def __init__(self, dpi_window_size_factor: float = 0.0) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
@@ -239,7 +211,7 @@ def dpi_font_loading_factor() -> float:
 # float DpiWindowSizeFactor();    /* original C++ signature */
 def dpi_window_size_factor() -> float:
     """DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
-    It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
+    It returns ApplicationScreenPixelPerInch / 96 under windows and linux. Under macOS, it will return 1.
     """
     pass
 

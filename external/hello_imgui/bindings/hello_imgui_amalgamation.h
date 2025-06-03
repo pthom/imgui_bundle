@@ -22,20 +22,14 @@ namespace HelloImGui
 //
 // Hello ImGui will try its best to automatically handle DPI scaling for you.
 //
-// Parameters to change the scaling behavior:
+// Parameter to change the scaling behavior:
 // ------------------------------------------
 // - `dpiWindowSizeFactor`:
 //        factor by which window size should be multiplied
-//
-// - `fontRenderingScale`:
-//     factor by which fonts glyphs should be scaled at rendering time
-//     (typically 1 on windows, and 0.5 on macOS retina screens)
-//
-//    By default, Hello ImGui will compute them automatically,
-//    when dpiWindowSizeFactor and fontRenderingScale are set to 0.
+//    By default, Hello ImGui will compute it automatically, when it is set to 0.
 //
 //
-// How to set those values manually:
+// How to set manually:
 // ---------------------------------
 // If it fails (i.e. your window and/or fonts are too big or too small),
 // you may set them manually:
@@ -66,29 +60,12 @@ struct DpiAwareParams
     //  and the resulting value will be stored in `dpiWindowSizeFactor`.
     float dpiWindowSizeFactor = 0.0f;
 
-    // `fontRenderingScale`
-    //     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.
-    //  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.
-    //  Changing this value will *not* change the visible font size on the screen, however it will
-    //  affect the size of font textures that are loaded.
-    //  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),
-    //  the font texture will be rasterized at 1/0.5 = 2 times the size of the font.
-    //   This leads to a better rendering quality on some platforms.
-    // (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)
-    float fontRenderingScale = 0.0f;
-
     // `DpiFontLoadingFactor`
     //     factor by which font size should be multiplied at loading time to get a similar visible size on different OSes.
     //     This is equal to dpiWindowSizeFactor
     //  The size will be equivalent to a size given for a 96 PPI screen
     float DpiFontLoadingFactor() const {
         return dpiWindowSizeFactor;
-    }
-
-    // `DpiFontRasterizerDensity`
-    //     Rasterizer density to use when loading fonts (applied to ImFontConfig.RasterizerDensity)
-    float DpiFontRasterizerDensity() const {
-        return 1.f / fontRenderingScale;
     }
 
 };
@@ -152,7 +129,7 @@ namespace HelloImGui
     float DpiFontLoadingFactor();
 
     // DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
-    // It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
+    // It returns ApplicationScreenPixelPerInch / 96 under windows and linux. Under macOS, it will return 1.
     float DpiWindowSizeFactor();
 
 } // namespace HelloImGui
