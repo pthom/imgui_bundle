@@ -220,6 +220,16 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::arg("v"),
         "(private API)");
 
+    m.def("im_trunc64",
+        ImTrunc64,
+        nb::arg("f"),
+        "(private API)");
+
+    m.def("im_round64",
+        ImRound64,
+        nb::arg("f"),
+        "(private API)");
+
     m.def("im_mod_positive",
         ImModPositive,
         nb::arg("a"), nb::arg("b"),
@@ -611,16 +621,18 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImFontStackData =
         nb::class_<ImFontStackData>
             (m, "ImFontStackData", "")
-        .def("__init__", [](ImFontStackData * self, float FontSize = float())
+        .def("__init__", [](ImFontStackData * self, float FontSizeBeforeScaling = float(), float FontSizeAfterScaling = float())
         {
             new (self) ImFontStackData();  // placement new
             auto r = self;
-            r->FontSize = FontSize;
+            r->FontSizeBeforeScaling = FontSizeBeforeScaling;
+            r->FontSizeAfterScaling = FontSizeAfterScaling;
         },
-        nb::arg("font_size") = float()
+        nb::arg("font_size_before_scaling") = float(), nb::arg("font_size_after_scaling") = float()
         )
         .def_rw("font", &ImFontStackData::Font, "")
-        .def_rw("font_size", &ImFontStackData::FontSize, "")
+        .def_rw("font_size_before_scaling", &ImFontStackData::FontSizeBeforeScaling, "")
+        .def_rw("font_size_after_scaling", &ImFontStackData::FontSizeAfterScaling, "")
         ;
 
 
@@ -1140,7 +1152,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImGuiTreeNodeStackData =
         nb::class_<ImGuiTreeNodeStackData>
-            (m, "TreeNodeStackData", " Store data emitted by TreeNode() for usage by TreePop()\n - To implement ImGuiTreeNodeFlags_NavLeftJumpsBackHere: store the minimum amount of data\n   which we can't infer in TreePop(), to perform the equivalent of NavApplyItemToResult().\n   Only stored when the node is a potential candidate for landing on a Left arrow jump.")
+            (m, "TreeNodeStackData", " Store data emitted by TreeNode() for usage by TreePop()\n - To implement ImGuiTreeNodeFlags_NavLeftJumpsToParent: store the minimum amount of data\n   which we can't infer in TreePop(), to perform the equivalent of NavApplyItemToResult().\n   Only stored when the node is a potential candidate for landing on a Left arrow jump.")
         .def("__init__", [](ImGuiTreeNodeStackData * self, ImGuiID ID = ImGuiID(), ImGuiTreeNodeFlags TreeFlags = ImGuiTreeNodeFlags(), ImGuiItemFlags ItemFlags = ImGuiItemFlags(), const std::optional<const ImRect> & NavRect = std::nullopt, float DrawLinesX1 = float(), float DrawLinesToNodesY2 = float(), const std::optional<const ImGuiTableColumnIdx> & DrawLinesTableColumn = std::nullopt)
         {
             new (self) ImGuiTreeNodeStackData();  // placement new
@@ -2206,10 +2218,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("style", &ImGuiContext::Style, "")
         .def_rw("config_flags_curr_frame", &ImGuiContext::ConfigFlagsCurrFrame, "= g.IO.ConfigFlags at the time of NewFrame()")
         .def_rw("config_flags_last_frame", &ImGuiContext::ConfigFlagsLastFrame, "")
-        .def_rw("font", &ImGuiContext::Font, "== FontStack.back().Font")
-        .def_rw("font_baked", &ImGuiContext::FontBaked, "== Font->GetFontBaked(FontSize)")
-        .def_rw("font_size", &ImGuiContext::FontSize, "== FontSizeBeforeScaling * io.FontGlobalScale * font->Scale * g.CurrentWindow->FontWindowScale. Current text height.")
-        .def_rw("font_size_before_scaling", &ImGuiContext::FontSizeBeforeScaling, "== value passed to PushFontSize()")
+        .def_rw("font", &ImGuiContext::Font, "Currently bound font. (== FontStack.back().Font)")
+        .def_rw("font_baked", &ImGuiContext::FontBaked, "Currently bound font at currently bound size. (== Font->GetFontBaked(FontSize))")
+        .def_rw("font_size", &ImGuiContext::FontSize, "Currently bound font size == line height (== FontSizeBeforeScaling * io.FontGlobalScale * font->Scale * g.CurrentWindow->FontWindowScale).")
+        .def_rw("font_size_before_scaling", &ImGuiContext::FontSizeBeforeScaling, "== value passed to PushFont() / PushFontSize() when specified.")
         .def_rw("font_scale", &ImGuiContext::FontScale, "== FontBaked->Size / Font->FontSize. Scale factor over baked size.")
         .def_rw("font_rasterizer_density", &ImGuiContext::FontRasterizerDensity, "Current font density. Used by all calls to GetFontBaked().")
         .def_rw("current_dpi_scale", &ImGuiContext::CurrentDpiScale, "Current window/viewport DpiScale == CurrentViewport->DpiScale")
@@ -2448,7 +2460,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("typing_select_state", &ImGuiContext::TypingSelectState, "State for GetTypingSelectRequest()")
         .def_rw("platform_ime_data", &ImGuiContext::PlatformImeData, "Data updated by current frame. Will be applied at end of the frame. For some backends, this is required to have WantVisible=True in order to receive text message.")
         .def_rw("platform_ime_data_prev", &ImGuiContext::PlatformImeDataPrev, "Previous frame data. When changed we call the platform_io.Platform_SetImeDataFn() handler.")
-        .def_rw("platform_ime_viewport", &ImGuiContext::PlatformImeViewport, "")
         .def_rw("user_textures", &ImGuiContext::UserTextures, "List of textures created/managed by user or third-party extension. Automatically appended into platform_io.Textures[].")
         .def_rw("dock_context", &ImGuiContext::DockContext, "")
         .def_rw("settings_loaded", &ImGuiContext::SettingsLoaded, "")
@@ -3307,13 +3318,16 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::UnregisterFontAtlas, nb::arg("atlas"));
 
     m.def("set_current_font",
-        ImGui::SetCurrentFont, nb::arg("font"), nb::arg("font_size"));
+        ImGui::SetCurrentFont, nb::arg("font"), nb::arg("font_size_before_scaling"), nb::arg("font_size_after_scaling"));
+
+    m.def("update_current_font_size",
+        ImGui::UpdateCurrentFontSize, nb::arg("restore_font_size_after_scaling"));
 
     m.def("set_font_rasterizer_density",
         ImGui::SetFontRasterizerDensity, nb::arg("rasterizer_density"));
 
-    m.def("update_current_font_size",
-        ImGui::UpdateCurrentFontSize);
+    m.def("get_font_rasterizer_density",
+        ImGui::GetFontRasterizerDensity, "(private API)");
 
     m.def("get_rounded_font_size",
         ImGui::GetRoundedFontSize,
@@ -3321,9 +3335,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         "(private API)");
 
     m.def("get_default_font",
-        ImGui::GetDefaultFont,
-        "(private API)",
-        nb::rv_policy::reference);
+        ImGui::GetDefaultFont, nb::rv_policy::reference);
 
     m.def("push_password_font",
         ImGui::PushPasswordFont);
@@ -5076,14 +5088,14 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassstbrp_context_opaque =
         nb::class_<stbrp_context_opaque>
-            (m, "stbrp_context_opaque", "Internal storage for incrementally packing and building a ImFontAtlas")
+            (m, "stbrp_context_opaque", "")
         .def(nb::init<>()) // implicit default constructor
         ;
 
 
     auto pyClassImFontAtlasBuilder =
         nb::class_<ImFontAtlasBuilder>
-            (m, "ImFontAtlasBuilder", "")
+            (m, "ImFontAtlasBuilder", "Internal storage for incrementally packing and building a ImFontAtlas")
         .def_rw("pack_context", &ImFontAtlasBuilder::PackContext, "Actually 'stbrp_context' but we don't want to define this in the header file.")
         .def_rw("rects", &ImFontAtlasBuilder::Rects, "")
         .def_rw("temp_buffer", &ImFontAtlasBuilder::TempBuffer, "Misc scratch buffer")
@@ -5141,8 +5153,8 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("im_font_atlas_font_destroy_output",
         ImFontAtlasFontDestroyOutput, nb::arg("atlas"), nb::arg("font"));
 
-    m.def("im_font_atlas_font_discard_output_bakes",
-        ImFontAtlasFontDiscardOutputBakes, nb::arg("atlas"), nb::arg("font"));
+    m.def("im_font_atlas_font_discard_bakes",
+        ImFontAtlasFontDiscardBakes, nb::arg("atlas"), nb::arg("font"), nb::arg("unused_frames"));
 
     m.def("im_font_atlas_baked_get_id",
         ImFontAtlasBakedGetId, nb::arg("font_id"), nb::arg("baked_size"), nb::arg("rasterizer_density"));

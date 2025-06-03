@@ -401,6 +401,16 @@ def im_floor(v: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
+# static inline float  ImTrunc64(float f)                                         { return (float)(ImS64)(f); }    /* original C++ signature */
+def im_trunc64(f: float) -> float:
+    """(private API)"""
+    pass
+
+# static inline float  ImRound64(float f)                                         { return (float)(ImS64)(f + 0.5f); }    /* original C++ signature */
+def im_round64(f: float) -> float:
+    """(private API)"""
+    pass
+
 # static inline int    ImModPositive(int a, int b)                                { return (a + b) % b; }    /* original C++ signature */
 def im_mod_positive(a: int, b: int) -> int:
     """(private API)"""
@@ -898,10 +908,12 @@ class ImDrawDataBuilder:
 class ImFontStackData:
     # ImFont*     Font;    /* original C++ signature */
     font: ImFont
-    # float       FontSize;    /* original C++ signature */
-    font_size: float
-    # ImFontStackData(float FontSize = float());    /* original C++ signature */
-    def __init__(self, font_size: float = float()) -> None:
+    # float       FontSizeBeforeScaling;    /* original C++ signature */
+    font_size_before_scaling: float
+    # float       FontSizeAfterScaling;    /* original C++ signature */
+    font_size_after_scaling: float
+    # ImFontStackData(float FontSizeBeforeScaling = float(), float FontSizeAfterScaling = float());    /* original C++ signature */
+    def __init__(self, font_size_before_scaling: float = float(), font_size_after_scaling: float = float()) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
@@ -1778,7 +1790,7 @@ class LastItemData:
 
 class TreeNodeStackData:
     """Store data emitted by TreeNode() for usage by TreePop()
-    - To implement ImGuiTreeNodeFlags_NavLeftJumpsBackHere: store the minimum amount of data
+    - To implement ImGuiTreeNodeFlags_NavLeftJumpsToParent: store the minimum amount of data
       which we can't infer in TreePop(), to perform the equivalent of NavApplyItemToResult().
       Only stored when the node is a potential candidate for landing on a Left arrow jump.
     """
@@ -3479,13 +3491,13 @@ class Context:
     # ImGuiConfigFlags        ConfigFlagsLastFrame;    /* original C++ signature */
     config_flags_last_frame: ConfigFlags
     # ImFont*                 Font;    /* original C++ signature */
-    font: ImFont  # == FontStack.back().Font
+    font: ImFont  # Currently bound font. (== FontStack.back().Font)
     # ImFontBaked*            FontBaked;    /* original C++ signature */
-    font_baked: ImFontBaked  # == Font->GetFontBaked(FontSize)
+    font_baked: ImFontBaked  # Currently bound font at currently bound size. (== Font->GetFontBaked(FontSize))
     # float                   FontSize;    /* original C++ signature */
-    font_size: float  # == FontSizeBeforeScaling * io.FontGlobalScale * font->Scale * g.CurrentWindow->FontWindowScale. Current text height.
+    font_size: float  # Currently bound font size == line height (== FontSizeBeforeScaling * io.FontGlobalScale * font->Scale * g.CurrentWindow->FontWindowScale).
     # float                   FontSizeBeforeScaling;    /* original C++ signature */
-    font_size_before_scaling: float  # == value passed to PushFontSize()
+    font_size_before_scaling: float  # == value passed to PushFont() / PushFontSize() when specified.
     # float                   FontScale;    /* original C++ signature */
     font_scale: float  # == FontBaked->Size / Font->FontSize. Scale factor over baked size.
     # float                   FontRasterizerDensity;    /* original C++ signature */
@@ -4066,8 +4078,6 @@ class Context:
     platform_ime_data_prev: (
         PlatformImeData  # Previous frame data. When changed we call the platform_io.Platform_SetImeDataFn() handler.
     )
-    # ImGuiID                 PlatformImeViewport;    /* original C++ signature */
-    platform_ime_viewport: ID
 
     # Extensions
     # FIXME: We could provide an API to register one slot in an array held in ImGuiContext?
@@ -5531,16 +5541,21 @@ def register_font_atlas(atlas: ImFontAtlas) -> None:
 def unregister_font_atlas(atlas: ImFontAtlas) -> None:
     pass
 
-# IMGUI_API void          SetCurrentFont(ImFont* font, float font_size);    /* original C++ signature */
-def set_current_font(font: ImFont, font_size: float) -> None:
+# IMGUI_API void          SetCurrentFont(ImFont* font, float font_size_before_scaling, float font_size_after_scaling);    /* original C++ signature */
+def set_current_font(font: ImFont, font_size_before_scaling: float, font_size_after_scaling: float) -> None:
+    pass
+
+# IMGUI_API void          UpdateCurrentFontSize(float restore_font_size_after_scaling);    /* original C++ signature */
+def update_current_font_size(restore_font_size_after_scaling: float) -> None:
     pass
 
 # IMGUI_API void          SetFontRasterizerDensity(float rasterizer_density);    /* original C++ signature */
 def set_font_rasterizer_density(rasterizer_density: float) -> None:
     pass
 
-# IMGUI_API void          UpdateCurrentFontSize();    /* original C++ signature */
-def update_current_font_size() -> None:
+# inline float            GetFontRasterizerDensity() { return GImGui->FontRasterizerDensity; }    /* original C++ signature */
+def get_font_rasterizer_density() -> float:
+    """(private API)"""
     pass
 
 # inline float            GetRoundedFontSize(float size) { return IM_ROUND(size); }    /* original C++ signature */
@@ -5548,9 +5563,8 @@ def get_rounded_font_size(size: float) -> float:
     """(private API)"""
     pass
 
-# inline ImFont*          GetDefaultFont() { ImGuiContext& g = *GImGui; return g.IO.FontDefault ? g.IO.FontDefault : g.IO.Fonts->Fonts[0]; }    /* original C++ signature */
+# IMGUI_API ImFont*       GetDefaultFont();    /* original C++ signature */
 def get_default_font() -> ImFont:
-    """(private API)"""
     pass
 
 # IMGUI_API void          PushPasswordFont();    /* original C++ signature */
@@ -7672,15 +7686,16 @@ class ImFontAtlasPostProcessData:
         """
         pass
 
+# We avoid dragging imstb_rectpack.h into public header (partly because binding generators are having issues with it)
 class stbrp_context_opaque:
-    """Internal storage for incrementally packing and building a ImFontAtlas"""
-
     # stbrp_context_opaque();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
 
 class ImFontAtlasBuilder:
+    """Internal storage for incrementally packing and building a ImFontAtlas"""
+
     # stbrp_context_opaque        PackContext;    /* original C++ signature */
     pack_context: stbrp_context_opaque  # Actually 'stbrp_context' but we don't want to define this in the header file.
     # ImVector<ImTextureRect>     Rects;    /* original C++ signature */
@@ -7771,8 +7786,8 @@ def im_font_atlas_font_init_output(atlas: ImFontAtlas, font: ImFont) -> bool:
 def im_font_atlas_font_destroy_output(atlas: ImFontAtlas, font: ImFont) -> None:
     pass
 
-# IMGUI_API void              ImFontAtlasFontDiscardOutputBakes(ImFontAtlas* atlas, ImFont* font);    /* original C++ signature */
-def im_font_atlas_font_discard_output_bakes(atlas: ImFontAtlas, font: ImFont) -> None:
+# IMGUI_API void              ImFontAtlasFontDiscardBakes(ImFontAtlas* atlas, ImFont* font, int unused_frames);    /* original C++ signature */
+def im_font_atlas_font_discard_bakes(atlas: ImFontAtlas, font: ImFont, unused_frames: int) -> None:
     pass
 
 # IMGUI_API ImGuiID           ImFontAtlasBakedGetId(ImGuiID font_id, float baked_size, float rasterizer_density);    /* original C++ signature */

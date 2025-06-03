@@ -538,11 +538,6 @@ void py_init_module_imgui_main(nb::module_& m)
     m.def("set_window_focus",
         nb::overload_cast<>(ImGui::SetWindowFocus), "(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus().");
 
-    m.def("set_window_font_scale",
-        ImGui::SetWindowFontScale,
-        nb::arg("scale"),
-        "[OBSOLETE] set font scale. Adjust IO.FontGlobalScale if you want to scale all windows. This is an old API! For correct scaling, prefer to reload font + rebuild ImFontAtlas + call style.ScaleAllSizes().");
-
     m.def("set_window_pos",
         nb::overload_cast<const char *, const ImVec2 &, ImGuiCond>(ImGui::SetWindowPos),
         nb::arg("name"), nb::arg("pos"), nb::arg("cond") = 0,
@@ -608,7 +603,7 @@ void py_init_module_imgui_main(nb::module_& m)
     m.def("push_font",
         ImGui::PushFont,
         nb::arg("font"), nb::arg("font_size") = -1,
-        "use None as a shortcut to push default font. Use <0.0 to keep current font size. Use font->DefaultSize to revert to font default size.");
+        "use None as a shortcut to push default font. Use <0.0 to keep current font size.");
 
     m.def("pop_font",
         ImGui::PopFont);
@@ -691,10 +686,15 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::rv_policy::reference);
 
     m.def("get_font_size",
-        ImGui::GetFontSize, "get current font size (= height in pixels) of current font with current scale applied");
+        ImGui::GetFontSize, "get current font size (= height in pixels) of current font with external scale factors applied. Use ImGui::GetStyle().FontSize to get value before external scale factors.");
 
     m.def("get_font_tex_uv_white_pixel",
         ImGui::GetFontTexUvWhitePixel, "get UV coordinate for a white pixel, useful to draw custom shapes via the ImDrawList API");
+
+    m.def("get_font_baked",
+        ImGui::GetFontBaked,
+        "get current font bound at current size // == GetFont()->GetFontBaked(GetFontSize())",
+        nb::rv_policy::reference);
 
     m.def("get_color_u32",
         nb::overload_cast<ImGuiCol, float>(ImGui::GetColorU32),
@@ -1080,18 +1080,19 @@ void py_init_module_imgui_main(nb::module_& m)
         "hyperlink text button, return True when clicked");
 
     m.def("text_link_open_url",
-        [](const char * label, std::optional<std::string> url = std::nullopt)
+        [](const char * label, std::optional<std::string> url = std::nullopt) -> bool
         {
-            auto TextLinkOpenURL_adapt_const_char_pointer_with_default_null = [](const char * label, std::optional<std::string> url = std::nullopt)
+            auto TextLinkOpenURL_adapt_const_char_pointer_with_default_null = [](const char * label, std::optional<std::string> url = std::nullopt) -> bool
             {
                 const char * url_adapt_default_null = nullptr;
                 if (url.has_value())
                     url_adapt_default_null = url.value().c_str();
 
-                ImGui::TextLinkOpenURL(label, url_adapt_default_null);
+                auto lambda_result = ImGui::TextLinkOpenURL(label, url_adapt_default_null);
+                return lambda_result;
             };
 
-            TextLinkOpenURL_adapt_const_char_pointer_with_default_null(label, url);
+            return TextLinkOpenURL_adapt_const_char_pointer_with_default_null(label, url);
         },
         nb::arg("label"), nb::arg("url") = nb::none(),
         "hyperlink text button, automatically open file/url when clicked");
@@ -3220,7 +3221,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("span_label_width", ImGuiTreeNodeFlags_SpanLabelWidth, "Narrow hit box + narrow hovering highlight, will only cover the label text.")
             .value("span_all_columns", ImGuiTreeNodeFlags_SpanAllColumns, "Frame will span all columns of its container table (label will still fit in current column)")
             .value("label_span_all_columns", ImGuiTreeNodeFlags_LabelSpanAllColumns, "Label will span all columns of its container table")
-            .value("nav_left_jumps_back_here", ImGuiTreeNodeFlags_NavLeftJumpsBackHere, "(WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)")
+            .value("nav_left_jumps_to_parent", ImGuiTreeNodeFlags_NavLeftJumpsToParent, "Nav: left arrow moves back to parent. This is processed in TreePop() when there's an unfullfilled Left nav request remaining.")
             .value("collapsing_header", ImGuiTreeNodeFlags_CollapsingHeader, "")
             .value("draw_lines_none", ImGuiTreeNodeFlags_DrawLinesNone, "No lines drawn")
             .value("draw_lines_full", ImGuiTreeNodeFlags_DrawLinesFull, "Horizontal lines to child nodes. Vertical line drawn down to TreePop() position: cover full contents. Faster (for large trees).")
@@ -3591,8 +3592,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("no_keyboard", ImGuiConfigFlags_NoKeyboard, "Instruct dear imgui to disable keyboard inputs and interactions. This is done by ignoring keyboard events and clearing existing states.")
             .value("docking_enable", ImGuiConfigFlags_DockingEnable, "Docking enable flags.")
             .value("viewports_enable", ImGuiConfigFlags_ViewportsEnable, "Viewport enable flags (require both ImGuiBackendFlags_PlatformHasViewports + ImGuiBackendFlags_RendererHasViewports set by the respective backends)")
-            .value("dpi_enable_scale_viewports", ImGuiConfigFlags_DpiEnableScaleViewports, "[BETA: Don't use] FIXME-DPI: Reposition and resize imgui windows when the DpiScale of a viewport changed (mostly useful for the main viewport hosting other window). Note that resizing the main window itself is up to your application.")
-            .value("dpi_enable_scale_fonts", ImGuiConfigFlags_DpiEnableScaleFonts, "[BETA: Don't use] FIXME-DPI: Request bitmap-scaled fonts to match DpiScale. This is a very low-quality workaround. The correct way to handle DPI is _currently_ to replace the atlas and/or fonts in the Platform_OnChangedViewport callback, but this is all early work in progress.")
+            .value("dpi_enable_scale_fonts", ImGuiConfigFlags_DpiEnableScaleFonts, "[BETA] FIXME-DPI: Apply an extra font scale of 'monitor->DpiScale / style.Scale'. This will scale fonts but NOT style sizes/padding for now.")
+            .value("dpi_enable_scale_viewports", ImGuiConfigFlags_DpiEnableScaleViewports, "[BETA] FIXME-DPI: Scale imgui and platform windows when 'monitor->DpiScale' changes.")
             .value("is_srgb", ImGuiConfigFlags_IsSRGB, "Application is SRGB-aware.")
             .value("is_touch_screen", ImGuiConfigFlags_IsTouchScreen, "Application is using a touch screen instead of a mouse.");
 
@@ -6070,6 +6071,7 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImGuiStyle =
         nb::class_<ImGuiStyle>
             (m, "Style", "")
+        .def_rw("font_size", &ImGuiStyle::FontSize, "Current base font size.  scaling applied). Use PushFont()/PushFontSize() to modify. Use ImGui::GetFontSize() to obtain scaled value.")
         .def_rw("alpha", &ImGuiStyle::Alpha, "Global alpha applies to everything in Dear ImGui.")
         .def_rw("disabled_alpha", &ImGuiStyle::DisabledAlpha, "Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.")
         .def_rw("window_padding", &ImGuiStyle::WindowPadding, "Padding within a window.")
@@ -6129,7 +6131,9 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("hover_delay_short", &ImGuiStyle::HoverDelayShort, "Delay for IsItemHovered(ImGuiHoveredFlags_DelayShort). Usually used along with HoverStationaryDelay.")
         .def_rw("hover_delay_normal", &ImGuiStyle::HoverDelayNormal, "Delay for IsItemHovered(ImGuiHoveredFlags_DelayNormal). \"")
         .def_rw("hover_flags_for_tooltip_mouse", &ImGuiStyle::HoverFlagsForTooltipMouse, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using mouse.")
-        .def_rw("hover_flags_for_tooltip_nav", &ImGuiStyle::HoverFlagsForTooltipNav, "")
+        .def_rw("hover_flags_for_tooltip_nav", &ImGuiStyle::HoverFlagsForTooltipNav, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using keyboard/gamepad.")
+        .def_rw("scale", &ImGuiStyle::Scale, "FIXME-WIP: Reference scale, as applied by ScaleAllSizes().")
+        .def_rw("_next_frame_font_size", &ImGuiStyle::_NextFrameFontSize, "")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("color_",
@@ -6173,7 +6177,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_flags", &ImGuiIO::ConfigFlags, "= 0              // See ImGuiConfigFlags_ enum. Set by user/application. Keyboard/Gamepad navigation options, etc.")
         .def_rw("backend_flags", &ImGuiIO::BackendFlags, "= 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.")
         .def_rw("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (== GetMainViewport()->Size). May change every frame.")
-        .def_rw("display_framebuffer_scale", &ImGuiIO::DisplayFramebufferScale, "= (1, 1)         // Main display density. For retina display where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.")
+        .def_rw("display_framebuffer_scale", &ImGuiIO::DisplayFramebufferScale, "= (1, 1)         // Main display density. For retina display where window coordinates are different from framebuffer coordinates. This will affect font density + will end up in ImDrawData::FramebufferScale.")
         .def_rw("delta_time", &ImGuiIO::DeltaTime, "= 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.")
         .def_rw("ini_saving_rate", &ImGuiIO::IniSavingRate, "")
         .def_rw("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")
@@ -7346,8 +7350,8 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::_OnChangedTexture)
         .def("_on_changed_vtx_offset",
             &ImDrawList::_OnChangedVtxOffset)
-        .def("_set_texture_ref",
-            &ImDrawList::_SetTextureRef, nb::arg("tex_ref"))
+        .def("_set_texture",
+            &ImDrawList::_SetTexture, nb::arg("tex_ref"))
         .def("_calc_circle_auto_segment_count",
             &ImDrawList::_CalcCircleAutoSegmentCount, nb::arg("radius"))
         .def("_path_arc_to_fast_ex",
@@ -7367,7 +7371,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("cmd_lists", &ImDrawData::CmdLists, "Array of ImDrawList* to render. The ImDrawLists are owned by ImGuiContext and only pointed to from here.")
         .def_rw("display_pos", &ImDrawData::DisplayPos, "Top-left position of the viewport to render (== top-left of the orthogonal projection matrix to use) (== GetMainViewport()->Pos for the main viewport, == (0.0) in most single-viewport applications)")
         .def_rw("display_size", &ImDrawData::DisplaySize, "Size of the viewport to render (== GetMainViewport()->Size for the main viewport, == io.DisplaySize in most single-viewport applications)")
-        .def_rw("framebuffer_scale", &ImDrawData::FramebufferScale, "Amount of pixels for each unit of DisplaySize. Based on io.DisplayFramebufferScale. Generally (1,1) on normal display, (2,2) on OSX with Retina display.")
+        .def_rw("framebuffer_scale", &ImDrawData::FramebufferScale, "Amount of pixels for each unit of DisplaySize. Copied from viewport->FramebufferScale (== io.DisplayFramebufferScale for main viewport). Generally (1,1) on normal display, (2,2) on OSX with Retina display.")
         .def_rw("owner_viewport", &ImDrawData::OwnerViewport, "Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).")
         .def_rw("textures", &ImDrawData::Textures, "List of textures to update. Most of the times the list is shared by all ImDrawData, has only 1 texture and it doesn't need any update. This almost always points to ImGui::GetPlatformIO().Textures[]. May be overriden or set to None if you want to manually update textures.")
         .def(nb::init<>(),
@@ -7428,7 +7432,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("used_rect", &ImTextureData::UsedRect, "w    r   // Bounding box encompassing all past and queued Updates[].")
         .def_rw("update_rect", &ImTextureData::UpdateRect, "w    r   // Bounding box encompassing all queued Updates[].")
         .def_rw("updates", &ImTextureData::Updates, "w    r   // Array of individual updates.")
-        .def_rw("unused_frames", &ImTextureData::UnusedFrames, "w    r   // In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used.")
+        .def_rw("unused_frames", &ImTextureData::UnusedFrames, "w    r   // In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used. Always >0 when Status==WantDestroy.")
         .def_rw("ref_count", &ImTextureData::RefCount, "w    r   // Number of contexts using this texture. Used during backend shutdown.")
         .def_rw("use_colors", &ImTextureData::UseColors, "w    r   // Tell whether our texture data is known to use colors (rather than just white + alpha).")
         .def_rw("want_destroy_next_frame", &ImTextureData::WantDestroyNextFrame, "rw   -   // [Internal] Queued to set ImTextureStatus_WantDestroy next frame. May still be used in the current frame.")
@@ -7479,12 +7483,12 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("glyph_offset", &ImFontConfig::GlyphOffset, "0, 0     // Offset (in pixels) all glyphs from this font input. Absolute value for default size, other sizes will scale this value.")
         .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX, "0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font. Absolute value for default size, other sizes will scale this value.")
         .def_rw("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX, "FLT_MAX  // Maximum AdvanceX for glyphs")
-        .def_rw("glyph_extra_advance_x", &ImFontConfig::GlyphExtraAdvanceX, "0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this.")
+        .def_rw("glyph_extra_advance_x", &ImFontConfig::GlyphExtraAdvanceX, "0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this. // FIXME-NEWATLAS: Intentionally unscaled")
         .def_rw("font_builder_flags", &ImFontConfig::FontBuilderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")
         .def_rw("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.")
-        .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity, "1.0     // (Legacy: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported). DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.")
+        .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity, "1.0     // [LEGACY: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported] DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.")
         .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
-        .def_rw("flags", &ImFontConfig::Flags, "Font flags (don't use just yet)")
+        .def_rw("flags", &ImFontConfig::Flags, "Font flags (don't use just yet, will be exposed in upcoming 1.92.X updates)")
         .def_rw("dst_font", &ImFontConfig::DstFont, "Target font (as we merging fonts, multiple ImFontConfig may target the same font)")
         .def_ro("font_loader", &ImFontConfig::FontLoader, "Custom font backend for this source (other use one stored in ImFontAtlas)")
         .def_rw("font_loader_data", &ImFontConfig::FontLoaderData, "Font loader opaque storage (per font config)")
@@ -7721,10 +7725,10 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyEnumImFontFlags_ =
         nb::enum_<ImFontFlags_>(m, "ImFontFlags_", nb::is_arithmetic(), " Font flags\n (in future versions as we redesign font loading API, this will become more important and better documented. for now please consider this as internal/advanced use)")
             .value("none", ImFontFlags_None, "")
-            .value("use_default_size", ImFontFlags_UseDefaultSize, "Legacy compatibility: make PushFont() calls without explicit size use font->DefaultSize instead of current font size.")
+            .value("default_to_legacy_size", ImFontFlags_DefaultToLegacySize, "Legacy compatibility: make PushFont() calls without explicit size use font->LegacySize instead of current font size.")
             .value("no_load_error", ImFontFlags_NoLoadError, "Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.")
-            .value("no_load_glyphs", ImFontFlags_NoLoadGlyphs, "Disable loading new glyphs.")
-            .value("lock_baked_sizes", ImFontFlags_LockBakedSizes, "Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size.");
+            .value("no_load_glyphs", ImFontFlags_NoLoadGlyphs, "[Internal] Disable loading new glyphs.")
+            .value("lock_baked_sizes", ImFontFlags_LockBakedSizes, "[Internal] Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size. Important: if you use this to preload given sizes, consider the possibility of multiple font density used on Retina display.");
 
 
     auto pyClassImFont =
@@ -7735,18 +7739,17 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("flags", &ImFont::Flags, "4     // Font flags.")
         .def_rw("current_rasterizer_density", &ImFont::CurrentRasterizerDensity, "Current rasterizer density. This is a varying state of the font.")
         .def_rw("font_id", &ImFont::FontId, "Unique identifier for the font")
-        .def_rw("default_size", &ImFont::DefaultSize, "4     // in  // Default font size")
+        .def_rw("legacy_size", &ImFont::LegacySize, "4     // in  // Font size passed to AddFont(). Use for old code calling PushFont() expecting to use that size. (use ImGui::GetFontBaked() to get font baked at current bound size).")
         .def_rw("sources", &ImFont::Sources, "16    // in  // List of sources. Pointers within ContainerAtlas->Sources[]")
         .def_rw("ellipsis_char", &ImFont::EllipsisChar, "2-4   // out // Character used for ellipsis rendering ('...').")
         .def_rw("fallback_char", &ImFont::FallbackChar, "2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')")
-        .def_rw("scale", &ImFont::Scale, "4     // in  // Base font scale (~1.0), multiplied by the per-window font scale which you can adjust with SetWindowFontScale()")
         .def_rw("ellipsis_auto_bake", &ImFont::EllipsisAutoBake, "1     //     // Mark when the \"...\" glyph needs to be generated.")
-        .def_rw("remap_pairs", &ImFont::RemapPairs, "16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.")
+        .def_rw("remap_pairs", &ImFont::RemapPairs, "")
         .def(nb::init<>(),
             "Methods")
         .def("get_font_baked",
             &ImFont::GetFontBaked,
-            nb::arg("font_size"),
+            nb::arg("font_size"), nb::arg("density") = -1.0f,
             "Get or create baked data for given size",
             nb::rv_policy::reference)
         .def("is_glyph_in_font",
@@ -7806,7 +7809,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("flags", &ImGuiViewport::Flags, "See ImGuiViewportFlags_")
         .def_rw("pos", &ImGuiViewport::Pos, "Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)")
         .def_rw("size", &ImGuiViewport::Size, "Main Area: Size of the viewport.")
-        .def_rw("framebuffer_scale", &ImGuiViewport::FramebufferScale, "Density of the viewport for Retina display (always 1,1 on Windows, may be 2,2 etc on macOS/iOS).")
+        .def_rw("framebuffer_scale", &ImGuiViewport::FramebufferScale, "Density of the viewport for Retina display (always 1,1 on Windows, may be 2,2 etc on macOS/iOS). This will affect font rasterizer density.")
         .def_rw("work_pos", &ImGuiViewport::WorkPos, "Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)")
         .def_rw("work_size", &ImGuiViewport::WorkSize, "Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)")
         .def_rw("dpi_scale", &ImGuiViewport::DpiScale, "1.0 = 96 DPI = No extra scale.")

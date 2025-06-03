@@ -588,7 +588,7 @@ class ImTextureRef:
     @overload
     def __init__(self, tex_id: ImTextureID) -> None:
         pass
-    # inline ImTextureID GetTexID() const;        /* original C++ signature */
+    # inline ImTextureID  GetTexID() const;       /* original C++ signature */
     def get_tex_id(self) -> ImTextureID:
         """(private API)
 
@@ -927,11 +927,6 @@ def set_window_focus() -> None:
     """(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus()."""
     pass
 
-# IMGUI_API void          SetWindowFontScale(float scale);                                                /* original C++ signature */
-def set_window_font_scale(scale: float) -> None:
-    """[OBSOLETE] set font scale. Adjust IO.FontGlobalScale if you want to scale all windows. This is an old API! For correct scaling, prefer to reload font + rebuild ImFontAtlas + call style.ScaleAllSizes()."""
-    pass
-
 # IMGUI_API void          SetWindowPos(const char* name, const ImVec2& pos, ImGuiCond cond = 0);          /* original C++ signature */
 @overload
 def set_window_pos(name: str, pos: ImVec2Like, cond: Cond = 0) -> None:
@@ -1013,10 +1008,15 @@ def set_scroll_from_pos_y(local_y: float, center_y_ratio: float = 0.5) -> None:
 # *IMPORTANT* before 1.92, fonts had a single size. They can now be dynamically be adjusted.
 # - Before 1.92: PushFont() always used font default size.
 # -  Since 1.92: PushFont() preserve the current shared font size.
-# - To use old behavior: use 'PushFont(font, font->DefaultSize)' in call site, or set 'ImFontConfig::Flags |= ImFontFlags_UseDefaultSize' before calling AddFont().
+# - To use old behavior (single size font, size specified in AddFontXXX() call:
+#   - Use 'PushFont(font, font->LegacySize)' at call site
+#   - Or set 'ImFontConfig::Flags |= ImFontFlags_DefaultToLegacySize' before calling AddFont(), and then 'PushFont(font)' will use this size.
+# *IMPORTANT* If you want to scale an existing font size:
+#   -     OK: PushFontSize(style.FontSize * factor) (= value before external scale factors applied).
+#   - NOT OK: PushFontSize(GetFontSize() * factor)  (= value after external scale factors applied. external scale factors are io.FontGlobalScale and per-viewport scales.).
 # IMGUI_API void          PushFont(ImFont* font, float font_size = -1);                       /* original C++ signature */
 def push_font(font: ImFont, font_size: float = -1) -> None:
-    """use None as a shortcut to push default font. Use <0.0 to keep current font size. Use font->DefaultSize to revert to font default size."""
+    """use None as a shortcut to push default font. Use <0.0 to keep current font size."""
     pass
 
 # IMGUI_API void          PopFont();    /* original C++ signature */
@@ -1120,12 +1120,17 @@ def get_font() -> ImFont:
 
 # IMGUI_API float         GetFontSize();                                                      /* original C++ signature */
 def get_font_size() -> float:
-    """get current font size (= height in pixels) of current font with current scale applied"""
+    """get current font size (= height in pixels) of current font with external scale factors applied. Use ImGui::GetStyle().FontSize to get value before external scale factors."""
     pass
 
 # IMGUI_API ImVec2        GetFontTexUvWhitePixel();                                           /* original C++ signature */
 def get_font_tex_uv_white_pixel() -> ImVec2:
     """get UV coordinate for a white pixel, useful to draw custom shapes via the ImDrawList API"""
+    pass
+
+# IMGUI_API ImFontBaked*  GetFontBaked();                                                     /* original C++ signature */
+def get_font_baked() -> ImFontBaked:
+    """get current font bound at current size // == GetFont()->GetFontBaked(GetFontSize())"""
     pass
 
 # IMGUI_API ImU32         GetColorU32(ImGuiCol idx, float alpha_mul = 1.0f);                  /* original C++ signature */
@@ -1454,8 +1459,8 @@ def text_link(label: str) -> bool:
     """hyperlink text button, return True when clicked"""
     pass
 
-# IMGUI_API void          TextLinkOpenURL(const char* label, const char* url = NULL);         /* original C++ signature */
-def text_link_open_url(label: str, url: Optional[str] = None) -> None:
+# IMGUI_API bool          TextLinkOpenURL(const char* label, const char* url = NULL);         /* original C++ signature */
+def text_link_open_url(label: str, url: Optional[str] = None) -> bool:
     """hyperlink text button, automatically open file/url when clicked"""
     pass
 
@@ -1464,6 +1469,7 @@ def text_link_open_url(label: str, url: Optional[str] = None) -> None:
 # - 'uv0' and 'uv1' are texture coordinates. Read about them from the same link above.
 # - Image() pads adds style.ImageBorderSize on each side, ImageButton() adds style.FramePadding on each side.
 # - ImageButton() draws a background based on regular Button() color + optionally an inner background if specified.
+# - An obsolete version of Image(), before 1.91.9 (March 2025), had a 'tint_col' parameter which is now supported by the ImageWithBg() function.
 # IMGUI_API void          Image(ImTextureRef tex_ref, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1));    /* original C++ signature */
 def image(
     tex_ref: ImTextureRef, image_size: ImVec2Like, uv0: Optional[ImVec2Like] = None, uv1: Optional[ImVec2Like] = None
@@ -3435,10 +3441,10 @@ class TreeNodeFlags_(enum.Enum):
     # ImGuiTreeNodeFlags_LabelSpanAllColumns  = 1 << 15,      /* original C++ signature */
     label_span_all_columns = enum.auto()  # (= 1 << 15)  # Label will span all columns of its container table
     # ImGuiTreeNodeFlags_NoScrollOnOpen     = 1 << 16,  // FIXME: TODO: Disable automatic scroll on TreePop() if node got just open and contents is not visible
-    # ImGuiTreeNodeFlags_NavLeftJumpsBackHere = 1 << 17,      /* original C++ signature */
-    nav_left_jumps_back_here = (
+    # ImGuiTreeNodeFlags_NavLeftJumpsToParent = 1 << 17,      /* original C++ signature */
+    nav_left_jumps_to_parent = (
         enum.auto()
-    )  # (= 1 << 17)  # (WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)
+    )  # (= 1 << 17)  # Nav: left arrow moves back to parent. This is processed in TreePop() when there's an unfullfilled Left nav request remaining.
     # ImGuiTreeNodeFlags_CollapsingHeader     = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_NoAutoOpenOnLog,    /* original C++ signature */
     collapsing_header = (
         enum.auto()
@@ -4381,14 +4387,16 @@ class ConfigFlags_(enum.Enum):
     viewports_enable = (
         enum.auto()
     )  # (= 1 << 10)  # Viewport enable flags (require both ImGuiBackendFlags_PlatformHasViewports + ImGuiBackendFlags_RendererHasViewports set by the respective backends)
-    # ImGuiConfigFlags_DpiEnableScaleViewports= 1 << 14,      /* original C++ signature */
-    dpi_enable_scale_viewports = (
-        enum.auto()
-    )  # (= 1 << 14)  # [BETA: Don't use] FIXME-DPI: Reposition and resize imgui windows when the DpiScale of a viewport changed (mostly useful for the main viewport hosting other window). Note that resizing the main window itself is up to your application.
-    # ImGuiConfigFlags_DpiEnableScaleFonts    = 1 << 15,      /* original C++ signature */
+
+    # [BETA] Scaling according to Monitor DPI
+    # ImGuiConfigFlags_DpiEnableScaleFonts    = 1 << 14,      /* original C++ signature */
     dpi_enable_scale_fonts = (
         enum.auto()
-    )  # (= 1 << 15)  # [BETA: Don't use] FIXME-DPI: Request bitmap-scaled fonts to match DpiScale. This is a very low-quality workaround. The correct way to handle DPI is _currently_ to replace the atlas and/or fonts in the Platform_OnChangedViewport callback, but this is all early work in progress.
+    )  # (= 1 << 14)  # [BETA] FIXME-DPI: Apply an extra font scale of 'monitor->DpiScale / style.Scale'. This will scale fonts but NOT style sizes/padding for now.
+    # ImGuiConfigFlags_DpiEnableScaleViewports= 1 << 15,      /* original C++ signature */
+    dpi_enable_scale_viewports = (
+        enum.auto()
+    )  # (= 1 << 15)  # [BETA] FIXME-DPI: Scale imgui and platform windows when 'monitor->DpiScale' changes.
 
     # User storage (to allow your backend/engine to communicate to code that may be shared between multiple projects. Those flags are NOT used by core Dear ImGui)
     # ImGuiConfigFlags_IsSRGB                 = 1 << 20,      /* original C++ signature */
@@ -8540,6 +8548,9 @@ ImVector_ImU8 = ImVector_uchar
 # -----------------------------------------------------------------------------
 
 class Style:
+    # float       FontSize;    /* original C++ signature */
+    font_size: float  # Current base font size.  scaling applied). Use PushFont()/PushFontSize() to modify. Use ImGui::GetFontSize() to obtain scaled value.
+
     # float       Alpha;    /* original C++ signature */
     alpha: float  # Global alpha applies to everything in Dear ImGui.
     # float       DisabledAlpha;    /* original C++ signature */
@@ -8688,8 +8699,14 @@ class Style:
     # ImGuiHoveredFlags HoverFlagsForTooltipMouse;    /* original C++ signature */
     hover_flags_for_tooltip_mouse: HoveredFlags  # Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using mouse.
     # ImGuiHoveredFlags HoverFlagsForTooltipNav;    /* original C++ signature */
-    hover_flags_for_tooltip_nav: HoveredFlags
-    # Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using keyboard/gamepad.
+    hover_flags_for_tooltip_nav: HoveredFlags  # Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using keyboard/gamepad.
+
+    # [Internal]
+    # float       Scale;    /* original C++ signature */
+    scale: float  # FIXME-WIP: Reference scale, as applied by ScaleAllSizes().
+    # float       _NextFrameFontSize;    /* original C++ signature */
+    _next_frame_font_size: float
+    # FIXME: Temporary hack until we finish remaining work.
 
     # [ADAPT_IMGUI_BUNDLE]
     #                                             #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -8764,7 +8781,7 @@ class IO:
         ImVec2  # <unset>          // Main display size, in pixels (== GetMainViewport()->Size). May change every frame.
     )
     # ImVec2      DisplayFramebufferScale;    /* original C++ signature */
-    display_framebuffer_scale: ImVec2  # = (1, 1)         // Main display density. For retina display where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.
+    display_framebuffer_scale: ImVec2  # = (1, 1)         // Main display density. For retina display where window coordinates are different from framebuffer coordinates. This will affect font density + will end up in ImDrawData::FramebufferScale.
     # float       DeltaTime;    /* original C++ signature */
     delta_time: float  # = 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.
     # float       IniSavingRate;    /* original C++ signature */
@@ -9626,7 +9643,7 @@ class ListClipper:
     items_count: int  # [Internal] Number of items
     # float           ItemsHeight;    /* original C++ signature */
     items_height: float  # [Internal] Height of item after a first step and item submission can calculate it
-    # float           StartPosY;    /* original C++ signature */
+    # double          StartPosY;    /* original C++ signature */
     start_pos_y: float  # [Internal] Cursor position at the time of Begin() or after table frozen rows are all processed
     # double          StartSeekOffsetY;    /* original C++ signature */
     start_seek_offset_y: (
@@ -10687,8 +10704,8 @@ class ImDrawList:
     # IMGUI_API void  _OnChangedVtxOffset();    /* original C++ signature */
     def _on_changed_vtx_offset(self) -> None:
         pass
-    # IMGUI_API void  _SetTextureRef(ImTextureRef tex_ref);    /* original C++ signature */
-    def _set_texture_ref(self, tex_ref: ImTextureRef) -> None:
+    # IMGUI_API void  _SetTexture(ImTextureRef tex_ref);    /* original C++ signature */
+    def _set_texture(self, tex_ref: ImTextureRef) -> None:
         pass
     # IMGUI_API int   _CalcCircleAutoSegmentCount(float radius) const;    /* original C++ signature */
     def _calc_circle_auto_segment_count(self, radius: float) -> int:
@@ -10723,7 +10740,7 @@ class ImDrawData:
     # ImVec2              DisplaySize;    /* original C++ signature */
     display_size: ImVec2  # Size of the viewport to render (== GetMainViewport()->Size for the main viewport, == io.DisplaySize in most single-viewport applications)
     # ImVec2              FramebufferScale;    /* original C++ signature */
-    framebuffer_scale: ImVec2  # Amount of pixels for each unit of DisplaySize. Based on io.DisplayFramebufferScale. Generally (1,1) on normal display, (2,2) on OSX with Retina display.
+    framebuffer_scale: ImVec2  # Amount of pixels for each unit of DisplaySize. Copied from viewport->FramebufferScale (== io.DisplayFramebufferScale for main viewport). Generally (1,1) on normal display, (2,2) on OSX with Retina display.
     # ImGuiViewport*      OwnerViewport;    /* original C++ signature */
     owner_viewport: (
         Viewport  # Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).
@@ -10844,7 +10861,7 @@ class ImTextureData:
     # ImVector<ImTextureRect> Updates;    /* original C++ signature */
     updates: ImVector_ImTextureRect  # w    r   // Array of individual updates.
     # int                 UnusedFrames;    /* original C++ signature */
-    unused_frames: int  # w    r   // In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used.
+    unused_frames: int  # w    r   // In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used. Always >0 when Status==WantDestroy.
     # unsigned short      RefCount;    /* original C++ signature */
     ref_count: int  # w    r   // Number of contexts using this texture. Used during backend shutdown.
     # bool                UseColors;    /* original C++ signature */
@@ -10917,6 +10934,7 @@ class ImTextureData:
 class ImFontConfig:
     """A font input/source (we may rename this to ImFontSource in the future)"""
 
+    # Data Source
     # void*           FontData;    /* original C++ signature */
     font_data: Any  #          // TTF/OTF data
     # int             FontDataSize;    /* original C++ signature */
@@ -10925,18 +10943,20 @@ class ImFontConfig:
     font_data_owned_by_atlas: (
         bool  # True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).
     )
+
+    # Options
     # bool            MergeMode;    /* original C++ signature */
     merge_mode: bool  # False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.
     # bool            PixelSnapH;    /* original C++ signature */
     pixel_snap_h: bool  # False    // Align every glyph AdvanceX to pixel boundaries. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.
     # bool            PixelSnapV;    /* original C++ signature */
     pixel_snap_v: bool  # True     // Align Scaled GlyphOffset.y to pixel boundaries.
-    # int             FontNo;    /* original C++ signature */
-    font_no: int  # 0        // Index of font within TTF/OTF file
-    # int             OversampleH;    /* original C++ signature */
-    oversample_h: int  # 0 (2)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1 or 2 depending on size. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.
-    # int             OversampleV;    /* original C++ signature */
-    oversample_v: int  # 0 (1)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1. This is not really useful as we don't use sub-pixel positions on the Y axis.
+    # ImS8            FontNo;    /* original C++ signature */
+    font_no: ImS8  # 0        // Index of font within TTF/OTF file
+    # ImS8            OversampleH;    /* original C++ signature */
+    oversample_h: ImS8  # 0 (2)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1 or 2 depending on size. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.
+    # ImS8            OversampleV;    /* original C++ signature */
+    oversample_v: ImS8  # 0 (1)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1. This is not really useful as we don't use sub-pixel positions on the Y axis.
     # float           SizePixels;    /* original C++ signature */
     size_pixels: float  #          // Size in pixels for rasterizer (more or less maps to the resulting font height).
     # ImVec2        GlyphExtraSpacing;      // 0, 0     // (REMOVED AT IT SEEMS LARGELY OBSOLETE. PLEASE REPORT IF YOU WERE USING THIS). Extra spacing (in pixels) between glyphs when rendered: essentially add to glyph->AdvanceX. Only X axis is supported for now.
@@ -10947,21 +10967,19 @@ class ImFontConfig:
     # float           GlyphMaxAdvanceX;    /* original C++ signature */
     glyph_max_advance_x: float  # FLT_MAX  // Maximum AdvanceX for glyphs
     # float           GlyphExtraAdvanceX;    /* original C++ signature */
-    glyph_extra_advance_x: (
-        float  # 0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this.
-    )
+    glyph_extra_advance_x: float  # 0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this. // FIXME-NEWATLAS: Intentionally unscaled
     # unsigned int    FontBuilderFlags;    /* original C++ signature */
     font_builder_flags: int  # 0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.
     # float           RasterizerMultiply;    /* original C++ signature */
     rasterizer_multiply: float  # 1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.
     # float           RasterizerDensity;    /* original C++ signature */
-    rasterizer_density: float  # 1.0     // (Legacy: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported). DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.
+    rasterizer_density: float  # 1.0     // [LEGACY: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported] DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.
     # ImWchar         EllipsisChar;    /* original C++ signature */
     ellipsis_char: ImWchar  # 0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.
 
     # [Internal]
     # ImFontFlags     Flags;    /* original C++ signature */
-    flags: ImFontFlags  # Font flags (don't use just yet)
+    flags: ImFontFlags  # Font flags (don't use just yet, will be exposed in upcoming 1.92.X updates)
     # ImFont*         DstFont;    /* original C++ signature */
     dst_font: ImFont  # Target font (as we merging fonts, multiple ImFontConfig may target the same font)
     # const ImFontLoader* FontLoader;    /* original C++ signature */
@@ -11433,20 +11451,20 @@ class ImFontFlags_(enum.Enum):
 
     # ImFontFlags_None                    = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
-    # ImFontFlags_UseDefaultSize          = 1 << 0,       /* original C++ signature */
-    use_default_size = (
+    # ImFontFlags_DefaultToLegacySize     = 1 << 0,       /* original C++ signature */
+    default_to_legacy_size = (
         enum.auto()
-    )  # (= 1 << 0)  # Legacy compatibility: make PushFont() calls without explicit size use font->DefaultSize instead of current font size.
+    )  # (= 1 << 0)  # Legacy compatibility: make PushFont() calls without explicit size use font->LegacySize instead of current font size.
     # ImFontFlags_NoLoadError             = 1 << 1,       /* original C++ signature */
     no_load_error = (
         enum.auto()
     )  # (= 1 << 1)  # Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.
     # ImFontFlags_NoLoadGlyphs            = 1 << 2,       /* original C++ signature */
-    no_load_glyphs = enum.auto()  # (= 1 << 2)  # Disable loading new glyphs.
+    no_load_glyphs = enum.auto()  # (= 1 << 2)  # [Internal] Disable loading new glyphs.
     # ImFontFlags_LockBakedSizes          = 1 << 3,       /* original C++ signature */
     lock_baked_sizes = (
         enum.auto()
-    )  # (= 1 << 3)  # Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size.
+    )  # (= 1 << 3)  # [Internal] Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size. Important: if you use this to preload given sizes, consider the possibility of multiple font density used on Retina display.
 
 class ImFont:
     """Font runtime data and rendering
@@ -11470,27 +11488,26 @@ class ImFont:
     # Conceptually Sources[] is the list of font sources merged to create this font.
     # ImGuiID                     FontId;    /* original C++ signature */
     font_id: ID  # Unique identifier for the font
-    # float                       DefaultSize;    /* original C++ signature */
-    default_size: float  # 4     // in  // Default font size
+    # float                       LegacySize;    /* original C++ signature */
+    legacy_size: float  # 4     // in  // Font size passed to AddFont(). Use for old code calling PushFont() expecting to use that size. (use ImGui::GetFontBaked() to get font baked at current bound size).
     # ImVector<ImFontConfig*>     Sources;    /* original C++ signature */
     sources: ImVector_ImFontConfig_ptr  # 16    // in  // List of sources. Pointers within ContainerAtlas->Sources[]
     # ImWchar                     EllipsisChar;    /* original C++ signature */
     ellipsis_char: ImWchar  # 2-4   // out // Character used for ellipsis rendering ('...').
     # ImWchar                     FallbackChar;    /* original C++ signature */
     fallback_char: ImWchar  # 2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')
-    # float                       Scale;    /* original C++ signature */
-    scale: float  # 4     // in  // Base font scale (~1.0), multiplied by the per-window font scale which you can adjust with SetWindowFontScale()
     # bool                        EllipsisAutoBake;    /* original C++ signature */
     ellipsis_auto_bake: bool  # 1     //     // Mark when the "..." glyph needs to be generated.
     # ImGuiStorage                RemapPairs;    /* original C++ signature */
-    remap_pairs: Storage  # 16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.
+    remap_pairs: Storage
+    # 16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.
 
     # IMGUI_API ImFont();    /* original C++ signature */
     def __init__(self) -> None:
         """Methods"""
         pass
-    # IMGUI_API ImFontBaked*      GetFontBaked(float font_size);      /* original C++ signature */
-    def get_font_baked(self, font_size: float) -> ImFontBaked:
+    # IMGUI_API ImFontBaked*      GetFontBaked(float font_size, float density = -1.0f);      /* original C++ signature */
+    def get_font_baked(self, font_size: float, density: float = -1.0) -> ImFontBaked:
         """Get or create baked data for given size"""
         pass
     # IMGUI_API bool              IsGlyphInFont(ImWchar c);    /* original C++ signature */
@@ -11632,9 +11649,7 @@ class Viewport:
     # ImVec2              Size;    /* original C++ signature */
     size: ImVec2  # Main Area: Size of the viewport.
     # ImVec2              FramebufferScale;    /* original C++ signature */
-    framebuffer_scale: (
-        ImVec2  # Density of the viewport for Retina display (always 1,1 on Windows, may be 2,2 etc on macOS/iOS).
-    )
+    framebuffer_scale: ImVec2  # Density of the viewport for Retina display (always 1,1 on Windows, may be 2,2 etc on macOS/iOS). This will affect font rasterizer density.
     # ImVec2              WorkPos;    /* original C++ signature */
     work_pos: ImVec2  # Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)
     # ImVec2              WorkSize;    /* original C++ signature */
