@@ -201,6 +201,9 @@ def get_dpi_aware_params() -> DpiAwareParams:
 
 # ----------------------------------------------------------------------------
 
+#
+# Legacy API, you should use RunnerParams.dpiAwareParams instead
+#
 # float DpiFontLoadingFactor();    /* original C++ signature */
 def dpi_font_loading_factor() -> float:
     """Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
@@ -214,8 +217,6 @@ def dpi_window_size_factor() -> float:
     It returns ApplicationScreenPixelPerInch / 96 under windows and linux. Under macOS, it will return 1.
     """
     pass
-
-# namespace HelloImGui
 
 # ----------------------------------------------------------------------------
 #           Handling screens with high DPI
@@ -414,8 +415,6 @@ def asset_file_full_path(
 def override_assets_folder(folder: str) -> None:
     """synonym of SetAssetsFolder"""
     pass
-
-# namespace HelloImGui
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/hello_imgui_error.h included by hello_imgui.h                              //
@@ -947,8 +946,6 @@ class ScreenBounds:
         """
         pass
 
-# namespace BackendApi
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/app_window_params.h continued                                              //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1465,8 +1462,6 @@ class ImGuiWindowParams:
 #                       hello_imgui/imgui_default_settings.h included by hello_imgui/runner_callbacks.h        //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# namespace HelloImGui
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_callbacks.h continued                                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1887,8 +1882,6 @@ def append_callback(
 ) -> VoidFunction:
     """AppendCallback: legacy synonym for SequenceFunctions"""
     pass
-
-# namespace HelloImGui
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/docking_params.h included by hello_imgui/runner_params.h                   //

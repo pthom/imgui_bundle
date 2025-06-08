@@ -2467,8 +2467,6 @@ def show_all_demos() -> None:
     """Bundle: ShowAllDemos is extracted from ShowDemoWindow, so that it can be used without creating an ImGui window."""
     pass
 
-# namespace ImPlot
-
 # -----------------------------------------------------------------------------
 # [SECTION] Obsolete API
 # -----------------------------------------------------------------------------

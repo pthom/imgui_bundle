@@ -471,12 +471,10 @@ NpBuffer = np.ndarray  # used to transfer texture data as a 1D numpy array of by
 
 # Character types
 # (we generally use UTF-8 encoded string in the API. This is storage specifically for a decoded character used for keyboard input and display)
-# A single decoded U16 character/code point. We encode them as multi bytes UTF-8 when used in strings.
 
 # Callback and functions types
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
-# Callback function for ImGui::SetNextWindowSizeConstraints()
 # #else
 #
 # #endif
@@ -2007,9 +2005,8 @@ def set_next_item_open(is_open: bool, cond: Cond = 0) -> None:
 
 # IMGUI_API void          SetNextItemStorageID(ImGuiID storage_id);                               /* original C++ signature */
 def set_next_item_storage_id(storage_id: ID) -> None:
+    """set id to use for open/close storage (default to same as item id)."""
     pass
-
-# set id to use for open/close storage (default to same as item id).
 
 # [ADAPT_IMGUI_BUNDLE]
 # Widgets: Selectables
@@ -2492,16 +2489,16 @@ def end_tab_bar() -> None:
 
 # IMGUI_API bool          BeginTabItem(const char* label, bool* p_open = NULL, ImGuiTabItemFlags flags = 0);     /* original C++ signature */
 def begin_tab_item(label: str, p_open: Optional[bool] = None, flags: TabItemFlags = 0) -> Tuple[bool, Optional[bool]]:
+    """create a Tab. Returns True if the Tab is selected."""
     pass
 
-# create a Tab. Returns True if the Tab is selected.
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
 # IMGUI_API bool          BeginTabItemSimple(const char* label, ImGuiTabItemFlags flags = 0);     /* original C++ signature */
 def begin_tab_item_simple(label: str, flags: TabItemFlags = 0) -> bool:
+    """create a Tab (non-closable). Returns True if the Tab is selected."""
     pass
 
-# create a Tab (non-closable). Returns True if the Tab is selected.
 # #endif
 #
 # IMGUI_API void          EndTabItem();                                                           /* original C++ signature */
@@ -3073,9 +3070,8 @@ def debug_start_item_picker() -> None:
 def debug_check_version_and_data_layout(
     version_str: str, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int
 ) -> bool:
+    """This is called by IMGUI_CHECKVERSION() macro."""
     pass
-
-# This is called by IMGUI_CHECKVERSION() macro.
 
 # Memory Allocators
 # - Those functions are not reliant on the current context.
@@ -5306,8 +5302,6 @@ class ImNewWrapper:
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
-
-# This is only required so we can use the symmetrical new()
 
 # -----------------------------------------------------------------------------
 # ImVector<>
@@ -8705,8 +8699,7 @@ class Style:
     # float       Scale;    /* original C++ signature */
     scale: float  # FIXME-WIP: Reference scale, as applied by ScaleAllSizes().
     # float       _NextFrameFontSize;    /* original C++ signature */
-    _next_frame_font_size: float
-    # FIXME: Temporary hack until we finish remaining work.
+    _next_frame_font_size: float  # FIXME: Temporary hack until we finish remaining work.
 
     # [ADAPT_IMGUI_BUNDLE]
     #                                             #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -8785,8 +8778,7 @@ class IO:
     # float       DeltaTime;    /* original C++ signature */
     delta_time: float  # = 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.
     # float       IniSavingRate;    /* original C++ signature */
-    ini_saving_rate: float
-    # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
+    ini_saving_rate: float  # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
 
     # void*       UserData;    /* original C++ signature */
     user_data: Any  # = None           // Store your own data.
@@ -9035,9 +9027,8 @@ class IO:
         pass
     # IMGUI_API void  ClearInputMouse();                                          /* original C++ signature */
     def clear_input_mouse(self) -> None:
+        """Clear current mouse state."""
         pass
-    # Clear current mouse state.
-
     # ------------------------------------------------------------------
     # Output - Updated by NewFrame() or EndFrame()/Render()
     # (when reading from the io.WantCaptureMouse, io.WantCaptureKeyboard flags to dispatch your inputs, it is
@@ -9172,8 +9163,7 @@ class IO:
     # ImWchar16   InputQueueSurrogate;    /* original C++ signature */
     input_queue_surrogate: ImWchar16  # For AddInputCharacterUTF16()
     # ImVector<ImWchar> InputQueueCharacters;    /* original C++ signature */
-    input_queue_characters: ImVector_ImWchar
-    # Queue of _characters_ input (obtained by platform backend). Fill using AddInputCharacter() helper.
+    input_queue_characters: ImVector_ImWchar  # Queue of _characters_ input (obtained by platform backend). Fill using AddInputCharacter() helper.
 
     # Legacy: before 1.87, we required backend to fill io.KeyMap[] (imgui->native map) during initialization and io.KeysDown[] (native indices) every frame.
     # This is still temporarily supported as a legacy feature. However the new preferred scheme is for backend to call io.AddKeyEvent().
@@ -10474,9 +10464,8 @@ class ImDrawList:
     def add_bezier_quadratic(
         self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, col: ImU32, thickness: float, num_segments: int = 0
     ) -> None:
+        """Quadratic Bezier (3 control points)"""
         pass
-    # Quadratic Bezier (3 control points)
-
     #                                      #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # - Only simple polygons are supported by filling functions (no self-intersections, no holes).
@@ -10668,10 +10657,11 @@ class ImDrawList:
         pass
     # inline    void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)         { PrimWriteIdx((ImDrawIdx)_VtxCurrentIdx); PrimWriteVtx(pos, uv, col); }     /* original C++ signature */
     def prim_vtx(self, pos: ImVec2Like, uv: ImVec2Like, col: ImU32) -> None:
-        """(private API)"""
-        pass
-    # Write vertex with unique index
+        """(private API)
 
+        Write vertex with unique index
+        """
+        pass
     # Obsolete names
     # inline  None  AddEllipse(const ImVec2& center, float radius_x, float radius_y, ImU32 col, float rot = 0.0, int num_segments = 0, float thickness = 1.0) { AddEllipse(center, ImVec2(radius_x, radius_y), col, rot, num_segments, thickness); } // OBSOLETED in 1.90.5 (Mar 2024)
     # inline  None  AddEllipseFilled(const ImVec2& center, float radius_x, float radius_y, ImU32 col, float rot = 0.0, int num_segments = 0) { AddEllipseFilled(center, ImVec2(radius_x, radius_y), col, rot, num_segments); }                        // OBSOLETED in 1.90.5 (Mar 2024)
@@ -11176,14 +11166,13 @@ class ImFontAtlas:
         pass
     # IMGUI_API void              ClearTexData();                 /* original C++ signature */
     def clear_tex_data(self) -> None:
+        """[OBSOLETE] Clear CPU-side copy of the texture data. Saves RAM once the texture has been copied to graphics memory."""
         pass
-    # [OBSOLETE] Clear CPU-side copy of the texture data. Saves RAM once the texture has been copied to graphics memory.
-
     # -------------------------------------------
     # Glyph Ranges
     # -------------------------------------------
 
-    # Basic Latin, Extended Latin
+    # Since 1.92: specifying glyph ranges is only useful/necessary if your backend doesn't support ImGuiBackendFlags_RendererHasTextures!
 
     # -------------------------------------------
     # [ADAPT_IMGUI_BUNDLE]
@@ -11306,15 +11295,13 @@ class ImFontAtlas:
     # int                         TexMaxHeight;    /* original C++ signature */
     tex_max_height: int  # Maximum desired texture height. Must be a power of two. Default to 8192.
     # void*                       UserData;    /* original C++ signature */
-    user_data: Any
-    # Store your own atlas related user-data (if e.g. you have multiple font atlas).
+    user_data: Any  # Store your own atlas related user-data (if e.g. you have multiple font atlas).
 
     # Output
     # - Because textures are dynamically created/resized, the current texture identifier may changed at *ANY TIME* during the frame.
     # - This should not affect you as you can always use the latest value. But note that any precomputed UV coordinates are only valid for the current TexRef.
     # ImTextureData*              TexData;    /* original C++ signature */
-    tex_data: ImTextureData
-    # Latest texture.
+    tex_data: ImTextureData  # Latest texture.
 
     #                                     #ifdef IMGUI_BUNDLE_PYTHON_API
     #
@@ -11376,8 +11363,7 @@ class ImFontAtlas:
     # int                         RefCount;    /* original C++ signature */
     ref_count: int  # Number of contexts using this atlas
     # ImGuiContext*               OwnerContext;    /* original C++ signature */
-    owner_context: Context
-    # Context which own the atlas will be in charge of updating and destroying it.
+    owner_context: Context  # Context which own the atlas will be in charge of updating and destroying it.
 
     # [Obsolete]
     # int                               TexDesiredWidth;         // OBSOLETED in 1.92.X (force texture width before calling Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height)
@@ -11499,8 +11485,7 @@ class ImFont:
     # bool                        EllipsisAutoBake;    /* original C++ signature */
     ellipsis_auto_bake: bool  # 1     //     // Mark when the "..." glyph needs to be generated.
     # ImGuiStorage                RemapPairs;    /* original C++ signature */
-    remap_pairs: Storage
-    # 16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.
+    remap_pairs: Storage  # 16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.
 
     # IMGUI_API ImFont();    /* original C++ signature */
     def __init__(self) -> None:
@@ -11524,7 +11509,9 @@ class ImFont:
         Fill ImFontConfig::Name.
         """
         pass
-    # utf8
+    # [Internal] Don't use!
+    # 'max_width' stops rendering after a certain width (could be turned into a 2 size). FLT_MAX to disable.
+    # 'wrap_width' enable automatic word-wrapping across multiple lines to fit into given width. 0.0 to disable.
 
     #                                   #ifdef IMGUI_BUNDLE_PYTHON_API
     #
@@ -11989,8 +11976,6 @@ def suspend_layout() -> None:
 def resume_layout() -> None:
     pass
 
-# namespace ImGui
-
 # #endif
 ####################    </generated_from:imgui_stacklayout.h>    ####################
 
@@ -12011,8 +11996,6 @@ def resume_layout() -> None:
 # -----------------------------------------------------------------------------
 # [SECTION] Stack Layout Internal API
 # -----------------------------------------------------------------------------
-
-# namespace ImGuiInternal
 
 # #endif
 ####################    </generated_from:imgui_stacklayout_internal.h>    ####################

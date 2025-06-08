@@ -94,7 +94,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::rv_policy::reference);
 
     m.def("im_text_count_lines",
-        ImTextCountLines, nb::arg("in_text"), nb::arg("in_text_end"));
+        ImTextCountLines,
+        nb::arg("in_text"), nb::arg("in_text_end"),
+        "return number of lines taken by text. trailing carriage return doesn't count as an extra line.");
 
     m.def("im_min",
         [](const ImVec2 & lhs, const ImVec2 & rhs) -> ImVec2
@@ -4593,7 +4595,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::RenderColorRectWithAlphaCheckerboard, nb::arg("draw_list"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("fill_col"), nb::arg("grid_step"), nb::arg("grid_off"), nb::arg("rounding") = 0.0f, nb::arg("flags") = 0);
 
     m.def("render_nav_cursor",
-        ImGui::RenderNavCursor, nb::arg("bb"), nb::arg("id_"), nb::arg("flags") = ImGuiNavRenderCursorFlags_None);
+        ImGui::RenderNavCursor,
+        nb::arg("bb"), nb::arg("id_"), nb::arg("flags") = ImGuiNavRenderCursorFlags_None,
+        "Navigation highlight");
 
     m.def("find_rendered_text_end",
         [](const char * text, std::optional<std::string> text_end = std::nullopt) -> const char *

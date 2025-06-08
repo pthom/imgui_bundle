@@ -727,7 +727,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         ax::NodeEditor::CanvasToScreen, nb::arg("pos"));
 
     m.def("get_node_count",
-        ax::NodeEditor::GetNodeCount);
+        ax::NodeEditor::GetNodeCount, "Returns number of submitted nodes since Begin() call");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 

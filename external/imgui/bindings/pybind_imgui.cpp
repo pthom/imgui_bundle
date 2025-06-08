@@ -1992,7 +1992,9 @@ void py_init_module_imgui_main(nb::module_& m)
         "set next TreeNode/CollapsingHeader open state.");
 
     m.def("set_next_item_storage_id",
-        ImGui::SetNextItemStorageID, nb::arg("storage_id"));
+        ImGui::SetNextItemStorageID,
+        nb::arg("storage_id"),
+        "set id to use for open/close storage (default to same as item id).");
 
     m.def("selectable",
         [](const char * label, bool p_selected, ImGuiSelectableFlags flags = 0, const std::optional<const ImVec2> & size = std::nullopt) -> std::tuple<bool, bool>
@@ -2602,12 +2604,16 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return BeginTabItem_adapt_modifiable_immutable_to_return(label, p_open, flags);
-        },     nb::arg("label"), nb::arg("p_open") = nb::none(), nb::arg("flags") = 0);
+        },
+        nb::arg("label"), nb::arg("p_open") = nb::none(), nb::arg("flags") = 0,
+        "create a Tab. Returns True if the Tab is selected.");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
     m.def("begin_tab_item_simple",
-        ImGui::BeginTabItemSimple, nb::arg("label"), nb::arg("flags") = 0);
+        ImGui::BeginTabItemSimple,
+        nb::arg("label"), nb::arg("flags") = 0,
+        "create a Tab (non-closable). Returns True if the Tab is selected.");
     // #endif
     //
 
@@ -3088,7 +3094,9 @@ void py_init_module_imgui_main(nb::module_& m)
         ImGui::DebugStartItemPicker);
 
     m.def("debug_check_version_and_data_layout",
-        ImGui::DebugCheckVersionAndDataLayout, nb::arg("version_str"), nb::arg("sz_io"), nb::arg("sz_style"), nb::arg("sz_vec2"), nb::arg("sz_vec4"), nb::arg("sz_drawvert"), nb::arg("sz_drawidx"));
+        ImGui::DebugCheckVersionAndDataLayout,
+        nb::arg("version_str"), nb::arg("sz_io"), nb::arg("sz_style"), nb::arg("sz_vec2"), nb::arg("sz_vec4"), nb::arg("sz_drawvert"), nb::arg("sz_drawidx"),
+        "This is called by IMGUI_CHECKVERSION() macro.");
 
     m.def("update_platform_windows",
         ImGui::UpdatePlatformWindows, "call in main loop. will call CreateWindow/ResizeWindow/etc. platform functions for each secondary viewport, and DestroyWindow for each inactive viewport.");
@@ -6133,7 +6141,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("hover_flags_for_tooltip_mouse", &ImGuiStyle::HoverFlagsForTooltipMouse, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using mouse.")
         .def_rw("hover_flags_for_tooltip_nav", &ImGuiStyle::HoverFlagsForTooltipNav, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using keyboard/gamepad.")
         .def_rw("scale", &ImGuiStyle::Scale, "FIXME-WIP: Reference scale, as applied by ScaleAllSizes().")
-        .def_rw("_next_frame_font_size", &ImGuiStyle::_NextFrameFontSize, "")
+        .def_rw("_next_frame_font_size", &ImGuiStyle::_NextFrameFontSize, "FIXME: Temporary hack until we finish remaining work.")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("color_",
@@ -6179,7 +6187,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("display_size", &ImGuiIO::DisplaySize, "<unset>          // Main display size, in pixels (== GetMainViewport()->Size). May change every frame.")
         .def_rw("display_framebuffer_scale", &ImGuiIO::DisplayFramebufferScale, "= (1, 1)         // Main display density. For retina display where window coordinates are different from framebuffer coordinates. This will affect font density + will end up in ImDrawData::FramebufferScale.")
         .def_rw("delta_time", &ImGuiIO::DeltaTime, "= 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.")
-        .def_rw("ini_saving_rate", &ImGuiIO::IniSavingRate, "")
+        .def_rw("ini_saving_rate", &ImGuiIO::IniSavingRate, "= 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.")
         .def_rw("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")
         .def_rw("fonts", &ImGuiIO::Fonts, "<auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.")
         .def_rw("font_global_scale", &ImGuiIO::FontGlobalScale, "= 1.0           // Global scale all fonts")
@@ -6289,7 +6297,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("clear_input_keys",
             &ImGuiIO::ClearInputKeys, "Clear current keyboard/gamepad state + current frame text input buffer. Equivalent to releasing all keys/buttons.")
         .def("clear_input_mouse",
-            &ImGuiIO::ClearInputMouse)
+            &ImGuiIO::ClearInputMouse, "Clear current mouse state.")
         .def_rw("want_capture_mouse", &ImGuiIO::WantCaptureMouse, "Set when Dear ImGui will use mouse inputs, in this case do not dispatch them to your main game/application (either way, always pass on mouse inputs to imgui). (e.g. unclicked mouse is hovering over an imgui window, widget is active, mouse was clicked over an imgui window, etc.).")
         .def_rw("want_capture_keyboard", &ImGuiIO::WantCaptureKeyboard, "Set when Dear ImGui will use keyboard inputs, in this case do not dispatch them to your main game/application (either way, always pass keyboard inputs to imgui). (e.g. InputText active, or an imgui window is focused and navigation is enabled, etc.).")
         .def_rw("want_text_input", &ImGuiIO::WantTextInput, "Mobile/console: when set, you may display an on-screen keyboard. This is set by Dear ImGui when it wants textual keyboard input to happen (e.g. when a InputText widget is active).")
@@ -6400,7 +6408,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("app_focus_lost", &ImGuiIO::AppFocusLost, "Only modify via AddFocusEvent()")
         .def_rw("app_accepting_events", &ImGuiIO::AppAcceptingEvents, "Only modify via SetAppAcceptingEvents()")
         .def_rw("input_queue_surrogate", &ImGuiIO::InputQueueSurrogate, "For AddInputCharacterUTF16()")
-        .def_rw("input_queue_characters", &ImGuiIO::InputQueueCharacters, "")
+        .def_rw("input_queue_characters", &ImGuiIO::InputQueueCharacters, "Queue of _characters_ input (obtained by platform backend). Fill using AddInputCharacter() helper.")
         .def(nb::init<>())
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
@@ -7171,7 +7179,9 @@ void py_init_module_imgui_main(nb::module_& m)
             nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0,
             "Cubic Bezier (4 control points)")
         .def("add_bezier_quadratic",
-            &ImDrawList::AddBezierQuadratic, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0)
+            &ImDrawList::AddBezierQuadratic,
+            nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0,
+            "Quadratic Bezier (3 control points)")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("add_polyline",
@@ -7333,7 +7343,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("prim_vtx",
             &ImDrawList::PrimVtx,
             nb::arg("pos"), nb::arg("uv"), nb::arg("col"),
-            "(private API)")
+            "(private API)\n\n Write vertex with unique index")
         .def("_set_draw_list_shared_data",
             nb::overload_cast<ImDrawListSharedData *>(&ImDrawList::_SetDrawListSharedData), nb::arg("data"))
         .def("_reset_for_new_frame",
@@ -7608,7 +7618,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("clear_fonts",
             &ImFontAtlas::ClearFonts, "[OBSOLETE] Clear input+output font data (same as ClearInputData() + glyphs storage, UV coordinates).")
         .def("clear_tex_data",
-            &ImFontAtlas::ClearTexData)
+            &ImFontAtlas::ClearTexData, "[OBSOLETE] Clear CPU-side copy of the texture data. Saves RAM once the texture has been copied to graphics memory.")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("add_font_from_file_ttf",
@@ -7654,8 +7664,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tex_min_height", &ImFontAtlas::TexMinHeight, "Minimum desired texture height. Must be a power of two. Default to 128.")
         .def_rw("tex_max_width", &ImFontAtlas::TexMaxWidth, "Maximum desired texture width. Must be a power of two. Default to 8192.")
         .def_rw("tex_max_height", &ImFontAtlas::TexMaxHeight, "Maximum desired texture height. Must be a power of two. Default to 8192.")
-        .def_rw("user_data", &ImFontAtlas::UserData, "")
-        .def_rw("tex_data", &ImFontAtlas::TexData, "")
+        .def_rw("user_data", &ImFontAtlas::UserData, "Store your own atlas related user-data (if e.g. you have multiple font atlas).")
+        .def_rw("tex_data", &ImFontAtlas::TexData, "Latest texture.")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("python_set_texture_id",
@@ -7682,7 +7692,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("font_loader_data", &ImFontAtlas::FontLoaderData, "Font backend opaque storage")
         .def_rw("font_builder_flags", &ImFontAtlas::FontBuilderFlags, "[FIXME: Should be called FontLoaderFlags] Shared flags (for all fonts) for font loader. THIS IS BUILD IMPLEMENTATION DEPENDENT (e.g. . Per-font override is also available in ImFontConfig.")
         .def_rw("ref_count", &ImFontAtlas::RefCount, "Number of contexts using this atlas")
-        .def_rw("owner_context", &ImFontAtlas::OwnerContext, "")
+        .def_rw("owner_context", &ImFontAtlas::OwnerContext, "Context which own the atlas will be in charge of updating and destroying it.")
         ;
 
 
@@ -7744,7 +7754,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("ellipsis_char", &ImFont::EllipsisChar, "2-4   // out // Character used for ellipsis rendering ('...').")
         .def_rw("fallback_char", &ImFont::FallbackChar, "2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')")
         .def_rw("ellipsis_auto_bake", &ImFont::EllipsisAutoBake, "1     //     // Mark when the \"...\" glyph needs to be generated.")
-        .def_rw("remap_pairs", &ImFont::RemapPairs, "")
+        .def_rw("remap_pairs", &ImFont::RemapPairs, "16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.")
         .def(nb::init<>(),
             "Methods")
         .def("get_font_baked",

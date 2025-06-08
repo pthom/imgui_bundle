@@ -18,7 +18,8 @@ from imgui_bundle.imgui import (
     ImDrawList,
     ImTextureRef,
 )
-ImageFlags = int # enum ImageFlags_
+
+ImageFlags = int  # enum ImageFlags_
 
 ImGui_Context = imgui.internal.Context
 
@@ -123,6 +124,11 @@ ImPlane3D = int  # enum ImPlane3D_
 # #ifndef IMGUI_DISABLE
 #
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
+
 # -----------------------------------------------------------------------------
 # [SECTION] Macros and Defines
 # -----------------------------------------------------------------------------
@@ -136,7 +142,6 @@ ImPlane3D = int  # enum ImPlane3D_
 # Enums
 
 # Flags
-# -> ImPlot3DAxisFlags_     // Flags: Axis flags
 
 # Fallback for ImGui versions before v1.92: define ImTextureRef as ImTextureID
 # You can `#define IMPLOT3D_NO_IMTEXTUREREF` to avoid this fallback
@@ -1149,9 +1154,7 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
 
 # IMPLOT3D_API void ShowAllDemos();    /* original C++ signature */
 def show_all_demos() -> None:
-    """Bundle: ShowAllDemos is extracted from ShowDemoWindow,
-    so that it can be used without creating an ImGui window.
-    """
+    """Shows all ImPlot3D demos, without enclosing window"""
     pass
 
 # IMPLOT3D_API void ShowStyleEditor(ImPlot3DStyle* ref = nullptr);    /* original C++ signature */
@@ -1539,8 +1542,6 @@ class Style:
 # Sphere
 
 # Duck (Rubber Duck by Poly by Google [CC-BY] via Poly Pizza)
-
-# namespace ImPlot3D
 
 # #endif
 ####################    </generated_from:implot3d.h>    ####################

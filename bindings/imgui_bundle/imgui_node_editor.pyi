@@ -103,6 +103,8 @@ def resume_editor_canvas() -> None:
 
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+
 class PinKind(enum.Enum):
     """------------------------------------------------------------------------------"""
 
@@ -967,9 +969,9 @@ def canvas_to_screen(pos: ImVec2Like) -> ImVec2:
 
 # IMGUI_NODE_EDITOR_API int GetNodeCount();                                    /* original C++ signature */
 def get_node_count() -> int:
+    """Returns number of submitted nodes since Begin() call"""
     pass
 
-# Returns number of submitted nodes since Begin() call
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
 # IMGUI_NODE_EDITOR_API std::vector<NodeId> GetOrderedNodeIds();    /* original C++ signature */
@@ -983,8 +985,6 @@ def get_ordered_node_ids() -> List[NodeId]:
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
-
-# namespace ax
 
 # ------------------------------------------------------------------------------
 # # endif

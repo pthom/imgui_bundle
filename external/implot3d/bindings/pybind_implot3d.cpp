@@ -44,6 +44,10 @@ void py_init_module_implot3d(nb::module_& m)
     ////////////////////    <generated_from:implot3d.h>    ////////////////////
     // #ifndef IMGUI_DISABLE
     //
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+    // #endif
+    //
 
 
     auto pyEnumFlags_ =
@@ -1304,7 +1308,7 @@ void py_init_module_implot3d(nb::module_& m)
         "Shows the ImPlot3D demo window");
 
     m.def("show_all_demos",
-        ImPlot3D::ShowAllDemos, " Bundle: ShowAllDemos is extracted from ShowDemoWindow,\n so that it can be used without creating an ImGui window.");
+        ImPlot3D::ShowAllDemos, "Shows all ImPlot3D demos, without enclosing window");
 
     m.def("show_style_editor",
         ImPlot3D::ShowStyleEditor,

@@ -1012,7 +1012,6 @@ def setup_lock() -> None:
 
 
 
-# namespace ImPlot3D
 
 # #endif
 ####################    </generated_from:implot3d_internal.h>    ####################

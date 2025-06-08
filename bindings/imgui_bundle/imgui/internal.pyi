@@ -173,12 +173,12 @@ KeyRoutingIndex = int
 # Use your programming IDE "Go to definition" facility on the names of the center columns to find the actual flags/enum lists.
 
 # Flags
-# -> enum ImGuiWindowRefreshFlags_ // Flags: for SetNextWindowRefreshPolicy()
 # [ADAPT_IMGUI_BUNDLE]
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
 # #endif
 #
+# [/ADAPT_IMGUI_BUNDLE]
 
 # Table column indexing
 
@@ -306,9 +306,8 @@ def im_text_find_previous_utf8_codepoint(in_text_start: str, in_text_curr: str) 
 
 # IMGUI_API int           ImTextCountLines(const char* in_text, const char* in_text_end);                                             /* original C++ signature */
 def im_text_count_lines(in_text: str, in_text_end: str) -> int:
+    """return number of lines taken by text. trailing carriage return doesn't count as an extra line."""
     pass
-
-# return number of lines taken by text. trailing carriage return doesn't count as an extra line.
 
 # Helpers: File System
 
@@ -7073,9 +7072,9 @@ def render_color_rect_with_alpha_checkerboard(
 
 # IMGUI_API void          RenderNavCursor(const ImRect& bb, ImGuiID id, ImGuiNavRenderCursorFlags flags = ImGuiNavRenderCursorFlags_None);     /* original C++ signature */
 def render_nav_cursor(bb: ImRect, id_: ID, flags: NavRenderCursorFlags = NavRenderCursorFlags_None) -> None:
+    """Navigation highlight"""
     pass
 
-# Navigation highlight
 # IMGUI_API const char*   FindRenderedTextEnd(const char* text, const char* text_end = NULL);     /* original C++ signature */
 def find_rendered_text_end(text: str, text_end: Optional[str] = None) -> str:
     """Find the optional ## from which we stop displaying text."""
