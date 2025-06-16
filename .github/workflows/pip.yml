@@ -17,7 +17,11 @@ jobs:
       fail-fast: false
       matrix:
         platform: [windows-latest, macos-latest, ubuntu-latest]
-        python-version: ["3.11", "3.12", "3.13"]
+        python-version: [
+          "3.11",
+          "3.12",
+          ">=3.13.5 <3.14"  # python 3.13.4 has an annoying bug which causes the CI to fail
+        ]
 
     steps:
     - uses: actions/checkout@v4
