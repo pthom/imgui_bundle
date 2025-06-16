@@ -633,8 +633,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::arg("font_size_before_scaling") = float(), nb::arg("font_size_after_scaling") = float()
         )
         .def_rw("font", &ImFontStackData::Font, "")
-        .def_rw("font_size_before_scaling", &ImFontStackData::FontSizeBeforeScaling, "")
-        .def_rw("font_size_after_scaling", &ImFontStackData::FontSizeAfterScaling, "")
+        .def_rw("font_size_before_scaling", &ImFontStackData::FontSizeBeforeScaling, "~~ style.FontSizeBase")
+        .def_rw("font_size_after_scaling", &ImFontStackData::FontSizeAfterScaling, "~~ g.FontSize")
         ;
 
 
@@ -732,6 +732,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("allow_overlap", ImGuiItemFlags_AllowOverlap, "False     // Allow being overlapped by another widget. Not-hovered to Hovered transition deferred by a frame.")
             .value("no_nav_disable_mouse_hover", ImGuiItemFlags_NoNavDisableMouseHover, "False     // Nav keyboard/gamepad mode doesn't disable hover highlight (behave as if NavHighlightItemUnderNav==False).")
             .value("no_mark_edited", ImGuiItemFlags_NoMarkEdited, "False     // Skip calling MarkItemEdited()")
+            .value("no_focus", ImGuiItemFlags_NoFocus, "False     // [EXPERIMENTAL: Not very well specced] Clicking doesn't take focus. Automatically sets ImGuiButtonFlags_NoFocus + ImGuiButtonFlags_NoNavFocus in ButtonBehavior().")
             .value("inputable", ImGuiItemFlags_Inputable, "False     // [WIP] Auto-activate input mode when tab focused. Currently only used and supported by a few items before it becomes a generic feature.")
             .value("has_selection_user_data", ImGuiItemFlags_HasSelectionUserData, "False     // Set by SetNextItemSelectionUserData()")
             .value("is_multi_select", ImGuiItemFlags_IsMultiSelect, "False     // Set by SetNextItemSelectionUserData()")
@@ -785,6 +786,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("no_hovered_on_focus", ImGuiButtonFlags_NoHoveredOnFocus, "don't report as hovered when nav focus is on this item")
             .value("no_set_key_owner", ImGuiButtonFlags_NoSetKeyOwner, "don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)")
             .value("no_test_key_owner", ImGuiButtonFlags_NoTestKeyOwner, "don't test key/input owner when polling the key (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)")
+            .value("no_focus", ImGuiButtonFlags_NoFocus, "[EXPERIMENTAL: Not very well specced]. Don't focus parent window when clicking.")
             .value("pressed_on_mask_", ImGuiButtonFlags_PressedOnMask_, "")
             .value("pressed_on_default_", ImGuiButtonFlags_PressedOnDefault_, "");
 
@@ -2222,9 +2224,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("config_flags_last_frame", &ImGuiContext::ConfigFlagsLastFrame, "")
         .def_rw("font", &ImGuiContext::Font, "Currently bound font. (== FontStack.back().Font)")
         .def_rw("font_baked", &ImGuiContext::FontBaked, "Currently bound font at currently bound size. (== Font->GetFontBaked(FontSize))")
-        .def_rw("font_size", &ImGuiContext::FontSize, "Currently bound font size == line height (== FontSizeBeforeScaling * io.FontGlobalScale * font->Scale * g.CurrentWindow->FontWindowScale).")
-        .def_rw("font_size_before_scaling", &ImGuiContext::FontSizeBeforeScaling, "== value passed to PushFont() / PushFontSize() when specified.")
-        .def_rw("font_scale", &ImGuiContext::FontScale, "== FontBaked->Size / Font->FontSize. Scale factor over baked size.")
+        .def_rw("font_size", &ImGuiContext::FontSize, "Currently bound font size == line height (== FontSizeBase + externals scales applied in the UpdateCurrentFontSize() function).")
+        .def_rw("font_size_base", &ImGuiContext::FontSizeBase, "Font size before scaling == style.FontSizeBase == value passed to PushFont() / PushFontSize() when specified.")
+        .def_rw("font_baked_scale", &ImGuiContext::FontBakedScale, "== FontBaked->Size / FontSize. Scale factor over baked size. Rarely used nowadays, very often == 1.0.")
         .def_rw("font_rasterizer_density", &ImGuiContext::FontRasterizerDensity, "Current font density. Used by all calls to GetFontBaked().")
         .def_rw("current_dpi_scale", &ImGuiContext::CurrentDpiScale, "Current window/viewport DpiScale == CurrentViewport->DpiScale")
         .def_rw("draw_list_shared_data", &ImGuiContext::DrawListSharedData, "")
@@ -2771,7 +2773,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("columns_storage", &ImGuiWindow::ColumnsStorage, "")
         .def_rw("font_window_scale", &ImGuiWindow::FontWindowScale, "User scale multiplier per-window, via SetWindowFontScale()")
         .def_rw("font_window_scale_parents", &ImGuiWindow::FontWindowScaleParents, "")
-        .def_rw("font_dpi_scale", &ImGuiWindow::FontDpiScale, "")
         .def_rw("font_ref_size", &ImGuiWindow::FontRefSize, "This is a copy of window->CalcFontSize() at the time of Begin(), trying to phase out CalcFontSize() especially as it may be called on non-current window.")
         .def_rw("settings_offset", &ImGuiWindow::SettingsOffset, "Offset into SettingsWindows[] (offsets are always valid as we only grow the array from the back)")
         .def_rw("draw_list", &ImGuiWindow::DrawList, "== &DrawListInst (for backward compatibility reason with code using imgui_internal.h we keep this a pointer)")
@@ -5212,7 +5213,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImFontAtlasPackDiscardRect, nb::arg("atlas"), nb::arg("id_"));
 
     m.def("im_font_atlas_update_new_frame",
-        ImFontAtlasUpdateNewFrame, nb::arg("atlas"), nb::arg("frame_count"));
+        ImFontAtlasUpdateNewFrame, nb::arg("atlas"), nb::arg("frame_count"), nb::arg("renderer_has_textures"));
 
     m.def("im_font_atlas_add_draw_list_shared_data",
         nb::overload_cast<ImFontAtlas *, ImDrawListSharedData *>(ImFontAtlasAddDrawListSharedData), nb::arg("atlas"), nb::arg("data"));

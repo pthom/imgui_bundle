@@ -908,9 +908,9 @@ class ImFontStackData:
     # ImFont*     Font;    /* original C++ signature */
     font: ImFont
     # float       FontSizeBeforeScaling;    /* original C++ signature */
-    font_size_before_scaling: float
+    font_size_before_scaling: float  # ~~ style.FontSizeBase
     # float       FontSizeAfterScaling;    /* original C++ signature */
-    font_size_after_scaling: float
+    font_size_after_scaling: float  # ~~ g.FontSize
     # ImFontStackData(float FontSizeBeforeScaling = float(), float FontSizeAfterScaling = float());    /* original C++ signature */
     def __init__(self, font_size_before_scaling: float = float(), font_size_after_scaling: float = float()) -> None:
         """Auto-generated default constructor with named params"""
@@ -1039,6 +1039,10 @@ class ItemFlagsPrivate_(enum.Enum):
     )  # (= 1 << 15)  # False     // Nav keyboard/gamepad mode doesn't disable hover highlight (behave as if NavHighlightItemUnderNav==False).
     # ImGuiItemFlags_NoMarkEdited             = 1 << 16,     /* original C++ signature */
     no_mark_edited = enum.auto()  # (= 1 << 16)  # False     // Skip calling MarkItemEdited()
+    # ImGuiItemFlags_NoFocus                  = 1 << 17,     /* original C++ signature */
+    no_focus = (
+        enum.auto()
+    )  # (= 1 << 17)  # False     // [EXPERIMENTAL: Not very well specced] Clicking doesn't take focus. Automatically sets ImGuiButtonFlags_NoFocus + ImGuiButtonFlags_NoNavFocus in ButtonBehavior().
 
     # Controlled by widget code
     # ImGuiItemFlags_Inputable                = 1 << 20,     /* original C++ signature */
@@ -1184,6 +1188,10 @@ class ButtonFlagsPrivate_(enum.Enum):
     no_test_key_owner = (
         enum.auto()
     )  # (= 1 << 21)  # don't test key/input owner when polling the key (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)
+    # ImGuiButtonFlags_NoFocus                = 1 << 22,      /* original C++ signature */
+    no_focus = (
+        enum.auto()
+    )  # (= 1 << 22)  # [EXPERIMENTAL: Not very well specced]. Don't focus parent window when clicking.
     # ImGuiButtonFlags_PressedOnMask_         = ImGuiButtonFlags_PressedOnClick | ImGuiButtonFlags_PressedOnClickRelease | ImGuiButtonFlags_PressedOnClickReleaseAnywhere | ImGuiButtonFlags_PressedOnRelease | ImGuiButtonFlags_PressedOnDoubleClick | ImGuiButtonFlags_PressedOnDragDropHold,    /* original C++ signature */
     pressed_on_mask_ = (
         enum.auto()
@@ -3494,11 +3502,13 @@ class Context:
     # ImFontBaked*            FontBaked;    /* original C++ signature */
     font_baked: ImFontBaked  # Currently bound font at currently bound size. (== Font->GetFontBaked(FontSize))
     # float                   FontSize;    /* original C++ signature */
-    font_size: float  # Currently bound font size == line height (== FontSizeBeforeScaling * io.FontGlobalScale * font->Scale * g.CurrentWindow->FontWindowScale).
-    # float                   FontSizeBeforeScaling;    /* original C++ signature */
-    font_size_before_scaling: float  # == value passed to PushFont() / PushFontSize() when specified.
-    # float                   FontScale;    /* original C++ signature */
-    font_scale: float  # == FontBaked->Size / Font->FontSize. Scale factor over baked size.
+    font_size: float  # Currently bound font size == line height (== FontSizeBase + externals scales applied in the UpdateCurrentFontSize() function).
+    # float                   FontSizeBase;    /* original C++ signature */
+    font_size_base: float  # Font size before scaling == style.FontSizeBase == value passed to PushFont() / PushFontSize() when specified.
+    # float                   FontBakedScale;    /* original C++ signature */
+    font_baked_scale: (
+        float  # == FontBaked->Size / FontSize. Scale factor over baked size. Rarely used nowadays, very often == 1.0.
+    )
     # float                   FontRasterizerDensity;    /* original C++ signature */
     font_rasterizer_density: float  # Current font density. Used by all calls to GetFontBaked().
     # float                   CurrentDpiScale;    /* original C++ signature */
@@ -4589,8 +4599,6 @@ class Window:
     font_window_scale: float  # User scale multiplier per-window, via SetWindowFontScale()
     # float                   FontWindowScaleParents;    /* original C++ signature */
     font_window_scale_parents: float
-    # float                   FontDpiScale;    /* original C++ signature */
-    font_dpi_scale: float
     # float                   FontRefSize;    /* original C++ signature */
     font_ref_size: float  # This is a copy of window->CalcFontSize() at the time of Begin(), trying to phase out CalcFontSize() especially as it may be called on non-current window.
     # int                     SettingsOffset;    /* original C++ signature */
@@ -4691,7 +4699,7 @@ class Window:
         """(private API)"""
         pass
     # [Obsolete] ImGuiWindow::CalcFontSize() was removed in 1.92.x because error-prone/misleading. You can use window->FontRefSize for a copy of g.FontSize at the time of the last Begin() call for this window.
-    # float     CalcFontSize() const    { ImGuiContext& g = *Ctx; return g.FontSizeBeforeScaling * FontWindowScale * FontDpiScale * FontWindowScaleParents;
+    # float     CalcFontSize() const    { ImGuiContext& g = *Ctx; return g.FontSizeBase * FontWindowScale * FontDpiScale * FontWindowScaleParents;
 
 # -----------------------------------------------------------------------------
 # [SECTION] Tab bar, Tab item support
@@ -7862,8 +7870,8 @@ def im_font_atlas_pack_get_rect_safe(atlas: ImFontAtlas, id_: ImFontAtlasRectId)
 def im_font_atlas_pack_discard_rect(atlas: ImFontAtlas, id_: ImFontAtlasRectId) -> None:
     pass
 
-# IMGUI_API void              ImFontAtlasUpdateNewFrame(ImFontAtlas* atlas, int frame_count);    /* original C++ signature */
-def im_font_atlas_update_new_frame(atlas: ImFontAtlas, frame_count: int) -> None:
+# IMGUI_API void              ImFontAtlasUpdateNewFrame(ImFontAtlas* atlas, int frame_count, bool renderer_has_textures);    /* original C++ signature */
+def im_font_atlas_update_new_frame(atlas: ImFontAtlas, frame_count: int, renderer_has_textures: bool) -> None:
     pass
 
 # IMGUI_API void              ImFontAtlasAddDrawListSharedData(ImFontAtlas* atlas, ImDrawListSharedData* data);    /* original C++ signature */

@@ -602,14 +602,14 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("push_font",
         ImGui::PushFont,
-        nb::arg("font"), nb::arg("font_size") = -1,
+        nb::arg("font"), nb::arg("font_size_base") = -1,
         "use None as a shortcut to push default font. Use <0.0 to keep current font size.");
 
     m.def("pop_font",
         ImGui::PopFont);
 
     m.def("push_font_size",
-        ImGui::PushFontSize, nb::arg("font_size"));
+        ImGui::PushFontSize, nb::arg("font_size_base"));
 
     m.def("pop_font_size",
         ImGui::PopFontSize);
@@ -686,7 +686,7 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::rv_policy::reference);
 
     m.def("get_font_size",
-        ImGui::GetFontSize, "get current font size (= height in pixels) of current font with external scale factors applied. Use ImGui::GetStyle().FontSize to get value before external scale factors.");
+        ImGui::GetFontSize, "get current font size (= height in pixels) of current font with external scale factors applied. Use ImGui::GetStyle().FontSizeBase to get value before external scale factors.");
 
     m.def("get_font_tex_uv_white_pixel",
         ImGui::GetFontTexUvWhitePixel, "get UV coordinate for a white pixel, useful to draw custom shapes via the ImDrawList API");
@@ -3600,8 +3600,6 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("no_keyboard", ImGuiConfigFlags_NoKeyboard, "Instruct dear imgui to disable keyboard inputs and interactions. This is done by ignoring keyboard events and clearing existing states.")
             .value("docking_enable", ImGuiConfigFlags_DockingEnable, "Docking enable flags.")
             .value("viewports_enable", ImGuiConfigFlags_ViewportsEnable, "Viewport enable flags (require both ImGuiBackendFlags_PlatformHasViewports + ImGuiBackendFlags_RendererHasViewports set by the respective backends)")
-            .value("dpi_enable_scale_fonts", ImGuiConfigFlags_DpiEnableScaleFonts, "[BETA] FIXME-DPI: Apply an extra font scale of 'monitor->DpiScale / style.Scale'. This will scale fonts but NOT style sizes/padding for now.")
-            .value("dpi_enable_scale_viewports", ImGuiConfigFlags_DpiEnableScaleViewports, "[BETA] FIXME-DPI: Scale imgui and platform windows when 'monitor->DpiScale' changes.")
             .value("is_srgb", ImGuiConfigFlags_IsSRGB, "Application is SRGB-aware.")
             .value("is_touch_screen", ImGuiConfigFlags_IsTouchScreen, "Application is using a touch screen instead of a mouse.");
 
@@ -6079,7 +6077,9 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImGuiStyle =
         nb::class_<ImGuiStyle>
             (m, "Style", "")
-        .def_rw("font_size", &ImGuiStyle::FontSize, "Current base font size.  scaling applied). Use PushFont()/PushFontSize() to modify. Use ImGui::GetFontSize() to obtain scaled value.")
+        .def_rw("font_size_base", &ImGuiStyle::FontSizeBase, "Current base font size before external scaling factors are applied. Use PushFont()/PushFontSize() to modify. Use ImGui::GetFontSize() to obtain scaled value.")
+        .def_rw("font_scale_main", &ImGuiStyle::FontScaleMain, "Main scale factor. May be set by application once, or exposed to end-user.")
+        .def_rw("font_scale_dpi", &ImGuiStyle::FontScaleDpi, "Additional scale factor from viewport/monitor contents scale. When io.ConfigDpiScaleFonts is enabled, this is automatically overwritten when changing monitor DPI.")
         .def_rw("alpha", &ImGuiStyle::Alpha, "Global alpha applies to everything in Dear ImGui.")
         .def_rw("disabled_alpha", &ImGuiStyle::DisabledAlpha, "Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.")
         .def_rw("window_padding", &ImGuiStyle::WindowPadding, "Padding within a window.")
@@ -6140,8 +6140,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("hover_delay_normal", &ImGuiStyle::HoverDelayNormal, "Delay for IsItemHovered(ImGuiHoveredFlags_DelayNormal). \"")
         .def_rw("hover_flags_for_tooltip_mouse", &ImGuiStyle::HoverFlagsForTooltipMouse, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using mouse.")
         .def_rw("hover_flags_for_tooltip_nav", &ImGuiStyle::HoverFlagsForTooltipNav, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using keyboard/gamepad.")
-        .def_rw("scale", &ImGuiStyle::Scale, "FIXME-WIP: Reference scale, as applied by ScaleAllSizes().")
-        .def_rw("_next_frame_font_size", &ImGuiStyle::_NextFrameFontSize, "FIXME: Temporary hack until we finish remaining work.")
+        .def_rw("_main_scale", &ImGuiStyle::_MainScale, "FIXME-WIP: Reference scale, as applied by ScaleAllSizes().")
+        .def_rw("_next_frame_font_size_base", &ImGuiStyle::_NextFrameFontSizeBase, "FIXME: Temporary hack until we finish remaining work.")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("color_",
@@ -6190,9 +6190,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("ini_saving_rate", &ImGuiIO::IniSavingRate, "= 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.")
         .def_rw("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")
         .def_rw("fonts", &ImGuiIO::Fonts, "<auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.")
-        .def_rw("font_global_scale", &ImGuiIO::FontGlobalScale, "= 1.0           // Global scale all fonts")
-        .def_rw("font_allow_user_scaling", &ImGuiIO::FontAllowUserScaling, "= False          // [OBSOLETE] Allow user scaling text of individual window with CTRL+Wheel.")
         .def_rw("font_default", &ImGuiIO::FontDefault, "= None           // Font to use on NewFrame(). Use None to uses Fonts->Fonts[0].")
+        .def_rw("font_allow_user_scaling", &ImGuiIO::FontAllowUserScaling, "= False          // [OBSOLETE] Allow user scaling text of individual window with CTRL+Wheel.")
         .def_rw("config_nav_swap_gamepad_buttons", &ImGuiIO::ConfigNavSwapGamepadButtons, "= False          // Swap Activate<>Cancel (A<>B) buttons, matching typical \"Nintendo/Japanese style\" gamepad layout.")
         .def_rw("config_nav_move_set_mouse_pos", &ImGuiIO::ConfigNavMoveSetMousePos, "= False          // Directional/tabbing navigation teleports the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is difficult. Will update io.MousePos and set io.WantSetMousePos=True.")
         .def_rw("config_nav_capture_keyboard", &ImGuiIO::ConfigNavCaptureKeyboard, "= True           // Sets io.WantCaptureKeyboard when io.NavActive is set.")
@@ -6208,6 +6207,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_viewports_no_task_bar_icon", &ImGuiIO::ConfigViewportsNoTaskBarIcon, "= False          // Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.")
         .def_rw("config_viewports_no_decoration", &ImGuiIO::ConfigViewportsNoDecoration, "= True           // Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).")
         .def_rw("config_viewports_no_default_parent", &ImGuiIO::ConfigViewportsNoDefaultParent, "= False          // Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to True if you want the default to be 0, then all viewports will be top-level OS windows.")
+        .def_rw("config_dpi_scale_fonts", &ImGuiIO::ConfigDpiScaleFonts, "= False          // [EXPERIMENTAL] Automatically overwrite style.FontScaleDpi when Monitor DPI changes. This will scale fonts but _NOT_ scale sizes/padding for now.")
+        .def_rw("config_dpi_scale_viewports", &ImGuiIO::ConfigDpiScaleViewports, "= False          // [EXPERIMENTAL] Scale Dear ImGui and Platform Windows when Monitor DPI changes.")
         .def_rw("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor, "= False          // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor). Cannot be easily renamed to 'io.ConfigXXX' because this is frequently used by backend implementations.")
         .def_rw("config_mac_osx_behaviors", &ImGuiIO::ConfigMacOSXBehaviors, "= defined(__APPLE__) // Swap Cmd<>Ctrl keys + OS X style text editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/Text Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.")
         .def_rw("config_input_trickle_event_queue", &ImGuiIO::ConfigInputTrickleEventQueue, "= True           // Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.")
@@ -7494,7 +7495,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX, "0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font. Absolute value for default size, other sizes will scale this value.")
         .def_rw("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX, "FLT_MAX  // Maximum AdvanceX for glyphs")
         .def_rw("glyph_extra_advance_x", &ImFontConfig::GlyphExtraAdvanceX, "0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this. // FIXME-NEWATLAS: Intentionally unscaled")
-        .def_rw("font_builder_flags", &ImFontConfig::FontBuilderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")
+        .def_rw("font_loader_flags", &ImFontConfig::FontLoaderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")
         .def_rw("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.")
         .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity, "1.0     // [LEGACY: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported] DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.")
         .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
@@ -7690,7 +7691,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_ro("font_loader", &ImFontAtlas::FontLoader, "Font loader opaque interface (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE). Don't set directly!")
         .def_ro("font_loader_name", &ImFontAtlas::FontLoaderName, "Font loader name (for display e.g. in About box) == FontLoader->Name")
         .def_rw("font_loader_data", &ImFontAtlas::FontLoaderData, "Font backend opaque storage")
-        .def_rw("font_builder_flags", &ImFontAtlas::FontBuilderFlags, "[FIXME: Should be called FontLoaderFlags] Shared flags (for all fonts) for font loader. THIS IS BUILD IMPLEMENTATION DEPENDENT (e.g. . Per-font override is also available in ImFontConfig.")
+        .def_rw("font_loader_flags", &ImFontAtlas::FontLoaderFlags, "Shared flags (for all fonts) for font loader. THIS IS BUILD IMPLEMENTATION DEPENDENT (e.g. Per-font override is also available in ImFontConfig).")
         .def_rw("ref_count", &ImFontAtlas::RefCount, "Number of contexts using this atlas")
         .def_rw("owner_context", &ImFontAtlas::OwnerContext, "Context which own the atlas will be in charge of updating and destroying it.")
         ;
@@ -7757,11 +7758,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("remap_pairs", &ImFont::RemapPairs, "16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.")
         .def(nb::init<>(),
             "Methods")
-        .def("get_font_baked",
-            &ImFont::GetFontBaked,
-            nb::arg("font_size"), nb::arg("density") = -1.0f,
-            "Get or create baked data for given size",
-            nb::rv_policy::reference)
         .def("is_glyph_in_font",
             &ImFont::IsGlyphInFont, nb::arg("c"))
         .def("is_loaded",
@@ -7769,6 +7765,11 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("get_debug_name",
             &ImFont::GetDebugName,
             "(private API)\n\n Fill ImFontConfig::Name.",
+            nb::rv_policy::reference)
+        .def("get_font_baked",
+            &ImFont::GetFontBaked,
+            nb::arg("font_size"), nb::arg("density") = -1.0f,
+            "Get or create baked data for given size",
             nb::rv_policy::reference)
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //

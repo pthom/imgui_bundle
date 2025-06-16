@@ -120,8 +120,8 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
 
     def show_edit_font_scale_in_status_bar():
         imgui.set_next_item_width(imgui.get_content_region_avail().x / 10)
-        _, imgui.get_io().font_global_scale = imgui.slider_float(
-            "Font scale", imgui.get_io().font_global_scale, 0.5, 5)
+        _, imgui.get_style().font_scale_main = imgui.slider_float(
+            "Font scale", imgui.get_style().font_scale_main, 0.5, 5)
 
     runner_params.callbacks.show_status = show_edit_font_scale_in_status_bar
 

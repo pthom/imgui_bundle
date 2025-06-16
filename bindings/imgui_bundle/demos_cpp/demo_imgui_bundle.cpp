@@ -131,7 +131,7 @@ int main(int, char **)
     auto showEditFontScaleInStatusBar = [&runnerParams]()
     {
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 10.f);
-        ImGui::SliderFloat("Font scale", & ImGui::GetIO().FontGlobalScale, 0.5f, 5.f);
+        ImGui::SliderFloat("Font scale", & ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
     };
     runnerParams.callbacks.ShowStatus = showEditFontScaleInStatusBar;
 
