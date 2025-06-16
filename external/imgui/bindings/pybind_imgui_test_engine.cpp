@@ -393,7 +393,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("action_delay_standard", &ImGuiTestEngineIO::ActionDelayStandard, "Time between most actions")
         .def_rw("config_watchdog_warning", &ImGuiTestEngineIO::ConfigWatchdogWarning, "Warn when a test exceed this time (in second)")
         .def_rw("config_watchdog_kill_test", &ImGuiTestEngineIO::ConfigWatchdogKillTest, "Attempt to stop running a test when exceeding this time (in second)")
-        .def_rw("config_watchdog_kill_app", &ImGuiTestEngineIO::ConfigWatchdogKillApp, "")
+        .def_rw("config_watchdog_kill_app", &ImGuiTestEngineIO::ConfigWatchdogKillApp, "Stop application when exceeding this time (in second)")
         .def_rw("export_results_format", &ImGuiTestEngineIO::ExportResultsFormat, "")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //

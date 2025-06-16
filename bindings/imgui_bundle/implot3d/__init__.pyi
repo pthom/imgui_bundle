@@ -16,9 +16,10 @@ from imgui_bundle.imgui import (
     ImVec4Like,
     ImU32,
     ImDrawList,
-    ImTextureID,
+    ImTextureRef,
 )
-ImageFlags = int # enum ImageFlags_
+
+ImageFlags = int  # enum ImageFlags_
 
 ImGui_Context = imgui.internal.Context
 
@@ -123,6 +124,11 @@ ImPlane3D = int  # enum ImPlane3D_
 # #ifndef IMGUI_DISABLE
 #
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
+
 # -----------------------------------------------------------------------------
 # [SECTION] Macros and Defines
 # -----------------------------------------------------------------------------
@@ -136,7 +142,6 @@ ImPlane3D = int  # enum ImPlane3D_
 # Enums
 
 # Flags
-# -> ImPlot3DAxisFlags_     // Flags: Axis flags
 
 # Fallback for ImGui versions before v1.92: define ImTextureRef as ImTextureID
 # You can `#define IMPLOT3D_NO_IMTEXTUREREF` to avoid this fallback
@@ -779,13 +784,13 @@ def plot_mesh(label_id: str, mesh: Mesh, flags: MeshFlags = 0) -> None:
 #
 # [/ADAPT_IMGUI_BUNDLE]
 
-# IMPLOT3D_API void PlotImage(const char* label_id, ImTextureID tex_ref, const ImPlot3DPoint& center, const ImPlot3DPoint& axis_u,    /* original C++ signature */
+# IMPLOT3D_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint& center, const ImPlot3DPoint& axis_u,    /* original C++ signature */
 #                             const ImPlot3DPoint& axis_v, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
 #                             const ImVec4& tint_col = ImVec4(1, 1, 1, 1), ImPlot3DImageFlags flags = 0);
 @overload
 def plot_image(
     label_id: str,
-    tex_ref: ImTextureID,
+    tex_ref: ImTextureRef,
     center: Point,
     axis_u: Point,
     axis_v: Point,
@@ -810,14 +815,14 @@ def plot_image(
     """
     pass
 
-# IMPLOT3D_API void PlotImage(const char* label_id, ImTextureID tex_ref, const ImPlot3DPoint& p0, const ImPlot3DPoint& p1, const ImPlot3DPoint& p2,    /* original C++ signature */
+# IMPLOT3D_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint& p0, const ImPlot3DPoint& p1, const ImPlot3DPoint& p2,    /* original C++ signature */
 #                             const ImPlot3DPoint& p3, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 0),
 #                             const ImVec2& uv2 = ImVec2(1, 1), const ImVec2& uv3 = ImVec2(0, 1), const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
 #                             ImPlot3DImageFlags flags = 0);
 @overload
 def plot_image(
     label_id: str,
-    tex_ref: ImTextureID,
+    tex_ref: ImTextureRef,
     p0: Point,
     p1: Point,
     p2: Point,
@@ -1149,9 +1154,7 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
 
 # IMPLOT3D_API void ShowAllDemos();    /* original C++ signature */
 def show_all_demos() -> None:
-    """Bundle: ShowAllDemos is extracted from ShowDemoWindow,
-    so that it can be used without creating an ImGui window.
-    """
+    """Shows all ImPlot3D demos, without enclosing window"""
     pass
 
 # IMPLOT3D_API void ShowStyleEditor(ImPlot3DStyle* ref = nullptr);    /* original C++ signature */
@@ -1539,8 +1542,6 @@ class Style:
 # Sphere
 
 # Duck (Rubber Duck by Poly by Google [CC-BY] via Poly Pizza)
-
-# namespace ImPlot3D
 
 # #endif
 ####################    </generated_from:implot3d.h>    ####################

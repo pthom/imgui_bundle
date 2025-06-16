@@ -26,6 +26,8 @@ DefaultScreenSize = (800, 600)
 
 # #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
 #
+# These functions wrap ImPlot::BeginPlot and ImPlot::EndPlot,
+# but they enable to make the plot content draggable inside a node
 def begin_plot_in_node_editor(
     title_id: str, size: Optional[ImVec2Like] = None, flags: ImPlotFlags = 0
 ) -> bool:

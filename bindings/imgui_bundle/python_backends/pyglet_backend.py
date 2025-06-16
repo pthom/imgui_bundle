@@ -10,10 +10,7 @@ import pyglet.clock
 
 
 from imgui_bundle.python_backends import compute_fb_scale
-from imgui_bundle.python_backends.opengl_backend import (
-    FixedPipelineRenderer,
-    ProgrammablePipelineRenderer,
-)
+from imgui_bundle.python_backends.opengl_backend_programmable import ProgrammablePipelineRenderer
 
 
 class PygletMixin(object):
@@ -283,18 +280,6 @@ class PygletMixin(object):
         self._gui_time = current_time
 
 
-class PygletFixedPipelineRenderer(PygletMixin, FixedPipelineRenderer):
-    def __init__(self, window, attach_callbacks=True):
-        super(PygletFixedPipelineRenderer, self).__init__()
-        self._set_pixel_ratio(window)
-        if attach_callbacks:
-            self._attach_callbacks(window)
-
-    def render(self, draw_data):
-        super(PygletFixedPipelineRenderer, self).render(draw_data)
-        self._handle_mouse_cursor()
-
-
 class PygletProgrammablePipelineRenderer(PygletMixin, ProgrammablePipelineRenderer):
     def __init__(self, window, attach_callbacks=True):
         super(PygletProgrammablePipelineRenderer, self).__init__()
@@ -306,20 +291,6 @@ class PygletProgrammablePipelineRenderer(PygletMixin, ProgrammablePipelineRender
         super(PygletProgrammablePipelineRenderer, self).render(draw_data)
         self._handle_mouse_cursor()
 
-
-class PygletRenderer(PygletFixedPipelineRenderer):
-    def __init__(self, window, attach_callbacks=True):
-        warnings.warn(
-            "PygletRenderer is deprecated; please use either "
-            "PygletFixedPipelineRenderer (for OpenGL 2.1, pyglet < 2.0) or "
-            "PygletProgrammablePipelineRenderer (for later versions) or "
-            "create_renderer(window) to auto-detect.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        super(PygletRenderer, self).__init__(window, attach_callbacks)
-
-
 def create_renderer(window, attach_callbacks=True):
     """
     This is a helper function that wraps the appropriate version of the Pyglet
@@ -329,7 +300,5 @@ def create_renderer(window, attach_callbacks=True):
     # Pyglet < 2.0 has issues with ProgrammablePipeline even when the context
     # is OpenGL 3, so we need to check the pyglet version rather than looking
     # at window.config.major_version to see if we want to use programmable.
-    if int(pyglet.version.split('.')[0]) < 2:
-        return PygletFixedPipelineRenderer(window, attach_callbacks)
-    else:
-        return PygletProgrammablePipelineRenderer(window, attach_callbacks)
+    assert int(pyglet.version.split('.')[0]) >= 2
+    return PygletProgrammablePipelineRenderer(window, attach_callbacks)

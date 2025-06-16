@@ -24,7 +24,7 @@ void demo_text_edit()
     static TextEditor editor = _PrepareTextEditor();
 
     ImGuiMd::Render(R"(
-# ImGuiColorTextEdit:
+# ImGuiColorTextEdit
 [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)  is a colorizing text editor for ImGui, able to colorize C, C++, hlsl, Sql, angel_script and lua code
     )");
 
@@ -44,7 +44,8 @@ void demo_text_edit()
     };
 
     ShowPaletteButtons();
-    ImGui::PushFont(ImGuiMd::GetCodeFont());
+    auto codeFont = ImGuiMd::GetCodeFont();
+    ImGui::PushFont(codeFont.font, codeFont.size);
     editor.Render("Code");
     ImGui::PopFont();
 }

@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from __future__ import annotations
 from enum import Enum
 import copy
@@ -76,8 +76,8 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiPlatformMonitor",
         "ImGuiViewport*",
         "ImGuiWindow*",
-        "ImFontAtlasCustomRect",
         "ImFontConfig",
+        "ImFontConfig*",
         "ImGuiFocusScopeData",
         "ImGuiSelectionRequest",
         # from imgui_internal.h
@@ -105,12 +105,16 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiTableHeaderData",  # new in v1.90.7
         "ImGuiTreeNodeStackData",
         "ImGuiMultiSelectTempData",
+        "ImTextureData*",
+        "ImTextureRef",
+        "ImTextureRect",
     ]
     cpp_synonyms_list_str = [
         "ImTextureID=int",
         "ImDrawIdx=uint",
         "ImGuiID=uint",
         "ImU32=uint",
+        "ImU16=uint",
         "ImWchar32=uint",
         "ImWchar=ImWchar32",
         "ImGuiItemFlags=int",
@@ -130,6 +134,10 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiTestLogLineInfo",
         "ImGuiTestRunTask",
         "ImGuiTestRunTask",
+        "ImFontAtlasRectEntry",
+        "stbrp_node",
+        "ImDrawListSharedData*",
+        "ImFontStackData",
     ]
 
     options.class_template_options.add_specialization(
@@ -144,6 +152,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
     options.srcmlcpp_options.ignored_warning_parts += [
         "Excluding template type const ImVector<T>",
         "Excluding template type ImVector<T>",
+        "Ignoring template class ImStableVector",
     ]
 
     for instantiated_type in instantiated_types:
@@ -306,7 +315,7 @@ def litgen_options_imgui(
         "|IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT"
     )
     options.srcmlcpp_options.header_filter_acceptable__regex += (
-        "|^IMGUI_BUNDLE_PYTHON_API$"
+        "|^IMGUI_BUNDLE_PYTHON_API$|^IMGUI_HAS_TEXTURES$"
     )
     if docking_branch:
         options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_HAS_DOCK$"
@@ -364,6 +373,7 @@ def litgen_options_imgui(
             r"^TexPixelsAlpha8$",
             r"^Stb$",
             r"^ErrorCallback$",  # callback with C function pointers
+            r"^BakedPool$",
         ]
     )
 
@@ -382,6 +392,8 @@ def litgen_options_imgui(
             r"::STB_",
             r"ImGuiStoragePair",
             r"^ImFileHandle$",
+            r"^ImFontLoader",
+            r"^ImFontAtlasBuilder",
         ]
     )
 
@@ -389,7 +401,10 @@ def litgen_options_imgui(
         r"^char\s*\*",
     ])
 
-    options.class_exclude_by_name__regex = join_string_by_pipe_char([])
+    options.class_exclude_by_name__regex = join_string_by_pipe_char([
+        "ImStableVector",
+        "ImGuiNpBuffer",  # Will be cast to numpy array (see pybind_imgui.cpp)
+    ])
 
     options.member_numeric_c_array_types += "|" + join_string_by_pipe_char(
         [

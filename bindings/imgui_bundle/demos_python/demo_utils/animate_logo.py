@@ -9,7 +9,7 @@ def draw_transparent_image(
 ):
     alpha_color = imgui.get_color_u32(ImVec4(1.0, 1.0, 1.0, alpha))
     imgui.get_foreground_draw_list().add_image_quad(
-        texture,
+        imgui.ImTextureRef(texture),
         ImVec2(rect.min.x, rect.min.y),
         ImVec2(rect.max.x, rect.min.y),
         ImVec2(rect.max.x, rect.max.y),

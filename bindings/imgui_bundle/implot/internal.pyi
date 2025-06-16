@@ -2406,7 +2406,6 @@ class Formatter_Time_Data:
 
 
 
-# namespace ImPlot
 
 # #endif
 ####################    </generated_from:implot_internal.h>    ####################

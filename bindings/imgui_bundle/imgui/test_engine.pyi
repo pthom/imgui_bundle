@@ -572,8 +572,7 @@ class TestEngineIO:
     # float                       ConfigWatchdogKillTest = 60.0f;    /* original C++ signature */
     config_watchdog_kill_test: float = 60.0  # Attempt to stop running a test when exceeding this time (in second)
     # float                       ConfigWatchdogKillApp = FLT_MAX;    /* original C++ signature */
-    config_watchdog_kill_app: float = sys.float_info.max
-    # Stop application when exceeding this time (in second)
+    config_watchdog_kill_app: float = sys.float_info.max  # Stop application when exceeding this time (in second)
 
     # Options: Export
     # While you can manually call ImGuiTestEngine_Export(), registering filename/format here ensure the crash handler will always export if application crash.
@@ -581,7 +580,7 @@ class TestEngineIO:
     # ImGuiTestEngineExportFormat ExportResultsFormat = (ImGuiTestEngineExportFormat)0;    /* original C++ signature */
     export_results_format: TestEngineExportFormat = TestEngineExportFormat.j_unit_xml
 
-    #                                                   #ifdef IMGUI_BUNDLE_PYTHON_API
+    #                                                     #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # void ExportResultsFilename_Set(const char* filename);    /* original C++ signature */
     def export_results_filename_set(self, filename: str) -> None:
@@ -589,7 +588,7 @@ class TestEngineIO:
         (private API)
         """
         pass
-    #                                                   #endif
+    #                                                     #endif
     #
 
     # Options: Sanity Checks

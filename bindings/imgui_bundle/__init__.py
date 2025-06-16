@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
 from imgui_bundle._imgui_bundle import __bundle_submodules__, __bundle_pyodide__ # type: ignore
 from imgui_bundle._imgui_bundle import __version__, compilation_time

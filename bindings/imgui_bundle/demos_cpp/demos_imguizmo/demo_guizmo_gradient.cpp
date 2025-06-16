@@ -13,10 +13,6 @@
 #include <algorithm>
 
 
-static ImVec4 operator*(const ImVec4& lhs, float rhs)
-{ return ImVec4(lhs.x * rhs, lhs.y * rhs, lhs.z * rhs, lhs.w * rhs); }
-
-
 struct MyGradient: public ImGradient::DelegateStl
 {
     MyGradient()

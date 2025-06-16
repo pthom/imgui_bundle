@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
 
 import litgen
@@ -59,6 +59,7 @@ def main():
     options.fn_return_force_policy_reference_for_references__regex = r".*"
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_by_param_type__regex = r"float[ ]*\*"
+    options.fn_exclude_by_name__regex = r"^SetID$"  # deprecated function
     options.fn_force_overload__regex = "DecomposeMatrixToComponents|RecomposeMatrixFromComponents|DrawCubes|DrawGrid|Manipulate"
     amalgamation = make_amalgamated_header("ImGuizmoPure.h")
     generator.process_cpp_code(code=amalgamation, filename="ImGuizmoPure.h")

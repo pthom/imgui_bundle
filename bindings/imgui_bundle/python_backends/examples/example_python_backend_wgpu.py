@@ -37,6 +37,8 @@ def update_gui():
             imgui.end_menu()
         imgui.end_main_menu_bar()
 
+    imgui.show_demo_window()
+
     imgui.set_next_window_size((300, 0), imgui.Cond_.appearing)
     imgui.set_next_window_pos((0, 20), imgui.Cond_.appearing)
 

@@ -72,19 +72,14 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
     hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
 
     # Load the title font
-    # app_state.title_font = hello_imgui.load_font("fonts/DroidSans.ttf", 18.0)
-    font_loading_params_title_icons = hello_imgui.FontLoadingParams()
-    font_loading_params_title_icons.merge_font_awesome = True
-    app_state.title_font = hello_imgui.load_font("fonts/Roboto/Roboto-BoldItalic.ttf", 18, font_loading_params_title_icons)
+    app_state.title_font = hello_imgui.load_font_ttf_with_font_awesome_icons("fonts/Roboto/Roboto-BoldItalic.ttf", 18)
 
     # Load the emoji font
     font_loading_params_emoji = hello_imgui.FontLoadingParams()
-    font_loading_params_emoji.use_full_glyph_range = True
     app_state.emoji_font = hello_imgui.load_font("fonts/NotoEmoji-Regular.ttf", 24., font_loading_params_emoji)
 
     # Load a large icon font
     font_loading_params_large_icon = hello_imgui.FontLoadingParams()
-    font_loading_params_large_icon.use_full_glyph_range = True
     app_state.large_icon_font = hello_imgui.load_font("fonts/fontawesome-webfont.ttf", 24., font_loading_params_large_icon)
 
     # Load a colored font

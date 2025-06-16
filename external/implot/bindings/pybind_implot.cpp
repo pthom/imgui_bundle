@@ -2641,9 +2641,9 @@ void py_init_module_implot(nb::module_& m)
     //
 
     m.def("plot_image",
-        [](const char * label_id, ImTextureID tex_ref, const ImPlotPoint & bounds_min, const ImPlotPoint & bounds_max, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlotImageFlags flags = 0)
+        [](const char * label_id, ImTextureRef tex_ref, const ImPlotPoint & bounds_min, const ImPlotPoint & bounds_max, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlotImageFlags flags = 0)
         {
-            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureID tex_ref, const ImPlotPoint & bounds_min, const ImPlotPoint & bounds_max, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlotImageFlags flags = 0)
+            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureRef tex_ref, const ImPlotPoint & bounds_min, const ImPlotPoint & bounds_max, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlotImageFlags flags = 0)
             {
 
                 const ImVec2& uv0_or_default = [&]() -> const ImVec2 {

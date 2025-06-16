@@ -376,8 +376,9 @@ def make_closure_demo_guizmo() -> GuiFunction:
         imgui.separator()
 
         for matId in range(gizmoCount):
-            gizmo.set_id(matId)
+            gizmo.push_id(matId)
             EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId)
+            gizmo.pop_id()
 
         imgui.end()
 

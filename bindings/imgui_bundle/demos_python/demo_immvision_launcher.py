@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, immapp, imgui_md, has_submodule
 HAS_IMMVISION = has_submodule("immvision")
 if HAS_IMMVISION:

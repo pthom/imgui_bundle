@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import List, Callable
 from types import ModuleType
 from dataclasses import dataclass
@@ -117,6 +117,13 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
             # be created after (and will steal the focus)
             runner_params.docking_params.focus_dockable_window("Dear ImGui Bundle")
         show_gui.nb_frames += 1
+
+    def show_edit_font_scale_in_status_bar():
+        imgui.set_next_item_width(imgui.get_content_region_avail().x / 10)
+        _, imgui.get_style().font_scale_main = imgui.slider_float(
+            "Font scale", imgui.get_style().font_scale_main, 0.5, 5)
+
+    runner_params.callbacks.show_status = show_edit_font_scale_in_status_bar
 
     runner_params.callbacks.show_gui = show_gui
 

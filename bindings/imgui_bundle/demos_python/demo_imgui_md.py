@@ -1,19 +1,23 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui_md, immapp
 
 
 def example_markdown_string() -> str:
     markdown = r"""
-# Markdown with imgui_md
-[imgui_md](https://github.com/mekhontsev/imgui_md) is a markdown renderer for Dear ImGui using MD4C parser.
+# Markdown example (H1)
 
-### Supported features
-
-imgui_md currently supports the following markdown functionality:
-
-* Images
-
+Hello World! <br>
 ![World](images/world.png)
+
+## Acknowledgments (H2)
+This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
+
+### Supported features (H3)
+
+imgui_md currently supports the following markdown functionality.
+
+#### Text formatting (H4)
+
 * Wrapped text
 * Headers
 * *Emphasis* (\*Emphasis\*)
@@ -29,7 +33,7 @@ imgui_md currently supports the following markdown functionality:
 * Backslash Escapes
 * Inline `code element` (using \`code element\`)
 * Tables
-* Block code (using \`\`\`)
+* Block code like this (using \`\`\`)
 ```
 int answer()
 {
@@ -39,6 +43,8 @@ int answer()
 * Separator (see below)
 
 ----
+
+#### Tables (H4)
 
 *Warning about tables layout*: the first row will impose the columns widths.
 Use nbsp\; to increase the columns sizes on the first row if required.
