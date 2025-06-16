@@ -89,11 +89,11 @@ void py_init_module_immvision(nb::module_& m)
         .def("__init__", [](ImmVision::ColormapScaleFromStatsData * self, ImmVision::ColorMapStatsTypeId ColorMapStatsType = ImmVision::ColorMapStatsTypeId::FromFullImage, double NbSigmas = 1.5, bool UseStatsMin = false, bool UseStatsMax = false)
         {
             new (self) ImmVision::ColormapScaleFromStatsData();  // placement new
-            auto r = self;
-            r->ColorMapStatsType = ColorMapStatsType;
-            r->NbSigmas = NbSigmas;
-            r->UseStatsMin = UseStatsMin;
-            r->UseStatsMax = UseStatsMax;
+            auto r_ctor_ = self;
+            r_ctor_->ColorMapStatsType = ColorMapStatsType;
+            r_ctor_->NbSigmas = NbSigmas;
+            r_ctor_->UseStatsMin = UseStatsMin;
+            r_ctor_->UseStatsMax = UseStatsMax;
         },
         nb::arg("color_map_stats_type") = ImmVision::ColorMapStatsTypeId::FromFullImage, nb::arg("nb_sigmas") = 1.5, nb::arg("use_stats_min") = false, nb::arg("use_stats_max") = false
         )
@@ -110,15 +110,15 @@ void py_init_module_immvision(nb::module_& m)
         .def("__init__", [](ImmVision::ColormapSettingsData * self, std::string Colormap = "None", double ColormapScaleMin = 0., double ColormapScaleMax = 1., const std::optional<const ImmVision::ColormapScaleFromStatsData> & ColormapScaleFromStats = std::nullopt, std::string internal_ColormapHovered = "")
         {
             new (self) ImmVision::ColormapSettingsData();  // placement new
-            auto r = self;
-            r->Colormap = Colormap;
-            r->ColormapScaleMin = ColormapScaleMin;
-            r->ColormapScaleMax = ColormapScaleMax;
+            auto r_ctor_ = self;
+            r_ctor_->Colormap = Colormap;
+            r_ctor_->ColormapScaleMin = ColormapScaleMin;
+            r_ctor_->ColormapScaleMax = ColormapScaleMax;
             if (ColormapScaleFromStats.has_value())
-                r->ColormapScaleFromStats = ColormapScaleFromStats.value();
+                r_ctor_->ColormapScaleFromStats = ColormapScaleFromStats.value();
             else
-                r->ColormapScaleFromStats = ImmVision::ColormapScaleFromStatsData();
-            r->internal_ColormapHovered = internal_ColormapHovered;
+                r_ctor_->ColormapScaleFromStats = ImmVision::ColormapScaleFromStatsData();
+            r_ctor_->internal_ColormapHovered = internal_ColormapHovered;
         },
         nb::arg("colormap") = "None", nb::arg("colormap_scale_min") = 0., nb::arg("colormap_scale_max") = 1., nb::arg("colormap_scale_from_stats") = nb::none(), nb::arg("internal_colormap_hovered") = ""
         )
@@ -136,16 +136,16 @@ void py_init_module_immvision(nb::module_& m)
         .def("__init__", [](ImmVision::MouseInformation * self, bool IsMouseHovering = false, const std::optional<const cv::Point2d> & MousePosition = std::nullopt, const std::optional<const cv::Point> & MousePosition_Displayed = std::nullopt)
         {
             new (self) ImmVision::MouseInformation();  // placement new
-            auto r = self;
-            r->IsMouseHovering = IsMouseHovering;
+            auto r_ctor_ = self;
+            r_ctor_->IsMouseHovering = IsMouseHovering;
             if (MousePosition.has_value())
-                r->MousePosition = MousePosition.value();
+                r_ctor_->MousePosition = MousePosition.value();
             else
-                r->MousePosition = cv::Point2d(-1., -1.);
+                r_ctor_->MousePosition = cv::Point2d(-1., -1.);
             if (MousePosition_Displayed.has_value())
-                r->MousePosition_Displayed = MousePosition_Displayed.value();
+                r_ctor_->MousePosition_Displayed = MousePosition_Displayed.value();
             else
-                r->MousePosition_Displayed = cv::Point(-1, -1);
+                r_ctor_->MousePosition_Displayed = cv::Point(-1, -1);
         },
         nb::arg("is_mouse_hovering") = false, nb::arg("mouse_position") = nb::none(), nb::arg("mouse_position_displayed") = nb::none()
         )
@@ -161,47 +161,47 @@ void py_init_module_immvision(nb::module_& m)
         .def("__init__", [](ImmVision::ImageParams * self, bool RefreshImage = false, const std::optional<const cv::Size> & ImageDisplaySize = std::nullopt, const std::optional<const cv::Matx33d> & ZoomPanMatrix = std::nullopt, std::string ZoomKey = "", const std::optional<const ImmVision::ColormapSettingsData> & ColormapSettings = std::nullopt, std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, const std::optional<const std::vector<cv::Point>> & WatchedPixels = std::nullopt, bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, const std::optional<const ImmVision::MouseInformation> & MouseInfo = std::nullopt)
         {
             new (self) ImmVision::ImageParams();  // placement new
-            auto r = self;
-            r->RefreshImage = RefreshImage;
+            auto r_ctor_ = self;
+            r_ctor_->RefreshImage = RefreshImage;
             if (ImageDisplaySize.has_value())
-                r->ImageDisplaySize = ImageDisplaySize.value();
+                r_ctor_->ImageDisplaySize = ImageDisplaySize.value();
             else
-                r->ImageDisplaySize = cv::Size();
+                r_ctor_->ImageDisplaySize = cv::Size();
             if (ZoomPanMatrix.has_value())
-                r->ZoomPanMatrix = ZoomPanMatrix.value();
+                r_ctor_->ZoomPanMatrix = ZoomPanMatrix.value();
             else
-                r->ZoomPanMatrix = cv::Matx33d::eye();
-            r->ZoomKey = ZoomKey;
+                r_ctor_->ZoomPanMatrix = cv::Matx33d::eye();
+            r_ctor_->ZoomKey = ZoomKey;
             if (ColormapSettings.has_value())
-                r->ColormapSettings = ColormapSettings.value();
+                r_ctor_->ColormapSettings = ColormapSettings.value();
             else
-                r->ColormapSettings = ImmVision::ColormapSettingsData();
-            r->ColormapKey = ColormapKey;
-            r->PanWithMouse = PanWithMouse;
-            r->ZoomWithMouseWheel = ZoomWithMouseWheel;
-            r->CanResize = CanResize;
-            r->ResizeKeepAspectRatio = ResizeKeepAspectRatio;
-            r->SelectedChannel = SelectedChannel;
-            r->ShowSchoolPaperBackground = ShowSchoolPaperBackground;
-            r->ShowAlphaChannelCheckerboard = ShowAlphaChannelCheckerboard;
-            r->ShowGrid = ShowGrid;
-            r->DrawValuesOnZoomedPixels = DrawValuesOnZoomedPixels;
-            r->ShowImageInfo = ShowImageInfo;
-            r->ShowPixelInfo = ShowPixelInfo;
-            r->ShowZoomButtons = ShowZoomButtons;
-            r->ShowOptionsPanel = ShowOptionsPanel;
-            r->ShowOptionsInTooltip = ShowOptionsInTooltip;
-            r->ShowOptionsButton = ShowOptionsButton;
+                r_ctor_->ColormapSettings = ImmVision::ColormapSettingsData();
+            r_ctor_->ColormapKey = ColormapKey;
+            r_ctor_->PanWithMouse = PanWithMouse;
+            r_ctor_->ZoomWithMouseWheel = ZoomWithMouseWheel;
+            r_ctor_->CanResize = CanResize;
+            r_ctor_->ResizeKeepAspectRatio = ResizeKeepAspectRatio;
+            r_ctor_->SelectedChannel = SelectedChannel;
+            r_ctor_->ShowSchoolPaperBackground = ShowSchoolPaperBackground;
+            r_ctor_->ShowAlphaChannelCheckerboard = ShowAlphaChannelCheckerboard;
+            r_ctor_->ShowGrid = ShowGrid;
+            r_ctor_->DrawValuesOnZoomedPixels = DrawValuesOnZoomedPixels;
+            r_ctor_->ShowImageInfo = ShowImageInfo;
+            r_ctor_->ShowPixelInfo = ShowPixelInfo;
+            r_ctor_->ShowZoomButtons = ShowZoomButtons;
+            r_ctor_->ShowOptionsPanel = ShowOptionsPanel;
+            r_ctor_->ShowOptionsInTooltip = ShowOptionsInTooltip;
+            r_ctor_->ShowOptionsButton = ShowOptionsButton;
             if (WatchedPixels.has_value())
-                r->WatchedPixels = WatchedPixels.value();
+                r_ctor_->WatchedPixels = WatchedPixels.value();
             else
-                r->WatchedPixels = std::vector<cv::Point>();
-            r->AddWatchedPixelOnDoubleClick = AddWatchedPixelOnDoubleClick;
-            r->HighlightWatchedPixels = HighlightWatchedPixels;
+                r_ctor_->WatchedPixels = std::vector<cv::Point>();
+            r_ctor_->AddWatchedPixelOnDoubleClick = AddWatchedPixelOnDoubleClick;
+            r_ctor_->HighlightWatchedPixels = HighlightWatchedPixels;
             if (MouseInfo.has_value())
-                r->MouseInfo = MouseInfo.value();
+                r_ctor_->MouseInfo = MouseInfo.value();
             else
-                r->MouseInfo = ImmVision::MouseInformation();
+                r_ctor_->MouseInfo = ImmVision::MouseInformation();
         },
         nb::arg("refresh_image") = false, nb::arg("image_display_size") = nb::none(), nb::arg("zoom_pan_matrix") = nb::none(), nb::arg("zoom_key") = "", nb::arg("colormap_settings") = nb::none(), nb::arg("colormap_key") = "", nb::arg("pan_with_mouse") = true, nb::arg("zoom_with_mouse_wheel") = true, nb::arg("can_resize") = true, nb::arg("resize_keep_aspect_ratio") = true, nb::arg("selected_channel") = -1, nb::arg("show_school_paper_background") = true, nb::arg("show_alpha_channel_checkerboard") = true, nb::arg("show_grid") = true, nb::arg("draw_values_on_zoomed_pixels") = true, nb::arg("show_image_info") = true, nb::arg("show_pixel_info") = true, nb::arg("show_zoom_buttons") = true, nb::arg("show_options_panel") = false, nb::arg("show_options_in_tooltip") = false, nb::arg("show_options_button") = true, nb::arg("watched_pixels") = nb::none(), nb::arg("add_watched_pixel_on_double_click") = true, nb::arg("highlight_watched_pixels") = true, nb::arg("mouse_info") = nb::none()
         )

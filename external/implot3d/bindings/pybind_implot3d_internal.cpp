@@ -421,19 +421,19 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def("__init__", [](ImPlot3DContext * self, const std::optional<const ImPlot3DNextItemData> & NextItemData = std::nullopt, const std::optional<const ImPlot3DStyle> & Style = std::nullopt, const std::optional<const ImPlot3DColormapData> & ColormapData = std::nullopt)
         {
             new (self) ImPlot3DContext();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (NextItemData.has_value())
-                r->NextItemData = NextItemData.value();
+                r_ctor_->NextItemData = NextItemData.value();
             else
-                r->NextItemData = ImPlot3DNextItemData();
+                r_ctor_->NextItemData = ImPlot3DNextItemData();
             if (Style.has_value())
-                r->Style = Style.value();
+                r_ctor_->Style = Style.value();
             else
-                r->Style = ImPlot3DStyle();
+                r_ctor_->Style = ImPlot3DStyle();
             if (ColormapData.has_value())
-                r->ColormapData = ColormapData.value();
+                r_ctor_->ColormapData = ColormapData.value();
             else
-                r->ColormapData = ImPlot3DColormapData();
+                r_ctor_->ColormapData = ImPlot3DColormapData();
         },
         nb::arg("next_item_data") = nb::none(), nb::arg("style") = nb::none(), nb::arg("colormap_data") = nb::none()
         )

@@ -6164,11 +6164,11 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__init__", [](ImGuiKeyData * self, bool Down = bool(), float DownDuration = float(), float DownDurationPrev = float(), float AnalogValue = float())
         {
             new (self) ImGuiKeyData();  // placement new
-            auto r = self;
-            r->Down = Down;
-            r->DownDuration = DownDuration;
-            r->DownDurationPrev = DownDurationPrev;
-            r->AnalogValue = AnalogValue;
+            auto r_ctor_ = self;
+            r_ctor_->Down = Down;
+            r_ctor_->DownDuration = DownDuration;
+            r_ctor_->DownDurationPrev = DownDurationPrev;
+            r_ctor_->AnalogValue = AnalogValue;
         },
         nb::arg("down") = bool(), nb::arg("down_duration") = float(), nb::arg("down_duration_prev") = float(), nb::arg("analog_value") = float()
         )
@@ -6474,19 +6474,19 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__init__", [](ImGuiSizeCallbackData * self, const std::optional<const ImVec2> & Pos = std::nullopt, const std::optional<const ImVec2> & CurrentSize = std::nullopt, const std::optional<const ImVec2> & DesiredSize = std::nullopt)
         {
             new (self) ImGuiSizeCallbackData();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Pos.has_value())
-                r->Pos = Pos.value();
+                r_ctor_->Pos = Pos.value();
             else
-                r->Pos = ImVec2();
+                r_ctor_->Pos = ImVec2();
             if (CurrentSize.has_value())
-                r->CurrentSize = CurrentSize.value();
+                r_ctor_->CurrentSize = CurrentSize.value();
             else
-                r->CurrentSize = ImVec2();
+                r_ctor_->CurrentSize = ImVec2();
             if (DesiredSize.has_value())
-                r->DesiredSize = DesiredSize.value();
+                r_ctor_->DesiredSize = DesiredSize.value();
             else
-                r->DesiredSize = ImVec2();
+                r_ctor_->DesiredSize = ImVec2();
         },
         nb::arg("pos") = nb::none(), nb::arg("current_size") = nb::none(), nb::arg("desired_size") = nb::none()
         )
@@ -6815,22 +6815,22 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__init__", [](ImGuiMultiSelectIO * self, const std::optional<const ImVector<ImGuiSelectionRequest>> & Requests = std::nullopt, const std::optional<const ImGuiSelectionUserData> & RangeSrcItem = std::nullopt, const std::optional<const ImGuiSelectionUserData> & NavIdItem = std::nullopt, bool NavIdSelected = bool(), bool RangeSrcReset = bool(), int ItemsCount = int())
         {
             new (self) ImGuiMultiSelectIO();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Requests.has_value())
-                r->Requests = Requests.value();
+                r_ctor_->Requests = Requests.value();
             else
-                r->Requests = ImVector<ImGuiSelectionRequest>();
+                r_ctor_->Requests = ImVector<ImGuiSelectionRequest>();
             if (RangeSrcItem.has_value())
-                r->RangeSrcItem = RangeSrcItem.value();
+                r_ctor_->RangeSrcItem = RangeSrcItem.value();
             else
-                r->RangeSrcItem = ImGuiSelectionUserData();
+                r_ctor_->RangeSrcItem = ImGuiSelectionUserData();
             if (NavIdItem.has_value())
-                r->NavIdItem = NavIdItem.value();
+                r_ctor_->NavIdItem = NavIdItem.value();
             else
-                r->NavIdItem = ImGuiSelectionUserData();
-            r->NavIdSelected = NavIdSelected;
-            r->RangeSrcReset = RangeSrcReset;
-            r->ItemsCount = ItemsCount;
+                r_ctor_->NavIdItem = ImGuiSelectionUserData();
+            r_ctor_->NavIdSelected = NavIdSelected;
+            r_ctor_->RangeSrcReset = RangeSrcReset;
+            r_ctor_->ItemsCount = ItemsCount;
         },
         nb::arg("requests") = nb::none(), nb::arg("range_src_item") = nb::none(), nb::arg("nav_id_item") = nb::none(), nb::arg("nav_id_selected") = bool(), nb::arg("range_src_reset") = bool(), nb::arg("items_count") = int()
         )
@@ -6856,18 +6856,18 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__init__", [](ImGuiSelectionRequest * self, ImGuiSelectionRequestType Type = ImGuiSelectionRequestType(), bool Selected = bool(), ImS8 RangeDirection = ImS8(), const std::optional<const ImGuiSelectionUserData> & RangeFirstItem = std::nullopt, const std::optional<const ImGuiSelectionUserData> & RangeLastItem = std::nullopt)
         {
             new (self) ImGuiSelectionRequest();  // placement new
-            auto r = self;
-            r->Type = Type;
-            r->Selected = Selected;
-            r->RangeDirection = RangeDirection;
+            auto r_ctor_ = self;
+            r_ctor_->Type = Type;
+            r_ctor_->Selected = Selected;
+            r_ctor_->RangeDirection = RangeDirection;
             if (RangeFirstItem.has_value())
-                r->RangeFirstItem = RangeFirstItem.value();
+                r_ctor_->RangeFirstItem = RangeFirstItem.value();
             else
-                r->RangeFirstItem = ImGuiSelectionUserData();
+                r_ctor_->RangeFirstItem = ImGuiSelectionUserData();
             if (RangeLastItem.has_value())
-                r->RangeLastItem = RangeLastItem.value();
+                r_ctor_->RangeLastItem = RangeLastItem.value();
             else
-                r->RangeLastItem = ImGuiSelectionUserData();
+                r_ctor_->RangeLastItem = ImGuiSelectionUserData();
         },
         nb::arg("type") = ImGuiSelectionRequestType(), nb::arg("selected") = bool(), nb::arg("range_direction") = ImS8(), nb::arg("range_first_item") = nb::none(), nb::arg("range_last_item") = nb::none()
         )
@@ -6960,16 +6960,16 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__init__", [](ImDrawVert * self, const std::optional<const ImVec2> & pos = std::nullopt, const std::optional<const ImVec2> & uv = std::nullopt, ImU32 col = ImU32())
         {
             new (self) ImDrawVert();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (pos.has_value())
-                r->pos = pos.value();
+                r_ctor_->pos = pos.value();
             else
-                r->pos = ImVec2();
+                r_ctor_->pos = ImVec2();
             if (uv.has_value())
-                r->uv = uv.value();
+                r_ctor_->uv = uv.value();
             else
-                r->uv = ImVec2();
-            r->col = col;
+                r_ctor_->uv = ImVec2();
+            r_ctor_->col = col;
         },
         nb::arg("pos") = nb::none(), nb::arg("uv") = nb::none(), nb::arg("col") = ImU32()
         )
@@ -6989,15 +6989,15 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__init__", [](ImDrawCmdHeader * self, const std::optional<const ImVec4> & ClipRect = std::nullopt, const std::optional<const ImTextureRef> & TexRef = std::nullopt)
         {
             new (self) ImDrawCmdHeader();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (ClipRect.has_value())
-                r->ClipRect = ClipRect.value();
+                r_ctor_->ClipRect = ClipRect.value();
             else
-                r->ClipRect = ImVec4();
+                r_ctor_->ClipRect = ImVec4();
             if (TexRef.has_value())
-                r->TexRef = TexRef.value();
+                r_ctor_->TexRef = TexRef.value();
             else
-                r->TexRef = ImTextureRef();
+                r_ctor_->TexRef = ImTextureRef();
         },
         nb::arg("clip_rect") = nb::none(), nb::arg("tex_ref") = nb::none()
         )
@@ -7013,15 +7013,15 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__init__", [](ImDrawChannel * self, const std::optional<const ImVector<ImDrawCmd>> & _CmdBuffer = std::nullopt, const std::optional<const ImVector<ImDrawIdx>> & _IdxBuffer = std::nullopt)
         {
             new (self) ImDrawChannel();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (_CmdBuffer.has_value())
-                r->_CmdBuffer = _CmdBuffer.value();
+                r_ctor_->_CmdBuffer = _CmdBuffer.value();
             else
-                r->_CmdBuffer = ImVector<ImDrawCmd>();
+                r_ctor_->_CmdBuffer = ImVector<ImDrawCmd>();
             if (_IdxBuffer.has_value())
-                r->_IdxBuffer = _IdxBuffer.value();
+                r_ctor_->_IdxBuffer = _IdxBuffer.value();
             else
-                r->_IdxBuffer = ImVector<ImDrawIdx>();
+                r_ctor_->_IdxBuffer = ImVector<ImDrawIdx>();
         },
         nb::arg("_cmd_buffer") = nb::none(), nb::arg("_idx_buffer") = nb::none()
         )
@@ -8121,12 +8121,12 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__init__", [](ImGuiPayload_PyId * self, const std::optional<const ImGuiPayloadId> & DataId = std::nullopt, std::string Type = std::string())
         {
             new (self) ImGuiPayload_PyId();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (DataId.has_value())
-                r->DataId = DataId.value();
+                r_ctor_->DataId = DataId.value();
             else
-                r->DataId = ImGuiPayloadId();
-            r->Type = Type;
+                r_ctor_->DataId = ImGuiPayloadId();
+            r_ctor_->Type = Type;
         },
         nb::arg("data_id") = nb::none(), nb::arg("type") = std::string()
         )

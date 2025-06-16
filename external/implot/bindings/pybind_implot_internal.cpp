@@ -332,15 +332,15 @@ void py_init_module_implot_internal(nb::module_& m)
         .def("__init__", [](ImPlotTag * self, const std::optional<const ImAxis> & Axis = std::nullopt, double Value = double(), ImU32 ColorBg = ImU32(), ImU32 ColorFg = ImU32(), int TextOffset = int())
         {
             new (self) ImPlotTag();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Axis.has_value())
-                r->Axis = Axis.value();
+                r_ctor_->Axis = Axis.value();
             else
-                r->Axis = ImAxis();
-            r->Value = Value;
-            r->ColorBg = ColorBg;
-            r->ColorFg = ColorFg;
-            r->TextOffset = TextOffset;
+                r_ctor_->Axis = ImAxis();
+            r_ctor_->Value = Value;
+            r_ctor_->ColorBg = ColorBg;
+            r_ctor_->ColorFg = ColorFg;
+            r_ctor_->TextOffset = TextOffset;
         },
         nb::arg("axis") = nb::none(), nb::arg("value") = double(), nb::arg("color_bg") = ImU32(), nb::arg("color_fg") = ImU32(), nb::arg("text_offset") = int()
         )
@@ -877,59 +877,59 @@ void py_init_module_implot_internal(nb::module_& m)
         .def("__init__", [](ImPlotContext * self, const std::optional<const ImPlotTicker> & CTicker = std::nullopt, const std::optional<const ImPlotAnnotationCollection> & Annotations = std::nullopt, const std::optional<const ImPlotTagCollection> & Tags = std::nullopt, const std::optional<const ImPlotStyle> & Style = std::nullopt, const std::optional<const ImVector<ImGuiColorMod>> & ColorModifiers = std::nullopt, const std::optional<const ImVector<ImGuiStyleMod>> & StyleModifiers = std::nullopt, const std::optional<const ImPlotColormapData> & ColormapData = std::nullopt, const std::optional<const ImVector<int>> & TempInt1 = std::nullopt, int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), const std::optional<const ImPlotNextPlotData> & NextPlotData = std::nullopt, const std::optional<const ImPlotNextItemData> & NextItemData = std::nullopt, const std::optional<const ImPlotInputMap> & InputMap = std::nullopt, bool OpenContextThisFrame = bool(), const std::optional<const ImGuiTextBuffer> & MousePosStringBuilder = std::nullopt, bool CanDragPlotInNodeEditor = false)
         {
             new (self) ImPlotContext();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (CTicker.has_value())
-                r->CTicker = CTicker.value();
+                r_ctor_->CTicker = CTicker.value();
             else
-                r->CTicker = ImPlotTicker();
+                r_ctor_->CTicker = ImPlotTicker();
             if (Annotations.has_value())
-                r->Annotations = Annotations.value();
+                r_ctor_->Annotations = Annotations.value();
             else
-                r->Annotations = ImPlotAnnotationCollection();
+                r_ctor_->Annotations = ImPlotAnnotationCollection();
             if (Tags.has_value())
-                r->Tags = Tags.value();
+                r_ctor_->Tags = Tags.value();
             else
-                r->Tags = ImPlotTagCollection();
+                r_ctor_->Tags = ImPlotTagCollection();
             if (Style.has_value())
-                r->Style = Style.value();
+                r_ctor_->Style = Style.value();
             else
-                r->Style = ImPlotStyle();
+                r_ctor_->Style = ImPlotStyle();
             if (ColorModifiers.has_value())
-                r->ColorModifiers = ColorModifiers.value();
+                r_ctor_->ColorModifiers = ColorModifiers.value();
             else
-                r->ColorModifiers = ImVector<ImGuiColorMod>();
+                r_ctor_->ColorModifiers = ImVector<ImGuiColorMod>();
             if (StyleModifiers.has_value())
-                r->StyleModifiers = StyleModifiers.value();
+                r_ctor_->StyleModifiers = StyleModifiers.value();
             else
-                r->StyleModifiers = ImVector<ImGuiStyleMod>();
+                r_ctor_->StyleModifiers = ImVector<ImGuiStyleMod>();
             if (ColormapData.has_value())
-                r->ColormapData = ColormapData.value();
+                r_ctor_->ColormapData = ColormapData.value();
             else
-                r->ColormapData = ImPlotColormapData();
+                r_ctor_->ColormapData = ImPlotColormapData();
             if (TempInt1.has_value())
-                r->TempInt1 = TempInt1.value();
+                r_ctor_->TempInt1 = TempInt1.value();
             else
-                r->TempInt1 = ImVector<int>();
-            r->DigitalPlotItemCnt = DigitalPlotItemCnt;
-            r->DigitalPlotOffset = DigitalPlotOffset;
+                r_ctor_->TempInt1 = ImVector<int>();
+            r_ctor_->DigitalPlotItemCnt = DigitalPlotItemCnt;
+            r_ctor_->DigitalPlotOffset = DigitalPlotOffset;
             if (NextPlotData.has_value())
-                r->NextPlotData = NextPlotData.value();
+                r_ctor_->NextPlotData = NextPlotData.value();
             else
-                r->NextPlotData = ImPlotNextPlotData();
+                r_ctor_->NextPlotData = ImPlotNextPlotData();
             if (NextItemData.has_value())
-                r->NextItemData = NextItemData.value();
+                r_ctor_->NextItemData = NextItemData.value();
             else
-                r->NextItemData = ImPlotNextItemData();
+                r_ctor_->NextItemData = ImPlotNextItemData();
             if (InputMap.has_value())
-                r->InputMap = InputMap.value();
+                r_ctor_->InputMap = InputMap.value();
             else
-                r->InputMap = ImPlotInputMap();
-            r->OpenContextThisFrame = OpenContextThisFrame;
+                r_ctor_->InputMap = ImPlotInputMap();
+            r_ctor_->OpenContextThisFrame = OpenContextThisFrame;
             if (MousePosStringBuilder.has_value())
-                r->MousePosStringBuilder = MousePosStringBuilder.value();
+                r_ctor_->MousePosStringBuilder = MousePosStringBuilder.value();
             else
-                r->MousePosStringBuilder = ImGuiTextBuffer();
-            r->CanDragPlotInNodeEditor = CanDragPlotInNodeEditor;
+                r_ctor_->MousePosStringBuilder = ImGuiTextBuffer();
+            r_ctor_->CanDragPlotInNodeEditor = CanDragPlotInNodeEditor;
         },
         nb::arg("c_ticker") = nb::none(), nb::arg("annotations") = nb::none(), nb::arg("tags") = nb::none(), nb::arg("style") = nb::none(), nb::arg("color_modifiers") = nb::none(), nb::arg("style_modifiers") = nb::none(), nb::arg("colormap_data") = nb::none(), nb::arg("temp_int1") = nb::none(), nb::arg("digital_plot_item_cnt") = int(), nb::arg("digital_plot_offset") = int(), nb::arg("next_plot_data") = nb::none(), nb::arg("next_item_data") = nb::none(), nb::arg("input_map") = nb::none(), nb::arg("open_context_this_frame") = bool(), nb::arg("mouse_pos_string_builder") = nb::none(), nb::arg("can_drag_plot_in_node_editor") = false
         )
@@ -1455,15 +1455,15 @@ void py_init_module_implot_internal(nb::module_& m)
         .def("__init__", [](ImPlot::Formatter_Time_Data * self, const std::optional<const ImPlotTime> & Time = std::nullopt, const std::optional<const ImPlotDateTimeSpec> & Spec = std::nullopt)
         {
             new (self) ImPlot::Formatter_Time_Data();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Time.has_value())
-                r->Time = Time.value();
+                r_ctor_->Time = Time.value();
             else
-                r->Time = ImPlotTime();
+                r_ctor_->Time = ImPlotTime();
             if (Spec.has_value())
-                r->Spec = Spec.value();
+                r_ctor_->Spec = Spec.value();
             else
-                r->Spec = ImPlotDateTimeSpec();
+                r_ctor_->Spec = ImPlotDateTimeSpec();
         },
         nb::arg("time") = nb::none(), nb::arg("spec") = nb::none()
         )

@@ -155,10 +155,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestEngineResultSummary * self, int CountTested = 0, int CountSuccess = 0, int CountInQueue = 0)
         {
             new (self) ImGuiTestEngineResultSummary();  // placement new
-            auto r = self;
-            r->CountTested = CountTested;
-            r->CountSuccess = CountSuccess;
-            r->CountInQueue = CountInQueue;
+            auto r_ctor_ = self;
+            r_ctor_->CountTested = CountTested;
+            r_ctor_->CountSuccess = CountSuccess;
+            r_ctor_->CountInQueue = CountInQueue;
         },
         nb::arg("count_tested") = 0, nb::arg("count_success") = 0, nb::arg("count_in_queue") = 0
         )
@@ -333,37 +333,37 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestEngineIO * self, bool ConfigSavedSettings = true, ImGuiTestRunSpeed ConfigRunSpeed = ImGuiTestRunSpeed_Fast, bool ConfigStopOnError = false, bool ConfigBreakOnError = false, bool ConfigKeepGuiFunc = false, ImGuiTestVerboseLevel ConfigVerboseLevel = ImGuiTestVerboseLevel_Warning, ImGuiTestVerboseLevel ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Info, bool ConfigLogToTTY = false, bool ConfigLogToDebugger = false, bool ConfigRestoreFocusAfterTests = true, bool ConfigCaptureEnabled = true, bool ConfigCaptureOnError = false, bool ConfigNoThrottle = false, bool ConfigMouseDrawCursor = true, float ConfigFixedDeltaTime = 0.0f, int PerfStressAmount = 1, float MouseSpeed = 600.0f, float MouseWobble = 0.25f, float ScrollSpeed = 1400.0f, float TypingSpeed = 20.0f, float ActionDelayShort = 0.15f, float ActionDelayStandard = 0.40f, float ConfigWatchdogWarning = 30.0f, float ConfigWatchdogKillTest = 60.0f, float ConfigWatchdogKillApp = FLT_MAX, ImGuiTestEngineExportFormat ExportResultsFormat = (ImGuiTestEngineExportFormat)0, bool CheckDrawDataIntegrity = false, bool IsRunningTests = false, bool IsRequestingMaxAppSpeed = false, bool IsCapturing = false)
         {
             new (self) ImGuiTestEngineIO();  // placement new
-            auto r = self;
-            r->ConfigSavedSettings = ConfigSavedSettings;
-            r->ConfigRunSpeed = ConfigRunSpeed;
-            r->ConfigStopOnError = ConfigStopOnError;
-            r->ConfigBreakOnError = ConfigBreakOnError;
-            r->ConfigKeepGuiFunc = ConfigKeepGuiFunc;
-            r->ConfigVerboseLevel = ConfigVerboseLevel;
-            r->ConfigVerboseLevelOnError = ConfigVerboseLevelOnError;
-            r->ConfigLogToTTY = ConfigLogToTTY;
-            r->ConfigLogToDebugger = ConfigLogToDebugger;
-            r->ConfigRestoreFocusAfterTests = ConfigRestoreFocusAfterTests;
-            r->ConfigCaptureEnabled = ConfigCaptureEnabled;
-            r->ConfigCaptureOnError = ConfigCaptureOnError;
-            r->ConfigNoThrottle = ConfigNoThrottle;
-            r->ConfigMouseDrawCursor = ConfigMouseDrawCursor;
-            r->ConfigFixedDeltaTime = ConfigFixedDeltaTime;
-            r->PerfStressAmount = PerfStressAmount;
-            r->MouseSpeed = MouseSpeed;
-            r->MouseWobble = MouseWobble;
-            r->ScrollSpeed = ScrollSpeed;
-            r->TypingSpeed = TypingSpeed;
-            r->ActionDelayShort = ActionDelayShort;
-            r->ActionDelayStandard = ActionDelayStandard;
-            r->ConfigWatchdogWarning = ConfigWatchdogWarning;
-            r->ConfigWatchdogKillTest = ConfigWatchdogKillTest;
-            r->ConfigWatchdogKillApp = ConfigWatchdogKillApp;
-            r->ExportResultsFormat = ExportResultsFormat;
-            r->CheckDrawDataIntegrity = CheckDrawDataIntegrity;
-            r->IsRunningTests = IsRunningTests;
-            r->IsRequestingMaxAppSpeed = IsRequestingMaxAppSpeed;
-            r->IsCapturing = IsCapturing;
+            auto r_ctor_ = self;
+            r_ctor_->ConfigSavedSettings = ConfigSavedSettings;
+            r_ctor_->ConfigRunSpeed = ConfigRunSpeed;
+            r_ctor_->ConfigStopOnError = ConfigStopOnError;
+            r_ctor_->ConfigBreakOnError = ConfigBreakOnError;
+            r_ctor_->ConfigKeepGuiFunc = ConfigKeepGuiFunc;
+            r_ctor_->ConfigVerboseLevel = ConfigVerboseLevel;
+            r_ctor_->ConfigVerboseLevelOnError = ConfigVerboseLevelOnError;
+            r_ctor_->ConfigLogToTTY = ConfigLogToTTY;
+            r_ctor_->ConfigLogToDebugger = ConfigLogToDebugger;
+            r_ctor_->ConfigRestoreFocusAfterTests = ConfigRestoreFocusAfterTests;
+            r_ctor_->ConfigCaptureEnabled = ConfigCaptureEnabled;
+            r_ctor_->ConfigCaptureOnError = ConfigCaptureOnError;
+            r_ctor_->ConfigNoThrottle = ConfigNoThrottle;
+            r_ctor_->ConfigMouseDrawCursor = ConfigMouseDrawCursor;
+            r_ctor_->ConfigFixedDeltaTime = ConfigFixedDeltaTime;
+            r_ctor_->PerfStressAmount = PerfStressAmount;
+            r_ctor_->MouseSpeed = MouseSpeed;
+            r_ctor_->MouseWobble = MouseWobble;
+            r_ctor_->ScrollSpeed = ScrollSpeed;
+            r_ctor_->TypingSpeed = TypingSpeed;
+            r_ctor_->ActionDelayShort = ActionDelayShort;
+            r_ctor_->ActionDelayStandard = ActionDelayStandard;
+            r_ctor_->ConfigWatchdogWarning = ConfigWatchdogWarning;
+            r_ctor_->ConfigWatchdogKillTest = ConfigWatchdogKillTest;
+            r_ctor_->ConfigWatchdogKillApp = ConfigWatchdogKillApp;
+            r_ctor_->ExportResultsFormat = ExportResultsFormat;
+            r_ctor_->CheckDrawDataIntegrity = CheckDrawDataIntegrity;
+            r_ctor_->IsRunningTests = IsRunningTests;
+            r_ctor_->IsRequestingMaxAppSpeed = IsRequestingMaxAppSpeed;
+            r_ctor_->IsCapturing = IsCapturing;
         },
         nb::arg("config_saved_settings") = true, nb::arg("config_run_speed") = ImGuiTestRunSpeed_Fast, nb::arg("config_stop_on_error") = false, nb::arg("config_break_on_error") = false, nb::arg("config_keep_gui_func") = false, nb::arg("config_verbose_level") = ImGuiTestVerboseLevel_Warning, nb::arg("config_verbose_level_on_error") = ImGuiTestVerboseLevel_Info, nb::arg("config_log_to_tty") = false, nb::arg("config_log_to_debugger") = false, nb::arg("config_restore_focus_after_tests") = true, nb::arg("config_capture_enabled") = true, nb::arg("config_capture_on_error") = false, nb::arg("config_no_throttle") = false, nb::arg("config_mouse_draw_cursor") = true, nb::arg("config_fixed_delta_time") = 0.0f, nb::arg("perf_stress_amount") = 1, nb::arg("mouse_speed") = 600.0f, nb::arg("mouse_wobble") = 0.25f, nb::arg("scroll_speed") = 1400.0f, nb::arg("typing_speed") = 20.0f, nb::arg("action_delay_short") = 0.15f, nb::arg("action_delay_standard") = 0.40f, nb::arg("config_watchdog_warning") = 30.0f, nb::arg("config_watchdog_kill_test") = 60.0f, nb::arg("config_watchdog_kill_app") = FLT_MAX, nb::arg("export_results_format") = (ImGuiTestEngineExportFormat)0, nb::arg("check_draw_data_integrity") = false, nb::arg("is_running_tests") = false, nb::arg("is_requesting_max_app_speed") = false, nb::arg("is_capturing") = false
         )
@@ -472,9 +472,9 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestLogLineInfo * self, ImGuiTestVerboseLevel Level = ImGuiTestVerboseLevel(), int LineOffset = int())
         {
             new (self) ImGuiTestLogLineInfo();  // placement new
-            auto r = self;
-            r->Level = Level;
-            r->LineOffset = LineOffset;
+            auto r_ctor_ = self;
+            r_ctor_->Level = Level;
+            r_ctor_->LineOffset = LineOffset;
         },
         nb::arg("level") = ImGuiTestVerboseLevel(), nb::arg("line_offset") = int()
         )
@@ -510,14 +510,14 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestOutput * self, ImGuiTestStatus Status = ImGuiTestStatus_Unknown, const std::optional<const ImGuiTestLog> & Log = std::nullopt, ImU64 StartTime = 0, ImU64 EndTime = 0)
         {
             new (self) ImGuiTestOutput();  // placement new
-            auto r = self;
-            r->Status = Status;
+            auto r_ctor_ = self;
+            r_ctor_->Status = Status;
             if (Log.has_value())
-                r->Log = Log.value();
+                r_ctor_->Log = Log.value();
             else
-                r->Log = ImGuiTestLog();
-            r->StartTime = StartTime;
-            r->EndTime = EndTime;
+                r_ctor_->Log = ImGuiTestLog();
+            r_ctor_->StartTime = StartTime;
+            r_ctor_->EndTime = EndTime;
         },
         nb::arg("status") = ImGuiTestStatus_Unknown, nb::arg("log") = nb::none(), nb::arg("start_time") = 0, nb::arg("end_time") = 0
         )
@@ -556,8 +556,8 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestRunTask * self, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None)
         {
             new (self) ImGuiTestRunTask();  // placement new
-            auto r = self;
-            r->RunFlags = RunFlags;
+            auto r_ctor_ = self;
+            r_ctor_->RunFlags = RunFlags;
         },
         nb::arg("run_flags") = ImGuiTestRunFlags_None
         )
@@ -733,49 +733,49 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestContext * self, const std::optional<const ImGuiTestGenericVars> & GenericVars = std::nullopt, ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, const std::optional<const ImGuiInputSource> & InputMode = std::nullopt, const std::optional<const ImVector<char>> & TempString = std::nullopt, const std::optional<const ImVector<char>> & Clipboard = std::nullopt, const std::optional<const ImVector<ImGuiWindow*>> & ForeignWindowsToHide = std::nullopt, const std::optional<const ImGuiTestItemInfo> & DummyItemInfoNull = std::nullopt, bool CachedLinesPrintedToTTY = false)
         {
             new (self) ImGuiTestContext();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (GenericVars.has_value())
-                r->GenericVars = GenericVars.value();
+                r_ctor_->GenericVars = GenericVars.value();
             else
-                r->GenericVars = ImGuiTestGenericVars();
-            r->OpFlags = OpFlags;
-            r->PerfStressAmount = PerfStressAmount;
-            r->FrameCount = FrameCount;
-            r->FirstTestFrameCount = FirstTestFrameCount;
-            r->FirstGuiFrame = FirstGuiFrame;
-            r->HasDock = HasDock;
-            r->RunFlags = RunFlags;
-            r->ActiveFunc = ActiveFunc;
-            r->RunningTime = RunningTime;
-            r->ActionDepth = ActionDepth;
-            r->CaptureCounter = CaptureCounter;
-            r->ErrorCounter = ErrorCounter;
-            r->Abort = Abort;
-            r->PerfRefDt = PerfRefDt;
-            r->PerfIterations = PerfIterations;
-            r->RefID = RefID;
-            r->RefWindowID = RefWindowID;
+                r_ctor_->GenericVars = ImGuiTestGenericVars();
+            r_ctor_->OpFlags = OpFlags;
+            r_ctor_->PerfStressAmount = PerfStressAmount;
+            r_ctor_->FrameCount = FrameCount;
+            r_ctor_->FirstTestFrameCount = FirstTestFrameCount;
+            r_ctor_->FirstGuiFrame = FirstGuiFrame;
+            r_ctor_->HasDock = HasDock;
+            r_ctor_->RunFlags = RunFlags;
+            r_ctor_->ActiveFunc = ActiveFunc;
+            r_ctor_->RunningTime = RunningTime;
+            r_ctor_->ActionDepth = ActionDepth;
+            r_ctor_->CaptureCounter = CaptureCounter;
+            r_ctor_->ErrorCounter = ErrorCounter;
+            r_ctor_->Abort = Abort;
+            r_ctor_->PerfRefDt = PerfRefDt;
+            r_ctor_->PerfIterations = PerfIterations;
+            r_ctor_->RefID = RefID;
+            r_ctor_->RefWindowID = RefWindowID;
             if (InputMode.has_value())
-                r->InputMode = InputMode.value();
+                r_ctor_->InputMode = InputMode.value();
             else
-                r->InputMode = ImGuiInputSource_Mouse;
+                r_ctor_->InputMode = ImGuiInputSource_Mouse;
             if (TempString.has_value())
-                r->TempString = TempString.value();
+                r_ctor_->TempString = TempString.value();
             else
-                r->TempString = ImVector<char>();
+                r_ctor_->TempString = ImVector<char>();
             if (Clipboard.has_value())
-                r->Clipboard = Clipboard.value();
+                r_ctor_->Clipboard = Clipboard.value();
             else
-                r->Clipboard = ImVector<char>();
+                r_ctor_->Clipboard = ImVector<char>();
             if (ForeignWindowsToHide.has_value())
-                r->ForeignWindowsToHide = ForeignWindowsToHide.value();
+                r_ctor_->ForeignWindowsToHide = ForeignWindowsToHide.value();
             else
-                r->ForeignWindowsToHide = ImVector<ImGuiWindow*>();
+                r_ctor_->ForeignWindowsToHide = ImVector<ImGuiWindow*>();
             if (DummyItemInfoNull.has_value())
-                r->DummyItemInfoNull = DummyItemInfoNull.value();
+                r_ctor_->DummyItemInfoNull = DummyItemInfoNull.value();
             else
-                r->DummyItemInfoNull = ImGuiTestItemInfo();
-            r->CachedLinesPrintedToTTY = CachedLinesPrintedToTTY;
+                r_ctor_->DummyItemInfoNull = ImGuiTestItemInfo();
+            r_ctor_->CachedLinesPrintedToTTY = CachedLinesPrintedToTTY;
         },
         nb::arg("generic_vars") = nb::none(), nb::arg("op_flags") = ImGuiTestOpFlags_None, nb::arg("perf_stress_amount") = 0, nb::arg("frame_count") = 0, nb::arg("first_test_frame_count") = 0, nb::arg("first_gui_frame") = false, nb::arg("has_dock") = false, nb::arg("run_flags") = ImGuiTestRunFlags_None, nb::arg("active_func") = ImGuiTestActiveFunc_None, nb::arg("running_time") = 0.0, nb::arg("action_depth") = 0, nb::arg("capture_counter") = 0, nb::arg("error_counter") = 0, nb::arg("abort") = false, nb::arg("perf_ref_dt") = -1.0, nb::arg("perf_iterations") = 400, nb::arg("ref_id") = 0, nb::arg("ref_window_id") = 0, nb::arg("input_mode") = nb::none(), nb::arg("temp_string") = nb::none(), nb::arg("clipboard") = nb::none(), nb::arg("foreign_windows_to_hide") = nb::none(), nb::arg("dummy_item_info_null") = nb::none(), nb::arg("cached_lines_printed_to_tty") = false
         )
@@ -1528,13 +1528,13 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestInfoTask * self, ImGuiID ID = 0, int FrameCount = -1, const std::optional<const ImGuiTestItemInfo> & Result = std::nullopt)
         {
             new (self) ImGuiTestInfoTask();  // placement new
-            auto r = self;
-            r->ID = ID;
-            r->FrameCount = FrameCount;
+            auto r_ctor_ = self;
+            r_ctor_->ID = ID;
+            r_ctor_->FrameCount = FrameCount;
             if (Result.has_value())
-                r->Result = Result.value();
+                r_ctor_->Result = Result.value();
             else
-                r->Result = ImGuiTestItemInfo();
+                r_ctor_->Result = ImGuiTestItemInfo();
         },
         nb::arg("id_") = 0, nb::arg("frame_count") = -1, nb::arg("result") = nb::none()
         )
@@ -1550,10 +1550,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestGatherTask * self, ImGuiID InParentID = 0, int InMaxDepth = 0, short InLayerMask = 0)
         {
             new (self) ImGuiTestGatherTask();  // placement new
-            auto r = self;
-            r->InParentID = InParentID;
-            r->InMaxDepth = InMaxDepth;
-            r->InLayerMask = InLayerMask;
+            auto r_ctor_ = self;
+            r_ctor_->InParentID = InParentID;
+            r_ctor_->InMaxDepth = InMaxDepth;
+            r_ctor_->InLayerMask = InLayerMask;
         },
         nb::arg("in_parent_id") = 0, nb::arg("in_max_depth") = 0, nb::arg("in_layer_mask") = 0
         )
@@ -1573,12 +1573,12 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestFindByLabelTask * self, ImGuiID InPrefixId = 0, int InSuffixDepth = 0, ImGuiID InSuffixLastItemHash = 0, ImGuiItemStatusFlags InFilterItemStatusFlags = 0, ImGuiID OutItemId = 0)
         {
             new (self) ImGuiTestFindByLabelTask();  // placement new
-            auto r = self;
-            r->InPrefixId = InPrefixId;
-            r->InSuffixDepth = InSuffixDepth;
-            r->InSuffixLastItemHash = InSuffixLastItemHash;
-            r->InFilterItemStatusFlags = InFilterItemStatusFlags;
-            r->OutItemId = OutItemId;
+            auto r_ctor_ = self;
+            r_ctor_->InPrefixId = InPrefixId;
+            r_ctor_->InSuffixDepth = InSuffixDepth;
+            r_ctor_->InSuffixLastItemHash = InSuffixLastItemHash;
+            r_ctor_->InFilterItemStatusFlags = InFilterItemStatusFlags;
+            r_ctor_->OutItemId = OutItemId;
         },
         nb::arg("in_prefix_id") = 0, nb::arg("in_suffix_depth") = 0, nb::arg("in_suffix_last_item_hash") = 0, nb::arg("in_filter_item_status_flags") = 0, nb::arg("out_item_id") = 0
         )
@@ -1609,19 +1609,19 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestInput * self, ImGuiTestInputType Type = ImGuiTestInputType_None, const std::optional<const ImGuiKeyChord> & KeyChord = std::nullopt, ImWchar Char = 0, bool Down = false, ImGuiID ViewportId = 0, const std::optional<const ImVec2> & ViewportPosSize = std::nullopt)
         {
             new (self) ImGuiTestInput();  // placement new
-            auto r = self;
-            r->Type = Type;
+            auto r_ctor_ = self;
+            r_ctor_->Type = Type;
             if (KeyChord.has_value())
-                r->KeyChord = KeyChord.value();
+                r_ctor_->KeyChord = KeyChord.value();
             else
-                r->KeyChord = ImGuiKey_None;
-            r->Char = Char;
-            r->Down = Down;
-            r->ViewportId = ViewportId;
+                r_ctor_->KeyChord = ImGuiKey_None;
+            r_ctor_->Char = Char;
+            r_ctor_->Down = Down;
+            r_ctor_->ViewportId = ViewportId;
             if (ViewportPosSize.has_value())
-                r->ViewportPosSize = ViewportPosSize.value();
+                r_ctor_->ViewportPosSize = ViewportPosSize.value();
             else
-                r->ViewportPosSize = ImVec2();
+                r_ctor_->ViewportPosSize = ImVec2();
         },
         nb::arg("type") = ImGuiTestInputType_None, nb::arg("key_chord") = nb::none(), nb::arg("char") = 0, nb::arg("down") = false, nb::arg("viewport_id") = 0, nb::arg("viewport_pos_size") = nb::none()
         )
@@ -1664,19 +1664,19 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("__init__", [](ImGuiTestInputs * self, const std::optional<const ImVec2> & MousePosValue = std::nullopt, const std::optional<const ImVec2> & MouseWheel = std::nullopt, ImGuiID MouseHoveredViewport = 0, int MouseButtonsValue = 0x00, bool HostEscDown = false, float HostEscDownDuration = -1.0f)
         {
             new (self) ImGuiTestInputs();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (MousePosValue.has_value())
-                r->MousePosValue = MousePosValue.value();
+                r_ctor_->MousePosValue = MousePosValue.value();
             else
-                r->MousePosValue = ImVec2();
+                r_ctor_->MousePosValue = ImVec2();
             if (MouseWheel.has_value())
-                r->MouseWheel = MouseWheel.value();
+                r_ctor_->MouseWheel = MouseWheel.value();
             else
-                r->MouseWheel = ImVec2();
-            r->MouseHoveredViewport = MouseHoveredViewport;
-            r->MouseButtonsValue = MouseButtonsValue;
-            r->HostEscDown = HostEscDown;
-            r->HostEscDownDuration = HostEscDownDuration;
+                r_ctor_->MouseWheel = ImVec2();
+            r_ctor_->MouseHoveredViewport = MouseHoveredViewport;
+            r_ctor_->MouseButtonsValue = MouseButtonsValue;
+            r_ctor_->HostEscDown = HostEscDown;
+            r_ctor_->HostEscDownDuration = HostEscDownDuration;
         },
         nb::arg("mouse_pos_value") = nb::none(), nb::arg("mouse_wheel") = nb::none(), nb::arg("mouse_hovered_viewport") = 0, nb::arg("mouse_buttons_value") = 0x00, nb::arg("host_esc_down") = false, nb::arg("host_esc_down_duration") = -1.0f
         )

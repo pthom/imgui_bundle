@@ -506,11 +506,11 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImBitVector * self, const std::optional<const ImVector<ImU32>> & Storage = std::nullopt)
         {
             new (self) ImBitVector();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Storage.has_value())
-                r->Storage = Storage.value();
+                r_ctor_->Storage = Storage.value();
             else
-                r->Storage = ImVector<ImU32>();
+                r_ctor_->Storage = ImVector<ImU32>();
         },
         nb::arg("storage") = nb::none()
         )
@@ -542,12 +542,12 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiTextIndex * self, const std::optional<const ImVector<int>> & LineOffsets = std::nullopt, int EndOffset = 0)
         {
             new (self) ImGuiTextIndex();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (LineOffsets.has_value())
-                r->LineOffsets = LineOffsets.value();
+                r_ctor_->LineOffsets = LineOffsets.value();
             else
-                r->LineOffsets = ImVector<int>();
-            r->EndOffset = EndOffset;
+                r_ctor_->LineOffsets = ImVector<int>();
+            r_ctor_->EndOffset = EndOffset;
         },
         nb::arg("line_offsets") = nb::none(), nb::arg("end_offset") = 0
         )
@@ -626,9 +626,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImFontStackData * self, float FontSizeBeforeScaling = float(), float FontSizeAfterScaling = float())
         {
             new (self) ImFontStackData();  // placement new
-            auto r = self;
-            r->FontSizeBeforeScaling = FontSizeBeforeScaling;
-            r->FontSizeAfterScaling = FontSizeAfterScaling;
+            auto r_ctor_ = self;
+            r_ctor_->FontSizeBeforeScaling = FontSizeBeforeScaling;
+            r_ctor_->FontSizeAfterScaling = FontSizeAfterScaling;
         },
         nb::arg("font_size_before_scaling") = float(), nb::arg("font_size_after_scaling") = float()
         )
@@ -656,15 +656,15 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiColorMod * self, const std::optional<const ImGuiCol> & Col = std::nullopt, const std::optional<const ImVec4> & BackupValue = std::nullopt)
         {
             new (self) ImGuiColorMod();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Col.has_value())
-                r->Col = Col.value();
+                r_ctor_->Col = Col.value();
             else
-                r->Col = ImGuiCol();
+                r_ctor_->Col = ImGuiCol();
             if (BackupValue.has_value())
-                r->BackupValue = BackupValue.value();
+                r_ctor_->BackupValue = BackupValue.value();
             else
-                r->BackupValue = ImVec4();
+                r_ctor_->BackupValue = ImVec4();
         },
         nb::arg("col") = nb::none(), nb::arg("backup_value") = nb::none()
         )
@@ -705,8 +705,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiDataTypeInfo * self, size_t Size = size_t())
         {
             new (self) ImGuiDataTypeInfo();  // placement new
-            auto r = self;
-            r->Size = Size;
+            auto r_ctor_ = self;
+            r_ctor_->Size = Size;
         },
         nb::arg("size") = size_t()
         )
@@ -898,38 +898,38 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiGroupData * self, ImGuiID WindowID = ImGuiID(), const std::optional<const ImVec2> & BackupCursorPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorMaxPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorPosPrevLine = std::nullopt, const std::optional<const ImVec1> & BackupIndent = std::nullopt, const std::optional<const ImVec1> & BackupGroupOffset = std::nullopt, const std::optional<const ImVec2> & BackupCurrLineSize = std::nullopt, float BackupCurrLineTextBaseOffset = float(), ImGuiID BackupActiveIdIsAlive = ImGuiID(), bool BackupDeactivatedIdIsAlive = bool(), bool BackupHoveredIdIsAlive = bool(), bool BackupIsSameLine = bool(), bool EmitItem = bool())
         {
             new (self) ImGuiGroupData();  // placement new
-            auto r = self;
-            r->WindowID = WindowID;
+            auto r_ctor_ = self;
+            r_ctor_->WindowID = WindowID;
             if (BackupCursorPos.has_value())
-                r->BackupCursorPos = BackupCursorPos.value();
+                r_ctor_->BackupCursorPos = BackupCursorPos.value();
             else
-                r->BackupCursorPos = ImVec2();
+                r_ctor_->BackupCursorPos = ImVec2();
             if (BackupCursorMaxPos.has_value())
-                r->BackupCursorMaxPos = BackupCursorMaxPos.value();
+                r_ctor_->BackupCursorMaxPos = BackupCursorMaxPos.value();
             else
-                r->BackupCursorMaxPos = ImVec2();
+                r_ctor_->BackupCursorMaxPos = ImVec2();
             if (BackupCursorPosPrevLine.has_value())
-                r->BackupCursorPosPrevLine = BackupCursorPosPrevLine.value();
+                r_ctor_->BackupCursorPosPrevLine = BackupCursorPosPrevLine.value();
             else
-                r->BackupCursorPosPrevLine = ImVec2();
+                r_ctor_->BackupCursorPosPrevLine = ImVec2();
             if (BackupIndent.has_value())
-                r->BackupIndent = BackupIndent.value();
+                r_ctor_->BackupIndent = BackupIndent.value();
             else
-                r->BackupIndent = ImVec1();
+                r_ctor_->BackupIndent = ImVec1();
             if (BackupGroupOffset.has_value())
-                r->BackupGroupOffset = BackupGroupOffset.value();
+                r_ctor_->BackupGroupOffset = BackupGroupOffset.value();
             else
-                r->BackupGroupOffset = ImVec1();
+                r_ctor_->BackupGroupOffset = ImVec1();
             if (BackupCurrLineSize.has_value())
-                r->BackupCurrLineSize = BackupCurrLineSize.value();
+                r_ctor_->BackupCurrLineSize = BackupCurrLineSize.value();
             else
-                r->BackupCurrLineSize = ImVec2();
-            r->BackupCurrLineTextBaseOffset = BackupCurrLineTextBaseOffset;
-            r->BackupActiveIdIsAlive = BackupActiveIdIsAlive;
-            r->BackupDeactivatedIdIsAlive = BackupDeactivatedIdIsAlive;
-            r->BackupHoveredIdIsAlive = BackupHoveredIdIsAlive;
-            r->BackupIsSameLine = BackupIsSameLine;
-            r->EmitItem = EmitItem;
+                r_ctor_->BackupCurrLineSize = ImVec2();
+            r_ctor_->BackupCurrLineTextBaseOffset = BackupCurrLineTextBaseOffset;
+            r_ctor_->BackupActiveIdIsAlive = BackupActiveIdIsAlive;
+            r_ctor_->BackupDeactivatedIdIsAlive = BackupDeactivatedIdIsAlive;
+            r_ctor_->BackupHoveredIdIsAlive = BackupHoveredIdIsAlive;
+            r_ctor_->BackupIsSameLine = BackupIsSameLine;
+            r_ctor_->EmitItem = EmitItem;
         },
         nb::arg("window_id") = ImGuiID(), nb::arg("backup_cursor_pos") = nb::none(), nb::arg("backup_cursor_max_pos") = nb::none(), nb::arg("backup_cursor_pos_prev_line") = nb::none(), nb::arg("backup_indent") = nb::none(), nb::arg("backup_group_offset") = nb::none(), nb::arg("backup_curr_line_size") = nb::none(), nb::arg("backup_curr_line_text_base_offset") = float(), nb::arg("backup_active_id_is_alive") = ImGuiID(), nb::arg("backup_deactivated_id_is_alive") = bool(), nb::arg("backup_hovered_id_is_alive") = bool(), nb::arg("backup_is_same_line") = bool(), nb::arg("emit_item") = bool()
         )
@@ -1160,20 +1160,20 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiTreeNodeStackData * self, ImGuiID ID = ImGuiID(), ImGuiTreeNodeFlags TreeFlags = ImGuiTreeNodeFlags(), ImGuiItemFlags ItemFlags = ImGuiItemFlags(), const std::optional<const ImRect> & NavRect = std::nullopt, float DrawLinesX1 = float(), float DrawLinesToNodesY2 = float(), const std::optional<const ImGuiTableColumnIdx> & DrawLinesTableColumn = std::nullopt)
         {
             new (self) ImGuiTreeNodeStackData();  // placement new
-            auto r = self;
-            r->ID = ID;
-            r->TreeFlags = TreeFlags;
-            r->ItemFlags = ItemFlags;
+            auto r_ctor_ = self;
+            r_ctor_->ID = ID;
+            r_ctor_->TreeFlags = TreeFlags;
+            r_ctor_->ItemFlags = ItemFlags;
             if (NavRect.has_value())
-                r->NavRect = NavRect.value();
+                r_ctor_->NavRect = NavRect.value();
             else
-                r->NavRect = ImRect();
-            r->DrawLinesX1 = DrawLinesX1;
-            r->DrawLinesToNodesY2 = DrawLinesToNodesY2;
+                r_ctor_->NavRect = ImRect();
+            r_ctor_->DrawLinesX1 = DrawLinesX1;
+            r_ctor_->DrawLinesToNodesY2 = DrawLinesToNodesY2;
             if (DrawLinesTableColumn.has_value())
-                r->DrawLinesTableColumn = DrawLinesTableColumn.value();
+                r_ctor_->DrawLinesTableColumn = DrawLinesTableColumn.value();
             else
-                r->DrawLinesTableColumn = ImGuiTableColumnIdx();
+                r_ctor_->DrawLinesTableColumn = ImGuiTableColumnIdx();
         },
         nb::arg("id_") = ImGuiID(), nb::arg("tree_flags") = ImGuiTreeNodeFlags(), nb::arg("item_flags") = ImGuiItemFlags(), nb::arg("nav_rect") = nb::none(), nb::arg("draw_lines_x1") = float(), nb::arg("draw_lines_to_nodes_y2") = float(), nb::arg("draw_lines_table_column") = nb::none()
         )
@@ -1211,17 +1211,17 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiWindowStackData * self, const std::optional<const ImGuiLastItemData> & ParentLastItemDataBackup = std::nullopt, const std::optional<const ImGuiErrorRecoveryState> & StackSizesInBegin = std::nullopt, bool DisabledOverrideReenable = bool(), float DisabledOverrideReenableAlphaBackup = float())
         {
             new (self) ImGuiWindowStackData();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (ParentLastItemDataBackup.has_value())
-                r->ParentLastItemDataBackup = ParentLastItemDataBackup.value();
+                r_ctor_->ParentLastItemDataBackup = ParentLastItemDataBackup.value();
             else
-                r->ParentLastItemDataBackup = ImGuiLastItemData();
+                r_ctor_->ParentLastItemDataBackup = ImGuiLastItemData();
             if (StackSizesInBegin.has_value())
-                r->StackSizesInBegin = StackSizesInBegin.value();
+                r_ctor_->StackSizesInBegin = StackSizesInBegin.value();
             else
-                r->StackSizesInBegin = ImGuiErrorRecoveryState();
-            r->DisabledOverrideReenable = DisabledOverrideReenable;
-            r->DisabledOverrideReenableAlphaBackup = DisabledOverrideReenableAlphaBackup;
+                r_ctor_->StackSizesInBegin = ImGuiErrorRecoveryState();
+            r_ctor_->DisabledOverrideReenable = DisabledOverrideReenable;
+            r_ctor_->DisabledOverrideReenableAlphaBackup = DisabledOverrideReenableAlphaBackup;
         },
         nb::arg("parent_last_item_data_backup") = nb::none(), nb::arg("stack_sizes_in_begin") = nb::none(), nb::arg("disabled_override_reenable") = bool(), nb::arg("disabled_override_reenable_alpha_backup") = float()
         )
@@ -1239,10 +1239,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiShrinkWidthItem * self, int Index = int(), float Width = float(), float InitialWidth = float())
         {
             new (self) ImGuiShrinkWidthItem();  // placement new
-            auto r = self;
-            r->Index = Index;
-            r->Width = Width;
-            r->InitialWidth = InitialWidth;
+            auto r_ctor_ = self;
+            r_ctor_->Index = Index;
+            r_ctor_->Width = Width;
+            r_ctor_->InitialWidth = InitialWidth;
         },
         nb::arg("index") = int(), nb::arg("width") = float(), nb::arg("initial_width") = float()
         )
@@ -1270,11 +1270,11 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiDeactivatedItemData * self, ImGuiID ID = ImGuiID(), int ElapseFrame = int(), bool HasBeenEditedBefore = bool(), bool IsAlive = bool())
         {
             new (self) ImGuiDeactivatedItemData();  // placement new
-            auto r = self;
-            r->ID = ID;
-            r->ElapseFrame = ElapseFrame;
-            r->HasBeenEditedBefore = HasBeenEditedBefore;
-            r->IsAlive = IsAlive;
+            auto r_ctor_ = self;
+            r_ctor_->ID = ID;
+            r_ctor_->ElapseFrame = ElapseFrame;
+            r_ctor_->HasBeenEditedBefore = HasBeenEditedBefore;
+            r_ctor_->IsAlive = IsAlive;
         },
         nb::arg("id_") = ImGuiID(), nb::arg("elapse_frame") = int(), nb::arg("has_been_edited_before") = bool(), nb::arg("is_alive") = bool()
         )
@@ -1335,13 +1335,13 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiInputEventMousePos * self, float PosX = float(), float PosY = float(), const std::optional<const ImGuiMouseSource> & MouseSource = std::nullopt)
         {
             new (self) ImGuiInputEventMousePos();  // placement new
-            auto r = self;
-            r->PosX = PosX;
-            r->PosY = PosY;
+            auto r_ctor_ = self;
+            r_ctor_->PosX = PosX;
+            r_ctor_->PosY = PosY;
             if (MouseSource.has_value())
-                r->MouseSource = MouseSource.value();
+                r_ctor_->MouseSource = MouseSource.value();
             else
-                r->MouseSource = ImGuiMouseSource();
+                r_ctor_->MouseSource = ImGuiMouseSource();
         },
         nb::arg("pos_x") = float(), nb::arg("pos_y") = float(), nb::arg("mouse_source") = nb::none()
         )
@@ -1357,13 +1357,13 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiInputEventMouseWheel * self, float WheelX = float(), float WheelY = float(), const std::optional<const ImGuiMouseSource> & MouseSource = std::nullopt)
         {
             new (self) ImGuiInputEventMouseWheel();  // placement new
-            auto r = self;
-            r->WheelX = WheelX;
-            r->WheelY = WheelY;
+            auto r_ctor_ = self;
+            r_ctor_->WheelX = WheelX;
+            r_ctor_->WheelY = WheelY;
             if (MouseSource.has_value())
-                r->MouseSource = MouseSource.value();
+                r_ctor_->MouseSource = MouseSource.value();
             else
-                r->MouseSource = ImGuiMouseSource();
+                r_ctor_->MouseSource = ImGuiMouseSource();
         },
         nb::arg("wheel_x") = float(), nb::arg("wheel_y") = float(), nb::arg("mouse_source") = nb::none()
         )
@@ -1379,13 +1379,13 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiInputEventMouseButton * self, int Button = int(), bool Down = bool(), const std::optional<const ImGuiMouseSource> & MouseSource = std::nullopt)
         {
             new (self) ImGuiInputEventMouseButton();  // placement new
-            auto r = self;
-            r->Button = Button;
-            r->Down = Down;
+            auto r_ctor_ = self;
+            r_ctor_->Button = Button;
+            r_ctor_->Down = Down;
             if (MouseSource.has_value())
-                r->MouseSource = MouseSource.value();
+                r_ctor_->MouseSource = MouseSource.value();
             else
-                r->MouseSource = ImGuiMouseSource();
+                r_ctor_->MouseSource = ImGuiMouseSource();
         },
         nb::arg("button") = int(), nb::arg("down") = bool(), nb::arg("mouse_source") = nb::none()
         )
@@ -1401,8 +1401,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiInputEventMouseViewport * self, ImGuiID HoveredViewportID = ImGuiID())
         {
             new (self) ImGuiInputEventMouseViewport();  // placement new
-            auto r = self;
-            r->HoveredViewportID = HoveredViewportID;
+            auto r_ctor_ = self;
+            r_ctor_->HoveredViewportID = HoveredViewportID;
         },
         nb::arg("hovered_viewport_id") = ImGuiID()
         )
@@ -1416,10 +1416,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiInputEventKey * self, ImGuiKey Key = ImGuiKey(), bool Down = bool(), float AnalogValue = float())
         {
             new (self) ImGuiInputEventKey();  // placement new
-            auto r = self;
-            r->Key = Key;
-            r->Down = Down;
-            r->AnalogValue = AnalogValue;
+            auto r_ctor_ = self;
+            r_ctor_->Key = Key;
+            r_ctor_->Down = Down;
+            r_ctor_->AnalogValue = AnalogValue;
         },
         nb::arg("key") = ImGuiKey(), nb::arg("down") = bool(), nb::arg("analog_value") = float()
         )
@@ -1443,8 +1443,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiInputEventAppFocused * self, bool Focused = bool())
         {
             new (self) ImGuiInputEventAppFocused();  // placement new
-            auto r = self;
-            r->Focused = Focused;
+            auto r_ctor_ = self;
+            r_ctor_->Focused = Focused;
         },
         nb::arg("focused") = bool()
         )
@@ -1532,12 +1532,12 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiListClipperRange * self, int Min = int(), int Max = int(), bool PosToIndexConvert = bool(), ImS8 PosToIndexOffsetMin = ImS8(), ImS8 PosToIndexOffsetMax = ImS8())
         {
             new (self) ImGuiListClipperRange();  // placement new
-            auto r = self;
-            r->Min = Min;
-            r->Max = Max;
-            r->PosToIndexConvert = PosToIndexConvert;
-            r->PosToIndexOffsetMin = PosToIndexOffsetMin;
-            r->PosToIndexOffsetMax = PosToIndexOffsetMax;
+            auto r_ctor_ = self;
+            r_ctor_->Min = Min;
+            r_ctor_->Max = Max;
+            r_ctor_->PosToIndexConvert = PosToIndexConvert;
+            r_ctor_->PosToIndexOffsetMin = PosToIndexOffsetMin;
+            r_ctor_->PosToIndexOffsetMax = PosToIndexOffsetMax;
         },
         nb::arg("min") = int(), nb::arg("max") = int(), nb::arg("pos_to_index_convert") = bool(), nb::arg("pos_to_index_offset_min") = ImS8(), nb::arg("pos_to_index_offset_max") = ImS8()
         )
@@ -1658,9 +1658,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiFocusScopeData * self, ImGuiID ID = ImGuiID(), ImGuiID WindowID = ImGuiID())
         {
             new (self) ImGuiFocusScopeData();  // placement new
-            auto r = self;
-            r->ID = ID;
-            r->WindowID = WindowID;
+            auto r_ctor_ = self;
+            r_ctor_->ID = ID;
+            r_ctor_->WindowID = WindowID;
         },
         nb::arg("id_") = ImGuiID(), nb::arg("window_id") = ImGuiID()
         )
@@ -1682,12 +1682,12 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiTypingSelectRequest * self, ImGuiTypingSelectFlags Flags = ImGuiTypingSelectFlags(), int SearchBufferLen = int(), bool SelectRequest = bool(), bool SingleCharMode = bool(), ImS8 SingleCharSize = ImS8())
         {
             new (self) ImGuiTypingSelectRequest();  // placement new
-            auto r = self;
-            r->Flags = Flags;
-            r->SearchBufferLen = SearchBufferLen;
-            r->SelectRequest = SelectRequest;
-            r->SingleCharMode = SingleCharMode;
-            r->SingleCharSize = SingleCharSize;
+            auto r_ctor_ = self;
+            r_ctor_->Flags = Flags;
+            r_ctor_->SearchBufferLen = SearchBufferLen;
+            r_ctor_->SelectRequest = SelectRequest;
+            r_ctor_->SingleCharMode = SingleCharMode;
+            r_ctor_->SingleCharSize = SingleCharSize;
         },
         nb::arg("flags") = ImGuiTypingSelectFlags(), nb::arg("search_buffer_len") = int(), nb::arg("select_request") = bool(), nb::arg("single_char_mode") = bool(), nb::arg("single_char_size") = ImS8()
         )
@@ -2062,8 +2062,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiLocEntry * self, ImGuiLocKey Key = ImGuiLocKey())
         {
             new (self) ImGuiLocEntry();  // placement new
-            auto r = self;
-            r->Key = Key;
+            auto r_ctor_ = self;
+            r_ctor_->Key = Key;
         },
         nb::arg("key") = ImGuiLocKey()
         )
@@ -2098,10 +2098,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiDebugAllocEntry * self, int FrameCount = int(), ImS16 AllocCount = ImS16(), ImS16 FreeCount = ImS16())
         {
             new (self) ImGuiDebugAllocEntry();  // placement new
-            auto r = self;
-            r->FrameCount = FrameCount;
-            r->AllocCount = AllocCount;
-            r->FreeCount = FreeCount;
+            auto r_ctor_ = self;
+            r_ctor_->FrameCount = FrameCount;
+            r_ctor_->AllocCount = AllocCount;
+            r_ctor_->FreeCount = FreeCount;
         },
         nb::arg("frame_count") = int(), nb::arg("alloc_count") = ImS16(), nb::arg("free_count") = ImS16()
         )
@@ -2127,22 +2127,22 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiMetricsConfig * self, bool ShowDebugLog = false, bool ShowIDStackTool = false, bool ShowWindowsRects = false, bool ShowWindowsBeginOrder = false, bool ShowTablesRects = false, bool ShowDrawCmdMesh = true, bool ShowDrawCmdBoundingBoxes = true, bool ShowTextEncodingViewer = false, bool ShowTextureUsedRect = false, bool ShowDockingNodes = false, int ShowWindowsRectsType = -1, int ShowTablesRectsType = -1, int HighlightMonitorIdx = -1, ImGuiID HighlightViewportID = 0, bool ShowFontPreview = true)
         {
             new (self) ImGuiMetricsConfig();  // placement new
-            auto r = self;
-            r->ShowDebugLog = ShowDebugLog;
-            r->ShowIDStackTool = ShowIDStackTool;
-            r->ShowWindowsRects = ShowWindowsRects;
-            r->ShowWindowsBeginOrder = ShowWindowsBeginOrder;
-            r->ShowTablesRects = ShowTablesRects;
-            r->ShowDrawCmdMesh = ShowDrawCmdMesh;
-            r->ShowDrawCmdBoundingBoxes = ShowDrawCmdBoundingBoxes;
-            r->ShowTextEncodingViewer = ShowTextEncodingViewer;
-            r->ShowTextureUsedRect = ShowTextureUsedRect;
-            r->ShowDockingNodes = ShowDockingNodes;
-            r->ShowWindowsRectsType = ShowWindowsRectsType;
-            r->ShowTablesRectsType = ShowTablesRectsType;
-            r->HighlightMonitorIdx = HighlightMonitorIdx;
-            r->HighlightViewportID = HighlightViewportID;
-            r->ShowFontPreview = ShowFontPreview;
+            auto r_ctor_ = self;
+            r_ctor_->ShowDebugLog = ShowDebugLog;
+            r_ctor_->ShowIDStackTool = ShowIDStackTool;
+            r_ctor_->ShowWindowsRects = ShowWindowsRects;
+            r_ctor_->ShowWindowsBeginOrder = ShowWindowsBeginOrder;
+            r_ctor_->ShowTablesRects = ShowTablesRects;
+            r_ctor_->ShowDrawCmdMesh = ShowDrawCmdMesh;
+            r_ctor_->ShowDrawCmdBoundingBoxes = ShowDrawCmdBoundingBoxes;
+            r_ctor_->ShowTextEncodingViewer = ShowTextEncodingViewer;
+            r_ctor_->ShowTextureUsedRect = ShowTextureUsedRect;
+            r_ctor_->ShowDockingNodes = ShowDockingNodes;
+            r_ctor_->ShowWindowsRectsType = ShowWindowsRectsType;
+            r_ctor_->ShowTablesRectsType = ShowTablesRectsType;
+            r_ctor_->HighlightMonitorIdx = HighlightMonitorIdx;
+            r_ctor_->HighlightViewportID = HighlightViewportID;
+            r_ctor_->ShowFontPreview = ShowFontPreview;
         },
         nb::arg("show_debug_log") = false, nb::arg("show_id_stack_tool") = false, nb::arg("show_windows_rects") = false, nb::arg("show_windows_begin_order") = false, nb::arg("show_tables_rects") = false, nb::arg("show_draw_cmd_mesh") = true, nb::arg("show_draw_cmd_bounding_boxes") = true, nb::arg("show_text_encoding_viewer") = false, nb::arg("show_texture_used_rect") = false, nb::arg("show_docking_nodes") = false, nb::arg("show_windows_rects_type") = -1, nb::arg("show_tables_rects_type") = -1, nb::arg("highlight_monitor_idx") = -1, nb::arg("highlight_viewport_id") = 0, nb::arg("show_font_preview") = true
         )
@@ -2532,104 +2532,104 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiWindowTempData * self, const std::optional<const ImVec2> & CursorPos = std::nullopt, const std::optional<const ImVec2> & CursorPosPrevLine = std::nullopt, const std::optional<const ImVec2> & CursorStartPos = std::nullopt, const std::optional<const ImVec2> & CursorMaxPos = std::nullopt, const std::optional<const ImVec2> & IdealMaxPos = std::nullopt, const std::optional<const ImVec2> & CurrLineSize = std::nullopt, const std::optional<const ImVec2> & PrevLineSize = std::nullopt, float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), const std::optional<const ImVec1> & Indent = std::nullopt, const std::optional<const ImVec1> & ColumnsOffset = std::nullopt, const std::optional<const ImVec1> & GroupOffset = std::nullopt, const std::optional<const ImVec2> & CursorStartPosLossyness = std::nullopt, ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), const std::optional<const ImVec2> & MenuBarOffset = std::nullopt, const std::optional<const ImGuiMenuColumns> & MenuColumns = std::nullopt, int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), ImU32 TreeRecordsClippedNodesY2Mask = ImU32(), const std::optional<const ImVector<ImGuiWindow*>> & ChildWindows = std::nullopt, int CurrentTableIdx = int(), const std::optional<const ImGuiLayoutType> & LayoutType = std::nullopt, const std::optional<const ImGuiLayoutType> & ParentLayoutType = std::nullopt, ImU32 ModalDimBgColor = ImU32(), ImGuiItemStatusFlags WindowItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags ChildItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags DockTabItemStatusFlags = ImGuiItemStatusFlags(), const std::optional<const ImRect> & DockTabItemRect = std::nullopt, float ItemWidth = float(), float TextWrapPos = float(), const std::optional<const ImVector<float>> & ItemWidthStack = std::nullopt, const std::optional<const ImVector<float>> & TextWrapPosStack = std::nullopt)
         {
             new (self) ImGuiWindowTempData();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (CursorPos.has_value())
-                r->CursorPos = CursorPos.value();
+                r_ctor_->CursorPos = CursorPos.value();
             else
-                r->CursorPos = ImVec2();
+                r_ctor_->CursorPos = ImVec2();
             if (CursorPosPrevLine.has_value())
-                r->CursorPosPrevLine = CursorPosPrevLine.value();
+                r_ctor_->CursorPosPrevLine = CursorPosPrevLine.value();
             else
-                r->CursorPosPrevLine = ImVec2();
+                r_ctor_->CursorPosPrevLine = ImVec2();
             if (CursorStartPos.has_value())
-                r->CursorStartPos = CursorStartPos.value();
+                r_ctor_->CursorStartPos = CursorStartPos.value();
             else
-                r->CursorStartPos = ImVec2();
+                r_ctor_->CursorStartPos = ImVec2();
             if (CursorMaxPos.has_value())
-                r->CursorMaxPos = CursorMaxPos.value();
+                r_ctor_->CursorMaxPos = CursorMaxPos.value();
             else
-                r->CursorMaxPos = ImVec2();
+                r_ctor_->CursorMaxPos = ImVec2();
             if (IdealMaxPos.has_value())
-                r->IdealMaxPos = IdealMaxPos.value();
+                r_ctor_->IdealMaxPos = IdealMaxPos.value();
             else
-                r->IdealMaxPos = ImVec2();
+                r_ctor_->IdealMaxPos = ImVec2();
             if (CurrLineSize.has_value())
-                r->CurrLineSize = CurrLineSize.value();
+                r_ctor_->CurrLineSize = CurrLineSize.value();
             else
-                r->CurrLineSize = ImVec2();
+                r_ctor_->CurrLineSize = ImVec2();
             if (PrevLineSize.has_value())
-                r->PrevLineSize = PrevLineSize.value();
+                r_ctor_->PrevLineSize = PrevLineSize.value();
             else
-                r->PrevLineSize = ImVec2();
-            r->CurrLineTextBaseOffset = CurrLineTextBaseOffset;
-            r->PrevLineTextBaseOffset = PrevLineTextBaseOffset;
-            r->IsSameLine = IsSameLine;
-            r->IsSetPos = IsSetPos;
+                r_ctor_->PrevLineSize = ImVec2();
+            r_ctor_->CurrLineTextBaseOffset = CurrLineTextBaseOffset;
+            r_ctor_->PrevLineTextBaseOffset = PrevLineTextBaseOffset;
+            r_ctor_->IsSameLine = IsSameLine;
+            r_ctor_->IsSetPos = IsSetPos;
             if (Indent.has_value())
-                r->Indent = Indent.value();
+                r_ctor_->Indent = Indent.value();
             else
-                r->Indent = ImVec1();
+                r_ctor_->Indent = ImVec1();
             if (ColumnsOffset.has_value())
-                r->ColumnsOffset = ColumnsOffset.value();
+                r_ctor_->ColumnsOffset = ColumnsOffset.value();
             else
-                r->ColumnsOffset = ImVec1();
+                r_ctor_->ColumnsOffset = ImVec1();
             if (GroupOffset.has_value())
-                r->GroupOffset = GroupOffset.value();
+                r_ctor_->GroupOffset = GroupOffset.value();
             else
-                r->GroupOffset = ImVec1();
+                r_ctor_->GroupOffset = ImVec1();
             if (CursorStartPosLossyness.has_value())
-                r->CursorStartPosLossyness = CursorStartPosLossyness.value();
+                r_ctor_->CursorStartPosLossyness = CursorStartPosLossyness.value();
             else
-                r->CursorStartPosLossyness = ImVec2();
-            r->NavLayerCurrent = NavLayerCurrent;
-            r->NavLayersActiveMask = NavLayersActiveMask;
-            r->NavLayersActiveMaskNext = NavLayersActiveMaskNext;
-            r->NavIsScrollPushableX = NavIsScrollPushableX;
-            r->NavHideHighlightOneFrame = NavHideHighlightOneFrame;
-            r->NavWindowHasScrollY = NavWindowHasScrollY;
-            r->MenuBarAppending = MenuBarAppending;
+                r_ctor_->CursorStartPosLossyness = ImVec2();
+            r_ctor_->NavLayerCurrent = NavLayerCurrent;
+            r_ctor_->NavLayersActiveMask = NavLayersActiveMask;
+            r_ctor_->NavLayersActiveMaskNext = NavLayersActiveMaskNext;
+            r_ctor_->NavIsScrollPushableX = NavIsScrollPushableX;
+            r_ctor_->NavHideHighlightOneFrame = NavHideHighlightOneFrame;
+            r_ctor_->NavWindowHasScrollY = NavWindowHasScrollY;
+            r_ctor_->MenuBarAppending = MenuBarAppending;
             if (MenuBarOffset.has_value())
-                r->MenuBarOffset = MenuBarOffset.value();
+                r_ctor_->MenuBarOffset = MenuBarOffset.value();
             else
-                r->MenuBarOffset = ImVec2();
+                r_ctor_->MenuBarOffset = ImVec2();
             if (MenuColumns.has_value())
-                r->MenuColumns = MenuColumns.value();
+                r_ctor_->MenuColumns = MenuColumns.value();
             else
-                r->MenuColumns = ImGuiMenuColumns();
-            r->TreeDepth = TreeDepth;
-            r->TreeHasStackDataDepthMask = TreeHasStackDataDepthMask;
-            r->TreeRecordsClippedNodesY2Mask = TreeRecordsClippedNodesY2Mask;
+                r_ctor_->MenuColumns = ImGuiMenuColumns();
+            r_ctor_->TreeDepth = TreeDepth;
+            r_ctor_->TreeHasStackDataDepthMask = TreeHasStackDataDepthMask;
+            r_ctor_->TreeRecordsClippedNodesY2Mask = TreeRecordsClippedNodesY2Mask;
             if (ChildWindows.has_value())
-                r->ChildWindows = ChildWindows.value();
+                r_ctor_->ChildWindows = ChildWindows.value();
             else
-                r->ChildWindows = ImVector<ImGuiWindow*>();
-            r->CurrentTableIdx = CurrentTableIdx;
+                r_ctor_->ChildWindows = ImVector<ImGuiWindow*>();
+            r_ctor_->CurrentTableIdx = CurrentTableIdx;
             if (LayoutType.has_value())
-                r->LayoutType = LayoutType.value();
+                r_ctor_->LayoutType = LayoutType.value();
             else
-                r->LayoutType = ImGuiLayoutType();
+                r_ctor_->LayoutType = ImGuiLayoutType();
             if (ParentLayoutType.has_value())
-                r->ParentLayoutType = ParentLayoutType.value();
+                r_ctor_->ParentLayoutType = ParentLayoutType.value();
             else
-                r->ParentLayoutType = ImGuiLayoutType();
-            r->ModalDimBgColor = ModalDimBgColor;
-            r->WindowItemStatusFlags = WindowItemStatusFlags;
-            r->ChildItemStatusFlags = ChildItemStatusFlags;
-            r->DockTabItemStatusFlags = DockTabItemStatusFlags;
+                r_ctor_->ParentLayoutType = ImGuiLayoutType();
+            r_ctor_->ModalDimBgColor = ModalDimBgColor;
+            r_ctor_->WindowItemStatusFlags = WindowItemStatusFlags;
+            r_ctor_->ChildItemStatusFlags = ChildItemStatusFlags;
+            r_ctor_->DockTabItemStatusFlags = DockTabItemStatusFlags;
             if (DockTabItemRect.has_value())
-                r->DockTabItemRect = DockTabItemRect.value();
+                r_ctor_->DockTabItemRect = DockTabItemRect.value();
             else
-                r->DockTabItemRect = ImRect();
-            r->ItemWidth = ItemWidth;
-            r->TextWrapPos = TextWrapPos;
+                r_ctor_->DockTabItemRect = ImRect();
+            r_ctor_->ItemWidth = ItemWidth;
+            r_ctor_->TextWrapPos = TextWrapPos;
             if (ItemWidthStack.has_value())
-                r->ItemWidthStack = ItemWidthStack.value();
+                r_ctor_->ItemWidthStack = ItemWidthStack.value();
             else
-                r->ItemWidthStack = ImVector<float>();
+                r_ctor_->ItemWidthStack = ImVector<float>();
             if (TextWrapPosStack.has_value())
-                r->TextWrapPosStack = TextWrapPosStack.value();
+                r_ctor_->TextWrapPosStack = TextWrapPosStack.value();
             else
-                r->TextWrapPosStack = ImVector<float>();
+                r_ctor_->TextWrapPosStack = ImVector<float>();
         },
         nb::arg("cursor_pos") = nb::none(), nb::arg("cursor_pos_prev_line") = nb::none(), nb::arg("cursor_start_pos") = nb::none(), nb::arg("cursor_max_pos") = nb::none(), nb::arg("ideal_max_pos") = nb::none(), nb::arg("curr_line_size") = nb::none(), nb::arg("prev_line_size") = nb::none(), nb::arg("curr_line_text_base_offset") = float(), nb::arg("prev_line_text_base_offset") = float(), nb::arg("is_same_line") = bool(), nb::arg("is_set_pos") = bool(), nb::arg("indent") = nb::none(), nb::arg("columns_offset") = nb::none(), nb::arg("group_offset") = nb::none(), nb::arg("cursor_start_pos_lossyness") = nb::none(), nb::arg("nav_layer_current") = ImGuiNavLayer(), nb::arg("nav_layers_active_mask") = short(), nb::arg("nav_layers_active_mask_next") = short(), nb::arg("nav_is_scroll_pushable_x") = bool(), nb::arg("nav_hide_highlight_one_frame") = bool(), nb::arg("nav_window_has_scroll_y") = bool(), nb::arg("menu_bar_appending") = bool(), nb::arg("menu_bar_offset") = nb::none(), nb::arg("menu_columns") = nb::none(), nb::arg("tree_depth") = int(), nb::arg("tree_has_stack_data_depth_mask") = ImU32(), nb::arg("tree_records_clipped_nodes_y2_mask") = ImU32(), nb::arg("child_windows") = nb::none(), nb::arg("current_table_idx") = int(), nb::arg("layout_type") = nb::none(), nb::arg("parent_layout_type") = nb::none(), nb::arg("modal_dim_bg_color") = ImU32(), nb::arg("window_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("child_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_rect") = nb::none(), nb::arg("item_width") = float(), nb::arg("text_wrap_pos") = float(), nb::arg("item_width_stack") = nb::none(), nb::arg("text_wrap_pos_stack") = nb::none()
         )
@@ -2968,12 +2968,12 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiTableCellData * self, ImU32 BgColor = ImU32(), const std::optional<const ImGuiTableColumnIdx> & Column = std::nullopt)
         {
             new (self) ImGuiTableCellData();  // placement new
-            auto r = self;
-            r->BgColor = BgColor;
+            auto r_ctor_ = self;
+            r_ctor_->BgColor = BgColor;
             if (Column.has_value())
-                r->Column = Column.value();
+                r_ctor_->Column = Column.value();
             else
-                r->Column = ImGuiTableColumnIdx();
+                r_ctor_->Column = ImGuiTableColumnIdx();
         },
         nb::arg("bg_color") = ImU32(), nb::arg("column") = nb::none()
         )
@@ -2988,14 +2988,14 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGuiTableHeaderData * self, const std::optional<const ImGuiTableColumnIdx> & Index = std::nullopt, ImU32 TextColor = ImU32(), ImU32 BgColor0 = ImU32(), ImU32 BgColor1 = ImU32())
         {
             new (self) ImGuiTableHeaderData();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Index.has_value())
-                r->Index = Index.value();
+                r_ctor_->Index = Index.value();
             else
-                r->Index = ImGuiTableColumnIdx();
-            r->TextColor = TextColor;
-            r->BgColor0 = BgColor0;
-            r->BgColor1 = BgColor1;
+                r_ctor_->Index = ImGuiTableColumnIdx();
+            r_ctor_->TextColor = TextColor;
+            r_ctor_->BgColor0 = BgColor0;
+            r_ctor_->BgColor1 = BgColor1;
         },
         nb::arg("index") = nb::none(), nb::arg("text_color") = ImU32(), nb::arg("bg_color0") = ImU32(), nb::arg("bg_color1") = ImU32()
         )
@@ -4078,9 +4078,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImGui::DockBuilderSplitNodeResult * self, ImGuiID id_at_dir = ImGuiID(), ImGuiID id_at_opposite_dir = ImGuiID())
         {
             new (self) ImGui::DockBuilderSplitNodeResult();  // placement new
-            auto r = self;
-            r->id_at_dir = id_at_dir;
-            r->id_at_opposite_dir = id_at_opposite_dir;
+            auto r_ctor_ = self;
+            r_ctor_->id_at_dir = id_at_dir;
+            r_ctor_->id_at_opposite_dir = id_at_opposite_dir;
         },
         nb::arg("id_at_dir") = ImGuiID(), nb::arg("id_at_opposite_dir") = ImGuiID()
         )
@@ -5067,14 +5067,14 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def("__init__", [](ImFontAtlasPostProcessData * self, const std::optional<const ImTextureFormat> & Format = std::nullopt, int Pitch = int(), int Width = int(), int Height = int())
         {
             new (self) ImFontAtlasPostProcessData();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Format.has_value())
-                r->Format = Format.value();
+                r_ctor_->Format = Format.value();
             else
-                r->Format = ImTextureFormat();
-            r->Pitch = Pitch;
-            r->Width = Width;
-            r->Height = Height;
+                r_ctor_->Format = ImTextureFormat();
+            r_ctor_->Pitch = Pitch;
+            r_ctor_->Width = Width;
+            r_ctor_->Height = Height;
         },
         nb::arg("format") = nb::none(), nb::arg("pitch") = int(), nb::arg("width") = int(), nb::arg("height") = int()
         )

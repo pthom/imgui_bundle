@@ -883,15 +883,15 @@ void py_init_module_implot3d(nb::module_& m)
         .def("__init__", [](ImPlot3D::Mesh * self, const std::optional<const std::vector<ImPlot3DPoint>> & Points = std::nullopt, const std::optional<const std::vector<UInt>> & Idx = std::nullopt)
         {
             new (self) ImPlot3D::Mesh();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Points.has_value())
-                r->Points = Points.value();
+                r_ctor_->Points = Points.value();
             else
-                r->Points = std::vector<ImPlot3DPoint>();
+                r_ctor_->Points = std::vector<ImPlot3DPoint>();
             if (Idx.has_value())
-                r->Idx = Idx.value();
+                r_ctor_->Idx = Idx.value();
             else
-                r->Idx = std::vector<UInt>();
+                r_ctor_->Idx = std::vector<UInt>();
         },
         nb::arg("points") = nb::none(), nb::arg("idx") = nb::none()
         )
@@ -1403,15 +1403,15 @@ void py_init_module_implot3d(nb::module_& m)
         .def("__init__", [](ImPlot3DRay * self, const std::optional<const ImPlot3DPoint> & Origin = std::nullopt, const std::optional<const ImPlot3DPoint> & Direction = std::nullopt)
         {
             new (self) ImPlot3DRay();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Origin.has_value())
-                r->Origin = Origin.value();
+                r_ctor_->Origin = Origin.value();
             else
-                r->Origin = ImPlot3DPoint();
+                r_ctor_->Origin = ImPlot3DPoint();
             if (Direction.has_value())
-                r->Direction = Direction.value();
+                r_ctor_->Direction = Direction.value();
             else
-                r->Direction = ImPlot3DPoint();
+                r_ctor_->Direction = ImPlot3DPoint();
         },
         nb::arg("origin") = nb::none(), nb::arg("direction") = nb::none()
         )
@@ -1426,15 +1426,15 @@ void py_init_module_implot3d(nb::module_& m)
         .def("__init__", [](ImPlot3DPlane * self, const std::optional<const ImPlot3DPoint> & Point = std::nullopt, const std::optional<const ImPlot3DPoint> & Normal = std::nullopt)
         {
             new (self) ImPlot3DPlane();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Point.has_value())
-                r->Point = Point.value();
+                r_ctor_->Point = Point.value();
             else
-                r->Point = ImPlot3DPoint();
+                r_ctor_->Point = ImPlot3DPoint();
             if (Normal.has_value())
-                r->Normal = Normal.value();
+                r_ctor_->Normal = Normal.value();
             else
-                r->Normal = ImPlot3DPoint();
+                r_ctor_->Normal = ImPlot3DPoint();
         },
         nb::arg("point") = nb::none(), nb::arg("normal") = nb::none()
         )

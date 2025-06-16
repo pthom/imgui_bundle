@@ -128,15 +128,15 @@ void py_init_module_immapp_cpp(nb::module_& m)
         .def("__init__", [](ImmApp::AddOnsParams * self, bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, bool updateNodeEditorColorsFromImguiColors = true, std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt)
         {
             new (self) ImmApp::AddOnsParams();  // placement new
-            auto r = self;
-            r->withImplot = withImplot;
-            r->withImplot3d = withImplot3d;
-            r->withMarkdown = withMarkdown;
-            r->withNodeEditor = withNodeEditor;
-            r->withTexInspect = withTexInspect;
-            r->withNodeEditorConfig = withNodeEditorConfig;
-            r->updateNodeEditorColorsFromImguiColors = updateNodeEditorColorsFromImguiColors;
-            r->withMarkdownOptions = withMarkdownOptions;
+            auto r_ctor_ = self;
+            r_ctor_->withImplot = withImplot;
+            r_ctor_->withImplot3d = withImplot3d;
+            r_ctor_->withMarkdown = withMarkdown;
+            r_ctor_->withNodeEditor = withNodeEditor;
+            r_ctor_->withTexInspect = withTexInspect;
+            r_ctor_->withNodeEditorConfig = withNodeEditorConfig;
+            r_ctor_->updateNodeEditorColorsFromImguiColors = updateNodeEditorColorsFromImguiColors;
+            r_ctor_->withMarkdownOptions = withMarkdownOptions;
         },
         nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("update_node_editor_colors_from_imgui_colors") = true, nb::arg("with_markdown_options") = nb::none()
         )
@@ -418,19 +418,19 @@ void py_init_module_immapp_cpp(nb::module_& m)
             .def("__init__", [](Snippets::SnippetData * self, std::string Code = "", Snippets::SnippetLanguage Language = Snippets::DefaultSnippetLanguage(), Snippets::SnippetTheme Palette = Snippets::SnippetTheme::Light, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = {}, int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = false, bool Border = false, bool DeIndentCode = true, bool AddFinalEmptyLine = false)
             {
                 new (self) Snippets::SnippetData();  // placement new
-                auto r = self;
-                r->Code = Code;
-                r->Language = Language;
-                r->Palette = Palette;
-                r->ShowCopyButton = ShowCopyButton;
-                r->ShowCursorPosition = ShowCursorPosition;
-                r->DisplayedFilename = DisplayedFilename;
-                r->HeightInLines = HeightInLines;
-                r->MaxHeightInLines = MaxHeightInLines;
-                r->ReadOnly = ReadOnly;
-                r->Border = Border;
-                r->DeIndentCode = DeIndentCode;
-                r->AddFinalEmptyLine = AddFinalEmptyLine;
+                auto r_ctor_ = self;
+                r_ctor_->Code = Code;
+                r_ctor_->Language = Language;
+                r_ctor_->Palette = Palette;
+                r_ctor_->ShowCopyButton = ShowCopyButton;
+                r_ctor_->ShowCursorPosition = ShowCursorPosition;
+                r_ctor_->DisplayedFilename = DisplayedFilename;
+                r_ctor_->HeightInLines = HeightInLines;
+                r_ctor_->MaxHeightInLines = MaxHeightInLines;
+                r_ctor_->ReadOnly = ReadOnly;
+                r_ctor_->Border = Border;
+                r_ctor_->DeIndentCode = DeIndentCode;
+                r_ctor_->AddFinalEmptyLine = AddFinalEmptyLine;
             },
             nb::arg("code") = "", nb::arg("language") = Snippets::DefaultSnippetLanguage(), nb::arg("palette") = Snippets::SnippetTheme::Light, nb::arg("show_copy_button") = true, nb::arg("show_cursor_position") = true, nb::arg("displayed_filename") = std::string{}, nb::arg("height_in_lines") = 0, nb::arg("max_height_in_lines") = 40, nb::arg("read_only") = false, nb::arg("border") = false, nb::arg("de_indent_code") = true, nb::arg("add_final_empty_line") = false
             )

@@ -84,18 +84,18 @@ void py_init_module_nanovg(nb::module_& m)
         .def("__init__", [](NVGpaint * self, float radius = float(), float feather = float(), const std::optional<const NVGcolor> & innerColor = std::nullopt, const std::optional<const NVGcolor> & outerColor = std::nullopt, int image = int())
         {
             new (self) NVGpaint();  // placement new
-            auto r = self;
-            r->radius = radius;
-            r->feather = feather;
+            auto r_ctor_ = self;
+            r_ctor_->radius = radius;
+            r_ctor_->feather = feather;
             if (innerColor.has_value())
-                r->innerColor = innerColor.value();
+                r_ctor_->innerColor = innerColor.value();
             else
-                r->innerColor = NVGcolor();
+                r_ctor_->innerColor = NVGcolor();
             if (outerColor.has_value())
-                r->outerColor = outerColor.value();
+                r_ctor_->outerColor = outerColor.value();
             else
-                r->outerColor = NVGcolor();
-            r->image = image;
+                r_ctor_->outerColor = NVGcolor();
+            r_ctor_->image = image;
         },
         nb::arg("radius") = float(), nb::arg("feather") = float(), nb::arg("inner_color") = nb::none(), nb::arg("outer_color") = nb::none(), nb::arg("image") = int()
         )
@@ -187,11 +187,11 @@ void py_init_module_nanovg(nb::module_& m)
         .def("__init__", [](NVGcompositeOperationState * self, int srcRGB = int(), int dstRGB = int(), int srcAlpha = int(), int dstAlpha = int())
         {
             new (self) NVGcompositeOperationState();  // placement new
-            auto r = self;
-            r->srcRGB = srcRGB;
-            r->dstRGB = dstRGB;
-            r->srcAlpha = srcAlpha;
-            r->dstAlpha = dstAlpha;
+            auto r_ctor_ = self;
+            r_ctor_->srcRGB = srcRGB;
+            r_ctor_->dstRGB = dstRGB;
+            r_ctor_->srcAlpha = srcAlpha;
+            r_ctor_->dstAlpha = dstAlpha;
         },
         nb::arg("src_rgb") = int(), nb::arg("dst_rgb") = int(), nb::arg("src_alpha") = int(), nb::arg("dst_alpha") = int()
         )
@@ -208,10 +208,10 @@ void py_init_module_nanovg(nb::module_& m)
         .def("__init__", [](NVGglyphPosition * self, float x = float(), float minx = float(), float maxx = float())
         {
             new (self) NVGglyphPosition();  // placement new
-            auto r = self;
-            r->x = x;
-            r->minx = minx;
-            r->maxx = maxx;
+            auto r_ctor_ = self;
+            r_ctor_->x = x;
+            r_ctor_->minx = minx;
+            r_ctor_->maxx = maxx;
         },
         nb::arg("x") = float(), nb::arg("minx") = float(), nb::arg("maxx") = float()
         )
@@ -228,10 +228,10 @@ void py_init_module_nanovg(nb::module_& m)
         .def("__init__", [](NVGtextRow * self, float width = float(), float minx = float(), float maxx = float())
         {
             new (self) NVGtextRow();  // placement new
-            auto r = self;
-            r->width = width;
-            r->minx = minx;
-            r->maxx = maxx;
+            auto r_ctor_ = self;
+            r_ctor_->width = width;
+            r_ctor_->minx = minx;
+            r_ctor_->maxx = maxx;
         },
         nb::arg("width") = float(), nb::arg("minx") = float(), nb::arg("maxx") = float()
         )
@@ -727,11 +727,11 @@ void py_init_module_nanovg(nb::module_& m)
         .def("__init__", [](NVGvertex * self, float x = float(), float y = float(), float u = float(), float v = float())
         {
             new (self) NVGvertex();  // placement new
-            auto r = self;
-            r->x = x;
-            r->y = y;
-            r->u = u;
-            r->v = v;
+            auto r_ctor_ = self;
+            r_ctor_->x = x;
+            r_ctor_->y = y;
+            r_ctor_->u = u;
+            r_ctor_->v = v;
         },
         nb::arg("x") = float(), nb::arg("y") = float(), nb::arg("u") = float(), nb::arg("v") = float()
         )
@@ -748,14 +748,14 @@ void py_init_module_nanovg(nb::module_& m)
         .def("__init__", [](NVGpath * self, int first = int(), int count = int(), int nbevel = int(), int nfill = int(), int nstroke = int(), int winding = int(), int convex = int())
         {
             new (self) NVGpath();  // placement new
-            auto r = self;
-            r->first = first;
-            r->count = count;
-            r->nbevel = nbevel;
-            r->nfill = nfill;
-            r->nstroke = nstroke;
-            r->winding = winding;
-            r->convex = convex;
+            auto r_ctor_ = self;
+            r_ctor_->first = first;
+            r_ctor_->count = count;
+            r_ctor_->nbevel = nbevel;
+            r_ctor_->nfill = nfill;
+            r_ctor_->nstroke = nstroke;
+            r_ctor_->winding = winding;
+            r_ctor_->convex = convex;
         },
         nb::arg("first") = int(), nb::arg("count") = int(), nb::arg("nbevel") = int(), nb::arg("nfill") = int(), nb::arg("nstroke") = int(), nb::arg("winding") = int(), nb::arg("convex") = int()
         )
@@ -778,8 +778,8 @@ void py_init_module_nanovg(nb::module_& m)
         .def("__init__", [](NVGparams * self, int edgeAntiAlias = int())
         {
             new (self) NVGparams();  // placement new
-            auto r = self;
-            r->edgeAntiAlias = edgeAntiAlias;
+            auto r_ctor_ = self;
+            r_ctor_->edgeAntiAlias = edgeAntiAlias;
         },
         nb::arg("edge_anti_alias") = int()
         )
@@ -930,10 +930,10 @@ void py_init_module_nanovg(nb::module_& m)
         .def("__init__", [](TextMetricsData * self, float ascender = float(), float descender = float(), float lineh = float())
         {
             new (self) TextMetricsData();  // placement new
-            auto r = self;
-            r->ascender = ascender;
-            r->descender = descender;
-            r->lineh = lineh;
+            auto r_ctor_ = self;
+            r_ctor_->ascender = ascender;
+            r_ctor_->descender = descender;
+            r_ctor_->lineh = lineh;
         },
         nb::arg("ascender") = float(), nb::arg("descender") = float(), nb::arg("lineh") = float()
         )
@@ -955,11 +955,11 @@ void py_init_module_nanovg(nb::module_& m)
         .def("__init__", [](NVGtextRowSimple * self, std::string row_text = std::string(), float width = float(), float minx = float(), float maxx = float())
         {
             new (self) NVGtextRowSimple();  // placement new
-            auto r = self;
-            r->row_text = row_text;
-            r->width = width;
-            r->minx = minx;
-            r->maxx = maxx;
+            auto r_ctor_ = self;
+            r_ctor_->row_text = row_text;
+            r_ctor_->width = width;
+            r_ctor_->minx = minx;
+            r_ctor_->maxx = maxx;
         },
         nb::arg("row_text") = std::string(), nb::arg("width") = float(), nb::arg("minx") = float(), nb::arg("maxx") = float()
         )

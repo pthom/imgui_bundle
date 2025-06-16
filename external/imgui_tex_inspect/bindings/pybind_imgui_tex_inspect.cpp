@@ -241,15 +241,15 @@ void py_init_module_imgui_tex_inspect(nb::module_& m)
         .def("__init__", [](ImGuiTexInspect::Transform2D * self, const std::optional<const ImVec2> & Scale = std::nullopt, const std::optional<const ImVec2> & Translate = std::nullopt)
         {
             new (self) ImGuiTexInspect::Transform2D();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Scale.has_value())
-                r->Scale = Scale.value();
+                r_ctor_->Scale = Scale.value();
             else
-                r->Scale = ImVec2();
+                r_ctor_->Scale = ImVec2();
             if (Translate.has_value())
-                r->Translate = Translate.value();
+                r_ctor_->Translate = Translate.value();
             else
-                r->Translate = ImVec2();
+                r_ctor_->Translate = ImVec2();
         },
         nb::arg("scale") = nb::none(), nb::arg("translate") = nb::none()
         )
@@ -272,15 +272,15 @@ void py_init_module_imgui_tex_inspect(nb::module_& m)
         .def("__init__", [](ImGuiTexInspect::Texture * self, const std::optional<const ImTextureID> & texture = std::nullopt, const std::optional<const ImVec2> & size = std::nullopt)
         {
             new (self) ImGuiTexInspect::Texture();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (texture.has_value())
-                r->texture = texture.value();
+                r_ctor_->texture = texture.value();
             else
-                r->texture = ImTextureID();
+                r_ctor_->texture = ImTextureID();
             if (size.has_value())
-                r->size = size.value();
+                r_ctor_->size = size.value();
             else
-                r->size = ImVec2();
+                r_ctor_->size = ImVec2();
         },
         nb::arg("texture") = nb::none(), nb::arg("size") = nb::none()
         )

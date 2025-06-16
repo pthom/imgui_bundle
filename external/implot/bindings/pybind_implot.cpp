@@ -53,8 +53,8 @@ void py_init_module_implot(nb::module_& m)
         .def("__init__", [](BoxedValue * self, double value = double())
         {
             new (self) BoxedValue();  // placement new
-            auto r = self;
-            r->value = value;
+            auto r_ctor_ = self;
+            r_ctor_->value = value;
         },
         nb::arg("value") = double()
         )
@@ -642,15 +642,15 @@ void py_init_module_implot(nb::module_& m)
         .def("__init__", [](ImPlot::SubplotsRowColRatios * self, const std::optional<const std::vector<float>> & row_ratios = std::nullopt, const std::optional<const std::vector<float>> & col_ratios = std::nullopt)
         {
             new (self) ImPlot::SubplotsRowColRatios();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (row_ratios.has_value())
-                r->row_ratios = row_ratios.value();
+                r_ctor_->row_ratios = row_ratios.value();
             else
-                r->row_ratios = std::vector<float>();
+                r_ctor_->row_ratios = std::vector<float>();
             if (col_ratios.has_value())
-                r->col_ratios = col_ratios.value();
+                r_ctor_->col_ratios = col_ratios.value();
             else
-                r->col_ratios = std::vector<float>();
+                r_ctor_->col_ratios = std::vector<float>();
         },
         nb::arg("row_ratios") = nb::none(), nb::arg("col_ratios") = nb::none()
         )

@@ -112,8 +112,8 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::DpiAwareParams * self, float dpiWindowSizeFactor = 0.0f)
         {
             new (self) HelloImGui::DpiAwareParams();  // placement new
-            auto r = self;
-            r->dpiWindowSizeFactor = dpiWindowSizeFactor;
+            auto r_ctor_ = self;
+            r_ctor_->dpiWindowSizeFactor = dpiWindowSizeFactor;
         },
         nb::arg("dpi_window_size_factor") = 0.0f
         )
@@ -166,8 +166,8 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::AssetFileData * self, size_t dataSize = 0)
         {
             new (self) HelloImGui::AssetFileData();  // placement new
-            auto r = self;
-            r->dataSize = dataSize;
+            auto r_ctor_ = self;
+            r_ctor_->dataSize = dataSize;
         },
         nb::arg("data_size") = 0
         )
@@ -375,15 +375,15 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::ImageAndSize * self, const std::optional<const ImTextureID> & textureId = std::nullopt, const std::optional<const ImVec2> & size = std::nullopt)
         {
             new (self) HelloImGui::ImageAndSize();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (textureId.has_value())
-                r->textureId = textureId.value();
+                r_ctor_->textureId = textureId.value();
             else
-                r->textureId = ImTextureID(0);
+                r_ctor_->textureId = ImTextureID(0);
             if (size.has_value())
-                r->size = size.value();
+                r_ctor_->size = size.value();
             else
-                r->size = ImVec2(0.f, 0.f);
+                r_ctor_->size = ImVec2(0.f, 0.f);
         },
         nb::arg("texture_id") = nb::none(), nb::arg("size") = nb::none()
         )
@@ -536,15 +536,15 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::FontLoadingParams * self, bool adjustSizeToDpi = true, bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, const std::optional<const ImFontConfig> & fontConfig = std::nullopt)
         {
             new (self) HelloImGui::FontLoadingParams();  // placement new
-            auto r = self;
-            r->adjustSizeToDpi = adjustSizeToDpi;
-            r->mergeToLastFont = mergeToLastFont;
-            r->loadColor = loadColor;
-            r->insideAssets = insideAssets;
+            auto r_ctor_ = self;
+            r_ctor_->adjustSizeToDpi = adjustSizeToDpi;
+            r_ctor_->mergeToLastFont = mergeToLastFont;
+            r_ctor_->loadColor = loadColor;
+            r_ctor_->insideAssets = insideAssets;
             if (fontConfig.has_value())
-                r->fontConfig = fontConfig.value();
+                r_ctor_->fontConfig = fontConfig.value();
             else
-                r->fontConfig = ImFontConfig();
+                r_ctor_->fontConfig = ImFontConfig();
         },
         nb::arg("adjust_size_to_dpi") = true, nb::arg("merge_to_last_font") = false, nb::arg("load_color") = false, nb::arg("inside_assets") = true, nb::arg("font_config") = nb::none()
         )
@@ -632,15 +632,15 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::ScreenBounds * self, const std::optional<const ScreenPosition> & position = std::nullopt, const std::optional<const ScreenSize> & size = std::nullopt)
         {
             new (self) HelloImGui::ScreenBounds();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (position.has_value())
-                r->position = position.value();
+                r_ctor_->position = position.value();
             else
-                r->position = HelloImGui::DefaultScreenPosition;
+                r_ctor_->position = HelloImGui::DefaultScreenPosition;
             if (size.has_value())
-                r->size = size.value();
+                r_ctor_->size = size.value();
             else
-                r->size = HelloImGui::DefaultWindowSize;
+                r_ctor_->size = HelloImGui::DefaultWindowSize;
         },
         nb::arg("position") = nb::none(), nb::arg("size") = nb::none()
         )
@@ -708,22 +708,22 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::WindowGeometry * self, const std::optional<const ScreenSize> & size = std::nullopt, bool sizeAuto = false, HelloImGui::WindowSizeState windowSizeState = HelloImGui::WindowSizeState::Standard, HelloImGui::WindowSizeMeasureMode windowSizeMeasureMode = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi, HelloImGui::WindowPositionMode positionMode = HelloImGui::WindowPositionMode::OsDefault, const std::optional<const ScreenPosition> & position = std::nullopt, int monitorIdx = 0, HelloImGui::FullScreenMode fullScreenMode = HelloImGui::FullScreenMode::NoFullScreen, bool resizeAppWindowAtNextFrame = false)
         {
             new (self) HelloImGui::WindowGeometry();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (size.has_value())
-                r->size = size.value();
+                r_ctor_->size = size.value();
             else
-                r->size = HelloImGui::DefaultWindowSize;
-            r->sizeAuto = sizeAuto;
-            r->windowSizeState = windowSizeState;
-            r->windowSizeMeasureMode = windowSizeMeasureMode;
-            r->positionMode = positionMode;
+                r_ctor_->size = HelloImGui::DefaultWindowSize;
+            r_ctor_->sizeAuto = sizeAuto;
+            r_ctor_->windowSizeState = windowSizeState;
+            r_ctor_->windowSizeMeasureMode = windowSizeMeasureMode;
+            r_ctor_->positionMode = positionMode;
             if (position.has_value())
-                r->position = position.value();
+                r_ctor_->position = position.value();
             else
-                r->position = HelloImGui::DefaultScreenPosition;
-            r->monitorIdx = monitorIdx;
-            r->fullScreenMode = fullScreenMode;
-            r->resizeAppWindowAtNextFrame = resizeAppWindowAtNextFrame;
+                r_ctor_->position = HelloImGui::DefaultScreenPosition;
+            r_ctor_->monitorIdx = monitorIdx;
+            r_ctor_->fullScreenMode = fullScreenMode;
+            r_ctor_->resizeAppWindowAtNextFrame = resizeAppWindowAtNextFrame;
         },
         nb::arg("size") = nb::none(), nb::arg("size_auto") = false, nb::arg("window_size_state") = HelloImGui::WindowSizeState::Standard, nb::arg("window_size_measure_mode") = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi, nb::arg("position_mode") = HelloImGui::WindowPositionMode::OsDefault, nb::arg("position") = nb::none(), nb::arg("monitor_idx") = 0, nb::arg("full_screen_mode") = HelloImGui::FullScreenMode::NoFullScreen, nb::arg("resize_app_window_at_next_frame") = false
         )
@@ -745,11 +745,11 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::EdgeInsets * self, double top = 0., double left = 0., double bottom = 0., double right = 0.)
         {
             new (self) HelloImGui::EdgeInsets();  // placement new
-            auto r = self;
-            r->top = top;
-            r->left = left;
-            r->bottom = bottom;
-            r->right = right;
+            auto r_ctor_ = self;
+            r_ctor_->top = top;
+            r_ctor_->left = left;
+            r_ctor_->bottom = bottom;
+            r_ctor_->right = right;
         },
         nb::arg("top") = 0., nb::arg("left") = 0., nb::arg("bottom") = 0., nb::arg("right") = 0.
         )
@@ -766,30 +766,30 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::AppWindowParams * self, std::string windowTitle = std::string(), const std::optional<const HelloImGui::WindowGeometry> & windowGeometry = std::nullopt, bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, const std::optional<const ImVec4> & borderlessHighlightColor = std::nullopt, const std::optional<const HelloImGui::EdgeInsets> & edgeInsets = std::nullopt, bool handleEdgeInsets = true, HelloImGui::EmscriptenKeyboardElement emscriptenKeyboardElement = HelloImGui::EmscriptenKeyboardElement::Default, bool repaintDuringResize_GotchaReentrantRepaint = false)
         {
             new (self) HelloImGui::AppWindowParams();  // placement new
-            auto r = self;
-            r->windowTitle = windowTitle;
+            auto r_ctor_ = self;
+            r_ctor_->windowTitle = windowTitle;
             if (windowGeometry.has_value())
-                r->windowGeometry = windowGeometry.value();
+                r_ctor_->windowGeometry = windowGeometry.value();
             else
-                r->windowGeometry = HelloImGui::WindowGeometry();
-            r->restorePreviousGeometry = restorePreviousGeometry;
-            r->resizable = resizable;
-            r->hidden = hidden;
-            r->borderless = borderless;
-            r->borderlessMovable = borderlessMovable;
-            r->borderlessResizable = borderlessResizable;
-            r->borderlessClosable = borderlessClosable;
+                r_ctor_->windowGeometry = HelloImGui::WindowGeometry();
+            r_ctor_->restorePreviousGeometry = restorePreviousGeometry;
+            r_ctor_->resizable = resizable;
+            r_ctor_->hidden = hidden;
+            r_ctor_->borderless = borderless;
+            r_ctor_->borderlessMovable = borderlessMovable;
+            r_ctor_->borderlessResizable = borderlessResizable;
+            r_ctor_->borderlessClosable = borderlessClosable;
             if (borderlessHighlightColor.has_value())
-                r->borderlessHighlightColor = borderlessHighlightColor.value();
+                r_ctor_->borderlessHighlightColor = borderlessHighlightColor.value();
             else
-                r->borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);
+                r_ctor_->borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f);
             if (edgeInsets.has_value())
-                r->edgeInsets = edgeInsets.value();
+                r_ctor_->edgeInsets = edgeInsets.value();
             else
-                r->edgeInsets = HelloImGui::EdgeInsets();
-            r->handleEdgeInsets = handleEdgeInsets;
-            r->emscriptenKeyboardElement = emscriptenKeyboardElement;
-            r->repaintDuringResize_GotchaReentrantRepaint = repaintDuringResize_GotchaReentrantRepaint;
+                r_ctor_->edgeInsets = HelloImGui::EdgeInsets();
+            r_ctor_->handleEdgeInsets = handleEdgeInsets;
+            r_ctor_->emscriptenKeyboardElement = emscriptenKeyboardElement;
+            r_ctor_->repaintDuringResize_GotchaReentrantRepaint = repaintDuringResize_GotchaReentrantRepaint;
         },
         nb::arg("window_title") = std::string(), nb::arg("window_geometry") = nb::none(), nb::arg("restore_previous_geometry") = false, nb::arg("resizable") = true, nb::arg("hidden") = false, nb::arg("borderless") = false, nb::arg("borderless_movable") = true, nb::arg("borderless_resizable") = true, nb::arg("borderless_closable") = true, nb::arg("borderless_highlight_color") = nb::none(), nb::arg("edge_insets") = nb::none(), nb::arg("handle_edge_insets") = true, nb::arg("emscripten_keyboard_element") = HelloImGui::EmscriptenKeyboardElement::Default, nb::arg("repaint_during_resize_gotcha_reentrant_repaint") = false
         )
@@ -823,36 +823,36 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::ImGuiWindowParams * self, HelloImGui::DefaultImGuiWindowType defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, bool enableViewports = false, bool configWindowsMoveFromTitleBarOnly = true, std::string menuAppTitle = "", bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showMenu_View_Themes = true, bool rememberTheme = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, const std::optional<const ImVec2> & fullScreenWindow_MarginTopLeft = std::nullopt, const std::optional<const ImVec2> & fullScreenWindow_MarginBottomRight = std::nullopt, const std::optional<const ImGuiTheme::ImGuiTweakedTheme> & tweakedTheme = std::nullopt, const std::optional<const ImVec4> & backgroundColor = std::nullopt)
         {
             new (self) HelloImGui::ImGuiWindowParams();  // placement new
-            auto r = self;
-            r->defaultImGuiWindowType = defaultImGuiWindowType;
-            r->enableViewports = enableViewports;
-            r->configWindowsMoveFromTitleBarOnly = configWindowsMoveFromTitleBarOnly;
-            r->menuAppTitle = menuAppTitle;
-            r->showMenuBar = showMenuBar;
-            r->showMenu_App = showMenu_App;
-            r->showMenu_App_Quit = showMenu_App_Quit;
-            r->showMenu_View = showMenu_View;
-            r->showMenu_View_Themes = showMenu_View_Themes;
-            r->rememberTheme = rememberTheme;
-            r->showStatusBar = showStatusBar;
-            r->showStatus_Fps = showStatus_Fps;
-            r->rememberStatusBarSettings = rememberStatusBarSettings;
+            auto r_ctor_ = self;
+            r_ctor_->defaultImGuiWindowType = defaultImGuiWindowType;
+            r_ctor_->enableViewports = enableViewports;
+            r_ctor_->configWindowsMoveFromTitleBarOnly = configWindowsMoveFromTitleBarOnly;
+            r_ctor_->menuAppTitle = menuAppTitle;
+            r_ctor_->showMenuBar = showMenuBar;
+            r_ctor_->showMenu_App = showMenu_App;
+            r_ctor_->showMenu_App_Quit = showMenu_App_Quit;
+            r_ctor_->showMenu_View = showMenu_View;
+            r_ctor_->showMenu_View_Themes = showMenu_View_Themes;
+            r_ctor_->rememberTheme = rememberTheme;
+            r_ctor_->showStatusBar = showStatusBar;
+            r_ctor_->showStatus_Fps = showStatus_Fps;
+            r_ctor_->rememberStatusBarSettings = rememberStatusBarSettings;
             if (fullScreenWindow_MarginTopLeft.has_value())
-                r->fullScreenWindow_MarginTopLeft = fullScreenWindow_MarginTopLeft.value();
+                r_ctor_->fullScreenWindow_MarginTopLeft = fullScreenWindow_MarginTopLeft.value();
             else
-                r->fullScreenWindow_MarginTopLeft = ImVec2(0.f, 0.f);
+                r_ctor_->fullScreenWindow_MarginTopLeft = ImVec2(0.f, 0.f);
             if (fullScreenWindow_MarginBottomRight.has_value())
-                r->fullScreenWindow_MarginBottomRight = fullScreenWindow_MarginBottomRight.value();
+                r_ctor_->fullScreenWindow_MarginBottomRight = fullScreenWindow_MarginBottomRight.value();
             else
-                r->fullScreenWindow_MarginBottomRight = ImVec2(0.f, 0.f);
+                r_ctor_->fullScreenWindow_MarginBottomRight = ImVec2(0.f, 0.f);
             if (tweakedTheme.has_value())
-                r->tweakedTheme = tweakedTheme.value();
+                r_ctor_->tweakedTheme = tweakedTheme.value();
             else
-                r->tweakedTheme = ImGuiTheme::ImGuiTweakedTheme();
+                r_ctor_->tweakedTheme = ImGuiTheme::ImGuiTweakedTheme();
             if (backgroundColor.has_value())
-                r->backgroundColor = backgroundColor.value();
+                r_ctor_->backgroundColor = backgroundColor.value();
             else
-                r->backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);
+                r_ctor_->backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);
         },
         nb::arg("default_imgui_window_type") = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, nb::arg("enable_viewports") = false, nb::arg("config_windows_move_from_title_bar_only") = true, nb::arg("menu_app_title") = "", nb::arg("show_menu_bar") = false, nb::arg("show_menu_app") = true, nb::arg("show_menu_app_quit") = true, nb::arg("show_menu_view") = true, nb::arg("show_menu_view_themes") = true, nb::arg("remember_theme") = true, nb::arg("show_status_bar") = false, nb::arg("show_status_fps") = true, nb::arg("remember_status_bar_settings") = true, nb::arg("full_screen_window_margin_top_left") = nb::none(), nb::arg("full_screen_window_margin_bottom_right") = nb::none(), nb::arg("tweaked_theme") = nb::none(), nb::arg("background_color") = nb::none()
         )
@@ -894,23 +894,23 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::MobileCallbacks * self, const std::optional<const VoidFunction> & OnDestroy = std::nullopt, const std::optional<const VoidFunction> & OnLowMemory = std::nullopt, const std::optional<const VoidFunction> & OnPause = std::nullopt, const std::optional<const VoidFunction> & OnResume = std::nullopt)
         {
             new (self) HelloImGui::MobileCallbacks();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (OnDestroy.has_value())
-                r->OnDestroy = OnDestroy.value();
+                r_ctor_->OnDestroy = OnDestroy.value();
             else
-                r->OnDestroy = HelloImGui::EmptyVoidFunction();
+                r_ctor_->OnDestroy = HelloImGui::EmptyVoidFunction();
             if (OnLowMemory.has_value())
-                r->OnLowMemory = OnLowMemory.value();
+                r_ctor_->OnLowMemory = OnLowMemory.value();
             else
-                r->OnLowMemory = HelloImGui::EmptyVoidFunction();
+                r_ctor_->OnLowMemory = HelloImGui::EmptyVoidFunction();
             if (OnPause.has_value())
-                r->OnPause = OnPause.value();
+                r_ctor_->OnPause = OnPause.value();
             else
-                r->OnPause = HelloImGui::EmptyVoidFunction();
+                r_ctor_->OnPause = HelloImGui::EmptyVoidFunction();
             if (OnResume.has_value())
-                r->OnResume = OnResume.value();
+                r_ctor_->OnResume = OnResume.value();
             else
-                r->OnResume = HelloImGui::EmptyVoidFunction();
+                r_ctor_->OnResume = HelloImGui::EmptyVoidFunction();
         },
         nb::arg("on_destroy") = nb::none(), nb::arg("on_low_memory") = nb::none(), nb::arg("on_pause") = nb::none(), nb::arg("on_resume") = nb::none()
         )
@@ -935,16 +935,16 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::EdgeToolbarOptions * self, float sizeEm = 2.5f, const std::optional<const ImVec2> & WindowPaddingEm = std::nullopt, const std::optional<const ImVec4> & WindowBg = std::nullopt)
         {
             new (self) HelloImGui::EdgeToolbarOptions();  // placement new
-            auto r = self;
-            r->sizeEm = sizeEm;
+            auto r_ctor_ = self;
+            r_ctor_->sizeEm = sizeEm;
             if (WindowPaddingEm.has_value())
-                r->WindowPaddingEm = WindowPaddingEm.value();
+                r_ctor_->WindowPaddingEm = WindowPaddingEm.value();
             else
-                r->WindowPaddingEm = ImVec2(0.3f, 0.3f);
+                r_ctor_->WindowPaddingEm = ImVec2(0.3f, 0.3f);
             if (WindowBg.has_value())
-                r->WindowBg = WindowBg.value();
+                r_ctor_->WindowBg = WindowBg.value();
             else
-                r->WindowBg = ImVec4(0.f, 0.f, 0.f, 0.f);
+                r_ctor_->WindowBg = ImVec4(0.f, 0.f, 0.f, 0.f);
         },
         nb::arg("size_em") = 2.5f, nb::arg("window_padding_em") = nb::none(), nb::arg("window_bg") = nb::none()
         )
@@ -960,15 +960,15 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::EdgeToolbar * self, const std::optional<const VoidFunction> & ShowToolbar = std::nullopt, const std::optional<const HelloImGui::EdgeToolbarOptions> & options = std::nullopt)
         {
             new (self) HelloImGui::EdgeToolbar();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (ShowToolbar.has_value())
-                r->ShowToolbar = ShowToolbar.value();
+                r_ctor_->ShowToolbar = ShowToolbar.value();
             else
-                r->ShowToolbar = HelloImGui::EmptyVoidFunction();
+                r_ctor_->ShowToolbar = HelloImGui::EmptyVoidFunction();
             if (options.has_value())
-                r->options = options.value();
+                r_ctor_->options = options.value();
             else
-                r->options = HelloImGui::EdgeToolbarOptions();
+                r_ctor_->options = HelloImGui::EdgeToolbarOptions();
         },
         nb::arg("show_toolbar") = nb::none(), nb::arg("options") = nb::none()
         )
@@ -997,81 +997,81 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::RunnerCallbacks * self, const std::optional<const VoidFunction> & ShowGui = std::nullopt, const std::optional<const VoidFunction> & ShowMenus = std::nullopt, const std::optional<const VoidFunction> & ShowAppMenuItems = std::nullopt, const std::optional<const VoidFunction> & ShowStatus = std::nullopt, const std::optional<const VoidFunction> & PostInit_AddPlatformBackendCallbacks = std::nullopt, const std::optional<const VoidFunction> & PostInit = std::nullopt, const std::optional<const VoidFunction> & LoadAdditionalFonts = std::nullopt, HelloImGui::DefaultIconFont defaultIconFont = HelloImGui::DefaultIconFont::FontAwesome4, const std::optional<const VoidFunction> & SetupImGuiConfig = std::nullopt, const std::optional<const VoidFunction> & SetupImGuiStyle = std::nullopt, const std::optional<const VoidFunction> & RegisterTests = std::nullopt, bool registerTestsCalled = false, const std::optional<const VoidFunction> & BeforeExit = std::nullopt, const std::optional<const VoidFunction> & BeforeExit_PostCleanup = std::nullopt, const std::optional<const VoidFunction> & PreNewFrame = std::nullopt, const std::optional<const VoidFunction> & BeforeImGuiRender = std::nullopt, const std::optional<const VoidFunction> & AfterSwap = std::nullopt, const std::optional<const VoidFunction> & CustomBackground = std::nullopt, const std::optional<const VoidFunction> & PostRenderDockableWindows = std::nullopt, const std::optional<const AnyEventCallback> & AnyBackendEventCallback = std::nullopt)
         {
             new (self) HelloImGui::RunnerCallbacks();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (ShowGui.has_value())
-                r->ShowGui = ShowGui.value();
+                r_ctor_->ShowGui = ShowGui.value();
             else
-                r->ShowGui = HelloImGui::EmptyVoidFunction();
+                r_ctor_->ShowGui = HelloImGui::EmptyVoidFunction();
             if (ShowMenus.has_value())
-                r->ShowMenus = ShowMenus.value();
+                r_ctor_->ShowMenus = ShowMenus.value();
             else
-                r->ShowMenus = HelloImGui::EmptyVoidFunction();
+                r_ctor_->ShowMenus = HelloImGui::EmptyVoidFunction();
             if (ShowAppMenuItems.has_value())
-                r->ShowAppMenuItems = ShowAppMenuItems.value();
+                r_ctor_->ShowAppMenuItems = ShowAppMenuItems.value();
             else
-                r->ShowAppMenuItems = HelloImGui::EmptyVoidFunction();
+                r_ctor_->ShowAppMenuItems = HelloImGui::EmptyVoidFunction();
             if (ShowStatus.has_value())
-                r->ShowStatus = ShowStatus.value();
+                r_ctor_->ShowStatus = ShowStatus.value();
             else
-                r->ShowStatus = HelloImGui::EmptyVoidFunction();
+                r_ctor_->ShowStatus = HelloImGui::EmptyVoidFunction();
             if (PostInit_AddPlatformBackendCallbacks.has_value())
-                r->PostInit_AddPlatformBackendCallbacks = PostInit_AddPlatformBackendCallbacks.value();
+                r_ctor_->PostInit_AddPlatformBackendCallbacks = PostInit_AddPlatformBackendCallbacks.value();
             else
-                r->PostInit_AddPlatformBackendCallbacks = HelloImGui::EmptyVoidFunction();
+                r_ctor_->PostInit_AddPlatformBackendCallbacks = HelloImGui::EmptyVoidFunction();
             if (PostInit.has_value())
-                r->PostInit = PostInit.value();
+                r_ctor_->PostInit = PostInit.value();
             else
-                r->PostInit = HelloImGui::EmptyVoidFunction();
+                r_ctor_->PostInit = HelloImGui::EmptyVoidFunction();
             if (LoadAdditionalFonts.has_value())
-                r->LoadAdditionalFonts = LoadAdditionalFonts.value();
+                r_ctor_->LoadAdditionalFonts = LoadAdditionalFonts.value();
             else
-                r->LoadAdditionalFonts = (VoidFunction)HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons;
-            r->defaultIconFont = defaultIconFont;
+                r_ctor_->LoadAdditionalFonts = (VoidFunction)HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons;
+            r_ctor_->defaultIconFont = defaultIconFont;
             if (SetupImGuiConfig.has_value())
-                r->SetupImGuiConfig = SetupImGuiConfig.value();
+                r_ctor_->SetupImGuiConfig = SetupImGuiConfig.value();
             else
-                r->SetupImGuiConfig = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig;
+                r_ctor_->SetupImGuiConfig = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiConfig;
             if (SetupImGuiStyle.has_value())
-                r->SetupImGuiStyle = SetupImGuiStyle.value();
+                r_ctor_->SetupImGuiStyle = SetupImGuiStyle.value();
             else
-                r->SetupImGuiStyle = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle;
+                r_ctor_->SetupImGuiStyle = (VoidFunction)HelloImGui::ImGuiDefaultSettings::SetupDefaultImGuiStyle;
             if (RegisterTests.has_value())
-                r->RegisterTests = RegisterTests.value();
+                r_ctor_->RegisterTests = RegisterTests.value();
             else
-                r->RegisterTests = HelloImGui::EmptyVoidFunction();
-            r->registerTestsCalled = registerTestsCalled;
+                r_ctor_->RegisterTests = HelloImGui::EmptyVoidFunction();
+            r_ctor_->registerTestsCalled = registerTestsCalled;
             if (BeforeExit.has_value())
-                r->BeforeExit = BeforeExit.value();
+                r_ctor_->BeforeExit = BeforeExit.value();
             else
-                r->BeforeExit = HelloImGui::EmptyVoidFunction();
+                r_ctor_->BeforeExit = HelloImGui::EmptyVoidFunction();
             if (BeforeExit_PostCleanup.has_value())
-                r->BeforeExit_PostCleanup = BeforeExit_PostCleanup.value();
+                r_ctor_->BeforeExit_PostCleanup = BeforeExit_PostCleanup.value();
             else
-                r->BeforeExit_PostCleanup = HelloImGui::EmptyVoidFunction();
+                r_ctor_->BeforeExit_PostCleanup = HelloImGui::EmptyVoidFunction();
             if (PreNewFrame.has_value())
-                r->PreNewFrame = PreNewFrame.value();
+                r_ctor_->PreNewFrame = PreNewFrame.value();
             else
-                r->PreNewFrame = HelloImGui::EmptyVoidFunction();
+                r_ctor_->PreNewFrame = HelloImGui::EmptyVoidFunction();
             if (BeforeImGuiRender.has_value())
-                r->BeforeImGuiRender = BeforeImGuiRender.value();
+                r_ctor_->BeforeImGuiRender = BeforeImGuiRender.value();
             else
-                r->BeforeImGuiRender = HelloImGui::EmptyVoidFunction();
+                r_ctor_->BeforeImGuiRender = HelloImGui::EmptyVoidFunction();
             if (AfterSwap.has_value())
-                r->AfterSwap = AfterSwap.value();
+                r_ctor_->AfterSwap = AfterSwap.value();
             else
-                r->AfterSwap = HelloImGui::EmptyVoidFunction();
+                r_ctor_->AfterSwap = HelloImGui::EmptyVoidFunction();
             if (CustomBackground.has_value())
-                r->CustomBackground = CustomBackground.value();
+                r_ctor_->CustomBackground = CustomBackground.value();
             else
-                r->CustomBackground = HelloImGui::EmptyVoidFunction();
+                r_ctor_->CustomBackground = HelloImGui::EmptyVoidFunction();
             if (PostRenderDockableWindows.has_value())
-                r->PostRenderDockableWindows = PostRenderDockableWindows.value();
+                r_ctor_->PostRenderDockableWindows = PostRenderDockableWindows.value();
             else
-                r->PostRenderDockableWindows = HelloImGui::EmptyVoidFunction();
+                r_ctor_->PostRenderDockableWindows = HelloImGui::EmptyVoidFunction();
             if (AnyBackendEventCallback.has_value())
-                r->AnyBackendEventCallback = AnyBackendEventCallback.value();
+                r_ctor_->AnyBackendEventCallback = AnyBackendEventCallback.value();
             else
-                r->AnyBackendEventCallback = HelloImGui::EmptyEventCallback();
+                r_ctor_->AnyBackendEventCallback = HelloImGui::EmptyEventCallback();
         },
         nb::arg("show_gui") = nb::none(), nb::arg("show_menus") = nb::none(), nb::arg("show_app_menu_items") = nb::none(), nb::arg("show_status") = nb::none(), nb::arg("post_init_add_platform_backend_callbacks") = nb::none(), nb::arg("post_init") = nb::none(), nb::arg("load_additional_fonts") = nb::none(), nb::arg("default_icon_font") = HelloImGui::DefaultIconFont::FontAwesome4, nb::arg("setup_imgui_config") = nb::none(), nb::arg("setup_imgui_style") = nb::none(), nb::arg("register_tests") = nb::none(), nb::arg("register_tests_called") = false, nb::arg("before_exit") = nb::none(), nb::arg("before_exit_post_cleanup") = nb::none(), nb::arg("pre_new_frame") = nb::none(), nb::arg("before_imgui_render") = nb::none(), nb::arg("after_swap") = nb::none(), nb::arg("custom_background") = nb::none(), nb::arg("post_render_dockable_windows") = nb::none(), nb::arg("any_backend_event_callback") = nb::none()
         )
@@ -1232,22 +1232,22 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::DockingParams * self, const std::optional<const std::vector<HelloImGui::DockingSplit>> & dockingSplits = std::nullopt, const std::optional<const std::vector<HelloImGui::DockableWindow>> & dockableWindows = std::nullopt, std::string layoutName = "Default", const std::optional<const ImGuiDockNodeFlags> & mainDockSpaceNodeFlags = std::nullopt, HelloImGui::DockingLayoutCondition layoutCondition = HelloImGui::DockingLayoutCondition::FirstUseEver, bool layoutReset = false)
         {
             new (self) HelloImGui::DockingParams();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (dockingSplits.has_value())
-                r->dockingSplits = dockingSplits.value();
+                r_ctor_->dockingSplits = dockingSplits.value();
             else
-                r->dockingSplits = std::vector<HelloImGui::DockingSplit>();
+                r_ctor_->dockingSplits = std::vector<HelloImGui::DockingSplit>();
             if (dockableWindows.has_value())
-                r->dockableWindows = dockableWindows.value();
+                r_ctor_->dockableWindows = dockableWindows.value();
             else
-                r->dockableWindows = std::vector<HelloImGui::DockableWindow>();
-            r->layoutName = layoutName;
+                r_ctor_->dockableWindows = std::vector<HelloImGui::DockableWindow>();
+            r_ctor_->layoutName = layoutName;
             if (mainDockSpaceNodeFlags.has_value())
-                r->mainDockSpaceNodeFlags = mainDockSpaceNodeFlags.value();
+                r_ctor_->mainDockSpaceNodeFlags = mainDockSpaceNodeFlags.value();
             else
-                r->mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode;
-            r->layoutCondition = layoutCondition;
-            r->layoutReset = layoutReset;
+                r_ctor_->mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode;
+            r_ctor_->layoutCondition = layoutCondition;
+            r_ctor_->layoutReset = layoutReset;
         },
         nb::arg("docking_splits") = nb::none(), nb::arg("dockable_windows") = nb::none(), nb::arg("layout_name") = "Default", nb::arg("main_dock_space_node_flags") = nb::none(), nb::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, nb::arg("layout_reset") = false
         )
@@ -1289,16 +1289,16 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::RemoteParams * self, bool enableRemoting = false, int wsPort = 5003, std::string wsHttpRootFolder = "", bool wsProvideIndexHtml = true, bool exitWhenServerDisconnected = false, double durationMaxDisconnected = 30.0, std::string serverHost = "localhost", uint32_t serverPort = 8888, bool transmitWindowSize = false)
         {
             new (self) HelloImGui::RemoteParams();  // placement new
-            auto r = self;
-            r->enableRemoting = enableRemoting;
-            r->wsPort = wsPort;
-            r->wsHttpRootFolder = wsHttpRootFolder;
-            r->wsProvideIndexHtml = wsProvideIndexHtml;
-            r->exitWhenServerDisconnected = exitWhenServerDisconnected;
-            r->durationMaxDisconnected = durationMaxDisconnected;
-            r->serverHost = serverHost;
-            r->serverPort = serverPort;
-            r->transmitWindowSize = transmitWindowSize;
+            auto r_ctor_ = self;
+            r_ctor_->enableRemoting = enableRemoting;
+            r_ctor_->wsPort = wsPort;
+            r_ctor_->wsHttpRootFolder = wsHttpRootFolder;
+            r_ctor_->wsProvideIndexHtml = wsProvideIndexHtml;
+            r_ctor_->exitWhenServerDisconnected = exitWhenServerDisconnected;
+            r_ctor_->durationMaxDisconnected = durationMaxDisconnected;
+            r_ctor_->serverHost = serverHost;
+            r_ctor_->serverPort = serverPort;
+            r_ctor_->transmitWindowSize = transmitWindowSize;
         },
         nb::arg("enable_remoting") = false, nb::arg("ws_port") = 5003, nb::arg("ws_http_root_folder") = "", nb::arg("ws_provide_index_html") = true, nb::arg("exit_when_server_disconnected") = false, nb::arg("duration_max_disconnected") = 30.0, nb::arg("server_host") = "localhost", nb::arg("server_port") = 8888, nb::arg("transmit_window_size") = false
         )
@@ -1320,13 +1320,13 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::OpenGlOptions * self, std::optional<std::string> GlslVersion = std::nullopt, std::optional<int> MajorVersion = std::nullopt, std::optional<int> MinorVersion = std::nullopt, std::optional<bool> UseCoreProfile = std::nullopt, std::optional<bool> UseForwardCompat = std::nullopt, std::optional<int> AntiAliasingSamples = std::nullopt)
         {
             new (self) HelloImGui::OpenGlOptions();  // placement new
-            auto r = self;
-            r->GlslVersion = GlslVersion;
-            r->MajorVersion = MajorVersion;
-            r->MinorVersion = MinorVersion;
-            r->UseCoreProfile = UseCoreProfile;
-            r->UseForwardCompat = UseForwardCompat;
-            r->AntiAliasingSamples = AntiAliasingSamples;
+            auto r_ctor_ = self;
+            r_ctor_->GlslVersion = GlslVersion;
+            r_ctor_->MajorVersion = MajorVersion;
+            r_ctor_->MinorVersion = MinorVersion;
+            r_ctor_->UseCoreProfile = UseCoreProfile;
+            r_ctor_->UseForwardCompat = UseForwardCompat;
+            r_ctor_->AntiAliasingSamples = AntiAliasingSamples;
         },
         nb::arg("glsl_version") = nb::none(), nb::arg("major_version") = nb::none(), nb::arg("minor_version") = nb::none(), nb::arg("use_core_profile") = nb::none(), nb::arg("use_forward_compat") = nb::none(), nb::arg("anti_aliasing_samples") = nb::none()
         )
@@ -1349,12 +1349,12 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::RendererBackendOptions * self, bool requestFloatBuffer = false, const std::optional<const HelloImGui::OpenGlOptions> & openGlOptions = std::nullopt)
         {
             new (self) HelloImGui::RendererBackendOptions();  // placement new
-            auto r = self;
-            r->requestFloatBuffer = requestFloatBuffer;
+            auto r_ctor_ = self;
+            r_ctor_->requestFloatBuffer = requestFloatBuffer;
             if (openGlOptions.has_value())
-                r->openGlOptions = openGlOptions.value();
+                r_ctor_->openGlOptions = openGlOptions.value();
             else
-                r->openGlOptions = HelloImGui::OpenGlOptions();
+                r_ctor_->openGlOptions = HelloImGui::OpenGlOptions();
         },
         nb::arg("request_float_buffer") = false, nb::arg("open_gl_options") = nb::none()
         )
@@ -1369,13 +1369,13 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::OpenGlOptionsFilled_ * self, std::string GlslVersion = "150", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true, int AntiAliasingSamples = 8)
         {
             new (self) HelloImGui::OpenGlOptionsFilled_();  // placement new
-            auto r = self;
-            r->GlslVersion = GlslVersion;
-            r->MajorVersion = MajorVersion;
-            r->MinorVersion = MinorVersion;
-            r->UseCoreProfile = UseCoreProfile;
-            r->UseForwardCompat = UseForwardCompat;
-            r->AntiAliasingSamples = AntiAliasingSamples;
+            auto r_ctor_ = self;
+            r_ctor_->GlslVersion = GlslVersion;
+            r_ctor_->MajorVersion = MajorVersion;
+            r_ctor_->MinorVersion = MinorVersion;
+            r_ctor_->UseCoreProfile = UseCoreProfile;
+            r_ctor_->UseForwardCompat = UseForwardCompat;
+            r_ctor_->AntiAliasingSamples = AntiAliasingSamples;
         },
         nb::arg("glsl_version") = "150", nb::arg("major_version") = 3, nb::arg("minor_version") = 3, nb::arg("use_core_profile") = true, nb::arg("use_forward_compat") = true, nb::arg("anti_aliasing_samples") = 8
         )
@@ -1437,13 +1437,13 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::FpsIdling * self, float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false, HelloImGui::FpsIdlingMode fpsIdlingMode = HelloImGui::FpsIdlingMode::Auto)
         {
             new (self) HelloImGui::FpsIdling();  // placement new
-            auto r = self;
-            r->fpsIdle = fpsIdle;
-            r->timeActiveAfterLastEvent = timeActiveAfterLastEvent;
-            r->enableIdling = enableIdling;
-            r->isIdling = isIdling;
-            r->rememberEnableIdling = rememberEnableIdling;
-            r->fpsIdlingMode = fpsIdlingMode;
+            auto r_ctor_ = self;
+            r_ctor_->fpsIdle = fpsIdle;
+            r_ctor_->timeActiveAfterLastEvent = timeActiveAfterLastEvent;
+            r_ctor_->enableIdling = enableIdling;
+            r_ctor_->isIdling = isIdling;
+            r_ctor_->rememberEnableIdling = rememberEnableIdling;
+            r_ctor_->fpsIdlingMode = fpsIdlingMode;
         },
         nb::arg("fps_idle") = 9.f, nb::arg("time_active_after_last_event") = 3.f, nb::arg("enable_idling") = true, nb::arg("is_idling") = false, nb::arg("remember_enable_idling") = false, nb::arg("fps_idling_mode") = HelloImGui::FpsIdlingMode::Auto
         )
@@ -1462,52 +1462,52 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::RunnerParams * self, const std::optional<const HelloImGui::RunnerCallbacks> & callbacks = std::nullopt, const std::optional<const HelloImGui::AppWindowParams> & appWindowParams = std::nullopt, const std::optional<const HelloImGui::ImGuiWindowParams> & imGuiWindowParams = std::nullopt, const std::optional<const HelloImGui::DockingParams> & dockingParams = std::nullopt, const std::optional<const std::vector<HelloImGui::DockingParams>> & alternativeDockingLayouts = std::nullopt, bool rememberSelectedAlternativeLayout = true, const std::optional<const HelloImGui::BackendPointers> & backendPointers = std::nullopt, const std::optional<const HelloImGui::RendererBackendOptions> & rendererBackendOptions = std::nullopt, HelloImGui::PlatformBackendType platformBackendType = HelloImGui::PlatformBackendType::FirstAvailable, HelloImGui::RendererBackendType rendererBackendType = HelloImGui::RendererBackendType::FirstAvailable, HelloImGui::IniFolderType iniFolderType = HelloImGui::IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, const std::optional<const HelloImGui::FpsIdling> & fpsIdling = std::nullopt, const std::optional<const HelloImGui::DpiAwareParams> & dpiAwareParams = std::nullopt, bool useImGuiTestEngine = false, int emscripten_fps = 0)
         {
             new (self) HelloImGui::RunnerParams();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (callbacks.has_value())
-                r->callbacks = callbacks.value();
+                r_ctor_->callbacks = callbacks.value();
             else
-                r->callbacks = HelloImGui::RunnerCallbacks();
+                r_ctor_->callbacks = HelloImGui::RunnerCallbacks();
             if (appWindowParams.has_value())
-                r->appWindowParams = appWindowParams.value();
+                r_ctor_->appWindowParams = appWindowParams.value();
             else
-                r->appWindowParams = HelloImGui::AppWindowParams();
+                r_ctor_->appWindowParams = HelloImGui::AppWindowParams();
             if (imGuiWindowParams.has_value())
-                r->imGuiWindowParams = imGuiWindowParams.value();
+                r_ctor_->imGuiWindowParams = imGuiWindowParams.value();
             else
-                r->imGuiWindowParams = HelloImGui::ImGuiWindowParams();
+                r_ctor_->imGuiWindowParams = HelloImGui::ImGuiWindowParams();
             if (dockingParams.has_value())
-                r->dockingParams = dockingParams.value();
+                r_ctor_->dockingParams = dockingParams.value();
             else
-                r->dockingParams = HelloImGui::DockingParams();
+                r_ctor_->dockingParams = HelloImGui::DockingParams();
             if (alternativeDockingLayouts.has_value())
-                r->alternativeDockingLayouts = alternativeDockingLayouts.value();
+                r_ctor_->alternativeDockingLayouts = alternativeDockingLayouts.value();
             else
-                r->alternativeDockingLayouts = std::vector<HelloImGui::DockingParams>();
-            r->rememberSelectedAlternativeLayout = rememberSelectedAlternativeLayout;
+                r_ctor_->alternativeDockingLayouts = std::vector<HelloImGui::DockingParams>();
+            r_ctor_->rememberSelectedAlternativeLayout = rememberSelectedAlternativeLayout;
             if (backendPointers.has_value())
-                r->backendPointers = backendPointers.value();
+                r_ctor_->backendPointers = backendPointers.value();
             else
-                r->backendPointers = HelloImGui::BackendPointers();
+                r_ctor_->backendPointers = HelloImGui::BackendPointers();
             if (rendererBackendOptions.has_value())
-                r->rendererBackendOptions = rendererBackendOptions.value();
+                r_ctor_->rendererBackendOptions = rendererBackendOptions.value();
             else
-                r->rendererBackendOptions = HelloImGui::RendererBackendOptions();
-            r->platformBackendType = platformBackendType;
-            r->rendererBackendType = rendererBackendType;
-            r->iniFolderType = iniFolderType;
-            r->iniFilename = iniFilename;
-            r->iniFilename_useAppWindowTitle = iniFilename_useAppWindowTitle;
-            r->appShallExit = appShallExit;
+                r_ctor_->rendererBackendOptions = HelloImGui::RendererBackendOptions();
+            r_ctor_->platformBackendType = platformBackendType;
+            r_ctor_->rendererBackendType = rendererBackendType;
+            r_ctor_->iniFolderType = iniFolderType;
+            r_ctor_->iniFilename = iniFilename;
+            r_ctor_->iniFilename_useAppWindowTitle = iniFilename_useAppWindowTitle;
+            r_ctor_->appShallExit = appShallExit;
             if (fpsIdling.has_value())
-                r->fpsIdling = fpsIdling.value();
+                r_ctor_->fpsIdling = fpsIdling.value();
             else
-                r->fpsIdling = HelloImGui::FpsIdling();
+                r_ctor_->fpsIdling = HelloImGui::FpsIdling();
             if (dpiAwareParams.has_value())
-                r->dpiAwareParams = dpiAwareParams.value();
+                r_ctor_->dpiAwareParams = dpiAwareParams.value();
             else
-                r->dpiAwareParams = HelloImGui::DpiAwareParams();
-            r->useImGuiTestEngine = useImGuiTestEngine;
-            r->emscripten_fps = emscripten_fps;
+                r_ctor_->dpiAwareParams = HelloImGui::DpiAwareParams();
+            r_ctor_->useImGuiTestEngine = useImGuiTestEngine;
+            r_ctor_->emscripten_fps = emscripten_fps;
         },
         nb::arg("callbacks") = nb::none(), nb::arg("app_window_params") = nb::none(), nb::arg("imgui_window_params") = nb::none(), nb::arg("docking_params") = nb::none(), nb::arg("alternative_docking_layouts") = nb::none(), nb::arg("remember_selected_alternative_layout") = true, nb::arg("backend_pointers") = nb::none(), nb::arg("renderer_backend_options") = nb::none(), nb::arg("platform_backend_type") = HelloImGui::PlatformBackendType::FirstAvailable, nb::arg("renderer_backend_type") = HelloImGui::RendererBackendType::FirstAvailable, nb::arg("ini_folder_type") = HelloImGui::IniFolderType::CurrentFolder, nb::arg("ini_filename") = "", nb::arg("ini_filename_use_app_window_title") = true, nb::arg("app_shall_exit") = false, nb::arg("fps_idling") = nb::none(), nb::arg("dpi_aware_params") = nb::none(), nb::arg("use_imgui_test_engine") = false, nb::arg("emscripten_fps") = 0
         )
@@ -1554,20 +1554,20 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("__init__", [](HelloImGui::SimpleRunnerParams * self, const std::optional<const VoidFunction> & guiFunction = std::nullopt, std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 9.f, bool enableIdling = true)
         {
             new (self) HelloImGui::SimpleRunnerParams();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (guiFunction.has_value())
-                r->guiFunction = guiFunction.value();
+                r_ctor_->guiFunction = guiFunction.value();
             else
-                r->guiFunction = HelloImGui::EmptyVoidFunction();
-            r->windowTitle = windowTitle;
-            r->windowSizeAuto = windowSizeAuto;
-            r->windowRestorePreviousGeometry = windowRestorePreviousGeometry;
+                r_ctor_->guiFunction = HelloImGui::EmptyVoidFunction();
+            r_ctor_->windowTitle = windowTitle;
+            r_ctor_->windowSizeAuto = windowSizeAuto;
+            r_ctor_->windowRestorePreviousGeometry = windowRestorePreviousGeometry;
             if (windowSize.has_value())
-                r->windowSize = windowSize.value();
+                r_ctor_->windowSize = windowSize.value();
             else
-                r->windowSize = HelloImGui::DefaultWindowSize;
-            r->fpsIdle = fpsIdle;
-            r->enableIdling = enableIdling;
+                r_ctor_->windowSize = HelloImGui::DefaultWindowSize;
+            r_ctor_->fpsIdle = fpsIdle;
+            r_ctor_->enableIdling = enableIdling;
         },
         nb::arg("gui_function") = nb::none(), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 9.f, nb::arg("enable_idling") = true
         )
