@@ -33,13 +33,14 @@ Docs and tricks, cf:
 * https://www.ubble.ai/how-to-make-opencv-js-work/
 * https://answers.opencv.org/question/212376/how-to-decode-an-image-using-emscripten/
 
+See _Bundle/_Drafts/build_work/OpenCv_Emscripten
 
 ==== Clone Opencv 4.7.0
 
 ```
 git clone https://github.com/opencv/opencv.git
 cd opencv
-git checkout 4.9.0
+git checkout 4.11.0
 cd ..
 ```
 
@@ -50,6 +51,18 @@ cd ..
 ```
 add_compile_options(-pthread)
 add_link_options(-pthread)
+```
+
+For pyodide, also add:
+```
+add_compile_options(
+  "-fwasm-exceptions"
+  "-sSUPPORT_LONGJMP"
+)
+add_link_options(
+  "-fwasm-exceptions"
+  "-sSUPPORT_LONGJMP"
+)
 ```
 
 
@@ -95,10 +108,10 @@ build: call_cmake
     make install
 
 tgz: build
-    tar -czvf opencv_4.9_pthread_fpic_emscripten_minimalist_install.tgz opencv_emscripten_install
+    tar -czvf opencv_4.11_wasmexcept_pthread_fpic_emscripten_minimalist_install.tgz opencv_emscripten_install
 
 all: tgz
-    md5 opencv_4.9_pthread_fpic_emscripten_minimalist_install.tgz
+    md5 opencv_4.11_wasmexcept_pthread_fpic_emscripten_minimalist_install.tgz
 
 ```
 
