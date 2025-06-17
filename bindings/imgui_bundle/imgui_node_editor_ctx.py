@@ -5,6 +5,19 @@ imgui_node_editor_ctx provide context managers to simplify the use of functions 
         can be replaced by:  `with imgui_node_editor.begin()
 
     etc.
+
+Note:
+    begin_create(), begin_delete(), being_group_hint(), and begin_shortcut ()
+    return a context manager that contains a boolean, which indicates whether the
+    context was opened or not.
+
+    Usage example:
+    ```python
+    with imgui_node_editor_ctx.begin_create() as shall_create:
+        if shall_create:
+            # do something with the pin
+            ...
+    ```
 """
 from imgui_bundle import ImVec2, ImVec4
 from imgui_bundle import imgui_node_editor as ed
@@ -91,16 +104,21 @@ def begin_pin(pin_id: ed.PinId, kind: ed.PinKind) -> _BeginPin:
 class _BeginCreate:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     _enter_callback: _EnterCallback
+    opened: bool
 
     def __init__(self, color: ImVec4 = IM_VEC4_ONE, thickness: float = 1.0) -> None:
         self._enter_callback = lambda: ed.begin_create(color, thickness)
 
     def __enter__(self) -> "_BeginCreate":
-        self._enter_callback()
+        self.opened = self._enter_callback()
         return self
 
     def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
-        ed.end_create()
+        if self.opened:
+            ed.end_create()
+
+    def __bool__(self) -> bool:
+        return self.opened
 
     def __repr__(self):
         return self.__class__.__name__
@@ -113,16 +131,21 @@ def begin_create(color: ImVec4 = IM_VEC4_ONE, thickness: float = 1.0) -> _BeginC
 class _BeginDelete:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     _enter_callback: _EnterCallback
+    opened: bool
 
     def __init__(self) -> None:
         self._enter_callback = lambda: ed.begin_delete()
 
     def __enter__(self) -> "_BeginDelete":
-        self._enter_callback()
+        self.opened = self._enter_callback()
         return self
 
     def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
-        ed.end_delete()
+        if self.opened:
+            ed.end_delete()
+
+    def __bool__(self) -> bool:
+        return self.opened
 
     def __repr__(self):
         return self.__class__.__name__
@@ -135,16 +158,21 @@ def begin_delete() -> _BeginDelete:
 class _BeginGroupHint:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     _enter_callback: _EnterCallback
+    opened: bool
 
     def __init__(self, node_id: ed.NodeId) -> None:
         self._enter_callback = lambda: ed.begin_group_hint(node_id)
 
     def __enter__(self) -> "_BeginGroupHint":
-        self._enter_callback()
+        self.opened = self._enter_callback()
         return self
 
     def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
-        ed.end_group_hint()
+        if self.opened:
+            ed.end_group_hint()
+
+    def __bool__(self) -> bool:
+        return self.opened
 
     def __repr__(self):
         return self.__class__.__name__
@@ -157,16 +185,21 @@ def begin_group_hint(node_id: ed.NodeId) -> _BeginGroupHint:
 class _BeginShortcut:
     # _enter_callback will be called in __enter__. Captures all __init__ arguments.
     _enter_callback: _EnterCallback
+    opened: bool
 
     def __init__(self) -> None:
         self._enter_callback = lambda: ed.begin_shortcut()
 
     def __enter__(self) -> "_BeginShortcut":
-        self._enter_callback()
+        self.opened = self._enter_callback()
         return self
 
     def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
-        ed.end_shortcut()
+        if self.opened:
+            ed.end_shortcut()
+
+    def __bool__(self) -> bool:
+        return self.opened
 
     def __repr__(self):
         return self.__class__.__name__

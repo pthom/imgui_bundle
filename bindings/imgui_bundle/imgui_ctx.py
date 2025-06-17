@@ -1,16 +1,31 @@
 """
-imgui_ctx provide context managers to simplify the use of functions pairs like
+imgui_ctx provides context managers to simplify the use of paired ImGui functions such as:
 
-    1. `imgui.begin()` and `imgui.end()`
-        can be replaced by:  `with imgui_ctx.begin() as window:`
+    1. `imgui.begin()` / `imgui.end()`
+       can be replaced by: `with imgui_ctx.begin() as window:` + `if window:`
 
-    2. `imgui.begin_child()` and `imgui.end_child()`
-        can be replaced by:  `with imgui_ctx.begin_child() as child:`
+    2. `imgui.begin_child()` / `imgui.end_child()`
+       can be replaced by: `with imgui_ctx.begin_child() as child:` + `if child:`
 
-    3. `imgui.begin_menu_bar()` and `imgui.end_menu_bar()`
-        can be replaced by:  `with imgui_ctx.begin_menu_bar() as menu_bar:`
+    3. `imgui.begin_menu_bar()` / `imgui.end_menu_bar()`
+       can be replaced by: `with imgui_ctx.begin_menu_bar() as menu_bar:` + `if menu_bar:`
 
-    etc.
+    ...
+
+Note:
+    ImGui’s "begin"/"end" functions typically return a boolean indicating whether the context is open and usable.
+    You may (and often should) use this boolean to guard the inner code, as in the example below:
+
+    ```python
+    with imgui_ctx.begin_main_menu_bar() as menu_bar:
+        if menu_bar:
+            with imgui_ctx.begin_menu("Edit1") as menu_edit:
+                if menu_edit:
+                    imgui.menu_item_simple("Undo")
+                    imgui.menu_item_simple("Redo")
+    ```
+
+    This pattern avoids rendering UI elements inside a closed or collapsed container, as per ImGui’s recommended usage.
 """
 
 
