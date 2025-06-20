@@ -1953,20 +1953,7 @@ def demo_header(label, demo_function):
 
 def show_all_demos():
     """Main function to display all ImPlot demos with categorized tabs."""
-    static = show_all_demos
-
     imgui.text(f"ImPlot says hello. ({implot.version})")
-
-    # Show warning for potential rendering issues
-    if not hasattr(static, "show_warning"):
-        static.show_warning = (imgui.get_io().backend_flags & imgui.BackendFlags_.renderer_has_vtx_offset.value) == 0 and imgui.draw_idx_size() == 2
-
-    if static.show_warning:
-        imgui.push_style_color(imgui.Col_.text.value, [1, 1, 0, 1])
-        imgui.text_wrapped("WARNING: ImDrawIdx is 16-bit and ImGuiBackendFlags_RendererHasVtxOffset is false. "
-                           "Expect visual glitches and artifacts! See README for more information.")
-        imgui.pop_style_color()
-
     imgui.spacing()
 
     if imgui.begin_tab_bar("ImPlotDemoTabs"):
