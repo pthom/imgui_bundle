@@ -21,11 +21,12 @@ def demo_gui():
     imgui.text(
         "Click the button below to launch the demo (below the button is a screenshot of the app that will be launched)"
     )
-    if imgui.button("Run gizmo demo"):
-        this_dir = os.path.dirname(__file__)
-        subprocess.Popen(
-            [sys.executable, this_dir + "/demos_imguizmo/demo_gizmo.py"]
-        )
+    if demo_utils.can_run_subprocess():
+        if imgui.button("Run gizmo demo"):
+            this_dir = os.path.dirname(__file__)
+            subprocess.Popen(
+                [sys.executable, this_dir + "/demos_imguizmo/demo_gizmo.py"]
+            )
     hello_imgui.image_from_asset(
         "images/gizmo_screenshot.jpg", size=ImVec2(0, immapp.em_size(15.0))
     )

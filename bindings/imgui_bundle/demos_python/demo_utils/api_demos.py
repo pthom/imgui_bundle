@@ -108,3 +108,19 @@ def read_markdown_code(doc_filename: str) -> str:
     doc_file = markdown_doc_folder() + "/" + doc_filename + ".adoc.md"
     r: str = read_code(doc_file)  # type: ignore
     return r
+
+
+def can_run_subprocess() -> bool:
+    from imgui_bundle._imgui_bundle import __bundle_pyodide__  # type: ignore
+    return not __bundle_pyodide__
+
+
+def spawn_demo_file(demo_file_path: str) -> None:
+    if can_run_subprocess():
+        import subprocess
+        import sys
+        subprocess.Popen(
+            [sys.executable, demo_file_path]
+        )
+    else:
+        print("Cannot run subprocess in this environment.")
