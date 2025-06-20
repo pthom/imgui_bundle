@@ -42,8 +42,9 @@ def demo_gui():
             "Click the button below to launch the demo"
         )
         imgui.new_line()
-        if imgui.button("Run full demo"):
-            _do_spawn_demo("demo_nanovg_full")
+        if demo_utils.can_run_subprocess():
+            if imgui.button("Run full demo"):
+                _do_spawn_demo("demo_nanovg_full")
         imgui.end_group()
 
         imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(14.0))
@@ -72,8 +73,9 @@ def demo_gui():
             "Click the button below to launch the demo"
         )
         imgui.new_line()
-        if imgui.button("Run simple demo"):
-            _do_spawn_demo("demo_nanovg_heart")
+        if demo_utils.can_run_subprocess():
+            if imgui.button("Run simple demo"):
+                _do_spawn_demo("demo_nanovg_heart")
         imgui.end_group()
         imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(14.0))
         if hello_imgui.image_button_from_asset("images/nanovg_demo_heart.jpg", ImVec2(hello_imgui.em_size(11.0), 0.0)):

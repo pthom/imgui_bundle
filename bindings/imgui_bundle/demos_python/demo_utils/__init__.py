@@ -4,7 +4,8 @@ from imgui_bundle.demos_python.demo_utils.api_demos import (
     show_python_vs_cpp_and_run,
     show_python_vs_cpp_file,
     set_hello_imgui_demo_assets_folder,
-    spawn_demo_file
+    spawn_demo_file,
+    can_run_subprocess
 )
 from imgui_bundle.demos_python.demo_utils.animate_logo import animate_logo
 from imgui_bundle.demos_python.demo_utils.imread_pil import imread_pil
@@ -19,5 +20,6 @@ __all__ = [
     "set_hello_imgui_demo_assets_folder",
     "animate_logo",
     "imread_pil",
-    "spawn_demo_file"
+    "spawn_demo_file",
+    "can_run_subprocess"
 ]

@@ -143,8 +143,9 @@ class DemoAppTable:
 
                         imgui.same_line()
 
-                        if imgui.button("Run"):
-                            demo_utils.spawn_demo_file(self._demo_python_file_path(demo_app))
+                        if demo_utils.can_run_subprocess():
+                            if imgui.button("Run"):
+                                demo_utils.spawn_demo_file(self._demo_python_file_path(demo_app))
 
                     imgui.pop_id()
                 imgui.end_table()

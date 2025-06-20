@@ -109,20 +109,18 @@ def read_markdown_code(doc_filename: str) -> str:
     r: str = read_code(doc_file)  # type: ignore
     return r
 
+
+def can_run_subprocess() -> bool:
+    from imgui_bundle._imgui_bundle import __bundle_pyodide__  # type: ignore
+    return not __bundle_pyodide__
+
+
 def spawn_demo_file(demo_file_path: str) -> None:
-    from imgui_bundle._imgui_bundle import __bundle_pyodide__ # type: ignore
-
-    can_run_process = True
-    if __bundle_pyodide__:
-        can_run_process = False
-
-    if can_run_process:
+    if can_run_subprocess():
         import subprocess
         import sys
         subprocess.Popen(
             [sys.executable, demo_file_path]
         )
     else:
-        print("Cannot spawn in pyodide, run code instead.")
-        code  = read_code(demo_file_path)
-        exec(code, globals(), locals())
+        print("Cannot run subprocess in this environment.")
