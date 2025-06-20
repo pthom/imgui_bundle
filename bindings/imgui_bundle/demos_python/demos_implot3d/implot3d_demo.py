@@ -13,39 +13,6 @@ set_hello_imgui_demo_assets_folder()
 # [SECTION] Demo Textures
 #-----------------------------------------------------------------------------
 
-def rgba_image_to_texture(image: np.ndarray) -> int:
-    """Upload an RGBA image to the GPU as a texture, returns the OpenGL texture ID."""
-    from OpenGL import GL
-    assert image.dtype == np.uint8 and image.ndim == 3 and image.shape[2] == 4
-
-    height, width = image.shape[:2]
-
-    # Generate a texture ID
-    texture_id = GL.glGenTextures(1)
-    GL.glBindTexture(GL.GL_TEXTURE_2D, texture_id)
-
-    # Set texture parameters (you may want to adjust this)
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR)
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR)
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE)
-    GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE)
-
-    # Upload the image
-    GL.glTexImage2D(
-        GL.GL_TEXTURE_2D,
-        0,                  # level
-        GL.GL_RGBA,            # internal format
-        width,
-        height,
-        0,                  # border
-        GL.GL_RGBA,            # input format
-        GL.GL_UNSIGNED_BYTE,   # input type
-        image
-    )
-
-    GL.glBindTexture(GL.GL_TEXTURE_2D, 0)
-    return texture_id
-
 
 def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> np.ndarray:
     """Create a checkerboard RGBA texture as a numpy array."""
@@ -489,11 +456,17 @@ def demo_image_plots():
         static.uv2 = ImVec2(1.0, 1.0)
         static.uv3 = ImVec2(0.0, 1.0)
 
+        # Create textures
+        # Step 1: create them as numpy arrays
         checker_img = make_checkerboard_texture()
         circle_img = make_gradient_circle_texture()
-
-        static.tex_id_checker = rgba_image_to_texture(checker_img)
-        static.tex_id_circle = rgba_image_to_texture(circle_img)
+        # Step 2: convert them to OpenGL textures (using imgui_bundle's immvision)
+        from imgui_bundle import immvision
+        static.tex_checker = immvision.GlTexture(checker_img)
+        static.tex_circle = immvision.GlTexture(circle_img)
+        # Step 3: create ImTextureRef from the OpenGL texture id
+        static.tex_id_checker = static.tex_checker.texture_id
+        static.tex_id_circle = static.tex_circle.texture_id
 
         static.initialized = True
 
