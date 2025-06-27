@@ -1,4 +1,22 @@
-Version numbers are synced between hello_imgui and imgui_bundle.
+*Version numbers are synced between "Dear ImGui", "Hello ImGui" and "Dear ImGui Bundle"*
+
+# v1.92.0
+
+*Starting with v1.92.0, version numbers are now synced between "Dear ImGui", "Hello ImGui" and "Dear ImGui Bundle"*
+
+## ImGui
+- Many Font related changes: this release brings many changes on the ImGui side (v1.92.0): do read the [release notes for ImGui v1.92.0](https://github.com/ocornut/imgui/releases/tag/v1.92.0)
+  TLDR: Fonts may be rendered at any size. Glyphs are loaded and rasterized dynamically. No need to specify ranges, prebake etc.
+
+## Python bindings
+- Fix ImPlot stubs (thanks @tlambert03)
+- Fix imgui_ctx and imgui_node_ctx
+- pure python backends: split opengl implems,  implement texture update in python pure opengl backends
+- imgui bindings => publish texture related infos
+
+## Pyodide
+- Added support for Pyodide
+
 
 # v1.6.3
 
