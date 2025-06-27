@@ -226,13 +226,11 @@ assets/
         void Render(const std::string& s)
         {
             auto defaultSizedFont = mMarkdownCollection.mFontCollection.GetDefaultFont();
-            ImGui::PushFont(defaultSizedFont.font);
-            ImGui::PushFontSize(defaultSizedFont.size);
+            ImGui::PushFont(defaultSizedFont.font, defaultSizedFont.size);
 
             const char * start = s.c_str();
             const char * end = start + s.size();
             this->print(start, end);
-            ImGui::PopFontSize();
             ImGui::PopFont();
         }
 

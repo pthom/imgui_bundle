@@ -601,18 +601,25 @@ void py_init_module_imgui_main(nb::module_& m)
         "adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position.");
 
     m.def("push_font",
-        ImGui::PushFont,
-        nb::arg("font"), nb::arg("font_size_base") = -1,
-        "use None as a shortcut to push default font. Use <0.0 to keep current font size.");
+        nb::overload_cast<ImFont *, float>(ImGui::PushFont),
+        nb::arg("font"), nb::arg("font_size_base_unscaled"),
+        "Use None as a shortcut to keep current font. Use 0.0 to keep current size.");
 
     m.def("pop_font",
         ImGui::PopFont);
 
-    m.def("push_font_size",
-        ImGui::PushFontSize, nb::arg("font_size_base"));
+    m.def("get_font",
+        ImGui::GetFont,
+        "get current font",
+        nb::rv_policy::reference);
 
-    m.def("pop_font_size",
-        ImGui::PopFontSize);
+    m.def("get_font_size",
+        ImGui::GetFontSize, "get current scaled font size (= height in pixels). AFTER global scale factors applied. *IMPORTANT* DO NOT PASS THIS VALUE TO PushFont()! Use ImGui::GetStyle().FontSizeBase to get value before global scale factors.");
+
+    m.def("get_font_baked",
+        ImGui::GetFontBaked,
+        "get current font bound at current size // == GetFont()->GetFontBaked(GetFontSize())",
+        nb::rv_policy::reference);
 
     m.def("push_style_color",
         nb::overload_cast<ImGuiCol, ImU32>(ImGui::PushStyleColor),
@@ -680,21 +687,8 @@ void py_init_module_imgui_main(nb::module_& m)
     m.def("pop_text_wrap_pos",
         ImGui::PopTextWrapPos);
 
-    m.def("get_font",
-        ImGui::GetFont,
-        "get current font",
-        nb::rv_policy::reference);
-
-    m.def("get_font_size",
-        ImGui::GetFontSize, "get current font size (= height in pixels) of current font with external scale factors applied. Use ImGui::GetStyle().FontSizeBase to get value before external scale factors.");
-
     m.def("get_font_tex_uv_white_pixel",
         ImGui::GetFontTexUvWhitePixel, "get UV coordinate for a white pixel, useful to draw custom shapes via the ImDrawList API");
-
-    m.def("get_font_baked",
-        ImGui::GetFontBaked,
-        "get current font bound at current size // == GetFont()->GetFontBaked(GetFontSize())",
-        nb::rv_policy::reference);
 
     m.def("get_color_u32",
         nb::overload_cast<ImGuiCol, float>(ImGui::GetColorU32),
@@ -3428,7 +3422,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("left_ctrl", ImGuiKey_LeftCtrl, "")
             .value("left_shift", ImGuiKey_LeftShift, "")
             .value("left_alt", ImGuiKey_LeftAlt, "")
-            .value("left_super", ImGuiKey_LeftSuper, "")
+            .value("left_super", ImGuiKey_LeftSuper, "Also see ImGuiMod_Ctrl, ImGuiMod_Shift, ImGuiMod_Alt, ImGuiMod_Super below!")
             .value("right_ctrl", ImGuiKey_RightCtrl, "")
             .value("right_shift", ImGuiKey_RightShift, "")
             .value("right_alt", ImGuiKey_RightAlt, "")
@@ -3530,30 +3524,30 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("app_back", ImGuiKey_AppBack, "Available on some keyboard/mouses. Often referred as \"Browser Back\"")
             .value("app_forward", ImGuiKey_AppForward, "")
             .value("oem102", ImGuiKey_Oem102, "Non-US backslash.")
-            .value("gamepad_start", ImGuiKey_GamepadStart, "Menu (Xbox)      + (Switch)   Start/Options (PS)")
-            .value("gamepad_back", ImGuiKey_GamepadBack, "View (Xbox)      - (Switch)   Share (PS)")
-            .value("gamepad_face_left", ImGuiKey_GamepadFaceLeft, "X (Xbox)         Y (Switch)   Square (PS)        // Tap: Toggle Menu. Hold: Windowing mode (Focus/Move/Resize windows)")
-            .value("gamepad_face_right", ImGuiKey_GamepadFaceRight, "B (Xbox)         A (Switch)   Circle (PS)        // Cancel / Close / Exit")
-            .value("gamepad_face_up", ImGuiKey_GamepadFaceUp, "Y (Xbox)         X (Switch)   Triangle (PS)      // Text Input / On-screen Keyboard")
-            .value("gamepad_face_down", ImGuiKey_GamepadFaceDown, "A (Xbox)         B (Switch)   Cross (PS)         // Activate / Open / Toggle / Tweak")
-            .value("gamepad_dpad_left", ImGuiKey_GamepadDpadLeft, "D-pad Left                                       // Move / Tweak / Resize Window (in Windowing mode)")
-            .value("gamepad_dpad_right", ImGuiKey_GamepadDpadRight, "D-pad Right                                      // Move / Tweak / Resize Window (in Windowing mode)")
-            .value("gamepad_dpad_up", ImGuiKey_GamepadDpadUp, "D-pad Up                                         // Move / Tweak / Resize Window (in Windowing mode)")
-            .value("gamepad_dpad_down", ImGuiKey_GamepadDpadDown, "D-pad Down                                       // Move / Tweak / Resize Window (in Windowing mode)")
-            .value("gamepad_l1", ImGuiKey_GamepadL1, "L Bumper (Xbox)  L (Switch)   L1 (PS)            // Tweak Slower / Focus Previous (in Windowing mode)")
-            .value("gamepad_r1", ImGuiKey_GamepadR1, "R Bumper (Xbox)  R (Switch)   R1 (PS)            // Tweak Faster / Focus Next (in Windowing mode)")
-            .value("gamepad_l2", ImGuiKey_GamepadL2, "L Trig. (Xbox)   ZL (Switch)  L2 (PS) [Analog]")
-            .value("gamepad_r2", ImGuiKey_GamepadR2, "R Trig. (Xbox)   ZR (Switch)  R2 (PS) [Analog]")
-            .value("gamepad_l3", ImGuiKey_GamepadL3, "L Stick (Xbox)   L3 (Switch)  L3 (PS)")
-            .value("gamepad_r3", ImGuiKey_GamepadR3, "R Stick (Xbox)   R3 (Switch)  R3 (PS)")
-            .value("gamepad_l_stick_left", ImGuiKey_GamepadLStickLeft, "[Analog]                                         // Move Window (in Windowing mode)")
-            .value("gamepad_l_stick_right", ImGuiKey_GamepadLStickRight, "[Analog]                                         // Move Window (in Windowing mode)")
-            .value("gamepad_l_stick_up", ImGuiKey_GamepadLStickUp, "[Analog]                                         // Move Window (in Windowing mode)")
-            .value("gamepad_l_stick_down", ImGuiKey_GamepadLStickDown, "[Analog]                                         // Move Window (in Windowing mode)")
-            .value("gamepad_r_stick_left", ImGuiKey_GamepadRStickLeft, "[Analog]")
-            .value("gamepad_r_stick_right", ImGuiKey_GamepadRStickRight, "[Analog]")
-            .value("gamepad_r_stick_up", ImGuiKey_GamepadRStickUp, "[Analog]")
-            .value("gamepad_r_stick_down", ImGuiKey_GamepadRStickDown, "[Analog]")
+            .value("gamepad_start", ImGuiKey_GamepadStart, "Menu        | +       | Options  |")
+            .value("gamepad_back", ImGuiKey_GamepadBack, "View        | -       | Share    |")
+            .value("gamepad_face_left", ImGuiKey_GamepadFaceLeft, "X           | Y       | Square   | Tap: Toggle Menu. Hold: Windowing mode (Focus/Move/Resize windows)")
+            .value("gamepad_face_right", ImGuiKey_GamepadFaceRight, "B           | A       | Circle   | Cancel / Close / Exit")
+            .value("gamepad_face_up", ImGuiKey_GamepadFaceUp, "Y           | X       | Triangle | Text Input / On-screen Keyboard")
+            .value("gamepad_face_down", ImGuiKey_GamepadFaceDown, "A           | B       | Cross    | Activate / Open / Toggle / Tweak")
+            .value("gamepad_dpad_left", ImGuiKey_GamepadDpadLeft, "D-pad Left  | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
+            .value("gamepad_dpad_right", ImGuiKey_GamepadDpadRight, "D-pad Right | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
+            .value("gamepad_dpad_up", ImGuiKey_GamepadDpadUp, "D-pad Up    | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
+            .value("gamepad_dpad_down", ImGuiKey_GamepadDpadDown, "D-pad Down  | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
+            .value("gamepad_l1", ImGuiKey_GamepadL1, "L Bumper    | L       | L1       | Tweak Slower / Focus Previous (in Windowing mode)")
+            .value("gamepad_r1", ImGuiKey_GamepadR1, "R Bumper    | R       | R1       | Tweak Faster / Focus Next (in Windowing mode)")
+            .value("gamepad_l2", ImGuiKey_GamepadL2, "L Trigger   | ZL      | L2       | [Analog]")
+            .value("gamepad_r2", ImGuiKey_GamepadR2, "R Trigger   | ZR      | R2       | [Analog]")
+            .value("gamepad_l3", ImGuiKey_GamepadL3, "L Stick     | L3      | L3       |")
+            .value("gamepad_r3", ImGuiKey_GamepadR3, "R Stick     | R3      | R3       |")
+            .value("gamepad_l_stick_left", ImGuiKey_GamepadLStickLeft, "|         |          | [Analog] Move Window (in Windowing mode)")
+            .value("gamepad_l_stick_right", ImGuiKey_GamepadLStickRight, "|         |          | [Analog] Move Window (in Windowing mode)")
+            .value("gamepad_l_stick_up", ImGuiKey_GamepadLStickUp, "|         |          | [Analog] Move Window (in Windowing mode)")
+            .value("gamepad_l_stick_down", ImGuiKey_GamepadLStickDown, "|         |          | [Analog] Move Window (in Windowing mode)")
+            .value("gamepad_r_stick_left", ImGuiKey_GamepadRStickLeft, "|         |          | [Analog]")
+            .value("gamepad_r_stick_right", ImGuiKey_GamepadRStickRight, "|         |          | [Analog]")
+            .value("gamepad_r_stick_up", ImGuiKey_GamepadRStickUp, "|         |          | [Analog]")
+            .value("gamepad_r_stick_down", ImGuiKey_GamepadRStickDown, "|         |          | [Analog]")
             .value("mouse_left", ImGuiKey_MouseLeft, " Aliases: Mouse Buttons (auto-submitted from AddMouseButtonEvent() calls)\n - This is mirroring the data also written to io.MouseDown[], io.MouseWheel, in a format allowing them to be accessed via standard key API.")
             .value("mouse_right", ImGuiKey_MouseRight, "")
             .value("mouse_middle", ImGuiKey_MouseMiddle, "")
@@ -3566,13 +3560,13 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("reserved_for_mod_alt", ImGuiKey_ReservedForModAlt, "")
             .value("reserved_for_mod_super", ImGuiKey_ReservedForModSuper, "")
             .value("named_key_end", ImGuiKey_NamedKey_END, "")
+            .value("named_key_count", ImGuiKey_NamedKey_COUNT, "")
             .value("mod_none", ImGuiMod_None, "")
             .value("mod_ctrl", ImGuiMod_Ctrl, "Ctrl (non-macOS), Cmd (macOS)")
             .value("mod_shift", ImGuiMod_Shift, "Shift")
             .value("mod_alt", ImGuiMod_Alt, "Option/Menu")
             .value("mod_super", ImGuiMod_Super, "Windows/Super (non-macOS), Ctrl (macOS)")
-            .value("mod_mask_", ImGuiMod_Mask_, "4-bits")
-            .value("named_key_count", ImGuiKey_NamedKey_COUNT, "[Internal] If you need to iterate all keys (for e.g. an input mapper) you may use ImGuiKey_NamedKey_BEGIN..ImGuiKey_NamedKey_END.");
+            .value("mod_mask_", ImGuiMod_Mask_, "4-bits");
 
 
     auto pyEnumInputFlags_ =
@@ -6077,9 +6071,9 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImGuiStyle =
         nb::class_<ImGuiStyle>
             (m, "Style", "")
-        .def_rw("font_size_base", &ImGuiStyle::FontSizeBase, "Current base font size before external scaling factors are applied. Use PushFont()/PushFontSize() to modify. Use ImGui::GetFontSize() to obtain scaled value.")
-        .def_rw("font_scale_main", &ImGuiStyle::FontScaleMain, "Main scale factor. May be set by application once, or exposed to end-user.")
-        .def_rw("font_scale_dpi", &ImGuiStyle::FontScaleDpi, "Additional scale factor from viewport/monitor contents scale. When io.ConfigDpiScaleFonts is enabled, this is automatically overwritten when changing monitor DPI.")
+        .def_rw("font_size_base", &ImGuiStyle::FontSizeBase, "Current base font size before external global factors are applied. Use PushFont(None, size) to modify. Use ImGui::GetFontSize() to obtain scaled value.")
+        .def_rw("font_scale_main", &ImGuiStyle::FontScaleMain, "Main global scale factor. May be set by application once, or exposed to end-user.")
+        .def_rw("font_scale_dpi", &ImGuiStyle::FontScaleDpi, "Additional global scale factor from viewport/monitor contents scale. When io.ConfigDpiScaleFonts is enabled, this is automatically overwritten when changing monitor DPI.")
         .def_rw("alpha", &ImGuiStyle::Alpha, "Global alpha applies to everything in Dear ImGui.")
         .def_rw("disabled_alpha", &ImGuiStyle::DisabledAlpha, "Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.")
         .def_rw("window_padding", &ImGuiStyle::WindowPadding, "Padding within a window.")
@@ -7501,7 +7495,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
         .def_rw("flags", &ImFontConfig::Flags, "Font flags (don't use just yet, will be exposed in upcoming 1.92.X updates)")
         .def_rw("dst_font", &ImFontConfig::DstFont, "Target font (as we merging fonts, multiple ImFontConfig may target the same font)")
-        .def_ro("font_loader", &ImFontConfig::FontLoader, "Custom font backend for this source (other use one stored in ImFontAtlas)")
         .def_rw("font_loader_data", &ImFontConfig::FontLoaderData, "Font loader opaque storage (per font config)")
         .def(nb::init<>())
         ;
@@ -7688,7 +7681,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("sources", &ImFontAtlas::Sources, "Source/configuration data")
         .def_rw("tex_next_unique_id", &ImFontAtlas::TexNextUniqueID, "Next value to be stored in TexData->UniqueID")
         .def_rw("font_next_unique_id", &ImFontAtlas::FontNextUniqueID, "Next value to be stored in ImFont->FontID")
-        .def_ro("font_loader", &ImFontAtlas::FontLoader, "Font loader opaque interface (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE). Don't set directly!")
         .def_ro("font_loader_name", &ImFontAtlas::FontLoaderName, "Font loader name (for display e.g. in About box) == FontLoader->Name")
         .def_rw("font_loader_data", &ImFontAtlas::FontLoaderData, "Font backend opaque storage")
         .def_rw("font_loader_flags", &ImFontAtlas::FontLoaderFlags, "Shared flags (for all fonts) for font loader. THIS IS BUILD IMPLEMENTATION DEPENDENT (e.g. Per-font override is also available in ImFontConfig).")
@@ -7736,7 +7728,6 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyEnumImFontFlags_ =
         nb::enum_<ImFontFlags_>(m, "ImFontFlags_", nb::is_arithmetic(), " Font flags\n (in future versions as we redesign font loading API, this will become more important and better documented. for now please consider this as internal/advanced use)")
             .value("none", ImFontFlags_None, "")
-            .value("default_to_legacy_size", ImFontFlags_DefaultToLegacySize, "Legacy compatibility: make PushFont() calls without explicit size use font->LegacySize instead of current font size.")
             .value("no_load_error", ImFontFlags_NoLoadError, "Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.")
             .value("no_load_glyphs", ImFontFlags_NoLoadGlyphs, "[Internal] Disable loading new glyphs.")
             .value("lock_baked_sizes", ImFontFlags_LockBakedSizes, "[Internal] Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size. Important: if you use this to preload given sizes, consider the possibility of multiple font density used on Retina display.");

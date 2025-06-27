@@ -128,10 +128,8 @@ namespace Snippets
         float lineHeight;
         {
             auto codeFont = ImGuiMd::GetCodeFont();
-            ImGui::PushFont(codeFont.font);
-            ImGui::PushFontSize(codeFont.size);
+            ImGui::PushFont(codeFont.font, codeFont.size);
             lineHeight = ImGui::GetFontSize();
-            ImGui::PopFontSize();
             ImGui::PopFont();
         }
 

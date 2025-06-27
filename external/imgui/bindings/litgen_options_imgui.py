@@ -392,7 +392,7 @@ def litgen_options_imgui(
             r"::STB_",
             r"ImGuiStoragePair",
             r"^ImFileHandle$",
-            r"^ImFontLoader",
+            r"ImFontLoader",
             r"^ImFontAtlasBuilder",
         ]
     )
@@ -444,6 +444,7 @@ def litgen_options_imgui(
             r"^SetItemKeyOwner",
             r"^GetIO",
             r"^GetPlatformIO",
+            r"^PushFont",
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
