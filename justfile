@@ -22,11 +22,11 @@ ext_reattach:
 
 # Push a new tag to the imgui fork repository with the current date
 imgui_tag:
-    cd external/imgui/imgui && git tag `date +'bundle_%Y%m%d'` && git push --tags
+    cd external/imgui/imgui && git tag `date +'bundle_%Y%m%d'` && git push fork --tags
 
 # Push a new tag to the imgui_test_engine fork repository with the current date
 imgui_te_tag:
-    cd external/imgui_test_engine/imgui_test_engine && git tag `date +'bundle_%Y%m%d'` && git push --tags
+    cd external/imgui_test_engine/imgui_test_engine && git tag `date +'bundle_%Y%m%d'` && git push fork --tags
 
 # Rebase the imgui fork repository on the official repository (push a new tag before!)
 imgui_rebase:
