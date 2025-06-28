@@ -10,14 +10,14 @@ def automation_show_me_code():
     engine = hello_imgui.get_imgui_test_engine()
     automation = imgui.test_engine.register_test(engine, "Automation", "ShowMeCode")
 
-    def test_open_popup_func(ctx):
-        ctx.set_ref("Dear ImGui Bundle")
+    def test_func(ctx):
+        ctx.set_ref("Intro")
         ctx.item_open("Code for this demo")
         ctx.sleep(2.5)
         ctx.item_close("Code for this demo")
 
         tab_logger_name = "//**/Logger"
-        tab_intro_name = "//**/Dear ImGui Bundle"
+        tab_intro_name = "//**/Intro"
 
         ctx.mouse_move(tab_logger_name)
         ctx.mouse_click(0)
@@ -27,7 +27,7 @@ def automation_show_me_code():
         ctx.mouse_move(tab_intro_name)
         ctx.mouse_click(0)
 
-    automation.test_func = test_open_popup_func
+    automation.test_func = test_func
     return automation
 
 
@@ -37,9 +37,9 @@ def automation_show_me_immediate_apps():
         engine, "Automation", "ShowMeImmediateApps"
     )
 
-    def test_open_popup_func(ctx):
-        tab_imm_apps_name = "//**/Immediate Apps"
-        tab_intro_name = "//**/Dear ImGui Bundle"
+    def test_func(ctx):
+        tab_imm_apps_name = "//**/Demo Apps"
+        tab_intro_name = "//**/Intro"
 
         ctx.mouse_move(tab_imm_apps_name)
         ctx.mouse_click(0)
@@ -50,7 +50,7 @@ def automation_show_me_immediate_apps():
         ctx.mouse_move(tab_intro_name)
         ctx.mouse_click(0)
 
-    automation.test_func = test_open_popup_func
+    automation.test_func = test_func
     return automation
 
 
@@ -60,9 +60,9 @@ def automation_show_me_imgui_test_engine():
         engine, "Automation", "ShowMeImGuiTestEngine"
     )
 
-    def test_open_popup_func(ctx):
-        tab_imm_apps_name = "//**/Immediate Apps"
-        tab_intro_name = "//**/Dear ImGui Bundle"
+    def test_func(ctx):
+        tab_imm_apps_name = "//**/Demo Apps"
+        tab_intro_name = "//**/Intro"
 
         ctx.mouse_move(tab_imm_apps_name)
         ctx.mouse_click(0)
@@ -72,7 +72,7 @@ def automation_show_me_imgui_test_engine():
         ctx.mouse_move(tab_intro_name)
         ctx.mouse_click(0)
 
-    automation.test_func = test_open_popup_func
+    automation.test_func = test_func
     return automation
 
 
@@ -134,7 +134,7 @@ def demo_gui():
 
     imgui_md.render_unindented(
         """
-        * The "Immediate Apps" tab is especially interesting, as it provides sample starter apps from which you can take inspiration. Click on the "View Code" button to view the app's code, and click on "Run" to run them.
+        * The "Demo Apps" tab is especially interesting, as it provides sample starter apps from which you can take inspiration. Click on the "View Code" button to view the app's code, and click on "Run" to run them.
         """
     )
     if hello_imgui.get_runner_params().use_imgui_test_engine:
