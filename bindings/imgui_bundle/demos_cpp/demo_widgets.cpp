@@ -15,7 +15,7 @@
 #include "ImFileDialog/ImFileDialog.h"
 #endif
 #include "imgui_md_wrapper.h"
-#include "ImCoolBar/ImCoolbar.h"
+#include "ImCoolBar/ImCoolBar.h"
 #include "demo_utils/api_demos.h"
 
 #include <fplus/fplus.hpp>
