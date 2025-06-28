@@ -292,8 +292,6 @@ assets/
                 nfo.size = ImVec2(mdImage->size.x * k, mdImage->size.y * k);
             }
 
-            nfo.col_border = mdImage->col_border;
-            nfo.col_tint = mdImage->col_tint;
             nfo.texture_id = mdImage->texture_id;
             nfo.uv0 = mdImage->uv0;
             nfo.uv1 = mdImage->uv1;
