@@ -1,4 +1,4 @@
-from imgui_bundle import immvision, immapp, imgui_md, ImVec2
+from imgui_bundle import immvision, immapp, imgui_md, ImVec2, imgui, hello_imgui
 from imgui_bundle.demos_python import demo_utils
 
 immvision.use_rgb_color_order()
@@ -16,19 +16,31 @@ def demo_gui() -> None:
         statics.tennis = demo_utils.imread_pil(assets_dir + "tennis.jpg")
 
         statics.params = immvision.ImageParams()
+        bear_display_size = int(hello_imgui.em_size(15))
+        statics.params.image_display_size = (bear_display_size, bear_display_size)
         statics.inited = True
 
-    imgui_md.render_unindented("immvision.image_display() will simply display an image")
+    imgui.begin_group()
+    imgui_md.render_unindented("# immvision.image_display()")
+    imgui_md.render_unindented("Displays an image (possibly resizable)")
     immvision.image_display_resizable(
         "Tennis", statics.tennis, size=statics.image_display_size
     )
+    imgui.end_group()
 
-    imgui_md.render_unindented(
-        """
-        immvision.image() will display an image, while providing lots of visualization options.<br>
-        Open the options panel by clicking on the settings button at the bottom right corner of the image"""
-    )
+    imgui.same_line()
+
+    imgui.begin_group()
+    imgui_md.render_unindented("# immvision.image()")
+    imgui_md.render_unindented("Displays an image, while providing lots of visualization options.")
     immvision.image("Bear", statics.bear, statics.params)
+    imgui_md.render_unindented("""
+        * Zoom in/out using the mouse wheel.
+        * Pixel values are displayed at high zoom levels.
+        * Pan the image by dragging it with the left mouse button
+        * Open settings via button (bottom right corner of the image)
+        """)
+    imgui.end_group()
 
 
 def main():
