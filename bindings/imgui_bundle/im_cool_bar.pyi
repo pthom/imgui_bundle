@@ -16,7 +16,7 @@ ImGuiWindowFlags_None = WindowFlags_.none
 #
 #MIT License
 #
-#Copyright (c) 2023 Stephane Cuillerdier (aka Aiekick)
+#Copyright (c) 2024 Stephane Cuillerdier (aka Aiekick)
 #
 #Permission is hereby granted, free of charge, to any person obtaining a copy
 #of this software and associated documentation files (the "Software"), to deal
@@ -86,6 +86,8 @@ def cool_bar_item() -> bool:
 def get_cool_bar_item_width() -> float:
     pass
 def get_cool_bar_item_scale() -> float:
+    pass
+def show_cool_bar_metrics(v_opened: bool) -> None:
     pass
 
 
