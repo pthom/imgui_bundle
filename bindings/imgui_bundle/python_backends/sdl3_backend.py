@@ -6,7 +6,7 @@ from typing import Any
 from imgui_bundle import imgui
 from sdl3 import *
 
-from .opengl_backend import ProgrammablePipelineRenderer
+from .opengl_backend_programmable import ProgrammablePipelineRenderer
 
 import ctypes
 

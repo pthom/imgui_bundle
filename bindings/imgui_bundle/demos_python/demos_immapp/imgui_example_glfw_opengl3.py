@@ -121,11 +121,9 @@ def main() -> None:
     # i. Load another font...
     font_filename = this_dir + "/../../demos_assets/fonts/Akronim-Regular.ttf"
     font_atlas = imgui.get_io().fonts
-    glyph_range = font_atlas.get_glyph_ranges_default()
     custom_font = font_atlas.add_font_from_file_ttf(
         filename=font_filename,
         size_pixels=font_size_pixel,
-        glyph_ranges_as_int_list=glyph_range,
     )
     # ii. ... And merge icons into the previous font
     from imgui_bundle import icons_fontawesome
@@ -133,11 +131,9 @@ def main() -> None:
     font_filename = this_dir + "/../../demos_assets/fonts/fontawesome-webfont.ttf"
     font_config = imgui.ImFontConfig()
     font_config.merge_mode = True
-    icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
     custom_font = font_atlas.add_font_from_file_ttf(
         filename=font_filename,
         size_pixels=font_size_pixel,
-        glyph_ranges_as_int_list=icons_range,
         font_cfg=font_config,
     )
 
@@ -178,7 +174,7 @@ def main() -> None:
 
             # Demo custom font
             _id = id(custom_font)
-            imgui.push_font(custom_font)
+            imgui.push_font(custom_font, custom_font.legacy_size)
             imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)
             imgui.pop_font()
 
