@@ -110,8 +110,10 @@ else()
 endif()
 
 
-# For python bindings, we force the usage of Glfw+OpenGL3
+# For python bindings:
+# - We force the usage of Glfw+OpenGL3
 # (pyodide is handled by hello_imgui_pyodide.cmake)
+# - We also disable ImGui obsolete functions
 if(IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
     set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
     set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
@@ -121,6 +123,8 @@ if(IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
     set(HELLOIMGUI_HAS_VULKAN OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_HAS_DIRECTX11 OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_HAS_DIRECTX12 OFF CACHE BOOL "" FORCE)
+
+    set(IMGUI_DISABLE_OBSOLETE_FUNCTIONS ON CACHE BOOL "" FORCE)
 endif()
 
 # -----------------------------------------------------------------------------
