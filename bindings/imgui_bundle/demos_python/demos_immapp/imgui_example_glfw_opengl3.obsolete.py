@@ -1,3 +1,5 @@
+# Obsoleted since v1.92 in Python: use pure python backends instead
+#
 # An example of using Dear ImGui with Glfw in python
 # Here, the backend rendering is implemented in C++: see calls to C++ native functions:
 #   imgui.backends.glfw_xxxx()
@@ -172,7 +174,7 @@ def main() -> None:
                 "Hello, world!"
             )  # Create a window called "Hello, world!" and append into it.
 
-            # Demo custom font
+            # # Demo custom font
             _id = id(custom_font)
             imgui.push_font(custom_font, custom_font.legacy_size)
             imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)

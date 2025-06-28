@@ -47,10 +47,14 @@ std::function<void()> makeGui()
             "Python: How to use ImVec2 and ImVec4 with Pydantic",
         },
         DemoApp{
-            "imgui_example_glfw_opengl3",
-            "Python: translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. "
-            "Demonstrates how to port from C++ to Python (here, *backend rendering is implemented in C++*)",
+            "demo_font_common_glyph_range",
+            "How to load fonts with specific glyph ranges (e.g., Chinese, Japanese, Korean)",
         },
+        // DemoApp{
+        //     "imgui_example_glfw_opengl3",
+        //     "Python: translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. "
+        //     "Demonstrates how to port from C++ to Python (here, *backend rendering is implemented in C++*)",
+        // },
         DemoApp{
             "example_python_backend_glfw3",
             "Python: how to use ImGui with GLFW3 using a *full python* backend",
