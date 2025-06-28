@@ -4,17 +4,35 @@
 
 *Starting with v1.92.0, version numbers are now synced between "Dear ImGui", "Hello ImGui" and "Dear ImGui Bundle"*
 
+
 ## ImGui
+
+> [v1.92.0: Scaling fonts & many more (big release)](https://github.com/ocornut/imgui/releases/tag/v1.92.0)
+
 - Many Font related changes: this release brings many changes on the ImGui side (v1.92.0): do read the [release notes for ImGui v1.92.0](https://github.com/ocornut/imgui/releases/tag/v1.92.0)
   TLDR: Fonts may be rendered at any size. Glyphs are loaded and rasterized dynamically. No need to specify ranges, prebake etc. GetTexDataAsRGBA32() is now obsolete.
 
 ## Python bindings
-- Font-related changes, following ImGui [v1.92.0](https://github.com/ocornut/imgui/releases/tag/v1.92.0)
-- font_atlas_get_tex_data_as_rgba32 was removed (not needed anymore)
+
+* Potentially breaking change for extern pure Python backends: `font_atlas_get_tex_data_as_rgba32` was removed (read the advice below)
+* Font-related changes, following ImGui [v1.92.0](https://github.com/ocornut/imgui/releases/tag/v1.92.0)
 - Fix ImPlot stubs (thanks @tlambert03)
 - Fix imgui_ctx and imgui_node_ctx
 - pure python backends: split opengl implems,  implement texture update in python pure opengl backends
 - imgui bindings => publish texture related infos
+
+### Advice for extern pure Python Backends (wgpu, etc.)
+Since v1.92, `font_atlas_get_tex_data_as_rgba32` was removed. Backends will need to be adapted by implementing support for dynamic fonts (preferred)
+
+> Extract from ImGui doc: ImGui Version 1.92.0 (June 2025), added texture support in Rendering Backends, which is the backbone for supporting dynamic font scaling among other things. In order to move forward and take advantage of all new features, support for ImGuiBackendFlags_RendererHasTextures will likely be REQUIRED for all backends before June 2026.
+
+Read ImGui backend doc: [flag `ImGuiBackendFlags_RendererHasTextures` (1.92+)](https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md) (read the part "Rendering: Adding support for ImGuiBackendFlags_RendererHasTextures (1.92+)").
+For inspiration, look at
+```
+    def _update_texture(self, tex: imgui.ImTextureData):
+```
+inside ImGui Bundle (bindings/imgui_bundle/python_backends/opengl_base_backend.py)
+
 
 ## Pyodide
 - Added support for Pyodide
