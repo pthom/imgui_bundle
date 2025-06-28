@@ -31,10 +31,10 @@ void py_init_module_imspinner(nb::module_& m)
     // #ifndef _IMSPINNER_H_
     //
 
-
-    m.attr("white") = (const ImColor) {1.f, 1.f, 1.f, 1.f};
-    m.attr("half_white") = (const ImColor) {1.f, 1.f, 1.f, 0.5f};
-    m.attr("red") = (const ImColor) {1.f, 0.f, 0.f, 1.f};
+    using ConstImColor = const ImColor;
+    m.attr("white") = ConstImColor {1.f, 1.f, 1.f, 1.f};
+    m.attr("half_white") = ConstImColor {1.f, 1.f, 1.f, 0.5f};
+    m.attr("red") = ConstImColor {1.f, 0.f, 0.f, 1.f};
 
 
     auto pyEnumSpinnerTypeT =
