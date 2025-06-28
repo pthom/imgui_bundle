@@ -130,6 +130,12 @@ void DemoSpinner()
     ImGui::Text("spinner_ang_triple");
     ImGui::SameLine();
     ImSpinner::SpinnerAngTriple("spinner_ang_triple", radius1, radius1 * 1.5f, radius1 * 2.0f, 2.5f, color, color, color);
+
+    static bool show_full_demo = false;
+    ImGui::SameLine();
+    ImGui::Checkbox("Show full spinners demo", &show_full_demo);
+    if (show_full_demo)
+        ImSpinner::demoSpinners();
 }
 
 
@@ -477,10 +483,12 @@ void DemoCoolBar()
 void demo_widgets()
 {
     DemoCoolBar();
-    DemoPortableFileDialogs(); ImGui::NewLine();
-    DemoImFileDialog(); ImGui::NewLine();
-    DemoKnobs();
-    DemoToggle(); ImGui::NewLine();
+    DemoToggle();
     DemoSpinner();
+    DemoKnobs();
     DemoCommandPalette();
+    ImGui::NewLine();
+    DemoPortableFileDialogs();
+    ImGui::NewLine();
+    DemoImFileDialog();
 }
