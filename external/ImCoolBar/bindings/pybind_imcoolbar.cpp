@@ -13,7 +13,7 @@
 #include <nanobind/make_iterator.h>
 #include <nanobind/ndarray.h>
 
-#include "ImCoolBar/ImCoolbar.h"  // Change this include to the library you are binding
+#include "ImCoolBar/ImCoolBar.h"  // Change this include to the library you are binding
 
 namespace nb = nanobind;
 
