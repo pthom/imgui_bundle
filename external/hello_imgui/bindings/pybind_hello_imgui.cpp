@@ -260,9 +260,44 @@ void py_init_module_hello_imgui(nb::module_& m)
 
 
     m.def("image_from_asset",
+        [](const char * assetPath, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt)
+        {
+            auto ImageFromAsset_adapt_mutable_param_with_default_value = [](const char * assetPath, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt)
+            {
+
+                const ImVec2& size_or_default = [&]() -> const ImVec2 {
+                    if (size.has_value())
+                        return size.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
+                    if (uv0.has_value())
+                        return uv0.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                const ImVec2& uv1_or_default = [&]() -> const ImVec2 {
+                    if (uv1.has_value())
+                        return uv1.value();
+                    else
+                        return ImVec2(1,1);
+                }();
+
+                HelloImGui::ImageFromAsset(assetPath, size_or_default, uv0_or_default, uv1_or_default);
+            };
+
+            ImageFromAsset_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1);
+        },
+        nb::arg("asset_path"), nb::arg("size") = nb::none(), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(),
+        " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)");
+
+    m.def("image_from_asset_with_bg",
         [](const char * assetPath, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImVec4> & border_col = std::nullopt)
         {
-            auto ImageFromAsset_adapt_mutable_param_with_default_value = [](const char * assetPath, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImVec4> & border_col = std::nullopt)
+            auto ImageFromAssetWithBg_adapt_mutable_param_with_default_value = [](const char * assetPath, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImVec4> & border_col = std::nullopt)
             {
 
                 const ImVec2& size_or_default = [&]() -> const ImVec2 {
@@ -300,13 +335,13 @@ void py_init_module_hello_imgui(nb::module_& m)
                         return ImVec4(0,0,0,0);
                 }();
 
-                HelloImGui::ImageFromAsset(assetPath, size_or_default, uv0_or_default, uv1_or_default, tint_col_or_default, border_col_or_default);
+                HelloImGui::ImageFromAssetWithBg(assetPath, size_or_default, uv0_or_default, uv1_or_default, tint_col_or_default, border_col_or_default);
             };
 
-            ImageFromAsset_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1, tint_col, border_col);
+            ImageFromAssetWithBg_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1, tint_col, border_col);
         },
         nb::arg("asset_path"), nb::arg("size") = nb::none(), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("border_col") = nb::none(),
-        " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * tint_col: ImVec4(1,1,1,1)\n        * border_col: ImVec4(0,0,0,0)");
+        " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets, with a colored background and a border.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * tint_col: ImVec4(1,1,1,1)\n        * border_col: ImVec4(0,0,0,0)");
 
     m.def("image_button_from_asset",
         [](const char * assetPath, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, int frame_padding = -1, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt) -> bool
@@ -1171,7 +1206,7 @@ void py_init_module_hello_imgui(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, initialDock_, newDock_, direction_, ratio_, nodeFlags_);
             },
             nb::arg("initial_dock_") = "", nb::arg("new_dock_") = "", nb::arg("direction_") = nb::none(), nb::arg("ratio_") = 0.25f, nb::arg("node_flags_") = nb::none(),
-            " Constructor\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: Dir.down\n        * nodeFlags_: DockNodeFlags_.none")
+            " Constructor\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: ImGuiDir_Down\n        * nodeFlags_: ImGuiDockNodeFlags_None")
         ;
 
 

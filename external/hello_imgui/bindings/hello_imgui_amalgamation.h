@@ -412,9 +412,15 @@ namespace HelloImGui
 // `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
 // will display a static image from the assets.
 void ImageFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0),
-                    const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
-                    const ImVec4& tint_col = ImVec4(1,1,1,1),
-                    const ImVec4& border_col = ImVec4(0,0,0,0));
+                    const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1));
+
+// `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
+// will display a static image from the assets, with a colored background and a border.
+void ImageFromAssetWithBg(const char *assetPath, const ImVec2& size = ImVec2(0, 0),
+            const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
+            const ImVec4& tint_col = ImVec4(1,1,1,1),
+            const ImVec4& border_col = ImVec4(0,0,0,0));
+
 
 // `bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`:
 // will display a button using an image from the assets.
