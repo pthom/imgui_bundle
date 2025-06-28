@@ -66,10 +66,6 @@ def make_gui() -> GuiFunction:
             "demo_pydantic",
             "Python: How to use ImVec2 and ImVec4 with Pydantic",
         ),
-        DemoApp(
-            "demo_font_common_glyph_range",
-            "How to load fonts with specific glyph ranges (e.g., Chinese, Japanese, Korean)",
-        ),
         # Disabled since v1.92 (use pure Python backend instead)
         # DemoApp(
         #     "imgui_example_glfw_opengl3",
