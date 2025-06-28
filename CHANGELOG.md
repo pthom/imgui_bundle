@@ -6,9 +6,11 @@
 
 ## ImGui
 - Many Font related changes: this release brings many changes on the ImGui side (v1.92.0): do read the [release notes for ImGui v1.92.0](https://github.com/ocornut/imgui/releases/tag/v1.92.0)
-  TLDR: Fonts may be rendered at any size. Glyphs are loaded and rasterized dynamically. No need to specify ranges, prebake etc.
+  TLDR: Fonts may be rendered at any size. Glyphs are loaded and rasterized dynamically. No need to specify ranges, prebake etc. GetTexDataAsRGBA32() is now obsolete.
 
 ## Python bindings
+- Font-related changes, following ImGui [v1.92.0](https://github.com/ocornut/imgui/releases/tag/v1.92.0)
+- font_atlas_get_tex_data_as_rgba32 was removed (not needed anymore)
 - Fix ImPlot stubs (thanks @tlambert03)
 - Fix imgui_ctx and imgui_node_ctx
 - pure python backends: split opengl implems,  implement texture update in python pure opengl backends

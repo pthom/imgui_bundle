@@ -7617,26 +7617,8 @@ void py_init_module_imgui_main(nb::module_& m)
         //
         .def("add_font_from_file_ttf",
             &ImFontAtlas::_AddFontFromFileTTF,
-            nb::arg("filename"), nb::arg("size_pixels"), nb::arg("font_cfg") = nb::none(), nb::arg("glyph_ranges_as_int_list") = nb::none(),
+            nb::arg("filename"), nb::arg("size_pixels"), nb::arg("font_cfg") = nb::none(),
             nb::rv_policy::reference)
-        .def("get_glyph_ranges_default",
-            &ImFontAtlas::_GetGlyphRangesDefault, "// Basic Latin, Extended Latin")
-        .def("get_glyph_ranges_greek",
-            &ImFontAtlas::_GetGlyphRangesGreek, "// Default + Greek and Coptic")
-        .def("get_glyph_ranges_korean",
-            &ImFontAtlas::_GetGlyphRangesKorean, "// Default + Korean characters")
-        .def("get_glyph_ranges_japanese",
-            &ImFontAtlas::_GetGlyphRangesJapanese, "// Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs")
-        .def("get_glyph_ranges_chinese_full",
-            &ImFontAtlas::_GetGlyphRangesChineseFull, "// Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs")
-        .def("get_glyph_ranges_chinese_simplified_common",
-            &ImFontAtlas::_GetGlyphRangesChineseSimplifiedCommon, "// Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese")
-        .def("get_glyph_ranges_cyrillic",
-            &ImFontAtlas::_GetGlyphRangesCyrillic, "// Default + about 400 Cyrillic characters")
-        .def("get_glyph_ranges_thai",
-            &ImFontAtlas::_GetGlyphRangesThai, "// Default + Thai characters")
-        .def("get_glyph_ranges_vietnamese",
-            &ImFontAtlas::_GetGlyphRangesVietnamese, "// Default + Vietnamese characters")
         // #endif
         //
         .def("add_custom_rect",
@@ -8162,63 +8144,8 @@ void imgui_manual_binding(nb::module_& m)
     nb::class_<ImVec2>& pyClassImVec2  = *pyClassImVec2Ptr;
     nb::class_<ImVec4>& pyClassImVec4 = *pyClassImVec4Ptr;
     nb::class_<ImColor>& pyClassImColor = *pyClassImColorPtr;
-    nb::class_<ImFontAtlas>& pyClassImFontAtlas = *pyClassImFontAtlasPtr;
 
-    // Function to retrieve RGBA32 texture data as a numpy array
-    auto font_atlas_get_tex_data_as_rgba32= [](ImFontAtlas* self) -> nb::handle
-    {
-        unsigned char *pixels = nullptr;
-        int width = 0, height = 0, bytes_per_pixel = 0;
-
-        // Retrieve texture data from ImFontAtlas
-        self->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
-
-        if (!pixels || width <= 0 || height <= 0 || bytes_per_pixel != 4)
-            throw std::runtime_error("Invalid texture data retrieved from ImFontAtlas.");
-
-        // The returned data is a pointer to the texture data, which is owned by the ImFontAtlas.
-        // so, we set the owner to the ImFontAtlas object to ensure that the data is not deallocated
-        nb::object owner = nb::cast(self);
-
-        // Create and return the ndarray using the initializer list constructor
-        // We will use this constructor:
-        //    ndarray(VoidPtr data,
-        //        std::initializer_list<size_t> shape = { },
-        //        handle owner = { },
-        //        std::initializer_list<int64_t> strides = { },
-        //        dlpack::dtype dtype = nanobind::dtype<Scalar>(),
-        //        int device_type = DeviceType,
-        //        int device_id = 0,
-        //        char order = Order) {
-        auto font_as_array = nb::ndarray<uint8_t>(
-            pixels,                  // VoidPtr data
-            {(size_t)height, (size_t)width, (size_t)4},      // Shape
-            owner,                  // Owner
-            {(int64_t)(4 * width), (int64_t)4, (int64_t)1},       // Strides in **elements** (not bytes)
-            nb::dtype<uint8_t>(),    // Data type
-            0,                       // device_type (default to CPU)
-            0,                       // device_id (default to 0)
-            'C'                      // Order ('C' for C-contiguous)
-        );
-
-        // Properly export the ndarray
-        return nb::detail::ndarray_export(
-            font_as_array.handle(),
-            nb::numpy::value,
-            nb::rv_policy::move, // Transfer ownership to Python (which will manage the lifetime of the ndarray, and the capsule will manage the lifetime of the data)
-            nullptr // cleanup
-        );
-    };
-    m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
-    //
-    //  Patches to ImFontAtlas
-    // make imgui.font_atlas_get_tex_data_as_rgba32() also accessible
-    // as imgui.get_io().fonts.get_tex_data_as_rgba32(), even if autocomplete
-    // doesn't find the latter.
-    pyClassImFontAtlas.def("get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
-
-
-// these are internal functions that should only be called with a tuple, list or array argument
+    // these are internal functions that should only be called with a tuple, list or array argument
     auto cast_to_imvec2 = [](nb::handle obj) -> ImVec2
     {
         if (len(obj) != 2)

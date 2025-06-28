@@ -68,14 +68,6 @@ uchar = int
 char = int
 ImFontAtlasRectId = int
 
-def font_atlas_get_tex_data_as_rgba32(
-    font_atlas: ImFontAtlas,
-) -> np.ndarray:
-    """Manual binding for ImFontAtlas::GetTexDataAsRGBA32
-    This is also available as a method of ImFont: ImFontAtlas.get_tex_data_as_rgba32()
-    """
-    pass
-
 # -----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
 # -----------------------------------------------------------------------------
@@ -11176,60 +11168,10 @@ class ImFontAtlas:
     # IMGUI_API ImFont* _AddFontFromFileTTF(    /* original C++ signature */
     #         const char* filename,
     #         float size_pixels,
-    #         const ImFontConfig* font_cfg = NULL,
-    #         std::optional<std::vector<ImWchar>> glyph_ranges_as_int_list = std::nullopt);
+    #         const ImFontConfig* font_cfg = NULL);
     def add_font_from_file_ttf(
-        self,
-        filename: str,
-        size_pixels: float,
-        font_cfg: Optional[ImFontConfig] = None,
-        glyph_ranges_as_int_list: Optional[List[ImWchar]] = None,
+        self, filename: str, size_pixels: float, font_cfg: Optional[ImFontConfig] = None
     ) -> ImFont:
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesDefault()                // Basic Latin, Extended Latin    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesDefault()); }
-    def get_glyph_ranges_default(self) -> List[ImWchar]:
-        """// Basic Latin, Extended Latin"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesGreek()                  // Default + Greek and Coptic    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesGreek()); }
-    def get_glyph_ranges_greek(self) -> List[ImWchar]:
-        """// Default + Greek and Coptic"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesKorean()                 // Default + Korean characters    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesKorean()); }
-    def get_glyph_ranges_korean(self) -> List[ImWchar]:
-        """// Default + Korean characters"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesJapanese()               // Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesJapanese()); }
-    def get_glyph_ranges_japanese(self) -> List[ImWchar]:
-        """// Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesChineseFull()            // Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesChineseFull()); }
-    def get_glyph_ranges_chinese_full(self) -> List[ImWchar]:
-        """// Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesChineseSimplifiedCommon()// Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesChineseSimplifiedCommon()); }
-    def get_glyph_ranges_chinese_simplified_common(self) -> List[ImWchar]:
-        """// Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesCyrillic()               // Default + about 400 Cyrillic characters    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesCyrillic()); }
-    def get_glyph_ranges_cyrillic(self) -> List[ImWchar]:
-        """// Default + about 400 Cyrillic characters"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesThai()                   // Default + Thai characters    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesThai()); }
-    def get_glyph_ranges_thai(self) -> List[ImWchar]:
-        """// Default + Thai characters"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesVietnamese()             // Default + Vietnamese characters    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesVietnamese()); }
-    def get_glyph_ranges_vietnamese(self) -> List[ImWchar]:
-        """// Default + Vietnamese characters"""
         pass
     #                                     #endif
     #
@@ -12088,7 +12030,6 @@ def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
 ##################################################
 #    Manually inserted code (additional methods, etc.)
 ##################################################
-ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32  # type: ignore
 
 # API for imgui_demo.cpp (specific to ImGui Bundle)
 def set_imgui_demo_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
