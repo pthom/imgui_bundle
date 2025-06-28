@@ -2,9 +2,7 @@
 #include <nanobind/nanobind.h>
 
 #include "imgui_impl_glfw.h"
-#include "imgui_impl_sdl2.h"
 #include "imgui_impl_opengl3.h"
-#include "imgui_impl_opengl2.h"
 
 namespace nb = nanobind;
 
@@ -40,31 +38,6 @@ void py_init_module_imgui_backends(nb::module_& m)
 
     m.def("opengl3_destroy_device_objects",
         ImGui_ImplOpenGL3_DestroyDeviceObjects);
-
-
-    //
-    // <bindings for imgui_impl_opengl2.h
-    //
-    m.def("opengl2_init",
-          ImGui_ImplOpenGL2_Init);
-
-    m.def("opengl2_shutdown",
-          ImGui_ImplOpenGL2_Shutdown);
-
-    m.def("opengl2_new_frame",
-          ImGui_ImplOpenGL2_NewFrame);
-
-    m.def("opengl2_render_draw_data",
-          ImGui_ImplOpenGL2_RenderDrawData, nb::arg("draw_data"));
-
-    m.def("opengl2_update_texture",
-          ImGui_ImplOpenGL2_UpdateTexture);
-
-    m.def("opengl2_create_device_objects",
-          ImGui_ImplOpenGL2_CreateDeviceObjects);
-
-    m.def("opengl2_destroy_device_objects",
-          ImGui_ImplOpenGL2_DestroyDeviceObjects);
 
 
     //
@@ -144,35 +117,4 @@ void py_init_module_imgui_backends(nb::module_& m)
           }, nb::arg("window_address"), nb::arg("c"));
 #endif // HELLOIMGUI_USE_GLFW3
 
-#ifdef HELLOIMGUI_USE_SDL2
-    //
-    // <bindings for imgui_impl_sdl2.h: Deprecated: superseded by full python backend
-    //
-    //    m.def("sdl2_init_for_opengl", [](size_t window_address, size_t sdl_gl_context_address) {
-    //        return ImGui_ImplSDL2_InitForOpenGL((SDL_Window*)window_address, (void *)sdl_gl_context_address);
-    //    }, nb::arg("window_address"), nb::arg("sdl_gl_context_address"));
-    //
-    //    m.def("sdl2_init_for_vulkan", [](size_t window_address) {
-    //        return ImGui_ImplSDL2_InitForVulkan((SDL_Window*)window_address);
-    //    }, nb::arg("window_address"));
-    //
-    //    m.def("sdl2_init_for_d3d", [](size_t window_address) {
-    //        return ImGui_ImplSDL2_InitForD3D((SDL_Window*)window_address);
-    //    }, nb::arg("window_address"));
-    //
-    //    m.def("sdl2_init_for_metal", [](size_t window_address) {
-    //        return ImGui_ImplSDL2_InitForMetal((SDL_Window*)window_address);
-    //    }, nb::arg("window_address"));
-    //
-    //    m.def("sdl2_init_for_sdl_renderer", [](size_t window_address, size_t sdl_renderer_address) {
-    //        return ImGui_ImplSDL2_InitForSDLRenderer((SDL_Window*)window_address, (SDL_Renderer *)sdl_renderer_address);
-    //    }, nb::arg("window_address"), nb::arg("sdl_renderer_address"));
-    //
-    //    m.def("sdl2_shutdown", []() {ImGui_ImplSDL2_Shutdown();} );
-    //    m.def("sdl2_new_frame", []() {ImGui_ImplSDL2_NewFrame();} );
-    //
-    //    m.def("sdl2_process_event", [](size_t event_address) {
-    //        return ImGui_ImplSDL2_ProcessEvent((const SDL_Event*)event_address);
-    //    }, nb::arg("event_address"));
-#endif // HELLOIMGUI_USE_SDL2
 }
