@@ -6,6 +6,20 @@ import numpy as np
 from numpy.typing import NDArray
 import datetime
 
+
+def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> np.ndarray:
+    """Create a checkerboard RGBA texture as a numpy array."""
+    img = np.zeros((size, size, 4), dtype=np.uint8)
+    for y in range(size):
+        for x in range(size):
+            if ((x // tile_size) + (y // tile_size)) % 2 == 0:
+                color = (255, 255, 255, 255)
+            else:
+                color = (64, 64, 64, 255)
+            img[y, x] = color
+    return img
+
+
 def plot_candlestick(
         label_id: str,
         xs: NDArray,  # x-axis values (timestamps as float)
@@ -894,6 +908,15 @@ def demo_images():
         static.uv1 = [1.0, 1.0]
         static.tint =[1.0, 1.0, 1.0, 1.0]
 
+        # Create textures
+        # Step 1: create them as numpy arrays
+        checker_img = make_checkerboard_texture()
+        # Step 2: convert them to OpenGL textures (using imgui_bundle's immvision)
+        from imgui_bundle import immvision
+        static.tex_checker = immvision.GlTexture(checker_img)
+        # Step 3: create ImTextureRef from the OpenGL texture id
+        static.tex_id_checker = imgui.ImTextureRef(static.tex_checker.texture_id)
+
     imgui.bullet_text("Below we are displaying the font texture, which is the only texture we have\naccess to in this demo.")
     imgui.bullet_text("Use the 'ImTextureID' type as storage to pass pointers or identifiers to your\nown texture data.")
     imgui.bullet_text("See ImGui Wiki page 'Image Loading and Displaying Examples'.")
@@ -905,7 +928,7 @@ def demo_images():
     _, static.tint = imgui.color_edit4("Tint", static.tint)
 
     if implot.begin_plot("##image"):
-        implot.plot_image("my image", imgui.get_io().fonts.tex_id,
+        implot.plot_image("my image", static.tex_id_checker,
                           bounds_min=implot.Point(static.bmin[0], static.bmin[1]),
                           bounds_max=implot.Point(static.bmax[0], static.bmax[1]),
                           uv0=ImVec2(static.uv0[0], static.uv0[1]),
