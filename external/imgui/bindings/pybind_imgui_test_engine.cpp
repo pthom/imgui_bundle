@@ -272,7 +272,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
 
             return ImGuiTestEngine_RegisterTest_adapt_const_char_pointer_with_default_null(engine, category, name, src_file, src_line);
         },
-        nb::arg("engine"), nb::arg("category"), nb::arg("name"), nb::arg("src_file") = nb::none(), nb::arg("src_line") = 0,
+        nb::arg("engine"), nb::arg("category"), nb::arg("name"), nb::arg("src_file").none() = nb::none(), nb::arg("src_line") = 0,
         "Prefer calling IM_REGISTER_TEST()",
         nb::rv_policy::reference);
 
@@ -298,7 +298,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             };
 
             ImGuiTestEngine_QueueTests_adapt_const_char_pointer_with_default_null(engine, group, filter, run_flags);
-        },     nb::arg("engine"), nb::arg("group"), nb::arg("filter") = nb::none(), nb::arg("run_flags") = 0);
+        },     nb::arg("engine"), nb::arg("group"), nb::arg("filter").none() = nb::none(), nb::arg("run_flags") = 0);
 
     m.def("try_abort_engine",
         ImGuiTestEngine_TryAbortEngine, nb::arg("engine"));
@@ -519,7 +519,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             r_ctor_->StartTime = StartTime;
             r_ctor_->EndTime = EndTime;
         },
-        nb::arg("status") = ImGuiTestStatus_Unknown, nb::arg("log") = nb::none(), nb::arg("start_time") = 0, nb::arg("end_time") = 0
+        nb::arg("status") = ImGuiTestStatus_Unknown, nb::arg("log").none() = nb::none(), nb::arg("start_time") = 0, nb::arg("end_time") = 0
         )
         .def_rw("status", &ImGuiTestOutput::Status, "")
         .def_rw("log", &ImGuiTestOutput::Log, "")
@@ -777,7 +777,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
                 r_ctor_->DummyItemInfoNull = ImGuiTestItemInfo();
             r_ctor_->CachedLinesPrintedToTTY = CachedLinesPrintedToTTY;
         },
-        nb::arg("generic_vars") = nb::none(), nb::arg("op_flags") = ImGuiTestOpFlags_None, nb::arg("perf_stress_amount") = 0, nb::arg("frame_count") = 0, nb::arg("first_test_frame_count") = 0, nb::arg("first_gui_frame") = false, nb::arg("has_dock") = false, nb::arg("run_flags") = ImGuiTestRunFlags_None, nb::arg("active_func") = ImGuiTestActiveFunc_None, nb::arg("running_time") = 0.0, nb::arg("action_depth") = 0, nb::arg("capture_counter") = 0, nb::arg("error_counter") = 0, nb::arg("abort") = false, nb::arg("perf_ref_dt") = -1.0, nb::arg("perf_iterations") = 400, nb::arg("ref_id") = 0, nb::arg("ref_window_id") = 0, nb::arg("input_mode") = nb::none(), nb::arg("temp_string") = nb::none(), nb::arg("clipboard") = nb::none(), nb::arg("foreign_windows_to_hide") = nb::none(), nb::arg("dummy_item_info_null") = nb::none(), nb::arg("cached_lines_printed_to_tty") = false
+        nb::arg("generic_vars").none() = nb::none(), nb::arg("op_flags") = ImGuiTestOpFlags_None, nb::arg("perf_stress_amount") = 0, nb::arg("frame_count") = 0, nb::arg("first_test_frame_count") = 0, nb::arg("first_gui_frame") = false, nb::arg("has_dock") = false, nb::arg("run_flags") = ImGuiTestRunFlags_None, nb::arg("active_func") = ImGuiTestActiveFunc_None, nb::arg("running_time") = 0.0, nb::arg("action_depth") = 0, nb::arg("capture_counter") = 0, nb::arg("error_counter") = 0, nb::arg("abort") = false, nb::arg("perf_ref_dt") = -1.0, nb::arg("perf_iterations") = 400, nb::arg("ref_id") = 0, nb::arg("ref_window_id") = 0, nb::arg("input_mode").none() = nb::none(), nb::arg("temp_string").none() = nb::none(), nb::arg("clipboard").none() = nb::none(), nb::arg("foreign_windows_to_hide").none() = nb::none(), nb::arg("dummy_item_info_null").none() = nb::none(), nb::arg("cached_lines_printed_to_tty") = false
         )
         .def_rw("generic_vars", &ImGuiTestContext::GenericVars, "Generic variables holder for convenience.")
         .def_rw("user_vars", &ImGuiTestContext::UserVars, "Access using ctx->GetVars<Type>(). Setup with test->SetVarsDataType<>().")
@@ -843,7 +843,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
 
                 return SuspendTestFunc_adapt_const_char_pointer_with_default_null(file, line);
             },
-            nb::arg("file") = nb::none(), nb::arg("line") = 0,
+            nb::arg("file").none() = nb::none(), nb::arg("line") = 0,
             "(private API)\n\n [DEBUG] Generally called via IM_SUSPEND_TESTFUNC")
         .def("log_ex",
             [](ImGuiTestContext & self, ImGuiTestVerboseLevel level, ImGuiTestLogFlags flags, const char * fmt)
@@ -871,7 +871,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
 
                 LogToTTY_adapt_const_char_pointer_with_default_null(level, message, message_end);
             },
-            nb::arg("level"), nb::arg("message"), nb::arg("message_end") = nb::none(),
+            nb::arg("level"), nb::arg("message"), nb::arg("message_end").none() = nb::none(),
             "(private API)")
         .def("log_to_debugger",
             &ImGuiTestContext::LogToDebugger,
@@ -995,7 +995,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
 
                 WindowMove_adapt_mutable_param_with_default_value(window_ref, pos, pivot, flags);
             },
-            nb::arg("window_ref"), nb::arg("pos"), nb::arg("pivot") = nb::none(), nb::arg("flags") = ImGuiTestOpFlags_None,
+            nb::arg("window_ref"), nb::arg("pos"), nb::arg("pivot").none() = nb::none(), nb::arg("flags") = ImGuiTestOpFlags_None,
             "Python bindings defaults:\n    If pivot is None, then its default value will be: ImVec2(0.0, 0.0)\n(private API)")
         .def("window_resize",
             &ImGuiTestContext::WindowResize,
@@ -1463,7 +1463,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
 
                 DockInto_adapt_mutable_param_with_default_value(src_id, dst_id, split_dir, is_outer_docking, flags);
             },
-            nb::arg("src_id"), nb::arg("dst_id"), nb::arg("split_dir") = nb::none(), nb::arg("is_outer_docking") = false, nb::arg("flags") = 0,
+            nb::arg("src_id"), nb::arg("dst_id"), nb::arg("split_dir").none() = nb::none(), nb::arg("is_outer_docking") = false, nb::arg("flags") = 0,
             "Python bindings defaults:\n    If split_dir is None, then its default value will be: Dir_None\n(private API)")
         .def("undock_node",
             &ImGuiTestContext::UndockNode,
@@ -1509,7 +1509,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
 
                 PerfCapture_adapt_const_char_pointer_with_default_null(category, test_name, csv_file);
             },
-            nb::arg("category") = nb::none(), nb::arg("test_name") = nb::none(), nb::arg("csv_file") = nb::none(),
+            nb::arg("category").none() = nb::none(), nb::arg("test_name").none() = nb::none(), nb::arg("csv_file").none() = nb::none(),
             "(private API)")
         .def("_make_aiming_space_over_pos",
             &ImGuiTestContext::_MakeAimingSpaceOverPos,
@@ -1536,7 +1536,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             else
                 r_ctor_->Result = ImGuiTestItemInfo();
         },
-        nb::arg("id_") = 0, nb::arg("frame_count") = -1, nb::arg("result") = nb::none()
+        nb::arg("id_") = 0, nb::arg("frame_count") = -1, nb::arg("result").none() = nb::none()
         )
         .def_rw("id_", &ImGuiTestInfoTask::ID, "")
         .def_rw("frame_count", &ImGuiTestInfoTask::FrameCount, "Timestamp of request")
@@ -1623,7 +1623,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             else
                 r_ctor_->ViewportPosSize = ImVec2();
         },
-        nb::arg("type") = ImGuiTestInputType_None, nb::arg("key_chord") = nb::none(), nb::arg("char") = 0, nb::arg("down") = false, nb::arg("viewport_id") = 0, nb::arg("viewport_pos_size") = nb::none()
+        nb::arg("type") = ImGuiTestInputType_None, nb::arg("key_chord").none() = nb::none(), nb::arg("char") = 0, nb::arg("down") = false, nb::arg("viewport_id") = 0, nb::arg("viewport_pos_size").none() = nb::none()
         )
         .def_rw("type", &ImGuiTestInput::Type, "")
         .def_rw("key_chord", &ImGuiTestInput::KeyChord, "")
@@ -1678,7 +1678,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             r_ctor_->HostEscDown = HostEscDown;
             r_ctor_->HostEscDownDuration = HostEscDownDuration;
         },
-        nb::arg("mouse_pos_value") = nb::none(), nb::arg("mouse_wheel") = nb::none(), nb::arg("mouse_hovered_viewport") = 0, nb::arg("mouse_buttons_value") = 0x00, nb::arg("host_esc_down") = false, nb::arg("host_esc_down_duration") = -1.0f
+        nb::arg("mouse_pos_value").none() = nb::none(), nb::arg("mouse_wheel").none() = nb::none(), nb::arg("mouse_hovered_viewport") = 0, nb::arg("mouse_buttons_value") = 0x00, nb::arg("host_esc_down") = false, nb::arg("host_esc_down_duration") = -1.0f
         )
         .def_rw("mouse_pos_value", &ImGuiTestInputs::MousePosValue, "Own non-rounded copy of MousePos in order facilitate simulating mouse movement very slow speed and high-framerate")
         .def_rw("mouse_wheel", &ImGuiTestInputs::MouseWheel, "")

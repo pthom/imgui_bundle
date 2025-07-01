@@ -512,7 +512,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r_ctor_->Storage = ImVector<ImU32>();
         },
-        nb::arg("storage") = nb::none()
+        nb::arg("storage").none() = nb::none()
         )
         .def_rw("storage", &ImBitVector::Storage, "")
         .def("create",
@@ -549,7 +549,7 @@ void py_init_module_imgui_internal(nb::module_& m)
                 r_ctor_->LineOffsets = ImVector<int>();
             r_ctor_->EndOffset = EndOffset;
         },
-        nb::arg("line_offsets") = nb::none(), nb::arg("end_offset") = 0
+        nb::arg("line_offsets").none() = nb::none(), nb::arg("end_offset") = 0
         )
         .def_rw("line_offsets", &ImGuiTextIndex::LineOffsets, "")
         .def_rw("end_offset", &ImGuiTextIndex::EndOffset, "Because we don't own text buffer we need to maintain EndOffset (may bake in LineOffsets?)")
@@ -667,7 +667,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r_ctor_->BackupValue = ImVec4();
         },
-        nb::arg("col") = nb::none(), nb::arg("backup_value") = nb::none()
+        nb::arg("col").none() = nb::none(), nb::arg("backup_value").none() = nb::none()
         )
         .def_rw("col", &ImGuiColorMod::Col, "")
         .def_rw("backup_value", &ImGuiColorMod::BackupValue, "")
@@ -932,7 +932,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             r_ctor_->BackupIsSameLine = BackupIsSameLine;
             r_ctor_->EmitItem = EmitItem;
         },
-        nb::arg("window_id") = ImGuiID(), nb::arg("backup_cursor_pos") = nb::none(), nb::arg("backup_cursor_max_pos") = nb::none(), nb::arg("backup_cursor_pos_prev_line") = nb::none(), nb::arg("backup_indent") = nb::none(), nb::arg("backup_group_offset") = nb::none(), nb::arg("backup_curr_line_size") = nb::none(), nb::arg("backup_curr_line_text_base_offset") = float(), nb::arg("backup_active_id_is_alive") = ImGuiID(), nb::arg("backup_deactivated_id_is_alive") = bool(), nb::arg("backup_hovered_id_is_alive") = bool(), nb::arg("backup_is_same_line") = bool(), nb::arg("emit_item") = bool()
+        nb::arg("window_id") = ImGuiID(), nb::arg("backup_cursor_pos").none() = nb::none(), nb::arg("backup_cursor_max_pos").none() = nb::none(), nb::arg("backup_cursor_pos_prev_line").none() = nb::none(), nb::arg("backup_indent").none() = nb::none(), nb::arg("backup_group_offset").none() = nb::none(), nb::arg("backup_curr_line_size").none() = nb::none(), nb::arg("backup_curr_line_text_base_offset") = float(), nb::arg("backup_active_id_is_alive") = ImGuiID(), nb::arg("backup_deactivated_id_is_alive") = bool(), nb::arg("backup_hovered_id_is_alive") = bool(), nb::arg("backup_is_same_line") = bool(), nb::arg("emit_item") = bool()
         )
         .def_rw("window_id", &ImGuiGroupData::WindowID, "")
         .def_rw("backup_cursor_pos", &ImGuiGroupData::BackupCursorPos, "")
@@ -1176,7 +1176,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r_ctor_->DrawLinesTableColumn = ImGuiTableColumnIdx();
         },
-        nb::arg("id_") = ImGuiID(), nb::arg("tree_flags") = ImGuiTreeNodeFlags(), nb::arg("item_flags") = ImGuiItemFlags(), nb::arg("nav_rect") = nb::none(), nb::arg("draw_lines_x1") = float(), nb::arg("draw_lines_to_nodes_y2") = float(), nb::arg("draw_lines_table_column") = nb::none()
+        nb::arg("id_") = ImGuiID(), nb::arg("tree_flags") = ImGuiTreeNodeFlags(), nb::arg("item_flags") = ImGuiItemFlags(), nb::arg("nav_rect").none() = nb::none(), nb::arg("draw_lines_x1") = float(), nb::arg("draw_lines_to_nodes_y2") = float(), nb::arg("draw_lines_table_column").none() = nb::none()
         )
         .def_rw("id_", &ImGuiTreeNodeStackData::ID, "")
         .def_rw("tree_flags", &ImGuiTreeNodeStackData::TreeFlags, "")
@@ -1224,7 +1224,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             r_ctor_->DisabledOverrideReenable = DisabledOverrideReenable;
             r_ctor_->DisabledOverrideReenableAlphaBackup = DisabledOverrideReenableAlphaBackup;
         },
-        nb::arg("parent_last_item_data_backup") = nb::none(), nb::arg("stack_sizes_in_begin") = nb::none(), nb::arg("disabled_override_reenable") = bool(), nb::arg("disabled_override_reenable_alpha_backup") = float()
+        nb::arg("parent_last_item_data_backup").none() = nb::none(), nb::arg("stack_sizes_in_begin").none() = nb::none(), nb::arg("disabled_override_reenable") = bool(), nb::arg("disabled_override_reenable_alpha_backup") = float()
         )
         .def_rw("window", &ImGuiWindowStackData::Window, "")
         .def_rw("parent_last_item_data_backup", &ImGuiWindowStackData::ParentLastItemDataBackup, "")
@@ -1344,7 +1344,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r_ctor_->MouseSource = ImGuiMouseSource();
         },
-        nb::arg("pos_x") = float(), nb::arg("pos_y") = float(), nb::arg("mouse_source") = nb::none()
+        nb::arg("pos_x") = float(), nb::arg("pos_y") = float(), nb::arg("mouse_source").none() = nb::none()
         )
         .def_rw("pos_x", &ImGuiInputEventMousePos::PosX, "")
         .def_rw("pos_y", &ImGuiInputEventMousePos::PosY, "")
@@ -1366,7 +1366,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r_ctor_->MouseSource = ImGuiMouseSource();
         },
-        nb::arg("wheel_x") = float(), nb::arg("wheel_y") = float(), nb::arg("mouse_source") = nb::none()
+        nb::arg("wheel_x") = float(), nb::arg("wheel_y") = float(), nb::arg("mouse_source").none() = nb::none()
         )
         .def_rw("wheel_x", &ImGuiInputEventMouseWheel::WheelX, "")
         .def_rw("wheel_y", &ImGuiInputEventMouseWheel::WheelY, "")
@@ -1388,7 +1388,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r_ctor_->MouseSource = ImGuiMouseSource();
         },
-        nb::arg("button") = int(), nb::arg("down") = bool(), nb::arg("mouse_source") = nb::none()
+        nb::arg("button") = int(), nb::arg("down") = bool(), nb::arg("mouse_source").none() = nb::none()
         )
         .def_rw("button", &ImGuiInputEventMouseButton::Button, "")
         .def_rw("down", &ImGuiInputEventMouseButton::Down, "")
@@ -2632,7 +2632,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r_ctor_->TextWrapPosStack = ImVector<float>();
         },
-        nb::arg("cursor_pos") = nb::none(), nb::arg("cursor_pos_prev_line") = nb::none(), nb::arg("cursor_start_pos") = nb::none(), nb::arg("cursor_max_pos") = nb::none(), nb::arg("ideal_max_pos") = nb::none(), nb::arg("curr_line_size") = nb::none(), nb::arg("prev_line_size") = nb::none(), nb::arg("curr_line_text_base_offset") = float(), nb::arg("prev_line_text_base_offset") = float(), nb::arg("is_same_line") = bool(), nb::arg("is_set_pos") = bool(), nb::arg("indent") = nb::none(), nb::arg("columns_offset") = nb::none(), nb::arg("group_offset") = nb::none(), nb::arg("cursor_start_pos_lossyness") = nb::none(), nb::arg("nav_layer_current") = ImGuiNavLayer(), nb::arg("nav_layers_active_mask") = short(), nb::arg("nav_layers_active_mask_next") = short(), nb::arg("nav_is_scroll_pushable_x") = bool(), nb::arg("nav_hide_highlight_one_frame") = bool(), nb::arg("nav_window_has_scroll_y") = bool(), nb::arg("menu_bar_appending") = bool(), nb::arg("menu_bar_offset") = nb::none(), nb::arg("menu_columns") = nb::none(), nb::arg("tree_depth") = int(), nb::arg("tree_has_stack_data_depth_mask") = ImU32(), nb::arg("tree_records_clipped_nodes_y2_mask") = ImU32(), nb::arg("child_windows") = nb::none(), nb::arg("current_table_idx") = int(), nb::arg("layout_type") = nb::none(), nb::arg("parent_layout_type") = nb::none(), nb::arg("modal_dim_bg_color") = ImU32(), nb::arg("window_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("child_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_rect") = nb::none(), nb::arg("item_width") = float(), nb::arg("text_wrap_pos") = float(), nb::arg("item_width_stack") = nb::none(), nb::arg("text_wrap_pos_stack") = nb::none()
+        nb::arg("cursor_pos").none() = nb::none(), nb::arg("cursor_pos_prev_line").none() = nb::none(), nb::arg("cursor_start_pos").none() = nb::none(), nb::arg("cursor_max_pos").none() = nb::none(), nb::arg("ideal_max_pos").none() = nb::none(), nb::arg("curr_line_size").none() = nb::none(), nb::arg("prev_line_size").none() = nb::none(), nb::arg("curr_line_text_base_offset") = float(), nb::arg("prev_line_text_base_offset") = float(), nb::arg("is_same_line") = bool(), nb::arg("is_set_pos") = bool(), nb::arg("indent").none() = nb::none(), nb::arg("columns_offset").none() = nb::none(), nb::arg("group_offset").none() = nb::none(), nb::arg("cursor_start_pos_lossyness").none() = nb::none(), nb::arg("nav_layer_current") = ImGuiNavLayer(), nb::arg("nav_layers_active_mask") = short(), nb::arg("nav_layers_active_mask_next") = short(), nb::arg("nav_is_scroll_pushable_x") = bool(), nb::arg("nav_hide_highlight_one_frame") = bool(), nb::arg("nav_window_has_scroll_y") = bool(), nb::arg("menu_bar_appending") = bool(), nb::arg("menu_bar_offset").none() = nb::none(), nb::arg("menu_columns").none() = nb::none(), nb::arg("tree_depth") = int(), nb::arg("tree_has_stack_data_depth_mask") = ImU32(), nb::arg("tree_records_clipped_nodes_y2_mask") = ImU32(), nb::arg("child_windows").none() = nb::none(), nb::arg("current_table_idx") = int(), nb::arg("layout_type").none() = nb::none(), nb::arg("parent_layout_type").none() = nb::none(), nb::arg("modal_dim_bg_color") = ImU32(), nb::arg("window_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("child_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_status_flags") = ImGuiItemStatusFlags(), nb::arg("dock_tab_item_rect").none() = nb::none(), nb::arg("item_width") = float(), nb::arg("text_wrap_pos") = float(), nb::arg("item_width_stack").none() = nb::none(), nb::arg("text_wrap_pos_stack").none() = nb::none()
         )
         .def_rw("cursor_pos", &ImGuiWindowTempData::CursorPos, "Current emitting position, in absolute coordinates.")
         .def_rw("cursor_pos_prev_line", &ImGuiWindowTempData::CursorPosPrevLine, "")
@@ -2813,7 +2813,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
                 return GetID_adapt_const_char_pointer_with_default_null(str, str_end);
             },
-            nb::arg("str"), nb::arg("str_end") = nb::none(),
+            nb::arg("str"), nb::arg("str_end").none() = nb::none(),
             "(private API)")
         .def("get_id",
             nb::overload_cast<const void *>(&ImGuiWindow::GetID),
@@ -2976,7 +2976,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             else
                 r_ctor_->Column = ImGuiTableColumnIdx();
         },
-        nb::arg("bg_color") = ImU32(), nb::arg("column") = nb::none()
+        nb::arg("bg_color") = ImU32(), nb::arg("column").none() = nb::none()
         )
         .def_rw("bg_color", &ImGuiTableCellData::BgColor, "Actual color")
         .def_rw("column", &ImGuiTableCellData::Column, "Column number")
@@ -2998,7 +2998,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             r_ctor_->BgColor0 = BgColor0;
             r_ctor_->BgColor1 = BgColor1;
         },
-        nb::arg("index") = nb::none(), nb::arg("text_color") = ImU32(), nb::arg("bg_color0") = ImU32(), nb::arg("bg_color1") = ImU32()
+        nb::arg("index").none() = nb::none(), nb::arg("text_color") = ImU32(), nb::arg("bg_color0") = ImU32(), nb::arg("bg_color1") = ImU32()
         )
         .def_rw("index", &ImGuiTableHeaderData::Index, "Column index")
         .def_rw("text_color", &ImGuiTableHeaderData::TextColor, "")
@@ -3606,7 +3606,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             };
 
             LogRenderedText_adapt_const_char_pointer_with_default_null(ref_pos, text, text_end);
-        },     nb::arg("ref_pos"), nb::arg("text"), nb::arg("text_end") = nb::none());
+        },     nb::arg("ref_pos"), nb::arg("text"), nb::arg("text_end").none() = nb::none());
 
     m.def("log_set_next_text_decoration",
         ImGui::LogSetNextTextDecoration, nb::arg("prefix"), nb::arg("suffix"));
@@ -3683,7 +3683,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             };
 
             return MenuItemEx_adapt_const_char_pointer_with_default_null(label, icon, shortcut, selected, enabled);
-        },     nb::arg("label"), nb::arg("icon"), nb::arg("shortcut") = nb::none(), nb::arg("selected") = false, nb::arg("enabled") = true);
+        },     nb::arg("label"), nb::arg("icon"), nb::arg("shortcut").none() = nb::none(), nb::arg("selected") = false, nb::arg("enabled") = true);
 
     m.def("begin_combo_popup",
         nb::overload_cast<ImGuiID, const ImRect &, ImGuiComboFlags>(ImGui::BeginComboPopup), nb::arg("popup_id"), nb::arg("bb"), nb::arg("flags"));
@@ -4291,7 +4291,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
             return BeginTableEx_adapt_mutable_param_with_default_value(name, id, columns_count, flags, outer_size, inner_width);
         },
-        nb::arg("name"), nb::arg("id_"), nb::arg("columns_count"), nb::arg("flags") = 0, nb::arg("outer_size") = nb::none(), nb::arg("inner_width") = 0.0f,
+        nb::arg("name"), nb::arg("id_"), nb::arg("columns_count"), nb::arg("flags") = 0, nb::arg("outer_size").none() = nb::none(), nb::arg("inner_width") = 0.0f,
         "Python bindings defaults:\n    If outer_size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("table_begin_init_memory",
@@ -4537,7 +4537,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             };
 
             RenderText_adapt_const_char_pointer_with_default_null(pos, text, text_end, hide_text_after_hash);
-        },     nb::arg("pos"), nb::arg("text"), nb::arg("text_end") = nb::none(), nb::arg("hide_text_after_hash") = true);
+        },     nb::arg("pos"), nb::arg("text"), nb::arg("text_end").none() = nb::none(), nb::arg("hide_text_after_hash") = true);
 
     m.def("render_text_wrapped",
         ImGui::RenderTextWrapped, nb::arg("pos"), nb::arg("text"), nb::arg("text_end"), nb::arg("wrap_width"));
@@ -4560,7 +4560,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
             RenderTextClipped_adapt_mutable_param_with_default_value(pos_min, pos_max, text, text_end, text_size_if_known, align, clip_rect);
         },
-        nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"), nb::arg("align") = nb::none(), nb::arg("clip_rect") = nb::none(),
+        nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"), nb::arg("align").none() = nb::none(), nb::arg("clip_rect") = nb::none(),
         "Python bindings defaults:\n    If align is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("render_text_clipped_ex",
@@ -4581,7 +4581,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
             RenderTextClippedEx_adapt_mutable_param_with_default_value(draw_list, pos_min, pos_max, text, text_end, text_size_if_known, align, clip_rect);
         },
-        nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"), nb::arg("align") = nb::none(), nb::arg("clip_rect") = nb::none(),
+        nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"), nb::arg("align").none() = nb::none(), nb::arg("clip_rect") = nb::none(),
         "Python bindings defaults:\n    If align is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("render_text_ellipsis",
@@ -4616,7 +4616,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
             return FindRenderedTextEnd_adapt_const_char_pointer_with_default_null(text, text_end);
         },
-        nb::arg("text"), nb::arg("text_end") = nb::none(),
+        nb::arg("text"), nb::arg("text_end").none() = nb::none(),
         "Find the optional ## from which we stop displaying text.",
         nb::rv_policy::reference);
 
@@ -4660,7 +4660,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             };
 
             TextEx_adapt_const_char_pointer_with_default_null(text, text_end, flags);
-        },     nb::arg("text"), nb::arg("text_end") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("text"), nb::arg("text_end").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("text_aligned",
         [](float align_x, float size_x, const char * fmt)
@@ -4694,7 +4694,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
             return ButtonEx_adapt_mutable_param_with_default_value(label, size_arg, flags);
         },
-        nb::arg("label"), nb::arg("size_arg") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("label"), nb::arg("size_arg").none() = nb::none(), nb::arg("flags") = 0,
         "Python bindings defaults:\n    If size_arg is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("arrow_button_ex",
@@ -4791,7 +4791,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             };
 
             return TreeNodeBehavior_adapt_const_char_pointer_with_default_null(id, flags, label, label_end);
-        },     nb::arg("id_"), nb::arg("flags"), nb::arg("label"), nb::arg("label_end") = nb::none());
+        },     nb::arg("id_"), nb::arg("flags"), nb::arg("label"), nb::arg("label_end").none() = nb::none());
 
     m.def("tree_node_draw_line_to_child_node",
         ImGui::TreeNodeDrawLineToChildNode, nb::arg("target_pos"));
@@ -5077,7 +5077,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             r_ctor_->Width = Width;
             r_ctor_->Height = Height;
         },
-        nb::arg("format") = nb::none(), nb::arg("pitch") = int(), nb::arg("width") = int(), nb::arg("height") = int()
+        nb::arg("format").none() = nb::none(), nb::arg("pitch") = int(), nb::arg("width") = int(), nb::arg("height") = int()
         )
         .def_rw("font_atlas", &ImFontAtlasPostProcessData::FontAtlas, "")
         .def_rw("font", &ImFontAtlasPostProcessData::Font, "")

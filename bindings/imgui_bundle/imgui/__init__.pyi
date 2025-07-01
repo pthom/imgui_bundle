@@ -1011,10 +1011,15 @@ def set_scroll_from_pos_y(local_y: float, center_y_ratio: float = 0.5) -> None:
 #  - CORRECT:   PushFont(None, style.FontSizeBase * 2.0)  // use current unscaled size x2 == make text twice bigger
 #  - INCORRECT: PushFont(None, GetFontSize())              // INCORRECT! using size after global factors already applied == GLOBAL SCALING FACTORS WILL APPLY TWICE!
 #  - INCORRECT: PushFont(None, GetFontSize() * 2.0)       // INCORRECT! using size after global factors already applied == GLOBAL SCALING FACTORS WILL APPLY TWICE!
-# IMGUI_API void          PushFont(ImFont* font, float font_size_base_unscaled);              /* original C++ signature */
-def push_font(font: ImFont, font_size_base_unscaled: float) -> None:
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# IMGUI_API void          PushFont(std::optional<ImFont*> font, float font_size_base_unscaled);              /* original C++ signature */
+def push_font(font: Optional[ImFont], font_size_base_unscaled: float) -> None:
     """Use None as a shortcut to keep current font. Use 0.0 to keep current size."""
     pass
+
+# #endif
+#
 
 # IMGUI_API void          PopFont();    /* original C++ signature */
 def pop_font() -> None:
