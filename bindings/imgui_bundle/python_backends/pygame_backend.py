@@ -1,12 +1,8 @@
-# Note: this backend was adapted to the new ImGui API. However, there are rendering issues with it,
-# probably because it uses an old version of the OpenGL API
-# (FixedPipelineRenderer instead of ProgrammablePipelineRenderer).
-
 from __future__ import absolute_import
 
 from imgui_bundle import imgui
 
-from imgui_bundle.python_backends.opengl_backend_fixed import FixedPipelineRenderer
+from imgui_bundle.python_backends.opengl_backend_programmable import ProgrammablePipelineRenderer
 
 from typing import Dict
 
@@ -17,7 +13,7 @@ import pygame.time
 PygameKey = int
 
 
-class PygameRenderer(FixedPipelineRenderer):
+class PygameRenderer(ProgrammablePipelineRenderer):
     key_map: Dict[PygameKey, imgui.Key]
     modifier_map: Dict[PygameKey, imgui.Key]
 
@@ -40,10 +36,10 @@ class PygameRenderer(FixedPipelineRenderer):
             pygame.K_INSERT: imgui.Key.insert,
             pygame.K_DELETE: imgui.Key.delete,
             pygame.K_BACKSPACE: imgui.Key.backspace,
-            pygame.K_SPACE: imgui.Key.space,
             pygame.K_RETURN: imgui.Key.enter,
             pygame.K_ESCAPE: imgui.Key.escape,
             pygame.K_KP_ENTER: imgui.Key.keypad_enter,
+            pygame.K_TAB: imgui.Key.tab,
 
             pygame.K_LCTRL: imgui.Key.left_ctrl,
             pygame.K_RCTRL: imgui.Key.right_ctrl,
@@ -119,7 +115,7 @@ class PygameRenderer(FixedPipelineRenderer):
                 flags=surface.get_flags(),
             )
             # existing font texure is no longer valid, so we need to refresh it
-            self.refresh_font_texture()
+            self._update_textures()
 
             # notify imgui about new window size
             io.display_size = event.size
