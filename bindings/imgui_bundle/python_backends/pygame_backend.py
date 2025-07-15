@@ -1,7 +1,3 @@
-# Note: this backend was adapted to the new ImGui API. However, there are rendering issues with it,
-# probably because it uses an old version of the OpenGL API
-# (FixedPipelineRenderer instead of ProgrammablePipelineRenderer).
-
 from __future__ import absolute_import
 
 from imgui_bundle import imgui
