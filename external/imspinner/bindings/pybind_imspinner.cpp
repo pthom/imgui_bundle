@@ -31,10 +31,10 @@ void py_init_module_imspinner(nb::module_& m)
     // #ifndef _IMSPINNER_H_
     //
 
-    using ConstImColor = const ImColor;
-    m.attr("white") = ConstImColor {1.f, 1.f, 1.f, 1.f};
-    m.attr("half_white") = ConstImColor {1.f, 1.f, 1.f, 0.5f};
-    m.attr("red") = ConstImColor {1.f, 0.f, 0.f, 1.f};
+
+    m.attr("white") = (const ImColor) {1.f, 1.f, 1.f, 1.f};
+    m.attr("half_white") = (const ImColor) {1.f, 1.f, 1.f, 0.5f};
+    m.attr("red") = (const ImColor) {1.f, 0.f, 0.f, 1.f};
 
 
     auto pyEnumSpinnerTypeT =
@@ -166,7 +166,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerAng_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0,
         " SpinnerAng is a function that draws a spinner widget with a given angle.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: white");
 
     m.def("spinner_ang8",
@@ -194,7 +194,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerAng8_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle, mode, rkoef);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0, nb::arg("rkoef") = 0.5f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0, nb::arg("rkoef") = 0.5f,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: white");
 
     m.def("spinner_ang_mix",
@@ -215,7 +215,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerAngMix_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, angle, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("arcs") = 4, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("arcs") = 4, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_loading_ring",
@@ -243,7 +243,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerLoadingRing_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, segments);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("segments") = 5,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("segments") = 5,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: half_white");
 
     m.def("spinner_clock",
@@ -271,7 +271,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerClock_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: half_white");
 
     m.def("spinner_pulsar",
@@ -292,7 +292,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerPulsar_adapt_mutable_param_with_default_value(label, radius, thickness, bg, speed, sequence, angle, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("sequence") = true, nb::arg("angle") = 0.f, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("sequence") = true, nb::arg("angle") = 0.f, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If bg is None, then its default value will be: half_white");
 
     m.def("spinner_double_fade_pulsar",
@@ -313,7 +313,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerDoubleFadePulsar_adapt_mutable_param_with_default_value(label, radius, param_2, bg, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("param_2"), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("param_2"), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If bg is None, then its default value will be: half_white");
 
     m.def("spinner_twin_pulsar",
@@ -334,7 +334,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTwinPulsar_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, rings, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("rings") = 2, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("rings") = 2, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_fade_pulsar",
@@ -355,7 +355,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFadePulsar_adapt_mutable_param_with_default_value(label, radius, color, speed, rings, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("rings") = 2, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("rings") = 2, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_fade_pulsar_square",
@@ -376,7 +376,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFadePulsarSquare_adapt_mutable_param_with_default_value(label, radius, color, speed, rings, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("rings") = 2, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("rings") = 2, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_circular_lines",
@@ -397,7 +397,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerCircularLines_adapt_mutable_param_with_default_value(label, radius, color, speed, lines, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("color") = nb::none(), nb::arg("speed") = 1.8f, nb::arg("lines") = 8, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.8f, nb::arg("lines") = 8, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_dots",
@@ -418,7 +418,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerDots_adapt_mutable_param_with_default_value(label, nextdot, radius, thickness, color, speed, dots, minth, mode);
         },
-        nb::arg("label"), nb::arg("nextdot"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 12, nb::arg("minth") = -1.f, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("nextdot"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 12, nb::arg("minth") = -1.f, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_v_dots",
@@ -446,7 +446,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerVDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, bgcolor, speed, dots, mdots, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bgcolor") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 12, nb::arg("mdots") = 6, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bgcolor").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 12, nb::arg("mdots") = 6, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bgcolor: white");
 
     m.def("spinner_bounce_dots",
@@ -467,7 +467,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerBounceDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 3, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 3, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_zip_dots",
@@ -488,7 +488,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerZipDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 5,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 5,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_dots_to_points",
@@ -509,7 +509,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerDotsToPoints_adapt_mutable_param_with_default_value(label, radius, thickness, offset_k, color, speed, dots);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("offset_k"), nb::arg("color") = nb::none(), nb::arg("speed") = 1.8f, nb::arg("dots") = 5,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("offset_k"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.8f, nb::arg("dots") = 5,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_dots_to_bar",
@@ -530,7 +530,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerDotsToBar_adapt_mutable_param_with_default_value(label, radius, thickness, offset_k, color, speed, dots);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("offset_k"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 5,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("offset_k"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 5,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_wave_dots",
@@ -551,7 +551,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerWaveDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_fade_dots",
@@ -572,7 +572,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFadeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_three_dots",
@@ -593,7 +593,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerThreeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_five_dots",
@@ -620,7 +620,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerMultiFadeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_thick_to_sin",
@@ -641,7 +641,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerThickToSin_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, nt, lt, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("nt") = 1, nb::arg("lt") = 8, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("nt") = 1, nb::arg("lt") = 8, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_scale_dots",
@@ -662,7 +662,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_square_spins",
@@ -683,7 +683,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSquareSpins_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_moving_dots",
@@ -704,7 +704,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerMovingDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 3,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 3,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_rotate_dots",
@@ -725,7 +725,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerRotateDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 2, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 2, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_orion_dots",
@@ -746,7 +746,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerOrionDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_galaxy_dots",
@@ -767,7 +767,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerGalaxyDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_twin_ang",
@@ -795,7 +795,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTwinAng_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, color1, color2, speed, angle, mode);
         },
-        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color1") = nb::none(), nb::arg("color2") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color1").none() = nb::none(), nb::arg("color2").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color1: white\n        * color2: red");
 
     m.def("spinner_filling",
@@ -823,7 +823,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFilling_adapt_mutable_param_with_default_value(label, radius, thickness, color1, color2, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color1") = nb::none(), nb::arg("color2") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color1").none() = nb::none(), nb::arg("color2").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color1: white\n        * color2: red");
 
     m.def("spinner_filling_mem",
@@ -861,7 +861,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTopup_adapt_mutable_param_with_default_value(label, radius1, radius2, color, fg, bg, speed);
         },
-        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("color") = nb::none(), nb::arg("fg") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("color").none() = nb::none(), nb::arg("fg").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: red\n        * fg: white\n        * bg: white");
 
     m.def("spinner_twin_ang180",
@@ -889,7 +889,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTwinAng180_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, color1, color2, speed, angle, mode);
         },
-        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color1") = nb::none(), nb::arg("color2") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = PI_DIV_4, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color1").none() = nb::none(), nb::arg("color2").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = PI_DIV_4, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color1: white\n        * color2: red");
 
     m.def("spinner_twin_ang360",
@@ -917,7 +917,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTwinAng360_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, color1, color2, speed1, speed2, mode);
         },
-        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color1") = nb::none(), nb::arg("color2") = nb::none(), nb::arg("speed1") = 2.8f, nb::arg("speed2") = 2.5f, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color1").none() = nb::none(), nb::arg("color2").none() = nb::none(), nb::arg("speed1") = 2.8f, nb::arg("speed2") = 2.5f, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color1: white\n        * color2: red");
 
     m.def("spinner_inc_dots",
@@ -938,7 +938,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerIncDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_inc_full_dots",
@@ -959,7 +959,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerIncFullDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 4,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_fade_bars",
@@ -980,7 +980,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFadeBars_adapt_mutable_param_with_default_value(label, w, color, speed, bars, scale);
         },
-        nb::arg("label"), nb::arg("w"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 3, nb::arg("scale") = false,
+        nb::arg("label"), nb::arg("w"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 3, nb::arg("scale") = false,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_fade_tris",
@@ -1001,7 +1001,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFadeTris_adapt_mutable_param_with_default_value(label, radius, color, speed, dim, scale, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dim") = 2, nb::arg("scale") = false, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dim") = 2, nb::arg("scale") = false, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_bars_rotate_fade",
@@ -1022,7 +1022,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerBarsRotateFade_adapt_mutable_param_with_default_value(label, rmin, rmax, thickness, color, speed, bars);
         },
-        nb::arg("label"), nb::arg("rmin"), nb::arg("rmax"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 6,
+        nb::arg("label"), nb::arg("rmin"), nb::arg("rmax"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 6,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_bars_scale_middle",
@@ -1043,7 +1043,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerBarsScaleMiddle_adapt_mutable_param_with_default_value(label, w, color, speed, bars);
         },
-        nb::arg("label"), nb::arg("w"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 3,
+        nb::arg("label"), nb::arg("w"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 3,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_ang_twin",
@@ -1071,7 +1071,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerAngTwin_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, color, bg, speed, angle, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("arcs") = 1, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("arcs") = 1, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: half_white");
 
     m.def("spinner_arc_rotation",
@@ -1092,7 +1092,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerArcRotation_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_arc_fade",
@@ -1113,7 +1113,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerArcFade_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_simple_arc_fade",
@@ -1134,7 +1134,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSimpleArcFade_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_square_stroke_fade",
@@ -1155,7 +1155,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSquareStrokeFade_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_ascii_symbol_points",
@@ -1176,7 +1176,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerAsciiSymbolPoints_adapt_mutable_param_with_default_value(label, text, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("text"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("text"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_text_fading",
@@ -1197,7 +1197,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTextFading_adapt_mutable_param_with_default_value(label, text, radius, fsize, color, speed);
         },
-        nb::arg("label"), nb::arg("text"), nb::arg("radius"), nb::arg("fsize"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("text"), nb::arg("radius"), nb::arg("fsize"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_seven_segments",
@@ -1218,7 +1218,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSevenSegments_adapt_mutable_param_with_default_value(label, text, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("text"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("text"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_square_stroke_fill",
@@ -1239,7 +1239,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSquareStrokeFill_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_square_stroke_loading",
@@ -1260,7 +1260,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSquareStrokeLoading_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_square_loading",
@@ -1281,7 +1281,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSquareLoading_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_filled_arc_fade",
@@ -1302,7 +1302,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFilledArcFade_adapt_mutable_param_with_default_value(label, radius, color, speed, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_points_roller",
@@ -1323,7 +1323,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerPointsRoller_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, points, circles, rspeed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("points") = 8, nb::arg("circles") = 2, nb::arg("rspeed") = 1.f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("points") = 8, nb::arg("circles") = 2, nb::arg("rspeed") = 1.f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_points_arc_bounce",
@@ -1344,7 +1344,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerPointsArcBounce_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, points, circles, rspeed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("points") = 4, nb::arg("circles") = 2, nb::arg("rspeed") = 0.f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("points") = 4, nb::arg("circles") = 2, nb::arg("rspeed") = 0.f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_filled_arc_color",
@@ -1372,7 +1372,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFilledArcColor_adapt_mutable_param_with_default_value(label, radius, color, bg, speed, arcs);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: red\n        * bg: white");
 
     m.def("spinner_filled_arc_ring",
@@ -1400,7 +1400,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFilledArcRing_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, arcs);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: red\n        * bg: white");
 
     m.def("spinner_arc_wedges",
@@ -1421,7 +1421,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerArcWedges_adapt_mutable_param_with_default_value(label, radius, color, speed, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: red");
 
     m.def("spinner_twin_ball",
@@ -1449,7 +1449,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTwinBall_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, b_thickness, ball, bg, speed, balls, mode);
         },
-        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("b_thickness"), nb::arg("ball") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("balls") = 2, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("b_thickness"), nb::arg("ball").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("balls") = 2, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * ball: white\n        * bg: half_white");
 
     m.def("spinner_solar_balls",
@@ -1477,7 +1477,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSolarBalls_adapt_mutable_param_with_default_value(label, radius, thickness, ball, bg, speed, balls);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("ball") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("balls") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("ball").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("balls") = 4,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * ball: white\n        * bg: half_white");
 
     m.def("spinner_solar_scale_balls",
@@ -1498,7 +1498,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSolarScaleBalls_adapt_mutable_param_with_default_value(label, radius, thickness, ball, speed, balls);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("ball") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("balls") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("ball").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("balls") = 4,
         "Python bindings defaults:\n    If ball is None, then its default value will be: white");
 
     m.def("spinner_solar_arcs",
@@ -1526,7 +1526,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSolarArcs_adapt_mutable_param_with_default_value(label, radius, thickness, ball, bg, speed, balls);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("ball") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("balls") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("ball").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("balls") = 4,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * ball: white\n        * bg: half_white");
 
     m.def("spinner_moving_arcs",
@@ -1547,7 +1547,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerMovingArcs_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_rainbow_circle",
@@ -1568,7 +1568,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerRainbowCircle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 1,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 1,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_bounce_ball",
@@ -1589,7 +1589,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerBounceBall_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, shadow);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 1, nb::arg("shadow") = false,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 1, nb::arg("shadow") = false,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_pulsar_ball",
@@ -1610,7 +1610,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerPulsarBall_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, shadow, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("shadow") = false, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("shadow") = false, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_inc_scale_dots",
@@ -1631,7 +1631,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerIncScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, angle, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6, nb::arg("angle") = 0.f, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6, nb::arg("angle") = 0.f, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_some_scale_dots",
@@ -1652,7 +1652,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSomeScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_ang_triple",
@@ -1687,7 +1687,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerAngTriple_adapt_mutable_param_with_default_value(label, radius1, radius2, radius3, thickness, c1, c2, c3, speed, angle);
         },
-        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("radius3"), nb::arg("thickness"), nb::arg("c1") = nb::none(), nb::arg("c2") = nb::none(), nb::arg("c3") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
+        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("radius3"), nb::arg("thickness"), nb::arg("c1").none() = nb::none(), nb::arg("c2").none() = nb::none(), nb::arg("c3").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * c1: white\n        * c2: half_white\n        * c3: white");
 
     m.def("spinner_ang_eclipse",
@@ -1708,7 +1708,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerAngEclipse_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, angle);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_ing_yang",
@@ -1736,7 +1736,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerIngYang_adapt_mutable_param_with_default_value(label, radius, thickness, reverse, yang_detlta_r, colorI, colorY, speed, angle, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("reverse"), nb::arg("yang_detlta_r"), nb::arg("color_i") = nb::none(), nb::arg("color_y") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI * 0.7f, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("reverse"), nb::arg("yang_detlta_r"), nb::arg("color_i").none() = nb::none(), nb::arg("color_y").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI * 0.7f, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * colorI: white\n        * colorY: white");
 
     m.def("spinner_gooey_balls",
@@ -1788,7 +1788,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerMoonLine_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: red");
 
     m.def("spinner_circle_drop",
@@ -1816,7 +1816,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerCircleDrop_adapt_mutable_param_with_default_value(label, radius, thickness, thickness_drop, color, bg, speed, angle);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("thickness_drop"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("thickness_drop"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: half_white");
 
     m.def("spinner_surrounded_indicator",
@@ -1844,7 +1844,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSurroundedIndicator_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: half_white");
 
     m.def("spinner_wifi_indicator",
@@ -1872,7 +1872,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerWifiIndicator_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, cangle, dots);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("cangle") = 0.f, nb::arg("dots") = 3,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("cangle") = 0.f, nb::arg("dots") = 3,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: red\n        * bg: half_white");
 
     m.def("spinner_triangles_selector",
@@ -1900,7 +1900,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTrianglesSelector_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, bars);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 8,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 8,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: half_white");
 
     m.def("spinner_flowing_gradient",
@@ -1928,7 +1928,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerFlowingGradient_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: red");
 
     m.def("spinner_rotate_segments",
@@ -1949,7 +1949,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerRotateSegments_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, layers, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("layers") = 1, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("layers") = 1, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_lemniscate",
@@ -1970,7 +1970,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerLemniscate_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, angle);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI / 2.0f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI / 2.0f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_rotate_gear",
@@ -1991,7 +1991,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerRotateGear_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, pins);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("pins") = 12,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("pins") = 12,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_rotate_wheel",
@@ -2019,7 +2019,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerRotateWheel_adapt_mutable_param_with_default_value(label, radius, thickness, bg_color, color, speed, pins);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg_color") = nb::none(), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("pins") = 12,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg_color").none() = nb::none(), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("pins") = 12,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * bg_color: white\n        * color: white");
 
     m.def("spinner_atom",
@@ -2040,7 +2040,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerAtom_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_pattern_rings",
@@ -2061,7 +2061,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerPatternRings_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_pattern_eclipse",
@@ -2082,7 +2082,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerPatternEclipse_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses, delta_a, delta_y);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3, nb::arg("delta_a") = 2.f, nb::arg("delta_y") = 0.f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3, nb::arg("delta_a") = 2.f, nb::arg("delta_y") = 0.f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_pattern_sphere",
@@ -2103,7 +2103,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerPatternSphere_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_ring_synchronous",
@@ -2124,7 +2124,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerRingSynchronous_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_ring_watermarks",
@@ -2145,7 +2145,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerRingWatermarks_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_rotated_atom",
@@ -2166,7 +2166,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerRotatedAtom_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("elipses") = 3, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_rainbow_balls",
@@ -2193,7 +2193,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSpiral_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_spiral_eye",
@@ -2214,7 +2214,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSpiralEye_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_bar_chart_sine",
@@ -2271,7 +2271,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerArcPolarFade_adapt_mutable_param_with_default_value(label, radius, color, speed, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_arc_polar_radius",
@@ -2292,7 +2292,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerArcPolarRadius_adapt_mutable_param_with_default_value(label, radius, color, speed, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_caleidoscope",
@@ -2313,7 +2313,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerCaleidoscope_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 6, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 6, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_hbo_dots",
@@ -2334,7 +2334,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerHboDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, dots, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("dots") = 6, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("dots") = 6, nb::arg("mode") = 0,
         " spinner idea by nitz 'Chris Dailey'\n\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_moon_dots",
@@ -2358,7 +2358,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTwinHboDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, dots, delta);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("dots") = 6, nb::arg("delta") = 0.f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("dots") = 6, nb::arg("delta") = 0.f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_three_dots_star",
@@ -2379,7 +2379,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerThreeDotsStar_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, delta);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("delta") = 0.f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("delta") = 0.f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_sine_arcs",
@@ -2400,7 +2400,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSineArcs_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_triangles_shift",
@@ -2428,7 +2428,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerTrianglesShift_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, bars);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 8,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 8,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: half_white");
 
     m.def("spinner_points_shift",
@@ -2456,7 +2456,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerPointsShift_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, bars);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 8,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 8,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: half_white");
 
     m.def("spinner_swing_dots",
@@ -2477,7 +2477,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSwingDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_circular_points",
@@ -2498,7 +2498,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerCircularPoints_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lines);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 1.8f, nb::arg("lines") = 8,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.8f, nb::arg("lines") = 8,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_curved_circle",
@@ -2519,7 +2519,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerCurvedCircle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, circles);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("circles") = 1,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("circles") = 1,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_mod_circle",
@@ -2540,7 +2540,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerModCircle_adapt_mutable_param_with_default_value(label, radius, thickness, color, ang_min, ang_max, speed);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("ang_min") = 1.f, nb::arg("ang_max") = 1.f, nb::arg("speed") = 2.8f,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("ang_min") = 1.f, nb::arg("ang_max") = 1.f, nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_dna_dots",
@@ -2561,7 +2561,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerDnaDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner3_smuggle_dots",
@@ -2582,7 +2582,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             Spinner3SmuggleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 4.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 4.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_rotate_segments_pulsar",
@@ -2603,7 +2603,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerRotateSegmentsPulsar_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, layers);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("layers") = 1,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4, nb::arg("layers") = 1,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_spline_ang",
@@ -2631,7 +2631,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerSplineAng_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = nb::none(), nb::arg("bg") = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: white");
     // #endif
     // #endif

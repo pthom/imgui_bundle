@@ -51,7 +51,7 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumFlags_ =
-        nb::enum_<ImPlot3DFlags_>(m, "Flags_", nb::is_arithmetic(), "Flags for ImPlot3D::BeginPlot()")
+        nb::enum_<ImPlot3DFlags_>(m, "Flags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImPlot3D::BeginPlot()")
             .value("none", ImPlot3DFlags_None, "Default")
             .value("no_title", ImPlot3DFlags_NoTitle, "Hide plot title")
             .value("no_legend", ImPlot3DFlags_NoLegend, "Hide plot legend")
@@ -62,14 +62,14 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumCond_ =
-        nb::enum_<ImPlot3DCond_>(m, "Cond_", nb::is_arithmetic(), "Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)")
+        nb::enum_<ImPlot3DCond_>(m, "Cond_", nb::is_arithmetic(), nb::is_flag(), "Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)")
             .value("none", ImPlot3DCond_None, "No condition (always set the variable), same as _Always")
             .value("always", ImPlot3DCond_Always, "No condition (always set the variable)")
             .value("once", ImPlot3DCond_Once, "Set the variable once per runtime session (only the first call will succeed)");
 
 
     auto pyEnumCol_ =
-        nb::enum_<ImPlot3DCol_>(m, "Col_", nb::is_arithmetic(), "")
+        nb::enum_<ImPlot3DCol_>(m, "Col_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("line", ImPlot3DCol_Line, "Line color")
             .value("fill", ImPlot3DCol_Fill, "Fill color")
             .value("marker_outline", ImPlot3DCol_MarkerOutline, "Marker outline color")
@@ -89,7 +89,7 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumStyleVar_ =
-        nb::enum_<ImPlot3DStyleVar_>(m, "StyleVar_", nb::is_arithmetic(), "Plot styling variables")
+        nb::enum_<ImPlot3DStyleVar_>(m, "StyleVar_", nb::is_arithmetic(), nb::is_flag(), "Plot styling variables")
             .value("line_weight", ImPlot3DStyleVar_LineWeight, "float, plot item line weight in pixels")
             .value("marker", ImPlot3DStyleVar_Marker, "int,   marker specification")
             .value("marker_size", ImPlot3DStyleVar_MarkerSize, "float, marker size in pixels (roughly the marker's \"radius\")")
@@ -106,7 +106,7 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumMarker_ =
-        nb::enum_<ImPlot3DMarker_>(m, "Marker_", nb::is_arithmetic(), "")
+        nb::enum_<ImPlot3DMarker_>(m, "Marker_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImPlot3DMarker_None, "No marker")
             .value("circle", ImPlot3DMarker_Circle, "Circle marker (default)")
             .value("square", ImPlot3DMarker_Square, "Square maker")
@@ -122,21 +122,21 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumItemFlags_ =
-        nb::enum_<ImPlot3DItemFlags_>(m, "ItemFlags_", nb::is_arithmetic(), "Flags for items")
+        nb::enum_<ImPlot3DItemFlags_>(m, "ItemFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for items")
             .value("none", ImPlot3DItemFlags_None, "Default")
             .value("no_legend", ImPlot3DItemFlags_NoLegend, "The item won't have a legend entry displayed")
             .value("no_fit", ImPlot3DItemFlags_NoFit, "The item won't be considered for plot fits");
 
 
     auto pyEnumScatterFlags_ =
-        nb::enum_<ImPlot3DScatterFlags_>(m, "ScatterFlags_", nb::is_arithmetic(), "Flags for PlotScatter")
+        nb::enum_<ImPlot3DScatterFlags_>(m, "ScatterFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotScatter")
             .value("none", ImPlot3DScatterFlags_None, "Default")
             .value("no_legend", ImPlot3DScatterFlags_NoLegend, "")
             .value("no_fit", ImPlot3DScatterFlags_NoFit, "");
 
 
     auto pyEnumLineFlags_ =
-        nb::enum_<ImPlot3DLineFlags_>(m, "LineFlags_", nb::is_arithmetic(), "Flags for PlotLine")
+        nb::enum_<ImPlot3DLineFlags_>(m, "LineFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotLine")
             .value("none", ImPlot3DLineFlags_None, "Default")
             .value("no_legend", ImPlot3DLineFlags_NoLegend, "")
             .value("no_fit", ImPlot3DLineFlags_NoFit, "")
@@ -146,42 +146,42 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumTriangleFlags_ =
-        nb::enum_<ImPlot3DTriangleFlags_>(m, "TriangleFlags_", nb::is_arithmetic(), "Flags for PlotTriangle")
+        nb::enum_<ImPlot3DTriangleFlags_>(m, "TriangleFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotTriangle")
             .value("none", ImPlot3DTriangleFlags_None, "Default")
             .value("no_legend", ImPlot3DTriangleFlags_NoLegend, "")
             .value("no_fit", ImPlot3DTriangleFlags_NoFit, "");
 
 
     auto pyEnumQuadFlags_ =
-        nb::enum_<ImPlot3DQuadFlags_>(m, "QuadFlags_", nb::is_arithmetic(), "Flags for PlotQuad")
+        nb::enum_<ImPlot3DQuadFlags_>(m, "QuadFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotQuad")
             .value("none", ImPlot3DQuadFlags_None, "Default")
             .value("no_legend", ImPlot3DQuadFlags_NoLegend, "")
             .value("no_fit", ImPlot3DQuadFlags_NoFit, "");
 
 
     auto pyEnumSurfaceFlags_ =
-        nb::enum_<ImPlot3DSurfaceFlags_>(m, "SurfaceFlags_", nb::is_arithmetic(), "Flags for PlotSurface")
+        nb::enum_<ImPlot3DSurfaceFlags_>(m, "SurfaceFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotSurface")
             .value("none", ImPlot3DSurfaceFlags_None, "Default")
             .value("no_legend", ImPlot3DSurfaceFlags_NoLegend, "")
             .value("no_fit", ImPlot3DSurfaceFlags_NoFit, "");
 
 
     auto pyEnumMeshFlags_ =
-        nb::enum_<ImPlot3DMeshFlags_>(m, "MeshFlags_", nb::is_arithmetic(), "Flags for PlotMesh")
+        nb::enum_<ImPlot3DMeshFlags_>(m, "MeshFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotMesh")
             .value("none", ImPlot3DMeshFlags_None, "Default")
             .value("no_legend", ImPlot3DMeshFlags_NoLegend, "")
             .value("no_fit", ImPlot3DMeshFlags_NoFit, "");
 
 
     auto pyEnumImageFlags_ =
-        nb::enum_<ImPlot3DImageFlags_>(m, "ImageFlags_", nb::is_arithmetic(), "Flags for PlotImage")
+        nb::enum_<ImPlot3DImageFlags_>(m, "ImageFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotImage")
             .value("none", ImPlot3DImageFlags_None, "Default")
             .value("no_legend", ImPlot3DImageFlags_NoLegend, "")
             .value("no_fit", ImPlot3DImageFlags_NoFit, "");
 
 
     auto pyEnumLegendFlags_ =
-        nb::enum_<ImPlot3DLegendFlags_>(m, "LegendFlags_", nb::is_arithmetic(), "Flags for legends")
+        nb::enum_<ImPlot3DLegendFlags_>(m, "LegendFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for legends")
             .value("none", ImPlot3DLegendFlags_None, "Default")
             .value("no_buttons", ImPlot3DLegendFlags_NoButtons, "Legend icons will not function as hide/show buttons")
             .value("no_highlight_item", ImPlot3DLegendFlags_NoHighlightItem, "Plot items will not be highlighted when their legend entry is hovered")
@@ -189,7 +189,7 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumLocation_ =
-        nb::enum_<ImPlot3DLocation_>(m, "Location_", nb::is_arithmetic(), "Used to position legend on a plot")
+        nb::enum_<ImPlot3DLocation_>(m, "Location_", nb::is_arithmetic(), nb::is_flag(), "Used to position legend on a plot")
             .value("center", ImPlot3DLocation_Center, "Center-center")
             .value("north", ImPlot3DLocation_North, "Top-center")
             .value("south", ImPlot3DLocation_South, "Bottom-center")
@@ -202,7 +202,7 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumAxisFlags_ =
-        nb::enum_<ImPlot3DAxisFlags_>(m, "AxisFlags_", nb::is_arithmetic(), "Flags for axis")
+        nb::enum_<ImPlot3DAxisFlags_>(m, "AxisFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for axis")
             .value("none", ImPlot3DAxisFlags_None, "Default")
             .value("no_label", ImPlot3DAxisFlags_NoLabel, "No axis label will be displayed")
             .value("no_grid_lines", ImPlot3DAxisFlags_NoGridLines, "No grid lines will be displayed")
@@ -217,7 +217,7 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumImAxis3D_ =
-        nb::enum_<ImAxis3D_>(m, "ImAxis3D_", nb::is_arithmetic(), "Axis indices")
+        nb::enum_<ImAxis3D_>(m, "ImAxis3D_", nb::is_arithmetic(), nb::is_flag(), "Axis indices")
             .value("x", ImAxis3D_X, "")
             .value("y", ImAxis3D_Y, "")
             .value("z", ImAxis3D_Z, "")
@@ -225,7 +225,7 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumImPlane3D_ =
-        nb::enum_<ImPlane3D_>(m, "ImPlane3D_", nb::is_arithmetic(), "Plane indices")
+        nb::enum_<ImPlane3D_>(m, "ImPlane3D_", nb::is_arithmetic(), nb::is_flag(), "Plane indices")
             .value("yz", ImPlane3D_YZ, "")
             .value("xz", ImPlane3D_XZ, "")
             .value("xy", ImPlane3D_XY, "")
@@ -233,7 +233,7 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     auto pyEnumColormap_ =
-        nb::enum_<ImPlot3DColormap_>(m, "Colormap_", nb::is_arithmetic(), "Colormaps")
+        nb::enum_<ImPlot3DColormap_>(m, "Colormap_", nb::is_arithmetic(), nb::is_flag(), "Colormaps")
             .value("deep", ImPlot3DColormap_Deep, "Same as seaborn \"deep\"")
             .value("dark", ImPlot3DColormap_Dark, "Same as matplotlib \"Set1\"")
             .value("pastel", ImPlot3DColormap_Pastel, "Same as matplotlib \"Pastel1\"")
@@ -283,7 +283,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             return BeginPlot_adapt_mutable_param_with_default_value(title_id, size, flags);
         },
-        nb::arg("title_id"), nb::arg("size") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("title_id"), nb::arg("size").none() = nb::none(), nb::arg("flags") = 0,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1, 0)");
 
     m.def("end_plot",
@@ -303,7 +303,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             SetupAxis_adapt_const_char_pointer_with_default_null(axis, label, flags);
         },
-        nb::arg("axis"), nb::arg("label") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("axis"), nb::arg("label").none() = nb::none(), nb::arg("flags") = 0,
         "Enables an axis or sets the label and/or flags for an existing axis. Leave #label = None for no label");
 
     m.def("setup_axis_limits",
@@ -324,7 +324,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             SetupAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
-        nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond") = nb::none(),
+        nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond").none() = nb::none(),
         "Python bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_axes",
@@ -350,7 +350,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             SetupAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, z_min, z_max, cond);
         },
-        nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("z_min"), nb::arg("z_max"), nb::arg("cond") = nb::none(),
+        nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("z_min"), nb::arg("z_max"), nb::arg("cond").none() = nb::none(),
         " Sets the X/Y/Z axes range limits. If ImPlot3DCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_rotation",
@@ -371,7 +371,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             SetupBoxRotation_adapt_mutable_param_with_default_value(elevation, azimuth, animate, cond);
         },
-        nb::arg("elevation"), nb::arg("azimuth"), nb::arg("animate") = false, nb::arg("cond") = nb::none(),
+        nb::arg("elevation"), nb::arg("azimuth"), nb::arg("animate") = false, nb::arg("cond").none() = nb::none(),
         " Sets the plot box rotation given the elevation and azimuth angles in degrees. If ImPlot3DCond_Always is used, the rotation will be locked\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_rotation",
@@ -392,7 +392,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             SetupBoxRotation_adapt_mutable_param_with_default_value(rotation, animate, cond);
         },
-        nb::arg("rotation"), nb::arg("animate") = false, nb::arg("cond") = nb::none(),
+        nb::arg("rotation"), nb::arg("animate") = false, nb::arg("cond").none() = nb::none(),
         " Sets the plot box rotation given a quaternion. If ImPlot3DCond_Always is used, the rotation will be locked\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_initial_rotation",
@@ -893,7 +893,7 @@ void py_init_module_implot3d(nb::module_& m)
             else
                 r_ctor_->Idx = std::vector<UInt>();
         },
-        nb::arg("points") = nb::none(), nb::arg("idx") = nb::none()
+        nb::arg("points").none() = nb::none(), nb::arg("idx").none() = nb::none()
         )
         .def_rw("points", &ImPlot3D::Mesh::Points, "")
         .def_rw("idx", &ImPlot3D::Mesh::Idx, "")
@@ -945,7 +945,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, center, axis_u, axis_v, uv0, uv1, tint_col, flags);
         },
-        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("center"), nb::arg("axis_u"), nb::arg("axis_v"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("center"), nb::arg("axis_u"), nb::arg("axis_v"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("flags") = 0,
         " Plots a rectangular image in 3D defined by its center and two direction vectors (axes).\n #center is the center of the rectangle in plot coordinates.\n #axis_u and #axis_v define the local axes and half-extents of the rectangle in 3D space.\n The rectangle is formed by moving from the center along ±axis_u and ±axis_v.\n #uv0 and #uv1 define the texture mapping.\n #tint_col can be used to tint the image.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)");
 
     m.def("plot_image",
@@ -994,7 +994,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, p0, p1, p2, p3, uv0, uv1, uv2, uv3, tint_col, flags);
         },
-        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("p0"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("uv2") = nb::none(), nb::arg("uv3") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("p0"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("uv2").none() = nb::none(), nb::arg("uv3").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("flags") = 0,
         " Plots an image using four arbitrary 3D points that define a quad in space.\n Each corner (p0 to p3) corresponds to a corner in the image, and #uv0 to #uv3 are the texture coordinates for each.\n This overload allows full control over orientation, shape, and distortion.\n Note: The quad is internally split into two triangles, so non-rectangular quads may produce rendering artifacts\n since distortion is interpolated per triangle rather than over the full quad.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 0)\n        * uv2: ImVec2(1, 1)\n        * uv3: ImVec2(0, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)");
 
     m.def("plot_text",
@@ -1015,7 +1015,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             PlotText_adapt_mutable_param_with_default_value(text, x, y, z, angle, pix_offset);
         },
-        nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("z"), nb::arg("angle") = 0.0f, nb::arg("pix_offset") = nb::none(),
+        nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("z"), nb::arg("angle") = 0.0f, nb::arg("pix_offset").none() = nb::none(),
         " Plots a centered text label at point x,y,z. It is possible to set the text angle in radians and offset in pixels\n\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("plot_to_pixels",
@@ -1120,7 +1120,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             SetNextLineStyle_adapt_mutable_param_with_default_value(col, weight);
         },
-        nb::arg("col") = nb::none(), nb::arg("weight") = IMPLOT3D_AUTO,
+        nb::arg("col").none() = nb::none(), nb::arg("weight") = IMPLOT3D_AUTO,
         " Set the line color and weight for the next item only\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT3D_AUTO_COL");
 
     m.def("set_next_fill_style",
@@ -1141,7 +1141,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             SetNextFillStyle_adapt_mutable_param_with_default_value(col, alpha_mod);
         },
-        nb::arg("col") = nb::none(), nb::arg("alpha_mod") = IMPLOT3D_AUTO,
+        nb::arg("col").none() = nb::none(), nb::arg("alpha_mod") = IMPLOT3D_AUTO,
         " Set the fill color for the next item only\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT3D_AUTO_COL");
 
     m.def("set_next_marker_style",
@@ -1176,7 +1176,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             SetNextMarkerStyle_adapt_mutable_param_with_default_value(marker, size, fill, weight, outline);
         },
-        nb::arg("marker") = nb::none(), nb::arg("size") = IMPLOT3D_AUTO, nb::arg("fill") = nb::none(), nb::arg("weight") = IMPLOT3D_AUTO, nb::arg("outline") = nb::none(),
+        nb::arg("marker").none() = nb::none(), nb::arg("size") = IMPLOT3D_AUTO, nb::arg("fill").none() = nb::none(), nb::arg("weight") = IMPLOT3D_AUTO, nb::arg("outline").none() = nb::none(),
         " Set the marker style for the next item only\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * marker: IMPLOT3D_AUTO\n        * fill: IMPLOT3D_AUTO_COL\n        * outline: IMPLOT3D_AUTO_COL");
 
     m.def("get_style_color_vec4",
@@ -1242,7 +1242,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             return GetColormapSize_adapt_mutable_param_with_default_value(cmap);
         },
-        nb::arg("cmap") = nb::none(),
+        nb::arg("cmap").none() = nb::none(),
         " Returns the size of a colormap\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("get_colormap_color",
@@ -1264,7 +1264,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             return GetColormapColor_adapt_mutable_param_with_default_value(idx, cmap);
         },
-        nb::arg("idx"), nb::arg("cmap") = nb::none(),
+        nb::arg("idx"), nb::arg("cmap").none() = nb::none(),
         " Returns a color from a colormap given an index >= 0 (modulo will be performed)\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("sample_colormap",
@@ -1286,7 +1286,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             return SampleColormap_adapt_mutable_param_with_default_value(t, cmap);
         },
-        nb::arg("t"), nb::arg("cmap") = nb::none(),
+        nb::arg("t"), nb::arg("cmap").none() = nb::none(),
         " Sample a color from the current colormap given t between 0 and 1\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("show_demo_window",
@@ -1304,7 +1304,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             return ShowDemoWindow_adapt_modifiable_immutable_to_return(p_open);
         },
-        nb::arg("p_open") = nb::none(),
+        nb::arg("p_open").none() = nb::none(),
         "Shows the ImPlot3D demo window");
 
     m.def("show_all_demos",
@@ -1413,7 +1413,7 @@ void py_init_module_implot3d(nb::module_& m)
             else
                 r_ctor_->Direction = ImPlot3DPoint();
         },
-        nb::arg("origin") = nb::none(), nb::arg("direction") = nb::none()
+        nb::arg("origin").none() = nb::none(), nb::arg("direction").none() = nb::none()
         )
         .def_rw("origin", &ImPlot3DRay::Origin, "")
         .def_rw("direction", &ImPlot3DRay::Direction, "")
@@ -1436,7 +1436,7 @@ void py_init_module_implot3d(nb::module_& m)
             else
                 r_ctor_->Normal = ImPlot3DPoint();
         },
-        nb::arg("point") = nb::none(), nb::arg("normal") = nb::none()
+        nb::arg("point").none() = nb::none(), nb::arg("normal").none() = nb::none()
         )
         .def_rw("point", &ImPlot3DPlane::Point, "")
         .def_rw("normal", &ImPlot3DPlane::Normal, "")

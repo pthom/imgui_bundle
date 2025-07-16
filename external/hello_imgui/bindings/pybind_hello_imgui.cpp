@@ -255,7 +255,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
             LogGui_adapt_mutable_param_with_default_value(size);
         },
-        nb::arg("size") = nb::none(),
+        nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0., 0.)");
 
 
@@ -291,7 +291,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
             ImageFromAsset_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1);
         },
-        nb::arg("asset_path"), nb::arg("size") = nb::none(), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(),
+        nb::arg("asset_path"), nb::arg("size").none() = nb::none(), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(),
         " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)");
 
     m.def("image_from_asset_with_bg",
@@ -340,7 +340,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
             ImageFromAssetWithBg_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1, tint_col, border_col);
         },
-        nb::arg("asset_path"), nb::arg("size") = nb::none(), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("border_col") = nb::none(),
+        nb::arg("asset_path"), nb::arg("size").none() = nb::none(), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("border_col").none() = nb::none(),
         " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets, with a colored background and a border.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * tint_col: ImVec4(1,1,1,1)\n        * border_col: ImVec4(0,0,0,0)");
 
     m.def("image_button_from_asset",
@@ -390,7 +390,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
             return ImageButtonFromAsset_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1, frame_padding, bg_col, tint_col);
         },
-        nb::arg("asset_path"), nb::arg("size") = nb::none(), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("frame_padding") = -1, nb::arg("bg_col") = nb::none(), nb::arg("tint_col") = nb::none(),
+        nb::arg("asset_path"), nb::arg("size").none() = nb::none(), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("frame_padding") = -1, nb::arg("bg_col").none() = nb::none(), nb::arg("tint_col").none() = nb::none(),
         " `bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`:\n will display a button using an image from the assets.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * bg_col: ImVec4(0,0,0,0)\n        * tint_col: ImVec4(1,1,1,1)");
 
     m.def("im_texture_id_from_asset",
@@ -420,7 +420,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->size = ImVec2(0.f, 0.f);
         },
-        nb::arg("texture_id") = nb::none(), nb::arg("size") = nb::none()
+        nb::arg("texture_id").none() = nb::none(), nb::arg("size").none() = nb::none()
         )
         .def_rw("texture_id", &HelloImGui::ImageAndSize::textureId, "")
         .def_rw("size", &HelloImGui::ImageAndSize::size, "")
@@ -516,7 +516,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, theme, tweaks);
             },
-            nb::arg("theme") = ImGuiTheme::ImGuiTheme_DarculaDarker, nb::arg("tweaks") = nb::none(),
+            nb::arg("theme") = ImGuiTheme::ImGuiTheme_DarculaDarker, nb::arg("tweaks").none() = nb::none(),
             "Python bindings defaults:\n    If tweaks is None, then its default value will be: ImGuiThemeTweaks()")
         ;
 
@@ -562,7 +562,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             };
 
             return ShowThemeTweakGuiWindow_adapt_modifiable_immutable_to_return(p_open);
-        },     nb::arg("p_open") = nb::none());
+        },     nb::arg("p_open").none() = nb::none());
 
 
     auto pyClassFontLoadingParams =
@@ -581,7 +581,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->fontConfig = ImFontConfig();
         },
-        nb::arg("adjust_size_to_dpi") = true, nb::arg("merge_to_last_font") = false, nb::arg("load_color") = false, nb::arg("inside_assets") = true, nb::arg("font_config") = nb::none()
+        nb::arg("adjust_size_to_dpi") = true, nb::arg("merge_to_last_font") = false, nb::arg("load_color") = false, nb::arg("inside_assets") = true, nb::arg("font_config").none() = nb::none()
         )
         .def_rw("adjust_size_to_dpi", &HelloImGui::FontLoadingParams::adjustSizeToDpi, " if True, the font size will be adjusted automatically to account for HighDPI\n")
         .def_rw("merge_to_last_font", &HelloImGui::FontLoadingParams::mergeToLastFont, "if True, the font will be merged to the last font")
@@ -610,7 +610,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
             return LoadFont_adapt_mutable_param_with_default_value(fontFilename, fontSize, params);
         },
-        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("params") = nb::none(),
+        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("params").none() = nb::none(),
         "Python bindings defaults:\n    If params is None, then its default value will be: initialized with default value",
         nb::rv_policy::reference);
 
@@ -633,7 +633,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
             return LoadFontTTF_adapt_mutable_param_with_default_value(fontFilename, fontSize, config);
         },
-        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("config") = nb::none(),
+        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("config").none() = nb::none(),
         "Python bindings defaults:\n    If config is None, then its default value will be: ImFontConfig()",
         nb::rv_policy::reference);
 
@@ -656,7 +656,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
             return LoadFontTTF_WithFontAwesomeIcons_adapt_mutable_param_with_default_value(fontFilename, fontSize, configFont);
         },
-        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("config_font") = nb::none(),
+        nb::arg("font_filename"), nb::arg("font_size"), nb::arg("config_font").none() = nb::none(),
         "Python bindings defaults:\n    If configFont is None, then its default value will be: ImFontConfig()",
         nb::rv_policy::reference);
 
@@ -677,7 +677,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->size = HelloImGui::DefaultWindowSize;
         },
-        nb::arg("position") = nb::none(), nb::arg("size") = nb::none()
+        nb::arg("position").none() = nb::none(), nb::arg("size").none() = nb::none()
         )
         .def_rw("position", &HelloImGui::ScreenBounds::position, "")
         .def_rw("size", &HelloImGui::ScreenBounds::size, "")
@@ -760,7 +760,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->fullScreenMode = fullScreenMode;
             r_ctor_->resizeAppWindowAtNextFrame = resizeAppWindowAtNextFrame;
         },
-        nb::arg("size") = nb::none(), nb::arg("size_auto") = false, nb::arg("window_size_state") = HelloImGui::WindowSizeState::Standard, nb::arg("window_size_measure_mode") = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi, nb::arg("position_mode") = HelloImGui::WindowPositionMode::OsDefault, nb::arg("position") = nb::none(), nb::arg("monitor_idx") = 0, nb::arg("full_screen_mode") = HelloImGui::FullScreenMode::NoFullScreen, nb::arg("resize_app_window_at_next_frame") = false
+        nb::arg("size").none() = nb::none(), nb::arg("size_auto") = false, nb::arg("window_size_state") = HelloImGui::WindowSizeState::Standard, nb::arg("window_size_measure_mode") = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi, nb::arg("position_mode") = HelloImGui::WindowPositionMode::OsDefault, nb::arg("position").none() = nb::none(), nb::arg("monitor_idx") = 0, nb::arg("full_screen_mode") = HelloImGui::FullScreenMode::NoFullScreen, nb::arg("resize_app_window_at_next_frame") = false
         )
         .def_rw("size", &HelloImGui::WindowGeometry::size, " Size of the application window\n used if fullScreenMode==NoFullScreen and sizeAuto==False. Default=(800, 600)\n The size will be handled as if it was specified for a 96PPI screen\n (i.e. a given size will correspond to the same physical size on different screens, whatever their DPI)")
         .def_rw("size_auto", &HelloImGui::WindowGeometry::sizeAuto, " If sizeAuto=True, adapt the app window size to the presented widgets.\n After the first frame was displayed, HelloImGui will measure its size, and the\n application window will be resized.\n As a consequence, the application window may change between the 1st and 2nd frame.\n If True, adapt the app window size to the presented widgets. This is done at startup")
@@ -826,7 +826,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->emscriptenKeyboardElement = emscriptenKeyboardElement;
             r_ctor_->repaintDuringResize_GotchaReentrantRepaint = repaintDuringResize_GotchaReentrantRepaint;
         },
-        nb::arg("window_title") = std::string(), nb::arg("window_geometry") = nb::none(), nb::arg("restore_previous_geometry") = false, nb::arg("resizable") = true, nb::arg("hidden") = false, nb::arg("borderless") = false, nb::arg("borderless_movable") = true, nb::arg("borderless_resizable") = true, nb::arg("borderless_closable") = true, nb::arg("borderless_highlight_color") = nb::none(), nb::arg("edge_insets") = nb::none(), nb::arg("handle_edge_insets") = true, nb::arg("emscripten_keyboard_element") = HelloImGui::EmscriptenKeyboardElement::Default, nb::arg("repaint_during_resize_gotcha_reentrant_repaint") = false
+        nb::arg("window_title") = std::string(), nb::arg("window_geometry").none() = nb::none(), nb::arg("restore_previous_geometry") = false, nb::arg("resizable") = true, nb::arg("hidden") = false, nb::arg("borderless") = false, nb::arg("borderless_movable") = true, nb::arg("borderless_resizable") = true, nb::arg("borderless_closable") = true, nb::arg("borderless_highlight_color").none() = nb::none(), nb::arg("edge_insets").none() = nb::none(), nb::arg("handle_edge_insets") = true, nb::arg("emscripten_keyboard_element") = HelloImGui::EmscriptenKeyboardElement::Default, nb::arg("repaint_during_resize_gotcha_reentrant_repaint") = false
         )
         .def_rw("window_title", &HelloImGui::AppWindowParams::windowTitle, "`windowTitle`: _string, default=\"\"_. Title of the application window")
         .def_rw("window_geometry", &HelloImGui::AppWindowParams::windowGeometry, " `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size,\n  full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._")
@@ -889,7 +889,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);
         },
-        nb::arg("default_imgui_window_type") = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, nb::arg("enable_viewports") = false, nb::arg("config_windows_move_from_title_bar_only") = true, nb::arg("menu_app_title") = "", nb::arg("show_menu_bar") = false, nb::arg("show_menu_app") = true, nb::arg("show_menu_app_quit") = true, nb::arg("show_menu_view") = true, nb::arg("show_menu_view_themes") = true, nb::arg("remember_theme") = true, nb::arg("show_status_bar") = false, nb::arg("show_status_fps") = true, nb::arg("remember_status_bar_settings") = true, nb::arg("full_screen_window_margin_top_left") = nb::none(), nb::arg("full_screen_window_margin_bottom_right") = nb::none(), nb::arg("tweaked_theme") = nb::none(), nb::arg("background_color") = nb::none()
+        nb::arg("default_imgui_window_type") = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow, nb::arg("enable_viewports") = false, nb::arg("config_windows_move_from_title_bar_only") = true, nb::arg("menu_app_title") = "", nb::arg("show_menu_bar") = false, nb::arg("show_menu_app") = true, nb::arg("show_menu_app_quit") = true, nb::arg("show_menu_view") = true, nb::arg("show_menu_view_themes") = true, nb::arg("remember_theme") = true, nb::arg("show_status_bar") = false, nb::arg("show_status_fps") = true, nb::arg("remember_status_bar_settings") = true, nb::arg("full_screen_window_margin_top_left").none() = nb::none(), nb::arg("full_screen_window_margin_bottom_right").none() = nb::none(), nb::arg("tweaked_theme").none() = nb::none(), nb::arg("background_color").none() = nb::none()
         )
         .def_rw("default_imgui_window_type", &HelloImGui::ImGuiWindowParams::defaultImGuiWindowType, " defaultImGuiWindowType: (enum DefaultImGuiWindowType)\n Choose between:\n    - ProvideFullScreenWindow (default)\n      a full window is provided in the background\n      You can still add windows on top of it, since the Z-order\n      of this background window is always behind\n    - ProvideFullScreenDockSpace:\n      a full screen dockspace is provided in the background\n      (use this if you intend to use docking)\n    - NoDefaultWindow:\n      no default window is provided")
         .def_rw("enable_viewports", &HelloImGui::ImGuiWindowParams::enableViewports, " enableViewports: Enable multiple viewports (i.e. multiple native windows)\n If True, you can drag windows outside the main window,\n in order to put their content into new native windows.")
@@ -947,7 +947,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->OnResume = HelloImGui::EmptyVoidFunction();
         },
-        nb::arg("on_destroy") = nb::none(), nb::arg("on_low_memory") = nb::none(), nb::arg("on_pause") = nb::none(), nb::arg("on_resume") = nb::none()
+        nb::arg("on_destroy").none() = nb::none(), nb::arg("on_low_memory").none() = nb::none(), nb::arg("on_pause").none() = nb::none(), nb::arg("on_resume").none() = nb::none()
         )
         .def_rw("on_destroy", &HelloImGui::MobileCallbacks::OnDestroy, "`OnDestroy`: The application is being terminated by the OS.")
         .def_rw("on_low_memory", &HelloImGui::MobileCallbacks::OnLowMemory, "`OnLowMemory`: _VoidFunction, default=empty_.\n When the application is low on memory, free memory if possible.")
@@ -981,7 +981,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->WindowBg = ImVec4(0.f, 0.f, 0.f, 0.f);
         },
-        nb::arg("size_em") = 2.5f, nb::arg("window_padding_em") = nb::none(), nb::arg("window_bg") = nb::none()
+        nb::arg("size_em") = 2.5f, nb::arg("window_padding_em").none() = nb::none(), nb::arg("window_bg").none() = nb::none()
         )
         .def_rw("size_em", &HelloImGui::EdgeToolbarOptions::sizeEm, " height or width the top toolbar, in em units\n (i.e. multiples of the default font size, to be Dpi aware)")
         .def_rw("window_padding_em", &HelloImGui::EdgeToolbarOptions::WindowPaddingEm, "Padding inside the window, in em units")
@@ -1005,7 +1005,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->options = HelloImGui::EdgeToolbarOptions();
         },
-        nb::arg("show_toolbar") = nb::none(), nb::arg("options") = nb::none()
+        nb::arg("show_toolbar").none() = nb::none(), nb::arg("options").none() = nb::none()
         )
         .def_rw("show_toolbar", &HelloImGui::EdgeToolbar::ShowToolbar, "")
         .def_rw("options", &HelloImGui::EdgeToolbar::options, "")
@@ -1108,7 +1108,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->AnyBackendEventCallback = HelloImGui::EmptyEventCallback();
         },
-        nb::arg("show_gui") = nb::none(), nb::arg("show_menus") = nb::none(), nb::arg("show_app_menu_items") = nb::none(), nb::arg("show_status") = nb::none(), nb::arg("post_init_add_platform_backend_callbacks") = nb::none(), nb::arg("post_init") = nb::none(), nb::arg("load_additional_fonts") = nb::none(), nb::arg("default_icon_font") = HelloImGui::DefaultIconFont::FontAwesome4, nb::arg("setup_imgui_config") = nb::none(), nb::arg("setup_imgui_style") = nb::none(), nb::arg("register_tests") = nb::none(), nb::arg("register_tests_called") = false, nb::arg("before_exit") = nb::none(), nb::arg("before_exit_post_cleanup") = nb::none(), nb::arg("pre_new_frame") = nb::none(), nb::arg("before_imgui_render") = nb::none(), nb::arg("after_swap") = nb::none(), nb::arg("custom_background") = nb::none(), nb::arg("post_render_dockable_windows") = nb::none(), nb::arg("any_backend_event_callback") = nb::none()
+        nb::arg("show_gui").none() = nb::none(), nb::arg("show_menus").none() = nb::none(), nb::arg("show_app_menu_items").none() = nb::none(), nb::arg("show_status").none() = nb::none(), nb::arg("post_init_add_platform_backend_callbacks").none() = nb::none(), nb::arg("post_init").none() = nb::none(), nb::arg("load_additional_fonts").none() = nb::none(), nb::arg("default_icon_font") = HelloImGui::DefaultIconFont::FontAwesome4, nb::arg("setup_imgui_config").none() = nb::none(), nb::arg("setup_imgui_style").none() = nb::none(), nb::arg("register_tests").none() = nb::none(), nb::arg("register_tests_called") = false, nb::arg("before_exit").none() = nb::none(), nb::arg("before_exit_post_cleanup").none() = nb::none(), nb::arg("pre_new_frame").none() = nb::none(), nb::arg("before_imgui_render").none() = nb::none(), nb::arg("after_swap").none() = nb::none(), nb::arg("custom_background").none() = nb::none(), nb::arg("post_render_dockable_windows").none() = nb::none(), nb::arg("any_backend_event_callback").none() = nb::none()
         )
         .def_rw("show_gui", &HelloImGui::RunnerCallbacks::ShowGui, " `ShowGui`: Fill it with a function that will add your widgets.\n (ShowGui will be called at each frame, before rendering the Dockable windows, if any)")
         .def_rw("show_menus", &HelloImGui::RunnerCallbacks::ShowMenus, " `ShowMenus`: Fill it with a function that will add ImGui menus by calling:\n       ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()\n   Notes:\n   * you do not need to call ImGui::BeginMenuBar and ImGui::EndMenuBar\n   * Some default menus can be provided:\n     see ImGuiWindowParams options:\n         _showMenuBar, showMenu_App_QuitAbout, showMenu_View_")
@@ -1133,7 +1133,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
                 AddEdgeToolbar_adapt_mutable_param_with_default_value(edgeToolbarType, guiFunction, options);
             },
-            nb::arg("edge_toolbar_type"), nb::arg("gui_function"), nb::arg("options") = nb::none(),
+            nb::arg("edge_toolbar_type"), nb::arg("gui_function"), nb::arg("options").none() = nb::none(),
             " `AddEdgeToolbar`: Add a toolbar that can be placed on the edges of the App window\n\n\nPython bindings defaults:\n    If options is None, then its default value will be: EdgeToolbarOptions()")
         .def_rw("post_init_add_platform_backend_callbacks", &HelloImGui::RunnerCallbacks::PostInit_AddPlatformBackendCallbacks, " `PostInit_AddPlatformBackendCallbacks`:\n  You can here add a function that will be called once after OpenGL and ImGui are inited,\n  but before the platform backend callbacks are initialized.\n  If you, want to add your own glfw callbacks, you should use this function to do so\n  (and then ImGui will call your callbacks followed by its own callbacks)")
         .def_rw("post_init", &HelloImGui::RunnerCallbacks::PostInit, " `PostInit`: You can here add a function that will be called once after everything\n  is inited (ImGui, Platform and Renderer Backend)")
@@ -1205,8 +1205,8 @@ void py_init_module_hello_imgui(nb::module_& m)
 
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, initialDock_, newDock_, direction_, ratio_, nodeFlags_);
             },
-            nb::arg("initial_dock_") = "", nb::arg("new_dock_") = "", nb::arg("direction_") = nb::none(), nb::arg("ratio_") = 0.25f, nb::arg("node_flags_") = nb::none(),
-            " Constructor\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: ImGuiDir_Down\n        * nodeFlags_: ImGuiDockNodeFlags_None")
+            nb::arg("initial_dock_") = "", nb::arg("new_dock_") = "", nb::arg("direction_").none() = nb::none(), nb::arg("ratio_") = 0.25f, nb::arg("node_flags_").none() = nb::none(),
+            " Constructor\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: Dir.down\n        * nodeFlags_: DockNodeFlags_.none")
         ;
 
 
@@ -1249,7 +1249,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, label_, dockSpaceName_, guiFunction_, isVisible_, canBeClosed_);
             },
-            nb::arg("label_") = "", nb::arg("dock_space_name_") = "", nb::arg("gui_function_") = nb::none(), nb::arg("is_visible_") = true, nb::arg("can_be_closed_") = true,
+            nb::arg("label_") = "", nb::arg("dock_space_name_") = "", nb::arg("gui_function_").none() = nb::none(), nb::arg("is_visible_") = true, nb::arg("can_be_closed_") = true,
             " --------------- Constructor ------------------------------\n Constructor\n\n\nPython bindings defaults:\n    If guiFunction_ is None, then its default value will be: EmptyVoidFunction()")
         ;
 
@@ -1284,7 +1284,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->layoutCondition = layoutCondition;
             r_ctor_->layoutReset = layoutReset;
         },
-        nb::arg("docking_splits") = nb::none(), nb::arg("dockable_windows") = nb::none(), nb::arg("layout_name") = "Default", nb::arg("main_dock_space_node_flags") = nb::none(), nb::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, nb::arg("layout_reset") = false
+        nb::arg("docking_splits").none() = nb::none(), nb::arg("dockable_windows").none() = nb::none(), nb::arg("layout_name") = "Default", nb::arg("main_dock_space_node_flags").none() = nb::none(), nb::arg("layout_condition") = HelloImGui::DockingLayoutCondition::FirstUseEver, nb::arg("layout_reset") = false
         )
         .def_rw("docking_splits", &HelloImGui::DockingParams::dockingSplits, " `dockingSplits`: _vector[DockingSplit]_.\n  Defines the way docking splits should be applied on the screen\n  in order to create new Dock Spaces")
         .def_rw("dockable_windows", &HelloImGui::DockingParams::dockableWindows, " `dockableWindows`: _vector[DockableWindow]_.\n  List of the dockable windows, together with their Gui code")
@@ -1363,7 +1363,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->UseForwardCompat = UseForwardCompat;
             r_ctor_->AntiAliasingSamples = AntiAliasingSamples;
         },
-        nb::arg("glsl_version") = nb::none(), nb::arg("major_version") = nb::none(), nb::arg("minor_version") = nb::none(), nb::arg("use_core_profile") = nb::none(), nb::arg("use_forward_compat") = nb::none(), nb::arg("anti_aliasing_samples") = nb::none()
+        nb::arg("glsl_version").none() = nb::none(), nb::arg("major_version").none() = nb::none(), nb::arg("minor_version").none() = nb::none(), nb::arg("use_core_profile").none() = nb::none(), nb::arg("use_forward_compat").none() = nb::none(), nb::arg("anti_aliasing_samples").none() = nb::none()
         )
         .def_rw("glsl_version", &HelloImGui::OpenGlOptions::GlslVersion, " Could be for example:\n    \"150\" on macOS\n    \"130\" on Windows\n    \"300es\" on GLES")
         .def_rw("major_version", &HelloImGui::OpenGlOptions::MajorVersion, "")
@@ -1391,7 +1391,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->openGlOptions = HelloImGui::OpenGlOptions();
         },
-        nb::arg("request_float_buffer") = false, nb::arg("open_gl_options") = nb::none()
+        nb::arg("request_float_buffer") = false, nb::arg("open_gl_options").none() = nb::none()
         )
         .def_rw("request_float_buffer", &HelloImGui::RendererBackendOptions::requestFloatBuffer, " `requestFloatBuffer`:\n Set to True to request a floating-point framebuffer.\n Only available on Metal, if your display supports it.\n Before setting this to True, first check `hasEdrSupport()`")
         .def_rw("open_gl_options", &HelloImGui::RendererBackendOptions::openGlOptions, " `openGlOptions`:\n Advanced options for OpenGL. Use at your own risk.")
@@ -1544,7 +1544,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->useImGuiTestEngine = useImGuiTestEngine;
             r_ctor_->emscripten_fps = emscripten_fps;
         },
-        nb::arg("callbacks") = nb::none(), nb::arg("app_window_params") = nb::none(), nb::arg("imgui_window_params") = nb::none(), nb::arg("docking_params") = nb::none(), nb::arg("alternative_docking_layouts") = nb::none(), nb::arg("remember_selected_alternative_layout") = true, nb::arg("backend_pointers") = nb::none(), nb::arg("renderer_backend_options") = nb::none(), nb::arg("platform_backend_type") = HelloImGui::PlatformBackendType::FirstAvailable, nb::arg("renderer_backend_type") = HelloImGui::RendererBackendType::FirstAvailable, nb::arg("ini_folder_type") = HelloImGui::IniFolderType::CurrentFolder, nb::arg("ini_filename") = "", nb::arg("ini_filename_use_app_window_title") = true, nb::arg("app_shall_exit") = false, nb::arg("fps_idling") = nb::none(), nb::arg("dpi_aware_params") = nb::none(), nb::arg("use_imgui_test_engine") = false, nb::arg("emscripten_fps") = 0
+        nb::arg("callbacks").none() = nb::none(), nb::arg("app_window_params").none() = nb::none(), nb::arg("imgui_window_params").none() = nb::none(), nb::arg("docking_params").none() = nb::none(), nb::arg("alternative_docking_layouts").none() = nb::none(), nb::arg("remember_selected_alternative_layout") = true, nb::arg("backend_pointers").none() = nb::none(), nb::arg("renderer_backend_options").none() = nb::none(), nb::arg("platform_backend_type") = HelloImGui::PlatformBackendType::FirstAvailable, nb::arg("renderer_backend_type") = HelloImGui::RendererBackendType::FirstAvailable, nb::arg("ini_folder_type") = HelloImGui::IniFolderType::CurrentFolder, nb::arg("ini_filename") = "", nb::arg("ini_filename_use_app_window_title") = true, nb::arg("app_shall_exit") = false, nb::arg("fps_idling").none() = nb::none(), nb::arg("dpi_aware_params").none() = nb::none(), nb::arg("use_imgui_test_engine") = false, nb::arg("emscripten_fps") = 0
         )
         .def_rw("callbacks", &HelloImGui::RunnerParams::callbacks, " `callbacks`: _see runner_callbacks.h_\n callbacks.ShowGui() will render the gui, ShowMenus() will show the menus, etc.")
         .def_rw("app_window_params", &HelloImGui::RunnerParams::appWindowParams, " `appWindowParams`: _see app_window_params.h_\n application Window Params (position, size, title)")
@@ -1604,7 +1604,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->fpsIdle = fpsIdle;
             r_ctor_->enableIdling = enableIdling;
         },
-        nb::arg("gui_function") = nb::none(), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 9.f, nb::arg("enable_idling") = true
+        nb::arg("gui_function").none() = nb::none(), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 9.f, nb::arg("enable_idling") = true
         )
         .def_rw("gui_function", &HelloImGui::SimpleRunnerParams::guiFunction, " `guiFunction`: _VoidFunction_.\n  Function that renders the Gui.")
         .def_rw("window_title", &HelloImGui::SimpleRunnerParams::windowTitle, " `windowTitle`: _string, default=\"\"_.\n  Title of the application window")
@@ -1626,7 +1626,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     m.def("widget_with_resize_handle",
         HelloImGui::WidgetWithResizeHandle,
-        nb::arg("id"), nb::arg("widget_gui_function"), nb::arg("handle_size_em") = 1.0f, nb::arg("on_item_resized") = nb::none(), nb::arg("on_item_hovered") = nb::none(),
+        nb::arg("id"), nb::arg("widget_gui_function"), nb::arg("handle_size_em") = 1.0f, nb::arg("on_item_resized").none() = nb::none(), nb::arg("on_item_hovered").none() = nb::none(),
         " WidgetWithResizeHandle: adds a resize handle to a widget\n Example usage with ImPlot:\n        None gui()\n        {\n            static ImVec2 widget_size(200, 200);\n            auto myWidgetFunction = []()\n            {\n                if (ImPlot::BeginPlot(\"My Plot\", widget_size)) {\n                    ImPlot::PlotLine(\"My Line\", x.data(), y.data(), 1000);\n                    ImPlot::EndPlot();\n                }\n            };\n            widget_size = widget_with_resize_handle(\"plot\", myWidgetFunction);\n        }");
 
 
@@ -1660,7 +1660,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, text, multiline, size_em);
             },
-            nb::arg("text") = "", nb::arg("multiline") = false, nb::arg("size_em") = nb::none(),
+            nb::arg("text") = "", nb::arg("multiline") = false, nb::arg("size_em").none() = nb::none(),
             "Python bindings defaults:\n    If size_em is None, then its default value will be: ImVec2(0, 0)")
         ;
 
@@ -1709,7 +1709,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
             Run_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle);
         },
-        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f,
+        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f,
         " Runs an application, by providing the Gui function, the window title, etc.\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("get_runner_params",
@@ -1821,7 +1821,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
                 SetupFromGuiFunction_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle);
             },
-            nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f,
+            nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f,
             " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
         pyNsManualRender.def("render",

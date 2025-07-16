@@ -156,7 +156,7 @@ def toggle(
 def toggle(label: str, v: bool, config: ToggleConfig) -> Tuple[bool, bool]:
     pass
 
-class ToggleFlags_(enum.Enum):
+class ToggleFlags_(enum.IntFlag):
     """ImGuiToggleFlags: A set of flags that adjust behavior and display for ImGui::Toggle()."""
 
     # ImGuiToggleFlags_None                   = 0,    /* original C++ signature */
@@ -186,7 +186,7 @@ class ToggleFlags_(enum.Enum):
     # ImGuiToggleFlags_Default                = ImGuiToggleFlags_None,     /* original C++ signature */
     default = enum.auto()  # (= ToggleFlags_None)  # The default flags used when no ImGuiToggleFlags_ are specified.
 
-class ToggleA11yStyle_(enum.Enum):
+class ToggleA11yStyle_(enum.IntFlag):
     """ImGuiToggleA11yStyle: Styles to draw A11y labels."""
 
     # ImGuiToggleA11yStyle_Label,                 /* original C++ signature */

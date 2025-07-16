@@ -259,7 +259,7 @@ def im_alpha_u32(col: ImU32, alpha: float) -> ImU32:
 #-----------------------------------------------------------------------------
 
 
-class TimeUnit_(enum.Enum):
+class TimeUnit_(enum.IntFlag):
     # ImPlotTimeUnit_Us,      /* original C++ signature */
     us = enum.auto()    # (= 0)  # microsecond
     # ImPlotTimeUnit_Ms,      /* original C++ signature */
@@ -280,7 +280,7 @@ class TimeUnit_(enum.Enum):
     # }
     count = enum.auto() # (= 8)
 
-class DateFmt_(enum.Enum):
+class DateFmt_(enum.IntFlag):
     # default        [ ISO 8601     ]
     # ImPlotDateFmt_None = 0,    /* original C++ signature */
     none = enum.auto()      # (= 0)
@@ -295,7 +295,7 @@ class DateFmt_(enum.Enum):
     # ImPlotDateFmt_Yr                   /* original C++ signature */
     yr = enum.auto()        # (= 5)  # 1991           [ 1991         ]
 
-class TimeFmt_(enum.Enum):
+class TimeFmt_(enum.IntFlag):
     # default        [ 24 Hour Clock ]
     # ImPlotTimeFmt_None = 0,    /* original C++ signature */
     none = enum.auto()        # (= 0)

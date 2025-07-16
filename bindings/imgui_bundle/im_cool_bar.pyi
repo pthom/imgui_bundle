@@ -39,7 +39,7 @@ ImGuiWindowFlags_None = WindowFlags_.none
 
 
 
-class ImCoolBarFlags_(enum.Enum):
+class ImCoolBarFlags_(enum.IntEnum):
     #
     none = enum.auto()       # (= 0)
     vertical = enum.auto()   # (= (1 << 0))

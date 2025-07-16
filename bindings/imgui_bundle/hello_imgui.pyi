@@ -423,7 +423,7 @@ def override_assets_folder(folder: str) -> None:
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-class LogLevel(enum.Enum):
+class LogLevel(enum.IntEnum):
     # Debug,    /* original C++ signature */
     debug = enum.auto()  # (= 0)
     # Info,    /* original C++ signature */
@@ -617,7 +617,7 @@ def image_proportional_size(asked_size: ImVec2Like, image_size: ImVec2Like) -> I
 # Some themes were adapted by themes posted by ImGui users at https://github.com/ocornut/imgui/issues/707
 #
 
-class ImGuiTheme_(enum.Enum):
+class ImGuiTheme_(enum.IntEnum):
     # ImGuiTheme_ImGuiColorsClassic = 0,    /* original C++ signature */
     imgui_colors_classic = enum.auto()  # (= 0)
     # ImGuiTheme_ImGuiColorsDark,    /* original C++ signature */
@@ -970,7 +970,7 @@ class ScreenBounds:
 #                       hello_imgui/app_window_params.h continued                                              //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class FullScreenMode(enum.Enum):
+class FullScreenMode(enum.IntEnum):
     # NoFullScreen,    /* original C++ signature */
     no_full_screen = enum.auto()  # (= 0)
     # FullScreen,                        /* original C++ signature */
@@ -984,7 +984,7 @@ class FullScreenMode(enum.Enum):
         enum.auto()
     )  # (= 3)  # Fake full screen, maximized window on the selected monitor
 
-class WindowSizeState(enum.Enum):
+class WindowSizeState(enum.IntEnum):
     # Standard,    /* original C++ signature */
     standard = enum.auto()  # (= 0)
     # Minimized,    /* original C++ signature */
@@ -993,7 +993,7 @@ class WindowSizeState(enum.Enum):
     # }
     maximized = enum.auto()  # (= 2)
 
-class WindowPositionMode(enum.Enum):
+class WindowPositionMode(enum.IntEnum):
     # OsDefault,    /* original C++ signature */
     os_default = enum.auto()  # (= 0)
     # MonitorCenter,    /* original C++ signature */
@@ -1002,7 +1002,7 @@ class WindowPositionMode(enum.Enum):
     # }
     from_coords = enum.auto()  # (= 2)
 
-class EmscriptenKeyboardElement(enum.Enum):
+class EmscriptenKeyboardElement(enum.IntEnum):
     # Window,    /* original C++ signature */
     window = enum.auto()  # (= 0)
     # Document,    /* original C++ signature */
@@ -1015,7 +1015,7 @@ class EmscriptenKeyboardElement(enum.Enum):
     # }
     default = enum.auto()  # (= 4)
 
-class WindowSizeMeasureMode(enum.Enum):
+class WindowSizeMeasureMode(enum.IntEnum):
     # ScreenCoords,    /* original C++ signature */
     # ScreenCoords: measure window size in screen coords.
     #     Note: screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
@@ -1301,7 +1301,7 @@ class AppWindowParams:
 
 # @@md#DefaultImGuiWindowType
 
-class DefaultImGuiWindowType(enum.Enum):
+class DefaultImGuiWindowType(enum.IntEnum):
     """`DefaultImGuiWindowType` is an enum class that defines whether a full screen background
     window is provided or not
     """
@@ -1565,7 +1565,7 @@ class MobileCallbacks:
 
 # @@md#EdgeToolbar
 
-class EdgeToolbarType(enum.Enum):
+class EdgeToolbarType(enum.IntEnum):
     """EdgeToolbarType: location of an Edge Toolbar"""
 
     # Top,    /* original C++ signature */
@@ -1647,7 +1647,7 @@ def edge_toolbar_type_name(e: EdgeToolbarType) -> str:
 
 # @@md#DefaultIconFont
 
-class DefaultIconFont(enum.Enum):
+class DefaultIconFont(enum.IntEnum):
     """HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font
     Breaking change in v1.5.0:
     - the default icon font is now FontAwesome 6, which includes many more icons.
@@ -2229,7 +2229,7 @@ class DockableWindow:
 
 # @@md
 
-class DockingLayoutCondition(enum.Enum):
+class DockingLayoutCondition(enum.IntEnum):
     # FirstUseEver,    /* original C++ signature */
     first_use_ever = enum.auto()  # (= 0)
     # ApplicationStart,    /* original C++ signature */
@@ -2617,7 +2617,7 @@ class OpenGlOptionsFilled_:
 # You can select the platform backend type (SDL, GLFW) and the rendering backend type
 # via RunnerParams.platformBackendType and RunnerParams.renderingBackendType.
 
-class PlatformBackendType(enum.Enum):
+class PlatformBackendType(enum.IntEnum):
     """Platform backend type (SDL, GLFW)
     They are listed in the order of preference when FirstAvailable is selected.
     """
@@ -2632,7 +2632,7 @@ class PlatformBackendType(enum.Enum):
     # }
     null = enum.auto()  # (= 3)
 
-class RendererBackendType(enum.Enum):
+class RendererBackendType(enum.IntEnum):
     """Rendering backend type (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)
     They are listed in the order of preference when FirstAvailable is selected.
     """
@@ -2659,7 +2659,7 @@ class RendererBackendType(enum.Enum):
 
 # @@md#IniFolderType
 
-class IniFolderType(enum.Enum):
+class IniFolderType(enum.IntEnum):
     """IniFolderType is an enum which describes where is the base path to store
     the ini file for the application settings.
 
@@ -2727,7 +2727,7 @@ def ini_folder_location(ini_folder_type: IniFolderType) -> str:
 
 # @@md#FpsIdling
 
-class FpsIdlingMode(enum.Enum):
+class FpsIdlingMode(enum.IntEnum):
     """FpsIdlingMode is an enum that describes the different modes of idling when rendering the GUI.
     - Sleep: the application will sleep when idling to reduce CPU usage.
     - EarlyReturn: rendering will return immediately when idling.

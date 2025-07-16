@@ -3108,7 +3108,7 @@ def find_viewport_by_platform_handle(platform_handle: Any) -> Viewport:
 # [SECTION] Flags & Enumerations
 # -----------------------------------------------------------------------------
 
-class WindowFlags_(enum.Enum):
+class WindowFlags_(enum.IntFlag):
     """Flags for ImGui::Begin()
     (Those are per-window flags. There are shared flags in ImGuiIO: io.ConfigWindowsResizeFromEdges and io.ConfigWindowsMoveFromTitleBarOnly)
     """
@@ -3202,7 +3202,7 @@ class WindowFlags_(enum.Enum):
 
     # Obsolete names
 
-class ChildFlags_(enum.Enum):
+class ChildFlags_(enum.IntFlag):
     """Flags for ImGui::BeginChild()
     (Legacy: bit 0 must always correspond to ImGuiChildFlags_Borders to be backward compatible with old API using 'bool border = False'.
     About using AutoResizeX/AutoResizeY flags:
@@ -3253,7 +3253,7 @@ class ChildFlags_(enum.Enum):
 
     # Obsolete names
 
-class ItemFlags_(enum.Enum):
+class ItemFlags_(enum.IntFlag):
     """Flags for ImGui::PushItemFlag()
     (Those are shared by all items)
     """
@@ -3285,7 +3285,7 @@ class ItemFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 5)  # False    // Allow submitting an item with the same identifier as an item already submitted this frame without triggering a warning tooltip if io.ConfigDebugHighlightIdConflicts is set.
 
-class InputTextFlags_(enum.Enum):
+class InputTextFlags_(enum.IntFlag):
     """Flags for ImGui::InputText()
     (Those are per-item flags. There are shared flags in ImGuiIO: io.ConfigInputTextCursorBlink and io.ConfigInputTextEnterKeepActive)
     """
@@ -3375,7 +3375,7 @@ class InputTextFlags_(enum.Enum):
     # Obsolete names
     # ImGuiInputTextFlags_AlwaysInsertMode  = ImGuiInputTextFlags_AlwaysOverwrite   // [renamed in 1.82] name was not matching behavior
 
-class TreeNodeFlags_(enum.Enum):
+class TreeNodeFlags_(enum.IntFlag):
     """Flags for ImGui::TreeNodeEx(), ImGui::CollapsingHeader*()"""
 
     # ImGuiTreeNodeFlags_None                 = 0,    /* original C++ signature */
@@ -3455,7 +3455,7 @@ class TreeNodeFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 20)  # Horizontal lines to child nodes. Vertical line drawn down to bottom-most child node. Slower (for large trees).
 
-class PopupFlags_(enum.Enum):
+class PopupFlags_(enum.IntFlag):
     """Flags for OpenPopup*(), BeginPopupContext*(), IsPopupOpen() functions.
     - To be backward compatible with older API which took an 'int mouse_button = 1' argument instead of 'ImGuiPopupFlags flags',
       we need to treat small flags values as a mouse button index, so we encode the mouse button in the first few bits of the flags.
@@ -3507,7 +3507,7 @@ class PopupFlags_(enum.Enum):
     # }
     any_popup = enum.auto()  # (= PopupFlags_AnyPopupId | PopupFlags_AnyPopupLevel)
 
-class SelectableFlags_(enum.Enum):
+class SelectableFlags_(enum.IntFlag):
     """Flags for ImGui::Selectable()"""
 
     # ImGuiSelectableFlags_None               = 0,    /* original C++ signature */
@@ -3529,7 +3529,7 @@ class SelectableFlags_(enum.Enum):
     # ImGuiSelectableFlags_Highlight          = 1 << 5,       /* original C++ signature */
     highlight = enum.auto()  # (= 1 << 5)  # Make the item be displayed as if it is hovered
 
-class ComboFlags_(enum.Enum):
+class ComboFlags_(enum.IntFlag):
     """Flags for ImGui::BeginCombo()"""
 
     # ImGuiComboFlags_None                    = 0,    /* original C++ signature */
@@ -3558,7 +3558,7 @@ class ComboFlags_(enum.Enum):
         enum.auto()
     )  # (= ComboFlags_HeightSmall | ComboFlags_HeightRegular | ComboFlags_HeightLarge | ComboFlags_HeightLargest)
 
-class TabBarFlags_(enum.Enum):
+class TabBarFlags_(enum.IntFlag):
     """Flags for ImGui::BeginTabBar()"""
 
     # ImGuiTabBarFlags_None                           = 0,    /* original C++ signature */
@@ -3593,7 +3593,7 @@ class TabBarFlags_(enum.Enum):
     # }
     fitting_policy_default_ = enum.auto()  # (= TabBarFlags_FittingPolicyResizeDown)
 
-class TabItemFlags_(enum.Enum):
+class TabItemFlags_(enum.IntFlag):
     """Flags for ImGui::BeginTabItem()"""
 
     # ImGuiTabItemFlags_None                          = 0,    /* original C++ signature */
@@ -3629,7 +3629,7 @@ class TabItemFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 8)  # Tab is selected when trying to close + closure is not immediately assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar.
 
-class FocusedFlags_(enum.Enum):
+class FocusedFlags_(enum.IntFlag):
     """Flags for ImGui::IsWindowFocused()"""
 
     # ImGuiFocusedFlags_None                          = 0,    /* original C++ signature */
@@ -3654,7 +3654,7 @@ class FocusedFlags_(enum.Enum):
     # }
     root_and_child_windows = enum.auto()  # (= FocusedFlags_RootWindow | FocusedFlags_ChildWindows)
 
-class HoveredFlags_(enum.Enum):
+class HoveredFlags_(enum.IntFlag):
     """Flags for ImGui::IsItemHovered(), ImGui::IsWindowHovered()
     Note: if you are trying to check whether your mouse should be dispatched to Dear ImGui or to your app, you should use 'io.WantCaptureMouse' instead! Please read the FAQ!
     Note: windows with the ImGuiWindowFlags_NoInputs flag are ignored by IsWindowHovered() calls.
@@ -3751,7 +3751,7 @@ class HoveredFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 17)  # IsItemHovered() only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)
 
-class DockNodeFlags_(enum.Enum):
+class DockNodeFlags_(enum.IntFlag):
     """Flags for ImGui::DockSpace(), shared/inherited by child nodes.
     (Some flags can be applied to individual nodes directly)
     FIXME-DOCK: Also see ImGuiDockNodeFlagsPrivate_ which may involve using the WIP and internal DockBuilder api.
@@ -3785,7 +3785,7 @@ class DockNodeFlags_(enum.Enum):
     # ImGuiDockNodeFlags_NoUndocking                  = 1 << 7,       /* original C++ signature */
     no_undocking = enum.auto()  # (= 1 << 7)  #       // Disable undocking this node.
 
-class DragDropFlags_(enum.Enum):
+class DragDropFlags_(enum.IntFlag):
     """Flags for ImGui::BeginDragDropSource(), ImGui::AcceptDragDropPayload()"""
 
     # ImGuiDragDropFlags_None                         = 0,    /* original C++ signature */
@@ -3843,7 +3843,7 @@ class DragDropFlags_(enum.Enum):
 
 # Standard Drag and Drop payload types. You can define you own payload types using short strings. Types starting with '_' are defined by Dear ImGui.
 
-class DataType_(enum.Enum):
+class DataType_(enum.IntFlag):
     """A primary data type"""
 
     # ImGuiDataType_S8,           /* original C++ signature */
@@ -3874,7 +3874,7 @@ class DataType_(enum.Enum):
     # }
     count = enum.auto()  # (= 12)
 
-class Dir(enum.Enum):
+class Dir(enum.IntFlag):
     """A cardinal direction"""
 
     # ImGuiDir_None    = -1,    /* original C++ signature */
@@ -3891,7 +3891,7 @@ class Dir(enum.Enum):
     # }
     count = enum.auto()  # (= 4)
 
-class SortDirection(enum.Enum):
+class SortDirection(enum.IntFlag):
     """A sorting direction"""
 
     # ImGuiSortDirection_None         = 0,    /* original C++ signature */
@@ -3901,7 +3901,7 @@ class SortDirection(enum.Enum):
     # ImGuiSortDirection_Descending   = 2         /* original C++ signature */
     descending = enum.auto()  # (= 2)  # Descending = 9->0, Z->A etc.
 
-class Key(enum.Enum):
+class Key(enum.IntFlag):
     """A key identifier (ImGuiKey_XXX or ImGuiMod_XXX value): can represent Keyboard, Mouse and Gamepad values.
     All our named keys are >= 512. Keys value 0 to 511 are left unused and were legacy native/opaque key values (< 1.87).
     Support for legacy keys was completely removed in 1.91.5.
@@ -4288,7 +4288,7 @@ class Key(enum.Enum):
     # ImGuiMod_Mask_                  = 0xF000,      /* original C++ signature */
     mod_mask_ = enum.auto()  # (= 0xF000)  # 4-bits
 
-class InputFlags_(enum.Enum):
+class InputFlags_(enum.IntFlag):
     """Flags for Shortcut(), SetNextItemShortcut(),
     (and for upcoming extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner() that are still in imgui_internal.h)
     Don't mistake with ImGuiInputTextFlags! (which is for ImGui::InputText() function)
@@ -4340,7 +4340,7 @@ class InputFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 18)  # Automatically display a tooltip when hovering item [BETA] Unsure of right api (opt-in/opt-out)
 
-class ConfigFlags_(enum.Enum):
+class ConfigFlags_(enum.IntFlag):
     """Configuration flags stored in io.ConfigFlags. Set by user/application."""
 
     # ImGuiConfigFlags_None                   = 0,    /* original C++ signature */
@@ -4381,7 +4381,7 @@ class ConfigFlags_(enum.Enum):
     # ImGuiConfigFlags_IsTouchScreen          = 1 << 21,      /* original C++ signature */
     is_touch_screen = enum.auto()  # (= 1 << 21)  # Application is using a touch screen instead of a mouse.
 
-class BackendFlags_(enum.Enum):
+class BackendFlags_(enum.IntFlag):
     """Backend capabilities flags stored in io.BackendFlags. Set by imgui_impl_xxx or custom backend."""
 
     # ImGuiBackendFlags_None                  = 0,    /* original C++ signature */
@@ -4415,7 +4415,7 @@ class BackendFlags_(enum.Enum):
     # ImGuiBackendFlags_RendererHasViewports  = 1 << 12,      /* original C++ signature */
     renderer_has_viewports = enum.auto()  # (= 1 << 12)  # Backend Renderer supports multiple viewports.
 
-class Col_(enum.Enum):
+class Col_(enum.IntFlag):
     """Enumeration for PushStyleColor() / PopStyleColor()"""
 
     # ImGuiCol_Text,    /* original C++ signature */
@@ -4549,7 +4549,7 @@ class Col_(enum.Enum):
     # ImGuiCol_COUNT,    /* original C++ signature */
     count = enum.auto()  # (= 60)
 
-class StyleVar_(enum.Enum):
+class StyleVar_(enum.IntFlag):
     """Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.
     - The enum only refers to fields of ImGuiStyle which makes sense to be pushed/popped inside UI code.
       During initialization or between frames, feel free to just poke into ImGuiStyle directly.
@@ -4641,7 +4641,7 @@ class StyleVar_(enum.Enum):
     # }
     count = enum.auto()  # (= 38)
 
-class ButtonFlags_(enum.Enum):
+class ButtonFlags_(enum.IntFlag):
     """Flags for InvisibleButton() [extended in imgui_internal.h]"""
 
     # ImGuiButtonFlags_None                   = 0,    /* original C++ signature */
@@ -4661,7 +4661,7 @@ class ButtonFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 3)  # InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.
 
-class ColorEditFlags_(enum.Enum):
+class ColorEditFlags_(enum.IntFlag):
     """Flags for ColorEdit3() / ColorEdit4() / ColorPicker3() / ColorPicker4() / ColorButton()"""
 
     # ImGuiColorEditFlags_None            = 0,    /* original C++ signature */
@@ -4782,7 +4782,7 @@ class ColorEditFlags_(enum.Enum):
     # Obsolete names
     # ImGuiColorEditFlags_RGB = ImGuiColorEditFlags_DisplayRGB, ImGuiColorEditFlags_HSV = ImGuiColorEditFlags_DisplayHSV, ImGuiColorEditFlags_HEX = ImGuiColorEditFlags_DisplayHex  // [renamed in 1.69]
 
-class SliderFlags_(enum.Enum):
+class SliderFlags_(enum.IntFlag):
     """Flags for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.
     We use the same sets of flags for DragXXX() and SliderXXX() functions as the features are the same and it makes it easier to swap them.
     (Those are per-item flags. There is shared behavior flag too: ImGuiIO: io.ConfigDragClickToInputText)
@@ -4825,7 +4825,7 @@ class SliderFlags_(enum.Enum):
         enum.auto()
     )  # (= 0x7000000F)  # [Internal] We treat using those bits as being potentially a 'float power' argument from the previous API that has got miscast to this enum, and will trigger an assert if needed.
 
-class MouseButton_(enum.Enum):
+class MouseButton_(enum.IntFlag):
     """Identify a mouse button.
     Those values are guaranteed to be stable and we frequently use 0/1 directly. Named enums provided for convenience.
     """
@@ -4840,7 +4840,7 @@ class MouseButton_(enum.Enum):
     # }
     count = enum.auto()  # (= 5)
 
-class MouseCursor_(enum.Enum):
+class MouseCursor_(enum.IntFlag):
     """Enumeration for GetMouseCursor()
     User code may request backend to display given cursor by calling SetMouseCursor(), which is why we have some cursors that are marked unused here
     """
@@ -4875,7 +4875,7 @@ class MouseCursor_(enum.Enum):
     # }
     count = enum.auto()  # (= 11)
 
-class MouseSource(enum.Enum):
+class MouseSource(enum.IntFlag):
     """Enumeration for AddMouseSourceEvent() actual source of Mouse Input data.
     Historically we use "Mouse" terminology everywhere to indicate pointer data, e.g. MousePos, IsMousePressed(), io.AddMousePosEvent()
     But that "Mouse" data can come from different source which occasionally may be useful for application to know about.
@@ -4896,7 +4896,7 @@ class MouseSource(enum.Enum):
     # }
     count = enum.auto()  # (= 3)
 
-class Cond_(enum.Enum):
+class Cond_(enum.IntFlag):
     """Enumeration for ImGui::SetNextWindow***(), SetWindow***(), SetNextItem***() functions
     Represent a condition.
     Important: Treat as a regular enum! Do NOT combine multiple values using binary operators! All the functions above treat 0 as a shortcut to ImGuiCond_Always.
@@ -4921,7 +4921,7 @@ class Cond_(enum.Enum):
 # [SECTION] Tables API flags and structures (ImGuiTableFlags, ImGuiTableColumnFlags, ImGuiTableRowFlags, ImGuiTableBgTarget, ImGuiTableSortSpecs, ImGuiTableColumnSortSpecs)
 # -----------------------------------------------------------------------------
 
-class TableFlags_(enum.Enum):
+class TableFlags_(enum.IntFlag):
     """Flags for ImGui::BeginTable()
     - Important! Sizing policies have complex and subtle side effects, much more so than you would expect.
       Read comments/demos carefully + experiment with live demos to get acquainted with them.
@@ -5081,7 +5081,7 @@ class TableFlags_(enum.Enum):
         enum.auto()
     )  # (= TableFlags_SizingFixedFit | TableFlags_SizingFixedSame | TableFlags_SizingStretchProp | TableFlags_SizingStretchSame)
 
-class TableColumnFlags_(enum.Enum):
+class TableColumnFlags_(enum.IntFlag):
     """Flags for ImGui::TableSetupColumn()"""
 
     # Input configuration flags
@@ -5174,7 +5174,7 @@ class TableColumnFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 30)  # [Internal] Disable user resizing this column directly (it may however we resized indirectly from its left edge)
 
-class TableRowFlags_(enum.Enum):
+class TableRowFlags_(enum.IntFlag):
     """Flags for ImGui::TableNextRow()"""
 
     # ImGuiTableRowFlags_None                     = 0,    /* original C++ signature */
@@ -5184,7 +5184,7 @@ class TableRowFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 0)  # Identify header row (set default background color + width of its contents accounted differently for auto column width)
 
-class TableBgTarget_(enum.Enum):
+class TableBgTarget_(enum.IntFlag):
     """Enum for ImGui::TableSetBgColor()
     Background colors are rendering in 3 layers:
      - Layer 0: draw with RowBg0 color if set, otherwise draw with ColumnBg0 if set.
@@ -9773,7 +9773,7 @@ class ImColor:
 # - As most users will want to store an index, for convenience and to reduce confusion we use ImS64 instead of None*,
 #   being syntactically easier to downcast. Feel free to reinterpret_cast and store a pointer inside.
 
-class MultiSelectFlags_(enum.Enum):
+class MultiSelectFlags_(enum.IntFlag):
     """Flags for BeginMultiSelect()"""
 
     # ImGuiMultiSelectFlags_None                  = 0,    /* original C++ signature */
@@ -9880,7 +9880,7 @@ class MultiSelectIO:
         """
         pass
 
-class SelectionRequestType(enum.Enum):
+class SelectionRequestType(enum.IntFlag):
     """Selection request type"""
 
     # ImGuiSelectionRequestType_None = 0,    /* original C++ signature */
@@ -10172,7 +10172,7 @@ class ImDrawListSplitter:
     def set_current_channel(self, draw_list: ImDrawList, channel_idx: int) -> None:
         pass
 
-class ImDrawFlags_(enum.Enum):
+class ImDrawFlags_(enum.IntFlag):
     """Flags for ImDrawList functions
     (Legacy: bit 0 must always correspond to ImDrawFlags_Closed to be backward compatible with old API using a bool. Bits 1..3 must be unused)
     """
@@ -10227,7 +10227,7 @@ class ImDrawFlags_(enum.Enum):
     # }
     round_corners_mask_ = enum.auto()  # (= ImDrawFlags_.round_corners_all | ImDrawFlags_.round_corners_none)
 
-class ImDrawListFlags_(enum.Enum):
+class ImDrawListFlags_(enum.IntFlag):
     """Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.
     It is however possible to temporarily alter flags between calls to ImDrawList:: functions.
     """
@@ -10757,7 +10757,7 @@ class ImDrawData:
 # FOR ALL OTHER ImTextureXXXX TYPES: ONLY CORE LIBRARY AND RENDERER BACKENDS NEED TO KNOW AND CARE ABOUT THEM.
 # -----------------------------------------------------------------------------
 
-class ImTextureFormat(enum.Enum):
+class ImTextureFormat(enum.IntFlag):
     """We intentionally support a limited amount of texture formats to limit burden on CPU-side code and extension.
     Most standard backends only support RGBA32 but we provide a single channel option for low-resource/embedded systems.
     """
@@ -10769,7 +10769,7 @@ class ImTextureFormat(enum.Enum):
     # ImTextureFormat_Alpha8,             /* original C++ signature */
     alpha8 = enum.auto()  # (= 1)  # 1 component per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight
 
-class ImTextureStatus(enum.Enum):
+class ImTextureStatus(enum.IntFlag):
     """Status of a texture to communicate with Renderer Backend."""
 
     # ImTextureStatus_OK,    /* original C++ signature */
@@ -11087,7 +11087,7 @@ class ImFontAtlasRect:
     def __init__(self) -> None:
         pass
 
-class ImFontAtlasFlags_(enum.Enum):
+class ImFontAtlasFlags_(enum.IntFlag):
     """Flags for ImFontAtlas build"""
 
     # ImFontAtlasFlags_None               = 0,    /* original C++ signature */
@@ -11369,7 +11369,7 @@ class ImFontBaked:
     def is_glyph_loaded(self, c: ImWchar) -> bool:
         pass
 
-class ImFontFlags_(enum.Enum):
+class ImFontFlags_(enum.IntFlag):
     """Font flags
     (in future versions as we redesign font loading API, this will become more important and better documented. for now please consider this as internal/advanced use)
     """
@@ -11497,7 +11497,7 @@ class ImFont:
 # [SECTION] Viewports
 # -----------------------------------------------------------------------------
 
-class ViewportFlags_(enum.Enum):
+class ViewportFlags_(enum.IntFlag):
     """Flags stored in ImGuiViewport::Flags, giving indications to the platform backends."""
 
     # ImGuiViewportFlags_None                     = 0,    /* original C++ signature */

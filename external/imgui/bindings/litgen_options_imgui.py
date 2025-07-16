@@ -296,6 +296,8 @@ def litgen_options_imgui(
     #     enum ImGuiMyFlags_ { ImGuiMyFlags_None = 0,...};  enum ImGuiMyFlagsPrivate_ { ImGuiMyFlags_PrivValue = ...};
     options.enum_flag_remove_values_prefix = True
     options.enum_flag_remove_values_prefix_group_private = True
+    options.enum_make_arithmetic__regex = r".*"
+    options.enum_make_flag__regex = r".*"
 
     options.python_max_line_length = (
         -1

@@ -719,13 +719,13 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumDataTypePrivate_ =
-        nb::enum_<ImGuiDataTypePrivate_>(m, "DataTypePrivate_", nb::is_arithmetic(), "Extend ImGuiDataType_")
+        nb::enum_<ImGuiDataTypePrivate_>(m, "DataTypePrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiDataType_")
             .value("pointer", ImGuiDataType_Pointer, "")
             .value("id_", ImGuiDataType_ID, "");
 
 
     auto pyEnumItemFlagsPrivate_ =
-        nb::enum_<ImGuiItemFlagsPrivate_>(m, "ItemFlagsPrivate_", nb::is_arithmetic(), " Extend ImGuiItemFlags\n - input: PushItemFlag() manipulates g.CurrentItemFlags, g.NextItemData.ItemFlags, ItemAdd() calls may add extra flags too.\n - output: stored in g.LastItemData.ItemFlags")
+        nb::enum_<ImGuiItemFlagsPrivate_>(m, "ItemFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), " Extend ImGuiItemFlags\n - input: PushItemFlag() manipulates g.CurrentItemFlags, g.NextItemData.ItemFlags, ItemAdd() calls may add extra flags too.\n - output: stored in g.LastItemData.ItemFlags")
             .value("disabled", ImGuiItemFlags_Disabled, "False     // Disable interactions (DOES NOT affect visuals. DO NOT mix direct use of this with BeginDisabled(). See BeginDisabled()/EndDisabled() for full disable feature, and github #211).")
             .value("read_only", ImGuiItemFlags_ReadOnly, "False     // [ALPHA] Allow hovering interactions but underlying value is not changed.")
             .value("mixed_value", ImGuiItemFlags_MixedValue, "False     // [BETA] Represent a mixed/indeterminate value, generally multi-selection where values differ. Currently only supported by Checkbox() (later should support all sorts of widgets)")
@@ -741,7 +741,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumItemStatusFlags_ =
-        nb::enum_<ImGuiItemStatusFlags_>(m, "ItemStatusFlags_", nb::is_arithmetic(), " Status flags for an already submitted item\n - output: stored in g.LastItemData.StatusFlags")
+        nb::enum_<ImGuiItemStatusFlags_>(m, "ItemStatusFlags_", nb::is_arithmetic(), nb::is_flag(), " Status flags for an already submitted item\n - output: stored in g.LastItemData.StatusFlags")
             .value("none", ImGuiItemStatusFlags_None, "")
             .value("hovered_rect", ImGuiItemStatusFlags_HoveredRect, "Mouse position is within item rectangle (does NOT mean that the window is in correct z-order and can be hovered!, this is only one part of the most-common IsItemHovered test)")
             .value("has_display_rect", ImGuiItemStatusFlags_HasDisplayRect, "g.LastItemData.DisplayRect is valid")
@@ -757,21 +757,21 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumHoveredFlagsPrivate_ =
-        nb::enum_<ImGuiHoveredFlagsPrivate_>(m, "HoveredFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiHoveredFlags_")
+        nb::enum_<ImGuiHoveredFlagsPrivate_>(m, "HoveredFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiHoveredFlags_")
             .value("delay_mask_", ImGuiHoveredFlags_DelayMask_, "")
             .value("allowed_mask_for_is_window_hovered", ImGuiHoveredFlags_AllowedMaskForIsWindowHovered, "")
             .value("allowed_mask_for_is_item_hovered", ImGuiHoveredFlags_AllowedMaskForIsItemHovered, "");
 
 
     auto pyEnumInputTextFlagsPrivate_ =
-        nb::enum_<ImGuiInputTextFlagsPrivate_>(m, "InputTextFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiInputTextFlags_")
+        nb::enum_<ImGuiInputTextFlagsPrivate_>(m, "InputTextFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiInputTextFlags_")
             .value("multiline", ImGuiInputTextFlags_Multiline, "For internal use by InputTextMultiline()")
             .value("merged_item", ImGuiInputTextFlags_MergedItem, "For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.")
             .value("localize_decimal_point", ImGuiInputTextFlags_LocalizeDecimalPoint, "For internal use by InputScalar() and TempInputScalar()");
 
 
     auto pyEnumButtonFlagsPrivate_ =
-        nb::enum_<ImGuiButtonFlagsPrivate_>(m, "ButtonFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiButtonFlags_")
+        nb::enum_<ImGuiButtonFlagsPrivate_>(m, "ButtonFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiButtonFlags_")
             .value("pressed_on_click", ImGuiButtonFlags_PressedOnClick, "return True on click (mouse down event)")
             .value("pressed_on_click_release", ImGuiButtonFlags_PressedOnClickRelease, "[Default] return True on click + release on same item <-- this is what the majority of Button are using")
             .value("pressed_on_click_release_anywhere", ImGuiButtonFlags_PressedOnClickReleaseAnywhere, "return True on click + release even if the release event is not done while hovering the item")
@@ -793,18 +793,18 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumComboFlagsPrivate_ =
-        nb::enum_<ImGuiComboFlagsPrivate_>(m, "ComboFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiComboFlags_")
+        nb::enum_<ImGuiComboFlagsPrivate_>(m, "ComboFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiComboFlags_")
             .value("custom_preview", ImGuiComboFlags_CustomPreview, "enable BeginComboPreview()");
 
 
     auto pyEnumSliderFlagsPrivate_ =
-        nb::enum_<ImGuiSliderFlagsPrivate_>(m, "SliderFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiSliderFlags_")
+        nb::enum_<ImGuiSliderFlagsPrivate_>(m, "SliderFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiSliderFlags_")
             .value("vertical", ImGuiSliderFlags_Vertical, "Should this slider be orientated vertically?")
             .value("read_only", ImGuiSliderFlags_ReadOnly, "Consider using g.NextItemData.ItemFlags |= ImGuiItemFlags_ReadOnly instead.");
 
 
     auto pyEnumSelectableFlagsPrivate_ =
-        nb::enum_<ImGuiSelectableFlagsPrivate_>(m, "SelectableFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiSelectableFlags_")
+        nb::enum_<ImGuiSelectableFlagsPrivate_>(m, "SelectableFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiSelectableFlags_")
             .value("no_holding_active_id", ImGuiSelectableFlags_NoHoldingActiveID, "")
             .value("select_on_nav", ImGuiSelectableFlags_SelectOnNav, "(WIP) Auto-select when moved into. This is not exposed in public API as to handle multi-select and modifiers we will need user to explicitly control focus scope. May be replaced with a BeginSelection() API.")
             .value("select_on_click", ImGuiSelectableFlags_SelectOnClick, "Override button behavior to react on Click (default is Click+Release)")
@@ -816,7 +816,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumTreeNodeFlagsPrivate_ =
-        nb::enum_<ImGuiTreeNodeFlagsPrivate_>(m, "TreeNodeFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiTreeNodeFlags_")
+        nb::enum_<ImGuiTreeNodeFlagsPrivate_>(m, "TreeNodeFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiTreeNodeFlags_")
             .value("no_nav_focus", ImGuiTreeNodeFlags_NoNavFocus, "Don't claim nav focus when interacting with this item (#8551)")
             .value("clip_label_for_trailing_button", ImGuiTreeNodeFlags_ClipLabelForTrailingButton, "FIXME-WIP: Hard-coded for CollapsingHeader()")
             .value("upside_down_arrow", ImGuiTreeNodeFlags_UpsideDownArrow, "FIXME-WIP: Turn Down arrow into an Up arrow, for reversed trees (#6517)")
@@ -825,7 +825,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumSeparatorFlags_ =
-        nb::enum_<ImGuiSeparatorFlags_>(m, "SeparatorFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiSeparatorFlags_>(m, "SeparatorFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiSeparatorFlags_None, "")
             .value("horizontal", ImGuiSeparatorFlags_Horizontal, "Axis default to current layout type, so generally Horizontal unless e.g. in a menu bar")
             .value("vertical", ImGuiSeparatorFlags_Vertical, "")
@@ -833,32 +833,32 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumFocusRequestFlags_ =
-        nb::enum_<ImGuiFocusRequestFlags_>(m, "FocusRequestFlags_", nb::is_arithmetic(), " Flags for FocusWindow(). This is not called ImGuiFocusFlags to avoid confusion with public-facing ImGuiFocusedFlags.\n FIXME: Once we finishing replacing more uses of GetTopMostPopupModal()+IsWindowWithinBeginStackOf()\n and FindBlockingModal() with this, we may want to change the flag to be opt-out instead of opt-in.")
+        nb::enum_<ImGuiFocusRequestFlags_>(m, "FocusRequestFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for FocusWindow(). This is not called ImGuiFocusFlags to avoid confusion with public-facing ImGuiFocusedFlags.\n FIXME: Once we finishing replacing more uses of GetTopMostPopupModal()+IsWindowWithinBeginStackOf()\n and FindBlockingModal() with this, we may want to change the flag to be opt-out instead of opt-in.")
             .value("none", ImGuiFocusRequestFlags_None, "")
             .value("restore_focused_child", ImGuiFocusRequestFlags_RestoreFocusedChild, "Find last focused child (if any) and focus it instead.")
             .value("unless_below_modal", ImGuiFocusRequestFlags_UnlessBelowModal, "Do not set focus if the window is below a modal.");
 
 
     auto pyEnumTextFlags_ =
-        nb::enum_<ImGuiTextFlags_>(m, "TextFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiTextFlags_>(m, "TextFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiTextFlags_None, "")
             .value("no_width_for_large_clipped_text", ImGuiTextFlags_NoWidthForLargeClippedText, "");
 
 
     auto pyEnumTooltipFlags_ =
-        nb::enum_<ImGuiTooltipFlags_>(m, "TooltipFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiTooltipFlags_>(m, "TooltipFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiTooltipFlags_None, "")
             .value("override_previous", ImGuiTooltipFlags_OverridePrevious, "Clear/ignore previously submitted tooltip (defaults to append)");
 
 
     auto pyEnumLayoutType_ =
-        nb::enum_<ImGuiLayoutType_>(m, "LayoutType_", nb::is_arithmetic(), " FIXME: this is in development, not exposed/functional as a generic feature yet.\n Horizontal/Vertical enums are fixed to 0/1 so they may be used to index ImVec2")
+        nb::enum_<ImGuiLayoutType_>(m, "LayoutType_", nb::is_arithmetic(), nb::is_flag(), " FIXME: this is in development, not exposed/functional as a generic feature yet.\n Horizontal/Vertical enums are fixed to 0/1 so they may be used to index ImVec2")
             .value("horizontal", ImGuiLayoutType_Horizontal, "")
             .value("vertical", ImGuiLayoutType_Vertical, "");
 
 
     auto pyEnumLogFlags_ =
-        nb::enum_<ImGuiLogFlags_>(m, "LogFlags_", nb::is_arithmetic(), "Flags for LogBegin() text capturing function")
+        nb::enum_<ImGuiLogFlags_>(m, "LogFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for LogBegin() text capturing function")
             .value("none", ImGuiLogFlags_None, "")
             .value("output_tty", ImGuiLogFlags_OutputTTY, "")
             .value("output_file", ImGuiLogFlags_OutputFile, "")
@@ -868,14 +868,14 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumAxis =
-        nb::enum_<ImGuiAxis>(m, "Axis", nb::is_arithmetic(), "X/Y enums are fixed to 0/1 so they may be used to index ImVec2")
+        nb::enum_<ImGuiAxis>(m, "Axis", nb::is_arithmetic(), nb::is_flag(), "X/Y enums are fixed to 0/1 so they may be used to index ImVec2")
             .value("none", ImGuiAxis_None, "")
             .value("x", ImGuiAxis_X, "")
             .value("y", ImGuiAxis_Y, "");
 
 
     auto pyEnumPlotType =
-        nb::enum_<ImGuiPlotType>(m, "PlotType", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiPlotType>(m, "PlotType", nb::is_arithmetic(), nb::is_flag(), "")
             .value("lines", ImGuiPlotType_Lines, "")
             .value("histogram", ImGuiPlotType_Histogram, "");
 
@@ -1052,7 +1052,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumWindowRefreshFlags_ =
-        nb::enum_<ImGuiWindowRefreshFlags_>(m, "WindowRefreshFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiWindowRefreshFlags_>(m, "WindowRefreshFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiWindowRefreshFlags_None, "")
             .value("try_to_avoid_refresh", ImGuiWindowRefreshFlags_TryToAvoidRefresh, "[EXPERIMENTAL] Try to keep existing contents, USER MUST NOT HONOR BEGIN() RETURNING FALSE AND NOT APPEND.")
             .value("refresh_on_hover", ImGuiWindowRefreshFlags_RefreshOnHover, "[EXPERIMENTAL] Always refresh on hover")
@@ -1060,7 +1060,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumNextWindowDataFlags_ =
-        nb::enum_<ImGuiNextWindowDataFlags_>(m, "NextWindowDataFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiNextWindowDataFlags_>(m, "NextWindowDataFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiNextWindowDataFlags_None, "")
             .value("has_pos", ImGuiNextWindowDataFlags_HasPos, "")
             .value("has_size", ImGuiNextWindowDataFlags_HasSize, "")
@@ -1111,7 +1111,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumNextItemDataFlags_ =
-        nb::enum_<ImGuiNextItemDataFlags_>(m, "NextItemDataFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiNextItemDataFlags_>(m, "NextItemDataFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiNextItemDataFlags_None, "")
             .value("has_width", ImGuiNextItemDataFlags_HasWidth, "")
             .value("has_open", ImGuiNextItemDataFlags_HasOpen, "")
@@ -1287,7 +1287,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumPopupPositionPolicy =
-        nb::enum_<ImGuiPopupPositionPolicy>(m, "PopupPositionPolicy", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiPopupPositionPolicy>(m, "PopupPositionPolicy", nb::is_arithmetic(), nb::is_flag(), "")
             .value("default", ImGuiPopupPositionPolicy_Default, "")
             .value("combo_box", ImGuiPopupPositionPolicy_ComboBox, "")
             .value("tooltip", ImGuiPopupPositionPolicy_Tooltip, "");
@@ -1309,7 +1309,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumInputEventType =
-        nb::enum_<ImGuiInputEventType>(m, "InputEventType", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiInputEventType>(m, "InputEventType", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiInputEventType_None, "")
             .value("mouse_pos", ImGuiInputEventType_MousePos, "")
             .value("mouse_wheel", ImGuiInputEventType_MouseWheel, "")
@@ -1322,7 +1322,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumInputSource =
-        nb::enum_<ImGuiInputSource>(m, "InputSource", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiInputSource>(m, "InputSource", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiInputSource_None, "")
             .value("mouse", ImGuiInputSource_Mouse, "Note: may be Mouse or TouchScreen or Pen. See io.MouseSource to distinguish them.")
             .value("keyboard", ImGuiInputSource_Keyboard, "")
@@ -1500,7 +1500,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumInputFlagsPrivate_ =
-        nb::enum_<ImGuiInputFlagsPrivate_>(m, "InputFlagsPrivate_", nb::is_arithmetic(), " Extend ImGuiInputFlags_\n Flags for extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner()\n Don't mistake with ImGuiInputTextFlags! (which is for ImGui::InputText() function)")
+        nb::enum_<ImGuiInputFlagsPrivate_>(m, "InputFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), " Extend ImGuiInputFlags_\n Flags for extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner()\n Don't mistake with ImGuiInputTextFlags! (which is for ImGui::InputText() function)")
             .value("repeat_rate_default", ImGuiInputFlags_RepeatRateDefault, "Repeat rate: Regular (default)")
             .value("repeat_rate_nav_move", ImGuiInputFlags_RepeatRateNavMove, "Repeat rate: Fast")
             .value("repeat_rate_nav_tweak", ImGuiInputFlags_RepeatRateNavTweak, "Repeat rate: Faster")
@@ -1575,7 +1575,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumActivateFlags_ =
-        nb::enum_<ImGuiActivateFlags_>(m, "ActivateFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiActivateFlags_>(m, "ActivateFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiActivateFlags_None, "")
             .value("prefer_input", ImGuiActivateFlags_PreferInput, "Favor activation that requires keyboard text input (e.g. for Slider/Drag). Default for Enter key.")
             .value("prefer_tweak", ImGuiActivateFlags_PreferTweak, "Favor activation for tweaking with arrows or gamepad (e.g. for Slider/Drag). Default for Space key and if keyboard is not used.")
@@ -1585,7 +1585,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumScrollFlags_ =
-        nb::enum_<ImGuiScrollFlags_>(m, "ScrollFlags_", nb::is_arithmetic(), "Early work-in-progress API for ScrollToItem()")
+        nb::enum_<ImGuiScrollFlags_>(m, "ScrollFlags_", nb::is_arithmetic(), nb::is_flag(), "Early work-in-progress API for ScrollToItem()")
             .value("none", ImGuiScrollFlags_None, "")
             .value("keep_visible_edge_x", ImGuiScrollFlags_KeepVisibleEdgeX, "If item is not visible: scroll as little as possible on X axis to bring item back into view [default for X axis]")
             .value("keep_visible_edge_y", ImGuiScrollFlags_KeepVisibleEdgeY, "If item is not visible: scroll as little as possible on Y axis to bring item back into view [default for Y axis for windows that are already visible]")
@@ -1599,7 +1599,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumNavRenderCursorFlags_ =
-        nb::enum_<ImGuiNavRenderCursorFlags_>(m, "NavRenderCursorFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiNavRenderCursorFlags_>(m, "NavRenderCursorFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiNavRenderCursorFlags_None, "")
             .value("compact", ImGuiNavRenderCursorFlags_Compact, "Compact highlight, no padding/distance from focused item")
             .value("always_draw", ImGuiNavRenderCursorFlags_AlwaysDraw, "Draw rectangular highlight if (g.NavId == id) even when g.NavCursorVisible == False, aka even when using the mouse.")
@@ -1607,7 +1607,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumNavMoveFlags_ =
-        nb::enum_<ImGuiNavMoveFlags_>(m, "NavMoveFlags_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiNavMoveFlags_>(m, "NavMoveFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiNavMoveFlags_None, "")
             .value("loop_x", ImGuiNavMoveFlags_LoopX, "On failed request, restart from opposite side")
             .value("loop_y", ImGuiNavMoveFlags_LoopY, "")
@@ -1629,7 +1629,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumNavLayer =
-        nb::enum_<ImGuiNavLayer>(m, "NavLayer", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiNavLayer>(m, "NavLayer", nb::is_arithmetic(), nb::is_flag(), "")
             .value("main", ImGuiNavLayer_Main, "Main scrolling layer")
             .value("menu", ImGuiNavLayer_Menu, "Menu layer (access with Alt)")
             .value("count", ImGuiNavLayer_COUNT, "");
@@ -1671,7 +1671,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumTypingSelectFlags_ =
-        nb::enum_<ImGuiTypingSelectFlags_>(m, "TypingSelectFlags_", nb::is_arithmetic(), "Flags for GetTypingSelectRequest()")
+        nb::enum_<ImGuiTypingSelectFlags_>(m, "TypingSelectFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for GetTypingSelectRequest()")
             .value("none", ImGuiTypingSelectFlags_None, "")
             .value("allow_backspace", ImGuiTypingSelectFlags_AllowBackspace, "Backspace to delete character inputs. If using: ensure GetTypingSelectRequest() is not called more than once per frame (filter by e.g. focus state)")
             .value("allow_single_char_mode", ImGuiTypingSelectFlags_AllowSingleCharMode, "Allow \"single char\" search mode which is activated when pressing the same character multiple times.");
@@ -1716,7 +1716,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumOldColumnFlags_ =
-        nb::enum_<ImGuiOldColumnFlags_>(m, "OldColumnFlags_", nb::is_arithmetic(), "Flags for internal's BeginColumns(). This is an obsolete API. Prefer using BeginTable() nowadays!")
+        nb::enum_<ImGuiOldColumnFlags_>(m, "OldColumnFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for internal's BeginColumns(). This is an obsolete API. Prefer using BeginTable() nowadays!")
             .value("none", ImGuiOldColumnFlags_None, "")
             .value("no_border", ImGuiOldColumnFlags_NoBorder, "Disable column dividers")
             .value("no_resize", ImGuiOldColumnFlags_NoResize, "Disable resizing columns when clicking on the dividers")
@@ -1826,7 +1826,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumDockNodeFlagsPrivate_ =
-        nb::enum_<ImGuiDockNodeFlagsPrivate_>(m, "DockNodeFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiDockNodeFlags_")
+        nb::enum_<ImGuiDockNodeFlagsPrivate_>(m, "DockNodeFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiDockNodeFlags_")
             .value("dock_space", ImGuiDockNodeFlags_DockSpace, "Saved // A dockspace is a node that occupy space within an existing user window. Otherwise the node is floating and create its own window.")
             .value("central_node", ImGuiDockNodeFlags_CentralNode, "Saved // The central node has 2 main properties: stay visible when empty, only use \"remaining\" spaces from its neighbor.")
             .value("no_tab_bar", ImGuiDockNodeFlags_NoTabBar, "Saved // Tab bar is completely unavailable. No triangle in the corner to enable it back.")
@@ -1848,14 +1848,14 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumDataAuthority_ =
-        nb::enum_<ImGuiDataAuthority_>(m, "DataAuthority_", nb::is_arithmetic(), "Store the source authority (dock node vs window) of a field")
+        nb::enum_<ImGuiDataAuthority_>(m, "DataAuthority_", nb::is_arithmetic(), nb::is_flag(), "Store the source authority (dock node vs window) of a field")
             .value("auto", ImGuiDataAuthority_Auto, "")
             .value("dock_node", ImGuiDataAuthority_DockNode, "")
             .value("window", ImGuiDataAuthority_Window, "");
 
 
     auto pyEnumDockNodeState =
-        nb::enum_<ImGuiDockNodeState>(m, "DockNodeState", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiDockNodeState>(m, "DockNodeState", nb::is_arithmetic(), nb::is_flag(), "")
             .value("unknown", ImGuiDockNodeState_Unknown, "")
             .value("host_window_hidden_because_single_window", ImGuiDockNodeState_HostWindowHiddenBecauseSingleWindow, "")
             .value("host_window_hidden_because_windows_are_resizing", ImGuiDockNodeState_HostWindowHiddenBecauseWindowsAreResizing, "")
@@ -1924,7 +1924,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumWindowDockStyleCol =
-        nb::enum_<ImGuiWindowDockStyleCol>(m, "WindowDockStyleCol", nb::is_arithmetic(), " List of colors that are stored at the time of Begin() into Docked Windows.\n We currently store the packed colors in a simple array window->DockStyle.Colors[].\n A better solution may involve appending into a log of colors in ImGuiContext + store offsets into those arrays in ImGuiWindow,\n but it would be more complex as we'd need to double-buffer both as e.g. drop target may refer to window from last frame.")
+        nb::enum_<ImGuiWindowDockStyleCol>(m, "WindowDockStyleCol", nb::is_arithmetic(), nb::is_flag(), " List of colors that are stored at the time of Begin() into Docked Windows.\n We currently store the packed colors in a simple array window->DockStyle.Colors[].\n A better solution may involve appending into a log of colors in ImGuiContext + store offsets into those arrays in ImGuiWindow,\n but it would be more complex as we'd need to double-buffer both as e.g. drop target may refer to window from last frame.")
             .value("text", ImGuiWindowDockStyleCol_Text, "")
             .value("tab_hovered", ImGuiWindowDockStyleCol_TabHovered, "")
             .value("tab_focused", ImGuiWindowDockStyleCol_TabFocused, "")
@@ -2040,7 +2040,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumLocKey =
-        nb::enum_<ImGuiLocKey>(m, "LocKey", nb::is_arithmetic(), "This is experimental and not officially supported, it'll probably fall short of features, if/when it does we may backtrack.")
+        nb::enum_<ImGuiLocKey>(m, "LocKey", nb::is_arithmetic(), nb::is_flag(), "This is experimental and not officially supported, it'll probably fall short of features, if/when it does we may backtrack.")
             .value("version_str", ImGuiLocKey_VersionStr, "")
             .value("table_size_one", ImGuiLocKey_TableSizeOne, "")
             .value("table_size_all_fit", ImGuiLocKey_TableSizeAllFit, "")
@@ -2074,7 +2074,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumDebugLogFlags_ =
-        nb::enum_<ImGuiDebugLogFlags_>(m, "DebugLogFlags_", nb::is_arithmetic(), "See IMGUI_DEBUG_LOG() and IMGUI_DEBUG_LOG_XXX() macros.")
+        nb::enum_<ImGuiDebugLogFlags_>(m, "DebugLogFlags_", nb::is_arithmetic(), nb::is_flag(), "See IMGUI_DEBUG_LOG() and IMGUI_DEBUG_LOG_XXX() macros.")
             .value("none", ImGuiDebugLogFlags_None, "")
             .value("event_error", ImGuiDebugLogFlags_EventError, "Error submitted by IM_ASSERT_USER_ERROR()")
             .value("event_active_id", ImGuiDebugLogFlags_EventActiveId, "")
@@ -2190,7 +2190,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumContextHookType =
-        nb::enum_<ImGuiContextHookType>(m, "ContextHookType", nb::is_arithmetic(), "[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow, cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764")
+        nb::enum_<ImGuiContextHookType>(m, "ContextHookType", nb::is_arithmetic(), nb::is_flag(), "[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow, cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764")
             .value("new_frame_pre", ImGuiContextHookType_NewFramePre, "")
             .value("new_frame_post", ImGuiContextHookType_NewFramePost, "")
             .value("end_frame_pre", ImGuiContextHookType_EndFramePre, "")
@@ -2841,14 +2841,14 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumTabBarFlagsPrivate_ =
-        nb::enum_<ImGuiTabBarFlagsPrivate_>(m, "TabBarFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiTabBarFlags_")
+        nb::enum_<ImGuiTabBarFlagsPrivate_>(m, "TabBarFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiTabBarFlags_")
             .value("dock_node", ImGuiTabBarFlags_DockNode, "Part of a dock node [we don't use this in the master branch but it facilitate branch syncing to keep this around]")
             .value("is_focused", ImGuiTabBarFlags_IsFocused, "")
             .value("save_settings", ImGuiTabBarFlags_SaveSettings, "FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs");
 
 
     auto pyEnumTabItemFlagsPrivate_ =
-        nb::enum_<ImGuiTabItemFlagsPrivate_>(m, "TabItemFlagsPrivate_", nb::is_arithmetic(), "Extend ImGuiTabItemFlags_")
+        nb::enum_<ImGuiTabItemFlagsPrivate_>(m, "TabItemFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiTabItemFlags_")
             .value("section_mask_", ImGuiTabItemFlags_SectionMask_, "")
             .value("no_close_button", ImGuiTabItemFlags_NoCloseButton, "Track whether p_open was set or not (we'll need this info on the next frame to recompute ContentWidth during layout)")
             .value("button", ImGuiTabItemFlags_Button, "Used by TabItemButton, change the tab item behavior to mimic a button")
@@ -5264,7 +5264,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumDockRequestType =
-        nb::enum_<ImGuiDockRequestType>(m, "DockRequestType", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiDockRequestType>(m, "DockRequestType", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiDockRequestType_None, "")
             .value("dock", ImGuiDockRequestType_Dock, "")
             .value("undock", ImGuiDockRequestType_Undock, "")

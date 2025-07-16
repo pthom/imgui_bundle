@@ -997,7 +997,7 @@ class DataTypeInfo:
         """Auto-generated default constructor with named params"""
         pass
 
-class DataTypePrivate_(enum.Enum):
+class DataTypePrivate_(enum.IntFlag):
     """Extend ImGuiDataType_"""
 
     # ImGuiDataType_Pointer = ImGuiDataType_COUNT,    /* original C++ signature */
@@ -1010,7 +1010,7 @@ class DataTypePrivate_(enum.Enum):
 # [SECTION] Widgets support: flags, enums, data structures
 # -----------------------------------------------------------------------------
 
-class ItemFlagsPrivate_(enum.Enum):
+class ItemFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiItemFlags
     - input: PushItemFlag() manipulates g.CurrentItemFlags, g.NextItemData.ItemFlags, ItemAdd() calls may add extra flags too.
     - output: stored in g.LastItemData.ItemFlags
@@ -1062,7 +1062,7 @@ class ItemFlagsPrivate_(enum.Enum):
     # Obsolete
     # ImGuiItemFlags_SelectableDontClosePopup = !ImGuiItemFlags_AutoClosePopups, // Can't have a redirect as we inverted the behavior
 
-class ItemStatusFlags_(enum.Enum):
+class ItemStatusFlags_(enum.IntFlag):
     """Status flags for an already submitted item
     - output: stored in g.LastItemData.StatusFlags
     """
@@ -1106,7 +1106,7 @@ class ItemStatusFlags_(enum.Enum):
 
     # Additional status + semantic for ImGuiTestEngine
 
-class HoveredFlagsPrivate_(enum.Enum):
+class HoveredFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiHoveredFlags_"""
 
     # ImGuiHoveredFlags_DelayMask_                    = ImGuiHoveredFlags_DelayNone | ImGuiHoveredFlags_DelayShort | ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_NoSharedDelay,    /* original C++ signature */
@@ -1123,7 +1123,7 @@ class HoveredFlagsPrivate_(enum.Enum):
         enum.auto()
     )  # (= HoveredFlags_AllowWhenBlockedByPopup | HoveredFlags_AllowWhenBlockedByActiveItem | HoveredFlags_AllowWhenOverlapped | HoveredFlags_AllowWhenDisabled | HoveredFlags_NoNavOverride | HoveredFlags_ForTooltip | HoveredFlags_Stationary | HoveredFlags_DelayMask_)
 
-class InputTextFlagsPrivate_(enum.Enum):
+class InputTextFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiInputTextFlags_"""
 
     # [Internal]
@@ -1136,7 +1136,7 @@ class InputTextFlagsPrivate_(enum.Enum):
     # ImGuiInputTextFlags_LocalizeDecimalPoint= 1 << 28,      /* original C++ signature */
     localize_decimal_point = enum.auto()  # (= 1 << 28)  # For internal use by InputScalar() and TempInputScalar()
 
-class ButtonFlagsPrivate_(enum.Enum):
+class ButtonFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiButtonFlags_"""
 
     # ImGuiButtonFlags_PressedOnClick         = 1 << 4,       /* original C++ signature */
@@ -1202,13 +1202,13 @@ class ButtonFlagsPrivate_(enum.Enum):
     # }
     pressed_on_default_ = enum.auto()  # (= ButtonFlags_PressedOnClickRelease)
 
-class ComboFlagsPrivate_(enum.Enum):
+class ComboFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiComboFlags_"""
 
     # ImGuiComboFlags_CustomPreview           = 1 << 20,      /* original C++ signature */
     custom_preview = enum.auto()  # (= 1 << 20)  # enable BeginComboPreview()
 
-class SliderFlagsPrivate_(enum.Enum):
+class SliderFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiSliderFlags_"""
 
     # ImGuiSliderFlags_Vertical               = 1 << 20,      /* original C++ signature */
@@ -1218,7 +1218,7 @@ class SliderFlagsPrivate_(enum.Enum):
         enum.auto()
     )  # (= 1 << 21)  # Consider using g.NextItemData.ItemFlags |= ImGuiItemFlags_ReadOnly instead.
 
-class SelectableFlagsPrivate_(enum.Enum):
+class SelectableFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiSelectableFlags_"""
 
     # NB: need to be in sync with last value of ImGuiSelectableFlags_
@@ -1249,7 +1249,7 @@ class SelectableFlagsPrivate_(enum.Enum):
         enum.auto()
     )  # (= 1 << 27)  # Don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)
 
-class TreeNodeFlagsPrivate_(enum.Enum):
+class TreeNodeFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiTreeNodeFlags_"""
 
     # ImGuiTreeNodeFlags_NoNavFocus                 = 1 << 27,    /* original C++ signature */
@@ -1268,7 +1268,7 @@ class TreeNodeFlagsPrivate_(enum.Enum):
         enum.auto()
     )  # (= TreeNodeFlags_DrawLinesNone | TreeNodeFlags_DrawLinesFull | TreeNodeFlags_DrawLinesToNodes)
 
-class SeparatorFlags_(enum.Enum):
+class SeparatorFlags_(enum.IntFlag):
     # ImGuiSeparatorFlags_None                    = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiSeparatorFlags_Horizontal              = 1 << 0,       /* original C++ signature */
@@ -1280,7 +1280,7 @@ class SeparatorFlags_(enum.Enum):
     # ImGuiSeparatorFlags_SpanAllColumns          = 1 << 2,       /* original C++ signature */
     span_all_columns = enum.auto()  # (= 1 << 2)  # Make separator cover all columns of a legacy Columns() set.
 
-class FocusRequestFlags_(enum.Enum):
+class FocusRequestFlags_(enum.IntFlag):
     """Flags for FocusWindow(). This is not called ImGuiFocusFlags to avoid confusion with public-facing ImGuiFocusedFlags.
     FIXME: Once we finishing replacing more uses of GetTopMostPopupModal()+IsWindowWithinBeginStackOf()
     and FindBlockingModal() with this, we may want to change the flag to be opt-out instead of opt-in.
@@ -1293,20 +1293,20 @@ class FocusRequestFlags_(enum.Enum):
     # ImGuiFocusRequestFlags_UnlessBelowModal     = 1 << 1,       /* original C++ signature */
     unless_below_modal = enum.auto()  # (= 1 << 1)  # Do not set focus if the window is below a modal.
 
-class TextFlags_(enum.Enum):
+class TextFlags_(enum.IntFlag):
     # ImGuiTextFlags_None                         = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiTextFlags_NoWidthForLargeClippedText   = 1 << 0,    /* original C++ signature */
     # }
     no_width_for_large_clipped_text = enum.auto()  # (= 1 << 0)
 
-class TooltipFlags_(enum.Enum):
+class TooltipFlags_(enum.IntFlag):
     # ImGuiTooltipFlags_None                      = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiTooltipFlags_OverridePrevious          = 1 << 1,       /* original C++ signature */
     override_previous = enum.auto()  # (= 1 << 1)  # Clear/ignore previously submitted tooltip (defaults to append)
 
-class LayoutType_(enum.Enum):
+class LayoutType_(enum.IntFlag):
     """FIXME: this is in development, not exposed/functional as a generic feature yet.
     Horizontal/Vertical enums are fixed to 0/1 so they may be used to index ImVec2
     """
@@ -1317,7 +1317,7 @@ class LayoutType_(enum.Enum):
     # }
     vertical = enum.auto()  # (= 1)
 
-class LogFlags_(enum.Enum):
+class LogFlags_(enum.IntFlag):
     """Flags for LogBegin() text capturing function"""
 
     # ImGuiLogFlags_None = 0,    /* original C++ signature */
@@ -1337,7 +1337,7 @@ class LogFlags_(enum.Enum):
         enum.auto()
     )  # (= LogFlags_OutputTTY | LogFlags_OutputFile | LogFlags_OutputBuffer | LogFlags_OutputClipboard)
 
-class Axis(enum.Enum):
+class Axis(enum.IntFlag):
     """X/Y enums are fixed to 0/1 so they may be used to index ImVec2"""
 
     # ImGuiAxis_None = -1,    /* original C++ signature */
@@ -1348,7 +1348,7 @@ class Axis(enum.Enum):
     # }
     y = enum.auto()  # (= 1)
 
-class PlotType(enum.Enum):
+class PlotType(enum.IntFlag):
     # ImGuiPlotType_Lines,    /* original C++ signature */
     lines = enum.auto()  # (= 0)
     # ImGuiPlotType_Histogram,    /* original C++ signature */
@@ -1612,7 +1612,7 @@ class InputTextState:
         """(private API)"""
         pass
 
-class WindowRefreshFlags_(enum.Enum):
+class WindowRefreshFlags_(enum.IntFlag):
     # ImGuiWindowRefreshFlags_None                = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiWindowRefreshFlags_TryToAvoidRefresh   = 1 << 0,       /* original C++ signature */
@@ -1625,7 +1625,7 @@ class WindowRefreshFlags_(enum.Enum):
     refresh_on_focus = enum.auto()  # (= 1 << 2)  # [EXPERIMENTAL] Always refresh on focus
     # Refresh policy/frequency, Load Balancing etc.
 
-class NextWindowDataFlags_(enum.Enum):
+class NextWindowDataFlags_(enum.IntFlag):
     # ImGuiNextWindowDataFlags_None               = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiNextWindowDataFlags_HasPos             = 1 << 0,    /* original C++ signature */
@@ -1718,7 +1718,7 @@ class NextWindowData:
         """(private API)"""
         pass
 
-class NextItemDataFlags_(enum.Enum):
+class NextItemDataFlags_(enum.IntFlag):
     # ImGuiNextItemDataFlags_None         = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiNextItemDataFlags_HasWidth     = 1 << 0,    /* original C++ signature */
@@ -1949,7 +1949,7 @@ class DeactivatedItemData:
 # [SECTION] Popup support
 # -----------------------------------------------------------------------------
 
-class PopupPositionPolicy(enum.Enum):
+class PopupPositionPolicy(enum.IntFlag):
     # ImGuiPopupPositionPolicy_Default,    /* original C++ signature */
     default = enum.auto()  # (= 0)
     # ImGuiPopupPositionPolicy_ComboBox,    /* original C++ signature */
@@ -1990,7 +1990,7 @@ class PopupData:
 
 # [Internal] Named shortcuts for Navigation
 
-class InputEventType(enum.Enum):
+class InputEventType(enum.IntFlag):
     # ImGuiInputEventType_None = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiInputEventType_MousePos,    /* original C++ signature */
@@ -2011,7 +2011,7 @@ class InputEventType(enum.Enum):
     # }
     count = enum.auto()  # (= 8)
 
-class InputSource(enum.Enum):
+class InputSource(enum.IntFlag):
     # ImGuiInputSource_None = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiInputSource_Mouse,             /* original C++ signature */
@@ -2192,7 +2192,7 @@ class KeyOwnerData:
     def __init__(self) -> None:
         pass
 
-class InputFlagsPrivate_(enum.Enum):
+class InputFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiInputFlags_
     Flags for extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner()
     Don't mistake with ImGuiInputTextFlags! (which is for ImGui::InputText() function)
@@ -2349,7 +2349,7 @@ class ListClipperData:
 # [SECTION] Navigation support
 # -----------------------------------------------------------------------------
 
-class ActivateFlags_(enum.Enum):
+class ActivateFlags_(enum.IntFlag):
     # ImGuiActivateFlags_None                 = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiActivateFlags_PreferInput          = 1 << 0,           /* original C++ signature */
@@ -2371,7 +2371,7 @@ class ActivateFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 4)  # Activation requested by an item shortcut via SetNextItemShortcut() function.
 
-class ScrollFlags_(enum.Enum):
+class ScrollFlags_(enum.IntFlag):
     """Early work-in-progress API for ScrollToItem()"""
 
     # ImGuiScrollFlags_None                   = 0,    /* original C++ signature */
@@ -2412,7 +2412,7 @@ class ScrollFlags_(enum.Enum):
         enum.auto()
     )  # (= ScrollFlags_KeepVisibleEdgeY | ScrollFlags_KeepVisibleCenterY | ScrollFlags_AlwaysCenterY)
 
-class NavRenderCursorFlags_(enum.Enum):
+class NavRenderCursorFlags_(enum.IntFlag):
     # ImGuiNavRenderCursorFlags_None          = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiNavRenderCursorFlags_Compact       = 1 << 1,           /* original C++ signature */
@@ -2424,7 +2424,7 @@ class NavRenderCursorFlags_(enum.Enum):
     # ImGuiNavRenderCursorFlags_NoRounding    = 1 << 3,    /* original C++ signature */
     no_rounding = enum.auto()  # (= 1 << 3)
 
-class NavMoveFlags_(enum.Enum):
+class NavMoveFlags_(enum.IntFlag):
     # ImGuiNavMoveFlags_None                  = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiNavMoveFlags_LoopX                 = 1 << 0,       /* original C++ signature */
@@ -2472,7 +2472,7 @@ class NavMoveFlags_(enum.Enum):
     # ImGuiNavMoveFlags_NoClearActiveId       = 1 << 15,      /* original C++ signature */
     no_clear_active_id = enum.auto()  # (= 1 << 15)  # (Experimental) Do not clear active id when applying move result
 
-class NavLayer(enum.Enum):
+class NavLayer(enum.IntFlag):
     # ImGuiNavLayer_Main  = 0,        /* original C++ signature */
     main = enum.auto()  # (= 0)  # Main scrolling layer
     # ImGuiNavLayer_Menu  = 1,        /* original C++ signature */
@@ -2527,7 +2527,7 @@ class FocusScopeData:
 # [SECTION] Typing-select support
 # -----------------------------------------------------------------------------
 
-class TypingSelectFlags_(enum.Enum):
+class TypingSelectFlags_(enum.IntFlag):
     """Flags for GetTypingSelectRequest()"""
 
     # ImGuiTypingSelectFlags_None                 = 0,    /* original C++ signature */
@@ -2599,7 +2599,7 @@ class TypingSelectState:
 # [SECTION] Columns support
 # -----------------------------------------------------------------------------
 
-class OldColumnFlags_(enum.Enum):
+class OldColumnFlags_(enum.IntFlag):
     """Flags for internal's BeginColumns(). This is an obsolete API. Prefer using BeginTable() nowadays!"""
 
     # ImGuiOldColumnFlags_None                    = 0,    /* original C++ signature */
@@ -2800,7 +2800,7 @@ class MultiSelectState:
 # #ifdef IMGUI_HAS_DOCK
 #
 
-class DockNodeFlagsPrivate_(enum.Enum):
+class DockNodeFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiDockNodeFlags_"""
 
     # [Internal]
@@ -2878,7 +2878,7 @@ class DockNodeFlagsPrivate_(enum.Enum):
         enum.auto()
     )  # (= DockNodeFlags_NoResizeFlagsMask_ | DockNodeFlags_DockSpace | DockNodeFlags_CentralNode | DockNodeFlags_NoTabBar | DockNodeFlags_HiddenTabBar | DockNodeFlags_NoWindowMenuButton | DockNodeFlags_NoCloseButton)
 
-class DataAuthority_(enum.Enum):
+class DataAuthority_(enum.IntFlag):
     """Store the source authority (dock node vs window) of a field"""
 
     # ImGuiDataAuthority_Auto,    /* original C++ signature */
@@ -2889,7 +2889,7 @@ class DataAuthority_(enum.Enum):
     # }
     window = enum.auto()  # (= 2)
 
-class DockNodeState(enum.Enum):
+class DockNodeState(enum.IntFlag):
     # ImGuiDockNodeState_Unknown,    /* original C++ signature */
     unknown = enum.auto()  # (= 0)
     # ImGuiDockNodeState_HostWindowHiddenBecauseSingleWindow,    /* original C++ signature */
@@ -3021,7 +3021,7 @@ class DockNode:
         """(private API)"""
         pass
 
-class WindowDockStyleCol(enum.Enum):
+class WindowDockStyleCol(enum.IntFlag):
     """List of colors that are stored at the time of Begin() into Docked Windows.
     We currently store the packed colors in a simple array window->DockStyle.Colors[].
     A better solution may involve appending into a log of colors in ImGuiContext + store offsets into those arrays in ImGuiWindow,
@@ -3230,7 +3230,7 @@ class SettingsHandler:
 # [SECTION] Localization support
 # -----------------------------------------------------------------------------
 
-class LocKey(enum.Enum):
+class LocKey(enum.IntFlag):
     """This is experimental and not officially supported, it'll probably fall short of features, if/when it does we may backtrack."""
 
     # ImGuiLocKey_VersionStr,    /* original C++ signature */
@@ -3289,7 +3289,7 @@ class LocEntry:
 # [SECTION] Metrics, Debug Tools
 # -----------------------------------------------------------------------------
 
-class DebugLogFlags_(enum.Enum):
+class DebugLogFlags_(enum.IntFlag):
     """See IMGUI_DEBUG_LOG() and IMGUI_DEBUG_LOG_XXX() macros."""
 
     # Event types
@@ -3444,7 +3444,7 @@ class IDStackTool:
 # [SECTION] Generic context hooks
 # -----------------------------------------------------------------------------
 
-class ContextHookType(enum.Enum):
+class ContextHookType(enum.IntFlag):
     """[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow, cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764"""
 
     # ImGuiContextHookType_NewFramePre,     /* original C++ signature */
@@ -4709,7 +4709,7 @@ class Window:
 # [SECTION] Tab bar, Tab item support
 # -----------------------------------------------------------------------------
 
-class TabBarFlagsPrivate_(enum.Enum):
+class TabBarFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiTabBarFlags_"""
 
     # ImGuiTabBarFlags_DockNode                   = 1 << 20,      /* original C++ signature */
@@ -4723,7 +4723,7 @@ class TabBarFlagsPrivate_(enum.Enum):
         enum.auto()
     )  # (= 1 << 22)  # FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs
 
-class TabItemFlagsPrivate_(enum.Enum):
+class TabItemFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiTabItemFlags_"""
 
     # ImGuiTabItemFlags_SectionMask_              = ImGuiTabItemFlags_Leading | ImGuiTabItemFlags_Trailing,    /* original C++ signature */
@@ -7973,7 +7973,7 @@ def im_font_atlas_get_mouse_cursor_tex_data(
 # - ImGuiDockContext
 # -----------------------------------------------------------------------------
 
-class DockRequestType(enum.Enum):
+class DockRequestType(enum.IntFlag):
     # ImGuiDockRequestType_None = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiDockRequestType_Dock,    /* original C++ signature */

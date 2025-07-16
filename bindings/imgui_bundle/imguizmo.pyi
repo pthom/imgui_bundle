@@ -166,7 +166,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
 
     # Render a cube with face color corresponding to face normal. Usefull for debug/tests
 
-    class OPERATION(enum.Enum):
+    class OPERATION(enum.IntEnum):
         """ call it when you want a gizmo
          Needs view and projection matrices.
          matrix parameter is the source matrix (where will be gizmo be drawn) and might be transformed by the function. Return deltaMatrix is optional
@@ -194,7 +194,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         universal = enum.auto()     # (= OPERATION.translate | OPERATION.rotate | OPERATION.scaleu)
 
 
-    class MODE(enum.Enum):
+    class MODE(enum.IntEnum):
         local = enum.auto() # (= 0)
         world = enum.auto() # (= 1)
 
@@ -284,7 +284,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         """ Configure the limit where planes are hiden"""
         pass
 
-    class COLOR(enum.Enum):
+    class COLOR(enum.IntEnum):
         direction_x = enum.auto()           # (= 0)  # directionColor[0]
         direction_y = enum.auto()           # (= 1)  # directionColor[1]
         direction_z = enum.auto()           # (= 2)  # directionColor[2]

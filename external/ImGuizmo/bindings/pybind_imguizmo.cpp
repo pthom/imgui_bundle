@@ -285,7 +285,7 @@ void py_init_module_imguizmo(nb::module_& m)
 
         pyNsImGuizmo.def("manipulate",
             nb::overload_cast<const ImGuizmo::Matrix16 &, const ImGuizmo::Matrix16 &, ImGuizmo::OPERATION, ImGuizmo::MODE, ImGuizmo::Matrix16 &, std::optional<ImGuizmo::Matrix16>, std::optional<ImGuizmo::Matrix3>, std::optional<ImGuizmo::Matrix6>, std::optional<ImGuizmo::Matrix3>>(ImGuizmo::Manipulate),
-            nb::arg("view"), nb::arg("projection"), nb::arg("operation"), nb::arg("mode"), nb::arg("object_matrix"), nb::arg("delta_matrix") = nb::none(), nb::arg("snap") = nb::none(), nb::arg("local_bounds") = nb::none(), nb::arg("bounds_snap") = nb::none(),
+            nb::arg("view"), nb::arg("projection"), nb::arg("operation"), nb::arg("mode"), nb::arg("object_matrix"), nb::arg("delta_matrix").none() = nb::none(), nb::arg("snap").none() = nb::none(), nb::arg("local_bounds").none() = nb::none(), nb::arg("bounds_snap").none() = nb::none(),
             "Manipulate may change the objectMatrix parameter (return True if modified)");
 
         pyNsImGuizmo.def("view_manipulate",

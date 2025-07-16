@@ -77,7 +77,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
             return BeginPlotInNodeEditor_adapt_mutable_param_with_default_value(title_id, size, flags);
         },
-        nb::arg("title_id"), nb::arg("size") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("title_id"), nb::arg("size").none() = nb::none(), nb::arg("flags") = 0,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
 
     m.def("end_plot_in_node_editor",
@@ -138,7 +138,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
             r_ctor_->updateNodeEditorColorsFromImguiColors = updateNodeEditorColorsFromImguiColors;
             r_ctor_->withMarkdownOptions = withMarkdownOptions;
         },
-        nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("update_node_editor_colors_from_imgui_colors") = true, nb::arg("with_markdown_options") = nb::none()
+        nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("update_node_editor_colors_from_imgui_colors") = true, nb::arg("with_markdown_options").none() = nb::none()
         )
         .def_rw("with_implot", &ImmApp::AddOnsParams::withImplot, "Set withImplot=True if you need to plot graphs with implot")
         .def_rw("with_implot3d", &ImmApp::AddOnsParams::withImplot3d, "Set withImplot3=True if you need to plot 3 graphs with implot3")
@@ -173,7 +173,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
             Run_adapt_mutable_param_with_default_value(runnerParams, addOnsParams);
         },
-        nb::arg("runner_params"), nb::arg("add_ons_params") = nb::none(),
+        nb::arg("runner_params"), nb::arg("add_ons_params").none() = nb::none(),
         "Python bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
     m.def("run",
@@ -194,7 +194,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
             Run_adapt_mutable_param_with_default_value(simpleParams, addOnsParams);
         },
-        nb::arg("simple_params"), nb::arg("add_ons_params") = nb::none(),
+        nb::arg("simple_params"), nb::arg("add_ons_params").none() = nb::none(),
         "Python bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
     m.def("run",
@@ -215,7 +215,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
             Run_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, withImplot, withImplot3d, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
         },
-        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("with_markdown_options") = nb::none(),
+        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("with_markdown_options").none() = nb::none(),
         "///////////////////////////////////////////////////////////////////////////////////////\n\n Helpers to run an app from Python (using named parameters)\n\n/////////////////////////////////////////////////////////////////////////////////////\n Helper to run an app inside imgui_bundle, using HelloImGui:\n\n (HelloImGui::SimpleRunnerParams)\n     - `guiFunction`: the function that will render the ImGui widgets\n     - `windowTitle`: title of the window\n     - `windowSizeAuto`: if True, autosize the window from its inner widgets\n     - `windowRestorePreviousGeometry`: if True, restore window size and position from last run\n     - `windowSize`: size of the window\n     - `fpsIdle`: fps of the application when idle\n\n (ImmApp::AddOnsParams)\n     - `with_implot`: if True, then a context for implot will be created/destroyed automatically\n     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized\n       (i.e. required fonts will be loaded)\n     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor\n       will be created automatically.\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("run_with_markdown",
@@ -236,7 +236,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
             RunWithMarkdown_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, withImplot, withImplot3d, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
         },
-        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("with_markdown_options") = nb::none(),
+        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("with_markdown_options").none() = nb::none(),
         " Run an application with markdown\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("em_size",
@@ -308,7 +308,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
                 SetupFromRunnerParams_adapt_mutable_param_with_default_value(runnerParams, addOnsParams);
             },
-            nb::arg("runner_params"), nb::arg("add_ons_params") = nb::none(),
+            nb::arg("runner_params"), nb::arg("add_ons_params").none() = nb::none(),
             " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A distinct copy of `RunnerParams` is stored internally.\n\n\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
         pyNsManualRender.def("setup_from_simple_runner_params",
@@ -329,7 +329,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
                 SetupFromSimpleRunnerParams_adapt_mutable_param_with_default_value(simpleParams, addOnsParams);
             },
-            nb::arg("simple_params"), nb::arg("add_ons_params") = nb::none(),
+            nb::arg("simple_params"), nb::arg("add_ons_params").none() = nb::none(),
             " Initializes the rendering with `SimpleRunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n\n\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
         pyNsManualRender.def("setup_from_gui_function",
@@ -350,7 +350,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
                 SetupFromGuiFunction_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, withImplot, withImplot3d, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
             },
-            nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size") = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config") = nb::none(), nb::arg("with_markdown_options") = nb::none(),
+            nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("with_markdown_options").none() = nb::none(),
             " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
         pyNsManualRender.def("render",

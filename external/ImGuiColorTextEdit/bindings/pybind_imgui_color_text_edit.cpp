@@ -184,7 +184,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
 
                 return Render_adapt_mutable_param_with_default_value(aTitle, aParentIsFocused, aSize, aBorder);
             },
-            nb::arg("a_title"), nb::arg("a_parent_is_focused") = false, nb::arg("a_size") = nb::none(), nb::arg("a_border") = false,
+            nb::arg("a_title"), nb::arg("a_parent_is_focused") = false, nb::arg("a_size").none() = nb::none(), nb::arg("a_border") = false,
             "Python bindings defaults:\n    If aSize is None, then its default value will be: ImVec2()")
         .def("im_gui_debug_panel",
             &TextEditor::ImGuiDebugPanel, nb::arg("panel_name") = "Debug")

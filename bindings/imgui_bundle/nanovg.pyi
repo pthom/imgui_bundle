@@ -101,19 +101,19 @@ class Paint:
         """
         pass
 
-class Winding(enum.Enum):
+class Winding(enum.IntEnum):
     # NVG_CCW = 1,			    /* original C++ signature */
     ccw = enum.auto() # (= 1)  # Winding for solid shapes
     # NVG_CW = 2,				    /* original C++ signature */
     cw = enum.auto()  # (= 2)  # Winding for holes
 
-class Solidity(enum.Enum):
+class Solidity(enum.IntEnum):
     # NVG_SOLID = 1,			    /* original C++ signature */
     solid = enum.auto() # (= 1)  # CCW
     # NVG_HOLE = 2,			    /* original C++ signature */
     hole = enum.auto()  # (= 2)  # CW
 
-class LineCap(enum.Enum):
+class LineCap(enum.IntEnum):
     # NVG_BUTT,    /* original C++ signature */
     butt = enum.auto()   # (= 0)
     # NVG_ROUND,    /* original C++ signature */
@@ -126,7 +126,7 @@ class LineCap(enum.Enum):
     # }
     miter = enum.auto()  # (= 4)
 
-class Align(enum.Enum):
+class Align(enum.IntEnum):
     # Horizontal align
     # NVG_ALIGN_LEFT 		= 1<<0,	    /* original C++ signature */
     align_left = enum.auto()     # (= 1<<0)  # Default, align text horizontally to left.
@@ -144,7 +144,7 @@ class Align(enum.Enum):
     # NVG_ALIGN_BASELINE	= 1<<6,     /* original C++ signature */
     align_baseline = enum.auto() # (= 1<<6)  # Default, align text vertically to baseline.
 
-class BlendFactor(enum.Enum):
+class BlendFactor(enum.IntEnum):
     # NVG_ZERO = 1<<0,    /* original C++ signature */
     zero = enum.auto()                # (= 1<<0)
     # NVG_ONE = 1<<1,    /* original C++ signature */
@@ -169,7 +169,7 @@ class BlendFactor(enum.Enum):
     # }
     src_alpha_saturate = enum.auto()  # (= 1<<10)
 
-class CompositeOperation(enum.Enum):
+class CompositeOperation(enum.IntEnum):
     # NVG_SOURCE_OVER,    /* original C++ signature */
     source_over = enum.auto()      # (= 0)
     # NVG_SOURCE_IN,    /* original C++ signature */
@@ -256,7 +256,7 @@ class TextRow:
         """Auto-generated default constructor with named params"""
         pass
 
-class ImageFlags(enum.Enum):
+class ImageFlags(enum.IntEnum):
     # NVG_IMAGE_GENERATE_MIPMAPS	= 1<<0,         /* original C++ signature */
     image_generate_mipmaps = enum.auto() # (= 1<<0)  # Generate mipmaps during creation of the image.
     # NVG_IMAGE_REPEATX			= 1<<1,		    /* original C++ signature */
@@ -1042,7 +1042,7 @@ def font_face(ctx: Context, font: str) -> None:
 
 
 
-class Texture(enum.Enum):
+class Texture(enum.IntEnum):
     """
      Internal Render API
 
@@ -1177,7 +1177,7 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
     #
     #///////////////////////////////////////////////////////////////////////
 
-    class NvgCreateFlags(enum.Enum):
+    class NvgCreateFlags(enum.IntEnum):
         """ Combination of NVGcreateFlags in nanovg_gl.h + nanovg_mtl.h"""
         # NVG_ANTIALIAS 		= 1<<0,    /* original C++ signature */
         # Flag indicating if geometry based antialiasing is used (may not be needed when using MSAA).

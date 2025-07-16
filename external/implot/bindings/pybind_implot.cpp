@@ -65,7 +65,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumImAxis_ =
-        nb::enum_<ImAxis_>(m, "ImAxis_", nb::is_arithmetic(), "Axis indices. The values assigned may change; NEVER hardcode these.")
+        nb::enum_<ImAxis_>(m, "ImAxis_", nb::is_arithmetic(), nb::is_flag(), "Axis indices. The values assigned may change; NEVER hardcode these.")
             .value("x1", ImAxis_X1, "enabled by default")
             .value("x2", ImAxis_X2, "disabled by default")
             .value("x3", ImAxis_X3, "disabled by default")
@@ -76,7 +76,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumFlags_ =
-        nb::enum_<ImPlotFlags_>(m, "Flags_", nb::is_arithmetic(), "Options for plots (see BeginPlot).")
+        nb::enum_<ImPlotFlags_>(m, "Flags_", nb::is_arithmetic(), nb::is_flag(), "Options for plots (see BeginPlot).")
             .value("none", ImPlotFlags_None, "default")
             .value("no_title", ImPlotFlags_NoTitle, "the plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MyPlot\")")
             .value("no_legend", ImPlotFlags_NoLegend, "the legend will not be displayed")
@@ -91,7 +91,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumAxisFlags_ =
-        nb::enum_<ImPlotAxisFlags_>(m, "AxisFlags_", nb::is_arithmetic(), "Options for plot axes (see SetupAxis).")
+        nb::enum_<ImPlotAxisFlags_>(m, "AxisFlags_", nb::is_arithmetic(), nb::is_flag(), "Options for plot axes (see SetupAxis).")
             .value("none", ImPlotAxisFlags_None, "default")
             .value("no_label", ImPlotAxisFlags_NoLabel, "the axis label will not be displayed (axis labels are also hidden if the supplied string name is None)")
             .value("no_grid_lines", ImPlotAxisFlags_NoGridLines, "no grid lines will be displayed")
@@ -115,7 +115,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumSubplotFlags_ =
-        nb::enum_<ImPlotSubplotFlags_>(m, "SubplotFlags_", nb::is_arithmetic(), "Options for subplots (see BeginSubplot)")
+        nb::enum_<ImPlotSubplotFlags_>(m, "SubplotFlags_", nb::is_arithmetic(), nb::is_flag(), "Options for subplots (see BeginSubplot)")
             .value("none", ImPlotSubplotFlags_None, "default")
             .value("no_title", ImPlotSubplotFlags_NoTitle, "the subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MySubplot\")")
             .value("no_legend", ImPlotSubplotFlags_NoLegend, "the legend will not be displayed (only applicable if ImPlotSubplotFlags_ShareItems is enabled)")
@@ -131,7 +131,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumLegendFlags_ =
-        nb::enum_<ImPlotLegendFlags_>(m, "LegendFlags_", nb::is_arithmetic(), "Options for legends (see SetupLegend)")
+        nb::enum_<ImPlotLegendFlags_>(m, "LegendFlags_", nb::is_arithmetic(), nb::is_flag(), "Options for legends (see SetupLegend)")
             .value("none", ImPlotLegendFlags_None, "default")
             .value("no_buttons", ImPlotLegendFlags_NoButtons, "legend icons will not function as hide/show buttons")
             .value("no_highlight_item", ImPlotLegendFlags_NoHighlightItem, "plot items will not be highlighted when their legend entry is hovered")
@@ -143,7 +143,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumMouseTextFlags_ =
-        nb::enum_<ImPlotMouseTextFlags_>(m, "MouseTextFlags_", nb::is_arithmetic(), "Options for mouse hover text (see SetupMouseText)")
+        nb::enum_<ImPlotMouseTextFlags_>(m, "MouseTextFlags_", nb::is_arithmetic(), nb::is_flag(), "Options for mouse hover text (see SetupMouseText)")
             .value("none", ImPlotMouseTextFlags_None, "default")
             .value("no_aux_axes", ImPlotMouseTextFlags_NoAuxAxes, "only show the mouse position for primary axes")
             .value("no_format", ImPlotMouseTextFlags_NoFormat, "axes label formatters won't be used to render text")
@@ -151,7 +151,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumDragToolFlags_ =
-        nb::enum_<ImPlotDragToolFlags_>(m, "DragToolFlags_", nb::is_arithmetic(), "Options for DragPoint, DragLine, DragRect")
+        nb::enum_<ImPlotDragToolFlags_>(m, "DragToolFlags_", nb::is_arithmetic(), nb::is_flag(), "Options for DragPoint, DragLine, DragRect")
             .value("none", ImPlotDragToolFlags_None, "default")
             .value("no_cursors", ImPlotDragToolFlags_NoCursors, "drag tools won't change cursor icons when hovered or held")
             .value("no_fit", ImPlotDragToolFlags_NoFit, "the drag tool won't be considered for plot fits")
@@ -160,7 +160,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumColormapScaleFlags_ =
-        nb::enum_<ImPlotColormapScaleFlags_>(m, "ColormapScaleFlags_", nb::is_arithmetic(), "Flags for ColormapScale")
+        nb::enum_<ImPlotColormapScaleFlags_>(m, "ColormapScaleFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ColormapScale")
             .value("none", ImPlotColormapScaleFlags_None, "default")
             .value("no_label", ImPlotColormapScaleFlags_NoLabel, "the colormap axis label will not be displayed")
             .value("opposite", ImPlotColormapScaleFlags_Opposite, "render the colormap label and tick labels on the opposite side")
@@ -168,14 +168,14 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumItemFlags_ =
-        nb::enum_<ImPlotItemFlags_>(m, "ItemFlags_", nb::is_arithmetic(), "Flags for ANY PlotX function")
+        nb::enum_<ImPlotItemFlags_>(m, "ItemFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ANY PlotX function")
             .value("none", ImPlotItemFlags_None, "")
             .value("no_legend", ImPlotItemFlags_NoLegend, "the item won't have a legend entry displayed")
             .value("no_fit", ImPlotItemFlags_NoFit, "the item won't be considered for plot fits");
 
 
     auto pyEnumLineFlags_ =
-        nb::enum_<ImPlotLineFlags_>(m, "LineFlags_", nb::is_arithmetic(), "Flags for PlotLine")
+        nb::enum_<ImPlotLineFlags_>(m, "LineFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotLine")
             .value("none", ImPlotLineFlags_None, "default")
             .value("segments", ImPlotLineFlags_Segments, "a line segment will be rendered from every two consecutive points")
             .value("loop", ImPlotLineFlags_Loop, "the last and first point will be connected to form a closed loop")
@@ -185,56 +185,56 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumScatterFlags_ =
-        nb::enum_<ImPlotScatterFlags_>(m, "ScatterFlags_", nb::is_arithmetic(), "Flags for PlotScatter")
+        nb::enum_<ImPlotScatterFlags_>(m, "ScatterFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotScatter")
             .value("none", ImPlotScatterFlags_None, "default")
             .value("no_clip", ImPlotScatterFlags_NoClip, "markers on the edge of a plot will not be clipped");
 
 
     auto pyEnumStairsFlags_ =
-        nb::enum_<ImPlotStairsFlags_>(m, "StairsFlags_", nb::is_arithmetic(), "Flags for PlotStairs")
+        nb::enum_<ImPlotStairsFlags_>(m, "StairsFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotStairs")
             .value("none", ImPlotStairsFlags_None, "default")
             .value("pre_step", ImPlotStairsFlags_PreStep, "the y value is continued constantly to the left from every x position, i.e. the interval (x[i-1], x[i]] has the value y[i]")
             .value("shaded", ImPlotStairsFlags_Shaded, "a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases");
 
 
     auto pyEnumShadedFlags_ =
-        nb::enum_<ImPlotShadedFlags_>(m, "ShadedFlags_", nb::is_arithmetic(), "Flags for PlotShaded (placeholder)")
+        nb::enum_<ImPlotShadedFlags_>(m, "ShadedFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotShaded (placeholder)")
             .value("none", ImPlotShadedFlags_None, "default");
 
 
     auto pyEnumBarsFlags_ =
-        nb::enum_<ImPlotBarsFlags_>(m, "BarsFlags_", nb::is_arithmetic(), "Flags for PlotBars")
+        nb::enum_<ImPlotBarsFlags_>(m, "BarsFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotBars")
             .value("none", ImPlotBarsFlags_None, "default")
             .value("horizontal", ImPlotBarsFlags_Horizontal, "bars will be rendered horizontally on the current y-axis");
 
 
     auto pyEnumBarGroupsFlags_ =
-        nb::enum_<ImPlotBarGroupsFlags_>(m, "BarGroupsFlags_", nb::is_arithmetic(), "Flags for PlotBarGroups")
+        nb::enum_<ImPlotBarGroupsFlags_>(m, "BarGroupsFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotBarGroups")
             .value("none", ImPlotBarGroupsFlags_None, "default")
             .value("horizontal", ImPlotBarGroupsFlags_Horizontal, "bar groups will be rendered horizontally on the current y-axis")
             .value("stacked", ImPlotBarGroupsFlags_Stacked, "items in a group will be stacked on top of each other");
 
 
     auto pyEnumErrorBarsFlags_ =
-        nb::enum_<ImPlotErrorBarsFlags_>(m, "ErrorBarsFlags_", nb::is_arithmetic(), "Flags for PlotErrorBars")
+        nb::enum_<ImPlotErrorBarsFlags_>(m, "ErrorBarsFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotErrorBars")
             .value("none", ImPlotErrorBarsFlags_None, "default")
             .value("horizontal", ImPlotErrorBarsFlags_Horizontal, "error bars will be rendered horizontally on the current y-axis");
 
 
     auto pyEnumStemsFlags_ =
-        nb::enum_<ImPlotStemsFlags_>(m, "StemsFlags_", nb::is_arithmetic(), "Flags for PlotStems")
+        nb::enum_<ImPlotStemsFlags_>(m, "StemsFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotStems")
             .value("none", ImPlotStemsFlags_None, "default")
             .value("horizontal", ImPlotStemsFlags_Horizontal, "stems will be rendered horizontally on the current y-axis");
 
 
     auto pyEnumInfLinesFlags_ =
-        nb::enum_<ImPlotInfLinesFlags_>(m, "InfLinesFlags_", nb::is_arithmetic(), "Flags for PlotInfLines")
+        nb::enum_<ImPlotInfLinesFlags_>(m, "InfLinesFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotInfLines")
             .value("none", ImPlotInfLinesFlags_None, "default")
             .value("horizontal", ImPlotInfLinesFlags_Horizontal, "lines will be rendered horizontally on the current y-axis");
 
 
     auto pyEnumPieChartFlags_ =
-        nb::enum_<ImPlotPieChartFlags_>(m, "PieChartFlags_", nb::is_arithmetic(), "Flags for PlotPieChart")
+        nb::enum_<ImPlotPieChartFlags_>(m, "PieChartFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotPieChart")
             .value("none", ImPlotPieChartFlags_None, "default")
             .value("normalize", ImPlotPieChartFlags_Normalize, "force normalization of pie chart values (i.e. always make a full circle if sum < 0)")
             .value("ignore_hidden", ImPlotPieChartFlags_IgnoreHidden, "ignore hidden slices when drawing the pie chart (as if they were not there)")
@@ -242,13 +242,13 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumHeatmapFlags_ =
-        nb::enum_<ImPlotHeatmapFlags_>(m, "HeatmapFlags_", nb::is_arithmetic(), "Flags for PlotHeatmap")
+        nb::enum_<ImPlotHeatmapFlags_>(m, "HeatmapFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotHeatmap")
             .value("none", ImPlotHeatmapFlags_None, "default")
             .value("col_major", ImPlotHeatmapFlags_ColMajor, "data will be read in column major order");
 
 
     auto pyEnumHistogramFlags_ =
-        nb::enum_<ImPlotHistogramFlags_>(m, "HistogramFlags_", nb::is_arithmetic(), "Flags for PlotHistogram and PlotHistogram2D")
+        nb::enum_<ImPlotHistogramFlags_>(m, "HistogramFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotHistogram and PlotHistogram2D")
             .value("none", ImPlotHistogramFlags_None, "default")
             .value("horizontal", ImPlotHistogramFlags_Horizontal, "histogram bars will be rendered horizontally (not supported by PlotHistogram2D)")
             .value("cumulative", ImPlotHistogramFlags_Cumulative, "each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)")
@@ -258,35 +258,35 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumDigitalFlags_ =
-        nb::enum_<ImPlotDigitalFlags_>(m, "DigitalFlags_", nb::is_arithmetic(), "Flags for PlotDigital (placeholder)")
+        nb::enum_<ImPlotDigitalFlags_>(m, "DigitalFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotDigital (placeholder)")
             .value("none", ImPlotDigitalFlags_None, "default");
 
 
     auto pyEnumImageFlags_ =
-        nb::enum_<ImPlotImageFlags_>(m, "ImageFlags_", nb::is_arithmetic(), "Flags for PlotImage (placeholder)")
+        nb::enum_<ImPlotImageFlags_>(m, "ImageFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotImage (placeholder)")
             .value("none", ImPlotImageFlags_None, "default");
 
 
     auto pyEnumTextFlags_ =
-        nb::enum_<ImPlotTextFlags_>(m, "TextFlags_", nb::is_arithmetic(), "Flags for PlotText")
+        nb::enum_<ImPlotTextFlags_>(m, "TextFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotText")
             .value("none", ImPlotTextFlags_None, "default")
             .value("vertical", ImPlotTextFlags_Vertical, "text will be rendered vertically");
 
 
     auto pyEnumDummyFlags_ =
-        nb::enum_<ImPlotDummyFlags_>(m, "DummyFlags_", nb::is_arithmetic(), "Flags for PlotDummy (placeholder)")
+        nb::enum_<ImPlotDummyFlags_>(m, "DummyFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotDummy (placeholder)")
             .value("none", ImPlotDummyFlags_None, "default");
 
 
     auto pyEnumCond_ =
-        nb::enum_<ImPlotCond_>(m, "Cond_", nb::is_arithmetic(), "Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)")
+        nb::enum_<ImPlotCond_>(m, "Cond_", nb::is_arithmetic(), nb::is_flag(), "Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)")
             .value("none", ImPlotCond_None, "No condition (always set the variable), same as _Always")
             .value("always", ImPlotCond_Always, "No condition (always set the variable)")
             .value("once", ImPlotCond_Once, "Set the variable once per runtime session (only the first call will succeed)");
 
 
     auto pyEnumCol_ =
-        nb::enum_<ImPlotCol_>(m, "Col_", nb::is_arithmetic(), "Plot styling colors.")
+        nb::enum_<ImPlotCol_>(m, "Col_", nb::is_arithmetic(), nb::is_flag(), "Plot styling colors.")
             .value("line", ImPlotCol_Line, "plot line/outline color (defaults to next unused color in current colormap)")
             .value("fill", ImPlotCol_Fill, "plot fill color for bars (defaults to the current line color)")
             .value("marker_outline", ImPlotCol_MarkerOutline, "marker outline color (defaults to the current line color)")
@@ -312,7 +312,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumStyleVar_ =
-        nb::enum_<ImPlotStyleVar_>(m, "StyleVar_", nb::is_arithmetic(), "Plot styling variables.")
+        nb::enum_<ImPlotStyleVar_>(m, "StyleVar_", nb::is_arithmetic(), nb::is_flag(), "Plot styling variables.")
             .value("line_weight", ImPlotStyleVar_LineWeight, "float,  plot item line weight in pixels")
             .value("marker", ImPlotStyleVar_Marker, "int,    marker specification")
             .value("marker_size", ImPlotStyleVar_MarkerSize, "float,  marker size in pixels (roughly the marker's \"radius\")")
@@ -344,7 +344,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumScale_ =
-        nb::enum_<ImPlotScale_>(m, "Scale_", nb::is_arithmetic(), "Axis scale")
+        nb::enum_<ImPlotScale_>(m, "Scale_", nb::is_arithmetic(), nb::is_flag(), "Axis scale")
             .value("linear", ImPlotScale_Linear, "default linear scale")
             .value("time", ImPlotScale_Time, "date/time scale")
             .value("log10", ImPlotScale_Log10, "base 10 logartithmic scale")
@@ -352,7 +352,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumMarker_ =
-        nb::enum_<ImPlotMarker_>(m, "Marker_", nb::is_arithmetic(), "Marker specifications.")
+        nb::enum_<ImPlotMarker_>(m, "Marker_", nb::is_arithmetic(), nb::is_flag(), "Marker specifications.")
             .value("none", ImPlotMarker_None, "no marker")
             .value("circle", ImPlotMarker_Circle, "a circle marker (default)")
             .value("square", ImPlotMarker_Square, "a square maker")
@@ -368,7 +368,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumColormap_ =
-        nb::enum_<ImPlotColormap_>(m, "Colormap_", nb::is_arithmetic(), "Built-in colormaps")
+        nb::enum_<ImPlotColormap_>(m, "Colormap_", nb::is_arithmetic(), nb::is_flag(), "Built-in colormaps")
             .value("deep", ImPlotColormap_Deep, "a.k.a. seaborn deep             (qual=True,  n=10) (default)")
             .value("dark", ImPlotColormap_Dark, "a.k.a. matplotlib \"Set1\"        (qual=True,  n=9 )")
             .value("pastel", ImPlotColormap_Pastel, "a.k.a. matplotlib \"Pastel1\"     (qual=True,  n=9 )")
@@ -388,7 +388,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumLocation_ =
-        nb::enum_<ImPlotLocation_>(m, "Location_", nb::is_arithmetic(), "Used to position items on a plot (e.g. legends, labels, etc.)")
+        nb::enum_<ImPlotLocation_>(m, "Location_", nb::is_arithmetic(), nb::is_flag(), "Used to position items on a plot (e.g. legends, labels, etc.)")
             .value("center", ImPlotLocation_Center, "center-center")
             .value("north", ImPlotLocation_North, "top-center")
             .value("south", ImPlotLocation_South, "bottom-center")
@@ -401,7 +401,7 @@ void py_init_module_implot(nb::module_& m)
 
 
     auto pyEnumBin_ =
-        nb::enum_<ImPlotBin_>(m, "Bin_", nb::is_arithmetic(), "Enums for different automatic histogram binning methods (k = bin count or w = bin width)")
+        nb::enum_<ImPlotBin_>(m, "Bin_", nb::is_arithmetic(), nb::is_flag(), "Enums for different automatic histogram binning methods (k = bin count or w = bin width)")
             .value("sqrt", ImPlotBin_Sqrt, "k = sqrt(n)")
             .value("sturges", ImPlotBin_Sturges, "k = 1 + log2(n)")
             .value("rice", ImPlotBin_Rice, "k = 2 * cbrt(n)")
@@ -627,7 +627,7 @@ void py_init_module_implot(nb::module_& m)
 
             return BeginPlot_adapt_mutable_param_with_default_value(title_id, size, flags);
         },
-        nb::arg("title_id"), nb::arg("size") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("title_id"), nb::arg("size").none() = nb::none(), nb::arg("flags") = 0,
         " Starts a 2D plotting context. If this function returns True, EndPlot() MUST\n be called! You are encouraged to use the following convention:\n\n if (BeginPlot(...)) {\n     PlotLine(...);\n     ...\n     EndPlot();\n }\n\n Important notes:\n\n - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID\n   collisions or don't want to display a title in the plot, use double hashes\n   (e.g. \"MyPlot##HiddenIdText\" or \"##NoTitle\").\n - #size is the **frame** size of the plot widget, not the plot area. The default\n   size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
 
     m.def("end_plot",
@@ -652,7 +652,7 @@ void py_init_module_implot(nb::module_& m)
             else
                 r_ctor_->col_ratios = std::vector<float>();
         },
-        nb::arg("row_ratios") = nb::none(), nb::arg("col_ratios") = nb::none()
+        nb::arg("row_ratios").none() = nb::none(), nb::arg("col_ratios").none() = nb::none()
         )
         .def_rw("row_ratios", &ImPlot::SubplotsRowColRatios::row_ratios, "")
         .def_rw("col_ratios", &ImPlot::SubplotsRowColRatios::col_ratios, "")
@@ -681,7 +681,7 @@ void py_init_module_implot(nb::module_& m)
 
             SetupAxis_adapt_const_char_pointer_with_default_null(axis, label, flags);
         },
-        nb::arg("axis"), nb::arg("label") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("axis"), nb::arg("label").none() = nb::none(), nb::arg("flags") = 0,
         "Enables an axis or sets the label and/or flags for an existing axis. Leave #label = None for no label.");
 
     m.def("setup_axis_limits",
@@ -702,7 +702,7 @@ void py_init_module_implot(nb::module_& m)
 
             SetupAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
-        nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond") = nb::none(),
+        nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond").none() = nb::none(),
         " Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead.\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
@@ -765,7 +765,7 @@ void py_init_module_implot(nb::module_& m)
 
             SetupAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, cond);
         },
-        nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("cond") = nb::none(),
+        nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("cond").none() = nb::none(),
         " Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_legend",
@@ -799,7 +799,7 @@ void py_init_module_implot(nb::module_& m)
 
             SetNextAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
-        nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond") = nb::none(),
+        nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond").none() = nb::none(),
         " Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
@@ -842,7 +842,7 @@ void py_init_module_implot(nb::module_& m)
 
             SetNextAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, cond);
         },
-        nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("cond") = nb::none(),
+        nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("cond").none() = nb::none(),
         " Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("set_next_axes_to_fit",
@@ -2455,7 +2455,7 @@ void py_init_module_implot(nb::module_& m)
 
             return PlotHistogram_adapt_mutable_param_with_default_value(label_id, values, bins, bar_scale, range, flags);
         },
-        nb::arg("label_id"), nb::arg("values"), nb::arg("bins") = ImPlotBin_Sturges, nb::arg("bar_scale") = 1.0, nb::arg("range") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("label_id"), nb::arg("values"), nb::arg("bins") = ImPlotBin_Sturges, nb::arg("bar_scale") = 1.0, nb::arg("range").none() = nb::none(), nb::arg("flags") = 0,
         " Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.\n\n\nPython bindings defaults:\n    If range is None, then its default value will be: Range()");
 
     m.def("plot_histogram_2d",
@@ -2548,7 +2548,7 @@ void py_init_module_implot(nb::module_& m)
 
             return PlotHistogram2D_adapt_mutable_param_with_default_value(label_id, xs, ys, x_bins, y_bins, range, flags);
         },
-        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("x_bins") = ImPlotBin_Sturges, nb::arg("y_bins") = ImPlotBin_Sturges, nb::arg("range") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("x_bins") = ImPlotBin_Sturges, nb::arg("y_bins") = ImPlotBin_Sturges, nb::arg("range").none() = nb::none(), nb::arg("flags") = 0,
         " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.\n\n\nPython bindings defaults:\n    If range is None, then its default value will be: Rect()");
 
     m.def("plot_digital",
@@ -2672,7 +2672,7 @@ void py_init_module_implot(nb::module_& m)
 
             PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, bounds_min, bounds_max, uv0, uv1, tint_col, flags);
         },
-        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("bounds_min"), nb::arg("bounds_max"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("tint_col") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("bounds_min"), nb::arg("bounds_max"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("flags") = 0,
         " Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)");
     // #endif
     //
@@ -2695,7 +2695,7 @@ void py_init_module_implot(nb::module_& m)
 
             PlotText_adapt_mutable_param_with_default_value(text, x, y, pix_offset, flags);
         },
-        nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("pix_offset") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("pix_offset").none() = nb::none(), nb::arg("flags") = 0,
         " Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).\n\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0,0)");
 
     m.def("plot_dummy",
@@ -2726,7 +2726,7 @@ void py_init_module_implot(nb::module_& m)
 
             return DragPoint_adapt_modifiable_immutable_to_return(id, x, y, col, size, flags, out_clicked, out_hovered, held);
         },
-        nb::arg("id_"), nb::arg("x"), nb::arg("y"), nb::arg("col"), nb::arg("size") = 4, nb::arg("flags") = 0, nb::arg("out_clicked") = nb::none(), nb::arg("out_hovered") = nb::none(), nb::arg("held") = nb::none(),
+        nb::arg("id_"), nb::arg("x"), nb::arg("y"), nb::arg("col"), nb::arg("size") = 4, nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("held").none() = nb::none(),
         "Shows a draggable point at x,y. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_line_x",
@@ -2751,7 +2751,7 @@ void py_init_module_implot(nb::module_& m)
 
             return DragLineX_adapt_modifiable_immutable_to_return(id, x, col, thickness, flags, out_clicked, out_hovered, held);
         },
-        nb::arg("id_"), nb::arg("x"), nb::arg("col"), nb::arg("thickness") = 1, nb::arg("flags") = 0, nb::arg("out_clicked") = nb::none(), nb::arg("out_hovered") = nb::none(), nb::arg("held") = nb::none(),
+        nb::arg("id_"), nb::arg("x"), nb::arg("col"), nb::arg("thickness") = 1, nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("held").none() = nb::none(),
         "Shows a draggable vertical guide line at an x-value. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_line_y",
@@ -2776,7 +2776,7 @@ void py_init_module_implot(nb::module_& m)
 
             return DragLineY_adapt_modifiable_immutable_to_return(id, y, col, thickness, flags, out_clicked, out_hovered, held);
         },
-        nb::arg("id_"), nb::arg("y"), nb::arg("col"), nb::arg("thickness") = 1, nb::arg("flags") = 0, nb::arg("out_clicked") = nb::none(), nb::arg("out_hovered") = nb::none(), nb::arg("held") = nb::none(),
+        nb::arg("id_"), nb::arg("y"), nb::arg("col"), nb::arg("thickness") = 1, nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("held").none() = nb::none(),
         "Shows a draggable horizontal guide line at a y-value. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_rect",
@@ -2804,7 +2804,7 @@ void py_init_module_implot(nb::module_& m)
 
             return DragRect_adapt_modifiable_immutable_to_return(id, x1, y1, x2, y2, col, flags, out_clicked, out_hovered, held);
         },
-        nb::arg("id_"), nb::arg("x1"), nb::arg("y1"), nb::arg("x2"), nb::arg("y2"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("out_clicked") = nb::none(), nb::arg("out_hovered") = nb::none(), nb::arg("held") = nb::none(),
+        nb::arg("id_"), nb::arg("x1"), nb::arg("y1"), nb::arg("x2"), nb::arg("y2"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("held").none() = nb::none(),
         "Shows a draggable and resizeable rectangle.");
 
     m.def("annotation",
@@ -2881,7 +2881,7 @@ void py_init_module_implot(nb::module_& m)
 
             return PixelsToPlot_adapt_mutable_param_with_default_value(pix, x_axis, y_axis);
         },
-        nb::arg("pix"), nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
+        nb::arg("pix"), nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("pixels_to_plot",
@@ -2910,7 +2910,7 @@ void py_init_module_implot(nb::module_& m)
 
             return PixelsToPlot_adapt_mutable_param_with_default_value(x, y, x_axis, y_axis);
         },
-        nb::arg("x"), nb::arg("y"), nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
+        nb::arg("x"), nb::arg("y"), nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("plot_to_pixels",
@@ -2939,7 +2939,7 @@ void py_init_module_implot(nb::module_& m)
 
             return PlotToPixels_adapt_mutable_param_with_default_value(plt, x_axis, y_axis);
         },
-        nb::arg("plt"), nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
+        nb::arg("plt"), nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("plot_to_pixels",
@@ -2968,7 +2968,7 @@ void py_init_module_implot(nb::module_& m)
 
             return PlotToPixels_adapt_mutable_param_with_default_value(x, y, x_axis, y_axis);
         },
-        nb::arg("x"), nb::arg("y"), nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
+        nb::arg("x"), nb::arg("y"), nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("get_plot_pos",
@@ -3003,7 +3003,7 @@ void py_init_module_implot(nb::module_& m)
 
             return GetPlotMousePos_adapt_mutable_param_with_default_value(x_axis, y_axis);
         },
-        nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
+        nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
         " Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("get_plot_limits",
@@ -3032,7 +3032,7 @@ void py_init_module_implot(nb::module_& m)
 
             return GetPlotLimits_adapt_mutable_param_with_default_value(x_axis, y_axis);
         },
-        nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
+        nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
         " Returns the current plot axis range.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("is_plot_hovered",
@@ -3075,7 +3075,7 @@ void py_init_module_implot(nb::module_& m)
 
             return GetPlotSelection_adapt_mutable_param_with_default_value(x_axis, y_axis);
         },
-        nb::arg("x_axis") = nb::none(), nb::arg("y_axis") = nb::none(),
+        nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
         " Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("cancel_plot_selection",
@@ -3099,7 +3099,7 @@ void py_init_module_implot(nb::module_& m)
 
             HideNextItem_adapt_mutable_param_with_default_value(hidden, cond);
         },
-        nb::arg("hidden") = true, nb::arg("cond") = nb::none(),
+        nb::arg("hidden") = true, nb::arg("cond").none() = nb::none(),
         " Hides or shows the next plot item (i.e. as if it were toggled from the legend).\n Use ImPlotCond_Always if you need to forcefully set this every frame.\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("begin_aligned_plots",
@@ -3230,7 +3230,7 @@ void py_init_module_implot(nb::module_& m)
 
             SetNextLineStyle_adapt_mutable_param_with_default_value(col, weight);
         },
-        nb::arg("col") = nb::none(), nb::arg("weight") = IMPLOT_AUTO,
+        nb::arg("col").none() = nb::none(), nb::arg("weight") = IMPLOT_AUTO,
         " Set the line color and weight for the next item only.\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT_AUTO_COL");
 
     m.def("set_next_fill_style",
@@ -3251,7 +3251,7 @@ void py_init_module_implot(nb::module_& m)
 
             SetNextFillStyle_adapt_mutable_param_with_default_value(col, alpha_mod);
         },
-        nb::arg("col") = nb::none(), nb::arg("alpha_mod") = IMPLOT_AUTO,
+        nb::arg("col").none() = nb::none(), nb::arg("alpha_mod") = IMPLOT_AUTO,
         " Set the fill color for the next item only.\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT_AUTO_COL");
 
     m.def("set_next_marker_style",
@@ -3286,7 +3286,7 @@ void py_init_module_implot(nb::module_& m)
 
             SetNextMarkerStyle_adapt_mutable_param_with_default_value(marker, size, fill, weight, outline);
         },
-        nb::arg("marker") = nb::none(), nb::arg("size") = IMPLOT_AUTO, nb::arg("fill") = nb::none(), nb::arg("weight") = IMPLOT_AUTO, nb::arg("outline") = nb::none(),
+        nb::arg("marker").none() = nb::none(), nb::arg("size") = IMPLOT_AUTO, nb::arg("fill").none() = nb::none(), nb::arg("weight") = IMPLOT_AUTO, nb::arg("outline").none() = nb::none(),
         " Set the marker style for the next item only.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * marker: IMPLOT_AUTO\n        * fill: IMPLOT_AUTO_COL\n        * outline: IMPLOT_AUTO_COL");
 
     m.def("set_next_error_bar_style",
@@ -3307,7 +3307,7 @@ void py_init_module_implot(nb::module_& m)
 
             SetNextErrorBarStyle_adapt_mutable_param_with_default_value(col, size, weight);
         },
-        nb::arg("col") = nb::none(), nb::arg("size") = IMPLOT_AUTO, nb::arg("weight") = IMPLOT_AUTO,
+        nb::arg("col").none() = nb::none(), nb::arg("size") = IMPLOT_AUTO, nb::arg("weight") = IMPLOT_AUTO,
         " Set the error bar style for the next item only.\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT_AUTO_COL");
 
     m.def("get_last_item_color",
@@ -3376,7 +3376,7 @@ void py_init_module_implot(nb::module_& m)
 
             return GetColormapSize_adapt_mutable_param_with_default_value(cmap);
         },
-        nb::arg("cmap") = nb::none(),
+        nb::arg("cmap").none() = nb::none(),
         " Returns the size of a colormap.\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("get_colormap_color",
@@ -3398,7 +3398,7 @@ void py_init_module_implot(nb::module_& m)
 
             return GetColormapColor_adapt_mutable_param_with_default_value(idx, cmap);
         },
-        nb::arg("idx"), nb::arg("cmap") = nb::none(),
+        nb::arg("idx"), nb::arg("cmap").none() = nb::none(),
         " Returns a color from a colormap given an index >= 0 (modulo will be performed).\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("sample_colormap",
@@ -3420,7 +3420,7 @@ void py_init_module_implot(nb::module_& m)
 
             return SampleColormap_adapt_mutable_param_with_default_value(t, cmap);
         },
-        nb::arg("t"), nb::arg("cmap") = nb::none(),
+        nb::arg("t"), nb::arg("cmap").none() = nb::none(),
         " Sample a color from the current colormap given t between 0 and 1.\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("colormap_scale",
@@ -3448,7 +3448,7 @@ void py_init_module_implot(nb::module_& m)
 
             ColormapScale_adapt_mutable_param_with_default_value(label, scale_min, scale_max, size, format, flags, cmap);
         },
-        nb::arg("label"), nb::arg("scale_min"), nb::arg("scale_max"), nb::arg("size") = nb::none(), nb::arg("format") = "%g", nb::arg("flags") = 0, nb::arg("cmap") = nb::none(),
+        nb::arg("label"), nb::arg("scale_min"), nb::arg("scale_max"), nb::arg("size").none() = nb::none(), nb::arg("format") = "%g", nb::arg("flags") = 0, nb::arg("cmap").none() = nb::none(),
         " Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. \"##NoLabel\"). If scale_min > scale_max, the scale to color mapping will be reversed.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
 
     m.def("colormap_slider",
@@ -3477,7 +3477,7 @@ void py_init_module_implot(nb::module_& m)
 
             return ColormapSlider_adapt_modifiable_immutable_to_return(label, t, out, format, cmap);
         },
-        nb::arg("label"), nb::arg("t"), nb::arg("out") = nb::none(), nb::arg("format") = "", nb::arg("cmap") = nb::none(),
+        nb::arg("label"), nb::arg("t"), nb::arg("out") = nb::none(), nb::arg("format") = "", nb::arg("cmap").none() = nb::none(),
         " Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1].\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("colormap_button",
@@ -3506,7 +3506,7 @@ void py_init_module_implot(nb::module_& m)
 
             return ColormapButton_adapt_mutable_param_with_default_value(label, size, cmap);
         },
-        nb::arg("label"), nb::arg("size") = nb::none(), nb::arg("cmap") = nb::none(),
+        nb::arg("label"), nb::arg("size").none() = nb::none(), nb::arg("cmap").none() = nb::none(),
         " Shows a button with a colormap gradient brackground.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
 
     m.def("bust_color_cache",
@@ -3523,7 +3523,7 @@ void py_init_module_implot(nb::module_& m)
 
             BustColorCache_adapt_const_char_pointer_with_default_null(plot_title_id);
         },
-        nb::arg("plot_title_id") = nb::none(),
+        nb::arg("plot_title_id").none() = nb::none(),
         " When items in a plot sample their color from a colormap, the color is cached and does not change\n unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,\n item colors will NOT update. If you need item colors to resample the new colormap, then use this\n function to bust the cached colors. If #plot_title_id is None, then every item in EVERY existing plot\n will be cache busted. Otherwise only the plot specified by #plot_title_id will be busted. For the\n latter, this function must be called in the same ImGui ID scope that the plot is in. You should rarely if ever\n need this function, but it is available for applications that require runtime colormap swaps (e.g. Heatmaps demo).");
 
     m.def("get_input_map",
@@ -3601,7 +3601,7 @@ void py_init_module_implot(nb::module_& m)
 
             return ShowMetricsWindow_adapt_modifiable_immutable_to_return(p_popen);
         },
-        nb::arg("p_popen") = nb::none(),
+        nb::arg("p_popen").none() = nb::none(),
         "Shows ImPlot metrics/debug information window.");
 
     m.def("show_demo_window",
@@ -3619,7 +3619,7 @@ void py_init_module_implot(nb::module_& m)
 
             return ShowDemoWindow_adapt_modifiable_immutable_to_return(p_open);
         },
-        nb::arg("p_open") = nb::none(),
+        nb::arg("p_open").none() = nb::none(),
         "Shows the ImPlot demo window (add implot_demo.cpp to your sources!)");
 
     m.def("show_all_demos",

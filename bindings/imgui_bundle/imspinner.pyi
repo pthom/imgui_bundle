@@ -60,7 +60,7 @@ half_white: ImColor  # = ImColor(1., 1., 1., 0.5)
 red: ImColor  # = ImColor(1., 0., 0., 1.)
 
 
-class SpinnerTypeT(enum.Enum):
+class SpinnerTypeT(enum.IntEnum):
     e_st_rainbow = enum.auto()      # (= 0)
     e_st_angle = enum.auto()        # (= 1)
     e_st_dots = enum.auto()         # (= 2)
@@ -138,7 +138,7 @@ def ease_sine(p: float) -> float:
 def ease_damping(p: float) -> float:
     pass
 
-class ease_mode(enum.Enum):
+class ease_mode(enum.IntEnum):
     e_ease_none = enum.auto()      # (= 0)
     e_ease_inoutquad = enum.auto() # (= 1)
     e_ease_inoutexpo = enum.auto() # (= 2)
