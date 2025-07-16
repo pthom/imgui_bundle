@@ -374,7 +374,7 @@ def gui_window_alternative_theme(app_state: AppState):
         imgui.text("This window uses a different theme")
         imgui.set_item_tooltip("""
             tweaked_theme = hello_imgui.ImGuiTheme.ImGuiTweakedTheme()
-            tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white.value
+            tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white
             tweaked_theme.tweaks.rounding = 0.0
             hello_imgui.apply_tweaked_theme(tweaked_theme)
         """
@@ -439,7 +439,7 @@ Handling Japanese font is of course possible within ImGui / Hello ImGui!
             # a popup with a modal window
             if imgui.button("Open Modal"):
                 imgui.open_popup("MyModal")
-            popup_opened, _ = imgui.begin_popup_modal("MyModal", None, imgui.WindowFlags_.always_auto_resize.value)
+            popup_opened, _ = imgui.begin_popup_modal("MyModal", None, imgui.WindowFlags_.always_auto_resize)
             if popup_opened:
                 imgui.text("This is a modal window")
                 if imgui.button("Close"):

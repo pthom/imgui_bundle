@@ -371,13 +371,13 @@ def gui_window_alternative_theme(app_state: AppState):
         imgui.text("This window uses a different theme")
         imgui.set_item_tooltip("""
             tweaked_theme = hello_imgui.ImGuiTheme.ImGuiTweakedTheme()
-            tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white.value
+            tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white
             tweaked_theme.tweaks.rounding = 0.0
             hello_imgui.apply_tweaked_theme(tweaked_theme)
         """
         )
 
-        if imgui.collapsing_header("Basic Widgets", imgui.TreeNodeFlags_.default_open.value):
+        if imgui.collapsing_header("Basic Widgets", imgui.TreeNodeFlags_.default_open):
             if not hasattr(statics, "checked"):
                 statics.checked = True
             _, statics.checked = imgui.checkbox("Checkbox", statics.checked)
@@ -436,7 +436,7 @@ Handling Japanese font is of course possible within ImGui / Hello ImGui!
             # a popup with a modal window
             if imgui.button("Open Modal"):
                 imgui.open_popup("MyModal")
-            popup_opened, _ = imgui.begin_popup_modal("MyModal", None, imgui.WindowFlags_.always_auto_resize.value)
+            popup_opened, _ = imgui.begin_popup_modal("MyModal", None, imgui.WindowFlags_.always_auto_resize)
             if popup_opened:
                 imgui.text("This is a modal window")
                 if imgui.button("Close"):
@@ -710,7 +710,7 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar.value
+    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar
     dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
 
     # alternativeThemeWindow
@@ -781,7 +781,7 @@ def setup_my_theme():
     hello_imgui.apply_tweaked_theme(tweaked_theme)  # Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui:  hello_imgui.push_tweaked_theme(tweaked_theme) / hello_imgui.pop_tweaked_theme()
     # Then apply further modifications to ImGui style
     imgui.get_style().item_spacing = ImVec2(6, 4)  # Reduce spacing between items ((8, 4) by default)
-    imgui.get_style().set_color_(imgui.Col_.text.value, (0.8, 0.8, 0.85, 1.0))  # Change text color
+    imgui.get_style().set_color_(imgui.Col_.text, (0.8, 0.8, 0.85, 1.0))  # Change text color
 
 
 ##########################################################################

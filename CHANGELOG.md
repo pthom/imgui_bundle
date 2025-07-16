@@ -1,5 +1,20 @@
 *Version numbers are synced between "Dear ImGui", "Hello ImGui" and "Dear ImGui Bundle"*
 
+# v1.92.XXX (ongoing)
+
+## Python Bindings:
+* ImGui Enums now use 'enum.IntFlag'
+ (This impacts only the typing checks, not the runtime behavior)
+ This means that you may replace code like:
+```python
+imgui.WindowFlags_.no_collapse.value | imgui.WindowFlags_.no_decoration.value
+```
+with:
+```python
+imgui.WindowFlags_.no_collapse | imgui.WindowFlags_.no_decoration
+```
+
+
 # v1.92.0
 
 *Starting with v1.92.0, version numbers are now synced between "Dear ImGui", "Hello ImGui" and "Dear ImGui Bundle"*

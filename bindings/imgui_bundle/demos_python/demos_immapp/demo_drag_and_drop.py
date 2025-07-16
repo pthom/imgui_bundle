@@ -54,7 +54,7 @@ def gui_drag_and_drop(state: DemoState) -> None:
         imgui.button(state.names[n], immapp.em_to_vec2(5.0, 5.0))
 
         # Our buttons are both drag sources and drag targets here!
-        if imgui.begin_drag_drop_source(imgui.DragDropFlags_.none.value):
+        if imgui.begin_drag_drop_source(imgui.DragDropFlags_.none):
             # Set payload to carry the index of our item (in python, the payload is an int)
             drag_data_id = n
             imgui.set_drag_drop_payload_py_id("DND_DEMO_CELL", drag_data_id)

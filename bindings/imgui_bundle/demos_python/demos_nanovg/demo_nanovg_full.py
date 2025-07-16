@@ -81,8 +81,8 @@ def main():
     runner_params.callbacks.custom_background = custom_background
 
     def gui():
-        imgui.set_next_window_pos(ImVec2(0, 0), imgui.Cond_.appearing.value)
-        imgui.begin("My Window!", None, imgui.WindowFlags_.always_auto_resize.value)
+        imgui.set_next_window_pos(ImVec2(0, 0), imgui.Cond_.appearing)
+        imgui.begin("My Window!", None, imgui.WindowFlags_.always_auto_resize)
 
         if app_state.display_in_frame_buffer:
             clear_color_vec4 = ImVec4(*app_state.clear_color)

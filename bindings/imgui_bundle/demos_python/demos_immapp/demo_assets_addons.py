@@ -115,8 +115,8 @@ def demo_plot(app_state: AppState):
         implot.setup_axes(
             "",
             "",
-            implot.AxisFlags_.no_decorations.value,
-            implot.AxisFlags_.no_decorations.value,
+            implot.AxisFlags_.no_decorations,
+            implot.AxisFlags_.no_decorations,
         )
         implot.plot_pie_chart(
             data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90
