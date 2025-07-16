@@ -30,6 +30,10 @@ from .imgui import ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor, ImVec
 from .imgui_pydantic import ImVec2_Pydantic as ImVec2_Pydantic, ImVec4_Pydantic as ImVec4_Pydantic, ImColor_Pydantic as ImColor_Pydantic
 from .im_col32 import IM_COL32 as IM_COL32
 
+
+__version__: str
+
+
 def compilation_time() -> str:
     """Return date and time when imgui_bundle was compiled"""
     pass
