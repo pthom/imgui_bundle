@@ -12,7 +12,6 @@ from typing import (
     Callable,
     Union,
     Protocol,
-    TypeVar,
 )
 import numpy as np
 import enum
@@ -9182,16 +9181,21 @@ class IO:
 
     #                                                                   #ifdef IMGUI_BUNDLE_PYTHON_API
     #
-    # IMGUI_API void SetIniFilename(const char* filename);    /* original C++ signature */
-    def set_ini_filename(self, filename: str) -> None:
+
+    # IMGUI_API void SetIniFilename(std::optional<const char*> filename);    /* original C++ signature */
+    def set_ini_filename(self, filename: Optional[str]) -> None:
+        """- The disk functions are automatically called if IniFilename != None
+        - Set IniFilename to None to load/save manually. Read io.WantSaveIniSettings description about handling .ini saving manually.
+        - Important: default value "imgui.ini" is relative to current working dir! Most apps will want to lock this to an absolute path (e.g. same path as executables).
+        """
+        pass
+    # IMGUI_API std::string GetIniFilename() const;    /* original C++ signature */
+    def get_ini_filename(self) -> str:
         pass
     # IMGUI_API void SetLogFilename(const char* filename);    /* original C++ signature */
     def set_log_filename(self, filename: str) -> None:
         pass
-    # IMGUI_API std::string GetIniFilename();    /* original C++ signature */
-    def get_ini_filename(self) -> str:
-        pass
-    # IMGUI_API std::string GetLogFilename();    /* original C++ signature */
+    # IMGUI_API std::string GetLogFilename() const;    /* original C++ signature */
     def get_log_filename(self) -> str:
         pass
     #                                                                   #endif

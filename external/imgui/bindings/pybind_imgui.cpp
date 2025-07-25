@@ -6412,11 +6412,13 @@ void py_init_module_imgui_main(nb::module_& m)
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("set_ini_filename",
-            &ImGuiIO::SetIniFilename, nb::arg("filename"))
-        .def("set_log_filename",
-            &ImGuiIO::SetLogFilename, nb::arg("filename"))
+            &ImGuiIO::SetIniFilename,
+            nb::arg("filename").none(),
+            " - The disk functions are automatically called if IniFilename != None\n - Set IniFilename to None to load/save manually. Read io.WantSaveIniSettings description about handling .ini saving manually.\n - Important: default value \"imgui.ini\" is relative to current working dir! Most apps will want to lock this to an absolute path (e.g. same path as executables).")
         .def("get_ini_filename",
             &ImGuiIO::GetIniFilename)
+        .def("set_log_filename",
+            &ImGuiIO::SetLogFilename, nb::arg("filename"))
         .def("get_log_filename",
             &ImGuiIO::GetLogFilename)
         // #endif
