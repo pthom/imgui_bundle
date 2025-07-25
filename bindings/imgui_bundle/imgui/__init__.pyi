@@ -317,18 +317,24 @@ VERTEX_BUFFER_UV_OFFSET: int
 VERTEX_BUFFER_COL_OFFSET: int
 INDEX_SIZE: int
 
-# VecProtocol: add __add__, __sub__, __mul__, __truediv__, __neg__ to ImVec2 and ImVec4
-TVec = TypeVar("TVec", bound="VecProtocol")
-
-class VecProtocol(Protocol[TVec]):
-    def __add__(self: TVec, other: TVec) -> TVec: ...
-    def __sub__(self: TVec, other: TVec) -> TVec: ...
-    def __mul__(self: TVec, other: Union[TVec, float]) -> TVec: ...
-    def __truediv__(self: TVec, other: Union[TVec, float]) -> TVec: ...
-    def __neg__(self: TVec) -> TVec: ...
-
 ImVec2Like = Union[ImVec2, Tuple[int | float, int | float], List[int | float]]
 ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | float], List[int | float]]
+
+# Vec2Protocol: add __add__, __sub__, __mul__, __truediv__, __neg__ to ImVec2
+class Vec2Protocol(Protocol):
+    def __add__(self, other: ImVec2Like) -> ImVec2: ...
+    def __sub__(self, other: ImVec2Like) -> ImVec2: ...
+    def __mul__(self, other: Union[ImVec2Like, float]) -> ImVec2: ...
+    def __truediv__(self, other: Union[ImVec2Like, float]) -> ImVec2: ...
+    def __neg__(self) -> ImVec2: ...
+
+# Vec4Protocol: add __add__, __sub__, __mul__, __truediv__, __neg__ to ImVec4
+class Vec4Protocol(Protocol):
+    def __add__(self, other: ImVec4Like) -> ImVec4: ...
+    def __sub__(self, other: ImVec4Like) -> ImVec4: ...
+    def __mul__(self, other: Union[ImVec4Like, float]) -> ImVec4: ...
+    def __truediv__(self, other: Union[ImVec4Like, float]) -> ImVec4: ...
+    def __neg__(self) -> ImVec4: ...
 
 NpBuffer = np.ndarray  # used to transfer texture data as a 1D numpy array of bytes
 
@@ -474,7 +480,7 @@ NpBuffer = np.ndarray  # used to transfer texture data as a 1D numpy array of by
 # #endif
 #
 
-class ImVec2(VecProtocol["ImVec2"]):
+class ImVec2(Vec2Protocol):
     # float                                   x,     /* original C++ signature */
     x: float
     # y;    /* original C++ signature */
@@ -514,7 +520,7 @@ class ImVec2(VecProtocol["ImVec2"]):
     # #endif
     #
 
-class ImVec4(VecProtocol["ImVec4"]):
+class ImVec4(Vec4Protocol):
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
 
     # float                                                     x,     /* original C++ signature */
