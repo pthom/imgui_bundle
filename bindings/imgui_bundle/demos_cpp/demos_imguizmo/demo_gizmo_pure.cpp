@@ -342,7 +342,7 @@ void EditTransform(
         mCurrentGizmoOperation,
         mCurrentGizmoMode,
         objectMatrix,
-        std::nullopt,
+        nullptr,
         ifFlag(useSnap, snap),
         ifFlag(boundSizing, bounds),
         ifFlag(boundSizingSnap, boundsSnap)

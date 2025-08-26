@@ -396,7 +396,29 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         local_bounds: Optional[Matrix6] = None,
         bounds_snap: Optional[Matrix3] = None
         ) -> bool:
-        """ Manipulate may change the objectMatrix parameter (return True if modified)"""
+        """ Manipulate: main API  of ImGuizmo
+         Returns True if the objectMatrix has been modified
+
+         Mandatory input parameters:
+           - view: camera view matrix (array of 16 floats)
+           - projection: camera projection matrix (array of 16 floats)
+           - operation: operation to perform (translate, rotate, scale)
+           - mode: in which space the operation is applied (local or world)
+         Input / Output parameter:
+           - object_matrix: matrix of the object to manipulate (array of 16 floats)
+             (will be modified when using the gizmo)
+
+         Optional output parameter:
+           - delta_matrix: matrix that contains the transformation delta (array of 16 floats)
+             (useful to retrieve the modification between two frames)
+             pass a newly created Matrix16, and it will be filled if not None.
+
+         Optional input parameters:
+           - snap: if not None, contains the snap value (array of 3 floats)
+             (for example, if using TRANSLATE and snap={1,1,1}, the object will be snapped to the next integer position)
+           - local_bounds: if not None, contains the local bounds of the object (array of 6 floats)
+           - bounds_snap: if not None, contains the snap value for the bounds (array of 3 floats)
+        """
         pass
 
     @staticmethod

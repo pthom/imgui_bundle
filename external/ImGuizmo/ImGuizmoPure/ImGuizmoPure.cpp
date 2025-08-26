@@ -47,11 +47,11 @@ namespace IMGUIZMO_NAMESPACE
         const Matrix16& projection,
         OPERATION operation,
         MODE mode,
-        Matrix16& objectMatrix,
-        std::optional<Matrix16> deltaMatrix,
+        Matrix16& object_matrix,
+        Matrix16* delta_matrix,
         std::optional<Matrix3> snap,
-        std::optional<Matrix6> localBounds,
-        std::optional<Matrix3> boundsSnap
+        std::optional<Matrix6> local_bounds,
+        std::optional<Matrix3> bounds_snap
     )
     {
         bool changed = Manipulate(
@@ -59,11 +59,11 @@ namespace IMGUIZMO_NAMESPACE
             projection.values,
             operation,
             mode,
-            objectMatrix.values,
-            deltaMatrix ? deltaMatrix->values : NULL,
+            object_matrix.values,
+            delta_matrix ? delta_matrix->values : NULL,
             snap ? snap->values : NULL,
-            localBounds ? localBounds->values : NULL,
-            boundsSnap ? boundsSnap-> values : NULL
+            local_bounds ? local_bounds->values : NULL,
+            bounds_snap ? bounds_snap-> values : NULL
             );
         return changed;
     }
