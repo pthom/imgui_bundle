@@ -1,3 +1,4 @@
+// Obsoleted since v1.92 in Python: use pure python backends instead
 #if defined(HELLOIMGUI_HAS_OPENGL3) && defined(HELLOIMGUI_USE_GLFW3)
 
 #ifndef __EMSCRIPTEN__ // to keep the build process simple, this demo is currently disabled with emscripten (although ImGui and Imgui Bundle are perfectly compatible with emscripten)

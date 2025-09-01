@@ -212,7 +212,7 @@ class BoxedValue:
 
 # Enums/Flags
 
-class ImAxis_(enum.Enum):
+class ImAxis_(enum.IntFlag):
     """Axis indices. The values assigned may change; NEVER hardcode these."""
 
     # horizontal axes
@@ -234,7 +234,7 @@ class ImAxis_(enum.Enum):
     # bookeeping
     count = enum.auto()  # (= 6)
 
-class Flags_(enum.Enum):
+class Flags_(enum.IntFlag):
     """Options for plots (see BeginPlot)."""
 
     # ImPlotFlags_None          = 0,           /* original C++ signature */
@@ -267,7 +267,7 @@ class Flags_(enum.Enum):
         enum.auto()
     )  # (= Flags_NoTitle | Flags_NoLegend | Flags_NoMenus | Flags_NoBoxSelect | Flags_NoMouseText)
 
-class AxisFlags_(enum.Enum):
+class AxisFlags_(enum.IntFlag):
     """Options for plot axes (see SetupAxis)."""
 
     # ImPlotAxisFlags_None          = 0,           /* original C++ signature */
@@ -326,7 +326,7 @@ class AxisFlags_(enum.Enum):
     # }
     aux_default = enum.auto()  # (= AxisFlags_NoGridLines | AxisFlags_Opposite)
 
-class SubplotFlags_(enum.Enum):
+class SubplotFlags_(enum.IntFlag):
     """Options for subplots (see BeginSubplot)"""
 
     # ImPlotSubplotFlags_None        = 0,           /* original C++ signature */
@@ -370,7 +370,7 @@ class SubplotFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 10)  # subplots are added in column major order instead of the default row major order
 
-class LegendFlags_(enum.Enum):
+class LegendFlags_(enum.IntFlag):
     """Options for legends (see SetupLegend)"""
 
     # ImPlotLegendFlags_None            = 0,          /* original C++ signature */
@@ -394,7 +394,7 @@ class LegendFlags_(enum.Enum):
     # ImPlotLegendFlags_Sort            = 1 << 6,     /* original C++ signature */
     sort = enum.auto()  # (= 1 << 6)  # legend entries will be displayed in alphabetical order
 
-class MouseTextFlags_(enum.Enum):
+class MouseTextFlags_(enum.IntFlag):
     """Options for mouse hover text (see SetupMouseText)"""
 
     # ImPlotMouseTextFlags_None        = 0,          /* original C++ signature */
@@ -406,7 +406,7 @@ class MouseTextFlags_(enum.Enum):
     # ImPlotMouseTextFlags_ShowAlways  = 1 << 2,     /* original C++ signature */
     show_always = enum.auto()  # (= 1 << 2)  # always display mouse position even if plot not hovered
 
-class DragToolFlags_(enum.Enum):
+class DragToolFlags_(enum.IntFlag):
     """Options for DragPoint, DragLine, DragRect"""
 
     # ImPlotDragToolFlags_None      = 0,          /* original C++ signature */
@@ -422,7 +422,7 @@ class DragToolFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 3)  # tool rendering will be delayed one frame; useful when applying position-constraints
 
-class ColormapScaleFlags_(enum.Enum):
+class ColormapScaleFlags_(enum.IntFlag):
     """Flags for ColormapScale"""
 
     # ImPlotColormapScaleFlags_None     = 0,          /* original C++ signature */
@@ -436,7 +436,7 @@ class ColormapScaleFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 2)  # invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)
 
-class ItemFlags_(enum.Enum):
+class ItemFlags_(enum.IntFlag):
     """Flags for ANY PlotX function"""
 
     # ImPlotItemFlags_None     = 0,    /* original C++ signature */
@@ -446,7 +446,7 @@ class ItemFlags_(enum.Enum):
     # ImPlotItemFlags_NoFit    = 1 << 1,     /* original C++ signature */
     no_fit = enum.auto()  # (= 1 << 1)  # the item won't be considered for plot fits
 
-class LineFlags_(enum.Enum):
+class LineFlags_(enum.IntFlag):
     """Flags for PlotLine"""
 
     # ImPlotLineFlags_None        = 0,           /* original C++ signature */
@@ -464,7 +464,7 @@ class LineFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 14)  # a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases
 
-class ScatterFlags_(enum.Enum):
+class ScatterFlags_(enum.IntFlag):
     """Flags for PlotScatter"""
 
     # ImPlotScatterFlags_None   = 0,           /* original C++ signature */
@@ -472,7 +472,7 @@ class ScatterFlags_(enum.Enum):
     # ImPlotScatterFlags_NoClip = 1 << 10,     /* original C++ signature */
     no_clip = enum.auto()  # (= 1 << 10)  # markers on the edge of a plot will not be clipped
 
-class StairsFlags_(enum.Enum):
+class StairsFlags_(enum.IntFlag):
     """Flags for PlotStairs"""
 
     # ImPlotStairsFlags_None     = 0,           /* original C++ signature */
@@ -486,13 +486,13 @@ class StairsFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 11)  # a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases
 
-class ShadedFlags_(enum.Enum):
+class ShadedFlags_(enum.IntFlag):
     """Flags for PlotShaded (placeholder)"""
 
     # ImPlotShadedFlags_None  = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
-class BarsFlags_(enum.Enum):
+class BarsFlags_(enum.IntFlag):
     """Flags for PlotBars"""
 
     # ImPlotBarsFlags_None         = 0,           /* original C++ signature */
@@ -500,7 +500,7 @@ class BarsFlags_(enum.Enum):
     # ImPlotBarsFlags_Horizontal   = 1 << 10,     /* original C++ signature */
     horizontal = enum.auto()  # (= 1 << 10)  # bars will be rendered horizontally on the current y-axis
 
-class BarGroupsFlags_(enum.Enum):
+class BarGroupsFlags_(enum.IntFlag):
     """Flags for PlotBarGroups"""
 
     # ImPlotBarGroupsFlags_None        = 0,           /* original C++ signature */
@@ -510,7 +510,7 @@ class BarGroupsFlags_(enum.Enum):
     # ImPlotBarGroupsFlags_Stacked     = 1 << 11,     /* original C++ signature */
     stacked = enum.auto()  # (= 1 << 11)  # items in a group will be stacked on top of each other
 
-class ErrorBarsFlags_(enum.Enum):
+class ErrorBarsFlags_(enum.IntFlag):
     """Flags for PlotErrorBars"""
 
     # ImPlotErrorBarsFlags_None       = 0,           /* original C++ signature */
@@ -518,7 +518,7 @@ class ErrorBarsFlags_(enum.Enum):
     # ImPlotErrorBarsFlags_Horizontal = 1 << 10,     /* original C++ signature */
     horizontal = enum.auto()  # (= 1 << 10)  # error bars will be rendered horizontally on the current y-axis
 
-class StemsFlags_(enum.Enum):
+class StemsFlags_(enum.IntFlag):
     """Flags for PlotStems"""
 
     # ImPlotStemsFlags_None       = 0,           /* original C++ signature */
@@ -526,7 +526,7 @@ class StemsFlags_(enum.Enum):
     # ImPlotStemsFlags_Horizontal = 1 << 10,     /* original C++ signature */
     horizontal = enum.auto()  # (= 1 << 10)  # stems will be rendered horizontally on the current y-axis
 
-class InfLinesFlags_(enum.Enum):
+class InfLinesFlags_(enum.IntFlag):
     """Flags for PlotInfLines"""
 
     # ImPlotInfLinesFlags_None       = 0,          /* original C++ signature */
@@ -534,7 +534,7 @@ class InfLinesFlags_(enum.Enum):
     # ImPlotInfLinesFlags_Horizontal = 1 << 10     /* original C++ signature */
     horizontal = enum.auto()  # (= 1 << 10)  # lines will be rendered horizontally on the current y-axis
 
-class PieChartFlags_(enum.Enum):
+class PieChartFlags_(enum.IntFlag):
     """Flags for PlotPieChart"""
 
     # ImPlotPieChartFlags_None         = 0,           /* original C++ signature */
@@ -550,7 +550,7 @@ class PieChartFlags_(enum.Enum):
     # ImPlotPieChartFlags_Exploding    = 1 << 12      /* original C++ signature */
     exploding = enum.auto()  # (= 1 << 12)  # Explode legend-hovered slice
 
-class HeatmapFlags_(enum.Enum):
+class HeatmapFlags_(enum.IntFlag):
     """Flags for PlotHeatmap"""
 
     # ImPlotHeatmapFlags_None     = 0,           /* original C++ signature */
@@ -558,7 +558,7 @@ class HeatmapFlags_(enum.Enum):
     # ImPlotHeatmapFlags_ColMajor = 1 << 10,     /* original C++ signature */
     col_major = enum.auto()  # (= 1 << 10)  # data will be read in column major order
 
-class HistogramFlags_(enum.Enum):
+class HistogramFlags_(enum.IntFlag):
     """Flags for PlotHistogram and PlotHistogram2D"""
 
     # ImPlotHistogramFlags_None       = 0,           /* original C++ signature */
@@ -582,19 +582,19 @@ class HistogramFlags_(enum.Enum):
     # ImPlotHistogramFlags_ColMajor   = 1 << 14      /* original C++ signature */
     col_major = enum.auto()  # (= 1 << 14)  # data will be read in column major order (not supported by PlotHistogram)
 
-class DigitalFlags_(enum.Enum):
+class DigitalFlags_(enum.IntFlag):
     """Flags for PlotDigital (placeholder)"""
 
     # ImPlotDigitalFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
-class ImageFlags_(enum.Enum):
+class ImageFlags_(enum.IntFlag):
     """Flags for PlotImage (placeholder)"""
 
     # ImPlotImageFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
-class TextFlags_(enum.Enum):
+class TextFlags_(enum.IntFlag):
     """Flags for PlotText"""
 
     # ImPlotTextFlags_None     = 0,           /* original C++ signature */
@@ -602,13 +602,13 @@ class TextFlags_(enum.Enum):
     # ImPlotTextFlags_Vertical = 1 << 10      /* original C++ signature */
     vertical = enum.auto()  # (= 1 << 10)  # text will be rendered vertically
 
-class DummyFlags_(enum.Enum):
+class DummyFlags_(enum.IntFlag):
     """Flags for PlotDummy (placeholder)"""
 
     # ImPlotDummyFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
-class Cond_(enum.Enum):
+class Cond_(enum.IntFlag):
     """Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)"""
 
     # ImPlotCond_None   = ImGuiCond_None,        /* original C++ signature */
@@ -618,7 +618,7 @@ class Cond_(enum.Enum):
     # ImPlotCond_Once   = ImGuiCond_Once,        /* original C++ signature */
     once = enum.auto()  # (= Cond_Once)  # Set the variable once per runtime session (only the first call will succeed)
 
-class Col_(enum.Enum):
+class Col_(enum.IntFlag):
     """Plot styling colors."""
 
     # item styling colors
@@ -669,7 +669,7 @@ class Col_(enum.Enum):
     # }
     count = enum.auto()  # (= 21)
 
-class StyleVar_(enum.Enum):
+class StyleVar_(enum.IntFlag):
     """Plot styling variables."""
 
     # item styling variables
@@ -736,7 +736,7 @@ class StyleVar_(enum.Enum):
     # }
     count = enum.auto()  # (= 27)
 
-class Scale_(enum.Enum):
+class Scale_(enum.IntFlag):
     """Axis scale"""
 
     # ImPlotScale_Linear = 0,     /* original C++ signature */
@@ -748,7 +748,7 @@ class Scale_(enum.Enum):
     # ImPlotScale_SymLog,         /* original C++ signature */
     sym_log = enum.auto()  # (= 3)  # symmetric log scale
 
-class Marker_(enum.Enum):
+class Marker_(enum.IntFlag):
     """Marker specifications."""
 
     # ImPlotMarker_None = -1,     /* original C++ signature */
@@ -777,7 +777,7 @@ class Marker_(enum.Enum):
     # }
     count = enum.auto()  # (= 10)
 
-class Colormap_(enum.Enum):
+class Colormap_(enum.IntFlag):
     """Built-in colormaps"""
 
     # ImPlotColormap_Deep     = 0,       /* original C++ signature */
@@ -813,7 +813,7 @@ class Colormap_(enum.Enum):
     # ImPlotColormap_Greys    = 15,      /* original C++ signature */
     greys = enum.auto()  # (= 15)  # white/black                     (qual=False, n=2 )
 
-class Location_(enum.Enum):
+class Location_(enum.IntFlag):
     """Used to position items on a plot (e.g. legends, labels, etc.)"""
 
     # ImPlotLocation_Center    = 0,                                              /* original C++ signature */
@@ -835,7 +835,7 @@ class Location_(enum.Enum):
     # ImPlotLocation_SouthEast = ImPlotLocation_South | ImPlotLocation_East      /* original C++ signature */
     south_east = enum.auto()  # (= Location_South | Location_East)  # bottom-right
 
-class Bin_(enum.Enum):
+class Bin_(enum.IntFlag):
     """Enums for different automatic histogram binning methods (k = bin count or w = bin width)"""
 
     # ImPlotBin_Sqrt    = -1,     /* original C++ signature */

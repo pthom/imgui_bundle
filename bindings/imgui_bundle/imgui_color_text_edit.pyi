@@ -68,12 +68,12 @@ class TextEditor:
     def __init__(self) -> None:
         pass
 
-    class PaletteId(enum.Enum):
+    class PaletteId(enum.IntEnum):
         dark = enum.auto()               # (= 0)
         light = enum.auto()              # (= 1)
         mariana = enum.auto()            # (= 2)
         retro_blue = enum.auto()         # (= 3)
-    class LanguageDefinitionId(enum.Enum):
+    class LanguageDefinitionId(enum.IntEnum):
         none = enum.auto()               # (= 0)
         cpp = enum.auto()                # (= 1)
         c = enum.auto()                  # (= 2)
@@ -85,7 +85,7 @@ class TextEditor:
         angel_script = enum.auto()       # (= 8)
         glsl = enum.auto()               # (= 9)
         hlsl = enum.auto()               # (= 10)
-    class SetViewAtLineMode(enum.Enum):
+    class SetViewAtLineMode(enum.IntEnum):
         first_visible_line = enum.auto() # (= 0)
         centered = enum.auto()           # (= 1)
         last_visible_line = enum.auto()  # (= 2)

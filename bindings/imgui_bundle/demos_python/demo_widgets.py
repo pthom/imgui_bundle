@@ -88,7 +88,9 @@ def demo_knobs():
     imgui.end_group()
 
 
+@immapp.static(show_full_demo=False)
 def demo_spinner():
+    static = demo_spinner
     from imgui_bundle import imspinner
 
     imgui_md.render(
@@ -122,6 +124,11 @@ def demo_spinner():
         color,
         color,
     )
+
+    imgui.same_line()
+    _, static.show_full_demo = imgui.checkbox("Show full spinners demo", static.show_full_demo)
+    if static.show_full_demo:
+        imspinner.demo_spinners()
 
 
 @immapp.static(flag=True)
@@ -449,15 +456,14 @@ def demo_cool_bar():
 
 def demo_gui():
     demo_cool_bar()
+    demo_toggle()
+    demo_spinner()
+    demo_knobs()
+    demo_command_palette()
+    imgui.new_line()
     demo_portable_file_dialogs()
     imgui.new_line()
     demo_imfile_dialog()
-    imgui.new_line()
-    demo_knobs()
-    demo_toggle()
-    imgui.new_line()
-    demo_spinner()
-    demo_command_palette()
 
 
 if __name__ == "__main__":

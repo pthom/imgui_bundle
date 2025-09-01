@@ -63,7 +63,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
 
             return Toggle_adapt_modifiable_immutable_to_return(label, v, size);
         },
-        nb::arg("label"), nb::arg("v"), nb::arg("size") = nb::none(),
+        nb::arg("label"), nb::arg("v"), nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
@@ -92,7 +92,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
 
             return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, size);
         },
-        nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("size") = nb::none(),
+        nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
@@ -121,7 +121,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
 
             return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, animation_duration, size);
         },
-        nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("animation_duration"), nb::arg("size") = nb::none(),
+        nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("animation_duration"), nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
@@ -150,7 +150,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
 
             return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, frame_rounding, knob_rounding, size);
         },
-        nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("frame_rounding"), nb::arg("knob_rounding"), nb::arg("size") = nb::none(),
+        nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("frame_rounding"), nb::arg("knob_rounding"), nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
@@ -179,7 +179,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
 
             return Toggle_adapt_modifiable_immutable_to_return(label, v, flags, animation_duration, frame_rounding, knob_rounding, size);
         },
-        nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("animation_duration"), nb::arg("frame_rounding"), nb::arg("knob_rounding"), nb::arg("size") = nb::none(),
+        nb::arg("label"), nb::arg("v"), nb::arg("flags"), nb::arg("animation_duration"), nb::arg("frame_rounding"), nb::arg("knob_rounding"), nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2()");
 
     m.def("toggle",
@@ -198,7 +198,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
 
 
     auto pyEnumToggleFlags_ =
-        nb::enum_<ImGuiToggleFlags_>(m, "ToggleFlags_", nb::is_arithmetic(), "ImGuiToggleFlags: A set of flags that adjust behavior and display for ImGui::Toggle().")
+        nb::enum_<ImGuiToggleFlags_>(m, "ToggleFlags_", nb::is_arithmetic(), nb::is_flag(), "ImGuiToggleFlags: A set of flags that adjust behavior and display for ImGui::Toggle().")
             .value("none", ImGuiToggleFlags_None, "")
             .value("animated", ImGuiToggleFlags_Animated, "The toggle's knob should be animated.")
             .value("bordered_frame", ImGuiToggleFlags_BorderedFrame, "The toggle should have a border drawn on the frame.")
@@ -212,7 +212,7 @@ void py_init_module_imgui_toggle(nb::module_& m)
 
 
     auto pyEnumToggleA11yStyle_ =
-        nb::enum_<ImGuiToggleA11yStyle_>(m, "ToggleA11yStyle_", nb::is_arithmetic(), "ImGuiToggleA11yStyle: Styles to draw A11y labels.")
+        nb::enum_<ImGuiToggleA11yStyle_>(m, "ToggleA11yStyle_", nb::is_arithmetic(), nb::is_flag(), "ImGuiToggleA11yStyle: Styles to draw A11y labels.")
             .value("label", ImGuiToggleA11yStyle_Label, "A11y glyphs draw as text labels.")
             .value("glyph", ImGuiToggleA11yStyle_Glyph, "A11y glyphs draw as power-icon style \"I/O\" glyphs.")
             .value("dot", ImGuiToggleA11yStyle_Dot, "A11y glyphs draw as a small dot that can be colored separately from the frame.")

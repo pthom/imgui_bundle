@@ -435,7 +435,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
             else
                 r_ctor_->ColormapData = ImPlot3DColormapData();
         },
-        nb::arg("next_item_data") = nb::none(), nb::arg("style") = nb::none(), nb::arg("colormap_data") = nb::none()
+        nb::arg("next_item_data").none() = nb::none(), nb::arg("style").none() = nb::none(), nb::arg("colormap_data").none() = nb::none()
         )
         .def_rw("current_plot", &ImPlot3DContext::CurrentPlot, "")
         .def_rw("current_items", &ImPlot3DContext::CurrentItems, "")
@@ -502,7 +502,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
 
             return BeginItem_adapt_mutable_param_with_default_value(label_id, flags, recolor_from);
         },
-        nb::arg("label_id"), nb::arg("flags") = 0, nb::arg("recolor_from") = nb::none(),
+        nb::arg("label_id"), nb::arg("flags") = 0, nb::arg("recolor_from").none() = nb::none(),
         "Python bindings defaults:\n    If recolor_from is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("end_item",
@@ -523,7 +523,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
 
             return RegisterOrGetItem_adapt_modifiable_immutable_to_return(label_id, flags, just_created);
         },
-        nb::arg("label_id"), nb::arg("flags"), nb::arg("just_created") = nb::none(),
+        nb::arg("label_id"), nb::arg("flags"), nb::arg("just_created").none() = nb::none(),
         "Register or get an existing item from the current plot",
         nb::rv_policy::reference);
 
@@ -549,7 +549,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
 
             AddTextRotated_adapt_const_char_pointer_with_default_null(draw_list, pos, angle, col, text_begin, text_end);
         },
-        nb::arg("draw_list"), nb::arg("pos"), nb::arg("angle"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end") = nb::none(),
+        nb::arg("draw_list"), nb::arg("pos"), nb::arg("angle"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(),
         "TODO move to another place");
 
     m.def("get_current_plot",

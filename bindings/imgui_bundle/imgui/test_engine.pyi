@@ -128,7 +128,7 @@ ImVector_Window = ImVector_Window_ptr
 # Types
 # -------------------------------------------------------------------------
 
-class TestEngineExportFormat(enum.Enum):
+class TestEngineExportFormat(enum.IntFlag):
     # ImGuiTestEngineExportFormat_None = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiTestEngineExportFormat_JUnitXml,    /* original C++ signature */
@@ -185,7 +185,7 @@ def export_ex(engine: TestEngine, format: TestEngineExportFormat, filename: str)
 # Types
 # -------------------------------------------------------------------------
 
-class TestActiveFunc(enum.Enum):
+class TestActiveFunc(enum.IntFlag):
     """Stored in ImGuiTestContext: where we are currently running GuiFunc or TestFunc"""
 
     # ImGuiTestActiveFunc_None,    /* original C++ signature */
@@ -196,7 +196,7 @@ class TestActiveFunc(enum.Enum):
     # }
     test_func = enum.auto()  # (= 2)
 
-class TestRunSpeed(enum.Enum):
+class TestRunSpeed(enum.IntFlag):
     # ImGuiTestRunSpeed_Fast          = 0,        /* original C++ signature */
     fast = enum.auto()  # (= 0)  # Run tests as fast as possible (teleport mouse, skip delays, etc.)
     # ImGuiTestRunSpeed_Normal        = 1,        /* original C++ signature */
@@ -207,7 +207,7 @@ class TestRunSpeed(enum.Enum):
     # }
     count = enum.auto()  # (= 3)
 
-class TestVerboseLevel(enum.Enum):
+class TestVerboseLevel(enum.IntFlag):
     # ImGuiTestVerboseLevel_Silent    = 0,        /* original C++ signature */
     silent = enum.auto()  # (= 0)  # -v0
     # ImGuiTestVerboseLevel_Error     = 1,        /* original C++ signature */
@@ -224,7 +224,7 @@ class TestVerboseLevel(enum.Enum):
     # }
     count = enum.auto()  # (= 6)
 
-class TestStatus(enum.Enum):
+class TestStatus(enum.IntFlag):
     """Test status (stored in ImGuiTest)"""
 
     # ImGuiTestStatus_Unknown     = 0,    /* original C++ signature */
@@ -243,7 +243,7 @@ class TestStatus(enum.Enum):
     # }
     count = enum.auto()  # (= 6)
 
-class TestGroup(enum.Enum):
+class TestGroup(enum.IntFlag):
     """Test group: this is mostly used to categorize tests in our testing UI. (Stored in ImGuiTest)"""
 
     # ImGuiTestGroup_Unknown      = -1,    /* original C++ signature */
@@ -256,7 +256,7 @@ class TestGroup(enum.Enum):
     # }
     count = enum.auto()  # (= 2)
 
-class TestFlags_(enum.Enum):
+class TestFlags_(enum.IntFlag):
     """Flags (stored in ImGuiTest)"""
 
     # ImGuiTestFlags_None                 = 0,    /* original C++ signature */
@@ -275,7 +275,7 @@ class TestFlags_(enum.Enum):
     )  # (= 1 << 2)  # Error/recovery warnings (missing End/Pop calls etc.) will be displayed as normal debug entries, for tests which may rely on those.
     # ImGuiTestFlags_RequireViewports   = 1 << 10
 
-class TestCheckFlags_(enum.Enum):
+class TestCheckFlags_(enum.IntFlag):
     """Flags for IM_CHECK* macros."""
 
     # ImGuiTestCheckFlags_None            = 0,    /* original C++ signature */
@@ -284,7 +284,7 @@ class TestCheckFlags_(enum.Enum):
     # }
     silent_success = enum.auto()  # (= 1 << 0)
 
-class TestLogFlags_(enum.Enum):
+class TestLogFlags_(enum.IntFlag):
     """Flags for ImGuiTestContext::Log* functions."""
 
     # ImGuiTestLogFlags_None              = 0,    /* original C++ signature */
@@ -292,7 +292,7 @@ class TestLogFlags_(enum.Enum):
     # ImGuiTestLogFlags_NoHeader          = 1 << 0        /* original C++ signature */
     no_header = enum.auto()  # (= 1 << 0)  # Do not display frame count and depth padding
 
-class TestRunFlags_(enum.Enum):
+class TestRunFlags_(enum.IntFlag):
     # ImGuiTestRunFlags_None              = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiTestRunFlags_GuiFuncDisable    = 1 << 0,       /* original C++ signature */
@@ -973,7 +973,7 @@ class TestRefDesc:
 # [SECTION] ImGuiTestContext related Flags/Enumerations
 # -------------------------------------------------------------------------
 
-class TestAction(enum.Enum):
+class TestAction(enum.IntFlag):
     """Named actions. Generally you will call the named helpers e.g. ItemClick(). This is used by shared/low-level functions such as ItemAction()."""
 
     # ImGuiTestAction_Unknown = 0,    /* original C++ signature */
@@ -1006,7 +1006,7 @@ class TestAction(enum.Enum):
     # }
     count = enum.auto()  # (= 10)
 
-class TestOpFlags_(enum.Enum):
+class TestOpFlags_(enum.IntFlag):
     """Generic flags for many ImGuiTestContext functions
     Some flags are only supported by a handful of functions. Check function headers for list of supported flags.
     """
@@ -2263,7 +2263,7 @@ class TestFindByLabelTask:
         """Auto-generated default constructor with named params"""
         pass
 
-class TestInputType(enum.Enum):
+class TestInputType(enum.IntFlag):
     # ImGuiTestInputType_None,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiTestInputType_Key,    /* original C++ signature */

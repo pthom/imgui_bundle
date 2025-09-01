@@ -1,3 +1,5 @@
+# Obsoleted since v1.92 in Python: use pure python backends instead
+#
 # An example of using Dear ImGui with Glfw in python
 # Here, the backend rendering is implemented in C++: see calls to C++ native functions:
 #   imgui.backends.glfw_xxxx()
@@ -65,10 +67,10 @@ def main() -> None:
     imgui.create_context()
     io = imgui.get_io()
     io.config_flags |= (
-        imgui.ConfigFlags_.nav_enable_keyboard.value
+        imgui.ConfigFlags_.nav_enable_keyboard
     )  # Enable Keyboard Controls
     # io.config_flags |= imgui.ConfigFlags_.nav_enable_gamepad # Enable Gamepad Controls
-    io.config_flags |= imgui.ConfigFlags_.docking_enable.value  # Enable docking
+    io.config_flags |= imgui.ConfigFlags_.docking_enable  # Enable docking
     # io.config_flags |= imgui.ConfigFlags_.viewports_enable # Enable Multi-Viewport / Platform Windows
     # io.config_viewports_no_auto_merge = True
     # io.config_viewports_no_task_bar_icon = True
@@ -79,11 +81,11 @@ def main() -> None:
 
     # When viewports are enabled we tweak WindowRounding/WindowBg so platform windows can look identical to regular ones.
     style = imgui.get_style()
-    if io.config_flags & imgui.ConfigFlags_.viewports_enable.value:
+    if io.config_flags & imgui.ConfigFlags_.viewports_enable:
         style.window_rounding = 0.0
-        window_bg_color = style.color_(imgui.Col_.window_bg.value)
+        window_bg_color = style.color_(imgui.Col_.window_bg)
         window_bg_color.w = 1.0
-        style.set_color_(imgui.Col_.window_bg.value, window_bg_color)
+        style.set_color_(imgui.Col_.window_bg, window_bg_color)
 
     # Setup Platform/Renderer backends
     import ctypes
@@ -121,11 +123,9 @@ def main() -> None:
     # i. Load another font...
     font_filename = this_dir + "/../../demos_assets/fonts/Akronim-Regular.ttf"
     font_atlas = imgui.get_io().fonts
-    glyph_range = font_atlas.get_glyph_ranges_default()
     custom_font = font_atlas.add_font_from_file_ttf(
         filename=font_filename,
         size_pixels=font_size_pixel,
-        glyph_ranges_as_int_list=glyph_range,
     )
     # ii. ... And merge icons into the previous font
     from imgui_bundle import icons_fontawesome
@@ -133,11 +133,9 @@ def main() -> None:
     font_filename = this_dir + "/../../demos_assets/fonts/fontawesome-webfont.ttf"
     font_config = imgui.ImFontConfig()
     font_config.merge_mode = True
-    icons_range = [icons_fontawesome.ICON_MIN_FA, icons_fontawesome.ICON_MAX_FA, 0]
     custom_font = font_atlas.add_font_from_file_ttf(
         filename=font_filename,
         size_pixels=font_size_pixel,
-        glyph_ranges_as_int_list=icons_range,
         font_cfg=font_config,
     )
 
@@ -176,9 +174,9 @@ def main() -> None:
                 "Hello, world!"
             )  # Create a window called "Hello, world!" and append into it.
 
-            # Demo custom font
+            # # Demo custom font
             _id = id(custom_font)
-            imgui.push_font(custom_font)
+            imgui.push_font(custom_font, custom_font.legacy_size)
             imgui.text("Hello " + icons_fontawesome.ICON_FA_SMILE)
             imgui.pop_font()
 
@@ -245,7 +243,7 @@ def main() -> None:
         # Update and Render additional Platform Windows
         # (Platform functions may change the current OpenGL context, so we save/restore it to make it easier to paste this code elsewhere.
         #  For this specific demo app we could also call glfwMakeContextCurrent(window) directly)
-        if io.config_flags & imgui.ConfigFlags_.viewports_enable.value > 0:
+        if io.config_flags & imgui.ConfigFlags_.viewports_enable > 0:
             backup_current_context = glfw.get_current_context()
             imgui.update_platform_windows()
             imgui.render_platform_windows_default()

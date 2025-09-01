@@ -16,14 +16,14 @@ ImGuiTest* AutomationShowMeCode()
     ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
 
     ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeCode");
-    auto testOpenPopupFunc = [](ImGuiTestContext *ctx) {
-        ctx->SetRef("Dear ImGui Bundle");
+    auto testFunc = [](ImGuiTestContext *ctx) {
+        ctx->SetRef("Intro");
         ctx->ItemOpen("Code for this demo");
         ctx->Sleep(2.5);
         ctx->ItemClose("Code for this demo");
 
         const char* tabLoggerName = "//**/Logger";
-        const char* tabIntroName = "//**/Dear ImGui Bundle";
+        const char* tabIntroName = "//**/Intro";
 
         ctx->MouseMove(tabLoggerName);
         ctx->MouseClick(0);
@@ -33,7 +33,7 @@ ImGuiTest* AutomationShowMeCode()
         ctx->MouseMove(tabIntroName);
         ctx->MouseClick(0);
     };
-    automation->TestFunc = testOpenPopupFunc;
+    automation->TestFunc = testFunc;
     return automation;
 }
 
@@ -43,9 +43,9 @@ ImGuiTest* AutomationShowMeImmediateApps()
     ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
 
     ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeImmediateApps");
-    auto testOpenPopupFunc = [](ImGuiTestContext *ctx) {
-        const char* tabImmAppsName = "//**/Immediate Apps";
-        const char* tabIntroName = "//**/Dear ImGui Bundle";
+    auto testFunc = [](ImGuiTestContext *ctx) {
+        const char* tabImmAppsName = "//**/Demo Apps";
+        const char* tabIntroName = "//**/Intro";
 
         ctx->MouseMove(tabImmAppsName);
         ctx->MouseClick(0);
@@ -56,7 +56,7 @@ ImGuiTest* AutomationShowMeImmediateApps()
         ctx->MouseMove(tabIntroName);
         ctx->MouseClick(0);
     };
-    automation->TestFunc = testOpenPopupFunc;
+    automation->TestFunc = testFunc;
     return automation;
 }
 
@@ -66,9 +66,9 @@ ImGuiTest* AutomationShowMeImGuiTestEngine()
     ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
 
     ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeImGuiTestEngine");
-    auto testOpenPopupFunc = [](ImGuiTestContext *ctx) {
-        const char* tabImmAppsName = "//**/Immediate Apps";
-        const char* tabIntroName = "//**/Dear ImGui Bundle";
+    auto testFunc = [](ImGuiTestContext *ctx) {
+        const char* tabImmAppsName = "//**/Demo Apps";
+        const char* tabIntroName = "//**/Intro";
 
         ctx->MouseMove(tabImmAppsName);
         ctx->MouseClick(0);
@@ -78,7 +78,7 @@ ImGuiTest* AutomationShowMeImGuiTestEngine()
         ctx->MouseMove(tabIntroName);
         ctx->MouseClick(0);
     };
-    automation->TestFunc = testOpenPopupFunc;
+    automation->TestFunc = testFunc;
     return automation;
 }
 #endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
@@ -137,7 +137,7 @@ void demo_imgui_bundle_intro()
     }
 
     ImGuiMd::RenderUnindented(R"(
-        * The "Immediate Apps" tab is especially interesting, as it provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
+        * The "Demo Apps" tab is especially interesting, as it provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
     )");
     if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
     {

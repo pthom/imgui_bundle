@@ -28,6 +28,7 @@ def main():
     options.srcmlcpp_options.ignored_warning_parts = [
         "Ignoring template function",
         "unhandled tag template",
+        "SpinnerDraw"
     ]
     # options.python_run_black_formatter = True
     options.postprocess_stub_function = lambda s: s.replace("IM_PI  0.7", "math.pi * 0.7")

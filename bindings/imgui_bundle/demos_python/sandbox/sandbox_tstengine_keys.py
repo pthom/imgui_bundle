@@ -10,10 +10,10 @@ def my_register_tests():
 
     test_press = imgui.test_engine.register_test(engine, "Demo Tests", "Press keys")
     def test_press_func(ctx: imgui.test_engine.TestContext) -> None:
-        ctx.key_down(imgui.Key.left_alt.value)
-        ctx.key_down(imgui.Key.a.value)
-        ctx.key_up(imgui.Key.a.value)
-        ctx.key_up(imgui.Key.left_alt.value)
+        ctx.key_down(imgui.Key.left_alt)
+        ctx.key_down(imgui.Key.a)
+        ctx.key_up(imgui.Key.a)
+        ctx.key_up(imgui.Key.left_alt)
     test_press.test_func = test_press_func
 
 

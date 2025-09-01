@@ -434,7 +434,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     # TextEditorBundle: addition to ImGuiColorTextEdit, specific to ImGuiBundle
     #
 
-    class SnippetLanguage(enum.Enum):
+    class SnippetLanguage(enum.IntEnum):
         cpp = enum.auto()  # (= 0)
         hlsl = enum.auto()  # (= 1)
         glsl = enum.auto()  # (= 2)
@@ -444,7 +444,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         lua = enum.auto()  # (= 6)
         python = enum.auto()  # (= 7)
 
-    class SnippetTheme(enum.Enum):
+    class SnippetTheme(enum.IntEnum):
         dark = enum.auto()  # (= 0)
         light = enum.auto()  # (= 1)
         retro_blue = enum.auto()  # (= 2)

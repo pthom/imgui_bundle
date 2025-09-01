@@ -1,8 +1,9 @@
 #include "immapp/immapp.h"
 #include "immvision/immvision.h"
 #include "demo_utils/api_demos.h"
+#include "hello_imgui/hello_imgui.h"
 #include <opencv2/imgcodecs.hpp>
-
+#include "imgui.h"
 
 void demo_immvision_display()
 {
@@ -18,14 +19,30 @@ void demo_immvision_display()
         std::string assetsDir = DemosAssetsFolder() + "/images/";
         bear = cv::imread(assetsDir + "bear_transparent.png", cv::IMREAD_UNCHANGED);
         tennis = cv::imread(assetsDir + "tennis.jpg");
+
+        int bearDisplaySize = int(HelloImGui::EmSize(15.f));
+        params.ImageDisplaySize = cv::Size(bearDisplaySize, bearDisplaySize);
+
         inited = true;
     }
 
-    ImGuiMd::RenderUnindented("ImmVision::ImageDisplay() will simply display an image");
+    ImGui::BeginGroup();
+    ImGuiMd::RenderUnindented("# ImmVision::ImageDisplay()");
+    ImGuiMd::RenderUnindented("Displays an image (possibly resizable)");
     ImmVision::ImageDisplayResizable("Tennis", tennis, &imageDisplaySize);
+    ImGui::EndGroup();
 
-    ImGuiMd::RenderUnindented(R"(
-        immvision.image() will display an image, while providing lots of visualization options.<br>
-        Open the options panel by clicking on the settings button at the bottom right corner of the image)");
+    ImGui::SameLine();
+
+    ImGui::BeginGroup();
+    ImGuiMd::RenderUnindented("# ImmVision::Image()");
+    ImGuiMd::RenderUnindented("Displays an image, while providing lots of visualization options.");
     ImmVision::Image("Bear", bear, &params);
+    ImGuiMd::RenderUnindented(R"(
+        * Zoom in/out using the mouse wheel.
+        * Pixel values are displayed at high zoom levels.
+        * Pan the image by dragging it with the left mouse button
+        * Open settings via button (bottom right corner of the image)
+    )");
+    ImGui::EndGroup();
 }

@@ -88,6 +88,10 @@ def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks
     app_state.color_font = hello_imgui.load_font("fonts/Playbox/Playbox-FREE.otf", 24., font_loading_params_color)
 
 
+def push_font_with_default_size(font: imgui.ImFont):
+    imgui.push_font(font, font.legacy_size)
+
+
 
 ##########################################################################
 #    Save additional settings in the ini file
@@ -138,7 +142,7 @@ def save_my_app_settings(app_state: AppState):
 @immapp.static(last_hide_time=1)
 def demo_hide_window(app_state: AppState):
     # Display a button that will hide the application window
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Hide app window")
     imgui.pop_font()
 
@@ -161,7 +165,7 @@ def demo_show_additional_window(app_state: AppState):
     # Note: you should not modify manually the content of runnerParams.docking_params.dockable_windows
     #       (since HelloImGui is constantly looping on it)
 
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Dynamically add window")
     imgui.pop_font()
 
@@ -186,7 +190,7 @@ def demo_show_additional_window(app_state: AppState):
 
 
 def demo_basic_widgets(app_state: AppState):
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Basic widgets demo")
     imgui.pop_font()
 
@@ -211,7 +215,7 @@ def demo_basic_widgets(app_state: AppState):
 
 
 def demo_user_settings(app_state: AppState):
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("User settings")
     imgui.pop_font()
 
@@ -231,7 +235,7 @@ def demo_user_settings(app_state: AppState):
 
 
 def demo_rocket(app_state: AppState):
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Rocket demo")
     imgui.pop_font()
 
@@ -258,7 +262,7 @@ def demo_rocket(app_state: AppState):
 
 
 def demo_docking_flags(app_state: AppState):
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Main dock space node flags")
     imgui.pop_font()
     imgui.text_wrapped(
@@ -315,7 +319,7 @@ Most flags are inherited by children dock spaces.
 
 
 def gui_window_layout_customization(app_state: AppState):
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Switch between layouts")
     imgui.pop_font()
     imgui.text('with the menu "View/Layouts"')
@@ -327,7 +331,7 @@ def gui_window_layout_customization(app_state: AppState):
 
     imgui.separator()
 
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Change the theme")
     imgui.pop_font()
     imgui.text('with the menu "View/Theme"')
@@ -361,19 +365,19 @@ def gui_window_alternative_theme(app_state: AppState):
     window_opened = imgui.begin("Alternative Theme")
     if window_opened:
         # Display some widgets
-        imgui.push_font(app_state.title_font)
+        push_font_with_default_size(app_state.title_font)
         imgui.text("Alternative Theme")
         imgui.pop_font()
         imgui.text("This window uses a different theme")
         imgui.set_item_tooltip("""
             tweaked_theme = hello_imgui.ImGuiTheme.ImGuiTweakedTheme()
-            tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white.value
+            tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white
             tweaked_theme.tweaks.rounding = 0.0
             hello_imgui.apply_tweaked_theme(tweaked_theme)
         """
         )
 
-        if imgui.collapsing_header("Basic Widgets", imgui.TreeNodeFlags_.default_open.value):
+        if imgui.collapsing_header("Basic Widgets", imgui.TreeNodeFlags_.default_open):
             if not hasattr(statics, "checked"):
                 statics.checked = True
             _, statics.checked = imgui.checkbox("Checkbox", statics.checked)
@@ -432,7 +436,7 @@ Handling Japanese font is of course possible within ImGui / Hello ImGui!
             # a popup with a modal window
             if imgui.button("Open Modal"):
                 imgui.open_popup("MyModal")
-            popup_opened, _ = imgui.begin_popup_modal("MyModal", None, imgui.WindowFlags_.always_auto_resize.value)
+            popup_opened, _ = imgui.begin_popup_modal("MyModal", None, imgui.WindowFlags_.always_auto_resize)
             if popup_opened:
                 imgui.text("This is a modal window")
                 if imgui.button("Close"):
@@ -458,7 +462,7 @@ Handling Japanese font is of course possible within ImGui / Hello ImGui!
 
 
 def demo_assets(app_state: AppState):
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Image From Assets")
     imgui.pop_font()
     hello_imgui.begin_group_column()
@@ -469,7 +473,7 @@ def demo_assets(app_state: AppState):
 
 
 def demo_fonts(app_state: AppState):
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Fonts - " + icons_fontawesome_6.ICON_FA_ROCKET)
     imgui.pop_font()
 
@@ -480,7 +484,7 @@ def demo_fonts(app_state: AppState):
     imgui.text("Emojis")
 
     with imgui_ctx.begin_group():
-        imgui.push_font(app_state.emoji_font)
+        push_font_with_default_size(app_state.emoji_font)
         imgui.text("✌❤🌴🚀")
         imgui.pop_font()
 
@@ -488,7 +492,7 @@ def demo_fonts(app_state: AppState):
         imgui.set_tooltip("Example with NotoEmoji font")
 
     imgui.text("Colored Fonts")
-    imgui.push_font(app_state.color_font)
+    push_font_with_default_size(app_state.color_font)
     imgui.text("COLOR!")
     imgui.pop_font()
     if imgui.is_item_hovered():
@@ -496,7 +500,7 @@ def demo_fonts(app_state: AppState):
 
 
 def demo_themes(app_state: AppState):
-    imgui.push_font(app_state.title_font)
+    push_font_with_default_size(app_state.title_font)
     imgui.text("Themes")
     imgui.pop_font()
 
@@ -561,7 +565,7 @@ def show_app_menu_items():
 
 
 def show_top_toolbar(app_state: AppState):
-    imgui.push_font(app_state.large_icon_font)
+    push_font_with_default_size(app_state.large_icon_font)
     if imgui.button(icons_fontawesome_6.ICON_FA_POWER_OFF):
         hello_imgui.get_runner_params().app_shall_exit = True
 
@@ -581,7 +585,7 @@ def show_top_toolbar(app_state: AppState):
 
 
 def show_right_toolbar(app_state: AppState):
-    imgui.push_font(app_state.large_icon_font)
+    push_font_with_default_size(app_state.large_icon_font)
     if imgui.button(icons_fontawesome_6.ICON_FA_CIRCLE_ARROW_LEFT):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Circle left in the right toolbar")
     if imgui.button(icons_fontawesome_6.ICON_FA_CIRCLE_ARROW_RIGHT):
@@ -706,7 +710,7 @@ def create_dockable_windows(app_state: AppState) -> List[hello_imgui.DockableWin
     dear_imgui_demo_window = hello_imgui.DockableWindow()
     dear_imgui_demo_window.label = "Dear ImGui Demo"
     dear_imgui_demo_window.dock_space_name = "MainDockSpace"
-    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar.value
+    dear_imgui_demo_window.imgui_window_flags = imgui.WindowFlags_.menu_bar
     dear_imgui_demo_window.gui_function = imgui.show_demo_window  # type: ignore
 
     # alternativeThemeWindow
@@ -777,7 +781,7 @@ def setup_my_theme():
     hello_imgui.apply_tweaked_theme(tweaked_theme)  # Note: you can also push/pop the theme in order to apply it only to a specific part of the Gui:  hello_imgui.push_tweaked_theme(tweaked_theme) / hello_imgui.pop_tweaked_theme()
     # Then apply further modifications to ImGui style
     imgui.get_style().item_spacing = ImVec2(6, 4)  # Reduce spacing between items ((8, 4) by default)
-    imgui.get_style().set_color_(imgui.Col_.text.value, (0.8, 0.8, 0.85, 1.0))  # Change text color
+    imgui.get_style().set_color_(imgui.Col_.text, (0.8, 0.8, 0.85, 1.0))  # Change text color
 
 
 ##########################################################################

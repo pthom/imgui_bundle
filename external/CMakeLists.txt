@@ -249,6 +249,7 @@ endif()
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 # Build imspinner
 add_simple_external_library_with_sources(imspinner imspinner)
+target_compile_definitions(imspinner PUBLIC IMSPINNER_DEMO)
 # Build imgui_toggle
 add_simple_external_library_with_sources(imgui_toggle imgui_toggle)
 # Build imgui_command_palette

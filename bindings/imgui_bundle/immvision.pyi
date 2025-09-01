@@ -92,7 +92,7 @@ def pop_color_order() -> None:
     """(private API)"""
     pass
 
-class ColorMapStatsTypeId(enum.Enum):
+class ColorMapStatsTypeId(enum.IntEnum):
     """Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values"""
 
     # FromFullImage,    /* original C++ signature */
@@ -702,7 +702,7 @@ class cv_drawing_utils:  # Proxy class that introduces typings for the *submodul
     pass  # (This corresponds to a C++ namespace. All method are static!)
     """ namespace CvDrawingUtils"""
 
-    class Colors(enum.Enum):
+    class Colors(enum.IntEnum):
         # Black,    /* original C++ signature */
         black = enum.auto()  # (= 0)
         # Red,    /* original C++ signature */

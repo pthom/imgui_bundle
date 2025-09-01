@@ -4,9 +4,7 @@
 from __future__ import absolute_import
 
 from imgui_bundle import imgui
-from imgui_bundle.python_backends.python_backends_disabled.pygame_backend import (
-    PygameRenderer,
-)
+from imgui_bundle.python_backends.pygame_backend import PygameRenderer
 import OpenGL.GL as gl  # type: ignore
 import pygame  # type: ignore
 import sys
@@ -24,6 +22,14 @@ def main():
     pygame.init()
     size = 800, 600
 
+    # --- request an OpenGL 3.3 core (forward-compatible) context ---
+    pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MAJOR_VERSION, 3)
+    pygame.display.gl_set_attribute(pygame.GL_CONTEXT_MINOR_VERSION, 3)
+    pygame.display.gl_set_attribute(
+        pygame.GL_CONTEXT_PROFILE_MASK, pygame.GL_CONTEXT_PROFILE_CORE
+    )
+    # macOS needs the forward-compatible flag too
+    pygame.display.gl_set_attribute(pygame.GL_CONTEXT_FORWARD_COMPATIBLE_FLAG, 1)
     pygame.display.set_mode(size, pygame.DOUBLEBUF | pygame.OPENGL | pygame.RESIZABLE)
 
     imgui.create_context()

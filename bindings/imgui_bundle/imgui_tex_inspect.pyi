@@ -44,13 +44,13 @@ def shutdown() -> None:
 # [SECTION] BASIC USAGE
 #-------------------------------------------------------------------------
 
-class InspectorAlphaMode(enum.Enum):
+class InspectorAlphaMode(enum.IntEnum):
     im_gui = enum.auto()       # (= 0)  # Alpha is transparency so you see the ImGui panel background behind image
     black = enum.auto()        # (= 1)  # Alpha is used to blend over a black background
     white = enum.auto()        # (= 2)  # Alpha is used to blend over a white background
     custom_color = enum.auto() # (= 3)  # Alpha is used to blend over a custom colour.
 
-class InspectorFlags_(enum.Enum):
+class InspectorFlags_(enum.IntEnum):
     show_wrap = enum.auto()               # (= 1 << 0)  # Draw beyong the [0,1] uv range. What you see will depend on API
     no_force_filter_nearest = enum.auto() # (= 1 << 1)  # Normally we force nearest neighbour sampling when zoomed in. Set to disable this.
     no_grid = enum.auto()                 # (= 1 << 2)  # By default a grid is shown at high zoom levels
@@ -229,7 +229,7 @@ class ValueText:
      * The text shows the value of the texel. E.g. "R:255, G: 128, B:0, A:255"
 
     """
-    class Format(enum.Enum):
+    class Format(enum.IntEnum):
         hex_string = enum.auto() # (= 0)  # E.g.  #EF97B9FF
         bytes_hex = enum.auto()  # (= 1)  # E.g.  R:#EF G:#97 B:#B9 A:#FF  (split over 4 lines)
         bytes_dec = enum.auto()  # (= 2)  # E.g.  R:239 G: 151 B:185 A:255  (split over 4 lines)
@@ -270,7 +270,7 @@ class Arrow:
     line_scale: ImVec2
     zero_point: ImVec2 = ImVec2(0, 0)
 
-    class Preset(enum.Enum):
+    class Preset(enum.IntEnum):
         normal_map = enum.auto()       # (= 0)  # For normal maps. I.e. Arrow is in (R,G) channels.  128, 128 is zero point
         normalized_float = enum.auto() # (= 1)  # Arrow in (R,G) channels. 0,0 is zero point, (1,0) will draw an arrow exactly to
         # right edge of texture. (0,-1) will draw exactly to the bottom etc.

@@ -5,6 +5,7 @@ Python bindings for https://github.com/mekhontsev/imgui_md (with an additional c
 # ruff: noqa: B008
 from typing import Optional, Callable
 from imgui_bundle.imgui import ImTextureID, ImVec2, ImVec4, ImFont
+import numpy as np
 
 # using VoidFunction = std::function<void(void)>;
 # using StringFunction = std::function<void(std::string)>;
@@ -22,7 +23,9 @@ MarkdownImageFunction = Callable[[str], MarkdownImage]
 
 class MarkdownFontOptions:
     font_base_path: str = "fonts/Roboto/Roboto"
+    # This size is in density-independent pixels
     regular_size: float = 16.0
+
     # Multipliers for header sizes, from h1 to h6
     header_size_factors: (
         np.ndarray

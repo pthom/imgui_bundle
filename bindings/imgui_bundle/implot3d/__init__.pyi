@@ -150,7 +150,7 @@ ImPlane3D = int  # enum ImPlane3D_
 # [SECTION] Flags & Enumerations
 # -----------------------------------------------------------------------------
 
-class Flags_(enum.Enum):
+class Flags_(enum.IntFlag):
     """Flags for ImPlot3D::BeginPlot()"""
 
     # ImPlot3DFlags_None = 0,                 /* original C++ signature */
@@ -169,7 +169,7 @@ class Flags_(enum.Enum):
     # }
     canvas_only = enum.auto()  # (= Flags_NoTitle | Flags_NoLegend | Flags_NoMouseText)
 
-class Cond_(enum.Enum):
+class Cond_(enum.IntFlag):
     """Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)"""
 
     # ImPlot3DCond_None = ImGuiCond_None,         /* original C++ signature */
@@ -179,7 +179,7 @@ class Cond_(enum.Enum):
     # ImPlot3DCond_Once = ImGuiCond_Once,         /* original C++ signature */
     once = enum.auto()  # (= Cond_Once)  # Set the variable once per runtime session (only the first call will succeed)
 
-class Col_(enum.Enum):
+class Col_(enum.IntFlag):
     # Item colors
     # ImPlot3DCol_Line = 0,          /* original C++ signature */
     line = enum.auto()  # (= 0)  # Line color
@@ -218,7 +218,7 @@ class Col_(enum.Enum):
     # }
     count = enum.auto()  # (= 15)
 
-class StyleVar_(enum.Enum):
+class StyleVar_(enum.IntFlag):
     """Plot styling variables"""
 
     # Item style
@@ -254,7 +254,7 @@ class StyleVar_(enum.Enum):
     # }
     count = enum.auto()  # (= 12)
 
-class Marker_(enum.Enum):
+class Marker_(enum.IntFlag):
     # ImPlot3DMarker_None = -1,     /* original C++ signature */
     none = enum.auto()  # (= -1)  # No marker
     # ImPlot3DMarker_Circle,        /* original C++ signature */
@@ -281,7 +281,7 @@ class Marker_(enum.Enum):
     # }
     count = enum.auto()  # (= 10)
 
-class ItemFlags_(enum.Enum):
+class ItemFlags_(enum.IntFlag):
     """Flags for items"""
 
     # ImPlot3DItemFlags_None = 0,              /* original C++ signature */
@@ -291,7 +291,7 @@ class ItemFlags_(enum.Enum):
     # ImPlot3DItemFlags_NoFit = 1 << 1,        /* original C++ signature */
     no_fit = enum.auto()  # (= 1 << 1)  # The item won't be considered for plot fits
 
-class ScatterFlags_(enum.Enum):
+class ScatterFlags_(enum.IntFlag):
     """Flags for PlotScatter"""
 
     # ImPlot3DScatterFlags_None = 0,     /* original C++ signature */
@@ -302,7 +302,7 @@ class ScatterFlags_(enum.Enum):
     # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
 
-class LineFlags_(enum.Enum):
+class LineFlags_(enum.IntFlag):
     """Flags for PlotLine"""
 
     # ImPlot3DLineFlags_None = 0,     /* original C++ signature */
@@ -318,7 +318,7 @@ class LineFlags_(enum.Enum):
     # ImPlot3DLineFlags_SkipNaN = 1 << 12,      /* original C++ signature */
     skip_nan = enum.auto()  # (= 1 << 12)  # NaNs values will be skipped instead of rendered as missing data
 
-class TriangleFlags_(enum.Enum):
+class TriangleFlags_(enum.IntFlag):
     """Flags for PlotTriangle"""
 
     # ImPlot3DTriangleFlags_None = 0,     /* original C++ signature */
@@ -329,7 +329,7 @@ class TriangleFlags_(enum.Enum):
     # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
 
-class QuadFlags_(enum.Enum):
+class QuadFlags_(enum.IntFlag):
     """Flags for PlotQuad"""
 
     # ImPlot3DQuadFlags_None = 0,     /* original C++ signature */
@@ -340,7 +340,7 @@ class QuadFlags_(enum.Enum):
     # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
 
-class SurfaceFlags_(enum.Enum):
+class SurfaceFlags_(enum.IntFlag):
     """Flags for PlotSurface"""
 
     # ImPlot3DSurfaceFlags_None = 0,     /* original C++ signature */
@@ -351,7 +351,7 @@ class SurfaceFlags_(enum.Enum):
     # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
 
-class MeshFlags_(enum.Enum):
+class MeshFlags_(enum.IntFlag):
     """Flags for PlotMesh"""
 
     # ImPlot3DMeshFlags_None = 0,     /* original C++ signature */
@@ -362,7 +362,7 @@ class MeshFlags_(enum.Enum):
     # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
 
-class ImageFlags_(enum.Enum):
+class ImageFlags_(enum.IntFlag):
     """Flags for PlotImage"""
 
     # ImPlot3DImageFlags_None = 0,     /* original C++ signature */
@@ -373,7 +373,7 @@ class ImageFlags_(enum.Enum):
     # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
 
-class LegendFlags_(enum.Enum):
+class LegendFlags_(enum.IntFlag):
     """Flags for legends"""
 
     # ImPlot3DLegendFlags_None = 0,                     /* original C++ signature */
@@ -387,7 +387,7 @@ class LegendFlags_(enum.Enum):
     # ImPlot3DLegendFlags_Horizontal = 1 << 2,          /* original C++ signature */
     horizontal = enum.auto()  # (= 1 << 2)  # Legend entries will be displayed horizontally
 
-class Location_(enum.Enum):
+class Location_(enum.IntFlag):
     """Used to position legend on a plot"""
 
     # ImPlot3DLocation_Center = 0,                                                     /* original C++ signature */
@@ -409,7 +409,7 @@ class Location_(enum.Enum):
     # ImPlot3DLocation_SouthEast = ImPlot3DLocation_South | ImPlot3DLocation_East      /* original C++ signature */
     south_east = enum.auto()  # (= Location_South | Location_East)  # Bottom-right
 
-class AxisFlags_(enum.Enum):
+class AxisFlags_(enum.IntFlag):
     """Flags for axis"""
 
     # ImPlot3DAxisFlags_None = 0,                  /* original C++ signature */
@@ -436,7 +436,7 @@ class AxisFlags_(enum.Enum):
     # }
     no_decorations = enum.auto()  # (= AxisFlags_NoLabel | AxisFlags_NoGridLines | AxisFlags_NoTickLabels)
 
-class ImAxis3D_(enum.Enum):
+class ImAxis3D_(enum.IntFlag):
     """Axis indices"""
 
     # ImAxis3D_X = 0,    /* original C++ signature */
@@ -449,7 +449,7 @@ class ImAxis3D_(enum.Enum):
     # }
     count = enum.auto()  # (= 3)
 
-class ImPlane3D_(enum.Enum):
+class ImPlane3D_(enum.IntFlag):
     """Plane indices"""
 
     # ImPlane3D_YZ = 0,    /* original C++ signature */
@@ -462,7 +462,7 @@ class ImPlane3D_(enum.Enum):
     # }
     count = enum.auto()  # (= 3)
 
-class Colormap_(enum.Enum):
+class Colormap_(enum.IntFlag):
     """Colormaps"""
 
     # ImPlot3DColormap_Deep = 0,          /* original C++ signature */

@@ -224,16 +224,16 @@ class StockViewer:
         if self.stock_data:
             implot.get_style().use_local_time = False
             if implot.begin_subplots("##Candlestick + Volume", 3, 1, ImVec2(-1, -1),
-                                    implot.SubplotFlags_.link_all_x.value):
+                                    implot.SubplotFlags_.link_all_x):
 
                 # === Candlestick plot ===
                 if implot.begin_plot("Price", ImVec2(-1, 0)):
-                    implot.setup_axis_scale(implot.ImAxis_.x1.value, implot.Scale_.time.value)
-                    implot.setup_axis_format(implot.ImAxis_.y1.value, "$%.0f")
-                    x_axis_flags = implot.AxisFlags_.auto_fit.value if self.needs_refresh_x_extent else 0
-                    implot.setup_axis(implot.ImAxis_.x1.value, "##Date", x_axis_flags)
-                    y_axis_flags = implot.AxisFlags_.auto_fit.value if self.needs_refresh_x_extent else 0
-                    implot.setup_axis(implot.ImAxis_.y1.value, "Price", y_axis_flags)
+                    implot.setup_axis_scale(implot.ImAxis_.x1, implot.Scale_.time)
+                    implot.setup_axis_format(implot.ImAxis_.y1, "$%.0f")
+                    x_axis_flags = implot.AxisFlags_.auto_fit if self.needs_refresh_x_extent else 0
+                    implot.setup_axis(implot.ImAxis_.x1, "##Date", x_axis_flags)
+                    y_axis_flags = implot.AxisFlags_.auto_fit if self.needs_refresh_x_extent else 0
+                    implot.setup_axis(implot.ImAxis_.y1, "Price", y_axis_flags)
                     plot_candlestick(
                         self.loaded_ticker,
                         self.stock_data.timestamps,
@@ -249,10 +249,10 @@ class StockViewer:
 
                 # === Volume subplot ===
                 if implot.begin_plot("Volume", ImVec2(-1, 0)):
-                    implot.setup_axis_scale(implot.ImAxis_.x1.value, implot.Scale_.time.value)
-                    implot.setup_axis_format(implot.ImAxis_.y1.value, "%.0f")
-                    y_axis_flags = implot.AxisFlags_.auto_fit.value if self.needs_refresh_x_extent else 0
-                    implot.setup_axis(implot.ImAxis_.y1.value, "Volume", y_axis_flags)
+                    implot.setup_axis_scale(implot.ImAxis_.x1, implot.Scale_.time)
+                    implot.setup_axis_format(implot.ImAxis_.y1, "%.0f")
+                    y_axis_flags = implot.AxisFlags_.auto_fit if self.needs_refresh_x_extent else 0
+                    implot.setup_axis(implot.ImAxis_.y1, "Volume", y_axis_flags)
                     implot.plot_bars(f"{self.loaded_ticker} Vol", self.stock_data.timestamps, self.stock_data.volumes, 60 * 60 * 24 * 0.8)
 
                     implot.plot_line(f"{self.loaded_ticker}-Vol EMA 20", self.stock_data.timestamps, self.stock_data.volume_ema_20)
@@ -261,10 +261,10 @@ class StockViewer:
 
                 # === RSI subplot ===
                 if implot.begin_plot("RSI", ImVec2(-1, 0)):
-                    implot.setup_axis_scale(implot.ImAxis_.x1.value, implot.Scale_.time.value)
-                    implot.setup_axis_format(implot.ImAxis_.y1.value, "%.0f")
-                    implot.setup_axis_limits(implot.ImAxis_.y1.value, 0, 100)  # RSI range
-                    implot.setup_axis(implot.ImAxis_.y1.value, "RSI")
+                    implot.setup_axis_scale(implot.ImAxis_.x1, implot.Scale_.time)
+                    implot.setup_axis_format(implot.ImAxis_.y1, "%.0f")
+                    implot.setup_axis_limits(implot.ImAxis_.y1, 0, 100)  # RSI range
+                    implot.setup_axis(implot.ImAxis_.y1, "RSI")
 
                     implot.plot_line(f"{self.loaded_ticker} RSI 14", self.stock_data.timestamps, self.stock_data.rsi_14)
 

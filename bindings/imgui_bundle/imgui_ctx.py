@@ -718,8 +718,8 @@ def push_obj_id(obj: Any) -> _WithPushID:
 class _WithPushFont:
     _enter_callback: _EnterCallback
 
-    def __init__(self, font: imgui.ImFont) -> None:
-        self._enter_callback = lambda: imgui.push_font(font)
+    def __init__(self, font: imgui.ImFont, font_size_base_unscaled: float = 0.0) -> None:
+        self._enter_callback = lambda: imgui.push_font(font, font_size_base_unscaled)
 
     def __enter__(self) -> "_WithPushFont":
         self._enter_callback()

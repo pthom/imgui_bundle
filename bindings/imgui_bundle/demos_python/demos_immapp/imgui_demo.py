@@ -200,7 +200,7 @@ def show_docking_disabled_message():
     imgui.text("Set io.config_flags |= imgui.ConfigFlags.DockingEnable in your code, or ")
     imgui.same_line(0.0, 0.0)
     if imgui.small_button("click here"):
-        io.config_flags |= imgui.ConfigFlags_.docking_enable.value
+        io.config_flags |= imgui.ConfigFlags_.docking_enable
 
 
 # Helper to wire demo markers located in code to an interactive browser
@@ -310,25 +310,25 @@ def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
         static.unsaved_document = False
 
     window_flags = 0
-    if static.no_titlebar:        window_flags |= imgui.WindowFlags_.no_title_bar.value
-    if static.no_scrollbar:       window_flags |= imgui.WindowFlags_.no_scrollbar.value
-    if not static.no_menu:        window_flags |= imgui.WindowFlags_.menu_bar.value
-    if static.no_move:            window_flags |= imgui.WindowFlags_.no_move.value
-    if static.no_resize:          window_flags |= imgui.WindowFlags_.no_resize.value
-    if static.no_collapse:        window_flags |= imgui.WindowFlags_.no_collapse.value
-    if static.no_nav:             window_flags |= imgui.WindowFlags_.no_nav.value
-    if static.no_background:      window_flags |= imgui.WindowFlags_.no_background.value
-    if static.no_bring_to_front:  window_flags |= imgui.WindowFlags_.no_bring_to_front_on_focus.value
-    if static.no_docking:         window_flags |= imgui.WindowFlags_.no_docking.value
-    if static.unsaved_document:   window_flags |= imgui.WindowFlags_.unsaved_document.value
+    if static.no_titlebar:        window_flags |= imgui.WindowFlags_.no_title_bar
+    if static.no_scrollbar:       window_flags |= imgui.WindowFlags_.no_scrollbar
+    if not static.no_menu:        window_flags |= imgui.WindowFlags_.menu_bar
+    if static.no_move:            window_flags |= imgui.WindowFlags_.no_move
+    if static.no_resize:          window_flags |= imgui.WindowFlags_.no_resize
+    if static.no_collapse:        window_flags |= imgui.WindowFlags_.no_collapse
+    if static.no_nav:             window_flags |= imgui.WindowFlags_.no_nav
+    if static.no_background:      window_flags |= imgui.WindowFlags_.no_background
+    if static.no_bring_to_front:  window_flags |= imgui.WindowFlags_.no_bring_to_front_on_focus
+    if static.no_docking:         window_flags |= imgui.WindowFlags_.no_docking
+    if static.unsaved_document:   window_flags |= imgui.WindowFlags_.unsaved_document
     if static.no_close:
         p_open = None  # Don't pass our bool* to Begin
 
     # We specify a default position/size in case there's no data in the .ini file.
     # We only do it to make the demo applications a little more welcoming, but typically this isn't required.
     main_viewport = imgui.get_main_viewport()
-    imgui.set_next_window_pos(ImVec2(main_viewport.work_pos.x + 650, main_viewport.work_pos.y + 20), imgui.Cond_.first_use_ever.value)
-    imgui.set_next_window_size(ImVec2(550, 680), imgui.Cond_.first_use_ever.value)
+    imgui.set_next_window_pos(ImVec2(main_viewport.work_pos.x + 650, main_viewport.work_pos.y + 20), imgui.Cond_.first_use_ever)
+    imgui.set_next_window_size(ImVec2(550, 680), imgui.Cond_.first_use_ever)
 
     # Main body of the Demo window starts here.
     if not imgui.begin("Dear ImGui Demo", p_open, window_flags):
@@ -417,28 +417,28 @@ def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
 
         if imgui.tree_node("Configuration##2"):
             imgui.separator_text("General")
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NavEnableKeyboard", io.config_flags, imgui.ConfigFlags_.nav_enable_keyboard.value)
+            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NavEnableKeyboard", io.config_flags, imgui.ConfigFlags_.nav_enable_keyboard)
             imgui.same_line(); help_marker("Enable keyboard controls.")
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NavEnableGamepad", io.config_flags, imgui.ConfigFlags_.nav_enable_gamepad.value)
+            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NavEnableGamepad", io.config_flags, imgui.ConfigFlags_.nav_enable_gamepad)
             imgui.same_line(); help_marker("Enable gamepad controls. Require backend to set io.BackendFlags |= ImGuiBackendFlags_HasGamepad.\n\nRead instructions in imgui.cpp for details.")
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouse", io.config_flags, imgui.ConfigFlags_.no_mouse.value)
-            if io.config_flags & imgui.ConfigFlags_.no_mouse.value:
+            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouse", io.config_flags, imgui.ConfigFlags_.no_mouse)
+            if io.config_flags & imgui.ConfigFlags_.no_mouse:
                 # The "NoMouse" option can get us stuck with a disabled mouse! Let's provide an alternative way to fix it:
                 if math.fmod(time.time(), 0.40) < 0.20:
                     imgui.same_line()
                     imgui.text("<<PRESS SPACE TO DISABLE>>")
                 if imgui.is_key_pressed(imgui.Key.space):
-                    io.config_flags &= ~imgui.ConfigFlags_.no_mouse.value
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", io.config_flags, imgui.ConfigFlags_.no_mouse_cursor_change.value)
+                    io.config_flags &= ~imgui.ConfigFlags_.no_mouse
+            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: NoMouseCursorChange", io.config_flags, imgui.ConfigFlags_.no_mouse_cursor_change)
             imgui.same_line(); help_marker("Instruct backend to not alter mouse cursor shape and visibility.")
 
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: DockingEnable", io.config_flags, imgui.ConfigFlags_.docking_enable.value)
+            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: DockingEnable", io.config_flags, imgui.ConfigFlags_.docking_enable)
             imgui.same_line()
             if io.config_docking_with_shift:
                 help_marker("Drag from window title bar or their tab to dock/undock. Hold SHIFT to enable docking.\n\nDrag from window menu button (upper-left button) to undock an entire node (all windows).")
             else:
                 help_marker("Drag from window title bar or their tab to dock/undock. Hold SHIFT to disable docking.\n\nDrag from window menu button (upper-left button) to undock an entire node (all windows).")
-            if io.config_flags & imgui.ConfigFlags_.docking_enable.value:
+            if io.config_flags & imgui.ConfigFlags_.docking_enable:
                 imgui.indent()
                 _, io.config_docking_no_split = imgui.checkbox("io.ConfigDockingNoSplit", io.config_docking_no_split)
                 imgui.same_line(); help_marker("Simplified docking mode: disable window splitting, so docking is limited to merging multiple windows together into tab-bars.")
@@ -450,9 +450,9 @@ def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
                 imgui.same_line(); help_marker("Make window or viewport transparent when docking and only display docking boxes on the target viewport. Useful if rendering of multiple viewport cannot be synced. Best used with ConfigViewportsNoAutoMerge.")
                 imgui.unindent()
 
-            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: ViewportsEnable", io.config_flags, imgui.ConfigFlags_.viewports_enable.value)
+            _, io.config_flags = imgui.checkbox_flags("io.ConfigFlags: ViewportsEnable", io.config_flags, imgui.ConfigFlags_.viewports_enable)
             imgui.same_line(); help_marker("[beta] Enable beta multi-viewports support. See ImGuiPlatformIO for details.")
-            if io.config_flags & imgui.ConfigFlags_.viewports_enable.value:
+            if io.config_flags & imgui.ConfigFlags_.viewports_enable:
                 imgui.indent()
                 _, io.config_viewports_no_auto_merge = imgui.checkbox("io.ConfigViewportsNoAutoMerge", io.config_viewports_no_auto_merge)
                 imgui.same_line(); help_marker("Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it.")
@@ -505,13 +505,13 @@ def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
 
             # Make a local copy to avoid modifying actual backend flags.
             imgui.begin_disabled()
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HasGamepad", io.backend_flags, imgui.BackendFlags_.has_gamepad.value)
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HasMouseCursors", io.backend_flags, imgui.BackendFlags_.has_mouse_cursors.value)
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HasSetMousePos", io.backend_flags, imgui.BackendFlags_.has_set_mouse_pos.value)
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: PlatformHasViewports", io.backend_flags, imgui.BackendFlags_.platform_has_viewports.value)
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HasMouseHoveredViewport", io.backend_flags, imgui.BackendFlags_.has_mouse_hovered_viewport.value)
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: RendererHasVtxOffset", io.backend_flags, imgui.BackendFlags_.renderer_has_vtx_offset.value)
-            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: RendererHasViewports", io.backend_flags, imgui.BackendFlags_.renderer_has_viewports.value)
+            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HasGamepad", io.backend_flags, imgui.BackendFlags_.has_gamepad)
+            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HasMouseCursors", io.backend_flags, imgui.BackendFlags_.has_mouse_cursors)
+            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HasSetMousePos", io.backend_flags, imgui.BackendFlags_.has_set_mouse_pos)
+            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: PlatformHasViewports", io.backend_flags, imgui.BackendFlags_.platform_has_viewports)
+            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: HasMouseHoveredViewport", io.backend_flags, imgui.BackendFlags_.has_mouse_hovered_viewport)
+            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: RendererHasVtxOffset", io.backend_flags, imgui.BackendFlags_.renderer_has_vtx_offset)
+            _, io.backend_flags = imgui.checkbox_flags("io.BackendFlags: RendererHasViewports", io.backend_flags, imgui.BackendFlags_.renderer_has_viewports)
             imgui.end_disabled()
             imgui.tree_pop()
             imgui.spacing()
@@ -617,9 +617,9 @@ def show_demo_window_widgets():
                 imgui.same_line()
             imgui.push_id(i)
             hue = i / 7.0
-            imgui.push_style_color(imgui.Col_.button.value, imgui.ImColor.hsv(hue, 0.6, 0.6).value)
-            imgui.push_style_color(imgui.Col_.button_hovered.value, imgui.ImColor.hsv(hue, 0.7, 0.7).value)
-            imgui.push_style_color(imgui.Col_.button_active.value, imgui.ImColor.hsv(hue, 0.8, 0.8).value)
+            imgui.push_style_color(imgui.Col_.button, imgui.ImColor.hsv(hue, 0.6, 0.6).value)
+            imgui.push_style_color(imgui.Col_.button_hovered, imgui.ImColor.hsv(hue, 0.7, 0.7).value)
+            imgui.push_style_color(imgui.Col_.button_active, imgui.ImColor.hsv(hue, 0.8, 0.8).value)
             imgui.button("Click")
             imgui.pop_style_color(3)
             imgui.pop_id()
@@ -632,7 +632,7 @@ def show_demo_window_widgets():
         IMGUI_DEMO_MARKER("Widgets/Basic/Buttons (Repeating)")
         if not hasattr(static, "counter"): static.counter = 0
         spacing = imgui.get_style().item_inner_spacing.x
-        imgui.push_item_flag(imgui.ItemFlags_.button_repeat.value, True)
+        imgui.push_item_flag(imgui.ItemFlags_.button_repeat, True)
         if imgui.arrow_button("##left", imgui.Dir.left):
             static.counter -= 1
         imgui.same_line(0.0, spacing)
@@ -703,7 +703,7 @@ def show_demo_window_widgets():
                 "Hold SHIFT/ALT for faster/slower edit.\n"
                 "Double-click or CTRL+click to input value.")
 
-            changed, static.i2 = imgui.drag_int("drag int 0..100", static.i2, 1, 0, 100, "%d%%", imgui.SliderFlags_.always_clamp.value)
+            changed, static.i2 = imgui.drag_int("drag int 0..100", static.i2, 1, 0, 100, "%d%%", imgui.SliderFlags_.always_clamp)
 
             if not hasattr(static, 'ff1'): static.ff1 = 1.00
             if not hasattr(static, 'ff2'): static.ff2 = 0.0067
@@ -722,7 +722,7 @@ def show_demo_window_widgets():
             if not hasattr(static, 'fff1'): static.fff1 = 0.123
             if not hasattr(static, 'fff2'): static.fff2 = 0.0
             changed, static.fff1 = imgui.slider_float("slider float", static.fff1, 0.0, 1.0, "ratio = %.3f")
-            changed, static.fff2 = imgui.slider_float("slider float (log)", static.fff2, -10.0, 10.0, "%.4f", imgui.SliderFlags_.logarithmic.value)
+            changed, static.fff2 = imgui.slider_float("slider float (log)", static.fff2, -10.0, 10.0, "%.4f", imgui.SliderFlags_.logarithmic)
 
             IMGUI_DEMO_MARKER("Widgets/Basic/SliderAngle")
             if not hasattr(static, 'angle'): static.angle = 0.0
@@ -837,32 +837,32 @@ def show_demo_window_widgets():
 
         # Manual tooltip emission example
         imgui.button("Manual")
-        if imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value):
+        if imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip):
             imgui.set_tooltip("I am a manually emitted tooltip.")
 
         # No delay tooltip example
         imgui.button("DelayNone")
-        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_none.value):
+        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_none):
             imgui.set_tooltip("I am a tooltip with no delay.")
 
         # Short delay tooltip example
         imgui.button("DelayShort")
-        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_short.value | imgui.HoveredFlags_.no_shared_delay.value):
+        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_short | imgui.HoveredFlags_.no_shared_delay):
             imgui.set_tooltip(f"I am a tooltip with a short delay ({imgui.get_style().hover_delay_short:.2f} sec).")
 
         imgui.button("DelayLong")
-        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal.value | imgui.HoveredFlags_.no_shared_delay.value):
+        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal | imgui.HoveredFlags_.no_shared_delay):
             imgui.set_tooltip(f"I am a tooltip with a long delay ({imgui.get_style().hover_delay_normal:.2f} sec).")
 
         imgui.button("Stationary")
-        if imgui.is_item_hovered(imgui.HoveredFlags_.stationary.value):
+        if imgui.is_item_hovered(imgui.HoveredFlags_.stationary):
             imgui.set_tooltip("I am a tooltip requiring mouse to be stationary before activating.")
 
         # Tooltips can also be shown for disabled items
         imgui.begin_disabled()
         imgui.button("Disabled item")
         imgui.end_disabled()
-        if imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value):
+        if imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip):
             imgui.set_tooltip("I am a a tooltip for a disabled item.")
 
         # Close the tree node for "Tooltips"
@@ -882,7 +882,7 @@ def show_demo_window_widgets():
                 # Use SetNextItemOpen() to set the default state of a node to be open. We could
                 # also use TreeNodeEx() with the ImGuiTreeNodeFlags_DefaultOpen flag to achieve the same thing!
                 if i == 0:
-                    imgui.set_next_item_open(True, imgui.Cond_.once.value)
+                    imgui.set_next_item_open(True, imgui.Cond_.once)
 
                 if imgui.tree_node(str(i), f"Child {i}"):
                     imgui.text("blah blah")
@@ -899,14 +899,14 @@ def show_demo_window_widgets():
                 "This is a more typical looking tree with selectable nodes.\n"
                 "Click to select, CTRL+Click to toggle, click on arrows or double-click to open.")
 
-            if not hasattr(static, 'base_flags'): static.base_flags = imgui.TreeNodeFlags_.open_on_arrow.value | imgui.TreeNodeFlags_.open_on_double_click.value | imgui.TreeNodeFlags_.span_avail_width.value
+            if not hasattr(static, 'base_flags'): static.base_flags = imgui.TreeNodeFlags_.open_on_arrow | imgui.TreeNodeFlags_.open_on_double_click | imgui.TreeNodeFlags_.span_avail_width
             if not hasattr(static, 'align_label_with_current_x_position'): static.align_label_with_current_x_position = False
             if not hasattr(static, 'test_drag_and_drop'): static.test_drag_and_drop = False
-            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_OpenOnArrow", static.base_flags, imgui.TreeNodeFlags_.open_on_arrow.value)
-            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_OpenOnDoubleClick", static.base_flags, imgui.TreeNodeFlags_.open_on_double_click.value)
-            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_SpanAvailWidth", static.base_flags, imgui.TreeNodeFlags_.span_avail_width.value); imgui.same_line(); help_marker("Extend hit area to all available width instead of allowing more items to be laid out after the node.")
-            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_SpanFullWidth", static.base_flags, imgui.TreeNodeFlags_.span_full_width.value)
-            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_SpanAllColumns", static.base_flags, imgui.TreeNodeFlags_.span_all_columns.value); imgui.same_line(); help_marker("For use in Tables only.")
+            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_OpenOnArrow", static.base_flags, imgui.TreeNodeFlags_.open_on_arrow)
+            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_OpenOnDoubleClick", static.base_flags, imgui.TreeNodeFlags_.open_on_double_click)
+            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_SpanAvailWidth", static.base_flags, imgui.TreeNodeFlags_.span_avail_width); imgui.same_line(); help_marker("Extend hit area to all available width instead of allowing more items to be laid out after the node.")
+            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_SpanFullWidth", static.base_flags, imgui.TreeNodeFlags_.span_full_width)
+            _, static.base_flags = imgui.checkbox_flags("ImGuiTreeNodeFlags_SpanAllColumns", static.base_flags, imgui.TreeNodeFlags_.span_all_columns); imgui.same_line(); help_marker("For use in Tables only.")
             _, static.align_label_with_current_x_position = imgui.checkbox("Align label with current X position", static.align_label_with_current_x_position)
             _, static.test_drag_and_drop = imgui.checkbox("Test tree node as drag source", static.test_drag_and_drop)
             imgui.text("Hello!")
@@ -922,7 +922,7 @@ def show_demo_window_widgets():
                 node_flags = static.base_flags
                 is_selected = (static.selection_mask & (1 << i)) != 0
                 if is_selected:
-                    node_flags |= imgui.TreeNodeFlags_.selected.value
+                    node_flags |= imgui.TreeNodeFlags_.selected
                 if i < 3:
                     # Items 0..2 are Tree Nodes.
                     node_open = imgui.tree_node_ex(str(i), node_flags, f"Selectable Node {i}")
@@ -938,7 +938,7 @@ def show_demo_window_widgets():
 
                 else:
                     # Items 3..5 are Tree Leaves.
-                    node_flags |= imgui.TreeNodeFlags_.leaf.value | imgui.TreeNodeFlags_.no_tree_push_on_open.value
+                    node_flags |= imgui.TreeNodeFlags_.leaf | imgui.TreeNodeFlags_.no_tree_push_on_open
                     imgui.tree_node_ex(str(i), node_flags, f"Selectable Leaf {i}")
                     if imgui.is_item_clicked() and not imgui.is_item_toggled_open():
                         node_clicked = i
@@ -972,7 +972,7 @@ def show_demo_window_widgets():
         _, static.closable_group = imgui.checkbox("Show 2nd header", static.closable_group)
 
         # First collapsible header
-        if imgui.collapsing_header("Header", imgui.TreeNodeFlags_.none.value):
+        if imgui.collapsing_header("Header", imgui.TreeNodeFlags_.none):
             # Display hover state and some content within the header
             imgui.text(f"IsItemHovered: {int(imgui.is_item_hovered())}")
             for i in range(5):
@@ -1113,8 +1113,8 @@ def show_demo_window_widgets():
         pos = imgui.get_cursor_screen_pos()
         uv_min = ImVec2(0.0, 0.0)  # Top-left
         uv_max = ImVec2(1.0, 1.0)  # Lower-right
-        tint_col = imgui.get_style_color_vec4(imgui.Col_.text.value) if static.use_text_color_for_tint else (1.0, 1.0, 1.0, 1.0)
-        border_col = imgui.get_style_color_vec4(imgui.Col_.border.value)
+        tint_col = imgui.get_style_color_vec4(imgui.Col_.text) if static.use_text_color_for_tint else (1.0, 1.0, 1.0, 1.0)
+        border_col = imgui.get_style_color_vec4(imgui.Col_.border)
 
         imgui.image(my_tex_id, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)  # type: ignore
         if imgui.begin_item_tooltip():
@@ -1137,7 +1137,7 @@ def show_demo_window_widgets():
         for i in range(8):
             imgui.push_id(i)
             if i > 0:
-                imgui.push_style_var(imgui.StyleVar_.frame_padding.value, ImVec2(i - 1.0, i - 1.0))
+                imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(i - 1.0, i - 1.0))
             size = ImVec2(32.0, 32.0)
             uv0 = ImVec2(0.0, 0.0)
             uv1 = ImVec2(32.0 / my_tex_w, 32.0 / my_tex_h)
@@ -1157,28 +1157,28 @@ def show_demo_window_widgets():
     if imgui.tree_node("Combo"):
         # Expose flags as checkboxes for the demo
         if not hasattr(static, 'flags'): static.flags = 0
-        _, static.flags = imgui.checkbox_flags("ImGuiComboFlags_PopupAlignLeft", static.flags, imgui.ComboFlags_.popup_align_left.value)
+        _, static.flags = imgui.checkbox_flags("ImGuiComboFlags_PopupAlignLeft", static.flags, imgui.ComboFlags_.popup_align_left)
         imgui.same_line(); help_marker("Only makes a difference if the popup is larger than the combo")
-        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_NoArrowButton", static.flags, imgui.ComboFlags_.no_arrow_button.value)
+        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_NoArrowButton", static.flags, imgui.ComboFlags_.no_arrow_button)
         if changed:
-            static.flags &= ~imgui.ComboFlags_.no_preview.value  # Clear the other flag, as we cannot combine both
-        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_NoPreview", static.flags, imgui.ComboFlags_.no_preview.value)
+            static.flags &= ~imgui.ComboFlags_.no_preview  # Clear the other flag, as we cannot combine both
+        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_NoPreview", static.flags, imgui.ComboFlags_.no_preview)
         if changed:
-            static.flags &= ~(imgui.ComboFlags_.no_arrow_button.value | imgui.ComboFlags_.width_fit_preview.value)  # Clear the other flag, as we cannot combine both
-        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_WidthFitPreview", static.flags, imgui.ComboFlags_.width_fit_preview.value)
+            static.flags &= ~(imgui.ComboFlags_.no_arrow_button | imgui.ComboFlags_.width_fit_preview)  # Clear the other flag, as we cannot combine both
+        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_WidthFitPreview", static.flags, imgui.ComboFlags_.width_fit_preview)
         if changed:
-            static.flags &= ~imgui.ComboFlags_.no_preview.value
+            static.flags &= ~imgui.ComboFlags_.no_preview
 
         # Override default popup height
-        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_HeightSmall", static.flags, imgui.ComboFlags_.height_small.value)
+        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_HeightSmall", static.flags, imgui.ComboFlags_.height_small)
         if changed:
-            static.flags &= ~(imgui.ComboFlags_.height_mask_.value & ~imgui.ComboFlags_.height_small.value)
-        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_HeightRegular", static.flags, imgui.ComboFlags_.height_regular.value)
+            static.flags &= ~(imgui.ComboFlags_.height_mask_ & ~imgui.ComboFlags_.height_small)
+        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_HeightRegular", static.flags, imgui.ComboFlags_.height_regular)
         if changed:
-            static.flags &= ~(imgui.ComboFlags_.height_mask_.value & ~imgui.ComboFlags_.height_regular.value)
-        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_HeightLargest", static.flags, imgui.ComboFlags_.height_largest.value)
+            static.flags &= ~(imgui.ComboFlags_.height_mask_ & ~imgui.ComboFlags_.height_regular)
+        changed, static.flags = imgui.checkbox_flags("ImGuiComboFlags_HeightLargest", static.flags, imgui.ComboFlags_.height_largest)
         if changed:
-            static.flags &= ~(imgui.ComboFlags_.height_mask_.value & ~imgui.ComboFlags_.height_largest.value)
+            static.flags &= ~(imgui.ComboFlags_.height_mask_ & ~imgui.ComboFlags_.height_largest)
 
         # Generic BeginCombo() API, displaying items with selectable behavior
         items = ["AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO"]
@@ -1260,7 +1260,7 @@ def show_demo_window_widgets():
             _, static.selection[0] = imgui.selectable("1. I am selectable", static.selection[0])
             _, static.selection[1] = imgui.selectable("2. I am selectable", static.selection[1])
             _, static.selection[2] = imgui.selectable("3. I am selectable", static.selection[2])
-            if imgui.selectable("4. I am double clickable", static.selection[3], imgui.SelectableFlags_.allow_double_click.value):
+            if imgui.selectable("4. I am double clickable", static.selection[3], imgui.SelectableFlags_.allow_double_click):
                 if imgui.is_mouse_double_clicked(0):
                     static.selection[3] = not static.selection[3]
             imgui.tree_pop()
@@ -1315,7 +1315,7 @@ def show_demo_window_widgets():
         if imgui.tree_node("In columns"):
             if not hasattr(static, 'selected_in_columns'): static.selected_in_columns = [False] * 10
 
-            if imgui.begin_table("split1", 3, imgui.TableFlags_.resizable.value | imgui.TableFlags_.no_saved_settings.value | imgui.TableFlags_.borders.value):
+            if imgui.begin_table("split1", 3, imgui.TableFlags_.resizable | imgui.TableFlags_.no_saved_settings | imgui.TableFlags_.borders):
                 for i in range(10):
                     label = f"Item {i}"
                     imgui.table_next_column()
@@ -1323,12 +1323,12 @@ def show_demo_window_widgets():
                 imgui.end_table()
             imgui.spacing()
 
-            if imgui.begin_table("split2", 3, imgui.TableFlags_.resizable.value | imgui.TableFlags_.no_saved_settings.value | imgui.TableFlags_.borders.value):
+            if imgui.begin_table("split2", 3, imgui.TableFlags_.resizable | imgui.TableFlags_.no_saved_settings | imgui.TableFlags_.borders):
                 for i in range(10):
                     label = f"Item {i}"
                     imgui.table_next_row()
                     imgui.table_next_column()
-                    _, static.selected_in_columns[i] = imgui.selectable(label, static.selected_in_columns[i], imgui.SelectableFlags_.span_all_columns.value)
+                    _, static.selected_in_columns[i] = imgui.selectable(label, static.selected_in_columns[i], imgui.SelectableFlags_.span_all_columns)
                     imgui.table_next_column()
                     imgui.text("Some other contents")
                     imgui.table_next_column()
@@ -1344,7 +1344,7 @@ def show_demo_window_widgets():
             time = imgui.get_time()
             winning_state = all(val == 1 for row in static.grid_selected for val in row)  # Check if all cells are selected
             if winning_state:
-                imgui.push_style_var(imgui.StyleVar_.selectable_text_align.value, ImVec2(0.5 + 0.5 * math.cos(time * 2), 0.5 + 0.5 * math.sin(time * 3)))
+                imgui.push_style_var(imgui.StyleVar_.selectable_text_align, ImVec2(0.5 + 0.5 * math.cos(time * 2), 0.5 + 0.5 * math.sin(time * 3)))
 
             for y in range(4):
                 for x in range(4):
@@ -1374,8 +1374,8 @@ def show_demo_window_widgets():
                     alignment = ImVec2(float(x) / 2.0, float(y) / 2.0)
                     name = f"({alignment[0]:.1f},{alignment[1]:.1f})"
                     if x > 0: imgui.same_line()
-                    imgui.push_style_var(imgui.StyleVar_.selectable_text_align.value, alignment)
-                    _, static.selectable_alignment[3 * y + x] = imgui.selectable(name, static.selectable_alignment[3 * y + x], imgui.SelectableFlags_.none.value, ImVec2(80, 80))
+                    imgui.push_style_var(imgui.StyleVar_.selectable_text_align, alignment)
+                    _, static.selectable_alignment[3 * y + x] = imgui.selectable(name, static.selectable_alignment[3 * y + x], imgui.SelectableFlags_.none, ImVec2(80, 80))
                     imgui.pop_style_var()
             imgui.tree_pop()
         imgui.tree_pop()
@@ -1406,10 +1406,10 @@ def show_demo_window_widgets():
             # The flags are used to configure the behavior of the InputText widget.
             # In Python, we can directly use the flags provided by the imgui library.
             if not hasattr(static, 'text_input_flags'):
-                static.text_input_flags = imgui.InputTextFlags_.allow_tab_input.value
-            _, static.text_input_flags = imgui.checkbox_flags("ImGuiInputTextFlags_ReadOnly", static.text_input_flags, imgui.InputTextFlags_.read_only.value)
-            _, static.text_input_flags = imgui.checkbox_flags("ImGuiInputTextFlags_AllowTabInput", static.text_input_flags, imgui.InputTextFlags_.allow_tab_input.value)
-            _, static.text_input_flags = imgui.checkbox_flags("ImGuiInputTextFlags_CtrlEnterForNewLine", static.text_input_flags, imgui.InputTextFlags_.ctrl_enter_for_new_line.value)
+                static.text_input_flags = imgui.InputTextFlags_.allow_tab_input
+            _, static.text_input_flags = imgui.checkbox_flags("ImGuiInputTextFlags_ReadOnly", static.text_input_flags, imgui.InputTextFlags_.read_only)
+            _, static.text_input_flags = imgui.checkbox_flags("ImGuiInputTextFlags_AllowTabInput", static.text_input_flags, imgui.InputTextFlags_.allow_tab_input)
+            _, static.text_input_flags = imgui.checkbox_flags("ImGuiInputTextFlags_CtrlEnterForNewLine", static.text_input_flags, imgui.InputTextFlags_.ctrl_enter_for_new_line)
 
             # Use InputTextMultiline for a multi-line resizable input box.
             changed, static.text_input_text = imgui.input_text_multiline("##source", static.text_input_text, ImVec2(-1, imgui.get_text_line_height() * 16), static.text_input_flags)
@@ -1438,27 +1438,27 @@ def show_demo_window_widgets():
 
             if not hasattr(static, "filtered_text_input_buf2"):
                 static.filtered_text_input_buf2 = ""
-            _, static.filtered_text_input_buf2 = imgui.input_text("decimal", static.filtered_text_input_buf2, flags=imgui.InputTextFlags_.chars_decimal.value)
+            _, static.filtered_text_input_buf2 = imgui.input_text("decimal", static.filtered_text_input_buf2, flags=imgui.InputTextFlags_.chars_decimal)
 
             if not hasattr(static, "filtered_text_input_buf3"):
                 static.filtered_text_input_buf3 = ""
-            _, static.filtered_text_input_buf3 = imgui.input_text("hexadecimal", static.filtered_text_input_buf3, flags=imgui.InputTextFlags_.chars_hexadecimal.value | imgui.InputTextFlags_.chars_uppercase.value)
+            _, static.filtered_text_input_buf3 = imgui.input_text("hexadecimal", static.filtered_text_input_buf3, flags=imgui.InputTextFlags_.chars_hexadecimal | imgui.InputTextFlags_.chars_uppercase)
 
             if not hasattr(static, "filtered_text_input_buf4"):
                 static.filtered_text_input_buf4 = ""
-            _, static.filtered_text_input_buf4 = imgui.input_text("uppercase", static.filtered_text_input_buf4, flags=imgui.InputTextFlags_.chars_uppercase.value)
+            _, static.filtered_text_input_buf4 = imgui.input_text("uppercase", static.filtered_text_input_buf4, flags=imgui.InputTextFlags_.chars_uppercase)
 
             if not hasattr(static, "filtered_text_input_buf5"):
                 static.filtered_text_input_buf5 = ""
-            _, static.filtered_text_input_buf5 = imgui.input_text("no blank", static.filtered_text_input_buf5, flags=imgui.InputTextFlags_.chars_no_blank.value)
+            _, static.filtered_text_input_buf5 = imgui.input_text("no blank", static.filtered_text_input_buf5, flags=imgui.InputTextFlags_.chars_no_blank)
 
             # if "filtered_text_input_buf6" not in static:
             #     static.filtered_text_input_buf6 = ""
-            # _, static.filtered_text_input_buf6 = imgui.input_text("casing swap", static.filtered_text_input_buf6, flags=imgui.InputTextFlags_.callback_char_filter.value, callback=TextFilters.filter_casing_swap)
+            # _, static.filtered_text_input_buf6 = imgui.input_text("casing swap", static.filtered_text_input_buf6, flags=imgui.InputTextFlags_.callback_char_filter, callback=TextFilters.filter_casing_swap)
             #
             # if "filtered_text_input_buf7" not in static:
             #     static.filtered_text_input_buf7 = ""
-            # _, static.filtered_text_input_buf7 = imgui.input_text("\"imgui\"", static.filtered_text_input_buf7, flags=imgui.InputTextFlags_.callback_char_filter.value, callback=TextFilters.filter_imgui_letters)
+            # _, static.filtered_text_input_buf7 = imgui.input_text("\"imgui\"", static.filtered_text_input_buf7, flags=imgui.InputTextFlags_.callback_char_filter, callback=TextFilters.filter_imgui_letters)
 
             imgui.tree_pop()
 
@@ -1467,19 +1467,19 @@ def show_demo_window_widgets():
             if not hasattr(static, "password"):
                 static.password = "password123"
 
-            _, static.password = imgui.input_text("password", static.password, imgui.InputTextFlags_.password.value)
+            _, static.password = imgui.input_text("password", static.password, imgui.InputTextFlags_.password)
             imgui.same_line(); help_marker("Display all characters as '*'.\nDisable clipboard cut and copy.\nDisable logging.")
-            _, static.password = imgui.input_text_with_hint("password (w/ hint)", "<password>", static.password, imgui.InputTextFlags_.password.value)
+            _, static.password = imgui.input_text_with_hint("password (w/ hint)", "<password>", static.password, imgui.InputTextFlags_.password)
             _, static.password = imgui.input_text("password (clear)", static.password)
             imgui.tree_pop()
 
         IMGUI_DEMO_MARKER("Widgets/Text Input/Miscellaneous")
         if imgui.tree_node("Miscellaneous"):
             if not hasattr(static, "misc_buf1"): static.misc_buf1 = ""
-            if not hasattr(static, "misc_flags"): static.misc_flags = imgui.InputTextFlags_.escape_clears_all.value
-            changed, static.misc_flags = imgui.checkbox_flags("ImGuiInputTextFlags_EscapeClearsAll", static.misc_flags, imgui.InputTextFlags_.escape_clears_all.value)
-            changed, static.misc_flags = imgui.checkbox_flags("ImGuiInputTextFlags_ReadOnly", static.misc_flags, imgui.InputTextFlags_.read_only.value)
-            changed, static.misc_flags = imgui.checkbox_flags("ImGuiInputTextFlags_NoUndoRedo", static.misc_flags, imgui.InputTextFlags_.no_undo_redo.value)
+            if not hasattr(static, "misc_flags"): static.misc_flags = imgui.InputTextFlags_.escape_clears_all
+            changed, static.misc_flags = imgui.checkbox_flags("ImGuiInputTextFlags_EscapeClearsAll", static.misc_flags, imgui.InputTextFlags_.escape_clears_all)
+            changed, static.misc_flags = imgui.checkbox_flags("ImGuiInputTextFlags_ReadOnly", static.misc_flags, imgui.InputTextFlags_.read_only)
+            changed, static.misc_flags = imgui.checkbox_flags("ImGuiInputTextFlags_NoUndoRedo", static.misc_flags, imgui.InputTextFlags_.no_undo_redo)
             _, static.misc_buf1 = imgui.input_text("Hello", static.misc_buf1, flags=static.misc_flags)
             imgui.tree_pop()
 
@@ -1500,7 +1500,7 @@ def show_demo_window_widgets():
     if imgui.tree_node("Tabs"):
         IMGUI_DEMO_MARKER("Widgets/Tabs/Basic")
         if imgui.tree_node("Basic"):
-            tab_bar_flags = imgui.TabBarFlags_.none.value
+            tab_bar_flags = imgui.TabBarFlags_.none
             if imgui.begin_tab_bar("MyTabBar", tab_bar_flags):
                 if imgui.begin_tab_item("Avocado")[0]:
                     imgui.text("This is the Avocado tab!\nblah blah blah blah blah")
@@ -1519,17 +1519,17 @@ def show_demo_window_widgets():
         if imgui.tree_node("Advanced & Close Button"):
             # Expose a couple of the available flags. In most cases, you may just call begin_tab_bar() with no flags (0).
             if not hasattr(static, "adv_tab_bar_flags"):
-                static.adv_tab_bar_flags = imgui.TabBarFlags_.reorderable.value
-            _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_Reorderable", static.adv_tab_bar_flags, imgui.TabBarFlags_.reorderable.value)
-            _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_AutoSelectNewTabs", static.adv_tab_bar_flags, imgui.TabBarFlags_.auto_select_new_tabs.value)
-            _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", static.adv_tab_bar_flags, imgui.TabBarFlags_.tab_list_popup_button.value)
-            _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", static.adv_tab_bar_flags, imgui.TabBarFlags_.no_close_with_middle_mouse_button.value)
-            if (static.adv_tab_bar_flags & imgui.TabBarFlags_.fitting_policy_mask_.value) == 0:
-                static.adv_tab_bar_flags |= imgui.TabBarFlags_.fitting_policy_default_.value
-            if imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", static.adv_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_resize_down.value):
-                static.adv_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_.value ^ imgui.TabBarFlags_.fitting_policy_resize_down.value)
-            if imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", static.adv_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_scroll.value):
-                static.adv_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_.value ^ imgui.TabBarFlags_.fitting_policy_scroll.value)
+                static.adv_tab_bar_flags = imgui.TabBarFlags_.reorderable
+            _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_Reorderable", static.adv_tab_bar_flags, imgui.TabBarFlags_.reorderable)
+            _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_AutoSelectNewTabs", static.adv_tab_bar_flags, imgui.TabBarFlags_.auto_select_new_tabs)
+            _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", static.adv_tab_bar_flags, imgui.TabBarFlags_.tab_list_popup_button)
+            _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", static.adv_tab_bar_flags, imgui.TabBarFlags_.no_close_with_middle_mouse_button)
+            if (static.adv_tab_bar_flags & imgui.TabBarFlags_.fitting_policy_mask_) == 0:
+                static.adv_tab_bar_flags |= imgui.TabBarFlags_.fitting_policy_default_
+            if imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", static.adv_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_resize_down):
+                static.adv_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_resize_down)
+            if imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", static.adv_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_scroll):
+                static.adv_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_scroll)
 
             # Tab Bar
             names = ["Artichoke", "Beetroot", "Celery", "Daikon"]
@@ -1544,7 +1544,7 @@ def show_demo_window_widgets():
             # the underlying bool will be set to False when the tab is closed.
             if imgui.begin_tab_bar("MyTabBar", static.adv_tab_bar_flags):
                 for n in range(len(static.opened)):
-                    if static.opened[n] and imgui.begin_tab_item(names[n], static.opened[n], imgui.TabItemFlags_.none.value)[0]:
+                    if static.opened[n] and imgui.begin_tab_item(names[n], static.opened[n], imgui.TabItemFlags_.none)[0]:
                         imgui.text("This is the %s tab!" % names[n])
                         if n & 1:
                             imgui.text("I am an odd tab.")
@@ -1577,22 +1577,22 @@ def show_demo_window_widgets():
             # Expose some other flags which are useful to showcase how they interact with Leading/Trailing tabs
             if not hasattr(static, "lead_trail_tab_bar_flags"):
                 static.lead_trail_tab_bar_flags = (
-                        imgui.TabBarFlags_.auto_select_new_tabs.value
-                        | imgui.TabBarFlags_.reorderable.value
-                        | imgui.TabBarFlags_.fitting_policy_resize_down.value
+                        imgui.TabBarFlags_.auto_select_new_tabs
+                        | imgui.TabBarFlags_.reorderable
+                        | imgui.TabBarFlags_.fitting_policy_resize_down
                 )
-            _, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.tab_list_popup_button.value)
-            changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_resize_down.value)
+            _, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.tab_list_popup_button)
+            changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_resize_down)
             if changed:
-                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_.value ^ imgui.TabBarFlags_.fitting_policy_resize_down.value)
-            changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_scroll.value)
+                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_resize_down)
+            changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_scroll)
             if changed:
-                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_.value ^ imgui.TabBarFlags_.fitting_policy_scroll)  # type: ignore
+                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_scroll)  # type: ignore
 
             if imgui.begin_tab_bar("MyTabBar", static.lead_trail_tab_bar_flags):
                 # Demo a Leading TabItemButton(): click the "?" button to open a menu
                 if static.show_leading_button:
-                    if imgui.tab_item_button("?", imgui.TabItemFlags_.leading.value | imgui.TabItemFlags_.no_tooltip.value):
+                    if imgui.tab_item_button("?", imgui.TabItemFlags_.leading | imgui.TabItemFlags_.no_tooltip):
                         imgui.open_popup("MyHelpMenu")
                 if imgui.begin_popup("MyHelpMenu"):
                     imgui.selectable("Hello!", False)
@@ -1601,7 +1601,7 @@ def show_demo_window_widgets():
                 # Demo Trailing Tabs: click the "+" button to add a new tab (in your app you may want to use a font icon instead of the "+")
                 # Note that we submit it before the regular tabs, but because of the ImGuiTabItemFlags_Trailing flag it will always appear at the end.
                 if static.show_trailing_button:
-                    if imgui.tab_item_button("+", imgui.TabItemFlags_.trailing.value | imgui.TabItemFlags_.no_tooltip.value):
+                    if imgui.tab_item_button("+", imgui.TabItemFlags_.trailing | imgui.TabItemFlags_.no_tooltip):
                         static.active_tabs.append(static.next_tab_id)  # Add new tab
                         static.next_tab_id += 1
 
@@ -1610,7 +1610,7 @@ def show_demo_window_widgets():
                 while n < len(static.active_tabs):
                     open = True
                     name = "%04d" % static.active_tabs[n]
-                    if imgui.begin_tab_item(name, open, imgui.TabItemFlags_.none.value)[0]:
+                    if imgui.begin_tab_item(name, open, imgui.TabItemFlags_.none)[0]:
                         imgui.text("This is the %s tab!" % name)
                         imgui.end_tab_item()
 
@@ -1652,9 +1652,9 @@ def show_demo_window_widgets():
         _, static.hdr = imgui.checkbox("With HDR", static.hdr)
         imgui.same_line()
         help_marker("Currently all this does is to lift the 0..1 limits on dragging widgets.")
-        misc_flags = (imgui.ColorEditFlags_.hdr.value if static.hdr else 0) | (0 if static.drag_and_drop else imgui.ColorEditFlags_.no_drag_drop.value) | (
-            imgui.ColorEditFlags_.alpha_preview_half.value if static.alpha_half_preview else (imgui.ColorEditFlags_.alpha_preview.value if static.alpha_preview else 0)) | (
-                         0 if static.options_menu else imgui.ColorEditFlags_.no_options.value)
+        misc_flags = (imgui.ColorEditFlags_.hdr if static.hdr else 0) | (0 if static.drag_and_drop else imgui.ColorEditFlags_.no_drag_drop) | (
+            imgui.ColorEditFlags_.alpha_preview_half if static.alpha_half_preview else (imgui.ColorEditFlags_.alpha_preview if static.alpha_preview else 0)) | (
+                         0 if static.options_menu else imgui.ColorEditFlags_.no_options)
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit")
         imgui.separator_text("Inline color editor")
@@ -1667,11 +1667,11 @@ def show_demo_window_widgets():
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit (HSV, with Alpha)")
         imgui.text("Color widget HSV with Alpha:")
-        _, static.color = imgui.color_edit4("MyColor##2", static.color, flags=imgui.ColorEditFlags_.display_hsv.value | misc_flags)  # type: ignore
+        _, static.color = imgui.color_edit4("MyColor##2", static.color, flags=imgui.ColorEditFlags_.display_hsv | misc_flags)  # type: ignore
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit (float display)")
         imgui.text("Color widget with Float Display:")
-        _, static.color = imgui.color_edit4("MyColor##2f", static.color, flags=imgui.ColorEditFlags_.float.value | misc_flags)
+        _, static.color = imgui.color_edit4("MyColor##2f", static.color, flags=imgui.ColorEditFlags_.float | misc_flags)
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorButton (with Picker)")
         imgui.text("Color button with Picker:")
@@ -1680,13 +1680,13 @@ def show_demo_window_widgets():
             "With the ImGuiColorEditFlags_NoInputs flag you can hide all the slider/text inputs.\n"
             "With the ImGuiColorEditFlags_NoLabel flag you can pass a non-empty label which will only "
             "be used for the tooltip and picker popup.")
-        _, static.color = imgui.color_edit4("MyColor##3", static.color, flags=imgui.ColorEditFlags_.no_inputs.value | imgui.ColorEditFlags_.no_label.value | misc_flags)
+        _, static.color = imgui.color_edit4("MyColor##3", static.color, flags=imgui.ColorEditFlags_.no_inputs | imgui.ColorEditFlags_.no_label | misc_flags)
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorButton (simple)")
         imgui.text("Color button only:")
         if not hasattr(static, "no_border"): static.no_border = False
         _, static.no_border = imgui.checkbox("ImGuiColorEditFlags_NoBorder", static.no_border)
-        imgui.color_button("MyColor##3c", static.color, misc_flags | (imgui.ColorEditFlags_.no_border.value if static.no_border else 0), (80, 80))  # type: ignore
+        imgui.color_button("MyColor##3c", static.color, misc_flags | (imgui.ColorEditFlags_.no_border if static.no_border else 0), (80, 80))  # type: ignore
 
         # HSV encoded support (to avoid RGB<>HSV round trips and singularities when S==0 or V==0)
         if not hasattr(static, "color_hsv"): static.color_hsv = ImVec4(0.23, 1.0, 1.0, 1.0)  # Stored as HSV!
@@ -1699,8 +1699,8 @@ def show_demo_window_widgets():
             "added benefit that you can manipulate hue values with the picker even when saturation or value are zero."
         )
         imgui.text("Color widget with InputHSV:")
-        _, static.color_hsv = imgui.color_edit4("HSV shown as RGB##1", static.color_hsv, imgui.ColorEditFlags_.display_rgb.value | imgui.ColorEditFlags_.input_hsv.value | imgui.ColorEditFlags_.float.value)   # type: ignore
-        _, static.color_hsv = imgui.color_edit4("HSV shown as HSV##1", static.color_hsv, imgui.ColorEditFlags_.display_hsv.value | imgui.ColorEditFlags_.input_hsv.value | imgui.ColorEditFlags_.float.value)   # type: ignore
+        _, static.color_hsv = imgui.color_edit4("HSV shown as RGB##1", static.color_hsv, imgui.ColorEditFlags_.display_rgb | imgui.ColorEditFlags_.input_hsv | imgui.ColorEditFlags_.float)   # type: ignore
+        _, static.color_hsv = imgui.color_edit4("HSV shown as HSV##1", static.color_hsv, imgui.ColorEditFlags_.display_hsv | imgui.ColorEditFlags_.input_hsv | imgui.ColorEditFlags_.float)   # type: ignore
         # imgui.drag_float4("Raw HSV values", static.color_hsv, 0.01, 0.0, 1.0)
 
         imgui.tree_pop()
@@ -1709,14 +1709,14 @@ def show_demo_window_widgets():
     IMGUI_DEMO_MARKER("Widgets/Drag and Slider Flags")
     if imgui.tree_node("Drag/Slider Flags"):
         # Demonstrate using advanced flags for DragXXX and SliderXXX functions. Note that the flags are the same!
-        if not hasattr(static, "drag_slider_flags"): static.drag_slider_flags = imgui.SliderFlags_.none.value
-        changed, static.drag_slider_flags = imgui.checkbox_flags("ImGuiSliderFlags_AlwaysClamp", static.drag_slider_flags, imgui.SliderFlags_.always_clamp.value)
+        if not hasattr(static, "drag_slider_flags"): static.drag_slider_flags = imgui.SliderFlags_.none
+        changed, static.drag_slider_flags = imgui.checkbox_flags("ImGuiSliderFlags_AlwaysClamp", static.drag_slider_flags, imgui.SliderFlags_.always_clamp)
         imgui.same_line(); help_marker("Always clamp value to min/max bounds (if any) when input manually with CTRL+Click.")
-        changed, static.drag_slider_flags = imgui.checkbox_flags("ImGuiSliderFlags_Logarithmic", static.drag_slider_flags, imgui.SliderFlags_.logarithmic.value)
+        changed, static.drag_slider_flags = imgui.checkbox_flags("ImGuiSliderFlags_Logarithmic", static.drag_slider_flags, imgui.SliderFlags_.logarithmic)
         imgui.same_line(); help_marker("Enable logarithmic editing (more precision for small values).")
-        changed, static.drag_slider_flags = imgui.checkbox_flags("ImGuiSliderFlags_NoRoundToFormat", static.drag_slider_flags, imgui.SliderFlags_.no_round_to_format.value)
+        changed, static.drag_slider_flags = imgui.checkbox_flags("ImGuiSliderFlags_NoRoundToFormat", static.drag_slider_flags, imgui.SliderFlags_.no_round_to_format)
         imgui.same_line(); help_marker("Disable rounding underlying value to match precision of the format string (e.g. %.3f values are rounded to those 3 digits).")
-        changed, static.drag_slider_flags = imgui.checkbox_flags("ImGuiSliderFlags_NoInput", static.drag_slider_flags, imgui.SliderFlags_.no_input.value)
+        changed, static.drag_slider_flags = imgui.checkbox_flags("ImGuiSliderFlags_NoInput", static.drag_slider_flags, imgui.SliderFlags_.no_input)
         imgui.same_line(); help_marker("Disable CTRL+Click or Enter key allowing to input text directly into the widget.")
 
         # Drags
@@ -1791,7 +1791,7 @@ def show_demo_window_widgets():
     IMGUI_DEMO_MARKER("Widgets/Vertical Sliders")
     if imgui.tree_node("Vertical Sliders"):
         spacing = 4
-        imgui.push_style_var(imgui.StyleVar_.item_spacing.value, ImVec2(spacing, spacing))
+        imgui.push_style_var(imgui.StyleVar_.item_spacing, ImVec2(spacing, spacing))
 
         if not hasattr(static, "sliderv_int_value"): static.sliderv_int_value = 0
         imgui.v_slider_int("##int", ImVec2(18, 160), static.sliderv_int_value, 0, 5)
@@ -1803,10 +1803,10 @@ def show_demo_window_widgets():
             if i > 0:
                 imgui.same_line()
             imgui.push_id(i)
-            imgui.push_style_color(imgui.Col_.frame_bg.value, imgui.ImColor.hsv(i / 7.0, 0.5, 0.5).value)
-            imgui.push_style_color(imgui.Col_.frame_bg_hovered.value, imgui.ImColor.hsv(i / 7.0, 0.6, 0.5).value)
-            imgui.push_style_color(imgui.Col_.frame_bg_active.value, imgui.ImColor.hsv(i / 7.0, 0.7, 0.5).value)
-            imgui.push_style_color(imgui.Col_.slider_grab.value, imgui.ImColor.hsv(i / 7.0, 0.9, 0.9).value)
+            imgui.push_style_color(imgui.Col_.frame_bg, imgui.ImColor.hsv(i / 7.0, 0.5, 0.5).value)
+            imgui.push_style_color(imgui.Col_.frame_bg_hovered, imgui.ImColor.hsv(i / 7.0, 0.6, 0.5).value)
+            imgui.push_style_color(imgui.Col_.frame_bg_active, imgui.ImColor.hsv(i / 7.0, 0.7, 0.5).value)
+            imgui.push_style_color(imgui.Col_.slider_grab, imgui.ImColor.hsv(i / 7.0, 0.9, 0.9).value)
             _, static.sliderv_values[i] = imgui.v_slider_float("##v", ImVec2(18, 160), static.sliderv_values[i], 0.0, 1.0, "")
             if imgui.is_item_active() or imgui.is_item_hovered():
                 imgui.set_tooltip("%.3f" % static.sliderv_values[i])
@@ -1838,7 +1838,7 @@ def show_demo_window_widgets():
             if i > 0:
                 imgui.same_line()
             imgui.push_id(i)
-            imgui.push_style_var(imgui.StyleVar_.grab_min_size.value, 40)
+            imgui.push_style_var(imgui.StyleVar_.grab_min_size, 40)
             _, static.sliderv_values[i] = imgui.v_slider_float("##v", ImVec2(40, 160), static.sliderv_values[i], 0.0, 1.0, "%.2f\nsec")
             imgui.pop_style_var()
             imgui.pop_id()
@@ -1886,9 +1886,9 @@ def show_demo_window_layout():
         _, static.disable_menu = imgui.checkbox("Disable Menu", static.disable_menu)
 
         # Child 1: no border, enable horizontal scrollbar
-        window_flags = imgui.WindowFlags_.horizontal_scrollbar.value
+        window_flags = imgui.WindowFlags_.horizontal_scrollbar
         if static.disable_mouse_wheel:
-            window_flags |= imgui.WindowFlags_.no_scroll_with_mouse.value
+            window_flags |= imgui.WindowFlags_.no_scroll_with_mouse
         imgui.begin_child("ChildL", ImVec2(imgui.get_content_region_avail().x * 0.5, 260), False, window_flags)
         for i in range(100):
             imgui.text("%04d: scrollable region" % i)
@@ -1899,19 +1899,19 @@ def show_demo_window_layout():
         # Child 2: rounded border
         if hasattr(static, "disable_mouse_wheel"): static.disable_mouse_wheel = False
         if hasattr(static, "disable_menu"): static.disable_menu = False
-        window_flags = imgui.WindowFlags_.none.value
+        window_flags = imgui.WindowFlags_.none
         if static.disable_mouse_wheel:
-            window_flags |= imgui.WindowFlags_.no_scroll_with_mouse.value
+            window_flags |= imgui.WindowFlags_.no_scroll_with_mouse
         if not static.disable_menu:
-            window_flags |= imgui.WindowFlags_.menu_bar.value
-        imgui.push_style_var(imgui.StyleVar_.child_rounding.value, 5.0)
+            window_flags |= imgui.WindowFlags_.menu_bar
+        imgui.push_style_var(imgui.StyleVar_.child_rounding, 5.0)
         if imgui.begin_child("ChildR", ImVec2(0, 260), True, window_flags):
             if not static.disable_menu and imgui.begin_menu_bar():
                 if imgui.begin_menu("Menu"):
                     show_example_menu_file()
                     imgui.end_menu()
                 imgui.end_menu_bar()
-            if imgui.begin_table("split", 2, flags=(imgui.TableFlags_.resizable.value | imgui.TableFlags_.no_saved_settings.value)):
+            if imgui.begin_table("split", 2, flags=(imgui.TableFlags_.resizable | imgui.TableFlags_.no_saved_settings)):
                 for i in range(100):
                     buf = f"{i:03d}"
                     imgui.table_next_column()
@@ -2127,7 +2127,7 @@ def show_demo_window_layout():
             names = ["Top", "25%", "Center", "75%", "Bottom"]
             imgui.text_unformatted(names[i])
 
-            child_flags = imgui.WindowFlags_.menu_bar.value if static.enable_extra_decorations else 0
+            child_flags = imgui.WindowFlags_.menu_bar if static.enable_extra_decorations else 0
             child_id = imgui.get_id(f"{i}")
             child_is_visible = imgui.begin_child(child_id, ImVec2(child_w, 200.0), True, child_flags)
             if imgui.begin_menu_bar():
@@ -2162,7 +2162,7 @@ def show_demo_window_layout():
         imgui.push_id("##HorizontalScrolling")
         for i in range(5):
             child_height = imgui.get_text_line_height() + style.scrollbar_size + style.window_padding.y * 2.0
-            child_flags = imgui.WindowFlags_.horizontal_scrollbar.value | (imgui.WindowFlags_.always_vertical_scrollbar.value if static.enable_extra_decorations else 0)
+            child_flags = imgui.WindowFlags_.horizontal_scrollbar | (imgui.WindowFlags_.always_vertical_scrollbar if static.enable_extra_decorations else 0)
             child_id = imgui.get_id(str(i))
             child_is_visible = imgui.begin_child(child_id, ImVec2(-100, child_height), True, child_flags)
             if scroll_to_off:
@@ -2304,16 +2304,16 @@ def show_demo_window_popups():
 
         # Always center this window when appearing
         center = imgui.get_main_viewport().get_center()
-        imgui.set_next_window_pos(center, imgui.Cond_.appearing.value, ImVec2(0.5, 0.5))
+        imgui.set_next_window_pos(center, imgui.Cond_.appearing, ImVec2(0.5, 0.5))
 
         if not hasattr(static, "dont_ask_me_next_time"):
             static.dont_ask_me_next_time = False  # Equivalent to static bool dont_ask_me_next_time = false;
 
-        if imgui.begin_popup_modal("Delete?", None, imgui.WindowFlags_.always_auto_resize.value)[0]:
+        if imgui.begin_popup_modal("Delete?", None, imgui.WindowFlags_.always_auto_resize)[0]:
             imgui.text("All those beautiful files will be deleted.\nThis operation cannot be undone!")
             imgui.separator()
 
-            imgui.push_style_var(imgui.StyleVar_.frame_padding.value, ImVec2(0, 0))
+            imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(0, 0))
             _, static.dont_ask_me_next_time = imgui.checkbox("Don't ask me next time", static.dont_ask_me_next_time)
             imgui.pop_style_var()
 
@@ -2327,7 +2327,7 @@ def show_demo_window_popups():
 
         if imgui.button("Stacked modals.."):
             imgui.open_popup("Stacked 1")
-        if imgui.begin_popup_modal("Stacked 1", None, imgui.WindowFlags_.menu_bar.value)[0]:
+        if imgui.begin_popup_modal("Stacked 1", None, imgui.WindowFlags_.menu_bar)[0]:
             if imgui.begin_menu_bar():
                 if imgui.begin_menu("File"):
                     if imgui.menu_item_simple("Some menu item"):
@@ -2375,7 +2375,7 @@ def show_demo_window_inputs():
 
         # Display inputs submitted to ImGuiIO
         IMGUI_DEMO_MARKER("Inputs & Focus/Inputs")
-        imgui.set_next_item_open(True, imgui.Cond_.once.value)
+        imgui.set_next_item_open(True, imgui.Cond_.once)
         if imgui.tree_node("Inputs"):
             help_marker(
                 "This is a simplified view. See more detailed input state:\n"
@@ -2396,7 +2396,7 @@ def show_demo_window_inputs():
 
         # Display ImGuiIO output flags
         IMGUI_DEMO_MARKER("Inputs & Focus/Outputs")
-        imgui.set_next_item_open(True, imgui.Cond_.once.value)
+        imgui.set_next_item_open(True, imgui.Cond_.once)
         if imgui.tree_node("Outputs"):
             help_marker(
                 "The value of io.WantCaptureMouse and io.WantCaptureKeyboard are normally set by Dear ImGui "
@@ -2421,11 +2421,11 @@ def show_demo_window_inputs():
                 capture_override_keyboard = -1
                 capture_override_desc = ["None", "Set to false", "Set to true"]
                 imgui.set_next_item_width(imgui.get_font_size() * 15)
-                imgui.slider_int("SetNextFrameWantCaptureMouse() on hover", capture_override_mouse, -1, +1, capture_override_desc[capture_override_mouse + 1], imgui.SliderFlags_.always_clamp.value)
+                imgui.slider_int("SetNextFrameWantCaptureMouse() on hover", capture_override_mouse, -1, +1, capture_override_desc[capture_override_mouse + 1], imgui.SliderFlags_.always_clamp)
                 imgui.set_next_item_width(imgui.get_font_size() * 15)
-                imgui.slider_int("SetNextFrameWantCaptureKeyboard() on hover", capture_override_keyboard, -1, +1, capture_override_desc[capture_override_keyboard + 1], imgui.SliderFlags_.always_clamp.value)
+                imgui.slider_int("SetNextFrameWantCaptureKeyboard() on hover", capture_override_keyboard, -1, +1, capture_override_desc[capture_override_keyboard + 1], imgui.SliderFlags_.always_clamp)
 
-                imgui.color_button("##panel", ImVec4(0.7, 0.1, 0.7, 1.0), imgui.ColorEditFlags_.no_tooltip.value | imgui.ColorEditFlags_.no_drag_drop.value, ImVec2(128.0, 96.0)) # Dummy item
+                imgui.color_button("##panel", ImVec4(0.7, 0.1, 0.7, 1.0), imgui.ColorEditFlags_.no_tooltip | imgui.ColorEditFlags_.no_drag_drop, ImVec2(128.0, 96.0)) # Dummy item
                 if imgui.is_item_hovered() and capture_override_mouse != -1:
                     imgui.set_next_frame_want_capture_mouse(capture_override_mouse == 1)
                 if imgui.is_item_hovered() and capture_override_keyboard != -1:
@@ -2516,7 +2516,7 @@ def show_demo_window_inputs():
             imgui.button("Drag Me")
             cur_pos = imgui.get_cursor_screen_pos()
             if imgui.is_item_active():
-                imgui.get_foreground_draw_list().add_line(cur_pos, io.mouse_pos, imgui.get_color_u32(imgui.Col_.button.value), 4.0) # Draw a line between the button and the mouse cursor
+                imgui.get_foreground_draw_list().add_line(cur_pos, io.mouse_pos, imgui.get_color_u32(imgui.Col_.button), 4.0) # Draw a line between the button and the mouse cursor
 
             # Drag operations gets "unlocked" when the mouse has moved past a certain threshold
             # (the default threshold is stored in io.MouseDragThreshold). You can request a lower or higher
@@ -2534,8 +2534,8 @@ def show_demo_window_inputs():
 # Make the UI compact because there are so many fields
 def push_style_compact():
     style = imgui.get_style()
-    imgui.push_style_var(imgui.StyleVar_.frame_padding.value, ImVec2(style.frame_padding.x, style.frame_padding.y * 0.60))
-    imgui.push_style_var(imgui.StyleVar_.item_spacing.value, ImVec2(style.item_spacing.x, style.item_spacing.y * 0.60))
+    imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(style.frame_padding.x, style.frame_padding.y * 0.60))
+    imgui.push_style_var(imgui.StyleVar_.item_spacing, ImVec2(style.item_spacing.x, style.item_spacing.y * 0.60))
 
 
 def pop_style_compact():
@@ -2570,7 +2570,7 @@ def show_demo_window_tables():
     help_marker("Disable the indenting of tree nodes so demo tables can use the full window width.")
     imgui.separator()
     if static.disable_indent:
-        imgui.push_style_var(imgui.StyleVar_.indent_spacing.value, 0.0)
+        imgui.push_style_var(imgui.StyleVar_.indent_spacing, 0.0)
 
     # About Styling of tables
     # Most settings are configured on a per-table basis via the flags passed to BeginTable() and TableSetupColumns APIs.
@@ -2639,31 +2639,31 @@ def show_demo_window_tables():
             CT_FillButton = 1
 
         if not hasattr(static, "bb_flags"):
-            static.bb_flags = imgui.TableFlags_.borders.value | imgui.TableFlags_.row_bg.value
+            static.bb_flags = imgui.TableFlags_.borders | imgui.TableFlags_.row_bg
             static.display_headers = False
             static.contents_type = ContentsType.CT_Text
 
         push_style_compact()
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_RowBg", static.bb_flags, imgui.TableFlags_.row_bg.value)
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_Borders", static.bb_flags, imgui.TableFlags_.borders.value)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_RowBg", static.bb_flags, imgui.TableFlags_.row_bg)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_Borders", static.bb_flags, imgui.TableFlags_.borders)
         imgui.same_line()
         help_marker("ImGuiTableFlags_Borders\n = ImGuiTableFlags_BordersInnerV\n | ImGuiTableFlags_BordersOuterV\n | ImGuiTableFlags_BordersInnerV\n | ImGuiTableFlags_BordersOuterH")
         imgui.indent()
 
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersH", static.bb_flags, imgui.TableFlags_.borders_h.value)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersH", static.bb_flags, imgui.TableFlags_.borders_h)
         imgui.indent()
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersOuterH", static.bb_flags, imgui.TableFlags_.borders_outer_h.value)
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersInnerH", static.bb_flags, imgui.TableFlags_.borders_inner_h.value)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersOuterH", static.bb_flags, imgui.TableFlags_.borders_outer_h)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersInnerH", static.bb_flags, imgui.TableFlags_.borders_inner_h)
         imgui.unindent()
 
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersV", static.bb_flags, imgui.TableFlags_.borders_v.value)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersV", static.bb_flags, imgui.TableFlags_.borders_v)
         imgui.indent()
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersOuterV", static.bb_flags, imgui.TableFlags_.borders_outer_v.value)
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersInnerV", static.bb_flags, imgui.TableFlags_.borders_inner_v.value)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersOuterV", static.bb_flags, imgui.TableFlags_.borders_outer_v)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersInnerV", static.bb_flags, imgui.TableFlags_.borders_inner_v)
         imgui.unindent()
 
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersOuter", static.bb_flags, imgui.TableFlags_.borders_outer.value)
-        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersInner", static.bb_flags, imgui.TableFlags_.borders_inner.value)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersOuter", static.bb_flags, imgui.TableFlags_.borders_outer)
+        _, static.bb_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersInner", static.bb_flags, imgui.TableFlags_.borders_inner)
         imgui.unindent()
 
         imgui.align_text_to_frame_padding()
@@ -2673,7 +2673,7 @@ def show_demo_window_tables():
         imgui.same_line()
         _, static.contents_type = imgui.radio_button("FillButton", static.contents_type, ContentsType.CT_FillButton)
         _, static.display_headers = imgui.checkbox("Display headers", static.display_headers)
-        _, static.flags = imgui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", static.bb_flags, imgui.TableFlags_.no_borders_in_body.value); imgui.same_line(); help_marker("Disable vertical borders in columns Body (borders will always appear in Headers)")
+        _, static.flags = imgui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", static.bb_flags, imgui.TableFlags_.no_borders_in_body); imgui.same_line(); help_marker("Disable vertical borders in columns Body (borders will always appear in Headers)")
         pop_style_compact()
 
         if imgui.begin_table("table1", 3, static.bb_flags):
@@ -2704,14 +2704,14 @@ def show_demo_window_tables():
         # By default, if we don't enable ScrollX, the sizing policy for each column is "Stretch".
         # All columns maintain a sizing weight, and they will occupy all available width.
         if not hasattr(static, "rs_flags"):
-            static.rs_flags = (imgui.TableFlags_.sizing_stretch_same.value |
-                            imgui.TableFlags_.resizable.value |
-                            imgui.TableFlags_.borders_outer.value |
-                            imgui.TableFlags_.borders_v.value |
-                            imgui.TableFlags_.context_menu_in_body.value)
+            static.rs_flags = (imgui.TableFlags_.sizing_stretch_same |
+                            imgui.TableFlags_.resizable |
+                            imgui.TableFlags_.borders_outer |
+                            imgui.TableFlags_.borders_v |
+                            imgui.TableFlags_.context_menu_in_body)
         push_style_compact()
-        _, static.rs_flags = imgui.checkbox_flags("ImGuiTableFlags_Resizable", static.rs_flags, imgui.TableFlags_.resizable.value)
-        _, static.rs_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersV", static.rs_flags, imgui.TableFlags_.borders_v.value)
+        _, static.rs_flags = imgui.checkbox_flags("ImGuiTableFlags_Resizable", static.rs_flags, imgui.TableFlags_.resizable)
+        _, static.rs_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersV", static.rs_flags, imgui.TableFlags_.borders_v)
         imgui.same_line()
         help_marker("Using the _Resizable flag automatically enables the _BordersInnerV flag as well, this is why the resize borders are still showing when unchecking this.")
         pop_style_compact()
@@ -2739,12 +2739,12 @@ def show_demo_window_tables():
             "Double-click a column border to auto-fit the column to its contents.")
         push_style_compact()
         if not hasattr(static, "rf_flags"):
-            static.rf_flags = (imgui.TableFlags_.sizing_fixed_fit.value |
-                               imgui.TableFlags_.resizable.value |
-                               imgui.TableFlags_.borders_outer.value |
-                               imgui.TableFlags_.borders_v.value |
-                               imgui.TableFlags_.context_menu_in_body.value)
-        _, static.rf_flags = imgui.checkbox_flags("ImGuiTableFlags_NoHostExtendX", static.rf_flags, imgui.TableFlags_.no_host_extend_x.value)
+            static.rf_flags = (imgui.TableFlags_.sizing_fixed_fit |
+                               imgui.TableFlags_.resizable |
+                               imgui.TableFlags_.borders_outer |
+                               imgui.TableFlags_.borders_v |
+                               imgui.TableFlags_.context_menu_in_body)
+        _, static.rf_flags = imgui.checkbox_flags("ImGuiTableFlags_NoHostExtendX", static.rf_flags, imgui.TableFlags_.no_host_extend_x)
         pop_style_compact()
 
         if imgui.begin_table("table1", 3, static.rf_flags):
@@ -2764,17 +2764,17 @@ def show_demo_window_tables():
             "Using TableSetupColumn() to alter resizing policy on a per-column basis.\n\n"
             "When combining Fixed and Stretch columns, generally you only want one, maybe two trailing columns to use _WidthStretch.")
         if not hasattr(static, "rm_flags"):
-            static.rm_flags = (imgui.TableFlags_.sizing_fixed_fit.value |
-                               imgui.TableFlags_.row_bg.value |
-                               imgui.TableFlags_.borders.value |
-                               imgui.TableFlags_.resizable.value |
-                               imgui.TableFlags_.reorderable.value |
-                               imgui.TableFlags_.hideable.value)
+            static.rm_flags = (imgui.TableFlags_.sizing_fixed_fit |
+                               imgui.TableFlags_.row_bg |
+                               imgui.TableFlags_.borders |
+                               imgui.TableFlags_.resizable |
+                               imgui.TableFlags_.reorderable |
+                               imgui.TableFlags_.hideable)
 
         if imgui.begin_table("table1", 3, static.rm_flags):
-            imgui.table_setup_column("AAA", imgui.TableColumnFlags_.width_fixed.value)
-            imgui.table_setup_column("BBB", imgui.TableColumnFlags_.width_fixed.value)
-            imgui.table_setup_column("CCC", imgui.TableColumnFlags_.width_stretch.value)
+            imgui.table_setup_column("AAA", imgui.TableColumnFlags_.width_fixed)
+            imgui.table_setup_column("BBB", imgui.TableColumnFlags_.width_fixed)
+            imgui.table_setup_column("CCC", imgui.TableColumnFlags_.width_stretch)
             imgui.table_headers_row()
             for row in range(5):
                 imgui.table_next_row()
@@ -2784,12 +2784,12 @@ def show_demo_window_tables():
             imgui.end_table()
 
         if imgui.begin_table("table2", 6, static.rm_flags):
-            imgui.table_setup_column("AAA", imgui.TableColumnFlags_.width_fixed.value)
-            imgui.table_setup_column("BBB", imgui.TableColumnFlags_.width_fixed.value)
-            imgui.table_setup_column("CCC", imgui.TableColumnFlags_.width_fixed.value | imgui.TableColumnFlags_.default_hide.value)
-            imgui.table_setup_column("DDD", imgui.TableColumnFlags_.width_stretch.value)
-            imgui.table_setup_column("EEE", imgui.TableColumnFlags_.width_stretch.value)
-            imgui.table_setup_column("FFF", imgui.TableColumnFlags_.width_stretch.value | imgui.TableColumnFlags_.default_hide.value)
+            imgui.table_setup_column("AAA", imgui.TableColumnFlags_.width_fixed)
+            imgui.table_setup_column("BBB", imgui.TableColumnFlags_.width_fixed)
+            imgui.table_setup_column("CCC", imgui.TableColumnFlags_.width_fixed | imgui.TableColumnFlags_.default_hide)
+            imgui.table_setup_column("DDD", imgui.TableColumnFlags_.width_stretch)
+            imgui.table_setup_column("EEE", imgui.TableColumnFlags_.width_stretch)
+            imgui.table_setup_column("FFF", imgui.TableColumnFlags_.width_stretch | imgui.TableColumnFlags_.default_hide)
             imgui.table_headers_row()
             for row in range(5):
                 imgui.table_next_row()
@@ -2807,21 +2807,21 @@ def show_demo_window_tables():
             "Click and drag column headers to reorder columns.\n\n"
             "Right-click on a header to open a context menu.")
         if not hasattr(static, "rh_flags"):
-            static.rh_flags = (imgui.TableFlags_.resizable.value |
-                               imgui.TableFlags_.reorderable.value |
-                               imgui.TableFlags_.hideable.value |
-                               imgui.TableFlags_.borders_outer.value |
-                               imgui.TableFlags_.borders_v.value)
+            static.rh_flags = (imgui.TableFlags_.resizable |
+                               imgui.TableFlags_.reorderable |
+                               imgui.TableFlags_.hideable |
+                               imgui.TableFlags_.borders_outer |
+                               imgui.TableFlags_.borders_v)
 
         push_style_compact()
-        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_Resizable", static.rh_flags, imgui.TableFlags_.resizable.value)
-        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_Reorderable", static.rh_flags, imgui.TableFlags_.reorderable.value)
-        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_Hideable", static.rh_flags, imgui.TableFlags_.hideable.value)
-        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", static.rh_flags, imgui.TableFlags_.no_borders_in_body.value)
-        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_NoBordersInBodyUntilResize", static.rh_flags, imgui.TableFlags_.no_borders_in_body_until_resize.value)
+        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_Resizable", static.rh_flags, imgui.TableFlags_.resizable)
+        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_Reorderable", static.rh_flags, imgui.TableFlags_.reorderable)
+        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_Hideable", static.rh_flags, imgui.TableFlags_.hideable)
+        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_NoBordersInBody", static.rh_flags, imgui.TableFlags_.no_borders_in_body)
+        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_NoBordersInBodyUntilResize", static.rh_flags, imgui.TableFlags_.no_borders_in_body_until_resize)
         imgui.same_line()
         help_marker("Disable vertical borders in columns Body until hovered for resize (borders will always appear in Headers)")
-        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_HighlightHoveredColumn", static.rh_flags, imgui.TableFlags_.highlight_hovered_column.value)
+        _, static.rh_flags = imgui.checkbox_flags("ImGuiTableFlags_HighlightHoveredColumn", static.rh_flags, imgui.TableFlags_.highlight_hovered_column)
         pop_style_compact()
 
         if imgui.begin_table("table1", 3, static.rh_flags):
@@ -2839,7 +2839,7 @@ def show_demo_window_tables():
             imgui.end_table()
 
         # Use outer_size.x == 0.0f instead of default to make the table as tight as possible (only valid when no scrolling and no stretch column)
-        if imgui.begin_table("table2", 3, static.rh_flags | imgui.TableFlags_.sizing_fixed_fit.value, ImVec2(0.0, 0.0)):
+        if imgui.begin_table("table2", 3, static.rh_flags | imgui.TableFlags_.sizing_fixed_fit, ImVec2(0.0, 0.0)):
             imgui.table_setup_column("One")
             imgui.table_setup_column("Two")
             imgui.table_setup_column("Three")
@@ -2868,21 +2868,21 @@ def show_demo_window_tables():
             "In this demo we don't show horizontal borders to emphasize how they don't affect default horizontal padding.")
 
         if not hasattr(static, "padding_flags"):
-            static.padding_flags = (imgui.TableFlags_.borders_v.value)
+            static.padding_flags = (imgui.TableFlags_.borders_v)
             static.show_headers = False
 
         push_style_compact()
-        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_PadOuterX", static.padding_flags, imgui.TableFlags_.pad_outer_x.value)
+        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_PadOuterX", static.padding_flags, imgui.TableFlags_.pad_outer_x)
         imgui.same_line()
         help_marker("Enable outer-most padding (default if ImGuiTableFlags_BordersOuterV is set)")
-        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_NoPadOuterX", static.padding_flags, imgui.TableFlags_.no_pad_outer_x.value)
+        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_NoPadOuterX", static.padding_flags, imgui.TableFlags_.no_pad_outer_x)
         imgui.same_line()
         help_marker("Disable outer-most padding (default if ImGuiTableFlags_BordersOuterV is not set)")
-        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_NoPadInnerX", static.padding_flags, imgui.TableFlags_.no_pad_inner_x.value)
+        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_NoPadInnerX", static.padding_flags, imgui.TableFlags_.no_pad_inner_x)
         imgui.same_line()
         help_marker("Disable inner padding between columns (double inner padding if BordersOuterV is on, single inner padding if BordersOuterV is off)")
-        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersOuterV", static.padding_flags, imgui.TableFlags_.borders_outer_v.value)
-        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersInnerV", static.padding_flags, imgui.TableFlags_.borders_inner_v.value)
+        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersOuterV", static.padding_flags, imgui.TableFlags_.borders_outer_v)
+        _, static.padding_flags = imgui.checkbox_flags("ImGuiTableFlags_BordersInnerV", static.padding_flags, imgui.TableFlags_.borders_inner_v)
         _, static.show_headers = imgui.checkbox("show_headers", static.show_headers)
         pop_style_compact()
 
@@ -2910,29 +2910,29 @@ def show_demo_window_tables():
         # FIXME-TABLE: Vertical border effectively not displayed the same way as horizontal one...
         help_marker("Setting style.CellPadding to (0,0) or a custom value.")
         if not hasattr(static, "padding_flags2"):
-            static.padding_flags2 = (imgui.TableFlags_.borders.value | imgui.TableFlags_.row_bg.value)
+            static.padding_flags2 = (imgui.TableFlags_.borders | imgui.TableFlags_.row_bg)
             static.cell_padding = [0.0, 0.0]
             static.show_widget_frame_bg = True
 
         push_style_compact()
-        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_Borders", static.padding_flags2, imgui.TableFlags_.borders.value)
-        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_BordersH", static.padding_flags2, imgui.TableFlags_.borders_h.value)
-        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_BordersV", static.padding_flags2, imgui.TableFlags_.borders_v.value)
-        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_BordersInner", static.padding_flags2, imgui.TableFlags_.borders_inner.value)
-        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_BordersOuter", static.padding_flags2, imgui.TableFlags_.borders_outer.value)
-        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_RowBg", static.padding_flags2, imgui.TableFlags_.row_bg.value)
-        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_Resizable", static.padding_flags2, imgui.TableFlags_.resizable.value)
+        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_Borders", static.padding_flags2, imgui.TableFlags_.borders)
+        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_BordersH", static.padding_flags2, imgui.TableFlags_.borders_h)
+        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_BordersV", static.padding_flags2, imgui.TableFlags_.borders_v)
+        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_BordersInner", static.padding_flags2, imgui.TableFlags_.borders_inner)
+        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_BordersOuter", static.padding_flags2, imgui.TableFlags_.borders_outer)
+        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_RowBg", static.padding_flags2, imgui.TableFlags_.row_bg)
+        _, static.padding_flags2 = imgui.checkbox_flags("ImGuiTableFlags_Resizable", static.padding_flags2, imgui.TableFlags_.resizable)
         _, static.show_widget_frame_bg = imgui.checkbox("show_widget_frame_bg", static.show_widget_frame_bg)
         _, static.cell_padding = imgui.slider_float2("CellPadding", static.cell_padding, 0.0, 10.0, "%.0f")
         pop_style_compact()
 
-        imgui.push_style_var(imgui.StyleVar_.cell_padding.value, static.cell_padding)  # type: ignore
+        imgui.push_style_var(imgui.StyleVar_.cell_padding, static.cell_padding)  # type: ignore
         if imgui.begin_table("table_padding_2", 3, static.padding_flags2):
             if not hasattr(static, "text_bufs"):
                 static.text_bufs = ["" for _ in range(3 * 5)]  # Mini text storage for 3x5 cells
                 static.init = True
             if not static.show_widget_frame_bg:
-                imgui.push_style_color(imgui.Col_.frame_bg.value, 0)
+                imgui.push_style_color(imgui.Col_.frame_bg, 0)
             for cell in range(3 * 5):
                 imgui.table_next_column()
                 if static.init:
@@ -2956,22 +2956,22 @@ def show_demo_window_tables():
         rows_count = 12
 
         if not hasattr(static, "table_flags_ah"):
-            static.table_flags_ah = (imgui.TableFlags_.sizing_fixed_fit.value | imgui.TableFlags_.scroll_x.value | imgui.TableFlags_.scroll_y.value |
-                                     imgui.TableFlags_.borders_outer.value | imgui.TableFlags_.borders_inner_h.value |
-                                     imgui.TableFlags_.hideable.value | imgui.TableFlags_.resizable.value |
-                                     imgui.TableFlags_.reorderable.value | imgui.TableFlags_.highlight_hovered_column.value)
+            static.table_flags_ah = (imgui.TableFlags_.sizing_fixed_fit | imgui.TableFlags_.scroll_x | imgui.TableFlags_.scroll_y |
+                                     imgui.TableFlags_.borders_outer | imgui.TableFlags_.borders_inner_h |
+                                     imgui.TableFlags_.hideable | imgui.TableFlags_.resizable |
+                                     imgui.TableFlags_.reorderable | imgui.TableFlags_.highlight_hovered_column)
 
-            static.column_flags_ah = imgui.TableColumnFlags_.angled_header.value | imgui.TableColumnFlags_.width_fixed.value
+            static.column_flags_ah = imgui.TableColumnFlags_.angled_header | imgui.TableColumnFlags_.width_fixed
             static.bools_ah = [False] * (columns_count * rows_count)  # Dummy selection storage
             static.frozen_cols_ah = 1
             static.frozen_rows_ah = 2
 
-        _, static.table_flags_ah = imgui.checkbox_flags("_ScrollX", static.table_flags_ah, imgui.TableFlags_.scroll_x.value)
-        _, static.table_flags_ah = imgui.checkbox_flags("_ScrollY", static.table_flags_ah, imgui.TableFlags_.scroll_y.value)
-        _, static.table_flags_ah = imgui.checkbox_flags("_Resizable", static.table_flags_ah, imgui.TableFlags_.resizable.value)
-        _, static.table_flags_ah = imgui.checkbox_flags("_Sortable", static.table_flags_ah, imgui.TableFlags_.sortable.value)
-        _, static.table_flags_ah = imgui.checkbox_flags("_NoBordersInBody", static.table_flags_ah, imgui.TableFlags_.no_borders_in_body.value)
-        _, static.table_flags_ah = imgui.checkbox_flags("_HighlightHoveredColumn", static.table_flags_ah, imgui.TableFlags_.highlight_hovered_column.value)
+        _, static.table_flags_ah = imgui.checkbox_flags("_ScrollX", static.table_flags_ah, imgui.TableFlags_.scroll_x)
+        _, static.table_flags_ah = imgui.checkbox_flags("_ScrollY", static.table_flags_ah, imgui.TableFlags_.scroll_y)
+        _, static.table_flags_ah = imgui.checkbox_flags("_Resizable", static.table_flags_ah, imgui.TableFlags_.resizable)
+        _, static.table_flags_ah = imgui.checkbox_flags("_Sortable", static.table_flags_ah, imgui.TableFlags_.sortable)
+        _, static.table_flags_ah = imgui.checkbox_flags("_NoBordersInBody", static.table_flags_ah, imgui.TableFlags_.no_borders_in_body)
+        _, static.table_flags_ah = imgui.checkbox_flags("_HighlightHoveredColumn", static.table_flags_ah, imgui.TableFlags_.highlight_hovered_column)
 
         imgui.set_next_item_width(imgui.get_font_size() * 8)
         _, static.frozen_cols_ah = imgui.slider_int("Frozen columns", static.frozen_cols_ah, 0, 2)
@@ -2980,7 +2980,7 @@ def show_demo_window_tables():
         _, static.frozen_rows_ah = imgui.slider_int("Frozen rows", static.frozen_rows_ah, 0, 2)
 
         _, static.column_flags_ah = imgui.checkbox_flags("Disable header contributing to column width",
-                                                         static.column_flags_ah, imgui.TableColumnFlags_.no_header_width.value)
+                                                         static.column_flags_ah, imgui.TableColumnFlags_.no_header_width)
 
         if imgui.tree_node("Style settings"):
             imgui.same_line()
@@ -2997,7 +2997,7 @@ def show_demo_window_tables():
 
         text_base_height = imgui.get_text_line_height_with_spacing()
         if imgui.begin_table("table_angled_headers", columns_count, static.table_flags_ah, (0.0, text_base_height * 12)):
-            imgui.table_setup_column(column_names[0], imgui.TableColumnFlags_.no_hide.value | imgui.TableColumnFlags_.no_reorder.value)
+            imgui.table_setup_column(column_names[0], imgui.TableColumnFlags_.no_hide | imgui.TableColumnFlags_.no_reorder)
 
             for n in range(1, columns_count):
                 imgui.table_setup_column(column_names[n], static.column_flags_ah)
@@ -3087,7 +3087,7 @@ def show_example_menu_file():
     IMGUI_DEMO_MARKER("Examples/Menu/Colors")
     if imgui.begin_menu("Colors"):
         sz = imgui.get_text_line_height()
-        for i in range(imgui.Col_.count.value):
+        for i in range(imgui.Col_.count):
             name = imgui.get_style_color_name(i)
             p = imgui.get_cursor_screen_pos()
             imgui.get_window_draw_list().add_rect_filled(p, ImVec2(p.x + sz, p.y + sz), imgui.get_color_u32(i))
@@ -3238,9 +3238,9 @@ class ImGuiDemoMarkerHighlight_Impl_DemoMarkersRegistry:
     # Check if the mouse is hovering over the zone_boundings
     def _is_mouse_hovering_zone_boundings(self, zone_boundings):
         if not imgui.is_window_hovered(
-                imgui.HoveredFlags_.allow_when_blocked_by_active_item.value |
-                imgui.HoveredFlags_.root_and_child_windows.value |
-                imgui.HoveredFlags_.no_popup_hierarchy.value):
+                imgui.HoveredFlags_.allow_when_blocked_by_active_item |
+                imgui.HoveredFlags_.root_and_child_windows |
+                imgui.HoveredFlags_.no_popup_hierarchy):
             return False
         y_mouse = imgui.get_mouse_pos().y
         x_mouse = imgui.get_mouse_pos().x
@@ -3320,7 +3320,7 @@ def main():
         show_demo_window(True)
 
     def gui_code():
-        with imgui_ctx.push_font(imgui_md.get_code_font()):
+        with imgui_ctx.push_font(imgui_md.get_code_font().font):
             code_editor.render("Code")
 
     def navigate_to_marker(marker):

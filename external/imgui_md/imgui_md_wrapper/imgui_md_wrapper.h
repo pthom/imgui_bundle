@@ -16,7 +16,9 @@ namespace ImGuiMd
     struct MarkdownFontOptions
     {
         std::string fontBasePath = "fonts/Roboto/Roboto";
+        // This size is in density-independent pixels
         float regularSize = 16.f;
+
         // Multipliers for header sizes, from h1 to h6
         float headerSizeFactors[6] = { 1.42f, 1.33f, 1.24f, 1.15f, 1.10f, 1.05f };
     };

@@ -26,6 +26,22 @@
 namespace ImGuiMd
 {
 
+    namespace
+    {
+        // Factor applied to the font size before displaying
+        // Case 1: Platforms which report screen size in "physical pixels": Windows (for "Dpi aware" apps), Linux (with Wayland)
+        //    in case 1, fontDpiFactor = screenDpi / 96
+        // Case 2: Platforms which report screen size in "density-independent pixels": macOS, iOS, Android, emscripten
+        //    in case 2, fontDpiFactor = 1
+        float fontDpiFactor()
+        {
+            auto dpiParams = HelloImGui::GetDpiAwareParams();
+            float fontDpiFactor = dpiParams->DpiFontLoadingFactor();
+            return fontDpiFactor;
+        }
+
+    }
+
     namespace ImGuiMdFonts
     {
         struct MarkdownEmphasis
@@ -57,14 +73,14 @@ namespace ImGuiMd
         float MarkdownFontOptions_FontSize(const MarkdownFontOptions &self, int headerLevel)
         {
             if (headerLevel <= 0)
-                return self.regularSize;
+                return self.regularSize * fontDpiFactor();
             else
             {
                 int idxSizeFactors = headerLevel - 1;
                 if (idxSizeFactors >= 6)
                     idxSizeFactors = 5;
                 float multiplicationFactor = self.headerSizeFactors[idxSizeFactors];
-                float fontSize = self.regularSize * multiplicationFactor;
+                float fontSize = self.regularSize * fontDpiFactor() * multiplicationFactor;
                 return fontSize;
             }
         };
@@ -99,7 +115,7 @@ namespace ImGuiMd
 
             SizedFont GetFontCode() const
             {
-                return {mFontCode, mMarkdownFontOptions.regularSize};
+                return {mFontCode, mMarkdownFontOptions.regularSize * fontDpiFactor()};
             }
 
             SizedFont GetDefaultFont() const
@@ -206,13 +222,13 @@ assets/
     class MarkdownRenderer : public imgui_md
     {
     private:
-        MarkdownOptions mMarkdownOptions;
+        MarkdownOptions *mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
         std::map<std::string, Snippets::SnippetData> mSnippets;
     public:
-        MarkdownRenderer(MarkdownOptions markdownOptions)
+        MarkdownRenderer(MarkdownOptions* markdownOptions)
             : mMarkdownOptions(markdownOptions)
-            , mMarkdownCollection(markdownOptions.fontOptions)
+            , mMarkdownCollection(markdownOptions->fontOptions)
         {
         }
 
@@ -226,13 +242,11 @@ assets/
         void Render(const std::string& s)
         {
             auto defaultSizedFont = mMarkdownCollection.mFontCollection.GetDefaultFont();
-            ImGui::PushFont(defaultSizedFont.font);
-            ImGui::PushFontSize(defaultSizedFont.size);
+            ImGui::PushFont(defaultSizedFont.font, defaultSizedFont.size);
 
             const char * start = s.c_str();
             const char * end = start + s.size();
             this->print(start, end);
-            ImGui::PopFontSize();
             ImGui::PopFont();
         }
 
@@ -274,16 +288,16 @@ assets/
 
         void open_url() const override
         {
-            if (mMarkdownOptions.callbacks.OnOpenLink)
-                mMarkdownOptions.callbacks.OnOpenLink(m_href);
+            if (mMarkdownOptions->callbacks.OnOpenLink)
+                mMarkdownOptions->callbacks.OnOpenLink(m_href);
         }
 
         bool get_image(image_info& nfo) const override
         {
-            if (! mMarkdownOptions.callbacks.OnImage)
+            if (! mMarkdownOptions->callbacks.OnImage)
                 return false;
 
-            std::optional<MarkdownImage> mdImage = mMarkdownOptions.callbacks.OnImage(m_img_src);
+            std::optional<MarkdownImage> mdImage = mMarkdownOptions->callbacks.OnImage(m_img_src);
 
             if (! mdImage.has_value())
                 return false;
@@ -294,8 +308,6 @@ assets/
                 nfo.size = ImVec2(mdImage->size.x * k, mdImage->size.y * k);
             }
 
-            nfo.col_border = mdImage->col_border;
-            nfo.col_tint = mdImage->col_tint;
             nfo.texture_id = mdImage->texture_id;
             nfo.uv0 = mdImage->uv0;
             nfo.uv1 = mdImage->uv1;
@@ -305,10 +317,10 @@ assets/
 
         void html_div(const std::string& divClass, bool openingDiv) override
         {
-            if (!mMarkdownOptions.callbacks.OnHtmlDiv)
+            if (!mMarkdownOptions->callbacks.OnHtmlDiv)
                 return;
 
-            mMarkdownOptions.callbacks.OnHtmlDiv(divClass, openingDiv);
+            mMarkdownOptions->callbacks.OnHtmlDiv(divClass, openingDiv);
         }
 
         void render_code_block() override
@@ -386,7 +398,6 @@ assets/
             return;
         }
 
-
         gMarkdownOptions = options;
         wasCalledAlready = true;
     }
@@ -406,7 +417,7 @@ assets/
     {
         auto fontLoaderFunction = []()
         {
-            gMarkdownRenderer = std::make_unique<MarkdownRenderer>(gMarkdownOptions);
+            gMarkdownRenderer = std::make_unique<MarkdownRenderer>(&gMarkdownOptions);
         };
         return fontLoaderFunction;
     }

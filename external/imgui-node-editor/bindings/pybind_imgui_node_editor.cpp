@@ -327,7 +327,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
             Begin_adapt_mutable_param_with_default_value(id, size);
         },
-        nb::arg("id"), nb::arg("size") = nb::none(),
+        nb::arg("id"), nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("end",
@@ -406,7 +406,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
             return Link_adapt_mutable_param_with_default_value(id, startPinId, endPinId, color, thickness);
         },
-        nb::arg("id"), nb::arg("start_pin_id"), nb::arg("end_pin_id"), nb::arg("color") = nb::none(), nb::arg("thickness") = 1.0f,
+        nb::arg("id"), nb::arg("start_pin_id"), nb::arg("end_pin_id"), nb::arg("color").none() = nb::none(), nb::arg("thickness") = 1.0f,
         "Python bindings defaults:\n    If color is None, then its default value will be: ImVec4(1, 1, 1, 1)");
 
     m.def("flow",
@@ -431,7 +431,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
             return BeginCreate_adapt_mutable_param_with_default_value(color, thickness);
         },
-        nb::arg("color") = nb::none(), nb::arg("thickness") = 1.0f,
+        nb::arg("color").none() = nb::none(), nb::arg("thickness") = 1.0f,
         "Python bindings defaults:\n    If color is None, then its default value will be: ImVec4(1, 1, 1, 1)");
 
     m.def("query_new_link",

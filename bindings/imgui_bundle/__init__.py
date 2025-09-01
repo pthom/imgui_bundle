@@ -4,9 +4,18 @@ from imgui_bundle._imgui_bundle import __bundle_submodules__, __bundle_pyodide__
 from imgui_bundle._imgui_bundle import __version__, compilation_time
 from typing import Union, Tuple, List
 
-
 def has_submodule(submodule_name):
     return submodule_name in __bundle_submodules__
+
+
+def _is_pydantic_v2_available() -> bool:
+    from importlib import metadata
+    try:
+            version_str: str = metadata.version("pydantic")
+    except metadata.PackageNotFoundError:
+        return False
+    major: int = int(version_str.split(".")[0])
+    return major >= 2
 
 
 __all__ = ["__version__", "compilation_time"]
@@ -18,12 +27,6 @@ __all__ = ["__version__", "compilation_time"]
 if has_submodule("imgui"):
     from imgui_bundle._imgui_bundle import imgui as imgui
     from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX  # noqa: F401
-    from imgui_bundle import imgui_pydantic as imgui_pydantic
-    from imgui_bundle.imgui_pydantic import (
-        ImVec4_Pydantic as ImVec4_Pydantic,
-        ImVec2_Pydantic as ImVec2_Pydantic,
-        ImColor_Pydantic as ImColor_Pydantic,
-    )
     from imgui_bundle.im_col32 import IM_COL32  # noqa: F401, E402
     from imgui_bundle import imgui_ctx as imgui_ctx  # noqa: E402
 
@@ -44,13 +47,7 @@ if has_submodule("imgui"):
         "FLT_MAX",
         "IM_COL32",
         "imgui_ctx",
-        # Pydantic types
-        "imgui_pydantic",
-        "ImVec4_Pydantic",
-        "ImVec2_Pydantic",
-        "ImColor_Pydantic",
     ])
-
 
     # Patch after imgui v1.90.9, where
     # the enum ImGuiDir_ was renamed to ImGuiDir and ImGuiSortDirection_ was renamed to ImGuiSortDirection
@@ -58,6 +55,21 @@ if has_submodule("imgui"):
     imgui.Dir_ = imgui.Dir
     imgui.SortDirection_ = imgui.SortDirection
 
+    # If pydantic v2 is available, import the pydantic-serializable types
+    if _is_pydantic_v2_available():
+        from imgui_bundle import imgui_pydantic as imgui_pydantic  # noqa: E402
+        from imgui_bundle.imgui_pydantic import (  # noqa: E402
+            ImVec4_Pydantic as ImVec4_Pydantic,
+            ImVec2_Pydantic as ImVec2_Pydantic,
+            ImColor_Pydantic as ImColor_Pydantic,
+        )
+
+        __all__.extend([
+                "imgui_pydantic",
+                "ImVec4_Pydantic",
+                "ImVec2_Pydantic",
+                "ImColor_Pydantic",
+            ])
 
 if has_submodule("hello_imgui"):
     from imgui_bundle._imgui_bundle import hello_imgui as hello_imgui

@@ -296,6 +296,8 @@ def litgen_options_imgui(
     #     enum ImGuiMyFlags_ { ImGuiMyFlags_None = 0,...};  enum ImGuiMyFlagsPrivate_ { ImGuiMyFlags_PrivValue = ...};
     options.enum_flag_remove_values_prefix = True
     options.enum_flag_remove_values_prefix_group_private = True
+    options.enum_make_arithmetic__regex = r".*"
+    options.enum_make_flag__regex = r".*"
 
     options.python_max_line_length = (
         -1
@@ -392,7 +394,7 @@ def litgen_options_imgui(
             r"::STB_",
             r"ImGuiStoragePair",
             r"^ImFileHandle$",
-            r"^ImFontLoader",
+            r"ImFontLoader",
             r"^ImFontAtlasBuilder",
         ]
     )
@@ -444,6 +446,7 @@ def litgen_options_imgui(
             r"^SetItemKeyOwner",
             r"^GetIO",
             r"^GetPlatformIO",
+            r"^PushFont",
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
@@ -485,10 +488,10 @@ def litgen_options_imgui(
 
     def postprocess_stub_imgui(stub_code: str) -> str:
         stub_code = stub_code.replace(
-            "class ImVec2:", "class ImVec2(VecProtocol['ImVec2']):"
+            "class ImVec2:", "class ImVec2(Vec2Protocol):"
         )
         stub_code = stub_code.replace(
-            "class ImVec4:", "class ImVec4(VecProtocol['ImVec4']):"
+            "class ImVec4:", "class ImVec4(Vec4Protocol):"
         )
         # Replace ImVector[int] by ImVector_int, etc.
         import re

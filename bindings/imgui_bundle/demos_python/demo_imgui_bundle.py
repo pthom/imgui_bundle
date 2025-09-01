@@ -88,9 +88,9 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         demo_module: ModuleType
 
     demos = [
-        DemoDetails("Dear ImGui Bundle", demo_imgui_bundle_intro),
+        DemoDetails("Intro", demo_imgui_bundle_intro),
         DemoDetails("Dear ImGui", demo_imgui_show_demo_window),
-        DemoDetails("Immediate Apps", demo_immapp_launcher),
+        DemoDetails("Demo Apps", demo_immapp_launcher),
         DemoDetails("Implot [3D]", demo_implot),
         DemoDetails("Node Editor", demo_node_editor_launcher),
         DemoDetails("Markdown", demo_imgui_md),

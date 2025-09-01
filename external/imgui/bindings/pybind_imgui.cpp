@@ -241,7 +241,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ShowDemoWindow_adapt_modifiable_immutable_to_return(p_open);
         },
-        nb::arg("p_open") = nb::none(),
+        nb::arg("p_open").none() = nb::none(),
         "create Demo window. demonstrate most ImGui features. call this to learn about the library! try to make it always available in your application!");
 
     m.def("show_metrics_window",
@@ -259,7 +259,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ShowMetricsWindow_adapt_modifiable_immutable_to_return(p_open);
         },
-        nb::arg("p_open") = nb::none(),
+        nb::arg("p_open").none() = nb::none(),
         "create Metrics/Debugger window. display Dear ImGui internals: windows, draw commands, various internal state, etc.");
 
     m.def("show_debug_log_window",
@@ -277,7 +277,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ShowDebugLogWindow_adapt_modifiable_immutable_to_return(p_open);
         },
-        nb::arg("p_open") = nb::none(),
+        nb::arg("p_open").none() = nb::none(),
         "create Debug Log window. display a simplified log of important dear imgui events.");
 
     m.def("show_id_stack_tool_window",
@@ -295,7 +295,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ShowIDStackToolWindow_adapt_modifiable_immutable_to_return(p_open);
         },
-        nb::arg("p_open") = nb::none(),
+        nb::arg("p_open").none() = nb::none(),
         "create Stack Tool window. hover items with mouse to query information about the source of their unique ID.");
 
     m.def("show_about_window",
@@ -313,7 +313,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ShowAboutWindow_adapt_modifiable_immutable_to_return(p_open);
         },
-        nb::arg("p_open") = nb::none(),
+        nb::arg("p_open").none() = nb::none(),
         "create About window. display Dear ImGui version, credits and build/system information.");
 
     m.def("show_style_editor",
@@ -368,7 +368,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return Begin_adapt_modifiable_immutable_to_return(name, p_open, flags);
-        },     nb::arg("name"), nb::arg("p_open") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("name"), nb::arg("p_open").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("end",
         ImGui::End);
@@ -392,7 +392,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return BeginChild_adapt_mutable_param_with_default_value(str_id, size, child_flags, window_flags);
         },
-        nb::arg("str_id"), nb::arg("size") = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags") = 0,
+        nb::arg("str_id"), nb::arg("size").none() = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags") = 0,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_child",
@@ -414,7 +414,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return BeginChild_adapt_mutable_param_with_default_value(id, size, child_flags, window_flags);
         },
-        nb::arg("id_"), nb::arg("size") = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags") = 0,
+        nb::arg("id_"), nb::arg("size").none() = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags") = 0,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("end_child",
@@ -479,7 +479,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             SetNextWindowPos_adapt_mutable_param_with_default_value(pos, cond, pivot);
         },
-        nb::arg("pos"), nb::arg("cond") = 0, nb::arg("pivot") = nb::none(),
+        nb::arg("pos"), nb::arg("cond") = 0, nb::arg("pivot").none() = nb::none(),
         "Python bindings defaults:\n    If pivot is None, then its default value will be: ImVec2(0, 0)\n\n set next window position. call before Begin(). use pivot=(0.5,0.5) to center on given point, etc.");
 
     m.def("set_next_window_size",
@@ -599,20 +599,31 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::overload_cast<float, float>(ImGui::SetScrollFromPosY),
         nb::arg("local_y"), nb::arg("center_y_ratio") = 0.5f,
         "adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position.");
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("push_font",
-        ImGui::PushFont,
-        nb::arg("font"), nb::arg("font_size_base") = -1,
-        "use None as a shortcut to push default font. Use <0.0 to keep current font size.");
+        nb::overload_cast<std::optional<ImFont*>, float>(ImGui::PushFont),
+        nb::arg("font").none(), nb::arg("font_size_base_unscaled"),
+        "Use None as a shortcut to keep current font. Use 0.0 to keep current size.");
+    // #endif
+    //
 
     m.def("pop_font",
         ImGui::PopFont);
 
-    m.def("push_font_size",
-        ImGui::PushFontSize, nb::arg("font_size_base"));
+    m.def("get_font",
+        ImGui::GetFont,
+        "get current font",
+        nb::rv_policy::reference);
 
-    m.def("pop_font_size",
-        ImGui::PopFontSize);
+    m.def("get_font_size",
+        ImGui::GetFontSize, "get current scaled font size (= height in pixels). AFTER global scale factors applied. *IMPORTANT* DO NOT PASS THIS VALUE TO PushFont()! Use ImGui::GetStyle().FontSizeBase to get value before global scale factors.");
+
+    m.def("get_font_baked",
+        ImGui::GetFontBaked,
+        "get current font bound at current size // == GetFont()->GetFontBaked(GetFontSize())",
+        nb::rv_policy::reference);
 
     m.def("push_style_color",
         nb::overload_cast<ImGuiCol, ImU32>(ImGui::PushStyleColor),
@@ -680,21 +691,8 @@ void py_init_module_imgui_main(nb::module_& m)
     m.def("pop_text_wrap_pos",
         ImGui::PopTextWrapPos);
 
-    m.def("get_font",
-        ImGui::GetFont,
-        "get current font",
-        nb::rv_policy::reference);
-
-    m.def("get_font_size",
-        ImGui::GetFontSize, "get current font size (= height in pixels) of current font with external scale factors applied. Use ImGui::GetStyle().FontSizeBase to get value before external scale factors.");
-
     m.def("get_font_tex_uv_white_pixel",
         ImGui::GetFontTexUvWhitePixel, "get UV coordinate for a white pixel, useful to draw custom shapes via the ImDrawList API");
-
-    m.def("get_font_baked",
-        ImGui::GetFontBaked,
-        "get current font bound at current size // == GetFont()->GetFontBaked(GetFontSize())",
-        nb::rv_policy::reference);
 
     m.def("get_color_u32",
         nb::overload_cast<ImGuiCol, float>(ImGui::GetColorU32),
@@ -856,7 +854,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             TextUnformatted_adapt_const_char_pointer_with_default_null(text, text_end);
         },
-        nb::arg("text"), nb::arg("text_end") = nb::none(),
+        nb::arg("text"), nb::arg("text_end").none() = nb::none(),
         "raw text without formatting. Roughly equivalent to Text(\"%s\", text) but: A) doesn't require null terminated string if 'text_end' is specified, B) it's faster, no memory copy is done, no buffer size limits, recommended for long chunks of text.");
 
     m.def("text",
@@ -961,7 +959,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return Button_adapt_mutable_param_with_default_value(label, size);
         },
-        nb::arg("label"), nb::arg("size") = nb::none(),
+        nb::arg("label"), nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n button");
 
     m.def("small_button",
@@ -1068,7 +1066,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             ProgressBar_adapt_const_char_pointer_with_default_null(fraction, size_arg, overlay);
         },
-        nb::arg("fraction"), nb::arg("size_arg") = nb::none(), nb::arg("overlay") = nb::none(),
+        nb::arg("fraction"), nb::arg("size_arg").none() = nb::none(), nb::arg("overlay").none() = nb::none(),
         "Python bindings defaults:\n    If size_arg is None, then its default value will be: ImVec2(-sys.float_info.min, 0)");
 
     m.def("bullet",
@@ -1094,7 +1092,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return TextLinkOpenURL_adapt_const_char_pointer_with_default_null(label, url);
         },
-        nb::arg("label"), nb::arg("url") = nb::none(),
+        nb::arg("label"), nb::arg("url").none() = nb::none(),
         "hyperlink text button, automatically open file/url when clicked");
 
     m.def("image",
@@ -1122,7 +1120,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             Image_adapt_mutable_param_with_default_value(tex_ref, image_size, uv0, uv1);
         },
-        nb::arg("tex_ref"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(),
+        nb::arg("tex_ref"), nb::arg("image_size"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)");
 
     m.def("image_with_bg",
@@ -1164,7 +1162,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             ImageWithBg_adapt_mutable_param_with_default_value(tex_ref, image_size, uv0, uv1, bg_col, tint_col);
         },
-        nb::arg("tex_ref"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("bg_col") = nb::none(), nb::arg("tint_col") = nb::none(),
+        nb::arg("tex_ref"), nb::arg("image_size"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("bg_col").none() = nb::none(), nb::arg("tint_col").none() = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * bg_col: ImVec4(0, 0, 0, 0)\n        * tint_col: ImVec4(1, 1, 1, 1)");
 
     m.def("image_button",
@@ -1207,7 +1205,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ImageButton_adapt_mutable_param_with_default_value(str_id, tex_ref, image_size, uv0, uv1, bg_col, tint_col);
         },
-        nb::arg("str_id"), nb::arg("tex_ref"), nb::arg("image_size"), nb::arg("uv0") = nb::none(), nb::arg("uv1") = nb::none(), nb::arg("bg_col") = nb::none(), nb::arg("tint_col") = nb::none(),
+        nb::arg("str_id"), nb::arg("tex_ref"), nb::arg("image_size"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("bg_col").none() = nb::none(), nb::arg("tint_col").none() = nb::none(),
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * bg_col: ImVec4(0, 0, 0, 0)\n        * tint_col: ImVec4(1, 1, 1, 1)");
 
     m.def("begin_combo",
@@ -1337,7 +1335,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return DragFloatRange2_adapt_modifiable_immutable_to_return(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags);
-        },     nb::arg("label"), nb::arg("v_current_min"), nb::arg("v_current_max"), nb::arg("v_speed") = 1.0f, nb::arg("v_min") = 0.0f, nb::arg("v_max") = 0.0f, nb::arg("format") = "%.3f", nb::arg("format_max") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("label"), nb::arg("v_current_min"), nb::arg("v_current_max"), nb::arg("v_speed") = 1.0f, nb::arg("v_min") = 0.0f, nb::arg("v_max") = 0.0f, nb::arg("format") = "%.3f", nb::arg("format_max").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("drag_int",
         [](const char * label, int v, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char * format = "%d", ImGuiSliderFlags flags = 0) -> std::tuple<bool, int>
@@ -1419,7 +1417,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return DragIntRange2_adapt_modifiable_immutable_to_return(label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, flags);
-        },     nb::arg("label"), nb::arg("v_current_min"), nb::arg("v_current_max"), nb::arg("v_speed") = 1.0f, nb::arg("v_min") = 0, nb::arg("v_max") = 0, nb::arg("format") = "%d", nb::arg("format_max") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("label"), nb::arg("v_current_min"), nb::arg("v_current_max"), nb::arg("v_speed") = 1.0f, nb::arg("v_min") = 0, nb::arg("v_max") = 0, nb::arg("format") = "%d", nb::arg("format_max").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("drag_scalar",
         [](const char * label, ImGuiDataType data_type, void * p_data, float v_speed = 1.0f, const void * p_min = NULL, const void * p_max = NULL, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
@@ -1435,7 +1433,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return DragScalar_adapt_const_char_pointer_with_default_null(label, data_type, p_data, v_speed, p_min, p_max, format, flags);
-        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("v_speed") = 1.0f, nb::arg("p_min") = nb::none(), nb::arg("p_max") = nb::none(), nb::arg("format") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("v_speed") = 1.0f, nb::arg("p_min") = nb::none(), nb::arg("p_max") = nb::none(), nb::arg("format").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("drag_scalar_n",
         [](const char * label, ImGuiDataType data_type, void * p_data, int components, float v_speed = 1.0f, const void * p_min = NULL, const void * p_max = NULL, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
@@ -1451,7 +1449,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return DragScalarN_adapt_const_char_pointer_with_default_null(label, data_type, p_data, components, v_speed, p_min, p_max, format, flags);
-        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("components"), nb::arg("v_speed") = 1.0f, nb::arg("p_min") = nb::none(), nb::arg("p_max") = nb::none(), nb::arg("format") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("components"), nb::arg("v_speed") = 1.0f, nb::arg("p_min") = nb::none(), nb::arg("p_max") = nb::none(), nb::arg("format").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("slider_float",
         [](const char * label, float v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, float>
@@ -1595,7 +1593,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return SliderScalar_adapt_const_char_pointer_with_default_null(label, data_type, p_data, p_min, p_max, format, flags);
-        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("format") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("format").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("slider_scalar_n",
         [](const char * label, ImGuiDataType data_type, void * p_data, int components, const void * p_min, const void * p_max, std::optional<std::string> format = std::nullopt, ImGuiSliderFlags flags = 0) -> bool
@@ -1611,7 +1609,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return SliderScalarN_adapt_const_char_pointer_with_default_null(label, data_type, p_data, components, p_min, p_max, format, flags);
-        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("components"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("format") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("components"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("format").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("v_slider_float",
         [](const char * label, const ImVec2 & size, float v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, float>
@@ -1655,7 +1653,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return VSliderScalar_adapt_const_char_pointer_with_default_null(label, size, data_type, p_data, p_min, p_max, format, flags);
-        },     nb::arg("label"), nb::arg("size"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("format") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("label"), nb::arg("size"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("format").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("input_float",
         [](const char * label, float v, float step = 0.0f, float step_fast = 0.0f, const char * format = "%.3f", ImGuiInputTextFlags flags = 0) -> std::tuple<bool, float>
@@ -1797,7 +1795,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return InputScalar_adapt_const_char_pointer_with_default_null(label, data_type, p_data, p_step, p_step_fast, format, flags);
-        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("p_step") = nb::none(), nb::arg("p_step_fast") = nb::none(), nb::arg("format") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("p_step") = nb::none(), nb::arg("p_step_fast") = nb::none(), nb::arg("format").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("input_scalar_n",
         [](const char * label, ImGuiDataType data_type, void * p_data, int components, const void * p_step = NULL, const void * p_step_fast = NULL, std::optional<std::string> format = std::nullopt, ImGuiInputTextFlags flags = 0) -> bool
@@ -1813,7 +1811,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return InputScalarN_adapt_const_char_pointer_with_default_null(label, data_type, p_data, components, p_step, p_step_fast, format, flags);
-        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("components"), nb::arg("p_step") = nb::none(), nb::arg("p_step_fast") = nb::none(), nb::arg("format") = nb::none(), nb::arg("flags") = 0);
+        },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("components"), nb::arg("p_step") = nb::none(), nb::arg("p_step_fast") = nb::none(), nb::arg("format").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("color_edit3",
         [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
@@ -1860,7 +1858,7 @@ void py_init_module_imgui_main(nb::module_& m)
     //
 
     m.def("color_picker4",
-        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags, std::optional<ImVec4>>(ImGui::ColorPicker4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col") = nb::none());
+        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags, std::optional<ImVec4>>(ImGui::ColorPicker4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
     // #endif
     //
 
@@ -1883,7 +1881,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ColorButton_adapt_mutable_param_with_default_value(desc_id, col, flags, size);
         },
-        nb::arg("desc_id"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("size") = nb::none(),
+        nb::arg("desc_id"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n display a color square/button, hover for details, return True when pressed.");
 
     m.def("set_color_edit_options",
@@ -2022,7 +2020,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return Selectable_adapt_modifiable_immutable_to_return(label, p_selected, flags, size);
         },
-        nb::arg("label"), nb::arg("p_selected"), nb::arg("flags") = 0, nb::arg("size") = nb::none(),
+        nb::arg("label"), nb::arg("p_selected"), nb::arg("flags") = 0, nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n \"bool* p_selected\" point to the selection state (read-write), as a convenient helper.");
 
     m.def("begin_multi_select",
@@ -2058,7 +2056,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return BeginListBox_adapt_mutable_param_with_default_value(label, size);
         },
-        nb::arg("label"), nb::arg("size") = nb::none(),
+        nb::arg("label"), nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n open a framed scrolling region");
 
     m.def("end_list_box",
@@ -2147,7 +2145,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             PlotLines_adapt_const_char_pointer_with_default_null(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
         },
-        nb::arg("label"), nb::arg("values"), nb::arg("values_offset") = 0, nb::arg("overlay_text") = nb::none(), nb::arg("scale_min") = FLT_MAX, nb::arg("scale_max") = FLT_MAX, nb::arg("graph_size") = nb::none(), nb::arg("stride") = -1,
+        nb::arg("label"), nb::arg("values"), nb::arg("values_offset") = 0, nb::arg("overlay_text").none() = nb::none(), nb::arg("scale_min") = FLT_MAX, nb::arg("scale_max") = FLT_MAX, nb::arg("graph_size").none() = nb::none(), nb::arg("stride") = -1,
         "Python bindings defaults:\n    If graph_size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("plot_histogram",
@@ -2208,7 +2206,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             PlotHistogram_adapt_const_char_pointer_with_default_null(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size, stride);
         },
-        nb::arg("label"), nb::arg("values"), nb::arg("values_offset") = 0, nb::arg("overlay_text") = nb::none(), nb::arg("scale_min") = FLT_MAX, nb::arg("scale_max") = FLT_MAX, nb::arg("graph_size") = nb::none(), nb::arg("stride") = -1,
+        nb::arg("label"), nb::arg("values"), nb::arg("values_offset") = 0, nb::arg("overlay_text").none() = nb::none(), nb::arg("scale_min") = FLT_MAX, nb::arg("scale_max") = FLT_MAX, nb::arg("graph_size").none() = nb::none(), nb::arg("stride") = -1,
         "Python bindings defaults:\n    If graph_size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("value",
@@ -2233,7 +2231,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             Value_adapt_const_char_pointer_with_default_null(prefix, v, float_format);
-        },     nb::arg("prefix"), nb::arg("v"), nb::arg("float_format") = nb::none());
+        },     nb::arg("prefix"), nb::arg("v"), nb::arg("float_format").none() = nb::none());
 
     m.def("begin_menu_bar",
         ImGui::BeginMenuBar, "append to menu-bar of current window (requires ImGuiWindowFlags_MenuBar flag set on parent window).");
@@ -2272,7 +2270,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return MenuItemSimple_adapt_const_char_pointer_with_default_null(label, shortcut, selected, enabled);
         },
-        nb::arg("label"), nb::arg("shortcut") = nb::none(), nb::arg("selected") = false, nb::arg("enabled") = true,
+        nb::arg("label"), nb::arg("shortcut").none() = nb::none(), nb::arg("selected") = false, nb::arg("enabled") = true,
         "(private API)");
     // #endif
     //
@@ -2348,7 +2346,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return BeginPopupModal_adapt_modifiable_immutable_to_return(name, p_open, flags);
         },
-        nb::arg("name"), nb::arg("p_open") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("name"), nb::arg("p_open").none() = nb::none(), nb::arg("flags") = 0,
         "return True if the modal is open, and you can start outputting to it.");
 
     m.def("end_popup",
@@ -2378,7 +2376,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             OpenPopupOnItemClick_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
         },
-        nb::arg("str_id") = nb::none(), nb::arg("popup_flags") = 1,
+        nb::arg("str_id").none() = nb::none(), nb::arg("popup_flags") = 1,
         "helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)");
 
     m.def("close_current_popup",
@@ -2399,7 +2397,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return BeginPopupContextItem_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
         },
-        nb::arg("str_id") = nb::none(), nb::arg("popup_flags") = 1,
+        nb::arg("str_id").none() = nb::none(), nb::arg("popup_flags") = 1,
         "open+begin popup when clicked on last item. Use str_id==None to associate the popup to previous item. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here. read comments in .cpp!");
 
     m.def("begin_popup_context_window",
@@ -2417,7 +2415,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return BeginPopupContextWindow_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
         },
-        nb::arg("str_id") = nb::none(), nb::arg("popup_flags") = 1,
+        nb::arg("str_id").none() = nb::none(), nb::arg("popup_flags") = 1,
         "open+begin popup when clicked on current window.");
 
     m.def("begin_popup_context_void",
@@ -2435,7 +2433,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return BeginPopupContextVoid_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
         },
-        nb::arg("str_id") = nb::none(), nb::arg("popup_flags") = 1,
+        nb::arg("str_id").none() = nb::none(), nb::arg("popup_flags") = 1,
         "open+begin popup when clicked in None (where there are no windows).");
 
     m.def("is_popup_open",
@@ -2462,7 +2460,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return BeginTable_adapt_mutable_param_with_default_value(str_id, columns, flags, outer_size, inner_width);
         },
-        nb::arg("str_id"), nb::arg("columns"), nb::arg("flags") = 0, nb::arg("outer_size") = nb::none(), nb::arg("inner_width") = 0.0f,
+        nb::arg("str_id"), nb::arg("columns"), nb::arg("flags") = 0, nb::arg("outer_size").none() = nb::none(), nb::arg("inner_width") = 0.0f,
         "Python bindings defaults:\n    If outer_size is None, then its default value will be: ImVec2(0.0, 0.0)");
 
     m.def("end_table",
@@ -2551,7 +2549,7 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             Columns_adapt_const_char_pointer_with_default_null(count, id, borders);
-        },     nb::arg("count") = 1, nb::arg("id_") = nb::none(), nb::arg("borders") = true);
+        },     nb::arg("count") = 1, nb::arg("id_").none() = nb::none(), nb::arg("borders") = true);
 
     m.def("next_column",
         ImGui::NextColumn, "next column, defaults to current row or next row if the current row is finished");
@@ -2605,7 +2603,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return BeginTabItem_adapt_modifiable_immutable_to_return(label, p_open, flags);
         },
-        nb::arg("label"), nb::arg("p_open") = nb::none(), nb::arg("flags") = 0,
+        nb::arg("label"), nb::arg("p_open").none() = nb::none(), nb::arg("flags") = 0,
         "create a Tab. Returns True if the Tab is selected.");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
@@ -2649,7 +2647,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return DockSpace_adapt_mutable_param_with_default_value(dockspace_id, size, flags, window_class);
         },
-        nb::arg("dockspace_id"), nb::arg("size") = nb::none(), nb::arg("flags") = 0, nb::arg("window_class") = nb::none(),
+        nb::arg("dockspace_id"), nb::arg("size").none() = nb::none(), nb::arg("flags") = 0, nb::arg("window_class") = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("dock_space_over_viewport",
@@ -2690,7 +2688,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             LogToFile_adapt_const_char_pointer_with_default_null(auto_open_depth, filename);
         },
-        nb::arg("auto_open_depth") = -1, nb::arg("filename") = nb::none(),
+        nb::arg("auto_open_depth") = -1, nb::arg("filename").none() = nb::none(),
         "start logging to file");
 
     m.def("log_to_clipboard",
@@ -2886,7 +2884,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return CalcTextSize_adapt_const_char_pointer_with_default_null(text, text_end, hide_text_after_double_hash, wrap_width);
         },
-        nb::arg("text"), nb::arg("text_end") = nb::none(), nb::arg("hide_text_after_double_hash") = false, nb::arg("wrap_width") = -1.0f,
+        nb::arg("text"), nb::arg("text_end").none() = nb::none(), nb::arg("hide_text_after_double_hash") = false, nb::arg("wrap_width") = -1.0f,
         "Text Utilities");
 
     m.def("color_convert_u32_to_float4",
@@ -3123,7 +3121,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumWindowFlags_ =
-        nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags_", nb::is_arithmetic(), " Flags for ImGui::Begin()\n (Those are per-window flags. There are shared flags in ImGuiIO: io.ConfigWindowsResizeFromEdges and io.ConfigWindowsMoveFromTitleBarOnly)")
+        nb::enum_<ImGuiWindowFlags_>(m, "WindowFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::Begin()\n (Those are per-window flags. There are shared flags in ImGuiIO: io.ConfigWindowsResizeFromEdges and io.ConfigWindowsMoveFromTitleBarOnly)")
             .value("none", ImGuiWindowFlags_None, "")
             .value("no_title_bar", ImGuiWindowFlags_NoTitleBar, "Disable title-bar")
             .value("no_resize", ImGuiWindowFlags_NoResize, "Disable user resizing with the lower-right grip")
@@ -3157,7 +3155,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumChildFlags_ =
-        nb::enum_<ImGuiChildFlags_>(m, "ChildFlags_", nb::is_arithmetic(), " Flags for ImGui::BeginChild()\n (Legacy: bit 0 must always correspond to ImGuiChildFlags_Borders to be backward compatible with old API using 'bool border = False'.\n About using AutoResizeX/AutoResizeY flags:\n - May be combined with SetNextWindowSizeConstraints() to set a min/max size for each axis (see \"Demo->Child->Auto-resize with Constraints\").\n - Size measurement for a given axis is only performed when the child window is within visible boundaries, or is just appearing.\n   - This allows BeginChild() to return False when not within boundaries (e.g. when scrolling), which is more optimal. BUT it won't update its auto-size while clipped.\n     While not perfect, it is a better default behavior as the always-on performance gain is more valuable than the occasional \"resizing after becoming visible again\" glitch.\n   - You may also use ImGuiChildFlags_AlwaysAutoResize to force an update even when child window is not in view.\n     HOWEVER PLEASE UNDERSTAND THAT DOING SO WILL PREVENT BeginChild() FROM EVER RETURNING FALSE, disabling benefits of coarse clipping.")
+        nb::enum_<ImGuiChildFlags_>(m, "ChildFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::BeginChild()\n (Legacy: bit 0 must always correspond to ImGuiChildFlags_Borders to be backward compatible with old API using 'bool border = False'.\n About using AutoResizeX/AutoResizeY flags:\n - May be combined with SetNextWindowSizeConstraints() to set a min/max size for each axis (see \"Demo->Child->Auto-resize with Constraints\").\n - Size measurement for a given axis is only performed when the child window is within visible boundaries, or is just appearing.\n   - This allows BeginChild() to return False when not within boundaries (e.g. when scrolling), which is more optimal. BUT it won't update its auto-size while clipped.\n     While not perfect, it is a better default behavior as the always-on performance gain is more valuable than the occasional \"resizing after becoming visible again\" glitch.\n   - You may also use ImGuiChildFlags_AlwaysAutoResize to force an update even when child window is not in view.\n     HOWEVER PLEASE UNDERSTAND THAT DOING SO WILL PREVENT BeginChild() FROM EVER RETURNING FALSE, disabling benefits of coarse clipping.")
             .value("none", ImGuiChildFlags_None, "")
             .value("borders", ImGuiChildFlags_Borders, "Show an outer border and enable WindowPadding. (IMPORTANT: this is always == 1 == True for legacy reason)")
             .value("always_use_window_padding", ImGuiChildFlags_AlwaysUseWindowPadding, "Pad with style.WindowPadding even if no border are drawn (no padding by default for non-bordered child windows because it makes more sense)")
@@ -3171,7 +3169,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumItemFlags_ =
-        nb::enum_<ImGuiItemFlags_>(m, "ItemFlags_", nb::is_arithmetic(), " Flags for ImGui::PushItemFlag()\n (Those are shared by all items)")
+        nb::enum_<ImGuiItemFlags_>(m, "ItemFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::PushItemFlag()\n (Those are shared by all items)")
             .value("none", ImGuiItemFlags_None, "(Default)")
             .value("no_tab_stop", ImGuiItemFlags_NoTabStop, "False    // Disable keyboard tabbing. This is a \"lighter\" version of ImGuiItemFlags_NoNav.")
             .value("no_nav", ImGuiItemFlags_NoNav, "False    // Disable any form of focusing (keyboard/gamepad directional navigation and SetKeyboardFocusHere() calls).")
@@ -3182,7 +3180,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumInputTextFlags_ =
-        nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags_", nb::is_arithmetic(), " Flags for ImGui::InputText()\n (Those are per-item flags. There are shared flags in ImGuiIO: io.ConfigInputTextCursorBlink and io.ConfigInputTextEnterKeepActive)")
+        nb::enum_<ImGuiInputTextFlags_>(m, "InputTextFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::InputText()\n (Those are per-item flags. There are shared flags in ImGuiIO: io.ConfigInputTextCursorBlink and io.ConfigInputTextEnterKeepActive)")
             .value("none", ImGuiInputTextFlags_None, "")
             .value("chars_decimal", ImGuiInputTextFlags_CharsDecimal, "Allow 0123456789.+-*/")
             .value("chars_hexadecimal", ImGuiInputTextFlags_CharsHexadecimal, "Allow 0123456789ABCDEFabcdef")
@@ -3211,7 +3209,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumTreeNodeFlags_ =
-        nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags_", nb::is_arithmetic(), "Flags for ImGui::TreeNodeEx(), ImGui::CollapsingHeader*()")
+        nb::enum_<ImGuiTreeNodeFlags_>(m, "TreeNodeFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGui::TreeNodeEx(), ImGui::CollapsingHeader*()")
             .value("none", ImGuiTreeNodeFlags_None, "")
             .value("selected", ImGuiTreeNodeFlags_Selected, "Draw as selected")
             .value("framed", ImGuiTreeNodeFlags_Framed, "Draw frame with background (e.g. for CollapsingHeader)")
@@ -3237,7 +3235,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumPopupFlags_ =
-        nb::enum_<ImGuiPopupFlags_>(m, "PopupFlags_", nb::is_arithmetic(), " Flags for OpenPopup*(), BeginPopupContext*(), IsPopupOpen() functions.\n - To be backward compatible with older API which took an 'int mouse_button = 1' argument instead of 'ImGuiPopupFlags flags',\n   we need to treat small flags values as a mouse button index, so we encode the mouse button in the first few bits of the flags.\n   It is therefore guaranteed to be legal to pass a mouse button index in ImGuiPopupFlags.\n - For the same reason, we exceptionally default the ImGuiPopupFlags argument of BeginPopupContextXXX functions to 1 instead of 0.\n   IMPORTANT: because the default parameter is 1 (==ImGuiPopupFlags_MouseButtonRight), if you rely on the default parameter\n   and want to use another flag, you need to pass in the ImGuiPopupFlags_MouseButtonRight flag explicitly.\n - Multiple buttons currently cannot be combined/or-ed in those functions (we could allow it later).")
+        nb::enum_<ImGuiPopupFlags_>(m, "PopupFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for OpenPopup*(), BeginPopupContext*(), IsPopupOpen() functions.\n - To be backward compatible with older API which took an 'int mouse_button = 1' argument instead of 'ImGuiPopupFlags flags',\n   we need to treat small flags values as a mouse button index, so we encode the mouse button in the first few bits of the flags.\n   It is therefore guaranteed to be legal to pass a mouse button index in ImGuiPopupFlags.\n - For the same reason, we exceptionally default the ImGuiPopupFlags argument of BeginPopupContextXXX functions to 1 instead of 0.\n   IMPORTANT: because the default parameter is 1 (==ImGuiPopupFlags_MouseButtonRight), if you rely on the default parameter\n   and want to use another flag, you need to pass in the ImGuiPopupFlags_MouseButtonRight flag explicitly.\n - Multiple buttons currently cannot be combined/or-ed in those functions (we could allow it later).")
             .value("none", ImGuiPopupFlags_None, "")
             .value("mouse_button_left", ImGuiPopupFlags_MouseButtonLeft, "For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)")
             .value("mouse_button_right", ImGuiPopupFlags_MouseButtonRight, "For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as ImGuiMouseButton_Right)")
@@ -3253,7 +3251,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumSelectableFlags_ =
-        nb::enum_<ImGuiSelectableFlags_>(m, "SelectableFlags_", nb::is_arithmetic(), "Flags for ImGui::Selectable()")
+        nb::enum_<ImGuiSelectableFlags_>(m, "SelectableFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGui::Selectable()")
             .value("none", ImGuiSelectableFlags_None, "")
             .value("no_auto_close_popups", ImGuiSelectableFlags_NoAutoClosePopups, "Clicking this doesn't close parent popup window (overrides ImGuiItemFlags_AutoClosePopups)")
             .value("span_all_columns", ImGuiSelectableFlags_SpanAllColumns, "Frame will span all columns of its container table (text will still fit in current column)")
@@ -3264,7 +3262,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumComboFlags_ =
-        nb::enum_<ImGuiComboFlags_>(m, "ComboFlags_", nb::is_arithmetic(), "Flags for ImGui::BeginCombo()")
+        nb::enum_<ImGuiComboFlags_>(m, "ComboFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGui::BeginCombo()")
             .value("none", ImGuiComboFlags_None, "")
             .value("popup_align_left", ImGuiComboFlags_PopupAlignLeft, "Align the popup toward the left by default")
             .value("height_small", ImGuiComboFlags_HeightSmall, "Max ~4 items visible. Tip: If you want your combo popup to be a specific size you can use SetNextWindowSizeConstraints() prior to calling BeginCombo()")
@@ -3278,7 +3276,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumTabBarFlags_ =
-        nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags_", nb::is_arithmetic(), "Flags for ImGui::BeginTabBar()")
+        nb::enum_<ImGuiTabBarFlags_>(m, "TabBarFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGui::BeginTabBar()")
             .value("none", ImGuiTabBarFlags_None, "")
             .value("reorderable", ImGuiTabBarFlags_Reorderable, "Allow manually dragging tabs to re-order them + New tabs are appended at the end of list")
             .value("auto_select_new_tabs", ImGuiTabBarFlags_AutoSelectNewTabs, "Automatically select new tabs when they appear")
@@ -3294,7 +3292,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumTabItemFlags_ =
-        nb::enum_<ImGuiTabItemFlags_>(m, "TabItemFlags_", nb::is_arithmetic(), "Flags for ImGui::BeginTabItem()")
+        nb::enum_<ImGuiTabItemFlags_>(m, "TabItemFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGui::BeginTabItem()")
             .value("none", ImGuiTabItemFlags_None, "")
             .value("unsaved_document", ImGuiTabItemFlags_UnsavedDocument, "Display a dot next to the title + set ImGuiTabItemFlags_NoAssumedClosure.")
             .value("set_selected", ImGuiTabItemFlags_SetSelected, "Trigger flag to programmatically make the tab selected when calling BeginTabItem()")
@@ -3308,7 +3306,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumFocusedFlags_ =
-        nb::enum_<ImGuiFocusedFlags_>(m, "FocusedFlags_", nb::is_arithmetic(), "Flags for ImGui::IsWindowFocused()")
+        nb::enum_<ImGuiFocusedFlags_>(m, "FocusedFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGui::IsWindowFocused()")
             .value("none", ImGuiFocusedFlags_None, "")
             .value("child_windows", ImGuiFocusedFlags_ChildWindows, "Return True if any children of the window is focused")
             .value("root_window", ImGuiFocusedFlags_RootWindow, "Test from root window (top most parent of the current hierarchy)")
@@ -3319,7 +3317,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumHoveredFlags_ =
-        nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags_", nb::is_arithmetic(), " Flags for ImGui::IsItemHovered(), ImGui::IsWindowHovered()\n Note: if you are trying to check whether your mouse should be dispatched to Dear ImGui or to your app, you should use 'io.WantCaptureMouse' instead! Please read the FAQ!\n Note: windows with the ImGuiWindowFlags_NoInputs flag are ignored by IsWindowHovered() calls.")
+        nb::enum_<ImGuiHoveredFlags_>(m, "HoveredFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::IsItemHovered(), ImGui::IsWindowHovered()\n Note: if you are trying to check whether your mouse should be dispatched to Dear ImGui or to your app, you should use 'io.WantCaptureMouse' instead! Please read the FAQ!\n Note: windows with the ImGuiWindowFlags_NoInputs flag are ignored by IsWindowHovered() calls.")
             .value("none", ImGuiHoveredFlags_None, "Return True if directly over the item/window, not obstructed by another window, not obstructed by an active popup or modal blocking inputs under them.")
             .value("child_windows", ImGuiHoveredFlags_ChildWindows, "IsWindowHovered() only: Return True if any children of the window is hovered")
             .value("root_window", ImGuiHoveredFlags_RootWindow, "IsWindowHovered() only: Test from root window (top most parent of the current hierarchy)")
@@ -3344,7 +3342,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumDockNodeFlags_ =
-        nb::enum_<ImGuiDockNodeFlags_>(m, "DockNodeFlags_", nb::is_arithmetic(), " Flags for ImGui::DockSpace(), shared/inherited by child nodes.\n (Some flags can be applied to individual nodes directly)\n FIXME-DOCK: Also see ImGuiDockNodeFlagsPrivate_ which may involve using the WIP and internal DockBuilder api.")
+        nb::enum_<ImGuiDockNodeFlags_>(m, "DockNodeFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::DockSpace(), shared/inherited by child nodes.\n (Some flags can be applied to individual nodes directly)\n FIXME-DOCK: Also see ImGuiDockNodeFlagsPrivate_ which may involve using the WIP and internal DockBuilder api.")
             .value("none", ImGuiDockNodeFlags_None, "")
             .value("keep_alive_only", ImGuiDockNodeFlags_KeepAliveOnly, "// Don't display the dockspace node but keep it alive. Windows docked into this dockspace node won't be undocked.")
             .value("no_docking_over_central_node", ImGuiDockNodeFlags_NoDockingOverCentralNode, "// Disable docking over the Central Node, which will be always kept empty.")
@@ -3356,7 +3354,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumDragDropFlags_ =
-        nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags_", nb::is_arithmetic(), "Flags for ImGui::BeginDragDropSource(), ImGui::AcceptDragDropPayload()")
+        nb::enum_<ImGuiDragDropFlags_>(m, "DragDropFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGui::BeginDragDropSource(), ImGui::AcceptDragDropPayload()")
             .value("none", ImGuiDragDropFlags_None, "")
             .value("source_no_preview_tooltip", ImGuiDragDropFlags_SourceNoPreviewTooltip, "Disable preview tooltip. By default, a successful call to BeginDragDropSource opens a tooltip so you can display a preview or description of the source contents. This flag disables this behavior.")
             .value("source_no_disable_hover", ImGuiDragDropFlags_SourceNoDisableHover, "By default, when dragging we clear data so that IsItemHovered() will return False, to avoid subsequent user code submitting tooltips. This flag disables this behavior so you can still call IsItemHovered() on the source item.")
@@ -3373,7 +3371,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumDataType_ =
-        nb::enum_<ImGuiDataType_>(m, "DataType_", nb::is_arithmetic(), "A primary data type")
+        nb::enum_<ImGuiDataType_>(m, "DataType_", nb::is_arithmetic(), nb::is_flag(), "A primary data type")
             .value("s8", ImGuiDataType_S8, "signed char / char (with sensible compilers)")
             .value("u8", ImGuiDataType_U8, "uchar")
             .value("s16", ImGuiDataType_S16, "short")
@@ -3390,7 +3388,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumDir =
-        nb::enum_<ImGuiDir>(m, "Dir", nb::is_arithmetic(), "A cardinal direction")
+        nb::enum_<ImGuiDir>(m, "Dir", nb::is_arithmetic(), nb::is_flag(), "A cardinal direction")
             .value("none", ImGuiDir_None, "")
             .value("left", ImGuiDir_Left, "")
             .value("right", ImGuiDir_Right, "")
@@ -3400,14 +3398,14 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumSortDirection =
-        nb::enum_<ImGuiSortDirection>(m, "SortDirection", nb::is_arithmetic(), "A sorting direction")
+        nb::enum_<ImGuiSortDirection>(m, "SortDirection", nb::is_arithmetic(), nb::is_flag(), "A sorting direction")
             .value("none", ImGuiSortDirection_None, "")
             .value("ascending", ImGuiSortDirection_Ascending, "Ascending = 0->9, A->Z etc.")
             .value("descending", ImGuiSortDirection_Descending, "Descending = 9->0, Z->A etc.");
 
 
     auto pyEnumKey =
-        nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic(), " A key identifier (ImGuiKey_XXX or ImGuiMod_XXX value): can represent Keyboard, Mouse and Gamepad values.\n All our named keys are >= 512. Keys value 0 to 511 are left unused and were legacy native/opaque key values (< 1.87).\n Support for legacy keys was completely removed in 1.91.5.\n Read details about the 1.87+ transition : https://github.com/ocornut/imgui/issues/4921\n Note that \"Keys\" related to physical keys and are not the same concept as input \"Characters\", the later are submitted via io.AddInputCharacter().\n The keyboard key enum values are named after the keys on a standard US keyboard, and on other keyboard types the keys reported may not match the keycaps.")
+        nb::enum_<ImGuiKey>(m, "Key", nb::is_arithmetic(), nb::is_flag(), " A key identifier (ImGuiKey_XXX or ImGuiMod_XXX value): can represent Keyboard, Mouse and Gamepad values.\n All our named keys are >= 512. Keys value 0 to 511 are left unused and were legacy native/opaque key values (< 1.87).\n Support for legacy keys was completely removed in 1.91.5.\n Read details about the 1.87+ transition : https://github.com/ocornut/imgui/issues/4921\n Note that \"Keys\" related to physical keys and are not the same concept as input \"Characters\", the later are submitted via io.AddInputCharacter().\n The keyboard key enum values are named after the keys on a standard US keyboard, and on other keyboard types the keys reported may not match the keycaps.")
             .value("none", ImGuiKey_None, "")
             .value("named_key_begin", ImGuiKey_NamedKey_BEGIN, "First valid key value (other than 0)")
             .value("tab", ImGuiKey_Tab, "== ImGuiKey_NamedKey_BEGIN")
@@ -3428,7 +3426,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("left_ctrl", ImGuiKey_LeftCtrl, "")
             .value("left_shift", ImGuiKey_LeftShift, "")
             .value("left_alt", ImGuiKey_LeftAlt, "")
-            .value("left_super", ImGuiKey_LeftSuper, "")
+            .value("left_super", ImGuiKey_LeftSuper, "Also see ImGuiMod_Ctrl, ImGuiMod_Shift, ImGuiMod_Alt, ImGuiMod_Super below!")
             .value("right_ctrl", ImGuiKey_RightCtrl, "")
             .value("right_shift", ImGuiKey_RightShift, "")
             .value("right_alt", ImGuiKey_RightAlt, "")
@@ -3530,30 +3528,30 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("app_back", ImGuiKey_AppBack, "Available on some keyboard/mouses. Often referred as \"Browser Back\"")
             .value("app_forward", ImGuiKey_AppForward, "")
             .value("oem102", ImGuiKey_Oem102, "Non-US backslash.")
-            .value("gamepad_start", ImGuiKey_GamepadStart, "Menu (Xbox)      + (Switch)   Start/Options (PS)")
-            .value("gamepad_back", ImGuiKey_GamepadBack, "View (Xbox)      - (Switch)   Share (PS)")
-            .value("gamepad_face_left", ImGuiKey_GamepadFaceLeft, "X (Xbox)         Y (Switch)   Square (PS)        // Tap: Toggle Menu. Hold: Windowing mode (Focus/Move/Resize windows)")
-            .value("gamepad_face_right", ImGuiKey_GamepadFaceRight, "B (Xbox)         A (Switch)   Circle (PS)        // Cancel / Close / Exit")
-            .value("gamepad_face_up", ImGuiKey_GamepadFaceUp, "Y (Xbox)         X (Switch)   Triangle (PS)      // Text Input / On-screen Keyboard")
-            .value("gamepad_face_down", ImGuiKey_GamepadFaceDown, "A (Xbox)         B (Switch)   Cross (PS)         // Activate / Open / Toggle / Tweak")
-            .value("gamepad_dpad_left", ImGuiKey_GamepadDpadLeft, "D-pad Left                                       // Move / Tweak / Resize Window (in Windowing mode)")
-            .value("gamepad_dpad_right", ImGuiKey_GamepadDpadRight, "D-pad Right                                      // Move / Tweak / Resize Window (in Windowing mode)")
-            .value("gamepad_dpad_up", ImGuiKey_GamepadDpadUp, "D-pad Up                                         // Move / Tweak / Resize Window (in Windowing mode)")
-            .value("gamepad_dpad_down", ImGuiKey_GamepadDpadDown, "D-pad Down                                       // Move / Tweak / Resize Window (in Windowing mode)")
-            .value("gamepad_l1", ImGuiKey_GamepadL1, "L Bumper (Xbox)  L (Switch)   L1 (PS)            // Tweak Slower / Focus Previous (in Windowing mode)")
-            .value("gamepad_r1", ImGuiKey_GamepadR1, "R Bumper (Xbox)  R (Switch)   R1 (PS)            // Tweak Faster / Focus Next (in Windowing mode)")
-            .value("gamepad_l2", ImGuiKey_GamepadL2, "L Trig. (Xbox)   ZL (Switch)  L2 (PS) [Analog]")
-            .value("gamepad_r2", ImGuiKey_GamepadR2, "R Trig. (Xbox)   ZR (Switch)  R2 (PS) [Analog]")
-            .value("gamepad_l3", ImGuiKey_GamepadL3, "L Stick (Xbox)   L3 (Switch)  L3 (PS)")
-            .value("gamepad_r3", ImGuiKey_GamepadR3, "R Stick (Xbox)   R3 (Switch)  R3 (PS)")
-            .value("gamepad_l_stick_left", ImGuiKey_GamepadLStickLeft, "[Analog]                                         // Move Window (in Windowing mode)")
-            .value("gamepad_l_stick_right", ImGuiKey_GamepadLStickRight, "[Analog]                                         // Move Window (in Windowing mode)")
-            .value("gamepad_l_stick_up", ImGuiKey_GamepadLStickUp, "[Analog]                                         // Move Window (in Windowing mode)")
-            .value("gamepad_l_stick_down", ImGuiKey_GamepadLStickDown, "[Analog]                                         // Move Window (in Windowing mode)")
-            .value("gamepad_r_stick_left", ImGuiKey_GamepadRStickLeft, "[Analog]")
-            .value("gamepad_r_stick_right", ImGuiKey_GamepadRStickRight, "[Analog]")
-            .value("gamepad_r_stick_up", ImGuiKey_GamepadRStickUp, "[Analog]")
-            .value("gamepad_r_stick_down", ImGuiKey_GamepadRStickDown, "[Analog]")
+            .value("gamepad_start", ImGuiKey_GamepadStart, "Menu        | +       | Options  |")
+            .value("gamepad_back", ImGuiKey_GamepadBack, "View        | -       | Share    |")
+            .value("gamepad_face_left", ImGuiKey_GamepadFaceLeft, "X           | Y       | Square   | Tap: Toggle Menu. Hold: Windowing mode (Focus/Move/Resize windows)")
+            .value("gamepad_face_right", ImGuiKey_GamepadFaceRight, "B           | A       | Circle   | Cancel / Close / Exit")
+            .value("gamepad_face_up", ImGuiKey_GamepadFaceUp, "Y           | X       | Triangle | Text Input / On-screen Keyboard")
+            .value("gamepad_face_down", ImGuiKey_GamepadFaceDown, "A           | B       | Cross    | Activate / Open / Toggle / Tweak")
+            .value("gamepad_dpad_left", ImGuiKey_GamepadDpadLeft, "D-pad Left  | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
+            .value("gamepad_dpad_right", ImGuiKey_GamepadDpadRight, "D-pad Right | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
+            .value("gamepad_dpad_up", ImGuiKey_GamepadDpadUp, "D-pad Up    | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
+            .value("gamepad_dpad_down", ImGuiKey_GamepadDpadDown, "D-pad Down  | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
+            .value("gamepad_l1", ImGuiKey_GamepadL1, "L Bumper    | L       | L1       | Tweak Slower / Focus Previous (in Windowing mode)")
+            .value("gamepad_r1", ImGuiKey_GamepadR1, "R Bumper    | R       | R1       | Tweak Faster / Focus Next (in Windowing mode)")
+            .value("gamepad_l2", ImGuiKey_GamepadL2, "L Trigger   | ZL      | L2       | [Analog]")
+            .value("gamepad_r2", ImGuiKey_GamepadR2, "R Trigger   | ZR      | R2       | [Analog]")
+            .value("gamepad_l3", ImGuiKey_GamepadL3, "L Stick     | L3      | L3       |")
+            .value("gamepad_r3", ImGuiKey_GamepadR3, "R Stick     | R3      | R3       |")
+            .value("gamepad_l_stick_left", ImGuiKey_GamepadLStickLeft, "|         |          | [Analog] Move Window (in Windowing mode)")
+            .value("gamepad_l_stick_right", ImGuiKey_GamepadLStickRight, "|         |          | [Analog] Move Window (in Windowing mode)")
+            .value("gamepad_l_stick_up", ImGuiKey_GamepadLStickUp, "|         |          | [Analog] Move Window (in Windowing mode)")
+            .value("gamepad_l_stick_down", ImGuiKey_GamepadLStickDown, "|         |          | [Analog] Move Window (in Windowing mode)")
+            .value("gamepad_r_stick_left", ImGuiKey_GamepadRStickLeft, "|         |          | [Analog]")
+            .value("gamepad_r_stick_right", ImGuiKey_GamepadRStickRight, "|         |          | [Analog]")
+            .value("gamepad_r_stick_up", ImGuiKey_GamepadRStickUp, "|         |          | [Analog]")
+            .value("gamepad_r_stick_down", ImGuiKey_GamepadRStickDown, "|         |          | [Analog]")
             .value("mouse_left", ImGuiKey_MouseLeft, " Aliases: Mouse Buttons (auto-submitted from AddMouseButtonEvent() calls)\n - This is mirroring the data also written to io.MouseDown[], io.MouseWheel, in a format allowing them to be accessed via standard key API.")
             .value("mouse_right", ImGuiKey_MouseRight, "")
             .value("mouse_middle", ImGuiKey_MouseMiddle, "")
@@ -3566,17 +3564,17 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("reserved_for_mod_alt", ImGuiKey_ReservedForModAlt, "")
             .value("reserved_for_mod_super", ImGuiKey_ReservedForModSuper, "")
             .value("named_key_end", ImGuiKey_NamedKey_END, "")
+            .value("named_key_count", ImGuiKey_NamedKey_COUNT, "")
             .value("mod_none", ImGuiMod_None, "")
             .value("mod_ctrl", ImGuiMod_Ctrl, "Ctrl (non-macOS), Cmd (macOS)")
             .value("mod_shift", ImGuiMod_Shift, "Shift")
             .value("mod_alt", ImGuiMod_Alt, "Option/Menu")
             .value("mod_super", ImGuiMod_Super, "Windows/Super (non-macOS), Ctrl (macOS)")
-            .value("mod_mask_", ImGuiMod_Mask_, "4-bits")
-            .value("named_key_count", ImGuiKey_NamedKey_COUNT, "[Internal] If you need to iterate all keys (for e.g. an input mapper) you may use ImGuiKey_NamedKey_BEGIN..ImGuiKey_NamedKey_END.");
+            .value("mod_mask_", ImGuiMod_Mask_, "4-bits");
 
 
     auto pyEnumInputFlags_ =
-        nb::enum_<ImGuiInputFlags_>(m, "InputFlags_", nb::is_arithmetic(), " Flags for Shortcut(), SetNextItemShortcut(),\n (and for upcoming extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner() that are still in imgui_internal.h)\n Don't mistake with ImGuiInputTextFlags! (which is for ImGui::InputText() function)")
+        nb::enum_<ImGuiInputFlags_>(m, "InputFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for Shortcut(), SetNextItemShortcut(),\n (and for upcoming extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner() that are still in imgui_internal.h)\n Don't mistake with ImGuiInputTextFlags! (which is for ImGui::InputText() function)")
             .value("none", ImGuiInputFlags_None, "")
             .value("repeat", ImGuiInputFlags_Repeat, "Enable repeat. Return True on successive repeats. Default for legacy IsKeyPressed(). NOT Default for legacy IsMouseClicked(). MUST BE == 1.")
             .value("route_active", ImGuiInputFlags_RouteActive, "Route to active item only.")
@@ -3591,7 +3589,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumConfigFlags_ =
-        nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags_", nb::is_arithmetic(), "Configuration flags stored in io.ConfigFlags. Set by user/application.")
+        nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags_", nb::is_arithmetic(), nb::is_flag(), "Configuration flags stored in io.ConfigFlags. Set by user/application.")
             .value("none", ImGuiConfigFlags_None, "")
             .value("nav_enable_keyboard", ImGuiConfigFlags_NavEnableKeyboard, "Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate.")
             .value("nav_enable_gamepad", ImGuiConfigFlags_NavEnableGamepad, "Master gamepad navigation enable flag. Backend also needs to set ImGuiBackendFlags_HasGamepad.")
@@ -3605,7 +3603,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumBackendFlags_ =
-        nb::enum_<ImGuiBackendFlags_>(m, "BackendFlags_", nb::is_arithmetic(), "Backend capabilities flags stored in io.BackendFlags. Set by imgui_impl_xxx or custom backend.")
+        nb::enum_<ImGuiBackendFlags_>(m, "BackendFlags_", nb::is_arithmetic(), nb::is_flag(), "Backend capabilities flags stored in io.BackendFlags. Set by imgui_impl_xxx or custom backend.")
             .value("none", ImGuiBackendFlags_None, "")
             .value("has_gamepad", ImGuiBackendFlags_HasGamepad, "Backend Platform supports gamepad and currently has one connected.")
             .value("has_mouse_cursors", ImGuiBackendFlags_HasMouseCursors, "Backend Platform supports honoring GetMouseCursor() value to change the OS cursor shape.")
@@ -3618,7 +3616,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumCol_ =
-        nb::enum_<ImGuiCol_>(m, "Col_", nb::is_arithmetic(), "Enumeration for PushStyleColor() / PopStyleColor()")
+        nb::enum_<ImGuiCol_>(m, "Col_", nb::is_arithmetic(), nb::is_flag(), "Enumeration for PushStyleColor() / PopStyleColor()")
             .value("text", ImGuiCol_Text, "")
             .value("text_disabled", ImGuiCol_TextDisabled, "")
             .value("window_bg", ImGuiCol_WindowBg, "Background of normal windows")
@@ -3683,7 +3681,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumStyleVar_ =
-        nb::enum_<ImGuiStyleVar_>(m, "StyleVar_", nb::is_arithmetic(), " Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.\n - The enum only refers to fields of ImGuiStyle which makes sense to be pushed/popped inside UI code.\n   During initialization or between frames, feel free to just poke into ImGuiStyle directly.\n - Tip: Use your programming IDE navigation facilities on the names in the _second column_ below to find the actual members and their description.\n   - In Visual Studio: CTRL+comma (\"Edit.GoToAll\") can follow symbols inside comments, whereas CTRL+F12 (\"Edit.GoToImplementation\") cannot.\n   - In Visual Studio w/ Visual Assist installed: ALT+G (\"VAssistX.GoToImplementation\") can also follow symbols inside comments.\n   - In VS Code, CLion, etc.: CTRL+click can follow symbols inside comments.\n - When changing this enum, you need to update the associated internal table GStyleVarInfo[] accordingly. This is where we link enum values to members offset/type.")
+        nb::enum_<ImGuiStyleVar_>(m, "StyleVar_", nb::is_arithmetic(), nb::is_flag(), " Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.\n - The enum only refers to fields of ImGuiStyle which makes sense to be pushed/popped inside UI code.\n   During initialization or between frames, feel free to just poke into ImGuiStyle directly.\n - Tip: Use your programming IDE navigation facilities on the names in the _second column_ below to find the actual members and their description.\n   - In Visual Studio: CTRL+comma (\"Edit.GoToAll\") can follow symbols inside comments, whereas CTRL+F12 (\"Edit.GoToImplementation\") cannot.\n   - In Visual Studio w/ Visual Assist installed: ALT+G (\"VAssistX.GoToImplementation\") can also follow symbols inside comments.\n   - In VS Code, CLion, etc.: CTRL+click can follow symbols inside comments.\n - When changing this enum, you need to update the associated internal table GStyleVarInfo[] accordingly. This is where we link enum values to members offset/type.")
             .value("alpha", ImGuiStyleVar_Alpha, "float     Alpha")
             .value("disabled_alpha", ImGuiStyleVar_DisabledAlpha, "float     DisabledAlpha")
             .value("window_padding", ImGuiStyleVar_WindowPadding, "ImVec2    WindowPadding")
@@ -3726,7 +3724,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumButtonFlags_ =
-        nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags_", nb::is_arithmetic(), "Flags for InvisibleButton() [extended in imgui_internal.h]")
+        nb::enum_<ImGuiButtonFlags_>(m, "ButtonFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for InvisibleButton() [extended in imgui_internal.h]")
             .value("none", ImGuiButtonFlags_None, "")
             .value("mouse_button_left", ImGuiButtonFlags_MouseButtonLeft, "React on left mouse button (default)")
             .value("mouse_button_right", ImGuiButtonFlags_MouseButtonRight, "React on right mouse button")
@@ -3736,7 +3734,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumColorEditFlags_ =
-        nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags_", nb::is_arithmetic(), "Flags for ColorEdit3() / ColorEdit4() / ColorPicker3() / ColorPicker4() / ColorButton()")
+        nb::enum_<ImGuiColorEditFlags_>(m, "ColorEditFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ColorEdit3() / ColorEdit4() / ColorPicker3() / ColorPicker4() / ColorButton()")
             .value("none", ImGuiColorEditFlags_None, "")
             .value("no_alpha", ImGuiColorEditFlags_NoAlpha, "// ColorEdit, ColorPicker, ColorButton: ignore Alpha component (will only read 3 components from the input pointer).")
             .value("no_picker", ImGuiColorEditFlags_NoPicker, "// ColorEdit: disable picker when clicking on color square.")
@@ -3771,7 +3769,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumSliderFlags_ =
-        nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags_", nb::is_arithmetic(), " Flags for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.\n We use the same sets of flags for DragXXX() and SliderXXX() functions as the features are the same and it makes it easier to swap them.\n (Those are per-item flags. There is shared behavior flag too: ImGuiIO: io.ConfigDragClickToInputText)")
+        nb::enum_<ImGuiSliderFlags_>(m, "SliderFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.\n We use the same sets of flags for DragXXX() and SliderXXX() functions as the features are the same and it makes it easier to swap them.\n (Those are per-item flags. There is shared behavior flag too: ImGuiIO: io.ConfigDragClickToInputText)")
             .value("none", ImGuiSliderFlags_None, "")
             .value("logarithmic", ImGuiSliderFlags_Logarithmic, "Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.")
             .value("no_round_to_format", ImGuiSliderFlags_NoRoundToFormat, "Disable rounding underlying value to match precision of the display format string (e.g. %.3 values are rounded to those 3 digits).")
@@ -3785,7 +3783,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumMouseButton_ =
-        nb::enum_<ImGuiMouseButton_>(m, "MouseButton_", nb::is_arithmetic(), " Identify a mouse button.\n Those values are guaranteed to be stable and we frequently use 0/1 directly. Named enums provided for convenience.")
+        nb::enum_<ImGuiMouseButton_>(m, "MouseButton_", nb::is_arithmetic(), nb::is_flag(), " Identify a mouse button.\n Those values are guaranteed to be stable and we frequently use 0/1 directly. Named enums provided for convenience.")
             .value("left", ImGuiMouseButton_Left, "")
             .value("right", ImGuiMouseButton_Right, "")
             .value("middle", ImGuiMouseButton_Middle, "")
@@ -3793,7 +3791,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumMouseCursor_ =
-        nb::enum_<ImGuiMouseCursor_>(m, "MouseCursor_", nb::is_arithmetic(), " Enumeration for GetMouseCursor()\n User code may request backend to display given cursor by calling SetMouseCursor(), which is why we have some cursors that are marked unused here")
+        nb::enum_<ImGuiMouseCursor_>(m, "MouseCursor_", nb::is_arithmetic(), nb::is_flag(), " Enumeration for GetMouseCursor()\n User code may request backend to display given cursor by calling SetMouseCursor(), which is why we have some cursors that are marked unused here")
             .value("none", ImGuiMouseCursor_None, "")
             .value("arrow", ImGuiMouseCursor_Arrow, "")
             .value("text_input", ImGuiMouseCursor_TextInput, "When hovering over InputText, etc.")
@@ -3810,7 +3808,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumMouseSource =
-        nb::enum_<ImGuiMouseSource>(m, "MouseSource", nb::is_arithmetic(), " Enumeration for AddMouseSourceEvent() actual source of Mouse Input data.\n Historically we use \"Mouse\" terminology everywhere to indicate pointer data, e.g. MousePos, IsMousePressed(), io.AddMousePosEvent()\n But that \"Mouse\" data can come from different source which occasionally may be useful for application to know about.\n You can submit a change of pointer type using io.AddMouseSourceEvent().")
+        nb::enum_<ImGuiMouseSource>(m, "MouseSource", nb::is_arithmetic(), nb::is_flag(), " Enumeration for AddMouseSourceEvent() actual source of Mouse Input data.\n Historically we use \"Mouse\" terminology everywhere to indicate pointer data, e.g. MousePos, IsMousePressed(), io.AddMousePosEvent()\n But that \"Mouse\" data can come from different source which occasionally may be useful for application to know about.\n You can submit a change of pointer type using io.AddMouseSourceEvent().")
             .value("mouse", ImGuiMouseSource_Mouse, "Input is coming from an actual mouse.")
             .value("touch_screen", ImGuiMouseSource_TouchScreen, "Input is coming from a touch screen (no hovering prior to initial press, less precise initial press aiming, dual-axis wheeling possible).")
             .value("pen", ImGuiMouseSource_Pen, "Input is coming from a pressure/magnetic pen (often used in conjunction with high-sampling rates).")
@@ -3818,7 +3816,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumCond_ =
-        nb::enum_<ImGuiCond_>(m, "Cond_", nb::is_arithmetic(), " Enumeration for ImGui::SetNextWindow***(), SetWindow***(), SetNextItem***() functions\n Represent a condition.\n Important: Treat as a regular enum! Do NOT combine multiple values using binary operators! All the functions above treat 0 as a shortcut to ImGuiCond_Always.")
+        nb::enum_<ImGuiCond_>(m, "Cond_", nb::is_arithmetic(), nb::is_flag(), " Enumeration for ImGui::SetNextWindow***(), SetWindow***(), SetNextItem***() functions\n Represent a condition.\n Important: Treat as a regular enum! Do NOT combine multiple values using binary operators! All the functions above treat 0 as a shortcut to ImGuiCond_Always.")
             .value("none", ImGuiCond_None, "No condition (always set the variable), same as _Always")
             .value("always", ImGuiCond_Always, "No condition (always set the variable), same as _None")
             .value("once", ImGuiCond_Once, "Set the variable once per runtime session (only the first call will succeed)")
@@ -3827,7 +3825,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumTableFlags_ =
-        nb::enum_<ImGuiTableFlags_>(m, "TableFlags_", nb::is_arithmetic(), " Flags for ImGui::BeginTable()\n - Important! Sizing policies have complex and subtle side effects, much more so than you would expect.\n   Read comments/demos carefully + experiment with live demos to get acquainted with them.\n - The DEFAULT sizing policies are:\n    - Default to ImGuiTableFlags_SizingFixedFit    if ScrollX is on, or if host window has ImGuiWindowFlags_AlwaysAutoResize.\n    - Default to ImGuiTableFlags_SizingStretchSame if ScrollX is off.\n - When ScrollX is off:\n    - Table defaults to ImGuiTableFlags_SizingStretchSame -> all Columns defaults to ImGuiTableColumnFlags_WidthStretch with same weight.\n    - Columns sizing policy allowed: Stretch (default), Fixed/Auto.\n    - Fixed Columns (if any) will generally obtain their requested width (unless the table cannot fit them all).\n    - Stretch Columns will share the remaining width according to their respective weight.\n    - Mixed Fixed/Stretch columns is possible but has various side-effects on resizing behaviors.\n      The typical use of mixing sizing policies is: any number of LEADING Fixed columns, followed by one or two TRAILING Stretch columns.\n      (this is because the visible order of columns have subtle but necessary effects on how they react to manual resizing).\n - When ScrollX is on:\n    - Table defaults to ImGuiTableFlags_SizingFixedFit -> all Columns defaults to ImGuiTableColumnFlags_WidthFixed\n    - Columns sizing policy allowed: Fixed/Auto mostly.\n    - Fixed Columns can be enlarged as needed. Table will show a horizontal scrollbar if needed.\n    - When using auto-resizing (non-resizable) fixed columns, querying the content width to use item right-alignment e.g. SetNextItemWidth(-FLT_MIN) doesn't make sense, would create a feedback loop.\n    - Using Stretch columns OFTEN DOES NOT MAKE SENSE if ScrollX is on, UNLESS you have specified a value for 'inner_width' in BeginTable().\n      If you specify a value for 'inner_width' then effectively the scrolling space is known and Stretch or mixed Fixed/Stretch columns become meaningful again.\n - Read on documentation at the top of imgui_tables.cpp for details.")
+        nb::enum_<ImGuiTableFlags_>(m, "TableFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::BeginTable()\n - Important! Sizing policies have complex and subtle side effects, much more so than you would expect.\n   Read comments/demos carefully + experiment with live demos to get acquainted with them.\n - The DEFAULT sizing policies are:\n    - Default to ImGuiTableFlags_SizingFixedFit    if ScrollX is on, or if host window has ImGuiWindowFlags_AlwaysAutoResize.\n    - Default to ImGuiTableFlags_SizingStretchSame if ScrollX is off.\n - When ScrollX is off:\n    - Table defaults to ImGuiTableFlags_SizingStretchSame -> all Columns defaults to ImGuiTableColumnFlags_WidthStretch with same weight.\n    - Columns sizing policy allowed: Stretch (default), Fixed/Auto.\n    - Fixed Columns (if any) will generally obtain their requested width (unless the table cannot fit them all).\n    - Stretch Columns will share the remaining width according to their respective weight.\n    - Mixed Fixed/Stretch columns is possible but has various side-effects on resizing behaviors.\n      The typical use of mixing sizing policies is: any number of LEADING Fixed columns, followed by one or two TRAILING Stretch columns.\n      (this is because the visible order of columns have subtle but necessary effects on how they react to manual resizing).\n - When ScrollX is on:\n    - Table defaults to ImGuiTableFlags_SizingFixedFit -> all Columns defaults to ImGuiTableColumnFlags_WidthFixed\n    - Columns sizing policy allowed: Fixed/Auto mostly.\n    - Fixed Columns can be enlarged as needed. Table will show a horizontal scrollbar if needed.\n    - When using auto-resizing (non-resizable) fixed columns, querying the content width to use item right-alignment e.g. SetNextItemWidth(-FLT_MIN) doesn't make sense, would create a feedback loop.\n    - Using Stretch columns OFTEN DOES NOT MAKE SENSE if ScrollX is on, UNLESS you have specified a value for 'inner_width' in BeginTable().\n      If you specify a value for 'inner_width' then effectively the scrolling space is known and Stretch or mixed Fixed/Stretch columns become meaningful again.\n - Read on documentation at the top of imgui_tables.cpp for details.")
             .value("none", ImGuiTableFlags_None, "")
             .value("resizable", ImGuiTableFlags_Resizable, "Enable resizing columns.")
             .value("reorderable", ImGuiTableFlags_Reorderable, "Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)")
@@ -3868,7 +3866,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumTableColumnFlags_ =
-        nb::enum_<ImGuiTableColumnFlags_>(m, "TableColumnFlags_", nb::is_arithmetic(), "Flags for ImGui::TableSetupColumn()")
+        nb::enum_<ImGuiTableColumnFlags_>(m, "TableColumnFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGui::TableSetupColumn()")
             .value("none", ImGuiTableColumnFlags_None, "")
             .value("disabled", ImGuiTableColumnFlags_Disabled, "Overriding/master disable flag: hide column, won't show in context menu (unlike calling TableSetColumnEnabled() which manipulates the user accessible state)")
             .value("default_hide", ImGuiTableColumnFlags_DefaultHide, "Default as a hidden/disabled column.")
@@ -3900,13 +3898,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumTableRowFlags_ =
-        nb::enum_<ImGuiTableRowFlags_>(m, "TableRowFlags_", nb::is_arithmetic(), "Flags for ImGui::TableNextRow()")
+        nb::enum_<ImGuiTableRowFlags_>(m, "TableRowFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGui::TableNextRow()")
             .value("none", ImGuiTableRowFlags_None, "")
             .value("headers", ImGuiTableRowFlags_Headers, "Identify header row (set default background color + width of its contents accounted differently for auto column width)");
 
 
     auto pyEnumTableBgTarget_ =
-        nb::enum_<ImGuiTableBgTarget_>(m, "TableBgTarget_", nb::is_arithmetic(), " Enum for ImGui::TableSetBgColor()\n Background colors are rendering in 3 layers:\n  - Layer 0: draw with RowBg0 color if set, otherwise draw with ColumnBg0 if set.\n  - Layer 1: draw with RowBg1 color if set, otherwise draw with ColumnBg1 if set.\n  - Layer 2: draw with CellBg color if set.\n The purpose of the two row/columns layers is to let you decide if a background color change should override or blend with the existing color.\n When using ImGuiTableFlags_RowBg on the table, each row has the RowBg0 color automatically set for odd/even rows.\n If you set the color of RowBg0 target, your color will override the existing RowBg0 color.\n If you set the color of RowBg1 or ColumnBg1 target, your color will blend over the RowBg0 color.")
+        nb::enum_<ImGuiTableBgTarget_>(m, "TableBgTarget_", nb::is_arithmetic(), nb::is_flag(), " Enum for ImGui::TableSetBgColor()\n Background colors are rendering in 3 layers:\n  - Layer 0: draw with RowBg0 color if set, otherwise draw with ColumnBg0 if set.\n  - Layer 1: draw with RowBg1 color if set, otherwise draw with ColumnBg1 if set.\n  - Layer 2: draw with CellBg color if set.\n The purpose of the two row/columns layers is to let you decide if a background color change should override or blend with the existing color.\n When using ImGuiTableFlags_RowBg on the table, each row has the RowBg0 color automatically set for odd/even rows.\n If you set the color of RowBg0 target, your color will override the existing RowBg0 color.\n If you set the color of RowBg1 or ColumnBg1 target, your color will blend over the RowBg0 color.")
             .value("none", ImGuiTableBgTarget_None, "")
             .value("row_bg0", ImGuiTableBgTarget_RowBg0, "Set row background color 0 (generally used for background, automatically set when ImGuiTableFlags_RowBg is used)")
             .value("row_bg1", ImGuiTableBgTarget_RowBg1, "Set row background color 1 (generally used for selection marking)")
@@ -6077,9 +6075,9 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImGuiStyle =
         nb::class_<ImGuiStyle>
             (m, "Style", "")
-        .def_rw("font_size_base", &ImGuiStyle::FontSizeBase, "Current base font size before external scaling factors are applied. Use PushFont()/PushFontSize() to modify. Use ImGui::GetFontSize() to obtain scaled value.")
-        .def_rw("font_scale_main", &ImGuiStyle::FontScaleMain, "Main scale factor. May be set by application once, or exposed to end-user.")
-        .def_rw("font_scale_dpi", &ImGuiStyle::FontScaleDpi, "Additional scale factor from viewport/monitor contents scale. When io.ConfigDpiScaleFonts is enabled, this is automatically overwritten when changing monitor DPI.")
+        .def_rw("font_size_base", &ImGuiStyle::FontSizeBase, "Current base font size before external global factors are applied. Use PushFont(None, size) to modify. Use ImGui::GetFontSize() to obtain scaled value.")
+        .def_rw("font_scale_main", &ImGuiStyle::FontScaleMain, "Main global scale factor. May be set by application once, or exposed to end-user.")
+        .def_rw("font_scale_dpi", &ImGuiStyle::FontScaleDpi, "Additional global scale factor from viewport/monitor contents scale. When io.ConfigDpiScaleFonts is enabled, this is automatically overwritten when changing monitor DPI.")
         .def_rw("alpha", &ImGuiStyle::Alpha, "Global alpha applies to everything in Dear ImGui.")
         .def_rw("disabled_alpha", &ImGuiStyle::DisabledAlpha, "Additional alpha multiplier applied by BeginDisabled(). Multiply over current value of Alpha.")
         .def_rw("window_padding", &ImGuiStyle::WindowPadding, "Padding within a window.")
@@ -6414,11 +6412,13 @@ void py_init_module_imgui_main(nb::module_& m)
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("set_ini_filename",
-            &ImGuiIO::SetIniFilename, nb::arg("filename"))
-        .def("set_log_filename",
-            &ImGuiIO::SetLogFilename, nb::arg("filename"))
+            &ImGuiIO::SetIniFilename,
+            nb::arg("filename").none(),
+            " - The disk functions are automatically called if IniFilename != None\n - Set IniFilename to None to load/save manually. Read io.WantSaveIniSettings description about handling .ini saving manually.\n - Important: default value \"imgui.ini\" is relative to current working dir! Most apps will want to lock this to an absolute path (e.g. same path as executables).")
         .def("get_ini_filename",
             &ImGuiIO::GetIniFilename)
+        .def("set_log_filename",
+            &ImGuiIO::SetLogFilename, nb::arg("filename"))
         .def("get_log_filename",
             &ImGuiIO::GetLogFilename)
         // #endif
@@ -6458,7 +6458,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 };
 
                 InsertChars_adapt_const_char_pointer_with_default_null(pos, text, text_end);
-            },     nb::arg("pos"), nb::arg("text"), nb::arg("text_end") = nb::none())
+            },     nb::arg("pos"), nb::arg("text"), nb::arg("text_end").none() = nb::none())
         .def("select_all",
             &ImGuiInputTextCallbackData::SelectAll, "(private API)")
         .def("clear_selection",
@@ -6488,7 +6488,7 @@ void py_init_module_imgui_main(nb::module_& m)
             else
                 r_ctor_->DesiredSize = ImVec2();
         },
-        nb::arg("pos") = nb::none(), nb::arg("current_size") = nb::none(), nb::arg("desired_size") = nb::none()
+        nb::arg("pos").none() = nb::none(), nb::arg("current_size").none() = nb::none(), nb::arg("desired_size").none() = nb::none()
         )
         .def_rw("user_data", &ImGuiSizeCallbackData::UserData, "Read-only.   What user passed to SetNextWindowSizeConstraints(). Generally store an integer or float in here (need reinterpret_cast<>).")
         .def_rw("pos", &ImGuiSizeCallbackData::Pos, "Read-only.   Window position, for reference.")
@@ -6586,7 +6586,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 };
 
                 return PassFilter_adapt_const_char_pointer_with_default_null(text, text_end);
-            },     nb::arg("text"), nb::arg("text_end") = nb::none())
+            },     nb::arg("text"), nb::arg("text_end").none() = nb::none())
         .def("build",
             &ImGuiTextFilter::Build)
         .def("clear",
@@ -6645,7 +6645,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 };
 
                 append_adapt_const_char_pointer_with_default_null(str, str_end);
-            },     nb::arg("str"), nb::arg("str_end") = nb::none())
+            },     nb::arg("str"), nb::arg("str_end").none() = nb::none())
         .def("appendf",
             [](ImGuiTextBuffer & self, const char * fmt)
             {
@@ -6789,7 +6789,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumMultiSelectFlags_ =
-        nb::enum_<ImGuiMultiSelectFlags_>(m, "MultiSelectFlags_", nb::is_arithmetic(), "Flags for BeginMultiSelect()")
+        nb::enum_<ImGuiMultiSelectFlags_>(m, "MultiSelectFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for BeginMultiSelect()")
             .value("none", ImGuiMultiSelectFlags_None, "")
             .value("single_select", ImGuiMultiSelectFlags_SingleSelect, "Disable selecting more than one item. This is available to allow single-selection code to share same code/logic if desired. It essentially disables the main purpose of BeginMultiSelect() tho!")
             .value("no_select_all", ImGuiMultiSelectFlags_NoSelectAll, "Disable CTRL+A shortcut to select all.")
@@ -6832,7 +6832,7 @@ void py_init_module_imgui_main(nb::module_& m)
             r_ctor_->RangeSrcReset = RangeSrcReset;
             r_ctor_->ItemsCount = ItemsCount;
         },
-        nb::arg("requests") = nb::none(), nb::arg("range_src_item") = nb::none(), nb::arg("nav_id_item") = nb::none(), nb::arg("nav_id_selected") = bool(), nb::arg("range_src_reset") = bool(), nb::arg("items_count") = int()
+        nb::arg("requests").none() = nb::none(), nb::arg("range_src_item").none() = nb::none(), nb::arg("nav_id_item").none() = nb::none(), nb::arg("nav_id_selected") = bool(), nb::arg("range_src_reset") = bool(), nb::arg("items_count") = int()
         )
         .def_rw("requests", &ImGuiMultiSelectIO::Requests, "ms:w, app:r     /  ms:w  app:r   // Requests to apply to your selection data.")
         .def_rw("range_src_item", &ImGuiMultiSelectIO::RangeSrcItem, "ms:w  app:r     /                // (If using clipper) Begin: Source item (often the first selected item) must never be clipped: use clipper.IncludeItemByIndex() to ensure it is submitted.")
@@ -6844,7 +6844,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumSelectionRequestType =
-        nb::enum_<ImGuiSelectionRequestType>(m, "SelectionRequestType", nb::is_arithmetic(), "Selection request type")
+        nb::enum_<ImGuiSelectionRequestType>(m, "SelectionRequestType", nb::is_arithmetic(), nb::is_flag(), "Selection request type")
             .value("none", ImGuiSelectionRequestType_None, "")
             .value("set_all", ImGuiSelectionRequestType_SetAll, "Request app to clear selection (if Selected==False) or select all items (if Selected==True). We cannot set RangeFirstItem/RangeLastItem as its contents is entirely up to user (not necessarily an index)")
             .value("set_range", ImGuiSelectionRequestType_SetRange, "Request app to select/unselect [RangeFirstItem..RangeLastItem] items (inclusive) based on value of Selected. Only EndMultiSelect() request this, app code can read after BeginMultiSelect() and it will always be False.");
@@ -6869,7 +6869,7 @@ void py_init_module_imgui_main(nb::module_& m)
             else
                 r_ctor_->RangeLastItem = ImGuiSelectionUserData();
         },
-        nb::arg("type") = ImGuiSelectionRequestType(), nb::arg("selected") = bool(), nb::arg("range_direction") = ImS8(), nb::arg("range_first_item") = nb::none(), nb::arg("range_last_item") = nb::none()
+        nb::arg("type") = ImGuiSelectionRequestType(), nb::arg("selected") = bool(), nb::arg("range_direction") = ImS8(), nb::arg("range_first_item").none() = nb::none(), nb::arg("range_last_item").none() = nb::none()
         )
         .def_rw("type", &ImGuiSelectionRequest::Type, "ms:w, app:r     /  ms:w, app:r   // Request type. You'll most often receive 1 Clear + 1 SetRange with a single-item range.")
         .def_rw("selected", &ImGuiSelectionRequest::Selected, "ms:w, app:r     /  ms:w, app:r   // Parameter for SetAll/SetRange requests (True = select, False = unselect)")
@@ -6971,7 +6971,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 r_ctor_->uv = ImVec2();
             r_ctor_->col = col;
         },
-        nb::arg("pos") = nb::none(), nb::arg("uv") = nb::none(), nb::arg("col") = ImU32()
+        nb::arg("pos").none() = nb::none(), nb::arg("uv").none() = nb::none(), nb::arg("col") = ImU32()
         )
         .def_rw("pos", &ImDrawVert::pos, "")
         .def_rw("uv", &ImDrawVert::uv, "")
@@ -6999,7 +6999,7 @@ void py_init_module_imgui_main(nb::module_& m)
             else
                 r_ctor_->TexRef = ImTextureRef();
         },
-        nb::arg("clip_rect") = nb::none(), nb::arg("tex_ref") = nb::none()
+        nb::arg("clip_rect").none() = nb::none(), nb::arg("tex_ref").none() = nb::none()
         )
         .def_rw("clip_rect", &ImDrawCmdHeader::ClipRect, "")
         .def_rw("tex_ref", &ImDrawCmdHeader::TexRef, "")
@@ -7023,7 +7023,7 @@ void py_init_module_imgui_main(nb::module_& m)
             else
                 r_ctor_->_IdxBuffer = ImVector<ImDrawIdx>();
         },
-        nb::arg("_cmd_buffer") = nb::none(), nb::arg("_idx_buffer") = nb::none()
+        nb::arg("_cmd_buffer").none() = nb::none(), nb::arg("_idx_buffer").none() = nb::none()
         )
         .def_rw("_cmd_buffer", &ImDrawChannel::_CmdBuffer, "")
         .def_rw("_idx_buffer", &ImDrawChannel::_IdxBuffer, "")
@@ -7051,7 +7051,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumImDrawFlags_ =
-        nb::enum_<ImDrawFlags_>(m, "ImDrawFlags_", nb::is_arithmetic(), " Flags for ImDrawList functions\n (Legacy: bit 0 must always correspond to ImDrawFlags_Closed to be backward compatible with old API using a bool. Bits 1..3 must be unused)")
+        nb::enum_<ImDrawFlags_>(m, "ImDrawFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImDrawList functions\n (Legacy: bit 0 must always correspond to ImDrawFlags_Closed to be backward compatible with old API using a bool. Bits 1..3 must be unused)")
             .value("none", ImDrawFlags_None, "")
             .value("closed", ImDrawFlags_Closed, "PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)")
             .value("round_corners_top_left", ImDrawFlags_RoundCornersTopLeft, "AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01.")
@@ -7069,7 +7069,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumImDrawListFlags_ =
-        nb::enum_<ImDrawListFlags_>(m, "ImDrawListFlags_", nb::is_arithmetic(), " Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.\n It is however possible to temporarily alter flags between calls to ImDrawList:: functions.")
+        nb::enum_<ImDrawListFlags_>(m, "ImDrawListFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.\n It is however possible to temporarily alter flags between calls to ImDrawList:: functions.")
             .value("none", ImDrawListFlags_None, "")
             .value("anti_aliased_lines", ImDrawListFlags_AntiAliasedLines, "Enable anti-aliased lines/borders (*2 the number of triangles for 1.0 wide line or lines thin enough to be drawn using textures, otherwise *3 the number of triangles)")
             .value("anti_aliased_lines_use_tex", ImDrawListFlags_AntiAliasedLinesUseTex, "Enable anti-aliased lines/borders using textures when possible. Require backend to render with bilinear filtering (NOT point/nearest filtering).")
@@ -7160,7 +7160,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 };
 
                 AddText_adapt_const_char_pointer_with_default_null(pos, col, text_begin, text_end);
-            },     nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end") = nb::none())
+            },     nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none())
         .def("add_text",
             [](ImDrawList & self, ImFont * font, float font_size, const ImVec2 & pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt, float wrap_width = 0.0f, const ImVec4 * cpu_fine_clip_rect = NULL)
             {
@@ -7174,7 +7174,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 };
 
                 AddText_adapt_const_char_pointer_with_default_null(font, font_size, pos, col, text_begin, text_end, wrap_width, cpu_fine_clip_rect);
-            },     nb::arg("font"), nb::arg("font_size"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end") = nb::none(), nb::arg("wrap_width") = 0.0f, nb::arg("cpu_fine_clip_rect") = nb::none())
+            },     nb::arg("font"), nb::arg("font_size"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(), nb::arg("wrap_width") = 0.0f, nb::arg("cpu_fine_clip_rect") = nb::none())
         .def("add_bezier_cubic",
             &ImDrawList::AddBezierCubic,
             nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0,
@@ -7218,7 +7218,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 AddImage_adapt_mutable_param_with_default_value(tex_ref, p_min, p_max, uv_min, uv_max, col);
             },
-            nb::arg("tex_ref"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("uv_min") = nb::none(), nb::arg("uv_max") = nb::none(), nb::arg("col") = IM_COL32_WHITE,
+            nb::arg("tex_ref"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("uv_min").none() = nb::none(), nb::arg("uv_max").none() = nb::none(), nb::arg("col") = IM_COL32_WHITE,
             "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv_min: ImVec2(0, 0)\n        * uv_max: ImVec2(1, 1)")
         .def("add_image_quad",
             [](ImDrawList & self, ImTextureRef tex_ref, const ImVec2 & p1, const ImVec2 & p2, const ImVec2 & p3, const ImVec2 & p4, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec2> & uv4 = std::nullopt, ImU32 col = IM_COL32_WHITE)
@@ -7259,7 +7259,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 AddImageQuad_adapt_mutable_param_with_default_value(tex_ref, p1, p2, p3, p4, uv1, uv2, uv3, uv4, col);
             },
-            nb::arg("tex_ref"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("uv1") = nb::none(), nb::arg("uv2") = nb::none(), nb::arg("uv3") = nb::none(), nb::arg("uv4") = nb::none(), nb::arg("col") = IM_COL32_WHITE,
+            nb::arg("tex_ref"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("uv1").none() = nb::none(), nb::arg("uv2").none() = nb::none(), nb::arg("uv3").none() = nb::none(), nb::arg("uv4").none() = nb::none(), nb::arg("col") = IM_COL32_WHITE,
             "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv1: ImVec2(0, 0)\n        * uv2: ImVec2(1, 0)\n        * uv3: ImVec2(1, 1)\n        * uv4: ImVec2(0, 1)")
         .def("add_image_rounded",
             &ImDrawList::AddImageRounded, nb::arg("tex_ref"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("uv_min"), nb::arg("uv_max"), nb::arg("col"), nb::arg("rounding"), nb::arg("flags") = 0)
@@ -7403,13 +7403,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumImTextureFormat =
-        nb::enum_<ImTextureFormat>(m, "ImTextureFormat", nb::is_arithmetic(), " We intentionally support a limited amount of texture formats to limit burden on CPU-side code and extension.\n Most standard backends only support RGBA32 but we provide a single channel option for low-resource/embedded systems.")
+        nb::enum_<ImTextureFormat>(m, "ImTextureFormat", nb::is_arithmetic(), nb::is_flag(), " We intentionally support a limited amount of texture formats to limit burden on CPU-side code and extension.\n Most standard backends only support RGBA32 but we provide a single channel option for low-resource/embedded systems.")
             .value("rgba32", ImTextureFormat_RGBA32, "4 components per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight * 4")
             .value("alpha8", ImTextureFormat_Alpha8, "1 component per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight");
 
 
     auto pyEnumImTextureStatus =
-        nb::enum_<ImTextureStatus>(m, "ImTextureStatus", nb::is_arithmetic(), "Status of a texture to communicate with Renderer Backend.")
+        nb::enum_<ImTextureStatus>(m, "ImTextureStatus", nb::is_arithmetic(), nb::is_flag(), "Status of a texture to communicate with Renderer Backend.")
             .value("ok", ImTextureStatus_OK, "")
             .value("destroyed", ImTextureStatus_Destroyed, "Backend destroyed the texture.")
             .value("want_create", ImTextureStatus_WantCreate, "Requesting backend to create the texture. Set status OK when done.")
@@ -7501,7 +7501,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
         .def_rw("flags", &ImFontConfig::Flags, "Font flags (don't use just yet, will be exposed in upcoming 1.92.X updates)")
         .def_rw("dst_font", &ImFontConfig::DstFont, "Target font (as we merging fonts, multiple ImFontConfig may target the same font)")
-        .def_ro("font_loader", &ImFontConfig::FontLoader, "Custom font backend for this source (other use one stored in ImFontAtlas)")
         .def_rw("font_loader_data", &ImFontConfig::FontLoaderData, "Font loader opaque storage (per font config)")
         .def(nb::init<>())
         ;
@@ -7566,7 +7565,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 AddText_adapt_const_char_pointer_with_default_null(text, text_end);
             },
-            nb::arg("text"), nb::arg("text_end") = nb::none(),
+            nb::arg("text"), nb::arg("text_end").none() = nb::none(),
             "Add string (each character of the UTF-8 string are added)")
         .def("build_ranges",
             &ImFontGlyphRangesBuilder::BuildRanges,
@@ -7589,7 +7588,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumImFontAtlasFlags_ =
-        nb::enum_<ImFontAtlasFlags_>(m, "ImFontAtlasFlags_", nb::is_arithmetic(), "Flags for ImFontAtlas build")
+        nb::enum_<ImFontAtlasFlags_>(m, "ImFontAtlasFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImFontAtlas build")
             .value("none", ImFontAtlasFlags_None, "")
             .value("no_power_of_two_height", ImFontAtlasFlags_NoPowerOfTwoHeight, "Don't round the height to next power of two")
             .value("no_mouse_cursors", ImFontAtlasFlags_NoMouseCursors, "Don't build software mouse cursors into the atlas (save a little texture memory)")
@@ -7624,26 +7623,8 @@ void py_init_module_imgui_main(nb::module_& m)
         //
         .def("add_font_from_file_ttf",
             &ImFontAtlas::_AddFontFromFileTTF,
-            nb::arg("filename"), nb::arg("size_pixels"), nb::arg("font_cfg") = nb::none(), nb::arg("glyph_ranges_as_int_list") = nb::none(),
+            nb::arg("filename"), nb::arg("size_pixels"), nb::arg("font_cfg") = nb::none(),
             nb::rv_policy::reference)
-        .def("get_glyph_ranges_default",
-            &ImFontAtlas::_GetGlyphRangesDefault, "// Basic Latin, Extended Latin")
-        .def("get_glyph_ranges_greek",
-            &ImFontAtlas::_GetGlyphRangesGreek, "// Default + Greek and Coptic")
-        .def("get_glyph_ranges_korean",
-            &ImFontAtlas::_GetGlyphRangesKorean, "// Default + Korean characters")
-        .def("get_glyph_ranges_japanese",
-            &ImFontAtlas::_GetGlyphRangesJapanese, "// Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs")
-        .def("get_glyph_ranges_chinese_full",
-            &ImFontAtlas::_GetGlyphRangesChineseFull, "// Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs")
-        .def("get_glyph_ranges_chinese_simplified_common",
-            &ImFontAtlas::_GetGlyphRangesChineseSimplifiedCommon, "// Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese")
-        .def("get_glyph_ranges_cyrillic",
-            &ImFontAtlas::_GetGlyphRangesCyrillic, "// Default + about 400 Cyrillic characters")
-        .def("get_glyph_ranges_thai",
-            &ImFontAtlas::_GetGlyphRangesThai, "// Default + Thai characters")
-        .def("get_glyph_ranges_vietnamese",
-            &ImFontAtlas::_GetGlyphRangesVietnamese, "// Default + Vietnamese characters")
         // #endif
         //
         .def("add_custom_rect",
@@ -7688,7 +7669,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("sources", &ImFontAtlas::Sources, "Source/configuration data")
         .def_rw("tex_next_unique_id", &ImFontAtlas::TexNextUniqueID, "Next value to be stored in TexData->UniqueID")
         .def_rw("font_next_unique_id", &ImFontAtlas::FontNextUniqueID, "Next value to be stored in ImFont->FontID")
-        .def_ro("font_loader", &ImFontAtlas::FontLoader, "Font loader opaque interface (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE). Don't set directly!")
         .def_ro("font_loader_name", &ImFontAtlas::FontLoaderName, "Font loader name (for display e.g. in About box) == FontLoader->Name")
         .def_rw("font_loader_data", &ImFontAtlas::FontLoaderData, "Font backend opaque storage")
         .def_rw("font_loader_flags", &ImFontAtlas::FontLoaderFlags, "Shared flags (for all fonts) for font loader. THIS IS BUILD IMPLEMENTATION DEPENDENT (e.g. Per-font override is also available in ImFontConfig).")
@@ -7734,9 +7714,8 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumImFontFlags_ =
-        nb::enum_<ImFontFlags_>(m, "ImFontFlags_", nb::is_arithmetic(), " Font flags\n (in future versions as we redesign font loading API, this will become more important and better documented. for now please consider this as internal/advanced use)")
+        nb::enum_<ImFontFlags_>(m, "ImFontFlags_", nb::is_arithmetic(), nb::is_flag(), " Font flags\n (in future versions as we redesign font loading API, this will become more important and better documented. for now please consider this as internal/advanced use)")
             .value("none", ImFontFlags_None, "")
-            .value("default_to_legacy_size", ImFontFlags_DefaultToLegacySize, "Legacy compatibility: make PushFont() calls without explicit size use font->LegacySize instead of current font size.")
             .value("no_load_error", ImFontFlags_NoLoadError, "Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.")
             .value("no_load_glyphs", ImFontFlags_NoLoadGlyphs, "[Internal] Disable loading new glyphs.")
             .value("lock_baked_sizes", ImFontFlags_LockBakedSizes, "[Internal] Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size. Important: if you use this to preload given sizes, consider the possibility of multiple font density used on Retina display.");
@@ -7795,7 +7774,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumViewportFlags_ =
-        nb::enum_<ImGuiViewportFlags_>(m, "ViewportFlags_", nb::is_arithmetic(), "Flags stored in ImGuiViewport::Flags, giving indications to the platform backends.")
+        nb::enum_<ImGuiViewportFlags_>(m, "ViewportFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags stored in ImGuiViewport::Flags, giving indications to the platform backends.")
             .value("none", ImGuiViewportFlags_None, "")
             .value("is_platform_window", ImGuiViewportFlags_IsPlatformWindow, "Represent a Platform Window")
             .value("is_platform_monitor", ImGuiViewportFlags_IsPlatformMonitor, "Represent a Platform Monitor (unused yet)")
@@ -7916,7 +7895,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             BeginHorizontal_adapt_mutable_param_with_default_value(str_id, size, align);
         },
-        nb::arg("str_id"), nb::arg("size") = nb::none(), nb::arg("align") = -1.0f,
+        nb::arg("str_id"), nb::arg("size").none() = nb::none(), nb::arg("align") = -1.0f,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_horizontal",
@@ -7937,7 +7916,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             BeginHorizontal_adapt_mutable_param_with_default_value(ptr_id, size, align);
         },
-        nb::arg("ptr_id"), nb::arg("size") = nb::none(), nb::arg("align") = -1.0f,
+        nb::arg("ptr_id"), nb::arg("size").none() = nb::none(), nb::arg("align") = -1.0f,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_horizontal",
@@ -7958,7 +7937,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             BeginHorizontal_adapt_mutable_param_with_default_value(id, size, align);
         },
-        nb::arg("id_"), nb::arg("size") = nb::none(), nb::arg("align") = -1,
+        nb::arg("id_"), nb::arg("size").none() = nb::none(), nb::arg("align") = -1,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("end_horizontal",
@@ -7982,7 +7961,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             BeginVertical_adapt_mutable_param_with_default_value(str_id, size, align);
         },
-        nb::arg("str_id"), nb::arg("size") = nb::none(), nb::arg("align") = -1.0f,
+        nb::arg("str_id"), nb::arg("size").none() = nb::none(), nb::arg("align") = -1.0f,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_vertical",
@@ -8003,7 +7982,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             BeginVertical_adapt_mutable_param_with_default_value(ptr_id, size, align);
         },
-        nb::arg("ptr_id"), nb::arg("size") = nb::none(), nb::arg("align") = -1.0f,
+        nb::arg("ptr_id"), nb::arg("size").none() = nb::none(), nb::arg("align") = -1.0f,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("begin_vertical",
@@ -8024,7 +8003,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             BeginVertical_adapt_mutable_param_with_default_value(id, size, align);
         },
-        nb::arg("id_"), nb::arg("size") = nb::none(), nb::arg("align") = -1,
+        nb::arg("id_"), nb::arg("size").none() = nb::none(), nb::arg("align") = -1,
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("end_vertical",
@@ -8094,7 +8073,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputTextMultiline_adapt_modifiable_immutable_to_return(label, str, size, flags, callback, user_data);
         },
-        nb::arg("label"), nb::arg("str"), nb::arg("size") = nb::none(), nb::arg("flags") = 0, nb::arg("callback") = nb::none(), nb::arg("user_data") = nb::none(),
+        nb::arg("label"), nb::arg("str"), nb::arg("size").none() = nb::none(), nb::arg("flags") = 0, nb::arg("callback") = nb::none(), nb::arg("user_data") = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("input_text_with_hint",
@@ -8128,7 +8107,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 r_ctor_->DataId = ImGuiPayloadId();
             r_ctor_->Type = Type;
         },
-        nb::arg("data_id") = nb::none(), nb::arg("type") = std::string()
+        nb::arg("data_id").none() = nb::none(), nb::arg("type") = std::string()
         )
         .def_rw("data_id", &ImGuiPayload_PyId::DataId, "Stores an id that represents the payload. For example, this could be given by python `id(object)`")
         .def_rw("type", &ImGuiPayload_PyId::Type, "A string representing the type of payload. It cannot exceed 32 characters.")
@@ -8171,63 +8150,8 @@ void imgui_manual_binding(nb::module_& m)
     nb::class_<ImVec2>& pyClassImVec2  = *pyClassImVec2Ptr;
     nb::class_<ImVec4>& pyClassImVec4 = *pyClassImVec4Ptr;
     nb::class_<ImColor>& pyClassImColor = *pyClassImColorPtr;
-    nb::class_<ImFontAtlas>& pyClassImFontAtlas = *pyClassImFontAtlasPtr;
 
-    // Function to retrieve RGBA32 texture data as a numpy array
-    auto font_atlas_get_tex_data_as_rgba32= [](ImFontAtlas* self) -> nb::handle
-    {
-        unsigned char *pixels = nullptr;
-        int width = 0, height = 0, bytes_per_pixel = 0;
-
-        // Retrieve texture data from ImFontAtlas
-        self->GetTexDataAsRGBA32(&pixels, &width, &height, &bytes_per_pixel);
-
-        if (!pixels || width <= 0 || height <= 0 || bytes_per_pixel != 4)
-            throw std::runtime_error("Invalid texture data retrieved from ImFontAtlas.");
-
-        // The returned data is a pointer to the texture data, which is owned by the ImFontAtlas.
-        // so, we set the owner to the ImFontAtlas object to ensure that the data is not deallocated
-        nb::object owner = nb::cast(self);
-
-        // Create and return the ndarray using the initializer list constructor
-        // We will use this constructor:
-        //    ndarray(VoidPtr data,
-        //        std::initializer_list<size_t> shape = { },
-        //        handle owner = { },
-        //        std::initializer_list<int64_t> strides = { },
-        //        dlpack::dtype dtype = nanobind::dtype<Scalar>(),
-        //        int device_type = DeviceType,
-        //        int device_id = 0,
-        //        char order = Order) {
-        auto font_as_array = nb::ndarray<uint8_t>(
-            pixels,                  // VoidPtr data
-            {(size_t)height, (size_t)width, (size_t)4},      // Shape
-            owner,                  // Owner
-            {(int64_t)(4 * width), (int64_t)4, (int64_t)1},       // Strides in **elements** (not bytes)
-            nb::dtype<uint8_t>(),    // Data type
-            0,                       // device_type (default to CPU)
-            0,                       // device_id (default to 0)
-            'C'                      // Order ('C' for C-contiguous)
-        );
-
-        // Properly export the ndarray
-        return nb::detail::ndarray_export(
-            font_as_array.handle(),
-            nb::numpy::value,
-            nb::rv_policy::move, // Transfer ownership to Python (which will manage the lifetime of the ndarray, and the capsule will manage the lifetime of the data)
-            nullptr // cleanup
-        );
-    };
-    m.def("font_atlas_get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
-    //
-    //  Patches to ImFontAtlas
-    // make imgui.font_atlas_get_tex_data_as_rgba32() also accessible
-    // as imgui.get_io().fonts.get_tex_data_as_rgba32(), even if autocomplete
-    // doesn't find the latter.
-    pyClassImFontAtlas.def("get_tex_data_as_rgba32", font_atlas_get_tex_data_as_rgba32);
-
-
-// these are internal functions that should only be called with a tuple, list or array argument
+    // these are internal functions that should only be called with a tuple, list or array argument
     auto cast_to_imvec2 = [](nb::handle obj) -> ImVec2
     {
         if (len(obj) != 2)

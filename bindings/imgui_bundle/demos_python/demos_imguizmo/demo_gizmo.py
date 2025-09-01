@@ -211,10 +211,10 @@ def EditTransform(
     viewManipulateTop = 0.0
 
     if useWindow:
-        imgui.set_next_window_size(ImVec2(800, 400), imgui.Cond_.appearing.value)
-        imgui.set_next_window_pos(ImVec2(400, 20), imgui.Cond_.appearing.value)
+        imgui.set_next_window_size(ImVec2(800, 400), imgui.Cond_.appearing)
+        imgui.set_next_window_pos(ImVec2(400, 20), imgui.Cond_.appearing)
         imgui.push_style_color(
-            imgui.Col_.window_bg.value, imgui.ImColor(0.35, 0.3, 0.3).value
+            imgui.Col_.window_bg, imgui.ImColor(0.35, 0.3, 0.3).value
         )
         imgui.begin("Gizmo", None, statics.gizmoWindowFlags)
         gizmo.set_drawlist()
@@ -309,12 +309,12 @@ def make_closure_demo_guizmo() -> GuiFunction:
         gizmo.set_orthographic(not isPerspective)
         gizmo.begin_frame()
 
-        imgui.set_next_window_pos(ImVec2(1024, 100), imgui.Cond_.appearing.value)
-        imgui.set_next_window_size(ImVec2(256, 256), imgui.Cond_.appearing.value)
+        imgui.set_next_window_pos(ImVec2(1024, 100), imgui.Cond_.appearing)
+        imgui.set_next_window_size(ImVec2(256, 256), imgui.Cond_.appearing)
 
         # create a window and insert the inspector
-        imgui.set_next_window_pos(ImVec2(10, 10), imgui.Cond_.appearing.value)
-        imgui.set_next_window_size(ImVec2(320, 340), imgui.Cond_.appearing.value)
+        imgui.set_next_window_pos(ImVec2(10, 10), imgui.Cond_.appearing)
+        imgui.set_next_window_size(ImVec2(320, 340), imgui.Cond_.appearing)
         imgui.begin("Editor")
         if imgui.radio_button("Full view", not useWindow):
             useWindow = False

@@ -120,7 +120,7 @@ void py_init_module_immvision(nb::module_& m)
                 r_ctor_->ColormapScaleFromStats = ImmVision::ColormapScaleFromStatsData();
             r_ctor_->internal_ColormapHovered = internal_ColormapHovered;
         },
-        nb::arg("colormap") = "None", nb::arg("colormap_scale_min") = 0., nb::arg("colormap_scale_max") = 1., nb::arg("colormap_scale_from_stats") = nb::none(), nb::arg("internal_colormap_hovered") = ""
+        nb::arg("colormap") = "None", nb::arg("colormap_scale_min") = 0., nb::arg("colormap_scale_max") = 1., nb::arg("colormap_scale_from_stats").none() = nb::none(), nb::arg("internal_colormap_hovered") = ""
         )
         .def_rw("colormap", &ImmVision::ColormapSettingsData::Colormap, " Colormap, see available Colormaps with AvailableColormaps()\n Work only with 1 channel matrices, i.e len(shape)==2")
         .def_rw("colormap_scale_min", &ImmVision::ColormapSettingsData::ColormapScaleMin, "")
@@ -147,7 +147,7 @@ void py_init_module_immvision(nb::module_& m)
             else
                 r_ctor_->MousePosition_Displayed = cv::Point(-1, -1);
         },
-        nb::arg("is_mouse_hovering") = false, nb::arg("mouse_position") = nb::none(), nb::arg("mouse_position_displayed") = nb::none()
+        nb::arg("is_mouse_hovering") = false, nb::arg("mouse_position").none() = nb::none(), nb::arg("mouse_position_displayed").none() = nb::none()
         )
         .def_rw("is_mouse_hovering", &ImmVision::MouseInformation::IsMouseHovering, "Is the mouse hovering the image")
         .def_rw("mouse_position", &ImmVision::MouseInformation::MousePosition, " Mouse position in the original image/matrix\n This position is given with float coordinates, and will be (-1., -1.) if the mouse is not hovering the image")
@@ -203,7 +203,7 @@ void py_init_module_immvision(nb::module_& m)
             else
                 r_ctor_->MouseInfo = ImmVision::MouseInformation();
         },
-        nb::arg("refresh_image") = false, nb::arg("image_display_size") = nb::none(), nb::arg("zoom_pan_matrix") = nb::none(), nb::arg("zoom_key") = "", nb::arg("colormap_settings") = nb::none(), nb::arg("colormap_key") = "", nb::arg("pan_with_mouse") = true, nb::arg("zoom_with_mouse_wheel") = true, nb::arg("can_resize") = true, nb::arg("resize_keep_aspect_ratio") = true, nb::arg("selected_channel") = -1, nb::arg("show_school_paper_background") = true, nb::arg("show_alpha_channel_checkerboard") = true, nb::arg("show_grid") = true, nb::arg("draw_values_on_zoomed_pixels") = true, nb::arg("show_image_info") = true, nb::arg("show_pixel_info") = true, nb::arg("show_zoom_buttons") = true, nb::arg("show_options_panel") = false, nb::arg("show_options_in_tooltip") = false, nb::arg("show_options_button") = true, nb::arg("watched_pixels") = nb::none(), nb::arg("add_watched_pixel_on_double_click") = true, nb::arg("highlight_watched_pixels") = true, nb::arg("mouse_info") = nb::none()
+        nb::arg("refresh_image") = false, nb::arg("image_display_size").none() = nb::none(), nb::arg("zoom_pan_matrix").none() = nb::none(), nb::arg("zoom_key") = "", nb::arg("colormap_settings").none() = nb::none(), nb::arg("colormap_key") = "", nb::arg("pan_with_mouse") = true, nb::arg("zoom_with_mouse_wheel") = true, nb::arg("can_resize") = true, nb::arg("resize_keep_aspect_ratio") = true, nb::arg("selected_channel") = -1, nb::arg("show_school_paper_background") = true, nb::arg("show_alpha_channel_checkerboard") = true, nb::arg("show_grid") = true, nb::arg("draw_values_on_zoomed_pixels") = true, nb::arg("show_image_info") = true, nb::arg("show_pixel_info") = true, nb::arg("show_zoom_buttons") = true, nb::arg("show_options_panel") = false, nb::arg("show_options_in_tooltip") = false, nb::arg("show_options_button") = true, nb::arg("watched_pixels").none() = nb::none(), nb::arg("add_watched_pixel_on_double_click") = true, nb::arg("highlight_watched_pixels") = true, nb::arg("mouse_info").none() = nb::none()
         )
         .def_rw("refresh_image", &ImmVision::ImageParams::RefreshImage, " Refresh Image: images textures are cached. Set to True if your image matrix/buffer has changed\n (for example, for live video images)")
         .def_rw("image_display_size", &ImmVision::ImageParams::ImageDisplaySize, " Size of the displayed image (can be different from the matrix size)\n If you specify only the width or height (e.g (300, 0), then the other dimension\n will be calculated automatically, respecting the original image w/h ratio.")
@@ -283,7 +283,7 @@ void py_init_module_immvision(nb::module_& m)
 
             return ImageDisplay_adapt_mutable_param_with_default_value(label_id, mat, imageDisplaySize, refreshImage, showOptionsButton);
         },
-        nb::arg("label_id"), nb::arg("mat"), nb::arg("image_display_size") = nb::none(), nb::arg("refresh_image") = false, nb::arg("show_options_button") = false,
+        nb::arg("label_id"), nb::arg("mat"), nb::arg("image_display_size").none() = nb::none(), nb::arg("refresh_image") = false, nb::arg("show_options_button") = false,
         " ImageDisplay: Only, display the image, with no user interaction (by default)\n\n Parameters:\n :param label_id\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets must have a unique Ids. For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           If they do, they might not refresh correctly!\n           To circumvent this, you can modify your label like this:\n              \"MyLabel##some_unique_id\"    (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n        - if your legend is displayed (i.e. it does not start with \"##\"),\n          then the total size of the widget will be larger than the imageDisplaySize.\n\n :param mat:\n     An image you want to display, under the form of an OpenCV matrix. All types of dense matrices are supported.\n\n :param imageDisplaySize:\n     Size of the displayed image (can be different from the mat size)\n     If you specify only the width or height (e.g (300, 0), then the other dimension\n     will be calculated automatically, respecting the original image w/h ratio.\n\n :param refreshImage:\n     images textures are cached. Set to True if your image matrix/buffer has changed\n     (for example, for live video images)\n\n :param showOptionsButton:\n     If True, show an option button that opens the option panel.\n     In that case, it also becomes possible to zoom & pan, add watched pixel by double-clicking, etc.\n\n :param isBgrOrBgra:\n     set to True if the color order of the image is BGR or BGRA (as in OpenCV)\n.    Breaking change, oct 2024: the default is BGR for C++, RGB for Python!\n\n :return:\n      The mouse position in `mat` original image coordinates, as double values.\n      (i.e. it does not matter if imageDisplaySize is different from mat.size())\n      It will return (-1., -1.) if the mouse is not hovering the image.\n\n      Note: use ImGui::IsMouseDown(mouse_button) (C++) or imgui.is_mouse_down(mouse_button) (Python)\n            to query more information about the mouse.\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)\n\n\n\nPython bindings defaults:\n    If imageDisplaySize is None, then its default value will be: cv.Size()");
 
     m.def("image_display_resizable",
@@ -324,7 +324,7 @@ void py_init_module_immvision(nb::module_& m)
 
             Inspector_AddImage_adapt_mutable_param_with_default_value(image, legend, zoomKey, colormapKey, zoomCenter, zoomRatio);
         },
-        nb::arg("image"), nb::arg("legend"), nb::arg("zoom_key") = "", nb::arg("colormap_key") = "", nb::arg("zoom_center") = nb::none(), nb::arg("zoom_ratio") = -1.,
+        nb::arg("image"), nb::arg("legend"), nb::arg("zoom_key") = "", nb::arg("colormap_key") = "", nb::arg("zoom_center").none() = nb::none(), nb::arg("zoom_ratio") = -1.,
         "Python bindings defaults:\n    If zoomCenter is None, then its default value will be: cv.Point2()");
 
     m.def("inspector_show",

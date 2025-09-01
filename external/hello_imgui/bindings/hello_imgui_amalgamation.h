@@ -230,6 +230,7 @@ for more information on how to fine tune DPI handling when using Hello ImGui.
 //                       hello_imgui/hello_imgui_assets.h included by hello_imgui.h                             //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <string>
+#include <functional>
 
 namespace HelloImGui
 {
@@ -268,6 +269,8 @@ struct AssetFileData
 // You *have* to call FreeAssetFileData to free the memory, except if you use
 // ImGui::GetIO().Fonts->AddFontFromMemoryTTF, which will take ownership of the
 // data and free it for you.
+// This function can be redirected with setLoadAssetFileDataFunction. If not redirected,
+// it calls DefaultLoadAssetFileData.
 AssetFileData LoadAssetFileData(const char *assetPath);
 
 // FreeAssetFileData(AssetFileData *)
@@ -277,6 +280,17 @@ AssetFileData LoadAssetFileData(const char *assetPath);
 void FreeAssetFileData(AssetFileData * assetFileData);
 // @@md
 
+// Function type to redirect asset loads. Function receives a path and
+// returns an AssetFileData structure. By default, it points to
+// DefaultLoadAssetFileData.
+using LoadAssetFileDataFunc = std::function<AssetFileData(const char*)>;
+
+// Redirect asset loads to user-defined function
+void SetLoadAssetFileDataFunction(LoadAssetFileDataFunc func);
+
+// This function actually performs the asset load, as described in
+// LoadAssetFileData
+AssetFileData DefaultLoadAssetFileData(const char *assetPath);
 
 // @@md#assetFileFullPath
 
@@ -412,9 +426,15 @@ namespace HelloImGui
 // `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
 // will display a static image from the assets.
 void ImageFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0),
-                    const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
-                    const ImVec4& tint_col = ImVec4(1,1,1,1),
-                    const ImVec4& border_col = ImVec4(0,0,0,0));
+                    const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1));
+
+// `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
+// will display a static image from the assets, with a colored background and a border.
+void ImageFromAssetWithBg(const char *assetPath, const ImVec2& size = ImVec2(0, 0),
+            const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
+            const ImVec4& tint_col = ImVec4(1,1,1,1),
+            const ImVec4& border_col = ImVec4(0,0,0,0));
+
 
 // `bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`:
 // will display a button using an image from the assets.
@@ -954,7 +974,6 @@ struct AppWindowParams
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/imgui_window_params.h included by hello_imgui/runner_params.h              //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <functional>
 
 
 namespace HelloImGui

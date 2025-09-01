@@ -6,6 +6,20 @@ import numpy as np
 from numpy.typing import NDArray
 import datetime
 
+
+def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> np.ndarray:
+    """Create a checkerboard RGBA texture as a numpy array."""
+    img = np.zeros((size, size, 4), dtype=np.uint8)
+    for y in range(size):
+        for x in range(size):
+            if ((x // tile_size) + (y // tile_size)) % 2 == 0:
+                color = (255, 255, 255, 255)
+            else:
+                color = (64, 64, 64, 255)
+            img[y, x] = color
+    return img
+
+
 def plot_candlestick(
         label_id: str,
         xs: NDArray,  # x-axis values (timestamps as float)
@@ -107,19 +121,19 @@ def demo_custom_plotters_and_tooltips():
 
     _, static.tooltip = imgui.checkbox("Show Tooltips", static.tooltip)
     imgui.same_line()
-    _, static.positive_color = imgui.color_edit4("Positive Color", static.positive_color, imgui.ColorEditFlags_.no_inputs.value)
+    _, static.positive_color = imgui.color_edit4("Positive Color", static.positive_color, imgui.ColorEditFlags_.no_inputs)
     imgui.same_line()
-    _, static.negative_color = imgui.color_edit4("Negative Color", static.negative_color, imgui.ColorEditFlags_.no_inputs.value)
+    _, static.negative_color = imgui.color_edit4("Negative Color", static.negative_color, imgui.ColorEditFlags_.no_inputs)
 
     implot.get_style().use_local_time = False
 
     if implot.begin_plot("Candlestick Chart", ImVec2(-1, 0)):
-        implot.setup_axes("", "", 0, implot.AxisFlags_.auto_fit.value | implot.AxisFlags_.range_fit.value)
+        implot.setup_axes("", "", 0, implot.AxisFlags_.auto_fit | implot.AxisFlags_.range_fit)
         implot.setup_axes_limits(static.first_day, static.last_day, 1250, 1600)
-        implot.setup_axis_scale(implot.ImAxis_.x1.value, implot.Scale_.time.value)
-        implot.setup_axis_limits_constraints(implot.ImAxis_.x1.value, static.first_day, static.last_day)
-        implot.setup_axis_zoom_constraints(implot.ImAxis_.x1.value, 60 * 60 * 24 * 14, static.last_day - static.first_day)
-        implot.setup_axis_format(implot.ImAxis_.y1.value, "$%.0f")
+        implot.setup_axis_scale(implot.ImAxis_.x1, implot.Scale_.time)
+        implot.setup_axis_limits_constraints(implot.ImAxis_.x1, static.first_day, static.last_day)
+        implot.setup_axis_zoom_constraints(implot.ImAxis_.x1, 60 * 60 * 24 * 14, static.last_day - static.first_day)
+        implot.setup_axis_format(implot.ImAxis_.y1, "$%.0f")
         plot_candlestick("GOOGL",
                          static.dates,
                          static.opens, static.closes, static.lows, static.highs,
@@ -178,7 +192,7 @@ def demo_help():
     imgui.indent()
 
     io = imgui.get_io()
-    backend_flag = "True" if io.backend_flags & imgui.BackendFlags_.renderer_has_vtx_offset.value else "False"
+    backend_flag = "True" if io.backend_flags & imgui.BackendFlags_.renderer_has_vtx_offset else "False"
     imgui.bullet_text(f"ImGuiBackendFlags_RendererHasVtxOffset: {backend_flag}")
 
     imgui.unindent()
@@ -214,8 +228,8 @@ def demo_config():
     imgui.separator()
 
     if implot.begin_plot("Preview"):
-        implot.setup_axis_scale(implot.ImAxis_.x1.value, implot.Scale_.time.value)
-        implot.setup_axis_limits(implot.ImAxis_.x1.value, static.now, static.now + 24 * 3600)
+        implot.setup_axis_scale(implot.ImAxis_.x1, implot.Scale_.time)
+        implot.setup_axis_limits(implot.ImAxis_.x1, static.now, static.now + 24 * 3600)
 
         for i in range(10):
             x = np.array([static.now, static.now + 24 * 3600], np.float32)
@@ -247,8 +261,8 @@ def demo_line_plots():
     if implot.begin_plot("Line Plots"):
         implot.setup_axes("x", "y")
         implot.plot_line("f(x)", static.xs1, static.ys1)
-        implot.set_next_marker_style(implot.Marker_.circle.value)
-        implot.plot_line("g(x)", static.xs2, static.ys2, flags=implot.LineFlags_.segments.value)
+        implot.set_next_marker_style(implot.Marker_.circle)
+        implot.plot_line("g(x)", static.xs2, static.ys2, flags=implot.LineFlags_.segments)
         implot.end_plot()
 
 
@@ -300,7 +314,7 @@ def demo_filled_line_plots():
         implot.setup_axes_limits(0, 100, 0, 500)
 
         if static.show_fills:
-            implot.push_style_var(implot.StyleVar_.fill_alpha.value, 0.25)
+            implot.push_style_var(implot.StyleVar_.fill_alpha, 0.25)
             ref_value = -np.inf if static.shade_mode == 0 else np.inf if static.shade_mode == 1 else static.fill_ref
             implot.plot_shaded("Stock 1", static.xs1, static.ys1, ref_value, static.flags)
             implot.plot_shaded("Stock 2", static.xs1, static.ys2, ref_value, static.flags)
@@ -335,7 +349,7 @@ def demo_shaded_plots():
     _, static.alpha = imgui.drag_float("Alpha", static.alpha, 0.01, 0, 1)
 
     if implot.begin_plot("Shaded Plots"):
-        implot.push_style_var(implot.StyleVar_.fill_alpha.value, static.alpha)
+        implot.push_style_var(implot.StyleVar_.fill_alpha, static.alpha)
         implot.plot_shaded("Uncertain Data", static.xs, static.ys1, static.ys2)
         implot.plot_line("Uncertain Data", static.xs, static.ys)
         implot.plot_shaded("Overlapping", static.xs, static.ys3, static.ys4)
@@ -361,9 +375,9 @@ def demo_scatter_plots():
     if implot.begin_plot("Scatter Plot"):
         implot.plot_scatter("Data 1", static.xs1, static.ys1)
 
-        implot.push_style_var(implot.StyleVar_.fill_alpha.value, 0.25)
+        implot.push_style_var(implot.StyleVar_.fill_alpha, 0.25)
         implot.set_next_marker_style(
-            implot.Marker_.square.value,
+            implot.Marker_.square,
             size=6,
             fill=implot.get_colormap_color(1),
             weight=implot.AUTO,
@@ -386,24 +400,24 @@ def demo_stairstep_plots():
     if not hasattr(static, "flags"):
         static.flags = 0
 
-    _, static.flags = imgui.checkbox_flags("Shaded", static.flags, implot.StairsFlags_.shaded.value)
+    _, static.flags = imgui.checkbox_flags("Shaded", static.flags, implot.StairsFlags_.shaded)
 
     if implot.begin_plot("Stairstep Plot"):
         implot.setup_axes("x", "f(x)")
         implot.setup_axes_limits(0, 1, 0, 1)
 
-        implot.push_style_color(implot.Col_.line.value, [0.5, 0.5, 0.5, 1.0])
+        implot.push_style_color(implot.Col_.line, [0.5, 0.5, 0.5, 1.0])
         implot.plot_line("##1", static.ys1, xscale=0.05)
         implot.plot_line("##2", static.ys2, xscale=0.05)
         implot.pop_style_color()
 
-        implot.set_next_marker_style(implot.Marker_.circle.value)
+        implot.set_next_marker_style(implot.Marker_.circle)
         implot.set_next_fill_style(implot.AUTO_COL, 0.25)
         implot.plot_stairs("Post Step (default)", static.ys1, xscale=0.05, flags=static.flags)
 
-        implot.set_next_marker_style(implot.Marker_.circle.value)
+        implot.set_next_marker_style(implot.Marker_.circle)
         implot.set_next_fill_style(implot.AUTO_COL, 0.25)
-        implot.plot_stairs("Pre Step", static.ys2, xscale=0.05, flags=static.flags | implot.StairsFlags_.pre_step.value)
+        implot.plot_stairs("Pre Step", static.ys2, xscale=0.05, flags=static.flags | implot.StairsFlags_.pre_step)
 
         implot.end_plot()
 
@@ -416,7 +430,7 @@ def demo_bar_plots():
 
     if implot.begin_plot("Bar Plot"):
         implot.plot_bars("Vertical", static.data, bar_size=0.7, shift=1)
-        implot.plot_bars("Horizontal", static.data, bar_size=0.4, shift=1, flags=implot.BarsFlags_.horizontal.value)
+        implot.plot_bars("Horizontal", static.data, bar_size=0.4, shift=1, flags=implot.BarsFlags_.horizontal)
         implot.end_plot()
 
 
@@ -442,7 +456,7 @@ def demo_bar_groups():
         static.flags = 0
         static.horz = False
 
-    _, static.flags = imgui.checkbox_flags("Stacked", static.flags, implot.BarGroupsFlags_.stacked.value)
+    _, static.flags = imgui.checkbox_flags("Stacked", static.flags, implot.BarGroupsFlags_.stacked)
     imgui.same_line()
     _, static.horz = imgui.checkbox("Horizontal", static.horz)
 
@@ -450,12 +464,12 @@ def demo_bar_groups():
     _, static.size = imgui.slider_float("Size", static.size, 0, 1)
 
     if implot.begin_plot("Bar Group"):
-        implot.setup_legend(implot.Location_.east.value, implot.LegendFlags_.outside.value)
+        implot.setup_legend(implot.Location_.east, implot.LegendFlags_.outside)
 
         if static.horz:
-            implot.setup_axes("Score", "Student", implot.AxisFlags_.auto_fit.value, implot.AxisFlags_.auto_fit.value)
+            implot.setup_axes("Score", "Student", implot.AxisFlags_.auto_fit, implot.AxisFlags_.auto_fit)
             implot.setup_axis_ticks(
-                axis=implot.ImAxis_.y1.value,
+                axis=implot.ImAxis_.y1,
                 values=static.positions,
                 labels=static.glabels,
                 keep_default=False
@@ -465,11 +479,11 @@ def demo_bar_groups():
                 values=static.data,
                 group_size=static.groups,
                 shift=0,
-                flags=static.flags | implot.BarGroupsFlags_.horizontal.value)
+                flags=static.flags | implot.BarGroupsFlags_.horizontal)
         else:
-            implot.setup_axes("Student", "Score", implot.AxisFlags_.auto_fit.value, implot.AxisFlags_.auto_fit.value)
+            implot.setup_axes("Student", "Score", implot.AxisFlags_.auto_fit, implot.AxisFlags_.auto_fit)
             implot.setup_axis_ticks(
-                axis=implot.ImAxis_.x1.value,
+                axis=implot.ImAxis_.x1,
                 values=static.positions,
                 labels=static.glabels,
                 keep_default=False
@@ -525,10 +539,10 @@ def demo_bar_stacks():
     labels_div = ["Pants on Fire","False","Mostly False","Mostly False","False","Pants on Fire","Half True","Mostly True","True"]
 
     implot.push_colormap(static.liars)
-    if implot.begin_plot("PolitiFact: Who Lies More?", ImVec2(-1, 400), implot.Flags_.no_mouse_text.value):
-        implot.setup_legend(implot.Location_.south.value, implot.LegendFlags_.outside.value | implot.LegendFlags_.horizontal.value)
-        implot.setup_axes("", "", implot.AxisFlags_.auto_fit.value | implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.auto_fit.value | implot.AxisFlags_.invert.value)
-        implot.setup_axis_ticks(implot.ImAxis_.y1.value,
+    if implot.begin_plot("PolitiFact: Who Lies More?", ImVec2(-1, 400), implot.Flags_.no_mouse_text):
+        implot.setup_legend(implot.Location_.south, implot.LegendFlags_.outside | implot.LegendFlags_.horizontal)
+        implot.setup_axes("", "", implot.AxisFlags_.auto_fit | implot.AxisFlags_.no_decorations, implot.AxisFlags_.auto_fit | implot.AxisFlags_.invert)
+        implot.setup_axis_ticks(implot.ImAxis_.y1,
                                 v_min=0, v_max=19, n_ticks=20,
                                 labels=politicians, keep_default=False)
         if static.diverging:
@@ -537,14 +551,14 @@ def demo_bar_stacks():
                 values=data_div,
                 group_size=0.75,
                 shift=0,
-                flags=implot.BarGroupsFlags_.stacked.value | implot.BarGroupsFlags_.horizontal.value)
+                flags=implot.BarGroupsFlags_.stacked | implot.BarGroupsFlags_.horizontal)
         else:
             implot.plot_bar_groups(
                 label_ids=labels_reg,
                 values=data_reg,
                 group_size=0.75,
                 shift=0,
-                flags=implot.BarGroupsFlags_.stacked.value | implot.BarGroupsFlags_.horizontal.value)
+                flags=implot.BarGroupsFlags_.stacked | implot.BarGroupsFlags_.horizontal)
         implot.end_plot()
 
     implot.pop_colormap()
@@ -572,13 +586,13 @@ def demo_error_bars():
         implot.set_next_error_bar_style(implot.get_colormap_color(1), 0)
         implot.plot_error_bars("Line", static.xs, static.lin1, static.err1, static.err2)
 
-        implot.set_next_marker_style(implot.Marker_.square.value)
+        implot.set_next_marker_style(implot.Marker_.square)
         implot.plot_line("Line", static.xs, static.lin1)
 
-        implot.push_style_color(implot.Col_.error_bar.value, implot.get_colormap_color(2))
+        implot.push_style_color(implot.Col_.error_bar, implot.get_colormap_color(2))
         implot.plot_error_bars("Scatter", static.xs, static.lin2, static.err2)
         implot.plot_error_bars("Scatter", static.xs, static.lin2, static.err3, static.err4,
-                               flags=implot.ErrorBarsFlags_.horizontal.value)
+                               flags=implot.ErrorBarsFlags_.horizontal)
         implot.pop_style_color()
 
         implot.plot_scatter("Scatter", static.xs, static.lin2)
@@ -595,10 +609,10 @@ def demo_stem_plots():
         static.ys2 = 0.5 + 0.25 * np.sin(10 * static.xs) * np.sin(static.xs)
 
     if implot.begin_plot("Stem Plots"):
-        implot.setup_axis_limits(implot.ImAxis_.x1.value, 0, 1.0)
-        implot.setup_axis_limits(implot.ImAxis_.y1.value, 0, 1.6)
+        implot.setup_axis_limits(implot.ImAxis_.x1, 0, 1.0)
+        implot.setup_axis_limits(implot.ImAxis_.y1, 0, 1.6)
         implot.plot_stems("Stems 1", static.xs, static.ys1)
-        implot.set_next_marker_style(implot.Marker_.circle.value)
+        implot.set_next_marker_style(implot.Marker_.circle)
         implot.plot_stems("Stems 2", static.xs, static.ys2)
         implot.end_plot()
 
@@ -613,9 +627,9 @@ def demo_infinite_lines():
         static.vals = np.array([0.25, 0.5, 0.75], dtype=np.float64)
 
     if implot.begin_plot("##Infinite"):
-        implot.setup_axes("", "", implot.AxisFlags_.no_initial_fit.value, implot.AxisFlags_.no_initial_fit.value)
+        implot.setup_axes("", "", implot.AxisFlags_.no_initial_fit, implot.AxisFlags_.no_initial_fit)
         implot.plot_inf_lines("Vertical", static.vals)
-        implot.plot_inf_lines("Horizontal", static.vals, flags=implot.InfLinesFlags_.horizontal.value)
+        implot.plot_inf_lines("Horizontal", static.vals, flags=implot.InfLinesFlags_.horizontal)
         implot.end_plot()
 
 
@@ -630,11 +644,11 @@ def demo_pie_charts():
     imgui.set_next_item_width(250)
     _, static.data1 = imgui.drag_float4("Values", static.data1, 0.01, 0, 1)
 
-    _, static.flags = imgui.checkbox_flags("Normalize", static.flags, implot.PieChartFlags_.normalize.value)
-    _, static.flags = imgui.checkbox_flags("Ignore Hidden", static.flags, implot.PieChartFlags_.ignore_hidden.value)
+    _, static.flags = imgui.checkbox_flags("Normalize", static.flags, implot.PieChartFlags_.normalize)
+    _, static.flags = imgui.checkbox_flags("Ignore Hidden", static.flags, implot.PieChartFlags_.ignore_hidden)
 
-    if implot.begin_plot("##Pie1", size=(250, 250), flags=implot.Flags_.equal.value | implot.Flags_.no_mouse_text.value):
-        implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
+    if implot.begin_plot("##Pie1", size=(250, 250), flags=implot.Flags_.equal | implot.Flags_.no_mouse_text):
+        implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(0, 1, 0, 1)
         implot.plot_pie_chart(static.labels1, np.array(static.data1), x=0.5, y=0.5, radius=0.4, label_fmt="%.2f", angle0=90, flags=static.flags)
         implot.end_plot()
@@ -645,9 +659,9 @@ def demo_pie_charts():
         static.labels2 = ["A", "B", "C", "D", "E"]
         static.data2 = np.array([1, 1, 2, 3, 5], dtype=np.int32)
 
-    implot.push_colormap(implot.Colormap_.pastel.value)
-    if implot.begin_plot("##Pie2", size=(250, 250), flags=implot.Flags_.equal.value | implot.Flags_.no_mouse_text.value):
-        implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
+    implot.push_colormap(implot.Colormap_.pastel)
+    if implot.begin_plot("##Pie2", size=(250, 250), flags=implot.Flags_.equal | implot.Flags_.no_mouse_text):
+        implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(0, 1, 0, 1)
         implot.plot_pie_chart(static.labels2, static.data2, x=0.5, y=0.5, radius=0.4, label_fmt="%.0f", angle0=180, flags=static.flags)
         implot.end_plot()
@@ -673,7 +687,7 @@ def demo_heatmaps():
         static.ylabels = ["R1", "R2", "R3", "R4", "R5", "R6", "R7"]
 
     if not hasattr(static, "map"):
-        static.map = implot.Colormap_.viridis.value
+        static.map = implot.Colormap_.viridis
 
     if implot.colormap_button(implot.get_colormap_name(static.map), size=(225, 0), cmap=static.map):
         static.map = (static.map + 1) % implot.get_colormap_count()
@@ -687,16 +701,16 @@ def demo_heatmaps():
 
     if not hasattr(static, "hm_flags"):
         static.hm_flags = 0
-    _, static.hm_flags = imgui.checkbox_flags("Column Major", static.hm_flags, implot.HeatmapFlags_.col_major.value)
+    _, static.hm_flags = imgui.checkbox_flags("Column Major", static.hm_flags, implot.HeatmapFlags_.col_major)
 
-    axes_flags = implot.AxisFlags_.lock.value | implot.AxisFlags_.no_grid_lines.value | implot.AxisFlags_.no_tick_marks.value
+    axes_flags = implot.AxisFlags_.lock | implot.AxisFlags_.no_grid_lines | implot.AxisFlags_.no_tick_marks
 
     implot.push_colormap(static.map)
 
-    if implot.begin_plot("##Heatmap1", size=(225, 225), flags=implot.Flags_.no_legend.value | implot.Flags_.no_mouse_text.value):
+    if implot.begin_plot("##Heatmap1", size=(225, 225), flags=implot.Flags_.no_legend | implot.Flags_.no_mouse_text):
         implot.setup_axes("", "", axes_flags, axes_flags)
-        implot.setup_axis_ticks(implot.ImAxis_.x1.value, v_min=0 + 1.0 / 14.0, v_max=1 - 1.0 / 14.0, n_ticks=7, labels=static.xlabels, keep_default=False)
-        implot.setup_axis_ticks(implot.ImAxis_.y1.value, v_min=1 - 1.0 / 14.0, v_max=0 + 1.0 / 14.0, n_ticks=7, labels=static.ylabels, keep_default=False)
+        implot.setup_axis_ticks(implot.ImAxis_.x1, v_min=0 + 1.0 / 14.0, v_max=1 - 1.0 / 14.0, n_ticks=7, labels=static.xlabels, keep_default=False)
+        implot.setup_axis_ticks(implot.ImAxis_.y1, v_min=1 - 1.0 / 14.0, v_max=0 + 1.0 / 14.0, n_ticks=7, labels=static.ylabels, keep_default=False)
         implot.plot_heatmap("heat", static.values1, scale_min=static.scale_min, scale_max=static.scale_max, label_fmt="%g",
                             bounds_min=implot.Point(0, 0), bounds_max=implot.Point(1, 1), flags=static.hm_flags)
         implot.end_plot()
@@ -712,7 +726,7 @@ def demo_heatmaps():
         static.values2 = np.random.uniform(0.0, 1.0, size=(size, size))
 
     if implot.begin_plot("##Heatmap2", size=(225, 225)):
-        implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
+        implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(-1, 1, -1, 1)
         implot.plot_heatmap("heat1", static.values2, scale_min=0, scale_max=1)
         implot.plot_heatmap("heat2", static.values2, scale_min=0, scale_max=1, bounds_min=(-1, -1), bounds_max=(0, 0))
@@ -727,7 +741,7 @@ def demo_histogram():
     static = demo_histogram
 
     if not hasattr(static, "hist_flags"):
-        static.hist_flags = implot.HistogramFlags_.density.value
+        static.hist_flags = implot.HistogramFlags_.density
         static.bins = 50
         static.mu = 5.0
         static.sigma = 2.0
@@ -737,17 +751,17 @@ def demo_histogram():
         static.data = np.random.normal(static.mu, static.sigma, 10000)
 
     imgui.set_next_item_width(200)
-    if imgui.radio_button("Sqrt", static.bins == implot.Bin_.sqrt.value):
-        static.bins = implot.Bin_.sqrt.value
+    if imgui.radio_button("Sqrt", static.bins == implot.Bin_.sqrt):
+        static.bins = implot.Bin_.sqrt
     imgui.same_line()
-    if imgui.radio_button("Sturges", static.bins == implot.Bin_.sturges.value):
-        static.bins = implot.Bin_.sturges.value
+    if imgui.radio_button("Sturges", static.bins == implot.Bin_.sturges):
+        static.bins = implot.Bin_.sturges
     imgui.same_line()
-    if imgui.radio_button("Rice", static.bins == implot.Bin_.rice.value):
-        static.bins = implot.Bin_.rice.value
+    if imgui.radio_button("Rice", static.bins == implot.Bin_.rice):
+        static.bins = implot.Bin_.rice
     imgui.same_line()
-    if imgui.radio_button("Scott", static.bins == implot.Bin_.scott.value):
-        static.bins = implot.Bin_.scott.value
+    if imgui.radio_button("Scott", static.bins == implot.Bin_.scott):
+        static.bins = implot.Bin_.scott
     imgui.same_line()
     if imgui.radio_button("N Bins", static.bins >= 0):
         static.bins = 50
@@ -757,11 +771,11 @@ def demo_histogram():
         imgui.set_next_item_width(200)
         _, static.bins = imgui.slider_int("##Bins", static.bins, 1, 100)
 
-    _, static.hist_flags = imgui.checkbox_flags("Horizontal", static.hist_flags, implot.HistogramFlags_.horizontal.value)
+    _, static.hist_flags = imgui.checkbox_flags("Horizontal", static.hist_flags, implot.HistogramFlags_.horizontal)
     imgui.same_line()
-    _, static.hist_flags = imgui.checkbox_flags("Density", static.hist_flags, implot.HistogramFlags_.density.value)
+    _, static.hist_flags = imgui.checkbox_flags("Density", static.hist_flags, implot.HistogramFlags_.density)
     imgui.same_line()
-    _, static.hist_flags = imgui.checkbox_flags("Cumulative", static.hist_flags, implot.HistogramFlags_.cumulative.value)
+    _, static.hist_flags = imgui.checkbox_flags("Cumulative", static.hist_flags, implot.HistogramFlags_.cumulative)
 
     _, static.range = imgui.checkbox("Range", static.range)
 
@@ -770,23 +784,23 @@ def demo_histogram():
         imgui.set_next_item_width(200)
         _, static.rmin, static.rmax = imgui.drag_float_range2("##Range", static.rmin, static.rmax, 0.1, -3, 13)
         imgui.same_line()
-        _, static.hist_flags = imgui.checkbox_flags("Exclude Outliers", static.hist_flags, implot.HistogramFlags_.no_outliers.value)
+        _, static.hist_flags = imgui.checkbox_flags("Exclude Outliers", static.hist_flags, implot.HistogramFlags_.no_outliers)
 
     x = np.linspace(-3, 13, 100)
     y = np.exp(-((x - static.mu) ** 2) / (2 * static.sigma ** 2)) / (static.sigma * np.sqrt(2 * np.pi))
 
-    if static.hist_flags & implot.HistogramFlags_.cumulative.value:
+    if static.hist_flags & implot.HistogramFlags_.cumulative:
         y = np.cumsum(y)
         y /= y[-1]
 
     if implot.begin_plot("##Histograms"):
-        implot.setup_axes("", "", implot.AxisFlags_.auto_fit.value, implot.AxisFlags_.auto_fit.value)
+        implot.setup_axes("", "", implot.AxisFlags_.auto_fit, implot.AxisFlags_.auto_fit)
         implot.set_next_fill_style(implot.AUTO_COL, 0.5)
         implot.plot_histogram("Empirical", static.data, bins=static.bins, bar_scale=1.0,
                               range=implot.Range(static.rmin, static.rmax) if static.range else implot.Range(), flags=static.hist_flags)
 
-        if (static.hist_flags & implot.HistogramFlags_.density.value) and not (static.hist_flags & implot.HistogramFlags_.no_outliers.value):
-            if static.hist_flags & implot.HistogramFlags_.horizontal.value:
+        if (static.hist_flags & implot.HistogramFlags_.density) and not (static.hist_flags & implot.HistogramFlags_.no_outliers):
+            if static.hist_flags & implot.HistogramFlags_.horizontal:
                 implot.plot_line("Theoretical", y, x)
             else:
                 implot.plot_line("Theoretical", x, y)
@@ -809,10 +823,10 @@ def demo_histogram2d():
     _, static.count = imgui.slider_int("Count", static.count, 100, 100000)
     _, static.xybins = imgui.slider_int2("Bins", static.xybins, 1, 500)
     imgui.same_line()
-    _, static.hist_flags = imgui.checkbox_flags("Density", static.hist_flags, implot.HistogramFlags_.density.value)
+    _, static.hist_flags = imgui.checkbox_flags("Density", static.hist_flags, implot.HistogramFlags_.density)
 
     max_count = 0
-    flags = implot.AxisFlags_.auto_fit.value | implot.AxisFlags_.foreground.value
+    flags = implot.AxisFlags_.auto_fit | implot.AxisFlags_.foreground
 
     implot.push_colormap("Hot")
     if implot.begin_plot("##Hist2D", size=(imgui.get_content_region_avail().x - 100 - imgui.get_style().item_spacing.x, 0)):
@@ -827,7 +841,7 @@ def demo_histogram2d():
         implot.end_plot()
 
     imgui.same_line()
-    implot.colormap_scale("Density" if static.hist_flags & implot.HistogramFlags_.density.value else "Count", 0, max_count, size=(100, 0))
+    implot.colormap_scale("Density" if static.hist_flags & implot.HistogramFlags_.density else "Count", 0, max_count, size=(100, 0))
     implot.pop_colormap()
 
 
@@ -867,9 +881,9 @@ def demo_digital_plots():
             static.data_analog[1].add_point(static.t, np.cos(2 * static.t))
 
     if implot.begin_plot("##Digital"):
-        implot.setup_axis_limits(implot.ImAxis_.x1.value, static.t - 10.0, static.t,
-                                 implot.Cond_.once.value if static.paused else implot.Cond_.always.value)
-        implot.setup_axis_limits(implot.ImAxis_.y1.value, -1, 1)
+        implot.setup_axis_limits(implot.ImAxis_.x1, static.t - 10.0, static.t,
+                                 implot.Cond_.once if static.paused else implot.Cond_.always)
+        implot.setup_axis_limits(implot.ImAxis_.y1, -1, 1)
 
         for i in range(2):
             if static.show_digital[i] and static.data_digital[i].size > 0:
@@ -894,6 +908,15 @@ def demo_images():
         static.uv1 = [1.0, 1.0]
         static.tint =[1.0, 1.0, 1.0, 1.0]
 
+        # Create textures
+        # Step 1: create them as numpy arrays
+        checker_img = make_checkerboard_texture()
+        # Step 2: convert them to OpenGL textures (using imgui_bundle's immvision)
+        from imgui_bundle import immvision
+        static.tex_checker = immvision.GlTexture(checker_img)
+        # Step 3: create ImTextureRef from the OpenGL texture id
+        static.tex_id_checker = imgui.ImTextureRef(static.tex_checker.texture_id)
+
     imgui.bullet_text("Below we are displaying the font texture, which is the only texture we have\naccess to in this demo.")
     imgui.bullet_text("Use the 'ImTextureID' type as storage to pass pointers or identifiers to your\nown texture data.")
     imgui.bullet_text("See ImGui Wiki page 'Image Loading and Displaying Examples'.")
@@ -905,7 +928,7 @@ def demo_images():
     _, static.tint = imgui.color_edit4("Tint", static.tint)
 
     if implot.begin_plot("##image"):
-        implot.plot_image("my image", imgui.get_io().fonts.tex_id,
+        implot.plot_image("my image", static.tex_id_checker,
                           bounds_min=implot.Point(static.bmin[0], static.bmin[1]),
                           bounds_max=implot.Point(static.bmax[0], static.bmax[1]),
                           uv0=ImVec2(static.uv0[0], static.uv0[1]),
@@ -943,15 +966,15 @@ def demo_markers_and_text():
     _, static.mk_size = imgui.drag_float("Marker Size", static.mk_size, 0.1, 2.0, 10.0, "%.2f px")
     _, static.mk_weight = imgui.drag_float("Marker Weight", static.mk_weight, 0.05, 0.5, 3.0, "%.2f px")
 
-    if implot.begin_plot("##MarkerStyles", size=(-1, 0), flags=implot.Flags_.canvas_only.value):
-        implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
+    if implot.begin_plot("##MarkerStyles", size=(-1, 0), flags=implot.Flags_.canvas_only):
+        implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(0, 10, 0, 12)
 
         xs = [1, 4]
         ys = [10, 11]
 
         # Filled markers
-        for m in range(implot.Marker_.count.value):
+        for m in range(implot.Marker_.count):
             with imgui_ctx.push_id(m):
                 implot.set_next_marker_style(m, static.mk_size, implot.AUTO_COL, static.mk_weight)
                 implot.plot_line("##Filled", np.array(xs), np.array(ys))
@@ -961,7 +984,7 @@ def demo_markers_and_text():
         ys = [10, 11]
 
         # Open markers
-        for m in range(implot.Marker_.count.value):
+        for m in range(implot.Marker_.count):
             with imgui_ctx.push_id(m):
                 implot.set_next_marker_style(m, static.mk_size, [0, 0, 0, 0], static.mk_weight)
                 implot.plot_line("##Open", np.array(xs), np.array(ys))
@@ -970,8 +993,8 @@ def demo_markers_and_text():
         implot.plot_text("Filled Markers", 2.5, 6.0)
         implot.plot_text("Open Markers", 7.5, 6.0)
 
-        implot.push_style_color(implot.Col_.inlay_text.value, [1, 0, 1, 1])
-        implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0), flags=implot.TextFlags_.vertical.value)
+        implot.push_style_color(implot.Col_.inlay_text, [1, 0, 1, 1])
+        implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0), flags=implot.TextFlags_.vertical)
         implot.pop_style_color()
 
         implot.end_plot()
@@ -994,10 +1017,10 @@ def demo_nan_values():
 
     _, static.include_nan = imgui.checkbox("Include NaN", static.include_nan)
     imgui.same_line()
-    _, static.flags = imgui.checkbox_flags("Skip NaN", static.flags, implot.LineFlags_.skip_nan.value)
+    _, static.flags = imgui.checkbox_flags("Skip NaN", static.flags, implot.LineFlags_.skip_nan)
 
     if implot.begin_plot("##NaNValues"):
-        implot.set_next_marker_style(implot.Marker_.square.value)
+        implot.set_next_marker_style(implot.Marker_.square)
         implot.plot_line("line", data1, data2, flags=static.flags)
         implot.plot_bars("bars", data1)
         implot.end_plot()
@@ -1015,7 +1038,7 @@ def demo_log_scale():
         static.ys3 = np.power(10, static.xs[:21])
 
     if implot.begin_plot("Log Plot", size=(-1, 0)):
-        implot.setup_axis_scale(implot.ImAxis_.x1.value, implot.Scale_.log10.value)
+        implot.setup_axis_scale(implot.ImAxis_.x1, implot.Scale_.log10)
         implot.setup_axes_limits(0.1, 100, 0, 10)
 
         implot.plot_line("f(x) = x", static.xs, static.xs)
@@ -1037,7 +1060,7 @@ def demo_symmetric_log_scale():
         static.ys2 = static.xs * 0.002 - 1
 
     if implot.begin_plot("SymLog Plot", size=(-1, 0)):
-        implot.setup_axis_scale(implot.ImAxis_.x1.value, implot.Scale_.sym_log.value)
+        implot.setup_axis_scale(implot.ImAxis_.x1, implot.Scale_.sym_log)
 
         implot.plot_line("f(x) = a*x+b", static.xs, static.ys2)
         implot.plot_line("f(x) = sin(x)", static.xs, static.ys1)
@@ -1085,7 +1108,7 @@ def demo_time_scale():
             static.data = HugeTimeData(static.t_min)
 
     if implot.begin_plot("##Time", size=(-1, 0)):
-        implot.setup_axis_scale(implot.ImAxis_.x1.value, implot.Scale_.time.value)
+        implot.setup_axis_scale(implot.ImAxis_.x1, implot.Scale_.time)
         implot.setup_axes_limits(static.t_min, static.t_max, 0, 1)
 
         if static.data is not None:
@@ -1154,29 +1177,29 @@ def demo_multiple_axes():
         implot.setup_axes_limits(0, 100, 0, 10)
 
         if static.x2_axis:
-            implot.setup_axis(implot.ImAxis_.x2.value, "X-Axis 2", implot.AxisFlags_.aux_default.value)
-            implot.setup_axis_limits(implot.ImAxis_.x2.value, 0, 100)
+            implot.setup_axis(implot.ImAxis_.x2, "X-Axis 2", implot.AxisFlags_.aux_default)
+            implot.setup_axis_limits(implot.ImAxis_.x2, 0, 100)
 
         if static.y2_axis:
-            implot.setup_axis(implot.ImAxis_.y2.value, "Y-Axis 2", implot.AxisFlags_.aux_default.value)
-            implot.setup_axis_limits(implot.ImAxis_.y2.value, 0, 1)
+            implot.setup_axis(implot.ImAxis_.y2, "Y-Axis 2", implot.AxisFlags_.aux_default)
+            implot.setup_axis_limits(implot.ImAxis_.y2, 0, 1)
 
         if static.y3_axis:
-            implot.setup_axis(implot.ImAxis_.y3.value, "Y-Axis 3", implot.AxisFlags_.aux_default.value)
-            implot.setup_axis_limits(implot.ImAxis_.y3.value, 0, 300)
+            implot.setup_axis(implot.ImAxis_.y3, "Y-Axis 3", implot.AxisFlags_.aux_default)
+            implot.setup_axis_limits(implot.ImAxis_.y3, 0, 300)
 
         implot.plot_line("f(x) = x", static.xs, static.xs)
 
         if static.x2_axis:
-            implot.set_axes(implot.ImAxis_.x2.value, implot.ImAxis_.y1.value)
+            implot.set_axes(implot.ImAxis_.x2, implot.ImAxis_.y1)
             implot.plot_line("f(x) = sin(x)*3+1", static.xs2, static.ys1)
 
         if static.y2_axis:
-            implot.set_axes(implot.ImAxis_.x1.value, implot.ImAxis_.y2.value)
+            implot.set_axes(implot.ImAxis_.x1, implot.ImAxis_.y2)
             implot.plot_line("f(x) = cos(x)*.2+.5", static.xs, static.ys2)
 
         if static.x2_axis and static.y3_axis:
-            implot.set_axes(implot.ImAxis_.x2.value, implot.ImAxis_.y3.value)
+            implot.set_axes(implot.ImAxis_.x2, implot.ImAxis_.y3)
             implot.plot_line("f(x) = sin(x+.5)*100+200", static.xs2, static.ys3)
 
         implot.end_plot()
@@ -1205,17 +1228,17 @@ def demo_linked_axes():
     if implot.begin_aligned_plots("AlignedGroup"):
         if implot.begin_plot("Plot A"):
             if static.linkx:
-                implot.setup_axis_links(implot.ImAxis_.x1.value, static.x_min, static.x_max)
+                implot.setup_axis_links(implot.ImAxis_.x1, static.x_min, static.x_max)
             if static.linky:
-                implot.setup_axis_links(implot.ImAxis_.y1.value, static.y_min, static.y_max)
+                implot.setup_axis_links(implot.ImAxis_.y1, static.y_min, static.y_max)
             implot.plot_line("Line", data)
             implot.end_plot()
 
         if implot.begin_plot("Plot B"):
             if static.linkx:
-                implot.setup_axis_links(implot.ImAxis_.x1.value, static.x_min, static.x_max)
+                implot.setup_axis_links(implot.ImAxis_.x1, static.x_min, static.x_max)
             if static.linky:
-                implot.setup_axis_links(implot.ImAxis_.y1.value, static.y_min, static.y_max)
+                implot.setup_axis_links(implot.ImAxis_.y1, static.y_min, static.y_max)
             implot.plot_line("Line", data)
             implot.end_plot()
 
@@ -1231,16 +1254,16 @@ def demo_axis_constraints():
 
     _, static.constraints[:2] = imgui.drag_float2("Limits Constraints", static.constraints[:2], 0.01)
     _, static.constraints[2:] = imgui.drag_float2("Zoom Constraints", static.constraints[2:], 0.01)
-    _, static.flags = imgui.checkbox_flags("Pan Stretch", static.flags, implot.AxisFlags_.pan_stretch.value)
+    _, static.flags = imgui.checkbox_flags("Pan Stretch", static.flags, implot.AxisFlags_.pan_stretch)
 
     if implot.begin_plot("##AxisConstraints", size=(-1, 0)):
         implot.setup_axes("X", "Y", static.flags, static.flags)
         implot.setup_axes_limits(-1, 1, -1, 1)
 
-        implot.setup_axis_limits_constraints(implot.ImAxis_.x1.value, static.constraints[0], static.constraints[1])
-        implot.setup_axis_zoom_constraints(implot.ImAxis_.x1.value, static.constraints[2], static.constraints[3])
-        implot.setup_axis_limits_constraints(implot.ImAxis_.y1.value, static.constraints[0], static.constraints[1])
-        implot.setup_axis_zoom_constraints(implot.ImAxis_.y1.value, static.constraints[2], static.constraints[3])
+        implot.setup_axis_limits_constraints(implot.ImAxis_.x1, static.constraints[0], static.constraints[1])
+        implot.setup_axis_zoom_constraints(implot.ImAxis_.x1, static.constraints[2], static.constraints[3])
+        implot.setup_axis_limits_constraints(implot.ImAxis_.y1, static.constraints[0], static.constraints[1])
+        implot.setup_axis_zoom_constraints(implot.ImAxis_.y1, static.constraints[2], static.constraints[3])
 
         implot.end_plot()
 
@@ -1260,13 +1283,13 @@ def demo_equal_axes():
 
     imgui.bullet_text("Equal constraint applies to axis pairs (e.g. X1/Y1, X2/Y2)")
 
-    if implot.begin_plot("##EqualAxes", size=(-1, 0), flags=implot.Flags_.equal.value):
-        implot.setup_axis(implot.ImAxis_.x2.value, None, implot.AxisFlags_.aux_default.value)
-        implot.setup_axis(implot.ImAxis_.y2.value, None, implot.AxisFlags_.aux_default.value)
+    if implot.begin_plot("##EqualAxes", size=(-1, 0), flags=implot.Flags_.equal):
+        implot.setup_axis(implot.ImAxis_.x2, None, implot.AxisFlags_.aux_default)
+        implot.setup_axis(implot.ImAxis_.y2, None, implot.AxisFlags_.aux_default)
 
         implot.plot_line("Circle", static.xs1, static.ys1)
 
-        implot.set_axes(implot.ImAxis_.x2.value, implot.ImAxis_.y2.value)
+        implot.set_axes(implot.ImAxis_.x2, implot.ImAxis_.y2)
         implot.plot_line("Diamond", static.xs2, static.ys2)
 
         implot.end_plot()
@@ -1278,8 +1301,8 @@ def demo_auto_fitting_data():
     static = demo_auto_fitting_data
 
     if not hasattr(static, "xflags"):
-        static.xflags = implot.AxisFlags_.none.value
-        static.yflags = implot.AxisFlags_.auto_fit.value | implot.AxisFlags_.range_fit.value
+        static.xflags = implot.AxisFlags_.none
+        static.yflags = implot.AxisFlags_.auto_fit | implot.AxisFlags_.range_fit
         static.data = 1 + np.sin(np.arange(101) / 10.0)
 
     imgui.bullet_text("The Y-axis has been configured to auto-fit to only the data visible in X-axis range.")
@@ -1288,15 +1311,15 @@ def demo_auto_fitting_data():
 
     imgui.text_unformatted("X: ")
     imgui.same_line()
-    _, static.xflags = imgui.checkbox_flags("ImPlotAxisFlags_AutoFit##X", static.xflags, implot.AxisFlags_.auto_fit.value)
+    _, static.xflags = imgui.checkbox_flags("ImPlotAxisFlags_AutoFit##X", static.xflags, implot.AxisFlags_.auto_fit)
     imgui.same_line()
-    _, static.xflags = imgui.checkbox_flags("ImPlotAxisFlags_RangeFit##X", static.xflags, implot.AxisFlags_.range_fit.value)
+    _, static.xflags = imgui.checkbox_flags("ImPlotAxisFlags_RangeFit##X", static.xflags, implot.AxisFlags_.range_fit)
 
     imgui.text_unformatted("Y: ")
     imgui.same_line()
-    _, static.yflags = imgui.checkbox_flags("ImPlotAxisFlags_AutoFit##Y", static.yflags, implot.AxisFlags_.auto_fit.value)
+    _, static.yflags = imgui.checkbox_flags("ImPlotAxisFlags_AutoFit##Y", static.yflags, implot.AxisFlags_.auto_fit)
     imgui.same_line()
-    _, static.yflags = imgui.checkbox_flags("ImPlotAxisFlags_RangeFit##Y", static.yflags, implot.AxisFlags_.range_fit.value)
+    _, static.yflags = imgui.checkbox_flags("ImPlotAxisFlags_RangeFit##Y", static.yflags, implot.AxisFlags_.range_fit)
 
     if implot.begin_plot("##DataFitting"):
         implot.setup_axes("X", "Y", static.xflags, static.yflags)
@@ -1309,10 +1332,10 @@ def demo_subplots_sizing():
     static = demo_subplots_sizing
 
     if not hasattr(static, "flags"):
-        static.flags = implot.SubplotFlags_.share_items.value | implot.SubplotFlags_.no_legend.value
+        static.flags = implot.SubplotFlags_.share_items | implot.SubplotFlags_.no_legend
 
-    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_NoResize", static.flags, implot.SubplotFlags_.no_resize.value)
-    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_NoTitle", static.flags, implot.SubplotFlags_.no_title.value)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_NoResize", static.flags, implot.SubplotFlags_.no_resize)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_NoTitle", static.flags, implot.SubplotFlags_.no_title)
 
     if not hasattr(static, "rows"):
         static.rows = 3
@@ -1341,8 +1364,8 @@ def demo_subplots_sizing():
             row_col_ratios=row_col_ratios):
         id_counter = 0
         for i in range(static.rows * static.cols):
-            if implot.begin_plot("", size=(0, 0), flags=implot.Flags_.no_legend.value):
-                implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
+            if implot.begin_plot("", size=(0, 0), flags=implot.Flags_.no_legend):
+                implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
 
                 # Compute sinewave data
                 fi = 0.01 * (i + 1)
@@ -1351,7 +1374,7 @@ def demo_subplots_sizing():
 
                 # Apply colormap based on subplot index
                 if static.rows * static.cols > 1:
-                    col = implot.sample_colormap(i / float(static.rows * static.cols - 1), implot.Colormap_.jet.value)
+                    col = implot.sample_colormap(i / float(static.rows * static.cols - 1), implot.Colormap_.jet)
                     implot.set_next_line_style(col)
 
                 # Label and plot line
@@ -1367,10 +1390,10 @@ def demo_subplot_item_sharing():
     static = demo_subplot_item_sharing
 
     if not hasattr(static, "flags"):
-        static.flags = implot.SubplotFlags_.share_items.value
+        static.flags = implot.SubplotFlags_.share_items
 
-    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_ShareItems", static.flags, implot.SubplotFlags_.share_items.value)
-    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_ColMajor", static.flags, implot.SubplotFlags_.col_major.value)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_ShareItems", static.flags, implot.SubplotFlags_.share_items)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_ColMajor", static.flags, implot.SubplotFlags_.col_major)
 
     imgui.bullet_text("Drag and drop items from the legend onto plots (except for 'common')")
 
@@ -1381,7 +1404,7 @@ def demo_subplot_item_sharing():
         static.curj = -1  # Current dataset being dragged
 
     if implot.begin_subplots("##ItemSharing", static.rows, static.cols, size=(-1, 400), flags=static.flags):
-        implot.setup_legend(implot.Location_.south.value, implot.LegendFlags_.sort.value | implot.LegendFlags_.horizontal.value)
+        implot.setup_legend(implot.Location_.south, implot.LegendFlags_.sort | implot.LegendFlags_.horizontal)
 
         for i in range(static.rows * static.cols):
             if implot.begin_plot(""):
@@ -1420,12 +1443,12 @@ def demo_subplot_axis_linking():
     static = demo_subplot_axis_linking
 
     if not hasattr(static, "flags"):
-        static.flags = implot.SubplotFlags_.link_rows.value | implot.SubplotFlags_.link_cols.value
+        static.flags = implot.SubplotFlags_.link_rows | implot.SubplotFlags_.link_cols
 
-    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkRows", static.flags, implot.SubplotFlags_.link_rows.value)
-    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkCols", static.flags, implot.SubplotFlags_.link_cols.value)
-    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkAllX", static.flags, implot.SubplotFlags_.link_all_x.value)
-    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkAllY", static.flags, implot.SubplotFlags_.link_all_y.value)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkRows", static.flags, implot.SubplotFlags_.link_rows)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkCols", static.flags, implot.SubplotFlags_.link_cols)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkAllX", static.flags, implot.SubplotFlags_.link_all_x)
+    _, static.flags = imgui.checkbox_flags("ImPlotSubplotFlags_LinkAllY", static.flags, implot.SubplotFlags_.link_all_y)
 
     if not hasattr(static, "rows"):
         static.rows = 2
@@ -1452,18 +1475,18 @@ def demo_drag_points():
     imgui.bullet_text("Click and drag each point.")
 
     if not hasattr(static, "flags"):
-        static.flags = implot.DragToolFlags_.none.value
+        static.flags = implot.DragToolFlags_.none
 
-    _, static.flags = imgui.checkbox_flags("No Cursors", static.flags, implot.DragToolFlags_.no_cursors.value)
+    _, static.flags = imgui.checkbox_flags("No Cursors", static.flags, implot.DragToolFlags_.no_cursors)
     imgui.same_line()
-    _, static.flags = imgui.checkbox_flags("No Fit", static.flags, implot.DragToolFlags_.no_fit.value)
+    _, static.flags = imgui.checkbox_flags("No Fit", static.flags, implot.DragToolFlags_.no_fit)
     imgui.same_line()
-    _, static.flags = imgui.checkbox_flags("No Input", static.flags, implot.DragToolFlags_.no_inputs.value)
+    _, static.flags = imgui.checkbox_flags("No Input", static.flags, implot.DragToolFlags_.no_inputs)
 
-    ax_flags = implot.AxisFlags_.no_tick_labels.value | implot.AxisFlags_.no_tick_marks.value
+    ax_flags = implot.AxisFlags_.no_tick_labels | implot.AxisFlags_.no_tick_marks
     clicked, hovered, held = [False] * 4, [False] * 4, [False] * 4
 
-    if implot.begin_plot("##Bezier", size=(-1, 0), flags=implot.Flags_.canvas_only.value):
+    if implot.begin_plot("##Bezier", size=(-1, 0), flags=implot.Flags_.canvas_only):
         implot.setup_axes("", "", ax_flags, ax_flags)
         implot.setup_axes_limits(0, 1, 0, 1)
 
@@ -1498,13 +1521,13 @@ def demo_drag_lines():
         static.y1 = 0.25
         static.y2 = 0.75
         static.f = 0.1
-        static.flags = implot.DragToolFlags_.none.value
+        static.flags = implot.DragToolFlags_.none
 
-    _, static.flags = imgui.checkbox_flags("No Cursors", static.flags, implot.DragToolFlags_.no_cursors.value)
+    _, static.flags = imgui.checkbox_flags("No Cursors", static.flags, implot.DragToolFlags_.no_cursors)
     imgui.same_line()
-    _, static.flags = imgui.checkbox_flags("No Fit", static.flags, implot.DragToolFlags_.no_fit.value)
+    _, static.flags = imgui.checkbox_flags("No Fit", static.flags, implot.DragToolFlags_.no_fit)
     imgui.same_line()
-    _, static.flags = imgui.checkbox_flags("No Input", static.flags, implot.DragToolFlags_.no_inputs.value)
+    _, static.flags = imgui.checkbox_flags("No Input", static.flags, implot.DragToolFlags_.no_inputs)
 
 
     if implot.begin_plot("##lines", size=(-1, 0)):
@@ -1552,7 +1575,7 @@ class DemoDragRectState:
         self.y_data2 = self.y_data1 - 0.6 + np.sin(arg * 2) * 0.4
         self.y_data3 = self.y_data2 - 0.6 + np.sin(arg * 3) * 0.4
         self.rect = implot.Rect(0.0025, 0.0075, -2.7, 1.1)  # type: ignore
-        self.flags = implot.DragToolFlags_.none.value
+        self.flags = implot.DragToolFlags_.none
 
 
 def demo_drag_rects():
@@ -1563,15 +1586,15 @@ def demo_drag_rects():
 
     imgui.bullet_text("Click and drag the edges, corners, and center of the rect.")
     _, state.flags = imgui.checkbox_flags(
-        "NoCursors", state.flags, implot.DragToolFlags_.no_cursors.value
+        "NoCursors", state.flags, implot.DragToolFlags_.no_cursors
     )
     imgui.same_line()
     _, state.flags = imgui.checkbox_flags(
-        "NoFit", state.flags, implot.DragToolFlags_.no_fit.value
+        "NoFit", state.flags, implot.DragToolFlags_.no_fit
     )
     imgui.same_line()
     _, state.flags = imgui.checkbox_flags(
-        "NoInput", state.flags, implot.DragToolFlags_.no_inputs.value
+        "NoInput", state.flags, implot.DragToolFlags_.no_inputs
     )
 
     plot_height = immapp.em_size() * 15
@@ -1605,14 +1628,14 @@ def demo_drag_rects():
         implot.internal.fit_point(implot.Point(0, 1.5))
 
         implot.end_plot()
-    if implot.begin_plot("##rect", ImVec2(-1, plot_height), implot.Flags_.canvas_only.value):
+    if implot.begin_plot("##rect", ImVec2(-1, plot_height), implot.Flags_.canvas_only):
         # implot.setup_axes("", "", implot.ImPlotAxisFlags_.no_decorations, implot.ImPlotAxisFlags_.no_decorations)
         implot.setup_axes_limits(
             state.rect.x.min,
             state.rect.x.max,
             state.rect.y.min,
             state.rect.y.max,
-            imgui.Cond_.always.value,
+            imgui.Cond_.always,
         )
         implot.plot_line("Signal 1", state.x_data, state.y_data1)
         implot.plot_line("Signal 2", state.x_data, state.y_data2)
@@ -1667,20 +1690,20 @@ def demo_tags():
     _, static.show = imgui.checkbox("Show Tags", static.show)
 
     if implot.begin_plot("##Tags"):
-        implot.setup_axis(implot.ImAxis_.x2.value)
-        implot.setup_axis(implot.ImAxis_.y2.value)
+        implot.setup_axis(implot.ImAxis_.x2)
+        implot.setup_axis(implot.ImAxis_.y2)
 
         if static.show:
             implot.tag_x(0.25, ImVec4(1, 1, 0, 1))
             implot.tag_y(0.75, ImVec4(1, 1, 0, 1))
 
             _, static.drag_tag, _, _, _ = implot.drag_line_y(
-                id_=0, y=static.drag_tag, col=ImVec4(1, 0, 0, 1), thickness=1, flags=implot.DragToolFlags_.no_fit.value
+                id_=0, y=static.drag_tag, col=ImVec4(1, 0, 0, 1), thickness=1, flags=implot.DragToolFlags_.no_fit
             )
 
             implot.tag_y(static.drag_tag, ImVec4(1, 0, 0, 1), "Drag")
 
-            implot.set_axes(implot.ImAxis_.x2.value, implot.ImAxis_.y2.value)
+            implot.set_axes(implot.ImAxis_.x2, implot.ImAxis_.y2)
             implot.tag_x(0.5, ImVec4(0, 1, 1, 1), "MyTag")
             implot.tag_y(0.5, ImVec4(0, 1, 1, 1), "Tag: %d" % 42)
 
@@ -1688,10 +1711,10 @@ def demo_tags():
 
 
 def sparkline(id, values, y_min, y_max, offset, color, size):
-    implot.push_style_var(implot.StyleVar_.plot_padding.value, ImVec2(0, 0))
-    if implot.begin_plot(id, size, implot.Flags_.canvas_only.value):
-        implot.setup_axes("", "", implot.AxisFlags_.no_decorations.value, implot.AxisFlags_.no_decorations.value)
-        implot.setup_axes_limits(0, len(values) - 1, y_min, y_max, imgui.Cond_.always.value)
+    implot.push_style_var(implot.StyleVar_.plot_padding, ImVec2(0, 0))
+    if implot.begin_plot(id, size, implot.Flags_.canvas_only):
+        implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
+        implot.setup_axes_limits(0, len(values) - 1, y_min, y_max, imgui.Cond_.always)
         implot.set_next_line_style(color)
         implot.plot_line("line", values, offset=offset)
         implot.end_plot()
@@ -1705,9 +1728,9 @@ def demo_tables():
         static.anim = True
         static.offset = 0
         static.flags = (
-                imgui.TableFlags_.borders_outer.value | imgui.TableFlags_.borders_v.value |
-                imgui.TableFlags_.row_bg.value | imgui.TableFlags_.resizable.value |
-                imgui.TableFlags_.reorderable.value
+                imgui.TableFlags_.borders_outer | imgui.TableFlags_.borders_v |
+                imgui.TableFlags_.row_bg | imgui.TableFlags_.resizable |
+                imgui.TableFlags_.reorderable
         )
 
     imgui.bullet_text("Plots can be used inside of ImGui tables as another means of creating subplots.")
@@ -1717,12 +1740,12 @@ def demo_tables():
         static.offset = (static.offset + 1) % 100
 
     if imgui.begin_table("##table", 3, static.flags, (-1, 0)):
-        imgui.table_setup_column("Electrode", imgui.TableColumnFlags_.width_fixed.value, 75.0)
-        imgui.table_setup_column("Voltage", imgui.TableColumnFlags_.width_fixed.value, 75.0)
+        imgui.table_setup_column("Electrode", imgui.TableColumnFlags_.width_fixed, 75.0)
+        imgui.table_setup_column("Voltage", imgui.TableColumnFlags_.width_fixed, 75.0)
         imgui.table_setup_column("EMG Signal")
         imgui.table_headers_row()
 
-        implot.push_colormap(implot.Colormap_.cool.value)
+        implot.push_colormap(implot.Colormap_.cool)
 
         for row in range(10):
             imgui.table_next_row()
@@ -1747,29 +1770,29 @@ def demo_tables():
 
 def style_seaborn():
     style = implot.get_style()
-    style.set_color_(implot.Col_.line.value, implot.AUTO_COL)
-    style.set_color_(implot.Col_.fill.value, implot.AUTO_COL)
-    style.set_color_(implot.Col_.marker_outline.value, implot.AUTO_COL)
-    style.set_color_(implot.Col_.marker_fill.value, implot.AUTO_COL)
+    style.set_color_(implot.Col_.line, implot.AUTO_COL)
+    style.set_color_(implot.Col_.fill, implot.AUTO_COL)
+    style.set_color_(implot.Col_.marker_outline, implot.AUTO_COL)
+    style.set_color_(implot.Col_.marker_fill, implot.AUTO_COL)
 
-    style.set_color_(implot.Col_.error_bar.value, ImVec4(0.00, 0.00, 0.00, 1.00))
-    style.set_color_(implot.Col_.frame_bg.value, ImVec4(1.00, 1.00, 1.00, 1.00))
-    style.set_color_(implot.Col_.plot_bg.value, ImVec4(0.92, 0.92, 0.95, 1.00))
-    style.set_color_(implot.Col_.plot_border.value, ImVec4(0.00, 0.00, 0.00, 0.00))
-    style.set_color_(implot.Col_.legend_bg.value, ImVec4(0.92, 0.92, 0.95, 1.00))
-    style.set_color_(implot.Col_.legend_border.value, ImVec4(0.80, 0.81, 0.85, 1.00))
-    style.set_color_(implot.Col_.legend_text.value, ImVec4(0.00, 0.00, 0.00, 1.00))
-    style.set_color_(implot.Col_.title_text.value, ImVec4(0.00, 0.00, 0.00, 1.00))
-    style.set_color_(implot.Col_.inlay_text.value, ImVec4(0.00, 0.00, 0.00, 1.00))
-    style.set_color_(implot.Col_.axis_text.value, ImVec4(0.00, 0.00, 0.00, 1.00))
-    style.set_color_(implot.Col_.axis_grid.value, ImVec4(1.00, 1.00, 1.00, 1.00))
-    style.set_color_(implot.Col_.axis_bg_hovered.value, ImVec4(0.92, 0.92, 0.95, 1.00))
-    style.set_color_(implot.Col_.axis_bg_active.value, ImVec4(0.92, 0.92, 0.95, 0.75))
-    style.set_color_(implot.Col_.selection.value, ImVec4(1.00, 0.65, 0.00, 1.00))
-    style.set_color_(implot.Col_.crosshairs.value, ImVec4(0.23, 0.10, 0.64, 0.50))
+    style.set_color_(implot.Col_.error_bar, ImVec4(0.00, 0.00, 0.00, 1.00))
+    style.set_color_(implot.Col_.frame_bg, ImVec4(1.00, 1.00, 1.00, 1.00))
+    style.set_color_(implot.Col_.plot_bg, ImVec4(0.92, 0.92, 0.95, 1.00))
+    style.set_color_(implot.Col_.plot_border, ImVec4(0.00, 0.00, 0.00, 0.00))
+    style.set_color_(implot.Col_.legend_bg, ImVec4(0.92, 0.92, 0.95, 1.00))
+    style.set_color_(implot.Col_.legend_border, ImVec4(0.80, 0.81, 0.85, 1.00))
+    style.set_color_(implot.Col_.legend_text, ImVec4(0.00, 0.00, 0.00, 1.00))
+    style.set_color_(implot.Col_.title_text, ImVec4(0.00, 0.00, 0.00, 1.00))
+    style.set_color_(implot.Col_.inlay_text, ImVec4(0.00, 0.00, 0.00, 1.00))
+    style.set_color_(implot.Col_.axis_text, ImVec4(0.00, 0.00, 0.00, 1.00))
+    style.set_color_(implot.Col_.axis_grid, ImVec4(1.00, 1.00, 1.00, 1.00))
+    style.set_color_(implot.Col_.axis_bg_hovered, ImVec4(0.92, 0.92, 0.95, 1.00))
+    style.set_color_(implot.Col_.axis_bg_active, ImVec4(0.92, 0.92, 0.95, 0.75))
+    style.set_color_(implot.Col_.selection, ImVec4(1.00, 0.65, 0.00, 1.00))
+    style.set_color_(implot.Col_.crosshairs, ImVec4(0.23, 0.10, 0.64, 0.50))
 
     style.line_weight = 1.5
-    style.marker = implot.Marker_.none.value
+    style.marker = implot.Marker_.none
     style.marker_size = 4
     style.marker_weight = 1
     style.fill_alpha = 1.0
@@ -1795,7 +1818,7 @@ def style_seaborn():
 def demo_custom_styles():
     # Apply Seaborn style
     import copy
-    implot.push_colormap(implot.Colormap_.deep.value)
+    implot.push_colormap(implot.Colormap_.deep)
     backup_style = copy.copy(implot.get_style())
     style_seaborn()
     if implot.begin_plot("Seaborn Style"):
@@ -1853,14 +1876,14 @@ def demo_legend_popups():
     if implot.begin_plot("Right Click the Legend"):
         implot.setup_axes_limits(0, 100, -1, 1)
 
-        implot.push_style_var(implot.StyleVar_.fill_alpha.value, static.alpha)
+        implot.push_style_var(implot.StyleVar_.fill_alpha, static.alpha)
 
         if not static.line:
             implot.set_next_fill_style(ImVec4(static.color[0], static.color[1], static.color[2], 1.0))
             implot.plot_bars("Right Click Me", vals)
         else:
             if static.markers:
-                implot.set_next_marker_style(implot.Marker_.square.value)
+                implot.set_next_marker_style(implot.Marker_.square)
             implot.set_next_line_style(ImVec4(static.color[0], static.color[1], static.color[2], 1.0), static.thickness)
             implot.plot_line("Right Click Me", vals)
             if static.shaded:
@@ -1889,7 +1912,7 @@ def demo_colormap_widgets():
     static = demo_colormap_widgets
 
     if not hasattr(static, "cmap"):
-        static.cmap = implot.Colormap_.viridis.value
+        static.cmap = implot.Colormap_.viridis
         static.t = 0.5
         static.col = [1.0, 1.0, 1.0, 1.0]  # Placeholder color
         static.scale = [0, 100]
@@ -1900,7 +1923,7 @@ def demo_colormap_widgets():
         static.cmap = (static.cmap + 1) % implot.get_colormap_count()
 
     # Colormap Slider
-    imgui.color_button("##Display", static.col, imgui.ColorEditFlags_.no_inputs.value)
+    imgui.color_button("##Display", static.col, imgui.ColorEditFlags_.no_inputs)
     imgui.same_line()
     # _, static.t, static.col = implot.colormap_slider(
     #     label="Slider",
@@ -1921,9 +1944,9 @@ def demo_colormap_widgets():
     _, static.scale = imgui.input_float2("Scale", static.scale)
 
     # Checkbox Flags for Scale Behavior
-    _, static.flags = imgui.checkbox_flags("No Label", static.flags, implot.ColormapScaleFlags_.no_label.value)
-    _, static.flags = imgui.checkbox_flags("Opposite", static.flags, implot.ColormapScaleFlags_.opposite.value)
-    _, static.flags = imgui.checkbox_flags("Invert", static.flags, implot.ColormapScaleFlags_.invert.value)
+    _, static.flags = imgui.checkbox_flags("No Label", static.flags, implot.ColormapScaleFlags_.no_label)
+    _, static.flags = imgui.checkbox_flags("Opposite", static.flags, implot.ColormapScaleFlags_.opposite)
+    _, static.flags = imgui.checkbox_flags("Invert", static.flags, implot.ColormapScaleFlags_.invert)
 
 
 #-----------------------------------------------------------------------------
@@ -2049,7 +2072,7 @@ def show_demo_window():
 
     # Show ImPlot Style Editor
     if static.show_implot_style_editor:
-        imgui.set_next_window_size((415, 762), imgui.Cond_.appearing.value)
+        imgui.set_next_window_size((415, 762), imgui.Cond_.appearing)
         imgui.begin("Style Editor (ImPlot)", True)
         implot.show_style_editor()
         imgui.end()
@@ -2069,9 +2092,9 @@ def show_demo_window():
         imgui.show_demo_window()
 
     # Main Demo Window
-    imgui.set_next_window_pos((50, 50), imgui.Cond_.first_use_ever.value)
-    imgui.set_next_window_size((600, 750), imgui.Cond_.first_use_ever.value)
-    imgui.begin("ImPlot Demo", True, imgui.WindowFlags_.menu_bar.value)
+    imgui.set_next_window_pos((50, 50), imgui.Cond_.first_use_ever)
+    imgui.set_next_window_size((600, 750), imgui.Cond_.first_use_ever)
+    imgui.begin("ImPlot Demo", True, imgui.WindowFlags_.menu_bar)
 
     if imgui.begin_menu_bar():
         if imgui.begin_menu("Tools"):

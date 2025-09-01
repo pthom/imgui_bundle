@@ -122,7 +122,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
 
     auto pyEnumTimeUnit_ =
-        nb::enum_<ImPlotTimeUnit_>(m, "TimeUnit_", nb::is_arithmetic(), "")
+        nb::enum_<ImPlotTimeUnit_>(m, "TimeUnit_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("us", ImPlotTimeUnit_Us, "microsecond")
             .value("ms", ImPlotTimeUnit_Ms, "millisecond")
             .value("s", ImPlotTimeUnit_S, "second")
@@ -135,7 +135,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
 
     auto pyEnumDateFmt_ =
-        nb::enum_<ImPlotDateFmt_>(m, "DateFmt_", nb::is_arithmetic(), "")
+        nb::enum_<ImPlotDateFmt_>(m, "DateFmt_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImPlotDateFmt_None, "")
             .value("day_mo", ImPlotDateFmt_DayMo, "10/3           [ --10-03      ]")
             .value("day_mo_yr", ImPlotDateFmt_DayMoYr, "10/3/91        [ 1991-10-03   ]")
@@ -145,7 +145,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
 
     auto pyEnumTimeFmt_ =
-        nb::enum_<ImPlotTimeFmt_>(m, "TimeFmt_", nb::is_arithmetic(), "")
+        nb::enum_<ImPlotTimeFmt_>(m, "TimeFmt_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImPlotTimeFmt_None, "")
             .value("us", ImPlotTimeFmt_Us, ".428 552       [ .428 552     ]")
             .value("s_us", ImPlotTimeFmt_SUs, ":29.428 552    [ :29.428 552  ]")
@@ -342,7 +342,7 @@ void py_init_module_implot_internal(nb::module_& m)
             r_ctor_->ColorFg = ColorFg;
             r_ctor_->TextOffset = TextOffset;
         },
-        nb::arg("axis") = nb::none(), nb::arg("value") = double(), nb::arg("color_bg") = ImU32(), nb::arg("color_fg") = ImU32(), nb::arg("text_offset") = int()
+        nb::arg("axis").none() = nb::none(), nb::arg("value") = double(), nb::arg("color_bg") = ImU32(), nb::arg("color_fg") = ImU32(), nb::arg("text_offset") = int()
         )
         .def_rw("axis", &ImPlotTag::Axis, "")
         .def_rw("value", &ImPlotTag::Value, "")
@@ -931,7 +931,7 @@ void py_init_module_implot_internal(nb::module_& m)
                 r_ctor_->MousePosStringBuilder = ImGuiTextBuffer();
             r_ctor_->CanDragPlotInNodeEditor = CanDragPlotInNodeEditor;
         },
-        nb::arg("c_ticker") = nb::none(), nb::arg("annotations") = nb::none(), nb::arg("tags") = nb::none(), nb::arg("style") = nb::none(), nb::arg("color_modifiers") = nb::none(), nb::arg("style_modifiers") = nb::none(), nb::arg("colormap_data") = nb::none(), nb::arg("temp_int1") = nb::none(), nb::arg("digital_plot_item_cnt") = int(), nb::arg("digital_plot_offset") = int(), nb::arg("next_plot_data") = nb::none(), nb::arg("next_item_data") = nb::none(), nb::arg("input_map") = nb::none(), nb::arg("open_context_this_frame") = bool(), nb::arg("mouse_pos_string_builder") = nb::none(), nb::arg("can_drag_plot_in_node_editor") = false
+        nb::arg("c_ticker").none() = nb::none(), nb::arg("annotations").none() = nb::none(), nb::arg("tags").none() = nb::none(), nb::arg("style").none() = nb::none(), nb::arg("color_modifiers").none() = nb::none(), nb::arg("style_modifiers").none() = nb::none(), nb::arg("colormap_data").none() = nb::none(), nb::arg("temp_int1").none() = nb::none(), nb::arg("digital_plot_item_cnt") = int(), nb::arg("digital_plot_offset") = int(), nb::arg("next_plot_data").none() = nb::none(), nb::arg("next_item_data").none() = nb::none(), nb::arg("input_map").none() = nb::none(), nb::arg("open_context_this_frame") = bool(), nb::arg("mouse_pos_string_builder").none() = nb::none(), nb::arg("can_drag_plot_in_node_editor") = false
         )
         .def_rw("current_plot", &ImPlotContext::CurrentPlot, "")
         .def_rw("current_subplot", &ImPlotContext::CurrentSubplot, "")
@@ -1029,7 +1029,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             return BeginItem_adapt_mutable_param_with_default_value(label_id, flags, recolor_from);
         },
-        nb::arg("label_id"), nb::arg("flags") = 0, nb::arg("recolor_from") = nb::none(),
+        nb::arg("label_id"), nb::arg("flags") = 0, nb::arg("recolor_from").none() = nb::none(),
         " Begins a new item. Returns False if the item should not be plotted. Pushes PlotClipRect.\n\n\nPython bindings defaults:\n    If recolor_from is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("end_item",
@@ -1050,7 +1050,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             return RegisterOrGetItem_adapt_modifiable_immutable_to_return(label_id, flags, just_created);
         },
-        nb::arg("label_id"), nb::arg("flags"), nb::arg("just_created") = nb::none(),
+        nb::arg("label_id"), nb::arg("flags"), nb::arg("just_created").none() = nb::none(),
         "Register or get an existing item from the current plot.",
         nb::rv_policy::reference);
 
@@ -1135,7 +1135,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             return GetLocationPos_adapt_mutable_param_with_default_value(outer_rect, inner_size, location, pad);
         },
-        nb::arg("outer_rect"), nb::arg("inner_size"), nb::arg("location"), nb::arg("pad") = nb::none(),
+        nb::arg("outer_rect"), nb::arg("inner_size"), nb::arg("location"), nb::arg("pad").none() = nb::none(),
         " Gets the position of an inner rect that is located inside of an outer rect according to an ImPlotLocation and padding amount.\n\n\nPython bindings defaults:\n    If pad is None, then its default value will be: ImVec2(0,0)");
 
     m.def("calc_legend_size",
@@ -1171,7 +1171,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             ShowAltLegend_adapt_mutable_param_with_default_value(title_id, vertical, size, interactable);
         },
-        nb::arg("title_id"), nb::arg("vertical") = true, nb::arg("size") = nb::none(), nb::arg("interactable") = true,
+        nb::arg("title_id"), nb::arg("vertical") = true, nb::arg("size").none() = nb::none(), nb::arg("interactable") = true,
         " Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window! This is not thoroughly tested nor scrollable!).\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0,0)");
 
     m.def("show_legend_context_menu",
@@ -1223,7 +1223,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             AddTextVertical_adapt_const_char_pointer_with_default_null(DrawList, pos, col, text_begin, text_end);
         },
-        nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end") = nb::none(),
+        nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(),
         "Draws vertical text. The position is the bottom left of the text rect.");
 
     m.def("add_text_centered",
@@ -1240,7 +1240,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             AddTextCentered_adapt_const_char_pointer_with_default_null(DrawList, top_center, col, text_begin, text_end);
         },
-        nb::arg("draw_list"), nb::arg("top_center"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end") = nb::none(),
+        nb::arg("draw_list"), nb::arg("top_center"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(),
         "Draws multiline horizontal text centered.");
 
     m.def("calc_text_size_vertical",
@@ -1465,7 +1465,7 @@ void py_init_module_implot_internal(nb::module_& m)
             else
                 r_ctor_->Spec = ImPlotDateTimeSpec();
         },
-        nb::arg("time") = nb::none(), nb::arg("spec") = nb::none()
+        nb::arg("time").none() = nb::none(), nb::arg("spec").none() = nb::none()
         )
         .def_rw("time", &ImPlot::Formatter_Time_Data::Time, "")
         .def_rw("spec", &ImPlot::Formatter_Time_Data::Spec, "")

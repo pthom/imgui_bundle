@@ -33,7 +33,7 @@ void py_init_module_imgui_md(nb::module_& m)
             (m, "MarkdownFontOptions", "")
         .def(nb::init<>()) // implicit default constructor
         .def_rw("font_base_path", &ImGuiMd::MarkdownFontOptions::fontBasePath, "")
-        .def_rw("regular_size", &ImGuiMd::MarkdownFontOptions::regularSize, "")
+        .def_rw("regular_size", &ImGuiMd::MarkdownFontOptions::regularSize, "This size is in density-independent pixels")
         .def_prop_ro("header_size_factors",
             [](ImGuiMd::MarkdownFontOptions &self) -> nb::ndarray<float, nb::numpy, nb::shape<6>, nb::c_contig>
             {
@@ -109,7 +109,7 @@ void py_init_module_imgui_md(nb::module_& m)
 
             InitializeMarkdown_adapt_mutable_param_with_default_value(options);
         },
-        nb::arg("options") = nb::none(),
+        nb::arg("options").none() = nb::none(),
         "Python bindings defaults:\n    If options is None, then its default value will be: MarkdownOptions()");
 
     m.def("de_initialize_markdown",

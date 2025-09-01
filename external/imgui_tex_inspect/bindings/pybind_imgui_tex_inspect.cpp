@@ -226,7 +226,7 @@ void py_init_module_imgui_tex_inspect(nb::module_& m)
 
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, xVectorIndex, yVectorIndex, lineScale);
             },
-            nb::arg("x_vector_index") = 0, nb::arg("y_vector_index") = 1, nb::arg("line_scale") = nb::none(),
+            nb::arg("x_vector_index") = 0, nb::arg("y_vector_index") = 1, nb::arg("line_scale").none() = nb::none(),
             "Python bindings defaults:\n    If lineScale is None, then its default value will be: ImVec2(1, 1)")
         .def("use_preset",
             &ImGuiTexInspect::Arrow::UsePreset, nb::arg("param_0"))
@@ -251,7 +251,7 @@ void py_init_module_imgui_tex_inspect(nb::module_& m)
             else
                 r_ctor_->Translate = ImVec2();
         },
-        nb::arg("scale") = nb::none(), nb::arg("translate") = nb::none()
+        nb::arg("scale").none() = nb::none(), nb::arg("translate").none() = nb::none()
         )
         .def_rw("scale", &ImGuiTexInspect::Transform2D::Scale, "")
         .def_rw("translate", &ImGuiTexInspect::Transform2D::Translate, "")
@@ -282,7 +282,7 @@ void py_init_module_imgui_tex_inspect(nb::module_& m)
             else
                 r_ctor_->size = ImVec2();
         },
-        nb::arg("texture") = nb::none(), nb::arg("size") = nb::none()
+        nb::arg("texture").none() = nb::none(), nb::arg("size").none() = nb::none()
         )
         .def_rw("texture", &ImGuiTexInspect::Texture::texture, "")
         .def_rw("size", &ImGuiTexInspect::Texture::size, "")

@@ -20,12 +20,12 @@ class Context:
 # TODO support std::string_view
 # TODO support function pointer callback in addition to std::function
 
-class ImCmdTextType(enum.Enum):
+class ImCmdTextType(enum.IntEnum):
     regular = enum.auto()   # (= 0)
     highlight = enum.auto() # (= 1)
     count = enum.auto()     # (= 2)
 
-class ImCmdTextFlag(enum.Enum):
+class ImCmdTextFlag(enum.IntEnum):
     #/ Whether the text is underlined. Default False.
     underline = enum.auto() # (= 0)
     count = enum.auto()     # (= 1)

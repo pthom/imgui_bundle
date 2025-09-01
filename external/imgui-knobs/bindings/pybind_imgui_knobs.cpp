@@ -99,7 +99,7 @@ void py_init_module_imgui_knobs(nb::module_& m)
 
             return Knob_adapt_modifiable_immutable_to_return(label, p_value, v_min, v_max, speed, format, variant, size, flags, steps);
         },
-        nb::arg("label"), nb::arg("p_value"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("speed") = 0, nb::arg("format") = nb::none(), nb::arg("variant") = nb::none(), nb::arg("size") = 0, nb::arg("flags") = 0, nb::arg("steps") = 10,
+        nb::arg("label"), nb::arg("p_value"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("speed") = 0, nb::arg("format").none() = nb::none(), nb::arg("variant").none() = nb::none(), nb::arg("size") = 0, nb::arg("flags") = 0, nb::arg("steps") = 10,
         "Python bindings defaults:\n    If variant is None, then its default value will be: ImGuiKnobVariant_.tick");
 
     m.def("knob_int",
@@ -137,7 +137,7 @@ void py_init_module_imgui_knobs(nb::module_& m)
 
             return KnobInt_adapt_modifiable_immutable_to_return(label, p_value, v_min, v_max, speed, format, variant, size, flags, steps);
         },
-        nb::arg("label"), nb::arg("p_value"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("speed") = 0, nb::arg("format") = nb::none(), nb::arg("variant") = nb::none(), nb::arg("size") = 0, nb::arg("flags") = 0, nb::arg("steps") = 10,
+        nb::arg("label"), nb::arg("p_value"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("speed") = 0, nb::arg("format").none() = nb::none(), nb::arg("variant").none() = nb::none(), nb::arg("size") = 0, nb::arg("flags") = 0, nb::arg("steps") = 10,
         "Python bindings defaults:\n    If variant is None, then its default value will be: ImGuiKnobVariant_.tick");
     ////////////////////    </generated_from:imgui-knobs.h>    ////////////////////
 
