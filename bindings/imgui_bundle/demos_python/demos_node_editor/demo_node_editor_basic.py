@@ -9,6 +9,12 @@ from imgui_bundle import (
 )
 from imgui_bundle.immapp import static, run_anon_block
 
+import os
+
+# Fallback for __file__ in Pyodide
+if '__file__' not in globals():
+    __file__ = os.getcwd() + '/script.py'
+
 
 class IdProvider:
     """A simple utility to obtain unique ids, and to be able to restore them at each frame"""
@@ -223,7 +229,6 @@ def demo_gui():
 
 
 def main():
-    import os
 
     this_dir = os.path.dirname(__file__)
     config = ed.Config()
