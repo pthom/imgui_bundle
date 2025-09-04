@@ -30,7 +30,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self.io.display_size = glfw.get_framebuffer_size(self.window)
 
         def get_clipboard_text(_ctx: imgui.internal.Context) -> str:
-            return glfw.get_clipboard_string(self.window)
+            s = glfw.get_clipboard_string(self.window)
+            return s.decode()
 
         def set_clipboard_text(_ctx: imgui.internal.Context, text: str) -> None:
             glfw.set_clipboard_string(self.window, text)
