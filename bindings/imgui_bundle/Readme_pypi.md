@@ -20,41 +20,75 @@ the interactive manual!*
 
 **Key Features**
 
--   **A lot of widgets and libraries:** All of Dear ImGui along with a
-    suite of additional libraries for plotting, node editing, markdown
-    rendering, and much more.
+- **Easy to use, yet very powerful:** Start your first app in 3 lines.
+  The Immediate Mode GUI (IMGUI) paradigm is simple and powerful,
+  letting you focus on the creative aspects of your projects.
 
--   **Always up-to-date:** The libraries are always very close to the
-    latest version of Dear ImGui. This is also true for Python
-    developers, since the bindings are automatically generated.
+- **A lot of widgets and libraries:** All of Dear ImGui along with a
+  suite of additional libraries for plotting, node editing, markdown
+  rendering, and much more.
 
--   **Interactive Demos and Documentation:** Quickly get started with
-    our interactive manual and demos that showcase the capabilities of
-    the pack. Read or copy-paste the source code (Python and C++)
-    directly from the interactive manual!
+- **Cross-platform in C++ and Python:** Works on Windows, Linux, macOS,
+  iOS, Android, and WebAssembly!
 
--   **Cross-platform:** Works on Windows, Linux, macOS, iOS, Android,
-    and WebAssembly!
+- **Web ready**: Develop full web applications, in C++ via Emscripten;
+  or in Python thanks to ImGui Bundle’s integration within *Pyodide*
 
--   **Easy to use, yet very powerful:** Start your first app in 3 lines.
-    The Immediate Mode GUI (IMGUI) paradigm is simple and powerful,
-    letting you focus on the creative aspects of your projects.
+- **Always up-to-date:** The libraries are always very close to the
+  latest version of Dear ImGui. This is also true for Python developers,
+  since the bindings are automatically generated.
 
--   **Fast:** Rendering is done via OpenGL (or any other renderer you
-    choose), through native code.
+- **Interactive Demos and Documentation:** Quickly get started with our
+  interactive manual and demos that showcase the capabilities of the
+  pack. Read or copy-paste the source code (Python and C++) directly
+  from the interactive manual!
 
--   **Beautifully documented Python bindings and stubs:** The Python
-    bindings stubs reflect the C++ API and documentation, serving as a
-    reference and aiding autocompletion in your IDE. See for example the
-    [stubs for
-    imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi),
-    and [for
-    hello\_imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi)
-    (which complete the [hello\_imgui
-    manual](https://pthom.github.io/hello_imgui/book/intro.html)).
+- **Fast:** Rendering is done via OpenGL (or any other renderer you
+  choose), through native code.
+
+- **Beautifully documented Python bindings and stubs:** The Python
+  bindings stubs reflect the C++ API and documentation, serving as a
+  reference and aiding autocompletion in your IDE. See for example the
+  [stubs for
+  imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi),
+  and [for
+  hello\_imgui](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi)
+  (which complete the [hello\_imgui
+  manual](https://pthom.github.io/hello_imgui/book/intro.html)).
 
 For a detailed look at each feature and more information, explore the
 sections listed in the Table of Contents.
+
+**Interactive Manual**
+
+Click on the animated demonstration below to launch the fully
+interactive manual.
+
+<figure id="truc">
+<img src="https://traineq.org/imgui_bundle_doc/demo_bundle8.gif"
+alt="Demo" />
+<figcaption>Dear ImGui Bundle interactive manual (in C++, via
+Emscripten)</figcaption>
+</figure>
+
+**Online playground in Pure Python (via Pyodide)**
+
+Since ImGui Bundle is available in Python and Pyodide, an [online
+playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/)
+will enable you to run and edit various ImGui applications in the
+browser without any setup.
+
+<figure id="playground">
+<img
+src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/playground.jpg"
+alt="Playground" />
+<figcaption>ImGui Bundle online playground (in Python, via
+Pyodide)</figcaption>
+</figure>
+
+See [this
+page](https://code-ballads.net/dear-imgui-bundle-build-real-time-python-web-applications-with-zero-fuss/)
+for more information about availability of ImGui Bundle in Pyodide.
 
 **Example code**
 
@@ -74,17 +108,6 @@ hello](https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_
     #include "imgui.h"
     int main() {   ImmApp::Run([] {   ImGui::Text("Hello, world!");   });  }
 
-**Interactive Manual**
-
-Click on the animated demonstration below to launch the fully
-interactive manual.
-
-<figure id="truc">
-<img src="https://traineq.org/imgui_bundle_doc/demo_bundle8.gif"
-alt="Demo" />
-<figcaption>Dear ImGui Bundle interactive manual</figcaption>
-</figure>
-
 # What’s in the pack?
 
 Dear ImGui Bundle includes the following libraries, which are available
@@ -96,7 +119,7 @@ in C++ *and* in Python:
 <col style="width: 50%" />
 </colgroup>
 <tbody>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/ocornut/imgui.git">Dear ImGui</a> : Bloat-free
 Graphical User interface with minimal dependencies</p></td>
@@ -104,7 +127,7 @@ Graphical User interface with minimal dependencies</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_imgui.jpg"
 alt="demo widgets imgui" /></p></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/ocornut/imgui_test_engine">ImGui Test
 Engine</a>: Dear ImGui Tests &amp; Automation Engine</p></td>
@@ -112,7 +135,7 @@ Engine</a>: Dear ImGui Tests &amp; Automation Engine</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_testengine.jpg"
 alt="demo testengine" /></p></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/pthom/hello_imgui.git">Hello ImGui</a>:
 cross-platform Gui apps with the simplicity of a "Hello World"
@@ -123,7 +146,7 @@ alt="demo docking" /> <img
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_custom_background.jpg"
 alt="demo custom background" /></p></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/epezent/implot">ImPlot</a>: Immediate Mode
 Plotting</p></td>
@@ -131,7 +154,7 @@ Plotting</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/battery_implot.jpg"
 alt="battery implot" /></p></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/brenocq/implot3d">ImPlot3D</a>: Immediate Mode
 3D Plotting</p></td>
@@ -139,7 +162,7 @@ href="https://github.com/brenocq/implot3d">ImPlot3D</a>: Immediate Mode
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/battery_implot3d.jpg"
 alt="battery implot3d" /></p></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/CedricGuillemet/ImGuizmo.git">ImGuizmo</a>:
 Immediate mode 3D gizmo for scene editing and other controls based on
@@ -148,7 +171,7 @@ Dear ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_gizmo.jpg"
 alt="demo gizmo" /></p></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/BalazsJako/ImGuiColorTextEdit">ImGuiColorTextEdit</a>:
 Colorizing text editor for ImGui</p></td>
@@ -156,7 +179,7 @@ Colorizing text editor for ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_editor.jpg"
 alt="demo widgets editor" /></p></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/thedmd/imgui-node-editor">imgui-node-editor</a>:
 Node Editor built using Dear ImGui</p></td>
@@ -164,7 +187,7 @@ Node Editor built using Dear ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_node_editor.jpg"
 alt="demo node editor" /></p></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/mekhontsev/imgui_md.git">imgui_md</a>: Markdown
 renderer for Dear ImGui using MD4C parser</p></td>
@@ -172,7 +195,7 @@ renderer for Dear ImGui using MD4C parser</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_md.jpg"
 alt="demo widgets md" /></p></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/pthom/immvision.git">ImmVision</a>: Immediate
 image debugger and insights</p></td>
@@ -182,7 +205,7 @@ alt="demo immvision process 1" /> <img
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_immvision_process_2.jpg"
 alt="demo immvision process 2" /></p></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/memononen/nanovg">NanoVG</a>: Antialiased 2D
 vector drawing library on top of OpenGL for UI and
@@ -191,7 +214,7 @@ visualizations</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/nanovg_full_demo.jpg"
 alt="nanovg full demo" /></p></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/andyborrell/imgui_tex_inspect">imgui_tex_inspect</a>:
 A texture inspector tool for Dear ImGui</p></td>
@@ -199,7 +222,7 @@ A texture inspector tool for Dear ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_imgui_tex_inspector.jpg"
 alt="demo imgui tex inspector" /></p></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/pthom/ImFileDialog.git">ImFileDialog</a>: A
 file dialog library for Dear ImGui</p></td>
@@ -207,7 +230,7 @@ file dialog library for Dear ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_imfiledialog.jpg"
 alt="demo widgets imfiledialog" /></p></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/samhocevar/portable-file-dialogs">portable-file-dialogs</a>
 <em>OS native</em> file dialogs library (C++11, single-header)</p></td>
@@ -215,7 +238,7 @@ href="https://github.com/samhocevar/portable-file-dialogs">portable-file-dialogs
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_portablefiledialogs.jpg"
 alt="demo widgets portablefiledialogs" /></p></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/altschuler/imgui-knobs">imgui-knobs</a>: Knobs
 widgets for ImGui</p></td>
@@ -223,7 +246,7 @@ widgets for ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_knobs.jpg"
 alt="demo widgets knobs" /></p></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/dalerank/imspinner">imspinner</a>: Set of nice
 spinners for imgui</p></td>
@@ -231,7 +254,7 @@ spinners for imgui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_spinners.jpg"
 alt="demo widgets spinners" /></p></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/cmdwtf/imgui_toggle">imgui_toggle</a>: A toggle
 switch widget for Dear ImGui</p></td>
@@ -239,7 +262,7 @@ switch widget for Dear ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_toggle.jpg"
 alt="demo widgets toggle" /></p></td>
 </tr>
-<tr class="even">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/aiekick/ImCoolBar">ImCoolBar</a>: A Cool bar
 for Dear ImGui</p></td>
@@ -247,7 +270,7 @@ for Dear ImGui</p></td>
 src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/demo_widgets_coolbar.jpg"
 alt="demo widgets coolbar" /></p></td>
 </tr>
-<tr class="odd">
+<tr>
 <td style="text-align: left;"><p><a
 href="https://github.com/hnOsmium0001/imgui-command-palette.git">imgui-command-palette</a>:
 A Sublime Text or VSCode style command palette in ImGui</p></td>
@@ -268,26 +291,26 @@ A big thank you to their authors for their awesome work!
     pip install opencv-python
     pip install pyGLM
 
--   imgui\_bundle: Binary wheels are available for Windows, MacOS and
-    Linux. If a compilation from source is needed, the build process
-    might take up to 5 minutes, and will require an internet connection.
+- imgui\_bundle: Binary wheels are available for Windows, MacOS and
+  Linux. If a compilation from source is needed, the build process might
+  take up to 5 minutes, and will require an internet connection.
 
--   OpenCV: in order to run the immvision module, install opencv-python.
-    The alternative OpenCV versions, such as opencv-python-headless
-    (headless) opencv-contrib-python (with extra modules) also work.
+- OpenCV: in order to run the immvision module, install opencv-python.
+  The alternative OpenCV versions, such as opencv-python-headless
+  (headless) opencv-contrib-python (with extra modules) also work.
 
--   pyGLM: in order to run the demo, install pyGLM
+- pyGLM: in order to run the demo, install pyGLM
 
 **Platform notes**
 
--   *Windows*: Under windows, you might need to install [msvc
-    redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022).
+- *Windows*: Under windows, you might need to install [msvc
+  redist](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#visual-studio-2015-2017-2019-and-2022).
 
--   *macOS* : under macOS, if a binary wheel is not available (e.g. for
-    older macOS versions), pip will try to compile from source. This
-    might fail if you do not have XCode installed. In this case, install
-    imgui-bundle with the following command
-    `SYSTEM_VERSION_COMPAT=0 pip install --only-binary=:all: imgui_bundle`
+- *macOS* : under macOS, if a binary wheel is not available (e.g. for
+  older macOS versions), pip will try to compile from source. This might
+  fail if you do not have XCode installed. In this case, install
+  imgui-bundle with the following command
+  `SYSTEM_VERSION_COMPAT=0 pip install --only-binary=:all: imgui_bundle`
 
 ## Install from source
 
@@ -298,9 +321,9 @@ A big thank you to their authors for their awesome work!
     pip install opencv-python
     pip install pyGLM
 
--   Since there are lots of submodules, this might take a few minutes
+- Since there are lots of submodules, this might take a few minutes
 
--   The build process might take up to 5 minutes
+- The build process might take up to 5 minutes
 
 ## Run the python demo
 
@@ -322,12 +345,12 @@ time between an idea and a first GUI prototype down to almost zero.
 
 It is well adapted for
 
--   developers and researchers who want to switch easily between and
-    research and development environment by facilitating the port of
-    research artifacts
+- developers and researchers who want to switch easily between and
+  research and development environment by facilitating the port of
+  research artifacts
 
--   beginners and developers who want to quickly develop an application
-    without learning a GUI framework
+- beginners and developers who want to quickly develop an application
+  without learning a GUI framework
 
 ### Who is this project **not** for
 
@@ -440,16 +463,16 @@ Contributions are welcome!
 
 Three of my past projects gave me the idea to develop this library.
 
--   [ImGui
-    Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html),
-    an interactive manual for Dear ImGui, which I developed in June 2020
+- [ImGui
+  Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html),
+  an interactive manual for Dear ImGui, which I developed in June 2020
 
--   [implot demo](https://traineq.org/implot_demo/src/implot_demo.html)
-    which I developed in 2020.
+- [implot demo](https://traineq.org/implot_demo/src/implot_demo.html)
+  which I developed in 2020.
 
--   [imgui\_datascience](https://github.com/pthom/imgui_datascience), a
-    python package I developed in 2018 for image analysis and debugging.
-    Its successor is immvision.
+- [imgui\_datascience](https://github.com/pthom/imgui_datascience), a
+  python package I developed in 2018 for image analysis and debugging.
+  Its successor is immvision.
 
 Developments for Dear ImGui Bundle and its related automatic binding
 generator began in january 2022.

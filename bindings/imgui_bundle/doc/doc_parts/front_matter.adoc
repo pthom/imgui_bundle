@@ -36,15 +36,17 @@ endif::[]
 
 **Key Features**
 
+* **Easy to use, yet very powerful:** Start your first app in 3 lines. The Immediate Mode GUI (IMGUI) paradigm is simple and powerful, letting you focus on the creative aspects of your projects.
+
 * **A lot of widgets and libraries:** All of Dear ImGui along with a suite of additional libraries for plotting, node editing, markdown rendering, and much more.
+
+* **Cross-platform in C++ and Python:** Works on Windows, Linux, macOS, iOS, Android, and WebAssembly!
+
+* **Web ready**: Develop full web applications, in C++ via Emscripten; or in Python thanks to ImGui Bundle's integration within _Pyodide_
 
 * **Always up-to-date:** The libraries are always very close to the latest version of Dear ImGui. This is also true for Python developers, since the bindings are automatically generated.
 
 * **Interactive Demos and Documentation:** Quickly get started with our interactive manual and demos that showcase the capabilities of the pack. Read or copy-paste the source code (Python and C++) directly from the interactive manual!
-
-* **Cross-platform:** Works on Windows, Linux, macOS, iOS, Android, and WebAssembly!
-
-* **Easy to use, yet very powerful:** Start your first app in 3 lines. The Immediate Mode GUI (IMGUI) paradigm is simple and powerful, letting you focus on the creative aspects of your projects.
 
 * **Fast:** Rendering is done via OpenGL (or any other renderer you choose), through native code.
 
@@ -55,6 +57,27 @@ For a detailed look at each feature and more information, explore the sections l
 
 
 ****
+
+
+**Interactive Manual**
+
+Click on the animated demonstration below to launch the fully interactive manual.
+
+.Dear ImGui Bundle interactive manual (in C++, via Emscripten)
+[#truc,link={url-demo-imgui-bundle}]
+image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
+
+
+**Online playground in Pure Python (via Pyodide)**
+
+Since ImGui Bundle is available in Python and Pyodide, an https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/[online playground] will enable you to run and edit various ImGui applications in the browser without any setup.
+
+.ImGui Bundle online playground (in Python, via Pyodide)
+[#playground,link=https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/]
+image::https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/doc/doc_images/playground.jpg[Playground, 500]
+
+See https://code-ballads.net/dear-imgui-bundle-build-real-time-python-web-applications-with-zero-fuss/[this page] for more information about availability of ImGui Bundle in Pyodide.
+
 
 **Example code**
 
@@ -77,13 +100,6 @@ _For {cpp} developers_
 int main() {   ImmApp::Run([] {   ImGui::Text("Hello, world!");   });  }
 ----
 
-**Interactive Manual**
-
-Click on the animated demonstration below to launch the fully interactive manual.
-
-.Dear ImGui Bundle interactive manual
-[#truc,link={url-demo-imgui-bundle}]
-image::https://traineq.org/imgui_bundle_doc/demo_bundle8.gif[Demo, 700]
 
 ifdef::env_gh_pages[]
 **Table of Contents**

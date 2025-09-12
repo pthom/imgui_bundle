@@ -1411,7 +1411,10 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-w">        </span><span class="tok-p">)</span>
 <span class="tok-w">        </span><span class="tok-n">sys</span><span class="tok-p">.</span><span class="tok-n">exit</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span>
 
-<span class="tok-w">    </span><span class="tok-n">SDL_GL_MakeCurrent</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">gl_context</span><span class="tok-p">)</span>
+<span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">SDL_GL_MakeCurrent</span><span class="tok-p">(</span><span class="tok-n">window</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">gl_context</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">&lt;</span><span class="tok-w"> </span><span class="tok-mi">0</span><span class="tok-o">:</span>
+<span class="tok-w">        </span><span class="tok-n">print</span><span class="tok-p">(</span><span class="tok-s">&quot;Error: SDL_GL_MakeCurrent failed: &quot;</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-n">SDL_GetError</span><span class="tok-p">().</span><span class="tok-n">decode</span><span class="tok-p">(</span><span class="tok-s">&quot;utf-8&quot;</span><span class="tok-p">))</span>
+<span class="tok-w">        </span><span class="tok-n">sys</span><span class="tok-p">.</span><span class="tok-n">exit</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span>
+
 <span class="tok-w">    </span><span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">not</span><span class="tok-w"> </span><span class="tok-n">SDL_GL_SetSwapInterval</span><span class="tok-p">(</span><span class="tok-mi">1</span><span class="tok-p">)</span><span class="tok-o">:</span>
 <span class="tok-w">        </span><span class="tok-n">print</span><span class="tok-p">(</span>
 <span class="tok-w">            </span><span class="tok-s">&quot;Warning: Unable to set VSync! SDL Error: &quot;</span><span class="tok-w"> </span><span class="tok-o">+</span><span class="tok-w"> </span><span class="tok-n">SDL_GetError</span><span class="tok-p">().</span><span class="tok-n">decode</span><span class="tok-p">(</span><span class="tok-s">&quot;utf-8&quot;</span><span class="tok-p">)</span>
@@ -1440,8 +1443,16 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-cp"># See full python backends implementations here:</span>
 <span class="tok-cp"># https:</span><span class="tok-c1">//github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends</span>
 
-<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-p">.</span><span class="tok-n">python_backends</span><span class="tok-p">.</span><span class="tok-n">glfw_backend</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">GlfwRenderer</span>
+
+<span class="tok-cp"># Workaround issue when using wayland (&quot;Attempt to retrieve context when no valid context&quot;, in PyOpenGL)</span>
+<span class="tok-cp"># (see https:</span><span class="tok-c1">//github.com/pthom/imgui_bundle/issues/321)</span>
+<span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">os</span>
+<span class="tok-k">if</span><span class="tok-w"> </span><span class="tok-n">os</span><span class="tok-p">.</span><span class="tok-n">getenv</span><span class="tok-p">(</span><span class="tok-s">&quot;XDG_SESSION_TYPE&quot;</span><span class="tok-p">)</span><span class="tok-w"> </span><span class="tok-o">==</span><span class="tok-w"> </span><span class="tok-s">&quot;wayland&quot;</span><span class="tok-w"> </span><span class="tok-n">and</span><span class="tok-w"> </span><span class="tok-n">not</span><span class="tok-w"> </span><span class="tok-n">os</span><span class="tok-p">.</span><span class="tok-n">getenv</span><span class="tok-p">(</span><span class="tok-s">&quot;PYOPENGL_PLATFORM&quot;</span><span class="tok-p">)</span><span class="tok-o">:</span>
+<span class="tok-w">    </span><span class="tok-n">os</span><span class="tok-p">.</span><span class="tok-n">environ</span><span class="tok-p">[</span><span class="tok-s">&quot;PYOPENGL_PLATFORM&quot;</span><span class="tok-p">]</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-s">&quot;x11&quot;</span>
+
+
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">OpenGL</span><span class="tok-p">.</span><span class="tok-n">GL</span><span class="tok-w"> </span><span class="tok-n">as</span><span class="tok-w"> </span><span class="tok-n">gl</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
+<span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-p">.</span><span class="tok-n">python_backends</span><span class="tok-p">.</span><span class="tok-n">glfw_backend</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">GlfwRenderer</span>
 <span class="tok-cp"># When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard glfw, not the one provided by imgui_bundle)</span>
 <span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">glfw</span><span class="tok-w">  </span><span class="tok-err">#</span><span class="tok-w"> </span><span class="tok-n">type</span><span class="tok-o">:</span><span class="tok-w"> </span><span class="tok-n">ignore</span>
 <span class="tok-n">from</span><span class="tok-w"> </span><span class="tok-n">imgui_bundle</span><span class="tok-w"> </span><span class="tok-k">import</span><span class="tok-w"> </span><span class="tok-n">imgui</span><span class="tok-p">,</span><span class="tok-w"> </span><span class="tok-n">imgui_ctx</span>
@@ -1457,19 +1468,6 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 
 
 <span class="tok-n">def</span><span class="tok-w"> </span><span class="tok-n">init_fonts_and_markdown</span><span class="tok-p">()</span><span class="tok-o">:</span>
-<span class="tok-w">    </span><span class="tok-cp"># Note:</span>
-<span class="tok-w">    </span><span class="tok-cp"># The way font are loaded in this example is a bit tricky.</span>
-<span class="tok-w">    </span><span class="tok-cp"># We are not using imgui.backends.opengl3_XXX anywhere else, because the rendering is done via Python.</span>
-<span class="tok-w">    </span><span class="tok-cp">#</span>
-<span class="tok-w">    </span><span class="tok-cp"># Howver, we will here need to:</span>
-<span class="tok-w">    </span><span class="tok-cp">#     - call imgui.backends.opengl3_init(glsl_version) at startup</span>
-<span class="tok-w">    </span><span class="tok-cp">#     - call imgui.backends.opengl3_new_frame() after loading the fonts, because this is how ImGui</span>
-<span class="tok-w">    </span><span class="tok-cp">#       will load the fonts into a texture (using imgui.get_io().fonts.build() is not enough)</span>
-
-<span class="tok-w">    </span><span class="tok-cp"># We need to initialize the OpenGL backend (so that we can later call opengl3_new_frame)</span>
-<span class="tok-w">    </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">backends</span><span class="tok-p">.</span><span class="tok-n">opengl3_init</span><span class="tok-p">(</span><span class="tok-s">&quot;#version 100&quot;</span><span class="tok-p">)</span>
-
-<span class="tok-w">    </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">get_io</span><span class="tok-p">().</span><span class="tok-n">fonts</span><span class="tok-p">.</span><span class="tok-n">clear</span><span class="tok-p">()</span>
 <span class="tok-w">    </span><span class="tok-cp"># uncomment to keep using the default hardcoded font, or load your default font here</span>
 <span class="tok-w">    </span><span class="tok-cp"># imgui.get_io().fonts.add_font_default()</span>
 
@@ -1477,9 +1475,6 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <span class="tok-w">    </span><span class="tok-n">imgui_md</span><span class="tok-p">.</span><span class="tok-n">initialize_markdown</span><span class="tok-p">()</span>
 <span class="tok-w">    </span><span class="tok-n">font_loader</span><span class="tok-w"> </span><span class="tok-o">=</span><span class="tok-w"> </span><span class="tok-n">imgui_md</span><span class="tok-p">.</span><span class="tok-n">get_font_loader_function</span><span class="tok-p">()</span>
 <span class="tok-w">    </span><span class="tok-n">font_loader</span><span class="tok-p">()</span>
-
-<span class="tok-w">    </span><span class="tok-cp"># We need to call this function to load the fonts into a texture</span>
-<span class="tok-w">    </span><span class="tok-n">imgui</span><span class="tok-p">.</span><span class="tok-n">backends</span><span class="tok-p">.</span><span class="tok-n">opengl3_new_frame</span><span class="tok-p">()</span>
 
 
 <span class="tok-n">def</span><span class="tok-w"> </span><span class="tok-n">main</span><span class="tok-p">()</span><span class="tok-o">:</span>
@@ -1603,7 +1598,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 <div class="content">
 <img src="https://github.com/pthom/imgui_bundle/raw/main/bindings/imgui_bundle/doc/doc_images/immapp_notebook_example.jpg" alt="immapp notebook example" width="600">
 </div>
-<div class="title">Figure 20. Using ImGui Bundle inside Jupyter Notebook</div>
+<div class="title">Figure 21. Using ImGui Bundle inside Jupyter Notebook</div>
 </div>
 <div class="paragraph">
 <p><a href="https://www.youtube.com/watch?v=QQIC7lpHono">40 seconds demo video on Youtube</a></p>
@@ -1623,7 +1618,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-04-02 16:31:06 +0200
+Last updated 2025-09-12 14:04:35 +0200
 </div>
 </div>
 </body>
