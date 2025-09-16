@@ -2,10 +2,26 @@
 
 # v1.92.XXX (ongoing)
 
-## Python Bindings:
+# v1.92.3
+
+## Updates to libraries
+### ImGui:
+- Updates imgui and imgui_test_engine to v1.92.3
+### hello_imgui:
+- update to v1.92.3
+- add SetLoadAssetFileDataFunction (and python binding): a way to customize asset loading
+### imgui_md:
+- fix line wrapping (thanks to @bgribble). cf #366
+### imgui-knobs, ImGuizmo, imgui_toggle:
+- update to latest version
+### ImGuiColorTextEdit:
+- update to latest version (from santaclose fork)
+
+## Python bindings:
+### ImGui bindings:
 * ImGui Enums now use 'enum.IntFlag'
- (This impacts only the typing checks, not the runtime behavior)
- This means that you may replace code like:
+  (This impacts only the typing checks, not the runtime behavior)
+  This means that you may replace code like:
 ```python
 imgui.WindowFlags_.no_collapse.value | imgui.WindowFlags_.no_decoration.value
 ```
@@ -13,6 +29,14 @@ with:
 ```python
 imgui.WindowFlags_.no_collapse | imgui.WindowFlags_.no_decoration
 ```
+* imgui.push_font (accepts optional font)
+* Improve typing for ImVec2 and ImVec4 (use different protocols. Thanks to @joegnis)
+### Pure Python Backends
+## Pure Python Backends
+* Fix pygame backend (thanks Dom Ormsby)
+* Fix issue when pasting with glfw backend (thanks to @sunsigil)
+### Other
+* ImGuizmo:handle deltaMatrix / document Manipulate API
 
 
 # v1.92.0
