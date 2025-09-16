@@ -124,10 +124,12 @@ ImPlane3D = int  # enum ImPlane3D_
 # #ifndef IMGUI_DISABLE
 #
 
+# [ADAPT_IMGUI_BUNDLE]
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
 # #endif
 #
+# [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Macros and Defines
