@@ -149,28 +149,40 @@ void py_init_module_implot3d(nb::module_& m)
         nb::enum_<ImPlot3DTriangleFlags_>(m, "TriangleFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotTriangle")
             .value("none", ImPlot3DTriangleFlags_None, "Default")
             .value("no_legend", ImPlot3DTriangleFlags_NoLegend, "")
-            .value("no_fit", ImPlot3DTriangleFlags_NoFit, "");
+            .value("no_fit", ImPlot3DTriangleFlags_NoFit, "")
+            .value("no_lines", ImPlot3DTriangleFlags_NoLines, "No lines will be rendered")
+            .value("no_fill", ImPlot3DTriangleFlags_NoFill, "No fill will be rendered")
+            .value("no_markers", ImPlot3DTriangleFlags_NoMarkers, "No markers will be rendered");
 
 
     auto pyEnumQuadFlags_ =
         nb::enum_<ImPlot3DQuadFlags_>(m, "QuadFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotQuad")
             .value("none", ImPlot3DQuadFlags_None, "Default")
             .value("no_legend", ImPlot3DQuadFlags_NoLegend, "")
-            .value("no_fit", ImPlot3DQuadFlags_NoFit, "");
+            .value("no_fit", ImPlot3DQuadFlags_NoFit, "")
+            .value("no_lines", ImPlot3DQuadFlags_NoLines, "No lines will be rendered")
+            .value("no_fill", ImPlot3DQuadFlags_NoFill, "No fill will be rendered")
+            .value("no_markers", ImPlot3DQuadFlags_NoMarkers, "No markers will be rendered");
 
 
     auto pyEnumSurfaceFlags_ =
         nb::enum_<ImPlot3DSurfaceFlags_>(m, "SurfaceFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotSurface")
             .value("none", ImPlot3DSurfaceFlags_None, "Default")
             .value("no_legend", ImPlot3DSurfaceFlags_NoLegend, "")
-            .value("no_fit", ImPlot3DSurfaceFlags_NoFit, "");
+            .value("no_fit", ImPlot3DSurfaceFlags_NoFit, "")
+            .value("no_lines", ImPlot3DSurfaceFlags_NoLines, "No lines will be rendered")
+            .value("no_fill", ImPlot3DSurfaceFlags_NoFill, "No fill will be rendered")
+            .value("no_markers", ImPlot3DSurfaceFlags_NoMarkers, "No markers will be rendered");
 
 
     auto pyEnumMeshFlags_ =
         nb::enum_<ImPlot3DMeshFlags_>(m, "MeshFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotMesh")
             .value("none", ImPlot3DMeshFlags_None, "Default")
             .value("no_legend", ImPlot3DMeshFlags_NoLegend, "")
-            .value("no_fit", ImPlot3DMeshFlags_NoFit, "");
+            .value("no_fit", ImPlot3DMeshFlags_NoFit, "")
+            .value("no_lines", ImPlot3DMeshFlags_NoLines, "No lines will be rendered")
+            .value("no_fill", ImPlot3DMeshFlags_NoFill, "No fill will be rendered")
+            .value("no_markers", ImPlot3DMeshFlags_NoMarkers, "No markers will be rendered");
 
 
     auto pyEnumImageFlags_ =
@@ -212,6 +224,7 @@ void py_init_module_implot3d(nb::module_& m)
             .value("lock_max", ImPlot3DAxisFlags_LockMax, "The axis maximum value will be locked when panning/zooming")
             .value("auto_fit", ImPlot3DAxisFlags_AutoFit, "Axis will be auto-fitting to data extents")
             .value("invert", ImPlot3DAxisFlags_Invert, "The axis will be inverted")
+            .value("pan_stretch", ImPlot3DAxisFlags_PanStretch, "Panning in a locked or constrained state will cause the axis to stretch if possible")
             .value("lock", ImPlot3DAxisFlags_Lock, "")
             .value("no_decorations", ImPlot3DAxisFlags_NoDecorations, "");
 
@@ -326,6 +339,16 @@ void py_init_module_implot3d(nb::module_& m)
         },
         nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond").none() = nb::none(),
         "Python bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+
+    m.def("setup_axis_limits_constraints",
+        ImPlot3D::SetupAxisLimitsConstraints,
+        nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"),
+        "Sets an axis' limits constraints");
+
+    m.def("setup_axis_zoom_constraints",
+        ImPlot3D::SetupAxisZoomConstraints,
+        nb::arg("axis"), nb::arg("z_min"), nb::arg("z_max"),
+        "Sets an axis' zoom constraints");
 
     m.def("setup_axes",
         ImPlot3D::SetupAxes,
@@ -1314,6 +1337,24 @@ void py_init_module_implot3d(nb::module_& m)
         ImPlot3D::ShowStyleEditor,
         nb::arg("ref") = nb::none(),
         "Shows ImPlot3D style editor block (not a window)");
+
+    m.def("show_metrics_window",
+        [](std::optional<bool> p_popen = std::nullopt) -> std::optional<bool>
+        {
+            auto ShowMetricsWindow_adapt_modifiable_immutable_to_return = [](std::optional<bool> p_popen = std::nullopt) -> std::optional<bool>
+            {
+                bool * p_popen_adapt_modifiable = nullptr;
+                if (p_popen.has_value())
+                    p_popen_adapt_modifiable = & (*p_popen);
+
+                ImPlot3D::ShowMetricsWindow(p_popen_adapt_modifiable);
+                return p_popen;
+            };
+
+            return ShowMetricsWindow_adapt_modifiable_immutable_to_return(p_popen);
+        },
+        nb::arg("p_popen").none() = nb::none(),
+        "Shows ImPlot3D metrics/debug information window.");
 
 
     auto pyClassImPlot3DPoint =

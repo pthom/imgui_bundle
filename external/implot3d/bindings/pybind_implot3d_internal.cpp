@@ -298,6 +298,8 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("show_default_ticks", &ImPlot3DAxis::ShowDefaultTicks, "")
         .def_rw("fit_this_frame", &ImPlot3DAxis::FitThisFrame, "")
         .def_rw("fit_extents", &ImPlot3DAxis::FitExtents, "")
+        .def_rw("constraint_range", &ImPlot3DAxis::ConstraintRange, "")
+        .def_rw("constraint_zoom", &ImPlot3DAxis::ConstraintZoom, "")
         .def_rw("hovered", &ImPlot3DAxis::Hovered, "")
         .def_rw("held", &ImPlot3DAxis::Held, "")
         .def(nb::init<>(),
@@ -316,6 +318,8 @@ void py_init_module_implot3d_internal(nb::module_& m)
             &ImPlot3DAxis::SetMax,
             nb::arg("_max"), nb::arg("force") = false,
             "(private API)")
+        .def("constrain",
+            &ImPlot3DAxis::Constrain, "(private API)")
         .def("is_range_locked",
             &ImPlot3DAxis::IsRangeLocked, "(private API)")
         .def("is_locked_min",
@@ -330,6 +334,10 @@ void py_init_module_implot3d_internal(nb::module_& m)
             &ImPlot3DAxis::IsInputLockedMax, "(private API)")
         .def("is_input_locked",
             &ImPlot3DAxis::IsInputLocked, "(private API)")
+        .def("is_pan_locked",
+            &ImPlot3DAxis::IsPanLocked,
+            nb::arg("increasing"),
+            "(private API)")
         .def("set_label",
             &ImPlot3DAxis::SetLabel,
             nb::arg("label"),
@@ -470,6 +478,16 @@ void py_init_module_implot3d_internal(nb::module_& m)
         nb::arg("idx"),
         nb::rv_policy::reference);
 
+    m.def("calc_text_color",
+        nb::overload_cast<const ImVec4 &>(ImPlot3D::CalcTextColor),
+        nb::arg("bg"),
+        "(private API)");
+
+    m.def("calc_text_color",
+        nb::overload_cast<ImU32>(ImPlot3D::CalcTextColor),
+        nb::arg("bg"),
+        "(private API)");
+
     m.def("get_item_data",
         ImPlot3D::GetItemData,
         "Get styling data for next item (call between BeginItem/EndItem)",
@@ -482,6 +500,11 @@ void py_init_module_implot3d_internal(nb::module_& m)
 
     m.def("next_colormap_color_u32",
         ImPlot3D::NextColormapColorU32, "Returns the next unused colormap color and advances the colormap. Can be used to skip colors if desired");
+
+    m.def("render_color_bar",
+        ImPlot3D::RenderColorBar,
+        nb::arg("colors"), nb::arg("size"), nb::arg("draw_list"), nb::arg("bounds"), nb::arg("vert"), nb::arg("reversed"), nb::arg("continuous"),
+        "Render a colormap bar");
 
     m.def("begin_item",
         [](const char * label_id, ImPlot3DItemFlags flags = 0, const std::optional<const ImPlot3DCol> & recolor_from = std::nullopt) -> bool

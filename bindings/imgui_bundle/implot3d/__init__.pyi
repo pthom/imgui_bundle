@@ -326,8 +326,13 @@ class TriangleFlags_(enum.IntFlag):
     # ImPlot3DTriangleFlags_NoLegend = ImPlot3DItemFlags_NoLegend,    /* original C++ signature */
     no_legend = enum.auto()  # (= ItemFlags_NoLegend)
     # ImPlot3DTriangleFlags_NoFit = ImPlot3DItemFlags_NoFit,    /* original C++ signature */
-    # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
+    # ImPlot3DTriangleFlags_NoLines = 1 << 10,       /* original C++ signature */
+    no_lines = enum.auto()  # (= 1 << 10)  # No lines will be rendered
+    # ImPlot3DTriangleFlags_NoFill = 1 << 11,        /* original C++ signature */
+    no_fill = enum.auto()  # (= 1 << 11)  # No fill will be rendered
+    # ImPlot3DTriangleFlags_NoMarkers = 1 << 12,     /* original C++ signature */
+    no_markers = enum.auto()  # (= 1 << 12)  # No markers will be rendered
 
 class QuadFlags_(enum.IntFlag):
     """Flags for PlotQuad"""
@@ -337,8 +342,13 @@ class QuadFlags_(enum.IntFlag):
     # ImPlot3DQuadFlags_NoLegend = ImPlot3DItemFlags_NoLegend,    /* original C++ signature */
     no_legend = enum.auto()  # (= ItemFlags_NoLegend)
     # ImPlot3DQuadFlags_NoFit = ImPlot3DItemFlags_NoFit,    /* original C++ signature */
-    # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
+    # ImPlot3DQuadFlags_NoLines = 1 << 10,       /* original C++ signature */
+    no_lines = enum.auto()  # (= 1 << 10)  # No lines will be rendered
+    # ImPlot3DQuadFlags_NoFill = 1 << 11,        /* original C++ signature */
+    no_fill = enum.auto()  # (= 1 << 11)  # No fill will be rendered
+    # ImPlot3DQuadFlags_NoMarkers = 1 << 12,     /* original C++ signature */
+    no_markers = enum.auto()  # (= 1 << 12)  # No markers will be rendered
 
 class SurfaceFlags_(enum.IntFlag):
     """Flags for PlotSurface"""
@@ -348,8 +358,13 @@ class SurfaceFlags_(enum.IntFlag):
     # ImPlot3DSurfaceFlags_NoLegend = ImPlot3DItemFlags_NoLegend,    /* original C++ signature */
     no_legend = enum.auto()  # (= ItemFlags_NoLegend)
     # ImPlot3DSurfaceFlags_NoFit = ImPlot3DItemFlags_NoFit,    /* original C++ signature */
-    # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
+    # ImPlot3DSurfaceFlags_NoLines = 1 << 10,       /* original C++ signature */
+    no_lines = enum.auto()  # (= 1 << 10)  # No lines will be rendered
+    # ImPlot3DSurfaceFlags_NoFill = 1 << 11,        /* original C++ signature */
+    no_fill = enum.auto()  # (= 1 << 11)  # No fill will be rendered
+    # ImPlot3DSurfaceFlags_NoMarkers = 1 << 12,     /* original C++ signature */
+    no_markers = enum.auto()  # (= 1 << 12)  # No markers will be rendered
 
 class MeshFlags_(enum.IntFlag):
     """Flags for PlotMesh"""
@@ -359,8 +374,13 @@ class MeshFlags_(enum.IntFlag):
     # ImPlot3DMeshFlags_NoLegend = ImPlot3DItemFlags_NoLegend,    /* original C++ signature */
     no_legend = enum.auto()  # (= ItemFlags_NoLegend)
     # ImPlot3DMeshFlags_NoFit = ImPlot3DItemFlags_NoFit,    /* original C++ signature */
-    # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
+    # ImPlot3DMeshFlags_NoLines = 1 << 10,       /* original C++ signature */
+    no_lines = enum.auto()  # (= 1 << 10)  # No lines will be rendered
+    # ImPlot3DMeshFlags_NoFill = 1 << 11,        /* original C++ signature */
+    no_fill = enum.auto()  # (= 1 << 11)  # No fill will be rendered
+    # ImPlot3DMeshFlags_NoMarkers = 1 << 12,     /* original C++ signature */
+    no_markers = enum.auto()  # (= 1 << 12)  # No markers will be rendered
 
 class ImageFlags_(enum.IntFlag):
     """Flags for PlotImage"""
@@ -430,6 +450,10 @@ class AxisFlags_(enum.IntFlag):
     auto_fit = enum.auto()  # (= 1 << 6)  # Axis will be auto-fitting to data extents
     # ImPlot3DAxisFlags_Invert = 1 << 7,           /* original C++ signature */
     invert = enum.auto()  # (= 1 << 7)  # The axis will be inverted
+    # ImPlot3DAxisFlags_PanStretch = 1 << 8,       /* original C++ signature */
+    pan_stretch = (
+        enum.auto()
+    )  # (= 1 << 8)  # Panning in a locked or constrained state will cause the axis to stretch if possible
     # ImPlot3DAxisFlags_Lock = ImPlot3DAxisFlags_LockMin | ImPlot3DAxisFlags_LockMax,    /* original C++ signature */
     lock = enum.auto()  # (= AxisFlags_LockMin | AxisFlags_LockMax)
     # ImPlot3DAxisFlags_NoDecorations = ImPlot3DAxisFlags_NoLabel | ImPlot3DAxisFlags_NoGridLines | ImPlot3DAxisFlags_NoTickLabels,    /* original C++ signature */
@@ -590,6 +614,16 @@ def setup_axis_limits(axis: ImAxis3D, v_min: float, v_max: float, cond: Optional
     """Python bindings defaults:
     If cond is None, then its default value will be: Cond_Once
     """
+    pass
+
+# IMPLOT3D_API void SetupAxisLimitsConstraints(ImAxis3D axis, double v_min, double v_max);    /* original C++ signature */
+def setup_axis_limits_constraints(axis: ImAxis3D, v_min: float, v_max: float) -> None:
+    """Sets an axis' limits constraints"""
+    pass
+
+# IMPLOT3D_API void SetupAxisZoomConstraints(ImAxis3D axis, double z_min, double z_max);    /* original C++ signature */
+def setup_axis_zoom_constraints(axis: ImAxis3D, z_min: float, z_max: float) -> None:
+    """Sets an axis' zoom constraints"""
     pass
 
 # IMPLOT3D_API void SetupAxes(const char* x_label, const char* y_label, const char* z_label, ImPlot3DAxisFlags x_flags = 0,    /* original C++ signature */
@@ -1160,6 +1194,11 @@ def show_all_demos() -> None:
 # IMPLOT3D_API void ShowStyleEditor(ImPlot3DStyle* ref = nullptr);    /* original C++ signature */
 def show_style_editor(ref: Optional[Style] = None) -> None:
     """Shows ImPlot3D style editor block (not a window)"""
+    pass
+
+# IMPLOT3D_API void ShowMetricsWindow(bool* p_popen = nullptr);    /* original C++ signature */
+def show_metrics_window(p_popen: Optional[bool] = None) -> Optional[bool]:
+    """Shows ImPlot3D metrics/debug information window."""
     pass
 
 # -----------------------------------------------------------------------------
