@@ -644,6 +644,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             (m, "TestGenericItemStatus", " Helper struct to store various query-able state of an item.\n This facilitate interactions between GuiFunc and TestFunc, since those state are frequently used.")
         .def_rw("ret_value", &ImGuiTestGenericItemStatus::RetValue, "return value")
         .def_rw("hovered", &ImGuiTestGenericItemStatus::Hovered, "result of IsItemHovered()")
+        .def_rw("hovered_allow_disabled", &ImGuiTestGenericItemStatus::HoveredAllowDisabled, "result of IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)")
         .def_rw("active", &ImGuiTestGenericItemStatus::Active, "result of IsItemActive()")
         .def_rw("focused", &ImGuiTestGenericItemStatus::Focused, "result of IsItemFocused()")
         .def_rw("clicked", &ImGuiTestGenericItemStatus::Clicked, "result of IsItemClicked()")
@@ -679,6 +680,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("window_flags", &ImGuiTestGenericVars::WindowFlags, "")
         .def_rw("table_flags", &ImGuiTestGenericVars::TableFlags, "")
         .def_rw("popup_flags", &ImGuiTestGenericVars::PopupFlags, "")
+        .def_rw("input_text_flags", &ImGuiTestGenericVars::InputTextFlags, "")
         .def_rw("status", &ImGuiTestGenericVars::Status, "")
         .def_rw("show_window1", &ImGuiTestGenericVars::ShowWindow1, "")
         .def_rw("show_window2", &ImGuiTestGenericVars::ShowWindow2, "")
@@ -1209,6 +1211,18 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             &ImGuiTestContext::ScrollToBottom,
             nb::arg("ref"),
             "(private API)")
+        .def("scroll_to_pos",
+            &ImGuiTestContext::ScrollToPos,
+            nb::arg("window_ref"), nb::arg("pos_v"), nb::arg("axis"), nb::arg("flags") = ImGuiTestOpFlags_None,
+            "(private API)")
+        .def("scroll_to_pos_x",
+            &ImGuiTestContext::ScrollToPosX,
+            nb::arg("window_ref"), nb::arg("pos_x"),
+            "(private API)")
+        .def("scroll_to_pos_y",
+            &ImGuiTestContext::ScrollToPosY,
+            nb::arg("window_ref"), nb::arg("pos_y"),
+            "(private API)")
         .def("scroll_to_item",
             &ImGuiTestContext::ScrollToItem,
             nb::arg("ref"), nb::arg("axis"), nb::arg("flags") = ImGuiTestOpFlags_None,
@@ -1696,6 +1710,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("ui_context_target", &ImGuiTestEngine::UiContextTarget, "imgui context for testing")
         .def_rw("ui_context_active", &ImGuiTestEngine::UiContextActive, "imgui context for testing == UiContextTarget or None")
         .def_rw("started", &ImGuiTestEngine::Started, "")
+        .def_rw("ui_context_has_hooks", &ImGuiTestEngine::UiContextHasHooks, "")
         .def_rw("batch_start_time", &ImGuiTestEngine::BatchStartTime, "")
         .def_rw("batch_end_time", &ImGuiTestEngine::BatchEndTime, "")
         .def_rw("frame_count", &ImGuiTestEngine::FrameCount, "")

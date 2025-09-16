@@ -1080,6 +1080,8 @@ class TestGenericItemStatus:
     ret_value: int  # return value
     # int     Hovered;    /* original C++ signature */
     hovered: int  # result of IsItemHovered()
+    # int     HoveredAllowDisabled;    /* original C++ signature */
+    hovered_allow_disabled: int  # result of IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)
     # int     Active;    /* original C++ signature */
     active: int  # result of IsItemActive()
     # int     Focused;    /* original C++ signature */
@@ -1108,7 +1110,7 @@ class TestGenericItemStatus:
     def query_set(self, ret_val: bool = False) -> None:
         """(private API)"""
         pass
-    # void QueryInc(bool ret_val = false) { RetValue += ret_val; Hovered += ImGui::IsItemHovered(); Active += ImGui::IsItemActive(); Focused += ImGui::IsItemFocused(); Clicked += ImGui::IsItemClicked(); Visible += ImGui::IsItemVisible(); Edited += ImGui::IsItemEdited(); Activated += ImGui::IsItemActivated(); Deactivated += ImGui::IsItemDeactivated(); DeactivatedAfterEdit += ImGui::IsItemDeactivatedAfterEdit(); }    /* original C++ signature */
+    # void QueryInc(bool ret_val = false) { RetValue += ret_val; Hovered += ImGui::IsItemHovered(); HoveredAllowDisabled += ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled); Active += ImGui::IsItemActive(); Focused += ImGui::IsItemFocused(); Clicked += ImGui::IsItemClicked(); Visible += ImGui::IsItemVisible(); Edited += ImGui::IsItemEdited(); Activated += ImGui::IsItemActivated(); Deactivated += ImGui::IsItemDeactivated(); DeactivatedAfterEdit += ImGui::IsItemDeactivatedAfterEdit(); }    /* original C++ signature */
     def query_inc(self, ret_val: bool = False) -> None:
         """(private API)"""
         pass
@@ -1140,6 +1142,8 @@ class TestGenericVars:
     table_flags: TableFlags
     # ImGuiPopupFlags         PopupFlags;    /* original C++ signature */
     popup_flags: PopupFlags
+    # ImGuiInputTextFlags     InputTextFlags;    /* original C++ signature */
+    input_text_flags: InputTextFlags
     # ImGuiTestGenericItemStatus  Status;    /* original C++ signature */
     status: TestGenericItemStatus
     # bool                    ShowWindow1,     /* original C++ signature */
@@ -1770,6 +1774,20 @@ class TestContext:
         pass
     # void        ScrollToBottom(ImGuiTestRef ref);    /* original C++ signature */
     def scroll_to_bottom(self, ref: Union[TestRef, str]) -> None:
+        """(private API)"""
+        pass
+    # void        ScrollToPos(ImGuiTestRef window_ref, float pos_v, ImGuiAxis axis, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
+    def scroll_to_pos(
+        self, window_ref: Union[TestRef, str], pos_v: float, axis: Axis, flags: TestOpFlags = TestOpFlags_None
+    ) -> None:
+        """(private API)"""
+        pass
+    # void        ScrollToPosX(ImGuiTestRef window_ref, float pos_x);    /* original C++ signature */
+    def scroll_to_pos_x(self, window_ref: Union[TestRef, str], pos_x: float) -> None:
+        """(private API)"""
+        pass
+    # void        ScrollToPosY(ImGuiTestRef window_ref, float pos_y);    /* original C++ signature */
+    def scroll_to_pos_y(self, window_ref: Union[TestRef, str], pos_y: float) -> None:
         """(private API)"""
         pass
     # void        ScrollToItem(ImGuiTestRef ref, ImGuiAxis axis, ImGuiTestOpFlags flags = ImGuiTestOpFlags_None);    /* original C++ signature */
@@ -2430,6 +2448,8 @@ class TestEngine:
 
     # bool                        Started = false;    /* original C++ signature */
     started: bool = False
+    # bool                        UiContextHasHooks = false;    /* original C++ signature */
+    ui_context_has_hooks: bool = False
     # ImU64                       BatchStartTime = 0;    /* original C++ signature */
     batch_start_time: ImU64 = 0
     # ImU64                       BatchEndTime = 0;    /* original C++ signature */

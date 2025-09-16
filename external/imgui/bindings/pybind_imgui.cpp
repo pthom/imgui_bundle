@@ -2510,7 +2510,7 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::overload_cast<>(ImGui::TableGetColumnIndex), "return current column index.");
 
     m.def("table_get_row_index",
-        nb::overload_cast<>(ImGui::TableGetRowIndex), "return current row index.");
+        nb::overload_cast<>(ImGui::TableGetRowIndex), "return current row index (header rows are accounted for)");
 
     m.def("table_get_column_name",
         nb::overload_cast<int>(ImGui::TableGetColumnName),
@@ -3155,7 +3155,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumChildFlags_ =
-        nb::enum_<ImGuiChildFlags_>(m, "ChildFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::BeginChild()\n (Legacy: bit 0 must always correspond to ImGuiChildFlags_Borders to be backward compatible with old API using 'bool border = False'.\n About using AutoResizeX/AutoResizeY flags:\n - May be combined with SetNextWindowSizeConstraints() to set a min/max size for each axis (see \"Demo->Child->Auto-resize with Constraints\").\n - Size measurement for a given axis is only performed when the child window is within visible boundaries, or is just appearing.\n   - This allows BeginChild() to return False when not within boundaries (e.g. when scrolling), which is more optimal. BUT it won't update its auto-size while clipped.\n     While not perfect, it is a better default behavior as the always-on performance gain is more valuable than the occasional \"resizing after becoming visible again\" glitch.\n   - You may also use ImGuiChildFlags_AlwaysAutoResize to force an update even when child window is not in view.\n     HOWEVER PLEASE UNDERSTAND THAT DOING SO WILL PREVENT BeginChild() FROM EVER RETURNING FALSE, disabling benefits of coarse clipping.")
+        nb::enum_<ImGuiChildFlags_>(m, "ChildFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::BeginChild()\n (Legacy: bit 0 must always correspond to ImGuiChildFlags_Borders to be backward compatible with old API using 'bool border = False'.)\n About using AutoResizeX/AutoResizeY flags:\n - May be combined with SetNextWindowSizeConstraints() to set a min/max size for each axis (see \"Demo->Child->Auto-resize with Constraints\").\n - Size measurement for a given axis is only performed when the child window is within visible boundaries, or is just appearing.\n   - This allows BeginChild() to return False when not within boundaries (e.g. when scrolling), which is more optimal. BUT it won't update its auto-size while clipped.\n     While not perfect, it is a better default behavior as the always-on performance gain is more valuable than the occasional \"resizing after becoming visible again\" glitch.\n   - You may also use ImGuiChildFlags_AlwaysAutoResize to force an update even when child window is not in view.\n     HOWEVER PLEASE UNDERSTAND THAT DOING SO WILL PREVENT BeginChild() FROM EVER RETURNING FALSE, disabling benefits of coarse clipping.")
             .value("none", ImGuiChildFlags_None, "")
             .value("borders", ImGuiChildFlags_Borders, "Show an outer border and enable WindowPadding. (IMPORTANT: this is always == 1 == True for legacy reason)")
             .value("always_use_window_padding", ImGuiChildFlags_AlwaysUseWindowPadding, "Pad with style.WindowPadding even if no border are drawn (no padding by default for non-bordered child windows because it makes more sense)")
@@ -3205,7 +3205,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("callback_always", ImGuiInputTextFlags_CallbackAlways, "Callback on each iteration. User code may query cursor position, modify text buffer.")
             .value("callback_char_filter", ImGuiInputTextFlags_CallbackCharFilter, "Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.")
             .value("callback_resize", ImGuiInputTextFlags_CallbackResize, "Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)")
-            .value("callback_edit", ImGuiInputTextFlags_CallbackEdit, "Callback on any edit. Note that InputText() already returns True on edit + you can always use IsItemEdited(). The callback is useful to manipulate the underlying buffer while focus is active.");
+            .value("callback_edit", ImGuiInputTextFlags_CallbackEdit, "Callback on any edit. Note that InputText() already returns True on edit + you can always use IsItemEdited(). The callback is useful to manipulate the underlying buffer while focus is active.")
+            .value("word_wrap", ImGuiInputTextFlags_WordWrap, "InputTextMultine(): word-wrap lines that are too long.");
 
 
     auto pyEnumTreeNodeFlags_ =
@@ -3258,7 +3259,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("allow_double_click", ImGuiSelectableFlags_AllowDoubleClick, "Generate press events on double clicks too")
             .value("disabled", ImGuiSelectableFlags_Disabled, "Cannot be selected, display grayed out text")
             .value("allow_overlap", ImGuiSelectableFlags_AllowOverlap, "(WIP) Hit testing to allow subsequent widgets to overlap this one")
-            .value("highlight", ImGuiSelectableFlags_Highlight, "Make the item be displayed as if it is hovered");
+            .value("highlight", ImGuiSelectableFlags_Highlight, "Make the item be displayed as if it is hovered")
+            .value("select_on_nav", ImGuiSelectableFlags_SelectOnNav, "Auto-select when moved into, unless Ctrl is held. Automatic when in a BeginMultiSelect() block.");
 
 
     auto pyEnumComboFlags_ =
@@ -3285,8 +3287,9 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("no_tab_list_scrolling_buttons", ImGuiTabBarFlags_NoTabListScrollingButtons, "Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)")
             .value("no_tooltip", ImGuiTabBarFlags_NoTooltip, "Disable tooltips when hovering a tab")
             .value("draw_selected_overline", ImGuiTabBarFlags_DrawSelectedOverline, "Draw selected overline markers over selected tab")
-            .value("fitting_policy_resize_down", ImGuiTabBarFlags_FittingPolicyResizeDown, "Resize tabs when they don't fit")
-            .value("fitting_policy_scroll", ImGuiTabBarFlags_FittingPolicyScroll, "Add scroll buttons when tabs don't fit")
+            .value("fitting_policy_mixed", ImGuiTabBarFlags_FittingPolicyMixed, "Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling buttons.")
+            .value("fitting_policy_shrink", ImGuiTabBarFlags_FittingPolicyShrink, "Shrink down tabs when they don't fit")
+            .value("fitting_policy_scroll", ImGuiTabBarFlags_FittingPolicyScroll, "Enable scrolling buttons when tabs don't fit")
             .value("fitting_policy_mask_", ImGuiTabBarFlags_FittingPolicyMask_, "")
             .value("fitting_policy_default_", ImGuiTabBarFlags_FittingPolicyDefault_, "");
 
@@ -3609,7 +3612,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("has_mouse_cursors", ImGuiBackendFlags_HasMouseCursors, "Backend Platform supports honoring GetMouseCursor() value to change the OS cursor shape.")
             .value("has_set_mouse_pos", ImGuiBackendFlags_HasSetMousePos, "Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if io.ConfigNavMoveSetMousePos is set).")
             .value("renderer_has_vtx_offset", ImGuiBackendFlags_RendererHasVtxOffset, "Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.")
-            .value("renderer_has_textures", ImGuiBackendFlags_RendererHasTextures, "Backend Renderer supports ImTextureData requests to create/update/destroy textures. This enables incremental texture updates and texture reloads.")
+            .value("renderer_has_textures", ImGuiBackendFlags_RendererHasTextures, "Backend Renderer supports ImTextureData requests to create/update/destroy textures. This enables incremental texture updates and texture reloads. See https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md for instructions on how to upgrade your custom backend.")
             .value("platform_has_viewports", ImGuiBackendFlags_PlatformHasViewports, "Backend Platform supports multiple viewports.")
             .value("has_mouse_hovered_viewport", ImGuiBackendFlags_HasMouseHoveredViewport, "Backend Platform supports calling io.AddMouseViewportEvent() with the viewport under the mouse. IF POSSIBLE, ignore viewports with the ImGuiViewportFlags_NoInputs flag (Win32 backend, GLFW 3.30+ backend can do this, SDL backend cannot). If this cannot be done, Dear ImGui needs to use a flawed heuristic to find the viewport under.")
             .value("renderer_has_viewports", ImGuiBackendFlags_RendererHasViewports, "Backend Renderer supports multiple viewports.");
@@ -3702,12 +3705,15 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("cell_padding", ImGuiStyleVar_CellPadding, "ImVec2    CellPadding")
             .value("scrollbar_size", ImGuiStyleVar_ScrollbarSize, "float     ScrollbarSize")
             .value("scrollbar_rounding", ImGuiStyleVar_ScrollbarRounding, "float     ScrollbarRounding")
+            .value("scrollbar_padding", ImGuiStyleVar_ScrollbarPadding, "float     ScrollbarPadding")
             .value("grab_min_size", ImGuiStyleVar_GrabMinSize, "float     GrabMinSize")
             .value("grab_rounding", ImGuiStyleVar_GrabRounding, "float     GrabRounding")
             .value("image_border_size", ImGuiStyleVar_ImageBorderSize, "float     ImageBorderSize")
             .value("layout_align", ImGuiStyleVar_LayoutAlign, "float     LayoutAlign")
             .value("tab_rounding", ImGuiStyleVar_TabRounding, "float     TabRounding")
             .value("tab_border_size", ImGuiStyleVar_TabBorderSize, "float     TabBorderSize")
+            .value("tab_min_width_base", ImGuiStyleVar_TabMinWidthBase, "float     TabMinWidthBase")
+            .value("tab_min_width_shrink", ImGuiStyleVar_TabMinWidthShrink, "float     TabMinWidthShrink")
             .value("tab_bar_border_size", ImGuiStyleVar_TabBarBorderSize, "float     TabBarBorderSize")
             .value("tab_bar_overline_size", ImGuiStyleVar_TabBarOverlineSize, "float     TabBarOverlineSize")
             .value("table_angled_headers_angle", ImGuiStyleVar_TableAngledHeadersAngle, "float     TableAngledHeadersAngle")
@@ -6102,6 +6108,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("columns_min_spacing", &ImGuiStyle::ColumnsMinSpacing, "Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).")
         .def_rw("scrollbar_size", &ImGuiStyle::ScrollbarSize, "Width of the vertical scrollbar, Height of the horizontal scrollbar.")
         .def_rw("scrollbar_rounding", &ImGuiStyle::ScrollbarRounding, "Radius of grab corners for scrollbar.")
+        .def_rw("scrollbar_padding", &ImGuiStyle::ScrollbarPadding, "Padding of scrollbar grab within its frame (same for both axises).")
         .def_rw("grab_min_size", &ImGuiStyle::GrabMinSize, "Minimum width/height of a grab box for slider/scrollbar.")
         .def_rw("grab_rounding", &ImGuiStyle::GrabRounding, "Radius of grabs corners rounding. Set to 0.0 to have rectangular slider grabs.")
         .def_rw("layout_align", &ImGuiStyle::LayoutAlign, "Element alignment inside horizontal and vertical layouts (0.0 - left/top, 1.0 - right/bottom, 0.5 - center).")
@@ -6109,6 +6116,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("image_border_size", &ImGuiStyle::ImageBorderSize, "Thickness of border around Image() calls.")
         .def_rw("tab_rounding", &ImGuiStyle::TabRounding, "Radius of upper corners of a tab. Set to 0.0 to have rectangular tabs.")
         .def_rw("tab_border_size", &ImGuiStyle::TabBorderSize, "Thickness of border around tabs.")
+        .def_rw("tab_min_width_base", &ImGuiStyle::TabMinWidthBase, "Minimum tab width, to make tabs larger than their contents. TabBar buttons are not affected.")
+        .def_rw("tab_min_width_shrink", &ImGuiStyle::TabMinWidthShrink, "Minimum tab width after shrinking, when using ImGuiTabBarFlags_FittingPolicyMixed policy.")
         .def_rw("tab_close_button_min_width_selected", &ImGuiStyle::TabCloseButtonMinWidthSelected, "-1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width.")
         .def_rw("tab_close_button_min_width_unselected", &ImGuiStyle::TabCloseButtonMinWidthUnselected, "-1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width. FLT_MAX: never show close button when unselected.")
         .def_rw("tab_bar_border_size", &ImGuiStyle::TabBarBorderSize, "Thickness of tab-bar separator, which takes on the tab active color to denote focus.")
@@ -6126,6 +6135,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("separator_text_padding", &ImGuiStyle::SeparatorTextPadding, "Horizontal offset of text from each edge of the separator + spacing on other axis. Generally small values. .y is recommended to be == FramePadding.y.")
         .def_rw("display_window_padding", &ImGuiStyle::DisplayWindowPadding, "Apply to regular windows: amount which we enforce to keep visible when moving near edges of your screen.")
         .def_rw("display_safe_area_padding", &ImGuiStyle::DisplaySafeAreaPadding, "Apply to every windows, menus, popups, tooltips: amount where we avoid displaying contents. Adjust if you cannot see the edges of your screen (e.g. on a TV where scaling has not been configured).")
+        .def_rw("docking_node_has_close_button", &ImGuiStyle::DockingNodeHasCloseButton, "Docking node has their own CloseButton() to close all docked windows.")
         .def_rw("docking_separator_size", &ImGuiStyle::DockingSeparatorSize, "Thickness of resizing border between docked windows")
         .def_rw("mouse_cursor_scale", &ImGuiStyle::MouseCursorScale, "Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). We apply per-monitor DPI scaling over this scale. May be removed later.")
         .def_rw("anti_aliased_lines", &ImGuiStyle::AntiAliasedLines, "Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).")
@@ -6205,6 +6215,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_viewports_no_task_bar_icon", &ImGuiIO::ConfigViewportsNoTaskBarIcon, "= False          // Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.")
         .def_rw("config_viewports_no_decoration", &ImGuiIO::ConfigViewportsNoDecoration, "= True           // Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).")
         .def_rw("config_viewports_no_default_parent", &ImGuiIO::ConfigViewportsNoDefaultParent, "= False          // Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to True if you want the default to be 0, then all viewports will be top-level OS windows.")
+        .def_rw("config_viewport_platform_focus_sets_focus", &ImGuiIO::ConfigViewportPlatformFocusSetsImGuiFocus, "= True // When a platform window is focused (e.g. using Alt+Tab, clicking Platform Title Bar), apply corresponding focus on imgui windows (may clear focus/active id from imgui windows location in other platform windows). In principle this is better enabled but we provide an opt-out, because some Linux window managers tend to eagerly focus windows (e.g. on mouse hover, or even a simple window pos/size change).")
         .def_rw("config_dpi_scale_fonts", &ImGuiIO::ConfigDpiScaleFonts, "= False          // [EXPERIMENTAL] Automatically overwrite style.FontScaleDpi when Monitor DPI changes. This will scale fonts but _NOT_ scale sizes/padding for now.")
         .def_rw("config_dpi_scale_viewports", &ImGuiIO::ConfigDpiScaleViewports, "= False          // [EXPERIMENTAL] Scale Dear ImGui and Platform Windows when Monitor DPI changes.")
         .def_rw("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor, "= False          // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor). Cannot be easily renamed to 'io.ConfigXXX' because this is frequently used by backend implementations.")
@@ -6322,11 +6333,11 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("mouse_wheel_h", &ImGuiIO::MouseWheelH, "Mouse wheel Horizontal. >0 scrolls Left, <0 scrolls Right. Most users don't have a mouse with a horizontal wheel, may not be filled by all backends.")
         .def_rw("mouse_source", &ImGuiIO::MouseSource, "Mouse actual input peripheral (Mouse/TouchScreen/Pen).")
         .def_rw("mouse_hovered_viewport", &ImGuiIO::MouseHoveredViewport, "(Optional) Modify using io.AddMouseViewportEvent(). With multi-viewports: viewport the OS mouse is hovering. If possible _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag is much better (few backends can handle that). Set io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport if you can provide this info. If you don't imgui will infer the value using the rectangles and last focused time of the viewports it knows about (ignoring other OS windows).")
-        .def_rw("key_ctrl", &ImGuiIO::KeyCtrl, "Keyboard modifier down: Control")
+        .def_rw("key_ctrl", &ImGuiIO::KeyCtrl, "Keyboard modifier down: Ctrl (non-macOS), Cmd (macOS)")
         .def_rw("key_shift", &ImGuiIO::KeyShift, "Keyboard modifier down: Shift")
         .def_rw("key_alt", &ImGuiIO::KeyAlt, "Keyboard modifier down: Alt")
-        .def_rw("key_super", &ImGuiIO::KeySuper, "Keyboard modifier down: Cmd/Super/Windows")
-        .def_rw("key_mods", &ImGuiIO::KeyMods, "Key mods flags (any of ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Alt/ImGuiMod_Super flags, same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags. Read-only, updated by NewFrame()")
+        .def_rw("key_super", &ImGuiIO::KeySuper, "Keyboard modifier down: Windows/Super (non-macOS), Ctrl (macOS)")
+        .def_rw("key_mods", &ImGuiIO::KeyMods, "Key mods flags (any of ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Alt/ImGuiMod_Super flags, same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags). Read-only, updated by NewFrame()")
         .def_rw("want_capture_mouse_unless_popup_close", &ImGuiIO::WantCaptureMouseUnlessPopupClose, "Alternative to WantCaptureMouse: (WantCaptureMouse == True && WantCaptureMouseUnlessPopupClose == False) when a click over None is expected to close a popup.")
         .def_rw("mouse_pos_prev", &ImGuiIO::MousePosPrev, "Previous mouse position (note that MouseDelta is not necessary == MousePos-MousePosPrev, in case either position is invalid)")
         .def_prop_ro("mouse_clicked_time",
@@ -6437,10 +6448,10 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("event_key", &ImGuiInputTextCallbackData::EventKey, "Key pressed (Up/Down/TAB)            // Read-only    // [Completion,History]")
         .def_ro("buf", &ImGuiInputTextCallbackData::Buf, "Text buffer                          // Read-write   // [Resize] Can replace pointer / [Completion,History,Always] Only write to pointed data, don't replace the actual pointer!")
         .def_rw("buf_text_len", &ImGuiInputTextCallbackData::BufTextLen, "Text length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()")
-        .def_rw("buf_size", &ImGuiInputTextCallbackData::BufSize, "Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1")
+        .def_rw("buf_size", &ImGuiInputTextCallbackData::BufSize, "Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land: == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1")
         .def_rw("buf_dirty", &ImGuiInputTextCallbackData::BufDirty, "Set if you modify Buf/BufTextLen!    // Write        // [Completion,History,Always]")
         .def_rw("cursor_pos", &ImGuiInputTextCallbackData::CursorPos, "// Read-write   // [Completion,History,Always]")
-        .def_rw("selection_start", &ImGuiInputTextCallbackData::SelectionStart, "// Read-write   // [Completion,History,Always] == to SelectionEnd when no selection)")
+        .def_rw("selection_start", &ImGuiInputTextCallbackData::SelectionStart, "// Read-write   // [Completion,History,Always] == to SelectionEnd when no selection")
         .def_rw("selection_end", &ImGuiInputTextCallbackData::SelectionEnd, "// Read-write   // [Completion,History,Always]")
         .def(nb::init<>())
         .def("delete_chars",
@@ -6718,6 +6729,12 @@ void py_init_module_imgui_main(nb::module_& m)
         ;
 
 
+    auto pyEnumListClipperFlags_ =
+        nb::enum_<ImGuiListClipperFlags_>(m, "ListClipperFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImGuiListClipper (currently not fully exposed in function calls: a future refactor will likely add this to ImGuiListClipper::Begin function equivalent)")
+            .value("none", ImGuiListClipperFlags_None, "")
+            .value("no_set_table_row_counters", ImGuiListClipperFlags_NoSetTableRowCounters, "[Internal] Disabled modifying table row counters. Avoid assumption that 1 clipper item == 1 table row.");
+
+
     auto pyClassImGuiListClipper =
         nb::class_<ImGuiListClipper>
             (m, "ListClipper", " Helper: Manually clip large list of items.\n If you have lots evenly spaced items and you have random access to the list, you can perform coarse\n clipping based on visibility to only submit items that are in view.\n The clipper calculates the range of visible items and advance the cursor to compensate for the non-visible items we have skipped.\n (Dear ImGui already clip items based on their bounds but: it needs to first layout the item to do so, and generally\n  fetching/submitting your own data incurs additional cost. Coarse clipping using ImGuiListClipper allows you to easily\n  scale using lists with tens of thousands of items without a problem)\n Usage:\n   ImGuiListClipper clipper;\n   clipper.Begin(1000);         // We have 1000 elements, evenly spaced.\n   while (clipper.Step())\n       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)\n           ImGui::Text(\"line number %d\", i);\n Generally what happens is:\n - Clipper lets you process the first element (DisplayStart = 0, DisplayEnd = 1) regardless of it being visible or not.\n - User code submit that one element.\n - Clipper can measure the height of the first element\n - Clipper calculate the actual range of elements to display based on the current clipping rectangle, position the cursor before the first visible element.\n - User code submit visible elements.\n - The clipper also handles various subtleties related to keyboard/gamepad navigation, wrapping etc.")
@@ -6729,6 +6746,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("start_pos_y", &ImGuiListClipper::StartPosY, "[Internal] Cursor position at the time of Begin() or after table frozen rows are all processed")
         .def_rw("start_seek_offset_y", &ImGuiListClipper::StartSeekOffsetY, "[Internal] Account for frozen rows in a table and initial loss of precision in very large windows.")
         .def_rw("temp_data", &ImGuiListClipper::TempData, "[Internal] Internal data")
+        .def_rw("flags", &ImGuiListClipper::Flags, "[Internal] Flags, currently not yet well exposed.")
         .def(nb::init<>(),
             " items_count: Use INT_MAX if you don't know how many items you have (in which case the cursor won't be advanced in the final step, and you can call SeekCursorForItem() manually if you need)\n items_height: Use -1.0 to be calculated automatically on first step. Otherwise pass in the distance between your items, typically GetTextLineHeightWithSpacing() or GetFrameHeightWithSpacing().")
         .def("begin",
@@ -6948,7 +6966,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def(nb::init<>(),
             "Also ensure our padding fields are zeroed")
         .def("get_tex_id",
-            &ImDrawCmd::GetTexID, "(private API)\n\n == (TexRef._TexData ? TexRef._TexData->TexID : TexRef._TexID")
+            &ImDrawCmd::GetTexID, "(private API)\n\n == (TexRef._TexData ? TexRef._TexData->TexID : TexRef._TexID)")
         ;
     // #ifndef IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT
     //
@@ -7309,7 +7327,7 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::AddDrawCmd, "This is useful if you need to forcefully create a new draw call (to allow for dependent rendering / blending). Otherwise primitives are merged into the same draw-call as much as possible")
         .def("clone_output",
             &ImDrawList::CloneOutput,
-            "Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer.",
+            "Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer. For multi-threaded rendering, consider using `imgui_threaded_rendering` from https://github.com/ocornut/imgui_club instead.",
             nb::rv_policy::reference)
         .def("channels_split",
             &ImDrawList::ChannelsSplit,
@@ -7376,7 +7394,7 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::class_<ImDrawData>
             (m, "ImDrawData", " All draw data to render a Dear ImGui frame\n (NB: the style and the naming convention here is a little inconsistent, we currently preserve them for backward compatibility purpose,\n as this is one of the oldest structure exposed by the library! Basically, ImDrawList == CmdList)")
         .def_rw("valid", &ImDrawData::Valid, "Only valid after Render() is called and before the next NewFrame() is called.")
-        .def_rw("cmd_lists_count", &ImDrawData::CmdListsCount, "Number of ImDrawList* to render. (== CmdLists.Size). Exists for legacy reason.")
+        .def_rw("cmd_lists_count", &ImDrawData::CmdListsCount, "== CmdLists.Size. (OBSOLETE: exists for legacy reasons). Number of ImDrawList* to render.")
         .def_rw("total_idx_count", &ImDrawData::TotalIdxCount, "For convenience, sum of all ImDrawList's IdxBuffer.Size")
         .def_rw("total_vtx_count", &ImDrawData::TotalVtxCount, "For convenience, sum of all ImDrawList's VtxBuffer.Size")
         .def_rw("cmd_lists", &ImDrawData::CmdLists, "Array of ImDrawList* to render. The ImDrawLists are owned by ImGuiContext and only pointed to from here.")
@@ -7431,7 +7449,7 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImTextureData =
         nb::class_<ImTextureData>
             (m, "ImTextureData", " Specs and pixel storage for a texture used by Dear ImGui.\n This is only useful for (1) core library and (2) backends. End-user/applications do not need to care about this.\n Renderer Backends will create a GPU-side version of this.\n Why does we store two identifiers: TexID and BackendUserData?\n - ImTextureID    TexID           = lower-level identifier stored in ImDrawCmd. ImDrawCmd can refer to textures not created by the backend, and for which there's no ImTextureData.\n - None*          BackendUserData = higher-level opaque storage for backend own book-keeping. Some backends may have enough with TexID and not need both.\n In columns below: who reads/writes each fields? 'r'=read, 'w'=write, 'core'=main library, 'backend'=renderer backend")
-        .def_rw("unique_id", &ImTextureData::UniqueID, "w    -   // Sequential index to facilitate identifying a texture when debugging/printing. Unique per atlas.")
+        .def_rw("unique_id", &ImTextureData::UniqueID, "w    -   // [DEBUG] Sequential index to facilitate identifying a texture when debugging/printing. Unique per atlas.")
         .def_rw("status", &ImTextureData::Status, "rw   rw  // ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy. Always use SetStatus() to modify!")
         .def_rw("backend_user_data", &ImTextureData::BackendUserData, "-    rw  // Convenience storage for backend. Some backends may have enough with TexID.")
         .def_rw("tex_id", &ImTextureData::TexID, "r    w   // Backend-specific texture identifier. Always use SetTexID() to modify! The identifier will stored in ImDrawCmd::GetTexID() and passed to backend's RenderDrawData function.")
@@ -7487,18 +7505,18 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("merge_mode", &ImFontConfig::MergeMode, "False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.")
         .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH, "False    // Align every glyph AdvanceX to pixel boundaries. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.")
         .def_rw("pixel_snap_v", &ImFontConfig::PixelSnapV, "True     // Align Scaled GlyphOffset.y to pixel boundaries.")
-        .def_rw("font_no", &ImFontConfig::FontNo, "0        // Index of font within TTF/OTF file")
         .def_rw("oversample_h", &ImFontConfig::OversampleH, "0 (2)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1 or 2 depending on size. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.")
         .def_rw("oversample_v", &ImFontConfig::OversampleV, "0 (1)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1. This is not really useful as we don't use sub-pixel positions on the Y axis.")
+        .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
         .def_rw("size_pixels", &ImFontConfig::SizePixels, "// Size in pixels for rasterizer (more or less maps to the resulting font height).")
         .def_rw("glyph_offset", &ImFontConfig::GlyphOffset, "0, 0     // Offset (in pixels) all glyphs from this font input. Absolute value for default size, other sizes will scale this value.")
         .def_rw("glyph_min_advance_x", &ImFontConfig::GlyphMinAdvanceX, "0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font. Absolute value for default size, other sizes will scale this value.")
         .def_rw("glyph_max_advance_x", &ImFontConfig::GlyphMaxAdvanceX, "FLT_MAX  // Maximum AdvanceX for glyphs")
         .def_rw("glyph_extra_advance_x", &ImFontConfig::GlyphExtraAdvanceX, "0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this. // FIXME-NEWATLAS: Intentionally unscaled")
+        .def_rw("font_no", &ImFontConfig::FontNo, "0        // Index of font within TTF/OTF file")
         .def_rw("font_loader_flags", &ImFontConfig::FontLoaderFlags, "0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.")
         .def_rw("rasterizer_multiply", &ImFontConfig::RasterizerMultiply, "1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.")
         .def_rw("rasterizer_density", &ImFontConfig::RasterizerDensity, "1.0     // [LEGACY: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported] DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.")
-        .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
         .def_rw("flags", &ImFontConfig::Flags, "Font flags (don't use just yet, will be exposed in upcoming 1.92.X updates)")
         .def_rw("dst_font", &ImFontConfig::DstFont, "Target font (as we merging fonts, multiple ImFontConfig may target the same font)")
         .def_rw("font_loader_data", &ImFontConfig::FontLoaderData, "Font loader opaque storage (per font config)")
@@ -7613,6 +7631,10 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImFontAtlas::Clear, "Clear everything (input fonts, output glyphs/textures)")
         .def("compact_cache",
             &ImFontAtlas::CompactCache, "Compact cached glyphs and texture.")
+        .def("set_font_loader",
+            &ImFontAtlas::SetFontLoader,
+            nb::arg("font_loader"),
+            "Change font loader at runtime.")
         .def("clear_input_data",
             &ImFontAtlas::ClearInputData, "[OBSOLETE] Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.")
         .def("clear_fonts",
@@ -7689,8 +7711,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("fallback_glyph_index", &ImFontBaked::FallbackGlyphIndex, "4     // out // Index of FontFallbackChar")
         .def_rw("ascent", &ImFontBaked::Ascent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
         .def_rw("descent", &ImFontBaked::Descent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
-        .def_rw("last_used_frame", &ImFontBaked::LastUsedFrame, "4     //     // Record of that time this was bounds")
-        .def_rw("baked_id", &ImFontBaked::BakedId, "4     //")
+        .def_rw("last_used_frame", &ImFontBaked::LastUsedFrame, "4  //     // Record of that time this was bounds")
+        .def_rw("baked_id", &ImFontBaked::BakedId, "4     //     // Unique ID for this baked storage")
         .def_rw("container_font", &ImFontBaked::ContainerFont, "4-8   // in  // Parent font")
         .def_rw("font_loader_datas", &ImFontBaked::FontLoaderDatas, "4-8   //     // Font loader opaque storage (per baked font * sources): single contiguous buffer allocated by imgui, passed to loader.")
         .def(nb::init<>())
@@ -7761,7 +7783,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("render_char",
             &ImFont::RenderChar, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("c"), nb::arg("cpu_fine_clip") = nb::none())
         .def("render_text",
-            &ImFont::RenderText, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("clip_rect"), nb::arg("text_begin"), nb::arg("text_end"), nb::arg("wrap_width") = 0.0f, nb::arg("cpu_fine_clip") = false)
+            &ImFont::RenderText, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("clip_rect"), nb::arg("text_begin"), nb::arg("text_end"), nb::arg("wrap_width") = 0.0f, nb::arg("flags") = 0)
         .def("clear_output_data",
             &ImFont::ClearOutputData)
         .def("add_remap_char",
