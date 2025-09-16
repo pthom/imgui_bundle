@@ -89,7 +89,7 @@ ImGuiZoomSliderFlags_None = im_zoom_slider.ImGuiZoomSliderFlags_.none  # noqa
 
 # <submodule im_guizmo>
 class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_guizmo
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     @staticmethod
     def set_drawlist(drawlist: Optional[ImDrawList] = None) -> None:
         """ call inside your own window and before Manipulate() in order to draw gizmo to that window.
