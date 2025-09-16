@@ -112,8 +112,6 @@ class TextEditor:
         pass
     def get_line_count(self) -> int:
         pass
-    def is_overwrite_enabled(self) -> bool:
-        pass
     def set_palette(self, a_value: TextEditor.PaletteId) -> None:
         pass
     def get_palette(self) -> TextEditor.PaletteId:

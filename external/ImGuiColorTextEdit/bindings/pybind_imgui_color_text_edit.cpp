@@ -89,8 +89,6 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::IsShortTabsEnabled)
         .def("get_line_count",
             &TextEditor::GetLineCount)
-        .def("is_overwrite_enabled",
-            &TextEditor::IsOverwriteEnabled)
         .def("set_palette",
             &TextEditor::SetPalette, nb::arg("a_value"))
         .def("get_palette",
