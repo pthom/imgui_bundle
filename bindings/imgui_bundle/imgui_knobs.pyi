@@ -19,6 +19,9 @@ class ImGuiKnobFlags_(enum.IntEnum):
     no_input = enum.auto()  # (= 1 << 1)
     value_tooltip = enum.auto()  # (= 1 << 2)
     drag_horizontal = enum.auto()  # (= 1 << 3)
+    drag_vertical = enum.auto()  # (= 1 << 4)
+    logarithmic = enum.auto()  # (= 1 << 5)
+    always_clamp = enum.auto()  # (= 1 << 6)
 
 class ImGuiKnobVariant_(enum.IntEnum):
     tick = enum.auto()  # (= 1 << 0)
@@ -48,11 +51,13 @@ def knob(
     v_min: float,
     v_max: float,
     speed: float = 0,
-    format: Optional[str] = None,
+    format: str = "%.3",
     variant: Optional[ImGuiKnobVariant] = None,
     size: float = 0,
     flags: ImGuiKnobFlags = 0,
     steps: int = 10,
+    angle_min: float = -1,
+    angle_max: float = -1,
 ) -> Tuple[bool, float]:
     """Python bindings defaults:
     If variant is None, then its default value will be: ImGuiKnobVariant_.tick
@@ -65,11 +70,13 @@ def knob_int(
     v_min: int,
     v_max: int,
     speed: float = 0,
-    format: Optional[str] = None,
+    format: str = "%i",
     variant: Optional[ImGuiKnobVariant] = None,
     size: float = 0,
     flags: ImGuiKnobFlags = 0,
     steps: int = 10,
+    angle_min: float = -1,
+    angle_max: float = -1,
 ) -> Tuple[bool, int]:
     """Python bindings defaults:
     If variant is None, then its default value will be: ImGuiKnobVariant_.tick

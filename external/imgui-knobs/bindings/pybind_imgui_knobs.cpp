@@ -37,7 +37,10 @@ void py_init_module_imgui_knobs(nb::module_& m)
             .value("no_title", ImGuiKnobFlags_NoTitle, "")
             .value("no_input", ImGuiKnobFlags_NoInput, "")
             .value("value_tooltip", ImGuiKnobFlags_ValueTooltip, "")
-            .value("drag_horizontal", ImGuiKnobFlags_DragHorizontal, "");
+            .value("drag_horizontal", ImGuiKnobFlags_DragHorizontal, "")
+            .value("drag_vertical", ImGuiKnobFlags_DragVertical, "")
+            .value("logarithmic", ImGuiKnobFlags_Logarithmic, "")
+            .value("always_clamp", ImGuiKnobFlags_AlwaysClamp, "");
 
 
     auto pyEnumImGuiKnobVariant_ =
@@ -65,9 +68,9 @@ void py_init_module_imgui_knobs(nb::module_& m)
 
 
     m.def("knob",
-        [](const char * label, float p_value, float v_min, float v_max, float speed = 0, std::optional<std::string> format = std::nullopt, const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10) -> std::tuple<bool, float>
+        [](const char * label, float p_value, float v_min, float v_max, float speed = 0, const char * format = "%.3f", const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10, float angle_min = -1, float angle_max = -1) -> std::tuple<bool, float>
         {
-            auto Knob_adapt_mutable_param_with_default_value = [](const char * label, float * p_value, float v_min, float v_max, float speed = 0, const char * format = NULL, const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10) -> bool
+            auto Knob_adapt_mutable_param_with_default_value = [](const char * label, float * p_value, float v_min, float v_max, float speed = 0, const char * format = "%.3f", const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10, float angle_min = -1, float angle_max = -1) -> bool
             {
 
                 const ImGuiKnobVariant& variant_or_default = [&]() -> const ImGuiKnobVariant {
@@ -77,35 +80,26 @@ void py_init_module_imgui_knobs(nb::module_& m)
                         return ImGuiKnobVariant_Tick;
                 }();
 
-                auto lambda_result = ImGuiKnobs::Knob(label, p_value, v_min, v_max, speed, format, variant_or_default, size, flags, steps);
+                auto lambda_result = ImGuiKnobs::Knob(label, p_value, v_min, v_max, speed, format, variant_or_default, size, flags, steps, angle_min, angle_max);
                 return lambda_result;
             };
-            auto Knob_adapt_const_char_pointer_with_default_null = [&Knob_adapt_mutable_param_with_default_value](const char * label, float * p_value, float v_min, float v_max, float speed = 0, std::optional<std::string> format = std::nullopt, const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10) -> bool
-            {
-                const char * format_adapt_default_null = nullptr;
-                if (format.has_value())
-                    format_adapt_default_null = format.value().c_str();
-
-                auto lambda_result = Knob_adapt_mutable_param_with_default_value(label, p_value, v_min, v_max, speed, format_adapt_default_null, variant, size, flags, steps);
-                return lambda_result;
-            };
-            auto Knob_adapt_modifiable_immutable_to_return = [&Knob_adapt_const_char_pointer_with_default_null](const char * label, float p_value, float v_min, float v_max, float speed = 0, std::optional<std::string> format = std::nullopt, const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10) -> std::tuple<bool, float>
+            auto Knob_adapt_modifiable_immutable_to_return = [&Knob_adapt_mutable_param_with_default_value](const char * label, float p_value, float v_min, float v_max, float speed = 0, const char * format = "%.3f", const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10, float angle_min = -1, float angle_max = -1) -> std::tuple<bool, float>
             {
                 float * p_value_adapt_modifiable = & p_value;
 
-                bool r = Knob_adapt_const_char_pointer_with_default_null(label, p_value_adapt_modifiable, v_min, v_max, speed, format, variant, size, flags, steps);
+                bool r = Knob_adapt_mutable_param_with_default_value(label, p_value_adapt_modifiable, v_min, v_max, speed, format, variant, size, flags, steps, angle_min, angle_max);
                 return std::make_tuple(r, p_value);
             };
 
-            return Knob_adapt_modifiable_immutable_to_return(label, p_value, v_min, v_max, speed, format, variant, size, flags, steps);
+            return Knob_adapt_modifiable_immutable_to_return(label, p_value, v_min, v_max, speed, format, variant, size, flags, steps, angle_min, angle_max);
         },
-        nb::arg("label"), nb::arg("p_value"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("speed") = 0, nb::arg("format").none() = nb::none(), nb::arg("variant").none() = nb::none(), nb::arg("size") = 0, nb::arg("flags") = 0, nb::arg("steps") = 10,
+        nb::arg("label"), nb::arg("p_value"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("speed") = 0, nb::arg("format") = "%.3f", nb::arg("variant").none() = nb::none(), nb::arg("size") = 0, nb::arg("flags") = 0, nb::arg("steps") = 10, nb::arg("angle_min") = -1, nb::arg("angle_max") = -1,
         "Python bindings defaults:\n    If variant is None, then its default value will be: ImGuiKnobVariant_.tick");
 
     m.def("knob_int",
-        [](const char * label, int p_value, int v_min, int v_max, float speed = 0, std::optional<std::string> format = std::nullopt, const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10) -> std::tuple<bool, int>
+        [](const char * label, int p_value, int v_min, int v_max, float speed = 0, const char * format = "%i", const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10, float angle_min = -1, float angle_max = -1) -> std::tuple<bool, int>
         {
-            auto KnobInt_adapt_mutable_param_with_default_value = [](const char * label, int * p_value, int v_min, int v_max, float speed = 0, const char * format = NULL, const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10) -> bool
+            auto KnobInt_adapt_mutable_param_with_default_value = [](const char * label, int * p_value, int v_min, int v_max, float speed = 0, const char * format = "%i", const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10, float angle_min = -1, float angle_max = -1) -> bool
             {
 
                 const ImGuiKnobVariant& variant_or_default = [&]() -> const ImGuiKnobVariant {
@@ -115,29 +109,20 @@ void py_init_module_imgui_knobs(nb::module_& m)
                         return ImGuiKnobVariant_Tick;
                 }();
 
-                auto lambda_result = ImGuiKnobs::KnobInt(label, p_value, v_min, v_max, speed, format, variant_or_default, size, flags, steps);
+                auto lambda_result = ImGuiKnobs::KnobInt(label, p_value, v_min, v_max, speed, format, variant_or_default, size, flags, steps, angle_min, angle_max);
                 return lambda_result;
             };
-            auto KnobInt_adapt_const_char_pointer_with_default_null = [&KnobInt_adapt_mutable_param_with_default_value](const char * label, int * p_value, int v_min, int v_max, float speed = 0, std::optional<std::string> format = std::nullopt, const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10) -> bool
-            {
-                const char * format_adapt_default_null = nullptr;
-                if (format.has_value())
-                    format_adapt_default_null = format.value().c_str();
-
-                auto lambda_result = KnobInt_adapt_mutable_param_with_default_value(label, p_value, v_min, v_max, speed, format_adapt_default_null, variant, size, flags, steps);
-                return lambda_result;
-            };
-            auto KnobInt_adapt_modifiable_immutable_to_return = [&KnobInt_adapt_const_char_pointer_with_default_null](const char * label, int p_value, int v_min, int v_max, float speed = 0, std::optional<std::string> format = std::nullopt, const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10) -> std::tuple<bool, int>
+            auto KnobInt_adapt_modifiable_immutable_to_return = [&KnobInt_adapt_mutable_param_with_default_value](const char * label, int p_value, int v_min, int v_max, float speed = 0, const char * format = "%i", const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10, float angle_min = -1, float angle_max = -1) -> std::tuple<bool, int>
             {
                 int * p_value_adapt_modifiable = & p_value;
 
-                bool r = KnobInt_adapt_const_char_pointer_with_default_null(label, p_value_adapt_modifiable, v_min, v_max, speed, format, variant, size, flags, steps);
+                bool r = KnobInt_adapt_mutable_param_with_default_value(label, p_value_adapt_modifiable, v_min, v_max, speed, format, variant, size, flags, steps, angle_min, angle_max);
                 return std::make_tuple(r, p_value);
             };
 
-            return KnobInt_adapt_modifiable_immutable_to_return(label, p_value, v_min, v_max, speed, format, variant, size, flags, steps);
+            return KnobInt_adapt_modifiable_immutable_to_return(label, p_value, v_min, v_max, speed, format, variant, size, flags, steps, angle_min, angle_max);
         },
-        nb::arg("label"), nb::arg("p_value"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("speed") = 0, nb::arg("format").none() = nb::none(), nb::arg("variant").none() = nb::none(), nb::arg("size") = 0, nb::arg("flags") = 0, nb::arg("steps") = 10,
+        nb::arg("label"), nb::arg("p_value"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("speed") = 0, nb::arg("format") = "%i", nb::arg("variant").none() = nb::none(), nb::arg("size") = 0, nb::arg("flags") = 0, nb::arg("steps") = 10, nb::arg("angle_min") = -1, nb::arg("angle_max") = -1,
         "Python bindings defaults:\n    If variant is None, then its default value will be: ImGuiKnobVariant_.tick");
     ////////////////////    </generated_from:imgui-knobs.h>    ////////////////////
 
