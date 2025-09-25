@@ -90,6 +90,15 @@ See [this
 page](https://code-ballads.net/dear-imgui-bundle-build-real-time-python-web-applications-with-zero-fuss/)
 for more information about availability of ImGui Bundle in Pyodide.
 
+**Full manual (PDF)**
+
+View or download the [full
+pdf](https://raw.githubusercontent.com/pthom/imgui_related_docs/refs/heads/main/manuals/imgui_bundle_manual.pdf)
+for this manual.
+
+You may feed it into a LLM such as ChatGPT, so that it can help you when
+using ImGui bundle.
+
 **Example code**
 
 *A hello world example with Dear ImGui Bundle*
