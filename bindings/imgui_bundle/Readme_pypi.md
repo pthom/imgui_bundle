@@ -4,7 +4,7 @@ Dear ImGui Bundle.*
 
 [![abc](https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/demos_assets/images/logo_imgui_bundle_512.png)](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
 
-*Click the bird for
+*Click the bird for  
 the interactive manual!*
 
 > Dear ImGui Bundle: an extensive set of ready-to-use widgets and
@@ -58,6 +58,15 @@ the interactive manual!*
 
 For a detailed look at each feature and more information, explore the
 sections listed in the Table of Contents.
+
+**Introduction for Python Developers**
+
+If you are new to ImGui Bundle, and working with Python, here is a
+beginner-friendly introduction with practical examples, which should get
+you started in no time:
+
+[Immediate Mode GUI with Python and Dear ImGui
+Bundle](https://github.com/pthom/imgui_bundle/blob/main/docs/docs_md/imgui_python_intro.md)
 
 **Interactive Manual**
 
@@ -296,9 +305,9 @@ A big thank you to their authors for their awesome work!
 
 ## Install from pypi
 
-    pip install imgui-bundle
-    pip install opencv-python
-    pip install pyGLM
+    pip install imgui-bundle  
+    pip install opencv-python 
+    pip install pyGLM 
 
 - imgui\_bundle: Binary wheels are available for Windows, MacOS and
   Linux. If a compilation from source is needed, the build process might
@@ -325,8 +334,8 @@ A big thank you to their authors for their awesome work!
 
     git clone https://github.com/pthom/imgui_bundle.git
     cd imgui_bundle
-    git submodule update --init --recursive
-    pip install -v .
+    git submodule update --init --recursive 
+    pip install -v . 
     pip install opencv-python
     pip install pyGLM
 

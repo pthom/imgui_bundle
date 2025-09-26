@@ -910,27 +910,46 @@ HelloImGui is fully configurable by POD (plain old data) structures. See <a href
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="python"><span></span><span class="tok-kn">import</span> <span class="tok-nn">numpy</span> <span class="tok-k">as</span> <span class="tok-nn">np</span>
-<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-n">implot</span><span class="tok-p">,</span> <span class="tok-n">imgui_md</span><span class="tok-p">,</span> <span class="tok-n">immapp</span>
-<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>
+<span class="tok-c1"># imgui_bundle is a package that provides several imgui-related submodules</span>
+<span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle</span> <span class="tok-kn">import</span> <span class="tok-p">(</span><span class="tok-n">imgui</span><span class="tok-p">,</span>       <span class="tok-c1"># first we import ImGui</span>
+                          <span class="tok-n">implot</span><span class="tok-p">,</span>      <span class="tok-c1"># ImPlot provides advanced real-time plotting</span>
+                          <span class="tok-n">imgui_md</span><span class="tok-p">,</span>    <span class="tok-c1"># imgui_md: markdown rendering for imgui</span>
+                          <span class="tok-n">hello_imgui</span><span class="tok-p">,</span> <span class="tok-c1"># hello_imgui: starter pack for imgui apps</span>
+                          <span class="tok-n">immapp</span><span class="tok-p">,</span>      <span class="tok-c1"># helper to activate addons (like implot, markdown, etc.)</span>
+                          <span class="tok-p">)</span>
+
+<span class="tok-k">def</span> <span class="tok-nf">gui</span><span class="tok-p">():</span>
+    <span class="tok-c1"># Render some markdown text</span>
+    <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render_unindented</span><span class="tok-p">(</span><span class="tok-s2">&quot;&quot;&quot;</span>
+<span class="tok-s2">    # Render an animated plot with ImPlot</span>
+<span class="tok-s2">    This example shows how to use `ImPlot` to render an animated plot,</span>
+<span class="tok-s2">    and how to use `imgui_md` to render markdown text (*this text!*).</span>
+<span class="tok-s2">    &quot;&quot;&quot;</span><span class="tok-p">)</span>
+
+    <span class="tok-c1"># Render an animated plot</span>
+    <span class="tok-k">if</span> <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">begin_plot</span><span class="tok-p">(</span>
+            <span class="tok-n">title_id</span><span class="tok-o">=</span><span class="tok-s2">&quot;Plot&quot;</span><span class="tok-p">,</span>
+            <span class="tok-c1"># size in em units (1em = height of a character)</span>
+            <span class="tok-n">size</span><span class="tok-o">=</span><span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">em_to_vec2</span><span class="tok-p">(</span><span class="tok-mi">40</span><span class="tok-p">,</span> <span class="tok-mi">20</span><span class="tok-p">)):</span>
+        <span class="tok-n">x</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">arange</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">4</span><span class="tok-p">,</span> <span class="tok-mf">0.01</span><span class="tok-p">)</span>
+        <span class="tok-n">y</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">x</span> <span class="tok-o">+</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">get_time</span><span class="tok-p">())</span>
+        <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">plot_line</span><span class="tok-p">(</span><span class="tok-s2">&quot;y1&quot;</span><span class="tok-p">,</span> <span class="tok-n">x</span><span class="tok-p">,</span> <span class="tok-n">y</span><span class="tok-p">)</span>
+        <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">end_plot</span><span class="tok-p">()</span>
+
+    <span class="tok-k">if</span> <span class="tok-n">imgui</span><span class="tok-o">.</span><span class="tok-n">button</span><span class="tok-p">(</span><span class="tok-s2">&quot;Exit&quot;</span><span class="tok-p">):</span>
+        <span class="tok-n">hello_imgui</span><span class="tok-o">.</span><span class="tok-n">get_runner_params</span><span class="tok-p">()</span><span class="tok-o">.</span><span class="tok-n">app_shall_exit</span> <span class="tok-o">=</span> <span class="tok-kc">True</span>
 
 
 <span class="tok-k">def</span> <span class="tok-nf">main</span><span class="tok-p">():</span>
-    <span class="tok-c1"># This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:</span>
-    <span class="tok-c1">#         hello_imgui.set_assets_folder(&quot;my_assets&quot;); # (By default, HelloImGui will search inside &quot;assets&quot;)</span>
+    <span class="tok-c1"># This call is specific to the ImGui Bundle interactive manual.</span>
+    <span class="tok-kn">from</span> <span class="tok-nn">imgui_bundle.demos_python</span> <span class="tok-kn">import</span> <span class="tok-n">demo_utils</span>
     <span class="tok-n">demo_utils</span><span class="tok-o">.</span><span class="tok-n">set_hello_imgui_demo_assets_folder</span><span class="tok-p">()</span>
 
-    <span class="tok-n">x</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">arange</span><span class="tok-p">(</span><span class="tok-mi">0</span><span class="tok-p">,</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">pi</span> <span class="tok-o">*</span> <span class="tok-mi">4</span><span class="tok-p">,</span> <span class="tok-mf">0.01</span><span class="tok-p">)</span>
-    <span class="tok-n">y1</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">cos</span><span class="tok-p">(</span><span class="tok-n">x</span><span class="tok-p">)</span>
-    <span class="tok-n">y2</span> <span class="tok-o">=</span> <span class="tok-n">np</span><span class="tok-o">.</span><span class="tok-n">sin</span><span class="tok-p">(</span><span class="tok-n">x</span><span class="tok-p">)</span>
-
-    <span class="tok-k">def</span> <span class="tok-nf">gui</span><span class="tok-p">():</span>
-        <span class="tok-n">imgui_md</span><span class="tok-o">.</span><span class="tok-n">render</span><span class="tok-p">(</span><span class="tok-s2">&quot;# This is the plot of _cosinus_ and *sinus*&quot;</span><span class="tok-p">)</span>  <span class="tok-c1"># Markdown</span>
-        <span class="tok-k">if</span> <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">begin_plot</span><span class="tok-p">(</span><span class="tok-s2">&quot;Plot&quot;</span><span class="tok-p">):</span>
-            <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">plot_line</span><span class="tok-p">(</span><span class="tok-s2">&quot;y1&quot;</span><span class="tok-p">,</span> <span class="tok-n">x</span><span class="tok-p">,</span> <span class="tok-n">y1</span><span class="tok-p">)</span>
-            <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">plot_line</span><span class="tok-p">(</span><span class="tok-s2">&quot;y2&quot;</span><span class="tok-p">,</span> <span class="tok-n">x</span><span class="tok-p">,</span> <span class="tok-n">y2</span><span class="tok-p">)</span>
-            <span class="tok-n">implot</span><span class="tok-o">.</span><span class="tok-n">end_plot</span><span class="tok-p">()</span>
-
-    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">gui</span><span class="tok-p">,</span> <span class="tok-n">with_implot</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-n">with_markdown</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span> <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">600</span><span class="tok-p">,</span> <span class="tok-mi">400</span><span class="tok-p">))</span>
+    <span class="tok-c1"># Run the app with ImPlot and markdown support</span>
+    <span class="tok-n">immapp</span><span class="tok-o">.</span><span class="tok-n">run</span><span class="tok-p">(</span><span class="tok-n">gui</span><span class="tok-p">,</span>
+               <span class="tok-n">with_implot</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span>
+               <span class="tok-n">with_markdown</span><span class="tok-o">=</span><span class="tok-kc">True</span><span class="tok-p">,</span>
+               <span class="tok-n">window_size</span><span class="tok-o">=</span><span class="tok-p">(</span><span class="tok-mi">700</span><span class="tok-p">,</span> <span class="tok-mi">500</span><span class="tok-p">))</span>
 
 
 <span class="tok-k">if</span> <span class="tok-vm">__name__</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;__main__&quot;</span><span class="tok-p">:</span>
@@ -1618,7 +1637,7 @@ In this case, you will not benefit from HelloImGui and ImmApp rapid development 
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-09-25 14:56:39 +0200
+Last updated 2025-09-26 16:43:52 +0200
 </div>
 </div>
 </body>

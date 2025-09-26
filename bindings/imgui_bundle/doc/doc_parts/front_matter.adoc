@@ -58,6 +58,12 @@ For a detailed look at each feature and more information, explore the sections l
 
 ****
 
+**Introduction for Python Developers**
+
+If you are new to ImGui Bundle, and working with Python, here is a beginner-friendly introduction with practical examples, which should get you started in no time:
+
+https://github.com/pthom/imgui_bundle/blob/main/docs/docs_md/imgui_python_intro.md[Immediate Mode GUI with Python and Dear ImGui Bundle]
+
 
 **Interactive Manual**
 
