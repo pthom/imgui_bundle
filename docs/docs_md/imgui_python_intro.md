@@ -4,8 +4,28 @@ Immediate Mode GUI with Python and Dear ImGui Bundle
 
 # What is Immediate Mode GUI?
 
-An "Immediate Mode Graphical User Interface" lets you build user interfaces directly in code. This keeps the UI and app state in perfect sync with minimal boilerplate.
-This approach is especially popular for quick prototyping and tools because it's intuitive, flexible, easy to maintain, and trivial to debug.
+**Traditional GUI: Create widgets once, manage state separately**
+
+```python
+# ... somewhere in your setup code ...
+button = Button("Click me")
+button.on_click = handle_click
+
+# ... probably in an unrelated part of the code ...
+def handle_click():
+    ...
+```
+
+**Immediate Mode GUI: describe and react to widgets at the same time**
+
+```python
+# At each frame of the render loop
+if imgui.button("Click me"):
+    handle_click()
+```
+
+An "Immediate Mode Graphical User Interface" lets you build user interfaces directly in code.
+This keeps the UI and app state in perfect sync with minimal boilerplate. This approach is especially popular for quick prototyping and tools because it's intuitive, flexible, easy to maintain, and trivial to debug.
 
 See the example below:
 
@@ -33,7 +53,10 @@ def gui():
 immapp.run(gui)
 ```
 
+Which produces this simple app:
+
 <img alt="A screenshot of the app" src="images/counter_app.png" height="100"/>
+
 
 # Immediate GUI in Python with Dear ImGui Bundle
 
