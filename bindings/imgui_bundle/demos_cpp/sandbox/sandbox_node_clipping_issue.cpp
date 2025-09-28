@@ -1,8 +1,14 @@
 // This sandbox was used to investigate a clipping issue
 // when using imgui-node-editor inside a docked window with popups
-// See related commit:
-// https://github.com/pthom/imgui-node-editor/commit/e9b0fa8641f33c7b71492d68a160c7781d1e377f
-// .
+// See related investigation: https://chatgpt.com/c/68d83a07-826c-8325-a084-00f9c87d6a3d
+//
+// All in all, when inside a node-editor's canvas:
+// - popups now works fine with imgui-node-editor
+//   => as a consequence, tooltips, ColorEdit, Combo, ImGui::BeginPopup, etc. also work fine
+// - standard Windows may not work (may cause clipping issues)
+//   => as a consequence, avoid calling ImGui::Begin from inside a node-editor's canvas
+// - child windows (ImGui::BeginChild) will not work
+//   => as a consequence, avoid calling ImGui::BeginChild from inside a node-editor's canvas
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "immapp/immapp.h"
 #include "imgui.h"
@@ -61,7 +67,27 @@ void Gui()
     p = ImGui::GetCursorScreenPos();
     dl->AddRectFilled(p + ImVec2(20, 20), p + ImVec2(50, 50), IM_COL32(0, 255, 0, 200)); // Green rect
 
+
+    if (ImGui::Button("Test Popup"))
+        ImGui::OpenPopup("TestPopup");
+    if (ImGui::BeginPopup("TestPopup"))
+    {
+        ImGui::Text("Hello from popup!");
+        DebugWidgetInfo("TestPopup");
+        ImGui::ColorEdit4("Color2", &gColor.x);
+        ImGui::EndPopup();
+    }
+
+
     ImGui::EndVertical();
+
+    // Standard ImGui windows do not work well with imgui-node-editor
+    // ImGuiWindowFlags flags =  0;
+    // ImGui::Begin("Inner Window", nullptr, flags);
+    // ImGui::Text("Inner Window");
+    // ImGui::SetNextItemWidth(200.f);
+    // ImGui::ColorEdit4("Color2", &gColor.x);
+    // ImGui::End();
 
     ed::EndNode();
 
