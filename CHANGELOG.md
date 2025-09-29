@@ -2,6 +2,13 @@
 
 # v1.92.XXX (ongoing)
 
+# v1.92.4
+
+This version is based on ImGui v1.92.3, and brings some small fixes.
+
+* InputTextMultiline: when inside imgui-node-editor, improve handling of single preview
+* imgui-node-editor: solve clipping issue which occur when a popup is open inside a node
+
 # v1.92.3
 
 ## Updates to libraries
