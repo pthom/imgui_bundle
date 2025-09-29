@@ -1,0 +1,29 @@
+name: "EmsWheel"
+
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+
+jobs:
+  build:
+    name: CppLib
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        submodules: recursive
+
+    - name: Setup interactive tmate session
+      uses: mxschmitt/action-tmate@v3
+
+#    - name: Build and install
+#      shell: bash
+#      run: |
+#        mkdir build
+#        cd build
