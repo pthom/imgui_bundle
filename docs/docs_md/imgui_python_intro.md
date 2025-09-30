@@ -205,8 +205,18 @@ With [this online playground](https://traineq.org/imgui_bundle_online/projects/i
 
 **Documentation websites**
 
-- [Dear ImGui Bundle documentation](https://pthom.github.io/imgui_bundle/). Read [this page](https://pthom.github.io/imgui_bundle/python_specific.html) for python-specific information
+- [Dear ImGui Bundle documentation](https://pthom.github.io/imgui_bundle). Read [this page](https://pthom.github.io/imgui_bundle/python_specific.html) for python-specific information
 - [Hello ImGui documentation](https://pthom.github.io/hello_imgui)
+- [Fiatlight documentation](https://pthom.github.io/fiatlight_doc)
+
+
+- **Repositories**
+
+- [Dear ImGui official repository](https://github.com/ocornut/imgui)
+- [Dear ImGui Bundle repository](https://github.com/pthom/imgui_bundle)
+- [Hello ImGui repository](https://github.com/pthom/hello_imgui)
+- [Litgen (bindings generator) repository](https://github.com/pthom/litgen)
+- [Fiatlight repository](https://github.com/pthom/fiatlight)
 
 
 **Full PDF manuals for LLMs**
@@ -216,13 +226,4 @@ You may feed the manuals below to a LLM, so that it can help you when using the 
 - [Hello ImGui manual (full pdf)](https://raw.githubusercontent.com/pthom/imgui_related_docs/refs/heads/main/manuals/hello_imgui_manual.pdf)
 - [ImGui Bundle manual (full pdf)](https://raw.githubusercontent.com/pthom/imgui_related_docs/refs/heads/main/manuals/imgui_bundle_manual.pdf)
 - [Fiatlight manual (full pdf)](https://pthom.github.io/fiatlight_doc/flgt.pdf)
-
-
-**Repositories**
-
-- [Dear ImGui official repository](https://github.com/ocornut/imgui)
-- [Dear ImGui Bundle repository](https://github.com/pthom/imgui_bundle)
-- [Hello ImGui repository](https://github.com/pthom/hello_imgui)
-- [Litgen (bindings generator) repository](https://github.com/pthom/litgen)
-- [Fiatlight repository](https://github.com/pthom/fiatlight)
 

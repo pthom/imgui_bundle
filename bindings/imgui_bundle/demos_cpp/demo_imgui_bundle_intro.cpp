@@ -119,13 +119,14 @@ void demo_imgui_bundle_intro()
         Welcome to the interactive manual for *Dear ImGui Bundle*! This manual present lots of examples, together with their code (in C++ and Python).
 
         Advices:
-        * This interactive manual works best when viewed together with "Dear ImGui Bundle docs"
+        * For Python users, read this introduction to Immediate Mode GUI with Python and Dear ImGui Bundle
     )");
     ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
-    if (ImGui::Button("Open Dear ImGui Bundle docs"))
-        ImmApp::BrowseToUrl("https://pthom.github.io/imgui_bundle/");
+    if (ImGui::Button("Immediate Mode GUI with Python"))
+        ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/blob/main/docs/docs_md/imgui_python_intro.md");
 
     ImGuiMd::RenderUnindented(R"(
+        * This interactive manual works best when viewed together with ["Dear ImGui Bundle docs"](https://pthom.github.io/imgui_bundle/)
         * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
     )");
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE

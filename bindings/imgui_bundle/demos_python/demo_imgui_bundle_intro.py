@@ -113,15 +113,16 @@ def demo_gui():
         Welcome to the interactive manual for *Dear ImGui Bundle*! This manual present lots of examples, together with their code (in C++ and Python).
 
         Advices:
-        * This interactive manual works best when viewed together with "Dear ImGui Bundle docs"
+        * For Python users, read this introduction to Immediate Mode GUI with Python and Dear ImGui Bundle
         """
     )
     imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
-    if imgui.button("Open Dear ImGui Bundle docs"):
-        webbrowser.open("https://pthom.github.io/imgui_bundle/")
+    if imgui.button("Immediate Mode GUI with Python"):
+        webbrowser.open("https://github.com/pthom/imgui_bundle/blob/main/docs/docs_md/imgui_python_intro.md")
 
     imgui_md.render_unindented(
         """
+        * This interactive manual works best when viewed together with ["Dear ImGui Bundle docs"](https://pthom.github.io/imgui_bundle/)
         * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
     """
     )
