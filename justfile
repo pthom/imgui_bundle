@@ -10,6 +10,9 @@ default:
 ems_build:
     ./ci_scripts/ems_build.sh
 
+ems_deploy:
+    ./ci_scripts/ems_deploy.sh
+
 # Serve emscripten with CORS
 ems_serve:
     python ./ci_scripts/webserver_multithread_policy.py
