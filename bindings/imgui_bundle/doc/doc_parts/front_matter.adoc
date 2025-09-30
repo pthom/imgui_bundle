@@ -36,11 +36,13 @@ endif::[]
 
 **Key Features**
 
+* **Python Bindings:** Using Dear ImGui Bundle in Python is extremely easy. Here is a beginner-friendly introduction: https://github.com/pthom/imgui_bundle/blob/main/docs/docs_md/imgui_python_intro.md[Immediate Mode GUI with Python and Dear ImGui Bundle]
+
+* **Cross-platform in C++ and Python:** Works on Windows, Linux, macOS, iOS, Android, and WebAssembly!
+
 * **Easy to use, yet very powerful:** Start your first app in 3 lines. The Immediate Mode GUI (IMGUI) paradigm is simple and powerful, letting you focus on the creative aspects of your projects.
 
 * **A lot of widgets and libraries:** All of Dear ImGui along with a suite of additional libraries for plotting, node editing, markdown rendering, and much more.
-
-* **Cross-platform in C++ and Python:** Works on Windows, Linux, macOS, iOS, Android, and WebAssembly!
 
 * **Web ready**: Develop full web applications, in C++ via Emscripten; or in Python thanks to ImGui Bundle's integration within _Pyodide_
 
@@ -57,12 +59,6 @@ For a detailed look at each feature and more information, explore the sections l
 
 
 ****
-
-**Introduction for Python Developers**
-
-If you are new to ImGui Bundle, and working with Python, here is a beginner-friendly introduction with practical examples, which should get you started in no time:
-
-https://github.com/pthom/imgui_bundle/blob/main/docs/docs_md/imgui_python_intro.md[Immediate Mode GUI with Python and Dear ImGui Bundle]
 
 
 **Interactive Manual**
