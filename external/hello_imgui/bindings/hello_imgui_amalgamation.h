@@ -85,7 +85,7 @@ application to be used on high DPI screens!
 Otherwise, widgets might be misplaced or too small on different screens and/or OS.
 
 Instead, you should use scale your widgets and windows relatively to the font size,
-as is done with the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+as is done with the [em CSS Unit](https://www.w3schools.com/cssref/css_units.php).
 
 @@md
 **/

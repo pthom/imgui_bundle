@@ -699,7 +699,7 @@ class GlTexture:
 
 # <submodule cv_drawing_utils>
 class cv_drawing_utils:  # Proxy class that introduces typings for the *submodule* cv_drawing_utils
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     """ namespace CvDrawingUtils"""
 
     class Colors(enum.IntEnum):

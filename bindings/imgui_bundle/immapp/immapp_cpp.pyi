@@ -317,7 +317,7 @@ def delete_node_editor_settings(runner_params: HelloImGui.RunnerParams) -> None:
 
 # <submodule manual_render>
 class manual_render:  # Proxy class that introduces typings for the *submodule* manual_render
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     """ namespace ManualRender"""
     # Immapp::ManualRender is a namespace that groups functions, allowing fine-grained control over the rendering process:
     # - It is customizable like Immapp::Run: initialize it with `RunnerParams` and `AddOnsParams`.
@@ -407,7 +407,7 @@ def clock_seconds() -> float:
 
 # <submodule code_utils>
 class code_utils:  # Proxy class that introduces typings for the *submodule* code_utils
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     """ namespace CodeUtils"""
 
     @staticmethod
@@ -429,7 +429,7 @@ class code_utils:  # Proxy class that introduces typings for the *submodule* cod
 
 # <submodule snippets>
 class snippets:  # Proxy class that introduces typings for the *submodule* snippets
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     #
     # TextEditorBundle: addition to ImGuiColorTextEdit, specific to ImGuiBundle
     #

@@ -461,9 +461,11 @@ def litgen_options_imgui(
     # Exclude callbacks from the params when they have a default value
     # (since imgui use bare C function pointers, not easily portable)
     options.fn_params_exclude_types__regex = r"size_t[ ]*\*"
-    # Exclude functions that take char or const ImWchar * params
+    # Exclude functions with those param types:
+    # - any function using a double pointer (like char **): see \* \* below
+    # - char, const ImWchar *, ImGuiErrorLogCallback
     options.fn_exclude_by_param_type__regex = (
-        "^char$|^const ImWchar \\*$|^ImGuiErrorLogCallback$"
+        "^char$|^const ImWchar \\*$|^ImGuiErrorLogCallback$|\* \*"
     )
 
     # Version where we use Boxed types everywhere:

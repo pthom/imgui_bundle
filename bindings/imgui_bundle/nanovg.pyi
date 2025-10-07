@@ -1169,7 +1169,7 @@ def debug_dump_path_cache(ctx: Context) -> None:
 
 # <submodule nvg_imgui>
 class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_imgui
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
 
     #/////////////////////////////////////////////////////////////////////////
     #

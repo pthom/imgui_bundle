@@ -163,7 +163,7 @@ class DpiAwareParams:
 # Otherwise, widgets might be misplaced or too small on different screens and/or OS.
 #
 # Instead, you should use scale your widgets and windows relatively to the font size,
-# as is done with the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+# as is done with the [em CSS Unit](https://www.w3schools.com/cssref/css_units.php).
 #
 # @@md
 # *
@@ -3485,7 +3485,7 @@ def show_app_menu(runner_params: RunnerParams) -> None:
 
 # <submodule imgui_default_settings>
 class imgui_default_settings:  # Proxy class that introduces typings for the *submodule* imgui_default_settings
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     """ namespace ImGuiDefaultSettings"""
     # void LoadDefaultFont_WithFontAwesomeIcons();    /* original C++ signature */
     @staticmethod
@@ -3506,7 +3506,7 @@ class imgui_default_settings:  # Proxy class that introduces typings for the *su
 
 # <submodule manual_render>
 class manual_render:  # Proxy class that introduces typings for the *submodule* manual_render
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     """ namespace ManualRender"""
     # HelloImGui::ManualRender is a namespace that groups functions, allowing fine-grained control over the rendering process:
     # - It is customizable like HelloImGui::Run: initialize it with `RunnerParams` or `SimpleRunnerParams`
