@@ -31,36 +31,6 @@ def opengl3_create_device_objects() -> bool:
 def opengl3_destroy_device_objects() -> None:
     pass
 
-###############################################################################
-# <bindings for imgui_impl_opengl2.h
-###############################################################################
-
-def opengl2_init() -> bool:
-    pass
-
-def opengl2_shutdown() -> None:
-    pass
-
-def opengl2_new_frame() -> None:
-    pass
-
-def opengl2_render_draw_data(draw_data: ImDrawData) -> None:
-    pass
-
-#
-# Called by Init/NewFrame/Shutdown
-#
-def opengl2_create_fonts_texture() -> bool:
-    pass
-
-def opengl2_destroy_fonts_texture() -> None:
-    pass
-
-def opengl2_create_device_objects() -> bool:
-    pass
-
-def opengl2_destroy_device_objects() -> None:
-    pass
 
 ###############################################################################
 # <bindings for imgui_impl_glfw.h

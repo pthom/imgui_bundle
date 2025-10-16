@@ -3,7 +3,6 @@
 
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include "imgui_impl_opengl2.h"
 
 namespace nb = nanobind;
 
@@ -39,32 +38,6 @@ void py_init_module_imgui_backends(nb::module_& m)
 
     m.def("opengl3_destroy_device_objects",
         ImGui_ImplOpenGL3_DestroyDeviceObjects);
-
-
-    //
-    // <bindings for imgui_impl_opengl2.h
-    //
-    m.def("opengl2_init",
-          ImGui_ImplOpenGL2_Init);
-
-    m.def("opengl2_shutdown",
-          ImGui_ImplOpenGL2_Shutdown);
-
-    m.def("opengl2_new_frame",
-          ImGui_ImplOpenGL2_NewFrame);
-
-    m.def("opengl2_render_draw_data",
-          ImGui_ImplOpenGL2_RenderDrawData, nb::arg("draw_data"));
-
-    m.def("opengl2_update_texture",
-          ImGui_ImplOpenGL2_UpdateTexture);
-
-    m.def("opengl2_create_device_objects",
-          ImGui_ImplOpenGL2_CreateDeviceObjects);
-
-    m.def("opengl2_destroy_device_objects",
-          ImGui_ImplOpenGL2_DestroyDeviceObjects);
-
 
     //
     // <bindings for imgui_impl_glfw.h
