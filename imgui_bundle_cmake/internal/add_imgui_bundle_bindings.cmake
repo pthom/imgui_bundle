@@ -90,6 +90,10 @@ function(add_imgui_bundle_bindings)
         target_link_libraries(${python_native_module_name} PUBLIC OpenGL::GL)
     endif()
 
+    if (IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2)
+        target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2)
+    endif()
+
     # Disable optimizations on release build for msvc
     # (leads to compilation times of > 3 hours!!!)
     if (MSVC)

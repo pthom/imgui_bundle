@@ -1,8 +1,12 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include <nanobind/nanobind.h>
 
+#include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#ifndef IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2
+#include "imgui_impl_opengl2.h"
+#endif
 
 namespace nb = nanobind;
 
@@ -38,6 +42,46 @@ void py_init_module_imgui_backends(nb::module_& m)
 
     m.def("opengl3_destroy_device_objects",
         ImGui_ImplOpenGL3_DestroyDeviceObjects);
+
+
+    //
+    // <bindings for imgui_impl_opengl2.h
+    //
+#ifndef IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2
+    m.def("opengl2_init",
+          ImGui_ImplOpenGL2_Init);
+
+    m.def("opengl2_shutdown",
+          ImGui_ImplOpenGL2_Shutdown);
+
+    m.def("opengl2_new_frame",
+          ImGui_ImplOpenGL2_NewFrame);
+
+    m.def("opengl2_render_draw_data",
+          ImGui_ImplOpenGL2_RenderDrawData, nb::arg("draw_data"));
+
+    m.def("opengl2_update_texture",
+          ImGui_ImplOpenGL2_UpdateTexture);
+
+    m.def("opengl2_create_device_objects",
+          ImGui_ImplOpenGL2_CreateDeviceObjects);
+
+    m.def("opengl2_destroy_device_objects",
+          ImGui_ImplOpenGL2_DestroyDeviceObjects);
+#else // #ifndef IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2
+    auto shout_opengl2_not_built = []() {
+        IM_ASSERT(false && "ImGui OpenGL2 backend was disabled by Cmake option IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2");
+    };
+
+    m.def("opengl2_init", shout_opengl2_not_built);
+    m.def("opengl2_shutdown", shout_opengl2_not_built);
+    m.def("opengl2_new_frame", shout_opengl2_not_built);
+    m.def("opengl2_render_draw_data", shout_opengl2_not_built);
+    m.def("opengl2_update_texture", shout_opengl2_not_built);
+    m.def("opengl2_create_device_objects", shout_opengl2_not_built);
+    m.def("opengl2_destroy_device_objects", shout_opengl2_not_built);
+#endif
+
 
     //
     // <bindings for imgui_impl_glfw.h

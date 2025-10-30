@@ -110,6 +110,11 @@ else()
     set(IMGUI_BUNDLE_BUILD_CPP ON)
 endif()
 
+# IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2: Disable OpenGL2 mixed C++/Python backend (cf https://github.com/pthom/imgui_bundle/issues/400)
+# Usage:    CMAKE_ARGS="-DIMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2=ON" pip install -v -e .
+if (IMGUI_BUNDLE_BUILD_PYTHON)
+    option(IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2 "Disable OpenGL2 backend for python bindings" OFF)
+endif()
 
 # For python bindings:
 # - We force the usage of Glfw+OpenGL3
