@@ -8,6 +8,7 @@ from imgui_bundle.demos_python import demo_utils  # noqa: E402
 
 
 HAS_OPENCV = importlib.util.find_spec("cv2") is not None
+HAS_PILLOW = importlib.util.find_spec("PIL") is not None
 
 
 if HAS_IMMVISION:
@@ -31,6 +32,19 @@ def demo_gui():
     """
     )
 
+    if not HAS_PILLOW:
+        imgui.new_line()
+        imgui_md.render_unindented("""
+        ## Missing dependency: Pillow
+        This demo requires the Python package *Pillow* to load images.
+        Please install it with:
+        ```
+        pip install Pillow
+        ```
+        (This demo will use dummy images until Pillow is installed.)
+        """)
+        imgui.new_line()
+
     if imgui.collapsing_header("Display images"):
         demos_immvision.demo_immvision_display.demo_gui()
         demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_display")
@@ -40,12 +54,19 @@ def demo_gui():
     if imgui.collapsing_header("Image inspector"):
         demos_immvision.demo_immvision_inspector.demo_gui()
         demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_inspector")
-    if HAS_OPENCV:
-        if imgui.collapsing_header("Example with image processing"):
+    if imgui.collapsing_header("Example with image processing"):
+        if HAS_OPENCV:
             demos_immvision.demo_immvision_process.demo_gui()
             demo_utils.show_python_vs_cpp_file(
                 "demos_immvision/demo_immvision_process", nb_lines=40
             )
+        else:
+            imgui_md.render_unindented("""
+            This demo requires OpenCv. Please install OpenCv to run it, with:
+            ```
+            pip install opencv-python
+            ```
+            """)
 
 
 def main():

@@ -30,13 +30,13 @@ classifiers = [
 dependencies = [
     "numpy",
     "munch",
-    "pillow",
 ]
 
 [project.optional-dependencies]
 test = ["pytest"]
 opengl = ["PyOpenGL"]
 glfw = ["glfw"]
+imgproc = ["pillow", "opencv-python"]
 
 
 [project.urls]

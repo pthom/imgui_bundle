@@ -12,8 +12,8 @@ def demo_gui() -> None:
         assets_dir = demo_utils.demos_assets_folder() + "/images/"
 
         # Load images as numpy arrays
-        statics.bear = demo_utils.imread_pil(assets_dir + "bear_transparent.png", load_alpha=True)
-        statics.tennis = demo_utils.imread_pil(assets_dir + "tennis.jpg")
+        statics.bear = demo_utils.imread_demo(assets_dir + "bear_transparent.png", load_alpha=True)
+        statics.tennis = demo_utils.imread_demo(assets_dir + "tennis.jpg")
 
         statics.params = immvision.ImageParams()
         bear_display_size = int(hello_imgui.em_size(15))

@@ -9,7 +9,7 @@ def fill_inspector():
     os.path.dirname(__file__)
     image_files = ["dmla.jpg", "house.jpg", "tennis.jpg", "world.png"]
     for image_file in image_files:
-        img = demo_utils.imread_pil(f"{demo_utils.demos_assets_folder()}/images/{image_file}")
+        img = demo_utils.imread_demo(f"{demo_utils.demos_assets_folder()}/images/{image_file}")
         immvision.inspector_add_image(img, legend=image_file)
 
 

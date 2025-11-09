@@ -3511,7 +3511,7 @@ class AppState:
     immvision_params_sobel: immvision.ImageParams
 
     def __init__(self, image_file: str):
-        self.image = demo_utils.imread_pil(image_file)
+        self.image = demo_utils.imread_demo(image_file)
         self.sobel_params = SobelParams()
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
 
