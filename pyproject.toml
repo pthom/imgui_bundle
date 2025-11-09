@@ -32,10 +32,43 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-test = ["pytest"]
+# To be able to display plots
+matplotlib = ["matplotlib"]
+# To use image processing features
+imgproc = ["pillow", "opencv-python"]
+pydantic = ["pydantic>=2.0.0"]
+# For pure python backends
 opengl = ["PyOpenGL"]
 glfw = ["glfw"]
-imgproc = ["pillow", "opencv-python"]
+sdl2 = ["PySDL2"]
+sdl3 = ["PySDL3"]
+wgpu = ["wgpu"]
+pyglet = ["pyglet"]
+all_backends = [
+    "PyOpenGL",
+    "glfw",
+    "PySDL2",
+    "PySDL3",
+    "wgpu",
+    "pyglet",
+]
+# full installation
+full = [
+    "matplotlib",
+    "pillow",
+    "opencv-python",
+    "PyOpenGL",
+    "glfw",
+    "PySDL2",
+    "PySDL3",
+    "wgpu",
+    "pyglet",
+    "pydantic>=2.0.0",
+    "PyGLM"
+]
+# For development and testing
+test = ["pytest"]
+
 
 
 [project.urls]

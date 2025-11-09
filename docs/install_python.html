@@ -562,23 +562,15 @@ pre.pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 <h3 id="_install_from_pypi">Install from pypi</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>pip<span class="tok-w"> </span>install<span class="tok-w"> </span>imgui-bundle<span class="tok-w">  </span># <b class="conum">(1)</b>
-pip<span class="tok-w"> </span>install<span class="tok-w"> </span>opencv-python<span class="tok-w"> </span># <b class="conum">(2)</b>
-pip<span class="tok-w"> </span>install<span class="tok-w"> </span>pyGLM<span class="tok-w"> </span># <b class="conum">(3)</b></code></pre>
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-c1"># Minimal install</span>
+pip<span class="tok-w"> </span>install<span class="tok-w"> </span>imgui-bundle
+
+<span class="tok-c1"># or to get all optional features:</span>
+pip<span class="tok-w"> </span>install<span class="tok-w"> </span><span class="tok-s2">&quot;imgui-bundle[full]&quot;</span></code></pre>
 </div>
 </div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>imgui_bundle: Binary wheels are available for Windows, MacOS and Linux. If a compilation from source is needed, the build process might take up to 5 minutes, and will require an internet connection.</p>
-</li>
-<li>
-<p>OpenCV: in order to run the immvision module, install opencv-python. The alternative OpenCV versions, such as opencv-python-headless (headless) opencv-contrib-python (with extra modules)  also work.</p>
-</li>
-<li>
-<p>pyGLM: in order to run the demo, install pyGLM</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>Binary wheels are available for Windows, MacOS and Linux. If a compilation from source is needed, the build process might take up to 5 minutes, and will require an internet connection.</p>
 </div>
 <div class="paragraph">
 <p><strong>Platform notes</strong></p>
@@ -598,23 +590,19 @@ pip<span class="tok-w"> </span>install<span class="tok-w"> </span>pyGLM<span cla
 <h3 id="_install_from_source">Install from source</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span></span>git<span class="tok-w"> </span>clone<span class="tok-w"> </span>https://github.com/pthom/imgui_bundle.git
+<pre class="pygments highlight"><code data-lang="bash"><span></span><span class="tok-c1"># Clone the repository</span>
+git<span class="tok-w"> </span>clone<span class="tok-w"> </span>https://github.com/pthom/imgui_bundle.git
 <span class="tok-nb">cd</span><span class="tok-w"> </span>imgui_bundle
-git<span class="tok-w"> </span>submodule<span class="tok-w"> </span>update<span class="tok-w"> </span>--init<span class="tok-w"> </span>--recursive<span class="tok-w"> </span># <b class="conum">(1)</b>
-pip<span class="tok-w"> </span>install<span class="tok-w"> </span>-v<span class="tok-w"> </span>.<span class="tok-w"> </span># <b class="conum">(2)</b>
-pip<span class="tok-w"> </span>install<span class="tok-w"> </span>opencv-python
-pip<span class="tok-w"> </span>install<span class="tok-w"> </span>pyGLM</code></pre>
+
+<span class="tok-c1"># Build and install the package (minimal install)</span>
+pip<span class="tok-w"> </span>install<span class="tok-w"> </span>-v<span class="tok-w"> </span>.
+
+<span class="tok-c1"># or build and install the package with all optional features:</span>
+<span class="tok-c1">#     pip install -v &quot;.[full]&quot;</span></code></pre>
 </div>
 </div>
-<div class="colist arabic">
-<ol>
-<li>
-<p>Since there are lots of submodules, this might take a few minutes</p>
-</li>
-<li>
-<p>The build process might take up to 5 minutes</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>The build process might take up to 5 minutes, and will clone the submodules if needed (an internet connection is required).</p>
 </div>
 </div>
 <div class="sect2">
@@ -646,7 +634,7 @@ Consider <code>demo_imgui_bundle</code> as an always available manual for Dear I
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2025-09-30 12:47:20 +0200
+Last updated 2025-11-09 18:36:20 +0100
 </div>
 </div>
 </body>

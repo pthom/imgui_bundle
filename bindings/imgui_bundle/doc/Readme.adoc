@@ -358,15 +358,15 @@ A big thank you to their authors for their awesome work!
 
 [source, bash]
 ----
-pip install imgui-bundle  # <1>
-pip install opencv-python # <2>
-pip install pyGLM # <3>
+# Minimal install
+pip install imgui-bundle
+
+# or to get all optional features:
+pip install "imgui-bundle[full]"
 ----
-<1> imgui_bundle: Binary wheels are available for Windows, MacOS and Linux. If a compilation from source is needed, the build process might take up to 5 minutes, and will require an internet connection.
 
-<2> OpenCV: in order to run the immvision module, install opencv-python. The alternative OpenCV versions, such as opencv-python-headless (headless) opencv-contrib-python (with extra modules)  also work.
+Binary wheels are available for Windows, MacOS and Linux. If a compilation from source is needed, the build process might take up to 5 minutes, and will require an internet connection.
 
-<3> pyGLM: in order to run the demo, install pyGLM
 
 *Platform notes*
 
@@ -376,15 +376,18 @@ pip install pyGLM # <3>
 === Install from source
 [source, bash]
 ----
+# Clone the repository
 git clone https://github.com/pthom/imgui_bundle.git
 cd imgui_bundle
-git submodule update --init --recursive # <1>
-pip install -v . # <2>
-pip install opencv-python
-pip install pyGLM
+
+# Build and install the package (minimal install)
+pip install -v .
+
+# or build and install the package with all optional features:
+#     pip install -v ".[full]"
 ----
-<1> Since there are lots of submodules, this might take a few minutes
-<2> The build process might take up to 5 minutes
+
+The build process might take up to 5 minutes, and will clone the submodules if needed (an internet connection is required).
 
 === Run the python demo
 
@@ -6086,7 +6089,7 @@ See documentation in the  link:{url-bundle-doc-tree}/bindings/imgui_bundle/pytho
 
 from imgui_bundle import imgui
 from imgui_bundle.python_backends.sdl2_backend import SDL2Renderer
-import OpenGL.GL as gl  # type: ignore
+import OpenGL.GL as gl  # pip install PyOpenGL
 from sdl2 import *  # type: ignore
 import ctypes
 import sys
@@ -6248,7 +6251,7 @@ if __name__ == "__main__":
 
 from imgui_bundle import imgui
 from imgui_bundle.python_backends.sdl3_backend import SDL3Renderer
-import OpenGL.GL as gl  # type: ignore
+import OpenGL.GL as gl  # pip install PyOpenGL
 from sdl3 import *  # type: ignore
 import ctypes
 import sys
@@ -6415,10 +6418,10 @@ if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFO
     os.environ["PYOPENGL_PLATFORM"] = "x11"
 
 
-import OpenGL.GL as gl  # type: ignore
+import OpenGL.GL as gl  # pip install PyOpenGL
 from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 # When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard glfw, not the one provided by imgui_bundle)
-import glfw
+import glfw  # type: ignore
 from imgui_bundle import imgui, imgui_ctx
 from imgui_bundle import imgui_md
 import sys

@@ -7,15 +7,15 @@ include::_utils.adoc[]
 
 [source, bash]
 ----
-pip install imgui-bundle  # <1>
-pip install opencv-python # <2>
-pip install pyGLM # <3>
+# Minimal install
+pip install imgui-bundle
+
+# or to get all optional features:
+pip install "imgui-bundle[full]"
 ----
-<1> imgui_bundle: Binary wheels are available for Windows, MacOS and Linux. If a compilation from source is needed, the build process might take up to 5 minutes, and will require an internet connection.
 
-<2> OpenCV: in order to run the immvision module, install opencv-python. The alternative OpenCV versions, such as opencv-python-headless (headless) opencv-contrib-python (with extra modules)  also work.
+Binary wheels are available for Windows, MacOS and Linux. If a compilation from source is needed, the build process might take up to 5 minutes, and will require an internet connection.
 
-<3> pyGLM: in order to run the demo, install pyGLM
 
 *Platform notes*
 
@@ -25,15 +25,18 @@ pip install pyGLM # <3>
 === Install from source
 [source, bash]
 ----
+# Clone the repository
 git clone https://github.com/pthom/imgui_bundle.git
 cd imgui_bundle
-git submodule update --init --recursive # <1>
-pip install -v . # <2>
-pip install opencv-python
-pip install pyGLM
+
+# Build and install the package (minimal install)
+pip install -v .
+
+# or build and install the package with all optional features:
+#     pip install -v ".[full]"
 ----
-<1> Since there are lots of submodules, this might take a few minutes
-<2> The build process might take up to 5 minutes
+
+The build process might take up to 5 minutes, and will clone the submodules if needed (an internet connection is required).
 
 === Run the python demo
 
