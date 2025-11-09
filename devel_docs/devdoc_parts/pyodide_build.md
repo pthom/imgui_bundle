@@ -35,7 +35,7 @@ that enable to control the build process of Pyodide and the needed packages on a
 
 Use justfile bindings/pyodide_web_demo/justfile, recipe build_base_packages
 ```bash
-pyodide build-recipes numpy Pillow pandas ipython requests opencv-python typing-extensions pydantic munch matplotlib future scikit-learn
+pyodide build-recipes numpy Pillow pandas ipython requests opencv-python typing-extensions pydantic matplotlib future scikit-learn
 ```
 
 ### Build and install all needed packages

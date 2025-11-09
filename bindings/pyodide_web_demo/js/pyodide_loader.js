@@ -82,7 +82,6 @@ async function loadPyodideAndPackages() {
             'numpy',  // 2.8 MB
             'pydantic', // 1.3 + 0.4 MB = 1.7 MB
             'typing_extensions', // 34 KB
-            'munch', // 10 KB
             'imgui_bundle', // 9.7 MB (with 3 MB for demos_assets, 6 MB native)
             'pillow', // 964 KB
 

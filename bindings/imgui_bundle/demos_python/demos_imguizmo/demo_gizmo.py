@@ -15,7 +15,6 @@ Basically:
 
 from typing import List, Tuple
 import math
-import munch  # type: ignore
 
 from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
@@ -119,9 +118,9 @@ def EditTransform(
 ) -> None:
     statics = EditTransform.statics
     global mCurrentGizmoOperation
-    if statics is None:
-        EditTransform.statics = munch.Munch()
-        statics = EditTransform.statics
+
+    statics = EditTransform
+    if not hasattr(statics, "initialized"):
         statics.mCurrentGizmoMode = gizmo.MODE.local
         statics.useSnap = False
         statics.snap = Matrix3([1.0, 1.0, 1.0])
@@ -130,6 +129,7 @@ def EditTransform(
         statics.boundSizing = False
         statics.boundSizingSnap = False
         statics.gizmoWindowFlags = 0
+        statics.initialized = True
 
     if editTransformDecomposition:
         if imgui.is_key_pressed(imgui.Key.t):

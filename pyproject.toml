@@ -29,7 +29,6 @@ classifiers = [
 
 dependencies = [
     "numpy",
-    "munch",
 ]
 
 [project.optional-dependencies]

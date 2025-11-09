@@ -4,7 +4,7 @@ REMOTE_USER_HOST := "pascal@192.168.1.50"
 FIATLIGHT_FOLDER := "../../../fiatlight"
 PROBABL_FOLDER := "../../../fiatlight/_drafts/_probabl_drafts"
 
-BASE_PACKAGE_LIST := "numpy Pillow pandas ipython requests opencv-python typing-extensions pydantic munch matplotlib future scikit-learn"
+BASE_PACKAGE_LIST := "numpy Pillow pandas ipython requests opencv-python typing-extensions pydantic matplotlib future scikit-learn"
 
 
 default:
