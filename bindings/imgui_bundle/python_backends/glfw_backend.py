@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 from imgui_bundle import imgui
-import glfw  # type: ignore
+import glfw  # pip install glfw
 
 from imgui_bundle.python_backends import compute_fb_scale
 from .opengl_backend_programmable import ProgrammablePipelineRenderer

@@ -19,7 +19,7 @@ from imgui_bundle import imgui
 
 # Always import glfw *after* imgui_bundle
 # (since imgui_bundle will set the correct path where to look for the correct version of the glfw dynamic library)
-import glfw  # type: ignore
+import glfw  # pip install glfw
 
 
 def glfw_error_callback(error: int, description: str) -> None:

@@ -30,13 +30,13 @@ classifiers = [
 dependencies = [
     "numpy",
     "munch",
-    "glfw",
     "pillow",
 ]
 
 [project.optional-dependencies]
 test = ["pytest"]
 opengl = ["PyOpenGL"]
+glfw = ["glfw"]
 
 
 [project.urls]
