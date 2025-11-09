@@ -1644,7 +1644,13 @@ void implot3d_binding_manual(nb::module_& m)
                   }
                   ImPlot3D::SetupAxisTicks(axis, v_min, v_max, n_ticks, label_char.data(), keep_default);
               }
-          }, nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("n_ticks"), nb::arg("labels"), nb::arg("keep_default"),
+          },
+          nb::arg("axis"),
+          nb::arg("v_min"),
+          nb::arg("v_max"),
+          nb::arg("n_ticks"),
+          nb::arg("labels") = std::nullopt,
+          nb::arg("keep_default") = false,
           "Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true."
     );
     m.def("setup_axis_ticks",
@@ -1663,7 +1669,11 @@ void implot3d_binding_manual(nb::module_& m)
                   }
                   ImPlot3D::SetupAxisTicks(axis, values.data(), n_ticks, label_char.data(), keep_default);
               }
-          }, nb::arg("axis"), nb::arg("values"), nb::arg("labels"), nb::arg("keep_default"),
+          },
+          nb::arg("axis"),
+          nb::arg("values"),
+          nb::arg("labels") = std::nullopt,
+          nb::arg("keep_default") = false,
           "Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true."
     );
 
