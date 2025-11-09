@@ -9,7 +9,7 @@
 
 from imgui_bundle import imgui
 from imgui_bundle.python_backends.sdl2_backend import SDL2Renderer
-import OpenGL.GL as gl  # type: ignore
+import OpenGL.GL as gl  # pip install PyOpenGL
 from sdl2 import *  # type: ignore
 import ctypes
 import sys

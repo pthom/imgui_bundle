@@ -14,7 +14,7 @@
 import os.path
 import sys
 import platform
-import OpenGL.GL as GL  # type: ignore
+import OpenGL.GL as GL  # pip install PyOpenGL
 from imgui_bundle import imgui
 
 # Always import glfw *after* imgui_bundle

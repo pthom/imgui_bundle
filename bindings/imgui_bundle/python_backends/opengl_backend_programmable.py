@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-import OpenGL.GL as gl  # noqa
+import OpenGL.GL as gl  # pip install PyOpenGL
 from imgui_bundle import imgui
 import ctypes
-import numpy as np
 
 from .opengl_base_backend import BaseOpenGLRenderer, get_common_gl_state, restore_common_gl_state
 

@@ -1,5 +1,5 @@
 from imgui_bundle import imgui
-import OpenGL.GL as gl  # noqa
+import OpenGL.GL as gl  # pip install PyOpenGL
 
 
 def _log__update_texture(msg: str):

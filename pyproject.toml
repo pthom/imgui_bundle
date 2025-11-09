@@ -31,12 +31,13 @@ dependencies = [
     "numpy",
     "munch",
     "glfw",
-    "PyOpenGL",
     "pillow",
 ]
 
 [project.optional-dependencies]
 test = ["pytest"]
+opengl = ["PyOpenGL"]
+
 
 [project.urls]
 Homepage = "https://pthom.github.io/imgui_bundle/"
