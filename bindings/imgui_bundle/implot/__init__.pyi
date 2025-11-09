@@ -2500,6 +2500,7 @@ def add_colormap(name: str, cols: np.ndarray, qual: bool = True) -> Colormap:
 
 # Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
 # IMPLOT_API void SetupAxisTicks(ImAxis axis, double v_min, double v_max, int n_ticks, const char* const labels[]=nullptr, bool keep_default=false);
+@overload
 def setup_axis_ticks(
     axis: ImAxis,
     v_min: float,
@@ -2512,6 +2513,7 @@ def setup_axis_ticks(
 
 # Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
 # IMPLOT_API void SetupAxisTicks(ImAxis axis, const double* values, int n_ticks, const char* const labels[]=nullptr, bool keep_default=false);
+@overload
 def setup_axis_ticks(
     axis: ImAxis,
     values: List[float],
