@@ -60,9 +60,9 @@ class _JsAnimationRenderer:
 
 @dataclass
 class _RenderLifeCycleFunctions:
-    setup: Callable[[], None] = None
-    render: Callable[[], None] = None
-    tear_down: Callable[[], None] = None
+    setup: Callable[[], None]
+    render: Callable[[], None]
+    tear_down: Callable[[], None]
 
 
 class _HelloImGuiOrImmApp(Enum):
@@ -73,12 +73,10 @@ class _HelloImGuiOrImmApp(Enum):
 def _arg_to_render_lifecycle_functions(himgui_or_immapp: _HelloImGuiOrImmApp, *args, **kwargs) -> _RenderLifeCycleFunctions:
     """Converts the arguments to the correct render lifecycle functions,
     depending on the type of arguments passed and whether it is a hello_imgui or immapp application."""
-    functions = _RenderLifeCycleFunctions()
-
     if himgui_or_immapp == _HelloImGuiOrImmApp.HELLO_IMGUI:
         render_module = hello_imgui.manual_render
     elif himgui_or_immapp == _HelloImGuiOrImmApp.IMMAPP:
-        render_module = immapp.manual_render
+        render_module = immapp.manual_render  # type: ignore
     else:
         raise ValueError("Invalid value for himgui_or_immapp")
 
@@ -89,20 +87,20 @@ def _arg_to_render_lifecycle_functions(himgui_or_immapp: _HelloImGuiOrImmApp, *a
 
     if use_runner_params:
         _log("overload with RunnerParams")
-        functions.setup = lambda: render_module.setup_from_runner_params(*args, **kwargs)
+        fn_setup = lambda: render_module.setup_from_runner_params(*args, **kwargs)   # noqa: E731
     elif use_simple_params:
         _log("overload with SimpleRunnerParams")
-        functions.setup = lambda: render_module.setup_from_simple_runner_params(*args, **kwargs)
+        fn_setup = lambda: render_module.setup_from_simple_runner_params(*args, **kwargs)   # noqa: E731
     elif use_gui_function:
         _log("overload with callable")
-        functions.setup = lambda:render_module.setup_from_gui_function(*args, **kwargs)
+        fn_setup = lambda:render_module.setup_from_gui_function(*args, **kwargs)   # noqa: E731
     else:
         raise ValueError("Invalid arguments")
 
-    functions.render = render_module.render
+    fn_render = render_module.render
+    fn_tear_down = render_module.tear_down
 
-    functions.tear_down = render_module.tear_down
-
+    functions = _RenderLifeCycleFunctions(fn_setup, fn_render, fn_tear_down)
     return functions
 
 
@@ -122,6 +120,7 @@ class _ManualRenderJs:
             self.js_animation_renderer = None
 
         try:
+            assert(self.js_animation_renderer is not None)
             self.render_lifecycle_functions.tear_down()
             self.render_lifecycle_functions = None
             _log("_ManualRenderJs: HelloImGuiRunnerJs: Renderer torn down successfully.")
