@@ -1,10 +1,13 @@
-# This file is an almost line by line transcription of implot_demo.cpp
-# ( https://github.com/epezent/implot/blob/master/implot_demo.cpp )
+# This file is a line-by-line transcription of implot_demo.cpp
+# (https://github.com/epezent/implot/blob/master/implot_demo.cpp)
 import time
 from imgui_bundle import imgui, immapp, implot, imgui_ctx, ImVec4, ImVec2, IM_COL32
 import numpy as np
 from numpy.typing import NDArray
 import datetime
+from typing import TypeAlias, Any
+
+FloatArray1D: TypeAlias = NDArray[np.floating[Any]]
 
 
 def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> np.ndarray:
@@ -22,11 +25,11 @@ def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> np.ndarra
 
 def plot_candlestick(
         label_id: str,
-        xs: NDArray,  # x-axis values (timestamps as float)
-        opens: NDArray,
-        closes: NDArray,
-        lows: NDArray,
-        highs: NDArray,
+        xs: FloatArray1D,  # x-axis values (timestamps as float)
+        opens: FloatArray1D,
+        closes: FloatArray1D,
+        lows: FloatArray1D,
+        highs: FloatArray1D,
         tooltip: bool,
         width_percent: float,
         positive_color: ImVec4 | None = None,
@@ -68,7 +71,7 @@ def plot_candlestick(
         idx = np.searchsorted(xs, mouse.x)
         if 0 < idx < count:
             with imgui_ctx.begin_tooltip():
-                dt = datetime.fromtimestamp(xs[idx])
+                dt = datetime.fromtimestamp(float(xs[idx]))
                 date_str = dt.strftime("%Y-%m-%d")
                 imgui.text(f"Day:   {date_str}")
                 imgui.text(f"Open:  ${opens[idx]:.2f}")
@@ -84,14 +87,14 @@ def plot_candlestick(
         # fit data if requested
         if implot.internal.fit_this_frame():
             for i in range(count):
-                implot.internal.fit_point(implot.Point(xs[i], lows[i]))
-                implot.internal.fit_point(implot.Point(xs[i], highs[i]))
+                implot.internal.fit_point(implot.Point(float(xs[i]), float(lows[i])))
+                implot.internal.fit_point(implot.Point(float(xs[i]), float(highs[i])))
         # render data
         for i in range(count):
-            open_pos = implot.plot_to_pixels(xs[i] - half_width, opens[i])
-            close_pos = implot.plot_to_pixels(xs[i] + half_width, closes[i])
-            low_pos = implot.plot_to_pixels(xs[i], lows[i])
-            high_pos = implot.plot_to_pixels(xs[i], highs[i])
+            open_pos = implot.plot_to_pixels(float(xs[i]) - half_width, float(opens[i]))
+            close_pos = implot.plot_to_pixels(float(xs[i]) + half_width, float(closes[i]))
+            low_pos = implot.plot_to_pixels(float(xs[i]), float(lows[i]))
+            high_pos = implot.plot_to_pixels(float(xs[i]), float(highs[i]))
             color = positive_color if opens[i] < closes[i] else negative_color
             color_u32 = imgui.get_color_u32(color)
             draw_list.add_line(low_pos, high_pos, color_u32)
@@ -107,8 +110,8 @@ def demo_custom_plotters_and_tooltips():
     if not hasattr(static, "initialized"):
         static.nb_days = 218
         static.first_day = datetime.datetime(2019, 1, 1, 0, 0, 0).timestamp()
-        static.last_day = static.first_day + static.nb_days * 86400
-        static.dates = np.array([static.first_day + i * 86400 for i in range(0, static.nb_days)])
+        static.last_day = static.first_day + static.nb_days * 86400.0
+        static.dates = np.array([static.first_day + i * 86400.0 for i in range(0, static.nb_days)])
         static.opens = np.array([1284.7,1319.9,1318.7,1328,1317.6,1321.6,1314.3,1325,1319.3,1323.1,1324.7,1321.3,1323.5,1322,1281.3,1281.95,1311.1,1315,1314,1313.1,1331.9,1334.2,1341.3,1350.6,1349.8,1346.4,1343.4,1344.9,1335.6,1337.9,1342.5,1337,1338.6,1337,1340.4,1324.65,1324.35,1349.5,1371.3,1367.9,1351.3,1357.8,1356.1,1356,1347.6,1339.1,1320.6,1311.8,1314,1312.4,1312.3,1323.5,1319.1,1327.2,1332.1,1320.3,1323.1,1328,1330.9,1338,1333,1335.3,1345.2,1341.1,1332.5,1314,1314.4,1310.7,1314,1313.1,1315,1313.7,1320,1326.5,1329.2,1314.2,1312.3,1309.5,1297.4,1293.7,1277.9,1295.8,1295.2,1290.3,1294.2,1298,1306.4,1299.8,1302.3,1297,1289.6,1302,1300.7,1303.5,1300.5,1303.2,1306,1318.7,1315,1314.5,1304.1,1294.7,1293.7,1291.2,1290.2,1300.4,1284.2,1284.25,1301.8,1295.9,1296.2,1304.4,1323.1,1340.9,1341,1348,1351.4,1351.4,1343.5,1342.3,1349,1357.6,1357.1,1354.7,1361.4,1375.2,1403.5,1414.7,1433.2,1438,1423.6,1424.4,1418,1399.5,1435.5,1421.25,1434.1,1412.4,1409.8,1412.2,1433.4,1418.4,1429,1428.8,1420.6,1441,1460.4,1441.7,1438.4,1431,1439.3,1427.4,1431.9,1439.5,1443.7,1425.6,1457.5,1451.2,1481.1,1486.7,1512.1,1515.9,1509.2,1522.3,1513,1526.6,1533.9,1523,1506.3,1518.4,1512.4,1508.8,1545.4,1537.3,1551.8,1549.4,1536.9,1535.25,1537.95,1535.2,1556,1561.4,1525.6,1516.4,1507,1493.9,1504.9,1506.5,1513.1,1506.5,1509.7,1502,1506.8,1521.5,1529.8,1539.8,1510.9,1511.8,1501.7,1478,1485.4,1505.6,1511.6,1518.6,1498.7,1510.9,1510.8,1498.3,1492,1497.7,1484.8,1494.2,1495.6,1495.6,1487.5,1491.1,1495.1,1506.4])
         static.highs = np.array([1284.75,1320.6,1327,1330.8,1326.8,1321.6,1326,1328,1325.8,1327.1,1326,1326,1323.5,1322.1,1282.7,1282.95,1315.8,1316.3,1314,1333.2,1334.7,1341.7,1353.2,1354.6,1352.2,1346.4,1345.7,1344.9,1340.7,1344.2,1342.7,1342.1,1345.2,1342,1350,1324.95,1330.75,1369.6,1374.3,1368.4,1359.8,1359,1357,1356,1353.4,1340.6,1322.3,1314.1,1316.1,1312.9,1325.7,1323.5,1326.3,1336,1332.1,1330.1,1330.4,1334.7,1341.1,1344.2,1338.8,1348.4,1345.6,1342.8,1334.7,1322.3,1319.3,1314.7,1316.6,1316.4,1315,1325.4,1328.3,1332.2,1329.2,1316.9,1312.3,1309.5,1299.6,1296.9,1277.9,1299.5,1296.2,1298.4,1302.5,1308.7,1306.4,1305.9,1307,1297.2,1301.7,1305,1305.3,1310.2,1307,1308,1319.8,1321.7,1318.7,1316.2,1305.9,1295.8,1293.8,1293.7,1304.2,1302,1285.15,1286.85,1304,1302,1305.2,1323,1344.1,1345.2,1360.1,1355.3,1363.8,1353,1344.7,1353.6,1358,1373.6,1358.2,1369.6,1377.6,1408.9,1425.5,1435.9,1453.7,1438,1426,1439.1,1418,1435,1452.6,1426.65,1437.5,1421.5,1414.1,1433.3,1441.3,1431.4,1433.9,1432.4,1440.8,1462.3,1467,1443.5,1444,1442.9,1447,1437.6,1440.8,1445.7,1447.8,1458.2,1461.9,1481.8,1486.8,1522.7,1521.3,1521.1,1531.5,1546.1,1534.9,1537.7,1538.6,1523.6,1518.8,1518.4,1514.6,1540.3,1565,1554.5,1556.6,1559.8,1541.9,1542.9,1540.05,1558.9,1566.2,1561.9,1536.2,1523.8,1509.1,1506.2,1532.2,1516.6,1519.7,1515,1519.5,1512.1,1524.5,1534.4,1543.3,1543.3,1542.8,1519.5,1507.2,1493.5,1511.4,1525.8,1522.2,1518.8,1515.3,1518,1522.3,1508,1501.5,1503,1495.5,1501.1,1497.9,1498.7,1492.1,1499.4,1506.9,1520.9])
         static.lows  = np.array([1282.85,1315,1318.7,1309.6,1317.6,1312.9,1312.4,1319.1,1319,1321,1318.1,1321.3,1319.9,1312,1280.5,1276.15,1308,1309.9,1308.5,1312.3,1329.3,1333.1,1340.2,1347,1345.9,1338,1340.8,1335,1332,1337.9,1333,1336.8,1333.2,1329.9,1340.4,1323.85,1324.05,1349,1366.3,1351.2,1349.1,1352.4,1350.7,1344.3,1338.9,1316.3,1308.4,1306.9,1309.6,1306.7,1312.3,1315.4,1319,1327.2,1317.2,1320,1323,1328,1323,1327.8,1331.7,1335.3,1336.6,1331.8,1311.4,1310,1309.5,1308,1310.6,1302.8,1306.6,1313.7,1320,1322.8,1311,1312.1,1303.6,1293.9,1293.5,1291,1277.9,1294.1,1286,1289.1,1293.5,1296.9,1298,1299.6,1292.9,1285.1,1288.5,1296.3,1297.2,1298.4,1298.6,1302,1300.3,1312,1310.8,1301.9,1292,1291.1,1286.3,1289.2,1289.9,1297.4,1283.65,1283.25,1292.9,1295.9,1290.8,1304.2,1322.7,1336.1,1341,1343.5,1345.8,1340.3,1335.1,1341.5,1347.6,1352.8,1348.2,1353.7,1356.5,1373.3,1398,1414.7,1427,1416.4,1412.7,1420.1,1396.4,1398.8,1426.6,1412.85,1400.7,1406,1399.8,1404.4,1415.5,1417.2,1421.9,1415,1413.7,1428.1,1434,1435.7,1427.5,1429.4,1423.9,1425.6,1427.5,1434.8,1422.3,1412.1,1442.5,1448.8,1468.2,1484.3,1501.6,1506.2,1498.6,1488.9,1504.5,1518.3,1513.9,1503.3,1503,1506.5,1502.1,1503,1534.8,1535.3,1541.4,1528.6,1525.6,1535.25,1528.15,1528,1542.6,1514.3,1510.7,1505.5,1492.1,1492.9,1496.8,1493.1,1503.4,1500.9,1490.7,1496.3,1505.3,1505.3,1517.9,1507.4,1507.1,1493.3,1470.5,1465,1480.5,1501.7,1501.4,1493.3,1492.1,1505.1,1495.7,1478,1487.1,1480.8,1480.6,1487,1488.3,1484.8,1484,1490.7,1490.4,1503.1])
@@ -235,7 +238,7 @@ def demo_config():
             x = np.array([static.now, static.now + 24 * 3600], np.float32)
             y = np.array([0, i / 9.0], np.float32)
 
-            with imgui_ctx.push_id(i):
+            with imgui_ctx.push_id(str(i)):
                 implot.plot_line("##Line", x, y)
 
         implot.end_plot()
@@ -507,8 +510,8 @@ def demo_bar_stacks():
         static.liars = -1
 
     if static.liars == -1:
-        Liars_Data = np.array([4282515870, 4282609140, 4287357182, 4294630301, 4294945280, 4294921472], np.uint32)
-        static.liars = implot.add_colormap("Liars", Liars_Data)
+        liars_data = np.array([4282515870, 4282609140, 4287357182, 4294630301, 4294945280, 4294921472], np.uint32)
+        static.liars = implot.add_colormap("Liars", liars_data)
 
     if not hasattr(static, "diverging"):
         static.diverging = True
@@ -650,7 +653,7 @@ def demo_pie_charts():
     if implot.begin_plot("##Pie1", size=(250, 250), flags=implot.Flags_.equal | implot.Flags_.no_mouse_text):
         implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(0, 1, 0, 1)
-        implot.plot_pie_chart(static.labels1, np.array(static.data1), x=0.5, y=0.5, radius=0.4, label_fmt="%.2f", angle0=90, flags=static.flags)
+        implot.plot_pie_chart(static.labels1, np.array(static.data1), x=0.5, y=0.5, radius=0.4, label_fmt="%.2f", angle0=90, flags=static.flags)  # type: ignore
         implot.end_plot()
 
     imgui.same_line()
@@ -729,7 +732,7 @@ def demo_heatmaps():
         implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(-1, 1, -1, 1)
         implot.plot_heatmap("heat1", static.values2, scale_min=0, scale_max=1)
-        implot.plot_heatmap("heat2", static.values2, scale_min=0, scale_max=1, bounds_min=(-1, -1), bounds_max=(0, 0))
+        implot.plot_heatmap("heat2", static.values2, scale_min=0, scale_max=1, bounds_min=implot.Point(-1, -1), bounds_max=implot.Point(0, 0))
         implot.end_plot()
 
     implot.pop_colormap()
@@ -837,7 +840,7 @@ def demo_histogram2d():
             xs=static.dist1, ys=static.dist2,
             x_bins=static.xybins[0], y_bins=static.xybins[1],
             range=implot.Rect(-6, 6, -6, 6),
-            flags=static.hist_flags)
+            flags=static.hist_flags)  # type: ignore
         implot.end_plot()
 
     imgui.same_line()
@@ -975,7 +978,7 @@ def demo_markers_and_text():
 
         # Filled markers
         for m in range(implot.Marker_.count):
-            with imgui_ctx.push_id(m):
+            with imgui_ctx.push_id(str(m)):
                 implot.set_next_marker_style(m, static.mk_size, implot.AUTO_COL, static.mk_weight)
                 implot.plot_line("##Filled", np.array(xs), np.array(ys))
             ys = [ys[0] - 1, ys[1] - 1]
@@ -985,7 +988,7 @@ def demo_markers_and_text():
 
         # Open markers
         for m in range(implot.Marker_.count):
-            with imgui_ctx.push_id(m):
+            with imgui_ctx.push_id(str(m)):
                 implot.set_next_marker_style(m, static.mk_size, [0, 0, 0, 0], static.mk_weight)
                 implot.plot_line("##Open", np.array(xs), np.array(ys))
             ys = [ys[0] - 1, ys[1] - 1]
@@ -1212,10 +1215,10 @@ def demo_linked_axes():
     static = demo_linked_axes
 
     if not hasattr(static, "x_min"):
-        static.x_min = 0.0
-        static.x_max = 1.0
-        static.y_min = 0.0
-        static.y_max = 1.0
+        static.x_min = implot.BoxedValue(0.0)
+        static.x_max = implot.BoxedValue(1.0)
+        static.y_min = implot.BoxedValue(0.0)
+        static.y_max = implot.BoxedValue(1.0)
         static.linkx = True
         static.linky = True
 
@@ -1345,7 +1348,7 @@ def demo_subplots_sizing():
     _, static.cols = imgui.slider_int("Cols", static.cols, 1, 5)
 
     if static.rows < 1 or static.cols < 1:
-        imgui.text_colored("Nice try, but the number of rows and columns must be greater than 0!", (1, 0, 0, 1))
+        imgui.text_colored(ImVec4(1, 0, 0, 1), "Nice try, but the number of rows and columns must be greater than 0!")
         return
 
     if not hasattr(static, "rratios"):
@@ -1495,17 +1498,17 @@ def demo_drag_points():
 
         colors = [[0, 0.9, 0, 1], [1, 0.5, 1, 1], [0, 0.5, 1, 1], [0, 0.9, 0, 1]]
         for i in range(4):
-            _, static.P[i].x, static.P[i].y, clicked[i], hovered[i], held[i] = implot.drag_point(
+            _, static.P[i].x, static.P[i].y, clicked[i], hovered[i], held[i] = implot.drag_point(  # type: ignore
                 id_=i, x=static.P[i].x, y=static.P[i].y, col=colors[i], flags=static.flags, held=held[i])
 
         # Compute Bézier curve
         t_vals = np.linspace(0, 1, 100)
         u = 1 - t_vals
         w1, w2, w3, w4 = u**3, 3 * u**2 * t_vals, 3 * u * t_vals**2, t_vals**3
-        B = np.dot(np.column_stack((w1, w2, w3, w4)), [[p.x, p.y] for p in static.P])
+        b = np.dot(np.column_stack((w1, w2, w3, w4)), [[p.x, p.y] for p in static.P])
 
         # Ensure 1D contiguous arrays using `.ravel()`
-        implot.plot_line("##bez", B[:, 0].ravel(), B[:, 1].ravel())
+        implot.plot_line("##bez", b[:, 0].ravel(), b[:, 1].ravel())
 
         implot.end_plot()
 
@@ -1545,7 +1548,6 @@ def demo_drag_lines():
         ys = (static.y1 + static.y2) / 2 + np.abs(static.y2 - static.y1) / 2 * np.sin(static.f * np.arange(1000) / 10)
 
         # Drag frequency line
-        clicked, hovered, held = False, False, False
         _, static.f, clicked, hovered, held = implot.drag_line_y(120482, static.f, col=[1, 0.5, 1, 1], thickness=1, flags=static.flags)
 
         implot.set_next_line_style(implot.AUTO_COL, 2.0 if hovered or held else 1.0)
@@ -1710,9 +1712,9 @@ def demo_tags():
         implot.end_plot()
 
 
-def sparkline(id, values, y_min, y_max, offset, color, size):
+def sparkline(label_id, values, y_min, y_max, offset, color, size):
     implot.push_style_var(implot.StyleVar_.plot_padding, ImVec2(0, 0))
-    if implot.begin_plot(id, size, implot.Flags_.canvas_only):
+    if implot.begin_plot(label_id, size, implot.Flags_.canvas_only):
         implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(0, len(values) - 1, y_min, y_max, imgui.Cond_.always)
         implot.set_next_line_style(color)

@@ -1,14 +1,15 @@
 # pip install yfinance
-import yfinance as yf
+import yfinance as yf  # type: ignore
 import numpy as np
+import numpy.typing as npt
 from dataclasses import dataclass
 from imgui_bundle import implot, ImVec4, ImVec2, imgui, imgui_ctx, IM_COL32, immapp
-from typing import Optional
+from typing import Optional, TypeAlias
 from functools import cached_property
 
 
 # ArrayFloat: 1D array of float64
-ArrayFloat = np.ndarray[(int,), np.float64]
+ArrayFloat: TypeAlias = npt.NDArray[np.float64]  # shape (N,)
 
 TICKER_IDS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META", "NFLX", "NVDA", "AMD", "INTC"]
 PERIOD_RANGES = ["1mo", "3mo", "6mo", "12mo", "24mo", "60mo"]
@@ -219,7 +220,7 @@ class StockViewer:
         self._gui_fetch()
 
         if self.fetch_error:
-            imgui.text_colored(f"Error: {self.fetch_error}", 1.0, 0.4, 0.4)
+            imgui.text_colored(ImVec4(1.0, 0.4, 0.4, 1.0), f"Error: {self.fetch_error}")
 
         if self.stock_data:
             implot.get_style().use_local_time = False
