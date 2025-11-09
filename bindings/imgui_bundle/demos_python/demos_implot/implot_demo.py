@@ -10,7 +10,7 @@ from typing import TypeAlias, Any
 FloatArray1D: TypeAlias = NDArray[np.floating[Any]]
 
 
-def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> np.ndarray:
+def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> NDArray[np.uint8]:
     """Create a checkerboard RGBA texture as a numpy array."""
     img = np.zeros((size, size, 4), dtype=np.uint8)
     for y in range(size):

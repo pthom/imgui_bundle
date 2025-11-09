@@ -6,6 +6,7 @@ from imgui_bundle.demos_python.demos_implot3d.implot3d_meshes import make_cube_m
 from imgui_bundle.demos_python.demo_utils.api_demos import set_hello_imgui_demo_assets_folder
 
 import numpy as np
+from numpy.typing import NDArray
 
 set_hello_imgui_demo_assets_folder()
 
@@ -14,7 +15,7 @@ set_hello_imgui_demo_assets_folder()
 #-----------------------------------------------------------------------------
 
 
-def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> np.ndarray:
+def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> NDArray[np.uint8]:
     """Create a checkerboard RGBA texture as a numpy array."""
     img = np.zeros((size, size, 4), dtype=np.uint8)
     for y in range(size):
@@ -27,7 +28,7 @@ def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> np.ndarra
     return img
 
 
-def make_gradient_circle_texture(size: int = 256) -> np.ndarray:
+def make_gradient_circle_texture(size: int = 256) -> NDArray[np.uint8]:
     """Create a circular gradient texture with transparency and a color tint."""
     img = np.zeros((size, size, 4), dtype=np.uint8)
     center = size / 2

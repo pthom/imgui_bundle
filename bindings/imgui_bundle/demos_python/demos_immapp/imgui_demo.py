@@ -2989,9 +2989,13 @@ def show_demo_window_tables():
                 "style.TableAngledHeadersAngle", imgui.get_style().table_angled_headers_angle, -50.0, +50.0)
 
             imgui.set_next_item_width(imgui.get_font_size() * 8)
-            _, imgui.get_style().table_angled_headers_text_align = imgui.slider_float2(
+            table_angled_headers_text_align_list = [imgui.get_style().table_angled_headers_text_align.x, imgui.get_style().table_angled_headers_text_align.y]
+            changed_it, table_angled_headers_text_align_list = imgui.slider_float2(
                 "style.TableAngledHeadersTextAlign",
-                imgui.get_style().table_angled_headers_text_align, 0.0, 1.0, "%.2f")
+                table_angled_headers_text_align_list, 0.0, 1.0, "%.2f")
+            if changed_it:
+                imgui.get_style().table_angled_headers_text_align.x = table_angled_headers_text_align_list[0]
+                imgui.get_style().table_angled_headers_text_align.y = table_angled_headers_text_align_list[1]
 
             imgui.tree_pop()
 
