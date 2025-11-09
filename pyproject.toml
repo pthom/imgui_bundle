@@ -42,7 +42,7 @@ opengl = ["PyOpenGL"]
 glfw = ["glfw"]
 sdl2 = ["PySDL2"]
 sdl3 = ["PySDL3"]
-wgpu = ["wgpu"]
+wgpu = ["wgpu", "rendercanvas"]
 pyglet = ["pyglet"]
 all_backends = [
     "PyOpenGL",
@@ -62,6 +62,7 @@ full = [
     "PySDL2",
     "PySDL3",
     "wgpu",
+    "rendercanvas",
     "pyglet",
     "pydantic>=2.0.0",
     "PyGLM"

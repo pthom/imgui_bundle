@@ -6,17 +6,19 @@
 #    https://github.com/pygfx/wgpu-py/tree/main/examples
 #    (look for examples whose name starts with "imgui_")
 #
-# Requirements: install wgpu with `pip install wgpu`
-
+# Requirements: install wgpu and rendercanvas with
+#     pip install wgpu rendercanvas
 import wgpu
 import sys
 from imgui_bundle import imgui, imgui_ctx
-from wgpu.gui.auto import WgpuCanvas, run
+from rendercanvas.auto import RenderCanvas, loop
 from wgpu.utils.imgui import ImguiRenderer
 
 
 # Create a canvas to render to
-canvas = WgpuCanvas(title="imgui", size=(640, 480))
+canvas = RenderCanvas(
+    title="imgui", size=(640, 480), max_fps=60, update_mode="continuous"
+)
 
 # Create a wgpu device
 adapter = wgpu.gpu.request_adapter_sync(power_preference="high-performance")
@@ -27,7 +29,6 @@ imgui_renderer = ImguiRenderer(device, canvas)
 
 
 def update_gui():
-    imgui.new_frame()
     if imgui.begin_main_menu_bar():
         if imgui.begin_menu("File", True):
             clicked_quit, _ = imgui.menu_item("Quit", "Cmd+Q", False, True)
@@ -71,21 +72,11 @@ def update_gui():
 
     imgui.end()
 
-    imgui.end_frame()
-    imgui.render()
-
-    return imgui.get_draw_data()
-
 
 # set the GUI update function that gets called to return the draw data
 imgui_renderer.set_gui(update_gui)
 
 
-def draw_frame():
-    imgui_renderer.render()
-    canvas.request_draw()
-
-
 if __name__ == "__main__":
-    canvas.request_draw(draw_frame)
-    run()
+    canvas.request_draw(imgui_renderer.render)
+    loop.run()
