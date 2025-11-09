@@ -423,7 +423,7 @@ def slider_implot3d_point(
         label: str, v: implot3d.Point,
         v_min: float, v_max: float, format: str = "%.3",
         flags: int = 0
-) -> [bool, implot3d.Point]:
+) -> tuple[bool, implot3d.Point]:
     as_floats = [v.x, v.y, v.z]
     changed, as_floats = imgui.slider_float3(label, as_floats, v_min, v_max, format, flags)
     return changed, implot3d.Point(as_floats[0], as_floats[1], as_floats[2])
