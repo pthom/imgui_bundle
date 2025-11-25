@@ -33,9 +33,14 @@ void py_init_module_implot3d_internal(nb::module_& m)
 
 
     m.def("im_log10",
-        ImPlot3D::ImLog10,
+        nb::overload_cast<float>(ImPlot3D::ImLog10),
         nb::arg("x"),
-        " Computes the common (base-10) logarithm\n(private API)");
+        "(private API)");
+
+    m.def("im_log10",
+        nb::overload_cast<double>(ImPlot3D::ImLog10),
+        nb::arg("x"),
+        "(private API)");
 
     m.def("im_nan",
         ImPlot3D::ImNan,
@@ -293,6 +298,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("previous_flags", &ImPlot3DAxis::PreviousFlags, "")
         .def_rw("range", &ImPlot3DAxis::Range, "")
         .def_rw("range_cond", &ImPlot3DAxis::RangeCond, "")
+        .def_rw("ndc_scale", &ImPlot3DAxis::NDCScale, "")
         .def_rw("ticker", &ImPlot3DAxis::Ticker, "")
         .def_rw("formatter_data", &ImPlot3DAxis::FormatterData, "")
         .def_rw("show_default_ticks", &ImPlot3DAxis::ShowDefaultTicks, "")
@@ -346,6 +352,14 @@ void py_init_module_implot3d_internal(nb::module_& m)
             &ImPlot3DAxis::GetLabel,
             "(private API)",
             nb::rv_policy::reference)
+        .def("ndc_size",
+            &ImPlot3DAxis::NDCSize, "(private API)")
+        .def("set_aspect",
+            &ImPlot3DAxis::SetAspect,
+            nb::arg("units_per_ndc_unit"),
+            "(private API)")
+        .def("get_aspect",
+            &ImPlot3DAxis::GetAspect, "(private API)")
         .def("has_label",
             &ImPlot3DAxis::HasLabel, "(private API)")
         .def("has_grid_lines",
@@ -379,7 +393,6 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("initial_rotation", &ImPlot3DPlot::InitialRotation, "Initial rotation quaternion")
         .def_rw("rotation", &ImPlot3DPlot::Rotation, "Current rotation quaternion")
         .def_rw("rotation_cond", &ImPlot3DPlot::RotationCond, "")
-        .def_rw("box_scale", &ImPlot3DPlot::BoxScale, "Scale factor for plot box X, Y, Z axes")
         .def_rw("animation_time", &ImPlot3DPlot::AnimationTime, "Remaining animation time")
         .def_rw("rotation_animation_end", &ImPlot3DPlot::RotationAnimationEnd, "End rotation for animation")
         .def_rw("setup_locked", &ImPlot3DPlot::SetupLocked, "")
@@ -387,6 +400,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("held", &ImPlot3DPlot::Held, "")
         .def_rw("held_edge_idx", &ImPlot3DPlot::HeldEdgeIdx, "Index of the edge being held")
         .def_rw("held_plane_idx", &ImPlot3DPlot::HeldPlaneIdx, "Index of the plane being held")
+        .def_rw("drag_rotation_axis", &ImPlot3DPlot::DragRotationAxis, "Axis of rotation for the duration of a drag")
         .def_rw("fit_this_frame", &ImPlot3DPlot::FitThisFrame, "Fit data")
         .def_rw("items", &ImPlot3DPlot::Items, "Items")
         .def_rw("context_click", &ImPlot3DPlot::ContextClick, "True if context button was clicked (to distinguish from double click)")
@@ -407,19 +421,25 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def("extend_fit",
             &ImPlot3DPlot::ExtendFit,
             nb::arg("point"),
-            "(private API)")
+            " Extends the fit range of all three axes to include the provided point\n(private API)")
         .def("range_min",
-            &ImPlot3DPlot::RangeMin, "(private API)")
+            &ImPlot3DPlot::RangeMin, " Returns the minimum of the range in all three dimensions\n(private API)")
         .def("range_max",
-            &ImPlot3DPlot::RangeMax, "(private API)")
+            &ImPlot3DPlot::RangeMax, " Returns the maximum of the range in all three dimensions\n(private API)")
         .def("range_center",
-            &ImPlot3DPlot::RangeCenter, "(private API)")
+            &ImPlot3DPlot::RangeCenter, " Returns the point at the center of the range in all three dimensions\n(private API)")
         .def("set_range",
             &ImPlot3DPlot::SetRange,
             nb::arg("min"), nb::arg("max"),
-            "(private API)")
-        .def("get_box_zoom",
-            &ImPlot3DPlot::GetBoxZoom, "(private API)")
+            " Sets the range of all three axes\n(private API)")
+        .def("get_view_scale",
+            &ImPlot3DPlot::GetViewScale, " Returns the scale of the plot view (constant to convert from NDC coordinates to pixels coordinates)\n(private API)")
+        .def("get_box_scale",
+            &ImPlot3DPlot::GetBoxScale, " Returns the scale of the plot box in each dimension\n(private API)")
+        .def("apply_equal_aspect",
+            &ImPlot3DPlot::ApplyEqualAspect,
+            nb::arg("ref_axis"),
+            " Applies equal aspect ratio constraint using the specified axis as reference.\n Other axes are adjusted to match the reference axis's aspect ratio (units per NDC unit).\n(private API)")
         ;
 
 

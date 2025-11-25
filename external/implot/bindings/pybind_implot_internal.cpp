@@ -113,7 +113,7 @@ void py_init_module_implot_internal(nb::module_& m)
     m.def("im_lerp_u32",
         ImLerpU32,
         nb::arg("colors"), nb::arg("size"), nb::arg("t"),
-        " Lerp across an array of 32-bit collors given t in [0.0 1.0]\n(private API)");
+        " Lerp across an array of 32-bit colors given t in [0.0 1.0]\n(private API)");
 
     m.def("im_alpha_u32",
         ImAlphaU32,
@@ -271,6 +271,7 @@ void py_init_module_implot_internal(nb::module_& m)
         .def_rw("y", &ImPlotPointError::Y, "")
         .def_rw("neg", &ImPlotPointError::Neg, "")
         .def_rw("pos", &ImPlotPointError::Pos, "")
+        .def(nb::init<>())
         .def(nb::init<double, double, double, double>(),
             nb::arg("x"), nb::arg("y"), nb::arg("neg"), nb::arg("pos"))
         ;
@@ -329,26 +330,12 @@ void py_init_module_implot_internal(nb::module_& m)
     auto pyClassImPlotTag =
         nb::class_<ImPlotTag>
             (m, "Tag", "")
-        .def("__init__", [](ImPlotTag * self, const std::optional<const ImAxis> & Axis = std::nullopt, double Value = double(), ImU32 ColorBg = ImU32(), ImU32 ColorFg = ImU32(), int TextOffset = int())
-        {
-            new (self) ImPlotTag();  // placement new
-            auto r_ctor_ = self;
-            if (Axis.has_value())
-                r_ctor_->Axis = Axis.value();
-            else
-                r_ctor_->Axis = ImAxis();
-            r_ctor_->Value = Value;
-            r_ctor_->ColorBg = ColorBg;
-            r_ctor_->ColorFg = ColorFg;
-            r_ctor_->TextOffset = TextOffset;
-        },
-        nb::arg("axis").none() = nb::none(), nb::arg("value") = double(), nb::arg("color_bg") = ImU32(), nb::arg("color_fg") = ImU32(), nb::arg("text_offset") = int()
-        )
         .def_rw("axis", &ImPlotTag::Axis, "")
         .def_rw("value", &ImPlotTag::Value, "")
         .def_rw("color_bg", &ImPlotTag::ColorBg, "")
         .def_rw("color_fg", &ImPlotTag::ColorFg, "")
         .def_rw("text_offset", &ImPlotTag::TextOffset, "")
+        .def(nb::init<>())
         ;
 
 
@@ -400,6 +387,7 @@ void py_init_module_implot_internal(nb::module_& m)
         .def_rw("show_label", &ImPlotTick::ShowLabel, "")
         .def_rw("level", &ImPlotTick::Level, "")
         .def_rw("idx", &ImPlotTick::Idx, "")
+        .def(nb::init<>())
         .def(nb::init<double, bool, int, bool>(),
             nb::arg("value"), nb::arg("major"), nb::arg("level"), nb::arg("show_label"))
         ;
@@ -1325,12 +1313,6 @@ void py_init_module_implot_internal(nb::module_& m)
         ImPlot::GetDaysInMonth,
         nb::arg("year"), nb::arg("month"),
         " Returns the number of days in a month, accounting for Feb. leap years. #month is zero indexed.\n(private API)");
-
-    m.def("get_time",
-        ImPlot::GetTime,
-        nb::arg("t"), nb::arg("ptm"),
-        " Get a tm struct from a UNIX timestamp according to the current ImPlotStyle.UseLocalTime setting.\n(private API)",
-        nb::rv_policy::reference);
 
     m.def("make_time",
         ImPlot::MakeTime,

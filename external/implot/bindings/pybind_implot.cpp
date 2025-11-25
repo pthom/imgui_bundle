@@ -72,13 +72,13 @@ void py_init_module_implot(nb::module_& m)
             .value("y1", ImAxis_Y1, "enabled by default")
             .value("y2", ImAxis_Y2, "disabled by default")
             .value("y3", ImAxis_Y3, "disabled by default")
-            .value("count", ImAxis_COUNT, "bookeeping");
+            .value("count", ImAxis_COUNT, "bookkeeping");
 
 
     auto pyEnumFlags_ =
         nb::enum_<ImPlotFlags_>(m, "Flags_", nb::is_arithmetic(), nb::is_flag(), "Options for plots (see BeginPlot).")
             .value("none", ImPlotFlags_None, "default")
-            .value("no_title", ImPlotFlags_NoTitle, "the plot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MyPlot\")")
+            .value("no_title", ImPlotFlags_NoTitle, "the plot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. \"##MyPlot\")")
             .value("no_legend", ImPlotFlags_NoLegend, "the legend will not be displayed")
             .value("no_mouse_text", ImPlotFlags_NoMouseText, "the mouse position, in plot coordinates, will not be displayed inside of the plot")
             .value("no_inputs", ImPlotFlags_NoInputs, "the user will not be able to interact with the plot")
@@ -117,7 +117,7 @@ void py_init_module_implot(nb::module_& m)
     auto pyEnumSubplotFlags_ =
         nb::enum_<ImPlotSubplotFlags_>(m, "SubplotFlags_", nb::is_arithmetic(), nb::is_flag(), "Options for subplots (see BeginSubplot)")
             .value("none", ImPlotSubplotFlags_None, "default")
-            .value("no_title", ImPlotSubplotFlags_NoTitle, "the subplot title will not be displayed (titles are also hidden if preceeded by double hashes, e.g. \"##MySubplot\")")
+            .value("no_title", ImPlotSubplotFlags_NoTitle, "the subplot title will not be displayed (titles are also hidden if preceded by double hashes, e.g. \"##MySubplot\")")
             .value("no_legend", ImPlotSubplotFlags_NoLegend, "the legend will not be displayed (only applicable if ImPlotSubplotFlags_ShareItems is enabled)")
             .value("no_menus", ImPlotSubplotFlags_NoMenus, "the user will not be able to open context menus with right-click")
             .value("no_resize", ImPlotSubplotFlags_NoResize, "resize splitters between subplot cells will be not be provided")
@@ -139,7 +139,8 @@ void py_init_module_implot(nb::module_& m)
             .value("no_menus", ImPlotLegendFlags_NoMenus, "the user will not be able to open context menus with right-click")
             .value("outside", ImPlotLegendFlags_Outside, "legend will be rendered outside of the plot area")
             .value("horizontal", ImPlotLegendFlags_Horizontal, "legend entries will be displayed horizontally")
-            .value("sort", ImPlotLegendFlags_Sort, "legend entries will be displayed in alphabetical order");
+            .value("sort", ImPlotLegendFlags_Sort, "legend entries will be displayed in alphabetical order")
+            .value("reverse", ImPlotLegendFlags_Reverse, "legend entries will be displayed in reverse order");
 
 
     auto pyEnumMouseTextFlags_ =
@@ -253,7 +254,7 @@ void py_init_module_implot(nb::module_& m)
             .value("horizontal", ImPlotHistogramFlags_Horizontal, "histogram bars will be rendered horizontally (not supported by PlotHistogram2D)")
             .value("cumulative", ImPlotHistogramFlags_Cumulative, "each bin will contain its count plus the counts of all previous bins (not supported by PlotHistogram2D)")
             .value("density", ImPlotHistogramFlags_Density, "counts will be normalized, i.e. the PDF will be visualized, or the CDF will be visualized if Cumulative is also set")
-            .value("no_outliers", ImPlotHistogramFlags_NoOutliers, "exclude values outside the specifed histogram range from the count toward normalizing and cumulative counts")
+            .value("no_outliers", ImPlotHistogramFlags_NoOutliers, "exclude values outside the specified histogram range from the count toward normalizing and cumulative counts")
             .value("col_major", ImPlotHistogramFlags_ColMajor, "data will be read in column major order (not supported by PlotHistogram)");
 
 
@@ -300,7 +301,7 @@ void py_init_module_implot(nb::module_& m)
             .value("legend_text", ImPlotCol_LegendText, "legend text color (defaults to ImPlotCol_InlayText)")
             .value("title_text", ImPlotCol_TitleText, "plot title text color (defaults to ImGuiCol_Text)")
             .value("inlay_text", ImPlotCol_InlayText, "color of text appearing inside of plots (defaults to ImGuiCol_Text)")
-            .value("axis_text", ImPlotCol_AxisText, "axis label and tick lables color (defaults to ImGuiCol_Text)")
+            .value("axis_text", ImPlotCol_AxisText, "axis label and tick labels color (defaults to ImGuiCol_Text)")
             .value("axis_grid", ImPlotCol_AxisGrid, "axis grid color (defaults to 25% ImPlotCol_AxisText)")
             .value("axis_tick", ImPlotCol_AxisTick, "axis tick color (defaults to AxisGrid)")
             .value("axis_bg", ImPlotCol_AxisBg, "background color of axis hover region (defaults to transparent)")
@@ -347,7 +348,7 @@ void py_init_module_implot(nb::module_& m)
         nb::enum_<ImPlotScale_>(m, "Scale_", nb::is_arithmetic(), nb::is_flag(), "Axis scale")
             .value("linear", ImPlotScale_Linear, "default linear scale")
             .value("time", ImPlotScale_Time, "date/time scale")
-            .value("log10", ImPlotScale_Log10, "base 10 logartithmic scale")
+            .value("log10", ImPlotScale_Log10, "base 10 logarithmic scale")
             .value("sym_log", ImPlotScale_SymLog, "symmetric log scale");
 
 
@@ -421,12 +422,9 @@ void py_init_module_implot(nb::module_& m)
         .def("__getitem__",
             nb::overload_cast<size_t>(&ImPlotPoint::operator[]),
             nb::arg("idx"),
-            "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<size_t>(&ImPlotPoint::operator[], nb::const_),
-            nb::arg("idx"),
-            "(private API)")
+            nb::overload_cast<size_t>(&ImPlotPoint::operator[], nb::const_), nb::arg("idx"))
         ;
 
 
@@ -448,15 +446,11 @@ void py_init_module_implot(nb::module_& m)
                 };
 
                 return Contains_adapt_force_lambda(value);
-            },
-            nb::arg("value"),
-            "(private API)")
+            },     nb::arg("value"))
         .def("size",
-            &ImPlotRange::Size, "(private API)")
+            &ImPlotRange::Size)
         .def("clamp",
-            &ImPlotRange::Clamp,
-            nb::arg("value"),
-            "(private API)")
+            &ImPlotRange::Clamp, nb::arg("value"))
         ;
 
 
@@ -478,9 +472,7 @@ void py_init_module_implot(nb::module_& m)
                 };
 
                 return Contains_adapt_force_lambda(p);
-            },
-            nb::arg("p"),
-            "(private API)")
+            },     nb::arg("p"))
         .def("contains",
             [](const ImPlotRect & self, double x, double y) -> bool
             {
@@ -491,23 +483,17 @@ void py_init_module_implot(nb::module_& m)
                 };
 
                 return Contains_adapt_force_lambda(x, y);
-            },
-            nb::arg("x"), nb::arg("y"),
-            "(private API)")
+            },     nb::arg("x"), nb::arg("y"))
         .def("size",
-            &ImPlotRect::Size, "(private API)")
+            &ImPlotRect::Size)
         .def("clamp",
-            nb::overload_cast<const ImPlotPoint &>(&ImPlotRect::Clamp),
-            nb::arg("p"),
-            "(private API)")
+            nb::overload_cast<const ImPlotPoint &>(&ImPlotRect::Clamp), nb::arg("p"))
         .def("clamp",
-            nb::overload_cast<double, double>(&ImPlotRect::Clamp),
-            nb::arg("x"), nb::arg("y"),
-            "(private API)")
+            nb::overload_cast<double, double>(&ImPlotRect::Clamp), nb::arg("x"), nb::arg("y"))
         .def("min",
-            &ImPlotRect::Min, "(private API)")
+            &ImPlotRect::Min)
         .def("max",
-            &ImPlotRect::Max, "(private API)")
+            &ImPlotRect::Max)
         ;
 
 
@@ -2704,9 +2690,9 @@ void py_init_module_implot(nb::module_& m)
         "Plots a dummy item (i.e. adds a legend entry colored by ImPlotCol_Line)");
 
     m.def("drag_point",
-        [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
+        [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> out_held = std::nullopt) -> std::tuple<bool, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
         {
-            auto DragPoint_adapt_modifiable_immutable_to_return = [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
+            auto DragPoint_adapt_modifiable_immutable_to_return = [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> out_held = std::nullopt) -> std::tuple<bool, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
             {
                 double * x_adapt_modifiable = & x;
                 double * y_adapt_modifiable = & y;
@@ -2716,23 +2702,23 @@ void py_init_module_implot(nb::module_& m)
                 bool * out_hovered_adapt_modifiable = nullptr;
                 if (out_hovered.has_value())
                     out_hovered_adapt_modifiable = & (*out_hovered);
-                bool * held_adapt_modifiable = nullptr;
-                if (held.has_value())
-                    held_adapt_modifiable = & (*held);
+                bool * out_held_adapt_modifiable = nullptr;
+                if (out_held.has_value())
+                    out_held_adapt_modifiable = & (*out_held);
 
-                bool r = ImPlot::DragPoint(id, x_adapt_modifiable, y_adapt_modifiable, col, size, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, held_adapt_modifiable);
-                return std::make_tuple(r, x, y, out_clicked, out_hovered, held);
+                bool r = ImPlot::DragPoint(id, x_adapt_modifiable, y_adapt_modifiable, col, size, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, out_held_adapt_modifiable);
+                return std::make_tuple(r, x, y, out_clicked, out_hovered, out_held);
             };
 
-            return DragPoint_adapt_modifiable_immutable_to_return(id, x, y, col, size, flags, out_clicked, out_hovered, held);
+            return DragPoint_adapt_modifiable_immutable_to_return(id, x, y, col, size, flags, out_clicked, out_hovered, out_held);
         },
-        nb::arg("id_"), nb::arg("x"), nb::arg("y"), nb::arg("col"), nb::arg("size") = 4, nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("held").none() = nb::none(),
+        nb::arg("id_"), nb::arg("x"), nb::arg("y"), nb::arg("col"), nb::arg("size") = 4, nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("out_held").none() = nb::none(),
         "Shows a draggable point at x,y. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_line_x",
-        [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
+        [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> out_held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
         {
-            auto DragLineX_adapt_modifiable_immutable_to_return = [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
+            auto DragLineX_adapt_modifiable_immutable_to_return = [](int id, double x, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> out_held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
             {
                 double * x_adapt_modifiable = & x;
                 bool * out_clicked_adapt_modifiable = nullptr;
@@ -2741,23 +2727,23 @@ void py_init_module_implot(nb::module_& m)
                 bool * out_hovered_adapt_modifiable = nullptr;
                 if (out_hovered.has_value())
                     out_hovered_adapt_modifiable = & (*out_hovered);
-                bool * held_adapt_modifiable = nullptr;
-                if (held.has_value())
-                    held_adapt_modifiable = & (*held);
+                bool * out_held_adapt_modifiable = nullptr;
+                if (out_held.has_value())
+                    out_held_adapt_modifiable = & (*out_held);
 
-                bool r = ImPlot::DragLineX(id, x_adapt_modifiable, col, thickness, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, held_adapt_modifiable);
-                return std::make_tuple(r, x, out_clicked, out_hovered, held);
+                bool r = ImPlot::DragLineX(id, x_adapt_modifiable, col, thickness, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, out_held_adapt_modifiable);
+                return std::make_tuple(r, x, out_clicked, out_hovered, out_held);
             };
 
-            return DragLineX_adapt_modifiable_immutable_to_return(id, x, col, thickness, flags, out_clicked, out_hovered, held);
+            return DragLineX_adapt_modifiable_immutable_to_return(id, x, col, thickness, flags, out_clicked, out_hovered, out_held);
         },
-        nb::arg("id_"), nb::arg("x"), nb::arg("col"), nb::arg("thickness") = 1, nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("held").none() = nb::none(),
+        nb::arg("id_"), nb::arg("x"), nb::arg("col"), nb::arg("thickness") = 1, nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("out_held").none() = nb::none(),
         "Shows a draggable vertical guide line at an x-value. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_line_y",
-        [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
+        [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> out_held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
         {
-            auto DragLineY_adapt_modifiable_immutable_to_return = [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
+            auto DragLineY_adapt_modifiable_immutable_to_return = [](int id, double y, const ImVec4 & col, float thickness = 1, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> out_held = std::nullopt) -> std::tuple<bool, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
             {
                 double * y_adapt_modifiable = & y;
                 bool * out_clicked_adapt_modifiable = nullptr;
@@ -2766,23 +2752,23 @@ void py_init_module_implot(nb::module_& m)
                 bool * out_hovered_adapt_modifiable = nullptr;
                 if (out_hovered.has_value())
                     out_hovered_adapt_modifiable = & (*out_hovered);
-                bool * held_adapt_modifiable = nullptr;
-                if (held.has_value())
-                    held_adapt_modifiable = & (*held);
+                bool * out_held_adapt_modifiable = nullptr;
+                if (out_held.has_value())
+                    out_held_adapt_modifiable = & (*out_held);
 
-                bool r = ImPlot::DragLineY(id, y_adapt_modifiable, col, thickness, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, held_adapt_modifiable);
-                return std::make_tuple(r, y, out_clicked, out_hovered, held);
+                bool r = ImPlot::DragLineY(id, y_adapt_modifiable, col, thickness, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, out_held_adapt_modifiable);
+                return std::make_tuple(r, y, out_clicked, out_hovered, out_held);
             };
 
-            return DragLineY_adapt_modifiable_immutable_to_return(id, y, col, thickness, flags, out_clicked, out_hovered, held);
+            return DragLineY_adapt_modifiable_immutable_to_return(id, y, col, thickness, flags, out_clicked, out_hovered, out_held);
         },
-        nb::arg("id_"), nb::arg("y"), nb::arg("col"), nb::arg("thickness") = 1, nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("held").none() = nb::none(),
+        nb::arg("id_"), nb::arg("y"), nb::arg("col"), nb::arg("thickness") = 1, nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("out_held").none() = nb::none(),
         "Shows a draggable horizontal guide line at a y-value. #col defaults to ImGuiCol_Text.");
 
     m.def("drag_rect",
-        [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, double, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
+        [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> out_held = std::nullopt) -> std::tuple<bool, double, double, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
         {
-            auto DragRect_adapt_modifiable_immutable_to_return = [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> held = std::nullopt) -> std::tuple<bool, double, double, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
+            auto DragRect_adapt_modifiable_immutable_to_return = [](int id, double x1, double y1, double x2, double y2, const ImVec4 & col, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> out_held = std::nullopt) -> std::tuple<bool, double, double, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
             {
                 double * x1_adapt_modifiable = & x1;
                 double * y1_adapt_modifiable = & y1;
@@ -2794,17 +2780,17 @@ void py_init_module_implot(nb::module_& m)
                 bool * out_hovered_adapt_modifiable = nullptr;
                 if (out_hovered.has_value())
                     out_hovered_adapt_modifiable = & (*out_hovered);
-                bool * held_adapt_modifiable = nullptr;
-                if (held.has_value())
-                    held_adapt_modifiable = & (*held);
+                bool * out_held_adapt_modifiable = nullptr;
+                if (out_held.has_value())
+                    out_held_adapt_modifiable = & (*out_held);
 
-                bool r = ImPlot::DragRect(id, x1_adapt_modifiable, y1_adapt_modifiable, x2_adapt_modifiable, y2_adapt_modifiable, col, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, held_adapt_modifiable);
-                return std::make_tuple(r, x1, y1, x2, y2, out_clicked, out_hovered, held);
+                bool r = ImPlot::DragRect(id, x1_adapt_modifiable, y1_adapt_modifiable, x2_adapt_modifiable, y2_adapt_modifiable, col, flags, out_clicked_adapt_modifiable, out_hovered_adapt_modifiable, out_held_adapt_modifiable);
+                return std::make_tuple(r, x1, y1, x2, y2, out_clicked, out_hovered, out_held);
             };
 
-            return DragRect_adapt_modifiable_immutable_to_return(id, x1, y1, x2, y2, col, flags, out_clicked, out_hovered, held);
+            return DragRect_adapt_modifiable_immutable_to_return(id, x1, y1, x2, y2, col, flags, out_clicked, out_hovered, out_held);
         },
-        nb::arg("id_"), nb::arg("x1"), nb::arg("y1"), nb::arg("x2"), nb::arg("y2"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("held").none() = nb::none(),
+        nb::arg("id_"), nb::arg("x1"), nb::arg("y1"), nb::arg("x2"), nb::arg("y2"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("out_clicked").none() = nb::none(), nb::arg("out_hovered").none() = nb::none(), nb::arg("out_held").none() = nb::none(),
         "Shows a draggable and resizeable rectangle.");
 
     m.def("annotation",
@@ -2975,7 +2961,7 @@ void py_init_module_implot(nb::module_& m)
         ImPlot::GetPlotPos, "Get the current Plot position (top-left) in pixels.");
 
     m.def("get_plot_size",
-        ImPlot::GetPlotSize, "Get the curent Plot size in pixels.");
+        ImPlot::GetPlotSize, "Get the current Plot size in pixels.");
 
     m.def("get_plot_mouse_pos",
         [](const std::optional<const ImAxis> & x_axis = std::nullopt, const std::optional<const ImAxis> & y_axis = std::nullopt) -> ImPlotPoint
@@ -3507,7 +3493,7 @@ void py_init_module_implot(nb::module_& m)
             return ColormapButton_adapt_mutable_param_with_default_value(label, size, cmap);
         },
         nb::arg("label"), nb::arg("size").none() = nb::none(), nb::arg("cmap").none() = nb::none(),
-        " Shows a button with a colormap gradient brackground.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
+        " Shows a button with a colormap gradient background.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
 
     m.def("bust_color_cache",
         [](std::optional<std::string> plot_title_id = std::nullopt)
@@ -3524,11 +3510,11 @@ void py_init_module_implot(nb::module_& m)
             BustColorCache_adapt_const_char_pointer_with_default_null(plot_title_id);
         },
         nb::arg("plot_title_id").none() = nb::none(),
-        " When items in a plot sample their color from a colormap, the color is cached and does not change\n unless explicitly overriden. Therefore, if you change the colormap after the item has already been plotted,\n item colors will NOT update. If you need item colors to resample the new colormap, then use this\n function to bust the cached colors. If #plot_title_id is None, then every item in EVERY existing plot\n will be cache busted. Otherwise only the plot specified by #plot_title_id will be busted. For the\n latter, this function must be called in the same ImGui ID scope that the plot is in. You should rarely if ever\n need this function, but it is available for applications that require runtime colormap swaps (e.g. Heatmaps demo).");
+        " When items in a plot sample their color from a colormap, the color is cached and does not change\n unless explicitly overridden. Therefore, if you change the colormap after the item has already been plotted,\n item colors will NOT update. If you need item colors to resample the new colormap, then use this\n function to bust the cached colors. If #plot_title_id is None, then every item in EVERY existing plot\n will be cache busted. Otherwise only the plot specified by #plot_title_id will be busted. For the\n latter, this function must be called in the same ImGui ID scope that the plot is in. You should rarely if ever\n need this function, but it is available for applications that require runtime colormap swaps (e.g. Heatmaps demo).");
 
     m.def("get_input_map",
         ImPlot::GetInputMap,
-        "Provides access to input mapping structure for permanant modifications to controls for pan, select, etc.",
+        "Provides access to input mapping structure for permanent modifications to controls for pan, select, etc.",
         nb::rv_policy::reference);
 
     m.def("map_input_default",

@@ -58,6 +58,11 @@ void py_init_module_implot3d(nb::module_& m)
             .value("no_mouse_text", ImPlot3DFlags_NoMouseText, "Hide mouse position in plot coordinates")
             .value("no_clip", ImPlot3DFlags_NoClip, "Disable 3D box clipping")
             .value("no_menus", ImPlot3DFlags_NoMenus, "The user will not be able to open context menus")
+            .value("equal", ImPlot3DFlags_Equal, "X, Y, and Z axes will be constrained to have the same units/pixel")
+            .value("no_rotate", ImPlot3DFlags_NoRotate, "Lock rotation interaction")
+            .value("no_pan", ImPlot3DFlags_NoPan, "Lock panning/translation interaction")
+            .value("no_zoom", ImPlot3DFlags_NoZoom, "Lock zoom interaction")
+            .value("no_inputs", ImPlot3DFlags_NoInputs, "Disable all user inputs")
             .value("canvas_only", ImPlot3DFlags_CanvasOnly, "");
 
 
@@ -99,6 +104,7 @@ void py_init_module_implot3d(nb::module_& m)
             .value("plot_min_size", ImPlot3DStyleVar_PlotMinSize, "ImVec2, minimum size plot frame can be when shrunk")
             .value("plot_padding", ImPlot3DStyleVar_PlotPadding, "ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)")
             .value("label_padding", ImPlot3DStyleVar_LabelPadding, "ImVec2, padding between axes labels, tick labels, and plot edge")
+            .value("view_scale_factor", ImPlot3DStyleVar_ViewScaleFactor, "float, scale factor for 3D view, you can use it to make the whole plot larger or smaller")
             .value("legend_padding", ImPlot3DStyleVar_LegendPadding, "ImVec2, legend padding from plot edges")
             .value("legend_inner_padding", ImPlot3DStyleVar_LegendInnerPadding, "ImVec2, legend inner padding from legend edges")
             .value("legend_spacing", ImPlot3DStyleVar_LegendSpacing, "ImVec2, spacing between legend entries")
@@ -377,9 +383,9 @@ void py_init_module_implot3d(nb::module_& m)
         " Sets the X/Y/Z axes range limits. If ImPlot3DCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_rotation",
-        [](float elevation, float azimuth, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
+        [](double elevation, double azimuth, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
         {
-            auto SetupBoxRotation_adapt_mutable_param_with_default_value = [](float elevation, float azimuth, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
+            auto SetupBoxRotation_adapt_mutable_param_with_default_value = [](double elevation, double azimuth, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
             {
 
                 const ImPlot3DCond& cond_or_default = [&]() -> const ImPlot3DCond {
@@ -419,7 +425,7 @@ void py_init_module_implot3d(nb::module_& m)
         " Sets the plot box rotation given a quaternion. If ImPlot3DCond_Always is used, the rotation will be locked\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_initial_rotation",
-        nb::overload_cast<float, float>(ImPlot3D::SetupBoxInitialRotation),
+        nb::overload_cast<double, double>(ImPlot3D::SetupBoxInitialRotation),
         nb::arg("elevation"), nb::arg("azimuth"),
         " Sets the plot box initial rotation given the elevation and azimuth angles in degrees. The initial rotation is the rotation the plot goes back to\n when a left mouse button double click happens");
 
@@ -1021,9 +1027,9 @@ void py_init_module_implot3d(nb::module_& m)
         " Plots an image using four arbitrary 3D points that define a quad in space.\n Each corner (p0 to p3) corresponds to a corner in the image, and #uv0 to #uv3 are the texture coordinates for each.\n This overload allows full control over orientation, shape, and distortion.\n Note: The quad is internally split into two triangles, so non-rectangular quads may produce rendering artifacts\n since distortion is interpolated per triangle rather than over the full quad.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 0)\n        * uv2: ImVec2(1, 1)\n        * uv3: ImVec2(0, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)");
 
     m.def("plot_text",
-        [](const char * text, float x, float y, float z, float angle = 0.0f, const std::optional<const ImVec2> & pix_offset = std::nullopt)
+        [](const char * text, double x, double y, double z, double angle = 0.0, const std::optional<const ImVec2> & pix_offset = std::nullopt)
         {
-            auto PlotText_adapt_mutable_param_with_default_value = [](const char * text, float x, float y, float z, float angle = 0.0f, const std::optional<const ImVec2> & pix_offset = std::nullopt)
+            auto PlotText_adapt_mutable_param_with_default_value = [](const char * text, double x, double y, double z, double angle = 0.0, const std::optional<const ImVec2> & pix_offset = std::nullopt)
             {
 
                 const ImVec2& pix_offset_or_default = [&]() -> const ImVec2 {
@@ -1038,7 +1044,7 @@ void py_init_module_implot3d(nb::module_& m)
 
             PlotText_adapt_mutable_param_with_default_value(text, x, y, z, angle, pix_offset);
         },
-        nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("z"), nb::arg("angle") = 0.0f, nb::arg("pix_offset").none() = nb::none(),
+        nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("z"), nb::arg("angle") = 0.0, nb::arg("pix_offset").none() = nb::none(),
         " Plots a centered text label at point x,y,z. It is possible to set the text angle in radians and offset in pixels\n\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("plot_to_pixels",
@@ -1364,7 +1370,7 @@ void py_init_module_implot3d(nb::module_& m)
         .def_rw("y", &ImPlot3DPoint::y, "")
         .def_rw("z", &ImPlot3DPoint::z, "")
         .def(nb::init<>())
-        .def(nb::init<float, float, float>(),
+        .def(nb::init<double, double, double>(),
             nb::arg("_x"), nb::arg("_y"), nb::arg("_z"))
         .def("__getitem__",
             nb::overload_cast<size_t>(&ImPlot3DPoint::operator[]),
@@ -1376,9 +1382,9 @@ void py_init_module_implot3d(nb::module_& m)
             nb::arg("idx"),
             "(private API)")
         .def("__mul__",
-            nb::overload_cast<float>(&ImPlot3DPoint::operator*, nb::const_), nb::arg("rhs"))
+            nb::overload_cast<double>(&ImPlot3DPoint::operator*, nb::const_), nb::arg("rhs"))
         .def("__truediv__",
-            nb::overload_cast<float>(&ImPlot3DPoint::operator/, nb::const_), nb::arg("rhs"))
+            nb::overload_cast<double>(&ImPlot3DPoint::operator/, nb::const_), nb::arg("rhs"))
         .def("__add__",
             &ImPlot3DPoint::operator+, nb::arg("rhs"))
         .def("__sub__",
@@ -1390,11 +1396,11 @@ void py_init_module_implot3d(nb::module_& m)
         .def("__neg__",
             [](ImPlot3DPoint & self) { return self.operator-(); }, "Unary operator")
         .def("__imul__",
-            nb::overload_cast<float>(&ImPlot3DPoint::operator*=),
+            nb::overload_cast<double>(&ImPlot3DPoint::operator*=),
             nb::arg("rhs"),
             nb::rv_policy::reference)
         .def("__itruediv__",
-            nb::overload_cast<float>(&ImPlot3DPoint::operator/=),
+            nb::overload_cast<double>(&ImPlot3DPoint::operator/=),
             nb::arg("rhs"),
             nb::rv_policy::reference)
         .def("__iadd__",
@@ -1515,7 +1521,7 @@ void py_init_module_implot3d(nb::module_& m)
         .def_rw("min", &ImPlot3DRange::Min, "")
         .def_rw("max", &ImPlot3DRange::Max, "")
         .def(nb::init<>())
-        .def(nb::init<float, float>(),
+        .def(nb::init<double, double>(),
             nb::arg("min"), nb::arg("max"))
         .def("expand",
             &ImPlot3DRange::Expand, nb::arg("value"))
@@ -1534,9 +1540,9 @@ void py_init_module_implot3d(nb::module_& m)
         .def_rw("z", &ImPlot3DQuat::z, "")
         .def_rw("w", &ImPlot3DQuat::w, "")
         .def(nb::init<>())
-        .def(nb::init<float, float, float, float>(),
+        .def(nb::init<double, double, double, double>(),
             nb::arg("_x"), nb::arg("_y"), nb::arg("_z"), nb::arg("_w"))
-        .def(nb::init<float, const ImPlot3DPoint &>(),
+        .def(nb::init<double, const ImPlot3DPoint &>(),
             nb::arg("_angle"), nb::arg("_axis"))
         .def_static("from_two_vectors",
             &ImPlot3DQuat::FromTwoVectors,
@@ -1593,6 +1599,7 @@ void py_init_module_implot3d(nb::module_& m)
         .def_rw("plot_min_size", &ImPlot3DStyle::PlotMinSize, "")
         .def_rw("plot_padding", &ImPlot3DStyle::PlotPadding, "")
         .def_rw("label_padding", &ImPlot3DStyle::LabelPadding, "")
+        .def_rw("view_scale_factor", &ImPlot3DStyle::ViewScaleFactor, "")
         .def_rw("legend_padding", &ImPlot3DStyle::LegendPadding, "Legend padding from plot edges")
         .def_rw("legend_inner_padding", &ImPlot3DStyle::LegendInnerPadding, "Legend inner padding from legend edges")
         .def_rw("legend_spacing", &ImPlot3DStyle::LegendSpacing, "Spacing between legend entries")

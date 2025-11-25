@@ -53,7 +53,8 @@ time_t = int
 ####################    <generated_from:implot_internal.h>    ####################
 # MIT License
 
-# Copyright (c) 2023 Evan Pezent
+# Copyright (c) 2020-2024 Evan Pezent
+# Copyright (c) 2025 Breno Cunha Queiroz
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -239,7 +240,7 @@ def im_mix_u32(a: ImU32, b: ImU32, s: ImU32) -> ImU32:
 #     return ImMixU32(colors[i1], colors[i2], (ImU32)(tr*256));
 # }
 def im_lerp_u32(colors: ImU32, size: int, t: float) -> ImU32:
-    """ Lerp across an array of 32-bit collors given t in [0.0 1.0]
+    """ Lerp across an array of 32-bit colors given t in [0.0 1.0]
     (private API)
     """
     pass
@@ -544,9 +545,14 @@ class PointError:
     neg: float
     # Pos;    /* original C++ signature */
     pos: float
+    # ImPlotPointError() { X = 0; Y = 0; Neg = 0; Pos = 0; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
     # ImPlotPointError(double x, double y, double neg, double pos) {    /* original C++ signature */
     #         X = x; Y = y; Neg = neg; Pos = pos;
     #     }
+    @overload
     def __init__(self, x: float, y: float, neg: float, pos: float) -> None:
         pass
 
@@ -622,14 +628,15 @@ class Tag:
     color_fg: ImU32
     # int    TextOffset;    /* original C++ signature */
     text_offset: int
-    # ImPlotTag(ImAxis Axis = ImAxis(), double Value = double(), ImU32 ColorBg = ImU32(), ImU32 ColorFg = ImU32(), int TextOffset = int());    /* original C++ signature */
-    def __init__(self, axis: Optional[ImAxis] = None, value: float = float(), color_bg: ImU32 = ImU32(), color_fg: ImU32 = ImU32(), text_offset: int = int()) -> None:
-        """Auto-generated default constructor with named params
 
-
-        Python bindings defaults:
-            If Axis is None, then its default value will be: ImAxis()
-        """
+    # ImPlotTag() {    /* original C++ signature */
+    #         Axis       = 0;
+    #         Value      = 0;
+    #         ColorBg    = 0;
+    #         ColorFg    = 0;
+    #         TextOffset = 0;
+    #     }
+    def __init__(self) -> None:
         pass
 
 class TagCollection:
@@ -689,6 +696,20 @@ class Tick:
     # int    Idx;    /* original C++ signature */
     idx: int
 
+    # ImPlotTick() {    /* original C++ signature */
+    #         PlotPos      = 0;
+    #         PixelPos     = 0;
+    #         LabelSize    = ImVec2(0,0);
+    #         TextOffset   = -1;
+    #         Major        = false;
+    #         ShowLabel    = false;
+    #         Level        = 0;
+    #         Idx          = -1;
+    #     }
+    @overload
+    def __init__(self) -> None:
+        pass
+
     # ImPlotTick(double value, bool major, int level, bool show_label) {    /* original C++ signature */
     #         PixelPos     = 0;
     #         PlotPos      = value;
@@ -697,6 +718,7 @@ class Tick:
     #         Level        = level;
     #         TextOffset   = -1;
     #     }
+    @overload
     def __init__(self, value: float, major: bool, level: int, show_label: bool) -> None:
         pass
 
@@ -2234,15 +2256,6 @@ def get_days_in_month(year: int, month: int) -> int:
 # NB: The following functions only work if there is a current ImPlotContext because the
 # internal tm struct is owned by the context! They are aware of ImPlotStyle.UseLocalTime.
 
-# static inline tm* GetTime(const ImPlotTime& t, tm* ptm) {    /* original C++ signature */
-#     if (GetStyle().UseLocalTime) return GetLocTime(t,ptm);
-#     else                         return GetGmtTime(t,ptm);
-# }
-def get_time(t: Time, ptm: tm) -> tm:
-    """ Get a tm struct from a UNIX timestamp according to the current ImPlotStyle.UseLocalTime setting.
-    (private API)
-    """
-    pass
 
 # IMPLOT_API ImPlotTime MakeTime(int year, int month = 0, int day = 1, int hour = 0, int min = 0, int sec = 0, int us = 0);    /* original C++ signature */
 def make_time(year: int, month: int = 0, day: int = 1, hour: int = 0, min: int = 0, sec: int = 0, us: int = 0) -> Time:
