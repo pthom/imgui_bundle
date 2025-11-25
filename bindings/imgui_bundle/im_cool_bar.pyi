@@ -39,6 +39,8 @@ ImGuiWindowFlags_None = WindowFlags_.none
 
 
 
+##define ENABLE_IMCOOLBAR_DEBUG
+
 class ImCoolBarFlags_(enum.IntEnum):
     #
     none = enum.auto()       # (= 0)
