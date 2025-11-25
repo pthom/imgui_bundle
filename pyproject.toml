@@ -101,7 +101,7 @@ profile = "black"
 build-verbosity = 1
 
 # Target python versions:
-build = ["cp312-*", "cp313-*", "cp314-*"]
+build = ["cp312-*", "cp313-*", "cp314-*", "cp314t-*"]
 
 # Tests
 test-requires = "pytest"
@@ -171,7 +171,8 @@ before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev l
 # windows wheels options
 #------------------------------------
 [tool.cibuildwheel.windows]
-skip = ["*win32"]
+# do not build for python 3.14t (freethreaded) on windows yet (tries to link with python314.lib instead of python314t.lib)
+skip = ["*win32", "*cp314t*"]
 
 # Environment variables
 # IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Download a precompiled version of opencv4.6.0

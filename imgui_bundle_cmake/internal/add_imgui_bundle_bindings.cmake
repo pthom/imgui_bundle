@@ -58,7 +58,7 @@ function(add_imgui_bundle_bindings)
         ${all_pybind_files}
         )
 
-    nanobind_add_module(${python_native_module_name} ${python_module_sources})
+    nanobind_add_module(${python_native_module_name} FREE_THREADED ${python_module_sources})
     target_compile_definitions(${python_native_module_name} PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
     litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} ${IMGUI_BUNDLE_PATH}/bindings)
