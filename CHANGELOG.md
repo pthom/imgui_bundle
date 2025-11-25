@@ -2,6 +2,31 @@
 
 # v1.92.XXX (ongoing)
 
+# v1.92.5
+
+This version is based on ImGui v1.92.5 & hello_imgui v1.92.5.
+
+## Updates to libraries
+### ImGui
+- Updates imgui to v1.92.5-docking
+- Update imgui_test_engine to v1.92.5
+### hello_imgui
+- update to v1.92.5
+### Implot & ImPlot3d
+- update implot and implot3d to latest main version
+### ImGuizmo and ImCoolBar
+- update to latest versions
+## Python bindings
+- most pip dependencies are now optional: only numpy is required. Pydantic, PyOpenGL, glfw, Pillow, matplotlib, and opencv-python are optional (if you use features that require them)
+- Vec2Protocol and Vec4Protocol are iterable / unpackable
+- import immapp_notebook.run_nb only if IPython is installed
+- option IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2 (Off by default): can disable Python backend support for OpenGL2
+- Update wgpu example to use wgpu latest API (compatible with v1.92)
+- Implot & ImPlot3d: fix bindings for setup_axis_ticks
+## Tooling
+- Fix pyodide build (force build sdl2 and libthtml5 with -fPIC)
+
+
 # v1.92.4
 
 This version is based on ImGui v1.92.3, and brings some small fixes.
