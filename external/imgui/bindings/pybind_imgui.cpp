@@ -1904,7 +1904,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return TreeNode_adapt_variadic_format(str_id, fmt);
         },
         nb::arg("str_id"), nb::arg("fmt"),
-        "helper variation to easily decorelate the id from the displayed string. Read the FAQ about why and how to use ID. to align arbitrary text at the same level as a TreeNode() you can use Bullet().");
+        "helper variation to easily decorrelate the id from the displayed string. Read the FAQ about why and how to use ID. to align arbitrary text at the same level as a TreeNode() you can use Bullet().");
 
     m.def("tree_node",
         [](const void * ptr_id, const char * fmt) -> bool
@@ -3109,7 +3109,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("find_viewport_by_id",
         ImGui::FindViewportByID,
-        nb::arg("id_"),
+        nb::arg("viewport_id"),
         "this is a helper for backends.",
         nb::rv_policy::reference);
 
@@ -3140,7 +3140,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("always_vertical_scrollbar", ImGuiWindowFlags_AlwaysVerticalScrollbar, "Always show vertical scrollbar (even if ContentSize.y < Size.y)")
             .value("always_horizontal_scrollbar", ImGuiWindowFlags_AlwaysHorizontalScrollbar, "Always show horizontal scrollbar (even if ContentSize.x < Size.x)")
             .value("no_nav_inputs", ImGuiWindowFlags_NoNavInputs, "No keyboard/gamepad navigation within the window")
-            .value("no_nav_focus", ImGuiWindowFlags_NoNavFocus, "No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by CTRL+TAB)")
+            .value("no_nav_focus", ImGuiWindowFlags_NoNavFocus, "No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by Ctrl+Tab)")
             .value("unsaved_document", ImGuiWindowFlags_UnsavedDocument, "Display a dot next to the title. When used in a tab/docking context, tab is selected when clicking the X + closure is not assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar.")
             .value("no_docking", ImGuiWindowFlags_NoDocking, "Disable docking of this window")
             .value("no_nav", ImGuiWindowFlags_NoNav, "")
@@ -3206,7 +3206,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("callback_char_filter", ImGuiInputTextFlags_CallbackCharFilter, "Callback on character inputs to replace or discard them. Modify 'EventChar' to replace or discard, or return 1 in callback to discard.")
             .value("callback_resize", ImGuiInputTextFlags_CallbackResize, "Callback on buffer capacity changes request (beyond 'buf_size' parameter value), allowing the string to grow. Notify when the string wants to be resized (for string types which hold a cache of their Size). You will be provided a new BufSize in the callback and NEED to honor it. (see misc/cpp/imgui_stdlib.h for an example of using this)")
             .value("callback_edit", ImGuiInputTextFlags_CallbackEdit, "Callback on any edit. Note that InputText() already returns True on edit + you can always use IsItemEdited(). The callback is useful to manipulate the underlying buffer while focus is active.")
-            .value("word_wrap", ImGuiInputTextFlags_WordWrap, "InputTextMultine(): word-wrap lines that are too long.");
+            .value("word_wrap", ImGuiInputTextFlags_WordWrap, "InputTextMultiline(): word-wrap lines that are too long.");
 
 
     auto pyEnumTreeNodeFlags_ =
@@ -3228,7 +3228,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("span_label_width", ImGuiTreeNodeFlags_SpanLabelWidth, "Narrow hit box + narrow hovering highlight, will only cover the label text.")
             .value("span_all_columns", ImGuiTreeNodeFlags_SpanAllColumns, "Frame will span all columns of its container table (label will still fit in current column)")
             .value("label_span_all_columns", ImGuiTreeNodeFlags_LabelSpanAllColumns, "Label will span all columns of its container table")
-            .value("nav_left_jumps_to_parent", ImGuiTreeNodeFlags_NavLeftJumpsToParent, "Nav: left arrow moves back to parent. This is processed in TreePop() when there's an unfullfilled Left nav request remaining.")
+            .value("nav_left_jumps_to_parent", ImGuiTreeNodeFlags_NavLeftJumpsToParent, "Nav: left arrow moves back to parent. This is processed in TreePop() when there's an unfulfilled Left nav request remaining.")
             .value("collapsing_header", ImGuiTreeNodeFlags_CollapsingHeader, "")
             .value("draw_lines_none", ImGuiTreeNodeFlags_DrawLinesNone, "No lines drawn")
             .value("draw_lines_full", ImGuiTreeNodeFlags_DrawLinesFull, "Horizontal lines to child nodes. Vertical line drawn down to TreePop() position: cover full contents. Faster (for large trees).")
@@ -3370,6 +3370,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("accept_before_delivery", ImGuiDragDropFlags_AcceptBeforeDelivery, "AcceptDragDropPayload() will returns True even before the mouse button is released. You can then call IsDelivery() to test if the payload needs to be delivered.")
             .value("accept_no_draw_default_rect", ImGuiDragDropFlags_AcceptNoDrawDefaultRect, "Do not draw the default highlight rectangle when hovering over target.")
             .value("accept_no_preview_tooltip", ImGuiDragDropFlags_AcceptNoPreviewTooltip, "Request hiding the BeginDragDropSource tooltip from the BeginDragDropTarget site.")
+            .value("accept_draw_as_hovered", ImGuiDragDropFlags_AcceptDrawAsHovered, "Accepting item will render as if hovered. Useful for e.g. a Button() used as a drop target.")
             .value("accept_peek_only", ImGuiDragDropFlags_AcceptPeekOnly, "For peeking ahead and inspecting the payload before delivery.");
 
 
@@ -3585,7 +3586,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("route_global", ImGuiInputFlags_RouteGlobal, "Global route (unless a focused window or active item registered the route).")
             .value("route_always", ImGuiInputFlags_RouteAlways, "Do not register route, poll keys directly.")
             .value("route_over_focused", ImGuiInputFlags_RouteOverFocused, "Option: global route: higher priority than focused route (unless active item in focused route).")
-            .value("route_over_active", ImGuiInputFlags_RouteOverActive, "Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. CTRL+A registered by InputText will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active.")
+            .value("route_over_active", ImGuiInputFlags_RouteOverActive, "Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. Ctrl+A registered by InputText will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active.")
             .value("route_unless_bg_focused", ImGuiInputFlags_RouteUnlessBgFocused, "Option: global route: will not be applied if underlying background/None is focused (== no Dear ImGui windows are focused). Useful for overlay applications.")
             .value("route_from_root_window", ImGuiInputFlags_RouteFromRootWindow, "Option: route evaluated from the point of view of root window rather than current window.")
             .value("tooltip", ImGuiInputFlags_Tooltip, "Automatically display a tooltip when hovering item [BETA] Unsure of right api (opt-in/opt-out)");
@@ -3613,9 +3614,10 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("has_set_mouse_pos", ImGuiBackendFlags_HasSetMousePos, "Backend Platform supports io.WantSetMousePos requests to reposition the OS mouse position (only used if io.ConfigNavMoveSetMousePos is set).")
             .value("renderer_has_vtx_offset", ImGuiBackendFlags_RendererHasVtxOffset, "Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.")
             .value("renderer_has_textures", ImGuiBackendFlags_RendererHasTextures, "Backend Renderer supports ImTextureData requests to create/update/destroy textures. This enables incremental texture updates and texture reloads. See https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md for instructions on how to upgrade your custom backend.")
+            .value("renderer_has_viewports", ImGuiBackendFlags_RendererHasViewports, "Backend Renderer supports multiple viewports.")
             .value("platform_has_viewports", ImGuiBackendFlags_PlatformHasViewports, "Backend Platform supports multiple viewports.")
             .value("has_mouse_hovered_viewport", ImGuiBackendFlags_HasMouseHoveredViewport, "Backend Platform supports calling io.AddMouseViewportEvent() with the viewport under the mouse. IF POSSIBLE, ignore viewports with the ImGuiViewportFlags_NoInputs flag (Win32 backend, GLFW 3.30+ backend can do this, SDL backend cannot). If this cannot be done, Dear ImGui needs to use a flawed heuristic to find the viewport under.")
-            .value("renderer_has_viewports", ImGuiBackendFlags_RendererHasViewports, "Backend Renderer supports multiple viewports.");
+            .value("has_parent_viewport", ImGuiBackendFlags_HasParentViewport, "Backend Platform supports honoring viewport->ParentViewport/ParentViewportId value, by applying the corresponding parent/child relation at the Platform level.");
 
 
     auto pyEnumCol_ =
@@ -3675,16 +3677,18 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("text_link", ImGuiCol_TextLink, "Hyperlink color")
             .value("text_selected_bg", ImGuiCol_TextSelectedBg, "Selected text inside an InputText")
             .value("tree_lines", ImGuiCol_TreeLines, "Tree node hierarchy outlines when using ImGuiTreeNodeFlags_DrawLines")
-            .value("drag_drop_target", ImGuiCol_DragDropTarget, "Rectangle highlighting a drop target")
+            .value("drag_drop_target", ImGuiCol_DragDropTarget, "Rectangle border highlighting a drop target")
+            .value("drag_drop_target_bg", ImGuiCol_DragDropTargetBg, "Rectangle background highlighting a drop target")
+            .value("unsaved_marker", ImGuiCol_UnsavedMarker, "Unsaved Document marker (in window title and tabs)")
             .value("nav_cursor", ImGuiCol_NavCursor, "Color of keyboard/gamepad navigation cursor/rectangle, when visible")
-            .value("nav_windowing_highlight", ImGuiCol_NavWindowingHighlight, "Highlight window when using CTRL+TAB")
-            .value("nav_windowing_dim_bg", ImGuiCol_NavWindowingDimBg, "Darken/colorize entire screen behind the CTRL+TAB window list, when active")
+            .value("nav_windowing_highlight", ImGuiCol_NavWindowingHighlight, "Highlight window when using Ctrl+Tab")
+            .value("nav_windowing_dim_bg", ImGuiCol_NavWindowingDimBg, "Darken/colorize entire screen behind the Ctrl+Tab window list, when active")
             .value("modal_window_dim_bg", ImGuiCol_ModalWindowDimBg, "Darken/colorize entire screen behind a modal window, when one is active")
             .value("count", ImGuiCol_COUNT, "");
 
 
     auto pyEnumStyleVar_ =
-        nb::enum_<ImGuiStyleVar_>(m, "StyleVar_", nb::is_arithmetic(), nb::is_flag(), " Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.\n - The enum only refers to fields of ImGuiStyle which makes sense to be pushed/popped inside UI code.\n   During initialization or between frames, feel free to just poke into ImGuiStyle directly.\n - Tip: Use your programming IDE navigation facilities on the names in the _second column_ below to find the actual members and their description.\n   - In Visual Studio: CTRL+comma (\"Edit.GoToAll\") can follow symbols inside comments, whereas CTRL+F12 (\"Edit.GoToImplementation\") cannot.\n   - In Visual Studio w/ Visual Assist installed: ALT+G (\"VAssistX.GoToImplementation\") can also follow symbols inside comments.\n   - In VS Code, CLion, etc.: CTRL+click can follow symbols inside comments.\n - When changing this enum, you need to update the associated internal table GStyleVarInfo[] accordingly. This is where we link enum values to members offset/type.")
+        nb::enum_<ImGuiStyleVar_>(m, "StyleVar_", nb::is_arithmetic(), nb::is_flag(), " Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.\n - The enum only refers to fields of ImGuiStyle which makes sense to be pushed/popped inside UI code.\n   During initialization or between frames, feel free to just poke into ImGuiStyle directly.\n - Tip: Use your programming IDE navigation facilities on the names in the _second column_ below to find the actual members and their description.\n   - In Visual Studio: Ctrl+Comma (\"Edit.GoToAll\") can follow symbols inside comments, whereas Ctrl+F12 (\"Edit.GoToImplementation\") cannot.\n   - In Visual Studio w/ Visual Assist installed: Alt+G (\"VAssistX.GoToImplementation\") can also follow symbols inside comments.\n   - In VS Code, CLion, etc.: Ctrl+Click can follow symbols inside comments.\n - When changing this enum, you need to update the associated internal table GStyleVarInfo[] accordingly. This is where we link enum values to members offset/type.")
             .value("alpha", ImGuiStyleVar_Alpha, "float     Alpha")
             .value("disabled_alpha", ImGuiStyleVar_DisabledAlpha, "float     DisabledAlpha")
             .value("window_padding", ImGuiStyleVar_WindowPadding, "ImVec2    WindowPadding")
@@ -3779,9 +3783,9 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("none", ImGuiSliderFlags_None, "")
             .value("logarithmic", ImGuiSliderFlags_Logarithmic, "Make the widget logarithmic (linear otherwise). Consider using ImGuiSliderFlags_NoRoundToFormat with this if using a format-string with small amount of digits.")
             .value("no_round_to_format", ImGuiSliderFlags_NoRoundToFormat, "Disable rounding underlying value to match precision of the display format string (e.g. %.3 values are rounded to those 3 digits).")
-            .value("no_input", ImGuiSliderFlags_NoInput, "Disable CTRL+Click or Enter key allowing to input text directly into the widget.")
+            .value("no_input", ImGuiSliderFlags_NoInput, "Disable Ctrl+Click or Enter key allowing to input text directly into the widget.")
             .value("wrap_around", ImGuiSliderFlags_WrapAround, "Enable wrapping around from max to min and from min to max. Only supported by DragXXX() functions for now.")
-            .value("clamp_on_input", ImGuiSliderFlags_ClampOnInput, "Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds.")
+            .value("clamp_on_input", ImGuiSliderFlags_ClampOnInput, "Clamp value to min/max bounds when input manually with Ctrl+Click. By default Ctrl+Click allows going out of bounds.")
             .value("clamp_zero_range", ImGuiSliderFlags_ClampZeroRange, "Clamp even if min==max==0.0. Otherwise due to legacy reason DragXXX functions don't clamp with those values. When your clamping limits are dynamic you almost always want to use it.")
             .value("no_speed_tweaks", ImGuiSliderFlags_NoSpeedTweaks, "Disable keyboard modifiers altering tweak speed. Useful if you want to alter tweak speed yourself based on your own logic.")
             .value("always_clamp", ImGuiSliderFlags_AlwaysClamp, "")
@@ -6108,7 +6112,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("columns_min_spacing", &ImGuiStyle::ColumnsMinSpacing, "Minimum horizontal spacing between two columns. Preferably > (FramePadding.x + 1).")
         .def_rw("scrollbar_size", &ImGuiStyle::ScrollbarSize, "Width of the vertical scrollbar, Height of the horizontal scrollbar.")
         .def_rw("scrollbar_rounding", &ImGuiStyle::ScrollbarRounding, "Radius of grab corners for scrollbar.")
-        .def_rw("scrollbar_padding", &ImGuiStyle::ScrollbarPadding, "Padding of scrollbar grab within its frame (same for both axises).")
+        .def_rw("scrollbar_padding", &ImGuiStyle::ScrollbarPadding, "Padding of scrollbar grab within its frame (same for both axes).")
         .def_rw("grab_min_size", &ImGuiStyle::GrabMinSize, "Minimum width/height of a grab box for slider/scrollbar.")
         .def_rw("grab_rounding", &ImGuiStyle::GrabRounding, "Radius of grabs corners rounding. Set to 0.0 to have rectangular slider grabs.")
         .def_rw("layout_align", &ImGuiStyle::LayoutAlign, "Element alignment inside horizontal and vertical layouts (0.0 - left/top, 1.0 - right/bottom, 0.5 - center).")
@@ -6127,6 +6131,9 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tree_lines_flags", &ImGuiStyle::TreeLinesFlags, "Default way to draw lines connecting TreeNode hierarchy. ImGuiTreeNodeFlags_DrawLinesNone or ImGuiTreeNodeFlags_DrawLinesFull or ImGuiTreeNodeFlags_DrawLinesToNodes.")
         .def_rw("tree_lines_size", &ImGuiStyle::TreeLinesSize, "Thickness of outlines when using ImGuiTreeNodeFlags_DrawLines.")
         .def_rw("tree_lines_rounding", &ImGuiStyle::TreeLinesRounding, "Radius of lines connecting child nodes to the vertical line.")
+        .def_rw("drag_drop_target_rounding", &ImGuiStyle::DragDropTargetRounding, "Radius of the drag and drop target frame.")
+        .def_rw("drag_drop_target_border_size", &ImGuiStyle::DragDropTargetBorderSize, "Thickness of the drag and drop target border.")
+        .def_rw("drag_drop_target_padding", &ImGuiStyle::DragDropTargetPadding, "Size to expand the drag and drop target from actual target item size.")
         .def_rw("color_button_position", &ImGuiStyle::ColorButtonPosition, "Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.")
         .def_rw("button_text_align", &ImGuiStyle::ButtonTextAlign, "Alignment of button text when button is larger than text. Defaults to (0.5, 0.5) (centered).")
         .def_rw("selectable_text_align", &ImGuiStyle::SelectableTextAlign, "Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.")
@@ -6199,7 +6206,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("user_data", &ImGuiIO::UserData, "= None           // Store your own data.")
         .def_rw("fonts", &ImGuiIO::Fonts, "<auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.")
         .def_rw("font_default", &ImGuiIO::FontDefault, "= None           // Font to use on NewFrame(). Use None to uses Fonts->Fonts[0].")
-        .def_rw("font_allow_user_scaling", &ImGuiIO::FontAllowUserScaling, "= False          // [OBSOLETE] Allow user scaling text of individual window with CTRL+Wheel.")
+        .def_rw("font_allow_user_scaling", &ImGuiIO::FontAllowUserScaling, "= False          // Allow user scaling text of individual window with Ctrl+Wheel.")
         .def_rw("config_nav_swap_gamepad_buttons", &ImGuiIO::ConfigNavSwapGamepadButtons, "= False          // Swap Activate<>Cancel (A<>B) buttons, matching typical \"Nintendo/Japanese style\" gamepad layout.")
         .def_rw("config_nav_move_set_mouse_pos", &ImGuiIO::ConfigNavMoveSetMousePos, "= False          // Directional/tabbing navigation teleports the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is difficult. Will update io.MousePos and set io.WantSetMousePos=True.")
         .def_rw("config_nav_capture_keyboard", &ImGuiIO::ConfigNavCaptureKeyboard, "= True           // Sets io.WantCaptureKeyboard when io.NavActive is set.")
@@ -6208,14 +6215,15 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_nav_cursor_visible_auto", &ImGuiIO::ConfigNavCursorVisibleAuto, "= True           // Using directional navigation key makes the cursor visible. Mouse click hides the cursor.")
         .def_rw("config_nav_cursor_visible_always", &ImGuiIO::ConfigNavCursorVisibleAlways, "= False          // Navigation cursor is always visible.")
         .def_rw("config_docking_no_split", &ImGuiIO::ConfigDockingNoSplit, "= False          // Simplified docking mode: disable window splitting, so docking is limited to merging multiple windows together into tab-bars.")
+        .def_rw("config_docking_no_docking_over", &ImGuiIO::ConfigDockingNoDockingOver, "= False          // Simplified docking mode: disable window merging into a same tab-bar, so docking is limited to splitting windows.")
         .def_rw("config_docking_with_shift", &ImGuiIO::ConfigDockingWithShift, "= False          // Enable docking with holding Shift key (reduce visual noise, allows dropping in wider space)")
         .def_rw("config_docking_always_tab_bar", &ImGuiIO::ConfigDockingAlwaysTabBar, "= False          // [BETA] [FIXME: This currently creates regression with auto-sizing and general overhead] Make every single floating window display within a docking node.")
         .def_rw("config_docking_transparent_payload", &ImGuiIO::ConfigDockingTransparentPayload, "= False          // [BETA] Make window or viewport transparent when docking and only display docking boxes on the target viewport. Useful if rendering of multiple viewport cannot be synced. Best used with ConfigViewportsNoAutoMerge.")
         .def_rw("config_viewports_no_auto_merge", &ImGuiIO::ConfigViewportsNoAutoMerge, "= False;         // Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it. May also set ImGuiViewportFlags_NoAutoMerge on individual viewport.")
         .def_rw("config_viewports_no_task_bar_icon", &ImGuiIO::ConfigViewportsNoTaskBarIcon, "= False          // Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.")
         .def_rw("config_viewports_no_decoration", &ImGuiIO::ConfigViewportsNoDecoration, "= True           // Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).")
-        .def_rw("config_viewports_no_default_parent", &ImGuiIO::ConfigViewportsNoDefaultParent, "= False          // Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to True if you want the default to be 0, then all viewports will be top-level OS windows.")
-        .def_rw("config_viewport_platform_focus_sets_focus", &ImGuiIO::ConfigViewportPlatformFocusSetsImGuiFocus, "= True // When a platform window is focused (e.g. using Alt+Tab, clicking Platform Title Bar), apply corresponding focus on imgui windows (may clear focus/active id from imgui windows location in other platform windows). In principle this is better enabled but we provide an opt-out, because some Linux window managers tend to eagerly focus windows (e.g. on mouse hover, or even a simple window pos/size change).")
+        .def_rw("config_viewports_no_default_parent", &ImGuiIO::ConfigViewportsNoDefaultParent, "= True           // When False: set secondary viewports' ParentViewportId to main viewport ID by default. Expects the platform backend to setup a parent/child relationship between the OS windows based on this value. Some backend may ignore this. Set to True if you want viewports to automatically be parent of main viewport, otherwise all viewports will be top-level OS windows.")
+        .def_rw("config_viewports_platform_focus_sets_focus", &ImGuiIO::ConfigViewportsPlatformFocusSetsImGuiFocus, "= True // When a platform window is focused (e.g. using Alt+Tab, clicking Platform Title Bar), apply corresponding focus on imgui windows (may clear focus/active id from imgui windows location in other platform windows). In principle this is better enabled but we provide an opt-out, because some Linux window managers tend to eagerly focus windows (e.g. on mouse hover, or even a simple window pos/size change).")
         .def_rw("config_dpi_scale_fonts", &ImGuiIO::ConfigDpiScaleFonts, "= False          // [EXPERIMENTAL] Automatically overwrite style.FontScaleDpi when Monitor DPI changes. This will scale fonts but _NOT_ scale sizes/padding for now.")
         .def_rw("config_dpi_scale_viewports", &ImGuiIO::ConfigDpiScaleViewports, "= False          // [EXPERIMENTAL] Scale Dear ImGui and Platform Windows when Monitor DPI changes.")
         .def_rw("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor, "= False          // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor). Cannot be easily renamed to 'io.ConfigXXX' because this is frequently used by backend implementations.")
@@ -6226,7 +6234,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_drag_click_to_input_text", &ImGuiIO::ConfigDragClickToInputText, "= False          // [BETA] Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving). Not desirable on devices without a keyboard.")
         .def_rw("config_windows_resize_from_edges", &ImGuiIO::ConfigWindowsResizeFromEdges, "= True           // Enable resizing of windows from their edges and from the lower-left corner. This requires ImGuiBackendFlags_HasMouseCursors for better mouse cursor feedback. (This used to be a per-window ImGuiWindowFlags_ResizeFromAnySide flag)")
         .def_rw("config_windows_move_from_title_bar_only", &ImGuiIO::ConfigWindowsMoveFromTitleBarOnly, "= False      // Enable allowing to move windows only when clicking on their title bar. Does not apply to windows without a title bar.")
-        .def_rw("config_windows_copy_contents_with_ctrl_c", &ImGuiIO::ConfigWindowsCopyContentsWithCtrlC, "= False      // [EXPERIMENTAL] CTRL+C copy the contents of focused window into the clipboard. Experimental because: (1) has known issues with nested Begin/End pairs (2) text output quality varies (3) text output is in submission order rather than spatial order.")
+        .def_rw("config_windows_copy_contents_with_ctrl_c", &ImGuiIO::ConfigWindowsCopyContentsWithCtrlC, "= False      // [EXPERIMENTAL] Ctrl+C copy the contents of focused window into the clipboard. Experimental because: (1) has known issues with nested Begin/End pairs (2) text output quality varies (3) text output is in submission order rather than spatial order.")
         .def_rw("config_scrollbar_scroll_by_page", &ImGuiIO::ConfigScrollbarScrollByPage, "= True           // Enable scrolling page by page when clicking outside the scrollbar grab. When disabled, always scroll to clicked location. When enabled, Shift+Click scrolls to clicked location.")
         .def_rw("config_memory_compact_timer", &ImGuiIO::ConfigMemoryCompactTimer, "= 60.0          // Timer (in seconds) to free transient windows/tables memory buffers when unused. Set to -1.0 to disable.")
         .def_rw("mouse_double_click_time", &ImGuiIO::MouseDoubleClickTime, "= 0.30          // Time for a double-click, in seconds.")
@@ -6329,7 +6337,7 @@ void py_init_module_imgui_main(nb::module_& m)
                 return self.MouseDown;
             },
             "Mouse buttons: 0=left, 1=right, 2=middle + extras (ImGuiMouseButton_COUNT == 5). Dear ImGui mostly uses left and right buttons. Other buttons allow us to track if the mouse is being used by your application + available to user as a convenience via IsMouse** API.")
-        .def_rw("mouse_wheel", &ImGuiIO::MouseWheel, "Mouse wheel Vertical: 1 unit scrolls about 5 lines text. >0 scrolls Up, <0 scrolls Down. Hold SHIFT to turn vertical scroll into horizontal scroll.")
+        .def_rw("mouse_wheel", &ImGuiIO::MouseWheel, "Mouse wheel Vertical: 1 unit scrolls about 5 lines text. >0 scrolls Up, <0 scrolls Down. Hold Shift to turn vertical scroll into horizontal scroll.")
         .def_rw("mouse_wheel_h", &ImGuiIO::MouseWheelH, "Mouse wheel Horizontal. >0 scrolls Left, <0 scrolls Right. Most users don't have a mouse with a horizontal wheel, may not be filled by all backends.")
         .def_rw("mouse_source", &ImGuiIO::MouseSource, "Mouse actual input peripheral (Mouse/TouchScreen/Pen).")
         .def_rw("mouse_hovered_viewport", &ImGuiIO::MouseHoveredViewport, "(Optional) Modify using io.AddMouseViewportEvent(). With multi-viewports: viewport the OS mouse is hovering. If possible _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag is much better (few backends can handle that). Set io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport if you can provide this info. If you don't imgui will infer the value using the rectangles and last focused time of the viewports it knows about (ignoring other OS windows).")
@@ -6394,8 +6402,8 @@ void py_init_module_imgui_main(nb::module_& m)
                 return self.MouseDownOwnedUnlessPopupClose;
             },
             "Track if button was clicked inside a dear imgui window.")
-        .def_rw("mouse_wheel_request_axis_swap", &ImGuiIO::MouseWheelRequestAxisSwap, "On a non-Mac system, holding SHIFT requests WheelY to perform the equivalent of a WheelX event. On a Mac system this is already enforced by the system.")
-        .def_rw("mouse_ctrl_left_as_right_click", &ImGuiIO::MouseCtrlLeftAsRightClick, "(OSX) Set to True when the current click was a Ctrl+click that spawned a simulated right click")
+        .def_rw("mouse_wheel_request_axis_swap", &ImGuiIO::MouseWheelRequestAxisSwap, "On a non-Mac system, holding Shift requests WheelY to perform the equivalent of a WheelX event. On a Mac system this is already enforced by the system.")
+        .def_rw("mouse_ctrl_left_as_right_click", &ImGuiIO::MouseCtrlLeftAsRightClick, "(OSX) Set to True when the current click was a Ctrl+Click that spawned a simulated right click")
         .def_prop_ro("mouse_down_duration",
             [](ImGuiIO &self) -> nb::ndarray<float, nb::numpy, nb::shape<5>, nb::c_contig>
             {
@@ -6810,7 +6818,7 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::enum_<ImGuiMultiSelectFlags_>(m, "MultiSelectFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for BeginMultiSelect()")
             .value("none", ImGuiMultiSelectFlags_None, "")
             .value("single_select", ImGuiMultiSelectFlags_SingleSelect, "Disable selecting more than one item. This is available to allow single-selection code to share same code/logic if desired. It essentially disables the main purpose of BeginMultiSelect() tho!")
-            .value("no_select_all", ImGuiMultiSelectFlags_NoSelectAll, "Disable CTRL+A shortcut to select all.")
+            .value("no_select_all", ImGuiMultiSelectFlags_NoSelectAll, "Disable Ctrl+A shortcut to select all.")
             .value("no_range_select", ImGuiMultiSelectFlags_NoRangeSelect, "Disable Shift+selection mouse/keyboard support (useful for unordered 2D selection). With BoxSelect is also ensure contiguous SetRange requests are not combined into one. This allows not handling interpolation in SetRange requests.")
             .value("no_auto_select", ImGuiMultiSelectFlags_NoAutoSelect, "Disable selecting items when navigating (useful for e.g. supporting range-select in a list of checkboxes).")
             .value("no_auto_clear", ImGuiMultiSelectFlags_NoAutoClear, "Disable clearing selection when navigating or selecting another one (generally used with ImGuiMultiSelectFlags_NoAutoSelect. useful for e.g. supporting range-select in a list of checkboxes).")
@@ -6824,7 +6832,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("scope_rect", ImGuiMultiSelectFlags_ScopeRect, "Scope for _BoxSelect and _ClearOnClickVoid is rectangle encompassing BeginMultiSelect()/EndMultiSelect(). Use if BeginMultiSelect() is called multiple times in same window.")
             .value("select_on_click", ImGuiMultiSelectFlags_SelectOnClick, "Apply selection on mouse down when clicking on unselected item. (Default)")
             .value("select_on_click_release", ImGuiMultiSelectFlags_SelectOnClickRelease, "Apply selection on mouse release when clicking an unselected item. Allow dragging an unselected item without altering selection.")
-            .value("nav_wrap_x", ImGuiMultiSelectFlags_NavWrapX, "[Temporary] Enable navigation wrapping on X axis. Provided as a convenience because we don't have a design for the general Nav API for this yet. When the more general feature be public we may obsolete this flag in favor of new one.");
+            .value("nav_wrap_x", ImGuiMultiSelectFlags_NavWrapX, "[Temporary] Enable navigation wrapping on X axis. Provided as a convenience because we don't have a design for the general Nav API for this yet. When the more general feature be public we may obsolete this flag in favor of new one.")
+            .value("no_select_on_right_click", ImGuiMultiSelectFlags_NoSelectOnRightClick, "Disable default right-click processing, which selects item on mouse down, and is designed for context-menus.");
 
 
     auto pyClassImGuiMultiSelectIO =
@@ -7402,7 +7411,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("display_size", &ImDrawData::DisplaySize, "Size of the viewport to render (== GetMainViewport()->Size for the main viewport, == io.DisplaySize in most single-viewport applications)")
         .def_rw("framebuffer_scale", &ImDrawData::FramebufferScale, "Amount of pixels for each unit of DisplaySize. Copied from viewport->FramebufferScale (== io.DisplayFramebufferScale for main viewport). Generally (1,1) on normal display, (2,2) on OSX with Retina display.")
         .def_rw("owner_viewport", &ImDrawData::OwnerViewport, "Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).")
-        .def_rw("textures", &ImDrawData::Textures, "List of textures to update. Most of the times the list is shared by all ImDrawData, has only 1 texture and it doesn't need any update. This almost always points to ImGui::GetPlatformIO().Textures[]. May be overriden or set to None if you want to manually update textures.")
+        .def_rw("textures", &ImDrawData::Textures, "List of textures to update. Most of the times the list is shared by all ImDrawData, has only 1 texture and it doesn't need any update. This almost always points to ImGui::GetPlatformIO().Textures[]. May be overridden or set to None if you want to manually update textures.")
         .def(nb::init<>(),
             "Functions")
         .def("clear",
@@ -7488,11 +7497,11 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("set_tex_id",
             &ImTextureData::SetTexID,
             nb::arg("tex_id"),
-            "(private API)\n\n Call after creating or destroying the texture. Never modify TexID directly!")
+            "(private API)")
         .def("set_status",
             &ImTextureData::SetStatus,
             nb::arg("status"),
-            "(private API)\n\n Call after honoring a request. Never modify Status directly!")
+            "(private API)")
         ;
 
 
@@ -7501,7 +7510,7 @@ void py_init_module_imgui_main(nb::module_& m)
             (m, "ImFontConfig", "A font input/source (we may rename this to ImFontSource in the future)")
         .def_rw("font_data", &ImFontConfig::FontData, "// TTF/OTF data")
         .def_rw("font_data_size", &ImFontConfig::FontDataSize, "// TTF/OTF data size")
-        .def_rw("font_data_owned_by_atlas", &ImFontConfig::FontDataOwnedByAtlas, "True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).")
+        .def_rw("font_data_owned_by_atlas", &ImFontConfig::FontDataOwnedByAtlas, "True     // TTF/OTF data ownership taken by the owner ImFontAtlas (will delete memory itself).")
         .def_rw("merge_mode", &ImFontConfig::MergeMode, "False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.")
         .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH, "False    // Align every glyph AdvanceX to pixel boundaries. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.")
         .def_rw("pixel_snap_v", &ImFontConfig::PixelSnapV, "True     // Align Scaled GlyphOffset.y to pixel boundaries.")
@@ -7628,7 +7637,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("remove_font",
             &ImFontAtlas::RemoveFont, nb::arg("font"))
         .def("clear",
-            &ImFontAtlas::Clear, "Clear everything (input fonts, output glyphs/textures)")
+            &ImFontAtlas::Clear, "Clear everything (input fonts, output glyphs/textures).")
         .def("compact_cache",
             &ImFontAtlas::CompactCache, "Compact cached glyphs and texture.")
         .def("set_font_loader",
@@ -7713,7 +7722,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("descent", &ImFontBaked::Descent, "4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)")
         .def_rw("last_used_frame", &ImFontBaked::LastUsedFrame, "4  //     // Record of that time this was bounds")
         .def_rw("baked_id", &ImFontBaked::BakedId, "4     //     // Unique ID for this baked storage")
-        .def_rw("container_font", &ImFontBaked::ContainerFont, "4-8   // in  // Parent font")
+        .def_rw("owner_font", &ImFontBaked::OwnerFont, "4-8   // in  // Parent font")
         .def_rw("font_loader_datas", &ImFontBaked::FontLoaderDatas, "4-8   //     // Font loader opaque storage (per baked font * sources): single contiguous buffer allocated by imgui, passed to loader.")
         .def(nb::init<>())
         .def("clear_output_data",
@@ -7745,14 +7754,14 @@ void py_init_module_imgui_main(nb::module_& m)
 
     auto pyClassImFont =
         nb::class_<ImFont>
-            (m, "ImFont", " Font runtime data and rendering\n - ImFontAtlas automatically loads a default embedded font for you if you didn't load one manually.\n - Since 1.92.X a font may be rendered as any size! Therefore a font doesn't have one specific size.\n - Use 'font->GetFontBaked(size)' to retrieve the ImFontBaked* corresponding to a given size.\n - If you used g.Font + g.FontSize (which is frequent from the ImGui layer), you can use g.FontBaked as a shortcut, as g.FontBaked == g.Font->GetFontBaked(g.FontSize).")
+            (m, "ImFont", " Font runtime data and rendering\n - ImFontAtlas automatically loads a default embedded font for you if you didn't load one manually.\n - Since 1.92.0 a font may be rendered as any size! Therefore a font doesn't have one specific size.\n - Use 'font->GetFontBaked(size)' to retrieve the ImFontBaked* corresponding to a given size.\n - If you used g.Font + g.FontSize (which is frequent from the ImGui layer), you can use g.FontBaked as a shortcut, as g.FontBaked == g.Font->GetFontBaked(g.FontSize).")
         .def_rw("last_baked", &ImFont::LastBaked, "4-8   // Cache last bound baked. NEVER USE DIRECTLY. Use GetFontBaked().")
-        .def_rw("container_atlas", &ImFont::ContainerAtlas, "4-8   // What we have been loaded into.")
+        .def_rw("owner_atlas", &ImFont::OwnerAtlas, "4-8   // What we have been loaded into.")
         .def_rw("flags", &ImFont::Flags, "4     // Font flags.")
         .def_rw("current_rasterizer_density", &ImFont::CurrentRasterizerDensity, "Current rasterizer density. This is a varying state of the font.")
         .def_rw("font_id", &ImFont::FontId, "Unique identifier for the font")
         .def_rw("legacy_size", &ImFont::LegacySize, "4     // in  // Font size passed to AddFont(). Use for old code calling PushFont() expecting to use that size. (use ImGui::GetFontBaked() to get font baked at current bound size).")
-        .def_rw("sources", &ImFont::Sources, "16    // in  // List of sources. Pointers within ContainerAtlas->Sources[]")
+        .def_rw("sources", &ImFont::Sources, "16    // in  // List of sources. Pointers within OwnerAtlas->Sources[]")
         .def_rw("ellipsis_char", &ImFont::EllipsisChar, "2-4   // out // Character used for ellipsis rendering ('...').")
         .def_rw("fallback_char", &ImFont::FallbackChar, "2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')")
         .def_rw("ellipsis_auto_bake", &ImFont::EllipsisAutoBake, "1     //     // Mark when the \"...\" glyph needs to be generated.")
@@ -7826,6 +7835,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("work_size", &ImGuiViewport::WorkSize, "Work Area: Size of the viewport minus task bars, menu bars, status bars (<= Size)")
         .def_rw("dpi_scale", &ImGuiViewport::DpiScale, "1.0 = 96 DPI = No extra scale.")
         .def_rw("parent_viewport_id", &ImGuiViewport::ParentViewportId, "(Advanced) 0: no parent. Instruct the platform backend to setup a parent/child relationship between platform windows.")
+        .def_rw("parent_viewport", &ImGuiViewport::ParentViewport, "(Advanced) Direct shortcut to ImGui::FindViewportByID(ParentViewportId). None: no parent.")
         .def_rw("draw_data", &ImGuiViewport::DrawData, "The ImDrawData corresponding to this viewport. Valid after Render() and until the next call to NewFrame().")
         .def_rw("renderer_user_data", &ImGuiViewport::RendererUserData, "None* to hold custom data structure for the renderer (e.g. swap chain, framebuffers etc.). generally set by your Renderer_CreateWindow function.")
         .def_rw("platform_user_data", &ImGuiViewport::PlatformUserData, "None* to hold custom data structure for the OS / platform (e.g. windowing info, render context). generally set by your Platform_CreateWindow function.")
@@ -7850,7 +7860,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("platform_get_clipboard_text_fn", &ImGuiPlatformIO::Platform_GetClipboardTextFn, "")
         .def_rw("platform_set_clipboard_text_fn", &ImGuiPlatformIO::Platform_SetClipboardTextFn, "")
         .def_rw("platform_clipboard_user_data", &ImGuiPlatformIO::Platform_ClipboardUserData, "[/ADAPT_IMGUI_BUNDLE]")
-        .def_rw("platform_open_in_shell_fn", &ImGuiPlatformIO::Platform_OpenInShellFn, " Optional: Open link/folder/file in OS Shell\n (default to use ShellExecuteW() on Windows, system() on Linux/Mac)\n [ADAPT_IMGUI_BUNDLE]\nbool        (*Platform_OpenInShellFn)(ImGuiContext* ctx, const char* path);")
+        .def_rw("platform_open_in_shell_fn", &ImGuiPlatformIO::Platform_OpenInShellFn, " Optional: Open link/folder/file in OS Shell\n (default to use ShellExecuteW() on Windows, system() on Linux/Mac. expected to return False on failure, but some platforms may always return True)\n [ADAPT_IMGUI_BUNDLE]\nbool        (*Platform_OpenInShellFn)(ImGuiContext* ctx, const char* path);")
         .def_rw("platform_open_in_shell_user_data", &ImGuiPlatformIO::Platform_OpenInShellUserData, "[/ADAPT_IMGUI_BUNDLE]")
         .def_rw("platform_ime_user_data", &ImGuiPlatformIO::Platform_ImeUserData, "")
         .def_rw("platform_locale_decimal_point", &ImGuiPlatformIO::Platform_LocaleDecimalPoint, "'.'")
@@ -7860,6 +7870,10 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("monitors", &ImGuiPlatformIO::Monitors, " (Optional) Monitor list\n - Updated by: app/backend. Update every frame to dynamically support changing monitor or DPI configuration.\n - Used by: dear imgui to query DPI info, clamp popups/tooltips within same monitor and not have them straddle monitors.")
         .def_rw("textures", &ImGuiPlatformIO::Textures, "List of textures used by Dear ImGui (most often 1) + contents of external texture list is automatically appended into this.")
         .def_rw("viewports", &ImGuiPlatformIO::Viewports, "Main viewports, followed by all secondary viewports.")
+        .def("clear_platform_handlers",
+            &ImGuiPlatformIO::ClearPlatformHandlers, "Clear all Platform_XXX fields. Typically called on Platform Backend shutdown.")
+        .def("clear_renderer_handlers",
+            &ImGuiPlatformIO::ClearRendererHandlers, "Clear all Renderer_XXX fields. Typically called on Renderer Backend shutdown.")
         ;
 
 

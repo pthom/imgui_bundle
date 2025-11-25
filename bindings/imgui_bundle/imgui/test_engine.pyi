@@ -190,11 +190,12 @@ class TestActiveFunc(enum.IntFlag):
 
     # ImGuiTestActiveFunc_None,    /* original C++ signature */
     none = enum.auto()  # (= 0)
-    # ImGuiTestActiveFunc_GuiFunc,    /* original C++ signature */
-    gui_func = enum.auto()  # (= 1)
-    # ImGuiTestActiveFunc_TestFunc    /* original C++ signature */
-    # }
-    test_func = enum.auto()  # (= 2)
+    # ImGuiTestActiveFunc_GuiFunc,                /* original C++ signature */
+    gui_func = enum.auto()  # (= 1)  # == GuiFunc() handler
+    # ImGuiTestActiveFunc_TestFunc,               /* original C++ signature */
+    test_func = enum.auto()  # (= 2)  # == TestFunc() handler
+    # ImGuiTestActiveFunc_TeardownFunc,           /* original C++ signature */
+    teardown_func = enum.auto()  # (= 3)  # == TeardownFunc() handler
 
 class TestRunSpeed(enum.IntFlag):
     # ImGuiTestRunSpeed_Fast          = 0,        /* original C++ signature */
@@ -363,16 +364,16 @@ def find_item_debug_label(ui_ctx: Context, id_: ID) -> str:
 def check(file: str, func: str, line: int, flags: TestCheckFlags, result: bool, expr: str) -> bool:
     pass
 
-# IMGUI_API bool      ImGuiTestEngine_CheckStrOp(const char* file, const char* func, int line, ImGuiTestCheckFlags flags, const char* op, const char* lhs_var, const char* lhs_value, const char* rhs_var, const char* rhs_value, bool* out_result);    /* original C++ signature */
-def check_str_op(
+# IMGUI_API bool      ImGuiTestEngine_CheckOpStr(const char* file, const char* func, int line, ImGuiTestCheckFlags flags, const char* op, const char* lhs_desc, const char* lhs_value, const char* rhs_desc, const char* rhs_value, bool* out_result);    /* original C++ signature */
+def check_op_str(
     file: str,
     func: str,
     line: int,
     flags: TestCheckFlags,
     op: str,
-    lhs_var: str,
+    lhs_desc: str,
     lhs_value: str,
-    rhs_var: str,
+    rhs_desc: str,
     rhs_value: str,
     out_result: bool,
 ) -> Tuple[bool, bool]:
@@ -522,14 +523,6 @@ class TestEngineIO:
     config_break_on_error: bool = False  # Break debugger on test error by calling IM_DEBUG_BREAK()
     # bool                        ConfigKeepGuiFunc = false;    /* original C++ signature */
     config_keep_gui_func: bool = False  # Keep test GUI running at the end of the test
-    # ImGuiTestVerboseLevel       ConfigVerboseLevel = ImGuiTestVerboseLevel_Warning;    /* original C++ signature */
-    config_verbose_level: TestVerboseLevel = TestVerboseLevel_Warning
-    # ImGuiTestVerboseLevel       ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Info;    /* original C++ signature */
-    config_verbose_level_on_error: TestVerboseLevel = TestVerboseLevel_Info
-    # bool                        ConfigLogToTTY = false;    /* original C++ signature */
-    config_log_to_tty: bool = False
-    # bool                        ConfigLogToDebugger = false;    /* original C++ signature */
-    config_log_to_debugger: bool = False
     # bool                        ConfigRestoreFocusAfterTests = true;    /* original C++ signature */
     config_restore_focus_after_tests: bool = True  # Restore focus back after running tests
     # bool                        ConfigCaptureEnabled = true;    /* original C++ signature */
@@ -546,6 +539,18 @@ class TestEngineIO:
     config_fixed_delta_time: float = 0.0  # Use fixed delta time instead of calculating it from wall clock
     # int                         PerfStressAmount = 1;    /* original C++ signature */
     perf_stress_amount: int = 1  # Integer to scale the amount of items submitted in test
+
+    # Options: Logging
+    # ImGuiTestVerboseLevel       ConfigVerboseLevel = ImGuiTestVerboseLevel_Warning;    /* original C++ signature */
+    config_verbose_level: TestVerboseLevel = TestVerboseLevel_Warning
+    # ImGuiTestVerboseLevel       ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Info;    /* original C++ signature */
+    config_verbose_level_on_error: TestVerboseLevel = TestVerboseLevel_Info
+    # bool                        ConfigLogToTTY = false;    /* original C++ signature */
+    config_log_to_tty: bool = False  # Output log entries to TTY (in addition to Test Engine UI)
+    # bool                        ConfigLogToDebugger = false;    /* original C++ signature */
+    config_log_to_debugger: bool = False  # Output log entries to Debugger (in addition to Test Engine UI)
+    # void*                       ConfigLogToFuncUserData = NULL;    /* original C++ signature */
+    config_log_to_func_user_data: Any = None
 
     # Options: Speed of user simulation
     # float                       MouseSpeed = 600.0f;    /* original C++ signature */
@@ -610,7 +615,7 @@ class TestEngineIO:
     )
     # bool                        IsCapturing = false;    /* original C++ signature */
     is_capturing: bool = False  # Capture is in progress
-    # ImGuiTestEngineIO(bool ConfigSavedSettings = true, ImGuiTestRunSpeed ConfigRunSpeed = ImGuiTestRunSpeed_Fast, bool ConfigStopOnError = false, bool ConfigBreakOnError = false, bool ConfigKeepGuiFunc = false, ImGuiTestVerboseLevel ConfigVerboseLevel = ImGuiTestVerboseLevel_Warning, ImGuiTestVerboseLevel ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Info, bool ConfigLogToTTY = false, bool ConfigLogToDebugger = false, bool ConfigRestoreFocusAfterTests = true, bool ConfigCaptureEnabled = true, bool ConfigCaptureOnError = false, bool ConfigNoThrottle = false, bool ConfigMouseDrawCursor = true, float ConfigFixedDeltaTime = 0.0f, int PerfStressAmount = 1, float MouseSpeed = 600.0f, float MouseWobble = 0.25f, float ScrollSpeed = 1400.0f, float TypingSpeed = 20.0f, float ActionDelayShort = 0.15f, float ActionDelayStandard = 0.40f, float ConfigWatchdogWarning = 30.0f, float ConfigWatchdogKillTest = 60.0f, float ConfigWatchdogKillApp = FLT_MAX, ImGuiTestEngineExportFormat ExportResultsFormat = (ImGuiTestEngineExportFormat)0, bool CheckDrawDataIntegrity = false, bool IsRunningTests = false, bool IsRequestingMaxAppSpeed = false, bool IsCapturing = false);    /* original C++ signature */
+    # ImGuiTestEngineIO(bool ConfigSavedSettings = true, ImGuiTestRunSpeed ConfigRunSpeed = ImGuiTestRunSpeed_Fast, bool ConfigStopOnError = false, bool ConfigBreakOnError = false, bool ConfigKeepGuiFunc = false, bool ConfigRestoreFocusAfterTests = true, bool ConfigCaptureEnabled = true, bool ConfigCaptureOnError = false, bool ConfigNoThrottle = false, bool ConfigMouseDrawCursor = true, float ConfigFixedDeltaTime = 0.0f, int PerfStressAmount = 1, ImGuiTestVerboseLevel ConfigVerboseLevel = ImGuiTestVerboseLevel_Warning, ImGuiTestVerboseLevel ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Info, bool ConfigLogToTTY = false, bool ConfigLogToDebugger = false, float MouseSpeed = 600.0f, float MouseWobble = 0.25f, float ScrollSpeed = 1400.0f, float TypingSpeed = 20.0f, float ActionDelayShort = 0.15f, float ActionDelayStandard = 0.40f, float ConfigWatchdogWarning = 30.0f, float ConfigWatchdogKillTest = 60.0f, float ConfigWatchdogKillApp = FLT_MAX, ImGuiTestEngineExportFormat ExportResultsFormat = (ImGuiTestEngineExportFormat)0, bool CheckDrawDataIntegrity = false, bool IsRunningTests = false, bool IsRequestingMaxAppSpeed = false, bool IsCapturing = false);    /* original C++ signature */
     def __init__(
         self,
         config_saved_settings: bool = True,
@@ -618,10 +623,6 @@ class TestEngineIO:
         config_stop_on_error: bool = False,
         config_break_on_error: bool = False,
         config_keep_gui_func: bool = False,
-        config_verbose_level: TestVerboseLevel = TestVerboseLevel_Warning,
-        config_verbose_level_on_error: TestVerboseLevel = TestVerboseLevel_Info,
-        config_log_to_tty: bool = False,
-        config_log_to_debugger: bool = False,
         config_restore_focus_after_tests: bool = True,
         config_capture_enabled: bool = True,
         config_capture_on_error: bool = False,
@@ -629,6 +630,10 @@ class TestEngineIO:
         config_mouse_draw_cursor: bool = True,
         config_fixed_delta_time: float = 0.0,
         perf_stress_amount: int = 1,
+        config_verbose_level: TestVerboseLevel = TestVerboseLevel_Warning,
+        config_verbose_level_on_error: TestVerboseLevel = TestVerboseLevel_Info,
+        config_log_to_tty: bool = False,
+        config_log_to_debugger: bool = False,
         mouse_speed: float = 600.0,
         mouse_wobble: float = 0.25,
         scroll_speed: float = 1400.0,
@@ -747,11 +752,19 @@ class TestLog:
     def __init__(self) -> None:
         """Functions"""
         pass
-    # bool    IsEmpty() const         { return Buffer.empty(); }    /* original C++ signature */
+    # bool        IsEmpty() const     { return Buffer.empty(); }    /* original C++ signature */
     def is_empty(self) -> bool:
         """(private API)"""
         pass
-    # void    Clear();    /* original C++ signature */
+    # const char* GetText()           { return Buffer.c_str(); }    /* original C++ signature */
+    def get_text(self) -> str:
+        """(private API)"""
+        pass
+    # int         GetTextLen()        { return Buffer.size(); }    /* original C++ signature */
+    def get_text_len(self) -> int:
+        """(private API)"""
+        pass
+    # void        Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)"""
         pass
@@ -832,7 +845,11 @@ class Test:
         None  # GUI function (optional if your test are running over an existing GUI application)
     )
     # Function_TestRunner    TestFunc = nullptr;    /* original C++ signature */
-    test_func: Function_TestRunner = None  # Test function
+    test_func: Function_TestRunner = None  # Test driving function
+    # Function_TestRunner    TeardownFunc = nullptr;    /* original C++ signature */
+    teardown_func: Function_TestRunner = (
+        None  # Teardown driving function, executed after TestFunc _regardless_ of TestFunc failing.
+    )
     # void*                           UserData = nullptr;    /* original C++ signature */
     user_data: Any = (
         None  # General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to use this)
@@ -1220,7 +1237,7 @@ class TestContext:
     # ImGuiTest*              Test = nullptr;    /* original C++ signature */
     test: Test = None  # Test currently running
     # ImGuiTestOutput*        TestOutput = nullptr;    /* original C++ signature */
-    test_output: TestOutput = None  # Test output (generally == &Test->Output)
+    test_output: TestOutput = None  # Test output (generally == &Test->Output while executing TestFunc)
     # ImGuiTestOpFlags        OpFlags = ImGuiTestOpFlags_None;    /* original C++ signature */
     op_flags: TestOpFlags = (
         TestOpFlags_None  # Flags affecting all operation (supported: ImGuiTestOpFlags_NoAutoUncollapse)
@@ -2174,7 +2191,7 @@ class TestContext:
 
 # String compares
 
-# Floating point compares
+# Floating point compares using an epsilon
 
 # -------------------------------------------------------------------------
 
@@ -2416,7 +2433,9 @@ class TestInputs:
     host_esc_down: bool = False
     # float                       HostEscDownDuration = -1.0f;    /* original C++ signature */
     host_esc_down_duration: float = -1.0  # Maintain our own DownDuration for host/backend ESC key so we can abort.
-    # ImGuiTestInputs(ImVec2 MousePosValue = ImVec2(), ImVec2 MouseWheel = ImVec2(), ImGuiID MouseHoveredViewport = 0, int MouseButtonsValue = 0x00, bool HostEscDown = false, float HostEscDownDuration = -1.0f);    /* original C++ signature */
+    # ImVec2                      HostMousePos;    /* original C++ signature */
+    host_mouse_pos: ImVec2
+    # ImGuiTestInputs(ImVec2 MousePosValue = ImVec2(), ImVec2 MouseWheel = ImVec2(), ImGuiID MouseHoveredViewport = 0, int MouseButtonsValue = 0x00, bool HostEscDown = false, float HostEscDownDuration = -1.0f, ImVec2 HostMousePos = ImVec2());    /* original C++ signature */
     def __init__(
         self,
         mouse_pos_value: Optional[ImVec2Like] = None,
@@ -2425,6 +2444,7 @@ class TestInputs:
         mouse_buttons_value: int = 0x00,
         host_esc_down: bool = False,
         host_esc_down_duration: float = -1.0,
+        host_mouse_pos: Optional[ImVec2Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
 
@@ -2433,6 +2453,7 @@ class TestInputs:
             If any of the params below is None, then its default value below will be used:
                 * MousePosValue: ImVec2()
                 * MouseWheel: ImVec2()
+                * HostMousePos: ImVec2()
         """
         pass
 
@@ -2468,6 +2489,8 @@ class TestEngine:
     gather_task: TestGatherTask
     # ImGuiTestFindByLabelTask    FindByLabelTask;    /* original C++ signature */
     find_by_label_task: TestFindByLabelTask
+    # ImGuiTextBuffer             StringBuilderForChecks;    /* original C++ signature */
+    string_builder_for_checks: TextBuffer
 
     # ImGuiTestInputs             Inputs;    /* original C++ signature */
     # Inputs

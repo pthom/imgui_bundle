@@ -73,8 +73,9 @@ void py_init_module_imgui_test_engine(nb::module_& m)
     auto pyEnumTestActiveFunc =
         nb::enum_<ImGuiTestActiveFunc>(m, "TestActiveFunc", nb::is_arithmetic(), nb::is_flag(), "Stored in ImGuiTestContext: where we are currently running GuiFunc or TestFunc")
             .value("none", ImGuiTestActiveFunc_None, "")
-            .value("gui_func", ImGuiTestActiveFunc_GuiFunc, "")
-            .value("test_func", ImGuiTestActiveFunc_TestFunc, "");
+            .value("gui_func", ImGuiTestActiveFunc_GuiFunc, "== GuiFunc() handler")
+            .value("test_func", ImGuiTestActiveFunc_TestFunc, "== TestFunc() handler")
+            .value("teardown_func", ImGuiTestActiveFunc_TeardownFunc, "== TeardownFunc() handler");
 
 
     auto pyEnumTestRunSpeed =
@@ -195,19 +196,19 @@ void py_init_module_imgui_test_engine(nb::module_& m)
     m.def("check",
         ImGuiTestEngine_Check, nb::arg("file"), nb::arg("func"), nb::arg("line"), nb::arg("flags"), nb::arg("result"), nb::arg("expr"));
 
-    m.def("check_str_op",
-        [](const char * file, const char * func, int line, ImGuiTestCheckFlags flags, const char * op, const char * lhs_var, const char * lhs_value, const char * rhs_var, const char * rhs_value, bool out_result) -> std::tuple<bool, bool>
+    m.def("check_op_str",
+        [](const char * file, const char * func, int line, ImGuiTestCheckFlags flags, const char * op, const char * lhs_desc, const char * lhs_value, const char * rhs_desc, const char * rhs_value, bool out_result) -> std::tuple<bool, bool>
         {
-            auto ImGuiTestEngine_CheckStrOp_adapt_modifiable_immutable_to_return = [](const char * file, const char * func, int line, ImGuiTestCheckFlags flags, const char * op, const char * lhs_var, const char * lhs_value, const char * rhs_var, const char * rhs_value, bool out_result) -> std::tuple<bool, bool>
+            auto ImGuiTestEngine_CheckOpStr_adapt_modifiable_immutable_to_return = [](const char * file, const char * func, int line, ImGuiTestCheckFlags flags, const char * op, const char * lhs_desc, const char * lhs_value, const char * rhs_desc, const char * rhs_value, bool out_result) -> std::tuple<bool, bool>
             {
                 bool * out_result_adapt_modifiable = & out_result;
 
-                bool r = ImGuiTestEngine_CheckStrOp(file, func, line, flags, op, lhs_var, lhs_value, rhs_var, rhs_value, out_result_adapt_modifiable);
+                bool r = ImGuiTestEngine_CheckOpStr(file, func, line, flags, op, lhs_desc, lhs_value, rhs_desc, rhs_value, out_result_adapt_modifiable);
                 return std::make_tuple(r, out_result);
             };
 
-            return ImGuiTestEngine_CheckStrOp_adapt_modifiable_immutable_to_return(file, func, line, flags, op, lhs_var, lhs_value, rhs_var, rhs_value, out_result);
-        },     nb::arg("file"), nb::arg("func"), nb::arg("line"), nb::arg("flags"), nb::arg("op"), nb::arg("lhs_var"), nb::arg("lhs_value"), nb::arg("rhs_var"), nb::arg("rhs_value"), nb::arg("out_result"));
+            return ImGuiTestEngine_CheckOpStr_adapt_modifiable_immutable_to_return(file, func, line, flags, op, lhs_desc, lhs_value, rhs_desc, rhs_value, out_result);
+        },     nb::arg("file"), nb::arg("func"), nb::arg("line"), nb::arg("flags"), nb::arg("op"), nb::arg("lhs_desc"), nb::arg("lhs_value"), nb::arg("rhs_desc"), nb::arg("rhs_value"), nb::arg("out_result"));
 
     m.def("error",
         [](const char * file, const char * func, int line, ImGuiTestCheckFlags flags, const char * fmt) -> bool
@@ -330,7 +331,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
     auto pyClassImGuiTestEngineIO =
         nb::class_<ImGuiTestEngineIO>
             (m, "TestEngineIO", "")
-        .def("__init__", [](ImGuiTestEngineIO * self, bool ConfigSavedSettings = true, ImGuiTestRunSpeed ConfigRunSpeed = ImGuiTestRunSpeed_Fast, bool ConfigStopOnError = false, bool ConfigBreakOnError = false, bool ConfigKeepGuiFunc = false, ImGuiTestVerboseLevel ConfigVerboseLevel = ImGuiTestVerboseLevel_Warning, ImGuiTestVerboseLevel ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Info, bool ConfigLogToTTY = false, bool ConfigLogToDebugger = false, bool ConfigRestoreFocusAfterTests = true, bool ConfigCaptureEnabled = true, bool ConfigCaptureOnError = false, bool ConfigNoThrottle = false, bool ConfigMouseDrawCursor = true, float ConfigFixedDeltaTime = 0.0f, int PerfStressAmount = 1, float MouseSpeed = 600.0f, float MouseWobble = 0.25f, float ScrollSpeed = 1400.0f, float TypingSpeed = 20.0f, float ActionDelayShort = 0.15f, float ActionDelayStandard = 0.40f, float ConfigWatchdogWarning = 30.0f, float ConfigWatchdogKillTest = 60.0f, float ConfigWatchdogKillApp = FLT_MAX, ImGuiTestEngineExportFormat ExportResultsFormat = (ImGuiTestEngineExportFormat)0, bool CheckDrawDataIntegrity = false, bool IsRunningTests = false, bool IsRequestingMaxAppSpeed = false, bool IsCapturing = false)
+        .def("__init__", [](ImGuiTestEngineIO * self, bool ConfigSavedSettings = true, ImGuiTestRunSpeed ConfigRunSpeed = ImGuiTestRunSpeed_Fast, bool ConfigStopOnError = false, bool ConfigBreakOnError = false, bool ConfigKeepGuiFunc = false, bool ConfigRestoreFocusAfterTests = true, bool ConfigCaptureEnabled = true, bool ConfigCaptureOnError = false, bool ConfigNoThrottle = false, bool ConfigMouseDrawCursor = true, float ConfigFixedDeltaTime = 0.0f, int PerfStressAmount = 1, ImGuiTestVerboseLevel ConfigVerboseLevel = ImGuiTestVerboseLevel_Warning, ImGuiTestVerboseLevel ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Info, bool ConfigLogToTTY = false, bool ConfigLogToDebugger = false, float MouseSpeed = 600.0f, float MouseWobble = 0.25f, float ScrollSpeed = 1400.0f, float TypingSpeed = 20.0f, float ActionDelayShort = 0.15f, float ActionDelayStandard = 0.40f, float ConfigWatchdogWarning = 30.0f, float ConfigWatchdogKillTest = 60.0f, float ConfigWatchdogKillApp = FLT_MAX, ImGuiTestEngineExportFormat ExportResultsFormat = (ImGuiTestEngineExportFormat)0, bool CheckDrawDataIntegrity = false, bool IsRunningTests = false, bool IsRequestingMaxAppSpeed = false, bool IsCapturing = false)
         {
             new (self) ImGuiTestEngineIO();  // placement new
             auto r_ctor_ = self;
@@ -339,10 +340,6 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             r_ctor_->ConfigStopOnError = ConfigStopOnError;
             r_ctor_->ConfigBreakOnError = ConfigBreakOnError;
             r_ctor_->ConfigKeepGuiFunc = ConfigKeepGuiFunc;
-            r_ctor_->ConfigVerboseLevel = ConfigVerboseLevel;
-            r_ctor_->ConfigVerboseLevelOnError = ConfigVerboseLevelOnError;
-            r_ctor_->ConfigLogToTTY = ConfigLogToTTY;
-            r_ctor_->ConfigLogToDebugger = ConfigLogToDebugger;
             r_ctor_->ConfigRestoreFocusAfterTests = ConfigRestoreFocusAfterTests;
             r_ctor_->ConfigCaptureEnabled = ConfigCaptureEnabled;
             r_ctor_->ConfigCaptureOnError = ConfigCaptureOnError;
@@ -350,6 +347,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             r_ctor_->ConfigMouseDrawCursor = ConfigMouseDrawCursor;
             r_ctor_->ConfigFixedDeltaTime = ConfigFixedDeltaTime;
             r_ctor_->PerfStressAmount = PerfStressAmount;
+            r_ctor_->ConfigVerboseLevel = ConfigVerboseLevel;
+            r_ctor_->ConfigVerboseLevelOnError = ConfigVerboseLevelOnError;
+            r_ctor_->ConfigLogToTTY = ConfigLogToTTY;
+            r_ctor_->ConfigLogToDebugger = ConfigLogToDebugger;
             r_ctor_->MouseSpeed = MouseSpeed;
             r_ctor_->MouseWobble = MouseWobble;
             r_ctor_->ScrollSpeed = ScrollSpeed;
@@ -365,7 +366,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             r_ctor_->IsRequestingMaxAppSpeed = IsRequestingMaxAppSpeed;
             r_ctor_->IsCapturing = IsCapturing;
         },
-        nb::arg("config_saved_settings") = true, nb::arg("config_run_speed") = ImGuiTestRunSpeed_Fast, nb::arg("config_stop_on_error") = false, nb::arg("config_break_on_error") = false, nb::arg("config_keep_gui_func") = false, nb::arg("config_verbose_level") = ImGuiTestVerboseLevel_Warning, nb::arg("config_verbose_level_on_error") = ImGuiTestVerboseLevel_Info, nb::arg("config_log_to_tty") = false, nb::arg("config_log_to_debugger") = false, nb::arg("config_restore_focus_after_tests") = true, nb::arg("config_capture_enabled") = true, nb::arg("config_capture_on_error") = false, nb::arg("config_no_throttle") = false, nb::arg("config_mouse_draw_cursor") = true, nb::arg("config_fixed_delta_time") = 0.0f, nb::arg("perf_stress_amount") = 1, nb::arg("mouse_speed") = 600.0f, nb::arg("mouse_wobble") = 0.25f, nb::arg("scroll_speed") = 1400.0f, nb::arg("typing_speed") = 20.0f, nb::arg("action_delay_short") = 0.15f, nb::arg("action_delay_standard") = 0.40f, nb::arg("config_watchdog_warning") = 30.0f, nb::arg("config_watchdog_kill_test") = 60.0f, nb::arg("config_watchdog_kill_app") = FLT_MAX, nb::arg("export_results_format") = (ImGuiTestEngineExportFormat)0, nb::arg("check_draw_data_integrity") = false, nb::arg("is_running_tests") = false, nb::arg("is_requesting_max_app_speed") = false, nb::arg("is_capturing") = false
+        nb::arg("config_saved_settings") = true, nb::arg("config_run_speed") = ImGuiTestRunSpeed_Fast, nb::arg("config_stop_on_error") = false, nb::arg("config_break_on_error") = false, nb::arg("config_keep_gui_func") = false, nb::arg("config_restore_focus_after_tests") = true, nb::arg("config_capture_enabled") = true, nb::arg("config_capture_on_error") = false, nb::arg("config_no_throttle") = false, nb::arg("config_mouse_draw_cursor") = true, nb::arg("config_fixed_delta_time") = 0.0f, nb::arg("perf_stress_amount") = 1, nb::arg("config_verbose_level") = ImGuiTestVerboseLevel_Warning, nb::arg("config_verbose_level_on_error") = ImGuiTestVerboseLevel_Info, nb::arg("config_log_to_tty") = false, nb::arg("config_log_to_debugger") = false, nb::arg("mouse_speed") = 600.0f, nb::arg("mouse_wobble") = 0.25f, nb::arg("scroll_speed") = 1400.0f, nb::arg("typing_speed") = 20.0f, nb::arg("action_delay_short") = 0.15f, nb::arg("action_delay_standard") = 0.40f, nb::arg("config_watchdog_warning") = 30.0f, nb::arg("config_watchdog_kill_test") = 60.0f, nb::arg("config_watchdog_kill_app") = FLT_MAX, nb::arg("export_results_format") = (ImGuiTestEngineExportFormat)0, nb::arg("check_draw_data_integrity") = false, nb::arg("is_running_tests") = false, nb::arg("is_requesting_max_app_speed") = false, nb::arg("is_capturing") = false
         )
         .def_rw("src_file_open_user_data", &ImGuiTestEngineIO::SrcFileOpenUserData, "(Optional) User data for SrcFileOpenFunc")
         .def_rw("screen_capture_user_data", &ImGuiTestEngineIO::ScreenCaptureUserData, "(Optional) User data for ScreenCaptureFunc")
@@ -374,10 +375,6 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("config_stop_on_error", &ImGuiTestEngineIO::ConfigStopOnError, "Stop queued tests on test error")
         .def_rw("config_break_on_error", &ImGuiTestEngineIO::ConfigBreakOnError, "Break debugger on test error by calling IM_DEBUG_BREAK()")
         .def_rw("config_keep_gui_func", &ImGuiTestEngineIO::ConfigKeepGuiFunc, "Keep test GUI running at the end of the test")
-        .def_rw("config_verbose_level", &ImGuiTestEngineIO::ConfigVerboseLevel, "")
-        .def_rw("config_verbose_level_on_error", &ImGuiTestEngineIO::ConfigVerboseLevelOnError, "")
-        .def_rw("config_log_to_tty", &ImGuiTestEngineIO::ConfigLogToTTY, "")
-        .def_rw("config_log_to_debugger", &ImGuiTestEngineIO::ConfigLogToDebugger, "")
         .def_rw("config_restore_focus_after_tests", &ImGuiTestEngineIO::ConfigRestoreFocusAfterTests, "Restore focus back after running tests")
         .def_rw("config_capture_enabled", &ImGuiTestEngineIO::ConfigCaptureEnabled, "Master enable flags for capturing and saving captures. Disable to avoid e.g. lengthy saving of large PNG files.")
         .def_rw("config_capture_on_error", &ImGuiTestEngineIO::ConfigCaptureOnError, "")
@@ -385,6 +382,11 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("config_mouse_draw_cursor", &ImGuiTestEngineIO::ConfigMouseDrawCursor, "Enable drawing of Dear ImGui software mouse cursor when running tests")
         .def_rw("config_fixed_delta_time", &ImGuiTestEngineIO::ConfigFixedDeltaTime, "Use fixed delta time instead of calculating it from wall clock")
         .def_rw("perf_stress_amount", &ImGuiTestEngineIO::PerfStressAmount, "Integer to scale the amount of items submitted in test")
+        .def_rw("config_verbose_level", &ImGuiTestEngineIO::ConfigVerboseLevel, "")
+        .def_rw("config_verbose_level_on_error", &ImGuiTestEngineIO::ConfigVerboseLevelOnError, "")
+        .def_rw("config_log_to_tty", &ImGuiTestEngineIO::ConfigLogToTTY, "Output log entries to TTY (in addition to Test Engine UI)")
+        .def_rw("config_log_to_debugger", &ImGuiTestEngineIO::ConfigLogToDebugger, "Output log entries to Debugger (in addition to Test Engine UI)")
+        .def_rw("config_log_to_func_user_data", &ImGuiTestEngineIO::ConfigLogToFuncUserData, "")
         .def_rw("mouse_speed", &ImGuiTestEngineIO::MouseSpeed, "Mouse speed (pixel/second) when not running in fast mode")
         .def_rw("mouse_wobble", &ImGuiTestEngineIO::MouseWobble, "(0.0..1.0) How much wobble to apply to the mouse (pixels per pixel of move distance) when not running in fast mode")
         .def_rw("scroll_speed", &ImGuiTestEngineIO::ScrollSpeed, "Scroll speed (pixel/second) when not running in fast mode")
@@ -491,6 +493,12 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             "Functions")
         .def("is_empty",
             &ImGuiTestLog::IsEmpty, "(private API)")
+        .def("get_text",
+            &ImGuiTestLog::GetText,
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("get_text_len",
+            &ImGuiTestLog::GetTextLen, "(private API)")
         .def("clear",
             &ImGuiTestLog::Clear, "(private API)")
         .def("extract_lines_for_verbose_levels",
@@ -537,7 +545,8 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("arg_variant", &ImGuiTest::ArgVariant, "User parameter. Generally we use it to run variations of a same test by sharing GuiFunc/TestFunc")
         .def_rw("flags", &ImGuiTest::Flags, "See ImGuiTestFlags_")
         .def_rw("gui_func", &ImGuiTest::GuiFunc, "GUI function (optional if your test are running over an existing GUI application)")
-        .def_rw("test_func", &ImGuiTest::TestFunc, "Test function")
+        .def_rw("test_func", &ImGuiTest::TestFunc, "Test driving function")
+        .def_rw("teardown_func", &ImGuiTest::TeardownFunc, "Teardown driving function, executed after TestFunc _regardless_ of TestFunc failing.")
         .def_rw("user_data", &ImGuiTest::UserData, "General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to use this)")
         .def_rw("source_file", &ImGuiTest::SourceFile, "__FILE__")
         .def_rw("source_line", &ImGuiTest::SourceLine, "__LINE__")
@@ -786,7 +795,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("ui_context", &ImGuiTestContext::UiContext, "UI context")
         .def_rw("engine_io", &ImGuiTestContext::EngineIO, "Test Engine IO/settings")
         .def_rw("test", &ImGuiTestContext::Test, "Test currently running")
-        .def_rw("test_output", &ImGuiTestContext::TestOutput, "Test output (generally == &Test->Output)")
+        .def_rw("test_output", &ImGuiTestContext::TestOutput, "Test output (generally == &Test->Output while executing TestFunc)")
         .def_rw("op_flags", &ImGuiTestContext::OpFlags, "Flags affecting all operation (supported: ImGuiTestOpFlags_NoAutoUncollapse)")
         .def_rw("perf_stress_amount", &ImGuiTestContext::PerfStressAmount, "Convenience copy of engine->IO.PerfStressAmount")
         .def_rw("frame_count", &ImGuiTestContext::FrameCount, "Test frame count (restarts from zero every time)")
@@ -1675,7 +1684,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
     auto pyClassImGuiTestInputs =
         nb::class_<ImGuiTestInputs>
             (m, "TestInputs", "")
-        .def("__init__", [](ImGuiTestInputs * self, const std::optional<const ImVec2> & MousePosValue = std::nullopt, const std::optional<const ImVec2> & MouseWheel = std::nullopt, ImGuiID MouseHoveredViewport = 0, int MouseButtonsValue = 0x00, bool HostEscDown = false, float HostEscDownDuration = -1.0f)
+        .def("__init__", [](ImGuiTestInputs * self, const std::optional<const ImVec2> & MousePosValue = std::nullopt, const std::optional<const ImVec2> & MouseWheel = std::nullopt, ImGuiID MouseHoveredViewport = 0, int MouseButtonsValue = 0x00, bool HostEscDown = false, float HostEscDownDuration = -1.0f, const std::optional<const ImVec2> & HostMousePos = std::nullopt)
         {
             new (self) ImGuiTestInputs();  // placement new
             auto r_ctor_ = self;
@@ -1691,8 +1700,12 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             r_ctor_->MouseButtonsValue = MouseButtonsValue;
             r_ctor_->HostEscDown = HostEscDown;
             r_ctor_->HostEscDownDuration = HostEscDownDuration;
+            if (HostMousePos.has_value())
+                r_ctor_->HostMousePos = HostMousePos.value();
+            else
+                r_ctor_->HostMousePos = ImVec2();
         },
-        nb::arg("mouse_pos_value").none() = nb::none(), nb::arg("mouse_wheel").none() = nb::none(), nb::arg("mouse_hovered_viewport") = 0, nb::arg("mouse_buttons_value") = 0x00, nb::arg("host_esc_down") = false, nb::arg("host_esc_down_duration") = -1.0f
+        nb::arg("mouse_pos_value").none() = nb::none(), nb::arg("mouse_wheel").none() = nb::none(), nb::arg("mouse_hovered_viewport") = 0, nb::arg("mouse_buttons_value") = 0x00, nb::arg("host_esc_down") = false, nb::arg("host_esc_down_duration") = -1.0f, nb::arg("host_mouse_pos").none() = nb::none()
         )
         .def_rw("mouse_pos_value", &ImGuiTestInputs::MousePosValue, "Own non-rounded copy of MousePos in order facilitate simulating mouse movement very slow speed and high-framerate")
         .def_rw("mouse_wheel", &ImGuiTestInputs::MouseWheel, "")
@@ -1700,6 +1713,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("mouse_buttons_value", &ImGuiTestInputs::MouseButtonsValue, "FIXME-TESTS: Use simulated_io.MouseDown[] ?")
         .def_rw("host_esc_down", &ImGuiTestInputs::HostEscDown, "")
         .def_rw("host_esc_down_duration", &ImGuiTestInputs::HostEscDownDuration, "Maintain our own DownDuration for host/backend ESC key so we can abort.")
+        .def_rw("host_mouse_pos", &ImGuiTestInputs::HostMousePos, "")
         ;
 
 
@@ -1719,6 +1733,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("tests_source_lines_dirty", &ImGuiTestEngine::TestsSourceLinesDirty, "")
         .def_rw("gather_task", &ImGuiTestEngine::GatherTask, "")
         .def_rw("find_by_label_task", &ImGuiTestEngine::FindByLabelTask, "")
+        .def_rw("string_builder_for_checks", &ImGuiTestEngine::StringBuilderForChecks, "")
         .def_rw("inputs", &ImGuiTestEngine::Inputs, "Inputs")
         .def_rw("abort", &ImGuiTestEngine::Abort, "")
         .def_rw("ui_select_and_scroll_to_test", &ImGuiTestEngine::UiSelectAndScrollToTest, "")
