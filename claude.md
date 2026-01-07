@@ -10,7 +10,6 @@ The following sections will contain lots of links:
 * those which are marked with "please do read" are important to understand the project, and you should read them right away.
 * those which are marked with "if needed" are less important, and you can read them later if you need to help users with specific questions.
 
-
 # Docs for ImGui Bundle and Hello ImGui
 
 ImGui Bundle is based on Dear ImGui, and can also use Hello ImGui as a base, in order to ease the creation of interactive applications.
