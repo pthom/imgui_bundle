@@ -108,7 +108,7 @@ void py_init_module_imcoolbar(nb::module_& m)
             return BeginCoolBar_adapt_mutable_param_with_default_value(vLabel, vCBFlags, vConfig, vFlags);
         },
         nb::arg("v_label"), nb::arg("v_cb_flags").none() = nb::none(), nb::arg("v_config").none() = nb::none(), nb::arg("v_flags").none() = nb::none(),
-        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * vCBFlags: ImCoolBarFlags_.vertical\n        * vConfig: initialized with default value\n        * vFlags: ImGuiWindowFlags_None");
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * vCBFlags: ImCoolBarFlags_.vertical\n        * vConfig: initialized with default value\n        * vFlags: WindowFlags_.none");
 
     m.def("end_cool_bar",
         ImGui::EndCoolBar);

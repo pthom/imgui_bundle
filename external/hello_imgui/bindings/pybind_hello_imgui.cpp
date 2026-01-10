@@ -1479,6 +1479,13 @@ void py_init_module_hello_imgui(nb::module_& m)
             .value("null", HelloImGui::RendererBackendType::Null, "");
 
 
+    m.def("platform_backend_type_to_string",
+        HelloImGui::PlatformBackendTypeToString, nb::arg("platform_backend_type"));
+
+    m.def("renderer_backend_type_to_string",
+        HelloImGui::RendererBackendTypeToString, nb::arg("renderer_backend_type"));
+
+
     auto pyEnumIniFolderType =
         nb::enum_<HelloImGui::IniFolderType>(m, "IniFolderType", nb::is_arithmetic(), " IniFolderType is an enum which describes where is the base path to store\n the ini file for the application settings.\n\n You can use IniFolderLocation(iniFolderType) to get the corresponding path.\n\n RunnerParams contains the following members, which are used to compute\n the ini file location:\n     iniFolderType           (IniFolderType::CurrentFolder by default)\n     iniFilename             (empty string by default)\n     iniFilename_useAppWindowTitle\n         (True by default: iniFilename is derived from\n          appWindowParams.windowTitle)\n\n iniFilename may contain a subfolder\n (which will be created inside the iniFolderType folder if needed)\n")
             .value("current_folder", HelloImGui::IniFolderType::CurrentFolder, " CurrentFolder: the folder where the application is executed\n (convenient for development, but not recommended for production)")
@@ -1497,7 +1504,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
 
     auto pyEnumFpsIdlingMode =
-        nb::enum_<HelloImGui::FpsIdlingMode>(m, "FpsIdlingMode", nb::is_arithmetic(), " FpsIdlingMode is an enum that describes the different modes of idling when rendering the GUI.\n - Sleep: the application will sleep when idling to reduce CPU usage.\n - EarlyReturn: rendering will return immediately when idling.\n   This is specifically designed for event-driven, and real-time applications.\n   Avoid using it in a tight loop without pauses, as it may cause excessive CPU consumption.\n - Auto: use platform-specific default behavior.\n    On most platforms, it will sleep. On Emscripten, `Render()` will return immediately\n    to avoid blocking the main thread.\n Note: you can override the default behavior by explicitly setting Sleep or EarlyReturn.")
+        nb::enum_<HelloImGui::FpsIdlingMode>(m, "FpsIdlingMode", nb::is_arithmetic(), " FpsIdlingMode is an enum that describes the different modes of idling\n when rendering the GUI.\n\n - Sleep:\n     The application sleeps when idling in order to reduce CPU usage.\n\n - EarlyReturn:\n     Rendering returns immediately when idling.\n     This is designed for event-driven or real-time applications,\n     including Jupyter/async usage and web applications.\n     Avoid using EarlyReturn inside a tight CPU loop without pauses,\n     as it may cause excessive CPU consumption.\n\n - Auto:\n     Use platform-specific default behavior.\n     On most native platforms, it will sleep.\n     On Emscripten, Render() will always return immediately\n     to avoid blocking the main browser thread.\n\n Note: you can override the default behavior by explicitly choosing Sleep or EarlyReturn.")
             .value("sleep", HelloImGui::FpsIdlingMode::Sleep, "")
             .value("early_return", HelloImGui::FpsIdlingMode::EarlyReturn, "")
             .value("auto", HelloImGui::FpsIdlingMode::Auto, "");
@@ -1505,8 +1512,8 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     auto pyClassFpsIdling =
         nb::class_<HelloImGui::FpsIdling>
-            (m, "FpsIdling", "FpsIdling is a struct that contains Fps Idling parameters")
-        .def("__init__", [](HelloImGui::FpsIdling * self, float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false, HelloImGui::FpsIdlingMode fpsIdlingMode = HelloImGui::FpsIdlingMode::Auto)
+            (m, "FpsIdling", " FpsIdling is a struct that contains parameters controlling the application's\n frame pacing, idling behavior, and performance.\n\n It provides tools to:\n   - lower CPU/GPU usage during inactivity,\n   - control maximum refresh speed,\n   - enable/disable synchronization to the monitor refresh rate,\n   - adapt frame pacing for special environments (notebooks, web, etc.).")
+        .def("__init__", [](HelloImGui::FpsIdling * self, float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false, HelloImGui::FpsIdlingMode fpsIdlingMode = HelloImGui::FpsIdlingMode::Auto, bool vsyncToMonitor = true, float fpsMax = 0.f)
         {
             new (self) HelloImGui::FpsIdling();  // placement new
             auto r_ctor_ = self;
@@ -1516,15 +1523,19 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->isIdling = isIdling;
             r_ctor_->rememberEnableIdling = rememberEnableIdling;
             r_ctor_->fpsIdlingMode = fpsIdlingMode;
+            r_ctor_->vsyncToMonitor = vsyncToMonitor;
+            r_ctor_->fpsMax = fpsMax;
         },
-        nb::arg("fps_idle") = 9.f, nb::arg("time_active_after_last_event") = 3.f, nb::arg("enable_idling") = true, nb::arg("is_idling") = false, nb::arg("remember_enable_idling") = false, nb::arg("fps_idling_mode") = HelloImGui::FpsIdlingMode::Auto
+        nb::arg("fps_idle") = 9.f, nb::arg("time_active_after_last_event") = 3.f, nb::arg("enable_idling") = true, nb::arg("is_idling") = false, nb::arg("remember_enable_idling") = false, nb::arg("fps_idling_mode") = HelloImGui::FpsIdlingMode::Auto, nb::arg("vsync_to_monitor") = true, nb::arg("fps_max") = 0.f
         )
-        .def_rw("fps_idle", &HelloImGui::FpsIdling::fpsIdle, " `fpsIdle`: _float, default=9_.\n  ImGui applications can consume a lot of CPU, since they update the screen\n  very frequently. In order to reduce the CPU usage, the FPS is reduced when\n  no user interaction is detected.\n  This is ok most of the time but if you are displaying animated widgets\n  (for example a live video), you may want to ask for a faster refresh:\n  either increase fpsIdle, or set it to 0 for maximum refresh speed\n  (you can change this value during the execution depending on your application\n  refresh needs)")
-        .def_rw("time_active_after_last_event", &HelloImGui::FpsIdling::timeActiveAfterLastEvent, " `timeActiveAfterLastEvent`: _float, default=3._.\n  Time in seconds after the last event before the application is considered idling.")
-        .def_rw("enable_idling", &HelloImGui::FpsIdling::enableIdling, " `enableIdling`: _bool, default=true_.\n  Disable idling by setting this to False.\n  (this can be changed dynamically during execution)")
-        .def_rw("is_idling", &HelloImGui::FpsIdling::isIdling, " `isIdling`: bool (dynamically updated during execution)\n  This bool will be updated during the application execution,\n  and will be set to True when it is idling.")
-        .def_rw("remember_enable_idling", &HelloImGui::FpsIdling::rememberEnableIdling, " `rememberEnableIdling`: _bool, default=true_.\n  If True, the last value of enableIdling is restored from the settings at startup.")
-        .def_rw("fps_idling_mode", &HelloImGui::FpsIdling::fpsIdlingMode, " `fpsIdlingMode`: _FpsIdlingMode, default=FpsIdlingMode::Automatic_.\n Sets the mode of idling when rendering the GUI (Sleep, EarlyReturn, Automatic)")
+        .def_rw("fps_idle", &HelloImGui::FpsIdling::fpsIdle, " `fpsIdle`: _float, default = 9_.\n\n When the application is idling (no user interaction detected), its FPS\n will be reduced to this value in order to save CPU and GPU resources.\n\n For animated or real-time widgets (e.g., live video), you may need a\n higher idle refresh rate, or even disable idling entirely.\n\n Set fpsIdle = 0. for maximum refresh speed during idling.")
+        .def_rw("time_active_after_last_event", &HelloImGui::FpsIdling::timeActiveAfterLastEvent, " `timeActiveAfterLastEvent`: _float, default = 3._.\n\n The duration (in seconds) after the last user event before the\n application switches to idling mode.")
+        .def_rw("enable_idling", &HelloImGui::FpsIdling::enableIdling, " `enableIdling`: _bool, default = true_.\n\n Enables or disables idling. When disabled, the application renders at\n full speed regardless of user activity.\n\n This can be changed dynamically during execution.")
+        .def_rw("is_idling", &HelloImGui::FpsIdling::isIdling, " `isIdling`: _bool (updated dynamically)_.\n\n This boolean is updated internally at runtime, and becomes True when\n the application is considered idle.")
+        .def_rw("remember_enable_idling", &HelloImGui::FpsIdling::rememberEnableIdling, " `rememberEnableIdling`: _bool, default = False.\n\n If True, the value of enableIdling will be restored from previous\n saved settings on startup.")
+        .def_rw("fps_idling_mode", &HelloImGui::FpsIdling::fpsIdlingMode, " `fpsIdlingMode`: _FpsIdlingMode, default = FpsIdlingMode::Auto_.\n\n Controls how idling is implemented internally:\n   - Sleep: sleep while idling (minimizes CPU usage)\n   - EarlyReturn: return immediately when idling (best for notebooks and async use)\n   - Auto: platform-specific behavior")
+        .def_rw("vsync_to_monitor", &HelloImGui::FpsIdling::vsyncToMonitor, " `vsyncToMonitor`: _bool, default = true_.\n\n If True, rendering is synchronized with the monitor refresh rate (commonly\n known as *VSync*). This limits the frame rate to the display frequency\n (e.g., 60 Hz, 120 Hz) and prevents unnecessary CPU/GPU load.\n *Only implemented with OpenGL*\n\n If False, rendering runs as fast as possible, or is limited by `fpsMax`.\n This is useful for benchmarking, offscreen rendering, or Jupyter/async workflows.\n\n Internally, this maps to the backend swap interval (e.g. glfwSwapInterval).")
+        .def_rw("fps_max", &HelloImGui::FpsIdling::fpsMax, " `fpsMax`: _float, default = 0._ (unlimited).\n\n Sets an explicit upper limit on the frame rate when not idling.\n\n This is particularly useful when:\n   - vsyncToMonitor is False,\n   - you want to avoid >1000 FPS rendering loops,\n   - preventing excessive CPU/GPU usage on high-performance machines,\n   - ensuring fairness in cooperative async environments.\n\n If fpsMax > 0, the application ensures that each frame takes at least\n (1 / fpsMax) seconds to render.\n\n When both vsyncToMonitor and fpsMax are enabled:\n   - The lower (stricter) limit dominates.")
         ;
 
 
