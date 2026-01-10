@@ -1,5 +1,4 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
-import importlib.util
 from imgui_bundle import _imgui_bundle as _native_bundle
 from imgui_bundle._imgui_bundle import immapp_cpp as immapp_cpp  # type: ignore
 from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
@@ -84,6 +83,10 @@ __all__ = [
 ]
 
 
-if importlib.util.find_spec("IPython") is not None:
-    from imgui_bundle.immapp.immapp_notebook import run_nb as run_nb
-    __all__.append("run_nb")
+def run_nb(*args, **kwargs):
+    """run_nb: alias for immapp.run, kept for backward compatibility.
+    Was intended to be used in Jupyter notebooks. Now immapp.run is patched to work in notebooks.
+    """
+    return run(*args, **kwargs)
+
+__all__.append("run_nb")

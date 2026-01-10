@@ -40,11 +40,20 @@ def notebook_do_patch_runners_if_needed() -> None:
                     else:
                         args = (gui_function_with_light_theme, *args[1:])
 
+            if "thumbnail_height" in kwargs:
+                thumbnail_height = kwargs.pop("thumbnail_height")
+            else:
+                thumbnail_height = 0
+            if "thumbnail_ratio" in kwargs:
+                thumbnail_ratio = kwargs.pop("thumbnail_ratio")
+            else:
+                thumbnail_ratio = 0.0
+
             # define a function that will run the full app, then run this function
             # via _run_app_function_and_display_image_in_notebook
             def app_function():
                 run_backup(*args, **kwargs)
-            _run_app_function_and_display_image_in_notebook(app_function)
+            _run_app_function_and_display_image_in_notebook(app_function, thumbnail_height, thumbnail_ratio)
         return patched_run
 
     immapp.run_original = immapp.run
