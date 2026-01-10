@@ -2294,6 +2294,12 @@ struct RunnerParams
     // `iniFilename_useAppWindowTitle`: _bool, default = true_.
     // Shall the iniFilename be derived from appWindowParams.windowTitle (if not empty)
     bool iniFilename_useAppWindowTitle = true;
+    // `iniDisable`: _bool, default = false_.
+    // If true, do not save or load any settings to or from an ini file.
+    bool iniDisable = false;
+    // `iniClearPreviousSettings`: _bool, default = false_.
+    // If true, delete any previous settings ini file at application startup.
+    bool iniClearPreviousSettings = false;
 
 
     // --------------- Exit -------------------
@@ -2344,7 +2350,7 @@ struct RunnerParams
 // @@md#IniIniSettingsLocation
 
 // IniSettingsLocation returns the path to the ini file for the application settings.
-std::string IniSettingsLocation(const RunnerParams& runnerParams);
+std::optional<std::string> IniSettingsLocation(const RunnerParams& runnerParams);
 
 // HasIniSettings returns true if the ini file for the application settings exists.
 bool HasIniSettings(const RunnerParams& runnerParams);

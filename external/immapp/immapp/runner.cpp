@@ -373,10 +373,13 @@ namespace ImmApp
     // NodeEditorSettingsLocation returns the path to the json file for the node editor settings.
     std::string NodeEditorSettingsLocation(const HelloImGui::RunnerParams& runnerParams)
     {
-        std::string iniLocation = HelloImGui::IniSettingsLocation(runnerParams);
+        auto iniLocationOpt = HelloImGui::IniSettingsLocation(runnerParams);
+        if (!iniLocationOpt.has_value())
+            return "";
+
         // iniLocation is of the form path/to/your/app.ini
         // => we replace it with path/to/your/app_node_editor.json
-        std::string jsonLocation = iniLocation;
+        std::string jsonLocation = iniLocationOpt.value();
         jsonLocation.replace(jsonLocation.size() - 4, 4, ".node_editor.json");
         return jsonLocation;
     }
@@ -394,7 +397,10 @@ namespace ImmApp
     // DeleteNodeEditorSettings deletes the json file for the node editor settings.
     void DeleteNodeEditorSettings(const HelloImGui::RunnerParams& runnerParams)
     {
-        std::string filename = IniSettingsLocation(runnerParams);
+        auto filenameOpt = IniSettingsLocation(runnerParams);
+        if (!filenameOpt.has_value())
+            return;
+        const std::string& filename = filenameOpt.value();
         if (filename.empty())
             return;
         if (!std::filesystem::exists(filename))

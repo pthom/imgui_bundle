@@ -97,10 +97,6 @@ void py_init_module_imgui_main(nb::module_& m)
     //
     // #endif
     //
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
     // #ifndef IMGUI_DISABLE
     //
     // #ifdef IMGUI_BUNDLE_PYTHON_API

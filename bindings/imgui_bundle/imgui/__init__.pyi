@@ -389,11 +389,6 @@ NpBuffer = np.ndarray  # used to transfer texture data as a 1D numpy array of by
 # #endif
 #
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-##define IMGUI_BUNDLE_IMGUI_USE_STRING
-# #endif
-#
 # [/ADAPT_IMGUI_BUNDLE]
 
 # [ADAPT_IMGUI_BUNDLE] utilities

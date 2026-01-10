@@ -3003,6 +3003,14 @@ class RunnerParams:
     # `iniFilename_useAppWindowTitle`: _bool, default = true_.
     # Shall the iniFilename be derived from appWindowParams.windowTitle (if not empty)
     ini_filename_use_app_window_title: bool = True
+    # bool iniDisable = false;    /* original C++ signature */
+    # `iniDisable`: _bool, default = false_.
+    # If True, do not save or load any settings to or from an ini file.
+    ini_disable: bool = False
+    # bool iniClearPreviousSettings = false;    /* original C++ signature */
+    # `iniClearPreviousSettings`: _bool, default = false_.
+    # If True, delete any previous settings ini file at application startup.
+    ini_clear_previous_settings: bool = False
 
     # --------------- Exit -------------------
 
@@ -3047,7 +3055,7 @@ class RunnerParams:
     # (only used on emscripten: 0 stands for "let the app or the browser decide")
     emscripten_fps: int = 0
 
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), PlatformBackendType platformBackendType = PlatformBackendType::FirstAvailable, RendererBackendType rendererBackendType = RendererBackendType::FirstAvailable, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), DpiAwareParams dpiAwareParams = DpiAwareParams(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
+    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), PlatformBackendType platformBackendType = PlatformBackendType::FirstAvailable, RendererBackendType rendererBackendType = RendererBackendType::FirstAvailable, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool iniDisable = false, bool iniClearPreviousSettings = false, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), DpiAwareParams dpiAwareParams = DpiAwareParams(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: Optional[RunnerCallbacks] = None,
@@ -3063,6 +3071,8 @@ class RunnerParams:
         ini_folder_type: IniFolderType = IniFolderType.current_folder,
         ini_filename: str = "",
         ini_filename_use_app_window_title: bool = True,
+        ini_disable: bool = False,
+        ini_clear_previous_settings: bool = False,
         app_shall_exit: bool = False,
         fps_idling: Optional[FpsIdling] = None,
         dpi_aware_params: Optional[DpiAwareParams] = None,
@@ -3090,8 +3100,8 @@ class RunnerParams:
 
 # @@md#IniIniSettingsLocation
 
-# std::string IniSettingsLocation(const RunnerParams& runnerParams);    /* original C++ signature */
-def ini_settings_location(runner_params: RunnerParams) -> str:
+# std::optional<std::string> IniSettingsLocation(const RunnerParams& runnerParams);    /* original C++ signature */
+def ini_settings_location(runner_params: RunnerParams) -> Optional[str]:
     """IniSettingsLocation returns the path to the ini file for the application settings."""
     pass
 
