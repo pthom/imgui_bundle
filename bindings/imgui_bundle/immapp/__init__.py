@@ -50,6 +50,9 @@ from imgui_bundle._imgui_bundle.hello_imgui import (  # type: ignore
 # Import async support
 from imgui_bundle.immapp.run_async_overloads import run_async as run_async
 
+# Import notebook convenience API
+from imgui_bundle.immapp import nb as nb
+
 manual_render = _native_bundle.immapp_cpp.manual_render
 __all__ = [
     "clock_seconds",
@@ -82,6 +85,7 @@ __all__ = [
     "widget_with_resize_handle_in_node_editor",
     "widget_with_resize_handle_in_node_editor_em",
     "immapp_code_utils",
+    "nb",
 ]
 
 

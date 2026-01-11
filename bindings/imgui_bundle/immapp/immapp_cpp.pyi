@@ -364,6 +364,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
         window_restore_previous_geometry: bool = False,
         window_size: Optional[ScreenSize] = None,
         fps_idle: float = 10.0,
+        top_most: bool = False,
         with_implot: bool = False,
         with_implot3d: bool = False,
         with_markdown: bool = False,

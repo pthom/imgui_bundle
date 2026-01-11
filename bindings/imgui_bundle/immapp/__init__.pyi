@@ -32,3 +32,5 @@ from imgui_bundle.hello_imgui import (
 # Re-export run_async with all its overloads from the implementation module
 # (Full type hints and docs are in run_async_overloads.py)
 from .run_async_overloads import run_async as run_async
+# Re-export nb module for notebook convenience API
+from . import nb as nb

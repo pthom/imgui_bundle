@@ -122,12 +122,12 @@ async def run_async(*args, **kwargs) -> None:
                 window_restore_previous_geometry=window_restore_previous_geometry,
                 window_size=window_size,
                 fps_idle=fps_idle,
+                top_most=top_most,
                 with_implot=with_implot,
                 with_implot3d=with_implot3d,
                 with_markdown=with_markdown,
                 with_node_editor=with_node_editor,
                 with_tex_inspect=with_tex_inspect,
-                top_most=top_most,
             )
         else:
             raise TypeError(f"First argument must be RunnerParams, SimpleRunnerParams, or a callable GUI function, got {type(first_arg)}")
