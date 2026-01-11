@@ -1233,6 +1233,14 @@ class AppWindowParams:
     # Full screen windows cannot be hidden.
     hidden: bool = False
 
+    # bool topMost = false;    /* original C++ signature */
+    # `topMost`: _bool, default = false_. Should the window stay on top of other windows.
+    # This is taken into account dynamically (you can change this at runtime).
+    # Note: This is only supported on desktop platforms (Windows, macOS, Linux).
+    # On mobile platforms (iOS, Android) and web (Emscripten), this setting is ignored.
+    # This setting is also ignored when the window is in fullscreen mode.
+    top_most: bool = False
+
     # --------------- Borderless window params ------------------
 
     # bool   borderless = false;    /* original C++ signature */
@@ -1295,7 +1303,7 @@ class AppWindowParams:
     # Do read https://github.com/pthom/hello_imgui/issues/112 for info about the possible gotchas
     # (This API is not stable, as the name suggests, and this is not supported)
     repaint_during_resize_gotcha_reentrant_repaint: bool = False
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true, EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default, bool repaintDuringResize_GotchaReentrantRepaint = false);    /* original C++ signature */
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool topMost = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true, EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default, bool repaintDuringResize_GotchaReentrantRepaint = false);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
@@ -1303,6 +1311,7 @@ class AppWindowParams:
         restore_previous_geometry: bool = False,
         resizable: bool = True,
         hidden: bool = False,
+        top_most: bool = False,
         borderless: bool = False,
         borderless_movable: bool = True,
         borderless_resizable: bool = True,
@@ -2120,7 +2129,7 @@ class DockingSplit:
     # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
     #  Flags to apply to the new dock space
     #  (enable/disable resizing, splitting, tab bar, etc.)
-    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
+    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
@@ -2139,8 +2148,8 @@ class DockingSplit:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * direction_: Dir.down
-                * nodeFlags_: DockNodeFlags_.none
+                * direction_: ImGuiDir_Down
+                * nodeFlags_: ImGuiDockNodeFlags_None
         """
         pass
 
@@ -2219,7 +2228,7 @@ class DockableWindow:
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window size.
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
@@ -2229,7 +2238,7 @@ class DockableWindow:
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window position.
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -2306,7 +2315,7 @@ class DockingParams:
     #  Most flags are inherited by children dock spaces.
     #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        DockNodeFlags_.passthru_central_node
+        ImGuiDockNodeFlags_PassthruCentralNode
     )
 
     # --------------- Layout handling -----------------------------
@@ -2362,7 +2371,7 @@ class DockingParams:
             If any of the params below is None, then its default value below will be used:
                 * dockingSplits: List[DockingSplit]()
                 * dockableWindows: List[DockableWindow]()
-                * mainDockSpaceNodeFlags: DockNodeFlags_.passthru_central_node
+                * mainDockSpaceNodeFlags: ImGuiDockNodeFlags_PassthruCentralNode
         """
         pass
 
@@ -3178,10 +3187,16 @@ class SimpleRunnerParams:
     #      HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = False;
     enable_idling: bool = True
 
+    # bool topMost = false;    /* original C++ signature */
+    # `topMost`: _bool, default=false_.
+    #  If True, the window will stay on top of other windows (desktop platforms only).
+    #  Useful especially when running from notebooks to keep the app visible above the browser.
+    top_most: bool = False
+
     # RunnerParams ToRunnerParams() const;    /* original C++ signature */
     def to_runner_params(self) -> RunnerParams:
         pass
-    # SimpleRunnerParams(VoidFunction guiFunction = EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 9.f, bool enableIdling = true);    /* original C++ signature */
+    # SimpleRunnerParams(VoidFunction guiFunction = EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 9.f, bool enableIdling = true, bool topMost = false);    /* original C++ signature */
     def __init__(
         self,
         gui_function: Optional[VoidFunction] = None,
@@ -3191,6 +3206,7 @@ class SimpleRunnerParams:
         window_size: Optional[ScreenSize] = None,
         fps_idle: float = 9.0,
         enable_idling: bool = True,
+        top_most: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
 
@@ -3383,7 +3399,8 @@ def run(simple_params: SimpleRunnerParams) -> None:
 #     bool windowSizeAuto = false,
 #     bool windowRestorePreviousGeometry = false,
 #     const ScreenSize &windowSize = DefaultWindowSize,
-#     float fpsIdle = 10.f
+#     float fpsIdle = 10.f,
+#     bool topMost = false
 # );
 @overload
 def run(
@@ -3393,6 +3410,7 @@ def run(
     window_restore_previous_geometry: bool = False,
     window_size: Optional[ScreenSize] = None,
     fps_idle: float = 10.0,
+    top_most: bool = False,
 ) -> None:
     """Runs an application, by providing the Gui function, the window title, etc.
 
@@ -3651,7 +3669,8 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     #         bool windowSizeAuto = false,
     #         bool windowRestorePreviousGeometry = false,
     #         const ScreenSize& windowSize = DefaultWindowSize,
-    #         float fpsIdle = 10.f
+    #         float fpsIdle = 10.f,
+    #         bool topMost = false
     #     );
     @staticmethod
     def setup_from_gui_function(
@@ -3661,6 +3680,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
         window_restore_previous_geometry: bool = False,
         window_size: Optional[ScreenSize] = None,
         fps_idle: float = 10.0,
+        top_most: bool = False,
     ) -> None:
         """Initializes the renderer with a simple GUI function and additional parameters.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).

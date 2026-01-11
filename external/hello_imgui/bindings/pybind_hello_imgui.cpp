@@ -835,7 +835,7 @@ void py_init_module_hello_imgui(nb::module_& m)
     auto pyClassAppWindowParams =
         nb::class_<HelloImGui::AppWindowParams>
             (m, "AppWindowParams", " @@md#AppWindowParams\n\n AppWindowParams is a struct that defines the application window display params.\nSee https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg\n for details.")
-        .def("__init__", [](HelloImGui::AppWindowParams * self, std::string windowTitle = std::string(), const std::optional<const HelloImGui::WindowGeometry> & windowGeometry = std::nullopt, bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, const std::optional<const ImVec4> & borderlessHighlightColor = std::nullopt, const std::optional<const HelloImGui::EdgeInsets> & edgeInsets = std::nullopt, bool handleEdgeInsets = true, HelloImGui::EmscriptenKeyboardElement emscriptenKeyboardElement = HelloImGui::EmscriptenKeyboardElement::Default, bool repaintDuringResize_GotchaReentrantRepaint = false)
+        .def("__init__", [](HelloImGui::AppWindowParams * self, std::string windowTitle = std::string(), const std::optional<const HelloImGui::WindowGeometry> & windowGeometry = std::nullopt, bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool topMost = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, const std::optional<const ImVec4> & borderlessHighlightColor = std::nullopt, const std::optional<const HelloImGui::EdgeInsets> & edgeInsets = std::nullopt, bool handleEdgeInsets = true, HelloImGui::EmscriptenKeyboardElement emscriptenKeyboardElement = HelloImGui::EmscriptenKeyboardElement::Default, bool repaintDuringResize_GotchaReentrantRepaint = false)
         {
             new (self) HelloImGui::AppWindowParams();  // placement new
             auto r_ctor_ = self;
@@ -847,6 +847,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->restorePreviousGeometry = restorePreviousGeometry;
             r_ctor_->resizable = resizable;
             r_ctor_->hidden = hidden;
+            r_ctor_->topMost = topMost;
             r_ctor_->borderless = borderless;
             r_ctor_->borderlessMovable = borderlessMovable;
             r_ctor_->borderlessResizable = borderlessResizable;
@@ -863,13 +864,14 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->emscriptenKeyboardElement = emscriptenKeyboardElement;
             r_ctor_->repaintDuringResize_GotchaReentrantRepaint = repaintDuringResize_GotchaReentrantRepaint;
         },
-        nb::arg("window_title") = std::string(), nb::arg("window_geometry").none() = nb::none(), nb::arg("restore_previous_geometry") = false, nb::arg("resizable") = true, nb::arg("hidden") = false, nb::arg("borderless") = false, nb::arg("borderless_movable") = true, nb::arg("borderless_resizable") = true, nb::arg("borderless_closable") = true, nb::arg("borderless_highlight_color").none() = nb::none(), nb::arg("edge_insets").none() = nb::none(), nb::arg("handle_edge_insets") = true, nb::arg("emscripten_keyboard_element") = HelloImGui::EmscriptenKeyboardElement::Default, nb::arg("repaint_during_resize_gotcha_reentrant_repaint") = false
+        nb::arg("window_title") = std::string(), nb::arg("window_geometry").none() = nb::none(), nb::arg("restore_previous_geometry") = false, nb::arg("resizable") = true, nb::arg("hidden") = false, nb::arg("top_most") = false, nb::arg("borderless") = false, nb::arg("borderless_movable") = true, nb::arg("borderless_resizable") = true, nb::arg("borderless_closable") = true, nb::arg("borderless_highlight_color").none() = nb::none(), nb::arg("edge_insets").none() = nb::none(), nb::arg("handle_edge_insets") = true, nb::arg("emscripten_keyboard_element") = HelloImGui::EmscriptenKeyboardElement::Default, nb::arg("repaint_during_resize_gotcha_reentrant_repaint") = false
         )
         .def_rw("window_title", &HelloImGui::AppWindowParams::windowTitle, "`windowTitle`: _string, default=\"\"_. Title of the application window")
         .def_rw("window_geometry", &HelloImGui::AppWindowParams::windowGeometry, " `windowGeometry`: _WindowGeometry_\n  Enables to precisely set the window geometry (position, monitor, size,\n  full screen, fake full screen, etc.)\n   _Note: on a mobile device, the application will always be full screen._")
         .def_rw("restore_previous_geometry", &HelloImGui::AppWindowParams::restorePreviousGeometry, " `restorePreviousGeometry`: _bool, default=false_.\n If True, then save & restore windowGeometry from last run (the geometry\n will be written in imgui_app_window.ini)")
         .def_rw("resizable", &HelloImGui::AppWindowParams::resizable, " `resizable`: _bool, default = false_. Should the window be resizable.\n This is taken into account at creation.")
         .def_rw("hidden", &HelloImGui::AppWindowParams::hidden, " `hidden`: _bool, default = false_. Should the window be hidden.\n This is taken into account dynamically (you can show/hide the window with this).\n Full screen windows cannot be hidden.")
+        .def_rw("top_most", &HelloImGui::AppWindowParams::topMost, " `topMost`: _bool, default = false_. Should the window stay on top of other windows.\n This is taken into account dynamically (you can change this at runtime).\n Note: This is only supported on desktop platforms (Windows, macOS, Linux).\n On mobile platforms (iOS, Android) and web (Emscripten), this setting is ignored.\n This setting is also ignored when the window is in fullscreen mode.")
         .def_rw("borderless", &HelloImGui::AppWindowParams::borderless, " `borderless`: _bool, default = false_. Should the window have borders.\n This is taken into account at creation.")
         .def_rw("borderless_movable", &HelloImGui::AppWindowParams::borderlessMovable, " `borderlessMovable`: if the window is borderless, should it be movable.\n   If so, a drag zone is displayed at the top of the window when the mouse is over it.")
         .def_rw("borderless_resizable", &HelloImGui::AppWindowParams::borderlessResizable, " `borderlessResizable`: if the window is borderless, should it be resizable.\n  If so, a drag zone is displayed at the bottom-right of the window\n  when the mouse is over it.")
@@ -1243,7 +1245,7 @@ void py_init_module_hello_imgui(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, initialDock_, newDock_, direction_, ratio_, nodeFlags_);
             },
             nb::arg("initial_dock_") = "", nb::arg("new_dock_") = "", nb::arg("direction_").none() = nb::none(), nb::arg("ratio_") = 0.25f, nb::arg("node_flags_").none() = nb::none(),
-            " Constructor\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: Dir.down\n        * nodeFlags_: DockNodeFlags_.none")
+            " Constructor\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: ImGuiDir_Down\n        * nodeFlags_: ImGuiDockNodeFlags_None")
         ;
 
 
@@ -1638,7 +1640,7 @@ void py_init_module_hello_imgui(nb::module_& m)
     auto pyClassSimpleRunnerParams =
         nb::class_<HelloImGui::SimpleRunnerParams>
             (m, "SimpleRunnerParams", " SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.\nFor example, this is sufficient to run an application:\n    ```cpp\n    None MyGui() {\n        ImGui::Text(\"Hello, world\");\n        if (ImGui::Button(\"Exit\"))\n            HelloImGui::GetRunnerParams()->appShallExit = True;\n    }\n\n    int main(){\n        auto params = HelloImGui::SimpleRunnerParams {\n            .guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = \"Example\"\n        };\n        HelloImGui::Run(params);\n    }\n    ```")
-        .def("__init__", [](HelloImGui::SimpleRunnerParams * self, const std::optional<const VoidFunction> & guiFunction = std::nullopt, std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 9.f, bool enableIdling = true)
+        .def("__init__", [](HelloImGui::SimpleRunnerParams * self, const std::optional<const VoidFunction> & guiFunction = std::nullopt, std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 9.f, bool enableIdling = true, bool topMost = false)
         {
             new (self) HelloImGui::SimpleRunnerParams();  // placement new
             auto r_ctor_ = self;
@@ -1655,8 +1657,9 @@ void py_init_module_hello_imgui(nb::module_& m)
                 r_ctor_->windowSize = HelloImGui::DefaultWindowSize;
             r_ctor_->fpsIdle = fpsIdle;
             r_ctor_->enableIdling = enableIdling;
+            r_ctor_->topMost = topMost;
         },
-        nb::arg("gui_function").none() = nb::none(), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 9.f, nb::arg("enable_idling") = true
+        nb::arg("gui_function").none() = nb::none(), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 9.f, nb::arg("enable_idling") = true, nb::arg("top_most") = false
         )
         .def_rw("gui_function", &HelloImGui::SimpleRunnerParams::guiFunction, " `guiFunction`: _VoidFunction_.\n  Function that renders the Gui.")
         .def_rw("window_title", &HelloImGui::SimpleRunnerParams::windowTitle, " `windowTitle`: _string, default=\"\"_.\n  Title of the application window")
@@ -1665,6 +1668,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def_rw("window_size", &HelloImGui::SimpleRunnerParams::windowSize, " `windowSize`: _ScreenSize, default={800, 600}_.\n  Size of the window\n The size will be handled as if it was specified for a 96PPI screen\n (i.e. a given size will correspond to the same physical size on different screens, whatever their DPI)")
         .def_rw("fps_idle", &HelloImGui::SimpleRunnerParams::fpsIdle, " `fpsIdle`: _float, default=9_.\n  FPS of the application when idle (set to 0 for full speed).")
         .def_rw("enable_idling", &HelloImGui::SimpleRunnerParams::enableIdling, " `enableIdling`: _bool, default=true_.\n  Disable idling at startup by setting this to False\n  When running, use:\n      HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = False;")
+        .def_rw("top_most", &HelloImGui::SimpleRunnerParams::topMost, " `topMost`: _bool, default=false_.\n  If True, the window will stay on top of other windows (desktop platforms only).\n  Useful especially when running from notebooks to keep the app visible above the browser.")
         .def("to_runner_params",
             &HelloImGui::SimpleRunnerParams::ToRunnerParams)
         ;
@@ -1744,9 +1748,9 @@ void py_init_module_hello_imgui(nb::module_& m)
         " `HelloImGui::Run(const SimpleRunnerParams&)`:\n Runs an application, using simpler params.");
 
     m.def("run",
-        [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f)
+        [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false)
         {
-            auto Run_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f)
+            auto Run_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false)
             {
 
                 const ScreenSize& windowSize_or_default = [&]() -> const ScreenSize {
@@ -1756,12 +1760,12 @@ void py_init_module_hello_imgui(nb::module_& m)
                         return HelloImGui::DefaultWindowSize;
                 }();
 
-                HelloImGui::Run(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle);
+                HelloImGui::Run(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle, topMost);
             };
 
-            Run_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle);
+            Run_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, topMost);
         },
-        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f,
+        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("top_most") = false,
         " Runs an application, by providing the Gui function, the window title, etc.\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("get_runner_params",
@@ -1856,9 +1860,9 @@ void py_init_module_hello_imgui(nb::module_& m)
             " Initializes the rendering with `SimpleRunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).");
 
         pyNsManualRender.def("setup_from_gui_function",
-            [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f)
+            [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false)
             {
-                auto SetupFromGuiFunction_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f)
+                auto SetupFromGuiFunction_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false)
                 {
 
                     const ScreenSize& windowSize_or_default = [&]() -> const ScreenSize {
@@ -1868,12 +1872,12 @@ void py_init_module_hello_imgui(nb::module_& m)
                             return HelloImGui::DefaultWindowSize;
                     }();
 
-                    HelloImGui::ManualRender::SetupFromGuiFunction(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle);
+                    HelloImGui::ManualRender::SetupFromGuiFunction(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle, topMost);
                 };
 
-                SetupFromGuiFunction_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle);
+                SetupFromGuiFunction_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, topMost);
             },
-            nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f,
+            nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("top_most") = false,
             " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
         pyNsManualRender.def("render",

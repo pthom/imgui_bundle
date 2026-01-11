@@ -250,6 +250,7 @@ namespace ImmApp
         bool windowRestorePreviousGeometry,
         const ScreenSize& windowSize,
         float fpsIdle,
+        bool topMost,
 
         // ImGuiBundle_AddOnsParams below:
         bool withImplot,
@@ -270,6 +271,7 @@ namespace ImmApp
         simpleRunnerParams.windowRestorePreviousGeometry = windowRestorePreviousGeometry;
         simpleRunnerParams.windowSize = windowSize;
         simpleRunnerParams.fpsIdle = fpsIdle;
+        simpleRunnerParams.topMost = topMost;
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
@@ -294,6 +296,7 @@ namespace ImmApp
         bool windowRestorePreviousGeometry,
         const ScreenSize& windowSize,
         float fpsIdle,
+        bool topMost,
 
         // ImGuiBundle_AddOnsParams below:
         bool withImplot,
@@ -313,6 +316,7 @@ namespace ImmApp
         simpleRunnerParams.windowRestorePreviousGeometry = windowRestorePreviousGeometry;
         simpleRunnerParams.windowSize = windowSize;
         simpleRunnerParams.fpsIdle = fpsIdle;
+        simpleRunnerParams.topMost = topMost;
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;

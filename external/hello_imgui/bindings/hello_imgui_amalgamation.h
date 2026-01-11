@@ -727,9 +727,6 @@ namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef __APPLE__
-#include <TargetConditionals.h>
-#endif
 
 namespace HelloImGui
 {
@@ -911,6 +908,13 @@ struct AppWindowParams
     // This is taken into account dynamically (you can show/hide the window with this).
     // Full screen windows cannot be hidden.
     bool hidden = false;
+
+    // `topMost`: _bool, default = false_. Should the window stay on top of other windows.
+    // This is taken into account dynamically (you can change this at runtime).
+    // Note: This is only supported on desktop platforms (Windows, macOS, Linux).
+    // On mobile platforms (iOS, Android) and web (Emscripten), this setting is ignored.
+    // This setting is also ignored when the window is in fullscreen mode.
+    bool topMost = false;
 
 
     // --------------- Borderless window params ------------------
@@ -2413,6 +2417,11 @@ struct SimpleRunnerParams
     //      HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
     bool  enableIdling = true;
 
+    // `topMost`: _bool, default=false_.
+    //  If true, the window will stay on top of other windows (desktop platforms only).
+    //  Useful especially when running from notebooks to keep the app visible above the browser.
+    bool topMost = false;
+
     RunnerParams ToRunnerParams() const;
 };
 // @@md
@@ -2584,7 +2593,8 @@ void Run(
     bool windowSizeAuto = false,
     bool windowRestorePreviousGeometry = false,
     const ScreenSize &windowSize = DefaultWindowSize,
-    float fpsIdle = 10.f
+    float fpsIdle = 10.f,
+    bool topMost = false
 );
 
 // =========================== HelloImGui::ManualRender ==================================
@@ -2648,7 +2658,8 @@ namespace ManualRender
         bool windowSizeAuto = false,
         bool windowRestorePreviousGeometry = false,
         const ScreenSize& windowSize = DefaultWindowSize,
-        float fpsIdle = 10.f
+        float fpsIdle = 10.f,
+        bool topMost = false
     );
 
     // Renders the current frame. Should be called regularly to maintain the application's responsiveness.
