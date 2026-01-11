@@ -109,6 +109,14 @@ async def run_async(*args, **kwargs) -> None:
     else:
         raise TypeError("run_async() requires at least one argument")
 
+    # Configure FPS settings for optimal async performance
+    # This ensures C++ code returns early to Python instead of sleeping,
+    # allowing maximum parallelism between GUI rendering and Python code execution
+    params = hello_imgui.get_runner_params()
+    params.fps_idling.fps_idling_mode = hello_imgui.FpsIdlingMode.early_return  # Use early return mode
+    params.fps_idling.vsync_to_monitor = False  # Disable vsync which is implemented via sleep
+    params.fps_idling.fps_max = 60.0  # Limit to 60 FPS (otherwise we may run at 500+ FPS on fast machines)
+
     # Async render loop
     try:
         while not hello_imgui.get_runner_params().app_shall_exit:
