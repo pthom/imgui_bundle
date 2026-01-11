@@ -22,6 +22,9 @@ from imgui_bundle.imgui import (
 
 from imgui_bundle.imgui import test_engine
 
+# Notebook convenience API (injected at runtime)
+from . import hello_imgui_nb as nb # noqa: F401
+
 # Manual code
 import imgui_bundle.imgui
 

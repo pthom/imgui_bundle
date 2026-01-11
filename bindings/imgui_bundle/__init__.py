@@ -181,6 +181,10 @@ if has_submodule("hello_imgui"):
     from imgui_bundle.hello_imgui_run_async import run_async as _hello_imgui_run_async
     hello_imgui.run_async = _hello_imgui_run_async  # type: ignore
 
+    # Add notebook convenience API
+    from imgui_bundle import hello_imgui_nb as _hello_imgui_nb_module
+    hello_imgui.nb = _hello_imgui_nb_module  # type: ignore
+
 #
 # Override assets folder
 #
