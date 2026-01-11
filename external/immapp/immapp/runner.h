@@ -211,6 +211,7 @@ namespace ImmApp
             bool windowRestorePreviousGeometry = false,
             const ScreenSize& windowSize = DefaultWindowSize,
             float fpsIdle = 10.f,
+            bool topMost = false,
 
             // AddOnsParams below:
             bool withImplot = false,

@@ -468,6 +468,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         bool windowRestorePreviousGeometry,
         const ScreenSize& windowSize,
         float fpsIdle,
+        bool topMost,
 
         // AddOnsParams below:
         bool withImplot,
@@ -488,6 +489,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         simpleRunnerParams.windowRestorePreviousGeometry = windowRestorePreviousGeometry;
         simpleRunnerParams.windowSize = windowSize;
         simpleRunnerParams.fpsIdle = fpsIdle;
+        simpleRunnerParams.topMost = topMost;
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
