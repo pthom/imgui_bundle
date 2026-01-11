@@ -24,7 +24,7 @@ class LaplacianData:
         img = cv2.imread(image_file)
         img = cv2.resize(img, dsize=None, fx=0.5, fy=0.5)  # type: ignore
         gray_uint8 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        self.src_gray = gray_uint8 / 255.0
+        self.src_gray = gray_uint8 / 255.0  # type: ignore
         self.update_laplacian()
 
         self.params = immvision.ImageParams()

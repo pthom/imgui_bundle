@@ -20,7 +20,7 @@ try:
 except (ImportError, ModuleNotFoundError):
 
 
-    def glfw_window_hello_imgui() -> None:
+    def glfw_window_hello_imgui() -> None:  # type: ignore
         import sys
         print("""Please install glfw, so that glfw_window_hello_imgui works:
         pip install glfw""")

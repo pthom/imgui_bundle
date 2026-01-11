@@ -165,7 +165,7 @@ async def test_nb_variable_updates():
     def my_gui():
         imgui.text(f"Counter: {data['counter']}")
         imgui.text(f"Text: {data['text']}")
-        if data["counter"] >= 5:
+        if data["counter"] >= 5:  # type: ignore
             hello_imgui.get_runner_params().app_shall_exit = True
 
     immapp.nb.start(my_gui, window_title="Variable Test")
