@@ -3420,6 +3420,70 @@ def run(
     """
     pass
 
+# =========================== HelloImGui::run_async ==================================
+# Async support for non-blocking GUI execution
+
+@overload
+async def run_async(runner_params: RunnerParams) -> None:
+    """Run a HelloImGui application asynchronously using RunnerParams.
+
+    This function will run until the application exits (user closes window or app_shall_exit is set).
+    Use this when you need full control over the async lifecycle.
+
+    Example:
+        async def my_app():
+            runner = hello_imgui.RunnerParams()
+            runner.callbacks.show_gui = my_gui_function
+            await hello_imgui.run_async(runner)
+            print("GUI closed")
+
+        asyncio.run(my_app())
+    """
+    ...
+
+@overload
+async def run_async(simple_params: SimpleRunnerParams) -> None:
+    """Run a HelloImGui application asynchronously using SimpleRunnerParams.
+
+    Example:
+        simple = hello_imgui.SimpleRunnerParams()
+        simple.gui_function = my_gui_function
+        simple.window_title = "My App"
+        await hello_imgui.run_async(simple)
+    """
+    ...
+
+@overload
+async def run_async(
+    gui_function: VoidFunction,
+    window_title: str = "",
+    window_size_auto: bool = False,
+    window_restore_previous_geometry: bool = False,
+    window_size: Optional[ScreenSize] = None,
+    fps_idle: float = 10.0,
+    top_most: bool = False,
+) -> None:
+    """Run a HelloImGui application asynchronously using a GUI function and parameters.
+
+    Args:
+        gui_function: The GUI function to call each frame
+        window_title: Window title
+        window_size_auto: Auto-size window to fit content
+        window_restore_previous_geometry: Restore window size/position from previous run
+        window_size: Window size in pixels (width, height)
+        fps_idle: FPS when application is idle
+        top_most: Keep window on top of others
+
+    Example:
+        await hello_imgui.run_async(
+            my_gui_function,
+            window_title="My App",
+            window_size_auto=True,
+            fps_idle=10.0
+        )
+    """
+    ...
+
 # =========================== HelloImGui::ManualRender ==================================
 # @@md#HelloImGui::ManualRender
 

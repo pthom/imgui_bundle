@@ -47,9 +47,10 @@ from imgui_bundle._imgui_bundle.hello_imgui import (  # type: ignore
     SimpleRunnerParams as SimpleRunnerParams,
 )
 
+# Import async support
+from imgui_bundle.immapp.run_async_overloads import run_async as run_async
 
 manual_render = _native_bundle.immapp_cpp.manual_render
-
 __all__ = [
     "clock_seconds",
     "default_node_editor_context",
@@ -62,6 +63,7 @@ __all__ = [
     "pixels_to_em",
     "pixel_size_to_em",
     "run",
+    "run_async",
     "run_with_markdown",
     "AddOnsParams",
     "icons_fontawesome",  # v4

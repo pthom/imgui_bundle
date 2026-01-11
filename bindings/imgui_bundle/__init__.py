@@ -175,6 +175,13 @@ from imgui_bundle._patch_runners_add_save_screenshot_param import patch_runners_
 patch_runners_add_save_screenshot_param()
 
 #
+# Add async support to hello_imgui
+#
+if has_submodule("hello_imgui"):
+    from imgui_bundle.hello_imgui_run_async import run_async as _hello_imgui_run_async
+    hello_imgui.run_async = _hello_imgui_run_async  # type: ignore
+
+#
 # Override assets folder
 #
 THIS_DIR = os.path.dirname(__file__)
