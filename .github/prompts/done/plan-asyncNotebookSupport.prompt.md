@@ -8,7 +8,7 @@ Add non-blocking async GUI support for Jupyter notebooks, enabling interactive d
 
 ## Steps
 
-### 1. Add `run_async()` to `bindings/imgui_bundle/immapp/__init__.py`
+### Done 1. Add `run_async()` to `bindings/imgui_bundle/immapp/__init__.py`
 
 Implement `async def run_async()` with overloads matching `immapp.run()` signatures:
 - `run_async(runner_params: RunnerParams, addons_params: Optional[AddOnsParams] = None)`
@@ -23,7 +23,7 @@ Implementation:
 
 **Why first:** This is the core async functionality that `start()` will delegate to.
 
-### 2. Add `run_async()` to hello_imgui module
+### Done 2. Add `run_async()` to hello_imgui module
 
 Similar to immapp but simpler (no AddOnsParams). Implement same three overloads:
 - `run_async(runner_params: RunnerParams)`
@@ -32,7 +32,7 @@ Similar to immapp but simpler (no AddOnsParams). Implement same three overloads:
 
 Use `hello_imgui.manual_render` for setup/render/teardown.
 
-### 3. Create `bindings/imgui_bundle/immapp/nb.py`
+### Done 3. Create `bindings/imgui_bundle/immapp/nb.py`
 
 Implement `immapp.nb` submodule with:
 - `run()` - Blocking + screenshot, delegates to existing patched behavior
@@ -51,7 +51,12 @@ Handle all three input signatures (matching `run_async()`):
 - `start(simple_params, addons_params=None)`
 - `start(gui_function, **kwargs)` with addon parameters
 
-### 4. Create `bindings/imgui_bundle/hello_imgui_nb.py`
+### Done 3.5 Check performance optimizations
+
+Ensure `run_async()` configures FPS settings for optimal async performance
+See sandbox_async_performance.py for re
+
+### Done 4. Create `bindings/imgui_bundle/hello_imgui_nb.py`
 
 Implement `hello_imgui.nb` module mirroring immapp but without `AddOnsParams`. Same API:
 - `run()` - Blocking + screenshot
@@ -64,20 +69,8 @@ Handle all three input signatures (matching `run_async()`):
 - `start(simple_params)`
 - `start(gui_function, **kwargs)`
 
-### 5. Add type hints to stub files
-
-Update type stubs with proper signatures:
-- `immapp_cpp.pyi` - Add `run_async()` and `nb` submodule
-- `hello_imgui.pyi` - Add `run_async()` and `nb` module
-
-### 6. Update `test.ipynb`
-
-Replace manual `immapp_run_async()` with `immapp.nb.start()`. Add cells demonstrating:
-- Blocking mode with `immapp.nb.run()` (screenshot output)
-- Non-blocking mode with `task = immapp.nb.start()` (no screenshot, stays open)
-- Live variable updates in subsequent cells
-- `immapp.nb.stop()` to close programmatically
-- Comparison with Qt demo pattern
+### 5. Update documentation and create a nice demo notebook
+See .github/prompts/doc_notebooks_bundle.md
 
 ## Further Considerations
 
