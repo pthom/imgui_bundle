@@ -1,8 +1,8 @@
 version: 1
 project:
   title: ImGui Bundle
-  authors:
-    - name: Pascal Thomet
+#  authors:
+#    - name: Pascal Thomet
   copyright: 2022-2025, Pascal Thomet
   github: pthom/imgui_bundle
   toc:
