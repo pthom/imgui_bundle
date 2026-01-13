@@ -18,27 +18,59 @@ perf_stats = {
 }
 
 
-def gui_with_perf_display():
-    """GUI that displays Python loop performance."""
-    imgui.text("Async Performance Demonstration")
-    imgui.separator()
+def gui_edit_idling_params():
+    imgui.separator_text("FPS Idling Settings")
+    imgui.dummy(hello_imgui.em_to_vec2(30, 0))
+    params_idling = hello_imgui.get_runner_params().fps_idling
 
+    # Enable FPS idling
+    _, params_idling.enable_idling = imgui.checkbox("Enable FPS Idling", params_idling.enable_idling)
+
+    # Idling mode
+    idling_mode = params_idling.fps_idling_mode
+    modes = [hello_imgui.FpsIdlingMode.sleep, hello_imgui.FpsIdlingMode.early_return]
+    mode_names = ["Sleep", "Early Return"]
+    current_mode_index = modes.index(idling_mode)
+    changed, new_mode_index = imgui.combo("Idling Mode", current_mode_index, mode_names)
+    if changed:
+        params_idling.fps_idling_mode = modes[new_mode_index]
+
+    # --- VSync toggle ---
+    vsync = params_idling.vsync_to_monitor
+    changed, vsync = imgui.checkbox("VSync to monitor", vsync)
+    if changed:
+        params_idling.vsync_to_monitor = vsync
+
+    # --- max FPS slider ---
+    maxfps = params_idling.fps_max
+    changed, maxfps = imgui.slider_float("fpsMax (0 = unlimited)", maxfps, 0.0, 3040.0)
+    if changed:
+        params_idling.fps_max = maxfps
+
+
+
+def gui_with_perf_display():
+    imgui.separator_text("FPS and performance Results")
+    imgui.text(f"Gui FPS: {hello_imgui.frame_rate():.2f}")
     imgui.text(f"Python Loop Iterations/sec: {perf_stats['python_fps']:.1f}")
-    imgui.text(f"Total Python Iterations: {perf_stats['python_iterations']}")
 
     elapsed = time.time() - perf_stats["start_time"]
     imgui.text(f"Running Time: {elapsed:.1f}s")
 
-    imgui.separator()
+    imgui.separator_text("Explanations")
     imgui.text_wrapped(
-        "The Python loop runs in parallel with GUI rendering. "
+        "The Python loop runs in parallel with GUI rendering with max performance for the python code."
         "This is possible because of optimized FPS settings:"
     )
     imgui.bullet_text("fps_idling_mode = early_return")
     imgui.bullet_text("vsync_to_monitor = False")
     imgui.bullet_text("fps_max = 60.0")
 
+    gui_edit_idling_params()
+
+    imgui.new_line()
     imgui.separator()
+    imgui.new_line()
     if imgui.button("Stop"):
         hello_imgui.get_runner_params().app_shall_exit = True
 
