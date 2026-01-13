@@ -1,0 +1,40 @@
+name: Build and Publish Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/book/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r docs/book/requirements.txt
+
+      - name: Build Jupyter Book
+        run: |
+          jupyter-book build docs/book
+
+      # - name: Deploy to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v3
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: docs/book/_build/html
+      #     force_runner: true
+

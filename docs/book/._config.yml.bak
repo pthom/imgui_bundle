@@ -1,0 +1,32 @@
+title: ImGui Bundle
+author: Pascal Thomet
+copyright: "2022-2025, Pascal Thomet"
+logo: "../../logo/logo_imgui_bundle_600.png"
+
+# Repository configuration
+repository:
+  url: https://github.com/pthom/imgui_bundle
+  path_to_book: docs/book
+  branch: main
+
+# Execution configuration
+execute:
+  execute_notebooks: off
+
+# HTML-specific configuration
+html:
+  favicon: "../../logo/logo_imgui_bundle_600.png"
+  use_edit_page_button: true
+  use_repository_button: true
+  use_issues_button: true
+  extra_navbar: Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+
+# Sphinx configuration
+sphinx:
+  config:
+    html_theme_options:
+      repository_url: https://github.com/pthom/imgui_bundle
+      use_repository_button: true
+    extensions:
+      - sphinx_design
+      - myst_parser

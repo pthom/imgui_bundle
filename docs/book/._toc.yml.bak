@@ -1,0 +1,36 @@
+format: jb-book
+root: intro
+parts:
+  - caption: Introduction
+    chapters:
+    - file: intro/overview
+    - file: intro/gallery
+    - file: intro/quickstart
+
+  - caption: Runners (Hello ImGui & ImmApp)
+    chapters:
+    - file: runners/basic
+    - file: runners/layout_docking
+    - file: runners/settings
+    - file: runners/theming
+    - file: runners/powersave
+    - file: runners/misc
+
+  - caption: Python Specifics
+    chapters:
+    - file: python/pythonic
+    - file: python/api_reference
+    - file: python/notebooks
+    - file: python/pyodide
+    - file: python/desktop_deploy
+    - file: python/pure_python_backend
+    - file: python/porting_cpp
+
+  - caption: Cookbook & Recipes
+    chapters:
+    - file: cookbook/data_viz
+    - file: cookbook/editors
+    - file: cookbook/vision
+    - file: cookbook/widgets
+    - file: cookbook/backgrounds
+    - file: cookbook/utilities

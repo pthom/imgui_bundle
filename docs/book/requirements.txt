@@ -1,0 +1,5 @@
+jupyter-book
+matplotlib
+numpy
+pydantic
+sphinx-design

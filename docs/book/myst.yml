@@ -1,0 +1,45 @@
+version: 1
+project:
+  title: ImGui Bundle
+  authors:
+    - name: Pascal Thomet
+  copyright: 2022-2025, Pascal Thomet
+  github: pthom/imgui_bundle
+  toc:
+    - file: intro.md
+    - title: Introduction
+      children:
+        - file: intro/overview.md
+        - file: intro/gallery.md
+        - file: intro/quickstart.md
+    - title: Runners (Hello ImGui & ImmApp)
+      children:
+        - file: runners/basic.md
+        - file: runners/layout_docking.md
+        - file: runners/settings.md
+        - file: runners/theming.md
+        - file: runners/powersave.md
+        - file: runners/misc.md
+    - title: Python Specifics
+      children:
+        - file: python/pythonic.md
+        - file: python/api_reference.md
+        - file: python/notebooks.md
+        - file: python/pyodide.md
+        - file: python/desktop_deploy.md
+        - file: python/pure_python_backend.md
+        - file: python/porting_cpp.md
+    - title: Cookbook & Recipes
+      children:
+        - file: cookbook/data_viz.md
+        - file: cookbook/editors.md
+        - file: cookbook/vision.md
+        - file: cookbook/widgets.md
+        - file: cookbook/backgrounds.md
+        - file: cookbook/utilities.md
+site:
+  options:
+    logo: ../../logo/logo_imgui_bundle_1024.png
+    favicon: ../../logo/logo_imgui_bundle_1024.png
+    folders: true
+  template: book-theme
