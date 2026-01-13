@@ -23,7 +23,7 @@ from imgui_bundle.imgui import (
 from imgui_bundle.imgui import test_engine
 
 # Notebook convenience API (injected at runtime)
-from . import hello_imgui_nb as nb # noqa: F401
+from . import hello_imgui_nb as nb  # noqa: F401
 
 # Manual code
 import imgui_bundle.imgui
@@ -1877,6 +1877,14 @@ class RunnerCallbacks:
     # after the dockable windows are rendered.
     post_render_dockable_windows: VoidFunction = EmptyVoidFunction()
 
+    # VoidFunction ThemeChanged = EmptyVoidFunction();    /* original C++ signature */
+    # `ThemeChanged`: You can here add a function that will be called
+    #  immediately after `ImGuiTheme::ApplyTheme` has been executed. This is
+    #  typically triggered when the user clicks a theme menu item in the menubar,
+    #  allowing custom drawings or UI elements to update their colors right after
+    #  the theme change.
+    theme_changed: VoidFunction = EmptyVoidFunction()
+
     # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
     # `AnyBackendEventCallback`:
     #  Callbacks for events from a specific backend. _Only implemented for SDL.
@@ -1887,7 +1895,7 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: Optional[VoidFunction] = None,
@@ -1909,6 +1917,7 @@ class RunnerCallbacks:
         after_swap: Optional[VoidFunction] = None,
         custom_background: Optional[VoidFunction] = None,
         post_render_dockable_windows: Optional[VoidFunction] = None,
+        theme_changed: Optional[VoidFunction] = None,
         any_backend_event_callback: Optional[AnyEventCallback] = None,
     ) -> None:
         """Auto-generated default constructor with named params
@@ -1933,6 +1942,7 @@ class RunnerCallbacks:
                 * AfterSwap: EmptyVoidFunction()
                 * CustomBackground: EmptyVoidFunction()
                 * PostRenderDockableWindows: EmptyVoidFunction()
+                * ThemeChanged: EmptyVoidFunction()
                 * AnyBackendEventCallback: EmptyEventCallback()
         """
         pass

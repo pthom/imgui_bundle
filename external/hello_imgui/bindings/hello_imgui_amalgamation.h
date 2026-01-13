@@ -1383,6 +1383,13 @@ struct RunnerCallbacks
     // after the dockable windows are rendered.
     VoidFunction PostRenderDockableWindows = EmptyVoidFunction();
 
+    // `ThemeChanged`: You can here add a function that will be called
+    //  immediately after `ImGuiTheme::ApplyTheme` has been executed. This is
+    //  typically triggered when the user clicks a theme menu item in the menubar,
+    //  allowing custom drawings or UI elements to update their colors right after
+    //  the theme change.
+    VoidFunction ThemeChanged = EmptyVoidFunction();
+
     // `AnyBackendEventCallback`:
     //  Callbacks for events from a specific backend. _Only implemented for SDL.
     //  where the event will be of type 'SDL_Event *'_
