@@ -1,0 +1,37 @@
+format: jb-book
+root: intro/intro
+parts:
+  - caption:
+    chapters:
+      - file: intro/batteries_included
+      - file: intro/imm_gui
+      - file: intro/interactive_manuals
+      - file: intro/examples_gallery
+      - file: intro/resources
+  - caption: For Python users
+    chapters:
+      - file: python/python_imgui_intro
+      - file: python/python_install
+      - file: python/python_tips
+      - file: python/python_assets
+      - file: python/pure_python_backend
+      - file: python/porting_cpp
+      - file: python/notebooks
+      - file: python/python_pyodide
+  - caption: For C++ users
+    chapters:
+      - file: cpp/cpp_install
+      - file: cpp/cpp_assets
+      - file: cpp/cpp_multiplatform
+      - file: cpp/cpp_debug_python
+  - caption: Runners (Hello ImGui & ImmApp)
+    chapters:
+      - file: runners/basic
+      - file: runners/hello_imgui
+      - file: runners/immapp
+      - file: runners/app_settings
+  - caption: Support
+    chapters:
+      - file: support/support_project
+      - file: support/closing_words
+
