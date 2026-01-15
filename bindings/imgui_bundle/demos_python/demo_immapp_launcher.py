@@ -8,12 +8,12 @@ from imgui_bundle.demos_python.demo_utils.demo_app_table import DemoAppTable, De
 
 
 DOC = """
-# HelloImGui and ImmApp
+# Demos Applications
 
-* [HelloImGui](https://pthom.github.io/hello_imgui) is a library based on ImGui that enables to easily create applications with ImGui.
-* [ImApp](https://github.com/pthom/imgui_bundle/blob/main/external/immapp/immapp/runner.h) (aka "Immediate App", a submodule of ImGuiBundle) is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
+This section most presents various demo applications that illustrate how to use Dear ImGui Bundle and its addons for various use cases. Explore the demos below (scroll with the mouse wheel in the table below for more)
 
-## Demo applications (*scroll with the mouse wheel below for more demos*)
+Note: [Hello ImGui](https://pthom.github.io/hello_imgui) is a library based on ImGui that enables to easily create applications with ImGui.
+[ImApp](https://github.com/pthom/imgui_bundle/blob/main/external/immapp/immapp/runner.h) (aka "Immediate App", a submodule of ImGuiBundle) is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
     """
 
 
