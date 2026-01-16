@@ -10,7 +10,7 @@ All the modifications done in step 1 can be seen in [this commit](https://github
 
 ### Step 1-a: Add needed folders, files and submodules inside external/
 
-**Add the library as a submodule in external/lib_name/lib_name**
+#### Add the library as a submodule in external/lib_name/lib_name
 
 If the library can be included without adaptations for inclusion inside ImGui Bundle, you can add it directly as a submodule.
 
@@ -36,15 +36,15 @@ cd -
 ```
 
 
-**Create the folder external/lib_name/bindings/**
+#### Create the folder external/lib_name/bindings/
 
-Copy the folder `external/bindings_generation/bindings_generator_template` into `external/lib_name/bindings/`
+Copy the folder external/bindings_generation/bindings_generator_template into external/lib_name/bindings/
 
 ```bash
 cp -r external/bindings_generation/bindings_generator_template external/ImCoolBar/bindings
 ```
 
-**Rename files in external/lib_name/bindings**
+#### Rename files in external/lib_name/bindings
 
 After having copied the template files, we need to rename them.
 In the example of ImCoolbar, we will rename them as follows:
@@ -56,7 +56,7 @@ mv external/ImCoolBar/bindings/pybind_LIBNAME.cpp external/ImCoolBar/bindings/py
 mv external/ImCoolBar/bindings/LIBNAME.pyi external/ImCoolBar/bindings/im_cool_bar.pyi
 ```
 
-**Move external/ImCoolBar/bindings/im_cool_bar.pyi to bindings/imgui_bundle/**
+#### Move external/ImCoolBar/bindings/im_cool_bar.pyi to bindings/imgui_bundle/
 
 The stub file (*.pyi) _must_ be inside bindings/imgui_bundle. In order to facilitate development, we will create a symlink to it inside external/ImCoolBar/bindings/
 
@@ -67,7 +67,7 @@ ln -s ../../../bindings/imgui_bundle/im_cool_bar.pyi .
 cd -
 ```
 
-**Final folder structure**
+#### Final folder structure
 
 We end up with the following structure:
 
