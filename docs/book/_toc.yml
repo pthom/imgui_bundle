@@ -34,4 +34,7 @@ parts:
     chapters:
       - file: support/support_project
       - file: support/closing_words
+  - caption: Developper docs
+    chapters:
+      - file: devel_docs/intro
 

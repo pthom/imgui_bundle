@@ -1,5 +1,0 @@
-== ImGui Bundle - Developer notes
-
-include::devnotes_prepare_devel_env.adoc[]
-
-include::devnotes_update_imgui.adoc[]
