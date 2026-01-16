@@ -37,4 +37,9 @@ parts:
   - caption: Developper docs
     chapters:
       - file: devel_docs/intro
+      - file: devel_docs/structure
+      - file: devel_docs/bindings_intro
+      - file: devel_docs/bindings_update
+      - file: devel_docs/bindings_newlib
+
 
