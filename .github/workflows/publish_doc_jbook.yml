@@ -43,7 +43,7 @@ jobs:
           cp _build/exports/book.pdf _build/html/assets/
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: docs/book/_build/html
 
