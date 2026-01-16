@@ -213,11 +213,6 @@ else()
 endif()
 
 
-# IMGUI_BUNDLE_BUILD_DOC: Build doc
-# -----------------------------------------------------------------------------
-# (reserved for this library authors)
-option(IMGUI_BUNDLE_BUILD_DOC "Build ImGui Bundle doc" OFF)
-
 # Options / Install
 # By default, hello_imgui install its targets only if it is the top level project
 # and only if it is not building the python package
@@ -405,13 +400,6 @@ endif()
 # -----------------------------------------------------------------------------
 if (MSVC)
     hello_imgui_msvc_sort_targets_by_folder(${CMAKE_CURRENT_LIST_DIR})
-endif()
-
-# Doc
-# -----------------------------------------------------------------------------
-if (IMGUI_BUNDLE_BUILD_DOC)
-    add_subdirectory(bindings/imgui_bundle/doc)
-    add_subdirectory(devel_docs)
 endif()
 
 #------------------------------------------------------------------------------

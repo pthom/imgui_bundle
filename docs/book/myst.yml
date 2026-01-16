@@ -1,0 +1,22 @@
+version: 1
+
+project:
+  title: Dear ImGui Bundle
+#  authors:
+#    - name: Pascal Thomet
+  copyright: 2022-2025, Pascal Thomet
+  github: pthom/imgui_bundle
+
+  exports:
+    - format: pdf
+      output: _build/exports/book.pdf
+      toc: _toc.yml
+      template: lapreprint-typst
+
+site:
+  options:
+    logo: ../../logo/logo_imgui_bundle_1024.png
+    favicon: ../../logo/logo_imgui_bundle_1024.png
+    folders: true
+    style: _static/custom.css
+    template: book-theme

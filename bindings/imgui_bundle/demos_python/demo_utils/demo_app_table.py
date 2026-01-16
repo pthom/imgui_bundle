@@ -151,7 +151,7 @@ class DemoAppTable:
                 imgui.end_table()
 
         self.display_demo_app_table_with_scroll_buttons(
-            "DemoAppTable", hello_imgui.em_to_vec2(0.0, 9.6), fn_table_gui)
+            "DemoAppTable", hello_imgui.em_to_vec2(0.0, 12.9), fn_table_gui)
         imgui_md.render("**Code for " + self.current_app.demo_file + "**")
         immapp.snippets.show_side_by_side_snippets(
             self.snippet_python, self.snippet_cpp, True, True

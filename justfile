@@ -51,23 +51,27 @@ cibuild_docker_manylinux:
 mypy:
     cd bindings && ./mypy_bindings.sh
 
-# Build the doc
-doc:
-    cd bindings/imgui_bundle/doc/scripts/ && ./build_doc.sh
+# Build the doc in interactive mode (for dev)
+doc_serve_interactive:
+    cd docs/book && jupyter-book start
+
+# Serve the static built doc
+doc_serve_static:
+    cd docs/book/_build/html && python -m http.server 7005
+
+# Build the doc in static html
+doc_build_static:
+    cd docs/book && jupyter-book build --html
+    echo "Doc built in docs/book/_build/html"
+    echo "You can serve it with:"
+    echo "\n  cd docs/book/_build/html && python -m http.server 7005"
+    echo "\nOr just run:\n\n  just doc_serve_static\n"
 
 # Build bundle doc in pdf, copy the pdf to the ramdisk
-doc_pdf:
-    cd bindings/imgui_bundle/doc && asciidoctor-pdf Readme_source.adoc
-    mv bindings/imgui_bundle/doc/Readme_source.pdf /Volumes/ramdisk/imgui_bundle_manual.pdf
+doc_build_pdf:
+    cd docs/book && jupyter-book build --pdf
 
 # Build hello_imgui doc in pdf, copy the pdf to the ramdisk
 doc_him_pdf:
     cd external/hello_imgui/hello_imgui/docs_src && jupyter-book build --builder pdfhtml .
     cp external/hello_imgui/hello_imgui/docs_src/_build/pdf/book.pdf /Volumes/ramdisk/hello_imgui_manual.pdf
-
-tutorial_book:
-    cd tutorial && just tutorial_book
-
-# Create a new tutorial page from the template (pass a name relative to tutorial/)
-tutorial_new name:
-    python tutorial/_tpl/instantiate_tutorial_template.py {{name}}

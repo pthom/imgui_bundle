@@ -155,7 +155,7 @@ void DemoAppTable::Gui()
         }
     };
 
-    DisplayDemoAppTableWithScrollButtons("DemoAppTable", HelloImGui::EmToVec2(0.f, 9.6f), fnTableGui);
+    DisplayDemoAppTableWithScrollButtons("DemoAppTable", HelloImGui::EmToVec2(0.f, 12.9f), fnTableGui);
 
     ImGuiMd::Render(std::string("**Code for ") + _currentApp.DemoFile + "**");
     Snippets::ShowSideBySideSnippets(_snippetCpp, _snippetPython, true, true);
