@@ -17,16 +17,16 @@ Dear ImGui Bundle is a collection of libraries around [Dear ImGui](https://githu
 - Cross‑platform: Windows, macOS, Linux, iOS, Android, and WebAssembly.
 - C++ and Python APIs with very similar structure.
 - Integrated ecosystem:
-  - Dear ImGui (core widgets)
-  - ImPlot / ImPlot3D (2D and 3D plotting)
-  - ImmVision (image inspection)
-  - imgui-node-editor, ImGuizmo, file dialogs, knobs, spinners, toggles, command palette, and more.
+    - Dear ImGui (core widgets)
+    - ImPlot / ImPlot3D (2D and 3D plotting)
+    - ImmVision (image inspection)
+    - imgui-node-editor, ImGuizmo, file dialogs, knobs, spinners, toggles, command palette, and more.
 - Optional high‑level runners:
-  - Hello ImGui: window, backend, docking, and assets management.
-  - ImmApp: easy activation of add‑ons (ImPlot, Markdown, etc.).
+    - Hello ImGui: window, backend, docking, and assets management.
+    - ImmApp: easy activation of add‑ons (ImPlot, Markdown, etc.).
 - Web‑ready:
-  - C++ via Emscripten
-  - Python via Pyodide (online playground and deployable HTML templates)
+    - C++ via Emscripten
+    - Python via Pyodide (online playground and deployable HTML templates)
 
 > “Think of it as a toolbox where all the pieces are pre‑wired to play well together: plotting, Markdown, node editors, image inspection, and more, ready to drop into your app.”
 
@@ -67,3 +67,14 @@ Run and edit Python ImGui Bundle apps directly in your browser:
 - Great for experimentation, teaching, and sharing small examples.
 
 Open the [playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/).
+
+
+
+## Build status
+
+| OpenGL renderer | Python bindings | Alternative renderers | Mobile |
+|-----------------|-----------------|-----------------------|--------|
+| [![CppLib](https://github.com/pthom/imgui_bundle/workflows/CppLib/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib.yml)<br>[![Emscripten](https://github.com/pthom/imgui_bundle/workflows/Emscripten/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/emscripten.yml) | [![Pip](https://github.com/pthom/imgui_bundle/workflows/Pip/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/pip.yml)<br>[![Wheels](https://github.com/pthom/imgui_bundle/workflows/Wheels/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/wheels.yml)<br>[![CppLib_WithBindings](https://github.com/pthom/imgui_bundle/workflows/CppLib_WithBindings/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib_with_bindings.yml) | [![Metal](https://github.com/pthom/imgui_bundle/workflows/Metal/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/Metal.yml)<br>[![DirectX](https://github.com/pthom/imgui_bundle/workflows/DirectX/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/DirectX.yml)<br>[![Vulkan](https://github.com/pthom/imgui_bundle/workflows/Vulkan/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/Vulkan.yml) | [![iOS](https://github.com/pthom/imgui_bundle/workflows/ios/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/ios.yml)<br>[![Android](https://github.com/pthom/imgui_bundle/workflows/android/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/android.yml) |
+
+
+***
