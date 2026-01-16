@@ -20,3 +20,6 @@ These libraries include plotting libraries, markdown rendering, file dialogs, im
 [//]: # (```{include} batteries_included.md)
 [//]: # (```)
 
+# Full pdf version of the manual
+
+A complete PDF of the manual is available below at [assets/book.pdf](assets/book.pdf); it is especially useful when working with LLMs.

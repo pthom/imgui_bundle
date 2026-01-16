@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - jbook
   workflow_dispatch:
 
 permissions:
@@ -30,10 +29,16 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r docs/book/requirements.txt
 
-      - name: Build Jupyter Book
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
+
+      - name: Build Jupyter Book (and PDF)
         run: |
           cd docs/book
           BASE_URL="/imgui_bundle" jupyter-book build --html
+          jupyter-book build --pdf
+          mkdir -p _build/html/assets
+          cp _build/exports/book.pdf _build/html/assets/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

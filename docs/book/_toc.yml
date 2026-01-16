@@ -41,5 +41,3 @@ parts:
       - file: devel_docs/bindings_intro
       - file: devel_docs/bindings_update
       - file: devel_docs/bindings_newlib
-
-
