@@ -5,3 +5,8 @@
   max-width: 200px;
   height: auto;
 }
+.myst-card,
+.myst-card .card {
+  border: none !important;
+  box-shadow: none !important;
+}

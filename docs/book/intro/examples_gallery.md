@@ -4,13 +4,15 @@
 
 Below are simple example applications available in the [Dear ImGui Bundle interactive manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html), in the "Demo Apps" tab.
 
+````{card}
+:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
 ```{figure} ../images/bundle_apps.jpg
 :alt: A screenshot of ImGui Bundle interactive manual, showing how to open example apps and show their source code
-:width: 600px
+:width: 500px
 :align: left
-Click on the "Demo Apps" tab, select a demo, run it and look at its source code (in C++ and Python)!
+Inside the manual, click the "Demo Apps" tab, select a demo, run it and look at its source code.
 ```
-
+````
 
 ### Complex layouts with docking windows
 

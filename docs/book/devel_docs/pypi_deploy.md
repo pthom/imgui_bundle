@@ -26,7 +26,7 @@ uv tool run twine upload wheelhouse/*
 
 or
 ```bash
-CIBW_ARCHS_MACOS="arm64" CIBW_BUILD="cp311-* cp312-*"  pipx run cibuildwheel --platform=macos
+CIBW_ARCHS_MACOS="arm64" CIBW_BUILD="cp311-* cp312-*"  uv tool run cibuildwheel --platform=macos
 ```
 
 In order to build a wheel for macOS 11
