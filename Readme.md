@@ -10,7 +10,7 @@
 
 > “Dear ImGui Bundle: easily create applications in Python and C++. Batteries included! With very few lines of code, you can build a responsive GUI, and deploy it to desktop or directly in the browser.”
 
-Dear ImGui Bundle is a collection of libraries around [Dear ImGui](https://github.com/ocornut/imgui), for both C++ and Python. It focuses on rapid prototyping, tooling, and educational demos, with first‑class support for desktop and web.
+Dear ImGui Bundle is a collection of libraries around [Dear ImGui](https://github.com/ocornut/imgui), for both C++ and Python. It focuses on app development, rapid prototyping, tooling, and educational demonstrations.
 
 ## Key features
 
@@ -59,6 +59,12 @@ The interactive manual showcases almost every part of the bundle with runnable e
 
 > “The interactive manual is intended to be your live reference: browse widgets, run demos, and copy code snippets directly into your own projects.”
 
+
+### DeepWiki
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pthom/imgui_bundle)
+
+_DeepWiki is an AI based website where you can ask questions about the Dear ImGui Bundle usage and get answers. It is trained on the full documentation and the source code of the Dear ImGui Bundle. Expect some inconsistencies, but it is still helpful._
 
 ### Online playground (Pyodide):
 Run and edit Python ImGui Bundle apps directly in your browser:
