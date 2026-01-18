@@ -42,6 +42,8 @@ def _glfw_set_search_path() -> None:
     elif platform.system() == "Linux":
         # Try multiple common naming conventions
         lib_filenames = ["libglfw.so.3", "libglfw.3.so", "libglfw. so.3.4", "libglfw.so.3.3"]
+    elif platform.system() == "Emscripten":
+        return
     else:
         warnings.warn(
             f"GLFW library search not implemented for platform: {platform.system()}. "
