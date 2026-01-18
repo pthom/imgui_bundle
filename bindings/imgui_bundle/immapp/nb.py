@@ -186,7 +186,7 @@ def start(*args, **kwargs) -> asyncio.Task:
             gui_with_theme = _make_gui_with_light_theme(gui_function)
 
             # Apply notebook-friendly defaults to kwargs
-            if "window_size_auto" not in kwargs:
+            if "window_size_auto" not in kwargs and "window_size" not in kwargs:
                 kwargs["window_size_auto"] = True
             if "top_most" not in kwargs:
                 kwargs["top_most"] = True
