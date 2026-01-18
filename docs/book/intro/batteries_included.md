@@ -1,4 +1,6 @@
-# Batteries Included
+# Bundled Libraries
+
+# Full list of included libraries
 
 Dear ImGui Bundle includes the following libraries, which are available in C++ _and_ in Python:
 

@@ -1,7 +1,7 @@
 format: jb-book
 root: intro/intro
 parts:
-  - caption:
+  - caption: Introduction
     chapters:
       - file: intro/batteries_included
       - file: intro/imm_gui

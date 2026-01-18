@@ -20,13 +20,6 @@ These libraries include plotting libraries, markdown rendering, file dialogs, im
 [//]: # (```{include} batteries_included.md)
 [//]: # (```)
 
-# Full pdf version of the manual
 
-A complete PDF of the manual is available below at [assets/book.pdf](assets/book.pdf); it is especially useful when working with LLMs.
-
-
-### DeepWiki
-
-[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pthom/imgui_bundle)
-
-_DeepWiki is an AI based website where you can ask questions about the Dear ImGui Bundle usage and get answers. It is trained on the full documentation and the source code of the Dear ImGui Bundle. Expect some inconsistencies, but it is still helpful._
+```{include} resources.md
+```

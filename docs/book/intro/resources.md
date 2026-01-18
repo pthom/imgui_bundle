@@ -1,5 +1,12 @@
 # Resources
 
+**DeepWiki**
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pthom/imgui_bundle)
+
+DeepWiki is an AI based website where you can ask questions about the usage of Dear ImGui Bundle and get answers. It is trained on the full documentation and the source code of the Dear ImGui Bundle. Expect some inconsistencies, but it is still helpful.
+
+
 **Live examples**
 
 - [ImGui Bundle interactive manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html): lots of example apps which you can run and inspect the source code
