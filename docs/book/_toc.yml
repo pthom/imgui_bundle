@@ -16,7 +16,7 @@ parts:
       - file: python/python_assets
       - file: python/pure_python_backend
       - file: python/python_async
-      - file: python/notebooks
+      - file: python/notebook_runners.ipynb
       - file: python/python_pyodide
   - caption: For C++ users
     chapters:

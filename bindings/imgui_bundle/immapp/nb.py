@@ -75,6 +75,15 @@ def run(*args, **kwargs):
 
         immapp.nb.run(my_gui, window_title="My App", window_size_auto=True)
         # Screenshot appears in cell output after closing
+
+    Additional parameters to controls the thumbnail screenshot:
+    * thumbnail_ratio: (default=1.0)
+      You can use it to change the size of the thumbnail.
+      Passing 0.5 will create a thumbnail half the width of the window.
+    * thumbnail_height: (default=0)
+      You can use it to set a fixed height for the thumbnail (in pixels).
+      If 0, the height is computed from the app window size.
+    (choose only one of the two parameters to control size)
     """
     from imgui_bundle import immapp
     return immapp.run(*args, **kwargs)
