@@ -1,4 +1,4 @@
-# Using ImGui Bundle in Jupyter Notebooks
+# Jupyter Notebooks support
 
 ImGui Bundle provides two modes for running applications in Jupyter notebooks: **blocking mode** (traditional with screenshots) and **non-blocking mode** (interactive with live updates).
 
