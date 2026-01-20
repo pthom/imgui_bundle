@@ -148,3 +148,11 @@ Without `await asyncio.sleep(0)`, the GUI will freeze because asyncio can't swit
 **Problem**: The GUI becomes unresponsive during computations.
 **Solution**: Make sure to `await asyncio.sleep(0)` regularly in your computation loops.
 
+
+### Exceptions in the async GUI
+
+If your GUI raises an exception, it might be difficult to trace with the GUI is running in an async way.
+
+In that case, it is recommended to first test your GUI in blocking mode using `immapp.run`, which will propagate exceptions normally.
+Once your GUI works in blocking mode, you can then switch to non-blocking mode (`immapp.run_async`).
+
