@@ -4,7 +4,16 @@ Dear ImGui Bundle includes [Hello ImGui](https://github.com/pthom/hello_imgui), 
 
 ## API & Usage
 
-See the "Hello ImGui" [API doc](https://pthom.github.io/hello_imgui/book/doc_api.html) and [Application parameter doc](https://pthom.github.io/hello_imgui/book/doc_params.html).
+**RunnerParams**
+
+Applications can be fully configured via `RunnerParams` (this incudes window size, app icon, fps settings, etc.).
+`hello_imgui.get_runner_params()` will return the runnerParams of the current application.
+
+See the [Application parameters doc](https://pthom.github.io/hello_imgui/book/doc_params.html).
+
+**API**
+
+See the "Hello ImGui" [API doc](https://pthom.github.io/hello_imgui/book/doc_api.html).
 
 ## Features
 

@@ -53,7 +53,7 @@ You may also call `hello_imgui.run()` (Python) or `HelloImGui::Run()` (C++), but
 :::
 
 
-## Activating Add-ons
+## Activating Add-ons with ImmApp
 
 Many libraries in the bundle (like **ImPlot** or **imgui_md**) require initialization at startup (e.g., creating contexts or loading specific fonts). `ImmApp` manages this via `AddOnsParams`.
 
@@ -100,43 +100,65 @@ int main() {
 ::::
 
 
-## Correctly size and position the widgets
+## Advanced: Manual Rendering
 
-It is almost always a bad idea to use fixed sizes. This will lead to portability issues, especially on high-DPI screens.
+If you need complete control over the render loop, you can use the functions inside `hello_imgui.manual_render`, or `immapp.manual_render`, instead of the standard `run()` functions.
 
-Instead of using fixed pixel sizes, it is recommended to use sizes relative to the font size, aka "em" units.
+::::{tab-set}
 
-:::{tip}
-See the definition of the [em CSS Unit](https://en.wikipedia.org/wiki/Em_(typography)).
-:::
-
-To achieve this, you should multiply your positions and sizes by `ImGui::GetFontSize()` (C++), or `imgui.get_font_size()` (Python).
-
-In order to make this simpler, the `HelloImGui::EmToVec2` (C++) or `hello_imgui::em_to_vec2` (Python) function below can greatly reduce the friction: it transforms a size in "em" units to a size in pixels.
-
-
-Example with Python:
-
+:::{tab-item} Python
 ```python
-from imgui_bundle import imgui, hello_imgui
+from imgui_bundle import imgui, hello_imgui, immapp
 
-def gui():
-    imgui.button("A button", hello_imgui.em_to_vec2(10, 2))  # 10em x 2em button
+# Setup
+runner_params = hello_imgui.RunnerParams()
+runner_params.callbacks.show_gui = lambda: imgui.text("Hello, ImGui Bundle!")
+addons = immapp.AddOnsParams()
+addons.with_implot = True
+immapp.manual_render.setup_from_runner_params(runner_params, addons)
+
+# Render loop
+while not hello_imgui.get_runner_params().app_shall_exit:
+    hello_imgui.manual_render.render()
+    # Do other work here if needed
+
+# Cleanup
+hello_imgui.manual_render.tear_down()
 ```
-
-Example with C++:
-
+:::
+:::{tab-item} C++
 ```cpp
 #include "imgui.h"
 #include "hello_imgui/hello_imgui.h"
+#include "immapp/immapp.h"
 
-void gui() {
-    ImGui::Button("A button", HelloImGui::EmToVec2(10, 2)); // 10em x 2em button
+int main()
+{
+    // Setup
+    HelloImGui::RunnerParams runnerParams;
+    runnerParams.callbacks.ShowGui = []() {
+        ImGui::Text("Hello, ImGui Bundle!");
+    };
+    ImmApp::AddOnsParams addons;
+    addons.withImplot = true;
+    ImmApp::ManualRender::SetupFromRunnerParams(runnerParams, addons);
+
+    // Render loop
+    while (!HelloImGui::GetRunnerParams().app_shall_exit) {
+        ImmApp::ManualRender::Render();
+        // Do other work here if needed
+    }
+
+    // Cleanup
+    ImmApp::ManualRender::TearDown();
+    return 0;
 }
 ```
-
-:::{note}
-* `EmSize(x)` functions are also available to get only one dimension in pixels. (e.g., `hello_imgui.em_size(2)` or `HelloImGui::EmSize(2)`).
-
-* `EmToVec2` and `EmSize` are also available in the `immapp` module in Python, and in the `ImmApp` namespace in C++.
 :::
+::::
+
+This approach is useful for:
+- Custom event loops
+- Integration with other frameworks
+- Fine-grained control over frame timing
+

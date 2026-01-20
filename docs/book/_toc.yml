@@ -30,6 +30,7 @@ parts:
       - file: runners/hello_imgui
       - file: runners/immapp
       - file: runners/app_settings
+      - file: runners/runner_tips
   - caption: Support
     chapters:
       - file: support/support_project
