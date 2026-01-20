@@ -162,3 +162,4 @@ This approach is useful for:
 - Integration with other frameworks
 - Fine-grained control over frame timing
 
+(For python users, also see the page on [async usage](../python/python_async.md) for more info and performance tips.)

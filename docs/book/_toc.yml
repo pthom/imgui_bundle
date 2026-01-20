@@ -16,6 +16,7 @@ parts:
       - file: python/python_assets
       - file: python/pure_python_backend
       - file: python/porting_cpp
+      - file: python/python_async
       - file: python/notebooks
       - file: python/python_pyodide
   - caption: For C++ users
