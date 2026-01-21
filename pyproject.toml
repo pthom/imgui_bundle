@@ -65,7 +65,7 @@ full = [
     "PyGLM"
 ]
 # For development and testing
-test = ["pytest"]
+test = ["pytest", "pytest-asyncio"]
 
 
 
