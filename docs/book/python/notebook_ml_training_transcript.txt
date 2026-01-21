@@ -1,98 +1,49 @@
-Video Transcript: "Real-Time ML Training with Interactive GUI in Jupyter"
-[0:00-0:20] INTRO
+# Bundle ML notebook
+
+
+## Real-Time ML Training with Interactive GUI in Jupyter
+
+[00:00:00]
 
 Hey everyone! Today I'm showing you something really cool - training a neural network in a Jupyter notebook with a live, interactive GUI that lets you tune hyperparameters in real-time.
 
-This uses Dear ImGui Bundle, which brings immediate-mode GUI capabilities to Python. Let's dive in!
+Disclaimer: this video uses an artificial voice.
 
-[0:20-0:45] SETUP
+We will use Dear ImGui Bundle, which brings immediate-mode GUI capabilities to Python. Let's dive in!
 
-We're training a simple neural network on the Iris dataset using PyTorch. Nothing fancy - just 3 layers classifying flower species.
-
-[Show notebook cells being executed quickly]
+We're training a simple neural network on the Iris dataset using PyTorch. Nothing fancy - just 3 layers, classifying flower species.
 
 Here I'm setting up the data, defining the model, and creating a shared training state that both our GUI and training loop can access.
 
-The key is this training_state dictionary - it holds our hyperparameters, training metrics, and control flags.
+The key is this training\_state dictionary - it holds our hyperparameters, training metrics, and control flags.
 
-[0:45-1:15] LAUNCHING THE GUI
+Now here's where it gets interesting.
 
-Now here's where it gets interesting. I call immapp.nb.start() - this launches the GUI in non-blocking mode.
+We can easily define a GUI in order to enable the user to tune hyperparameters. Here, we add a slider to adjust the learning rate. And here we plot the loss and accuracy.
 
-[Show GUI window appearing on screen]
+To [00:01:00] run this GUI, I call immapp.nb.start() - this launches the GUI in non-blocking mode.
 
 See? The cell completes immediately, but the GUI window stays open on top of the browser. This is crucial - we can now run other cells while the GUI is active.
 
 The GUI shows our training metrics, hyperparameter controls, and live plots. But right now, nothing's training yet.
 
-[1:15-2:00] STARTING TRAINING
-
 Let's start the training loop. This is an async function that runs alongside the GUI.
-
-[Execute training cell, show plots starting to update]
 
 Watch the loss curve - it's updating in real-time! We can see the training and test accuracy climbing.
 
-The magic happens here: await asyncio.sleep(0) - this yields control after each epoch, letting the GUI update smoothly. Both the training loop and GUI are cooperating through asyncio.
-
-[2:00-2:45] INTERACTIVE TUNING
+The magic happens here: await async\_io.sleep(0) - this yields control after each epoch, letting the GUI update smoothly. Both the training loop and GUI are cooperating through async\_io.
 
 Now the fun part - let's interact with it while it's training!
 
-[Move learning rate slider]
+I can pause training, make adjustments...and resume. This is incredibly useful for experimenting with hyperparameters without [00:02:00] restarting training from scratch.
 
 I'm adjusting the learning rate - watch how the loss curve immediately responds. Higher learning rate, faster but noisier convergence.
 
-[Adjust momentum]
+Let me reset the training and try different settings. Starting fresh with a lower learning rate - see how the curve is smoother but converges more slowly?
 
-Now I'm changing the momentum - see how it smooths out the training dynamics?
+This pattern could work for any ML training.
 
-[Click pause button]
+Once the training is finished, we may run the GUI one last time in blocking mode, in order to capture a screenshot which will be displayed and saved inside the notebook.
 
-I can pause training, make adjustments...
+All the code is in the video description - it's part of the Dear ImGUI Bundle documentation. If you want to add interactive GUIs to your ML workflows, give it a try! Thanks for watching, and see you in the next one!
 
-[Click resume]
-
-...and resume. This is incredibly useful for experimenting with hyperparameters without restarting training from scratch.
-
-[2:45-3:20] RESET AND EXPERIMENT
-
-Let me reset the training and try different settings.
-
-[Click reset, adjust parameters, show new training run]
-
-Starting fresh with a lower learning rate - see how the curve is smoother but converges more slowly?
-
-This pattern works for any ML training - imagine using this for:
-
-Deep learning with larger models
-Adjusting batch size, learning rate schedules
-Monitoring multiple metrics
-Training on GPU
-[3:20-3:50] WRAP UP
-
-The key insight: we're running two async tasks concurrently - one for the GUI, one for training. They share state through a simple dictionary. No complex threading, no multiprocessing headaches.
-
-[Show final results]
-
-After 10,000 epochs, we've got 100% accuracy on both train and test sets. Not bad for a simple demo!
-
-[3:50-4:00] OUTRO
-
-All the code is in the video description - it's part of the Dear ImGui Bundle documentation. If you want to add interactive GUIs to your ML workflows, give it a try!
-
-Thanks for watching, and see you in the next one!
-
-Visual Cues for Editing:
-0:00-0:20: Screen recording of notebook + webcam corner
-0:20-0:45: Fast-forward through setup cells executing
-0:45-1:15: Focus on GUI window appearing, zoom in on interface
-1:15-2:00: Split screen: notebook cell + GUI with updating plots
-2:00-2:45: Close-up on GUI, cursor adjusting sliders, plots responding
-2:45-3:20: Full workflow: reset → adjust → new training visualization
-3:20-3:50: Quick montage of use cases (text overlays)
-3:50-4:00: GitHub/docs link overlay
-Optional B-Roll Ideas:
-Quick comparison: "traditional" static matplotlib plots vs. live ImGui
-Code highlight: the await asyncio.sleep(0) line with explanation overlay
-Terminal showing pip install imgui-bundle torch

@@ -171,8 +171,6 @@ def start(*args, **kwargs) -> asyncio.Task:
             # Apply notebook-friendly defaults to kwargs
             if "window_size_auto" not in kwargs and "window_size" not in kwargs:
                 kwargs["window_size_auto"] = True
-            if "top_most" not in kwargs:
-                kwargs["top_most"] = True
 
             # Create the task
             _current_task = asyncio.create_task(
