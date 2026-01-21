@@ -104,8 +104,8 @@ build-verbosity = 1
 build = ["cp311-*", "cp312-*", "cp313-*", "cp314-*"]
 
 # Tests
-test-requires = "pytest"
-test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package}/tests !
+test-requires = ["pytest", "pytest-asyncio"]
+test-command = "pytest {project}/tests --ignore={project}/tests/tests_python_gui"
 
 
 #------------------------------------
