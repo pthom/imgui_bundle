@@ -63,7 +63,14 @@ jobs:
         # optionally: export IMMVISION_FETCH_OPENCV=OFF
         pip install --verbose .[test]
 
-    - name: pytest
+    # On macOS, run tests, ignoring the GUI tests
+    - name: pytest no gui (macOS)
+      if: ${{ matrix.platform == 'macos-latest' }}
+      run: pytest --ignore=tests/tests_python_gui
+
+    # Run tests with GUI (Xvfb is running on ubuntu, mesa software opengl on windows)
+    - name: pytest with gui
+      if: ${{ matrix.platform != 'macos-latest' }}
       run: pytest
 
     - name: CI Automation python test (ubuntu)
