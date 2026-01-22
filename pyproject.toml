@@ -10,7 +10,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "imgui-bundle"
-version = "1.92.5"  # Remember to mirror changes on line 2 of main CMakeLists! This mirrors IMGUI_VERSION_NUM in imgui.h
+version = "1.92.6"  # Remember to mirror changes on line 2 of main CMakeLists! This mirrors IMGUI_VERSION_NUM in imgui.h
 description="Dear ImGui Bundle: From expressive code to powerful GUIs in no time. A fast, feature-rich, cross-platform toolkit for C++ and Python."
 readme = "bindings/imgui_bundle/Readme_pypi.md"
 authors = [ { name = "Pascal Thomet", email = "pthomet@gmail.com" } ]
@@ -103,7 +103,8 @@ build-verbosity = 1
 # Target python versions:
 build = ["cp311-*", "cp312-*", "cp313-*", "cp314-*"]
 
-# Tests
+# Tests : we ignore the python GUI tests here, as they require a display
+# (note: those tests are run in the pip.yml GitHub actions workflows)
 test-requires = ["pytest", "pytest-asyncio"]
 test-command = "pytest {project}/tests --ignore={project}/tests/tests_python_gui"
 
