@@ -83,7 +83,31 @@ imgui_bundle_demo="imgui_bundle.demos_python.demo_imgui_bundle:main"
 [tool.scikit-build]
 wheel.expand-macos-universal-tags = true
 wheel.packages = ["bindings/imgui_bundle"]
-sdist.exclude = ["bindings/imgui_bundle/doc", "docs"]
+sdist.exclude = [
+    ".git",
+    ".github",
+    "external/*/.git",
+    "ci_scripts",
+    "docs",
+    # Build artifacts
+    "build*",
+    "external/*/build*",
+    "_skbuild",
+    "*.so",
+    "*.dylib",
+    "*.dll",
+    "*.pyd",
+    "*.egg-info",
+    "__pycache__",
+    # Virtual environments
+    "venv*",
+    ".venv*",
+    "v3*",
+    # Dependency managers & pip outputs
+    "vcpkg",
+    "dist",
+    "wheelhouse",
+]
 
 cmake.version = ">=3.26.1"
 build.verbose = true
@@ -123,7 +147,6 @@ before-build = "uname -a"
 # test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
 test-skip = ["*"]
 # Environment variables
-# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
 environment = { MACOSX_DEPLOYMENT_TARGET="14.0" }
 
 # Architectures
@@ -139,8 +162,6 @@ archs = ["x86_64", "arm64"]
 skip = ["*i686"]
 test-skip = ["*-musllinux_*"] #  issue with OpenGL on musllinux
 # Environment variables
-# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
-# environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
 environment-pass = ["IMMVISION_OPENCV_GIT_REPO"]  # pass alternative git repo to docker build containers
 
 
@@ -174,6 +195,21 @@ before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev l
 [tool.cibuildwheel.windows]
 skip = ["*win32"]
 
-# Environment variables
-# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Download a precompiled version of opencv4.6.0
-# environment = { IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460="ON" }
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Custom Build Configurations
+# ═══════════════════════════════════════════════════════════════════════════
+# You may disable some submodules of imgui_bundle if you do not need them.
+# Common cases are:
+# 1. to disable immvision (to avoid the OpenCV dependency)
+#    Pass -DIMGUI_BUNDLE_WITH_IMMVISION=OFF, e.g.:
+#        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_IMMVISION=OFF" pip install -v .
+#    or
+#        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_IMMVISION=OFF" python -m build --wheel
+#
+# 2. to disable hello_imgui (to avoid the windowing dependencies)
+#   Pass -DIMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF, e.g.:
+#        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF" pip install -v .
+#   If you disable hello_imgui, several dependent modules will be auto-disabled:
+#     immapp, imgui_md, im_file_dialog, imgui_tex_inspect, immvision, imgui_test_engine, and the glfw backend.
+

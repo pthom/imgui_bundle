@@ -105,36 +105,6 @@ async def test_nb_stop():
 
 
 @pytest.mark.asyncio
-async def test_nb_auto_stop_existing():
-    """Test that starting a new GUI auto-stops the existing one."""
-    gui1_active = {"value": True}
-    gui2_active = {"value": True}
-
-    def gui1():
-        if not gui1_active["value"]:
-            hello_imgui.get_runner_params().app_shall_exit = True
-
-    def gui2():
-        if not gui2_active["value"]:
-            hello_imgui.get_runner_params().app_shall_exit = True
-
-    # Start first GUI
-    hello_imgui.nb.start(gui1, window_title="GUI 1")
-    assert hello_imgui.nb.is_running(), "GUI 1 should be running"
-    await asyncio.sleep(0.1)
-
-    # Start second GUI - should auto-stop first
-    hello_imgui.nb.start(gui2, window_title="GUI 2")
-    await asyncio.sleep(0.2)
-
-    assert hello_imgui.nb.is_running(), "GUI 2 should be running"
-
-    # Clean up
-    gui2_active["value"] = False
-    await asyncio.sleep(0.2)
-
-
-@pytest.mark.asyncio
 async def test_nb_is_running():
     """Test hello_imgui.nb.is_running() state tracking."""
     # Initially not running

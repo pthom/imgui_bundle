@@ -34,11 +34,15 @@ void py_init_module_imcoolbar(nb::module_& m);
 void py_init_module_nanovg(nb::module_& m);
 
 
-std::vector<std::string> gAllSubmodules;
+std::vector<std::string> gAvailableSubmodules;
+std::vector<std::string> gDisabledSubmodules;
 
-void _register_submodule(const std::string& submodule_name)
+void _register_submodule(const std::string& submodule_name, bool available = true)
 {
-    gAllSubmodules.push_back(submodule_name);
+    if (available)
+        gAvailableSubmodules.push_back(submodule_name);
+    else
+        gDisabledSubmodules.push_back(submodule_name);
 }
 
 
@@ -71,11 +75,17 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("imgui.test_engine");
     auto module_imgui_test_engine =  module_imgui.def_submodule("test_engine");
     py_init_module_imgui_test_engine(module_imgui_test_engine);
+#else
+    _register_submodule("imgui.test_engine", false);
 #endif
 
+#ifndef IMGUI_BUNDLE_DISABLE_HELLO_IMGUI
     _register_submodule("hello_imgui");
     auto module_himgui =  m.def_submodule("hello_imgui");
     py_init_module_hello_imgui(module_himgui);
+#else
+    _register_submodule("hello_imgui", false);
+#endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
     _register_submodule("implot");
@@ -85,6 +95,9 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("implot.internal");
     auto module_implot_internal = module_implot.def_submodule("internal");
     py_init_module_implot_internal(module_implot_internal);
+#else
+    _register_submodule("implot", false);
+    _register_submodule("implot.internal", false);
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
@@ -95,6 +108,9 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("implot3d.internal");
     auto module_implot3d_internal = module_implot3d.def_submodule("internal");
     py_init_module_implot3d_internal(module_implot3d_internal);
+#else
+    _register_submodule("implot3d", false);
+    _register_submodule("implot3d.internal", false);
 #endif
 
     _register_submodule("imgui_color_text_edit");
@@ -105,6 +121,8 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("imgui_node_editor");
     auto module_imgui_node_editor =  m.def_submodule("imgui_node_editor");
     py_init_module_imgui_node_editor(module_imgui_node_editor);
+#else
+    _register_submodule("imgui_node_editor", false);
 #endif
 
     _register_submodule("imgui_knobs");
@@ -115,37 +133,53 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("im_file_dialog");
 	auto module_im_file_dialog =  m.def_submodule("im_file_dialog");
 	py_init_module_im_file_dialog(module_im_file_dialog);
+#else
+    _register_submodule("im_file_dialog", false);
 #endif
 
     _register_submodule("imspinner");
     auto module_imspinner =  m.def_submodule("imspinner");
     py_init_module_imspinner(module_imspinner);
 
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_MD
     _register_submodule("imgui_md");
     auto module_imgui_md =  m.def_submodule("imgui_md");
     py_init_module_imgui_md(module_imgui_md);
+#else
+    _register_submodule("imgui_md", false);
+#endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
     _register_submodule("immvision");
     auto module_immvision =  m.def_submodule("immvision");
     py_init_module_immvision(module_immvision);
+#else
+    _register_submodule("immvision", false);
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
     _register_submodule("imguizmo");
     auto module_imguizmo = m.def_submodule("imguizmo");
     py_init_module_imguizmo(module_imguizmo);
+#else
+    _register_submodule("imguizmo", false);
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT
     _register_submodule("imgui_tex_inspect");
     auto module_imgui_tex_inspect = m.def_submodule("imgui_tex_inspect");
     py_init_module_imgui_tex_inspect(module_imgui_tex_inspect);
+#else
+    _register_submodule("imgui_tex_inspect", false);
 #endif
 
+#ifndef IMGUI_BUNDLE_DISABLE_IMMAPP
     _register_submodule("immapp_cpp");
     auto module_immapp_cpp = m.def_submodule("immapp_cpp");
     py_init_module_immapp_cpp(module_immapp_cpp);
+#else
+    _register_submodule("immapp_cpp", false);
+#endif
 
     _register_submodule("imgui_toggle");
     auto module_imgui_toggle = m.def_submodule("imgui_toggle");
@@ -167,13 +201,16 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("nanovg");
     auto module_nanovg = m.def_submodule("nanovg");
     py_init_module_nanovg(module_nanovg);
+#else
+    _register_submodule("nanovg", false);
 #endif
 
-#ifdef HELLOIMGUI_USE_GLFW3
+#if defined(HELLOIMGUI_USE_GLFW3) && !defined(IMGUI_BUNDLE_DISABLE_HELLO_IMGUI)
     _register_submodule("with_glfw");
 #endif
 
-    m.attr("__bundle_submodules__") = gAllSubmodules;
+    m.attr("__bundle_submodules_available__") = gAvailableSubmodules;
+    m.attr("__bundle_submodules_disabled__") = gDisabledSubmodules;
 
 #ifdef IMGUI_BUNDLE_BUILD_PYODIDE
     m.attr("__bundle_pyodide__") = true;

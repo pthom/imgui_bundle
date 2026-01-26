@@ -3,7 +3,9 @@
 
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
+#ifndef IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL3
 #include "imgui_impl_opengl3.h"
+#endif
 #ifndef IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2
 #include "imgui_impl_opengl2.h"
 #endif
@@ -21,7 +23,9 @@ void py_init_module_imgui_backends(nb::module_& m)
 {
     //
     // <bindings for imgui_impl_opengl3.h
+    // OpenGL3 backend is only available with hello_imgui
     //
+#ifndef IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL3
     m.def("opengl3_init",
         ImGui_ImplOpenGL3_Init, nb::arg("glsl_version"));
 
@@ -42,6 +46,20 @@ void py_init_module_imgui_backends(nb::module_& m)
 
     m.def("opengl3_destroy_device_objects",
         ImGui_ImplOpenGL3_DestroyDeviceObjects);
+#else // IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL3
+     // Provide stub functions when OpenGL3 backend is not available
+     auto shout_opengl3_not_built = []() {
+         IM_ASSERT(false && "ImGui OpenGL3 backend requires hello_imgui (disabled by IMGUI_BUNDLE_DISABLE_HELLO_IMGUI). Use OpenGL2 backend instead.");
+     };
+
+     m.def("opengl3_init", shout_opengl3_not_built);
+     m.def("opengl3_shutdown", shout_opengl3_not_built);
+     m.def("opengl3_new_frame", shout_opengl3_not_built);
+     m.def("opengl3_render_draw_data", shout_opengl3_not_built);
+     m.def("opengl3_update_texture", shout_opengl3_not_built);
+     m.def("opengl3_create_device_objects", shout_opengl3_not_built);
+     m.def("opengl3_destroy_device_objects", shout_opengl3_not_built);
+#endif // IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL3
 
 
     //

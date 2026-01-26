@@ -109,10 +109,14 @@ namespace ImmApp
             gImmAppContext._NodeEditorContext = ax::NodeEditor::CreateEditor(&gImmAppContext._NodeEditorConfig);
             ax::NodeEditor::SetCurrentEditor(gImmAppContext._NodeEditorContext.value());
 
-            runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
-                FnResetImGuiNodeEditorId,
-                runnerParams.callbacks.BeforeExit
-            );
+            // Only sequence the ID reset function if it's been set (by node editor bindings)
+            if (FnResetImGuiNodeEditorId)
+            {
+                runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
+                    FnResetImGuiNodeEditorId,
+                    runnerParams.callbacks.BeforeExit
+                );
+            }
 
             // Update node editor colors from imgui colors
             auto fnUpdateNodeEditorColorsFromImguiColors = [&]

@@ -1,6 +1,90 @@
 set(IMGUI_BUNDLE_CMAKE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
 
 
+###################################################################################################
+# Backward compatibility layer for legacy IMGUI_BUNDLE_DISABLE_* options
+###################################################################################################
+# This macro translates legacy IMGUI_BUNDLE_DISABLE_* options to new IMGUI_BUNDLE_WITH_* options
+# with deprecation warnings. Support will be removed circa January 2028.
+macro(imgui_bundle_translate_legacy_disable_options)
+    set(_all_options
+        HELLO_IMGUI
+        IMMAPP
+        IMGUI_MD
+        NANOVG
+        IMPLOT
+        IMPLOT3D
+        IMGUI_NODE_EDITOR
+        IMGUIZMO
+        IMGUI_TEX_INSPECT
+        IMFILEDIALOG
+        IMMVISION
+    )
+
+    foreach(_opt ${_all_options})
+        if(DEFINED IMGUI_BUNDLE_DISABLE_${_opt})
+            message(DEPRECATION
+                "IMGUI_BUNDLE_DISABLE_${_opt} is deprecated and will be removed in a future version (circa January 2028). "
+                "Please use IMGUI_BUNDLE_WITH_${_opt}=OFF instead.")
+
+            # Invert the boolean value: DISABLE_X=ON means WITH_X=OFF
+            if(IMGUI_BUNDLE_DISABLE_${_opt})
+                set(IMGUI_BUNDLE_WITH_${_opt} OFF CACHE BOOL "Translated from legacy DISABLE option" FORCE)
+            else()
+                set(IMGUI_BUNDLE_WITH_${_opt} ON CACHE BOOL "Translated from legacy DISABLE option" FORCE)
+            endif()
+        endif()
+    endforeach()
+endmacro()
+
+
+###################################################################################################
+# Environment variable handling for Python builds
+###################################################################################################
+# This macro allows environment variables to override IMGUI_BUNDLE_WITH_* options
+# Usage: Call this macro after defining all IMGUI_BUNDLE_WITH_* options in CMakeLists.txt
+macro(imgui_bundle_apply_env_var_overrides)
+    if(IMGUI_BUNDLE_BUILD_PYTHON)
+        # List of all options that can be controlled via environment variables
+        set(_with_options
+            HELLO_IMGUI
+            IMMAPP
+            IMGUI_MD
+            NANOVG
+            IMPLOT
+            IMPLOT3D
+            IMGUI_NODE_EDITOR
+            IMGUIZMO
+            IMGUI_TEX_INSPECT
+            IMFILEDIALOG
+            IMMVISION
+        )
+
+        foreach(_opt ${_with_options})
+            # Support new WITH_* environment variables
+            if(DEFINED ENV{IMGUI_BUNDLE_WITH_${_opt}})
+                set(IMGUI_BUNDLE_WITH_${_opt} "$ENV{IMGUI_BUNDLE_WITH_${_opt}}" CACHE BOOL "Set from environment variable" FORCE)
+                message(STATUS "IMGUI_BUNDLE_WITH_${_opt} set to $ENV{IMGUI_BUNDLE_WITH_${_opt}} from environment")
+            endif()
+
+            # Support legacy DISABLE_* environment variables with deprecation warning
+            if(DEFINED ENV{IMGUI_BUNDLE_DISABLE_${_opt}})
+                message(DEPRECATION
+                    "Environment variable IMGUI_BUNDLE_DISABLE_${_opt} is deprecated and will be removed in a future version (circa January 2028). "
+                    "Please use IMGUI_BUNDLE_WITH_${_opt} instead (with inverted logic).")
+
+                # Invert the value: DISABLE_X=ON means WITH_X=OFF
+                if("$ENV{IMGUI_BUNDLE_DISABLE_${_opt}}")
+                    set(IMGUI_BUNDLE_WITH_${_opt} OFF CACHE BOOL "Set from legacy environment variable" FORCE)
+                else()
+                    set(IMGUI_BUNDLE_WITH_${_opt} ON CACHE BOOL "Set from legacy environment variable" FORCE)
+                endif()
+                message(STATUS "IMGUI_BUNDLE_WITH_${_opt} set to ${IMGUI_BUNDLE_WITH_${_opt}} from legacy environment variable IMGUI_BUNDLE_DISABLE_${_opt}")
+            endif()
+        endforeach()
+    endif()
+endmacro()
+
 
 ###################################################################################################
 # Store installable dependencies
