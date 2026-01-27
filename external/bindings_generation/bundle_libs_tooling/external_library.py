@@ -207,3 +207,27 @@ class ExternalLibrary:
             )
             return
         self.cmd_pull().run()
+
+    def has_new_changes_in_official(self) -> bool:
+        import subprocess
+
+        if self.fork_git_url is None:
+            return False
+        if self.official_branch == self.fork_branch:
+            return False
+
+        has_changes = False
+
+        # self.cmd_fetch_all().run()
+        cur_dir = os.getcwd()
+        os.chdir(self.git_folder_abs_path())
+        cmd_str = f"git --no-pager log  --oneline {self.fork_branch}..{self.official_branch}"
+
+        cmd_result_str: str
+        process_result = subprocess.run(cmd_str, shell=True, capture_output=True, text=True)
+        if len(process_result.stdout) > 0:
+            has_changes = True
+
+        os.chdir(cur_dir)
+
+        return has_changes

@@ -5,8 +5,9 @@ from bundle_libs_tooling import all_external_libraries
 # all_external_libraries.reattach_all_submodules()
 # all_external_libraries.pull_all_submodules()
 # all_external_libraries.fetch_all_submodules()
+all_external_libraries.check_new_changes_in_official()
 
-cmd = all_external_libraries.lib_implot3d().cmd_rebase_fork_on_official_changes()
-print(cmd)
-cmd.run()
+# cmd = all_external_libraries.lib_implot3d().cmd_rebase_fork_on_official_changes()
+# print(cmd)
+# cmd.run()
 

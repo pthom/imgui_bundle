@@ -278,3 +278,19 @@ def fetch_all_submodules():
         if lib.is_submodule():
             print(lib.name)
             lib.cmd_fetch_all().run()
+
+def check_new_changes_in_official():
+    unchanged = []
+    changed = []
+    for lib in ALL_LIBS:
+        has_changes = lib.has_new_changes_in_official()
+        if has_changes:
+            changed.append(lib.name)
+        else:
+            unchanged.append(lib.name)
+
+    unchanged_str = ", ".join(unchanged)
+    changed_str = ", ".join(changed)
+    print(f"Unchanged libraries: {unchanged_str}")
+    print(f"Libraries with new changes in official repo: {changed_str}")
+
