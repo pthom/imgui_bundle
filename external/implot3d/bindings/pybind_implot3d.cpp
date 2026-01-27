@@ -198,6 +198,11 @@ void py_init_module_implot3d(nb::module_& m)
             .value("no_fit", ImPlot3DImageFlags_NoFit, "");
 
 
+    auto pyEnumDummyFlags_ =
+        nb::enum_<ImPlot3DDummyFlags_>(m, "DummyFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotDummy")
+            .value("none", ImPlot3DDummyFlags_None, "Default");
+
+
     auto pyEnumLegendFlags_ =
         nb::enum_<ImPlot3DLegendFlags_>(m, "LegendFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for legends")
             .value("none", ImPlot3DLegendFlags_None, "Default")
@@ -237,18 +242,25 @@ void py_init_module_implot3d(nb::module_& m)
 
     auto pyEnumImAxis3D_ =
         nb::enum_<ImAxis3D_>(m, "ImAxis3D_", nb::is_arithmetic(), nb::is_flag(), "Axis indices")
-            .value("x", ImAxis3D_X, "")
-            .value("y", ImAxis3D_Y, "")
-            .value("z", ImAxis3D_Z, "")
+            .value("x", ImAxis3D_X, "X-axis")
+            .value("y", ImAxis3D_Y, "Y-axis")
+            .value("z", ImAxis3D_Z, "Z-axis")
             .value("count", ImAxis3D_COUNT, "");
 
 
     auto pyEnumImPlane3D_ =
         nb::enum_<ImPlane3D_>(m, "ImPlane3D_", nb::is_arithmetic(), nb::is_flag(), "Plane indices")
-            .value("yz", ImPlane3D_YZ, "")
-            .value("xz", ImPlane3D_XZ, "")
-            .value("xy", ImPlane3D_XY, "")
+            .value("yz", ImPlane3D_YZ, "YZ plane (perpendicular to X-axis)")
+            .value("xz", ImPlane3D_XZ, "XZ plane (perpendicular to Y-axis)")
+            .value("xy", ImPlane3D_XY, "XY plane (perpendicular to Z-axis)")
             .value("count", ImPlane3D_COUNT, "");
+
+
+    auto pyEnumScale_ =
+        nb::enum_<ImPlot3DScale_>(m, "Scale_", nb::is_arithmetic(), nb::is_flag(), "Axis scale")
+            .value("linear", ImPlot3DScale_Linear, "Default linear scale")
+            .value("log10", ImPlot3DScale_Log10, "Base 10 log scale")
+            .value("sym_log", ImPlot3DScale_SymLog, "Symmetric base 10 log scale");
 
 
     auto pyEnumColormap_ =
@@ -272,16 +284,24 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     m.def("create_context",
-        ImPlot3D::CreateContext, nb::rv_policy::reference);
+        ImPlot3D::CreateContext,
+        "Creates a new ImPlot3D context. Call this after ImGui::CreateContext",
+        nb::rv_policy::reference);
 
     m.def("destroy_context",
-        ImPlot3D::DestroyContext, nb::arg("ctx") = nb::none());
+        ImPlot3D::DestroyContext,
+        nb::arg("ctx") = nb::none(),
+        "Destroys an ImPlot3D context. Call this before ImGui::DestroyContext. None = destroy current context");
 
     m.def("get_current_context",
-        ImPlot3D::GetCurrentContext, nb::rv_policy::reference);
+        ImPlot3D::GetCurrentContext,
+        "Returns the current ImPlot3D context. None if no context has been set",
+        nb::rv_policy::reference);
 
     m.def("set_current_context",
-        ImPlot3D::SetCurrentContext, nb::arg("ctx"));
+        ImPlot3D::SetCurrentContext,
+        nb::arg("ctx"),
+        "Sets the current ImPlot3D context");
 
     m.def("begin_plot",
         [](const char * title_id, const std::optional<const ImVec2> & size = std::nullopt, ImPlot3DFlags flags = 0) -> bool
@@ -344,17 +364,27 @@ void py_init_module_implot3d(nb::module_& m)
             SetupAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
         nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond").none() = nb::none(),
-        "Python bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets an axis range limits. If ImPlot3DCond_Always is used, the axis limits will be locked.\n Note: To invert an axis, use ImPlot3DAxisFlags_Invert with SetupAxis instead of swapping min/max\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+
+    m.def("setup_axis_scale",
+        nb::overload_cast<ImAxis3D, ImPlot3DScale>(ImPlot3D::SetupAxisScale),
+        nb::arg("axis"), nb::arg("scale"),
+        "Sets an axis' scale using built-in options");
+
+    m.def("setup_axis_scale",
+        nb::overload_cast<ImAxis3D, ImPlot3DTransform, ImPlot3DTransform, void *>(ImPlot3D::SetupAxisScale),
+        nb::arg("axis"), nb::arg("forward"), nb::arg("inverse"), nb::arg("data") = nb::none(),
+        "Sets an axis' scale using user supplied forward and inverse transforms");
 
     m.def("setup_axis_limits_constraints",
         ImPlot3D::SetupAxisLimitsConstraints,
         nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"),
-        "Sets an axis' limits constraints");
+        "Sets an axis' limits constraints. The axis will be constrained to never go below #v_min or above #v_max");
 
     m.def("setup_axis_zoom_constraints",
         ImPlot3D::SetupAxisZoomConstraints,
-        nb::arg("axis"), nb::arg("z_min"), nb::arg("z_max"),
-        "Sets an axis' zoom constraints");
+        nb::arg("axis"), nb::arg("zoom_min"), nb::arg("zoom_max"),
+        "Sets an axis' zoom constraints. The zoom (axis range size: range.max - range.min) will be constrained between #zoom_min and #zoom_max");
 
     m.def("setup_axes",
         ImPlot3D::SetupAxes,
@@ -380,7 +410,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetupAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, z_min, z_max, cond);
         },
         nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("z_min"), nb::arg("z_max"), nb::arg("cond").none() = nb::none(),
-        " Sets the X/Y/Z axes range limits. If ImPlot3DCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits)\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the X/Y/Z axes range limits. If ImPlot3DCond_Always is used, the axes limits will be locked (shorthand for three calls to SetupAxisLimits)\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_rotation",
         [](double elevation, double azimuth, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
@@ -440,7 +470,9 @@ void py_init_module_implot3d(nb::module_& m)
         "Sets the plot box X/Y/Z scale. A scale of 1.0 is the default. Values greater than 1.0 enlarge the plot, while values between 0.0 and 1.0 shrink it");
 
     m.def("setup_legend",
-        ImPlot3D::SetupLegend, nb::arg("location"), nb::arg("flags") = 0);
+        ImPlot3D::SetupLegend,
+        nb::arg("location"), nb::arg("flags") = 0,
+        "Sets up the plot legend location and flags");
 
     m.def("plot_scatter",
         [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DScatterFlags flags = 0, int offset = 0, int stride = -1)
@@ -531,7 +563,9 @@ void py_init_module_implot3d(nb::module_& m)
             };
 
             PlotScatter_adapt_c_buffers(label_id, xs, ys, zs, flags, offset, stride);
-        },     nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1);
+        },
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
+        "Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates");
 
     m.def("plot_line",
         [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DLineFlags flags = 0, int offset = 0, int stride = -1)
@@ -622,7 +656,9 @@ void py_init_module_implot3d(nb::module_& m)
             };
 
             PlotLine_adapt_c_buffers(label_id, xs, ys, zs, flags, offset, stride);
-        },     nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1);
+        },
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
+        "Plots a line in 3D. Consecutive points are connected with line segments");
 
     m.def("plot_triangle",
         [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DTriangleFlags flags = 0, int offset = 0, int stride = -1)
@@ -713,7 +749,9 @@ void py_init_module_implot3d(nb::module_& m)
             };
 
             PlotTriangle_adapt_c_buffers(label_id, xs, ys, zs, flags, offset, stride);
-        },     nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1);
+        },
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
+        "Plots triangles in 3D. Every 3 consecutive points define a triangle");
 
     m.def("plot_quad",
         [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DQuadFlags flags = 0, int offset = 0, int stride = -1)
@@ -804,7 +842,9 @@ void py_init_module_implot3d(nb::module_& m)
             };
 
             PlotQuad_adapt_c_buffers(label_id, xs, ys, zs, flags, offset, stride);
-        },     nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1);
+        },
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
+        "Plots quads in 3D. Every 4 consecutive points define a quadrilateral");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -925,7 +965,7 @@ void py_init_module_implot3d(nb::module_& m)
         nb::arg("points").none() = nb::none(), nb::arg("idx").none() = nb::none()
         )
         .def_rw("points", &ImPlot3D::Mesh::Points, "")
-        .def_rw("idx", &ImPlot3D::Mesh::Idx, "")
+        .def_rw("idx", &ImPlot3D::Mesh::Idx, "Triangles are defined by the index buffer (every 3 indices form a triangle)")
         ;
 
 
@@ -1045,7 +1085,12 @@ void py_init_module_implot3d(nb::module_& m)
             PlotText_adapt_mutable_param_with_default_value(text, x, y, z, angle, pix_offset);
         },
         nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("z"), nb::arg("angle") = 0.0, nb::arg("pix_offset").none() = nb::none(),
-        " Plots a centered text label at point x,y,z. It is possible to set the text angle in radians and offset in pixels\n\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0, 0)");
+        " Plots a centered text label at point x,y,z with optional rotation angle (in radians) and pixel offset\n\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0, 0)");
+
+    m.def("plot_dummy",
+        ImPlot3D::PlotDummy,
+        nb::arg("label_id"), nb::arg("flags") = 0,
+        "Plots a dummy item (can be used to modify legend entry appearance when called after plotting an item, or add a dummy legend entry)");
 
     m.def("plot_to_pixels",
         nb::overload_cast<const ImPlot3DPoint &>(ImPlot3D::PlotToPixels), nb::arg("point"));
@@ -1065,14 +1110,16 @@ void py_init_module_implot3d(nb::module_& m)
     m.def("pixels_to_plot_plane",
         nb::overload_cast<double, double, ImPlane3D, bool>(ImPlot3D::PixelsToPlotPlane), nb::arg("x"), nb::arg("y"), nb::arg("plane"), nb::arg("mask") = true);
 
-    m.def("get_plot_pos",
-        ImPlot3D::GetPlotPos, "Get the current plot position (top-left) in pixels");
+    m.def("get_plot_rect_pos",
+        ImPlot3D::GetPlotRectPos, "Get the current plot rect position (top-left) in absolute screen coordinates");
 
-    m.def("get_plot_size",
-        ImPlot3D::GetPlotSize, "Get the current plot size in pixels");
+    m.def("get_plot_rect_size",
+        ImPlot3D::GetPlotRectSize, "Get the current plot rect size in pixels");
 
     m.def("get_plot_draw_list",
-        nb::overload_cast<>(ImPlot3D::GetPlotDrawList), nb::rv_policy::reference);
+        nb::overload_cast<>(ImPlot3D::GetPlotDrawList),
+        "Returns the ImDrawList used for rendering plot items. Use this to add custom rendering inside plots",
+        nb::rv_policy::reference);
 
     m.def("get_style",
         ImPlot3D::GetStyle, nb::rv_policy::reference);
@@ -1344,6 +1391,16 @@ void py_init_module_implot3d(nb::module_& m)
         nb::arg("ref") = nb::none(),
         "Shows ImPlot3D style editor block (not a window)");
 
+    m.def("show_style_selector",
+        ImPlot3D::ShowStyleSelector,
+        nb::arg("label"),
+        "Shows ImPlot3D style selector and returns True if selection is changed (not a window)");
+
+    m.def("show_colormap_selector",
+        ImPlot3D::ShowColormapSelector,
+        nb::arg("label"),
+        "Shows ImPlot3D colormap selector and returns True if selection is changed (not a window)");
+
     m.def("show_metrics_window",
         [](std::optional<bool> p_popen = std::nullopt) -> std::optional<bool>
         {
@@ -1362,13 +1419,31 @@ void py_init_module_implot3d(nb::module_& m)
         nb::arg("p_popen").none() = nb::none(),
         "Shows ImPlot3D metrics/debug information window.");
 
+    m.def("show_about_window",
+        [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+        {
+            auto ShowAboutWindow_adapt_modifiable_immutable_to_return = [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+            {
+                bool * p_open_adapt_modifiable = nullptr;
+                if (p_open.has_value())
+                    p_open_adapt_modifiable = & (*p_open);
+
+                ImPlot3D::ShowAboutWindow(p_open_adapt_modifiable);
+                return p_open;
+            };
+
+            return ShowAboutWindow_adapt_modifiable_immutable_to_return(p_open);
+        },
+        nb::arg("p_open").none() = nb::none(),
+        "Shows ImPlot3D about window.");
+
 
     auto pyClassImPlot3DPoint =
         nb::class_<ImPlot3DPoint>
-            (m, "Point", "ImPlot3DPoint: 3D vector to store points in 3D")
-        .def_rw("x", &ImPlot3DPoint::x, "")
-        .def_rw("y", &ImPlot3DPoint::y, "")
-        .def_rw("z", &ImPlot3DPoint::z, "")
+            (m, "Point", "ImPlot3DPoint: 3D vector to store points in 3D space")
+        .def_rw("x", &ImPlot3DPoint::x, "Coordinates")
+        .def_rw("y", &ImPlot3DPoint::y, "Coordinates")
+        .def_rw("z", &ImPlot3DPoint::z, "Coordinates")
         .def(nb::init<>())
         .def(nb::init<double, double, double>(),
             nb::arg("_x"), nb::arg("_y"), nb::arg("_z"))
@@ -1446,7 +1521,7 @@ void py_init_module_implot3d(nb::module_& m)
 
     auto pyClassImPlot3DRay =
         nb::class_<ImPlot3DRay>
-            (m, "Ray", "")
+            (m, "Ray", "ImPlot3DRay: Represents a ray in 3D space with an origin and direction")
         .def("__init__", [](ImPlot3DRay * self, const std::optional<const ImPlot3DPoint> & Origin = std::nullopt, const std::optional<const ImPlot3DPoint> & Direction = std::nullopt)
         {
             new (self) ImPlot3DRay();  // placement new
@@ -1462,14 +1537,14 @@ void py_init_module_implot3d(nb::module_& m)
         },
         nb::arg("origin").none() = nb::none(), nb::arg("direction").none() = nb::none()
         )
-        .def_rw("origin", &ImPlot3DRay::Origin, "")
-        .def_rw("direction", &ImPlot3DRay::Direction, "")
+        .def_rw("origin", &ImPlot3DRay::Origin, "Ray origin point")
+        .def_rw("direction", &ImPlot3DRay::Direction, "Ray direction (not necessarily normalized)")
         ;
 
 
     auto pyClassImPlot3DPlane =
         nb::class_<ImPlot3DPlane>
-            (m, "Plane", "")
+            (m, "Plane", "ImPlot3DPlane: Represents a plane in 3D space defined by a point and normal vector")
         .def("__init__", [](ImPlot3DPlane * self, const std::optional<const ImPlot3DPoint> & Point = std::nullopt, const std::optional<const ImPlot3DPoint> & Normal = std::nullopt)
         {
             new (self) ImPlot3DPlane();  // placement new
@@ -1485,16 +1560,16 @@ void py_init_module_implot3d(nb::module_& m)
         },
         nb::arg("point").none() = nb::none(), nb::arg("normal").none() = nb::none()
         )
-        .def_rw("point", &ImPlot3DPlane::Point, "")
-        .def_rw("normal", &ImPlot3DPlane::Normal, "")
+        .def_rw("point", &ImPlot3DPlane::Point, "A point on the plane")
+        .def_rw("normal", &ImPlot3DPlane::Normal, "Plane normal vector")
         ;
 
 
     auto pyClassImPlot3DBox =
         nb::class_<ImPlot3DBox>
-            (m, "Box", "")
-        .def_rw("min", &ImPlot3DBox::Min, "")
-        .def_rw("max", &ImPlot3DBox::Max, "")
+            (m, "Box", "ImPlot3DBox: Axis-aligned bounding box in 3D space")
+        .def_rw("min", &ImPlot3DBox::Min, "Minimum corner of the box")
+        .def_rw("max", &ImPlot3DBox::Max, "Maximum corner of the box")
         .def(nb::init<>(),
             "Default constructor")
         .def(nb::init<const ImPlot3DPoint &, const ImPlot3DPoint &>(),
@@ -1517,41 +1592,46 @@ void py_init_module_implot3d(nb::module_& m)
 
     auto pyClassImPlot3DRange =
         nb::class_<ImPlot3DRange>
-            (m, "Range", "")
-        .def_rw("min", &ImPlot3DRange::Min, "")
-        .def_rw("max", &ImPlot3DRange::Max, "")
+            (m, "Range", "ImPlot3DRange: Represents a 1D range with min and max values")
+        .def_rw("min", &ImPlot3DRange::Min, "Minimum value")
+        .def_rw("max", &ImPlot3DRange::Max, "Maximum value")
         .def(nb::init<>())
         .def(nb::init<double, double>(),
             nb::arg("min"), nb::arg("max"))
         .def("expand",
-            &ImPlot3DRange::Expand, nb::arg("value"))
+            &ImPlot3DRange::Expand,
+            nb::arg("value"),
+            "Expand range to include value")
         .def("contains",
-            &ImPlot3DRange::Contains, nb::arg("value"))
+            &ImPlot3DRange::Contains,
+            nb::arg("value"),
+            "Check if value is within range")
         .def("size",
-            &ImPlot3DRange::Size, "(private API)")
+            &ImPlot3DRange::Size, "(private API)\n\n Get range size")
         ;
 
 
     auto pyClassImPlot3DQuat =
         nb::class_<ImPlot3DQuat>
-            (m, "Quat", "")
-        .def_rw("x", &ImPlot3DQuat::x, "")
-        .def_rw("y", &ImPlot3DQuat::y, "")
-        .def_rw("z", &ImPlot3DQuat::z, "")
-        .def_rw("w", &ImPlot3DQuat::w, "")
+            (m, "Quat", "ImPlot3DQuat: Quaternion for representing 3D rotations")
+        .def_rw("x", &ImPlot3DQuat::x, "Quaternion components")
+        .def_rw("y", &ImPlot3DQuat::y, "Quaternion components")
+        .def_rw("z", &ImPlot3DQuat::z, "Quaternion components")
+        .def_rw("w", &ImPlot3DQuat::w, "Quaternion components")
         .def(nb::init<>())
         .def(nb::init<double, double, double, double>(),
             nb::arg("_x"), nb::arg("_y"), nb::arg("_z"), nb::arg("_w"))
         .def(nb::init<double, const ImPlot3DPoint &>(),
-            nb::arg("_angle"), nb::arg("_axis"))
+            nb::arg("_angle"), nb::arg("_axis"),
+            "Construct quaternion from angle-axis representation (angle in radians)")
         .def_static("from_two_vectors",
             &ImPlot3DQuat::FromTwoVectors,
             nb::arg("v0"), nb::arg("v1"),
-            "Set quaternion from two vectors")
+            "Create quaternion that rotates from v0 to v1")
         .def_static("from_el_az",
             &ImPlot3DQuat::FromElAz,
             nb::arg("elevation"), nb::arg("azimuth"),
-            "Set quaternion given elevation and azimuth angles in radians")
+            "Create quaternion from elevation and azimuth angles (in radians)")
         .def("length",
             &ImPlot3DQuat::Length, "Get quaternion length")
         .def("normalized",
@@ -1563,7 +1643,7 @@ void py_init_module_implot3d(nb::module_& m)
         .def("__mul__",
             nb::overload_cast<const ImPlot3DQuat &>(&ImPlot3DQuat::operator*, nb::const_),
             nb::arg("rhs"),
-            "Binary operators")
+            "Quaternion multiplication")
         .def("normalize",
             &ImPlot3DQuat::Normalize,
             "Normalize the quaternion in place",
@@ -1579,7 +1659,7 @@ void py_init_module_implot3d(nb::module_& m)
         .def_static("slerp",
             &ImPlot3DQuat::Slerp,
             nb::arg("q1"), nb::arg("q2"), nb::arg("t"),
-            "Interpolate between two quaternions")
+            "Spherical linear interpolation between two quaternions (t in [0,1])")
         .def("dot",
             &ImPlot3DQuat::Dot,
             nb::arg("rhs"),
@@ -1595,11 +1675,11 @@ void py_init_module_implot3d(nb::module_& m)
         .def_rw("marker_size", &ImPlot3DStyle::MarkerSize, "Marker size in pixels (roughly the marker's \"radius\")")
         .def_rw("marker_weight", &ImPlot3DStyle::MarkerWeight, "Marker outline weight in pixels")
         .def_rw("fill_alpha", &ImPlot3DStyle::FillAlpha, "Alpha modifier applied to plot fills")
-        .def_rw("plot_default_size", &ImPlot3DStyle::PlotDefaultSize, "")
-        .def_rw("plot_min_size", &ImPlot3DStyle::PlotMinSize, "")
-        .def_rw("plot_padding", &ImPlot3DStyle::PlotPadding, "")
-        .def_rw("label_padding", &ImPlot3DStyle::LabelPadding, "")
-        .def_rw("view_scale_factor", &ImPlot3DStyle::ViewScaleFactor, "")
+        .def_rw("plot_default_size", &ImPlot3DStyle::PlotDefaultSize, "Default size used when ImVec2(0,0) is passed to BeginPlot")
+        .def_rw("plot_min_size", &ImPlot3DStyle::PlotMinSize, "Minimum size plot frame can be when shrunk")
+        .def_rw("plot_padding", &ImPlot3DStyle::PlotPadding, "Padding between widget frame and plot area")
+        .def_rw("label_padding", &ImPlot3DStyle::LabelPadding, "Padding between axes labels, tick labels, and plot edge")
+        .def_rw("view_scale_factor", &ImPlot3DStyle::ViewScaleFactor, "Scale factor for 3D view")
         .def_rw("legend_padding", &ImPlot3DStyle::LegendPadding, "Legend padding from plot edges")
         .def_rw("legend_inner_padding", &ImPlot3DStyle::LegendInnerPadding, "Legend inner padding from legend edges")
         .def_rw("legend_spacing", &ImPlot3DStyle::LegendSpacing, "Spacing between legend entries")
@@ -1611,7 +1691,7 @@ void py_init_module_implot3d(nb::module_& m)
             &ImPlot3DStyle::SetColor,
             nb::arg("idx"), nb::arg("col"),
             "(private API)")
-        .def_rw("colormap", &ImPlot3DStyle::Colormap, "The current colormap. Set this to either an ImPlot3DColormap_ enum or an index returned by AddColormap")
+        .def_rw("colormap", &ImPlot3DStyle::Colormap, "The current colormap (ImPlot3DColormap_ enum or index from AddColormap)")
         .def(nb::init<>(),
             "Constructor")
         .def(nb::init<const ImPlot3DStyle &>(),

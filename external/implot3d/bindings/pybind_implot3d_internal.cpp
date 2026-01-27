@@ -33,14 +33,24 @@ void py_init_module_implot3d_internal(nb::module_& m)
 
 
     m.def("im_log10",
-        nb::overload_cast<float>(ImPlot3D::ImLog10),
+        ImPlot3D::ImLog10,
         nb::arg("x"),
-        "(private API)");
+        " Computes the common (base-10) logarithm\n(private API)");
 
-    m.def("im_log10",
-        nb::overload_cast<double>(ImPlot3D::ImLog10),
+    m.def("im_sinh",
+        ImPlot3D::ImSinh,
         nb::arg("x"),
-        "(private API)");
+        " Computes the hyperbolic sine\n(private API)");
+
+    m.def("im_asinh",
+        ImPlot3D::ImAsinh,
+        nb::arg("x"),
+        " Computes the inverse hyperbolic sine\n(private API)");
+
+    m.def("im_pos_mod",
+        ImPlot3D::ImPosMod,
+        nb::arg("l"), nb::arg("r"),
+        " Returns always positive modulo (assumes r != 0)\n(private API)");
 
     m.def("im_nan",
         ImPlot3D::ImNan,
@@ -60,7 +70,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
     m.def("im_constrain_inf",
         ImPlot3D::ImConstrainInf,
         nb::arg("val"),
-        " Turns infinity to floating point maximums\n(private API)");
+        " Turns infinity to floating point maximums\n Clamped to half DBL_MAX to prevent overflow in size calculations (Max - Min)\n(private API)");
 
     m.def("im_almost_equal",
         ImPlot3D::ImAlmostEqual,
@@ -299,9 +309,14 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("range", &ImPlot3DAxis::Range, "")
         .def_rw("range_cond", &ImPlot3DAxis::RangeCond, "")
         .def_rw("ndc_scale", &ImPlot3DAxis::NDCScale, "")
+        .def_rw("scale", &ImPlot3DAxis::Scale, "")
         .def_rw("ticker", &ImPlot3DAxis::Ticker, "")
         .def_rw("formatter_data", &ImPlot3DAxis::FormatterData, "")
         .def_rw("show_default_ticks", &ImPlot3DAxis::ShowDefaultTicks, "")
+        .def_rw("transform_forward", &ImPlot3DAxis::TransformForward, "Custom axis forward transform")
+        .def_rw("transform_inverse", &ImPlot3DAxis::TransformInverse, "Custom axis inverse transform")
+        .def_rw("transform_data", &ImPlot3DAxis::TransformData, "Custom transform data set by the user")
+        .def_rw("scaled_range", &ImPlot3DAxis::ScaledRange, "Cached scaled range values")
         .def_rw("fit_this_frame", &ImPlot3DAxis::FitThisFrame, "")
         .def_rw("fit_extents", &ImPlot3DAxis::FitExtents, "")
         .def_rw("constraint_range", &ImPlot3DAxis::ConstraintRange, "")
@@ -326,6 +341,16 @@ void py_init_module_implot3d_internal(nb::module_& m)
             "(private API)")
         .def("constrain",
             &ImPlot3DAxis::Constrain, "(private API)")
+        .def("update_transform_cache",
+            &ImPlot3DAxis::UpdateTransformCache, "(private API)")
+        .def("plot_to_ndc",
+            &ImPlot3DAxis::PlotToNDC,
+            nb::arg("plt"),
+            "(private API)")
+        .def("ndc_to_plot",
+            &ImPlot3DAxis::NDCToPlot,
+            nb::arg("t"),
+            "(private API)")
         .def("is_range_locked",
             &ImPlot3DAxis::IsRangeLocked, "(private API)")
         .def("is_locked_min",
@@ -632,6 +657,26 @@ void py_init_module_implot3d_internal(nb::module_& m)
 
     m.def("setup_lock",
         ImPlot3D::SetupLock);
+
+    m.def("transform_forward_log10",
+        ImPlot3D::TransformForward_Log10,
+        nb::arg("v"), nb::arg("param_1"),
+        "(private API)");
+
+    m.def("transform_inverse_log10",
+        ImPlot3D::TransformInverse_Log10,
+        nb::arg("v"), nb::arg("param_1"),
+        "(private API)");
+
+    m.def("transform_forward_sym_log",
+        ImPlot3D::TransformForward_SymLog,
+        nb::arg("v"), nb::arg("param_1"),
+        "(private API)");
+
+    m.def("transform_inverse_sym_log",
+        ImPlot3D::TransformInverse_SymLog,
+        nb::arg("v"), nb::arg("param_1"),
+        "(private API)");
     // #endif
     ////////////////////    </generated_from:implot3d_internal.h>    ////////////////////
 

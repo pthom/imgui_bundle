@@ -154,7 +154,7 @@ Bin_Sturges = Bin_.sturges
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ImPlot v0.17
+# ImPlot v0.18 WIP
 
 # Table of Contents:
 #
