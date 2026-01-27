@@ -367,14 +367,17 @@ void py_init_module_implot3d(nb::module_& m)
         " Sets an axis range limits. If ImPlot3DCond_Always is used, the axis limits will be locked.\n Note: To invert an axis, use ImPlot3DAxisFlags_Invert with SetupAxis instead of swapping min/max\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_axis_scale",
-        nb::overload_cast<ImAxis3D, ImPlot3DScale>(ImPlot3D::SetupAxisScale),
+        [](ImAxis3D axis, ImPlot3DScale scale)
+        {
+            auto SetupAxisScale_adapt_force_lambda = [](ImAxis3D axis, ImPlot3DScale scale)
+            {
+                ImPlot3D::SetupAxisScale(axis, scale);
+            };
+
+            SetupAxisScale_adapt_force_lambda(axis, scale);
+        },
         nb::arg("axis"), nb::arg("scale"),
         "Sets an axis' scale using built-in options");
-
-    m.def("setup_axis_scale",
-        nb::overload_cast<ImAxis3D, ImPlot3DTransform, ImPlot3DTransform, void *>(ImPlot3D::SetupAxisScale),
-        nb::arg("axis"), nb::arg("forward"), nb::arg("inverse"), nb::arg("data") = nb::none(),
-        "Sets an axis' scale using user supplied forward and inverse transforms");
 
     m.def("setup_axis_limits_constraints",
         ImPlot3D::SetupAxisLimitsConstraints,

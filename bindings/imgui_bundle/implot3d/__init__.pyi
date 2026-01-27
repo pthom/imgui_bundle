@@ -658,15 +658,8 @@ def setup_axis_limits(axis: ImAxis3D, v_min: float, v_max: float, cond: Optional
     pass
 
 # IMPLOT3D_API void SetupAxisScale(ImAxis3D axis, ImPlot3DScale scale);    /* original C++ signature */
-@overload
 def setup_axis_scale(axis: ImAxis3D, scale: Scale) -> None:
     """Sets an axis' scale using built-in options"""
-    pass
-
-# IMPLOT3D_API void SetupAxisScale(ImAxis3D axis, ImPlot3DTransform forward, ImPlot3DTransform inverse, void* data = nullptr);    /* original C++ signature */
-@overload
-def setup_axis_scale(axis: ImAxis3D, forward: Transform, inverse: Transform, data: Optional[Any] = None) -> None:
-    """Sets an axis' scale using user supplied forward and inverse transforms"""
     pass
 
 # IMPLOT3D_API void SetupAxisLimitsConstraints(ImAxis3D axis, double v_min, double v_max);    /* original C++ signature */
