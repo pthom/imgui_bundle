@@ -1,6 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import List
-from bindings_generation.external_library import ExternalLibrary
+from .external_library import ExternalLibrary
 
 
 # fmt: off

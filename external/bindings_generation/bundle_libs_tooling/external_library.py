@@ -2,8 +2,8 @@
 import os.path
 from typing import Optional, List
 from dataclasses import dataclass
-from bindings_generation.shell_commands import ShellCommands
-from bindings_generation.paths import external_libraries_dir
+from .shell_commands import ShellCommands
+from .paths import external_libraries_dir
 from codemanip.code_utils import to_snake_case
 
 
@@ -164,6 +164,7 @@ class ExternalLibrary:
 
     def cmd_rebase_fork_on_official_changes(self) -> ShellCommands:
         assert self.fork_git_url is not None
+        date_str_yyyymmdd = os.popen("date +%Y%m%d").read().strip()
         cmd = f"""
         cd {self.git_folder_abs_path()}
         git fetch {self.official_remote_name}

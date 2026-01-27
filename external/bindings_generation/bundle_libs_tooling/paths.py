@@ -3,7 +3,7 @@ import os
 
 
 def external_libraries_dir():
-    this_dir = os.path.abspath(os.path.dirname(__file__) + "/..")
+    this_dir = os.path.abspath(os.path.dirname(__file__) + "/../..")
     return this_dir
 
 

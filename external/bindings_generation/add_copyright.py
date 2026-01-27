@@ -1,7 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import Dict
 import os
-from bindings_generation import paths
+from bundle_libs_tooling import paths
 
 
 copyright_str = "Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle"

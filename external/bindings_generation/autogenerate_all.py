@@ -3,8 +3,7 @@ import importlib
 import sys
 import os
 
-sys.path.append(os.path.dirname(__file__) + "/..")
-from bindings_generation import all_external_libraries  # noqa: E402
+from bundle_libs_tooling import all_external_libraries  # noqa: E402
 
 
 def autogenerate_all():
