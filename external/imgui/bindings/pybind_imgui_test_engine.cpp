@@ -1248,25 +1248,6 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             &ImGuiTestContext::ScrollToTabItem,
             nb::arg("tab_bar"), nb::arg("tab_id"),
             "(private API)")
-        .def("scroll_error_check",
-            [](ImGuiTestContext & self, ImGuiAxis axis, float expected, float actual, int remaining_attempts) -> std::tuple<bool, int>
-            {
-                auto ScrollErrorCheck_adapt_modifiable_immutable_to_return = [&self](ImGuiAxis axis, float expected, float actual, int remaining_attempts) -> std::tuple<bool, int>
-                {
-                    int * remaining_attempts_adapt_modifiable = & remaining_attempts;
-
-                    bool r = self.ScrollErrorCheck(axis, expected, actual, remaining_attempts_adapt_modifiable);
-                    return std::make_tuple(r, remaining_attempts);
-                };
-
-                return ScrollErrorCheck_adapt_modifiable_immutable_to_return(axis, expected, actual, remaining_attempts);
-            },
-            nb::arg("axis"), nb::arg("expected"), nb::arg("actual"), nb::arg("remaining_attempts"),
-            "(private API)")
-        .def("scroll_verify_scroll_max",
-            &ImGuiTestContext::ScrollVerifyScrollMax,
-            nb::arg("ref"),
-            "(private API)")
         .def("item_info",
             &ImGuiTestContext::ItemInfo,
             nb::arg("ref"), nb::arg("flags") = ImGuiTestOpFlags_None,
@@ -1442,6 +1423,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             nb::arg("ref"), nb::arg("label"), nb::arg("key_mods") = 0,
             "(private API)")
         .def("table_set_column_enabled",
+            nb::overload_cast<ImGuiTestRef, int, bool>(&ImGuiTestContext::TableSetColumnEnabled),
+            nb::arg("ref"), nb::arg("column_n"), nb::arg("enabled"),
+            "(private API)")
+        .def("table_set_column_enabled",
             nb::overload_cast<ImGuiTestRef, const char *, bool>(&ImGuiTestContext::TableSetColumnEnabled),
             nb::arg("ref"), nb::arg("label"), nb::arg("enabled"),
             "(private API)")
@@ -1533,6 +1518,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
                 PerfCapture_adapt_const_char_pointer_with_default_null(category, test_name, csv_file);
             },
             nb::arg("category").none() = nb::none(), nb::arg("test_name").none() = nb::none(), nb::arg("csv_file").none() = nb::none(),
+            "(private API)")
+        .def("_scroll_verify_scroll_max",
+            &ImGuiTestContext::_ScrollVerifyScrollMax,
+            nb::arg("ref"),
             "(private API)")
         .def("_make_aiming_space_over_pos",
             &ImGuiTestContext::_MakeAimingSpaceOverPos,

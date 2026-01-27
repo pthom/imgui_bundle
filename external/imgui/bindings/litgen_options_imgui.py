@@ -465,7 +465,7 @@ def litgen_options_imgui(
     # - any function using a double pointer (like char **): see \* \* below
     # - char, const ImWchar *, ImGuiErrorLogCallback
     options.fn_exclude_by_param_type__regex = (
-        "^char$|^const ImWchar \\*$|^ImGuiErrorLogCallback$|\* \*"
+        r"^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$|\* \*"
     )
 
     # Version where we use Boxed types everywhere:

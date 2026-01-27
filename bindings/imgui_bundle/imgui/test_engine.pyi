@@ -342,6 +342,8 @@ class TestEngineResultSummary:
 # Functions
 # -------------------------------------------------------------------------
 
+# Legacy version support
+
 # extern void         ImGuiTestEngineHook_ItemAdd(ImGuiContext* ui_ctx, ImGuiID id, const ImRect& bb, const ImGuiLastItemData* item_data);    /* original C++ signature */
 def hook_item_add(ui_ctx: Context, id_: ID, bb: ImRect, item_data: LastItemData) -> None:
     """Hooks for core imgui/ library (generally called via macros)
@@ -1823,16 +1825,6 @@ class TestContext:
     def scroll_to_tab_item(self, tab_bar: TabBar, tab_id: ID) -> None:
         """(private API)"""
         pass
-    # bool        ScrollErrorCheck(ImGuiAxis axis, float expected, float actual, int* remaining_attempts);    /* original C++ signature */
-    def scroll_error_check(
-        self, axis: Axis, expected: float, actual: float, remaining_attempts: int
-    ) -> Tuple[bool, int]:
-        """(private API)"""
-        pass
-    # void        ScrollVerifyScrollMax(ImGuiTestRef ref);    /* original C++ signature */
-    def scroll_verify_scroll_max(self, ref: Union[TestRef, str]) -> None:
-        """(private API)"""
-        pass
     # Low-level queries
     # - ItemInfo queries never returns None! Instead they return an empty instance (info->IsEmpty(), info->ID == 0) and set contexted as errored.
     # - You can use ImGuiTestOpFlags_NoError to do a query without marking context as errored. This is what ItemExists() does.
@@ -2041,7 +2033,13 @@ class TestContext:
     def table_click_header(self, ref: Union[TestRef, str], label: str, key_mods: KeyChord = 0) -> SortDirection:
         """(private API)"""
         pass
+    # void                        TableSetColumnEnabled(ImGuiTestRef ref, int column_n, bool enabled);    /* original C++ signature */
+    @overload
+    def table_set_column_enabled(self, ref: Union[TestRef, str], column_n: int, enabled: bool) -> None:
+        """(private API)"""
+        pass
     # void                        TableSetColumnEnabled(ImGuiTestRef ref, const char* label, bool enabled);    /* original C++ signature */
+    @overload
     def table_set_column_enabled(self, ref: Union[TestRef, str], label: str, enabled: bool) -> None:
         """(private API)"""
         pass
@@ -2115,6 +2113,10 @@ class TestContext:
     # Obsolete functions
 
     # [Internal]
+    # void        _ScrollVerifyScrollMax(ImGuiTestRef ref);    /* original C++ signature */
+    def _scroll_verify_scroll_max(self, ref: Union[TestRef, str]) -> None:
+        """(private API)"""
+        pass
     # void        _MakeAimingSpaceOverPos(ImGuiViewport* viewport, ImGuiWindow* over_window, const ImVec2& over_pos);     /* original C++ signature */
     def _make_aiming_space_over_pos(self, viewport: Viewport, over_window: Window, over_pos: ImVec2Like) -> None:
         """(private API)
