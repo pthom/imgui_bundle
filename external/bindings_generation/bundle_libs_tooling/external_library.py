@@ -167,6 +167,8 @@ class ExternalLibrary:
         date_str_yyyymmdd = os.popen("date +%Y%m%d").read().strip()
         cmd = f"""
         cd {self.git_folder_abs_path()}
+        git tag {date_str_yyyymmdd}
+        git push {self.fork_remote_name} --tags
         git fetch {self.official_remote_name}
         git fetch {self.fork_remote_name}
         git checkout {self.fork_branch}
