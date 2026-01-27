@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+    <title>imgui-bundle Pyodide Test</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; }
+        #canvas { display: block; width: 100%; height: 100%; }
+    </style>
+    <!-- Load Pyodide from local dist -->
+    <script src="output/pyodide_dist/pyodide.js"></script>
+    <!-- Or from CDN: -->
+    <!--     <script src="https://cdn.jsdelivr.net/pyodide/v0.28.2/full/pyodide.js"></script>-->
+</head>
+<body>
+<canvas id="canvas" tabindex="0"></canvas>
+
+<script type="text/javascript">
+
+// ====================== Start of Python code ============================
+const pythonCode = `
+import pydantic
+print("pydantic imported successfully!")
+import imgui_bundle
+print(f"imgui_bundle loaded successfully!")
+print(imgui_bundle.info())
+
+from imgui_bundle import imgui, immapp
+
+def gui():
+    imgui.text("Hello from imgui-bundle!")
+
+immapp.run(gui)
+`;
+// ====================== End of Python code ==============================
+
+
+async function main() {
+    try {
+        // Enable right-click in canvas
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        // Load Pyodide with local packages
+        let pyodide = await loadPyodide();
+
+        // Setup SDL canvas
+        // See: https://pyodide.org/en/stable/usage/sdl.html
+        let sdl2Canvas = document.getElementById("canvas");
+        pyodide.canvas.setCanvas2D(sdl2Canvas);
+
+        // SDL requires this opt-in flag
+        pyodide._api._skip_unwind_fatal_error = true;
+
+        // Load imgui-bundle package
+        // Option 1: Load from local wheel (built package)
+        await pyodide.loadPackage("imgui_bundle");
+
+        // Option 2: Load from URL
+        // await pyodide.loadPackage("./imgui_bundle-1.92.6-cp313-cp313-pyodide_2025_0_wasm32.whl");
+
+        // Option 3: Use micropip for packages from PyPI (when available)
+        // await pyodide.loadPackage("micropip");
+        // const micropip = pyodide.pyimport("micropip");
+        // await micropip.install('imgui-bundle');
+
+
+        // Run the Python code
+        pyodide.runPython(pythonCode);
+
+    } catch (error) {
+        console.error("Failed to load:", error);
+    }
+}
+
+main();
+</script>
+</body>
+</html>

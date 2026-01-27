@@ -1,0 +1,39 @@
+package:
+  name: imgui-bundle
+  version: 1.92.6b1  # Should match version in pyproject.toml
+  top-level:
+    - imgui_bundle
+
+source:
+  # Here, we use a clean sdist that's copied into the container
+  # Source: ci_scripts/docker_pyodide/docker_pyodide_resources/imgui_bundle_sdist
+  # Created from: python -m build --sdist (respects sdist.exclude in pyproject.toml)
+  # Copied to container at: /mnt/imgui_bundle_sdist
+  #
+  # Why copy instead of mount? Because any symlinks in virtualenvs would be broken,
+  # and pyodide's build system (shutil.copytree) fails on broken symlinks.
+  path: /mnt/imgui_bundle_sdist
+  #
+  # Note: below is the version from the pyodide-recipes repository
+  # source:
+  #   url: https://github.com/pthom/imgui_bundle/releases/download/v1.92.4/srcs-full-v1.92.4.tar.gz
+  #   sha256: c53afb7fb410c12f9727ce504b61125d048f60aeb6ca0d50ccbb395c40ccd3c8
+
+
+build:
+  # imgui-bundle needs to link with relocatable versions of SDL2 and html5.
+  # By default, emscripten builds the non-relocatable version of these libraries,
+  # so we need to trigger the build of the relocatable (-fPIC) versions.
+  # See https://github.com/pyodide/pyodide/issues/5248 for more explanations.
+  script: |
+    embuilder build sdl2 libhtml5 --pic
+
+requirements:
+  run:
+    - pydantic
+    - munch
+    - numpy
+
+extra:
+  recipe-maintainers:
+    - pthom

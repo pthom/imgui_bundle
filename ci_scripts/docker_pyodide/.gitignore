@@ -1,0 +1,7 @@
+# Generated sdist directory - created at build time
+docker_pyodide_resources/imgui_bundle_sdist/
+
+# Build outputs
+output/*.whl
+output/pyodide_dist/
+
