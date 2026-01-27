@@ -585,14 +585,10 @@ class Axis:
     # bool ShowDefaultTicks;    /* original C++ signature */
     show_default_ticks: bool
     # Scale
-    # ImPlot3DTransform TransformForward;    /* original C++ signature */
-    transform_forward: Transform  # Custom axis forward transform
-    # ImPlot3DTransform TransformInverse;    /* original C++ signature */
-    transform_inverse: Transform  # Custom axis inverse transform
     # void* TransformData;    /* original C++ signature */
-    transform_data: Any           # Custom transform data set by the user
+    transform_data: Any  # Custom transform data set by the user
     # ImPlot3DRange ScaledRange;    /* original C++ signature */
-    scaled_range: Range           # Cached scaled range values
+    scaled_range: Range  # Cached scaled range values
     # Fit data
     # bool FitThisFrame;    /* original C++ signature */
     fit_this_frame: bool

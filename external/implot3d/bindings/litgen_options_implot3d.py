@@ -26,7 +26,7 @@ def litgen_options_implot3d() -> LitgenOptions:
     options.fn_exclude_by_param_type__regex = "ImPlot3DFormatter"
     options.fn_force_lambda__regex = "PlotMesh"
     options.class_exclude_by_name__regex = "ImDrawList3D"
-    options.member_exclude_by_type__regex = r"^ImVector|TextBuffer|Storage|ImPool|ImPlot3DFormatter|ImPlot3DLocator|ImDrawList3D"
+    options.member_exclude_by_type__regex = r"^ImVector|TextBuffer|Storage|ImPool|ImPlot3DFormatter|ImPlot3DLocator|ImDrawList3D|ImPlot3DTransform"
 
     options.class_copy__regex = "ImPlot3DStyle|Style"
     options.class_copy_add_info_in_stub = True
