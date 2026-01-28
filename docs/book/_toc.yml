@@ -3,7 +3,7 @@ root: intro/intro
 parts:
   - caption: Introduction
     chapters:
-      - file: intro/batteries_included
+      - file: intro/why_imgui_bundle
       - file: intro/imm_gui
       - file: intro/interactive_manuals
       - file: intro/examples_gallery
