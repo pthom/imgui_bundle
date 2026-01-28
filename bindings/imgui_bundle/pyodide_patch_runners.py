@@ -26,10 +26,12 @@ class _JsAnimationRenderer:
     render_fn: Callable[[], None]  # A python function that performs rendering
     stop_requested: bool  # A flag to request the animation loop to stop
     main_loop_proxy: js.Proxy  # A javascript proxy to the main_loop method that is called at each frame
+    stop_callback: Callable[[], None] | None  # Callback to call when stopping (to trigger teardown)
 
-    def __init__(self, render_fn: Callable[[], None]):
+    def __init__(self, render_fn: Callable[[], None], stop_callback: Callable[[], None] | None = None):
         self.render_fn = render_fn
         self.stop_requested = False
+        self.stop_callback = stop_callback
         self.main_loop_proxy = create_proxy(self.main_loop)
 
     def main_loop(self, _timestamp):
@@ -39,14 +41,27 @@ class _JsAnimationRenderer:
                 self.main_loop_proxy.destroy()
                 self.main_loop_proxy = None
             return
+
         try:
-            self.render_fn()
+            if not self.stop_requested:
+                self.render_fn()
+
+                # Check if the application requested exit (like AbstractRunner::Run does)
+                # This happens when user clicks close button or calls app_shall_exit = True
+                if hello_imgui.get_runner_params().app_shall_exit:
+                    _log("_JsAnimationRenderer: app_shall_exit detected, calling stop_callback")
+                    self.request_stop()
+                    # Trigger teardown via callback
+                    if self.stop_callback:
+                        self.stop_callback()
+                    return
         except Exception as e:
             self.request_stop()
             raise e
 
-        # Schedule the next frame
-        js.requestAnimationFrame(self.main_loop_proxy)
+        # Only schedule the next frame if not stopping/tearing down
+        if not self.stop_requested:
+            js.requestAnimationFrame(self.main_loop_proxy)
 
     def start(self):
         _log("_JsAnimationRenderer.start()")
@@ -104,6 +119,35 @@ def _arg_to_render_lifecycle_functions(himgui_or_immapp: _HelloImGuiOrImmApp, *a
     return functions
 
 
+ERROR_MESSAGE_RUN_NOT_SUPPORTED = """
+╔════════════════════════════════════════════════════════════════════════════╗
+║ ERROR: hello_imgui.run() and immapp.run() not supported anymore in Pyodide ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+In Pyodide (browser environment), hello_imgui.run() cannot block without
+freezing the browser tab. You must use the async version instead.
+
+SOLUTION - Replace:
+    immapp.run(runnerParams)   or   hello_imgui.run(runnerParams)
+
+   With one of these:
+
+   Option 1: Sequential sessions (waits for GUI to exit)
+   ─────────────────────────────────────────────────────
+   async def main():
+       await immapp.run_async(runnerParams)
+       # or await hello_imgui.run_async(runnerParams)
+       print("GUI exited")
+   
+   asyncio.create_task(main())
+
+   Option 2: Fire-and-forget (starts GUI in background)
+   ────────────────────────────────────────────────────
+   asyncio.create_task(immapp.run_async(runnerParams))
+   #    or asyncio.create_task(hello_imgui.run_async(runnerParams))
+"""
+
+
 class _ManualRenderJs:
     """Manages the ManualRender lifecycle (from HelloImGui or ImmApp) and integrates with _JsAnimationRenderer."""
     js_animation_renderer: _JsAnimationRenderer | None = None
@@ -112,40 +156,93 @@ class _ManualRenderJs:
 
     def _stop(self):
         """Stops the current rendering loop and tears down the renderer."""
-        if not  self.is_running:
+        _log("_ManualRenderJs._stop() called")
+        if not self.is_running:
+            _log("_ManualRenderJs.stop -> Not running, nothing to stop.")
             return
         if self.js_animation_renderer is not None:
-            _log("_ManualRenderJs: Stopping js_animation_renderer")
+            _log("_ManualRenderJs.stop -> Stopping js_animation_renderer")
             self.js_animation_renderer.request_stop()
             self.js_animation_renderer = None
 
         try:
-            assert(self.js_animation_renderer is not None)
+            assert(self.render_lifecycle_functions is not None)
             self.render_lifecycle_functions.tear_down()
             self.render_lifecycle_functions = None
-            _log("_ManualRenderJs: HelloImGuiRunnerJs: Renderer torn down successfully.")
+            _log("_ManualRenderJs._stop() -> HelloImGuiRunnerJs: Renderer torn down successfully.")
         except Exception as e:
             import traceback
-            js.console.error(f"_ManualRenderJs: Error during Renderer teardown: {e}\n{traceback.format_exc()}")
+            js.console.error(f"_ManualRenderJs._stop() -> _ManualRenderJs: Error during Renderer teardown: {e}\n{traceback.format_exc()}")
         finally:
+            self.is_running = False
             # Force garbage collection to free resources
             gc.collect()
 
     def _run(self, himgui_or_immapp: _HelloImGuiOrImmApp, *args, **kwargs):
+        _log(f"_ManualRenderJs._run() called with {himgui_or_immapp}, args: {args}, kwargs: {kwargs}")
         if self.is_running:
+            _log("_ManualRenderJs._run() -> Stopping existing renderer before starting a new one.")
             self._stop()
         self.is_running = True
 
         self.render_lifecycle_functions = _arg_to_render_lifecycle_functions(himgui_or_immapp, *args, **kwargs)
         self.render_lifecycle_functions.setup()
-        self.js_animation_renderer = _JsAnimationRenderer(self.render_lifecycle_functions.render)
+        # Pass _stop as callback so animation renderer can trigger teardown when app_shall_exit
+        self.js_animation_renderer = _JsAnimationRenderer(
+            self.render_lifecycle_functions.render,
+            stop_callback=self._stop
+        )
         self.js_animation_renderer.start()
+        _log("_ManualRenderJs._run() -> Animation started (non-blocking)")
+
+    async def _run_async(self, himgui_or_immapp: _HelloImGuiOrImmApp, *args, **kwargs):
+        """Async version that can be awaited to wait until GUI exits."""
+        import asyncio
+
+        _log(f"_ManualRenderJs._run_async() called with {himgui_or_immapp}, args: {args}, kwargs: {kwargs}")
+
+        # Start the GUI (non-blocking)
+        self._run(himgui_or_immapp, *args, **kwargs)
+
+        # Wait until stopped (either by stop_requested or app_shall_exit)
+        # Teardown is automatic via stop_callback
+        _log("_ManualRenderJs._run_async() -> Waiting for GUI to exit")
+        while self.is_running:
+            await asyncio.sleep(0.016)  # ~60 FPS check rate
+
+        _log("_ManualRenderJs._run_async() -> GUI exited (teardown already done via callback)")
 
     def run_immapp(self, *args, **kwargs):
-        self._run(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
+        """Raises an error with helpful migration message.
+
+        In Pyodide, immapp.run() cannot block without freezing the browser.
+        Use run_async() instead.
+        """
+        print(ERROR_MESSAGE_RUN_NOT_SUPPORTED)
+        raise RuntimeError(
+            "immapp.run() is not supported in Pyodide. Use immapp.run_async() instead. "
+            "See error message above for examples."
+        )
 
     def run_hello_imgui(self, *args, **kwargs):
-        self._run(_HelloImGuiOrImmApp.HELLO_IMGUI, *args, **kwargs)
+        """Raises an error with helpful migration message.
+
+        In Pyodide, hello_imgui.run() cannot block without freezing the browser.
+        Use run_async() instead.
+        """
+        print(ERROR_MESSAGE_RUN_NOT_SUPPORTED)
+        raise RuntimeError(
+            "hello_imgui.run() is not supported in Pyodide. Use hello_imgui.run_async() instead. "
+            "See error message above for examples."
+        )
+
+    async def run_immapp_async(self, *args, **kwargs):
+        """Async version of run_immapp that waits until GUI exits."""
+        await self._run_async(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
+
+    async def run_hello_imgui_async(self, *args, **kwargs):
+        """Async version of run_hello_imgui that waits until GUI exits."""
+        await self._run_async(_HelloImGuiOrImmApp.HELLO_IMGUI, *args, **kwargs)
 
 
 _MANUAL_RENDER_JS: _ManualRenderJs | None = None
@@ -154,9 +251,13 @@ _MANUAL_RENDER_JS: _ManualRenderJs | None = None
 def pyodide_do_patch_runners():
     # Instantiate global runners
     global _MANUAL_RENDER_JS
-    print("pyodide_do_patch_runners()")
-    _log("_MANUAL_RENDER_JS: Version 1")
+    # print("pyodide_do_patch_runners()")
+    _log("pyodide_do_patch_runners: Version 10")
     _MANUAL_RENDER_JS = _ManualRenderJs()
     # Monkey patch the hello_imgui.run and immapp.run function to use the js version
     hello_imgui.run = _MANUAL_RENDER_JS.run_hello_imgui
     immapp.run = _MANUAL_RENDER_JS.run_immapp
+
+    # Add async versions for sequential execution patterns
+    immapp.run_async = _MANUAL_RENDER_JS.run_immapp_async
+    hello_imgui.run_async = _MANUAL_RENDER_JS.run_hello_imgui_async

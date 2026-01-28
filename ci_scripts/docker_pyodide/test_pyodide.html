@@ -18,18 +18,34 @@
 
 // ====================== Start of Python code ============================
 const pythonCode = `
+import asyncio
 import pydantic
 print("pydantic imported successfully!")
 import imgui_bundle
 print(f"imgui_bundle loaded successfully!")
 print(imgui_bundle.info())
 
-from imgui_bundle import imgui, immapp
+from imgui_bundle import imgui, immapp, hello_imgui
+
+
+async def run_app():
+    print("Starting GUI session...")
+    await immapp.run_async(gui)
+    print("GUI session has exited!")
+
 
 def gui():
-    imgui.text("Hello from imgui-bundle!")
+    imgui.text(f"Hello from imgui-bundle!")
+    if imgui.button("Exit"):
+        print("Button clicked!")
+        hello_imgui.get_runner_params().app_shall_exit = True
 
-immapp.run(gui)
+# Start the GUI
+# immapp.run(gui)  # will fail and display helpful message (immapp.run is not supported anymore)
+# Both versions below are valid
+# asyncio.create_task(immapp.run_async(gui))
+asyncio.create_task(run_app())
+
 `;
 // ====================== End of Python code ==============================
 
