@@ -122,11 +122,11 @@ async def test_nb_auto_stop_existing():
     # Start first GUI
     immapp.nb.start(gui1, window_title="GUI 1")
     assert immapp.nb.is_running(), "GUI 1 should be running"
-    await asyncio.sleep(0.1)
+    await asyncio.sleep(0.3)
 
     # Start second GUI - should auto-stop first
     immapp.nb.start(gui2, window_title="GUI 2")
-    await asyncio.sleep(0.2)
+    await asyncio.sleep(0.3)
 
     assert immapp.nb.is_running(), "GUI 2 should be running"
 
