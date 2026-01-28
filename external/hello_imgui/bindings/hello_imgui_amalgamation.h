@@ -2645,13 +2645,13 @@ namespace ManualRender
     //     By default,
     //       - On Emscripten, `ManualRender::Render()` will return immediately to avoid blocking the main thread.
     //       - On other platforms, it will sleep
-    //  2. If initialized with `RunnerParams`, a copy of the `RunnerParams` will be made
+    //  2. If initialized with `RunnerParams`, a reference to the user's `RunnerParams` is kept
     //     (which can be accessed with `HelloImGui::GetRunnerParams()`).
 
     // Initializes the rendering with the full customizable `RunnerParams`.
     // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-    // A distinct copy of `RunnerParams` is stored internally.
-    void SetupFromRunnerParams(const RunnerParams& runnerParams);
+    // A reference to the user's `RunnerParams` is kept internally (similar to HelloImGui::Run).
+    void SetupFromRunnerParams(RunnerParams& runnerParams);
 
     // Initializes the rendering with `SimpleRunnerParams`.
     // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).

@@ -918,7 +918,15 @@ def main():
     #
     # Part 4: Run the app
     #
-    hello_imgui.run(runner_params)
+
+    # Version 1: using hello_imgui.run
+    # hello_imgui.run(runner_params)
+
+    # Version 2: using manual_render
+    hello_imgui.manual_render.setup_from_runner_params(runner_params)
+    while not runner_params.app_shall_exit:
+        hello_imgui.manual_render.render()
+    hello_imgui.manual_render.tear_down()
 
 
 if __name__ == "__main__":

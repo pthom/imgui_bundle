@@ -195,8 +195,8 @@ namespace ImmApp
 
         // Initializes the rendering with the full customizable `RunnerParams`.
         // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-        // A distinct copy of `RunnerParams` is stored internally.
-        void SetupFromRunnerParams(const HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());
+        // A reference to the user's `RunnerParams` is kept internally (similar to ImmApp::Run).
+        void SetupFromRunnerParams(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());
 
         // Initializes the rendering with `SimpleRunnerParams`.
         // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).

@@ -1857,7 +1857,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         pyNsManualRender.def("setup_from_runner_params",
             HelloImGui::ManualRender::SetupFromRunnerParams,
             nb::arg("runner_params"),
-            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A distinct copy of `RunnerParams` is stored internally.");
+            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A reference to the user's `RunnerParams` is kept internally (similar to HelloImGui::Run).");
 
         pyNsManualRender.def("setup_from_simple_runner_params",
             HelloImGui::ManualRender::SetupFromSimpleRunnerParams,

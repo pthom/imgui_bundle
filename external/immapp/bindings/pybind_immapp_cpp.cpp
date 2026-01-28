@@ -291,9 +291,9 @@ void py_init_module_immapp_cpp(nb::module_& m)
     { // <namespace ManualRender>
         nb::module_ pyNsManualRender = m.def_submodule("manual_render", "namespace ManualRender");
         pyNsManualRender.def("setup_from_runner_params",
-            [](const HelloImGui::RunnerParams & runnerParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+            [](HelloImGui::RunnerParams & runnerParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
             {
-                auto SetupFromRunnerParams_adapt_mutable_param_with_default_value = [](const HelloImGui::RunnerParams & runnerParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
+                auto SetupFromRunnerParams_adapt_mutable_param_with_default_value = [](HelloImGui::RunnerParams & runnerParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)
                 {
 
                     const ImmApp::AddOnsParams& addOnsParams_or_default = [&]() -> const ImmApp::AddOnsParams {
@@ -309,7 +309,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
                 SetupFromRunnerParams_adapt_mutable_param_with_default_value(runnerParams, addOnsParams);
             },
             nb::arg("runner_params"), nb::arg("add_ons_params").none() = nb::none(),
-            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A distinct copy of `RunnerParams` is stored internally.\n\n\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
+            " Initializes the rendering with the full customizable `RunnerParams`.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n A reference to the user's `RunnerParams` is kept internally (similar to ImmApp::Run).\n\n\nPython bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
         pyNsManualRender.def("setup_from_simple_runner_params",
             [](const HelloImGui::SimpleRunnerParams & simpleParams, const std::optional<const ImmApp::AddOnsParams> & addOnsParams = std::nullopt)

@@ -432,6 +432,11 @@ namespace ManualRender  // namespace ImmApp::ManualRender
     };
     RendererStatus sCurrentStatus = RendererStatus::NotInitialized;
 
+    // Storage for RunnerParams when created from SimpleRunnerParams or GuiFunction
+    // This is necessary because HelloImGui::ManualRender stores a pointer to the runnerParams,
+    // so we need to keep it alive between Setup and TearDown
+    std::optional<HelloImGui::RunnerParams> sStoredRunnerParams;
+
     // Changes the current status to Initialized if it was NotInitialized,
     // otherwise raises an error (assert or exception)
     void TrySwitchToInitialized()
@@ -451,18 +456,18 @@ namespace ManualRender  // namespace ImmApp::ManualRender
     }
 
 
-    void SetupFromRunnerParams(const HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
+    void SetupFromRunnerParams(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
     {
         TrySwitchToInitialized();
-        HelloImGui::RunnerParams runnerParamsCopy = runnerParams;
-        Priv_Setup(runnerParamsCopy, addOnsParams);
-        HelloImGui::ManualRender::SetupFromRunnerParams(runnerParamsCopy);
+        Priv_Setup(runnerParams, addOnsParams);
+        HelloImGui::ManualRender::SetupFromRunnerParams(runnerParams);
     }
 
     void SetupFromSimpleRunnerParams(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)
     {
-        HelloImGui::RunnerParams runnerParams = simpleParams.ToRunnerParams();
-        SetupFromRunnerParams(runnerParams, addOnsParams);
+        // Store the runnerParams to keep it alive for the entire lifecycle
+        sStoredRunnerParams = simpleParams.ToRunnerParams();
+        SetupFromRunnerParams(sStoredRunnerParams.value(), addOnsParams);
     }
 
     void SetupFromGuiFunction(
@@ -519,6 +524,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         TrySwitchToNotInitialized();
         HelloImGui::ManualRender::TearDown();
         Priv_TearDown();
+        sStoredRunnerParams.reset();  // Clear the stored RunnerParams
     }
 } // namespace ManualRender
 

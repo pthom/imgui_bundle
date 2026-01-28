@@ -334,7 +334,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     ) -> None:
         """Initializes the rendering with the full customizable `RunnerParams`.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-         A distinct copy of `RunnerParams` is stored internally.
+         A reference to the user's `RunnerParams` is kept internally (similar to ImmApp::Run).
 
 
         Python bindings defaults:
