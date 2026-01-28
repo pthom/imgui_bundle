@@ -31,23 +31,10 @@ cd "${PYODIDE_DIR}"
 # Note: meta.yaml must be manually configured to point to the correct source path
 pyodide build-recipes imgui-bundle --recipe-dir "${RECIPES_DIR}/packages" --install
 
+# Copy pyodide dist files for testing
 echo ""
 echo ">>> Copying build artifacts to output directory..."
-
-# Create output directory if needed
 mkdir -p "${OUTPUT_DIR}"
-
-# Find and copy the built wheel
-WHEEL=$(find "${PYODIDE_DIR}/dist" -name "imgui_bundle-*.whl" -type f | head -1)
-
-if [ -n "$WHEEL" ]; then
-    cp "$WHEEL" "${OUTPUT_DIR}/"
-    echo "    Wheel copied: $(basename $WHEEL)"
-else
-    echo "Warning: No wheel found in ${PYODIDE_DIR}/dist"
-fi
-
-# Copy pyodide dist files for testing
 mkdir -p "${OUTPUT_DIR}/pyodide_dist"
 cp -r "${PYODIDE_DIR}/dist/"* "${OUTPUT_DIR}/pyodide_dist/" 2>/dev/null || true
 
@@ -55,7 +42,4 @@ echo ""
 echo "========================================"
 echo "Build complete!"
 echo "========================================"
-echo ""
-echo "Output files in ${OUTPUT_DIR}:"
-ls -la "${OUTPUT_DIR}"/*.whl 2>/dev/null || echo "  (no wheel files)"
 echo ""
