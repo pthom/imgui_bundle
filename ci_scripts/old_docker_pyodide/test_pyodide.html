@@ -18,12 +18,8 @@
 
 // ====================== Start of Python code ============================
 const pythonCode = `
-import asyncio
-import pydantic
-print("pydantic imported successfully!")
 import imgui_bundle
-print(f"imgui_bundle loaded successfully!")
-print(imgui_bundle.info())
+print(imgui_bundle.info())  # interesting! Will print compilation time
 
 from imgui_bundle import imgui, immapp, hello_imgui
 
@@ -40,10 +36,6 @@ def gui():
         print("Button clicked!")
         hello_imgui.get_runner_params().app_shall_exit = True
 
-# Start the GUI
-# immapp.run(gui)  # will fail and display helpful message (immapp.run is not supported anymore)
-# Both versions below are valid
-# asyncio.create_task(immapp.run_async(gui))
 asyncio.create_task(run_app())
 
 `;
@@ -67,17 +59,7 @@ async function main() {
         pyodide._api._skip_unwind_fatal_error = true;
 
         // Load imgui-bundle package
-        // Option 1: Load from local wheel (built package)
         await pyodide.loadPackage("imgui_bundle");
-
-        // Option 2: Load from URL
-        // await pyodide.loadPackage("./imgui_bundle-1.92.6-cp313-cp313-pyodide_2025_0_wasm32.whl");
-
-        // Option 3: Use micropip for packages from PyPI (when available)
-        // await pyodide.loadPackage("micropip");
-        // const micropip = pyodide.pyimport("micropip");
-        // await micropip.install('imgui-bundle');
-
 
         // Run the Python code
         pyodide.runPython(pythonCode);

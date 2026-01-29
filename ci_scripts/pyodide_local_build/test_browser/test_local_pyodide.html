@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>imgui-bundle Pyodide Test (Local)</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; }
+        #canvas { display: block; width: 100%; height: 100%; }
+    </style>
+    <!-- Load Pyodide from local distribution -->
+    <script src="pyodide_dist/pyodide.js"></script>
+</head>
+<body>
+<canvas id="canvas" tabindex="0"></canvas>
+
+<script type="text/javascript">
+// ====================== Python Code ============================
+const pythonCode = `
+import asyncio
+import imgui_bundle
+print(f"imgui_bundle version: {imgui_bundle.__version__}")
+print(imgui_bundle.info())
+
+from imgui_bundle import imgui, immapp, hello_imgui
+
+def gui():
+    imgui.text("Hello from imgui-bundle + Pyodide!")
+    imgui.text("Test: Local Pyodide Distribution")
+    imgui.separator()
+    if imgui.button("Exit"):
+        hello_imgui.get_runner_params().app_shall_exit = True
+
+async def run_app():
+    print("Starting GUI...")
+    await immapp.run_async(gui, window_title="Local Pyodide Test")
+    print("GUI exited")
+
+asyncio.create_task(run_app())
+`;
+// ====================== End Python Code ========================
+
+async function main() {
+    try {
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        let pyodide = await loadPyodide({ indexURL: "pyodide_dist/" });
+
+        // Setup SDL canvas
+        let sdl2Canvas = document.getElementById("canvas");
+        pyodide.canvas.setCanvas2D(sdl2Canvas);
+        pyodide._api._skip_unwind_fatal_error = true;
+
+        // load some packages required by imgui-bundle:
+        // (after loading imgui-bundle from local_wheels/, pyodide forgets where to find them in its own package cache)
+        await pyodide.loadPackage("numpy")
+        await pyodide.loadPackage("pydantic")
+
+        // Load imgui-bundle from local wheel
+        await pyodide.loadPackage("local_wheels/imgui_bundle-1.92.6b1-cp313-cp313-pyodide_2025_0_wasm32.whl");
+
+        pyodide.runPython(pythonCode);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+main();
+</script>
+</body>
+</html>

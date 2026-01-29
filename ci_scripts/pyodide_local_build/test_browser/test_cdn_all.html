@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>imgui-bundle Pyodide Test (Full CDN)</title>
+    <style>
+        html, body { width: 100%; height: 100%; margin: 0; }
+        #canvas { display: block; width: 100%; height: 100%; }
+    </style>
+    <!-- Load Pyodide from CDN -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+</head>
+<body>
+<canvas id="canvas" tabindex="0"></canvas>
+
+<script type="text/javascript">
+// ====================== Python Code ============================
+const pythonCode = `
+import imgui_bundle
+print(f"imgui_bundle version: {imgui_bundle.__version__}")
+
+from imgui_bundle import imgui, immapp, hello_imgui
+
+def gui():
+    imgui.text("Hello from imgui-bundle + Pyodide!")
+    imgui.text("Test: Full CDN (Official Pyodide Package)")
+    imgui.text_wrapped("Note: This may be older than your local build")
+    imgui.separator()
+    if imgui.button("Exit"):
+        hello_imgui.get_runner_params().app_shall_exit = True
+
+immapp.run(gui, window_title="CDN Pyodide Test")
+`;
+// ====================== End Python Code ========================
+
+async function main() {
+    try {
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        let pyodide = await loadPyodide();
+
+        // Setup SDL canvas
+        let sdl2Canvas = document.getElementById("canvas");
+        pyodide.canvas.setCanvas2D(sdl2Canvas);
+        pyodide._api._skip_unwind_fatal_error = true;
+
+        // Load imgui-bundle from official Pyodide packages
+        await pyodide.loadPackage("imgui_bundle");
+
+        pyodide.runPython(pythonCode);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+}
+
+main();
+</script>
+
+</body>
+</html>
