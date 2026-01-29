@@ -32,25 +32,37 @@ function(ibd_pyodide_manually_link_sdl_to_bindings)
     # (cf https://github.com/pyodide/pyodide/issues/5029:
     #     emscripten_compute_dom_pk_code is in html5.a (not html5.js))
 
-    # instead we link manually libSDL2.a:
+    # IMPORTANT: SDL2 linking for SIDE_MODULE (pyodide)
+    # ===================================================
+    # Based on https://github.com/pyodide/pyodide/issues/5248 and #5584
+    #
+    # For SIDE_MODULE builds, we need BOTH:
+    # 1. Static PIC SDL2 libraries (for native symbol definitions)
+    # 2. -s USE_SDL=2 flag (for JavaScript glue code)
+    #
+    # The key is to build SDL2 with -fPIC (Position Independent Code) using embuilder,
+    # then link those PIC libraries into the SIDE_MODULE.
+    #
+    # DO NOT link the regular (non-PIC) SDL2 libraries - they won't work in SIDE_MODULE.
     if(IMGUI_BUNDLE_BUILD_PYODIDE AND EMSCRIPTEN)
 
-        # See https://github.com/pyodide/pyodide/issues/5248
-        # We need to build sdl2 and libhtml5 with -fPIC (position independent code)
-        # with embuilder
-        execute_process(COMMAND embuilder build sdl2 libhtml5 --pic
+        message(STATUS "Pyodide: Building SDL2 with PIC for SIDE_MODULE compatibility")
+
+        # Build SDL2 and html5 with -fPIC using embuilder
+        # This creates PIC versions that work in SIDE_MODULE builds
+        execute_process(
+            COMMAND embuilder build sdl2 libhtml5 --pic
             RESULT_VARIABLE result
             OUTPUT_VARIABLE output
-            ERROR_VARIABLE error)
+            ERROR_VARIABLE error
+        )
+
         if (NOT result EQUAL 0)
             message(FATAL_ERROR "
-                imgui_bundle pyodide package: could not build sdl2 and libhtml5 with embuilder
-                Command :
-                    embuilder build sdl2 libhtml5 --pic
-                Failed with code ${result}
+                Failed to build SDL2 with PIC for pyodide SIDE_MODULE
+                Command: embuilder build sdl2 libhtml5 --pic
                 Error: ${error}
-
-                See https://github.com/pyodide/pyodide/issues/5248
+                See: https://github.com/pyodide/pyodide/issues/5248
             ")
         endif()
 
@@ -66,9 +78,11 @@ function(ibd_pyodide_manually_link_sdl_to_bindings)
                     See https://github.com/pyodide/pyodide/issues/5248")
         endif()
 
+        message(STATUS "Pyodide: Linking PIC SDL2: ${sdl_lib_file}")
         target_link_libraries(_imgui_bundle PUBLIC ${sdl_lib_file})
 
-        # Manually link native side of html5
+        # Link the PIC html5 library (contains emscripten_compute_dom_pk_code)
+        message(STATUS "Pyodide: Linking PIC html5: ${ems_lib_path_pic}/libhtml5.a")
         target_link_libraries(_imgui_bundle PUBLIC ${ems_lib_path_pic}/libhtml5.a)
 
         # Add -sRELOCATABLE=1 to the target:
