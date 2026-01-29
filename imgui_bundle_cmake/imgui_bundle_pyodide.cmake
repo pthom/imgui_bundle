@@ -89,6 +89,37 @@ function(ibd_pyodide_manually_link_sdl_to_bindings)
         # This is not useful for the moment, but may become if/when pyodide correctly handles SDL and html native link.
         target_compile_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
         target_link_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
+
+        # CRITICAL: Handle EM_JS symbols from SDL2
+        # ========================================
+        # SDL2 contains EM_JS macros (e.g., ___em_lib_deps_sdlaudio, ___em_lib_deps_sdlmouse)
+        # that create JavaScript bridge symbols. These symbols are provided at runtime by
+        # SDL2's JavaScript glue code (library_sdl.js), so they're intentionally undefined
+        # at link time.
+        #
+        # For SIDE_MODULE builds, Emscripten already defaults ERROR_ON_UNDEFINED_SYMBOLS=0,
+        # so undefined symbols are allowed by default. However, the build system uses -Werror
+        # which treats all warnings (including [-Wundefined]) as errors.
+        #
+        # Solution: Use -Wno-error=undefined to allow undefined symbol warnings without
+        # treating them as errors. This is safe because:
+        # - Regular C/C++ linking errors are still caught at compile time
+        # - Only affects link-time undefined symbols (expected for SIDE_MODULE)
+        # - SDL2's JavaScript glue will provide these symbols at runtime
+        #
+        # Note: We've replaced our own EM_JS usage (ImGui_ImplSDL2_EmscriptenOpenURL,
+        # sapp_js_write_clipboard) with EM_ASM to avoid creating unnecessary symbols.
+        # The only remaining undefined symbols are from SDL2 itself.
+        #
+        # Expected warnings (from SDL2, safe):
+        #   ___em_lib_deps_sdlaudio (SDL2 audio subsystem)
+        #   ___em_lib_deps_sdlmouse (SDL2 mouse input)
+        #   ___em_lib_deps_sdlsysurl (SDL2 URL opening)
+        #
+        # Based on: https://github.com/pyodide/pyodide/issues/5584
+        target_link_options(_imgui_bundle PUBLIC
+            "-Wno-error=undefined"  # Allow undefined symbol warnings for SDL2's EM_JS bridges
+        )
     endif()
 endfunction()
 

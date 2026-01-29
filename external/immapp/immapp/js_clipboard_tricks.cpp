@@ -16,25 +16,30 @@ extern "C"
 {
 #endif
 
-
-EM_JS(void, sapp_js_write_clipboard, (const char* c_str), {
-    var str = UTF8ToString(c_str);
-    var ta = document.createElement('textarea');
-    ta.setAttribute('autocomplete', 'off');
-    ta.setAttribute('autocorrect', 'off');
-    ta.setAttribute('autocapitalize', 'off');
-    ta.setAttribute('spellcheck', 'false');
-    ta.style.left = -100 + 'px';
-    ta.style.top = -100 + 'px';
-    ta.style.height = 1;
-    ta.style.width = 1;
-    ta.value = str;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    //console.log("Set clipboard to " + str);
-});
+// Pyodide/SIDE_MODULE fix: Use EM_ASM instead of EM_JS to avoid undefined symbol issues
+// EM_JS creates a separate symbol (___em_js__sapp_js_write_clipboard) that doesn't work
+// well in SIDE_MODULE builds. EM_ASM embeds the JavaScript inline without creating external symbols.
+void sapp_js_write_clipboard(const char* c_str)
+{
+    EM_ASM({
+        var str = UTF8ToString($0);
+        var ta = document.createElement('textarea');
+        ta.setAttribute('autocomplete', 'off');
+        ta.setAttribute('autocorrect', 'off');
+        ta.setAttribute('autocapitalize', 'off');
+        ta.setAttribute('spellcheck', 'false');
+        ta.style.left = -100 + 'px';
+        ta.style.top = -100 + 'px';
+        ta.style.height = 1;
+        ta.style.width = 1;
+        ta.value = str;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        //console.log("Set clipboard to " + str);
+    }, c_str);
+}
 
 #ifdef __cplusplus
 }
