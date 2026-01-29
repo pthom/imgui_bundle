@@ -13,6 +13,11 @@ PYODIDE_DIR="/opt/pyodide"
 RECIPES_DIR="/opt/pyodide-recipes"
 IMGUI_BUNDLE_SRC="/mnt/imgui_bundle_sdist"
 OUTPUT_DIR="/mnt/output"
+#export PYODIDE_DIR="/opt/pyodide"
+#export RECIPES_DIR="/opt/pyodide-recipes"
+#export IMGUI_BUNDLE_SRC="/mnt/imgui_bundle_sdist"
+#export OUTPUT_DIR="/mnt/output"
+
 
 # Activate the virtual environment
 source /opt/venv_pyodide/bin/activate
@@ -29,7 +34,7 @@ cd "${PYODIDE_DIR}"
 
 # Build imgui-bundle
 # Note: meta.yaml must be manually configured to point to the correct source path
-pyodide build-recipes imgui-bundle --recipe-dir "${RECIPES_DIR}/packages" --install
+pyodide build-recipes imgui-bundle --recipe-dir "${RECIPES_DIR}/packages" --install --log-dir /mnt/output/build_imgui_bundle_logs
 
 # Copy pyodide dist files for testing
 echo ""
