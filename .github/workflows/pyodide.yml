@@ -1,0 +1,84 @@
+name: Pyodide
+
+on:
+  workflow_dispatch:
+  pull_request:
+  release:
+    types:
+      - published
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build_pyodide_wheel:
+    name: Build Pyodide Wheel
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget bzip2
+
+      - name: Install Pyodide build environment
+        shell: bash
+        run: |
+          ./ci_scripts/pyodide_local_build/setup_pyodide_local_build.sh
+
+      - name: Build Pyodide wheel
+        shell: bash
+        run: |
+          source ci_scripts/pyodide_local_build/venv_pyo/bin/activate
+          source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh
+          pyodide build
+
+      - name: List built wheels
+        run: |
+          echo "Built wheels:"
+          ls -lh dist/*pyodide*.whl
+
+      - name: Upload Pyodide wheel artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: pyodide-wheel
+          path: dist/*pyodide*.whl
+          if-no-files-found: error
+
+  upload_to_release:
+    name: Upload wheel to GitHub Release
+    needs: build_pyodide_wheel
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Pyodide wheel artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: pyodide-wheel
+          path: dist
+
+      - name: List downloaded wheels
+        run: |
+          echo "Wheels to upload:"
+          ls -lh dist/*.whl
+
+      - name: Upload wheel to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.whl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
