@@ -5,35 +5,6 @@
 default:
     @just --list
 
-
-# Build pyodide wheel (with macOS naming fix workaround)
-# Uses the setup in ci_scripts/pyodide_local_build/
-pyodide_build:
-    source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && pyodide build
-    python ci_scripts/pyodide_local_build/fix_pyodide_wheel_name.py
-    cp dist/imgui_bundle*pyodide*.whl ci_scripts/pyodide_local_build/test_browser/local_wheels/
-
-# Clean pyodide build artifacts
-pyodide_clean:
-    rm -rf .pyodide_build dist
-
-# pyodide deep clean (removes also the local build setup)
-pyodide_deep_clean: pyodide_clean
-    rm -rf ci_scripts/pyodide_local_build/test_browser/pyodide_dist
-    rm -rf ci_scripts/pyodide_local_build/venv_pyo
-    rm -rf ci_scripts/pyodide_local_build/emsdk
-
-
-# Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
-pyodide_setup_local_build:
-    ./ci_scripts/pyodide_local_build/setup_pyodide_local_build.sh
-    ./ci_scripts/pyodide_local_build/test_browser/download_pyodide_dist.sh
-
-# Start browser test server (serves test HTML pages)
-pyodide_test_serve:
-    ./ci_scripts/pyodide_local_build/test_browser/run_server.sh
-
-
 # build emscripten
 ems_build:
     ./ci_scripts/ems_build.sh
@@ -103,3 +74,38 @@ doc_build_pdf:
 doc_him_pdf:
     cd external/hello_imgui/hello_imgui/docs_src && jupyter-book build --builder pdfhtml .
     cp external/hello_imgui/hello_imgui/docs_src/_build/pdf/book.pdf /Volumes/ramdisk/hello_imgui_manual.pdf
+
+
+
+# ==============================================================
+# Pyodide build targets
+# ==============================================================
+# Note: see ci_scripts/pyodide_local_build/Readme.md
+# for more info about the local pyodide build setup
+# --------------------------------------------------------------
+
+# Build pyodide wheel (with macOS naming fix workaround)
+pyodide_build:
+    source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && pyodide build
+    python ci_scripts/pyodide_local_build/fix_pyodide_wheel_name.py
+    cp dist/imgui_bundle*pyodide*.whl ci_scripts/pyodide_local_build/test_browser/local_wheels/
+
+# Start browser test server (serves test HTML pages)
+pyodide_test_serve:
+    ./ci_scripts/pyodide_local_build/test_browser/run_server.sh
+
+# Clean pyodide build artifacts
+pyodide_clean:
+    rm -rf .pyodide_build dist
+
+# Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
+pyodide_setup_local_build:
+    ./ci_scripts/pyodide_local_build/setup_pyodide_local_build.sh
+    ./ci_scripts/pyodide_local_build/test_browser/download_pyodide_dist.sh
+
+# pyodide deep clean (removes also the local build setup)
+pyodide_deep_clean: pyodide_clean
+    rm -rf ci_scripts/pyodide_local_build/test_browser/pyodide_dist
+    rm -rf ci_scripts/pyodide_local_build/venv_pyo
+    rm -rf ci_scripts/pyodide_local_build/emsdk
+
