@@ -1,7 +1,11 @@
 # Repository folders structure
 
-Below is the folders structure of Dear ImGui Bundle repository:
+Below is the folder structure of Dear ImGui Bundle repository.
 
+**Key areas:**
+- `bindings/` – Python package, stubs (`.pyi`), and demos
+- `external/` – All C++ libraries (submodules) and their binding generators
+- `docs/` – This documentation (Jupyter Book)
 
 ```
 ./
@@ -100,5 +104,15 @@ Below is the folders structure of Dear ImGui Bundle repository:
 |
 +-- src/
 |         +-- imgui_bundle/                               # main cpp library: almost empty,
-                                                          # but linked to all external libraries
+|                                                         # but linked to all external libraries
+|
++-- docs/
+          +-- book/                                       # Jupyter Book documentation
+                   +-- _toc.yml                           # Table of contents
+                   +-- intro/                             # Introduction chapters
+                   +-- python/                            # Python user docs
+                   +-- cpp/                               # C++ user docs
+                   +-- core_libs/                         # Core library docs
+                   +-- addons/                            # Add-on library docs
+                   +-- devel_docs/                        # Developer documentation
 ```

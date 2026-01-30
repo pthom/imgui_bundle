@@ -8,7 +8,7 @@ In Python, the module imgui_ctx provides a lot of context managers that automati
 from imgui_bundle import imgui, imgui_ctx
 
 with imgui_ctx.begin("My Window"): # imgui.end() called automatically
-imgui.text("Hello World")
+    imgui.text("Hello World")
 ```
 
 Of course, you can choose to use the standard API by using the module imgui:
@@ -171,3 +171,9 @@ The Dear ImGui Python API The python API closely mirrors the C++ API, and its do
 * [main API](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi)
 * [internal API](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/internal.pyi)
 
+# See Also
+
+- **[Dear ImGui Basics](../core_libs/imgui.md)** – Widget concepts, IDs, common patterns
+- **[Hello ImGui & ImmApp](../core_libs/hello_imgui_immapp.md)** – App runners, DPI handling, configuration
+- **[Async Support](python_async.md)** – Running GUI alongside async Python code
+- **[Jupyter Notebooks](notebook_runners.ipynb)** – Using ImGui Bundle in notebooks

@@ -86,7 +86,7 @@ With Hello ImGui and ImmApp (both included in Dear ImGui Bundle), you can create
 
 * [Hello ImGui](https://pthom.github.io/hello_imgui) is a library based on ImGui that enables to easily create applications with ImGui. It handles window creation, backend initialization (SDL, GLFW, etc.), cross-platform assets, docking layout, and more.
 
-* [ImApp](https://github.com/pthom/imgui_bundle/blob/main/external/immapp/immapp/runner.h) (aka "Immediate App", a submodule of ImGuiBundle) is a thin extension of Hello ImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
+* [ImmApp](https://github.com/pthom/imgui_bundle/blob/main/external/immapp/immapp/runner.h) (aka "Immediate App", a submodule of ImGuiBundle) is a thin extension of Hello ImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
 
 
 ## Hello World in 4 lines

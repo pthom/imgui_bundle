@@ -81,7 +81,10 @@ Can be created with this code (where lots of nbsp\; were added to enforce the co
 def demo_gui():
     s = example_markdown_string()
     imgui_md.render(s)
-
+    # Note: you may also use:
+    #   imgui_md.render_unindented(s)
+    # (it will remove the main indentation of the Markdown string before rendering it,
+    # which is useful when the string is defined inside a function with indentation)
 
 def main():
     immapp.run(demo_gui, with_markdown=True, window_size=(800, 800))

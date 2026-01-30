@@ -42,3 +42,10 @@ The source for the demos can be found inside [bindings/imgui_bundle/demos_python
 
 
 TIP: Consider `imgui_bundle_demo` as an always available manual for Dear ImGui Bundle with lots of examples and related code source.
+
+## Next Steps
+
+- **[Dear ImGui Basics](../core_libs/imgui.md)** – Learn ImGui concepts (widgets, IDs, patterns)
+- **[Hello ImGui & ImmApp](../core_libs/hello_imgui_immapp.md)** – App runners, configuration, DPI handling
+- **[Python Tips](python_tips.md)** – Context managers, C++ to Python translation, debugging
+- **[Assets](python_assets.md)** – Managing fonts, images, and resources

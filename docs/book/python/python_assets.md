@@ -44,3 +44,15 @@ Note: in C++, the assets folder also contains an `app_settings` folder, which co
 You can [download the default assets as a zip file](https://traineq.org/ImGuiBundle/assets.zip).
 
 Look at the folder [imgui_bundle/bindings/imgui_bundle/assets](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets) to see its content.
+
+## Troubleshooting
+
+**"Assets not found" or missing fonts/images:**
+
+1. Ensure the `assets/` folder is in the same directory as your script
+2. If running from a different directory, set the path explicitly:
+   ```python
+   import hello_imgui
+   hello_imgui.set_assets_folder("/path/to/your/assets")
+   ```
+3. For packaged applications, ensure assets are included in your distribution

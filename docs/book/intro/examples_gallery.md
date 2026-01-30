@@ -16,7 +16,7 @@ Inside the manual, click the "Demo Apps" tab, select a demo, run it and look at 
 
 ### Complex layouts with docking windows
 
-```{figure} ../images/demo_docking.jpg
+```{figure} ../images/demo_docking.webp
 :alt: Complex docking layout
 :width: 300px
 :align: left

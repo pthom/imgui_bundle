@@ -85,4 +85,8 @@ Can be created with this code (where lots of nbsp\; were added to enforce the co
 void demo_imgui_md()
 {
     ImGuiMd::Render(exampleMarkdownString());
+    // Note: you may also use:
+    //   ImGuiMd::RenderUnindented(exampleMarkdownString());
+    // (it will remove the main indentation of the Markdown string before rendering it,
+    // which is useful when the string is defined inside a function with indentation)
 }

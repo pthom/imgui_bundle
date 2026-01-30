@@ -46,3 +46,17 @@ The source for the demos can be found inside bindings/imgui_bundle/demos_cpp.
 Consider demo_imgui_bundle as a manual with lots of examples and related code source. It is always available online
 :::
 
+## Multiplatform applications
+
+Hello ImGui and Dear ImGui Bundle offer excellent support for multiplatform applications (Windows, macOS, Linux, iOS, Android, and Emscripten).
+
+See this tutorial video for Hello ImGui:
+
+<a href="https://www.youtube.com/watch?v=dArP4lBnOr8">
+<img src="video_multiplatform.png" alt="Multiplatform tutorial video" width="600"/>
+</a>
+
+:::{tip}
+The principle with Dear ImGui Bundle is the same as described in the video, just use the dedicated [Dear ImGui Bundle project template](https://github.com/pthom/imgui_bundle_template), and use `imgui_bundle_add_app` in your CMakeLists.txt.
+:::
+

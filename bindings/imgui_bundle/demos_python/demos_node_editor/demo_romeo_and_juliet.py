@@ -1,6 +1,8 @@
 import os.path
 
-from imgui_bundle import immapp, imgui, imgui_node_editor as ed, ImVec4
+from imgui_bundle import immapp, imgui, imgui_node_editor as ed, ImVec4, ImVec2
+
+first_frame = True
 
 
 class Lover:
@@ -66,9 +68,18 @@ links = [
 
 
 def demo_gui():
+    global first_frame
     this_dir = os.path.dirname(__file__)
     ed.get_config().settings_file = this_dir + "/romeo_and_juliet.json"
     ed.begin("Romeo and Juliet")
+
+    # Position nodes as a triangle on first frame
+    if first_frame:
+        ed.set_node_position(lovers[0].node_id, ImVec2(150, 0))    # Romeo - top
+        ed.set_node_position(lovers[1].node_id, ImVec2(300, 200))  # Juliet - bottom right
+        ed.set_node_position(lovers[2].node_id, ImVec2(0, 200))    # Count Paris - bottom left
+        first_frame = False
+
     for lover in lovers:
         lover.draw()
     for link in links:

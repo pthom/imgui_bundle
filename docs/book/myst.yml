@@ -16,7 +16,20 @@ project:
 site:
   options:
     logo: ../../logo/logo_imgui_bundle_1024.png
+    logo_text: Dear ImGui Bundle
     favicon: ../../logo/logo_imgui_bundle_1024.png
     folders: true
     style: _static/custom.css
     template: book-theme
+  nav:
+    - title: Ahh
+    - title: Interactive Manual
+      url: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+    - title: GitHub
+      url: https://github.com/pthom/imgui_bundle
+    - title: Online Python Playground
+      url: https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/
+    - title: PyPI
+      url: https://pypi.org/project/imgui-bundle/
+    - title: Conda
+      url: https://anaconda.org/channels/conda-forge/packages/imgui-bundle/overview

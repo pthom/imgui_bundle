@@ -3,7 +3,7 @@ root: intro/intro
 parts:
   - caption: Introduction
     chapters:
-      - file: intro/why_imgui_bundle
+      - file: intro/key_features
       - file: intro/imm_gui
       - file: intro/interactive_manuals
       - file: intro/examples_gallery
@@ -12,33 +12,38 @@ parts:
     chapters:
       - file: python/python_imgui_intro
       - file: python/python_install
-      - file: python/python_tips
       - file: python/python_assets
       - file: python/pure_python_backend
       - file: python/python_async
       - file: python/notebook_runners.ipynb
       - file: python/python_pyodide
+      - file: python/python_tips
   - caption: For C++ users
     chapters:
       - file: cpp/cpp_install
       - file: cpp/cpp_assets
-      - file: cpp/cpp_multiplatform
-      - file: cpp/cpp_debug_python
-  - caption: Runners (Hello ImGui & ImmApp)
+  - caption: Core Libraries
     chapters:
-      - file: runners/basic
-      - file: runners/hello_imgui
-      - file: runners/immapp
-      - file: runners/app_settings
-      - file: runners/runner_tips
+      - file: core_libs/imgui
+      - file: core_libs/hello_imgui_immapp
+      - file: core_libs/test_engine
+  - caption: Add-on Libraries
+    chapters:
+      - file: addons/plotting
+      - file: addons/visualization
+      - file: addons/text_markdown
+      - file: addons/tools
+      - file: addons/widgets
   - caption: Support
     chapters:
       - file: support/support_project
       - file: support/closing_words
-  - caption: Developper docs
+  - caption: Developer docs
     chapters:
       - file: devel_docs/intro
       - file: devel_docs/structure
       - file: devel_docs/bindings_intro
       - file: devel_docs/bindings_update
       - file: devel_docs/bindings_newlib
+      - file: devel_docs/bindings_debug
+

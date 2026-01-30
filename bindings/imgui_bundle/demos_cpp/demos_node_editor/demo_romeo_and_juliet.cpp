@@ -103,6 +103,17 @@ void demo_romeo_and_juliet()
 
     // ed::GetConfig().SettingsFile = "romeo_and_juliet.json"; // GetConfig() is const!
     ed::Begin("Romeo and Juliet");
+
+    // Position nodes as a triangle on first frame
+    static bool first_frame = true;
+    if (first_frame)
+    {
+        ed::SetNodePosition(lovers[0]->nodeId, ImVec2(150, 0));    // Romeo - top
+        ed::SetNodePosition(lovers[1]->nodeId, ImVec2(300, 200));  // Juliet - bottom right
+        ed::SetNodePosition(lovers[2]->nodeId, ImVec2(0, 200));    // Count Paris - bottom left
+        first_frame = false;
+    }
+
     for (auto &lover: lovers)
         lover->Draw();
     for (auto &link: links)

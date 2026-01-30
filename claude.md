@@ -142,7 +142,7 @@ ImGui Bundle's Python bindings follow Python's conventions while maintaining com
 * Python requires explicit imports from the imgui_bundle package:
   ```python
   from imgui_bundle import imgui, implot, immapp, hello_imgui
-  
+
   # Or specific components:
   from imgui_bundle.immapp import fonts, icons_fontawesome_6
   ```
@@ -154,6 +154,101 @@ ImGui Bundle's Python bindings follow Python's conventions while maintaining com
   #include "immapp/immapp.h"
   ```
 
+
+# Common ImGui Patterns and Gotchas
+
+## Widget IDs
+
+ImGui identifies widgets by their label string. You must not have two widgets with the same label in the same scope, or they will conflict.
+
+**Solution 1: Use `##` to add a hidden ID suffix:**
+```python
+imgui.button("OK")           # ID is "OK"
+imgui.button("OK##dialog2")  # ID is "OK##dialog2", but displays as "OK"
+imgui.button("##hidden")     # No visible label, ID is "##hidden"
+```
+
+**Solution 2: Use `push_id()`/`pop_id()` for loops:**
+```python
+for i, item in enumerate(items):
+    imgui.push_id(i)          # or push_id(str(i)) or push_id(item.name)
+    if imgui.button("Delete"):
+        delete_item(item)
+    imgui.pop_id()
+```
+
+## Begin/End Pairs
+
+Many ImGui functions come in begin/end pairs. **Important rules:**
+
+1. **`imgui.begin()` is special**: Always call `imgui.end()`, even if `begin()` returns False:
+   ```python
+   # CORRECT
+   if imgui.begin("Window"):
+       imgui.text("Content")
+   imgui.end()  # Always called!
+
+   # WRONG - will cause errors
+   if imgui.begin("Window"):
+       imgui.text("Content")
+       imgui.end()  # Only called when window is visible - BUG!
+   ```
+
+2. **Other begin/end pairs**: Only call `end_*()` if `begin_*()` returned True:
+   ```python
+   if imgui.begin_menu("File"):
+       if imgui.menu_item("Open"):
+           open_file()
+       imgui.end_menu()  # Only when begin_menu returned True
+
+   if imgui.begin_popup("popup"):
+       imgui.text("Popup content")
+       imgui.end_popup()  # Only when begin_popup returned True
+   ```
+
+## Context Managers (Python)
+
+Python users can use `imgui_ctx` for automatic end calls, which is cleaner and less error-prone:
+
+```python
+from imgui_bundle import imgui, imgui_ctx
+
+# Automatic imgui.end() when exiting the with block
+with imgui_ctx.begin("My Window") as window_visible:
+    if window_visible:
+        imgui.text("Hello")
+
+# Works for other pairs too
+with imgui_ctx.begin_menu("File") as menu_open:
+    if menu_open:
+        if imgui.menu_item("Open"):
+            open_file()
+
+# Useful for tree nodes, popups, etc.
+with imgui_ctx.tree_node("Settings") as node_open:
+    if node_open:
+        imgui.text("Settings content")
+```
+
+See: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_ctx.py
+
+## DPI-Aware Sizing
+
+**Never use hardcoded pixel sizes** - they will look wrong on high-DPI screens and different platforms.
+
+```python
+# BAD - hardcoded pixels
+imgui.button("Click", imgui.ImVec2(100, 30))
+
+# GOOD - use em units (1 em = font height, typically ~16px at 100% DPI)
+imgui.button("Click", hello_imgui.em_to_vec2(8, 2))
+
+# Also available:
+width = hello_imgui.em_size(10)  # Single dimension
+em = hello_imgui.em_size()       # Get 1 em in pixels
+```
+
+The `em_to_vec2()` and `em_size()` functions are available in both `hello_imgui` and `immapp` modules.
 
 
 # References for Python APIs
@@ -385,7 +480,7 @@ def gui():
     imgui.image(texture, imgui.ImVec2(100, 100))
 ```
 
-**DPI-Aware Sizing** - Use `em_size()` for resolution-independent sizing:
+**DPI-Aware Sizing** - Use `em_size()` for resolution-independent sizing (see also "Common ImGui Patterns and Gotchas" section above):
 
 ```python
 from imgui_bundle import hello_imgui, imgui
@@ -394,7 +489,7 @@ def gui():
     em = hello_imgui.em_size()  # Current font size (adapts to DPI)
     imgui.button("Click", imgui.ImVec2(10 * em, 2 * em))
 
-    # Convenience function
+    # Convenience function (preferred)
     imgui.button("Click", hello_imgui.em_to_vec2(10, 2))
 ```
 
