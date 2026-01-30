@@ -1,4 +1,4 @@
-# Deploy to the web with Pyodide
+# Deploy to the web
 
 Dear ImGui Bundle applications can be effortlessly deployed to the web using Pyodide, enabling Python code to run directly in web browsers. This capability allows developers to share interactive GUI applications without requiring users to install any software.
 

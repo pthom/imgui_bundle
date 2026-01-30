@@ -1,3 +1,69 @@
+# Code output guidelines for Claude
+
+When helping users with coding tasks, please follow these guidelines to ensure high-quality, maintainable code.
+
+## 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+## 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+## 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
+
+
+=================
+
+Now, some notes about the ImGui Bundle project itself.
+
+
 # ImGui Bundle: Conversation Starter for LLMs
 
 ImGui Bundle provides a complete set of libraries on top of Dear ImGui, enabling users to create interactive applications in C++ and Python. 
@@ -16,15 +82,18 @@ ImGui Bundle is based on Dear ImGui, and can also use Hello ImGui as a base, in 
 
 Please do read to the following documentation for a comprehensive understanding of the libraries:
 
-Bundle
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/doc/Readme.adoc
+**Dear ImGui Bundle, full doc (PDF):** 
+https://pthom.github.io/imgui_bundle/assets/book.pdf
 
-Hello ImGui:
+**Hello ImGui**
 https://pthom.github.io/hello_imgui/book/intro.html
 https://pthom.github.io/hello_imgui/book/doc_params.html
 https://pthom.github.io/hello_imgui/book/doc_api.html
 
-
+**Docs for Fiatlight**
+Fiatlight is a library heavily based on Dear ImGui Bundle, by the same author.
+Reading this is not mandatory, it only helps if working on Fiatlight itself.
+https://pthom.github.io/fiatlight_doc/flgt.pdf
 
 # Differences in the C++ versus Python APIs
 
@@ -149,6 +218,62 @@ immapp.run(
 
 Note: When using Hello ImGui or ImmApp, you don't need to call `imgui.begin()` and `imgui.end()` for the main window, as they automatically create a full-window ImGui context.
 
+### Async and Pyodide Support
+
+ImGui Bundle supports asynchronous execution for Jupyter notebooks and web deployment via Pyodide.
+
+**Desktop Async** - For applications that need async integration:
+
+```python
+import asyncio
+from imgui_bundle import immapp
+
+async def main():
+    await immapp.run_async(gui, window_title="My App")
+    print("GUI closed")
+
+asyncio.run(main())
+```
+
+**Jupyter Notebooks** - Use the `.nb` module for non-blocking execution:
+
+```python
+from imgui_bundle import immapp
+
+# Start GUI (non-blocking, continues to next cell)
+immapp.nb.start(gui, window_title="My App")
+
+# Later, to stop:
+immapp.nb.stop()
+
+# Check if running:
+if immapp.nb.is_running():
+    print("GUI is active")
+```
+
+**Pyodide (Web Browser)** - In Pyodide, `run()` starts the GUI and returns immediately (browsers cannot block):
+
+```python
+# Same code works on desktop (blocking) and Pyodide (fire-and-forget)
+immapp.run(gui, window_title="My App")
+```
+
+For async control in Pyodide (waiting for GUI to exit), use `run_async()`:
+
+```python
+import asyncio
+async def main():
+    await immapp.run_async(gui, window_title="My App")
+    print("GUI closed")
+asyncio.create_task(main())
+```
+
+| Platform | `run()` | `run_async()` |
+|----------|---------|---------------|
+| Desktop | Blocking | Awaitable |
+| Pyodide | Fire-and-forget | Awaitable |
+| Notebook | Use `nb.start()` | Use `nb.start()` |
+
 ### Advanced Configuration with RunnerParams
 
 For more sophisticated applications, Hello ImGui provides a comprehensive `RunnerParams` structure that controls all aspects of application behavior. Instead of using simple parameters, you can create and configure a `RunnerParams` object:
@@ -192,11 +317,21 @@ immapp.run(params)
    - Default window types (full screen, dockspace, none)
 
 3. **Callbacks** (`callbacks`):
-   - Function hooks for various application lifecycle events
-   - GUI rendering (`show_gui`)
-   - Menu generation (`show_menus`, `show_app_menu_items`)
-   - Status bar content (`show_status`)
-   - Application events (init, exit, frame updates)
+   - GUI callbacks (called every frame):
+     - `show_gui`: Main GUI content
+     - `show_menus`: Custom menu bar content
+     - `show_app_menu_items`: Items in the "App" menu
+     - `show_status`: Status bar content
+   - Lifecycle callbacks:
+     - `post_init`: Called once after OpenGL/backend initialization
+     - `before_exit`: Called once before shutdown
+     - `pre_new_frame`: Called before each frame starts
+   - Font loading:
+     - `load_additional_fonts`: Load custom fonts at startup
+   - Custom rendering:
+     - `custom_background`: For custom OpenGL/3D backgrounds
+   - Mobile-specific:
+     - `mobile_on_pause`, `mobile_on_resume`: App backgrounded/foregrounded
 
 4. **Docking Parameters** (`docking_params`):
    - Define dockable window layouts
@@ -209,6 +344,59 @@ immapp.run(params)
    - Background rendering options
 
 This comprehensive parameter system allows for highly customized applications while maintaining the simplicity of the basic API for common use cases.
+
+### Asset Management
+
+Hello ImGui provides a cross-platform asset system for fonts, images, and other resources.
+
+**Asset Directories** - By default, assets are loaded from a folder named `assets` next to your executable or script:
+
+```python
+# Set custom assets folder (call before run)
+hello_imgui.set_assets_folder("my_assets")
+```
+
+**Loading Fonts**:
+
+```python
+from imgui_bundle import hello_imgui
+
+def load_fonts():
+    # Load a font at 18px size
+    hello_imgui.load_font("fonts/Roboto-Regular.ttf", 18.0)
+
+    # Load with options (e.g., merge icons into previous font)
+    font_params = hello_imgui.FontLoadingParams()
+    font_params.merge_to_last_font = True
+    hello_imgui.load_font("fonts/icons.ttf", 16.0, font_params)
+
+params = hello_imgui.RunnerParams()
+params.callbacks.load_additional_fonts = load_fonts
+```
+
+**Loading Images**:
+
+```python
+from imgui_bundle import hello_imgui, imgui
+
+def gui():
+    # Load and display an image from assets
+    texture = hello_imgui.im_texture_id_from_asset("images/logo.png")
+    imgui.image(texture, imgui.ImVec2(100, 100))
+```
+
+**DPI-Aware Sizing** - Use `em_size()` for resolution-independent sizing:
+
+```python
+from imgui_bundle import hello_imgui, imgui
+
+def gui():
+    em = hello_imgui.em_size()  # Current font size (adapts to DPI)
+    imgui.button("Click", imgui.ImVec2(10 * em, 2 * em))
+
+    # Convenience function
+    imgui.button("Click", hello_imgui.em_to_vec2(10, 2))
+```
 
 ### API References
 
@@ -259,46 +447,12 @@ https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot/__i
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot3d/__init__.pyi
 
 
-## List of all included libraries APIs
+## All Library APIs
 
-Below are links to the Python bindings for all the libraries included in ImGui Bundle. Read them if needed.
+All library stubs (Python type hints and API documentation) are in `bindings/imgui_bundle/*.pyi`:
+https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
 
-* Hello ImGui and ImmApp:
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/immapp/__init__.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/hello_imgui.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/immapp/immapp_cpp.pyi
-
-* ImGui:
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui/__init__.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui/backends.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui/test_engine.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui/internal.pyi
-
-* ImPlot:
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/implot/__init__.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/implot/internal.pyi
-
-* ImPlot3D:
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/implot3d/__init__.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/implot3d/internal.pyi
-
-* ImmVision
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/immvision.pyi
-
-* Other libraries:
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui_md.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui_color_text_edit.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/portable_file_dialogs.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui_tex_inspect.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imspinner.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/im_file_dialog.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui_knobs.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui_node_editor.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imguizmo.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui_command_palette.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/nanovg.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui_toggle.pyi
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/im_cool_bar.pyi
+Key files: `hello_imgui.pyi`, `imgui/__init__.pyi`, `implot/__init__.pyi`, `immvision.pyi`, `immapp/__init__.pyi`
 
 
 # Example programs and demos
@@ -379,77 +533,36 @@ https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_bac
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py
 
 
-# ImmVision API and Usage
+# ImmVision
 
-ImmVision is an immediate mode image debugger and visualization library included in ImGui Bundle. It allows for interactive inspection, analysis, and visualization of images within ImGui interfaces.
+ImmVision is an image debugger with zoom, pan, pixel inspection, and colormaps. Key points:
 
-## Key Features
+- Initialize color order: `immvision.use_rgb_color_order()` or `use_bgr_color_order()`
+- `image()`: Full-featured display with `ImageParams` for options
+- `image_display()`: Simple display
+- `inspector_add_image()` / `inspector_show()`: Multi-image inspection
 
-1. **Image Display Functions**:
-   - `image()`: Full-featured display with zoom, pan, pixel inspection, colormap options
-   - `image_display()`: Simpler display with minimal interactive features
-   - `image_display_resizable()`: Simple display with resizable widget
+Demos: `demos_python/demos_immvision/` (display, inspector, processing, linked views)
 
-2. **Color Order Configuration**:
-   - Must initialize with `immvision.use_rgb_color_order()` or `immvision.use_bgr_color_order()`
-   - Temporary color order changes with `push_color_order_rgb()`, `push_color_order_bgr()` and `pop_color_order()`
+# For Developers
 
-3. **Image Parameters**:
-   - `ImageParams` class controls display options including:
-     - Zoom/pan settings with `zoom_pan_matrix` and `zoom_key` for syncing views
-     - Colormap settings for visualizing single-channel images
-     - Interactive options (mouse controls, grid display, pixel info)
-     - Watched pixels functionality
+Developer documentation (building, bindings, repo structure) is available in:
+`docs/book/devel_docs/`
 
-4. **Inspector Functionality**:
-   - `inspector_add_image()`: Add images to a collection
-   - `inspector_show()`: Display all collected images in a single view
+Key files:
+- `structure.md` - Repository folder structure
+- `bindings_intro.md` - How bindings are generated (uses litgen)
+- `bindings_update.md` - Updating library bindings
+- `bindings_newlib.md` - Adding a new library
+- `pypi_deploy.md` - PyPI deployment process
 
-5. **Colormap Support**:
-   - Apply color mappings to single-channel images
-   - `available_colormaps()` returns list of supported colormaps
-   - Configure mapping with `ColormapSettingsData`
+The bindings are generated automatically using [litgen](https://pthom.github.io/litgen/litgen_book/00_00_intro.html), a Python bindings generator for C++ libraries.
 
-## Basic Example
-
-```python
-from imgui_bundle import immvision, immapp, imgui
-
-# Initialize color order at application start
-immvision.use_rgb_color_order()
-
-# Create an ImageParams object to maintain state
-params = immvision.ImageParams()
-params.zoom_key = "my_key"  # For synchronized views
-params.show_options_panel = True  # Show options panel by default
-
-# Inside your GUI function:
-def gui_function():
-    # Display image with full features
-    immvision.image("Image Label", image_data, params)
-    
-    # Or simple display
-    immvision.image_display("Simple Image", image_data)
-```
-
-## Demo Examples
-
-ImmVision comes with several demo examples that showcase its capabilities:
-
-1. Basic display: `demos_python/demos_immvision/demo_immvision_display.py`
-2. Inspector usage: `demos_python/demos_immvision/demo_immvision_inspector.py`
-3. Image processing: `demos_python/demos_immvision/demo_immvision_process.py` 
-4. Linked views: `demos_python/demos_immvision/demo_immvision_link.py`
-
-These demos show how to effectively use ImmVision for various image visualization and analysis tasks.
+External libraries and their bindings are in `external/`:
+- Each library has a submodule and a `bindings/` folder
+- `external/bindings_generation/autogenerate_all.py` regenerates all bindings
 
 # Follow up
 
-Please study the documentation you were provided (especially the links marked with "please do read").
-
-Then, provide a quick summary of what you understood. 
-
-You then should be ready to help users with their questions.
-
-**Do not forget to consult the links that were marked with "if needed" if you need to help users with specific questions on the APIs**
+**Consult the links that were marked with "if needed" if you need to help users with specific questions on the APIs**
 
