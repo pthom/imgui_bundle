@@ -2,9 +2,15 @@
 
 Dear ImGui Bundle is a mature framework that excels at building technical, real-time, and visualization-heavy applications.
 
-If you are building scientific tools, game tools, visualization applications, developer tools, or creative apps, give it a try. The learning curve is gentle compared to traditional GUI frameworks, the development velocity is high, and the results are professional.
+If you are building scientific tools, game tools, visualization applications, developer tools, or creative apps, give it a try. The learning curve is gentle compared to traditional GUI frameworks. Development velocity is high, and the results are professional.
 
-**When NOT to use Dear ImGui Bundle:** It may not be the best choice for complex form-based business applications, applications requiring deep native OS integration (system tray, native menus), projects where accessibility is critical, or applications that need to match OS look-and-feel exactly.
+You'll soon see that GUI code can be clear, readable, and easy to maintain. The immediate mode paradigm makes it a joy to reason about your app logic.
+
+
+:::{note}
+* Dear ImGui Bundle may not be the best choice for applications that need to match OS look-and-feel exactly, or for projects where accessibility is critical.
+* Being able to work with readable code is getting more and more important as LLMs are now widely used to generate code. Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is easy to understand, both for humans and for AI tools.
+:::
 
 
 # Key Features
