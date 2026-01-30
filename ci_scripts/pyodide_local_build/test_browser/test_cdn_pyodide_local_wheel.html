@@ -29,12 +29,7 @@ def gui():
     if imgui.button("Exit"):
         hello_imgui.get_runner_params().app_shall_exit = True
 
-async def run_app():
-    print("Starting GUI...")
-    await immapp.run_async(gui, window_title="CDN Pyodide Test")
-    print("GUI exited")
-
-asyncio.create_task(run_app())
+immapp.run(gui, window_title="CDN + Local Wheel Pyodide Test")
 `;
 // ====================== End Python Code ========================
 

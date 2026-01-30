@@ -30,11 +30,12 @@ def gui():
         hello_imgui.get_runner_params().app_shall_exit = True
 
 async def run_app():
-    print("Starting GUI...")
     await immapp.run_async(gui, window_title="Local Pyodide Test")
     print("GUI exited")
 
-asyncio.create_task(run_app())
+# Either use asyncio to run the app, or the simpler run() function:
+# asyncio.create_task(run_app())
+immapp.run(gui, window_title="Local Pyodide Test")
 `;
 // ====================== End Python Code ========================
 

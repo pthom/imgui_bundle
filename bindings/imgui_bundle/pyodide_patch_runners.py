@@ -119,33 +119,6 @@ def _arg_to_render_lifecycle_functions(himgui_or_immapp: _HelloImGuiOrImmApp, *a
     return functions
 
 
-ERROR_MESSAGE_RUN_NOT_SUPPORTED = """
-╔════════════════════════════════════════════════════════════════════════════╗
-║ ERROR: hello_imgui.run() and immapp.run() not supported anymore in Pyodide ║
-╚════════════════════════════════════════════════════════════════════════════╝
-
-In Pyodide (browser environment), hello_imgui.run() cannot block without
-freezing the browser tab. You must use the async version instead.
-
-SOLUTION - Replace:
-    immapp.run(runnerParams)   or   hello_imgui.run(runnerParams)
-
-   With one of these:
-
-   Option 1: Sequential sessions (waits for GUI to exit)
-   ─────────────────────────────────────────────────────
-   async def main():
-       await immapp.run_async(runnerParams)
-       # or await hello_imgui.run_async(runnerParams)
-       print("GUI exited")
-   
-   asyncio.create_task(main())
-
-   Option 2: Fire-and-forget (starts GUI in background)
-   ────────────────────────────────────────────────────
-   asyncio.create_task(immapp.run_async(runnerParams))
-   #    or asyncio.create_task(hello_imgui.run_async(runnerParams))
-"""
 
 
 class _ManualRenderJs:
@@ -213,28 +186,24 @@ class _ManualRenderJs:
         _log("_ManualRenderJs._run_async() -> GUI exited (teardown already done via callback)")
 
     def run_immapp(self, *args, **kwargs):
-        """Raises an error with helpful migration message.
+        """Run an immapp GUI in Pyodide (fire-and-forget).
 
-        In Pyodide, immapp.run() cannot block without freezing the browser.
-        Use run_async() instead.
+        In Pyodide, run() starts the GUI and returns immediately since browsers
+        cannot block. The GUI runs until the user closes it or sets app_shall_exit = True.
+
+        For async control (waiting for GUI to exit), use run_async() instead.
         """
-        print(ERROR_MESSAGE_RUN_NOT_SUPPORTED)
-        raise RuntimeError(
-            "immapp.run() is not supported in Pyodide. Use immapp.run_async() instead. "
-            "See error message above for examples."
-        )
+        self._run(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
 
     def run_hello_imgui(self, *args, **kwargs):
-        """Raises an error with helpful migration message.
+        """Run a hello_imgui GUI in Pyodide (fire-and-forget).
 
-        In Pyodide, hello_imgui.run() cannot block without freezing the browser.
-        Use run_async() instead.
+        In Pyodide, run() starts the GUI and returns immediately since browsers
+        cannot block. The GUI runs until the user closes it or sets app_shall_exit = True.
+
+        For async control (waiting for GUI to exit), use run_async() instead.
         """
-        print(ERROR_MESSAGE_RUN_NOT_SUPPORTED)
-        raise RuntimeError(
-            "hello_imgui.run() is not supported in Pyodide. Use hello_imgui.run_async() instead. "
-            "See error message above for examples."
-        )
+        self._run(_HelloImGuiOrImmApp.HELLO_IMGUI, *args, **kwargs)
 
     async def run_immapp_async(self, *args, **kwargs):
         """Async version of run_immapp that waits until GUI exits."""
@@ -252,12 +221,14 @@ def pyodide_do_patch_runners():
     # Instantiate global runners
     global _MANUAL_RENDER_JS
     # print("pyodide_do_patch_runners()")
-    _log("pyodide_do_patch_runners: Version 10")
+    _log("pyodide_do_patch_runners: Version 12")
     _MANUAL_RENDER_JS = _ManualRenderJs()
-    # Monkey patch the hello_imgui.run and immapp.run function to use the js version
+
+    # Monkey patch the hello_imgui.run and immapp.run functions
+    # In Pyodide, run() is fire-and-forget (returns immediately) since browsers cannot block
     hello_imgui.run = _MANUAL_RENDER_JS.run_hello_imgui
     immapp.run = _MANUAL_RENDER_JS.run_immapp
 
-    # Add async versions for sequential execution patterns
+    # Add async versions for waiting until GUI exits
     immapp.run_async = _MANUAL_RENDER_JS.run_immapp_async
     hello_imgui.run_async = _MANUAL_RENDER_JS.run_hello_imgui_async

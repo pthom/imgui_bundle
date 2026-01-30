@@ -85,7 +85,7 @@ doc_him_pdf:
 # --------------------------------------------------------------
 
 # Build pyodide wheel (with macOS naming fix workaround)
-pyodide_build:
+pyodide_build: pyodide_clean
     source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && pyodide build
     python ci_scripts/pyodide_local_build/fix_pyodide_wheel_name.py
     cp dist/imgui_bundle*pyodide*.whl ci_scripts/pyodide_local_build/test_browser/local_wheels/
@@ -96,7 +96,9 @@ pyodide_test_serve:
 
 # Clean pyodide build artifacts
 pyodide_clean:
-    rm -rf .pyodide_build dist
+    rm -rf .pyodide_build
+    rm -f ci_scripts/pyodide_local_build/test_browser/local_wheels/imgui_bundle*pyodide*.whl
+    rm -f dist/imgui_bundle*pyodide*.whl
 
 # Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
 pyodide_setup_local_build:

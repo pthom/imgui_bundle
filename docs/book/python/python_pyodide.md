@@ -6,7 +6,7 @@ Dear ImGui Bundle applications can be effortlessly deployed to the web using Pyo
 
 ## Pyodide Minimal Example
 
-With Pyodide, web deployment is as easy as copying this HTML template. The Python code is unchanged from what you’d use for desktop.
+With Pyodide, web deployment is as easy as copying this HTML template. The Python code is unchanged from what you'd use for desktop.
 
 
 ```html
@@ -30,7 +30,7 @@ from imgui_bundle import imgui, immapp
 def gui():
     imgui.text(f"hello, world")
 
-immapp.run(gui)
+immapp.run(gui, window_title="Hello World")
 `
     // ====================== End of Python code ==============================
     async function main(){
@@ -52,6 +52,60 @@ immapp.run(gui)
 </body>
 </html>
 ```
+
+## Pyodide API
+
+In Pyodide (browser environment), `run()` behaves differently than on desktop: it starts the GUI and **returns immediately** (fire-and-forget), since browsers cannot block.
+
+### Pattern 1: Fire-and-Forget with run() (Recommended)
+
+The simplest pattern - same code as desktop, just works:
+
+```python
+from imgui_bundle import imgui, immapp
+
+def gui():
+    imgui.text("Hello from Pyodide!")
+    if imgui.button("Exit"):
+        from imgui_bundle import hello_imgui
+        hello_imgui.get_runner_params().app_shall_exit = True
+
+# In Pyodide: starts the GUI and returns immediately
+# On desktop: blocks until GUI closes
+immapp.run(gui, window_title="My App")
+```
+
+**This is perfect when:**
+- You want the same code to work on desktop and in browser
+- You don't need to do anything after the GUI closes
+- You want the simplest possible code
+
+*Note: In Pyodide, `run()` returns immediately. Use `run_async()` if you need to wait for the GUI to exit.*
+
+
+### Pattern 2: Async Control with run_async()
+
+For workflows that need to wait for the GUI to exit:
+
+```python
+import asyncio
+from imgui_bundle import imgui, immapp
+
+def gui():
+    imgui.text("Advanced async control")
+
+async def main():
+    # Wait for GUI to exit before continuing
+    await immapp.run_async(gui, window_title="My App")
+    print("GUI closed")
+
+asyncio.create_task(main())
+```
+
+**Use this when:**
+- You need to know when the GUI exits
+- You're integrating with other async code
+- You want to run sequential GUI sessions
 
 ## A more advanced example
 
