@@ -1,5 +1,7 @@
 # Async Support
 
+_(Since v1.92.6)_
+
 ImGui Bundle provides async/await support that enables **true parallel execution** of Python code alongside GUI rendering. This allows your Python computations to run at full speed while the GUI remains responsive.
 
 _Note: an async execution mode is also available for Jupyter notebooks; see [Notebook Usage](notebook_runners.md) for details._

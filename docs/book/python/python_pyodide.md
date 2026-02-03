@@ -83,7 +83,9 @@ immapp.run(gui, window_title="My App")
 *Note: In Pyodide, `run()` returns immediately. Use `run_async()` if you need to wait for the GUI to exit.*
 
 
-### Pattern 2: Async Control with run_async()
+### Pattern 2: Async Control with run_async()  
+
+_(since v1.92.6)_
 
 For workflows that need to wait for the GUI to exit:
 
