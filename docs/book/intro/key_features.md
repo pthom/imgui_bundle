@@ -262,9 +262,12 @@ dpg.destroy_context()
 ```python
 from nicegui import ui
 
+selected_idx = -1
 items = ["Apple", "Banana", "Cherry"]
 
 def on_selection_change(e):
+    global selected_idx
+    selected_idx = items.index(e.value)
     selection_label.text = f"You selected: {e.value}"
 
 ui.label("Choose a fruit:")
@@ -282,33 +285,25 @@ ui.run(title="Fruit Picker")
 :::
 
 :::{tab-item} Gradio
-**26 lines** – Declarative blocks with event wiring
+**18 lines** – Declarative blocks with event wiring
 
 ```python
 import gradio as gr
 
 items = ["Apple", "Banana", "Cherry"]
+selected_item = items[0]
 
 def on_selection_change(choice):
+    global selected_item
+    selected_item = choice
     return f"You selected: {choice}"
-
-def on_button_click():
-    print("Button clicked")
-    return "Button clicked"
 
 with gr.Blocks() as demo:
     gr.Markdown("# Fruit Picker")
     gr.Markdown("Choose a fruit:")
-
     dropdown = gr.Dropdown(choices=items, value=items[0], label="Choose a fruit")
     output = gr.Textbox(value=f"You selected: {items[0]}", label="Selection", interactive=False)
-
-    button = gr.Button("Click Me")
-    button_output = gr.Textbox(label="Button Status", interactive=False)
-
-    # Wire up the events
     dropdown.change(fn=on_selection_change, inputs=dropdown, outputs=output)
-    button.click(fn=on_button_click, outputs=button_output)
 
 demo.launch()
 ```
