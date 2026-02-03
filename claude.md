@@ -237,18 +237,20 @@ See: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui
 **Never use hardcoded pixel sizes** - they will look wrong on high-DPI screens and different platforms.
 
 ```python
+from imgui_bundle import imgui, em_to_vec2, em_size
+
 # BAD - hardcoded pixels
 imgui.button("Click", imgui.ImVec2(100, 30))
 
 # GOOD - use em units (1 em = font height, typically ~16px at 100% DPI)
-imgui.button("Click", hello_imgui.em_to_vec2(8, 2))
+imgui.button("Click", em_to_vec2(8, 2))  # or hello_imgui.em_to_vec2(8, 2)
 
 # Also available:
-width = hello_imgui.em_size(10)  # Single dimension
-em = hello_imgui.em_size()       # Get 1 em in pixels
+width = em_size(10)  # Single dimension
+em = em_size()       # Get 1 em in pixels
 ```
 
-The `em_to_vec2()` and `em_size()` functions are available in both `hello_imgui` and `immapp` modules.
+The `em_to_vec2()` and `em_size()` functions are available directly from `imgui_bundle` (recommended), and also in `hello_imgui` and `immapp` modules.
 
 
 # References for Python APIs
@@ -483,14 +485,14 @@ def gui():
 **DPI-Aware Sizing** - Use `em_size()` for resolution-independent sizing (see also "Common ImGui Patterns and Gotchas" section above):
 
 ```python
-from imgui_bundle import hello_imgui, imgui
+from imgui_bundle import imgui, em_to_vec2, em_size
 
 def gui():
-    em = hello_imgui.em_size()  # Current font size (adapts to DPI)
+    em = em_size()  # Current font size (adapts to DPI)
     imgui.button("Click", imgui.ImVec2(10 * em, 2 * em))
 
     # Convenience function (preferred)
-    imgui.button("Click", hello_imgui.em_to_vec2(10, 2))
+    imgui.button("Click", em_to_vec2(10, 2))
 ```
 
 ### API References

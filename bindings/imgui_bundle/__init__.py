@@ -2,7 +2,7 @@
 import os
 from imgui_bundle._imgui_bundle import __bundle_submodules_available__, __bundle_submodules_disabled__, __bundle_pyodide__ # type: ignore
 from imgui_bundle._imgui_bundle import __version__, compilation_time
-from typing import Union, Tuple, List
+from typing import Union, Tuple, List, overload
 
 def has_submodule(submodule_name):
     return submodule_name in __bundle_submodules_available__
@@ -85,6 +85,35 @@ if has_submodule("imgui"):
         "IM_COL32",
         "imgui_ctx",
     ])
+
+    # Em sizing utilities (DPI-independent sizing)
+    def em_size(v: float = 1.0) -> float:
+        """Returns a size in pixels corresponding to `v` em units.
+
+        1 em = current font size (ImGui::GetFontSize()).
+        Use this for DPI-independent sizing.
+        """
+        return imgui.get_font_size() * v
+
+    @overload
+    def em_to_vec2(x: float, y: float) -> ImVec2: ...
+    @overload
+    def em_to_vec2(v: ImVec2Like) -> ImVec2: ...
+
+    def em_to_vec2(x, y=None) -> ImVec2:
+        """Returns an ImVec2 sized in em units (multiples of font size).
+
+        Can be called as:
+            em_to_vec2(3.0, 2.0)  -> ImVec2 of 3em x 2em
+            em_to_vec2((3.0, 2.0))  -> same, from tuple
+            em_to_vec2(ImVec2(3.0, 2.0))  -> same, from ImVec2
+        """
+        font_size = imgui.get_font_size()
+        if y is None:
+            return ImVec2(font_size * x[0], font_size * x[1])
+        return ImVec2(font_size * x, font_size * y)
+
+    __all__.extend(["em_size", "em_to_vec2"])
 
     # Patch after imgui v1.90.9, where
     # the enum ImGuiDir_ was renamed to ImGuiDir and ImGuiSortDirection_ was renamed to ImGuiSortDirection

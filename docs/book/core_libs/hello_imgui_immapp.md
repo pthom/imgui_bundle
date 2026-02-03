@@ -191,14 +191,14 @@ Instead, use sizes relative to the font size using "em" units. Hello ImGui provi
 
 :::{tab-item} Python
 ```python
-from imgui_bundle import imgui, hello_imgui
+from imgui_bundle import imgui, em_to_vec2, em_size
 
 def gui():
     # Button sized as 10em x 2em (scales with DPI)
-    imgui.button("A button", hello_imgui.em_to_vec2(10, 2))
+    imgui.button("A button", em_to_vec2(10, 2))
 
     # For single values, use em_size
-    width = hello_imgui.em_size(10)
+    width = em_size(10)
 ```
 :::
 
@@ -220,7 +220,11 @@ void gui() {
 ::::
 
 :::{note}
-`em_to_vec2` and `em_size` are also available in the `immapp` module (Python) and `ImmApp` namespace (C++).
+`em_to_vec2` and `em_size` are available:
+
+- Directly from `imgui_bundle` (Python, since v1.92.6: `from imgui_bundle import em_to_vec2`)
+- In the `hello_imgui` and `immapp` modules (Python)
+- In the `HelloImGui` and `ImmApp` namespaces (C++, as `EmToVec2` and `EmSize`)
 :::
 
 ---

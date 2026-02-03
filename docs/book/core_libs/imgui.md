@@ -235,7 +235,7 @@ imgui.button("Click", imgui.ImVec2(font_size * 8, font_size * 2))
 ```
 
 :::{tip}
-When using Hello ImGui or ImmApp, prefer the more convenient `em_to_vec2()` function. See [DPI-Aware Sizing](hello_imgui_immapp.md#dpi-aware-sizing).
+Prefer the more convenient `em_to_vec2()` function, available directly from `imgui_bundle`. See [DPI-Aware Sizing](hello_imgui_immapp.md#dpi-aware-sizing).
 :::
 
 ## Documentation
