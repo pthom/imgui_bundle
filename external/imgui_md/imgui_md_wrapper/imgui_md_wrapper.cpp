@@ -159,10 +159,18 @@ assets/
 └── images/
     └── markdown_broken_image.png
 
+You may find these files in the imgui_bundle/bindings/imgui_md/assets folder.
 )";
                 for (auto emphasisVariant: AllEmphasisVariants())
                 {
                     std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
+
+                    if (! HelloImGui::AssetExists(fontFile))
+                    {
+                        fprintf(stderr, "Markdown font file \"%s\" not found!\n", fontFile.c_str());
+                        fprintf(stderr, "%s", error_message.c_str());
+                        IM_ASSERT(false);
+                    }
 
                     // we shall not load the icons for all the fonts variants, since the font atlas
                     // texture might end up too big to fit in the GPU.
