@@ -2,6 +2,7 @@
 import os
 
 import litgen
+from codemanip import code_utils
 
 
 THIS_DIR = os.path.dirname(__file__)
@@ -20,12 +21,37 @@ def main():
     # Configure options
     options = litgen.LitgenOptions()
     options.use_nanobind()
+
+    # Standard ImVec replacements for function parameters
     options.fn_params_type_replacements.add_replacements([
         (r"\bImVec2\b", "ImVec2Like"),
         (r"\bImVec4\b", "ImVec4Like")
     ])
-    # ImAnim uses C-style API with iam_ prefix at global scope, no namespace
-    # No IMGUI_API prefix - functions are not prefixed
+
+    # Remove iam_ prefix from function names (keep underscore naming style)
+    options.function_names_replacements.add_last_replacement("^iam_", "")
+    options.var_names_replacements.add_last_replacement("^iam_", "")
+    options.function_names_replacements.add_last_replacement("^ImAnim", "")
+
+    # Remove iam_ prefix from type names (enums, classes, structs)
+    options.type_replacements.add_last_replacement(r"^iam_", "")
+
+    options.fn_params_exclude_types__regex = code_utils.join_string_by_pipe_char([
+        r"void\s*\*",             # void* user data
+    ])
+
+
+    # Add ImGuiID type alias
+    options.type_replacements.add_last_replacement(r"^ImGuiID$", "int")
+
+    def postprocess_stub_function(stub_code: str) -> str:
+        # Remove iam_ prefix from function names in stubs as well
+        r = stub_code.replace("iam_", "")
+        r = r.replace("ImVector[float]", "ImVector_float")
+        r = r.replace("ImVector[ImVec4]", "ImVector_ImVec4")
+        return r
+
+    options.postprocess_stub_function = postprocess_stub_function
 
     litgen.write_generated_code_for_file(
         options,
