@@ -83,3 +83,6 @@
 [submodule "external/implot3d/implot3d"]
 	path = external/implot3d/implot3d
 	url = https://github.com/pthom/implot3d.git
+[submodule "external/ImAnim/ImAnim"]
+	path = external/ImAnim/ImAnim
+	url = https://github.com/pthom/ImAnim.git

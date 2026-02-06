@@ -1,0 +1,1 @@
+../../../bindings/imgui_bundle/im_anim.pyi

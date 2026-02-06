@@ -197,6 +197,9 @@ if has_submodule("imcoolbar"):
 if has_submodule("nanovg"):
     from imgui_bundle._imgui_bundle import nanovg as nanovg
     __all__.extend(["nanovg"])
+if has_submodule("im_anim"):
+    from imgui_bundle._imgui_bundle import im_anim as im_anim
+    __all__.extend(["im_anim"])
 
 if has_submodule("immapp_cpp"):  # immapp is a Python wrapper around immapp_cpp
     from imgui_bundle import immapp as immapp

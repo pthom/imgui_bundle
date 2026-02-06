@@ -215,6 +215,16 @@ def lib_nanovg() -> ExternalLibrary:
     )
 
 
+def lib_imanim() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="ImAnim",
+        official_git_url="https://github.com/soufianekhiat/ImAnim.git",
+        official_branch="main",
+        fork_git_url="https://github.com/pthom/ImAnim.git",
+        fork_branch="imgui_bundle"
+    )
+
+
 # fmt: on
 
 
@@ -242,6 +252,7 @@ ALL_LIBS = [
     lib_imspinner(),
     lib_portable_file_dialogs(),
     lib_nanovg(),
+    lib_imanim(),
 ]
 
 

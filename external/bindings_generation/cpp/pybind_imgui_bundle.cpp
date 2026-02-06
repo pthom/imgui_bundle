@@ -32,6 +32,7 @@ void py_init_module_portable_file_dialogs(nb::module_& m);
 void py_init_module_imgui_command_palette(nb::module_& m);
 void py_init_module_imcoolbar(nb::module_& m);
 void py_init_module_nanovg(nb::module_& m);
+void py_init_module_imanim(nb::module_& m);
 
 
 std::vector<std::string> gAvailableSubmodules;
@@ -203,6 +204,14 @@ void py_init_module_imgui_bundle(nb::module_& m)
     py_init_module_nanovg(module_nanovg);
 #else
     _register_submodule("nanovg", false);
+#endif
+
+#ifdef IMGUI_BUNDLE_WITH_IMANIM
+    _register_submodule("im_anim");
+    auto module_imanim = m.def_submodule("im_anim");
+    py_init_module_imanim(module_imanim);
+#else
+    _register_submodule("im_anim", false);
 #endif
 
 #if defined(HELLOIMGUI_USE_GLFW3) && !defined(IMGUI_BUNDLE_DISABLE_HELLO_IMGUI)
