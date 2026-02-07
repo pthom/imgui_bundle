@@ -33,41 +33,68 @@ namespace
 {
     struct CodeFile
     {
-        std::string content;
-        TextEditor editor;
-        bool loaded = false;
+        std::string cppContent;
+        std::string pyContent;
+        TextEditor cppEditor;
+        TextEditor pyEditor;
+        bool cppLoaded = false;
+        bool pyLoaded = false;
     };
 
     // Cached file list from config
     std::vector<DemoFileInfo> g_files;
 
-    std::map<std::string, CodeFile> g_codeFiles;  // Keyed by displayName (e.g., "im_anim_demo.cpp")
+    std::map<std::string, CodeFile> g_codeFiles;  // Keyed by baseName
     int g_currentFileIndex = 0;
     int g_pendingScrollLine = -1;
     std::string g_pendingScrollFile;
+    bool g_showPython = false;  // Global toggle for C++/Python view
 
-    void LoadFile(const std::string& displayName, const std::string& assetName, TextEditor::LanguageDefinitionId lang)
+    void LoadFile(const DemoFileInfo& fileInfo)
     {
-        std::string assetPath = std::string("demo_code/") + assetName;
-        auto assetData = HelloImGui::LoadAssetFileData(assetPath.c_str());
+        CodeFile& cf = g_codeFiles[fileInfo.baseName];
 
-        if (assetData.data != nullptr && assetData.dataSize > 0)
+        // Load C++ file
         {
-            CodeFile& cf = g_codeFiles[displayName];
-            cf.content = std::string((const char*)assetData.data, assetData.dataSize);
-            cf.editor.SetText(cf.content);
-            cf.editor.SetLanguageDefinition(lang);
-            cf.editor.SetPalette(TextEditor::PaletteId::Dark);
-            cf.editor.SetReadOnlyEnabled(true);
-            cf.editor.SetShowLineNumbersEnabled(true);
-            cf.editor.SetShowWhitespacesEnabled(false);
-            cf.loaded = true;
-            HelloImGui::FreeAssetFileData(&assetData);
+            std::string assetPath = std::string("demo_code/") + fileInfo.cppAssetName();
+            auto assetData = HelloImGui::LoadAssetFileData(assetPath.c_str());
+            if (assetData.data != nullptr && assetData.dataSize > 0)
+            {
+                cf.cppContent = std::string((const char*)assetData.data, assetData.dataSize);
+                cf.cppEditor.SetText(cf.cppContent);
+                cf.cppEditor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Cpp);
+                cf.cppEditor.SetPalette(TextEditor::PaletteId::Dark);
+                cf.cppEditor.SetReadOnlyEnabled(true);
+                cf.cppEditor.SetShowLineNumbersEnabled(true);
+                cf.cppEditor.SetShowWhitespacesEnabled(false);
+                cf.cppLoaded = true;
+                HelloImGui::FreeAssetFileData(&assetData);
+            }
+        }
+
+        // Load Python file if it exists
+        if (fileInfo.hasPython)
+        {
+            std::string assetPath = std::string("demo_code/") + fileInfo.pyAssetName();
+            auto assetData = HelloImGui::LoadAssetFileData(assetPath.c_str());
+            if (assetData.data != nullptr && assetData.dataSize > 0)
+            {
+                cf.pyContent = std::string((const char*)assetData.data, assetData.dataSize);
+                cf.pyEditor.SetText(cf.pyContent);
+                cf.pyEditor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Python);
+                cf.pyEditor.SetPalette(TextEditor::PaletteId::Dark);
+                cf.pyEditor.SetReadOnlyEnabled(true);
+                cf.pyEditor.SetShowLineNumbersEnabled(true);
+                cf.pyEditor.SetShowWhitespacesEnabled(false);
+                cf.pyLoaded = true;
+                HelloImGui::FreeAssetFileData(&assetData);
+            }
         }
     }
 
     int FindFileIndex(const char* displayName)
     {
+        // Match against both .cpp and .py display names
         for (size_t i = 0; i < g_files.size(); ++i)
         {
             if (g_files[i].cppDisplayName() == displayName)
@@ -82,26 +109,47 @@ void DemoCodeViewer_Init()
     // Get file list from config
     g_files = GetAllDemoFiles();
 
-    // Load all C++ files
+    // Load all files
     for (const auto& file : g_files)
     {
-        LoadFile(file.cppDisplayName(), file.cppAssetName(), TextEditor::LanguageDefinitionId::Cpp);
+        LoadFile(file);
     }
 }
 
 void DemoCodeViewer_Show()
 {
+    // Language toggle (only show if any file has Python)
+    bool anyHasPython = false;
+    for (const auto& f : g_files)
+        if (f.hasPython) { anyHasPython = true; break; }
+
+    if (anyHasPython)
+    {
+        if (ImGui::RadioButton("C++", !g_showPython))
+            g_showPython = false;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Python", g_showPython))
+            g_showPython = true;
+        ImGui::SameLine();
+        ImGui::Spacing();
+        ImGui::SameLine();
+    }
+
     // Tabs for file selection
     if (ImGui::BeginTabBar("CodeViewerTabs"))
     {
         for (size_t i = 0; i < g_files.size(); ++i)
         {
             const auto& file = g_files[i];
-            std::string displayName = file.cppDisplayName();
+            std::string displayName = g_showPython ? file.pyDisplayName() : file.cppDisplayName();
+
+            // Skip if showing Python but file doesn't have Python
+            if (g_showPython && !file.hasPython)
+                continue;
 
             ImGuiTabItemFlags flags = 0;
             // If we have a pending scroll for this file, select its tab
-            if (!g_pendingScrollFile.empty() && g_pendingScrollFile == displayName)
+            if (!g_pendingScrollFile.empty() && g_pendingScrollFile == file.cppDisplayName())
             {
                 flags |= ImGuiTabItemFlags_SetSelected;
             }
@@ -122,62 +170,75 @@ void DemoCodeViewer_Show()
     }
 
     // Display the current file's editor
-    std::string currentDisplayName = g_files[g_currentFileIndex].cppDisplayName();
-    auto it = g_codeFiles.find(currentDisplayName);
-    if (it != g_codeFiles.end() && it->second.loaded)
+    const auto& currentFile = g_files[g_currentFileIndex];
+    auto it = g_codeFiles.find(currentFile.baseName);
+    if (it == g_codeFiles.end())
     {
-        CodeFile& cf = it->second;
+        ImGui::TextWrapped("File not found: %s", currentFile.baseName.c_str());
+        return;
+    }
 
-        // Handle pending scroll
-        if (!g_pendingScrollFile.empty() && g_pendingScrollFile == currentDisplayName && g_pendingScrollLine > 0)
+    CodeFile& cf = it->second;
+    bool showingPython = g_showPython && cf.pyLoaded;
+    TextEditor& editor = showingPython ? cf.pyEditor : cf.cppEditor;
+    bool loaded = showingPython ? cf.pyLoaded : cf.cppLoaded;
+    std::string displayName = showingPython ? currentFile.pyDisplayName() : currentFile.cppDisplayName();
+
+    if (!loaded)
+    {
+        ImGui::TextWrapped("Failed to load %s", displayName.c_str());
+        return;
+    }
+
+    // Handle pending scroll (only for C++ since markers come from C++)
+    if (!g_pendingScrollFile.empty() && g_pendingScrollFile == currentFile.cppDisplayName() && g_pendingScrollLine > 0)
+    {
+        // If showing Python, switch to C++ to show the marker location
+        if (g_showPython)
         {
-            cf.editor.SetViewAtLine(g_pendingScrollLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
-            cf.editor.SetCursorPosition(g_pendingScrollLine - 1, 0);
-            cf.editor.SelectLine(g_pendingScrollLine - 1);
-            g_pendingScrollLine = -1;
-            g_pendingScrollFile.clear();
+            g_showPython = false;
+        }
+        cf.cppEditor.SetViewAtLine(g_pendingScrollLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
+        cf.cppEditor.SetCursorPosition(g_pendingScrollLine - 1, 0);
+        cf.cppEditor.SelectLine(g_pendingScrollLine - 1);
+        g_pendingScrollLine = -1;
+        g_pendingScrollFile.clear();
+    }
+
+    // Top bar with line info and copy button
+    {
+        // Copy button
+        ImGui::BeginDisabled(!editor.AnyCursorHasSelection());
+        if (ImGui::Button(ICON_FA_COPY))
+            editor.Copy();
+        ImGui::EndDisabled();
+
+        ImGui::SameLine();
+
+        if (ImGui::SmallButton("View on github at this line"))
+        {
+            int line, column; editor.GetCursorPosition(line, column);
+            printf("To be implemented: open github link for %s at line %d\n", displayName.c_str(), line + 1);
+            //use OpenUrl
         }
 
-        // Top bar with line info and copy button
-        {
-            // Copy button
-            ImGui::BeginDisabled(!cf.editor.AnyCursorHasSelection());
-            if (ImGui::Button(ICON_FA_COPY))
-                cf.editor.Copy();
-            ImGui::EndDisabled();
+        ImGui::SameLine();
 
-            ImGui::SameLine();
-
-            if (ImGui::SmallButton("View on github at this line"))
-            {
-                int line, column; cf.editor.GetCursorPosition(line, column);
-                printf("To be implemented: open github link for %s at line %d\n", currentDisplayName.c_str(), line + 1);
-                //use OpenUrl
-            }
-
-            ImGui::SameLine();
-
-            int line, column; cf.editor.GetCursorPosition(line, column);
-            ImGui::Text("%6d / %6d  | %s", line + 1, cf.editor.GetLineCount(), currentDisplayName.c_str());
-
-        }
-
-        // Use code font if available
-        auto codeFont = ImGuiMd::GetCodeFont();
-        if (codeFont.font)
-            ImGui::PushFont(codeFont.font, codeFont.size);
-
-        // Use unique ID per file to keep cursor/scroll state independent
-        std::string editorId = std::string("##code_") + currentDisplayName;
-        cf.editor.Render(editorId.c_str(), false, ImGui::GetContentRegionAvail());
-
-        if (codeFont.font)
-            ImGui::PopFont();
+        int line, column; editor.GetCursorPosition(line, column);
+        ImGui::Text("%6d / %6d  | %s", line + 1, editor.GetLineCount(), displayName.c_str());
     }
-    else
-    {
-        ImGui::TextWrapped("Failed to load %s", currentDisplayName.c_str());
-    }
+
+    // Use code font if available
+    auto codeFont = ImGuiMd::GetCodeFont();
+    if (codeFont.font)
+        ImGui::PushFont(codeFont.font, codeFont.size);
+
+    // Use unique ID per file and language to keep cursor/scroll state independent
+    std::string editorId = std::string("##code_") + displayName;
+    editor.Render(editorId.c_str(), false, ImGui::GetContentRegionAvail());
+
+    if (codeFont.font)
+        ImGui::PopFont();
 }
 
 void DemoCodeViewer_ShowCodeAt(const char* filename, int line)

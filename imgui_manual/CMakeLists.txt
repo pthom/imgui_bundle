@@ -21,7 +21,10 @@ set(implot3d_dir ${bundle_dir}/external/implot3d/implot3d)
 
 # Copy demo source files to assets/demo_code/ for runtime loading
 set(demo_code_dest ${CMAKE_CURRENT_LIST_DIR}/assets/demo_code)
+set(demos_python_dir ${bundle_dir}/bindings/imgui_bundle/demos_python)
 file(MAKE_DIRECTORY ${demo_code_dest})
+
+# C++ demos
 configure_file(${imanim_dir}/im_anim_demo_basics.cpp ${demo_code_dest}/im_anim_demo_basics.cpp.txt COPYONLY)
 configure_file(${imanim_dir}/im_anim_demo.cpp ${demo_code_dest}/im_anim_demo.cpp.txt COPYONLY)
 configure_file(${imanim_dir}/im_anim_doc.cpp ${demo_code_dest}/im_anim_doc.cpp.txt COPYONLY)
@@ -29,6 +32,12 @@ configure_file(${imanim_dir}/im_anim_usecase.cpp ${demo_code_dest}/im_anim_useca
 configure_file(${imgui_dir}/imgui_demo.cpp ${demo_code_dest}/imgui_demo.cpp.txt COPYONLY)
 configure_file(${implot_dir}/implot_demo.cpp ${demo_code_dest}/implot_demo.cpp.txt COPYONLY)
 configure_file(${implot3d_dir}/implot3d_demo.cpp ${demo_code_dest}/implot3d_demo.cpp.txt COPYONLY)
+
+# Python demos (from bindings/imgui_bundle/demos_python/)
+configure_file(${demos_python_dir}/demos_imanim/im_anim_demo_basics.py ${demo_code_dest}/im_anim_demo_basics.py.txt COPYONLY)
+configure_file(${demos_python_dir}/demos_immapp/imgui_demo.py ${demo_code_dest}/imgui_demo.py.txt COPYONLY)
+configure_file(${demos_python_dir}/demos_implot/implot_demo.py ${demo_code_dest}/implot_demo.py.txt COPYONLY)
+configure_file(${demos_python_dir}/demos_implot3d/implot3d_demo.py ${demo_code_dest}/implot3d_demo.py.txt COPYONLY)
 
 
 # Force use Glfw (using pongasoft/emscripten-glfw) on emscripten, which has a good support for the clipboard
