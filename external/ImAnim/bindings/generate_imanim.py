@@ -22,7 +22,12 @@ def main():
     options = litgen.LitgenOptions()
     options.use_nanobind()
 
+    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API"
+
     options.original_signature_flag_show = True
+
+    options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
+
     # Standard ImVec replacements for function parameters
     options.fn_params_type_replacements.add_replacements([
         (r"\bImVec2\b", "ImVec2Like"),
@@ -44,6 +49,17 @@ def main():
         r"bezier4",             # a float* which expect 4 float, without any type information, so we can't generate a proper binding for it
     ])
 
+    options.fn_exclude_by_name__regex = code_utils.join_string_by_pipe_char([
+        r"iam_transform_to_matrix",
+    ])
+
+    options.fn_force_lambda__regex = code_utils.join_string_by_pipe_char([
+        # Any function whose name starts by "get_" or "iam_get_blended_"
+        # (those function were rewritten with a specific API for python
+        # => we need to force a lambda so that the correct signature is user in the pydef)
+        r"get_",
+        r"iam_get_blended_"
+    ])
 
     # Add ImGuiID type alias
     options.type_replacements.add_last_replacement(r"^ImGuiID$", "int")

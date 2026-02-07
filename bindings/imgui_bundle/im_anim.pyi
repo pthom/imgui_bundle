@@ -52,6 +52,11 @@ marker_callback = Callable[[int, int, float], None]  # inst_id, marker_id, marke
 
 # Version information
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
+
 
 # PI constants
 
@@ -187,6 +192,12 @@ class ease_desc:
 
 # Custom easing function callback (t in [0,1], returns eased value)
 # [ADAPT_IMGUI_BUNDLE] - use ImAnimHybridCallback to switch between function pointer and std::function
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #else
+#
+# #endif
+#
 # [/ADAPT_IMGUI_BUNDLE]
 
 # ----------------------------------------------------
@@ -253,7 +264,7 @@ def get_custom_ease(slot: int) -> ease_fn:
 
 # Debug UI
 # void show_unified_inspector(bool* p_open = nullptr);                                /* original C++ signature */
-def show_unified_inspector(p_open: Optional[bool] = None) -> None:
+def show_unified_inspector(p_open: Optional[bool] = None) -> Optional[bool]:
     """ Show unified inspector (merges debug window + animation inspector)."""
     pass
 # void show_debug_timeline(ImGuiID instance_id);                                      /* original C++ signature */
@@ -671,6 +682,12 @@ def tween_color_rel(
     pass
 
 # Resolver callbacks for dynamic target computation
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #else
+#
+# #endif
+#
 
 # Resolved tweens - target computed dynamically by callback each frame
 # float  tween_float_resolved(ImGuiID id, ImGuiID channel_id, float_resolver fn, void* user, float dur, ease_desc const& ez, int policy, float dt);                         /* original C++ signature */
@@ -1799,10 +1816,6 @@ def transform_from_matrix(
     """ Decompose a 3x2 matrix into transform components"""
     pass
 
-# void transform_to_matrix(transform const& t, float* out_matrix);    /* original C++ signature */
-def transform_to_matrix(t: transform, out_matrix: float) -> None:
-    """ Convert transform to 3x2 matrix (row-major: [m00 m01 tx; m10 m11 ty])"""
-    pass
 
 # ============================================================
 # CLIP-BASED ANIMATION SYSTEM
@@ -1895,6 +1908,12 @@ class variation_mode(enum.IntEnum):
     var_callback = enum.auto()   # (= 7)  # Use custom callback
 
 # Callback types for custom variation logic
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #else
+#
+# #endif
+#
 
 class variation_float:
     """ Float variation"""
@@ -2404,6 +2423,14 @@ def varc_seed(v: variation_color, s: int) -> variation_color:
 
 # Forward declarations
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+
+# #else
+#
+
+# #endif
+#
 
 class clip:
     """ ----------------------------------------------------
@@ -2730,28 +2757,30 @@ class instance:
     def is_paused(self) -> bool:
         pass
 
-    # Get animated values
-    # bool get_float(ImGuiID channel, float* out) const;    /* original C++ signature */
-    def get_float(self, channel: int, out: float) -> bool:
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # inline std::pair<bool, float> get_float(ImGuiID channel) const { float v = 0.f; bool ok = get_float(channel, &v); return {ok, v}; }    /* original C++ signature */
+    def get_float(self, channel: int) -> Tuple[bool, float]:
         pass
-    # bool get_vec2(ImGuiID channel, ImVec2* out) const;    /* original C++ signature */
-    def get_vec2(self, channel: int, out: ImVec2Like) -> bool:
+    # inline std::pair<bool, ImVec2> get_vec2(ImGuiID channel) const { ImVec2 v; bool ok = get_vec2(channel, &v); return {ok, v}; }    /* original C++ signature */
+    def get_vec2(self, channel: int) -> Tuple[bool, ImVec2]:
         pass
-    # bool get_vec4(ImGuiID channel, ImVec4* out) const;    /* original C++ signature */
-    def get_vec4(self, channel: int, out: ImVec4Like) -> bool:
+    # inline std::pair<bool, ImVec4> get_vec4(ImGuiID channel) const { ImVec4 v; bool ok = get_vec4(channel, &v); return {ok, v}; }    /* original C++ signature */
+    def get_vec4(self, channel: int) -> Tuple[bool, ImVec4]:
         pass
-    # bool get_int(ImGuiID channel, int* out) const;    /* original C++ signature */
-    def get_int(self, channel: int, out: int) -> bool:
+    # inline std::pair<bool, int> get_int(ImGuiID channel) const { int v = 0; bool ok = get_int(channel, &v); return {ok, v}; }    /* original C++ signature */
+    def get_int(self, channel: int) -> Tuple[bool, int]:
         pass
-    # bool get_color(ImGuiID channel, ImVec4* out, int color_space = color_space::col_oklab) const;      /* original C++ signature */
+    # inline std::pair<bool, ImVec4> get_color(ImGuiID channel, int color_space = color_space::col_oklab) const { ImVec4 v; bool ok = get_color(channel, &v, color_space); return {ok, v}; }    /* original C++ signature */
     def get_color(
         self,
         channel: int,
-        out: ImVec4Like,
         color_space: int = color_space.col_oklab
-        ) -> bool:
-        """ Color blended in specified color space."""
+        ) -> Tuple[bool, ImVec4]:
         pass
+    # #endif
+    #
+
 
     # bool valid() const;    /* original C++ signature */
     def valid(self) -> bool:
@@ -2831,22 +2860,23 @@ def layer_add(inst: instance, weight: float) -> None:
 def layer_end(instance_id: int) -> None:
     """ Finalize blending and normalize weights."""
     pass
-# bool get_blended_float(ImGuiID instance_id, ImGuiID channel, float* out);       /* original C++ signature */
-def get_blended_float(instance_id: int, channel: int, out: float) -> bool:
-    """ Get blended float value."""
+
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# inline std::pair<bool, float> get_blended_float(ImGuiID instance_id, ImGuiID channel) { float v = 0.f; bool ok = get_blended_float(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
+def get_blended_float(instance_id: int, channel: int) -> Tuple[bool, float]:
     pass
-# bool get_blended_vec2(ImGuiID instance_id, ImGuiID channel, ImVec2* out);       /* original C++ signature */
-def get_blended_vec2(instance_id: int, channel: int, out: ImVec2Like) -> bool:
-    """ Get blended vec2 value."""
+# inline std::pair<bool, ImVec2> get_blended_vec2(ImGuiID instance_id, ImGuiID channel) { ImVec2 v; bool ok = get_blended_vec2(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
+def get_blended_vec2(instance_id: int, channel: int) -> Tuple[bool, ImVec2]:
     pass
-# bool get_blended_vec4(ImGuiID instance_id, ImGuiID channel, ImVec4* out);       /* original C++ signature */
-def get_blended_vec4(instance_id: int, channel: int, out: ImVec4Like) -> bool:
-    """ Get blended vec4 value."""
+# inline std::pair<bool, ImVec4> get_blended_vec4(ImGuiID instance_id, ImGuiID channel) { ImVec4 v; bool ok = get_blended_vec4(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
+def get_blended_vec4(instance_id: int, channel: int) -> Tuple[bool, ImVec4]:
     pass
-# bool get_blended_int(ImGuiID instance_id, ImGuiID channel, int* out);           /* original C++ signature */
-def get_blended_int(instance_id: int, channel: int, out: int) -> bool:
-    """ Get blended int value."""
+# inline std::pair<bool, int> get_blended_int(ImGuiID instance_id, ImGuiID channel) { int v = 0; bool ok = get_blended_int(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
+def get_blended_int(instance_id: int, channel: int) -> Tuple[bool, int]:
     pass
+# #endif
+#
 
 # Persistence (optional)
 # result clip_save(ImGuiID clip_id, char const* path);    /* original C++ signature */
