@@ -16,26 +16,6 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
 {
     std::vector<LibraryConfig> configs;
 
-    // ImAnim
-    {
-        LibraryConfig cfg;
-        cfg.name = "ImAnim";
-        cfg.files = {
-            {"im_anim_demo_basics", true},   // has Python
-            {"im_anim_demo", false},
-            {"im_anim_doc", false},
-            {"im_anim_usecase", false},
-        };
-        cfg.frameSetup = [] {
-            iam_update_begin_frame();
-            iam_clip_update(ImGui::GetIO().DeltaTime);
-        };
-        cfg.showDemoWindow = [] {
-            // For now, show all ImAnim windows (we'll refine this later)
-            ImAnimDemoBasicsWindow(false);
-        };
-        configs.push_back(std::move(cfg));
-    }
 
     // ImGui
     {
@@ -80,6 +60,27 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [] {
             ImPlot3D::ShowDemoWindow_MaybeDocked(false);
+        };
+        configs.push_back(std::move(cfg));
+    }
+
+    // ImAnim
+    {
+        LibraryConfig cfg;
+        cfg.name = "ImAnim";
+        cfg.files = {
+                {"im_anim_demo_basics", true},   // has Python
+                {"im_anim_demo", false},
+                {"im_anim_doc", false},
+                {"im_anim_usecase", false},
+            };
+        cfg.frameSetup = [] {
+            iam_update_begin_frame();
+            iam_clip_update(ImGui::GetIO().DeltaTime);
+        };
+        cfg.showDemoWindow = [] {
+            // For now, show all ImAnim windows (we'll refine this later)
+            ImAnimDemoBasicsWindow(false);
         };
         configs.push_back(std::move(cfg));
     }

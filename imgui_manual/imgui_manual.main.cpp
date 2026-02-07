@@ -121,6 +121,7 @@ std::vector<HelloImGui::DockableWindow> SetupDockableWindows()
     HelloImGui::DockableWindow demoWindow;
     demoWindow.label = "Demo";
     demoWindow.dockSpaceName = "LeftDockSpace";
+    demoWindow.imGuiWindowFlags = ImGuiWindowFlags_MenuBar; // we need a menu bar for the ImGui demo window
     demoWindow.GuiFunction = ShowCurrentLibraryDemo;
 
     // Code Viewer Window (right side, 70%)

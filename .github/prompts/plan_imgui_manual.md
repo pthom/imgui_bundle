@@ -257,12 +257,27 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
 - [x] Wire up library-specific frame setup (ImAnim setup in PreNewFrame callback)
 - [x] Add "Open in detached window" checkbox option
 
-### Step 4: Build Multiple Executables
+### Step 4: Adapt imgui_demo.cpp
+- [x] imgui_demo.cpp should be adapted to support force include pattern (need to rebase some changes)
+- [x] Rewiew IMGUI_DEMO_MARKER locations in imgui_demo.cpp
+- [ ] Once this works perfectly, push a PR to the main ImGui repo.
+
+### Step 5: Make Python code viewer work with IMGUI_DEMO_MARKER
+- [ ] Make sure the Python code viewer can jump to the correct line based on IMGUI_DEMO_MARKER calls in the Python demos
+  (require reading the source code of the Python demos to find the correct line numbers for each marker, and mapping them to the marker names)
+  (later, in Python this may require inspecting the python source code, with the inspect module)
+  test this with the existing `imgui_demo.py` and the `im_anim_demo_basics.py` which already has markers
+
+### Step 5: adapt implot_demo and implot3d_demo
+- [ ] Add IMGUI_DEMO_MARKER to implot_demo.cpp and implot3d_demo.cpp
+- [ ] Add the same IMGUI_DEMO_MARKER (with exact same section names) to the Python demos
+
+### Step 6: Build Multiple Executables
 - [ ] Create separate app targets in CMakeLists.txt
 - [ ] Each target uses appropriate LibraryConfig subset
 - [ ] Test all executables
 
-### Step 5: Polish
+### Step 6: Polish
 - [ ] Implement GitHub link
 - [ ] Add file/marker search
 - [ ] UI/UX refinement
