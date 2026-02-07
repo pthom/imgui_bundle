@@ -506,31 +506,35 @@ void py_init_module_imanim(nb::module_& m)
     //
     // #endif
     //
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("tween_float_resolved",
         iam_tween_float_resolved,
-        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("user"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("dt"),
+        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("dt"),
         "Float with dynamic target.");
 
     m.def("tween_vec2_resolved",
         iam_tween_vec2_resolved,
-        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("user"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("dt"),
+        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("dt"),
         "Vec2 with dynamic target.");
 
     m.def("tween_vec4_resolved",
         iam_tween_vec4_resolved,
-        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("user"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("dt"),
+        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("dt"),
         "Vec4 with dynamic target.");
 
     m.def("tween_color_resolved",
         iam_tween_color_resolved,
-        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("user"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("color_space"), nb::arg("dt"),
+        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("color_space"), nb::arg("dt"),
         "Color with dynamic target.");
 
     m.def("tween_int_resolved",
         iam_tween_int_resolved,
-        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("user"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("dt"),
+        nb::arg("id"), nb::arg("channel_id"), nb::arg("fn"), nb::arg("dur"), nb::arg("ez"), nb::arg("policy"), nb::arg("dt"),
         "Int with dynamic target.");
+    // #endif
+    //
 
     m.def("rebase_float",
         iam_rebase_float,

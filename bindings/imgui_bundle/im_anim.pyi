@@ -690,12 +690,13 @@ def tween_color_rel(
 #
 
 # Resolved tweens - target computed dynamically by callback each frame
-# float  tween_float_resolved(ImGuiID id, ImGuiID channel_id, float_resolver fn, void* user, float dur, ease_desc const& ez, int policy, float dt);                         /* original C++ signature */
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# float  tween_float_resolved(ImGuiID id, ImGuiID channel_id, float_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                         /* original C++ signature */
 def tween_float_resolved(
     id: int,
     channel_id: int,
     fn: float_resolver,
-    user: Any,
     dur: float,
     ez: ease_desc,
     policy: int,
@@ -703,12 +704,12 @@ def tween_float_resolved(
     ) -> float:
     """ Float with dynamic target."""
     pass
-# ImVec2 tween_vec2_resolved(ImGuiID id, ImGuiID channel_id, vec2_resolver fn, void* user, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
+# ImVec2 tween_vec2_resolved(ImGuiID id, ImGuiID    /* original C++ signature */
+# 	channel_id, vec2_resolver fn, float dur, ease_desc const& ez, int policy, float dt);
 def tween_vec2_resolved(
     id: int,
     channel_id: int,
     fn: vec2_resolver,
-    user: Any,
     dur: float,
     ez: ease_desc,
     policy: int,
@@ -716,12 +717,11 @@ def tween_vec2_resolved(
     ) -> ImVec2:
     """ Vec2 with dynamic target."""
     pass
-# ImVec4 tween_vec4_resolved(ImGuiID id, ImGuiID channel_id, vec4_resolver fn, void* user, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
+# ImVec4 tween_vec4_resolved(ImGuiID id, ImGuiID channel_id, vec4_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
 def tween_vec4_resolved(
     id: int,
     channel_id: int,
     fn: vec4_resolver,
-    user: Any,
     dur: float,
     ez: ease_desc,
     policy: int,
@@ -729,12 +729,11 @@ def tween_vec4_resolved(
     ) -> ImVec4:
     """ Vec4 with dynamic target."""
     pass
-# ImVec4 tween_color_resolved(ImGuiID id, ImGuiID channel_id, color_resolver fn, void* user, float dur, ease_desc const& ez, int policy, int color_space, float dt);        /* original C++ signature */
+# ImVec4 tween_color_resolved(ImGuiID id, ImGuiID channel_id, color_resolver fn, float dur, ease_desc const& ez, int policy, int color_space, float dt);        /* original C++ signature */
 def tween_color_resolved(
     id: int,
     channel_id: int,
     fn: color_resolver,
-    user: Any,
     dur: float,
     ez: ease_desc,
     policy: int,
@@ -743,12 +742,11 @@ def tween_color_resolved(
     ) -> ImVec4:
     """ Color with dynamic target."""
     pass
-# int    tween_int_resolved(ImGuiID id, ImGuiID channel_id, int_resolver fn, void* user, float dur, ease_desc const& ez, int policy, float dt);                             /* original C++ signature */
+# int    tween_int_resolved(ImGuiID id, ImGuiID channel_id, int_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                             /* original C++ signature */
 def tween_int_resolved(
     id: int,
     channel_id: int,
     fn: int_resolver,
-    user: Any,
     dur: float,
     ez: ease_desc,
     policy: int,
@@ -756,6 +754,8 @@ def tween_int_resolved(
     ) -> int:
     """ Int with dynamic target."""
     pass
+# #endif
+#
 
 # Rebase functions - change target of in-progress animation without restarting
 # void rebase_float(ImGuiID id, ImGuiID channel_id, float new_target, float dt);      /* original C++ signature */
