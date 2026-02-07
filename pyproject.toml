@@ -96,6 +96,7 @@ sdist.exclude = [
     "external/*/.git",
     "ci_scripts",
     "docs",
+    "imgui_bundle_assets",  # only for C++ apps
     # Build artifacts
     "build*",
     "external/*/build*",

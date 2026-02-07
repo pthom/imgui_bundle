@@ -159,7 +159,7 @@ assets/
 └── images/
     └── markdown_broken_image.png
 
-You may find these files in the imgui_bundle/bindings/imgui_md/assets folder.
+You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 )";
                 for (auto emphasisVariant: AllEmphasisVariants())
                 {
