@@ -11,6 +11,11 @@ Before implementing:
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
+- If a solution becomes complex (multiple cascading changes, need for workarounds), STOP and explain the difficulty. Present options rather than plowing ahead.
+
+**If you encounter an API in the codebase which is awkward to use**
+- Do not circumvent it with a hack. Instead, surface the issue and ask for clarification or improvement.
+
 
 ## 2. Simplicity First
 
