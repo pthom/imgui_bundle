@@ -22,6 +22,7 @@ def main():
     options = litgen.LitgenOptions()
     options.use_nanobind()
 
+    options.original_signature_flag_show = True
     # Standard ImVec replacements for function parameters
     options.fn_params_type_replacements.add_replacements([
         (r"\bImVec2\b", "ImVec2Like"),
