@@ -1,4 +1,5 @@
 #include "demo_code_viewer.h"
+#include "library_config.h"
 #include "imgui.h"
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_4.h"
@@ -6,6 +7,7 @@
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include <string>
 #include <map>
+#include <vector>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -13,17 +15,17 @@
 
 void OpenUrl(const std::string &url)
 {
-        bool isAbsoluteUrl = url.find("http") == 0;
-        if (!isAbsoluteUrl)
-            return;
+    bool isAbsoluteUrl = url.find("http") == 0;
+    if (!isAbsoluteUrl)
+        return;
 #if defined(__EMSCRIPTEN__)
-        std::string js_command = "window.open(\"" + url + "\");";
-        emscripten_run_script(js_command.c_str());
+    std::string js_command = "window.open(\"" + url + "\");";
+    emscripten_run_script(js_command.c_str());
 #elif defined(_WIN32)
-        ShellExecuteA( NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL );
-#elif defined(TARGET_OS_MAC)
-        std::string cmd = std::string("open ") + url.c_str();
-        system(cmd.c_str());
+    ShellExecuteA( NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL );
+#elif defined(__APPLE__)
+    std::string cmd = std::string("open ") + url.c_str();
+    system(cmd.c_str());
 #endif
 }
 
@@ -36,35 +38,25 @@ namespace
         bool loaded = false;
     };
 
-    // Files we want to display (display name -> asset filename)
-    struct FileInfo {
-        const char* displayName;  // Shown in tabs and used for marker matching
-        const char* assetName;    // Actual filename in assets (with .txt extension for macOS bundling)
-    };
-    const FileInfo g_files[] = {
-        {"im_anim_demo_basics.cpp", "im_anim_demo_basics.cpp.txt"},
-        {"im_anim_demo.cpp", "im_anim_demo.cpp.txt"},
-        {"im_anim_doc.cpp", "im_anim_doc.cpp.txt"},
-        {"im_anim_usecase.cpp", "im_anim_usecase.cpp.txt"},
-    };
-    constexpr int g_fileCount = sizeof(g_files) / sizeof(g_files[0]);
+    // Cached file list from config
+    std::vector<DemoFileInfo> g_files;
 
-    std::map<std::string, CodeFile> g_codeFiles;  // Keyed by displayName
+    std::map<std::string, CodeFile> g_codeFiles;  // Keyed by displayName (e.g., "im_anim_demo.cpp")
     int g_currentFileIndex = 0;
     int g_pendingScrollLine = -1;
     std::string g_pendingScrollFile;
 
-    void LoadFile(const FileInfo& fileInfo)
+    void LoadFile(const std::string& displayName, const std::string& assetName, TextEditor::LanguageDefinitionId lang)
     {
-        std::string assetPath = std::string("demo_code/") + fileInfo.assetName;
+        std::string assetPath = std::string("demo_code/") + assetName;
         auto assetData = HelloImGui::LoadAssetFileData(assetPath.c_str());
 
         if (assetData.data != nullptr && assetData.dataSize > 0)
         {
-            CodeFile& cf = g_codeFiles[fileInfo.displayName];
+            CodeFile& cf = g_codeFiles[displayName];
             cf.content = std::string((const char*)assetData.data, assetData.dataSize);
             cf.editor.SetText(cf.content);
-            cf.editor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Cpp);
+            cf.editor.SetLanguageDefinition(lang);
             cf.editor.SetPalette(TextEditor::PaletteId::Dark);
             cf.editor.SetReadOnlyEnabled(true);
             cf.editor.SetShowLineNumbersEnabled(true);
@@ -76,10 +68,10 @@ namespace
 
     int FindFileIndex(const char* displayName)
     {
-        for (int i = 0; i < g_fileCount; ++i)
+        for (size_t i = 0; i < g_files.size(); ++i)
         {
-            if (strcmp(g_files[i].displayName, displayName) == 0)
-                return i;
+            if (g_files[i].cppDisplayName() == displayName)
+                return (int)i;
         }
         return -1;
     }
@@ -87,9 +79,13 @@ namespace
 
 void DemoCodeViewer_Init()
 {
-    for (int i = 0; i < g_fileCount; ++i)
+    // Get file list from config
+    g_files = GetAllDemoFiles();
+
+    // Load all C++ files
+    for (const auto& file : g_files)
     {
-        LoadFile(g_files[i]);
+        LoadFile(file.cppDisplayName(), file.cppAssetName(), TextEditor::LanguageDefinitionId::Cpp);
     }
 }
 
@@ -98,26 +94,35 @@ void DemoCodeViewer_Show()
     // Tabs for file selection
     if (ImGui::BeginTabBar("CodeViewerTabs"))
     {
-        for (int i = 0; i < g_fileCount; ++i)
+        for (size_t i = 0; i < g_files.size(); ++i)
         {
+            const auto& file = g_files[i];
+            std::string displayName = file.cppDisplayName();
+
             ImGuiTabItemFlags flags = 0;
             // If we have a pending scroll for this file, select its tab
-            if (!g_pendingScrollFile.empty() && g_pendingScrollFile == g_files[i].displayName)
+            if (!g_pendingScrollFile.empty() && g_pendingScrollFile == displayName)
             {
                 flags |= ImGuiTabItemFlags_SetSelected;
             }
 
-            if (ImGui::BeginTabItem(g_files[i].displayName, nullptr, flags))
+            if (ImGui::BeginTabItem(displayName.c_str(), nullptr, flags))
             {
-                g_currentFileIndex = i;
+                g_currentFileIndex = (int)i;
                 ImGui::EndTabItem();
             }
         }
         ImGui::EndTabBar();
     }
 
+    if (g_files.empty())
+    {
+        ImGui::TextWrapped("No demo files configured");
+        return;
+    }
+
     // Display the current file's editor
-    const char* currentDisplayName = g_files[g_currentFileIndex].displayName;
+    std::string currentDisplayName = g_files[g_currentFileIndex].cppDisplayName();
     auto it = g_codeFiles.find(currentDisplayName);
     if (it != g_codeFiles.end() && it->second.loaded)
     {
@@ -146,14 +151,14 @@ void DemoCodeViewer_Show()
             if (ImGui::SmallButton("View on github at this line"))
             {
                 int line, column; cf.editor.GetCursorPosition(line, column);
-                printf("To be implemented: open github link for %s at line %d\n", currentDisplayName, line + 1);
+                printf("To be implemented: open github link for %s at line %d\n", currentDisplayName.c_str(), line + 1);
                 //use OpenUrl
             }
 
             ImGui::SameLine();
 
             int line, column; cf.editor.GetCursorPosition(line, column);
-            ImGui::Text("%6d / %6d  | %s", line + 1, cf.editor.GetLineCount(), currentDisplayName);
+            ImGui::Text("%6d / %6d  | %s", line + 1, cf.editor.GetLineCount(), currentDisplayName.c_str());
 
         }
 
@@ -171,7 +176,7 @@ void DemoCodeViewer_Show()
     }
     else
     {
-        ImGui::TextWrapped("Failed to load %s", currentDisplayName);
+        ImGui::TextWrapped("Failed to load %s", currentDisplayName.c_str());
     }
 }
 

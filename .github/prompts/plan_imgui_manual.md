@@ -237,9 +237,9 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
 ## Implementation Order
 
 ### Step 1: Immediate Cleanup (No Breaking Changes)
-- [ ] Extract file list to a config structure (still hardcoded, but centralized)
-- [ ] Add ImGui/ImPlot/ImPlot3D files to code viewer tabs
-- [ ] Test that existing functionality still works
+- [x] Extract file list to a config structure (still hardcoded, but centralized)
+- [x] Add ImGui/ImPlot/ImPlot3D files to code viewer tabs
+- [x] Test that existing functionality still works (app runs, needs manual verification)
 
 ### Step 2: Add Python Toggle
 - [ ] Move Python demos to same folder as C++ demos

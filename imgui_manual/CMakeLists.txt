@@ -36,14 +36,19 @@ configure_file(${implot3d_dir}/implot3d_demo.cpp ${demo_code_dest}/implot3d_demo
 #set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
 
 
-# Force-include the marker hooks header to imgui, implot and implot3d
+# Force-include the marker hooks header to imgui, implot, implot3d and imanim
 set(marker_hooks_header ${CMAKE_CURRENT_LIST_DIR}/imgui_demo_marker_hooks.h)
 force_include(imgui ${marker_hooks_header})
 force_include(implot ${marker_hooks_header})
 force_include(implot3d ${marker_hooks_header})
+force_include(imanim ${marker_hooks_header})
 
 # Add library imgui_manual_lib
-add_library(imgui_manual_lib demo_code_viewer.cpp imgui_demo_marker_hooks.cpp)
+add_library(imgui_manual_lib
+    demo_code_viewer.cpp
+    imgui_demo_marker_hooks.cpp
+    library_config.cpp
+)
 target_link_libraries(imgui_manual_lib PUBLIC imgui implot implot3d imanim hello_imgui imgui_color_text_edit imgui_md)
 # target_link_libraries(imgui_manual_lib PUBLIC imgui_bundle)
 
