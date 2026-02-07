@@ -125,7 +125,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
     auto pyClassAddOnsParams =
         nb::class_<ImmApp::AddOnsParams>
             (m, "AddOnsParams", "///////////////////////////////////////////////////////////////////////////////////////\n\n AddOnParams: require specific ImGuiBundle packages (markdown, node editor, texture viewer)\n to be initialized at startup.\n\n/////////////////////////////////////////////////////////////////////////////////////")
-        .def("__init__", [](ImmApp::AddOnsParams * self, bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, bool updateNodeEditorColorsFromImguiColors = true, std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt)
+        .def("__init__", [](ImmApp::AddOnsParams * self, bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, bool withImAnim = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, bool updateNodeEditorColorsFromImguiColors = true, std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt)
         {
             new (self) ImmApp::AddOnsParams();  // placement new
             auto r_ctor_ = self;
@@ -134,17 +134,19 @@ void py_init_module_immapp_cpp(nb::module_& m)
             r_ctor_->withMarkdown = withMarkdown;
             r_ctor_->withNodeEditor = withNodeEditor;
             r_ctor_->withTexInspect = withTexInspect;
+            r_ctor_->withImAnim = withImAnim;
             r_ctor_->withNodeEditorConfig = withNodeEditorConfig;
             r_ctor_->updateNodeEditorColorsFromImguiColors = updateNodeEditorColorsFromImguiColors;
             r_ctor_->withMarkdownOptions = withMarkdownOptions;
         },
-        nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("update_node_editor_colors_from_imgui_colors") = true, nb::arg("with_markdown_options").none() = nb::none()
+        nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_im_anim") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("update_node_editor_colors_from_imgui_colors") = true, nb::arg("with_markdown_options").none() = nb::none()
         )
         .def_rw("with_implot", &ImmApp::AddOnsParams::withImplot, "Set withImplot=True if you need to plot graphs with implot")
         .def_rw("with_implot3d", &ImmApp::AddOnsParams::withImplot3d, "Set withImplot3=True if you need to plot 3 graphs with implot3")
         .def_rw("with_markdown", &ImmApp::AddOnsParams::withMarkdown, " Set withMarkdown=True if you need to render Markdown\n (alternatively, you can set withMarkdownOptions)")
         .def_rw("with_node_editor", &ImmApp::AddOnsParams::withNodeEditor, " Set withNodeEditor=True if you need to render a node editor\n (alternatively, you can set withNodeEditorConfig)")
         .def_rw("with_tex_inspect", &ImmApp::AddOnsParams::withTexInspect, "Set withTexInspect=True if you need to use imgui_tex_inspect")
+        .def_rw("with_im_anim", &ImmApp::AddOnsParams::withImAnim, " Set withImAnim=True if you need to use ImAnim.\n If True, then iam_update_begin_frame() and iam_clip_update() will be called automatically at each frame")
         // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         //
         .def_rw("with_node_editor_config", &ImmApp::AddOnsParams::withNodeEditorConfig, "You can tweak NodeEditorConfig (but this is optional)")
@@ -198,9 +200,9 @@ void py_init_module_immapp_cpp(nb::module_& m)
         "Python bindings defaults:\n    If addOnsParams is None, then its default value will be: AddOnsParams()");
 
     m.def("run",
-        [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false, bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+        [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false, bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, bool withImAnim = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
         {
-            auto Run_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false, bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+            auto Run_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false, bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, bool withImAnim = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
             {
 
                 const ScreenSize& windowSize_or_default = [&]() -> const ScreenSize {
@@ -210,18 +212,18 @@ void py_init_module_immapp_cpp(nb::module_& m)
                         return DefaultWindowSize;
                 }();
 
-                ImmApp::Run(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle, topMost, withImplot, withImplot3d, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+                ImmApp::Run(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle, topMost, withImplot, withImplot3d, withMarkdown, withNodeEditor, withTexInspect, withImAnim, withNodeEditorConfig, withMarkdownOptions);
             };
 
-            Run_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, topMost, withImplot, withImplot3d, withMarkdown, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+            Run_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, topMost, withImplot, withImplot3d, withMarkdown, withNodeEditor, withTexInspect, withImAnim, withNodeEditorConfig, withMarkdownOptions);
         },
-        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("top_most") = false, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("with_markdown_options").none() = nb::none(),
+        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("top_most") = false, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_markdown") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_im_anim") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("with_markdown_options").none() = nb::none(),
         "///////////////////////////////////////////////////////////////////////////////////////\n\n Helpers to run an app from Python (using named parameters)\n\n/////////////////////////////////////////////////////////////////////////////////////\n Helper to run an app inside imgui_bundle, using HelloImGui:\n\n (HelloImGui::SimpleRunnerParams)\n     - `guiFunction`: the function that will render the ImGui widgets\n     - `windowTitle`: title of the window\n     - `windowSizeAuto`: if True, autosize the window from its inner widgets\n     - `windowRestorePreviousGeometry`: if True, restore window size and position from last run\n     - `windowSize`: size of the window\n     - `fpsIdle`: fps of the application when idle\n\n (ImmApp::AddOnsParams)\n     - `with_implot`: if True, then a context for implot will be created/destroyed automatically\n     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized\n       (i.e. required fonts will be loaded)\n     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor\n       will be created automatically.\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("run_with_markdown",
-        [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false, bool withImplot = false, bool withImplot3d = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+        [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false, bool withImplot = false, bool withImplot3d = false, bool withNodeEditor = false, bool withTexInspect = false, bool withImAnim = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
         {
-            auto RunWithMarkdown_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false, bool withImplot = false, bool withImplot3d = false, bool withNodeEditor = false, bool withTexInspect = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
+            auto RunWithMarkdown_adapt_mutable_param_with_default_value = [](const VoidFunction & guiFunction, const std::string & windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 10.f, bool topMost = false, bool withImplot = false, bool withImplot3d = false, bool withNodeEditor = false, bool withTexInspect = false, bool withImAnim = false, const std::optional<NodeEditorConfig> & withNodeEditorConfig = std::nullopt, const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt)
             {
 
                 const ScreenSize& windowSize_or_default = [&]() -> const ScreenSize {
@@ -231,12 +233,12 @@ void py_init_module_immapp_cpp(nb::module_& m)
                         return DefaultWindowSize;
                 }();
 
-                ImmApp::RunWithMarkdown(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle, topMost, withImplot, withImplot3d, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+                ImmApp::RunWithMarkdown(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize_or_default, fpsIdle, topMost, withImplot, withImplot3d, withNodeEditor, withTexInspect, withImAnim, withNodeEditorConfig, withMarkdownOptions);
             };
 
-            RunWithMarkdown_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, topMost, withImplot, withImplot3d, withNodeEditor, withTexInspect, withNodeEditorConfig, withMarkdownOptions);
+            RunWithMarkdown_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, topMost, withImplot, withImplot3d, withNodeEditor, withTexInspect, withImAnim, withNodeEditorConfig, withMarkdownOptions);
         },
-        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("top_most") = false, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("with_markdown_options").none() = nb::none(),
+        nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("top_most") = false, nb::arg("with_implot") = false, nb::arg("with_implot3d") = false, nb::arg("with_node_editor") = false, nb::arg("with_tex_inspect") = false, nb::arg("with_im_anim") = false, nb::arg("with_node_editor_config").none() = nb::none(), nb::arg("with_markdown_options").none() = nb::none(),
         " Run an application with markdown\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("em_size",

@@ -122,6 +122,10 @@ class AddOnsParams:
     # Set withTexInspect=True if you need to use imgui_tex_inspect
     with_tex_inspect: bool = False
 
+    # Set withImAnim=True if you need to use ImAnim.
+    # If True, then iam_update_begin_frame() and iam_clip_update() will be called automatically at each frame
+    with_im_anim: bool = False
+
     # #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     #
     # You can tweak NodeEditorConfig (but this is optional)
@@ -145,6 +149,7 @@ class AddOnsParams:
         with_markdown: bool = False,
         with_node_editor: bool = False,
         with_tex_inspect: bool = False,
+        with_im_anim: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
         update_node_editor_colors_from_imgui_colors: bool = True,
         with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
@@ -192,6 +197,7 @@ def run(
     with_markdown: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
+    with_im_anim: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
@@ -235,6 +241,7 @@ def run_with_markdown(
     with_implot3d: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
+    with_im_anim: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
