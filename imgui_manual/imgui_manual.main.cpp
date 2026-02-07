@@ -71,7 +71,8 @@ void ImAnimDemoWindow(bool create_window);
 void ImAnimDocWindow(bool create_window);
 void ImAnimUsecaseWindow(bool create_window);
 
-// Show the demo(s) for the current library
+// Show the demo for the current library
+// This is called from within a dockable window (always docked to LeftDockSpace)
 void ShowCurrentLibraryDemo()
 {
     IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
@@ -106,15 +107,17 @@ void ShowCurrentLibraryDemo()
             ImGui::EndTabBar();
         }
     }
-    else if (currentLib.showDemoWindow)
+    else
     {
-        currentLib.showDemoWindow(false);
+        // ImGui, ImPlot, ImPlot3D - show demo content directly (without creating a window)
+        if (currentLib.showDemoWindow)
+            currentLib.showDemoWindow(false);
     }
 }
 
 std::vector<HelloImGui::DockableWindow> SetupDockableWindows()
 {
-    // Demo Window (left side, 30%)
+    // Demo Window (left side, 30%) - content changes based on selected library
     HelloImGui::DockableWindow demoWindow;
     demoWindow.label = "Demo";
     demoWindow.dockSpaceName = "LeftDockSpace";
@@ -199,6 +202,8 @@ int main()
     };
 
     runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
+
+    runnerParams.iniClearPreviousSettings = true; // start with a clean layout each time (for demo purposes)
 
     ImmApp::AddOnsParams addons;
     addons.withMarkdown = true;

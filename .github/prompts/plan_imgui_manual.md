@@ -248,7 +248,14 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
 - [x] Add [C++] [Python] toggle buttons
 
 ### Step 3: Add Library Tabs
-- [ ] Create library tab bar
+- [x] Create library tab bar
+- [ ] Handle imgui, implot and implot3d demos: 
+  since ShowImmGuiDemoWindow() and ShowImPlotDemoWindow() create their own windows, they are not docked into the left panel.
+  Is there a way to make them dock into the left panel?
+  We could either modify ImGui::ShowDemoWindow() to accept a parameter (bool create_window=true) that we would set to false when called from the manual; or we could call something SetNextWindowDockID() before calling ShowDemoWindow() to force it to dock into the left panel.
+ => for this we may have to look inside hello_imgui's docking system to see how it handles docking and if we can leverage that for the demo windows.
+    see external/hello_imgui/hello_imgui/src/hello_imgui/internal/docking_details.cpp
+
 - [ ] Wire up library-specific frame setup
 - [ ] Filter code viewer files by selected library
 

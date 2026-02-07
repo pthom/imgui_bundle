@@ -47,7 +47,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [](bool create_window) {
             (void)create_window;
-            ImGui::ShowDemoWindow();
+            ImGui::ShowDemoWindow_MaybeDocked(false);
         };
         configs.push_back(std::move(cfg));
     }
@@ -62,7 +62,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [](bool create_window) {
             (void)create_window;
-            ImPlot::ShowDemoWindow();
+            ImPlot::ShowAllDemos();
         };
         configs.push_back(std::move(cfg));
     }
@@ -77,7 +77,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [](bool create_window) {
             (void)create_window;
-            ImPlot3D::ShowDemoWindow();
+            ImPlot3D::ShowAllDemos();
         };
         configs.push_back(std::move(cfg));
     }
