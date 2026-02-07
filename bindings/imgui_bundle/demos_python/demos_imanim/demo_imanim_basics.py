@@ -12,6 +12,18 @@ def IMGUI_DEMO_MARKER(section: str) -> None:
     pass
 
 
+# ============================================================
+# HELPER: Open/Close all collapsing headers and tree nodes
+# ============================================================
+_open_all = 0  # 0 = none, 1 = open all, -1 = close all
+
+
+def _apply_open_all() -> None:
+    global _open_all
+    if _open_all != 0:
+        imgui.set_next_item_open(_open_all > 0, imgui.Cond_.always)
+
+
 def demo_header(label: str, demo_function) -> None:
     """Show a tree node with the demo and its source code."""
     static = demo_header
@@ -26,6 +38,7 @@ def demo_header(label: str, demo_function) -> None:
         snippet_data.max_height_in_lines = 30
         static.fn_snippets[fn_id] = snippet_data
 
+    _apply_open_all()
     if imgui.tree_node_ex(label):
         if imgui.tree_node_ex("Source code"):
             snippet_data = static.fn_snippets[fn_id]
@@ -33,6 +46,7 @@ def demo_header(label: str, demo_function) -> None:
             imgui.tree_pop()
         demo_function()
         imgui.tree_pop()
+
 
 # =============================================================================
 # BASIC ANIMATIONS
@@ -422,34 +436,57 @@ def demo_text_stagger():
 # MAIN GUI
 # =============================================================================
 
-def gui():
-    if imgui.tree_node("Basic Animations"):
+def im_anim_demo_basics_window(create_window: bool = False) -> None:
+    global _open_all
+
+    if create_window:
+        imgui.set_next_window_size(ImVec2(650, 750), imgui.Cond_.first_use_ever)
+        is_open, _ = imgui.begin("ImAnim Demo - Basics")
+        if not is_open:
+            imgui.end()
+            return
+
+    # Open/Close all sections
+    _open_all = 0
+    if imgui.button("Open All"):
+        _open_all = 1
+    imgui.same_line()
+    if imgui.button("Close All"):
+        _open_all = -1
+
+    imgui.separator()
+
+    _apply_open_all()
+    if imgui.collapsing_header("Basic Animations"):
         demo_header("Tween Float", demo_tween_float)
         demo_header("Color Tween (OKLAB)", demo_color_tween)
         demo_header("Oscillator", demo_oscillator)
         demo_header("Shake", demo_shake)
-        imgui.tree_pop()
 
-    if imgui.tree_node("Clips (Timeline)"):
+    _apply_open_all()
+    if imgui.collapsing_header("Clips (Timeline)"):
         demo_header("Delay", demo_clip_delay)
         demo_header("Callbacks", demo_clip_callback)
         demo_header("Stagger", demo_stagger)
-        imgui.tree_pop()
 
-    if imgui.tree_node("Paths"):
+    _apply_open_all()
+    if imgui.collapsing_header("Paths"):
         demo_header("Motion Path", demo_path)
         demo_header("Path Morphing", demo_path_morph)
         demo_header("Text Along Path", demo_text_path)
-        imgui.tree_pop()
 
-    if imgui.tree_node("Advanced"):
+    _apply_open_all()
+    if imgui.collapsing_header("Advanced"):
         demo_header("Gradient", demo_gradient)
         demo_header("Transform", demo_transform)
         demo_header("Resolved Tween (Mouse Follow)", demo_resolved)
         demo_header("Text Stagger", demo_text_stagger)
-        imgui.tree_pop()
+
+    if create_window:
+        imgui.end()
 
 
 if __name__ == "__main__":
-    immapp.run(gui, with_im_anim=True, with_markdown=True,
-               window_title="ImAnim Demo", window_size=(500, 700))
+    immapp.run(lambda: im_anim_demo_basics_window(False),
+               with_im_anim=True, with_markdown=True,
+               window_title="ImAnim Demo - Basics", window_size=(500, 700))

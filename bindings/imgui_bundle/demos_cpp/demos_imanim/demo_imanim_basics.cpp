@@ -13,10 +13,23 @@
 // Marker for the interactive manual. Maps sections to source code.
 // #define IMGUI_DEMO_MARKER(section) ((void)0)
 
+// ============================================================
+// HELPER: Open/Close all collapsing headers and tree nodes
+// ============================================================
+static int s_open_all = 0;  // 0 = none, 1 = open all, -1 = close all
+
+static void ApplyOpenAll()
+{
+    if (s_open_all != 0)
+        ImGui::SetNextItemOpen(s_open_all > 0, ImGuiCond_Always);
+}
+
+
 // Show a tree node with the demo (no source code display in C++).
 template<typename F>
 void demo_header(const char* label, F demo_function)
 {
+    ApplyOpenAll();
     if (ImGui::TreeNodeEx(label)) {
         demo_function();
         ImGui::TreePop();
@@ -24,6 +37,7 @@ void demo_header(const char* label, F demo_function)
 }
 
 constexpr float PI = 3.14159265358979323846f;
+
 
 // =============================================================================
 // BASIC ANIMATIONS
@@ -456,38 +470,61 @@ void DemoTextStagger()
 // =============================================================================
 // MAIN GUI
 // =============================================================================
+void ImAnimDemoBasicsWindow(bool create_window = false);
 
-void Gui()
+
+void ImAnimDemoBasicsWindow(bool create_window)
 {
-    if (ImGui::TreeNode("Basic Animations")) {
+    if (create_window) {
+        ImGui::SetNextWindowSize(ImVec2(650, 750), ImGuiCond_FirstUseEver);
+        if (!ImGui::Begin("ImAnim Demo - Basics")) {
+            ImGui::End();
+            return;
+        }
+    }
+
+    // Open/Close all sections (uses global s_open_all)
+    s_open_all = 0;
+    if (ImGui::Button("Open All"))
+        s_open_all = 1;
+    ImGui::SameLine();
+    if (ImGui::Button("Close All"))
+        s_open_all = -1;
+
+    ImGui::Separator();
+
+    ApplyOpenAll();
+    if (ImGui::CollapsingHeader("Basic Animations")) {
         demo_header("Tween Float", DemoTweenFloat);
         demo_header("Color Tween (OKLAB)", DemoColorTween);
         demo_header("Oscillator", DemoOscillator);
         demo_header("Shake", DemoShake);
-        ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Clips (Timeline)")) {
+	ApplyOpenAll();
+    if (ImGui::CollapsingHeader("Clips (Timeline)")) {
         demo_header("Delay", DemoClipDelay);
         demo_header("Callbacks", DemoClipCallback);
         demo_header("Stagger", DemoStagger);
-        ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Paths")) {
+	ApplyOpenAll();
+    if (ImGui::CollapsingHeader("Paths")) {
         demo_header("Motion Path", DemoPath);
         demo_header("Path Morphing", DemoPathMorph);
         demo_header("Text Along Path", DemoTextPath);
-        ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Advanced")) {
+	ApplyOpenAll();
+    if (ImGui::CollapsingHeader("Advanced")) {
         demo_header("Gradient", DemoGradient);
         demo_header("Transform", DemoTransform);
         demo_header("Resolved Tween (Mouse Follow)", DemoResolved);
         demo_header("Text Stagger", DemoTextStagger);
-        ImGui::TreePop();
     }
+
+    if (create_window)
+        ImGui::End();
 }
 
 
@@ -495,8 +532,8 @@ void Gui()
 int main()
 {
     HelloImGui::RunnerParams runner_params;
-    runner_params.callbacks.ShowGui = Gui;
-    runner_params.appWindowParams.windowTitle = "ImAnim Demo";
+    runner_params.callbacks.ShowGui = []() { ImAnimDemoBasicsWindow(false); };
+    runner_params.appWindowParams.windowTitle = "ImAnim Demo - Basics";
 
     ImmApp::AddOnsParams addons_params;
     addons_params.withImAnim = true;
