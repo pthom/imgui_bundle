@@ -59,7 +59,7 @@ void Gui()
     DemoClipDelay();
 }
 
-
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()
 {
     HelloImGui::RunnerParams runner_params;
@@ -70,3 +70,4 @@ int main()
 
     ImmApp::Run(runner_params, addons_params);
 }
+#endif
