@@ -2149,7 +2149,7 @@ class DockingSplit:
     # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
     #  Flags to apply to the new dock space
     #  (enable/disable resizing, splitting, tab bar, etc.)
-    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
+    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
@@ -2168,8 +2168,8 @@ class DockingSplit:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * direction_: ImGuiDir_Down
-                * nodeFlags_: ImGuiDockNodeFlags_None
+                * direction_: Dir.down
+                * nodeFlags_: DockNodeFlags_.none
         """
         pass
 
@@ -2248,7 +2248,7 @@ class DockableWindow:
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window size.
-    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_size_condition: ImGuiCond = Cond_.first_use_ever
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
@@ -2258,7 +2258,7 @@ class DockableWindow:
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window position.
-    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
+    window_position_condition: ImGuiCond = Cond_.first_use_ever
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -2335,7 +2335,7 @@ class DockingParams:
     #  Most flags are inherited by children dock spaces.
     #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        ImGuiDockNodeFlags_PassthruCentralNode
+        DockNodeFlags_.passthru_central_node
     )
 
     # --------------- Layout handling -----------------------------
@@ -2391,7 +2391,7 @@ class DockingParams:
             If any of the params below is None, then its default value below will be used:
                 * dockingSplits: List[DockingSplit]()
                 * dockableWindows: List[DockableWindow]()
-                * mainDockSpaceNodeFlags: ImGuiDockNodeFlags_PassthruCentralNode
+                * mainDockSpaceNodeFlags: DockNodeFlags_.passthru_central_node
         """
         pass
 

@@ -669,6 +669,13 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
     """create Demo window. demonstrate most ImGui features. call this to learn about the library! try to make it always available in your application!"""
     pass
 
+# [ADAPT_IMGUI_BUNDLE]
+# IMGUI_API void          ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL);     /* original C++ signature */
+def show_demo_window_maybe_docked(create_window: bool, p_open: Optional[bool] = None) -> Optional[bool]:
+    pass
+
+# [/ADAPT_IMGUI_BUNDLE]
+
 # IMGUI_API void          ShowMetricsWindow(bool* p_open = NULL);         /* original C++ signature */
 def show_metrics_window(p_open: Optional[bool] = None) -> Optional[bool]:
     """create Metrics/Debugger window. display Dear ImGui internals: windows, draw commands, various internal state, etc."""

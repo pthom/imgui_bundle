@@ -20,7 +20,7 @@ struct LibraryConfig {
     std::string name;                           // "ImAnim", "ImGui", etc.
     std::vector<DemoFileInfo> files;            // Demo files for this library
     std::function<void()> frameSetup;           // Called each frame (e.g., iam_update_begin_frame)
-    std::function<void(bool)> showDemoWindow;   // Shows the demo window (param: create_window)
+    std::function<void()> showDemoWindow;        // Shows the demo content
 };
 
 // Get all library configurations

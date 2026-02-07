@@ -1270,9 +1270,13 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
     """Shows the ImPlot3D demo window"""
     pass
 
+# Shows all ImPlot3D demos, without enclosing window
 # IMPLOT3D_API void ShowAllDemos();    /* original C++ signature */
 def show_all_demos() -> None:
-    """Shows all ImPlot3D demos, without enclosing window"""
+    pass
+
+# IMPLOT3D_API void  ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL);    /* original C++ signature */
+def show_demo_window_maybe_docked(create_window: bool, p_open: Optional[bool] = None) -> Optional[bool]:
     pass
 
 # IMPLOT3D_API void ShowStyleEditor(ImPlot3DStyle* ref = nullptr);    /* original C++ signature */

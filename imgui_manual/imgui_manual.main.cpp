@@ -111,7 +111,7 @@ void ShowCurrentLibraryDemo()
     {
         // ImGui, ImPlot, ImPlot3D - show demo content directly (without creating a window)
         if (currentLib.showDemoWindow)
-            currentLib.showDemoWindow(false);
+            currentLib.showDemoWindow();
     }
 }
 

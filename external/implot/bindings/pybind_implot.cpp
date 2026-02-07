@@ -3609,7 +3609,23 @@ void py_init_module_implot(nb::module_& m)
         "Shows the ImPlot demo window (add implot_demo.cpp to your sources!)");
 
     m.def("show_all_demos",
-        ImPlot::ShowAllDemos, "Bundle: ShowAllDemos is extracted from ShowDemoWindow, so that it can be used without creating an ImGui window.");
+        ImPlot::ShowAllDemos);
+
+    m.def("show_demo_window_maybe_docked",
+        [](bool create_window, std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+        {
+            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [](bool create_window, std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+            {
+                bool * p_open_adapt_modifiable = nullptr;
+                if (p_open.has_value())
+                    p_open_adapt_modifiable = & (*p_open);
+
+                ImPlot::ShowDemoWindow_MaybeDocked(create_window, p_open_adapt_modifiable);
+                return p_open;
+            };
+
+            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open);
+        },     nb::arg("create_window"), nb::arg("p_open").none() = nb::none());
     // #endif
     ////////////////////    </generated_from:implot.h>    ////////////////////
 

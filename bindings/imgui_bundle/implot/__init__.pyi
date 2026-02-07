@@ -2453,9 +2453,13 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
     """Shows the ImPlot demo window (add implot_demo.cpp to your sources!)"""
     pass
 
+# Bundle: ShowAllDemos is extracted from ShowDemoWindow, so that it can be used without creating an ImGui window.
 # IMPLOT_API void ShowAllDemos();    /* original C++ signature */
 def show_all_demos() -> None:
-    """Bundle: ShowAllDemos is extracted from ShowDemoWindow, so that it can be used without creating an ImGui window."""
+    pass
+
+# IMPLOT_API void  ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL);    /* original C++ signature */
+def show_demo_window_maybe_docked(create_window: bool, p_open: Optional[bool] = None) -> Optional[bool]:
     pass
 
 # -----------------------------------------------------------------------------

@@ -174,7 +174,6 @@ def spinner_rainbow(
     """
     pass
 
-
 def spinner_rainbow_mix(
     label: str,
     radius: float,
@@ -218,7 +217,6 @@ def spinner_ang(
             * bg: white
     """
     pass
-
 
 def spinner_ang8(
     label: str,
@@ -1986,8 +1984,6 @@ def spinner_spline_ang(
     """
     pass
 
-
-# ---------------------------------------------------------------------
 
 
 # #endif

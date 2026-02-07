@@ -247,17 +247,15 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
 - [x] Add Python editor alongside C++ editor
 - [x] Add [C++] [Python] toggle buttons
 
-### Step 3: Add Library Tabs
-- [x] Create library tab bar
-- [ ] Handle imgui, implot and implot3d demos: 
-  since ShowImmGuiDemoWindow() and ShowImPlotDemoWindow() create their own windows, they are not docked into the left panel.
-  Is there a way to make them dock into the left panel?
-  We could either modify ImGui::ShowDemoWindow() to accept a parameter (bool create_window=true) that we would set to false when called from the manual; or we could call something SetNextWindowDockID() before calling ShowDemoWindow() to force it to dock into the left panel.
- => for this we may have to look inside hello_imgui's docking system to see how it handles docking and if we can leverage that for the demo windows.
-    see external/hello_imgui/hello_imgui/src/hello_imgui/internal/docking_details.cpp
-
-- [ ] Wire up library-specific frame setup
-- [ ] Filter code viewer files by selected library
+### Step 3: Add Library Selection and Multi-Library Support
+- [x] Create library selection UI (changed from tabs to top edge toolbar for better UX)
+- [x] Handle imgui, implot and implot3d demos:
+  - Solution: Added `ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open)` to ImGui fork
+  - ImPlot and ImPlot3D already had `ShowAllDemos()` pattern
+  - When `create_window=false`, demo content is shown directly in the dockable window
+- [x] Filter code viewer files by selected library (GetCurrentLibraryFiles() in demo_code_viewer.cpp)
+- [x] Wire up library-specific frame setup (ImAnim setup in PreNewFrame callback)
+- [x] Add "Open in detached window" checkbox option
 
 ### Step 4: Build Multiple Executables
 - [ ] Create separate app targets in CMakeLists.txt

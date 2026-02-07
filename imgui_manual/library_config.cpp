@@ -30,9 +30,9 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             iam_update_begin_frame();
             iam_clip_update(ImGui::GetIO().DeltaTime);
         };
-        cfg.showDemoWindow = [](bool create_window) {
+        cfg.showDemoWindow = [] {
             // For now, show all ImAnim windows (we'll refine this later)
-            ImAnimDemoBasicsWindow(create_window);
+            ImAnimDemoBasicsWindow(false);
         };
         configs.push_back(std::move(cfg));
     }
@@ -45,9 +45,13 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             {"imgui_demo", true},  // has Python (not line-by-line match)
         };
         cfg.frameSetup = nullptr;
-        cfg.showDemoWindow = [](bool create_window) {
-            (void)create_window;
-            ImGui::ShowDemoWindow_MaybeDocked(false);
+        cfg.showDemoWindow = [] {
+            static bool do_create_window = false;
+            ImGui::Checkbox("ImGui Demo in external window", &do_create_window);
+            ImGui::SetItemTooltip("Useful to test \"Window Options\" below...");
+
+            ImGui::Separator();
+            ImGui::ShowDemoWindow_MaybeDocked(do_create_window);
         };
         configs.push_back(std::move(cfg));
     }
@@ -60,9 +64,8 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             {"implot_demo", true},
         };
         cfg.frameSetup = nullptr;
-        cfg.showDemoWindow = [](bool create_window) {
-            (void)create_window;
-            ImPlot::ShowAllDemos();
+        cfg.showDemoWindow = [] {
+            ImPlot::ShowDemoWindow_MaybeDocked(false);
         };
         configs.push_back(std::move(cfg));
     }
@@ -75,9 +78,8 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             {"implot3d_demo", true},
         };
         cfg.frameSetup = nullptr;
-        cfg.showDemoWindow = [](bool create_window) {
-            (void)create_window;
-            ImPlot3D::ShowAllDemos();
+        cfg.showDemoWindow = [] {
+            ImPlot3D::ShowDemoWindow_MaybeDocked(false);
         };
         configs.push_back(std::move(cfg));
     }

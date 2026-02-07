@@ -704,8 +704,7 @@ def tween_float_resolved(
     ) -> float:
     """ Float with dynamic target."""
     pass
-# ImVec2 tween_vec2_resolved(ImGuiID id, ImGuiID    /* original C++ signature */
-# 	channel_id, vec2_resolver fn, float dur, ease_desc const& ez, int policy, float dt);
+# ImVec2 tween_vec2_resolved(ImGuiID id, ImGuiID channel_id, vec2_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
 def tween_vec2_resolved(
     id: int,
     channel_id: int,
@@ -2914,6 +2913,9 @@ def doc_window(create_window: bool = True) -> None:
     pass
 # void ImAnimUsecaseWindow(bool create_window = true);    /* original C++ signature */
 def usecase_window(create_window: bool = True) -> None:
+    pass
+# void ImAnimDemoBasicsWindow(bool create_window = true);    /* original C++ signature */
+def demo_basics_window(create_window: bool = True) -> None:
     pass
 ####################    </generated_from:im_anim.h>    ####################
 
