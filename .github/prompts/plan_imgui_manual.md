@@ -1,0 +1,297 @@
+# Plan: Evolve imgui_manual for Multiple Libraries and Python Support
+
+## Current State Analysis
+
+The `imgui_manual/` project is an interactive demo viewer:
+- **Left panel (30%)**: Demo windows with widgets
+- **Right panel (70%)**: Source code viewer with syntax highlighting
+- **Core feature**: When hovering any widget with "Follow source" enabled, the code view scrolls to the relevant `IMGUI_DEMO_MARKER`
+
+### Current Components
+
+| File | Purpose |
+|------|---------|
+| `imgui_manual.main.cpp` | Main app: docking setup, hooks, menus |
+| `demo_code_viewer.cpp/h` | Loads/displays source with ImGuiColorTextEdit |
+| `imgui_demo_marker_hooks.cpp/h` | IMGUI_DEMO_MARKER tracking system |
+| `CMakeLists.txt` | Copies demo files, force-includes headers |
+| `assets/demo_code/*.txt` | Runtime copies of demo source files |
+
+### Current Limitations
+
+1. **Hardcoded file list** in `demo_code_viewer.cpp` (lines 44-49)
+2. **Hardcoded docking windows** in `imgui_manual.main.cpp` (lines 39-84)
+3. **C++ only** - no Python demo support
+4. **ImAnim only** - no ImGui/ImPlot/ImPlot3D demos shown (even though files are copied)
+5. **No library tabs** - all demos lumped together
+
+### Available Demo Files
+
+| Library | C++ Demo Files | Python Demo Files |
+|---------|----------------|-------------------|
+| ImAnim | 4 files: im_anim_demo, im_anim_demo_basics, im_anim_doc, im_anim_usecase | `external/ImAnim/ImAnim/im_anim_demo_basics.py` |
+| ImGui | 1 file: imgui_demo.cpp | `bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py` (3500 lines, not a line-by-line port) |
+| ImPlot | 1 file: implot_demo.cpp | `demos_python/demos_implot/implot_demo.py` |
+| ImPlot3D | 1 file: implot3d_demo.cpp | `demos_python/demos_implot3d/implot3d_demo.py` |
+
+---
+
+## Goals
+
+1. **Multi-library support**: Tabs or separate apps for ImGui, ImPlot, ImPlot3D, ImAnim
+2. **Python demo support**: Show Python code alongside C++ when available
+3. **Reduce repetition**: Data-driven configuration instead of copy-paste code
+4. **Flexible deployment**: Combined app AND separate per-library apps (multiple executables)
+
+---
+
+## Proposed Architecture
+
+### Phase 1: Refactor to Data-Driven Configuration
+
+**Goal**: Replace hardcoded lists with configuration structures.
+
+#### 1.1 Create `library_config.h`
+
+```cpp
+struct DemoFileInfo {
+    const char* baseName;         // "im_anim_demo_basics" (without extension)
+    bool hasPython;               // true if .py exists alongside .cpp
+};
+
+struct LibraryConfig {
+    const char* name;                    // "ImAnim"
+    const char* dockWindowPrefix;        // "ImAnim"
+    std::vector<DemoFileInfo> files;
+    std::function<void()> frameSetup;    // e.g., iam_update_begin_frame()
+    std::function<void(bool)> demoGui;   // e.g., ImAnimDemoBasicsWindow
+};
+
+// All available libraries
+extern std::vector<LibraryConfig> g_allLibraries;
+```
+
+**File naming convention** (no configurability needed):
+- C++ file: `demo_xxx.cpp` → asset: `demo_xxx.cpp.txt`
+- Python file: `demo_xxx.py` (same folder as C++) → asset: `demo_xxx.py.txt`
+- Python files will need to be co-located with C++ files (move `imgui_demo.py` to `external/imgui/imgui/`)
+
+#### 1.2 Refactor `demo_code_viewer.cpp`
+
+- Accept file list dynamically from `LibraryConfig`
+- Add language toggle (C++/Python) when both available
+- Generalize tab creation
+
+#### 1.3 Refactor `imgui_manual.main.cpp`
+
+- Generate docking windows from `LibraryConfig`
+- Support library tabs in left panel OR separate apps
+- Make frame setup callbacks configurable
+
+### Phase 2: Add Python Demo Support
+
+**Goal**: Display Python source code when available.
+
+#### 2.1 Update CMakeLists.txt
+
+- Copy Python demo files to `assets/demo_code/`
+- For each `demo_xxx.cpp`, check if `demo_xxx.py` exists in same folder and copy it
+
+#### 2.2 Python Demo Files with IMGUI_DEMO_MARKER
+
+Python marker pattern (does nothing - code viewer uses line matching):
+```python
+def IMGUI_DEMO_MARKER(section: str) -> None:
+    """Marker for the interactive manual. Maps sections to source code."""
+    pass
+```
+
+Existing Python demos:
+- `external/ImAnim/ImAnim/im_anim_demo_basics.py` - already exists
+- `imgui_demo.py` - exists but needs to be moved to `external/imgui/imgui/`
+- ImPlot/ImPlot3D demos - may need to be moved to external lib folders
+
+#### 2.3 Add Language Toggle to Code Viewer
+
+```cpp
+struct CodeFile {
+    std::string cppContent;
+    std::string pythonContent;  // Empty if not available
+    TextEditor cppEditor;
+    TextEditor pythonEditor;
+    bool showPython = false;    // Toggle state
+};
+```
+
+UI: `[C++] [Python]` toggle buttons when both available.
+
+### Phase 3: Support All Libraries
+
+**Goal**: Add ImGui, ImPlot, ImPlot3D to the manual.
+
+#### 3.1 Library Configurations
+
+```cpp
+// ImAnim
+LibraryConfig imAnimConfig = {
+    .name = "ImAnim",
+    .files = {
+        {"im_anim_demo_basics", true},   // has Python
+        {"im_anim_demo", false},
+        {"im_anim_doc", false},
+        {"im_anim_usecase", false},
+    },
+    .frameSetup = []{ iam_update_begin_frame(); iam_clip_update(ImGui::GetIO().DeltaTime); },
+    .demoGui = ImAnimDemoBasicsWindow,
+};
+
+// ImGui
+LibraryConfig imGuiConfig = {
+    .name = "ImGui",
+    .files = {{"imgui_demo", true}},  // has Python (not line-by-line match)
+    .frameSetup = nullptr,
+    .demoGui = [](bool) { ImGui::ShowDemoWindow(); },
+};
+
+// ImPlot
+LibraryConfig imPlotConfig = {
+    .name = "ImPlot",
+    .files = {{"implot_demo", true}},
+    .frameSetup = nullptr,
+    .demoGui = [](bool) { ImPlot::ShowDemoWindow(); },
+};
+
+// ImPlot3D
+LibraryConfig imPlot3DConfig = {
+    .name = "ImPlot3D",
+    .files = {{"implot3d_demo", true}},
+    .frameSetup = nullptr,
+    .demoGui = [](bool) { ImPlot3D::ShowDemoWindow(); },
+};
+```
+
+#### 3.2 Build Multiple Executables
+
+CMakeLists.txt will create multiple targets (no options needed):
+
+```cmake
+# Combined app with all libraries
+imgui_bundle_add_app(imgui_manual_all ...)
+
+# Per-library apps
+imgui_bundle_add_app(imgui_manual_imanim ...)
+imgui_bundle_add_app(imgui_manual_imgui ...)
+imgui_bundle_add_app(imgui_manual_implot ...)
+imgui_bundle_add_app(imgui_manual_implot3d ...)
+```
+
+Each app links only the libraries it needs and uses a subset of `LibraryConfig`.
+
+### Phase 4: UI Design for Multi-Library
+
+#### Option A: Library Tabs (Combined App)
+
+```
++--------------------------------------------------------+
+| [ImGui] [ImPlot] [ImPlot3D] [ImAnim]  <- Library tabs  |
++--------------------------------------------------------+
+| Demo Window        |  Source Code Viewer               |
+| (30%)              |  (70%)                             |
+|                    |  [C++] [Python] <- language toggle |
+| [Follow source]    |  [Tabs: file1, file2, ...]        |
+|                    |                                    |
+| <widgets>          |  <syntax highlighted code>        |
++--------------------------------------------------------+
+```
+
+#### Option B: Separate Apps
+
+Build targets:
+- `imgui_manual_all` - Combined app with tabs
+- `imgui_manual_imanim` - ImAnim only
+- `imgui_manual_imgui` - ImGui only
+- `imgui_manual_implot` - ImPlot only
+- `imgui_manual_implot3d` - ImPlot3D only
+
+### Phase 5: Polish
+
+#### 5.1 GitHub Link Implementation
+
+```cpp
+void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
+    // Determine repo/path based on library
+    std::string ext = isPython ? ".py" : ".cpp";
+    std::string url = GetGitHubBaseUrl(baseName) + baseName + ext + "#L" + std::to_string(line);
+    OpenUrl(url);
+}
+```
+
+#### 5.2 Search Functionality
+
+- Search within current file
+- Search across all files
+- Jump to IMGUI_DEMO_MARKER by name
+
+---
+
+## Implementation Order
+
+### Step 1: Immediate Cleanup (No Breaking Changes)
+- [ ] Extract file list to a config structure (still hardcoded, but centralized)
+- [ ] Add ImGui/ImPlot/ImPlot3D files to code viewer tabs
+- [ ] Test that existing functionality still works
+
+### Step 2: Add Python Toggle
+- [ ] Move Python demos to same folder as C++ demos
+- [ ] Update CMake to copy Python demo files
+- [ ] Add Python editor alongside C++ editor
+- [ ] Add [C++] [Python] toggle buttons
+
+### Step 3: Add Library Tabs
+- [ ] Create library tab bar
+- [ ] Wire up library-specific frame setup
+- [ ] Filter code viewer files by selected library
+
+### Step 4: Build Multiple Executables
+- [ ] Create separate app targets in CMakeLists.txt
+- [ ] Each target uses appropriate LibraryConfig subset
+- [ ] Test all executables
+
+### Step 5: Polish
+- [ ] Implement GitHub link
+- [ ] Add file/marker search
+- [ ] UI/UX refinement
+
+---
+
+## Resolved Questions
+
+1. **Python marker integration**: Option A - Python function does nothing, code viewer uses line-by-line matching
+
+2. **Combined vs. separate apps**: Both - combined app by default, plus separate executables for each library
+
+3. **Python demo availability**: Show Python demos even if they differ from C++ (e.g., imgui_demo.py is not a line-by-line port)
+
+4. **ImGui demo size**: imgui_demo.py is 3500 lines and works well, no performance concern
+
+---
+
+## Files to Create/Modify
+
+| Action | File |
+|--------|------|
+| Create | `imgui_manual/library_config.h` |
+| Create | `imgui_manual/library_config.cpp` |
+| Modify | `imgui_manual/demo_code_viewer.cpp` |
+| Modify | `imgui_manual/imgui_manual.main.cpp` |
+| Modify | `imgui_manual/CMakeLists.txt` |
+| Move | `imgui_demo.py` → `external/imgui/imgui/imgui_demo.py` |
+
+---
+
+## Notes
+
+- The existing `imgui_demo_marker_hooks.h/cpp` system works well and should be preserved
+- ImGuiColorTextEdit already handles large files reasonably well
+- HelloImGui docking system makes tab management straightforward
+- File naming convention is simple: `xxx.cpp` + `xxx.py` in same folder → `xxx.cpp.txt` + `xxx.py.txt` in assets
