@@ -1362,6 +1362,10 @@ struct RunnerCallbacks
     //  It is a good place to add new dockable windows.
     VoidFunction PreNewFrame = EmptyVoidFunction();
 
+    // `PostNewFrame`: You can here add a function that will be called at each frame,
+    //  just after the call to ImGui::NewFrame(), and before any Gui code.
+    VoidFunction PostNewFrame = EmptyVoidFunction();
+
     // `BeforeImGuiRender`: You can here add a function that will be called at each frame,
     //  after the user Gui code, and just before the call to
     //  ImGui::Render() (which will also call ImGui::EndFrame()).

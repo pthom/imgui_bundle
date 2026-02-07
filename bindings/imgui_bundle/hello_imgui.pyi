@@ -1852,6 +1852,11 @@ class RunnerCallbacks:
     #  It is a good place to add new dockable windows.
     pre_new_frame: VoidFunction = EmptyVoidFunction()
 
+    # VoidFunction PostNewFrame = EmptyVoidFunction();    /* original C++ signature */
+    # `PostNewFrame`: You can here add a function that will be called at each frame,
+    #  just after the call to ImGui::NewFrame(), and before any Gui code.
+    post_new_frame: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction BeforeImGuiRender = EmptyVoidFunction();    /* original C++ signature */
     # `BeforeImGuiRender`: You can here add a function that will be called at each frame,
     #  after the user Gui code, and just before the call to
@@ -1895,7 +1900,7 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction PostNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: Optional[VoidFunction] = None,
@@ -1913,6 +1918,7 @@ class RunnerCallbacks:
         before_exit: Optional[VoidFunction] = None,
         before_exit_post_cleanup: Optional[VoidFunction] = None,
         pre_new_frame: Optional[VoidFunction] = None,
+        post_new_frame: Optional[VoidFunction] = None,
         before_imgui_render: Optional[VoidFunction] = None,
         after_swap: Optional[VoidFunction] = None,
         custom_background: Optional[VoidFunction] = None,
@@ -1938,6 +1944,7 @@ class RunnerCallbacks:
                 * BeforeExit: EmptyVoidFunction()
                 * BeforeExit_PostCleanup: EmptyVoidFunction()
                 * PreNewFrame: EmptyVoidFunction()
+                * PostNewFrame: EmptyVoidFunction()
                 * BeforeImGuiRender: EmptyVoidFunction()
                 * AfterSwap: EmptyVoidFunction()
                 * CustomBackground: EmptyVoidFunction()
@@ -2142,7 +2149,7 @@ class DockingSplit:
     # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
     #  Flags to apply to the new dock space
     #  (enable/disable resizing, splitting, tab bar, etc.)
-    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
+    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
@@ -2161,8 +2168,8 @@ class DockingSplit:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * direction_: Dir.down
-                * nodeFlags_: DockNodeFlags_.none
+                * direction_: ImGuiDir_Down
+                * nodeFlags_: ImGuiDockNodeFlags_None
         """
         pass
 
@@ -2241,7 +2248,7 @@ class DockableWindow:
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window size.
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
@@ -2251,7 +2258,7 @@ class DockableWindow:
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window position.
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -2328,7 +2335,7 @@ class DockingParams:
     #  Most flags are inherited by children dock spaces.
     #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        DockNodeFlags_.passthru_central_node
+        ImGuiDockNodeFlags_PassthruCentralNode
     )
 
     # --------------- Layout handling -----------------------------
@@ -2384,7 +2391,7 @@ class DockingParams:
             If any of the params below is None, then its default value below will be used:
                 * dockingSplits: List[DockingSplit]()
                 * dockableWindows: List[DockableWindow]()
-                * mainDockSpaceNodeFlags: DockNodeFlags_.passthru_central_node
+                * mainDockSpaceNodeFlags: ImGuiDockNodeFlags_PassthruCentralNode
         """
         pass
 
