@@ -8649,22 +8649,4 @@ void imgui_manual_binding(nb::module_& m)
         return IM_COL32(r, g, b, a);
     });
 
-    //
-    // API for imgui_demo
-    //
-    // Forward declaration of imgui_demo.cpp API
-    void SetImGuiDemoWindowPos(ImVec2 pos, ImVec2 size, ImGuiCond cond);
-    void SetImGuiDemoCodeWindowPos(ImVec2 pos, ImVec2 size, ImGuiCond cond);
-    void ImGuiDemoSetShowPythonCode(bool showPythonCode);
-    extern bool GImGuiDemoMarker_IsActive;
-
-    m.def("set_imgui_demo_window_pos", SetImGuiDemoWindowPos);
-    m.def("set_imgui_demo_code_window_pos", SetImGuiDemoCodeWindowPos);
-    m.def("set_imgui_demo_marker_is_active", [](bool b) {
-        GImGuiDemoMarker_IsActive = b;
-    });
-    m.def("get_imgui_demo_marker_is_active", []() {
-        return GImGuiDemoMarker_IsActive;
-    });
-    m.def("set_imgui_demo_show_python_code", ImGuiDemoSetShowPythonCode);
 }

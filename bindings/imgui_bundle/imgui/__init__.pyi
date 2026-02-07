@@ -12218,21 +12218,5 @@ def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
 #    Manually inserted code (additional methods, etc.)
 ##################################################
 
-# API for imgui_demo.cpp (specific to ImGui Bundle)
-def set_imgui_demo_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
-    pass
-
-def set_imgui_demo_code_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
-    pass
-
-def set_imgui_demo_marker_is_active(b: bool) -> None:
-    pass
-
-def get_imgui_demo_marker_is_active() -> bool:
-    pass
-
-def set_imgui_demo_show_python_code(b: bool) -> None:
-    pass
-
 ImVector_ImVec4Like = ImVector_ImVec4
 ImVector_ImVec2Like = ImVector_ImVec2
