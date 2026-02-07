@@ -22,6 +22,7 @@ set(implot3d_dir ${bundle_dir}/external/implot3d/implot3d)
 # Copy demo source files to assets/demo_code/ for runtime loading
 set(demo_code_dest ${CMAKE_CURRENT_LIST_DIR}/assets/demo_code)
 file(MAKE_DIRECTORY ${demo_code_dest})
+configure_file(${imanim_dir}/im_anim_demo_basics.cpp ${demo_code_dest}/im_anim_demo_basics.cpp.txt COPYONLY)
 configure_file(${imanim_dir}/im_anim_demo.cpp ${demo_code_dest}/im_anim_demo.cpp.txt COPYONLY)
 configure_file(${imanim_dir}/im_anim_doc.cpp ${demo_code_dest}/im_anim_doc.cpp.txt COPYONLY)
 configure_file(${imanim_dir}/im_anim_usecase.cpp ${demo_code_dest}/im_anim_usecase.cpp.txt COPYONLY)

@@ -42,9 +42,10 @@ namespace
         const char* assetName;    // Actual filename in assets (with .txt extension for macOS bundling)
     };
     const FileInfo g_files[] = {
+        {"im_anim_demo_basics.cpp", "im_anim_demo_basics.cpp.txt"},
         {"im_anim_demo.cpp", "im_anim_demo.cpp.txt"},
         {"im_anim_doc.cpp", "im_anim_doc.cpp.txt"},
-        {"im_anim_usecase.cpp", "im_anim_usecase.cpp.txt"}
+        {"im_anim_usecase.cpp", "im_anim_usecase.cpp.txt"},
     };
     constexpr int g_fileCount = sizeof(g_files) / sizeof(g_files[0]);
 

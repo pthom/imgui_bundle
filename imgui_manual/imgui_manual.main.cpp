@@ -38,6 +38,15 @@ void OnPostInit()
 
 std::vector<HelloImGui::DockableWindow> SetupDockableWindows()
 {
+    // ImAnim Demo Basic Window
+    HelloImGui::DockableWindow imAnimDemoBasicsWindow;
+    imAnimDemoBasicsWindow.label = "ImAnim Demo - Basics";
+    imAnimDemoBasicsWindow.dockSpaceName = "LeftDockSpace";
+    imAnimDemoBasicsWindow.GuiFunction = [] {
+        IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
+        ImAnimDemoBasicsWindow(false);
+    };
+
     // ImAnim Demo Window
     HelloImGui::DockableWindow imAnimDemoWindow;
     imAnimDemoWindow.label = "ImAnim Demo";
@@ -71,7 +80,7 @@ std::vector<HelloImGui::DockableWindow> SetupDockableWindows()
     codeViewerWindow.dockSpaceName = "MainDockSpace";
     codeViewerWindow.GuiFunction = [] { DemoCodeViewer_Show(); };
 
-    return {imAnimDemoWindow, imAnimDocWindow, imAnimUsecaseWindow, codeViewerWindow};
+    return {imAnimDemoBasicsWindow, imAnimDemoWindow, imAnimDocWindow, imAnimUsecaseWindow, codeViewerWindow};
 }
 
 int main()
