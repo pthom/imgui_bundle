@@ -1775,37 +1775,145 @@ void py_init_module_imanim(nb::module_& m)
             nb::arg("clip_id"),
             "Start building a new clip with the given ID")
         .def("key_float",
-            &iam_clip::key_float, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, float value, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_float_adapt_exclude_params = [&self](ImGuiID channel, float time, float value, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_float(channel, time, value, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_float_adapt_exclude_params(channel, time, value, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_vec2",
-            &iam_clip::key_vec2, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, ImVec2 value, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_vec2_adapt_exclude_params = [&self](ImGuiID channel, float time, ImVec2 value, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_vec2(channel, time, value, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_vec2_adapt_exclude_params(channel, time, value, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_vec4",
-            &iam_clip::key_vec4, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, ImVec4 value, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_vec4_adapt_exclude_params = [&self](ImGuiID channel, float time, ImVec4 value, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_vec4(channel, time, value, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_vec4_adapt_exclude_params(channel, time, value, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_int",
             &iam_clip::key_int, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_color",
-            &iam_clip::key_color, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("color_space") = iam_color_space::iam_col_oklab, nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, ImVec4 value, int color_space = iam_color_space::iam_col_oklab, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_color_adapt_exclude_params = [&self](ImGuiID channel, float time, ImVec4 value, int color_space = iam_color_space::iam_col_oklab, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_color(channel, time, value, color_space, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_color_adapt_exclude_params(channel, time, value, color_space, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("color_space") = iam_color_space::iam_col_oklab, nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_float_var",
-            &iam_clip::key_float_var, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("var"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, float value, const iam_variation_float & var, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_float_var_adapt_exclude_params = [&self](ImGuiID channel, float time, float value, const iam_variation_float & var, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_float_var(channel, time, value, var, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_float_var_adapt_exclude_params(channel, time, value, var, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("var"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_vec2_var",
-            &iam_clip::key_vec2_var, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("var"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, ImVec2 value, const iam_variation_vec2 & var, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_vec2_var_adapt_exclude_params = [&self](ImGuiID channel, float time, ImVec2 value, const iam_variation_vec2 & var, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_vec2_var(channel, time, value, var, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_vec2_var_adapt_exclude_params(channel, time, value, var, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("var"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_vec4_var",
-            &iam_clip::key_vec4_var, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("var"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, ImVec4 value, const iam_variation_vec4 & var, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_vec4_var_adapt_exclude_params = [&self](ImGuiID channel, float time, ImVec4 value, const iam_variation_vec4 & var, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_vec4_var(channel, time, value, var, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_vec4_var_adapt_exclude_params(channel, time, value, var, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("var"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_int_var",
             &iam_clip::key_int_var, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("var"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_color_var",
-            &iam_clip::key_color_var, nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("var"), nb::arg("color_space") = iam_color_space::iam_col_oklab, nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, ImVec4 value, const iam_variation_color & var, int color_space = iam_color_space::iam_col_oklab, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_color_var_adapt_exclude_params = [&self](ImGuiID channel, float time, ImVec4 value, const iam_variation_color & var, int color_space = iam_color_space::iam_col_oklab, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_color_var(channel, time, value, var, color_space, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_color_var_adapt_exclude_params(channel, time, value, var, color_space, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("value"), nb::arg("var"), nb::arg("color_space") = iam_color_space::iam_col_oklab, nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_float_spring",
             &iam_clip::key_float_spring,
             nb::arg("channel"), nb::arg("time"), nb::arg("target"), nb::arg("spring"),
             "Spring-based keyframe (float only)")
         .def("key_float_rel",
-            &iam_clip::key_float_rel, nb::arg("channel"), nb::arg("time"), nb::arg("percent"), nb::arg("px_bias"), nb::arg("anchor_space"), nb::arg("axis"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, float percent, float px_bias, int anchor_space, int axis, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_float_rel_adapt_exclude_params = [&self](ImGuiID channel, float time, float percent, float px_bias, int anchor_space, int axis, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_float_rel(channel, time, percent, px_bias, anchor_space, axis, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_float_rel_adapt_exclude_params(channel, time, percent, px_bias, anchor_space, axis, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("percent"), nb::arg("px_bias"), nb::arg("anchor_space"), nb::arg("axis"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_vec2_rel",
-            &iam_clip::key_vec2_rel, nb::arg("channel"), nb::arg("time"), nb::arg("percent"), nb::arg("px_bias"), nb::arg("anchor_space"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, ImVec2 percent, ImVec2 px_bias, int anchor_space, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_vec2_rel_adapt_exclude_params = [&self](ImGuiID channel, float time, ImVec2 percent, ImVec2 px_bias, int anchor_space, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_vec2_rel(channel, time, percent, px_bias, anchor_space, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_vec2_rel_adapt_exclude_params(channel, time, percent, px_bias, anchor_space, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("percent"), nb::arg("px_bias"), nb::arg("anchor_space"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_vec4_rel",
-            &iam_clip::key_vec4_rel, nb::arg("channel"), nb::arg("time"), nb::arg("percent"), nb::arg("px_bias"), nb::arg("anchor_space"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, ImVec4 percent, ImVec4 px_bias, int anchor_space, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_vec4_rel_adapt_exclude_params = [&self](ImGuiID channel, float time, ImVec4 percent, ImVec4 px_bias, int anchor_space, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_vec4_rel(channel, time, percent, px_bias, anchor_space, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_vec4_rel_adapt_exclude_params(channel, time, percent, px_bias, anchor_space, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("percent"), nb::arg("px_bias"), nb::arg("anchor_space"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("key_color_rel",
-            &iam_clip::key_color_rel, nb::arg("channel"), nb::arg("time"), nb::arg("percent"), nb::arg("px_bias"), nb::arg("color_space"), nb::arg("anchor_space"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear, nb::arg("bezier4") = nb::none())
+            [](iam_clip & self, ImGuiID channel, float time, ImVec4 percent, ImVec4 px_bias, int color_space, int anchor_space, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+            {
+                auto key_color_rel_adapt_exclude_params = [&self](ImGuiID channel, float time, ImVec4 percent, ImVec4 px_bias, int color_space, int anchor_space, int ease_type = iam_ease_type::iam_ease_linear) -> iam_clip &
+                {
+                    auto& lambda_result = self.key_color_rel(channel, time, percent, px_bias, color_space, anchor_space, ease_type, nullptr);
+                    return lambda_result;
+                };
+
+                return key_color_rel_adapt_exclude_params(channel, time, percent, px_bias, color_space, anchor_space, ease_type);
+            },     nb::arg("channel"), nb::arg("time"), nb::arg("percent"), nb::arg("px_bias"), nb::arg("color_space"), nb::arg("anchor_space"), nb::arg("ease_type") = iam_ease_type::iam_ease_linear)
         .def("seq_begin",
             &iam_clip::seq_begin, "Start sequential block (keyframes after seq_end start after this block)")
         .def("seq_end",

@@ -39,6 +39,9 @@ def main():
     options.fn_params_exclude_types__regex = code_utils.join_string_by_pipe_char([
         r"void\s*\*",             # void* user data
     ])
+    options.fn_params_exclude_names__regex = code_utils.join_string_by_pipe_char([
+        r"bezier4",             # a float* which expect 4 float, without any type information, so we can't generate a proper binding for it
+    ])
 
 
     # Add ImGuiID type alias

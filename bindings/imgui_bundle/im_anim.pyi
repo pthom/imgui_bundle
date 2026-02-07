@@ -1861,8 +1861,7 @@ class clip:
         channel: int,
         time: float,
         value: float,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
     def key_vec2(
@@ -1870,8 +1869,7 @@ class clip:
         channel: int,
         time: float,
         value: ImVec2Like,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
     def key_vec4(
@@ -1879,8 +1877,7 @@ class clip:
         channel: int,
         time: float,
         value: ImVec4Like,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
     def key_int(
@@ -1897,8 +1894,7 @@ class clip:
         time: float,
         value: ImVec4Like,
         color_space: int = color_space.col_oklab,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
 
@@ -1909,8 +1905,7 @@ class clip:
         time: float,
         value: float,
         var: variation_float,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
     def key_vec2_var(
@@ -1919,8 +1914,7 @@ class clip:
         time: float,
         value: ImVec2Like,
         var: variation_vec2,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
     def key_vec4_var(
@@ -1929,8 +1923,7 @@ class clip:
         time: float,
         value: ImVec4Like,
         var: variation_vec4,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
     def key_int_var(
@@ -1949,8 +1942,7 @@ class clip:
         value: ImVec4Like,
         var: variation_color,
         color_space: int = color_space.col_oklab,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
 
@@ -1973,8 +1965,7 @@ class clip:
         px_bias: float,
         anchor_space: int,
         axis: int,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
     def key_vec2_rel(
@@ -1984,8 +1975,7 @@ class clip:
         percent: ImVec2Like,
         px_bias: ImVec2Like,
         anchor_space: int,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
     def key_vec4_rel(
@@ -1995,8 +1985,7 @@ class clip:
         percent: ImVec4Like,
         px_bias: ImVec4Like,
         anchor_space: int,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
     def key_color_rel(
@@ -2007,8 +1996,7 @@ class clip:
         px_bias: ImVec4Like,
         color_space: int,
         anchor_space: int,
-        ease_type: int = ease_type.ease_linear,
-        bezier4: Optional[float] = None
+        ease_type: int = ease_type.ease_linear
         ) -> clip:
         pass
 
