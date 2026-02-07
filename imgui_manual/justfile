@@ -1,0 +1,17 @@
+all:
+    just --list
+
+emscripten_build:
+    source ~/emsdk/emsdk_env.sh && \
+    mkdir -p build_emscripten && \
+    cd build_emscripten && \
+    emcmake cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    emmake make -j4
+    @echo "Emscripten build completed."
+
+emscripten_run:
+    source ~/emsdk/emsdk_env.sh && \
+    cd build_emscripten && \
+    emrun --no_browser --port 8080 .
+    @echo "Emscripten application is running on http://localhost:8080"
+

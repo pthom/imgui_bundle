@@ -323,6 +323,11 @@ else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
 
+# IMGUI_BUNDLE_BUILD_IMGUI_MANUAL: Build ImGui Manual
+# -----------------------------------------------------------------------------
+option(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL "Build ImGui Manual" OFF)
+
+
 
 # Options / Install
 # By default, hello_imgui install its targets only if it is the top level project
@@ -492,6 +497,9 @@ if (IMGUI_BUNDLE_BUILD_CPP)
     if (IMGUI_BUNDLE_BUILD_PYTHON)
         add_subdirectory(pybind_native_debug)
     endif()
+    if (IMGUI_BUNDLE_BUILD_IMGUI_MANUAL)
+        add_subdirectory(imgui_manual)
+    endif()
 endif()
 
 # CI Automation
@@ -579,7 +587,6 @@ message(STATUS "
     IMGUI_BUNDLE_BUILD_PYTHON:     ${IMGUI_BUNDLE_BUILD_PYTHON}
     IMGUI_BUNDLE_BUILD_PYODIDE:    ${IMGUI_BUNDLE_BUILD_PYODIDE}
     IMGUI_BUNDLE_BUILD_DEMOS:      ${IMGUI_BUNDLE_BUILD_DEMOS}
-    IMGUI_BUNDLE_BUILD_DOC:        ${IMGUI_BUNDLE_BUILD_DOC}
 
     Core Framework:
     ---------------------------------------------------------------------------
