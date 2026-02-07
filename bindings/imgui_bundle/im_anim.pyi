@@ -8,7 +8,7 @@ motion paths, and more. Core functions:
 - iam_clip_update: Update timeline animations (delta time)
 """
 # ruff: noqa: B008
-from typing import Optional, Callable, Any, overload
+from typing import Optional, Callable, Any, overload, Tuple
 from imgui_bundle.imgui import ImVec2, ImVec2Like, ImVec4, ImVec4Like, ImU32, ImFont, Style, ImVector_float, ImVector_ImVec4
 import enum
 

@@ -7,12 +7,40 @@ from imgui_bundle import imgui, im_anim as iam, immapp, ImVec2, ImVec4
 import math
 
 
+def IMGUI_DEMO_MARKER(section: str) -> None:
+    """Marker for the interactive manual. Maps sections to source code."""
+    pass
+
+
+def demo_header(label: str, demo_function) -> None:
+    """Show a tree node with the demo and its source code."""
+    static = demo_header
+    fn_id = id(demo_function)
+    if not hasattr(static, "fn_snippets"):
+        static.fn_snippets = {}
+    if fn_id not in static.fn_snippets:
+        import inspect
+        source = inspect.getsource(demo_function)
+        snippet_data = immapp.snippets.SnippetData(code=source)
+        snippet_data.show_copy_button = True
+        snippet_data.max_height_in_lines = 30
+        static.fn_snippets[fn_id] = snippet_data
+
+    if imgui.tree_node_ex(label):
+        if imgui.tree_node_ex("Source code"):
+            snippet_data = static.fn_snippets[fn_id]
+            immapp.snippets.show_code_snippet(snippet_data)
+            imgui.tree_pop()
+        demo_function()
+        imgui.tree_pop()
+
 # =============================================================================
 # BASIC ANIMATIONS
 # =============================================================================
 
 def demo_tween_float():
     """Basic tween: smoothly animate a float value toward a target."""
+    IMGUI_DEMO_MARKER("Basic Animations/Tween Float")
     static = demo_tween_float
     if not hasattr(static, "target"):
         static.target = 50.0
@@ -30,6 +58,7 @@ def demo_tween_float():
 
 def demo_color_tween():
     """Color tween: animate colors in perceptually uniform OKLAB space."""
+    IMGUI_DEMO_MARKER("Basic Animations/Color Tween")
     static = demo_color_tween
     if not hasattr(static, "idx"):
         static.idx = 0
@@ -53,6 +82,7 @@ def demo_color_tween():
 
 def demo_oscillator():
     """Oscillator: continuous sine wave for pulse effects."""
+    IMGUI_DEMO_MARKER("Basic Animations/Oscillator")
     dt = imgui.get_io().delta_time
     pulse = 1.0 + iam.oscillate(
         imgui.get_id("pulse"), 0.3, 1.5, iam.wave_type.wave_sine, 0.0, dt
@@ -64,15 +94,14 @@ def demo_oscillator():
 
 def demo_shake():
     """Shake: triggered decaying animation for error feedback."""
-    static = demo_shake
-    if not hasattr(static, "id"):
-        static.id = imgui.get_id("shake")
+    IMGUI_DEMO_MARKER("Basic Animations/Shake")
+    shake_id = imgui.get_id("shake")
 
     if imgui.button("Trigger Shake"):
-        iam.trigger_shake(static.id)
+        iam.trigger_shake(shake_id)
 
     dt = imgui.get_io().delta_time
-    offset = iam.shake(static.id, 10.0, 30.0, 0.5, dt)
+    offset = iam.shake(shake_id, 10.0, 30.0, 0.5, dt)
     imgui.same_line()
     cursor = imgui.get_cursor_pos()
     imgui.set_cursor_pos(ImVec2(cursor.x + offset, cursor.y))
@@ -85,51 +114,46 @@ def demo_shake():
 
 def demo_clip_delay():
     """Clip with delay: animation starts after a delay period."""
+    IMGUI_DEMO_MARKER("Clips/Delay")
     static = demo_clip_delay
     if not hasattr(static, "init"):
-        CLIP = imgui.get_id("delay_clip")
-        CH = imgui.get_id("ch")
-        (iam.clip.begin(CLIP)
-            .key_float(CH, 0.0, 0.0, iam.ease_type.ease_out_cubic)
-            .key_float(CH, 1.0, 1.0)
+        (iam.clip.begin(imgui.get_id("delay_clip"))
+            .key_float(imgui.get_id("ch"), 0.0, 0.0, iam.ease_type.ease_out_cubic)
+            .key_float(imgui.get_id("ch"), 1.0, 1.0)
             .set_delay(1.0)
             .end())
         static.init = True
-        static.CLIP, static.CH = CLIP, CH
 
-    INST = imgui.get_id("delay_inst")
     if imgui.button("Play (1s delay)"):
-        iam.play(static.CLIP, INST)
+        iam.play(imgui.get_id("delay_clip"), imgui.get_id("delay_inst"))
 
-    inst = iam.get_instance(INST)
-    value = inst.get_float(static.CH)[1] if inst.valid() else 0.0
+    inst = iam.get_instance(imgui.get_id("delay_inst"))
+    value = inst.get_float(imgui.get_id("ch"))[1] if inst.valid() else 0.0
     imgui.progress_bar(value, ImVec2(-1, 20), "")
 
 
 def demo_clip_callback():
     """Clip with callbacks: on_begin and on_complete events."""
+    IMGUI_DEMO_MARKER("Clips/Callbacks")
     static = demo_clip_callback
+    id_ch_scale = imgui.get_id("ch_scale")
     if not hasattr(static, "init"):
         static.begin_count = 0
         static.complete_count = 0
-        CLIP = imgui.get_id("cb_clip")
-        CH = imgui.get_id("ch_scale")
-        (iam.clip.begin(CLIP)
-            .key_float(CH, 0.0, 0.5, iam.ease_type.ease_out_back)
-            .key_float(CH, 0.5, 1.2)
-            .key_float(CH, 1.0, 1.0, iam.ease_type.ease_in_out_sine)
+        (iam.clip.begin(imgui.get_id("cb_clip"))
+            .key_float(id_ch_scale, 0.0, 0.5, iam.ease_type.ease_out_back)
+            .key_float(id_ch_scale, 0.5, 1.2)
+            .key_float(id_ch_scale, 1.0, 1.0, iam.ease_type.ease_in_out_sine)
             .on_begin(lambda _: setattr(static, 'begin_count', static.begin_count + 1))
             .on_complete(lambda _: setattr(static, 'complete_count', static.complete_count + 1))
             .end())
         static.init = True
-        static.CLIP, static.CH = CLIP, CH
 
-    INST = imgui.get_id("cb_inst")
     if imgui.button("Play"):
-        iam.play(static.CLIP, INST)
+        iam.play(imgui.get_id("cb_clip"), imgui.get_id("cb_inst"))
 
-    inst = iam.get_instance(INST)
-    scale = inst.get_float(static.CH)[1] if inst.valid() else 1.0
+    inst = iam.get_instance(imgui.get_id("cb_inst"))
+    scale = inst.get_float(id_ch_scale)[1] if inst.valid() else 1.0
     imgui.same_line()
     imgui.button("Animated", ImVec2(80 * scale, 30))
     imgui.text(f"on_begin: {static.begin_count}, on_complete: {static.complete_count}")
@@ -137,27 +161,28 @@ def demo_clip_callback():
 
 def demo_stagger():
     """Stagger: cascading animations across multiple elements."""
+    IMGUI_DEMO_MARKER("Clips/Stagger")
     static = demo_stagger
     N = 5
+    id_stagger_clip = imgui.get_id("stagger_clip")
+    id_stagger_ch = imgui.get_id("stagger_ch")
     if not hasattr(static, "init"):
-        CLIP = imgui.get_id("stagger_clip")
-        CH = imgui.get_id("stagger_ch")
-        (iam.clip.begin(CLIP)
-            .key_float(CH, 0.0, 0.0, iam.ease_type.ease_out_back)
-            .key_float(CH, 0.5, 1.0)
-            .set_stagger(N, 0.15, 0.0)  # 0.1s delay between each
+        (iam.clip.begin(id_stagger_clip)
+            .key_float(id_stagger_ch, 0.0, 0.0, iam.ease_type.ease_out_back)
+            .key_float(id_stagger_ch, 0.5, 1.0)
+            .set_stagger(N, 0.15, 0.0)
             .end())
         static.init = True
-        static.CLIP, static.CH = CLIP, CH
 
     if imgui.button("Play Stagger"):
         for i in range(N):
-            iam.play_stagger(static.CLIP, imgui.get_id(f"stag_{i}"), i)
+            iam.play_stagger(id_stagger_clip, imgui.get_id(f"stag_{i}"), i)
 
     for i in range(N):
         inst = iam.get_instance(imgui.get_id(f"stag_{i}"))
-        val = inst.get_float(static.CH)[1] if inst.valid() else 0.0
-        imgui.same_line() if i > 0 else None
+        val = inst.get_float(id_stagger_ch)[1] if inst.valid() else 0.0
+        if i > 0:
+            imgui.same_line()
         imgui.button(f"{i}", ImVec2(30, 30 + 20 * val))
 
 
@@ -167,20 +192,19 @@ def demo_stagger():
 
 def demo_path():
     """Motion path: animate along a bezier curve."""
+    IMGUI_DEMO_MARKER("Paths/Motion Path")
     static = demo_path
     if not hasattr(static, "init"):
-        PATH = imgui.get_id("path")
-        (iam.path.begin(PATH, ImVec2(0, 0))
+        (iam.path.begin(imgui.get_id("path"), ImVec2(0, 0))
             .cubic_to(ImVec2(50, -60), ImVec2(150, -60), ImVec2(200, 0))
             .cubic_to(ImVec2(250, 60), ImVec2(150, 60), ImVec2(100, 0))
             .end())
         static.init = True
-        static.PATH = PATH
         static.t = 0.0
 
     dt = imgui.get_io().delta_time
     static.t = (static.t + dt * 0.4) % 1.0
-    pos = iam.path_evaluate(static.PATH, static.t)
+    pos = iam.path_evaluate(imgui.get_id("path"), static.t)
 
     dl = imgui.get_window_draw_list()
     origin = imgui.get_cursor_screen_pos()
@@ -188,8 +212,8 @@ def demo_path():
 
     # Draw path
     for i in range(40):
-        p1 = iam.path_evaluate(static.PATH, i / 40.0)
-        p2 = iam.path_evaluate(static.PATH, (i + 1) / 40.0)
+        p1 = iam.path_evaluate(imgui.get_id("path"), i / 40.0)
+        p2 = iam.path_evaluate(imgui.get_id("path"), (i + 1) / 40.0)
         dl.add_line(ImVec2(origin.x + p1.x, origin.y + p1.y),
                     ImVec2(origin.x + p2.x, origin.y + p2.y), 0xFF888888, 2.0)
     # Draw ball
@@ -199,17 +223,16 @@ def demo_path():
 
 def demo_path_morph():
     """Path morphing: smoothly transition between two shapes."""
+    IMGUI_DEMO_MARKER("Paths/Path Morphing")
     static = demo_path_morph
     if not hasattr(static, "init"):
         # Circle-ish path
-        static.PATH_A = imgui.get_id("morph_a")
-        (iam.path.begin(static.PATH_A, ImVec2(50, 0))
+        (iam.path.begin(imgui.get_id("morph_a"), ImVec2(50, 0))
             .cubic_to(ImVec2(50, -30), ImVec2(0, -50), ImVec2(-50, 0))
             .cubic_to(ImVec2(-50, 30), ImVec2(0, 50), ImVec2(50, 0))
             .end())
         # Square-ish path
-        static.PATH_B = imgui.get_id("morph_b")
-        (iam.path.begin(static.PATH_B, ImVec2(40, -40))
+        (iam.path.begin(imgui.get_id("morph_b"), ImVec2(40, -40))
             .line_to(ImVec2(-40, -40))
             .line_to(ImVec2(-40, 40))
             .line_to(ImVec2(40, 40))
@@ -227,8 +250,8 @@ def demo_path_morph():
     # Draw morphed path
     for i in range(40):
         t1, t2 = i / 40.0, (i + 1) / 40.0
-        p1 = iam.path_morph(static.PATH_A, static.PATH_B, t1, static.blend)
-        p2 = iam.path_morph(static.PATH_A, static.PATH_B, t2, static.blend)
+        p1 = iam.path_morph(imgui.get_id("morph_a"), imgui.get_id("morph_b"), t1, static.blend)
+        p2 = iam.path_morph(imgui.get_id("morph_a"), imgui.get_id("morph_b"), t2, static.blend)
         dl.add_line(ImVec2(origin.x + p1.x, origin.y + p1.y),
                     ImVec2(origin.x + p2.x, origin.y + p2.y), 0xFF44AAFF, 3.0)
     imgui.dummy(ImVec2(160, 120))
@@ -236,13 +259,13 @@ def demo_path_morph():
 
 def demo_text_path():
     """Text along path: render text following a curve."""
+    IMGUI_DEMO_MARKER("Paths/Text Along Path")
     static = demo_text_path
     if not hasattr(static, "init"):
-        static.PATH = imgui.get_id("text_path")
-        (iam.path.begin(static.PATH, ImVec2(0, 40))
+        (iam.path.begin(imgui.get_id("text_path"), ImVec2(0, 40))
             .quadratic_to(ImVec2(100, -20), ImVec2(200, 40))
             .end())
-        iam.path_build_arc_lut(static.PATH, 64)
+        iam.path_build_arc_lut(imgui.get_id("text_path"), 64)
         static.init = True
         static.progress = 1.0
 
@@ -252,7 +275,7 @@ def demo_text_path():
     opts = iam.text_path_opts()
     opts.origin = ImVec2(origin.x + 20, origin.y + 30)
     opts.color = 0xFFFFFFFF
-    iam.text_path_animated(static.PATH, "Hello ImAnim!", static.progress, opts)
+    iam.text_path_animated(imgui.get_id("text_path"), "Hello ImAnim!", static.progress, opts)
     imgui.dummy(ImVec2(240, 80))
 
 
@@ -262,6 +285,7 @@ def demo_text_path():
 
 def demo_gradient():
     """Gradient: animate between multi-stop color gradients."""
+    IMGUI_DEMO_MARKER("Advanced/Gradient")
     static = demo_gradient
     if not hasattr(static, "init"):
         static.grad_a = iam.gradient.two_color(ImVec4(1, 0, 0, 1), ImVec4(1, 1, 0, 1))
@@ -294,10 +318,10 @@ def demo_gradient():
 
 def demo_transform():
     """Transform: animate position, rotation, and scale together."""
+    IMGUI_DEMO_MARKER("Advanced/Transform")
     static = demo_transform
-    if not hasattr(static, "init"):
+    if not hasattr(static, "target_idx"):
         static.target_idx = 0
-        static.init = True
 
     targets = [
         iam.transform(ImVec2(0, 0), 0.0, ImVec2(1, 1)),
@@ -332,6 +356,7 @@ def demo_transform():
 
 def demo_resolved():
     """Resolved tween: target computed dynamically (follows mouse)."""
+    IMGUI_DEMO_MARKER("Advanced/Resolved Tween")
     dt = imgui.get_io().delta_time
     mouse = imgui.get_mouse_pos()
     origin = imgui.get_cursor_screen_pos()
@@ -339,8 +364,8 @@ def demo_resolved():
     # Resolver returns mouse position relative to origin
     def resolver():
         return ImVec2(
-            max(0, min(180, mouse.x - origin.x)),
-            max(0, min(60, mouse.y - origin.y))
+            max(0.0, min(180.0, mouse.x - origin.x)),
+            max(0.0, min(60.0, mouse.y - origin.y))
         )
 
     pos = iam.tween_vec2_resolved(
@@ -358,6 +383,7 @@ def demo_resolved():
 
 def demo_text_stagger():
     """Text stagger: per-character animation effects."""
+    IMGUI_DEMO_MARKER("Advanced/Text Stagger")
     static = demo_text_stagger
     if not hasattr(static, "init"):
         static.progress = 0.0
@@ -398,59 +424,32 @@ def demo_text_stagger():
 
 def gui():
     if imgui.tree_node("Basic Animations"):
-        if imgui.tree_node("Tween Float"):
-            demo_tween_float()
-            imgui.tree_pop()
-        if imgui.tree_node("Color Tween (OKLAB)"):
-            demo_color_tween()
-            imgui.tree_pop()
-        if imgui.tree_node("Oscillator"):
-            demo_oscillator()
-            imgui.tree_pop()
-        if imgui.tree_node("Shake"):
-            demo_shake()
-            imgui.tree_pop()
+        demo_header("Tween Float", demo_tween_float)
+        demo_header("Color Tween (OKLAB)", demo_color_tween)
+        demo_header("Oscillator", demo_oscillator)
+        demo_header("Shake", demo_shake)
         imgui.tree_pop()
 
     if imgui.tree_node("Clips (Timeline)"):
-        if imgui.tree_node("Delay"):
-            demo_clip_delay()
-            imgui.tree_pop()
-        if imgui.tree_node("Callbacks"):
-            demo_clip_callback()
-            imgui.tree_pop()
-        if imgui.tree_node("Stagger"):
-            demo_stagger()
-            imgui.tree_pop()
+        demo_header("Delay", demo_clip_delay)
+        demo_header("Callbacks", demo_clip_callback)
+        demo_header("Stagger", demo_stagger)
         imgui.tree_pop()
 
     if imgui.tree_node("Paths"):
-        if imgui.tree_node("Motion Path"):
-            demo_path()
-            imgui.tree_pop()
-        if imgui.tree_node("Path Morphing"):
-            demo_path_morph()
-            imgui.tree_pop()
-        if imgui.tree_node("Text Along Path"):
-            demo_text_path()
-            imgui.tree_pop()
+        demo_header("Motion Path", demo_path)
+        demo_header("Path Morphing", demo_path_morph)
+        demo_header("Text Along Path", demo_text_path)
         imgui.tree_pop()
 
     if imgui.tree_node("Advanced"):
-        if imgui.tree_node("Gradient"):
-            demo_gradient()
-            imgui.tree_pop()
-        if imgui.tree_node("Transform"):
-            demo_transform()
-            imgui.tree_pop()
-        if imgui.tree_node("Resolved Tween (Mouse Follow)"):
-            demo_resolved()
-            imgui.tree_pop()
-        if imgui.tree_node("Text Stagger"):
-            demo_text_stagger()
-            imgui.tree_pop()
+        demo_header("Gradient", demo_gradient)
+        demo_header("Transform", demo_transform)
+        demo_header("Resolved Tween (Mouse Follow)", demo_resolved)
+        demo_header("Text Stagger", demo_text_stagger)
         imgui.tree_pop()
 
 
 if __name__ == "__main__":
-    immapp.run(gui, with_im_anim=True, window_title="ImAnim Demo", window_size=(500, 700))
+    immapp.run(gui, with_im_anim=True, with_markdown=True,
+               window_title="ImAnim Demo", window_size=(500, 700))
