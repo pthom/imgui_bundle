@@ -28,3 +28,11 @@ const std::vector<LibraryConfig>& GetAllLibraryConfigs();
 
 // Get all demo files across all libraries (for code viewer)
 std::vector<DemoFileInfo> GetAllDemoFiles();
+
+// Current library selection
+int GetCurrentLibraryIndex();
+void SetCurrentLibraryIndex(int index);
+const LibraryConfig& GetCurrentLibrary();
+
+// Get demo files for current library only
+std::vector<DemoFileInfo> GetCurrentLibraryFiles();

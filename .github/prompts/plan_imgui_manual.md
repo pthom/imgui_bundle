@@ -242,10 +242,10 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
 - [x] Test that existing functionality still works (app runs, needs manual verification)
 
 ### Step 2: Add Python Toggle
-- [ ] Move Python demos to same folder as C++ demos
-- [ ] Update CMake to copy Python demo files
-- [ ] Add Python editor alongside C++ editor
-- [ ] Add [C++] [Python] toggle buttons
+- [x] Move Python demos to bindings/imgui_bundle/demos_python/ , cpp demos remain in external/ folders
+- [x] Update CMake to copy Python demo files
+- [x] Add Python editor alongside C++ editor
+- [x] Add [C++] [Python] toggle buttons
 
 ### Step 3: Add Library Tabs
 - [ ] Create library tab bar

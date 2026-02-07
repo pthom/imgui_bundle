@@ -105,3 +105,28 @@ std::vector<DemoFileInfo> GetAllDemoFiles()
     }
     return allFiles;
 }
+
+// Current library selection (0 = first library)
+static int g_currentLibraryIndex = 0;
+
+int GetCurrentLibraryIndex()
+{
+    return g_currentLibraryIndex;
+}
+
+void SetCurrentLibraryIndex(int index)
+{
+    const auto& configs = GetAllLibraryConfigs();
+    if (index >= 0 && index < (int)configs.size())
+        g_currentLibraryIndex = index;
+}
+
+const LibraryConfig& GetCurrentLibrary()
+{
+    return GetAllLibraryConfigs()[g_currentLibraryIndex];
+}
+
+std::vector<DemoFileInfo> GetCurrentLibraryFiles()
+{
+    return GetCurrentLibrary().files;
+}

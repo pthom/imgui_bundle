@@ -4,6 +4,7 @@
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "demo_code_viewer.h"
 #include "imgui_demo_marker_hooks.h"
+#include "library_config.h"
 
 #include <string>
 void OpenUrl(const std::string &url);
@@ -27,7 +28,6 @@ void OnBeforeFrame_ImAnimSetup()
 }
 
 void OnPostInit()
-
 {
     // Initialize the code viewer (loads source files from assets)
     DemoCodeViewer_Init();
@@ -36,43 +36,89 @@ void OnPostInit()
     GImGuiDemoMarkerHook = OnDemoMarkerHook;
 }
 
+// Top toolbar: library selection buttons
+void ShowLibraryToolbar()
+{
+    const auto& libs = GetAllLibraryConfigs();
+    int currentIdx = GetCurrentLibraryIndex();
+
+    for (size_t i = 0; i < libs.size(); ++i)
+    {
+        if (i > 0)
+            ImGui::SameLine();
+
+        bool isSelected = ((int)i == currentIdx);
+        if (isSelected)
+        {
+            ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
+        }
+
+        if (ImGui::Button(libs[i].name.c_str()))
+        {
+            SetCurrentLibraryIndex((int)i);
+        }
+
+        if (isSelected)
+        {
+            ImGui::PopStyleColor();
+        }
+    }
+}
+
+// Forward declarations for ImAnim demo windows
+void ImAnimDemoBasicsWindow(bool create_window);
+void ImAnimDemoWindow(bool create_window);
+void ImAnimDocWindow(bool create_window);
+void ImAnimUsecaseWindow(bool create_window);
+
+// Show the demo(s) for the current library
+void ShowCurrentLibraryDemo()
+{
+    IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
+
+    const auto& currentLib = GetCurrentLibrary();
+
+    // ImAnim has multiple demos - show them as tabs
+    if (currentLib.name == "ImAnim")
+    {
+        if (ImGui::BeginTabBar("ImAnimDemos"))
+        {
+            if (ImGui::BeginTabItem("Basics"))
+            {
+                ImAnimDemoBasicsWindow(false);
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Demo"))
+            {
+                ImAnimDemoWindow(false);
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Doc"))
+            {
+                ImAnimDocWindow(false);
+                ImGui::EndTabItem();
+            }
+            if (ImGui::BeginTabItem("Usecases"))
+            {
+                ImAnimUsecaseWindow(false);
+                ImGui::EndTabItem();
+            }
+            ImGui::EndTabBar();
+        }
+    }
+    else if (currentLib.showDemoWindow)
+    {
+        currentLib.showDemoWindow(false);
+    }
+}
+
 std::vector<HelloImGui::DockableWindow> SetupDockableWindows()
 {
-    // ImAnim Demo Basic Window
-    HelloImGui::DockableWindow imAnimDemoBasicsWindow;
-    imAnimDemoBasicsWindow.label = "ImAnim Demo - Basics";
-    imAnimDemoBasicsWindow.dockSpaceName = "LeftDockSpace";
-    imAnimDemoBasicsWindow.GuiFunction = [] {
-        IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
-        ImAnimDemoBasicsWindow(false);
-    };
-
-    // ImAnim Demo Window
-    HelloImGui::DockableWindow imAnimDemoWindow;
-    imAnimDemoWindow.label = "ImAnim Demo";
-    imAnimDemoWindow.dockSpaceName = "LeftDockSpace";
-    imAnimDemoWindow.GuiFunction = [] {
-        IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
-        ImAnimDemoWindow(false);
-    };
-
-    // ImAnim Documentation Window
-    HelloImGui::DockableWindow imAnimDocWindow;
-    imAnimDocWindow.label = "ImAnim Doc";
-    imAnimDocWindow.dockSpaceName = "LeftDockSpace";
-    imAnimDocWindow.GuiFunction = [] {
-        IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
-        ImAnimDocWindow(false);
-    };
-
-    // ImAnim Usecases Window
-    HelloImGui::DockableWindow imAnimUsecaseWindow;
-    imAnimUsecaseWindow.label = "ImAnim Usecases";
-    imAnimUsecaseWindow.dockSpaceName = "LeftDockSpace";
-    imAnimUsecaseWindow.GuiFunction = [] {
-        IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
-        ImAnimUsecaseWindow(false);
-    };
+    // Demo Window (left side, 30%)
+    HelloImGui::DockableWindow demoWindow;
+    demoWindow.label = "Demo";
+    demoWindow.dockSpaceName = "LeftDockSpace";
+    demoWindow.GuiFunction = ShowCurrentLibraryDemo;
 
     // Code Viewer Window (right side, 70%)
     HelloImGui::DockableWindow codeViewerWindow;
@@ -80,7 +126,7 @@ std::vector<HelloImGui::DockableWindow> SetupDockableWindows()
     codeViewerWindow.dockSpaceName = "MainDockSpace";
     codeViewerWindow.GuiFunction = [] { DemoCodeViewer_Show(); };
 
-    return {imAnimDemoBasicsWindow, imAnimDemoWindow, imAnimDocWindow, imAnimUsecaseWindow, codeViewerWindow};
+    return {demoWindow, codeViewerWindow};
 }
 
 int main()
@@ -103,10 +149,20 @@ int main()
     runnerParams.dockingParams.dockingSplits = {splitLeftRight};
     runnerParams.dockingParams.dockableWindows = SetupDockableWindows();
 
+    // Top toolbar for library selection
+    HelloImGui::EdgeToolbarOptions toolbarOptions;
+    toolbarOptions.sizeEm = 2.0f;
+    toolbarOptions.WindowBg = ImVec4(0.3f, 0.3f, 0.3f, 0.9f);
+    runnerParams.callbacks.AddEdgeToolbar(
+        HelloImGui::EdgeToolbarType::Top,
+        ShowLibraryToolbar,
+        toolbarOptions
+    );
+
     runnerParams.imGuiWindowParams.showStatusBar = true;
     runnerParams.imGuiWindowParams.showMenuBar = true;
 
-        // Set the app menu
+    // Set the app menu
     runnerParams.callbacks.ShowMenus = []
     {
         if (ImGui::BeginMenu("Links"))
@@ -114,7 +170,6 @@ int main()
             ImGui::SeparatorText("ImAnim");
             if (ImGui::MenuItem("ImAnim - Github repository"))
                 OpenUrl("https://github.com/soufianekhiat/ImAnim");
-
             if (ImGui::MenuItem("ImAnim - Doc"))
                 OpenUrl("https://github.com/soufianekhiat/ImAnim/tree/main/docs");
 
@@ -124,24 +179,31 @@ int main()
             if (ImGui::MenuItem("Dear ImGui - Interactive Manual"))
                 OpenUrl("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html");
 
+            ImGui::SeparatorText("ImPlot");
+            if (ImGui::MenuItem("ImPlot - Github repository"))
+                OpenUrl("https://github.com/epezent/implot");
 
-            // ImGui::SeparatorText("About this manual");
-            // if (ImGui::MenuItem("Repository"))
-            //     OpenUrl("https://github.com/pthom/imgui_manual");
+            ImGui::SeparatorText("ImPlot3D");
+            if (ImGui::MenuItem("ImPlot3D - Github repository"))
+                OpenUrl("https://github.com/brenocq/implot3d");
+
             ImGui::EndMenu();
         }
     };
 
     // Add some widgets in the status bar
     runnerParams.callbacks.ShowStatus = [] {
-        //MarkdownHelper::Markdown("Dear ImGui Manual - [Repository](https://github.com/pthom/imgui_manual)");
-        ImGuiMd::Render("ImAnim Manual, a manual for [ImAnim](https://github.com/soufianekhiat/ImAnim) - Made with [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle/) and [Hello ImGui](https://github.com/pthom/hello_imgui)");
+        const auto& lib = GetCurrentLibrary();
+        std::string status = "Viewing: " + lib.name + " - Made with [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle/)";
+        ImGuiMd::Render(status.c_str());
     };
 
     runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
 
     ImmApp::AddOnsParams addons;
     addons.withMarkdown = true;
+    addons.withImplot = true;
+    addons.withImplot3d = true;
     ImmApp::Run(runnerParams, addons);
     return 0;
 }

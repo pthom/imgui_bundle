@@ -41,10 +41,7 @@ namespace
         bool pyLoaded = false;
     };
 
-    // Cached file list from config
-    std::vector<DemoFileInfo> g_files;
-
-    std::map<std::string, CodeFile> g_codeFiles;  // Keyed by baseName
+    std::map<std::string, CodeFile> g_codeFiles;  // Keyed by baseName (all files loaded)
     int g_currentFileIndex = 0;
     int g_pendingScrollLine = -1;
     std::string g_pendingScrollFile;
@@ -92,12 +89,13 @@ namespace
         }
     }
 
-    int FindFileIndex(const char* displayName)
+    int FindFileIndexInCurrentLibrary(const char* displayName)
     {
-        // Match against both .cpp and .py display names
-        for (size_t i = 0; i < g_files.size(); ++i)
+        // Match against .cpp display names in current library
+        auto files = GetCurrentLibraryFiles();
+        for (size_t i = 0; i < files.size(); ++i)
         {
-            if (g_files[i].cppDisplayName() == displayName)
+            if (files[i].cppDisplayName() == displayName)
                 return (int)i;
         }
         return -1;
@@ -106,11 +104,9 @@ namespace
 
 void DemoCodeViewer_Init()
 {
-    // Get file list from config
-    g_files = GetAllDemoFiles();
-
-    // Load all files
-    for (const auto& file : g_files)
+    // Load all files from all libraries (for fast switching between libraries)
+    auto allFiles = GetAllDemoFiles();
+    for (const auto& file : allFiles)
     {
         LoadFile(file);
     }
@@ -118,9 +114,12 @@ void DemoCodeViewer_Init()
 
 void DemoCodeViewer_Show()
 {
+    // Get files for current library
+    auto files = GetCurrentLibraryFiles();
+
     // Language toggle (only show if any file has Python)
     bool anyHasPython = false;
-    for (const auto& f : g_files)
+    for (const auto& f : files)
         if (f.hasPython) { anyHasPython = true; break; }
 
     if (anyHasPython)
@@ -138,9 +137,9 @@ void DemoCodeViewer_Show()
     // Tabs for file selection
     if (ImGui::BeginTabBar("CodeViewerTabs"))
     {
-        for (size_t i = 0; i < g_files.size(); ++i)
+        for (size_t i = 0; i < files.size(); ++i)
         {
-            const auto& file = g_files[i];
+            const auto& file = files[i];
             std::string displayName = g_showPython ? file.pyDisplayName() : file.cppDisplayName();
 
             // Skip if showing Python but file doesn't have Python
@@ -163,14 +162,18 @@ void DemoCodeViewer_Show()
         ImGui::EndTabBar();
     }
 
-    if (g_files.empty())
+    if (files.empty())
     {
         ImGui::TextWrapped("No demo files configured");
         return;
     }
 
+    // Clamp file index to valid range (may change when switching libraries)
+    if (g_currentFileIndex >= (int)files.size())
+        g_currentFileIndex = 0;
+
     // Display the current file's editor
-    const auto& currentFile = g_files[g_currentFileIndex];
+    const auto& currentFile = files[g_currentFileIndex];
     auto it = g_codeFiles.find(currentFile.baseName);
     if (it == g_codeFiles.end())
     {
@@ -247,8 +250,8 @@ void DemoCodeViewer_ShowCodeAt(const char* filename, int line)
     g_pendingScrollFile = filename;
     g_pendingScrollLine = line;
 
-    // Switch to the correct tab
-    int idx = FindFileIndex(filename);
+    // Switch to the correct tab (within current library)
+    int idx = FindFileIndexInCurrentLibrary(filename);
     if (idx >= 0)
     {
         g_currentFileIndex = idx;
