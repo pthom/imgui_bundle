@@ -268,22 +268,15 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
   (later, in Python this may require inspecting the python source code, with the inspect module)
   test this with the existing `imgui_demo.py` and the `im_anim_demo_basics.py` which already has markers
 
-### Step 6: adapt implot_demo and implot3d_demo
-- [ ] Add IMGUI_DEMO_MARKER to implot_demo.cpp and implot3d_demo.cpp
-- [ ] Add the same IMGUI_DEMO_MARKER (with exact same section names) to the Python demos
-- [ ] Review im_anim demos so that demo markers are inside the tree node. 
-  => Write a script to automatically move the markers inside the tree nodes. Do this for all demos, except im_anim_demo_basics which already has this. The script should look for IMGUI_DEMO_MARKER calls, and move them inside the closest parent tree node, if there is a tree node just below it (next line).
-Example of what the script should do:
+### Step 6: adapt implot_demo and implot3d_demo, and im_anim demos
+- [x] Review im_anim demos so that demo markers are inside the tree node.
+- [x] Add IMGUI_DEMO_MARKER to implot_demo.cpp and implot3d_demo.cpp
+- [x] Add the same IMGUI_DEMO_MARKER (with exact same section names) to the Python demos
+- [ ] Add missing demos in implot3d_demo.py (and add markers)
+List of demo functions that are not present in implot3d_demo.py, but present in implot3d_demo.cpp.
+'demo_config', 'demo_legend_options', 'demo_log_scale', 'demo_symmetric_log_scale', 'demo_mouse_picking', 'demo_equal_axes', 'demo_auto_fitting_data',
+'demo_custom_per_point_style', 'demo_offset_and_stride', 'demo_custom_overlay', 'demo_axis_constraints', 'demo_plot_flags'
 
-  IMGUI_DEMO_MARKER("Animated Buttons");
-  if (ImGui::TreeNodeEx("Animated Buttons")) {
-
-becomes:
-
-  if (ImGui::TreeNodeEx("Animated Buttons")) {
-      IMGUI_DEMO_MARKER("Animated Buttons");
-
-(it should preserve the indentation and spacing, and only move the marker if it is not already inside the tree node)
 
 ### Step 7: Build Multiple Executables
 - [ ] Create separate app targets in CMakeLists.txt

@@ -9,6 +9,11 @@ from typing import TypeAlias, Any
 
 FloatArray1D: TypeAlias = NDArray[np.floating[Any]]
 
+def IMGUI_DEMO_MARKER(section: str) -> None:
+    """Marker for the interactive manual. Maps sections to source code."""
+    pass
+
+
 
 def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> NDArray[np.uint8]:
     """Create a checkerboard RGBA texture as a numpy array."""
@@ -105,6 +110,7 @@ def plot_candlestick(
 
 
 def demo_custom_plotters_and_tooltips():
+    IMGUI_DEMO_MARKER("Custom/Custom Plotters and Tooltips")
     static = demo_custom_plotters_and_tooltips
     imgui.bullet_text("You can create custom plotters or extend ImPlot using implot_internal.h.")
     if not hasattr(static, "initialized"):
@@ -176,6 +182,7 @@ class ScrollingBuffer:
 def demo_help():
     """Displays help information similar to the ImPlot C++ demo."""
 
+    IMGUI_DEMO_MARKER("Demo_Help")
     imgui.text("ABOUT THIS DEMO:")
     imgui.bullet_text("Sections below are demonstrating many aspects of the library.")
     imgui.bullet_text("The \"Tools\" menu above gives access to: Style Editors (ImPlot/ImGui)\n"
@@ -210,6 +217,7 @@ def demo_help():
 # -----------------------------------------------------------------------------
 
 def demo_config():
+    IMGUI_DEMO_MARKER("Config")
     static = demo_config
 
     if not hasattr(static, "now"):
@@ -247,6 +255,7 @@ def demo_config():
 #-----------------------------------------------------------------------------
 
 def demo_line_plots():
+    IMGUI_DEMO_MARKER("Plots/Line Plots")
     static = demo_line_plots
 
     if not hasattr(static, "xs1"):
@@ -276,6 +285,7 @@ def random_range(min_val, max_val, size=1):
 
 
 def demo_filled_line_plots():
+    IMGUI_DEMO_MARKER("Plots/Filled Line Plots")
     static = demo_filled_line_plots
 
     if not hasattr(static, "xs1"):
@@ -335,6 +345,7 @@ def demo_filled_line_plots():
 #-----------------------------------------------------------------------------
 
 def demo_shaded_plots():
+    IMGUI_DEMO_MARKER("Plots/Shaded Plots")
     static = demo_shaded_plots
 
     if not hasattr(static, "xs"):
@@ -365,6 +376,7 @@ def demo_shaded_plots():
 #-----------------------------------------------------------------------------
 
 def demo_scatter_plots():
+    IMGUI_DEMO_MARKER("Plots/Scatter Plots")
     static = demo_scatter_plots
 
     if not hasattr(static, "xs1"):
@@ -394,6 +406,7 @@ def demo_scatter_plots():
 #-----------------------------------------------------------------------------
 
 def demo_stairstep_plots():
+    IMGUI_DEMO_MARKER("Plots/Stairstep Plots")
     static = demo_stairstep_plots
 
     if not hasattr(static, "ys1"):
@@ -426,6 +439,7 @@ def demo_stairstep_plots():
 
 
 def demo_bar_plots():
+    IMGUI_DEMO_MARKER("Plots/Bar Plots")
     static = demo_bar_plots
 
     if not hasattr(static, "data"):
@@ -440,6 +454,7 @@ def demo_bar_plots():
 #-----------------------------------------------------------------------------
 
 def demo_bar_groups():
+    IMGUI_DEMO_MARKER("Plots/Bar Groups")
     static = demo_bar_groups
 
     if not hasattr(static, "data"):
@@ -504,6 +519,7 @@ def demo_bar_groups():
 #-----------------------------------------------------------------------------
 
 def demo_bar_stacks():
+    IMGUI_DEMO_MARKER("Plots/Bar Stacks")
     static = demo_bar_stacks
 
     if not hasattr(static, "liars"):
@@ -568,6 +584,7 @@ def demo_bar_stacks():
 
 
 def demo_error_bars():
+    IMGUI_DEMO_MARKER("Plots/Error Bars")
     static = demo_error_bars
 
     if not hasattr(static, "xs"):
@@ -604,6 +621,7 @@ def demo_error_bars():
 
 
 def demo_stem_plots():
+    IMGUI_DEMO_MARKER("Plots/Stem Plots")
     static = demo_stem_plots
 
     if not hasattr(static, "xs"):
@@ -625,6 +643,7 @@ def demo_stem_plots():
 #-----------------------------------------------------------------------------
 
 def demo_infinite_lines():
+    IMGUI_DEMO_MARKER("Plots/Infinite Lines")
     static = demo_infinite_lines
     if not hasattr(static, "vals"):
         static.vals = np.array([0.25, 0.5, 0.75], dtype=np.float64)
@@ -637,6 +656,7 @@ def demo_infinite_lines():
 
 
 def demo_pie_charts():
+    IMGUI_DEMO_MARKER("Plots/Pie Charts")
     static = demo_pie_charts
 
     if not hasattr(static, "data1"):
@@ -672,6 +692,7 @@ def demo_pie_charts():
 
 
 def demo_heatmaps():
+    IMGUI_DEMO_MARKER("Plots/Heatmaps")
     static = demo_heatmaps
 
     if not hasattr(static, "values1"):
@@ -741,6 +762,7 @@ def demo_heatmaps():
 #-----------------------------------------------------------------------------
 
 def demo_histogram():
+    IMGUI_DEMO_MARKER("Plots/Histogram")
     static = demo_histogram
 
     if not hasattr(static, "hist_flags"):
@@ -814,6 +836,7 @@ def demo_histogram():
 #-----------------------------------------------------------------------------
 
 def demo_histogram2d():
+    IMGUI_DEMO_MARKER("Plots/Histogram 2D")
     static = demo_histogram2d
 
     if not hasattr(static, "count"):
@@ -849,6 +872,7 @@ def demo_histogram2d():
 
 
 def demo_digital_plots():
+    IMGUI_DEMO_MARKER("Plots/Digital Plots")
     static = demo_digital_plots
 
     if not hasattr(static, "paused"):
@@ -902,6 +926,7 @@ def demo_digital_plots():
 #-----------------------------------------------------------------------------
 
 def demo_images():
+    IMGUI_DEMO_MARKER("Plots/Images")
     static = demo_images
 
     if not hasattr(static, "bmin"):
@@ -960,6 +985,7 @@ class RollingBuffer:
 #-----------------------------------------------------------------------------
 
 def demo_markers_and_text():
+    IMGUI_DEMO_MARKER("Plots/Markers and Text")
     static = demo_markers_and_text
 
     if not hasattr(static, "mk_size"):
@@ -1006,6 +1032,7 @@ def demo_markers_and_text():
 #-----------------------------------------------------------------------------
 
 def demo_nan_values():
+    IMGUI_DEMO_MARKER("Plots/NaN Values")
     static = demo_nan_values
 
     if not hasattr(static, "include_nan"):
@@ -1032,6 +1059,7 @@ def demo_nan_values():
 #-----------------------------------------------------------------------------
 
 def demo_log_scale():
+    IMGUI_DEMO_MARKER("Axes/Log Scale")
     static = demo_log_scale
 
     if not hasattr(static, "xs"):
@@ -1055,6 +1083,7 @@ def demo_log_scale():
 #-----------------------------------------------------------------------------
 
 def demo_symmetric_log_scale():
+    IMGUI_DEMO_MARKER("Axes/Symmetric Log Scale")
     static = demo_symmetric_log_scale
 
     if not hasattr(static, "xs"):
@@ -1087,6 +1116,7 @@ class HugeTimeData:
 
 
 def demo_time_scale():
+    IMGUI_DEMO_MARKER("Axes/Time Scale")
     static = demo_time_scale
 
     if not hasattr(static, "t_min"):
@@ -1153,6 +1183,7 @@ def demo_time_scale():
 #-----------------------------------------------------------------------------
 
 def demo_multiple_axes():
+    IMGUI_DEMO_MARKER("Axes/Multiple Axes")
     static = demo_multiple_axes
 
     if not hasattr(static, "xs"):
@@ -1212,6 +1243,7 @@ def demo_multiple_axes():
 # Demo_LinkedAxes
 #-----------------------------------------------------------------------------
 def demo_linked_axes():
+    IMGUI_DEMO_MARKER("Axes/Linked Axes")
     static = demo_linked_axes
 
     if not hasattr(static, "x_min"):
@@ -1249,6 +1281,7 @@ def demo_linked_axes():
 
 
 def demo_axis_constraints():
+    IMGUI_DEMO_MARKER("Axes/Axis Constraints")
     static = demo_axis_constraints
 
     if not hasattr(static, "constraints"):
@@ -1274,6 +1307,7 @@ def demo_axis_constraints():
 #-----------------------------------------------------------------------------
 
 def demo_equal_axes():
+    IMGUI_DEMO_MARKER("Axes/Equal Axes")
     static = demo_equal_axes
 
     if not hasattr(static, "xs1"):
@@ -1301,6 +1335,7 @@ def demo_equal_axes():
 #-----------------------------------------------------------------------------
 
 def demo_auto_fitting_data():
+    IMGUI_DEMO_MARKER("Axes/Auto-Fitting Data")
     static = demo_auto_fitting_data
 
     if not hasattr(static, "xflags"):
@@ -1332,6 +1367,7 @@ def demo_auto_fitting_data():
 
 
 def demo_subplots_sizing():
+    IMGUI_DEMO_MARKER("Subplots/Sizing")
     static = demo_subplots_sizing
 
     if not hasattr(static, "flags"):
@@ -1390,6 +1426,7 @@ def demo_subplots_sizing():
 
 
 def demo_subplot_item_sharing():
+    IMGUI_DEMO_MARKER("Subplots/Item Sharing")
     static = demo_subplot_item_sharing
 
     if not hasattr(static, "flags"):
@@ -1443,6 +1480,7 @@ def demo_subplot_item_sharing():
 
 
 def demo_subplot_axis_linking():
+    IMGUI_DEMO_MARKER("Subplots/Axis Linking")
     static = demo_subplot_axis_linking
 
     if not hasattr(static, "flags"):
@@ -1474,6 +1512,7 @@ def demo_subplot_axis_linking():
 
 #-----------------------------------------------------------------------------
 def demo_drag_points():
+    IMGUI_DEMO_MARKER("Tools/Drag Points")
     static = demo_drag_points
     imgui.bullet_text("Click and drag each point.")
 
@@ -1514,6 +1553,7 @@ def demo_drag_points():
 
 
 def demo_drag_lines():
+    IMGUI_DEMO_MARKER("Tools/Drag Lines")
     static = demo_drag_lines
 
     imgui.bullet_text("Click and drag the horizontal and vertical lines.")
@@ -1581,6 +1621,7 @@ class DemoDragRectState:
 
 
 def demo_drag_rects():
+    IMGUI_DEMO_MARKER("Tools/Drag Rects")
     static = demo_drag_rects
     if not hasattr(static, "state"):
         static.state = DemoDragRectState()
@@ -1646,6 +1687,7 @@ def demo_drag_rects():
 
 
 def demo_annotations():
+    IMGUI_DEMO_MARKER("Tools/Annotations")
     static = demo_annotations
     if not hasattr(static, "clamp"):
         static.clamp = False
@@ -1683,6 +1725,7 @@ def demo_annotations():
 
 
 def demo_tags():
+    IMGUI_DEMO_MARKER("Tools/Tags")
     static = demo_tags
 
     if not hasattr(static, "show"):
@@ -1724,6 +1767,7 @@ def sparkline(label_id, values, y_min, y_max, offset, color, size):
 
 
 def demo_tables():
+    IMGUI_DEMO_MARKER("Subplots/Tables")
     static = demo_tables
 
     if not hasattr(static, "anim"):
@@ -1818,6 +1862,7 @@ def style_seaborn():
 
 
 def demo_custom_styles():
+    IMGUI_DEMO_MARKER("Custom/Custom Styles")
     # Apply Seaborn style
     import copy
     implot.push_colormap(implot.Colormap_.deep)
@@ -1843,6 +1888,7 @@ def demo_custom_styles():
 #-----------------------------------------------------------------------------
 
 def demo_custom_rendering():
+    IMGUI_DEMO_MARKER("Custom/Custom Rendering")
     if implot.begin_plot("##CustomRend"):
         cntr = implot.plot_to_pixels(implot.Point(0.5, 0.5))
         rmin = implot.plot_to_pixels(implot.Point(0.25, 0.75))
@@ -1858,6 +1904,7 @@ def demo_custom_rendering():
 
 
 def demo_legend_popups():
+    IMGUI_DEMO_MARKER("Tools/Legend Popups")
     static = demo_legend_popups
 
     imgui.bullet_text("You can implement legend context menus to inject per-item controls and widgets.")
@@ -1911,6 +1958,7 @@ def demo_legend_popups():
 
 
 def demo_colormap_widgets():
+    IMGUI_DEMO_MARKER("Tools/Colormap Widgets")
     static = demo_colormap_widgets
 
     if not hasattr(static, "cmap"):

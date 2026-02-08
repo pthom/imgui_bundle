@@ -1,6 +1,13 @@
 # This file is an almost line by line transcription of implot3d_demo.cpp
 # ( https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp )
 
+
+# List of demo functions that are not present in implot3d_demo.py, but present in implot3d_demo.cpp.
+# {
+# 'demo_config', 'demo_legend_options', 'demo_log_scale', 'demo_symmetric_log_scale', 'demo_mouse_picking', 'demo_equal_axes', 'demo_auto_fitting_data',
+#   'demo_custom_per_point_style', 'demo_offset_and_stride', 'demo_custom_overlay', 'demo_axis_constraints', 'demo_plot_flags'
+# }
+
 from imgui_bundle import imgui, immapp, implot3d, imgui_ctx, ImVec4, ImVec2, IM_COL32
 from imgui_bundle.demos_python.demos_implot3d.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
 from imgui_bundle.demos_python.demo_utils.api_demos import set_hello_imgui_demo_assets_folder
@@ -9,6 +16,11 @@ import numpy as np
 from numpy.typing import NDArray
 
 set_hello_imgui_demo_assets_folder()
+
+def IMGUI_DEMO_MARKER(section: str) -> None:
+    """Marker for the interactive manual. Maps sections to source code."""
+    pass
+
 
 #-----------------------------------------------------------------------------
 # [SECTION] Demo Textures
@@ -77,6 +89,7 @@ class CircularBuffer:
 
 
 def demo_line_plots():
+    IMGUI_DEMO_MARKER("Plots/Line Plots")
     static = demo_line_plots
 
     # Update static values every frame since they depend on `imgui.get_time()`
@@ -97,6 +110,7 @@ def demo_line_plots():
 
 
 def demo_scatter_plots():
+    IMGUI_DEMO_MARKER("Plots/Scatter Plots")
     static = demo_scatter_plots
 
     if not hasattr(static, "xs1"):  # Initialize static data only once
@@ -128,6 +142,7 @@ def demo_scatter_plots():
 
 
 def demo_triangle_plots():
+    IMGUI_DEMO_MARKER("Plots/Triangle Plots")
     static = demo_triangle_plots
 
     if not hasattr(static, "xs"):  # Initialize static data only once
@@ -177,6 +192,7 @@ def demo_triangle_plots():
 
 
 def demo_quad_plots():
+    IMGUI_DEMO_MARKER("Plots/Quad Plots")
     static = demo_quad_plots
 
     if not hasattr(static, "xs"):  # Initialize static data only once
@@ -261,6 +277,7 @@ def demo_quad_plots():
 
 
 def demo_surface_plots():
+    IMGUI_DEMO_MARKER("Plots/Surface Plots")
     static = demo_surface_plots
 
     # Constants
@@ -353,6 +370,7 @@ def demo_surface_plots():
 
 
 def demo_mesh_plots():
+    IMGUI_DEMO_MARKER("Plots/Mesh Plots")
     static = demo_mesh_plots
 
     # Initialize static variables only once
@@ -431,6 +449,7 @@ def slider_implot3d_point(
 
 
 def demo_image_plots():
+    IMGUI_DEMO_MARKER("Plots/Image Plots")
     static = demo_image_plots
 
      # imgui.bullet_text("Below we are displaying the font texture, which is the only texture we have\naccess to in this demo.")
@@ -517,6 +536,7 @@ def demo_image_plots():
 
 
 def demo_realtime_plots():
+    IMGUI_DEMO_MARKER("Plots/Realtime Plots")
     static = demo_realtime_plots
 
     if not hasattr(static, "t"):
@@ -567,6 +587,7 @@ def demo_realtime_plots():
 
 
 def demo_markers_and_text():
+    IMGUI_DEMO_MARKER("Plots/Markers and Text")
     static = demo_markers_and_text
 
     # Initialize static variables only once
@@ -630,6 +651,7 @@ def demo_markers_and_text():
 
 
 def demo_nan_values():
+    IMGUI_DEMO_MARKER("Plots/NaN Values")
     static = demo_nan_values
 
     # Initialize static variables only once
@@ -662,6 +684,7 @@ def demo_nan_values():
 #-----------------------------------------------------------------------------
 
 def demo_box_scale():
+    IMGUI_DEMO_MARKER("Axes/Box Scale")
     static = demo_box_scale
 
     # Constants
@@ -687,6 +710,7 @@ def demo_box_scale():
 
 
 def demo_box_rotation():
+    IMGUI_DEMO_MARKER("Axes/Box Rotation")
     static = demo_box_rotation
 
     # Initialize state variables
@@ -743,6 +767,7 @@ def demo_box_rotation():
 
 
 def demo_tick_labels():
+    IMGUI_DEMO_MARKER("Axes/Tick Labels")
     static = demo_tick_labels
     if not hasattr(static, "custom_ticks"):
         static.custom_ticks = True
@@ -768,6 +793,7 @@ def demo_tick_labels():
 
 
 def demo_custom_styles():
+    IMGUI_DEMO_MARKER("Custom/Custom Styles")
     # Apply Seaborn style
     import copy
     implot3d.push_colormap(implot3d.Colormap_.deep)
@@ -801,6 +827,7 @@ def demo_custom_styles():
 
 def demo_custom_rendering():
 
+    IMGUI_DEMO_MARKER("Custom/Custom Rendering")
     if implot3d.begin_plot("##CustomRend"):
         implot3d.setup_axes_limits(-0.1, 1.1, -0.1, 1.1, -0.1, 1.1)
 
@@ -863,6 +890,7 @@ def style_seaborn():
 #-----------------------------------------------------------------------------
 
 def demo_help():
+    IMGUI_DEMO_MARKER("Help")
     imgui.separator_text("ABOUT THIS DEMO:")
     imgui.bullet_text("The other tabs are demonstrating many aspects of the library.")
 
