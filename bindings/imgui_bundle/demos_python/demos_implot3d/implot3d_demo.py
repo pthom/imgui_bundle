@@ -2,11 +2,6 @@
 # ( https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp )
 
 
-# List of demo functions that are not present in implot3d_demo.py, but present in implot3d_demo.cpp.
-# {
-# 'demo_config', 'demo_legend_options', 'demo_log_scale', 'demo_symmetric_log_scale', 'demo_mouse_picking', 'demo_equal_axes', 'demo_auto_fitting_data',
-#   'demo_custom_per_point_style', 'demo_offset_and_stride', 'demo_custom_overlay', 'demo_axis_constraints', 'demo_plot_flags'
-# }
 
 from imgui_bundle import imgui, immapp, implot3d, imgui_ctx, ImVec4, ImVec2, IM_COL32
 from imgui_bundle.demos_python.demos_implot3d.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
@@ -586,6 +581,172 @@ def demo_realtime_plots():
         implot3d.end_plot()
 
 
+def demo_plot_flags():
+    IMGUI_DEMO_MARKER("Plots/Plot Flags")
+    static = demo_plot_flags
+
+    if not hasattr(static, "flags"):
+        static.flags = implot3d.Flags_.none.value
+
+    flag_info = [
+        (implot3d.Flags_.no_title, "Hide plot title"),
+        (implot3d.Flags_.no_legend, "Hide plot legend"),
+        (implot3d.Flags_.no_mouse_text, "Hide mouse position in plot coordinates"),
+        (implot3d.Flags_.no_clip, "Disable 3D box clipping"),
+        (implot3d.Flags_.no_menus, "The user will not be able to open context menus"),
+        (implot3d.Flags_.equal, "X, Y, and Z axes will be constrained to have the same units/pixel"),
+        (implot3d.Flags_.no_rotate, "Lock rotation interaction"),
+        (implot3d.Flags_.no_pan, "Lock panning/translation interaction"),
+        (implot3d.Flags_.no_zoom, "Lock zooming interaction"),
+        (implot3d.Flags_.no_inputs, "Disable all user inputs"),
+    ]
+
+    for flag, tooltip in flag_info:
+        _, static.flags = imgui.checkbox_flags(str(flag.name), static.flags, flag.value)
+        imgui.same_line()
+        help_marker(tooltip)
+
+    if implot3d.begin_plot("Plot Flags Demo", size=(-1, 0), flags=static.flags):
+        implot3d.setup_axes("X-axis", "Y-axis", "Z-axis")
+        implot3d.setup_axes_limits(-10, 10, -10, 10, -5, 5)
+
+        if not hasattr(static, "helix_x"):
+            static.helix_x = np.zeros(100, dtype=np.float32)
+            static.helix_y = np.zeros(100, dtype=np.float32)
+            static.helix_z = np.zeros(100, dtype=np.float32)
+            for i in range(100):
+                t = i * 0.1
+                static.helix_x[i] = 3.0 * np.cos(t)
+                static.helix_y[i] = 3.0 * np.sin(t)
+                static.helix_z[i] = t - 5.0
+
+        implot3d.plot_line("Helix", static.helix_x, static.helix_y, static.helix_z)
+
+        scatter_x = np.array([-10, 10, -10, 10, -10, 10, -10, 10], dtype=np.float32)
+        scatter_y = np.array([-10, -10, 10, 10, -10, -10, 10, 10], dtype=np.float32)
+        scatter_z = np.array([-5, -5, -5, -5, 5, 5, 5, 5], dtype=np.float32)
+        implot3d.plot_scatter("Cube corners", scatter_x, scatter_y, scatter_z)
+
+        implot3d.end_plot()
+
+
+def demo_offset_and_stride():
+    IMGUI_DEMO_MARKER("Plots/Offset and Stride")
+    static = demo_offset_and_stride
+
+    k_spirals = 11
+    k_points_per = 50
+
+    if not hasattr(static, "offset"):
+        static.offset = 0
+
+    # Build interleaved data: [s0.x0 s0.y0 s0.z0 ... sn.x0 sn.y0 sn.z0 s0.x1 ...]
+    interleaved = np.zeros(3 * k_points_per * k_spirals, dtype=np.float64)
+    for p in range(k_points_per):
+        for s in range(k_spirals):
+            r = s / (k_spirals - 1) * 0.2 + 0.2
+            theta = p / k_points_per * 6.28
+            interleaved[p * 3 * k_spirals + 3 * s + 0] = 0.5 + r * np.cos(theta)
+            interleaved[p * 3 * k_spirals + 3 * s + 1] = 0.5 + r * np.sin(theta)
+            interleaved[p * 3 * k_spirals + 3 * s + 2] = 0.5 + 0.5 * np.sin(2.0 * theta)
+
+    imgui.bullet_text("Offsetting is useful for realtime plots (see above) and circular buffers.")
+    imgui.bullet_text("Striding is useful for interleaved data (e.g. audio) or plotting structs.")
+    imgui.bullet_text("Here, all spiral data is stored in a single interleaved buffer:")
+    imgui.bullet_text("[s0.x0 s0.y0 s0.z0 ... sn.x0 sn.y0 sn.z0 s0.x1 s0.y1 s0.z1 ... sn.x1 sn.y1 sn.z1 ... sn.xm sn.ym sn.zm]")
+    imgui.bullet_text("The offset value indicates which spiral point index is considered the first.")
+    imgui.bullet_text("Offsets can be negative and/or larger than the actual data count.")
+    _, static.offset = imgui.slider_int("Offset", static.offset, -2 * k_points_per, 2 * k_points_per)
+
+    if implot3d.begin_plot("##strideoffset", size=(-1, 0)):
+        implot3d.push_colormap(implot3d.Colormap_.jet)
+        stride_elements = 3 * k_spirals
+        for s in range(k_spirals):
+            label = f"Spiral {s}"
+            # Extract x, y, z for this spiral using numpy slicing (Pythonic stride)
+            xs = interleaved[s * 3 + 0 :: stride_elements][:k_points_per].copy()
+            ys = interleaved[s * 3 + 1 :: stride_elements][:k_points_per].copy()
+            zs = interleaved[s * 3 + 2 :: stride_elements][:k_points_per].copy()
+            implot3d.plot_line(label, xs, ys, zs, offset=static.offset)
+        implot3d.end_plot()
+        implot3d.pop_colormap()
+
+
+def demo_legend_options():
+    IMGUI_DEMO_MARKER("Plots/Legend Options")
+    static = demo_legend_options
+
+    if not hasattr(static, "loc"):
+        static.loc = implot3d.Location_.east.value
+        static.flags = 0
+
+    _, static.loc = imgui.checkbox_flags("North", static.loc, implot3d.Location_.north.value)
+    imgui.same_line()
+    _, static.loc = imgui.checkbox_flags("South", static.loc, implot3d.Location_.south.value)
+    imgui.same_line()
+    _, static.loc = imgui.checkbox_flags("West", static.loc, implot3d.Location_.west.value)
+    imgui.same_line()
+    _, static.loc = imgui.checkbox_flags("East", static.loc, implot3d.Location_.east.value)
+
+    _, static.flags = imgui.checkbox_flags("ImPlot3DLegendFlags_Horizontal", static.flags, implot3d.LegendFlags_.horizontal.value)
+    imgui.same_line()
+    help_marker("Legend entries will be displayed horizontally")
+
+    _, static.flags = imgui.checkbox_flags("ImPlot3DLegendFlags_NoButtons", static.flags, implot3d.LegendFlags_.no_buttons.value)
+    imgui.same_line()
+    help_marker("Legend icons will not function as hide/show buttons")
+
+    _, static.flags = imgui.checkbox_flags("ImPlot3DLegendFlags_NoHighlightItem", static.flags, implot3d.LegendFlags_.no_highlight_item.value)
+    imgui.same_line()
+    help_marker("Plot items will not be highlighted when their legend entry is hovered")
+
+    style = implot3d.get_style()
+    changed, val = imgui.slider_float2("LegendPadding", style.legend_padding, 0.0, 20.0, "%.0f")
+    if changed:
+        style.legend_padding = ImVec2(val[0], val[1])
+    changed, val = imgui.slider_float2("LegendInnerPadding", style.legend_inner_padding, 0.0, 10.0, "%.0f")
+    if changed:
+        style.legend_inner_padding = ImVec2(val[0], val[1])
+    changed, val = imgui.slider_float2("LegendSpacing", style.legend_spacing, 0.0, 5.0, "%.0f")
+    if changed:
+        style.legend_spacing = ImVec2(val[0], val[1])
+
+    if implot3d.begin_plot("Legend Options Demo", size=(-1, 0)):
+        implot3d.setup_axes("X-Axis", "Y-Axis", "Z-Axis")
+        implot3d.setup_axes_limits(-1, 1, -1, 1, -1, 1)
+        implot3d.setup_legend(static.loc, static.flags)
+
+        t = imgui.get_time() * 0.5
+        count = 50
+        xs1 = np.zeros(count, dtype=np.float32)
+        ys1 = np.zeros(count, dtype=np.float32)
+        zs1 = np.zeros(count, dtype=np.float32)
+        xs2 = np.zeros(count, dtype=np.float32)
+        ys2 = np.zeros(count, dtype=np.float32)
+        zs2 = np.zeros(count, dtype=np.float32)
+        xs3 = np.zeros(count, dtype=np.float32)
+        ys3 = np.zeros(count, dtype=np.float32)
+        zs3 = np.zeros(count, dtype=np.float32)
+
+        for i in range(count):
+            phase = i * 0.1 + t
+            xs1[i] = 0.8 * np.cos(phase)
+            ys1[i] = 0.8 * np.sin(phase)
+            zs1[i] = 0.5 * np.sin(phase * 2)
+            xs2[i] = 0.6 * np.cos(phase + 1.0)
+            ys2[i] = 0.6 * np.sin(phase + 1.0)
+            zs2[i] = -0.3 * np.cos(phase * 1.5)
+            xs3[i] = 0.4 * np.sin(phase)
+            ys3[i] = 0.4 * np.cos(phase)
+            zs3[i] = 0.7 * np.cos(phase * 0.8)
+
+        implot3d.plot_line("Helix A", xs1, ys1, zs1)
+        implot3d.plot_line("Helix B##IDText", xs2, ys2, zs2)
+        implot3d.plot_line("##NotListed", xs3, ys3, zs3)
+
+        implot3d.end_plot()
+
+
 def demo_markers_and_text():
     IMGUI_DEMO_MARKER("Plots/Markers and Text")
     static = demo_markers_and_text
@@ -766,6 +927,38 @@ def demo_box_rotation():
         implot3d.end_plot()
 
 
+def demo_log_scale():
+    IMGUI_DEMO_MARKER("Axes/Log Scale")
+    xs = np.arange(1001) * 0.1
+    ys1 = np.sin(xs) + 1
+    ys2 = np.log(np.maximum(xs, 1e-10))  # avoid log(0)
+    ys3 = np.power(10.0, xs)
+    zs = np.zeros(1001, dtype=np.float64)
+
+    if implot3d.begin_plot("Log Plot 3D", size=(-1, 0)):
+        implot3d.setup_axis_scale(implot3d.ImAxis3D_.x, implot3d.Scale_.log10)
+        implot3d.setup_axes_limits(0.1, 100, 0, 10, -1, 1)
+        implot3d.plot_line("f(x) = x", xs, xs, zs)
+        implot3d.plot_line("f(x) = sin(x)+1", xs, ys1, zs)
+        implot3d.plot_line("f(x) = log(x)", xs, ys2, zs)
+        implot3d.plot_line("f(x) = 10^x", xs[:21], ys3[:21], zs[:21])
+        implot3d.end_plot()
+
+
+def demo_symmetric_log_scale():
+    IMGUI_DEMO_MARKER("Axes/Symmetric Log Scale")
+    xs = np.arange(1001) * 0.1 - 50
+    ys1 = np.sin(xs)
+    ys2 = np.arange(1001) * 0.002 - 1
+    zs = np.zeros(1001, dtype=np.float64)
+
+    if implot3d.begin_plot("SymLog Plot", size=(-1, 0)):
+        implot3d.setup_axis_scale(implot3d.ImAxis3D_.x, implot3d.Scale_.sym_log)
+        implot3d.plot_line("f(x) = a*x+b", xs, ys2, zs)
+        implot3d.plot_line("f(x) = sin(x)", xs, ys1, zs)
+        implot3d.end_plot()
+
+
 def demo_tick_labels():
     IMGUI_DEMO_MARKER("Axes/Tick Labels")
     static = demo_tick_labels
@@ -791,6 +984,178 @@ def demo_tick_labels():
             implot3d.setup_axis_ticks(axis = implot3d.ImAxis3D_.z, v_min=0, v_max=1, n_ticks=6, labels = letters_labels if static.custom_labels else [], keep_default=False)
         implot3d.end_plot()
 
+
+def demo_axis_constraints():
+    IMGUI_DEMO_MARKER("Axes/Axis Constraints")
+    static = demo_axis_constraints
+
+    if not hasattr(static, "limit_constraints"):
+        static.limit_constraints = [-10.0, 10.0]
+        static.zoom_constraints = [1.0, 20.0]
+        static.flags = 0
+
+    changed, val = imgui.drag_float2("Limits Constraints", static.limit_constraints, 0.01)
+    if changed:
+        static.limit_constraints = [val[0], val[1]]
+    changed, val = imgui.drag_float2("Zoom Constraints", static.zoom_constraints, 0.01)
+    if changed:
+        static.zoom_constraints = [val[0], val[1]]
+    _, static.flags = imgui.checkbox_flags("ImPlot3DAxisFlags_PanStretch", static.flags, implot3d.AxisFlags_.pan_stretch.value)
+
+    if implot3d.begin_plot("##AxisConstraints", size=(-1, 0)):
+        implot3d.setup_axes("X", "Y", "Z", static.flags, static.flags, static.flags)
+        implot3d.setup_axes_limits(-1, 1, -1, 1, -1, 1)
+        for axis in [implot3d.ImAxis3D_.x, implot3d.ImAxis3D_.y, implot3d.ImAxis3D_.z]:
+            implot3d.setup_axis_limits_constraints(axis, static.limit_constraints[0], static.limit_constraints[1])
+            implot3d.setup_axis_zoom_constraints(axis, static.zoom_constraints[0], static.zoom_constraints[1])
+        implot3d.end_plot()
+
+
+def demo_equal_axes():
+    IMGUI_DEMO_MARKER("Axes/Equal Axes")
+    static = demo_equal_axes
+
+    imgui.bullet_text("Equal constraint applies to all three axes (X, Y, Z)")
+    imgui.bullet_text("When enabled, the axes maintain the same units/pixel ratio")
+
+    if not hasattr(static, "circle_xs"):
+        angles = np.linspace(0, 2 * np.pi, 360)
+        static.circle_xs = np.cos(angles)
+        static.circle_ys = np.sin(angles)
+        static.circle_zs = np.zeros(360, dtype=np.float64)
+        static.helix_xs = 0.5 * np.cos(angles)
+        static.helix_ys = 0.5 * np.sin(angles)
+        static.helix_zs = np.linspace(-1, 1, 360)
+        static.flags = implot3d.Flags_.equal.value
+
+    square_xs = np.array([-0.5, 0.5, 0.5, -0.5, -0.5], dtype=np.float32)
+    square_ys = np.array([-0.5, -0.5, 0.5, 0.5, -0.5], dtype=np.float32)
+    square_zs = np.array([-0.5, -0.5, -0.5, -0.5, -0.5], dtype=np.float32)
+
+    _, static.flags = imgui.checkbox_flags("ImPlot3DFlags_Equal", static.flags, implot3d.Flags_.equal.value)
+
+    if implot3d.begin_plot("##EqualAxes", size=(-1, 0), flags=static.flags):
+        implot3d.setup_axes("X-Axis", "Y-Axis", "Z-Axis")
+        implot3d.plot_line("Circle", static.circle_xs, static.circle_ys, static.circle_zs)
+        implot3d.plot_line("Helix", static.helix_xs, static.helix_ys, static.helix_zs)
+        implot3d.plot_line("Square", square_xs, square_ys, square_zs)
+        implot3d.end_plot()
+
+
+def demo_auto_fitting_data():
+    IMGUI_DEMO_MARKER("Axes/Auto-Fitting Data")
+    static = demo_auto_fitting_data
+
+    imgui.bullet_text("Axes can be configured to auto-fit to data extents.")
+    imgui.bullet_text("Try panning and zooming to see the axes adjust.")
+    imgui.bullet_text("Disable AutoFit on an axis to fix its range.")
+
+    if not hasattr(static, "xflags"):
+        static.xflags = implot3d.AxisFlags_.none.value
+        static.yflags = implot3d.AxisFlags_.none.value
+        static.zflags = implot3d.AxisFlags_.auto_fit.value
+        static.data_x = np.arange(101) * 0.1
+        static.data_y = np.arange(101) * 0.1
+        static.data_z = 1 + np.sin(np.arange(101) / 10.0)
+
+    imgui.text_unformatted("X: ")
+    imgui.same_line()
+    _, static.xflags = imgui.checkbox_flags("ImPlot3DAxisFlags_AutoFit##X", static.xflags, implot3d.AxisFlags_.auto_fit.value)
+
+    imgui.text_unformatted("Y: ")
+    imgui.same_line()
+    _, static.yflags = imgui.checkbox_flags("ImPlot3DAxisFlags_AutoFit##Y", static.yflags, implot3d.AxisFlags_.auto_fit.value)
+
+    imgui.text_unformatted("Z: ")
+    imgui.same_line()
+    _, static.zflags = imgui.checkbox_flags("ImPlot3DAxisFlags_AutoFit##Z", static.zflags, implot3d.AxisFlags_.auto_fit.value)
+
+    if implot3d.begin_plot("##AutoFitting"):
+        implot3d.setup_axes("X-Axis", "Y-Axis", "Z-Axis", static.xflags, static.yflags, static.zflags)
+        implot3d.plot_line("Wave", static.data_x, static.data_y, static.data_z)
+        implot3d.end_plot()
+
+
+#-----------------------------------------------------------------------------
+# [SECTION] Tools
+#-----------------------------------------------------------------------------
+
+def demo_mouse_picking():
+    IMGUI_DEMO_MARKER("Tools/Mouse Picking")
+    static = demo_mouse_picking
+
+    if not hasattr(static, "points"):
+        static.points: list[implot3d.Point] = []
+        static.rays: list[implot3d.Ray] = []
+        static.selected_plane = implot3d.ImPlane3D_.xy.value
+        static.mask_plane = True
+
+    imgui.bullet_text("Click anywhere in the plot to place points/rays.")
+
+    _, static.selected_plane = imgui.radio_button("XY-Plane", static.selected_plane, implot3d.ImPlane3D_.xy.value)
+    imgui.same_line()
+    _, static.selected_plane = imgui.radio_button("XZ-Plane", static.selected_plane, implot3d.ImPlane3D_.xz.value)
+    imgui.same_line()
+    _, static.selected_plane = imgui.radio_button("YZ-Plane", static.selected_plane, implot3d.ImPlane3D_.yz.value)
+
+    _, static.mask_plane = imgui.checkbox("Mask Plane", static.mask_plane)
+    if imgui.button("Clear"):
+        static.points.clear()
+        static.rays.clear()
+
+    if implot3d.begin_plot("Mouse Picking", size=(-1, 0), flags=implot3d.Flags_.no_clip.value):
+        implot3d.setup_axes("X-Axis", "Y-Axis", "Z-Axis")
+        implot3d.setup_axes_limits(-1, 1, -1, 1, -1, 1)
+
+        mouse_pos = imgui.get_mouse_pos()
+        ray = implot3d.pixels_to_plot_ray(mouse_pos)
+        plane = implot3d.ImPlane3D_(static.selected_plane)
+        point = implot3d.pixels_to_plot_plane(mouse_pos, plane, static.mask_plane)
+
+        # Show intersection point
+        if imgui.is_item_hovered() and not point.is_nan():
+            implot3d.set_next_marker_style(implot3d.Marker_.circle, 5, ImVec4(1, 1, 0, 1))
+            px = np.array([point.x], dtype=np.float64)
+            py = np.array([point.y], dtype=np.float64)
+            pz = np.array([point.z], dtype=np.float64)
+            implot3d.plot_scatter("##Intersection", px, py, pz)
+
+        # Add point/ray on click
+        if imgui.is_item_hovered() and imgui.is_mouse_clicked(0) and not point.is_nan():
+            static.points.append(point)
+            static.rays.append(ray)
+
+        # Draw all placed points
+        if len(static.points) > 0:
+            implot3d.set_next_marker_style(implot3d.Marker_.circle, 3)
+            pts_x = np.array([p.x for p in static.points], dtype=np.float64)
+            pts_y = np.array([p.y for p in static.points], dtype=np.float64)
+            pts_z = np.array([p.z for p in static.points], dtype=np.float64)
+            implot3d.plot_scatter("Placed Points", pts_x, pts_y, pts_z)
+
+        # Draw all placed rays
+        if len(static.rays) > 0:
+            ray_xs = []
+            ray_ys = []
+            ray_zs = []
+            for i in range(len(static.rays)):
+                p1 = static.points[i]
+                p2 = static.points[i] - static.rays[i].direction
+                ray_xs.extend([p1.x, p2.x])
+                ray_ys.extend([p1.y, p2.y])
+                ray_zs.extend([p1.z, p2.z])
+            implot3d.plot_line("Placed Rays",
+                               np.array(ray_xs, dtype=np.float64),
+                               np.array(ray_ys, dtype=np.float64),
+                               np.array(ray_zs, dtype=np.float64),
+                               flags=implot3d.LineFlags_.segments)
+
+        implot3d.end_plot()
+
+
+#-----------------------------------------------------------------------------
+# [SECTION] Custom
+#-----------------------------------------------------------------------------
 
 def demo_custom_styles():
     IMGUI_DEMO_MARKER("Custom/Custom Styles")
@@ -885,6 +1250,173 @@ def style_seaborn():
     style.plot_min_size = ImVec2(300, 225)
 
 
+def demo_custom_overlay():
+    IMGUI_DEMO_MARKER("Custom/Custom Overlay")
+    static = demo_custom_overlay
+
+    imgui.bullet_text("Demonstrates custom 2D overlays using GetPlotRectPos/GetPlotRectSize.")
+    imgui.bullet_text("Shows mouse tooltip, line to closest point.")
+
+    if not hasattr(static, "xs"):
+        np.random.seed(0)
+        static.xs = np.random.rand(50).astype(np.float32)
+        static.ys = np.random.rand(50).astype(np.float32)
+        static.zs = np.random.rand(50).astype(np.float32)
+
+    if implot3d.begin_plot("##CustomOverlay", size=(-1, 0)):
+        implot3d.setup_axes("X-Axis", "Y-Axis", "Z-Axis")
+        implot3d.setup_axes_limits(0, 1, 0, 1, 0, 1)
+        implot3d.plot_scatter("Data", static.xs, static.ys, static.zs)
+
+        draw_list = implot3d.get_plot_draw_list()
+        mouse_pos = imgui.get_mouse_pos()
+        is_hovered = imgui.is_item_hovered()
+
+        if is_hovered:
+            # Find closest point to mouse in screen space
+            closest_idx = -1
+            min_dist_sq = 1e10
+            closest_px = ImVec2(0, 0)
+
+            for i in range(50):
+                point_px = implot3d.plot_to_pixels(float(static.xs[i]), float(static.ys[i]), float(static.zs[i]))
+                dx = point_px.x - mouse_pos.x
+                dy = point_px.y - mouse_pos.y
+                dist_sq = dx * dx + dy * dy
+                if dist_sq < min_dist_sq:
+                    min_dist_sq = dist_sq
+                    closest_idx = i
+                    closest_px = point_px
+
+            # Draw line to closest point
+            if closest_idx >= 0:
+                draw_list.add_line(mouse_pos, closest_px, IM_COL32(255, 255, 0, 255), 2.0)
+
+                imgui.begin_tooltip()
+                imgui.text(f"Mouse: ({mouse_pos.x:.1f}, {mouse_pos.y:.1f})")
+                imgui.text(f"Closest Point #{closest_idx}")
+                imgui.text(f"Position: ({static.xs[closest_idx]:.3f}, {static.ys[closest_idx]:.3f}, {static.zs[closest_idx]:.3f})")
+                imgui.text(f"Distance: {np.sqrt(min_dist_sq):.1f} px")
+                imgui.end_tooltip()
+
+        implot3d.end_plot()
+
+
+def demo_custom_per_point_style():
+    IMGUI_DEMO_MARKER("Custom/Custom Per-Point Style")
+    static = demo_custom_per_point_style
+
+    imgui.bullet_text("Demonstrates per-point coloring using colormap sampling.")
+    imgui.bullet_text("Each point calls SetNextMarkerStyle with a sampled color.")
+    imgui.bullet_text("All points share the same label for a single legend entry.")
+
+    if not hasattr(static, "marker_size"):
+        static.marker_size = 4.0
+        static.cmap = implot3d.Colormap_.viridis.value
+
+    _, static.marker_size = imgui.slider_float("Marker Size", static.marker_size, 2.0, 10.0)
+    if imgui.begin_combo("Colormap", implot3d.get_colormap_name(static.cmap)):
+        for i in range(implot3d.get_colormap_count()):
+            if imgui.selectable(implot3d.get_colormap_name(i), static.cmap == i)[0]:
+                static.cmap = i
+        imgui.end_combo()
+
+    # Generate three stacked toruses with different color patterns
+    if not hasattr(static, "torus_data"):
+        R = 0.6  # Major radius
+        r = 0.2  # Minor radius
+        u_samples = 20
+        v_samples = 20
+        static.torus_data = np.zeros((3, 400, 4), dtype=np.float32)
+
+        for torus in range(3):
+            z_offset = (2 - torus) * 0.6
+            idx = 0
+            for i in range(u_samples):
+                u = i / u_samples * 2.0 * np.pi
+                for j in range(v_samples):
+                    v = j / v_samples * 2.0 * np.pi
+                    x = (R + r * np.cos(v)) * np.cos(u)
+                    y = (R + r * np.cos(v)) * np.sin(u)
+                    z = r * np.sin(v) + z_offset
+
+                    if torus == 0:
+                        t = (z - (z_offset - r)) / (2.0 * r)
+                    elif torus == 1:
+                        t = (np.cos(v) + 1.0) / 2.0
+                    else:
+                        t = (np.cos(u) + 1.0) / 2.0
+
+                    static.torus_data[torus, idx] = [x, y, z, t]
+                    idx += 1
+
+    if implot3d.begin_plot("##PerPointStyle", size=(-1, 0)):
+        implot3d.setup_axes("X", "Y", "Z")
+        implot3d.setup_axes_limits(-1, 1, -1, 1, -0.5, 1.5)
+
+        labels = ["Height-colored", "Radial-colored", "Angular-colored"]
+        legend_colors = [
+            ImVec4(1.0, 0.0, 0.0, 1.0),
+            ImVec4(0.0, 1.0, 0.0, 1.0),
+            ImVec4(0.0, 0.0, 1.0, 1.0),
+        ]
+
+        for torus in range(3):
+            point_count = 400
+            for i in range(point_count):
+                x = float(static.torus_data[torus, i, 0])
+                y = float(static.torus_data[torus, i, 1])
+                z = float(static.torus_data[torus, i, 2])
+                t = float(static.torus_data[torus, i, 3])
+
+                color = implot3d.sample_colormap(t, static.cmap)
+                implot3d.set_next_marker_style(implot3d.Marker_.circle, static.marker_size, color, -1, color)
+                implot3d.plot_scatter(labels[torus],
+                                      np.array([x], dtype=np.float32),
+                                      np.array([y], dtype=np.float32),
+                                      np.array([z], dtype=np.float32))
+            # Override legend color with PlotDummy
+            implot3d.set_next_line_style(legend_colors[torus])
+            implot3d.plot_dummy(labels[torus])
+
+        implot3d.end_plot()
+
+
+#-----------------------------------------------------------------------------
+# [SECTION] Config
+#-----------------------------------------------------------------------------
+
+def demo_config():
+    IMGUI_DEMO_MARKER("Config")
+    imgui.show_font_selector("Font")
+    imgui.show_style_selector("ImGui Style")
+    implot3d.show_style_selector("ImPlot3D Style")
+    implot3d.show_colormap_selector("ImPlot3D Colormap")
+    imgui.separator()
+
+    if implot3d.begin_plot("Preview", size=(-1, 0)):
+        static = demo_config
+        if not hasattr(static, "xs"):
+            static.xs = np.zeros((10, 50), dtype=np.float32)
+            static.ys = np.zeros((10, 50), dtype=np.float32)
+            static.zs = np.zeros((10, 50), dtype=np.float32)
+            for i in range(10):
+                for j in range(50):
+                    t = j / 49.0
+                    angle = t * 4.0 * np.pi
+                    radius = 0.3 + i * 0.05
+                    static.xs[i, j] = radius * np.cos(angle)
+                    static.ys[i, j] = radius * np.sin(angle)
+                    static.zs[i, j] = i / 9.0
+
+        for i in range(10):
+            imgui.push_id(i)
+            implot3d.plot_line("##Spiral", static.xs[i], static.ys[i], static.zs[i])
+            imgui.pop_id()
+
+        implot3d.end_plot()
+
+
 #-----------------------------------------------------------------------------
 # [SECTION] Demo Window
 #-----------------------------------------------------------------------------
@@ -973,6 +1505,8 @@ def show_all_demos():
     # Tab Bar
     if imgui.begin_tab_bar("ImPlot3DDemoTabs"):
         if imgui.begin_tab_item_simple("Plots"):
+            # Plot Types
+            imgui.separator_text("Plot Types")
             demo_header("Line Plots", demo_line_plots)
             demo_header("Scatter Plots", demo_scatter_plots)
             demo_header("Triangle Plots", demo_triangle_plots)
@@ -981,6 +1515,11 @@ def show_all_demos():
             demo_header("Mesh Plots", demo_mesh_plots)
             demo_header("Realtime Plots", demo_realtime_plots)
             demo_header("Image Plots", demo_image_plots)
+            # Plot Options
+            imgui.separator_text("Plot Options")
+            demo_header("Plot Flags", demo_plot_flags)
+            demo_header("Offset and Stride", demo_offset_and_stride)
+            demo_header("Legend Options", demo_legend_options)
             demo_header("Markers and Text", demo_markers_and_text)
             demo_header("NaN Values", demo_nan_values)
             imgui.end_tab_item()
@@ -988,12 +1527,27 @@ def show_all_demos():
         if imgui.begin_tab_item_simple("Axes"):
             demo_header("Box Scale", demo_box_scale)
             demo_header("Box Rotation", demo_box_rotation)
+            demo_header("Log Scale", demo_log_scale)
+            demo_header("Symmetric Log Scale", demo_symmetric_log_scale)
             demo_header("Tick Labels", demo_tick_labels)
+            demo_header("Axis Constraints", demo_axis_constraints)
+            demo_header("Equal Axes", demo_equal_axes)
+            demo_header("Auto-Fitting Data", demo_auto_fitting_data)
+            imgui.end_tab_item()
+
+        if imgui.begin_tab_item_simple("Tools"):
+            demo_header("Mouse Picking", demo_mouse_picking)
             imgui.end_tab_item()
 
         if imgui.begin_tab_item_simple("Custom"):
             demo_header("Custom Styles", demo_custom_styles)
             demo_header("Custom Rendering", demo_custom_rendering)
+            demo_header("Custom Overlay", demo_custom_overlay)
+            demo_header("Custom Per-Point Style", demo_custom_per_point_style)
+            imgui.end_tab_item()
+
+        if imgui.begin_tab_item_simple("Config"):
+            demo_config()
             imgui.end_tab_item()
 
         if imgui.begin_tab_item_simple("Help"):
@@ -1001,6 +1555,8 @@ def show_all_demos():
             imgui.end_tab_item()
 
         imgui.end_tab_bar()
+
+    IMGUI_DEMO_MARKER("end")
 
 
 def show_demo_window():

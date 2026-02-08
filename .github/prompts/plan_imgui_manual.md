@@ -272,11 +272,11 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
 - [x] Review im_anim demos so that demo markers are inside the tree node.
 - [x] Add IMGUI_DEMO_MARKER to implot_demo.cpp and implot3d_demo.cpp
 - [x] Add the same IMGUI_DEMO_MARKER (with exact same section names) to the Python demos
-- [ ] Add missing demos in implot3d_demo.py (and add markers)
+- [x] Add missing demos in implot3d_demo.py (and add markers)
 List of demo functions that are not present in implot3d_demo.py, but present in implot3d_demo.cpp.
 'demo_config', 'demo_legend_options', 'demo_log_scale', 'demo_symmetric_log_scale', 'demo_mouse_picking', 'demo_equal_axes', 'demo_auto_fitting_data',
 'demo_custom_per_point_style', 'demo_offset_and_stride', 'demo_custom_overlay', 'demo_axis_constraints', 'demo_plot_flags'
-
+- [x] Not useful: Port ShowDemoWindow_MaybeDocked to implot and implot3d demos? Check if it useful (i.e. bring more demos to python)
 
 ### Step 7: Build Multiple Executables
 - [ ] Create separate app targets in CMakeLists.txt
@@ -285,8 +285,22 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 
 ### Step 8: Polish
 - [ ] Implement GitHub link
-- [ ] Add file/marker search
-- [ ] UI/UX refinement
+- [ ] Add file/marker search: search in demo files or in declarations (header files or stub). 
+  This requires adding header files or stubs to the libraries. 
+  possible use case: user wants to find the signature and doc for a specific function or widget in the demo code. He selects it, clicks (right-click or place a button somewhere? this is to be discussed) "search in code", and the relevant header file or stub is opened in the code viewer, with the first matching line highlighted and the possibility to search for other occurrences in the file.
+- [ ] UI/UX refinement: add images or icons for top edge toolbar buttons
+
+### Step 9: Integration
+- [ ] Add in bundle interactive manual C++
+- [ ] Add in bundle interactive manual Python. We still want to display library-specific Python demos in the bundle, even if they are not line-by-line ports of the C++ demos (like imgui_demo.py). This is a way to test and maintain the Python demo support, and also to provide more demos to bundle users.
+- [ ] Update bundle book and documentation
+- [ ] Add doc for ImAnim in the bundle book (compare C++ and Python API, esp enum usage)
+- [ ] Think again: should it be a subproject of imgui_bundle or a separate repo?
+      If separate repo, it can be more easily contributed to by the community. 
+      But this conflicts with the fact that it is tightly coupled with the bundle (the libraries are deep in the bundle, and the demo files are also in the bundle bindings).
+
+
+### Step 10: Publish & Communicate
 
 ---
 

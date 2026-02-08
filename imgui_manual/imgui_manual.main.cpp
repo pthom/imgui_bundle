@@ -178,12 +178,6 @@ int main()
     {
         if (ImGui::BeginMenu("Links"))
         {
-            ImGui::SeparatorText("ImAnim");
-            if (ImGui::MenuItem("ImAnim - Github repository"))
-                OpenUrl("https://github.com/soufianekhiat/ImAnim");
-            if (ImGui::MenuItem("ImAnim - Doc"))
-                OpenUrl("https://github.com/soufianekhiat/ImAnim/tree/main/docs");
-
             ImGui::SeparatorText("Dear ImGui");
             if (ImGui::MenuItem("Dear ImGui - Github repository"))
                 OpenUrl("https://github.com/ocornut/imgui");
@@ -197,6 +191,12 @@ int main()
             ImGui::SeparatorText("ImPlot3D");
             if (ImGui::MenuItem("ImPlot3D - Github repository"))
                 OpenUrl("https://github.com/brenocq/implot3d");
+
+            ImGui::SeparatorText("ImAnim");
+            if (ImGui::MenuItem("ImAnim - Github repository"))
+                OpenUrl("https://github.com/soufianekhiat/ImAnim");
+            if (ImGui::MenuItem("ImAnim - Doc"))
+                OpenUrl("https://github.com/soufianekhiat/ImAnim/tree/main/docs");
 
             ImGui::EndMenu();
         }
