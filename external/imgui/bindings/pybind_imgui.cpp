@@ -1492,6 +1492,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return SliderFloat2_adapt_modifiable_immutable_to_return(label, v, v_min, v_max, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("slider_float2",
+        nb::overload_cast<const char *, ImVec2, float, float, const char *, ImGuiSliderFlags>(ImGui::SliderFloat2), nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("slider_float3",
         [](const char * label, std::array<float, 3> v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
@@ -1520,6 +1527,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return SliderFloat4_adapt_modifiable_immutable_to_return(label, v, v_min, v_max, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("slider_float4",
+        nb::overload_cast<const char *, ImVec4, float, float, const char *, ImGuiSliderFlags>(ImGui::SliderFloat4), nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("slider_angle",
         [](const char * label, float v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f, const char * format = "%.0f deg", ImGuiSliderFlags flags = 0) -> std::tuple<bool, float>
@@ -1694,6 +1708,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputFloat2_adapt_modifiable_immutable_to_return(label, v, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("input_float2",
+        nb::overload_cast<const char *, ImVec2, const char *, ImGuiInputTextFlags>(ImGui::InputFloat2), nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("input_float3",
         [](const char * label, std::array<float, 3> v, const char * format = "%.3f", ImGuiInputTextFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
@@ -1722,6 +1743,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputFloat4_adapt_modifiable_immutable_to_return(label, v, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("input_float4",
+        nb::overload_cast<const char *, ImVec4, const char *, ImGuiInputTextFlags>(ImGui::InputFloat4), nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("input_int",
         [](const char * label, int v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0) -> std::tuple<bool, int>
@@ -1824,50 +1852,21 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputScalarN_adapt_const_char_pointer_with_default_null(label, data_type, p_data, components, p_step, p_step_fast, format, flags);
         },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("components"), nb::arg("p_step") = nb::none(), nb::arg("p_step_fast") = nb::none(), nb::arg("format").none() = nb::none(), nb::arg("flags") = 0);
-
-    m.def("color_edit3",
-        [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
-        {
-            auto ColorEdit3_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
-            {
-                float * col_adapt_modifiable = col.data();
-
-                bool r = ImGui::ColorEdit3(label, col_adapt_modifiable, flags);
-                return std::make_tuple(r, col);
-            };
-
-            return ColorEdit3_adapt_modifiable_immutable_to_return(label, col, flags);
-        },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-
-    m.def("color_edit4",
-        [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 4>>
-        {
-            auto ColorEdit4_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 4>>
-            {
-                float * col_adapt_modifiable = col.data();
-
-                bool r = ImGui::ColorEdit4(label, col_adapt_modifiable, flags);
-                return std::make_tuple(r, col);
-            };
-
-            return ColorEdit4_adapt_modifiable_immutable_to_return(label, col, flags);
-        },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-
-    m.def("color_picker3",
-        [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
-        {
-            auto ColorPicker3_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
-            {
-                float * col_adapt_modifiable = col.data();
-
-                bool r = ImGui::ColorPicker3(label, col_adapt_modifiable, flags);
-                return std::make_tuple(r, col);
-            };
-
-            return ColorPicker3_adapt_modifiable_immutable_to_return(label, col, flags);
-        },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
+
+    m.def("color_edit4",
+        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags>(ImGui::ColorEdit4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+
+    m.def("color_edit3",
+        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags>(ImGui::ColorEdit3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+    // #endif
+    //
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("color_picker3",
+        nb::overload_cast<const char *, ImVec4, ImGuiColorEditFlags>(ImGui::ColorPicker3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
 
     m.def("color_picker4",
         nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags, std::optional<ImVec4>>(ImGui::ColorPicker4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
