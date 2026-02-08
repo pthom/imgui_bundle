@@ -12,12 +12,11 @@ void OpenUrl(const std::string &url);
 // Callback invoked when a demo marker is hovered (with tracking enabled)
 void OnDemoMarkerHook(const char* file, int line, const char* section)
 {
-    (void)section; // unused
     static int last_line = -1;
     if (line == last_line)
         return;
     last_line = line;
-    DemoCodeViewer_ShowCodeAt(file, line);
+    DemoCodeViewer_ShowCodeAt(file, line, section);
 }
 
 void OnBeforeFrame_ImAnimSetup()
@@ -36,17 +35,15 @@ void OnPostInit()
     GImGuiDemoMarkerHook = OnDemoMarkerHook;
 }
 
-// Top toolbar: library selection buttons
+// Top toolbar: library selection buttons + C++/Python toggle
 void ShowLibraryToolbar()
 {
+    ImGui::BeginHorizontal("LibraryToolbar", ImVec2(ImGui::GetContentRegionAvail().x, 0.f));
     const auto& libs = GetAllLibraryConfigs();
     int currentIdx = GetCurrentLibraryIndex();
 
     for (size_t i = 0; i < libs.size(); ++i)
     {
-        if (i > 0)
-            ImGui::SameLine();
-
         bool isSelected = ((int)i == currentIdx);
         if (isSelected)
         {
@@ -63,6 +60,16 @@ void ShowLibraryToolbar()
             ImGui::PopStyleColor();
         }
     }
+
+    ImGui::Spring();
+
+    bool showPython = DemoCodeViewer_GetShowPython();
+    if (ImGui::RadioButton("C++", !showPython))
+        DemoCodeViewer_SetShowPython(false);
+    if (ImGui::RadioButton("Python", showPython))
+        DemoCodeViewer_SetShowPython(true);
+
+    ImGui::EndHorizontal();
 }
 
 // Forward declarations for ImAnim demo windows

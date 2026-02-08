@@ -263,21 +263,34 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
 - [ ] Once this works perfectly, push a PR to the main ImGui repo.
 
 ### Step 5: Make Python code viewer work with IMGUI_DEMO_MARKER
-- [ ] Make sure the Python code viewer can jump to the correct line based on IMGUI_DEMO_MARKER calls in the Python demos
+- [x] Make sure the Python code viewer can jump to the correct line based on IMGUI_DEMO_MARKER calls in the Python demos
   (require reading the source code of the Python demos to find the correct line numbers for each marker, and mapping them to the marker names)
   (later, in Python this may require inspecting the python source code, with the inspect module)
   test this with the existing `imgui_demo.py` and the `im_anim_demo_basics.py` which already has markers
 
-### Step 5: adapt implot_demo and implot3d_demo
+### Step 6: adapt implot_demo and implot3d_demo
 - [ ] Add IMGUI_DEMO_MARKER to implot_demo.cpp and implot3d_demo.cpp
 - [ ] Add the same IMGUI_DEMO_MARKER (with exact same section names) to the Python demos
+- [ ] Review im_anim demos so that demo markers are inside the tree node. 
+  => Write a script to automatically move the markers inside the tree nodes. Do this for all demos, except im_anim_demo_basics which already has this. The script should look for IMGUI_DEMO_MARKER calls, and move them inside the closest parent tree node, if there is a tree node just below it (next line).
+Example of what the script should do:
 
-### Step 6: Build Multiple Executables
+  IMGUI_DEMO_MARKER("Animated Buttons");
+  if (ImGui::TreeNodeEx("Animated Buttons")) {
+
+becomes:
+
+  if (ImGui::TreeNodeEx("Animated Buttons")) {
+      IMGUI_DEMO_MARKER("Animated Buttons");
+
+(it should preserve the indentation and spacing, and only move the marker if it is not already inside the tree node)
+
+### Step 7: Build Multiple Executables
 - [ ] Create separate app targets in CMakeLists.txt
 - [ ] Each target uses appropriate LibraryConfig subset
 - [ ] Test all executables
 
-### Step 6: Polish
+### Step 8: Polish
 - [ ] Implement GitHub link
 - [ ] Add file/marker search
 - [ ] UI/UX refinement

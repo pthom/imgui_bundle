@@ -39,13 +39,44 @@ namespace
         TextEditor pyEditor;
         bool cppLoaded = false;
         bool pyLoaded = false;
+        std::map<std::string, int> pyMarkers;  // section_name → 1-based line number
     };
 
     std::map<std::string, CodeFile> g_codeFiles;  // Keyed by baseName (all files loaded)
     int g_currentFileIndex = 0;
     int g_pendingScrollLine = -1;
     std::string g_pendingScrollFile;
+    std::string g_pendingScrollSection;  // section name from IMGUI_DEMO_MARKER
     bool g_showPython = false;  // Global toggle for C++/Python view
+
+    // Parse IMGUI_DEMO_MARKER("section") calls from source text, return section → 1-based line map
+    std::map<std::string, int> ParseMarkers(const std::string& source)
+    {
+        std::map<std::string, int> markers;
+        const std::string pattern = "IMGUI_DEMO_MARKER(\"";
+        int lineNum = 1;
+        size_t pos = 0;
+        while (pos < source.size())
+        {
+            size_t eol = source.find('\n', pos);
+            if (eol == std::string::npos) eol = source.size();
+            // Search for pattern in this line
+            size_t found = source.find(pattern, pos);
+            if (found != std::string::npos && found < eol)
+            {
+                size_t start = found + pattern.size();
+                size_t end = source.find('"', start);
+                if (end != std::string::npos && end < eol)
+                {
+                    std::string section = source.substr(start, end - start);
+                    markers[section] = lineNum;
+                }
+            }
+            lineNum++;
+            pos = eol + 1;
+        }
+        return markers;
+    }
 
     void LoadFile(const DemoFileInfo& fileInfo)
     {
@@ -84,6 +115,7 @@ namespace
                 cf.pyEditor.SetShowLineNumbersEnabled(true);
                 cf.pyEditor.SetShowWhitespacesEnabled(false);
                 cf.pyLoaded = true;
+                cf.pyMarkers = ParseMarkers(cf.pyContent);
                 HelloImGui::FreeAssetFileData(&assetData);
             }
         }
@@ -102,6 +134,9 @@ namespace
     }
 }
 
+bool DemoCodeViewer_GetShowPython() { return g_showPython; }
+void DemoCodeViewer_SetShowPython(bool show) { g_showPython = show; }
+
 void DemoCodeViewer_Init()
 {
     // Load all files from all libraries (for fast switching between libraries)
@@ -117,34 +152,14 @@ void DemoCodeViewer_Show()
     // Get files for current library
     auto files = GetCurrentLibraryFiles();
 
-    // Language toggle (only show if any file has Python)
-    bool anyHasPython = false;
-    for (const auto& f : files)
-        if (f.hasPython) { anyHasPython = true; break; }
-
-    if (anyHasPython)
-    {
-        if (ImGui::RadioButton("C++", !g_showPython))
-            g_showPython = false;
-        ImGui::SameLine();
-        if (ImGui::RadioButton("Python", g_showPython))
-            g_showPython = true;
-        ImGui::SameLine();
-        ImGui::Spacing();
-        ImGui::SameLine();
-    }
-
     // Tabs for file selection
     if (ImGui::BeginTabBar("CodeViewerTabs"))
     {
         for (size_t i = 0; i < files.size(); ++i)
         {
             const auto& file = files[i];
-            std::string displayName = g_showPython ? file.pyDisplayName() : file.cppDisplayName();
-
-            // Skip if showing Python but file doesn't have Python
-            if (g_showPython && !file.hasPython)
-                continue;
+            bool hasPy = file.hasPython && g_codeFiles.count(file.baseName) && g_codeFiles[file.baseName].pyLoaded;
+            std::string displayName = (g_showPython && hasPy) ? file.pyDisplayName() : file.cppDisplayName();
 
             ImGuiTabItemFlags flags = 0;
             // If we have a pending scroll for this file, select its tab
@@ -193,19 +208,36 @@ void DemoCodeViewer_Show()
         return;
     }
 
-    // Handle pending scroll (only for C++ since markers come from C++)
+    if (g_showPython && !cf.pyLoaded)
+        ImGui::TextColored(ImVec4(1.f, 1.f, 0.5f, 1.f), "No Python code available for this demo");
+
+    // Handle pending scroll
     if (!g_pendingScrollFile.empty() && g_pendingScrollFile == currentFile.cppDisplayName() && g_pendingScrollLine > 0)
     {
-        // If showing Python, switch to C++ to show the marker location
-        if (g_showPython)
+        bool scrolledPython = false;
+        // If viewing Python and we have a section match, scroll Python editor
+        if (g_showPython && cf.pyLoaded && !g_pendingScrollSection.empty())
         {
-            g_showPython = false;
+            auto it2 = cf.pyMarkers.find(g_pendingScrollSection);
+            if (it2 != cf.pyMarkers.end())
+            {
+                int pyLine = it2->second;
+                cf.pyEditor.SetViewAtLine(pyLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
+                cf.pyEditor.SetCursorPosition(pyLine - 1, 0);
+                cf.pyEditor.SelectLine(pyLine - 1);
+                scrolledPython = true;
+            }
         }
-        cf.cppEditor.SetViewAtLine(g_pendingScrollLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
-        cf.cppEditor.SetCursorPosition(g_pendingScrollLine - 1, 0);
-        cf.cppEditor.SelectLine(g_pendingScrollLine - 1);
+        // Otherwise scroll C++ editor (without changing the user's language preference)
+        if (!scrolledPython)
+        {
+            cf.cppEditor.SetViewAtLine(g_pendingScrollLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
+            cf.cppEditor.SetCursorPosition(g_pendingScrollLine - 1, 0);
+            cf.cppEditor.SelectLine(g_pendingScrollLine - 1);
+        }
         g_pendingScrollLine = -1;
         g_pendingScrollFile.clear();
+        g_pendingScrollSection.clear();
     }
 
     // Top bar with line info and copy button
@@ -244,11 +276,12 @@ void DemoCodeViewer_Show()
         ImGui::PopFont();
 }
 
-void DemoCodeViewer_ShowCodeAt(const char* filename, int line)
+void DemoCodeViewer_ShowCodeAt(const char* filename, int line, const char* section)
 {
     // Store the request - will be processed on next render
     g_pendingScrollFile = filename;
     g_pendingScrollLine = line;
+    g_pendingScrollSection = section ? section : "";
 
     // Switch to the correct tab (within current library)
     int idx = FindFileIndexInCurrentLibrary(filename);
