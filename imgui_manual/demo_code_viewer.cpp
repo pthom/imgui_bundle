@@ -253,8 +253,9 @@ void DemoCodeViewer_Show()
         if (ImGui::SmallButton("View on github at this line"))
         {
             int line, column; editor.GetCursorPosition(line, column);
-            printf("To be implemented: open github link for %s at line %d\n", displayName.c_str(), line + 1);
-            //use OpenUrl
+            const std::string& githubUrl = showingPython ? currentFile.pyGithubUrl : currentFile.cppGithubUrl;
+            if (!githubUrl.empty())
+                OpenUrl(githubUrl + "#L" + std::to_string(line + 1));
         }
 
         ImGui::SameLine();

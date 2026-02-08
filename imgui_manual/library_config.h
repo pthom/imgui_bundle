@@ -7,6 +7,8 @@
 struct DemoFileInfo {
     std::string baseName;    // e.g., "im_anim_demo_basics" (without extension)
     bool hasPython = false;  // true if .py exists alongside .cpp
+    std::string cppGithubUrl;  // Full URL without #L suffix
+    std::string pyGithubUrl;   // Same for Python file (empty if no Python)
 
     // Derived names for display and asset loading
     std::string cppDisplayName() const { return baseName + ".cpp"; }

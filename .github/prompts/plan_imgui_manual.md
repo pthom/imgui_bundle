@@ -279,12 +279,13 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [x] Not useful: Port ShowDemoWindow_MaybeDocked to implot and implot3d demos? Check if it useful (i.e. bring more demos to python)
 
 ### Step 7: Build Multiple Executables
-- [ ] Create separate app targets in CMakeLists.txt
+- [ ] Create separate app targets in CMakeLists.txt / Or pass args at runtime (would need to work in emscripten too, which is a bit more complex)
 - [ ] Each target uses appropriate LibraryConfig subset
 - [ ] Test all executables
 
 ### Step 8: Polish
-- [ ] Implement GitHub link
+- [x] Implement GitHub link
+- [ ] Remember to move python github links back to main branch
 - [ ] Add file/marker search: search in demo files or in declarations (header files or stub). 
   This requires adding header files or stubs to the libraries. 
   possible use case: user wants to find the signature and doc for a specific function or widget in the demo code. He selects it, clicks (right-click or place a button somewhere? this is to be discussed) "search in code", and the relevant header file or stub is opened in the code viewer, with the first matching line highlighted and the possibility to search for other occurrences in the file.

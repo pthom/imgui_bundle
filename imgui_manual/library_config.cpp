@@ -22,7 +22,9 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         LibraryConfig cfg;
         cfg.name = "ImGui";
         cfg.files = {
-            {"imgui_demo", true},  // has Python (not line-by-line match)
+            {"imgui_demo", true,
+             "https://github.com/pthom/imgui/blob/imgui_bundle/imgui_demo.cpp",
+             "https://github.com/pthom/imgui_bundle/blob/add_imanim/bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py"},
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [] {
@@ -41,7 +43,9 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         LibraryConfig cfg;
         cfg.name = "ImPlot";
         cfg.files = {
-            {"implot_demo", true},
+            {"implot_demo", true,
+             "https://github.com/pthom/implot/blob/imgui_bundle/implot_demo.cpp",
+             "https://github.com/pthom/imgui_bundle/blob/add_imanim/bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py"},
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [] {
@@ -55,7 +59,9 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         LibraryConfig cfg;
         cfg.name = "ImPlot3D";
         cfg.files = {
-            {"implot3d_demo", true},
+            {"implot3d_demo", true,
+             "https://github.com/pthom/implot3d/blob/imgui_bundle/implot3d_demo.cpp",
+             "https://github.com/pthom/imgui_bundle/blob/add_imanim/bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py"},
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [] {
@@ -69,10 +75,15 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         LibraryConfig cfg;
         cfg.name = "ImAnim";
         cfg.files = {
-                {"im_anim_demo_basics", true},   // has Python
-                {"im_anim_demo", false},
-                {"im_anim_doc", false},
-                {"im_anim_usecase", false},
+                {"im_anim_demo_basics", true,
+                 "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_demo_basics.cpp",
+                 "https://github.com/pthom/imgui_bundle/blob/add_imanim/bindings/imgui_bundle/demos_python/demos_imanim/im_anim_demo_basics.py"},
+                {"im_anim_demo", false,
+                 "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_demo.cpp"},
+                {"im_anim_doc", false,
+                 "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_doc.cpp"},
+                {"im_anim_usecase", false,
+                 "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_usecase.cpp"},
             };
         cfg.frameSetup = [] {
             iam_update_begin_frame();
