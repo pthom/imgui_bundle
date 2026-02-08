@@ -8,6 +8,8 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <algorithm>
+#include <cctype>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -48,6 +50,157 @@ namespace
     std::string g_pendingScrollFile;
     std::string g_pendingScrollSection;  // section name from IMGUI_DEMO_MARKER
     bool g_showPython = false;  // Global toggle for C++/Python view
+
+    // Search state
+    bool g_searchBarOpen = false;
+    bool g_searchBarJustOpened = false;  // To auto-focus the input
+    char g_searchBuffer[256] = "";
+    bool g_searchCaseSensitive = false;
+    bool g_searchMatchWord = false;
+    size_t g_lastMatchOffset = std::string::npos;  // Byte offset of last match found
+
+    bool IsWordChar(char c) { return std::isalnum((unsigned char)c) || c == '_'; }
+
+    bool IsWordBoundary(const std::string& s, size_t pos, size_t len)
+    {
+        if (pos > 0 && IsWordChar(s[pos - 1])) return false;
+        size_t end = pos + len;
+        if (end < s.size() && IsWordChar(s[end])) return false;
+        return true;
+    }
+
+    bool MatchesAt(const std::string& haystack, size_t pos, const std::string& needle, bool caseSensitive)
+    {
+        if (pos + needle.size() > haystack.size()) return false;
+        if (caseSensitive)
+            return haystack.compare(pos, needle.size(), needle) == 0;
+        for (size_t j = 0; j < needle.size(); ++j)
+            if (std::tolower((unsigned char)haystack[pos + j]) != std::tolower((unsigned char)needle[j]))
+                return false;
+        return true;
+    }
+
+    size_t FindInString(const std::string& haystack, const std::string& needle, size_t startPos, bool caseSensitive, bool matchWord)
+    {
+        for (size_t pos = startPos; pos + needle.size() <= haystack.size(); ++pos)
+        {
+            if (MatchesAt(haystack, pos, needle, caseSensitive))
+            {
+                if (!matchWord || IsWordBoundary(haystack, pos, needle.size()))
+                    return pos;
+            }
+        }
+        return std::string::npos;
+    }
+
+    size_t RFindInString(const std::string& haystack, const std::string& needle, size_t endPos, bool caseSensitive, bool matchWord)
+    {
+        if (needle.empty()) return std::string::npos;
+        size_t searchEnd = std::min(endPos, haystack.size());
+        for (size_t i = searchEnd; i > 0; --i)
+        {
+            size_t pos = i - 1;
+            if (MatchesAt(haystack, pos, needle, caseSensitive))
+            {
+                if (!matchWord || IsWordBoundary(haystack, pos, needle.size()))
+                    return pos;
+            }
+        }
+        return std::string::npos;
+    }
+
+    // Convert a byte offset in content to a 0-based line number
+    int OffsetToLine(const std::string& content, size_t offset)
+    {
+        int line = 0;
+        for (size_t i = 0; i < offset && i < content.size(); ++i)
+            if (content[i] == '\n') ++line;
+        return line;
+    }
+
+    // Convert a byte offset to a 0-based column (chars from start of line)
+    int OffsetToColumn(const std::string& content, size_t offset)
+    {
+        int col = 0;
+        for (size_t i = offset; i > 0; --i)
+        {
+            if (content[i - 1] == '\n') break;
+            ++col;
+        }
+        return col;
+    }
+
+    // Convert cursor position to byte offset in content
+    size_t CursorToOffset(TextEditor& editor, const std::string& content)
+    {
+        int curLine, curCol; editor.GetCursorPosition(curLine, curCol);
+        size_t offset = 0;
+        int line = 0;
+        while (line < curLine && offset < content.size())
+        {
+            if (content[offset] == '\n') ++line;
+            ++offset;
+        }
+        offset += curCol;
+        return offset;
+    }
+
+    void GoToMatch(TextEditor& editor, const std::string& content, size_t found)
+    {
+        g_lastMatchOffset = found;
+        int foundLine = OffsetToLine(content, found);
+        editor.SetCursorPosition(foundLine, 0);
+        editor.SelectLine(foundLine);
+        editor.SetViewAtLine(foundLine, TextEditor::SetViewAtLineMode::Centered);
+    }
+
+    void SearchNext(TextEditor& editor, const std::string& content, const char* text, bool caseSensitive, bool matchWord)
+    {
+        if (text[0] == '\0') return;
+        std::string needle(text);
+        // Start after the last match to advance forward
+        size_t offset = (g_lastMatchOffset != std::string::npos) ? g_lastMatchOffset + 1 : CursorToOffset(editor, content);
+        size_t found = FindInString(content, needle, offset, caseSensitive, matchWord);
+        if (found == std::string::npos)
+            found = FindInString(content, needle, 0, caseSensitive, matchWord);  // Wrap around
+        if (found != std::string::npos)
+            GoToMatch(editor, content, found);
+    }
+
+    void SearchPrev(TextEditor& editor, const std::string& content, const char* text, bool caseSensitive, bool matchWord)
+    {
+        if (text[0] == '\0') return;
+        std::string needle(text);
+        // Search backward from before the last match
+        size_t offset = (g_lastMatchOffset != std::string::npos && g_lastMatchOffset > 0) ? g_lastMatchOffset - 1 : CursorToOffset(editor, content);
+        size_t found = RFindInString(content, needle, offset + 1, caseSensitive, matchWord);
+        if (found == std::string::npos)
+            found = RFindInString(content, needle, content.size(), caseSensitive, matchWord);  // Wrap around
+        if (found != std::string::npos)
+            GoToMatch(editor, content, found);
+    }
+
+    // Count all matches and determine which one the cursor is on (1-based). Returns {current, total}.
+    std::pair<int, int> CountMatches(const std::string& content, const char* text, bool caseSensitive, bool matchWord, size_t cursorOffset)
+    {
+        if (text[0] == '\0') return {0, 0};
+        std::string needle(text);
+        int total = 0;
+        int current = 0;
+        size_t pos = 0;
+        while (true)
+        {
+            size_t found = FindInString(content, needle, pos, caseSensitive, matchWord);
+            if (found == std::string::npos) break;
+            ++total;
+            if (found < cursorOffset)
+                current = total;
+            else if (current == 0)
+                current = total;  // Cursor is before or at first match
+            pos = found + 1;
+        }
+        return {current, total};
+    }
 
     // Parse IMGUI_DEMO_MARKER("section") calls from source text, return section → 1-based line map
     std::map<std::string, int> ParseMarkers(const std::string& source)
@@ -260,8 +413,79 @@ void DemoCodeViewer_Show()
 
         ImGui::SameLine();
 
+        // Search button
+        if (ImGui::SmallButton(ICON_FA_SEARCH))
+        {
+            std::string sel = editor.GetSelectedText();
+            if (!sel.empty())
+                snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
+            g_searchBarOpen = true;
+            g_searchBarJustOpened = true;
+        }
+
+        ImGui::SameLine();
+
         int line, column; editor.GetCursorPosition(line, column);
         ImGui::Text("%6d / %6d  | %s", line + 1, editor.GetLineCount(), displayName.c_str());
+    }
+
+    // Content string for search operations
+    const std::string& content = showingPython ? cf.pyContent : cf.cppContent;
+
+    // Search bar (shown when g_searchBarOpen)
+    if (g_searchBarOpen)
+    {
+        if (ImGui::SmallButton(ICON_FA_TIMES "##closesearch"))
+            g_searchBarOpen = false;
+        ImGui::SameLine();
+
+        float em = HelloImGui::EmSize();
+        ImGui::SetNextItemWidth(15.f * em);
+        if (g_searchBarJustOpened)
+        {
+            ImGui::SetKeyboardFocusHere();
+            g_searchBarJustOpened = false;
+        }
+        if (ImGui::InputText("##search", g_searchBuffer, sizeof(g_searchBuffer),
+                             ImGuiInputTextFlags_EnterReturnsTrue))
+        {
+            SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
+        }
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Next"))
+            SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Prev"))
+            SearchPrev(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
+        ImGui::SameLine();
+        ImGui::Checkbox("Aa##casesensitive", &g_searchCaseSensitive);
+        ImGui::SameLine();
+        ImGui::Checkbox("Word##matchword", &g_searchMatchWord);
+
+        // Show match count: "current / total"
+        if (g_searchBuffer[0] != '\0')
+        {
+            ImGui::SameLine();
+            size_t cursorOff = CursorToOffset(editor, content);
+            auto [current, total] = CountMatches(content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord, cursorOff);
+            if (total == 0)
+                ImGui::TextColored(ImVec4(1.f, 0.4f, 0.4f, 1.f), "No matches");
+            else
+                ImGui::Text("%d / %d", current, total);
+        }
+    }
+
+    // Ctrl+F shortcut to toggle search bar
+    if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_F))
+    {
+        g_searchBarOpen = !g_searchBarOpen;
+        if (g_searchBarOpen)
+        {
+            g_searchBarJustOpened = true;
+            std::string sel = editor.GetSelectedText();
+            if (!sel.empty())
+                snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
+        }
     }
 
     // Use code font if available
@@ -272,6 +496,24 @@ void DemoCodeViewer_Show()
     // Use unique ID per file and language to keep cursor/scroll state independent
     std::string editorId = std::string("##code_") + displayName;
     editor.Render(editorId.c_str(), false, ImGui::GetContentRegionAvail());
+
+    // Right-click context menu on the editor
+    ImGui::OpenPopupOnItemClick("CodeEditorContext", ImGuiPopupFlags_MouseButtonRight);
+    if (ImGui::BeginPopup("CodeEditorContext"))
+    {
+        std::string sel = editor.GetSelectedText();
+        if (!sel.empty())
+        {
+            std::string menuLabel = "Search \"" + sel.substr(0, 30) + (sel.size() > 30 ? "..." : "") + "\" in this file";
+            if (ImGui::MenuItem(menuLabel.c_str()))
+            {
+                snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
+                g_searchBarOpen = true;
+                SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
+            }
+        }
+        ImGui::EndPopup();
+    }
 
     if (codeFont.font)
         ImGui::PopFont();
