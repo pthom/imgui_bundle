@@ -3,18 +3,19 @@
 #include <string>
 #include <functional>
 
-// Information about a single demo file
+// Information about a single demo file or API reference file
 struct DemoFileInfo {
     std::string baseName;    // e.g., "im_anim_demo_basics" (without extension)
-    bool hasPython = false;  // true if .py exists alongside .cpp
+    bool hasPython = false;  // true if .py/.pyi exists alongside .cpp/.h
+    bool isApiReference = false;  // true for header/stub files (vs demo files)
     std::string cppGithubUrl;  // Full URL without #L suffix
     std::string pyGithubUrl;   // Same for Python file (empty if no Python)
 
     // Derived names for display and asset loading
-    std::string cppDisplayName() const { return baseName + ".cpp"; }
-    std::string pyDisplayName() const { return baseName + ".py"; }
-    std::string cppAssetName() const { return baseName + ".cpp.txt"; }
-    std::string pyAssetName() const { return baseName + ".py.txt"; }
+    std::string cppDisplayName() const { return baseName + (isApiReference ? ".h" : ".cpp"); }
+    std::string pyDisplayName() const { return baseName + (isApiReference ? ".pyi" : ".py"); }
+    std::string cppAssetName() const { return baseName + (isApiReference ? ".h.txt" : ".cpp.txt"); }
+    std::string pyAssetName() const { return baseName + (isApiReference ? ".pyi.txt" : ".py.txt"); }
 };
 
 // Configuration for a library (ImGui, ImPlot, ImPlot3D, ImAnim)

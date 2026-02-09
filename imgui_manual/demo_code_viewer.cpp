@@ -59,6 +59,8 @@ namespace
     bool g_searchMatchWord = false;
     size_t g_lastMatchOffset = std::string::npos;  // Byte offset of last match found
 
+    bool g_pendingApiSearch = false;  // Trigger search on next frame after switching to API tab
+
     bool IsWordChar(char c) { return std::isalnum((unsigned char)c) || c == '_'; }
 
     bool IsWordBoundary(const std::string& s, size_t pos, size_t len)
@@ -285,6 +287,27 @@ namespace
         }
         return -1;
     }
+
+    void SearchInApi(const std::string& searchTerm)
+    {
+        // Find the API reference file index in current library
+        auto files = GetCurrentLibraryFiles();
+        int apiIdx = -1;
+        for (size_t i = 0; i < files.size(); ++i)
+        {
+            if (files[i].isApiReference) { apiIdx = (int)i; break; }
+        }
+        if (apiIdx < 0) return;
+
+        // Switch to API tab
+        g_currentFileIndex = apiIdx;
+
+        // Fill search buffer and trigger search
+        snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", searchTerm.c_str());
+        g_searchBarOpen = true;
+        g_lastMatchOffset = std::string::npos;  // Reset to search from beginning
+        g_pendingApiSearch = true;
+    }
 }
 
 bool DemoCodeViewer_GetShowPython() { return g_showPython; }
@@ -317,8 +340,19 @@ void DemoCodeViewer_Show()
             ImGuiTabItemFlags flags = 0;
             // If we have a pending scroll for this file, select its tab
             if (!g_pendingScrollFile.empty() && g_pendingScrollFile == file.cppDisplayName())
-            {
                 flags |= ImGuiTabItemFlags_SetSelected;
+            // If pending API search, select the API tab
+            if (g_pendingApiSearch && file.isApiReference)
+                flags |= ImGuiTabItemFlags_SetSelected;
+
+            // Tinted tabs for API reference files
+            int colorsPushed = 0;
+            if (file.isApiReference)
+            {
+                ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0.15f, 0.25f, 0.40f, 1.0f));
+                ImGui::PushStyleColor(ImGuiCol_TabHovered, ImVec4(0.25f, 0.40f, 0.55f, 1.0f));
+                ImGui::PushStyleColor(ImGuiCol_TabSelected, ImVec4(0.20f, 0.35f, 0.50f, 1.0f));
+                colorsPushed = 3;
             }
 
             if (ImGui::BeginTabItem(displayName.c_str(), nullptr, flags))
@@ -326,6 +360,9 @@ void DemoCodeViewer_Show()
                 g_currentFileIndex = (int)i;
                 ImGui::EndTabItem();
             }
+
+            if (colorsPushed > 0)
+                ImGui::PopStyleColor(colorsPushed);
         }
         ImGui::EndTabBar();
     }
@@ -425,12 +462,33 @@ void DemoCodeViewer_Show()
 
         ImGui::SameLine();
 
+        // Search in API button
+        ImGui::BeginDisabled(!editor.AnyCursorHasSelection());
+        if (ImGui::SmallButton(ICON_FA_BOOK "##searchapi"))
+        {
+            std::string sel = editor.GetSelectedText();
+            if (!sel.empty())
+                SearchInApi(sel);
+        }
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+            ImGui::SetTooltip("Search selected text in API declarations (Ctrl+Shift+F)");
+        ImGui::EndDisabled();
+
+        ImGui::SameLine();
+
         int line, column; editor.GetCursorPosition(line, column);
         ImGui::Text("%6d / %6d  | %s", line + 1, editor.GetLineCount(), displayName.c_str());
     }
 
     // Content string for search operations
     const std::string& content = showingPython ? cf.pyContent : cf.cppContent;
+
+    // Handle pending API search (triggered by SearchInApi on previous frame)
+    if (g_pendingApiSearch && currentFile.isApiReference)
+    {
+        SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
+        g_pendingApiSearch = false;
+    }
 
     // Search bar (shown when g_searchBarOpen)
     if (g_searchBarOpen)
@@ -488,6 +546,14 @@ void DemoCodeViewer_Show()
         }
     }
 
+    // Ctrl+Shift+F shortcut to search in API declarations
+    if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_F))
+    {
+        std::string sel = editor.GetSelectedText();
+        if (!sel.empty())
+            SearchInApi(sel);
+    }
+
     // Use code font if available
     auto codeFont = ImGuiMd::GetCodeFont();
     if (codeFont.font)
@@ -501,17 +567,30 @@ void DemoCodeViewer_Show()
     ImGui::OpenPopupOnItemClick("CodeEditorContext", ImGuiPopupFlags_MouseButtonRight);
     if (ImGui::BeginPopup("CodeEditorContext"))
     {
+        if (codeFont.font)
+            ImGui::PopFont(); // restore font for menu
+
         std::string sel = editor.GetSelectedText();
         if (!sel.empty())
         {
-            std::string menuLabel = "Search \"" + sel.substr(0, 30) + (sel.size() > 30 ? "..." : "") + "\" in this file";
+            std::string truncSel = sel.substr(0, 30) + (sel.size() > 30 ? "..." : "");
+
+            std::string menuLabel = "Search \"" + truncSel + "\" in this file";
             if (ImGui::MenuItem(menuLabel.c_str()))
             {
                 snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
                 g_searchBarOpen = true;
                 SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
             }
+
+            std::string apiLabel = "Search \"" + truncSel + "\" in API";
+            if (ImGui::MenuItem(apiLabel.c_str()))
+                SearchInApi(sel);
         }
+
+        if (codeFont.font)
+            ImGui::PushFont(codeFont.font, codeFont.size);
+        
         ImGui::EndPopup();
     }
 

@@ -19,13 +19,6 @@ void OnDemoMarkerHook(const char* file, int line, const char* section)
     DemoCodeViewer_ShowCodeAt(file, line, section);
 }
 
-void OnBeforeFrame_ImAnimSetup()
-{
-    // >>> ImAnim frame setup (required every frame) <<<
-    iam_update_begin_frame();
-    iam_clip_update(ImGui::GetIO().DeltaTime);
-}
-
 void OnPostInit()
 {
     // Initialize the code viewer (loads source files from assets)
@@ -143,7 +136,6 @@ std::vector<HelloImGui::DockableWindow> SetupDockableWindows()
 int main()
 {
     HelloImGui::RunnerParams runnerParams;
-    runnerParams.callbacks.PreNewFrame = OnBeforeFrame_ImAnimSetup;  // ImAnim frame setup
     runnerParams.callbacks.PostInit = OnPostInit;  // Initialize code viewer after OpenGL init
 
     runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
@@ -217,6 +209,7 @@ int main()
     addons.withMarkdown = true;
     addons.withImplot = true;
     addons.withImplot3d = true;
+    addons.withImAnim = true;
     ImmApp::Run(runnerParams, addons);
     return 0;
 }

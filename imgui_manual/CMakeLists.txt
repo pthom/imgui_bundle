@@ -39,6 +39,25 @@ configure_file(${demos_python_dir}/demos_immapp/imgui_demo.py ${demo_code_dest}/
 configure_file(${demos_python_dir}/demos_implot/implot_demo.py ${demo_code_dest}/implot_demo.py.txt COPYONLY)
 configure_file(${demos_python_dir}/demos_implot3d/implot3d_demo.py ${demo_code_dest}/implot3d_demo.py.txt COPYONLY)
 
+# API reference files: C++ headers
+configure_file(${imgui_dir}/imgui.h ${demo_code_dest}/imgui.h.txt COPYONLY)
+configure_file(${imgui_dir}/imgui_internal.h ${demo_code_dest}/imgui_internal.h.txt COPYONLY)
+configure_file(${implot_dir}/implot.h ${demo_code_dest}/implot.h.txt COPYONLY)
+configure_file(${implot_dir}/implot_internal.h ${demo_code_dest}/implot_internal.h.txt COPYONLY)
+configure_file(${implot3d_dir}/implot3d.h ${demo_code_dest}/implot3d.h.txt COPYONLY)
+configure_file(${implot3d_dir}/implot3d_internal.h ${demo_code_dest}/implot3d_internal.h.txt COPYONLY)
+configure_file(${imanim_dir}/im_anim.h ${demo_code_dest}/im_anim.h.txt COPYONLY)
+
+# API reference files: Python stubs
+set(stubs_dir ${bundle_dir}/bindings/imgui_bundle)
+configure_file(${stubs_dir}/imgui/__init__.pyi ${demo_code_dest}/imgui.pyi.txt COPYONLY)
+configure_file(${stubs_dir}/imgui/internal.pyi ${demo_code_dest}/imgui_internal.pyi.txt COPYONLY)
+configure_file(${stubs_dir}/implot/__init__.pyi ${demo_code_dest}/implot.pyi.txt COPYONLY)
+configure_file(${stubs_dir}/implot/internal.pyi ${demo_code_dest}/implot_internal.pyi.txt COPYONLY)
+configure_file(${stubs_dir}/implot3d/__init__.pyi ${demo_code_dest}/implot3d.pyi.txt COPYONLY)
+configure_file(${stubs_dir}/implot3d/internal.pyi ${demo_code_dest}/implot3d_internal.pyi.txt COPYONLY)
+configure_file(${stubs_dir}/im_anim.pyi ${demo_code_dest}/im_anim.pyi.txt COPYONLY)
+
 
 # Force use Glfw (using pongasoft/emscripten-glfw) on emscripten, which has a good support for the clipboard
 #set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
