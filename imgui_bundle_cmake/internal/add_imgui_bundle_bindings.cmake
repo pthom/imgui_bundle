@@ -137,8 +137,18 @@ function(add_imgui_bundle_bindings)
 
     target_link_libraries(${python_native_module_name} PUBLIC ${bound_library})
 
-    # Link with OpenGL (necessary for nanobind)
-    if (NOT  EMSCRIPTEN)
+    # On Android, explicitly link against the Python library
+    if(ANDROID)
+        if(DEFINED ENV{ANDROID_PYTHON_LIBRARY})
+            message(STATUS "Android: Linking ${python_native_module_name} against Python library: $ENV{ANDROID_PYTHON_LIBRARY}")
+            target_link_libraries(${python_native_module_name} PRIVATE "$ENV{ANDROID_PYTHON_LIBRARY}")
+        else()
+            message(WARNING "Android: ANDROID_PYTHON_LIBRARY environment variable not set!")
+        endif()
+    endif()
+
+    # Link with OpenGL (necessary for nanobind on desktop platforms)
+    if (NOT EMSCRIPTEN AND NOT ANDROID)
         if (APPLE)
             target_link_libraries(${python_native_module_name} PUBLIC "-framework OpenGL")
         else()
