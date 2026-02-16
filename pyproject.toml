@@ -217,7 +217,6 @@ skip = ["*win32"]
 [tool.cibuildwheel.android]
 build = "cp313-*"
 archs = ["arm64_v8a"]
-before-build = "pip install numpy"
 
 [tool.cibuildwheel.android.environment]
 ANDROID_API_LEVEL = "31"
