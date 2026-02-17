@@ -132,12 +132,11 @@ void py_init_module_imspinner(nb::module_& m)
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("ang_min") = 0.f, nb::arg("ang_max") = ImSpinner::PI_2, nb::arg("arcs") = 1, nb::arg("mode") = 0,
         "\n        const char *label: A string label for the spinner, used to identify it in ImGui.\n        float radius: The radius of the spinner.\n        float thickness: The thickness of the spinner's border.\n        const ImColor &color: The color of the spinner.\n        float speed: The speed of the spinning animation.\n        float ang_min: Minimum angle of spinning.\n        float ang_max: Maximum angle of spinning.\n        int arcs: Number of arcs of the spinner.\n");
 
-
     m.def("spinner_rainbow_mix",
-        SpinnerRainbowMix, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("ang_min") = 0.f, nb::arg("ang_max") = PI_2, nb::arg("arcs") = 1, nb::arg("mode") = 0);
+        ImSpinner::SpinnerRainbowMix, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("ang_min") = 0.f, nb::arg("ang_max") = ImSpinner::PI_2, nb::arg("arcs") = 1, nb::arg("mode") = 0);
 
     m.def("spinner_rotating_heart",
-        SpinnerRotatingHeart,
+        ImSpinner::SpinnerRotatingHeart,
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("ang_min") = 0.f,
         "This function draws a rotating heart spinner.");
 
@@ -151,17 +150,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerAng(label, radius, thickness, color_or_default, bg_or_default, speed, angle, mode);
+                ImSpinner::SpinnerAng(label, radius, thickness, color_or_default, bg_or_default, speed, angle, mode);
             };
 
             SpinnerAng_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle, mode);
@@ -179,17 +178,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerAng8(label, radius, thickness, color_or_default, bg_or_default, speed, angle, mode, rkoef);
+                ImSpinner::SpinnerAng8(label, radius, thickness, color_or_default, bg_or_default, speed, angle, mode, rkoef);
             };
 
             SpinnerAng8_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle, mode, rkoef);
@@ -207,10 +206,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerAngMix(label, radius, thickness, color_or_default, speed, angle, arcs, mode);
+                ImSpinner::SpinnerAngMix(label, radius, thickness, color_or_default, speed, angle, arcs, mode);
             };
 
             SpinnerAngMix_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, angle, arcs, mode);
@@ -228,17 +227,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerLoadingRing(label, radius, thickness, color_or_default, bg_or_default, speed, segments);
+                ImSpinner::SpinnerLoadingRing(label, radius, thickness, color_or_default, bg_or_default, speed, segments);
             };
 
             SpinnerLoadingRing_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, segments);
@@ -256,17 +255,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerClock(label, radius, thickness, color_or_default, bg_or_default, speed);
+                ImSpinner::SpinnerClock(label, radius, thickness, color_or_default, bg_or_default, speed);
             };
 
             SpinnerClock_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed);
@@ -284,10 +283,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerPulsar(label, radius, thickness, bg_or_default, speed, sequence, angle, mode);
+                ImSpinner::SpinnerPulsar(label, radius, thickness, bg_or_default, speed, sequence, angle, mode);
             };
 
             SpinnerPulsar_adapt_mutable_param_with_default_value(label, radius, thickness, bg, speed, sequence, angle, mode);
@@ -305,10 +304,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerDoubleFadePulsar(label, radius, param_2, bg_or_default, speed);
+                ImSpinner::SpinnerDoubleFadePulsar(label, radius, param_2, bg_or_default, speed);
             };
 
             SpinnerDoubleFadePulsar_adapt_mutable_param_with_default_value(label, radius, param_2, bg, speed);
@@ -326,10 +325,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerTwinPulsar(label, radius, thickness, color_or_default, speed, rings, mode);
+                ImSpinner::SpinnerTwinPulsar(label, radius, thickness, color_or_default, speed, rings, mode);
             };
 
             SpinnerTwinPulsar_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, rings, mode);
@@ -347,10 +346,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerFadePulsar(label, radius, color_or_default, speed, rings, mode);
+                ImSpinner::SpinnerFadePulsar(label, radius, color_or_default, speed, rings, mode);
             };
 
             SpinnerFadePulsar_adapt_mutable_param_with_default_value(label, radius, color, speed, rings, mode);
@@ -368,10 +367,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerFadePulsarSquare(label, radius, color_or_default, speed, rings, mode);
+                ImSpinner::SpinnerFadePulsarSquare(label, radius, color_or_default, speed, rings, mode);
             };
 
             SpinnerFadePulsarSquare_adapt_mutable_param_with_default_value(label, radius, color, speed, rings, mode);
@@ -389,10 +388,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerCircularLines(label, radius, color_or_default, speed, lines, mode);
+                ImSpinner::SpinnerCircularLines(label, radius, color_or_default, speed, lines, mode);
             };
 
             SpinnerCircularLines_adapt_mutable_param_with_default_value(label, radius, color, speed, lines, mode);
@@ -410,10 +409,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerDots(label, nextdot, radius, thickness, color_or_default, speed, dots, minth, mode);
+                ImSpinner::SpinnerDots(label, nextdot, radius, thickness, color_or_default, speed, dots, minth, mode);
             };
 
             SpinnerDots_adapt_mutable_param_with_default_value(label, nextdot, radius, thickness, color, speed, dots, minth, mode);
@@ -431,17 +430,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bgcolor_or_default = [&]() -> const ImColor {
                     if (bgcolor.has_value())
                         return bgcolor.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerVDots(label, radius, thickness, color_or_default, bgcolor_or_default, speed, dots, mdots, mode);
+                ImSpinner::SpinnerVDots(label, radius, thickness, color_or_default, bgcolor_or_default, speed, dots, mdots, mode);
             };
 
             SpinnerVDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, bgcolor, speed, dots, mdots, mode);
@@ -459,10 +458,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerBounceDots(label, radius, thickness, color_or_default, speed, dots, mode);
+                ImSpinner::SpinnerBounceDots(label, radius, thickness, color_or_default, speed, dots, mode);
             };
 
             SpinnerBounceDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
@@ -480,10 +479,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerZipDots(label, radius, thickness, color_or_default, speed, dots);
+                ImSpinner::SpinnerZipDots(label, radius, thickness, color_or_default, speed, dots);
             };
 
             SpinnerZipDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
@@ -501,10 +500,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerDotsToPoints(label, radius, thickness, offset_k, color_or_default, speed, dots);
+                ImSpinner::SpinnerDotsToPoints(label, radius, thickness, offset_k, color_or_default, speed, dots);
             };
 
             SpinnerDotsToPoints_adapt_mutable_param_with_default_value(label, radius, thickness, offset_k, color, speed, dots);
@@ -522,10 +521,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerDotsToBar(label, radius, thickness, offset_k, color_or_default, speed, dots);
+                ImSpinner::SpinnerDotsToBar(label, radius, thickness, offset_k, color_or_default, speed, dots);
             };
 
             SpinnerDotsToBar_adapt_mutable_param_with_default_value(label, radius, thickness, offset_k, color, speed, dots);
@@ -543,10 +542,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerWaveDots(label, radius, thickness, color_or_default, speed, lt);
+                ImSpinner::SpinnerWaveDots(label, radius, thickness, color_or_default, speed, lt);
             };
 
             SpinnerWaveDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
@@ -564,10 +563,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerFadeDots(label, radius, thickness, color_or_default, speed, lt, mode);
+                ImSpinner::SpinnerFadeDots(label, radius, thickness, color_or_default, speed, lt, mode);
             };
 
             SpinnerFadeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, mode);
@@ -585,10 +584,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerThreeDots(label, radius, thickness, color_or_default, speed, lt);
+                ImSpinner::SpinnerThreeDots(label, radius, thickness, color_or_default, speed, lt);
             };
 
             SpinnerThreeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
@@ -597,10 +596,10 @@ void py_init_module_imspinner(nb::module_& m)
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_five_dots",
-        SpinnerFiveDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = 0xffffffff, nb::arg("speed") = 2.8f, nb::arg("lt") = 8);
+        ImSpinner::SpinnerFiveDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = 0xffffffff, nb::arg("speed") = 2.8f, nb::arg("lt") = 8);
 
     m.def("spinner4_caleidospcope",
-        Spinner4Caleidospcope, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = 0xffffffff, nb::arg("speed") = 2.8f, nb::arg("lt") = 8);
+        ImSpinner::Spinner4Caleidospcope, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = 0xffffffff, nb::arg("speed") = 2.8f, nb::arg("lt") = 8);
 
     m.def("spinner_multi_fade_dots",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
@@ -612,10 +611,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerMultiFadeDots(label, radius, thickness, color_or_default, speed, lt);
+                ImSpinner::SpinnerMultiFadeDots(label, radius, thickness, color_or_default, speed, lt);
             };
 
             SpinnerMultiFadeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
@@ -633,10 +632,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerThickToSin(label, radius, thickness, color_or_default, speed, nt, lt, mode);
+                ImSpinner::SpinnerThickToSin(label, radius, thickness, color_or_default, speed, nt, lt, mode);
             };
 
             SpinnerThickToSin_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, nt, lt, mode);
@@ -654,10 +653,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerScaleDots(label, radius, thickness, color_or_default, speed, lt);
+                ImSpinner::SpinnerScaleDots(label, radius, thickness, color_or_default, speed, lt);
             };
 
             SpinnerScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
@@ -675,10 +674,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSquareSpins(label, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSquareSpins(label, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSquareSpins_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
@@ -696,10 +695,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerMovingDots(label, radius, thickness, color_or_default, speed, dots);
+                ImSpinner::SpinnerMovingDots(label, radius, thickness, color_or_default, speed, dots);
             };
 
             SpinnerMovingDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
@@ -717,10 +716,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerRotateDots(label, radius, thickness, color_or_default, speed, dots, mode);
+                ImSpinner::SpinnerRotateDots(label, radius, thickness, color_or_default, speed, dots, mode);
             };
 
             SpinnerRotateDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
@@ -738,10 +737,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerOrionDots(label, radius, thickness, color_or_default, speed, arcs);
+                ImSpinner::SpinnerOrionDots(label, radius, thickness, color_or_default, speed, arcs);
             };
 
             SpinnerOrionDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
@@ -759,10 +758,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerGalaxyDots(label, radius, thickness, color_or_default, speed, arcs);
+                ImSpinner::SpinnerGalaxyDots(label, radius, thickness, color_or_default, speed, arcs);
             };
 
             SpinnerGalaxyDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
@@ -780,17 +779,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color1.has_value())
                         return color1.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& color2_or_default = [&]() -> const ImColor {
                     if (color2.has_value())
                         return color2.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
-                SpinnerTwinAng(label, radius1, radius2, thickness, color1_or_default, color2_or_default, speed, angle, mode);
+                ImSpinner::SpinnerTwinAng(label, radius1, radius2, thickness, color1_or_default, color2_or_default, speed, angle, mode);
             };
 
             SpinnerTwinAng_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, color1, color2, speed, angle, mode);
@@ -808,17 +807,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color1.has_value())
                         return color1.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& color2_or_default = [&]() -> const ImColor {
                     if (color2.has_value())
                         return color2.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
-                SpinnerFilling(label, radius, thickness, color1_or_default, color2_or_default, speed);
+                ImSpinner::SpinnerFilling(label, radius, thickness, color1_or_default, color2_or_default, speed);
             };
 
             SpinnerFilling_adapt_mutable_param_with_default_value(label, radius, thickness, color1, color2, speed);
@@ -827,7 +826,7 @@ void py_init_module_imspinner(nb::module_& m)
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color1: white\n        * color2: red");
 
     m.def("spinner_filling_mem",
-        SpinnerFillingMem, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("colorbg"), nb::arg("speed"));
+        ImSpinner::SpinnerFillingMem, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("colorbg"), nb::arg("speed"));
 
     m.def("spinner_topup",
         [](const char * label, float radius1, float radius2, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & fg = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 2.8f)
@@ -839,24 +838,24 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
                 const ImColor& fg_or_default = [&]() -> const ImColor {
                     if (fg.has_value())
                         return fg.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerTopup(label, radius1, radius2, color_or_default, fg_or_default, bg_or_default, speed);
+                ImSpinner::SpinnerTopup(label, radius1, radius2, color_or_default, fg_or_default, bg_or_default, speed);
             };
 
             SpinnerTopup_adapt_mutable_param_with_default_value(label, radius1, radius2, color, fg, bg, speed);
@@ -865,31 +864,31 @@ void py_init_module_imspinner(nb::module_& m)
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: red\n        * fg: white\n        * bg: white");
 
     m.def("spinner_twin_ang180",
-        [](const char * label, float radius1, float radius2, float thickness, const std::optional<const ImColor> & color1 = std::nullopt, const std::optional<const ImColor> & color2 = std::nullopt, float speed = 2.8f, float angle = PI_DIV_4, int mode = 0)
+        [](const char * label, float radius1, float radius2, float thickness, const std::optional<const ImColor> & color1 = std::nullopt, const std::optional<const ImColor> & color2 = std::nullopt, float speed = 2.8f, float angle = ImSpinner::PI_DIV_4, int mode = 0)
         {
-            auto SpinnerTwinAng180_adapt_mutable_param_with_default_value = [](const char * label, float radius1, float radius2, float thickness, const std::optional<const ImColor> & color1 = std::nullopt, const std::optional<const ImColor> & color2 = std::nullopt, float speed = 2.8f, float angle = PI_DIV_4, int mode = 0)
+            auto SpinnerTwinAng180_adapt_mutable_param_with_default_value = [](const char * label, float radius1, float radius2, float thickness, const std::optional<const ImColor> & color1 = std::nullopt, const std::optional<const ImColor> & color2 = std::nullopt, float speed = 2.8f, float angle = ImSpinner::PI_DIV_4, int mode = 0)
             {
 
                 const ImColor& color1_or_default = [&]() -> const ImColor {
                     if (color1.has_value())
                         return color1.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& color2_or_default = [&]() -> const ImColor {
                     if (color2.has_value())
                         return color2.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
-                SpinnerTwinAng180(label, radius1, radius2, thickness, color1_or_default, color2_or_default, speed, angle, mode);
+                ImSpinner::SpinnerTwinAng180(label, radius1, radius2, thickness, color1_or_default, color2_or_default, speed, angle, mode);
             };
 
             SpinnerTwinAng180_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, color1, color2, speed, angle, mode);
         },
-        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color1").none() = nb::none(), nb::arg("color2").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = PI_DIV_4, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color1").none() = nb::none(), nb::arg("color2").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = ImSpinner::PI_DIV_4, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color1: white\n        * color2: red");
 
     m.def("spinner_twin_ang360",
@@ -902,17 +901,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color1.has_value())
                         return color1.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& color2_or_default = [&]() -> const ImColor {
                     if (color2.has_value())
                         return color2.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
-                SpinnerTwinAng360(label, radius1, radius2, thickness, color1_or_default, color2_or_default, speed1, speed2, mode);
+                ImSpinner::SpinnerTwinAng360(label, radius1, radius2, thickness, color1_or_default, color2_or_default, speed1, speed2, mode);
             };
 
             SpinnerTwinAng360_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, color1, color2, speed1, speed2, mode);
@@ -930,10 +929,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerIncDots(label, radius, thickness, color_or_default, speed, dots);
+                ImSpinner::SpinnerIncDots(label, radius, thickness, color_or_default, speed, dots);
             };
 
             SpinnerIncDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
@@ -951,10 +950,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerIncFullDots(label, radius, thickness, color_or_default, speed, dots);
+                ImSpinner::SpinnerIncFullDots(label, radius, thickness, color_or_default, speed, dots);
             };
 
             SpinnerIncFullDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
@@ -972,10 +971,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerFadeBars(label, w, color_or_default, speed, bars, scale);
+                ImSpinner::SpinnerFadeBars(label, w, color_or_default, speed, bars, scale);
             };
 
             SpinnerFadeBars_adapt_mutable_param_with_default_value(label, w, color, speed, bars, scale);
@@ -993,10 +992,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerFadeTris(label, radius, color_or_default, speed, dim, scale, mode);
+                ImSpinner::SpinnerFadeTris(label, radius, color_or_default, speed, dim, scale, mode);
             };
 
             SpinnerFadeTris_adapt_mutable_param_with_default_value(label, radius, color, speed, dim, scale, mode);
@@ -1014,10 +1013,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerBarsRotateFade(label, rmin, rmax, thickness, color_or_default, speed, bars);
+                ImSpinner::SpinnerBarsRotateFade(label, rmin, rmax, thickness, color_or_default, speed, bars);
             };
 
             SpinnerBarsRotateFade_adapt_mutable_param_with_default_value(label, rmin, rmax, thickness, color, speed, bars);
@@ -1035,10 +1034,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerBarsScaleMiddle(label, w, color_or_default, speed, bars);
+                ImSpinner::SpinnerBarsScaleMiddle(label, w, color_or_default, speed, bars);
             };
 
             SpinnerBarsScaleMiddle_adapt_mutable_param_with_default_value(label, w, color, speed, bars);
@@ -1056,17 +1055,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerAngTwin(label, radius1, radius2, thickness, color_or_default, bg_or_default, speed, angle, arcs, mode);
+                ImSpinner::SpinnerAngTwin(label, radius1, radius2, thickness, color_or_default, bg_or_default, speed, angle, arcs, mode);
             };
 
             SpinnerAngTwin_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, color, bg, speed, angle, arcs, mode);
@@ -1084,10 +1083,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerArcRotation(label, radius, thickness, color_or_default, speed, arcs, mode);
+                ImSpinner::SpinnerArcRotation(label, radius, thickness, color_or_default, speed, arcs, mode);
             };
 
             SpinnerArcRotation_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, mode);
@@ -1105,10 +1104,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerArcFade(label, radius, thickness, color_or_default, speed, arcs, mode);
+                ImSpinner::SpinnerArcFade(label, radius, thickness, color_or_default, speed, arcs, mode);
             };
 
             SpinnerArcFade_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, mode);
@@ -1126,10 +1125,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSimpleArcFade(label, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSimpleArcFade(label, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSimpleArcFade_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
@@ -1147,10 +1146,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSquareStrokeFade(label, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSquareStrokeFade(label, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSquareStrokeFade_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
@@ -1168,10 +1167,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerAsciiSymbolPoints(label, text, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerAsciiSymbolPoints(label, text, radius, thickness, color_or_default, speed);
             };
 
             SpinnerAsciiSymbolPoints_adapt_mutable_param_with_default_value(label, text, radius, thickness, color, speed);
@@ -1189,10 +1188,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerTextFading(label, text, radius, fsize, color_or_default, speed);
+                ImSpinner::SpinnerTextFading(label, text, radius, fsize, color_or_default, speed);
             };
 
             SpinnerTextFading_adapt_mutable_param_with_default_value(label, text, radius, fsize, color, speed);
@@ -1210,10 +1209,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSevenSegments(label, text, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSevenSegments(label, text, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSevenSegments_adapt_mutable_param_with_default_value(label, text, radius, thickness, color, speed);
@@ -1231,10 +1230,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSquareStrokeFill(label, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSquareStrokeFill(label, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSquareStrokeFill_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
@@ -1252,10 +1251,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSquareStrokeLoading(label, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSquareStrokeLoading(label, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSquareStrokeLoading_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
@@ -1273,10 +1272,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSquareLoading(label, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSquareLoading(label, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSquareLoading_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
@@ -1294,10 +1293,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerFilledArcFade(label, radius, color_or_default, speed, arcs, mode);
+                ImSpinner::SpinnerFilledArcFade(label, radius, color_or_default, speed, arcs, mode);
             };
 
             SpinnerFilledArcFade_adapt_mutable_param_with_default_value(label, radius, color, speed, arcs, mode);
@@ -1315,10 +1314,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerPointsRoller(label, radius, thickness, color_or_default, speed, points, circles, rspeed);
+                ImSpinner::SpinnerPointsRoller(label, radius, thickness, color_or_default, speed, points, circles, rspeed);
             };
 
             SpinnerPointsRoller_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, points, circles, rspeed);
@@ -1336,10 +1335,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerPointsArcBounce(label, radius, thickness, color_or_default, speed, points, circles, rspeed);
+                ImSpinner::SpinnerPointsArcBounce(label, radius, thickness, color_or_default, speed, points, circles, rspeed);
             };
 
             SpinnerPointsArcBounce_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, points, circles, rspeed);
@@ -1357,17 +1356,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerFilledArcColor(label, radius, color_or_default, bg_or_default, speed, arcs);
+                ImSpinner::SpinnerFilledArcColor(label, radius, color_or_default, bg_or_default, speed, arcs);
             };
 
             SpinnerFilledArcColor_adapt_mutable_param_with_default_value(label, radius, color, bg, speed, arcs);
@@ -1385,17 +1384,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerFilledArcRing(label, radius, thickness, color_or_default, bg_or_default, speed, arcs);
+                ImSpinner::SpinnerFilledArcRing(label, radius, thickness, color_or_default, bg_or_default, speed, arcs);
             };
 
             SpinnerFilledArcRing_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, arcs);
@@ -1413,10 +1412,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
-                SpinnerArcWedges(label, radius, color_or_default, speed, arcs, mode);
+                ImSpinner::SpinnerArcWedges(label, radius, color_or_default, speed, arcs, mode);
             };
 
             SpinnerArcWedges_adapt_mutable_param_with_default_value(label, radius, color, speed, arcs, mode);
@@ -1434,17 +1433,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (ball.has_value())
                         return ball.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerTwinBall(label, radius1, radius2, thickness, b_thickness, ball_or_default, bg_or_default, speed, balls, mode);
+                ImSpinner::SpinnerTwinBall(label, radius1, radius2, thickness, b_thickness, ball_or_default, bg_or_default, speed, balls, mode);
             };
 
             SpinnerTwinBall_adapt_mutable_param_with_default_value(label, radius1, radius2, thickness, b_thickness, ball, bg, speed, balls, mode);
@@ -1462,17 +1461,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (ball.has_value())
                         return ball.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerSolarBalls(label, radius, thickness, ball_or_default, bg_or_default, speed, balls);
+                ImSpinner::SpinnerSolarBalls(label, radius, thickness, ball_or_default, bg_or_default, speed, balls);
             };
 
             SpinnerSolarBalls_adapt_mutable_param_with_default_value(label, radius, thickness, ball, bg, speed, balls);
@@ -1490,10 +1489,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (ball.has_value())
                         return ball.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSolarScaleBalls(label, radius, thickness, ball_or_default, speed, balls);
+                ImSpinner::SpinnerSolarScaleBalls(label, radius, thickness, ball_or_default, speed, balls);
             };
 
             SpinnerSolarScaleBalls_adapt_mutable_param_with_default_value(label, radius, thickness, ball, speed, balls);
@@ -1511,17 +1510,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (ball.has_value())
                         return ball.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerSolarArcs(label, radius, thickness, ball_or_default, bg_or_default, speed, balls);
+                ImSpinner::SpinnerSolarArcs(label, radius, thickness, ball_or_default, bg_or_default, speed, balls);
             };
 
             SpinnerSolarArcs_adapt_mutable_param_with_default_value(label, radius, thickness, ball, bg, speed, balls);
@@ -1539,10 +1538,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerMovingArcs(label, radius, thickness, color_or_default, speed, arcs);
+                ImSpinner::SpinnerMovingArcs(label, radius, thickness, color_or_default, speed, arcs);
             };
 
             SpinnerMovingArcs_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
@@ -1560,10 +1559,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerRainbowCircle(label, radius, thickness, color_or_default, speed, arcs, mode);
+                ImSpinner::SpinnerRainbowCircle(label, radius, thickness, color_or_default, speed, arcs, mode);
             };
 
             SpinnerRainbowCircle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, mode);
@@ -1581,10 +1580,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerBounceBall(label, radius, thickness, color_or_default, speed, dots, shadow);
+                ImSpinner::SpinnerBounceBall(label, radius, thickness, color_or_default, speed, dots, shadow);
             };
 
             SpinnerBounceBall_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, shadow);
@@ -1602,10 +1601,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerPulsarBall(label, radius, thickness, color_or_default, speed, shadow, mode);
+                ImSpinner::SpinnerPulsarBall(label, radius, thickness, color_or_default, speed, shadow, mode);
             };
 
             SpinnerPulsarBall_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, shadow, mode);
@@ -1623,10 +1622,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerIncScaleDots(label, radius, thickness, color_or_default, speed, dots, angle, mode);
+                ImSpinner::SpinnerIncScaleDots(label, radius, thickness, color_or_default, speed, dots, angle, mode);
             };
 
             SpinnerIncScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, angle, mode);
@@ -1644,10 +1643,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSomeScaleDots(label, radius, thickness, color_or_default, speed, dots, mode);
+                ImSpinner::SpinnerSomeScaleDots(label, radius, thickness, color_or_default, speed, dots, mode);
             };
 
             SpinnerSomeScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
@@ -1665,24 +1664,24 @@ void py_init_module_imspinner(nb::module_& m)
                     if (c1.has_value())
                         return c1.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& c2_or_default = [&]() -> const ImColor {
                     if (c2.has_value())
                         return c2.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
                 const ImColor& c3_or_default = [&]() -> const ImColor {
                     if (c3.has_value())
                         return c3.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerAngTriple(label, radius1, radius2, radius3, thickness, c1_or_default, c2_or_default, c3_or_default, speed, angle);
+                ImSpinner::SpinnerAngTriple(label, radius1, radius2, radius3, thickness, c1_or_default, c2_or_default, c3_or_default, speed, angle);
             };
 
             SpinnerAngTriple_adapt_mutable_param_with_default_value(label, radius1, radius2, radius3, thickness, c1, c2, c3, speed, angle);
@@ -1700,10 +1699,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerAngEclipse(label, radius, thickness, color_or_default, speed, angle);
+                ImSpinner::SpinnerAngEclipse(label, radius, thickness, color_or_default, speed, angle);
             };
 
             SpinnerAngEclipse_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, angle);
@@ -1721,17 +1720,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (colorI.has_value())
                         return colorI.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& colorY_or_default = [&]() -> const ImColor {
                     if (colorY.has_value())
                         return colorY.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerIngYang(label, radius, thickness, reverse, yang_detlta_r, colorI_or_default, colorY_or_default, speed, angle, mode);
+                ImSpinner::SpinnerIngYang(label, radius, thickness, reverse, yang_detlta_r, colorI_or_default, colorY_or_default, speed, angle, mode);
             };
 
             SpinnerIngYang_adapt_mutable_param_with_default_value(label, radius, thickness, reverse, yang_detlta_r, colorI, colorY, speed, angle, mode);
@@ -1740,28 +1739,28 @@ void py_init_module_imspinner(nb::module_& m)
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * colorI: white\n        * colorY: white");
 
     m.def("spinner_gooey_balls",
-        SpinnerGooeyBalls, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
+        ImSpinner::SpinnerGooeyBalls, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
 
     m.def("spinner_dots_loading",
-        SpinnerDotsLoading, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("bg"), nb::arg("speed"));
+        ImSpinner::SpinnerDotsLoading, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("bg"), nb::arg("speed"));
 
     m.def("spinner_rotate_gooey_balls",
-        SpinnerRotateGooeyBalls, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls"), nb::arg("mode") = 0);
+        ImSpinner::SpinnerRotateGooeyBalls, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls"), nb::arg("mode") = 0);
 
     m.def("spinner_herbert_balls",
-        SpinnerHerbertBalls, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls"));
+        ImSpinner::SpinnerHerbertBalls, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls"));
 
     m.def("spinner_herbert_balls3_d",
-        SpinnerHerbertBalls3D, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"));
+        ImSpinner::SpinnerHerbertBalls3D, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"));
 
     m.def("spinner_rotate_triangles",
-        SpinnerRotateTriangles, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("tris"), nb::arg("mode") = 0);
+        ImSpinner::SpinnerRotateTriangles, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("tris"), nb::arg("mode") = 0);
 
     m.def("spinner_rotate_shapes",
-        SpinnerRotateShapes, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("shapes"), nb::arg("pnt"));
+        ImSpinner::SpinnerRotateShapes, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("shapes"), nb::arg("pnt"));
 
     m.def("spinner_sin_squares",
-        SpinnerSinSquares, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
+        ImSpinner::SpinnerSinSquares, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
 
     m.def("spinner_moon_line",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 2.8f, float angle = IM_PI)
@@ -1773,17 +1772,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
-                SpinnerMoonLine(label, radius, thickness, color_or_default, bg_or_default, speed, angle);
+                ImSpinner::SpinnerMoonLine(label, radius, thickness, color_or_default, bg_or_default, speed, angle);
             };
 
             SpinnerMoonLine_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle);
@@ -1801,17 +1800,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerCircleDrop(label, radius, thickness, thickness_drop, color_or_default, bg_or_default, speed, angle);
+                ImSpinner::SpinnerCircleDrop(label, radius, thickness, thickness_drop, color_or_default, bg_or_default, speed, angle);
             };
 
             SpinnerCircleDrop_adapt_mutable_param_with_default_value(label, radius, thickness, thickness_drop, color, bg, speed, angle);
@@ -1829,17 +1828,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerSurroundedIndicator(label, radius, thickness, color_or_default, bg_or_default, speed);
+                ImSpinner::SpinnerSurroundedIndicator(label, radius, thickness, color_or_default, bg_or_default, speed);
             };
 
             SpinnerSurroundedIndicator_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed);
@@ -1857,17 +1856,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerWifiIndicator(label, radius, thickness, color_or_default, bg_or_default, speed, cangle, dots);
+                ImSpinner::SpinnerWifiIndicator(label, radius, thickness, color_or_default, bg_or_default, speed, cangle, dots);
             };
 
             SpinnerWifiIndicator_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, cangle, dots);
@@ -1885,17 +1884,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerTrianglesSelector(label, radius, thickness, color_or_default, bg_or_default, speed, bars);
+                ImSpinner::SpinnerTrianglesSelector(label, radius, thickness, color_or_default, bg_or_default, speed, bars);
             };
 
             SpinnerTrianglesSelector_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, bars);
@@ -1913,17 +1912,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return red;
+                        return ImSpinner::red;
                 }();
 
-                SpinnerFlowingGradient(label, radius, thickness, color_or_default, bg_or_default, speed, angle);
+                ImSpinner::SpinnerFlowingGradient(label, radius, thickness, color_or_default, bg_or_default, speed, angle);
             };
 
             SpinnerFlowingGradient_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle);
@@ -1941,10 +1940,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerRotateSegments(label, radius, thickness, color_or_default, speed, arcs, layers, mode);
+                ImSpinner::SpinnerRotateSegments(label, radius, thickness, color_or_default, speed, arcs, layers, mode);
             };
 
             SpinnerRotateSegments_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, layers, mode);
@@ -1962,10 +1961,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerLemniscate(label, radius, thickness, color_or_default, speed, angle);
+                ImSpinner::SpinnerLemniscate(label, radius, thickness, color_or_default, speed, angle);
             };
 
             SpinnerLemniscate_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, angle);
@@ -1983,10 +1982,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerRotateGear(label, radius, thickness, color_or_default, speed, pins);
+                ImSpinner::SpinnerRotateGear(label, radius, thickness, color_or_default, speed, pins);
             };
 
             SpinnerRotateGear_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, pins);
@@ -2004,17 +2003,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (bg_color.has_value())
                         return bg_color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& color_or_default = [&]() -> const ImColor {
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerRotateWheel(label, radius, thickness, bg_color_or_default, color_or_default, speed, pins);
+                ImSpinner::SpinnerRotateWheel(label, radius, thickness, bg_color_or_default, color_or_default, speed, pins);
             };
 
             SpinnerRotateWheel_adapt_mutable_param_with_default_value(label, radius, thickness, bg_color, color, speed, pins);
@@ -2032,10 +2031,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerAtom(label, radius, thickness, color_or_default, speed, elipses);
+                ImSpinner::SpinnerAtom(label, radius, thickness, color_or_default, speed, elipses);
             };
 
             SpinnerAtom_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
@@ -2053,10 +2052,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerPatternRings(label, radius, thickness, color_or_default, speed, elipses);
+                ImSpinner::SpinnerPatternRings(label, radius, thickness, color_or_default, speed, elipses);
             };
 
             SpinnerPatternRings_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
@@ -2074,10 +2073,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerPatternEclipse(label, radius, thickness, color_or_default, speed, elipses, delta_a, delta_y);
+                ImSpinner::SpinnerPatternEclipse(label, radius, thickness, color_or_default, speed, elipses, delta_a, delta_y);
             };
 
             SpinnerPatternEclipse_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses, delta_a, delta_y);
@@ -2095,10 +2094,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerPatternSphere(label, radius, thickness, color_or_default, speed, elipses);
+                ImSpinner::SpinnerPatternSphere(label, radius, thickness, color_or_default, speed, elipses);
             };
 
             SpinnerPatternSphere_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
@@ -2116,10 +2115,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerRingSynchronous(label, radius, thickness, color_or_default, speed, elipses);
+                ImSpinner::SpinnerRingSynchronous(label, radius, thickness, color_or_default, speed, elipses);
             };
 
             SpinnerRingSynchronous_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
@@ -2137,10 +2136,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerRingWatermarks(label, radius, thickness, color_or_default, speed, elipses);
+                ImSpinner::SpinnerRingWatermarks(label, radius, thickness, color_or_default, speed, elipses);
             };
 
             SpinnerRingWatermarks_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses);
@@ -2158,10 +2157,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerRotatedAtom(label, radius, thickness, color_or_default, speed, elipses, mode);
+                ImSpinner::SpinnerRotatedAtom(label, radius, thickness, color_or_default, speed, elipses, mode);
             };
 
             SpinnerRotatedAtom_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, elipses, mode);
@@ -2170,10 +2169,10 @@ void py_init_module_imspinner(nb::module_& m)
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_rainbow_balls",
-        SpinnerRainbowBalls, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls") = 5, nb::arg("mode") = 0, nb::arg("rings") = 1, nb::arg("mx") = 1);
+        ImSpinner::SpinnerRainbowBalls, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls") = 5, nb::arg("mode") = 0, nb::arg("rings") = 1, nb::arg("mx") = 1);
 
     m.def("spinner_rainbow_shot",
-        SpinnerRainbowShot, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls") = 5);
+        ImSpinner::SpinnerRainbowShot, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls") = 5);
 
     m.def("spinner_spiral",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t arcs = 4)
@@ -2185,10 +2184,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSpiral(label, radius, thickness, color_or_default, speed, arcs);
+                ImSpinner::SpinnerSpiral(label, radius, thickness, color_or_default, speed, arcs);
             };
 
             SpinnerSpiral_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
@@ -2206,10 +2205,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSpiralEye(label, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSpiralEye(label, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSpiralEye_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
@@ -2218,40 +2217,40 @@ void py_init_module_imspinner(nb::module_& m)
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_bar_chart_sine",
-        SpinnerBarChartSine, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 5, nb::arg("mode") = 0);
+        ImSpinner::SpinnerBarChartSine, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 5, nb::arg("mode") = 0);
 
     m.def("spinner_bar_chart_adv_sine",
-        SpinnerBarChartAdvSine, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
+        ImSpinner::SpinnerBarChartAdvSine, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
 
     m.def("spinner_bar_chart_adv_sine_fade",
-        SpinnerBarChartAdvSineFade, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
+        ImSpinner::SpinnerBarChartAdvSineFade, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
 
     m.def("spinner_bar_chart_rainbow",
-        SpinnerBarChartRainbow, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 5, nb::arg("mode") = 0);
+        ImSpinner::SpinnerBarChartRainbow, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 5, nb::arg("mode") = 0);
 
     m.def("spinner_blocks",
-        SpinnerBlocks, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
+        ImSpinner::SpinnerBlocks, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
 
     m.def("spinner_twin_blocks",
-        SpinnerTwinBlocks, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
+        ImSpinner::SpinnerTwinBlocks, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
 
     m.def("spinner_square_random_dots",
-        SpinnerSquareRandomDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
+        ImSpinner::SpinnerSquareRandomDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
 
     m.def("spinner_scale_blocks",
-        SpinnerScaleBlocks, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
+        ImSpinner::SpinnerScaleBlocks, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
 
     m.def("spinner_scale_squares",
-        SpinnerScaleSquares, nb::arg("label"), nb::arg("radius"), nb::arg("thikness"), nb::arg("color"), nb::arg("speed"));
+        ImSpinner::SpinnerScaleSquares, nb::arg("label"), nb::arg("radius"), nb::arg("thikness"), nb::arg("color"), nb::arg("speed"));
 
     m.def("spinner_squish_square",
-        SpinnerSquishSquare, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"));
+        ImSpinner::SpinnerSquishSquare, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"));
 
     m.def("spinner_fluid",
-        SpinnerFluid, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 3);
+        ImSpinner::SpinnerFluid, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 3);
 
     m.def("spinner_fluid_points",
-        SpinnerFluidPoints, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("dots") = 6, nb::arg("delta") = 0.35f);
+        ImSpinner::SpinnerFluidPoints, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("dots") = 6, nb::arg("delta") = 0.35f);
 
     m.def("spinner_arc_polar_fade",
         [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t arcs = 4, int mode = 0)
@@ -2263,10 +2262,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerArcPolarFade(label, radius, color_or_default, speed, arcs, mode);
+                ImSpinner::SpinnerArcPolarFade(label, radius, color_or_default, speed, arcs, mode);
             };
 
             SpinnerArcPolarFade_adapt_mutable_param_with_default_value(label, radius, color, speed, arcs, mode);
@@ -2284,10 +2283,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerArcPolarRadius(label, radius, color_or_default, speed, arcs, mode);
+                ImSpinner::SpinnerArcPolarRadius(label, radius, color_or_default, speed, arcs, mode);
             };
 
             SpinnerArcPolarRadius_adapt_mutable_param_with_default_value(label, radius, color, speed, arcs, mode);
@@ -2305,10 +2304,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerCaleidoscope(label, radius, thickness, color_or_default, speed, arcs, mode);
+                ImSpinner::SpinnerCaleidoscope(label, radius, thickness, color_or_default, speed, arcs, mode);
             };
 
             SpinnerCaleidoscope_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, mode);
@@ -2326,10 +2325,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerHboDots(label, radius, thickness, color_or_default, minfade, ryk, speed, dots, mode);
+                ImSpinner::SpinnerHboDots(label, radius, thickness, color_or_default, minfade, ryk, speed, dots, mode);
             };
 
             SpinnerHboDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, dots, mode);
@@ -2338,7 +2337,7 @@ void py_init_module_imspinner(nb::module_& m)
         " spinner idea by nitz 'Chris Dailey'\n\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_moon_dots",
-        SpinnerMoonDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("first"), nb::arg("second"), nb::arg("speed") = 1.1f);
+        ImSpinner::SpinnerMoonDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("first"), nb::arg("second"), nb::arg("speed") = 1.1f);
 
     m.def("spinner_twin_hbo_dots",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, float delta = 0.f)
@@ -2350,10 +2349,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerTwinHboDots(label, radius, thickness, color_or_default, minfade, ryk, speed, dots, delta);
+                ImSpinner::SpinnerTwinHboDots(label, radius, thickness, color_or_default, minfade, ryk, speed, dots, delta);
             };
 
             SpinnerTwinHboDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, dots, delta);
@@ -2371,10 +2370,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerThreeDotsStar(label, radius, thickness, color_or_default, minfade, ryk, speed, delta);
+                ImSpinner::SpinnerThreeDotsStar(label, radius, thickness, color_or_default, minfade, ryk, speed, delta);
             };
 
             SpinnerThreeDotsStar_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, delta);
@@ -2392,10 +2391,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSineArcs(label, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSineArcs(label, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSineArcs_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
@@ -2413,17 +2412,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerTrianglesShift(label, radius, thickness, color_or_default, bg_or_default, speed, bars);
+                ImSpinner::SpinnerTrianglesShift(label, radius, thickness, color_or_default, bg_or_default, speed, bars);
             };
 
             SpinnerTrianglesShift_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, bars);
@@ -2441,17 +2440,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return half_white;
+                        return ImSpinner::half_white;
                 }();
 
-                SpinnerPointsShift(label, radius, thickness, color_or_default, bg_or_default, speed, bars);
+                ImSpinner::SpinnerPointsShift(label, radius, thickness, color_or_default, bg_or_default, speed, bars);
             };
 
             SpinnerPointsShift_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, bars);
@@ -2469,10 +2468,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSwingDots(label, radius, thickness, color_or_default, speed);
+                ImSpinner::SpinnerSwingDots(label, radius, thickness, color_or_default, speed);
             };
 
             SpinnerSwingDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
@@ -2490,10 +2489,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerCircularPoints(label, radius, thickness, color_or_default, speed, lines);
+                ImSpinner::SpinnerCircularPoints(label, radius, thickness, color_or_default, speed, lines);
             };
 
             SpinnerCircularPoints_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lines);
@@ -2511,10 +2510,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerCurvedCircle(label, radius, thickness, color_or_default, speed, circles);
+                ImSpinner::SpinnerCurvedCircle(label, radius, thickness, color_or_default, speed, circles);
             };
 
             SpinnerCurvedCircle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, circles);
@@ -2532,10 +2531,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerModCircle(label, radius, thickness, color_or_default, ang_min, ang_max, speed);
+                ImSpinner::SpinnerModCircle(label, radius, thickness, color_or_default, ang_min, ang_max, speed);
             };
 
             SpinnerModCircle_adapt_mutable_param_with_default_value(label, radius, thickness, color, ang_min, ang_max, speed);
@@ -2553,10 +2552,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerDnaDots(label, radius, thickness, color_or_default, speed, lt, delta, mode);
+                ImSpinner::SpinnerDnaDots(label, radius, thickness, color_or_default, speed, lt, delta, mode);
             };
 
             SpinnerDnaDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
@@ -2574,10 +2573,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                Spinner3SmuggleDots(label, radius, thickness, color_or_default, speed, lt, delta, mode);
+                ImSpinner::Spinner3SmuggleDots(label, radius, thickness, color_or_default, speed, lt, delta, mode);
             };
 
             Spinner3SmuggleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
@@ -2595,10 +2594,10 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerRotateSegmentsPulsar(label, radius, thickness, color_or_default, speed, arcs, layers);
+                ImSpinner::SpinnerRotateSegmentsPulsar(label, radius, thickness, color_or_default, speed, arcs, layers);
             };
 
             SpinnerRotateSegmentsPulsar_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, layers);
@@ -2616,17 +2615,17 @@ void py_init_module_imspinner(nb::module_& m)
                     if (color.has_value())
                         return color.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
                 const ImColor& bg_or_default = [&]() -> const ImColor {
                     if (bg.has_value())
                         return bg.value();
                     else
-                        return white;
+                        return ImSpinner::white;
                 }();
 
-                SpinnerSplineAng(label, radius, thickness, color_or_default, bg_or_default, speed, angle, mode);
+                ImSpinner::SpinnerSplineAng(label, radius, thickness, color_or_default, bg_or_default, speed, angle, mode);
             };
 
             SpinnerSplineAng_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle, mode);

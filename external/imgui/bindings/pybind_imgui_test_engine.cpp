@@ -1044,7 +1044,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("get_window_titlebar_point",
             &ImGuiTestContext::GetWindowTitlebarPoint,
             nb::arg("window_ref"),
-            "(private API)\n\n Return a clickable point on window title-bar (window tab for docked windows).")
+            "(private API)\n\n Return a clickable point on window title-bar (window tab for docked windows) that will e.g. move this single window.")
         .def("get_main_monitor_work_pos",
             &ImGuiTestContext::GetMainMonitorWorkPos, "(private API)\n\n Work pos and size of main viewport when viewports are disabled, or work pos and size of monitor containing main viewport when viewports are enabled.")
         .def("get_main_monitor_work_size",

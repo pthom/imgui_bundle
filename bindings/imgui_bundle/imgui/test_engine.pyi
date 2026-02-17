@@ -1544,7 +1544,7 @@ class TestContext:
     def get_window_titlebar_point(self, window_ref: Union[TestRef, str]) -> ImVec2:
         """(private API)
 
-        Return a clickable point on window title-bar (window tab for docked windows).
+        Return a clickable point on window title-bar (window tab for docked windows) that will e.g. move this single window.
         """
         pass
     # ImVec2      GetMainMonitorWorkPos();                                                /* original C++ signature */
@@ -2096,6 +2096,7 @@ class TestContext:
     def dock_node_hide_tab_bar(self, node: DockNode, hidden: bool) -> None:
         """(private API)"""
         pass
+    # ImVec2    GetDockNodeTitlebarPos(ImGuiDockNode* node);
     #                                                                     #endif
     #
 

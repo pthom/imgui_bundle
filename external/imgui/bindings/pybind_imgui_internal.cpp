@@ -2447,7 +2447,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_move_dir_for_debug", &ImGuiContext::NavMoveDirForDebug, "")
         .def_rw("nav_move_clip_dir", &ImGuiContext::NavMoveClipDir, "FIXME-NAV: Describe the purpose of this better. Might want to rename?")
         .def_rw("nav_scoring_rect", &ImGuiContext::NavScoringRect, "Rectangle used for scoring, in screen space. Based of window->NavRectRel[], modified for directional navigation scoring.")
-        .def_rw("nav_scoring_no_clip_rect", &ImGuiContext::NavScoringNoClipRect, "Some nav operations (such as PageUp/PageDown) enforce a region which clipper will attempt to always keep submitted")
+        .def_rw("nav_scoring_no_clip_rect", &ImGuiContext::NavScoringNoClipRect, "Some nav operations (such as PageUp/PageDown) enforce a region which clipper will attempt to always keep submitted. Unset/invalid if inverted.")
         .def_rw("nav_scoring_debug_count", &ImGuiContext::NavScoringDebugCount, "Metrics for debugging")
         .def_rw("nav_tabbing_dir", &ImGuiContext::NavTabbingDir, "Generally -1 or +1, 0 when tabbing without a nav id")
         .def_rw("nav_tabbing_counter", &ImGuiContext::NavTabbingCounter, ">0 when counting items for tabbing")
@@ -2461,8 +2461,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_just_moved_to_key_mods", &ImGuiContext::NavJustMovedToKeyMods, "")
         .def_rw("nav_just_moved_to_is_tabbing", &ImGuiContext::NavJustMovedToIsTabbing, "Copy of ImGuiNavMoveFlags_IsTabbing. Maybe we should store whole flags.")
         .def_rw("nav_just_moved_to_has_selection_data", &ImGuiContext::NavJustMovedToHasSelectionData, "Copy of move result's ItemFlags & ImGuiItemFlags_HasSelectionUserData). Maybe we should just store ImGuiNavItemData.")
+        .def_rw("config_nav_enable_tabbing", &ImGuiContext::ConfigNavEnableTabbing, "= True. Enable tabbing (Tab, Shift+Tab). PLEASE LET ME KNOW IF YOU USE THIS.")
         .def_rw("config_nav_windowing_with_gamepad", &ImGuiContext::ConfigNavWindowingWithGamepad, "= True. Enable Ctrl+Tab by holding ImGuiKey_GamepadFaceLeft (== ImGuiKey_NavGamepadMenu). When False, the button may still be used to toggle Menu layer.")
-        .def_rw("config_nav_windowing_key_next", &ImGuiContext::ConfigNavWindowingKeyNext, "= ImGuiMod_Ctrl | ImGuiKey_Tab (or ImGuiMod_Super | ImGuiKey_Tab on OS X). For reconfiguration (see #4828)")
+        .def_rw("config_nav_windowing_key_next", &ImGuiContext::ConfigNavWindowingKeyNext, "= ImGuiMod_Ctrl | ImGuiKey_Tab (or ImGuiMod_Super | ImGuiKey_Tab on OS X). Set to 0 to disable. For reconfiguration (see #4828)")
         .def_rw("config_nav_windowing_key_prev", &ImGuiContext::ConfigNavWindowingKeyPrev, "= ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab (or ImGuiMod_Super | ImGuiMod_Shift | ImGuiKey_Tab on OS X)")
         .def_rw("nav_windowing_target", &ImGuiContext::NavWindowingTarget, "Target window when doing Ctrl+Tab (or Pad Menu + FocusPrev/Next), this window is temporarily displayed top-most!")
         .def_rw("nav_windowing_target_anim", &ImGuiContext::NavWindowingTargetAnim, "Record of last valid NavWindowingTarget until DimBgRatio and NavWindowingHighlightAlpha becomes 0.0, so the fade-out can stay on it.")
@@ -2955,7 +2956,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("window", &ImGuiTabItem::Window, "When TabItem is part of a DockNode's TabBar, we hold on to a window.")
         .def_rw("last_frame_visible", &ImGuiTabItem::LastFrameVisible, "")
         .def_rw("last_frame_selected", &ImGuiTabItem::LastFrameSelected, "This allows us to infer an ordered list of the last activated tabs with little maintenance")
-        .def_rw("offset", &ImGuiTabItem::Offset, "Position relative to beginning of tab")
+        .def_rw("offset", &ImGuiTabItem::Offset, "Position relative to beginning of tab bar")
         .def_rw("width", &ImGuiTabItem::Width, "Width currently displayed")
         .def_rw("content_width", &ImGuiTabItem::ContentWidth, "Width of label + padding, stored during BeginTabItem() call (misnamed as \"Content\" would normally imply width of label only)")
         .def_rw("requested_width", &ImGuiTabItem::RequestedWidth, "Width optionally requested by caller, -1.0 is unused")
@@ -2976,6 +2977,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("id_", &ImGuiTabBar::ID, "Zero for tab-bars used by docking")
         .def_rw("selected_tab_id", &ImGuiTabBar::SelectedTabId, "Selected tab/window")
         .def_rw("next_selected_tab_id", &ImGuiTabBar::NextSelectedTabId, "Next selected tab/window. Will also trigger a scrolling animation")
+        .def_rw("next_scroll_to_tab_id", &ImGuiTabBar::NextScrollToTabId, "")
         .def_rw("visible_tab_id", &ImGuiTabBar::VisibleTabId, "Can occasionally be != SelectedTabId (e.g. when previewing contents for Ctrl+Tab preview)")
         .def_rw("curr_frame_visible", &ImGuiTabBar::CurrFrameVisible, "")
         .def_rw("prev_frame_visible", &ImGuiTabBar::PrevFrameVisible, "")
@@ -3290,6 +3292,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::overload_cast<ImGuiContext *>(ImGui::GetPlatformIO),
         nb::arg("ctx"),
         nb::rv_policy::reference);
+
+    m.def("get_scale",
+        ImGui::GetScale, "(private API)\n\n FIXME-DPI: I don't want to formalize this just yet. Because reasons. Please don't use.");
 
     m.def("get_current_window_read",
         ImGui::GetCurrentWindowRead,
@@ -4508,6 +4513,9 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("table_set_column_width_auto_all",
         nb::overload_cast<ImGuiTable *>(ImGui::TableSetColumnWidthAutoAll), nb::arg("table"));
+
+    m.def("table_set_column_display_order",
+        nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableSetColumnDisplayOrder), nb::arg("table"), nb::arg("column_n"), nb::arg("dst_order"));
 
     m.def("table_remove",
         nb::overload_cast<ImGuiTable *>(ImGui::TableRemove), nb::arg("table"));
