@@ -286,9 +286,10 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 ### Step 8: Polish
 - [x] Implement GitHub link
 - [ ] Remember to move python github links back to main branch
-- [ ] Add file/marker search: search in demo files or in declarations (header files or stub). 
+- [x] Add file/marker search: search in demo files or in declarations (header files or stub). 
   This requires adding header files or stubs to the libraries. 
   possible use case: user wants to find the signature and doc for a specific function or widget in the demo code. He selects it, clicks (right-click or place a button somewhere? this is to be discussed) "search in code", and the relevant header file or stub is opened in the code viewer, with the first matching line highlighted and the possibility to search for other occurrences in the file.
+- [x] Also handle imgui_internal.h, implot(3d)_internal.h (+ stubs)
 - [ ] UI/UX refinement: add images or icons for top edge toolbar buttons
 
 ### Step 9: Integration
