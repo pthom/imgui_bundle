@@ -158,6 +158,11 @@ void py_init_module_implot_internal(nb::module_& m)
             .value("hr", ImPlotTimeFmt_Hr, "7pm            [ 19:00        ]");
 
 
+    auto pyEnumMarkerInternal_ =
+        nb::enum_<ImPlotMarkerInternal_>(m, "MarkerInternal_", nb::is_arithmetic(), nb::is_flag(), "")
+            .value("im_plot_marker_invalid", ImPlotMarker_Invalid, "");
+
+
     auto pyClassImPlotDateTimeSpec =
         nb::class_<ImPlotDateTimeSpec>
             (m, "DateTimeSpec", "Combined date/time format spec")
@@ -635,6 +640,7 @@ void py_init_module_implot_internal(nb::module_& m)
             (m, "Item", "State information for Plot items")
         .def_rw("id_", &ImPlotItem::ID, "")
         .def_rw("color", &ImPlotItem::Color, "")
+        .def_rw("marker", &ImPlotItem::Marker, "")
         .def_rw("legend_hover_rect", &ImPlotItem::LegendHoverRect, "")
         .def_rw("name_offset", &ImPlotItem::NameOffset, "")
         .def_rw("show", &ImPlotItem::Show, "")
@@ -671,6 +677,7 @@ void py_init_module_implot_internal(nb::module_& m)
         .def_rw("id_", &ImPlotItemGroup::ID, "")
         .def_rw("legend", &ImPlotItemGroup::Legend, "")
         .def_rw("colormap_idx", &ImPlotItemGroup::ColormapIdx, "")
+        .def_rw("marker_idx", &ImPlotItemGroup::MarkerIdx, "")
         .def(nb::init<>())
         .def("get_item_count",
             &ImPlotItemGroup::GetItemCount, "(private API)")
@@ -837,19 +844,12 @@ void py_init_module_implot_internal(nb::module_& m)
     auto pyClassImPlotNextItemData =
         nb::class_<ImPlotNextItemData>
             (m, "NextItemData", "Temporary data storage for upcoming item")
-        .def_rw("line_weight", &ImPlotNextItemData::LineWeight, "")
-        .def_rw("marker", &ImPlotNextItemData::Marker, "")
-        .def_rw("marker_size", &ImPlotNextItemData::MarkerSize, "")
-        .def_rw("marker_weight", &ImPlotNextItemData::MarkerWeight, "")
-        .def_rw("fill_alpha", &ImPlotNextItemData::FillAlpha, "")
-        .def_rw("error_bar_size", &ImPlotNextItemData::ErrorBarSize, "")
-        .def_rw("error_bar_weight", &ImPlotNextItemData::ErrorBarWeight, "")
-        .def_rw("digital_bit_height", &ImPlotNextItemData::DigitalBitHeight, "")
-        .def_rw("digital_bit_gap", &ImPlotNextItemData::DigitalBitGap, "")
+        .def_rw("spec", &ImPlotNextItemData::Spec, "")
         .def_rw("render_line", &ImPlotNextItemData::RenderLine, "")
         .def_rw("render_fill", &ImPlotNextItemData::RenderFill, "")
         .def_rw("render_marker_line", &ImPlotNextItemData::RenderMarkerLine, "")
         .def_rw("render_marker_fill", &ImPlotNextItemData::RenderMarkerFill, "")
+        .def_rw("render_markers", &ImPlotNextItemData::RenderMarkers, "")
         .def_rw("has_hidden", &ImPlotNextItemData::HasHidden, "")
         .def_rw("hidden", &ImPlotNextItemData::Hidden, "")
         .def_rw("hidden_cond", &ImPlotNextItemData::HiddenCond, "")
@@ -999,26 +999,40 @@ void py_init_module_implot_internal(nb::module_& m)
         "Shows a subplot's context menu.");
 
     m.def("begin_item",
-        [](const char * label_id, ImPlotItemFlags flags = 0, const std::optional<const ImPlotCol> & recolor_from = std::nullopt) -> bool
+        [](const char * label_id, const std::optional<const ImPlotSpec> & spec = std::nullopt, const std::optional<const ImVec4> & item_col = std::nullopt, const std::optional<const ImPlotMarker> & item_mkr = std::nullopt) -> bool
         {
-            auto BeginItem_adapt_mutable_param_with_default_value = [](const char * label_id, ImPlotItemFlags flags = 0, const std::optional<const ImPlotCol> & recolor_from = std::nullopt) -> bool
+            auto BeginItem_adapt_mutable_param_with_default_value = [](const char * label_id, const std::optional<const ImPlotSpec> & spec = std::nullopt, const std::optional<const ImVec4> & item_col = std::nullopt, const std::optional<const ImPlotMarker> & item_mkr = std::nullopt) -> bool
             {
 
-                const ImPlotCol& recolor_from_or_default = [&]() -> const ImPlotCol {
-                    if (recolor_from.has_value())
-                        return recolor_from.value();
+                const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
+                    if (spec.has_value())
+                        return spec.value();
                     else
-                        return IMPLOT_AUTO;
+                        return ImPlotSpec();
                 }();
 
-                auto lambda_result = ImPlot::BeginItem(label_id, flags, recolor_from_or_default);
+                const ImVec4& item_col_or_default = [&]() -> const ImVec4 {
+                    if (item_col.has_value())
+                        return item_col.value();
+                    else
+                        return IMPLOT_AUTO_COL;
+                }();
+
+                const ImPlotMarker& item_mkr_or_default = [&]() -> const ImPlotMarker {
+                    if (item_mkr.has_value())
+                        return item_mkr.value();
+                    else
+                        return ImPlotMarker_Invalid;
+                }();
+
+                auto lambda_result = ImPlot::BeginItem(label_id, spec_or_default, item_col_or_default, item_mkr_or_default);
                 return lambda_result;
             };
 
-            return BeginItem_adapt_mutable_param_with_default_value(label_id, flags, recolor_from);
+            return BeginItem_adapt_mutable_param_with_default_value(label_id, spec, item_col, item_mkr);
         },
-        nb::arg("label_id"), nb::arg("flags") = 0, nb::arg("recolor_from").none() = nb::none(),
-        " Begins a new item. Returns False if the item should not be plotted. Pushes PlotClipRect.\n\n\nPython bindings defaults:\n    If recolor_from is None, then its default value will be: IMPLOT_AUTO");
+        nb::arg("label_id"), nb::arg("spec").none() = nb::none(), nb::arg("item_col").none() = nb::none(), nb::arg("item_mkr").none() = nb::none(),
+        " Begins a new item. Returns False if the item should not be plotted. Pushes PlotClipRect.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * spec: Spec()\n        * item_col: IMPLOT_AUTO_COL\n        * item_mkr: Marker_Invalid");
 
     m.def("end_item",
         ImPlot::EndItem, "Ends an item (call only if BeginItem returns True). Pops PlotClipRect.");

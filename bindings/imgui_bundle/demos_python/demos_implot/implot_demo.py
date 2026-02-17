@@ -273,8 +273,8 @@ def demo_line_plots():
     if implot.begin_plot("Line Plots"):
         implot.setup_axes("x", "y")
         implot.plot_line("f(x)", static.xs1, static.ys1)
-        implot.set_next_marker_style(implot.Marker_.circle)
-        implot.plot_line("g(x)", static.xs2, static.ys2, flags=implot.LineFlags_.segments)
+        implot.plot_line("g(x)", static.xs2, static.ys2,
+                         spec=implot.Spec(flags=implot.LineFlags_.segments, marker=implot.Marker_.circle))
         implot.end_plot()
 
 
@@ -327,12 +327,11 @@ def demo_filled_line_plots():
         implot.setup_axes_limits(0, 100, 0, 500)
 
         if static.show_fills:
-            implot.push_style_var(implot.StyleVar_.fill_alpha, 0.25)
+            spec = implot.Spec(flags=static.flags, fill_alpha=0.25)
             ref_value = -np.inf if static.shade_mode == 0 else np.inf if static.shade_mode == 1 else static.fill_ref
-            implot.plot_shaded("Stock 1", static.xs1, static.ys1, ref_value, static.flags)
-            implot.plot_shaded("Stock 2", static.xs1, static.ys2, ref_value, static.flags)
-            implot.plot_shaded("Stock 3", static.xs1, static.ys3, ref_value, static.flags)
-            implot.pop_style_var()
+            implot.plot_shaded("Stock 1", static.xs1, static.ys1, ref_value, spec)
+            implot.plot_shaded("Stock 2", static.xs1, static.ys2, ref_value, spec)
+            implot.plot_shaded("Stock 3", static.xs1, static.ys3, ref_value, spec)
 
         if static.show_lines:
             implot.plot_line("Stock 1", static.xs1, static.ys1)

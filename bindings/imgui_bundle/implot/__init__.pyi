@@ -134,7 +134,7 @@ Bin_Sturges = Bin_.sturges
 # MIT License
 
 # Copyright (c) 2020-2024 Evan Pezent
-# Copyright (c) 2025 Breno Cunha Queiroz
+# Copyright (c) 2025-2026 Breno Cunha Queiroz
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -234,6 +234,42 @@ class ImAxis_(enum.IntFlag):
     # }
     # bookkeeping
     count = enum.auto()  # (= 6)
+
+class Prop_(enum.IntFlag):
+    """Plotting properties. These provide syntactic sugar for creating ImPlotSpecs from (ImPlotProp,value) pairs. See ImPlotSpec documentation."""
+
+    # ImPlotProp_LineColor,           /* original C++ signature */
+    line_color = (
+        enum.auto()
+    )  # (= 0)  # line color (applies to lines, bar edges); IMPLOT_AUTO_COL will use next Colormap color or current item color
+    # ImPlotProp_LineWeight,          /* original C++ signature */
+    line_weight = enum.auto()  # (= 1)  # line weight in pixels (applies to lines, bar edges, marker edges)
+    # ImPlotProp_FillColor,           /* original C++ signature */
+    fill_color = (
+        enum.auto()
+    )  # (= 2)  # fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color
+    # ImPlotProp_FillAlpha,           /* original C++ signature */
+    fill_alpha = enum.auto()  # (= 3)  # alpha multiplier (applies to FillColor and MarkerFillColor)
+    # ImPlotProp_Marker,              /* original C++ signature */
+    marker = enum.auto()  # (= 4)  # marker type; specify ImPlotMarker_Auto to use the next unused marker
+    # ImPlotProp_MarkerSize,          /* original C++ signature */
+    marker_size = enum.auto()  # (= 5)  # size of markers (radius) *in pixels*
+    # ImPlotProp_MarkerLineColor,     /* original C++ signature */
+    marker_line_color = enum.auto()  # (= 6)  # marker edge color; IMPLOT_AUTO_COL will use LineColor
+    # ImPlotProp_MarkerFillColor,     /* original C++ signature */
+    marker_fill_color = enum.auto()  # (= 7)  # marker face color; IMPLOT_AUTO_COL will use LineColor
+    # ImPlotProp_Size,                /* original C++ signature */
+    size = enum.auto()  # (= 8)  # size of error bar whiskers (width or height), and digital bars (height) *in pixels*
+    # ImPlotProp_Offset,              /* original C++ signature */
+    offset = enum.auto()  # (= 9)  # data index offset
+    # ImPlotProp_Stride,              /* original C++ signature */
+    stride = (
+        enum.auto()
+    )  # (= 10)  # data stride in bytes; IMPLOT_AUTO will result in sizeof(T) where T is the type passed to PlotX
+    # ImPlotProp_Flags                /* original C++ signature */
+    flags = (
+        enum.auto()
+    )  # (= 11)  # optional item flags; can be composed from common ImPlotItemFlags and/or specialized ImPlotXFlags
 
 class Flags_(enum.IntFlag):
     """Options for plots (see BeginPlot)."""
@@ -440,7 +476,7 @@ class ColormapScaleFlags_(enum.IntFlag):
     )  # (= 1 << 2)  # invert the colormap bar and axis scale (this only affects rendering; if you only want to reverse the scale mapping, make scale_min > scale_max)
 
 class ItemFlags_(enum.IntFlag):
-    """Flags for ANY PlotX function"""
+    """Flags for ANY PlotX function. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotItemFlags_None     = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -450,7 +486,7 @@ class ItemFlags_(enum.IntFlag):
     no_fit = enum.auto()  # (= 1 << 1)  # the item won't be considered for plot fits
 
 class LineFlags_(enum.IntFlag):
-    """Flags for PlotLine"""
+    """Flags for PlotLine. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotLineFlags_None        = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -468,15 +504,21 @@ class LineFlags_(enum.IntFlag):
     )  # (= 1 << 14)  # a filled region between the line and horizontal origin will be rendered; use PlotShaded for more advanced cases
 
 class ScatterFlags_(enum.IntFlag):
-    """Flags for PlotScatter"""
+    """Flags for PlotScatter. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotScatterFlags_None   = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
     # ImPlotScatterFlags_NoClip = 1 << 10,     /* original C++ signature */
     no_clip = enum.auto()  # (= 1 << 10)  # markers on the edge of a plot will not be clipped
 
+class BubblesFlags_(enum.IntFlag):
+    """Flags for PlotBubbles. Used by setting ImPlotSpec::Flags."""
+
+    # ImPlotBubblesFlags_None = 0,     /* original C++ signature */
+    none = enum.auto()  # (= 0)  # default
+
 class StairsFlags_(enum.IntFlag):
-    """Flags for PlotStairs"""
+    """Flags for PlotStairs. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotStairsFlags_None     = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -490,13 +532,13 @@ class StairsFlags_(enum.IntFlag):
     )  # (= 1 << 11)  # a filled region between the stairs and horizontal origin will be rendered; use PlotShaded for more advanced cases
 
 class ShadedFlags_(enum.IntFlag):
-    """Flags for PlotShaded (placeholder)"""
+    """Flags for PlotShaded (placeholder). Used by setting ImPlotSpec::Flags."""
 
     # ImPlotShadedFlags_None  = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
 class BarsFlags_(enum.IntFlag):
-    """Flags for PlotBars"""
+    """Flags for PlotBars. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotBarsFlags_None         = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -504,7 +546,7 @@ class BarsFlags_(enum.IntFlag):
     horizontal = enum.auto()  # (= 1 << 10)  # bars will be rendered horizontally on the current y-axis
 
 class BarGroupsFlags_(enum.IntFlag):
-    """Flags for PlotBarGroups"""
+    """Flags for PlotBarGroups. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotBarGroupsFlags_None        = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -514,7 +556,7 @@ class BarGroupsFlags_(enum.IntFlag):
     stacked = enum.auto()  # (= 1 << 11)  # items in a group will be stacked on top of each other
 
 class ErrorBarsFlags_(enum.IntFlag):
-    """Flags for PlotErrorBars"""
+    """Flags for PlotErrorBars. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotErrorBarsFlags_None       = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -522,7 +564,7 @@ class ErrorBarsFlags_(enum.IntFlag):
     horizontal = enum.auto()  # (= 1 << 10)  # error bars will be rendered horizontally on the current y-axis
 
 class StemsFlags_(enum.IntFlag):
-    """Flags for PlotStems"""
+    """Flags for PlotStems. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotStemsFlags_None       = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -530,7 +572,7 @@ class StemsFlags_(enum.IntFlag):
     horizontal = enum.auto()  # (= 1 << 10)  # stems will be rendered horizontally on the current y-axis
 
 class InfLinesFlags_(enum.IntFlag):
-    """Flags for PlotInfLines"""
+    """Flags for PlotInfLines. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotInfLinesFlags_None       = 0,          /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -538,7 +580,7 @@ class InfLinesFlags_(enum.IntFlag):
     horizontal = enum.auto()  # (= 1 << 10)  # lines will be rendered horizontally on the current y-axis
 
 class PieChartFlags_(enum.IntFlag):
-    """Flags for PlotPieChart"""
+    """Flags for PlotPieChart. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotPieChartFlags_None         = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -554,7 +596,7 @@ class PieChartFlags_(enum.IntFlag):
     exploding = enum.auto()  # (= 1 << 12)  # Explode legend-hovered slice
 
 class HeatmapFlags_(enum.IntFlag):
-    """Flags for PlotHeatmap"""
+    """Flags for PlotHeatmap. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotHeatmapFlags_None     = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -562,7 +604,7 @@ class HeatmapFlags_(enum.IntFlag):
     col_major = enum.auto()  # (= 1 << 10)  # data will be read in column major order
 
 class HistogramFlags_(enum.IntFlag):
-    """Flags for PlotHistogram and PlotHistogram2D"""
+    """Flags for PlotHistogram and PlotHistogram2D. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotHistogramFlags_None       = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -586,19 +628,19 @@ class HistogramFlags_(enum.IntFlag):
     col_major = enum.auto()  # (= 1 << 14)  # data will be read in column major order (not supported by PlotHistogram)
 
 class DigitalFlags_(enum.IntFlag):
-    """Flags for PlotDigital (placeholder)"""
+    """Flags for PlotDigital (placeholder). Used by setting ImPlotSpec::Flags."""
 
     # ImPlotDigitalFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
 class ImageFlags_(enum.IntFlag):
-    """Flags for PlotImage (placeholder)"""
+    """Flags for PlotImage (placeholder). Used by setting ImPlotSpec::Flags."""
 
     # ImPlotImageFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
 class TextFlags_(enum.IntFlag):
-    """Flags for PlotText"""
+    """Flags for PlotText. Used by setting ImPlotSpec::Flags."""
 
     # ImPlotTextFlags_None     = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -606,7 +648,7 @@ class TextFlags_(enum.IntFlag):
     vertical = enum.auto()  # (= 1 << 10)  # text will be rendered vertically
 
 class DummyFlags_(enum.IntFlag):
-    """Flags for PlotDummy (placeholder)"""
+    """Flags for PlotDummy (placeholder). Used by setting ImPlotSpec::Flags."""
 
     # ImPlotDummyFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
@@ -624,120 +666,92 @@ class Cond_(enum.IntFlag):
 class Col_(enum.IntFlag):
     """Plot styling colors."""
 
-    # item styling colors
-    # ImPlotCol_Line,              /* original C++ signature */
-    line = enum.auto()  # (= 0)  # plot line/outline color (defaults to next unused color in current colormap)
-    # ImPlotCol_Fill,              /* original C++ signature */
-    fill = enum.auto()  # (= 1)  # plot fill color for bars (defaults to the current line color)
-    # ImPlotCol_MarkerOutline,     /* original C++ signature */
-    marker_outline = enum.auto()  # (= 2)  # marker outline color (defaults to the current line color)
-    # ImPlotCol_MarkerFill,        /* original C++ signature */
-    marker_fill = enum.auto()  # (= 3)  # marker fill color (defaults to the current line color)
-    # ImPlotCol_ErrorBar,          /* original C++ signature */
-    error_bar = enum.auto()  # (= 4)  # error bar color (defaults to ImGuiCol_Text)
-    # plot styling colors
     # ImPlotCol_FrameBg,           /* original C++ signature */
-    frame_bg = enum.auto()  # (= 5)  # plot frame background color (defaults to ImGuiCol_FrameBg)
+    frame_bg = enum.auto()  # (= 0)  # plot frame background color (defaults to ImGuiCol_FrameBg)
     # ImPlotCol_PlotBg,            /* original C++ signature */
-    plot_bg = enum.auto()  # (= 6)  # plot area background color (defaults to ImGuiCol_WindowBg)
+    plot_bg = enum.auto()  # (= 1)  # plot area background color (defaults to ImGuiCol_WindowBg)
     # ImPlotCol_PlotBorder,        /* original C++ signature */
-    plot_border = enum.auto()  # (= 7)  # plot area border color (defaults to ImGuiCol_Border)
+    plot_border = enum.auto()  # (= 2)  # plot area border color (defaults to ImGuiCol_Border)
     # ImPlotCol_LegendBg,          /* original C++ signature */
-    legend_bg = enum.auto()  # (= 8)  # legend background color (defaults to ImGuiCol_PopupBg)
+    legend_bg = enum.auto()  # (= 3)  # legend background color (defaults to ImGuiCol_PopupBg)
     # ImPlotCol_LegendBorder,      /* original C++ signature */
-    legend_border = enum.auto()  # (= 9)  # legend border color (defaults to ImPlotCol_PlotBorder)
+    legend_border = enum.auto()  # (= 4)  # legend border color (defaults to ImPlotCol_PlotBorder)
     # ImPlotCol_LegendText,        /* original C++ signature */
-    legend_text = enum.auto()  # (= 10)  # legend text color (defaults to ImPlotCol_InlayText)
+    legend_text = enum.auto()  # (= 5)  # legend text color (defaults to ImPlotCol_InlayText)
     # ImPlotCol_TitleText,         /* original C++ signature */
-    title_text = enum.auto()  # (= 11)  # plot title text color (defaults to ImGuiCol_Text)
+    title_text = enum.auto()  # (= 6)  # plot title text color (defaults to ImGuiCol_Text)
     # ImPlotCol_InlayText,         /* original C++ signature */
-    inlay_text = enum.auto()  # (= 12)  # color of text appearing inside of plots (defaults to ImGuiCol_Text)
+    inlay_text = enum.auto()  # (= 7)  # color of text appearing inside of plots (defaults to ImGuiCol_Text)
     # ImPlotCol_AxisText,          /* original C++ signature */
-    axis_text = enum.auto()  # (= 13)  # axis label and tick labels color (defaults to ImGuiCol_Text)
+    axis_text = enum.auto()  # (= 8)  # axis label and tick labels color (defaults to ImGuiCol_Text)
     # ImPlotCol_AxisGrid,          /* original C++ signature */
-    axis_grid = enum.auto()  # (= 14)  # axis grid color (defaults to 25% ImPlotCol_AxisText)
+    axis_grid = enum.auto()  # (= 9)  # axis grid color (defaults to 25% ImPlotCol_AxisText)
     # ImPlotCol_AxisTick,          /* original C++ signature */
-    axis_tick = enum.auto()  # (= 15)  # axis tick color (defaults to AxisGrid)
+    axis_tick = enum.auto()  # (= 10)  # axis tick color (defaults to AxisGrid)
     # ImPlotCol_AxisBg,            /* original C++ signature */
-    axis_bg = enum.auto()  # (= 16)  # background color of axis hover region (defaults to transparent)
+    axis_bg = enum.auto()  # (= 11)  # background color of axis hover region (defaults to transparent)
     # ImPlotCol_AxisBgHovered,     /* original C++ signature */
-    axis_bg_hovered = enum.auto()  # (= 17)  # axis hover color (defaults to ImGuiCol_ButtonHovered)
+    axis_bg_hovered = enum.auto()  # (= 12)  # axis hover color (defaults to ImGuiCol_ButtonHovered)
     # ImPlotCol_AxisBgActive,      /* original C++ signature */
-    axis_bg_active = enum.auto()  # (= 18)  # axis active color (defaults to ImGuiCol_ButtonActive)
+    axis_bg_active = enum.auto()  # (= 13)  # axis active color (defaults to ImGuiCol_ButtonActive)
     # ImPlotCol_Selection,         /* original C++ signature */
-    selection = enum.auto()  # (= 19)  # box-selection color (defaults to yellow)
+    selection = enum.auto()  # (= 14)  # box-selection color (defaults to yellow)
     # ImPlotCol_Crosshairs,        /* original C++ signature */
-    crosshairs = enum.auto()  # (= 20)  # crosshairs color (defaults to ImPlotCol_PlotBorder)
+    crosshairs = enum.auto()  # (= 15)  # crosshairs color (defaults to ImPlotCol_PlotBorder)
     # ImPlotCol_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 21)
+    count = enum.auto()  # (= 16)
 
 class StyleVar_(enum.IntFlag):
     """Plot styling variables."""
 
-    # item styling variables
-    # ImPlotStyleVar_LineWeight,             /* original C++ signature */
-    line_weight = enum.auto()  # (= 0)  # float,  plot item line weight in pixels
-    # ImPlotStyleVar_Marker,                 /* original C++ signature */
-    marker = enum.auto()  # (= 1)  # int,    marker specification
-    # ImPlotStyleVar_MarkerSize,             /* original C++ signature */
-    marker_size = enum.auto()  # (= 2)  # float,  marker size in pixels (roughly the marker's "radius")
-    # ImPlotStyleVar_MarkerWeight,           /* original C++ signature */
-    marker_weight = enum.auto()  # (= 3)  # float,  plot outline weight of markers in pixels
-    # ImPlotStyleVar_FillAlpha,              /* original C++ signature */
-    fill_alpha = enum.auto()  # (= 4)  # float,  alpha modifier applied to all plot item fills
-    # ImPlotStyleVar_ErrorBarSize,           /* original C++ signature */
-    error_bar_size = enum.auto()  # (= 5)  # float,  error bar whisker width in pixels
-    # ImPlotStyleVar_ErrorBarWeight,         /* original C++ signature */
-    error_bar_weight = enum.auto()  # (= 6)  # float,  error bar whisker weight in pixels
-    # ImPlotStyleVar_DigitalBitHeight,       /* original C++ signature */
-    digital_bit_height = enum.auto()  # (= 7)  # float,  digital channels bit height (at 1) in pixels
-    # ImPlotStyleVar_DigitalBitGap,          /* original C++ signature */
-    digital_bit_gap = enum.auto()  # (= 8)  # float,  digital channels bit padding gap in pixels
-    # plot styling variables
+    # ImPlotStyleVar_PlotDefaultSize,        /* original C++ signature */
+    plot_default_size = enum.auto()  # (= 0)  # ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot
+    # ImPlotStyleVar_PlotMinSize,            /* original C++ signature */
+    plot_min_size = enum.auto()  # (= 1)  # ImVec2, minimum size plot frame can be when shrunk
     # ImPlotStyleVar_PlotBorderSize,         /* original C++ signature */
-    plot_border_size = enum.auto()  # (= 9)  # float,  thickness of border around plot area
+    plot_border_size = enum.auto()  # (= 2)  # float,  thickness of border around plot area
     # ImPlotStyleVar_MinorAlpha,             /* original C++ signature */
-    minor_alpha = enum.auto()  # (= 10)  # float,  alpha multiplier applied to minor axis grid lines
+    minor_alpha = enum.auto()  # (= 3)  # float,  alpha multiplier applied to minor axis grid lines
     # ImPlotStyleVar_MajorTickLen,           /* original C++ signature */
-    major_tick_len = enum.auto()  # (= 11)  # ImVec2, major tick lengths for X and Y axes
+    major_tick_len = enum.auto()  # (= 4)  # ImVec2, major tick lengths for X and Y axes
     # ImPlotStyleVar_MinorTickLen,           /* original C++ signature */
-    minor_tick_len = enum.auto()  # (= 12)  # ImVec2, minor tick lengths for X and Y axes
+    minor_tick_len = enum.auto()  # (= 5)  # ImVec2, minor tick lengths for X and Y axes
     # ImPlotStyleVar_MajorTickSize,          /* original C++ signature */
-    major_tick_size = enum.auto()  # (= 13)  # ImVec2, line thickness of major ticks
+    major_tick_size = enum.auto()  # (= 6)  # ImVec2, line thickness of major ticks
     # ImPlotStyleVar_MinorTickSize,          /* original C++ signature */
-    minor_tick_size = enum.auto()  # (= 14)  # ImVec2, line thickness of minor ticks
+    minor_tick_size = enum.auto()  # (= 7)  # ImVec2, line thickness of minor ticks
     # ImPlotStyleVar_MajorGridSize,          /* original C++ signature */
-    major_grid_size = enum.auto()  # (= 15)  # ImVec2, line thickness of major grid lines
+    major_grid_size = enum.auto()  # (= 8)  # ImVec2, line thickness of major grid lines
     # ImPlotStyleVar_MinorGridSize,          /* original C++ signature */
-    minor_grid_size = enum.auto()  # (= 16)  # ImVec2, line thickness of minor grid lines
+    minor_grid_size = enum.auto()  # (= 9)  # ImVec2, line thickness of minor grid lines
     # ImPlotStyleVar_PlotPadding,            /* original C++ signature */
     plot_padding = (
         enum.auto()
-    )  # (= 17)  # ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
+    )  # (= 10)  # ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
     # ImPlotStyleVar_LabelPadding,           /* original C++ signature */
-    label_padding = enum.auto()  # (= 18)  # ImVec2, padding between axes labels, tick labels, and plot edge
+    label_padding = enum.auto()  # (= 11)  # ImVec2, padding between axes labels, tick labels, and plot edge
     # ImPlotStyleVar_LegendPadding,          /* original C++ signature */
-    legend_padding = enum.auto()  # (= 19)  # ImVec2, legend padding from plot edges
+    legend_padding = enum.auto()  # (= 12)  # ImVec2, legend padding from plot edges
     # ImPlotStyleVar_LegendInnerPadding,     /* original C++ signature */
-    legend_inner_padding = enum.auto()  # (= 20)  # ImVec2, legend inner padding from legend edges
+    legend_inner_padding = enum.auto()  # (= 13)  # ImVec2, legend inner padding from legend edges
     # ImPlotStyleVar_LegendSpacing,          /* original C++ signature */
-    legend_spacing = enum.auto()  # (= 21)  # ImVec2, spacing between legend entries
+    legend_spacing = enum.auto()  # (= 14)  # ImVec2, spacing between legend entries
     # ImPlotStyleVar_MousePosPadding,        /* original C++ signature */
-    mouse_pos_padding = enum.auto()  # (= 22)  # ImVec2, padding between plot edge and interior info text
+    mouse_pos_padding = enum.auto()  # (= 15)  # ImVec2, padding between plot edge and interior info text
     # ImPlotStyleVar_AnnotationPadding,      /* original C++ signature */
-    annotation_padding = enum.auto()  # (= 23)  # ImVec2, text padding around annotation labels
+    annotation_padding = enum.auto()  # (= 16)  # ImVec2, text padding around annotation labels
     # ImPlotStyleVar_FitPadding,             /* original C++ signature */
     fit_padding = (
         enum.auto()
-    )  # (= 24)  # ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)
-    # ImPlotStyleVar_PlotDefaultSize,        /* original C++ signature */
-    plot_default_size = enum.auto()  # (= 25)  # ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot
-    # ImPlotStyleVar_PlotMinSize,            /* original C++ signature */
-    plot_min_size = enum.auto()  # (= 26)  # ImVec2, minimum size plot frame can be when shrunk
+    )  # (= 17)  # ImVec2, additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)
+    # ImPlotStyleVar_DigitalPadding,         /* original C++ signature */
+    digital_padding = enum.auto()  # (= 18)  # float,  digital plot padding from bottom in pixels
+    # ImPlotStyleVar_DigitalSpacing,         /* original C++ signature */
+    digital_spacing = enum.auto()  # (= 19)  # float,  digital plot spacing gap in pixels
     # ImPlotStyleVar_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 27)
+    count = enum.auto()  # (= 20)
 
 class Scale_(enum.IntFlag):
     """Axis scale"""
@@ -754,8 +768,10 @@ class Scale_(enum.IntFlag):
 class Marker_(enum.IntFlag):
     """Marker specifications."""
 
-    # ImPlotMarker_None = -1,     /* original C++ signature */
-    none = enum.auto()  # (= -1)  # no marker
+    # ImPlotMarker_None = -2,     /* original C++ signature */
+    none = enum.auto()  # (= -2)  # no marker
+    # ImPlotMarker_Auto = -1,     /* original C++ signature */
+    auto = enum.auto()  # (= -1)  # automatic marker selection
     # ImPlotMarker_Circle,        /* original C++ signature */
     circle = enum.auto()  # (= 0)  # a circle marker (default)
     # ImPlotMarker_Square,        /* original C++ signature */
@@ -771,11 +787,11 @@ class Marker_(enum.IntFlag):
     # ImPlotMarker_Right,         /* original C++ signature */
     right = enum.auto()  # (= 6)  # an rightward-pointing triangle marker
     # ImPlotMarker_Cross,         /* original C++ signature */
-    cross = enum.auto()  # (= 7)  # a cross marker (not fillable)
+    cross = enum.auto()  # (= 7)  # a cross marker (not fill-able)
     # ImPlotMarker_Plus,          /* original C++ signature */
-    plus = enum.auto()  # (= 8)  # a plus marker (not fillable)
+    plus = enum.auto()  # (= 8)  # a plus marker (not fill-able)
     # ImPlotMarker_Asterisk,      /* original C++ signature */
-    asterisk = enum.auto()  # (= 9)  # a asterisk marker (not fillable)
+    asterisk = enum.auto()  # (= 9)  # a asterisk marker (not fill-able)
     # ImPlotMarker_COUNT    /* original C++ signature */
     # }
     count = enum.auto()  # (= 10)
@@ -849,6 +865,91 @@ class Bin_(enum.IntFlag):
     rice = enum.auto()  # (= -3)  # k = 2 * cbrt(n)
     # ImPlotBin_Scott   = -4,     /* original C++ signature */
     scott = enum.auto()  # (= -4)  # w = 3.49 * sigma / cbrt(n)
+
+class Spec:
+    """Plot item styling specification. Provide these to PlotX functions to override styling, specify
+    offsetting or stride, or set optional flags. This struct can be used in the following ways:
+
+    1. By declaring and defining a struct instance:
+
+       ImPlotSpec spec;
+       spec.LineColor = ImVec4(1,0,0,1);
+       spec.LineWeight = 2.0;
+       spec.Marker = ImPlotMarker_Circle;
+       spec.Flags = ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments;
+       ImPlot::PlotLine("MyLine", xs, ys, 100, spec);
+
+    2. Inline using (ImPlotProp,value) pairs (order does NOT matter):
+
+       ImPlot::PlotLine("MyLine", xs, ys, 100, {
+         ImPlotProp_LineColor, ImVec4(1,0,0,1),
+         ImPlotProp_LineWeight, 2.0,
+         ImPlotProp_Marker, ImPlotMarker_Circle,
+         ImPlotProp_Flags, ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments
+       });
+    """
+
+    # ImVec4          LineColor       = IMPLOT_AUTO_COL;    /* original C++ signature */
+    line_color: ImVec4 = (
+        IMPLOT_AUTO_COL  # line color (applies to lines, bar edges); IMPLOT_AUTO_COL will use next Colormap color or current item color
+    )
+    # float           LineWeight      = 1.0f;    /* original C++ signature */
+    line_weight: float = 1.0  # line weight in pixels (applies to lines, bar edges, marker edges)
+    # ImVec4          FillColor       = IMPLOT_AUTO_COL;    /* original C++ signature */
+    fill_color: ImVec4 = (
+        IMPLOT_AUTO_COL  # fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color
+    )
+    # float           FillAlpha       = 1.0f;    /* original C++ signature */
+    fill_alpha: float = 1.0  # alpha multiplier (applies to FillColor and MarkerFillColor)
+    # ImPlotMarker    Marker          = ImPlotMarker_None;    /* original C++ signature */
+    marker: Marker = Marker_None  # marker type; specify ImPlotMarker_Auto to use the next unused marker
+    # float           MarkerSize      = 4;    /* original C++ signature */
+    marker_size: float = 4  # size of markers (radius) *in pixels*
+    # ImVec4          MarkerLineColor = IMPLOT_AUTO_COL;    /* original C++ signature */
+    marker_line_color: ImVec4 = IMPLOT_AUTO_COL  # marker edge color; IMPLOT_AUTO_COL will use LineColor
+    # ImVec4          MarkerFillColor = IMPLOT_AUTO_COL;    /* original C++ signature */
+    marker_fill_color: ImVec4 = IMPLOT_AUTO_COL  # marker face color; IMPLOT_AUTO_COL will use LineColor
+    # float           Size            = 4;    /* original C++ signature */
+    size: float = 4  # size of error bar whiskers (width or height), and digital bars (height) *in pixels*
+    # int             Offset          = 0;    /* original C++ signature */
+    offset: int = 0  # data index offset
+    # int             Stride          = IMPLOT_AUTO;    /* original C++ signature */
+    stride: int = (
+        IMPLOT_AUTO  # data stride in bytes; IMPLOT_AUTO will result in sizeof(T) where T is the type passed to PlotX
+    )
+    # ImPlotItemFlags Flags           = ImPlotItemFlags_None;    /* original C++ signature */
+    flags: ItemFlags = (
+        ItemFlags_None  # optional item flags; can be composed from common ImPlotItemFlags and/or specialized ImPlotXFlags
+    )
+
+    # ImPlotSpec(ImVec4 LineColor = IMPLOT_AUTO_COL, float LineWeight = 1.0f, ImVec4 FillColor = IMPLOT_AUTO_COL, float FillAlpha = 1.0f, ImPlotMarker Marker = ImPlotMarker_None, float MarkerSize = 4, ImVec4 MarkerLineColor = IMPLOT_AUTO_COL, ImVec4 MarkerFillColor = IMPLOT_AUTO_COL, float Size = 4, int Offset = 0, int Stride = IMPLOT_AUTO, ImPlotItemFlags Flags = ImPlotItemFlags_None);    /* original C++ signature */
+    def __init__(
+        self,
+        line_color: Optional[ImVec4Like] = None,
+        line_weight: float = 1.0,
+        fill_color: Optional[ImVec4Like] = None,
+        fill_alpha: float = 1.0,
+        marker: Optional[Marker] = None,
+        marker_size: float = 4,
+        marker_line_color: Optional[ImVec4Like] = None,
+        marker_fill_color: Optional[ImVec4Like] = None,
+        size: float = 4,
+        offset: int = 0,
+        stride: int = IMPLOT_AUTO,
+        flags: ItemFlags = ItemFlags_None,
+    ) -> None:
+        """Auto-generated default constructor with named params
+
+
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                * LineColor: IMPLOT_AUTO_COL
+                * FillColor: IMPLOT_AUTO_COL
+                * Marker: Marker_None
+                * MarkerLineColor: IMPLOT_AUTO_COL
+                * MarkerFillColor: IMPLOT_AUTO_COL
+        """
+        pass
 
 class Point:
     # double x,     /* original C++ signature */
@@ -927,11 +1028,11 @@ class Rect:
     # IMPLOT_API ImPlotPoint Size() const                                                     { return ImPlotPoint(X.Size(), Y.Size());    }    /* original C++ signature */
     def size(self) -> Point:
         pass
-    # IMPLOT_API ImPlotPoint Clamp(const ImPlotPoint& p)                                      { return Clamp(p.x, p.y);                    }    /* original C++ signature */
+    # IMPLOT_API ImPlotPoint Clamp(const ImPlotPoint& p) const                                { return Clamp(p.x, p.y);                    }    /* original C++ signature */
     @overload
     def clamp(self, p: Point) -> Point:
         pass
-    # IMPLOT_API ImPlotPoint Clamp(double x, double y)                                        { return ImPlotPoint(X.Clamp(x),Y.Clamp(y)); }    /* original C++ signature */
+    # IMPLOT_API ImPlotPoint Clamp(double x, double y) const                                  { return ImPlotPoint(X.Clamp(x),Y.Clamp(y)); }    /* original C++ signature */
     @overload
     def clamp(self, x: float, y: float) -> Point:
         pass
@@ -947,26 +1048,11 @@ class Style:
     (has support for copy.copy)
     """
 
-    # item styling variables
-    # float   LineWeight;    /* original C++ signature */
-    line_weight: float  # = 1,      item line weight in pixels
-    # int     Marker;    /* original C++ signature */
-    marker: int  # = ImPlotMarker_None, marker specification
-    # float   MarkerSize;    /* original C++ signature */
-    marker_size: float  # = 4,      marker size in pixels (roughly the marker's "radius")
-    # float   MarkerWeight;    /* original C++ signature */
-    marker_weight: float  # = 1,      outline weight of markers in pixels
-    # float   FillAlpha;    /* original C++ signature */
-    fill_alpha: float  # = 1,      alpha modifier applied to plot fills
-    # float   ErrorBarSize;    /* original C++ signature */
-    error_bar_size: float  # = 5,      error bar whisker width in pixels
-    # float   ErrorBarWeight;    /* original C++ signature */
-    error_bar_weight: float  # = 1.5,    error bar whisker weight in pixels
-    # float   DigitalBitHeight;    /* original C++ signature */
-    digital_bit_height: float  # = 8,      digital channels bit height (at y = 1.0) in pixels
-    # float   DigitalBitGap;    /* original C++ signature */
-    digital_bit_gap: float  # = 4,      digital channels bit padding gap in pixels
-    # plot styling variables
+    # plot styling
+    # ImVec2  PlotDefaultSize;    /* original C++ signature */
+    plot_default_size: ImVec2  # = 400,300 default size used when ImVec2(0,0) is passed to BeginPlot
+    # ImVec2  PlotMinSize;    /* original C++ signature */
+    plot_min_size: ImVec2  # = 200,150 minimum size plot frame can be when shrunk
     # float   PlotBorderSize;    /* original C++ signature */
     plot_border_size: float  # = 1,      line thickness of border around plot area
     # float   MinorAlpha;    /* original C++ signature */
@@ -983,6 +1069,7 @@ class Style:
     major_grid_size: ImVec2  # = 1,1     line thickness of major grid lines
     # ImVec2  MinorGridSize;    /* original C++ signature */
     minor_grid_size: ImVec2  # = 1,1     line thickness of minor grid lines
+    # plot padding
     # ImVec2  PlotPadding;    /* original C++ signature */
     plot_padding: (
         ImVec2  # = 10,10   padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
@@ -1001,12 +1088,10 @@ class Style:
     annotation_padding: ImVec2  # = 2,2     text padding around annotation labels
     # ImVec2  FitPadding;    /* original C++ signature */
     fit_padding: ImVec2  # = 0,0     additional fit padding as a percentage of the fit extents (e.g. ImVec2(0.1,0.1) adds 10% to the fit extents of X and Y)
-    # ImVec2  PlotDefaultSize;    /* original C++ signature */
-    plot_default_size: ImVec2  # = 400,300 default size used when ImVec2(0,0) is passed to BeginPlot
-
-    # ImVec2  PlotMinSize;    /* original C++ signature */
-    # = 200,150 minimum size plot frame can be when shrunk
-    plot_min_size: ImVec2
+    # float   DigitalPadding;    /* original C++ signature */
+    digital_padding: float  # = 20,     digital plot padding from bottom in pixels
+    # float   DigitalSpacing;    /* original C++ signature */
+    digital_spacing: float  # = 4,      digital plot spacing gap in pixels
 
     # [ADAPT_IMGUI_BUNDLE]
     #                             #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -1246,7 +1331,7 @@ def begin_subplots(
 # IMPLOT_API void EndSubplots();    /* original C++ signature */
 def end_subplots() -> None:
     """Only call EndSubplots() if BeginSubplots() returns True! Typically called at the end
-    of an if statement conditioned on BeginSublots(). See example above.
+    of an if statement conditioned on BeginSubplots(). See example above.
     """
     pass
 
@@ -1306,7 +1391,7 @@ def setup_axis_links(axis: ImAxis, link_min: BoxedValue, link_max: BoxedValue) -
 # IMPLOT_API void SetupAxisFormat(ImAxis axis, const char* fmt);    /* original C++ signature */
 @overload
 def setup_axis_format(axis: ImAxis, fmt: str) -> None:
-    """Sets the format of numeric axis labels via formater specifier (default="%g"). Formated values will be double (i.e. use %f)."""
+    """Sets the format of numeric axis labels via formatter specifier (default="%g"). Formatted values will be double (i.e. use %f)."""
     pass
 
 # IMPLOT_API void SetupAxisScale(ImAxis axis, ImPlotScale scale);    /* original C++ signature */
@@ -1437,13 +1522,13 @@ def set_next_axes_to_fit() -> None:
 #
 # If you need to plot custom or non-homogenous data you have a few options:
 #
-# 1. If your data is a simple struct/class (e.g. Vector2), you can use striding.
+# 1. If your data is a simple struct/class (e.g. Vector2), you can use striding in your ImPlotSpec.
 #    This is the most performant option if applicable.
 #
 #    struct Vector2 { float X, Y; };
 #    ...
 #    Vector2 data[42];
-#    ImPlot::PlotLine("line", &data[0].x, &data[0].y, 42, 0, 0, sizeof(Vector2));
+#    ImPlot::PlotLine("line", &data[0].x, &data[0].y, 42, {ImPlotProp_Stride, sizeof(Vector2});
 #
 # 2. Write a custom getter C function or C++ lambda and pass it and optionally your data to
 #    an ImPlot function post-fixed with a G (e.g. PlotScatterG). This has a slight performance
@@ -1473,46 +1558,88 @@ def set_next_axes_to_fit() -> None:
 # if you try plotting extremely large 64-bit integral types. Proceed with caution!
 
 # Plots a standard 2D line plot.
-# IMPLOT_TMP void PlotLine(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotLine(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_line(
-    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, flags: LineFlags = 0, offset: int = 0
+    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, spec: Optional[Spec] = None
 ) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, int count, ImPlotLineFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
-def plot_line(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: LineFlags = 0, offset: int = 0) -> None:
+def plot_line(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
 # Plots a standard 2D scatter plot. Default marker is ImPlotMarker_Circle.
-# IMPLOT_TMP void PlotScatter(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotScatterFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotScatter(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_scatter(
-    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, flags: ScatterFlags = 0, offset: int = 0
+    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, spec: Optional[Spec] = None
 ) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP void PlotScatter(const char* label_id, const T* xs, const T* ys, int count, ImPlotScatterFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotScatter(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
-def plot_scatter(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: ScatterFlags = 0, offset: int = 0) -> None:
+def plot_scatter(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
+    pass
+
+# Plots a bubble graph. #szs are the radius of each bubble in plot units.
+# IMPLOT_TMP void PlotBubbles(const char* label_id, const T* values, const T* szs, int count, double xscale=1, double xstart=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
+@overload
+def plot_bubbles(
+    label_id: str,
+    values: np.ndarray,
+    szs: np.ndarray,
+    xscale: float = 1,
+    xstart: float = 0,
+    spec: Optional[Spec] = None,
+) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
+    pass
+
+# IMPLOT_TMP void PlotBubbles(const char* label_id, const T* xs, const T* ys, const T* szs, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
+@overload
+def plot_bubbles(label_id: str, xs: np.ndarray, ys: np.ndarray, szs: np.ndarray, spec: Optional[Spec] = None) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
 # Plots a a stairstep graph. The y value is continued constantly to the right from every x position, i.e. the interval [x[i], x[i+1]) has the value y[i]
-# IMPLOT_TMP void PlotStairs(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, ImPlotStairsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotStairs(const char* label_id, const T* values, int count, double xscale=1, double xstart=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_stairs(
-    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, flags: StairsFlags = 0, offset: int = 0
+    label_id: str, values: np.ndarray, xscale: float = 1, xstart: float = 0, spec: Optional[Spec] = None
 ) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP void PlotStairs(const char* label_id, const T* xs, const T* ys, int count, ImPlotStairsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotStairs(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
-def plot_stairs(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: StairsFlags = 0, offset: int = 0) -> None:
+def plot_stairs(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
 # Plots a shaded (filled) region between two lines, or a line and a horizontal reference. Set yref to +/-INFINITY for infinite fill extents.
-# IMPLOT_TMP void PlotShaded(const char* label_id, const T* values, int count, double yref=0, double xscale=1, double xstart=0, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotShaded(const char* label_id, const T* values, int count, double yref=0, double xscale=1, double xstart=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_shaded(
     label_id: str,
@@ -1520,49 +1647,61 @@ def plot_shaded(
     yref: float = 0,
     xscale: float = 1,
     xstart: float = 0,
-    flags: ShadedFlags = 0,
-    offset: int = 0,
+    spec: Optional[Spec] = None,
 ) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys, int count, double yref=0, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys, int count, double yref=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
-def plot_shaded(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, yref: float = 0, flags: ShadedFlags = 0, offset: int = 0
-) -> None:
+def plot_shaded(label_id: str, xs: np.ndarray, ys: np.ndarray, yref: float = 0, spec: Optional[Spec] = None) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys1, const T* ys2, int count, ImPlotShadedFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys1, const T* ys2, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
-def plot_shaded(
-    label_id: str, xs: np.ndarray, ys1: np.ndarray, ys2: np.ndarray, flags: ShadedFlags = 0, offset: int = 0
-) -> None:
+def plot_shaded(label_id: str, xs: np.ndarray, ys1: np.ndarray, ys2: np.ndarray, spec: Optional[Spec] = None) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
 # Plots a bar graph. Vertical by default. #bar_size and #shift are in plot units.
-# IMPLOT_TMP void PlotBars(const char* label_id, const T* values, int count, double bar_size=0.67, double shift=0, ImPlotBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotBars(const char* label_id, const T* values, int count, double bar_size=0.67, double shift=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_bars(
-    label_id: str, values: np.ndarray, bar_size: float = 0.67, shift: float = 0, flags: BarsFlags = 0, offset: int = 0
+    label_id: str, values: np.ndarray, bar_size: float = 0.67, shift: float = 0, spec: Optional[Spec] = None
 ) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP void PlotBars(const char* label_id, const T* xs, const T* ys, int count, double bar_size, ImPlotBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotBars(const char* label_id, const T* xs, const T* ys, int count, double bar_size, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
-def plot_bars(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, bar_size: float, flags: BarsFlags = 0, offset: int = 0
-) -> None:
+def plot_bars(label_id: str, xs: np.ndarray, ys: np.ndarray, bar_size: float, spec: Optional[Spec] = None) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
-# IMPLOT_TMP void PlotBarGroups(const std::vector<std::string>& label_ids, const T* values, int count, double group_size=0.67, double shift=0, ImPlotBarGroupsFlags flags=0);    /* original C++ signature */
+# IMPLOT_TMP void PlotBarGroups(const std::vector<std::string>& label_ids, const T* values, int count, double group_size=0.67, double shift=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 def plot_bar_groups(
-    label_ids: List[str], values: np.ndarray, group_size: float = 0.67, shift: float = 0, flags: BarGroupsFlags = 0
+    label_ids: List[str], values: np.ndarray, group_size: float = 0.67, shift: float = 0, spec: Optional[Spec] = None
 ) -> None:
     """Plots a group of bars.
-    - values should be a **1 dimension** numpy array of values.
-    - label_ids should be a list of strings corresponding to bars labels
+     - values should be a **1 dimension** numpy array of values.
+     - label_ids should be a list of strings corresponding to bars labels
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
@@ -1570,54 +1709,57 @@ def plot_bar_groups(
 #
 
 # Plots vertical error bar. The label_id should be the same as the label_id of the associated line or bar plot.
-# IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* err, int count, ImPlotErrorBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* err, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_error_bars(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, err: np.ndarray, flags: ErrorBarsFlags = 0, offset: int = 0
+    label_id: str, xs: np.ndarray, ys: np.ndarray, err: np.ndarray, spec: Optional[Spec] = None
 ) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* neg, const T* pos, int count, ImPlotErrorBarsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotErrorBars(const char* label_id, const T* xs, const T* ys, const T* neg, const T* pos, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_error_bars(
-    label_id: str,
-    xs: np.ndarray,
-    ys: np.ndarray,
-    neg: np.ndarray,
-    pos: np.ndarray,
-    flags: ErrorBarsFlags = 0,
-    offset: int = 0,
+    label_id: str, xs: np.ndarray, ys: np.ndarray, neg: np.ndarray, pos: np.ndarray, spec: Optional[Spec] = None
 ) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
 # Plots stems. Vertical by default.
-# IMPLOT_TMP void PlotStems(const char* label_id, const T* values, int count, double ref=0, double scale=1, double start=0, ImPlotStemsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotStems(const char* label_id, const T* values, int count, double ref=0, double scale=1, double start=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_stems(
-    label_id: str,
-    values: np.ndarray,
-    ref: float = 0,
-    scale: float = 1,
-    start: float = 0,
-    flags: StemsFlags = 0,
-    offset: int = 0,
+    label_id: str, values: np.ndarray, ref: float = 0, scale: float = 1, start: float = 0, spec: Optional[Spec] = None
 ) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP void PlotStems(const char* label_id, const T* xs, const T* ys, int count, double ref=0, ImPlotStemsFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
+# IMPLOT_TMP void PlotStems(const char* label_id, const T* xs, const T* ys, int count, double ref=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
-def plot_stems(
-    label_id: str, xs: np.ndarray, ys: np.ndarray, ref: float = 0, flags: StemsFlags = 0, offset: int = 0
-) -> None:
+def plot_stems(label_id: str, xs: np.ndarray, ys: np.ndarray, ref: float = 0, spec: Optional[Spec] = None) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP void PlotInfLines(const char* label_id, const T* values, int count, ImPlotInfLinesFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
-def plot_inf_lines(label_id: str, values: np.ndarray, flags: InfLinesFlags = 0, offset: int = 0) -> None:
-    """Plots infinite vertical or horizontal lines (e.g. for references or asymptotes)."""
+# IMPLOT_TMP void PlotInfLines(const char* label_id, const T* values, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
+def plot_inf_lines(label_id: str, values: np.ndarray, spec: Optional[Spec] = None) -> None:
+    """Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
+    """
     pass
 
 # Plots a pie chart. Center and radius are in plot units. #label_fmt can be set to None for no labels.
-# IMPLOT_TMP void PlotPieChart(const char* const label_ids[], const T* values, int count, double x, double y, double radius, const char* label_fmt="%.1f", double angle0=90, ImPlotPieChartFlags flags=0);    /* original C++ signature */
+# IMPLOT_TMP void PlotPieChart(const char* const label_ids[], const T* values, int count, double x, double y, double radius, const char* label_fmt="%.1f", double angle0=90, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_pie_chart(
     label_ids: List[str],
@@ -1627,29 +1769,34 @@ def plot_pie_chart(
     radius: float,
     label_fmt: str = "%.1",
     angle0: float = 90,
-    flags: PieChartFlags = 0,
+    spec: Optional[Spec] = None,
 ) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
-# IMPLOT_TMP double PlotHistogram(const char* label_id, const T* values, int count, int bins=ImPlotBin_Sturges, double bar_scale=1.0, ImPlotRange range=ImPlotRange(), ImPlotHistogramFlags flags=0);    /* original C++ signature */
+# IMPLOT_TMP double PlotHistogram(const char* label_id, const T* values, int count, int bins=ImPlotBin_Sturges, double bar_scale=1.0, ImPlotRange range=ImPlotRange(), const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 def plot_histogram(
     label_id: str,
     values: np.ndarray,
     bins: int = Bin_Sturges,
     bar_scale: float = 1.0,
     range: Optional[Range] = None,
-    flags: HistogramFlags = 0,
+    spec: Optional[Spec] = None,
 ) -> float:
     """Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.
      Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.
 
 
     Python bindings defaults:
-        If range is None, then its default value will be: Range()
+        If any of the params below is None, then its default value below will be used:
+            * range: Range()
+            * spec: Spec()
     """
     pass
 
-# IMPLOT_TMP double PlotHistogram2D(const char* label_id, const T* xs, const T* ys, int count, int x_bins=ImPlotBin_Sturges, int y_bins=ImPlotBin_Sturges, ImPlotRect range=ImPlotRect(), ImPlotHistogramFlags flags=0);    /* original C++ signature */
+# IMPLOT_TMP double PlotHistogram2D(const char* label_id, const T* xs, const T* ys, int count, int x_bins=ImPlotBin_Sturges, int y_bins=ImPlotBin_Sturges, ImPlotRect range=ImPlotRect(), const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 def plot_histogram_2d(
     label_id: str,
     xs: np.ndarray,
@@ -1657,25 +1804,30 @@ def plot_histogram_2d(
     x_bins: int = Bin_Sturges,
     y_bins: int = Bin_Sturges,
     range: Optional[Rect] = None,
-    flags: HistogramFlags = 0,
+    spec: Optional[Spec] = None,
 ) -> float:
     """Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of
      #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
 
 
     Python bindings defaults:
-        If range is None, then its default value will be: Rect()
+        If any of the params below is None, then its default value below will be used:
+            * range: Rect()
+            * spec: Spec()
     """
     pass
 
 # Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
-# IMPLOT_TMP void PlotDigital(const char* label_id, const T* xs, const T* ys, int count, ImPlotDigitalFlags flags=0, int offset=0, int stride=sizeof(T));    /* original C++ signature */
-def plot_digital(label_id: str, xs: np.ndarray, ys: np.ndarray, flags: DigitalFlags = 0, offset: int = 0) -> None:
+# IMPLOT_TMP void PlotDigital(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
+def plot_digital(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
+    """Python bindings defaults:
+    If spec is None, then its default value will be: Spec()
+    """
     pass
 
 # #ifdef IMGUI_HAS_TEXTURES
 #
-# IMPLOT_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlotPoint& bounds_min, const ImPlotPoint& bounds_max, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& tint_col = ImVec4(1, 1, 1, 1), ImPlotImageFlags flags = 0);    /* original C++ signature */
+# IMPLOT_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlotPoint& bounds_min, const ImPlotPoint& bounds_max, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& tint_col = ImVec4(1, 1, 1, 1), const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 def plot_image(
     label_id: str,
     tex_ref: ImTextureRef,
@@ -1684,7 +1836,7 @@ def plot_image(
     uv0: Optional[ImVec2Like] = None,
     uv1: Optional[ImVec2Like] = None,
     tint_col: Optional[ImVec4Like] = None,
-    flags: ImageFlags = 0,
+    spec: Optional[Spec] = None,
 ) -> None:
     """Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).
 
@@ -1694,25 +1846,35 @@ def plot_image(
             * uv0: ImVec2(0, 0)
             * uv1: ImVec2(1, 1)
             * tint_col: ImVec4(1, 1, 1, 1)
+            * spec: Spec()
     """
     pass
 
 # #endif
 #
 
-# IMPLOT_API void PlotText(const char* text, double x, double y, const ImVec2& pix_offset=ImVec2(0,0), ImPlotTextFlags flags=0);    /* original C++ signature */
-def plot_text(text: str, x: float, y: float, pix_offset: Optional[ImVec2Like] = None, flags: TextFlags = 0) -> None:
+# IMPLOT_API void PlotText(const char* text, double x, double y, const ImVec2& pix_offset=ImVec2(0,0), const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
+def plot_text(
+    text: str, x: float, y: float, pix_offset: Optional[ImVec2Like] = None, spec: Optional[Spec] = None
+) -> None:
     """Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).
 
 
     Python bindings defaults:
-        If pix_offset is None, then its default value will be: ImVec2(0,0)
+        If any of the params below is None, then its default value below will be used:
+            * pix_offset: ImVec2(0,0)
+            * spec: Spec()
     """
     pass
 
-# IMPLOT_API void PlotDummy(const char* label_id, ImPlotDummyFlags flags=0);    /* original C++ signature */
-def plot_dummy(label_id: str, flags: DummyFlags = 0) -> None:
-    """Plots a dummy item (i.e. adds a legend entry colored by ImPlotCol_Line)"""
+# IMPLOT_API void PlotDummy(const char* label_id, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
+def plot_dummy(label_id: str, spec: Optional[Spec] = None) -> None:
+    """Plots a dummy item (i.e. adds a legend entry colored by ImPlotCol_Line)
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
+    """
     pass
 
 # -----------------------------------------------------------------------------
@@ -2046,29 +2208,12 @@ def end_drag_drop_source() -> None:
 # indexable array in ImPlotStyle. You can permanently modify these values through
 # GetStyle().Colors, or temporarily modify them with Push/Pop functions below.
 # However, by default all style colors in ImPlot default to a special color
-# IMPLOT_AUTO_COL. The behavior of this color depends upon the style color to
-# which it as applied:
-#
-#     1) For style colors associated with plot items (e.g. ImPlotCol_Line),
-#        IMPLOT_AUTO_COL tells ImPlot to color the item with the next unused
-#        color in the current colormap. Thus, every item will have a different
-#        color up to the number of colors in the colormap, at which point the
-#        colormap will roll over. For most use cases, you should not need to
-#        set these style colors to anything but IMPLOT_COL_AUTO; you are
-#        probably better off changing the current colormap. However, if you
-#        need to explicitly color a particular item you may either Push/Pop
-#        the style color around the item in question, or use the SetNextXXXStyle
-#        API below. If you permanently set one of these style colors to a specific
-#        color, or forget to call Pop, then all subsequent items will be styled
-#        with the color you set.
-#
-#     2) For style colors associated with plot styling (e.g. ImPlotCol_PlotBg),
-#        IMPLOT_AUTO_COL tells ImPlot to set that color from color data in your
-#        **ImGuiStyle**. The ImGuiCol_ that these style colors default to are
-#        detailed above, and in general have been mapped to produce plots visually
-#        consistent with your current ImGui style. Of course, you are free to
-#        manually set these colors to whatever you like, and further can Push/Pop
-#        them around individual plots for plot-specific styling (e.g. coloring axes).
+# IMPLOT_AUTO_COL. IMPLOT_AUTO_COL tells ImPlot to set that color from color data
+# in your **ImGuiStyle**. The ImGuiCol_ that these style colors default to are
+# detailed above, and in general have been mapped to produce plots visually
+# consistent with your current ImGui style. Of course, you are free to
+# manually set these colors to whatever you like, and further can Push/Pop
+# them around individual plots for plot-specific styling (e.g. coloring axes).
 
 # Provides access to plot style structure for permanent modifications to colors, sizes, etc.
 # IMPLOT_API ImPlotStyle& GetStyle();    /* original C++ signature */
@@ -2142,62 +2287,6 @@ def pop_style_var(count: int = 1) -> None:
     """Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count."""
     pass
 
-# The following can be used to modify the style of the next plot item ONLY. They do
-# NOT require calls to PopStyleX. Leave style attributes you don't want modified to
-# IMPLOT_AUTO or IMPLOT_AUTO_COL. Automatic styles will be deduced from the current
-# values in your ImPlotStyle or from Colormap data.
-
-# IMPLOT_API void SetNextLineStyle(const ImVec4& col = IMPLOT_AUTO_COL, float weight = IMPLOT_AUTO);    /* original C++ signature */
-def set_next_line_style(col: Optional[ImVec4Like] = None, weight: float = IMPLOT_AUTO) -> None:
-    """Set the line color and weight for the next item only.
-
-
-    Python bindings defaults:
-        If col is None, then its default value will be: IMPLOT_AUTO_COL
-    """
-    pass
-
-# IMPLOT_API void SetNextFillStyle(const ImVec4& col = IMPLOT_AUTO_COL, float alpha_mod = IMPLOT_AUTO);    /* original C++ signature */
-def set_next_fill_style(col: Optional[ImVec4Like] = None, alpha_mod: float = IMPLOT_AUTO) -> None:
-    """Set the fill color for the next item only.
-
-
-    Python bindings defaults:
-        If col is None, then its default value will be: IMPLOT_AUTO_COL
-    """
-    pass
-
-# IMPLOT_API void SetNextMarkerStyle(ImPlotMarker marker = IMPLOT_AUTO, float size = IMPLOT_AUTO, const ImVec4& fill = IMPLOT_AUTO_COL, float weight = IMPLOT_AUTO, const ImVec4& outline = IMPLOT_AUTO_COL);    /* original C++ signature */
-def set_next_marker_style(
-    marker: Optional[Marker] = None,
-    size: float = IMPLOT_AUTO,
-    fill: Optional[ImVec4Like] = None,
-    weight: float = IMPLOT_AUTO,
-    outline: Optional[ImVec4Like] = None,
-) -> None:
-    """Set the marker style for the next item only.
-
-
-    Python bindings defaults:
-        If any of the params below is None, then its default value below will be used:
-            * marker: IMPLOT_AUTO
-            * fill: IMPLOT_AUTO_COL
-            * outline: IMPLOT_AUTO_COL
-    """
-    pass
-
-# IMPLOT_API void SetNextErrorBarStyle(const ImVec4& col = IMPLOT_AUTO_COL, float size = IMPLOT_AUTO, float weight = IMPLOT_AUTO);    /* original C++ signature */
-def set_next_error_bar_style(
-    col: Optional[ImVec4Like] = None, size: float = IMPLOT_AUTO, weight: float = IMPLOT_AUTO
-) -> None:
-    """Set the error bar style for the next item only.
-
-
-    Python bindings defaults:
-        If col is None, then its default value will be: IMPLOT_AUTO_COL
-    """
-    pass
-
 # IMPLOT_API ImVec4 GetLastItemColor();    /* original C++ signature */
 def get_last_item_color() -> ImVec4:
     """Gets the last item primary color (i.e. its legend icon color)"""
@@ -2211,6 +2300,11 @@ def get_style_color_name(idx: Col) -> str:
 # IMPLOT_API const char* GetMarkerName(ImPlotMarker idx);    /* original C++ signature */
 def get_marker_name(idx: Marker) -> str:
     """Returns the null terminated string name for an ImPlotMarker."""
+    pass
+
+# IMPLOT_API ImPlotMarker NextMarker();    /* original C++ signature */
+def next_marker() -> Marker:
+    """Returns the next marker and advances the marker for the current plot. You need to call this between Begin/EndPlot!"""
     pass
 
 # -----------------------------------------------------------------------------
@@ -2527,6 +2621,6 @@ def plot_heatmap(
     label_fmt: str = "%.1f",
     bounds_min: Point = Point(0, 0),
     bounds_max: Point = Point(1, 1),
-    flags: HeatmapFlags = 0,
+    spec: Spec = Spec(),
 ):
     pass
