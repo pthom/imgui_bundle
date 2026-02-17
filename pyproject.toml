@@ -202,6 +202,12 @@ before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev l
 [tool.cibuildwheel.windows]
 skip = ["*win32"]
 
+#------------------------------------
+# android wheels
+#------------------------------------
+# Android wheel support is experimental, and available in a separate branch (not officially supported at the moment)
+# See: https://github.com/pthom/imgui_bundle/tree/android-wheel
+# Related PR: https://github.com/pthom/imgui_bundle/pull/438
 
 # ═══════════════════════════════════════════════════════════════════════════
 # Custom Build Configurations
