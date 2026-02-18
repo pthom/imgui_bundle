@@ -2124,8 +2124,12 @@ def show_all_demos():
 
 
 def show_demo_window():
+    show_demo_window_maybe_docked(True)
+
+
+def show_demo_window_maybe_docked(create_window: bool):
     """Main ImPlot Demo Window with menu options for various ImPlot and ImGui tools."""
-    static = show_demo_window
+    static = show_demo_window_maybe_docked
 
     if not hasattr(static, "show_implot_metrics"):
         static.show_implot_metrics = False
@@ -2160,9 +2164,10 @@ def show_demo_window():
         imgui.show_demo_window()
 
     # Main Demo Window
-    imgui.set_next_window_pos((50, 50), imgui.Cond_.first_use_ever)
-    imgui.set_next_window_size((600, 750), imgui.Cond_.first_use_ever)
-    imgui.begin("ImPlot Demo", True, imgui.WindowFlags_.menu_bar)
+    if create_window:
+        imgui.set_next_window_pos((50, 50), imgui.Cond_.first_use_ever)
+        imgui.set_next_window_size((600, 750), imgui.Cond_.first_use_ever)
+        imgui.begin("ImPlot Demo", True, imgui.WindowFlags_.menu_bar)
 
     if imgui.begin_menu_bar():
         if imgui.begin_menu("Tools"):
@@ -2177,11 +2182,12 @@ def show_demo_window():
 
     #-------------------------------------------------------------------------
     show_all_demos()
-    imgui.end()
+    if create_window:
+        imgui.end()
 
 
 def main():
-    immapp.run(show_demo_window, with_implot=True, with_markdown=True)
+    immapp.run(lambda: show_demo_window_maybe_docked(False), with_implot=True, with_markdown=True)
 
 
 if __name__ == "__main__":

@@ -23,7 +23,7 @@ void demo_implot()
         ImGui::SameLine();
         if (ImGui::Button("Python demo code"))
             ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py");
-        ImPlot::ShowAllDemos();
+        ImPlot::ShowDemoWindow_MaybeDocked(false);
     }
 
     if (ImGui::CollapsingHeader("ImPlot3D: Full Demo"))
