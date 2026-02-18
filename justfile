@@ -16,6 +16,16 @@ ems_deploy:
 ems_serve:
     python ./ci_scripts/webserver_multithread_policy.py
 
+# Build the emscripten manual
+ems_manual_build:
+    mkdir -p build_ems_manual && \
+    cd build_ems_manual && \
+    source ~/emsdk/emsdk_env.sh && \
+    emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_BUILD_IMGUI_MANUAL=ON && \
+    cmake --build . -j 8
+
+ems_manual_serve:
+    cd build_ems_manual && python ../ci_scripts/webserver_multithread_policy.py -p 7006
 
 # Reattach all submodules to branches and remotes (fork + official)
 ext_reattach:

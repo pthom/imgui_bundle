@@ -26,4 +26,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.root:
         os.chdir(args.root)
+    print(f"http://localhost:{args.port}/")
     test(CORSRequestHandler, HTTPServer, port=args.port)

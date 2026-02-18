@@ -39,3 +39,12 @@ const LibraryConfig& GetCurrentLibrary();
 
 // Get demo files for current library only
 std::vector<DemoFileInfo> GetCurrentLibraryFiles();
+
+// Single-library mode: when launched with --lib <name> (desktop) or ?lib=<name> (emscripten),
+// only one library is shown and the library selection toolbar is simplified.
+bool IsSingleLibraryMode();
+void SetSingleLibraryMode(bool enabled);
+
+// Parse library selection from command-line args (--lib <name>) or URL params (?lib=<name>).
+// If a valid library name is found, sets the current library and enables single-library mode.
+void ParseLibraryArg(int argc, char** argv);

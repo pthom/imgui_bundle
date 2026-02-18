@@ -333,7 +333,7 @@ option(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL "Build ImGui Manual" OFF)
 # and only if it is not building the python package
 # (the python package will install different elements)
 #------------------------------------------------------------------------------
-if(PROJECT_IS_TOP_LEVEL AND NOT IMGUI_BUNDLE_BUILD_PYTHON)
+if(PROJECT_IS_TOP_LEVEL AND NOT IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_IMGUI_MANUAL)
     set(imgui_bundle_install_cpp_default ON)
 else()
     set(imgui_bundle_install_cpp_default OFF)

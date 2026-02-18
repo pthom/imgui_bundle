@@ -3,6 +3,11 @@
 #include "im_anim.h"
 #include "implot/implot.h"
 #include "implot3d/implot3d.h"
+#include <algorithm>
+#include <cctype>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 // Forward declarations for ImAnim demo windows
 void ImAnimDemoBasicsWindow(bool create_window);
@@ -164,4 +169,74 @@ const LibraryConfig& GetCurrentLibrary()
 std::vector<DemoFileInfo> GetCurrentLibraryFiles()
 {
     return GetCurrentLibrary().files;
+}
+
+// Single-library mode
+static bool g_singleLibraryMode = false;
+
+bool IsSingleLibraryMode()
+{
+    return g_singleLibraryMode;
+}
+
+void SetSingleLibraryMode(bool enabled)
+{
+    g_singleLibraryMode = enabled;
+}
+
+namespace {
+    std::string ToLower(const std::string& s)
+    {
+        std::string result = s;
+        std::transform(result.begin(), result.end(), result.begin(),
+                       [](unsigned char c) { return std::tolower(c); });
+        return result;
+    }
+
+    int FindLibraryIndexByName(const std::string& name)
+    {
+        std::string nameLower = ToLower(name);
+        const auto& configs = GetAllLibraryConfigs();
+        for (int i = 0; i < (int)configs.size(); ++i)
+        {
+            if (ToLower(configs[i].name) == nameLower)
+                return i;
+        }
+        return -1;
+    }
+} // anonymous namespace
+
+void ParseLibraryArg(int argc, char** argv)
+{
+    std::string libName;
+
+#ifdef __EMSCRIPTEN__
+    // Read ?lib=<name> from URL query parameters
+    (void)argc; (void)argv;
+    const char* result = emscripten_run_script_string(
+        "new URLSearchParams(window.location.search).get('lib') || ''"
+    );
+    if (result && result[0] != '\0')
+        libName = result;
+#else
+    // Read --lib <name> from command-line arguments
+    for (int i = 1; i < argc - 1; ++i)
+    {
+        if (std::string(argv[i]) == "--lib")
+        {
+            libName = argv[i + 1];
+            break;
+        }
+    }
+#endif
+
+    if (!libName.empty())
+    {
+        int idx = FindLibraryIndexByName(libName);
+        if (idx >= 0)
+        {
+            SetCurrentLibraryIndex(idx);
+            SetSingleLibraryMode(true);
+        }
+    }
 }

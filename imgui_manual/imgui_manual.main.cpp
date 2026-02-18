@@ -35,21 +35,25 @@ void ShowLibraryToolbar()
 
     ImGui::Spring(1.f);
 
-    const auto& libs = GetAllLibraryConfigs();
-    int currentIdx = GetCurrentLibraryIndex();
-
-    for (size_t i = 0; i < libs.size(); ++i)
+    if (! IsSingleLibraryMode())
     {
-        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 10.f);
-        bool isSelected = ((int)i == currentIdx);
-        if (isSelected)
-            ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
-        if (ImGui::Button(libs[i].name.c_str(), HelloImGui::EmToVec2(5.2f, 1.7f)))
-            SetCurrentLibraryIndex((int)i);
+        // Multi-library mode: show library selection buttons
+        const auto& libs = GetAllLibraryConfigs();
+        int currentIdx = GetCurrentLibraryIndex();
 
-        if (isSelected)
-            ImGui::PopStyleColor();
-        ImGui::PopStyleVar();
+        for (size_t i = 0; i < libs.size(); ++i)
+        {
+            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 10.f);
+            bool isSelected = ((int)i == currentIdx);
+            if (isSelected)
+                ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
+            if (ImGui::Button(libs[i].name.c_str(), HelloImGui::EmToVec2(5.2f, 1.7f)))
+                SetCurrentLibraryIndex((int)i);
+
+            if (isSelected)
+                ImGui::PopStyleColor();
+            ImGui::PopStyleVar();
+        }
     }
 
     ImGui::Spring(0.05f);
@@ -135,10 +139,16 @@ std::vector<HelloImGui::DockableWindow> SetupDockableWindows()
     return {demoWindow, codeViewerWindow};
 }
 
-int main()
+int main(int argc, char** argv)
 {
+    ParseLibraryArg(argc, argv);
+
     HelloImGui::RunnerParams runnerParams;
     runnerParams.callbacks.PostInit = OnPostInit;  // Initialize code viewer after OpenGL init
+
+    runnerParams.appWindowParams.windowTitle = "Dear ImGui Manual";
+    if (IsSingleLibraryMode())
+        runnerParams.appWindowParams.windowTitle += " - " + GetCurrentLibrary().name;
 
     runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
 
