@@ -1819,3 +1819,30 @@ def setup_axis_ticks(
     keep_default: bool = False,
 ):
     pass
+
+
+# OBSOLETED in v0.4 (from February 2026)
+# ============================================================================
+# The following functions have been REMOVED. Use Spec objects instead:
+#
+# set_next_line_style(col, weight)
+#   -> Use: spec=implot3d.Spec(line_color=col, line_weight=weight)
+#
+# set_next_fill_style(col, alpha_mod)
+#   -> Use: spec=implot3d.Spec(fill_color=col, fill_alpha=alpha_mod)
+#
+# set_next_marker_style(marker, size, fill, weight, outline)
+#   -> Use: spec=implot3d.Spec(marker=marker, marker_size=size,
+#                               marker_fill_color=fill, line_weight=weight,
+#                               marker_line_color=outline)
+#
+# Example migration:
+#   # OLD (removed):
+#   implot3d.set_next_line_style(ImVec4(1,0,0,1), 2.0)
+#   implot3d.plot_line("data", xs, ys, zs)
+#
+#   # NEW:
+#   implot3d.plot_line("data", xs, ys, zs,
+#                      spec=implot3d.Spec(line_color=ImVec4(1,0,0,1),
+#                                        line_weight=2.0))
+# ============================================================================
