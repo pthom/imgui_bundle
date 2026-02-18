@@ -62,6 +62,27 @@ def help_marker(desc: str):
         imgui.end_tooltip()
 
 
+def checkbox_flag(flags: int, flag: int, flag_name: str = None) -> tuple[bool, int]:
+    """
+    Helper function to create a checkbox that toggles a flag bit.
+    Mimics C++ macro: CHECKBOX_FLAG(flags, flag)
+
+    Args:
+        flags: Current flags value
+        flag: The flag bit to toggle
+        flag_name: Optional name for the checkbox (if None, uses flag's string representation)
+
+    Returns:
+        Tuple of (changed, new_flags)
+    """
+    if flag_name is None:
+        # Try to get the flag name from the enum
+        flag_name = str(flag)
+
+    changed, new_flags = imgui.checkbox_flags(flag_name, flags, flag)
+    return changed, new_flags
+
+
 class CircularBuffer:
     """A simple circular buffer using NumPy arrays, mimicking C++'s ScrollingBuffer."""
 
@@ -99,8 +120,9 @@ def demo_line_plots():
     if implot3d.begin_plot("Line Plots"):
         implot3d.setup_axes("x", "y", "z")
         implot3d.plot_line("f(x)", static.xs1, static.ys1, static.zs1)
-        implot3d.set_next_marker_style(implot3d.Marker_.circle)
-        implot3d.plot_line("g(x)", static.xs2, static.ys2, static.zs2, flags=implot3d.LineFlags_.segments)
+        implot3d.plot_line("g(x)", static.xs2, static.ys2, static.zs2,
+                          spec=implot3d.Spec(marker=implot3d.Marker_.circle,
+                                           flags=implot3d.LineFlags_.segments))
         implot3d.end_plot()
 
 
@@ -122,16 +144,13 @@ def demo_scatter_plots():
     if implot3d.begin_plot("Scatter Plots"):
         implot3d.plot_scatter("Data 1", static.xs1, static.ys1, static.zs1)
 
-        implot3d.push_style_var(implot3d.StyleVar_.fill_alpha, 0.25)
-        implot3d.set_next_marker_style(
-            implot3d.Marker_.square, 6,
-            implot3d.get_colormap_color(1),  # Marker outline color
-            implot3d.AUTO,  # Default weight
-            implot3d.get_colormap_color(1)   # Marker fill color
-        )
-
-        implot3d.plot_scatter("Data 2", static.xs2, static.ys2, static.zs2)
-        implot3d.pop_style_var()
+        implot3d.plot_scatter("Data 2", static.xs2, static.ys2, static.zs2,
+                             spec=implot3d.Spec(
+                                 marker=implot3d.Marker_.square,
+                                 marker_size=6,
+                                 marker_line_color=implot3d.get_colormap_color(1),
+                                 marker_fill_color=implot3d.get_colormap_color(1),
+                                 fill_alpha=0.25))
 
         implot3d.end_plot()
 
@@ -169,20 +188,28 @@ def demo_triangle_plots():
         static.xs = np.array(xs, dtype=np.float32)
         static.ys = np.array(ys, dtype=np.float32)
         static.zs = np.array(zs, dtype=np.float32)
+        # Initialize triangle flags
+        static.flags = implot3d.TriangleFlags_.none.value
+
+    # Triangle flags UI
+    _, static.flags = checkbox_flag(static.flags, implot3d.TriangleFlags_.no_lines.value, "NoLines")
+    _, static.flags = checkbox_flag(static.flags, implot3d.TriangleFlags_.no_fill.value, "NoFill")
+    _, static.flags = checkbox_flag(static.flags, implot3d.TriangleFlags_.no_markers.value, "NoMarkers")
 
     if implot3d.begin_plot("Triangle Plots"):
         implot3d.setup_axes_limits(-1, 1, -1, 1, -0.5, 1.5)
 
-        # Setup pyramid colors
-        implot3d.set_next_fill_style(implot3d.get_colormap_color(0))
-        implot3d.set_next_line_style(implot3d.get_colormap_color(1), 2)
-        implot3d.set_next_marker_style(
-            implot3d.Marker_.square, 3,
-            implot3d.get_colormap_color(2), implot3d.AUTO, implot3d.get_colormap_color(2)
+        # Setup pyramid colors and flags using Spec
+        spec = implot3d.Spec(
+            fill_color=implot3d.get_colormap_color(0),
+            line_color=implot3d.get_colormap_color(1),
+            marker=implot3d.Marker_.square,
+            marker_size=3,
+            flags=static.flags
         )
 
         # Plot pyramid (6 triangles, 3 vertices each = 18 total vertices)
-        implot3d.plot_triangle("Pyramid", static.xs, static.ys, static.zs)
+        implot3d.plot_triangle("Pyramid", static.xs, static.ys, static.zs, spec=spec)
         implot3d.end_plot()
 
 
@@ -237,6 +264,12 @@ def demo_quad_plots():
             -1, -1, -1, -1
         ], dtype=np.float32)
 
+        static.flags = implot3d.QuadFlags_.none.value
+
+    _, static.flags = checkbox_flag(static.flags, implot3d.QuadFlags_.no_lines.value, "NoLines")
+    _, static.flags = checkbox_flag(static.flags, implot3d.QuadFlags_.no_fill.value, "NoFill")
+    _, static.flags = checkbox_flag(static.flags, implot3d.QuadFlags_.no_markers.value, "NoMarkers")
+
     if implot3d.begin_plot("Quad Plots"):
         implot3d.setup_axes_limits(-1.5, 1.5, -1.5, 1.5, -1.5, 1.5)
 
@@ -249,24 +282,39 @@ def demo_quad_plots():
 
         # Render +x and -x faces
         color_x = colors["X"]
-        implot3d.set_next_fill_style(color_x)
-        implot3d.set_next_line_style(color_x, 2)
-        implot3d.set_next_marker_style(implot3d.Marker_.square, 3, color_x, implot3d.AUTO, color_x)
-        implot3d.plot_quad("X", static.xs[0:8], static.ys[0:8], static.zs[0:8])
+        implot3d.plot_quad("X", static.xs[0:8], static.ys[0:8], static.zs[0:8],
+                            spec=implot3d.Spec(
+                                fill_color=color_x,
+                                line_color=color_x,
+                                marker=implot3d.Marker_.square,
+                                marker_size=3,
+                                marker_line_color=color_x,
+                                marker_fill_color=color_x,
+                                flags=static.flags))
 
         # Render +y and -y faces
         color_y = colors["Y"]
-        implot3d.set_next_fill_style(color_y)
-        implot3d.set_next_line_style(color_y, 2)
-        implot3d.set_next_marker_style(implot3d.Marker_.square, 3, color_y, implot3d.AUTO, color_y)
-        implot3d.plot_quad("Y", static.xs[8:16], static.ys[8:16], static.zs[8:16])
+        implot3d.plot_quad("Y", static.xs[8:16], static.ys[8:16], static.zs[8:16],
+                            spec=implot3d.Spec(
+                                fill_color=color_y,
+                                line_color=color_y,
+                                marker=implot3d.Marker_.square,
+                                marker_size=3,
+                                marker_line_color=color_y,
+                                marker_fill_color=color_y,
+                                flags=static.flags))
 
         # Render +z and -z faces
         color_z = colors["Z"]
-        implot3d.set_next_fill_style(color_z)
-        implot3d.set_next_line_style(color_z, 2)
-        implot3d.set_next_marker_style(implot3d.Marker_.square, 3, color_z, implot3d.AUTO, color_z)
-        implot3d.plot_quad("Z", static.xs[16:24], static.ys[16:24], static.zs[16:24])
+        implot3d.plot_quad("Z", static.xs[16:24], static.ys[16:24], static.zs[16:24],
+                            spec=implot3d.Spec(
+                                fill_color=color_z,
+                                line_color=color_z,
+                                marker=implot3d.Marker_.square,
+                                marker_size=3,
+                                marker_line_color=color_z,
+                                marker_fill_color=color_z,
+                                flags=static.flags))
 
         implot3d.end_plot()
 
@@ -299,6 +347,11 @@ def demo_surface_plots():
         static.custom_range = False
         static.range_min = -1.0
         static.range_max = 1.0
+        static.flags = implot3d.SurfaceFlags_.none.value
+
+    _, static.flags = checkbox_flag(static.flags, implot3d.SurfaceFlags_.no_lines.value, "NoLines")
+    _, static.flags = checkbox_flag(static.flags, implot3d.SurfaceFlags_.no_fill.value, "NoFill")
+    _, static.flags = checkbox_flag(static.flags, implot3d.SurfaceFlags_.no_markers.value, "NoMarkers")
 
     # Update time-dependent Z values
     static.t += imgui.get_io().delta_time
@@ -345,17 +398,18 @@ def demo_surface_plots():
         implot3d.setup_axes_limits(-1, 1, -1, 1, -1.5, 1.5)
         implot3d.push_style_var(implot3d.StyleVar_.fill_alpha, 0.8)
 
-        if static.selected_fill == 0:
-            implot3d.set_next_fill_style(static.solid_color)
+        spec = implot3d.Spec(line_color=implot3d.get_colormap_color(1), flags=static.flags)
 
-        implot3d.set_next_line_style(implot3d.get_colormap_color(1))
+        if static.selected_fill == 0:
+            spec.fill_color = ImVec4(*static.solid_color)
 
         # Plot the surface
         if static.custom_range:
             implot3d.plot_surface("Wave Surface", static.xs, static.ys, static.zs, n, n,
-                                  scale_min=float(static.range_min), scale_max=float(static.range_max))
+                                  scale_min=float(static.range_min), scale_max=float(static.range_max),
+                                    spec=spec)
         else:
-            implot3d.plot_surface("Wave Surface", static.xs, static.ys, static.zs, n, n)
+            implot3d.plot_surface("Wave Surface", static.xs, static.ys, static.zs, n, n, spec=spec)
 
         implot3d.pop_style_var()
         implot3d.end_plot()
@@ -408,27 +462,33 @@ def demo_mesh_plots():
     if implot3d.begin_plot("Mesh Plots"):
         implot3d.setup_axes_limits(-1, 1, -1, 1, -1, 1)
 
+        spec = implot3d.Spec()
+
         # Set colors
         if static.set_fill_color:
-            implot3d.set_next_fill_style(static.fill_color)
+            spec.fill_color = ImVec4(*static.fill_color)
         else:
-            implot3d.set_next_fill_style([0.0, 0.0, 0.0, 0.0])  # Transparent
+            spec.fill_color = ImVec4(0.0, 0.0, 0.0, 0.0)  # Transparent
 
         if static.set_line_color:
-            implot3d.set_next_line_style(static.line_color)
+            spec.line_color = ImVec4(*static.line_color)
 
         if static.set_marker_color:
-            implot3d.set_next_marker_style(
-                implot3d.Marker_.square, 3, static.marker_color, implot3d.AUTO, static.marker_color
-            )
+            # implot3d.set_next_marker_style(
+            #     implot3d.Marker_.square, 3, static.marker_color, implot3d.AUTO, static.marker_color
+            # )
+            spec.marker = implot3d.Marker_.square
+            spec.marker_size = 3
+            spec.marker_line_color = ImVec4(*static.marker_color)
+            spec.marker_fill_color = ImVec4(*static.marker_color)
 
         # Plot the selected mesh
         if static.mesh_id == 0:
-            implot3d.plot_mesh("Duck", static.duck_mesh)
+            implot3d.plot_mesh("Duck", static.duck_mesh, spec=spec)
         elif static.mesh_id == 1:
-            implot3d.plot_mesh("Sphere", static.sphere_mesh)
+            implot3d.plot_mesh("Sphere", static.sphere_mesh, spec=spec)
         elif static.mesh_id == 2:
-            implot3d.plot_mesh("Cube", static.cube_mesh)
+            implot3d.plot_mesh("Cube", static.cube_mesh, spec=spec)
 
         implot3d.end_plot()
 
@@ -650,6 +710,8 @@ def demo_offset_and_stride():
             interleaved[p * 3 * k_spirals + 3 * s + 1] = 0.5 + r * np.sin(theta)
             interleaved[p * 3 * k_spirals + 3 * s + 2] = 0.5 + 0.5 * np.sin(2.0 * theta)
 
+    imgui.text("Offset/Stride support in Python still needs work")
+
     imgui.bullet_text("Offsetting is useful for realtime plots (see above) and circular buffers.")
     imgui.bullet_text("Striding is useful for interleaved data (e.g. audio) or plotting structs.")
     imgui.bullet_text("Here, all spiral data is stored in a single interleaved buffer:")
@@ -667,7 +729,12 @@ def demo_offset_and_stride():
             xs = interleaved[s * 3 + 0 :: stride_elements][:k_points_per].copy()
             ys = interleaved[s * 3 + 1 :: stride_elements][:k_points_per].copy()
             zs = interleaved[s * 3 + 2 :: stride_elements][:k_points_per].copy()
-            implot3d.plot_line(label, xs, ys, zs, offset=static.offset)
+
+            spec = implot3d.Spec()
+            spec.offset = static.offset
+            # spec.stride = 3 * k_spirals * 8  # Stride in bytes (3 coords * num spirals * size of double)
+
+            implot3d.plot_line(label, xs, ys, zs, spec=spec)
         implot3d.end_plot()
         implot3d.pop_colormap()
 
@@ -754,7 +821,7 @@ def demo_markers_and_text():
     # Initialize static variables only once
     if not hasattr(static, "mk_size"):
         static.mk_size = implot3d.get_style().marker_size
-        static.mk_weight = implot3d.get_style().marker_weight
+        static.mk_weight = implot3d.get_style().line_weight
 
     # UI Controls for marker size and weight
     _, static.mk_size = imgui.drag_float("Marker Size", static.mk_size, 0.1, 2.0, 10.0, "%.2f px")
@@ -766,7 +833,7 @@ def demo_markers_and_text():
                             implot3d.AxisFlags_.no_decorations,
                             implot3d.AxisFlags_.no_decorations)
 
-        implot3d.setup_axes_limits(-0.5, 1.5, -0.5, 1.5, 0, implot3d.Marker_.count + 1)
+        implot3d.setup_axes_limits(-0.5, 1.5, -0.5, 1.5, 0, float(implot3d.Marker_.count) + 1)
 
         xs = np.zeros(2, dtype=np.float32)
         ys = np.zeros(2, dtype=np.float32)
@@ -779,8 +846,13 @@ def demo_markers_and_text():
             ys[1] = ys[0] + np.sin(angle) * 0.5
 
             with imgui_ctx.push_id(str(m)):
-                implot3d.set_next_marker_style(m, static.mk_size, None, static.mk_weight)
-                implot3d.plot_line("##Filled", xs, ys, zs, 2)
+                implot3d.plot_line("##Filled", xs, ys, zs,
+                                   spec=implot3d.Spec(
+                                        marker=m,
+                                        marker_size=static.mk_size,
+                                        line_weight=static.mk_weight
+                                       )
+                                   )
 
             zs -= 1  # Move markers down in Z axis
 
@@ -794,8 +866,14 @@ def demo_markers_and_text():
             ys[1] = ys[0] - np.sin(angle) * 0.5
 
             with imgui_ctx.push_id(str(m)):
-                implot3d.set_next_marker_style(m, static.mk_size, [0, 0, 0, 0], static.mk_weight)
-                implot3d.plot_line("##Open", xs, ys, zs, 2)
+                implot3d.plot_line("##Open", xs, ys, zs,
+                                   spec=implot3d.Spec(
+                                        marker=m,
+                                        marker_size=static.mk_size,
+                                        line_weight=static.mk_weight,
+                                        marker_fill_color=ImVec4(0, 0, 0, 0)
+                                       )
+                                   )
 
             zs -= 1  # Move markers down in Z axis
 
@@ -835,8 +913,9 @@ def demo_nan_values():
 
     # Begin plot
     if implot3d.begin_plot("##NaNValues"):
-        implot3d.set_next_marker_style(implot3d.Marker_.square)
-        implot3d.plot_line("Line", data1, data2, data3, flags=static.flags)
+        # implot3d.set_next_marker_style(implot3d.Marker_.square)
+        implot3d.plot_line("Line", data1, data2, data3, spec=implot3d.Spec(
+            flags=static.flags, marker=implot3d.Marker_.square))
         implot3d.end_plot()
 
 
@@ -915,14 +994,10 @@ def demo_box_rotation():
         x_axis = np.array([0.0, 1.0], dtype=np.float32)
 
         # Plot axis lines
-        implot3d.set_next_line_style([0.8, 0.2, 0.2, 1])
-        implot3d.plot_line("X-Axis", x_axis, origin, origin, 2)
-
-        implot3d.set_next_line_style([0.2, 0.8, 0.2, 1])
-        implot3d.plot_line("Y-Axis", origin, x_axis, origin, 2)
-
-        implot3d.set_next_line_style([0.2, 0.2, 0.8, 1])
-        implot3d.plot_line("Z-Axis", origin, origin, x_axis, 2)
+        spec = implot3d.Spec(line_color=ImVec4(0.8, 0.2, 0.2, 1))
+        implot3d.plot_line("X-Axis", x_axis, origin, origin, spec=spec)
+        implot3d.plot_line("Y-Axis", origin, x_axis, origin, spec=spec)
+        implot3d.plot_line("Z-Axis", origin, origin, x_axis, spec=spec)
 
         implot3d.end_plot()
 
@@ -1114,11 +1189,11 @@ def demo_mouse_picking():
 
         # Show intersection point
         if imgui.is_item_hovered() and not point.is_nan():
-            implot3d.set_next_marker_style(implot3d.Marker_.circle, 5, ImVec4(1, 1, 0, 1))
+            spec = implot3d.Spec(marker=implot3d.Marker_.circle, marker_size=5, marker_fill_color=ImVec4(1, 1, 0, 1))
             px = np.array([point.x], dtype=np.float64)
             py = np.array([point.y], dtype=np.float64)
             pz = np.array([point.z], dtype=np.float64)
-            implot3d.plot_scatter("##Intersection", px, py, pz)
+            implot3d.plot_scatter("##Intersection", px, py, pz, spec=spec)
 
         # Add point/ray on click
         if imgui.is_item_hovered() and imgui.is_mouse_clicked(0) and not point.is_nan():
@@ -1127,11 +1202,12 @@ def demo_mouse_picking():
 
         # Draw all placed points
         if len(static.points) > 0:
-            implot3d.set_next_marker_style(implot3d.Marker_.circle, 3)
             pts_x = np.array([p.x for p in static.points], dtype=np.float64)
             pts_y = np.array([p.y for p in static.points], dtype=np.float64)
             pts_z = np.array([p.z for p in static.points], dtype=np.float64)
-            implot3d.plot_scatter("Placed Points", pts_x, pts_y, pts_z)
+
+            spec = implot3d.Spec(marker=implot3d.Marker_.circle, marker_size=3)
+            implot3d.plot_scatter("Placed Points", pts_x, pts_y, pts_z, spec=spec)
 
         # Draw all placed rays
         if len(static.rays) > 0:
@@ -1148,7 +1224,8 @@ def demo_mouse_picking():
                                np.array(ray_xs, dtype=np.float64),
                                np.array(ray_ys, dtype=np.float64),
                                np.array(ray_zs, dtype=np.float64),
-                               flags=implot3d.LineFlags_.segments)
+                               spec = implot3d.Spec(flags=implot3d.LineFlags_.segments),
+                               )
 
         implot3d.end_plot()
 
@@ -1224,10 +1301,6 @@ def demo_custom_rendering():
 
 def style_seaborn():
     style = implot3d.get_style()
-    style.set_color(implot3d.Col_.line, implot3d.AUTO_COL)
-    style.set_color(implot3d.Col_.fill, implot3d.AUTO_COL)
-    style.set_color(implot3d.Col_.marker_outline, implot3d.AUTO_COL)
-    style.set_color(implot3d.Col_.marker_fill, implot3d.AUTO_COL)
     style.set_color(implot3d.Col_.frame_bg, ImVec4(1.00, 1.00, 1.00, 1.00))
     style.set_color(implot3d.Col_.plot_bg, ImVec4(0.92, 0.92, 0.95, 1.00))
     style.set_color(implot3d.Col_.plot_border, ImVec4(0.00, 0.00, 0.00, 0.00))
@@ -1242,7 +1315,6 @@ def style_seaborn():
     style.line_weight = 1.5
     style.marker = implot3d.Marker_.none
     style.marker_size = 4
-    style.marker_weight = 1
     style.fill_alpha = 1.0
     style.plot_padding = ImVec2(12, 12)
     style.label_padding = ImVec2(5, 5)
@@ -1370,14 +1442,13 @@ def demo_custom_per_point_style():
                 t = float(static.torus_data[torus, i, 3])
 
                 color = implot3d.sample_colormap(t, static.cmap)
-                implot3d.set_next_marker_style(implot3d.Marker_.circle, static.marker_size, color, -1, color)
+                spec = implot3d.Spec(marker=implot3d.Marker_.circle, marker_size=static.marker_size, marker_fill_color=color)
                 implot3d.plot_scatter(labels[torus],
                                       np.array([x], dtype=np.float32),
                                       np.array([y], dtype=np.float32),
-                                      np.array([z], dtype=np.float32))
+                                      np.array([z], dtype=np.float32), spec=spec)
             # Override legend color with PlotDummy
-            implot3d.set_next_line_style(legend_colors[torus])
-            implot3d.plot_dummy(labels[torus])
+            implot3d.plot_dummy(labels[torus], spec=implot3d.Spec(line_color=legend_colors[torus]))
 
         implot3d.end_plot()
 
