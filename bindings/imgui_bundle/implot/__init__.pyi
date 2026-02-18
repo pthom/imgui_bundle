@@ -19,7 +19,7 @@ from imgui_bundle.imgui import (
     DragDropFlags,
     ImDrawList,
     Cond_,
-    ImTextureRef
+    ImTextureRef,
 )
 
 ImGui_Context = imgui.internal.Context

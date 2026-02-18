@@ -9,7 +9,7 @@ from typing import TypeAlias, Any
 
 FloatArray1D: TypeAlias = NDArray[np.floating[Any]]
 
-def IMGUI_DEMO_MARKER(section: str) -> None:
+def IMGUI_DEMO_MARKER(_section: str) -> None:
     """Marker for the interactive manual. Maps sections to source code."""
     pass
 

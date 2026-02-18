@@ -81,11 +81,10 @@ ImPlane3D = int  # enum ImPlane3D_
 #
 ImAxis3D = int  # enum ImAxis3D_
 
-Scale = int # enum Scale_
+Scale = int  # enum Scale_
 
 Marker_Auto = Marker_.auto
 ItemFlags_None = ItemFlags_.none
-
 
 """
 """
@@ -1819,7 +1818,6 @@ def setup_axis_ticks(
     keep_default: bool = False,
 ):
     pass
-
 
 # OBSOLETED in v0.4 (from February 2026)
 # ============================================================================

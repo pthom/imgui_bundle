@@ -25,6 +25,7 @@ from imgui_bundle.implot import (
     Marker,
     Style,
     InputMap,
+    Spec
 )
 
 from imgui_bundle.imgui import (
