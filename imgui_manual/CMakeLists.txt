@@ -78,3 +78,11 @@ target_link_libraries(imgui_bundle INTERFACE imgui_manual_lib)
 
 imgui_bundle_add_app(imgui_manual imgui_manual.main.cpp)
 target_link_libraries(imgui_manual PRIVATE imgui_manual_lib)
+
+set_target_properties(imgui_manual PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
+# For Emscripten, change output name from imgui_manual.html to index.html
+if (EMSCRIPTEN)
+    set_target_properties(imgui_manual PROPERTIES OUTPUT_NAME index)
+endif()
+

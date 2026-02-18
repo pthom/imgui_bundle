@@ -280,7 +280,7 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [X] Args / Run the manual showing only one library at a time
   (--lib implot, --lib implot3d, --lib imanim, --lib imgui, or ?lib=implot for emscripten)
 - [x] Each target uses appropriate LibraryConfig subset
-- [ ] Deploy online
+- [x] Deploy online: see https://traineq.org/ImGuiBundle/imgui_manual/ (+ ?lib=... for specific library)
 
 ### Step 8: Polish
 - [x] Implement GitHub link

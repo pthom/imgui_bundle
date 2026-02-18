@@ -17,19 +17,25 @@ ems_serve:
     python ./ci_scripts/webserver_multithread_policy.py
 
 # Build the emscripten manual
-ems_manual_build:
-    mkdir -p build_ems_manual && \
-    cd build_ems_manual && \
+manual_ems_build:
+    mkdir -p build_manual_ems && \
+    cd build_manual_ems && \
     source ~/emsdk/emsdk_env.sh && \
     emcmake cmake .. -DCMAKE_BUILD_TYPE=Release \
                      -DIMGUI_BUNDLE_BUILD_IMGUI_MANUAL=ON -DIMGUI_BUNDLE_BUILD_DEMOS=OFF && \
     cmake --build . -j 8
 
-ems_manual_serve:
-    cd build_ems_manual && python ../ci_scripts/webserver_multithread_policy.py -p 7006
+manual_ems_serve: manual_ems_build
+    echo "add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL to load the corresponding manual page"
+    cd build_manual_ems/bin && python ../../ci_scripts/webserver_multithread_policy.py -p 7006
 
-ems_manual_clean:
-    rm -rf build_ems_manual
+manual_ems_clean:
+    rm -rf build_manual_ems
+
+# deploy the manual to https://traineq.org/ImGuiBundle/imgui_manual/
+manual_ems_deploy: manual_ems_build
+    # add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL to load the corresponding manual page
+    rsync -vaz build_manual_ems/bin/ pascal@traineq.org:HTML/ImGuiBundle/imgui_manual
 
 # Reattach all submodules to branches and remotes (fork + official)
 ext_reattach:

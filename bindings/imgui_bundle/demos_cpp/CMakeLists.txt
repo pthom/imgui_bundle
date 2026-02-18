@@ -23,22 +23,6 @@ add_subdirectory(sandbox)
 ibd_add_this_folder_auto_demos("")
 ibd_add_this_folder_as_demos_library()
 
-if (EMSCRIPTEN)
-    set(demos_python_folder ${demos_cpp_folder}/../demos_python)
-
-    set(imgui_demo_src_folder ${IMGUI_BUNDLE_PATH}/external/imgui/imgui/)
-    set(imgui_demo_tmp_folder ${CMAKE_CURRENT_BINARY_DIR}/tmp/imgui_demo_code)
-    file(COPY ${imgui_demo_src_folder}/imgui_demo.cpp DESTINATION ${imgui_demo_tmp_folder})
-    file(COPY ${imgui_demo_src_folder}/imgui_demo.py DESTINATION ${imgui_demo_tmp_folder})
-
-    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${demos_cpp_folder}@/demos_cpp")
-    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${demos_python_folder}@/demos_python")
-    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${imgui_demo_tmp_folder}@code/imgui")
-    set(python_backends_folder ${CMAKE_CURRENT_LIST_DIR}/../python_backends)
-    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${python_backends_folder}@/python_backends")
-endif()
-
-
 target_link_libraries(demo_imguizmo_launcher PRIVATE demos_imguizmo)
 target_link_libraries(demo_node_editor_launcher PRIVATE demos_node_editor)
 target_link_libraries(demo_tex_inspect_launcher PRIVATE demos_tex_inspect)
