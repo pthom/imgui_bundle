@@ -1,8 +1,8 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import webbrowser
 from imgui_bundle import imgui, imgui_md, immapp
-from imgui_bundle.demos_python.demos_implot3d import implot3d_demo
-from imgui_bundle.demos_python.demos_implot import implot_demo
+from imgui_bundle.demos_python.demos_imgui_manual import implot3d_demo
+from imgui_bundle.demos_python.demos_imgui_manual import implot_demo
 
 
 def demo_gui():

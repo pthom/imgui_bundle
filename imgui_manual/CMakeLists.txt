@@ -33,11 +33,11 @@ configure_file(${imgui_dir}/imgui_demo.cpp ${demo_code_dest}/imgui_demo.cpp.txt 
 configure_file(${implot_dir}/implot_demo.cpp ${demo_code_dest}/implot_demo.cpp.txt COPYONLY)
 configure_file(${implot3d_dir}/implot3d_demo.cpp ${demo_code_dest}/implot3d_demo.cpp.txt COPYONLY)
 
-# Python demos (from bindings/imgui_bundle/demos_python/)
-configure_file(${demos_python_dir}/demos_imanim/im_anim_demo_basics.py ${demo_code_dest}/im_anim_demo_basics.py.txt COPYONLY)
-configure_file(${demos_python_dir}/demos_immapp/imgui_demo.py ${demo_code_dest}/imgui_demo.py.txt COPYONLY)
-configure_file(${demos_python_dir}/demos_implot/implot_demo.py ${demo_code_dest}/implot_demo.py.txt COPYONLY)
-configure_file(${demos_python_dir}/demos_implot3d/implot3d_demo.py ${demo_code_dest}/implot3d_demo.py.txt COPYONLY)
+# Python demos (from bindings/imgui_bundle/demos_python/demos_imgui_manual)
+configure_file(${demos_python_dir}/demos_imgui_manual/im_anim_demo_basics.py ${demo_code_dest}/im_anim_demo_basics.py.txt COPYONLY)
+configure_file(${demos_python_dir}/demos_imgui_manual/imgui_demo.py ${demo_code_dest}/imgui_demo.py.txt COPYONLY)
+configure_file(${demos_python_dir}/demos_imgui_manual/implot_demo.py ${demo_code_dest}/implot_demo.py.txt COPYONLY)
+configure_file(${demos_python_dir}/demos_imgui_manual/implot3d_demo.py ${demo_code_dest}/implot3d_demo.py.txt COPYONLY)
 
 # API reference files: C++ headers
 configure_file(${imgui_dir}/imgui.h ${demo_code_dest}/imgui.h.txt COPYONLY)

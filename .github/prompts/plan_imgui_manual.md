@@ -302,7 +302,6 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 ./bindings/imgui_bundle/demos_python/demos_imanim/im_anim_demo_basics.py
 
 ./external/imgui/imgui/imgui_demo.cpp
-./external/imgui/imgui/imgui_demo.py
 ./bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py
 ```
 

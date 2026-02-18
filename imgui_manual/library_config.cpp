@@ -24,7 +24,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.files = {
             {"imgui_demo", true, false,
              "https://github.com/pthom/imgui/blob/imgui_bundle/imgui_demo.cpp",
-             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py"},
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_manual/imgui_demo.py"},
             {"imgui", true, true,
              "https://github.com/pthom/imgui/blob/imgui_bundle/imgui.h",
              "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi"},
@@ -51,7 +51,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.files = {
             {"implot_demo", true, false,
              "https://github.com/pthom/implot/blob/imgui_bundle/implot_demo.cpp",
-             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py"},
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_manual/implot_demo.py"},
             {"implot", true, true,
              "https://github.com/pthom/implot/blob/imgui_bundle/implot.h",
              "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot/__init__.pyi"},
@@ -73,7 +73,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.files = {
             {"implot3d_demo", true, false,
              "https://github.com/pthom/implot3d/blob/imgui_bundle/implot3d_demo.cpp",
-             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py"},
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_manual/implot3d_demo.py"},
             {"implot3d", true, true,
              "https://github.com/pthom/implot3d/blob/imgui_bundle/implot3d.h",
              "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot3d/__init__.pyi"},
@@ -95,7 +95,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.files = {
                 {"im_anim_demo_basics", true, false,
                  "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_demo_basics.cpp",
-                 "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imanim/im_anim_demo_basics.py"},
+                 "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_manual/im_anim_demo_basics.py"},
                 {"im_anim_demo", false, false,
                  "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_demo.cpp"},
                 {"im_anim_doc", false, false,
