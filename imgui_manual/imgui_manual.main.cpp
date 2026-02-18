@@ -32,35 +32,37 @@ void OnPostInit()
 void ShowLibraryToolbar()
 {
     ImGui::BeginHorizontal("LibraryToolbar", ImVec2(ImGui::GetContentRegionAvail().x, 0.f));
+
+    ImGui::Spring(1.f);
+
     const auto& libs = GetAllLibraryConfigs();
     int currentIdx = GetCurrentLibraryIndex();
 
     for (size_t i = 0; i < libs.size(); ++i)
     {
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 10.f);
         bool isSelected = ((int)i == currentIdx);
         if (isSelected)
-        {
             ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
-        }
-
-        if (ImGui::Button(libs[i].name.c_str()))
-        {
+        if (ImGui::Button(libs[i].name.c_str(), HelloImGui::EmToVec2(5.2f, 1.7f)))
             SetCurrentLibraryIndex((int)i);
-        }
 
         if (isSelected)
-        {
             ImGui::PopStyleColor();
-        }
+        ImGui::PopStyleVar();
     }
 
-    ImGui::Spring();
+    ImGui::Spring(0.05f);
 
+    ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * 1.15f);
     bool showPython = DemoCodeViewer_GetShowPython();
     if (ImGui::RadioButton("C++", !showPython))
         DemoCodeViewer_SetShowPython(false);
     if (ImGui::RadioButton("Python", showPython))
         DemoCodeViewer_SetShowPython(true);
+    ImGui::PopFont();
+
+    ImGui::Dummy(HelloImGui::EmToVec2(0.5f, 0.f));
 
     ImGui::EndHorizontal();
 }
@@ -154,7 +156,7 @@ int main()
 
     // Top toolbar for library selection
     HelloImGui::EdgeToolbarOptions toolbarOptions;
-    toolbarOptions.sizeEm = 2.0f;
+    toolbarOptions.sizeEm = 2.3f;
     toolbarOptions.WindowBg = ImVec4(0.3f, 0.3f, 0.3f, 0.9f);
     runnerParams.callbacks.AddEdgeToolbar(
         HelloImGui::EdgeToolbarType::Top,
