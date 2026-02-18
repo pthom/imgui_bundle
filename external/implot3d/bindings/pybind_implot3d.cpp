@@ -50,6 +50,21 @@ void py_init_module_implot3d(nb::module_& m)
     //
 
 
+    auto pyEnumProp_ =
+        nb::enum_<ImPlot3DProp_>(m, "Prop_", nb::is_arithmetic(), nb::is_flag(), "Plotting properties. These provide syntactic sugar for creating ImPlot3DSpec from (ImPlot3DProp,value) pairs")
+            .value("line_color", ImPlot3DProp_LineColor, "Line color; IMPLOT3D_AUTO_COL will use next Colormap color")
+            .value("line_weight", ImPlot3DProp_LineWeight, "Line weight in pixels")
+            .value("fill_color", ImPlot3DProp_FillColor, "Fill color (applies to shaded regions); IMPLOT3D_AUTO_COL will use next Colormap color")
+            .value("fill_alpha", ImPlot3DProp_FillAlpha, "Alpha multiplier (applies to FillColor and MarkerFillColor)")
+            .value("marker", ImPlot3DProp_Marker, "Marker type")
+            .value("marker_size", ImPlot3DProp_MarkerSize, "Size of markers (radius) *in pixels*")
+            .value("marker_line_color", ImPlot3DProp_MarkerLineColor, "Marker outline color; IMPLOT3D_AUTO_COL will use next LineColor")
+            .value("marker_fill_color", ImPlot3DProp_MarkerFillColor, "Marker fill color; IMPLOT3D_AUTO_COL will use LineColor")
+            .value("offset", ImPlot3DProp_Offset, "Data index offset")
+            .value("stride", ImPlot3DProp_Stride, "Data stride in bytes; IMPLOT3D_AUTO will result in sizeof(T) where T is the type passed to PlotX")
+            .value("flags", ImPlot3DProp_Flags, "Optional item flags; can be composed from common ImPlot3DItemFlags and/or specialized ImPlot3DXFlags");
+
+
     auto pyEnumFlags_ =
         nb::enum_<ImPlot3DFlags_>(m, "Flags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImPlot3D::BeginPlot()")
             .value("none", ImPlot3DFlags_None, "Default")
@@ -75,10 +90,6 @@ void py_init_module_implot3d(nb::module_& m)
 
     auto pyEnumCol_ =
         nb::enum_<ImPlot3DCol_>(m, "Col_", nb::is_arithmetic(), nb::is_flag(), "")
-            .value("line", ImPlot3DCol_Line, "Line color")
-            .value("fill", ImPlot3DCol_Fill, "Fill color")
-            .value("marker_outline", ImPlot3DCol_MarkerOutline, "Marker outline color")
-            .value("marker_fill", ImPlot3DCol_MarkerFill, "Marker fill color")
             .value("title_text", ImPlot3DCol_TitleText, "Title color")
             .value("inlay_text", ImPlot3DCol_InlayText, "Color for texts appearing inside of plots")
             .value("frame_bg", ImPlot3DCol_FrameBg, "Frame background color")
@@ -98,7 +109,6 @@ void py_init_module_implot3d(nb::module_& m)
             .value("line_weight", ImPlot3DStyleVar_LineWeight, "float, plot item line weight in pixels")
             .value("marker", ImPlot3DStyleVar_Marker, "int,   marker specification")
             .value("marker_size", ImPlot3DStyleVar_MarkerSize, "float, marker size in pixels (roughly the marker's \"radius\")")
-            .value("marker_weight", ImPlot3DStyleVar_MarkerWeight, "float, plot outline weight of markers in pixels")
             .value("fill_alpha", ImPlot3DStyleVar_FillAlpha, "float, alpha modifier applied to all plot item fills")
             .value("plot_default_size", ImPlot3DStyleVar_PlotDefaultSize, "ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot")
             .value("plot_min_size", ImPlot3DStyleVar_PlotMinSize, "ImVec2, minimum size plot frame can be when shrunk")
@@ -114,6 +124,7 @@ void py_init_module_implot3d(nb::module_& m)
     auto pyEnumMarker_ =
         nb::enum_<ImPlot3DMarker_>(m, "Marker_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImPlot3DMarker_None, "No marker")
+            .value("auto", ImPlot3DMarker_Auto, "Automatic marker selection")
             .value("circle", ImPlot3DMarker_Circle, "Circle marker (default)")
             .value("square", ImPlot3DMarker_Square, "Square maker")
             .value("diamond", ImPlot3DMarker_Diamond, "Diamond marker")
@@ -281,6 +292,56 @@ void py_init_module_implot3d(nb::module_& m)
             .value("pi_yg", ImPlot3DColormap_PiYG, "Same as matplotlib \"PiYG\"")
             .value("spectral", ImPlot3DColormap_Spectral, "Same as matplotlib \"Spectral\"")
             .value("greys", ImPlot3DColormap_Greys, "White/black");
+
+
+    auto pyClassImPlot3DSpec =
+        nb::class_<ImPlot3DSpec>
+            (m, "Spec", " Plot item styling specification. Provide these to PlotX functions to override styling, specify\n offsetting or stride, or set optional flags. This struct can be used in the following ways:\n\n 1. By declaring and defining a struct instance:\n\n    ImPlot3DSpec spec;\n    spec.LineColor = ImVec4(1,0,0,1);\n    spec.LineWeight = 2.0;\n    spec.Marker = ImPlot3DMarker_Circle;\n    spec.Flags = ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments;\n    ImPlot3D::PlotLine(\"MyLine\", xs, ys, zs, 100, spec);\n\n 2. Inline using ImPlot3DProp,value pairs (order does NOT matter):\n\n    ImPlot3D::PlotLine(\"MyLine\", xs, ys, zs, 100, {\n      ImPlot3DProp_LineColor, ImVec4(1,0,0,1),\n      ImPlot3DProp_LineWeight, 2.0,\n      ImPlot3DProp_Marker, ImPlot3DMarker_Circle,\n      ImPlot3DProp_Flags, ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments\n    });")
+        .def("__init__", [](ImPlot3DSpec * self, const std::optional<const ImVec4> & LineColor = std::nullopt, float LineWeight = 1.0f, const std::optional<const ImVec4> & FillColor = std::nullopt, float FillAlpha = IMPLOT3D_AUTO, const std::optional<const ImPlot3DMarker> & Marker = std::nullopt, float MarkerSize = IMPLOT3D_AUTO, const std::optional<const ImVec4> & MarkerLineColor = std::nullopt, const std::optional<const ImVec4> & MarkerFillColor = std::nullopt, int Offset = 0, int Stride = IMPLOT3D_AUTO, ImPlot3DItemFlags Flags = ImPlot3DItemFlags_None)
+        {
+            new (self) ImPlot3DSpec();  // placement new
+            auto r_ctor_ = self;
+            if (LineColor.has_value())
+                r_ctor_->LineColor = LineColor.value();
+            else
+                r_ctor_->LineColor = IMPLOT3D_AUTO_COL;
+            r_ctor_->LineWeight = LineWeight;
+            if (FillColor.has_value())
+                r_ctor_->FillColor = FillColor.value();
+            else
+                r_ctor_->FillColor = IMPLOT3D_AUTO_COL;
+            r_ctor_->FillAlpha = FillAlpha;
+            if (Marker.has_value())
+                r_ctor_->Marker = Marker.value();
+            else
+                r_ctor_->Marker = ImPlot3DMarker_Auto;
+            r_ctor_->MarkerSize = MarkerSize;
+            if (MarkerLineColor.has_value())
+                r_ctor_->MarkerLineColor = MarkerLineColor.value();
+            else
+                r_ctor_->MarkerLineColor = IMPLOT3D_AUTO_COL;
+            if (MarkerFillColor.has_value())
+                r_ctor_->MarkerFillColor = MarkerFillColor.value();
+            else
+                r_ctor_->MarkerFillColor = IMPLOT3D_AUTO_COL;
+            r_ctor_->Offset = Offset;
+            r_ctor_->Stride = Stride;
+            r_ctor_->Flags = Flags;
+        },
+        nb::arg("line_color").none() = nb::none(), nb::arg("line_weight") = 1.0f, nb::arg("fill_color").none() = nb::none(), nb::arg("fill_alpha") = IMPLOT3D_AUTO, nb::arg("marker").none() = nb::none(), nb::arg("marker_size") = IMPLOT3D_AUTO, nb::arg("marker_line_color").none() = nb::none(), nb::arg("marker_fill_color").none() = nb::none(), nb::arg("offset") = 0, nb::arg("stride") = IMPLOT3D_AUTO, nb::arg("flags") = ImPlot3DItemFlags_None
+        )
+        .def_rw("line_color", &ImPlot3DSpec::LineColor, "Line color; IMPLOT3D_AUTO_COL will use next Colormap color")
+        .def_rw("line_weight", &ImPlot3DSpec::LineWeight, "Line weight in pixels")
+        .def_rw("fill_color", &ImPlot3DSpec::FillColor, "Fill color (applies to shaded regions); IMPLOT3D_AUTO_COL will use next Colormap color")
+        .def_rw("fill_alpha", &ImPlot3DSpec::FillAlpha, "Alpha multiplier (applies to FillColor and MarkerFillColor)")
+        .def_rw("marker", &ImPlot3DSpec::Marker, "Marker type")
+        .def_rw("marker_size", &ImPlot3DSpec::MarkerSize, "Size of markers (radius) *in pixels*")
+        .def_rw("marker_line_color", &ImPlot3DSpec::MarkerLineColor, "Marker outline color; IMPLOT3D_AUTO_COL will use LineColor")
+        .def_rw("marker_fill_color", &ImPlot3DSpec::MarkerFillColor, "Marker fill color; IMPLOT3D_AUTO_COL will use LineColor")
+        .def_rw("offset", &ImPlot3DSpec::Offset, "Data index offset")
+        .def_rw("stride", &ImPlot3DSpec::Stride, "Data stride in bytes; IMPLOT3D_AUTO will result in sizeof(T) where T is the type passed to PlotX")
+        .def_rw("flags", &ImPlot3DSpec::Flags, "Optional item flags; can be composed from common ImPlot3DItemFlags and/or specialized ImPlot3DXFlags")
+        ;
 
 
     m.def("create_context",
@@ -478,9 +539,9 @@ void py_init_module_implot3d(nb::module_& m)
         "Sets up the plot legend location and flags");
 
     m.def("plot_scatter",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DScatterFlags flags = 0, int offset = 0, int stride = -1)
+        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotScatter_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DScatterFlags flags = 0, int offset = 0, int stride = -1)
+            auto PlotScatter_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -505,11 +566,6 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * zs_from_pyarray = zs.data();
                 size_t zs_count = zs.shape(0);
-
-                // process stride default value (which was a sizeof in C++)
-                int zs_stride = stride;
-                if (zs_stride == -1)
-                    zs_stride = (int)zs.itemsize();
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -537,43 +593,55 @@ void py_init_module_implot3d(nb::module_& m)
 
                 // call the correct template version by casting
                 if (zs_type == 'B')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'b')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'H')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'h')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'I')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'i')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'L')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'l')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'f')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'd')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'g')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'q')
-                    ImPlot3D::PlotScatter(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotScatter(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 // If we reach this point, the array type is not supported!
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
+            auto PlotScatter_adapt_mutable_param_with_default_value = [&PlotScatter_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            {
 
-            PlotScatter_adapt_c_buffers(label_id, xs, ys, zs, flags, offset, stride);
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlot3DSpec();
+                }();
+
+                PlotScatter_adapt_c_buffers(label_id, xs, ys, zs, spec_or_default);
+            };
+
+            PlotScatter_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
-        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
-        "Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates");
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
+        " Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_line",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DLineFlags flags = 0, int offset = 0, int stride = -1)
+        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotLine_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DLineFlags flags = 0, int offset = 0, int stride = -1)
+            auto PlotLine_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -598,11 +666,6 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * zs_from_pyarray = zs.data();
                 size_t zs_count = zs.shape(0);
-
-                // process stride default value (which was a sizeof in C++)
-                int zs_stride = stride;
-                if (zs_stride == -1)
-                    zs_stride = (int)zs.itemsize();
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -630,43 +693,55 @@ void py_init_module_implot3d(nb::module_& m)
 
                 // call the correct template version by casting
                 if (zs_type == 'B')
-                    ImPlot3D::PlotLine(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'b')
-                    ImPlot3D::PlotLine(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'H')
-                    ImPlot3D::PlotLine(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'h')
-                    ImPlot3D::PlotLine(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'I')
-                    ImPlot3D::PlotLine(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'i')
-                    ImPlot3D::PlotLine(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'L')
-                    ImPlot3D::PlotLine(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'l')
-                    ImPlot3D::PlotLine(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'f')
-                    ImPlot3D::PlotLine(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'd')
-                    ImPlot3D::PlotLine(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'g')
-                    ImPlot3D::PlotLine(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'q')
-                    ImPlot3D::PlotLine(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotLine(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 // If we reach this point, the array type is not supported!
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
+            auto PlotLine_adapt_mutable_param_with_default_value = [&PlotLine_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            {
 
-            PlotLine_adapt_c_buffers(label_id, xs, ys, zs, flags, offset, stride);
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlot3DSpec();
+                }();
+
+                PlotLine_adapt_c_buffers(label_id, xs, ys, zs, spec_or_default);
+            };
+
+            PlotLine_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
-        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
-        "Plots a line in 3D. Consecutive points are connected with line segments");
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
+        " Plots a line in 3D. Consecutive points are connected with line segments\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_triangle",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DTriangleFlags flags = 0, int offset = 0, int stride = -1)
+        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotTriangle_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DTriangleFlags flags = 0, int offset = 0, int stride = -1)
+            auto PlotTriangle_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -691,11 +766,6 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * zs_from_pyarray = zs.data();
                 size_t zs_count = zs.shape(0);
-
-                // process stride default value (which was a sizeof in C++)
-                int zs_stride = stride;
-                if (zs_stride == -1)
-                    zs_stride = (int)zs.itemsize();
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -723,43 +793,55 @@ void py_init_module_implot3d(nb::module_& m)
 
                 // call the correct template version by casting
                 if (zs_type == 'B')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'b')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'H')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'h')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'I')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'i')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'L')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'l')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'f')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'd')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'g')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'q')
-                    ImPlot3D::PlotTriangle(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotTriangle(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 // If we reach this point, the array type is not supported!
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
+            auto PlotTriangle_adapt_mutable_param_with_default_value = [&PlotTriangle_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            {
 
-            PlotTriangle_adapt_c_buffers(label_id, xs, ys, zs, flags, offset, stride);
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlot3DSpec();
+                }();
+
+                PlotTriangle_adapt_c_buffers(label_id, xs, ys, zs, spec_or_default);
+            };
+
+            PlotTriangle_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
-        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
-        "Plots triangles in 3D. Every 3 consecutive points define a triangle");
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
+        " Plots triangles in 3D. Every 3 consecutive points define a triangle\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_quad",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DQuadFlags flags = 0, int offset = 0, int stride = -1)
+        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotQuad_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, ImPlot3DQuadFlags flags = 0, int offset = 0, int stride = -1)
+            auto PlotQuad_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -784,11 +866,6 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * zs_from_pyarray = zs.data();
                 size_t zs_count = zs.shape(0);
-
-                // process stride default value (which was a sizeof in C++)
-                int zs_stride = stride;
-                if (zs_stride == -1)
-                    zs_stride = (int)zs.itemsize();
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -816,45 +893,57 @@ void py_init_module_implot3d(nb::module_& m)
 
                 // call the correct template version by casting
                 if (zs_type == 'B')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'b')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'H')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'h')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'I')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'i')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'L')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'l')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'f')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'd')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'g')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'q')
-                    ImPlot3D::PlotQuad(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), flags, offset, zs_stride);
+                    ImPlot3D::PlotQuad(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 // If we reach this point, the array type is not supported!
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
+            auto PlotQuad_adapt_mutable_param_with_default_value = [&PlotQuad_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            {
 
-            PlotQuad_adapt_c_buffers(label_id, xs, ys, zs, flags, offset, stride);
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlot3DSpec();
+                }();
+
+                PlotQuad_adapt_c_buffers(label_id, xs, ys, zs, spec_or_default);
+            };
+
+            PlotQuad_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
-        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
-        "Plots quads in 3D. Every 4 consecutive points define a quadrilateral");
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
+        " Plots quads in 3D. Every 4 consecutive points define a quadrilateral\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
     m.def("plot_surface",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, ImPlot3DSurfaceFlags flags = 0, int offset = 0, int stride = -1)
+        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotSurface_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, ImPlot3DSurfaceFlags flags = 0, int offset = 0, int stride = -1)
+            auto PlotSurface_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -879,11 +968,6 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * zs_from_pyarray = zs.data();
                 size_t zs_count = zs.shape(0);
-
-                // process stride default value (which was a sizeof in C++)
-                int zs_stride = stride;
-                if (zs_stride == -1)
-                    zs_stride = (int)zs.itemsize();
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -911,38 +995,50 @@ void py_init_module_implot3d(nb::module_& m)
 
                 // call the correct template version by casting
                 if (zs_type == 'B')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'b')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const int8_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const int8_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const int8_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'H')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint16_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'h')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const int16_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const int16_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const int16_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'I')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint32_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'i')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const int32_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'L')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const np_uint_l *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'l')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const np_int_l *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'f')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const float *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'd')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const double *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const double *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const double *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'g')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const long double *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const long double *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const long double *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'q')
-                    ImPlot3D::PlotSurface(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const long long *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, flags, offset, zs_stride);
+                    ImPlot3D::PlotSurface(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const long long *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const long long *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 // If we reach this point, the array type is not supported!
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
+            auto PlotSurface_adapt_mutable_param_with_default_value = [&PlotSurface_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            {
 
-            PlotSurface_adapt_c_buffers(label_id, xs, ys, zs, x_count, y_count, scale_min, scale_max, flags, offset, stride);
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlot3DSpec();
+                }();
+
+                PlotSurface_adapt_c_buffers(label_id, xs, ys, zs, x_count, y_count, scale_min, scale_max, spec_or_default);
+            };
+
+            PlotSurface_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, x_count, y_count, scale_min, scale_max, spec);
         },
-        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("x_count"), nb::arg("y_count"), nb::arg("scale_min") = 0.0, nb::arg("scale_max") = 0.0, nb::arg("flags") = 0, nb::arg("offset") = 0, nb::arg("stride") = -1,
-        " Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays,\n and the z array contains the height of each vertex.\n A total of x_count * y_count vertices are expected for each array.\n Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.");
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("x_count"), nb::arg("y_count"), nb::arg("scale_min") = 0.0, nb::arg("scale_max") = 0.0, nb::arg("spec").none() = nb::none(),
+        " Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays,\n and the z array contains the height of each vertex.\n A total of x_count * y_count vertices are expected for each array.\n Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #endif
     //
     // #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -973,22 +1069,32 @@ void py_init_module_implot3d(nb::module_& m)
 
 
     m.def("plot_mesh",
-        [](const char * label_id, const ImPlot3D::Mesh & mesh, ImPlot3DMeshFlags flags = 0)
+        [](const char * label_id, const ImPlot3D::Mesh & mesh, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotMesh_adapt_force_lambda = [](const char * label_id, const ImPlot3D::Mesh & mesh, ImPlot3DMeshFlags flags = 0)
+            auto PlotMesh_adapt_mutable_param_with_default_value = [](const char * label_id, const ImPlot3D::Mesh & mesh, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
             {
-                ImPlot3D::PlotMesh(label_id, mesh, flags);
+
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlot3DSpec();
+                }();
+
+                ImPlot3D::PlotMesh(label_id, mesh, spec_or_default);
             };
 
-            PlotMesh_adapt_force_lambda(label_id, mesh, flags);
-        },     nb::arg("label_id"), nb::arg("mesh"), nb::arg("flags") = 0);
+            PlotMesh_adapt_mutable_param_with_default_value(label_id, mesh, spec);
+        },
+        nb::arg("label_id"), nb::arg("mesh"), nb::arg("spec").none() = nb::none(),
+        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #endif
     //
 
     m.def("plot_image",
-        [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & center, const ImPlot3DPoint & axis_u, const ImPlot3DPoint & axis_v, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlot3DImageFlags flags = 0)
+        [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & center, const ImPlot3DPoint & axis_u, const ImPlot3DPoint & axis_v, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & center, const ImPlot3DPoint & axis_u, const ImPlot3DPoint & axis_v, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlot3DImageFlags flags = 0)
+            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & center, const ImPlot3DPoint & axis_u, const ImPlot3DPoint & axis_v, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
             {
 
                 const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
@@ -1012,18 +1118,25 @@ void py_init_module_implot3d(nb::module_& m)
                         return ImVec4(1, 1, 1, 1);
                 }();
 
-                ImPlot3D::PlotImage(label_id, tex_ref, center, axis_u, axis_v, uv0_or_default, uv1_or_default, tint_col_or_default, flags);
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlot3DSpec();
+                }();
+
+                ImPlot3D::PlotImage(label_id, tex_ref, center, axis_u, axis_v, uv0_or_default, uv1_or_default, tint_col_or_default, spec_or_default);
             };
 
-            PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, center, axis_u, axis_v, uv0, uv1, tint_col, flags);
+            PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, center, axis_u, axis_v, uv0, uv1, tint_col, spec);
         },
-        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("center"), nb::arg("axis_u"), nb::arg("axis_v"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("flags") = 0,
-        " Plots a rectangular image in 3D defined by its center and two direction vectors (axes).\n #center is the center of the rectangle in plot coordinates.\n #axis_u and #axis_v define the local axes and half-extents of the rectangle in 3D space.\n The rectangle is formed by moving from the center along ±axis_u and ±axis_v.\n #uv0 and #uv1 define the texture mapping.\n #tint_col can be used to tint the image.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)");
+        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("center"), nb::arg("axis_u"), nb::arg("axis_v"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("spec").none() = nb::none(),
+        " Plots a rectangular image in 3D defined by its center and two direction vectors (axes).\n #center is the center of the rectangle in plot coordinates.\n #axis_u and #axis_v define the local axes and half-extents of the rectangle in 3D space.\n The rectangle is formed by moving from the center along ±axis_u and ±axis_v.\n #uv0 and #uv1 define the texture mapping.\n #tint_col can be used to tint the image.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * spec: Spec()");
 
     m.def("plot_image",
-        [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & p0, const ImPlot3DPoint & p1, const ImPlot3DPoint & p2, const ImPlot3DPoint & p3, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlot3DImageFlags flags = 0)
+        [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & p0, const ImPlot3DPoint & p1, const ImPlot3DPoint & p2, const ImPlot3DPoint & p3, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & p0, const ImPlot3DPoint & p1, const ImPlot3DPoint & p2, const ImPlot3DPoint & p3, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, ImPlot3DImageFlags flags = 0)
+            auto PlotImage_adapt_mutable_param_with_default_value = [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & p0, const ImPlot3DPoint & p1, const ImPlot3DPoint & p2, const ImPlot3DPoint & p3, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
             {
 
                 const ImVec2& uv0_or_default = [&]() -> const ImVec2 {
@@ -1061,13 +1174,20 @@ void py_init_module_implot3d(nb::module_& m)
                         return ImVec4(1, 1, 1, 1);
                 }();
 
-                ImPlot3D::PlotImage(label_id, tex_ref, p0, p1, p2, p3, uv0_or_default, uv1_or_default, uv2_or_default, uv3_or_default, tint_col_or_default, flags);
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlot3DSpec();
+                }();
+
+                ImPlot3D::PlotImage(label_id, tex_ref, p0, p1, p2, p3, uv0_or_default, uv1_or_default, uv2_or_default, uv3_or_default, tint_col_or_default, spec_or_default);
             };
 
-            PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, p0, p1, p2, p3, uv0, uv1, uv2, uv3, tint_col, flags);
+            PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, p0, p1, p2, p3, uv0, uv1, uv2, uv3, tint_col, spec);
         },
-        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("p0"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("uv2").none() = nb::none(), nb::arg("uv3").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("flags") = 0,
-        " Plots an image using four arbitrary 3D points that define a quad in space.\n Each corner (p0 to p3) corresponds to a corner in the image, and #uv0 to #uv3 are the texture coordinates for each.\n This overload allows full control over orientation, shape, and distortion.\n Note: The quad is internally split into two triangles, so non-rectangular quads may produce rendering artifacts\n since distortion is interpolated per triangle rather than over the full quad.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 0)\n        * uv2: ImVec2(1, 1)\n        * uv3: ImVec2(0, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)");
+        nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("p0"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("uv2").none() = nb::none(), nb::arg("uv3").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("spec").none() = nb::none(),
+        " Plots an image using four arbitrary 3D points that define a quad in space.\n Each corner (p0 to p3) corresponds to a corner in the image, and #uv0 to #uv3 are the texture coordinates for each.\n This overload allows full control over orientation, shape, and distortion.\n Note: The quad is internally split into two triangles, so non-rectangular quads may produce rendering artifacts\n since distortion is interpolated per triangle rather than over the full quad.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 0)\n        * uv2: ImVec2(1, 1)\n        * uv3: ImVec2(0, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * spec: Spec()");
 
     m.def("plot_text",
         [](const char * text, double x, double y, double z, double angle = 0.0, const std::optional<const ImVec2> & pix_offset = std::nullopt)
@@ -1091,9 +1211,25 @@ void py_init_module_implot3d(nb::module_& m)
         " Plots a centered text label at point x,y,z with optional rotation angle (in radians) and pixel offset\n\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("plot_dummy",
-        ImPlot3D::PlotDummy,
-        nb::arg("label_id"), nb::arg("flags") = 0,
-        "Plots a dummy item (can be used to modify legend entry appearance when called after plotting an item, or add a dummy legend entry)");
+        [](const char * label_id, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+        {
+            auto PlotDummy_adapt_mutable_param_with_default_value = [](const char * label_id, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            {
+
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlot3DSpec();
+                }();
+
+                ImPlot3D::PlotDummy(label_id, spec_or_default);
+            };
+
+            PlotDummy_adapt_mutable_param_with_default_value(label_id, spec);
+        },
+        nb::arg("label_id"), nb::arg("spec").none() = nb::none(),
+        " Plots a dummy item (can be used to modify legend entry appearance when called after plotting an item, or add a dummy legend entry)\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_to_pixels",
         nb::overload_cast<const ImPlot3DPoint &>(ImPlot3D::PlotToPixels), nb::arg("point"));
@@ -1181,88 +1317,14 @@ void py_init_module_implot3d(nb::module_& m)
         nb::arg("count") = 1,
         "Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count");
 
-    m.def("set_next_line_style",
-        [](const std::optional<const ImVec4> & col = std::nullopt, float weight = IMPLOT3D_AUTO)
-        {
-            auto SetNextLineStyle_adapt_mutable_param_with_default_value = [](const std::optional<const ImVec4> & col = std::nullopt, float weight = IMPLOT3D_AUTO)
-            {
-
-                const ImVec4& col_or_default = [&]() -> const ImVec4 {
-                    if (col.has_value())
-                        return col.value();
-                    else
-                        return IMPLOT3D_AUTO_COL;
-                }();
-
-                ImPlot3D::SetNextLineStyle(col_or_default, weight);
-            };
-
-            SetNextLineStyle_adapt_mutable_param_with_default_value(col, weight);
-        },
-        nb::arg("col").none() = nb::none(), nb::arg("weight") = IMPLOT3D_AUTO,
-        " Set the line color and weight for the next item only\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT3D_AUTO_COL");
-
-    m.def("set_next_fill_style",
-        [](const std::optional<const ImVec4> & col = std::nullopt, float alpha_mod = IMPLOT3D_AUTO)
-        {
-            auto SetNextFillStyle_adapt_mutable_param_with_default_value = [](const std::optional<const ImVec4> & col = std::nullopt, float alpha_mod = IMPLOT3D_AUTO)
-            {
-
-                const ImVec4& col_or_default = [&]() -> const ImVec4 {
-                    if (col.has_value())
-                        return col.value();
-                    else
-                        return IMPLOT3D_AUTO_COL;
-                }();
-
-                ImPlot3D::SetNextFillStyle(col_or_default, alpha_mod);
-            };
-
-            SetNextFillStyle_adapt_mutable_param_with_default_value(col, alpha_mod);
-        },
-        nb::arg("col").none() = nb::none(), nb::arg("alpha_mod") = IMPLOT3D_AUTO,
-        " Set the fill color for the next item only\n\n\nPython bindings defaults:\n    If col is None, then its default value will be: IMPLOT3D_AUTO_COL");
-
-    m.def("set_next_marker_style",
-        [](const std::optional<const ImPlot3DMarker> & marker = std::nullopt, float size = IMPLOT3D_AUTO, const std::optional<const ImVec4> & fill = std::nullopt, float weight = IMPLOT3D_AUTO, const std::optional<const ImVec4> & outline = std::nullopt)
-        {
-            auto SetNextMarkerStyle_adapt_mutable_param_with_default_value = [](const std::optional<const ImPlot3DMarker> & marker = std::nullopt, float size = IMPLOT3D_AUTO, const std::optional<const ImVec4> & fill = std::nullopt, float weight = IMPLOT3D_AUTO, const std::optional<const ImVec4> & outline = std::nullopt)
-            {
-
-                const ImPlot3DMarker& marker_or_default = [&]() -> const ImPlot3DMarker {
-                    if (marker.has_value())
-                        return marker.value();
-                    else
-                        return IMPLOT3D_AUTO;
-                }();
-
-                const ImVec4& fill_or_default = [&]() -> const ImVec4 {
-                    if (fill.has_value())
-                        return fill.value();
-                    else
-                        return IMPLOT3D_AUTO_COL;
-                }();
-
-                const ImVec4& outline_or_default = [&]() -> const ImVec4 {
-                    if (outline.has_value())
-                        return outline.value();
-                    else
-                        return IMPLOT3D_AUTO_COL;
-                }();
-
-                ImPlot3D::SetNextMarkerStyle(marker_or_default, size, fill_or_default, weight, outline_or_default);
-            };
-
-            SetNextMarkerStyle_adapt_mutable_param_with_default_value(marker, size, fill, weight, outline);
-        },
-        nb::arg("marker").none() = nb::none(), nb::arg("size") = IMPLOT3D_AUTO, nb::arg("fill").none() = nb::none(), nb::arg("weight") = IMPLOT3D_AUTO, nb::arg("outline").none() = nb::none(),
-        " Set the marker style for the next item only\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * marker: IMPLOT3D_AUTO\n        * fill: IMPLOT3D_AUTO_COL\n        * outline: IMPLOT3D_AUTO_COL");
-
     m.def("get_style_color_vec4",
         ImPlot3D::GetStyleColorVec4, nb::arg("idx"));
 
     m.def("get_style_color_u32",
         ImPlot3D::GetStyleColorU32, nb::arg("idx"));
+
+    m.def("next_marker",
+        ImPlot3D::NextMarker, "Returns the next marker and advances the marker for the current plot. You need to call this between Begin/EndPlot!");
 
     m.def("add_colormap",
         nb::overload_cast<const char *, const ImVec4 *, int, bool>(ImPlot3D::AddColormap), nb::arg("name"), nb::arg("cols"), nb::arg("size"), nb::arg("qual") = true);
@@ -1692,7 +1754,6 @@ void py_init_module_implot3d(nb::module_& m)
         .def_rw("line_weight", &ImPlot3DStyle::LineWeight, "Line weight in pixels")
         .def_rw("marker", &ImPlot3DStyle::Marker, "Default marker type (ImPlot3DMarker_None)")
         .def_rw("marker_size", &ImPlot3DStyle::MarkerSize, "Marker size in pixels (roughly the marker's \"radius\")")
-        .def_rw("marker_weight", &ImPlot3DStyle::MarkerWeight, "Marker outline weight in pixels")
         .def_rw("fill_alpha", &ImPlot3DStyle::FillAlpha, "Alpha modifier applied to plot fills")
         .def_rw("plot_default_size", &ImPlot3DStyle::PlotDefaultSize, "Default size used when ImVec2(0,0) is passed to BeginPlot")
         .def_rw("plot_min_size", &ImPlot3DStyle::PlotMinSize, "Minimum size plot frame can be when shrunk")

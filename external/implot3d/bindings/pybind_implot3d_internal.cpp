@@ -88,14 +88,15 @@ void py_init_module_implot3d_internal(nb::module_& m)
         " Mix color a and b by factor s in [0 256]\n(private API)");
 
 
+    auto pyEnumMarkerInternal_ =
+        nb::enum_<ImPlot3DMarkerInternal_>(m, "MarkerInternal_", nb::is_arithmetic(), nb::is_flag(), "")
+            .value("im_plot3_d_marker_invalid", ImPlot3DMarker_Invalid, "");
+
+
     auto pyClassImPlot3DNextItemData =
         nb::class_<ImPlot3DNextItemData>
             (m, "NextItemData", "")
-        .def_rw("line_weight", &ImPlot3DNextItemData::LineWeight, "")
-        .def_rw("marker", &ImPlot3DNextItemData::Marker, "")
-        .def_rw("marker_size", &ImPlot3DNextItemData::MarkerSize, "")
-        .def_rw("marker_weight", &ImPlot3DNextItemData::MarkerWeight, "")
-        .def_rw("fill_alpha", &ImPlot3DNextItemData::FillAlpha, "")
+        .def_rw("spec", &ImPlot3DNextItemData::Spec, "")
         .def_rw("render_line", &ImPlot3DNextItemData::RenderLine, "")
         .def_rw("render_fill", &ImPlot3DNextItemData::RenderFill, "")
         .def_rw("render_marker_line", &ImPlot3DNextItemData::RenderMarkerLine, "")
@@ -179,6 +180,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
             (m, "Item", "State information for plot items")
         .def_rw("id_", &ImPlot3DItem::ID, "")
         .def_rw("color", &ImPlot3DItem::Color, "")
+        .def_rw("marker", &ImPlot3DItem::Marker, "")
         .def_rw("name_offset", &ImPlot3DItem::NameOffset, "")
         .def_rw("show", &ImPlot3DItem::Show, "")
         .def_rw("legend_hovered", &ImPlot3DItem::LegendHovered, "")
@@ -208,6 +210,7 @@ void py_init_module_implot3d_internal(nb::module_& m)
             (m, "ItemGroup", "Holds items")
         .def_rw("legend", &ImPlot3DItemGroup::Legend, "")
         .def_rw("colormap_idx", &ImPlot3DItemGroup::ColormapIdx, "")
+        .def_rw("marker_idx", &ImPlot3DItemGroup::MarkerIdx, "")
         .def(nb::init<>())
         .def("get_item_count",
             &ImPlot3DItemGroup::GetItemCount, "(private API)")
@@ -550,26 +553,40 @@ void py_init_module_implot3d_internal(nb::module_& m)
         "Render a colormap bar");
 
     m.def("begin_item",
-        [](const char * label_id, ImPlot3DItemFlags flags = 0, const std::optional<const ImPlot3DCol> & recolor_from = std::nullopt) -> bool
+        [](const char * label_id, const std::optional<const ImPlot3DSpec> & spec = std::nullopt, const std::optional<const ImVec4> & item_col = std::nullopt, const std::optional<const ImPlot3DMarker> & item_mkr = std::nullopt) -> bool
         {
-            auto BeginItem_adapt_mutable_param_with_default_value = [](const char * label_id, ImPlot3DItemFlags flags = 0, const std::optional<const ImPlot3DCol> & recolor_from = std::nullopt) -> bool
+            auto BeginItem_adapt_mutable_param_with_default_value = [](const char * label_id, const std::optional<const ImPlot3DSpec> & spec = std::nullopt, const std::optional<const ImVec4> & item_col = std::nullopt, const std::optional<const ImPlot3DMarker> & item_mkr = std::nullopt) -> bool
             {
 
-                const ImPlot3DCol& recolor_from_or_default = [&]() -> const ImPlot3DCol {
-                    if (recolor_from.has_value())
-                        return recolor_from.value();
+                const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
+                    if (spec.has_value())
+                        return spec.value();
                     else
-                        return IMPLOT3D_AUTO;
+                        return ImPlot3DSpec();
                 }();
 
-                auto lambda_result = ImPlot3D::BeginItem(label_id, flags, recolor_from_or_default);
+                const ImVec4& item_col_or_default = [&]() -> const ImVec4 {
+                    if (item_col.has_value())
+                        return item_col.value();
+                    else
+                        return IMPLOT3D_AUTO_COL;
+                }();
+
+                const ImPlot3DMarker& item_mkr_or_default = [&]() -> const ImPlot3DMarker {
+                    if (item_mkr.has_value())
+                        return item_mkr.value();
+                    else
+                        return ImPlot3DMarker_Invalid;
+                }();
+
+                auto lambda_result = ImPlot3D::BeginItem(label_id, spec_or_default, item_col_or_default, item_mkr_or_default);
                 return lambda_result;
             };
 
-            return BeginItem_adapt_mutable_param_with_default_value(label_id, flags, recolor_from);
+            return BeginItem_adapt_mutable_param_with_default_value(label_id, spec, item_col, item_mkr);
         },
-        nb::arg("label_id"), nb::arg("flags") = 0, nb::arg("recolor_from").none() = nb::none(),
-        "Python bindings defaults:\n    If recolor_from is None, then its default value will be: IMPLOT3D_AUTO");
+        nb::arg("label_id"), nb::arg("spec").none() = nb::none(), nb::arg("item_col").none() = nb::none(), nb::arg("item_mkr").none() = nb::none(),
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * spec: Spec()\n        * item_col: IMPLOT3D_AUTO_COL\n        * item_mkr: Marker_Invalid");
 
     m.def("end_item",
         ImPlot3D::EndItem);
