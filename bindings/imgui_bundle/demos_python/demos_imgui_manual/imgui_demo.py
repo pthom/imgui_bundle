@@ -119,8 +119,7 @@ from imgui_bundle import ImVec2, ImVec4
 import time
 import math
 import numpy as np
-import inspect
-from typing import Optional, List, Callable
+from typing import Optional
 
 
 IMGUI_DISABLE_DEBUG_TOOLS = False  # or True, depending on your configuration
@@ -214,7 +213,7 @@ IMGUI_DEMO_MARKER_IS_ACTIVE = True
 
 
 def IMGUI_DEMO_MARKER(section: str):
-    imgui_demo_marker_callback_default(section)
+    pass
 
 
 # [SECTION] Demo Window / ShowDemoWindow()
@@ -389,7 +388,6 @@ def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
     imgui.text(f"dear imgui says hello! ({imgui.get_version()})")
     imgui.spacing()
 
-    imgui_demo_marker_gui_toggle()
     imgui.begin_child("Demos")
 
     IMGUI_DEMO_MARKER("Help")
@@ -3120,256 +3118,13 @@ def show_example_menu_file():
 
 
 # -----------------------------------------------------------------------------
-# [SECTION] IMGUI_DEMO_MARKER utilities
-# Utilities that provide an interactive "code lookup" via the IMGUI_DEMO_MARKER macro
-# -----------------------------------------------------------------------------
-
-# [sub section] ImGuiDemoMarker_GuiToggle()
-# Display a "Code Lookup" checkbox that toggles interactive code browsing
-def imgui_demo_marker_gui_toggle():
-    global IMGUI_DEMO_MARKER_IS_ACTIVE
-    _, IMGUI_DEMO_MARKER_IS_ACTIVE = imgui.checkbox("Code Lookup", IMGUI_DEMO_MARKER_IS_ACTIVE)
-    if imgui.is_item_hovered():
-        imgui.set_tooltip(
-            "Check this box and hover any demo to pinpoint its location inside the code.\n"
-            "\n"
-            "(you can also press \"Ctrl-Alt-C\" at any time to toggle this mode)"
-        )
-    if imgui.is_key_pressed(imgui.Key.c) and imgui.get_io().key_ctrl and imgui.get_io().key_alt:
-        IMGUI_DEMO_MARKER_IS_ACTIVE = not IMGUI_DEMO_MARKER_IS_ACTIVE
-    if IMGUI_DEMO_MARKER_IS_ACTIVE and imgui.is_key_pressed(imgui.Key.escape):
-        IMGUI_DEMO_MARKER_IS_ACTIVE = False
-
-
-CALLBACK_NAVIGATE_TO_MARKER: Optional[Callable[[str], None]] = None
-
-# [sub section] ImGuiDemoMarkerCallback_Default()
-# ImGuiDemoMarkerCallback_Default is the default callback used by IMGUI_DEMO_MARKER,
-# but this can be overridden via GImGuiDemoMarkerCallback
-def imgui_demo_marker_callback_default(marker):
-    def get_caller_line_number() -> int:
-        frame = inspect.currentframe()
-        try:
-            caller_frame = frame.f_back.f_back.f_back  # type: ignore
-            return caller_frame.f_lineno  # type: ignore
-        finally:
-            del frame
-    if not IMGUI_DEMO_MARKER_IS_ACTIVE:
-        return
-    line = get_caller_line_number()
-    if imgui_demo_marker_highlight_zone(line):
-        imgui.set_tooltip(
-            "Code Lookup\n"
-            f"IMGUI_DEMO_MARKER(\"{marker}\")\n\n"
-            "Press \"Esc\" to exit this mode")
-
-        if CALLBACK_NAVIGATE_TO_MARKER is not None:
-            CALLBACK_NAVIGATE_TO_MARKER(marker)
-
-
-# A ZoneBoundings specifies a rectangular bounding for the widgets whose code is given
-# *after* a call to IMGUI_DEMO_MARKER. This bounding will extend down to the next IMGUI_DEMO_MARKER macro call.
-# It always occupies the full width of the current window.
-class _ZoneBoundings:
-    source_line_number: int # Source code location
-    min_y: float; max_y: float  # Location of this zone inside its parent window
-    window: Optional[imgui.internal.Window]  # Current window when IMGUI_DEMO_MARKER was called
-    def __init__(self):
-        self.source_line_number = -1
-        self.min_y = 1.0
-        self.max_y = -1.0
-        self.Window = None
-
-
-# [sub section] ImGuiDemoMarkerHighlightZone()
-# `bool ImGuiDemoMarkerHighlightZone(int line_number)` is able to graphically highlight a *hovered* section
-# of the demo (it keeps track of graphical location of each section).
-# Each zone is identified by its source code line number, and ImGuiDemoMarkerHighlightZone will return true if
-# it is currently highlighted.
-
-# "namespace ImGuiDemoMarkerHighlight_Impl"
-# The DemoMarkersRegistry class stores the boundings for the different calls to the IMGUI_DEMO_MARKER macro.
-# It handles the display and handling of the "Help/Code lookup" button.
-class ImGuiDemoMarkerHighlight_Impl_DemoMarkersRegistry:
-    # Members
-    all_zones_boundings: List[_ZoneBoundings] # All boundings for all the calls to DEMO_MARKERS
-    previous_zone_source_line: int            # Location of the previous call to DEMO_MARKERS (used to end the previous bounding)
-
-    def __init__(self):
-        self.all_zones_boundings = []
-        self.previous_zone_source_line = -1
-
-    # highlight starts a demo marker zone.
-    # If the highlight mode is active and the demo marker zone is hovered, it will highlight it,
-    # display a tooltip and return true. Otherwise it will return false.
-    def highlight(self, line_number) -> bool:
-        # This will store the bounding for the next widgets, and this bounding will extend until the next call to DemoMarker
-        self._store_zone_boundings(line_number)
-        zone_boundings = self._get_zone_boundings_for_line(line_number)
-
-        # Handle mouse and keyboard actions if the zone is hovered
-        is_mouse_hovering_zone = self._is_mouse_hovering_zone_boundings(zone_boundings)
-        if not is_mouse_hovering_zone:
-            return False
-
-        self._highlight_zone(zone_boundings)
-        return True
-
-    # StoreZoneBoundings stores information about the marker zone.
-    def _store_zone_boundings(self, line_number):
-        # Store info about the marker
-        current_zone_boundings = _ZoneBoundings()
-        if self._has_zone_boundings_for_line(line_number):
-            current_zone_boundings = self._get_zone_boundings_for_line(line_number)
-        else:
-            current_zone_boundings.source_line_number = line_number
-
-        # Store min_y position for the current marker
-        current_zone_boundings.window = imgui.internal.get_current_window()
-        current_zone_boundings.min_y = imgui.get_cursor_screen_pos().y
-
-        # Store the current marker in the list
-        self._set_zone_boundings_for_line(line_number, current_zone_boundings)
-
-        # Store max position for the previous marker
-        if self._has_zone_boundings_for_line(self.previous_zone_source_line):
-            previous_zone_boundings = self._get_zone_boundings_for_line(self.previous_zone_source_line)
-            if previous_zone_boundings.window == imgui.internal.get_current_window():
-                previous_zone_boundings.max_y = imgui.get_cursor_screen_pos().y
-
-        self.previous_zone_source_line = line_number
-
-    # Check if the mouse is hovering over the zone_boundings
-    def _is_mouse_hovering_zone_boundings(self, zone_boundings):
-        if not imgui.is_window_hovered(
-                imgui.HoveredFlags_.allow_when_blocked_by_active_item |
-                imgui.HoveredFlags_.root_and_child_windows |
-                imgui.HoveredFlags_.no_popup_hierarchy):
-            return False
-        y_mouse = imgui.get_mouse_pos().y
-        x_mouse = imgui.get_mouse_pos().x
-        return (
-                (y_mouse >= zone_boundings.min_y)
-                and ((y_mouse < zone_boundings.max_y) or (zone_boundings.max_y < 0.0))
-                and ((x_mouse >= imgui.get_window_pos().x) and (x_mouse < imgui.get_window_pos().x + imgui.get_window_size().x))
-        )
-
-    # Highlight the specified zone_boundings
-    def _highlight_zone(self, zone_boundings):
-        # tl_dim / br_dim: top_left and bottom_right corners of the dimmed zone
-        tl_dim = imgui.get_window_pos()
-        br_dim = ImVec2(imgui.get_window_pos().x + imgui.get_window_size().x, imgui.get_window_pos().y + imgui.get_window_size().y)
-
-        # tl_zone / br_zone: top_left and bottom_right corners of the highlighted zone
-        min_y = zone_boundings.min_y if zone_boundings.min_y >= imgui.get_window_pos().y else imgui.get_window_pos().y
-        tl_zone = ImVec2(imgui.get_window_pos().x, min_y)
-        max_y = zone_boundings.max_y if zone_boundings.max_y > 0.0 else imgui.get_window_pos().y + imgui.get_window_height()
-        br_zone = ImVec2(imgui.get_window_pos().x + imgui.get_window_width(), max_y)
-
-        draw_list = imgui.get_foreground_draw_list()
-        dim_color = imgui.IM_COL32(127, 127, 127, 100)
-
-        draw_list.add_rect_filled(tl_dim, ImVec2(br_dim.x, tl_zone.y), dim_color)
-
-        draw_list.add_rect_filled(ImVec2(tl_dim.x, tl_zone.y), ImVec2(tl_zone.x, br_zone.y), dim_color)
-        draw_list.add_rect_filled(ImVec2(br_zone.x, tl_zone.y), ImVec2(br_dim.x, br_zone.y), dim_color)
-
-        draw_list.add_rect_filled(ImVec2(tl_dim.x, br_zone.y), ImVec2(br_dim.x, br_dim.y), dim_color)
-
-    # Check if there are zone boundings for the given line_number
-    def _has_zone_boundings_for_line(self, line_number):
-        for zone in self.all_zones_boundings:
-            if zone.source_line_number == line_number:
-                return True
-        return False
-
-    # Get zone boundings for the given line_number
-    def _get_zone_boundings_for_line(self, line_number):
-        assert self._has_zone_boundings_for_line(line_number), "Please call has_zone_boundings_for_line before!"
-        for zone in self.all_zones_boundings:
-            if zone.source_line_number == line_number:
-                return zone
-        raise Exception("We should never get there!")
-
-    # Set zone boundings for the given line_number
-    def _set_zone_boundings_for_line(self, line_number, zone_boundings):
-        if self._has_zone_boundings_for_line(line_number):
-            self._get_zone_boundings_for_line(line_number)
-        else:
-            self.all_zones_boundings.append(zone_boundings)
-
-G_DEMO_MARKERS_REGISTRY = ImGuiDemoMarkerHighlight_Impl_DemoMarkersRegistry()
-
-
-def imgui_demo_marker_highlight_zone(line_number: int) -> bool:
-    return G_DEMO_MARKERS_REGISTRY.highlight(line_number)
-
-
-# -----------------------------------------------------------------------------
 # [SECTION] Runner
 # -----------------------------------------------------------------------------
 
 def main():
-    from imgui_bundle import hello_imgui, immapp,  imgui_color_text_edit as ed, imgui_ctx, imgui_md
+    from imgui_bundle import immapp
+    immapp.run(lambda: show_demo_window(None))
 
-    global CALLBACK_NAVIGATE_TO_MARKER
-
-    code_editor = ed.TextEditor()
-    with open(__file__, encoding="utf-8") as f:
-        code = f.read()
-        code_lines = code.splitlines()
-        code_editor.set_text(code)
-
-    def gui_demo():
-        show_demo_window(True)
-
-    def gui_code():
-        with imgui_ctx.push_font(imgui_md.get_code_font().font):
-            code_editor.render("Code")
-
-    def navigate_to_marker(marker):
-        for i, line in enumerate(code_lines):
-            if line.strip().startswith("IMGUI_DEMO_MARKER("):
-                tokens = line.split('"')
-                line_marker = tokens[1]
-                if line_marker == marker:
-                    line_start = i
-                    col_start = 1
-                    line_end = i
-                    col_end = len(line)
-                    code_editor.set_cursor_position(line_start, col_start)
-                    code_editor.set_selection(line_start, col_start, line_end, col_end)
-
-    CALLBACK_NAVIGATE_TO_MARKER = navigate_to_marker
-
-    runner_params = hello_imgui.RunnerParams()
-    runner_params.app_window_params.window_title = "ImGui Demo - Python"
-    runner_params.app_window_params.window_geometry.size = (1200, 900)
-    runner_params.imgui_window_params.default_imgui_window_type = hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
-
-    split = hello_imgui.DockingSplit(
-        initial_dock_="MainDockSpace",
-        direction_=imgui.Dir.left,
-        ratio_=0.5,
-        new_dock_="Dear ImGui Demo"
-    )
-    runner_params.docking_params.docking_splits = [split]
-
-    win_demo = hello_imgui.DockableWindow(
-        label_="Dear ImGui Demo",
-        dock_space_name_="Dear ImGui Demo",
-        gui_function_=gui_demo
-    )
-    win_code = hello_imgui.DockableWindow(
-        label_="Code",
-        dock_space_name_="MainDockSpace",
-        gui_function_=gui_code
-    )
-
-    runner_params.docking_params.dockable_windows = [win_demo, win_code]
-    addons = immapp.AddOnsParams()
-    addons.with_markdown = True
-    immapp.run(runner_params, addons)
 
 
 if __name__ == "__main__":

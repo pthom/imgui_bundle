@@ -290,20 +290,6 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [x] Also handle imgui_internal.h, implot(3d)_internal.h (+ stubs)
 - [ ] UI/UX refinement: add images or icons for top edge toolbar buttons
 - [ ] Think
-```
-./external/implot/implot/implot_demo.cpp
-./bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py
-
-./external/implot3d/implot3d/implot3d_demo.cpp
-./bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py
-
-
-./external/ImAnim/ImAnim/im_anim_demo_basics.cpp
-./bindings/imgui_bundle/demos_python/demos_imanim/im_anim_demo_basics.py
-
-./external/imgui/imgui/imgui_demo.cpp
-./bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py
-```
 
 ### Step 9: Integration
 - [ ] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
