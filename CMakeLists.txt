@@ -127,8 +127,8 @@ endif()
 
 # Force backends for python bindings, emscripten and iOS
 # -----------------------------------------------------------------------------
-# For python bindings, we force the usage of Glfw+OpenGL3 (pyodide is handled by imgui_bundle_pyodide.cmake).
-# We also disable ImGui obsolete functions
+# For python bindings, we force the usage of Glfw+OpenGL3. We also disable ImGui obsolete functions
+# Note: pyodide must use SDL2 (because, sdl2 is linked to the main pyodide python module). This is handled by imgui_bundle_pyodide.cmake).
 if(IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
     set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
     set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)

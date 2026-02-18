@@ -1,6 +1,10 @@
 ###################################################################################################
 # Specific build options for pyodide
 ###################################################################################################
+# pyodide must use SDL2, because sdl2 is linked to the main pyodide python module (glfw is not).
+# If using glfw, it would be linked it to the side module imgui_bundle (which is a dynamic library),
+# and then we would get a runtime error in pyodide because glfw would not be found at runtime
+# (since a dynamic library does not load its own dependencies, but relies on the main module to provide them).
 
 function(ibd_pyodide_set_build_options_if_needed)
     # Determine if we need to build pyodide
