@@ -1089,7 +1089,7 @@ def show_demo_window_widgets():
         # -will be passed to the rendering backend via the ImDrawCmd structure.
         # -If you use one of the default imgui_impl_XXXX.cpp rendering backend, they all have comments at the top
         # -of their respective source file to specify what they expect to be stored in ImTextureID, for example:
-            # -- The imgui_impl_dx11.cpp renderer expect a 'ID3D11ShaderResourceView*' pointer
+        # -- The imgui_impl_dx11.cpp renderer expect a 'ID3D11ShaderResourceView*' pointer
         # -- The imgui_impl_opengl3.cpp renderer expect a GLuint OpenGL texture identifier, etc.
         # -More:
         # -- If you decided that ImTextureID = MyEngineTexture*, then you can pass your MyEngineTexture* pointers
