@@ -58,12 +58,6 @@ configure_file(${stubs_dir}/implot3d/__init__.pyi ${demo_code_dest}/implot3d.pyi
 configure_file(${stubs_dir}/implot3d/internal.pyi ${demo_code_dest}/implot3d_internal.pyi.txt COPYONLY)
 configure_file(${stubs_dir}/im_anim.pyi ${demo_code_dest}/im_anim.pyi.txt COPYONLY)
 
-
-# Force use Glfw (using pongasoft/emscripten-glfw) on emscripten, which has a good support for the clipboard
-#set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
-#set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
-
-
 # Force-include the marker hooks header to imgui, implot, implot3d and imanim
 set(marker_hooks_header ${CMAKE_CURRENT_LIST_DIR}/imgui_demo_marker_hooks.h)
 force_include(imgui ${marker_hooks_header})
