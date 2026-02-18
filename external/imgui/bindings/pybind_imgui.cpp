@@ -138,6 +138,19 @@ void py_init_module_imgui_main(nb::module_& m)
             return ImVec2(self);
         })    ;
 
+    pyClassImVec2.def("__getitem__", [](const ImVec2& self, int idx) {
+        if (idx == 0) return self.x;
+        else if (idx == 1) return self.y;
+        else throw std::out_of_range("Index out of range for ImVec2");
+    });
+    pyClassImVec2.def("__setitem__", [](ImVec2& self, int idx, float value) {
+        if (idx == 0) self.x = value;
+        else if (idx == 1) self.y = value;
+        else throw std::out_of_range("Index out of range for ImVec2");
+    });
+
+
+
 
     auto pyClassImVec4 =
         nb::class_<ImVec4>
@@ -162,6 +175,23 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__copy__",  [](const ImVec4 &self) {
             return ImVec4(self);
         })    ;
+
+    pyClassImVec4.def("__getitem__", [](const ImVec4& self, int idx) {
+        if (idx == 0) return self.x;
+        else if (idx == 1) return self.y;
+        else if (idx == 2) return self.z;
+        else if (idx == 3) return self.w;
+        else throw std::out_of_range("Index out of range for ImVec4");
+    });
+    pyClassImVec4.def("__setitem__", [](ImVec4& self, int idx, float value) {
+        if (idx == 0) self.x = value;
+        else if (idx == 1) self.y = value;
+        else if (idx == 2) self.z = value;
+        else if (idx == 3) self.w = value;
+        else throw std::out_of_range("Index out of range for ImVec4");
+    });
+
+
 
 
     auto pyClassImTextureRef =

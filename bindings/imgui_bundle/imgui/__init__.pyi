@@ -523,6 +523,14 @@ class ImVec2(Vec2Protocol):
     # #endif
     #
 
+    def __getitem__(self, idx: int) -> float:
+        """Get the value at the given index (0 for x, 1 for y)"""
+        ...
+
+    def __setitem__(self, idx: int, value: float) -> None:
+        """Set the value at the given index (0 for x, 1 for y)"""
+        ...
+
 class ImVec4(Vec4Protocol):
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
 
@@ -555,6 +563,14 @@ class ImVec4(Vec4Protocol):
         pass
     # #endif
     #
+
+    def __getitem__(self, idx: int) -> float:
+        """Get the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
+        ...
+
+    def __setitem__(self, idx: int, value: float) -> None:
+        """Set the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
+        ...
 
 # -----------------------------------------------------------------------------
 # [SECTION] Texture identifiers (ImTextureID, ImTextureRef)
