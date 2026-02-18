@@ -5,9 +5,6 @@
 #include "implot3d/implot3d.h"
 #include <algorithm>
 #include <cctype>
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#endif
 
 // Forward declarations for ImAnim demo windows
 void ImAnimDemoBasicsWindow(bool create_window);
@@ -20,7 +17,6 @@ namespace {
 std::vector<LibraryConfig> CreateLibraryConfigs()
 {
     std::vector<LibraryConfig> configs;
-
 
     // ImGui
     {
@@ -46,6 +42,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             ImGui::Separator();
             ImGui::ShowDemoWindow_MaybeDocked(do_create_window);
         };
+        cfg.mdIntro = "Dear ImGui - Bloat-free Graphical User interface | [Repository](https://github.com/ocornut/imgui) | [FAQ](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md) | [Wiki](https://github.com/ocornut/imgui/wiki) | [dearimgui.com](https://www.dearimgui.com/)";
         configs.push_back(std::move(cfg));
     }
 
@@ -68,6 +65,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.showDemoWindow = [] {
             ImPlot::ShowDemoWindow_MaybeDocked(false);
         };
+        cfg.mdIntro = "ImPlot - Immediate Mode Plotting for Dear ImGui | [Repository](https://github.com/epezent/implot)";
         configs.push_back(std::move(cfg));
     }
 
@@ -90,6 +88,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.showDemoWindow = [] {
             ImPlot3D::ShowDemoWindow_MaybeDocked(false);
         };
+        cfg.mdIntro = "ImPlot3D - Immediate Mode 3D Plotting for Dear ImGui | [Repository](https://github.com/brenocq/implot3d/)";
         configs.push_back(std::move(cfg));
     }
 
@@ -119,9 +118,9 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             // For now, show all ImAnim windows (we'll refine this later)
             ImAnimDemoBasicsWindow(false);
         };
+        cfg.mdIntro = "ImAnim - Animation Engine for Dear ImGui | [Repository](https://github.com/soufianekhiat/ImAnim) | [Docs](https://github.com/soufianekhiat/ImAnim/tree/main/docs)";
         configs.push_back(std::move(cfg));
     }
-
     return configs;
 }
 
@@ -179,10 +178,6 @@ bool IsSingleLibraryMode()
     return g_singleLibraryMode;
 }
 
-void SetSingleLibraryMode(bool enabled)
-{
-    g_singleLibraryMode = enabled;
-}
 
 namespace {
     std::string ToLower(const std::string& s)
@@ -206,37 +201,17 @@ namespace {
     }
 } // anonymous namespace
 
-void ParseLibraryArg(int argc, char** argv)
+
+void SetSingleLibraryMode(std::string libname)
 {
-    std::string libName;
-
-#ifdef __EMSCRIPTEN__
-    // Read ?lib=<name> from URL query parameters
-    (void)argc; (void)argv;
-    const char* result = emscripten_run_script_string(
-        "new URLSearchParams(window.location.search).get('lib') || ''"
-    );
-    if (result && result[0] != '\0')
-        libName = result;
-#else
-    // Read --lib <name> from command-line arguments
-    for (int i = 1; i < argc - 1; ++i)
+    int idx = FindLibraryIndexByName(libname);
+    if (idx >= 0)
     {
-        if (std::string(argv[i]) == "--lib")
-        {
-            libName = argv[i + 1];
-            break;
-        }
+        SetCurrentLibraryIndex(idx);
+        g_singleLibraryMode = true;
     }
-#endif
-
-    if (!libName.empty())
+    else
     {
-        int idx = FindLibraryIndexByName(libName);
-        if (idx >= 0)
-        {
-            SetCurrentLibraryIndex(idx);
-            SetSingleLibraryMode(true);
-        }
+        IM_ASSERT(false && "SetSingleLibraryMode: Failed to find the current library name");
     }
 }

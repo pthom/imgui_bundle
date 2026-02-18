@@ -9,6 +9,16 @@ function(force_include target header)
     endif()
 endfunction()
 
+function(copy_code_file code_file_full_path)
+    # The code files are copied to the demo_code_dest directory with a .txt extension for runtime loading as text.
+    set(code_file ${code_file_full_path})
+    # Extract filename and append .txt extension for runtime loading as text
+    get_filename_component(code_file ${code_file_full_path} NAME)
+    set(destination ${demo_code_dest}/${code_file}.txt)
+    # Copy the code file to the destination
+    configure_file(${code_file_full_path} ${destination} COPYONLY)
+endfunction()
+
 #
 # set path variables for libraries featured in the manual (imgui, implot, implot3d and im_anim)
 #
@@ -25,38 +35,38 @@ set(demos_python_dir ${bundle_dir}/bindings/imgui_bundle/demos_python)
 file(MAKE_DIRECTORY ${demo_code_dest})
 
 # C++ demos
-configure_file(${imanim_dir}/im_anim_demo_basics.cpp ${demo_code_dest}/im_anim_demo_basics.cpp.txt COPYONLY)
-configure_file(${imanim_dir}/im_anim_demo.cpp ${demo_code_dest}/im_anim_demo.cpp.txt COPYONLY)
-configure_file(${imanim_dir}/im_anim_doc.cpp ${demo_code_dest}/im_anim_doc.cpp.txt COPYONLY)
-configure_file(${imanim_dir}/im_anim_usecase.cpp ${demo_code_dest}/im_anim_usecase.cpp.txt COPYONLY)
-configure_file(${imgui_dir}/imgui_demo.cpp ${demo_code_dest}/imgui_demo.cpp.txt COPYONLY)
-configure_file(${implot_dir}/implot_demo.cpp ${demo_code_dest}/implot_demo.cpp.txt COPYONLY)
-configure_file(${implot3d_dir}/implot3d_demo.cpp ${demo_code_dest}/implot3d_demo.cpp.txt COPYONLY)
+copy_code_file(${imanim_dir}/im_anim_demo_basics.cpp)
+copy_code_file(${imanim_dir}/im_anim_demo.cpp)
+copy_code_file(${imanim_dir}/im_anim_doc.cpp)
+copy_code_file(${imanim_dir}/im_anim_usecase.cpp)
+copy_code_file(${imgui_dir}/imgui_demo.cpp)
+copy_code_file(${implot_dir}/implot_demo.cpp)
+copy_code_file(${implot3d_dir}/implot3d_demo.cpp)
 
 # Python demos (from bindings/imgui_bundle/demos_python/demos_imgui_manual)
-configure_file(${demos_python_dir}/demos_imgui_manual/im_anim_demo_basics.py ${demo_code_dest}/im_anim_demo_basics.py.txt COPYONLY)
-configure_file(${demos_python_dir}/demos_imgui_manual/imgui_demo.py ${demo_code_dest}/imgui_demo.py.txt COPYONLY)
-configure_file(${demos_python_dir}/demos_imgui_manual/implot_demo.py ${demo_code_dest}/implot_demo.py.txt COPYONLY)
-configure_file(${demos_python_dir}/demos_imgui_manual/implot3d_demo.py ${demo_code_dest}/implot3d_demo.py.txt COPYONLY)
+copy_code_file(${demos_python_dir}/demos_imgui_manual/im_anim_demo_basics.py)
+copy_code_file(${demos_python_dir}/demos_imgui_manual/imgui_demo.py)
+copy_code_file(${demos_python_dir}/demos_imgui_manual/implot_demo.py)
+copy_code_file(${demos_python_dir}/demos_imgui_manual/implot3d_demo.py)
 
 # API reference files: C++ headers
-configure_file(${imgui_dir}/imgui.h ${demo_code_dest}/imgui.h.txt COPYONLY)
-configure_file(${imgui_dir}/imgui_internal.h ${demo_code_dest}/imgui_internal.h.txt COPYONLY)
-configure_file(${implot_dir}/implot.h ${demo_code_dest}/implot.h.txt COPYONLY)
-configure_file(${implot_dir}/implot_internal.h ${demo_code_dest}/implot_internal.h.txt COPYONLY)
-configure_file(${implot3d_dir}/implot3d.h ${demo_code_dest}/implot3d.h.txt COPYONLY)
-configure_file(${implot3d_dir}/implot3d_internal.h ${demo_code_dest}/implot3d_internal.h.txt COPYONLY)
-configure_file(${imanim_dir}/im_anim.h ${demo_code_dest}/im_anim.h.txt COPYONLY)
+copy_code_file(${imgui_dir}/imgui.h)
+copy_code_file(${imgui_dir}/imgui_internal.h)
+copy_code_file(${implot_dir}/implot.h)
+copy_code_file(${implot_dir}/implot_internal.h)
+copy_code_file(${implot3d_dir}/implot3d.h)
+copy_code_file(${implot3d_dir}/implot3d_internal.h)
+copy_code_file(${imanim_dir}/im_anim.h)
 
 # API reference files: Python stubs
 set(stubs_dir ${bundle_dir}/bindings/imgui_bundle)
-configure_file(${stubs_dir}/imgui/__init__.pyi ${demo_code_dest}/imgui.pyi.txt COPYONLY)
-configure_file(${stubs_dir}/imgui/internal.pyi ${demo_code_dest}/imgui_internal.pyi.txt COPYONLY)
-configure_file(${stubs_dir}/implot/__init__.pyi ${demo_code_dest}/implot.pyi.txt COPYONLY)
-configure_file(${stubs_dir}/implot/internal.pyi ${demo_code_dest}/implot_internal.pyi.txt COPYONLY)
-configure_file(${stubs_dir}/implot3d/__init__.pyi ${demo_code_dest}/implot3d.pyi.txt COPYONLY)
-configure_file(${stubs_dir}/implot3d/internal.pyi ${demo_code_dest}/implot3d_internal.pyi.txt COPYONLY)
-configure_file(${stubs_dir}/im_anim.pyi ${demo_code_dest}/im_anim.pyi.txt COPYONLY)
+copy_code_file(${stubs_dir}/imgui/__init__.pyi ${demo_code_dest}/imgui.pyi.txt)
+copy_code_file(${stubs_dir}/imgui/internal.pyi ${demo_code_dest}/imgui_internal.pyi.txt)
+copy_code_file(${stubs_dir}/implot/__init__.pyi ${demo_code_dest}/implot.pyi.txt)
+copy_code_file(${stubs_dir}/implot/internal.pyi ${demo_code_dest}/implot_internal.pyi.txt)
+copy_code_file(${stubs_dir}/implot3d/__init__.pyi ${demo_code_dest}/implot3d.pyi.txt)
+copy_code_file(${stubs_dir}/implot3d/internal.pyi ${demo_code_dest}/implot3d_internal.pyi.txt)
+copy_code_file(${stubs_dir}/im_anim.pyi ${demo_code_dest}/im_anim.pyi.txt)
 
 # Force-include the marker hooks header to imgui, implot, implot3d and imanim
 set(marker_hooks_header ${CMAKE_CURRENT_LIST_DIR}/imgui_demo_marker_hooks.h)
@@ -68,8 +78,13 @@ force_include(imanim ${marker_hooks_header})
 # Add library imgui_manual_lib
 add_library(imgui_manual_lib
     demo_code_viewer.cpp
+    demo_code_viewer.h
     imgui_demo_marker_hooks.cpp
+    imgui_demo_marker_hooks.h
+    imgui_manual.cpp
+    imgui_manual.h
     library_config.cpp
+    library_config.h
 )
 target_link_libraries(imgui_manual_lib PUBLIC imgui implot implot3d imanim hello_imgui imgui_color_text_edit imgui_md)
 # target_link_libraries(imgui_manual_lib PUBLIC imgui_bundle)
