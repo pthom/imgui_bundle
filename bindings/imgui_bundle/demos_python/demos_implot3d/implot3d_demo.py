@@ -699,18 +699,15 @@ def demo_offset_and_stride():
 
     if not hasattr(static, "offset"):
         static.offset = 0
-
-    # Build interleaved data: [s0.x0 s0.y0 s0.z0 ... sn.x0 sn.y0 sn.z0 s0.x1 ...]
-    interleaved = np.zeros(3 * k_points_per * k_spirals, dtype=np.float64)
-    for p in range(k_points_per):
-        for s in range(k_spirals):
-            r = s / (k_spirals - 1) * 0.2 + 0.2
-            theta = p / k_points_per * 6.28
-            interleaved[p * 3 * k_spirals + 3 * s + 0] = 0.5 + r * np.cos(theta)
-            interleaved[p * 3 * k_spirals + 3 * s + 1] = 0.5 + r * np.sin(theta)
-            interleaved[p * 3 * k_spirals + 3 * s + 2] = 0.5 + 0.5 * np.sin(2.0 * theta)
-
-    imgui.text("Offset/Stride support in Python still needs work")
+        # Build interleaved data once: [s0.x0 s0.y0 s0.z0 ... sn.x0 sn.y0 sn.z0 s0.x1 ...]
+        static.interleaved = np.zeros(3 * k_points_per * k_spirals, dtype=np.float64)
+        for p in range(k_points_per):
+            for s in range(k_spirals):
+                r = s / (k_spirals - 1) * 0.2 + 0.2
+                theta = p / k_points_per * 6.28
+                static.interleaved[p * 3 * k_spirals + 3 * s + 0] = 0.5 + r * np.cos(theta)
+                static.interleaved[p * 3 * k_spirals + 3 * s + 1] = 0.5 + r * np.sin(theta)
+                static.interleaved[p * 3 * k_spirals + 3 * s + 2] = 0.5 + 0.5 * np.sin(2.0 * theta)
 
     imgui.bullet_text("Offsetting is useful for realtime plots (see above) and circular buffers.")
     imgui.bullet_text("Striding is useful for interleaved data (e.g. audio) or plotting structs.")
@@ -722,17 +719,19 @@ def demo_offset_and_stride():
 
     if implot3d.begin_plot("##strideoffset", size=(-1, 0)):
         implot3d.push_colormap(implot3d.Colormap_.jet)
-        stride_elements = 3 * k_spirals
         for s in range(k_spirals):
             label = f"Spiral {s}"
-            # Extract x, y, z for this spiral using numpy slicing (Pythonic stride)
-            xs = interleaved[s * 3 + 0 :: stride_elements][:k_points_per].copy()
-            ys = interleaved[s * 3 + 1 :: stride_elements][:k_points_per].copy()
-            zs = interleaved[s * 3 + 2 :: stride_elements][:k_points_per].copy()
+            # Extract x, y, z for this spiral from the interleaved buffer
+            # Note: Python bindings require contiguous arrays, so we extract slices with .copy()
+            # In C++, spec.Stride would be used: 3 * k_spirals * sizeof(double)
+            stride_elements = 3 * k_spirals
+            xs = static.interleaved[s * 3 + 0 :: stride_elements][:k_points_per].copy()
+            ys = static.interleaved[s * 3 + 1 :: stride_elements][:k_points_per].copy()
+            zs = static.interleaved[s * 3 + 2 :: stride_elements][:k_points_per].copy()
 
-            spec = implot3d.Spec()
-            spec.offset = static.offset
-            # spec.stride = 3 * k_spirals * 8  # Stride in bytes (3 coords * num spirals * size of double)
+            spec = implot3d.Spec(offset=static.offset)
+            # spec.stride is not used here because we pass contiguous arrays (extracted via slicing)
+            # The C++ version would set spec.Stride = 3 * k_spirals * sizeof(double)
 
             implot3d.plot_line(label, xs, ys, zs, spec=spec)
         implot3d.end_plot()
