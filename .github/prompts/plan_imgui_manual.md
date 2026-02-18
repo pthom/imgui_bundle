@@ -277,9 +277,9 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [x] Not useful: Port ShowDemoWindow_MaybeDocked to implot and implot3d demos? Check if it useful (i.e. bring more demos to python)
 
 ### Step 7: Build Multiple Executables
-- [ ] Create separate app targets in CMakeLists.txt
-- [ ] Each target uses appropriate LibraryConfig subset
-- [ ] Test all executables
+- [X] Args / Run the manual showing only one library at a time
+  (--lib implot, --lib implot3d, --lib imanim, --lib imgui, or ?lib=implot for emscripten)
+- [x] Each target uses appropriate LibraryConfig subset
 - [ ] Deploy online
 
 ### Step 8: Polish
@@ -290,7 +290,7 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
   possible use case: user wants to find the signature and doc for a specific function or widget in the demo code. He selects it, clicks (right-click or place a button somewhere? this is to be discussed) "search in code", and the relevant header file or stub is opened in the code viewer, with the first matching line highlighted and the possibility to search for other occurrences in the file.
 - [x] Also handle imgui_internal.h, implot(3d)_internal.h (+ stubs)
 - [ ] UI/UX refinement: add images or icons for top edge toolbar buttons
-
+- [ ] Remove external modules from ImAnim
 
 ### Step 11: Manual in python
 Nooo: Try to avoid doing this...
