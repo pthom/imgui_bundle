@@ -228,9 +228,8 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
 
 #### 5.2 Search Functionality
 
-- Search within current file
-- Search across all files
-- Jump to IMGUI_DEMO_MARKER by name
+- [x] Search within current file
+- [x] Search across all files
 
 ---
 
@@ -260,7 +259,6 @@ void OpenGitHubAtLine(const char* baseName, int line, bool isPython) {
 ### Step 4: Adapt imgui_demo.cpp
 - [x] imgui_demo.cpp should be adapted to support force include pattern (need to rebase some changes)
 - [x] Rewiew IMGUI_DEMO_MARKER locations in imgui_demo.cpp
-- [ ] Once this works perfectly, push a PR to the main ImGui repo.
 
 ### Step 5: Make Python code viewer work with IMGUI_DEMO_MARKER
 - [x] Make sure the Python code viewer can jump to the correct line based on IMGUI_DEMO_MARKER calls in the Python demos
@@ -285,16 +283,33 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 
 ### Step 8: Polish
 - [x] Implement GitHub link
-- [ ] Remember to move python github links back to main branch
+- [x] Remember to move python github links back to main branch
 - [x] Add file/marker search: search in demo files or in declarations (header files or stub). 
   This requires adding header files or stubs to the libraries. 
   possible use case: user wants to find the signature and doc for a specific function or widget in the demo code. He selects it, clicks (right-click or place a button somewhere? this is to be discussed) "search in code", and the relevant header file or stub is opened in the code viewer, with the first matching line highlighted and the possibility to search for other occurrences in the file.
 - [x] Also handle imgui_internal.h, implot(3d)_internal.h (+ stubs)
 - [ ] UI/UX refinement: add images or icons for top edge toolbar buttons
+- [ ] Think
+```
+./external/implot/implot/implot_demo.cpp
+./bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py
+
+./external/implot3d/implot3d/implot3d_demo.cpp
+./bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py
+
+
+./external/ImAnim/ImAnim/im_anim_demo_basics.cpp
+./bindings/imgui_bundle/demos_python/demos_imanim/im_anim_demo_basics.py
+
+./external/imgui/imgui/imgui_demo.cpp
+./external/imgui/imgui/imgui_demo.py
+./bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py
+```
 
 ### Step 9: Integration
-- [ ] Add in bundle interactive manual C++
-- [ ] Add in bundle interactive manual Python. We still want to display library-specific Python demos in the bundle, even if they are not line-by-line ports of the C++ demos (like imgui_demo.py). This is a way to test and maintain the Python demo support, and also to provide more demos to bundle users.
+- [ ] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
+   - [ ] C++
+  - [ ] Python. We still want to display library-specific Python demos in the bundle, even if they are not line-by-line ports of the C++ demos (like imgui_demo.py). This is a way to test and maintain the Python demo support, and also to provide more demos to bundle users.
 - [ ] Update bundle book and documentation
 - [ ] Add doc for ImAnim in the bundle book (compare C++ and Python API, esp enum usage)
 - [ ] Think again: should it be a subproject of imgui_bundle or a separate repo?
@@ -303,7 +318,9 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 
 
 ### Step 10: Publish & Communicate
-
+- [ ] PR to imgui, implot, implot3d and imanim
+- [ ] Mail to ocornut and other maintainers about the new manual and its features
+- 
 ---
 
 ## Resolved Questions
