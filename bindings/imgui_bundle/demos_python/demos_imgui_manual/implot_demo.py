@@ -2187,7 +2187,7 @@ def show_demo_window_maybe_docked(create_window: bool):
 
 
 def main():
-    immapp.run(lambda: show_demo_window_maybe_docked(False), with_implot=True, with_markdown=True)
+    immapp.run(show_demo_window, with_implot=True, with_markdown=True)
 
 
 if __name__ == "__main__":

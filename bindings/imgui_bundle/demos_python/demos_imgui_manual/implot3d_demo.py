@@ -1630,7 +1630,10 @@ def show_all_demos():
 
 
 def show_demo_window():
-    static = show_demo_window
+    show_demo_window_maybe_docked(create_window=True)
+
+def show_demo_window_maybe_docked(create_window: bool):
+    static = show_demo_window_maybe_docked
 
     # Initialize static state variables
     if not hasattr(static, "show_implot3d_style_editor"):
@@ -1656,10 +1659,12 @@ def show_demo_window():
     if static.show_imgui_demo:
         imgui.show_demo_window()
 
-    # Set window properties
-    imgui.set_next_window_pos((100, 100), imgui.Cond_.first_use_ever)
-    imgui.set_next_window_size((600, 750), imgui.Cond_.first_use_ever)
-    imgui.begin("ImPlot3D Demo", None, imgui.WindowFlags_.menu_bar)
+    if create_window:
+        # Set window properties
+        imgui.set_next_window_pos((100, 100), imgui.Cond_.first_use_ever)
+        imgui.set_next_window_size((600, 750), imgui.Cond_.first_use_ever)
+        imgui.begin("ImPlot3D Demo", None, imgui.WindowFlags_.menu_bar)
+
     if imgui.begin_menu_bar():
         if imgui.begin_menu("Tools"):
             _, static.show_implot3d_style_editor = imgui.menu_item("Style Editor", "", static.show_implot3d_style_editor)
@@ -1672,15 +1677,12 @@ def show_demo_window():
 
     show_all_demos()
 
-    imgui.end()
-
-
-def demo_gui():
-    show_demo_window()
+    if create_window:
+        imgui.end()
 
 
 def main():
-    immapp.run(show_demo_window, with_implot3d=True, with_markdown=True)
+    immapp.run(show_demo_window)
 
 
 if __name__ == "__main__":
