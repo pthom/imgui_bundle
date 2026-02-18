@@ -171,8 +171,18 @@ class ScrollingBuffer:
 
     def get_data(self):
         """Returns the data as contiguous 1D arrays for plotting."""
-        data = self.data[:self.size] if self.size < self.max_size else np.roll(self.data, -self.offset, axis=0)
-        return np.ascontiguousarray(data[:, 0]), np.ascontiguousarray(data[:, 1])
+        if self.size < self.max_size:
+            data = self.data[:self.size]
+        else:
+            # Ensure data is contiguous after roll operation
+            data = np.ascontiguousarray(np.roll(self.data, -self.offset, axis=0))
+
+        # Extract columns and create fresh contiguous arrays
+        # Using .copy() ensures we get a truly independent, contiguous array
+        xs = data[:, 0].astype(np.float32, order='C', copy=True)
+        ys = data[:, 1].astype(np.float32, order='C', copy=True)
+
+        return xs, ys
 
 
 #-----------------------------------------------------------------------------
@@ -347,6 +357,7 @@ def demo_shaded_plots():
     IMGUI_DEMO_MARKER("Plots/Shaded Plots")
     static = demo_shaded_plots
 
+
     if not hasattr(static, "xs"):
         np.random.seed(0)
         static.xs = np.linspace(0, 1, 1001, dtype=np.float64)
@@ -356,19 +367,18 @@ def demo_shaded_plots():
         static.ys3 = 0.75 + 0.2 * np.sin(25 * static.xs)
         static.ys4 = 0.75 + 0.1 * np.cos(25 * static.xs)
 
-    if not hasattr(static, "alpha"):
-        static.alpha = 0.25
+    if not hasattr(static, "spec"):
+        static.spec = implot.Spec(fill_alpha=0.25)
 
-    _, static.alpha = imgui.drag_float("Alpha", static.alpha, 0.01, 0, 1)
+    _, static.spec.fill_alpha = imgui.drag_float("Alpha", static.spec.fill_alpha, 0.01, 0, 1)
 
     if implot.begin_plot("Shaded Plots"):
-        implot.push_style_var(implot.StyleVar_.fill_alpha, static.alpha)
-        implot.plot_shaded("Uncertain Data", static.xs, static.ys1, static.ys2)
-        implot.plot_line("Uncertain Data", static.xs, static.ys)
-        implot.plot_shaded("Overlapping", static.xs, static.ys3, static.ys4)
-        implot.plot_line("Overlapping", static.xs, static.ys3)
-        implot.plot_line("Overlapping", static.xs, static.ys4)
-        implot.pop_style_var()
+        implot.setup_legend(implot.Location_.north_west, implot.LegendFlags_.reverse)  # reverse legend to match vertical order on plot
+        implot.plot_shaded("Uncertain Data", static.xs, static.ys1, static.ys2, static.spec)
+        implot.plot_line("Uncertain Data", static.xs, static.ys, static.spec)
+        implot.plot_shaded("Overlapping", static.xs, static.ys3, static.ys4, static.spec)
+        implot.plot_line("Overlapping", static.xs, static.ys3, static.spec)
+        implot.plot_line("Overlapping", static.xs, static.ys4, static.spec)
         implot.end_plot()
 
 
@@ -388,17 +398,13 @@ def demo_scatter_plots():
 
     if implot.begin_plot("Scatter Plot"):
         implot.plot_scatter("Data 1", static.xs1, static.ys1)
-
-        implot.push_style_var(implot.StyleVar_.fill_alpha, 0.25)
-        implot.set_next_marker_style(
-            implot.Marker_.square,
-            size=6,
-            fill=implot.get_colormap_color(1),
-            weight=implot.AUTO,
-            outline=implot.get_colormap_color(1))
-        implot.plot_scatter("Data 2", static.xs2, static.ys2)
-        implot.pop_style_var()
-
+        implot.plot_scatter("Data 2", static.xs2, static.ys2,
+                          spec=implot.Spec(
+                              marker=implot.Marker_.square,
+                              marker_size=6,
+                              line_color=implot.get_colormap_color(1),
+                              fill_color=implot.get_colormap_color(1),
+                              fill_alpha=0.25))
         implot.end_plot()
 
 
@@ -421,18 +427,16 @@ def demo_stairstep_plots():
         implot.setup_axes("x", "f(x)")
         implot.setup_axes_limits(0, 1, 0, 1)
 
-        implot.push_style_color(implot.Col_.line, [0.5, 0.5, 0.5, 1.0])
-        implot.plot_line("##1", static.ys1, xscale=0.05)
-        implot.plot_line("##2", static.ys2, xscale=0.05)
-        implot.pop_style_color()
+        implot.plot_line("##1", static.ys1, xscale=0.05,
+                        spec=implot.Spec(line_color=ImVec4(0.5, 0.5, 0.5, 1.0)))
+        implot.plot_line("##2", static.ys2, xscale=0.05,
+                        spec=implot.Spec(line_color=ImVec4(0.5, 0.5, 0.5, 1.0)))
 
-        implot.set_next_marker_style(implot.Marker_.circle)
-        implot.set_next_fill_style(implot.AUTO_COL, 0.25)
-        implot.plot_stairs("Post Step (default)", static.ys1, xscale=0.05, flags=static.flags)
+        spec = implot.Spec(flags=static.flags, fill_alpha=0.25, marker=implot.Marker_.circle)
+        implot.plot_stairs("Post Step (default)", static.ys1, xscale=0.05, spec=spec)
 
-        implot.set_next_marker_style(implot.Marker_.circle)
-        implot.set_next_fill_style(implot.AUTO_COL, 0.25)
-        implot.plot_stairs("Pre Step", static.ys2, xscale=0.05, flags=static.flags | implot.StairsFlags_.pre_step)
+        spec.flags = static.flags | implot.StairsFlags_.pre_step
+        implot.plot_stairs("Pre Step", static.ys2, xscale=0.05, spec=spec)
 
         implot.end_plot()
 
@@ -446,7 +450,8 @@ def demo_bar_plots():
 
     if implot.begin_plot("Bar Plot"):
         implot.plot_bars("Vertical", static.data, bar_size=0.7, shift=1)
-        implot.plot_bars("Horizontal", static.data, bar_size=0.4, shift=1, flags=implot.BarsFlags_.horizontal)
+        implot.plot_bars("Horizontal", static.data, bar_size=0.4, shift=1,
+                        spec=implot.Spec(flags=implot.BarsFlags_.horizontal))
         implot.end_plot()
 
 
@@ -496,7 +501,7 @@ def demo_bar_groups():
                 values=static.data,
                 group_size=static.groups,
                 shift=0,
-                flags=static.flags | implot.BarGroupsFlags_.horizontal)
+                spec=implot.Spec(flags=static.flags | implot.BarGroupsFlags_.horizontal))
         else:
             implot.setup_axes("Student", "Score", implot.AxisFlags_.auto_fit, implot.AxisFlags_.auto_fit)
             implot.setup_axis_ticks(
@@ -510,7 +515,7 @@ def demo_bar_groups():
                 values=static.data,
                 group_size=static.groups,
                 shift=0,
-                flags=static.flags)
+                spec=implot.Spec(flags=static.flags))
 
         implot.end_plot()
 
@@ -569,14 +574,14 @@ def demo_bar_stacks():
                 values=data_div,
                 group_size=0.75,
                 shift=0,
-                flags=implot.BarGroupsFlags_.stacked | implot.BarGroupsFlags_.horizontal)
+                spec=implot.Spec(flags=implot.BarGroupsFlags_.stacked | implot.BarGroupsFlags_.horizontal))
         else:
             implot.plot_bar_groups(
                 label_ids=labels_reg,
                 values=data_reg,
                 group_size=0.75,
                 shift=0,
-                flags=implot.BarGroupsFlags_.stacked | implot.BarGroupsFlags_.horizontal)
+                spec=implot.Spec(flags=implot.BarGroupsFlags_.stacked | implot.BarGroupsFlags_.horizontal))
         implot.end_plot()
 
     implot.pop_colormap()
@@ -602,18 +607,19 @@ def demo_error_bars():
         implot.plot_bars("Bar", static.xs, static.bar, bar_size=0.5)
         implot.plot_error_bars("Bar", static.xs, static.bar, static.err1)
 
-        implot.set_next_error_bar_style(implot.get_colormap_color(1), 0)
-        implot.plot_error_bars("Line", static.xs, static.lin1, static.err1, static.err2)
+        implot.plot_error_bars("Line", static.xs, static.lin1, static.err1, static.err2,
+                              spec=implot.Spec(line_color=implot.get_colormap_color(1), size=0))
+        implot.plot_line("Line", static.xs, static.lin1,
+                        spec=implot.Spec(marker=implot.Marker_.square))
 
-        implot.set_next_marker_style(implot.Marker_.square)
-        implot.plot_line("Line", static.xs, static.lin1)
-
-        implot.push_style_color(implot.Col_.error_bar, implot.get_colormap_color(2))
-        implot.plot_error_bars("Scatter", static.xs, static.lin2, static.err2)
-        implot.plot_error_bars("Scatter", static.xs, static.lin2, static.err3, static.err4,
-                               flags=implot.ErrorBarsFlags_.horizontal)
-        implot.pop_style_color()
-
+        spec = implot.Spec(
+            line_color=implot.get_colormap_color(2),
+            size=6,
+            line_weight=1.5
+        )
+        implot.plot_error_bars("Scatter", static.xs, static.lin2, static.err2, spec=spec)
+        spec.flags = implot.ErrorBarsFlags_.horizontal
+        implot.plot_error_bars("Scatter", static.xs, static.lin2, static.err3, static.err4, spec=spec)
         implot.plot_scatter("Scatter", static.xs, static.lin2)
 
         implot.end_plot()
@@ -632,8 +638,8 @@ def demo_stem_plots():
         implot.setup_axis_limits(implot.ImAxis_.x1, 0, 1.0)
         implot.setup_axis_limits(implot.ImAxis_.y1, 0, 1.6)
         implot.plot_stems("Stems 1", static.xs, static.ys1)
-        implot.set_next_marker_style(implot.Marker_.circle)
-        implot.plot_stems("Stems 2", static.xs, static.ys2)
+        implot.plot_stems("Stems 2", static.xs, static.ys2,
+                         spec=implot.Spec(marker=implot.Marker_.circle))
         implot.end_plot()
 
 
@@ -650,7 +656,8 @@ def demo_infinite_lines():
     if implot.begin_plot("##Infinite"):
         implot.setup_axes("", "", implot.AxisFlags_.no_initial_fit, implot.AxisFlags_.no_initial_fit)
         implot.plot_inf_lines("Vertical", static.vals)
-        implot.plot_inf_lines("Horizontal", static.vals, flags=implot.InfLinesFlags_.horizontal)
+        implot.plot_inf_lines("Horizontal", static.vals,
+                             spec=implot.Spec(flags=implot.InfLinesFlags_.horizontal))
         implot.end_plot()
 
 
@@ -672,7 +679,8 @@ def demo_pie_charts():
     if implot.begin_plot("##Pie1", size=(250, 250), flags=implot.Flags_.equal | implot.Flags_.no_mouse_text):
         implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(0, 1, 0, 1)
-        implot.plot_pie_chart(static.labels1, np.array(static.data1), x=0.5, y=0.5, radius=0.4, label_fmt="%.2f", angle0=90, flags=static.flags)  # type: ignore
+        implot.plot_pie_chart(static.labels1, np.array(static.data1), x=0.5, y=0.5, radius=0.4, label_fmt="%.2f", angle0=90,
+                             spec=implot.Spec(flags=static.flags))  # type: ignore
         implot.end_plot()
 
     imgui.same_line()
@@ -685,7 +693,8 @@ def demo_pie_charts():
     if implot.begin_plot("##Pie2", size=(250, 250), flags=implot.Flags_.equal | implot.Flags_.no_mouse_text):
         implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(0, 1, 0, 1)
-        implot.plot_pie_chart(static.labels2, static.data2, x=0.5, y=0.5, radius=0.4, label_fmt="%.0f", angle0=180, flags=static.flags)
+        implot.plot_pie_chart(static.labels2, static.data2, x=0.5, y=0.5, radius=0.4, label_fmt="%.0f", angle0=180,
+                             spec=implot.Spec(flags=static.flags))
         implot.end_plot()
     implot.pop_colormap()
 
@@ -735,7 +744,8 @@ def demo_heatmaps():
         implot.setup_axis_ticks(implot.ImAxis_.x1, v_min=0 + 1.0 / 14.0, v_max=1 - 1.0 / 14.0, n_ticks=7, labels=static.xlabels, keep_default=False)
         implot.setup_axis_ticks(implot.ImAxis_.y1, v_min=1 - 1.0 / 14.0, v_max=0 + 1.0 / 14.0, n_ticks=7, labels=static.ylabels, keep_default=False)
         implot.plot_heatmap("heat", static.values1, scale_min=static.scale_min, scale_max=static.scale_max, label_fmt="%g",
-                            bounds_min=implot.Point(0, 0), bounds_max=implot.Point(1, 1), flags=static.hm_flags)
+                            bounds_min=implot.Point(0, 0), bounds_max=implot.Point(1, 1),
+                            spec=implot.Spec(flags=static.hm_flags))
         implot.end_plot()
 
     imgui.same_line()
@@ -819,9 +829,9 @@ def demo_histogram():
 
     if implot.begin_plot("##Histograms"):
         implot.setup_axes("", "", implot.AxisFlags_.auto_fit, implot.AxisFlags_.auto_fit)
-        implot.set_next_fill_style(implot.AUTO_COL, 0.5)
         implot.plot_histogram("Empirical", static.data, bins=static.bins, bar_scale=1.0,
-                              range=implot.Range(static.rmin, static.rmax) if static.range else implot.Range(), flags=static.hist_flags)
+                              range=implot.Range(static.rmin, static.rmax) if static.range else implot.Range(),
+                              spec=implot.Spec(fill_alpha=0.5, flags=static.hist_flags))
 
         if (static.hist_flags & implot.HistogramFlags_.density) and not (static.hist_flags & implot.HistogramFlags_.no_outliers):
             if static.hist_flags & implot.HistogramFlags_.horizontal:
@@ -862,7 +872,7 @@ def demo_histogram2d():
             xs=static.dist1, ys=static.dist2,
             x_bins=static.xybins[0], y_bins=static.xybins[1],
             range=implot.Rect(-6, 6, -6, 6),
-            flags=static.hist_flags)  # type: ignore
+            spec=implot.Spec(flags=static.hist_flags))  # type: ignore
         implot.end_plot()
 
     imgui.same_line()
@@ -978,7 +988,10 @@ class RollingBuffer:
         if not self.data:
             return np.array([], dtype=np.float32), np.array([], dtype=np.float32)
         data = np.array(self.data, dtype=np.float32)
-        return np.ascontiguousarray(data[:, 0]), np.ascontiguousarray(data[:, 1])
+        # Create fresh contiguous arrays with .copy()
+        xs = data[:, 0].astype(np.float32, order='C', copy=True)
+        ys = data[:, 1].astype(np.float32, order='C', copy=True)
+        return xs, ys
 
 
 #-----------------------------------------------------------------------------
@@ -987,12 +1000,17 @@ def demo_markers_and_text():
     IMGUI_DEMO_MARKER("Plots/Markers and Text")
     static = demo_markers_and_text
 
-    if not hasattr(static, "mk_size"):
-        static.mk_size = implot.get_style().marker_size
-        static.mk_weight = implot.get_style().marker_weight
+    if not hasattr(static, "spec"):
+        static.spec = implot.Spec(marker=implot.Marker_.auto)
+        # Default values from ImPlotSpec: MarkerSize = 4, LineWeight = 1.0
+        static.mk_size = static.spec.marker_size
+        static.mk_weight = static.spec.line_weight
 
     _, static.mk_size = imgui.drag_float("Marker Size", static.mk_size, 0.1, 2.0, 10.0, "%.2f px")
     _, static.mk_weight = imgui.drag_float("Marker Weight", static.mk_weight, 0.05, 0.5, 3.0, "%.2f px")
+
+    static.spec.marker_size = static.mk_size
+    static.spec.line_weight = static.mk_weight
 
     if implot.begin_plot("##MarkerStyles", size=(-1, 0), flags=implot.Flags_.canvas_only):
         implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
@@ -1004,8 +1022,8 @@ def demo_markers_and_text():
         # Filled markers
         for m in range(implot.Marker_.count):
             with imgui_ctx.push_id(str(m)):
-                implot.set_next_marker_style(m, static.mk_size, implot.AUTO_COL, static.mk_weight)
-                implot.plot_line("##Filled", np.array(xs), np.array(ys))
+                static.spec.fill_alpha = 1.0
+                implot.plot_line("##Filled", np.array(xs), np.array(ys), static.spec)
             ys = [ys[0] - 1, ys[1] - 1]
 
         xs = [6, 9]
@@ -1014,15 +1032,16 @@ def demo_markers_and_text():
         # Open markers
         for m in range(implot.Marker_.count):
             with imgui_ctx.push_id(str(m)):
-                implot.set_next_marker_style(m, static.mk_size, [0, 0, 0, 0], static.mk_weight)
-                implot.plot_line("##Open", np.array(xs), np.array(ys))
+                static.spec.fill_alpha = 0.0
+                implot.plot_line("##Open", np.array(xs), np.array(ys), static.spec)
             ys = [ys[0] - 1, ys[1] - 1]
 
         implot.plot_text("Filled Markers", 2.5, 6.0)
         implot.plot_text("Open Markers", 7.5, 6.0)
 
         implot.push_style_color(implot.Col_.inlay_text, [1, 0, 1, 1])
-        implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0), flags=implot.TextFlags_.vertical)
+        implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0),
+                        spec=implot.Spec(flags=implot.TextFlags_.vertical))
         implot.pop_style_color()
 
         implot.end_plot()
@@ -1049,8 +1068,8 @@ def demo_nan_values():
     _, static.flags = imgui.checkbox_flags("Skip NaN", static.flags, implot.LineFlags_.skip_nan)
 
     if implot.begin_plot("##NaNValues"):
-        implot.set_next_marker_style(implot.Marker_.square)
-        implot.plot_line("line", data1, data2, flags=static.flags)
+        implot.plot_line("line", data1, data2,
+                        spec=implot.Spec(flags=static.flags, marker=implot.Marker_.square))
         implot.plot_bars("bars", data1)
         implot.end_plot()
 
@@ -1411,14 +1430,14 @@ def demo_subplots_sizing():
                 y_values = np.sin(fi * x_values)
 
                 # Apply colormap based on subplot index
+                col = implot.get_colormap_color(0)
                 if static.rows * static.cols > 1:
                     col = implot.sample_colormap(i / float(static.rows * static.cols - 1), implot.Colormap_.jet)
-                    implot.set_next_line_style(col)
 
                 # Label and plot line
                 label = f"data{id_counter}"
                 id_counter += 1
-                implot.plot_line(label, x_values, y_values)
+                implot.plot_line(label, x_values, y_values, spec=implot.Spec(line_color=col))
 
                 implot.end_plot()
         implot.end_subplots()
@@ -1534,10 +1553,10 @@ def demo_drag_points():
         if not hasattr(static, "P"):
             static.P = [implot.Point(0.05, 0.05), implot.Point(0.2, 0.4), implot.Point(0.8, 0.6), implot.Point(0.95, 0.95)]
 
-        colors = [[0, 0.9, 0, 1], [1, 0.5, 1, 1], [0, 0.5, 1, 1], [0, 0.9, 0, 1]]
+        colors = [ImVec4(0, 0.9, 0, 1), ImVec4(1, 0.5, 1, 1), ImVec4(0, 0.5, 1, 1), ImVec4(0, 0.9, 0, 1)]
         for i in range(4):
-            _, static.P[i].x, static.P[i].y, clicked[i], hovered[i], held[i] = implot.drag_point(  # type: ignore
-                id_=i, x=static.P[i].x, y=static.P[i].y, col=colors[i], flags=static.flags, held=held[i])
+            _, static.P[i].x, static.P[i].y, clicked[i], hovered[i], held[i] = implot.drag_point(
+                id_=i, x=static.P[i].x, y=static.P[i].y, col=colors[i], flags=static.flags)
 
         # Compute Bézier curve
         t_vals = np.linspace(0, 1, 100)
@@ -1589,8 +1608,8 @@ def demo_drag_lines():
         # Drag frequency line
         _, static.f, clicked, hovered, held = implot.drag_line_y(120482, static.f, col=[1, 0.5, 1, 1], thickness=1, flags=static.flags)
 
-        implot.set_next_line_style(implot.AUTO_COL, 2.0 if hovered or held else 1.0)
-        implot.plot_line("Interactive Data", xs, ys)
+        implot.plot_line("Interactive Data", xs, ys,
+                        spec=implot.Spec(line_weight=2.0 if hovered or held else 1.0))
 
         implot.end_plot()
 
@@ -1759,8 +1778,13 @@ def sparkline(label_id, values, y_min, y_max, offset, color, size):
     if implot.begin_plot(label_id, size, implot.Flags_.canvas_only):
         implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(0, len(values) - 1, y_min, y_max, imgui.Cond_.always)
-        implot.set_next_line_style(color)
-        implot.plot_line("line", values, offset=offset)
+        implot.plot_line("line", values,
+                        spec=implot.Spec(
+                            line_color=color,
+                            fill_color=color,
+                            fill_alpha=0.25,
+                            offset=offset,
+                            flags=implot.LineFlags_.shaded))
         implot.end_plot()
     implot.pop_style_var()
 
@@ -1815,12 +1839,6 @@ def demo_tables():
 
 def style_seaborn():
     style = implot.get_style()
-    style.set_color_(implot.Col_.line, implot.AUTO_COL)
-    style.set_color_(implot.Col_.fill, implot.AUTO_COL)
-    style.set_color_(implot.Col_.marker_outline, implot.AUTO_COL)
-    style.set_color_(implot.Col_.marker_fill, implot.AUTO_COL)
-
-    style.set_color_(implot.Col_.error_bar, ImVec4(0.00, 0.00, 0.00, 1.00))
     style.set_color_(implot.Col_.frame_bg, ImVec4(1.00, 1.00, 1.00, 1.00))
     style.set_color_(implot.Col_.plot_bg, ImVec4(0.92, 0.92, 0.95, 1.00))
     style.set_color_(implot.Col_.plot_border, ImVec4(0.00, 0.00, 0.00, 0.00))
@@ -1836,15 +1854,8 @@ def style_seaborn():
     style.set_color_(implot.Col_.selection, ImVec4(1.00, 0.65, 0.00, 1.00))
     style.set_color_(implot.Col_.crosshairs, ImVec4(0.23, 0.10, 0.64, 0.50))
 
-    style.line_weight = 1.5
-    style.marker = implot.Marker_.none
-    style.marker_size = 4
-    style.marker_weight = 1
-    style.fill_alpha = 1.0
-    style.error_bar_size = 5
-    style.error_bar_weight = 1.5
-    style.digital_bit_height = 8
-    style.digital_bit_gap = 4
+    style.mouse_pos_padding = ImVec2(5, 5)
+    style.plot_min_size = ImVec2(300, 225)
     style.plot_border_size = 0
     style.minor_alpha = 1.0
     style.major_tick_len = ImVec2(0, 0)
@@ -1856,8 +1867,8 @@ def style_seaborn():
     style.plot_padding = ImVec2(12, 12)
     style.label_padding = ImVec2(5, 5)
     style.legend_padding = ImVec2(5, 5)
-    style.mouse_pos_padding = ImVec2(5, 5)
-    style.plot_min_size = ImVec2(300, 225)
+    style.digital_padding = 20
+    style.digital_spacing = 4
 
 
 def demo_custom_styles():
@@ -1924,20 +1935,28 @@ def demo_legend_popups():
     if implot.begin_plot("Right Click the Legend"):
         implot.setup_axes_limits(0, 100, -1, 1)
 
-        implot.push_style_var(implot.StyleVar_.fill_alpha, static.alpha)
+        # rendering logic
+        color_vec = ImVec4(static.color[0], static.color[1], static.color[2], 1.0)
 
         if not static.line:
-            implot.set_next_fill_style(ImVec4(static.color[0], static.color[1], static.color[2], 1.0))
-            implot.plot_bars("Right Click Me", vals)
+            implot.plot_bars("Right Click Me", vals,
+                           spec=implot.Spec(
+                               fill_alpha=static.alpha,
+                               fill_color=color_vec))
         else:
+            implot.plot_line("Right Click Me", vals,
+                           spec=implot.Spec(
+                               line_color=color_vec,
+                               line_weight=static.thickness))
             if static.markers:
-                implot.set_next_marker_style(implot.Marker_.square)
-            implot.set_next_line_style(ImVec4(static.color[0], static.color[1], static.color[2], 1.0), static.thickness)
-            implot.plot_line("Right Click Me", vals)
+                implot.plot_scatter("Right Click Me", vals,
+                                  spec=implot.Spec(
+                                      marker=implot.Marker_.square,
+                                      line_color=color_vec))
             if static.shaded:
-                implot.plot_shaded("Right Click Me", vals)
+                implot.plot_shaded("Right Click Me", vals,
+                                 spec=implot.Spec(fill_alpha=static.alpha))
 
-        implot.pop_style_var()
 
         # Custom legend context menu
         if implot.begin_legend_popup("Right Click Me"):
