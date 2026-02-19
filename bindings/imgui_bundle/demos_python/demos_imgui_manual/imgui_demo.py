@@ -748,8 +748,8 @@ def show_demo_window_widgets():
         with indented_block():
             # Color editor widgets
             IMGUI_DEMO_MARKER("Widgets/Basic/ColorEdit3, ColorEdit4")
-            if not hasattr(static, 'col1'): static.col1 = [1.0, 0.0, 0.2]
-            if not hasattr(static, 'col2'): static.col2 = [0.4, 0.7, 0.0, 0.5]
+            if not hasattr(static, 'col1'): static.col1 = ImVec4(1.0, 0.0, 0.2, 1.0)
+            if not hasattr(static, 'col2'): static.col2 = ImVec4(0.4, 0.7, 0.0, 0.5)
             changed, static.col1 = imgui.color_edit3("color 1", static.col1)
             imgui.same_line()
             help_marker(
@@ -1105,9 +1105,9 @@ def show_demo_window_widgets():
         # -- Read https://github.com/ocornut/imgui/blob/master/docs/FAQ.md
         # -- Read https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
         # Fetch the font texture ID and its size
-        my_tex_id = io.fonts.tex_id
-        my_tex_w = float(io.fonts.tex_width)
-        my_tex_h = float(io.fonts.tex_height)
+        my_tex_id = imgui.ImTextureRef(io.fonts.python_get_texture_id())
+        my_tex_w = float(io.fonts.tex_data.width)
+        my_tex_h = float(io.fonts.tex_data.height)
 
         # Option to use text color for tinting the image
         if not hasattr(static, 'use_text_color_for_tint'):
@@ -1121,7 +1121,7 @@ def show_demo_window_widgets():
         tint_col = imgui.get_style_color_vec4(imgui.Col_.text) if static.use_text_color_for_tint else (1.0, 1.0, 1.0, 1.0)
         border_col = imgui.get_style_color_vec4(imgui.Col_.border)
 
-        imgui.image(my_tex_id, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)  # type: ignore
+        imgui.image_with_bg(my_tex_id, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)  # type: ignore
         if imgui.begin_item_tooltip():
             # Define the region for the zoomed tooltip
             region_sz = 32.0
@@ -1131,7 +1131,7 @@ def show_demo_window_widgets():
             imgui.text(f"Max: ({region_x + region_sz:.2f}, {region_y + region_sz:.2f})")
             uv0 = ImVec2((region_x) / my_tex_w, (region_y) / my_tex_h)
             uv1 = ImVec2((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h)
-            imgui.image(my_tex_id, ImVec2(region_sz * 4.0, region_sz * 4.0), uv0, uv1, tint_col, border_col)  # type: ignore
+            imgui.image_with_bg(my_tex_id, ImVec2(region_sz * 4.0, region_sz * 4.0), uv0, uv1, tint_col, border_col)  # type: ignore
             imgui.end_tooltip()
 
         # Textured buttons
@@ -1531,10 +1531,8 @@ def show_demo_window_widgets():
             _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", static.adv_tab_bar_flags, imgui.TabBarFlags_.no_close_with_middle_mouse_button)
             if (static.adv_tab_bar_flags & imgui.TabBarFlags_.fitting_policy_mask_) == 0:
                 static.adv_tab_bar_flags |= imgui.TabBarFlags_.fitting_policy_default_
-            if imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", static.adv_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_resize_down):
-                static.adv_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_resize_down)
-            if imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", static.adv_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_scroll):
-                static.adv_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_scroll)
+            if imgui.checkbox_flags("ImGuiTabBarFlags_DrawSelectedOverline", static.adv_tab_bar_flags, imgui.TabBarFlags_.draw_selected_overline):
+                static.adv_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.draw_selected_overline)
 
             # Tab Bar
             names = ["Artichoke", "Beetroot", "Celery", "Daikon"]
@@ -1584,12 +1582,12 @@ def show_demo_window_widgets():
                 static.lead_trail_tab_bar_flags = (
                         imgui.TabBarFlags_.auto_select_new_tabs
                         | imgui.TabBarFlags_.reorderable
-                        | imgui.TabBarFlags_.fitting_policy_resize_down
+                        | imgui.TabBarFlags_.fitting_policy_shrink
                 )
-            _, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.tab_list_popup_button)
-            changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyResizeDown", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_resize_down)
+            _, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("tab_list_popup_button", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.tab_list_popup_button)
+            changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("fitting_policy_shrink", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_shrink)
             if changed:
-                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_resize_down)
+                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_shrink)
             changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_scroll)
             if changed:
                 static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_scroll)  # type: ignore
@@ -1634,7 +1632,7 @@ def show_demo_window_widgets():
         if not hasattr(static, "color"):
             static.color = ImVec4(114.0 / 255.0, 144.0 / 255.0, 154.0 / 255.0, 200.0 / 255.0)
         if not hasattr(static, "color3"):
-            static.color3 = [114.0 / 255.0, 144.0 / 255.0, 154.0 / 255.0]
+            static.color3 = ImVec4(114.0 / 255.0, 144.0 / 255.0, 154.0 / 255.0, 1.0) # last component is ignored
 
         if not hasattr(static, "alpha_preview"):
             static.alpha_preview = True
@@ -1658,7 +1656,7 @@ def show_demo_window_widgets():
         imgui.same_line()
         help_marker("Currently all this does is to lift the 0..1 limits on dragging widgets.")
         misc_flags = (imgui.ColorEditFlags_.hdr if static.hdr else 0) | (0 if static.drag_and_drop else imgui.ColorEditFlags_.no_drag_drop) | (
-            imgui.ColorEditFlags_.alpha_preview_half if static.alpha_half_preview else (imgui.ColorEditFlags_.alpha_preview if static.alpha_preview else 0)) | (
+            imgui.ColorEditFlags_.alpha_preview_half if static.alpha_half_preview else 0) | (
                          0 if static.options_menu else imgui.ColorEditFlags_.no_options)
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit")
