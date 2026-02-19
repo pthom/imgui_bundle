@@ -210,25 +210,27 @@ namespace
         std::map<std::string, int> markers;
         const std::string pattern = "IMGUI_DEMO_MARKER(\"";
         int lineNum = 1;
-        size_t pos = 0;
-        while (pos < source.size())
+        size_t searchFrom = 0;
+
+        while (true)
         {
-            size_t eol = source.find('\n', pos);
-            if (eol == std::string::npos) eol = source.size();
-            // Search for pattern in this line
-            size_t found = source.find(pattern, pos);
-            if (found != std::string::npos && found < eol)
-            {
-                size_t start = found + pattern.size();
-                size_t end = source.find('"', start);
-                if (end != std::string::npos && end < eol)
-                {
-                    std::string section = source.substr(start, end - start);
-                    markers[section] = lineNum;
-                }
-            }
-            lineNum++;
-            pos = eol + 1;
+            size_t found = source.find(pattern, searchFrom);
+            if (found == std::string::npos) break;
+
+            // Count newlines only between the last position and this match (one linear pass total)
+            for (size_t i = searchFrom; i < found; ++i)
+                if (source[i] == '\n') ++lineNum;
+
+            // Extract marker name up to the closing quote on the same line
+            size_t nameStart = found + pattern.size();
+            size_t nameEnd   = source.find('"', nameStart);
+            size_t lineEnd   = source.find('\n', found);
+            if (nameEnd != std::string::npos && (lineEnd == std::string::npos || nameEnd < lineEnd))
+                markers[source.substr(nameStart, nameEnd - nameStart)] = lineNum;
+
+            // Advance past this line
+            searchFrom = (lineEnd != std::string::npos) ? lineEnd + 1 : source.size();
+            if (lineEnd != std::string::npos) ++lineNum;
         }
         return markers;
     }
