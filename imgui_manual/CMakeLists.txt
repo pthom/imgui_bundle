@@ -31,7 +31,7 @@ set(implot3d_dir ${bundle_dir}/external/implot3d/implot3d)
 
 # Copy demo source files to assets/demo_code/ for runtime loading
 set(demo_code_dest ${CMAKE_CURRENT_LIST_DIR}/assets/demo_code)
-set(demos_python_dir ${bundle_dir}/bindings/imgui_bundle/demos_python)
+set(demos_python_dir ${bundle_dir}/bindings/imgui_bundle/demos_python/demos_imgui_manual)
 file(MAKE_DIRECTORY ${demo_code_dest})
 
 # C++ demos
@@ -44,10 +44,10 @@ copy_code_file(${implot_dir}/implot_demo.cpp)
 copy_code_file(${implot3d_dir}/implot3d_demo.cpp)
 
 # Python demos (from bindings/imgui_bundle/demos_python/demos_imgui_manual)
-copy_code_file(${demos_python_dir}/demos_imgui_manual/im_anim_demo_basics.py)
-copy_code_file(${demos_python_dir}/demos_imgui_manual/imgui_demo.py)
-copy_code_file(${demos_python_dir}/demos_imgui_manual/implot_demo.py)
-copy_code_file(${demos_python_dir}/demos_imgui_manual/implot3d_demo.py)
+copy_code_file(${demos_python_dir}/im_anim_demo_basics.py)
+copy_code_file(${demos_python_dir}/imgui_demo.py)
+copy_code_file(${demos_python_dir}/implot_demo.py)
+copy_code_file(${demos_python_dir}/implot3d_demo.py)
 
 # API reference files: C++ headers
 copy_code_file(${imgui_dir}/imgui.h)
@@ -60,13 +60,13 @@ copy_code_file(${imanim_dir}/im_anim.h)
 
 # API reference files: Python stubs
 set(stubs_dir ${bundle_dir}/bindings/imgui_bundle)
-copy_code_file(${stubs_dir}/imgui/__init__.pyi ${demo_code_dest}/imgui.pyi.txt)
-copy_code_file(${stubs_dir}/imgui/internal.pyi ${demo_code_dest}/imgui_internal.pyi.txt)
-copy_code_file(${stubs_dir}/implot/__init__.pyi ${demo_code_dest}/implot.pyi.txt)
-copy_code_file(${stubs_dir}/implot/internal.pyi ${demo_code_dest}/implot_internal.pyi.txt)
-copy_code_file(${stubs_dir}/implot3d/__init__.pyi ${demo_code_dest}/implot3d.pyi.txt)
-copy_code_file(${stubs_dir}/implot3d/internal.pyi ${demo_code_dest}/implot3d_internal.pyi.txt)
-copy_code_file(${stubs_dir}/im_anim.pyi ${demo_code_dest}/im_anim.pyi.txt)
+copy_code_file(${stubs_dir}/imgui/__init__.pyi)
+copy_code_file(${stubs_dir}/imgui/internal.pyi)
+copy_code_file(${stubs_dir}/implot/__init__.pyi)
+copy_code_file(${stubs_dir}/implot/internal.pyi)
+copy_code_file(${stubs_dir}/implot3d/__init__.pyi)
+copy_code_file(${stubs_dir}/implot3d/internal.pyi)
+copy_code_file(${stubs_dir}/im_anim.pyi)
 
 # Force-include the marker hooks header to imgui, implot, implot3d and imanim
 set(marker_hooks_header ${CMAKE_CURRENT_LIST_DIR}/imgui_demo_marker_hooks.h)
