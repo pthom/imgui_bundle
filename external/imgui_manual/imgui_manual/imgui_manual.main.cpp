@@ -1,6 +1,8 @@
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/runner.h"
 #include "imgui_manual.h"
+#include <algorithm>
+#include <cctype>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -36,10 +38,12 @@ std::string ParseLibraryArg(int argc, char** argv)
 int main(int argc, char** argv)
 {
     auto libraryFromString = [](const std::string& s) -> std::optional<ImGuiManualLibrary> {
-        if (s == "ImGui")    return ImGuiManualLibrary::ImGui;
-        if (s == "ImPlot")   return ImGuiManualLibrary::ImPlot;
-        if (s == "ImPlot3D") return ImGuiManualLibrary::ImPlot3D;
-        if (s == "ImAnim")   return ImGuiManualLibrary::ImAnim;
+        auto lower = [](std::string t) { std::transform(t.begin(), t.end(), t.begin(), ::tolower); return t; };
+        std::string sl = lower(s);
+        if (sl == "imgui")   return ImGuiManualLibrary::ImGui;
+        if (sl == "implot")  return ImGuiManualLibrary::ImPlot;
+        if (sl == "implot3d")return ImGuiManualLibrary::ImPlot3D;
+        if (sl == "imanim")  return ImGuiManualLibrary::ImAnim;
         return std::nullopt;
     };
     std::optional<ImGuiManualLibrary> library = libraryFromString(ParseLibraryArg(argc, argv));
