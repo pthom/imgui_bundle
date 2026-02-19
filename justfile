@@ -14,7 +14,8 @@ ems_deploy:
 
 # Serve emscripten with CORS
 ems_serve:
-    python ./ci_scripts/webserver_multithread_policy.py
+    cd build_ems_release/bin && \
+    python ../../ci_scripts/webserver_multithread_policy.py -p 8642
 
 # Build the emscripten manual
 manual_ems_build:

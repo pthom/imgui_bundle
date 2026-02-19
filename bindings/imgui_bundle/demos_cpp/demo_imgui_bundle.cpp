@@ -85,7 +85,7 @@ int main(int, char **)
         HelloImGui::DockableWindow window;
         window.label = demoDetails.Label;
         window.dockSpaceName = "MainDockSpace";
-        window.GuiFunction = [&demoDetails]()
+        window.GuiFunction = [demoDetails]()
         {
             ShowModuleDemo(demoDetails.DemoFilename, demoDetails.DemoFunction, demoDetails.ShowCode);
         };
@@ -133,7 +133,7 @@ int main(int, char **)
         nbFrames += 1;
     };
 
-    auto showEditFontScaleInStatusBar = [&runnerParams]()
+    auto showEditFontScaleInStatusBar = []()
     {
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 10.f);
         ImGui::SliderFloat("Font scale", & ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);

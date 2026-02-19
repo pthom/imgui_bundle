@@ -310,6 +310,7 @@ Nooo: Try to avoid doing this...
 - [x] Add link to imgui_manual in imgui_manual for imgui
 - [x] Fix choice lib in emscripten
 - [x] Can't switch between C++ and Python!
+- [x] "Code for this demo" => fail in emscripten
 - [ ] Contact ocornut / preview: 
 https://traineq.org/ImGuiBundle/imgui_manual/?lib=imgui 
 https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot

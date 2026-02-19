@@ -44,6 +44,16 @@ if (MSVC)
     FILE(COPY msvc_note.txt DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endif()
 
+if(EMSCRIPTEN)
+    # Preload demo source files so that "Code for this demo" can display them.
+    # so source files must be embedded in the virtual filesystem at /demos_cpp and /demos_python.
+    set(_demos_root ${CMAKE_CURRENT_LIST_DIR}/..)
+    target_link_options(demo_imgui_bundle PRIVATE
+        "SHELL:--preload-file ${_demos_root}/demos_cpp@/demos_cpp"
+        "SHELL:--preload-file ${_demos_root}/demos_python@/demos_python"
+    )
+endif()
+
 if(EMSCRIPTEN AND HELLOIMGUI_EMSCRIPTEN_PTHREAD)
     # Needed addition for multithread support (required by ImGui Test Engine)
     # Note: see the shell.emscripten.html in this folder we are using a custom shell,
