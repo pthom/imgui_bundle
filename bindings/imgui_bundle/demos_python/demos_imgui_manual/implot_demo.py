@@ -410,6 +410,29 @@ def demo_scatter_plots():
 
 #-----------------------------------------------------------------------------
 
+def demo_bubble_plots():
+    IMGUI_DEMO_MARKER("Plots/Bubble Plots")
+    static = demo_bubble_plots
+
+    if not hasattr(static, "xs"):
+        np.random.seed(0)
+        nb_points = 20
+        static.xs = np.linspace(0, 0.99, nb_points, dtype=np.float64)
+        static.ys1 = np.random.rand(nb_points)
+        static.ys2 = np.random.rand(nb_points)
+        static.sz1 = 0.02 + 0.08 * np.random.rand(nb_points)
+        static.sz2 = 0.02 + 0.08 * np.random.rand(nb_points)
+
+    if implot.begin_plot("Bubble Plot", flags=implot.Flags_.equal):
+        implot.plot_bubbles("Data 1", static.xs, static.ys1, static.sz1,
+                           spec=implot.Spec(fill_alpha=0.5))
+        implot.plot_bubbles("Data 2", static.xs, static.ys2, static.sz2,
+                           spec=implot.Spec(fill_alpha=0.5, line_color=ImVec4(0, 0, 0, 0)))
+        implot.end_plot()
+
+
+#-----------------------------------------------------------------------------
+
 def demo_stairstep_plots():
     IMGUI_DEMO_MARKER("Plots/Stairstep Plots")
     static = demo_stairstep_plots
@@ -2053,7 +2076,8 @@ def show_all_demos():
             demo_header("Filled Line Plots", demo_filled_line_plots)
             demo_header("Shaded Plots", demo_shaded_plots)
             demo_header("Scatter Plots", demo_scatter_plots)
-            # demo_header("Realtime Plots", demo_realtime_plots)
+            demo_header("Bubble Plots", demo_bubble_plots)
+            # demo_header("Realtime Plots", demo_realtime_plots) # KK
             demo_header("Stairstep Plots", demo_stairstep_plots)
             demo_header("Bar Plots", demo_bar_plots)
             demo_header("Bar Groups", demo_bar_groups)
