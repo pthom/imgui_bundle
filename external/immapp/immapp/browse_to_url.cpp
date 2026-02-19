@@ -8,10 +8,12 @@
 #include <shellapi.h>
 #elif defined(__APPLE__)
 #include <TargetConditionals.h>
+#include <unistd.h>   // fork, execlp, _exit
+#include <sys/wait.h> // waitpid
+#elif defined(__linux__)
+#include <unistd.h>
+#include <sys/wait.h>
 #endif
-
-#include <cstdlib>
-#include <cstdio>
 
 
 namespace ImmApp
@@ -27,14 +29,32 @@ namespace ImmApp
 #elif TARGET_OS_IPHONE
         // Nothing on iOS
 #elif TARGET_OS_OSX
-        char cmd[1024];
-        snprintf(cmd, 1024, "open %s", url);
-        system(cmd);
+        {
+            // fork+execlp instead of system("open <url>"):
+            // system() passes the string through /bin/sh, so metacharacters in url
+            // (semicolons, backticks, ...) would be interpreted as shell commands.
+            // execlp passes url as a raw argv element — no shell, no parsing.
+            pid_t pid = fork();
+            if (pid == 0)
+            {
+                execlp("open", "open", url, nullptr);
+                _exit(1);
+            }
+            else if (pid > 0)
+                waitpid(pid, nullptr, 0);
+        }
 #elif defined(__linux__)
-        char cmd[1024];
-        snprintf(cmd, 1024, "xdg-open %s", url);
-        int r = system(cmd);
-        (void) r;
+        {
+            // Same rationale as macOS above.
+            pid_t pid = fork();
+            if (pid == 0)
+            {
+                execlp("xdg-open", "xdg-open", url, nullptr);
+                _exit(1);
+            }
+            else if (pid > 0)
+                waitpid(pid, nullptr, 0);
+        }
 #endif
     }
 }
