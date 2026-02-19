@@ -13,7 +13,6 @@
 #  https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py
 #
 ###############################################################################
-from IPython.testing.globalipapp import xsys
 
 # fmt: off
 # mypy: disable_error_code=attr-defined

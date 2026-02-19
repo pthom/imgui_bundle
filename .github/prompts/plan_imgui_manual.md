@@ -304,7 +304,8 @@ Nooo: Try to avoid doing this...
 - [x] specify default python or C++ for ShowImGuiManualGui
 - [x] add python demos
 - [x] add full python demos also (for implot, implot3d, and imanim)
-- [ ] fix imgui_demo.py : basic widget -> fail
+- [x] fix imgui_demo.py : 
+- [x] add menu bars to all demos py
 - [ ] "Code for this demo". Too narrow on intro tab
 - [ ] Add link to imgui_manual in imgui_manual for imgui
 - [ ] remove demo_assets, demo_cpp, demos_python from pyodide?
