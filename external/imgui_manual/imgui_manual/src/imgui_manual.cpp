@@ -153,7 +153,9 @@ namespace
 } // anonymous namespace
 
 
-void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library, bool show_status_bar)
+void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
+                        std::optional<ImGuiManualCppOrPython> language,
+                        bool show_status_bar)
 {
     static bool initialized = false;
     if (!initialized)
@@ -161,6 +163,9 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library, bool show_sta
         PrepareResources();
         initialized = true;
     }
+
+    if (language.has_value())
+        DemoCodeViewer_SetShowPython(language.value() == ImGuiManualCppOrPython::Python);
 
     if (library.has_value())
     {

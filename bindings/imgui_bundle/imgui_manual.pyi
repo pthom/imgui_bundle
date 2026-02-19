@@ -18,10 +18,19 @@ class ImGuiManualLibrary(enum.IntEnum):
     # ImAnim }    /* original C++ signature */
     im_anim = enum.auto()  # (= 3)
 
+class ImGuiManualCppOrPython(enum.IntEnum):
+    # Cpp,     /* original C++ signature */
+    cpp = enum.auto()  # (= 0)
+    # Python }    /* original C++ signature */
+    python = enum.auto()  # (= 1)
+
 # void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library = std::nullopt,    /* original C++ signature */
+#                         std::optional<ImGuiManualCppOrPython> language = std::nullopt,
 #                         bool show_status_bar = false);
 def show_imgui_manual_gui(
-    library: Optional[ImGuiManualLibrary] = None, show_status_bar: bool = False
+    library: Optional[ImGuiManualLibrary] = None,
+    language: Optional[ImGuiManualCppOrPython] = None,
+    show_status_bar: bool = False,
 ) -> None:
     pass
 

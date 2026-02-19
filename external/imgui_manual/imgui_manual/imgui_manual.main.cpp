@@ -49,7 +49,7 @@ int main(int argc, char** argv)
     runnerParams.appWindowParams.windowTitle = "Dear ImGui Manual";
     runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
 
-    runnerParams.callbacks.ShowGui = [library]() { ShowImGuiManualGui(library, true); };
+    runnerParams.callbacks.ShowGui = [library]() { ShowImGuiManualGui(library, ImGuiManualCppOrPython::Cpp, true); };
 
     runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
 
