@@ -13,12 +13,13 @@ from imgui_bundle.demos_python import demo_implot
 from imgui_bundle.demos_python import demo_imgui_md
 from imgui_bundle.demos_python import demo_immvision_launcher
 from imgui_bundle.demos_python import demo_imguizmo_launcher
-from imgui_bundle.demos_python import demo_tex_inspect_launcher
+#from imgui_bundle.demos_python import demo_tex_inspect_launcher
 from imgui_bundle.demos_python import demo_node_editor_launcher
 from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_nanovg_launcher
 from imgui_bundle.demos_python import demo_themes
 from imgui_bundle.demos_python import demo_logger
+from imgui_bundle.demos_python import demo_im_anim
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
@@ -51,6 +52,8 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     # Menu bar
     runner_params.imgui_window_params.show_menu_bar = True
     runner_params.imgui_window_params.show_status_bar = True
+
+    runner_params.ini_clear_previous_settings = True
 
     ################################################################################################
     # Part 2: Define the application layout and windows
@@ -92,6 +95,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         DemoDetails("Dear ImGui", demo_imgui_show_demo_window),
         DemoDetails("Demo Apps", demo_immapp_launcher),
         DemoDetails("Implot [3D]", demo_implot),
+        DemoDetails("ImAnim", demo_im_anim),
         DemoDetails("Node Editor", demo_node_editor_launcher),
         DemoDetails("Markdown", demo_imgui_md),
         DemoDetails("Text Editor", demo_text_edit),
@@ -101,7 +105,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         DemoDetails("ImGuizmo", demo_imguizmo_launcher),
         DemoDetails("Themes", demo_themes),
         DemoDetails("Logger", demo_logger),
-        DemoDetails("tex_inspect", demo_tex_inspect_launcher),
+        # DemoDetails("tex_inspect", demo_tex_inspect_launcher),
     ]
 
     for demo in demos:
@@ -139,7 +143,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     addons.with_markdown = True
     addons.with_implot = True
     addons.with_implot3d = True
-    addons.with_tex_inspect = True
+    addons.with_im_anim = True
 
     return runner_params, addons
 

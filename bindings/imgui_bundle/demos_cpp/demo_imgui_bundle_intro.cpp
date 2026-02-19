@@ -59,28 +59,6 @@ ImGuiTest* AutomationShowMeImmediateApps()
     automation->TestFunc = testFunc;
     return automation;
 }
-
-
-ImGuiTest* AutomationShowMeImGuiTestEngine()
-{
-    ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
-
-    ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeImGuiTestEngine");
-    auto testFunc = [](ImGuiTestContext *ctx) {
-        const char* tabImmAppsName = "//**/Demo Apps";
-        const char* tabIntroName = "//**/Intro";
-
-        ctx->MouseMove(tabImmAppsName);
-        ctx->MouseClick(0);
-        ctx->ItemClick("//**/demo_testengine/View code");
-        ctx->Sleep(2.5f);
-        ctx->MouseMove("//**/demo_testengine/Run");
-        ctx->MouseMove(tabIntroName);
-        ctx->MouseClick(0);
-    };
-    automation->TestFunc = testFunc;
-    return automation;
-}
 #endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 
 
@@ -93,7 +71,6 @@ void demo_imgui_bundle_intro()
 
     static ImGuiTest *automationShowMeCode = nullptr;
     static ImGuiTest *automationShowMeImmediateApps = nullptr;
-    static ImGuiTest *automationShowMeImGuiTestEngine = nullptr;
     static bool wasAutomationInited = false;
     // Create automations upon first display
     if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
@@ -103,7 +80,6 @@ void demo_imgui_bundle_intro()
             wasAutomationInited = true;
             automationShowMeCode = AutomationShowMeCode();
             automationShowMeImmediateApps = AutomationShowMeImmediateApps();
-            automationShowMeImGuiTestEngine = AutomationShowMeImGuiTestEngine();
         }
         // set automation speed
         ImGuiTestEngineIO& engineIo = ImGuiTestEngine_GetIO(HelloImGui::GetImGuiTestEngine());
@@ -113,54 +89,34 @@ void demo_imgui_bundle_intro()
     }
 #endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 
+    ImGui::NewLine();
+    ImGuiMd::RenderUnindented("*Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!*");
+
+    ImGui::NewLine();
+    ImGui::NewLine();
+    ImGui::NewLine();
     ImGuiMd::RenderUnindented(R"(
-        *Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!*
-
-        Welcome to the interactive manual for *Dear ImGui Bundle*! This manual present lots of examples, together with their code (in C++ and Python).
-
-        Advices:
-        * For Python users, read this introduction to Immediate Mode GUI with Python and Dear ImGui Bundle
-    )");
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
-    if (ImGui::Button("Immediate Mode GUI with Python"))
-        ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/blob/main/docs/docs_md/imgui_python_intro.md");
-
-    ImGuiMd::RenderUnindented(R"(
-        * This interactive manual works best when viewed together with ["Dear ImGui Bundle docs"](https://pthom.github.io/imgui_bundle/)
-        * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
-    )");
+        Welcome to the interactive manual for *Dear ImGui Bundle*!
+        This manual present lots of examples, together with their code (in C++ and Python).
+        Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
+)");
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
     if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
     {
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
+        //ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
         if (ImGui::Button("Show me##demo_code_demo"))
             ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeCode);
     }
 
+    ImGui::NewLine();
     ImGuiMd::RenderUnindented(R"(
-        * The "Demo Apps" tab is especially interesting, as it provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
+        The "Demo Apps" tab is especially interesting, as it provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
     )");
     if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
     {
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
+        //ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
         if (ImGui::Button("Show me##demo_imm_apps"))
             ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
-    }
-#endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    ImGuiMd::RenderUnindented(R"(
-        * The best way to learn about the numerous ImGui widgets usage is to use the online "ImGui Manual" (once inside the manual, you may want to click the "Python" checkbox).
-    )");
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
-    if (ImGui::Button("Open ImGui Manual"))
-        ImmApp::BrowseToUrl("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html");
-
-#ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
-    {
-        ImGui::NewLine();
-        ImGuiMd::RenderUnindented(R"(
-            *Note: the automations provided by the "Show me" buttons work thanks to [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine). See [license](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*
-        )");
     }
 #endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 

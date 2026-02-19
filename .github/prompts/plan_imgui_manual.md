@@ -301,7 +301,11 @@ Nooo: Try to avoid doing this...
     - the code viewer only shows the Python demo file source (using inspect)
 
 ### WWW
-- [ ] add python demo
+- [x] specify default python or C++ for ShowImGuiManualGui
+- [x] add python demos
+- [ ] add full python demos also (for implot, implot3d, and imanim)
+- [ ] "Code for this demo". Too narrow on intro tab
+- [ ] Add link to imgui_manual in imgui_manual for imgui
 - [ ] remove demo_assets, demo_cpp, demos_python from pyodide?
 
 ### Step 10: Integration
