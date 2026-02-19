@@ -317,9 +317,10 @@ https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
 https://traineq.org/ImGuiBundle/imgui_manual/
 
 Link to commit / demo_markers
-Link to demo bundle
+Link to demo bundle 
 
-- [ ] publish imgui_bundle_demo
+- [x] publish imgui_bundle_demo
+- [ ] fix CI errors
 - [ ] redirect current manual to new
 - [ ] close manual repo
 - [ ] pyodide wheels: remove demo_assets, demo_cpp, demos_python

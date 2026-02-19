@@ -313,16 +313,6 @@ namespace
 bool DemoCodeViewer_GetShowPython() { return g_showPython; }
 void DemoCodeViewer_SetShowPython(bool show) { g_showPython = show; }
 
-void DemoCodeViewer_Init()
-{
-    // Load all files from all libraries (for fast switching between libraries)
-    auto allFiles = GetAllDemoFiles();
-    for (const auto& file : allFiles)
-    {
-        LoadFile(file);
-    }
-}
-
 void DemoCodeViewer_Show()
 {
     // Get files for current library
@@ -377,8 +367,10 @@ void DemoCodeViewer_Show()
     if (g_currentFileIndex >= (int)files.size())
         g_currentFileIndex = 0;
 
-    // Display the current file's editor
+    // Display the current file's editor — load lazily on first access
     const auto& currentFile = files[g_currentFileIndex];
+    if (g_codeFiles.find(currentFile.baseName) == g_codeFiles.end())
+        LoadFile(currentFile);
     auto it = g_codeFiles.find(currentFile.baseName);
     if (it == g_codeFiles.end())
     {

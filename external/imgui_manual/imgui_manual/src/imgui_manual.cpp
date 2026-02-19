@@ -141,15 +141,6 @@ namespace
         }
     }
 
-    void PrepareResources()
-    {
-        // Initialize the code viewer (loads source files from assets)
-        DemoCodeViewer_Init();
-
-        // Set up the demo marker hook
-        GImGuiDemoMarkerHook = OnDemoMarkerHook;
-    }
-
 } // anonymous namespace
 
 
@@ -160,12 +151,14 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
     static bool initialized = false;
     if (!initialized)
     {
-        PrepareResources();
-        initialized = true;
+        // Set up the demo marker hook
+        GImGuiDemoMarkerHook = OnDemoMarkerHook;
 
-        // Do this once only, to allow the user to change afterwards
+        // Do this once only, to allow the user to change afterward.
         if (language.has_value())
             DemoCodeViewer_SetShowPython(language.value() == ImGuiManualCppOrPython::Python);
+
+        initialized = true;
     }
 
 

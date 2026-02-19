@@ -1,8 +1,5 @@
 #pragma once
 
-// Initialize the code viewer - loads source files from assets
-void DemoCodeViewer_Init();
-
 // Render the code viewer window (call from a dockable window's GuiFunction)
 void DemoCodeViewer_Show();
 
