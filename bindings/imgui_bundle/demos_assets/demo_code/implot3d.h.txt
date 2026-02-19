@@ -1,0 +1,1137 @@
+// SPDX-License-Identifier: MIT
+// SPDX-FileCopyrightText: 2024-2026 Breno Cunha Queiroz
+
+// ImPlot3D v0.4 WIP
+
+// Acknowledgments:
+//  ImPlot3D is heavily inspired by ImPlot
+//  (https://github.com/epezent/implot) by Evan Pezent,
+//  and follows a similar code style and structure to
+//  maintain consistency with ImPlot's API.
+
+// Table of Contents:
+// [SECTION] Macros and Defines
+// [SECTION] Forward declarations and basic types
+// [SECTION] Flags & Enumerations
+// [SECTION] Specs API
+// [SECTION] Callbacks
+// [SECTION] Context
+// [SECTION] Begin/End Plot
+// [SECTION] Setup
+// [SECTION] Plot Items
+// [SECTION] Plot Utils
+// [SECTION] Miscellaneous
+// [SECTION] Styles API (legacy)
+// [SECTION] Demo
+// [SECTION] Debugging
+// [SECTION] ImPlot3DPoint
+// [SECTION] ImPlot3DRay
+// [SECTION] ImPlot3DPlane
+// [SECTION] ImPlot3DBox
+// [SECTION] ImPlot3DQuat
+// [SECTION] ImPlot3DStyle
+// [SECTION] Meshes
+// [SECTION] Obsolete API
+
+#pragma once
+#include "imgui.h"
+#ifndef IMGUI_DISABLE
+
+// [ADAPT_IMGUI_BUNDLE]
+#ifdef IMGUI_BUNDLE_PYTHON_API
+#include <vector>
+#endif
+// IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API is always defined (even when building python bindings),
+// but is used as a marker to exclude certain functions from the python binding code.
+#define IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
+// [/ADAPT_IMGUI_BUNDLE]
+
+//-----------------------------------------------------------------------------
+// [SECTION] Macros and Defines
+//-----------------------------------------------------------------------------
+
+#ifndef IMPLOT3D_API
+#define IMPLOT3D_API
+#endif
+
+#define IMPLOT3D_VERSION "0.4 WIP"            // ImPlot3D version
+#define IMPLOT3D_VERSION_NUM 401              // Integer encoded version
+#define IMPLOT3D_AUTO -1                      // Deduce variable automatically
+#define IMPLOT3D_AUTO_COL ImVec4(0, 0, 0, -1) // Deduce color automatically
+#define IMPLOT3D_TMP template <typename T> IMPLOT3D_API
+
+//-----------------------------------------------------------------------------
+// [SECTION] Forward declarations and basic types
+//-----------------------------------------------------------------------------
+
+// Forward declarations
+struct ImPlot3DContext;
+struct ImPlot3DStyle;
+struct ImPlot3DPoint;
+struct ImPlot3DRay;
+struct ImPlot3DPlane;
+struct ImPlot3DBox;
+struct ImPlot3DRange;
+struct ImPlot3DQuat;
+
+// Enums
+typedef int ImPlot3DCond;     // -> ImPlot3DCond_              // Enum: Condition for flags
+typedef int ImPlot3DCol;      // -> ImPlot3DCol_               // Enum: Styling colors
+typedef int ImPlot3DStyleVar; // -> ImPlot3DStyleVar_          // Enum: Style variables
+typedef int ImPlot3DMarker;   // -> ImPlot3DMarker_            // Enum: Marker styles
+typedef int ImPlot3DLocation; // -> ImPlot3DLocation_          // Enum: Locations
+typedef int ImAxis3D;         // -> ImAxis3D_                  // Enum: Axis indices
+typedef int ImPlane3D;        // -> ImPlane3D_                 // Enum: Plane indices
+typedef int ImPlot3DScale;    // -> ImPlot3DScale_             // Enum: Axis scale (linear, log, etc.)
+typedef int ImPlot3DColormap; // -> ImPlot3DColormap_          // Enum: Colormaps
+typedef int ImPlot3DProp;     // -> ImPlot3DProp_              // Enum: Plot properties
+
+// Flags
+typedef int ImPlot3DFlags;         // -> ImPlot3DFlags_         // Flags: for BeginPlot()
+typedef int ImPlot3DItemFlags;     // -> ImPlot3DItemFlags_     // Flags: Item flags
+typedef int ImPlot3DScatterFlags;  // -> ImPlot3DScatterFlags_  // Flags: Scatter plot flags
+typedef int ImPlot3DLineFlags;     // -> ImPlot3DLineFlags_     // Flags: Line plot flags
+typedef int ImPlot3DTriangleFlags; // -> ImPlot3DTriangleFlags_ // Flags: Triangle plot flags
+typedef int ImPlot3DQuadFlags;     // -> ImPlot3DQuadFlags_     // Flags: Quad plot flags
+typedef int ImPlot3DSurfaceFlags;  // -> ImPlot3DSurfaceFlags_  // Flags: Surface plot flags
+typedef int ImPlot3DMeshFlags;     // -> ImPlot3DMeshFlags_     // Flags: Mesh plot flags
+typedef int ImPlot3DImageFlags;    // -> ImPlot3DImageFlags_    // Flags: Image plot flags
+typedef int ImPlot3DDummyFlags;    // -> ImPlot3DDummyFlags_    // Flags: Dummy flags
+typedef int ImPlot3DLegendFlags;   // -> ImPlot3DLegendFlags_   // Flags: Legend flags
+typedef int ImPlot3DAxisFlags;     // -> ImPlot3DAxisFlags_     // Flags: Axis flags
+
+// Fallback for ImGui versions before v1.92: define ImTextureRef as ImTextureID
+// You can `#define IMPLOT3D_NO_IMTEXTUREREF` to avoid this fallback
+#if !defined(IMGUI_HAS_TEXTURES) && !defined(IMPLOT3D_NO_IMTEXTUREREF)
+typedef ImTextureID ImTextureRef;
+#endif
+
+//-----------------------------------------------------------------------------
+// [SECTION] Flags & Enumerations
+//-----------------------------------------------------------------------------
+
+// Plotting properties. These provide syntactic sugar for creating ImPlot3DSpec from (ImPlot3DProp,value) pairs
+enum ImPlot3DProp_ {
+    ImPlot3DProp_LineColor,       // Line color; IMPLOT3D_AUTO_COL will use next Colormap color
+    ImPlot3DProp_LineWeight,      // Line weight in pixels
+    ImPlot3DProp_FillColor,       // Fill color (applies to shaded regions); IMPLOT3D_AUTO_COL will use next Colormap color
+    ImPlot3DProp_FillAlpha,       // Alpha multiplier (applies to FillColor and MarkerFillColor)
+    ImPlot3DProp_Marker,          // Marker type
+    ImPlot3DProp_MarkerSize,      // Size of markers (radius) *in pixels*
+    ImPlot3DProp_MarkerLineColor, // Marker outline color; IMPLOT3D_AUTO_COL will use next LineColor
+    ImPlot3DProp_MarkerFillColor, // Marker fill color; IMPLOT3D_AUTO_COL will use LineColor
+    ImPlot3DProp_Offset,          // Data index offset
+    ImPlot3DProp_Stride,          // Data stride in bytes; IMPLOT3D_AUTO will result in sizeof(T) where T is the type passed to PlotX
+    ImPlot3DProp_Flags            // Optional item flags; can be composed from common ImPlot3DItemFlags and/or specialized ImPlot3DXFlags
+};
+
+// Flags for ImPlot3D::BeginPlot()
+enum ImPlot3DFlags_ {
+    ImPlot3DFlags_None = 0,             // Default
+    ImPlot3DFlags_NoTitle = 1 << 0,     // Hide plot title
+    ImPlot3DFlags_NoLegend = 1 << 1,    // Hide plot legend
+    ImPlot3DFlags_NoMouseText = 1 << 2, // Hide mouse position in plot coordinates
+    ImPlot3DFlags_NoClip = 1 << 3,      // Disable 3D box clipping
+    ImPlot3DFlags_NoMenus = 1 << 4,     // The user will not be able to open context menus
+    ImPlot3DFlags_Equal = 1 << 5,       // X, Y, and Z axes will be constrained to have the same units/pixel
+    ImPlot3DFlags_NoRotate = 1 << 6,    // Lock rotation interaction
+    ImPlot3DFlags_NoPan = 1 << 7,       // Lock panning/translation interaction
+    ImPlot3DFlags_NoZoom = 1 << 8,      // Lock zoom interaction
+    ImPlot3DFlags_NoInputs = 1 << 9,    // Disable all user inputs
+    ImPlot3DFlags_CanvasOnly = ImPlot3DFlags_NoTitle | ImPlot3DFlags_NoLegend | ImPlot3DFlags_NoMouseText,
+};
+
+// Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)
+enum ImPlot3DCond_ {
+    ImPlot3DCond_None = ImGuiCond_None,     // No condition (always set the variable), same as _Always
+    ImPlot3DCond_Always = ImGuiCond_Always, // No condition (always set the variable)
+    ImPlot3DCond_Once = ImGuiCond_Once,     // Set the variable once per runtime session (only the first call will succeed)
+};
+
+enum ImPlot3DCol_ {
+    // Plot colors
+    ImPlot3DCol_TitleText,  // Title color
+    ImPlot3DCol_InlayText,  // Color for texts appearing inside of plots
+    ImPlot3DCol_FrameBg,    // Frame background color
+    ImPlot3DCol_PlotBg,     // Plot area background color
+    ImPlot3DCol_PlotBorder, // Plot area border color
+    // Legend colors
+    ImPlot3DCol_LegendBg,     // Legend background color
+    ImPlot3DCol_LegendBorder, // Legend border color
+    ImPlot3DCol_LegendText,   // Legend text color
+    // Axis colors
+    ImPlot3DCol_AxisText, // Axis label and tick lables color
+    ImPlot3DCol_AxisGrid, // Axis grid color
+    ImPlot3DCol_AxisTick, // Axis tick color (defaults to AxisGrid)
+    ImPlot3DCol_COUNT,
+};
+
+// Plot styling variables
+enum ImPlot3DStyleVar_ {
+    // Item style
+    ImPlot3DStyleVar_LineWeight, // float, plot item line weight in pixels
+    ImPlot3DStyleVar_Marker,     // int,   marker specification
+    ImPlot3DStyleVar_MarkerSize, // float, marker size in pixels (roughly the marker's "radius")
+    ImPlot3DStyleVar_FillAlpha,  // float, alpha modifier applied to all plot item fills
+    // Plot style
+    ImPlot3DStyleVar_PlotDefaultSize, // ImVec2, default size used when ImVec2(0,0) is passed to BeginPlot
+    ImPlot3DStyleVar_PlotMinSize,     // ImVec2, minimum size plot frame can be when shrunk
+    ImPlot3DStyleVar_PlotPadding,     // ImVec2, padding between widget frame and plot area, labels, or outside legends (i.e. main padding)
+    ImPlot3DStyleVar_LabelPadding,    // ImVec2, padding between axes labels, tick labels, and plot edge
+    ImPlot3DStyleVar_ViewScaleFactor, // float, scale factor for 3D view, you can use it to make the whole plot larger or smaller
+    // Legend style
+    ImPlot3DStyleVar_LegendPadding,      // ImVec2, legend padding from plot edges
+    ImPlot3DStyleVar_LegendInnerPadding, // ImVec2, legend inner padding from legend edges
+    ImPlot3DStyleVar_LegendSpacing,      // ImVec2, spacing between legend entries
+    ImPlot3DStyleVar_COUNT
+};
+
+enum ImPlot3DMarker_ {
+    ImPlot3DMarker_None = -2, // No marker
+    ImPlot3DMarker_Auto = -1, // Automatic marker selection
+    ImPlot3DMarker_Circle,    // Circle marker (default)
+    ImPlot3DMarker_Square,    // Square maker
+    ImPlot3DMarker_Diamond,   // Diamond marker
+    ImPlot3DMarker_Up,        // Upward-pointing triangle marker
+    ImPlot3DMarker_Down,      // Downward-pointing triangle marker
+    ImPlot3DMarker_Left,      // Leftward-pointing triangle marker
+    ImPlot3DMarker_Right,     // Rightward-pointing triangle marker
+    ImPlot3DMarker_Cross,     // Cross marker (not fillable)
+    ImPlot3DMarker_Plus,      // Plus marker (not fillable)
+    ImPlot3DMarker_Asterisk,  // Asterisk marker (not fillable)
+    ImPlot3DMarker_COUNT
+};
+
+// Flags for items
+enum ImPlot3DItemFlags_ {
+    ImPlot3DItemFlags_None = 0,          // Default
+    ImPlot3DItemFlags_NoLegend = 1 << 0, // The item won't have a legend entry displayed
+    ImPlot3DItemFlags_NoFit = 1 << 1,    // The item won't be considered for plot fits
+};
+
+// Flags for PlotScatter
+enum ImPlot3DScatterFlags_ {
+    ImPlot3DScatterFlags_None = 0, // Default
+    ImPlot3DScatterFlags_NoLegend = ImPlot3DItemFlags_NoLegend,
+    ImPlot3DScatterFlags_NoFit = ImPlot3DItemFlags_NoFit,
+};
+
+// Flags for PlotLine
+enum ImPlot3DLineFlags_ {
+    ImPlot3DLineFlags_None = 0, // Default
+    ImPlot3DLineFlags_NoLegend = ImPlot3DItemFlags_NoLegend,
+    ImPlot3DLineFlags_NoFit = ImPlot3DItemFlags_NoFit,
+    ImPlot3DLineFlags_Segments = 1 << 10, // A line segment will be rendered from every two consecutive points
+    ImPlot3DLineFlags_Loop = 1 << 11,     // The last and first point will be connected to form a closed loop
+    ImPlot3DLineFlags_SkipNaN = 1 << 12,  // NaNs values will be skipped instead of rendered as missing data
+};
+
+// Flags for PlotTriangle
+enum ImPlot3DTriangleFlags_ {
+    ImPlot3DTriangleFlags_None = 0, // Default
+    ImPlot3DTriangleFlags_NoLegend = ImPlot3DItemFlags_NoLegend,
+    ImPlot3DTriangleFlags_NoFit = ImPlot3DItemFlags_NoFit,
+    ImPlot3DTriangleFlags_NoLines = 1 << 10,   // No lines will be rendered
+    ImPlot3DTriangleFlags_NoFill = 1 << 11,    // No fill will be rendered
+    ImPlot3DTriangleFlags_NoMarkers = 1 << 12, // No markers will be rendered
+};
+
+// Flags for PlotQuad
+enum ImPlot3DQuadFlags_ {
+    ImPlot3DQuadFlags_None = 0, // Default
+    ImPlot3DQuadFlags_NoLegend = ImPlot3DItemFlags_NoLegend,
+    ImPlot3DQuadFlags_NoFit = ImPlot3DItemFlags_NoFit,
+    ImPlot3DQuadFlags_NoLines = 1 << 10,   // No lines will be rendered
+    ImPlot3DQuadFlags_NoFill = 1 << 11,    // No fill will be rendered
+    ImPlot3DQuadFlags_NoMarkers = 1 << 12, // No markers will be rendered
+};
+
+// Flags for PlotSurface
+enum ImPlot3DSurfaceFlags_ {
+    ImPlot3DSurfaceFlags_None = 0, // Default
+    ImPlot3DSurfaceFlags_NoLegend = ImPlot3DItemFlags_NoLegend,
+    ImPlot3DSurfaceFlags_NoFit = ImPlot3DItemFlags_NoFit,
+    ImPlot3DSurfaceFlags_NoLines = 1 << 10,   // No lines will be rendered
+    ImPlot3DSurfaceFlags_NoFill = 1 << 11,    // No fill will be rendered
+    ImPlot3DSurfaceFlags_NoMarkers = 1 << 12, // No markers will be rendered
+};
+
+// Flags for PlotMesh
+enum ImPlot3DMeshFlags_ {
+    ImPlot3DMeshFlags_None = 0, // Default
+    ImPlot3DMeshFlags_NoLegend = ImPlot3DItemFlags_NoLegend,
+    ImPlot3DMeshFlags_NoFit = ImPlot3DItemFlags_NoFit,
+    ImPlot3DMeshFlags_NoLines = 1 << 10,   // No lines will be rendered
+    ImPlot3DMeshFlags_NoFill = 1 << 11,    // No fill will be rendered
+    ImPlot3DMeshFlags_NoMarkers = 1 << 12, // No markers will be rendered
+};
+
+// Flags for PlotImage
+enum ImPlot3DImageFlags_ {
+    ImPlot3DImageFlags_None = 0, // Default
+    ImPlot3DImageFlags_NoLegend = ImPlot3DItemFlags_NoLegend,
+    ImPlot3DImageFlags_NoFit = ImPlot3DItemFlags_NoFit,
+};
+
+// Flags for PlotDummy
+enum ImPlot3DDummyFlags_ {
+    ImPlot3DDummyFlags_None = 0 // Default
+};
+
+// Flags for legends
+enum ImPlot3DLegendFlags_ {
+    ImPlot3DLegendFlags_None = 0,                 // Default
+    ImPlot3DLegendFlags_NoButtons = 1 << 0,       // Legend icons will not function as hide/show buttons
+    ImPlot3DLegendFlags_NoHighlightItem = 1 << 1, // Plot items will not be highlighted when their legend entry is hovered
+    ImPlot3DLegendFlags_Horizontal = 1 << 2,      // Legend entries will be displayed horizontally
+};
+
+// Used to position legend on a plot
+enum ImPlot3DLocation_ {
+    ImPlot3DLocation_Center = 0,                                                 // Center-center
+    ImPlot3DLocation_North = 1 << 0,                                             // Top-center
+    ImPlot3DLocation_South = 1 << 1,                                             // Bottom-center
+    ImPlot3DLocation_West = 1 << 2,                                              // Center-left
+    ImPlot3DLocation_East = 1 << 3,                                              // Center-right
+    ImPlot3DLocation_NorthWest = ImPlot3DLocation_North | ImPlot3DLocation_West, // Top-left
+    ImPlot3DLocation_NorthEast = ImPlot3DLocation_North | ImPlot3DLocation_East, // Top-right
+    ImPlot3DLocation_SouthWest = ImPlot3DLocation_South | ImPlot3DLocation_West, // Bottom-left
+    ImPlot3DLocation_SouthEast = ImPlot3DLocation_South | ImPlot3DLocation_East  // Bottom-right
+};
+
+// Flags for axis
+enum ImPlot3DAxisFlags_ {
+    ImPlot3DAxisFlags_None = 0,              // Default
+    ImPlot3DAxisFlags_NoLabel = 1 << 0,      // No axis label will be displayed
+    ImPlot3DAxisFlags_NoGridLines = 1 << 1,  // No grid lines will be displayed
+    ImPlot3DAxisFlags_NoTickMarks = 1 << 2,  // No tick marks will be displayed
+    ImPlot3DAxisFlags_NoTickLabels = 1 << 3, // No tick labels will be displayed
+    ImPlot3DAxisFlags_LockMin = 1 << 4,      // The axis minimum value will be locked when panning/zooming
+    ImPlot3DAxisFlags_LockMax = 1 << 5,      // The axis maximum value will be locked when panning/zooming
+    ImPlot3DAxisFlags_AutoFit = 1 << 6,      // Axis will be auto-fitting to data extents
+    ImPlot3DAxisFlags_Invert = 1 << 7,       // The axis will be inverted
+    ImPlot3DAxisFlags_PanStretch = 1 << 8,   // Panning in a locked or constrained state will cause the axis to stretch if possible
+    ImPlot3DAxisFlags_Lock = ImPlot3DAxisFlags_LockMin | ImPlot3DAxisFlags_LockMax,
+    ImPlot3DAxisFlags_NoDecorations = ImPlot3DAxisFlags_NoLabel | ImPlot3DAxisFlags_NoGridLines | ImPlot3DAxisFlags_NoTickLabels,
+};
+
+// Axis indices
+enum ImAxis3D_ {
+    ImAxis3D_X = 0, // X-axis
+    ImAxis3D_Y,     // Y-axis
+    ImAxis3D_Z,     // Z-axis
+    ImAxis3D_COUNT,
+};
+
+// Plane indices
+enum ImPlane3D_ {
+    ImPlane3D_YZ = 0, // YZ plane (perpendicular to X-axis)
+    ImPlane3D_XZ,     // XZ plane (perpendicular to Y-axis)
+    ImPlane3D_XY,     // XY plane (perpendicular to Z-axis)
+    ImPlane3D_COUNT,
+};
+
+// Axis scale
+enum ImPlot3DScale_ {
+    ImPlot3DScale_Linear = 0, // Default linear scale
+    ImPlot3DScale_Log10,      // Base 10 log scale
+    ImPlot3DScale_SymLog,     // Symmetric base 10 log scale
+};
+
+// Colormaps
+enum ImPlot3DColormap_ {
+    ImPlot3DColormap_Deep = 0,      // Same as seaborn "deep"
+    ImPlot3DColormap_Dark = 1,      // Same as matplotlib "Set1"
+    ImPlot3DColormap_Pastel = 2,    // Same as matplotlib "Pastel1"
+    ImPlot3DColormap_Paired = 3,    // Same as matplotlib "Paired"
+    ImPlot3DColormap_Viridis = 4,   // Same as matplotlib "viridis"
+    ImPlot3DColormap_Plasma = 5,    // Same as matplotlib "plasma"
+    ImPlot3DColormap_Hot = 6,       // Same as matplotlib/MATLAB "hot"
+    ImPlot3DColormap_Cool = 7,      // Same as matplotlib/MATLAB "cool"
+    ImPlot3DColormap_Pink = 8,      // Same as matplotlib/MATLAB "pink"
+    ImPlot3DColormap_Jet = 9,       // Same as matplotlib/MATLAB "jet"
+    ImPlot3DColormap_Twilight = 10, // Same as matplotlib "twilight"
+    ImPlot3DColormap_RdBu = 11,     // Same as matplotlib "RdBu"
+    ImPlot3DColormap_BrBG = 12,     // Same as matplotlib "BrGB"
+    ImPlot3DColormap_PiYG = 13,     // Same as matplotlib "PiYG"
+    ImPlot3DColormap_Spectral = 14, // Same as matplotlib "Spectral"
+    ImPlot3DColormap_Greys = 15,    // White/black
+};
+
+//-----------------------------------------------------------------------------
+// [SECTION] Specs API
+//-----------------------------------------------------------------------------
+
+// Plot item styling specification. Provide these to PlotX functions to override styling, specify
+// offsetting or stride, or set optional flags. This struct can be used in the following ways:
+//
+// 1. By declaring and defining a struct instance:
+//
+//    ImPlot3DSpec spec;
+//    spec.LineColor = ImVec4(1,0,0,1);
+//    spec.LineWeight = 2.0f;
+//    spec.Marker = ImPlot3DMarker_Circle;
+//    spec.Flags = ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments;
+//    ImPlot3D::PlotLine("MyLine", xs, ys, zs, 100, spec);
+//
+// 2. Inline using ImPlot3DProp,value pairs (order does NOT matter):
+//
+//    ImPlot3D::PlotLine("MyLine", xs, ys, zs, 100, {
+//      ImPlot3DProp_LineColor, ImVec4(1,0,0,1),
+//      ImPlot3DProp_LineWeight, 2.0f,
+//      ImPlot3DProp_Marker, ImPlot3DMarker_Circle,
+//      ImPlot3DProp_Flags, ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments
+//    });
+struct ImPlot3DSpec {
+    ImVec4 LineColor = IMPLOT3D_AUTO_COL;        // Line color; IMPLOT3D_AUTO_COL will use next Colormap color
+    float LineWeight = 1.0f;                     // Line weight in pixels
+    ImVec4 FillColor = IMPLOT3D_AUTO_COL;        // Fill color (applies to shaded regions); IMPLOT3D_AUTO_COL will use next Colormap color
+    float FillAlpha = IMPLOT3D_AUTO;             // Alpha multiplier (applies to FillColor and MarkerFillColor)
+    ImPlot3DMarker Marker = ImPlot3DMarker_Auto; // Marker type
+    float MarkerSize = IMPLOT3D_AUTO;            // Size of markers (radius) *in pixels*
+    ImVec4 MarkerLineColor = IMPLOT3D_AUTO_COL;  // Marker outline color; IMPLOT3D_AUTO_COL will use LineColor
+    ImVec4 MarkerFillColor = IMPLOT3D_AUTO_COL;  // Marker fill color; IMPLOT3D_AUTO_COL will use LineColor
+    int Offset = 0;                              // Data index offset
+    int Stride = IMPLOT3D_AUTO;                  // Data stride in bytes; IMPLOT3D_AUTO will result in sizeof(T) where T is the type passed to PlotX
+    ImPlot3DItemFlags Flags =
+        ImPlot3DItemFlags_None; // Optional item flags; can be composed from common ImPlot3DItemFlags and/or specialized ImPlot3DXFlags
+
+#ifdef IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
+    // Bundle: omit default constructor to generation of named constructor in Python (spec = ImPlotSpec(line_weight=..., marker=..., etc.) instead of spec = ImPlotSpec() and then setting properties manually)
+    ImPlot3DSpec() {}
+#endif
+
+#ifdef IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
+    // We don't publish those in Python. Use named constructor instead.
+
+    // Construct a plot item specification from (ImPlot3DProp,value) pairs in any order
+    // E.g. ImPlot3DSpec(ImPlot3DProp_LineColor, my_color, ImPlot3DProp_Marker, ImPlot3DMarker_Circle)
+    template <typename... Args> ImPlot3DSpec(Args... args) {
+        static_assert((sizeof...(Args)) % 2 == 0, "Odd number of arguments! You must provide (ImPlot3DProp,value) pairs!");
+        SetProp(args...);
+    }
+
+    // Set properties from (ImPlot3DProp,value) pairs in any order
+    // E.g. SetProp(ImPlot3DProp_LineColor, my_color, ImPlot3DProp_Marker, ImPlot3DMarker_Circle)
+    template <typename Arg, typename... Args> void SetProp(ImPlot3DProp prop, Arg arg, Args... args) {
+        static_assert((sizeof...(Args)) % 2 == 0, "Odd number of arguments! You must provide (ImPlot3DProp,value) pairs!");
+        SetProp(prop, arg);
+        SetProp(args...);
+    }
+
+    // Set a property from a scalar value.
+    template <typename T> void SetProp(ImPlot3DProp prop, T v) {
+        switch (prop) {
+            case ImPlot3DProp_LineColor: LineColor = ImGui::ColorConvertU32ToFloat4((ImU32)v); return;
+            case ImPlot3DProp_LineWeight: LineWeight = (float)v; return;
+            case ImPlot3DProp_FillColor: FillColor = ImGui::ColorConvertU32ToFloat4((ImU32)v); return;
+            case ImPlot3DProp_FillAlpha: FillAlpha = (float)v; return;
+            case ImPlot3DProp_Marker: Marker = (ImPlot3DMarker)v; return;
+            case ImPlot3DProp_MarkerSize: MarkerSize = (float)v; return;
+            case ImPlot3DProp_MarkerLineColor: MarkerLineColor = ImGui::ColorConvertU32ToFloat4((ImU32)v); return;
+            case ImPlot3DProp_MarkerFillColor: MarkerFillColor = ImGui::ColorConvertU32ToFloat4((ImU32)v); return;
+            case ImPlot3DProp_Offset: Offset = (int)v; return;
+            case ImPlot3DProp_Stride: Stride = (int)v; return;
+            case ImPlot3DProp_Flags: Flags = (ImPlot3DItemFlags)v; return;
+            default: break;
+        }
+        IM_ASSERT(0 && "User provided an ImPlot3DProp which cannot be set from scalar value!");
+    }
+
+    // Set a property from an ImVec4 value.
+    void SetProp(ImPlot3DProp prop, const ImVec4& v) {
+        switch (prop) {
+            case ImPlot3DProp_LineColor: LineColor = v; return;
+            case ImPlot3DProp_FillColor: FillColor = v; return;
+            case ImPlot3DProp_MarkerLineColor: MarkerLineColor = v; return;
+            case ImPlot3DProp_MarkerFillColor: MarkerFillColor = v; return;
+            default: break;
+        }
+        IM_ASSERT(0 && "User provided an ImPlot3DProp which cannot be set from ImVec4 value!");
+    }
+#endif
+};
+
+//-----------------------------------------------------------------------------
+// [SECTION] Callbacks
+//-----------------------------------------------------------------------------
+
+// Callback signature for axis tick label formatter.
+// Given a numeric #value, format it into #buff with maximum #size characters.
+// Optionally use #user_data for context. Return the number of characters written (excluding null terminator)
+typedef int (*ImPlot3DFormatter)(double value, char* buff, int size, void* user_data);
+
+// Callback signature for axis transform
+typedef double (*ImPlot3DTransform)(double value, void* user_data);
+
+namespace ImPlot3D {
+
+//-----------------------------------------------------------------------------
+// [SECTION] Context
+//-----------------------------------------------------------------------------
+
+// Creates a new ImPlot3D context. Call this after ImGui::CreateContext
+IMPLOT3D_API ImPlot3DContext* CreateContext();
+// Destroys an ImPlot3D context. Call this before ImGui::DestroyContext. nullptr = destroy current context
+IMPLOT3D_API void DestroyContext(ImPlot3DContext* ctx = nullptr);
+// Returns the current ImPlot3D context. nullptr if no context has been set
+IMPLOT3D_API ImPlot3DContext* GetCurrentContext();
+// Sets the current ImPlot3D context
+IMPLOT3D_API void SetCurrentContext(ImPlot3DContext* ctx);
+
+//-----------------------------------------------------------------------------
+// [SECTION] Begin/End Plot
+//-----------------------------------------------------------------------------
+
+// Starts a 3D plotting context. If this function returns true, EndPlot() MUST
+// be called! You are encouraged to use the following convention:
+//
+// if (ImPlot3D::BeginPlot(...)) {
+//     ImPlot3D::PlotLine(...);
+//     ...
+//     ImPlot3D::EndPlot();
+// }
+//
+// Important notes:
+// - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID
+//   collisions or don't want to display a title in the plot, use double hashes
+//   (e.g. "MyPlot##HiddenIdText" or "##NoTitle").
+// - #size is the **frame** size of the plot widget, not the plot area.
+IMPLOT3D_API bool BeginPlot(const char* title_id, const ImVec2& size = ImVec2(-1, 0), ImPlot3DFlags flags = 0);
+IMPLOT3D_API void EndPlot(); // Only call if BeginPlot() returns true!
+
+//-----------------------------------------------------------------------------
+// [SECTION] Setup
+//-----------------------------------------------------------------------------
+
+// The following API allows you to setup and customize various aspects of the
+// current plot. The functions should be called immediately after BeginPlot()
+// and before any other API calls. Typical usage is as follows:
+
+// if (ImPlot3D::BeginPlot(...)) {                     1) Begin a new plot
+//     ImPlot3D::SetupAxis(ImAxis3D_X, "My X-Axis");    2) Make Setup calls
+//     ImPlot3D::SetupAxis(ImAxis3D_Y, "My Y-Axis");
+//     ImPlot3D::SetupLegend(ImPlotLocation_North);
+//     ...
+//     ImPlot3D::SetupFinish();                        3) [Optional] Explicitly finish setup
+//     ImPlot3D::PlotLine(...);                        4) Plot items
+//     ...
+//     ImPlot3D::EndPlot();                            5) End the plot
+// }
+//
+// Important notes:
+//
+// - Always call Setup code at the top of your BeginPlot conditional statement.
+// - Setup is locked once you start plotting or explicitly call SetupFinish.
+//   Do NOT call Setup code after you begin plotting or after you make
+//   any non-Setup API calls (e.g. utils like PlotToPixels also lock Setup).
+// - Calling SetupFinish is OPTIONAL, but probably good practice. If you do not
+//   call it yourself, then the first subsequent plotting or utility function will
+//   call it for you.
+
+// Enables an axis or sets the label and/or flags for an existing axis. Leave #label = nullptr for no label
+IMPLOT3D_API void SetupAxis(ImAxis3D axis, const char* label = nullptr, ImPlot3DAxisFlags flags = 0);
+
+// Sets an axis range limits. If ImPlot3DCond_Always is used, the axis limits will be locked.
+// Note: To invert an axis, use ImPlot3DAxisFlags_Invert with SetupAxis instead of swapping min/max
+IMPLOT3D_API void SetupAxisLimits(ImAxis3D axis, double v_min, double v_max, ImPlot3DCond cond = ImPlot3DCond_Once);
+
+// Sets the format of numeric axis labels via formatter callback. Given value, write a label into buff. Optionally pass user data
+IMPLOT3D_API void SetupAxisFormat(ImAxis3D axis, ImPlot3DFormatter formatter, void* data = nullptr);
+
+// Sets an axis' ticks and optionally the labels. To keep the default ticks, set #keep_default=true
+IMPLOT3D_API void SetupAxisTicks(ImAxis3D axis, const double* values, int n_ticks, const char* const labels[] = nullptr, bool keep_default = false);
+
+// Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true
+IMPLOT3D_API void SetupAxisTicks(ImAxis3D axis, double v_min, double v_max, int n_ticks, const char* const labels[] = nullptr,
+                                 bool keep_default = false);
+
+// Sets an axis' scale using built-in options
+IMPLOT3D_API void SetupAxisScale(ImAxis3D axis, ImPlot3DScale scale);
+
+#ifdef IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
+// Sets an axis' scale using user supplied forward and inverse transforms
+IMPLOT3D_API void SetupAxisScale(ImAxis3D axis, ImPlot3DTransform forward, ImPlot3DTransform inverse, void* data = nullptr);
+#endif
+
+// Sets an axis' limits constraints. The axis will be constrained to never go below #v_min or above #v_max
+IMPLOT3D_API void SetupAxisLimitsConstraints(ImAxis3D axis, double v_min, double v_max);
+
+// Sets an axis' zoom constraints. The zoom (axis range size: range.max - range.min) will be constrained between #zoom_min and #zoom_max
+IMPLOT3D_API void SetupAxisZoomConstraints(ImAxis3D axis, double zoom_min, double zoom_max);
+
+// Sets the label and/or flags for primary X/Y/Z axes (shorthand for three calls to SetupAxis)
+IMPLOT3D_API void SetupAxes(const char* x_label, const char* y_label, const char* z_label, ImPlot3DAxisFlags x_flags = 0,
+                            ImPlot3DAxisFlags y_flags = 0, ImPlot3DAxisFlags z_flags = 0);
+
+// Sets the X/Y/Z axes range limits. If ImPlot3DCond_Always is used, the axes limits will be locked (shorthand for three calls to SetupAxisLimits)
+IMPLOT3D_API void SetupAxesLimits(double x_min, double x_max, double y_min, double y_max, double z_min, double z_max,
+                                  ImPlot3DCond cond = ImPlot3DCond_Once);
+
+// Sets the plot box rotation given the elevation and azimuth angles in degrees. If ImPlot3DCond_Always is used, the rotation will be locked
+IMPLOT3D_API void SetupBoxRotation(double elevation, double azimuth, bool animate = false, ImPlot3DCond cond = ImPlot3DCond_Once);
+
+// Sets the plot box rotation given a quaternion. If ImPlot3DCond_Always is used, the rotation will be locked
+IMPLOT3D_API void SetupBoxRotation(ImPlot3DQuat rotation, bool animate = false, ImPlot3DCond cond = ImPlot3DCond_Once);
+
+// Sets the plot box initial rotation given the elevation and azimuth angles in degrees. The initial rotation is the rotation the plot goes back to
+// when a left mouse button double click happens
+IMPLOT3D_API void SetupBoxInitialRotation(double elevation, double azimuth);
+
+// Sets the plot box initial rotation given a quaternion. The initial rotation is the rotation the plot goes back to when a left mouse button double
+// click happens
+IMPLOT3D_API void SetupBoxInitialRotation(ImPlot3DQuat rotation);
+
+// Sets the plot box X/Y/Z scale. A scale of 1.0 is the default. Values greater than 1.0 enlarge the plot, while values between 0.0 and 1.0 shrink it
+IMPLOT3D_API void SetupBoxScale(double x, double y, double z);
+
+// Sets up the plot legend location and flags
+IMPLOT3D_API void SetupLegend(ImPlot3DLocation location, ImPlot3DLegendFlags flags = 0);
+
+//-----------------------------------------------------------------------------
+// [SECTION] Plot Items
+//-----------------------------------------------------------------------------
+
+// The plotting API is provided below. Call these functions between
+// BeginPlot/EndPlot and after any Setup API calls.
+//
+// The templated functions are explicitly instantiated in implot3d_items.cpp.
+// They are not intended to be used generically with custom types. You will get
+// a linker error if you try! All functions support the following scalar types:
+//
+// float, double, ImS8, ImU8, ImS16, ImU16, ImS32, ImU32, ImS64, ImU64
+//
+// If you need to plot custom or non-homogenous data you have a few options:
+//
+// 1. If your data is a simple struct/class (e.g. Vector3f), you can use striding.
+//    This is the most performant option if applicable.
+//
+//    struct Vector3f { float X, Y, Z; };
+//    ...
+//    Vector3f data[42];
+//    ImPlot3D::PlotLine("line", &data[0].X, &data[0].Y, &data[0].Z, 42, {ImPlot3DProp_Stride, sizeof(Vector2f)});
+//
+// 2. If your data is in separate arrays or requires computation, you can copy/transform
+//    it into temporary float or double arrays before plotting.
+//
+// NB: All types are converted to double before plotting. You may lose information
+// if you try plotting extremely large 64-bit integral types. Proceed with caution!
+
+// Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates
+IMPLOT3D_TMP void PlotScatter(const char* label_id, const T* xs, const T* ys, const T* zs, int count, const ImPlot3DSpec& spec = ImPlot3DSpec());
+
+// Plots a line in 3D. Consecutive points are connected with line segments
+IMPLOT3D_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, const T* zs, int count, const ImPlot3DSpec& spec = ImPlot3DSpec());
+
+// Plots triangles in 3D. Every 3 consecutive points define a triangle
+IMPLOT3D_TMP void PlotTriangle(const char* label_id, const T* xs, const T* ys, const T* zs, int count, const ImPlot3DSpec& spec = ImPlot3DSpec());
+
+// Plots quads in 3D. Every 4 consecutive points define a quadrilateral
+IMPLOT3D_TMP void PlotQuad(const char* label_id, const T* xs, const T* ys, const T* zs, int count, const ImPlot3DSpec& spec = ImPlot3DSpec());
+
+// [ADAPT_IMGUI_BUNDLE]
+#ifdef IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
+// Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays, and the z array contains the height of each vertex. A
+// total of x_count * y_count vertices are expected for each array. Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them
+// to a predefined range
+IMPLOT3D_TMP void PlotSurface(const char* label_id, const T* xs, const T* ys, const T* zs, int x_count, int y_count, double scale_min = 0.0,
+                              double scale_max = 0.0, const ImPlot3DSpec& spec = ImPlot3DSpec());
+#endif
+#ifdef IMGUI_BUNDLE_PYTHON_API
+// A version of PlotSurface whose API is easier to port to Python
+//    (params xs_count, ys_count and zs_count are removed in the Python API, but are used in the bindings code generation)
+
+// Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays,
+// and the z array contains the height of each vertex.
+// A total of x_count * y_count vertices are expected for each array.
+// Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.
+IMPLOT3D_TMP void PlotSurface(
+    const char* label_id,
+    const T* xs, int xs_count,
+    const T* ys, int ys_count,
+    const T* zs, int zs_count,
+    int x_count, int y_count,
+    double scale_min = 0.0, double scale_max = 0.0,
+    const ImPlot3DSpec& spec = ImPlot3DSpec()
+    );
+#endif
+// [/ADAPT_IMGUI_BUNDLE]
+
+// [ADAPT_IMGUI_BUNDLE]
+#ifdef IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
+    // Plots a 3D mesh given vertex positions and indices. Triangles are defined by the index buffer (every 3 indices form a triangle)
+    IMPLOT3D_API void PlotMesh(const char* label_id, const ImPlot3DPoint* vtx, const unsigned int* idx, int vtx_count, int idx_count, const ImPlot3DSpec& spec = ImPlot3DSpec());
+#endif
+#ifdef IMGUI_BUNDLE_PYTHON_API
+    using UInt = unsigned int;
+    struct Mesh
+    {	
+        std::vector<ImPlot3DPoint> Points;
+		std::vector<UInt> Idx;  // Triangles are defined by the index buffer (every 3 indices form a triangle)
+    };
+    IMPLOT3D_API void PlotMesh(const char* label_id, const Mesh& mesh, const ImPlot3DSpec& spec = ImPlot3DSpec());
+#endif
+// [/ADAPT_IMGUI_BUNDLE]
+
+// Plots a rectangular image in 3D defined by its center and two direction vectors (axes).
+// #center is the center of the rectangle in plot coordinates.
+// #axis_u and #axis_v define the local axes and half-extents of the rectangle in 3D space.
+// The rectangle is formed by moving from the center along ±axis_u and ±axis_v.
+// #uv0 and #uv1 define the texture mapping.
+// #tint_col can be used to tint the image.
+IMPLOT3D_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint& center, const ImPlot3DPoint& axis_u,
+                            const ImPlot3DPoint& axis_v, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1),
+                            const ImVec4& tint_col = ImVec4(1, 1, 1, 1), const ImPlot3DSpec& spec = ImPlot3DSpec());
+
+// Plots an image using four arbitrary 3D points that define a quad in space.
+// Each corner (p0 to p3) corresponds to a corner in the image, and #uv0 to #uv3 are the texture coordinates for each.
+// This overload allows full control over orientation, shape, and distortion.
+// Note: The quad is internally split into two triangles, so non-rectangular quads may produce rendering artifacts
+// since distortion is interpolated per triangle rather than over the full quad.
+IMPLOT3D_API void PlotImage(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint& p0, const ImPlot3DPoint& p1, const ImPlot3DPoint& p2,
+                            const ImPlot3DPoint& p3, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 0),
+                            const ImVec2& uv2 = ImVec2(1, 1), const ImVec2& uv3 = ImVec2(0, 1), const ImVec4& tint_col = ImVec4(1, 1, 1, 1),
+                            const ImPlot3DSpec& spec = ImPlot3DSpec());
+
+// Plots a centered text label at point x,y,z with optional rotation angle (in radians) and pixel offset
+IMPLOT3D_API void PlotText(const char* text, double x, double y, double z, double angle = 0.0, const ImVec2& pix_offset = ImVec2(0, 0));
+
+// Plots a dummy item (can be used to modify legend entry appearance when called after plotting an item, or add a dummy legend entry)
+IMPLOT3D_API void PlotDummy(const char* label_id, const ImPlot3DSpec& spec = ImPlot3DSpec());
+
+//-----------------------------------------------------------------------------
+// [SECTION] Plot Utils
+//-----------------------------------------------------------------------------
+
+// Convert a position in the current plot's coordinate system to pixels
+IMPLOT3D_API ImVec2 PlotToPixels(const ImPlot3DPoint& point);
+IMPLOT3D_API ImVec2 PlotToPixels(double x, double y, double z);
+
+// Convert a pixel coordinate to a ray in the current plot's coordinate system. Useful for 3D picking and intersection tests
+IMPLOT3D_API ImPlot3DRay PixelsToPlotRay(const ImVec2& pix);
+IMPLOT3D_API ImPlot3DRay PixelsToPlotRay(double x, double y);
+
+// Convert a pixel coordinate to a point on one of the plot box's axis-aligned planes (XY, XZ, or YZ).
+// By default, the result is masked to the axis ranges. Set #mask=false to project to the infinite plane.
+// Returns ImPlot3DPoint(NAN, NAN, NAN) if the ray does not intersect the plane
+IMPLOT3D_API ImPlot3DPoint PixelsToPlotPlane(const ImVec2& pix, ImPlane3D plane, bool mask = true);
+IMPLOT3D_API ImPlot3DPoint PixelsToPlotPlane(double x, double y, ImPlane3D plane, bool mask = true);
+
+// Get the current plot rect position (top-left) in absolute screen coordinates
+IMPLOT3D_API ImVec2 GetPlotRectPos();
+// Get the current plot rect size in pixels
+IMPLOT3D_API ImVec2 GetPlotRectSize();
+
+//-----------------------------------------------------------------------------
+// [SECTION] Miscellaneous
+//-----------------------------------------------------------------------------
+
+// Returns the ImDrawList used for rendering plot items. Use this to add custom rendering inside plots
+IMPLOT3D_API ImDrawList* GetPlotDrawList();
+
+//-----------------------------------------------------------------------------
+// [SECTION] Styles API (legacy)
+//-----------------------------------------------------------------------------
+
+// Get current style
+IMPLOT3D_API ImPlot3DStyle& GetStyle();
+IMPLOT3D_API void SetStyle(const ImPlot3DStyle& style);
+
+// Set color styles
+IMPLOT3D_API void StyleColorsAuto(ImPlot3DStyle* dst = nullptr);    // Set colors with ImGui style
+IMPLOT3D_API void StyleColorsDark(ImPlot3DStyle* dst = nullptr);    // Set colors with dark style
+IMPLOT3D_API void StyleColorsLight(ImPlot3DStyle* dst = nullptr);   // Set colors with light style
+IMPLOT3D_API void StyleColorsClassic(ImPlot3DStyle* dst = nullptr); // Set colors with classic style
+
+// Temporarily modify a style color. Don't forget to call PopStyleColor!
+IMPLOT3D_API void PushStyleColor(ImPlot3DCol idx, ImU32 col);
+IMPLOT3D_API void PushStyleColor(ImPlot3DCol idx, const ImVec4& col);
+// Undo temporary style color modification(s). Undo multiple pushes at once by increasing count
+IMPLOT3D_API void PopStyleColor(int count = 1);
+
+// Temporarily modify a style variable of float type. Don't forget to call PopStyleVar!
+IMPLOT3D_API void PushStyleVar(ImPlot3DStyleVar idx, float val);
+// Temporarily modify a style variable of int type. Don't forget to call PopStyleVar!
+IMPLOT3D_API void PushStyleVar(ImPlot3DStyleVar idx, int val);
+// Temporarily modify a style variable of ImVec2 type. Don't forget to call PopStyleVar!
+IMPLOT3D_API void PushStyleVar(ImPlot3DStyleVar idx, const ImVec2& val);
+// Undo temporary style variable modification(s). Undo multiple pushes at once by increasing count
+IMPLOT3D_API void PopStyleVar(int count = 1);
+
+// Get color
+IMPLOT3D_API ImVec4 GetStyleColorVec4(ImPlot3DCol idx);
+IMPLOT3D_API ImU32 GetStyleColorU32(ImPlot3DCol idx);
+
+// Returns the next marker and advances the marker for the current plot. You need to call this between Begin/EndPlot!
+IMPLOT3D_API ImPlot3DMarker NextMarker();
+
+//-----------------------------------------------------------------------------
+// [SECTION] Colormaps
+//-----------------------------------------------------------------------------
+
+// Item styling is based on colormaps when the relevant ImPlot3DCol_XXX is set to
+// IMPLOT3D_AUTO_COL (default). Several built-in colormaps are available. You can
+// add and then push/pop your own colormaps as well. To permanently set a colormap,
+// modify the Colormap index member of your ImPlot3DStyle.
+
+// Colormap data will be ignored and a custom color will be used if you have done one of the following:
+//     1) Modified an item style color in your ImPlot3DStyle to anything other than IMPLOT3D_AUTO_COL.
+
+// Add a new colormap. The color data will be copied. The colormap can be used by pushing either the returned index or the
+// string name with PushColormap. The colormap name must be unique and the size must be greater than 1. You will receive
+// an assert otherwise! By default colormaps are considered to be qualitative (i.e. discrete). If you want to create a
+// continuous colormap, set #qual=false. This will treat the colors you provide as keys, and ImPlot3D will build a linearly
+// interpolated lookup table. The memory footprint of this table will be exactly ((size-1)*255+1)*4 bytes.
+
+IMPLOT3D_API ImPlot3DColormap AddColormap(const char* name, const ImVec4* cols, int size, bool qual = true);
+IMPLOT3D_API ImPlot3DColormap AddColormap(const char* name, const ImU32* cols, int size, bool qual = true);
+
+// Returns the number of available colormaps (i.e. the built-in + user-added count)
+IMPLOT3D_API int GetColormapCount();
+// Returns a null terminated string name for a colormap given an index. Returns nullptr if index is invalid
+IMPLOT3D_API const char* GetColormapName(ImPlot3DColormap cmap);
+// Returns an index number for a colormap given a valid string name. Returns -1 if name is invalid
+IMPLOT3D_API ImPlot3DColormap GetColormapIndex(const char* name);
+
+// Temporarily switch to one of the built-in (i.e. ImPlot3DColormap_XXX) or user-added colormaps (i.e. a return value of AddColormap). Don't forget to
+// call PopColormap!
+IMPLOT3D_API void PushColormap(ImPlot3DColormap cmap);
+// Push a colormap by string name. Use built-in names such as "Default", "Deep", "Jet", etc. or a string you provided to AddColormap. Don't forget to
+// call PopColormap!
+IMPLOT3D_API void PushColormap(const char* name);
+// Undo temporary colormap modification(s). Undo multiple pushes at once by increasing count
+IMPLOT3D_API void PopColormap(int count = 1);
+
+// Returns the next color from the current colormap and advances the colormap for the current plot
+// Can also be used with no return value to skip colors if desired. You need to call it between Begin/EndPlot!
+IMPLOT3D_API ImVec4 NextColormapColor();
+
+// Returns the size of a colormap
+IMPLOT3D_API int GetColormapSize(ImPlot3DColormap cmap = IMPLOT3D_AUTO);
+// Returns a color from a colormap given an index >= 0 (modulo will be performed)
+IMPLOT3D_API ImVec4 GetColormapColor(int idx, ImPlot3DColormap cmap = IMPLOT3D_AUTO);
+// Sample a color from the current colormap given t between 0 and 1
+IMPLOT3D_API ImVec4 SampleColormap(float t, ImPlot3DColormap cmap = IMPLOT3D_AUTO);
+
+//-----------------------------------------------------------------------------
+// [SECTION] Demo
+//-----------------------------------------------------------------------------
+// Add implot3d_demo.cpp to your sources to use methods in this section
+
+// Shows the ImPlot3D demo window
+IMPLOT3D_API void ShowDemoWindow(bool* p_open = nullptr);
+// Shows all ImPlot3D demos, without enclosing window
+IMPLOT3D_API void ShowAllDemos();
+IMPLOT3D_API void  ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL);
+
+
+// Shows ImPlot3D style editor block (not a window)
+IMPLOT3D_API void ShowStyleEditor(ImPlot3DStyle* ref = nullptr);
+// Shows ImPlot3D style selector and returns true if selection is changed (not a window)
+IMPLOT3D_API bool ShowStyleSelector(const char* label);
+// Shows ImPlot3D colormap selector and returns true if selection is changed (not a window)
+IMPLOT3D_API bool ShowColormapSelector(const char* label);
+
+// Shows ImPlot3D metrics/debug information window.
+IMPLOT3D_API void ShowMetricsWindow(bool* p_popen = nullptr);
+
+// Shows ImPlot3D about window.
+IMPLOT3D_API void ShowAboutWindow(bool* p_open = nullptr);
+
+} // namespace ImPlot3D
+
+//-----------------------------------------------------------------------------
+// [SECTION] ImPlot3DPoint
+//-----------------------------------------------------------------------------
+
+// ImPlot3DPoint: 3D vector to store points in 3D space
+struct ImPlot3DPoint {
+    double x, y, z; // Coordinates
+    constexpr ImPlot3DPoint() : x(0.0), y(0.0), z(0.0) {}
+    constexpr ImPlot3DPoint(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
+
+    // Accessors
+    double& operator[](size_t idx) {
+        IM_ASSERT(idx == 0 || idx == 1 || idx == 2);
+        return ((double*)(void*)(char*)this)[idx];
+    }
+    double operator[](size_t idx) const {
+        IM_ASSERT(idx == 0 || idx == 1 || idx == 2);
+        return ((const double*)(const void*)(const char*)this)[idx];
+    }
+
+    // Binary operators
+    IMPLOT3D_API ImPlot3DPoint operator*(double rhs) const;
+    IMPLOT3D_API ImPlot3DPoint operator/(double rhs) const;
+    IMPLOT3D_API ImPlot3DPoint operator+(const ImPlot3DPoint& rhs) const;
+    IMPLOT3D_API ImPlot3DPoint operator-(const ImPlot3DPoint& rhs) const;
+    IMPLOT3D_API ImPlot3DPoint operator*(const ImPlot3DPoint& rhs) const;
+    IMPLOT3D_API ImPlot3DPoint operator/(const ImPlot3DPoint& rhs) const;
+
+    // Unary operator
+    IMPLOT3D_API ImPlot3DPoint operator-() const;
+
+    // Compound assignment operators
+    IMPLOT3D_API ImPlot3DPoint& operator*=(double rhs);
+    IMPLOT3D_API ImPlot3DPoint& operator/=(double rhs);
+    IMPLOT3D_API ImPlot3DPoint& operator+=(const ImPlot3DPoint& rhs);
+    IMPLOT3D_API ImPlot3DPoint& operator-=(const ImPlot3DPoint& rhs);
+    IMPLOT3D_API ImPlot3DPoint& operator*=(const ImPlot3DPoint& rhs);
+    IMPLOT3D_API ImPlot3DPoint& operator/=(const ImPlot3DPoint& rhs);
+
+    // Comparison operators
+    IMPLOT3D_API bool operator==(const ImPlot3DPoint& rhs) const;
+    IMPLOT3D_API bool operator!=(const ImPlot3DPoint& rhs) const;
+
+    // Dot product
+    IMPLOT3D_API double Dot(const ImPlot3DPoint& rhs) const;
+
+    // Cross product
+    IMPLOT3D_API ImPlot3DPoint Cross(const ImPlot3DPoint& rhs) const;
+
+    // Get vector length
+    IMPLOT3D_API double Length() const;
+
+    // Get vector squared length
+    IMPLOT3D_API double LengthSquared() const;
+
+    // Normalize to unit length
+    IMPLOT3D_API void Normalize();
+
+    // Return vector normalized to unit length
+    IMPLOT3D_API ImPlot3DPoint Normalized() const;
+
+    // Friend binary operators to allow commutative behavior
+    IMPLOT3D_API friend ImPlot3DPoint operator*(double lhs, const ImPlot3DPoint& rhs);
+
+    // Check if the point is NaN
+    IMPLOT3D_API bool IsNaN() const;
+
+#ifdef IMPLOT3D_POINT_CLASS_EXTRA
+    IMPLOT3D_POINT_CLASS_EXTRA // Define additional constructors and implicit cast operators in imconfig.h to convert back and forth between your math
+                               // types and ImPlot3DPoint
+#endif
+};
+
+//-----------------------------------------------------------------------------
+// [SECTION] ImPlot3DRay
+//-----------------------------------------------------------------------------
+
+// ImPlot3DRay: Represents a ray in 3D space with an origin and direction
+struct ImPlot3DRay {
+    ImPlot3DPoint Origin;    // Ray origin point
+    ImPlot3DPoint Direction; // Ray direction (not necessarily normalized)
+};
+
+//-----------------------------------------------------------------------------
+// [SECTION] ImPlot3DPlane
+//-----------------------------------------------------------------------------
+
+// ImPlot3DPlane: Represents a plane in 3D space defined by a point and normal vector
+struct ImPlot3DPlane {
+    ImPlot3DPoint Point;  // A point on the plane
+    ImPlot3DPoint Normal; // Plane normal vector
+};
+
+//-----------------------------------------------------------------------------
+// [SECTION] ImPlot3DBox
+//-----------------------------------------------------------------------------
+
+// ImPlot3DBox: Axis-aligned bounding box in 3D space
+struct ImPlot3DBox {
+    ImPlot3DPoint Min; // Minimum corner of the box
+    ImPlot3DPoint Max; // Maximum corner of the box
+
+    // Default constructor
+    constexpr ImPlot3DBox() : Min(ImPlot3DPoint()), Max(ImPlot3DPoint()) {}
+
+    // Constructor with two points
+    constexpr ImPlot3DBox(const ImPlot3DPoint& min, const ImPlot3DPoint& max) : Min(min), Max(max) {}
+
+    // Method to expand the box to include a point
+    IMPLOT3D_API void Expand(const ImPlot3DPoint& point);
+
+    // Method to check if a point is inside the box
+    IMPLOT3D_API bool Contains(const ImPlot3DPoint& point) const;
+
+    // Method to clip a line segment against the box
+    IMPLOT3D_API bool ClipLineSegment(const ImPlot3DPoint& p0, const ImPlot3DPoint& p1, ImPlot3DPoint& p0_clipped, ImPlot3DPoint& p1_clipped) const;
+};
+
+//-----------------------------------------------------------------------------
+// [SECTION] ImPlot3DRange
+//-----------------------------------------------------------------------------
+
+// ImPlot3DRange: Represents a 1D range with min and max values
+struct ImPlot3DRange {
+    double Min; // Minimum value
+    double Max; // Maximum value
+
+    constexpr ImPlot3DRange() : Min(0.0), Max(0.0) {}
+    constexpr ImPlot3DRange(double min, double max) : Min(min), Max(max) {}
+
+    IMPLOT3D_API void Expand(double value);         // Expand range to include value
+    IMPLOT3D_API bool Contains(double value) const; // Check if value is within range
+    double Size() const { return Max - Min; }       // Get range size
+};
+
+//-----------------------------------------------------------------------------
+// [SECTION] ImPlot3DQuat
+//-----------------------------------------------------------------------------
+
+// ImPlot3DQuat: Quaternion for representing 3D rotations
+struct ImPlot3DQuat {
+    double x, y, z, w; // Quaternion components
+
+    // Constructors
+    constexpr ImPlot3DQuat() : x(0.0), y(0.0), z(0.0), w(1.0) {}
+    constexpr ImPlot3DQuat(double _x, double _y, double _z, double _w) : x(_x), y(_y), z(_z), w(_w) {}
+
+    // Construct quaternion from angle-axis representation (angle in radians)
+    IMPLOT3D_API ImPlot3DQuat(double _angle, const ImPlot3DPoint& _axis);
+
+    // Create quaternion that rotates from v0 to v1
+    IMPLOT3D_API static ImPlot3DQuat FromTwoVectors(const ImPlot3DPoint& v0, const ImPlot3DPoint& v1);
+
+    // Create quaternion from elevation and azimuth angles (in radians)
+    IMPLOT3D_API static ImPlot3DQuat FromElAz(double elevation, double azimuth);
+
+    // Get quaternion length
+    IMPLOT3D_API double Length() const;
+
+    // Get normalized quaternion
+    IMPLOT3D_API ImPlot3DQuat Normalized() const;
+
+    // Conjugate of the quaternion
+    IMPLOT3D_API ImPlot3DQuat Conjugate() const;
+
+    // Inverse of the quaternion
+    IMPLOT3D_API ImPlot3DQuat Inverse() const;
+
+    // Binary operators
+    IMPLOT3D_API ImPlot3DQuat operator*(const ImPlot3DQuat& rhs) const; // Quaternion multiplication
+
+    // Normalize the quaternion in place
+    IMPLOT3D_API ImPlot3DQuat& Normalize();
+
+    // Rotate a 3D point using the quaternion
+    IMPLOT3D_API ImPlot3DPoint operator*(const ImPlot3DPoint& point) const;
+
+    // Comparison operators
+    IMPLOT3D_API bool operator==(const ImPlot3DQuat& rhs) const;
+    IMPLOT3D_API bool operator!=(const ImPlot3DQuat& rhs) const;
+
+    // Spherical linear interpolation between two quaternions (t in [0,1])
+    IMPLOT3D_API static ImPlot3DQuat Slerp(const ImPlot3DQuat& q1, const ImPlot3DQuat& q2, double t);
+
+    // Get quaternion dot product
+    IMPLOT3D_API double Dot(const ImPlot3DQuat& rhs) const;
+
+#ifdef IMPLOT3D_QUAT_CLASS_EXTRA
+    IMPLOT3D_QUAT_CLASS_EXTRA // Define additional constructors and implicit cast operators in imconfig.h to convert back and forth between your math
+                              // types and ImPlot3DQuat
+#endif
+};
+
+//-----------------------------------------------------------------------------
+// [SECTION] ImPlot3DStyle
+//-----------------------------------------------------------------------------
+
+struct ImPlot3DStyle {
+    // Item style
+    float LineWeight; // Line weight in pixels
+    int Marker;       // Default marker type (ImPlot3DMarker_None)
+    float MarkerSize; // Marker size in pixels (roughly the marker's "radius")
+    float FillAlpha;  // Alpha modifier applied to plot fills
+    // Plot style
+    ImVec2 PlotDefaultSize; // Default size used when ImVec2(0,0) is passed to BeginPlot
+    ImVec2 PlotMinSize;     // Minimum size plot frame can be when shrunk
+    ImVec2 PlotPadding;     // Padding between widget frame and plot area
+    ImVec2 LabelPadding;    // Padding between axes labels, tick labels, and plot edge
+    float ViewScaleFactor;  // Scale factor for 3D view
+    // Legend style
+    ImVec2 LegendPadding;      // Legend padding from plot edges
+    ImVec2 LegendInnerPadding; // Legend inner padding from legend edges
+    ImVec2 LegendSpacing;      // Spacing between legend entries
+    // Colors
+    ImVec4 Colors[ImPlot3DCol_COUNT]; // Array of plot colors
+    inline ImVec4 GetColor(ImPlot3DCol idx) const { return Colors[idx]; }
+    inline void SetColor(ImPlot3DCol idx, const ImVec4& col) { Colors[idx] = col; }
+    // Colormap
+    ImPlot3DColormap Colormap; // The current colormap (ImPlot3DColormap_ enum or index from AddColormap)
+    // Constructor
+    IMPLOT3D_API ImPlot3DStyle();
+    ImPlot3DStyle(const ImPlot3DStyle& other) = default;
+    ImPlot3DStyle& operator=(const ImPlot3DStyle& other) =
+  default;
+};
+
+//-----------------------------------------------------------------------------
+// [SECTION] Meshes
+//-----------------------------------------------------------------------------
+
+namespace ImPlot3D {
+
+// Cube
+constexpr int CUBE_VTX_COUNT = 8;              // Number of cube vertices
+constexpr int CUBE_IDX_COUNT = 36;             // Number of cube indices (12 triangles)
+extern ImPlot3DPoint cube_vtx[CUBE_VTX_COUNT]; // Cube vertices
+extern unsigned int cube_idx[CUBE_IDX_COUNT];  // Cube indices
+
+// Sphere
+constexpr int SPHERE_VTX_COUNT = 162;              // Number of sphere vertices for 128 triangles
+constexpr int SPHERE_IDX_COUNT = 960;              // Number of sphere indices (128 triangles)
+extern ImPlot3DPoint sphere_vtx[SPHERE_VTX_COUNT]; // Sphere vertices
+extern unsigned int sphere_idx[SPHERE_IDX_COUNT];  // Sphere indices
+
+// Duck (Rubber Duck by Poly by Google [CC-BY] via Poly Pizza)
+constexpr int DUCK_VTX_COUNT = 254;            // Number of duck vertices
+constexpr int DUCK_IDX_COUNT = 1428;           // Number of duck indices
+extern ImPlot3DPoint duck_vtx[DUCK_VTX_COUNT]; // Duck vertices
+extern unsigned int duck_idx[DUCK_IDX_COUNT];  // Duck indices
+
+} // namespace ImPlot3D
+
+//-----------------------------------------------------------------------------
+// [SECTION] Obsolete API
+//-----------------------------------------------------------------------------
+
+// The following functions will be removed! Keep your copy of ImPlot3D up to date!
+// Occasionally set '#define IMPLOT3D_DISABLE_OBSOLETE_FUNCTIONS' to stay ahead.
+// If you absolutely must use these functions and do not want to receive compiler
+// warnings, set '#define IMPLOT3D_DISABLE_OBSOLETE_WARNINGS'.
+
+#ifndef IMPLOT3D_DISABLE_OBSOLETE_FUNCTIONS
+
+#ifndef IMPLOT3D_DISABLE_OBSOLETE_WARNINGS
+#if __cplusplus > 201402L
+#define IMPLOT3D_DEPRECATED(method) [[deprecated]] method
+#elif defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
+#define IMPLOT3D_DEPRECATED(method) method __attribute__((deprecated))
+#elif defined(_MSC_VER)
+#define IMPLOT3D_DEPRECATED(method) __declspec(deprecated) method
+#else
+#define IMPLOT3D_DEPRECATED(method) method
+#endif
+#else
+#define IMPLOT3D_DEPRECATED(method) method
+#endif
+
+namespace ImPlot3D {
+
+// OBSOLETED in v0.4 (from February 2026)
+// IMPLOT_API void SetNextLineStyle(const ImVec4& col = IMPLOT_AUTO_COL, float weight = IMPLOT_AUTO); // OBSOLETED IN v0.4 // Set ImPlotSpec.LineColor/LineWeight or construct ImPlotSpec with { ImPlotSpec_LineColor, color, ImPlotSpec_LineWeight, weight }.
+
+// IMPLOT_API void SetNextFillStyle(const ImVec4& col = IMPLOT_AUTO_COL, float alpha_mod = IMPLOT_AUTO);// OBSOLETED IN v0.4 // Set ImPlotSpec.FillColor/FillAlpha or construct ImPlotSpec with { ImPlotSpec_FillColor, color, ImPlotSpec_FillAlpha, alpha }.
+
+// IMPLOT_API void SetNextMarkerStyle(ImPlotMarker marker = IMPLOT_AUTO, float size = IMPLOT_AUTO, const ImVec4& fill = IMPLOT_AUTO_COL, float weight = IMPLOT_AUTO, const ImVec4& outline = IMPLOT_AUTO_COL); // OBSOLETED IN v0.4 // Set ImPlotSpec.Marker/MarkerSize/MarkerFillColor/LineWeight/MarkerLineColor or construct ImPlotSpec with { ImPlotSpec_Marker, marker, ImPlotSpec_MarkerSize, size, ImPlotSpec_MarkerFillColor, fill_color, ImPlotSpec_LineWeight, weight, ImPlotSpec_MarkerLineColor, outline }.
+
+// OBSOLETED in v0.3 -> PLANNED REMOVAL in v1.0
+IMPLOT3D_DEPRECATED(IMPLOT3D_API ImVec2 GetPlotPos());  // Renamed to GetPlotRectPos()
+IMPLOT3D_DEPRECATED(IMPLOT3D_API ImVec2 GetPlotSize()); // Renamed to GetPlotRectSize()
+
+} // namespace ImPlot3D
+
+#endif // #ifndef IMPLOT3D_DISABLE_OBSOLETE_FUNCTIONS
+
+#endif // #ifndef IMGUI_DISABLE

@@ -140,8 +140,8 @@ endfunction()
 # ---------------------------------------------------------------------------
 function(iman_main)
     #
-    # Sanity checks
-    # ==============
+    # Sanity checks and early exits
+    # =============================
     # # If the app is requested, the lib is required
     if(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP)
         set(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB ON CACHE BOOL "" FORCE)
@@ -164,9 +164,15 @@ function(iman_main)
     # Link the library to imgui_bundle INTERFACE and install machinery
     iman_link_imgui_bundle_to_manual()
 
+    # Build the standalone app (optional)
     if(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP)
         iman_add_imgui_manual_app()
         # Refresh demo code assets from live bundle sources
         iman_copy_demo_code_assets(${CMAKE_CURRENT_FUNCTION_LIST_DIR}/assets/demo_code)
+    endif()
+
+    # Add demo_code assets to python
+    if (IMGUI_BUNDLE_BUILD_PYTHON)
+        iman_copy_demo_code_assets(${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/demos_assets/demo_code)
     endif()
 endfunction()
