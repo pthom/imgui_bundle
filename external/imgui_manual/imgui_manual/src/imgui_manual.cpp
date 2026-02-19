@@ -162,10 +162,12 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
     {
         PrepareResources();
         initialized = true;
+
+        // Do this once only, to allow the user to change afterwards
+        if (language.has_value())
+            DemoCodeViewer_SetShowPython(language.value() == ImGuiManualCppOrPython::Python);
     }
 
-    if (language.has_value())
-        DemoCodeViewer_SetShowPython(language.value() == ImGuiManualCppOrPython::Python);
 
     if (library.has_value())
     {

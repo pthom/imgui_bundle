@@ -308,10 +308,19 @@ Nooo: Try to avoid doing this...
 - [x] add menu bars to all demos py
 - [x] "Code for this demo": only on selected demos
 - [x] Add link to imgui_manual in imgui_manual for imgui
-- [ ] publish imgui_bundle_demo & manual
+- [x] Fix choice lib in emscripten
+- [x] Can't switch between C++ and Python!
+- [ ] Contact ocornut / preview: 
+https://traineq.org/ImGuiBundle/imgui_manual/?lib=imgui 
+https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
+https://traineq.org/ImGuiBundle/imgui_manual/
+
+Link to commit / demo_markers
+
+- [ ] publish imgui_bundle_demo
 - [ ] redirect current manual to new
 - [ ] close manual repo
-- [ ] remove demo_assets, demo_cpp, demos_python from pyodide?
+- [ ] pyodide wheels: remove demo_assets, demo_cpp, demos_python
 
 ### Step 10: Integration
 - [x] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
