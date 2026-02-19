@@ -80,11 +80,20 @@ endfunction()
 
 function(iman_force_include_marker_hooks)
     set(marker_hooks_header ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/src/imgui_demo_marker_hooks.h)
+    set(marker_hooks_impl   ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/src/imgui_demo_marker_hooks.cpp)
     foreach(lib imgui implot implot3d imanim)
         if(TARGET ${lib})
             _force_include(${lib} ${marker_hooks_header})
         endif()
     endforeach()
+    # Compile the hooks implementation into imgui itself, so that libimgui.a
+    # contains both the IMGUI_DEMO_MARKER call sites AND their definition.
+    # This avoids a GNU ld link-order problem: if the definition lived in a
+    # separate library (imgui_manual_lib) that CMake orders before libimgui.a,
+    # the single-pass linker would never extract it (no pending undefined ref yet).
+    if(TARGET imgui)
+        target_sources(imgui PRIVATE ${marker_hooks_impl})
+    endif()
 endfunction()
 
 
@@ -92,6 +101,11 @@ endfunction()
 # imgui_manual_lib: the library exposing ShowImGuiManualGui()
 # ---------------------------------------------------------------------------
 function(iman_add_imgui_manual_lib)
+    # Note:
+    # - the marker hooks implementation (${src}/src/imgui_demo_marker_hooks.cpp)
+    #   is compiled into imgui itself (see iman_force_include_marker_hooks)
+    #   This solves link issues.
+    #
     set(src ${CMAKE_CURRENT_FUNCTION_LIST_DIR})
     add_library(imgui_manual_lib STATIC
         ${src}/src/imgui_manual.cpp
@@ -99,7 +113,6 @@ function(iman_add_imgui_manual_lib)
         ${src}/src/library_config.h
         ${src}/src/demo_code_viewer.cpp
         ${src}/src/demo_code_viewer.h
-        ${src}/src/imgui_demo_marker_hooks.cpp
         ${src}/src/imgui_demo_marker_hooks.h
         ${src}/imgui_manual.h
     )

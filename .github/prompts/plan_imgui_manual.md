@@ -292,14 +292,6 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [x] Remove external modules from ImAnim
 - [x] Layout manual without docking, only window
 
-### Step 11: Manual in python
-Nooo: Try to avoid doing this...
-  bindings/imgui_bundle/demos_python/demos_imgui_manual contains Python demos for the manual.
-  They are almost line by line ports of the C++ demos, including the IMGUI_DEMO_MARKER calls.
-  Let's try to make a simplified version of the manual in Python, with simplified features:
-  - we run only one file at a time
-    - the code viewer only shows the Python demo file source (using inspect)
-
 ### WWW
 - [x] specify default python or C++ for ShowImGuiManualGui
 - [x] add python demos
@@ -316,8 +308,9 @@ https://traineq.org/ImGuiBundle/imgui_manual/?lib=imgui
 https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
 https://traineq.org/ImGuiBundle/imgui_manual/
 
-Link to commit / demo_markers
-Link to demo bundle 
+Link to demo bundle : https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+
+Link to commit / demo_markers => rebase new branch on master (with cherry-pick)
 
 - [x] publish imgui_bundle_demo
 - [ ] fix CI errors
