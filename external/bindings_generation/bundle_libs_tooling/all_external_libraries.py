@@ -225,6 +225,12 @@ def lib_imanim() -> ExternalLibrary:
     )
 
 
+def lib_imgui_manual() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui_manual"  # internal library, no git URL
+    )
+
+
 # fmt: on
 
 
@@ -253,6 +259,7 @@ ALL_LIBS = [
     lib_portable_file_dialogs(),
     lib_nanovg(),
     lib_imanim(),
+    lib_imgui_manual(),
 ]
 
 

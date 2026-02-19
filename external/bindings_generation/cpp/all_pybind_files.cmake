@@ -30,4 +30,5 @@ set(all_pybind_files
     ${external_dir}/portable_file_dialogs/bindings/pybind_portable_file_dialogs.cpp
     ${external_dir}/nanovg/bindings/pybind_nanovg.cpp
     ${external_dir}/ImAnim/bindings/pybind_imanim.cpp
+    ${external_dir}/imgui_manual/bindings/pybind_imgui_manual.cpp
     )

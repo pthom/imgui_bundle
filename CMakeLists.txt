@@ -216,6 +216,7 @@ option(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR "Build with imgui-node-editor" ON)
 option(IMGUI_BUNDLE_WITH_IMPLOT "Build with implot" ON)
 option(IMGUI_BUNDLE_WITH_IMPLOT3D "Build with implot3d" ON)
 option(IMGUI_BUNDLE_WITH_IMANIM "Build with ImAnim" ON)
+option(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB "Build with imgui_manual as an included library" ON)
 option(IMGUI_BUNDLE_WITH_IMMVISION "Build with immvision" ${IMMVISION_FETCH_OPENCV})
 
 # Translate legacy IMGUI_BUNDLE_DISABLE_* options to new IMGUI_BUNDLE_WITH_* options
@@ -311,9 +312,10 @@ else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
 
-# IMGUI_BUNDLE_BUILD_IMGUI_MANUAL: Build ImGui Manual
+# IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP: Build ImGui Manual standalone exe
+# (the library imgui_manual_lib is controlled by IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB)
 # -----------------------------------------------------------------------------
-option(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL "Build ImGui Manual" OFF)
+option(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP "Build imgui_manual standalone app" OFF)
 
 
 
@@ -322,7 +324,7 @@ option(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL "Build ImGui Manual" OFF)
 # and only if it is not building the python package
 # (the python package will install different elements)
 #------------------------------------------------------------------------------
-if(PROJECT_IS_TOP_LEVEL AND NOT IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_IMGUI_MANUAL)
+if(PROJECT_IS_TOP_LEVEL AND NOT IMGUI_BUNDLE_BUILD_PYTHON)
     set(imgui_bundle_install_cpp_default ON)
 else()
     set(imgui_bundle_install_cpp_default OFF)
@@ -485,9 +487,6 @@ if (IMGUI_BUNDLE_BUILD_CPP)
     if (IMGUI_BUNDLE_BUILD_PYTHON)
         add_subdirectory(pybind_native_debug)
     endif()
-    if (IMGUI_BUNDLE_BUILD_IMGUI_MANUAL)
-        add_subdirectory(imgui_manual)
-    endif()
 endif()
 
 # CI Automation
@@ -588,6 +587,7 @@ message(STATUS "
     IMGUI_BUNDLE_WITH_IMPLOT:            ${IMGUI_BUNDLE_WITH_IMPLOT}
     IMGUI_BUNDLE_WITH_IMPLOT3D:          ${IMGUI_BUNDLE_WITH_IMPLOT3D}
     IMGUI_BUNDLE_WITH_IMANIM:            ${IMGUI_BUNDLE_WITH_IMANIM}
+    IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB:  ${IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB}
     IMGUI_BUNDLE_WITH_NANOVG:            ${IMGUI_BUNDLE_WITH_NANOVG}
     IMGUI_BUNDLE_WITH_IMGUIZMO:          ${IMGUI_BUNDLE_WITH_IMGUIZMO}
     IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR: ${IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR}

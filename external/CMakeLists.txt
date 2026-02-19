@@ -324,3 +324,10 @@ if(IMGUI_BUNDLE_WITH_IMMAPP AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
 else()
     message(STATUS "Skipping immapp (disabled or hello_imgui not available)")
 endif()
+
+
+###############################################################################
+# imgui_manual (interactive demo viewer for ImGui, ImPlot, ImPlot3D, ImAnim)
+###############################################################################
+add_subdirectory(imgui_manual/imgui_manual)
+
