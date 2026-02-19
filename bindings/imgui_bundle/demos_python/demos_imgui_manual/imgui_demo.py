@@ -13,7 +13,7 @@
 #  https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py
 #
 ###############################################################################
-
+from IPython.testing.globalipapp import xsys
 
 # fmt: off
 # mypy: disable_error_code=attr-defined
@@ -228,8 +228,11 @@ def IMGUI_DEMO_MARKER(section: str):
 # Demonstrate most Dear ImGui features (this is big function!)
 # You may execute this function to experiment with the UI and understand what it does.
 # You may then search for keywords in the code when you are interested by a specific feature.
+def show_demo_window(p_open: Optional[bool]=None) -> Optional[bool]:
+    return show_demo_window_maybe_docked(True, p_open)
 
-def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
+
+def show_demo_window_maybe_docked(create_window: bool, p_open: Optional[bool] = None) -> Optional[bool]:
     # Exceptionally add an extra assert here for people confused about initial Dear ImGui setup
     # Most functions would normally just assert/crash if the context is missing.
     assert imgui.get_current_context() is not None, "Missing Dear ImGui context. Refer to examples app!"
@@ -326,14 +329,16 @@ def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
     # We specify a default position/size in case there's no data in the .ini file.
     # We only do it to make the demo applications a little more welcoming, but typically this isn't required.
     main_viewport = imgui.get_main_viewport()
-    imgui.set_next_window_pos(ImVec2(main_viewport.work_pos.x + 650, main_viewport.work_pos.y + 20), imgui.Cond_.first_use_ever)
-    imgui.set_next_window_size(ImVec2(550, 680), imgui.Cond_.first_use_ever)
 
-    # Main body of the Demo window starts here.
-    if not imgui.begin("Dear ImGui Demo", p_open, window_flags):
-        # Early out if the window is collapsed, as an optimization.
-        imgui.end()
-        return p_open
+    if create_window:
+        imgui.set_next_window_pos(ImVec2(main_viewport.work_pos.x + 650, main_viewport.work_pos.y + 20), imgui.Cond_.first_use_ever)
+        imgui.set_next_window_size(ImVec2(550, 680), imgui.Cond_.first_use_ever)
+
+        # Main body of the Demo window starts here.
+        if not imgui.begin("Dear ImGui Demo", p_open, window_flags):
+            # Early out if the window is collapsed, as an optimization.
+            imgui.end()
+            return p_open
 
     # Most "big" widgets share a common width settings by default. See 'Demo->Layout->Widgets Width' for details.
     # e.g. Use 2/3 of the space for widgets and 1/3 for labels (right align)
@@ -563,7 +568,9 @@ def show_demo_window(p_open: Optional[bool]) -> Optional[bool]:
     # End of show_demo_window()
     imgui.end_child()  # </imgui.begin_child("Demos")>
     imgui.pop_item_width()
-    imgui.end()
+
+    if create_window:
+        imgui.end()
     return True
 
 
