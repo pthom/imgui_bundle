@@ -23,10 +23,10 @@ from imgui_bundle.demos_python import demo_im_anim
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
-def show_module_demo(demo_filename: str, demo_function: Callable[[], None]) -> None:
+def show_module_demo(demo_filename: str, demo_function: Callable[[], None], show_code: bool = False) -> None:
     if imgui.get_frame_count() < 2:  # cf https://github.com/pthom/imgui_bundle/issues/293
         return
-    if imgui.collapsing_header("Code for this demo"):
+    if show_code and imgui.collapsing_header("Code for this demo"):
         demo_utils.show_python_vs_cpp_file(demo_filename, 40)
     demo_function()
 
@@ -73,14 +73,14 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     #
     dockable_windows: List[hello_imgui.DockableWindow] = []
 
-    def add_demo_dockable_window(label: str, demo_module: ModuleType):
+    def add_demo_dockable_window(label: str, demo_module: ModuleType, show_code: bool = False):
         window = hello_imgui.DockableWindow()
         window.label = label
         window.dock_space_name = "MainDockSpace"
         demo_module_name = demo_module.__name__.split(".")[-1]
 
         def win_fn() -> None:
-            show_module_demo(demo_module_name, demo_module.demo_gui)
+            show_module_demo(demo_module_name, demo_module.demo_gui, show_code)
 
         window.gui_function = win_fn
         dockable_windows.append(window)
@@ -89,27 +89,28 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     class DemoDetails:
         label: str
         demo_module: ModuleType
+        show_code: bool = False
 
     demos = [
-        DemoDetails("Intro", demo_imgui_bundle_intro),
-        DemoDetails("Dear ImGui", demo_imgui_show_demo_window),
-        DemoDetails("Demo Apps", demo_immapp_launcher),
+        DemoDetails("Intro",       demo_imgui_bundle_intro),
+        DemoDetails("Dear ImGui",  demo_imgui_show_demo_window),
+        DemoDetails("Demo Apps",   demo_immapp_launcher),
         DemoDetails("Implot [3D]", demo_implot),
-        DemoDetails("ImAnim", demo_im_anim),
+        DemoDetails("ImAnim",      demo_im_anim),
         DemoDetails("Node Editor", demo_node_editor_launcher),
-        DemoDetails("Markdown", demo_imgui_md),
-        DemoDetails("Text Editor", demo_text_edit),
-        DemoDetails("Widgets", demo_widgets),
-        DemoDetails("ImmVision", demo_immvision_launcher),
-        DemoDetails("NanoVG", demo_nanovg_launcher),
-        DemoDetails("ImGuizmo", demo_imguizmo_launcher),
-        DemoDetails("Themes", demo_themes),
-        DemoDetails("Logger", demo_logger),
+        DemoDetails("Markdown",    demo_imgui_md,              show_code=True),
+        DemoDetails("Text Editor", demo_text_edit,             show_code=True),
+        DemoDetails("Widgets",     demo_widgets,               show_code=True),
+        DemoDetails("ImmVision",   demo_immvision_launcher),
+        DemoDetails("NanoVG",      demo_nanovg_launcher),
+        DemoDetails("ImGuizmo",    demo_imguizmo_launcher),
+        DemoDetails("Themes",      demo_themes,                show_code=True),
+        DemoDetails("Logger",      demo_logger,                show_code=True),
         # DemoDetails("tex_inspect", demo_tex_inspect_launcher),
     ]
 
     for demo in demos:
-        add_demo_dockable_window(demo.label, demo.demo_module)
+        add_demo_dockable_window(demo.label, demo.demo_module, demo.show_code)
 
     runner_params.docking_params.dockable_windows = dockable_windows
 

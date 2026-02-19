@@ -11,33 +11,6 @@
 #include "imgui_test_engine/imgui_te_ui.h"
 
 
-ImGuiTest* AutomationShowMeCode()
-{
-    ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
-
-    ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeCode");
-    auto testFunc = [](ImGuiTestContext *ctx) {
-        ctx->SetRef("Intro");
-        ctx->ItemOpen("Code for this demo");
-        ctx->Sleep(2.5);
-        ctx->ItemClose("Code for this demo");
-
-        const char* tabLoggerName = "//**/Logger";
-        const char* tabIntroName = "//**/Intro";
-
-        ctx->MouseMove(tabLoggerName);
-        ctx->MouseClick(0);
-        ctx->SetRef("Logger");
-        ctx->ItemOpen("Code for this demo");
-        ctx->ItemClose("Code for this demo");
-        ctx->MouseMove(tabIntroName);
-        ctx->MouseClick(0);
-    };
-    automation->TestFunc = testFunc;
-    return automation;
-}
-
-
 ImGuiTest* AutomationShowMeImmediateApps()
 {
     ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
@@ -69,7 +42,6 @@ void demo_imgui_bundle_intro()
     // Automations
     //
 
-    static ImGuiTest *automationShowMeCode = nullptr;
     static ImGuiTest *automationShowMeImmediateApps = nullptr;
     static bool wasAutomationInited = false;
     // Create automations upon first display
@@ -78,7 +50,6 @@ void demo_imgui_bundle_intro()
         if (!wasAutomationInited)
         {
             wasAutomationInited = true;
-            automationShowMeCode = AutomationShowMeCode();
             automationShowMeImmediateApps = AutomationShowMeImmediateApps();
         }
         // set automation speed
@@ -96,25 +67,14 @@ void demo_imgui_bundle_intro()
     ImGui::NewLine();
     ImGui::NewLine();
     ImGuiMd::RenderUnindented(R"(
-        Welcome to the interactive manual for *Dear ImGui Bundle*!
-        This manual present lots of examples, together with their code (in C++ and Python).
-        Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
+Welcome to the interactive manual for *Dear ImGui Bundle*! This manual present lots of examples, together with their code (in C++ and Python).
+
+The "Demo Apps" tab is especially interesting, as it provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
 )");
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
-    {
-        //ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
-        if (ImGui::Button("Show me##demo_code_demo"))
-            ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeCode);
-    }
 
-    ImGui::NewLine();
-    ImGuiMd::RenderUnindented(R"(
-        The "Demo Apps" tab is especially interesting, as it provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
-    )");
     if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
     {
-        //ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
         if (ImGui::Button("Show me##demo_imm_apps"))
             ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
     }

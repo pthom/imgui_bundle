@@ -306,55 +306,21 @@ Nooo: Try to avoid doing this...
 - [x] add full python demos also (for implot, implot3d, and imanim)
 - [x] fix imgui_demo.py : 
 - [x] add menu bars to all demos py
-- [ ] "Code for this demo". Too narrow on intro tab
-- [ ] Add link to imgui_manual in imgui_manual for imgui
+- [x] "Code for this demo": only on selected demos
+- [x] Add link to imgui_manual in imgui_manual for imgui
+- [ ] publish imgui_bundle_demo & manual
+- [ ] redirect current manual to new
+- [ ] close manual repo
 - [ ] remove demo_assets, demo_cpp, demos_python from pyodide?
 
 ### Step 10: Integration
-- [ ] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
-   - [ ] C++
-  - [ ] Python. We still want to display library-specific Python demos in the bundle, even if they are not line-by-line ports of the C++ demos (like imgui_demo.py). This is a way to test and maintain the Python demo support, and also to provide more demos to bundle users.
+- [x] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
 - [ ] Update bundle book and documentation
-  - [ ] Add doc for ImAnim in the bundle book (compare C++ and Python API, esp enum usage)
-- [ ] Think again: should it be a subproject of imgui_bundle or a separate repo?
-      If separate repo, it can be more easily contributed to by the community. 
-      But this conflicts with the fact that it is tightly coupled with the bundle (the libraries are deep in the bundle, and the demo files are also in the bundle bindings).
+- [ ] Add doc for ImAnim in the bundle book (compare C++ and Python API, esp enum usage)
 
 
 ### Step 11: Publish & Communicate
-- [ ] PR to imgui, implot, implot3d and imanim
+- [ ] Release v1.92
 - [ ] Mail to ocornut and other maintainers about the new manual and its features
-- 
----
+- [ ] PR to imgui, implot, implot3d and imanim with DemoMarker. Advocate for adoption in the main repos.
 
-## Resolved Questions
-
-1. **Python marker integration**: Option A - Python function does nothing, code viewer uses line-by-line matching
-
-2. **Combined vs. separate apps**: Both - combined app by default, plus separate executables for each library
-
-3. **Python demo availability**: Show Python demos even if they differ from C++ (e.g., imgui_demo.py is not a line-by-line port)
-
-4. **ImGui demo size**: imgui_demo.py is 3500 lines and works well, no performance concern
-
----
-
-## Files to Create/Modify
-
-| Action | File |
-|--------|------|
-| Create | `imgui_manual/library_config.h` |
-| Create | `imgui_manual/library_config.cpp` |
-| Modify | `imgui_manual/demo_code_viewer.cpp` |
-| Modify | `imgui_manual/imgui_manual.main.cpp` |
-| Modify | `imgui_manual/CMakeLists.txt` |
-| Move | `imgui_demo.py` → `external/imgui/imgui/imgui_demo.py` |
-
----
-
-## Notes
-
-- The existing `imgui_demo_marker_hooks.h/cpp` system works well and should be preserved
-- ImGuiColorTextEdit already handles large files reasonably well
-- HelloImGui docking system makes tab management straightforward
-- File naming convention is simple: `xxx.cpp` + `xxx.py` in same folder → `xxx.cpp.txt` + `xxx.py.txt` in assets

@@ -29,11 +29,11 @@ void demo_im_anim();
 using VoidFunction = std::function<void(void)>;
 
 
-void ShowModuleDemo(const std::string& demoFilename, VoidFunction demoFunction)
+void ShowModuleDemo(const std::string& demoFilename, VoidFunction demoFunction, bool showCode)
 {
     if (ImGui::GetFrameCount() < 2) // cf https://github.com/pthom/imgui_bundle/issues/293
         return;
-    if (ImGui::CollapsingHeader("Code for this demo"))
+    if (showCode && ImGui::CollapsingHeader("Code for this demo"))
         ShowPythonVsCppFile(demoFilename.c_str(), 40);
     demoFunction();
 }
@@ -77,6 +77,7 @@ int main(int, char **)
         std::string Label;
         std::string DemoFilename;
         VoidFunction DemoFunction;
+        bool ShowCode = false;
     };
 
     auto addDemoDockableWindow = [&dockableWindows](const DemoDetails& demoDetails)
@@ -86,30 +87,31 @@ int main(int, char **)
         window.dockSpaceName = "MainDockSpace";
         window.GuiFunction = [&demoDetails]()
         {
-            ShowModuleDemo(demoDetails.DemoFilename, demoDetails.DemoFunction);
+            ShowModuleDemo(demoDetails.DemoFilename, demoDetails.DemoFunction, demoDetails.ShowCode);
         };
         dockableWindows.push_back(window);
     };
 
-#define DEMO_DETAILS(label, function_name) DemoDetails{ label, #function_name, function_name }
+#define DEMO_DETAILS(label, function_name)           DemoDetails{ label, #function_name, function_name, false }
+#define DEMO_DETAILS_WITH_CODE(label, function_name) DemoDetails{ label, #function_name, function_name, true  }
 
     std::vector<DemoDetails> demos {
-        DEMO_DETAILS("Intro", demo_imgui_bundle_intro),
-        DEMO_DETAILS("Dear ImGui", demo_imgui_show_demo_window),
-        DEMO_DETAILS("Demo Apps", demo_immapp_launcher),
-        DEMO_DETAILS("Implot [3D]", demo_implot),
-        DEMO_DETAILS("ImAnim", demo_im_anim),
-        DEMO_DETAILS("Node Editor", demo_node_editor_launcher),
-        DEMO_DETAILS("Markdown", demo_imgui_md),
-        DEMO_DETAILS("Text Editor", demo_text_edit),
-        DEMO_DETAILS("Widgets", demo_widgets),
-        DEMO_DETAILS("ImmVision", demo_immvision_launcher),
+        DEMO_DETAILS(          "Intro",       demo_imgui_bundle_intro),
+        DEMO_DETAILS(          "Dear ImGui",  demo_imgui_show_demo_window),
+        DEMO_DETAILS(          "Demo Apps",   demo_immapp_launcher),
+        DEMO_DETAILS(          "Implot [3D]", demo_implot),
+        DEMO_DETAILS(          "ImAnim",      demo_im_anim),
+        DEMO_DETAILS(          "Node Editor", demo_node_editor_launcher),
+        DEMO_DETAILS_WITH_CODE("Markdown",    demo_imgui_md),
+        DEMO_DETAILS_WITH_CODE("Text Editor", demo_text_edit),
+        DEMO_DETAILS_WITH_CODE("Widgets",     demo_widgets),
+        DEMO_DETAILS(          "ImmVision",   demo_immvision_launcher),
 #ifdef IMGUI_BUNDLE_WITH_NANOVG
-        DEMO_DETAILS("NanoVG", demo_nanovg_launcher),
+        DEMO_DETAILS(          "NanoVG",      demo_nanovg_launcher),
 #endif
-        DEMO_DETAILS("ImGuizmo", demo_imguizmo_launcher),
-        DEMO_DETAILS("Themes", demo_themes),
-        DEMO_DETAILS("Logger", demo_logger),
+        DEMO_DETAILS(          "ImGuizmo",    demo_imguizmo_launcher),
+        DEMO_DETAILS_WITH_CODE("Themes",      demo_themes),
+        DEMO_DETAILS_WITH_CODE("Logger",      demo_logger),
         //DEMO_DETAILS("tex_inspect", demo_tex_inspect_launcher),
     };
 

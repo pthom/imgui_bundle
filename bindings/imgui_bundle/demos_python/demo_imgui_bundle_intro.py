@@ -6,31 +6,6 @@ from imgui_bundle import immapp, ImVec2
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
-def automation_show_me_code():
-    engine = hello_imgui.get_imgui_test_engine()
-    automation = imgui.test_engine.register_test(engine, "Automation", "ShowMeCode")
-
-    def test_func(ctx):
-        ctx.set_ref("Intro")
-        ctx.item_open("Code for this demo")
-        ctx.sleep(2.5)
-        ctx.item_close("Code for this demo")
-
-        tab_logger_name = "//**/Logger"
-        tab_intro_name = "//**/Intro"
-
-        ctx.mouse_move(tab_logger_name)
-        ctx.mouse_click(0)
-        ctx.set_ref("Logger")
-        ctx.item_open("Code for this demo")
-        ctx.item_close("Code for this demo")
-        ctx.mouse_move(tab_intro_name)
-        ctx.mouse_click(0)
-
-    automation.test_func = test_func
-    return automation
-
-
 def automation_show_me_immediate_apps():
     engine = hello_imgui.get_imgui_test_engine()
     automation = imgui.test_engine.register_test(
@@ -68,7 +43,6 @@ def demo_gui():
     if hello_imgui.get_runner_params().use_imgui_test_engine:
         if not statics.was_automation_inited:
             statics.was_automation_inited = True
-            statics.automation_show_me_code = automation_show_me_code()
             statics.automation_show_me_immediate_apps = (
                 automation_show_me_immediate_apps()
             )
@@ -90,23 +64,10 @@ def demo_gui():
     imgui.new_line()
     imgui_md.render_unindented(
         """
-        Welcome to the interactive manual for *Dear ImGui Bundle*!
-        This manual present lots of examples, together with their code (in C++ and Python).
-        Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
-"""
-    )
-    if hello_imgui.get_runner_params().use_imgui_test_engine:
-        #imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
-        if imgui.button("Show me##demo_code_demo"):
-            imgui.test_engine.queue_test(
-                hello_imgui.get_imgui_test_engine(), statics.automation_show_me_code
-            )
+Welcome to the interactive manual for *Dear ImGui Bundle*! This manual present lots of examples, together with their code (in C++ and Python).
 
-    imgui.new_line()
-    imgui_md.render_unindented(
-        """
-        The "Demo Apps" tab is especially interesting, as it provides sample starter apps from which you can take inspiration. Click on the "View Code" button to view the app's code, and click on "Run" to run them.
-        """
+The "Demo Apps" tab is especially interesting, as it provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
+"""
     )
     if hello_imgui.get_runner_params().use_imgui_test_engine:
         #imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + hello_imgui.em_size(1.0))
