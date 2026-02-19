@@ -13,6 +13,10 @@
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
+#ifdef _WIN32
+#include <windows.h>
+#include <Shellapi.h>
+#endif
 
 
 void OpenUrl(const std::string &url)
