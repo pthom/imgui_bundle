@@ -171,6 +171,9 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library, bool show_sta
 
     // Use all space, except for a small margin at the bottom for the status bar
     ImVec2 availableSize = ImGui::GetContentRegionAvail();
+    if (availableSize.x <= 0 || availableSize.y <= 0)
+        return; // this can happen in the very first frame, let's bail out in this case.
+
     if (show_status_bar)
         availableSize.y -= HelloImGui::EmSize(1.5);
 
