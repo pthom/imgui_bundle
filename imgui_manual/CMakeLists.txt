@@ -69,7 +69,7 @@ copy_code_file(${stubs_dir}/implot3d/internal.pyi)
 copy_code_file(${stubs_dir}/im_anim.pyi)
 
 # Force-include the marker hooks header to imgui, implot, implot3d and imanim
-set(marker_hooks_header ${CMAKE_CURRENT_LIST_DIR}/imgui_demo_marker_hooks.h)
+set(marker_hooks_header ${CMAKE_CURRENT_LIST_DIR}/src/imgui_demo_marker_hooks.h)
 force_include(imgui ${marker_hooks_header})
 force_include(implot ${marker_hooks_header})
 force_include(implot3d ${marker_hooks_header})
@@ -77,19 +77,21 @@ force_include(imanim ${marker_hooks_header})
 
 # Add library imgui_manual_lib
 add_library(imgui_manual_lib
-    demo_code_viewer.cpp
-    demo_code_viewer.h
-    imgui_demo_marker_hooks.cpp
-    imgui_demo_marker_hooks.h
-    imgui_manual.cpp
+    src/demo_code_viewer.cpp
+    src/demo_code_viewer.h
+    src/imgui_demo_marker_hooks.cpp
+    src/imgui_demo_marker_hooks.h
+    src/imgui_manual.cpp
     imgui_manual.h
-    library_config.cpp
-    library_config.h
+    src/library_config.cpp
+    src/library_config.h
 )
 target_link_libraries(imgui_manual_lib PUBLIC imgui implot implot3d imanim hello_imgui imgui_color_text_edit imgui_md)
+target_include_directories(imgui_manual_lib
+    PUBLIC  ${CMAKE_CURRENT_LIST_DIR}        # for imgui_manual.h
+    PRIVATE ${CMAKE_CURRENT_LIST_DIR}/src    # for internal headers
+)
 # target_link_libraries(imgui_manual_lib PUBLIC imgui_bundle)
-
-target_link_libraries(imgui_bundle INTERFACE imgui_manual_lib)
 
 imgui_bundle_add_app(imgui_manual imgui_manual.main.cpp)
 target_link_libraries(imgui_manual PRIVATE imgui_manual_lib)

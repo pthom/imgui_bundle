@@ -290,7 +290,7 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
   possible use case: user wants to find the signature and doc for a specific function or widget in the demo code. He selects it, clicks (right-click or place a button somewhere? this is to be discussed) "search in code", and the relevant header file or stub is opened in the code viewer, with the first matching line highlighted and the possibility to search for other occurrences in the file.
 - [x] Also handle imgui_internal.h, implot(3d)_internal.h (+ stubs)
 - [x] Remove external modules from ImAnim
-- [ ] Layout manual without docking, only window
+- [x] Layout manual without docking, only window
 
 ### Step 11: Manual in python
 Nooo: Try to avoid doing this...

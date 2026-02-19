@@ -1,3 +1,4 @@
+#include "imgui_manual.h"
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/runner.h"
 #include "im_anim.h"
@@ -5,8 +6,6 @@
 #include "demo_code_viewer.h"
 #include "imgui_demo_marker_hooks.h"
 #include "library_config.h"
-
-#include <string>
 
 // Forward declarations for ImAnim demo windows
 void ImAnimDemoBasicsWindow(bool create_window);
@@ -154,45 +153,41 @@ namespace
 } // anonymous namespace
 
 
-namespace ImGuiManual
+void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library, bool show_status_bar)
 {
-    void SetLibrary(std::string libname)
+    static bool initialized = false;
+    if (!initialized)
     {
-        SetSingleLibraryMode(std::move(libname));
-    }
-
-
-    void ShowGui(bool show_status_bar)
-    {
-        static bool initialized = false;
-        if (!initialized)
+        if (library.has_value())
         {
-            PrepareResources();
-            initialized = true;
+            static const char* names[] = { "ImGui", "ImPlot", "ImPlot3D", "ImAnim" };
+            SetSingleLibraryMode(names[static_cast<int>(library.value())]);
         }
-
-        ShowLibraryToolbar();
-
-        // Use all space, except for a small margin at the bottom for the status bar
-        ImVec2 availableSize = ImGui::GetContentRegionAvail();
-        if (show_status_bar)
-            availableSize.y -= HelloImGui::EmSize(1.5);
-
-        int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
-        int demoWindowFlags = ImGuiWindowFlags_MenuBar; // we need a menu bar for the ImGui demo window
-        ImGui::BeginChild("left pane", ImVec2(availableSize.x * 0.45f, availableSize.y), demoChildFlags, demoWindowFlags);
-        ShowCurrentLibraryDemo();
-        ImGui::EndChild();
-
-        ImGui::SameLine();
-
-        int codeChildFlags = ImGuiChildFlags_Borders;
-        int codeWindowFlags = ImGuiWindowFlags_MenuBar;
-        ImGui::BeginChild("editor", ImVec2(0.f, availableSize.y), codeChildFlags, codeWindowFlags);
-        DemoCodeViewer_Show();
-        ImGui::EndChild();
-
-        if (show_status_bar)
-            ShowStatusBar();
+        PrepareResources();
+        initialized = true;
     }
-} // namespace ImGuiManual
+
+    ShowLibraryToolbar();
+
+    // Use all space, except for a small margin at the bottom for the status bar
+    ImVec2 availableSize = ImGui::GetContentRegionAvail();
+    if (show_status_bar)
+        availableSize.y -= HelloImGui::EmSize(1.5);
+
+    int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
+    int demoWindowFlags = ImGuiWindowFlags_MenuBar; // we need a menu bar for the ImGui demo window
+    ImGui::BeginChild("left pane", ImVec2(availableSize.x * 0.45f, availableSize.y), demoChildFlags, demoWindowFlags);
+    ShowCurrentLibraryDemo();
+    ImGui::EndChild();
+
+    ImGui::SameLine();
+
+    int codeChildFlags = ImGuiChildFlags_Borders;
+    int codeWindowFlags = ImGuiWindowFlags_MenuBar;
+    ImGui::BeginChild("editor", ImVec2(0.f, availableSize.y), codeChildFlags, codeWindowFlags);
+    DemoCodeViewer_Show();
+    ImGui::EndChild();
+
+    if (show_status_bar)
+        ShowStatusBar();
+}

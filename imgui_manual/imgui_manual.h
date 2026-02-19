@@ -1,7 +1,7 @@
 #pragma once
+#include <optional>
 
-namespace ImGuiManual
-{
-    void ShowGui(bool show_status_bar = false);
-    void SetLibrary(std::string libname);
-}
+enum class ImGuiManualLibrary { ImGui, ImPlot, ImPlot3D, ImAnim };
+
+void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library = std::nullopt,
+                        bool show_status_bar = false);

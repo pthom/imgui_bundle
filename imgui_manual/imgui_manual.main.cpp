@@ -35,16 +35,21 @@ std::string ParseLibraryArg(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-    std::string libName = ParseLibraryArg(argc, argv);
-    if (!libName.empty())
-        ImGuiManual::SetLibrary(libName);
+    auto libraryFromString = [](const std::string& s) -> std::optional<ImGuiManualLibrary> {
+        if (s == "ImGui")    return ImGuiManualLibrary::ImGui;
+        if (s == "ImPlot")   return ImGuiManualLibrary::ImPlot;
+        if (s == "ImPlot3D") return ImGuiManualLibrary::ImPlot3D;
+        if (s == "ImAnim")   return ImGuiManualLibrary::ImAnim;
+        return std::nullopt;
+    };
+    std::optional<ImGuiManualLibrary> library = libraryFromString(ParseLibraryArg(argc, argv));
 
     HelloImGui::RunnerParams runnerParams;
 
     runnerParams.appWindowParams.windowTitle = "Dear ImGui Manual";
     runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
 
-    runnerParams.callbacks.ShowGui = []() { ImGuiManual::ShowGui(true); };
+    runnerParams.callbacks.ShowGui = [library]() { ShowImGuiManualGui(library, true); };
 
     runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
 
