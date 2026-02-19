@@ -61,7 +61,9 @@ VoidPtr = Any
 
 FLT_MIN: float  # value defined by this module as the minimum acceptable C(++) float
 FLT_MAX: float  # value defined by this module as the maximum acceptable C(++) float
+
 IM_COL32_WHITE: int
+IM_COL32_BLACK: int  #  = IM_COL32(0, 0, 0, 255)
 
 Window = internal.Window
 uint = int
@@ -299,9 +301,6 @@ IM_COL32_A_SHIFT = 24
 def IM_COL32(r: ImU32, g: ImU32, b: ImU32, a: ImU32) -> ImU32:
     r = (a << IM_COL32_A_SHIFT) | (b << IM_COL32_B_SHIFT) | (g << IM_COL32_G_SHIFT) | (r << IM_COL32_R_SHIFT)
     return r
-
-IM_COL32_WHITE: int  #  = IM_COL32(255, 255, 255, 255)
-IM_COL32_BLACK: int  #  = IM_COL32(0, 0, 0, 255)
 
 """
 Additional customizations

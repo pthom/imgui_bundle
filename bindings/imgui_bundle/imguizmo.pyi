@@ -6,9 +6,11 @@ from typing import List, Optional, Any, overload
 import enum
 import numpy as np
 
-from imgui_bundle.imgui import ImU32, ImDrawList, ImVec2Like
+from imgui_bundle.imgui import ImU32, ImDrawList, ImVec2Like, Window, ID
 
 ImGuiContext = Any
+ImGuiWindow = Window
+ImGuiID = ID
 
 ImGuiZoomSliderFlags = int
 ImGuiZoomSliderFlags_None = im_zoom_slider.ImGuiZoomSliderFlags_.none  # noqa

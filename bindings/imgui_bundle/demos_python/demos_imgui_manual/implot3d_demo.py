@@ -62,7 +62,7 @@ def help_marker(desc: str):
         imgui.end_tooltip()
 
 
-def checkbox_flag(flags: int, flag: int, flag_name: str = None) -> tuple[bool, int]:
+def checkbox_flag(flags: int, flag: int, flag_name: str|None = None) -> tuple[bool, int]:
     """
     Helper function to create a checkbox that toggles a flag bit.
     Mimics C++ macro: CHECKBOX_FLAG(flags, flag)
@@ -1159,8 +1159,8 @@ def demo_mouse_picking():
     static = demo_mouse_picking
 
     if not hasattr(static, "points"):
-        static.points: list[implot3d.Point] = []
-        static.rays: list[implot3d.Ray] = []
+        static.points = []  # : list[implot3d.Point]
+        static.rays = []  # : list[implot3d.Ray]
         static.selected_plane = implot3d.ImPlane3D_.xy.value
         static.mask_plane = True
 

@@ -316,6 +316,7 @@ https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
 https://traineq.org/ImGuiBundle/imgui_manual/
 
 Link to commit / demo_markers
+Link to demo bundle
 
 - [ ] publish imgui_bundle_demo
 - [ ] redirect current manual to new

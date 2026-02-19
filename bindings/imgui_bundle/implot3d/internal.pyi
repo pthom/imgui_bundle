@@ -3,12 +3,13 @@ Python bindings for https://github.com/brenocq/implot3d
 """
 # ruff: noqa: E741, B008
 from typing import Any, Optional, Tuple, overload
+import enum
 
 from imgui_bundle.imgui import ImVec2, ImVec4, ImU32, ID, ImVec2Like, ImVec4Like, ImDrawList
 from imgui_bundle.imgui.internal import ImRect
 from imgui_bundle.implot3d import (
     Colormap, Marker, Flags, Col, Point, LegendFlags, AxisFlags, Location,
-    Quat, Ray, Range, Cond, Style, ItemFlags, ImAxis3D
+    Quat, Ray, Range, Cond, Style, ItemFlags, ImAxis3D, Spec, Scale
     )
 
 

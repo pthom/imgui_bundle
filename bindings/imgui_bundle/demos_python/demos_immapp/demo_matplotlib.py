@@ -21,7 +21,7 @@ class AnimatedFigure:
     def __init__(self):
         # Data for plotting
         self.phase = 0.0
-        self.x = np.arange(0.0, 2.0, 0.01)
+        self.x = np.arange(0.0, 2.0, 0.01, dtype=np.float32)
         self.y = 1 + np.sin(2 * np.pi * self.x + self.phase) * self.amplitude
 
         # Create a figure and a set of subplots

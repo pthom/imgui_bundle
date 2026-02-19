@@ -73,11 +73,6 @@ class SpinnerTypeT(enum.IntEnum):
 
     e_st_count = enum.auto()        # (= 9)
 
-PI_DIV_4: float  # = IM_PI / 4.
-PI_DIV_2: float  # = IM_PI / 2.
-PI_2: float  # = IM_PI  2.
-
-
 
 
 def color_alpha(c: ImColor, alpha: float) -> ImColor:

@@ -559,7 +559,7 @@ def gui(app_state: AppState):
     uniforms.set_uniform_value("SEA_CHOPPY", value)
 
     color_vec = uniforms.get_uniform_value("SEA_BASE")
-    color_list = [color_vec.x, color_vec.y, color_vec.z]
+    color_list = ImVec4(color_vec.x, color_vec.y, color_vec.z, 1.0)
     _, color_list = imgui.color_edit3("SEA_BASE", color_list)
     color_vec = MyVec3(color_list[0], color_list[1], color_list[2])
     uniforms.set_uniform_value("SEA_BASE", color_vec)

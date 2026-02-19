@@ -1763,8 +1763,6 @@ def demo_drag_points():
     _, static.flags = imgui.checkbox_flags("No Input", static.flags, implot.DragToolFlags_.no_inputs)
 
     ax_flags = implot.AxisFlags_.no_tick_labels | implot.AxisFlags_.no_tick_marks
-    clicked, hovered, held = [False] * 4, [False] * 4, [False] * 4
-
     if implot.begin_plot("##Bezier", size=(-1, 0), flags=implot.Flags_.canvas_only):
         implot.setup_axes("", "", ax_flags, ax_flags)
         implot.setup_axes_limits(0, 1, 0, 1)
@@ -1774,7 +1772,7 @@ def demo_drag_points():
 
         colors = [ImVec4(0, 0.9, 0, 1), ImVec4(1, 0.5, 1, 1), ImVec4(0, 0.5, 1, 1), ImVec4(0, 0.9, 0, 1)]
         for i in range(4):
-            _, static.P[i].x, static.P[i].y, clicked[i], hovered[i], held[i] = implot.drag_point(
+            _, static.P[i].x, static.P[i].y, *_ = implot.drag_point(
                 id_=i, x=static.P[i].x, y=static.P[i].y, col=colors[i], flags=static.flags)
 
         # Compute Bézier curve
