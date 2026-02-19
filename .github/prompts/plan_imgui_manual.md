@@ -299,7 +299,11 @@ Nooo: Try to avoid doing this...
   Let's try to make a simplified version of the manual in Python, with simplified features:
   - we run only one file at a time
     - the code viewer only shows the Python demo file source (using inspect)
-  
+
+### WWW
+- [ ] add python demo
+- [ ] remove demo_assets, demo_cpp, demos_python from pyodide?
+
 ### Step 10: Integration
 - [ ] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
    - [ ] C++
