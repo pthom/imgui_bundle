@@ -1019,6 +1019,62 @@ class RollingBuffer:
 
 #-----------------------------------------------------------------------------
 
+def demo_realtime_plots():
+    IMGUI_DEMO_MARKER("Plots/Realtime Plots")
+    static = demo_realtime_plots
+
+    if not hasattr(static, "t"):
+        static.t = 0.0
+        static.last_t = 0.0
+        static.history = 10.0
+        static.sdata1 = ScrollingBuffer()
+        static.sdata2 = ScrollingBuffer()
+        static.rdata1 = RollingBuffer(span=10.0)
+        static.rdata2 = RollingBuffer(span=10.0)
+
+    imgui.bullet_text("Move your mouse to change the data!")
+    mouse = imgui.get_mouse_pos()
+
+    if static.t == 0 or static.t - static.last_t >= 0.02:
+        static.sdata1.add_point(static.t, mouse.x * 0.0005)
+        static.rdata1.add_point(static.t, mouse.x * 0.0005)
+        static.sdata2.add_point(static.t, mouse.y * 0.0005)
+        static.rdata2.add_point(static.t, mouse.y * 0.0005)
+        static.last_t = static.t
+    static.t += imgui.get_io().delta_time
+
+    _, static.history = imgui.slider_float("History", static.history, 1, 30, "%.1f s")
+    static.rdata1.span = static.history
+    static.rdata2.span = static.history
+
+    flags = implot.AxisFlags_.no_tick_labels
+    if implot.begin_plot("##Scrolling", size=(-1, imgui.get_text_line_height() * 10)):
+        implot.setup_axes("", "", flags, flags)
+        implot.setup_axis_limits(implot.ImAxis_.x1, static.t - static.history, static.t, implot.Cond_.always)
+        implot.setup_axis_limits(implot.ImAxis_.y1, 0, 1)
+        if static.sdata1.size > 0:
+            xs1, ys1 = static.sdata1.get_data()
+            xs2, ys2 = static.sdata2.get_data()
+            implot.plot_shaded("Mouse X", xs1, ys1, yref=float('-inf'),
+                               spec=implot.Spec(fill_alpha=0.5))
+            implot.plot_line("Mouse Y", xs2, ys2)
+        implot.end_plot()
+
+    if implot.begin_plot("##Rolling", size=(-1, imgui.get_text_line_height() * 10)):
+        implot.setup_axes("", "", flags, flags)
+        implot.setup_axis_limits(implot.ImAxis_.x1, 0, static.history, implot.Cond_.always)
+        implot.setup_axis_limits(implot.ImAxis_.y1, 0, 1)
+        xs1, ys1 = static.rdata1.get_data()
+        xs2, ys2 = static.rdata2.get_data()
+        if len(xs1) > 0:
+            implot.plot_line("Mouse X", xs1, ys1)
+        if len(xs2) > 0:
+            implot.plot_line("Mouse Y", xs2, ys2)
+        implot.end_plot()
+
+
+#-----------------------------------------------------------------------------
+
 def demo_markers_and_text():
     IMGUI_DEMO_MARKER("Plots/Markers and Text")
     static = demo_markers_and_text
@@ -1223,6 +1279,19 @@ def demo_time_scale():
 
 #-----------------------------------------------------------------------------
 
+def demo_custom_scale():
+    IMGUI_DEMO_MARKER("Axes/Custom Scale")
+    # Not ported to Python: this demo relies on SetupAxisScale() with custom forward/inverse
+    # transform functions (C++ API: ImPlot::SetupAxisScale(axis, forward_fn, inverse_fn, data)).
+    # Python bindings do not expose function-pointer-based axis scale transforms.
+    imgui.text_wrapped(
+        "Not available in Python: this demo uses SetupAxisScale() with custom transform "
+        "function pointers (forward/inverse), which are not exposed in the Python bindings."
+    )
+
+
+#-----------------------------------------------------------------------------
+
 def demo_multiple_axes():
     IMGUI_DEMO_MARKER("Axes/Multiple Axes")
     static = demo_multiple_axes
@@ -1277,6 +1346,52 @@ def demo_multiple_axes():
             implot.set_axes(implot.ImAxis_.x2, implot.ImAxis_.y3)
             implot.plot_line("f(x) = sin(x+.5)*100+200", static.xs2, static.ys3)
 
+        implot.end_plot()
+
+
+#-----------------------------------------------------------------------------
+
+def demo_tick_labels():
+    IMGUI_DEMO_MARKER("Axes/Tick Labels")
+    static = demo_tick_labels
+
+    if not hasattr(static, "custom_fmt"):
+        static.custom_fmt = True
+        static.custom_ticks = False
+        static.custom_labels = True
+
+    _, static.custom_fmt = imgui.checkbox("Show Custom Format", static.custom_fmt)
+    imgui.same_line()
+    _, static.custom_ticks = imgui.checkbox("Show Custom Ticks", static.custom_ticks)
+    if static.custom_ticks:
+        imgui.same_line()
+        _, static.custom_labels = imgui.checkbox("Show Custom Labels", static.custom_labels)
+
+    pi = 3.14
+    pi_str = ["PI"]
+    yticks = [100.0, 300.0, 700.0, 900.0]
+    ylabels = ["One", "Three", "Seven", "Nine"]
+    yticks_aux = [0.2, 0.4, 0.6]
+    ylabels_aux = ["A", "B", "C", "D", "E", "F"]
+
+    if implot.begin_plot("##Ticks"):
+        implot.setup_axes_limits(2.5, 5, 0, 1000)
+        implot.setup_axis(implot.ImAxis_.y2, None, implot.AxisFlags_.aux_default)
+        implot.setup_axis(implot.ImAxis_.y3, None, implot.AxisFlags_.aux_default)
+        if static.custom_fmt:
+            implot.setup_axis_format(implot.ImAxis_.x1, "%g ms")
+            implot.setup_axis_format(implot.ImAxis_.y1, "%g Hz")
+            implot.setup_axis_format(implot.ImAxis_.y2, "%g dB")
+            implot.setup_axis_format(implot.ImAxis_.y3, "%g m")
+        if static.custom_ticks:
+            implot.setup_axis_ticks(implot.ImAxis_.x1, [pi],
+                                    pi_str if static.custom_labels else None, True)
+            implot.setup_axis_ticks(implot.ImAxis_.y1, yticks,
+                                    ylabels if static.custom_labels else None, False)
+            implot.setup_axis_ticks(implot.ImAxis_.y2, yticks_aux,
+                                    ylabels_aux[:3] if static.custom_labels else None, False)
+            implot.setup_axis_ticks(implot.ImAxis_.y3, 0, 1, 6,
+                                    ylabels_aux if static.custom_labels else None, False)
         implot.end_plot()
 
 
@@ -1552,6 +1667,87 @@ def demo_subplot_axis_linking():
 
 
 #-----------------------------------------------------------------------------
+
+def demo_item_styling_and_spec():
+    IMGUI_DEMO_MARKER("Tools/Item Styling and Spec")
+    data1_x = np.array([i / 19.0 for i in range(20)], dtype=np.float32)
+    data1_y = data1_x ** 2
+    data2_x = np.array([i / 19.0 for i in range(20)], dtype=np.float32)
+    data2_y = data2_x ** 3
+
+    if implot.begin_plot("##SpecStyling"):
+        implot.setup_axes("x", "y")
+
+        # 1. By declaring and defining a struct instance:
+        spec = implot.Spec(
+            line_color=ImVec4(1, 1, 0, 1),
+            line_weight=1.0,
+            fill_color=ImVec4(1, 0.5, 0, 1),
+            fill_alpha=0.5,
+            marker=implot.Marker_.square,
+            marker_size=6,
+            flags=implot.ItemFlags_.no_legend | implot.LineFlags_.shaded,
+        )
+        implot.plot_line("Line 1", data1_x, data1_y, spec)
+
+        # 2. Inline using keyword arguments:
+        implot.plot_line("Line 2", data2_x, data2_y,
+                         implot.Spec(
+                             line_color=ImVec4(0, 1, 1, 1),
+                             line_weight=1.0,
+                             fill_color=ImVec4(0, 0, 1, 1),
+                             fill_alpha=0.5,
+                             marker=implot.Marker_.diamond,
+                             marker_size=6,
+                             flags=implot.ItemFlags_.no_legend | implot.LineFlags_.shaded,
+                         ))
+
+        implot.end_plot()
+
+
+#-----------------------------------------------------------------------------
+
+def demo_offset_and_stride():
+    IMGUI_DEMO_MARKER("Tools/Offset and Stride")
+    static = demo_offset_and_stride
+
+    k_circles = 11
+    k_points_per = 50
+
+    if not hasattr(static, "interleaved_data"):
+        k_size = 2 * k_points_per * k_circles
+        static.interleaved_data = np.zeros(k_size, dtype=np.float64)
+        for p in range(k_points_per):
+            for c in range(k_circles):
+                r = c / (k_circles - 1) * 0.2 + 0.2
+                static.interleaved_data[p * 2 * k_circles + 2 * c + 0] = 0.5 + r * np.cos(p / k_points_per * 6.28)
+                static.interleaved_data[p * 2 * k_circles + 2 * c + 1] = 0.5 + r * np.sin(p / k_points_per * 6.28)
+        static.offset = 0
+
+    imgui.bullet_text("Offsetting is useful for realtime plots (see above) and circular buffers.")
+    imgui.bullet_text("Striding is useful for interleaved data (e.g. audio) or plotting structs.")
+    imgui.bullet_text("Here, all circle data is stored in a single interleaved buffer:")
+    imgui.bullet_text("[c0.x0 c0.y0 ... cn.x0 cn.y0 c0.x1 c0.y1 ... cn.x1 cn.y1 ... cn.xm cn.ym]")
+    imgui.bullet_text("The offset value indicates which circle point index is considered the first.")
+    imgui.bullet_text("Offsets can be negative and/or larger than the actual data count.")
+    _, static.offset = imgui.slider_int("Offset", static.offset, -2 * k_points_per, 2 * k_points_per)
+
+    if implot.begin_plot("##strideoffset", size=(-1, 0), flags=implot.Flags_.equal):
+        implot.push_colormap(implot.Colormap_.jet)
+        stride_elements = 2 * k_circles
+        for c in range(k_circles):
+            # Note: Python bindings require contiguous arrays, so we extract each circle's
+            # x/y data via strided slicing + .copy(). In C++, spec.Stride would be used:
+            # stride = 2 * k_circles * sizeof(double).
+            xs = static.interleaved_data[c * 2 + 0 :: stride_elements][:k_points_per].copy()
+            ys = static.interleaved_data[c * 2 + 1 :: stride_elements][:k_points_per].copy()
+            implot.plot_line(f"Circle {c}", xs, ys,
+                             spec=implot.Spec(offset=static.offset))
+        implot.pop_colormap()
+        implot.end_plot()
+
+
+#-----------------------------------------------------------------------------
 def demo_drag_points():
     IMGUI_DEMO_MARKER("Tools/Drag Points")
     static = demo_drag_points
@@ -1727,6 +1923,63 @@ def demo_drag_rects():
         implot.end_plot()
 
 
+#-----------------------------------------------------------------------------
+
+def demo_querying():
+    IMGUI_DEMO_MARKER("Tools/Querying")
+    static = demo_querying
+
+    if not hasattr(static, "data_x"):
+        rng = np.random.RandomState(0)
+        static.data_x = rng.uniform(0.1, 0.9, 50)
+        static.data_y = rng.uniform(0.1, 0.9, 50)
+        static.rects = []
+
+    imgui.bullet_text("Box select and left click mouse to create a new query rect.")
+    imgui.bullet_text("Ctrl + click in the plot area to draw points.")
+
+    if imgui.button("Clear Queries"):
+        static.rects = []
+
+    cent_spec = implot.Spec(marker=implot.Marker_.square, marker_size=6)
+
+    if implot.begin_plot("##Centroid"):
+        implot.setup_axes_limits(0, 1, 0, 1)
+
+        if implot.is_plot_hovered() and imgui.is_mouse_clicked(0) and imgui.get_io().key_ctrl:
+            pt = implot.get_plot_mouse_pos()
+            static.data_x = np.append(static.data_x, pt.x)
+            static.data_y = np.append(static.data_y, pt.y)
+
+        implot.plot_scatter("Points",
+                            static.data_x.astype(np.float64),
+                            static.data_y.astype(np.float64))
+
+        if implot.is_plot_selected():
+            sel = implot.get_plot_selection()
+            mask = ((static.data_x >= sel.x.min) & (static.data_x <= sel.x.max) &
+                    (static.data_y >= sel.y.min) & (static.data_y <= sel.y.max))
+            if mask.sum() > 0:
+                cx = float(static.data_x[mask].mean())
+                cy = float(static.data_y[mask].mean())
+                implot.plot_scatter("Centroid", np.array([cx]), np.array([cy]), cent_spec)
+            if imgui.is_mouse_clicked(implot.get_input_map().select_cancel):
+                implot.cancel_plot_selection()
+                static.rects.append(sel)
+
+        for i, rect in enumerate(static.rects):
+            mask = ((static.data_x >= rect.x.min) & (static.data_x <= rect.x.max) &
+                    (static.data_y >= rect.y.min) & (static.data_y <= rect.y.max))
+            if mask.sum() > 0:
+                cx = float(static.data_x[mask].mean())
+                cy = float(static.data_y[mask].mean())
+                implot.plot_scatter("Centroid", np.array([cx]), np.array([cy]), cent_spec)
+            _, rect.x.min, rect.y.min, rect.x.max, rect.y.max, _, _, _ = implot.drag_rect(
+                i, rect.x.min, rect.y.min, rect.x.max, rect.y.max, ImVec4(1, 0, 1, 1))
+
+        implot.end_plot()
+
+
 def demo_annotations():
     IMGUI_DEMO_MARKER("Tools/Annotations")
     static = demo_annotations
@@ -1794,6 +2047,189 @@ def demo_tags():
             implot.tag_y(0.5, ImVec4(0, 1, 1, 1), "Tag: %d" % 42)
 
         implot.end_plot()
+
+
+#-----------------------------------------------------------------------------
+
+def demo_drag_and_drop():
+    IMGUI_DEMO_MARKER("Tools/Drag and Drop")
+    imgui.bullet_text("Drag/drop items from the left column.")
+    imgui.bullet_text("Drag/drop items between plots.")
+    imgui.indent()
+    imgui.bullet_text("Plot 1 Targets: Plot, Y-Axes, Legend")
+    imgui.bullet_text("Plot 1 Sources: Legend Item Labels")
+    imgui.bullet_text("Plot 2 Targets: Plot, X-Axis, Y-Axis")
+    imgui.bullet_text("Plot 2 Sources: Plot, X-Axis, Y-Axis (hold Ctrl)")
+    imgui.unindent()
+
+    static = demo_drag_and_drop
+
+    if not hasattr(static, "dnd_plt"):
+        k_dnd = 20
+        static.k_dnd = k_dnd
+        static.dnd_plt = [0] * k_dnd      # which plot (0=none, 1=plot1, 2=plot2)
+        static.dnd_yax = [implot.ImAxis_.y1] * k_dnd
+        static.dnd_labels = [f"{i + 1:02d} Hz" for i in range(k_dnd)]
+        static.dnd_colors = [ImVec4(
+            np.random.uniform(0, 1), np.random.uniform(0, 1), np.random.uniform(0, 1), 1.0
+        ) for _ in range(k_dnd)]
+        t_vals = np.linspace(0, 1, 1001, dtype=np.float32)
+        static.dnd_data = [
+            (t_vals, 0.5 + 0.5 * np.sin(2 * 3.14 * t_vals * (i + 1)).astype(np.float32))
+            for i in range(k_dnd)
+        ]
+        static.dndx = -1  # index into dnd for plot2 x-axis
+        static.dndy = -1  # index into dnd for plot2 y-axis
+
+    k_dnd = static.k_dnd
+    DND_TYPE = "MY_DND"
+
+    imgui.begin_child("DND_LEFT", (100, 400))
+    if imgui.button("Reset Data"):
+        static.dnd_plt = [0] * k_dnd
+        static.dnd_yax = [implot.ImAxis_.y1] * k_dnd
+        static.dndx = -1
+        static.dndy = -1
+
+    for k in range(k_dnd):
+        if static.dnd_plt[k] > 0:
+            continue
+        implot.item_icon(static.dnd_colors[k])
+        imgui.same_line()
+        imgui.selectable(static.dnd_labels[k], False, 0, (100, 0))
+        if imgui.begin_drag_drop_source(imgui.DragDropFlags_.none):
+            imgui.set_drag_drop_payload_py_id(DND_TYPE, k)
+            implot.item_icon(static.dnd_colors[k])
+            imgui.same_line()
+            imgui.text_unformatted(static.dnd_labels[k])
+            imgui.end_drag_drop_source()
+    imgui.end_child()
+
+    if imgui.begin_drag_drop_target():
+        payload = imgui.accept_drag_drop_payload_py_id(DND_TYPE)
+        if payload is not None:
+            i = payload.data_id
+            static.dnd_plt[i] = 0
+            static.dnd_yax[i] = implot.ImAxis_.y1
+        imgui.end_drag_drop_target()
+
+    imgui.same_line()
+    imgui.begin_child("DND_RIGHT", (-1, 400))
+
+    ax_flags = implot.AxisFlags_.no_tick_labels | implot.AxisFlags_.no_grid_lines | implot.AxisFlags_.no_highlight
+    # plot 1 (time series)
+    if implot.begin_plot("##DND1", size=(-1, imgui.get_text_line_height() * 13)):
+        implot.setup_axis(implot.ImAxis_.x1, None, ax_flags | implot.AxisFlags_.lock)
+        implot.setup_axis(implot.ImAxis_.y1, "[drop here]", ax_flags)
+        implot.setup_axis(implot.ImAxis_.y2, "[drop here]", ax_flags | implot.AxisFlags_.opposite)
+        implot.setup_axis(implot.ImAxis_.y3, "[drop here]", ax_flags | implot.AxisFlags_.opposite)
+
+        for k in range(k_dnd):
+            if static.dnd_plt[k] == 1:
+                implot.set_axis(static.dnd_yax[k])
+                xs, ys = static.dnd_data[k]
+                implot.plot_line(static.dnd_labels[k], xs, ys,
+                                 spec=implot.Spec(line_color=static.dnd_colors[k]))
+                if implot.begin_drag_drop_source_item(static.dnd_labels[k]):
+                    imgui.set_drag_drop_payload_py_id(DND_TYPE, k)
+                    implot.item_icon(static.dnd_colors[k])
+                    imgui.same_line()
+                    imgui.text_unformatted(static.dnd_labels[k])
+                    implot.end_drag_drop_source()
+
+        if implot.begin_drag_drop_target_plot():
+            payload = imgui.accept_drag_drop_payload_py_id(DND_TYPE)
+            if payload is not None:
+                i = payload.data_id
+                static.dnd_plt[i] = 1
+                static.dnd_yax[i] = implot.ImAxis_.y1
+            implot.end_drag_drop_target()
+
+        for y in [implot.ImAxis_.y1, implot.ImAxis_.y2, implot.ImAxis_.y3]:
+            if implot.begin_drag_drop_target_axis(y):
+                payload = imgui.accept_drag_drop_payload_py_id(DND_TYPE)
+                if payload is not None:
+                    i = payload.data_id
+                    static.dnd_plt[i] = 1
+                    static.dnd_yax[i] = y
+                implot.end_drag_drop_target()
+
+        if implot.begin_drag_drop_target_legend():
+            payload = imgui.accept_drag_drop_payload_py_id(DND_TYPE)
+            if payload is not None:
+                i = payload.data_id
+                static.dnd_plt[i] = 1
+                static.dnd_yax[i] = implot.ImAxis_.y1
+            implot.end_drag_drop_target()
+
+        implot.end_plot()
+
+    # plot 2 (Lissajous)
+    axis_bg_col = implot.get_style().color_(implot.Col_.axis_bg)
+    cx = static.dnd_colors[static.dndx] if static.dndx >= 0 else axis_bg_col
+    cy = static.dnd_colors[static.dndy] if static.dndy >= 0 else axis_bg_col
+    lx = static.dnd_labels[static.dndx] if static.dndx >= 0 else "[drop here]"
+    ly = static.dnd_labels[static.dndy] if static.dndy >= 0 else "[drop here]"
+
+    if implot.begin_plot("##DND2", size=(-1, imgui.get_text_line_height() * 13)):
+        implot.push_style_color(implot.Col_.axis_bg, cx)
+        implot.setup_axis(implot.ImAxis_.x1, lx, ax_flags)
+        implot.push_style_color(implot.Col_.axis_bg, cy)
+        implot.setup_axis(implot.ImAxis_.y1, ly, ax_flags)
+        implot.pop_style_color(2)
+
+        if static.dndx >= 0 and static.dndy >= 0:
+            mixed = ImVec4(
+                (static.dnd_colors[static.dndx].x + static.dnd_colors[static.dndy].x) / 2,
+                (static.dnd_colors[static.dndx].y + static.dnd_colors[static.dndy].y) / 2,
+                (static.dnd_colors[static.dndx].z + static.dnd_colors[static.dndy].z) / 2,
+                (static.dnd_colors[static.dndx].w + static.dnd_colors[static.dndy].w) / 2,
+            )
+            _, ys_x = static.dnd_data[static.dndx]
+            _, ys_y = static.dnd_data[static.dndy]
+            implot.plot_line("##dndxy", ys_x, ys_y,
+                             spec=implot.Spec(line_color=mixed))
+
+        if implot.begin_drag_drop_target_axis(implot.ImAxis_.x1):
+            payload = imgui.accept_drag_drop_payload_py_id(DND_TYPE)
+            if payload is not None:
+                static.dndx = payload.data_id
+            implot.end_drag_drop_target()
+
+        if static.dndx >= 0 and implot.begin_drag_drop_source_axis(implot.ImAxis_.x1):
+            imgui.set_drag_drop_payload_py_id(DND_TYPE, static.dndx)
+            implot.item_icon(static.dnd_colors[static.dndx])
+            imgui.same_line()
+            imgui.text_unformatted(static.dnd_labels[static.dndx])
+            implot.end_drag_drop_source()
+
+        if implot.begin_drag_drop_target_axis(implot.ImAxis_.y1):
+            payload = imgui.accept_drag_drop_payload_py_id(DND_TYPE)
+            if payload is not None:
+                static.dndy = payload.data_id
+            implot.end_drag_drop_target()
+
+        if static.dndy >= 0 and implot.begin_drag_drop_source_axis(implot.ImAxis_.y1):
+            imgui.set_drag_drop_payload_py_id(DND_TYPE, static.dndy)
+            implot.item_icon(static.dnd_colors[static.dndy])
+            imgui.same_line()
+            imgui.text_unformatted(static.dnd_labels[static.dndy])
+            implot.end_drag_drop_source()
+
+        if implot.begin_drag_drop_target_plot():
+            payload = imgui.accept_drag_drop_payload_py_id(DND_TYPE)
+            if payload is not None:
+                static.dndx = payload.data_id
+                static.dndy = payload.data_id
+            implot.end_drag_drop_target()
+
+        if implot.begin_drag_drop_source_plot():
+            imgui.text_unformatted("Yes, you can\ndrag this!")
+            implot.end_drag_drop_source()
+
+        implot.end_plot()
+
+    imgui.end_child()
 
 
 def sparkline(label_id, values, y_min, y_max, offset, color, size):
@@ -1920,6 +2356,20 @@ def demo_custom_styles():
 
 #-----------------------------------------------------------------------------
 
+def demo_custom_data_and_getters():
+    IMGUI_DEMO_MARKER("Custom/Custom Data and Getters")
+    # Not ported to Python: this demo relies on PlotLineG() which accepts a C++ function pointer
+    # as a data getter (API: ImPlot::PlotLineG(label, getter_fn, user_data, count)).
+    # Python bindings do not expose function-pointer-based plot APIs.
+    imgui.text_wrapped(
+        "Not available in Python: this demo uses PlotLineG() / PlotScatterG() with C++ "
+        "function pointer callbacks as data getters. This API is not exposed in the "
+        "Python bindings. Use numpy arrays to pre-compute your data instead."
+    )
+
+
+#-----------------------------------------------------------------------------
+
 def demo_custom_rendering():
     IMGUI_DEMO_MARKER("Custom/Custom Rendering")
     if implot.begin_plot("##CustomRend"):
@@ -1935,6 +2385,58 @@ def demo_custom_rendering():
 
         implot.end_plot()
 
+
+def demo_legend_options():
+    IMGUI_DEMO_MARKER("Tools/Legend Options")
+    static = demo_legend_options
+
+    if not hasattr(static, "loc"):
+        static.loc = implot.Location_.east
+        static.flags = implot.LegendFlags_.none
+        static.num_dummy_items = 25
+
+    _, static.loc = imgui.checkbox_flags("North", static.loc, implot.Location_.north)
+    imgui.same_line()
+    _, static.loc = imgui.checkbox_flags("South", static.loc, implot.Location_.south)
+    imgui.same_line()
+    _, static.loc = imgui.checkbox_flags("West", static.loc, implot.Location_.west)
+    imgui.same_line()
+    _, static.loc = imgui.checkbox_flags("East", static.loc, implot.Location_.east)
+
+    _, static.flags = imgui.checkbox_flags("Horizontal", static.flags, implot.LegendFlags_.horizontal)
+    _, static.flags = imgui.checkbox_flags("Outside", static.flags, implot.LegendFlags_.outside)
+    _, static.flags = imgui.checkbox_flags("Sort", static.flags, implot.LegendFlags_.sort)
+    _, static.flags = imgui.checkbox_flags("Reverse", static.flags, implot.LegendFlags_.reverse)
+
+    style = implot.get_style()
+    _, style.legend_padding = imgui.slider_float2("Legend Padding", style.legend_padding, 0, 20, "%.0f")
+    _, style.legend_inner_padding = imgui.slider_float2("Legend Inner Spacing", style.legend_inner_padding, 0, 10, "%.0f")
+    _, style.legend_spacing = imgui.slider_float2("Legend Spacing", style.legend_spacing, 0, 5, "%.0f")
+
+    _, static.num_dummy_items = imgui.slider_int("Num Dummy Items (Demo Scrolling)", static.num_dummy_items, 0, 100)
+
+    if implot.begin_plot("##Legend", size=(-1, 0)):
+        implot.setup_legend(static.loc, static.flags)
+
+        # Precomputed saw wave data for demo items
+        t = np.linspace(0, 1, 1000, dtype=np.float64)
+        offsets = [0.2, 0.4, 0.6, 0.8, 1.0]
+        saw = [2.0 / np.pi * np.arctan(1.0 / np.tan(np.pi * 4 * t)) * 0.2 + o
+               for o in offsets]
+
+        implot.plot_line("Item 002", t, saw[0])
+        implot.plot_line("Item 001##IDText", t, saw[1])   # ## part used for ID only
+        implot.plot_line("##NotListed", t, saw[2])         # not added to legend
+        implot.plot_line("Item 003", t, saw[3])
+        implot.plot_line("Item 003", t, saw[4])            # combined with previous "Item 003"
+
+        for i in range(static.num_dummy_items):
+            implot.plot_dummy(f"Item {i + 4:03d}")
+
+        implot.end_plot()
+
+
+#-----------------------------------------------------------------------------
 
 def demo_legend_popups():
     IMGUI_DEMO_MARKER("Tools/Legend Popups")
@@ -2077,7 +2579,7 @@ def show_all_demos():
             demo_header("Shaded Plots", demo_shaded_plots)
             demo_header("Scatter Plots", demo_scatter_plots)
             demo_header("Bubble Plots", demo_bubble_plots)
-            # demo_header("Realtime Plots", demo_realtime_plots) # KK
+            demo_header("Realtime Plots", demo_realtime_plots)
             demo_header("Stairstep Plots", demo_stairstep_plots)
             demo_header("Bar Plots", demo_bar_plots)
             demo_header("Bar Groups", demo_bar_groups)
@@ -2106,9 +2608,9 @@ def show_all_demos():
             demo_header("Log Scale", demo_log_scale)
             demo_header("Symmetric Log Scale", demo_symmetric_log_scale)
             demo_header("Time Scale", demo_time_scale)
-            # demo_header("Custom Scale", demo_custom_scale)
+            # demo_custom_scale: not ported (requires SetupAxisScale with function pointer transforms)
             demo_header("Multiple Axes", demo_multiple_axes)
-            # demo_header("Tick Labels", demo_tick_labels)
+            demo_header("Tick Labels", demo_tick_labels)
             demo_header("Linked Axes", demo_linked_axes)
             demo_header("Axis Constraints", demo_axis_constraints)
             demo_header("Equal Axes", demo_equal_axes)
@@ -2116,22 +2618,23 @@ def show_all_demos():
             imgui.end_tab_item()
 
         if imgui.begin_tab_item_simple("Tools"):
-            # demo_header("Offset and Stride", demo_offset_and_stride)
+            demo_header("Item Styling and Spec", demo_item_styling_and_spec)
+            demo_header("Offset and Stride", demo_offset_and_stride)
             demo_header("Drag Points", demo_drag_points)
             demo_header("Drag Lines", demo_drag_lines)
             demo_header("Drag Rects", demo_drag_rects)
-            # demo_header("Querying", demo_querying)
+            demo_header("Querying", demo_querying)
             demo_header("Annotations", demo_annotations)
             demo_header("Tags", demo_tags)
-            # demo_header("Drag and Drop", demo_drag_and_drop)
-            # demo_header("Legend Options", demo_legend_options)
+            demo_header("Drag and Drop", demo_drag_and_drop)
+            demo_header("Legend Options", demo_legend_options)
             demo_header("Legend Popups", demo_legend_popups)
             demo_header("Colormap Widgets", demo_colormap_widgets)
             imgui.end_tab_item()
 
         if imgui.begin_tab_item_simple("Custom"):
             demo_header("Custom Styles", demo_custom_styles)
-            # demo_header("Custom Data and Getters", demo_custom_data_and_getters)
+            # demo_custom_data_and_getters: not ported (requires PlotLineG with function pointer getters)
             demo_header("Custom Rendering", demo_custom_rendering)
             demo_header("Custom Plotters and Tooltips", demo_custom_plotters_and_tooltips)
             imgui.end_tab_item()
