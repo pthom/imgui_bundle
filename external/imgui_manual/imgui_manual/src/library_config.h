@@ -45,4 +45,5 @@ std::vector<DemoFileInfo> GetCurrentLibraryFiles();
 // only one library is shown and the library selection toolbar is simplified.
 bool IsSingleLibraryMode();
 void SetSingleLibraryMode(std::string libname);
+void SetMultipleLibraryMode();
 

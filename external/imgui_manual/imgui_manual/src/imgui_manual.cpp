@@ -158,14 +158,18 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library, bool show_sta
     static bool initialized = false;
     if (!initialized)
     {
-        if (library.has_value())
-        {
-            static const char* names[] = { "ImGui", "ImPlot", "ImPlot3D", "ImAnim" };
-            SetSingleLibraryMode(names[static_cast<int>(library.value())]);
-        }
         PrepareResources();
         initialized = true;
     }
+
+    if (library.has_value())
+    {
+        static const char* names[] = { "ImGui", "ImPlot", "ImPlot3D", "ImAnim" };
+        SetSingleLibraryMode(names[static_cast<int>(library.value())]);
+    }
+    else
+        SetMultipleLibraryMode();
+
 
     ShowLibraryToolbar();
 

@@ -215,3 +215,8 @@ void SetSingleLibraryMode(std::string libname)
         IM_ASSERT(false && "SetSingleLibraryMode: Failed to find the current library name");
     }
 }
+
+void SetMultipleLibraryMode()
+{
+    g_singleLibraryMode = false;
+}
