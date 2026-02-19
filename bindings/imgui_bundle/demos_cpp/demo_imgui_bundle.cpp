@@ -34,7 +34,7 @@ void ShowModuleDemo(const std::string& demoFilename, VoidFunction demoFunction)
     if (ImGui::GetFrameCount() < 2) // cf https://github.com/pthom/imgui_bundle/issues/293
         return;
     if (ImGui::CollapsingHeader("Code for this demo"))
-        ShowPythonVsCppFile(demoFilename.c_str());
+        ShowPythonVsCppFile(demoFilename.c_str(), 40);
     demoFunction();
 }
 

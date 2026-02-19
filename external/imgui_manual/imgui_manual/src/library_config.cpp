@@ -42,7 +42,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             ImGui::Separator();
             ImGui::ShowDemoWindow_MaybeDocked(do_create_window);
         };
-        cfg.mdIntro = "Dear ImGui - Bloat-free Graphical User interface | [Repository](https://github.com/ocornut/imgui) | [FAQ](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md) | [Wiki](https://github.com/ocornut/imgui/wiki) | [dearimgui.com](https://www.dearimgui.com/)";
+        cfg.mdIntro = "Dear ImGui | [Repository](https://github.com/ocornut/imgui) | [FAQ](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md) | [Wiki](https://github.com/ocornut/imgui/wiki) | [dearimgui.com](https://www.dearimgui.com/) | [Dear ImGui Manual](https://traineq.org/ImGuiBundle/imgui_manual/)";
         configs.push_back(std::move(cfg));
     }
 
