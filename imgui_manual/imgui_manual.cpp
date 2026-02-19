@@ -162,7 +162,7 @@ namespace ImGuiManual
     }
 
 
-    void ShowGui()
+    void ShowGui(bool show_status_bar)
     {
         static bool initialized = false;
         if (!initialized)
@@ -175,7 +175,8 @@ namespace ImGuiManual
 
         // Use all space, except for a small margin at the bottom for the status bar
         ImVec2 availableSize = ImGui::GetContentRegionAvail();
-        availableSize.y -= HelloImGui::EmSize(1.5);
+        if (show_status_bar)
+            availableSize.y -= HelloImGui::EmSize(1.5);
 
         int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
         int demoWindowFlags = ImGuiWindowFlags_MenuBar; // we need a menu bar for the ImGui demo window
@@ -191,6 +192,7 @@ namespace ImGuiManual
         DemoCodeViewer_Show();
         ImGui::EndChild();
 
-        ShowStatusBar();
+        if (show_status_bar)
+            ShowStatusBar();
     }
 } // namespace ImGuiManual
