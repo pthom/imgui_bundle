@@ -10,30 +10,9 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
-#ifdef __EMSCRIPTEN__
-#include <emscripten.h>
-#endif
-#ifdef _WIN32
-#include <windows.h>
-#include <Shellapi.h>
-#endif
+#include "immapp/browse_to_url.h"
 
 
-void OpenUrl(const std::string &url)
-{
-    bool isAbsoluteUrl = url.find("http") == 0;
-    if (!isAbsoluteUrl)
-        return;
-#if defined(__EMSCRIPTEN__)
-    std::string js_command = "window.open(\"" + url + "\");";
-    emscripten_run_script(js_command.c_str());
-#elif defined(_WIN32)
-    ShellExecuteA( NULL, "open", url.c_str(), NULL, NULL, SW_SHOWNORMAL );
-#elif defined(__APPLE__)
-    std::string cmd = std::string("open ") + url.c_str();
-    system(cmd.c_str());
-#endif
-}
 
 namespace
 {
@@ -443,7 +422,7 @@ void DemoCodeViewer_Show()
             int line, column; editor.GetCursorPosition(line, column);
             const std::string& githubUrl = showingPython ? currentFile.pyGithubUrl : currentFile.cppGithubUrl;
             if (!githubUrl.empty())
-                OpenUrl(githubUrl + "#L" + std::to_string(line + 1));
+                ImmApp::BrowseToUrl((githubUrl + "#L" + std::to_string(line + 1)).c_str());
         }
 
         ImGui::SameLine();

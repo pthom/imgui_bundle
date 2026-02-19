@@ -117,7 +117,7 @@ function(iman_add_imgui_manual_lib)
         ${src}/imgui_manual.h
     )
     target_link_libraries(imgui_manual_lib PUBLIC
-        imgui implot implot3d imanim hello_imgui imgui_color_text_edit imgui_md)
+        imgui implot implot3d imanim hello_imgui immapp imgui_color_text_edit imgui_md)
     target_include_directories(imgui_manual_lib
         PUBLIC  $<BUILD_INTERFACE:${src}>        # for imgui_manual.h
         PRIVATE $<BUILD_INTERFACE:${src}/src>    # for internal headers
