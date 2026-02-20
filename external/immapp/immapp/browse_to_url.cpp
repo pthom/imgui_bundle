@@ -3,6 +3,7 @@
 // Specific per platform includes for BrowseToUrl
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
+#include <cstdio> // snprintf
 #elif defined(_WIN32)
 #include <windows.h>
 #include <shellapi.h>
