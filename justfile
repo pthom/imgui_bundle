@@ -7,10 +7,22 @@ default:
 
 # build emscripten
 ems_build:
-    ./ci_scripts/ems_build.sh
+    mkdir -p build_ems_release && \
+    cd build_ems_release && \
+    source ~/emsdk/emsdk_env.sh && \
+    emcmake cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    make -j
 
-ems_deploy:
-    ./ci_scripts/ems_deploy.sh
+
+# clean emscripten build
+ems_clean:
+    rm -rf build_ems_release
+
+
+# deploy the emscripten build to official imgui bundle interactive manual
+ems_deploy: ems_build
+    cd build_ems_release && \
+    rsync -vaz bin pascal@traineq.org:HTML/ImGuiBundle/emscripten
 
 # Serve emscripten with CORS
 ems_serve:
