@@ -1,4 +1,4 @@
-# Plan: Evolve imgui_manual for Multiple Libraries and Python Support
+# Plan: Refactor imgui_manual for multiple Libraries, and integrate it into imgui_bundle
 
 ## Current State Analysis
 
@@ -292,21 +292,6 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [x] Remove external modules from ImAnim
 - [x] Layout manual without docking, only window
 
-### Fix regressions and polish details
-- [x] specify default python or C++ for ShowImGuiManualGui
-- [x] add python demos
-- [x] add full python demos also (for implot, implot3d, and imanim)
-- [x] fix imgui_demo.py : 
-- [x] add menu bars to all demos py
-- [x] "Code for this demo": only on selected demos
-- [x] Add link to imgui_manual in imgui_manual for imgui
-- [x] Fix choice lib in emscripten
-- [x] Can't switch between C++ and Python!
-- [x] "Code for this demo" => fail in emscripten
-- [x] publish imgui_bundle_demo
-- [x] fix CI errors
-- [ ] pyodide wheels: remove demo_assets, demo_cpp, demos_python
-- [ ] immvision disabled in emscripten demo!
 
 ### Step 10: Integration
 - [x] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
@@ -330,3 +315,6 @@ Link to commit / demo_markers => rebase new branch on master (with cherry-pick)
 - [ ] Mail to ocornut and other maintainers about the new manual and its features
 - [ ] PR to imgui, implot, implot3d and imanim with DemoMarker. Advocate for adoption in the main repos.
 
+## Triage
+<!-- Items that surfaced during implementation needing evaluation: scope creep, unexpected issues, open questions. -->
+- [ ] pyodide wheels: remove demo_assets, demo_cpp, demos_python
