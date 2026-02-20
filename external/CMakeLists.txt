@@ -130,13 +130,17 @@ endif()
 if(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
 
-    # Only add immapp integration files if immapp is available
+    # Always compile the immapp integration shim; only link immapp when available.
+    # When immapp is absent, IMGUI_BUNDLE_DISABLE_IMMAPP is set so the .cpp
+    # compiles stub implementations instead of calling into immapp.
+    target_sources(imgui_node_editor PRIVATE
+        imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.cpp
+        imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.h
+    )
     if(IMGUI_BUNDLE_WITH_IMMAPP)
-        target_sources(imgui_node_editor PRIVATE
-            imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.cpp
-            imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.h
-        )
         target_link_libraries(imgui_node_editor PUBLIC immapp)
+    else()
+        target_compile_definitions(imgui_node_editor PRIVATE IMGUI_BUNDLE_DISABLE_IMMAPP)
     endif()
 
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
