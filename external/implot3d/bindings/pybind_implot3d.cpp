@@ -539,9 +539,9 @@ void py_init_module_implot3d(nb::module_& m)
         "Sets up the plot legend location and flags");
 
     m.def("plot_scatter",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotScatter_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
+            auto PlotScatter_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -620,7 +620,7 @@ void py_init_module_implot3d(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
-            auto PlotScatter_adapt_mutable_param_with_default_value = [&PlotScatter_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            auto PlotScatter_adapt_mutable_param_with_default_value = [&PlotScatter_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
             {
 
                 const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
@@ -639,9 +639,9 @@ void py_init_module_implot3d(nb::module_& m)
         " Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_line",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotLine_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
+            auto PlotLine_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -720,7 +720,7 @@ void py_init_module_implot3d(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
-            auto PlotLine_adapt_mutable_param_with_default_value = [&PlotLine_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            auto PlotLine_adapt_mutable_param_with_default_value = [&PlotLine_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
             {
 
                 const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
@@ -739,9 +739,9 @@ void py_init_module_implot3d(nb::module_& m)
         " Plots a line in 3D. Consecutive points are connected with line segments\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_triangle",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotTriangle_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
+            auto PlotTriangle_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -820,7 +820,7 @@ void py_init_module_implot3d(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
-            auto PlotTriangle_adapt_mutable_param_with_default_value = [&PlotTriangle_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            auto PlotTriangle_adapt_mutable_param_with_default_value = [&PlotTriangle_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
             {
 
                 const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
@@ -839,9 +839,9 @@ void py_init_module_implot3d(nb::module_& m)
         " Plots triangles in 3D. Every 3 consecutive points define a triangle\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_quad",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotQuad_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
+            auto PlotQuad_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -920,7 +920,7 @@ void py_init_module_implot3d(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
-            auto PlotQuad_adapt_mutable_param_with_default_value = [&PlotQuad_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            auto PlotQuad_adapt_mutable_param_with_default_value = [&PlotQuad_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
             {
 
                 const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {
@@ -941,9 +941,9 @@ void py_init_module_implot3d(nb::module_& m)
     //
 
     m.def("plot_surface",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
         {
-            auto PlotSurface_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, const ImPlot3DSpec & spec = ImPlot3DSpec())
+            auto PlotSurface_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, const ImPlot3DSpec & spec = ImPlot3DSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -1022,7 +1022,7 @@ void py_init_module_implot3d(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + zs_type + "') for param zs");
             };
-            auto PlotSurface_adapt_mutable_param_with_default_value = [&PlotSurface_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
+            auto PlotSurface_adapt_mutable_param_with_default_value = [&PlotSurface_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, int x_count, int y_count, double scale_min = 0.0, double scale_max = 0.0, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
             {
 
                 const ImPlot3DSpec& spec_or_default = [&]() -> const ImPlot3DSpec {

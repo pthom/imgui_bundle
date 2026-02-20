@@ -2129,9 +2129,9 @@ void py_init_module_imgui_main(nb::module_& m)
         },     nb::arg("label"), nb::arg("current_item"), nb::arg("items"), nb::arg("height_in_items") = -1);
 
     m.def("plot_lines",
-        [](const char * label, const nb::ndarray<> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+        [](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
         {
-            auto PlotLines_adapt_c_buffers = [](const char * label, const nb::ndarray<> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
+            auto PlotLines_adapt_c_buffers = [](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -2163,7 +2163,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 ImGui::PlotLines(label, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), values_offset, overlay_text, scale_min, scale_max, graph_size, values_stride);
             };
-            auto PlotLines_adapt_mutable_param_with_default_value = [&PlotLines_adapt_c_buffers](const char * label, const nb::ndarray<> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+            auto PlotLines_adapt_mutable_param_with_default_value = [&PlotLines_adapt_c_buffers](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
             {
 
                 const ImVec2& graph_size_or_default = [&]() -> const ImVec2 {
@@ -2175,7 +2175,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 PlotLines_adapt_c_buffers(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size_or_default, stride);
             };
-            auto PlotLines_adapt_const_char_pointer_with_default_null = [&PlotLines_adapt_mutable_param_with_default_value](const char * label, const nb::ndarray<> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+            auto PlotLines_adapt_const_char_pointer_with_default_null = [&PlotLines_adapt_mutable_param_with_default_value](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
             {
                 const char * overlay_text_adapt_default_null = nullptr;
                 if (overlay_text.has_value())
@@ -2190,9 +2190,9 @@ void py_init_module_imgui_main(nb::module_& m)
         "Python bindings defaults:\n    If graph_size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("plot_histogram",
-        [](const char * label, const nb::ndarray<> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+        [](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
         {
-            auto PlotHistogram_adapt_c_buffers = [](const char * label, const nb::ndarray<> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
+            auto PlotHistogram_adapt_c_buffers = [](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -2224,7 +2224,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 ImGui::PlotHistogram(label, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), values_offset, overlay_text, scale_min, scale_max, graph_size, values_stride);
             };
-            auto PlotHistogram_adapt_mutable_param_with_default_value = [&PlotHistogram_adapt_c_buffers](const char * label, const nb::ndarray<> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+            auto PlotHistogram_adapt_mutable_param_with_default_value = [&PlotHistogram_adapt_c_buffers](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
             {
 
                 const ImVec2& graph_size_or_default = [&]() -> const ImVec2 {
@@ -2236,7 +2236,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 PlotHistogram_adapt_c_buffers(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size_or_default, stride);
             };
-            auto PlotHistogram_adapt_const_char_pointer_with_default_null = [&PlotHistogram_adapt_mutable_param_with_default_value](const char * label, const nb::ndarray<> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+            auto PlotHistogram_adapt_const_char_pointer_with_default_null = [&PlotHistogram_adapt_mutable_param_with_default_value](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
             {
                 const char * overlay_text_adapt_default_null = nullptr;
                 if (overlay_text.has_value())

@@ -890,9 +890,9 @@ void py_init_module_implot(nb::module_& m)
         ImPlot::SetNextAxesToFit, "Sets all upcoming axes to auto fit to their data.");
 
     m.def("plot_line",
-        [](const char * label_id, const nb::ndarray<> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotLine_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & values, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotLine_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -955,7 +955,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotLine_adapt_mutable_param_with_default_value = [&PlotLine_adapt_c_buffers](const char * label_id, const nb::ndarray<> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotLine_adapt_mutable_param_with_default_value = [&PlotLine_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -974,9 +974,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_line",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotLine_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotLine_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -1047,7 +1047,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotLine_adapt_mutable_param_with_default_value = [&PlotLine_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotLine_adapt_mutable_param_with_default_value = [&PlotLine_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1066,9 +1066,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_scatter",
-        [](const char * label_id, const nb::ndarray<> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotScatter_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & values, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotScatter_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -1131,7 +1131,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotScatter_adapt_mutable_param_with_default_value = [&PlotScatter_adapt_c_buffers](const char * label_id, const nb::ndarray<> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotScatter_adapt_mutable_param_with_default_value = [&PlotScatter_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1150,9 +1150,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_scatter",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotScatter_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotScatter_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -1223,7 +1223,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotScatter_adapt_mutable_param_with_default_value = [&PlotScatter_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotScatter_adapt_mutable_param_with_default_value = [&PlotScatter_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1242,9 +1242,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bubbles",
-        [](const char * label_id, const nb::ndarray<> & values, const nb::ndarray<> & szs, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & values, nb::ndarray<nb::ro> & szs, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotBubbles_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & values, const nb::ndarray<> & szs, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotBubbles_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, nb::ndarray<nb::ro> & szs, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -1315,7 +1315,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + szs_type + "') for param szs");
             };
-            auto PlotBubbles_adapt_mutable_param_with_default_value = [&PlotBubbles_adapt_c_buffers](const char * label_id, const nb::ndarray<> & values, const nb::ndarray<> & szs, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotBubbles_adapt_mutable_param_with_default_value = [&PlotBubbles_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & values, nb::ndarray<nb::ro> & szs, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1334,9 +1334,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bubbles",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & szs, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & szs, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotBubbles_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & szs, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotBubbles_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & szs, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -1415,7 +1415,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + szs_type + "') for param szs");
             };
-            auto PlotBubbles_adapt_mutable_param_with_default_value = [&PlotBubbles_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & szs, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotBubbles_adapt_mutable_param_with_default_value = [&PlotBubbles_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & szs, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1434,9 +1434,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_stairs",
-        [](const char * label_id, const nb::ndarray<> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotStairs_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & values, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotStairs_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -1499,7 +1499,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotStairs_adapt_mutable_param_with_default_value = [&PlotStairs_adapt_c_buffers](const char * label_id, const nb::ndarray<> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotStairs_adapt_mutable_param_with_default_value = [&PlotStairs_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1518,9 +1518,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_stairs",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotStairs_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotStairs_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -1591,7 +1591,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotStairs_adapt_mutable_param_with_default_value = [&PlotStairs_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotStairs_adapt_mutable_param_with_default_value = [&PlotStairs_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1610,9 +1610,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_shaded",
-        [](const char * label_id, const nb::ndarray<> & values, double yref = 0, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & values, double yref = 0, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotShaded_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & values, double yref = 0, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotShaded_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double yref = 0, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -1675,7 +1675,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotShaded_adapt_mutable_param_with_default_value = [&PlotShaded_adapt_c_buffers](const char * label_id, const nb::ndarray<> & values, double yref = 0, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotShaded_adapt_mutable_param_with_default_value = [&PlotShaded_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & values, double yref = 0, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1694,9 +1694,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_shaded",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, double yref = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double yref = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotShaded_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, double yref = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotShaded_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double yref = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -1767,7 +1767,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotShaded_adapt_mutable_param_with_default_value = [&PlotShaded_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, double yref = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotShaded_adapt_mutable_param_with_default_value = [&PlotShaded_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double yref = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1786,9 +1786,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_shaded",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys1, const nb::ndarray<> & ys2, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys1, nb::ndarray<nb::ro> & ys2, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotShaded_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys1, const nb::ndarray<> & ys2, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotShaded_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys1, nb::ndarray<nb::ro> & ys2, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -1867,7 +1867,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys2_type + "') for param ys2");
             };
-            auto PlotShaded_adapt_mutable_param_with_default_value = [&PlotShaded_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys1, const nb::ndarray<> & ys2, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotShaded_adapt_mutable_param_with_default_value = [&PlotShaded_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys1, nb::ndarray<nb::ro> & ys2, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1886,9 +1886,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bars",
-        [](const char * label_id, const nb::ndarray<> & values, double bar_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & values, double bar_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotBars_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & values, double bar_size = 0.67, double shift = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotBars_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double bar_size = 0.67, double shift = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -1951,7 +1951,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotBars_adapt_mutable_param_with_default_value = [&PlotBars_adapt_c_buffers](const char * label_id, const nb::ndarray<> & values, double bar_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotBars_adapt_mutable_param_with_default_value = [&PlotBars_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & values, double bar_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -1970,9 +1970,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bars",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, double bar_size, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double bar_size, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotBars_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, double bar_size, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotBars_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double bar_size, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -2043,7 +2043,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotBars_adapt_mutable_param_with_default_value = [&PlotBars_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, double bar_size, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotBars_adapt_mutable_param_with_default_value = [&PlotBars_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double bar_size, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -2064,9 +2064,9 @@ void py_init_module_implot(nb::module_& m)
     //
 
     m.def("plot_bar_groups",
-        [](const std::vector<std::string> & label_ids, const nb::ndarray<> & values, double group_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const std::vector<std::string> & label_ids, nb::ndarray<nb::ro> & values, double group_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotBarGroups_adapt_c_buffers = [](const std::vector<std::string> & label_ids, const nb::ndarray<> & values, double group_size = 0.67, double shift = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotBarGroups_adapt_c_buffers = [](const std::vector<std::string> & label_ids, nb::ndarray<nb::ro> & values, double group_size = 0.67, double shift = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -2129,7 +2129,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotBarGroups_adapt_mutable_param_with_default_value = [&PlotBarGroups_adapt_c_buffers](const std::vector<std::string> & label_ids, const nb::ndarray<> & values, double group_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotBarGroups_adapt_mutable_param_with_default_value = [&PlotBarGroups_adapt_c_buffers](const std::vector<std::string> & label_ids, nb::ndarray<nb::ro> & values, double group_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -2150,9 +2150,9 @@ void py_init_module_implot(nb::module_& m)
     //
 
     m.def("plot_error_bars",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & err, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & err, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & err, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & err, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -2231,7 +2231,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + err_type + "') for param err");
             };
-            auto PlotErrorBars_adapt_mutable_param_with_default_value = [&PlotErrorBars_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & err, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotErrorBars_adapt_mutable_param_with_default_value = [&PlotErrorBars_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & err, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -2250,9 +2250,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_error_bars",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & neg, const nb::ndarray<> & pos, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & neg, nb::ndarray<nb::ro> & pos, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & neg, const nb::ndarray<> & pos, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & neg, nb::ndarray<nb::ro> & pos, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -2339,7 +2339,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + pos_type + "') for param pos");
             };
-            auto PlotErrorBars_adapt_mutable_param_with_default_value = [&PlotErrorBars_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const nb::ndarray<> & neg, const nb::ndarray<> & pos, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotErrorBars_adapt_mutable_param_with_default_value = [&PlotErrorBars_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & neg, nb::ndarray<nb::ro> & pos, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -2358,9 +2358,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_stems",
-        [](const char * label_id, const nb::ndarray<> & values, double ref = 0, double scale = 1, double start = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & values, double ref = 0, double scale = 1, double start = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotStems_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & values, double ref = 0, double scale = 1, double start = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotStems_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double ref = 0, double scale = 1, double start = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -2423,7 +2423,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotStems_adapt_mutable_param_with_default_value = [&PlotStems_adapt_c_buffers](const char * label_id, const nb::ndarray<> & values, double ref = 0, double scale = 1, double start = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotStems_adapt_mutable_param_with_default_value = [&PlotStems_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & values, double ref = 0, double scale = 1, double start = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -2442,9 +2442,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_stems",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, double ref = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double ref = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotStems_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, double ref = 0, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotStems_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double ref = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -2515,7 +2515,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotStems_adapt_mutable_param_with_default_value = [&PlotStems_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, double ref = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotStems_adapt_mutable_param_with_default_value = [&PlotStems_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double ref = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -2534,9 +2534,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_inf_lines",
-        [](const char * label_id, const nb::ndarray<> & values, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & values, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotInfLines_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & values, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotInfLines_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -2599,7 +2599,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotInfLines_adapt_mutable_param_with_default_value = [&PlotInfLines_adapt_c_buffers](const char * label_id, const nb::ndarray<> & values, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotInfLines_adapt_mutable_param_with_default_value = [&PlotInfLines_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & values, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -2618,9 +2618,9 @@ void py_init_module_implot(nb::module_& m)
         " Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_pie_chart",
-        [](const std::vector<std::string> & label_ids, const nb::ndarray<> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const std::vector<std::string> & label_ids, nb::ndarray<nb::ro> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotPieChart_adapt_c_buffers = [](const char * const label_ids[], const nb::ndarray<> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotPieChart_adapt_c_buffers = [](const char * const label_ids[], nb::ndarray<nb::ro> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -2683,7 +2683,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotPieChart_adapt_mutable_param_with_default_value = [&PlotPieChart_adapt_c_buffers](const char * const label_ids[], const nb::ndarray<> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotPieChart_adapt_mutable_param_with_default_value = [&PlotPieChart_adapt_c_buffers](const char * const label_ids[], nb::ndarray<nb::ro> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
@@ -2695,7 +2695,7 @@ void py_init_module_implot(nb::module_& m)
 
                 PlotPieChart_adapt_c_buffers(label_ids, values, x, y, radius, label_fmt, angle0, spec_or_default);
             };
-            auto PlotPieChart_adapt_c_string_list_no_count = [&PlotPieChart_adapt_mutable_param_with_default_value](const std::vector<std::string> & label_ids, const nb::ndarray<> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotPieChart_adapt_c_string_list_no_count = [&PlotPieChart_adapt_mutable_param_with_default_value](const std::vector<std::string> & label_ids, nb::ndarray<nb::ro> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
                 std::vector<const char *> label_ids_ptrs;
                 label_ids_ptrs.reserve(label_ids.size());
@@ -2711,9 +2711,9 @@ void py_init_module_implot(nb::module_& m)
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_histogram",
-        [](const char * label_id, const nb::ndarray<> & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, const std::optional<const ImPlotRange> & range = std::nullopt, const std::optional<const ImPlotSpec> & spec = std::nullopt) -> double
+        [](const char * label_id, nb::ndarray<nb::ro> & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, const std::optional<const ImPlotRange> & range = std::nullopt, const std::optional<const ImPlotSpec> & spec = std::nullopt) -> double
         {
-            auto PlotHistogram_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, ImPlotRange range = ImPlotRange(), const ImPlotSpec & spec = ImPlotSpec()) -> double
+            auto PlotHistogram_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, ImPlotRange range = ImPlotRange(), const ImPlotSpec & spec = ImPlotSpec()) -> double
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -2776,7 +2776,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + values_type + "') for param values");
             };
-            auto PlotHistogram_adapt_mutable_param_with_default_value = [&PlotHistogram_adapt_c_buffers](const char * label_id, const nb::ndarray<> & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, const std::optional<const ImPlotRange> & range = std::nullopt, const std::optional<const ImPlotSpec> & spec = std::nullopt) -> double
+            auto PlotHistogram_adapt_mutable_param_with_default_value = [&PlotHistogram_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, const std::optional<const ImPlotRange> & range = std::nullopt, const std::optional<const ImPlotSpec> & spec = std::nullopt) -> double
             {
 
                 const ImPlotRange& range_or_default = [&]() -> const ImPlotRange {
@@ -2803,9 +2803,9 @@ void py_init_module_implot(nb::module_& m)
         " Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * range: Range()\n        * spec: Spec()");
 
     m.def("plot_histogram_2d",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, const std::optional<const ImPlotRect> & range = std::nullopt, const std::optional<const ImPlotSpec> & spec = std::nullopt) -> double
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, const std::optional<const ImPlotRect> & range = std::nullopt, const std::optional<const ImPlotSpec> & spec = std::nullopt) -> double
         {
-            auto PlotHistogram2D_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, ImPlotRect range = ImPlotRect(), const ImPlotSpec & spec = ImPlotSpec()) -> double
+            auto PlotHistogram2D_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, ImPlotRect range = ImPlotRect(), const ImPlotSpec & spec = ImPlotSpec()) -> double
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -2876,7 +2876,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotHistogram2D_adapt_mutable_param_with_default_value = [&PlotHistogram2D_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, const std::optional<const ImPlotRect> & range = std::nullopt, const std::optional<const ImPlotSpec> & spec = std::nullopt) -> double
+            auto PlotHistogram2D_adapt_mutable_param_with_default_value = [&PlotHistogram2D_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, const std::optional<const ImPlotRect> & range = std::nullopt, const std::optional<const ImPlotSpec> & spec = std::nullopt) -> double
             {
 
                 const ImPlotRect& range_or_default = [&]() -> const ImPlotRect {
@@ -2903,9 +2903,9 @@ void py_init_module_implot(nb::module_& m)
         " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * range: Rect()\n        * spec: Spec()");
 
     m.def("plot_digital",
-        [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
         {
-            auto PlotDigital_adapt_c_buffers = [](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const ImPlotSpec & spec = ImPlotSpec())
+            auto PlotDigital_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (xs.ndim() == 1 && xs.stride(0) == 1))
@@ -2976,7 +2976,7 @@ void py_init_module_implot(nb::module_& m)
                 else
                     throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
             };
-            auto PlotDigital_adapt_mutable_param_with_default_value = [&PlotDigital_adapt_c_buffers](const char * label_id, const nb::ndarray<> & xs, const nb::ndarray<> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            auto PlotDigital_adapt_mutable_param_with_default_value = [&PlotDigital_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
             {
 
                 const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
