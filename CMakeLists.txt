@@ -245,46 +245,14 @@ endif()
 
 
 # =============================================================================
-# Dependency Chain Resolution
+# Dependency Chain Resolution — Phase 1
 # =============================================================================
-# This section enforces module dependencies by automatically disabling dependent
-# modules when their requirements are not met.
+# Resolves module-level dependencies (IMGUI_BUNDLE_WITH_* flags only).
+# Phase 2 (rendering backend dependencies) runs later in external/CMakeLists.txt,
+# after HelloImGui has been configured and HELLOIMGUI_HAS_OPENGL3 is correctly set
+# (by calling imgui_bundle_resolve_rendering_backend_dependencies())
 # =============================================================================
-if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI)
-    message(STATUS "
-    ===========================================================
-     IMGUI_BUNDLE_WITH_HELLO_IMGUI is OFF, automatically disabling dependent modules:
-        immapp              (depends on hello_imgui)
-        imgui_md            (depends on hello_imgui + immapp)
-        imgui_test_engine   (needs GIL management)
-        GLFW backend        (not needed)
-    ===========================================================")
-    set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: depends on hello_imgui" FORCE)
-    set(IMGUI_BUNDLE_WITH_IMGUI_MD OFF CACHE BOOL "Auto-disabled: depends on hello_imgui" FORCE)
-    set(HELLOIMGUI_WITH_TEST_ENGINE OFF CACHE BOOL "Auto-disabled: needs GIL management from hello_imgui" FORCE)
-    set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
-    set(HELLOIMGUI_HAS_OPENGL3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
-endif()
-# Note: modules that require OpenGL3 (immvision, im_file_dialog, imgui_tex_inspect)
-# are auto-disabled in external/CMakeLists.txt, after HelloImGui has been configured
-# and HELLOIMGUI_HAS_OPENGL3 is correctly set for the target platform.
-# Catch conflicting configurations
-if(NOT IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR AND IMGUI_BUNDLE_WITH_IMMAPP)
-    message(STATUS "Auto-disabling immapp (immapp depends on imgui_node_editor)")
-    set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp depends on imgui_node_editor" FORCE)
-endif()
-if(NOT IMGUI_BUNDLE_WITH_IMMAPP AND IMGUI_BUNDLE_WITH_IMGUI_MD)
-    message(STATUS "Auto-disabling imgui_md (imgui_md depends on immapp)")
-    set(IMGUI_BUNDLE_WITH_IMGUI_MD OFF CACHE BOOL "Auto-disabled: imgui_md depends on immapp" FORCE)
-endif()
-if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI AND IMGUI_BUNDLE_WITH_IMMAPP)
-    message(WARNING "Auto-disabling immapp (immapp depends on hello_imgui)")
-    set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp depends on hello_imgui" FORCE)
-endif()
-if (IMGUI_BUNDLE_WITH_NANOVG AND NOT(HELLOIMGUI_HAS_OPENGL3 OR HELLOIMGUI_HAS_METAL))
-    message(WARNING "Auto-disabling nanovg (nanovg depends on OpenGL3 or Metal)")
-    set(IMGUI_BUNDLE_WITH_NANOVG OFF CACHE BOOL "Auto-disabled: nanovg depends on OpenGL3 or Metal" FORCE)
-endif()
+imgui_bundle_resolve_early_dependencies()
 
 
 #------------------------------------------------------------------------------

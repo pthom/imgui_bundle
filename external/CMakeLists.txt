@@ -67,24 +67,13 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
 endif()
 
 
-###############################################################################
-# Auto-disable modules that require OpenGL3, now that HelloImGui has been
-# configured and HELLOIMGUI_HAS_OPENGL3 reflects the actual platform support.
-# (This check was deliberately deferred from CMakeLists.txt so that HelloImGui
-# can set HELLOIMGUI_HAS_OPENGL3 before we consult it.)
-###############################################################################
-if (NOT HELLOIMGUI_HAS_OPENGL3)
-    message(STATUS "
-    ===========================================================
-     HELLOIMGUI_HAS_OPENGL3 is OFF, automatically disabling dependent modules:
-        im_file_dialog      (needs OpenGL context)
-        imgui_tex_inspect   (needs OpenGL context)
-        immvision           (needs OpenGL context)
-    ")
-    set(IMGUI_BUNDLE_WITH_IMFILEDIALOG OFF CACHE BOOL "Auto-disabled: needs OpenGL context" FORCE)
-    set(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT OFF CACHE BOOL "Auto-disabled: needs OpenGL context" FORCE)
-    set(IMGUI_BUNDLE_WITH_IMMVISION OFF CACHE BOOL "Auto-disabled: needs OpenGL context" FORCE)
-endif()
+# =============================================================================
+# Dependency Chain Resolution — Phase 2
+# =============================================================================
+# HelloImGui is now configured; HELLOIMGUI_HAS_OPENGL3 / HELLOIMGUI_HAS_METAL
+# reflect actual platform support. Resolve rendering-backend dependencies.
+# =============================================================================
+imgui_bundle_resolve_rendering_backend_dependencies()
 
 ###############################################################################
 # "Big" libraries, which can be disabled individually, for C++

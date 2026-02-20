@@ -2,6 +2,71 @@ set(IMGUI_BUNDLE_CMAKE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
 
 
 ###################################################################################################
+# Dependency chain resolution — Phase 1 (early)
+# Resolves dependencies between IMGUI_BUNDLE_WITH_* module flags.
+# Call this after all IMGUI_BUNDLE_WITH_* options are declared (in CMakeLists.txt),
+# before add_subdirectory(external).
+# Does NOT consult HELLOIMGUI_HAS_OPENGL3 / HELLOIMGUI_HAS_METAL — those are only
+# reliably set after HelloImGui has been configured. See Phase 2 below.
+###################################################################################################
+macro(imgui_bundle_resolve_early_dependencies)
+    if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI)
+        message(STATUS "
+    ===========================================================
+     IMGUI_BUNDLE_WITH_HELLO_IMGUI is OFF, automatically disabling dependent modules:
+        immapp              (depends on hello_imgui)
+        imgui_md            (depends on hello_imgui + immapp)
+        imgui_test_engine   (needs GIL management)
+        GLFW backend        (not needed)
+    ===========================================================")
+        set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: depends on hello_imgui" FORCE)
+        set(IMGUI_BUNDLE_WITH_IMGUI_MD OFF CACHE BOOL "Auto-disabled: depends on hello_imgui" FORCE)
+        set(HELLOIMGUI_WITH_TEST_ENGINE OFF CACHE BOOL "Auto-disabled: needs GIL management from hello_imgui" FORCE)
+        set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
+        set(HELLOIMGUI_HAS_OPENGL3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
+    endif()
+    if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI AND IMGUI_BUNDLE_WITH_IMMAPP)
+        message(WARNING "Auto-disabling immapp (immapp depends on hello_imgui)")
+        set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp depends on hello_imgui" FORCE)
+    endif()
+    if(NOT IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR AND IMGUI_BUNDLE_WITH_IMMAPP)
+        message(STATUS "Auto-disabling immapp (immapp depends on imgui_node_editor)")
+        set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp depends on imgui_node_editor" FORCE)
+    endif()
+    if(NOT IMGUI_BUNDLE_WITH_IMMAPP AND IMGUI_BUNDLE_WITH_IMGUI_MD)
+        message(STATUS "Auto-disabling imgui_md (imgui_md depends on immapp)")
+        set(IMGUI_BUNDLE_WITH_IMGUI_MD OFF CACHE BOOL "Auto-disabled: imgui_md depends on immapp" FORCE)
+    endif()
+endmacro()
+
+
+###################################################################################################
+# Dependency chain resolution — Phase 2 (after HelloImGui)
+# Resolves dependencies on the rendering backend.
+# Call this in external/CMakeLists.txt, after add_hello_imgui() has been called,
+# so that HELLOIMGUI_HAS_OPENGL3 and HELLOIMGUI_HAS_METAL reflect actual platform support.
+###################################################################################################
+macro(imgui_bundle_resolve_rendering_backend_dependencies)
+    if(NOT HELLOIMGUI_HAS_OPENGL3)
+        message(STATUS "
+    ===========================================================
+     HELLOIMGUI_HAS_OPENGL3 is OFF, automatically disabling dependent modules:
+        im_file_dialog      (needs OpenGL context)
+        imgui_tex_inspect   (needs OpenGL context)
+        immvision           (needs OpenGL context)
+    ")
+        set(IMGUI_BUNDLE_WITH_IMFILEDIALOG OFF CACHE BOOL "Auto-disabled: needs OpenGL context" FORCE)
+        set(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT OFF CACHE BOOL "Auto-disabled: needs OpenGL context" FORCE)
+        set(IMGUI_BUNDLE_WITH_IMMVISION OFF CACHE BOOL "Auto-disabled: needs OpenGL context" FORCE)
+    endif()
+    if(IMGUI_BUNDLE_WITH_NANOVG AND NOT(HELLOIMGUI_HAS_OPENGL3 OR HELLOIMGUI_HAS_METAL))
+        message(WARNING "Auto-disabling nanovg (nanovg depends on OpenGL3 or Metal)")
+        set(IMGUI_BUNDLE_WITH_NANOVG OFF CACHE BOOL "Auto-disabled: nanovg depends on OpenGL3 or Metal" FORCE)
+    endif()
+endmacro()
+
+
+###################################################################################################
 # Backward compatibility layer for legacy IMGUI_BUNDLE_DISABLE_* options
 ###################################################################################################
 # This macro translates legacy IMGUI_BUNDLE_DISABLE_* options to new IMGUI_BUNDLE_WITH_* options

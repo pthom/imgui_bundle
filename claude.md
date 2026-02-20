@@ -675,6 +675,16 @@ External libraries and their bindings are in `external/`:
 ## Build & Platform Notes
 This project spans C++/Python with cross-platform builds (Emscripten, iOS). Be cautious about removing includes like <cstdio> — always check all platform targets before removing headers.
 
+### Build folders
+Use `builds/claude_xxx/` for test builds (always prefix with `claude_`; other folders belong to the user).
+
+Example — emscripten configure:
+```bash
+mkdir -p builds/claude_ems && cd builds/claude_ems
+source ~/emsdk/emsdk_env.sh
+emcmake cmake ../.. -DCMAKE_BUILD_TYPE=Release
+```
+
 ## Workflow: Specs and Plans
 
 Plans, specs, and todos for features live in `.claude/plans/`:
