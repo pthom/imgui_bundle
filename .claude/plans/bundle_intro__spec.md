@@ -42,6 +42,9 @@ Ideas considered during spec discussion:
 ────────────────────────────────────────────────────────────
 ```
 
+ImPlot:heart, candlestick, IMGUI_DEMO_MARKER("Subplots/Tables");
+ImPlot3d: Lorenz attractor, IMGUI_DEMO_MARKER("Plots/Mesh Plots"), IMGUI_DEMO_MARKER("Plots/Mesh Plots");
+
 ### Mini-demos (side by side, compact)
 Three live animated demos embedded in columns:
 
