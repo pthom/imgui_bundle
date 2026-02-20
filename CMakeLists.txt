@@ -143,6 +143,7 @@ if(IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
 endif()
 
 
+
 # =============================================================================
 # Module Selection
 # =============================================================================
@@ -264,18 +265,9 @@ if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
     set(HELLOIMGUI_HAS_OPENGL3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
 endif()
-if (NOT HELLOIMGUI_HAS_OPENGL3)
-    message(STATUS "
-    ===========================================================
-     HELLOIMGUI_HAS_OPENGL3 is OFF, automatically disabling dependent modules:
-        im_file_dialog      (needs OpenGL context)
-        imgui_tex_inspect   (needs OpenGL context)
-        immvision           (needs OpenGL context)
-    ")
-    set(IMGUI_BUNDLE_WITH_IMFILEDIALOG OFF CACHE BOOL "Auto-disabled: needs OpenGL context" FORCE)
-    set(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT OFF CACHE BOOL "Auto-disabled: needs OpenGL from hello_imgui" FORCE)
-    set(IMGUI_BUNDLE_WITH_IMMVISION OFF CACHE BOOL "Auto-disabled: needs OpenGL from hello_imgui" FORCE)
-endif()
+# Note: modules that require OpenGL3 (immvision, im_file_dialog, imgui_tex_inspect)
+# are auto-disabled in external/CMakeLists.txt, after HelloImGui has been configured
+# and HELLOIMGUI_HAS_OPENGL3 is correctly set for the target platform.
 # Catch conflicting configurations
 if(NOT IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR AND IMGUI_BUNDLE_WITH_IMMAPP)
     message(STATUS "Auto-disabling immapp (immapp depends on imgui_node_editor)")
