@@ -292,7 +292,7 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [x] Remove external modules from ImAnim
 - [x] Layout manual without docking, only window
 
-### WWW
+### Fix regressions and polish details
 - [x] specify default python or C++ for ShowImGuiManualGui
 - [x] add python demos
 - [x] add full python demos also (for implot, implot3d, and imanim)
@@ -303,28 +303,29 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [x] Fix choice lib in emscripten
 - [x] Can't switch between C++ and Python!
 - [x] "Code for this demo" => fail in emscripten
-- [ ] Contact ocornut / preview: 
-https://traineq.org/ImGuiBundle/imgui_manual/?lib=imgui 
-https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
-https://traineq.org/ImGuiBundle/imgui_manual/
-
-Link to demo bundle : https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
-
-Link to commit / demo_markers => rebase new branch on master (with cherry-pick)
-
 - [x] publish imgui_bundle_demo
-- [ ] fix CI errors
-- [ ] redirect current manual to new
-- [ ] close manual repo
+- [x] fix CI errors
 - [ ] pyodide wheels: remove demo_assets, demo_cpp, demos_python
+- [ ] immvision disabled in emscripten demo!
 
 ### Step 10: Integration
 - [x] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
 - [ ] Update bundle book and documentation
 - [ ] Add doc for ImAnim in the bundle book (compare C++ and Python API, esp enum usage)
 
-
 ### Step 11: Publish & Communicate
+- [ ] Contact ocornut / preview:
+  https://traineq.org/ImGuiBundle/imgui_manual/?lib=imgui
+  https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
+  https://traineq.org/ImGuiBundle/imgui_manual/
+
+Link to demo bundle : https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+
+Link to commit / demo_markers => rebase new branch on master (with cherry-pick)
+
+- [ ] redirect current manual to new
+- [ ] close manual repo
+- [ ] Intro Tab: Review wording: read doc for inspiration) / Add Hero anim in intro tab? Use 3D custom background? Redo Icon?
 - [ ] Release v1.92
 - [ ] Mail to ocornut and other maintainers about the new manual and its features
 - [ ] PR to imgui, implot, implot3d and imanim with DemoMarker. Advocate for adoption in the main repos.

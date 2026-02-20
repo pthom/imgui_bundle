@@ -56,8 +56,10 @@ def demo_gui():
 
     imgui.new_line()
     imgui_md.render_unindented(
-        "*Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!*"
-    )
+        """
+        # Dear ImGui Bundle
+        *Easily create ImGui applications in Python and C++. Batteries included!*
+        """)
 
     imgui.new_line()
     imgui.new_line()
