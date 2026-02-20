@@ -291,12 +291,18 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [x] Also handle imgui_internal.h, implot(3d)_internal.h (+ stubs)
 - [x] Remove external modules from ImAnim
 - [x] Layout manual without docking, only window
-
-
-### Step 10: Integration
 - [x] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
+
+### Step 9: Polish UI and intro
+
+- [ ] Intro Tab: Review wording: read doc for inspiration) / Add Hero anim in intro tab? Use 3D custom background? Redo Icon?
+
+
+### Step 10: Doc
 - [ ] Update bundle book and documentation
 - [ ] Add doc for ImAnim in the bundle book (compare C++ and Python API, esp enum usage)
+- [ ] redirect current manual to new
+- [ ] close manual repo
 
 ### Step 11: Publish & Communicate
 - [ ] Contact ocornut / preview:
@@ -308,9 +314,6 @@ Link to demo bundle : https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_
 
 Link to commit / demo_markers => rebase new branch on master (with cherry-pick)
 
-- [ ] redirect current manual to new
-- [ ] close manual repo
-- [ ] Intro Tab: Review wording: read doc for inspiration) / Add Hero anim in intro tab? Use 3D custom background? Redo Icon?
 - [ ] Release v1.92
 - [ ] Mail to ocornut and other maintainers about the new manual and its features
 - [ ] PR to imgui, implot, implot3d and imanim with DemoMarker. Advocate for adoption in the main repos.
