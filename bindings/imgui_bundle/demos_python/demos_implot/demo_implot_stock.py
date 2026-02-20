@@ -179,14 +179,15 @@ class StockViewer:
         try:
             df = yf.download(self.ticker_input, period=self.period, interval="1d")
             df = df.dropna()
-            timestamps = df.index.map(lambda ts: ts.timestamp()).to_numpy(np.float64)
+            # Copy arrays to ensure compatibility with nanobind (pandas-derived arrays can cause issues)
+            timestamps = np.array(df.index.map(lambda ts: ts.timestamp()).to_numpy(np.float64))
             self.stock_data = StockData(
                 timestamps,
-                df["Open"].to_numpy().flatten(),
-                df["Close"].to_numpy().flatten(),
-                df["Low"].to_numpy().flatten(),
-                df["High"].to_numpy().flatten(),
-                df["Volume"].to_numpy().astype(np.float64).flatten(),
+                np.array(df["Open"].to_numpy().flatten()),
+                np.array(df["Close"].to_numpy().flatten()),
+                np.array(df["Low"].to_numpy().flatten()),
+                np.array(df["High"].to_numpy().flatten()),
+                np.array(df["Volume"].to_numpy().astype(np.float64).flatten()),
             )
             self.loaded_ticker = self.ticker_input
             self.fetch_error = None
