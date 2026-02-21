@@ -42,6 +42,7 @@ manual_ems_build:
 
 manual_ems_serve: manual_ems_build
     echo "add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL to load the corresponding manual page"
+    rm -f build_manual_ems/bin/demo_code/*.gz
     cd build_manual_ems/bin && python ../../ci_scripts/webserver_multithread_policy.py -p 7006
 
 manual_ems_clean:
@@ -49,10 +50,13 @@ manual_ems_clean:
 
 # deploy the manual to https://traineq.org/ImGuiBundle/imgui_manual/
 manual_ems_deploy: manual_ems_build
-    # The server supports gzip encoding, this speed up the loading a lot, especially for the .wasm files
+    # demo_code files are served uncompressed (lazy-fetched via XHR — no pre-gzip)
+    rm -f build_manual_ems/bin/demo_code/*.gz
+    # .wasm/.js/.data are pre-gzipped for faster initial load
     gzip -9 -k -f build_manual_ems/bin/*.wasm build_manual_ems/bin/index.data build_manual_ems/bin/*.js
-    rsync -vaz build_manual_ems/bin/ pascal@traineq.org:HTML/ImGuiBundle/imgui_manual
-    echo "Manual deployed to https://traineq.org/ImGuiBundle/imgui_manual/ (add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL to load the corresponding manual page)"
+    # --delete removes stale files on the server (e.g. old .gz.gz leftovers)
+    rsync -vaz --delete build_manual_ems/bin/ pascal@traineq.org:HTML/ImGuiBundle/imgui_manual
+    echo "Manual deployed to https://traineq.org/ImGuiBundle/imgui_manual/ (add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL)"
 
 # Reattach all submodules to branches and remotes (fork + official)
 ext_reattach:
