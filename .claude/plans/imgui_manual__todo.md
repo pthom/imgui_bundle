@@ -9,9 +9,13 @@ The items here are used in the short term: this file changes quickly.
 ## Todo
 <!-- Notation: [ ] pending, [~] in progress, [x] done, [N] won't do -->
 
-- [ ] Add doc for ImAnim in the bundle book (compare C++ and Python API, esp enum usage)
-- [ ] Intro Tab: Review wording: read doc for inspiration) / Add Hero anim in intro tab? Use 3D custom background? Redo Icon?
-- [ ] Update bundle book and documentation
-- [x] immvision disabled in emscripten demo! Fixed via two-phase cmake dependency resolution (commit 41addc78).
+- [ ] Contact ocornut / preview:
+  https://traineq.org/ImGuiBundle/imgui_manual/?lib=imgui
+  https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
+  https://traineq.org/ImGuiBundle/imgui_manual/
+
+Link to demo bundle : https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+
+Link to commit / demo_markers => rebase new branch on master (with cherry-pick)
 
 

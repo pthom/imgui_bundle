@@ -297,7 +297,6 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 
 - [ ] Review Intro Tab: see intro_tab__spec.md for details.
 
-
 ### Step 10: Doc
 - [ ] Add doc for ImAnim in the bundle book (compare C++ and Python API, esp enum usage)
 - [ ] Update bundle book and documentation
@@ -306,13 +305,35 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 
 ### Step 11: Publish & Communicate
 - [ ] Contact ocornut / preview:
-  https://traineq.org/ImGuiBundle/imgui_manual/?lib=imgui
-  https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
-  https://traineq.org/ImGuiBundle/imgui_manual/
 
-Link to demo bundle : https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+Salut Omar, 
 
-Link to commit / demo_markers => rebase new branch on master (with cherry-pick)
+Comme je t'en parlais, j'aimerais ton avis sur la nouvelle version de imgui_manual.
+C'est un full rewrite, qui integre maintenant plusieurs librairies (ImGui, ImPlot, ImPlot3D et ImAnim),
+(et qui supporte optionnellement les demos Python en plus des demos C++).
+
+Ci-dessous ce à quoi pourrait ressembler Dear ImGui Manual 2.0
+https://traineq.org/ImGuiBundle/imgui_manual/?lib=imgui
+Et ci-dessous la même chose pour ImPlot et ImPlot3D
+https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
+https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot3d
+Et pour voir tout ensemble
+https://traineq.org/ImGuiBundle/imgui_manual/
+
+Note: Je n'ai pas pu garder le manual en tant qu'un projet standalone et j'ai dû donc l'intégrer dans le bundle.
+C'est principalement pour des raisons de maintenance, et parce que ca me permet de l'intégrer dans le manuel du bundle:
+https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+
+Pour faire tout ceci, j'ai du faire qq modifs dans imgui_demo.cpp, mais qui vont dans le bon sens
+(IMGUI_DEMO_MARKER est défini de façon complètement externe).
+https://github.com/ocornut/imgui/compare/master...pthom:imgui:demo_markers_2026?expand=1
+
+Et on pourra discuter d'ajouter le code pour IMGUI_DEMO_MARKER dans imgui si on veut (mais ça reste optionnel) 
+Dans ce cas, il serait par là:
+https://github.com/pthom/imgui_bundle/blob/main/external/imgui_manual/imgui_manual/src/imgui_demo_marker_hooks.h
+https://github.com/pthom/imgui_bundle/blob/main/external/imgui_manual/imgui_manual/src/imgui_demo_marker_hooks.cpp
+(Ce celui dont je me sers de façon identique pour les 4 librairies: grosso-modo je force-include imgui_demo_marker_hooks.h).
+
 
 - [ ] Add stats tracking (e.g. via goatcounter)?
 - [ ] Mail to ocornut and other maintainers about the new manual and its features
@@ -322,3 +343,32 @@ Link to commit / demo_markers => rebase new branch on master (with cherry-pick)
 <!-- Items that surfaced during implementation needing evaluation: scope creep, unexpected issues, open questions. -->
 - [ ] pyodide wheels: remove demo_assets, demo_cpp, demos_python
 - [ ] Release v1.92
+
+## Discussion with ImGui author (ocornut)
+
+- Essayer d'optimiser le démarrage
+- Ajouter scale
+- Zoom Web / rendu dégueulasse. Marche apres reload.
+- Essayer de rendre possible de compiler les Demos Markers sans ifdef dans imgui_demo.cpp
+- IMGUI_DEMO_MARKER partout mais utiliser nom dans lib
+- Question / ImAnim: intégrer dans bundle ou non. Le lien sans ? n'inclue pas ImAnim
+  Laisser ImAnim dans le bundle, mais desactivé par défaut
+- Enlever la checkbox "Open in detached window"
+- Dans manual, avoir le flag move WindowFromTitleOnly
+- 
+- Reset code lookup quand on change de librairie
+- Press Esc to stop this mode (IsKeyPressedEscape() in main ->
+if (Shortcut(ImGuiKey_Esc, ImGuiInputFlags_RouteGlobal))
+if (Shortcut(ImGuiMod_Ctrl | ImGuiKey_C)) { ...}
+  SetNextItemShortcut(ImGuiMod_Ctrl | ImGuiKey_S);
+Remove Ctrl-Alt-C
+- reduire clutter: Code Lookup / Follow source / Open in detached window => 1 button "Follow source" + "Open in detached window" checkbox dans le menu
+- essayer de ne pas cacher la fenetre d'ImGui / utiliser SetNextWindowPos / SetNextWindowSize
+  (cocher par défaut "No Resize" et "No Move" dans les flags de la fenêtre)
+- Warning sur fichiers pyi: font partie d'ImGui Bundle. Pas la même maintenance.
+- Ajouter un bouton "Open in GitHub" qui ouvre le fichier source à la ligne correspondante sur GitHub (pour les fichiers qui sont dans le repo, pas les fichiers de démonstration qui sont dans le bundle)
+- Shortcut pour Casing (alt-c) et pour word wrap (alt-w)
+- Si clic droit dans text sans selection, essayer de trouver mot sous le curseur et le sélectionner
+- Essayer de rechercher pour code sur curseur
+- Les evenement keyup sont mal reçus : voir Tools/Debug Log/IO
+- 
