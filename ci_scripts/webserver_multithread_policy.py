@@ -8,7 +8,7 @@ Inspired by https://gist.github.com/Faless/1e228325ced0662aee59dc92fa69efd7
 
 Also serves pre-compressed .gz files transparently: if index.wasm.gz exists and the
 browser sends Accept-Encoding: gzip, it is served with Content-Encoding: gzip.
-Pre-compress with: gzip -9 -k index.wasm index.data index.js
+Pre-compress with: gzip -k index.wasm index.data index.js
 """
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler, test
@@ -28,7 +28,7 @@ class CORSRequestHandler (SimpleHTTPRequestHandler):
         if 'gzip' in accept_encoding and not self.path.endswith('.gz'):
             fs_path = self.translate_path(self.path)
             gz_path = fs_path + '.gz'
-            if os.path.isfile(gz_path):
+            if os.path.isfile(gz_path) and os.path.getmtime(gz_path) >= os.path.getmtime(fs_path):
                 try:
                     with open(gz_path, 'rb') as f:
                         content = f.read()

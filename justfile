@@ -27,7 +27,11 @@ ems_deploy: ems_build
 
 # Serve emscripten with CORS
 ems_serve:
-    gzip -9 -k -f build_ems_release/bin/*.wasm build_ems_release/bin/*.data build_ems_release/bin/*.js
+    # gzipping is not needed for local testing, and it makes the server slower to start, so we skip it here
+    # (there are many files to gzip, this is slow). In that case, we remove the gzipped files if they exist,
+    # to avoid confusion and ensure the server serves the non-gzipped files.
+    # gzip -9 -k -f build_ems_release/bin/*.wasm build_ems_release/bin/*.data build_ems_release/bin/*.js
+    rm -f build_ems_release/bin/*.gz && \
     cd build_ems_release/bin && \
     python ../../ci_scripts/webserver_multithread_policy.py -p 8642
 
