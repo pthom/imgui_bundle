@@ -189,9 +189,9 @@ function(iman_main)
     iman_add_imgui_manual_lib()
     iman_force_include_marker_hooks()
     iman_link_imgui_bundle_to_manual()
+    iman_setup_demo_code_dir()   # populate bin/demo_code/ from source files
 
     if(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP)
-        iman_setup_demo_code_dir()   # populate bin/demo_code/ from source files
         iman_add_imgui_manual_app()
     endif()
 
