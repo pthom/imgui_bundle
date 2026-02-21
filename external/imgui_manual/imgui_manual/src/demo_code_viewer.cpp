@@ -10,20 +10,27 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
+#include <fstream>
 #include "immapp/browse_to_url.h"
+#ifdef __EMSCRIPTEN__
+#include <emscripten/emscripten.h>
+#include <sys/stat.h>  // mkdir
+#endif
 
 
 
 namespace
 {
+    enum class LoadState { NotLoaded, Loading, Loaded, Failed };
+
     struct CodeFile
     {
+        LoadState cppState = LoadState::NotLoaded;
+        LoadState pyState  = LoadState::NotLoaded;
         std::string cppContent;
         std::string pyContent;
         TextEditor cppEditor;
         TextEditor pyEditor;
-        bool cppLoaded = false;
-        bool pyLoaded = false;
         std::map<std::string, int> pyMarkers;  // section_name → 1-based line number
     };
 
@@ -218,48 +225,110 @@ namespace
         return markers;
     }
 
+    void PopulateEditor(CodeFile& cf, const std::string& content, bool isPython)
+    {
+        TextEditor& editor = isPython ? cf.pyEditor : cf.cppEditor;
+        editor.SetText(content);
+        editor.SetLanguageDefinition(isPython
+            ? TextEditor::LanguageDefinitionId::Python
+            : TextEditor::LanguageDefinitionId::Cpp);
+        editor.SetPalette(TextEditor::PaletteId::Dark);
+        editor.SetReadOnlyEnabled(true);
+        editor.SetShowLineNumbersEnabled(true);
+        editor.SetShowWhitespacesEnabled(false);
+        if (isPython) {
+            cf.pyContent = content;
+            cf.pyMarkers = ParseMarkers(content);
+            cf.pyState   = LoadState::Loaded;
+        } else {
+            cf.cppContent = content;
+            cf.cppState   = LoadState::Loaded;
+        }
+    }
+
+    // Desktop: reads from IMAN_DEMO_CODE_DIR/<filename> via std::ifstream.
+    // Emscripten: called from OnWgetLoad after emscripten_async_wget completes.
     void LoadFile(const DemoFileInfo& fileInfo)
     {
         CodeFile& cf = g_codeFiles[fileInfo.baseName];
 
-        // Load C++ file
+#ifndef __EMSCRIPTEN__
+        auto loadOne = [&](const std::string& filename, LoadState& state, bool isPython)
         {
-            std::string assetPath = std::string("demo_code/") + fileInfo.cppAssetName();
-            auto assetData = HelloImGui::LoadAssetFileData(assetPath.c_str());
-            if (assetData.data != nullptr && assetData.dataSize > 0)
-            {
-                cf.cppContent = std::string((const char*)assetData.data, assetData.dataSize);
-                cf.cppEditor.SetText(cf.cppContent);
-                cf.cppEditor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Cpp);
-                cf.cppEditor.SetPalette(TextEditor::PaletteId::Dark);
-                cf.cppEditor.SetReadOnlyEnabled(true);
-                cf.cppEditor.SetShowLineNumbersEnabled(true);
-                cf.cppEditor.SetShowWhitespacesEnabled(false);
-                cf.cppLoaded = true;
-                HelloImGui::FreeAssetFileData(&assetData);
+            if (state != LoadState::NotLoaded) return;
+            state = LoadState::Loading;
+            std::string path = std::string(IMAN_DEMO_CODE_DIR) + "/" + filename;
+            std::ifstream f(path);
+            if (f) {
+                std::string content(std::istreambuf_iterator<char>(f), {});
+                PopulateEditor(cf, content, isPython);
+            } else {
+                state = LoadState::Failed;
             }
-        }
+        };
 
-        // Load Python file if it exists
+        loadOne(fileInfo.cppDisplayName(), cf.cppState, false);
         if (fileInfo.hasPython)
-        {
-            std::string assetPath = std::string("demo_code/") + fileInfo.pyAssetName();
-            auto assetData = HelloImGui::LoadAssetFileData(assetPath.c_str());
-            if (assetData.data != nullptr && assetData.dataSize > 0)
-            {
-                cf.pyContent = std::string((const char*)assetData.data, assetData.dataSize);
-                cf.pyEditor.SetText(cf.pyContent);
-                cf.pyEditor.SetLanguageDefinition(TextEditor::LanguageDefinitionId::Python);
-                cf.pyEditor.SetPalette(TextEditor::PaletteId::Dark);
-                cf.pyEditor.SetReadOnlyEnabled(true);
-                cf.pyEditor.SetShowLineNumbersEnabled(true);
-                cf.pyEditor.SetShowWhitespacesEnabled(false);
-                cf.pyLoaded = true;
-                cf.pyMarkers = ParseMarkers(cf.pyContent);
-                HelloImGui::FreeAssetFileData(&assetData);
-            }
+            loadOne(fileInfo.pyDisplayName(), cf.pyState, true);
+#endif
+    }
+
+#ifdef __EMSCRIPTEN__
+    // Pending fetch map: MEMFS path ("/demo_code/foo.cpp") → {baseName, isPython}
+    struct PendingFetch { std::string baseName; bool isPython; };
+    std::map<std::string, PendingFetch> g_pendingFetches;
+
+    void OnWgetDone(const char* arg, bool success)
+    {
+        // arg is the MEMFS local path ("/demo_code/foo.cpp") for onload,
+        // or possibly the URL ("demo_code/foo.cpp") for onerror — try both.
+        std::string key(arg);
+        auto it = g_pendingFetches.find(key);
+        if (it == g_pendingFetches.end())
+            it = g_pendingFetches.find("/" + key);
+        if (it == g_pendingFetches.end()) return;
+
+        auto [baseName, isPython] = it->second;
+        g_pendingFetches.erase(it);
+        CodeFile& cf = g_codeFiles[baseName];
+        LoadState& state = isPython ? cf.pyState : cf.cppState;
+
+        if (!success) { state = LoadState::Failed; return; }
+
+        // File is in MEMFS — ensure path has leading slash
+        std::string path = (arg[0] == '/') ? key : ("/" + key);
+        std::ifstream f(path);
+        if (f) {
+            std::string content(std::istreambuf_iterator<char>(f), {});
+            PopulateEditor(cf, content, isPython);
+        } else {
+            state = LoadState::Failed;
         }
     }
+
+    void OnWgetLoad (const char* path) { OnWgetDone(path, true);  }
+    void OnWgetError(const char* path) { OnWgetDone(path, false); }
+
+    void RequestFileLoad(const DemoFileInfo& fileInfo)
+    {
+        // Create /demo_code/ dir in MEMFS once (wget does not create parent dirs).
+        static bool dirCreated = false;
+        if (!dirCreated) { mkdir("/demo_code", 0777); dirCreated = true; }
+
+        CodeFile& cf = g_codeFiles[fileInfo.baseName];
+        auto fetchOne = [&](const std::string& url, LoadState& state, bool isPython)
+        {
+            if (state != LoadState::NotLoaded) return;
+            state = LoadState::Loading;
+            std::string localPath = "/" + url;
+            g_pendingFetches[localPath] = {fileInfo.baseName, isPython};
+            emscripten_async_wget(url.c_str(), localPath.c_str(), OnWgetLoad, OnWgetError);
+        };
+        fetchOne(fileInfo.cppFetchUrl(), cf.cppState, false);
+        if (fileInfo.hasPython)
+            fetchOne(fileInfo.pyFetchUrl(), cf.pyState, true);
+    }
+#endif  // __EMSCRIPTEN__
 
     int FindFileIndexInCurrentLibrary(const char* displayName)
     {
@@ -309,7 +378,7 @@ void DemoCodeViewer_Show()
         for (size_t i = 0; i < files.size(); ++i)
         {
             const auto& file = files[i];
-            bool hasPy = file.hasPython && g_codeFiles.count(file.baseName) && g_codeFiles[file.baseName].pyLoaded;
+            bool hasPy = file.hasPython && g_codeFiles.count(file.baseName) && g_codeFiles.at(file.baseName).pyState == LoadState::Loaded;
             std::string displayName = (g_showPython && hasPy) ? file.pyDisplayName() : file.cppDisplayName();
 
             ImGuiTabItemFlags flags = 0;
@@ -354,28 +423,31 @@ void DemoCodeViewer_Show()
 
     // Display the current file's editor — load lazily on first access
     const auto& currentFile = files[g_currentFileIndex];
-    if (g_codeFiles.find(currentFile.baseName) == g_codeFiles.end())
-        LoadFile(currentFile);
-    auto it = g_codeFiles.find(currentFile.baseName);
-    if (it == g_codeFiles.end())
-    {
-        ImGui::TextWrapped("File not found: %s", currentFile.baseName.c_str());
-        return;
-    }
+#ifdef __EMSCRIPTEN__
+    RequestFileLoad(currentFile);  // no-op if already Loading/Loaded/Failed
+#else
+    LoadFile(currentFile);         // no-op if already Loading/Loaded/Failed
+#endif
 
-    CodeFile& cf = it->second;
-    bool showingPython = g_showPython && cf.pyLoaded;
-    TextEditor& editor = showingPython ? cf.pyEditor : cf.cppEditor;
-    bool loaded = showingPython ? cf.pyLoaded : cf.cppLoaded;
+    CodeFile& cf = g_codeFiles[currentFile.baseName];
+    bool showingPython = g_showPython && cf.pyState == LoadState::Loaded;
+    LoadState activeState = showingPython ? cf.pyState : cf.cppState;
     std::string displayName = showingPython ? currentFile.pyDisplayName() : currentFile.cppDisplayName();
 
-    if (!loaded)
+    if (activeState == LoadState::Loading)
     {
-        ImGui::TextWrapped("Failed to load %s", displayName.c_str());
+        ImGui::Text(ICON_FA_SPINNER " Loading %s ...", currentFile.cppDisplayName().c_str());
+        return;
+    }
+    if (activeState == LoadState::Failed)
+    {
+        ImGui::TextColored(ImVec4(1.f, 0.4f, 0.4f, 1.f), "Failed to load %s", displayName.c_str());
         return;
     }
 
-    if (g_showPython && !cf.pyLoaded)
+    TextEditor& editor = showingPython ? cf.pyEditor : cf.cppEditor;
+
+    if (g_showPython && !currentFile.hasPython)
         ImGui::TextColored(ImVec4(1.f, 1.f, 0.5f, 1.f), "No Python code available for this demo");
 
     // Handle pending scroll
@@ -383,7 +455,7 @@ void DemoCodeViewer_Show()
     {
         bool scrolledPython = false;
         // If viewing Python and we have a section match, scroll Python editor
-        if (g_showPython && cf.pyLoaded && !g_pendingScrollSection.empty())
+        if (g_showPython && cf.pyState == LoadState::Loaded && !g_pendingScrollSection.empty())
         {
             auto it2 = cf.pyMarkers.find(g_pendingScrollSection);
             if (it2 != cf.pyMarkers.end())

@@ -1,68 +1,84 @@
 # imgui_manual: interactive manual for ImGui, ImPlot, ImPlot3D, ImAnim
+#
+# Included from ./CMakeLists.txt, which calls iman_main().
+#
+# Structure (top to bottom):
+#   _iman_copy / _iman_copy_as        low-level file-copy helpers
+#   iman_setup_demo_code_dir          populate binary demo_code/ at configure time
+#   _force_include / iman_force_include_marker_hooks
+#                                     hook IMGUI_DEMO_MARKER into lib sources
+#   iman_add_imgui_manual_lib         build imgui_manual_lib static library
+#   iman_link_imgui_bundle_to_manual  plug into imgui_bundle INTERFACE
+#   iman_add_imgui_manual_app         build standalone exe (optional)
+#   iman_main                         entry point
 
-# This file is structured
-# - functions first: private start with underscore, grouped by theme (asset copying, force-include)
-# - public functions use the prefix iman_
-# - then iman_main
-# This file is intended to be included from ./CMakeLists.txt, which will call iman_main()
 
 # ---------------------------------------------------------------------------
-# Asset copying (copy demo code files to the assets folder so that the demo code viewer can load them at runtime).
+# Low-level copy helpers (private)
 # ---------------------------------------------------------------------------
-function(_copy_code_file code_file_full_path demo_code_dest)
-    get_filename_component(code_file ${code_file_full_path} NAME)
-    set(destination ${demo_code_dest}/${code_file}.txt)
-    configure_file(${code_file_full_path} ${destination} COPYONLY)
+
+# Copy src → dest/<original-filename>  (keeps the name)
+function(_iman_copy src dest)
+    get_filename_component(filename ${src} NAME)
+    configure_file(${src} ${dest}/${filename} COPYONLY)
 endfunction()
 
-function(_copy_code_file_renamed code_file_full_path new_name demo_code_dest)
-    set(destination ${demo_code_dest}/${new_name}.txt)
-    configure_file(${code_file_full_path} ${destination} COPYONLY)
+# Copy src → dest/<name>  (renames on arrival)
+function(_iman_copy_as src name dest)
+    configure_file(${src} ${dest}/${name} COPYONLY)
 endfunction()
 
-function(iman_copy_demo_code_assets demo_code_dest)
-    set(bundle_dir ${IMGUI_BUNDLE_PATH})
-    set(imanim_dir ${bundle_dir}/external/ImAnim/ImAnim)
-    set(imgui_dir  ${bundle_dir}/external/imgui/imgui)
-    set(implot_dir ${bundle_dir}/external/implot/implot)
-    set(implot3d_dir ${bundle_dir}/external/implot3d/implot3d)
-    set(demos_python_dir ${bundle_dir}/bindings/imgui_bundle/demos_python/demos_imgui_manual)
 
-    file(MAKE_DIRECTORY ${demo_code_dest})
+# ---------------------------------------------------------------------------
+# Demo code folder
+#
+# Files are copied to ${CMAKE_BINARY_DIR}/bin/demo_code/ at CMake configure
+# time with their natural extensions (.cpp / .py / .h / .pyi).
+# They are never placed in assets/ so they are never preloaded/bundled.
+#
+# Desktop  : read lazily via std::ifstream(IMAN_DEMO_CODE_DIR + "/" + filename)
+# Emscripten: served alongside the app, fetched lazily via emscripten_async_wget()
+# ---------------------------------------------------------------------------
+function(iman_setup_demo_code_dir)
+    set(b    ${IMGUI_BUNDLE_PATH})
+    set(dest ${CMAKE_BINARY_DIR}/bin/demo_code)
+    file(MAKE_DIRECTORY ${dest})
 
-    # C++ demos
-    _copy_code_file(${imanim_dir}/im_anim_demo_basics.cpp ${demo_code_dest})
-    _copy_code_file(${imanim_dir}/im_anim_demo.cpp ${demo_code_dest})
-    _copy_code_file(${imanim_dir}/im_anim_doc.cpp ${demo_code_dest})
-    _copy_code_file(${imanim_dir}/im_anim_usecase.cpp ${demo_code_dest})
-    _copy_code_file(${imgui_dir}/imgui_demo.cpp ${demo_code_dest})
-    _copy_code_file(${implot_dir}/implot_demo.cpp ${demo_code_dest})
-    _copy_code_file(${implot3d_dir}/implot3d_demo.cpp ${demo_code_dest})
-    # Python demos
-    _copy_code_file(${demos_python_dir}/im_anim_demo_basics.py ${demo_code_dest})
-    _copy_code_file(${demos_python_dir}/imgui_demo.py ${demo_code_dest})
-    _copy_code_file(${demos_python_dir}/implot_demo.py ${demo_code_dest})
-    _copy_code_file(${demos_python_dir}/implot3d_demo.py ${demo_code_dest})
+    # C++ demo files
+    _iman_copy(${b}/external/ImAnim/ImAnim/im_anim_demo_basics.cpp    ${dest})
+    _iman_copy(${b}/external/ImAnim/ImAnim/im_anim_demo.cpp           ${dest})
+    _iman_copy(${b}/external/ImAnim/ImAnim/im_anim_doc.cpp            ${dest})
+    _iman_copy(${b}/external/ImAnim/ImAnim/im_anim_usecase.cpp        ${dest})
+    _iman_copy(${b}/external/imgui/imgui/imgui_demo.cpp               ${dest})
+    _iman_copy(${b}/external/implot/implot/implot_demo.cpp            ${dest})
+    _iman_copy(${b}/external/implot3d/implot3d/implot3d_demo.cpp      ${dest})
 
-    # API reference: C++ headers
-    _copy_code_file(${imgui_dir}/imgui.h ${demo_code_dest})
-    _copy_code_file(${imgui_dir}/imgui_internal.h ${demo_code_dest})
-    _copy_code_file(${implot_dir}/implot.h ${demo_code_dest})
-    _copy_code_file(${implot_dir}/implot_internal.h ${demo_code_dest})
-    _copy_code_file(${implot3d_dir}/implot3d.h ${demo_code_dest})
-    _copy_code_file(${implot3d_dir}/implot3d_internal.h ${demo_code_dest})
-    _copy_code_file(${imanim_dir}/im_anim.h ${demo_code_dest})
-    # API reference: Python stubs
-    set(stubs_dir ${bundle_dir}/bindings/imgui_bundle)
-    _copy_code_file_renamed(${stubs_dir}/imgui/__init__.pyi    imgui.pyi             ${demo_code_dest})
-    _copy_code_file_renamed(${stubs_dir}/imgui/internal.pyi    imgui_internal.pyi    ${demo_code_dest})
-    _copy_code_file_renamed(${stubs_dir}/implot/__init__.pyi   implot.pyi            ${demo_code_dest})
-    _copy_code_file_renamed(${stubs_dir}/implot/internal.pyi   implot_internal.pyi   ${demo_code_dest})
-    _copy_code_file_renamed(${stubs_dir}/implot3d/__init__.pyi implot3d.pyi          ${demo_code_dest})
-    _copy_code_file_renamed(${stubs_dir}/implot3d/internal.pyi implot3d_internal.pyi ${demo_code_dest})
-    _copy_code_file_renamed(${stubs_dir}/im_anim.pyi           im_anim.pyi           ${demo_code_dest})
+    # Python demo files
+    set(pydemos ${b}/bindings/imgui_bundle/demos_python/demos_imgui_manual)
+    _iman_copy(${pydemos}/im_anim_demo_basics.py ${dest})
+    _iman_copy(${pydemos}/imgui_demo.py          ${dest})
+    _iman_copy(${pydemos}/implot_demo.py         ${dest})
+    _iman_copy(${pydemos}/implot3d_demo.py       ${dest})
+
+    # C++ API headers
+    _iman_copy(${b}/external/imgui/imgui/imgui.h                      ${dest})
+    _iman_copy(${b}/external/imgui/imgui/imgui_internal.h             ${dest})
+    _iman_copy(${b}/external/implot/implot/implot.h                   ${dest})
+    _iman_copy(${b}/external/implot/implot/implot_internal.h          ${dest})
+    _iman_copy(${b}/external/implot3d/implot3d/implot3d.h             ${dest})
+    _iman_copy(${b}/external/implot3d/implot3d/implot3d_internal.h    ${dest})
+    _iman_copy(${b}/external/ImAnim/ImAnim/im_anim.h                  ${dest})
+
+    # Python stubs (renamed: subdir/__init__.pyi → flat name)
+    set(stubs ${b}/bindings/imgui_bundle)
+    _iman_copy_as(${stubs}/imgui/__init__.pyi     imgui.pyi             ${dest})
+    _iman_copy_as(${stubs}/imgui/internal.pyi     imgui_internal.pyi    ${dest})
+    _iman_copy_as(${stubs}/implot/__init__.pyi    implot.pyi            ${dest})
+    _iman_copy_as(${stubs}/implot/internal.pyi    implot_internal.pyi   ${dest})
+    _iman_copy_as(${stubs}/implot3d/__init__.pyi  implot3d.pyi          ${dest})
+    _iman_copy_as(${stubs}/implot3d/internal.pyi  implot3d_internal.pyi ${dest})
+    _iman_copy_as(${stubs}/im_anim.pyi            im_anim.pyi           ${dest})
 endfunction()
-
 
 
 # ---------------------------------------------------------------------------
@@ -101,11 +117,6 @@ endfunction()
 # imgui_manual_lib: the library exposing ShowImGuiManualGui()
 # ---------------------------------------------------------------------------
 function(iman_add_imgui_manual_lib)
-    # Note:
-    # - the marker hooks implementation (${src}/src/imgui_demo_marker_hooks.cpp)
-    #   is compiled into imgui itself (see iman_force_include_marker_hooks)
-    #   This solves link issues.
-    #
     set(src ${CMAKE_CURRENT_FUNCTION_LIST_DIR})
     add_library(imgui_manual_lib STATIC
         ${src}/src/imgui_manual.cpp
@@ -122,10 +133,19 @@ function(iman_add_imgui_manual_lib)
         PUBLIC  $<BUILD_INTERFACE:${src}>        # for imgui_manual.h
         PRIVATE $<BUILD_INTERFACE:${src}/src>    # for internal headers
     )
+    # Desktop: demo code is read via std::ifstream from the binary-dir demo_code/ folder.
+    # IMAN_DEMO_CODE_DIR is baked in at compile time (Emscripten uses a relative URL instead).
+    if(NOT EMSCRIPTEN)
+        target_compile_definitions(imgui_manual_lib PRIVATE
+            IMAN_DEMO_CODE_DIR="${CMAKE_BINARY_DIR}/bin/demo_code"
+        )
+    endif()
 endfunction()
 
 
+# ---------------------------------------------------------------------------
 # Bundle integration: plug into imgui_bundle INTERFACE and install machinery
+# ---------------------------------------------------------------------------
 function(iman_link_imgui_bundle_to_manual)
     target_link_libraries(imgui_bundle INTERFACE imgui_manual_lib)
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB)
@@ -135,12 +155,12 @@ function(iman_link_imgui_bundle_to_manual)
     endif()
 endfunction()
 
+
 # ---------------------------------------------------------------------------
 # Standalone exe (optional)
 # ---------------------------------------------------------------------------
 function(iman_add_imgui_manual_app)
     imgui_bundle_add_app(imgui_manual ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/imgui_manual.main.cpp)
-    # target_link_libraries(imgui_manual PRIVATE imgui_manual_lib)
     set_target_properties(imgui_manual PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
     if(EMSCRIPTEN)
         set_target_properties(imgui_manual PROPERTIES OUTPUT_NAME index)
@@ -149,43 +169,32 @@ endfunction()
 
 
 # ---------------------------------------------------------------------------
-# Main
+# Main entry point
 # ---------------------------------------------------------------------------
 function(iman_main)
-    #
-    # Sanity checks and early exits
-    # =============================
-    # # If the app is requested, the lib is required
+    # If the app is requested, the lib is required
     if(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP)
         set(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB ON CACHE BOOL "" FORCE)
     endif()
-    # If the lib is requested, warn if any of the dependencies are missing and disable the lib
+    # Bail out if any required dependency is missing
     if(NOT IMGUI_BUNDLE_WITH_IMMAPP OR NOT IMGUI_BUNDLE_WITH_IMANIM OR NOT IMGUI_BUNDLE_WITH_IMPLOT OR NOT IMGUI_BUNDLE_WITH_IMPLOT3D)
         message(WARNING "Not building imgui_manual_lib (missing dependencies: imanim, immapp, implot, implot3d)")
         set(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB OFF CACHE INTERNAL "" FORCE)
         return()
     endif()
-    # If the lib is not requested, skip everything
     if(NOT IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB)
         return()
     endif()
 
-    # Build the library
     iman_add_imgui_manual_lib()
-    # Force-include the marker hooks into imgui/implot/implot3d/imanim
     iman_force_include_marker_hooks()
-    # Link the library to imgui_bundle INTERFACE and install machinery
     iman_link_imgui_bundle_to_manual()
 
-    # Build the standalone app (optional)
     if(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP)
+        iman_setup_demo_code_dir()   # populate bin/demo_code/ from source files
         iman_add_imgui_manual_app()
-        # Refresh demo code assets from live bundle sources
-        iman_copy_demo_code_assets(${CMAKE_CURRENT_FUNCTION_LIST_DIR}/assets/demo_code)
     endif()
 
-    # Add demo_code assets to python
-    if (IMGUI_BUNDLE_BUILD_PYTHON)
-        iman_copy_demo_code_assets(${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/demos_assets/demo_code)
-    endif()
+    # Note: lazy loading for Python bundle demos is a separate effort.
+    # When implemented, it should also use the binary-dir demo_code/ approach.
 endfunction()

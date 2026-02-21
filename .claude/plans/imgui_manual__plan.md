@@ -347,7 +347,7 @@ https://github.com/pthom/imgui_bundle/blob/main/external/imgui_manual/imgui_manu
 ## Discussion with ImGui author (ocornut)
 
 - Essayer d'optimiser le démarrage
-- Ajouter scale
+X Ajouter scale
 - Zoom Web / rendu dégueulasse. Marche apres reload.
 - Essayer de rendre possible de compiler les Demos Markers sans ifdef dans imgui_demo.cpp
 - IMGUI_DEMO_MARKER partout mais utiliser nom dans lib
@@ -371,4 +371,5 @@ Remove Ctrl-Alt-C
 - Si clic droit dans text sans selection, essayer de trouver mot sous le curseur et le sélectionner
 - Essayer de rechercher pour code sur curseur
 - Les evenement keyup sont mal reçus : voir Tools/Debug Log/IO
-- 
+- DemoMarker sur ExampleApps (dans ExampleAppName::Draw())
+- Ajouter un bouton "Reset code view" pour reset le scroll à la position de départ

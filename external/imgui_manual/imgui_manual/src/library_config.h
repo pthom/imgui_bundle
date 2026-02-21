@@ -11,11 +11,14 @@ struct DemoFileInfo {
     std::string cppGithubUrl;  // Full URL without #L suffix
     std::string pyGithubUrl;   // Same for Python file (empty if no Python)
 
-    // Derived names for display and asset loading
+    // Display names
     std::string cppDisplayName() const { return baseName + (isApiReference ? ".h" : ".cpp"); }
     std::string pyDisplayName() const { return baseName + (isApiReference ? ".pyi" : ".py"); }
-    std::string cppAssetName() const { return baseName + (isApiReference ? ".h.txt" : ".cpp.txt"); }
-    std::string pyAssetName() const { return baseName + (isApiReference ? ".pyi.txt" : ".py.txt"); }
+
+    // Fetch URL for emscripten_async_wget (e.g. "demo_code/imgui_demo.cpp")
+    // Desktop reads via std::ifstream(IMAN_DEMO_CODE_DIR + "/" + cppDisplayName())
+    std::string cppFetchUrl() const { return "demo_code/" + baseName + (isApiReference ? ".h" : ".cpp"); }
+    std::string pyFetchUrl()  const { return "demo_code/" + baseName + (isApiReference ? ".pyi" : ".py"); }
 };
 
 // Configuration for a library (ImGui, ImPlot, ImPlot3D, ImAnim)
