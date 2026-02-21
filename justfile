@@ -13,7 +13,6 @@ ems_build:
     emcmake cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make -j
 
-
 # clean emscripten build
 ems_clean:
     rm -rf build_ems_release
@@ -21,11 +20,14 @@ ems_clean:
 
 # deploy the emscripten build to official imgui bundle interactive manual
 ems_deploy: ems_build
+    # The server supports gzip encoding
+    gzip -9 -k -f build_ems_release/bin/*.wasm build_ems_release/bin/*.data build_ems_release/bin/*.js
     cd build_ems_release && \
     rsync -vaz bin pascal@traineq.org:HTML/ImGuiBundle/emscripten
 
 # Serve emscripten with CORS
 ems_serve:
+    gzip -9 -k -f build_ems_release/bin/*.wasm build_ems_release/bin/*.data build_ems_release/bin/*.js
     cd build_ems_release/bin && \
     python ../../ci_scripts/webserver_multithread_policy.py -p 8642
 
@@ -35,11 +37,12 @@ manual_ems_build:
     cd build_manual_ems && \
     source ~/emsdk/emsdk_env.sh && \
     emcmake cmake .. -DCMAKE_BUILD_TYPE=Release \
-                     -DIMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP=ON -DIMGUI_BUNDLE_BUILD_DEMOS=OFF && \
+                     -DIMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP=ON -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
     cmake --build . -j 8
 
 manual_ems_serve: manual_ems_build
     echo "add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL to load the corresponding manual page"
+    gzip -9 -k -f build_manual_ems/bin/*.wasm build_manual_ems/bin/index.data build_manual_ems/bin/*.js
     cd build_manual_ems/bin && python ../../ci_scripts/webserver_multithread_policy.py -p 7006
 
 manual_ems_clean:
@@ -48,6 +51,7 @@ manual_ems_clean:
 # deploy the manual to https://traineq.org/ImGuiBundle/imgui_manual/
 manual_ems_deploy: manual_ems_build
     # add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL to load the corresponding manual page
+    gzip -9 -k -f build_manual_ems/bin/*.wasm build_manual_ems/bin/index.data build_manual_ems/bin/*.js
     rsync -vaz build_manual_ems/bin/ pascal@traineq.org:HTML/ImGuiBundle/imgui_manual
 
 # Reattach all submodules to branches and remotes (fork + official)
