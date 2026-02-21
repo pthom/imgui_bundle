@@ -126,19 +126,32 @@ namespace
 
     void ShowStatusBar()
     {
+        // Scaling slider on the left
+        ImGui::SetNextItemWidth(150.f); // one rare occasion where we set a fixed width for an item (not using EmSize), because it will change the full scale (and the slider size would vary!)
+        ImGui::SliderFloat("Font scale", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
+        ImGui::SameLine();
+
+        // Add the rest in a child, because ImGuiMd wants to start from the left edge of the window
+        // Move this child a bit
+        auto pos = ImGui::GetCursorPos();
+        pos.x += HelloImGui::EmSize(4.f); // add some margin from the slider
+        pos.y += ImGui::GetStyle().ItemSpacing.y * 0.5f;  // fix vertical alignment md rendering below
+        ImGui::SetCursorPos(pos);
+
+        auto flag = ImGuiWindowFlags_NoDecoration;
+        ImGui::BeginChild("www", ImVec2(0, 0), 0, flag);
         ImGuiMd::RenderUnindented(R"(Dear ImGui Manual - Made with [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle/))");
 
         {
             auto & params = *HelloImGui::GetRunnerParams();
-            float dy = ImGui::GetFontSize() * 0.15f;
-            ImGui::SameLine(ImGui::GetIO().DisplaySize.x - 14.f * ImGui::GetFontSize());
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - HelloImGui::EmSize(14.f));
             const char* idlingInfo = params.fpsIdling.isIdling ? " (Idling)" : "";
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - dy); // The checkbox seems visually misaligned, let's fix this
             ImGui::Checkbox("Enable idling", &params.fpsIdling.enableIdling);
             ImGui::SameLine();
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() - dy);
             ImGui::Text("FPS: %.1f%s", HelloImGui::FrameRate(), idlingInfo);
         }
+
+        ImGui::EndChild();
     }
 
 } // anonymous namespace
