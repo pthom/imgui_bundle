@@ -52,6 +52,7 @@ int main(int argc, char** argv)
 
     runnerParams.appWindowParams.windowTitle = "Dear ImGui Manual";
     runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
+    runnerParams.imGuiWindowParams.configWindowsMoveFromTitleBarOnly = false;
 
     runnerParams.callbacks.ShowGui = [library]() { ShowImGuiManualGui(library, ImGuiManualCppOrPython::Cpp, true); };
 
