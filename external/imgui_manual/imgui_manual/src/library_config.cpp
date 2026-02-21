@@ -35,12 +35,8 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [] {
-            static bool do_create_window = false;
-            ImGui::Checkbox("ImGui Demo in external window", &do_create_window);
-            ImGui::SetItemTooltip("Useful to test \"Window Options\" below...");
-
-            ImGui::Separator();
-            ImGui::ShowDemoWindow_MaybeDocked(do_create_window);
+            ImGui::ShowDemoWindow_MaybeDocked(true, nullptr,
+                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
         };
         cfg.mdIntro = "Dear ImGui | [Repository](https://github.com/ocornut/imgui) | [FAQ](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md) | [Wiki](https://github.com/ocornut/imgui/wiki) | [dearimgui.com](https://www.dearimgui.com/) | [Dear ImGui Manual](https://traineq.org/ImGuiBundle/imgui_manual/)";
         configs.push_back(std::move(cfg));

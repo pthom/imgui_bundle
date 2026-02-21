@@ -83,8 +83,6 @@ namespace
     // Show the demo for the current library
     void ShowCurrentLibraryDemo()
     {
-        IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
-
         const auto& currentLib = GetCurrentLibrary();
 
         // ImAnim has multiple demos - show them as tabs
@@ -157,6 +155,8 @@ namespace
 } // anonymous namespace
 
 
+extern bool gIsImGuiDemoWindowUserEdited;
+
 void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
                         std::optional<ImGuiManualCppOrPython> language,
                         bool show_status_bar)
@@ -194,11 +194,56 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
     if (show_status_bar)
         availableSize.y -= HelloImGui::EmSize(1.5);
 
-    int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
-    int demoWindowFlags = ImGuiWindowFlags_MenuBar; // we need a menu bar for the ImGui demo window
-    ImGui::BeginChild("left pane", ImVec2(availableSize.x * 0.45f, availableSize.y), demoChildFlags, demoWindowFlags);
-    ShowCurrentLibraryDemo();
-    ImGui::EndChild();
+    const auto& currentLib = GetCurrentLibrary();
+    bool isImGuiLib = (currentLib.name == "ImGui");
+    float leftPaneWidth = availableSize.x * 0.45f;
+
+    if (isImGuiLib)
+    {
+        // Render a child window which occupies the full height and which can be resized
+        // (will serve as a splitter)
+        ImVec2 lastCursorPos;
+        {
+            int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
+            int demoWindowFlags = ImGuiWindowFlags_MenuBar;
+            ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, demoWindowFlags);
+            IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
+
+            lastCursorPos = ImGui::GetCursorScreenPos();
+            ImGui::EndChild();
+        }
+
+        // We will render the ImGui demo window fully inside the previous child
+        // (if not movable)
+        ImVec2 demoPos, demoSize;
+        {
+            ImVec2 tl = lastCursorPos;
+            ImVec2 br = ImGui::GetItemRectMax();
+            float br_margin = 10.f;
+
+            demoPos = tl;
+            demoSize = ImVec2(br.x - tl.x - br_margin, br.y - tl.y - br_margin);
+        }
+
+        if (!gIsImGuiDemoWindowUserEdited)
+        {
+            ImGui::SetNextWindowPos(demoPos);
+            ImGui::SetNextWindowSize(demoSize);
+        }
+
+        // ImGui demo creates its own window — position it where the left pane would be
+        ShowCurrentLibraryDemo();
+    }
+    else
+    {
+        // Other libraries: render inside a child window as before
+        int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
+        int demoWindowFlags = ImGuiWindowFlags_MenuBar;
+        ImGui::BeginChild("left pane", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, demoWindowFlags);
+        IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
+        ShowCurrentLibraryDemo();
+        ImGui::EndChild();
+    }
 
     ImGui::SameLine();
 
