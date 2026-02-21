@@ -40,9 +40,30 @@ We are also using goatcounter for simple stats
             image-rendering: pixelated;
             -ms-interpolation-mode: nearest-neighbor;
         }
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 10;
+        }
+        #loading-spinner {
+            width: 48px; height: 48px;
+            border: 4px solid #333; border-top-color: #999;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        #loading-status {
+            color: #999; margin-top: 16px; font-family: sans-serif; font-size: 14px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
+<div id="loading-overlay">
+    <div id="loading-spinner"></div>
+    <div id="loading-status">Loading...</div>
+</div>
 <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
 
 <!-- Call coi-serviceworker at startup -->
@@ -86,9 +107,21 @@ We are also using goatcounter for simple stats
         })(),
         setStatus: function(text) {
             console.log("status: " + text);
+            var overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                if (!text || text === '') {
+                    overlay.remove();
+                } else {
+                    var display = text.replace(/\((\d+)\/(\d+)\)/, function(_, a, b) {
+                        return '(' + (a / 1024 | 0) + ' KB / ' + (b / 1024 | 0) + ' KB)';
+                    });
+                    document.getElementById('loading-status').innerText = display;
+                }
+            }
         },
         monitorRunDependencies: function(left) {
-            // no run dependencies to log
+            var el = document.getElementById('loading-status');
+            if (el && left > 0) el.innerText = 'Initializing...';
         }
     };
     window.onerror = function() {
