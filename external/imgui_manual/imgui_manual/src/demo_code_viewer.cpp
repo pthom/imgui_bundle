@@ -51,6 +51,7 @@ namespace
     size_t g_lastMatchOffset = std::string::npos;  // Byte offset of last match found
 
     bool g_pendingApiSearch = false;  // Trigger search on next frame after switching to API tab
+    int g_pendingApiTabIndex = -1;   // Target tab index for pending API search
 
     // Pending match selection (deferred by one frame so horizontal scroll reset takes effect first)
     struct PendingMatch { int startLine, startCol, endLine, endCol; };
@@ -156,11 +157,11 @@ namespace
         g_pendingMatch = PendingMatch{startLine, startCol, endLine, endCol};
     }
 
+    // Search starting AFTER the last match (advances to next occurrence)
     void SearchNext(TextEditor& editor, const std::string& content, const char* text, bool caseSensitive, bool matchWord)
     {
         if (text[0] == '\0') return;
         std::string needle(text);
-        // Start after the last match to advance forward
         size_t offset = (g_lastMatchOffset != std::string::npos) ? g_lastMatchOffset + 1 : CursorToOffset(editor, content);
         size_t found = FindInString(content, needle, offset, caseSensitive, matchWord);
         if (found == std::string::npos)
@@ -354,13 +355,41 @@ namespace
 
     void SearchInApi(const std::string& searchTerm)
     {
-        // Find the API reference file index in current library
+        // Find the API reference file that contains the search term
         auto files = GetCurrentLibraryFiles();
         int apiIdx = -1;
+        int firstApiIdx = -1;
         for (size_t i = 0; i < files.size(); ++i)
         {
-            if (files[i].isApiReference) { apiIdx = (int)i; break; }
+            if (!files[i].isApiReference) continue;
+            if (firstApiIdx < 0) firstApiIdx = (int)i;
+
+            // Check if this API file's content contains the term
+            auto it = g_codeFiles.find(files[i].baseName);
+            if (it != g_codeFiles.end() && !it->second.cppContent.empty())
+            {
+                if (it->second.cppContent.find(searchTerm) != std::string::npos)
+                {
+                    apiIdx = (int)i;
+                    break;
+                }
+            }
+            else
+            {
+                // File not loaded yet — load it now to check
+#ifndef __EMSCRIPTEN__
+                LoadFile(files[i]);
+                auto it2 = g_codeFiles.find(files[i].baseName);
+                if (it2 != g_codeFiles.end() && it2->second.cppContent.find(searchTerm) != std::string::npos)
+                {
+                    apiIdx = (int)i;
+                    break;
+                }
+#endif
+            }
         }
+        // Fall back to first API file if term not found in any
+        if (apiIdx < 0) apiIdx = firstApiIdx;
         if (apiIdx < 0) return;
 
         // Switch to API tab
@@ -370,6 +399,7 @@ namespace
         snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", searchTerm.c_str());
         g_searchBarOpen = true;
         g_lastMatchOffset = std::string::npos;  // Reset to search from beginning
+        g_pendingApiTabIndex = apiIdx;
         g_pendingApiSearch = true;
     }
 }
@@ -395,8 +425,8 @@ void DemoCodeViewer_Show()
             // If we have a pending scroll for this file, select its tab
             if (!g_pendingScrollFile.empty() && g_pendingScrollFile == file.cppDisplayName())
                 flags |= ImGuiTabItemFlags_SetSelected;
-            // If pending API search, select the API tab
-            if (g_pendingApiSearch && file.isApiReference)
+            // If pending API search, select the target tab
+            if (g_pendingApiSearch && (int)i == g_pendingApiTabIndex)
                 flags |= ImGuiTabItemFlags_SetSelected;
 
             // Tinted tabs for API reference files
@@ -554,7 +584,7 @@ void DemoCodeViewer_Show()
     const std::string& content = showingPython ? cf.pyContent : cf.cppContent;
 
     // Handle pending API search (triggered by SearchInApi on previous frame)
-    if (g_pendingApiSearch && currentFile.isApiReference)
+    if (g_pendingApiSearch && currentFile.isApiReference && !content.empty())
     {
         SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
         g_pendingApiSearch = false;
@@ -661,7 +691,7 @@ void DemoCodeViewer_Show()
         {
             snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", rightClickWord.c_str());
             g_searchBarOpen = true;
-            SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
+            g_lastMatchOffset = CursorToOffset(editor, content);  // Next/Prev start from here
         }
 
         std::string apiLabel = "Search \"" + truncSel + "\" in API";

@@ -333,17 +333,26 @@ X Under emscripten, Keyup event on Ctrl(windows)/Command(macOS) are not received
 X Fix / IMGUI_DEMO_MARKER("End")
 X rebase imgui / marker
 X remove ImAnim from default manual online. Le lien sans ? n'inclue pas ImAnim
-X Shortcut pour Casing (alt-c) et pour word wrap (alt-w)
+X Search
+  X Shortcut pour Casing (alt-c) et pour word wrap (alt-w)
+  X Si clic droit dans text sans selection, essayer de trouver mot sous le curseur et le sélectionner  
+  X next can scroll all the way to the right
+  Shortcut / Next and Prev / Ctrl-F + Display search in API
+  Display shortcut Next/Prev/Casing/Word in tooltip (SetItemTooltip)
+
+  In the code editor, the color blue for selected text does not standout enough. Can we make it 
+
+
+
+The fix
+
 - tools windows for ImPlot/ Imgui cannot be moved...
 - Refactor IMGUI_DEMO_MARKER: 
   X finish
   - PR imgui:  https://github.com/ocornut/imgui/compare/master...pthom:markers_infra?expand=1
 - DemoMarker sur ExampleApps (dans ExampleAppName::Draw())
 - 
-- Si clic droit dans text sans selection, essayer de trouver mot sous le curseur et le sélectionner  
-  Essayer de rechercher pour code sur curseur
 
-- next can scroll all the way to the right
 
 - Warning sur fichiers pyi: font partie d'ImGui Bundle. Pas la même maintenance.
 
