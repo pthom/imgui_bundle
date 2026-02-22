@@ -1,6 +1,7 @@
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/runner.h"
 #include "imgui_manual.h"
+#include "imgui.h"
 #include <algorithm>
 #include <cctype>
 #ifdef __EMSCRIPTEN__
@@ -59,6 +60,7 @@ int main(int argc, char** argv)
     runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
 
     runnerParams.iniClearPreviousSettings = true; // start with a clean layout each time (for demo purposes)
+    runnerParams.callbacks.LoadAdditionalFonts = []() { ImGui::GetIO().Fonts->AddFontDefaultVector();};
 
     ImmApp::AddOnsParams addons;
     addons.withMarkdown = true;
