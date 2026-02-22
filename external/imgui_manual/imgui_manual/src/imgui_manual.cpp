@@ -1,6 +1,7 @@
 #include "imgui_manual.h"
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/runner.h"
+#include "immapp/browse_to_url.h"
 #include "im_anim.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "demo_code_viewer.h"
@@ -139,22 +140,36 @@ namespace
 
     void ShowStatusBar()
     {
+        auto RenderLink = [](const char* text, const char* url) {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.6f, 1.0f, 1.0f));
+            ImGui::TextUnformatted(text);
+            ImGui::PopStyleColor();
+            ImGui::SetItemTooltip("%s", url);
+            if (ImGui::IsItemClicked())
+                ImmApp::BrowseToUrl(url);
+        };
+
         // Scaling slider on the left
         ImGui::SetNextItemWidth(150.f); // one rare occasion where we set a fixed width for an item (not using EmSize), because it will change the full scale (and the slider size would vary!)
         ImGui::SliderFloat("Font scale  | ", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
         ImGui::SameLine();
 
-        // Add the rest in a child, because ImGuiMd wants to start from the left edge of the window
-        ImGui::Text(R"(Dear ImGui Manual - Made with [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle/))");
+        // Reference to ImGui Bundle
+        ImGui::Text("Dear ImGui Manual - Made with");
+        ImGui::SameLine(0, ImGui::CalcTextSize(" ").x);
+        RenderLink("Dear ImGui Bundle", "https://github.com/pthom/imgui_bundle/");
+        ImGui::SameLine();
 
+        // Fps Idling, aligned to the right
+        ImGui::BeginHorizontal("AlignRight", ImVec2(ImGui::GetContentRegionAvail().x, 0));
+        ImGui::Spring();
         {
             auto & params = *HelloImGui::GetRunnerParams();
-            ImGui::SameLine(ImGui::GetContentRegionAvail().x - HelloImGui::EmSize(14.f));
             const char* idlingInfo = params.fpsIdling.isIdling ? " (Idling)" : "";
             ImGui::Checkbox("Enable idling", &params.fpsIdling.enableIdling);
-            ImGui::SameLine();
             ImGui::Text("FPS: %.1f%s", HelloImGui::FrameRate(), idlingInfo);
         }
+        ImGui::EndHorizontal();
 
     }
 
@@ -203,8 +218,6 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
     if (show_status_bar)
         availableSize.y -= ImGui::GetFrameHeightWithSpacing();
 
-    const auto& currentLib = GetCurrentLibrary();
-    bool isImGuiLib = (currentLib.name == "ImGui");
     float leftPaneWidth = availableSize.x * 0.45f;
 
     // Render the demo: we create a child window which occupies the full height and which can be resized

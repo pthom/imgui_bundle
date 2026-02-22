@@ -293,9 +293,6 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 - [x] Layout manual without docking, only window
 - [x] Add imgui/implot[3d]/imanim manual in bundle interactive manual:
 
-### Step 9: Polish intro tab
-
-- [ ] Review Intro Tab: see intro_tab__spec.md for details.
 
 ### Step 10: Doc
 - [ ] Add doc for ImAnim in the bundle book (compare C++ and Python API, esp enum usage)
@@ -305,36 +302,6 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 
 ### Step 11: Publish & Communicate
 - [ ] Contact ocornut / preview:
-
-Salut Omar, 
-
-Comme je t'en parlais, j'aimerais ton avis sur la nouvelle version de imgui_manual.
-C'est un full rewrite, qui integre maintenant plusieurs librairies (ImGui, ImPlot, ImPlot3D et ImAnim),
-(et qui supporte optionnellement les demos Python en plus des demos C++).
-
-Ci-dessous ce à quoi pourrait ressembler Dear ImGui Manual 2.0
-https://traineq.org/ImGuiBundle/imgui_manual/?lib=imgui
-Et ci-dessous la même chose pour ImPlot et ImPlot3D
-https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot
-https://traineq.org/ImGuiBundle/imgui_manual/?lib=implot3d
-Et pour voir tout ensemble
-https://traineq.org/ImGuiBundle/imgui_manual/
-
-Note: Je n'ai pas pu garder le manual en tant qu'un projet standalone et j'ai dû donc l'intégrer dans le bundle.
-C'est principalement pour des raisons de maintenance, et parce que ca me permet de l'intégrer dans le manuel du bundle:
-https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
-
-Pour faire tout ceci, j'ai du faire qq modifs dans imgui_demo.cpp, mais qui vont dans le bon sens
-(IMGUI_DEMO_MARKER est défini de façon complètement externe).
-https://github.com/ocornut/imgui/compare/master...pthom:imgui:demo_markers_2026?expand=1
-
-Et on pourra discuter d'ajouter le code pour IMGUI_DEMO_MARKER dans imgui si on veut (mais ça reste optionnel) 
-Dans ce cas, il serait par là:
-https://github.com/pthom/imgui_bundle/blob/main/external/imgui_manual/imgui_manual/src/imgui_demo_marker_hooks.h
-https://github.com/pthom/imgui_bundle/blob/main/external/imgui_manual/imgui_manual/src/imgui_demo_marker_hooks.cpp
-(Ce celui dont je me sers de façon identique pour les 4 librairies: grosso-modo je force-include imgui_demo_marker_hooks.h).
-
-
 - [ ] Add stats tracking (e.g. via goatcounter)?
 - [ ] Mail to ocornut and other maintainers about the new manual and its features
 - [ ] PR to imgui, implot, implot3d and imanim with DemoMarker. Advocate for adoption in the main repos.
@@ -353,12 +320,12 @@ X reduire clutter: Code Lookup / Follow source / Open in detached window => 1 bu
 X Vrai fenetre pour démo (resizable / movable si flags ok)
 X Press Esc to stop this mode / if (Shortcut(ImGuiKey_Esc, ImGuiInputFlags_RouteGlobal))
 x Refac ShowShortInfo
-- Reset code lookup quand on change de librairie
+X Reset code lookup quand on change de librairie
+X Vraie fenetre pour ImPlot et cie
+X Disable move / Implot & ImAnim
+X Scrollbar tout a droite / because decal status
 
-Vraie fenetre pour ImPlot et cie
-
-- Scrollbar tout a droite / because decal status
-
+- Use Proggy forever
 - Shortcut pour Casing (alt-c) et pour word wrap (alt-w)
 - Warning sur fichiers pyi: font partie d'ImGui Bundle. Pas la même maintenance.
 
