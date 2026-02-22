@@ -1,4 +1,5 @@
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/hello_imgui_font.h"
 #include "immapp/runner.h"
 #include "imgui_manual.h"
 #include "imgui.h"
@@ -60,7 +61,12 @@ int main(int argc, char** argv)
     runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
 
     runnerParams.iniClearPreviousSettings = true; // start with a clean layout each time (for demo purposes)
-    runnerParams.callbacks.LoadAdditionalFonts = []() { ImGui::GetIO().Fonts->AddFontDefaultVector();};
+    runnerParams.callbacks.LoadAdditionalFonts = []() {
+        ImGui::GetIO().Fonts->AddFontDefaultVector();
+        HelloImGui::FontLoadingParams faParams;
+        faParams.mergeToLastFont = true;
+        HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 13.f, faParams);
+    };
 
     ImmApp::AddOnsParams addons;
     addons.withMarkdown = true;
