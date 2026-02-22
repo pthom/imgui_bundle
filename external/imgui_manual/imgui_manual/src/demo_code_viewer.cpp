@@ -46,8 +46,8 @@ namespace
     bool g_searchBarOpen = false;
     bool g_searchBarJustOpened = false;  // To auto-focus the input
     char g_searchBuffer[256] = "";
-    bool g_searchCaseSensitive = false;
-    bool g_searchMatchWord = false;
+    bool g_searchCaseSensitive = true;
+    bool g_searchMatchWord = true;
     size_t g_lastMatchOffset = std::string::npos;  // Byte offset of last match found
 
     bool g_pendingApiSearch = false;  // Trigger search on next frame after switching to API tab
@@ -559,6 +559,7 @@ void DemoCodeViewer_Show()
             g_searchBarOpen = true;
             g_searchBarJustOpened = true;
         }
+        ImGui::SetItemTooltip("Search (Ctrl+F)");
 
         ImGui::SameLine();
 
@@ -610,17 +611,23 @@ void DemoCodeViewer_Show()
             SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
         }
         ImGui::SameLine();
+        ImGui::SetNextItemShortcut(ImGuiKey_F3, ImGuiInputFlags_RouteGlobal);
         if (ImGui::SmallButton("Next"))
             SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
+        ImGui::SetItemTooltip("Next match (F3)");
         ImGui::SameLine();
+        ImGui::SetNextItemShortcut(ImGuiKey_F3 | ImGuiMod_Shift, ImGuiInputFlags_RouteGlobal);
         if (ImGui::SmallButton("Prev"))
             SearchPrev(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
+        ImGui::SetItemTooltip("Previous match (Shift+F3)");
         ImGui::SameLine();
         ImGui::SetNextItemShortcut(ImGuiKey_C | ImGuiMod_Alt, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Aa##casesensitive", &g_searchCaseSensitive);
+        ImGui::SetItemTooltip("Case sensitive (Alt+C)");
         ImGui::SameLine();
         ImGui::SetNextItemShortcut(ImGuiKey_W | ImGuiMod_Alt, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Word##matchword", &g_searchMatchWord);
+        ImGui::SetItemTooltip("Match whole word (Alt+W)");
 
         // Show match count: "current / total"
         if (g_searchBuffer[0] != '\0')
