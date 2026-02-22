@@ -313,33 +313,42 @@ List of demo functions that are not present in implot3d_demo.py, but present in 
 
 ## Discussion with ImGui author (ocornut)
 
-X Essayer d'optimiser le démarrage
+X Essayer d'optimiser le démarrage 
+  X on ne transfere plus que 3MB au démarrage au total, moins que dans l'ancien
+  X les fichiers de code sont telechargés on demand
 X Ajouter scale
 X Enlever la checkbox "Open in detached window"
 X reduire clutter: Code Lookup / Follow source / Open in detached window => 1 button "Follow source" + "Open in detached window" checkbox dans le menu
 X Vrai fenetre pour démo (resizable / movable si flags ok)
-X Press Esc to stop this mode / if (Shortcut(ImGuiKey_Esc, ImGuiInputFlags_RouteGlobal))
+X Press Esc to stop this mode / if (Shortcut(ImGuiKey_Esc, ImGuiInpuLettFlags_RouteGlobal))
 x Refac ShowShortInfo
 X Reset code lookup quand on change de librairie
-X Vraie fenetre pour ImPlot et cie
+X Vraie fenetre pour ImGui, ImPlot et cie
 X Disable move / Implot & ImAnim
+X Can move/close ImGui window if the user sets the correct flags
 X Scrollbar tout a droite / because decal status
+X Use Proggy forever
+X merge fontawesome to proggy
+X Under emscripten, Keyup event on Ctrl(windows)/Command(macOS) are not received in rare cases:
+X Fix / IMGUI_DEMO_MARKER("End")
+X rebase imgui / marker
 
-- Use Proggy forever
+- Refactor IMGUI_DEMO_MARKER: 
+  X finish
+  - PR imgui:  https://github.com/ocornut/imgui/compare/master...pthom:markers_infra?expand=1
+- DemoMarker sur ExampleApps (dans ExampleAppName::Draw())
+
+
+- tools windows for ImPlot/ Imgui cannot be moved...
+
 - Shortcut pour Casing (alt-c) et pour word wrap (alt-w)
 - Warning sur fichiers pyi: font partie d'ImGui Bundle. Pas la même maintenance.
 
 - Zoom Web / rendu dégueulasse. Marche apres reload.
-- Essayer de rendre possible de compiler les Demos Markers sans ifdef dans imgui_demo.cpp
-- IMGUI_DEMO_MARKER partout mais utiliser nom dans lib
 - Question / ImAnim: intégrer dans bundle ou non. Le lien sans ? n'inclue pas ImAnim
   Laisser ImAnim dans le bundle, mais desactivé par défaut
 - Ajouter un bouton "Open in GitHub" qui ouvre le fichier source à la ligne correspondante sur GitHub (pour les fichiers qui sont dans le repo, pas les fichiers de démonstration qui sont dans le bundle)
 - Si clic droit dans text sans selection, essayer de trouver mot sous le curseur et le sélectionner
 - Essayer de rechercher pour code sur curseur
-- Les evenement keyup sont mal reçus : voir Tools/Debug Log/IO
-- DemoMarker sur ExampleApps (dans ExampleAppName::Draw())
 - Ajouter un bouton "Reset code view" pour reset le scroll à la position de départ
-
-
 
