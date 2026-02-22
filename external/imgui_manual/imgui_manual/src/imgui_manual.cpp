@@ -90,6 +90,7 @@ namespace
 
             current_zone_boundings.Window = ImGui::GetCurrentWindow();
             current_zone_boundings.MinY = ImGui::GetCursorScreenPos().y;
+            current_zone_boundings.MaxY = -1.0f; // Reset: will be set by next marker, or stay -1 (= extends to bottom)
             SetZoneBoundingsForLine(line_number, current_zone_boundings);
 
             if (HasZoneBoundingsForLine(PreviousZoneSourceLine))
