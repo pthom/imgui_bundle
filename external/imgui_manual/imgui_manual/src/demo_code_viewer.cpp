@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <cctype>
 #include <fstream>
+#include <optional>
 #include "immapp/browse_to_url.h"
 #ifdef __EMSCRIPTEN__
 #include <emscripten/emscripten.h>
@@ -50,6 +51,10 @@ namespace
     size_t g_lastMatchOffset = std::string::npos;  // Byte offset of last match found
 
     bool g_pendingApiSearch = false;  // Trigger search on next frame after switching to API tab
+
+    // Pending match selection (deferred by one frame so horizontal scroll reset takes effect first)
+    struct PendingMatch { int startLine, startCol, endLine, endCol; };
+    std::optional<PendingMatch> g_pendingMatch;
 
     bool IsWordChar(char c) { return std::isalnum((unsigned char)c) || c == '_'; }
 
@@ -137,13 +142,18 @@ namespace
         return offset;
     }
 
-    void GoToMatch(TextEditor& editor, const std::string& content, size_t found)
+    void GoToMatch(TextEditor& editor, const std::string& content, size_t found, size_t matchLen)
     {
         g_lastMatchOffset = found;
-        int foundLine = OffsetToLine(content, found);
-        editor.SetCursorPosition(foundLine, 0);
-        editor.SelectLine(foundLine);
-        editor.SetViewAtLine(foundLine, TextEditor::SetViewAtLineMode::Centered);
+        int startLine = OffsetToLine(content, found);
+        int startCol  = OffsetToColumn(content, found);
+        int endLine   = OffsetToLine(content, found + matchLen);
+        int endCol    = OffsetToColumn(content, found + matchLen);
+        // Frame 1: move cursor to column 0 to reset horizontal scroll
+        editor.SetCursorPosition(startLine, 0);
+        editor.SetViewAtLine(startLine, TextEditor::SetViewAtLineMode::Centered);
+        // Frame 2: select the match (deferred so scroll reset takes effect first)
+        g_pendingMatch = PendingMatch{startLine, startCol, endLine, endCol};
     }
 
     void SearchNext(TextEditor& editor, const std::string& content, const char* text, bool caseSensitive, bool matchWord)
@@ -156,7 +166,7 @@ namespace
         if (found == std::string::npos)
             found = FindInString(content, needle, 0, caseSensitive, matchWord);  // Wrap around
         if (found != std::string::npos)
-            GoToMatch(editor, content, found);
+            GoToMatch(editor, content, found, needle.size());
     }
 
     void SearchPrev(TextEditor& editor, const std::string& content, const char* text, bool caseSensitive, bool matchWord)
@@ -169,7 +179,7 @@ namespace
         if (found == std::string::npos)
             found = RFindInString(content, needle, content.size(), caseSensitive, matchWord);  // Wrap around
         if (found != std::string::npos)
-            GoToMatch(editor, content, found);
+            GoToMatch(editor, content, found, needle.size());
     }
 
     // Count all matches and determine which one the cursor is on (1-based). Returns {current, total}.
@@ -477,6 +487,14 @@ void DemoCodeViewer_Show()
         g_pendingScrollLine = -1;
         g_pendingScrollFile.clear();
         g_pendingScrollSection.clear();
+    }
+
+    // Apply deferred match selection (frame 2 of GoToMatch: scroll left happened last frame)
+    if (g_pendingMatch.has_value())
+    {
+        auto& m = g_pendingMatch.value();
+        editor.SelectRegion(m.startLine, m.startCol, m.endLine, m.endCol);
+        g_pendingMatch.reset();
     }
 
     // Top bar with line info and copy button
