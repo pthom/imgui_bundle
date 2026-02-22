@@ -204,6 +204,7 @@ namespace
 
 
 extern bool gIsImGuiDemoWindowUserEdited;
+extern bool gIsImGuiDemoWindow_no_close;
 
 void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
                         std::optional<ImGuiManualCppOrPython> language,
@@ -214,6 +215,9 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
     {
         // Set up the demo marker hook
         GImGuiDemoMarkerHook = OnDemoMarkerHook;
+
+        // Disable close button on ImGui::ShowDemoWindow by default
+        gIsImGuiDemoWindow_no_close = true;
 
         // Do this once only, to allow the user to change afterward.
         if (language.has_value())

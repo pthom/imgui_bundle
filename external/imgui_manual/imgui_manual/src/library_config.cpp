@@ -14,6 +14,40 @@ void ImAnimUsecaseWindow(bool create_window);
 
 namespace {
 
+void ShowImGuiDemoWindow_AutoReopen()
+{
+    static bool opened = true;
+    bool still_opened = true;
+    if (opened)
+        ImGui::ShowDemoWindow_MaybeDocked(true, &still_opened,
+            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+
+    bool was_just_closed = opened && !still_opened;
+    static double reopen_time = -1.0;
+    if (was_just_closed)
+    {
+        opened = false;
+        reopen_time = ImGui::GetTime() + 3.0;
+    }
+
+    if (!opened)
+    {
+        if (ImGui::GetTime() >= reopen_time)
+        {
+            opened = true;
+            reopen_time = -1.0;
+        }
+        else
+        {
+            ImGui::Begin("Closed!");
+            ImGui::Text("You closed the demo window, it will reopen in a short while...");
+            ImGui::End();
+        }
+    }
+
+
+}
+
 std::vector<LibraryConfig> CreateLibraryConfigs()
 {
     std::vector<LibraryConfig> configs;
@@ -34,10 +68,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
              "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/internal.pyi"},
         };
         cfg.frameSetup = nullptr;
-        cfg.showDemoWindow = [] {
-            ImGui::ShowDemoWindow_MaybeDocked(true, nullptr,
-                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-        };
+        cfg.showDemoWindow = ShowImGuiDemoWindow_AutoReopen;
         cfg.mdIntro = "Dear ImGui | [Repository](https://github.com/ocornut/imgui) | [FAQ](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md) | [Wiki](https://github.com/ocornut/imgui/wiki) | [dearimgui.com](https://www.dearimgui.com/) | [Dear ImGui Manual](https://traineq.org/ImGuiBundle/imgui_manual/)";
         configs.push_back(std::move(cfg));
     }
