@@ -5,6 +5,7 @@
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "demo_code_viewer.h"
 #include "imgui_demo_marker_hooks.h"
+#include "imgui_internal.h"
 #include "library_config.h"
 
 // Forward declarations for ImAnim demo windows
@@ -15,14 +16,55 @@ void ImAnimUsecaseWindow(bool create_window);
 
 namespace
 {
+
+    bool                                GDemoMarker_FlagFollowSource = true;
+    char                                GDemoMarker_CodeLookupInfo[1024] = {0};
+
+
+    // [sub section] ImGuiDemoMarker_GuiToggle()
+    // Display a "Code Lookup" checkbox that toggles interactive code browsing
+    void DemoMarker_ShowShortInfo()
+    {
+        ImGui::SetNextItemShortcut(ImGuiKey_Escape, ImGuiInputFlags_RouteGlobal);
+        ImGui::Checkbox("Follow source    ", &GDemoMarker_FlagFollowSource);
+        ImGui::SetItemTooltip("Press Escape to toggle this mode");
+
+        ImGui::SameLine();
+
+        ImGui::PushFont(ImGuiMd::GetCodeFont().font, 0.f);
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.3f, 1.0f));
+        ImGui::Text("%s", GDemoMarker_CodeLookupInfo);
+        ImGui::PopStyleColor();
+        ImGui::PopFont();
+
+        ImGui::Separator();
+    }
+
+    static const char* BaseFilename(const char* path)
+    {
+        const char* f = strrchr(path, '/');
+        const char* b = strrchr(path, '\\');
+        const char* last = f > b ? f : b;
+        return last ? last + 1 : path;
+    }
+
     // Callback invoked when a demo marker is hovered (with tracking enabled)
     void OnDemoMarkerHook(const char* file, int line, const char* section)
     {
-        static int last_line = -1;
-        if (line == last_line)
-            return;
-        last_line = line;
-        DemoCodeViewer_ShowCodeAt(file, line, section);
+        // Return immediately if invoked with the same parameters as last time
+        {
+            static int last_line = -1;
+            if (last_line == line)
+                return;
+            last_line = line;
+        }
+
+        const char* filename = BaseFilename(file);
+        snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
+        "%s:%d - \"%s\"", filename, line + 1, section);
+
+        if (GDemoMarker_FlagFollowSource)
+            DemoCodeViewer_ShowCodeAt(filename, line, section);
     }
 
     // Top toolbar: library selection buttons + C++/Python toggle
@@ -207,7 +249,7 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
             int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
             int demoWindowFlags = ImGuiWindowFlags_MenuBar;
             ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, demoWindowFlags);
-            IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
+            DemoMarker_ShowShortInfo();
 
             lastCursorPos = ImGui::GetCursorScreenPos();
             ImGui::EndChild();
@@ -240,7 +282,7 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
         int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
         int demoWindowFlags = ImGuiWindowFlags_MenuBar;
         ImGui::BeginChild("left pane", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, demoWindowFlags);
-        IMGUI_DEMO_MARKER_SHOW_SHORT_INFO();
+        DemoMarker_ShowShortInfo();
         ShowCurrentLibraryDemo();
         ImGui::EndChild();
     }

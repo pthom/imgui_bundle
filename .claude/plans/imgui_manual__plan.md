@@ -346,30 +346,33 @@ https://github.com/pthom/imgui_bundle/blob/main/external/imgui_manual/imgui_manu
 
 ## Discussion with ImGui author (ocornut)
 
-- Essayer d'optimiser le démarrage
+X Essayer d'optimiser le démarrage
 X Ajouter scale
+X Enlever la checkbox "Open in detached window"
+X reduire clutter: Code Lookup / Follow source / Open in detached window => 1 button "Follow source" + "Open in detached window" checkbox dans le menu
+X Vrai fenetre pour démo (resizable / movable si flags ok)
+X Press Esc to stop this mode / if (Shortcut(ImGuiKey_Esc, ImGuiInputFlags_RouteGlobal))
+x Refac ShowShortInfo
+- Reset code lookup quand on change de librairie
+
+Vraie fenetre pour ImPlot et cie
+
+- Scrollbar tout a droite / because decal status
+
+- Shortcut pour Casing (alt-c) et pour word wrap (alt-w)
+- Warning sur fichiers pyi: font partie d'ImGui Bundle. Pas la même maintenance.
+
 - Zoom Web / rendu dégueulasse. Marche apres reload.
 - Essayer de rendre possible de compiler les Demos Markers sans ifdef dans imgui_demo.cpp
 - IMGUI_DEMO_MARKER partout mais utiliser nom dans lib
 - Question / ImAnim: intégrer dans bundle ou non. Le lien sans ? n'inclue pas ImAnim
   Laisser ImAnim dans le bundle, mais desactivé par défaut
-- Enlever la checkbox "Open in detached window"
-- Dans manual, avoir le flag move WindowFromTitleOnly
-- 
-- Reset code lookup quand on change de librairie
-- Press Esc to stop this mode (IsKeyPressedEscape() in main ->
-if (Shortcut(ImGuiKey_Esc, ImGuiInputFlags_RouteGlobal))
-if (Shortcut(ImGuiMod_Ctrl | ImGuiKey_C)) { ...}
-  SetNextItemShortcut(ImGuiMod_Ctrl | ImGuiKey_S);
-Remove Ctrl-Alt-C
-- reduire clutter: Code Lookup / Follow source / Open in detached window => 1 button "Follow source" + "Open in detached window" checkbox dans le menu
-- essayer de ne pas cacher la fenetre d'ImGui / utiliser SetNextWindowPos / SetNextWindowSize
-  (cocher par défaut "No Resize" et "No Move" dans les flags de la fenêtre)
-- Warning sur fichiers pyi: font partie d'ImGui Bundle. Pas la même maintenance.
 - Ajouter un bouton "Open in GitHub" qui ouvre le fichier source à la ligne correspondante sur GitHub (pour les fichiers qui sont dans le repo, pas les fichiers de démonstration qui sont dans le bundle)
-- Shortcut pour Casing (alt-c) et pour word wrap (alt-w)
 - Si clic droit dans text sans selection, essayer de trouver mot sous le curseur et le sélectionner
 - Essayer de rechercher pour code sur curseur
 - Les evenement keyup sont mal reçus : voir Tools/Debug Log/IO
 - DemoMarker sur ExampleApps (dans ExampleAppName::Draw())
 - Ajouter un bouton "Reset code view" pour reset le scroll à la position de départ
+
+
+

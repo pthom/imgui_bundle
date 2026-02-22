@@ -1,76 +1,9 @@
-// Copied from imgui repo : https://github.com/pthom/imgui/blob/DemoCodeDockingSplit/imgui_demo_marker_hooks.cpp
-// (pthom fork, branch DemoCodeDockingSplit)
-
 #include "imgui.h"
-#include <stdio.h>
-#include <string.h>
 #include "imgui_demo_marker_hooks.h"
+
 
 ImGuiDemoMarkerHook             GImGuiDemoMarkerHook = NULL;
 
-// Strip directory path from __FILE__, returning just the filename
-static const char* GetFileName(const char* path)
-{
-    const char* f = strrchr(path, '/');
-    const char* b = strrchr(path, '\\');
-    const char* last = f > b ? f : b;
-    return last ? last + 1 : path;
-}
-
-//-----------------------------------------------------------------------------
-// [SECTION] IMGUI_DEMO_MARKER utilities
-// Utilities that provide an interactive "code lookup" via the IMGUI_DEMO_MARKER macro
-//-----------------------------------------------------------------------------
-
-// Forward declarations
-void                                DemoMarker_ShowGui();
-bool                                DemoMarker_IsMouveHovering(int line_number);
-// Global state
-bool                                GDemoMarker_FlagFollowSource = true;
-char                                GDemoMarker_CodeLookupInfo[1024] = {0};
-void DemoMarker_HandleCallback(const char* file, int line, const char* section)
-{
-    if (!GImGuiDemoMarkerHook)
-        return;
-    if (!DemoMarker_IsMouveHovering(line))
-        return;
-
-    const char* filename = GetFileName(file);
-    snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-    "%s:%d - \"%s\"", filename, line + 1, section);
-
-    if (GDemoMarker_FlagFollowSource)
-        GImGuiDemoMarkerHook(filename, line, section);
-}
-
-
-// [sub section] ImGuiDemoMarker_GuiToggle()
-// Display a "Code Lookup" checkbox that toggles interactive code browsing
-void DemoMarker_ShowShortInfo()
-{
-    if (GImGuiDemoMarkerHook == NULL)
-        return;
-    ImGui::SeparatorText("Code lookup");
-    ImGui::Checkbox("Follow source", &GDemoMarker_FlagFollowSource);
-    if (ImGui::IsItemHovered())
-        ImGui::SetTooltip(
-            "Check this box and hover any demo to pinpoint its location inside the code.\n"
-            "\n"
-            "(you can also press \"Ctrl-Alt-C\" at any time to toggle this mode)"
-        );
-    if (GDemoMarker_FlagFollowSource)
-    {
-        ImGui::SameLine();
-        ImGui::Text("   (Press Esc to stop this mode)");
-    }
-    if (ImGui::IsKeyPressed(ImGuiKey_C) && ImGui::GetIO().KeyCtrl && ImGui::GetIO().KeyAlt)
-        GDemoMarker_FlagFollowSource = !GDemoMarker_FlagFollowSource;
-    if (GDemoMarker_FlagFollowSource && ImGui::IsKeyPressed(ImGuiKey_Escape))
-        GDemoMarker_FlagFollowSource = false;
-
-    ImGui::Text("%s", GDemoMarker_CodeLookupInfo);
-    ImGui::Separator();
-}
 
 // [sub section] ImGuiDemoMarkerHighlightZone()
 // `bool ImGuiDemoMarkerHighlightZone(int line_number)` is able to graphically highlight a *hovered* section
@@ -234,6 +167,16 @@ namespace ImGuiDemoMarkerZoneBoundings_Impl
 bool DemoMarker_IsMouveHovering(int line_number)
 {
     return ImGuiDemoMarkerZoneBoundings_Impl::GDemoMarkersRegistry.IsMouveHoveringDemoMarker(line_number);
+}
+
+void DemoMarker_HandleCallback(const char* filename, int line, const char* section)
+{
+    if (!GImGuiDemoMarkerHook)
+        return;
+    if (!DemoMarker_IsMouveHovering(line))
+        return;
+
+    GImGuiDemoMarkerHook(filename, line, section);
 }
 
 // End of Demo code
