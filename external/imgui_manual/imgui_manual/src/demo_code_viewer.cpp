@@ -676,7 +676,7 @@ void DemoCodeViewer_Show()
     static std::string rightClickWord;
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
     {
-        std::string sel = editor.AnyCursorHasSelection() ? editor.GetSelectedText() : std::string();
+        std::string sel = editor.GetSelectedText();
         if (!sel.empty())
             rightClickWord = sel;
         else
