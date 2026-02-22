@@ -5,7 +5,6 @@
 #include "im_anim.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "demo_code_viewer.h"
-#include "imgui_demo_marker_hooks.h"
 #include "imgui_internal.h"
 #include "library_config.h"
 
@@ -55,20 +54,111 @@ namespace
         ImGui::Separator();
     }
 
-    static const char* BaseFilename(const char* path)
+    // -------------------------------------------------------------------
+    // DemoMarkersRegistry: tracks zone boundings for IMGUI_DEMO_MARKER
+    // (moved from the former imgui_demo_marker_hooks.cpp)
+    // -------------------------------------------------------------------
+    class DemoMarkersRegistry
     {
-        const char* f = strrchr(path, '/');
-        const char* b = strrchr(path, '\\');
-        const char* last = f > b ? f : b;
-        return last ? last + 1 : path;
+    private:
+        struct ZoneBoundings
+        {
+            ZoneBoundings() : SourceLineNumber(-1), MinY(-1.0f), MaxY(-1.0f), Window(NULL) {}
+            int SourceLineNumber;
+            float MinY, MaxY;
+            ImGuiWindow* Window;
+        };
+
+    public:
+        DemoMarkersRegistry() : AllZonesBoundings(), PreviousZoneSourceLine(-1) {}
+
+        bool IsMouveHoveringDemoMarker(int line_number)
+        {
+            StoreZoneBoundings(line_number);
+            ZoneBoundings& zone_boundings = GetZoneBoundingsForLine(line_number);
+            return IsMouseHoveringZoneBoundings(zone_boundings);
+        }
+
+    private:
+        void StoreZoneBoundings(int line_number)
+        {
+            ZoneBoundings current_zone_boundings;
+            if (HasZoneBoundingsForLine(line_number))
+                current_zone_boundings = GetZoneBoundingsForLine(line_number);
+            else
+                current_zone_boundings.SourceLineNumber = line_number;
+
+            current_zone_boundings.Window = ImGui::GetCurrentWindow();
+            current_zone_boundings.MinY = ImGui::GetCursorScreenPos().y;
+            SetZoneBoundingsForLine(line_number, current_zone_boundings);
+
+            if (HasZoneBoundingsForLine(PreviousZoneSourceLine))
+            {
+                ZoneBoundings& previous = GetZoneBoundingsForLine(PreviousZoneSourceLine);
+                if (previous.Window == ImGui::GetCurrentWindow())
+                    previous.MaxY = ImGui::GetCursorScreenPos().y;
+            }
+            PreviousZoneSourceLine = line_number;
+        }
+
+        bool IsMouseHoveringZoneBoundings(const ZoneBoundings& zb)
+        {
+            if (!ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem | ImGuiHoveredFlags_RootAndChildWindows | ImGuiHoveredFlags_NoPopupHierarchy))
+                return false;
+            float y = ImGui::GetMousePos().y;
+            float x = ImGui::GetMousePos().x;
+            return (y >= zb.MinY)
+                && ((y < zb.MaxY) || (zb.MaxY < 0.f))
+                && (x >= ImGui::GetWindowPos().x)
+                && (x < ImGui::GetWindowPos().x + ImGui::GetWindowSize().x);
+        }
+
+        bool HasZoneBoundingsForLine(int line_number)
+        {
+            for (int i = 0; i < AllZonesBoundings.size(); ++i)
+                if (AllZonesBoundings[i].SourceLineNumber == line_number)
+                    return true;
+            return false;
+        }
+
+        ZoneBoundings& GetZoneBoundingsForLine(int line_number)
+        {
+            for (int i = 0; i < AllZonesBoundings.size(); ++i)
+                if (AllZonesBoundings[i].SourceLineNumber == line_number)
+                    return AllZonesBoundings[i];
+            IM_ASSERT(false);
+            static ZoneBoundings dummy; return dummy;
+        }
+
+        void SetZoneBoundingsForLine(int line_number, const ZoneBoundings& zb)
+        {
+            if (HasZoneBoundingsForLine(line_number))
+                GetZoneBoundingsForLine(line_number) = zb;
+            else
+                AllZonesBoundings.push_back(zb);
+        }
+
+        ImVector<ZoneBoundings> AllZonesBoundings;
+        int PreviousZoneSourceLine;
+    };
+    static DemoMarkersRegistry GDemoMarkersRegistry;
+
+    bool DemoMarker_IsMouveHovering(int line_number)
+    {
+        return GDemoMarkersRegistry.IsMouveHoveringDemoMarker(line_number);
     }
 
-    // Callback invoked when a demo marker is hovered (with tracking enabled)
-    void OnDemoMarkerHook(const char* file, int line, const char* section)
+    // Callback invoked by IMGUI_DEMO_MARKER when a demo section is hovered
+    void OnDemoMarkerCallback(const char* file, int line, const char* section, void* user_data)
     {
-        const char* filename = BaseFilename(file);
+        (void)user_data;
+        if (!DemoMarker_IsMouveHovering(line))
+            return;
+        // file is IMGUI_DEMO_MARKER_FILE value (e.g. "imgui_demo"), append ".cpp" for display
+        char filename[256];
+        snprintf(filename, sizeof(filename), "%s.cpp", file);
         snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-        "%s:%d - \"%s\"", filename, line + 1, section);
+            "%s:%d - \"%s\"", filename, line + 1, section);
 
         if (GDemoMarker_FlagFollowSource)
             DemoCodeViewer_ShowCodeAt(filename, line, section);
@@ -187,7 +277,7 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
     if (!initialized)
     {
         // Set up the demo marker hook
-        GImGuiDemoMarkerHook = OnDemoMarkerHook;
+        GImGuiDemoMarkerCallback = OnDemoMarkerCallback;
 
         // Disable close button on ImGui::ShowDemoWindow by default
         gIsImGuiDemoWindow_no_close = true;

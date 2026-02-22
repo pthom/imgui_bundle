@@ -1348,8 +1348,10 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
 def show_all_demos() -> None:
     pass
 
-# IMPLOT3D_API void  ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL);    /* original C++ signature */
-def show_demo_window_maybe_docked(create_window: bool, p_open: Optional[bool] = None) -> Optional[bool]:
+# IMPLOT3D_API void  ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL, ImGuiWindowFlags initial_extra_flags = 0);    /* original C++ signature */
+def show_demo_window_maybe_docked(
+    create_window: bool, p_open: Optional[bool] = None, initial_extra_flags: WindowFlags = 0
+) -> Optional[bool]:
     pass
 
 # IMPLOT3D_API void ShowStyleEditor(ImPlot3DStyle* ref = nullptr);    /* original C++ signature */

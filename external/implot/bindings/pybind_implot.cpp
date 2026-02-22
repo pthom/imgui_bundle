@@ -3914,21 +3914,21 @@ void py_init_module_implot(nb::module_& m)
         "Shows the ImPlot demo window (add implot_demo.cpp to your sources!)");
 
     m.def("show_demo_window_maybe_docked",
-        [](bool create_window, std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+        [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0) -> std::optional<bool>
         {
-            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [](bool create_window, std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0) -> std::optional<bool>
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
                     p_open_adapt_modifiable = & (*p_open);
 
-                ImPlot::ShowDemoWindow_MaybeDocked(create_window, p_open_adapt_modifiable);
+                ImPlot::ShowDemoWindow_MaybeDocked(create_window, p_open_adapt_modifiable, initial_extra_flags);
                 return p_open;
             };
 
-            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open);
+            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open, initial_extra_flags);
         },
-        nb::arg("create_window"), nb::arg("p_open").none() = nb::none(),
+        nb::arg("create_window"), nb::arg("p_open").none() = nb::none(), nb::arg("initial_extra_flags") = 0,
         "Bundle: ShowDemoWindow_MaybeDocked is ShowDemoWindow, but can be used without creating an ImGui window.");
     // #endif
     ////////////////////    </generated_from:implot.h>    ////////////////////

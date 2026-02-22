@@ -1452,20 +1452,20 @@ void py_init_module_implot3d(nb::module_& m)
         ImPlot3D::ShowAllDemos);
 
     m.def("show_demo_window_maybe_docked",
-        [](bool create_window, std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+        [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0) -> std::optional<bool>
         {
-            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [](bool create_window, std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
+            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0) -> std::optional<bool>
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
                     p_open_adapt_modifiable = & (*p_open);
 
-                ImPlot3D::ShowDemoWindow_MaybeDocked(create_window, p_open_adapt_modifiable);
+                ImPlot3D::ShowDemoWindow_MaybeDocked(create_window, p_open_adapt_modifiable, initial_extra_flags);
                 return p_open;
             };
 
-            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open);
-        },     nb::arg("create_window"), nb::arg("p_open").none() = nb::none());
+            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open, initial_extra_flags);
+        },     nb::arg("create_window"), nb::arg("p_open").none() = nb::none(), nb::arg("initial_extra_flags") = 0);
 
     m.def("show_style_editor",
         ImPlot3D::ShowStyleEditor,
