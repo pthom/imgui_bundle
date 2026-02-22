@@ -132,41 +132,8 @@ namespace
     void ShowCurrentLibraryDemo()
     {
         const auto& currentLib = GetCurrentLibrary();
-
-        // ImAnim has multiple demos - show them as tabs
-        if (currentLib.name == "ImAnim")
-        {
-            if (ImGui::BeginTabBar("ImAnimDemos"))
-            {
-                if (ImGui::BeginTabItem("Basics"))
-                {
-                    ImAnimDemoBasicsWindow(false);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Demo"))
-                {
-                    ImAnimDemoWindow(false);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Doc"))
-                {
-                    ImAnimDocWindow(false);
-                    ImGui::EndTabItem();
-                }
-                if (ImGui::BeginTabItem("Usecases"))
-                {
-                    ImAnimUsecaseWindow(false);
-                    ImGui::EndTabItem();
-                }
-                ImGui::EndTabBar();
-            }
-        }
-        else
-        {
-            // ImGui, ImPlot, ImPlot3D - show demo content directly (without creating a window)
-            if (currentLib.showDemoWindow)
-                currentLib.showDemoWindow();
-        }
+        if (currentLib.showDemoWindow)
+            currentLib.showDemoWindow();
     }
 
 
@@ -235,7 +202,6 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
     else
         SetMultipleLibraryMode();
 
-
     ShowLibraryToolbar();
 
     // Use all space, except for a small margin at the bottom for the status bar
@@ -250,14 +216,14 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
     bool isImGuiLib = (currentLib.name == "ImGui");
     float leftPaneWidth = availableSize.x * 0.45f;
 
-    if (isImGuiLib)
+    // Render the demo: we create a child window which occupies the full height and which can be resized
+    // (will serve as a splitter)
+    // Then, we position the demo window and display it in a regular window
     {
-        // Render a child window which occupies the full height and which can be resized
-        // (will serve as a splitter)
         ImVec2 lastCursorPos;
         {
             int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
-            int demoWindowFlags = ImGuiWindowFlags_MenuBar;
+            int demoWindowFlags = 0;//ImGuiWindowFlags_MenuBar;
             ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, demoWindowFlags);
             DemoMarker_ShowShortInfo();
 
@@ -277,30 +243,19 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
             demoSize = ImVec2(br.x - tl.x - br_margin, br.y - tl.y - br_margin);
         }
 
-        if (!gIsImGuiDemoWindowUserEdited)
+        if (!gIsImGuiDemoWindowUserEdited || GetCurrentLibrary().name != "ImGui")
         {
             ImGui::SetNextWindowPos(demoPos);
             ImGui::SetNextWindowSize(demoSize);
         }
 
-        // ImGui demo creates its own window — position it where the left pane would be
         ShowCurrentLibraryDemo();
-    }
-    else
-    {
-        // Other libraries: render inside a child window as before
-        int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
-        int demoWindowFlags = ImGuiWindowFlags_MenuBar;
-        ImGui::BeginChild("left pane", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, demoWindowFlags);
-        DemoMarker_ShowShortInfo();
-        ShowCurrentLibraryDemo();
-        ImGui::EndChild();
     }
 
     ImGui::SameLine();
 
     int codeChildFlags = ImGuiChildFlags_Borders;
-    int codeWindowFlags = ImGuiWindowFlags_MenuBar;
+    int codeWindowFlags = 0;//ImGuiWindowFlags_MenuBar;
     ImGui::BeginChild("editor", ImVec2(0.f, availableSize.y), codeChildFlags, codeWindowFlags);
     DemoCodeViewer_Show();
     ImGui::EndChild();

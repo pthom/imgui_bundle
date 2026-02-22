@@ -44,8 +44,36 @@ void ShowImGuiDemoWindow_AutoReopen()
             ImGui::End();
         }
     }
+}
 
-
+void ShowImAnimDemos()
+{
+    ImGui::Begin("ImAnimDemos");
+    if (ImGui::BeginTabBar("ImAnimDemos"))
+    {
+        if (ImGui::BeginTabItem("Basics"))
+        {
+            ImAnimDemoBasicsWindow(false);
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Demo"))
+        {
+            ImAnimDemoWindow(false);
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Doc"))
+        {
+            ImAnimDocWindow(false);
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Usecases"))
+        {
+            ImAnimUsecaseWindow(false);
+            ImGui::EndTabItem();
+        }
+        ImGui::EndTabBar();
+    }
+    ImGui::End();
 }
 
 std::vector<LibraryConfig> CreateLibraryConfigs()
@@ -90,7 +118,8 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [] {
-            ImPlot::ShowDemoWindow_MaybeDocked(false);
+            ImPlot::ShowDemoWindow_MaybeDocked(true, nullptr,
+                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
         };
         cfg.mdIntro = "ImPlot - Immediate Mode Plotting for Dear ImGui | [Repository](https://github.com/epezent/implot)";
         configs.push_back(std::move(cfg));
@@ -113,7 +142,8 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [] {
-            ImPlot3D::ShowDemoWindow_MaybeDocked(false);
+            ImPlot3D::ShowDemoWindow_MaybeDocked(true, nullptr,
+                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
         };
         cfg.mdIntro = "ImPlot3D - Immediate Mode 3D Plotting for Dear ImGui | [Repository](https://github.com/brenocq/implot3d/)";
         configs.push_back(std::move(cfg));
@@ -141,10 +171,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             iam_update_begin_frame();
             iam_clip_update(ImGui::GetIO().DeltaTime);
         };
-        cfg.showDemoWindow = [] {
-            // For now, show all ImAnim windows (we'll refine this later)
-            ImAnimDemoBasicsWindow(false);
-        };
+        cfg.showDemoWindow = ShowImAnimDemos;
         cfg.mdIntro = "ImAnim - Animation Engine for Dear ImGui | [Repository](https://github.com/soufianekhiat/ImAnim) | [Docs](https://github.com/soufianekhiat/ImAnim/tree/main/docs)";
         configs.push_back(std::move(cfg));
     }
