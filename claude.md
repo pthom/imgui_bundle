@@ -261,6 +261,34 @@ em = em_size()       # Get 1 em in pixels
 
 The `em_to_vec2()` and `em_size()` functions are available directly from `imgui_bundle` (recommended), and also in `hello_imgui` and `immapp` modules.
 
+## Horizontal/Vertical Layouts (StackLayout)
+
+ImGui Bundle includes a patched ImGui with **StackLayout** (by thedmd), which adds `BeginHorizontal`/`EndHorizontal`, `BeginVertical`/`EndVertical`, and `Spring()`. Use these instead of repeated `SameLine()` calls, or when you need right-alignment or flexible spacing.
+
+```cpp
+// Instead of many SameLine() calls:
+ImGui::BeginHorizontal("toolbar", ImVec2(ImGui::GetContentRegionAvail().x, 0.f));
+ImGui::Button("Left");
+ImGui::Button("Also Left");
+ImGui::Spring();          // pushes remaining items to the right
+ImGui::Text("Right-aligned");
+ImGui::EndHorizontal();
+```
+
+```python
+imgui.begin_horizontal("toolbar", imgui.ImVec2(imgui.get_content_region_avail().x, 0.0))
+imgui.button("Left")
+imgui.button("Also Left")
+imgui.spring()
+imgui.text("Right-aligned")
+imgui.end_horizontal()
+```
+
+Prefer StackLayout over `SameLine()` when:
+- You have many items on one line
+- You need right-alignment or centered content via `Spring()`
+- You want flexible spacing between groups of widgets
+
 
 # References for Python APIs
 
