@@ -378,8 +378,7 @@ void DemoCodeViewer_Show()
         for (size_t i = 0; i < files.size(); ++i)
         {
             const auto& file = files[i];
-            bool hasPy = file.hasPython && g_codeFiles.count(file.baseName) && g_codeFiles.at(file.baseName).pyState == LoadState::Loaded;
-            std::string displayName = (g_showPython && hasPy) ? file.pyDisplayName() : file.cppDisplayName();
+            std::string displayName = (g_showPython && file.hasPython) ? file.pyDisplayName() : file.cppDisplayName();
 
             ImGuiTabItemFlags flags = 0;
             // If we have a pending scroll for this file, select its tab
