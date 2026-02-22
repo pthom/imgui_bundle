@@ -364,6 +364,7 @@ namespace
     }
 }
 
+int DemoCodeViewer_GetCurrentFileIndex() { return g_currentFileIndex; }
 bool DemoCodeViewer_GetShowPython() { return g_showPython; }
 void DemoCodeViewer_SetShowPython(bool show) { g_showPython = show; }
 

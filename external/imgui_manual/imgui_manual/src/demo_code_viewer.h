@@ -7,6 +7,9 @@ void DemoCodeViewer_Show();
 bool DemoCodeViewer_GetShowPython();
 void DemoCodeViewer_SetShowPython(bool show);
 
+// Get the index of the currently displayed file tab
+int DemoCodeViewer_GetCurrentFileIndex();
+
 // Scroll to a specific line in a specific file
 // filename: just the filename (e.g., "im_anim_demo.cpp"), not the full path
 // line: 1-based line number

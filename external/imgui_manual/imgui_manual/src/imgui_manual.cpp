@@ -25,6 +25,20 @@ namespace
     // Display a "Code Lookup" checkbox that toggles interactive code browsing
     void DemoMarker_ShowShortInfo()
     {
+        // Reset lookup info when library or file tab changes
+        {
+            static int prevLibIndex = -1;
+            static int prevFileIndex = -1;
+            int libIndex = GetCurrentLibraryIndex();
+            int fileIndex = DemoCodeViewer_GetCurrentFileIndex();
+            if (libIndex != prevLibIndex || fileIndex != prevFileIndex)
+            {
+                GDemoMarker_CodeLookupInfo[0] = '\0';
+                prevLibIndex = libIndex;
+                prevFileIndex = fileIndex;
+            }
+        }
+
         ImGui::SetNextItemShortcut(ImGuiKey_Escape, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Follow source    ", &GDemoMarker_FlagFollowSource);
         ImGui::SetItemTooltip("Press Escape to toggle this mode");
@@ -51,14 +65,6 @@ namespace
     // Callback invoked when a demo marker is hovered (with tracking enabled)
     void OnDemoMarkerHook(const char* file, int line, const char* section)
     {
-        // Return immediately if invoked with the same parameters as last time
-        {
-            static int last_line = -1;
-            if (last_line == line)
-                return;
-            last_line = line;
-        }
-
         const char* filename = BaseFilename(file);
         snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
         "%s:%d - \"%s\"", filename, line + 1, section);
