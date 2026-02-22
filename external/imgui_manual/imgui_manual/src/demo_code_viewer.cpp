@@ -565,8 +565,10 @@ void DemoCodeViewer_Show()
         if (ImGui::SmallButton("Prev"))
             SearchPrev(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
         ImGui::SameLine();
+        ImGui::SetNextItemShortcut(ImGuiKey_C | ImGuiMod_Alt);
         ImGui::Checkbox("Aa##casesensitive", &g_searchCaseSensitive);
         ImGui::SameLine();
+        ImGui::SetNextItemShortcut(ImGuiKey_W | ImGuiMod_Alt);
         ImGui::Checkbox("Word##matchword", &g_searchMatchWord);
 
         // Show match count: "current / total"

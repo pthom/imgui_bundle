@@ -37,7 +37,7 @@ manual_ems_build:
     cd build_manual_ems && \
     source ~/emsdk/emsdk_env.sh && \
     emcmake cmake .. -DCMAKE_BUILD_TYPE=Release \
-                     -DIMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP=ON -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
+                     -DIMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP=ON -DIMGUI_BUNDLE_WITH_IMANIM=OFF -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
     cmake --build . -j 8
 
 manual_ems_serve: manual_ems_build
