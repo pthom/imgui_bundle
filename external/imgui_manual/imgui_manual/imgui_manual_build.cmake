@@ -94,7 +94,11 @@ function(iman_add_imgui_manual_lib)
         ${src}/imgui_manual.h
     )
     target_link_libraries(imgui_manual_lib PUBLIC
-        imgui implot implot3d imanim hello_imgui immapp imgui_color_text_edit imgui_md)
+        imgui implot implot3d hello_imgui immapp imgui_color_text_edit imgui_md)
+    if(IMGUI_BUNDLE_WITH_IMANIM)
+        target_link_libraries(imgui_manual_lib PUBLIC imanim)
+    endif()
+
     target_include_directories(imgui_manual_lib
         PUBLIC  $<BUILD_INTERFACE:${src}>        # for imgui_manual.h
         PRIVATE $<BUILD_INTERFACE:${src}/src>    # for internal headers
@@ -143,7 +147,7 @@ function(iman_main)
         set(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB ON CACHE BOOL "" FORCE)
     endif()
     # Bail out if any required dependency is missing
-    if(NOT IMGUI_BUNDLE_WITH_IMMAPP OR NOT IMGUI_BUNDLE_WITH_IMANIM OR NOT IMGUI_BUNDLE_WITH_IMPLOT OR NOT IMGUI_BUNDLE_WITH_IMPLOT3D)
+    if(NOT IMGUI_BUNDLE_WITH_IMMAPP OR NOT IMGUI_BUNDLE_WITH_IMPLOT OR NOT IMGUI_BUNDLE_WITH_IMPLOT3D)
         message(WARNING "Not building imgui_manual_lib (missing dependencies: imanim, immapp, implot, implot3d)")
         set(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB OFF CACHE INTERNAL "" FORCE)
         return()

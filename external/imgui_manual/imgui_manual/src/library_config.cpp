@@ -1,6 +1,8 @@
 #include "library_config.h"
 #include "imgui.h"
+#ifdef IMGUI_BUNDLE_WITH_IMANIM
 #include "im_anim.h"
+#endif
 #include "implot/implot.h"
 #include "implot3d/implot3d.h"
 #include <algorithm>
@@ -149,6 +151,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         configs.push_back(std::move(cfg));
     }
 
+#ifdef IMGUI_BUNDLE_WITH_IMANIM
     // ImAnim
     {
         LibraryConfig cfg;
@@ -175,6 +178,8 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.mdIntro = "ImAnim - Animation Engine for Dear ImGui | [Repository](https://github.com/soufianekhiat/ImAnim) | [Docs](https://github.com/soufianekhiat/ImAnim/tree/main/docs)";
         configs.push_back(std::move(cfg));
     }
+#endif // #ifdef IMGUI_BUNDLE_WITH_IMANIM
+
     return configs;
 }
 

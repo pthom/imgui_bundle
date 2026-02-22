@@ -2,7 +2,9 @@
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/runner.h"
 #include "immapp/browse_to_url.h"
+#ifdef IMGUI_BUNDLE_WITH_IMANIM
 #include "im_anim.h"
+#endif
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "demo_code_viewer.h"
 #include "imgui_internal.h"

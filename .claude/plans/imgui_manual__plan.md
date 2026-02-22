@@ -332,23 +332,20 @@ X merge fontawesome to proggy
 X Under emscripten, Keyup event on Ctrl(windows)/Command(macOS) are not received in rare cases:
 X Fix / IMGUI_DEMO_MARKER("End")
 X rebase imgui / marker
-
+- tools windows for ImPlot/ Imgui cannot be moved...
 - Refactor IMGUI_DEMO_MARKER: 
   X finish
   - PR imgui:  https://github.com/ocornut/imgui/compare/master...pthom:markers_infra?expand=1
 - DemoMarker sur ExampleApps (dans ExampleAppName::Draw())
 
 
-- tools windows for ImPlot/ Imgui cannot be moved...
-
 - Shortcut pour Casing (alt-c) et pour word wrap (alt-w)
 - Warning sur fichiers pyi: font partie d'ImGui Bundle. Pas la même maintenance.
 
-- Zoom Web / rendu dégueulasse. Marche apres reload.
-- Question / ImAnim: intégrer dans bundle ou non. Le lien sans ? n'inclue pas ImAnim
-  Laisser ImAnim dans le bundle, mais desactivé par défaut
 - Ajouter un bouton "Open in GitHub" qui ouvre le fichier source à la ligne correspondante sur GitHub (pour les fichiers qui sont dans le repo, pas les fichiers de démonstration qui sont dans le bundle)
 - Si clic droit dans text sans selection, essayer de trouver mot sous le curseur et le sélectionner
 - Essayer de rechercher pour code sur curseur
 - Ajouter un bouton "Reset code view" pour reset le scroll à la position de départ
+- Question / ImAnim: intégrer dans bundle ou non. Le lien sans ? n'inclue pas ImAnim
+  Laisser ImAnim dans le bundle, mais desactivé par défaut
 
