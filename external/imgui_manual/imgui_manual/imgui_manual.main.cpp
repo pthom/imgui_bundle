@@ -55,6 +55,8 @@ int main(int argc, char** argv)
     runnerParams.appWindowParams.windowTitle = "Dear ImGui Manual";
     runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
     runnerParams.imGuiWindowParams.configWindowsMoveFromTitleBarOnly = false;
+    runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow;
+    runnerParams.imGuiWindowParams.enableViewports = false;
 
     runnerParams.callbacks.ShowGui = [library]() { ShowImGuiManualGui(library, ImGuiManualCppOrPython::Cpp, true); };
 
@@ -66,6 +68,11 @@ int main(int argc, char** argv)
         HelloImGui::FontLoadingParams faParams;
         faParams.mergeToLastFont = true;
         HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 13.f, faParams);
+    };
+
+    runnerParams.callbacks.PostInit = [] {
+        // Remove ImGuiConfigFlags_DockingEnable from ConfigFlags
+        ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_DockingEnable;
     };
 
     ImmApp::AddOnsParams addons;
