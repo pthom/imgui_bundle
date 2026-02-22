@@ -141,19 +141,11 @@ namespace
     {
         // Scaling slider on the left
         ImGui::SetNextItemWidth(150.f); // one rare occasion where we set a fixed width for an item (not using EmSize), because it will change the full scale (and the slider size would vary!)
-        ImGui::SliderFloat("Font scale", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
+        ImGui::SliderFloat("Font scale  | ", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
         ImGui::SameLine();
 
         // Add the rest in a child, because ImGuiMd wants to start from the left edge of the window
-        // Move this child a bit
-        auto pos = ImGui::GetCursorPos();
-        pos.x += HelloImGui::EmSize(4.f); // add some margin from the slider
-        pos.y += ImGui::GetStyle().ItemSpacing.y * 0.5f;  // fix vertical alignment md rendering below
-        ImGui::SetCursorPos(pos);
-
-        auto flag = ImGuiWindowFlags_NoDecoration;
-        ImGui::BeginChild("www", ImVec2(0, 0), 0, flag);
-        ImGuiMd::RenderUnindented(R"(Dear ImGui Manual - Made with [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle/))");
+        ImGui::Text(R"(Dear ImGui Manual - Made with [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle/))");
 
         {
             auto & params = *HelloImGui::GetRunnerParams();
@@ -164,7 +156,6 @@ namespace
             ImGui::Text("FPS: %.1f%s", HelloImGui::FrameRate(), idlingInfo);
         }
 
-        ImGui::EndChild();
     }
 
 } // anonymous namespace
@@ -210,7 +201,7 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
         return; // this can happen in the very first frame, let's bail out in this case.
 
     if (show_status_bar)
-        availableSize.y -= HelloImGui::EmSize(1.5);
+        availableSize.y -= ImGui::GetFrameHeightWithSpacing();
 
     const auto& currentLib = GetCurrentLibrary();
     bool isImGuiLib = (currentLib.name == "ImGui");
