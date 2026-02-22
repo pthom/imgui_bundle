@@ -16,13 +16,13 @@ void ImAnimUsecaseWindow(bool create_window);
 
 namespace {
 
-void ShowImGuiDemoWindow_AutoReopen()
+void ShowImGuiDemoWindow_AutoReopen(ImVec2 windowPos, ImVec2 windowSize)
 {
     static bool opened = true;
     bool still_opened = true;
     if (opened)
         ImGui::ShowDemoWindow_MaybeDocked(true, &still_opened,
-            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+            ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize, windowPos, windowSize);
 
     bool was_just_closed = opened && !still_opened;
     static double reopen_time = -1.0;
@@ -48,8 +48,12 @@ void ShowImGuiDemoWindow_AutoReopen()
     }
 }
 
-void ShowImAnimDemos()
+void ShowImAnimDemos(ImVec2 windowPos, ImVec2 windowSize)
 {
+    if (windowSize.x > 0 && windowSize.y > 0) {
+        ImGui::SetNextWindowPos(windowPos);
+        ImGui::SetNextWindowSize(windowSize);
+    }
     ImGui::Begin("ImAnimDemos");
     if (ImGui::BeginTabBar("ImAnimDemos"))
     {
@@ -119,9 +123,9 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
              "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot/internal.pyi"},
         };
         cfg.frameSetup = nullptr;
-        cfg.showDemoWindow = [] {
+        cfg.showDemoWindow = [](ImVec2 pos, ImVec2 size) {
             ImPlot::ShowDemoWindow_MaybeDocked(true, nullptr,
-                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize, pos, size);
         };
         cfg.mdIntro = "ImPlot - Immediate Mode Plotting for Dear ImGui | [Repository](https://github.com/epezent/implot)";
         configs.push_back(std::move(cfg));
@@ -143,9 +147,9 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
              "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot3d/internal.pyi"},
         };
         cfg.frameSetup = nullptr;
-        cfg.showDemoWindow = [] {
+        cfg.showDemoWindow = [](ImVec2 pos, ImVec2 size) {
             ImPlot3D::ShowDemoWindow_MaybeDocked(true, nullptr,
-                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
+                ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize, pos, size);
         };
         cfg.mdIntro = "ImPlot3D - Immediate Mode 3D Plotting for Dear ImGui | [Repository](https://github.com/brenocq/implot3d/)";
         configs.push_back(std::move(cfg));

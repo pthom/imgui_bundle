@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <functional>
+#include "imgui.h"
 
 // Information about a single demo file or API reference file
 struct DemoFileInfo {
@@ -26,7 +27,7 @@ struct LibraryConfig {
     std::string name;                           // "ImAnim", "ImGui", etc.
     std::vector<DemoFileInfo> files;            // Demo files for this library
     std::function<void()> frameSetup;           // Called each frame (e.g., iam_update_begin_frame)
-    std::function<void()> showDemoWindow;        // Shows the demo content
+    std::function<void(ImVec2 windowPos, ImVec2 windowSize)> showDemoWindow; // Shows the demo content
     std::string mdIntro;                         // Markdown text with intro & links for the library, show in the top toolbar
 };
 

@@ -223,11 +223,11 @@ namespace
 
 
     // Show the demo for the current library
-    void ShowCurrentLibraryDemo()
+    void ShowCurrentLibraryDemo(ImVec2 windowPos, ImVec2 windowSize)
     {
         const auto& currentLib = GetCurrentLibrary();
         if (currentLib.showDemoWindow)
-            currentLib.showDemoWindow();
+            currentLib.showDemoWindow(windowPos, windowSize);
     }
 
 
@@ -341,12 +341,9 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
         }
 
         if (!gIsImGuiDemoWindowUserEdited || GetCurrentLibrary().name != "ImGui")
-        {
-            ImGui::SetNextWindowPos(demoPos);
-            ImGui::SetNextWindowSize(demoSize);
-        }
-
-        ShowCurrentLibraryDemo();
+            ShowCurrentLibraryDemo(demoPos, demoSize);
+        else
+            ShowCurrentLibraryDemo(ImVec2(0, 0), ImVec2(0, 0));
     }
 
     ImGui::SameLine();
