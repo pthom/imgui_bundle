@@ -618,33 +618,41 @@ void DemoCodeViewer_Show()
     editor.Render(editorId.c_str(), false, ImGui::GetContentRegionAvail());
 
     // Right-click context menu on the editor
-    ImGui::OpenPopupOnItemClick("CodeEditorContext", ImGuiPopupFlags_MouseButtonRight);
+    static std::string rightClickWord;
+    if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
+    {
+        std::string sel = editor.AnyCursorHasSelection() ? editor.GetSelectedText() : std::string();
+        if (!sel.empty())
+            rightClickWord = sel;
+        else
+        {
+            rightClickWord = editor.GetWordAtScreenPos(ImGui::GetMousePos());
+        }
+        if (!rightClickWord.empty())
+            ImGui::OpenPopup("CodeEditorContext");
+    }
     if (ImGui::BeginPopup("CodeEditorContext"))
     {
         if (codeFont.font)
             ImGui::PopFont(); // restore font for menu
 
-        std::string sel = editor.GetSelectedText();
-        if (!sel.empty())
+        std::string truncSel = rightClickWord.substr(0, 30) + (rightClickWord.size() > 30 ? "..." : "");
+
+        std::string menuLabel = "Search \"" + truncSel + "\" in this file";
+        if (ImGui::MenuItem(menuLabel.c_str()))
         {
-            std::string truncSel = sel.substr(0, 30) + (sel.size() > 30 ? "..." : "");
-
-            std::string menuLabel = "Search \"" + truncSel + "\" in this file";
-            if (ImGui::MenuItem(menuLabel.c_str()))
-            {
-                snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
-                g_searchBarOpen = true;
-                SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
-            }
-
-            std::string apiLabel = "Search \"" + truncSel + "\" in API";
-            if (ImGui::MenuItem(apiLabel.c_str()))
-                SearchInApi(sel);
+            snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", rightClickWord.c_str());
+            g_searchBarOpen = true;
+            SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
         }
+
+        std::string apiLabel = "Search \"" + truncSel + "\" in API";
+        if (ImGui::MenuItem(apiLabel.c_str()))
+            SearchInApi(rightClickWord);
 
         if (codeFont.font)
             ImGui::PushFont(codeFont.font, codeFont.size);
-        
+
         ImGui::EndPopup();
     }
 
