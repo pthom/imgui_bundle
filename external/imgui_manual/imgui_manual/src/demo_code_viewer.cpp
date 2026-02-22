@@ -502,9 +502,12 @@ void DemoCodeViewer_Show()
         // Search button
         if (ImGui::SmallButton(ICON_FA_SEARCH))
         {
-            std::string sel = editor.GetSelectedText();
-            if (!sel.empty())
-                snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
+            if (editor.AnyCursorHasSelection())
+            {
+                std::string sel = editor.GetSelectedText();
+                if (!sel.empty())
+                    snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
+            }
             g_searchBarOpen = true;
             g_searchBarJustOpened = true;
         }
@@ -565,10 +568,10 @@ void DemoCodeViewer_Show()
         if (ImGui::SmallButton("Prev"))
             SearchPrev(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
         ImGui::SameLine();
-        ImGui::SetNextItemShortcut(ImGuiKey_C | ImGuiMod_Alt);
+        ImGui::SetNextItemShortcut(ImGuiKey_C | ImGuiMod_Alt, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Aa##casesensitive", &g_searchCaseSensitive);
         ImGui::SameLine();
-        ImGui::SetNextItemShortcut(ImGuiKey_W | ImGuiMod_Alt);
+        ImGui::SetNextItemShortcut(ImGuiKey_W | ImGuiMod_Alt, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Word##matchword", &g_searchMatchWord);
 
         // Show match count: "current / total"
