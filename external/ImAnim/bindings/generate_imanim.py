@@ -49,9 +49,63 @@ def main():
         r"bezier4",             # a float* which expect 4 float, without any type information, so we can't generate a proper binding for it
     ])
 
+    # ==========================================
+    # Exclude bloat features from Python bindings
+    # (see _plans/imanim_trim_bindings__plan.md)
+    # ==========================================
+
     options.fn_exclude_by_name__regex = code_utils.join_string_by_pipe_char([
+        # Previously excluded
         r"iam_transform_to_matrix",
+        # Profiler, drag feedback
+        r"iam_profiler_.*",
+        r"iam_drag_.*",
+        # Tween variants: relative, resolved, per-axis
+        r"iam_tween_.*_(rel$|resolved|per_axis)",
+        # Anchor size (only used by relative tweens)
+        r"iam_anchor_size",
+        # Motion paths, arc-length, path morphing
+        r"iam_(bezier_quadratic|bezier_cubic|catmull_rom|path_|tween_path|get_morph_blend).*",
+        # Text along paths, text stagger
+        r"iam_text_(path|stagger).*",
+        # Quad transform helpers
+        r"iam_(transform_quad|make_glyph_quad)",
+        # Noise
+        r"iam_(noise|smooth_noise)_.*",
+        # Style interpolation
+        r"iam_style_.*",
+        # Gradient, transform interpolation
+        r"iam_(gradient_lerp|tween_gradient|transform_lerp|tween_transform|transform_from_matrix)",
+        # Layering (keep iam_get_blended_color, exclude the rest)
+        r"iam_layer_.*",
+        r"iam_get_blended_(float|vec[24]|int)",
+        # Clip persistence
+        r"iam_clip_(save|load)",
+        # Variation helpers (all 60+)
+        r"iam_var(f|i|v2|v4|c)_.*",
+        # Demo windows (keep only basics)
+        r"ImAnim(Demo|Doc|Usecase)Window",
     ])
+
+    options.class_exclude_by_name__regex = code_utils.join_string_by_pipe_char([
+        r"iam_(drag_opts|drag_feedback|ease_per_axis)",
+        r"iam_(morph_opts|text_path_opts|text_stagger_opts|noise_opts)",
+        r"iam_(gradient|transform|path)$",
+        r"iam_variation_(float|int|vec[24]|color)",
+    ])
+
+    options.enum_exclude_by_name__regex = code_utils.join_string_by_pipe_char([
+        r"iam_(anchor_space|path_segment_type|noise_type|rotation_mode|variation_mode)",
+        r"iam_text_(path_align|stagger_effect)",
+    ])
+
+    options.member_exclude_by_name_and_class__regex = {
+        "iam_clip": code_utils.join_string_by_pipe_char([
+            r"key_.*_(var|rel|spring)",
+            r"set_(duration|delay|timescale)_var",
+            r"(seq|par)_(begin|end)",
+        ]),
+    }
 
     options.fn_force_lambda__regex = code_utils.join_string_by_pipe_char([
         # Any function whose name starts by "get_" or "iam_get_blended_"

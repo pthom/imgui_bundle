@@ -58,6 +58,25 @@ marker_callback = Callable[[int, int, float], None]  # inst_id, marker_id, marke
 #
 
 
+# ----------------------------------------------------
+# Python Bindings Status (Dear ImGui Bundle)
+# ----------------------------------------------------
+# The following features are bound to Python via Dear ImGui Bundle:
+#   - Easing presets and descriptors (ease_type, ease_desc, shorthands)
+#   - Frame management (update_begin_frame, gc, etc.)
+#   - Tween API (tween_float/vec2/vec4/int/color)
+#   - Rebase functions (rebase_*)
+#   - Oscillators (oscillate_*)
+#   - Shake and wiggle (shake_*, wiggle_*)
+#   - Scroll animation (scroll_to_*)
+#   - Clip system (clip, instance, play, etc.)
+#   - Color blending (get_blended_color)
+#   - Debug UI (show_unified_inspector, show_debug_timeline)
+#
+# Sections marked [C++ only] below are not available in
+# the Python bindings.
+# ----------------------------------------------------
+
 # PI constants
 
 class ease_type(enum.IntEnum):
@@ -156,15 +175,6 @@ class color_space(enum.IntEnum):
     # col_oklch				    /* original C++ signature */
     col_oklch = enum.auto()       # (= 4)  # sRGB<->OKLCH (cylindrical OKLAB), blend in OKLCH, back to sRGB
 
-class anchor_space(enum.IntEnum):
-    # anchor_window_content = 0,	    /* original C++ signature */
-    anchor_window_content = enum.auto() # (= 0)  # ImGui::GetContentRegionAvail()
-    # anchor_window,				    /* original C++ signature */
-    anchor_window = enum.auto()         # (= 1)  # ImGui::GetWindowSize()
-    # anchor_viewport,			    /* original C++ signature */
-    anchor_viewport = enum.auto()       # (= 2)  # ImGui::GetWindowViewport()->Size
-    # anchor_last_item			    /* original C++ signature */
-    anchor_last_item = enum.auto()      # (= 3)  # ImGui::GetItemRectSize()
 
 class ease_desc:
     """ Descriptor for any easing (preset or parametric)"""
@@ -272,107 +282,10 @@ def show_debug_timeline(instance_id: int) -> None:
     """ Show debug timeline for a clip instance."""
     pass
 
-# Performance Profiler
-# void profiler_enable(bool enable);                                                  /* original C++ signature */
-def profiler_enable(enable: bool) -> None:
-    """ Enable/disable the performance profiler."""
-    pass
-# bool profiler_is_enabled();                                                         /* original C++ signature */
-def profiler_is_enabled() -> bool:
-    """ Check if profiler is enabled."""
-    pass
-# void profiler_begin_frame();                                                        /* original C++ signature */
-def profiler_begin_frame() -> None:
-    """ Call at frame start when profiler is enabled."""
-    pass
-# void profiler_end_frame();                                                          /* original C++ signature */
-def profiler_end_frame() -> None:
-    """ Call at frame end when profiler is enabled."""
-    pass
-# void profiler_begin(const char* name);                                              /* original C++ signature */
-def profiler_begin(name: str) -> None:
-    """ Begin a named profiler section."""
-    pass
-# void profiler_end();                                                                /* original C++ signature */
-def profiler_end() -> None:
-    """ End the current profiler section."""
-    pass
-
-class drag_opts:
-    """ Drag Feedback - animated feedback for drag operations"""
-    # ImVec2 snap_grid;    /* original C++ signature */
-    snap_grid: ImVec2       # Grid size for snapping (0,0 = no grid)
-    # ImVec2* snap_points;    /* original C++ signature */
-    snap_points: ImVec2     # Array of custom snap points
-    # int snap_points_count;    /* original C++ signature */
-    snap_points_count: int  # Number of snap points
-    # float snap_duration;    /* original C++ signature */
-    snap_duration: float    # Duration of snap animation
-    # float overshoot;    /* original C++ signature */
-    overshoot: float        # Overshoot amount (0 = none, 1 = normal)
-    # int ease_type;    /* original C++ signature */
-    ease_type: int          # Easing type for snap animation
-
-    # drag_opts() : snap_grid(0, 0), snap_points(nullptr), snap_points_count(0),    /* original C++ signature */
-    # 		snap_duration(0.2f), overshoot(0), ease_type(ease_out_cubic) {}
-    def __init__(self) -> None:
-        pass
-
-class drag_feedback:
-    # ImVec2 position;    /* original C++ signature */
-    position: ImVec2      # Current animated position
-    # ImVec2 offset;    /* original C++ signature */
-    offset: ImVec2        # Offset from drag start
-    # ImVec2 velocity;    /* original C++ signature */
-    velocity: ImVec2      # Current velocity estimate
-    # bool is_dragging;    /* original C++ signature */
-    is_dragging: bool     # Currently being dragged
-    # bool is_snapping;    /* original C++ signature */
-    is_snapping: bool     # Currently snapping to target
-    # float snap_progress;    /* original C++ signature */
-    snap_progress: float  # Snap animation progress (0-1)
-    # drag_feedback(ImVec2 position = ImVec2(), ImVec2 offset = ImVec2(), ImVec2 velocity = ImVec2(), bool is_dragging = bool(), bool is_snapping = bool(), float snap_progress = float());    /* original C++ signature */
-    def __init__(
-        self,
-        position: Optional[ImVec2Like] = None,
-        offset: Optional[ImVec2Like] = None,
-        velocity: Optional[ImVec2Like] = None,
-        is_dragging: bool = bool(),
-        is_snapping: bool = bool(),
-        snap_progress: float = float()
-        ) -> None:
-        """Auto-generated default constructor with named params
+# Performance Profiler [C++ only]
 
 
-        Python bindings defaults:
-            If any of the params below is None, then its default value below will be used:
-                * position: ImVec2()
-                * offset: ImVec2()
-                * velocity: ImVec2()
-        """
-        pass
 
-# drag_feedback drag_begin(ImGuiID id, ImVec2 pos);                               /* original C++ signature */
-def drag_begin(id: int, pos: ImVec2Like) -> drag_feedback:
-    """ Start tracking drag at position."""
-    pass
-# drag_feedback drag_update(ImGuiID id, ImVec2 pos, float dt);                    /* original C++ signature */
-def drag_update(id: int, pos: ImVec2Like, dt: float) -> drag_feedback:
-    """ Update drag position during drag."""
-    pass
-# drag_feedback drag_release(ImGuiID id, ImVec2 pos, drag_opts const& opts, float dt);     /* original C++ signature */
-def drag_release(
-    id: int,
-    pos: ImVec2Like,
-    opts: drag_opts,
-    dt: float
-    ) -> drag_feedback:
-    """ Release drag with animated feedback."""
-    pass
-# void drag_cancel(ImGuiID id);                                                       /* original C++ signature */
-def drag_cancel(id: int) -> None:
-    """ Cancel drag tracking."""
-    pass
 
 class wave_type(enum.IntEnum):
     """ Oscillators - continuous periodic animations"""
@@ -615,146 +528,13 @@ def tween_color(
     """
     pass
 
-# Resize-friendly helpers
-# ImVec2 anchor_size(int space);     /* original C++ signature */
-def anchor_size(space: int) -> ImVec2:
-    """ Get dimensions of anchor space (window, viewport, etc.)."""
-    pass
+# Resize-friendly helpers [C++ only]
 
-# Relative target tweens (percent of anchor + pixel offset) - survive window resizes
-# float  tween_float_rel(ImGuiID id, ImGuiID channel_id, float percent, float px_bias, float dur, ease_desc const& ez, int policy, int anchor_space, int axis, float dt);      /* original C++ signature */
-def tween_float_rel(
-    id: int,
-    channel_id: int,
-    percent: float,
-    px_bias: float,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    anchor_space: int,
-    axis: int,
-    dt: float
-    ) -> float:
-    """ Float relative to anchor (axis: 0=x, 1=y)."""
-    pass
-# ImVec2 tween_vec2_rel(ImGuiID id, ImGuiID channel_id, ImVec2 percent, ImVec2 px_bias, float dur, ease_desc const& ez, int policy, int anchor_space, float dt);               /* original C++ signature */
-def tween_vec2_rel(
-    id: int,
-    channel_id: int,
-    percent: ImVec2Like,
-    px_bias: ImVec2Like,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    anchor_space: int,
-    dt: float
-    ) -> ImVec2:
-    """ Vec2 relative to anchor."""
-    pass
-# ImVec4 tween_vec4_rel(ImGuiID id, ImGuiID channel_id, ImVec4 percent, ImVec4 px_bias, float dur, ease_desc const& ez, int policy, int anchor_space, float dt);               /* original C++ signature */
-def tween_vec4_rel(
-    id: int,
-    channel_id: int,
-    percent: ImVec4Like,
-    px_bias: ImVec4Like,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    anchor_space: int,
-    dt: float
-    ) -> ImVec4:
-    """ Vec4 with x,y relative to anchor."""
-    pass
-# ImVec4 tween_color_rel(ImGuiID id, ImGuiID channel_id, ImVec4 percent, ImVec4 px_bias, float dur, ease_desc const& ez, int policy, int color_space, int anchor_space, float dt);     /* original C++ signature */
-def tween_color_rel(
-    id: int,
-    channel_id: int,
-    percent: ImVec4Like,
-    px_bias: ImVec4Like,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    color_space: int,
-    anchor_space: int,
-    dt: float
-    ) -> ImVec4:
-    """ Color with component offsets."""
-    pass
+# Relative target tweens (percent of anchor + pixel offset) - survive window resizes [C++ only]
 
-# Resolver callbacks for dynamic target computation
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #else
-#
-# #endif
-#
+# Resolver callbacks for dynamic target computation [C++ only]
 
-# Resolved tweens - target computed dynamically by callback each frame
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# float  tween_float_resolved(ImGuiID id, ImGuiID channel_id, float_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                         /* original C++ signature */
-def tween_float_resolved(
-    id: int,
-    channel_id: int,
-    fn: float_resolver,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    dt: float
-    ) -> float:
-    """ Float with dynamic target."""
-    pass
-# ImVec2 tween_vec2_resolved(ImGuiID id, ImGuiID channel_id, vec2_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
-def tween_vec2_resolved(
-    id: int,
-    channel_id: int,
-    fn: vec2_resolver,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    dt: float
-    ) -> ImVec2:
-    """ Vec2 with dynamic target."""
-    pass
-# ImVec4 tween_vec4_resolved(ImGuiID id, ImGuiID channel_id, vec4_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
-def tween_vec4_resolved(
-    id: int,
-    channel_id: int,
-    fn: vec4_resolver,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    dt: float
-    ) -> ImVec4:
-    """ Vec4 with dynamic target."""
-    pass
-# ImVec4 tween_color_resolved(ImGuiID id, ImGuiID channel_id, color_resolver fn, float dur, ease_desc const& ez, int policy, int color_space, float dt);        /* original C++ signature */
-def tween_color_resolved(
-    id: int,
-    channel_id: int,
-    fn: color_resolver,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    color_space: int,
-    dt: float
-    ) -> ImVec4:
-    """ Color with dynamic target."""
-    pass
-# int    tween_int_resolved(ImGuiID id, ImGuiID channel_id, int_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                             /* original C++ signature */
-def tween_int_resolved(
-    id: int,
-    channel_id: int,
-    fn: int_resolver,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    dt: float
-    ) -> int:
-    """ Int with dynamic target."""
-    pass
-# #endif
-#
+# Resolved tweens - target computed dynamically by callback each frame [C++ only]
 
 # Rebase functions - change target of in-progress animation without restarting
 # void rebase_float(ImGuiID id, ImGuiID channel_id, float new_target, float dt);      /* original C++ signature */
@@ -872,948 +652,107 @@ def scroll_to_bottom(
     pass
 
 # ----------------------------------------------------
-# Per-axis easing - different easing per component
+# Per-axis easing - different easing per component [C++ only]
 # ----------------------------------------------------
 
-class ease_per_axis:
-    """ Per-axis easing descriptor (for vec2/vec4/color)"""
-    # ease_desc x;    /* original C++ signature */
-    x: ease_desc  # Easing for X component
-    # ease_desc y;    /* original C++ signature */
-    y: ease_desc  # Easing for Y component
-    # ease_desc z;    /* original C++ signature */
-    z: ease_desc  # Easing for Z component (vec4/color only)
-    # ease_desc w;    /* original C++ signature */
-    w: ease_desc  # Easing for W/alpha component (vec4/color only)
-
-    # ease_per_axis()    /* original C++ signature */
-    # 		: x(ease_preset(ease_linear)), y(ease_preset(ease_linear)),
-    # 		  z(ease_preset(ease_linear)), w(ease_preset(ease_linear)) {}
-    @overload
-    def __init__(self) -> None:
-        pass
-
-    # ease_per_axis(ease_desc all)    /* original C++ signature */
-    # 		: x(all), y(all), z(all), w(all) {}
-    @overload
-    def __init__(self, all: ease_desc) -> None:
-        pass
-
-    # ease_per_axis(ease_desc ex, ease_desc ey)    /* original C++ signature */
-    # 		: x(ex), y(ey), z(ease_preset(ease_linear)), w(ease_preset(ease_linear)) {}
-    @overload
-    def __init__(self, ex: ease_desc, ey: ease_desc) -> None:
-        pass
-
-    # ease_per_axis(ease_desc ex, ease_desc ey, ease_desc ez, ease_desc ew)    /* original C++ signature */
-    # 		: x(ex), y(ey), z(ez), w(ew) {}
-    @overload
-    def __init__(self, ex: ease_desc, ey: ease_desc, ez: ease_desc, ew: ease_desc) -> None:
-        pass
 
 # Tween with per-axis easing - each component uses its own easing curve
-# ImVec2 tween_vec2_per_axis(ImGuiID id, ImGuiID channel_id, ImVec2 target, float dur, ease_per_axis const& ez, int policy, float dt);    /* original C++ signature */
-def tween_vec2_per_axis(
-    id: int,
-    channel_id: int,
-    target: ImVec2Like,
-    dur: float,
-    ez: ease_per_axis,
-    policy: int,
-    dt: float
-    ) -> ImVec2:
-    pass
-# ImVec4 tween_vec4_per_axis(ImGuiID id, ImGuiID channel_id, ImVec4 target, float dur, ease_per_axis const& ez, int policy, float dt);    /* original C++ signature */
-def tween_vec4_per_axis(
-    id: int,
-    channel_id: int,
-    target: ImVec4Like,
-    dur: float,
-    ez: ease_per_axis,
-    policy: int,
-    dt: float
-    ) -> ImVec4:
-    pass
-# ImVec4 tween_color_per_axis(ImGuiID id, ImGuiID channel_id, ImVec4 target_srgb, float dur, ease_per_axis const& ez, int policy, int color_space, float dt);    /* original C++ signature */
-def tween_color_per_axis(
-    id: int,
-    channel_id: int,
-    target_srgb: ImVec4Like,
-    dur: float,
-    ez: ease_per_axis,
-    policy: int,
-    color_space: int,
-    dt: float
-    ) -> ImVec4:
-    pass
 
 # ----------------------------------------------------
-# Motion Paths - animate along curves and splines
+# Motion Paths - animate along curves and splines [C++ only]
 # ----------------------------------------------------
 
-class path_segment_type(enum.IntEnum):
-    """ Path segment types"""
-    # seg_line = 0,                /* original C++ signature */
-    seg_line = enum.auto()             # (= 0)  # Linear segment to endpoint
-    # seg_quadratic_bezier,        /* original C++ signature */
-    seg_quadratic_bezier = enum.auto() # (= 1)  # Quadratic bezier (1 control point)
-    # seg_cubic_bezier,            /* original C++ signature */
-    seg_cubic_bezier = enum.auto()     # (= 2)  # Cubic bezier (2 control points)
-    # seg_catmull_rom              /* original C++ signature */
-    seg_catmull_rom = enum.auto()      # (= 3)  # Catmull-rom spline segment
 
 # Single-curve evaluation functions (stateless, for direct use)
-# ImVec2 bezier_quadratic(ImVec2 p0, ImVec2 p1, ImVec2 p2, float t);                                  /* original C++ signature */
-def bezier_quadratic(
-    p0: ImVec2Like,
-    p1: ImVec2Like,
-    p2: ImVec2Like,
-    t: float
-    ) -> ImVec2:
-    """ Evaluate quadratic bezier at t [0,1]."""
-    pass
-# ImVec2 bezier_cubic(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t);                           /* original C++ signature */
-def bezier_cubic(
-    p0: ImVec2Like,
-    p1: ImVec2Like,
-    p2: ImVec2Like,
-    p3: ImVec2Like,
-    t: float
-    ) -> ImVec2:
-    """ Evaluate cubic bezier at t [0,1]."""
-    pass
-# ImVec2 catmull_rom(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t, float tension = 0.5f);      /* original C++ signature */
-def catmull_rom(
-    p0: ImVec2Like,
-    p1: ImVec2Like,
-    p2: ImVec2Like,
-    p3: ImVec2Like,
-    t: float,
-    tension: float = 0.5
-    ) -> ImVec2:
-    """ Evaluate Catmull-Rom spline at t [0,1]. Points go through p1 and p2."""
-    pass
 
 # Derivatives (for tangent/velocity)
-# ImVec2 bezier_quadratic_deriv(ImVec2 p0, ImVec2 p1, ImVec2 p2, float t);                            /* original C++ signature */
-def bezier_quadratic_deriv(
-    p0: ImVec2Like,
-    p1: ImVec2Like,
-    p2: ImVec2Like,
-    t: float
-    ) -> ImVec2:
-    """ Derivative of quadratic bezier."""
-    pass
-# ImVec2 bezier_cubic_deriv(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t);                     /* original C++ signature */
-def bezier_cubic_deriv(
-    p0: ImVec2Like,
-    p1: ImVec2Like,
-    p2: ImVec2Like,
-    p3: ImVec2Like,
-    t: float
-    ) -> ImVec2:
-    """ Derivative of cubic bezier."""
-    pass
-# ImVec2 catmull_rom_deriv(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t, float tension = 0.5f);     /* original C++ signature */
-def catmull_rom_deriv(
-    p0: ImVec2Like,
-    p1: ImVec2Like,
-    p2: ImVec2Like,
-    p3: ImVec2Like,
-    t: float,
-    tension: float = 0.5
-    ) -> ImVec2:
-    """ Derivative of Catmull-Rom."""
-    pass
 
-
-class path:
-    """ path - fluent API for building multi-segment motion paths"""
-    # static path begin(ImGuiID path_id, ImVec2 start);                                               /* original C++ signature */
-    @staticmethod
-    def begin(path_id: int, start: ImVec2Like) -> path:
-        """ Start building a path at position."""
-        pass
-
-    # path& line_to(ImVec2 end);                                                                      /* original C++ signature */
-    def line_to(self, end: ImVec2Like) -> path:
-        """ Add linear segment to endpoint."""
-        pass
-    # path& quadratic_to(ImVec2 ctrl, ImVec2 end);                                                    /* original C++ signature */
-    def quadratic_to(self, ctrl: ImVec2Like, end: ImVec2Like) -> path:
-        """ Add quadratic bezier segment."""
-        pass
-    # path& cubic_to(ImVec2 ctrl1, ImVec2 ctrl2, ImVec2 end);                                         /* original C++ signature */
-    def cubic_to(self, ctrl1: ImVec2Like, ctrl2: ImVec2Like, end: ImVec2Like) -> path:
-        """ Add cubic bezier segment."""
-        pass
-    # path& catmull_to(ImVec2 end, float tension = 0.5f);                                             /* original C++ signature */
-    def catmull_to(self, end: ImVec2Like, tension: float = 0.5) -> path:
-        """ Add Catmull-Rom segment to endpoint."""
-        pass
-    # path& close();                                                                                  /* original C++ signature */
-    def close(self) -> path:
-        """ Close path back to start point."""
-        pass
-
-    # void end();                                                                                         /* original C++ signature */
-    def end(self) -> None:
-        """ Finalize and register path."""
-        pass
-
-    # ImGuiID id() const { return m_path_id; }    /* original C++ signature */
-    def id(self) -> int:
-        pass
 
 
 # Query path info
-# bool   path_exists(ImGuiID path_id);                                                                /* original C++ signature */
-def path_exists(path_id: int) -> bool:
-    """ Check if path exists."""
-    pass
-# float  path_length(ImGuiID path_id);                                                                /* original C++ signature */
-def path_length(path_id: int) -> float:
-    """ Get approximate path length."""
-    pass
-# ImVec2 path_evaluate(ImGuiID path_id, float t);                                                     /* original C++ signature */
-def path_evaluate(path_id: int, t: float) -> ImVec2:
-    """ Sample path at t [0,1]."""
-    pass
-# ImVec2 path_tangent(ImGuiID path_id, float t);                                                      /* original C++ signature */
-def path_tangent(path_id: int, t: float) -> ImVec2:
-    """ Get tangent (normalized direction) at t."""
-    pass
-# float  path_angle(ImGuiID path_id, float t);                                                        /* original C++ signature */
-def path_angle(path_id: int, t: float) -> float:
-    """ Get rotation angle (radians) at t."""
-    pass
 
 # Tween along a path
-# ImVec2 tween_path(ImGuiID id, ImGuiID channel_id, ImGuiID path_id, float dur, ease_desc const& ez, int policy, float dt);       /* original C++ signature */
-def tween_path(
-    id: int,
-    channel_id: int,
-    path_id: int,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    dt: float
-    ) -> ImVec2:
-    """ Animate position along path."""
-    pass
-# float  tween_path_angle(ImGuiID id, ImGuiID channel_id, ImGuiID path_id, float dur, ease_desc const& ez, int policy, float dt);     /* original C++ signature */
-def tween_path_angle(
-    id: int,
-    channel_id: int,
-    path_id: int,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    dt: float
-    ) -> float:
-    """ Animate rotation angle along path."""
-    pass
 
 # ----------------------------------------------------
-# Arc-length parameterization (for constant-speed animation)
+# Arc-length parameterization (for constant-speed animation) [C++ only]
 # ----------------------------------------------------
 
 # Build arc-length lookup table for a path (call once per path, improves accuracy)
-# void   path_build_arc_lut(ImGuiID path_id, int subdivisions = 64);                                  /* original C++ signature */
-def path_build_arc_lut(path_id: int, subdivisions: int = 64) -> None:
-    """ Build LUT with specified resolution."""
-    pass
-# bool   path_has_arc_lut(ImGuiID path_id);                                                           /* original C++ signature */
-def path_has_arc_lut(path_id: int) -> bool:
-    """ Check if path has precomputed LUT."""
-    pass
 
 # Distance-based path evaluation (uses arc-length LUT for constant speed)
-# float  path_distance_to_t(ImGuiID path_id, float distance);                                         /* original C++ signature */
-def path_distance_to_t(path_id: int, distance: float) -> float:
-    """ Convert arc-length distance to t parameter."""
-    pass
-# ImVec2 path_evaluate_at_distance(ImGuiID path_id, float distance);                                  /* original C++ signature */
-def path_evaluate_at_distance(path_id: int, distance: float) -> ImVec2:
-    """ Get position at arc-length distance."""
-    pass
-# float  path_angle_at_distance(ImGuiID path_id, float distance);                                     /* original C++ signature */
-def path_angle_at_distance(path_id: int, distance: float) -> float:
-    """ Get rotation angle at arc-length distance."""
-    pass
-# ImVec2 path_tangent_at_distance(ImGuiID path_id, float distance);                                   /* original C++ signature */
-def path_tangent_at_distance(path_id: int, distance: float) -> ImVec2:
-    """ Get tangent at arc-length distance."""
-    pass
 
 # ----------------------------------------------------
-# Path Morphing - interpolate between two paths
+# Path Morphing - interpolate between two paths [C++ only]
 # ----------------------------------------------------
 
-class morph_opts:
-    """ Morph options for path interpolation"""
-    # int   samples;    /* original C++ signature */
-    samples: int           # Number of sample points for resampling (default: 64)
-    # bool  match_endpoints;    /* original C++ signature */
-    match_endpoints: bool  # Force endpoints to match exactly (default: True)
-    # bool  use_arc_length;    /* original C++ signature */
-    use_arc_length: bool   # Use arc-length parameterization for smoother morphing (default: True)
-
-    # morph_opts() : samples(64), match_endpoints(true), use_arc_length(true) {}    /* original C++ signature */
-    def __init__(self) -> None:
-        pass
-
-# ImVec2 path_morph(ImGuiID path_a, ImGuiID path_b, float t, float blend, morph_opts const& opts = morph_opts());    /* original C++ signature */
-def path_morph(
-    path_a: int,
-    path_b: int,
-    t: float,
-    blend: float,
-    opts: Optional[morph_opts] = None
-    ) -> ImVec2:
-    """ Evaluate morphed path at parameter t [0,1] with blend factor [0,1]
-     path_a at blend=0, path_b at blend=1
-     Paths can have different numbers of segments - they are resampled to match
 
 
-    Python bindings defaults:
-        If opts is None, then its default value will be: morph_opts()
-    """
-    pass
-
-# ImVec2 path_morph_tangent(ImGuiID path_a, ImGuiID path_b, float t, float blend, morph_opts const& opts = morph_opts());    /* original C++ signature */
-def path_morph_tangent(
-    path_a: int,
-    path_b: int,
-    t: float,
-    blend: float,
-    opts: Optional[morph_opts] = None
-    ) -> ImVec2:
-    """ Get tangent of morphed path
 
 
-    Python bindings defaults:
-        If opts is None, then its default value will be: morph_opts()
-    """
-    pass
 
-# float  path_morph_angle(ImGuiID path_a, ImGuiID path_b, float t, float blend, morph_opts const& opts = morph_opts());    /* original C++ signature */
-def path_morph_angle(
-    path_a: int,
-    path_b: int,
-    t: float,
-    blend: float,
-    opts: Optional[morph_opts] = None
-    ) -> float:
-    """ Get angle (radians) of morphed path
-
-
-    Python bindings defaults:
-        If opts is None, then its default value will be: morph_opts()
-    """
-    pass
-
-# ImVec2 tween_path_morph(ImGuiID id, ImGuiID channel_id, ImGuiID path_a, ImGuiID path_b,    /* original C++ signature */
-#                             float target_blend, float dur, ease_desc const& path_ease,
-#                             ease_desc const& morph_ease, int policy, float dt,
-#                             morph_opts const& opts = morph_opts());
-def tween_path_morph(
-    id: int,
-    channel_id: int,
-    path_a: int,
-    path_b: int,
-    target_blend: float,
-    dur: float,
-    path_ease: ease_desc,
-    morph_ease: ease_desc,
-    policy: int,
-    dt: float,
-    opts: Optional[morph_opts] = None
-    ) -> ImVec2:
-    """ Tween along a morphing path - animates both position along path AND the morph blend
-
-
-    Python bindings defaults:
-        If opts is None, then its default value will be: morph_opts()
-    """
-    pass
-
-# float  get_morph_blend(ImGuiID id, ImGuiID channel_id);    /* original C++ signature */
-def get_morph_blend(id: int, channel_id: int) -> float:
-    """ Get current morph blend value from a tween (for querying state)"""
-    pass
 
 # ----------------------------------------------------
-# Text along motion paths
+# Text along motion paths [C++ only]
 # ----------------------------------------------------
 
-class text_path_align(enum.IntEnum):
-    """ Text alignment along path"""
-    # text_align_start = 0,        /* original C++ signature */
-    text_align_start = enum.auto()  # (= 0)  # Text starts at path start (or offset)
-    # text_align_center,           /* original C++ signature */
-    text_align_center = enum.auto() # (= 1)  # Text centered on path
-    # text_align_end               /* original C++ signature */
-    text_align_end = enum.auto()    # (= 2)  # Text ends at path end
-
-class text_path_opts:
-    """ Text path options"""
-    # ImVec2 origin;    /* original C++ signature */
-    origin: ImVec2         # Screen-space origin for rendering (path coords are offset by this)
-    # float offset;    /* original C++ signature */
-    offset: float          # Starting offset along path (pixels)
-    # float letter_spacing;    /* original C++ signature */
-    letter_spacing: float  # Extra spacing between characters (pixels)
-    # int   align;    /* original C++ signature */
-    align: int             # text_path_align value
-    # bool  flip_y;    /* original C++ signature */
-    flip_y: bool           # Flip text vertically (for paths going right-to-left)
-    # ImU32 color;    /* original C++ signature */
-    color: ImU32           # Text color (default: white)
-    # ImFont* font;    /* original C++ signature */
-    font: ImFont           # Font to use (None = current font)
-    # float font_scale;    /* original C++ signature */
-    font_scale: float      # Additional font scale (1.0 = normal)
-
-    # text_path_opts() : origin(0, 0), offset(0), letter_spacing(0), align(text_align_start),    /* original C++ signature */
-    # 	                       flip_y(false), color(IM_COL32_WHITE), font(nullptr), font_scale(1.0f) {}
-    def __init__(self) -> None:
-        pass
-
-# void text_path(ImGuiID path_id, const char* text, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
-def text_path(
-    path_id: int,
-    text: str,
-    opts: Optional[text_path_opts] = None
-    ) -> None:
-    """ Render text along a path (static - no animation)
 
 
-    Python bindings defaults:
-        If opts is None, then its default value will be: text_path_opts()
-    """
-    pass
-
-# void text_path_animated(ImGuiID path_id, const char* text, float progress, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
-def text_path_animated(
-    path_id: int,
-    text: str,
-    progress: float,
-    opts: Optional[text_path_opts] = None
-    ) -> None:
-    """ Animated text along path (characters appear progressively)
 
 
-    Python bindings defaults:
-        If opts is None, then its default value will be: text_path_opts()
-    """
-    pass
-
-# float text_path_width(const char* text, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
-def text_path_width(text: str, opts: Optional[text_path_opts] = None) -> float:
-    """ Helper: Get text width for path layout calculations
-
-
-    Python bindings defaults:
-        If opts is None, then its default value will be: text_path_opts()
-    """
-    pass
 
 # ----------------------------------------------------
-# Quad transform helpers (for advanced custom rendering)
+# Quad transform helpers (for advanced custom rendering) [C++ only]
 # ----------------------------------------------------
 
-# void transform_quad(ImVec2* quad, ImVec2 center, float angle_rad, ImVec2 translation);    /* original C++ signature */
-def transform_quad(
-    quad: ImVec2Like,
-    center: ImVec2Like,
-    angle_rad: float,
-    translation: ImVec2Like
-    ) -> None:
-    """ Transform a quad (4 vertices) by rotation and translation"""
-    pass
 
-# void make_glyph_quad(ImVec2* quad, ImVec2 pos, float angle_rad, float glyph_width, float glyph_height, float baseline_offset = 0.0f);    /* original C++ signature */
-def make_glyph_quad(
-    quad: ImVec2Like,
-    pos: ImVec2Like,
-    angle_rad: float,
-    glyph_width: float,
-    glyph_height: float,
-    baseline_offset: float = 0.0
-    ) -> None:
-    """ Create a rotated quad for a glyph at a position on the path"""
-    pass
 
 # ----------------------------------------------------
-# Text Stagger - per-character animation effects
+# Text Stagger - per-character animation effects [C++ only]
 # ----------------------------------------------------
 
-class text_stagger_effect(enum.IntEnum):
-    """ Text stagger effect types"""
-    # text_fx_none = 0,            /* original C++ signature */
-    text_fx_none = enum.auto()        # (= 0)  # No effect (instant appear)
-    # text_fx_fade,                /* original C++ signature */
-    text_fx_fade = enum.auto()        # (= 1)  # Fade in alpha
-    # text_fx_scale,               /* original C++ signature */
-    text_fx_scale = enum.auto()       # (= 2)  # Scale from center
-    # text_fx_slide_up,            /* original C++ signature */
-    text_fx_slide_up = enum.auto()    # (= 3)  # Slide up from below
-    # text_fx_slide_down,          /* original C++ signature */
-    text_fx_slide_down = enum.auto()  # (= 4)  # Slide down from above
-    # text_fx_slide_left,          /* original C++ signature */
-    text_fx_slide_left = enum.auto()  # (= 5)  # Slide in from right
-    # text_fx_slide_right,         /* original C++ signature */
-    text_fx_slide_right = enum.auto() # (= 6)  # Slide in from left
-    # text_fx_rotate,              /* original C++ signature */
-    text_fx_rotate = enum.auto()      # (= 7)  # Rotate in
-    # text_fx_bounce,              /* original C++ signature */
-    text_fx_bounce = enum.auto()      # (= 8)  # Bounce in with overshoot
-    # text_fx_wave,                /* original C++ signature */
-    text_fx_wave = enum.auto()        # (= 9)  # Wave motion (continuous)
-    # text_fx_typewriter           /* original C++ signature */
-    text_fx_typewriter = enum.auto()  # (= 10)  # Typewriter style (instant per char)
-
-class text_stagger_opts:
-    """ Text stagger options"""
-    # ImVec2 pos;    /* original C++ signature */
-    pos: ImVec2              # Base position for text
-    # int    effect;    /* original C++ signature */
-    effect: int              # text_stagger_effect
-    # float  char_delay;    /* original C++ signature */
-    char_delay: float        # Delay between each character (seconds)
-    # float  char_duration;    /* original C++ signature */
-    char_duration: float     # Duration of each character's animation (seconds)
-    # float  effect_intensity;    /* original C++ signature */
-    effect_intensity: float  # Intensity of effect (pixels for slide, degrees for rotate, scale factor)
-    # ease_desc ease;    /* original C++ signature */
-    ease: ease_desc          # Easing for character animation
-    # ImU32  color;    /* original C++ signature */
-    color: ImU32             # Text color
-    # ImFont* font;    /* original C++ signature */
-    font: ImFont             # Font to use (None = current)
-    # float  font_scale;    /* original C++ signature */
-    font_scale: float        # Font scale multiplier
-    # float  letter_spacing;    /* original C++ signature */
-    letter_spacing: float    # Extra spacing between characters
-
-    # text_stagger_opts()    /* original C++ signature */
-    # 		: pos(0, 0), effect(text_fx_fade), char_delay(0.05f), char_duration(0.3f),
-    # 		  effect_intensity(20.0f), ease(ease_preset(ease_out_cubic)),
-    # 		  color(IM_COL32_WHITE), font(nullptr), font_scale(1.0f), letter_spacing(0.0f) {}
-    def __init__(self) -> None:
-        pass
-
-# void text_stagger(ImGuiID id, const char* text, float progress, text_stagger_opts const& opts = text_stagger_opts());    /* original C++ signature */
-def text_stagger(
-    id: int,
-    text: str,
-    progress: float,
-    opts: Optional[text_stagger_opts] = None
-    ) -> None:
-    """ Render text with per-character stagger animation
 
 
-    Python bindings defaults:
-        If opts is None, then its default value will be: text_stagger_opts()
-    """
-    pass
-
-# float text_stagger_width(const char* text, text_stagger_opts const& opts = text_stagger_opts());    /* original C++ signature */
-def text_stagger_width(
-    text: str,
-    opts: Optional[text_stagger_opts] = None
-    ) -> float:
-    """ Get text width for layout calculations
 
 
-    Python bindings defaults:
-        If opts is None, then its default value will be: text_stagger_opts()
-    """
-    pass
-
-# float text_stagger_duration(const char* text, text_stagger_opts const& opts = text_stagger_opts());    /* original C++ signature */
-def text_stagger_duration(
-    text: str,
-    opts: Optional[text_stagger_opts] = None
-    ) -> float:
-    """ Get total animation duration for text (accounts for stagger delays)
-
-
-    Python bindings defaults:
-        If opts is None, then its default value will be: text_stagger_opts()
-    """
-    pass
 
 # ----------------------------------------------------
-# Noise Channels - Perlin/Simplex noise for organic movement
+# Noise Channels - Perlin/Simplex noise for organic movement [C++ only]
 # ----------------------------------------------------
 
-class noise_type(enum.IntEnum):
-    """ Noise types"""
-    # noise_perlin = 0,            /* original C++ signature */
-    noise_perlin = enum.auto()  # (= 0)  # Classic Perlin noise
-    # noise_simplex,               /* original C++ signature */
-    noise_simplex = enum.auto() # (= 1)  # Simplex noise (faster, fewer artifacts)
-    # noise_value,                 /* original C++ signature */
-    noise_value = enum.auto()   # (= 2)  # Value noise (blocky)
-    # noise_worley                 /* original C++ signature */
-    noise_worley = enum.auto()  # (= 3)  # Worley/cellular noise
 
-class noise_opts:
-    """ Noise options"""
-    # int   type;    /* original C++ signature */
-    type: int           # noise_type
-    # int   octaves;    /* original C++ signature */
-    octaves: int        # Number of octaves for fractal noise (1-8)
-    # float persistence;    /* original C++ signature */
-    persistence: float  # Amplitude multiplier per octave (0.0-1.0)
-    # float lacunarity;    /* original C++ signature */
-    lacunarity: float   # Frequency multiplier per octave (typically 2.0)
-    # int   seed;    /* original C++ signature */
-    seed: int           # Random seed for noise generation
-
-    # noise_opts()    /* original C++ signature */
-    # 		: type(noise_perlin), octaves(4), persistence(0.5f), lacunarity(2.0f), seed(0) {}
-    def __init__(self) -> None:
-        pass
 
 # Sample noise at a point (returns value in [-1, 1])
-# float  noise_2d(float x, float y, noise_opts const& opts = noise_opts());                        /* original C++ signature */
-def noise_2d(x: float, y: float, opts: Optional[noise_opts] = None) -> float:
-    """Python bindings defaults:
-        If opts is None, then its default value will be: noise_opts()
-
-     2D noise
-    """
-    pass
-# float  noise_3d(float x, float y, float z, noise_opts const& opts = noise_opts());            /* original C++ signature */
-def noise_3d(
-    x: float,
-    y: float,
-    z: float,
-    opts: Optional[noise_opts] = None
-    ) -> float:
-    """Python bindings defaults:
-        If opts is None, then its default value will be: noise_opts()
-
-     3D noise
-    """
-    pass
 
 # Animated noise channels - continuous noise that evolves over time
-# float  noise_channel_float(ImGuiID id, float frequency, float amplitude, noise_opts const& opts, float dt);      /* original C++ signature */
-def noise_channel_float(
-    id: int,
-    frequency: float,
-    amplitude: float,
-    opts: noise_opts,
-    dt: float
-    ) -> float:
-    """ 1D animated noise"""
-    pass
-# ImVec2 noise_channel_vec2(ImGuiID id, ImVec2 frequency, ImVec2 amplitude, noise_opts const& opts, float dt);     /* original C++ signature */
-def noise_channel_vec2(
-    id: int,
-    frequency: ImVec2Like,
-    amplitude: ImVec2Like,
-    opts: noise_opts,
-    dt: float
-    ) -> ImVec2:
-    """ 2D animated noise"""
-    pass
-# ImVec4 noise_channel_vec4(ImGuiID id, ImVec4 frequency, ImVec4 amplitude, noise_opts const& opts, float dt);     /* original C++ signature */
-def noise_channel_vec4(
-    id: int,
-    frequency: ImVec4Like,
-    amplitude: ImVec4Like,
-    opts: noise_opts,
-    dt: float
-    ) -> ImVec4:
-    """ 4D animated noise"""
-    pass
-# ImVec4 noise_channel_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float frequency, noise_opts const& opts, int color_space, float dt);     /* original C++ signature */
-def noise_channel_color(
-    id: int,
-    base_color: ImVec4Like,
-    amplitude: ImVec4Like,
-    frequency: float,
-    opts: noise_opts,
-    color_space: int,
-    dt: float
-    ) -> ImVec4:
-    """ Animated color noise in specified color space"""
-    pass
 
 # Convenience: smooth random movement (like wiggle but using noise)
-# float  smooth_noise_float(ImGuiID id, float amplitude, float speed, float dt);                              /* original C++ signature */
-def smooth_noise_float(id: int, amplitude: float, speed: float, dt: float) -> float:
-    """ Simple 1D smooth noise"""
-    pass
-# ImVec2 smooth_noise_vec2(ImGuiID id, ImVec2 amplitude, float speed, float dt);                        /* original C++ signature */
-def smooth_noise_vec2(
-    id: int,
-    amplitude: ImVec2Like,
-    speed: float,
-    dt: float
-    ) -> ImVec2:
-    """ Simple 2D smooth noise"""
-    pass
-# ImVec4 smooth_noise_vec4(ImGuiID id, ImVec4 amplitude, float speed, float dt);                        /* original C++ signature */
-def smooth_noise_vec4(
-    id: int,
-    amplitude: ImVec4Like,
-    speed: float,
-    dt: float
-    ) -> ImVec4:
-    """ Simple 4D smooth noise"""
-    pass
-# ImVec4 smooth_noise_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float speed, int color_space, float dt);     /* original C++ signature */
-def smooth_noise_color(
-    id: int,
-    base_color: ImVec4Like,
-    amplitude: ImVec4Like,
-    speed: float,
-    color_space: int,
-    dt: float
-    ) -> ImVec4:
-    """ Smooth noise for colors in specified color space"""
-    pass
 
 # ----------------------------------------------------
-# Style Interpolation - animate between ImGuiStyle themes
+# Style Interpolation - animate between ImGuiStyle themes [C++ only]
 # ----------------------------------------------------
 
 # Register a named style for interpolation
-# void style_register(ImGuiID style_id, ImGuiStyle const& style);                                       /* original C++ signature */
-def style_register(style_id: int, style: ImGuiStyle) -> None:
-    """ Register a style snapshot"""
-    pass
-# void style_register_current(ImGuiID style_id);                                                        /* original C++ signature */
-def style_register_current(style_id: int) -> None:
-    """ Register current ImGui style"""
-    pass
 
-# void style_blend(ImGuiID style_a, ImGuiID style_b, float t, int color_space = color_space::col_oklab);    /* original C++ signature */
-def style_blend(
-    style_a: int,
-    style_b: int,
-    t: float,
-    color_space: int = color_space.col_oklab
-    ) -> None:
-    """ Blend between two registered styles (result applied to ImGui::GetStyle())
-     Uses color_space for color blending mode (col_oklab recommended)
-    """
-    pass
 
-# void style_tween(ImGuiID id, ImGuiID target_style, float duration, ease_desc const& ease, int color_space, float dt);    /* original C++ signature */
-def style_tween(
-    id: int,
-    target_style: int,
-    duration: float,
-    ease: ease_desc,
-    color_space: int,
-    dt: float
-    ) -> None:
-    """ Tween between styles over time"""
-    pass
 
-# void style_blend_to(ImGuiID style_a, ImGuiID style_b, float t, ImGuiStyle* out_style, int color_space = color_space::col_oklab);    /* original C++ signature */
-def style_blend_to(
-    style_a: int,
-    style_b: int,
-    t: float,
-    out_style: ImGuiStyle,
-    color_space: int = color_space.col_oklab
-    ) -> None:
-    """ Get interpolated style without applying"""
-    pass
 
-# bool style_exists(ImGuiID style_id);    /* original C++ signature */
-def style_exists(style_id: int) -> bool:
-    """ Check if a style is registered"""
-    pass
 
-# void style_unregister(ImGuiID style_id);    /* original C++ signature */
-def style_unregister(style_id: int) -> None:
-    """ Remove a registered style"""
-    pass
 
 # ----------------------------------------------------
-# Gradient Interpolation - animate between color gradients
+# Gradient Interpolation - animate between color gradients [C++ only]
 # ----------------------------------------------------
 
-class gradient:
-    """ Color gradient with any number of stops (sorted by position)"""
-    # ImVector<float> positions;    /* original C++ signature */
-    positions: ImVector_float  # Positions along gradient [0,1], kept sorted
-    # ImVector<ImVec4> colors;    /* original C++ signature */
-    colors: ImVector_ImVec4    # Colors at each position (sRGB)
 
-    # gradient() {}    /* original C++ signature */
-    def __init__(self) -> None:
-        pass
 
-    # gradient& add(float position, ImVec4 color);    /* original C++ signature */
-    @overload
-    def add(self, position: float, color: ImVec4Like) -> gradient:
-        """ Add a stop to the gradient (automatically sorted by position)"""
-        pass
-    # gradient& add(float position, ImU32 color) {    /* original C++ signature */
-    # 		return add(position, ImGui::ColorConvertU32ToFloat4(color));
-    # 	}
-    @overload
-    def add(self, position: float, color: ImU32) -> gradient:
-        pass
-
-    # int stop_count() const { return positions.Size; }    /* original C++ signature */
-    def stop_count(self) -> int:
-        """ Get stop count"""
-        pass
-
-    # ImVec4 sample(float t, int color_space = color_space::col_oklab) const;    /* original C++ signature */
-    def sample(self, t: float, color_space: int = color_space.col_oklab) -> ImVec4:
-        """ Sample the gradient at position t [0,1]"""
-        pass
-
-    # Create common gradients
-    # static gradient solid(ImVec4 color);    /* original C++ signature */
-    @staticmethod
-    def solid(color: ImVec4Like) -> gradient:
-        pass
-    # static gradient two_color(ImVec4 start, ImVec4 end);    /* original C++ signature */
-    @staticmethod
-    def two_color(start: ImVec4Like, end: ImVec4Like) -> gradient:
-        pass
-    # static gradient three_color(ImVec4 start, ImVec4 mid, ImVec4 end);    /* original C++ signature */
-    @staticmethod
-    def three_color(start: ImVec4Like, mid: ImVec4Like, end: ImVec4Like) -> gradient:
-        pass
-
-# gradient gradient_lerp(gradient const& a, gradient const& b, float t, int color_space = color_space::col_oklab);    /* original C++ signature */
-def gradient_lerp(
-    a: gradient,
-    b: gradient,
-    t: float,
-    color_space: int = color_space.col_oklab
-    ) -> gradient:
-    """ Blend between two gradients"""
-    pass
-
-# gradient tween_gradient(ImGuiID id, ImGuiID channel_id, gradient const& target, float dur, ease_desc const& ez, int policy, int color_space, float dt);    /* original C++ signature */
-def tween_gradient(
-    id: int,
-    channel_id: int,
-    target: gradient,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    color_space: int,
-    dt: float
-    ) -> gradient:
-    """ Tween between gradients over time"""
-    pass
 
 # ----------------------------------------------------
-# Transform Interpolation - animate 2D transforms
+# Transform Interpolation - animate 2D transforms [C++ only]
 # ----------------------------------------------------
 
-class rotation_mode(enum.IntEnum):
-    """ Rotation interpolation modes"""
-    # rotation_shortest = 0,       /* original C++ signature */
-    rotation_shortest = enum.auto() # (= 0)  # Shortest path (default) - never rotates more than 180 degrees
-    # rotation_longest,            /* original C++ signature */
-    rotation_longest = enum.auto()  # (= 1)  # Longest path - always takes the long way around
-    # rotation_cw,                 /* original C++ signature */
-    rotation_cw = enum.auto()       # (= 2)  # Clockwise - always rotates clockwise (positive direction)
-    # rotation_ccw,                /* original C++ signature */
-    rotation_ccw = enum.auto()      # (= 3)  # Counter-clockwise - always rotates counter-clockwise
-    # rotation_direct              /* original C++ signature */
-    rotation_direct = enum.auto()   # (= 4)  # Direct lerp - no angle unwrapping, can cause spinning for large deltas
 
-class transform:
-    """ 2D transform (position, rotation, scale)"""
-    # ImVec2 position;    /* original C++ signature */
-    position: ImVec2  # Translation
-    # ImVec2 scale;    /* original C++ signature */
-    scale: ImVec2     # Scale (1,1 = identity)
-    # float rotation;    /* original C++ signature */
-    rotation: float   # Rotation in radians
 
-    # transform() : position(0, 0), scale(1, 1), rotation(0) {}    /* original C++ signature */
-    @overload
-    def __init__(self) -> None:
-        pass
-    # transform(ImVec2 pos, float rot = 0, ImVec2 scl = ImVec2(1, 1))    /* original C++ signature */
-    # 		: position(pos), scale(scl), rotation(rot) {}
-    @overload
-    def __init__(
-        self,
-        pos: ImVec2Like,
-        rot: float = 0,
-        scl: Optional[ImVec2Like] = None
-        ) -> None:
-        """Python bindings defaults:
-            If scl is None, then its default value will be: ImVec2(1, 1)
-        """
-        pass
 
-    # static transform identity() { return transform(); }    /* original C++ signature */
-    @staticmethod
-    def identity() -> transform:
-        """ Create identity transform"""
-        pass
 
-    # transform operator*(transform const& other) const;    /* original C++ signature */
-    def __mul__(self, other: transform) -> transform:
-        """ Combine transforms (this * other)"""
-        pass
-
-    # ImVec2 apply(ImVec2 point) const;    /* original C++ signature */
-    def apply(self, point: ImVec2Like) -> ImVec2:
-        """ Apply transform to a point"""
-        pass
-
-    # transform inverse() const;    /* original C++ signature */
-    def inverse(self) -> transform:
-        """ Get inverse transform"""
-        pass
-
-# transform transform_lerp(transform const& a, transform const& b, float t, int rotation_mode = rotation_mode::rotation_shortest);    /* original C++ signature */
-def transform_lerp(
-    a: transform,
-    b: transform,
-    t: float,
-    rotation_mode: int = rotation_mode.rotation_shortest
-    ) -> transform:
-    """ Blend between two transforms with rotation interpolation"""
-    pass
-
-# transform tween_transform(ImGuiID id, ImGuiID channel_id, transform const& target, float dur, ease_desc const& ez, int policy, int rotation_mode, float dt);    /* original C++ signature */
-def tween_transform(
-    id: int,
-    channel_id: int,
-    target: transform,
-    dur: float,
-    ez: ease_desc,
-    policy: int,
-    rotation_mode: int,
-    dt: float
-    ) -> transform:
-    """ Tween between transforms over time"""
-    pass
-
-# transform transform_from_matrix(float m00, float m01, float m10, float m11, float tx, float ty);    /* original C++ signature */
-def transform_from_matrix(
-    m00: float,
-    m01: float,
-    m10: float,
-    m11: float,
-    tx: float,
-    ty: float
-    ) -> transform:
-    """ Decompose a 3x2 matrix into transform components"""
-    pass
 
 
 # ============================================================
@@ -1884,541 +823,33 @@ class spring_params:
         pass
 
 # ----------------------------------------------------
-# Repeat with Variation - per-loop parameter changes
+# Repeat with Variation - per-loop parameter changes [C++ only]
 # ----------------------------------------------------
 
-class variation_mode(enum.IntEnum):
-    """ Variation modes for repeat animations"""
-    # var_none = 0,           /* original C++ signature */
-    var_none = enum.auto()       # (= 0)  # No variation
-    # var_increment,          /* original C++ signature */
-    var_increment = enum.auto()  # (= 1)  # Add amount each iteration
-    # var_decrement,          /* original C++ signature */
-    var_decrement = enum.auto()  # (= 2)  # Subtract amount each iteration
-    # var_multiply,           /* original C++ signature */
-    var_multiply = enum.auto()   # (= 3)  # Multiply by factor each iteration
-    # var_random,             /* original C++ signature */
-    var_random = enum.auto()     # (= 4)  # Random in range [-amount, +amount]
-    # var_random_abs,         /* original C++ signature */
-    var_random_abs = enum.auto() # (= 5)  # Random in range [0, amount]
-    # var_pingpong,           /* original C++ signature */
-    var_pingpong = enum.auto()   # (= 6)  # Alternate +/- each iteration
-    # var_callback            /* original C++ signature */
-    var_callback = enum.auto()   # (= 7)  # Use custom callback
 
 # Callback types for custom variation logic
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #else
-#
-# #endif
-#
-
-class variation_float:
-    """ Float variation"""
-    # int                     mode;    /* original C++ signature */
-    mode: int
-    # float                   amount;    /* original C++ signature */
-    amount: float
-    # float                   min_clamp;    /* original C++ signature */
-    min_clamp: float
-    # float                   max_clamp;    /* original C++ signature */
-    max_clamp: float
-    # unsigned int            seed;    /* original C++ signature */
-    seed: int  # 0 = global random, non-zero = deterministic
-    # variation_float_fn  callback;    /* original C++ signature */
-    callback: variation_float_fn
-    # void*                   user;    /* original C++ signature */
-    user: Any
-    # variation_float(int mode = int(), float amount = float(), float min_clamp = float(), float max_clamp = float(), variation_float_fn callback = variation_float_fn());    /* original C++ signature */
-    def __init__(
-        self,
-        mode: int = int(),
-        amount: float = float(),
-        min_clamp: float = float(),
-        max_clamp: float = float(),
-        callback: Optional[variation_float_fn] = None
-        ) -> None:
-        """Auto-generated default constructor with named params
 
 
-        Python bindings defaults:
-            If callback is None, then its default value will be: variation_float_fn()
-        """
-        pass
-
-class variation_int:
-    """ Int variation"""
-    # int                   mode;    /* original C++ signature */
-    mode: int
-    # int                   amount;    /* original C++ signature */
-    amount: int
-    # int                   min_clamp;    /* original C++ signature */
-    min_clamp: int
-    # int                   max_clamp;    /* original C++ signature */
-    max_clamp: int
-    # unsigned int          seed;    /* original C++ signature */
-    seed: int
-    # variation_int_fn  callback;    /* original C++ signature */
-    callback: variation_int_fn
-    # void*                 user;    /* original C++ signature */
-    user: Any
-    # variation_int(int mode = int(), int amount = int(), int min_clamp = int(), int max_clamp = int(), variation_int_fn callback = variation_int_fn());    /* original C++ signature */
-    def __init__(
-        self,
-        mode: int = int(),
-        amount: int = int(),
-        min_clamp: int = int(),
-        max_clamp: int = int(),
-        callback: Optional[variation_int_fn] = None
-        ) -> None:
-        """Auto-generated default constructor with named params
 
 
-        Python bindings defaults:
-            If callback is None, then its default value will be: variation_int_fn()
-        """
-        pass
 
-class variation_vec2:
-    """ Vec2 variation (global mode or per-axis)"""
-    # int                    mode;    /* original C++ signature */
-    mode: int           # Global mode (var_none = use per-axis)
-    # ImVec2                 amount;    /* original C++ signature */
-    amount: ImVec2
-    # ImVec2                 min_clamp;    /* original C++ signature */
-    min_clamp: ImVec2
-    # ImVec2                 max_clamp;    /* original C++ signature */
-    max_clamp: ImVec2
-    # unsigned int           seed;    /* original C++ signature */
-    seed: int
-    # variation_vec2_fn  callback;    /* original C++ signature */
-    callback: variation_vec2_fn
-    # void*                  user;    /* original C++ signature */
-    user: Any
-    # variation_float    x,     /* original C++ signature */
-    x: variation_float  # Per-axis (used when mode == var_none)
-    # y;    /* original C++ signature */
-    y: variation_float  # Per-axis (used when mode == var_none)
-    # variation_vec2(int mode = int(), ImVec2 amount = ImVec2(), ImVec2 min_clamp = ImVec2(), ImVec2 max_clamp = ImVec2(), variation_vec2_fn callback = variation_vec2_fn(), variation_float x = variation_float(), variation_float y = variation_float());    /* original C++ signature */
-    def __init__(
-        self,
-        mode: int = int(),
-        amount: Optional[ImVec2Like] = None,
-        min_clamp: Optional[ImVec2Like] = None,
-        max_clamp: Optional[ImVec2Like] = None,
-        callback: Optional[variation_vec2_fn] = None,
-        x: Optional[variation_float] = None,
-        y: Optional[variation_float] = None
-        ) -> None:
-        """Auto-generated default constructor with named params
-
-
-        Python bindings defaults:
-            If any of the params below is None, then its default value below will be used:
-                * amount: ImVec2()
-                * min_clamp: ImVec2()
-                * max_clamp: ImVec2()
-                * callback: variation_vec2_fn()
-                * x: variation_float()
-                * y: variation_float()
-        """
-        pass
-
-class variation_vec4:
-    """ Vec4 variation (global mode or per-axis)"""
-    # int                    mode;    /* original C++ signature */
-    mode: int
-    # ImVec4                 amount;    /* original C++ signature */
-    amount: ImVec4
-    # ImVec4                 min_clamp;    /* original C++ signature */
-    min_clamp: ImVec4
-    # ImVec4                 max_clamp;    /* original C++ signature */
-    max_clamp: ImVec4
-    # unsigned int           seed;    /* original C++ signature */
-    seed: int
-    # variation_vec4_fn  callback;    /* original C++ signature */
-    callback: variation_vec4_fn
-    # void*                  user;    /* original C++ signature */
-    user: Any
-    # variation_float    x,     /* original C++ signature */
-    x: variation_float  # Per-axis
-    # y,     /* original C++ signature */
-    y: variation_float  # Per-axis
-    # z,     /* original C++ signature */
-    z: variation_float  # Per-axis
-    # w;    /* original C++ signature */
-    w: variation_float  # Per-axis
-    # variation_vec4(int mode = int(), ImVec4 amount = ImVec4(), ImVec4 min_clamp = ImVec4(), ImVec4 max_clamp = ImVec4(), variation_vec4_fn callback = variation_vec4_fn(), variation_float x = variation_float(), variation_float y = variation_float(), variation_float z = variation_float(), variation_float w = variation_float());    /* original C++ signature */
-    def __init__(
-        self,
-        mode: int = int(),
-        amount: Optional[ImVec4Like] = None,
-        min_clamp: Optional[ImVec4Like] = None,
-        max_clamp: Optional[ImVec4Like] = None,
-        callback: Optional[variation_vec4_fn] = None,
-        x: Optional[variation_float] = None,
-        y: Optional[variation_float] = None,
-        z: Optional[variation_float] = None,
-        w: Optional[variation_float] = None
-        ) -> None:
-        """Auto-generated default constructor with named params
-
-
-        Python bindings defaults:
-            If any of the params below is None, then its default value below will be used:
-                * amount: ImVec4()
-                * min_clamp: ImVec4()
-                * max_clamp: ImVec4()
-                * callback: variation_vec4_fn()
-                * x: variation_float()
-                * y: variation_float()
-                * z: variation_float()
-                * w: variation_float()
-        """
-        pass
-
-class variation_color:
-    """ Color variation (global mode or per-channel)"""
-    # int                    mode;    /* original C++ signature */
-    mode: int
-    # ImVec4                 amount;    /* original C++ signature */
-    amount: ImVec4
-    # ImVec4                 min_clamp;    /* original C++ signature */
-    min_clamp: ImVec4
-    # ImVec4                 max_clamp;    /* original C++ signature */
-    max_clamp: ImVec4
-    # int                    color_space;    /* original C++ signature */
-    color_space: int             # col_oklab, etc.
-    # unsigned int           seed;    /* original C++ signature */
-    seed: int
-    # variation_vec4_fn  callback;    /* original C++ signature */
-    callback: variation_vec4_fn  # Returns ImVec4 color delta
-    # void*                  user;    /* original C++ signature */
-    user: Any
-    # variation_float    r,     /* original C++ signature */
-    r: variation_float           # Per-channel
-    # g,     /* original C++ signature */
-    g: variation_float           # Per-channel
-    # b,     /* original C++ signature */
-    b: variation_float           # Per-channel
-    # a;    /* original C++ signature */
-    a: variation_float           # Per-channel
-    # variation_color(int mode = int(), ImVec4 amount = ImVec4(), ImVec4 min_clamp = ImVec4(), ImVec4 max_clamp = ImVec4(), int color_space = int(), variation_vec4_fn callback = variation_vec4_fn(), variation_float r = variation_float(), variation_float g = variation_float(), variation_float b = variation_float(), variation_float a = variation_float());    /* original C++ signature */
-    def __init__(
-        self,
-        mode: int = int(),
-        amount: Optional[ImVec4Like] = None,
-        min_clamp: Optional[ImVec4Like] = None,
-        max_clamp: Optional[ImVec4Like] = None,
-        color_space: int = int(),
-        callback: Optional[variation_vec4_fn] = None,
-        r: Optional[variation_float] = None,
-        g: Optional[variation_float] = None,
-        b: Optional[variation_float] = None,
-        a: Optional[variation_float] = None
-        ) -> None:
-        """Auto-generated default constructor with named params
-
-
-        Python bindings defaults:
-            If any of the params below is None, then its default value below will be used:
-                * amount: ImVec4()
-                * min_clamp: ImVec4()
-                * max_clamp: ImVec4()
-                * callback: variation_vec4_fn()
-                * r: variation_float()
-                * g: variation_float()
-                * b: variation_float()
-                * a: variation_float()
-        """
-        pass
 
 # ----------------------------------------------------
-# Variation helper functions (C11-style inline)
+# Variation helper functions (C11-style inline) [C++ only]
 # ----------------------------------------------------
 
 # Float variation helpers
-# static inline variation_float varf_none(void) {    /* original C++ signature */
-# 	variation_float v = {var_none, 0, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def varf_none() -> variation_float:
-    pass
-# static inline variation_float varf_inc(float amt) {    /* original C++ signature */
-# 	variation_float v = {var_increment, amt, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def varf_inc(amt: float) -> variation_float:
-    pass
-# static inline variation_float varf_dec(float amt) {    /* original C++ signature */
-# 	variation_float v = {var_decrement, amt, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def varf_dec(amt: float) -> variation_float:
-    pass
-# static inline variation_float varf_mul(float f) {    /* original C++ signature */
-# 	variation_float v = {var_multiply, f, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def varf_mul(f: float) -> variation_float:
-    pass
-# static inline variation_float varf_rand(float r) {    /* original C++ signature */
-# 	variation_float v = {var_random, r, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def varf_rand(r: float) -> variation_float:
-    pass
-# static inline variation_float varf_rand_abs(float r) {    /* original C++ signature */
-# 	variation_float v = {var_random_abs, r, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def varf_rand_abs(r: float) -> variation_float:
-    pass
-# static inline variation_float varf_pingpong(float amt) {    /* original C++ signature */
-# 	variation_float v = {var_pingpong, amt, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def varf_pingpong(amt: float) -> variation_float:
-    pass
-# static inline variation_float varf_fn(variation_float_fn fn, void* user) {    /* original C++ signature */
-# 	variation_float v = {var_callback, 0, -FLT_MAX, FLT_MAX, 0, fn, user};
-# 	return v;
-# }
-def varf_fn(fn: variation_float_fn, user: Any) -> variation_float:
-    pass
-# static inline variation_float varf_clamp(variation_float v, float mn, float mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
-def varf_clamp(v: variation_float, mn: float, mx: float) -> variation_float:
-    pass
-# static inline variation_float varf_seed(variation_float v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
-def varf_seed(v: variation_float, s: int) -> variation_float:
-    pass
 
 # Int variation helpers
-# static inline variation_int vari_none(void) {    /* original C++ signature */
-# 	variation_int v = {var_none, 0, INT_MIN, INT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def vari_none() -> variation_int:
-    pass
-# static inline variation_int vari_inc(int amt) {    /* original C++ signature */
-# 	variation_int v = {var_increment, amt, INT_MIN, INT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def vari_inc(amt: int) -> variation_int:
-    pass
-# static inline variation_int vari_dec(int amt) {    /* original C++ signature */
-# 	variation_int v = {var_decrement, amt, INT_MIN, INT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def vari_dec(amt: int) -> variation_int:
-    pass
-# static inline variation_int vari_rand(int r) {    /* original C++ signature */
-# 	variation_int v = {var_random, r, INT_MIN, INT_MAX, 0, 0, 0};
-# 	return v;
-# }
-def vari_rand(r: int) -> variation_int:
-    pass
-# static inline variation_int vari_fn(variation_int_fn fn, void* user) {    /* original C++ signature */
-# 	variation_int v = {var_callback, 0, INT_MIN, INT_MAX, 0, fn, user};
-# 	return v;
-# }
-def vari_fn(fn: variation_int_fn, user: Any) -> variation_int:
-    pass
-# static inline variation_int vari_clamp(variation_int v, int mn, int mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
-def vari_clamp(v: variation_int, mn: int, mx: int) -> variation_int:
-    pass
-# static inline variation_int vari_seed(variation_int v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
-def vari_seed(v: variation_int, s: int) -> variation_int:
-    pass
 
 # Vec2 variation helpers (global)
-# static inline variation_vec2 varv2_none(void) {    /* original C++ signature */
-# 	variation_vec2 v = {var_none, {0,0}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
-def varv2_none() -> variation_vec2:
-    pass
-# static inline variation_vec2 varv2_inc(float x, float y) {    /* original C++ signature */
-# 	variation_vec2 v = {var_increment, {x,y}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
-def varv2_inc(x: float, y: float) -> variation_vec2:
-    pass
-# static inline variation_vec2 varv2_dec(float x, float y) {    /* original C++ signature */
-# 	variation_vec2 v = {var_decrement, {x,y}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
-def varv2_dec(x: float, y: float) -> variation_vec2:
-    pass
-# static inline variation_vec2 varv2_mul(float f) {    /* original C++ signature */
-# 	variation_vec2 v = {var_multiply, {f,f}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
-def varv2_mul(f: float) -> variation_vec2:
-    pass
-# static inline variation_vec2 varv2_rand(float x, float y) {    /* original C++ signature */
-# 	variation_vec2 v = {var_random, {x,y}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
-def varv2_rand(x: float, y: float) -> variation_vec2:
-    pass
-# static inline variation_vec2 varv2_fn(variation_vec2_fn fn, void* user) {    /* original C++ signature */
-# 	variation_vec2 v = {var_callback, {0,0}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, fn, user, {0}, {0}};
-# 	return v;
-# }
-def varv2_fn(fn: variation_vec2_fn, user: Any) -> variation_vec2:
-    pass
 # Vec2 per-axis helper
-# static inline variation_vec2 varv2_axis(variation_float vx, variation_float vy) {    /* original C++ signature */
-# 	variation_vec2 v = {var_none, {0,0}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, vx, vy};
-# 	return v;
-# }
-def varv2_axis(vx: variation_float, vy: variation_float) -> variation_vec2:
-    pass
-# static inline variation_vec2 varv2_clamp(variation_vec2 v, ImVec2 mn, ImVec2 mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
-def varv2_clamp(v: variation_vec2, mn: ImVec2Like, mx: ImVec2Like) -> variation_vec2:
-    pass
-# static inline variation_vec2 varv2_seed(variation_vec2 v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
-def varv2_seed(v: variation_vec2, s: int) -> variation_vec2:
-    pass
 
 # Vec4 variation helpers (global)
-# static inline variation_vec4 varv4_none(void) {    /* original C++ signature */
-# 	variation_vec4 v = {var_none, {0,0,0,0}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varv4_none() -> variation_vec4:
-    pass
-# static inline variation_vec4 varv4_inc(float x, float y, float z, float w) {    /* original C++ signature */
-# 	variation_vec4 v = {var_increment, {x,y,z,w}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varv4_inc(x: float, y: float, z: float, w: float) -> variation_vec4:
-    pass
-# static inline variation_vec4 varv4_dec(float x, float y, float z, float w) {    /* original C++ signature */
-# 	variation_vec4 v = {var_decrement, {x,y,z,w}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varv4_dec(x: float, y: float, z: float, w: float) -> variation_vec4:
-    pass
-# static inline variation_vec4 varv4_mul(float f) {    /* original C++ signature */
-# 	variation_vec4 v = {var_multiply, {f,f,f,f}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varv4_mul(f: float) -> variation_vec4:
-    pass
-# static inline variation_vec4 varv4_rand(float x, float y, float z, float w) {    /* original C++ signature */
-# 	variation_vec4 v = {var_random, {x,y,z,w}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varv4_rand(x: float, y: float, z: float, w: float) -> variation_vec4:
-    pass
-# static inline variation_vec4 varv4_fn(variation_vec4_fn fn, void* user) {    /* original C++ signature */
-# 	variation_vec4 v = {var_callback, {0,0,0,0}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, fn, user, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varv4_fn(fn: variation_vec4_fn, user: Any) -> variation_vec4:
-    pass
 # Vec4 per-axis helper
-# static inline variation_vec4 varv4_axis(variation_float vx, variation_float vy, variation_float vz, variation_float vw) {    /* original C++ signature */
-# 	variation_vec4 v = {var_none, {0,0,0,0}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, vx, vy, vz, vw};
-# 	return v;
-# }
-def varv4_axis(
-    vx: variation_float,
-    vy: variation_float,
-    vz: variation_float,
-    vw: variation_float
-    ) -> variation_vec4:
-    pass
-# static inline variation_vec4 varv4_clamp(variation_vec4 v, ImVec4 mn, ImVec4 mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
-def varv4_clamp(v: variation_vec4, mn: ImVec4Like, mx: ImVec4Like) -> variation_vec4:
-    pass
-# static inline variation_vec4 varv4_seed(variation_vec4 v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
-def varv4_seed(v: variation_vec4, s: int) -> variation_vec4:
-    pass
 
 # Color variation helpers (global)
-# static inline variation_color varc_none(void) {    /* original C++ signature */
-# 	variation_color v = {var_none, {0,0,0,0}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varc_none() -> variation_color:
-    pass
-# static inline variation_color varc_inc(float r, float g, float b, float a) {    /* original C++ signature */
-# 	variation_color v = {var_increment, {r,g,b,a}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varc_inc(r: float, g: float, b: float, a: float) -> variation_color:
-    pass
-# static inline variation_color varc_dec(float r, float g, float b, float a) {    /* original C++ signature */
-# 	variation_color v = {var_decrement, {r,g,b,a}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varc_dec(r: float, g: float, b: float, a: float) -> variation_color:
-    pass
-# static inline variation_color varc_mul(float f) {    /* original C++ signature */
-# 	variation_color v = {var_multiply, {f,f,f,1}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varc_mul(f: float) -> variation_color:
-    pass
-# static inline variation_color varc_rand(float r, float g, float b, float a) {    /* original C++ signature */
-# 	variation_color v = {var_random, {r,g,b,a}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varc_rand(r: float, g: float, b: float, a: float) -> variation_color:
-    pass
-# static inline variation_color varc_fn(variation_vec4_fn fn, void* user) {    /* original C++ signature */
-# 	variation_color v = {var_callback, {0,0,0,0}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, fn, user, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
-def varc_fn(fn: variation_vec4_fn, user: Any) -> variation_color:
-    pass
 # Color per-channel helper
-# static inline variation_color varc_channel(variation_float vr, variation_float vg, variation_float vb, variation_float va) {    /* original C++ signature */
-# 	variation_color v = {var_none, {0,0,0,0}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, vr, vg, vb, va};
-# 	return v;
-# }
-def varc_channel(
-    vr: variation_float,
-    vg: variation_float,
-    vb: variation_float,
-    va: variation_float
-    ) -> variation_color:
-    pass
-# static inline variation_color varc_space(variation_color v, int space) {    /* original C++ signature */
-# 	v.color_space = space; return v;
-# }
-def varc_space(v: variation_color, space: int) -> variation_color:
-    pass
-# static inline variation_color varc_clamp(variation_color v, ImVec4 mn, ImVec4 mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
-def varc_clamp(v: variation_color, mn: ImVec4Like, mx: ImVec4Like) -> variation_color:
-    pass
-# static inline variation_color varc_seed(variation_color v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
-def varc_seed(v: variation_color, s: int) -> variation_color:
-    pass
 
 # Forward declarations
 
@@ -2491,132 +922,11 @@ class clip:
         pass
 
     # Keyframes with repeat variation (value changes per loop iteration)
-    # clip& key_float_var(ImGuiID channel, float time, float value, variation_float const& var, int ease_type = ease_type::ease_linear, float const* bezier4 = nullptr);    /* original C++ signature */
-    def key_float_var(
-        self,
-        channel: int,
-        time: float,
-        value: float,
-        var: variation_float,
-        ease_type: int = ease_type.ease_linear
-        ) -> clip:
-        pass
-    # clip& key_vec2_var(ImGuiID channel, float time, ImVec2 value, variation_vec2 const& var, int ease_type = ease_type::ease_linear, float const* bezier4 = nullptr);    /* original C++ signature */
-    def key_vec2_var(
-        self,
-        channel: int,
-        time: float,
-        value: ImVec2Like,
-        var: variation_vec2,
-        ease_type: int = ease_type.ease_linear
-        ) -> clip:
-        pass
-    # clip& key_vec4_var(ImGuiID channel, float time, ImVec4 value, variation_vec4 const& var, int ease_type = ease_type::ease_linear, float const* bezier4 = nullptr);    /* original C++ signature */
-    def key_vec4_var(
-        self,
-        channel: int,
-        time: float,
-        value: ImVec4Like,
-        var: variation_vec4,
-        ease_type: int = ease_type.ease_linear
-        ) -> clip:
-        pass
-    # clip& key_int_var(ImGuiID channel, float time, int value, variation_int const& var, int ease_type = ease_type::ease_linear);    /* original C++ signature */
-    def key_int_var(
-        self,
-        channel: int,
-        time: float,
-        value: int,
-        var: variation_int,
-        ease_type: int = ease_type.ease_linear
-        ) -> clip:
-        pass
-    # clip& key_color_var(ImGuiID channel, float time, ImVec4 value, variation_color const& var, int color_space = color_space::col_oklab, int ease_type = ease_type::ease_linear, float const* bezier4 = nullptr);    /* original C++ signature */
-    def key_color_var(
-        self,
-        channel: int,
-        time: float,
-        value: ImVec4Like,
-        var: variation_color,
-        color_space: int = color_space.col_oklab,
-        ease_type: int = ease_type.ease_linear
-        ) -> clip:
-        pass
 
-    # clip& key_float_spring(ImGuiID channel, float time, float target, spring_params const& spring);    /* original C++ signature */
-    def key_float_spring(
-        self,
-        channel: int,
-        time: float,
-        target: float,
-        spring: spring_params
-        ) -> clip:
-        """ Spring-based keyframe (float only)"""
-        pass
 
     # Anchor-relative keyframes (values resolved relative to window/viewport at get time)
-    # clip& key_float_rel(ImGuiID channel, float time, float percent, float px_bias, int anchor_space, int axis, int ease_type = ease_type::ease_linear, float const* bezier4 = nullptr);    /* original C++ signature */
-    def key_float_rel(
-        self,
-        channel: int,
-        time: float,
-        percent: float,
-        px_bias: float,
-        anchor_space: int,
-        axis: int,
-        ease_type: int = ease_type.ease_linear
-        ) -> clip:
-        pass
-    # clip& key_vec2_rel(ImGuiID channel, float time, ImVec2 percent, ImVec2 px_bias, int anchor_space, int ease_type = ease_type::ease_linear, float const* bezier4 = nullptr);    /* original C++ signature */
-    def key_vec2_rel(
-        self,
-        channel: int,
-        time: float,
-        percent: ImVec2Like,
-        px_bias: ImVec2Like,
-        anchor_space: int,
-        ease_type: int = ease_type.ease_linear
-        ) -> clip:
-        pass
-    # clip& key_vec4_rel(ImGuiID channel, float time, ImVec4 percent, ImVec4 px_bias, int anchor_space, int ease_type = ease_type::ease_linear, float const* bezier4 = nullptr);    /* original C++ signature */
-    def key_vec4_rel(
-        self,
-        channel: int,
-        time: float,
-        percent: ImVec4Like,
-        px_bias: ImVec4Like,
-        anchor_space: int,
-        ease_type: int = ease_type.ease_linear
-        ) -> clip:
-        pass
-    # clip& key_color_rel(ImGuiID channel, float time, ImVec4 percent, ImVec4 px_bias, int color_space, int anchor_space, int ease_type = ease_type::ease_linear, float const* bezier4 = nullptr);    /* original C++ signature */
-    def key_color_rel(
-        self,
-        channel: int,
-        time: float,
-        percent: ImVec4Like,
-        px_bias: ImVec4Like,
-        color_space: int,
-        anchor_space: int,
-        ease_type: int = ease_type.ease_linear
-        ) -> clip:
-        pass
 
     # Timeline grouping - sequential and parallel keyframe blocks
-    # clip& seq_begin();      /* original C++ signature */
-    def seq_begin(self) -> clip:
-        """ Start sequential block (keyframes after seq_end start after this block)"""
-        pass
-    # clip& seq_end();    /* original C++ signature */
-    def seq_end(self) -> clip:
-        pass
-    # clip& par_begin();      /* original C++ signature */
-    def par_begin(self) -> clip:
-        """ Start parallel block (keyframes play at same time offset)"""
-        pass
-    # clip& par_end();    /* original C++ signature */
-    def par_end(self) -> clip:
-        pass
 
     # Timeline markers - callbacks at specific times during playback
     # clip& marker(float time, ImGuiID marker_id, marker_callback cb, void* user = nullptr);      /* original C++ signature */
@@ -2652,18 +962,6 @@ class clip:
         pass
 
     # Timing variation per loop iteration
-    # clip& set_duration_var(variation_float const& var);       /* original C++ signature */
-    def set_duration_var(self, var: variation_float) -> clip:
-        """ Vary clip duration per loop"""
-        pass
-    # clip& set_delay_var(variation_float const& var);          /* original C++ signature */
-    def set_delay_var(self, var: variation_float) -> clip:
-        """ Vary delay between loops"""
-        pass
-    # clip& set_timescale_var(variation_float const& var);      /* original C++ signature */
-    def set_timescale_var(self, var: variation_float) -> clip:
-        """ Vary playback speed per loop"""
-        pass
 
     # Callbacks
     # clip& on_begin(clip_callback cb, void* user = nullptr);    /* original C++ signature */
@@ -2846,44 +1144,10 @@ def play_stagger(clip_id: int, instance_id: int, index: int) -> instance:
     """ Play with stagger delay applied."""
     pass
 
-# Layering support - blend multiple animation instances
-# void layer_begin(ImGuiID instance_id);                                          /* original C++ signature */
-def layer_begin(instance_id: int) -> None:
-    """ Start blending into target instance."""
-    pass
-# void layer_add(instance inst, float weight);                                /* original C++ signature */
-def layer_add(inst: instance, weight: float) -> None:
-    """ Add source instance with weight."""
-    pass
-# void layer_end(ImGuiID instance_id);                                            /* original C++ signature */
-def layer_end(instance_id: int) -> None:
-    """ Finalize blending and normalize weights."""
-    pass
+# Layering support - blend multiple animation instances [C++ only]
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# inline std::pair<bool, float> get_blended_float(ImGuiID instance_id, ImGuiID channel) { float v = 0.f; bool ok = get_blended_float(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
-def get_blended_float(instance_id: int, channel: int) -> Tuple[bool, float]:
-    pass
-# inline std::pair<bool, ImVec2> get_blended_vec2(ImGuiID instance_id, ImGuiID channel) { ImVec2 v; bool ok = get_blended_vec2(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
-def get_blended_vec2(instance_id: int, channel: int) -> Tuple[bool, ImVec2]:
-    pass
-# inline std::pair<bool, ImVec4> get_blended_vec4(ImGuiID instance_id, ImGuiID channel) { ImVec4 v; bool ok = get_blended_vec4(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
-def get_blended_vec4(instance_id: int, channel: int) -> Tuple[bool, ImVec4]:
-    pass
-# inline std::pair<bool, int> get_blended_int(ImGuiID instance_id, ImGuiID channel) { int v = 0; bool ok = get_blended_int(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
-def get_blended_int(instance_id: int, channel: int) -> Tuple[bool, int]:
-    pass
-# #endif
-#
 
-# Persistence (optional)
-# result clip_save(ImGuiID clip_id, char const* path);    /* original C++ signature */
-def clip_save(clip_id: int, path: str) -> result:
-    pass
-# result clip_load(char const* path, ImGuiID* out_clip_id);    /* original C++ signature */
-def clip_load(path: str, out_clip_id: ImGuiID) -> result:
-    pass
+# Persistence (optional) [C++ only]
 
 # ----------------------------------------------------
 # Usage notes (summary)
@@ -2905,15 +1169,6 @@ def clip_load(path: str, out_clip_id: ImGuiID) -> result:
 # ----------------------------------------------------
 # Demo and doc launchers (see im_anim_demo.cpp, im_anim_docs.cpp, im_anim_usecase.cpp)
 # ----------------------------------------------------
-# void ImAnimDemoWindow(bool create_window = true);    /* original C++ signature */
-def demo_window(create_window: bool = True) -> None:
-    pass
-# void ImAnimDocWindow(bool create_window = true);    /* original C++ signature */
-def doc_window(create_window: bool = True) -> None:
-    pass
-# void ImAnimUsecaseWindow(bool create_window = true);    /* original C++ signature */
-def usecase_window(create_window: bool = True) -> None:
-    pass
 # void ImAnimDemoBasicsWindow(bool create_window = true);    /* original C++ signature */
 def demo_basics_window(create_window: bool = True) -> None:
     pass
