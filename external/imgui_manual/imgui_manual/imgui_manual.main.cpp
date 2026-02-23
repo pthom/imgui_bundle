@@ -70,11 +70,6 @@ int main(int argc, char** argv)
         HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 13.f, faParams);
     };
 
-    runnerParams.callbacks.PostInit = [] {
-        // Remove ImGuiConfigFlags_DockingEnable from ConfigFlags
-        ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_DockingEnable;
-    };
-
     ImmApp::AddOnsParams addons;
     addons.withMarkdown = true;
     addons.withImplot = true;
