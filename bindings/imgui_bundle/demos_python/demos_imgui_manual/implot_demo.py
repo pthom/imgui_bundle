@@ -1,5 +1,10 @@
-# This file is a line-by-line transcription of implot_demo.cpp
-# (https://github.com/epezent/implot/blob/master/implot_demo.cpp)
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImPlot
+# -----------------------------------------------------------------------------
+# implot_demo.py is a port of implot_demo.cpp using the bindings provided
+# by Dear ImGui Bundle. It is not guaranteed to be up-to-date with the
+# latest version of the C++ code, but it should be close enough.
+###############################################################################
 import time
 from imgui_bundle import imgui, immapp, implot, imgui_ctx, ImVec4, ImVec2, IM_COL32
 import numpy as np

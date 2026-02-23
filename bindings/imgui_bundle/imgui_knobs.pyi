@@ -1,7 +1,12 @@
-"""Knobs for ImGui
-Python bindings for https://github.com/altschuler/imgui-knobs
-"""
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of imgui-knobs
+# -----------------------------------------------------------------------------
+# imgui_knobs.pyi: auto-generated bindings for imgui-knobs (Knobs for ImGui)
+# See https://github.com/altschuler/imgui-knobs
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 from typing import Tuple, Optional, overload
 import enum
 

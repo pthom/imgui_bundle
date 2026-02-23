@@ -1,12 +1,12 @@
-"""ImAnim: Animation Engine for Dear ImGui
-Python bindings for https://github.com/soufianekhiat/ImAnim
-
-ImAnim provides smooth animations with 30+ easing functions, keyframe clips,
-motion paths, and more. Core functions:
-- iam_tween_float/vec2/vec4/color: Animate values with easing
-- iam_update_begin_frame: Call after ImGui::NewFrame()
-- iam_clip_update: Update timeline animations (delta time)
-"""
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImAnim
+# -----------------------------------------------------------------------------
+# im_anim.pyi is the equivalent of im_anim.h, using the bindings provided
+# by Dear ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008
 from typing import Optional, Callable, Any, overload, Tuple
 from imgui_bundle.imgui import ImVec2, ImVec2Like, ImVec4, ImVec4Like, ImU32, ImFont, Style, ImVector_float, ImVector_ImVec4

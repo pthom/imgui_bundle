@@ -1,6 +1,12 @@
-"""Spinners for ImGui
-https://github.com/dalerank/imspinner
-"""
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of imspinner
+# -----------------------------------------------------------------------------
+# imspinner.pyi: auto-generated bindings for imspinner, which provides 
+# Spinners for ImGui. See https://github.com/dalerank/imspinner
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008
 import enum
 import math

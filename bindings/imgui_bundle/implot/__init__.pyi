@@ -1,7 +1,12 @@
-"""ImPlot: Immediate Mode Plotting for ImGui
-Python bindings for https://github.com/epezent/implot
-"""
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImPlot
+# -----------------------------------------------------------------------------
+# implot/__init__.pyi is the equivalent of implot.h, using the bindings
+# provided by Dear ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008, F821, F811
 from typing import Any, Optional, Tuple, List, overload
 import numpy as np

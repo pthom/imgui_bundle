@@ -1,7 +1,12 @@
-"""A toggle switch widget for Dear ImGui
-Python bindings for https://github.com/cmdwtf/imgui_toggle
-"""
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of imgui_toggle
+# -----------------------------------------------------------------------------
+# imgui_toggle.pyi: auto-generated bindings for imgui_toggle, 
+# a toggle switch widget for Dear ImGui (see https://github.com/cmdwtf/imgui_toggle)
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008
 from typing import Tuple, overload, Optional
 import enum

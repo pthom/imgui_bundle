@@ -1,7 +1,12 @@
-"""immvision: immediate image debugger and insights
-Python bindings for https://github.com/pthom/immvision.git
-"""
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle
+# -----------------------------------------------------------------------------
+# immvision.pyi: auto-generated bindings for ImmVision, an immediate image
+# debugger and insights tool. See https://github.com/pthom/immvision.git
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008
 from typing import List, Tuple, TypeAlias, Optional, overload
 import enum

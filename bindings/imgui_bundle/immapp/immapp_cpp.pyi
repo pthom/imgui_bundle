@@ -1,5 +1,13 @@
 """ImmApp: Immediate App Toolkit for ImGui Bundle"""
 
+###############################################################################
+# This file is a part of Dear ImGui Bundle
+# -----------------------------------------------------------------------------
+# ImmApp is an Immediate App Toolkit for ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008, F821
 from typing import Tuple, Optional, Callable, List, overload, Any
 import enum

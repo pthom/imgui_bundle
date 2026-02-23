@@ -2,6 +2,16 @@
 https://github.com/pthom/hello_imgui
 """
 
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of Hello ImGui
+# -----------------------------------------------------------------------------
+# hello_imgui.pyi is the equivalent of hello_imgui.h, using the bindings
+# provided by Dear ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
+
 # ruff: noqa: F811, B008, F821
 from typing import List, Any, Callable, Tuple, Optional, overload, Dict
 import numpy as np

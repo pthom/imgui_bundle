@@ -1,6 +1,12 @@
-"""A texture inspector tool for Dear ImGui
-https://github.com/andyborrell/imgui_tex_inspect
-"""
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of imgui_tex_inspect
+# -----------------------------------------------------------------------------
+# imgui_tex_inspect.pyi: auto-generated bindings for imgui_tex_inspect,
+# a texture inspector tool for Dear ImGui. See https://github.com/andyborrell/imgui_tex_inspect
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: F821, B008
 from typing import overload, Optional
 import enum

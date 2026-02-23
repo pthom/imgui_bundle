@@ -1,3 +1,12 @@
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of Dear ImGui
+# -----------------------------------------------------------------------------
+# imgui/__init__.pyi is the equivalent of imgui.h, using the bindings provided
+# by Dear ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008, E741
 from __future__ import annotations
 import sys
@@ -56,7 +65,6 @@ from .internal import (
     ImFontLoader,
     ImDrawTextFlags,
 )
-
 VoidPtr = Any
 
 FLT_MIN: float  # value defined by this module as the minimum acceptable C(++) float

@@ -1,6 +1,15 @@
 """ImCoolbar: A Cool bar for Dear ImGui
 Python bindings for https://github.com/aiekick/ImCoolBar
 """
+
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImCoolBar
+# -----------------------------------------------------------------------------
+# im_cool_bar.pyi: auto-generated bindings for ImCoolBar.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008
 import enum
 from typing import Optional

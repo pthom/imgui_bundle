@@ -1,8 +1,10 @@
-# This file is an almost line by line transcription of implot3d_demo.cpp
-# ( https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp )
-
-
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImPlot3D
+# -----------------------------------------------------------------------------
+# implot3d_demo.py is a port of implot3d_demo.cpp using the bindings
+# provided by Dear ImGui Bundle. It is not guaranteed to be up-to-date
+# with the latest version of the C++ code, but it should be close enough.
+###############################################################################
 from imgui_bundle import imgui, immapp, implot3d, imgui_ctx, ImVec4, ImVec2, IM_COL32
 from imgui_bundle.demos_python.demos_imgui_manual.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
 from imgui_bundle.demos_python.demo_utils.api_demos import set_hello_imgui_demo_assets_folder

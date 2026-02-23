@@ -1,7 +1,13 @@
-"""ImFileDialog: based on https://github.com/dfranx/ImFileDialog
-Thanks to dfranx (https://github.com/dfranx)
-"""
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImFileDialog
+# -----------------------------------------------------------------------------
+# im_file_dialog.pyi: auto-generated bindings for ImFileDialog.
+# based on https://github.com/dfranx/ImFileDialog
+# Thanks to dfranx (https://github.com/dfranx)
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: F821
 from __future__ import annotations
 from typing import List

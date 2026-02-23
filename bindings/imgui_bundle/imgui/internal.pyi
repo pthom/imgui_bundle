@@ -1,3 +1,12 @@
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of Dear ImGui
+# -----------------------------------------------------------------------------
+# imgui/internal.pyi is the equivalent of imgui_internal.h, using the
+# bindings provided by Dear ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: F403, F405, B008
 from typing import Any, Tuple, Optional, Callable, overload
 import enum

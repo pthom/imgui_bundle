@@ -1,3 +1,12 @@
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImGui Test Engine
+# -----------------------------------------------------------------------------
+# imgui/test_engine.pyi: auto-generated bindings for ImGui Test Engine.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
+
 """ImGui Test Engine python bindings
 
 Note: Integrating ImGui TestEngine directly from python, and without using HelloImGui and ImmApp is very difficult:

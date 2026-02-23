@@ -1,6 +1,12 @@
-"""ImPlot: Immediate Mode 3D Plotting for ImGui
-Python bindings for https://github.com/brenocq/implot3d
-"""
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImPlot3D
+# -----------------------------------------------------------------------------
+# implot3d/internal.pyi is the equivalent of implot3d_internal.h, using the
+# bindings provided by Dear ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: E741, B008
 from typing import Any, Optional, Tuple, overload
 import enum

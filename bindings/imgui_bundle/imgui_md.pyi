@@ -1,7 +1,15 @@
-"""Markdown for ImGui
-Python bindings for https://github.com/mekhontsev/imgui_md (with an additional custom wrapper)
-"""
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of imgui_md
+# -----------------------------------------------------------------------------
+# imgui_md.pyi: auto-generated bindings for imgui_md, a Markdown renderer
+# for ImGui.
+# See https://github.com/mekhontsev/imgui_md
+# Here, we also provide bindings for an additional wrapper, which is part of
+# ImGui Bundle: see external/imgui_md/imgui_md_wrapper
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008
 from typing import Optional, Callable
 from imgui_bundle.imgui import ImTextureID, ImVec2, ImVec4, ImFont

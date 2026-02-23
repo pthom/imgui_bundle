@@ -1,8 +1,11 @@
-"""ImAnim Demo - Showcases animation features with simple, readable examples.
-
-Covers: tweens, clips, oscillators, shake, paths, morphing, text along paths,
-stagger, gradients, transforms, resolved tweens, and layering.
-"""
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImAnim
+# -----------------------------------------------------------------------------
+# im_anim_demo_basics.py is a port of im_anim_demo_basics.cpp using the
+# bindings provided by Dear ImGui Bundle. It is not guaranteed to be
+# up-to-date with the latest version of the C++ code, but it should be
+# close enough.
+###############################################################################
 from imgui_bundle import imgui, im_anim as iam, immapp, ImVec2, ImVec4
 import math
 

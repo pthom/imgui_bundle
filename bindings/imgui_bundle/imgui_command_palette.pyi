@@ -1,6 +1,13 @@
-"""a Sublime Text or VSCode style command palette in ImGui
-https://github.com/hnOsmium0001/imgui-command-palette
-"""
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of imgui-command-palette
+# -----------------------------------------------------------------------------
+# imgui_command_palette.pyi: auto-generated bindings
+# imgui-command-palette is a Sublime Text or VSCode style command palette in ImGui
+# https://github.com/hnOsmium0001/imgui-command-palette
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 from typing import List, Callable
 import enum
 from imgui_bundle.imgui import ImFont, ImU32

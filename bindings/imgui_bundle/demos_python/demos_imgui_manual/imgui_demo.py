@@ -1,17 +1,9 @@
-# Port of imgui_demo.cpp
-#
 ###############################################################################
-#
-#              IMPORTANT
-#  This file is a port of imgui_demo.cpp to Python, using Dear ImGui Bundle.
-#
-#  The port was done once, based on version 1.90 WIP (Oct 2023).
-#  It is not guaranteed to be up-to-date with the latest version of the C++
-#  code, but it should be close enough.
-#
-#  Official source for this file:
-#  https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/imgui_demo.py
-#
+# This file is a part of Dear ImGui Bundle, NOT a part of Dear ImGui
+# -----------------------------------------------------------------------------
+# imgui_demo.py is a port of imgui_demo.cpp using the bindings provided
+# by Dear ImGui Bundle. It is not guaranteed to be up-to-date with the
+# latest version of the C++ code, but it should be close enough.
 ###############################################################################
 
 # fmt: off

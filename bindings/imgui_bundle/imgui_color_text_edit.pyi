@@ -1,6 +1,14 @@
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImGuiColorTextEdit
+# -----------------------------------------------------------------------------
+# imgui_color_text_edit.pyi: auto-generated bindings for ImGuiColorTextEdit,
+# ImGuiColorTextEdit can be found originally at https://github.com/BalazsJako/ImGuiColorTextEdit
+# In this bundle we use a fork: https://github.com/pthom/ImGuiColorTextEdit/tree/imgui_bundle
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 """
-Python port of ImGuiColorTextEdit: https://github.com/BalazsJako/ImGuiColorTextEdit
-
 Below is the readme from the project
 ====================================
 
