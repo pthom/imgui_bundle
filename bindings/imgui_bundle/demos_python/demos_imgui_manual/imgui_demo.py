@@ -10,8 +10,7 @@
 # mypy: disable_error_code=attr-defined
 # mypy: disable_error_code=no-untyped-call
 
-# dear imgui, v1.90 WIP
-# (demo code)
+# Originally ported from imgui_demo.cpp, v1.90
 # noqa: E701
 # noqa: E702
 # noqa: E501
