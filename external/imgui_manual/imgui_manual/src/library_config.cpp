@@ -10,9 +10,11 @@
 
 // Forward declarations for ImAnim demo windows
 void ImAnimDemoBasicsWindow(bool create_window);
+#ifdef IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS
 void ImAnimDemoWindow(bool create_window);
 void ImAnimDocWindow(bool create_window);
 void ImAnimUsecaseWindow(bool create_window);
+#endif
 
 namespace {
 
@@ -62,6 +64,7 @@ void ShowImAnimDemos(ImVec2 windowPos, ImVec2 windowSize)
             ImAnimDemoBasicsWindow(false);
             ImGui::EndTabItem();
         }
+#ifdef IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS
         if (ImGui::BeginTabItem("Demo"))
         {
             ImAnimDemoWindow(false);
@@ -77,6 +80,7 @@ void ShowImAnimDemos(ImVec2 windowPos, ImVec2 windowSize)
             ImAnimUsecaseWindow(false);
             ImGui::EndTabItem();
         }
+#endif
         ImGui::EndTabBar();
     }
     ImGui::End();
@@ -177,12 +181,14 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
                 {"im_anim_demo_basics", true, false,
                  "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_demo_basics.cpp",
                  "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_manual/im_anim_demo_basics.py"},
+#ifdef IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS
                 {"im_anim_demo", false, false,
                  "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_demo.cpp"},
                 {"im_anim_doc", false, false,
                  "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_doc.cpp"},
                 {"im_anim_usecase", false, false,
                  "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim_usecase.cpp"},
+#endif
                 {"im_anim", true, true,
                  "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim.h",
                  "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/im_anim.pyi"},
