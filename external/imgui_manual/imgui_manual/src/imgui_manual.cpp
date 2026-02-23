@@ -144,6 +144,8 @@ namespace
         ImVector<ZoneBoundings> AllZonesBoundings;
         int PreviousZoneSourceLine;
     };
+
+
     static DemoMarkersRegistry GDemoMarkersRegistry;
 
     bool DemoMarker_IsMouveHovering(int line_number)
