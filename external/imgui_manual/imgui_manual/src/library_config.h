@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <utility>
 #include <functional>
 #include "imgui.h"
 
@@ -28,7 +29,8 @@ struct LibraryConfig {
     std::vector<DemoFileInfo> files;            // Demo files for this library
     std::function<void()> frameSetup;           // Called each frame (e.g., iam_update_begin_frame)
     std::function<void(ImVec2 windowPos, ImVec2 windowSize)> showDemoWindow; // Shows the demo content
-    std::string mdIntro;                         // Markdown text with intro & links for the library, show in the top toolbar
+    std::string introText;                                       // Plain text intro for the library (e.g. "Dear ImGui")
+    std::vector<std::pair<std::string, std::string>> links;      // {label, url} pairs shown in the top toolbar
 };
 
 // Get all library configurations

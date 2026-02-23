@@ -19,6 +19,15 @@ void ImAnimUsecaseWindow(bool create_window);
 namespace
 {
 
+    void RenderLink(const char* text, const char* url) {
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.6f, 1.0f, 1.0f));
+        ImGui::TextUnformatted(text);
+        ImGui::PopStyleColor();
+        ImGui::SetItemTooltip("%s", url);
+        if (ImGui::IsItemClicked())
+            ImmApp::BrowseToUrl(url);
+    };
+
     bool                                GDemoMarker_FlagFollowSource = true;
     char                                GDemoMarker_CodeLookupInfo[1024] = {0};
 
@@ -207,9 +216,16 @@ namespace
 
         float w = ImGui::GetContentRegionAvail().x;
 
-        // Show library intro text (with links)
+        // Show library intro text and links
         const auto& lib = GetCurrentLibrary();
-        ImGuiMd::RenderUnindented(lib.mdIntro);
+        ImGui::TextUnformatted(lib.introText.c_str());
+        for (const auto& [label, url] : lib.links)
+        {
+            ImGui::SameLine(0, ImGui::CalcTextSize(" ").x);
+            ImGui::TextUnformatted("|");
+            ImGui::SameLine(0, ImGui::CalcTextSize(" ").x);
+            RenderLink(label.c_str(), url.c_str());
+        }
 
         // Limit the width of md intro to about half of the available space
         ImGui::SameLine(w * 0.5f);
@@ -235,15 +251,6 @@ namespace
 
     void ShowStatusBar()
     {
-        auto RenderLink = [](const char* text, const char* url) {
-            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.6f, 1.0f, 1.0f));
-            ImGui::TextUnformatted(text);
-            ImGui::PopStyleColor();
-            ImGui::SetItemTooltip("%s", url);
-            if (ImGui::IsItemClicked())
-                ImmApp::BrowseToUrl(url);
-        };
-
         // Scaling slider on the left
         ImGui::SetNextItemWidth(150.f); // one rare occasion where we set a fixed width for an item (not using EmSize), because it will change the full scale (and the slider size would vary!)
         ImGui::SliderFloat("Font scale  | ", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);

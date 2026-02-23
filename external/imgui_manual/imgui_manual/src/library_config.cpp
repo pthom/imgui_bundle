@@ -103,7 +103,14 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = ShowImGuiDemoWindow_AutoReopen;
-        cfg.mdIntro = "Dear ImGui | [Repository](https://github.com/ocornut/imgui) | [FAQ](https://github.com/ocornut/imgui/blob/master/docs/FAQ.md) | [Wiki](https://github.com/ocornut/imgui/wiki) | [dearimgui.com](https://www.dearimgui.com/) | [Dear ImGui Manual](https://traineq.org/ImGuiBundle/imgui_manual/)";
+        cfg.introText = "Dear ImGui";
+        cfg.links = {
+            {"Repository", "https://github.com/ocornut/imgui"},
+            {"FAQ", "https://github.com/ocornut/imgui/blob/master/docs/FAQ.md"},
+            {"Wiki", "https://github.com/ocornut/imgui/wiki"},
+            {"dearimgui.com", "https://www.dearimgui.com/"},
+            {"Dear ImGui Manual", "https://traineq.org/ImGuiBundle/imgui_manual/"},
+        };
         configs.push_back(std::move(cfg));
     }
 
@@ -127,7 +134,10 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             ImPlot::ShowDemoWindow_MaybeDocked(true, nullptr,
                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize, pos, size);
         };
-        cfg.mdIntro = "ImPlot - Immediate Mode Plotting for Dear ImGui | [Repository](https://github.com/epezent/implot)";
+        cfg.introText = "ImPlot - Immediate Mode Plotting for Dear ImGui";
+        cfg.links = {
+            {"Repository", "https://github.com/epezent/implot"},
+        };
         configs.push_back(std::move(cfg));
     }
 
@@ -151,7 +161,10 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             ImPlot3D::ShowDemoWindow_MaybeDocked(true, nullptr,
                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize, pos, size);
         };
-        cfg.mdIntro = "ImPlot3D - Immediate Mode 3D Plotting for Dear ImGui | [Repository](https://github.com/brenocq/implot3d/)";
+        cfg.introText = "ImPlot3D - Immediate Mode 3D Plotting for Dear ImGui";
+        cfg.links = {
+            {"Repository", "https://github.com/brenocq/implot3d/"},
+        };
         configs.push_back(std::move(cfg));
     }
 
@@ -179,7 +192,11 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             iam_clip_update(ImGui::GetIO().DeltaTime);
         };
         cfg.showDemoWindow = ShowImAnimDemos;
-        cfg.mdIntro = "ImAnim - Animation Engine for Dear ImGui | [Repository](https://github.com/soufianekhiat/ImAnim) | [Docs](https://github.com/soufianekhiat/ImAnim/tree/main/docs)";
+        cfg.introText = "ImAnim - Animation Engine for Dear ImGui";
+        cfg.links = {
+            {"Repository", "https://github.com/soufianekhiat/ImAnim"},
+            {"Docs", "https://github.com/soufianekhiat/ImAnim/tree/main/docs"},
+        };
         configs.push_back(std::move(cfg));
     }
 #endif // #ifdef IMGUI_BUNDLE_WITH_IMANIM
