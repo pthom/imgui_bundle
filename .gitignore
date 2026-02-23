@@ -1,5 +1,5 @@
 # Using https://github.com/github/gitignore/blob/master/Python.gitignore
-
+_plans/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
