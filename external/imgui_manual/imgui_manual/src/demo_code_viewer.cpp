@@ -559,7 +559,7 @@ void DemoCodeViewer_Show()
             g_searchBarOpen = true;
             g_searchBarJustOpened = true;
         }
-        ImGui::SetItemTooltip("Search (Ctrl+F)");
+        ImGui::SetItemTooltip("Search (Ctrl+F).\n You may also right click in the editor below.");
 
         ImGui::SameLine();
 
