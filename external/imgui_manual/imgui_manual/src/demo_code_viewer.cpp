@@ -611,15 +611,18 @@ void DemoCodeViewer_Show()
             SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
         }
         ImGui::SameLine();
+        bool canSearch = g_searchBuffer[0] != '\0' && !content.empty();
+        ImGui::BeginDisabled(!canSearch);
         ImGui::SetNextItemShortcut(ImGuiKey_F3, ImGuiInputFlags_RouteGlobal);
-        if (ImGui::SmallButton("Next"))
+        if (ImGui::SmallButton(ICON_FA_ARROW_DOWN))
             SearchNext(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
         ImGui::SetItemTooltip("Next match (F3)");
         ImGui::SameLine();
         ImGui::SetNextItemShortcut(ImGuiKey_F3 | ImGuiMod_Shift, ImGuiInputFlags_RouteGlobal);
-        if (ImGui::SmallButton("Prev"))
+        if (ImGui::SmallButton(ICON_FA_ARROW_UP))
             SearchPrev(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
         ImGui::SetItemTooltip("Previous match (Shift+F3)");
+        ImGui::EndDisabled();
         ImGui::SameLine();
         ImGui::SetNextItemShortcut(ImGuiKey_C | ImGuiMod_Alt, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Aa##casesensitive", &g_searchCaseSensitive);

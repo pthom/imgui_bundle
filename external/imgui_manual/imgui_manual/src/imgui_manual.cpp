@@ -251,19 +251,21 @@ namespace
 
     void ShowStatusBar()
     {
+        ImGui::BeginHorizontal("StatusBar", ImVec2(ImGui::GetContentRegionAvail().x, 0));
         // Scaling slider on the left
         ImGui::SetNextItemWidth(150.f); // one rare occasion where we set a fixed width for an item (not using EmSize), because it will change the full scale (and the slider size would vary!)
         ImGui::SliderFloat("Font scale  | ", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
-        ImGui::SameLine();
 
         // Reference to ImGui Bundle
-        ImGui::Text("Dear ImGui Manual - Made with");
-        ImGui::SameLine(0, ImGui::CalcTextSize(" ").x);
-        RenderLink("Dear ImGui Bundle", "https://github.com/pthom/imgui_bundle/");
-        ImGui::SameLine();
+        // ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.6f, 1.0f, 1.0f));
+        ImGui::Text("Dear ImGui Manual");
+        ImGui::SetItemTooltip(
+            "Dear ImGui Manual is developed as a part of Dear imGui Bundle\n"
+                "\nhttps://pthom.github.io/imgui_bundle/"
+            );
+        // ImGui::PopStyleColor();
 
         // Fps Idling, aligned to the right
-        ImGui::BeginHorizontal("AlignRight", ImVec2(ImGui::GetContentRegionAvail().x, 0));
         ImGui::Spring();
         {
             auto & params = *HelloImGui::GetRunnerParams();
@@ -272,7 +274,6 @@ namespace
             ImGui::Text("FPS: %.1f%s", HelloImGui::FrameRate(), idlingInfo);
         }
         ImGui::EndHorizontal();
-
     }
 
 } // anonymous namespace
