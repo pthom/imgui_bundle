@@ -48,15 +48,10 @@ manual_ems_serve: manual_ems_build
 manual_ems_clean:
     rm -rf build_manual_ems
 
-# deploy the manual to https://traineq.org/ImGuiBundle/imgui_manual/
-manual_ems_deploy: manual_ems_build
-    # demo_code files are served uncompressed (lazy-fetched via XHR — no pre-gzip)
-    rm -f build_manual_ems/bin/demo_code/*.gz
-    # .wasm/.js/.data are pre-gzipped for faster initial load
-    gzip -9 -k -f build_manual_ems/bin/*.wasm build_manual_ems/bin/index.data build_manual_ems/bin/*.js
-    # --delete removes stale files on the server (e.g. old .gz.gz leftovers)
-    rsync -vaz --delete build_manual_ems/bin/ pascal@traineq.org:HTML/ImGuiBundle/imgui_manual
-    echo "Manual deployed to https://traineq.org/ImGuiBundle/imgui_manual/ (add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL)"
+# deploy the manual to https://pthom.github.io/imgui_manual_online
+# (copies build output into the imgui_manual_online submodule, commits, and pushes)
+manual_ems_deploy_github: manual_ems_build
+    ./ci_scripts/manual_ems_deploy.sh
 
 # Reattach all submodules to branches and remotes (fork + official)
 ext_reattach:
