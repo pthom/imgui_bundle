@@ -647,17 +647,14 @@ void DemoCodeViewer_Show()
         }
     }
 
-    // Ctrl+F shortcut to toggle search bar
+    // Ctrl+F shortcut: open search bar, or re-focus input if already open
     if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiKey_F))
     {
-        g_searchBarOpen = !g_searchBarOpen;
-        if (g_searchBarOpen)
-        {
-            g_searchBarJustOpened = true;
-            std::string sel = editor.GetSelectedText();
-            if (!sel.empty())
-                snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
-        }
+        g_searchBarOpen = true;
+        g_searchBarJustOpened = true;
+        std::string sel = editor.GetSelectedText();
+        if (!sel.empty())
+            snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
     }
 
     // Ctrl+Shift+F shortcut to search in API declarations
