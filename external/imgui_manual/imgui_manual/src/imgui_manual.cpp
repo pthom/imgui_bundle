@@ -50,9 +50,9 @@ namespace
             }
         }
 
-        ImGui::SetNextItemShortcut(ImGuiKey_Escape, ImGuiInputFlags_RouteGlobal);
+        ImGui::SetNextItemShortcut(ImGuiKey_F1, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Follow source    ", &GDemoMarker_FlagFollowSource);
-        ImGui::SetItemTooltip("Press Escape to toggle this mode");
+        ImGui::SetItemTooltip("Press F1 to toggle this mode");
 
         ImGui::SameLine();
 
@@ -61,8 +61,6 @@ namespace
         ImGui::Text("%s", GDemoMarker_CodeLookupInfo);
         ImGui::PopStyleColor();
         ImGui::PopFont();
-
-        ImGui::Separator();
     }
 
     // -------------------------------------------------------------------
@@ -307,7 +305,7 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
         GImGuiDemoMarkerCallback = OnDemoMarkerCallback;
 
         // Disable close button on ImGui::ShowDemoWindow by default
-        gIsImGuiDemoWindow_no_close = true;
+        gIsImGuiDemoWindow_no_close = false;
 
         // Do this once only, to allow the user to change afterward.
         if (language.has_value())
