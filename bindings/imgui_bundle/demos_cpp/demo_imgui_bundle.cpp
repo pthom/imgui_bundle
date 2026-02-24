@@ -143,6 +143,10 @@ int main(int, char **)
     runnerParams.callbacks.ShowGui = showGui;
     runnerParams.useImGuiTestEngine = true;
 
+    runnerParams.callbacks.SetupImGuiConfig = [] {
+        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    };
+
     // ################################################################################################
     // Part 3: Run the app
     // ################################################################################################

@@ -135,6 +135,12 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     if "test_engine" in dir(imgui):  # only enable test engine if available (i.e. if imgui bundle was compiled with it)
         runner_params.use_imgui_test_engine = True
 
+    def setup_imgui_config() -> None:
+        imgui.get_io().config_flags |= imgui.ConfigFlags_.nav_enable_keyboard.value
+
+    runner_params.callbacks.setup_imgui_config = setup_imgui_config
+
+
     ################################################################################################
     # Part 3: Run the app
     ################################################################################################

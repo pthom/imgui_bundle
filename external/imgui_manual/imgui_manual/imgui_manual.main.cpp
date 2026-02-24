@@ -70,6 +70,10 @@ int main(int argc, char** argv)
         HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 13.f, faParams);
     };
 
+    runnerParams.callbacks.SetupImGuiConfig = [] {
+        ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+    };
+
     ImmApp::AddOnsParams addons;
     addons.withMarkdown = true;
     addons.withImplot = true;
