@@ -40,7 +40,8 @@ namespace
     int g_pendingScrollLine = -1;
     std::string g_pendingScrollFile;
     std::string g_pendingScrollSection;  // section name from IMGUI_DEMO_MARKER
-    bool g_showPython = false;  // Global toggle for C++/Python view
+    bool g_showPython = false;      // Effective display state (may be temporarily overridden by Follow Source)
+    bool g_userPrefPython = false;  // User's manual C++/Python preference (radio button)
 
     // Search state
     bool g_searchBarOpen = false;
@@ -405,8 +406,8 @@ namespace
 }
 
 int DemoCodeViewer_GetCurrentFileIndex() { return g_currentFileIndex; }
-bool DemoCodeViewer_GetShowPython() { return g_showPython; }
-void DemoCodeViewer_SetShowPython(bool show) { g_showPython = show; }
+bool DemoCodeViewer_GetShowPython() { return g_userPrefPython; }
+void DemoCodeViewer_SetShowPython(bool show) { g_showPython = show; g_userPrefPython = show; }
 
 void DemoCodeViewer_Show()
 {
@@ -470,6 +471,36 @@ void DemoCodeViewer_Show()
 #endif
 
     CodeFile& cf = g_codeFiles[currentFile.baseName];
+    // Handle pending scroll (before computing showingPython, since it may switch language)
+    if (!g_pendingScrollFile.empty() && g_pendingScrollFile == currentFile.cppDisplayName() && g_pendingScrollLine > 0)
+    {
+        bool scrolledPython = false;
+        if (g_userPrefPython && cf.pyState == LoadState::Loaded && !g_pendingScrollSection.empty())
+        {
+            auto it2 = cf.pyMarkers.find(g_pendingScrollSection);
+            if (it2 != cf.pyMarkers.end())
+            {
+                int pyLine = it2->second;
+                cf.pyEditor.SetViewAtLine(pyLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
+                cf.pyEditor.SetCursorPosition(pyLine - 1, 0);
+                cf.pyEditor.SelectLine(pyLine - 1);
+                scrolledPython = true;
+            }
+        }
+        if (!scrolledPython)
+        {
+            cf.cppEditor.SetViewAtLine(g_pendingScrollLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
+            cf.cppEditor.SetCursorPosition(g_pendingScrollLine - 1, 0);
+            cf.cppEditor.SelectLine(g_pendingScrollLine - 1);
+        }
+        // Auto-switch displayed language to match what we scrolled
+        if (g_userPrefPython)
+            g_showPython = scrolledPython;
+        g_pendingScrollLine = -1;
+        g_pendingScrollFile.clear();
+        g_pendingScrollSection.clear();
+    }
+
     bool showingPython = g_showPython && cf.pyState == LoadState::Loaded;
     LoadState activeState = showingPython ? cf.pyState : cf.cppState;
     std::string displayName = showingPython ? currentFile.pyDisplayName() : currentFile.cppDisplayName();
@@ -489,35 +520,6 @@ void DemoCodeViewer_Show()
 
     if (g_showPython && !currentFile.hasPython)
         ImGui::TextColored(ImVec4(1.f, 1.f, 0.5f, 1.f), "No Python code available for this demo");
-
-    // Handle pending scroll
-    if (!g_pendingScrollFile.empty() && g_pendingScrollFile == currentFile.cppDisplayName() && g_pendingScrollLine > 0)
-    {
-        bool scrolledPython = false;
-        // If viewing Python and we have a section match, scroll Python editor
-        if (g_showPython && cf.pyState == LoadState::Loaded && !g_pendingScrollSection.empty())
-        {
-            auto it2 = cf.pyMarkers.find(g_pendingScrollSection);
-            if (it2 != cf.pyMarkers.end())
-            {
-                int pyLine = it2->second;
-                cf.pyEditor.SetViewAtLine(pyLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
-                cf.pyEditor.SetCursorPosition(pyLine - 1, 0);
-                cf.pyEditor.SelectLine(pyLine - 1);
-                scrolledPython = true;
-            }
-        }
-        // Otherwise scroll C++ editor (without changing the user's language preference)
-        if (!scrolledPython)
-        {
-            cf.cppEditor.SetViewAtLine(g_pendingScrollLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
-            cf.cppEditor.SetCursorPosition(g_pendingScrollLine - 1, 0);
-            cf.cppEditor.SelectLine(g_pendingScrollLine - 1);
-        }
-        g_pendingScrollLine = -1;
-        g_pendingScrollFile.clear();
-        g_pendingScrollSection.clear();
-    }
 
     // Apply deferred match selection (frame 2 of GoToMatch: scroll left happened last frame)
     if (g_pendingMatch.has_value())

@@ -177,15 +177,15 @@ namespace
             int pyLine = DemoCodeViewer_GetPythonLineForSection(cppFilename, section);
             if (pyLine > 0)
                 snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-                    "%s.py:%d", file, pyLine);
+                    "%s.py:%d - \"%s\"", file, pyLine, section);
             else
                 snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-                    "%s.cpp:%d (no python demo)", file, line + 1);
+                    "%s.cpp:%d (no python demo) - \"%s\"", file, line + 1, section);
         }
         else
         {
             snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-                "%s.cpp:%d", file, line + 1);
+                "%s.cpp:%d - \"%s\"", file, line + 1, section);
         }
 
         if (GDemoMarker_FlagFollowSource)
