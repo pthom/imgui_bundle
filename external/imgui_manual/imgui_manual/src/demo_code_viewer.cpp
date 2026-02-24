@@ -718,6 +718,21 @@ void DemoCodeViewer_Show()
         ImGui::PopFont();
 }
 
+int DemoCodeViewer_GetPythonLineForSection(const char* cppFilename, const char* section)
+{
+    if (!section || section[0] == '\0') return -1;
+    // Find the baseName by stripping the extension from cppFilename
+    std::string cpp(cppFilename);
+    auto dot = cpp.rfind('.');
+    if (dot == std::string::npos) return -1;
+    std::string baseName = cpp.substr(0, dot);
+    auto it = g_codeFiles.find(baseName);
+    if (it == g_codeFiles.end() || it->second.pyState != LoadState::Loaded) return -1;
+    auto it2 = it->second.pyMarkers.find(section);
+    if (it2 == it->second.pyMarkers.end()) return -1;
+    return it2->second;  // 1-based line number
+}
+
 void DemoCodeViewer_ShowCodeAt(const char* filename, int line, const char* section)
 {
     // Store the request - will be processed on next render

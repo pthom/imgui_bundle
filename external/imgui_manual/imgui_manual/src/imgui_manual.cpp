@@ -169,13 +169,27 @@ namespace
         if (!DemoMarker_IsMouveHovering(line))
             return;
         // file is IMGUI_DEMO_MARKER_FILE value (e.g. "imgui_demo"), append ".cpp" for display
-        char filename[256];
-        snprintf(filename, sizeof(filename), "%s.cpp", file);
-        snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-            "%s:%d - \"%s\"", filename, line + 1, section);
+        char cppFilename[256];
+        snprintf(cppFilename, sizeof(cppFilename), "%s.cpp", file);
+
+        if (DemoCodeViewer_GetShowPython() && section)
+        {
+            int pyLine = DemoCodeViewer_GetPythonLineForSection(cppFilename, section);
+            if (pyLine > 0)
+                snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
+                    "%s.py:%d", file, pyLine);
+            else
+                snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
+                    "%s.cpp:%d (no python demo)", file, line + 1);
+        }
+        else
+        {
+            snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
+                "%s.cpp:%d", file, line + 1);
+        }
 
         if (GDemoMarker_FlagFollowSource)
-            DemoCodeViewer_ShowCodeAt(filename, line, section);
+            DemoCodeViewer_ShowCodeAt(cppFilename, line, section);
     }
 
     // Top toolbar: library selection buttons + C++/Python toggle
