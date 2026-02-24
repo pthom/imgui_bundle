@@ -96,7 +96,6 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         DemoDetails("Dear ImGui",  demo_imgui_show_demo_window),
         DemoDetails("Demo Apps",   demo_immapp_launcher),
         DemoDetails("Implot [3D]", demo_implot),
-        DemoDetails("ImAnim",      demo_im_anim),
         DemoDetails("Node Editor", demo_node_editor_launcher),
         DemoDetails("Markdown",    demo_imgui_md,              show_code=True),
         DemoDetails("Text Editor", demo_text_edit,             show_code=True),
@@ -106,6 +105,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         DemoDetails("ImGuizmo",    demo_imguizmo_launcher),
         DemoDetails("Themes",      demo_themes,                show_code=True),
         DemoDetails("Logger",      demo_logger,                show_code=True),
+        DemoDetails("ImAnim",      demo_im_anim),
         # DemoDetails("tex_inspect", demo_tex_inspect_launcher),
     ]
 

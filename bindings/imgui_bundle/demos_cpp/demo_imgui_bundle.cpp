@@ -100,7 +100,6 @@ int main(int, char **)
         DEMO_DETAILS(          "Dear ImGui",  demo_imgui_show_demo_window),
         DEMO_DETAILS(          "Demo Apps",   demo_immapp_launcher),
         DEMO_DETAILS(          "Implot [3D]", demo_implot),
-        DEMO_DETAILS(          "ImAnim",      demo_im_anim),
         DEMO_DETAILS(          "Node Editor", demo_node_editor_launcher),
         DEMO_DETAILS_WITH_CODE("Markdown",    demo_imgui_md),
         DEMO_DETAILS_WITH_CODE("Text Editor", demo_text_edit),
@@ -112,6 +111,7 @@ int main(int, char **)
         DEMO_DETAILS(          "ImGuizmo",    demo_imguizmo_launcher),
         DEMO_DETAILS_WITH_CODE("Themes",      demo_themes),
         DEMO_DETAILS_WITH_CODE("Logger",      demo_logger),
+        DEMO_DETAILS(          "ImAnim",      demo_im_anim),
         //DEMO_DETAILS("tex_inspect", demo_tex_inspect_launcher),
     };
 
