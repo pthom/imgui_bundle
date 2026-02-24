@@ -217,7 +217,7 @@ option(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR "Build with imgui-node-editor" ON)
 option(IMGUI_BUNDLE_WITH_IMPLOT "Build with implot" ON)
 option(IMGUI_BUNDLE_WITH_IMPLOT3D "Build with implot3d" ON)
 option(IMGUI_BUNDLE_WITH_IMANIM "Build with ImAnim" ON)
-option(IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS "Include all ImAnim author demos (Demo/Doc/Usecases) in manual" OFF)
+option(IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS "Include all ImAnim author demos (Demo/Doc/Usecases) in manual" ON)
 option(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB "Build with imgui_manual as an included library" ON)
 option(IMGUI_BUNDLE_WITH_IMMVISION "Build with immvision" ${IMMVISION_FETCH_OPENCV})
 
