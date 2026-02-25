@@ -80,8 +80,9 @@ struct AppState
 void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.LoadAdditionalFonts
 {
     // First, load the default font (the default font should be loaded first)
-    // In this example, we instruct HelloImGui to use FontAwesome6 instead of FontAwesome4
-    HelloImGui::GetRunnerParams()->callbacks.defaultIconFont = HelloImGui::DefaultIconFont::FontAwesome6;
+    // In this example, we could instruct HelloImGui to use FontAwesome6 instead of FontAwesome4
+    // This would require that the file fonts/Font_Awesome_6_Free-Solid-900.otf exists in the assets
+    // HelloImGui::GetRunnerParams()->callbacks.defaultIconFont = HelloImGui::DefaultIconFont::FontAwesome6;
     HelloImGui::ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons();
 
     // Load the title font. Also manually merge FontAwesome icons to it
@@ -93,7 +94,7 @@ void LoadFonts(AppState& appState) // This is called by runnerParams.callbacks.L
 
     // Load a large icon font
     HelloImGui::FontLoadingParams fontLoadingParamsLargeIcon;
-    appState.LargeIconFont = HelloImGui::LoadFont("fonts/Font_Awesome_6_Free-Solid-900.otf", 24.f, fontLoadingParamsLargeIcon);
+    appState.LargeIconFont = HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 24.f, fontLoadingParamsLargeIcon);
 
 #ifdef IMGUI_ENABLE_FREETYPE
     // Load a colored font (requires FreeType & lunasvg)

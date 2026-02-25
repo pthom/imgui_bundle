@@ -67,8 +67,10 @@ class AppState:
 ##########################################################################
 def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks.LoadAdditionalFonts
     # First, load the default font (the default font should be loaded first)
-    # In this example, we instruct HelloImGui to use FontAwesome6 instead of FontAwesome4
-    hello_imgui.get_runner_params().callbacks.default_icon_font = hello_imgui.DefaultIconFont.font_awesome6
+    # In this example, we could instruct HelloImGui to use FontAwesome6 instead of FontAwesome4
+    # This would require that the file fonts/Font_Awesome_6_Free-Solid-900.otf exists in the assets
+    # hello_imgui.get_runner_params().callbacks.default_icon_font = hello_imgui.DefaultIconFont.font_awesome6
+
     hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
 
     # Load the title font
