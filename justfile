@@ -48,8 +48,8 @@ manual_ems_serve: manual_ems_build
 manual_ems_clean:
     rm -rf build_manual_ems
 
-# deploy the manual to https://pthom.github.io/imgui_manual_online
-# (copies build output into the imgui_manual_online submodule, commits, and pushes)
+# deploy the manual to https://pthom.github.io/imgui_manual/
+# (copies build output into the imgui_manual github pages repo, commits, and pushes)
 manual_ems_deploy_github: manual_ems_build
     ./ci_scripts/manual_ems_deploy.sh
 

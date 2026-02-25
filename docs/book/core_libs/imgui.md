@@ -8,14 +8,14 @@
 The best way to learn Dear ImGui is through the interactive **ImGui Manual**:
 
 ````{card}
-:link: https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html
+:link: https://pthom.github.io/imgui_manual/
 ```{figure} ../images/imgui_manual_python.jpg
 :width: 600
 ImGui Manual - Interactive reference for Dear ImGui
 ```
 ````
 
-**[Launch the ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)**
+**[Launch the ImGui Manual](https://pthom.github.io/imgui_manual)**
 
 The manual lets you:
 - Browse all ImGui widgets interactively
@@ -240,7 +240,7 @@ Prefer the more convenient `em_to_vec2()` function, available directly from `img
 
 ## Documentation
 
-- **[ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html)** - Interactive widget reference
+- **[ImGui Manual](https://pthom.github.io/imgui_manual/)** - Interactive widget reference
 - **[Dear ImGui Repository](https://github.com/ocornut/imgui)** - Official repository with extensive documentation
 - **Python API Reference:** [imgui/\_\_init\_\_.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi), [imgui/internal.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/internal.pyi)
 - **C++ API Reference:** [imgui.h](https://github.com/ocornut/imgui/blob/docking/imgui.h), [imgui_internal.h](https://github.com/ocornut/imgui/blob/docking/imgui_internal.h)

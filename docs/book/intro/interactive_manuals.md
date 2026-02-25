@@ -2,7 +2,7 @@
 
 ## Dear ImGui Manual
 
-[Dear ImGui Manual](https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html) lets you explore all the widgets and features of Dear ImGui, with live examples and the corresponding python or C++ code. It is built using Dear ImGui Bundle.
+[Dear ImGui Manual](https://pthom.github.io/imgui_manual/) lets you explore all the widgets and features of Dear ImGui, with live examples and the corresponding python or C++ code. It is built using Dear ImGui Bundle.
 
 <img alt="A screenshot of ImGui Manual, showing how to use a widget together with the related python code" src="../images/imgui_manual_python.jpg" height="500"/>
 
