@@ -9,8 +9,7 @@ void demo_nanovg_launcher()
 {
     static bool isFullDemoOpened = false, isSimpleDemoOpened = false;
     ImGuiMd::RenderUnindented(R"(
-        # NanoVG
-        [NanoVG](https://github.com/memononen/nanovg) Antialiased 2D vector drawing library on top of OpenGL for UI and visualizations.
+        [NanoVG](https://github.com/memononen/nanovg) provides antialiased 2D vector drawing library on top of OpenGL for UI and visualizations.
     )");
 
     if (!isFullDemoOpened && !isSimpleDemoOpened)

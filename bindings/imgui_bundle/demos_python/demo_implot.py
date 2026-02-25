@@ -13,9 +13,7 @@ except ImportError:
 def demo_gui():
     imgui_md.render_unindented(
         """
-        # ImPlot & ImPlot3D &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;[Online Demo](https://traineq.org/implot_demo/src/implot_demo.html)
-        * [Implot](https://github.com/epezent/implot) provides immediate Mode Plotting for ImGui.
-        * [Implot3D](https://github.com/brenocq/implot3d) provides immediate Mode 3D Plotting, with an API inspired from ImPlot.
+        [Implot](https://github.com/epezent/implot) and [Implot3D](https://github.com/brenocq/implot3d) are fast and efficient libraries which provide immediate Mode Plotting.
         """
     )
 

@@ -9,12 +9,7 @@ from imgui_bundle.demos_python import demo_utils  # this will set the assets fol
 def demo_gui():
     imgui_md.render_unindented(
         """
-        # ImGuizmo
-        [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui
-
-        What started with the gizmo is now a collection of dear imgui widgets and more advanced controls.
-
-        Open the demos below by clicking on their title.
+        [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui.
         """
     )
 

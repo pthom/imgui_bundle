@@ -22,13 +22,7 @@ def demo_gui():
 
     imgui_md.render_unindented(
         """
-        # ImmVision
-        [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger.
-        It is based on OpenCv and can analyse RGB & float, images with 1 to 4 channels.
-
-        Whereas *imgui_tex_inspect* is dedicated to texture analysis, *immvision* is more dedicated to image processing and computer vision.
-
-        Open the demos below by clicking on their title.
+        [ImmVision](https://github.com/pthom/immvision) is an immediate image analyzer. It is based on OpenCv and can analyse RGB & float, images with 1 to 4 channels.
     """
     )
 

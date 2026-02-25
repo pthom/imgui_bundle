@@ -1,7 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import List, Callable
 from types import ModuleType
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from imgui_bundle import imgui, hello_imgui, immapp
 from imgui_bundle.immapp import static
@@ -13,7 +13,7 @@ from imgui_bundle.demos_python import demo_implot
 from imgui_bundle.demos_python import demo_imgui_md
 from imgui_bundle.demos_python import demo_immvision_launcher
 from imgui_bundle.demos_python import demo_imguizmo_launcher
-#from imgui_bundle.demos_python import demo_tex_inspect_launcher
+from imgui_bundle.demos_python import demo_tex_inspect_launcher
 from imgui_bundle.demos_python import demo_node_editor_launcher
 from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_nanovg_launcher
@@ -23,12 +23,44 @@ from imgui_bundle.demos_python import demo_im_anim
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
+_show_code_states: dict[str, bool] = {}
+
 def show_module_demo(demo_filename: str, demo_function: Callable[[], None], show_code: bool = False) -> None:
     if imgui.get_frame_count() < 2:  # cf https://github.com/pthom/imgui_bundle/issues/293
         return
-    if show_code and imgui.collapsing_header("Code for this demo"):
-        demo_utils.show_python_vs_cpp_file(demo_filename, 40)
+    if show_code:
+        current = _show_code_states.get(demo_filename, False)
+        _, current = imgui.checkbox("Show code##" + demo_filename, current)
+        _show_code_states[demo_filename] = current
+        if current:
+            demo_utils.show_python_vs_cpp_file(demo_filename, 40)
     demo_function()
+
+
+@dataclass
+class DemoDetails:
+    label: str
+    demo_module: ModuleType
+    show_code: bool = False
+
+
+@dataclass
+class DemoGroup:
+    """A group of demos shown as collapsing headers inside a single tab."""
+    label: str
+    demos: List[DemoDetails] = field(default_factory=list)
+
+
+def _show_group_gui(group: DemoGroup) -> None:
+    """Gui function for a grouped tab: each sub-demo is a collapsing header."""
+    if imgui.get_frame_count() < 2:
+        return
+    for demo in group.demos:
+        demo_module_name = demo.demo_module.__name__.split(".")[-1]
+        if imgui.collapsing_header(demo.label):
+            imgui.indent()
+            show_module_demo(demo_module_name, demo.demo_module.demo_gui, demo.show_code)
+            imgui.unindent()
 
 
 def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
@@ -73,44 +105,61 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     #
     dockable_windows: List[hello_imgui.DockableWindow] = []
 
-    def add_demo_dockable_window(label: str, demo_module: ModuleType, show_code: bool = False):
-        window = hello_imgui.DockableWindow()
-        window.label = label
-        window.dock_space_name = "MainDockSpace"
-        demo_module_name = demo_module.__name__.split(".")[-1]
-
-        def win_fn() -> None:
-            show_module_demo(demo_module_name, demo_module.demo_gui, show_code)
-
-        window.gui_function = win_fn
-        dockable_windows.append(window)
-
-    @dataclass
-    class DemoDetails:
-        label: str
-        demo_module: ModuleType
-        show_code: bool = False
-
-    demos = [
+    # --- Standalone tabs (no grouping) ---
+    standalone_demos = [
         DemoDetails("Intro",       demo_imgui_bundle_intro),
         DemoDetails("Dear ImGui",  demo_imgui_show_demo_window),
         DemoDetails("Demo Apps",   demo_immapp_launcher),
-        DemoDetails("Implot [3D]", demo_implot),
-        DemoDetails("Node Editor", demo_node_editor_launcher),
-        DemoDetails("Markdown",    demo_imgui_md,              show_code=True),
-        DemoDetails("Text Editor", demo_text_edit,             show_code=True),
-        DemoDetails("Widgets",     demo_widgets,               show_code=True),
-        DemoDetails("ImmVision",   demo_immvision_launcher),
-        DemoDetails("NanoVG",      demo_nanovg_launcher),
-        DemoDetails("ImGuizmo",    demo_imguizmo_launcher),
-        DemoDetails("Themes",      demo_themes,                show_code=True),
-        DemoDetails("Logger",      demo_logger,                show_code=True),
-        DemoDetails("ImAnim",      demo_im_anim),
-        # DemoDetails("tex_inspect", demo_tex_inspect_launcher),
     ]
 
-    for demo in demos:
-        add_demo_dockable_window(demo.label, demo.demo_module, demo.show_code)
+    for demo in standalone_demos:
+        window = hello_imgui.DockableWindow()
+        window.label = demo.label
+        window.dock_space_name = "MainDockSpace"
+        demo_module_name = demo.demo_module.__name__.split(".")[-1]
+
+        def make_win_fn(mod_name: str, mod: ModuleType, sc: bool) -> Callable[[], None]:
+            def win_fn() -> None:
+                show_module_demo(mod_name, mod.demo_gui, sc)
+            return win_fn
+
+        window.gui_function = make_win_fn(demo_module_name, demo.demo_module, demo.show_code)
+        dockable_windows.append(window)
+
+    # --- Grouped tabs (sub-demos shown as collapsing headers) ---
+    groups = [
+        DemoGroup("Visualization", [
+            DemoDetails("Plots with ImPlot and ImPlot3D", demo_implot),
+            DemoDetails("ImmVision - Image analyzer", demo_immvision_launcher),
+            DemoDetails("ImGuizmo - Immediate Mode 3D Gizmo",  demo_imguizmo_launcher),
+            DemoDetails("NanoVG - 2D Vector Drawing", demo_nanovg_launcher),
+        ]),
+        DemoGroup("Widgets", [
+            DemoDetails("Markdown - Rich Text Rendering",     demo_imgui_md,    show_code=True),
+            DemoDetails("Text Editor - Code Editing Widget",  demo_text_edit,   show_code=True),
+            DemoDetails("Misc Widgets - Knobs, Toggles, ...", demo_widgets,     show_code=True),
+            DemoDetails("Logger - Log Window Widget",         demo_logger,      show_code=True),
+            DemoDetails("Tex Inspect - Texture Inspector",    demo_tex_inspect_launcher),
+        ]),
+        DemoGroup("Tools", [
+            DemoDetails("Node Editor - Visual Node Graphs", demo_node_editor_launcher),
+            DemoDetails("Themes - Style & Color Customization", demo_themes,   show_code=True),
+            DemoDetails("ImAnim - Animation Library",       demo_im_anim),
+        ]),
+    ]
+
+    for group in groups:
+        window = hello_imgui.DockableWindow()
+        window.label = group.label
+        window.dock_space_name = "MainDockSpace"
+
+        def make_group_fn(g: DemoGroup) -> Callable[[], None]:
+            def win_fn() -> None:
+                _show_group_gui(g)
+            return win_fn
+
+        window.gui_function = make_group_fn(group)
+        dockable_windows.append(window)
 
     runner_params.docking_params.dockable_windows = dockable_windows
 
@@ -147,7 +196,6 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     addons = immapp.AddOnsParams()
     addons.with_markdown = True
     addons.with_node_editor = True
-    addons.with_markdown = True
     addons.with_implot = True
     addons.with_implot3d = True
     addons.with_im_anim = True

@@ -1369,7 +1369,7 @@ void IntroMiniDemos()
     float carouselHeight;
     if (IsSmallScreen())
     {
-        carouselHeight = windowSize.y * 0.65f;
+        carouselHeight = windowSize.y * 0.55f;
         if (carouselHeight < em * 12.f) carouselHeight = em * 12.f;
     }
     else
