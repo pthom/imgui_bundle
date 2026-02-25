@@ -757,7 +757,22 @@ Tip: *You can resize the columns on the table below!*
 
 
 // ============================================================================
-// Slide 8: Web Deployment — static screenshot
+// Slide 8: Source Code Viewer — Self-documenting demo
+// ============================================================================
+
+namespace IntroSourceCode
+{
+    void SlideGui(ImVec2 contentSize)
+    {
+        ImGui::BeginChild("##source_code", contentSize, false);
+        ShowPythonVsCppFile("demo_imgui_bundle_intro");
+        ImGui::EndChild();
+    }
+} // namespace IntroSourceCode
+
+
+// ============================================================================
+// Slide 9: Web Deployment — static screenshot
 // ============================================================================
 
 namespace IntroWebDeploy
@@ -1010,15 +1025,19 @@ void main(){
 
     void GuiSidePanel()
     {
-        ImGui::TextDisabled("\"Seascape\" by Alexander Alekseev aka TDM - 2014");
+        ImGui::Text("\"Seascape\" by Alexander Alekseev aka TDM");
         ImGui::SetItemTooltip(
             "License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported\n"
             "Contact: tdmaav@gmail.com");
         ImGui::Spacing();
         if (sState)
         {
+            float sliderW = HelloImGui::EmSize(7.f);
+            ImGui::SetNextItemWidth(sliderW);
             ImGui::SliderFloat("Wave height", &sState->seaHeight, 0.1f, 2.0f);
+            ImGui::SetNextItemWidth(sliderW);
             ImGui::SliderFloat("Choppiness", &sState->seaChoppy, 0.5f, 8.0f);
+            ImGui::SetNextItemWidth(sliderW);
             ImGui::ColorEdit3("Sea base color", sState->seaBase);
         }
     }
@@ -1026,17 +1045,40 @@ void main(){
     void SlideGui(ImVec2 contentSize)
     {
         float em = HelloImGui::EmSize();
-        float mainSide = contentSize.y;
-        float gap = em * 0.5f;
-        float sidePanelW = contentSize.x - mainSide - gap;
 
-        GuiMainPart(mainSide, mainSide);
+        // Render shader filling the full content area
+        GuiMainPart(contentSize.x, contentSize.y);
 
-        if (sidePanelW > em * 4.f)
-        {
-            ImGui::SameLine(0.f, gap);
-            DrawSidePanel("##shader_side", sidePanelW, mainSide, GuiSidePanel);
-        }
+        // Overlay controls on top of the shader
+        float overlayW = em * 18.f;
+        float overlayH = em * 6.5f;
+        float pad = em * 0.8f;
+        float overlayX = ImGui::GetItemRectMin().x + contentSize.x - overlayW - pad;
+        float overlayY = ImGui::GetItemRectMin().y + pad;
+
+        ImDrawList* dl = ImGui::GetWindowDrawList();
+        float rounding = em * 0.5f;
+        float bgMargin = em * 0.3f;
+        ImU32 bg = ImGui::ColorConvertFloat4ToU32(ImVec4(0.f, 0.f, 0.f, 0.35f));
+        ImU32 border = ImGui::ColorConvertFloat4ToU32(ImVec4(1.f, 1.f, 1.f, 0.15f));
+        dl->AddRectFilled(
+            ImVec2(overlayX - bgMargin, overlayY),
+            ImVec2(overlayX + overlayW, overlayY + overlayH + bgMargin),
+            bg, rounding);
+        dl->AddRect(
+            ImVec2(overlayX - bgMargin, overlayY),
+            ImVec2(overlayX + overlayW, overlayY + overlayH + bgMargin),
+            border, rounding, 0, 1.f);
+
+        ImGui::SetCursorScreenPos(ImVec2(overlayX, overlayY));
+        ImGui::BeginChild("##shader_overlay", ImVec2(overlayW, overlayH), false,
+                          ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
+        float innerPad = em * 0.5f;
+        ImGui::SetCursorPos(ImVec2(innerPad, innerPad));
+        ImGui::PushItemWidth(overlayW - innerPad * 2.f);
+        GuiSidePanel();
+        ImGui::PopItemWidth();
+        ImGui::EndChild();
     }
 } // namespace IntroShader
 
@@ -1233,6 +1275,10 @@ void IntroMiniDemos()
         { "Rich Documentation, Built In",
           "Render markdown directly in your UI \xe2\x80\x94 headers, code blocks, tables, links, and images, all from a simple string.",
           MarkdownSlideGui },
+
+        { "Integrated Text & Code Editor",
+          "The built-in text editor supports syntax highlighting, line numbers, and search. Below is the source of this very demo \xe2\x80\x94 side by side in Python and C++.",
+          IntroSourceCode::SlideGui },
 
         { "Deploy to the Web",
           "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",

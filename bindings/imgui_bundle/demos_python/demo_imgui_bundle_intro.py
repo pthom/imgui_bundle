@@ -681,7 +681,17 @@ def _markdown_slide_gui(content_size: ImVec2):
 
 
 # ============================================================================
-# Slide 8: Web Deployment — static screenshot
+# Slide 8: Source Code Viewer — Self-documenting demo
+# ============================================================================
+
+def _source_code_slide_gui(content_size: ImVec2):
+    imgui.begin_child("##source_code", content_size, False)
+    demo_utils.show_python_vs_cpp_file("demo_imgui_bundle_intro")
+    imgui.end_child()
+
+
+# ============================================================================
+# Slide 9: Web Deployment — static screenshot
 # ============================================================================
 
 def _web_deploy_slide_gui(content_size: ImVec2):
@@ -695,7 +705,7 @@ def _web_deploy_slide_gui(content_size: ImVec2):
 
 
 # ============================================================================
-# Slide 7: Seascape shader — FBO + OpenGL
+# Slide 10: Seascape shader — FBO + OpenGL
 # ============================================================================
 
 if HAS_OPENGL:
@@ -896,27 +906,55 @@ void main(){
                         ImVec2(0, 1), ImVec2(1, 0))  # flip Y for FBO
 
     def _shader_gui_side():
-        imgui.text_disabled('"Seascape" by Alexander Alekseev aka TDM - 2014')
+        imgui.text('"Seascape" by Alexander Alekseev aka TDM')
         imgui.set_item_tooltip(
             "License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported\n"
             "Contact: tdmaav@gmail.com")
         imgui.spacing()
         if _shader_state:
+            imgui.set_next_item_width(hello_imgui.em_size(7))
             _, _shader_state.sea_height = imgui.slider_float("Wave height", _shader_state.sea_height, 0.1, 2.0)
+            imgui.set_next_item_width(hello_imgui.em_size(7))
             _, _shader_state.sea_choppy = imgui.slider_float("Choppiness", _shader_state.sea_choppy, 0.5, 8.0)
+            imgui.set_next_item_width(hello_imgui.em_size(7))
             _, _shader_state.sea_base = imgui.color_edit3("Sea base color", _shader_state.sea_base)
 
     def _shader_slide_gui(content_size: ImVec2):
         em = hello_imgui.em_size()
-        main_side = content_size.y
-        gap = em * 0.5
-        side_panel_w = content_size.x - main_side - gap
 
-        _shader_gui_main(main_side, main_side)
+        # Render shader filling the full content area
+        _shader_gui_main(content_size.x, content_size.y)
 
-        if side_panel_w > em * 4.0:
-            imgui.same_line(0.0, gap)
-            draw_side_panel("##shader_side", side_panel_w, main_side, _shader_gui_side)
+        # Overlay controls on top of the shader
+        overlay_w = em * 18.0
+        overlay_h = em * 6.5
+        pad = em * 0.8
+        overlay_x = imgui.get_item_rect_min().x + content_size.x - overlay_w - pad
+        overlay_y = imgui.get_item_rect_min().y + pad
+
+        dl = imgui.get_window_draw_list()
+        rounding = em * 0.5
+        bg_margin = em * 0.3
+        bg = imgui.color_convert_float4_to_u32(ImVec4(0.0, 0.0, 0.0, 0.35))
+        border = imgui.color_convert_float4_to_u32(ImVec4(1.0, 1.0, 1.0, 0.15))
+        dl.add_rect_filled(
+            ImVec2(overlay_x - bg_margin, overlay_y),
+            ImVec2(overlay_x + overlay_w, overlay_y + overlay_h + bg_margin),
+            bg, rounding)
+        dl.add_rect(
+            ImVec2(overlay_x - bg_margin, overlay_y),
+            ImVec2(overlay_x + overlay_w, overlay_y + overlay_h + bg_margin),
+            border, rounding, 0, 1.0)
+
+        imgui.set_cursor_screen_pos(ImVec2(overlay_x, overlay_y))
+        imgui.begin_child("##shader_overlay", ImVec2(overlay_w, overlay_h), False,
+                          imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_background)
+        inner_pad = em * 0.5
+        imgui.set_cursor_pos(ImVec2(inner_pad, inner_pad))
+        imgui.push_item_width(overlay_w - inner_pad * 2.0)
+        _shader_gui_side()
+        imgui.pop_item_width()
+        imgui.end_child()
 
 
 # ============================================================================
@@ -1114,6 +1152,10 @@ def _intro_mini_demos():
             "Rich Documentation, Built In",
             "Render markdown directly in your UI \u2014 headers, code blocks, tables, links, and images, all from a simple string.",
             _markdown_slide_gui),
+        CarouselSlide(
+            "Integrated Text & Code Editor",
+            "The built-in text editor supports syntax highlighting, line numbers, and search. Below is the source of this very demo \u2014 side by side in Python and C++.",
+            _source_code_slide_gui),
         CarouselSlide(
             "Deploy to the Web",
             "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",
