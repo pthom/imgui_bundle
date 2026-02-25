@@ -147,7 +147,7 @@ namespace Snippets
 
             if ((snippetData.MaxHeightInLines > 0) && (nbVisibleLines > snippetData.MaxHeightInLines))
                 nbVisibleLines = snippetData.MaxHeightInLines;
-            editorSize.y = lineHeight * (float) nbVisibleLines;
+            editorSize.y = lineHeight * (float) nbVisibleLines + ImGui::GetStyle().ScrollbarSize;
         }
 
         if (hasTitleLine)
