@@ -1,6 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import math
-import webbrowser
 from dataclasses import dataclass, field
 from typing import Callable, List
 
@@ -10,6 +9,7 @@ from imgui_bundle import imgui, imgui_md, hello_imgui, immapp, ImVec2, ImVec4
 from imgui_bundle.demos_python import demo_utils
 from imgui_bundle import implot3d
 from imgui_bundle.immapp import icons_fontawesome_6
+import webbrowser
 
 # Optional imports (replacing #ifdef guards)
 try:
@@ -574,7 +574,24 @@ def _notebook_slide_gui(content_size: ImVec2):
 
 
 # ============================================================================
-# Slide 6: Web Deployment — static screenshot
+# Slide 6: Node Editor — static screenshot
+# ============================================================================
+
+def _node_editor_slide_gui(content_size: ImVec2):
+    img_aspect = 800.0 / 516.0
+    link_h = imgui.get_frame_height()
+    w = content_size.x
+    h = w / img_aspect
+    if h > content_size.y - link_h:
+        h = content_size.y - link_h
+        w = h * img_aspect
+    hello_imgui.image_from_asset("images/node_editor_fiat.jpg", ImVec2(w, h))
+
+    imgui_md.render_unindented("Built with [fiatlight](https://pthom.github.io/fiatlight_doc/)")
+
+
+# ============================================================================
+# Slide 7: Web Deployment — static screenshot
 # ============================================================================
 
 def _web_deploy_slide_gui(content_size: ImVec2):
@@ -999,6 +1016,10 @@ def _intro_mini_demos():
             "Feature-Rich Widgets",
             "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
             _table_slide_gui),
+        CarouselSlide(
+            "Explore Ideas in a Node Editor",
+            "With imgui-node-editor, you can build complex applications such as blueprint editors. Here is an example of an image editing pipeline.",
+            _node_editor_slide_gui),
         CarouselSlide(
             "Deploy to the Web",
             "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",

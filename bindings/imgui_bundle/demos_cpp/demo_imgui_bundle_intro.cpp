@@ -643,7 +643,26 @@ namespace IntroNotebook
 
 
 // ============================================================================
-// Slide 7: Web Deployment — static screenshot
+// Slide 7: Node Editor — static screenshot
+// ============================================================================
+
+namespace IntroNodeEditor
+{
+    void SlideGui(ImVec2 contentSize)
+    {
+        float imgAspect = 800.f / 516.f;
+        float linkH = ImGui::GetFrameHeight();
+        float w = contentSize.x;
+        float h = w / imgAspect;
+        if (h > contentSize.y - linkH) { h = contentSize.y - linkH; w = h * imgAspect; }
+        HelloImGui::ImageFromAsset("images/node_editor_fiat.jpg", ImVec2(w, h));
+        ImGuiMd::RenderUnindented("Built with [fiatlight](https://pthom.github.io/fiatlight_doc/)");
+    }
+} // namespace IntroNodeEditor
+
+
+// ============================================================================
+// Slide 8: Web Deployment — static screenshot
 // ============================================================================
 
 namespace IntroWebDeploy
@@ -950,8 +969,9 @@ static void ImmVisionSlideGui(ImVec2 cs) { IntroImmVision::SlideGui(cs); }
 static void ImmVisionSlideGui(ImVec2)    { ImGui::TextWrapped("ImmVision not available (requires OpenCV)."); }
 #endif
 
-static void NotebookSlideGui(ImVec2 cs)  { IntroNotebook::SlideGui(cs); }
-static void WebDeploySlideGui(ImVec2 cs) { IntroWebDeploy::SlideGui(cs); }
+static void NotebookSlideGui(ImVec2 cs)    { IntroNotebook::SlideGui(cs); }
+static void NodeEditorSlideGui(ImVec2 cs)  { IntroNodeEditor::SlideGui(cs); }
+static void WebDeploySlideGui(ImVec2 cs)   { IntroWebDeploy::SlideGui(cs); }
 
 #ifdef HELLOIMGUI_HAS_OPENGL
 static void ShaderSlideGui(ImVec2 cs) { IntroShader::SlideGui(cs); }
@@ -1109,6 +1129,10 @@ void IntroMiniDemos()
         { "Feature-Rich Widgets",
           "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
           TableSlideGui },
+
+        { "Explore Ideas in a Node Editor",
+          "With imgui-node-editor, you can build complex applications such as blueprint editors. Here is an example of an image editing pipeline.",
+          NodeEditorSlideGui },
 
         { "Deploy to the Web",
           "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",
@@ -1286,3 +1310,33 @@ void demo_imgui_bundle_intro()
     ImGui::Separator();
     ShowBadges();
 }
+
+
+// ============================================================================
+// Main entry point
+// ============================================================================
+
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
+int main(int, char**)
+{
+    ChdirBesideAssetsFolder();
+
+    HelloImGui::RunnerParams runnerParams;
+    runnerParams.callbacks.ShowGui = demo_imgui_bundle_intro;
+    runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
+    runnerParams.appWindowParams.windowTitle = "ImGui Bundle - Introduction";
+
+    ImmApp::AddOnsParams addons;
+    addons.withMarkdown = true;
+    addons.withNodeEditor = true;
+    addons.withImplot = true;
+    addons.withImplot3d = true;
+    addons.withTexInspect = true;
+    addons.withImAnim = true;
+
+    ImmApp::Run(runnerParams, addons);
+
+    return 0;
+}
+#endif
+
