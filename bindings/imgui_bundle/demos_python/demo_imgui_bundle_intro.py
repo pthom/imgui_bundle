@@ -217,94 +217,131 @@ def _lorenz_slide_gui(content_size: ImVec2):
 
 
 # ============================================================================
-# Slide 2: Telemetry — ImPlot subplots with scrolling signals
+# Slide 2: ImPlot showcase — 4 diverse plot types in subplots
 # ============================================================================
 
 if HAS_IMPLOT:
-    class _TelemetryChannel:
-        def __init__(self, max_size: int = 2000):
-            self.times: List[float] = []
-            self.values: List[float] = []
-            self.max_size = max_size
+    _implot_inited = False
+    _implot_xs: np.ndarray = None  # type: ignore
 
-        def add_point(self, t: float, v: float):
-            self.times.append(t)
-            self.values.append(v)
-            if len(self.times) > self.max_size:
-                self.times.pop(0)
-                self.values.pop(0)
+    # Filled line plots (static)
+    _filled_xs: np.ndarray = None  # type: ignore
+    _filled_ys1: np.ndarray = None  # type: ignore
+    _filled_ys2: np.ndarray = None  # type: ignore
+    _filled_ys3: np.ndarray = None  # type: ignore
 
-    _telemetry_channels = [_TelemetryChannel() for _ in range(4)]
-    _telemetry_time = 0.0
-    _telemetry_speed = 20.0
-    _telemetry_paused = False
-    _telemetry_history = 10.0
+    # Shaded plots (static, like original demo)
+    _shaded_xs: np.ndarray = None  # type: ignore
+    _shaded_ys: np.ndarray = None  # type: ignore
+    _shaded_ys1: np.ndarray = None  # type: ignore
+    _shaded_ys2: np.ndarray = None  # type: ignore
+    _shaded_ys3: np.ndarray = None  # type: ignore
+    _shaded_ys4: np.ndarray = None  # type: ignore
 
-    def _pseudo_noise(t: float) -> float:
-        return math.sin(t * 37.1) * math.sin(t * 53.7)
+    # Stem plots (static)
+    _stem_xs: np.ndarray = None  # type: ignore
+    _stem_ys1: np.ndarray = None  # type: ignore
+    _stem_ys2: np.ndarray = None  # type: ignore
 
-    def _telemetry_update():
-        global _telemetry_time
-        if _telemetry_paused:
-            return
-        dt = imgui.get_io().delta_time * _telemetry_speed
-        _telemetry_time += dt
-        pi = math.pi
-        t = _telemetry_time
-        _telemetry_channels[0].add_point(t, math.sin(2.0 * pi * 0.5 * t))
-        _telemetry_channels[1].add_point(t, 0.5 * math.sin(2.0 * pi * 0.3 * t) + 0.3 * _pseudo_noise(t))
-        _telemetry_channels[2].add_point(t, 1.0 if math.sin(2.0 * pi * 0.4 * t) > 0.0 else -1.0)
-        _telemetry_channels[3].add_point(t, 0.6 * math.sin(2.0 * pi * 0.7 * t) + 0.3 * math.sin(2.0 * pi * 2.3 * t))
+    def _random_range(low: float, high: float, n: int) -> np.ndarray:
+        return low + (high - low) * np.random.rand(n)
 
-    def _telemetry_gui_main(plot_size: ImVec2):
-        _telemetry_update()
+    def _implot_init():
+        global _implot_inited, _implot_xs
+        global _filled_xs, _filled_ys1, _filled_ys2, _filled_ys3
+        global _shaded_xs, _shaded_ys, _shaded_ys1, _shaded_ys2, _shaded_ys3, _shaded_ys4
+        global _stem_xs, _stem_ys1, _stem_ys2
+        np.random.seed(0)
 
-        labels = ["Voltage", "Pressure", "Digital", "Vibration"]
-        colors = [
-            ImVec4(0.2, 0.9, 0.4, 1.0),
-            ImVec4(0.3, 0.6, 1.0, 1.0),
-            ImVec4(1.0, 0.6, 0.1, 1.0),
-            ImVec4(0.9, 0.3, 0.6, 1.0),
-        ]
+        _implot_xs = np.linspace(0, 1, 1001, dtype=np.float64)
 
-        sub_flags = implot.SubplotFlags_.link_all_x | implot.SubplotFlags_.no_resize
-        if implot.begin_subplots("##Telemetry", 2, 2, plot_size, sub_flags):
-            for i in range(4):
-                if implot.begin_plot(labels[i], ImVec2(), implot.Flags_.no_legend):
-                    implot.setup_axes("", "",
-                                      implot.AxisFlags_.no_tick_labels,
-                                      implot.AxisFlags_.auto_fit)
-                    implot.setup_axis_limits(implot.ImAxis_.x1,
-                                             _telemetry_time - _telemetry_history,
-                                             _telemetry_time,
-                                             implot.Cond_.always)
-                    ch = _telemetry_channels[i]
-                    if len(ch.times) > 0:
-                        times_arr = np.array(ch.times, dtype=np.float64)
-                        values_arr = np.array(ch.values, dtype=np.float64)
-                        spec = implot.Spec()
-                        spec.line_color = colors[i]
-                        implot.plot_line(labels[i], times_arr, values_arr, spec)
-                    implot.end_plot()
+        # Filled line plots
+        _filled_xs = np.arange(101, dtype=np.float64)
+        _filled_ys1 = _random_range(400.0, 450.0, 101)
+        _filled_ys2 = _random_range(275.0, 350.0, 101)
+        _filled_ys3 = _random_range(150.0, 225.0, 101)
+
+        # Shaded plots (from original demo_shaded_plots)
+        _shaded_xs = np.linspace(0, 1, 1001, dtype=np.float64)
+        _shaded_ys = 0.25 + 0.25 * np.sin(25 * _shaded_xs) * np.sin(5 * _shaded_xs) + _random_range(-0.01, 0.01, 1001)
+        _shaded_ys1 = _shaded_ys + _random_range(0.1, 0.12, 1001)
+        _shaded_ys2 = _shaded_ys - _random_range(0.1, 0.12, 1001)
+        _shaded_ys3 = 0.75 + 0.2 * np.sin(25 * _shaded_xs)
+        _shaded_ys4 = 0.75 + 0.1 * np.cos(25 * _shaded_xs)
+
+        # Stem plots (from original demo_stem_plots)
+        _stem_xs = np.linspace(0, 1, 51, dtype=np.float64)
+        _stem_ys1 = 1.0 + 0.5 * np.sin(25 * _stem_xs) * np.cos(2 * _stem_xs)
+        _stem_ys2 = 0.5 + 0.25 * np.sin(10 * _stem_xs) * np.sin(_stem_xs)
+
+        _implot_inited = True
+
+    def _implot_subplot1_line_plots():
+        """Animated line plots with 3 curves and interactive legend."""
+        t = imgui.get_time() * 1.5
+        ys1 = 0.5 + 0.5 * np.sin(6.0 * (_implot_xs + t))
+        ys2 = 0.5 + 0.3 * np.cos(4.0 * (_implot_xs + t))
+        ys3 = 0.5 + 0.2 * np.sin(10.0 * _implot_xs + t) * np.cos(3.0 * _implot_xs + t)
+        if implot.begin_plot("Line Plots"):
+            implot.setup_axes("x", "y",
+                              implot.AxisFlags_.no_tick_labels,
+                              implot.AxisFlags_.no_tick_labels)
+            implot.setup_axes_limits(0, 1, -0.1, 1.1)
+            implot.plot_line("f(x)", _implot_xs, ys1)
+            implot.plot_line("g(x)", _implot_xs, ys2)
+            implot.plot_line("h(x)", _implot_xs, ys3)
+            implot.end_plot()
+
+    def _implot_subplot2_filled():
+        """Static filled line plots (stock prices)."""
+        if implot.begin_plot("Stock Prices"):
+            implot.setup_axes("Days", "Price")
+            implot.setup_axes_limits(0, 100, 0, 500)
+            spec = implot.Spec(fill_alpha=0.25)
+            implot.plot_shaded("Stock 1", _filled_xs, _filled_ys1, 0.0, spec)
+            implot.plot_line("Stock 1", _filled_xs, _filled_ys1)
+            implot.plot_shaded("Stock 2", _filled_xs, _filled_ys2, 0.0, spec)
+            implot.plot_line("Stock 2", _filled_xs, _filled_ys2)
+            implot.plot_shaded("Stock 3", _filled_xs, _filled_ys3, 0.0, spec)
+            implot.plot_line("Stock 3", _filled_xs, _filled_ys3)
+            implot.end_plot()
+
+    def _implot_subplot3_shaded():
+        """Shaded plots (from original demo)."""
+        spec = implot.Spec(fill_alpha=0.25)
+        if implot.begin_plot("Shaded Plots"):
+            implot.setup_legend(implot.Location_.north_west, implot.LegendFlags_.reverse)
+            implot.plot_shaded("Uncertain Data", _shaded_xs, _shaded_ys1, _shaded_ys2, spec)
+            implot.plot_line("Uncertain Data", _shaded_xs, _shaded_ys, spec)
+            implot.plot_shaded("Overlapping", _shaded_xs, _shaded_ys3, _shaded_ys4, spec)
+            implot.plot_line("Overlapping", _shaded_xs, _shaded_ys3, spec)
+            implot.plot_line("Overlapping", _shaded_xs, _shaded_ys4, spec)
+            implot.end_plot()
+
+    def _implot_subplot4_stems():
+        """Stem plots (from original demo)."""
+        if implot.begin_plot("Stem Plots"):
+            implot.setup_axis_limits(implot.ImAxis_.x1, 0, 1.0)
+            implot.setup_axis_limits(implot.ImAxis_.y1, 0, 1.6)
+            implot.plot_stems("Stems 1", _stem_xs, _stem_ys1)
+            implot.plot_stems("Stems 2", _stem_xs, _stem_ys2,
+                              spec=implot.Spec(marker=implot.Marker_.circle))
+            implot.end_plot()
+
+    def _implot_showcase_gui(plot_size: ImVec2):
+        global _implot_inited
+        if not _implot_inited:
+            _implot_init()
+        sub_flags = implot.SubplotFlags_.no_resize
+        if implot.begin_subplots("##ImPlotShowcase", 2, 2, plot_size, sub_flags):
+            _implot_subplot1_line_plots()
+            _implot_subplot2_filled()
+            _implot_subplot3_shaded()
+            _implot_subplot4_stems()
             implot.end_subplots()
 
-    def _telemetry_gui_side():
-        global _telemetry_paused, _telemetry_speed, _telemetry_history
-        _, _telemetry_paused = imgui.checkbox("Pause", _telemetry_paused)
-        _, _telemetry_speed = imgui.slider_float("Speed", _telemetry_speed, 0.5, 40.0)
-        _, _telemetry_history = imgui.slider_float("History", _telemetry_history, 2.0, 20.0, "%.0f s")
-
-    def _telemetry_slide_gui(content_size: ImVec2):
-        em = hello_imgui.em_size()
-        main_side = content_size.y
-        gap = em * 0.5
-        side_panel_w = content_size.x - main_side - gap
-
-        _telemetry_gui_main(ImVec2(main_side, main_side))
-
-        if side_panel_w > em * 4.0:
-            imgui.same_line(0.0, gap)
-            draw_side_panel("##telemetry_side", side_panel_w, main_side, _telemetry_gui_side)
+    def _implot_slide_gui(content_size: ImVec2):
+        _implot_showcase_gui(content_size)
 
 
 # ============================================================================
@@ -997,9 +1034,9 @@ void main(){
 # Slide wrappers with fallbacks
 # ============================================================================
 
-def _telemetry_slide_wrapper(cs: ImVec2):
+def _implot_slide_wrapper(cs: ImVec2):
     if HAS_IMPLOT:
-        _telemetry_slide_gui(cs)
+        _implot_slide_gui(cs)
     else:
         imgui.text_wrapped("ImPlot not available.")
 
@@ -1116,11 +1153,6 @@ The "Demo Apps" tab provide sample starter apps from which you can take inspirat
                     _automation_show_me,
                 )
 
-        demo_utils.animate_logo(
-            "images/logo_imgui_bundle_512.png", 1.0, ImVec2(0.5, 3.0), 0.30,
-            "https://github.com/pthom/imgui_bundle",
-        )
-
 
 # ============================================================================
 # Carousel rendering
@@ -1181,7 +1213,7 @@ def _intro_mini_demos():
         CarouselSlide(
             "Rich Interactive Plots",
             "ImPlot delivers animated, interactive 2D charts with minimal code. It is extremely fast, and ideal for real-time data monitoring, diagnostics, and dashboards.",
-            _telemetry_slide_wrapper),
+            _implot_slide_wrapper),
         CarouselSlide(
             "GPU-Accelerated Rendering",
             "Dear ImGui renders directly on the GPU \u2014 fast enough to blend custom shaders and 3D content into your UI.",

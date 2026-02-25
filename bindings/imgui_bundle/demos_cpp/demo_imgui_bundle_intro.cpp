@@ -5,7 +5,6 @@
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/browse_to_url.h"
 #include "immapp/immapp.h"
-#include "demo_utils/animate_logo.h"
 #include "demo_utils/api_demos.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
@@ -31,6 +30,7 @@
 #endif
 
 #include <cmath>
+#include <cstdlib>
 #include <vector>
 #include <memory>
 
@@ -222,106 +222,170 @@ namespace IntroLorenz
 
 
 // ============================================================================
-// Slide 3: Telemetry — ImPlot subplots with scrolling signals
+// Slide 2: ImPlot showcase — 4 diverse plot types in subplots
 // ============================================================================
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 
-namespace IntroTelemetry
+namespace IntroImPlotShowcase
 {
-    struct Channel {
-        std::vector<float> times, values;
-        int maxSize = 2000;
-        void AddPoint(float t, float v) {
-            times.push_back(t);
-            values.push_back(v);
-            if ((int)times.size() > maxSize) {
-                times.erase(times.begin());
-                values.erase(values.begin());
-            }
-        }
-    };
+    static bool sInited = false;
+    static const int kLineN = 1001;
+    static const int kFilledN = 101;
+    static const int kStemN = 51;
 
-    static Channel sChannels[4];
-    static float sTime = 0.f;
-    static float sSpeed = 20.0f;
-    static bool sPaused = false;
-    static float sHistory = 10.0f;
+    static std::vector<double> sLineXs;
 
-    static float PseudoNoise(float t) {
-        return sinf(t * 37.1f) * sinf(t * 53.7f);
+    // Filled line plots (static)
+    static std::vector<double> sFilledXs, sFilledYs1, sFilledYs2, sFilledYs3;
+
+    // Shaded plots (static)
+    static std::vector<double> sShadedXs, sShadedYs, sShadedYs1, sShadedYs2, sShadedYs3, sShadedYs4;
+
+    // Stem plots (static)
+    static std::vector<double> sStemXs, sStemYs1, sStemYs2;
+
+    static double RandomRange(double low, double high)
+    {
+        return low + (high - low) * ((double)rand() / RAND_MAX);
     }
 
-    static void Update()
+    static void Init()
     {
-        if (sPaused) return;
-        float dt = ImGui::GetIO().DeltaTime * sSpeed;
-        sTime += dt;
-        float pi = 3.14159265f;
-        sChannels[0].AddPoint(sTime, sinf(2.f * pi * 0.5f * sTime));
-        sChannels[1].AddPoint(sTime, 0.5f * sinf(2.f * pi * 0.3f * sTime) + 0.3f * PseudoNoise(sTime));
-        sChannels[2].AddPoint(sTime, sinf(2.f * pi * 0.4f * sTime) > 0.f ? 1.f : -1.f);
-        sChannels[3].AddPoint(sTime, 0.6f * sinf(2.f * pi * 0.7f * sTime) + 0.3f * sinf(2.f * pi * 2.3f * sTime));
-    }
+        srand(0);
 
-    void GuiMainPart(ImVec2 plotSize)
-    {
-        Update();
+        sLineXs.resize(kLineN);
+        for (int i = 0; i < kLineN; i++)
+            sLineXs[i] = (double)i / (kLineN - 1);
 
-        static const char* labels[] = {"Voltage", "Pressure", "Digital", "Vibration"};
-        static const ImVec4 colors[] = {
-            ImVec4(0.2f, 0.9f, 0.4f, 1.f),
-            ImVec4(0.3f, 0.6f, 1.0f, 1.f),
-            ImVec4(1.0f, 0.6f, 0.1f, 1.f),
-            ImVec4(0.9f, 0.3f, 0.6f, 1.f),
-        };
-
-        ImPlotSubplotFlags subFlags = ImPlotSubplotFlags_LinkAllX | ImPlotSubplotFlags_NoResize;
-        if (ImPlot::BeginSubplots("##Telemetry", 2, 2, plotSize, subFlags))
+        // Filled line plots
+        sFilledXs.resize(kFilledN);
+        sFilledYs1.resize(kFilledN);
+        sFilledYs2.resize(kFilledN);
+        sFilledYs3.resize(kFilledN);
+        for (int i = 0; i < kFilledN; i++)
         {
-            for (int i = 0; i < 4; i++)
-            {
-                if (ImPlot::BeginPlot(labels[i], ImVec2(), ImPlotFlags_NoLegend))
-                {
-                    ImPlot::SetupAxes(nullptr, nullptr,
-                        ImPlotAxisFlags_NoTickLabels, ImPlotAxisFlags_AutoFit);
-                    ImPlot::SetupAxisLimits(ImAxis_X1, sTime - sHistory, sTime, ImGuiCond_Always);
+            sFilledXs[i] = (double)i;
+            sFilledYs1[i] = RandomRange(400.0, 450.0);
+            sFilledYs2[i] = RandomRange(275.0, 350.0);
+            sFilledYs3[i] = RandomRange(150.0, 225.0);
+        }
 
-                    if (!sChannels[i].times.empty())
-                    {
-                        ImPlot::PlotLine(labels[i],
-                            sChannels[i].times.data(), sChannels[i].values.data(),
-                            (int)sChannels[i].times.size(), {ImPlotProp_LineColor, colors[i]});
-                    }
-                    ImPlot::EndPlot();
-                }
-            }
+        // Shaded plots
+        sShadedXs.resize(kLineN);
+        sShadedYs.resize(kLineN);
+        sShadedYs1.resize(kLineN);
+        sShadedYs2.resize(kLineN);
+        sShadedYs3.resize(kLineN);
+        sShadedYs4.resize(kLineN);
+        for (int i = 0; i < kLineN; i++)
+        {
+            double x = (double)i / (kLineN - 1);
+            sShadedXs[i] = x;
+            sShadedYs[i] = 0.25 + 0.25 * sin(25.0 * x) * sin(5.0 * x) + RandomRange(-0.01, 0.01);
+            sShadedYs1[i] = sShadedYs[i] + RandomRange(0.1, 0.12);
+            sShadedYs2[i] = sShadedYs[i] - RandomRange(0.1, 0.12);
+            sShadedYs3[i] = 0.75 + 0.2 * sin(25.0 * x);
+            sShadedYs4[i] = 0.75 + 0.1 * cos(25.0 * x);
+        }
+
+        // Stem plots
+        sStemXs.resize(kStemN);
+        sStemYs1.resize(kStemN);
+        sStemYs2.resize(kStemN);
+        for (int i = 0; i < kStemN; i++)
+        {
+            double x = (double)i / (kStemN - 1);
+            sStemXs[i] = x;
+            sStemYs1[i] = 1.0 + 0.5 * sin(25.0 * x) * cos(2.0 * x);
+            sStemYs2[i] = 0.5 + 0.25 * sin(10.0 * x) * sin(x);
+        }
+
+        sInited = true;
+    }
+
+    static void Subplot1_LinePlots()
+    {
+        double t = ImGui::GetTime() * 1.5;
+        std::vector<double> ys1(kLineN), ys2(kLineN), ys3(kLineN);
+        for (int i = 0; i < kLineN; i++)
+        {
+            double x = sLineXs[i];
+            ys1[i] = 0.5 + 0.5 * sin(6.0 * (x + t));
+            ys2[i] = 0.5 + 0.3 * cos(4.0 * (x + t));
+            ys3[i] = 0.5 + 0.2 * sin(10.0 * x + t) * cos(3.0 * x + t);
+        }
+        if (ImPlot::BeginPlot("Line Plots"))
+        {
+            ImPlot::SetupAxes("x", "y", ImPlotAxisFlags_NoTickLabels, ImPlotAxisFlags_NoTickLabels);
+            ImPlot::SetupAxesLimits(0, 1, -0.1, 1.1);
+            ImPlot::PlotLine("f(x)", sLineXs.data(), ys1.data(), kLineN);
+            ImPlot::PlotLine("g(x)", sLineXs.data(), ys2.data(), kLineN);
+            ImPlot::PlotLine("h(x)", sLineXs.data(), ys3.data(), kLineN);
+            ImPlot::EndPlot();
+        }
+    }
+
+    static void Subplot2_Filled()
+    {
+        if (ImPlot::BeginPlot("Stock Prices"))
+        {
+            ImPlot::SetupAxes("Days", "Price");
+            ImPlot::SetupAxesLimits(0, 100, 0, 500);
+            ImPlotSpec spec;
+            spec.FillAlpha = 0.25f;
+            ImPlot::PlotShaded("Stock 1", sFilledXs.data(), sFilledYs1.data(), kFilledN, 0.0, spec);
+            ImPlot::PlotLine("Stock 1", sFilledXs.data(), sFilledYs1.data(), kFilledN);
+            ImPlot::PlotShaded("Stock 2", sFilledXs.data(), sFilledYs2.data(), kFilledN, 0.0, spec);
+            ImPlot::PlotLine("Stock 2", sFilledXs.data(), sFilledYs2.data(), kFilledN);
+            ImPlot::PlotShaded("Stock 3", sFilledXs.data(), sFilledYs3.data(), kFilledN, 0.0, spec);
+            ImPlot::PlotLine("Stock 3", sFilledXs.data(), sFilledYs3.data(), kFilledN);
+            ImPlot::EndPlot();
+        }
+    }
+
+    static void Subplot3_Shaded()
+    {
+        ImPlotSpec spec;
+        spec.FillAlpha = 0.25f;
+        if (ImPlot::BeginPlot("Shaded Plots"))
+        {
+            ImPlot::SetupLegend(ImPlotLocation_NorthWest, ImPlotLegendFlags_Reverse);
+            ImPlot::PlotShaded("Uncertain Data", sShadedXs.data(), sShadedYs1.data(), sShadedYs2.data(), kLineN, spec);
+            ImPlot::PlotLine("Uncertain Data", sShadedXs.data(), sShadedYs.data(), kLineN, spec);
+            ImPlot::PlotShaded("Overlapping", sShadedXs.data(), sShadedYs3.data(), sShadedYs4.data(), kLineN, spec);
+            ImPlot::PlotLine("Overlapping", sShadedXs.data(), sShadedYs3.data(), kLineN, spec);
+            ImPlot::PlotLine("Overlapping", sShadedXs.data(), sShadedYs4.data(), kLineN, spec);
+            ImPlot::EndPlot();
+        }
+    }
+
+    static void Subplot4_Stems()
+    {
+        if (ImPlot::BeginPlot("Stem Plots"))
+        {
+            ImPlot::SetupAxisLimits(ImAxis_X1, 0, 1.0);
+            ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1.6);
+            ImPlot::PlotStems("Stems 1", sStemXs.data(), sStemYs1.data(), kStemN);
+            ImPlot::PlotStems("Stems 2", sStemXs.data(), sStemYs2.data(), kStemN, 0.0,
+                ImPlotSpec(ImPlotProp_Marker, (double)ImPlotMarker_Circle));
+            ImPlot::EndPlot();
+        }
+    }
+
+    void SlideGui(ImVec2 plotSize)
+    {
+        if (!sInited)
+            Init();
+        if (ImPlot::BeginSubplots("##ImPlotShowcase", 2, 2, plotSize, ImPlotSubplotFlags_NoResize))
+        {
+            Subplot1_LinePlots();
+            Subplot2_Filled();
+            Subplot3_Shaded();
+            Subplot4_Stems();
             ImPlot::EndSubplots();
         }
     }
-
-    void GuiSidePanel()
-    {
-        ImGui::Checkbox("Pause", &sPaused);
-        ImGui::SliderFloat("Speed", &sSpeed, 0.5f, 40.0f);
-        ImGui::SliderFloat("History", &sHistory, 2.0f, 20.0f, "%.0f s");
-    }
-
-    void SlideGui(ImVec2 contentSize)
-    {
-        float em = HelloImGui::EmSize();
-        float mainSide = contentSize.y;
-        float gap = em * 0.5f;
-        float sidePanelW = contentSize.x - mainSide - gap;
-
-        GuiMainPart(ImVec2(mainSide, mainSide));
-
-        if (sidePanelW > em * 4.f)
-        {
-            ImGui::SameLine(0.f, gap);
-            DrawSidePanel("##telemetry_side", sidePanelW, mainSide, GuiSidePanel);
-        }
-    }
-} // namespace IntroTelemetry
+} // namespace IntroImPlotShowcase
 
 #endif // IMGUI_BUNDLE_WITH_IMPLOT
 
@@ -1118,9 +1182,9 @@ void main(){
 // depend on optional libraries, providing a fallback message.
 
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
-static void TelemetrySlideGui(ImVec2 cs) { IntroTelemetry::SlideGui(cs); }
+static void ImPlotShowcaseSlideGui(ImVec2 cs) { IntroImPlotShowcase::SlideGui(cs); }
 #else
-static void TelemetrySlideGui(ImVec2) { ImGui::TextWrapped("ImPlot not available."); }
+static void ImPlotShowcaseSlideGui(ImVec2) { ImGui::TextWrapped("ImPlot not available."); }
 #endif
 
 static void LorenzSlideGui(ImVec2 cs)    { IntroLorenz::SlideGui(cs); }
@@ -1310,7 +1374,7 @@ void IntroMiniDemos()
     static const CarouselSlide slides[] = {
         { "Rich Interactive Plots",
           "ImPlot delivers animated, interactive 2D charts with minimal code. It is extremely fast, and ideal for real-time data monitoring, diagnostics, and dashboards.",
-            TelemetrySlideGui },
+            ImPlotShowcaseSlideGui },
 
         { "GPU-Accelerated Rendering",
         "Dear ImGui renders directly on the GPU \xe2\x80\x94 fast enough to blend custom shaders and 3D content into your UI.",
