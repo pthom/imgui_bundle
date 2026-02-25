@@ -18,6 +18,5 @@ void demo_imguizmo_launcher()
     );
     if (ImGui::Button("Run gizmo demo"))
         SpawnDemo("demo_gizmo");
-    HelloImGui::ImageFromAsset("images/gizmo_screenshot.jpg", ImVec2(0, HelloImGui::EmSize(15.0f)));
     ShowPythonVsCppFile("demos_imguizmo/demo_gizmo", 30);
 }

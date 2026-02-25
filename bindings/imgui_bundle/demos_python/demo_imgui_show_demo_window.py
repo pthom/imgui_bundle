@@ -28,7 +28,7 @@ def demo_gui():
         imgui.show_demo_window()
 
     demo_utils.animate_logo(
-        "images/logo_imgui_600.png",
+        "images/logo_imgui_600.jpg",
         2.0,
         ImVec2(1.0 * 0.64, 4.8 * 0.64),
         0.45,

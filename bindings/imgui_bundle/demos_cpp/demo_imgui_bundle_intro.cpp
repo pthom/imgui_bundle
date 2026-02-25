@@ -1258,8 +1258,6 @@ The "Demo Apps" tab provide sample starter apps from which you can take inspirat
                 ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
         }
 #endif
-
-        AnimateLogo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5f, 3.f), 0.30f, "https://github.com/pthom/imgui_bundle");
     }
 }
 

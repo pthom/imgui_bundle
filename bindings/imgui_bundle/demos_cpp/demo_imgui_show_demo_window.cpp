@@ -21,5 +21,5 @@ void demo_imgui_show_demo_window()
     ImGui::ShowDemoWindow_MaybeDocked(false);
 #endif
 
-    AnimateLogo("images/logo_imgui_600.png", 2.f, ImVec2(1.f * 0.64f, 4.8f * 0.64f), 0.45f, "https://github.com/ocornut/imgui");
+    AnimateLogo("images/logo_imgui_600.jpg", 2.f, ImVec2(1.f * 0.64f, 4.8f * 0.64f), 0.45f, "https://github.com/ocornut/imgui");
 }
