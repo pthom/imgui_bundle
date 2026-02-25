@@ -1090,27 +1090,30 @@ void IntroMiniDemos()
     ImGui::Separator();
 
     static const CarouselSlide slides[] = {
-        // { "Rich Interactive Plots",
-        //   "ImPlot delivers animated, interactive 2D charts with minimal code \xe2\x80\x94 ready for real-time data.",
-        //   HeartSlideGui },
         { "Rich Interactive Plots",
           "ImPlot delivers animated, interactive 2D charts with minimal code. It is extremely fast, and ideal for real-time data monitoring, diagnostics, and dashboards.",
-          TelemetrySlideGui },
+            TelemetrySlideGui },
+
+        { "GPU-Accelerated Rendering",
+        "Dear ImGui renders directly on the GPU \xe2\x80\x94 fast enough to blend custom shaders and 3D content into your UI.",
+        ShaderSlideGui },
+
         { "3D Data Exploration",
           "ImPlot3D adds rotatable, zoomable 3D plots \xe2\x80\x94 navigate complex datasets with intuitive controls.",
           LorenzSlideGui },
-        { "Feature-Rich Widgets",
-          "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
-          TableSlideGui },
+
         { "Image Analysis",
           "ImmVision lets you zoom, pan, and inspect pixel values in real time \xe2\x80\x94 with linked views and colormaps.",
           ImmVisionSlideGui },
+
+        { "Feature-Rich Widgets",
+          "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
+          TableSlideGui },
+
         { "Deploy to the Web",
           "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",
           WebDeploySlideGui },
-        { "GPU-Accelerated Rendering",
-          "Dear ImGui renders directly on the GPU \xe2\x80\x94 fast enough to blend custom shaders and 3D content into your UI.",
-          ShaderSlideGui },
+
         { "Usage in Notebooks",
         "Dear ImGui Bundle can also be used from a notebook \xe2\x80\x94 here, it displays a real-time dashboard during an ML training session.",
             NotebookSlideGui },
@@ -1149,7 +1152,7 @@ void IntroMiniDemos()
         if (!userInteracting)
         {
             autoTimer += dt;
-            if (autoTimer > 4.0f)
+            if (autoTimer > 5.0f)
             {
                 currentSlide = (currentSlide + 1) % slideCount;
                 autoTimer = 0.f;

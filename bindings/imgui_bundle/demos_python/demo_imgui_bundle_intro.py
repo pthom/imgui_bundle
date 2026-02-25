@@ -984,25 +984,25 @@ def _intro_mini_demos():
             "ImPlot delivers animated, interactive 2D charts with minimal code. It is extremely fast, and ideal for real-time data monitoring, diagnostics, and dashboards.",
             _telemetry_slide_wrapper),
         CarouselSlide(
+            "GPU-Accelerated Rendering",
+            "Dear ImGui renders directly on the GPU \u2014 fast enough to blend custom shaders and 3D content into your UI.",
+            _shader_slide_wrapper),
+        CarouselSlide(
             "3D Data Exploration",
             "ImPlot3D adds rotatable, zoomable 3D plots \u2014 navigate complex datasets with intuitive controls.",
             _lorenz_slide_gui),
-        CarouselSlide(
-            "Feature-Rich Widgets",
-            "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
-            _table_slide_gui),
         CarouselSlide(
             "Image Analysis",
             "ImmVision lets you zoom, pan, and inspect pixel values in real time \u2014 with linked views and colormaps.",
             _immvision_slide_wrapper),
         CarouselSlide(
+            "Feature-Rich Widgets",
+            "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
+            _table_slide_gui),
+        CarouselSlide(
             "Deploy to the Web",
             "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",
             _web_deploy_slide_gui),
-        CarouselSlide(
-            "GPU-Accelerated Rendering",
-            "Dear ImGui renders directly on the GPU \u2014 fast enough to blend custom shaders and 3D content into your UI.",
-            _shader_slide_wrapper),
         CarouselSlide(
             "Usage in Notebooks",
             "Dear ImGui Bundle can also be used from a notebook \u2014 here, it displays a real-time dashboard during an ML training session.",
@@ -1040,7 +1040,7 @@ def _intro_mini_demos():
         user_interacting = imgui.is_any_item_active()
         if not user_interacting:
             _auto_timer += dt
-            if _auto_timer > 4.0:
+            if _auto_timer > 5.0:
                 _current_slide = (_current_slide + 1) % slide_count
                 _auto_timer = 0.0
 
