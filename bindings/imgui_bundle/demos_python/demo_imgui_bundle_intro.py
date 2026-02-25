@@ -7,6 +7,7 @@ import numpy as np
 
 from imgui_bundle import imgui, imgui_md, hello_imgui, immapp, ImVec2, ImVec4
 from imgui_bundle import imgui_color_text_edit as ed
+from imgui_bundle import imgui_knobs, imgui_toggle
 from imgui_bundle.demos_python import demo_utils
 from imgui_bundle import implot3d
 from imgui_bundle.immapp import icons_fontawesome_6
@@ -313,6 +314,7 @@ _table_playhead = 0
 _table_bpm = 140.0
 _table_playing = True
 _table_accum = 0.0
+_table_hl_color = ImVec4(0.3, 0.5, 1.0, 0.25)
 
 
 def _table_init():
@@ -364,7 +366,7 @@ def _table_gui_main(size: ImVec2):
         imgui.table_angled_headers_row()
         imgui.table_headers_row()
 
-        hl_col = imgui.color_convert_float4_to_u32(ImVec4(0.3, 0.5, 1.0, 0.25))
+        hl_col = imgui.color_convert_float4_to_u32(_table_hl_color)
 
         for row in range(_table_num_beats):
             imgui.push_id(row)
@@ -390,9 +392,37 @@ def _table_gui_main(size: ImVec2):
 
 
 def _table_gui_side():
-    global _table_playing, _table_bpm
-    _, _table_playing = imgui.checkbox("Play", _table_playing)
-    _, _table_bpm = imgui.slider_float("BPM", _table_bpm, 60.0, 300.0, "%.0f")
+    global _table_playing, _table_bpm, _table_hl_color
+    em = hello_imgui.em_size()
+
+    # Play/Pause
+    imgui.text("Play")
+    toggle_config = imgui_toggle.material_style()
+    toggle_config.size = ImVec2(em * 2.5, em * 1.2)
+    _, _table_playing = imgui_toggle.toggle("##play", _table_playing, toggle_config)
+
+    # BPM
+    imgui.spacing()
+    imgui.text("Tempo")
+    accent = imgui.get_style_color_vec4(imgui.Col_.slider_grab)
+    imgui.push_style_color(imgui.Col_.frame_bg, ImVec4(accent.x, accent.y, accent.z, 0.4))
+    imgui.push_style_color(imgui.Col_.frame_bg_hovered, ImVec4(accent.x, accent.y, accent.z, 0.6))
+    imgui.push_style_color(imgui.Col_.frame_bg_active, ImVec4(accent.x, accent.y, accent.z, 0.8))
+    _, _table_bpm = imgui_knobs.knob(
+        "##bpm", _table_bpm, 60.0, 300.0, 0.0, "%.0f",
+        imgui_knobs.ImGuiKnobVariant_.wiper_dot,
+        em * 3.5, imgui_knobs.ImGuiKnobFlags_.always_clamp)
+    imgui.pop_style_color(3)
+
+    # Highlight color
+    imgui.spacing()
+    imgui.text("Highlight")
+    picker_flags = (imgui.ColorEditFlags_.no_side_preview
+                    | imgui.ColorEditFlags_.no_inputs
+                    | imgui.ColorEditFlags_.no_label
+                    | imgui.ColorEditFlags_.alpha_bar
+                    | imgui.ColorEditFlags_.picker_hue_wheel)
+    _, _table_hl_color = imgui.color_picker4("##hl_wheel", _table_hl_color, picker_flags)
 
 
 def _table_slide_gui(content_size: ImVec2):
@@ -686,7 +716,7 @@ def _markdown_slide_gui(content_size: ImVec2):
 
 def _source_code_slide_gui(content_size: ImVec2):
     imgui.begin_child("##source_code", content_size, False)
-    demo_utils.show_python_vs_cpp_file("demo_imgui_bundle_intro")
+    demo_utils.show_python_vs_cpp_file("demo_imgui_bundle_intro", 25)
     imgui.end_child()
 
 
@@ -1016,10 +1046,11 @@ def _intro_top_section():
 *From expressive code to powerful GUIs in no time*
 """)
 
-    imgui_md.render_unindented(
-        "A batteries-included framework built on Dear ImGui, bundling 20+ libraries "
-        "\u2014 plotting, markdown, node editors, 3D gizmos, and more. "
-        "Works in C++ and Python, on desktop, mobile, and web."
+    imgui_md.render_unindented("""
+        A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
+
+        Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
+        """
     )
 
     imgui.text_disabled("Start your first app in 2 or 3 lines of code.")

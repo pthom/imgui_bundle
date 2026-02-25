@@ -1,3 +1,4 @@
+// Slide 8: Web Deployment — static screenshot
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
@@ -7,7 +8,6 @@
 #include "demo_utils/animate_logo.h"
 #include "demo_utils/api_demos.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
-
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
 #endif
@@ -765,7 +765,7 @@ namespace IntroSourceCode
     void SlideGui(ImVec2 contentSize)
     {
         ImGui::BeginChild("##source_code", contentSize, false);
-        ShowPythonVsCppFile("demo_imgui_bundle_intro");
+        ShowPythonVsCppFile("demo_imgui_bundle_intro", 25);
         ImGui::EndChild();
     }
 } // namespace IntroSourceCode
@@ -1149,7 +1149,11 @@ void IntroTopSection()
 *From expressive code to powerful GUIs in no time*
 )");
 
-    ImGuiMd::RenderUnindented(R"(A batteries-included framework built on Dear ImGui, bundling 20+ libraries — plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.)");
+    ImGuiMd::RenderUnindented(R"(
+        A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
+
+        Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
+)");
 
     ImGui::TextDisabled("Start your first app in 2 or 3 lines of code.");
 
