@@ -396,6 +396,7 @@ def litgen_options_imgui(
             r"^ImFileHandle$",
             r"ImFontLoader",
             r"^ImFontAtlasBuilder",
+            r"^ImGuiDemoMarkerCallback",
         ]
     )
 

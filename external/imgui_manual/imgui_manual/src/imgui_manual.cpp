@@ -161,33 +161,47 @@ namespace
     }
 
     // Callback invoked by IMGUI_DEMO_MARKER when a demo section is hovered
-    void OnDemoMarkerCallback(const char* file, int line, const char* section, void* user_data)
+    void OnDemoMarkerCallback(const char* file_ext_cpp, int line, const char* section)
     {
-        (void)user_data;
         if (!DemoMarker_IsMouveHovering(line))
             return;
-        // file is IMGUI_DEMO_MARKER_FILE value (e.g. "imgui_demo"), append ".cpp" for display
-        char cppFilename[256];
-        snprintf(cppFilename, sizeof(cppFilename), "%s.cpp", file);
+        // Compute file name without extension
+        char file_no_ext[256];
+        {
+            const char* dot = strrchr(file_ext_cpp, '.');
+            if (dot != NULL)
+            {
+                size_t len = dot - file_ext_cpp;
+                if (len >= sizeof(file_no_ext))
+                    len = sizeof(file_no_ext) - 1;
+                strncpy(file_no_ext, file_ext_cpp, len);
+                file_no_ext[len] = '\0';
+            }
+            else
+            {
+                strncpy(file_no_ext, file_ext_cpp, sizeof(file_no_ext) - 1);
+                file_no_ext[sizeof(file_no_ext) - 1] = '\0';
+            }
+        }
 
         if (DemoCodeViewer_GetShowPython() && section)
         {
-            int pyLine = DemoCodeViewer_GetPythonLineForSection(cppFilename, section);
+            int pyLine = DemoCodeViewer_GetPythonLineForSection(file_ext_cpp, section);
             if (pyLine > 0)
                 snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-                    "%s.py:%d - \"%s\"", file, pyLine, section);
+                    "%s.py:%d - \"%s\"", file_no_ext, pyLine, section);
             else
                 snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-                    "%s.cpp:%d (no python demo) - \"%s\"", file, line + 1, section);
+                    "%s.cpp:%d (no python demo) - \"%s\"", file_no_ext, line + 1, section);
         }
         else
         {
             snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-                "%s.cpp:%d - \"%s\"", file, line + 1, section);
+                "%s.cpp:%d - \"%s\"", file_no_ext, line + 1, section);
         }
 
         if (GDemoMarker_FlagFollowSource)
-            DemoCodeViewer_ShowCodeAt(cppFilename, line, section);
+            DemoCodeViewer_ShowCodeAt(file_ext_cpp, line, section);
     }
 
     // Top toolbar: library selection buttons + C++/Python toggle
@@ -302,7 +316,8 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
     if (!initialized)
     {
         // Set up the demo marker hook
-        GImGuiDemoMarkerCallback = OnDemoMarkerCallback;
+        ImGuiContext& g = *GImGui;
+        g.DemoMarkerCallback = OnDemoMarkerCallback;
 
         // Disable close button on ImGui::ShowDemoWindow by default
         gIsImGuiDemoWindow_no_close = false;

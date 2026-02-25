@@ -3914,22 +3914,41 @@ void py_init_module_implot(nb::module_& m)
         "Shows the ImPlot demo window (add implot_demo.cpp to your sources!)");
 
     m.def("show_demo_window_maybe_docked",
-        [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0) -> std::optional<bool>
+        [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0, const std::optional<const ImVec2> & window_pos = std::nullopt, const std::optional<const ImVec2> & window_size = std::nullopt) -> std::optional<bool>
         {
-            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0) -> std::optional<bool>
+            auto ShowDemoWindow_MaybeDocked_adapt_mutable_param_with_default_value = [](bool create_window, bool * p_open = NULL, ImGuiWindowFlags initial_extra_flags = 0, const std::optional<const ImVec2> & window_pos = std::nullopt, const std::optional<const ImVec2> & window_size = std::nullopt)
+            {
+
+                const ImVec2& window_pos_or_default = [&]() -> const ImVec2 {
+                    if (window_pos.has_value())
+                        return window_pos.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                const ImVec2& window_size_or_default = [&]() -> const ImVec2 {
+                    if (window_size.has_value())
+                        return window_size.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                ImPlot::ShowDemoWindow_MaybeDocked(create_window, p_open, initial_extra_flags, window_pos_or_default, window_size_or_default);
+            };
+            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [&ShowDemoWindow_MaybeDocked_adapt_mutable_param_with_default_value](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0, const std::optional<const ImVec2> & window_pos = std::nullopt, const std::optional<const ImVec2> & window_size = std::nullopt) -> std::optional<bool>
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
                     p_open_adapt_modifiable = & (*p_open);
 
-                ImPlot::ShowDemoWindow_MaybeDocked(create_window, p_open_adapt_modifiable, initial_extra_flags);
+                ShowDemoWindow_MaybeDocked_adapt_mutable_param_with_default_value(create_window, p_open_adapt_modifiable, initial_extra_flags, window_pos, window_size);
                 return p_open;
             };
 
-            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open, initial_extra_flags);
+            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open, initial_extra_flags, window_pos, window_size);
         },
-        nb::arg("create_window"), nb::arg("p_open").none() = nb::none(), nb::arg("initial_extra_flags") = 0,
-        "Bundle: ShowDemoWindow_MaybeDocked is ShowDemoWindow, but can be used without creating an ImGui window.");
+        nb::arg("create_window"), nb::arg("p_open").none() = nb::none(), nb::arg("initial_extra_flags") = 0, nb::arg("window_pos").none() = nb::none(), nb::arg("window_size").none() = nb::none(),
+        " Bundle: ShowDemoWindow_MaybeDocked is ShowDemoWindow, but can be used without creating an ImGui window.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * window_pos: ImVec2(0, 0)\n        * window_size: ImVec2(0, 0)");
     // #endif
     ////////////////////    </generated_from:implot.h>    ////////////////////
 

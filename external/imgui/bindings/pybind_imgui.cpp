@@ -271,20 +271,41 @@ void py_init_module_imgui_main(nb::module_& m)
         "create Demo window. demonstrate most ImGui features. call this to learn about the library! try to make it always available in your application!");
 
     m.def("show_demo_window_maybe_docked",
-        [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0) -> std::optional<bool>
+        [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0, const std::optional<const ImVec2> & window_pos = std::nullopt, const std::optional<const ImVec2> & window_size = std::nullopt) -> std::optional<bool>
         {
-            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0) -> std::optional<bool>
+            auto ShowDemoWindow_MaybeDocked_adapt_mutable_param_with_default_value = [](bool create_window, bool * p_open = NULL, ImGuiWindowFlags initial_extra_flags = 0, const std::optional<const ImVec2> & window_pos = std::nullopt, const std::optional<const ImVec2> & window_size = std::nullopt)
+            {
+
+                const ImVec2& window_pos_or_default = [&]() -> const ImVec2 {
+                    if (window_pos.has_value())
+                        return window_pos.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                const ImVec2& window_size_or_default = [&]() -> const ImVec2 {
+                    if (window_size.has_value())
+                        return window_size.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                ImGui::ShowDemoWindow_MaybeDocked(create_window, p_open, initial_extra_flags, window_pos_or_default, window_size_or_default);
+            };
+            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [&ShowDemoWindow_MaybeDocked_adapt_mutable_param_with_default_value](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0, const std::optional<const ImVec2> & window_pos = std::nullopt, const std::optional<const ImVec2> & window_size = std::nullopt) -> std::optional<bool>
             {
                 bool * p_open_adapt_modifiable = nullptr;
                 if (p_open.has_value())
                     p_open_adapt_modifiable = & (*p_open);
 
-                ImGui::ShowDemoWindow_MaybeDocked(create_window, p_open_adapt_modifiable, initial_extra_flags);
+                ShowDemoWindow_MaybeDocked_adapt_mutable_param_with_default_value(create_window, p_open_adapt_modifiable, initial_extra_flags, window_pos, window_size);
                 return p_open;
             };
 
-            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open, initial_extra_flags);
-        },     nb::arg("create_window"), nb::arg("p_open").none() = nb::none(), nb::arg("initial_extra_flags") = 0);
+            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open, initial_extra_flags, window_pos, window_size);
+        },
+        nb::arg("create_window"), nb::arg("p_open").none() = nb::none(), nb::arg("initial_extra_flags") = 0, nb::arg("window_pos").none() = nb::none(), nb::arg("window_size").none() = nb::none(),
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * window_pos: ImVec2(0, 0)\n        * window_size: ImVec2(0, 0)");
 
     m.def("show_metrics_window",
         [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
@@ -2035,6 +2056,11 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::arg("storage_id"),
         "set id to use for open/close storage (default to same as item id).");
 
+    m.def("tree_node_get_open",
+        ImGui::TreeNodeGetOpen,
+        nb::arg("storage_id"),
+        "retrieve tree node open/close state.");
+
     m.def("selectable",
         [](const char * label, bool p_selected, ImGuiSelectableFlags flags = 0, const std::optional<const ImVec2> & size = std::nullopt) -> std::tuple<bool, bool>
         {
@@ -3235,7 +3261,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("allow_tab_input", ImGuiInputTextFlags_AllowTabInput, "Pressing TAB input a '\t' character into the text field")
             .value("enter_returns_true", ImGuiInputTextFlags_EnterReturnsTrue, "Return 'True' when Enter is pressed (as opposed to every time the value was modified). Consider using IsItemDeactivatedAfterEdit() instead!")
             .value("escape_clears_all", ImGuiInputTextFlags_EscapeClearsAll, "Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert)")
-            .value("ctrl_enter_for_new_line", ImGuiInputTextFlags_CtrlEnterForNewLine, "In multi-line mode, validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter).")
+            .value("ctrl_enter_for_new_line", ImGuiInputTextFlags_CtrlEnterForNewLine, "In multi-line mode: validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). Note that Shift+Enter always enter a new line either way.")
             .value("read_only", ImGuiInputTextFlags_ReadOnly, "Read-only mode")
             .value("password", ImGuiInputTextFlags_Password, "Password mode, display all characters as '*', disable copy")
             .value("always_overwrite", ImGuiInputTextFlags_AlwaysOverwrite, "Overwrite mode")
@@ -6806,6 +6832,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("ctx", &ImGuiListClipper::Ctx, "Parent UI context")
         .def_rw("display_start", &ImGuiListClipper::DisplayStart, "First item to display, updated by each call to Step()")
         .def_rw("display_end", &ImGuiListClipper::DisplayEnd, "End of items to display (exclusive)")
+        .def_rw("user_index", &ImGuiListClipper::UserIndex, "Helper storage for user convenience/code. Optional, and otherwise unused if you don't use it.")
         .def_rw("items_count", &ImGuiListClipper::ItemsCount, "[Internal] Number of items")
         .def_rw("items_height", &ImGuiListClipper::ItemsHeight, "[Internal] Height of item after a first step and item submission can calculate it")
         .def_rw("start_pos_y", &ImGuiListClipper::StartPosY, "[Internal] Cursor position at the time of Begin() or after table frozen rows are all processed")

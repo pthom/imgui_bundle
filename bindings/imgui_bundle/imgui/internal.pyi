@@ -4249,6 +4249,8 @@ class Context:
     settings_ini_data: TextBuffer  # In memory .ini settings
     # ImVector<ImGuiSettingsHandler>      SettingsHandlers;    /* original C++ signature */
     settings_handlers: ImVector_SettingsHandler  # List of .ini settings handlers
+
+    # Hooks
     # ImGuiID                             HookIdNext;    /* original C++ signature */
     hook_id_next: ID  # Next available HookId
 
@@ -7502,10 +7504,6 @@ def tree_node_draw_line_to_tree_pop(data: TreeNodeStackData) -> None:
 def tree_push_override_id(id_: ID) -> None:
     pass
 
-# IMGUI_API bool          TreeNodeGetOpen(ImGuiID storage_id);    /* original C++ signature */
-def tree_node_get_open(storage_id: ID) -> bool:
-    pass
-
 # IMGUI_API void          TreeNodeSetOpen(ImGuiID storage_id, bool open);    /* original C++ signature */
 def tree_node_set_open(storage_id: ID, open: bool) -> None:
     pass
@@ -7667,6 +7665,11 @@ def begin_error_tooltip() -> bool:
 
 # IMGUI_API void          EndErrorTooltip();    /* original C++ signature */
 def end_error_tooltip() -> None:
+    pass
+
+# IMGUI_API void          DemoMarker(const char* file, int line, const char* section);    /* original C++ signature */
+def demo_marker(file: str, line: int, section: str) -> None:
+    """Demo Doc Marker for e.g. imgui_manual"""
     pass
 
 # Debug Tools

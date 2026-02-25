@@ -4948,9 +4948,6 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("tree_push_override_id",
         ImGui::TreePushOverrideID, nb::arg("id_"));
 
-    m.def("tree_node_get_open",
-        ImGui::TreeNodeGetOpen, nb::arg("storage_id"));
-
     m.def("tree_node_set_open",
         ImGui::TreeNodeSetOpen, nb::arg("storage_id"), nb::arg("open"));
 
@@ -5066,6 +5063,11 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("end_error_tooltip",
         ImGui::EndErrorTooltip);
+
+    m.def("demo_marker",
+        ImGui::DemoMarker,
+        nb::arg("file"), nb::arg("line"), nb::arg("section"),
+        "Demo Doc Marker for e.g. imgui_manual");
 
     m.def("debug_alloc_hook",
         ImGui::DebugAllocHook,

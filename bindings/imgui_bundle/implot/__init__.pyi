@@ -2556,11 +2556,22 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
     """Shows the ImPlot demo window (add implot_demo.cpp to your sources!)"""
     pass
 
-# IMPLOT_API void  ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL, ImGuiWindowFlags initial_extra_flags = 0);    /* original C++ signature */
+# IMPLOT_API void  ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL, ImGuiWindowFlags initial_extra_flags = 0, ImVec2 window_pos = ImVec2(0, 0), ImVec2 window_size = ImVec2(0, 0));    /* original C++ signature */
 def show_demo_window_maybe_docked(
-    create_window: bool, p_open: Optional[bool] = None, initial_extra_flags: WindowFlags = 0
+    create_window: bool,
+    p_open: Optional[bool] = None,
+    initial_extra_flags: WindowFlags = 0,
+    window_pos: Optional[ImVec2Like] = None,
+    window_size: Optional[ImVec2Like] = None,
 ) -> Optional[bool]:
-    """Bundle: ShowDemoWindow_MaybeDocked is ShowDemoWindow, but can be used without creating an ImGui window."""
+    """Bundle: ShowDemoWindow_MaybeDocked is ShowDemoWindow, but can be used without creating an ImGui window.
+
+
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            * window_pos: ImVec2(0, 0)
+            * window_size: ImVec2(0, 0)
+    """
     pass
 
 # -----------------------------------------------------------------------------

@@ -65,6 +65,7 @@ from .internal import (
     ImFontLoader,
     ImDrawTextFlags,
 )
+
 VoidPtr = Any
 
 FLT_MIN: float  # value defined by this module as the minimum acceptable C(++) float
@@ -693,10 +694,19 @@ def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
     pass
 
 # [ADAPT_IMGUI_BUNDLE]
-# IMGUI_API void          ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL, ImGuiWindowFlags initial_extra_flags = 0);     /* original C++ signature */
+# IMGUI_API void          ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL, ImGuiWindowFlags initial_extra_flags = 0, ImVec2 window_pos = ImVec2(0, 0), ImVec2 window_size = ImVec2(0, 0));     /* original C++ signature */
 def show_demo_window_maybe_docked(
-    create_window: bool, p_open: Optional[bool] = None, initial_extra_flags: WindowFlags = 0
+    create_window: bool,
+    p_open: Optional[bool] = None,
+    initial_extra_flags: WindowFlags = 0,
+    window_pos: Optional[ImVec2Like] = None,
+    window_size: Optional[ImVec2Like] = None,
 ) -> Optional[bool]:
+    """Python bindings defaults:
+    If any of the params below is None, then its default value below will be used:
+        * window_pos: ImVec2(0, 0)
+        * window_size: ImVec2(0, 0)
+    """
     pass
 
 # [/ADAPT_IMGUI_BUNDLE]
@@ -2101,6 +2111,11 @@ def set_next_item_storage_id(storage_id: ID) -> None:
     """set id to use for open/close storage (default to same as item id)."""
     pass
 
+# IMGUI_API bool          TreeNodeGetOpen(ImGuiID storage_id);                                    /* original C++ signature */
+def tree_node_get_open(storage_id: ID) -> bool:
+    """retrieve tree node open/close state."""
+    pass
+
 # [ADAPT_IMGUI_BUNDLE]
 # Widgets: Selectables
 # - A selectable highlights when hovered, and can display another color when selected.
@@ -3443,7 +3458,7 @@ class InputTextFlags_(enum.IntFlag):
     # ImGuiInputTextFlags_CtrlEnterForNewLine = 1 << 8,       /* original C++ signature */
     ctrl_enter_for_new_line = (
         enum.auto()
-    )  # (= 1 << 8)  # In multi-line mode, validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter).
+    )  # (= 1 << 8)  # In multi-line mode: validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). Note that Shift+Enter always enter a new line either way.
 
     # Other options
     # ImGuiInputTextFlags_ReadOnly            = 1 << 9,       /* original C++ signature */
@@ -9841,6 +9856,8 @@ class ListClipper:
     display_start: int  # First item to display, updated by each call to Step()
     # int             DisplayEnd;    /* original C++ signature */
     display_end: int  # End of items to display (exclusive)
+    # int             UserIndex;    /* original C++ signature */
+    user_index: int  # Helper storage for user convenience/code. Optional, and otherwise unused if you don't use it.
     # int             ItemsCount;    /* original C++ signature */
     items_count: int  # [Internal] Number of items
     # float           ItemsHeight;    /* original C++ signature */

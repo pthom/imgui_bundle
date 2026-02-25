@@ -255,6 +255,8 @@ class TextEditor:
         pass
     def get_selected_text(self, a_cursor: int = -1) -> str:
         pass
+    def get_word_at_screen_pos(self, a_screen_pos: ImVec2Like) -> str:
+        pass
 
 ####################    </generated_from:TextEditor.h>    ####################
 

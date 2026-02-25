@@ -196,6 +196,8 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::GetSelectionEnd, nb::arg("a_cursor") = -1)
         .def("get_selected_text",
             &TextEditor::GetSelectedText, nb::arg("a_cursor") = -1)
+        .def("get_word_at_screen_pos",
+            &TextEditor::GetWordAtScreenPos, nb::arg("a_screen_pos"))
         ;
     ////////////////////    </generated_from:TextEditor.h>    ////////////////////
 
