@@ -6,6 +6,7 @@
 #include "immapp/immapp.h"
 #include "demo_utils/animate_logo.h"
 #include "demo_utils/api_demos.h"
+#include "ImGuiColorTextEdit/TextEditor.h"
 
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
@@ -662,6 +663,100 @@ namespace IntroNodeEditor
 
 
 // ============================================================================
+// Slide 7: Markdown rendering — side-by-side source / rendered
+// ============================================================================
+
+namespace IntroMarkdown
+{
+    static const char* kMarkdownSample = R"(## Quick Start Guide
+
+**ImGui Bundle** makes it easy to build
+_beautiful_ apps with rich documentation.
+
+Features:
+- Headers, **bold**, *italic*, ~~strikethrough~~
+- [Clickable links](https://github.com/pthom/imgui_bundle)
+- Syntax-highlighted code blocks
+
+```python
+import imgui_bundle
+imgui_md.render("# Hello!")
+```
+
+Tip: *You can resize the columns on the table below!*
+
+| Library   | Domain          |
+|-----------|-----------------|
+| ImPlot    | 2D plots        |
+| ImPlot3D  | 3D plots        |
+| ImmVision | Image analysis  |
+
+)";
+
+    // Markdown editor with syntax highlighting
+    static TextEditor* sMarkdownEditor = nullptr;
+    static bool sMarkdownEditorInitialized = false;
+
+    void InitMarkdownEditor()
+    {
+        if (!sMarkdownEditorInitialized)
+        {
+            sMarkdownEditor = new TextEditor();
+            sMarkdownEditor->SetText(kMarkdownSample);
+            // Use C++ language definition as a reasonable approximation for markdown
+            // (it will highlight code blocks and some syntax)
+            sMarkdownEditor->SetLanguageDefinition(TextEditor::LanguageDefinitionId::Cpp);
+            sMarkdownEditor->SetPalette(TextEditor::PaletteId::Dark);
+            sMarkdownEditorInitialized = true;
+        }
+    }
+
+    void SlideGui(ImVec2 contentSize)
+    {
+        InitMarkdownEditor();
+
+        float em = HelloImGui::EmSize();
+        float gap = em * 0.5f;
+        float halfW = (contentSize.x - gap) * 0.5f;
+        float h = contentSize.y;
+
+        // Left panel background
+        ImVec4 accent = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+        ImU32 bg     = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.08f));
+        ImU32 border = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.3f));
+        float rounding = em * 0.4f;
+
+        ImVec2 panelPos = ImGui::GetCursorScreenPos();
+        ImDrawList* dl = ImGui::GetWindowDrawList();
+        dl->AddRectFilled(panelPos, ImVec2(panelPos.x + halfW, panelPos.y + h), bg, rounding);
+        dl->AddRect(panelPos, ImVec2(panelPos.x + halfW, panelPos.y + h), border, rounding, 0, 1.5f);
+
+        // Left child: editable source with syntax highlighting
+        ImGui::BeginChild("##md_source", ImVec2(halfW, h), false, ImGuiWindowFlags_NoBackground);
+
+        // Use code font for better readability
+        auto codeFont = ImGuiMd::GetCodeFont();
+        ImGui::PushFont(codeFont.font, codeFont.size * 0.9f);
+
+        // Render the text editor (it will fill the child window)
+        sMarkdownEditor->Render("##md_editor");
+
+        ImGui::PopFont();
+        ImGui::EndChild();
+
+        ImGui::SameLine(0, gap);
+
+        // Right child: rendered markdown
+        ImGui::BeginChild("##md_rendered", ImVec2(halfW, h), false, ImGuiWindowFlags_NoScrollbar);
+        // Get the current text from the editor
+        std::string currentMarkdown = sMarkdownEditor->GetText();
+        ImGuiMd::RenderUnindented(currentMarkdown.c_str());
+        ImGui::EndChild();
+    }
+} // namespace IntroMarkdown
+
+
+// ============================================================================
 // Slide 8: Web Deployment — static screenshot
 // ============================================================================
 
@@ -971,6 +1066,7 @@ static void ImmVisionSlideGui(ImVec2)    { ImGui::TextWrapped("ImmVision not ava
 
 static void NotebookSlideGui(ImVec2 cs)    { IntroNotebook::SlideGui(cs); }
 static void NodeEditorSlideGui(ImVec2 cs)  { IntroNodeEditor::SlideGui(cs); }
+static void MarkdownSlideGui(ImVec2 cs)    { IntroMarkdown::SlideGui(cs); }
 static void WebDeploySlideGui(ImVec2 cs)   { IntroWebDeploy::SlideGui(cs); }
 
 #ifdef HELLOIMGUI_HAS_OPENGL
@@ -1133,6 +1229,10 @@ void IntroMiniDemos()
         { "Explore Ideas in a Node Editor",
           "With imgui-node-editor, you can build complex applications such as blueprint editors. Here is an example of an image editing pipeline.",
           NodeEditorSlideGui },
+
+        { "Rich Documentation, Built In",
+          "Render markdown directly in your UI \xe2\x80\x94 headers, code blocks, tables, links, and images, all from a simple string.",
+          MarkdownSlideGui },
 
         { "Deploy to the Web",
           "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",

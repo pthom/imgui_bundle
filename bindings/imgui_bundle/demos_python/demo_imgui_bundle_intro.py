@@ -6,6 +6,7 @@ from typing import Callable, List
 import numpy as np
 
 from imgui_bundle import imgui, imgui_md, hello_imgui, immapp, ImVec2, ImVec4
+from imgui_bundle import imgui_color_text_edit as ed
 from imgui_bundle.demos_python import demo_utils
 from imgui_bundle import implot3d
 from imgui_bundle.immapp import icons_fontawesome_6
@@ -591,7 +592,96 @@ def _node_editor_slide_gui(content_size: ImVec2):
 
 
 # ============================================================================
-# Slide 7: Web Deployment — static screenshot
+# Slide 7: Markdown — side-by-side source and rendered
+# ============================================================================
+
+_MARKDOWN_SAMPLE = """\
+## Quick Start Guide
+
+**ImGui Bundle** makes it easy to build
+_beautiful_ apps with rich documentation.
+
+Features:
+- Headers, **bold**, *italic*, ~~strikethrough~~
+- [Clickable links](https://github.com/pthom/imgui_bundle)
+- Syntax-highlighted code blocks
+
+```python
+import imgui_bundle
+imgui_md.render("# Hello!")
+```
+
+Tip: *You can resize the columns on the table below!*
+
+| Library   | Domain          |
+|-----------|-----------------|
+| ImPlot    | 2D plots        |
+| ImPlot3D  | 3D plots        |
+| ImmVision | Image analysis  |
+"""
+
+# Markdown editor with syntax highlighting
+_markdown_text_editor: ed.TextEditor = None  # type: ignore
+_markdown_editor_initialized = False
+
+
+def _init_markdown_editor():
+    global _markdown_text_editor, _markdown_editor_initialized
+    _markdown_text_editor = ed.TextEditor()
+    _markdown_text_editor.set_text(_MARKDOWN_SAMPLE)
+    # Use C++ language definition as a reasonable approximation for markdown
+    # (it will highlight code blocks and some syntax)
+    _markdown_text_editor.set_language_definition(ed.TextEditor.LanguageDefinitionId.cpp)
+    _markdown_text_editor.set_palette(ed.TextEditor.PaletteId.dark)
+    _markdown_editor_initialized = True
+
+
+def _markdown_slide_gui(content_size: ImVec2):
+    global _markdown_editor_initialized
+    if not _markdown_editor_initialized:
+        _init_markdown_editor()
+
+    em = hello_imgui.em_size()
+    gap = em * 0.5
+    half_w = (content_size.x - gap) * 0.5
+    h = content_size.y
+
+    # Left panel: editable source with syntax highlighting
+    accent = imgui.get_style_color_vec4(imgui.Col_.button_hovered)
+    bg = imgui.color_convert_float4_to_u32(ImVec4(accent.x, accent.y, accent.z, 0.08))
+    border = imgui.color_convert_float4_to_u32(ImVec4(accent.x, accent.y, accent.z, 0.3))
+    rounding = em * 0.4
+
+    panel_pos = imgui.get_cursor_screen_pos()
+    dl = imgui.get_window_draw_list()
+    dl.add_rect_filled(panel_pos, ImVec2(panel_pos.x + half_w, panel_pos.y + h), bg, rounding)
+    dl.add_rect(panel_pos, ImVec2(panel_pos.x + half_w, panel_pos.y + h), border, rounding, 0, 1.5)
+
+    imgui.begin_child("##md_source", ImVec2(half_w, h), False,
+                      imgui.WindowFlags_.no_background)
+
+    # Use code font for better readability
+    code_font = imgui_md.get_code_font()
+    imgui.push_font(code_font.font, code_font.size * 0.9)
+
+    # Render the text editor
+    _markdown_text_editor.render("##md_editor", False, ImVec2(half_w, h))
+
+    imgui.pop_font()
+    imgui.end_child()
+
+    imgui.same_line(0, gap)
+
+    # Right panel: rendered markdown
+    imgui.begin_child("##md_rendered", ImVec2(half_w, h), False, imgui.WindowFlags_.no_scrollbar)
+    # Get the current text from the editor
+    current_markdown = _markdown_text_editor.get_text()
+    imgui_md.render_unindented(current_markdown)
+    imgui.end_child()
+
+
+# ============================================================================
+# Slide 8: Web Deployment — static screenshot
 # ============================================================================
 
 def _web_deploy_slide_gui(content_size: ImVec2):
@@ -1020,6 +1110,10 @@ def _intro_mini_demos():
             "Explore Ideas in a Node Editor",
             "With imgui-node-editor, you can build complex applications such as blueprint editors. Here is an example of an image editing pipeline.",
             _node_editor_slide_gui),
+        CarouselSlide(
+            "Rich Documentation, Built In",
+            "Render markdown directly in your UI \u2014 headers, code blocks, tables, links, and images, all from a simple string.",
+            _markdown_slide_gui),
         CarouselSlide(
             "Deploy to the Web",
             "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",
