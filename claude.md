@@ -708,10 +708,17 @@ External libraries and their bindings are in `external/`:
 ## Build & Platform Notes
 This project spans C++/Python with cross-platform builds (Emscripten, iOS). Be cautious about removing includes like <cstdio> — always check all platform targets before removing headers.
 
+## Note for Claude and LLMs
+
+### Working on plans
+
+- When working on demo code that need to be written both in Python and C++, ask the user which language he wants to tackle first. Work on those modifications, then ask the user to look at it and validate. Only then can you work on porting to the other language (ask him).
+
+
 ### Build folders
 Claude and LLMS should create folders whose name starts with `claude_` inside the `builds/` folder, to avoid conflicts with user-created folders. For example:
 
-Examples: 
+Examples:
 
 **Build with emscripten:**
 ```bash
@@ -728,7 +735,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release \
          -DIMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP=ON -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
 ```
 
-etc. LLM's can create build folders for specific tasks, and use names that reflect the task (e.g. `claude_fix_emscripten_build` or `claude_test_pyodide`), to avoid conflicts with user-created folders. 
+etc. LLM's can create build folders for specific tasks, and use names that reflect the task (e.g. `claude_fix_emscripten_build` or `claude_test_pyodide`), to avoid conflicts with user-created folders.
 
 
 ## Workflow: Specs and Plans
