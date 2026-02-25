@@ -15,7 +15,14 @@ from imgui_bundle import imgui_command_palette as imcmd
 from imgui_bundle import portable_file_dialogs as pfd
 
 
-@immapp.static(knob_float_value=0, knob_int_value=0)
+@immapp.static(
+    knob_float_value=0,
+    knob_int_value=0,
+    use_custom_colors=False,
+    primary_col=[0.1, 0.45, 0.7, 1.0],
+    secondary_col=[0.7, 0.7, 0.7, 1.0],
+    track_col=[0.3, 0.3, 0.7, 1.0],
+)
 def demo_knobs():
     static = demo_knobs
     from imgui_bundle import imgui_knobs
@@ -72,6 +79,17 @@ def demo_knobs():
         imgui.new_line()
         imgui.pop_id()
 
+    # Apply custom colors before drawing knobs
+    if static.use_custom_colors:
+        p, s, t = static.primary_col, static.secondary_col, static.track_col
+        imgui_knobs.set_knob_colors(imgui_knobs.KnobColors(
+            primary=imgui_knobs.color_set(imgui.ImColor(p[0], p[1], p[2], p[3])),
+            secondary=imgui_knobs.color_set(imgui.ImColor(s[0], s[1], s[2], s[3])),
+            track=imgui_knobs.color_set(imgui.ImColor(t[0], t[1], t[2], t[3])),
+        ))
+    else:
+        imgui_knobs.unset_knob_colors()
+
     knobs_size_small = immapp.em_size() * 2.5
     knobs_size_big = knobs_size_small * 1.3
 
@@ -86,6 +104,17 @@ def demo_knobs():
     imgui.text("Some big knobs (int values)")
     show_int_knobs(knobs_size_big)
     imgui.end_group()
+
+    # Customize colors button + popup (below the knobs)
+    if imgui.button("Customize Colors"):
+        imgui.open_popup("knob_colors_popup")
+    if imgui.begin_popup("knob_colors_popup"):
+        _, static.use_custom_colors = imgui.checkbox("Use custom colors", static.use_custom_colors)
+        if static.use_custom_colors:
+            _, static.primary_col = imgui.color_edit4("Primary (indicator)", static.primary_col)
+            _, static.secondary_col = imgui.color_edit4("Secondary (circle)", static.secondary_col)
+            _, static.track_col = imgui.color_edit4("Track (arc)", static.track_col)
+        imgui.end_popup()
 
 
 @immapp.static(show_full_demo=False)

@@ -62,10 +62,47 @@ void py_init_module_imgui_knobs(nb::module_& m)
         .def_rw("active", &ImGuiKnobs::color_set::active, "")
         .def(nb::init<ImColor, ImColor, ImColor>(),
             nb::arg("base"), nb::arg("hovered"), nb::arg("active"))
+        .def(nb::init<>())
         .def(nb::init<ImColor>(),
             nb::arg("color"))
         ;
 
+
+    auto pyClassKnobColors =
+        nb::class_<ImGuiKnobs::KnobColors>
+            (m, "KnobColors", "")
+        .def("__init__", [](ImGuiKnobs::KnobColors * self, const std::optional<const ImGuiKnobs::color_set> & primary = std::nullopt, const std::optional<const ImGuiKnobs::color_set> & secondary = std::nullopt, const std::optional<const ImGuiKnobs::color_set> & track = std::nullopt)
+        {
+            new (self) ImGuiKnobs::KnobColors();  // placement new
+            auto r_ctor_ = self;
+            if (primary.has_value())
+                r_ctor_->primary = primary.value();
+            else
+                r_ctor_->primary = ImGuiKnobs::color_set();
+            if (secondary.has_value())
+                r_ctor_->secondary = secondary.value();
+            else
+                r_ctor_->secondary = ImGuiKnobs::color_set();
+            if (track.has_value())
+                r_ctor_->track = track.value();
+            else
+                r_ctor_->track = ImGuiKnobs::color_set();
+        },
+        nb::arg("primary").none() = nb::none(), nb::arg("secondary").none() = nb::none(), nb::arg("track").none() = nb::none()
+        )
+        .def_rw("primary", &ImGuiKnobs::KnobColors::primary, "")
+        .def_rw("secondary", &ImGuiKnobs::KnobColors::secondary, "")
+        .def_rw("track", &ImGuiKnobs::KnobColors::track, "")
+        ;
+
+
+    m.def("set_knob_colors",
+        ImGuiKnobs::SetKnobColors,
+        nb::arg("colors"),
+        " Set custom knob colors. Pass individual color_sets for primary (indicator),\n secondary (circle body), and track (background arc).");
+
+    m.def("unset_knob_colors",
+        ImGuiKnobs::UnsetKnobColors, "Reset to theme-aware defaults (auto-detects dark/light theme).");
 
     m.def("knob",
         [](const char * label, float p_value, float v_min, float v_max, float speed = 0, const char * format = "%.3f", const std::optional<const ImGuiKnobVariant> & variant = std::nullopt, float size = 0, ImGuiKnobFlags flags = 0, int steps = 10, float angle_min = -1, float angle_max = -1) -> std::tuple<bool, float>

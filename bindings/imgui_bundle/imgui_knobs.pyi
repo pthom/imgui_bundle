@@ -47,8 +47,43 @@ class color_set:
         pass
 
     @overload
+    def __init__(self) -> None:
+        pass
+
+    @overload
     def __init__(self, color: ImColor) -> None:
         pass
+
+class KnobColors:
+    primary: color_set
+    secondary: color_set
+    track: color_set
+    def __init__(
+        self,
+        primary: Optional[color_set] = None,
+        secondary: Optional[color_set] = None,
+        track: Optional[color_set] = None,
+    ) -> None:
+        """Auto-generated default constructor with named params
+
+
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                * primary: color_set()
+                * secondary: color_set()
+                * track: color_set()
+        """
+        pass
+
+def set_knob_colors(colors: KnobColors) -> None:
+    """Set custom knob colors. Pass individual color_sets for primary (indicator),
+    secondary (circle body), and track (background arc).
+    """
+    pass
+
+def unset_knob_colors() -> None:
+    """Reset to theme-aware defaults (auto-detects dark/light theme)."""
+    pass
 
 def knob(
     label: str,
