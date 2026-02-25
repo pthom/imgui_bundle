@@ -1148,6 +1148,11 @@ static void ShaderSlideGui(ImVec2)    { ImGui::TextWrapped("Shader demo requires
 // Top section
 // ============================================================================
 
+bool IsSmallScreen()
+{
+    return ImGui::GetIO().DisplaySize.x < HelloImGui::EmSize() * 50.f;
+}
+
 void ShowBadges()
 {
     // Push badges to the bottom of the available window space
@@ -1169,24 +1174,49 @@ void ShowBadges()
 
 void IntroTopSection()
 {
+    bool small = IsSmallScreen();
+
     ImGuiMd::RenderUnindented(R"(
 # Dear ImGui Bundle
 
 *From expressive code to powerful GUIs in no time*
 )");
 
-    ImGuiMd::RenderUnindented(R"(
+    if (small)
+    {
+        static bool showFull = false;
+        if (!showFull)
+        {
+            ImGui::TextDisabled("20+ libraries, C++ & Python, desktop/mobile/web.");
+            ImGui::SameLine();
+            if (ImGui::SmallButton("More..."))
+                showFull = true;
+        }
+        if (showFull)
+        {
+            ImGuiMd::RenderUnindented(R"(
         A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
         Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
 )");
-    ImGui::SameLine();
-    ImGui::TextDisabled("Start your first app in 2 or 3 lines of code.");
-
-    if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Less"))
+                showFull = false;
+        }
+    }
+    else
     {
-        ImGui::BeginTooltip();
-        ImGui::Dummy(HelloImGui::EmToVec2(80.f, 0.f));
-        ShowPythonVsCppCode(R"(
+        ImGuiMd::RenderUnindented(R"(
+        A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
+        Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
+)");
+        ImGui::SameLine();
+        ImGui::TextDisabled("Start your first app in 2 or 3 lines of code.");
+
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+        {
+            ImGui::BeginTooltip();
+            ImGui::Dummy(HelloImGui::EmToVec2(80.f, 0.f));
+            ShowPythonVsCppCode(R"(
 from imgui_bundle import imgui, immapp
 immapp.run(lambda: imgui.text("Hello!"))
 )", R"(
@@ -1194,7 +1224,8 @@ immapp.run(lambda: imgui.text("Hello!"))
 #include "imgui.h"
 int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
 )", 5);
-        ImGui::EndTooltip();
+            ImGui::EndTooltip();
+        }
     }
 
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
@@ -1212,21 +1243,24 @@ int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
     }
 #endif
 
-    ImGui::NewLine();
-    ImGuiMd::RenderUnindented(R"(
+    if (!small)
+    {
+        ImGui::NewLine();
+        ImGuiMd::RenderUnindented(R"(
 The "Demo Apps" tab provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them
 )");
 
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
-    {
-        ImGui::SameLine();
-        if (ImGui::SmallButton("?"))
-            ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
-    }
+        if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
+        {
+            ImGui::SameLine();
+            if (ImGui::SmallButton("?"))
+                ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
+        }
 #endif
 
-    AnimateLogo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5f, 3.f), 0.30f, "https://github.com/pthom/imgui_bundle");
+        AnimateLogo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5f, 3.f), 0.30f, "https://github.com/pthom/imgui_bundle");
+    }
 }
 
 
@@ -1331,9 +1365,18 @@ void IntroMiniDemos()
     ImDrawList* dl = ImGui::GetWindowDrawList();
     ImVec2 windowSize = ImGui::GetWindowSize();
 
-    // --- Carousel zone: 4:3 aspect ratio, centered, 65% of window height ---
-    float carouselHeight = windowSize.y * 0.65f;
-    if (carouselHeight < em * 15.f) carouselHeight = em * 15.f;
+    // --- Carousel zone: 4:3 aspect ratio, centered ---
+    float carouselHeight;
+    if (IsSmallScreen())
+    {
+        carouselHeight = windowSize.y * 0.65f;
+        if (carouselHeight < em * 12.f) carouselHeight = em * 12.f;
+    }
+    else
+    {
+        carouselHeight = windowSize.y * 0.65f;
+        if (carouselHeight < em * 15.f) carouselHeight = em * 15.f;
+    }
     float carouselWidth = carouselHeight * (4.f / 3.f);
     float availWidth = ImGui::GetContentRegionAvail().x;
     if (carouselWidth > availWidth) carouselWidth = availWidth;

@@ -12,6 +12,7 @@ from imgui_bundle.demos_python import demo_utils
 from imgui_bundle import implot3d
 from imgui_bundle.immapp import icons_fontawesome_6
 import webbrowser
+from imgui_bundle.immapp import static
 
 # Optional imports (replacing #ifdef guards)
 try:
@@ -33,6 +34,11 @@ try:
     HAS_OPENGL = True
 except ImportError:
     HAS_OPENGL = False
+
+
+def is_small_screen() -> bool:
+    """Returns True on phones and small tablets (< ~800px width)."""
+    return imgui.get_io().display_size.x < hello_imgui.em_size() * 50
 
 
 # ============================================================================
@@ -1037,8 +1043,11 @@ _automation_inited = False
 _automation_show_me = None
 
 
+@static(show_full=False)
 def _intro_top_section():
     global _automation_inited, _automation_show_me
+
+    small = is_small_screen()
 
     imgui_md.render_unindented("""
 # Dear ImGui Bundle
@@ -1046,30 +1055,45 @@ def _intro_top_section():
 *From expressive code to powerful GUIs in no time*
 """)
 
-    imgui_md.render_unindented("""
+    if small:
+        if not _intro_top_section.show_full:
+            imgui.text_disabled("20+ libraries, C++ & Python, desktop/mobile/web.")
+            imgui.same_line()
+            if imgui.small_button("More..."):
+                _intro_top_section.show_full = True
+        if _intro_top_section.show_full:
+            imgui_md.render_unindented("""
+        A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
+        Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
+        """)
+            imgui.same_line()
+            if imgui.small_button("Less"):
+                _intro_top_section.show_full = False
+    else:
+        imgui_md.render_unindented("""
         A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
         Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
         """
-    )
-    imgui.same_line()
-    imgui.text_disabled("Start your first app in 2 or 3 lines of code.")
+        )
+        imgui.same_line()
+        imgui.text_disabled("Start your first app in 2 or 3 lines of code.")
 
-    if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
-        imgui.begin_tooltip()
-        imgui.dummy(hello_imgui.em_to_vec2(80.0, 0.0))
-        demo_utils.show_python_vs_cpp_code(
-            """
+        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
+            imgui.begin_tooltip()
+            imgui.dummy(hello_imgui.em_to_vec2(80.0, 0.0))
+            demo_utils.show_python_vs_cpp_code(
+                """
 from imgui_bundle import imgui, immapp
 immapp.run(lambda: imgui.text("Hello!"))
 """,
-            """
+                """
 #include "immapp/immapp.h"
 #include "imgui.h"
 int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
 """,
-            5,
-        )
-        imgui.end_tooltip()
+                5,
+            )
+            imgui.end_tooltip()
 
     if hello_imgui.get_runner_params().use_imgui_test_engine:
         if not _automation_inited:
@@ -1078,25 +1102,24 @@ int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
         engine_io = imgui.test_engine.get_io(hello_imgui.get_imgui_test_engine())
         engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.cinematic
 
-    imgui.new_line()
-    imgui_md.render_unindented("""
+    if not small:
+        imgui.new_line()
+        imgui_md.render_unindented("""
 The "Demo Apps" tab provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them
 """)
 
-    if hello_imgui.get_runner_params().use_imgui_test_engine:
-        imgui.same_line()
-        # imgui.text_disabled("Demo")
-        # if imgui.is_item_clicked(0):
-        if imgui.small_button("?"):
-            imgui.test_engine.queue_test(
-                hello_imgui.get_imgui_test_engine(),
-                _automation_show_me,
-            )
+        if hello_imgui.get_runner_params().use_imgui_test_engine:
+            imgui.same_line()
+            if imgui.small_button("?"):
+                imgui.test_engine.queue_test(
+                    hello_imgui.get_imgui_test_engine(),
+                    _automation_show_me,
+                )
 
-    demo_utils.animate_logo(
-        "images/logo_imgui_bundle_512.png", 1.0, ImVec2(0.5, 3.0), 0.30,
-        "https://github.com/pthom/imgui_bundle",
-    )
+        demo_utils.animate_logo(
+            "images/logo_imgui_bundle_512.png", 1.0, ImVec2(0.5, 3.0), 0.30,
+            "https://github.com/pthom/imgui_bundle",
+        )
 
 
 # ============================================================================
@@ -1208,10 +1231,15 @@ def _intro_mini_demos():
     dl = imgui.get_window_draw_list()
     window_size = imgui.get_window_size()
 
-    # --- Carousel zone: 4:3 aspect ratio, centered, 65% of window height ---
-    carousel_height = window_size.y * 0.65
-    if carousel_height < em * 15.0:
-        carousel_height = em * 15.0
+    # --- Carousel zone: 4:3 aspect ratio, centered ---
+    if is_small_screen():
+        carousel_height = window_size.y * 0.65
+        if carousel_height < em * 12.0:
+            carousel_height = em * 12.0
+    else:
+        carousel_height = window_size.y * 0.65
+        if carousel_height < em * 15.0:
+            carousel_height = em * 15.0
     carousel_width = carousel_height * (4.0 / 3.0)
     avail_width = imgui.get_content_region_avail().x
     if carousel_width > avail_width:
