@@ -21,6 +21,10 @@
 #include <opencv2/imgcodecs.hpp>
 #endif
 
+#include "imgui-knobs/imgui-knobs.h"
+#include "imgui_toggle/imgui_toggle.h"
+#include "imgui_toggle/imgui_toggle_presets.h"
+
 #ifdef HELLOIMGUI_HAS_OPENGL
 #include "hello_imgui/hello_imgui_include_opengl.h"
 #include <iostream>
@@ -337,6 +341,7 @@ namespace IntroTable
     static float sBpm = 140.f;
     static bool sPlaying = true;
     static float sAccum = 0.f;
+    static ImVec4 sHlColor = ImVec4(0.3f, 0.5f, 1.0f, 0.25f);
 
     static void Init()
     {
@@ -385,7 +390,7 @@ namespace IntroTable
             ImGui::TableAngledHeadersRow();
             ImGui::TableHeadersRow();
 
-            ImU32 hlCol = ImGui::ColorConvertFloat4ToU32(ImVec4(0.3f, 0.5f, 1.0f, 0.25f));
+            ImU32 hlCol = ImGui::ColorConvertFloat4ToU32(sHlColor);
 
             for (int row = 0; row < kNumBeats; row++)
             {
@@ -419,8 +424,29 @@ namespace IntroTable
 
     void GuiSidePanel()
     {
-        ImGui::Checkbox("Play", &sPlaying);
-        ImGui::SliderFloat("BPM", &sBpm, 60.f, 300.f, "%.0f");
+        float em = HelloImGui::EmSize();
+
+        // Play/Pause toggle
+        ImGui::Text("Play");
+        auto toggleConfig = ImGuiTogglePresets::MaterialStyle();
+        toggleConfig.Size = ImVec2(em * 2.5f, em * 1.2f);
+        ImGui::Toggle("##play", &sPlaying, toggleConfig);
+
+        // BPM knob
+        ImGui::Spacing();
+        ImGui::Text("Tempo");
+        ImGuiKnobs::Knob("##bpm", &sBpm, 60.f, 300.f, 0.f, "%.0f",
+            ImGuiKnobVariant_WiperDot, em * 3.5f, ImGuiKnobFlags_AlwaysClamp);
+
+        // Highlight color picker
+        ImGui::Spacing();
+        ImGui::Text("Highlight");
+        ImGuiColorEditFlags pickerFlags = ImGuiColorEditFlags_NoSidePreview
+            | ImGuiColorEditFlags_NoInputs
+            | ImGuiColorEditFlags_NoLabel
+            | ImGuiColorEditFlags_AlphaBar
+            | ImGuiColorEditFlags_PickerHueWheel;
+        ImGui::ColorPicker4("##hl_wheel", &sHlColor.x, pickerFlags);
     }
 
     void SlideGui(ImVec2 contentSize)
@@ -1151,10 +1177,9 @@ void IntroTopSection()
 
     ImGuiMd::RenderUnindented(R"(
         A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
-
         Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
 )");
-
+    ImGui::SameLine();
     ImGui::TextDisabled("Start your first app in 2 or 3 lines of code.");
 
     if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
@@ -1189,13 +1214,14 @@ int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
 
     ImGui::NewLine();
     ImGuiMd::RenderUnindented(R"(
-The "Demo Apps" tab provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
+The "Demo Apps" tab provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them
 )");
 
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
     if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
     {
-        if (ImGui::Button("Show me##demo_imm_apps"))
+        ImGui::SameLine();
+        if (ImGui::SmallButton("?"))
             ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
     }
 #endif
@@ -1249,8 +1275,6 @@ static float DrawSlideMottoCard(const CarouselSlide& slide, float slideWidth)
 
 void IntroMiniDemos()
 {
-    ImGui::Separator();
-
     static const CarouselSlide slides[] = {
         { "Rich Interactive Plots",
           "ImPlot delivers animated, interactive 2D charts with minimal code. It is extremely fast, and ideal for real-time data monitoring, diagnostics, and dashboards.",
@@ -1452,8 +1476,8 @@ void demo_imgui_bundle_intro()
     HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
 
     IntroTopSection();
-    ImGui::NewLine();
-    ImGui::Text("Below are some examples showing what can be achieved with Dear ImGui Bundle");
+    ImGui::Separator();
+    ImGuiMd::Render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*");
     IntroMiniDemos();
 
     ImGui::NewLine();

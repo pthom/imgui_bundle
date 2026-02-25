@@ -1048,11 +1048,10 @@ def _intro_top_section():
 
     imgui_md.render_unindented("""
         A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
-
         Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
         """
     )
-
+    imgui.same_line()
     imgui.text_disabled("Start your first app in 2 or 3 lines of code.")
 
     if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
@@ -1081,11 +1080,14 @@ int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
 
     imgui.new_line()
     imgui_md.render_unindented("""
-The "Demo Apps" tab provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
+The "Demo Apps" tab provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them
 """)
 
     if hello_imgui.get_runner_params().use_imgui_test_engine:
-        if imgui.button("Show me##demo_imm_apps"):
+        imgui.same_line()
+        # imgui.text_disabled("Demo")
+        # if imgui.is_item_clicked(0):
+        if imgui.small_button("?"):
             imgui.test_engine.queue_test(
                 hello_imgui.get_imgui_test_engine(),
                 _automation_show_me,
@@ -1151,8 +1153,6 @@ _auto_stopped = False
 
 def _intro_mini_demos():
     global _current_slide, _animated_offset, _auto_timer, _auto_stopped
-
-    imgui.separator()
 
     slides = [
         CarouselSlide(
@@ -1336,8 +1336,8 @@ def demo_gui():
     hello_imgui.get_runner_params().fps_idling.enable_idling = False
 
     _intro_top_section()
-    imgui.new_line()
-    imgui.text("Below are some examples showing what can be achieved with Dear ImGui Bundle")
+    imgui.separator()
+    imgui_md.render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*")
     _intro_mini_demos()
 
     imgui.new_line()
