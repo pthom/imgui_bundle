@@ -21,6 +21,10 @@ std::string ParseLibraryArg(int argc, char** argv)
     );
     if (result && result[0] != '\0')
         libName = result;
+    if (libName.empty())
+        libName = "imgui"; // Temporarily use imgui only on the base url
+    if (libName == "all")
+        libName = ""; // Temporarily use imgui only on the base url
 #else
     // Read --lib <name> from command-line arguments
     for (int i = 1; i < argc - 1; ++i)
