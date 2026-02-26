@@ -177,9 +177,6 @@ namespace Snippets
                 {
                     timeClickCopyButton[id] = ImmApp::ClockSeconds();
                     ImGui::SetClipboardText(snippetData.Code.c_str());
-                    #ifdef __EMSCRIPTEN__
-                    JsClipboard_SetClipboardText(snippetData.Code.c_str());
-                    #endif
                 }
 
                 bool wasCopiedRecently = false;
@@ -195,7 +192,6 @@ namespace Snippets
                 else if (ImGui::IsItemHovered())
                     ImGui::SetTooltip("Copy");
             }
-
             ImGui::SetCursorPos(topRight);
             ImGui::NewLine();
         }
