@@ -417,7 +417,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
         auto pyNsSnippets_ClassSnippetData =
             nb::class_<Snippets::SnippetData>
                 (pyNsSnippets, "SnippetData", "")
-            .def("__init__", [](Snippets::SnippetData * self, std::string Code = "", Snippets::SnippetLanguage Language = Snippets::DefaultSnippetLanguage(), Snippets::SnippetTheme Palette = Snippets::SnippetTheme::Light, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = {}, int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = false, bool Border = false, bool DeIndentCode = true, bool AddFinalEmptyLine = false)
+            .def("__init__", [](Snippets::SnippetData * self, std::string Code = "", Snippets::SnippetLanguage Language = Snippets::DefaultSnippetLanguage(), Snippets::SnippetTheme Palette = Snippets::SnippetTheme::Dark, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = {}, int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = false, bool Border = false, bool DeIndentCode = true, bool AddFinalEmptyLine = false)
             {
                 new (self) Snippets::SnippetData();  // placement new
                 auto r_ctor_ = self;
@@ -434,7 +434,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
                 r_ctor_->DeIndentCode = DeIndentCode;
                 r_ctor_->AddFinalEmptyLine = AddFinalEmptyLine;
             },
-            nb::arg("code") = "", nb::arg("language") = Snippets::DefaultSnippetLanguage(), nb::arg("palette") = Snippets::SnippetTheme::Light, nb::arg("show_copy_button") = true, nb::arg("show_cursor_position") = true, nb::arg("displayed_filename") = std::string{}, nb::arg("height_in_lines") = 0, nb::arg("max_height_in_lines") = 40, nb::arg("read_only") = false, nb::arg("border") = false, nb::arg("de_indent_code") = true, nb::arg("add_final_empty_line") = false
+            nb::arg("code") = "", nb::arg("language") = Snippets::DefaultSnippetLanguage(), nb::arg("palette") = Snippets::SnippetTheme::Dark, nb::arg("show_copy_button") = true, nb::arg("show_cursor_position") = true, nb::arg("displayed_filename") = std::string{}, nb::arg("height_in_lines") = 0, nb::arg("max_height_in_lines") = 40, nb::arg("read_only") = false, nb::arg("border") = false, nb::arg("de_indent_code") = true, nb::arg("add_final_empty_line") = false
             )
             .def_rw("code", &Snippets::SnippetData::Code, "")
             .def_rw("language", &Snippets::SnippetData::Language, "")

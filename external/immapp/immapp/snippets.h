@@ -45,7 +45,7 @@ namespace Snippets
     {
         std::string Code = "";
         SnippetLanguage Language = DefaultSnippetLanguage();
-        SnippetTheme Palette = SnippetTheme::Light;
+        SnippetTheme Palette = SnippetTheme::Dark;
 
         bool ShowCopyButton = true;         // Displayed on top of the editor (Top Right corner)
         bool ShowCursorPosition = true;     // Show line and column number

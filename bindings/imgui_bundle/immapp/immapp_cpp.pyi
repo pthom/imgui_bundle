@@ -476,7 +476,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     class SnippetData:
         code: str = ""
         language: SnippetLanguage = DefaultSnippetLanguage()
-        palette: SnippetTheme = SnippetTheme.light
+        palette: SnippetTheme = SnippetTheme.dark
 
         show_copy_button: bool = (
             True  # Displayed on top of the editor (Top Right corner)
@@ -505,7 +505,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
             self,
             code: str = "",
             language: SnippetLanguage = DefaultSnippetLanguage(),
-            palette: SnippetTheme = SnippetTheme.light,
+            palette: SnippetTheme = SnippetTheme.dark,
             show_copy_button: bool = True,
             show_cursor_position: bool = True,
             displayed_filename: str = "",
