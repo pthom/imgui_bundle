@@ -186,8 +186,8 @@ def _lorenz_gui_side():
     imgui.text_disabled("Butterfly Effect")
     imgui.set_item_tooltip(
         "Tiny changes in initial conditions lead to\n"
-        "completely different trajectories \u2014\n"
-        "the hallmark of deterministic chaos.")
+        "completely different trajectories.\n"
+        "The hallmark of deterministic chaos.")
     imgui.spacing()
     _, _lorenz_params.sigma = imgui.slider_float("Sigma", _lorenz_params.sigma, 0.0, 100.0)
     imgui.set_item_tooltip("Rate of divergence (chaos level)")
@@ -764,7 +764,242 @@ def _source_code_slide_gui(content_size: ImVec2):
 
 
 # ============================================================================
-# Slide 9: Web Deployment — static screenshot
+# Slide 9: Mini Gallery — "Code that reads like a book"
+# ============================================================================
+
+# Each snippet: (title, code_str, gui_func)
+# The gui_func renders the live demo for that snippet.
+
+_GALLERY_SNIPPETS = [
+    ("Animated Plot",
+     # Python
+     """\
+t = imgui.get_time()
+x = np.linspace(0, 4 * np.pi, 200)
+if implot.begin_plot("##wave", ImVec2(-1, -1)):
+    implot.plot_line("sin", x, np.sin(x + t))
+    implot.plot_line("cos", x, np.cos(x + t * 0.7))
+    implot.end_plot()""",
+     # C++
+     """\
+float t = ImGui::GetTime();
+std::vector<float> x(200), s(200), c(200);
+for (int i = 0; i < 200; i++) {
+    x[i] = i * 4.f * IM_PI / 199.f;
+    s[i] = sinf(x[i] + t);
+    c[i] = cosf(x[i] + t * 0.7f);
+}
+if (ImPlot::BeginPlot("##wave", ImVec2(-1, -1))) {
+    ImPlot::PlotLine("sin", x.data(), s.data(), 200);
+    ImPlot::PlotLine("cos", x.data(), c.data(), 200);
+    ImPlot::EndPlot();
+}"""),
+    ("Knob",
+     # Python
+     """\
+_, value = imgui_knobs.knob(
+    "Volume", value, 0, 100, 1,
+    "%.0f%%", imgui_knobs.ImGuiKnobVariant_.wiper_dot)
+imgui.same_line()
+imgui.v_slider_float("##vslider",
+    ImVec2(em * 1.5, em * 5), value, 0, 100, "%.0f")""",
+     # C++
+     """\
+ImGuiKnobs::Knob(
+    "Volume", &value, 0, 100, 1,
+    "%.0f%%", ImGuiKnobVariant_WiperDot);
+ImGui::SameLine();
+ImGui::VSliderFloat("##vslider",
+    ImVec2(em * 1.5f, em * 5.f), &value, 0, 100, "%.0f");"""),
+    ("Color Picker",
+     # Python
+     """\
+imgui.text(f"Color: ({c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f})")
+_, c = imgui.color_picker4("##color", c,
+    imgui.ColorEditFlags_.no_side_preview
+    | imgui.ColorEditFlags_.no_inputs)""",
+     # C++
+     """\
+ImGui::Text("Color: (%.2f, %.2f, %.2f)", c[0], c[1], c[2]);
+ImGui::ColorPicker4("##color", c,
+    ImGuiColorEditFlags_NoSidePreview
+    | ImGuiColorEditFlags_NoInputs);"""),
+    ("Mini Form",
+     # Python
+     """\
+_, name = imgui.input_text("Name", name)
+if imgui.button("Greet") and name:
+    greeting = f"Hello, {name}!"
+imgui.text_colored(ImVec4(0.4, 1, 0.4, 1), greeting)
+_, agreed = imgui.checkbox("I agree", agreed)
+_, choice = imgui.combo("Fruit", choice,
+                        ["Apple", "Banana", "Cherry"])""",
+     # C++
+     """\
+ImGui::InputText("Name", name, sizeof(name));
+if (ImGui::Button("Greet") && name[0])
+    snprintf(greeting, sizeof(greeting), "Hello, %s!", name);
+ImGui::TextColored(ImVec4(0.4f,1,0.4f,1), "%s", greeting);
+ImGui::Checkbox("I agree", &agreed);
+ImGui::Combo("Fruit", &choice, "Apple\\0Banana\\0Cherry\\0");"""),
+]
+
+# _gallery_editors[lang_idx][snippet_idx], lang_idx: 0=Python, 1=C++
+_gallery_editors: list = [[], []]
+_gallery_initialized = False
+_gallery_lang = 0  # 0 = Python, 1 = C++
+
+
+def _init_gallery():
+    global _gallery_initialized
+    for lang_idx, lang_def in enumerate([
+        ed.TextEditor.LanguageDefinitionId.python,
+        ed.TextEditor.LanguageDefinitionId.cpp,
+    ]):
+        for _, py_code, cpp_code in _GALLERY_SNIPPETS:
+            code = py_code if lang_idx == 0 else cpp_code
+            editor = ed.TextEditor()
+            editor.set_text(code)
+            editor.set_language_definition(lang_def)
+            editor.set_palette(ed.TextEditor.PaletteId.dark)
+            # editor.set_read_only(True)
+            _gallery_editors[lang_idx].append(editor)
+    _gallery_initialized = True
+
+
+def _gallery_slide_gui(content_size: ImVec2):
+    global _gallery_initialized, _gallery_lang
+    s = _gallery_slide_gui  # static-like state on the function object
+    if not _gallery_initialized:
+        _init_gallery()
+
+    if not hasattr(s, "_knob_val"):
+        s._knob_val = 42.0
+        s._color = [0.4, 0.6, 1.0, 1.0]
+        s._name = "World"
+        s._greeting = "Hello, World!"
+        s._agreed = True
+        s._choice = 0
+
+    em = hello_imgui.em_size()
+
+    # Language radio buttons
+    _, _gallery_lang = imgui.radio_button("Python", _gallery_lang, 0)
+    imgui.same_line()
+    _, _gallery_lang = imgui.radio_button("C++", _gallery_lang, 1)
+
+    cols = 2
+    rows = 2
+    gap = em * 0.4
+    cell_w = (content_size.x - gap * (cols - 1)) / cols
+    cursor_offset_y = imgui.get_cursor_screen_pos().y - imgui.get_window_pos().y
+    remaining_h = content_size.y - cursor_offset_y
+    cell_h = (remaining_h - gap * (rows - 1)) / rows
+
+    snippets_gui = [
+        lambda: _gallery_gui_plot(cell_w, cell_h, em),
+        lambda: _gallery_gui_knob(cell_w, cell_h, em, s),
+        lambda: _gallery_gui_color(cell_w, cell_h, em, s),
+        lambda: _gallery_gui_form(cell_w, cell_h, em, s),
+    ]
+
+    origin = imgui.get_cursor_screen_pos()
+    for idx in range(4):
+        row, col = divmod(idx, cols)
+        x = origin.x + col * (cell_w + gap)
+        y = origin.y + row * (cell_h + gap)
+        imgui.set_cursor_screen_pos(ImVec2(x, y))
+        _gallery_render_cell(idx, cell_w, cell_h, em, snippets_gui[idx])
+
+
+def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func):
+    title = _GALLERY_SNIPPETS[idx][0]
+    editor = _gallery_editors[_gallery_lang][idx]
+
+    # Background
+    dl = imgui.get_window_draw_list()
+    p = imgui.get_cursor_screen_pos()
+    accent = imgui.get_style_color_vec4(imgui.Col_.button_hovered)
+    bg = imgui.color_convert_float4_to_u32(ImVec4(accent.x, accent.y, accent.z, 0.06))
+    border = imgui.color_convert_float4_to_u32(ImVec4(accent.x, accent.y, accent.z, 0.25))
+    rounding = em * 0.4
+    dl.add_rect_filled(p, ImVec2(p.x + w, p.y + h), bg, rounding)
+    dl.add_rect(p, ImVec2(p.x + w, p.y + h), border, rounding, 0, 1.0)
+
+    imgui.begin_child(f"##gallery_{idx}", ImVec2(w, h), False,
+                      imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_background)
+    pad = em * 0.4
+
+    # Title
+    imgui.set_cursor_pos(ImVec2(pad, pad * 0.5))
+    imgui.text_disabled(title)
+    imgui.set_cursor_pos_x(pad)
+
+    # Split: resizable code left, live demo right
+    default_code_w = (w - pad * 2) * 0.5
+    avail_h = h - imgui.get_cursor_pos_y() - pad
+
+    # Code (left) — resizable via drag
+    code_font = imgui_md.get_code_font()
+    imgui.push_font(code_font.font, code_font.size * 0.8)
+    imgui.begin_child(f"##code_{idx}", ImVec2(default_code_w, avail_h),
+                      imgui.ChildFlags_.resize_x | imgui.ChildFlags_.borders)
+    editor.render(f"##ed_gallery_{idx}", False, ImVec2(-1, -1))
+    imgui.end_child()
+    imgui.pop_font()
+
+    imgui.same_line()
+
+    # Live demo (right) — fills remaining space
+    imgui.begin_child(f"##live_{idx}", ImVec2(0, avail_h), False,
+                      imgui.WindowFlags_.no_scrollbar)
+    gui_func()
+    imgui.end_child()
+
+    imgui.end_child()
+
+
+def _gallery_gui_plot(w: float, h: float, em: float):
+    if not HAS_IMPLOT:
+        imgui.text("ImPlot not available")
+        return
+    t = imgui.get_time()
+    x = np.linspace(0, 4 * np.pi, 200)
+    if implot.begin_plot("##wave", ImVec2(-1, -1)):
+        implot.plot_line("sin", x, np.sin(x + t))
+        implot.plot_line("cos", x, np.cos(x + t * 0.7))
+        implot.end_plot()
+
+
+def _gallery_gui_knob(w: float, h: float, em: float, s):
+    _, s._knob_val = imgui_knobs.knob(
+        "Volume", s._knob_val, 0, 100, 1,
+        "%.0f%%", imgui_knobs.ImGuiKnobVariant_.wiper_dot)
+    imgui.same_line()
+    _, s._knob_val = imgui.v_slider_float(
+        "##vslider", ImVec2(em * 1.5, em * 5), s._knob_val, 0, 100, "%.0f")
+
+
+def _gallery_gui_color(w: float, h: float, em: float, s):
+    imgui.text(f"({s._color[0]:.2f}, {s._color[1]:.2f}, {s._color[2]:.2f})")
+    _, s._color = imgui.color_picker4(
+        "##color", s._color,
+        imgui.ColorEditFlags_.no_side_preview | imgui.ColorEditFlags_.no_inputs)
+
+
+def _gallery_gui_form(w: float, h: float, em: float, s):
+    imgui.set_next_item_width(-1)
+    _, s._name = imgui.input_text("Name", s._name)
+    if imgui.button("Greet") and s._name:
+        s._greeting = f"Hello, {s._name}!"
+    imgui.text_colored(ImVec4(0.4, 1.0, 0.4, 1.0), s._greeting)
+    _, s._agreed = imgui.checkbox("I agree", s._agreed)
+    imgui.set_next_item_width(-1)
+    _, s._choice = imgui.combo("Fruit", s._choice, ["Apple", "Banana", "Cherry"])
+
+
+# ============================================================================
+# Slide 10: Web Deployment — static screenshot
 # ============================================================================
 
 def _web_deploy_slide_gui(content_size: ImVec2):
@@ -1205,15 +1440,15 @@ def _intro_mini_demos():
             _implot_slide_wrapper),
         CarouselSlide(
             "GPU-Accelerated Rendering",
-            "Dear ImGui renders directly on the GPU \u2014 fast enough to blend custom shaders and 3D content into your UI.",
+            "Dear ImGui renders directly on the GPU, fast enough to blend custom shaders and 3D content into your UI.",
             _shader_slide_wrapper),
         CarouselSlide(
             "3D Data Exploration",
-            "ImPlot3D adds rotatable, zoomable 3D plots \u2014 navigate complex datasets with intuitive controls.",
+            "ImPlot3D adds rotatable, zoomable 3D plots. Navigate complex datasets with intuitive controls.",
             _lorenz_slide_gui),
         CarouselSlide(
             "Image Analysis",
-            "ImmVision lets you zoom, pan, and inspect pixel values in real time \u2014 with linked views and colormaps.",
+            "ImmVision lets you zoom, pan, and inspect pixel values in real time, with linked views and colormaps.",
             _immvision_slide_wrapper),
         CarouselSlide(
             "Feature-Rich Widgets",
@@ -1225,19 +1460,23 @@ def _intro_mini_demos():
             _node_editor_slide_gui),
         CarouselSlide(
             "Rich Documentation, Built In",
-            "Render markdown directly in your UI \u2014 headers, code blocks, tables, links, and images, all from a simple string.",
+            "Render markdown directly in your UI - headers, code blocks, tables, links, and images, all from a simple string.",
             _markdown_slide_gui),
         CarouselSlide(
             "Integrated Text & Code Editor",
-            "The built-in text editor supports syntax highlighting, line numbers, and search. Below is the source of this very demo \u2014 side by side in Python and C++.",
+            "The built-in text editor supports syntax highlighting, line numbers, and search. Below is the source of this very demo, side by side in Python and C++.",
             _source_code_slide_gui),
+        CarouselSlide(
+            "Code That Reads Like a Book",
+            "No widget trees, no callbacks, no state sync. Each snippet below is the complete code for the live demo beside it.",
+            _gallery_slide_gui),
         CarouselSlide(
             "Deploy to the Web",
             "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",
             _web_deploy_slide_gui),
         CarouselSlide(
             "Usage in Notebooks",
-            "Dear ImGui Bundle can also be used from a notebook \u2014 here, it displays a real-time dashboard during an ML training session.",
+            "Dear ImGui Bundle can also be used from a notebook. Here, it displays a real-time dashboard during an ML training session.",
             _notebook_slide_gui),
     ]
     slide_count = len(slides)

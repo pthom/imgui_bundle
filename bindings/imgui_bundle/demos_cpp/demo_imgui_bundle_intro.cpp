@@ -186,8 +186,8 @@ namespace IntroLorenz
         ImGui::TextDisabled("Butterfly Effect");
         ImGui::SetItemTooltip(
             "Tiny changes in initial conditions lead to\n"
-            "completely different trajectories \xe2\x80\x94\n"
-            "the hallmark of deterministic chaos.");
+            "completely different trajectories.\n"
+            "The hallmark of deterministic chaos.");
         ImGui::Spacing();
         ImGui::SliderFloat("Sigma", &sParams.sigma, 0.0f, 100.0f);
         ImGui::SetItemTooltip("Rate of divergence (chaos level)");
@@ -862,7 +862,263 @@ namespace IntroSourceCode
 
 
 // ============================================================================
-// Slide 9: Web Deployment — static screenshot
+// Slide 9: Mini Gallery — "Code that reads like a book"
+// ============================================================================
+
+namespace IntroGallery
+{
+    struct SnippetInfo {
+        const char* title;
+        const char* pythonCode;
+        const char* cppCode;
+    };
+
+    static const SnippetInfo sSnippets[] = {
+        { "Animated Plot",
+          // Python
+          "t = imgui.get_time()\n"
+          "x = np.linspace(0, 4 * np.pi, 200)\n"
+          "if implot.begin_plot(\"##wave\", ImVec2(-1, -1)):\n"
+          "    implot.plot_line(\"sin\", x, np.sin(x + t))\n"
+          "    implot.plot_line(\"cos\", x, np.cos(x + t * 0.7))\n"
+          "    implot.end_plot()",
+          // C++
+          "float t = ImGui::GetTime();\n"
+          "std::vector<float> x(200), s(200), c(200);\n"
+          "for (int i = 0; i < 200; i++) {\n"
+          "    x[i] = i * 4.f * IM_PI / 199.f;\n"
+          "    s[i] = sinf(x[i] + t);\n"
+          "    c[i] = cosf(x[i] + t * 0.7f);\n"
+          "}\n"
+          "if (ImPlot::BeginPlot(\"##wave\", ImVec2(-1, -1))) {\n"
+          "    ImPlot::PlotLine(\"sin\", x.data(), s.data(), 200);\n"
+          "    ImPlot::PlotLine(\"cos\", x.data(), c.data(), 200);\n"
+          "    ImPlot::EndPlot();\n"
+          "}" },
+        { "Knob",
+          // Python
+          "_, value = imgui_knobs.knob(\n"
+          "    \"Volume\", value, 0, 100, 1,\n"
+          "    \"%.0f%%\", imgui_knobs.ImGuiKnobVariant_.wiper_dot)\n"
+          "imgui.same_line()\n"
+          "imgui.v_slider_float(\"##vslider\",\n"
+          "    ImVec2(em * 1.5, em * 5), value, 0, 100, \"%.0f\")",
+          // C++
+          "ImGuiKnobs::Knob(\n"
+          "    \"Volume\", &value, 0, 100, 1,\n"
+          "    \"%.0f%%\", ImGuiKnobVariant_WiperDot);\n"
+          "ImGui::SameLine();\n"
+          "ImGui::VSliderFloat(\"##vslider\",\n"
+          "    ImVec2(em * 1.5f, em * 5.f), &value, 0, 100, \"%.0f\");" },
+        { "Color Picker",
+          // Python
+          "imgui.text(f\"Color: ({c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f})\")\n"
+          "_, c = imgui.color_picker4(\"##color\", c,\n"
+          "    imgui.ColorEditFlags_.no_side_preview\n"
+          "    | imgui.ColorEditFlags_.no_inputs)",
+          // C++
+          "ImGui::Text(\"Color: (%.2f, %.2f, %.2f)\", c[0], c[1], c[2]);\n"
+          "ImGui::ColorPicker4(\"##color\", c,\n"
+          "    ImGuiColorEditFlags_NoSidePreview\n"
+          "    | ImGuiColorEditFlags_NoInputs);" },
+        { "Mini Form",
+          // Python
+          "_, name = imgui.input_text(\"Name\", name)\n"
+          "if imgui.button(\"Greet\") and name:\n"
+          "    greeting = f\"Hello, {name}!\"\n"
+          "imgui.text_colored(ImVec4(0.4, 1, 0.4, 1), greeting)\n"
+          "_, agreed = imgui.checkbox(\"I agree\", agreed)\n"
+          "_, choice = imgui.combo(\"Fruit\", choice,\n"
+          "                        [\"Apple\", \"Banana\", \"Cherry\"])",
+          // C++
+          "ImGui::InputText(\"Name\", name, sizeof(name));\n"
+          "if (ImGui::Button(\"Greet\") && name[0])\n"
+          "    snprintf(greeting, sizeof(greeting), \"Hello, %s!\", name);\n"
+          "ImGui::TextColored(ImVec4(0.4f,1,0.4f,1), \"%s\", greeting);\n"
+          "ImGui::Checkbox(\"I agree\", &agreed);\n"
+          "ImGui::Combo(\"Fruit\", &choice, \"Apple\\0Banana\\0Cherry\\0\");" },
+    };
+    static const int kSnippetCount = IM_ARRAYSIZE(sSnippets);
+
+    // Editors: [0]=Python, [1]=C++, each has kSnippetCount editors
+    static TextEditor sEditors[2][kSnippetCount];
+    static bool sInitialized = false;
+    static int sLang = 0; // 0=Python, 1=C++
+
+    // Live demo state
+    static float sKnobVal = 42.f;
+    static float sColor[4] = {0.4f, 0.6f, 1.0f, 1.0f};
+    static char sName[128] = "World";
+    static char sGreeting[128] = "Hello, World!";
+    static bool sAgreed = true;
+    static int sChoice = 0;
+
+    void Init()
+    {
+        TextEditor::LanguageDefinitionId langDefs[] = {
+            TextEditor::LanguageDefinitionId::Python,
+            TextEditor::LanguageDefinitionId::Cpp
+        };
+        for (int lang = 0; lang < 2; lang++)
+        {
+            for (int i = 0; i < kSnippetCount; i++)
+            {
+                const char* code = (lang == 0) ? sSnippets[i].pythonCode : sSnippets[i].cppCode;
+                sEditors[lang][i].SetText(code);
+                sEditors[lang][i].SetLanguageDefinition(langDefs[lang]);
+                sEditors[lang][i].SetPalette(TextEditor::PaletteId::Dark);
+                // sEditors[lang][i].SetReadOnly(true);
+            }
+        }
+        sInitialized = true;
+    }
+
+    void GuiPlot()
+    {
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
+        float t = (float)ImGui::GetTime();
+        static float x[200], s[200], c[200];
+        for (int i = 0; i < 200; i++)
+        {
+            x[i] = i * 4.f * IM_PI / 199.f;
+            s[i] = sinf(x[i] + t);
+            c[i] = cosf(x[i] + t * 0.7f);
+        }
+        if (ImPlot::BeginPlot("##wave", ImVec2(-1, -1)))
+        {
+            ImPlot::PlotLine("sin", x, s, 200);
+            ImPlot::PlotLine("cos", x, c, 200);
+            ImPlot::EndPlot();
+        }
+#else
+        ImGui::Text("ImPlot not available");
+#endif
+    }
+
+    void GuiKnob()
+    {
+        float em = HelloImGui::EmSize();
+        ImGuiKnobs::Knob("Volume", &sKnobVal, 0, 100, 1,
+                          "%.0f%%", ImGuiKnobVariant_WiperDot);
+        ImGui::SameLine();
+        ImGui::VSliderFloat("##vslider", ImVec2(em * 1.5f, em * 5.f),
+                            &sKnobVal, 0, 100, "%.0f");
+    }
+
+    void GuiColor()
+    {
+        ImGui::Text("(%.2f, %.2f, %.2f)", sColor[0], sColor[1], sColor[2]);
+        ImGui::ColorPicker4("##color", sColor,
+            ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoInputs);
+    }
+
+    void GuiForm()
+    {
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputText("Name", sName, sizeof(sName));
+        if (ImGui::Button("Greet") && sName[0])
+            snprintf(sGreeting, sizeof(sGreeting), "Hello, %s!", sName);
+        ImGui::TextColored(ImVec4(0.4f, 1.f, 0.4f, 1.f), "%s", sGreeting);
+        ImGui::Checkbox("I agree", &sAgreed);
+        ImGui::SetNextItemWidth(-1);
+        ImGui::Combo("Fruit", &sChoice, "Apple\0Banana\0Cherry\0");
+    }
+
+    using GuiFunc = void(*)();
+    static GuiFunc sGuiFuncs[] = { GuiPlot, GuiKnob, GuiColor, GuiForm };
+
+    void RenderCell(int idx, float w, float h, float em, GuiFunc guiFunc)
+    {
+        const char* title = sSnippets[idx].title;
+        TextEditor& editor = sEditors[sLang][idx];
+
+        // Background
+        ImDrawList* dl = ImGui::GetWindowDrawList();
+        ImVec2 p = ImGui::GetCursorScreenPos();
+        ImVec4 accent = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+        ImU32 bg = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.06f));
+        ImU32 border = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.25f));
+        float rounding = em * 0.4f;
+        dl->AddRectFilled(p, ImVec2(p.x + w, p.y + h), bg, rounding);
+        dl->AddRect(p, ImVec2(p.x + w, p.y + h), border, rounding, 0, 1.f);
+
+        char childId[32];
+        snprintf(childId, sizeof(childId), "##gallery_%d", idx);
+        ImGui::BeginChild(childId, ImVec2(w, h), false,
+                          ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
+        float pad = em * 0.4f;
+
+        // Title
+        ImGui::SetCursorPos(ImVec2(pad, pad * 0.5f));
+        ImGui::TextDisabled("%s", title);
+        ImGui::SetCursorPosX(pad);
+
+        // Split: resizable code left, live demo right
+        float defaultCodeW = (w - pad * 2.f) * 0.5f;
+        float availH = h - ImGui::GetCursorPosY() - pad;
+
+        // Code (left) — resizable via drag
+        auto codeFont = ImGuiMd::GetCodeFont();
+        ImGui::PushFont(codeFont.font, codeFont.size * 0.8f);
+        char codeChildId[32];
+        snprintf(codeChildId, sizeof(codeChildId), "##code_%d", idx);
+        ImGui::BeginChild(codeChildId, ImVec2(defaultCodeW, availH),
+                          ImGuiChildFlags_ResizeX | ImGuiChildFlags_Borders);
+        char editorId[32];
+        snprintf(editorId, sizeof(editorId), "##ed_gallery_%d", idx);
+        editor.Render(editorId, false, ImVec2(-1, -1));
+        ImGui::EndChild();
+        ImGui::PopFont();
+
+        ImGui::SameLine();
+
+        // Live demo (right) — fills remaining space
+        char liveId[32];
+        snprintf(liveId, sizeof(liveId), "##live_%d", idx);
+        ImGui::BeginChild(liveId, ImVec2(0, availH), false, ImGuiWindowFlags_NoScrollbar);
+        guiFunc();
+        ImGui::EndChild();
+
+        ImGui::EndChild();
+    }
+
+    void SlideGui(ImVec2 contentSize)
+    {
+        if (!sInitialized)
+            Init();
+
+        float em = HelloImGui::EmSize();
+
+        // Language radio buttons
+        ImGui::RadioButton("Python", &sLang, 0);
+        ImGui::SameLine();
+        ImGui::RadioButton("C++", &sLang, 1);
+
+        int cols = 2, rows = 2;
+        float gap = em * 0.4f;
+        float cellW = (contentSize.x - gap * (float)(cols - 1)) / (float)cols;
+        float cursorOffsetY = ImGui::GetCursorScreenPos().y - ImGui::GetWindowPos().y;
+        float remainingH = contentSize.y - cursorOffsetY;
+        float cellH = (remainingH - gap * (float)(rows - 1)) / (float)rows;
+
+        ImVec2 origin = ImGui::GetCursorScreenPos();
+        for (int idx = 0; idx < kSnippetCount; idx++)
+        {
+            int row = idx / cols;
+            int col = idx % cols;
+            float x = origin.x + col * (cellW + gap);
+            float y = origin.y + row * (cellH + gap);
+            ImGui::SetCursorScreenPos(ImVec2(x, y));
+            RenderCell(idx, cellW, cellH, em, sGuiFuncs[idx]);
+        }
+    }
+} // namespace IntroGallery
+
+static void GallerySlideGui(ImVec2 cs) { IntroGallery::SlideGui(cs); }
+
+
+// ============================================================================
+// Slide 10: Web Deployment — static screenshot
 // ============================================================================
 
 namespace IntroWebDeploy
@@ -1367,15 +1623,15 @@ void IntroMiniDemos()
             ImPlotShowcaseSlideGui },
 
         { "GPU-Accelerated Rendering",
-        "Dear ImGui renders directly on the GPU \xe2\x80\x94 fast enough to blend custom shaders and 3D content into your UI.",
-        ShaderSlideGui },
+          "Dear ImGui renders directly on the GPU, fast enough to blend custom shaders and 3D content into your UI.",
+          ShaderSlideGui },
 
         { "3D Data Exploration",
-          "ImPlot3D adds rotatable, zoomable 3D plots \xe2\x80\x94 navigate complex datasets with intuitive controls.",
+          "ImPlot3D adds rotatable, zoomable 3D plots. Navigate complex datasets with intuitive controls.",
           LorenzSlideGui },
 
         { "Image Analysis",
-          "ImmVision lets you zoom, pan, and inspect pixel values in real time \xe2\x80\x94 with linked views and colormaps.",
+          "ImmVision lets you zoom, pan, and inspect pixel values in real time, with linked views and colormaps.",
           ImmVisionSlideGui },
 
         { "Feature-Rich Widgets",
@@ -1387,20 +1643,24 @@ void IntroMiniDemos()
           NodeEditorSlideGui },
 
         { "Rich Documentation, Built In",
-          "Render markdown directly in your UI \xe2\x80\x94 headers, code blocks, tables, links, and images, all from a simple string.",
+          "Render markdown directly in your UI - headers, code blocks, tables, links, and images, all from a simple string.",
           MarkdownSlideGui },
 
         { "Integrated Text & Code Editor",
-          "The built-in text editor supports syntax highlighting, line numbers, and search. Below is the source of this very demo \xe2\x80\x94 side by side in Python and C++.",
+          "The built-in text editor supports syntax highlighting, line numbers, and search. Below is the source of this very demo, side by side in Python and C++.",
           IntroSourceCode::SlideGui },
+
+        { "Code That Reads Like a Book",
+          "No widget trees, no callbacks, no state sync. Each snippet below is the complete code for the live demo beside it.",
+          GallerySlideGui },
 
         { "Deploy to the Web",
           "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",
           WebDeploySlideGui },
 
         { "Usage in Notebooks",
-        "Dear ImGui Bundle can also be used from a notebook \xe2\x80\x94 here, it displays a real-time dashboard during an ML training session.",
-            NotebookSlideGui },
+          "Dear ImGui Bundle can also be used from a notebook. Here, it displays a real-time dashboard during an ML training session.",
+          NotebookSlideGui },
     };
     static const int slideCount = IM_ARRAYSIZE(slides);
 
