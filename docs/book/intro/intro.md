@@ -58,7 +58,7 @@ hello_imgui.run(gui, window_title="Fruit Picker")
 
 ![Fruit picker app](../images/choose_fruit.jpg)
 
-No widget objects. No signals/slots. State lives in your code. Changes are immediate.
+No widget objects. No signals/slots. State lives in your code. Changes are immediate. [Compare with alternatives](key_features.md#comparison-with-alternatives)
 
 ---
 
