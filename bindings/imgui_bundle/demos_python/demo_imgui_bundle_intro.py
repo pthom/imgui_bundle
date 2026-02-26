@@ -10,7 +10,7 @@ from imgui_bundle import imgui_color_text_edit as ed
 from imgui_bundle import imgui_knobs, imgui_toggle
 from imgui_bundle.demos_python import demo_utils
 from imgui_bundle import implot3d
-from imgui_bundle.immapp import icons_fontawesome_6
+from imgui_bundle.immapp import icons_fontawesome_4
 import webbrowser
 from imgui_bundle.immapp import static
 
@@ -1331,9 +1331,9 @@ def _intro_mini_demos():
     nav_y = slide_area_pos.y + slide_height + em * 0.3
 
     # Left arrow
-    imgui.set_cursor_screen_pos(ImVec2(nav_start_x, nav_y))
-    if imgui.button(icons_fontawesome_6.ICON_FA_CHEVRON_LEFT + "##carousel_prev",
-                    ImVec2(arrow_btn_w, em * 1.5)):
+    imgui.set_cursor_screen_pos(ImVec2(nav_start_x, nav_y + hello_imgui.em_size(0.15)))
+    if imgui.button(icons_fontawesome_4.ICON_FA_CHEVRON_LEFT + "##carousel_prev",
+                    ImVec2(arrow_btn_w, em * 1.2)):
         _current_slide = (_current_slide - 1 + slide_count) % slide_count
         _auto_stopped = True
 
@@ -1363,9 +1363,9 @@ def _intro_mini_demos():
 
     # Right arrow
     right_arrow_x = dots_start_x + dots_width + em * 0.5
-    imgui.set_cursor_screen_pos(ImVec2(right_arrow_x, nav_y))
-    if imgui.button(icons_fontawesome_6.ICON_FA_CHEVRON_RIGHT + "##carousel_next",
-                    ImVec2(arrow_btn_w, em * 1.5)):
+    imgui.set_cursor_screen_pos(ImVec2(right_arrow_x, nav_y + hello_imgui.em_size(0.15)))
+    if imgui.button(icons_fontawesome_4.ICON_FA_CHEVRON_RIGHT + "##carousel_next",
+                    ImVec2(arrow_btn_w, em * 1.2)):
         _current_slide = (_current_slide + 1) % slide_count
         _auto_stopped = True
 

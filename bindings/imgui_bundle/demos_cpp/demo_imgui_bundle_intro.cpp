@@ -34,7 +34,7 @@
 #include <vector>
 #include <memory>
 
-#include "hello_imgui/icons_font_awesome_6.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 
 
 // ============================================================================
@@ -1506,8 +1506,8 @@ void IntroMiniDemos()
         float navY = slideAreaPos.y + slideHeight + em * 0.3f;
 
         // Left arrow
-        ImGui::SetCursorScreenPos(ImVec2(navStartX, navY));
-        if (ImGui::Button(ICON_FA_CHEVRON_LEFT "##carousel_prev", ImVec2(arrowBtnW, em * 1.5f)))
+        ImGui::SetCursorScreenPos(ImVec2(navStartX, navY + HelloImGui::EmSize(0.15f)));
+        if (ImGui::Button(ICON_FA_CHEVRON_LEFT "##carousel_prev", ImVec2(arrowBtnW, em * 1.2f)))
         {
             currentSlide = (currentSlide - 1 + slideCount) % slideCount;
             autoStopped = true;
@@ -1545,8 +1545,8 @@ void IntroMiniDemos()
 
         // Right arrow
         float rightArrowX = dotsStartX + dotsWidth + em * 0.5f;
-        ImGui::SetCursorScreenPos(ImVec2(rightArrowX, navY));
-        if (ImGui::Button(ICON_FA_CHEVRON_RIGHT "##carousel_next", ImVec2(arrowBtnW, em * 1.5f)))
+        ImGui::SetCursorScreenPos(ImVec2(rightArrowX, navY + HelloImGui::EmSize(0.15f)));
+        if (ImGui::Button(ICON_FA_CHEVRON_RIGHT "##carousel_next", ImVec2(arrowBtnW, em * 1.2f)))
         {
             currentSlide = (currentSlide + 1) % slideCount;
             autoStopped = true;
