@@ -814,16 +814,16 @@ ImGui::VSliderFloat("##vslider",
     ("Color Picker",
      # Python
      """\
-imgui.text(f"Color: ({c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f})")
-_, c = imgui.color_picker4("##color", c,
-    imgui.ColorEditFlags_.no_side_preview
-    | imgui.ColorEditFlags_.no_inputs)""",
+# c is an ImVec4
+imgui.text(f"({c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f})")
+_, c = imgui.color_picker4("##color", c)
+""",
      # C++
      """\
-ImGui::Text("Color: (%.2f, %.2f, %.2f)", c[0], c[1], c[2]);
-ImGui::ColorPicker4("##color", c,
-    ImGuiColorEditFlags_NoSidePreview
-    | ImGuiColorEditFlags_NoInputs);"""),
+// c is an ImVec4
+ImGui::Text("(%.2f, %.2f, %.2f)", c.x, c.y, c.z);
+ImGui::ColorPicker4("##color", &c.x);
+"""),
     ("Mini Form",
      # Python
      """\
@@ -913,6 +913,8 @@ def _gallery_slide_gui(content_size: ImVec2):
 
 
 def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func):
+    if not hasattr(_gallery_render_cell, "_copy_times"):
+        _gallery_render_cell._copy_times = {}
     title = _GALLERY_SNIPPETS[idx][0]
     editor = _gallery_editors[_gallery_lang][idx]
 
@@ -930,23 +932,33 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func):
                       imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_background)
     pad = em * 0.4
 
-    # Title
-    imgui.set_cursor_pos(ImVec2(pad, pad * 0.5))
-    imgui.text_disabled(title)
-    imgui.set_cursor_pos_x(pad)
-
-    # Split: resizable code left, live demo right
     default_code_w = (w - pad * 2) * 0.5
     avail_h = h - imgui.get_cursor_pos_y() - pad
 
-    # Code (left) — resizable via drag
-    code_font = imgui_md.get_code_font()
-    imgui.push_font(code_font.font, code_font.size * 0.8)
+    # Code (left) — resizable child containing title + copy + editor
     imgui.begin_child(f"##code_{idx}", ImVec2(default_code_w, avail_h),
                       imgui.ChildFlags_.resize_x | imgui.ChildFlags_.borders)
+
+    # Title + Copy button
+    imgui.text_disabled(title)
+    imgui.same_line(imgui.get_content_region_avail().x - imgui.get_frame_height())
+    if imgui.small_button(icons_fontawesome_4.ICON_FA_COPY + f"##copy_{idx}"):
+        code = _GALLERY_SNIPPETS[idx][1] if _gallery_lang == 0 else _GALLERY_SNIPPETS[idx][2]
+        imgui.set_clipboard_text(code)
+        _gallery_render_cell._copy_times[idx] = imgui.get_time()
+    copied_recently = (imgui.get_time() - _gallery_render_cell._copy_times.get(idx, -1.0)) < 0.7
+    if copied_recently:
+        imgui.set_item_tooltip("Copied!")
+    else:
+        imgui.set_item_tooltip("Copy")
+
+    # Editor
+    code_font = imgui_md.get_code_font()
+    imgui.push_font(code_font.font, code_font.size * 0.8)
     editor.render(f"##ed_gallery_{idx}", False, ImVec2(-1, -1))
-    imgui.end_child()
     imgui.pop_font()
+
+    imgui.end_child()
 
     imgui.same_line()
 
@@ -982,9 +994,7 @@ def _gallery_gui_knob(w: float, h: float, em: float, s):
 
 def _gallery_gui_color(w: float, h: float, em: float, s):
     imgui.text(f"({s._color[0]:.2f}, {s._color[1]:.2f}, {s._color[2]:.2f})")
-    _, s._color = imgui.color_picker4(
-        "##color", s._color,
-        imgui.ColorEditFlags_.no_side_preview | imgui.ColorEditFlags_.no_inputs)
+    _, s._color = imgui.color_picker4("##color", s._color)
 
 
 def _gallery_gui_form(w: float, h: float, em: float, s):

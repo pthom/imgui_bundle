@@ -912,15 +912,13 @@ namespace IntroGallery
           "    ImVec2(em * 1.5f, em * 5.f), &value, 0, 100, \"%.0f\");" },
         { "Color Picker",
           // Python
-          "imgui.text(f\"Color: ({c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f})\")\n"
-          "_, c = imgui.color_picker4(\"##color\", c,\n"
-          "    imgui.ColorEditFlags_.no_side_preview\n"
-          "    | imgui.ColorEditFlags_.no_inputs)",
+          "# c is an ImVec4\n"
+          "imgui.text(f\"({c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f})\")\n"
+          "_, c = imgui.color_picker4(\"##color\", c)",
           // C++
-          "ImGui::Text(\"Color: (%.2f, %.2f, %.2f)\", c[0], c[1], c[2]);\n"
-          "ImGui::ColorPicker4(\"##color\", c,\n"
-          "    ImGuiColorEditFlags_NoSidePreview\n"
-          "    | ImGuiColorEditFlags_NoInputs);" },
+          "// c is an ImVec4\n"
+          "ImGui::Text(\"(%.2f, %.2f, %.2f)\", c.x, c.y, c.z);\n"
+          "ImGui::ColorPicker4(\"##color\", &c.x);" },
         { "Mini Form",
           // Python
           "_, name = imgui.input_text(\"Name\", name)\n"
@@ -947,7 +945,7 @@ namespace IntroGallery
 
     // Live demo state
     static float sKnobVal = 42.f;
-    static float sColor[4] = {0.4f, 0.6f, 1.0f, 1.0f};
+    static ImVec4 sColor = {0.4f, 0.6f, 1.0f, 1.0f};
     static char sName[128] = "World";
     static char sGreeting[128] = "Hello, World!";
     static bool sAgreed = true;
@@ -1007,9 +1005,8 @@ namespace IntroGallery
 
     void GuiColor()
     {
-        ImGui::Text("(%.2f, %.2f, %.2f)", sColor[0], sColor[1], sColor[2]);
-        ImGui::ColorPicker4("##color", sColor,
-            ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoInputs);
+        ImGui::Text("(%.2f, %.2f, %.2f)", sColor.x, sColor.y, sColor.z);
+        ImGui::ColorPicker4("##color", &sColor.x);
     }
 
     void GuiForm()
@@ -1026,6 +1023,7 @@ namespace IntroGallery
 
     using GuiFunc = void(*)();
     static GuiFunc sGuiFuncs[] = { GuiPlot, GuiKnob, GuiColor, GuiForm };
+    static double sCopyTime[kSnippetCount] = {};
 
     void RenderCell(int idx, float w, float h, float em, GuiFunc guiFunc)
     {
@@ -1048,27 +1046,41 @@ namespace IntroGallery
                           ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
         float pad = em * 0.4f;
 
-        // Title
-        ImGui::SetCursorPos(ImVec2(pad, pad * 0.5f));
-        ImGui::TextDisabled("%s", title);
-        ImGui::SetCursorPosX(pad);
-
-        // Split: resizable code left, live demo right
         float defaultCodeW = (w - pad * 2.f) * 0.5f;
         float availH = h - ImGui::GetCursorPosY() - pad;
 
-        // Code (left) — resizable via drag
-        auto codeFont = ImGuiMd::GetCodeFont();
-        ImGui::PushFont(codeFont.font, codeFont.size * 0.8f);
+        // Code (left) — resizable child containing title + copy + editor
         char codeChildId[32];
         snprintf(codeChildId, sizeof(codeChildId), "##code_%d", idx);
         ImGui::BeginChild(codeChildId, ImVec2(defaultCodeW, availH),
                           ImGuiChildFlags_ResizeX | ImGuiChildFlags_Borders);
-        char editorId[32];
-        snprintf(editorId, sizeof(editorId), "##ed_gallery_%d", idx);
-        editor.Render(editorId, false, ImVec2(-1, -1));
+        {
+            // Title + Copy button
+            ImGui::TextDisabled("%s", title);
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - ImGui::GetFrameHeight());
+            char copyId[32];
+            snprintf(copyId, sizeof(copyId), ICON_FA_COPY "##copy_%d", idx);
+            if (ImGui::SmallButton(copyId))
+            {
+                const char* code = (sLang == 0) ? sSnippets[idx].pythonCode : sSnippets[idx].cppCode;
+                ImGui::SetClipboardText(code);
+                sCopyTime[idx] = ImGui::GetTime();
+            }
+            bool copiedRecently = (ImGui::GetTime() - sCopyTime[idx]) < 0.7;
+            if (copiedRecently)
+                ImGui::SetItemTooltip("Copied!");
+            else
+                ImGui::SetItemTooltip("Copy");
+
+            // Editor
+            auto codeFont = ImGuiMd::GetCodeFont();
+            ImGui::PushFont(codeFont.font, codeFont.size * 0.8f);
+            char editorId[32];
+            snprintf(editorId, sizeof(editorId), "##ed_gallery_%d", idx);
+            editor.Render(editorId, false, ImVec2(-1, -1));
+            ImGui::PopFont();
+        }
         ImGui::EndChild();
-        ImGui::PopFont();
 
         ImGui::SameLine();
 
