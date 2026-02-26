@@ -1557,6 +1557,25 @@ void IntroMiniDemos()
         ImGui::Dummy(ImVec2(1, 1));
     }
 
+    // Navigation via mouse wheel
+    if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiKey_MouseWheelX, ImGuiInputFlags_RouteGlobal))
+    {
+        static double time_last_trigger = -1.f;
+        double now = ImGui::GetTime();
+        if (now - time_last_trigger > 1.0)
+        {
+            autoStopped = true;
+            if (ImGui::GetIO().MouseWheelH > 0)
+                currentSlide = (currentSlide - 1) % slideCount;
+            else
+                currentSlide = (currentSlide + 1) % slideCount;
+            if (currentSlide < 0)
+                currentSlide = 0;
+            time_last_trigger = now;
+        }
+    }
+
+
     ImGui::Unindent(carouselOffsetX);
 }
 

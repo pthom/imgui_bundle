@@ -1195,6 +1195,7 @@ _auto_stopped = False
 
 
 def _intro_mini_demos():
+    static = _intro_mini_demos
     global _current_slide, _animated_offset, _auto_timer, _auto_stopped
 
     slides = [
@@ -1371,6 +1372,22 @@ def _intro_mini_demos():
     # Advance cursor past nav bar
     imgui.set_cursor_screen_pos(ImVec2(slide_area_pos.x, nav_y + em * 1.8))
     imgui.dummy(ImVec2(1, 1))
+
+    # Navigation via mouse wheel
+    if imgui.shortcut(imgui.Key.mod_shift | imgui.Key.mouse_wheel_x, imgui.InputFlags_.route_global.value):
+        now = imgui.get_time()
+        if not hasattr(static, "_time_last_trigger"):
+            static._time_last_trigger = -1.0
+        if now - static._time_last_trigger > 1.0:
+            _auto_stopped = True
+            if imgui.get_io().mouse_wheel_h > 0:
+                if _current_slide > 0:
+                    _current_slide = (_current_slide - 1) % slide_count
+            else:
+                _current_slide = (_current_slide + 1) % slide_count
+            if _current_slide  < 0:
+                _current_slide = 0
+            static._time_last_trigger = now
 
     imgui.unindent(carousel_offset_x)
 
