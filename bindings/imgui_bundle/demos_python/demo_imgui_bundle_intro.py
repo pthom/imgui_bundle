@@ -998,36 +998,24 @@ void main(){
         # Render shader filling the full content area
         _shader_gui_main(content_size.x, content_size.y)
 
-        # Overlay controls on top of the shader
-        overlay_w = em * 18.0
-        overlay_h = em * 6.5
+        # Overlay controls in a transparent auto-resizing window
         pad = em * 0.8
-        overlay_x = imgui.get_item_rect_min().x + content_size.x - overlay_w - pad
+        overlay_x = imgui.get_item_rect_min().x + content_size.x - em * 18.0 - pad
         overlay_y = imgui.get_item_rect_min().y + pad
 
-        dl = imgui.get_window_draw_list()
-        rounding = em * 0.5
-        bg_margin = em * 0.3
-        bg = imgui.color_convert_float4_to_u32(ImVec4(0.0, 0.0, 0.0, 0.35))
-        border = imgui.color_convert_float4_to_u32(ImVec4(1.0, 1.0, 1.0, 0.15))
-        dl.add_rect_filled(
-            ImVec2(overlay_x - bg_margin, overlay_y),
-            ImVec2(overlay_x + overlay_w, overlay_y + overlay_h + bg_margin),
-            bg, rounding)
-        dl.add_rect(
-            ImVec2(overlay_x - bg_margin, overlay_y),
-            ImVec2(overlay_x + overlay_w, overlay_y + overlay_h + bg_margin),
-            border, rounding, 0, 1.0)
-
-        imgui.set_cursor_screen_pos(ImVec2(overlay_x, overlay_y))
-        imgui.begin_child("##shader_overlay", ImVec2(overlay_w, overlay_h), False,
-                          imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_background)
-        inner_pad = em * 0.5
-        imgui.set_cursor_pos(ImVec2(inner_pad, inner_pad))
-        imgui.push_item_width(overlay_w - inner_pad * 2.0)
-        _shader_gui_side()
-        imgui.pop_item_width()
-        imgui.end_child()
+        imgui.set_next_window_pos(ImVec2(overlay_x, overlay_y), imgui.Cond_.always.value)
+        imgui.set_next_window_bg_alpha(0.35)
+        imgui.push_style_var(imgui.StyleVar_.window_rounding, em * 0.5)
+        if imgui.begin("##seascape_overlay", None,
+                       imgui.WindowFlags_.always_auto_resize |
+                       imgui.WindowFlags_.no_title_bar |
+                       imgui.WindowFlags_.no_move |
+                       imgui.WindowFlags_.no_saved_settings)[0]:
+            imgui.push_item_width(em * 16.0)
+            _shader_gui_side()
+            imgui.pop_item_width()
+        imgui.end()
+        imgui.pop_style_var()
 
 
 # ============================================================================

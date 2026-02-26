@@ -1139,36 +1139,26 @@ void main(){
         // Render shader filling the full content area
         GuiMainPart(contentSize.x, contentSize.y);
 
-        // Overlay controls on top of the shader
-        float overlayW = em * 18.f;
-        float overlayH = em * 6.5f;
+        // Overlay controls in a transparent auto-resizing window
         float pad = em * 0.8f;
-        float overlayX = ImGui::GetItemRectMin().x + contentSize.x - overlayW - pad;
+        float overlayX = ImGui::GetItemRectMin().x + contentSize.x - em * 18.f - pad;
         float overlayY = ImGui::GetItemRectMin().y + pad;
 
-        ImDrawList* dl = ImGui::GetWindowDrawList();
-        float rounding = em * 0.5f;
-        float bgMargin = em * 0.3f;
-        ImU32 bg = ImGui::ColorConvertFloat4ToU32(ImVec4(0.f, 0.f, 0.f, 0.35f));
-        ImU32 border = ImGui::ColorConvertFloat4ToU32(ImVec4(1.f, 1.f, 1.f, 0.15f));
-        dl->AddRectFilled(
-            ImVec2(overlayX - bgMargin, overlayY),
-            ImVec2(overlayX + overlayW, overlayY + overlayH + bgMargin),
-            bg, rounding);
-        dl->AddRect(
-            ImVec2(overlayX - bgMargin, overlayY),
-            ImVec2(overlayX + overlayW, overlayY + overlayH + bgMargin),
-            border, rounding, 0, 1.f);
-
-        ImGui::SetCursorScreenPos(ImVec2(overlayX, overlayY));
-        ImGui::BeginChild("##shader_overlay", ImVec2(overlayW, overlayH), false,
-                          ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
-        float innerPad = em * 0.5f;
-        ImGui::SetCursorPos(ImVec2(innerPad, innerPad));
-        ImGui::PushItemWidth(overlayW - innerPad * 2.f);
-        GuiSidePanel();
-        ImGui::PopItemWidth();
-        ImGui::EndChild();
+        ImGui::SetNextWindowPos(ImVec2(overlayX, overlayY), ImGuiCond_Always);
+        ImGui::SetNextWindowBgAlpha(0.35f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, em * 0.5f);
+        if (ImGui::Begin("##seascape_overlay", nullptr,
+                         ImGuiWindowFlags_AlwaysAutoResize |
+                         ImGuiWindowFlags_NoTitleBar |
+                         ImGuiWindowFlags_NoMove |
+                         ImGuiWindowFlags_NoSavedSettings))
+        {
+            ImGui::PushItemWidth(em * 16.f);
+            GuiSidePanel();
+            ImGui::PopItemWidth();
+        }
+        ImGui::End();
+        ImGui::PopStyleVar();
     }
 } // namespace IntroShader
 
