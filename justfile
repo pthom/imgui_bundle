@@ -18,11 +18,15 @@ ibex_clean:
     rm -rf build_ibex_ems
 
 # deploy the imgui bundle explorer build
+# old url:     # rsync -vaz bin pascal@traineq.org:HTML/ImGuiBundle/emscripten
 ibex_deploy: ibex_build
     # The server supports gzip encoding, this speed up the loading a lot, especially for the .wasm files
+    cp build_ibex_ems/bin/demo_imgui_bundle.html build_ibex_ems/bin/index.html
     gzip -9 -k -f build_ibex_ems/bin/*.wasm build_ibex_ems/bin/*.data build_ibex_ems/bin/*.js
     cd build_ibex_ems && \
-    rsync -vaz bin pascal@traineq.org:HTML/ImGuiBundle/emscripten
+    rsync -vaz bin/ pascal@traineq.org:HTML/imgui_bundle_explorer/
+    scp build_ibex_ems/bin/demo_imgui_bundle.html pascal@traineq.org:HTML/imgui_bundle_explorer/index.html
+    echo "Deployed to https://traineq.org/imgui_bundle_explorer/"
 
 # Serve emscripten with CORS
 ibex_serve:
