@@ -1,6 +1,78 @@
-*Version numbers are synced between "Dear ImGui", "Hello ImGui" and "Dear ImGui Bundle"*
+*Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# v1.92.XXX (ongoing)
+# v1.92.6XX (ongoing)
+
+# v1.92.600
+
+Based on ImGui v1.92.6 & hello_imgui v1.92.6.
+
+## Dear ImGui Bundle Explorer (formerly "ImGui Bundle Interactive Manual")
+
+The interactive manual has been renamed to **Dear ImGui Bundle Explorer** and significantly enhanced:
+- New intro tab with a carousel of 7 interactive slides showcasing the ecosystem
+- Deployed at [traineq.org/imgui_bundle_explorer](https://traineq.org/imgui_bundle_explorer)
+
+## Dear ImGui Explorer
+
+[Dear ImGui Explorer](https://pthom.github.io/imgui_explorer) (formerly "imgui_manual") has been rewritten from scratch and integrated into the Dear ImGui Bundle repository. It was previously a standalone project; Dear ImGui Bundle is now its parent repository.
+
+It provides interactive manuals for ImGui, ImPlot, ImPlot3D, and ImAnim — with side-by-side C++/Python code, syntax highlighting, and search in API reference files (headers, Python stubs).
+
+- Follow source: click on any demo widget to jump to its source code
+- Search across API files with Ctrl+Shift+F
+- Lazy-load demo code files (desktop and Emscripten)
+- Deployed at [pthom.github.io/imgui_explorer](https://pthom.github.io/imgui_explorer)
+
+## New library: ImAnim
+
+Added [ImAnim](https://github.com/pthom/im_anim), a tweening and animation library for ImGui.
+- Available via `immapp.run(..., with_im_anim=True)` / `ImmApp::AddOnParams::withImAnim`
+- Python API adapted for `get_float`, `get_vec2`, `get_color`, etc.
+
+## Updates to libraries
+- Update imgui to v1.92.6-docking
+- Update hello_imgui to v1.92.6
+- Update implot to latest version (breaking change: added `ImPlotSpec`, removed plot item styling)
+- Update implot3d to latest version (breaking change: added `ImPlot3DSpec`)
+- Update ImGuiColorTextEdit: line numbers always visible in separate gutter, improved selection colors
+- Update imgui_knobs: added `SetKnobColors`, `UnsetKnobColors`, default color adapts to light/dark theme
+- Update imgui_md: render tables using ImGui tables (resizable columns), delay before showing link hrefs
+
+## Async and notebook support
+- Added `hello_imgui.run_async()` / `immapp.run_async()` for async/await support
+- Added `immapp.nb` module for non-blocking Jupyter notebook execution (`nb.start()`, `nb.stop()`, `nb.is_running()`)
+- Added `hello_imgui.nb` convenience module
+
+## Pyodide (web) support
+- Added Docker build system for Pyodide wheels
+- `run()` is fire-and-forget in Pyodide; use `run_async()` for awaitable behavior
+- CI workflow for Pyodide builds
+- Pyodide wheels now exclude demo code to reduce size
+
+## Python bindings
+- Added `em_size()` and `em_to_vec2()` at root of `imgui_bundle` for DPI-independent sizing
+- Added `__getitem__` / `__setitem__` (subscript `[]`) for ImVec2 and ImVec4
+- Configurable wheel builds with selective module inclusion
+- Fix: accept read-only numpy arrays (e.g. from pandas) in nanobind bindings
+
+## hello_imgui improvements
+- Added `AddAssetsSearchPath()` / `ClearAssetsSearchPaths()` / `GetAssetsSearchPaths()` for multi-folder asset resolution at runtime
+- Added `topMost` window attribute
+- Added `iniDisable` and `iniClearPreviousSettings` params
+- Added `FpsIdling::vsyncToMonitor` and `FpsIdling::fpsMax` settings
+- Added `theme_changed` callback
+- Fix: ManualRender RunnerParams lifetime management
+
+## Build & CI
+- Added ARM Linux (aarch64) wheel builds using native `ubuntu-24.04-arm` runners
+- Reduced Emscripten .data sizes: demos only bundle the assets they actually need
+- Deduplicated demo assets (removed ~1.1M of files duplicated between `assets/` and `demos_assets/`)
+- Emscripten: use GLFW3 backend by default instead of SDL2
+- Fix: shell injection in BrowseToUrl (replaced `system()` with `fork+execlp`)
+
+## Documentation
+- Complete documentation overhaul using Jupyter Book, available as [PDF](https://pthom.github.io/imgui_bundle/assets/book.pdf)
+- Added developer documentation (building, bindings, repo structure)
 
 # v1.92.5
 

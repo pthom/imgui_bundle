@@ -10,7 +10,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "imgui-bundle"
-version = "1.92.6"  #  1.92.6 WIP - Remember to mirror changes on line 2 of main CMakeLists! This mirrors IMGUI_VERSION_NUM in imgui.h
+version = "1.92.600"  # Based on ImGui 1.92.6 - Remember to mirror changes on line 3 of main CMakeLists! Version = ImGui patch × 100 + bundle release
 description="Dear ImGui Bundle: From expressive code to powerful GUIs in no time. A fast, feature-rich, cross-platform toolkit for C++ and Python."
 readme = "bindings/imgui_bundle/Readme_pypi.md"
 authors = [ { name = "Pascal Thomet", email = "pthomet@gmail.com" } ]
