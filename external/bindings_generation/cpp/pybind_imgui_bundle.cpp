@@ -215,7 +215,7 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("im_anim", false);
 #endif
 
-#ifdef IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
     _register_submodule("imgui_manual");
     auto module_imgui_manual = m.def_submodule("imgui_manual");
     py_init_module_imgui_manual(module_imgui_manual);

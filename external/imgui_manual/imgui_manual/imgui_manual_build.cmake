@@ -123,7 +123,7 @@ endfunction()
 # ---------------------------------------------------------------------------
 function(iman_link_imgui_bundle_to_manual)
     target_link_libraries(imgui_bundle INTERFACE imgui_manual_lib)
-    target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB)
+    target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB)
     if(COMMAND ibd_add_installable_dependency AND IMGUI_BUNDLE_INSTALL_CPP)
         install(FILES ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/imgui_manual.h DESTINATION include/imgui_manual)
         ibd_add_installable_dependency(imgui_manual_lib)
@@ -148,16 +148,16 @@ endfunction()
 # ---------------------------------------------------------------------------
 function(iman_main)
     # If the app is requested, the lib is required
-    if(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP)
-        set(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB ON CACHE BOOL "" FORCE)
+    if(IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_APP)
+        set(IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB ON CACHE BOOL "" FORCE)
     endif()
     # Bail out if any required dependency is missing
     if(NOT IMGUI_BUNDLE_WITH_IMMAPP OR NOT IMGUI_BUNDLE_WITH_IMPLOT OR NOT IMGUI_BUNDLE_WITH_IMPLOT3D)
         message(WARNING "Not building imgui_manual_lib (missing dependencies: imanim, immapp, implot, implot3d)")
-        set(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB OFF CACHE INTERNAL "" FORCE)
+        set(IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB OFF CACHE INTERNAL "" FORCE)
         return()
     endif()
-    if(NOT IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB)
+    if(NOT IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB)
         return()
     endif()
 
@@ -165,7 +165,7 @@ function(iman_main)
     iman_link_imgui_bundle_to_manual()
     iman_setup_demo_code_dir()   # populate bin/demo_code/ from source files
 
-    if(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP)
+    if(IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_APP)
         iman_add_imgui_manual_app()
     endif()
 

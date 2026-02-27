@@ -4,7 +4,7 @@
 #include "implot/implot.h"
 #include "implot3d/implot3d.h"
 #include "immapp/immapp.h"
-#ifdef IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
 #include "imgui_manual.h"
 #endif
 
@@ -16,7 +16,7 @@ void demo_implot()
     )");
     if (ImGui::CollapsingHeader("ImPlot: Full Demo"))
     {
-#ifdef IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ImGui::PushID("ImPlotDemo");
         ShowImGuiManualGui(ImGuiManualLibrary::ImPlot);
         ImGui::PopID();
@@ -27,7 +27,7 @@ void demo_implot()
 
     if (ImGui::CollapsingHeader("ImPlot3D: Full Demo"))
     {
-#ifdef IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ImGui::PushID("ImPlot3DDemo");
         ShowImGuiManualGui(ImGuiManualLibrary::ImPlot3D);
         ImGui::PopID();

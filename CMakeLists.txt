@@ -218,7 +218,7 @@ option(IMGUI_BUNDLE_WITH_IMPLOT "Build with implot" ON)
 option(IMGUI_BUNDLE_WITH_IMPLOT3D "Build with implot3d" ON)
 option(IMGUI_BUNDLE_WITH_IMANIM "Build with ImAnim" ON)
 option(IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS "Include all ImAnim author demos (Demo/Doc/Usecases) in manual" ON)
-option(IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB "Build with imgui_manual as an included library" ON)
+option(IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB "Build with imgui_manual as an included library" ON)
 option(IMGUI_BUNDLE_WITH_IMMVISION "Build with immvision" ${IMMVISION_FETCH_OPENCV})
 
 # Translate legacy IMGUI_BUNDLE_DISABLE_* options to new IMGUI_BUNDLE_WITH_* options
@@ -273,10 +273,10 @@ else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
 
-# IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP: Build ImGui Manual standalone exe
-# (the library imgui_manual_lib is controlled by IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB)
+# IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_APP: Build ImGui Explorer standalone exe
+# (the library imgui_manual_lib is controlled by IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB)
 # -----------------------------------------------------------------------------
-option(IMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP "Build imgui_manual standalone app" OFF)
+option(IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_APP "Build imgui_manual standalone app" OFF)
 
 
 
@@ -548,7 +548,7 @@ message(STATUS "
     IMGUI_BUNDLE_WITH_IMPLOT:            ${IMGUI_BUNDLE_WITH_IMPLOT}
     IMGUI_BUNDLE_WITH_IMPLOT3D:          ${IMGUI_BUNDLE_WITH_IMPLOT3D}
     IMGUI_BUNDLE_WITH_IMANIM:            ${IMGUI_BUNDLE_WITH_IMANIM}
-    IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB:  ${IMGUI_BUNDLE_WITH_IMGUI_MANUAL_LIB}
+    IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB:  ${IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB}
     IMGUI_BUNDLE_WITH_NANOVG:            ${IMGUI_BUNDLE_WITH_NANOVG}
     IMGUI_BUNDLE_WITH_IMGUIZMO:          ${IMGUI_BUNDLE_WITH_IMGUIZMO}
     IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR: ${IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR}
