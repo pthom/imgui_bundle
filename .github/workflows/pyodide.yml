@@ -66,7 +66,7 @@ jobs:
 
     steps:
       - name: Download Pyodide wheel artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: pyodide-wheel
           path: dist
