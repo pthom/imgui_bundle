@@ -33,7 +33,7 @@ void py_init_module_imgui_command_palette(nb::module_& m);
 void py_init_module_imcoolbar(nb::module_& m);
 void py_init_module_nanovg(nb::module_& m);
 void py_init_module_imanim(nb::module_& m);
-void py_init_module_imgui_manual(nb::module_& m);
+void py_init_module_imgui_explorer(nb::module_& m);
 
 
 std::vector<std::string> gAvailableSubmodules;
@@ -216,11 +216,11 @@ void py_init_module_imgui_bundle(nb::module_& m)
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
-    _register_submodule("imgui_manual");
-    auto module_imgui_manual = m.def_submodule("imgui_manual");
-    py_init_module_imgui_manual(module_imgui_manual);
+    _register_submodule("imgui_explorer");
+    auto module_imgui_explorer = m.def_submodule("imgui_explorer");
+    py_init_module_imgui_explorer(module_imgui_explorer);
 #else
-    _register_submodule("imgui_manual", false);
+    _register_submodule("imgui_explorer", false);
 #endif
 
 #if defined(HELLOIMGUI_USE_GLFW3) && !defined(IMGUI_BUNDLE_DISABLE_HELLO_IMGUI)

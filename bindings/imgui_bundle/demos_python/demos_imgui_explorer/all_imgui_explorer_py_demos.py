@@ -1,12 +1,12 @@
-"""all_imgui_manual_py_demos.py: shows all imgui_manual Python demos in one tabbed window,
+"""all_imgui_explorer_py_demos.py: shows all imgui_explorer Python demos in one tabbed window,
 to check that they all work together and to compare them with the C++ versions"""
 
-from imgui_bundle import imgui, immapp, imgui_manual, imgui_ctx, ImVec2
-from imgui_bundle.demos_python.demos_imgui_manual import imgui_demo, implot_demo, implot3d_demo, im_anim_demo_basics
+from imgui_bundle import imgui, immapp, imgui_explorer, imgui_ctx, ImVec2
+from imgui_bundle.demos_python.demos_imgui_explorer import imgui_demo, implot_demo, implot3d_demo, im_anim_demo_basics
 
 
 def gui():
-    imgui.text("All imgui_manual Python demos in one tabbed window")
+    imgui.text("All imgui_explorer Python demos in one tabbed window")
     with imgui_ctx.begin_tab_bar("Tabs"):
         with imgui_ctx.begin_tab_item("imgui_demo.py") as tab_item:
             if tab_item:
@@ -15,7 +15,7 @@ def gui():
                 imgui.end_child()
         with imgui_ctx.begin_tab_item("imgui_demo.cpp") as tab_item:
             if tab_item:
-                imgui_manual.show_imgui_manual_gui(imgui_manual.ImGuiManualLibrary.imgui, imgui_manual.ImGuiManualCppOrPython.python, False)
+                imgui_explorer.show_imgui_explorer_gui(imgui_explorer.ImGuiExplorerLibrary.imgui, imgui_explorer.ImGuiExplorerCppOrPython.python, False)
 
         with imgui_ctx.begin_tab_item("implot_demo.py") as tab_item:
             if tab_item:
@@ -24,7 +24,7 @@ def gui():
                 imgui.end_child()
         with imgui_ctx.begin_tab_item("implot_demo.cpp") as tab_item:
             if tab_item:
-                imgui_manual.show_imgui_manual_gui(imgui_manual.ImGuiManualLibrary.implot, imgui_manual.ImGuiManualCppOrPython.python, False)
+                imgui_explorer.show_imgui_explorer_gui(imgui_explorer.ImGuiExplorerLibrary.implot, imgui_explorer.ImGuiExplorerCppOrPython.python, False)
 
         with imgui_ctx.begin_tab_item("implot3d_demo.py") as tab_item:
             if tab_item:
@@ -33,14 +33,14 @@ def gui():
                 imgui.end_child()
         with imgui_ctx.begin_tab_item("implot3d_demo.cpp") as tab_item:
             if tab_item:
-                imgui_manual.show_imgui_manual_gui(imgui_manual.ImGuiManualLibrary.implot3_d, imgui_manual.ImGuiManualCppOrPython.python, False)
+                imgui_explorer.show_imgui_explorer_gui(imgui_explorer.ImGuiExplorerLibrary.implot3_d, imgui_explorer.ImGuiExplorerCppOrPython.python, False)
 
         with imgui_ctx.begin_tab_item("im_anim_demo_basics.py") as tab_item:
             if tab_item:
                 im_anim_demo_basics.im_anim_demo_basics_window(False)
         with imgui_ctx.begin_tab_item("im_anim_demo_basics.cpp") as tab_item:
             if tab_item:
-                imgui_manual.show_imgui_manual_gui(imgui_manual.ImGuiManualLibrary.im_anim, imgui_manual.ImGuiManualCppOrPython.python, False)
+                imgui_explorer.show_imgui_explorer_gui(imgui_explorer.ImGuiExplorerLibrary.im_anim, imgui_explorer.ImGuiExplorerCppOrPython.python, False)
 
 
 def main():

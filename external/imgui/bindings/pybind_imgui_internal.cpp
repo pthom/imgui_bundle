@@ -5067,7 +5067,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("demo_marker",
         ImGui::DemoMarker,
         nb::arg("file"), nb::arg("line"), nb::arg("section"),
-        "Demo Doc Marker for e.g. imgui_manual");
+        "Demo Doc Marker for e.g. imgui_explorer");
 
     m.def("debug_alloc_hook",
         ImGui::DebugAllocHook,

@@ -2,7 +2,7 @@
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "demo_utils/animate_logo.h"
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
-#include "imgui_manual.h"
+#include "imgui_explorer.h"
 #endif
 
 void demo_imgui_show_demo_window()
@@ -16,7 +16,7 @@ void demo_imgui_show_demo_window()
     ImGui::Separator();
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
-    ShowImGuiManualGui(ImGuiManualLibrary::ImGui, ImGuiManualCppOrPython::Cpp, false);
+    ShowImGuiExplorerGui(ImGuiExplorerLibrary::ImGui, ImGuiExplorerCppOrPython::Cpp, false);
 #else
     ImGui::ShowDemoWindow_MaybeDocked(false);
 #endif

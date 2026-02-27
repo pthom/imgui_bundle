@@ -7669,7 +7669,7 @@ def end_error_tooltip() -> None:
 
 # IMGUI_API void          DemoMarker(const char* file, int line, const char* section);    /* original C++ signature */
 def demo_marker(file: str, line: int, section: str) -> None:
-    """Demo Doc Marker for e.g. imgui_manual"""
+    """Demo Doc Marker for e.g. imgui_explorer"""
     pass
 
 # Debug Tools

@@ -1,14 +1,14 @@
 # Interactive Manuals
 
-## Dear ImGui Manual
+## Dear ImGui Explorer
 
-[Dear ImGui Manual](https://pthom.github.io/imgui_manual/) lets you explore all the widgets and features of Dear ImGui, with live examples and the corresponding python or C++ code. It is built using Dear ImGui Bundle.
+[Dear ImGui Manual](https://pthom.github.io/imgui_explorer/) lets you explore all the widgets and features of Dear ImGui, with live examples and the corresponding python or C++ code. It is built using Dear ImGui Bundle.
 
-<img alt="A screenshot of ImGui Manual, showing how to use a widget together with the related python code" src="../images/imgui_manual_python.jpg" height="500"/>
+<img alt="A screenshot of Dear ImGui Explorer, showing how to use a widget together with the related python code" src="../images/imgui_explorer_python.jpg" height="500"/>
 
-## Dear ImGui Bundle Interactive Manual
+## Dear ImGui Bundle Explorer
 
-[Dear ImGui Bundle interactive manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html) lets you explore the features of Dear ImGui Bundle in your web browser.
+[Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer) lets you explore the features of Dear ImGui Bundle in your web browser.
 
 Pay attention to the "Demo Apps" tab, which contains many examples built with Dear ImGui Bundle.
 You can read the documentation, run the demos, and even view the source code (in C++ and Python) directly from the manual!

@@ -6,7 +6,7 @@
 # with the latest version of the C++ code, but it should be close enough.
 ###############################################################################
 from imgui_bundle import imgui, immapp, implot3d, imgui_ctx, ImVec4, ImVec2, IM_COL32
-from imgui_bundle.demos_python.demos_imgui_manual.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
+from imgui_bundle.demos_python.demos_imgui_explorer.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
 import numpy as np
 from numpy.typing import NDArray
 

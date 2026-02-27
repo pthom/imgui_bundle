@@ -377,7 +377,7 @@ NpBuffer = np.ndarray  # used to transfer texture data as a 1D numpy array of by
 #   - Software using Dear ImGui  https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui
 # - Issues & support ........... https://github.com/ocornut/imgui/issues
 # - Test Engine & Automation ... https://github.com/ocornut/imgui_test_engine (test suite, test engine to automate your apps)
-# - Web version of the Demo .... https://pthom.github.io/imgui_manual/ (w/ source code browser)
+# - Web version of the Demo .... https://pthom.github.io/imgui_explorer/ (w/ source code browser)
 
 # For FIRST-TIME users having issues compiling/linking/running:
 # please post in https://github.com/ocornut/imgui/discussions if you cannot find a solution in resources above.

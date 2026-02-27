@@ -339,7 +339,7 @@ endif()
 
 
 ###############################################################################
-# imgui_manual (interactive demo viewer for ImGui, ImPlot, ImPlot3D, ImAnim)
+# imgui_explorer (interactive demo viewer for ImGui, ImPlot, ImPlot3D, ImAnim)
 ###############################################################################
-add_subdirectory(imgui_manual/imgui_manual)
+add_subdirectory(imgui_explorer/imgui_explorer)
 

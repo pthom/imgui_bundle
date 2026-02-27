@@ -2,10 +2,10 @@
 from imgui_bundle import imgui, imgui_md, immapp
 
 try:
-    from imgui_bundle import imgui_manual
-    _has_imgui_manual = True
+    from imgui_bundle import imgui_explorer
+    _has_imgui_explorer = True
 except ImportError:
-    _has_imgui_manual = False
+    _has_imgui_explorer = False
 
 
 def demo_gui():
@@ -19,9 +19,9 @@ def demo_gui():
     imgui.new_line()
     imgui.separator()
 
-    if _has_imgui_manual:
-        imgui_manual.show_imgui_manual_gui(
-            imgui_manual.ImGuiManualLibrary.im_anim, imgui_manual.ImGuiManualCppOrPython.python, False
+    if _has_imgui_explorer:
+        imgui_explorer.show_imgui_explorer_gui(
+            imgui_explorer.ImGuiExplorerLibrary.im_anim, imgui_explorer.ImGuiExplorerCppOrPython.python, False
         )
     else:
         imgui.text("Demo unavailable, because Dear ImGui Manual library is not included in this build.")

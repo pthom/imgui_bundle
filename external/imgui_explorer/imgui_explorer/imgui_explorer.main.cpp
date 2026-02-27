@@ -1,7 +1,7 @@
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/hello_imgui_font.h"
 #include "immapp/runner.h"
-#include "imgui_manual.h"
+#include "imgui_explorer.h"
 #include "imgui.h"
 #include <algorithm>
 #include <cctype>
@@ -43,16 +43,16 @@ std::string ParseLibraryArg(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-    auto libraryFromString = [](const std::string& s) -> std::optional<ImGuiManualLibrary> {
+    auto libraryFromString = [](const std::string& s) -> std::optional<ImGuiExplorerLibrary> {
         auto lower = [](std::string t) { std::transform(t.begin(), t.end(), t.begin(), ::tolower); return t; };
         std::string sl = lower(s);
-        if (sl == "imgui")   return ImGuiManualLibrary::ImGui;
-        if (sl == "implot")  return ImGuiManualLibrary::ImPlot;
-        if (sl == "implot3d")return ImGuiManualLibrary::ImPlot3D;
-        if (sl == "imanim")  return ImGuiManualLibrary::ImAnim;
+        if (sl == "imgui")   return ImGuiExplorerLibrary::ImGui;
+        if (sl == "implot")  return ImGuiExplorerLibrary::ImPlot;
+        if (sl == "implot3d")return ImGuiExplorerLibrary::ImPlot3D;
+        if (sl == "imanim")  return ImGuiExplorerLibrary::ImAnim;
         return std::nullopt;
     };
-    std::optional<ImGuiManualLibrary> library = libraryFromString(ParseLibraryArg(argc, argv));
+    std::optional<ImGuiExplorerLibrary> library = libraryFromString(ParseLibraryArg(argc, argv));
 
     HelloImGui::RunnerParams runnerParams;
 
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow;
     runnerParams.imGuiWindowParams.enableViewports = false;
 
-    runnerParams.callbacks.ShowGui = [library]() { ShowImGuiManualGui(library, ImGuiManualCppOrPython::Cpp, true); };
+    runnerParams.callbacks.ShowGui = [library]() { ShowImGuiExplorerGui(library, ImGuiExplorerCppOrPython::Cpp, true); };
 
     runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
 

@@ -1,13 +1,13 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, imgui_md, immapp
-from imgui_bundle.demos_python.demos_imgui_manual import implot3d_demo
-from imgui_bundle.demos_python.demos_imgui_manual import implot_demo
+from imgui_bundle.demos_python.demos_imgui_explorer import implot3d_demo
+from imgui_bundle.demos_python.demos_imgui_explorer import implot_demo
 
 try:
-    from imgui_bundle import imgui_manual
-    _has_imgui_manual = True
+    from imgui_bundle import imgui_explorer
+    _has_imgui_explorer = True
 except ImportError:
-    _has_imgui_manual = False
+    _has_imgui_explorer = False
 
 
 def demo_gui():
@@ -18,17 +18,17 @@ def demo_gui():
     )
 
     if imgui.collapsing_header("ImPlot: Full Demo"):
-        if _has_imgui_manual:
+        if _has_imgui_explorer:
             imgui.push_id("ImPlotDemo")
-            imgui_manual.show_imgui_manual_gui(imgui_manual.ImGuiManualLibrary.implot)
+            imgui_explorer.show_imgui_explorer_gui(imgui_explorer.ImGuiExplorerLibrary.implot)
             imgui.pop_id()
         else:
             implot_demo.show_all_demos()
 
     if imgui.collapsing_header("ImPlot3D: Full Demo"):
-        if _has_imgui_manual:
+        if _has_imgui_explorer:
             imgui.push_id("ImPlot3DDemo")
-            imgui_manual.show_imgui_manual_gui(imgui_manual.ImGuiManualLibrary.implot3_d)
+            imgui_explorer.show_imgui_explorer_gui(imgui_explorer.ImGuiExplorerLibrary.implot3_d)
             imgui.pop_id()
         else:
             implot3d_demo.show_all_demos()

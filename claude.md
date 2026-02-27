@@ -727,12 +727,12 @@ source ~/emsdk/emsdk_env.sh
 emcmake cmake ../.. -DCMAKE_BUILD_TYPE=Release
 ```
 
-**Build the desktop manual app:**
+**Build the desktop imgui explorer app:**
 ```
-mkdir -p builds/claude_manual_desktop && 
-cd builds/claude_manual_desktop && \
+mkdir -p builds/claude_imgui_explorer_desktop && 
+cd builds/claude_imgui_explorer_desktop && \
 cmake .. -DCMAKE_BUILD_TYPE=Release \
-         -DIMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP=ON -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
+         -DIMGUI_BUNDLE_BUILD_IMGUI_EXPLORER_APP=ON -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
 ```
 
 etc. LLM's can create build folders for specific tasks, and use names that reflect the task (e.g. `claude_fix_emscripten_build` or `claude_test_pyodide`), to avoid conflicts with user-created folders.

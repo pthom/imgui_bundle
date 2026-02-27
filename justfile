@@ -31,27 +31,29 @@ ems_serve:
     cd build_ems_release/bin && \
     python ../../ci_scripts/webserver_multithread_policy.py -p 8642
 
-# Build the emscripten manual
-manual_ems_build:
-    mkdir -p build_manual_ems && \
-    cd build_manual_ems && \
+# Build imgui explorer emscripten
+imex_ems_build:
+    mkdir -p build_imex_ems && \
+    cd build_imex_ems && \
     source ~/emsdk/emsdk_env.sh && \
     emcmake cmake .. -DCMAKE_BUILD_TYPE=Release \
-                     -DIMGUI_BUNDLE_BUILD_IMGUI_MANUAL_APP=ON -DIMGUI_BUNDLE_WITH_IMANIM=OFF -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
+                     -DIMGUI_BUNDLE_BUILD_IMGUI_EXPLORER_APP=ON -DIMGUI_BUNDLE_WITH_IMANIM=OFF -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
     cmake --build . -j 8
 
-manual_ems_serve: manual_ems_build
+# Serve imgui explorer
+imex_ems_serve: imex_ems_build
     echo "add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL to load the corresponding manual page"
-    rm -f build_manual_ems/bin/demo_code/*.gz
-    cd build_manual_ems/bin && python ../../ci_scripts/webserver_multithread_policy.py -p 7006
+    rm -f build_imex_ems/bin/demo_code/*.gz
+    cd build_imex_ems/bin && python ../../ci_scripts/webserver_multithread_policy.py -p 7006
 
-manual_ems_clean:
-    rm -rf build_manual_ems
+# Clean imgui explorer emscripten build
+imex_ems_clean:
+    rm -rf build_imex_ems
 
-# deploy the manual to https://pthom.github.io/imgui_manual/
-# (copies build output into the imgui_manual github pages repo, commits, and pushes)
-manual_ems_deploy_github: manual_ems_build
-    ./ci_scripts/manual_ems_deploy.sh
+# deploy imgui explorer to https://pthom.github.io/imgui_explorer/
+# (copies build output into the imgui_explorer github pages repo, commits, and pushes)
+imex_ems_deploy: imex_ems_build
+    ./ci_scripts/imex_ems_deploy.sh
 
 # Reattach all submodules to branches and remotes (fork + official)
 ext_reattach:
@@ -105,13 +107,6 @@ doc_build_static:
 # Build bundle doc in pdf, copy the pdf to the ramdisk
 doc_build_pdf:
     cd docs/book && jupyter-book build --pdf
-
-# Build hello_imgui doc in pdf, copy the pdf to the ramdisk
-doc_him_pdf:
-    cd external/hello_imgui/hello_imgui/docs_src && jupyter-book build --builder pdfhtml .
-    cp external/hello_imgui/hello_imgui/docs_src/_build/pdf/book.pdf /Volumes/ramdisk/hello_imgui_manual.pdf
-
-
 
 # ==============================================================
 # Pyodide build targets

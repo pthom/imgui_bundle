@@ -8,13 +8,13 @@ THIS_DIR = os.path.dirname(__file__)
 PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
-CPP_HEADERS_DIR = THIS_DIR + "/../imgui_manual"
+CPP_HEADERS_DIR = THIS_DIR + "/../imgui_explorer"
 
 
 def main():
-    print("autogenerate_imgui_manual")
-    output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_manual.cpp"
-    output_stub_pyi_file = STUB_DIR + "/imgui_manual.pyi"
+    print("autogenerate_imgui_explorer")
+    output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_explorer.cpp"
+    output_stub_pyi_file = STUB_DIR + "/imgui_explorer.pyi"
 
     options = litgen.LitgenOptions()
     options.use_nanobind()
@@ -26,7 +26,7 @@ def main():
     options.function_names_replacements.add_first_replacement("ImGui", "Imgui")
 
     generator = litgen.LitgenGenerator(options)
-    generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_manual.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_explorer.h")
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,
         output_stub_pyi_file=output_stub_pyi_file,

@@ -5,7 +5,7 @@
 #include "implot3d/implot3d.h"
 #include "immapp/immapp.h"
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
-#include "imgui_manual.h"
+#include "imgui_explorer.h"
 #endif
 
 
@@ -18,7 +18,7 @@ void demo_implot()
     {
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ImGui::PushID("ImPlotDemo");
-        ShowImGuiManualGui(ImGuiManualLibrary::ImPlot);
+        ShowImGuiExplorerGui(ImGuiExplorerLibrary::ImPlot);
         ImGui::PopID();
 #else
         ImPlot::ShowDemoWindow_MaybeDocked(false);
@@ -29,7 +29,7 @@ void demo_implot()
     {
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ImGui::PushID("ImPlot3DDemo");
-        ShowImGuiManualGui(ImGuiManualLibrary::ImPlot3D);
+        ShowImGuiExplorerGui(ImGuiExplorerLibrary::ImPlot3D);
         ImGui::PopID();
 #else
         ImPlot3D::ShowAllDemos();

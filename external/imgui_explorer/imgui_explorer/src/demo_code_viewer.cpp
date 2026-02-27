@@ -269,7 +269,7 @@ namespace
         {
             if (state != LoadState::NotLoaded) return;
             state = LoadState::Loading;
-            std::string path = std::string(IMAN_DEMO_CODE_DIR) + "/" + filename;
+            std::string path = std::string(IEX_DEMO_CODE_DIR) + "/" + filename;
             std::ifstream f(path);
             if (f) {
                 std::string content(std::istreambuf_iterator<char>(f), {});

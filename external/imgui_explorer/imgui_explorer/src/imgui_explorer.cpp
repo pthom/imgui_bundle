@@ -1,4 +1,4 @@
-#include "imgui_manual.h"
+#include "imgui_explorer.h"
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/runner.h"
 #include "immapp/browse_to_url.h"
@@ -318,8 +318,8 @@ namespace
 extern bool gIsImGuiDemoWindowUserEdited;
 extern bool gIsImGuiDemoWindow_no_close;
 
-void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
-                        std::optional<ImGuiManualCppOrPython> language,
+void ShowImGuiExplorerGui(std::optional<ImGuiExplorerLibrary> library,
+                        std::optional<ImGuiExplorerCppOrPython> language,
                         bool show_status_bar)
 {
     static bool initialized = false;
@@ -334,7 +334,7 @@ void ShowImGuiManualGui(std::optional<ImGuiManualLibrary> library,
 
         // Do this once only, to allow the user to change afterward.
         if (language.has_value())
-            DemoCodeViewer_SetShowPython(language.value() == ImGuiManualCppOrPython::Python);
+            DemoCodeViewer_SetShowPython(language.value() == ImGuiExplorerCppOrPython::Python);
 
         initialized = true;
     }
