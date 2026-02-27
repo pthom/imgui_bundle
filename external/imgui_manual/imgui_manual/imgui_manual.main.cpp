@@ -67,12 +67,15 @@ int main(int argc, char** argv)
     runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
 
     runnerParams.iniClearPreviousSettings = true; // start with a clean layout each time (for demo purposes)
-    runnerParams.callbacks.LoadAdditionalFonts = []() {
-        ImGui::GetIO().Fonts->AddFontDefaultVector();
-        HelloImGui::FontLoadingParams faParams;
-        faParams.mergeToLastFont = true;
-        HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 13.f, faParams);
-    };
+
+    // Use proggy forever with the code below (disabled for the moment, waiting for Omar confirmation)
+    // runnerParams.callbacks.LoadAdditionalFonts = []() {
+    //     ImGui::GetIO().Fonts->AddFontDefaultVector();
+    //     HelloImGui::FontLoadingParams faParams;
+    //     faParams.mergeToLastFont = true;
+    //     HelloImGui::LoadFont("fonts/fontawesome-webfont.ttf", 13.f, faParams);
+    //     ImGui::GetStyle().FontSizeBase = 16.f;
+    // };
 
     runnerParams.callbacks.SetupImGuiConfig = [] {
         ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
