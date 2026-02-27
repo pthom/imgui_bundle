@@ -283,13 +283,23 @@ namespace
         ImGui::SliderFloat("Font scale  | ", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
 
         // Reference to ImGui Bundle
-        // ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.6f, 1.0f, 1.0f));
-        ImGui::Text("Dear ImGui Explorer: An Interactive Manual for Dear ImGui, ImPlot & ImPlot3D");
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.6f, 1.0f, 1.0f));
+        ImGui::Text("Dear ImGui Explorer");
+        if (ImGui::IsItemHovered())
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (ImGui::IsItemClicked())
+            ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/tree/main/external/imgui_explorer/imgui_explorer");
+        ImGui::PopStyleColor();
         ImGui::SetItemTooltip(
-            "Dear ImGui Manual is developed as a part of Dear imGui Bundle\n"
+            "Dear ImGui Explorer is developed as a part of Dear imGui Bundle\n"
                 "\nhttps://pthom.github.io/imgui_bundle/"
             );
-        // ImGui::PopStyleColor();
+
+        ImVec2 pos = ImGui::GetCursorScreenPos();
+        pos.x -= ImGui::GetStyle().ItemSpacing.x;
+        ImGui::SetCursorScreenPos(pos);
+
+        ImGui::Text(" - An Interactive Manual for Dear ImGui, ImPlot & ImPlot3D");
 
         // Fps Idling, aligned to the right
         ImGui::Spring();
