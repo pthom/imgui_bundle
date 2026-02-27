@@ -5,30 +5,29 @@
 default:
     @just --list
 
-# build emscripten
-ems_build:
-    mkdir -p build_ems_release && \
-    cd build_ems_release && \
+# build imgui bundle explorer emscripten
+ibex_build:
+    mkdir -p build_ibex_ems && \
+    cd build_ibex_ems && \
     source ~/emsdk/emsdk_env.sh && \
     emcmake cmake .. -DCMAKE_BUILD_TYPE=Release && \
     make -j
 
-# clean emscripten build
-ems_clean:
-    rm -rf build_ems_release
+# clean imgui bundle emscripten build
+ibex_clean:
+    rm -rf build_ibex_ems
 
-
-# deploy the emscripten build to official imgui bundle interactive manual
-ems_deploy: ems_build
+# deploy the imgui bundle explorer build
+ibex_deploy: ibex_build
     # The server supports gzip encoding, this speed up the loading a lot, especially for the .wasm files
-    gzip -9 -k -f build_ems_release/bin/*.wasm build_ems_release/bin/*.data build_ems_release/bin/*.js
-    cd build_ems_release && \
+    gzip -9 -k -f build_ibex_ems/bin/*.wasm build_ibex_ems/bin/*.data build_ibex_ems/bin/*.js
+    cd build_ibex_ems && \
     rsync -vaz bin pascal@traineq.org:HTML/ImGuiBundle/emscripten
 
 # Serve emscripten with CORS
-ems_serve:
-    rm -f build_ems_release/bin/*.gz && \
-    cd build_ems_release/bin && \
+ibex_serve:
+    rm -f build_ibex_ems/bin/*.gz && \
+    cd build_ibex_ems/bin && \
     python ../../ci_scripts/webserver_multithread_policy.py -p 8642
 
 # Build imgui explorer emscripten

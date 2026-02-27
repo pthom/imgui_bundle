@@ -8,23 +8,19 @@ function(ibd_add_demo_cpp)
     set(args ${ARGN})
     list(GET args 0 demo_name)
 
-    # Default assets folder for the demos
-    set(this_demo_asset_folder ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/demos_assets)
-    # if there is a folder with the same name as the demo + "_assets", we will use it as assets folder
+    # Only use a custom {demo_name}_assets/ folder if it exists.
+    # Otherwise, no extra assets beyond the core imgui_bundle_assets/ (bundled automatically).
+    # Demos needing demos_assets/ should add it explicitly via hello_imgui_bundle_assets_from_folder().
     if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/${demo_name}_assets)
-        set(this_demo_asset_folder ${CMAKE_CURRENT_LIST_DIR}/${demo_name}_assets)
         message(STATUS "ibd_add_demo_cpp: ${demo_name} uses custom assets: ${demo_name}_assets/")
+        imgui_bundle_add_app(${args} ASSETS_LOCATION ${CMAKE_CURRENT_LIST_DIR}/${demo_name}_assets)
+    else()
+        imgui_bundle_add_app(${args})
     endif()
-
-    imgui_bundle_add_app(${args} ASSETS_LOCATION ${this_demo_asset_folder})
     if(MSVC)
         hello_imgui_msvc_target_set_folder(${demo_name} demos_cpp)
     endif()
     target_link_libraries(${demo_name} PUBLIC demo_utils)
-    if (EMSCRIPTEN)
-        # Bundle demos_assets
-        hello_imgui_bundle_assets_from_folder(${demo_name} ${this_demo_asset_folder})
-    endif()
 endfunction()
 
 function(ibd_add_single_file_demo_cpp demo_cpp_file optional_prefix)

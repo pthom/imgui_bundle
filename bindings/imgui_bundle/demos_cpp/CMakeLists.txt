@@ -40,6 +40,18 @@ endif()
 
 FILE(COPY ../demos_assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
+# Bundle demos_assets only for demos that actually need demo-specific fonts/images.
+# Other demos get only the core imgui_bundle_assets/ (DroidSans, Roboto, fontawesome, etc.)
+set(_da ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/demos_assets)
+foreach(_t
+    demo_imgui_bundle
+    demo_imgui_bundle_intro
+    demo_widgets
+    demo_imgui_show_demo_window
+)
+    hello_imgui_bundle_assets_from_folder(${_t} ${_da})
+endforeach()
+
 if (MSVC)
     FILE(COPY msvc_note.txt DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endif()

@@ -1,4 +1,9 @@
 ibd_add_this_folder_demos("")
+
+# demo_docking needs NotoEmoji, Playbox, entypo fonts from demos_assets
+set(_da ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/demos_assets)
+hello_imgui_bundle_assets_from_folder(demo_docking ${_da})
+
 if(EMSCRIPTEN)
     target_link_libraries(imgui_example_glfw_opengl3 PRIVATE GL)
 else()
