@@ -55,7 +55,7 @@ jobs:
       shell: bash
 
     - name: Upload wheels as artifacts
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: wheels_no_opencv_${{ matrix.os }}
         path: wheelhouse/*.whl
