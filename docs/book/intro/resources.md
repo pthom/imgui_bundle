@@ -41,7 +41,7 @@ DeepWiki is an AI based website where you can ask questions about the usage of D
 
 You may feed the manuals below to a LLM, so that it can help you when using the libraries.
 
-- [Hello ImGui manual (full pdf)](https://raw.githubusercontent.com/pthom/imgui_related_docs/refs/heads/main/manuals/hello_imgui_manual.pdf)
+- [Hello ImGui manual (full pdf)](https://pthom.github.io/hello_imgui/hello_imgui_book.pdf)
 - [ImGui Bundle manual (full pdf)](https://pthom.github.io/imgui_bundle/assets/book.pdf)
 - [Fiatlight manual (full pdf)](https://pthom.github.io/fiatlight_doc/flgt.pdf)
 
