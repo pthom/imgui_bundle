@@ -42,7 +42,7 @@ jobs:
         run: |
           source ci_scripts/pyodide_local_build/venv_pyo/bin/activate
           source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh
-          pyodide build
+          IMGUI_BUNDLE_EXCLUDE_DEMOS=1 pyodide build
 
       - name: List built wheels
         run: |

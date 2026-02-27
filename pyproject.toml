@@ -110,6 +110,11 @@ sdist.exclude = [
     "wheelhouse",
 ]
 
+# Exclude demo directories to reduce wheel size (set IMGUI_BUNDLE_EXCLUDE_DEMOS=1 to activate)
+[[tool.scikit-build.overrides]]
+if.env.IMGUI_BUNDLE_EXCLUDE_DEMOS = true
+wheel.exclude = ["imgui_bundle/demos_cpp/**", "imgui_bundle/demos_python/**", "imgui_bundle/demos_assets/**"]
+
 cmake.version = ">=3.26.1"
 build.verbose = true
 logging.level = "INFO"

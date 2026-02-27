@@ -120,9 +120,9 @@ doc_him_pdf:
 # for more info about the local pyodide build setup
 # --------------------------------------------------------------
 
-# Build pyodide wheel (with macOS naming fix workaround)
+# Build pyodide wheel (excludes demos to reduce size)
 pyodide_build: pyodide_clean
-    source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && pyodide build
+    source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && IMGUI_BUNDLE_EXCLUDE_DEMOS=1 pyodide build
     cp dist/imgui_bundle*pyodide*.whl ci_scripts/pyodide_local_build/test_browser/local_wheels/
 
 # Start browser test server (serves test HTML pages)
