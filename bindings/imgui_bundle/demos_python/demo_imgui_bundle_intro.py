@@ -1279,13 +1279,32 @@ def _immvision_slide_wrapper(cs: ImVec2):
         _immvision_slide_gui(cs)
     else:
         imgui.text_wrapped("ImmVision not available (requires OpenCV).")
+        imgui.text("Please run:")
+        imgui.text("    pip install opencv-python")
+        imgui.same_line()
+        if imgui.button("Copy"):
+            imgui.set_clipboard_text("pip install opencv-python")
+        imgui.text("or")
+        imgui.text("    uv pip install opencv-python")
+        imgui.same_line()
+        if imgui.button("Copy##2"):
+            imgui.set_clipboard_text("uv pip install opencv-python")
 
 
 def _shader_slide_wrapper(cs: ImVec2):
     if HAS_OPENGL:
         _shader_slide_gui(cs)
     else:
-        imgui.text_wrapped("Shader demo requires OpenGL backend.")
+        imgui.text_wrapped("Shader demo requires OpenGL, please run:")
+        imgui.text("    pip install PyOpenGL")
+        imgui.same_line()
+        if imgui.button("Copy"):
+            imgui.set_clipboard_text("pip install PyOpenGL")
+        imgui.text("or")
+        imgui.text("   uv pip install PyOpenGL")
+        imgui.same_line()
+        if imgui.button("Copy##2"):
+            imgui.set_clipboard_text("uv pip install PyOpenGL")
 
 
 # ============================================================================
