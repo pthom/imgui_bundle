@@ -123,7 +123,6 @@ doc_him_pdf:
 # Build pyodide wheel (with macOS naming fix workaround)
 pyodide_build: pyodide_clean
     source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && pyodide build
-    python ci_scripts/pyodide_local_build/fix_pyodide_wheel_name.py
     cp dist/imgui_bundle*pyodide*.whl ci_scripts/pyodide_local_build/test_browser/local_wheels/
 
 # Start browser test server (serves test HTML pages)

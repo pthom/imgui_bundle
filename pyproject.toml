@@ -2,12 +2,6 @@
 requires = ["scikit-build-core>=0.11.0", "nanobind>=2.4.0"]
 build-backend = "scikit_build_core.build"
 
-# Note: scikit-build-core fix for pyodide wheel naming (PR #1196) was merged in Dec 2024
-#       but is not yet released (last release: v0.11.6, Aug 2024).
-#       Workaround: ci_scripts/fix_pyodide_wheel_name.py renames wheels on macOS after build.
-#       TODO: Remove workaround once scikit-build-core v0.12+ is available.
-#       See: https://github.com/scikit-build/scikit-build-core/issues/920
-
 # To debug build backend, replace by:
 # cf https://peps.python.org/pep-0517/#in-tree-build-backends
 #    requires = ["pybind11", "packaging", "pathspec"]

@@ -19,7 +19,6 @@ ci_scripts/pyodide_local_build/
 ├── Readme.md                      # This file
 ├── config_versions_pyodide.sh     # Version configuration (edit this to change versions)
 ├── setup_pyodide_local_build.sh   # Automated setup script
-├── fix_pyodide_wheel_name.py      # macOS wheel naming workaround
 ├── .gitignore                     # Ignores venv_pyo/ and emsdk/
 ├── test_browser/                  # Browser testing tools and HTML test pages
 ├── venv_pyo/                      # Python virtual environment (created during setup)
@@ -107,9 +106,6 @@ source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh
 # 2. Build from repository root
 cd ../..  # Go to imgui_bundle root
 pyodide build
-
-# 3. Fix wheel name (macOS only)
-python ci_scripts/pyodide_local_build/fix_pyodide_wheel_name.py
 ```
 
 ## Output
