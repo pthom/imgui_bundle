@@ -1308,6 +1308,16 @@ def _show_badges():
     if hello_imgui.image_button_from_asset("images/badge_interactive_explorer.png", btn_size):
         webbrowser.open("https://traineq.org/imgui_bundle_explorer")
 
+    from imgui_bundle import __version__, compilation_time
+    version_text = f"v{__version__} - {compilation_time().split('compiled on ')[1]}"
+    imgui.push_font(None, imgui.get_font_size() * 0.9)
+    text_size = imgui.calc_text_size(version_text)
+    screen_pos = imgui.get_cursor_screen_pos()
+    avail = imgui.get_content_region_avail()
+    imgui.set_cursor_screen_pos(ImVec2(screen_pos.x + avail.x - text_size.x, screen_pos.y + avail.y - text_size.y))
+    imgui.text_disabled(version_text)
+    imgui.pop_font()
+
 
 _automation_inited = False
 _automation_show_me = None

@@ -1492,6 +1492,17 @@ void ShowBadges()
     ImGui::SameLine();
     if (HelloImGui::ImageButtonFromAsset("images/badge_interactive_explorer.png", btnSize))
         ImmApp::BrowseToUrl("https://traineq.org/imgui_bundle_explorer");
+
+    {
+        ImGui::PushFont(nullptr, ImGui::GetFontSize() * 0.9f);
+        const char* versionText = "v" IMGUI_BUNDLE_VERSION " - " __DATE__ " - " __TIME__;
+        ImVec2 textSize = ImGui::CalcTextSize(versionText);
+        ImVec2 screenPos = ImGui::GetCursorScreenPos();
+        ImVec2 avail = ImGui::GetContentRegionAvail();
+        ImGui::SetCursorScreenPos(ImVec2(screenPos.x + avail.x - textSize.x, screenPos.y + avail.y - textSize.y));
+        ImGui::TextDisabled("%s", versionText);
+        ImGui::PopFont();
+    }
 }
 
 void IntroTopSection()
