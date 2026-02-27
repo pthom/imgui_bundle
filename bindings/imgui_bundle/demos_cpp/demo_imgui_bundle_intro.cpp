@@ -1830,14 +1830,27 @@ void IntroMiniDemos()
     }
 
     // Navigation via mouse wheel
-    if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiKey_MouseWheelX, ImGuiInputFlags_RouteGlobal))
+    bool was_wheel_nav_initiated = false;
+    float wheel_nav_value = 0.f;
+    if (ImGui::Shortcut(ImGuiKey_MouseWheelX, ImGuiInputFlags_RouteGlobal))
     {
+        was_wheel_nav_initiated = true;
+        wheel_nav_value = ImGui::GetIO().MouseWheelH;
+    }
+    if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiKey_MouseWheelY, ImGuiInputFlags_RouteGlobal))
+    {
+        was_wheel_nav_initiated = true;
+        wheel_nav_value = ImGui::GetIO().MouseWheel;
+    }
+    if (was_wheel_nav_initiated)
+    {
+        printf("Trigger\n");
         static double time_last_trigger = -1.f;
         double now = ImGui::GetTime();
         if (now - time_last_trigger > 1.0)
         {
             autoStopped = true;
-            if (ImGui::GetIO().MouseWheelH > 0)
+            if (wheel_nav_value > 0)
                 currentSlide = (currentSlide - 1) % slideCount;
             else
                 currentSlide = (currentSlide + 1) % slideCount;
