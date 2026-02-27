@@ -1500,7 +1500,7 @@ void IntroTopSection()
 
     // Title and description
     ImGuiMd::RenderUnindented("# Dear ImGui Bundle Explorer");
-    ImGui::TextDisabled("An Interactive Manual for the Dear ImGui Ecosystem");
+    ImGui::TextDisabled("Explore Dear ImGui Bundle and its Libraries");
 
     static bool showFull = false;
     if (small)

@@ -1347,7 +1347,7 @@ def _intro_top_section():
 
     # Title and description
     imgui_md.render_unindented("# Dear ImGui Bundle Explorer")
-    imgui.text_disabled("An Interactive Manual for the Dear ImGui Ecosystem")
+    imgui.text_disabled("Explore Dear ImGui Bundle and its Libraries")
 
     if not hasattr(static, "show_full"):
         static.show_full = False
