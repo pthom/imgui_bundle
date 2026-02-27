@@ -63,6 +63,7 @@ void py_init_module_imgui_bundle(nb::module_& m)
     nb::set_leak_warnings(false);
 
     m.attr("__version__") = IMGUI_BUNDLE_VERSION;
+    m.attr("__build_number__") = IMGUI_BUNDLE_BUILD_NUMBER;
     m.def("compilation_time", []() {
         return std::string("imgui_bundle, compiled on ") + __DATE__ + " at " + __TIME__;
     });

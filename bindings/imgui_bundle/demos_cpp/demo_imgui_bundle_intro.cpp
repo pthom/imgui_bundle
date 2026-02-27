@@ -1495,7 +1495,7 @@ void ShowBadges()
 
     {
         ImGui::PushFont(nullptr, ImGui::GetFontSize() * 0.9f);
-        const char* versionText = "v" IMGUI_BUNDLE_VERSION " - " __DATE__ " - " __TIME__;
+        const char* versionText = "v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER;
         ImVec2 textSize = ImGui::CalcTextSize(versionText);
         ImVec2 screenPos = ImGui::GetCursorScreenPos();
         ImVec2 avail = ImGui::GetContentRegionAvail();

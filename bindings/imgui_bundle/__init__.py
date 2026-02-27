@@ -1,7 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
 from imgui_bundle._imgui_bundle import __bundle_submodules_available__, __bundle_submodules_disabled__, __bundle_pyodide__ # type: ignore
-from imgui_bundle._imgui_bundle import __version__, compilation_time
+from imgui_bundle._imgui_bundle import __version__, __build_number__, compilation_time
 from typing import Union, Tuple, List, overload
 
 def has_submodule(submodule_name):
@@ -26,7 +26,7 @@ def info() -> str:
     # Format submodules list
     submodules_str = ", ".join(__bundle_submodules_available__)
 
-    info_str = f"ImGui Bundle v{__version__}\n"
+    info_str = f"ImGui Bundle v{__version__} buil {__build_number__}\n"
     info_str += f"{comp_time}\n"
     info_str += f"Available submodules ({len(__bundle_submodules_available__)}): {submodules_str}\n"
 
@@ -49,6 +49,7 @@ def _is_pydantic_v2_available() -> bool:
 
 __all__ = [
     "__version__",
+    "__build_number__",
     "compilation_time",
     "info",
     "has_submodule",
