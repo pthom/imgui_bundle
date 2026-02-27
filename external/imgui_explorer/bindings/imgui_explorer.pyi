@@ -1,1 +1,1 @@
-../../../bindings/imgui_bundle/imgui_manual.pyi
+../../../bindings/imgui_bundle/imgui_explorer.pyi
