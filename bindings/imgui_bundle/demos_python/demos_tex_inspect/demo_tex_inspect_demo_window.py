@@ -3,12 +3,10 @@
 #
 # This app launches an internal demo from imgui_tex_inspect, thus its code does not appear here.
 #
-from imgui_bundle import imgui_tex_inspect, hello_imgui, immapp
-from imgui_bundle.demos_python.demo_utils.api_demos import demos_assets_folder
+from imgui_bundle import imgui_tex_inspect, immapp
 
 
 def main():
-    hello_imgui.set_assets_folder(demos_assets_folder())
     immapp.run(
         imgui_tex_inspect.show_demo_window,
         with_tex_inspect=True,

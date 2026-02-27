@@ -14,14 +14,12 @@ def demo_gui():
     ImGuiTexInspect is a texture inspector tool for Dear ImGui. It's a debug tool that allows you to easily inspect the data in any texture.
 
     Whereas *imgui_tex_inspect* is dedicated to texture analysis, *immvision* is more dedicated to image processing and computer vision.
-
-    Open the demos below by clicking on their title.
     """
     )
 
-    if imgui.collapsing_header("Simple Demo"):
-        demos_tex_inspect.demo_tex_inspect_simple.demo_gui()
-        demo_utils.show_python_vs_cpp_file("demos_tex_inspect/demo_tex_inspect_simple")
+    # if imgui.collapsing_header("Simple Demo"):
+    #     demos_tex_inspect.demo_tex_inspect_simple.demo_gui()
+    #     demo_utils.show_python_vs_cpp_file("demos_tex_inspect/demo_tex_inspect_simple")
 
     if demo_utils.can_run_subprocess():
         if imgui.collapsing_header("Full Demo"):

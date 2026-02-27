@@ -790,12 +790,6 @@ def setup_my_theme():
 #    main(): here, we simply fill RunnerParams, then run the application
 ##########################################################################
 def main():
-    # By default, an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
-    # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
-    # If you need to add more assets, make a copy of this assets folder and add your own files,
-    # and call set_assets_folder
-    hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
-
     #
     # Part 1: Define the application state, fill the status and menu bars, and load additional font
     #

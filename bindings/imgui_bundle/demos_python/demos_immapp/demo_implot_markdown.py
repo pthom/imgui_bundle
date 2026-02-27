@@ -30,10 +30,6 @@ def gui():
 
 
 def main():
-    # This call is specific to the ImGui Bundle interactive manual.
-    from imgui_bundle.demos_python import demo_utils
-    demo_utils.set_hello_imgui_demo_assets_folder()
-
     # Run the app with ImPlot and markdown support
     immapp.run(gui,
                with_implot=True,

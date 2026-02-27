@@ -42,10 +42,6 @@ class AppState:
 
 
 def main():
-    # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
-    #         hello_imgui.set_assets_folder("my_assets")  # (By default, HelloImGui will search inside "assets")
-    demo_utils.set_hello_imgui_demo_assets_folder()
-
     app_state = AppState()
 
     runner_params = hello_imgui.RunnerParams()

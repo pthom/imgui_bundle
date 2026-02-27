@@ -68,7 +68,6 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         f"For information, demos sources are available in {demo_utils.api_demos.demos_python_folder()}"
     )
 
-    hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
     ################################################################################################
     # Part 1: Define the runner params
     ################################################################################################

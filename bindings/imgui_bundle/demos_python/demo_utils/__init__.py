@@ -11,8 +11,6 @@ from imgui_bundle.demos_python.demo_utils.api_demos import (
 from imgui_bundle.demos_python.demo_utils.animate_logo import animate_logo
 from imgui_bundle.demos_python.demo_utils.imread_demo import imread_demo
 
-set_hello_imgui_demo_assets_folder()
-
 __all__ = [
     "GuiFunction",
     "demos_assets_folder",

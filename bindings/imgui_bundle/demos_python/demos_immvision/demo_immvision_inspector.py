@@ -7,7 +7,7 @@ immvision.use_rgb_color_order()
 
 def fill_inspector():
     os.path.dirname(__file__)
-    image_files = ["house.jpg", "tennis.jpg", "world.png"]
+    image_files = ["house.jpg", "tennis.jpg"]
     for image_file in image_files:
         img = demo_utils.imread_demo(f"{demo_utils.demos_assets_folder()}/images/{image_file}")
         immvision.inspector_add_image(img, legend=image_file)
@@ -26,7 +26,6 @@ def demo_gui():
 
 
 def main():
-    demo_utils.set_hello_imgui_demo_assets_folder()
     immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
 
 

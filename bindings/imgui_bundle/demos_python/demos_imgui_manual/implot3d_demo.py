@@ -7,12 +7,8 @@
 ###############################################################################
 from imgui_bundle import imgui, immapp, implot3d, imgui_ctx, ImVec4, ImVec2, IM_COL32
 from imgui_bundle.demos_python.demos_imgui_manual.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
-from imgui_bundle.demos_python.demo_utils.api_demos import set_hello_imgui_demo_assets_folder
-
 import numpy as np
 from numpy.typing import NDArray
-
-set_hello_imgui_demo_assets_folder()
 
 def IMGUI_DEMO_MARKER(section: str) -> None:
     """Marker for the interactive manual. Maps sections to source code."""
@@ -1684,7 +1680,7 @@ def show_demo_window_maybe_docked(create_window: bool):
 
 
 def main():
-    immapp.run(show_demo_window)
+    immapp.run(show_demo_window, with_implot3d=True)
 
 
 if __name__ == "__main__":

@@ -19,9 +19,6 @@ def show_gui():
 
 
 def main():
-    # Set the assets folder path
-    hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
-
     immapp.run(
         gui_function=show_gui,
         window_title="Hello, globe!",

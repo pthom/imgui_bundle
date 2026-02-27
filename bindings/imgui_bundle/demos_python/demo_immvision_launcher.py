@@ -68,5 +68,4 @@ def main():
 
 
 if __name__ == "__main__":
-    demo_utils.set_hello_imgui_demo_assets_folder()
     main()
