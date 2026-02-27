@@ -249,37 +249,47 @@ GLuint CreateFullScreenQuadVAO()
 ******************************************************************************/
 
 // See https://www.shadertoy.com/view/Ms2SD1 / Many thanks to Alexander Alekseev aka TDM
-// This is an old shader, so it uses GLSL 100
-// (See V330 code in python version of this demo: bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py)
+// GLSL 100 for Emscripten (WebGL), GLSL 330 for desktop OpenGL
 
+#ifdef __EMSCRIPTEN__
+#define SHADER_HEADER "#version 100\nprecision mediump float;\n"
+#define VERT_IN "attribute"
+#define VERT_OUT "varying"
+#define FRAG_IN "varying"
+#define FRAG_OUT_DECL "vec4 FragColor;\n"
+#define FRAG_OUT_ASSIGN "gl_FragColor = FragColor;\n"
+#else
+#define SHADER_HEADER "#version 330 core\n"
+#define VERT_IN "in"
+#define VERT_OUT "out"
+#define FRAG_IN "in"
+#define FRAG_OUT_DECL "out vec4 FragColor;\n"
+#define FRAG_OUT_ASSIGN ""
+#endif
 
-const char* GVertexShaderSource = R"(#version 100
-precision mediump float;
-attribute vec3 aPos;
-attribute vec2 aTexCoord;
-
-varying vec2 TexCoord;
-
-void main()
-{
-    gl_Position = vec4(aPos, 1.0);
-    TexCoord = aTexCoord;
-}
-)";
+const char* GVertexShaderSource =
+    SHADER_HEADER
+    VERT_IN " vec3 aPos;\n"
+    VERT_IN " vec2 aTexCoord;\n"
+    VERT_OUT " vec2 TexCoord;\n"
+    "void main()\n"
+    "{\n"
+    "    gl_Position = vec4(aPos, 1.0);\n"
+    "    TexCoord = aTexCoord;\n"
+    "}\n";
 
 
 // See https://www.shadertoy.com/view/Ms2SD1 / Many thanks to Alexander Alekseev aka TDM
-const char* GFragmentShaderSource = R"(#version 100
-precision mediump float;
-/*
- * "Seascape" by Alexander Alekseev aka TDM - 2014
- * License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
- * Contact: tdmaav@gmail.com
- */
-
-
-varying vec2 TexCoord;
-vec4 FragColor;
+const char* GFragmentShaderSource =
+    SHADER_HEADER
+    "/*\n"
+    " * \"Seascape\" by Alexander Alekseev aka TDM - 2014\n"
+    " * License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.\n"
+    " * Contact: tdmaav@gmail.com\n"
+    " */\n"
+    FRAG_IN " vec2 TexCoord;\n"
+    FRAG_OUT_DECL
+    R"(
 
 uniform vec2 iResolution;  // Window resolution
 uniform float iTime;      // Shader elapsed time
@@ -499,9 +509,7 @@ void main()
 
     // Post-processing (adjust as needed)
     FragColor = vec4(pow(color, vec3(0.65)), 1.0);
-
-    gl_FragColor = FragColor;
-}
+    )" FRAG_OUT_ASSIGN R"(}
 )";
 
 

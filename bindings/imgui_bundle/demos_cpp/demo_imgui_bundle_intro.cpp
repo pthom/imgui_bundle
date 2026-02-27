@@ -1225,25 +1225,42 @@ namespace IntroShader
         return vao;
     }
 
-    // --- GLSL sources (GLSL 100 for max compatibility, like demo_custom_background.cpp) ---
+    // --- GLSL sources: GLSL 100 for Emscripten (WebGL), GLSL 330 for desktop ---
 
-    const char* kVertSrc = R"(#version 100
-precision mediump float;
-attribute vec3 aPos;
-attribute vec2 aTexCoord;
-varying vec2 TexCoord;
-void main() {
-    gl_Position = vec4(aPos, 1.0);
-    TexCoord = aTexCoord;
-}
-)";
+#ifdef __EMSCRIPTEN__
+#define SHADER_HEADER "#version 100\nprecision mediump float;\n"
+#define VERT_IN "attribute"
+#define VERT_OUT "varying"
+#define FRAG_IN "varying"
+#define FRAG_OUT_DECL ""
+#define FRAG_OUT_ASSIGN "gl_FragColor="
+#else
+#define SHADER_HEADER "#version 330 core\n"
+#define VERT_IN "in"
+#define VERT_OUT "out"
+#define FRAG_IN "in"
+#define FRAG_OUT_DECL "out vec4 FragColor;\n"
+#define FRAG_OUT_ASSIGN "FragColor="
+#endif
+
+    const char* kVertSrc =
+        SHADER_HEADER
+        VERT_IN " vec3 aPos;\n"
+        VERT_IN " vec2 aTexCoord;\n"
+        VERT_OUT " vec2 TexCoord;\n"
+        "void main() {\n"
+        "    gl_Position = vec4(aPos, 1.0);\n"
+        "    TexCoord = aTexCoord;\n"
+        "}\n";
 
     // Seascape by Alexander Alekseev aka TDM - 2014
     // https://www.shadertoy.com/view/Ms2SD1
     // SEA_HEIGHT, SEA_CHOPPY, SEA_BASE are uniforms for interactive sliders
-    const char* kFragSrc = R"(#version 100
-precision mediump float;
-varying vec2 TexCoord;
+    const char* kFragSrc =
+        SHADER_HEADER
+        FRAG_IN " vec2 TexCoord;\n"
+        FRAG_OUT_DECL
+        R"(
 
 uniform vec2 iResolution;
 uniform float iTime;
@@ -1294,7 +1311,7 @@ void main(){
     vec2 fragCoord=TexCoord*iResolution;
     float time=iTime*0.3;
     vec3 color=getPixel(fragCoord,time);
-    gl_FragColor=vec4(pow(color,vec3(0.65)),1.0);
+    )" FRAG_OUT_ASSIGN R"(vec4(pow(color,vec3(0.65)),1.0);
 }
 )";
 
