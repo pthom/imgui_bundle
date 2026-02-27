@@ -24,7 +24,7 @@ site:
   nav:
     - title: Ahh
     - title: Interactive Manual
-      url: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+      url: https://traineq.org/imgui_bundle_explorer
     - title: GitHub
       url: https://github.com/pthom/imgui_bundle
     - title: Online Python Playground

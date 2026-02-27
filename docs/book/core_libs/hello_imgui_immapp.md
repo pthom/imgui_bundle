@@ -16,10 +16,10 @@ These runners enable you to create powerful ImGui applications with minimal boil
 
 ## Interactive Manual
 
-The best way to learn is through the **[Interactive Manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)**. The "Demo Apps" tab lets you explore demos with their source code in Python and C++.
+The best way to learn is through the **[Interactive Manual](https://traineq.org/imgui_bundle_explorer)**. The "Demo Apps" tab lets you explore demos with their source code in Python and C++.
 
 ````{card}
-:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:link: https://traineq.org/imgui_bundle_explorer
 ```{figure} ../images/demo_immapp_apps.webp
 :width: 500
 ImGui Bundle Interactive Manual - Explore the "Demo Apps" tab

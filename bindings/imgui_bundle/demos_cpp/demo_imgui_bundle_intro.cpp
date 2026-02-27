@@ -1490,8 +1490,8 @@ void ShowBadges()
     if (HelloImGui::ImageButtonFromAsset("images/badge_view_docs.png", btnSize))
         ImmApp::BrowseToUrl("https://pthom.github.io/imgui_bundle");
     ImGui::SameLine();
-    if (HelloImGui::ImageButtonFromAsset("images/badge_interactive_manual.png", btnSize))
-        ImmApp::BrowseToUrl("https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html");
+    if (HelloImGui::ImageButtonFromAsset("images/badge_interactive_explorer.png", btnSize))
+        ImmApp::BrowseToUrl("https://traineq.org/imgui_bundle_explorer");
 }
 
 void IntroTopSection()

@@ -10,7 +10,7 @@ from imgui_bundle import imgui, im_anim as iam, immapp, ImVec2, ImVec4
 
 
 def IMGUI_DEMO_MARKER(section: str) -> None:
-    """Marker for the interactive manual. Maps sections to source code."""
+    """Marker for the Explorer. Maps sections to source code."""
     pass
 
 

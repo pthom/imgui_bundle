@@ -133,7 +133,7 @@ def ensure_marker_stub(py_lines: list[str]) -> list[str]:
     stub = [
         '\n',
         'def IMGUI_DEMO_MARKER(section: str) -> None:\n',
-        '    """Marker for the interactive manual. Maps sections to source code."""\n',
+        '    """Marker for the Explorer. Maps sections to source code."""\n',
         '    pass\n',
         '\n',
     ]

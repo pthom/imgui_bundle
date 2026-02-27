@@ -76,7 +76,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     runner_params = hello_imgui.RunnerParams()
     # Window size and title
     runner_params.app_window_params.window_title = (
-        "Dear ImGui Bundle interactive manual"
+        "Dear ImGui Bundle Explorer"
     )
     runner_params.app_window_params.window_geometry.size = (1400, 950)
 

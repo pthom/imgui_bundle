@@ -1,13 +1,13 @@
 # Examples and Gallery
 
-## Examples in the interactive manual
+## Examples in the interactive explorer
 
-Below are simple example applications available in the [Dear ImGui Bundle interactive manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html), in the "Demo Apps" tab.
+Below are simple example applications available in the [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer), in the "Demo Apps" tab.
 
 ````{card}
-:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html
+:link: https://traineq.org/imgui_bundle_explorer
 ```{figure} ../images/bundle_apps.jpg
-:alt: A screenshot of ImGui Bundle interactive manual, showing how to open example apps and show their source code
+:alt: A screenshot of ImGui Bundle Explorer, showing how to open example apps and show their source code
 :width: 500px
 :align: left
 Inside the manual, click the "Demo Apps" tab, select a demo, run it and look at its source code.

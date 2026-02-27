@@ -13,7 +13,7 @@
 Pay attention to the "Demo Apps" tab, which contains many examples built with Dear ImGui Bundle.
 You can read the documentation, run the demos, and even view the source code (in C++ and Python) directly from the manual!
 
-<img alt="A screenshot of ImGui Bundle interactive manual, showing how to open example apps and show their source code" src="../images/bundle_apps.jpg" height="500" />
+<img alt="A screenshot of ImGui Bundle Explorer, showing how to open example apps and show their source code" src="../images/bundle_apps.jpg" height="500" />
 
 
 ## Online Python playground

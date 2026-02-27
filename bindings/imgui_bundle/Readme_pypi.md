@@ -1,5 +1,5 @@
-<a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_manual.png" alt="interactive manual" height="25"/>
+<a href="https://traineq.org/imgui_bundle_explorer">
+<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_explorer.png" alt="interactive manual" height="25"/>
 </a>
 &nbsp;
 <a href="https://pthom.github.io/imgui_bundle/">
@@ -32,7 +32,7 @@ Dear ImGui Bundle is a collection of libraries around [Dear ImGui](https://githu
 
 ***
 
-## Documentation and interactive manuals
+## Documentation and interactive explorer
 
 ### Documentation site
 
@@ -42,14 +42,14 @@ Click the image below to visit the documentation site:
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_view_docs.png" alt="view docs" height="25"/>
 </a>
 
-This site contains the full documentation for Dear ImGui Bundle, including install instructions, conceptual introductions, step‑by‑step tutorials, deployment recipes, etc. It is a companion to the interactive manual below.
+This site contains the full documentation for Dear ImGui Bundle, including install instructions, conceptual introductions, step‑by‑step tutorials, deployment recipes, etc. It is a companion to "Dear ImGui Bundle Explorer", an Explorer below.
 
 ### Interactive manual & demo
 
 Click the image below to launch the interactive manual in your web browser:
 
-<a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_manual.png" alt="interactive manual" height="25"/>
+<a href="https://traineq.org/imgui_bundle_explorer">
+<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_explorer.png" alt="interactive manual" height="25"/>
 </a>
 
 The interactive manual showcases almost every part of the bundle with runnable examples. You can:

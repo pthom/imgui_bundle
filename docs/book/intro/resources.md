@@ -4,7 +4,7 @@
 
 The manuals and demos below are using Dear ImGui Bundle itself!
 
-- [ImGui Bundle interactive manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html): lots of example apps which you can run and inspect the source code
+- [ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer): lots of example apps which you can run and inspect the source code
 - [ImGui Manual (widget reference & code)](https://pthom.github.io/imgui_explorer/): explore all the widgets and features of Dear ImGui, with live examples and the corresponding python or C++ code
 - [Online Pyodide playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/):  try imgui apps using Python, directly in your browser
 

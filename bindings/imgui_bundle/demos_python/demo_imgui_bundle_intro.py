@@ -1305,8 +1305,8 @@ def _show_badges():
     if hello_imgui.image_button_from_asset("images/badge_view_docs.png", btn_size):
         webbrowser.open("https://pthom.github.io/imgui_bundle")
     imgui.same_line()
-    if hello_imgui.image_button_from_asset("images/badge_interactive_manual.png", btn_size):
-        webbrowser.open("https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html")
+    if hello_imgui.image_button_from_asset("images/badge_interactive_explorer.png", btn_size):
+        webbrowser.open("https://traineq.org/imgui_bundle_explorer")
 
 
 _automation_inited = False

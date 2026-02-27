@@ -1,5 +1,5 @@
-<a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_manual.png" alt="interactive manual" height="25"/>
+<a href="https://traineq.org/imgui_bundle_explorer">
+<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_explorer.png" alt="interactive explorer" height="25"/>
 </a>
 &nbsp;
 <a href="https://pthom.github.io/imgui_bundle/">
@@ -32,7 +32,7 @@ Dear ImGui Bundle is a collection of libraries around [Dear ImGui](https://githu
 
 ***
 
-## Documentation and interactive manuals
+## Documentation and interactive explorer / manual
 
 ### Documentation site
 
@@ -42,22 +42,22 @@ Click the image below to visit the documentation site:
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_view_docs.png" alt="view docs" height="25"/>
 </a>
 
-This site contains the full documentation for Dear ImGui Bundle, including install instructions, conceptual introductions, step‑by‑step tutorials, deployment recipes, etc. It is a companion to the interactive manual below.
+This site contains the full documentation for Dear ImGui Bundle, including install instructions, conceptual introductions, step‑by‑step tutorials, deployment recipes, etc. It is a companion to the interactive explorer / manual below.
 
-### Interactive manual & demo
+### Interactive explorer & demo
 
-Click the image below to launch the interactive manual in your web browser:
+Click the image below to launch the interactive explorer in your web browser:
 
-<a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_manual.png" alt="interactive manual" height="25"/>
+<a href="https://traineq.org/imgui_bundle_explorer">
+<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_explorer.png" alt="interactive explorer" height="25"/>
 </a>
 
-The interactive manual showcases almost every part of the bundle with runnable examples. You can:
+ImGui Bundle Explorer showcases almost every part of the bundle with runnable examples. You can:
 - Explore core Dear ImGui widgets.
 - Try plotting, node editors, image viewers, test engine, and more.
 - Inspect and copy the C++ and Python source code for each demo.
 
-> “The interactive manual is intended to be your live reference: browse widgets, run demos, and copy code snippets directly into your own projects.”
+> “The explorer is intended to be your live reference: browse widgets, run demos, and copy code snippets directly into your own projects.”
 
 
 ### DeepWiki

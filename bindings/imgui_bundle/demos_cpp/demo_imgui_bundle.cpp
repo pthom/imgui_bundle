@@ -87,7 +87,7 @@ int main(int, char **)
     // Hello ImGui params (they hold the settings as well as the Gui callbacks)
     HelloImGui::RunnerParams runnerParams;
     // Window size and title
-    runnerParams.appWindowParams.windowTitle = "Dear ImGui Bundle interactive manual";
+    runnerParams.appWindowParams.windowTitle = "Dear ImGui Bundle Explorer";
     runnerParams.appWindowParams.windowGeometry.size = {1400, 950};
 
     // Menu bar

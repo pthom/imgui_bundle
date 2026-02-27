@@ -11,7 +11,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 def IMGUI_DEMO_MARKER(section: str) -> None:
-    """Marker for the interactive manual. Maps sections to source code."""
+    """Marker for the Explorer. Maps sections to source code."""
     pass
 
 

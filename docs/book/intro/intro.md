@@ -2,11 +2,11 @@
 
 > From expressive code to powerful GUIs in no time: a fast, feature-rich, cross-platform toolkit for C++ & Python.
 
-<a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">
+<a href="https://traineq.org/imgui_bundle_explorer">
     <img src="../../../logo/logo_imgui_bundle_1024.png" width="80"/>
 </a>
 
-_Click the logo to launch the interactive manual in your browser!_
+_Click the logo to launch the interactive explorer in your browser!_
 
 ---
 

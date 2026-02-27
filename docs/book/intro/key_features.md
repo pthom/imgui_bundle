@@ -20,7 +20,7 @@
 
 * **Easy to use, yet very powerful:** Start your first app in 3 lines.
 
-* **Interactive Demos and Documentation:** Quickly get started with our interactive manual and demos that showcase the capabilities of the pack. Read or copy-paste the source code (Python and C++) directly from the interactive manual!
+* **Interactive Demos and Documentation:** Quickly get started with the ImGui Bundle Interactive Explorer, that showcases the capabilities of the pack. Read or copy-paste the source code (Python and C++) directly from there!
 
 
 ## Always up-to-date
@@ -148,7 +148,7 @@ The cross-platform support actually works:
 - Python → Pyodide → WebAssembly (!!)
 - Full Python runtime in browser
 - Native-speed rendering via WebGL
-- Check the interactive manual: [traineq.org/ImGuiBundle](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
+- Check ImGui Bundle Explorer: [traineq.org/ImGuiBundle](https://traineq.org/imgui_bundle_explorer)
 
 
 # Comparison with Alternatives
