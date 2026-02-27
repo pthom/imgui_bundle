@@ -101,13 +101,11 @@ function(add_imgui_bundle_bindings)
     set(python_native_module_name _imgui_bundle)    # This is the native python module name
     set(python_wrapper_module_name imgui_bundle)    # This is the python wrapper around the native module
     set(python_module_sources
-        ${bindings_main_folder}/module.cpp
         ${bindings_main_folder}/pybind_imgui_bundle.cpp
         ${filtered_pybind_files}
         )
 
     nanobind_add_module(${python_native_module_name} ${python_module_sources})
-    target_compile_definitions(${python_native_module_name} PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
     # Propagate WITH flags to bindings so preprocessor conditionals work
     if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI)

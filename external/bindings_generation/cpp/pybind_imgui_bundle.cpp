@@ -34,6 +34,7 @@ void py_init_module_imcoolbar(nb::module_& m);
 void py_init_module_nanovg(nb::module_& m);
 void py_init_module_imanim(nb::module_& m);
 void py_init_module_imgui_explorer(nb::module_& m);
+void py_init_module_imgui_bundle(nb::module_& m);
 
 
 std::vector<std::string> gAvailableSubmodules;
@@ -47,12 +48,21 @@ void _register_submodule(const std::string& submodule_name, bool available = tru
         gDisabledSubmodules.push_back(submodule_name);
 }
 
+// This builds the native python module `_imgui_bundle`
+// it will be wrapped in a standard python module `imgui_bundle`
+NB_MODULE(_imgui_bundle, m)
+{
+
+    py_init_module_imgui_bundle(m);
+}
+
 
 void py_init_module_imgui_bundle(nb::module_& m)
 {
     // Disable leak warnings (we may have a few, to be fixed later)
     nb::set_leak_warnings(false);
 
+    m.attr("__version__") = IMGUI_BUNDLE_VERSION;
     m.def("compilation_time", []() {
         return std::string("imgui_bundle, compiled on ") + __DATE__ + " at " + __TIME__;
     });

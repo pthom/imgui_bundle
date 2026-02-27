@@ -4,6 +4,7 @@ project(imgui_bundle VERSION "1.92.600") # Based on ImGui 1.92.6 - Remember to m
 
 # imgui_bundle_build_lib contains the main logic to build imgui_bundle
 set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
+set(IMGUI_BUNDLE_VERSION ${PROJECT_VERSION} CACHE STRING "" FORCE)
 include(imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
 include(imgui_bundle_cmake/imgui_bundle_pyodide.cmake)
 
@@ -406,6 +407,7 @@ endif()
 # Fake main library (imgui_bundle is just an interface to define common options)
 # -----------------------------------------------------------------------------
 add_library(imgui_bundle INTERFACE)
+target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_VERSION="${IMGUI_BUNDLE_VERSION}")
 if(IMGUI_BUNDLE_INSTALL_CPP)
     install(DIRECTORY imgui_bundle_cmake DESTINATION share/imgui-bundle)
     install(DIRECTORY bindings/imgui_bundle/assets DESTINATION share/imgui-bundle)
