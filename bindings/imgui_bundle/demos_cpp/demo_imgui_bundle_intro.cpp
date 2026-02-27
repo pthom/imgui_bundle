@@ -1225,7 +1225,7 @@ namespace IntroShader
         return vao;
     }
 
-    // --- GLSL sources (GLSL 100 for max compatibility) ---
+    // --- GLSL sources (GLSL 100 for max compatibility, like demo_custom_background.cpp) ---
 
     const char* kVertSrc = R"(#version 100
 precision mediump float;

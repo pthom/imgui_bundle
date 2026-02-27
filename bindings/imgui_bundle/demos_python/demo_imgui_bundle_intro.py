@@ -1027,23 +1027,11 @@ def _web_deploy_slide_gui(content_size: ImVec2):
 # ============================================================================
 
 if HAS_OPENGL:
-    _VERT_SRC = """#version 100
-precision mediump float;
-attribute vec3 aPos;
-attribute vec2 aTexCoord;
-varying vec2 TexCoord;
-void main() {
-    gl_Position = vec4(aPos, 1.0);
-    TexCoord = aTexCoord;
-}
-"""
+    import sys as _sys
 
-    # Seascape by Alexander Alekseev aka TDM - 2014
-    # https://www.shadertoy.com/view/Ms2SD1
-    _FRAG_SRC = """#version 100
-precision mediump float;
-varying vec2 TexCoord;
-
+    # Shader body shared between GLSL 100 (Emscripten/WebGL) and GLSL 330 (desktop).
+    # Uses compatibility macros defined in the version-specific headers below.
+    _SEASCAPE_BODY = """
 uniform vec2 iResolution;
 uniform float iTime;
 uniform float SEA_HEIGHT;
@@ -1090,12 +1078,42 @@ float heightMapTracing(vec3 ori,vec3 dir,out vec3 p){float tm=0.0;float tx=1000.
 vec3 getPixel(vec2 coord,float time){vec2 uv=coord/iResolution.xy;uv=uv*2.0-1.0;uv.x*=iResolution.x/iResolution.y;vec3 ang=vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);vec3 ori=vec3(0.0,3.5,time*5.0);vec3 dir=normalize(vec3(uv.xy,-2.0));dir.z+=length(uv)*0.14;dir=normalize(dir)*fromEuler(ang);vec3 p;heightMapTracing(ori,dir,p);vec3 dist=p-ori;vec3 n=getNormal(p,dot(dist,dist)*EPSILON_NRM);vec3 light=normalize(vec3(0.0,1.0,0.8));return mix(getSkyColor(dir),getSeaColor(p,n,light,dir,dist),pow(smoothstep(0.0,-0.02,dir.y),0.2));}
 
 void main(){
-    vec2 fragCoord=TexCoord*iResolution;
+    vec2 fragCoord=FRAG_TEXCOORD*iResolution;
     float time=iTime*0.3;
     vec3 color=getPixel(fragCoord,time);
-    gl_FragColor=vec4(pow(color,vec3(0.65)),1.0);
+    FRAG_OUT=vec4(pow(color,vec3(0.65)),1.0);
 }
 """
+
+    _IS_EMSCRIPTEN = _sys.platform == "emscripten"
+
+    if _IS_EMSCRIPTEN:
+        _VERT_SRC = """#version 100
+precision mediump float;
+attribute vec3 aPos;
+attribute vec2 aTexCoord;
+varying vec2 TexCoord;
+void main() { gl_Position = vec4(aPos, 1.0); TexCoord = aTexCoord; }
+"""
+        _FRAG_SRC = """#version 100
+precision mediump float;
+varying vec2 TexCoord;
+#define FRAG_TEXCOORD TexCoord
+#define FRAG_OUT gl_FragColor
+""" + _SEASCAPE_BODY
+    else:
+        _VERT_SRC = """#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec2 aTexCoord;
+out vec2 TexCoord;
+void main() { gl_Position = vec4(aPos, 1.0); TexCoord = aTexCoord; }
+"""
+        _FRAG_SRC = """#version 330 core
+in vec2 TexCoord;
+out vec4 FragColor;
+#define FRAG_TEXCOORD TexCoord
+#define FRAG_OUT FragColor
+""" + _SEASCAPE_BODY
 
     class _ShaderState:
         def __init__(self):
@@ -1209,11 +1227,15 @@ void main(){
         if _shader_inited:
             return
         _shader_inited = True
-        _shader_state = _ShaderState()
-        _shader_state.init()
-        hello_imgui.get_runner_params().callbacks.enqueue_before_exit(
-            lambda: _shader_state.destroy() if _shader_state else None
-        )
+        try:
+            _shader_state = _ShaderState()
+            _shader_state.init()
+            hello_imgui.get_runner_params().callbacks.enqueue_before_exit(
+                lambda: _shader_state.destroy() if _shader_state else None
+            )
+        except Exception as e:
+            print(f"Shader init failed: {e}")
+            _shader_state = None
 
     def _shader_gui_main(width: float, height: float):
         _shader_lazy_init()
