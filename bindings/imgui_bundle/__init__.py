@@ -260,6 +260,3 @@ if has_submodule("hello_imgui"):
 
     THIS_DIR = os.path.dirname(__file__)
     hello_imgui.override_assets_folder(THIS_DIR + "/assets")
-    _demos_assets = THIS_DIR + "/demos_assets"
-    if os.path.isdir(_demos_assets):
-        hello_imgui.add_assets_search_path(_demos_assets)
