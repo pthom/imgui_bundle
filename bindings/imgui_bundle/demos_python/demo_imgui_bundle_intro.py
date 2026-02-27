@@ -1313,57 +1313,57 @@ _automation_inited = False
 _automation_show_me = None
 
 
-@static(show_full=False)
 def _intro_top_section():
+    static = _intro_top_section
     global _automation_inited, _automation_show_me
 
     small = is_small_screen()
 
-    imgui_md.render_unindented("""
-# Dear ImGui Bundle
-
-*From expressive code to powerful GUIs in no time*
-""")
-
-    if small:
-        if not _intro_top_section.show_full:
-            imgui.text_disabled("20+ libraries, C++ & Python, desktop/mobile/web.")
-            imgui.same_line()
-            if imgui.small_button("More..."):
-                _intro_top_section.show_full = True
-        if _intro_top_section.show_full:
-            imgui_md.render_unindented("""
-        A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
-        Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
+    def render_intro_paragraph():
+        imgui_md.render_unindented( """
+        Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
+        The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
         """)
-            imgui.same_line()
-            if imgui.small_button("Less"):
-                _intro_top_section.show_full = False
-    else:
-        imgui_md.render_unindented("""
-        A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
-        Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
-        """
-        )
-        imgui.same_line()
-        imgui.text_disabled("Start your first app in 2 or 3 lines of code.")
+
+    def render_start_quickly():
+        imgui.text_disabled("Start your first app in 2–3 lines of code.")
 
         if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
             imgui.begin_tooltip()
             imgui.dummy(hello_imgui.em_to_vec2(80.0, 0.0))
             demo_utils.show_python_vs_cpp_code(
                 """
-from imgui_bundle import imgui, immapp
-immapp.run(lambda: imgui.text("Hello!"))
-""",
+                from imgui_bundle import imgui, immapp
+                immapp.run(lambda: imgui.text("Hello!"))
+                """,
                 """
-#include "immapp/immapp.h"
-#include "imgui.h"
-int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
-""",
+                #include "immapp/immapp.h"
+                #include "imgui.h"
+                int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
+                """,
                 5,
             )
             imgui.end_tooltip()
+
+    # Title and description
+    imgui_md.render_unindented("# Dear ImGui Bundle Explorer")
+    imgui.text_disabled("An Interactive Manual for the Dear ImGui Ecosystem")
+
+    if not hasattr(static, "show_full"):
+        static.show_full = False
+    if small:
+        if not static.show_full:
+            if imgui.small_button("More..."):
+                static.show_full = True
+        else:
+            if imgui.small_button("Less"):
+                static.show_full = False
+
+    if not small or static.show_full:
+        render_intro_paragraph()
+        imgui.same_line()
+        render_start_quickly()
+
 
     if hello_imgui.get_runner_params().use_imgui_test_engine:
         if not _automation_inited:
@@ -1375,7 +1375,7 @@ int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
     if not small:
         imgui.new_line()
         imgui_md.render_unindented("""
-The "Demo Apps" tab provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them
+Each tab provides demos for the included libraries, along with their code. The "Demo Apps" tab provides sample starter apps from which you can take inspiration.
 """)
 
         if hello_imgui.get_runner_params().use_imgui_test_engine:

@@ -12,8 +12,8 @@ except ImportError:
 def demo_gui():
     imgui_md.render_unindented(
         """
-        # Dear ImGui demo
-        Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right of this window.
+        # Dear ImGui
+        Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right.
     """
     )
 
@@ -30,7 +30,7 @@ def demo_gui():
     demo_utils.animate_logo(
         "images/logo_imgui_600.jpg",
         2.0,
-        ImVec2(1.0 * 0.64, 4.8 * 0.64),
+        ImVec2(1.0 * 0.2, 4.8 * 0.2),
         0.45,
         "https://github.com/ocornut/imgui",
     )

@@ -1498,56 +1498,55 @@ void IntroTopSection()
 {
     bool small = IsSmallScreen();
 
-    ImGuiMd::RenderUnindented(R"(
-# Dear ImGui Bundle
+    // Title and description
+    ImGuiMd::RenderUnindented("# Dear ImGui Bundle Explorer");
+    ImGui::TextDisabled("An Interactive Manual for the Dear ImGui Ecosystem");
 
-*From expressive code to powerful GUIs in no time*
-)");
-
+    static bool showFull = false;
     if (small)
     {
-        static bool showFull = false;
         if (!showFull)
         {
-            ImGui::TextDisabled("20+ libraries, C++ & Python, desktop/mobile/web.");
-            ImGui::SameLine();
             if (ImGui::SmallButton("More..."))
                 showFull = true;
         }
-        if (showFull)
+        else
         {
-            ImGuiMd::RenderUnindented(R"(
-        A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
-        Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
-)");
-            ImGui::SameLine();
             if (ImGui::SmallButton("Less"))
                 showFull = false;
         }
     }
-    else
-    {
-        ImGuiMd::RenderUnindented(R"(
-        A batteries-included framework built on Dear ImGui, bundling 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more. Works in C++ and Python, on desktop, mobile, and web.
-        Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is concise, and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
-)");
-        ImGui::SameLine();
-        ImGui::TextDisabled("Start your first app in 2 or 3 lines of code.");
 
+    auto renderIntroParagraph = []() {
+        ImGuiMd::RenderUnindented(R"(
+        Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
+        The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
+)");
+    };
+
+    auto renderStartQuickly = []() {
+        ImGui::TextDisabled("Start your first app in 2\xe2\x80\x93""3 lines of code.");
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
         {
             ImGui::BeginTooltip();
             ImGui::Dummy(HelloImGui::EmToVec2(80.f, 0.f));
             ShowPythonVsCppCode(R"(
-from imgui_bundle import imgui, immapp
-immapp.run(lambda: imgui.text("Hello!"))
+                from imgui_bundle import imgui, immapp
+                immapp.run(lambda: imgui.text("Hello!"))
 )", R"(
-#include "immapp/immapp.h"
-#include "imgui.h"
-int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
+                #include "immapp/immapp.h"
+                #include "imgui.h"
+                int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
 )", 5);
             ImGui::EndTooltip();
         }
+    };
+
+    if (!small || showFull)
+    {
+        renderIntroParagraph();
+        ImGui::SameLine();
+        renderStartQuickly();
     }
 
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
@@ -1569,7 +1568,7 @@ int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
     {
         ImGui::NewLine();
         ImGuiMd::RenderUnindented(R"(
-The "Demo Apps" tab provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them
+Each tab provides demos for the included libraries, along with their code. The "Demo Apps" tab provides sample starter apps from which you can take inspiration.
 )");
 
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE

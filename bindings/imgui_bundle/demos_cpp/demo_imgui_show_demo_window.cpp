@@ -8,8 +8,8 @@
 void demo_imgui_show_demo_window()
 {
     ImGuiMd::RenderUnindented(R"(
-        # Dear ImGui demo
-        Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right of this window.
+        # Dear ImGui
+        Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right.
     )");
 
     ImGui::NewLine();
@@ -21,5 +21,5 @@ void demo_imgui_show_demo_window()
     ImGui::ShowDemoWindow_MaybeDocked(false);
 #endif
 
-    AnimateLogo("images/logo_imgui_600.jpg", 2.f, ImVec2(1.f * 0.64f, 4.8f * 0.64f), 0.45f, "https://github.com/ocornut/imgui");
+    AnimateLogo("images/logo_imgui_600.jpg", 2.f, ImVec2(1.f * 0.2f, 4.8f * 0.2f), 0.45f, "https://github.com/ocornut/imgui");
 }
