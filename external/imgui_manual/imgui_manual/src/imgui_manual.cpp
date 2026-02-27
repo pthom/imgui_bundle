@@ -284,7 +284,7 @@ namespace
 
         // Reference to ImGui Bundle
         // ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.6f, 1.0f, 1.0f));
-        ImGui::Text("Dear ImGui Manual");
+        ImGui::Text("Dear ImGui Explorer: An Interactive Manual for Dear ImGui, ImPlot & ImPlot3D");
         ImGui::SetItemTooltip(
             "Dear ImGui Manual is developed as a part of Dear imGui Bundle\n"
                 "\nhttps://pthom.github.io/imgui_bundle/"

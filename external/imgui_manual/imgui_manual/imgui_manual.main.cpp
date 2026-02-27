@@ -56,7 +56,7 @@ int main(int argc, char** argv)
 
     HelloImGui::RunnerParams runnerParams;
 
-    runnerParams.appWindowParams.windowTitle = "Dear ImGui Manual";
+    runnerParams.appWindowParams.windowTitle = "Dear ImGui Explorer: An Interactive Manual for Dear ImGui, ImPlot & ImPlot3D";
     runnerParams.appWindowParams.windowGeometry.size = {1400, 900};
     runnerParams.imGuiWindowParams.configWindowsMoveFromTitleBarOnly = false;
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow;

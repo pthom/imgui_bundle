@@ -113,7 +113,6 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             {"FAQ", "https://github.com/ocornut/imgui/blob/master/docs/FAQ.md"},
             {"Wiki", "https://github.com/ocornut/imgui/wiki"},
             {"dearimgui.com", "https://www.dearimgui.com/"},
-            {"Dear ImGui Manual", "https://pthom.github.io/imgui_manual/"},
         };
         configs.push_back(std::move(cfg));
     }
