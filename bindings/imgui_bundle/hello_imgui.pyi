@@ -428,12 +428,49 @@ def asset_exists(asset_relative_filename: str) -> bool:
     """Returns True if this asset file exists"""
     pass
 
+# @@md
+
+# @@md#AssetsSearchPaths
+
 # void SetAssetsFolder(const std::string& folder);    /* original C++ signature */
 @overload
 def set_assets_folder(folder: str) -> None:
     """Sets the assets folder location
     (when using this, automatic assets installation on mobile platforms may not work)
     """
+    pass
+
+# Assets search paths provide additional locations where assets can be found,
+# giving a unified view across multiple folders. When loading an asset, the
+# search order is:
+#   1. The main assets folder (set by SetAssetsFolder(), or the default
+#      platform-specific locations such as exe_folder/assets)
+#   2. Each search path added by AddAssetsSearchPath(), in order
+#   3. Other built-in platform-specific fallback locations
+#
+# The first match wins. This is useful when assets are split across
+# directories — for example, core assets (fonts, icons) in one folder
+# and demo-specific assets (extra images, specialty fonts) in another.
+#
+# Note: search paths are a runtime-only mechanism. Unlike the main assets
+# folder (which CMake can bundle into the application for mobile/emscripten),
+# search path folders are not automatically embedded at compile time.
+# They are intended for desktop or Python usage where the filesystem
+# is directly accessible.
+
+# void AddAssetsSearchPath(const std::string& folder);    /* original C++ signature */
+def add_assets_search_path(folder: str) -> None:
+    """Add a folder to the asset search paths."""
+    pass
+
+# void ClearAssetsSearchPaths();    /* original C++ signature */
+def clear_assets_search_paths() -> None:
+    """Remove all previously added search paths."""
+    pass
+
+# const std::vector<std::string>& GetAssetsSearchPaths();    /* original C++ signature */
+def get_assets_search_paths() -> List[str]:
+    """Return the current list of search paths."""
     pass
 
 # @@md
@@ -845,6 +882,10 @@ def darcula(
 # }
 def show_theme_tweak_gui_window(p_open: Optional[bool] = None) -> Optional[bool]:
     pass
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # @@md#Fonts
 
@@ -2159,7 +2200,7 @@ class DockingSplit:
     # `nodeFlags`: *ImGuiDockNodeFlags_ (enum)*.
     #  Flags to apply to the new dock space
     #  (enable/disable resizing, splitting, tab bar, etc.)
-    node_flags: ImGuiDockNodeFlags = DockNodeFlags_.none
+    node_flags: ImGuiDockNodeFlags = ImGuiDockNodeFlags_None
 
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
@@ -2178,8 +2219,8 @@ class DockingSplit:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * direction_: Dir.down
-                * nodeFlags_: DockNodeFlags_.none
+                * direction_: ImGuiDir_Down
+                * nodeFlags_: ImGuiDockNodeFlags_None
         """
         pass
 
@@ -2258,7 +2299,7 @@ class DockableWindow:
     # ImGuiCond  windowSizeCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowSizeCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window size.
-    window_size_condition: ImGuiCond = Cond_.first_use_ever
+    window_size_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # ImVec2 windowPosition = ImVec2(0.f, 0.f);    /* original C++ signature */
     # `windowPos`: _ImVec2, default=(0., 0.) (i.e let the app decide)_.
@@ -2268,7 +2309,7 @@ class DockableWindow:
     # ImGuiCond  windowPositionCondition = ImGuiCond_FirstUseEver;    /* original C++ signature */
     # `windowPosCondition`: _ImGuiCond, default=ImGuiCond_FirstUseEver_.
     #  When to apply the window position.
-    window_position_condition: ImGuiCond = Cond_.first_use_ever
+    window_position_condition: ImGuiCond = ImGuiCond_FirstUseEver
 
     # DockableWindow(    /* original C++ signature */
     #         const std::string & label_ = "",
@@ -2345,7 +2386,7 @@ class DockingParams:
     #  Most flags are inherited by children dock spaces.
     #  You can also set flags for specific dock spaces via `DockingSplit.nodeFlags`
     main_dock_space_node_flags: ImGuiDockNodeFlags = (
-        DockNodeFlags_.passthru_central_node
+        ImGuiDockNodeFlags_PassthruCentralNode
     )
 
     # --------------- Layout handling -----------------------------
@@ -2401,7 +2442,7 @@ class DockingParams:
             If any of the params below is None, then its default value below will be used:
                 * dockingSplits: List[DockingSplit]()
                 * dockableWindows: List[DockableWindow]()
-                * mainDockSpaceNodeFlags: DockNodeFlags_.passthru_central_node
+                * mainDockSpaceNodeFlags: ImGuiDockNodeFlags_PassthruCentralNode
         """
         pass
 

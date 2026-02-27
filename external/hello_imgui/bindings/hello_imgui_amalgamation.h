@@ -230,6 +230,7 @@ for more information on how to fine tune DPI handling when using Hello ImGui.
 //                       hello_imgui/hello_imgui_assets.h included by hello_imgui.h                             //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <string>
+#include <vector>
 #include <functional>
 
 namespace HelloImGui
@@ -311,12 +312,42 @@ std::string AssetFileFullPath(const std::string& assetRelativeFilename,
 // Returns true if this asset file exists
 bool AssetExists(const std::string& assetRelativeFilename);
 
+// @@md
+
+// @@md#AssetsSearchPaths
+
 // Sets the assets folder location
 // (when using this, automatic assets installation on mobile platforms may not work)
 void SetAssetsFolder(const std::string& folder);
 
-// @@md
+// Assets search paths provide additional locations where assets can be found,
+// giving a unified view across multiple folders. When loading an asset, the
+// search order is:
+//   1. The main assets folder (set by SetAssetsFolder(), or the default
+//      platform-specific locations such as exe_folder/assets)
+//   2. Each search path added by AddAssetsSearchPath(), in order
+//   3. Other built-in platform-specific fallback locations
+//
+// The first match wins. This is useful when assets are split across
+// directories — for example, core assets (fonts, icons) in one folder
+// and demo-specific assets (extra images, specialty fonts) in another.
+//
+// Note: search paths are a runtime-only mechanism. Unlike the main assets
+// folder (which CMake can bundle into the application for mobile/emscripten),
+// search path folders are not automatically embedded at compile time.
+// They are intended for desktop or Python usage where the filesystem
+// is directly accessible.
 
+// Add a folder to the asset search paths.
+void AddAssetsSearchPath(const std::string& folder);
+
+// Remove all previously added search paths.
+void ClearAssetsSearchPaths();
+
+// Return the current list of search paths.
+const std::vector<std::string>& GetAssetsSearchPaths();
+
+// @@md
 
 
 // Legacy API, kept for compatibility
@@ -610,7 +641,6 @@ namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <vector>
 
 
 namespace HelloImGui

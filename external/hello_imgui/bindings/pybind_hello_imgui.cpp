@@ -238,6 +238,17 @@ void py_init_module_hello_imgui(nb::module_& m)
         nb::arg("folder"),
         " Sets the assets folder location\n (when using this, automatic assets installation on mobile platforms may not work)");
 
+    m.def("add_assets_search_path",
+        HelloImGui::AddAssetsSearchPath,
+        nb::arg("folder"),
+        "Add a folder to the asset search paths.");
+
+    m.def("clear_assets_search_paths",
+        HelloImGui::ClearAssetsSearchPaths, "Remove all previously added search paths.");
+
+    m.def("get_assets_search_paths",
+        HelloImGui::GetAssetsSearchPaths, "Return the current list of search paths.");
+
     m.def("set_assets_folder",
         nb::overload_cast<const char *>(HelloImGui::SetAssetsFolder),
         nb::arg("folder"),
@@ -1255,7 +1266,7 @@ void py_init_module_hello_imgui(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, initialDock_, newDock_, direction_, ratio_, nodeFlags_);
             },
             nb::arg("initial_dock_") = "", nb::arg("new_dock_") = "", nb::arg("direction_").none() = nb::none(), nb::arg("ratio_") = 0.25f, nb::arg("node_flags_").none() = nb::none(),
-            " Constructor\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: Dir.down\n        * nodeFlags_: DockNodeFlags_.none")
+            " Constructor\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: ImGuiDir_Down\n        * nodeFlags_: ImGuiDockNodeFlags_None")
         ;
 
 
