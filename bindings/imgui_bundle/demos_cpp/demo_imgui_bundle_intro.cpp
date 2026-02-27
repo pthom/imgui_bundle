@@ -1829,34 +1829,40 @@ void IntroMiniDemos()
         ImGui::Dummy(ImVec2(1, 1));
     }
 
-    // Navigation via mouse wheel
-    bool was_wheel_nav_initiated = false;
-    float wheel_nav_value = 0.f;
-    if (ImGui::Shortcut(ImGuiKey_MouseWheelX, ImGuiInputFlags_RouteGlobal))
+    // Navigation via mouse wheel: disabled for now as it can interfere with users trying to scroll inside demos,
+    // and is complex to validate for all case (trackpad vs mouse wheel, horizontal vs vertical, with or without modifiers, etc.)
+    if (false)
     {
-        was_wheel_nav_initiated = true;
-        wheel_nav_value = ImGui::GetIO().MouseWheelH;
-    }
-    if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiKey_MouseWheelY, ImGuiInputFlags_RouteGlobal))
-    {
-        was_wheel_nav_initiated = true;
-        wheel_nav_value = ImGui::GetIO().MouseWheel;
-    }
-    if (was_wheel_nav_initiated)
-    {
-        printf("Trigger\n");
-        static double time_last_trigger = -1.f;
-        double now = ImGui::GetTime();
-        if (now - time_last_trigger > 1.0)
+        bool was_wheel_nav_initiated = false;
+        float wheel_nav_value = 0.f;
+
+        // This shortcut works on a macbook trackpad, but will interfere with *vertical (!)* scrolling inside demos
+        if (ImGui::Shortcut(ImGuiKey_MouseWheelX, ImGuiInputFlags_RouteGlobal))
         {
-            autoStopped = true;
-            if (wheel_nav_value > 0)
-                currentSlide = (currentSlide - 1) % slideCount;
-            else
-                currentSlide = (currentSlide + 1) % slideCount;
-            if (currentSlide < 0)
-                currentSlide = 0;
-            time_last_trigger = now;
+            was_wheel_nav_initiated = true;
+            wheel_nav_value = ImGui::GetIO().MouseWheelH;
+        }
+        if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiKey_MouseWheelY, ImGuiInputFlags_RouteGlobal))
+        {
+            was_wheel_nav_initiated = true;
+            wheel_nav_value = ImGui::GetIO().MouseWheel;
+        }
+        if (was_wheel_nav_initiated)
+        {
+            printf("Trigger\n");
+            static double time_last_trigger = -1.f;
+            double now = ImGui::GetTime();
+            if (now - time_last_trigger > 1.0)
+            {
+                autoStopped = true;
+                if (wheel_nav_value > 0)
+                    currentSlide = (currentSlide - 1) % slideCount;
+                else
+                    currentSlide = (currentSlide + 1) % slideCount;
+                if (currentSlide < 0)
+                    currentSlide = 0;
+                time_last_trigger = now;
+            }
         }
     }
 
