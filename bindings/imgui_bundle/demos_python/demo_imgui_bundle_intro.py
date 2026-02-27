@@ -509,7 +509,7 @@ if HAS_IMMVISION:
     _immvision_zoom_center = None
 
     def _immvision_compute_sobel():
-        gray = cv2.cvtColor(_immvision_image, cv2.COLOR_BGR2GRAY)
+        gray = cv2.cvtColor(_immvision_image, cv2.COLOR_RGB2GRAY)
         img_float = gray.astype(np.float32) / 255.0
         blurred = cv2.GaussianBlur(img_float, (0, 0), _immvision_blur_size, _immvision_blur_size)
         good_scale = 1.0 / (2.0 ** (_immvision_k_size - 2 * _immvision_deriv_order - 2))
@@ -520,8 +520,8 @@ if HAS_IMMVISION:
         global _immvision_image, _immvision_image_sobel, _immvision_inited
         global _immvision_zoom_center, _immvision_start_time
 
-        immvision.use_bgr_color_order()
-        _immvision_image = cv2.imread(demo_utils.demos_assets_folder() + "/images/house.jpg")
+        immvision.use_rgb_color_order()
+        _immvision_image = demo_utils.imread_demo(demo_utils.demos_assets_folder() + "/images/house.jpg")
         _immvision_image_sobel = _immvision_compute_sobel()
 
         disp_w = int(hello_imgui.em_size(20.0))
