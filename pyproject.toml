@@ -170,7 +170,7 @@ test-skip = ["*-musllinux_*"] #  issue with OpenGL on musllinux
 # Environment variables
 environment-pass = ["IMMVISION_OPENCV_GIT_REPO"]  # pass alternative git repo to docker build containers
 # Pre-built OpenCV: built once in before-all, reused by all Python versions
-environment = { OpenCV_DIR="/opt/opencv_minimalist/lib/cmake/opencv4" }
+environment = { CMAKE_PREFIX_PATH="/opt/opencv_minimalist", OpenCV_STATIC="ON" }
 
 
 # Install glfw dev packages on manylinux:
@@ -202,10 +202,12 @@ before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev l
 #------------------------------------
 [tool.cibuildwheel.windows]
 skip = ["*win32"]
-# Pre-built static OpenCV: built once in before-all, reused by all Python versions
+# Pre-built static OpenCV: built once in before-all, reused by all Python versions.
 # This replaces the previous opencv_world.dll download, making wheels ~14MB smaller.
+# We use CMAKE_PREFIX_PATH (not OpenCV_DIR) because the install layout varies by
+# MSVC version — find_package(OpenCV) searches standard subdirectories under the prefix.
 before-all = "bash {project}/external/immvision/immvision/cmake/build_opencv.sh C:/opencv_minimalist"
-environment = { OpenCV_DIR="C:/opencv_minimalist", OpenCV_STATIC="ON" }
+environment = { CMAKE_PREFIX_PATH="C:/opencv_minimalist", OpenCV_STATIC="ON" }
 
 #------------------------------------
 # android wheels
