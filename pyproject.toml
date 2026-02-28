@@ -192,10 +192,10 @@ environment = { OpenCV_DIR="/opt/opencv_minimalist/lib/cmake/opencv4" }
 # sudo apt-get install -y xorg-dev libgl1-mesa-dev libglfw3-dev libglew-dev xvfb
 
 # sudo apt-get install -y libgl1-mesa-dev
-before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel mesa-libGL-devel && bash {project}/ci/build_opencv_for_ci.sh"
+before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel mesa-libGL-devel && bash {project}/external/immvision/immvision/cmake/build_opencv.sh /opt/opencv_minimalist"
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux*"
-before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev mesa-dev mesa-gl cmake curl && bash {project}/ci/build_opencv_for_ci.sh"
+before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev mesa-dev mesa-gl cmake curl bash && bash {project}/external/immvision/immvision/cmake/build_opencv.sh /opt/opencv_minimalist"
 
 #------------------------------------
 # windows wheels options
@@ -204,7 +204,7 @@ before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev l
 skip = ["*win32"]
 # Pre-built static OpenCV: built once in before-all, reused by all Python versions
 # This replaces the previous opencv_world.dll download, making wheels ~14MB smaller.
-before-all = "powershell -ExecutionPolicy Bypass -File {project}/ci/build_opencv_for_ci_win.ps1"
+before-all = "bash {project}/external/immvision/immvision/cmake/build_opencv.sh C:/opencv_minimalist"
 environment = { OpenCV_DIR="C:/opencv_minimalist", OpenCV_STATIC="ON" }
 
 #------------------------------------
