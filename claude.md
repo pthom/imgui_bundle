@@ -19,6 +19,8 @@ Before implementing:
 
 **Before implementing a solution, wait for the user to finish evaluating alternatives.**
 
+**No whack-a-mole loops.** When hitting a second unexpected failure in a row on a hard problem (especially cross-platform builds, CI, toolchain issues): STOP fixing. Present the full picture of what's going wrong and why, and ask to examine the difficulties together before writing more code. Investigation time up front saves much more than it costs. Similarly, before bumping a dependency version, check changelogs/release notes for new features that could interact with existing build flags.
+
 
 ## 2. Simplicity First
 
