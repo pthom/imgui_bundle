@@ -40,11 +40,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+          - os: ubuntu-24.04-arm
+          - os: macos-latest      # Apple Silicon (arm64)
+          - os: windows-latest
 
     steps:
 
-    # builds on x86_64 failed to produce arm64 wheels a few years ago. Ensure macOS runners are arm64.
     - name: macOS ensure arm64
       if: runner.os == 'macOS'
       run: |

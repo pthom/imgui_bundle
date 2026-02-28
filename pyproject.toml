@@ -155,11 +155,8 @@ test-skip = ["*"]
 # Environment variables
 environment = { MACOSX_DEPLOYMENT_TARGET="14.0" }
 
-# Architectures
-# -------------
-# archs = ["universal2"] # building universal2 fails miserably at this time: see comment in external/immvision/find_opencv.cmake
-# So, we build separately for x86_64 and arm64
-archs = ["x86_64", "arm64"]
+# Apple Silicon only — Intel Macs discontinued in 2020, GitHub dropping Intel runners in 2027.
+archs = ["arm64"]
 
 #------------------------------------
 # linux wheels options
