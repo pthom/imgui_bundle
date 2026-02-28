@@ -202,6 +202,10 @@ before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev l
 #------------------------------------
 [tool.cibuildwheel.windows]
 skip = ["*win32"]
+# Pre-built static OpenCV: built once in before-all, reused by all Python versions
+# This replaces the previous opencv_world.dll download, making wheels ~14MB smaller.
+before-all = "powershell -ExecutionPolicy Bypass -File {project}/ci/build_opencv_for_ci_win.ps1"
+environment = { OpenCV_DIR="C:/opencv_minimalist", OpenCV_STATIC="ON" }
 
 #------------------------------------
 # android wheels

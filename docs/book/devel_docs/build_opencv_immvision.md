@@ -12,8 +12,9 @@ for all OpenCV build/download strategies.
 | Platform | Strategy | Where |
 |----------|----------|-------|
 | Linux CI wheels | Pre-built once per container via `before-all` | `ci/build_opencv_for_ci.sh` |
+| Windows CI wheels | Pre-built once per runner via `before-all` | `ci/build_opencv_for_ci_win.ps1` |
 | Linux/macOS local `pip install` | Built from source via FetchContent | `find_opencv.cmake` → `immvision_fetch_opencv_from_source()` |
-| Windows | Precompiled package downloaded | `find_opencv.cmake` → `immvision_download_opencv_official_package_win()` |
+| Windows local `pip install` | Precompiled `opencv_world.dll` downloaded (fallback) | `find_opencv.cmake` → `immvision_download_opencv_official_package_win()` |
 | Emscripten | Precompiled package downloaded | `find_opencv.cmake` → `immvision_download_emscripten_precompiled_opencv_4_9_0()` |
 | Emscripten (rebuild) | Manual build, upload as release asset | See [Rebuilding emscripten package](#rebuilding-the-emscripten-precompiled-package) below |
 
@@ -29,9 +30,13 @@ for all OpenCV build/download strategies.
   Builds OpenCV once per container so all Python versions reuse it.
   **The cmake flags are duplicated from `find_opencv.cmake`** — keep them in sync.
 
-- **`pyproject.toml`** — cibuildwheel config. The `[tool.cibuildwheel.linux]` section:
-  - `before-all` calls `ci/build_opencv_for_ci.sh`
-  - `environment` sets `OpenCV_DIR` so `find_package(OpenCV)` finds the pre-built install
+- **`ci/build_opencv_for_ci_win.ps1`** — PowerShell script, same role on Windows.
+  Builds static OpenCV (no `opencv_world.dll`), making Windows wheels ~14MB smaller.
+  **The cmake flags are duplicated from `find_opencv.cmake`** — keep them in sync.
+
+- **`pyproject.toml`** — cibuildwheel config:
+  - `[tool.cibuildwheel.linux]`: `before-all` calls the Linux script, `environment` sets `OpenCV_DIR`
+  - `[tool.cibuildwheel.windows]`: `before-all` calls the Windows script, `environment` sets `OpenCV_DIR` + `OpenCV_STATIC`
 
 - **`docs/book/devel_docs/oldies/emscripten_build.md`** — Redirects here.
 
@@ -43,13 +48,16 @@ When bumping the OpenCV version, update these locations:
 | What | File | What to change |
 |------|------|----------------|
 | Source build version (Linux/macOS) | `find_opencv.cmake` | `GIT_TAG` in `FetchContent_Declare(OpenCV_Fetch ...)` |
-| CI pre-build version | `ci/build_opencv_for_ci.sh` | `OPENCV_VERSION` variable |
-| Windows precompiled URL | `find_opencv.cmake` | URL + MD5 in `immvision_download_opencv_official_package_win()` |
+| CI pre-build version (Linux) | `ci/build_opencv_for_ci.sh` | `OPENCV_VERSION` variable |
+| CI pre-build version (Windows) | `ci/build_opencv_for_ci_win.ps1` | `$OPENCV_VERSION` variable |
+| Windows precompiled URL (fallback) | `find_opencv.cmake` | URL + MD5 in `immvision_download_opencv_official_package_win()` |
 | Emscripten precompiled URL | `find_opencv.cmake` | URL + MD5 in `immvision_download_emscripten_precompiled_opencv_4_9_0()` |
 
-Note: the Windows and emscripten precompiled packages have **their own version lifecycle**.
-They don't need to match the source build version — they are updated separately when new
-precompiled packages are built and uploaded as GitHub release assets.
+Note: the Windows fallback package (`opencv_world.dll`) and emscripten precompiled packages
+have **their own version lifecycle**. They don't need to match the source build version —
+they are updated separately when new precompiled packages are built and uploaded as GitHub
+release assets. The Windows fallback is only used for local `pip install` on Windows
+(CI wheels use the static pre-build instead).
 
 
 ## Linux CI: how the pre-build works
@@ -66,6 +74,28 @@ The fix:
    skips `immvision_fetch_opencv_from_source()` entirely
 
 This applies to both manylinux and musllinux containers (each has its own `before-all`).
+
+
+## Windows CI: static build instead of opencv_world.dll
+
+Previously, Windows wheels downloaded a precompiled `opencv_world.dll` (~50MB) and
+shipped it inside the wheel, resulting in ~25MB wheels vs ~11MB on macOS/Linux.
+
+The fix uses the same `before-all` strategy as Linux:
+1. `before-all` in `pyproject.toml` runs `ci/build_opencv_for_ci_win.ps1`
+2. The script downloads OpenCV source, builds a minimalist static version with MSVC,
+   and installs to `C:\opencv_minimalist`
+3. `environment` sets `OpenCV_DIR` and `OpenCV_STATIC=ON`
+4. Each Python wheel build's `find_package(OpenCV)` finds the pre-built static install
+5. OpenCV is linked statically into `_imgui_bundle.pyd` — no DLL needed
+
+The `opencv_world.dll` download (`immvision_download_opencv_official_package_win()`) is
+still available as a fallback for local `pip install` on Windows where no pre-built
+static install exists.
+
+The DLL handling code in `find_opencv.cmake` (glob for `opencv_world*.dll`, install to
+wheel, `IMMVISION_OPENCV_WORLD_DLL` cache variable) degrades gracefully: when OpenCV is
+static, no DLLs are found and the entire chain is a no-op.
 
 
 ## Rebuilding the emscripten precompiled package
