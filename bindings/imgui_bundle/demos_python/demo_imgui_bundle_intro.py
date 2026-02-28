@@ -1244,6 +1244,8 @@ out vec4 FragColor;
             tex_ref = imgui.ImTextureRef(_shader_state.texture)
             imgui.image(tex_ref, ImVec2(width, height),
                         ImVec2(0, 1), ImVec2(1, 0))  # flip Y for FBO
+        else:
+            imgui.dummy(ImVec2(width, height))
 
     def _shader_gui_side():
         imgui.text('"Seascape" by Alexander Alekseev aka TDM')
