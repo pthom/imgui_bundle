@@ -169,6 +169,8 @@ skip = ["*i686"]
 test-skip = ["*-musllinux_*"] #  issue with OpenGL on musllinux
 # Environment variables
 environment-pass = ["IMMVISION_OPENCV_GIT_REPO"]  # pass alternative git repo to docker build containers
+# Pre-built OpenCV: built once in before-all, reused by all Python versions
+environment = { OpenCV_DIR="/opt/opencv_minimalist/lib/cmake/opencv4" }
 
 
 # Install glfw dev packages on manylinux:
@@ -190,10 +192,10 @@ environment-pass = ["IMMVISION_OPENCV_GIT_REPO"]  # pass alternative git repo to
 # sudo apt-get install -y xorg-dev libgl1-mesa-dev libglfw3-dev libglew-dev xvfb
 
 # sudo apt-get install -y libgl1-mesa-dev
-before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel mesa-libGL-devel"
+before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel mesa-libGL-devel && bash {project}/ci/build_opencv_for_ci.sh"
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux*"
-before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev mesa-dev mesa-gl"
+before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev mesa-dev mesa-gl cmake curl && bash {project}/ci/build_opencv_for_ci.sh"
 
 #------------------------------------
 # windows wheels options
