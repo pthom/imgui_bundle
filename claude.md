@@ -22,6 +22,11 @@ Before implementing:
 **No whack-a-mole loops.** When hitting a second unexpected failure in a row on a hard problem (especially cross-platform builds, CI, toolchain issues): STOP fixing. Present the full picture of what's going wrong and why, and ask to examine the difficulties together before writing more code. Investigation time up front saves much more than it costs. Similarly, before bumping a dependency version, check changelogs/release notes for new features that could interact with existing build flags.
 
 
+## 1b. Interaction Style
+
+**Wait before acting.** Do NOT start implementing or proposing solutions before the user has finished evaluating alternatives or describing the problem. Wait for explicit go-ahead. When asked to analyze or review, produce analysis ONLY — not code changes.
+
+
 ## 2. Simplicity First
 
 **Minimum code that solves the problem. Nothing speculative.**
@@ -49,6 +54,10 @@ When your changes create orphans:
 - Don't remove pre-existing dead code unless asked.
 
 The test: Every changed line should trace directly to the user's request.
+
+## 3b. C++/Python Porting
+
+When porting between C++ and Python: use raw strings for multiline content, use Python naming conventions (snake_case). Verify API names exist before using them (check the `.pyi` stubs).
 
 ## 4. Goal-Driven Execution
 
@@ -742,7 +751,7 @@ etc. LLM's can create build folders for specific tasks, and use names that refle
 
 ## Workflow: Specs and Plans
 
-Plans, specs, and todos for features live in `.claude/plans/`:
+Plans, specs, and todos for features live in `_plans/`:
 - `featurename__spec.md` — written by the user before work starts
 - `featurename__plan.md` — written by Claude after reading the spec, before coding
 - `featurename__todo.md` — tracks progress during implementation
