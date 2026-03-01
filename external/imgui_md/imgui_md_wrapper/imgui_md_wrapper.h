@@ -134,4 +134,6 @@ namespace ImGuiMd
             italic(italic_), bold(bold_), headerLevel(headerLevel_) {}
     };
     SizedFont GetFont(const MarkdownFontSpec& fontSpec);
+
+    ImVec4 LinkColor();
 }

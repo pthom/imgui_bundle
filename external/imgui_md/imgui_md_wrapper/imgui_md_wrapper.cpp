@@ -22,9 +22,14 @@
 #include <iostream>
 #include <cassert>
 
+ImVec4 LinkColor(); // See imgui_md.cpp
 
 namespace ImGuiMd
 {
+    ImVec4 LinkColor()
+    {
+        return ::LinkColor();
+    }
 
     namespace
     {
