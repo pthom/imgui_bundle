@@ -1506,18 +1506,19 @@ void ShowBadges()
     ImGui::SameLine();
     if (HelloImGui::ImageButtonFromAsset("images/badge_view_docs.png", btnSize))
         ImmApp::BrowseToUrl("https://pthom.github.io/imgui_bundle");
-    ImGui::SameLine();
-    if (HelloImGui::ImageButtonFromAsset("images/badge_interactive_explorer.png", btnSize))
-        ImmApp::BrowseToUrl("https://traineq.org/imgui_bundle_explorer");
-
     {
         ImGui::PushFont(nullptr, ImGui::GetFontSize() * 0.9f);
-        const char* versionText = "v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER;
+        const char* versionText = "Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER;
         ImVec2 textSize = ImGui::CalcTextSize(versionText);
         ImVec2 screenPos = ImGui::GetCursorScreenPos();
         ImVec2 avail = ImGui::GetContentRegionAvail();
-        ImGui::SetCursorScreenPos(ImVec2(screenPos.x + avail.x - textSize.x, screenPos.y + avail.y - textSize.y));
+        ImGui::SetCursorScreenPos(ImVec2(screenPos.x + avail.x - textSize.x, screenPos.y + avail.y - textSize.y * 2.2f));
         ImGui::TextDisabled("%s", versionText);
+
+        const char* text2 = "Dear ImGui Explorer";
+        ImVec2 text2Size = ImGui::CalcTextSize(text2);
+        ImGui::SetCursorScreenPos(ImVec2(screenPos.x + avail.x - text2Size.x, screenPos.y + avail.y - textSize.y));
+        ImGuiMd::RenderTextAsLink(text2, "https://pthom.github.io/imgui_explorer");
         ImGui::PopFont();
     }
 }

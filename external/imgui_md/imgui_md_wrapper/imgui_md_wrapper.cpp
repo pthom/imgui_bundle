@@ -31,6 +31,19 @@ namespace ImGuiMd
         return ::LinkColor();
     }
 
+    void RenderTextAsLink(const char* text, const char* url)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Text, LinkColor());
+        ImGui::TextUnformatted(text);
+        ImGui::PopStyleColor();
+        ImGui::SetItemTooltip("%s", url);
+        if (ImGui::IsItemHovered())
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (ImGui::IsItemClicked())
+            ImmApp::BrowseToUrl(url);
+    }
+
+
     namespace
     {
         // Factor applied to the font size before displaying

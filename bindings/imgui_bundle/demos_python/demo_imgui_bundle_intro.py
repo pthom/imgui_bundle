@@ -1347,18 +1347,19 @@ def _show_badges():
     imgui.same_line()
     if hello_imgui.image_button_from_asset("images/badge_view_docs.png", btn_size):
         webbrowser.open("https://pthom.github.io/imgui_bundle")
-    imgui.same_line()
-    if hello_imgui.image_button_from_asset("images/badge_interactive_explorer.png", btn_size):
-        webbrowser.open("https://traineq.org/imgui_bundle_explorer")
 
     from imgui_bundle import __version__, __build_number__
-    version_text = f"v{__version__} build {__build_number__}"
+    version_text = f"Dear ImGui Bundle Explorer - v{__version__} build {__build_number__}"
     imgui.push_font(None, imgui.get_font_size() * 0.9)
     text_size = imgui.calc_text_size(version_text)
     screen_pos = imgui.get_cursor_screen_pos()
     avail = imgui.get_content_region_avail()
-    imgui.set_cursor_screen_pos(ImVec2(screen_pos.x + avail.x - text_size.x, screen_pos.y + avail.y - text_size.y))
+    imgui.set_cursor_screen_pos(ImVec2(screen_pos.x + avail.x - text_size.x, screen_pos.y + avail.y - text_size.y * 2.2))
     imgui.text_disabled(version_text)
+    text2 = "Dear ImGui Explorer"
+    text2_size = imgui.calc_text_size(text2)
+    imgui.set_cursor_screen_pos(ImVec2(screen_pos.x + avail.x - text2_size.x, screen_pos.y + avail.y - text_size.y))
+    imgui_md.render_text_as_link("Dear ImGui Explorer", "https://pthom.github.io/imgui_explorer")
     imgui.pop_font()
 
 
