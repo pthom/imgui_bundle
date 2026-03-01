@@ -86,6 +86,10 @@ int main(int argc, char** argv)
     addons.withImplot = true;
     addons.withImplot3d = true;
     addons.withImAnim = true;
+
+    // start with a clean layout each time (for demo purposes)
+    runnerParams.iniClearPreviousSettings = true;
+
     ImmApp::Run(runnerParams, addons);
     return 0;
 }

@@ -9,6 +9,7 @@
 #include "demo_code_viewer.h"
 #include "imgui_internal.h"
 #include "library_config.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 
 // Forward declarations for ImAnim demo windows
 void ImAnimDemoBasicsWindow(bool create_window);
@@ -283,23 +284,37 @@ namespace
         ImGui::SliderFloat("Font scale  | ", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
 
         // Reference to ImGui Bundle
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.6f, 1.0f, 1.0f));
-        ImGui::Text("Dear ImGui Explorer");
-        if (ImGui::IsItemHovered())
-            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-        if (ImGui::IsItemClicked())
-            ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/tree/main/external/imgui_explorer/imgui_explorer");
+        ImGui::PushStyleColor(ImGuiCol_Text, ImGuiMd::LinkColor());
+        ImGui::TextUnformatted("Dear ImGui Explorer");
         ImGui::PopStyleColor();
-        ImGui::SetItemTooltip(
-            "Dear ImGui Explorer is developed as a part of Dear imGui Bundle\n"
-                "\nhttps://pthom.github.io/imgui_bundle/"
-            );
-
+        if (ImGui::IsItemClicked())
+            ImGui::OpenPopup("BundleInfoPopup");
         ImVec2 pos = ImGui::GetCursorScreenPos();
         pos.x -= ImGui::GetStyle().ItemSpacing.x;
         ImGui::SetCursorScreenPos(pos);
-
         ImGui::Text(" - An Interactive Manual for Dear ImGui, ImPlot & ImPlot3D");
+
+        if (ImGui::BeginPopupModal("BundleInfoPopup", NULL, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar))
+        {
+            ImGui::BeginChild("fff", HelloImGui::EmToVec2(40.f, 3.f), false, ImGuiWindowFlags_NoScrollbar);
+            // ImGui::Dummy(ImVec2(HelloImGui::EmSize(35.f), 0));
+             ImGuiMd::RenderUnindented(R"(
+                Dear ImGui Explorer is developed as a part of [Dear imGui Bundle](https://pthom.github.io/imgui_bundle/).
+                See [Source code](https://github.com/pthom/imgui_bundle/tree/main/external/imgui_explorer/imgui_explorer)
+
+                Also see: [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer)
+             )");
+
+            ImGui::EndChild();
+            ImGui::SetNextItemShortcut(ImGuiKey_Escape);
+            if (ImGui::Button("Close"))
+                ImGui::CloseCurrentPopup();
+            ImGui::EndPopup();
+        }
+
+        // ImGui::Spring();
+        // ImGuiMd::RenderTextAsLink("Dear ImGui Bundle Explorer", "https://traineq_org/imgui_bundle_explorer");
+
 
         // Fps Idling, aligned to the right
         ImGui::Spring();
