@@ -45,7 +45,7 @@ def is_small_screen() -> bool:
 # Test engine automation (unchanged from old file)
 # ============================================================================
 
-def automation_show_me_immediate_apps():
+def _automation_show_me_immediate_apps():
     engine = hello_imgui.get_imgui_test_engine()
     automation = imgui.test_engine.register_test(
         engine, "Automation", "ShowMeImmediateApps"
@@ -65,6 +65,75 @@ def automation_show_me_immediate_apps():
 
     automation.test_func = test_func
     return automation
+
+
+def _automation_show_me_custom_background():
+    engine = hello_imgui.get_imgui_test_engine()
+    automation = imgui.test_engine.register_test(
+        engine, "Automation", "ShowMeCustomBackgroundExample"
+    )
+
+    def test_func(ctx):
+        ctx.mouse_move("//**/Demo Apps")
+        ctx.mouse_click(0)
+        ctx.item_click("//**/demo_custom_background/View code")
+        ctx.mouse_move("//**/Run##CurrentDemo")
+
+    automation.test_func = test_func
+    return automation
+
+
+def _automation_show_me_docking():
+    engine = hello_imgui.get_imgui_test_engine()
+    automation = imgui.test_engine.register_test(
+        engine, "Automation", "ShowMeDockingExample"
+    )
+
+    def test_func(ctx):
+        ctx.mouse_move("//**/Demo Apps")
+        ctx.mouse_click(0)
+        ctx.item_click("//**/demo_docking/View code")
+        ctx.mouse_move("//**/Run##CurrentDemo")
+
+    automation.test_func = test_func
+    return automation
+
+
+# Centralized automation registration and "More info" link helper
+class _IntroAutomations:
+    show_immediate_apps = None
+    show_custom_background = None
+    show_docking = None
+    _inited = False
+
+    @staticmethod
+    def init():
+        if _IntroAutomations._inited:
+            return
+        if not hello_imgui.get_runner_params().use_imgui_test_engine:
+            return
+        _IntroAutomations._inited = True
+        _IntroAutomations.show_immediate_apps = _automation_show_me_immediate_apps()
+        _IntroAutomations.show_custom_background = _automation_show_me_custom_background()
+        _IntroAutomations.show_docking = _automation_show_me_docking()
+        engine_io = imgui.test_engine.get_io(hello_imgui.get_imgui_test_engine())
+        engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.cinematic
+
+    @staticmethod
+    def show_link(label, automation):
+        if automation is None:
+            return
+        imgui.spacing()
+        imgui.push_style_color(imgui.Col_.text, imgui_md.link_color())
+        imgui.text(label)
+        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
+            imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
+            if imgui.is_mouse_clicked(imgui.MouseButton_.left):
+                imgui.set_window_focus(None)  # clear focus from overlay
+                imgui.test_engine.queue_test(
+                    hello_imgui.get_imgui_test_engine(), automation
+                )
+        imgui.pop_style_color()
 
 
 # ============================================================================
@@ -466,6 +535,10 @@ def _table_gui_side():
                     | imgui.ColorEditFlags_.alpha_bar
                     | imgui.ColorEditFlags_.picker_hue_wheel)
     _, _table_hl_color = imgui.color_picker4("##hl_wheel", _table_hl_color, picker_flags)
+
+    imgui.new_line()
+    imgui.new_line()
+    _IntroAutomations.show_link("More info: complex app layout", _IntroAutomations.show_docking)
 
 
 def _table_slide_gui(content_size: ImVec2):
@@ -1261,6 +1334,8 @@ out vec4 FragColor;
             imgui.set_next_item_width(hello_imgui.em_size(7))
             _, _shader_state.sea_base = imgui.color_edit3("Sea base color", _shader_state.sea_base)
 
+            _IntroAutomations.show_link("More info & code", _IntroAutomations.show_custom_background)
+
     def _shader_slide_gui(content_size: ImVec2):
         em = hello_imgui.em_size()
 
@@ -1273,7 +1348,7 @@ out vec4 FragColor;
         overlay_y = imgui.get_item_rect_min().y + pad
 
         imgui.set_next_window_pos(ImVec2(overlay_x, overlay_y), imgui.Cond_.always.value)
-        imgui.set_next_window_bg_alpha(0.35)
+        imgui.set_next_window_bg_alpha(0.45)
         imgui.push_style_var(imgui.StyleVar_.window_rounding, em * 0.5)
         if imgui.begin("##seascape_overlay", None,
                        imgui.WindowFlags_.always_auto_resize |
@@ -1363,13 +1438,8 @@ def _show_badges():
     imgui.pop_font()
 
 
-_automation_inited = False
-_automation_show_me = None
-
-
 def _intro_top_section():
     static = _intro_top_section
-    global _automation_inited, _automation_show_me
 
     small = is_small_screen()
 
@@ -1419,12 +1489,7 @@ def _intro_top_section():
         render_start_quickly()
 
 
-    if hello_imgui.get_runner_params().use_imgui_test_engine:
-        if not _automation_inited:
-            _automation_inited = True
-            _automation_show_me = automation_show_me_immediate_apps()
-        engine_io = imgui.test_engine.get_io(hello_imgui.get_imgui_test_engine())
-        engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.cinematic
+    _IntroAutomations.init()
 
     if not small:
         imgui.new_line()
@@ -1437,7 +1502,7 @@ Each tab provides demos for the included libraries, along with their code. The "
             if imgui.small_button("?"):
                 imgui.test_engine.queue_test(
                     hello_imgui.get_imgui_test_engine(),
-                    _automation_show_me,
+                    _IntroAutomations.show_immediate_apps,
                 )
 
 

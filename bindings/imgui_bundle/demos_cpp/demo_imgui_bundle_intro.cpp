@@ -67,6 +67,80 @@ ImGuiTest* AutomationShowMeImmediateApps()
     automation->TestFunc = testFunc;
     return automation;
 }
+
+ImGuiTest* AutomationShowMeCustomBackgroundExample()
+{
+    ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
+
+    ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeCustomBackgroundExample");
+    auto testFunc = [](ImGuiTestContext *ctx) {
+        const char* tabImmAppsName = "//**/Demo Apps";
+
+        ctx->MouseMove(tabImmAppsName);
+        ctx->MouseClick(0);
+        ctx->ItemClick("//**/demo_custom_background/View code");
+        ctx->MouseMove("//**/Run##CurrentDemo");
+    };
+    automation->TestFunc = testFunc;
+    return automation;
+}
+
+ImGuiTest* AutomationShowMeDockingExample()
+{
+    ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
+
+    ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeDockingExample");
+    auto testFunc = [](ImGuiTestContext *ctx) {
+        const char* tabImmAppsName = "//**/Demo Apps";
+
+        ctx->MouseMove(tabImmAppsName);
+        ctx->MouseClick(0);
+        ctx->ItemClick("//**/demo_docking/View code");
+        ctx->MouseMove("//**/Run##CurrentDemo");
+    };
+    automation->TestFunc = testFunc;
+    return automation;
+}
+
+// Centralized automation registration and "More info" link helper
+namespace IntroAutomations
+{
+    static ImGuiTest* showImmediateApps = nullptr;
+    static ImGuiTest* showCustomBackground = nullptr;
+    static ImGuiTest* showDocking = nullptr;
+    static bool inited = false;
+
+    void Init()
+    {
+        if (inited) return;
+        if (!HelloImGui::GetRunnerParams()->useImGuiTestEngine) return;
+        inited = true;
+        showImmediateApps = AutomationShowMeImmediateApps();
+        showCustomBackground = AutomationShowMeCustomBackgroundExample();
+        showDocking = AutomationShowMeDockingExample();
+        ImGuiTestEngineIO& engineIo = ImGuiTestEngine_GetIO(HelloImGui::GetImGuiTestEngine());
+        engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic;
+    }
+
+    void ShowLink(const char* label, ImGuiTest* automation)
+    {
+        if (!automation) return;
+        ImGui::Spacing();
+        ImGui::PushStyleColor(ImGuiCol_Text, ImGuiMd::LinkColor());
+        ImGui::Text("%s", label);
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+        {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+            {
+                ImGui::SetWindowFocus(NULL);
+                ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automation);
+            }
+        }
+        ImGui::PopStyleColor();
+    }
+}
+
 #endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 
 
@@ -511,6 +585,12 @@ namespace IntroTable
             | ImGuiColorEditFlags_AlphaBar
             | ImGuiColorEditFlags_PickerHueWheel;
         ImGui::ColorPicker4("##hl_wheel", &sHlColor.x, pickerFlags);
+
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
+        ImGui::NewLine();
+        ImGui::NewLine();
+            IntroAutomations::ShowLink("More info: complex app layout", IntroAutomations::showDocking);
+#endif
     }
 
     void SlideGui(ImVec2 contentSize)
@@ -1414,6 +1494,11 @@ void main(){
             ImGui::SliderFloat("Choppiness", &sState->seaChoppy, 0.5f, 8.0f);
             ImGui::SetNextItemWidth(sliderW);
             ImGui::ColorEdit3("Sea base color", sState->seaBase);
+
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
+            IntroAutomations::ShowLink("More info & code", IntroAutomations::showCustomBackground);
+#endif
+
         }
     }
 
@@ -1430,7 +1515,7 @@ void main(){
         float overlayY = ImGui::GetItemRectMin().y + pad;
 
         ImGui::SetNextWindowPos(ImVec2(overlayX, overlayY), ImGuiCond_Always);
-        ImGui::SetNextWindowBgAlpha(0.35f);
+        ImGui::SetNextWindowBgAlpha(0.45f);
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, em * 0.5f);
         if (ImGui::Begin("##seascape_overlay", nullptr,
                          ImGuiWindowFlags_AlwaysAutoResize |
@@ -1579,18 +1664,7 @@ void IntroTopSection()
     }
 
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    static ImGuiTest *automationShowMeImmediateApps = nullptr;
-    static bool wasAutomationInited = false;
-    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
-    {
-        if (!wasAutomationInited)
-        {
-            wasAutomationInited = true;
-            automationShowMeImmediateApps = AutomationShowMeImmediateApps();
-        }
-        ImGuiTestEngineIO& engineIo = ImGuiTestEngine_GetIO(HelloImGui::GetImGuiTestEngine());
-        engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic;
-    }
+    IntroAutomations::Init();
 #endif
 
     if (!small)
@@ -1605,7 +1679,7 @@ Each tab provides demos for the included libraries, along with their code. The "
         {
             ImGui::SameLine();
             if (ImGui::SmallButton("?"))
-                ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
+                ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), IntroAutomations::showImmediateApps);
         }
 #endif
     }
