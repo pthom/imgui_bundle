@@ -599,7 +599,15 @@ void py_init_module_imgui_main(nb::module_& m)
         "(not recommended) set current window collapsed state. prefer using SetNextWindowCollapsed().");
 
     m.def("set_window_focus",
-        nb::overload_cast<>(ImGui::SetWindowFocus), "(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus().");
+        []()
+        {
+            auto SetWindowFocus_adapt_force_lambda = []()
+            {
+                ImGui::SetWindowFocus();
+            };
+
+            SetWindowFocus_adapt_force_lambda();
+        },     "(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus().");
 
     m.def("set_window_pos",
         nb::overload_cast<const char *, const ImVec2 &, ImGuiCond>(ImGui::SetWindowPos),
@@ -615,11 +623,23 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::overload_cast<const char *, bool, ImGuiCond>(ImGui::SetWindowCollapsed),
         nb::arg("name"), nb::arg("collapsed"), nb::arg("cond") = 0,
         "set named window collapsed state");
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("set_window_focus",
-        nb::overload_cast<const char *>(ImGui::SetWindowFocus),
-        nb::arg("name"),
-        "set named window to be focused / top-most. use None to remove focus.");
+        [](std::optional<std::string> name)
+        {
+            auto SetWindowFocus_adapt_force_lambda = [](std::optional<std::string> name)
+            {
+                ImGui::SetWindowFocus(name);
+            };
+
+            SetWindowFocus_adapt_force_lambda(name);
+        },
+        nb::arg("name").none(),
+        "// set named window to be focused / top-most. use None to remove focus.");
+    // #endif
+    //
 
     m.def("get_scroll_x",
         ImGui::GetScrollX, "get scrolling amount [0 .. GetScrollMaxX()]");

@@ -377,7 +377,7 @@ NpBuffer = np.ndarray  # used to transfer texture data as a 1D numpy array of by
 #   - Software using Dear ImGui  https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui
 # - Issues & support ........... https://github.com/ocornut/imgui/issues
 # - Test Engine & Automation ... https://github.com/ocornut/imgui_test_engine (test suite, test engine to automate your apps)
-# - Web version of the Demo .... https://pthom.github.io/imgui_explorer/ (w/ source code browser)
+# - Web version of the Demo .... https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html (w/ source code browser)
 
 # For FIRST-TIME users having issues compiling/linking/running:
 # please post in https://github.com/ocornut/imgui/discussions if you cannot find a solution in resources above.
@@ -987,11 +987,17 @@ def set_window_collapsed(name: str, collapsed: bool, cond: Cond = 0) -> None:
     """set named window collapsed state"""
     pass
 
-# IMGUI_API void          SetWindowFocus(const char* name);                                               /* original C++ signature */
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# IMGUI_API inline void          SetWindowFocus(std::optional<std::string> name)                                           // set named window to be focused / top-most. use NULL to remove focus.    /* original C++ signature */
+#     { if (name.has_value()) SetWindowFocus(name.value()); else SetWindowFocus(NULL); }
 @overload
-def set_window_focus(name: str) -> None:
-    """set named window to be focused / top-most. use None to remove focus."""
+def set_window_focus(name: Optional[str]) -> None:
+    """// set named window to be focused / top-most. use None to remove focus."""
     pass
+
+# #endif
+#
 
 # Windows Scrolling
 # - Any change of Scroll will be applied at the beginning of next frame in the first call to Begin().
