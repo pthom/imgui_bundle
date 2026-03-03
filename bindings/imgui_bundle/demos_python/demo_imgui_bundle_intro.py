@@ -1093,6 +1093,10 @@ def _web_deploy_slide_gui(content_size: ImVec2):
         h = content_size.y
         w = h * img_aspect
     hello_imgui.image_from_asset("images/bundle_playground.jpg", ImVec2(w, h))
+    if imgui.is_item_hovered():
+        imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
+    if imgui.is_item_clicked():
+        webbrowser.open("https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/")
 
 
 # ============================================================================

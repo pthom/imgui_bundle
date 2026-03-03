@@ -1222,6 +1222,10 @@ namespace IntroWebDeploy
         float h = w / imgAspect;
         if (h > contentSize.y) { h = contentSize.y; w = h * imgAspect; }
         HelloImGui::ImageFromAsset("images/bundle_playground.jpg", ImVec2(w, h));
+        if (ImGui::IsItemHovered())
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (ImGui::IsItemClicked())
+            ImmApp::BrowseToUrl("https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/");
     }
 } // namespace IntroWebDeploy
 
