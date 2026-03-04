@@ -153,3 +153,14 @@ just pyodide_deep_clean
 - **Emscripten SDK**: https://emscripten.org/docs/getting_started/downloads.html
 - **scikit-build-core issue #920**: https://github.com/scikit-build/scikit-build-core/issues/920
 
+
+# Release a new version of pyodide
+
+- After creating a new release for imgui bundle
+- Build & test the new version locally with pyodide (see above)
+- Upload the wheel to the release assets on github
+- Clone https://github.com/pyodide/pyodide-recipes
+- Create a branch, e.g. `imgui_bundle_v1.92.600`
+- Edit packages/imgui-bundle/meta.yaml, add the new version, and update the URL to point to the new wheel in the github release assets. Update the sha256 hash of the wheel.
+- Make a PR to the pyodide-recipes repository, and ask for review and merge.
+

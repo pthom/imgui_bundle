@@ -144,3 +144,7 @@ pyodide_deep_clean: pyodide_clean
     rm -rf ci_scripts/pyodide_local_build/venv_pyo
     rm -rf ci_scripts/pyodide_local_build/emsdk
 
+# Populate the pyodide_recipes folder by cloning the pyodide-recipes repository and adding a remote to the fork (for pushing changes to the recipes)
+pyodide_setup_recipe_clone:
+    git clone https://github.com/pyodide/pyodide-recipes.git ci_scripts/pyodide_local_build/pyodide_recipes
+    cd ci_scripts/pyodide_local_build/pyodide_recipes && git remote add fork https://github.com/pthom/pyodide-recipes.git
