@@ -61,6 +61,7 @@ jobs:
     - uses: actions/checkout@v6
       with:
         submodules: recursive
+        fetch-depth: 0  # Full history needed for build number (git rev-list --count HEAD)
 
     - uses: pypa/cibuildwheel@v3.3.1
 
