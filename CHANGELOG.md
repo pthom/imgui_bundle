@@ -38,9 +38,9 @@ Added [ImAnim](https://github.com/pthom/im_anim), a tweening and animation libra
 - Update imgui_knobs: added `SetKnobColors`, `UnsetKnobColors`, default color adapts to light/dark theme
 - Update imgui_md: render tables using ImGui tables (resizable columns), delay before showing link hrefs
 
-## Async and notebook support
-- Added `hello_imgui.run_async()` / `immapp.run_async()` for async/await support
-- Added `immapp.nb` module for non-blocking Jupyter notebook execution (`nb.start()`, `nb.stop()`, `nb.is_running()`)
+## Python: Async run and notebook support
+- Added `hello_imgui.run_async()` / `immapp.run_async()` for async/await support (with maximal performance). See [doc for async](https://pthom.github.io/imgui_bundle/python/python-async/)
+- Added `immapp.nb` module for non-blocking Jupyter notebook execution (`nb.start()`, `nb.stop()`, `nb.is_running()`). See [doc for notebook](https://pthom.github.io/imgui_bundle/python/notebook-runners/)
 - Added `hello_imgui.nb` convenience module
 
 ## Pyodide (web) support
