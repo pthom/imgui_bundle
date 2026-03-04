@@ -3,9 +3,14 @@
 > From expressive code to powerful GUIs in no time: a fast, feature-rich, cross-platform toolkit for C++ & Python.
 
 
-_Click the animation below to launch "Dear ImGui Bundle Explorer", an interactive manual which demoes of all the features (and their code)!_
+_Click the animation below to launch "Dear ImGui Bundle Explorer"_ 
 
-[![](../images/bundle_explorer_vid.*)](https://traineq.org/imgui_bundle_explorer/)
+````{card}
+:link: https://traineq.org/imgui_bundle_explorer/
+```{figure} ../images/bundle_explorer_vid.*
+Dear ImGui Bundle Explorer is an interactive manual with demos of all the features (with example code). It is intended to be used together with this documentation.
+```
+````
 
 ---
 
