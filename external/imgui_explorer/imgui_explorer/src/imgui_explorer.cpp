@@ -287,6 +287,8 @@ namespace
         ImGui::PushStyleColor(ImGuiCol_Text, ImGuiMd::LinkColor());
         ImGui::TextUnformatted("Dear ImGui Explorer");
         ImGui::PopStyleColor();
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
         if (ImGui::IsItemClicked())
             ImGui::OpenPopup("BundleInfoPopup");
         ImVec2 pos = ImGui::GetCursorScreenPos();
