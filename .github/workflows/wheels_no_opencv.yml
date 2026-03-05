@@ -42,7 +42,7 @@ jobs:
         submodules: recursive
 
     - name: Build wheels (Python 3.14 only, no ImmVision)
-      uses: pypa/cibuildwheel@v3.3.1
+      uses: pypa/cibuildwheel@v3.4.0
       env:
         # Build only Python 3.14 to save CI time and space
         CIBW_BUILD: "cp314-*"
