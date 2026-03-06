@@ -63,6 +63,42 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 .value("first_visible_line", TextEditor::SetViewAtLineMode::FirstVisibleLine, "")
                 .value("centered", TextEditor::SetViewAtLineMode::Centered, "")
                 .value("last_visible_line", TextEditor::SetViewAtLineMode::LastVisibleLine, "");
+        auto pyClassTextEditor_ClassTextPosition =
+            nb::class_<TextEditor::TextPosition>
+                (pyClassTextEditor, "TextPosition", "")
+            .def("__init__", [](TextEditor::TextPosition * self, int line = -1, int column = -1)
+            {
+                new (self) TextEditor::TextPosition();  // placement new
+                auto r_ctor_ = self;
+                r_ctor_->line = line;
+                r_ctor_->column = column;
+            },
+            nb::arg("line") = -1, nb::arg("column") = -1
+            )
+            .def_rw("line", &TextEditor::TextPosition::line, "")
+            .def_rw("column", &TextEditor::TextPosition::column, "")
+            ;
+        auto pyClassTextEditor_ClassSelectionPosition =
+            nb::class_<TextEditor::SelectionPosition>
+                (pyClassTextEditor, "SelectionPosition", "")
+            .def("__init__", [](TextEditor::SelectionPosition * self, const std::optional<const TextEditor::TextPosition> & start = std::nullopt, const std::optional<const TextEditor::TextPosition> & end = std::nullopt)
+            {
+                new (self) TextEditor::SelectionPosition();  // placement new
+                auto r_ctor_ = self;
+                if (start.has_value())
+                    r_ctor_->start = start.value();
+                else
+                    r_ctor_->start = TextEditor::TextPosition();
+                if (end.has_value())
+                    r_ctor_->end = end.value();
+                else
+                    r_ctor_->end = TextEditor::TextPosition();
+            },
+            nb::arg("start").none() = nb::none(), nb::arg("end").none() = nb::none()
+            )
+            .def_rw("start", &TextEditor::SelectionPosition::start, "")
+            .def_rw("end", &TextEditor::SelectionPosition::end, "")
+            ;
     } // end of inner classes & enums of TextEditor
 
     pyClassTextEditor
@@ -132,7 +168,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("set_cursor_position",
             nb::overload_cast<int, int>(&TextEditor::SetCursorPosition), nb::arg("a_line"), nb::arg("a_char_index"))
         .def("get_cursor_position",
-            &TextEditor::GetCursorPosition, nb::arg("out_line"), nb::arg("out_column"))
+            nb::overload_cast<int &, int &>(&TextEditor::GetCursorPosition, nb::const_), nb::arg("out_line"), nb::arg("out_column"))
         .def("get_first_visible_line",
             &TextEditor::GetFirstVisibleLine)
         .def("get_last_visible_line",
@@ -188,16 +224,16 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::ImGuiDebugPanel, nb::arg("panel_name") = "Debug")
         .def("unit_tests",
             &TextEditor::UnitTests)
-        .def("set_selection",
-            nb::overload_cast<int, int, int, int, int>(&TextEditor::SetSelection), nb::arg("a_start_line"), nb::arg("a_start_char"), nb::arg("a_end_line"), nb::arg("a_end_char"), nb::arg("a_cursor") = -1)
-        .def("get_selection_start",
-            &TextEditor::GetSelectionStart, nb::arg("a_cursor") = -1)
-        .def("get_selection_end",
-            &TextEditor::GetSelectionEnd, nb::arg("a_cursor") = -1)
-        .def("get_selected_text",
-            &TextEditor::GetSelectedText, nb::arg("a_cursor") = -1)
         .def("get_word_at_screen_pos",
             &TextEditor::GetWordAtScreenPos, nb::arg("a_screen_pos"))
+        .def("get_selected_text",
+            &TextEditor::GetSelectedText, nb::arg("a_cursor") = -1)
+        .def("set_selection_position",
+            &TextEditor::SetSelectionPosition, nb::arg("pos"))
+        .def("get_selection_position",
+            &TextEditor::GetSelectionPosition, nb::arg("a_cursor") = -1)
+        .def("get_cursor_position",
+            [](TextEditor & self) { return self.GetCursorPosition(); })
         ;
     ////////////////////    </generated_from:TextEditor.h>    ////////////////////
 

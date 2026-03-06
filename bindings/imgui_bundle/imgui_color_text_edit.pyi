@@ -184,6 +184,7 @@ class TextEditor:
     @overload
     def set_cursor_position(self, a_line: int, a_char_index: int) -> None:
         pass
+    @overload
     def get_cursor_position(self, out_line: int, out_column: int) -> None:
         pass
     def get_first_visible_line(self) -> int:
@@ -239,24 +240,45 @@ class TextEditor:
     def unit_tests(self) -> None:
         pass
 
-    @overload
-    def set_selection(
-        self,
-        a_start_line: int,
-        a_start_char: int,
-        a_end_line: int,
-        a_end_char: int,
-        a_cursor: int = -1
-        ) -> None:
-        pass
-    def get_selection_start(self, a_cursor: int = -1) -> TextEditor.Coordinates:
-        pass
-    def get_selection_end(self, a_cursor: int = -1) -> TextEditor.Coordinates:
+    #
+    # Additions to @santclose fork below
+    #
+    def get_word_at_screen_pos(self, a_screen_pos: ImVec2Like) -> str:
         pass
     def get_selected_text(self, a_cursor: int = -1) -> str:
         pass
-    def get_word_at_screen_pos(self, a_screen_pos: ImVec2Like) -> str:
+    # TextPosition and SelectionPosition are only used for the public API (private impl uses Coordinates)
+    class TextPosition:
+        line: int = -1
+        column: int = -1
+        def __init__(self, line: int = -1, column: int = -1) -> None:
+            """Auto-generated default constructor with named params"""
+            pass
+    class SelectionPosition:
+        start: TextPosition
+        end: TextPosition
+        def __init__(
+            self,
+            start: Optional[TextPosition] = None,
+            end: Optional[TextPosition] = None
+            ) -> None:
+            """Auto-generated default constructor with named params
+
+
+            Python bindings defaults:
+                If any of the params below is None, then its default value below will be used:
+                    * start: TextEditor.TextPosition()
+                    * end: TextEditor.TextPosition()
+            """
+            pass
+    def set_selection_position(self, pos: TextEditor.SelectionPosition) -> None:
         pass
+    def get_selection_position(self, a_cursor: int = -1) -> TextEditor.SelectionPosition:
+        pass
+    @overload
+    def get_cursor_position(self) -> TextEditor.TextPosition:
+        pass
+
 
 ####################    </generated_from:TextEditor.h>    ####################
 

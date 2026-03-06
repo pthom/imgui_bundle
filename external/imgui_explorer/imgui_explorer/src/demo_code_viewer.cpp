@@ -541,10 +541,10 @@ void DemoCodeViewer_Show()
 
         if (ImGui::SmallButton("View on github at this line"))
         {
-            int line, column; editor.GetCursorPosition(line, column);
+            auto pos = editor.GetCursorPosition();
             const std::string& githubUrl = showingPython ? currentFile.pyGithubUrl : currentFile.cppGithubUrl;
             if (!githubUrl.empty())
-                ImmApp::BrowseToUrl((githubUrl + "#L" + std::to_string(line + 1)).c_str());
+                ImmApp::BrowseToUrl((githubUrl + "#L" + std::to_string(pos.line + 1)).c_str());
         }
 
         ImGui::SameLine();
@@ -579,8 +579,8 @@ void DemoCodeViewer_Show()
 
         ImGui::SameLine();
 
-        int line, column; editor.GetCursorPosition(line, column);
-        ImGui::Text("%6d / %6d  | %s", line + 1, editor.GetLineCount(), displayName.c_str());
+        auto pos = editor.GetCursorPosition();
+        ImGui::Text("%6d / %6d  | %s", pos.line + 1, editor.GetLineCount(), displayName.c_str());
     }
 
     // Content string for search operations
