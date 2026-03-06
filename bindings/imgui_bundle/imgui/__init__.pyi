@@ -1994,29 +1994,56 @@ def input_scalar_n(
 # Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color square that can be left-clicked to open a picker, and right-clicked to open an option menu.)
 # - Note that in C++ a 'float v[X]' function argument is the _same_ as 'float* v', the array syntax is just a way to document the number of elements that are expected to be accessible.
 # - You can pass the address of a first float element out of a contiguous structure, e.g. &myvector.x
+
+# IMGUI_API bool          ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
+@overload
+def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+    pass
+
+# IMGUI_API bool          ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
+@overload
+def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+    pass
+
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
 # IMGUI_API inline std::tuple<bool, ImVec4> ColorEdit4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
 #         {  bool changed = ColorEdit4(label.c_str(), (float*)&col, flags);  return { changed, col }; }
+@overload
 def color_edit4(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
 # IMGUI_API inline std::tuple<bool, ImVec4> ColorEdit3(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
 #         {  bool changed = ColorEdit3(label.c_str(), (float*)&col, flags);  return { changed, col }; }
+@overload
 def color_edit3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
 # #endif
 #
 
+# IMGUI_API bool          ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
+@overload
+def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+    pass
+
+# IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);    /* original C++ signature */
+@overload
+def color_picker4(
+    label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[float] = None
+) -> Tuple[bool, List[float]]:
+    pass
+
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
 # IMGUI_API inline std::tuple<bool, ImVec4> ColorPicker3(const char* label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
 #         { bool changed = ColorPicker3(label, (float*)&col, flags);  return { changed, col }; }
+@overload
 def color_picker3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
 # IMGUI_API std::tuple<bool, ImVec4> ColorPicker4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0, std::optional<ImVec4> ref_col = std::nullopt);    /* original C++ signature */
+@overload
 def color_picker4(
     label: str, col: ImVec4Like, flags: ColorEditFlags = 0, ref_col: Optional[ImVec4Like] = None
 ) -> Tuple[bool, ImVec4]:
