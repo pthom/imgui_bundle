@@ -2,11 +2,11 @@
 
 Dear ImGui Bundle includes specialized tools for image inspection and debugging.
 
-## ImmVision - Image Debugger
+## ImmVision - Image Viewer Widget
 
 ### Introduction
 
-[ImmVision](https://github.com/pthom/immvision) provides interactive image display with zoom, pan, pixel inspection, and colormap support. Particularly useful for debugging computer vision pipelines.
+[ImmVision](https://github.com/pthom/immvision) provides an interactive image viewer widget for ImGui applications, with zoom, pan, pixel inspection, and colormap support. Useful for building image processing tools and debugging computer vision pipelines from within your application.
 
 ::::{card}
 :link: https://github.com/pthom/immvision
@@ -101,6 +101,67 @@ Click the image to run a launcher that includes several examples.
 
 - **Python:** [immvision.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/immvision.pyi)
 - **C++:** [image.h](https://github.com/pthom/immvision/blob/master/src/immvision/image.h) | [inspector.h](https://github.com/pthom/immvision/blob/master/src/immvision/inspector.h)
+
+## ImmDebug — Standalone Image Debugger
+
+[Video tutorial on Youtube](https://www.youtube.com/watch?v=ztVBk2FN6_8)
+
+ImmDebug a tool from [ImmVision](https://github.com/pthom/immvision) lets you visually inspect images from any running program — during execution or even after it finishes (post-mortem). Add one-line calls to send images to a standalone viewer with zoom, pan, pixel inspection, and colormaps.
+
+```{figure} ../images/immdebug.jpg
+:width: 500
+The immdebug viewer displaying images sent from a running program.
+```
+
+### Python
+
+Install from PyPI:
+
+```bash
+pip install immdebug
+```
+
+Start the viewer in a terminal, then send images from your code:
+
+```python
+# In a terminal: immdebug-viewer
+
+import numpy as np
+import cv2
+from immdebug import immdebug
+
+image = cv2.imread("photo.jpg")
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+edges = cv2.Canny(gray, 100, 200)
+
+immdebug(image, "image")  # inspect the original image
+immdebug(gray, "gray")    # inspect different steps of your processing pipeline
+immdebug(edges, "edges")  
+```
+
+Works with OpenCV, PIL, matplotlib, or any numpy array. See the [immdebug PyPI package](https://pypi.org/project/immdebug/) for full API documentation.
+
+### C++
+
+Drop 4 files from [src/immdebug](https://github.com/pthom/immvision/tree/master/src/immdebug) into your project (only OpenCV required):
+
+```cpp
+#include "immdebug/immdebug.h"
+
+cv::Mat image = cv::imread("photo.jpg");
+ImmVision::ImmDebug(image, "original");
+```
+
+Build and run the C++ viewer separately — see the [immvision README](https://github.com/pthom/immvision) for instructions.
+
+### Features
+
+- **Non-blocking** — just writes a file and returns immediately
+- **Cross-language** — C++ and Python clients use the same protocol, both work with either viewer
+- **Post-mortem** — images persist in the temp directory for 1 hour; start the viewer after your script finishes
+- **Single instance** — re-launching the viewer brings the existing instance to the top
+
+
 
 
 ## imgui_tex_inspect - Texture Inspector
