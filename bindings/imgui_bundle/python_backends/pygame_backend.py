@@ -69,6 +69,11 @@ class PygameRenderer(ProgrammablePipelineRenderer):
             pygame.K_RSUPER: imgui.Key.mod_super,
         }
 
+        self.mouse_map = {
+            2: imgui.MouseButton_.middle,
+            3: imgui.MouseButton_.right
+        }
+
     def process_event(self, event):
         # perf: local for faster access
         io = self.io
@@ -79,7 +84,7 @@ class PygameRenderer(ProgrammablePipelineRenderer):
 
         if event.type == pygame.MOUSEBUTTONDOWN or event.type == pygame.MOUSEBUTTONUP:
             down = event.type == pygame.MOUSEBUTTONDOWN
-            imgui_button = event.button - 1
+            imgui_button = self.mouse_map.get(event.button, event.button - 1)
             io.add_mouse_button_event(imgui_button, down)
             return True
 
