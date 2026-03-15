@@ -101,6 +101,20 @@ void FillInspectorRendering()
         blur.convertTo(floatMat, CV_64FC1);
         floatMat = floatMat / 255.;
         ImmVision::Inspector_AddImage(floatMat, "house_f64", zoomKey);
+
+        // Float grayscale with Sobel-like gradient (useful for colormap testing)
+        {
+            cv::Mat sobelX, sobelY, sobelMag;
+            cv::Sobel(gray, sobelX, CV_32F, 1, 0);
+            cv::Sobel(gray, sobelY, CV_32F, 0, 1);
+            cv::magnitude(sobelX, sobelY, sobelMag);
+            // Normalize to 0-1 range
+            double minVal, maxVal;
+            cv::minMaxLoc(sobelMag, &minVal, &maxVal);
+            if (maxVal > 0)
+                sobelMag = sobelMag / maxVal;
+            ImmVision::Inspector_AddImage(sobelMag, "house_sobel_f32", zoomKey);
+        }
     }
 
     cv::Mat bear = cv::imread(assetsDir + "bear_transparent.png", cv::IMREAD_UNCHANGED);
@@ -167,8 +181,10 @@ void FillInspectorRendering()
         "synth_s16_1ch");
 
     // int32: wide range
+    double maxInt32 = (double)std::numeric_limits<int32_t>::max();
+    double minInt32 = (double)std::numeric_limits<int32_t>::min();
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<int32_t>(200, 150, 1, -100000, 100000),
+        MakeSyntheticGradient<int32_t>(200, 150, 1, minInt32, maxInt32),
         "synth_s32_1ch");
 
     // =========================================================================
