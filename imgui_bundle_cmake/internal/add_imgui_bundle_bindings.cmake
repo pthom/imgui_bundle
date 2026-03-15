@@ -117,11 +117,10 @@ function(add_imgui_bundle_bindings)
 
     litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} ${IMGUI_BUNDLE_PATH}/bindings)
 
-    # add cvnp for immvision
+    # add immvision type casters
     if (IMGUI_BUNDLE_WITH_IMMVISION)
-        set(cvnp_nano_dir ${IMGUI_BUNDLE_PATH}/external/immvision/cvnp_nano)
-        target_sources(${python_native_module_name} PRIVATE ${cvnp_nano_dir}/cvnp_nano/cvnp_nano.h)
-        target_include_directories(${python_native_module_name} PRIVATE ${cvnp_nano_dir})
+        set(immvision_bindings_dir ${IMGUI_BUNDLE_PATH}/external/immvision/bindings)
+        target_include_directories(${python_native_module_name} PRIVATE ${immvision_bindings_dir})
 
         target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
