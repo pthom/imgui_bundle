@@ -50,10 +50,6 @@
 	path = external/immvision/immvision
 	url = https://github.com/pthom/immvision.git
 	branch = master
-[submodule "external/immvision/cvnp"]
-	path = external/immvision/cvnp
-	url = https://github.com/pthom/cvnp.git
-	branch = master
 [submodule "external/implot/implot"]
 	path = external/implot/implot
 	url = https://github.com/pthom/implot.git
@@ -77,9 +73,6 @@
 [submodule "external/nanovg/MetalNanoVG"]
 	path = external/nanovg/MetalNanoVG
 	url = https://github.com/ollix/MetalNanoVG.git
-[submodule "external/immvision/cvnp_nano"]
-	path = external/immvision/cvnp_nano
-	url = https://github.com/pthom/cvnp_nano.git
 [submodule "external/implot3d/implot3d"]
 	path = external/implot3d/implot3d
 	url = https://github.com/pthom/implot3d.git
