@@ -32,7 +32,7 @@ jobs:
           pip install -r docs/book/requirements.txt
 
       - name: Install Typst
-        uses: typst-community/setup-typst@v4
+        uses: typst-community/setup-typst@v5
 
       - name: Build Jupyter Book (and PDF)
         run: |
