@@ -6,8 +6,10 @@
 // 2. Click through each image in the inspector at various zoom levels
 // 3. After migration, run the same program and compare visually
 
+#ifdef IMMVISION_HAS_OPENCV
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
+#endif
 #include "immvision/immvision.h"
 #include "immapp/immapp.h"
 #include "demo_utils/api_demos.h"
@@ -25,10 +27,9 @@
 // Gradients test colormap scaling and depth conversion.
 // Sine wave tests interpolation quality at various zoom levels.
 template<typename T>
-cv::Mat MakeSyntheticGradient(int w, int h, int channels, double minVal, double maxVal)
+ImmVision::ImageBuffer MakeSyntheticGradient(int w, int h, int channels, ImmVision::ImageDepth depth, double minVal, double maxVal)
 {
-    int cv_depth = cv::DataType<T>::depth;
-    cv::Mat mat(h, w, CV_MAKETYPE(cv_depth, channels));
+    ImmVision::ImageBuffer mat = ImmVision::ImageBuffer::Zeros(w, h, channels, depth);
     for (int y = 0; y < h; y++)
     {
         T* row = mat.ptr<T>(y);
@@ -61,13 +62,14 @@ void FillInspectorRendering()
     // =========================================================================
     std::string zoomKey = "zk";
 
-    cv::Mat house = cv::imread(assetsDir + "house.jpg");
+    ImmVision::ImageBuffer house = ImmVision::ImRead(assetsDir + "house.jpg");
     if (!house.empty())
     {
-        ImmVision::Inspector_AddImage(house, "house_bgr_u8", zoomKey);
+        ImmVision::Inspector_AddImage(house, "house_rgb_u8", zoomKey);
 
+#ifdef IMMVISION_HAS_OPENCV
         cv::Mat gray;
-        cv::cvtColor(house, gray, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(house.to_cv_mat(), gray, cv::COLOR_RGB2GRAY);
         ImmVision::Inspector_AddImage(gray, "house_gray_u8", zoomKey);
 
         // Floyd-Steinberg dithered halftone (tests INTER_AREA downscale on dithered content)
@@ -115,15 +117,16 @@ void FillInspectorRendering()
                 sobelMag = sobelMag / maxVal;
             ImmVision::Inspector_AddImage(sobelMag, "house_sobel_f32", zoomKey);
         }
+#endif // IMMVISION_HAS_OPENCV
     }
 
-    cv::Mat bear = cv::imread(assetsDir + "bear_transparent.png", cv::IMREAD_UNCHANGED);
+    ImmVision::ImageBuffer bear = ImmVision::ImRead(assetsDir + "bear_transparent.png");
     if (!bear.empty())
-        ImmVision::Inspector_AddImage(bear, "bear_bgra_u8");
+        ImmVision::Inspector_AddImage(bear, "bear_rgba_u8");
 
-    cv::Mat tennis = cv::imread(assetsDir + "tennis.jpg");
+    ImmVision::ImageBuffer tennis = ImmVision::ImRead(assetsDir + "tennis.jpg");
     if (!tennis.empty())
-        ImmVision::Inspector_AddImage(tennis, "tennis_bgr_u8");
+        ImmVision::Inspector_AddImage(tennis, "tennis_rgb_u8");
 
     // =========================================================================
     // Synthetic: uint8 variants
@@ -131,30 +134,30 @@ void FillInspectorRendering()
 
     // 3-channel gradient (basic color display)
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<uint8_t>(200, 150, 3, 0, 255),
+        MakeSyntheticGradient<uint8_t>(200, 150, 3, ImmVision::ImageDepth::uint8, 0, 255),
         "synth_u8_3ch");
 
     // 1-channel (colormap path)
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<uint8_t>(200, 150, 1, 0, 255),
+        MakeSyntheticGradient<uint8_t>(200, 150, 1, ImmVision::ImageDepth::uint8, 0, 255),
         "synth_u8_1ch");
 
     // 2-channel (the "fake 3-channel" path in converted_to_rgba_image)
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<uint8_t>(200, 150, 2, 0, 255),
+        MakeSyntheticGradient<uint8_t>(200, 150, 2, ImmVision::ImageDepth::uint8, 0, 255),
         "synth_u8_2ch");
 
     // 4-channel RGBA with gradient alpha (tests alpha checkerboard overlay)
     {
-        cv::Mat rgba(150, 200, CV_8UC4);
+        ImmVision::ImageBuffer rgba = ImmVision::ImageBuffer::Zeros(200, 150, 4, ImmVision::ImageDepth::uint8);
         for (int y = 0; y < 150; y++)
         {
             uint8_t* row = rgba.ptr<uint8_t>(y);
             for (int x = 0; x < 200; x++)
             {
-                row[x * 4 + 0] = (uint8_t)(x * 255 / 199); // B
+                row[x * 4 + 0] = (uint8_t)(x * 255 / 199); // R
                 row[x * 4 + 1] = (uint8_t)(y * 255 / 149); // G
-                row[x * 4 + 2] = 128;                        // R
+                row[x * 4 + 2] = 128;                        // B
                 row[x * 4 + 3] = (uint8_t)(x * 255 / 199); // A: transparent left, opaque right
             }
         }
@@ -167,24 +170,24 @@ void FillInspectorRendering()
 
     // int8: signed byte (-128 to 127)
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<int8_t>(200, 150, 1, -128, 127),
+        MakeSyntheticGradient<int8_t>(200, 150, 1, ImmVision::ImageDepth::int8, -128, 127),
         "synth_s8_1ch");
 
     // uint16: large dynamic range (0 to 65535)
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<uint16_t>(200, 150, 1, 0, 65535),
+        MakeSyntheticGradient<uint16_t>(200, 150, 1, ImmVision::ImageDepth::uint16, 0, 65535),
         "synth_u16_1ch");
 
     // int16: signed (-32768 to 32767)
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<int16_t>(200, 150, 1, -32768, 32767),
+        MakeSyntheticGradient<int16_t>(200, 150, 1, ImmVision::ImageDepth::int16, -32768, 32767),
         "synth_s16_1ch");
 
     // int32: wide range
     double maxInt32 = (double)std::numeric_limits<int32_t>::max();
     double minInt32 = (double)std::numeric_limits<int32_t>::min();
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<int32_t>(200, 150, 1, minInt32, maxInt32),
+        MakeSyntheticGradient<int32_t>(200, 150, 1, ImmVision::ImageDepth::int32, minInt32, maxInt32),
         "synth_s32_1ch");
 
     // =========================================================================
@@ -193,22 +196,22 @@ void FillInspectorRendering()
 
     // float32, 1 channel (depth maps, scientific data)
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<float>(200, 150, 1, -1.0f, 1.0f),
+        MakeSyntheticGradient<float>(200, 150, 1, ImmVision::ImageDepth::float32, -1.0f, 1.0f),
         "synth_f32_1ch");
 
     // float32, 3 channels (HDR-like)
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<float>(200, 150, 3, 0.0f, 1.0f),
+        MakeSyntheticGradient<float>(200, 150, 3, ImmVision::ImageDepth::float32, 0.0f, 1.0f),
         "synth_f32_3ch");
 
     // float64, 1 channel
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<double>(200, 150, 1, -1.0, 1.0),
+        MakeSyntheticGradient<double>(200, 150, 1, ImmVision::ImageDepth::float64, -1.0, 1.0),
         "synth_f64_1ch");
 
     // float64, 3 channels
     ImmVision::Inspector_AddImage(
-        MakeSyntheticGradient<double>(200, 150, 3, 0.0, 1.0),
+        MakeSyntheticGradient<double>(200, 150, 3, ImmVision::ImageDepth::float64, 0.0, 1.0),
         "synth_f64_3ch");
 
     // =========================================================================
@@ -217,7 +220,7 @@ void FillInspectorRendering()
 
     // Checkerboard: sharp edges test interpolation artifacts (especially INTER_AREA)
     {
-        cv::Mat checker(200, 200, CV_8UC1);
+        ImmVision::ImageBuffer checker = ImmVision::ImageBuffer::Zeros(200, 200, 1, ImmVision::ImageDepth::uint8);
         for (int y = 0; y < 200; y++)
         {
             uint8_t* row = checker.ptr<uint8_t>(y);
@@ -229,7 +232,7 @@ void FillInspectorRendering()
 
     // Halftone-like binary pattern (dithering, downscale quality)
     {
-        cv::Mat halftone(300, 300, CV_8UC1);
+        ImmVision::ImageBuffer halftone = ImmVision::ImageBuffer::Zeros(300, 300, 1, ImmVision::ImageDepth::uint8);
         for (int y = 0; y < 300; y++)
         {
             uint8_t* row = halftone.ptr<uint8_t>(y);
@@ -246,7 +249,7 @@ void FillInspectorRendering()
 
     // Float32 with special values: NaN, +Inf, -Inf
     {
-        cv::Mat special(100, 100, CV_32FC1);
+        ImmVision::ImageBuffer special = ImmVision::ImageBuffer::Zeros(100, 100, 1, ImmVision::ImageDepth::float32);
         for (int y = 0; y < 100; y++)
         {
             float* row = special.ptr<float>(y);
@@ -272,7 +275,7 @@ void demo_immvision_rendering_test()
     static bool inited = false;
     if (!inited)
     {
-        ImmVision::UseBgrColorOrder();
+        ImmVision::UseRgbColorOrder();
         FillInspectorRendering();
         inited = true;
     }
@@ -289,7 +292,7 @@ void demo_immvision_rendering_test()
 int main(int, char*[])
 {
     ChdirBesideAssetsFolder();
-    ImmVision::UseBgrColorOrder();
+    ImmVision::UseRgbColorOrder();
 
     HelloImGui::RunnerParams params;
     params.appWindowParams.windowGeometry.size = {1200, 900};

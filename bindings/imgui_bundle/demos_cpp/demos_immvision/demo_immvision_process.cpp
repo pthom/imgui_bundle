@@ -2,10 +2,17 @@
 #include "immvision/immvision.h"
 #include "immapp/immapp.h"
 
+#ifndef IMMVISION_HAS_OPENCV
+
+void demo_immvision_process()
+{
+    ImGui::TextWrapped("This demo requires OpenCV (Sobel filter, Gaussian blur, color conversion).");
+}
+
+#else
+
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/imgcodecs.hpp>
-
 
 // The parameters for our image processing pipeline
 struct SobelParams
@@ -26,7 +33,7 @@ struct SobelParams
 cv::Mat ComputeSobel(const cv::Mat& image, const SobelParams& params)
 {
     cv::Mat gray;
-    cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
+    cv::cvtColor(image, gray, cv::COLOR_RGB2GRAY);
     cv::Mat img_float;
     gray.convertTo(img_float, CV_32F, 1.0 / 255.0);
     cv::Mat blurred;
@@ -106,7 +113,7 @@ bool GuiSobelParams(SobelParams& params)
 //     - parameters to display the images via ImmVision: they share the same zoom key,
 //       so that we can move the two image in sync
 struct AppStateProcess {
-    cv::Mat image;
+    ImmVision::ImageBuffer image;
     cv::Mat imageSobel;
     SobelParams sobelParams;
 
@@ -114,17 +121,17 @@ struct AppStateProcess {
     ImmVision::ImageParams immvisionParamsSobel;
 
     AppStateProcess(const std::string& image_file) {
-        ImmVision::UseBgrColorOrder();
-        image = cv::imread(image_file);
+        ImmVision::UseRgbColorOrder();
+        image = ImmVision::ImRead(image_file);
         sobelParams = SobelParams();
-        imageSobel = ComputeSobel(image, sobelParams);
+        imageSobel = ComputeSobel(image.to_cv_mat(), sobelParams);
 
         immvisionParams = ImmVision::ImageParams();
-        immvisionParams.ImageDisplaySize = cv::Size(int(ImmApp::EmSize(22.f)), 0);
+        immvisionParams.ImageDisplaySize = ImmVision::Size(int(ImmApp::EmSize(22.f)), 0);
         immvisionParams.ZoomKey = "z";
 
         immvisionParamsSobel = ImmVision::ImageParams();
-        immvisionParamsSobel.ImageDisplaySize = cv::Size(int(ImmApp::EmSize(22.f)), 0);
+        immvisionParamsSobel.ImageDisplaySize = ImmVision::Size(int(ImmApp::EmSize(22.f)), 0);
         immvisionParamsSobel.ZoomKey = "z";
         immvisionParamsSobel.ShowOptionsPanel = true;
     }
@@ -146,13 +153,15 @@ void demo_immvision_process()
     ImGui::Separator();
 
     if (GuiSobelParams(appState.sobelParams)) {
-        appState.imageSobel = ComputeSobel(appState.image, appState.sobelParams);
+        appState.imageSobel = ComputeSobel(appState.image.to_cv_mat(), appState.sobelParams);
         appState.immvisionParamsSobel.RefreshImage = true;
     }
     ImmVision::Image("Original", appState.image, &appState.immvisionParams);
     ImGui::SameLine();
     ImmVision::Image("Deriv", appState.imageSobel, &appState.immvisionParamsSobel);
 }
+
+#endif // IMMVISION_HAS_OPENCV
 
 
 // The main function is not present in this file, but it could be written as

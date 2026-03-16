@@ -10,3 +10,19 @@ hello_imgui_bundle_assets_from_folder(demo_immvision_display ${_da})
 hello_imgui_bundle_assets_from_folder(demo_immvision_inspector ${_da})
 hello_imgui_bundle_assets_from_folder(demo_immvision_process ${_da})
 hello_imgui_bundle_assets_from_folder(demo_immvision_link ${_da})
+
+# Some immvision demos use OpenCV for advanced image processing (Sobel, blur, etc.)
+# These parts are guarded behind #ifdef IMMVISION_HAS_OPENCV in the source.
+find_package(OpenCV QUIET)
+if(OpenCV_FOUND AND TARGET opencv_imgproc)
+    set(_opencv_demo_targets
+        demos_immvision
+        demo_immvision_process
+        demo_immvision_rendering_test
+    )
+    foreach(_t ${_opencv_demo_targets})
+        if(TARGET ${_t})
+            target_link_libraries(${_t} PUBLIC opencv_imgproc)
+        endif()
+    endforeach()
+endif()
