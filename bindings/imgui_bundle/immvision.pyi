@@ -60,6 +60,107 @@ ImTextureID: TypeAlias = int
 #     You never need to create these types explicitly in Python.
 #
 
+# IMMVISION_API std::string ImageDepthName(ImageDepth depth);    /* original C++ signature */
+def image_depth_name(depth: ImageDepth) -> str:
+    """Returns the name of the depth as a string ("uint8", "float32", etc.)"""
+    pass
+
+# IMMVISION_API bool ImageDepthIsFloat(ImageDepth depth);    /* original C++ signature */
+def image_depth_is_float(depth: ImageDepth) -> bool:
+    """Returns True if the depth is a floating-point type (float32 or float64)"""
+    pass
+
+class Size2d:
+    """2D double-precision size. Used for drawing operations (ellipse, rectangle_size)."""
+
+    # double width = 0.,     /* original C++ signature */
+    width: float = 0.0
+    # height = 0.;    /* original C++ signature */
+    height: float = 0.0
+    # Size2d() = default;    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # Size2d(double w, double h) : width(w), height(h) {}    /* original C++ signature */
+    @overload
+    def __init__(self, w: float, h: float) -> None:
+        pass
+    # Size2d(const Size& s) : width((double)s.width), height((double)s.height) {}    /* original C++ signature */
+    @overload
+    def __init__(self, s: Size) -> None:
+        pass
+
+class Color4d:
+    """4-channel double color value (e.g. RGBA or BGRA)."""
+
+    # double v[4] = {0, 0, 0, 255};    /* original C++ signature */
+    v: np.ndarray  # ndarray[type=double, size=4] default:float(0, 0, 0, 255)
+    # double& operator[](int i) { return v[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> float:
+        """(private API)"""
+        pass
+    # const double& operator[](int i) const { return v[i]; }    /* original C++ signature */
+    @overload
+    def __getitem__(self, i: int) -> float:
+        """(private API)"""
+        pass
+    # Color4d() = default;    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # Color4d(double v0, double v1, double v2, double v3) : v{v0, v1, v2, v3} {}    /* original C++ signature */
+    @overload
+    def __init__(self, v0: float, v1: float, v2: float, v3: float) -> None:
+        pass
+
+class Rect:
+    """Integer rectangle (x, y, width, height)."""
+
+    # int x = 0,     /* original C++ signature */
+    x: int = 0
+    # y = 0,     /* original C++ signature */
+    y: int = 0
+    # width = 0,     /* original C++ signature */
+    width: int = 0
+    # height = 0;    /* original C++ signature */
+    height: int = 0
+    # Rect() = default;    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # Rect(int x_, int y_, int w, int h) : x(x_), y(y_), width(w), height(h) {}    /* original C++ signature */
+    @overload
+    def __init__(self, x_: int, y_: int, w: int, h: int) -> None:
+        pass
+    # Rect(Point pt, Size sz) : x(pt.x), y(pt.y), width(sz.width), height(sz.height) {}    /* original C++ signature */
+    @overload
+    def __init__(self, pt: Point, sz: Size) -> None:
+        pass
+    # Rect(Point pt1, Point pt2)    /* original C++ signature */
+    #             : x(std::min(pt1.x, pt2.x)), y(std::min(pt1.y, pt2.y)),
+    #               width(std::max(pt1.x, pt2.x) - x), height(std::max(pt1.y, pt2.y) - y) {}
+    @overload
+    def __init__(self, pt1: Point, pt2: Point) -> None:
+        """Construct from two corner points (top-left and bottom-right)"""
+        pass
+    # bool empty() const { return width <= 0 || height <= 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # int area() const { return width * height; }    /* original C++ signature */
+    def area(self) -> int:
+        """(private API)"""
+        pass
+    # bool contains(Point pt) const { return pt.x >= x && pt.x < x + width && pt.y >= y && pt.y < y + height; }    /* original C++ signature */
+    def contains(self, pt: Point) -> bool:
+        """(private API)"""
+        pass
+    # Size size() const { return {width, height}; }    /* original C++ signature */
+    def size(self) -> Size:
+        """(private API)"""
+        pass
+
 ####################    </generated_from:immvision_types.h>    ####################
 
 ####################    <generated_from:image.h>    ####################
@@ -625,6 +726,16 @@ def get_cached_rgba_image(label: str) -> ImageBuffer:
 # IMMVISION_API std::string VersionInfo();    /* original C++ signature */
 def version_info() -> str:
     """Return immvision version info"""
+    pass
+
+# IMMVISION_API ImageBuffer ImRead(const std::string& filename);    /* original C++ signature */
+def im_read(filename: str) -> ImageBuffer:
+    """Load an image from file (PNG, JPG, BMP, TGA, HDR, etc.) using stb_image.
+    Returns an empty ImageBuffer if loading fails.
+    The returned image is always in RGB order (not BGR).
+    For uint8 images: channels are as stored in file (1, 3, or 4).
+    For HDR images: returns float32 data.
+    """
     pass
 
 ####################    </generated_from:image.h>    ####################
