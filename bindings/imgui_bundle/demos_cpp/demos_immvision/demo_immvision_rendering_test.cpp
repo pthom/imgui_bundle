@@ -33,7 +33,8 @@ ImmVision::ImageBuffer MakeSyntheticGradient(int w, int h, int channels, ImmVisi
     for (int y = 0; y < h; y++)
     {
         T* row = mat.ptr<T>(y);
-        double vy = 0.5 + 0.3 * std::sin(2.0 * M_PI * y / (double)h * 4.0);
+        double pi = 3.14159265358979323846;
+        double vy = 0.5 + 0.3 * std::sin(2.0 * pi * y / (double)h * 4.0);
         for (int x = 0; x < w; x++)
         {
             double t = (double)x / (double)(w - 1);
