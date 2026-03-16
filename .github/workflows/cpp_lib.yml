@@ -11,12 +11,13 @@ env:
 
 jobs:
   build:
-    name: CppLib
+    name: CppLib (${{ matrix.platform }}${{ matrix.fetch_opencv && ', OpenCV' || '' }})
     runs-on: ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
         platform: [windows-latest, macos-latest, ubuntu-latest]
+        fetch_opencv: [false, true]
 
     steps:
     - uses: actions/checkout@v6
@@ -36,5 +37,5 @@ jobs:
       run: |
         mkdir build
         cd build
-        cmake .. -DHELLOIMGUI_USE_GLFW3=ON -DHELLOIMGUI_USE_SDL2=ON  -DHELLOIMGUI_HAS_OPENGL3=ON -DCMAKE_BUILD_TYPE=Release -DHELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED=ON
+        cmake .. -DHELLOIMGUI_USE_GLFW3=ON -DHELLOIMGUI_USE_SDL2=ON  -DHELLOIMGUI_HAS_OPENGL3=ON -DCMAKE_BUILD_TYPE=Release -DHELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED=ON ${{ matrix.fetch_opencv && '-DIMMVISION_FETCH_OPENCV=ON' || '' }}
         cmake --build . --config Release -j 3
