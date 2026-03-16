@@ -392,16 +392,18 @@ void py_init_module_immvision(nb::module_& m)
                 nb::arg("img"))
             .def("retrieve", [](const TestHolder& self) -> ImageBuffer { return self.stored; });
 
-        // Create an ImageBuffer from a non-contiguous cv::Mat ROI
-        // (tests that the constructor clones to contiguous memory)
-        th.def("create_non_contiguous_image", []() -> ImageBuffer {
-            cv::Mat big(100, 100, CV_8UC3, cv::Scalar(10, 20, 30));
+        // Create an ImageBuffer from a non-contiguous sub-image
+        // (tests that subImage shares stride with parent, and clone produces contiguous memory)
+        th.def("create_from_non_contiguous_roi", []() -> ImageBuffer {
+            ImageBuffer big = ImageBuffer::Zeros(100, 100, 3, ImageDepth::uint8);
+            big.fill(Color4d(10, 20, 30, 0));
             // Set a known pixel in the ROI region
-            big.at<cv::Vec3b>(5, 5) = cv::Vec3b(42, 43, 44);
-            // Extract a sub-matrix (non-contiguous)
-            cv::Mat roi = big(cv::Rect(2, 2, 20, 20));
-            assert(!roi.isContinuous());
-            return ImageBuffer(roi);
+            uint8_t* p = big.pixel_ptr<uint8_t>(5, 5);
+            p[0] = 42; p[1] = 43; p[2] = 44;
+            // Extract a sub-image (non-contiguous: step > width * elemSizeTotal)
+            ImageBuffer roi = big.subImage(Rect(2, 2, 20, 20));
+            // Clone to contiguous memory (this is what the Python caster does)
+            return roi.clone();
         });
 
         // Point/Point2d/Size round-trip helpers

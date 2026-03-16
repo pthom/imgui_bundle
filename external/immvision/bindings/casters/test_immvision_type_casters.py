@@ -427,7 +427,7 @@ def test_non_contiguous_cvmat_cloned():
     """ImageBuffer(cv::Mat) should clone non-contiguous ROI sub-matrices
     to contiguous memory. Verify the resulting numpy array is contiguous
     and has correct shape/values."""
-    result = th.create_non_contiguous_image()
+    result = th.create_from_non_contiguous_roi()
     assert isinstance(result, np.ndarray)
     assert result.flags['C_CONTIGUOUS']
     assert result.shape == (20, 20, 3)
