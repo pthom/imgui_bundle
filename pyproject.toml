@@ -84,6 +84,7 @@ imgui_bundle_demo="imgui_bundle.demos_python.demo_imgui_bundle:main"
 [tool.scikit-build]
 wheel.expand-macos-universal-tags = true
 wheel.packages = ["bindings/imgui_bundle"]
+wheel.exclude = ["lib/**", "include/**"]
 sdist.exclude = [
     ".git",
     ".github",
@@ -116,7 +117,7 @@ sdist.exclude = [
 if.env.IMGUI_BUNDLE_EXCLUDE_DEMOS = true
 wheel.exclude = ["imgui_bundle/demos_cpp/**", "imgui_bundle/demos_python/**", "imgui_bundle/demos_assets/**"]
 
-cmake.version = ">=3.26.1"
+cmake.version = ">=3.28"
 build.verbose = true
 logging.level = "INFO"
 
