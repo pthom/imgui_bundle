@@ -83,7 +83,7 @@ endfunction()
 
 
 # ---------------------------------------------------------------------------
-# imgui_explorer_lib: the library exposing ShowImGuiExplorerGui()
+# imgui_explorer_lib: the library exposing ShowImGuiExplorerGui_Cpp/Python()
 # ---------------------------------------------------------------------------
 function(iex_add_imgui_explorer_lib)
     set(src ${CMAKE_CURRENT_FUNCTION_LIST_DIR})

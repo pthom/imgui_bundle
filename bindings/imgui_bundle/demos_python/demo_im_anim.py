@@ -1,11 +1,8 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, imgui_md, immapp
 
-try:
-    from imgui_bundle import imgui_explorer
-    _has_imgui_explorer = True
-except ImportError:
-    _has_imgui_explorer = False
+from imgui_bundle.demos_python.demo_utils.imgui_explorer_setup import get_imgui_explorer, get_package_path
+imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 
 def demo_gui():
@@ -20,8 +17,8 @@ def demo_gui():
     imgui.separator()
 
     if _has_imgui_explorer:
-        imgui_explorer.show_imgui_explorer_gui(
-            imgui_explorer.ImGuiExplorerLibrary.im_anim, imgui_explorer.ImGuiExplorerCppOrPython.python, False
+        imgui_explorer.show_imgui_explorer_gui_python(
+            imgui_explorer.ImGuiExplorerLibrary.im_anim, get_package_path()
         )
     else:
         imgui.text("Demo unavailable, because Dear ImGui Manual library is not included in this build.")

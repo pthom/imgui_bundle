@@ -54,6 +54,22 @@ namespace
     bool g_pendingApiSearch = false;  // Trigger search on next frame after switching to API tab
     int g_pendingApiTabIndex = -1;   // Target tab index for pending API search
 
+    // Python-only mode state
+    bool g_pythonOnlyMode = false;
+    std::string g_pythonPackageRoot;  // root of the imgui_bundle Python package
+    std::string g_pyDemoCodeDir;     // pythonPackageRoot + "/demos_python/demos_imgui_explorer"
+
+    std::string GetDemoCodeDir()
+    {
+        if (g_pythonOnlyMode)
+            return g_pyDemoCodeDir;
+#ifdef IEX_DEMO_CODE_DIR
+        return IEX_DEMO_CODE_DIR;
+#else
+        return {};
+#endif
+    }
+
     // Pending match selection (deferred by one frame so horizontal scroll reset takes effect first)
     struct PendingMatch { int startLine, startCol, endLine, endCol; };
     std::optional<PendingMatch> g_pendingMatch;
@@ -258,30 +274,48 @@ namespace
         }
     }
 
-    // Desktop: reads from IMAN_DEMO_CODE_DIR/<filename> via std::ifstream.
+    // Resolve the file path for a Python file, using pyPackageRelativePath if
+    // in Python-only mode and the field is set, otherwise flat lookup in demo code dir.
+    std::string ResolvePyFilePath(const DemoFileInfo& fileInfo)
+    {
+        if (g_pythonOnlyMode && !fileInfo.pyPackageRelativePath.empty())
+            return g_pythonPackageRoot + "/" + fileInfo.pyPackageRelativePath;
+        std::string dir = GetDemoCodeDir();
+        if (!dir.empty())
+            return dir + "/" + fileInfo.pyDisplayName();
+        return {};
+    }
+
+    // Desktop: reads from demo code dir via std::ifstream.
     // Emscripten: called from OnWgetLoad after emscripten_async_wget completes.
     void LoadFile(const DemoFileInfo& fileInfo)
     {
         CodeFile& cf = g_codeFiles[fileInfo.baseName];
 
 #ifndef __EMSCRIPTEN__
-        auto loadOne = [&](const std::string& filename, LoadState& state, bool isPython)
+        auto loadOne = [&](const std::string& path, LoadState& state, bool isPython)
         {
             if (state != LoadState::NotLoaded) return;
             state = LoadState::Loading;
-            std::string path = std::string(IEX_DEMO_CODE_DIR) + "/" + filename;
-            std::ifstream f(path);
-            if (f) {
-                std::string content(std::istreambuf_iterator<char>(f), {});
-                PopulateEditor(cf, content, isPython);
-            } else {
-                state = LoadState::Failed;
+
+            if (!path.empty()) {
+                std::ifstream f(path);
+                if (f) {
+                    std::string content(std::istreambuf_iterator<char>(f), {});
+                    PopulateEditor(cf, content, isPython);
+                    return;
+                }
             }
+            state = LoadState::Failed;
         };
 
-        loadOne(fileInfo.cppDisplayName(), cf.cppState, false);
+        {
+            std::string dir = GetDemoCodeDir();
+            std::string cppPath = dir.empty() ? "" : dir + "/" + fileInfo.cppDisplayName();
+            loadOne(cppPath, cf.cppState, false);
+        }
         if (fileInfo.hasPython)
-            loadOne(fileInfo.pyDisplayName(), cf.pyState, true);
+            loadOne(ResolvePyFilePath(fileInfo), cf.pyState, true);
 #endif
     }
 
@@ -411,6 +445,15 @@ void DemoCodeViewer_SetShowPython(bool show) { g_showPython = show; g_userPrefPy
 
 void DemoCodeViewer_Show()
 {
+    bool pythonOnly = DemoCodeViewer_IsPythonOnlyMode();
+
+    // In Python-only mode, force Python display
+    if (pythonOnly)
+    {
+        g_showPython = true;
+        g_userPrefPython = true;
+    }
+
     // Get files for current library
     auto files = GetCurrentLibraryFiles();
 
@@ -420,6 +463,11 @@ void DemoCodeViewer_Show()
         for (size_t i = 0; i < files.size(); ++i)
         {
             const auto& file = files[i];
+
+            // In Python-only mode, skip files that have no Python equivalent
+            if (pythonOnly && !file.hasPython)
+                continue;
+
             std::string displayName = (g_showPython && file.hasPython) ? file.pyDisplayName() : file.cppDisplayName();
 
             ImGuiTabItemFlags flags = 0;
@@ -512,7 +560,17 @@ void DemoCodeViewer_Show()
     }
     if (activeState == LoadState::Failed)
     {
-        ImGui::TextColored(ImVec4(1.f, 0.4f, 0.4f, 1.f), "Failed to load %s", displayName.c_str());
+        const std::string& githubUrl = showingPython ? currentFile.pyGithubUrl : currentFile.cppGithubUrl;
+        if (!githubUrl.empty())
+        {
+            ImGui::TextColored(ImVec4(1.f, 1.f, 0.5f, 1.f), "%s is not available locally.", displayName.c_str());
+            if (ImGui::SmallButton(("View " + displayName + " on GitHub").c_str()))
+                ImmApp::BrowseToUrl(githubUrl.c_str());
+        }
+        else
+        {
+            ImGui::TextColored(ImVec4(1.f, 0.4f, 0.4f, 1.f), "Failed to load %s", displayName.c_str());
+        }
         return;
     }
 
@@ -745,4 +803,17 @@ void DemoCodeViewer_ShowCodeAt(const char* filename, int line, const char* secti
     {
         g_currentFileIndex = idx;
     }
+}
+
+bool DemoCodeViewer_IsPythonOnlyMode()
+{
+    return g_pythonOnlyMode;
+}
+
+void DemoCodeViewer_SetupPythonMode(const std::string& pythonPackagePath)
+{
+    if (pythonPackagePath.empty() || g_pythonOnlyMode) return;
+    g_pythonOnlyMode = true;
+    g_pythonPackageRoot = pythonPackagePath;
+    g_pyDemoCodeDir = pythonPackagePath + "/demos_python/demos_imgui_explorer";
 }

@@ -15,7 +15,7 @@ void demo_im_anim()
     ImGui::Separator();
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
-    ShowImGuiExplorerGui(ImGuiExplorerLibrary::ImAnim, ImGuiExplorerCppOrPython::Cpp, false);
+    ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImAnim, false);
 #else
     ImGui::Text("Demo unavailable, because Dear ImGui Manual library is not included in this build.");
 #endif

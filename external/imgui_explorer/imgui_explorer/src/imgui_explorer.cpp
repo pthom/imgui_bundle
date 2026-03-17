@@ -234,11 +234,19 @@ namespace
 
         auto guiPythonCppToggle = []()
         {
-            bool showPython = DemoCodeViewer_GetShowPython();
-            if (ImGui::RadioButton("C++", !showPython))
-                DemoCodeViewer_SetShowPython(false);
-            if (ImGui::RadioButton("Python", showPython))
-                DemoCodeViewer_SetShowPython(true);
+            if (DemoCodeViewer_IsPythonOnlyMode())
+            {
+                ImGui::Text("C++ & Python code: ");
+                RenderLink("Online Explorer", "https://traineq.org/imgui_bundle_explorer/");
+            }
+            else
+            {
+                bool showPython = DemoCodeViewer_GetShowPython();
+                if (ImGui::RadioButton("C++", !showPython))
+                    DemoCodeViewer_SetShowPython(false);
+                if (ImGui::RadioButton("Python", showPython))
+                    DemoCodeViewer_SetShowPython(true);
+            }
         };
 
         float w = ImGui::GetContentRegionAvail().x;
@@ -335,89 +343,103 @@ namespace
 extern bool gIsImGuiDemoWindowUserEdited;
 extern bool gIsImGuiDemoWindow_no_close;
 
-void ShowImGuiExplorerGui(std::optional<ImGuiExplorerLibrary> library,
-                        std::optional<ImGuiExplorerCppOrPython> language,
-                        bool show_status_bar)
-{
-    static bool initialized = false;
-    if (!initialized)
+namespace {
+    void InitExplorer()
     {
-        // Set up the demo marker hook
+        static bool initialized = false;
+        if (initialized) 
+		    return;
+        initialized = true;
+
+        // Set up the demo marker hook 
         ImGuiContext& g = *GImGui;
         g.DemoMarkerCallback = OnDemoMarkerCallback;
-
         // Disable close button on ImGui::ShowDemoWindow by default
         gIsImGuiDemoWindow_no_close = false;
-
-        // Do this once only, to allow the user to change afterward.
-        if (language.has_value())
-            DemoCodeViewer_SetShowPython(language.value() == ImGuiExplorerCppOrPython::Python);
-
-        initialized = true;
     }
 
-
-    if (library.has_value())
+    void SetLibraryMode(std::optional<ImGuiExplorerLibrary> library)
     {
-        static const char* names[] = { "ImGui", "ImPlot", "ImPlot3D", "ImAnim" };
-        SetSingleLibraryMode(names[static_cast<int>(library.value())]);
-    }
-    else
-        SetMultipleLibraryMode();
-
-    ShowLibraryToolbar();
-
-    // Use all space, except for a small margin at the bottom for the status bar
-    ImVec2 availableSize = ImGui::GetContentRegionAvail();
-    if (availableSize.x <= 0 || availableSize.y <= 0)
-        return; // this can happen in the very first frame, let's bail out in this case.
-
-    if (show_status_bar)
-        availableSize.y -= ImGui::GetFrameHeightWithSpacing();
-
-    float leftPaneWidth = availableSize.x * 0.45f;
-
-    // Render the demo: we create a child window which occupies the full height and which can be resized
-    // (will serve as a splitter)
-    // Then, we position the demo window and display it in a regular window
-    {
-        ImVec2 lastCursorPos;
+        if (library.has_value())
         {
-            int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
-            int demoWindowFlags = 0;//ImGuiWindowFlags_MenuBar;
-            ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, demoWindowFlags);
-            DemoMarker_ShowShortInfo();
-
-            lastCursorPos = ImGui::GetCursorScreenPos();
-            ImGui::EndChild();
+            static const char* names[] = { "ImGui", "ImPlot", "ImPlot3D", "ImAnim" };
+            SetSingleLibraryMode(names[static_cast<int>(library.value())]);
         }
-
-        // We will render the ImGui demo window fully inside the previous child
-        // (if not movable)
-        ImVec2 demoPos, demoSize;
-        {
-            ImVec2 tl = lastCursorPos;
-            ImVec2 br = ImGui::GetItemRectMax();
-            float br_margin = 10.f;
-
-            demoPos = tl;
-            demoSize = ImVec2(br.x - tl.x - br_margin, br.y - tl.y - br_margin);
-        }
-
-        if (!gIsImGuiDemoWindowUserEdited || GetCurrentLibrary().name != "ImGui")
-            ShowCurrentLibraryDemo(demoPos, demoSize);
         else
-            ShowCurrentLibraryDemo(ImVec2(0, 0), ImVec2(0, 0));
+            SetMultipleLibraryMode();
     }
 
-    ImGui::SameLine();
+    void ShowExplorerLayout(bool show_status_bar)
+    {
+        ShowLibraryToolbar();
 
-    int codeChildFlags = ImGuiChildFlags_Borders;
-    int codeWindowFlags = 0;//ImGuiWindowFlags_MenuBar;
-    ImGui::BeginChild("editor", ImVec2(0.f, availableSize.y), codeChildFlags, codeWindowFlags);
-    DemoCodeViewer_Show();
-    ImGui::EndChild();
+        // Use all space, except for a small margin at the bottom for the status bar
+        ImVec2 availableSize = ImGui::GetContentRegionAvail();
+        if (availableSize.x <= 0 || availableSize.y <= 0)
+            return; // this can happen in the very first frame, let's bail out in this case.
 
-    if (show_status_bar)
-        ShowStatusBar();
+        if (show_status_bar)
+            availableSize.y -= ImGui::GetFrameHeightWithSpacing();
+
+        float leftPaneWidth = availableSize.x * 0.45f;
+
+        // Render the demo: we create a child window which occupies the full height and which can be resized
+        // (will serve as a splitter)
+        // Then, we position the demo window and display it in a regular window
+        {
+            ImVec2 lastCursorPos;
+            {
+                int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
+                ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, 0);
+                DemoMarker_ShowShortInfo();
+                lastCursorPos = ImGui::GetCursorScreenPos();
+                ImGui::EndChild();
+            }
+
+            // We will render the ImGui demo window fully inside the previous child
+            // (if not movable)
+            ImVec2 demoPos, demoSize;
+            {
+                ImVec2 tl = lastCursorPos;
+                ImVec2 br = ImGui::GetItemRectMax();
+                float br_margin = 10.f;
+                demoPos = tl;
+                demoSize = ImVec2(br.x - tl.x - br_margin, br.y - tl.y - br_margin);
+            }
+
+            if (!gIsImGuiDemoWindowUserEdited || GetCurrentLibrary().name != "ImGui")
+                ShowCurrentLibraryDemo(demoPos, demoSize);
+            else
+                ShowCurrentLibraryDemo(ImVec2(0, 0), ImVec2(0, 0));
+        }
+
+        ImGui::SameLine();
+
+        ImGui::BeginChild("editor", ImVec2(0.f, availableSize.y), ImGuiChildFlags_Borders, 0);
+        DemoCodeViewer_Show();
+        ImGui::EndChild();
+
+        if (show_status_bar)
+            ShowStatusBar();
+    }
+
+} // anonymous namespace
+
+
+void ShowImGuiExplorerGui_Cpp(std::optional<ImGuiExplorerLibrary> library,
+                              bool show_status_bar)
+{
+    InitExplorer();
+    SetLibraryMode(library);
+    ShowExplorerLayout(show_status_bar);
+}
+
+void ShowImGuiExplorerGui_Python(std::optional<ImGuiExplorerLibrary> library,
+                                 const std::string& pythonPackagePath)
+{
+    InitExplorer();
+    DemoCodeViewer_SetupPythonMode(pythonPackagePath);
+    DemoCodeViewer_SetShowPython(true);
+    SetLibraryMode(library);
+    ShowExplorerLayout(false);
 }

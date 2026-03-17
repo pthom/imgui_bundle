@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 // Render the code viewer window (call from a dockable window's GuiFunction)
 void DemoCodeViewer_Show();
@@ -19,3 +20,11 @@ void DemoCodeViewer_ShowCodeAt(const char* filename, int line, const char* secti
 // Look up the Python line (1-based) for a IMGUI_DEMO_MARKER section in a given file.
 // cppFilename: e.g. "imgui_demo.cpp". Returns -1 if not found or no Python available.
 int DemoCodeViewer_GetPythonLineForSection(const char* cppFilename, const char* section);
+
+// Returns true when in Python-only mode (PyPI install).
+// In this mode, C++ source files are not available and only Python code is shown.
+bool DemoCodeViewer_IsPythonOnlyMode();
+
+// Configure Python-only mode: sets the demo code directory and stub aliases
+// based on the imgui_bundle package root path.
+void DemoCodeViewer_SetupPythonMode(const std::string& pythonPackagePath);

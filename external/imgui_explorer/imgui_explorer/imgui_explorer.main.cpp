@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow;
     runnerParams.imGuiWindowParams.enableViewports = false;
 
-    runnerParams.callbacks.ShowGui = [library]() { ShowImGuiExplorerGui(library, ImGuiExplorerCppOrPython::Cpp, true); };
+    runnerParams.callbacks.ShowGui = [library]() { ShowImGuiExplorerGui_Cpp(library, true); };
 
     runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
 

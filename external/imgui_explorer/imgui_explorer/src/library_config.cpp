@@ -100,10 +100,12 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
              "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py"},
             {"imgui", true, true,
              "https://github.com/pthom/imgui/blob/imgui_bundle/imgui.h",
-             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi"},
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi",
+             "imgui/__init__.pyi"},
             {"imgui_internal", true, true,
              "https://github.com/pthom/imgui/blob/imgui_bundle/imgui_internal.h",
-             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/internal.pyi"},
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/internal.pyi",
+             "imgui/internal.pyi"},
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = ShowImGuiDemoWindow_AutoReopen;
@@ -127,10 +129,12 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
              "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py"},
             {"implot", true, true,
              "https://github.com/pthom/implot/blob/imgui_bundle/implot.h",
-             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot/__init__.pyi"},
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot/__init__.pyi",
+             "implot/__init__.pyi"},
             {"implot_internal", true, true,
              "https://github.com/pthom/implot/blob/imgui_bundle/implot_internal.h",
-             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot/internal.pyi"},
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot/internal.pyi",
+             "implot/internal.pyi"},
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [](ImVec2 pos, ImVec2 size) {
@@ -154,10 +158,12 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
              "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py"},
             {"implot3d", true, true,
              "https://github.com/pthom/implot3d/blob/imgui_bundle/implot3d.h",
-             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot3d/__init__.pyi"},
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot3d/__init__.pyi",
+             "implot3d/__init__.pyi"},
             {"implot3d_internal", true, true,
              "https://github.com/pthom/implot3d/blob/imgui_bundle/implot3d_internal.h",
-             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot3d/internal.pyi"},
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot3d/internal.pyi",
+             "implot3d/internal.pyi"},
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [](ImVec2 pos, ImVec2 size) {

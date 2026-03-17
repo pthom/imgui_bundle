@@ -3,11 +3,8 @@ from imgui_bundle import imgui, imgui_md, immapp
 from imgui_bundle.demos_python.demos_imgui_explorer import implot3d_demo
 from imgui_bundle.demos_python.demos_imgui_explorer import implot_demo
 
-try:
-    from imgui_bundle import imgui_explorer
-    _has_imgui_explorer = True
-except ImportError:
-    _has_imgui_explorer = False
+from imgui_bundle.demos_python.demo_utils.imgui_explorer_setup import get_imgui_explorer, get_package_path
+imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 
 def demo_gui():
@@ -20,7 +17,7 @@ def demo_gui():
     if imgui.collapsing_header("ImPlot: Full Demo"):
         if _has_imgui_explorer:
             imgui.push_id("ImPlotDemo")
-            imgui_explorer.show_imgui_explorer_gui(imgui_explorer.ImGuiExplorerLibrary.implot)
+            imgui_explorer.show_imgui_explorer_gui_python(imgui_explorer.ImGuiExplorerLibrary.implot, get_package_path())
             imgui.pop_id()
         else:
             implot_demo.show_all_demos()
@@ -28,7 +25,7 @@ def demo_gui():
     if imgui.collapsing_header("ImPlot3D: Full Demo"):
         if _has_imgui_explorer:
             imgui.push_id("ImPlot3DDemo")
-            imgui_explorer.show_imgui_explorer_gui(imgui_explorer.ImGuiExplorerLibrary.implot3_d)
+            imgui_explorer.show_imgui_explorer_gui_python(imgui_explorer.ImGuiExplorerLibrary.implot3_d, get_package_path())
             imgui.pop_id()
         else:
             implot3d_demo.show_all_demos()

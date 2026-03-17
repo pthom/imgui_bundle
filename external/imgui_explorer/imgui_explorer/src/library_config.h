@@ -13,12 +13,18 @@ struct DemoFileInfo {
     std::string cppGithubUrl;  // Full URL without #L suffix
     std::string pyGithubUrl;   // Same for Python file (empty if no Python)
 
+    // Optional path relative to the Python package root for the Python file.
+    // Used in Python-only mode when the file isn't in the flat demo_code/ dir.
+    // e.g. "imgui/__init__.pyi" for the imgui stub.
+    // If empty, the default flat lookup (pyDisplayName()) is used.
+    std::string pyPackageRelativePath;
+
     // Display names
     std::string cppDisplayName() const { return baseName + (isApiReference ? ".h" : ".cpp"); }
     std::string pyDisplayName() const { return baseName + (isApiReference ? ".pyi" : ".py"); }
 
     // Fetch URL for emscripten_async_wget (e.g. "demo_code/imgui_demo.cpp")
-    // Desktop reads via std::ifstream(IMAN_DEMO_CODE_DIR + "/" + cppDisplayName())
+    // Desktop reads via std::ifstream(IEX_DEMO_CODE_DIR + "/" + cppDisplayName())
     std::string cppFetchUrl() const { return "demo_code/" + baseName + (isApiReference ? ".h" : ".cpp"); }
     std::string pyFetchUrl()  const { return "demo_code/" + baseName + (isApiReference ? ".pyi" : ".py"); }
 };

@@ -16,7 +16,7 @@ void demo_imgui_show_demo_window()
     ImGui::Separator();
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
-    ShowImGuiExplorerGui(ImGuiExplorerLibrary::ImGui, ImGuiExplorerCppOrPython::Cpp, false);
+    ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImGui, false);
 #else
     ImGui::ShowDemoWindow_MaybeDocked(false);
 #endif

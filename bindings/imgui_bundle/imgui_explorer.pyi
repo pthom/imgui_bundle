@@ -27,20 +27,23 @@ class ImGuiExplorerLibrary(enum.IntEnum):
     # ImAnim }    /* original C++ signature */
     im_anim = enum.auto()  # (= 3)
 
-class ImGuiExplorerCppOrPython(enum.IntEnum):
-    # Cpp,     /* original C++ signature */
-    cpp = enum.auto()  # (= 0)
-    # Python }    /* original C++ signature */
-    python = enum.auto()  # (= 1)
-
-# void ShowImGuiExplorerGui(std::optional<ImGuiExplorerLibrary> library = std::nullopt,    /* original C++ signature */
-#                         std::optional<ImGuiExplorerCppOrPython> language = std::nullopt,
-#                         bool show_status_bar = false);
-def show_imgui_explorer_gui(
-    library: Optional[ImGuiExplorerLibrary] = None,
-    language: Optional[ImGuiExplorerCppOrPython] = None,
-    show_status_bar: bool = False,
+# void ShowImGuiExplorerGui_Cpp(std::optional<ImGuiExplorerLibrary> library = std::nullopt,    /* original C++ signature */
+#                               bool show_status_bar = false);
+def show_imgui_explorer_gui_cpp(
+    library: Optional[ImGuiExplorerLibrary] = None, show_status_bar: bool = False
 ) -> None:
+    """C++ standalone explorer: shows C++/Python toggle and status bar option."""
+    pass
+
+# void ShowImGuiExplorerGui_Python(std::optional<ImGuiExplorerLibrary> library = std::nullopt,    /* original C++ signature */
+#                                  const std::string& pythonPackagePath = "");
+def show_imgui_explorer_gui_python(
+    library: Optional[ImGuiExplorerLibrary] = None, python_package_path: str = ""
+) -> None:
+    """Python (PyPI) explorer: Python-only mode, no status bar.
+    pythonPackagePath is the root of the installed imgui_bundle package
+    (used to locate .py demos and .pyi stubs).
+    """
     pass
 
 ####################    </generated_from:imgui_explorer.h>    ####################

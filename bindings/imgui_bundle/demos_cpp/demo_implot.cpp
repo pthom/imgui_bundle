@@ -18,7 +18,7 @@ void demo_implot()
     {
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ImGui::PushID("ImPlotDemo");
-        ShowImGuiExplorerGui(ImGuiExplorerLibrary::ImPlot);
+        ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot);
         ImGui::PopID();
 #else
         ImPlot::ShowDemoWindow_MaybeDocked(false);
@@ -29,7 +29,7 @@ void demo_implot()
     {
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ImGui::PushID("ImPlot3DDemo");
-        ShowImGuiExplorerGui(ImGuiExplorerLibrary::ImPlot3D);
+        ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot3D);
         ImGui::PopID();
 #else
         ImPlot3D::ShowAllDemos();

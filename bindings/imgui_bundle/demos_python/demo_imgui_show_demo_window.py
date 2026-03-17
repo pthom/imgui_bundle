@@ -1,19 +1,16 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, imgui_md, immapp, ImVec2
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
+from imgui_bundle.demos_python.demo_utils.imgui_explorer_setup import get_imgui_explorer, get_package_path
 
-try:
-    from imgui_bundle import imgui_explorer
-    _has_imgui_explorer = True
-except ImportError:
-    _has_imgui_explorer = False
+imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 
 def demo_gui():
     imgui_md.render_unindented(
         """
         # Dear ImGui
-        Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right.
+        Browse the demos below, and look at their code in the right panel!
     """
     )
 
@@ -21,8 +18,8 @@ def demo_gui():
     imgui.separator()
 
     if _has_imgui_explorer:
-        imgui_explorer.show_imgui_explorer_gui(
-            imgui_explorer.ImGuiExplorerLibrary.imgui, imgui_explorer.ImGuiExplorerCppOrPython.python, False
+        imgui_explorer.show_imgui_explorer_gui_python(
+            imgui_explorer.ImGuiExplorerLibrary.imgui, get_package_path()
         )
     else:
         imgui.show_demo_window()
