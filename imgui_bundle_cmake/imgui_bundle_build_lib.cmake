@@ -123,6 +123,7 @@ macro(imgui_bundle_apply_env_var_overrides)
             IMGUI_TEX_INSPECT
             IMFILEDIALOG
             IMMVISION
+            IMANIM
         )
 
         foreach(_opt ${_with_options})
