@@ -1,12 +1,12 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# v1.92.6XX (ongoing)
-
 # v1.92.601
 
 ## ImmVision: OpenCV is now optional
 
-ImmVision no longer requires OpenCV. All image processing (color conversion, statistics, alpha blending, drawing annotations, zoom/pan transform, image saving) has been reimplemented without OpenCV dependencies.
+ImmVision no longer requires OpenCV: this way the compilation and installation of the library is much faster, and the resulting binaries are smaller.
+
+All image processing (color conversion, statistics, alpha blending, drawing annotations, zoom/pan transform, image saving) has been reimplemented without OpenCV dependencies.
 
 - **New core types**: `ImageBuffer`, `Point`, `Point2d`, `Size`, `Matrix33d` replace `cv::Mat` and OpenCV geometric types in all public APIs
 - **Zero-copy interop**: When OpenCV is available (`IMMVISION_HAS_OPENCV`), `cv::Mat` converts seamlessly to/from `ImageBuffer` via implicit constructors
@@ -19,8 +19,11 @@ ImmVision no longer requires OpenCV. All image processing (color conversion, sta
 - **Faster CI builds**: 5–8 minutes faster per platform (no more OpenCV compilation)
 - **New features**: colormap support for single-channel integer images, multithreaded pixel drawing/resize, fixed watched pixel delete button visibility
 
-## Other changes
+## demo_imgui_bundle (aka "Dear ImGui Bundle Explorer")
+- Display version and compilation time at startup (C++, emscripten and Python versions)
+- Python demo code is also shown in the python version (when installed from Pypi)
 
+## Other changes
 - CMake: fetch freetype & plutovg with `EXCLUDE_FROM_ALL`
 - CMake: fix ImAnim exclusion when `IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS` is off
 
