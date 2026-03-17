@@ -5,12 +5,12 @@
 default:
     @just --list
 
-# build imgui bundle explorer emscripten
+# build imgui bundle explorer emscripten (with OpenCV for demos)
 ibex_build:
     mkdir -p build_ibex_ems && \
     cd build_ibex_ems && \
     source ~/emsdk/emsdk_env.sh && \
-    emcmake cmake .. -DCMAKE_BUILD_TYPE=Release && \
+    emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DIMMVISION_FETCH_OPENCV=ON && \
     make -j
 
 # clean imgui bundle emscripten build
