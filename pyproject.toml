@@ -117,7 +117,7 @@ sdist.exclude = [
 if.env.IMGUI_BUNDLE_EXCLUDE_DEMOS = true
 wheel.exclude = ["imgui_bundle/demos_cpp/**", "imgui_bundle/demos_python/**", "imgui_bundle/demos_assets/**"]
 
-cmake.version = ">=3.28"
+cmake.version = ">=3.26.1"
 build.verbose = true
 logging.level = "INFO"
 

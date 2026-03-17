@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.18)
 
 project(imgui_bundle VERSION "1.92.600") # Based on ImGui 1.92.6 - Remember to mirror changes to pyproject.toml! Version = ImGui patch × 100 + bundle release
 
