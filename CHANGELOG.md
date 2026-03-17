@@ -2,9 +2,9 @@
 
 # v1.92.601
 
-## ImmVision: OpenCV is now optional
+## ImmVision: OpenCV is now optional / use GPU rendering pipeline 
 
-ImmVision no longer requires OpenCV: this way the compilation and installation of the library is much faster, and the resulting binaries are smaller.
+**ImmVision no longer requires OpenCV: this way the compilation and installation of the library is much faster, and the resulting binaries are smaller.**
 
 All image processing (color conversion, statistics, alpha blending, drawing annotations, zoom/pan transform, image saving) has been reimplemented without OpenCV dependencies.
 
@@ -18,6 +18,15 @@ All image processing (color conversion, statistics, alpha blending, drawing anno
 - **Smaller wheels**: ~16% size reduction across all platforms (45 MB total savings)
 - **Faster CI builds**: 5–8 minutes faster per platform (no more OpenCV compilation)
 - **New features**: colormap support for single-channel integer images, multithreaded pixel drawing/resize, fixed watched pixel delete button visibility
+
+**The ImmVision rendering pipeline has been rewritten to use GPU texture sampling and ImGui DrawList:**
+
+- **GPU zoom/pan**: Image uploaded to GPU texture once (with mipmaps); pan/zoom handled via UV coordinates — no more per-frame CPU warp
+- **Mipmap filtering**: `GL_NEAREST` at high zoom (pixel-perfect), `GL_LINEAR` for moderate zoom, `GL_LINEAR_MIPMAP_LINEAR` for downsampling (high-quality anti-aliasing)
+- **DrawList annotations**: Grid lines, pixel values, and watched pixel markers drawn via ImGui DrawList in screen space (TrueType font replaces bitmap font)
+- **DrawList backgrounds**: School paper and alpha checkerboard rendered via DrawList (no longer composited into texture)
+- **Inspector redesign**: Horizontal filmstrip with scrolling and adjustable thumbnail size replaces the old vertical listbox
+- **Other fixes**: "Export colormap image" now available for uint8 images with colormap; save dialog remembers last directory
 
 ## demo_imgui_bundle (aka "Dear ImGui Bundle Explorer")
 - Display version and compilation time at startup (C++, emscripten and Python versions)
