@@ -2,6 +2,8 @@
 
 # v1.92.6XX (ongoing)
 
+# v1.92.601
+
 ## ImmVision: OpenCV is now optional
 
 ImmVision no longer requires OpenCV. All image processing (color conversion, statistics, alpha blending, drawing annotations, zoom/pan transform, image saving) has been reimplemented without OpenCV dependencies.
