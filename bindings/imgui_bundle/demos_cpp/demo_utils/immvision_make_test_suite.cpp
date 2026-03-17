@@ -27,7 +27,7 @@
 // Gradients test colormap scaling and depth conversion.
 // Sine wave tests interpolation quality at various zoom levels.
 template<typename T>
-ImmVision::ImageBuffer MakeSyntheticGradient(int w, int h, int channels, ImmVision::ImageDepth depth, double minVal, double maxVal)
+static ImmVision::ImageBuffer MakeSyntheticGradient(int w, int h, int channels, ImmVision::ImageDepth depth, double minVal, double maxVal)
 {
     ImmVision::ImageBuffer mat = ImmVision::ImageBuffer::Zeros(w, h, channels, depth);
     for (int y = 0; y < h; y++)
@@ -53,7 +53,7 @@ ImmVision::ImageBuffer MakeSyntheticGradient(int w, int h, int channels, ImmVisi
 }
 
 
-void FillInspectorRendering()
+void ImmVisionMakeTestSuite()
 {
     //std::string assetsDir = "/Users/pascal/dvp/OpenSource/ImGuiWork/_Bundle/imgui_bundle/bindings/imgui_bundle/demos_assets/images/"; //DemosAssetsFolder() + "/images/";
     std::string assetsDir = DemosAssetsFolder() + "/images/";
@@ -269,39 +269,3 @@ void FillInspectorRendering()
         ImmVision::Inspector_AddImage(special, "synth_f32_special");
     }
 }
-
-
-void demo_immvision_rendering_test()
-{
-    static bool inited = false;
-    if (!inited)
-    {
-        ImmVision::UseRgbColorOrder();
-        FillInspectorRendering();
-        inited = true;
-    }
-
-    ImGui::TextWrapped(
-        "Rendering test suite: exercises all depth/channel combinations.\n"
-        "Check each image at fit-to-window, 1:1, ~5x, ~50x, and ~80x zoom.\n"
-        "Compare against reference screenshots from the main branch."
-    );
-    ImmVision::Inspector_Show();
-}
-
-#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
-int main(int, char*[])
-{
-    ChdirBesideAssetsFolder();
-    ImmVision::UseRgbColorOrder();
-
-    HelloImGui::RunnerParams params;
-    params.appWindowParams.windowGeometry.size = {1200, 900};
-    params.appWindowParams.windowTitle = "ImmVision Rendering Test Suite";
-    params.callbacks.ShowGui = []() {
-        demo_immvision_rendering_test();
-    };
-    HelloImGui::Run(params);
-    return 0;
-}
-#endif

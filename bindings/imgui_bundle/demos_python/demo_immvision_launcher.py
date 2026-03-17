@@ -61,9 +61,6 @@ def demo_gui():
             pip install opencv-python
             ```
             """)
-    if imgui.collapsing_header("Rendering test suite"):
-        demos_immvision.demo_immvision_rendering_test.demo_gui()
-        demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_rendering_test", nb_lines=30)
 
 
 def main():

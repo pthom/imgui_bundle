@@ -13,7 +13,7 @@ HAS_OPENCV = importlib.util.find_spec("cv2") is not None
 
 
 def _make_synthetic_gradient(
-    w: int, h: int, channels: int, dtype: np.dtype, min_val: float, max_val: float
+        w: int, h: int, channels: int, dtype: np.dtype, min_val: float, max_val: float
 ) -> np.ndarray:
     """Horizontal gradient + vertical sine pattern."""
     shape = (h, w, channels) if channels > 1 else (h, w)
@@ -34,7 +34,7 @@ def _make_synthetic_gradient(
     return mat
 
 
-def _fill_inspector_rendering() -> None:
+def immvision_make_test_suite() -> None:
     assets_dir = demo_utils.demos_assets_folder() + "/images/"
     zoom_key = "zk"
 
@@ -181,30 +181,3 @@ def _fill_inspector_rendering() -> None:
             else:
                 special[y, x] = -np.inf
     immvision.inspector_add_image(special, "synth_f32_special")
-
-
-_inited = False
-
-
-def demo_gui():
-    global _inited
-    if not _inited:
-        immvision.use_rgb_color_order()
-        _fill_inspector_rendering()
-        _inited = True
-
-    imgui.text_wrapped(
-        "Rendering test suite: exercises all depth/channel combinations.\n"
-        "Check each image at fit-to-window, 1:1, ~5x, ~50x, and ~80x zoom.\n"
-        "Compare against reference screenshots from the main branch."
-    )
-    immvision.inspector_show()
-
-
-def main():
-    immvision.use_rgb_color_order()
-    immapp.run(demo_gui, window_title="ImmVision Rendering Test Suite", window_size=(1200, 900))
-
-
-if __name__ == "__main__":
-    main()
