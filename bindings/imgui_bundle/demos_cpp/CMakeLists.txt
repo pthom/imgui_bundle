@@ -37,6 +37,12 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
     target_link_libraries(demo_immvision_launcher PRIVATE demos_immvision)
     target_link_libraries(demo_imgui_bundle PRIVATE demos_immvision)
 endif()
+if(IMMVISION_HAS_OPENCV)
+    find_package(OpenCV REQUIRED)
+    target_link_libraries(demo_immvision_launcher PUBLIC opencv_imgproc)
+    target_link_libraries(demo_imgui_bundle PUBLIC opencv_imgproc)
+endif()
+
 
 FILE(COPY ../demos_assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 

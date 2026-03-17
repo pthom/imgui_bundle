@@ -203,6 +203,8 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
 
 
 def main():
+    from imgui_bundle import __version__, __build_number__, compilation_time
+    print(f"Dear ImGui Bundle Explorer - v{__version__} build {__build_number__}, {compilation_time()}")
     runner_params, addons = make_params()
     immapp.run(runner_params=runner_params, add_ons_params=addons)
 

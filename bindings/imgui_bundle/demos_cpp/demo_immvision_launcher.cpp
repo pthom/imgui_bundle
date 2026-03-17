@@ -17,6 +17,7 @@ void demo_immvision_display();
 void demo_immvision_link();
 void demo_immvision_inspector();
 void demo_immvision_process();
+void demo_immvision_rendering_test();
 
 
 void demo_immvision_launcher()
@@ -50,6 +51,11 @@ void demo_immvision_launcher()
     {
         demo_immvision_process();
         ShowPythonVsCppFile("demos_immvision/demo_immvision_process", 40);
+    }
+    if (ImGui::CollapsingHeader("Rendering test suite"))
+    {
+        demo_immvision_rendering_test();
+        ShowPythonVsCppFile("demos_immvision/demo_immvision_rendering_test", 30);
     }
 }
 

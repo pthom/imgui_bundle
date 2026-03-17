@@ -60,7 +60,6 @@ jobs:
     - name: Build and install
       shell: bash
       run: |
-        # optionally: export IMMVISION_FETCH_OPENCV=OFF
         pip install --verbose .[test]
 
     # On macOS, run tests, ignoring the GUI tests

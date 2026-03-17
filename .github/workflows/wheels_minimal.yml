@@ -42,12 +42,12 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Build wheels (Python 3.14 only, no ImmVision)
+    - name: Build wheels (Python 3.14 only, minimal)
       uses: pypa/cibuildwheel@v3.4.0
       env:
         # Build only Python 3.14 to save CI time and space
         CIBW_BUILD: "cp314-*"
-        # Disable ImmVision to avoid OpenCV dependency
+        # Disable Hello ImGui and all dependent modules for minimal wheel
         CIBW_ENVIRONMENT: "IMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF"
         CIBW_BUILD_VERBOSITY: 1
 

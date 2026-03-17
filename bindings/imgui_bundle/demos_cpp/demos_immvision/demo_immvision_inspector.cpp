@@ -1,4 +1,3 @@
-#include <opencv2/imgcodecs.hpp>
 #include "immvision/immvision.h"
 #include "immapp/immapp.h"
 #include "demo_utils/api_demos.h"
@@ -11,7 +10,7 @@ void FillInspector()
     std::vector<std::string> imagefiles = { "house.jpg", "tennis.jpg"};
     for (auto imageFile: imagefiles)
     {
-        cv::Mat img = cv::imread(DemosAssetsFolder() + "/images/" + imageFile);
+        ImmVision::ImageBuffer img = ImmVision::ImRead(DemosAssetsFolder() + "/images/" + imageFile);
         ImmVision::Inspector_AddImage(img, imageFile);
     }
 }
@@ -22,7 +21,7 @@ void demo_immvision_inspector()
     static bool inited = false;
     if (!inited)
     {
-        ImmVision::UseBgrColorOrder();
+        ImmVision::UseRgbColorOrder();
         FillInspector();
         inited = true;
     }

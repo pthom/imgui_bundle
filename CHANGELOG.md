@@ -2,6 +2,26 @@
 
 # v1.92.6XX (ongoing)
 
+## ImmVision: OpenCV is now optional
+
+ImmVision no longer requires OpenCV. All image processing (color conversion, statistics, alpha blending, drawing annotations, zoom/pan transform, image saving) has been reimplemented without OpenCV dependencies.
+
+- **New core types**: `ImageBuffer`, `Point`, `Point2d`, `Size`, `Matrix33d` replace `cv::Mat` and OpenCV geometric types in all public APIs
+- **Zero-copy interop**: When OpenCV is available (`IMMVISION_HAS_OPENCV`), `cv::Mat` converts seamlessly to/from `ImageBuffer` via implicit constructors
+- **Python**: No change for Python users — ImmVision continues to use numpy arrays (the `cvnp_nano` bridge has been removed)
+- **Drawing primitives**: Custom bitmap font and Bresenham drawing replace OpenCV's `putText`, `line`, `ellipse`, `rectangle`
+- **Image saving**: Uses `stb_image_write` (PNG/JPG/BMP/TGA/HDR) instead of `cv::imwrite`
+- **Zoom/pan**: Custom implementation with nearest, bilinear, and area-based downscaling
+- **ImmDebug API change**: `ImmDebug()` now assumes RGB (the common default); use `ImmDebugBgr()` for OpenCV BGR images. Fixed per-image color order handling in the viewer.
+- **Smaller wheels**: ~16% size reduction across all platforms (45 MB total savings)
+- **Faster CI builds**: 5–8 minutes faster per platform (no more OpenCV compilation)
+- **New features**: colormap support for single-channel integer images, multithreaded pixel drawing/resize, fixed watched pixel delete button visibility
+
+## Other changes
+
+- CMake: fetch freetype & plutovg with `EXCLUDE_FROM_ALL`
+- CMake: fix ImAnim exclusion when `IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS` is off
+
 # v1.92.600
 
 Based on ImGui v1.92.6 & hello_imgui v1.92.6.

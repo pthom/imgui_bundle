@@ -7,6 +7,7 @@
 
 #include <functional>
 #include <map>
+#include <cstdio>
 
 void demo_immapp_launcher();
 void demo_nanovg_launcher();
@@ -79,6 +80,8 @@ void ShowGroupGui(const DemoGroup& group)
 
 int main(int, char **)
 {
+    printf("Dear ImGui Bundle Explorer - v%s build %s, compiled on %s at %s\n",
+           IMGUI_BUNDLE_VERSION, IMGUI_BUNDLE_BUILD_NUMBER, __DATE__, __TIME__);
     ChdirBesideAssetsFolder();
     //###############################################################################################
     // Part 1: Define the runner params

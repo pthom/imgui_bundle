@@ -1,4 +1,5 @@
 # Using https://github.com/github/gitignore/blob/master/Python.gitignore
+.claude/
 _plans/
 # Byte-compiled / optimized / DLL files
 __pycache__/

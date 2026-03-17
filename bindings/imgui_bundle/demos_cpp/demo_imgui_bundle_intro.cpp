@@ -15,9 +15,6 @@
 
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
 #include "immvision/immvision.h"
-#include <opencv2/core.hpp>
-#include <opencv2/imgproc.hpp>
-#include <opencv2/imgcodecs.hpp>
 #endif
 
 #include "imgui-knobs/imgui-knobs.h"
@@ -618,18 +615,14 @@ namespace IntroTable
 
 namespace IntroImmVision
 {
-    static cv::Mat sImage;
-    static cv::Mat sImageSobel;
+    static ImmVision::ImageBuffer sImage;
+    static ImmVision::ImageBuffer sImageSobel;
     static ImmVision::ImageParams sParams;
     static ImmVision::ImageParams sParamsSobel;
     static bool sInited = false;
     static bool sAnimating = true;
     static double sStartTime = 0.;
-
-    // Sobel params
     static float sBlurSize = 1.25f;
-    static int sDerivOrder = 1;
-    static int sKSize = 7;
 
     // Zoom animation
     static constexpr double kZoomInDuration = 1.5;
@@ -640,44 +633,95 @@ namespace IntroImmVision
     static constexpr double kMinZoom = 1.0;
     static constexpr double kMaxZoom = 70.0;
 
-    static cv::Point2d sZoomCenter;
+    static ImmVision::Point2d sZoomCenter;
 
-    static cv::Mat ComputeSobel()
+    // Simplified Sobel: RGB→gray, box blur, 3x3 vertical Sobel kernel
+    static ImmVision::ImageBuffer ComputeSobel()
     {
-        cv::Mat gray;
-        cv::cvtColor(sImage, gray, cv::COLOR_BGR2GRAY);
-        cv::Mat imgFloat;
-        gray.convertTo(imgFloat, CV_32F, 1.0 / 255.0);
-        cv::Mat blurred;
-        cv::GaussianBlur(imgFloat, blurred, cv::Size(), sBlurSize, sBlurSize);
-        double goodScale = 1.0 / std::pow(2.0, (sKSize - 2 * sDerivOrder - 2));
-        cv::Mat r;
-        cv::Sobel(blurred, r, CV_64F, sDerivOrder, 0, sKSize, goodScale);
-        return r;
+        int w = sImage.width, h = sImage.height;
+
+        // RGB to grayscale float
+        ImmVision::ImageBuffer gray = ImmVision::ImageBuffer::Zeros(w, h, 1, ImmVision::ImageDepth::float64);
+        for (int y = 0; y < h; y++)
+        {
+            const uint8_t* src = sImage.ptr<uint8_t>(y);
+            double* dst = gray.ptr<double>(y);
+            for (int x = 0; x < w; x++)
+                dst[x] = (0.299 * src[x * 3] + 0.587 * src[x * 3 + 1] + 0.114 * src[x * 3 + 2]) / 255.0;
+        }
+
+        // Separable box blur (approximate Gaussian)
+        int radius = std::max(1, (int)(sBlurSize * 2.0f));
+        ImmVision::ImageBuffer blurred = ImmVision::ImageBuffer::Zeros(w, h, 1, ImmVision::ImageDepth::float64);
+        // Horizontal pass
+        for (int y = 0; y < h; y++)
+        {
+            const double* src = gray.ptr<double>(y);
+            double* dst = blurred.ptr<double>(y);
+            for (int x = 0; x < w; x++)
+            {
+                double sum = 0; int count = 0;
+                for (int dx = -radius; dx <= radius; dx++)
+                {
+                    int xx = std::clamp(x + dx, 0, w - 1);
+                    sum += src[xx]; count++;
+                }
+                dst[x] = sum / count;
+            }
+        }
+        // Vertical pass (in-place via temp)
+        ImmVision::ImageBuffer temp = blurred.clone();
+        for (int y = 0; y < h; y++)
+        {
+            double* dst = blurred.ptr<double>(y);
+            for (int x = 0; x < w; x++)
+            {
+                double sum = 0; int count = 0;
+                for (int dy = -radius; dy <= radius; dy++)
+                {
+                    int yy = std::clamp(y + dy, 0, h - 1);
+                    sum += temp.ptr<double>(yy)[x]; count++;
+                }
+                dst[x] = sum / count;
+            }
+        }
+
+        // 3x3 vertical Sobel: [-1,0,1; -2,0,2; -1,0,1]
+        ImmVision::ImageBuffer sobel = ImmVision::ImageBuffer::Zeros(w, h, 1, ImmVision::ImageDepth::float64);
+        for (int y = 1; y < h - 1; y++)
+        {
+            const double* r0 = blurred.ptr<double>(y - 1);
+            const double* r1 = blurred.ptr<double>(y);
+            const double* r2 = blurred.ptr<double>(y + 1);
+            double* dst = sobel.ptr<double>(y);
+            for (int x = 1; x < w - 1; x++)
+                dst[x] = -r0[x-1] - 2*r1[x-1] - r2[x-1] + r0[x+1] + 2*r1[x+1] + r2[x+1];
+        }
+        return sobel;
     }
 
     static void Init()
     {
-        ImmVision::UseBgrColorOrder();
-        sImage = cv::imread(DemosAssetsFolder() + "/images/house.jpg");
+        ImmVision::UseRgbColorOrder();
+        sImage = ImmVision::ImRead(DemosAssetsFolder() + "/images/house.jpg");
         sImageSobel = ComputeSobel();
 
         int dispW = (int)HelloImGui::EmSize(20.f);
-        sParams.ImageDisplaySize = cv::Size(dispW, 0);
+        sParams.ImageDisplaySize = ImmVision::Size(dispW, 0);
         sParams.ShowOptionsPanel = false;
         sParams.ShowImageInfo = false;
         sParams.ShowPixelInfo = true;
         sParams.ShowZoomButtons = false;
         sParams.ZoomKey = "intro_immvision";
 
-        sParamsSobel.ImageDisplaySize = cv::Size(dispW, 0);
+        sParamsSobel.ImageDisplaySize = ImmVision::Size(dispW, 0);
         sParamsSobel.ShowOptionsPanel = false;
         sParamsSobel.ShowImageInfo = false;
         sParamsSobel.ShowPixelInfo = true;
         sParamsSobel.ShowZoomButtons = false;
         sParamsSobel.ZoomKey = "intro_immvision";
 
-        sZoomCenter = cv::Point2d(sImage.cols * 0.35, sImage.rows * 0.45);
+        sZoomCenter = ImmVision::Point2d(sImage.cols() * 0.35, sImage.rows() * 0.45);
         sStartTime = ImmApp::ClockSeconds();
     }
 
@@ -704,8 +748,7 @@ namespace IntroImmVision
 
     static bool CheckUserInteraction()
     {
-        bool hovering = sParams.MouseInfo.IsMouseHovering
-                     || sParamsSobel.MouseInfo.IsMouseHovering;
+        bool hovering = sParams.MouseInfo.IsMouseHovering || sParamsSobel.MouseInfo.IsMouseHovering;
         if (hovering && (ImGui::IsMouseDragging(0) || ImGui::GetIO().MouseWheel != 0.f))
             return true;
         return false;
@@ -730,8 +773,8 @@ namespace IntroImmVision
 
         // Size each image to half the available width
         int halfW = (int)(size.x * 0.5f - HelloImGui::EmSize(1.5f));
-        sParams.ImageDisplaySize = cv::Size(halfW, 0);
-        sParamsSobel.ImageDisplaySize = cv::Size(halfW, 0);
+        sParams.ImageDisplaySize = ImmVision::Size(halfW, 0);
+        sParamsSobel.ImageDisplaySize = ImmVision::Size(halfW, 0);
 
         ImmVision::Image("Original##intro", sImage, &sParams);
         ImGui::SameLine();
@@ -751,22 +794,7 @@ namespace IntroImmVision
         }
         ImGui::Separator();
 
-        bool changed = false;
         if (ImGui::SliderFloat("Blur", &sBlurSize, 0.5f, 10.0f))
-            changed = true;
-
-        ImGui::Text("Deriv order:");
-        for (int order = 1; order <= 4; order++)
-        {
-            ImGui::SameLine();
-            if (ImGui::RadioButton(std::to_string(order).c_str(), sDerivOrder == order))
-            {
-                sDerivOrder = order;
-                changed = true;
-            }
-        }
-
-        if (changed)
         {
             sImageSobel = ComputeSobel();
             sParamsSobel.RefreshImage = true;

@@ -746,6 +746,14 @@ cmake .. -DCMAKE_BUILD_TYPE=Release \
          -DIMGUI_BUNDLE_BUILD_IMGUI_EXPLORER_APP=ON -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
 ```
 
+**Build with Python bindings + immvision (recommended for most development):**
+```bash
+mkdir -p builds/claude_python_bindings && cd builds/claude_python_bindings
+cmake ../.. --preset "python_bindings" \
+    -DPython_EXECUTABLE=/path/to/your/venv/bin/python
+```
+This uses the `python_bindings` preset which enables immvision, OpenCV fetching, and Python bindings. You just need to specify which Python to use. This is the most complete build for testing C++ demos, Python bindings, and immvision together.
+
 etc. LLM's can create build folders for specific tasks, and use names that reflect the task (e.g. `claude_fix_emscripten_build` or `claude_test_pyodide`), to avoid conflicts with user-created folders.
 
 

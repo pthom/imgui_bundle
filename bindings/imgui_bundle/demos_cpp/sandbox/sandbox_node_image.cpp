@@ -4,20 +4,21 @@
 #include "imgui.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 #include "immvision/immvision.h"
-#include <opencv2/opencv.hpp>
 
 namespace ed = ax::NodeEditor;
 
 
 void Gui()
 {
-    static cv::Mat red, blue, white;
+    static ImmVision::ImageBuffer red, blue, white;
     if (red.empty())
     {
-        //red = cv::Mat(300, 300, CV_8UC3, cv::Scalar(0, 0, 255));
-        red = cv::imread("/Users/pascal/dvp/OpenSource/ImGuiWork/_Bundle/imgui_bundle/bindings/imgui_bundle/assets/images/world.png");
-        blue = cv::Mat(300, 300, CV_8UC3, cv::Scalar(255, 0, 0));
-        white = cv::Mat(300, 300, CV_8UC3, cv::Scalar(255, 255, 255));
+        //red = ImmVision::ImageBuffer::Zeros(300, 300, 3, ImmVision::ImageDepth::uint8);
+        red = ImmVision::ImRead("/Users/pascal/dvp/OpenSource/ImGuiWork/_Bundle/imgui_bundle/bindings/imgui_bundle/assets/images/world.png");
+        blue = ImmVision::ImageBuffer::Zeros(300, 300, 3, ImmVision::ImageDepth::uint8);
+        blue.fill(ImmVision::Color4d(0, 0, 255, 255));
+        white = ImmVision::ImageBuffer::Zeros(300, 300, 3, ImmVision::ImageDepth::uint8);
+        white.fill(ImmVision::Color4d(255, 255, 255, 255));
     }
 
     static ImmVision::ImageParams redParams;

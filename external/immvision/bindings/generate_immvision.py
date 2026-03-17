@@ -27,32 +27,36 @@ def main():
     options.python_run_black_formatter = True
     options.fn_exclude_non_api = False
 
+    # Exclude types that are handled by custom nanobind type casters
+    # (ImageBuffer <-> numpy, Point/Point2d/Size <-> tuple, Matrix33d <-> list)
+    options.class_exclude_by_name__regex = r"^ImageBuffer$|^Point$|^Point2d$|^Size$|^Matrix33d$"
+
+    # Exclude ImageDepth enum and ImageDepthSize function (implementation details)
+    options.enum_exclude_by_name__regex = r"^ImageDepth$"
+    options.fn_exclude_by_name__regex = r"^ImageDepthSize$"
+
     def post_process_stub(code: str):
         r = (
-            code.replace(": cv.Mat", ": Mat")
-            .replace("cv.Point2d", "Point2d")
-            .replace(" = cv.Point2(", " = (")
-            .replace(" = cv.Point(", " = (")
-            .replace(": cv.Point", ": Point")
-            .replace("cv.Matx33.eye()", "np.eye(3)")
-            .replace("cv.Matx33d", "Matx33d")
+            code
+            # Fix default values for types handled by type casters
             .replace("ColorMapStatsTypeId()", "ColorMapStatsTypeId.from_full_image")
-            .replace("List[cv.Point]", "List[Point]")
-            .replace("List[cv.Point]", "List[Point]")
-            .replace("cv.Size", "Size")
-            .replace("cv.Scalar", "Scalar")
-            .replace("Point2d = ()", "Point2d = (0, 0)")
-            .replace(" = Size()", " = (0, 0)")
+            .replace("Point2d(-1., -1.)", "(-1., -1.)")
+            .replace("Point(-1, -1)", "(-1, -1)")
+            .replace("Point2d()", "(0., 0.)")
+            .replace("Size()", "(0, 0)")
+            .replace("Matrix33d.eye()", "[[1,0,0],[0,1,0],[0,0,1]]")
+            .replace("Matrix33d::eye()", "[[1,0,0],[0,1,0],[0,0,1]]")
         )
         return r
 
     options.postprocess_stub_function = post_process_stub
 
     generator = litgen.LitgenGenerator(options)
-    all_in_one_include = THIS_DIR + "/../immvision/src_all_in_one/immvision/immvision.h"
-    generator.process_cpp_file(all_in_one_include)
-    cv_drawing_utils_h = THIS_DIR + "/../immvision/src/immvision/internal/cv/cv_drawing_utils.h"
-    generator.process_cpp_file(cv_drawing_utils_h)
+    include_dir = THIS_DIR + "/../immvision/src/immvision/"
+    generator.process_cpp_file(include_dir + "immvision_types.h")
+    generator.process_cpp_file(include_dir + "image.h")
+    generator.process_cpp_file(include_dir + "inspector.h")
+    generator.process_cpp_file(include_dir + "gl_texture.h")
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,
