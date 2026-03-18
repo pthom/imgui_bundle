@@ -32,9 +32,23 @@ All image processing (color conversion, statistics, alpha blending, drawing anno
 - Display version and compilation time at startup (C++, emscripten and Python versions)
 - Python demo code is also shown in the python version (when installed from Pypi)
 
-## Other changes
+## hello_imgui
+- Fix potential memory error in font handling (`_LoadFontImpl`: pass font buffer allocated with `IM_ALLOC`)
+- Add `HelloImGui::LoadImageDataFromAsset()` — decode an image from assets into CPU memory (C++ only)
+- Compile `imgui_impl_metal.mm` and `MetalNanoVG` with `-fobjc-arc` (fixes ARC bridge cast warnings)
+- Workaround plutovg `file(RELATIVE_PATH)` error with relative `CMAKE_INSTALL_PREFIX` (scikit-build-core)
+
+## Build & warnings cleanup
+We are approaching zero-warnings.
+
 - CMake: fetch freetype & plutovg with `EXCLUDE_FROM_ALL`
 - CMake: fix ImAnim exclusion when `IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS` is off
+- CMake: `ibd_add_this_folder_as_demos_library` now links `demo_utils` (fixes GCC linker error)
+- CMake: suppress Apple ld duplicate library warnings
+- CMake: suppress third-party warnings (ImAnim: `-Wno-unused-result`, `-Wno-nontrivial-memaccess`; plutosvg: `-Wno-deprecated-declarations`)
+- CMake: normalize install path (`./lib/` → `lib`) to fix CMP0177 warning
+- Fix `ImFileDialog` `u8path` deprecation warning (C++20 compatibility)
+- Fix GCC `-Wformat-truncation` warning in `demo_imgui_bundle_intro.cpp`
 
 # v1.92.600
 
