@@ -237,6 +237,7 @@ namespace
             if (DemoCodeViewer_IsPythonOnlyMode())
             {
                 ImGui::Text("C++ & Python code: ");
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemSpacing.x);
                 RenderLink("Online Explorer", "https://traineq.org/imgui_bundle_explorer/");
             }
             else
