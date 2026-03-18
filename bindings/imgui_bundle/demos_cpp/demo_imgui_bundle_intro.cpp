@@ -1055,7 +1055,7 @@ namespace IntroGallery
     static float sKnobVal = 42.f;
     static ImVec4 sColor = {0.4f, 0.6f, 1.0f, 1.0f};
     static char sName[128] = "World";
-    static char sGreeting[128] = "Hello, World!";
+    static char sGreeting[256] = "Hello, World!";
     static bool sAgreed = true;
     static int sChoice = 0;
 

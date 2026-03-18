@@ -5,7 +5,7 @@
 // 1. Build and run on main branch (the reference worktree at imgui_bundle_w2)
 // 2. Click through each image in the inspector at various zoom levels
 // 3. After migration, run the same program and compare visually
-
+#ifdef IMGUI_BUNDLE_WITH_IMMVISION
 #ifdef IMMVISION_HAS_OPENCV
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc.hpp>
@@ -269,3 +269,4 @@ void ImmVisionMakeTestSuite()
         ImmVision::Inspector_AddImage(special, "synth_f32_special");
     }
 }
+#endif // #ifdef IMGUI_BUNDLE_WITH_IMMVISION
