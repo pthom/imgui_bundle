@@ -154,5 +154,5 @@ function(_ibd_pyodide_set_build_options)
     set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)
 
     # Disable some features
-    set(IMGUI_BUNDLE_DISABLE_IMFILEDIALOG ON CACHE BOOL "" FORCE)
+    set(IMGUI_BUNDLE_WITH_IMFILEDIALOG OFF CACHE BOOL "" FORCE)
 endfunction()
