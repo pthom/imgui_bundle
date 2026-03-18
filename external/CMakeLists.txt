@@ -228,6 +228,10 @@ if(IMGUI_BUNDLE_WITH_NANOVG)
         target_sources(nanovg PRIVATE nanovg/MetalNanoVG/src/nanovg_mtl.m nanovg/MetalNanoVG/src/nanovg_mtl.h)
         target_link_libraries(nanovg PUBLIC "-framework Metal" "-framework QuartzCore")
         target_include_directories(nanovg PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/nanovg/MetalNanoVG/src>)
+        # MetalNanoVG was written with ARC enabled — compile with -fobjc-arc
+        set_source_files_properties(nanovg/MetalNanoVG/src/nanovg_mtl.m
+            TARGET_DIRECTORY nanovg
+            PROPERTIES COMPILE_FLAGS "-fobjc-arc")
     endif()
 
     # Add nvg_imgui
