@@ -5,15 +5,6 @@ project(imgui_bundle VERSION "1.92.601") # Based on ImGui 1.92.6 - Remember to m
 # imgui_bundle_build_lib contains the main logic to build imgui_bundle
 set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
 set(IMGUI_BUNDLE_VERSION ${PROJECT_VERSION} CACHE STRING "" FORCE)
-# Build number = total git commit count (monotonically increasing)
-execute_process(COMMAND git rev-list --count HEAD
-    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-    OUTPUT_VARIABLE IMGUI_BUNDLE_BUILD_NUMBER
-    OUTPUT_STRIP_TRAILING_WHITESPACE
-    ERROR_QUIET)
-if(NOT IMGUI_BUNDLE_BUILD_NUMBER)
-    set(IMGUI_BUNDLE_BUILD_NUMBER "0")
-endif()
 include(imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
 include(imgui_bundle_cmake/imgui_bundle_pyodide.cmake)
 
@@ -393,8 +384,22 @@ if (WIN32 AND IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR)
 endif()
 
+# Suppress Apple ld warnings about duplicate libraries in transitive dependencies
+if(APPLE)
+    add_link_options("-Wl,-no_warn_duplicate_libraries")
+endif()
+
 # Fake main library (imgui_bundle is just an interface to define common options)
 # -----------------------------------------------------------------------------
+# Build number = total git commit count (monotonically increasing)
+execute_process(COMMAND git rev-list --count HEAD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+    OUTPUT_VARIABLE IMGUI_BUNDLE_BUILD_NUMBER
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET)
+if(NOT IMGUI_BUNDLE_BUILD_NUMBER)
+    set(IMGUI_BUNDLE_BUILD_NUMBER "0")
+endif()
 add_library(imgui_bundle INTERFACE)
 target_compile_definitions(imgui_bundle INTERFACE
     IMGUI_BUNDLE_VERSION="${IMGUI_BUNDLE_VERSION}"
