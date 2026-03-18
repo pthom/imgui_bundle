@@ -260,6 +260,10 @@ if(IMGUI_BUNDLE_WITH_IMANIM)
     add_simple_external_library_with_sources(imanim ImAnim)
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMANIM)
     target_include_directories(imanim PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/ImAnim/ImAnim>)
+    # Suppress GCC warning about unused fread return values in third-party code
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        target_compile_options(imanim PRIVATE -Wno-unused-result)
+    endif()
     set(IMGUI_BUNDLE_WITH_IMANIM ON CACHE INTERNAL "" FORCE)
 endif()
 
