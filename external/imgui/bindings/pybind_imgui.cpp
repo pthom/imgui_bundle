@@ -6774,6 +6774,16 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("count_grep", &ImGuiTextFilter::CountGrep, "")
         ;
 
+    pyClassImGuiTextFilter.def_prop_rw("input_buf",
+        [](const ImGuiTextFilter& self) { return std::string(self.InputBuf); },
+        [](ImGuiTextFilter& self, const std::string& s) {
+            strncpy(self.InputBuf, s.c_str(), sizeof(self.InputBuf) - 1);
+            self.InputBuf[sizeof(self.InputBuf) - 1] = '\0';
+            self.Build();
+        });
+
+
+
 
     auto pyClassImGuiTextBuffer =
         nb::class_<ImGuiTextBuffer>

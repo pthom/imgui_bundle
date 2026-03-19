@@ -9702,6 +9702,14 @@ class TextFilter:
     # int                     CountGrep;    /* original C++ signature */
     count_grep: int
 
+    @property
+    def input_buf(self) -> str:
+        """The current filter text. Setting it also calls build()."""
+        ...
+
+    @input_buf.setter
+    def input_buf(self, value: str) -> None: ...
+
 class TextBuffer:
     """Helper: Growable text buffer for logging/accumulating text
     (this could be called 'ImGuiTextBuilder' / 'ImGuiStringBuilder')

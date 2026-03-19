@@ -533,6 +533,27 @@ def litgen_options_imgui(
     )
 
 
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiTextFilter",
+        stub_code='''
+        @property
+        def input_buf(self) -> str:
+            """The current filter text. Setting it also calls build()."""
+            ...
+        @input_buf.setter
+        def input_buf(self, value: str) -> None: ...
+    ''',
+        pydef_code="""
+        LG_CLASS.def_prop_rw("input_buf",
+            [](const ImGuiTextFilter& self) { return std::string(self.InputBuf); },
+            [](ImGuiTextFilter& self, const std::string& s) {
+                strncpy(self.InputBuf, s.c_str(), sizeof(self.InputBuf) - 1);
+                self.InputBuf[sizeof(self.InputBuf) - 1] = '\\0';
+                self.Build();
+            });
+    """,
+    )
+
     if options_type == ImguiOptionsType.imgui_h:
         options.fn_exclude_by_name__regex += "|^InputText"
     elif options_type == ImguiOptionsType.imgui_internal_h:
