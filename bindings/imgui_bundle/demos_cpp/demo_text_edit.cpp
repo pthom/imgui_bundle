@@ -255,7 +255,7 @@ void DemoDecoratorsAndContextMenus()
         editor.SetText(
             "#include <iostream>\n"
             "\n"
-            "int main() {\n"
+            "void foo() {\n"
             "    std::cout << \"Hello\" << std::endl;\n"
             "    int x = 42;\n"
             "    float pi = 3.14159f;\n"
@@ -333,7 +333,7 @@ void DemoTextDiff()
         std::string left =
             "#include <iostream>\n"
             "\n"
-            "int main() {\n"
+            "void foo() {\n"
             "    std::cout << \"Hello\" << std::endl;\n"
             "    return 0;\n"
             "}\n";
@@ -342,7 +342,7 @@ void DemoTextDiff()
             "#include <iostream>\n"
             "#include <string>\n"
             "\n"
-            "int main() {\n"
+            "void foo() {\n"
             "    std::string name = \"World\";\n"
             "    std::cout << \"Hello, \" << name << std::endl;\n"
             "    return 0;\n"
