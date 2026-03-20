@@ -1,11 +1,58 @@
-# Misc development utilities
+# ImGui Bundle development utilities
 
+_pycmd := "PYTHONPATH=external/bindings_generation python -c"
 
 # List all the targets in the justfile
 default:
     @just --list
 
-# build imgui bundle explorer emscripten (with OpenCV for demos)
+
+# ==============================================================
+# External libraries management
+# ==============================================================
+
+# Show all external libraries with their remotes and branches
+[group('libs')]
+libs_info:
+    @{{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import show_libs_info; show_libs_info()"
+
+# Reattach all submodules to branches and remotes (fork + official)
+[group('libs')]
+libs_reattach:
+    {{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import reattach_all_submodules; reattach_all_submodules()"
+
+# Fetch all remotes for all submodules
+[group('libs')]
+libs_fetch:
+    {{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import fetch_all_submodules; fetch_all_submodules()"
+
+# Pull all submodules
+[group('libs')]
+libs_pull:
+    {{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import pull_all_submodules; pull_all_submodules()"
+
+# Check which fork libraries have new upstream changes
+[group('libs')]
+libs_check_upstream:
+    {{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import check_new_changes_in_official; check_new_changes_in_official()"
+
+# Tag and rebase a fork library on its official upstream (usage: just libs_rebase <name>)
+[group('libs')]
+libs_rebase lib:
+    {{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import rebase_lib; rebase_lib('{{ lib }}')"
+
+# Push a date tag to a fork library (usage: just libs_tag <name>)
+[group('libs')]
+libs_tag lib:
+    {{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import tag_lib; tag_lib('{{ lib }}')"
+
+
+# ==============================================================
+# ImGui Bundle Explorer (emscripten, with OpenCV)
+# ==============================================================
+
+# Build imgui bundle explorer emscripten (with OpenCV for demos)
+[group('ibex')]
 ibex_build:
     mkdir -p build_ibex_ems && \
     cd build_ibex_ems && \
@@ -13,12 +60,13 @@ ibex_build:
     emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DIMMVISION_FETCH_OPENCV=ON && \
     make -j
 
-# clean imgui bundle emscripten build
+# Clean imgui bundle explorer emscripten build
+[group('ibex')]
 ibex_clean:
     rm -rf build_ibex_ems
 
-# deploy the imgui bundle explorer build
-# old url:     # rsync -vaz bin pascal@traineq.org:HTML/ImGuiBundle/emscripten
+# Deploy the imgui bundle explorer build (old url: rsync -vaz bin pascal@traineq.org:HTML/ImGuiBundle/emscripten)
+[group('ibex')]
 ibex_deploy: ibex_build
     # The server supports gzip encoding, this speed up the loading a lot, especially for the .wasm files
     cp build_ibex_ems/bin/demo_imgui_bundle.html build_ibex_ems/bin/index.html
@@ -29,12 +77,19 @@ ibex_deploy: ibex_build
     echo "Deployed to https://traineq.org/imgui_bundle_explorer/"
 
 # Serve emscripten with CORS
+[group('ibex')]
 ibex_serve:
     rm -f build_ibex_ems/bin/*.gz && \
     cd build_ibex_ems/bin && \
     python ../../ci_scripts/webserver_multithread_policy.py -p 8642
 
+
+# ==============================================================
+# ImGui Explorer (emscripten, lightweight)
+# ==============================================================
+
 # Build imgui explorer emscripten
+[group('imex')]
 imex_ems_build:
     mkdir -p build_imex_ems && \
     cd build_imex_ems && \
@@ -44,62 +99,54 @@ imex_ems_build:
     cmake --build . -j 8
 
 # Serve imgui explorer
+[group('imex')]
 imex_ems_serve: imex_ems_build
     echo "add ?lib=imgui, ?lib=implot, ?lib=implot3d or ?lib=imanim to the URL to load the corresponding manual page"
     rm -f build_imex_ems/bin/demo_code/*.gz
     cd build_imex_ems/bin && python ../../ci_scripts/webserver_multithread_policy.py -p 7006
 
 # Clean imgui explorer emscripten build
+[group('imex')]
 imex_ems_clean:
     rm -rf build_imex_ems
 
-# deploy imgui explorer to https://pthom.github.io/imgui_explorer/
-# (copies build output into the imgui_explorer github pages repo, commits, and pushes)
+# Deploy imgui explorer to https://pthom.github.io/imgui_explorer/ (copies build into github pages repo, commits, pushes)
+[group('imex')]
 imex_ems_deploy: imex_ems_build
     ./ci_scripts/imex_ems_deploy.sh
 
-# Reattach all submodules to branches and remotes (fork + official)
-ext_reattach:
-    python -c "import sys; sys.path.append('external'); from bindings_generation import all_external_libraries; all_external_libraries.reattach_all_submodules()"
 
+# ==============================================================
+# CI / Docker
+# ==============================================================
 
-# Push a new tag to the imgui fork repository with the current date
-imgui_tag:
-    cd external/imgui/imgui && git tag `date +'bundle_%Y%m%d'` && git push fork --tags
-
-# Push a new tag to the imgui_test_engine fork repository with the current date
-imgui_te_tag:
-    cd external/imgui_test_engine/imgui_test_engine && git tag `date +'bundle_%Y%m%d'` && git push fork --tags
-
-# Rebase the imgui fork repository on the official repository (push a new tag before!)
-imgui_rebase:
-    cd external/imgui/imgui && git fetch official && git rebase official/docking
-
-# Rebase the imgui_test_engine fork repository on the official repository (push a new tag before!)
-imgui_te_rebase:
-    cd external/imgui_test_engine/imgui_test_engine && git fetch official && git rebase official/main
-
-# Runs a musllinux docker container with the repo mounted (to test the musllinux cibuild). Sources will be in /work inside the container.
+# Run a musllinux docker container with the repo mounted. Sources will be in /work inside the container.
+[group('ci')]
 cibuild_docker_musllinux:
     docker run -it --rm -v {{justfile_directory()}}:/work -w /work quay.io/pypa/musllinux_1_1_x86_64 bash
 
-# Runs a manylinux docker container with the repo mounted (to test the manylinux cibuild). Sources will be in /work inside the container.
+# Run a manylinux docker container with the repo mounted. Sources will be in /work inside the container.
+[group('ci')]
 cibuild_docker_manylinux:
     docker run -it --rm -v {{justfile_directory()}}:/work -w /work quay.io/pypa/manylinux2014_x86_64 bash
 
-# Run mypy on the bindings
-mypy:
-    cd bindings && ./mypy_bindings.sh
+
+# ==============================================================
+# Documentation
+# ==============================================================
 
 # Build the doc in interactive mode (for dev)
+[group('docs')]
 doc_serve_interactive:
     cd docs/book && jupyter-book start
 
 # Serve the static built doc
+[group('docs')]
 doc_serve_static:
     cd docs/book/_build/html && python -m http.server 7005
 
 # Build the doc in static html
+[group('docs')]
 doc_build_static:
     cd docs/book && jupyter-book build --html
     echo "Doc built in docs/book/_build/html"
@@ -108,43 +155,65 @@ doc_build_static:
     echo "\nOr just run:\n\n  just doc_serve_static\n"
 
 # Build bundle doc in pdf, copy the pdf to the ramdisk
+[group('docs')]
 doc_build_pdf:
     cd docs/book && jupyter-book build --pdf
 
+
 # ==============================================================
-# Pyodide build targets
+# Pyodide
 # ==============================================================
 # Note: see ci_scripts/pyodide_local_build/Readme.md
 # for more info about the local pyodide build setup
-# --------------------------------------------------------------
 
 # Build pyodide wheel (excludes demos to reduce size)
+[group('pyodide')]
 pyodide_build: pyodide_clean
     source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && IMGUI_BUNDLE_EXCLUDE_DEMOS=1 pyodide build
     cp dist/imgui_bundle*pyodide*.whl ci_scripts/pyodide_local_build/test_browser/local_wheels/
 
 # Start browser test server (serves test HTML pages)
+[group('pyodide')]
 pyodide_test_serve:
     ./ci_scripts/pyodide_local_build/test_browser/run_server.sh
 
 # Clean pyodide build artifacts
+[group('pyodide')]
 pyodide_clean:
     rm -rf .pyodide_build
     rm -f ci_scripts/pyodide_local_build/test_browser/local_wheels/imgui_bundle*pyodide*.whl
     rm -f dist/imgui_bundle*pyodide*.whl
 
 # Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
+[group('pyodide')]
 pyodide_setup_local_build:
     ./ci_scripts/pyodide_local_build/setup_pyodide_local_build.sh
     ./ci_scripts/pyodide_local_build/test_browser/download_pyodide_dist.sh
 
-# pyodide deep clean (removes also the local build setup)
+# Pyodide deep clean (removes also the local build setup)
+[group('pyodide')]
 pyodide_deep_clean: pyodide_clean
     rm -rf ci_scripts/pyodide_local_build/test_browser/pyodide_dist
     rm -rf ci_scripts/pyodide_local_build/venv_pyo
     rm -rf ci_scripts/pyodide_local_build/emsdk
 
-# Populate the pyodide_recipes folder by cloning the pyodide-recipes repository and adding a remote to the fork (for pushing changes to the recipes)
+# Clone pyodide-recipes repo and add fork remote
+[group('pyodide')]
 pyodide_setup_recipe_clone:
     git clone https://github.com/pyodide/pyodide-recipes.git ci_scripts/pyodide_local_build/pyodide_recipes
     cd ci_scripts/pyodide_local_build/pyodide_recipes && git remote add fork https://github.com/pthom/pyodide-recipes.git
+
+
+# ==============================================================
+# Tests
+# ==============================================================
+
+# Run mypy on the bindings
+[group('test')]
+test_mypy:
+    cd bindings && ./mypy_bindings.sh
+
+# Run pytest
+[group('test')]
+test_pytest:
+    pytest

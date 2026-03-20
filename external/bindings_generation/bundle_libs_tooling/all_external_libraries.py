@@ -128,7 +128,8 @@ def lib_imgui_toggle() -> ExternalLibrary:
 def lib_imgui_color_text_edit() -> ExternalLibrary:
     return ExternalLibrary(
         name="ImGuiColorTextEdit",
-        official_git_url="https://github.com/BalazsJako/ImGuiColorTextEdit.git",
+        # official_git_url="https://github.com/BalazsJako/ImGuiColorTextEdit.git",
+        official_git_url="https://github.com/goossens/ImGuiColorTextEdit.git",
         official_branch="dev",
         fork_git_url="https://github.com/pthom/ImGuiColorTextEdit.git",
     )
@@ -155,17 +156,6 @@ def lib_immvision() -> ExternalLibrary:
         name="immvision",
         official_git_url="https://github.com/pthom/immvision.git",
         official_branch="master"
-    )
-
-
-def lib_cvnp() -> ExternalLibrary:
-    return ExternalLibrary(
-        name="cvnp",
-        official_git_url="https://github.com/pthom/cvnp.git",
-        official_branch="master",
-        custom_git_folder="immvision/cvnp",
-        is_sub_library=True,
-        is_published_in_python=False
     )
 
 
@@ -252,7 +242,6 @@ ALL_LIBS = [
     lib_imguizmo(),
     lib_immapp(),
     lib_immvision(),
-    lib_cvnp(),
     lib_implot(),
     lib_implot3d(),
     lib_imspinner(),
@@ -311,4 +300,43 @@ def check_new_changes_in_official():
     changed_str = ", ".join(changed)
     print(f"Unchanged libraries: {unchanged_str}")
     print(f"Libraries with new changes in official repo: {changed_str}")
+
+
+def find_lib_by_snake_case(name: str) -> ExternalLibrary:
+    """Find a library by its snake_case name (as shown by show_libs_info)."""
+    matches = [lib for lib in ALL_LIBS if lib.name_snake_case() == name]
+    if not matches:
+        all_names = ", ".join(lib.name_snake_case() for lib in ALL_LIBS if lib.is_submodule())
+        raise ValueError(f"Unknown library: '{name}'. Available: {all_names}")
+    return matches[0]
+
+
+def show_libs_info():
+    """Print a table of all external libraries with their remotes and paths."""
+    print(f"{'NAME':<25s} {'FORK':<53s} {'OFFICIAL':<53s} {'PATH'}")
+    print("-" * 170)
+    for lib in ALL_LIBS:
+        if lib.is_submodule():
+            fork = lib.fork_git_url or ""
+            official = lib.official_git_url or ""
+            print(f"{lib.name_snake_case():<25s} {fork:<53s} {official:<53s} {lib.git_folder_relative_path()}")
+
+
+def rebase_lib(name: str):
+    """Tag and rebase a fork library on its official upstream."""
+    lib = find_lib_by_snake_case(name)
+    assert lib.fork_git_url, f"'{name}' ({lib.name}) is not a fork"
+    lib.cmd_rebase_fork_on_official_changes().run()
+
+
+def tag_lib(name: str):
+    """Push a date tag to a fork library."""
+    import os
+    lib = find_lib_by_snake_case(name)
+    assert lib.fork_git_url, f"'{name}' ({lib.name}) is not a fork"
+    date_str = os.popen("date +%Y%m%d").read().strip()
+    from .shell_commands import ShellCommands
+    ShellCommands(
+        f"cd {lib.git_folder_abs_path()} && git tag bundle_{date_str} && git push {lib.fork_remote_name} --tags"
+    ).run()
 
