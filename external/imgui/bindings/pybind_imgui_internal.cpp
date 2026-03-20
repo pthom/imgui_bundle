@@ -2421,6 +2421,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_window", &ImGuiContext::NavWindow, "Focused window for navigation. Could be called 'FocusedWindow'")
         .def_rw("nav_focus_scope_id", &ImGuiContext::NavFocusScopeId, "Focused focus scope (e.g. selection code often wants to \"clear other items\" when landing on an item of the same scope)")
         .def_rw("nav_layer", &ImGuiContext::NavLayer, "Focused layer (main scrolling layer, or menu/title bar layer)")
+        .def_rw("nav_id_item_flags", &ImGuiContext::NavIdItemFlags, "")
         .def_rw("nav_activate_id", &ImGuiContext::NavActivateId, "~~ (g.ActiveId == 0) && (IsKeyPressed(ImGuiKey_Space) || IsKeyDown(ImGuiKey_Enter) || IsKeyPressed(ImGuiKey_NavGamepadActivate)) ? NavId : 0, also set when calling ActivateItemByID()")
         .def_rw("nav_activate_down_id", &ImGuiContext::NavActivateDownId, "~~ IsKeyDown(ImGuiKey_Space) || IsKeyDown(ImGuiKey_Enter) || IsKeyDown(ImGuiKey_NavGamepadActivate) ? NavId : 0")
         .def_rw("nav_activate_pressed_id", &ImGuiContext::NavActivatePressedId, "~~ IsKeyPressed(ImGuiKey_Space) || IsKeyPressed(ImGuiKey_Enter) || IsKeyPressed(ImGuiKey_NavGamepadActivate) ? NavId : 0 (no repeat)")
@@ -2428,6 +2429,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_focus_route", &ImGuiContext::NavFocusRoute, "Reversed copy focus scope stack for NavId (should contains NavFocusScopeId). This essentially follow the window->ParentWindowForFocusRoute chain.")
         .def_rw("nav_highlight_activated_id", &ImGuiContext::NavHighlightActivatedId, "")
         .def_rw("nav_highlight_activated_timer", &ImGuiContext::NavHighlightActivatedTimer, "")
+        .def_rw("nav_open_context_menu_item_id", &ImGuiContext::NavOpenContextMenuItemId, "")
+        .def_rw("nav_open_context_menu_window_id", &ImGuiContext::NavOpenContextMenuWindowId, "")
         .def_rw("nav_next_activate_id", &ImGuiContext::NavNextActivateId, "Set by ActivateItemByID(), queued until next frame.")
         .def_rw("nav_next_activate_flags", &ImGuiContext::NavNextActivateFlags, "")
         .def_rw("nav_input_source", &ImGuiContext::NavInputSource, "Keyboard or Gamepad mode? THIS CAN ONLY BE ImGuiInputSource_Keyboard or ImGuiInputSource_Gamepad")
@@ -2524,6 +2527,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("input_text_deactivated_state", &ImGuiContext::InputTextDeactivatedState, "")
         .def_rw("input_text_password_font_backup_baked", &ImGuiContext::InputTextPasswordFontBackupBaked, "")
         .def_rw("input_text_password_font_backup_flags", &ImGuiContext::InputTextPasswordFontBackupFlags, "")
+        .def_rw("input_text_reactivate_id", &ImGuiContext::InputTextReactivateId, "ID of InputText to reactivate on next frame (for io.ConfigInputTextEnterKeepActive behavior)")
         .def_rw("temp_input_id", &ImGuiContext::TempInputId, "Temporary text input when using Ctrl+Click on a slider, etc.")
         .def_rw("data_type_zero_value", &ImGuiContext::DataTypeZeroValue, "0 for all data types")
         .def_rw("begin_menu_depth", &ImGuiContext::BeginMenuDepth, "")
@@ -3780,6 +3784,12 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("get_mouse_button_from_popup_flags",
         nb::overload_cast<ImGuiPopupFlags>(ImGui::GetMouseButtonFromPopupFlags), nb::arg("flags"));
 
+    m.def("is_popup_open_request_for_item",
+        nb::overload_cast<ImGuiPopupFlags, ImGuiID>(ImGui::IsPopupOpenRequestForItem), nb::arg("flags"), nb::arg("id_"));
+
+    m.def("is_popup_open_request_for_window",
+        nb::overload_cast<ImGuiPopupFlags>(ImGui::IsPopupOpenRequestForWindow), nb::arg("flags"));
+
     m.def("begin_tooltip_ex",
         ImGui::BeginTooltipEx, nb::arg("tooltip_flags"), nb::arg("extra_window_flags"));
 
@@ -4887,6 +4897,9 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("get_window_resize_border_id",
         ImGui::GetWindowResizeBorderID, nb::arg("window"), nb::arg("dir"));
 
+    m.def("extend_hit_box_when_near_viewport_edge",
+        ImGui::ExtendHitBoxWhenNearViewportEdge, nb::arg("window"), nb::arg("bb"), nb::arg("threshold"), nb::arg("axis"));
+
     m.def("button_behavior",
         [](const ImRect & bb, ImGuiID id, bool out_hovered, bool out_held, ImGuiButtonFlags flags = 0) -> std::tuple<bool, bool, bool>
         {
@@ -5067,7 +5080,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("demo_marker",
         ImGui::DemoMarker,
         nb::arg("file"), nb::arg("line"), nb::arg("section"),
-        "Demo Doc Marker for e.g. imgui_manual");
+        "Demo Doc Marker for e.g. imgui_explorer");
 
     m.def("debug_alloc_hook",
         ImGui::DebugAllocHook,
@@ -5132,8 +5145,8 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("debug_node_font",
         ImGui::DebugNodeFont, nb::arg("font"));
 
-    m.def("debug_node_font_glyphes_for_src_mask",
-        ImGui::DebugNodeFontGlyphesForSrcMask, nb::arg("font"), nb::arg("baked"), nb::arg("src_mask"));
+    m.def("debug_node_font_glyphs_for_src_mask",
+        ImGui::DebugNodeFontGlyphsForSrcMask, nb::arg("font"), nb::arg("baked"), nb::arg("src_mask"));
 
     m.def("debug_node_font_glyph",
         ImGui::DebugNodeFontGlyph, nb::arg("font"), nb::arg("glyph"));

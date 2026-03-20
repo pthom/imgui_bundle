@@ -377,7 +377,7 @@ NpBuffer = np.ndarray  # used to transfer texture data as a 1D numpy array of by
 #   - Software using Dear ImGui  https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui
 # - Issues & support ........... https://github.com/ocornut/imgui/issues
 # - Test Engine & Automation ... https://github.com/ocornut/imgui_test_engine (test suite, test engine to automate your apps)
-# - Web version of the Demo .... https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html (w/ source code browser)
+# - Web version of the Demo .... https://pthom.github.io/imgui_manual (w/ source code browser)
 
 # For FIRST-TIME users having issues compiling/linking/running:
 # please post in https://github.com/ocornut/imgui/discussions if you cannot find a solution in resources above.
@@ -601,7 +601,9 @@ class ImVec4(Vec4Protocol):
 # - In v1.91.4 (2024/10/08): the default type for ImTextureID was changed from 'None*' to 'ImU64'. This allowed backends requiring 64-bit worth of data to build on 32-bit architectures. Use intermediary intptr_t cast and read FAQ if you have casting warnings.
 # - In v1.92.0 (2025/06/11): added ImTextureRef which carry either a ImTextureID either a pointer to internal texture atlas. All user facing functions taking ImTextureID changed to ImTextureRef
 
-# Define this if you need 0 to be a valid ImTextureID for your backend.
+# Define this if you need to change the invalid value for your backend.
+# - in v1.92.7 (2025/03/12): we changed default value from 0 to -1 as it is a better default, which supports storing offsets/indices.
+# - If this is causing problem with your custom ImTextureID definition, you can add '#define ImTextureID_Invalid' to your imconfig + please report this to GitHub.
 
 class ImTextureRef:
     # ImTextureRef()                          { _TexData = NULL; _TexID = ImTextureID_Invalid; }    /* original C++ signature */
@@ -4366,13 +4368,15 @@ class Key(enum.IntFlag):
     # ImGuiKey_GamepadFaceLeft,           /* original C++ signature */
     gamepad_face_left = (
         enum.auto()
-    )  # (= 634)  # X           | Y       | Square   | Tap: Toggle Menu. Hold: Windowing mode (Focus/Move/Resize windows)
+    )  # (= 634)  # X           | Y       | Square   | Toggle Menu. Hold for Windowing mode (Focus/Move/Resize windows)
     # ImGuiKey_GamepadFaceRight,          /* original C++ signature */
     gamepad_face_right = enum.auto()  # (= 635)  # B           | A       | Circle   | Cancel / Close / Exit
     # ImGuiKey_GamepadFaceUp,             /* original C++ signature */
-    gamepad_face_up = enum.auto()  # (= 636)  # Y           | X       | Triangle | Text Input / On-screen Keyboard
+    gamepad_face_up = enum.auto()  # (= 636)  # Y           | X       | Triangle | Open Context Menu
     # ImGuiKey_GamepadFaceDown,           /* original C++ signature */
-    gamepad_face_down = enum.auto()  # (= 637)  # A           | B       | Cross    | Activate / Open / Toggle / Tweak
+    gamepad_face_down = (
+        enum.auto()
+    )  # (= 637)  # A           | B       | Cross    | Activate / Open / Toggle. Hold for 0.60 to Activate in Text Input mode (e.g. wired to an on-screen keyboard).
     # ImGuiKey_GamepadDpadLeft,           /* original C++ signature */
     gamepad_dpad_left = (
         enum.auto()
@@ -4843,17 +4847,19 @@ class StyleVar_(enum.IntFlag):
     button_text_align = enum.auto()  # (= 36)  # ImVec2    ButtonTextAlign
     # ImGuiStyleVar_SelectableTextAlign,          /* original C++ signature */
     selectable_text_align = enum.auto()  # (= 37)  # ImVec2    SelectableTextAlign
+    # ImGuiStyleVar_SeparatorSize,                /* original C++ signature */
+    separator_size = enum.auto()  # (= 38)  # float     SeparatorSize
     # ImGuiStyleVar_SeparatorTextBorderSize,      /* original C++ signature */
-    separator_text_border_size = enum.auto()  # (= 38)  # float     SeparatorTextBorderSize
+    separator_text_border_size = enum.auto()  # (= 39)  # float     SeparatorTextBorderSize
     # ImGuiStyleVar_SeparatorTextAlign,           /* original C++ signature */
-    separator_text_align = enum.auto()  # (= 39)  # ImVec2    SeparatorTextAlign
+    separator_text_align = enum.auto()  # (= 40)  # ImVec2    SeparatorTextAlign
     # ImGuiStyleVar_SeparatorTextPadding,         /* original C++ signature */
-    separator_text_padding = enum.auto()  # (= 40)  # ImVec2    SeparatorTextPadding
+    separator_text_padding = enum.auto()  # (= 41)  # ImVec2    SeparatorTextPadding
     # ImGuiStyleVar_DockingSeparatorSize,         /* original C++ signature */
-    docking_separator_size = enum.auto()  # (= 41)  # float     DockingSeparatorSize
+    docking_separator_size = enum.auto()  # (= 42)  # float     DockingSeparatorSize
     # ImGuiStyleVar_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 42)
+    count = enum.auto()  # (= 43)
 
 class ButtonFlags_(enum.IntFlag):
     """Flags for InvisibleButton() [extended in imgui_internal.h]"""
@@ -8880,6 +8886,8 @@ class Style:
     )
     # ImVec2      SelectableTextAlign;    /* original C++ signature */
     selectable_text_align: ImVec2  # Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.
+    # float       SeparatorSize;    /* original C++ signature */
+    separator_size: float  # Thickness of border in Separator()
     # float       SeparatorTextBorderSize;    /* original C++ signature */
     separator_text_border_size: float  # Thickness of border in SeparatorText()
     # ImVec2      SeparatorTextAlign;    /* original C++ signature */
@@ -9086,7 +9094,7 @@ class IO:
     )
     # bool        ConfigInputTextEnterKeepActive;    /* original C++ signature */
     config_input_text_enter_keep_active: (
-        bool  # = False          // [BETA] Pressing Enter will keep item active and select contents (single-line only).
+        bool  # = False          // [BETA] Pressing Enter will reactivate item and select all text (single-line only).
     )
     # bool        ConfigDragClickToInputText;    /* original C++ signature */
     config_drag_click_to_input_text: bool  # = False          // [BETA] Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving). Not desirable on devices without a keyboard.
@@ -11398,7 +11406,7 @@ class ImFontAtlas:
      - Call Build() + GetTexDataAsAlpha8() or GetTexDataAsRGBA32() to build and retrieve pixels data.
      - Call SetTexID(my_tex_id); and pass the pointer/identifier to your texture in a format natural to your graphics API.
     Common pitfalls:
-    - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persist up until the
+    - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persists up until the
       atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.
     - Important: By default, AddFontFromMemoryTTF() takes ownership of the data. Even though we are not writing to it, we will free the pointer on destruction.
       You can set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed,
