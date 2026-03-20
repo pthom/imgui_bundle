@@ -828,7 +828,6 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("pressed_on_double_click", ImGuiButtonFlags_PressedOnDoubleClick, "return True on double-click (default requires click+release)")
             .value("pressed_on_drag_drop_hold", ImGuiButtonFlags_PressedOnDragDropHold, "return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)")
             .value("flatten_children", ImGuiButtonFlags_FlattenChildren, "allow interactions even if a child window is overlapping")
-            .value("allow_overlap", ImGuiButtonFlags_AllowOverlap, "require previous frame HoveredId to either match id or be null before being usable.")
             .value("align_text_base_line", ImGuiButtonFlags_AlignTextBaseLine, "vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine")
             .value("no_key_mods_allowed", ImGuiButtonFlags_NoKeyModsAllowed, "disable mouse interaction if a key modifier is held")
             .value("no_holding_active_id", ImGuiButtonFlags_NoHoldingActiveId, "don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)")
@@ -1082,6 +1081,10 @@ void py_init_module_imgui_internal(nb::module_& m)
             "(private API)")
         .def("get_preferred_offset_x",
             &ImGuiInputTextState::GetPreferredOffsetX, "(private API)")
+        .def("get_text",
+            &ImGuiInputTextState::GetText,
+            "(private API)",
+            nb::rv_policy::reference)
         .def("cursor_anim_reset",
             &ImGuiInputTextState::CursorAnimReset, "(private API)")
         .def("cursor_clamp",
@@ -2037,10 +2040,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("last_alpha", &ImGuiViewportP::LastAlpha, "")
         .def_rw("last_focused_had_nav_window", &ImGuiViewportP::LastFocusedHadNavWindow, "Instead of maintaining a LastFocusedWindow (which may harder to correctly maintain), we merely store weither NavWindow != None last time the viewport was focused.")
         .def_rw("platform_monitor", &ImGuiViewportP::PlatformMonitor, "")
-        .def_prop_ro("bg_fg_draw_lists_last_frame",
-            [](ImGuiViewportP &self) -> nb::ndarray<int, nb::numpy, nb::shape<2>, nb::c_contig>
+        .def_prop_ro("bg_fg_draw_lists_last_time_active",
+            [](ImGuiViewportP &self) -> nb::ndarray<float, nb::numpy, nb::shape<2>, nb::c_contig>
             {
-                return self.BgFgDrawListsLastFrame;
+                return self.BgFgDrawListsLastTimeActive;
             },
             "Last frame number the background (0) and foreground (1) draw lists were used")
         .def_rw("draw_data_p", &ImGuiViewportP::DrawDataP, "")

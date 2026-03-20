@@ -2903,7 +2903,7 @@ void py_init_module_imgui_main(nb::module_& m)
         "alter visibility of keyboard/gamepad cursor. by default: show when using an arrow key, hide when clicking with mouse.");
 
     m.def("set_next_item_allow_overlap",
-        ImGui::SetNextItemAllowOverlap, "allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both Selectable() and TreeNode() have dedicated flags doing this.");
+        ImGui::SetNextItemAllowOverlap, "allow next item to be overlapped by a subsequent item. Typically useful with InvisibleButton(), Selectable(), TreeNode() covering an area where subsequent items may need to be added. Note that both Selectable() and TreeNode() have dedicated flags doing this.");
 
     m.def("is_item_hovered",
         ImGui::IsItemHovered,
@@ -3361,7 +3361,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("none", ImGuiTreeNodeFlags_None, "")
             .value("selected", ImGuiTreeNodeFlags_Selected, "Draw as selected")
             .value("framed", ImGuiTreeNodeFlags_Framed, "Draw frame with background (e.g. for CollapsingHeader)")
-            .value("allow_overlap", ImGuiTreeNodeFlags_AllowOverlap, "Hit testing to allow subsequent widgets to overlap this one")
+            .value("allow_overlap", ImGuiTreeNodeFlags_AllowOverlap, "Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().")
             .value("no_tree_push_on_open", ImGuiTreeNodeFlags_NoTreePushOnOpen, "Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra indent nor pushing on ID stack")
             .value("no_auto_open_on_log", ImGuiTreeNodeFlags_NoAutoOpenOnLog, "Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes)")
             .value("default_open", ImGuiTreeNodeFlags_DefaultOpen, "Default node to be open")
@@ -3406,7 +3406,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("span_all_columns", ImGuiSelectableFlags_SpanAllColumns, "Frame will span all columns of its container table (text will still fit in current column)")
             .value("allow_double_click", ImGuiSelectableFlags_AllowDoubleClick, "Generate press events on double clicks too")
             .value("disabled", ImGuiSelectableFlags_Disabled, "Cannot be selected, display grayed out text")
-            .value("allow_overlap", ImGuiSelectableFlags_AllowOverlap, "(WIP) Hit testing to allow subsequent widgets to overlap this one")
+            .value("allow_overlap", ImGuiSelectableFlags_AllowOverlap, "Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().")
             .value("highlight", ImGuiSelectableFlags_Highlight, "Make the item be displayed as if it is hovered")
             .value("select_on_nav", ImGuiSelectableFlags_SelectOnNav, "Auto-select when moved into, unless Ctrl is held. Automatic when in a BeginMultiSelect() block.");
 
@@ -3890,7 +3890,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("mouse_button_right", ImGuiButtonFlags_MouseButtonRight, "React on right mouse button")
             .value("mouse_button_middle", ImGuiButtonFlags_MouseButtonMiddle, "React on center mouse button")
             .value("mouse_button_mask_", ImGuiButtonFlags_MouseButtonMask_, "[Internal]")
-            .value("enable_nav", ImGuiButtonFlags_EnableNav, "InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.");
+            .value("enable_nav", ImGuiButtonFlags_EnableNav, "InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.")
+            .value("allow_overlap", ImGuiButtonFlags_AllowOverlap, "Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().");
 
 
     auto pyEnumColorEditFlags_ =
@@ -6997,15 +6998,17 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("no_auto_clear_on_reselect", ImGuiMultiSelectFlags_NoAutoClearOnReselect, "Disable clearing selection when clicking/selecting an already selected item.")
             .value("box_select1d", ImGuiMultiSelectFlags_BoxSelect1d, "Enable box-selection with same width and same x pos items (e.g. full row Selectable()). Box-selection works better with little bit of spacing between items hit-box in order to be able to aim at empty space.")
             .value("box_select2d", ImGuiMultiSelectFlags_BoxSelect2d, "Enable box-selection with varying width or varying x pos items support (e.g. different width labels, or 2D layout/grid). This is slower: alters clipping logic so that e.g. horizontal movements will update selection of normally clipped items.")
-            .value("box_select_no_scroll", ImGuiMultiSelectFlags_BoxSelectNoScroll, "Disable scrolling when box-selecting near edges of scope.")
+            .value("box_select_no_scroll", ImGuiMultiSelectFlags_BoxSelectNoScroll, "Disable scrolling when box-selecting and moving mouse near edges of scope.")
             .value("clear_on_escape", ImGuiMultiSelectFlags_ClearOnEscape, "Clear selection when pressing Escape while scope is focused.")
             .value("clear_on_click_void", ImGuiMultiSelectFlags_ClearOnClickVoid, "Clear selection when clicking on empty location within scope.")
             .value("scope_window", ImGuiMultiSelectFlags_ScopeWindow, "Scope for _BoxSelect and _ClearOnClickVoid is whole window (Default). Use if BeginMultiSelect() covers a whole window or used a single time in same window.")
             .value("scope_rect", ImGuiMultiSelectFlags_ScopeRect, "Scope for _BoxSelect and _ClearOnClickVoid is rectangle encompassing BeginMultiSelect()/EndMultiSelect(). Use if BeginMultiSelect() is called multiple times in same window.")
-            .value("select_on_click", ImGuiMultiSelectFlags_SelectOnClick, "Apply selection on mouse down when clicking on unselected item. (Default)")
+            .value("select_on_auto", ImGuiMultiSelectFlags_SelectOnAuto, "Apply selection on mouse down when clicking on unselected item, on mouse up when clicking on selected item. (Default)")
+            .value("select_on_click_always", ImGuiMultiSelectFlags_SelectOnClickAlways, "Apply selection on mouse down when clicking on any items. Prevents Drag and Drop from being used on multiple-selection, but allows e.g. BoxSelect to always reselect even when clicking inside an existing selection. (Excel style behavior)")
             .value("select_on_click_release", ImGuiMultiSelectFlags_SelectOnClickRelease, "Apply selection on mouse release when clicking an unselected item. Allow dragging an unselected item without altering selection.")
             .value("nav_wrap_x", ImGuiMultiSelectFlags_NavWrapX, "[Temporary] Enable navigation wrapping on X axis. Provided as a convenience because we don't have a design for the general Nav API for this yet. When the more general feature be public we may obsolete this flag in favor of new one.")
-            .value("no_select_on_right_click", ImGuiMultiSelectFlags_NoSelectOnRightClick, "Disable default right-click processing, which selects item on mouse down, and is designed for context-menus.");
+            .value("no_select_on_right_click", ImGuiMultiSelectFlags_NoSelectOnRightClick, "Disable default right-click processing, which selects item on mouse down, and is designed for context-menus.")
+            .value("select_on_mask_", ImGuiMultiSelectFlags_SelectOnMask_, "");
 
 
     auto pyClassImGuiMultiSelectIO =

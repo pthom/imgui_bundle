@@ -377,7 +377,7 @@ NpBuffer = np.ndarray  # used to transfer texture data as a 1D numpy array of by
 #   - Software using Dear ImGui  https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui
 # - Issues & support ........... https://github.com/ocornut/imgui/issues
 # - Test Engine & Automation ... https://github.com/ocornut/imgui_test_engine (test suite, test engine to automate your apps)
-# - Web version of the Demo .... https://pthom.github.io/imgui_manual (w/ source code browser)
+# - Web version of the Demo .... https://pthom.github.io/imgui_explorer (w/ source code browser)
 
 # For FIRST-TIME users having issues compiling/linking/running:
 # please post in https://github.com/ocornut/imgui/discussions if you cannot find a solution in resources above.
@@ -602,8 +602,8 @@ class ImVec4(Vec4Protocol):
 # - In v1.92.0 (2025/06/11): added ImTextureRef which carry either a ImTextureID either a pointer to internal texture atlas. All user facing functions taking ImTextureID changed to ImTextureRef
 
 # Define this if you need to change the invalid value for your backend.
-# - in v1.92.7 (2025/03/12): we changed default value from 0 to -1 as it is a better default, which supports storing offsets/indices.
-# - If this is causing problem with your custom ImTextureID definition, you can add '#define ImTextureID_Invalid' to your imconfig + please report this to GitHub.
+# - If your backend is using ImTextureID to store an index/offset and you need 0 to be valid, You can add '#define ImTextureID_Invalid ((ImTextureID)-1)' in your imconfig.h file.
+# - From 2026/03/12 to 2026/03/19 we experimented with changing to default to -1, but I worried it would cause too many issues in third-party code so it was reverted.
 
 class ImTextureRef:
     # ImTextureRef()                          { _TexData = NULL; _TexID = ImTextureID_Invalid; }    /* original C++ signature */
@@ -2831,7 +2831,7 @@ def set_nav_cursor_visible(visible: bool) -> None:
 # Overlapping mode
 # IMGUI_API void          SetNextItemAllowOverlap();                                              /* original C++ signature */
 def set_next_item_allow_overlap() -> None:
-    """allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both Selectable() and TreeNode() have dedicated flags doing this."""
+    """allow next item to be overlapped by a subsequent item. Typically useful with InvisibleButton(), Selectable(), TreeNode() covering an area where subsequent items may need to be added. Note that both Selectable() and TreeNode() have dedicated flags doing this."""
     pass
 
 # Item/Widgets Utilities and Query Functions
@@ -3570,7 +3570,9 @@ class TreeNodeFlags_(enum.IntFlag):
     # ImGuiTreeNodeFlags_Framed               = 1 << 1,       /* original C++ signature */
     framed = enum.auto()  # (= 1 << 1)  # Draw frame with background (e.g. for CollapsingHeader)
     # ImGuiTreeNodeFlags_AllowOverlap         = 1 << 2,       /* original C++ signature */
-    allow_overlap = enum.auto()  # (= 1 << 2)  # Hit testing to allow subsequent widgets to overlap this one
+    allow_overlap = (
+        enum.auto()
+    )  # (= 1 << 2)  # Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().
     # ImGuiTreeNodeFlags_NoTreePushOnOpen     = 1 << 3,       /* original C++ signature */
     no_tree_push_on_open = (
         enum.auto()
@@ -3710,7 +3712,9 @@ class SelectableFlags_(enum.IntFlag):
     # ImGuiSelectableFlags_Disabled           = 1 << 3,       /* original C++ signature */
     disabled = enum.auto()  # (= 1 << 3)  # Cannot be selected, display grayed out text
     # ImGuiSelectableFlags_AllowOverlap       = 1 << 4,       /* original C++ signature */
-    allow_overlap = enum.auto()  # (= 1 << 4)  # (WIP) Hit testing to allow subsequent widgets to overlap this one
+    allow_overlap = (
+        enum.auto()
+    )  # (= 1 << 4)  # Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().
     # ImGuiSelectableFlags_Highlight          = 1 << 5,       /* original C++ signature */
     highlight = enum.auto()  # (= 1 << 5)  # Make the item be displayed as if it is hovered
     # ImGuiSelectableFlags_SelectOnNav        = 1 << 6,       /* original C++ signature */
@@ -4880,6 +4884,10 @@ class ButtonFlags_(enum.IntFlag):
     enable_nav = (
         enum.auto()
     )  # (= 1 << 3)  # InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.
+    # ImGuiButtonFlags_AllowOverlap           = 1 << 12,      /* original C++ signature */
+    allow_overlap = (
+        enum.auto()
+    )  # (= 1 << 12)  # Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().
 
 class ColorEditFlags_(enum.IntFlag):
     """Flags for ColorEdit3() / ColorEdit4() / ColorPicker3() / ColorPicker4() / ColorButton()"""
@@ -10098,7 +10106,9 @@ class MultiSelectFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 7)  # Enable box-selection with varying width or varying x pos items support (e.g. different width labels, or 2D layout/grid). This is slower: alters clipping logic so that e.g. horizontal movements will update selection of normally clipped items.
     # ImGuiMultiSelectFlags_BoxSelectNoScroll     = 1 << 8,       /* original C++ signature */
-    box_select_no_scroll = enum.auto()  # (= 1 << 8)  # Disable scrolling when box-selecting near edges of scope.
+    box_select_no_scroll = (
+        enum.auto()
+    )  # (= 1 << 8)  # Disable scrolling when box-selecting and moving mouse near edges of scope.
     # ImGuiMultiSelectFlags_ClearOnEscape         = 1 << 9,       /* original C++ signature */
     clear_on_escape = enum.auto()  # (= 1 << 9)  # Clear selection when pressing Escape while scope is focused.
     # ImGuiMultiSelectFlags_ClearOnClickVoid      = 1 << 10,      /* original C++ signature */
@@ -10111,14 +10121,18 @@ class MultiSelectFlags_(enum.IntFlag):
     scope_rect = (
         enum.auto()
     )  # (= 1 << 12)  # Scope for _BoxSelect and _ClearOnClickVoid is rectangle encompassing BeginMultiSelect()/EndMultiSelect(). Use if BeginMultiSelect() is called multiple times in same window.
-    # ImGuiMultiSelectFlags_SelectOnClick         = 1 << 13,      /* original C++ signature */
-    select_on_click = (
+    # ImGuiMultiSelectFlags_SelectOnAuto          = 1 << 13,      /* original C++ signature */
+    select_on_auto = (
         enum.auto()
-    )  # (= 1 << 13)  # Apply selection on mouse down when clicking on unselected item. (Default)
-    # ImGuiMultiSelectFlags_SelectOnClickRelease  = 1 << 14,      /* original C++ signature */
+    )  # (= 1 << 13)  # Apply selection on mouse down when clicking on unselected item, on mouse up when clicking on selected item. (Default)
+    # ImGuiMultiSelectFlags_SelectOnClickAlways   = 1 << 14,      /* original C++ signature */
+    select_on_click_always = (
+        enum.auto()
+    )  # (= 1 << 14)  # Apply selection on mouse down when clicking on any items. Prevents Drag and Drop from being used on multiple-selection, but allows e.g. BoxSelect to always reselect even when clicking inside an existing selection. (Excel style behavior)
+    # ImGuiMultiSelectFlags_SelectOnClickRelease  = 1 << 15,      /* original C++ signature */
     select_on_click_release = (
         enum.auto()
-    )  # (= 1 << 14)  # Apply selection on mouse release when clicking an unselected item. Allow dragging an unselected item without altering selection.
+    )  # (= 1 << 15)  # Apply selection on mouse release when clicking an unselected item. Allow dragging an unselected item without altering selection.
     # ImGuiMultiSelectFlags_RangeSelect2       = 1 << 15,  // Shift+Selection uses 2 geometry instead of linear sequence, so possible to use Shift+up/down to select vertically in grid. Analogous to what BoxSelect does.
     # ImGuiMultiSelectFlags_NavWrapX              = 1 << 16,      /* original C++ signature */
     nav_wrap_x = (
@@ -10128,6 +10142,12 @@ class MultiSelectFlags_(enum.IntFlag):
     no_select_on_right_click = (
         enum.auto()
     )  # (= 1 << 17)  # Disable default right-click processing, which selects item on mouse down, and is designed for context-menus.
+    # ImGuiMultiSelectFlags_SelectOnMask_         = ImGuiMultiSelectFlags_SelectOnAuto | ImGuiMultiSelectFlags_SelectOnClickAlways | ImGuiMultiSelectFlags_SelectOnClickRelease,    /* original C++ signature */
+    select_on_mask_ = (
+        enum.auto()
+    )  # (= MultiSelectFlags_SelectOnAuto | MultiSelectFlags_SelectOnClickAlways | MultiSelectFlags_SelectOnClickRelease)
+
+    # Obsolete names
 
 class MultiSelectIO:
     """Main IO structure returned by BeginMultiSelect()/EndMultiSelect().

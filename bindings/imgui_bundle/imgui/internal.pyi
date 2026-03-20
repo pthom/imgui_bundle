@@ -1233,10 +1233,6 @@ class ButtonFlagsPrivate_(enum.IntFlag):
     # ImGuiButtonFlags_Repeat               = 1 << 10,  // hold to repeat -> use ImGuiItemFlags_ButtonRepeat instead.
     # ImGuiButtonFlags_FlattenChildren        = 1 << 11,      /* original C++ signature */
     flatten_children = enum.auto()  # (= 1 << 11)  # allow interactions even if a child window is overlapping
-    # ImGuiButtonFlags_AllowOverlap           = 1 << 12,      /* original C++ signature */
-    allow_overlap = (
-        enum.auto()
-    )  # (= 1 << 12)  # require previous frame HoveredId to either match id or be null before being usable.
     # ImGuiButtonFlags_DontClosePopups      = 1 << 13,  // disable automatically closing parent popup on press
     # ImGuiButtonFlags_Disabled             = 1 << 14,  // disable interactions -> use BeginDisabled() or ImGuiItemFlags_Disabled
     # ImGuiButtonFlags_AlignTextBaseLine      = 1 << 15,      /* original C++ signature */
@@ -1643,6 +1639,10 @@ class InputTextState:
         pass
     # float       GetPreferredOffsetX() const;    /* original C++ signature */
     def get_preferred_offset_x(self) -> float:
+        """(private API)"""
+        pass
+    # const char* GetText()                   { return TextA.Data ? TextA.Data : ""; }    /* original C++ signature */
+    def get_text(self) -> str:
         """(private API)"""
         pass
     # Cursor & Selection
@@ -3202,10 +3202,10 @@ class ViewportP:
     last_focused_had_nav_window: bool  # Instead of maintaining a LastFocusedWindow (which may harder to correctly maintain), we merely store weither NavWindow != None last time the viewport was focused.
     # short               PlatformMonitor;    /* original C++ signature */
     platform_monitor: int
-    # int                 BgFgDrawListsLastFrame[2];    /* original C++ signature */
-    bg_fg_draw_lists_last_frame: (
+    # float               BgFgDrawListsLastTimeActive[2];    /* original C++ signature */
+    bg_fg_draw_lists_last_time_active: (
         np.ndarray
-    )  # ndarray[type=int, size=2]  # Last frame number the background (0) and foreground (1) draw lists were used
+    )  # ndarray[type=float, size=2]  # Last frame number the background (0) and foreground (1) draw lists were used
     # ImDrawData          DrawDataP;    /* original C++ signature */
     draw_data_p: ImDrawData
     # ImDrawDataBuilder   DrawDataBuilder;    /* original C++ signature */
@@ -3230,7 +3230,7 @@ class ViewportP:
     # ImVec2              BuildWorkInsetMax;    /* original C++ signature */
     build_work_inset_max: ImVec2  # "
 
-    # ImGuiViewportP()                    { Window = NULL; Idx = -1; LastFrameActive = BgFgDrawListsLastFrame[0] = BgFgDrawListsLastFrame[1] = LastFocusedStampCount = -1; LastNameHash = 0; Alpha = LastAlpha = 1.0f; LastFocusedHadNavWindow = false; PlatformMonitor = -1; BgFgDrawLists[0] = BgFgDrawLists[1] = NULL; LastPlatformPos = LastPlatformSize = LastRendererSize = ImVec2(FLT_MAX, FLT_MAX); }    /* original C++ signature */
+    # ImGuiViewportP()                    { Window = NULL; Idx = -1; LastFrameActive = LastFocusedStampCount = -1; BgFgDrawListsLastTimeActive[0] = BgFgDrawListsLastTimeActive[1] = -1.0f; LastNameHash = 0; Alpha = LastAlpha = 1.0f; LastFocusedHadNavWindow = false; PlatformMonitor = -1; BgFgDrawLists[0] = BgFgDrawLists[1] = NULL; LastPlatformPos = LastPlatformSize = LastRendererSize = ImVec2(FLT_MAX, FLT_MAX); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
     # void    ClearRequestFlags()         { PlatformRequestClose = PlatformRequestMove = PlatformRequestResize = false; }    /* original C++ signature */
