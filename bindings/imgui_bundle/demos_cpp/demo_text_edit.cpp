@@ -490,7 +490,7 @@ void DemoEditorWithMenus()
 		if (ImGui::BeginMenu("Find")) {
 			if (ImGui::MenuItem("Find", " " SHORTCUT "F")) { editor.OpenFindReplaceWindow(); }
 			if (ImGui::MenuItem("Find Next", " " SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindNext(); }
-			if (ImGui::MenuItem("Find All", "^" SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindAll(); }
+			// if (ImGui::MenuItem("Find All", "Shift " SHORTCUT "F", nullptr, editor.HasFindString())) { editor.FindAll(); }
 			ImGui::Separator();
 			ImGui::EndMenu();
 		}
