@@ -51,6 +51,16 @@ libs_rebase lib:
 libs_tag lib:
     {{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import tag_lib; tag_lib('{{ lib }}')"
 
+# Regenerate Python bindings for a single library (usage: just libs_bindings <name>)
+[group('libs')]
+libs_bindings lib:
+    {{ _pycmd }} "from autogenerate_all import autogenerate_by_name; autogenerate_by_name('{{ lib }}')"
+
+# Regenerate Python bindings for all libraries
+[group('libs')]
+libs_bindings_all:
+    {{ _pycmd }} "from autogenerate_all import main; main()"
+
 
 # ==============================================================
 # ImGui Bundle Explorer (emscripten, with OpenCV)
