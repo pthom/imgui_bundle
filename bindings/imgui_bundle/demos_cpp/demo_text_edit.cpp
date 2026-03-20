@@ -3,7 +3,7 @@
 #include "immapp/immapp.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "ImGuiColorTextEdit/TextDiff.h"
-#include <fplus/fplus.hpp>
+#include "demo_utils/api_demos.h"
 #include <string>
 #include <set>
 #include <map>
@@ -16,65 +16,78 @@
 // ============================================================================
 namespace
 {
-    std::string gFileContent; // loaded once
+    std::string gCppContent;    // loaded once
+    std::string gPythonContent; // loaded once
 
-    void LoadFileContent()
+    void LoadFileContents()
     {
-        if (!gFileContent.empty()) return;
-#ifndef __EMSCRIPTEN__
-        gFileContent = fplus::read_text_file(__FILE__)();
-#else
-        gFileContent = fplus::read_text_file("/demos_cpp/demo_text_edit.cpp")();
-#endif
+        if (gCppContent.empty())
+            gCppContent = ReadCppCode("demo_text_edit");
+        if (gPythonContent.empty())
+            gPythonContent = ReadPythonCode("demo_text_edit");
     }
 
-    // Extract the source code of a function by searching for "void funcName()"
-    // and returning everything up to the next "// ====..." separator.
-    std::string ExtractFunctionSource(const std::string& funcName)
+    // Extract source between a separator comment and the next one.
+    // For C++: searches for "void funcName()" preceded by "// ===="
+    // For Python: searches for "def pyFuncName(" preceded by "# ===="
+    std::string ExtractFunctionSource(const std::string& content, const std::string& needle, const std::string& separator)
     {
-        LoadFileContent();
-        std::string needle = "void " + funcName + "()";
-        auto pos = gFileContent.find(needle);
-        if (pos == std::string::npos) return "// Source not found for " + funcName;
+        auto pos = content.find(needle);
+        if (pos == std::string::npos) return "// Source not found for " + needle;
 
-        // Find the preceding comment block (look backwards for "// ====")
-        auto commentStart = gFileContent.rfind("// ====", pos);
+        auto commentStart = content.rfind(separator, pos);
         if (commentStart != std::string::npos)
             pos = commentStart;
 
-        // Find the end: next "// ====" after the function start
-        auto endPos = gFileContent.find("// ====", pos + needle.size());
+        auto endPos = content.find(separator, pos + needle.size());
         if (endPos == std::string::npos)
-            endPos = gFileContent.size();
+            endPos = content.size();
 
-        return gFileContent.substr(pos, endPos - pos);
+        return content.substr(pos, endPos - pos);
     }
 
-    // Show a "Show source" checkbox. When checked, displays the function's source
-    // in a read-only editor (light theme), followed by a separator before the demo.
-    // Returns true so the caller can always proceed to render the demo.
-    void ShowSourceToggle(const char* funcName)
+    // Show a "Show source" checkbox with C++/Python toggle.
+    // When checked, displays the function's source in a read-only editor (light theme).
+    // cppFuncName: e.g. "DemoBasicEditor", pyFuncName: e.g. "demo_basic_editor"
+    void ShowSourceToggle(const char* cppFuncName, const char* pyFuncName)
     {
         static std::map<std::string, bool> showFlags;
+        static std::map<std::string, int>  langFlags; // 0 = C++, 1 = Python
         static std::map<std::string, TextEditor> sourceEditors;
 
-        bool& show = showFlags[funcName];
+        std::string key(cppFuncName);
+        bool& show = showFlags[key];
+        int& lang = langFlags[key];
+
         ImGui::Checkbox("Show source", &show);
         if (show)
         {
+            ImGui::SameLine();
+            ImGui::RadioButton("C++", &lang, 0);
+            ImGui::SameLine();
+            ImGui::RadioButton("Python", &lang, 1);
+
             ImGui::SeparatorText("Source");
-            if (sourceEditors.find(funcName) == sourceEditors.end())
+            LoadFileContents();
+
+            // Build editor key per language to keep separate editors
+            std::string editorKey = key + (lang == 0 ? "_cpp" : "_py");
+            if (sourceEditors.find(editorKey) == sourceEditors.end())
             {
-                auto& ed = sourceEditors[funcName];
-                ed.SetText(ExtractFunctionSource(funcName));
-                ed.SetLanguage(TextEditor::Language::Cpp());
+                auto& ed = sourceEditors[editorKey];
+                if (lang == 0)
+                    ed.SetText(ExtractFunctionSource(gCppContent, std::string("void ") + cppFuncName + "()", "// ===="));
+                else
+                    ed.SetText(ExtractFunctionSource(gPythonContent, std::string("def ") + pyFuncName + "(", "# ===="));
+                ed.SetLanguage(lang == 0 ? TextEditor::Language::Cpp() : TextEditor::Language::Python());
                 ed.SetPalette(TextEditor::GetLightPalette());
                 ed.SetReadOnlyEnabled(true);
             }
+
             auto codeFont = ImGuiMd::GetCodeFont();
             ImGui::PushFont(codeFont.font, codeFont.size);
-            std::string id = std::string("##src_") + funcName;
-            sourceEditors[funcName].Render(id.c_str(), ImVec2(-1, ImGui::GetTextLineHeight() * 15), false);
+            std::string id = std::string("##src_") + editorKey;
+            sourceEditors[editorKey].Render(id.c_str(), ImVec2(-1, ImGui::GetTextLineHeight() * 15), false);
             ImGui::PopFont();
             ImGui::SeparatorText("Demo");
         }
@@ -88,18 +101,13 @@ namespace
 // ============================================================================
 void DemoBasicEditor()
 {
-    ShowSourceToggle("DemoBasicEditor");
+    ShowSourceToggle("DemoBasicEditor", "demo_basic_editor");
     static bool initialized = false;
     static TextEditor editor;
     if (!initialized)
     {
-        std::string filename = __FILE__;
-#ifndef __EMSCRIPTEN__
-        std::string code = fplus::read_text_file(filename)();
-#else
-        std::string code = fplus::read_text_file("/demos_cpp/demo_text_edit.cpp")();
-#endif
-        editor.SetText(code);
+        LoadFileContents();
+        editor.SetText(gCppContent);
         editor.SetLanguage(TextEditor::Language::Cpp());
         initialized = true;
     }
@@ -149,7 +157,7 @@ void DemoBasicEditor()
 // ============================================================================
 void DemoChangeCallback()
 {
-    ShowSourceToggle("DemoChangeCallback");
+    ShowSourceToggle("DemoChangeCallback", "demo_change_callback");
     static bool initialized = false;
     static TextEditor editor;
     static int changeCount = 0;
@@ -187,7 +195,7 @@ void DemoChangeCallback()
 // ============================================================================
 void DemoFilters()
 {
-    ShowSourceToggle("DemoFilters");
+    ShowSourceToggle("DemoFilters", "demo_filters");
     static bool initialized = false;
     static TextEditor editor;
 
@@ -244,7 +252,7 @@ void DemoFilters()
 // ============================================================================
 void DemoDecoratorsAndContextMenus()
 {
-    ShowSourceToggle("DemoDecoratorsAndContextMenus");
+    ShowSourceToggle("DemoDecoratorsAndContextMenus", "demo_decorators_and_context_menus");
     static bool initialized = false;
     static TextEditor editor;
     static std::set<int> breakpoints;
@@ -323,7 +331,7 @@ void DemoDecoratorsAndContextMenus()
 // ============================================================================
 void DemoTextDiff()
 {
-    ShowSourceToggle("DemoTextDiff");
+    ShowSourceToggle("DemoTextDiff", "demo_text_diff");
     static bool initialized = false;
     static TextDiff diff;
     static bool sideBySide = false;

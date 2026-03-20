@@ -1,6 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import inspect
-import re
+import textwrap
 
 from imgui_bundle import imgui, imgui_color_text_edit as ed, imgui_md, ImVec2
 from imgui_bundle.immapp import static
@@ -12,41 +12,16 @@ TextDiff = ed.TextDiff
 # ============================================================================
 # Source display helper: shows the code of a demo function in a collapsible section
 # ============================================================================
-_file_content: str = ""
 _source_show_flags: dict[str, bool] = {}
 _source_editors: dict[str, TextEditor] = {}
+# Map function names to their actual function objects (filled by each demo function)
+_source_functions: dict[str, object] = {}
 
 
-def _load_file_content() -> str:
-    global _file_content
-    if not _file_content:
-        with open(__file__, encoding="utf8") as f:
-            _file_content = f.read()
-    return _file_content
-
-
-def _extract_function_source(func_name: str) -> str:
-    """Extract source between the '# ====...' separator before the function and the next one."""
-    content = _load_file_content()
-    # Find the function definition
-    match = re.search(r"^def " + func_name + r"\(", content, re.MULTILINE)
-    if not match:
-        return f"# Source not found for {func_name}"
-    pos = match.start()
-    # Find preceding comment block (look backwards for '# ====')
-    comment_start = content.rfind("# ====", 0, pos)
-    if comment_start >= 0:
-        pos = comment_start
-    # Find the end: next '# ====' after the function start
-    end_pos = content.find("# ====", match.end())
-    if end_pos < 0:
-        end_pos = len(content)
-    return content[pos:end_pos]
-
-
-def _show_source_toggle(func_name: str) -> None:
+def _show_source_toggle(func: object) -> None:
     """Show a 'Show source' checkbox. When checked, displays the function's source
-    in a read-only editor (light theme), followed by a separator before the demo."""
+    (obtained via inspect.getsource) in a read-only editor with light theme."""
+    func_name = func.__name__  # type: ignore
     if func_name not in _source_show_flags:
         _source_show_flags[func_name] = False
 
@@ -54,8 +29,9 @@ def _show_source_toggle(func_name: str) -> None:
     if _source_show_flags[func_name]:
         imgui.separator_text("Source")
         if func_name not in _source_editors:
+            source = textwrap.dedent(inspect.getsource(func))
             editor = TextEditor()
-            editor.set_text(_extract_function_source(func_name))
+            editor.set_text(source)
             editor.set_language(TextEditor.Language.python())
             editor.set_palette(TextEditor.get_light_palette())
             editor.set_read_only_enabled(True)
@@ -73,7 +49,7 @@ def _show_source_toggle(func_name: str) -> None:
 # ============================================================================
 @static(initialized=False, editor=None, lang_idx=3)  # default: Python
 def demo_basic_editor():
-    _show_source_toggle("demo_basic_editor")
+    _show_source_toggle(demo_basic_editor)
     statics = demo_basic_editor
     if not statics.initialized:
         statics.editor = TextEditor()
@@ -126,7 +102,7 @@ def demo_basic_editor():
 # ============================================================================
 @static(initialized=False, editor=None, change_count=0)
 def demo_change_callback():
-    _show_source_toggle("demo_change_callback")
+    _show_source_toggle(demo_change_callback)
     statics = demo_change_callback
     if not statics.initialized:
         statics.editor = TextEditor()
@@ -150,7 +126,7 @@ def demo_change_callback():
 # ============================================================================
 @static(initialized=False, editor=None)
 def demo_filters():
-    _show_source_toggle("demo_filters")
+    _show_source_toggle(demo_filters)
     statics = demo_filters
     if not statics.initialized:
         statics.editor = TextEditor()
@@ -191,7 +167,7 @@ def demo_filters():
 # ============================================================================
 @static(initialized=False, editor=None, breakpoints=None, last_action="")
 def demo_decorators_and_context_menus():
-    _show_source_toggle("demo_decorators_and_context_menus")
+    _show_source_toggle(demo_decorators_and_context_menus)
     statics = demo_decorators_and_context_menus
     if not statics.initialized:
         statics.breakpoints = set()
@@ -261,7 +237,7 @@ def demo_decorators_and_context_menus():
 # ============================================================================
 @static(initialized=False, diff=None, side_by_side=False)
 def demo_text_diff():
-    _show_source_toggle("demo_text_diff")
+    _show_source_toggle(demo_text_diff)
     statics = demo_text_diff
     if not statics.initialized:
         left = (
