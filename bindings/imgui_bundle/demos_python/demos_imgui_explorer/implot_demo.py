@@ -438,6 +438,39 @@ def demo_bubble_plots():
 
 #-----------------------------------------------------------------------------
 
+def demo_polygon_plots():
+    IMGUI_DEMO_MARKER("Plots/Polygon Plots")
+    static = demo_polygon_plots
+
+    if not hasattr(static, "tri_xs"):
+        # Triangle (convex)
+        static.tri_xs = np.array([0.5, 1.0, 0.0])
+        static.tri_ys = np.array([1.0, 0.0, 0.0])
+
+        # Pentagon (convex)
+        angles = np.arange(5) * 2.0 * np.pi / 5.0 - np.pi / 2.0
+        static.pent_xs = 3.0 + 0.8 * np.cos(angles)
+        static.pent_ys = 0.5 + 0.8 * np.sin(angles)
+
+        # Star (concave), counter-clockwise
+        angles = np.arange(10) * 2.0 * np.pi / 10.0 - np.pi / 2.0
+        radii = np.where(np.arange(10) % 2 == 0, 0.8, 0.3)
+        static.star_xs = 5.5 + radii * np.cos(angles)
+        static.star_ys = 0.5 + radii * np.sin(angles)
+
+    if implot.begin_plot("Polygon Plot", ImVec2(-1, 0), implot.Flags_.equal):
+        implot.plot_polygon("Triangle", static.tri_xs, static.tri_ys,
+                            spec=implot.Spec(fill_alpha=0.5))
+        implot.plot_polygon("Pentagon", static.pent_xs, static.pent_ys,
+                            spec=implot.Spec(fill_alpha=0.5, fill_color=ImVec4(0, 1, 0, 1)))
+        implot.plot_polygon("Star (Concave)", static.star_xs, static.star_ys,
+                            spec=implot.Spec(fill_alpha=0.5, fill_color=ImVec4(1, 1, 0, 1),
+                                             flags=implot.PolygonFlags_.concave))
+        implot.end_plot()
+
+
+#-----------------------------------------------------------------------------
+
 def demo_stairstep_plots():
     IMGUI_DEMO_MARKER("Plots/Stairstep Plots")
     static = demo_stairstep_plots
@@ -2583,6 +2616,7 @@ def show_all_demos():
             demo_header("Scatter Plots", demo_scatter_plots)
             demo_header("Bubble Plots", demo_bubble_plots)
             demo_header("Realtime Plots", demo_realtime_plots)
+            demo_header("Polygon Plots", demo_polygon_plots)
             demo_header("Stairstep Plots", demo_stairstep_plots)
             demo_header("Bar Plots", demo_bar_plots)
             demo_header("Bar Groups", demo_bar_groups)

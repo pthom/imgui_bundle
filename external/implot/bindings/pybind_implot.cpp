@@ -212,6 +212,12 @@ void py_init_module_implot(nb::module_& m)
             .value("none", ImPlotBubblesFlags_None, "default");
 
 
+    auto pyEnumPolygonFlags_ =
+        nb::enum_<ImPlotPolygonFlags_>(m, "PolygonFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotPolygon. Used by setting ImPlotSpec::Flags.")
+            .value("none", ImPlotPolygonFlags_None, "default (closed, convex polygon)")
+            .value("concave", ImPlotPolygonFlags_Concave, "use concave polygon filling (slower but supports concave shapes)");
+
+
     auto pyEnumStairsFlags_ =
         nb::enum_<ImPlotStairsFlags_>(m, "StairsFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for PlotStairs. Used by setting ImPlotSpec::Flags.")
             .value("none", ImPlotStairsFlags_None, "default")
@@ -260,7 +266,8 @@ void py_init_module_implot(nb::module_& m)
             .value("none", ImPlotPieChartFlags_None, "default")
             .value("normalize", ImPlotPieChartFlags_Normalize, "force normalization of pie chart values (i.e. always make a full circle if sum < 0)")
             .value("ignore_hidden", ImPlotPieChartFlags_IgnoreHidden, "ignore hidden slices when drawing the pie chart (as if they were not there)")
-            .value("exploding", ImPlotPieChartFlags_Exploding, "Explode legend-hovered slice");
+            .value("exploding", ImPlotPieChartFlags_Exploding, "explode legend-hovered slice")
+            .value("no_slice_border", ImPlotPieChartFlags_NoSliceBorder, "do not draw slice borders");
 
 
     auto pyEnumHeatmapFlags_ =
@@ -1432,6 +1439,98 @@ void py_init_module_implot(nb::module_& m)
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("szs"), nb::arg("spec").none() = nb::none(),
         "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+
+    m.def("plot_polygon",
+        [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+        {
+            auto PlotPolygon_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
+            {
+                // Check if the array is 1D and C-contiguous
+                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                    throw std::runtime_error("The array must be 1D and contiguous");
+
+                // convert nb::ndarray to C standard buffer (const)
+                const void * xs_from_pyarray = xs.data();
+                size_t xs_count = xs.shape(0);
+
+                // Check if the array is 1D and C-contiguous
+                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                    throw std::runtime_error("The array must be 1D and contiguous");
+
+                // convert nb::ndarray to C standard buffer (const)
+                const void * ys_from_pyarray = ys.data();
+                size_t ys_count = ys.shape(0);
+
+                using np_uint_l = uint64_t;
+                using np_int_l = int64_t;
+
+                // Define a lambda to compute the letter code for the buffer type
+                auto _nanobind_buffer_type_to_letter_code = [](uint8_t dtype_code, size_t sizeof_item)  -> char
+                {
+                    #define DCODE(T) static_cast<uint8_t>(nb::dlpack::dtype_code::T)
+                        const std::array<std::tuple<uint8_t, size_t, char>, 11> mappings = {{
+                            {DCODE(UInt), 1, 'B'}, {DCODE(UInt), 2, 'H'}, {DCODE(UInt), 4, 'I'}, {DCODE(UInt), 8, 'L'},
+                            {DCODE(Int), 1, 'b'}, {DCODE(Int), 2, 'h'}, {DCODE(Int), 4, 'i'}, {DCODE(Int), 8, 'l'},
+                            {DCODE(Float), 4, 'f'}, {DCODE(Float), 8, 'd'}, {DCODE(Float), 16, 'g'}
+                        }};
+                    #undef DCODE
+                    for (const auto& [code_val, size, letter] : mappings)
+                        if (code_val == dtype_code && size == sizeof_item)
+                            return letter;
+                    throw std::runtime_error("Unsupported dtype");
+                };
+
+                // Compute the letter code for the buffer type
+                uint8_t dtype_code_ys = ys.dtype().code;
+                size_t sizeof_item_ys = ys.dtype().bits / 8;
+                char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
+
+                // call the correct template version by casting
+                if (ys_type == 'B')
+                    ImPlot::PlotPolygon(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'b')
+                    ImPlot::PlotPolygon(label_id, static_cast<const int8_t *>(xs_from_pyarray), static_cast<const int8_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'H')
+                    ImPlot::PlotPolygon(label_id, static_cast<const uint16_t *>(xs_from_pyarray), static_cast<const uint16_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'h')
+                    ImPlot::PlotPolygon(label_id, static_cast<const int16_t *>(xs_from_pyarray), static_cast<const int16_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'I')
+                    ImPlot::PlotPolygon(label_id, static_cast<const uint32_t *>(xs_from_pyarray), static_cast<const uint32_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'i')
+                    ImPlot::PlotPolygon(label_id, static_cast<const int32_t *>(xs_from_pyarray), static_cast<const int32_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'L')
+                    ImPlot::PlotPolygon(label_id, static_cast<const np_uint_l *>(xs_from_pyarray), static_cast<const np_uint_l *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'l')
+                    ImPlot::PlotPolygon(label_id, static_cast<const np_int_l *>(xs_from_pyarray), static_cast<const np_int_l *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'f')
+                    ImPlot::PlotPolygon(label_id, static_cast<const float *>(xs_from_pyarray), static_cast<const float *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'd')
+                    ImPlot::PlotPolygon(label_id, static_cast<const double *>(xs_from_pyarray), static_cast<const double *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'g')
+                    ImPlot::PlotPolygon(label_id, static_cast<const long double *>(xs_from_pyarray), static_cast<const long double *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                else if (ys_type == 'q')
+                    ImPlot::PlotPolygon(label_id, static_cast<const long long *>(xs_from_pyarray), static_cast<const long long *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
+                // If we reach this point, the array type is not supported!
+                else
+                    throw std::runtime_error(std::string("Bad array type ('") + ys_type + "') for param ys");
+            };
+            auto PlotPolygon_adapt_mutable_param_with_default_value = [&PlotPolygon_adapt_c_buffers](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
+            {
+
+                const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
+                    if (spec.has_value())
+                        return spec.value();
+                    else
+                        return ImPlotSpec();
+                }();
+
+                PlotPolygon_adapt_c_buffers(label_id, xs, ys, spec_or_default);
+            };
+
+            PlotPolygon_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
+        },
+        nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
+        " Plots a polygon. Points are specified in counter-clockwise order. If concave, make sure to set the Concave flag.\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_stairs",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)

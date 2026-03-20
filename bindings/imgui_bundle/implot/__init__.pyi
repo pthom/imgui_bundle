@@ -526,6 +526,14 @@ class BubblesFlags_(enum.IntFlag):
     # ImPlotBubblesFlags_None = 0,     /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
 
+class PolygonFlags_(enum.IntFlag):
+    """Flags for PlotPolygon. Used by setting ImPlotSpec::Flags."""
+
+    # ImPlotPolygonFlags_None     = 0,           /* original C++ signature */
+    none = enum.auto()  # (= 0)  # default (closed, convex polygon)
+    # ImPlotPolygonFlags_Concave  = 1 << 10,     /* original C++ signature */
+    concave = enum.auto()  # (= 1 << 10)  # use concave polygon filling (slower but supports concave shapes)
+
 class StairsFlags_(enum.IntFlag):
     """Flags for PlotStairs. Used by setting ImPlotSpec::Flags."""
 
@@ -591,18 +599,20 @@ class InfLinesFlags_(enum.IntFlag):
 class PieChartFlags_(enum.IntFlag):
     """Flags for PlotPieChart. Used by setting ImPlotSpec::Flags."""
 
-    # ImPlotPieChartFlags_None         = 0,           /* original C++ signature */
+    # ImPlotPieChartFlags_None          = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
-    # ImPlotPieChartFlags_Normalize    = 1 << 10,     /* original C++ signature */
+    # ImPlotPieChartFlags_Normalize     = 1 << 10,     /* original C++ signature */
     normalize = (
         enum.auto()
     )  # (= 1 << 10)  # force normalization of pie chart values (i.e. always make a full circle if sum < 0)
-    # ImPlotPieChartFlags_IgnoreHidden = 1 << 11,     /* original C++ signature */
+    # ImPlotPieChartFlags_IgnoreHidden  = 1 << 11,     /* original C++ signature */
     ignore_hidden = (
         enum.auto()
     )  # (= 1 << 11)  # ignore hidden slices when drawing the pie chart (as if they were not there)
-    # ImPlotPieChartFlags_Exploding    = 1 << 12      /* original C++ signature */
-    exploding = enum.auto()  # (= 1 << 12)  # Explode legend-hovered slice
+    # ImPlotPieChartFlags_Exploding     = 1 << 12,     /* original C++ signature */
+    exploding = enum.auto()  # (= 1 << 12)  # explode legend-hovered slice
+    # ImPlotPieChartFlags_NoSliceBorder = 1 << 13      /* original C++ signature */
+    no_slice_border = enum.auto()  # (= 1 << 13)  # do not draw slice borders
 
 class HeatmapFlags_(enum.IntFlag):
     """Flags for PlotHeatmap. Used by setting ImPlotSpec::Flags."""
@@ -1625,6 +1635,16 @@ def plot_bubbles(
 def plot_bubbles(label_id: str, xs: np.ndarray, ys: np.ndarray, szs: np.ndarray, spec: Optional[Spec] = None) -> None:
     """Python bindings defaults:
     If spec is None, then its default value will be: Spec()
+    """
+    pass
+
+# IMPLOT_TMP void PlotPolygon(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
+def plot_polygon(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
+    """Plots a polygon. Points are specified in counter-clockwise order. If concave, make sure to set the Concave flag.
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
