@@ -1268,14 +1268,17 @@ out vec4 FragColor;
             GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
 
         def destroy(self):
-            if self.texture:
-                GL.glDeleteTextures(1, [self.texture])
-            if self.fbo:
-                GL.glDeleteFramebuffers(1, [self.fbo])
-            if self.shader_program:
-                GL.glDeleteProgram(self.shader_program)
-            if self.quad_vao:
-                GL.glDeleteVertexArrays(1, [self.quad_vao])
+            try:
+                if self.texture:
+                    GL.glDeleteTextures(1, [self.texture])
+                if self.fbo:
+                    GL.glDeleteFramebuffers(1, [self.fbo])
+                if self.shader_program:
+                    GL.glDeleteProgram(self.shader_program)
+                if self.quad_vao:
+                    GL.glDeleteVertexArrays(1, [self.quad_vao])
+            except Exception:
+                pass  # GL context may already be partially torn down at exit
             self.texture = self.fbo = self.shader_program = self.quad_vao = 0
 
         def render_to_fbo(self):
