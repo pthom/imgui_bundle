@@ -1,7 +1,7 @@
 ###############################################################################
 # This file is a part of Dear ImGui Bundle, NOT a part of imgui_toggle
 # -----------------------------------------------------------------------------
-# imgui_toggle.pyi: auto-generated bindings for imgui_toggle, 
+# imgui_toggle.pyi: auto-generated bindings for imgui_toggle,
 # a toggle switch widget for Dear ImGui (see https://github.com/cmdwtf/imgui_toggle)
 #
 # It is automatically generated (using https://pthom.github.io/litgen/),

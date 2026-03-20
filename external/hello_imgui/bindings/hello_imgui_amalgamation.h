@@ -504,7 +504,7 @@ ImageAndSize ImageAndSizeFromAsset(const char *assetPath);
 //        so you don't need to call it directly.
 ImVec2 ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize);
 
-// `HelloImGui::ImageData`: decoded image pixel data.
+// `HelloImGui::ImageData`: decoded image pixel data (C++ only)
 struct ImageData
 {
     unsigned char* data = nullptr;
@@ -514,6 +514,7 @@ struct ImageData
 };
 
 // `HelloImGui::LoadImageDataFromAsset(assetPath, desired_channels)`:
+// (C++ only)
 // Load and decode an image from the assets into CPU memory.
 // desired_channels: 0=keep original, 1=gray, 3=RGB, 4=RGBA (default).
 // The caller must call Free() on the returned ImageData when done.
