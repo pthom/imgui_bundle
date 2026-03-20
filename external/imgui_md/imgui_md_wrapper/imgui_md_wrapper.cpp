@@ -377,7 +377,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             {
                 mSnippets[m_code_block] = Snippets::SnippetData();
                 auto& snippet = mSnippets[m_code_block];
-                snippet.Palette = Snippets::SnippetTheme::Mariana;
+                snippet.Palette = Snippets::SnippetTheme::Dark;
                 snippet.Code = code_without_last_empty_lines(m_code_block);
 
                 // set language

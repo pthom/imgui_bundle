@@ -16,7 +16,7 @@ def show_python_code(
         show_cursor_position: bool | None = None,
         de_indent_code: bool | None = None,
         show_copy_button: bool | None = None,
-        palette: immapp.snippets.SnippetTheme | None = immapp.snippets.SnippetTheme.mariana,
+        palette: immapp.snippets.SnippetTheme | None = immapp.snippets.SnippetTheme.dark,
         border: bool | None = None,
     ) -> None:
     """Render the code of an object as a markdown code block"""

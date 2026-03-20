@@ -92,7 +92,7 @@ def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Resu
         snippet_data = immapp.snippets.SnippetData()
         snippet_data.code = code
         snippet_data.height_in_lines = code.count("\n")
-        snippet_data.palette = immapp.snippets.SnippetTheme.mariana
+        snippet_data.palette = immapp.snippets.SnippetTheme.dark
         statics.s_code_cells[label_id] = CodeAndResult(snippet_data, _NoResult(), "")
 
     code_and_result = statics.s_code_cells[label_id]

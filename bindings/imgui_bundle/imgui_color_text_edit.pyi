@@ -1,58 +1,47 @@
 ###############################################################################
-# This file is a part of Dear ImGui Bundle, NOT a part of ImGuiColorTextEdit
+# This file is a part of Dear ImGui Bundle, NOT a part of ImGui
 # -----------------------------------------------------------------------------
 # imgui_color_text_edit.pyi: auto-generated bindings for ImGuiColorTextEdit,
-# ImGuiColorTextEdit can be found originally at https://github.com/BalazsJako/ImGuiColorTextEdit
+# Based on the goossens rewrite: https://github.com/goossens/ImGuiColorTextEdit
+# (originally created by BalazsJako, rewritten from scratch by Johan A. Goossens)
 # In this bundle we use a fork: https://github.com/pthom/ImGuiColorTextEdit/tree/imgui_bundle
 #
 # It is automatically generated (using https://pthom.github.io/litgen/),
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 """
-Below is the readme from the project
-====================================
+# Colorizing Text Editor and Text Diff for Dear ImGui
 
-# ImGuiColorTextEdit
-Syntax highlighting text editor for ImGui
+TextEdit is a syntax highlighting text editor for Dear ImGui and it was originally developed by Balázs Jákó. Unfortunately, he no longer has time to work on the project. In fact, the last update to his repository was in June 2019. As a result, over 200 forks exist by people who like his work but want to fix bugs and/or add new features. A fork by Santiago, also known as santaclose, was the most actively maintained version (over 220 commits ahead of the original version) when I was looking for a syntax highlighting text editor for Dear ImGui in late 2023. This repository was originally a fork of Santiago's version and I tried to enhance it.
 
-![Screenshot](https://github.com/BalazsJako/ImGuiColorTextEdit/wiki/ImGuiTextEdit.png "Screenshot")
+In late December 2024, I decided that it was better for me to rewrite the code from the ground up while preserving the majority of the public APIs so it would be relatively simple for me (and others) to reuse my rewrite. One of my fundamental arguments for the rewrite was that the code had become hard to read and maintain (at least for me). I decided to create a more object-oriented internal architecture (see below) that made it clear who was responsible for what by using a layered approach. While rewriting the code, a number of new features were also added.
 
-Demo project: https://github.com/BalazsJako/ColorTextEditorDemo
+The rewrite and now the maintenance of this code is part of a larger project (ObjectTalk) and this repository is simply a snapshot of the relevant editor code to provide reuse. As part of this code is automatically generated, references to the master project are provided where required. You can find all text editor source code components here in the ObjectTalk repository.
 
-This started as my attempt to write a relatively simple widget which provides text editing functionality with syntax highlighting. Now there are other contributors who provide valuable additions.
-
-While it relies on Omar Cornut's https://github.com/ocornut/imgui, it does not follow the "pure" one widget - one function approach. Since the editor has to maintain a relatively complex and large internal state, it did not seem to be practical to try and enforce fully immediate mode. It stores its internal state in an object instance which is reused across frames.
-
-The code is (still) work in progress, please report if you find any issues.
-
-# Main features
- - approximates typical code editor look and feel (essential mouse/keyboard commands work - I mean, the commands _I_ normally use :))
- - undo/redo
- - UTF-8 support
- - works with both fixed and variable-width fonts
- - extensible syntax highlighting for multiple languages
- - identifier declarations: a small piece of description can be associated with an identifier. The editor displays it in a tooltip when the mouse cursor is hovered over the identifier
- - error markers: the user can specify a list of error messages together the line of occurence, the editor will highligh the lines with red backround and display error message in a tooltip when the mouse cursor is hovered over the line
- - large files: there is no explicit limit set on file size or number of lines (below 2GB, performance is not affected when large files are loaded (except syntax coloring, see below)
- - color palette support: you can switch between different color palettes, or even define your own
- - whitespace indicators (TAB, space)
-
-# Known issues
- - syntax highligthing of most languages - except C/C++ - is based on std::regex, which is diasppointingly slow. Because of that, the highlighting process is amortized between multiple frames. C/C++ has a hand-written tokenizer which is much faster.
-
-Please post your screenshots if you find this little piece of software useful. :)
-
-# Contribute
-
-If you want to contribute, please refer to CONTRIBUTE file.
+To respect its origins, this repository will remain a fork (of a fork) although there is now little code in common.
 
 """
 # ruff: noqa: F821, B008
+
+
+# *** BREAKING CHANGES since v1.92.601 ***
+# The underlying library was switched from the santaclose fork to the goossens
+# rewrite. The API has changed significantly. Key changes:
+#   - PaletteId enum → get_dark_palette() / get_light_palette()
+#   - LanguageDefinitionId enum → Language class with static methods (e.g. Language.cpp())
+#   - set_language_definition() → set_language()
+#   - set_cursor_position() → set_cursor()
+#   - get_selected_text() → get_cursor_text(cursor_index)
+#   - render(title, border, size) → render(title, size, border), returns None
+# See CHANGELOG.md for the full migration guide.
+
+
 from __future__ import annotations
 from typing import List, Any, Dict, Set, overload, Optional
 import enum
 
-from imgui_bundle.imgui import ImVec2Like
+from imgui_bundle.imgui import ImVec2Like, ImU32, ImVec2, ImWchar
+from typing import Callable
 
 String = str
 Identifiers = Dict[
@@ -68,141 +57,168 @@ Char = int
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # <litgen_stub> // Autogenerated code below! Do not edit!
 ####################    <generated_from:TextEditor.h>    ####################
+#	TextEditor - A syntax highlighting text editor for Dear ImGui.
+#	Copyright (c) 2024-2026 Johan A. Goossens. All rights reserved.
+#
+#	This work is licensed under the terms of the MIT license.
+#	For a copy, see <https://opensource.org/licenses/MIT>.
 
+
+
+
+#
+#	Include files
+#
+
+
+
+
+#
+#	TextEditor
+#
 
 class TextEditor:
-    # ------------- Exposed API ------------- //
-
     def __init__(self) -> None:
+        """ constructor"""
         pass
 
-    class PaletteId(enum.IntEnum):
-        dark = enum.auto()               # (= 0)
-        light = enum.auto()              # (= 1)
-        mariana = enum.auto()            # (= 2)
-        retro_blue = enum.auto()         # (= 3)
-    class LanguageDefinitionId(enum.IntEnum):
-        none = enum.auto()               # (= 0)
-        cpp = enum.auto()                # (= 1)
-        c = enum.auto()                  # (= 2)
-        cs = enum.auto()                 # (= 3)
-        python = enum.auto()             # (= 4)
-        lua = enum.auto()                # (= 5)
-        json = enum.auto()               # (= 6)
-        sql = enum.auto()                # (= 7)
-        angel_script = enum.auto()       # (= 8)
-        glsl = enum.auto()               # (= 9)
-        hlsl = enum.auto()               # (= 10)
-    class SetViewAtLineMode(enum.IntEnum):
-        first_visible_line = enum.auto() # (= 0)
-        centered = enum.auto()           # (= 1)
-        last_visible_line = enum.auto()  # (= 2)
+    #
+    # Below is the public API
+    # Public member functions start with an uppercase character to be consistent with Dear ImGui
+    #
 
-    def set_read_only_enabled(self, a_value: bool) -> None:
+    def set_tab_size(self, value: int) -> None:
+        """ access editor options"""
         pass
-    def is_read_only_enabled(self) -> bool:
-        pass
-    def set_auto_indent_enabled(self, a_value: bool) -> None:
-        pass
-    def is_auto_indent_enabled(self) -> bool:
-        pass
-    def set_show_whitespaces_enabled(self, a_value: bool) -> None:
-        pass
-    def is_show_whitespaces_enabled(self) -> bool:
-        pass
-    def set_show_line_numbers_enabled(self, a_value: bool) -> None:
-        pass
-    def is_show_line_numbers_enabled(self) -> bool:
-        pass
-    def set_short_tabs_enabled(self, a_value: bool) -> None:
-        pass
-    def is_short_tabs_enabled(self) -> bool:
-        pass
-    def get_line_count(self) -> int:
-        pass
-    def set_palette(self, a_value: TextEditor.PaletteId) -> None:
-        pass
-    def get_palette(self) -> TextEditor.PaletteId:
-        pass
-    def set_language_definition(self, a_value: TextEditor.LanguageDefinitionId) -> None:
-        pass
-    def get_language_definition(self) -> TextEditor.LanguageDefinitionId:
-        pass
-    def get_language_definition_name(self) -> str:
-        pass
-    def set_tab_size(self, a_value: int) -> None:
-        pass
+
     def get_tab_size(self) -> int:
         pass
-    def set_line_spacing(self, a_value: float) -> None:
+    def set_insert_spaces_on_tabs(self, value: bool) -> None:
+        pass
+    def is_insert_spaces_on_tabs(self) -> bool:
+        pass
+    def set_line_spacing(self, value: float) -> None:
         pass
     def get_line_spacing(self) -> float:
         pass
-
-    @staticmethod
-    def set_default_palette(a_value: TextEditor.PaletteId) -> None:
+    def set_read_only_enabled(self, value: bool) -> None:
         pass
-    @staticmethod
-    def get_default_palette() -> TextEditor.PaletteId:
+    def is_read_only_enabled(self) -> bool:
         pass
-
-    def select_all(self) -> None:
+    def set_auto_indent_enabled(self, value: bool) -> None:
         pass
-    def select_line(self, a_line: int) -> None:
+    def is_auto_indent_enabled(self) -> bool:
         pass
-    def select_region(
-        self,
-        a_start_line: int,
-        a_start_char: int,
-        a_end_line: int,
-        a_end_char: int
-        ) -> None:
+    def set_show_whitespaces_enabled(self, value: bool) -> None:
         pass
-    @overload
-    def select_next_occurrence_of(
-        self,
-        a_text: str,
-        a_text_size: int,
-        a_case_sensitive: bool = True
-        ) -> None:
+    def is_show_whitespaces_enabled(self) -> bool:
         pass
-    def select_all_occurrences_of(
-        self,
-        a_text: str,
-        a_text_size: int,
-        a_case_sensitive: bool = True
-        ) -> None:
+    def set_show_spaces_enabled(self, value: bool) -> None:
         pass
-    def any_cursor_has_selection(self) -> bool:
+    def is_show_spaces_enabled(self) -> bool:
         pass
-    def all_cursors_have_selection(self) -> bool:
+    def set_show_tabs_enabled(self, value: bool) -> None:
         pass
-    def clear_extra_cursors(self) -> None:
+    def is_show_tabs_enabled(self) -> bool:
         pass
-    def clear_selections(self) -> None:
+    def set_show_line_numbers_enabled(self, value: bool) -> None:
         pass
-    @overload
-    def set_cursor_position(self, a_line: int, a_char_index: int) -> None:
+    def is_show_line_numbers_enabled(self) -> bool:
         pass
-    @overload
-    def get_cursor_position(self, out_line: int, out_column: int) -> None:
+    def set_show_scrollbar_mini_map_enabled(self, value: bool) -> None:
         pass
-    def get_first_visible_line(self) -> int:
+    def is_show_scrollbar_mini_map_enabled(self) -> bool:
         pass
-    def get_last_visible_line(self) -> int:
+    def set_show_pan_scroll_indicator_enabled(self, value: bool) -> None:
         pass
-    def set_view_at_line(self, a_line: int, a_mode: TextEditor.SetViewAtLineMode) -> None:
+    def is_show_pan_scroll_indicator_enabled(self) -> bool:
+        pass
+    def set_show_matching_brackets(self, value: bool) -> None:
+        pass
+    def is_showing_matching_brackets(self) -> bool:
+        pass
+    def set_complete_paired_glyphs(self, value: bool) -> None:
+        pass
+    def is_completing_paired_glyphs(self) -> bool:
+        pass
+    def set_overwrite_enabled(self, value: bool) -> None:
+        pass
+    def is_overwrite_enabled(self) -> bool:
+        pass
+    def set_middle_mouse_pan_mode(self) -> None:
+        pass
+    def set_middle_mouse_scroll_mode(self) -> None:
+        pass
+    def is_middle_mouse_pan_mode(self) -> bool:
         pass
 
-    def copy(self) -> None:
+    # access text (using UTF-8 encoded strings)
+    # (see note below on cursor and scroll manipulation after setting new text)
+    def set_text(self, text: str) -> None:
         pass
+    def get_text(self) -> str:
+        pass
+    def get_cursor_text(self, cursor: int) -> str:
+        pass
+
+    def get_line_text(self, line: int) -> str:
+        pass
+
+    def get_section_text(
+        self,
+        start_line: int,
+        start_column: int,
+        end_line: int,
+        end_column: int
+        ) -> str:
+        pass
+
+    def replace_section_text(
+        self,
+        start_line: int,
+        start_column: int,
+        end_line: int,
+        end_column: int,
+        text: str
+        ) -> None:
+        pass
+
+    def clear_text(self) -> None:
+        pass
+
+    def is_empty(self) -> bool:
+        pass
+    def get_line_count(self) -> int:
+        pass
+
+    def render(
+        self,
+        title: str,
+        size: Optional[ImVec2Like] = None,
+        border: bool = False
+        ) -> None:
+        """ render the text editor in a Dear ImGui context
+
+
+        Python bindings defaults:
+            If size is None, then its default value will be: ImVec2()
+        """
+        pass
+
+    def set_focus(self) -> None:
+        """ programmatically set focus on the editor"""
+        pass
+
+    # clipboard actions
     def cut(self) -> None:
+        pass
+    def copy(self) -> None:
         pass
     def paste(self) -> None:
         pass
-    def undo(self, a_steps: int = 1) -> None:
+    def undo(self) -> None:
         pass
-    def redo(self, a_steps: int = 1) -> None:
+    def redo(self) -> None:
         pass
     def can_undo(self) -> bool:
         pass
@@ -211,75 +227,562 @@ class TextEditor:
     def get_undo_index(self) -> int:
         pass
 
-    def set_text(self, a_text: str) -> None:
+    # manipulate cursors and selections (line numbers are zero-based)
+    def set_cursor(self, line: int, column: int) -> None:
         pass
-    @overload
-    def get_text(self) -> str:
+    def select_all(self) -> None:
         pass
-
-    def set_text_lines(self, a_lines: List[str]) -> None:
+    def select_line(self, line: int) -> None:
         pass
-    def get_text_lines(self) -> List[str]:
+    def select_lines(self, start: int, end: int) -> None:
         pass
-
-    @overload
-    def render(
+    def select_region(
         self,
-        a_title: str,
-        a_parent_is_focused: bool = False,
-        a_size: Optional[ImVec2Like] = None,
-        a_border: bool = False
-        ) -> bool:
-        """Python bindings defaults:
-            If aSize is None, then its default value will be: ImVec2()
-        """
+        start_line: int,
+        start_column: int,
+        end_line: int,
+        end_column: int
+        ) -> None:
+        pass
+    def select_to_brackets(self, include_brackets: bool = True) -> None:
+        pass
+    def grow_selections_to_curly_brackets(self) -> None:
+        pass
+    def shrink_selections_to_curly_brackets(self) -> None:
+        pass
+    def add_next_occurrence(self) -> None:
+        pass
+    def select_all_occurrences(self) -> None:
+        pass
+    def any_cursor_has_selection(self) -> bool:
+        pass
+    def all_cursors_have_selection(self) -> bool:
+        pass
+    def current_cursor_has_selection(self) -> bool:
+        pass
+    def clear_cursors(self) -> None:
         pass
 
-    def im_gui_debug_panel(self, panel_name: str = "Debug") -> None:
-        pass
-    def unit_tests(self) -> None:
+    def get_number_of_cursors(self) -> int:
         pass
 
-    #
-    # Additions to @santclose fork below
-    #
-    def get_word_at_screen_pos(self, a_screen_pos: ImVec2Like) -> str:
-        pass
-    def get_selected_text(self, a_cursor: int = -1) -> str:
-        pass
-    # TextPosition and SelectionPosition are only used for the public API (private impl uses Coordinates)
-    class TextPosition:
-        line: int = -1
-        column: int = -1
-        def __init__(self, line: int = -1, column: int = -1) -> None:
+
+    # Alternative API for cursor and selection position using lightweight out struct (line and column are zero-based)
+    # (the meaning of main and current is explained in README.md)
+    class CursorPosition:
+        line: int = 0
+        column: int = 0
+        def __init__(self, line: int = 0, column: int = 0) -> None:
             """Auto-generated default constructor with named params"""
             pass
-    class SelectionPosition:
-        start: TextPosition
-        end: TextPosition
+    class CursorSelection:
+        start: CursorPosition
+        end: CursorPosition
         def __init__(
             self,
-            start: Optional[TextPosition] = None,
-            end: Optional[TextPosition] = None
+            start: Optional[CursorPosition] = None,
+            end: Optional[CursorPosition] = None
             ) -> None:
             """Auto-generated default constructor with named params
 
 
             Python bindings defaults:
                 If any of the params below is None, then its default value below will be used:
-                    * start: TextEditor.TextPosition()
-                    * end: TextEditor.TextPosition()
+                    * start: TextEditor.CursorPosition()
+                    * end: TextEditor.CursorPosition()
             """
             pass
-    def set_selection_position(self, pos: TextEditor.SelectionPosition) -> None:
+    def get_main_cursor_position(self) -> TextEditor.CursorPosition:
         pass
-    def get_selection_position(self, a_cursor: int = -1) -> TextEditor.SelectionPosition:
+    def get_current_cursor_position(self) -> TextEditor.CursorPosition:
         pass
-    @overload
-    def get_cursor_position(self) -> TextEditor.TextPosition:
+    def get_cursor_position(self, cursor: int) -> TextEditor.CursorPosition:
+        pass
+    def get_cursor_selection(self, cursor: int) -> TextEditor.CursorSelection:
+        pass
+    def get_main_cursor_selection(self) -> TextEditor.CursorSelection:
         pass
 
+    def get_word_at_screen_pos(self, screen_pos: ImVec2Like) -> str:
+        """ get the word at a screen position (e.g. from ImGui::GetMousePos()) - uses the origin saved during the last Render() call"""
+        pass
+
+    class Scroll(enum.IntEnum):
+        """ scrolling support"""
+        align_top = enum.auto()                   # (= 0)
+        align_middle = enum.auto()                # (= 1)
+        align_bottom = enum.auto()                # (= 2)
+
+    def scroll_to_line(self, line: int, alignment: TextEditor.Scroll) -> None:
+        pass
+    def get_first_visible_line(self) -> int:
+        pass
+    def get_last_visible_line(self) -> int:
+        pass
+    def get_first_visible_column(self) -> int:
+        pass
+    def get_last_visible_column(self) -> int:
+        pass
+
+    def get_line_height(self) -> float:
+        pass
+    def get_glyph_width(self) -> float:
+        pass
+
+    # note on setting cursor and scrolling
+    #
+    # calling SetCursor or ScrollToLine has no effect until the next call to Render
+    # this is because we can only do layout calculations when we are in a Dear ImGui drawing context
+    # as a result, SetCursor or ScrollToLine just mark the request and let Render execute it
+    #
+    # the order of the calls is therefore important as they can interfere with each other
+    # so if you call SetText, SetCursor and/or ScrollToLine before Render, the order should be:
+    #
+    # * call SetText first as it resets the entire editor state including cursors and scrolling
+    # * then call SetCursor as it sets the cursor and requests that we make the cursor visible (i.e. scroll to it)
+    # * then call ScrollToLine to mark the exact scroll location (it cancels the possible SetCursor scroll request)
+    # * call Render to properly update the entire state
+    #
+    # this works on opening the editor as well as later
+
+    # find/replace support
+    def select_first_occurrence_of(
+        self,
+        text: str,
+        case_sensitive: bool = True,
+        whole_word: bool = False
+        ) -> None:
+        pass
+    def select_next_occurrence_of(
+        self,
+        text: str,
+        case_sensitive: bool = True,
+        whole_word: bool = False
+        ) -> None:
+        pass
+    def select_all_occurrences_of(
+        self,
+        text: str,
+        case_sensitive: bool = True,
+        whole_word: bool = False
+        ) -> None:
+        pass
+    def replace_text_in_current_cursor(self, text: str) -> None:
+        pass
+    def replace_text_in_all_cursors(self, text: str) -> None:
+        pass
+
+    def open_find_replace_window(self) -> None:
+        pass
+    def close_find_replace_window(self) -> None:
+        pass
+    def set_find_button_label(self, label: str) -> None:
+        pass
+    def set_find_all_button_label(self, label: str) -> None:
+        pass
+    def set_replace_button_label(self, label: str) -> None:
+        pass
+    def set_replace_all_button_label(self, label: str) -> None:
+        pass
+    def has_find_string(self) -> bool:
+        pass
+    def find_next(self) -> None:
+        pass
+    def find_all(self) -> None:
+        pass
+
+    # access markers (line numbers are zero-based)
+    def add_marker(
+        self,
+        line: int,
+        line_number_color: ImU32,
+        text_color: ImU32,
+        line_number_tooltip: str,
+        text_tooltip: str
+        ) -> None:
+        pass
+    def clear_markers(self) -> None:
+        pass
+    def has_markers(self) -> bool:
+        pass
+
+    def set_change_callback(self, callback: Callable[[], None], delay: int = 0) -> None:
+        """ specify a change callback (called when changes are made (including undo/redo))
+         the delay parameter specifies a time in miliseconds that the editor will wait for before calling
+         which helps in case you don't need to track every keystroke
+         passing None deactivates the callback
+        """
+        pass
+
+    class Change:
+        """ detailed change report passed to callback below
+         this callback is different from the one above as is reports every change (not just a summary) and is very detailed
+         the insert flag states whether the change was an insert (True) or a delete (False)
+         in case of an overwrite, there will be two actions (first a delete and then an insert)
+         the start parameters refer to the insert point or the start of the delete
+         the end parameters refer to the end of the inserted text or the end of the deleted text
+         the text parameter contains the inserted or deleted text
+         line, column and index values are zero-based
+        """
+        insert: bool
+        start_line: int
+        start_column: int
+        start_index: int
+        end_line: int
+        end_column: int
+        end_index: int
+        text: str
+        def __init__(
+            self,
+            insert: bool = bool(),
+            start_line: int = int(),
+            start_column: int = int(),
+            start_index: int = int(),
+            end_line: int = int(),
+            end_column: int = int(),
+            end_index: int = int(),
+            text: str = ""
+            ) -> None:
+            """Auto-generated default constructor with named params"""
+            pass
+
+    def set_transaction_callback(
+        self,
+        callback: Callable[[List[TextEditor.Change]], None]
+        ) -> None:
+        """ specify a transaction callback (live document changes in great detail)
+         it provides a list of changes made to the document in a single transaction (in the right order)
+         be carefull with this callback as it gets very verbose (called on every keystroke, delete, cut, paste, undo and redo)
+         passing None deactivates the callback
+        """
+        pass
+
+
+    class Decorator:
+        """ line-based decoration"""
+        line: int                                 # zero-based
+        width: float
+        height: float
+        glyph_size: ImVec2
+        def __init__(
+            self,
+            line: int = int(),
+            width: float = float(),
+            height: float = float(),
+            glyph_size: Optional[ImVec2Like] = None
+            ) -> None:
+            """Auto-generated default constructor with named params
+
+
+            Python bindings defaults:
+                If glyphSize is None, then its default value will be: ImVec2()
+            """
+            pass
+
+    def set_line_decorator(
+        self,
+        width: float,
+        callback: Callable[[TextEditor.Decorator], None]
+        ) -> None:
+        """ positive width is number of pixels, negative with is number of glyphs"""
+        pass
+
+    def clear_line_decorator(self) -> None:
+        pass
+    def has_line_decorator(self) -> bool:
+        pass
+
+    # setup context menu callbacks (these are called when a user right clicks line numbers or somewhere in the text)
+    # the editor sets up the popup menus, the callback has to populate them
+    def set_line_number_context_menu_callback(
+        self,
+        callback: Callable[[int], None]
+        ) -> None:
+        pass
+    def clear_line_number_context_menu_callback(self) -> None:
+        pass
+    def has_line_number_context_menu_callback(self) -> bool:
+        pass
+
+    def set_text_context_menu_callback(self, callback: Callable[[int, int], None]) -> None:
+        pass
+    def clear_text_context_menu_callback(self) -> None:
+        pass
+    def has_text_context_menu_callback(self) -> bool:
+        pass
+
+    # useful functions to work on selections
+    # NOTE: functions provided to FilterSelections or FilterLines should accept and return UTF-8 encoded strings
+    def indent_lines(self) -> None:
+        pass
+    def deindent_lines(self) -> None:
+        pass
+    def move_up_lines(self) -> None:
+        pass
+    def move_down_lines(self) -> None:
+        pass
+    def toggle_comments(self) -> None:
+        pass
+    def filter_selections(self, filter: Callable[[str], str]) -> None:
+        pass
+    def selection_to_lower_case(self) -> None:
+        pass
+    def selection_to_upper_case(self) -> None:
+        pass
+
+    # useful functions to work on entire text
+    def strip_trailing_whitespaces(self) -> None:
+        pass
+    def filter_lines(self, filter: Callable[[str], str]) -> None:
+        pass
+    def tabs_to_spaces(self) -> None:
+        pass
+    def spaces_to_tabs(self) -> None:
+        pass
+
+    class Color(enum.IntEnum):
+        """ color palette support"""
+        text = enum.auto()                        # (= 0)
+        keyword = enum.auto()                     # (= 1)
+        declaration = enum.auto()                 # (= 2)
+        number = enum.auto()                      # (= 3)
+        string = enum.auto()                      # (= 4)
+        punctuation = enum.auto()                 # (= 5)
+        preprocessor = enum.auto()                # (= 6)
+        identifier = enum.auto()                  # (= 7)
+        known_identifier = enum.auto()            # (= 8)
+        comment = enum.auto()                     # (= 9)
+        background = enum.auto()                  # (= 10)
+        cursor = enum.auto()                      # (= 11)
+        selection = enum.auto()                   # (= 12)
+        whitespace = enum.auto()                  # (= 13)
+        matching_bracket_background = enum.auto() # (= 14)
+        matching_bracket_active = enum.auto()     # (= 15)
+        matching_bracket_level1 = enum.auto()     # (= 16)
+        matching_bracket_level2 = enum.auto()     # (= 17)
+        matching_bracket_level3 = enum.auto()     # (= 18)
+        matching_bracket_error = enum.auto()      # (= 19)
+        line_number = enum.auto()                 # (= 20)
+        current_line_number = enum.auto()         # (= 21)
+
+    class Palette:
+        def get(self, color: Color) -> ImU32:
+            pass
+        def __init__(self) -> None:
+            """Autogenerated default constructor"""
+            pass
+
+    def set_palette(self, new_palette: TextEditor.Palette) -> None:
+        pass
+    def get_palette(self) -> TextEditor.Palette:
+        pass
+    @staticmethod
+    def set_default_palette(a_value: TextEditor.Palette) -> None:
+        pass
+    @staticmethod
+    def get_default_palette() -> TextEditor.Palette:
+        pass
+
+    @staticmethod
+    def get_dark_palette() -> TextEditor.Palette:
+        pass
+    @staticmethod
+    def get_light_palette() -> TextEditor.Palette:
+        pass
+
+    class Glyph:
+        """ a single colored character (a glyph)"""
+        @overload
+        def __init__(self) -> None:
+            """ constructors"""
+            pass
+        @overload
+        def __init__(self, cp: ImWchar) -> None:
+            pass
+        @overload
+        def __init__(self, cp: ImWchar, col: Color) -> None:
+            pass
+
+        # properties
+        codepoint: ImWchar = 0
+        color: Color = Color.text
+
+    class Iterator:
+        """ iterator used in language-specific tokenizers
+         this iterator points to unicode codepoints
+        """
+        @overload
+        def __init__(self) -> None:
+            """ constructors"""
+            pass
+        @overload
+        def __init__(self, g: Glyph) -> None:
+            pass
+
+
+        def __sub__(self, a: TextEditor.Iterator) -> int:
+            pass
+
+
+    class Language:
+        """ language support"""
+        # name of the language
+        name: str
+
+
+        # predefined language definitions
+        @staticmethod
+        def c() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def cpp() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def cs() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def angel_script() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def lua() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def python() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def glsl() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def hlsl() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def json() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def markdown() -> TextEditor.Language:
+            pass
+        @staticmethod
+        def sql() -> TextEditor.Language:
+            pass
+        def __init__(self) -> None:
+            """Autogenerated default constructor"""
+            pass
+
+    def set_language(self, l: TextEditor.Language) -> None:
+        pass
+    def get_language(self) -> TextEditor.Language:
+        pass
+    def has_language(self) -> bool:
+        pass
+    def get_language_name(self) -> str:
+        pass
+
+    def iterate_identifiers(self, callback: Callable[[str], None]) -> None:
+        """ iterate through identifiers detected by the colorizer (based on current language)"""
+        pass
 
 ####################    </generated_from:TextEditor.h>    ####################
+
+
+####################    <generated_from:TextDiff.h>    ####################
+#	TextDiff - A syntax highlighting text diff widget for Dear ImGui.
+#	Copyright (c) 2024-2026 Johan A. Goossens. All rights reserved.
+#
+#	This work is licensed under the terms of the MIT license.
+#	For a copy, see <https://opensource.org/licenses/MIT>.
+
+
+
+
+#
+#	Include files
+#
+
+
+
+#
+#	TextDiff
+#
+
+class TextDiff:
+    def __init__(self) -> None:
+        """ constructor"""
+        pass
+
+    # specify visual mode (combined is default)
+    def set_side_by_side_mode(self, flag: bool) -> None:
+        pass
+    def get_side_by_side_mode(self) -> bool:
+        pass
+
+    def set_text(self, left: str, right: str) -> None:
+        """ specify the text to be compared (using UTF-8 encoded strings)"""
+        pass
+
+    def set_language(self, l: Language) -> None:
+        """ specify a new language"""
+        pass
+
+    def set_colors(self, ac: ImU32, dc: ImU32) -> None:
+        """ specify the background color for added/deleted lines"""
+        pass
+
+    def render(
+        self,
+        title: str,
+        size: Optional[ImVec2Like] = None,
+        border: bool = False
+        ) -> None:
+        """ render the text editor in a Dear ImGui context
+
+
+        Python bindings defaults:
+            If size is None, then its default value will be: ImVec2()
+        """
+        pass
+
+    # block/hide certain API calls
+    def set_read_only_enabled(self, param_0: bool) -> None:
+        pass
+    def set_show_line_numbers_enabled(self, param_0: bool) -> None:
+        pass
+    def set_show_matching_brackets(self, param_0: bool) -> None:
+        pass
+
+    def add_marker(
+        self,
+        param_0: int,
+        param_1: ImU32,
+        param_2: ImU32,
+        param_3: str,
+        param_4: str
+        ) -> None:
+        pass
+    def clear_markers(self) -> None:
+        pass
+
+    def set_line_decorator(
+        self,
+        param_0: float,
+        param_1: Callable[[Decorator], None]
+        ) -> None:
+        pass
+    def clear_line_decorator(self) -> None:
+        pass
+
+    def set_line_number_context_menu_callback(
+        self,
+        param_0: Callable[[int], None]
+        ) -> None:
+        pass
+    def clear_line_number_context_menu_callback(self) -> None:
+        pass
+
+    def set_text_context_menu_callback(self, param_0: Callable[[int, int], None]) -> None:
+        pass
+    def clear_text_context_menu_callback(self) -> None:
+        pass
+
+####################    </generated_from:TextDiff.h>    ####################
 
 # </litgen_stub> // Autogenerated code end!

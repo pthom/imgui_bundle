@@ -71,27 +71,27 @@ Enable markdown by passing `with_markdown=True` to `immapp.run()` (Python) or us
 - **C++:** [imgui_md_wrapper.h](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_md/imgui_md_wrapper/imgui_md_wrapper.h)
 
 
-## ImGuiColorTextEdit - Syntax Highlighting Editor
+## ImGuiColorTextEdit - Syntax Highlighting Editor & Diff Viewer
 
 ### Introduction
 
-[ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit) is a colorizing text editor for ImGui. It supports syntax highlighting for C, C++, Python, HLSL, SQL, AngelScript, Lua, and more.
+[ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit) is a syntax highlighting text editor and diff viewer for ImGui (originally by BalazsJako, rewritten from scratch by Johan A. Goossens).
 
-Dear ImGui Bundle uses a [fork](https://github.com/pthom/ImGuiColorTextEdit/tree/imgui_bundle) with additional fixes and features.
-
-::::{card}
-:link: https://github.com/BalazsJako/ImGuiColorTextEdit
-```{figure} https://raw.githubusercontent.com/wiki/BalazsJako/ImGuiColorTextEdit/ImGuiTextEdit.png
-:width: 350
-ImGuiColorTextEdit: syntax highlighting editor with multiple color palettes.
-```
-::::
+Dear ImGui Bundle uses a [fork](https://github.com/pthom/ImGuiColorTextEdit/tree/imgui_bundle) with a few additions for Python bindings.
 
 **Features:**
-- Multiple color palettes (dark, light, retro blue, mariana)
-- Language definitions for common languages
-- Line numbers, error markers, breakpoints
-- Undo/redo, copy/paste, find/replace
+- Syntax highlighting for C, C++, Python, GLSL, HLSL, Lua, SQL, AngelScript, C#, JSON, Markdown
+- Multiple color palettes (dark, light)
+- Find/replace UI with keyboard shortcuts
+- Text markers (colored line highlights with tooltips)
+- Bracket matching with visual indicators
+- Line decorators (custom gutter content per line, e.g. breakpoints)
+- Context menu callbacks (separate for line numbers and text area)
+- Change and transaction callbacks
+- Filter selections/lines (transform text via callbacks)
+- Autocomplete framework
+- Undo/redo, copy/paste, multi-cursor support
+- **TextDiff widget**: combined and side-by-side diff view for comparing two texts
 
 :::{tip}
 The text editor requires a fixed-width font. If you are using ImmApp with Markdown enabled, you may use its code font:
@@ -111,4 +111,4 @@ imgui.pop_font()
 ### Documented APIs
 
 - **Python:** [imgui_color_text_edit.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_color_text_edit.pyi)
-- **C++:** [TextEditor.h](https://github.com/pthom/ImGuiColorTextEdit/blob/imgui_bundle/TextEditor.h)
+- **C++:** [TextEditor.h](https://github.com/pthom/ImGuiColorTextEdit/blob/imgui_bundle/TextEditor.h) | [TextDiff.h](https://github.com/pthom/ImGuiColorTextEdit/blob/imgui_bundle/TextDiff.h)

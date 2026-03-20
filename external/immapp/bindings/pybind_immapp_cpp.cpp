@@ -405,9 +405,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
         auto pyEnumSnippetTheme =
             nb::enum_<Snippets::SnippetTheme>(pyNsSnippets, "SnippetTheme", nb::is_arithmetic(), "")
                 .value("dark", Snippets::SnippetTheme::Dark, "")
-                .value("light", Snippets::SnippetTheme::Light, "")
-                .value("retro_blue", Snippets::SnippetTheme::RetroBlue, "")
-                .value("mariana", Snippets::SnippetTheme::Mariana, "");
+                .value("light", Snippets::SnippetTheme::Light, "");
 
 
         pyNsSnippets.def("default_snippet_language",

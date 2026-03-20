@@ -777,8 +777,8 @@ def _init_markdown_editor():
     _markdown_text_editor.set_text(_MARKDOWN_SAMPLE)
     # Use C++ language definition as a reasonable approximation for markdown
     # (it will highlight code blocks and some syntax)
-    _markdown_text_editor.set_language_definition(ed.TextEditor.LanguageDefinitionId.cpp)
-    _markdown_text_editor.set_palette(ed.TextEditor.PaletteId.dark)
+    _markdown_text_editor.set_language(ed.TextEditor.Language.cpp())
+    _markdown_text_editor.set_palette(ed.TextEditor.get_dark_palette())
     _markdown_editor_initialized = True
 
 
@@ -811,7 +811,7 @@ def _markdown_slide_gui(content_size: ImVec2):
     imgui.push_font(code_font.font, code_font.size * 0.9)
 
     # Render the text editor
-    _markdown_text_editor.render("##md_editor", False, ImVec2(half_w, h))
+    _markdown_text_editor.render("##md_editor", ImVec2(half_w, h), False)
 
     imgui.pop_font()
     imgui.end_child()
@@ -926,15 +926,15 @@ _gallery_lang = 0  # 0 = Python, 1 = C++
 def _init_gallery():
     global _gallery_initialized
     for lang_idx, lang_def in enumerate([
-        ed.TextEditor.LanguageDefinitionId.python,
-        ed.TextEditor.LanguageDefinitionId.cpp,
+        ed.TextEditor.Language.python(),
+        ed.TextEditor.Language.cpp(),
     ]):
         for _, py_code, cpp_code in _GALLERY_SNIPPETS:
             code = py_code if lang_idx == 0 else cpp_code
             editor = ed.TextEditor()
             editor.set_text(code)
-            editor.set_language_definition(lang_def)
-            editor.set_palette(ed.TextEditor.PaletteId.dark)
+            editor.set_language(lang_def)
+            editor.set_palette(ed.TextEditor.get_dark_palette())
             # editor.set_read_only(True)
             _gallery_editors[lang_idx].append(editor)
     _gallery_initialized = True
@@ -1028,7 +1028,7 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func):
     # Editor
     code_font = imgui_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size * 0.8)
-    editor.render(f"##ed_gallery_{idx}", False, ImVec2(-1, -1))
+    editor.render(f"##ed_gallery_{idx}", ImVec2(-1, -1), False)
     imgui.pop_font()
 
     imgui.end_child()

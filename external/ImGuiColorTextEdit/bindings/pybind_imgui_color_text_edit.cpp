@@ -3,6 +3,7 @@
 #include <nanobind/trampoline.h>
 #include <nanobind/stl/array.h>
 #include <nanobind/stl/string.h>
+#include <nanobind/stl/string_view.h>
 #include <nanobind/stl/vector.h>
 #include <nanobind/stl/optional.h>
 #include <nanobind/stl/function.h>
@@ -15,6 +16,7 @@
 
 
 #include "ImGuiColorTextEdit/TextEditor.h"
+#include "ImGuiColorTextEdit/TextDiff.h"
 
 namespace nb = nanobind;
 
@@ -39,203 +41,540 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             (m, "TextEditor", "");
 
     { // inner classes & enums of TextEditor
-        auto pyEnumPaletteId =
-            nb::enum_<TextEditor::PaletteId>(pyClassTextEditor, "PaletteId", nb::is_arithmetic(), "")
-                .value("dark", TextEditor::PaletteId::Dark, "")
-                .value("light", TextEditor::PaletteId::Light, "")
-                .value("mariana", TextEditor::PaletteId::Mariana, "")
-                .value("retro_blue", TextEditor::PaletteId::RetroBlue, "");
-        auto pyEnumLanguageDefinitionId =
-            nb::enum_<TextEditor::LanguageDefinitionId>(pyClassTextEditor, "LanguageDefinitionId", nb::is_arithmetic(), "")
-                .value("none", TextEditor::LanguageDefinitionId::None, "")
-                .value("cpp", TextEditor::LanguageDefinitionId::Cpp, "")
-                .value("c", TextEditor::LanguageDefinitionId::C, "")
-                .value("cs", TextEditor::LanguageDefinitionId::Cs, "")
-                .value("python", TextEditor::LanguageDefinitionId::Python, "")
-                .value("lua", TextEditor::LanguageDefinitionId::Lua, "")
-                .value("json", TextEditor::LanguageDefinitionId::Json, "")
-                .value("sql", TextEditor::LanguageDefinitionId::Sql, "")
-                .value("angel_script", TextEditor::LanguageDefinitionId::AngelScript, "")
-                .value("glsl", TextEditor::LanguageDefinitionId::Glsl, "")
-                .value("hlsl", TextEditor::LanguageDefinitionId::Hlsl, "");
-        auto pyEnumSetViewAtLineMode =
-            nb::enum_<TextEditor::SetViewAtLineMode>(pyClassTextEditor, "SetViewAtLineMode", nb::is_arithmetic(), "")
-                .value("first_visible_line", TextEditor::SetViewAtLineMode::FirstVisibleLine, "")
-                .value("centered", TextEditor::SetViewAtLineMode::Centered, "")
-                .value("last_visible_line", TextEditor::SetViewAtLineMode::LastVisibleLine, "");
-        auto pyClassTextEditor_ClassTextPosition =
-            nb::class_<TextEditor::TextPosition>
-                (pyClassTextEditor, "TextPosition", "")
-            .def("__init__", [](TextEditor::TextPosition * self, int line = -1, int column = -1)
+        auto pyClassTextEditor_ClassCursorPosition =
+            nb::class_<TextEditor::CursorPosition>
+                (pyClassTextEditor, "CursorPosition", "")
+            .def("__init__", [](TextEditor::CursorPosition * self, int line = 0, int column = 0)
             {
-                new (self) TextEditor::TextPosition();  // placement new
+                new (self) TextEditor::CursorPosition();  // placement new
                 auto r_ctor_ = self;
                 r_ctor_->line = line;
                 r_ctor_->column = column;
             },
-            nb::arg("line") = -1, nb::arg("column") = -1
+            nb::arg("line") = 0, nb::arg("column") = 0
             )
-            .def_rw("line", &TextEditor::TextPosition::line, "")
-            .def_rw("column", &TextEditor::TextPosition::column, "")
+            .def_rw("line", &TextEditor::CursorPosition::line, "")
+            .def_rw("column", &TextEditor::CursorPosition::column, "")
             ;
-        auto pyClassTextEditor_ClassSelectionPosition =
-            nb::class_<TextEditor::SelectionPosition>
-                (pyClassTextEditor, "SelectionPosition", "")
-            .def("__init__", [](TextEditor::SelectionPosition * self, const std::optional<const TextEditor::TextPosition> & start = std::nullopt, const std::optional<const TextEditor::TextPosition> & end = std::nullopt)
+        auto pyClassTextEditor_ClassCursorSelection =
+            nb::class_<TextEditor::CursorSelection>
+                (pyClassTextEditor, "CursorSelection", "")
+            .def("__init__", [](TextEditor::CursorSelection * self, const std::optional<const TextEditor::CursorPosition> & start = std::nullopt, const std::optional<const TextEditor::CursorPosition> & end = std::nullopt)
             {
-                new (self) TextEditor::SelectionPosition();  // placement new
+                new (self) TextEditor::CursorSelection();  // placement new
                 auto r_ctor_ = self;
                 if (start.has_value())
                     r_ctor_->start = start.value();
                 else
-                    r_ctor_->start = TextEditor::TextPosition();
+                    r_ctor_->start = TextEditor::CursorPosition();
                 if (end.has_value())
                     r_ctor_->end = end.value();
                 else
-                    r_ctor_->end = TextEditor::TextPosition();
+                    r_ctor_->end = TextEditor::CursorPosition();
             },
             nb::arg("start").none() = nb::none(), nb::arg("end").none() = nb::none()
             )
-            .def_rw("start", &TextEditor::SelectionPosition::start, "")
-            .def_rw("end", &TextEditor::SelectionPosition::end, "")
+            .def_rw("start", &TextEditor::CursorSelection::start, "")
+            .def_rw("end", &TextEditor::CursorSelection::end, "")
+            ;
+        auto pyEnumScroll =
+            nb::enum_<TextEditor::Scroll>(pyClassTextEditor, "Scroll", nb::is_arithmetic(), "scrolling support")
+                .value("align_top", TextEditor::Scroll::alignTop, "")
+                .value("align_middle", TextEditor::Scroll::alignMiddle, "")
+                .value("align_bottom", TextEditor::Scroll::alignBottom, "");
+        auto pyClassTextEditor_ClassChange =
+            nb::class_<TextEditor::Change>
+                (pyClassTextEditor, "Change", " detailed change report passed to callback below\n this callback is different from the one above as is reports every change (not just a summary) and is very detailed\n the insert flag states whether the change was an insert (True) or a delete (False)\n in case of an overwrite, there will be two actions (first a delete and then an insert)\n the start parameters refer to the insert point or the start of the delete\n the end parameters refer to the end of the inserted text or the end of the deleted text\n the text parameter contains the inserted or deleted text\n line, column and index values are zero-based")
+            .def("__init__", [](TextEditor::Change * self, bool insert = bool(), int startLine = int(), int startColumn = int(), int startIndex = int(), int endLine = int(), int endColumn = int(), int endIndex = int(), std::string text = std::string())
+            {
+                new (self) TextEditor::Change();  // placement new
+                auto r_ctor_ = self;
+                r_ctor_->insert = insert;
+                r_ctor_->startLine = startLine;
+                r_ctor_->startColumn = startColumn;
+                r_ctor_->startIndex = startIndex;
+                r_ctor_->endLine = endLine;
+                r_ctor_->endColumn = endColumn;
+                r_ctor_->endIndex = endIndex;
+                r_ctor_->text = text;
+            },
+            nb::arg("insert") = bool(), nb::arg("start_line") = int(), nb::arg("start_column") = int(), nb::arg("start_index") = int(), nb::arg("end_line") = int(), nb::arg("end_column") = int(), nb::arg("end_index") = int(), nb::arg("text") = std::string()
+            )
+            .def_rw("insert", &TextEditor::Change::insert, "")
+            .def_rw("start_line", &TextEditor::Change::startLine, "")
+            .def_rw("start_column", &TextEditor::Change::startColumn, "")
+            .def_rw("start_index", &TextEditor::Change::startIndex, "")
+            .def_rw("end_line", &TextEditor::Change::endLine, "")
+            .def_rw("end_column", &TextEditor::Change::endColumn, "")
+            .def_rw("end_index", &TextEditor::Change::endIndex, "")
+            .def_rw("text", &TextEditor::Change::text, "")
+            ;
+        auto pyClassTextEditor_ClassDecorator =
+            nb::class_<TextEditor::Decorator>
+                (pyClassTextEditor, "Decorator", "line-based decoration")
+            .def("__init__", [](TextEditor::Decorator * self, int line = int(), float width = float(), float height = float(), const std::optional<const ImVec2> & glyphSize = std::nullopt)
+            {
+                new (self) TextEditor::Decorator();  // placement new
+                auto r_ctor_ = self;
+                r_ctor_->line = line;
+                r_ctor_->width = width;
+                r_ctor_->height = height;
+                if (glyphSize.has_value())
+                    r_ctor_->glyphSize = glyphSize.value();
+                else
+                    r_ctor_->glyphSize = ImVec2();
+            },
+            nb::arg("line") = int(), nb::arg("width") = float(), nb::arg("height") = float(), nb::arg("glyph_size").none() = nb::none()
+            )
+            .def_rw("line", &TextEditor::Decorator::line, "zero-based")
+            .def_rw("width", &TextEditor::Decorator::width, "")
+            .def_rw("height", &TextEditor::Decorator::height, "")
+            .def_rw("glyph_size", &TextEditor::Decorator::glyphSize, "")
+            ;
+        auto pyEnumColor =
+            nb::enum_<TextEditor::Color>(pyClassTextEditor, "Color", nb::is_arithmetic(), "color palette support")
+                .value("text", TextEditor::Color::text, "")
+                .value("keyword", TextEditor::Color::keyword, "")
+                .value("declaration", TextEditor::Color::declaration, "")
+                .value("number", TextEditor::Color::number, "")
+                .value("string", TextEditor::Color::string, "")
+                .value("punctuation", TextEditor::Color::punctuation, "")
+                .value("preprocessor", TextEditor::Color::preprocessor, "")
+                .value("identifier", TextEditor::Color::identifier, "")
+                .value("known_identifier", TextEditor::Color::knownIdentifier, "")
+                .value("comment", TextEditor::Color::comment, "")
+                .value("background", TextEditor::Color::background, "")
+                .value("cursor", TextEditor::Color::cursor, "")
+                .value("selection", TextEditor::Color::selection, "")
+                .value("whitespace", TextEditor::Color::whitespace, "")
+                .value("matching_bracket_background", TextEditor::Color::matchingBracketBackground, "")
+                .value("matching_bracket_active", TextEditor::Color::matchingBracketActive, "")
+                .value("matching_bracket_level1", TextEditor::Color::matchingBracketLevel1, "")
+                .value("matching_bracket_level2", TextEditor::Color::matchingBracketLevel2, "")
+                .value("matching_bracket_level3", TextEditor::Color::matchingBracketLevel3, "")
+                .value("matching_bracket_error", TextEditor::Color::matchingBracketError, "")
+                .value("line_number", TextEditor::Color::lineNumber, "")
+                .value("current_line_number", TextEditor::Color::currentLineNumber, "");
+        auto pyClassTextEditor_ClassPalette =
+            nb::class_<TextEditor::Palette>
+                (pyClassTextEditor, "Palette", "")
+            .def(nb::init<>()) // implicit default constructor
+            .def("get",
+                &TextEditor::Palette::get, nb::arg("color"))
+            ;
+        auto pyClassTextEditor_ClassGlyph =
+            nb::class_<TextEditor::Glyph>
+                (pyClassTextEditor, "Glyph", "a single colored character (a glyph)")
+            .def(nb::init<>(),
+                "constructors")
+            .def(nb::init<ImWchar>(),
+                nb::arg("cp"))
+            .def(nb::init<ImWchar, TextEditor::Color>(),
+                nb::arg("cp"), nb::arg("col"))
+            .def_rw("codepoint", &TextEditor::Glyph::codepoint, "")
+            .def_rw("color", &TextEditor::Glyph::color, "")
+            ;
+        auto pyClassTextEditor_ClassIterator =
+            nb::class_<TextEditor::Iterator>
+                (pyClassTextEditor, "Iterator", " iterator used in language-specific tokenizers\n this iterator points to unicode codepoints")
+            .def(nb::init<>(),
+                "constructors")
+            .def(nb::init<TextEditor::Glyph *>(),
+                nb::arg("g"))
+            .def("__sub__",
+                &TextEditor::Iterator::operator-, nb::arg("a"))
+            ;
+        auto pyClassTextEditor_ClassLanguage =
+            nb::class_<TextEditor::Language>
+                (pyClassTextEditor, "Language", "language support")
+            .def(nb::init<>()) // implicit default constructor
+            .def_rw("name", &TextEditor::Language::name, "name of the language")
+            .def_static("c",
+                &TextEditor::Language::C, nb::rv_policy::reference)
+            .def_static("cpp",
+                &TextEditor::Language::Cpp, nb::rv_policy::reference)
+            .def_static("cs",
+                &TextEditor::Language::Cs, nb::rv_policy::reference)
+            .def_static("angel_script",
+                &TextEditor::Language::AngelScript, nb::rv_policy::reference)
+            .def_static("lua",
+                &TextEditor::Language::Lua, nb::rv_policy::reference)
+            .def_static("python",
+                &TextEditor::Language::Python, nb::rv_policy::reference)
+            .def_static("glsl",
+                &TextEditor::Language::Glsl, nb::rv_policy::reference)
+            .def_static("hlsl",
+                &TextEditor::Language::Hlsl, nb::rv_policy::reference)
+            .def_static("json",
+                &TextEditor::Language::Json, nb::rv_policy::reference)
+            .def_static("markdown",
+                &TextEditor::Language::Markdown, nb::rv_policy::reference)
+            .def_static("sql",
+                &TextEditor::Language::Sql, nb::rv_policy::reference)
             ;
     } // end of inner classes & enums of TextEditor
 
     pyClassTextEditor
-        .def(nb::init<>())
+        .def(nb::init<>(),
+            "constructor")
+        .def("set_tab_size",
+            &TextEditor::SetTabSize,
+            nb::arg("value"),
+            "access editor options")
+        .def("get_tab_size",
+            &TextEditor::GetTabSize)
+        .def("set_insert_spaces_on_tabs",
+            &TextEditor::SetInsertSpacesOnTabs, nb::arg("value"))
+        .def("is_insert_spaces_on_tabs",
+            &TextEditor::IsInsertSpacesOnTabs)
+        .def("set_line_spacing",
+            &TextEditor::SetLineSpacing, nb::arg("value"))
+        .def("get_line_spacing",
+            &TextEditor::GetLineSpacing)
         .def("set_read_only_enabled",
-            &TextEditor::SetReadOnlyEnabled, nb::arg("a_value"))
+            &TextEditor::SetReadOnlyEnabled, nb::arg("value"))
         .def("is_read_only_enabled",
             &TextEditor::IsReadOnlyEnabled)
         .def("set_auto_indent_enabled",
-            &TextEditor::SetAutoIndentEnabled, nb::arg("a_value"))
+            &TextEditor::SetAutoIndentEnabled, nb::arg("value"))
         .def("is_auto_indent_enabled",
             &TextEditor::IsAutoIndentEnabled)
         .def("set_show_whitespaces_enabled",
-            &TextEditor::SetShowWhitespacesEnabled, nb::arg("a_value"))
+            &TextEditor::SetShowWhitespacesEnabled, nb::arg("value"))
         .def("is_show_whitespaces_enabled",
             &TextEditor::IsShowWhitespacesEnabled)
+        .def("set_show_spaces_enabled",
+            &TextEditor::SetShowSpacesEnabled, nb::arg("value"))
+        .def("is_show_spaces_enabled",
+            &TextEditor::IsShowSpacesEnabled)
+        .def("set_show_tabs_enabled",
+            &TextEditor::SetShowTabsEnabled, nb::arg("value"))
+        .def("is_show_tabs_enabled",
+            &TextEditor::IsShowTabsEnabled)
         .def("set_show_line_numbers_enabled",
-            &TextEditor::SetShowLineNumbersEnabled, nb::arg("a_value"))
+            &TextEditor::SetShowLineNumbersEnabled, nb::arg("value"))
         .def("is_show_line_numbers_enabled",
             &TextEditor::IsShowLineNumbersEnabled)
-        .def("set_short_tabs_enabled",
-            &TextEditor::SetShortTabsEnabled, nb::arg("a_value"))
-        .def("is_short_tabs_enabled",
-            &TextEditor::IsShortTabsEnabled)
+        .def("set_show_scrollbar_mini_map_enabled",
+            &TextEditor::SetShowScrollbarMiniMapEnabled, nb::arg("value"))
+        .def("is_show_scrollbar_mini_map_enabled",
+            &TextEditor::IsShowScrollbarMiniMapEnabled)
+        .def("set_show_pan_scroll_indicator_enabled",
+            &TextEditor::SetShowPanScrollIndicatorEnabled, nb::arg("value"))
+        .def("is_show_pan_scroll_indicator_enabled",
+            &TextEditor::IsShowPanScrollIndicatorEnabled)
+        .def("set_show_matching_brackets",
+            &TextEditor::SetShowMatchingBrackets, nb::arg("value"))
+        .def("is_showing_matching_brackets",
+            &TextEditor::IsShowingMatchingBrackets)
+        .def("set_complete_paired_glyphs",
+            &TextEditor::SetCompletePairedGlyphs, nb::arg("value"))
+        .def("is_completing_paired_glyphs",
+            &TextEditor::IsCompletingPairedGlyphs)
+        .def("set_overwrite_enabled",
+            &TextEditor::SetOverwriteEnabled, nb::arg("value"))
+        .def("is_overwrite_enabled",
+            &TextEditor::IsOverwriteEnabled)
+        .def("set_middle_mouse_pan_mode",
+            &TextEditor::SetMiddleMousePanMode)
+        .def("set_middle_mouse_scroll_mode",
+            &TextEditor::SetMiddleMouseScrollMode)
+        .def("is_middle_mouse_pan_mode",
+            &TextEditor::IsMiddleMousePanMode)
+        .def("set_text",
+            &TextEditor::SetText, nb::arg("text"))
+        .def("get_text",
+            &TextEditor::GetText)
+        .def("get_cursor_text",
+            &TextEditor::GetCursorText, nb::arg("cursor"))
+        .def("get_line_text",
+            &TextEditor::GetLineText, nb::arg("line"))
+        .def("get_section_text",
+            &TextEditor::GetSectionText, nb::arg("start_line"), nb::arg("start_column"), nb::arg("end_line"), nb::arg("end_column"))
+        .def("replace_section_text",
+            &TextEditor::ReplaceSectionText, nb::arg("start_line"), nb::arg("start_column"), nb::arg("end_line"), nb::arg("end_column"), nb::arg("text"))
+        .def("clear_text",
+            &TextEditor::ClearText)
+        .def("is_empty",
+            &TextEditor::IsEmpty)
         .def("get_line_count",
             &TextEditor::GetLineCount)
-        .def("set_palette",
-            &TextEditor::SetPalette, nb::arg("a_value"))
-        .def("get_palette",
-            &TextEditor::GetPalette)
-        .def("set_language_definition",
-            &TextEditor::SetLanguageDefinition, nb::arg("a_value"))
-        .def("get_language_definition",
-            &TextEditor::GetLanguageDefinition)
-        .def("get_language_definition_name",
-            &TextEditor::GetLanguageDefinitionName)
-        .def("set_tab_size",
-            &TextEditor::SetTabSize, nb::arg("a_value"))
-        .def("get_tab_size",
-            &TextEditor::GetTabSize)
-        .def("set_line_spacing",
-            &TextEditor::SetLineSpacing, nb::arg("a_value"))
-        .def("get_line_spacing",
-            &TextEditor::GetLineSpacing)
-        .def_static("set_default_palette",
-            &TextEditor::SetDefaultPalette, nb::arg("a_value"))
-        .def_static("get_default_palette",
-            &TextEditor::GetDefaultPalette)
-        .def("select_all",
-            &TextEditor::SelectAll)
-        .def("select_line",
-            &TextEditor::SelectLine, nb::arg("a_line"))
-        .def("select_region",
-            &TextEditor::SelectRegion, nb::arg("a_start_line"), nb::arg("a_start_char"), nb::arg("a_end_line"), nb::arg("a_end_char"))
-        .def("select_next_occurrence_of",
-            nb::overload_cast<const char *, int, bool>(&TextEditor::SelectNextOccurrenceOf), nb::arg("a_text"), nb::arg("a_text_size"), nb::arg("a_case_sensitive") = true)
-        .def("select_all_occurrences_of",
-            &TextEditor::SelectAllOccurrencesOf, nb::arg("a_text"), nb::arg("a_text_size"), nb::arg("a_case_sensitive") = true)
-        .def("any_cursor_has_selection",
-            &TextEditor::AnyCursorHasSelection)
-        .def("all_cursors_have_selection",
-            &TextEditor::AllCursorsHaveSelection)
-        .def("clear_extra_cursors",
-            &TextEditor::ClearExtraCursors)
-        .def("clear_selections",
-            &TextEditor::ClearSelections)
-        .def("set_cursor_position",
-            nb::overload_cast<int, int>(&TextEditor::SetCursorPosition), nb::arg("a_line"), nb::arg("a_char_index"))
-        .def("get_cursor_position",
-            nb::overload_cast<int &, int &>(&TextEditor::GetCursorPosition, nb::const_), nb::arg("out_line"), nb::arg("out_column"))
-        .def("get_first_visible_line",
-            &TextEditor::GetFirstVisibleLine)
-        .def("get_last_visible_line",
-            &TextEditor::GetLastVisibleLine)
-        .def("set_view_at_line",
-            &TextEditor::SetViewAtLine, nb::arg("a_line"), nb::arg("a_mode"))
-        .def("copy",
-            &TextEditor::Copy)
+        .def("render",
+            [](TextEditor & self, const char * title, const std::optional<const ImVec2> & size = std::nullopt, bool border = false)
+            {
+                auto Render_adapt_mutable_param_with_default_value = [&self](const char * title, const std::optional<const ImVec2> & size = std::nullopt, bool border = false)
+                {
+
+                    const ImVec2& size_or_default = [&]() -> const ImVec2 {
+                        if (size.has_value())
+                            return size.value();
+                        else
+                            return ImVec2();
+                    }();
+
+                    self.Render(title, size_or_default, border);
+                };
+
+                Render_adapt_mutable_param_with_default_value(title, size, border);
+            },
+            nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("border") = false,
+            " render the text editor in a Dear ImGui context\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()")
+        .def("set_focus",
+            &TextEditor::SetFocus, "programmatically set focus on the editor")
         .def("cut",
             &TextEditor::Cut)
+        .def("copy",
+            &TextEditor::Copy)
         .def("paste",
             &TextEditor::Paste)
         .def("undo",
-            &TextEditor::Undo, nb::arg("a_steps") = 1)
+            &TextEditor::Undo)
         .def("redo",
-            &TextEditor::Redo, nb::arg("a_steps") = 1)
+            &TextEditor::Redo)
         .def("can_undo",
             &TextEditor::CanUndo)
         .def("can_redo",
             &TextEditor::CanRedo)
         .def("get_undo_index",
             &TextEditor::GetUndoIndex)
+        .def("set_cursor",
+            &TextEditor::SetCursor, nb::arg("line"), nb::arg("column"))
+        .def("select_all",
+            &TextEditor::SelectAll)
+        .def("select_line",
+            &TextEditor::SelectLine, nb::arg("line"))
+        .def("select_lines",
+            &TextEditor::SelectLines, nb::arg("start"), nb::arg("end"))
+        .def("select_region",
+            &TextEditor::SelectRegion, nb::arg("start_line"), nb::arg("start_column"), nb::arg("end_line"), nb::arg("end_column"))
+        .def("select_to_brackets",
+            &TextEditor::SelectToBrackets, nb::arg("include_brackets") = true)
+        .def("grow_selections_to_curly_brackets",
+            &TextEditor::GrowSelectionsToCurlyBrackets)
+        .def("shrink_selections_to_curly_brackets",
+            &TextEditor::ShrinkSelectionsToCurlyBrackets)
+        .def("add_next_occurrence",
+            &TextEditor::AddNextOccurrence)
+        .def("select_all_occurrences",
+            &TextEditor::SelectAllOccurrences)
+        .def("any_cursor_has_selection",
+            &TextEditor::AnyCursorHasSelection)
+        .def("all_cursors_have_selection",
+            &TextEditor::AllCursorsHaveSelection)
+        .def("current_cursor_has_selection",
+            &TextEditor::CurrentCursorHasSelection)
+        .def("clear_cursors",
+            &TextEditor::ClearCursors)
+        .def("get_number_of_cursors",
+            &TextEditor::GetNumberOfCursors)
+        .def("get_main_cursor_position",
+            &TextEditor::GetMainCursorPosition)
+        .def("get_current_cursor_position",
+            &TextEditor::GetCurrentCursorPosition)
+        .def("get_cursor_position",
+            &TextEditor::GetCursorPosition, nb::arg("cursor"))
+        .def("get_cursor_selection",
+            &TextEditor::GetCursorSelection, nb::arg("cursor"))
+        .def("get_main_cursor_selection",
+            &TextEditor::GetMainCursorSelection)
+        .def("get_word_at_screen_pos",
+            &TextEditor::GetWordAtScreenPos,
+            nb::arg("screen_pos"),
+            "get the word at a screen position (e.g. from ImGui::GetMousePos()) - uses the origin saved during the last Render() call")
+        .def("scroll_to_line",
+            &TextEditor::ScrollToLine, nb::arg("line"), nb::arg("alignment"))
+        .def("get_first_visible_line",
+            &TextEditor::GetFirstVisibleLine)
+        .def("get_last_visible_line",
+            &TextEditor::GetLastVisibleLine)
+        .def("get_first_visible_column",
+            &TextEditor::GetFirstVisibleColumn)
+        .def("get_last_visible_column",
+            &TextEditor::GetLastVisibleColumn)
+        .def("get_line_height",
+            &TextEditor::GetLineHeight)
+        .def("get_glyph_width",
+            &TextEditor::GetGlyphWidth)
+        .def("select_first_occurrence_of",
+            &TextEditor::SelectFirstOccurrenceOf, nb::arg("text"), nb::arg("case_sensitive") = true, nb::arg("whole_word") = false)
+        .def("select_next_occurrence_of",
+            &TextEditor::SelectNextOccurrenceOf, nb::arg("text"), nb::arg("case_sensitive") = true, nb::arg("whole_word") = false)
+        .def("select_all_occurrences_of",
+            &TextEditor::SelectAllOccurrencesOf, nb::arg("text"), nb::arg("case_sensitive") = true, nb::arg("whole_word") = false)
+        .def("replace_text_in_current_cursor",
+            &TextEditor::ReplaceTextInCurrentCursor, nb::arg("text"))
+        .def("replace_text_in_all_cursors",
+            &TextEditor::ReplaceTextInAllCursors, nb::arg("text"))
+        .def("open_find_replace_window",
+            &TextEditor::OpenFindReplaceWindow)
+        .def("close_find_replace_window",
+            &TextEditor::CloseFindReplaceWindow)
+        .def("set_find_button_label",
+            &TextEditor::SetFindButtonLabel, nb::arg("label"))
+        .def("set_find_all_button_label",
+            &TextEditor::SetFindAllButtonLabel, nb::arg("label"))
+        .def("set_replace_button_label",
+            &TextEditor::SetReplaceButtonLabel, nb::arg("label"))
+        .def("set_replace_all_button_label",
+            &TextEditor::SetReplaceAllButtonLabel, nb::arg("label"))
+        .def("has_find_string",
+            &TextEditor::HasFindString)
+        .def("find_next",
+            &TextEditor::FindNext)
+        .def("find_all",
+            &TextEditor::FindAll)
+        .def("add_marker",
+            &TextEditor::AddMarker, nb::arg("line"), nb::arg("line_number_color"), nb::arg("text_color"), nb::arg("line_number_tooltip"), nb::arg("text_tooltip"))
+        .def("clear_markers",
+            &TextEditor::ClearMarkers)
+        .def("has_markers",
+            &TextEditor::HasMarkers)
+        .def("set_change_callback",
+            &TextEditor::SetChangeCallback,
+            nb::arg("callback"), nb::arg("delay") = 0,
+            " specify a change callback (called when changes are made (including undo/redo))\n the delay parameter specifies a time in miliseconds that the editor will wait for before calling\n which helps in case you don't need to track every keystroke\n passing None deactivates the callback")
+        .def("set_transaction_callback",
+            &TextEditor::SetTransactionCallback,
+            nb::arg("callback"),
+            " specify a transaction callback (live document changes in great detail)\n it provides a list of changes made to the document in a single transaction (in the right order)\n be carefull with this callback as it gets very verbose (called on every keystroke, delete, cut, paste, undo and redo)\n passing None deactivates the callback")
+        .def("set_line_decorator",
+            &TextEditor::SetLineDecorator,
+            nb::arg("width"), nb::arg("callback"),
+            "positive width is number of pixels, negative with is number of glyphs")
+        .def("clear_line_decorator",
+            &TextEditor::ClearLineDecorator)
+        .def("has_line_decorator",
+            &TextEditor::HasLineDecorator)
+        .def("set_line_number_context_menu_callback",
+            &TextEditor::SetLineNumberContextMenuCallback, nb::arg("callback"))
+        .def("clear_line_number_context_menu_callback",
+            &TextEditor::ClearLineNumberContextMenuCallback)
+        .def("has_line_number_context_menu_callback",
+            &TextEditor::HasLineNumberContextMenuCallback)
+        .def("set_text_context_menu_callback",
+            &TextEditor::SetTextContextMenuCallback, nb::arg("callback"))
+        .def("clear_text_context_menu_callback",
+            &TextEditor::ClearTextContextMenuCallback)
+        .def("has_text_context_menu_callback",
+            &TextEditor::HasTextContextMenuCallback)
+        .def("indent_lines",
+            &TextEditor::IndentLines)
+        .def("deindent_lines",
+            &TextEditor::DeindentLines)
+        .def("move_up_lines",
+            &TextEditor::MoveUpLines)
+        .def("move_down_lines",
+            &TextEditor::MoveDownLines)
+        .def("toggle_comments",
+            &TextEditor::ToggleComments)
+        .def("filter_selections",
+            &TextEditor::FilterSelections, nb::arg("filter"))
+        .def("selection_to_lower_case",
+            &TextEditor::SelectionToLowerCase)
+        .def("selection_to_upper_case",
+            &TextEditor::SelectionToUpperCase)
+        .def("strip_trailing_whitespaces",
+            &TextEditor::StripTrailingWhitespaces)
+        .def("filter_lines",
+            &TextEditor::FilterLines, nb::arg("filter"))
+        .def("tabs_to_spaces",
+            &TextEditor::TabsToSpaces)
+        .def("spaces_to_tabs",
+            &TextEditor::SpacesToTabs)
+        .def("set_palette",
+            &TextEditor::SetPalette, nb::arg("new_palette"))
+        .def("get_palette",
+            &TextEditor::GetPalette, nb::rv_policy::reference)
+        .def_static("set_default_palette",
+            &TextEditor::SetDefaultPalette, nb::arg("a_value"))
+        .def_static("get_default_palette",
+            &TextEditor::GetDefaultPalette, nb::rv_policy::reference)
+        .def_static("get_dark_palette",
+            &TextEditor::GetDarkPalette, nb::rv_policy::reference)
+        .def_static("get_light_palette",
+            &TextEditor::GetLightPalette, nb::rv_policy::reference)
+        .def("set_language",
+            &TextEditor::SetLanguage, nb::arg("l"))
+        .def("get_language",
+            &TextEditor::GetLanguage, nb::rv_policy::reference)
+        .def("has_language",
+            &TextEditor::HasLanguage)
+        .def("get_language_name",
+            &TextEditor::GetLanguageName)
+        .def("iterate_identifiers",
+            &TextEditor::IterateIdentifiers,
+            nb::arg("callback"),
+            "iterate through identifiers detected by the colorizer (based on current language)")
+        ;
+    ////////////////////    </generated_from:TextEditor.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:TextDiff.h>    ////////////////////
+    auto pyClassTextDiff =
+        nb::class_<TextDiff>
+            (m, "TextDiff", "")
+        .def(nb::init<>(),
+            "constructor")
+        .def("set_side_by_side_mode",
+            &TextDiff::SetSideBySideMode, nb::arg("flag"))
+        .def("get_side_by_side_mode",
+            &TextDiff::GetSideBySideMode)
         .def("set_text",
-            &TextEditor::SetText, nb::arg("a_text"))
-        .def("get_text",
-            [](TextEditor & self) { return self.GetText(); })
-        .def("set_text_lines",
-            &TextEditor::SetTextLines, nb::arg("a_lines"))
-        .def("get_text_lines",
-            &TextEditor::GetTextLines)
+            &TextDiff::SetText,
+            nb::arg("left"), nb::arg("right"),
+            "specify the text to be compared (using UTF-8 encoded strings)")
+        .def("set_language",
+            &TextDiff::SetLanguage,
+            nb::arg("l"),
+            "specify a new language")
+        .def("set_colors",
+            &TextDiff::SetColors,
+            nb::arg("ac"), nb::arg("dc"),
+            "specify the background color for added/deleted lines")
         .def("render",
-            [](TextEditor & self, const char * aTitle, bool aParentIsFocused = false, const std::optional<const ImVec2> & aSize = std::nullopt, bool aBorder = false) -> bool
+            [](TextDiff & self, const char * title, const std::optional<const ImVec2> & size = std::nullopt, bool border = false)
             {
-                auto Render_adapt_mutable_param_with_default_value = [&self](const char * aTitle, bool aParentIsFocused = false, const std::optional<const ImVec2> & aSize = std::nullopt, bool aBorder = false) -> bool
+                auto Render_adapt_mutable_param_with_default_value = [&self](const char * title, const std::optional<const ImVec2> & size = std::nullopt, bool border = false)
                 {
 
-                    const ImVec2& aSize_or_default = [&]() -> const ImVec2 {
-                        if (aSize.has_value())
-                            return aSize.value();
+                    const ImVec2& size_or_default = [&]() -> const ImVec2 {
+                        if (size.has_value())
+                            return size.value();
                         else
                             return ImVec2();
                     }();
 
-                    auto lambda_result = self.Render(aTitle, aParentIsFocused, aSize_or_default, aBorder);
-                    return lambda_result;
+                    self.Render(title, size_or_default, border);
                 };
 
-                return Render_adapt_mutable_param_with_default_value(aTitle, aParentIsFocused, aSize, aBorder);
+                Render_adapt_mutable_param_with_default_value(title, size, border);
             },
-            nb::arg("a_title"), nb::arg("a_parent_is_focused") = false, nb::arg("a_size").none() = nb::none(), nb::arg("a_border") = false,
-            "Python bindings defaults:\n    If aSize is None, then its default value will be: ImVec2()")
-        .def("im_gui_debug_panel",
-            &TextEditor::ImGuiDebugPanel, nb::arg("panel_name") = "Debug")
-        .def("unit_tests",
-            &TextEditor::UnitTests)
-        .def("get_word_at_screen_pos",
-            &TextEditor::GetWordAtScreenPos, nb::arg("a_screen_pos"))
-        .def("get_selected_text",
-            &TextEditor::GetSelectedText, nb::arg("a_cursor") = -1)
-        .def("set_selection_position",
-            &TextEditor::SetSelectionPosition, nb::arg("pos"))
-        .def("get_selection_position",
-            &TextEditor::GetSelectionPosition, nb::arg("a_cursor") = -1)
-        .def("get_cursor_position",
-            [](TextEditor & self) { return self.GetCursorPosition(); })
+            nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("border") = false,
+            " render the text editor in a Dear ImGui context\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()")
+        .def("set_read_only_enabled",
+            &TextDiff::SetReadOnlyEnabled, nb::arg("param_0"))
+        .def("set_show_line_numbers_enabled",
+            &TextDiff::SetShowLineNumbersEnabled, nb::arg("param_0"))
+        .def("set_show_matching_brackets",
+            &TextDiff::SetShowMatchingBrackets, nb::arg("param_0"))
+        .def("add_marker",
+            &TextDiff::AddMarker, nb::arg("param_0"), nb::arg("param_1"), nb::arg("param_2"), nb::arg("param_3"), nb::arg("param_4"))
+        .def("clear_markers",
+            &TextDiff::ClearMarkers)
+        .def("set_line_decorator",
+            &TextDiff::SetLineDecorator, nb::arg("param_0"), nb::arg("param_1"))
+        .def("clear_line_decorator",
+            &TextDiff::ClearLineDecorator)
+        .def("set_line_number_context_menu_callback",
+            &TextDiff::SetLineNumberContextMenuCallback, nb::arg("param_0"))
+        .def("clear_line_number_context_menu_callback",
+            &TextDiff::ClearLineNumberContextMenuCallback)
+        .def("set_text_context_menu_callback",
+            &TextDiff::SetTextContextMenuCallback, nb::arg("param_0"))
+        .def("clear_text_context_menu_callback",
+            &TextDiff::ClearTextContextMenuCallback)
         ;
-    ////////////////////    </generated_from:TextEditor.h>    ////////////////////
+    ////////////////////    </generated_from:TextDiff.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE END !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

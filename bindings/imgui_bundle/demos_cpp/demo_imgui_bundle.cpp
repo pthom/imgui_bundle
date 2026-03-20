@@ -140,22 +140,22 @@ int main(int, char **)
         { "Visualization", {
             DEMO_DETAILS(          "Plots with ImPlot and ImPlot3D",  demo_implot),
             DEMO_DETAILS(          "ImmVision - Image analyzer",      demo_immvision_launcher),
-            DEMO_DETAILS(          "ImGuizmo - Immediate Mode 3D Gizmo", demo_imguizmo_launcher),
-#ifdef IMGUI_BUNDLE_WITH_NANOVG
-            DEMO_DETAILS(          "NanoVG - 2D Vector Drawing",      demo_nanovg_launcher),
-#endif
+            DEMO_DETAILS(          "Tex Inspect - Texture Inspector",    demo_tex_inspect_launcher),
         }},
         { "Widgets", {
-            DEMO_DETAILS_WITH_CODE("Markdown - Rich Text Rendering",     demo_imgui_md),
-            DEMO_DETAILS_WITH_CODE("Text Editor - Code Editing Widget",  demo_text_edit),
             DEMO_DETAILS_WITH_CODE("Misc Widgets - Knobs, Toggles, ...", demo_widgets),
             DEMO_DETAILS_WITH_CODE("Logger - Log Window Widget",         demo_logger),
-            DEMO_DETAILS(          "Tex Inspect - Texture Inspector",    demo_tex_inspect_launcher),
+            DEMO_DETAILS(          "ImGuizmo - Immediate Mode 3D Gizmo", demo_imguizmo_launcher),
+            DEMO_DETAILS_WITH_CODE("Markdown - Rich Text Rendering",     demo_imgui_md),
+            DEMO_DETAILS          ("Text Editor - Code Editing Widget",  demo_text_edit),
         }},
         { "Tools", {
             DEMO_DETAILS(          "Node Editor - Visual Node Graphs",       demo_node_editor_launcher),
             DEMO_DETAILS_WITH_CODE("Themes - Style & Color Customization",   demo_themes),
             DEMO_DETAILS(          "ImAnim - Animation Library",             demo_im_anim),
+#ifdef IMGUI_BUNDLE_WITH_NANOVG
+            DEMO_DETAILS(          "NanoVG - 2D Vector Drawing",      demo_nanovg_launcher),
+#endif
         }},
     };
 

@@ -130,20 +130,20 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         DemoGroup("Visualization", [
             DemoDetails("Plots with ImPlot and ImPlot3D", demo_implot),
             DemoDetails("ImmVision - Image analyzer", demo_immvision_launcher),
-            DemoDetails("ImGuizmo - Immediate Mode 3D Gizmo",  demo_imguizmo_launcher),
-            DemoDetails("NanoVG - 2D Vector Drawing", demo_nanovg_launcher),
+            DemoDetails("Tex Inspect - Texture Inspector",    demo_tex_inspect_launcher),
         ]),
         DemoGroup("Widgets", [
-            DemoDetails("Markdown - Rich Text Rendering",     demo_imgui_md,    show_code=True),
-            DemoDetails("Text Editor - Code Editing Widget",  demo_text_edit,   show_code=True),
             DemoDetails("Misc Widgets - Knobs, Toggles, ...", demo_widgets,     show_code=True),
             DemoDetails("Logger - Log Window Widget",         demo_logger,      show_code=True),
-            DemoDetails("Tex Inspect - Texture Inspector",    demo_tex_inspect_launcher),
+            DemoDetails("ImGuizmo - Immediate Mode 3D Gizmo",  demo_imguizmo_launcher),
+            DemoDetails("Markdown - Rich Text Rendering",     demo_imgui_md,    show_code=True),
+            DemoDetails("Text Editor - Code Editing Widget",  demo_text_edit),
         ]),
         DemoGroup("Tools", [
             DemoDetails("Node Editor - Visual Node Graphs", demo_node_editor_launcher),
             DemoDetails("Themes - Style & Color Customization", demo_themes,   show_code=True),
             DemoDetails("ImAnim - Animation Library",       demo_im_anim),
+            DemoDetails("NanoVG - 2D Vector Drawing", demo_nanovg_launcher),
         ]),
     ]
 

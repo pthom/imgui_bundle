@@ -903,8 +903,8 @@ Tip: *You can resize the columns on the table below!*
             sMarkdownEditor->SetText(kMarkdownSample);
             // Use C++ language definition as a reasonable approximation for markdown
             // (it will highlight code blocks and some syntax)
-            sMarkdownEditor->SetLanguageDefinition(TextEditor::LanguageDefinitionId::Cpp);
-            sMarkdownEditor->SetPalette(TextEditor::PaletteId::Dark);
+            sMarkdownEditor->SetLanguage(TextEditor::Language::Cpp());
+            sMarkdownEditor->SetPalette(TextEditor::GetDarkPalette());
             sMarkdownEditorInitialized = true;
         }
     }
@@ -1061,9 +1061,9 @@ namespace IntroGallery
 
     void Init()
     {
-        TextEditor::LanguageDefinitionId langDefs[] = {
-            TextEditor::LanguageDefinitionId::Python,
-            TextEditor::LanguageDefinitionId::Cpp
+        const TextEditor::Language* langDefs[] = {
+            TextEditor::Language::Python(),
+            TextEditor::Language::Cpp()
         };
         for (int lang = 0; lang < 2; lang++)
         {
@@ -1071,8 +1071,8 @@ namespace IntroGallery
             {
                 const char* code = (lang == 0) ? sSnippets[i].pythonCode : sSnippets[i].cppCode;
                 sEditors[lang][i].SetText(code);
-                sEditors[lang][i].SetLanguageDefinition(langDefs[lang]);
-                sEditors[lang][i].SetPalette(TextEditor::PaletteId::Dark);
+                sEditors[lang][i].SetLanguage(langDefs[lang]);
+                sEditors[lang][i].SetPalette(TextEditor::GetDarkPalette());
                 // sEditors[lang][i].SetReadOnly(true);
             }
         }
@@ -1185,7 +1185,7 @@ namespace IntroGallery
             ImGui::PushFont(codeFont.font, codeFont.size * 0.8f);
             char editorId[32];
             snprintf(editorId, sizeof(editorId), "##ed_gallery_%d", idx);
-            editor.Render(editorId, false, ImVec2(-1, -1));
+            editor.Render(editorId, ImVec2(-1, -1), false);
             ImGui::PopFont();
         }
         ImGui::EndChild();

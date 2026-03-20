@@ -465,8 +465,6 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     class SnippetTheme(enum.IntEnum):
         dark = enum.auto()  # (= 0)
         light = enum.auto()  # (= 1)
-        retro_blue = enum.auto()  # (= 2)
-        mariana = enum.auto()  # (= 3)
 
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:

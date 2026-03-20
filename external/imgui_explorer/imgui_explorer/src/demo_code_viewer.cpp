@@ -148,7 +148,7 @@ namespace
     // Convert cursor position to byte offset in content
     size_t CursorToOffset(TextEditor& editor, const std::string& content)
     {
-        int curLine, curCol; editor.GetCursorPosition(curLine, curCol);
+        int curLine, curCol; editor.GetMainCursor(curLine, curCol);
         size_t offset = 0;
         int line = 0;
         while (line < curLine && offset < content.size())
@@ -168,8 +168,8 @@ namespace
         int endLine   = OffsetToLine(content, found + matchLen);
         int endCol    = OffsetToColumn(content, found + matchLen);
         // Frame 1: move cursor to column 0 to reset horizontal scroll
-        editor.SetCursorPosition(startLine, 0);
-        editor.SetViewAtLine(startLine, TextEditor::SetViewAtLineMode::Centered);
+        editor.SetCursor(startLine, 0);
+        editor.ScrollToLine(startLine, TextEditor::Scroll::alignMiddle);
         // Frame 2: select the match (deferred so scroll reset takes effect first)
         g_pendingMatch = PendingMatch{startLine, startCol, endLine, endCol};
     }
@@ -257,10 +257,10 @@ namespace
     {
         TextEditor& editor = isPython ? cf.pyEditor : cf.cppEditor;
         editor.SetText(content);
-        editor.SetLanguageDefinition(isPython
-            ? TextEditor::LanguageDefinitionId::Python
-            : TextEditor::LanguageDefinitionId::Cpp);
-        editor.SetPalette(TextEditor::PaletteId::Dark);
+        editor.SetLanguage(isPython
+            ? TextEditor::Language::Python()
+            : TextEditor::Language::Cpp());
+        editor.SetPalette(TextEditor::GetDarkPalette());
         editor.SetReadOnlyEnabled(true);
         editor.SetShowLineNumbersEnabled(true);
         editor.SetShowWhitespacesEnabled(false);
@@ -529,16 +529,16 @@ void DemoCodeViewer_Show()
             if (it2 != cf.pyMarkers.end())
             {
                 int pyLine = it2->second;
-                cf.pyEditor.SetViewAtLine(pyLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
-                cf.pyEditor.SetCursorPosition(pyLine - 1, 0);
+                cf.pyEditor.ScrollToLine(pyLine - 3, TextEditor::Scroll::alignTop);
+                cf.pyEditor.SetCursor(pyLine - 1, 0);
                 cf.pyEditor.SelectLine(pyLine - 1);
                 scrolledPython = true;
             }
         }
         if (!scrolledPython)
         {
-            cf.cppEditor.SetViewAtLine(g_pendingScrollLine - 3, TextEditor::SetViewAtLineMode::FirstVisibleLine);
-            cf.cppEditor.SetCursorPosition(g_pendingScrollLine - 1, 0);
+            cf.cppEditor.ScrollToLine(g_pendingScrollLine - 3, TextEditor::Scroll::alignTop);
+            cf.cppEditor.SetCursor(g_pendingScrollLine - 1, 0);
             cf.cppEditor.SelectLine(g_pendingScrollLine - 1);
         }
         // Auto-switch displayed language to match what we scrolled
@@ -599,7 +599,7 @@ void DemoCodeViewer_Show()
 
         if (ImGui::SmallButton("View on github at this line"))
         {
-            auto pos = editor.GetCursorPosition();
+            auto pos = editor.GetMainCursorPosition();
             const std::string& githubUrl = showingPython ? currentFile.pyGithubUrl : currentFile.cppGithubUrl;
             if (!githubUrl.empty())
                 ImmApp::BrowseToUrl((githubUrl + "#L" + std::to_string(pos.line + 1)).c_str());
@@ -612,7 +612,7 @@ void DemoCodeViewer_Show()
         {
             if (editor.AnyCursorHasSelection())
             {
-                std::string sel = editor.GetSelectedText();
+                std::string sel = editor.GetCursorText(0);
                 if (!sel.empty())
                     snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
             }
@@ -627,7 +627,7 @@ void DemoCodeViewer_Show()
         ImGui::BeginDisabled(!editor.AnyCursorHasSelection());
         if (ImGui::SmallButton(ICON_FA_BOOK "##searchapi"))
         {
-            std::string sel = editor.GetSelectedText();
+            std::string sel = editor.GetCursorText(0);
             if (!sel.empty())
                 SearchInApi(sel);
         }
@@ -637,7 +637,7 @@ void DemoCodeViewer_Show()
 
         ImGui::SameLine();
 
-        auto pos = editor.GetCursorPosition();
+        auto pos = editor.GetMainCursorPosition();
         ImGui::Text("%6d / %6d  | %s", pos.line + 1, editor.GetLineCount(), displayName.c_str());
     }
 
@@ -710,7 +710,7 @@ void DemoCodeViewer_Show()
     {
         g_searchBarOpen = true;
         g_searchBarJustOpened = true;
-        std::string sel = editor.GetSelectedText();
+        std::string sel = editor.GetCursorText(0);
         if (!sel.empty())
             snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
     }
@@ -718,7 +718,7 @@ void DemoCodeViewer_Show()
     // Ctrl+Shift+F shortcut to search in API declarations
     if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_F))
     {
-        std::string sel = editor.GetSelectedText();
+        std::string sel = editor.GetCursorText(0);
         if (!sel.empty())
             SearchInApi(sel);
     }
@@ -730,13 +730,13 @@ void DemoCodeViewer_Show()
 
     // Use unique ID per file and language to keep cursor/scroll state independent
     std::string editorId = std::string("##code_") + displayName;
-    editor.Render(editorId.c_str(), false, ImGui::GetContentRegionAvail());
+    editor.Render(editorId.c_str(), ImGui::GetContentRegionAvail(), false);
 
     // Right-click context menu on the editor
     static std::string rightClickWord;
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
     {
-        std::string sel = editor.GetSelectedText();
+        std::string sel = editor.GetCursorText(0);
         if (!sel.empty())
             rightClickWord = sel;
         else

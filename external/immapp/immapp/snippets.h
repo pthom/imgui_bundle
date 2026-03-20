@@ -24,9 +24,7 @@ namespace Snippets
     enum class SnippetTheme
     {
         Dark,
-        Light,
-        RetroBlue,
-        Mariana
+        Light
     };
 
 

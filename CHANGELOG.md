@@ -1,5 +1,51 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
+# v1.92.602 (WIP)
+
+## ImGuiColorTextEdit: switched to goossens rewrite (**breaking API changes**)
+
+Replaced the santaclose-based ImGuiColorTextEdit with the [complete rewrite by Johan A. Goossens](https://github.com/goossens/ImGuiColorTextEdit). This brings a cleaner architecture, proper UTF-8 support, C++17, no regex/boost dependency, and many new features.
+
+### New features
+- Find/replace UI with keyboard shortcuts
+- Text markers (colored line highlights with tooltips)
+- Bracket matching with visual indicators
+- Line decorators (custom gutter content per line)
+- Context menu callbacks (separate for line numbers and text area)
+- Change and transaction callbacks
+- Filter selections/lines (transform text via callbacks)
+- Autocomplete framework
+- TextDiff widget (combined and side-by-side diff view)
+- Many more languages (C#, JSON, Markdown, AngelScript)
+
+### Breaking API changes (Python)
+
+| Old | New |
+|-----|-----|
+| `TextEditor.PaletteId.dark` | `TextEditor.get_dark_palette()` |
+| `TextEditor.PaletteId.light` | `TextEditor.get_light_palette()` |
+| `TextEditor.PaletteId.retro_blue` | *(removed)* |
+| `TextEditor.PaletteId.mariana` | *(removed)* |
+| `TextEditor.LanguageDefinitionId.cpp` | `TextEditor.Language.cpp()` |
+| `set_language_definition(id)` | `set_language(Language.cpp())` |
+| `set_cursor_position(line, col)` | `set_cursor(line, col)` |
+| `set_view_at_line(line, mode)` | `scroll_to_line(line, alignment)` |
+| `get_selected_text(cursor)` | `get_cursor_text(cursor)` |
+| `get_cursor_position() -> TextPosition` | `get_main_cursor_position() -> CursorPosition` |
+| `render(title, border, size) -> bool` | `render(title, size, border) -> None` |
+| `undo(steps)` / `redo(steps)` | `undo()` / `redo()` (no steps) |
+| `SnippetTheme.retro_blue` / `.mariana` | *(removed)* |
+
+To detect text changes, use `set_change_callback(callback, delay_ms)` instead of the old `render()` return value.
+
+See the breaking changes note at the top of [imgui_color_text_edit.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_color_text_edit.pyi) for a quick summary.
+
+### Breaking API changes (C++)
+
+Same renames as Python (CamelCase). Additionally:
+- `Render()` parameter order changed: `(title, size, border)` instead of `(title, border, size)`
+- `Render()` returns `void` instead of `bool`
+
 # v1.92.601
 
 ## ImmVision: OpenCV is now optional / use GPU rendering pipeline 
