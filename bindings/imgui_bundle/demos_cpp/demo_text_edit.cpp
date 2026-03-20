@@ -311,7 +311,7 @@ void DemoDecoratorsAndContextMenus()
         initialized = true;
     }
 
-    ImGui::Text("Right-click line numbers to toggle breakpoints, right-click text for other actions.");
+    ImGui::Text("Right-click line numbers or press F9 to toggle breakpoints, right-click text for other actions.");
     if (!lastAction.empty())
     {
         ImGui::SameLine();
@@ -322,6 +322,17 @@ void DemoDecoratorsAndContextMenus()
     ImGui::PushFont(codeFont.font, codeFont.size);
     editor.Render("##decorators_ctx");
     ImGui::PopFont();
+
+    // F9: toggle breakpoint on current line
+    if (ImGui::Shortcut(ImGuiKey_F9))
+    {
+        int line = editor.GetMainCursorPosition().line;
+        if (breakpoints.count(line))
+            breakpoints.erase(line);
+        else
+            breakpoints.insert(line);
+    }
+
 }
 
 

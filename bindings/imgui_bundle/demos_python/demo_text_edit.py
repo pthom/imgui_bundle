@@ -220,7 +220,7 @@ def demo_decorators_and_context_menus():
 
     editor = statics.editor
 
-    imgui.text("Right-click line numbers to toggle breakpoints, right-click text for other actions.")
+    imgui.text("Right-click line numbers or press F9 to toggle breakpoints, right-click text for other actions.")
     if statics.last_action:
         imgui.same_line()
         imgui.text_colored(imgui.ImVec4(0.5, 0.8, 1.0, 1.0), f"  {statics.last_action}")
@@ -229,6 +229,14 @@ def demo_decorators_and_context_menus():
     imgui.push_font(code_font.font, code_font.size)
     editor.render("##decorators_ctx")
     imgui.pop_font()
+
+    # F9: toggle breakpoint on current line
+    if imgui.shortcut(imgui.Key.f9):
+        line = editor.get_main_cursor_position().line
+        if line in statics.breakpoints:
+            statics.breakpoints.discard(line)
+        else:
+            statics.breakpoints.add(line)
 
 
 # ============================================================================
