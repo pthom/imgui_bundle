@@ -32,7 +32,7 @@ void py_init_module_imspinner(nb::module_& m)
     //
 
 
-    m.attr("white") = ImColor (1.f, 1.f, 1.f, 1.f);
+    m.attr("white") = ImColor(1.f, 1.f, 1.f, 1.f);
     m.attr("half_white") = ImColor(1.f, 1.f, 1.f, 0.5f);
     m.attr("red") = ImColor(1.f, 0.f, 0.f, 1.f);
 

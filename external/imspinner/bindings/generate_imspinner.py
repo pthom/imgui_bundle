@@ -1,5 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
+import re
 
 import litgen
 
@@ -32,6 +33,10 @@ def main():
     ]
     # options.python_run_black_formatter = True
     options.postprocess_stub_function = lambda s: s.replace("IM_PI  0.7", "math.pi * 0.7")
+    # litgen emits C99 compound literals like `(const ImColor) {1.f, ...}` instead of `ImColor(1.f, ...)`
+    options.postprocess_pydef_function = lambda s: re.sub(
+        r"\(const (\w+)\)\s*\{([^}]*)\}", r"\1(\2)", s
+    )
 
     options.globals_vars_include_by_name__regex = r"^PI_|white|red"
 
