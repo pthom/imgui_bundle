@@ -381,6 +381,131 @@ void DemoTextDiff()
     ImGui::PopFont();
 }
 
+// ============================================================================
+// Tab 7: Editor and menus
+// Demonstrates how menus can be added to supplement the editor
+// ============================================================================
+#if __APPLE__
+#define SHORTCUT "Cmd-"
+#else
+#define SHORTCUT "Ctrl-"
+#endif
+void DemoEditorWithMenus()
+{
+    ShowSourceToggle("DemoEditorWithMenus", "demo_editor_with_menus");
+
+    static bool initialized = false;
+    static TextEditor editor;
+
+    if (!initialized)
+    {
+        editor.SetText(
+            "#include <iostream>\n"
+            "\n"
+            "void foo() {\n"
+            "    std::cout << \"Hello\" << std::endl;\n"
+            "    int x = 42;\n"
+            "    float pi = 3.14159f;\n"
+            "    return x;\n"
+            "}\n"
+        );
+        editor.SetLanguage(TextEditor::Language::Cpp());
+        initialized = true;
+    }
+
+    ImGui::BeginChild("editor_with_menus", ImVec2(0, 0), 0, ImGuiWindowFlags_MenuBar);
+
+    // create menubar
+	if (ImGui::BeginMenuBar()) {
+		// if (ImGui::BeginMenu("File")) {
+		// 	if (ImGui::MenuItem("New", SHORTCUT "N")) { newFile(); }
+		// 	if (ImGui::MenuItem("Open...", SHORTCUT "O")) { openFile(); }
+		// 	ImGui::Separator();
+		//
+		// 	if (ImGui::MenuItem("Save", SHORTCUT "S", nullptr, isSavable())) { saveFile(); }
+		// 	if (ImGui::MenuItem("Save As...")) { showSaveFileAs(); }
+		// 	ImGui::EndMenu();
+		// }
+
+		if (ImGui::BeginMenu("Edit")) {
+			if (ImGui::MenuItem("Undo", " " SHORTCUT "Z", nullptr, editor.CanUndo())) { editor.Undo(); }
+#if __APPLE__
+			if (ImGui::MenuItem("Redo", "^" SHORTCUT "Z", nullptr, editor.CanRedo())) { editor.Redo(); }
+#else
+			if (ImGui::MenuItem("Redo", " " SHORTCUT "Y", nullptr, editor.CanRedo())) { editor.Redo(); }
+#endif
+
+			ImGui::Separator();
+			if (ImGui::MenuItem("Cut", " " SHORTCUT "X", nullptr, editor.AnyCursorHasSelection())) { editor.Cut(); }
+			if (ImGui::MenuItem("Copy", " " SHORTCUT "C", nullptr, editor.AnyCursorHasSelection())) { editor.Copy(); }
+			if (ImGui::MenuItem("Paste", " " SHORTCUT "V", nullptr, ImGui::GetClipboardText() != nullptr)) { editor.Paste(); }
+
+			ImGui::Separator();
+			bool flag;
+			flag = editor.IsInsertSpacesOnTabs(); if (ImGui::MenuItem("Insert Spaces on Tabs", nullptr, &flag)) { editor.SetInsertSpacesOnTabs(flag); };
+
+			if (ImGui::MenuItem("Tabs To Spaces")) { editor.TabsToSpaces(); }
+			if (ImGui::MenuItem("Spaces To Tabs", nullptr, nullptr, !editor.IsInsertSpacesOnTabs())) { editor.SpacesToTabs(); }
+			if (ImGui::MenuItem("Strip Trailing Whitespaces")) { editor.StripTrailingWhitespaces(); }
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Selection")) {
+			if (ImGui::MenuItem("Select All", " " SHORTCUT "A", nullptr, !editor.IsEmpty())) { editor.SelectAll(); }
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Indent Line(s)", " " SHORTCUT "]", nullptr, !editor.IsEmpty())) { editor.IndentLines(); }
+			if (ImGui::MenuItem("Deindent Line(s)", " " SHORTCUT "[", nullptr, !editor.IsEmpty())) { editor.DeindentLines(); }
+			if (ImGui::MenuItem("Move Line(s) Up",  "Alt-Up", nullptr, !editor.IsEmpty())) { editor.MoveUpLines(); }
+			if (ImGui::MenuItem("Move Line(s) Down",  "Alt-Down", nullptr, !editor.IsEmpty())) { editor.MoveDownLines(); }
+			if (ImGui::MenuItem("Toggle Comments", " " SHORTCUT "/", nullptr, editor.HasLanguage())) { editor.ToggleComments(); }
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("To Uppercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { editor.SelectionToUpperCase(); }
+			if (ImGui::MenuItem("To Lowercase", nullptr, nullptr, editor.AnyCursorHasSelection())) { editor.SelectionToLowerCase(); }
+			ImGui::Separator();
+
+			if (ImGui::MenuItem("Add Next Occurrence", " " SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.AddNextOccurrence(); }
+			if (ImGui::MenuItem("Select All Occurrences", "^" SHORTCUT "D", nullptr, editor.CurrentCursorHasSelection())) { editor.SelectAllOccurrences(); }
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("View")) {
+
+			bool flag;
+			flag = editor.IsShowWhitespacesEnabled(); if (ImGui::MenuItem("Show Whitespaces", nullptr, &flag)) { editor.SetShowWhitespacesEnabled(flag); };
+			flag = editor.IsShowSpacesEnabled(); if (ImGui::MenuItem("Show Spaces", nullptr, &flag)) { editor.SetShowSpacesEnabled(flag); };
+			flag = editor.IsShowTabsEnabled(); if (ImGui::MenuItem("Show Tabs", nullptr, &flag)) { editor.SetShowTabsEnabled(flag); };
+			flag = editor.IsShowLineNumbersEnabled(); if (ImGui::MenuItem("Show Line Numbers", nullptr, &flag)) { editor.SetShowLineNumbersEnabled(flag); };
+			flag = editor.IsShowingMatchingBrackets(); if (ImGui::MenuItem("Show Matching Brackets", nullptr, &flag)) { editor.SetShowMatchingBrackets(flag); };
+			flag = editor.IsCompletingPairedGlyphs(); if (ImGui::MenuItem("Complete Matching Glyphs", nullptr, &flag)) { editor.SetCompletePairedGlyphs(flag); };
+			flag = editor.IsShowPanScrollIndicatorEnabled(); if (ImGui::MenuItem("Show Pan/Scroll Indicator", nullptr, &flag)) { editor.SetShowPanScrollIndicatorEnabled(flag); };
+			flag = editor.IsMiddleMousePanMode(); if (ImGui::MenuItem("Middle Mouse Pan Mode", nullptr, &flag)) { if (flag) editor.SetMiddleMousePanMode(); else editor.SetMiddleMouseScrollMode(); };
+
+			ImGui::EndMenu();
+		}
+
+		if (ImGui::BeginMenu("Find")) {
+			if (ImGui::MenuItem("Find", " " SHORTCUT "F")) { editor.OpenFindReplaceWindow(); }
+			if (ImGui::MenuItem("Find Next", " " SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindNext(); }
+			if (ImGui::MenuItem("Find All", "^" SHORTCUT "G", nullptr, editor.HasFindString())) { editor.FindAll(); }
+			ImGui::Separator();
+			ImGui::EndMenu();
+		}
+
+		ImGui::EndMenuBar();
+	}
+
+    auto codeFont = ImGuiMd::GetCodeFont();
+    ImGui::PushFont(codeFont.font, codeFont.size);
+    editor.Render("##editor_menus");
+    ImGui::PopFont();
+
+    ImGui::EndChild();
+}
+
 
 // ============================================================================
 // Main demo function
@@ -417,6 +542,11 @@ void demo_text_edit()
         if (ImGui::BeginTabItem("Text Diff"))
         {
             DemoTextDiff();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Editor with Menus"))
+        {
+            DemoEditorWithMenus();
             ImGui::EndTabItem();
         }
         ImGui::EndTabBar();

@@ -279,6 +279,135 @@ def demo_text_diff():
 
 
 # ============================================================================
+# Tab 6: Editor with Menus
+# Demonstrates how menus can be added to supplement the editor
+# ============================================================================
+import platform
+_SHORTCUT = "Cmd-" if platform.system() == "Darwin" else "Ctrl-"
+
+
+@static(initialized=False, editor=None)
+def demo_editor_with_menus():
+    _show_source_toggle(demo_editor_with_menus)
+    statics = demo_editor_with_menus
+    if not statics.initialized:
+        statics.editor = TextEditor()
+        statics.editor.set_text(
+            "import math\n"
+            "\n"
+            "def greet(name):\n"
+            '    print(f"Hello {name}")\n'
+            "    x = 42\n"
+            "    pi = math.pi\n"
+            "    return x\n"
+        )
+        statics.editor.set_language(TextEditor.Language.python())
+        statics.initialized = True
+    editor = statics.editor
+
+    imgui.begin_child("editor_with_menus", ImVec2(0, 0), 0, imgui.WindowFlags_.menu_bar.value)
+
+    if imgui.begin_menu_bar():
+        if imgui.begin_menu("Edit"):
+            if imgui.menu_item_simple(f"Undo  {_SHORTCUT}Z", enabled=editor.can_undo()):
+                editor.undo()
+            if imgui.menu_item_simple(f"Redo  {_SHORTCUT}Y", enabled=editor.can_redo()):
+                editor.redo()
+            imgui.separator()
+            if imgui.menu_item_simple(f"Cut  {_SHORTCUT}X", enabled=editor.any_cursor_has_selection()):
+                editor.cut()
+            if imgui.menu_item_simple(f"Copy  {_SHORTCUT}C", enabled=editor.any_cursor_has_selection()):
+                editor.copy()
+            if imgui.menu_item_simple(f"Paste  {_SHORTCUT}V"):
+                editor.paste()
+            imgui.separator()
+            _, flag = imgui.menu_item("Insert Spaces on Tabs", "", editor.is_insert_spaces_on_tabs())
+            if _:
+                editor.set_insert_spaces_on_tabs(flag)
+            if imgui.menu_item_simple("Tabs To Spaces"):
+                editor.tabs_to_spaces()
+            if imgui.menu_item_simple("Spaces To Tabs", enabled=not editor.is_insert_spaces_on_tabs()):
+                editor.spaces_to_tabs()
+            if imgui.menu_item_simple("Strip Trailing Whitespaces"):
+                editor.strip_trailing_whitespaces()
+            imgui.end_menu()
+
+        if imgui.begin_menu("Selection"):
+            if imgui.menu_item_simple(f"Select All", f"{_SHORTCUT}A", enabled=not editor.is_empty()):
+                editor.select_all()
+            imgui.separator()
+            if imgui.menu_item_simple(f"Indent Line(s)", f"{_SHORTCUT}]", enabled=not editor.is_empty()):
+                editor.indent_lines()
+            if imgui.menu_item_simple(f"Deindent Line(s)", f"{_SHORTCUT}[", enabled=not editor.is_empty()):
+                editor.deindent_lines()
+            if imgui.menu_item_simple("Move Line(s) Up", "Alt-Up", enabled=not editor.is_empty()):
+                editor.move_up_lines()
+            if imgui.menu_item_simple("Move Line(s) Down", "Alt-Down ", enabled=not editor.is_empty()):
+                editor.move_down_lines()
+            if imgui.menu_item_simple(f"Toggle Comments", f"{_SHORTCUT}/", enabled=editor.has_language()):
+                editor.toggle_comments()
+            imgui.separator()
+            if imgui.menu_item_simple("To Uppercase", enabled=editor.any_cursor_has_selection()):
+                editor.selection_to_upper_case()
+            if imgui.menu_item_simple("To Lowercase", enabled=editor.any_cursor_has_selection()):
+                editor.selection_to_lower_case()
+            imgui.separator()
+            if imgui.menu_item_simple(f"Add Next Occurrence", f"{_SHORTCUT}D", enabled=editor.current_cursor_has_selection()):
+                editor.add_next_occurrence()
+            if imgui.menu_item_simple(f"Select All Occurrences",  f"^{_SHORTCUT}D", enabled=editor.current_cursor_has_selection()):
+                editor.select_all_occurrences()
+            imgui.end_menu()
+
+        if imgui.begin_menu("View"):
+            _, flag = imgui.menu_item("Show Whitespaces", "", editor.is_show_whitespaces_enabled())
+            if _:
+                editor.set_show_whitespaces_enabled(flag)
+            _, flag = imgui.menu_item("Show Spaces", "", editor.is_show_spaces_enabled())
+            if _:
+                editor.set_show_spaces_enabled(flag)
+            _, flag = imgui.menu_item("Show Tabs", "", editor.is_show_tabs_enabled())
+            if _:
+                editor.set_show_tabs_enabled(flag)
+            _, flag = imgui.menu_item("Show Line Numbers", "", editor.is_show_line_numbers_enabled())
+            if _:
+                editor.set_show_line_numbers_enabled(flag)
+            _, flag = imgui.menu_item("Show Matching Brackets", "", editor.is_showing_matching_brackets())
+            if _:
+                editor.set_show_matching_brackets(flag)
+            _, flag = imgui.menu_item("Complete Matching Glyphs", "", editor.is_completing_paired_glyphs())
+            if _:
+                editor.set_complete_paired_glyphs(flag)
+            _, flag = imgui.menu_item("Show Pan/Scroll Indicator", "", editor.is_show_pan_scroll_indicator_enabled())
+            if _:
+                editor.set_show_pan_scroll_indicator_enabled(flag)
+            _, flag = imgui.menu_item("Middle Mouse Pan Mode", "", editor.is_middle_mouse_pan_mode())
+            if _:
+                if flag:
+                    editor.set_middle_mouse_pan_mode()
+                else:
+                    editor.set_middle_mouse_scroll_mode()
+            imgui.end_menu()
+
+        if imgui.begin_menu("Find"):
+            if imgui.menu_item_simple(f"Find", f"{_SHORTCUT}F"):
+                editor.open_find_replace_window()
+            if imgui.menu_item_simple(f"Find Next",  f"{_SHORTCUT}G", enabled=editor.has_find_string()):
+                editor.find_next()
+            if imgui.menu_item_simple(f"Find All",  f"^{_SHORTCUT}G", enabled=editor.has_find_string()):
+                editor.find_all()
+            imgui.end_menu()
+
+        imgui.end_menu_bar()
+
+    code_font = imgui_md.get_code_font()
+    imgui.push_font(code_font.font, code_font.size)
+    editor.render("##editor_menus")
+    imgui.pop_font()
+
+    imgui.end_child()
+
+
+# ============================================================================
 # Main demo function
 # ============================================================================
 def demo_gui():
@@ -304,6 +433,9 @@ def demo_gui():
             imgui.end_tab_item()
         if imgui.begin_tab_item("Text Diff")[0]:
             demo_text_diff()
+            imgui.end_tab_item()
+        if imgui.begin_tab_item("Editor with Menus")[0]:
+            demo_editor_with_menus()
             imgui.end_tab_item()
         imgui.end_tab_bar()
 
