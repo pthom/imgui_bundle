@@ -196,7 +196,8 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
 #endif
                 {"im_anim", true, true,
                  "https://github.com/pthom/ImAnim/blob/imgui_bundle/im_anim.h",
-                 "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/im_anim.pyi"},
+                 "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/im_anim.pyi",
+                 "im_anim.pyi"},
             };
         cfg.frameSetup = [] {
             iam_update_begin_frame();
