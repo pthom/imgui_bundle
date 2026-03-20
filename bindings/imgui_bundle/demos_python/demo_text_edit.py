@@ -277,7 +277,7 @@ def demo_gui():
     imgui_md.render(
         """
 # ImGuiColorTextEdit
-[ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit) is a syntax highlighting text editor for ImGui (originally by BalazsJako, rewritten by Johan A. Goossens)
+[ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit) is a syntax highlighting text editor for Dear ImGui (originally by BalazsJako, rewritten by Johan A. Goossens)
     """
     )
 
