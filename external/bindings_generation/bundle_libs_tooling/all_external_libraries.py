@@ -302,12 +302,13 @@ def check_new_changes_in_official():
     print(f"Libraries with new changes in official repo: {changed_str}")
 
 
-def find_lib_by_snake_case(name: str) -> ExternalLibrary:
-    """Find a library by its snake_case name (as shown by show_libs_info)."""
-    matches = [lib for lib in ALL_LIBS if lib.name_snake_case() == name]
+def find_lib(name: str) -> ExternalLibrary:
+    """Find a library by its snake_case name or original name (e.g. 'imgui_color_text_edit' or 'ImGuiColorTextEdit')."""
+    name = name.strip().rstrip(",")
+    matches = [lib for lib in ALL_LIBS if lib.name_snake_case() == name or lib.name == name]
     if not matches:
-        all_names = ", ".join(lib.name_snake_case() for lib in ALL_LIBS if lib.is_submodule())
-        raise ValueError(f"Unknown library: '{name}'. Available: {all_names}")
+        all_names = ", ".join(f"{lib.name_snake_case()} ({lib.name})" for lib in ALL_LIBS if lib.is_submodule())
+        raise ValueError(f"Unknown library: '{name}'. Available:\n{all_names}")
     return matches[0]
 
 
@@ -322,9 +323,18 @@ def show_libs_info():
             print(f"{lib.name_snake_case():<25s} {fork:<53s} {official:<53s} {lib.git_folder_relative_path()}")
 
 
+def show_lib_upstream_log(name: str):
+    """Show new commits in official upstream that are not yet in the fork branch."""
+    import subprocess
+    lib = find_lib(name)
+    assert lib.fork_git_url, f"'{name}' ({lib.name}) is not a fork"
+    cmd_str = f"git --no-pager log --oneline {lib.fork_branch}..{lib.official_remote_name}/{lib.official_branch}"
+    subprocess.run(cmd_str, shell=True, cwd=lib.git_folder_abs_path())
+
+
 def rebase_lib(name: str):
     """Tag and rebase a fork library on its official upstream."""
-    lib = find_lib_by_snake_case(name)
+    lib = find_lib(name)
     assert lib.fork_git_url, f"'{name}' ({lib.name}) is not a fork"
     lib.cmd_rebase_fork_on_official_changes().run()
 
@@ -332,7 +342,7 @@ def rebase_lib(name: str):
 def tag_lib(name: str):
     """Push a date tag to a fork library."""
     import os
-    lib = find_lib_by_snake_case(name)
+    lib = find_lib(name)
     assert lib.fork_git_url, f"'{name}' ({lib.name}) is not a fork"
     date_str = os.popen("date +%Y%m%d").read().strip()
     from .shell_commands import ShellCommands

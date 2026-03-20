@@ -36,6 +36,11 @@ libs_pull:
 libs_check_upstream:
     {{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import check_new_changes_in_official; check_new_changes_in_official()"
 
+# Show new upstream commits not yet in a fork library (usage: just libs_log <name>)
+[group('libs')]
+libs_log lib:
+    @{{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import show_lib_upstream_log; show_lib_upstream_log('{{ lib }}')"
+
 # Tag and rebase a fork library on its official upstream (usage: just libs_rebase <name>)
 [group('libs')]
 libs_rebase lib:
