@@ -4,7 +4,7 @@ import sys
 from immdebug import immdebug
 
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 while True:
     ret, frame = cap.read()
@@ -22,7 +22,7 @@ while True:
         break
 
     if key == ord('d'):
-        immdebug(edges, "edges")
-        immdebug(frame, "frame")
-        immdebug(gray, "gray")
-        immdebug(edges_float, "edges_float")
+        immdebug(edges, "edges", zoom_key="a")
+        immdebug(frame, "frame", zoom_key="a")
+        immdebug(gray, "gray", zoom_key="a")
+        immdebug(edges_float, "edges_float", zoom_key="a")
