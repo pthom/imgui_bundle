@@ -3,8 +3,7 @@
 > From expressive code to powerful GUIs in no time: a fast, feature-rich, cross-platform toolkit for C++ & Python.
 
 
-_Click the animation below to launch "Dear ImGui Bundle Explorer"_ 
-
+_Click the animation below to launch "Dear ImGui Bundle Explorer":_
 ````{card}
 :link: https://traineq.org/imgui_bundle_explorer/
 ```{figure} ../images/bundle_explorer_vid.*
