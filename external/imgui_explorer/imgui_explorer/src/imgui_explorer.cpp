@@ -27,6 +27,8 @@ namespace
         ImGui::SetItemTooltip("%s", url);
         if (ImGui::IsItemClicked())
             ImmApp::BrowseToUrl(url);
+        if (ImGui::IsItemHovered())
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
     };
 
     bool                                GDemoMarker_FlagFollowSource = true;
