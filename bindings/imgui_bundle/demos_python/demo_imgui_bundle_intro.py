@@ -12,7 +12,7 @@ from imgui_bundle.demos_python import demo_utils
 from imgui_bundle import implot3d
 from imgui_bundle.immapp import icons_fontawesome_4
 import webbrowser
-from imgui_bundle.immapp import static
+
 
 # Optional imports (replacing #ifdef guards)
 try:
@@ -23,10 +23,15 @@ except ImportError:
 
 try:
     from imgui_bundle import immvision
-    import cv2
     HAS_IMMVISION = True
 except ImportError:
     HAS_IMMVISION = False
+
+try:
+    import cv2
+    HAS_OPENCV = True
+except ImportError:
+    HAS_OPENCV = False
 
 try:
     import OpenGL.GL as GL
@@ -558,7 +563,7 @@ def _table_slide_gui(content_size: ImVec2):
 # Slide 4: ImmVision — Image debugging with animated zoom
 # ============================================================================
 
-if HAS_IMMVISION:
+if HAS_IMMVISION and HAS_OPENCV:
     _immvision_image = None
     _immvision_image_sobel = None
     _immvision_params = immvision.ImageParams()
@@ -1381,20 +1386,23 @@ def _implot_slide_wrapper(cs: ImVec2):
 
 
 def _immvision_slide_wrapper(cs: ImVec2):
-    if HAS_IMMVISION:
+    if HAS_IMMVISION and HAS_OPENCV:
         _immvision_slide_gui(cs)
     else:
-        imgui.text_wrapped("ImmVision not available (requires OpenCV).")
-        imgui.text("Please run:")
-        imgui.text("    pip install opencv-python")
-        imgui.same_line()
-        if imgui.button("Copy"):
-            imgui.set_clipboard_text("pip install opencv-python")
-        imgui.text("or")
-        imgui.text("    uv pip install opencv-python")
-        imgui.same_line()
-        if imgui.button("Copy##2"):
-            imgui.set_clipboard_text("uv pip install opencv-python")
+        if not HAS_IMMVISION:
+            imgui.text_wrapped("ImmVision not available in this build.")
+        else:
+            if not HAS_OPENCV:
+                imgui.text_wrapped("This demo requires OpenCV. Please run:")
+                imgui.text("    pip install opencv-python")
+                imgui.same_line()
+                if imgui.button("Copy"):
+                    imgui.set_clipboard_text("pip install opencv-python")
+                imgui.text("or")
+                imgui.text("   uv pip install opencv-python")
+                imgui.same_line()
+                if imgui.button("Copy##2"):
+                    imgui.set_clipboard_text("uv pip install opencv-python")
 
 
 def _shader_slide_wrapper(cs: ImVec2):

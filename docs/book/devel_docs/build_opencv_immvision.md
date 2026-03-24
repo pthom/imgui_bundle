@@ -1,6 +1,8 @@
 # OpenCV builds for immvision
 
-Immvision requires a minimalist static OpenCV (only `core`, `imgcodecs`, `imgproc`).
+ImmVision no longer requires OpenCV — it works standalone with its own `ImageBuffer` type.
+OpenCV is optional and only needed for `cv::Mat` interop in C++. When enabled, a minimalist
+static OpenCV (only `core`, `imgcodecs`, `imgproc`) is used.
 How OpenCV is obtained depends on the platform. This document is the central reference
 for all OpenCV build/download strategies.
 

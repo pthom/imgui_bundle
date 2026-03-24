@@ -7,7 +7,7 @@
 #ifndef IMGUI_BUNDLE_WITH_IMMVISION
 void demo_immvision_launcher()
 {
-    ImGui::Text("Dear ImGui Bundle was compiled without support for ImmVision (this requires OpenCV and OpenGl)");
+    ImGui::Text("Dear ImGui Bundle was compiled without support for ImmVision (this requires OpenGL)");
 }
 
 #else
@@ -28,7 +28,7 @@ void demo_immvision_launcher()
     }
 
     ImGuiMd::RenderUnindented(R"(
-        [ImmVision](https://github.com/pthom/immvision) is an immediate image analyzer. It is based on OpenCv and can analyse RGB & float, images with 1 to 4 channels.
+        [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger and inspector. It can display and analyse RGB & float images with 1 to 4 channels, with zoom, pan, pixel inspection, and colormaps.
     )");
 
     if (ImGui::CollapsingHeader("Display images"))

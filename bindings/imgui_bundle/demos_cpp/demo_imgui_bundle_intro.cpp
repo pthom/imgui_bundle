@@ -1585,7 +1585,7 @@ static void TableSlideGui(ImVec2 cs)     { IntroTable::SlideGui(cs); }
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
 static void ImmVisionSlideGui(ImVec2 cs) { IntroImmVision::SlideGui(cs); }
 #else
-static void ImmVisionSlideGui(ImVec2)    { ImGui::TextWrapped("ImmVision not available (requires OpenCV)."); }
+static void ImmVisionSlideGui(ImVec2)    { ImGui::TextWrapped("ImmVision not available in this build."); }
 #endif
 
 static void NotebookSlideGui(ImVec2 cs)    { IntroNotebook::SlideGui(cs); }
