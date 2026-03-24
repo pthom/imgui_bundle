@@ -529,17 +529,17 @@ void DemoCodeViewer_Show()
             if (it2 != cf.pyMarkers.end())
             {
                 int pyLine = it2->second;
-                cf.pyEditor.ScrollToLine(pyLine - 3, TextEditor::Scroll::alignTop);
                 cf.pyEditor.SetCursor(pyLine - 1, 0);
                 cf.pyEditor.SelectLine(pyLine - 1);
+                cf.pyEditor.ScrollToLine(pyLine - 3, TextEditor::Scroll::alignTop);
                 scrolledPython = true;
             }
         }
         if (!scrolledPython)
         {
-            cf.cppEditor.ScrollToLine(g_pendingScrollLine - 3, TextEditor::Scroll::alignTop);
             cf.cppEditor.SetCursor(g_pendingScrollLine - 1, 0);
             cf.cppEditor.SelectLine(g_pendingScrollLine - 1);
+            cf.cppEditor.ScrollToLine(g_pendingScrollLine - 3, TextEditor::Scroll::alignTop);
         }
         // Auto-switch displayed language to match what we scrolled
         if (g_userPrefPython)
