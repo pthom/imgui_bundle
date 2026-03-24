@@ -18,6 +18,7 @@ parts:
       - file: python/notebook_runners.ipynb
       - file: python/python_pyodide
       - file: python/python_tips
+      - file: python/desktop_deploy
   - caption: For C++ users
     chapters:
       - file: cpp/cpp_install
