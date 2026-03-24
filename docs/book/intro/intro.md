@@ -30,10 +30,7 @@ You'll soon see that GUI code can be clear, readable, and easy to maintain. The 
 
 
 
-:::{note}
-* Dear ImGui Bundle may not be the best choice for applications that need to match OS look-and-feel exactly, or for projects where accessibility is critical.
-* Being able to work with readable code is getting more and more important as LLMs are now widely used to generate code. Dear ImGui Bundle's immediate mode paradigm naturally leads to code that is easy to understand, both for humans and for AI tools.
-:::
+_Note: Dear ImGui Bundle may not be the best choice for applications that need to match OS look-and-feel exactly, or for projects where accessibility is critical._
 
 
 
@@ -42,7 +39,7 @@ You'll soon see that GUI code can be clear, readable, and easy to maintain. The 
 
 ## Code That Reads Like a Book
 
-The immediate mode paradigm means your UI code is simple and direct:
+The immediate mode paradigm means your UI code is simple and direct: the app below can be coded with just 9 readable lines of Python:
 
 ```python
 from imgui_bundle import imgui, hello_imgui
@@ -61,13 +58,21 @@ hello_imgui.run(gui, window_title="Fruit Picker")
 
 ![Fruit picker app](../images/choose_fruit.jpg)
 
-No widget objects. No signals/slots. State lives in your code. Changes are immediate. 
+The relation between code and behavior is direct: what you write is what runs. There are no hidden widget trees, no callback chains, and no implicit state synchronization. This makes it easier to reason about your app's logic and flow.
 
-:::::{seealso} Comparison with Alternatives
-:icon: false
-:class: dropdown
+**Easy to understand for humans**
 
-Compare the code styles with other popular GUI libraries:
+Being able to work with readable code is getting more and more important as LLMs are now widely used to generate code: *You*, the human, still need to understand, review, and maintain that code. Immediate mode makes this easier.
+
+**Easy to understand for AI**
+
+And the same clarity that helps humans also helps AI: with no implicit state to get wrong, LLMs can read and generate ImGui code reliably. The [full PDF manuals](https://pthom.github.io/imgui_bundle/assets/book.pdf) give an AI assistant all the context it needs.
+
+---
+
+## How Does It Compare?
+
+Not sure if Dear ImGui Bundle is right for you? Compare the code styles with other popular GUI libraries:
 
 ::::{tab-set}
 
@@ -226,11 +231,10 @@ demo.launch()
 ::::
 
 :::{note}
-These example are [available here](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/sandbox/compare_other_libs)
+These examples are [available here](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/sandbox/compare_other_libs)
 :::
 
-:::::
-
+---
 
 ## Learn More
 
