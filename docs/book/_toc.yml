@@ -3,6 +3,7 @@ root: intro/intro
 parts:
   - caption: Introduction
     chapters:
+      - file: intro/what_is_imgui_bundle
       - file: intro/key_features
       - file: intro/imm_gui
       - file: intro/interactive_manuals
