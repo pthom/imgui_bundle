@@ -252,7 +252,7 @@ You should prefer a more complete framework (such as Qt for example) if your int
 
 ## Learn More
 
-- **[Key Features](key_features.md)** — Detailed comparisons with Qt, Streamlit, Gradio, and more.
+- **[Key Features](key_features.md)** — Library list, FAQ, and more details.
 - **[Immediate Mode Explained](imm_gui.md)** — Understand the paradigm that makes ImGui different.
 - **[Interactive Manuals & Demos](interactive_manuals.md)** — Try the demos in your browser.
 - **[Jupyter Notebooks](../python/notebook_runners.ipynb)** — Interactive GUIs inside Jupyter. Your training loop keeps running while you tune hyperparameters.

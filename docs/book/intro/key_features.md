@@ -73,57 +73,9 @@ Each library is:
 
 # Common Questions
 
-## Is It Interesting for Developers?
+## Is it up to date?
 
-**Absolutely yes**, for several reasons:
-
-### 1. Joy of Use
-
-The immediate-mode paradigm is genuinely refreshing:
-
-```python
-# Your code directly expresses intent
-if imgui.button("Click Me"):
-    do_something()
-```
-
-This is more readable and maintainable than callback spaghetti or complex widget trees.
-
-
-### 2. Rapid Development
-
-From zero to functional UI is remarkably fast:
-- No UI designer needed
-- No XML/JSON layouts to maintain
-- Changes appear immediately
-- Easy to iterate
-
-### 3. Power When You Need It
-
-The framework scales from simple to complex:
-- Start with a simple window and buttons
-- Add docking and multiple windows
-- Incorporate 3D visualization
-- Build node-based editors
-- Create custom widgets
-
-All while maintaining code clarity.
-
-### 4. Cross-Platform Reality
-
-The cross-platform support actually works:
-- Same code runs on Windows, macOS, Linux
-- WebAssembly with Python runtime (!!)
-- No platform-specific hacks needed
-- Mobile support (iOS, Android) is real (in C++)
-
-### 5. Active Community
-
-- Dear ImGui itself has 60k+ stars and is used in AAA games
-- Dear ImGui Bundle is based on Dear ImGui and adds comprehensive Python support
-- 1k+ stars
-- Regular updates and maintenance, keeping up with Dear ImGui upstream
-
+**Yes!** Because: Python bindings are auto-generated, so they stay in sync with C++
 
 ## "Isn't rebuilding the UI every frame slow?"
 
@@ -148,4 +100,14 @@ The cross-platform support actually works:
 - Python → Pyodide → WebAssembly (!!)
 - Full Python runtime in browser
 - Native-speed rendering via WebGL
-- Check ImGui Bundle Explorer: [traineq.org/ImGuiBundle](https://traineq.org/imgui_bundle_explorer)
+- Check [ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer)
+
+## Is It Interesting for Developers?
+
+**Absolutely yes**, for several reasons:
+
+* The immediate-mode paradigm is genuinely refreshing: your code directly expresses intent
+* Rapid Development: From zero to functional UI is remarkably fast:
+* The cross-platform support actually works: the same code runs on Windows, macOS, Linux. Mobile support is real (in C++), and web support via Emscripten and Pyodide also.
+* Active Community: Dear ImGui itself has 70k+ stars. Dear ImGui Bundle adds comprehensive Python support, and has 1k+ stars (growing steadily).
+

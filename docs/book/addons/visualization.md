@@ -65,6 +65,11 @@ int main() {
     return 0;
 }
 ```
+
+:::{note}
+This example uses `cv::Mat` from OpenCV, but **OpenCV is optional**. ImmVision works standalone with its own `ImmVision::ImageBuffer` type. If you don't need OpenCV, replace `cv::Mat` with `ImageBuffer` and use `UseRgbColorOrder()` instead.
+:::
+
 :::
 
 ::::
