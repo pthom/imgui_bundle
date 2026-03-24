@@ -29,12 +29,6 @@ You'll soon see that GUI code can be clear, readable, and easy to maintain. The 
 - **Always up-to-date**: Tracks Dear ImGui upstream closely; Python bindings are auto-generated.
 
 
-
-_Note: Dear ImGui Bundle may not be the best choice for applications that need to match OS look-and-feel exactly, or for projects where accessibility is critical._
-
-
-
-
 ---
 
 ## Code That Reads Like a Book
@@ -233,6 +227,22 @@ demo.launch()
 :::{note}
 These examples are [available here](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/sandbox/compare_other_libs)
 :::
+
+---
+
+## Who is it for?
+
+- **beginners and developers**: go from idea to GUI prototype in minutes, without learning a complex framework. Deploy to almost any platform.
+- **ML/AI researchers**: visualize training in real time, tune hyperparameters mid-run, inside Jupyter
+- **Computer vision engineers**: inspect images and tensors at the pixel level with ImmVision
+- **Robotics developers**: fast, readable debug UIs in Python or C++
+- **Scientific instrument builders**: cross-platform GUIs that deploy to desktop and web from the same code
+- **Technical tool makers**: build node editors, gizmos, code editors without a web stack
+
+
+**Who is this project not for**
+
+You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for accessibility, internationalization, advanced styling, etc.
 
 ---
 

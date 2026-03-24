@@ -1,20 +1,5 @@
 # Closing words
 
-## Who is this project for
-
-Dear ImGui Bundle aims to make applications prototyping fast and easy, in a multiplatform / multi-tooling context. The intent is to reduce the time between an idea and a first GUI prototype down to almost zero.
-
-It is well adapted for
-
-* developers and researchers who want to switch easily between and research and development environment by facilitating the port of research artifacts
-* beginners and developers who want to quickly develop an application without learning a GUI framework
-
-## Who is this project not for
-
-You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for internationalization, advanced styling, etc.
-
-Also, the library makes no guarantee of ABI stability, and its API is opened to slight adaptations and breaking changes if they are found to make the overall usage better and/or safer.
-
 ## License
 
 The MIT License (MIT)
