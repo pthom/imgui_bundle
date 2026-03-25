@@ -5,114 +5,408 @@ Below is the folder structure of Dear ImGui Bundle repository.
 **Key areas:**
 - `bindings/` – Python package, stubs (`.pyi`), and demos
 - `external/` – All C++ libraries (submodules) and their binding generators
+- `imgui_bundle_cmake/` – CMake build infrastructure
 - `docs/` – This documentation (Jupyter Book)
+
+---
+
+## Top-level overview
 
 ```
 ./
-+-- Readme.md -> bindings/imgui_bundle/Readme.md           # doc
-+-- Readme_devel.md
-|
-+-- _example_integration/                         # Demonstrate how to easily use
-|         +-- CMakeLists.txt                      # imgui_bundle in a C++ app
-|         +-- assets/                             # (this is a github template available a
-|         +-- hello_world.main.cpp                # https://github.com/pthom/imgui_bundle_template
-|
-+-- imgui_bundle_cmake/                           # imgui_bundle_add_app() :
-|         |                                       # a cmake function you can use
-|         +-- imgui_bundle_add_app.cmake          # to create an app in one line
-|
-+-- bindings/                                     # root for the python bindings
-|         +-- imgui_bundle/
-|                  +-- assets/                    # assets/ folder: you need to
-|                  |                              # copy this folder
-|                  |                              # into your app folder if you
-|                  |                              # intend to use markdown
-|                  |
-|                  +-- demos_assets/              # assets used by demos
-|                  +-- demos_cpp/                 # lots of C++ demos
-|                  +-- demos_python/              # lots of python demos
-|                  +-- imgui/                     # imgui stubs
-|                  |     +-- __init__.pyi
-|                  |     +-- backends.pyi
-|                  |     +-- internal.pyi
-|                  |     +-- py.typed
-|                  +-- implot.pyi                           # implot stubs
-|                  +-- __init__.py
-|                  +-- __init__.pyi
-|                  +-- hello_imgui.pyi
-|                  +-- ...                                  # lots of other libs stubs
-|                  +-- ...
-|                  +-- ...
-|                  +-- immapp/                              # immapp: immediate app
-|                  |        |                               # utilities
-|                  |        +-- __init__.py
-|                  |        +-- __init__.pyi
-|                  |        +-- icons_fontawesome.py
-|                  |        +-- immapp_cpp.pyi
-|                  |        +-- immapp_utils.py
-|                  |        +-- py.typed
-|                  +-- _imgui_bundle.cpython-38-darwin.so  # imGui_bundle python
-|                  |                                       # dynamic library
-|                  +-- glfw_utils.py
-|                  +-- python_backends/                   # Backends implemented in pure python
-|                  +-- py.typed
-|
-|
-+-- cmake/                                                 # Private cmake utilities
-|         +-- add_imgui.cmake
-|         +-- ...
-|
-+-- external/                                              # Root of all bound libraries
-|         +-- CMakeLists.txt
-|         +-- imgui/                                       # ImGui root
-|         |         +-- bindings/                          # ImGui bindings
-|         |         +-- imgui/                             # ImGui submodule
-|         +-- ImGuizmo/
-|         |         +-- bindings/                          # ImGuizmo bindings
-|         |         +-- ImGuizmo/                          # ImGuizmo submodule
-|         |         +-- ImGuizmoPure/                      # Manual wrappers to help
-|         |                                                # bindings generation
-|         |
-|         +-- ... lots of other bound libraries/           # Lots of other bound libraries
-|         |         +-- {lib_name}/
-|         |         +-- bindings/
-|         |
-|         +-- _doc/
-|         |
-|         +-- bindings_generation/                         # Script to generate bindings
-|         |         |                                      # and to facilitate external
-|         |         +-- __init__.py                        # libraries update
-|         |         +-- all_external_libraries.py
-|         |         +-- autogenerate_all.py
-|         |         +-- ...
-|         |
-|         +-- SDL/SDL/                                     # Linked library (without
-|         |                                                # python bindings)
-|         +-- fplus/fplus/                                 # Library without bindings
-|         +-- glfw/glfw                                    # Library without bindings
-|
-+-- lg_cmake_utils/                                        # Cmake utils for bindings
-|         |                                                # generation
-|         +-- lg_cmake_utils.cmake
-|         +-- ...
-|
-+-- pybind_native_debug/
-|         +-- CMakeLists.txt
-|         +-- Readme.md
-|         +-- pybind_native_debug.cpp
-|         +-- pybind_native_debug.py
-|
-+-- src/
-|         +-- imgui_bundle/                               # main cpp library: almost empty,
-|                                                         # but linked to all external libraries
-|
-+-- docs/
-          +-- book/                                       # Jupyter Book documentation
-                   +-- _toc.yml                           # Table of contents
-                   +-- intro/                             # Introduction chapters
-                   +-- python/                            # Python user docs
-                   +-- cpp/                               # C++ user docs
-                   +-- core_libs/                         # Core library docs
-                   +-- addons/                            # Add-on library docs
-                   +-- devel_docs/                        # Developer documentation
+├── CMakeLists.txt                          Main CMake build file
+├── CMakePresets.json                       Build presets (python_bindings, etc.)
+├── pyproject.toml                          Python package config (scikit-build-core + nanobind)
+├── justfile                                Task runner for common build commands
+├── litgen_imconfig.h                       ImGui config header for the bindings generator
+├── pytest.ini                              Pytest configuration
+├── requirements-dev.txt                    Development dependencies
+├── CHANGELOG.md
+├── LICENSE                                 MIT
+├── Readme.md
+│
+│   ── Python package & demos ───────────────────────────────────────
+│
+├── bindings/                               Root of the Python package (see below)
+│
+│   ── C++ libraries ────────────────────────────────────────────────
+│
+├── external/                               All C++ libraries + binding generators (see below)
+│
+│   ── CMake build infrastructure ───────────────────────────────────
+│
+├── imgui_bundle_cmake/                     CMake helpers & build logic (see below)
+│
+│   ── Documentation ────────────────────────────────────────────────
+│
+├── docs/
+│     └── book/                             Jupyter Book documentation (see below)
+│
+│   ── Other ────────────────────────────────────────────────────────
+│
+├── _example_integration/                   Template project for using imgui_bundle in C++ apps
+│     ├── CMakeLists.txt                    (also available as https://github.com/pthom/imgui_bundle_template)
+│     ├── hello_world.cpp
+│     └── assets/
+│
+├── imgui_bundle_assets/                    Shared asset files for C++ apps (fonts, etc.)
+│
+├── pybind_native_debug/                    Debug utility for stepping into native C++ from Python
+│     ├── pybind_native_debug.cpp
+│     └── pybind_native_debug.py
+│
+├── tests/                                  Test suite
+│     ├── lg_imgui_bundle_test.py
+│     └── tests_python_gui/                 GUI tests (require display)
+│
+├── ci_scripts/                             CI/CD scripts (Docker, Pyodide local builds)
+├── _plans/                                 Specs, plans, and todos for features
+├── logo/                                   Project logo files
+└── builds/                                 Build output directories (default, claude_*, etc.)
 ```
+
+---
+
+## `bindings/` – Python package
+
+This is the root of the `imgui_bundle` Python package. It contains the Python API, type stubs,
+demos, and the compiled native extension.
+
+```
+bindings/imgui_bundle/
+│
+│   ── Package core ─────────────────────────────────────────────────
+│
+├── __init__.py                             Package initialization, module exports, version
+├── __init__.pyi                            Top-level type stubs
+├── _imgui_bundle.cpython-*-.so             Compiled native extension (all C++ libs in one .so)
+│
+│   ── Type stubs (.pyi) ── one per C++ library ─────────────────────
+│   (auto-generated by litgen; provide IDE autocompletion & type checking)
+│
+├── hello_imgui.pyi                         Hello ImGui API
+├── im_anim.pyi                             Animation library
+├── im_cool_bar.pyi                         Cool toolbar widget
+├── im_file_dialog.pyi                      File dialog
+├── imgui_bundle.pyi                        Core bundle types
+├── imgui_color_text_edit.pyi               Code editor with syntax highlighting
+├── imgui_command_palette.pyi               VSCode-style command palette
+├── imgui_explorer.pyi                      Interactive widget explorer
+├── imgui_knobs.pyi                         Knob/dial widgets
+├── imgui_md.pyi                            Markdown rendering
+├── imgui_node_editor.pyi                   Node graph editor
+├── imgui_tex_inspect.pyi                   Texture inspector
+├── imgui_toggle.pyi                        Toggle switches
+├── imguizmo.pyi                            3D gizmo/transform
+├── immvision.pyi                           Image debugger (zoom, colormaps, pixel inspection)
+├── imspinner.pyi                           Spinner/loading widgets
+├── nanovg.pyi                              Vector graphics
+├── portable_file_dialogs.pyi               OS-native file dialogs
+│
+│   ── Subpackages with their own stubs ─────────────────────────────
+│
+├── imgui/                                  Dear ImGui bindings
+│     ├── __init__.pyi                      Main ImGui API stubs (very large)
+│     ├── internal.pyi                      ImGui internal API stubs
+│     ├── backends.pyi                      Backend stubs
+│     └── test_engine.pyi                   Test engine stubs
+│
+├── implot/                                 ImPlot bindings
+│     ├── __init__.pyi                      ImPlot API stubs
+│     └── internal.pyi                      ImPlot internals
+│
+├── implot3d/                               ImPlot3D bindings
+│     ├── __init__.pyi                      ImPlot3D API stubs
+│     └── internal.pyi                      ImPlot3D internals
+│
+│   ── Python utilities (.py) ───────────────────────────────────────
+│
+├── imgui_ctx.py                            Context managers for ImGui begin/end pairs
+├── imgui_node_editor_ctx.py                Context managers for node editor
+├── imgui_pydantic.py                       Pydantic integration for ImGui types
+├── imgui_fig.py                            Figure/plotting utilities
+├── im_col32.py                             Color utilities
+├── glfw_utils.py                           GLFW utility functions
+├── hello_imgui_run_async.py                Async runner support
+├── hello_imgui_nb.py                       Jupyter notebook support
+├── hello_imgui_nb.pyi                      Type stubs for notebook support
+├── notebook_patch_runners.py               Patches for notebook environments
+├── pyodide_patch_runners.py                Patches for Pyodide/browser
+├── _glfw_set_search_path.py                GLFW library path setup
+├── _patch_runners_add_save_screenshot_param.py
+│
+│   ── ImmApp module ────────────────────────────────────────────────
+│
+├── immapp/                                 High-level app runner utilities
+│     ├── __init__.py                       Main ImmApp module
+│     ├── __init__.pyi                      Type stubs
+│     ├── immapp_cpp.pyi                    C++ ImmApp API stubs
+│     ├── immapp_utils.py                   General utilities
+│     ├── immapp_code_utils.py              Code utility functions
+│     ├── immapp_notebook.py                Notebook-specific utilities
+│     ├── nb.py                             Notebook integration (nb.start / nb.stop)
+│     ├── nb.pyi
+│     ├── run_async_overloads.py            Async runner overloads
+│     ├── runnable_code_cell.py             Runnable code cell support
+│     ├── icons_fontawesome_4.py            FontAwesome 4 icon constants
+│     └── icons_fontawesome_6.py            FontAwesome 6 icon constants
+│
+│   ── Pure Python backends ─────────────────────────────────────────
+│
+├── python_backends/                        ImGui backends implemented in pure Python
+│     ├── opengl_base_backend.py            Base OpenGL backend class
+│     ├── opengl_backend_programmable.py    Programmable pipeline backend
+│     ├── glfw_backend.py                   GLFW backend
+│     ├── sdl2_backend.py                   SDL2 backend
+│     ├── sdl3_backend.py                   SDL3 backend
+│     ├── pygame_backend.py                 Pygame backend
+│     └── pyglet_backend.py                 Pyglet backend
+│
+│   ── Demos ────────────────────────────────────────────────────────
+│
+├── demos_python/                           Python demos (15 categories)
+│     ├── demos_immapp/                     ImmApp framework demos (hello world, docking, etc.)
+│     ├── demos_implot/                     2D plotting demos
+│     ├── demos_implot3d/                   3D plotting demos
+│     ├── demos_immvision/                  Image inspection demos
+│     ├── demos_node_editor/                Node editor demos
+│     ├── demos_imguizmo/                   3D gizmo demos
+│     ├── demos_tex_inspect/                Texture inspector demos
+│     ├── demos_nanovg/                     Vector graphics demos
+│     ├── demos_imgui_explorer/             Widget explorer demos
+│     ├── demos_immdebug/                   Image debug viewer demos
+│     ├── haikus/                           Small "haiku" example programs
+│     ├── notebooks/                        Jupyter notebook examples
+│     ├── sandbox/                          Experimental/sandbox examples
+│     ├── demo_packaging/                   Packaging/distribution examples
+│     └── demo_utils/                       Shared demo utilities
+│
+├── demos_cpp/                              C++ demos (9 categories)
+│     ├── demos_immapp/                     ImmApp demos (hello world, docking, etc.)
+│     ├── demos_imanim/                     Animation demos
+│     ├── demos_imguizmo/                   Gizmo demos
+│     ├── demos_immvision/                  Image inspection demos
+│     ├── demos_nanovg/                     Vector graphics demos
+│     ├── demos_node_editor/                Node editor demos
+│     ├── demos_tex_inspect/                Texture inspector demos
+│     ├── sandbox/                          Experimental demos
+│     ├── demo_utils/                       Shared C++ demo utilities
+│     └── _auto_main/                       Auto-generated main() for demos
+│
+├── assets/                                 Assets folder (fonts for markdown, etc.)
+└── demos_assets/                           Images and resources used by demos
+```
+
+---
+
+## `external/` – C++ libraries and bindings
+
+Each library typically contains a git submodule with the C++ source and a `bindings/` folder
+with the litgen generation script and generated nanobind C++ code.
+
+```
+external/
+│
+│   ── Core libraries (with Python bindings) ────────────────────────
+│
+├── imgui/                                  Dear ImGui – core widget library (imgui_bundle fork)
+│     ├── imgui/                            Submodule
+│     └── bindings/                         litgen options + generated pybind code
+│
+├── hello_imgui/                            Hello ImGui – window lifecycle, docking, DPI, assets
+│     ├── hello_imgui/                      Submodule
+│     └── bindings/
+│
+├── immapp/                                 ImmApp – high-level runner with add-on initialization
+│     └── bindings/
+│
+│   ── Plotting & visualization (with bindings) ─────────────────────
+│
+├── implot/                                 ImPlot – 2D plotting
+├── implot3d/                               ImPlot3D – 3D plotting
+├── immvision/                              ImmVision – image debugger (zoom, colormaps, pixel inspection)
+├── imgui_tex_inspect/                      imgui_tex_inspect – texture inspector
+│
+│   ── Text editing & markdown (with bindings) ──────────────────────
+│
+├── ImGuiColorTextEdit/                     Code editor with syntax highlighting
+├── imgui_md/                               Markdown rendering (MD4C-based)
+│
+│   ── Tools (with bindings) ────────────────────────────────────────
+│
+├── ImGuizmo/                               3D gizmo for scene editing
+│     ├── ImGuizmo/                         Submodule
+│     └── ImGuizmoPure/                     Manual wrappers to help binding generation
+├── imgui-node-editor/                      Node graph editor
+├── nanovg/                                 Antialiased 2D vector drawing (OpenGL)
+├── imgui_explorer/                         Interactive widget explorer/demo app
+│
+│   ── Widgets (with bindings) ──────────────────────────────────────
+│
+├── ImFileDialog/                           File dialog
+├── portable_file_dialogs/                  OS-native file dialogs (single-header)
+├── imgui-knobs/                            Knob/dial widgets
+├── imspinner/                              Spinner/loading widgets
+├── imgui_toggle/                           Toggle switches
+├── ImCoolBar/                              macOS-style cool toolbar
+├── imgui-command-palette/                  VSCode-style command palette
+├── ImAnim/                                 Animation library
+│
+│   ── Testing (with bindings) ──────────────────────────────────────
+│
+├── imgui_test_engine/                      Dear ImGui test & automation engine
+│
+│   ── Support libraries (no Python bindings) ───────────────────────
+│
+├── glfw/                                   GLFW window/input backend
+├── fplus/                                  Functional programming C++ library
+│
+│   ── Binding generation tooling ───────────────────────────────────
+│
+├── bindings_generation/
+│     ├── autogenerate_all.py               Master script: regenerates all bindings
+│     ├── all_external_libraries.py         Registry of all libraries
+│     ├── bundle_libs_tooling/              Helpers for external library management
+│     └── bindings_generator_template/      Template for adding new library bindings
+│
+└── _doc/                                   Documentation about bindings (Howto)
+```
+
+**Binding generation pattern** (e.g. for ImCoolBar):
+
+```
+external/ImCoolBar/
+├── ImCoolBar/                              Git submodule (C++ source)
+│     ├── ImCoolbar.h                       C++ header (input to litgen)
+│     └── ImCoolbar.cpp
+└── bindings/
+      ├── generate_imcoolbar.py             litgen script: reads .h → generates pybind + stubs
+      ├── pybind_imcoolbar.cpp              Generated nanobind C++ code
+      └── im_cool_bar.pyi                   Symlink → bindings/imgui_bundle/im_cool_bar.pyi
+```
+
+---
+
+## `imgui_bundle_cmake/` – Build infrastructure
+
+```
+imgui_bundle_cmake/
+├── imgui_bundle_build_lib.cmake            Main build logic (the bulk of the build system)
+├── imgui_bundle_add_app.cmake              imgui_bundle_add_app(): create an app in one line
+├── imgui_bundle_add_demo.cmake             Helper for adding demo targets
+├── imgui_bundle_config.h                   C++ config header (#defines for enabled features)
+├── imgui_bundle_pyodide.cmake              Pyodide/Emscripten web build configuration
+├── imgui_bundle_conda.cmake                Conda dependency configuration
+├── imgui-bundleConfig.cmake                CMake package config (for find_package)
+├── ios-cmake/                              iOS CMake toolchain (symlink → hello_imgui)
+└── internal/
+      ├── add_imgui.cmake                   Integrates Dear ImGui into the build
+      ├── add_hello_imgui.cmake             Integrates Hello ImGui
+      ├── add_imgui_bundle_bindings.cmake   Integrates Python bindings
+      ├── add_simple_library.cmake          Generic helper: add a library with bindings
+      ├── add_glfw_submodule.cmake          GLFW backend setup
+      ├── litgen_setup_module.cmake         litgen binding generation setup
+      └── dump_cmake_variables.cmake        Debug: print all CMake variables
+```
+
+---
+
+## `docs/book/` – Documentation (Jupyter Book)
+
+The documentation is structured as a Jupyter Book and published as a website + PDF.
+
+```
+docs/book/
+├── _toc.yml                                Table of contents
+├── myst.yml                                MyST Markdown configuration
+│
+├── intro/                                  Introduction
+│     ├── intro.md                          Landing page
+│     ├── what_is_imgui_bundle.md           Project overview & comparisons
+│     ├── key_features.md                   Feature list, library catalog, FAQ
+│     ├── imm_gui.md                        The immediate mode paradigm explained
+│     ├── interactive_manuals.md            Online demos & explorer
+│     ├── examples_gallery.md               Curated examples
+│     └── resources.md                      Links & resources
+│
+├── python/                                 For Python users
+│     ├── python_imgui_intro.md             ImGui introduction for Python developers
+│     ├── python_install.md                 pip install, setup
+│     ├── python_assets.md                  Asset management
+│     ├── pure_python_backend.md            Pure Python backends (no compilation)
+│     ├── python_async.md                   Async/await patterns
+│     ├── notebook_runners.ipynb            Jupyter notebook integration
+│     ├── python_pyodide.md                 Web deployment via Pyodide
+│     ├── python_tips.md                    Python-specific tips
+│     └── desktop_deploy.md                 Desktop deployment
+│
+├── cpp/                                    For C++ users
+│     ├── cpp_install.md                    C++ installation & CMake setup
+│     └── cpp_assets.md                     C++ asset management
+│
+├── core_libs/                              Core library documentation
+│     ├── imgui.md                          Dear ImGui
+│     ├── hello_imgui_immapp.md             Hello ImGui & ImmApp
+│     └── test_engine.md                    Test engine
+│
+├── addons/                                 Add-on library documentation
+│     ├── plotting.md                       ImPlot & ImPlot3D
+│     ├── visualization.md                  ImmVision
+│     ├── text_markdown.md                  Markdown & code editor
+│     ├── tools.md                          Gizmo, node editor, NanoVG
+│     └── widgets.md                        Knobs, toggles, spinners, etc.
+│
+├── support/                                Support & closing
+│     ├── support_project.md
+│     └── closing_words.md
+│
+├── devel_docs/                             Developer documentation (this section)
+│     ├── intro.md                          Architecture overview
+│     ├── structure.md                      Repository structure (this file)
+│     ├── bindings_intro.md                 How litgen binding generation works
+│     ├── bindings_update.md                Updating existing library bindings
+│     ├── bindings_newlib.md                Adding a new library to the bundle
+│     └── bindings_debug.md                 Debugging native C++ from Python
+│
+└── images/                                 Documentation images
+```
+
+---
+
+## Architecture layers
+
+ImGui Bundle implements a four-layer architecture:
+
+```
+┌─────────────────────────────────────────────────────┐
+│  4. ImmApp Layer                                    │  immapp.run() — simplified runner
+│     Auto-initializes add-ons (ImPlot, Markdown...)  │  with_implot=True, with_markdown=True
+├─────────────────────────────────────────────────────┤
+│  3. Hello ImGui Framework                           │  Window lifecycle, docking, DPI,
+│     Asset management, themes, callbacks             │  multi-platform deployment
+├─────────────────────────────────────────────────────┤
+│  2. Dear ImGui + Add-on Libraries                   │  Immediate-mode widgets, plotting,
+│     ImPlot, ImGuizmo, node editor, ImmVision...     │  gizmos, image inspection, etc.
+├─────────────────────────────────────────────────────┤
+│  1. Rendering Backends                              │  GLFW/SDL + OpenGL/Metal/DirectX/
+│     Platform abstraction                            │  Vulkan/WebGPU
+└─────────────────────────────────────────────────────┘
+```
+
+Users work at their preferred level: from raw ImGui calls to `immapp.run()`.
+
+## Binding generation flow
+
+All 23+ C++ libraries compile into a single `_imgui_bundle` native extension:
+
+```
+C++ header (.h)
+      │
+      ▼
+litgen (generate_*.py)         Reads C++ headers via srcML
+      │
+      ├──▶ pybind_*.cpp        nanobind C++ code (compiled into _imgui_bundle.so)
+      └──▶ *.pyi               Python type stubs (IDE autocompletion + type checking)
+```
+
+Regenerate all bindings: `python external/bindings_generation/autogenerate_all.py`

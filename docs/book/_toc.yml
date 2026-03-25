@@ -43,9 +43,14 @@ parts:
   - caption: Developer docs
     chapters:
       - file: devel_docs/intro
+      - file: devel_docs/getting_started_dev
       - file: devel_docs/structure
+      - file: devel_docs/build_guide
+      - file: devel_docs/testing
       - file: devel_docs/bindings_intro
       - file: devel_docs/bindings_update
       - file: devel_docs/bindings_newlib
       - file: devel_docs/bindings_debug
+      - file: devel_docs/pypi_deploy
+      - file: devel_docs/build_opencv_immvision
 

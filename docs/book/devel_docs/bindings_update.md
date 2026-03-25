@@ -131,17 +131,33 @@ Look at the changes, and check if they look ok
 
 ## Compile & Test
 
-**Correct possible compilation errors due to breaking changes in imgui's API**
+If you don't have a build directory yet, see [Getting Started](getting_started_dev.md) or [Build Guide](build_guide.md).
 
-**Test in C++**
+**Build:**
+```bash
+cd builds/my_build
+cmake --build . -j
+```
 
-Run `demo_imgui_bundle`
+Fix any compilation errors due to breaking changes in the upstream API.
 
-(demo_imgui_bundle is a global demonstration program, that uses most of the feature of all libraries)
+**Test in C++:**
+```bash
+./demo_imgui_bundle    # Global demo exercising most libraries
+```
 
-**Test in Python**
+**Test in Python:**
+```bash
+python bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py
+```
 
-Run `demo_imgui_bundle.py`
+**Run the test suite:**
+```bash
+just test_pytest   # or: pytest
+just test_mypy     # or: cd bindings && ./mypy_bindings.sh
+```
+
+See [Testing](testing.md) for more details.
 
 
 ## Update forked submodules:

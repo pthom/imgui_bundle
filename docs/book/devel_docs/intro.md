@@ -2,6 +2,10 @@
 
 This section is for developers willing to build and modify the imgui_bundle library. It covers topics such as building the library, updating dependencies, and adding new features or bindings.
 
+:::{tip}
+**New here?** Start with [Getting Started (Developer)](getting_started_dev.md) — it takes you from clone to working build in 5 minutes.
+:::
+
 ## Architecture Overview
 
 ImGui Bundle implements a **four-layer architecture**:
@@ -34,8 +38,13 @@ All 23+ C++ libraries compile into a single `_imgui_bundle` native extension, wi
 
 ## In This Section
 
+- [Getting Started (Developer)](getting_started_dev.md) – clone, build, run, test
 - [Repository Structure](structure.md) – folder organization
+- [Build Guide](build_guide.md) – CMake options, presets, justfile commands
+- [Testing](testing.md) – running tests, CI workflows
 - [Bindings Introduction](bindings_intro.md) – how the generator works
 - [Update Bindings](bindings_update.md) – updating existing library bindings
 - [Add New Library](bindings_newlib.md) – adding a new library to the bundle
 - [Debug Native C++](bindings_debug.md) – debugging C++ code from Python
+- [PyPI Deployment](pypi_deploy.md) – releasing to PyPI
+- [OpenCV Build Guide](build_opencv_immvision.md) – building with OpenCV / ImmVision
