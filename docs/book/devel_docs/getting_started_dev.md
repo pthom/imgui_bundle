@@ -62,7 +62,7 @@ cmake --build . -j
 Then set your `PYTHONPATH` to include the build output, and run:
 ```bash
 cd ../..
-python bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py
+python bindings/imgui_bundle/demos_python/demo_imgui_bundle.py
 ```
 
 :::{note}

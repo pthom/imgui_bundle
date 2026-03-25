@@ -2,9 +2,19 @@
 
 ## Goal
 
-This folder contains tools for building imgui-bundle as a Pyodide package locally (out-of-tree).
+The folder `ci_scripts/pyodide_local_build/` contains tools for building imgui-bundle as a Pyodide package locally (out-of-tree).
 
 **Recommended usage:** Use the `justfile` targets from the repository root for a streamlined workflow.
+
+```
+> just pyodide_
+pyodide_build               -- Args: # Build pyodide wheel (excludes demos to reduce size)
+pyodide_clean               -- Args: # Clean pyodide build artifacts
+pyodide_deep_clean          -- Args: # Pyodide deep clean (removes also the local build setup)
+pyodide_setup_local_build   -- Args: # Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
+pyodide_setup_recipe_clone  -- Args: # Clone pyodide-recipes repo and add fork remote
+pyodide_test_serve          -- Args: # Start browser test server (serves test HTML pages)
+```
 
 **What's included:**
 - Python virtual environment with `pyodide-build` installed

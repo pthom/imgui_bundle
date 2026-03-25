@@ -106,6 +106,7 @@ cross-compilation mismatches (ARM NEON headers vs x64 compiler). The performance
 is negligible for the minimalist OpenCV (image loading only).
 
 
+(rebuilding-the-emscripten-precompiled-package)=
 ## Rebuilding the emscripten precompiled package
 
 The emscripten builds use precompiled OpenCV packages downloaded from GitHub release assets.

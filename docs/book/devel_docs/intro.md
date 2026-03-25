@@ -31,6 +31,25 @@ All 23+ C++ libraries compile into a single `_imgui_bundle` native extension, wi
 - **Cross-Platform**: Same codebase deploys to desktop (Windows/macOS/Linux), mobile (iOS/Android), and web (Emscripten/Pyodide)
 - **DPI-Aware Sizing**: Helper functions like `EmToVec2()` enable responsive layouts across high-DPI displays
 
+## Glossary
+
+Terms used throughout the developer docs:
+
+| Term                | Meaning                                                                                                                                                                      |
+|---------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Dear ImGui**      | The core C++ immediate-mode GUI library by Omar Cornut                                                                                                                       |
+| **Hello ImGui**     | Framework layer on top of Dear ImGui: window lifecycle, docking, DPI, asset management, multi-platform deployment                                                            |
+| **ImmApp**          | High-level runner that wraps Hello ImGui and auto-initializes add-ons (ImPlot, Markdown, etc.) via simple flags                                                              |
+| **litgen**          | [Literate Generator](https://pthom.github.io/litgen) — the tool that reads C++ headers and generates Python bindings (nanobind C++ code + `.pyi` stubs)                      |
+| **nanobind**        | C++ library used to create Python extension modules. Successor to pybind11; used by litgen's generated code                                                                  |
+| **srcML**           | XML representation of C++ source code; used internally by litgen to parse headers                                                                                            |
+| **`.pyi` stubs**    | Python type stub files providing IDE autocompletion and type checking for the native extension                                                                               |
+| **pybind**          | Legacy naming seen in generated filenames (`pybind_*.cpp`). These files actually use nanobind, not pybind11 — the name is historical                                         |
+| **ibex**            | Abbreviation fo [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer) — the full demo app showcasing all libraries, used in just recipes (`just ibex_...`) |
+| **imex**            | Abbreviation for [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/) - source code in external/imgui_explorer. Used just recipes `just imex_...`                  |
+| **`_imgui_bundle`** | The single compiled native extension (`.so`/`.pyd`) containing all 23+ C++ libraries                                                                                         |
+| **justfile**        | Task runner config at repo root; provides shortcuts like `just libs_bindings`, `just test_pytest`, etc.                                                                      |
+
 ## More Resources
 
 - **[DeepWiki - ImGui Bundle](https://deepwiki.com/pthom/imgui_bundle)** – AI-powered documentation explorer for in-depth architecture questions
