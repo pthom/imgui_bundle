@@ -1,7 +1,12 @@
-"""Knobs for ImGui
-Python bindings for https://github.com/altschuler/imgui-knobs
-"""
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of imgui-knobs
+# -----------------------------------------------------------------------------
+# imgui_knobs.pyi: auto-generated bindings for imgui-knobs (Knobs for ImGui)
+# See https://github.com/altschuler/imgui-knobs
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 from typing import Tuple, Optional, overload
 import enum
 
@@ -42,8 +47,43 @@ class color_set:
         pass
 
     @overload
+    def __init__(self) -> None:
+        pass
+
+    @overload
     def __init__(self, color: ImColor) -> None:
         pass
+
+class KnobColors:
+    primary: color_set
+    secondary: color_set
+    track: color_set
+    def __init__(
+        self,
+        primary: Optional[color_set] = None,
+        secondary: Optional[color_set] = None,
+        track: Optional[color_set] = None,
+    ) -> None:
+        """Auto-generated default constructor with named params
+
+
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                * primary: color_set()
+                * secondary: color_set()
+                * track: color_set()
+        """
+        pass
+
+def set_knob_colors(colors: KnobColors) -> None:
+    """Set custom knob colors. Pass individual color_sets for primary (indicator),
+    secondary (circle body), and track (background arc).
+    """
+    pass
+
+def unset_knob_colors() -> None:
+    """Reset to theme-aware defaults (auto-detects dark/light theme)."""
+    pass
 
 def knob(
     label: str,

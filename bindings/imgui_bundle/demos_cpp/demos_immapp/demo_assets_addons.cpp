@@ -134,7 +134,7 @@ void DemoPlot(AppState& appState) {}
 // Our main function
 int main(int, char**)
 {
-    // This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
+    // This call is specific to the ImGui Bundle Explorer. In a standard application, you could write:
     //         HelloImGui::SetAssetsFolder("my_assets"); // (By default, HelloImGui will search inside "assets")
     ChdirBesideAssetsFolder();
 

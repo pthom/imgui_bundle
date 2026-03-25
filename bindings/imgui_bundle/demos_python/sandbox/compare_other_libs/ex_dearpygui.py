@@ -1,4 +1,4 @@
-import dearpygui.dearpygui as dpg
+import dearpygui.dearpygui as dpg  # type: ignore
 
 selected_item = None
 items = ["Apple", "Banana", "Cherry"]

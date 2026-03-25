@@ -4,38 +4,36 @@
 #include "implot/implot.h"
 #include "implot3d/implot3d.h"
 #include "immapp/immapp.h"
-#include "immapp/browse_to_url.h"
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
+#include "imgui_explorer.h"
+#endif
 
 
 void demo_implot()
 {
     ImGuiMd::RenderUnindented(R"(
-        # ImPlot & ImPlot3D &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;[Online Demo](https://traineq.org/implot_demo/src/implot_demo.html)
-        * [Implot](https://github.com/epezent/implot) provides immediate Mode Plotting for ImGui.
-        * [Implot3D](https://github.com/brenocq/implot3d) provides immediate Mode 3D Plotting, with an API inspired from ImPlot.
+        [Implot](https://github.com/epezent/implot) and [Implot3D](https://github.com/brenocq/implot3d) are fast and efficient libraries which provide immediate Mode Plotting.
     )");
     if (ImGui::CollapsingHeader("ImPlot: Full Demo"))
     {
-        ImGui::Text("View on GitHub:");
-        ImGui::SameLine();
-        if (ImGui::Button("C++ demo code"))
-            ImmApp::BrowseToUrl("https://github.com/epezent/implot/blob/master/implot_demo.cpp");
-        ImGui::SameLine();
-        if (ImGui::Button("Python demo code"))
-            ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py");
-        ImPlot::ShowAllDemos();
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
+        ImGui::PushID("ImPlotDemo");
+        ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot);
+        ImGui::PopID();
+#else
+        ImPlot::ShowDemoWindow_MaybeDocked(false);
+#endif
     }
 
     if (ImGui::CollapsingHeader("ImPlot3D: Full Demo"))
     {
-        ImGui::Text("View on GitHub:");
-        ImGui::SameLine();
-        if (ImGui::Button("C++ demo code"))
-            ImmApp::BrowseToUrl("https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp");
-        ImGui::SameLine();
-        if (ImGui::Button("Python demo code"))
-            ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py");
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
+        ImGui::PushID("ImPlot3DDemo");
+        ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot3D);
+        ImGui::PopID();
+#else
         ImPlot3D::ShowAllDemos();
+#endif
     }
 }
 

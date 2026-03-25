@@ -1,7 +1,14 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
+
+# Workaround for PyOpenGL 3.1.6+ on Wayland: GLFW uses X11/XWayland, but PyOpenGL
+# assumes Wayland EGL and fails to find the GL context. Force X11 backend.
+# Must be set before any `import OpenGL` happens.
+# See https://github.com/pthom/imgui_bundle/issues/321
+if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFORM"):
+    os.environ["PYOPENGL_PLATFORM"] = "x11"
 from imgui_bundle._imgui_bundle import __bundle_submodules_available__, __bundle_submodules_disabled__, __bundle_pyodide__ # type: ignore
-from imgui_bundle._imgui_bundle import __version__, compilation_time
+from imgui_bundle._imgui_bundle import __version__, __build_number__, compilation_time
 from typing import Union, Tuple, List, overload
 
 def has_submodule(submodule_name):
@@ -26,7 +33,7 @@ def info() -> str:
     # Format submodules list
     submodules_str = ", ".join(__bundle_submodules_available__)
 
-    info_str = f"ImGui Bundle v{__version__}\n"
+    info_str = f"ImGui Bundle v{__version__} buil {__build_number__}\n"
     info_str += f"{comp_time}\n"
     info_str += f"Available submodules ({len(__bundle_submodules_available__)}): {submodules_str}\n"
 
@@ -49,6 +56,7 @@ def _is_pydantic_v2_available() -> bool:
 
 __all__ = [
     "__version__",
+    "__build_number__",
     "compilation_time",
     "info",
     "has_submodule",
@@ -197,6 +205,12 @@ if has_submodule("imcoolbar"):
 if has_submodule("nanovg"):
     from imgui_bundle._imgui_bundle import nanovg as nanovg
     __all__.extend(["nanovg"])
+if has_submodule("im_anim"):
+    from imgui_bundle._imgui_bundle import im_anim as im_anim
+    __all__.extend(["im_anim"])
+if has_submodule("imgui_explorer"):
+    from imgui_bundle._imgui_bundle import imgui_explorer as imgui_explorer
+    __all__.extend(["imgui_explorer"])
 
 if has_submodule("immapp_cpp"):  # immapp is a Python wrapper around immapp_cpp
     from imgui_bundle import immapp as immapp

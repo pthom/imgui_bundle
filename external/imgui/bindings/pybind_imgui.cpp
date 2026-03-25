@@ -138,6 +138,19 @@ void py_init_module_imgui_main(nb::module_& m)
             return ImVec2(self);
         })    ;
 
+    pyClassImVec2.def("__getitem__", [](const ImVec2& self, int idx) {
+        if (idx == 0) return self.x;
+        else if (idx == 1) return self.y;
+        else throw std::out_of_range("Index out of range for ImVec2");
+    });
+    pyClassImVec2.def("__setitem__", [](ImVec2& self, int idx, float value) {
+        if (idx == 0) self.x = value;
+        else if (idx == 1) self.y = value;
+        else throw std::out_of_range("Index out of range for ImVec2");
+    });
+
+
+
 
     auto pyClassImVec4 =
         nb::class_<ImVec4>
@@ -162,6 +175,23 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("__copy__",  [](const ImVec4 &self) {
             return ImVec4(self);
         })    ;
+
+    pyClassImVec4.def("__getitem__", [](const ImVec4& self, int idx) {
+        if (idx == 0) return self.x;
+        else if (idx == 1) return self.y;
+        else if (idx == 2) return self.z;
+        else if (idx == 3) return self.w;
+        else throw std::out_of_range("Index out of range for ImVec4");
+    });
+    pyClassImVec4.def("__setitem__", [](ImVec4& self, int idx, float value) {
+        if (idx == 0) self.x = value;
+        else if (idx == 1) self.y = value;
+        else if (idx == 2) self.z = value;
+        else if (idx == 3) self.w = value;
+        else throw std::out_of_range("Index out of range for ImVec4");
+    });
+
+
 
 
     auto pyClassImTextureRef =
@@ -239,6 +269,43 @@ void py_init_module_imgui_main(nb::module_& m)
         },
         nb::arg("p_open").none() = nb::none(),
         "create Demo window. demonstrate most ImGui features. call this to learn about the library! try to make it always available in your application!");
+
+    m.def("show_demo_window_maybe_docked",
+        [](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0, const std::optional<const ImVec2> & window_pos = std::nullopt, const std::optional<const ImVec2> & window_size = std::nullopt) -> std::optional<bool>
+        {
+            auto ShowDemoWindow_MaybeDocked_adapt_mutable_param_with_default_value = [](bool create_window, bool * p_open = NULL, ImGuiWindowFlags initial_extra_flags = 0, const std::optional<const ImVec2> & window_pos = std::nullopt, const std::optional<const ImVec2> & window_size = std::nullopt)
+            {
+
+                const ImVec2& window_pos_or_default = [&]() -> const ImVec2 {
+                    if (window_pos.has_value())
+                        return window_pos.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                const ImVec2& window_size_or_default = [&]() -> const ImVec2 {
+                    if (window_size.has_value())
+                        return window_size.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                ImGui::ShowDemoWindow_MaybeDocked(create_window, p_open, initial_extra_flags, window_pos_or_default, window_size_or_default);
+            };
+            auto ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return = [&ShowDemoWindow_MaybeDocked_adapt_mutable_param_with_default_value](bool create_window, std::optional<bool> p_open = std::nullopt, ImGuiWindowFlags initial_extra_flags = 0, const std::optional<const ImVec2> & window_pos = std::nullopt, const std::optional<const ImVec2> & window_size = std::nullopt) -> std::optional<bool>
+            {
+                bool * p_open_adapt_modifiable = nullptr;
+                if (p_open.has_value())
+                    p_open_adapt_modifiable = & (*p_open);
+
+                ShowDemoWindow_MaybeDocked_adapt_mutable_param_with_default_value(create_window, p_open_adapt_modifiable, initial_extra_flags, window_pos, window_size);
+                return p_open;
+            };
+
+            return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open, initial_extra_flags, window_pos, window_size);
+        },
+        nb::arg("create_window"), nb::arg("p_open").none() = nb::none(), nb::arg("initial_extra_flags") = 0, nb::arg("window_pos").none() = nb::none(), nb::arg("window_size").none() = nb::none(),
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * window_pos: ImVec2(0, 0)\n        * window_size: ImVec2(0, 0)");
 
     m.def("show_metrics_window",
         [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>
@@ -532,7 +599,15 @@ void py_init_module_imgui_main(nb::module_& m)
         "(not recommended) set current window collapsed state. prefer using SetNextWindowCollapsed().");
 
     m.def("set_window_focus",
-        nb::overload_cast<>(ImGui::SetWindowFocus), "(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus().");
+        []()
+        {
+            auto SetWindowFocus_adapt_force_lambda = []()
+            {
+                ImGui::SetWindowFocus();
+            };
+
+            SetWindowFocus_adapt_force_lambda();
+        },     "(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus().");
 
     m.def("set_window_pos",
         nb::overload_cast<const char *, const ImVec2 &, ImGuiCond>(ImGui::SetWindowPos),
@@ -548,11 +623,23 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::overload_cast<const char *, bool, ImGuiCond>(ImGui::SetWindowCollapsed),
         nb::arg("name"), nb::arg("collapsed"), nb::arg("cond") = 0,
         "set named window collapsed state");
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
 
     m.def("set_window_focus",
-        nb::overload_cast<const char *>(ImGui::SetWindowFocus),
-        nb::arg("name"),
-        "set named window to be focused / top-most. use None to remove focus.");
+        [](std::optional<std::string> name)
+        {
+            auto SetWindowFocus_adapt_force_lambda = [](std::optional<std::string> name)
+            {
+                ImGui::SetWindowFocus(name);
+            };
+
+            SetWindowFocus_adapt_force_lambda(name);
+        },
+        nb::arg("name").none(),
+        "// set named window to be focused / top-most. use None to remove focus.");
+    // #endif
+    //
 
     m.def("get_scroll_x",
         ImGui::GetScrollX, "get scrolling amount [0 .. GetScrollMaxX()]");
@@ -1476,6 +1563,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return SliderFloat2_adapt_modifiable_immutable_to_return(label, v, v_min, v_max, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("slider_float2",
+        nb::overload_cast<const char *, ImVec2, float, float, const char *, ImGuiSliderFlags>(ImGui::SliderFloat2), nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("slider_float3",
         [](const char * label, std::array<float, 3> v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
@@ -1504,6 +1598,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return SliderFloat4_adapt_modifiable_immutable_to_return(label, v, v_min, v_max, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("slider_float4",
+        nb::overload_cast<const char *, ImVec4, float, float, const char *, ImGuiSliderFlags>(ImGui::SliderFloat4), nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("slider_angle",
         [](const char * label, float v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f, const char * format = "%.0f deg", ImGuiSliderFlags flags = 0) -> std::tuple<bool, float>
@@ -1678,6 +1779,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputFloat2_adapt_modifiable_immutable_to_return(label, v, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("input_float2",
+        nb::overload_cast<const char *, ImVec2, const char *, ImGuiInputTextFlags>(ImGui::InputFloat2), nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("input_float3",
         [](const char * label, std::array<float, 3> v, const char * format = "%.3f", ImGuiInputTextFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
@@ -1706,6 +1814,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputFloat4_adapt_modifiable_immutable_to_return(label, v, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("input_float4",
+        nb::overload_cast<const char *, ImVec4, const char *, ImGuiInputTextFlags>(ImGui::InputFloat4), nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("input_int",
         [](const char * label, int v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0) -> std::tuple<bool, int>
@@ -1836,6 +1951,16 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ColorEdit4_adapt_modifiable_immutable_to_return(label, col, flags);
         },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
+
+    m.def("color_edit4",
+        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags>(ImGui::ColorEdit4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+
+    m.def("color_edit3",
+        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags>(ImGui::ColorEdit3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+    // #endif
+    //
 
     m.def("color_picker3",
         [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
@@ -1850,8 +1975,25 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ColorPicker3_adapt_modifiable_immutable_to_return(label, col, flags);
         },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+
+    m.def("color_picker4",
+        [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0, const float * ref_col = NULL) -> std::tuple<bool, std::array<float, 4>>
+        {
+            auto ColorPicker4_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0, const float * ref_col = NULL) -> std::tuple<bool, std::array<float, 4>>
+            {
+                float * col_adapt_modifiable = col.data();
+
+                bool r = ImGui::ColorPicker4(label, col_adapt_modifiable, flags, ref_col);
+                return std::make_tuple(r, col);
+            };
+
+            return ColorPicker4_adapt_modifiable_immutable_to_return(label, col, flags, ref_col);
+        },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col") = nb::none());
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
+
+    m.def("color_picker3",
+        nb::overload_cast<const char *, ImVec4, ImGuiColorEditFlags>(ImGui::ColorPicker3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
 
     m.def("color_picker4",
         nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags, std::optional<ImVec4>>(ImGui::ColorPicker4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
@@ -1990,6 +2132,11 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::arg("storage_id"),
         "set id to use for open/close storage (default to same as item id).");
 
+    m.def("tree_node_get_open",
+        ImGui::TreeNodeGetOpen,
+        nb::arg("storage_id"),
+        "retrieve tree node open/close state.");
+
     m.def("selectable",
         [](const char * label, bool p_selected, ImGuiSelectableFlags flags = 0, const std::optional<const ImVec2> & size = std::nullopt) -> std::tuple<bool, bool>
         {
@@ -2084,9 +2231,9 @@ void py_init_module_imgui_main(nb::module_& m)
         },     nb::arg("label"), nb::arg("current_item"), nb::arg("items"), nb::arg("height_in_items") = -1);
 
     m.def("plot_lines",
-        [](const char * label, const nb::ndarray<> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+        [](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
         {
-            auto PlotLines_adapt_c_buffers = [](const char * label, const nb::ndarray<> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
+            auto PlotLines_adapt_c_buffers = [](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -2118,7 +2265,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 ImGui::PlotLines(label, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), values_offset, overlay_text, scale_min, scale_max, graph_size, values_stride);
             };
-            auto PlotLines_adapt_mutable_param_with_default_value = [&PlotLines_adapt_c_buffers](const char * label, const nb::ndarray<> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+            auto PlotLines_adapt_mutable_param_with_default_value = [&PlotLines_adapt_c_buffers](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
             {
 
                 const ImVec2& graph_size_or_default = [&]() -> const ImVec2 {
@@ -2130,7 +2277,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 PlotLines_adapt_c_buffers(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size_or_default, stride);
             };
-            auto PlotLines_adapt_const_char_pointer_with_default_null = [&PlotLines_adapt_mutable_param_with_default_value](const char * label, const nb::ndarray<> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+            auto PlotLines_adapt_const_char_pointer_with_default_null = [&PlotLines_adapt_mutable_param_with_default_value](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
             {
                 const char * overlay_text_adapt_default_null = nullptr;
                 if (overlay_text.has_value())
@@ -2145,9 +2292,9 @@ void py_init_module_imgui_main(nb::module_& m)
         "Python bindings defaults:\n    If graph_size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("plot_histogram",
-        [](const char * label, const nb::ndarray<> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+        [](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
         {
-            auto PlotHistogram_adapt_c_buffers = [](const char * label, const nb::ndarray<> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
+            auto PlotHistogram_adapt_c_buffers = [](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, ImVec2 graph_size = ImVec2(0, 0), int stride = -1)
             {
                 // Check if the array is 1D and C-contiguous
                 if (! (values.ndim() == 1 && values.stride(0) == 1))
@@ -2179,7 +2326,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 ImGui::PlotHistogram(label, static_cast<const float *>(values_from_pyarray), static_cast<int>(values_count), values_offset, overlay_text, scale_min, scale_max, graph_size, values_stride);
             };
-            auto PlotHistogram_adapt_mutable_param_with_default_value = [&PlotHistogram_adapt_c_buffers](const char * label, const nb::ndarray<> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+            auto PlotHistogram_adapt_mutable_param_with_default_value = [&PlotHistogram_adapt_c_buffers](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, const char * overlay_text = NULL, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
             {
 
                 const ImVec2& graph_size_or_default = [&]() -> const ImVec2 {
@@ -2191,7 +2338,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
                 PlotHistogram_adapt_c_buffers(label, values, values_offset, overlay_text, scale_min, scale_max, graph_size_or_default, stride);
             };
-            auto PlotHistogram_adapt_const_char_pointer_with_default_null = [&PlotHistogram_adapt_mutable_param_with_default_value](const char * label, const nb::ndarray<> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
+            auto PlotHistogram_adapt_const_char_pointer_with_default_null = [&PlotHistogram_adapt_mutable_param_with_default_value](const char * label, nb::ndarray<nb::ro> & values, int values_offset = 0, std::optional<std::string> overlay_text = std::nullopt, float scale_min = FLT_MAX, float scale_max = FLT_MAX, const std::optional<const ImVec2> & graph_size = std::nullopt, int stride = -1)
             {
                 const char * overlay_text_adapt_default_null = nullptr;
                 if (overlay_text.has_value())
@@ -2756,7 +2903,7 @@ void py_init_module_imgui_main(nb::module_& m)
         "alter visibility of keyboard/gamepad cursor. by default: show when using an arrow key, hide when clicking with mouse.");
 
     m.def("set_next_item_allow_overlap",
-        ImGui::SetNextItemAllowOverlap, "allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both Selectable() and TreeNode() have dedicated flags doing this.");
+        ImGui::SetNextItemAllowOverlap, "allow next item to be overlapped by a subsequent item. Typically useful with InvisibleButton(), Selectable(), TreeNode() covering an area where subsequent items may need to be added. Note that both Selectable() and TreeNode() have dedicated flags doing this.");
 
     m.def("is_item_hovered",
         ImGui::IsItemHovered,
@@ -3190,7 +3337,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("allow_tab_input", ImGuiInputTextFlags_AllowTabInput, "Pressing TAB input a '\t' character into the text field")
             .value("enter_returns_true", ImGuiInputTextFlags_EnterReturnsTrue, "Return 'True' when Enter is pressed (as opposed to every time the value was modified). Consider using IsItemDeactivatedAfterEdit() instead!")
             .value("escape_clears_all", ImGuiInputTextFlags_EscapeClearsAll, "Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert)")
-            .value("ctrl_enter_for_new_line", ImGuiInputTextFlags_CtrlEnterForNewLine, "In multi-line mode, validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter).")
+            .value("ctrl_enter_for_new_line", ImGuiInputTextFlags_CtrlEnterForNewLine, "In multi-line mode: validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). Note that Shift+Enter always enter a new line either way.")
             .value("read_only", ImGuiInputTextFlags_ReadOnly, "Read-only mode")
             .value("password", ImGuiInputTextFlags_Password, "Password mode, display all characters as '*', disable copy")
             .value("always_overwrite", ImGuiInputTextFlags_AlwaysOverwrite, "Overwrite mode")
@@ -3214,13 +3361,13 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("none", ImGuiTreeNodeFlags_None, "")
             .value("selected", ImGuiTreeNodeFlags_Selected, "Draw as selected")
             .value("framed", ImGuiTreeNodeFlags_Framed, "Draw frame with background (e.g. for CollapsingHeader)")
-            .value("allow_overlap", ImGuiTreeNodeFlags_AllowOverlap, "Hit testing to allow subsequent widgets to overlap this one")
+            .value("allow_overlap", ImGuiTreeNodeFlags_AllowOverlap, "Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().")
             .value("no_tree_push_on_open", ImGuiTreeNodeFlags_NoTreePushOnOpen, "Don't do a TreePush() when open (e.g. for CollapsingHeader) = no extra indent nor pushing on ID stack")
             .value("no_auto_open_on_log", ImGuiTreeNodeFlags_NoAutoOpenOnLog, "Don't automatically and temporarily open node when Logging is active (by default logging will automatically open tree nodes)")
             .value("default_open", ImGuiTreeNodeFlags_DefaultOpen, "Default node to be open")
             .value("open_on_double_click", ImGuiTreeNodeFlags_OpenOnDoubleClick, "Open on double-click instead of simple click (default for multi-select unless any _OpenOnXXX behavior is set explicitly). Both behaviors may be combined.")
             .value("open_on_arrow", ImGuiTreeNodeFlags_OpenOnArrow, "Open when clicking on the arrow part (default for multi-select unless any _OpenOnXXX behavior is set explicitly). Both behaviors may be combined.")
-            .value("leaf", ImGuiTreeNodeFlags_Leaf, "No collapsing, no arrow (use as a convenience for leaf nodes).")
+            .value("leaf", ImGuiTreeNodeFlags_Leaf, "No collapsing, no arrow (use as a convenience for leaf nodes). Note: will always open a tree/id scope and return True. If you never use that scope, add ImGuiTreeNodeFlags_NoTreePushOnOpen.")
             .value("bullet", ImGuiTreeNodeFlags_Bullet, "Display a bullet instead of arrow. IMPORTANT: node can still be marked open/close if you don't set the _Leaf flag!")
             .value("frame_padding", ImGuiTreeNodeFlags_FramePadding, "Use FramePadding (even for an unframed text node) to vertically align text baseline to regular widget height. Equivalent to calling AlignTextToFramePadding() before the node.")
             .value("span_avail_width", ImGuiTreeNodeFlags_SpanAvailWidth, "Extend hit box to the right-most edge, even if not framed. This is not the default in order to allow adding other items on the same line without using AllowOverlap mode.")
@@ -3259,7 +3406,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("span_all_columns", ImGuiSelectableFlags_SpanAllColumns, "Frame will span all columns of its container table (text will still fit in current column)")
             .value("allow_double_click", ImGuiSelectableFlags_AllowDoubleClick, "Generate press events on double clicks too")
             .value("disabled", ImGuiSelectableFlags_Disabled, "Cannot be selected, display grayed out text")
-            .value("allow_overlap", ImGuiSelectableFlags_AllowOverlap, "(WIP) Hit testing to allow subsequent widgets to overlap this one")
+            .value("allow_overlap", ImGuiSelectableFlags_AllowOverlap, "Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().")
             .value("highlight", ImGuiSelectableFlags_Highlight, "Make the item be displayed as if it is hovered")
             .value("select_on_nav", ImGuiSelectableFlags_SelectOnNav, "Auto-select when moved into, unless Ctrl is held. Automatic when in a BeginMultiSelect() block.");
 
@@ -3535,10 +3682,10 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("oem102", ImGuiKey_Oem102, "Non-US backslash.")
             .value("gamepad_start", ImGuiKey_GamepadStart, "Menu        | +       | Options  |")
             .value("gamepad_back", ImGuiKey_GamepadBack, "View        | -       | Share    |")
-            .value("gamepad_face_left", ImGuiKey_GamepadFaceLeft, "X           | Y       | Square   | Tap: Toggle Menu. Hold: Windowing mode (Focus/Move/Resize windows)")
+            .value("gamepad_face_left", ImGuiKey_GamepadFaceLeft, "X           | Y       | Square   | Toggle Menu. Hold for Windowing mode (Focus/Move/Resize windows)")
             .value("gamepad_face_right", ImGuiKey_GamepadFaceRight, "B           | A       | Circle   | Cancel / Close / Exit")
-            .value("gamepad_face_up", ImGuiKey_GamepadFaceUp, "Y           | X       | Triangle | Text Input / On-screen Keyboard")
-            .value("gamepad_face_down", ImGuiKey_GamepadFaceDown, "A           | B       | Cross    | Activate / Open / Toggle / Tweak")
+            .value("gamepad_face_up", ImGuiKey_GamepadFaceUp, "Y           | X       | Triangle | Open Context Menu")
+            .value("gamepad_face_down", ImGuiKey_GamepadFaceDown, "A           | B       | Cross    | Activate / Open / Toggle. Hold for 0.60 to Activate in Text Input mode (e.g. wired to an on-screen keyboard).")
             .value("gamepad_dpad_left", ImGuiKey_GamepadDpadLeft, "D-pad Left  | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
             .value("gamepad_dpad_right", ImGuiKey_GamepadDpadRight, "D-pad Right | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
             .value("gamepad_dpad_up", ImGuiKey_GamepadDpadUp, "D-pad Up    | \"       | \"        | Move / Tweak / Resize Window (in Windowing mode)")
@@ -3596,7 +3743,7 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyEnumConfigFlags_ =
         nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags_", nb::is_arithmetic(), nb::is_flag(), "Configuration flags stored in io.ConfigFlags. Set by user/application.")
             .value("none", ImGuiConfigFlags_None, "")
-            .value("nav_enable_keyboard", ImGuiConfigFlags_NavEnableKeyboard, "Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate.")
+            .value("nav_enable_keyboard", ImGuiConfigFlags_NavEnableKeyboard, "Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + Space/Enter to activate. Note: some features such as basic Tabbing and CtrL+Tab are enabled by regardless of this flag (and may be disabled via other means, see #4828, #9218).")
             .value("nav_enable_gamepad", ImGuiConfigFlags_NavEnableGamepad, "Master gamepad navigation enable flag. Backend also needs to set ImGuiBackendFlags_HasGamepad.")
             .value("no_mouse", ImGuiConfigFlags_NoMouse, "Instruct dear imgui to disable mouse inputs and interactions.")
             .value("no_mouse_cursor_change", ImGuiConfigFlags_NoMouseCursorChange, "Instruct backend to not alter mouse cursor shape and visibility. Use if the backend cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.")
@@ -3728,6 +3875,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("tree_lines_rounding", ImGuiStyleVar_TreeLinesRounding, "float     TreeLinesRounding")
             .value("button_text_align", ImGuiStyleVar_ButtonTextAlign, "ImVec2    ButtonTextAlign")
             .value("selectable_text_align", ImGuiStyleVar_SelectableTextAlign, "ImVec2    SelectableTextAlign")
+            .value("separator_size", ImGuiStyleVar_SeparatorSize, "float     SeparatorSize")
             .value("separator_text_border_size", ImGuiStyleVar_SeparatorTextBorderSize, "float     SeparatorTextBorderSize")
             .value("separator_text_align", ImGuiStyleVar_SeparatorTextAlign, "ImVec2    SeparatorTextAlign")
             .value("separator_text_padding", ImGuiStyleVar_SeparatorTextPadding, "ImVec2    SeparatorTextPadding")
@@ -3742,7 +3890,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("mouse_button_right", ImGuiButtonFlags_MouseButtonRight, "React on right mouse button")
             .value("mouse_button_middle", ImGuiButtonFlags_MouseButtonMiddle, "React on center mouse button")
             .value("mouse_button_mask_", ImGuiButtonFlags_MouseButtonMask_, "[Internal]")
-            .value("enable_nav", ImGuiButtonFlags_EnableNav, "InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.");
+            .value("enable_nav", ImGuiButtonFlags_EnableNav, "InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.")
+            .value("allow_overlap", ImGuiButtonFlags_AllowOverlap, "Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().");
 
 
     auto pyEnumColorEditFlags_ =
@@ -3756,7 +3905,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("no_tooltip", ImGuiColorEditFlags_NoTooltip, "// ColorEdit, ColorPicker, ColorButton: disable tooltip when hovering the preview.")
             .value("no_label", ImGuiColorEditFlags_NoLabel, "// ColorEdit, ColorPicker: disable display of inline text label (the label is still forwarded to the tooltip and picker).")
             .value("no_side_preview", ImGuiColorEditFlags_NoSidePreview, "// ColorPicker: disable bigger color preview on right side of the picker, use small color square preview instead.")
-            .value("no_drag_drop", ImGuiColorEditFlags_NoDragDrop, "// ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.")
+            .value("no_drag_drop", ImGuiColorEditFlags_NoDragDrop, "// ColorEdit: disable drag and drop target/source. ColorButton: disable drag and drop source.")
             .value("no_border", ImGuiColorEditFlags_NoBorder, "// ColorButton: disable border (which is enforced by default)")
             .value("no_color_markers", ImGuiColorEditFlags_NoColorMarkers, "// ColorEdit: disable rendering R/G/B/A color marker. May also be disabled globally by setting style.ColorMarkerSize = 0.")
             .value("alpha_opaque", ImGuiColorEditFlags_AlphaOpaque, "// ColorEdit, ColorPicker, ColorButton: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling ColorEdit4()/ColorPicker4(). For ColorButton() this does the same as _NoAlpha.")
@@ -6143,6 +6292,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("color_button_position", &ImGuiStyle::ColorButtonPosition, "Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.")
         .def_rw("button_text_align", &ImGuiStyle::ButtonTextAlign, "Alignment of button text when button is larger than text. Defaults to (0.5, 0.5) (centered).")
         .def_rw("selectable_text_align", &ImGuiStyle::SelectableTextAlign, "Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.")
+        .def_rw("separator_size", &ImGuiStyle::SeparatorSize, "Thickness of border in Separator()")
         .def_rw("separator_text_border_size", &ImGuiStyle::SeparatorTextBorderSize, "Thickness of border in SeparatorText()")
         .def_rw("separator_text_align", &ImGuiStyle::SeparatorTextAlign, "Alignment of text within the separator. Defaults to (0.0, 0.5) (left aligned, center).")
         .def_rw("separator_text_padding", &ImGuiStyle::SeparatorTextPadding, "Horizontal offset of text from each edge of the separator + spacing on other axis. Generally small values. .y is recommended to be == FramePadding.y.")
@@ -6161,7 +6311,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("hover_delay_normal", &ImGuiStyle::HoverDelayNormal, "Delay for IsItemHovered(ImGuiHoveredFlags_DelayNormal). \"")
         .def_rw("hover_flags_for_tooltip_mouse", &ImGuiStyle::HoverFlagsForTooltipMouse, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using mouse.")
         .def_rw("hover_flags_for_tooltip_nav", &ImGuiStyle::HoverFlagsForTooltipNav, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using keyboard/gamepad.")
-        .def_rw("_main_scale", &ImGuiStyle::_MainScale, "FIXME-WIP: Reference scale, as applied by ScaleAllSizes().")
+        .def_rw("_main_scale", &ImGuiStyle::_MainScale, "FIXME-WIP: Reference scale, as applied by ScaleAllSizes(). PLEASE DO NOT USE THIS FOR NOW.")
         .def_rw("_next_frame_font_size_base", &ImGuiStyle::_NextFrameFontSizeBase, "FIXME: Temporary hack until we finish remaining work.")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
@@ -6236,7 +6386,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_mac_osx_behaviors", &ImGuiIO::ConfigMacOSXBehaviors, "= defined(__APPLE__) // Swap Cmd<>Ctrl keys + OS X style text editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/Text Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.")
         .def_rw("config_input_trickle_event_queue", &ImGuiIO::ConfigInputTrickleEventQueue, "= True           // Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.")
         .def_rw("config_input_text_cursor_blink", &ImGuiIO::ConfigInputTextCursorBlink, "= True           // Enable blinking cursor (optional as some users consider it to be distracting).")
-        .def_rw("config_input_text_enter_keep_active", &ImGuiIO::ConfigInputTextEnterKeepActive, "= False          // [BETA] Pressing Enter will keep item active and select contents (single-line only).")
+        .def_rw("config_input_text_enter_keep_active", &ImGuiIO::ConfigInputTextEnterKeepActive, "= False          // [BETA] Pressing Enter will reactivate item and select all text (single-line only).")
         .def_rw("config_drag_click_to_input_text", &ImGuiIO::ConfigDragClickToInputText, "= False          // [BETA] Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving). Not desirable on devices without a keyboard.")
         .def_rw("config_windows_resize_from_edges", &ImGuiIO::ConfigWindowsResizeFromEdges, "= True           // Enable resizing of windows from their edges and from the lower-left corner. This requires ImGuiBackendFlags_HasMouseCursors for better mouse cursor feedback. (This used to be a per-window ImGuiWindowFlags_ResizeFromAnySide flag)")
         .def_rw("config_windows_move_from_title_bar_only", &ImGuiIO::ConfigWindowsMoveFromTitleBarOnly, "= False      // Enable allowing to move windows only when clicking on their title bar. Does not apply to windows without a title bar.")
@@ -6627,6 +6777,16 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("count_grep", &ImGuiTextFilter::CountGrep, "")
         ;
 
+    pyClassImGuiTextFilter.def_prop_rw("input_buf",
+        [](const ImGuiTextFilter& self) { return std::string(self.InputBuf); },
+        [](ImGuiTextFilter& self, const std::string& s) {
+            strncpy(self.InputBuf, s.c_str(), sizeof(self.InputBuf) - 1);
+            self.InputBuf[sizeof(self.InputBuf) - 1] = '\0';
+            self.Build();
+        });
+
+
+
 
     auto pyClassImGuiTextBuffer =
         nb::class_<ImGuiTextBuffer>
@@ -6761,6 +6921,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("ctx", &ImGuiListClipper::Ctx, "Parent UI context")
         .def_rw("display_start", &ImGuiListClipper::DisplayStart, "First item to display, updated by each call to Step()")
         .def_rw("display_end", &ImGuiListClipper::DisplayEnd, "End of items to display (exclusive)")
+        .def_rw("user_index", &ImGuiListClipper::UserIndex, "Helper storage for user convenience/code. Optional, and otherwise unused if you don't use it.")
         .def_rw("items_count", &ImGuiListClipper::ItemsCount, "[Internal] Number of items")
         .def_rw("items_height", &ImGuiListClipper::ItemsHeight, "[Internal] Height of item after a first step and item submission can calculate it")
         .def_rw("start_pos_y", &ImGuiListClipper::StartPosY, "[Internal] Cursor position at the time of Begin() or after table frozen rows are all processed")
@@ -6837,15 +6998,17 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("no_auto_clear_on_reselect", ImGuiMultiSelectFlags_NoAutoClearOnReselect, "Disable clearing selection when clicking/selecting an already selected item.")
             .value("box_select1d", ImGuiMultiSelectFlags_BoxSelect1d, "Enable box-selection with same width and same x pos items (e.g. full row Selectable()). Box-selection works better with little bit of spacing between items hit-box in order to be able to aim at empty space.")
             .value("box_select2d", ImGuiMultiSelectFlags_BoxSelect2d, "Enable box-selection with varying width or varying x pos items support (e.g. different width labels, or 2D layout/grid). This is slower: alters clipping logic so that e.g. horizontal movements will update selection of normally clipped items.")
-            .value("box_select_no_scroll", ImGuiMultiSelectFlags_BoxSelectNoScroll, "Disable scrolling when box-selecting near edges of scope.")
+            .value("box_select_no_scroll", ImGuiMultiSelectFlags_BoxSelectNoScroll, "Disable scrolling when box-selecting and moving mouse near edges of scope.")
             .value("clear_on_escape", ImGuiMultiSelectFlags_ClearOnEscape, "Clear selection when pressing Escape while scope is focused.")
             .value("clear_on_click_void", ImGuiMultiSelectFlags_ClearOnClickVoid, "Clear selection when clicking on empty location within scope.")
             .value("scope_window", ImGuiMultiSelectFlags_ScopeWindow, "Scope for _BoxSelect and _ClearOnClickVoid is whole window (Default). Use if BeginMultiSelect() covers a whole window or used a single time in same window.")
             .value("scope_rect", ImGuiMultiSelectFlags_ScopeRect, "Scope for _BoxSelect and _ClearOnClickVoid is rectangle encompassing BeginMultiSelect()/EndMultiSelect(). Use if BeginMultiSelect() is called multiple times in same window.")
-            .value("select_on_click", ImGuiMultiSelectFlags_SelectOnClick, "Apply selection on mouse down when clicking on unselected item. (Default)")
+            .value("select_on_auto", ImGuiMultiSelectFlags_SelectOnAuto, "Apply selection on mouse down when clicking on unselected item, on mouse up when clicking on selected item. (Default)")
+            .value("select_on_click_always", ImGuiMultiSelectFlags_SelectOnClickAlways, "Apply selection on mouse down when clicking on any items. Prevents Drag and Drop from being used on multiple-selection, but allows e.g. BoxSelect to always reselect even when clicking inside an existing selection. (Excel style behavior)")
             .value("select_on_click_release", ImGuiMultiSelectFlags_SelectOnClickRelease, "Apply selection on mouse release when clicking an unselected item. Allow dragging an unselected item without altering selection.")
             .value("nav_wrap_x", ImGuiMultiSelectFlags_NavWrapX, "[Temporary] Enable navigation wrapping on X axis. Provided as a convenience because we don't have a design for the general Nav API for this yet. When the more general feature be public we may obsolete this flag in favor of new one.")
-            .value("no_select_on_right_click", ImGuiMultiSelectFlags_NoSelectOnRightClick, "Disable default right-click processing, which selects item on mouse down, and is designed for context-menus.");
+            .value("no_select_on_right_click", ImGuiMultiSelectFlags_NoSelectOnRightClick, "Disable default right-click processing, which selects item on mouse down, and is designed for context-menus.")
+            .value("select_on_mask_", ImGuiMultiSelectFlags_SelectOnMask_, "");
 
 
     auto pyClassImGuiMultiSelectIO =
@@ -7524,7 +7687,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("font_data_size", &ImFontConfig::FontDataSize, "// TTF/OTF data size")
         .def_rw("font_data_owned_by_atlas", &ImFontConfig::FontDataOwnedByAtlas, "True     // TTF/OTF data ownership taken by the owner ImFontAtlas (will delete memory itself). SINCE 1.92, THE DATA NEEDS TO PERSIST FOR WHOLE DURATION OF ATLAS.")
         .def_rw("merge_mode", &ImFontConfig::MergeMode, "False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.")
-        .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH, "False    // Align every glyph AdvanceX to pixel boundaries. Prevents fractional font size from working correctly! Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.")
+        .def_rw("pixel_snap_h", &ImFontConfig::PixelSnapH, "False    // Align every glyph AdvanceX to pixel boundaries. Prevents fractional font size from working correctly! Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, OversampleH/V will default to 1.")
         .def_rw("oversample_h", &ImFontConfig::OversampleH, "0 (2)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1 or 2 depending on size. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.")
         .def_rw("oversample_v", &ImFontConfig::OversampleV, "0 (1)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1. This is not really useful as we don't use sub-pixel positions on the Y axis.")
         .def_rw("ellipsis_char", &ImFontConfig::EllipsisChar, "0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.")
@@ -7636,7 +7799,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
     auto pyClassImFontAtlas =
         nb::class_<ImFontAtlas>
-            (m, "ImFontAtlas", " Load and rasterize multiple TTF/OTF fonts into a same texture. The font atlas will build a single texture holding:\n  - One or more fonts.\n  - Custom graphics data needed to render the shapes needed by Dear ImGui.\n  - Mouse cursor shapes for software cursor rendering (unless setting 'Flags |= ImFontAtlasFlags_NoMouseCursors' in the font atlas).\n  - If you don't call any AddFont*** functions, the default font embedded in the code will be loaded for you.\n It is the rendering backend responsibility to upload texture into your graphics API:\n  - ImGui_ImplXXXX_RenderDrawData() functions generally iterate platform_io->Textures[] to create/update/destroy each ImTextureData instance.\n  - Backend then set ImTextureData's TexID and BackendUserData.\n  - Texture id are passed back to you during rendering to identify the texture. Read FAQ entry about ImTextureID/ImTextureRef for more details.\n Legacy path:\n  - Call Build() + GetTexDataAsAlpha8() or GetTexDataAsRGBA32() to build and retrieve pixels data.\n  - Call SetTexID(my_tex_id); and pass the pointer/identifier to your texture in a format natural to your graphics API.\n Common pitfalls:\n - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persist up until the\n   atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.\n - Important: By default, AddFontFromMemoryTTF() takes ownership of the data. Even though we are not writing to it, we will free the pointer on destruction.\n   You can set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed,\n - Even though many functions are suffixed with \"TTF\", OTF data is supported just as well.\n - This is an old API and it is currently awkward for those and various other reasons! We will address them in the future!")
+            (m, "ImFontAtlas", " Load and rasterize multiple TTF/OTF fonts into a same texture. The font atlas will build a single texture holding:\n  - One or more fonts.\n  - Custom graphics data needed to render the shapes needed by Dear ImGui.\n  - Mouse cursor shapes for software cursor rendering (unless setting 'Flags |= ImFontAtlasFlags_NoMouseCursors' in the font atlas).\n  - If you don't call any AddFont*** functions, the default font embedded in the code will be loaded for you.\n It is the rendering backend responsibility to upload texture into your graphics API:\n  - ImGui_ImplXXXX_RenderDrawData() functions generally iterate platform_io->Textures[] to create/update/destroy each ImTextureData instance.\n  - Backend then set ImTextureData's TexID and BackendUserData.\n  - Texture id are passed back to you during rendering to identify the texture. Read FAQ entry about ImTextureID/ImTextureRef for more details.\n Legacy path:\n  - Call Build() + GetTexDataAsAlpha8() or GetTexDataAsRGBA32() to build and retrieve pixels data.\n  - Call SetTexID(my_tex_id); and pass the pointer/identifier to your texture in a format natural to your graphics API.\n Common pitfalls:\n - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persists up until the\n   atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.\n - Important: By default, AddFontFromMemoryTTF() takes ownership of the data. Even though we are not writing to it, we will free the pointer on destruction.\n   You can set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed,\n - Even though many functions are suffixed with \"TTF\", OTF data is supported just as well.\n - This is an old API and it is currently awkward for those and various other reasons! We will address them in the future!")
         .def(nb::init<>())
         .def("add_font",
             &ImFontAtlas::AddFont,
@@ -7785,9 +7948,9 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("font_id", &ImFont::FontId, "Unique identifier for the font")
         .def_rw("legacy_size", &ImFont::LegacySize, "4     // in  // Font size passed to AddFont(). Use for old code calling PushFont() expecting to use that size. (use ImGui::GetFontBaked() to get font baked at current bound size).")
         .def_rw("sources", &ImFont::Sources, "16    // in  // List of sources. Pointers within OwnerAtlas->Sources[]")
-        .def_rw("ellipsis_char", &ImFont::EllipsisChar, "2-4   // out // Character used for ellipsis rendering ('...').")
+        .def_rw("ellipsis_char", &ImFont::EllipsisChar, "2-4   // out // Character used for ellipsis rendering ('...'). If you ever want to temporarily swap this for an alternative/dummy char, make sure to clear EllipsisAutoBake.")
         .def_rw("fallback_char", &ImFont::FallbackChar, "2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')")
-        .def_rw("ellipsis_auto_bake", &ImFont::EllipsisAutoBake, "1     //     // Mark when the \"...\" glyph needs to be generated.")
+        .def_rw("ellipsis_auto_bake", &ImFont::EllipsisAutoBake, "1     //     // Mark when the \"...\" glyph (== EllipsisChar) needs to be generated by combining multiple '.'.")
         .def_rw("remap_pairs", &ImFont::RemapPairs, "16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.")
         .def(nb::init<>(),
             "Methods")
@@ -8633,22 +8796,4 @@ void imgui_manual_binding(nb::module_& m)
         return IM_COL32(r, g, b, a);
     });
 
-    //
-    // API for imgui_demo
-    //
-    // Forward declaration of imgui_demo.cpp API
-    void SetImGuiDemoWindowPos(ImVec2 pos, ImVec2 size, ImGuiCond cond);
-    void SetImGuiDemoCodeWindowPos(ImVec2 pos, ImVec2 size, ImGuiCond cond);
-    void ImGuiDemoSetShowPythonCode(bool showPythonCode);
-    extern bool GImGuiDemoMarker_IsActive;
-
-    m.def("set_imgui_demo_window_pos", SetImGuiDemoWindowPos);
-    m.def("set_imgui_demo_code_window_pos", SetImGuiDemoCodeWindowPos);
-    m.def("set_imgui_demo_marker_is_active", [](bool b) {
-        GImGuiDemoMarker_IsActive = b;
-    });
-    m.def("get_imgui_demo_marker_is_active", []() {
-        return GImGuiDemoMarker_IsActive;
-    });
-    m.def("set_imgui_demo_show_python_code", ImGuiDemoSetShowPythonCode);
 }

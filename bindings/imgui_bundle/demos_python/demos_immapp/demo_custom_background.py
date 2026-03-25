@@ -1,10 +1,3 @@
-# Workaround issue when using wayland ("Attempt to retrieve context when no valid context", in PyOpenGL)
-# (see https://github.com/pthom/imgui_bundle/issues/321)
-import os
-if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFORM"):
-    os.environ["PYOPENGL_PLATFORM"] = "x11"
-
-
 from imgui_bundle import hello_imgui, imgui, immapp, ImVec2, ImVec4, imgui_md
 from imgui_bundle.demos_python import demo_utils
 
@@ -559,7 +552,7 @@ def gui(app_state: AppState):
     uniforms.set_uniform_value("SEA_CHOPPY", value)
 
     color_vec = uniforms.get_uniform_value("SEA_BASE")
-    color_list = [color_vec.x, color_vec.y, color_vec.z]
+    color_list = ImVec4(color_vec.x, color_vec.y, color_vec.z, 1.0)
     _, color_list = imgui.color_edit3("SEA_BASE", color_list)
     color_vec = MyVec3(color_list[0], color_list[1], color_list[2])
     uniforms.set_uniform_value("SEA_BASE", color_vec)
@@ -578,10 +571,6 @@ def gui(app_state: AppState):
 
 
 def main():
-    # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
-    #         hello_imgui.set_assets_folder("my_assets")  # (By default, HelloImGui will search inside "assets")
-    demo_utils.set_hello_imgui_demo_assets_folder()
-
     # Our global app state
     app_state = AppState()
 

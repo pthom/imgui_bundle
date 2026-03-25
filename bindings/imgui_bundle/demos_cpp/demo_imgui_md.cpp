@@ -53,30 +53,30 @@ int answer()
 *Warning about tables layout*: the first row will impose the columns widths.
 Use nbsp\; to increase the columns sizes on the first row if required.
 
-As an example, the table below:
+As an example, the table below (where columns are resizable!)
 
-| Continent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Population&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Number of Countries |
-|-----------|------------|---------------------|
-| Africa    | 1.3 billion | 54                  |
-| Antarctica | 0 | 0          |
-| Asia      | 4.5 billion | 48                  |
-| Europe    | 743 million | 44                  |
-| North America | 579 million | 23              |
-| Oceania   | 41 million  | 14                  |
-| South America | 422 million | 12              |
+| Continent | Population | Number of Countries |
+|----------------|-------------|---------------------|
+| Africa         | 1.3 billion | 54                  |
+| Antarctica     | 0           | 0                   |
+| Asia           | 4.5 billion | 48                  |
+| Europe         | 743 million | 44                  |
+| North America  | 579 million | 23                  |
+| Oceania        | 41 million  | 14                  |
+| South America  | 422 million | 12                  |
 
-Can be created with this code (where lots of nbsp\; were added to enforce the column widths on the first row):<br><br>
+Can be created with this code
 
 ```
-| Continent&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Population&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Number of Countries |
-|-----------|------------|---------------------|
-| Africa    | 1.3 billion | 54                  |
-| Antarctica | 0 | 0          |
-| Asia      | 4.5 billion | 48                  |
-| Europe    | 743 million | 44                  |
-| North America | 579 million | 23              |
-| Oceania   | 41 million  | 14                  |
-| South America | 422 million | 12              |
+| Continent      | Population  | Number of Countries |
+|----------------|-------------|---------------------|
+| Africa         | 1.3 billion | 54                  |
+| Antarctica     | 0           | 0                   |
+| Asia           | 4.5 billion | 48                  |
+| Europe         | 743 million | 44                  |
+| North America  | 579 million | 23                  |
+| Oceania        | 41 million  | 14                  |
+| South America  | 422 million | 12                  |
 ```
 )";
 }

@@ -1,6 +1,172 @@
-*Version numbers are synced between "Dear ImGui", "Hello ImGui" and "Dear ImGui Bundle"*
+*Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# v1.92.XXX (ongoing)
+# v1.92.602 (WIP)
+
+## ImGuiColorTextEdit: switched to goossens rewrite (**breaking API changes**)
+
+Replaced the santaclose-based ImGuiColorTextEdit with the [complete rewrite by Johan A. Goossens](https://github.com/goossens/ImGuiColorTextEdit). This brings a cleaner architecture, proper UTF-8 support, C++17, no regex/boost dependency, and many new features.
+
+### New features
+- Find/replace UI with keyboard shortcuts
+- Text markers (colored line highlights with tooltips)
+- Bracket matching with visual indicators
+- Line decorators (custom gutter content per line)
+- Context menu callbacks (separate for line numbers and text area)
+- Change and transaction callbacks
+- Filter selections/lines (transform text via callbacks)
+- Autocomplete framework
+- TextDiff widget (combined and side-by-side diff view)
+- Many more languages (C#, JSON, Markdown, AngelScript)
+
+### Breaking API changes (Python)
+
+| Old | New |
+|-----|-----|
+| `TextEditor.PaletteId.dark` | `TextEditor.get_dark_palette()` |
+| `TextEditor.PaletteId.light` | `TextEditor.get_light_palette()` |
+| `TextEditor.PaletteId.retro_blue` | *(removed)* |
+| `TextEditor.PaletteId.mariana` | *(removed)* |
+| `TextEditor.LanguageDefinitionId.cpp` | `TextEditor.Language.cpp()` |
+| `set_language_definition(id)` | `set_language(Language.cpp())` |
+| `set_cursor_position(line, col)` | `set_cursor(line, col)` |
+| `set_view_at_line(line, mode)` | `scroll_to_line(line, alignment)` |
+| `get_selected_text(cursor)` | `get_cursor_text(cursor)` |
+| `get_cursor_position() -> TextPosition` | `get_main_cursor_position() -> CursorPosition` |
+| `render(title, border, size) -> bool` | `render(title, size, border) -> None` |
+| `undo(steps)` / `redo(steps)` | `undo()` / `redo()` (no steps) |
+| `SnippetTheme.retro_blue` / `.mariana` | *(removed)* |
+
+To detect text changes, use `set_change_callback(callback, delay_ms)` instead of the old `render()` return value.
+
+See the breaking changes note at the top of [imgui_color_text_edit.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_color_text_edit.pyi) for a quick summary.
+
+### Breaking API changes (C++)
+
+Same renames as Python (CamelCase). Additionally:
+- `Render()` parameter order changed: `(title, size, border)` instead of `(title, border, size)`
+- `Render()` returns `void` instead of `bool`
+
+# v1.92.601
+
+## ImmVision: OpenCV is now optional / use GPU rendering pipeline 
+
+**ImmVision no longer requires OpenCV: this way the compilation and installation of the library is much faster, and the resulting binaries are smaller.**
+
+All image processing (color conversion, statistics, alpha blending, drawing annotations, zoom/pan transform, image saving) has been reimplemented without OpenCV dependencies.
+
+- **New core types**: `ImageBuffer`, `Point`, `Point2d`, `Size`, `Matrix33d` replace `cv::Mat` and OpenCV geometric types in all public APIs
+- **Zero-copy interop**: When OpenCV is available (`IMMVISION_HAS_OPENCV`), `cv::Mat` converts seamlessly to/from `ImageBuffer` via implicit constructors
+- **Python**: No change for Python users — ImmVision continues to use numpy arrays (the `cvnp_nano` bridge has been removed)
+- **Drawing primitives**: Custom bitmap font and Bresenham drawing replace OpenCV's `putText`, `line`, `ellipse`, `rectangle`
+- **Image saving**: Uses `stb_image_write` (PNG/JPG/BMP/TGA/HDR) instead of `cv::imwrite`
+- **Zoom/pan**: Custom implementation with nearest, bilinear, and area-based downscaling
+- **ImmDebug API change**: `ImmDebug()` now assumes RGB (the common default); use `ImmDebugBgr()` for OpenCV BGR images. Fixed per-image color order handling in the viewer.
+- **Smaller wheels**: ~16% size reduction across all platforms (45 MB total savings)
+- **Faster CI builds**: 5–8 minutes faster per platform (no more OpenCV compilation)
+- **New features**: colormap support for single-channel integer images, multithreaded pixel drawing/resize, fixed watched pixel delete button visibility
+
+**The ImmVision rendering pipeline has been rewritten to use GPU texture sampling and ImGui DrawList:**
+
+- **GPU zoom/pan**: Image uploaded to GPU texture once (with mipmaps); pan/zoom handled via UV coordinates — no more per-frame CPU warp
+- **Mipmap filtering**: `GL_NEAREST` at high zoom (pixel-perfect), `GL_LINEAR` for moderate zoom, `GL_LINEAR_MIPMAP_LINEAR` for downsampling (high-quality anti-aliasing)
+- **DrawList annotations**: Grid lines, pixel values, and watched pixel markers drawn via ImGui DrawList in screen space (TrueType font replaces bitmap font)
+- **DrawList backgrounds**: School paper and alpha checkerboard rendered via DrawList (no longer composited into texture)
+- **Inspector redesign**: Horizontal filmstrip with scrolling and adjustable thumbnail size replaces the old vertical listbox
+- **Other fixes**: "Export colormap image" now available for uint8 images with colormap; save dialog remembers last directory
+
+## demo_imgui_bundle (aka "Dear ImGui Bundle Explorer")
+- Display version and compilation time at startup (C++, emscripten and Python versions)
+- Python demo code is also shown in the python version (when installed from Pypi)
+
+## hello_imgui
+- Fix potential memory error in font handling (`_LoadFontImpl`: pass font buffer allocated with `IM_ALLOC`)
+- Add `HelloImGui::LoadImageDataFromAsset()` — decode an image from assets into CPU memory (C++ only)
+- Compile `imgui_impl_metal.mm` and `MetalNanoVG` with `-fobjc-arc` (fixes ARC bridge cast warnings)
+- Workaround plutovg `file(RELATIVE_PATH)` error with relative `CMAKE_INSTALL_PREFIX` (scikit-build-core)
+
+## Build & warnings cleanup
+We are approaching zero-warnings.
+
+- CMake: fetch freetype & plutovg with `EXCLUDE_FROM_ALL`
+- CMake: fix ImAnim exclusion when `IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS` is off
+- CMake: `ibd_add_this_folder_as_demos_library` now links `demo_utils` (fixes GCC linker error)
+- CMake: suppress Apple ld duplicate library warnings
+- CMake: suppress third-party warnings (ImAnim: `-Wno-unused-result`, `-Wno-nontrivial-memaccess`; plutosvg: `-Wno-deprecated-declarations`)
+- CMake: normalize install path (`./lib/` → `lib`) to fix CMP0177 warning
+- Fix `ImFileDialog` `u8path` deprecation warning (C++20 compatibility)
+- Fix GCC `-Wformat-truncation` warning in `demo_imgui_bundle_intro.cpp`
+
+# v1.92.600
+
+Based on ImGui v1.92.6 & hello_imgui v1.92.6.
+
+## Dear ImGui Bundle Explorer (formerly "ImGui Bundle Interactive Manual")
+
+The interactive manual has been renamed to **Dear ImGui Bundle Explorer** and significantly enhanced:
+- New intro tab with a carousel of 7 interactive slides showcasing the ecosystem
+- Deployed at [traineq.org/imgui_bundle_explorer](https://traineq.org/imgui_bundle_explorer)
+
+## Dear ImGui Explorer
+
+[Dear ImGui Explorer](https://pthom.github.io/imgui_explorer) (formerly "imgui_manual") has been rewritten from scratch and integrated into the Dear ImGui Bundle repository. It was previously a standalone project; Dear ImGui Bundle is now its parent repository.
+
+It provides interactive manuals for ImGui, ImPlot, ImPlot3D, and ImAnim — with side-by-side C++/Python code, syntax highlighting, and search in API reference files (headers, Python stubs).
+
+- Follow source: click on any demo widget to jump to its source code
+- Search across API files with Ctrl+Shift+F
+- Lazy-load demo code files (desktop and Emscripten)
+- Deployed at [pthom.github.io/imgui_explorer](https://pthom.github.io/imgui_explorer)
+
+## New library: ImAnim
+
+Added [ImAnim](https://github.com/pthom/im_anim), a tweening and animation library for ImGui.
+- Available via `immapp.run(..., with_im_anim=True)` / `ImmApp::AddOnParams::withImAnim`
+- Python API adapted for `get_float`, `get_vec2`, `get_color`, etc.
+
+## Updates to libraries
+- Update imgui to v1.92.6-docking
+- Update hello_imgui to v1.92.6
+- Update implot to latest version (breaking change: added `ImPlotSpec`, removed plot item styling)
+- Update implot3d to latest version (breaking change: added `ImPlot3DSpec`)
+- Update ImGuiColorTextEdit: line numbers always visible in separate gutter, improved selection colors
+- Update imgui_knobs: added `SetKnobColors`, `UnsetKnobColors`, default color adapts to light/dark theme
+- Update imgui_md: render tables using ImGui tables (resizable columns), delay before showing link hrefs
+
+## Python: Async run and notebook support
+- Added `hello_imgui.run_async()` / `immapp.run_async()` for async/await support (with maximal performance). See [doc for async](https://pthom.github.io/imgui_bundle/python/python-async/)
+- Added `immapp.nb` module for non-blocking Jupyter notebook execution (`nb.start()`, `nb.stop()`, `nb.is_running()`). See [doc for notebook](https://pthom.github.io/imgui_bundle/python/notebook-runners/)
+- Added `hello_imgui.nb` convenience module
+
+## Pyodide (web) support
+- Added Docker build system for Pyodide wheels
+- `run()` is fire-and-forget in Pyodide; use `run_async()` for awaitable behavior
+- CI workflow for Pyodide builds
+- Pyodide wheels now exclude demo code to reduce size
+
+## Python bindings
+- Added `em_size()` and `em_to_vec2()` at root of `imgui_bundle` for DPI-independent sizing
+- Added `__getitem__` / `__setitem__` (subscript `[]`) for ImVec2 and ImVec4
+- Configurable wheel builds with selective module inclusion
+- Fix: accept read-only numpy arrays (e.g. from pandas) in nanobind bindings
+
+## hello_imgui improvements
+- Added `AddAssetsSearchPath()` / `ClearAssetsSearchPaths()` / `GetAssetsSearchPaths()` for multi-folder asset resolution at runtime
+- Added `topMost` window attribute
+- Added `iniDisable` and `iniClearPreviousSettings` params
+- Added `FpsIdling::vsyncToMonitor` and `FpsIdling::fpsMax` settings
+- Added `theme_changed` callback
+- Fix: ManualRender RunnerParams lifetime management
+
+## Build & CI
+- Added ARM Linux (aarch64) wheel builds using native `ubuntu-24.04-arm` runners
+- Reduced Emscripten .data sizes: demos only bundle the assets they actually need
+- Deduplicated demo assets (removed ~1.1M of files duplicated between `assets/` and `demos_assets/`)
+- Emscripten: use GLFW3 backend by default instead of SDL2
+- Fix: shell injection in BrowseToUrl (replaced `system()` with `fork+execlp`)
+
+## Documentation
+- Complete documentation overhaul using Jupyter Book, available as [PDF](https://pthom.github.io/imgui_bundle/assets/book.pdf)
+- Added developer documentation (building, bindings, repo structure)
 
 # v1.92.5
 
@@ -356,7 +522,7 @@ See changes in [Hello ImGui v1.5.0-rc1](https://github.com/pthom/hello_imgui/rel
 ### Python
 * Can plot Matplotlib figures in Python: see [demo](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py) and [imgui_fig](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_fig.py)
 * Added [imgui_ctx](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_ctx.py): python context manager for imgui.begin / imgui.end, etc (lots)
-* Show python & C++ code in the ImGui Demo window (see "Dear ImGui" tab in the [interactive manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html))
+* Show python & C++ code in the ImGui Demo window (see "Dear ImGui" tab in the [interactive explorer](https://traineq.org/imgui_bundle_explorer))
 * Added bindings for imgui [AddPolyline / AddConvexPolyFilled](https://github.com/pthom/imgui_bundle/blob/7c7f31944edd3cf92e040226a73eda7b6e4e5c5f/bindings/imgui_bundle/imgui/__init__.pyi#L9283C23-L9290)
 * Added bindings for imgui [IniFileName and LogFilename](https://github.com/pthom/imgui_bundle/blob/7c7f31944edd3cf92e040226a73eda7b6e4e5c5f/bindings/imgui_bundle/imgui/__init__.pyi#L7943-L7946), WindowName
 * Added bindings for [ImGuiInputTextCallback](https://github.com/pthom/imgui_bundle/blob/7c7f31944edd3cf92e040226a73eda7b6e4e5c5f/bindings/imgui_bundle/imgui/__init__.pyi#L10453-L10463) and ImGuiSizeCallback (also see [this](https://github.com/pthom/imgui_bundle/blob/7c7f31944edd3cf92e040226a73eda7b6e4e5c5f/bindings/imgui_bundle/imgui/__init__.pyi#L255C1-L256))
@@ -422,7 +588,7 @@ ImGui Test Engine is a Tests & Automation Engine for Dear ImGui.
 * Can be used with python, and C++ (all platforms, incl emscripten). See [python bindings](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/test_engine.pyi) declarations (stubs).
 * Enabled by default inside ImGui Bundle. Needs to be enabled manually when using Hello ImGui.
 * Lots of work on making ImGui Test Engine's coroutines (thread based) compatible with Python and emscripten
-* ImGui Test Engine is now used to run interactive automations in the [interactive manual](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html) (click on the "Show me" buttons)
+* ImGui Test Engine is now used to run interactive automations in the [interactive manual](https://traineq.org/imgui_bundle_explorer) (click on the "Show me" buttons)
 * Added specific demo and doc
 
 _Note: See [Dear ImGui Test Engine License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt). (TL;DR: free for individuals, educational, open-source and small businesses uses. Paid for larger businesses)_
@@ -479,7 +645,7 @@ Submodules changes:
 * ImPlot bindings: Add support for heatmaps
 
 As always, an online interactive manual is available
-[<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/doc/doc_images/badge_interactive_manual.png" height=20>](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)&nbsp;&nbsp;&nbsp;[<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png" height=20>](https://pthom.github.io/imgui_bundle)
+[<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/doc/doc_images/badge_interactive_explorer.png" height=20>](https://traineq.org/imgui_bundle_explorer)&nbsp;&nbsp;&nbsp;[<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/doc/bindings/imgui_bundle/doc/doc_images/badge_view_docs.png" height=20>](https://pthom.github.io/imgui_bundle)
 
 ### More details about layouts handling with Hello ImGui:
 

@@ -1,7 +1,12 @@
-"""Node editor built using ImGui
-Python bindings for https://github.com/thedmd/imgui-node-editor
-"""
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of imgui-node-editor
+# -----------------------------------------------------------------------------
+# imgui_node_editor.pyi: auto-generated bindings for imgui-node-editor,
+# a Node editor built using ImGui. See https://github.com/thedmd/imgui-node-editor
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008
 from typing import Any, Optional, List, overload
 import enum

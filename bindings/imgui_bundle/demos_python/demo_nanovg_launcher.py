@@ -23,8 +23,7 @@ def demo_gui():
         static.show_full_demo_rendering_code = False
 
     imgui_md.render_unindented("""
-        # NanoVG
-        [NanoVG](https://github.com/memononen/nanovg) Antialiased 2D vector drawing library on top of OpenGL for UI and visualizations.
+        [NanoVG](https://github.com/memononen/nanovg) provides antialiased 2D vector drawing library on top of OpenGL for UI and visualizations.
         """)
 
     if not static.is_full_demo_opened and not static.is_simple_demo_opened:

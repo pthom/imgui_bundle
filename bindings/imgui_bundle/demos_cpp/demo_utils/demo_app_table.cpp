@@ -158,5 +158,21 @@ void DemoAppTable::Gui()
     DisplayDemoAppTableWithScrollButtons("DemoAppTable", HelloImGui::EmToVec2(0.f, 12.9f), fnTableGui);
 
     ImGuiMd::Render(std::string("**Code for ") + _currentApp.DemoFile + "**");
+    if (!_currentApp.DemoFile.empty())
+    {
+        bool exeFound = false;
+        #ifdef __EMSCRIPTEN__
+            exeFound = !_currentApp.IsPythonBackendDemo;
+        #else
+            exeFound = HasDemoExeFile(_currentApp.DemoFile);
+        #endif
+        if (exeFound)
+        {
+            ImGui::SameLine();
+            ImGui::Text("   ");
+            if (ImGui::SmallButton("Run##CurrentDemo"))
+                SpawnDemo(_currentApp.DemoFile);
+        }
+    }
     Snippets::ShowSideBySideSnippets(_snippetCpp, _snippetPython, true, true);
 }

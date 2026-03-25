@@ -22,9 +22,27 @@
 #include <iostream>
 #include <cassert>
 
+ImVec4 LinkColor(); // See imgui_md.cpp
 
 namespace ImGuiMd
 {
+    ImVec4 LinkColor()
+    {
+        return ::LinkColor();
+    }
+
+    void RenderTextAsLink(const char* text, const char* url)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Text, LinkColor());
+        ImGui::TextUnformatted(text);
+        ImGui::PopStyleColor();
+        ImGui::SetItemTooltip("%s", url);
+        if (ImGui::IsItemHovered())
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (ImGui::IsItemClicked())
+            ImmApp::BrowseToUrl(url);
+    }
+
 
     namespace
     {
@@ -159,10 +177,18 @@ assets/
 └── images/
     └── markdown_broken_image.png
 
+You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 )";
                 for (auto emphasisVariant: AllEmphasisVariants())
                 {
                     std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
+
+                    if (! HelloImGui::AssetExists(fontFile))
+                    {
+                        fprintf(stderr, "Markdown font file \"%s\" not found!\n", fontFile.c_str());
+                        fprintf(stderr, "%s", error_message.c_str());
+                        IM_ASSERT(false);
+                    }
 
                     // we shall not load the icons for all the fonts variants, since the font atlas
                     // texture might end up too big to fit in the GPU.
@@ -225,6 +251,9 @@ assets/
         MarkdownOptions *mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
         std::map<std::string, Snippets::SnippetData> mSnippets;
+        int mTableIdCounter = 0;
+        bool mTableOpen = false;
+        bool mIsFirstBlock = true;
     public:
         MarkdownRenderer(MarkdownOptions* markdownOptions)
             : mMarkdownOptions(markdownOptions)
@@ -246,6 +275,8 @@ assets/
 
             const char * start = s.c_str();
             const char * end = start + s.size();
+            mTableIdCounter = 0;
+            mIsFirstBlock = true;
             this->print(start, end);
             ImGui::PopFont();
         }
@@ -346,7 +377,7 @@ assets/
             {
                 mSnippets[m_code_block] = Snippets::SnippetData();
                 auto& snippet = mSnippets[m_code_block];
-                snippet.Palette = Snippets::SnippetTheme::Mariana;
+                snippet.Palette = Snippets::SnippetTheme::Dark;
                 snippet.Code = code_without_last_empty_lines(m_code_block);
 
                 // set language
@@ -373,6 +404,64 @@ assets/
             Snippets::ShowCodeSnippet(snippet);
 
             ImGui::PopID();
+        }
+
+        void BLOCK_TABLE(const MD_BLOCK_TABLE_DETAIL* d, bool e) override
+        {
+            if (e) {
+                // print() pre-compensates for the initial NewLine by moving
+                // the cursor up. Only a table as the very first block needs
+                // to undo that — later blocks have already consumed it.
+                if (mIsFirstBlock)
+                    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + ImGui::GetFontSize() * 0.3f + ImGui::GetStyle().ItemSpacing.y);
+                mIsFirstBlock = false;
+                ImGui::PushID(mTableIdCounter++);
+                ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchProp
+                                      | ImGuiTableFlags_Resizable;
+                if (m_table_border)
+                    flags |= ImGuiTableFlags_BordersInnerV
+                           | ImGuiTableFlags_BordersOuterV
+                           | ImGuiTableFlags_BordersOuterH
+                           | ImGuiTableFlags_BordersInnerH;
+                mTableOpen = ImGui::BeginTable("##md", d->col_count, flags);
+            } else {
+                if (mTableOpen)
+                    ImGui::EndTable();
+                mTableOpen = false;
+                ImGui::PopID();
+            }
+        }
+
+        void BLOCK_THEAD(bool e) override
+        {
+            if (!mTableOpen) return;
+            if (m_table_header_highlight) {
+                if (e) {
+                    ImGuiMdFonts::MarkdownTextStyle style;
+                    style.markdownEmphasis.bold = true;
+                    auto font = mMarkdownCollection.mFontCollection.GetFont(style);
+                    ImGui::PushFont(font.font, font.size);
+                } else {
+                    ImGui::PopFont();
+                }
+            }
+        }
+
+        void BLOCK_TBODY(bool) override {}
+
+        void BLOCK_TR(bool e) override
+        {
+            if (mTableOpen && e) ImGui::TableNextRow();
+        }
+
+        void BLOCK_TH(const MD_BLOCK_TD_DETAIL*, bool e) override
+        {
+            if (mTableOpen && e) ImGui::TableNextColumn();
+        }
+
+        void BLOCK_TD(const MD_BLOCK_TD_DETAIL*, bool e) override
+        {
+            if (mTableOpen && e) ImGui::TableNextColumn();
         }
 
     };

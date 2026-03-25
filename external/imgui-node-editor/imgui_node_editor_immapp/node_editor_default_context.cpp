@@ -4,6 +4,7 @@
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 
 
+#ifndef IMGUI_BUNDLE_DISABLE_IMMAPP
 namespace ImmApp
 {
     ax::NodeEditor::EditorContext* DefaultNodeEditorContext();
@@ -13,6 +14,12 @@ ax::NodeEditor::EditorContext* DefaultNodeEditorContext_Immapp()
 {
     return ImmApp::DefaultNodeEditorContext();
 }
+#else
+ax::NodeEditor::EditorContext* DefaultNodeEditorContext_Immapp()
+{
+    return nullptr; // immapp not available
+}
+#endif
 
 void SuspendNodeEditorCanvas_Immapp()
 {

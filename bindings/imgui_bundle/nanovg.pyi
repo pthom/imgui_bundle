@@ -1,3 +1,11 @@
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of NanoVG
+# -----------------------------------------------------------------------------
+# nanovg.pyi: auto-generated bindings for NanoVG.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 import enum
 import numpy as np
 from typing import Any, Callable, Tuple, List, Optional

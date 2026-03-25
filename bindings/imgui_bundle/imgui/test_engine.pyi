@@ -1,3 +1,12 @@
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImGui Test Engine
+# -----------------------------------------------------------------------------
+# imgui/test_engine.pyi: auto-generated bindings for ImGui Test Engine.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
+
 """ImGui Test Engine python bindings
 
 Note: Integrating ImGui TestEngine directly from python, and without using HelloImGui and ImmApp is very difficult:
@@ -1544,7 +1553,7 @@ class TestContext:
     def get_window_titlebar_point(self, window_ref: Union[TestRef, str]) -> ImVec2:
         """(private API)
 
-        Return a clickable point on window title-bar (window tab for docked windows).
+        Return a clickable point on window title-bar (window tab for docked windows) that will e.g. move this single window.
         """
         pass
     # ImVec2      GetMainMonitorWorkPos();                                                /* original C++ signature */
@@ -2096,6 +2105,7 @@ class TestContext:
     def dock_node_hide_tab_bar(self, node: DockNode, hidden: bool) -> None:
         """(private API)"""
         pass
+    # ImVec2    GetDockNodeTitlebarPos(ImGuiDockNode* node);
     #                                                                     #endif
     #
 

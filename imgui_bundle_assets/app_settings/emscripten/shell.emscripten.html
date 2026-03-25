@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en-us">
+<head>
+    <link rel="icon" type="image/x-icon" href="@HELLO_IMGUI_FAVICON@">
+
+    <!--
+    Uncomment the lines below if you want to enable the "Add to Home Screen" prompt on iOS devices.
+    See https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/ConfiguringWebApplications/ConfiguringWebApplications.html
+
+    <link rel="apple-touch-icon" href="@HELLO_IMGUI_FAVICON@">
+    <meta name="apple-mobile-web-app-title" content="@HELLO_IMGUI_ICON_DISPLAY_NAME@">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    -->
+
+
+    <!--
+    You could include your own custom CSS and JS here, e.g.:
+    <script src="custom.js"></script>
+    -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
+    <title>@HELLO_IMGUI_ICON_DISPLAY_NAME@</title>
+    <style>
+        body { margin: 0; background-color: black }
+        .emscripten {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            margin: 0px;
+            border: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: block;
+            image-rendering: optimizeSpeed;
+            image-rendering: crisp-edges;
+            -ms-interpolation-mode: nearest-neighbor;
+        }
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 10;
+        }
+        #loading-spinner {
+            width: 48px; height: 48px;
+            border: 4px solid #333; border-top-color: #999;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        #loading-status {
+            color: #999; margin-top: 16px; font-family: sans-serif; font-size: 14px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<div id="loading-overlay">
+    <div id="loading-spinner"></div>
+    <div id="loading-status">Loading...</div>
+</div>
+<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+<script type='text/javascript'>
+    var Module = {
+        preRun: [],
+        postRun: [],
+        print: (function() {
+            return function(text) {
+                text = Array.prototype.slice.call(arguments).join(' ');
+                console.log(text);
+            };
+        })(),
+        printErr: function(text) {
+            text = Array.prototype.slice.call(arguments).join(' ');
+            console.error(text);
+        },
+        canvas: (function() {
+            var canvas = document.getElementById('canvas');
+            canvas.addEventListener("webglcontextlost", function(e) {
+                alert('WebGL context lost, please reload the page');
+                e.preventDefault();
+            }, false);
+
+            // Explicitly create a WebGL 2 context with stencil buffer enabled.
+            if (typeof WebGL2RenderingContext !== 'undefined') {
+                var gl = canvas.getContext('webgl2', { stencil: true });
+                if (!gl) {
+                    console.error('WebGL 2 not available, falling back to WebGL');
+                    gl = canvas.getContext('webgl', { stencil: true });
+                }
+                if (!gl) {
+                    alert('WebGL not available with stencil buffer');
+                }
+                return canvas;
+            } else {
+                alert('WebGL 2 not supported by this browser');
+            }
+
+        })(),
+        setStatus: function(text) {
+            console.log("status: " + text);
+            var overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                if (!text || text === '') {
+                    overlay.remove();
+                } else {
+                    var display = text.replace(/\((\d+)\/(\d+)\)/, function(_, a, b) {
+                        return '(' + (a / 1024 | 0) + ' KB / ' + (b / 1024 | 0) + ' KB)';
+                    });
+                    document.getElementById('loading-status').innerText = display;
+                }
+            }
+        },
+        monitorRunDependencies: function(left) {
+            var el = document.getElementById('loading-status');
+            if (el && left > 0) el.innerText = 'Initializing...';
+        }
+    };
+    window.onerror = function() {
+        console.log("onerror: " + event);
+    };
+</script>
+{{{ SCRIPT }}}
+</body>
+</html>

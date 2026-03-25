@@ -1,14 +1,23 @@
-"""ImGuizmo: Immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui
-https://github.com/CedricGuillemet/ImGuizmo
-"""
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImGuizmo
+# -----------------------------------------------------------------------------
+# imguizmo.pyi: auto-generated bindings for ImGuizmo, an Immediate mode 3D gizmo 
+# for scene editing and other controls based on Dear Imgui
+# See https://github.com/CedricGuillemet/ImGuizmo
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: F821
 from typing import List, Optional, Any, overload
 import enum
 import numpy as np
 
-from imgui_bundle.imgui import ImU32, ImDrawList, ImVec2Like
+from imgui_bundle.imgui import ImU32, ImDrawList, ImVec2Like, Window, ID
 
 ImGuiContext = Any
+ImGuiWindow = Window
+ImGuiID = ID
 
 ImGuiZoomSliderFlags = int
 ImGuiZoomSliderFlags_None = im_zoom_slider.ImGuiZoomSliderFlags_.none  # noqa

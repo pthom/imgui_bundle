@@ -63,7 +63,6 @@ def demo_gui():
 
 
 def main():
-    api_demos.set_hello_imgui_demo_assets_folder()
     immapp.run(demo_gui, "Log", with_markdown=True)
 
 

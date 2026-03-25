@@ -80,7 +80,7 @@ class ExternalLibrary:
         generators_modules = list(filter(is_generator_module, files))
         if len(generators_modules) != 1:
             print(
-                f"ERROR: {self.name} has {len(generators_modules)} generator modules, expected 1"
+                f"ERROR: {self.name} has {len(generators_modules)} generator modules, expected 1: see {generators_modules}"
             )
         assert len(generators_modules) == 1
         return generators_modules[0][:-3]  # remove extension ".py"
@@ -221,7 +221,7 @@ class ExternalLibrary:
         # self.cmd_fetch_all().run()
         cur_dir = os.getcwd()
         os.chdir(self.git_folder_abs_path())
-        cmd_str = f"git --no-pager log  --oneline {self.fork_branch}..{self.official_branch}"
+        cmd_str = f"git --no-pager log  --oneline {self.fork_branch}..{self.official_remote_name}/{self.official_branch}"
 
         cmd_result_str: str
         process_result = subprocess.run(cmd_str, shell=True, capture_output=True, text=True)

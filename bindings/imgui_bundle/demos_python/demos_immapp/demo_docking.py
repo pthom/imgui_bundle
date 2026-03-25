@@ -67,8 +67,10 @@ class AppState:
 ##########################################################################
 def load_fonts(app_state: AppState):  # This is called by runnerParams.callbacks.LoadAdditionalFonts
     # First, load the default font (the default font should be loaded first)
-    # In this example, we instruct HelloImGui to use FontAwesome6 instead of FontAwesome4
-    hello_imgui.get_runner_params().callbacks.default_icon_font = hello_imgui.DefaultIconFont.font_awesome6
+    # In this example, we could instruct HelloImGui to use FontAwesome6 instead of FontAwesome4
+    # This would require that the file fonts/Font_Awesome_6_Free-Solid-900.otf exists in the assets
+    # hello_imgui.get_runner_params().callbacks.default_icon_font = hello_imgui.DefaultIconFont.font_awesome6
+
     hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons()
 
     # Load the title font
@@ -788,12 +790,6 @@ def setup_my_theme():
 #    main(): here, we simply fill RunnerParams, then run the application
 ##########################################################################
 def main():
-    # By default, an assets folder is installed via pip inside site-packages/lg_imgui_bundle/assets
-    # and provides two fonts (fonts/DroidSans.ttf and fonts/fontawesome-webfont.ttf)
-    # If you need to add more assets, make a copy of this assets folder and add your own files,
-    # and call set_assets_folder
-    hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
-
     #
     # Part 1: Define the application state, fill the status and menu bars, and load additional font
     #

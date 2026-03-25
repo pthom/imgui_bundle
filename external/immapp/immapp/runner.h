@@ -44,6 +44,10 @@ namespace ImmApp
         // Set withTexInspect=true if you need to use imgui_tex_inspect
         bool withTexInspect = false;
 
+        // Set withImAnim=true if you need to use ImAnim.
+        // If true, then iam_update_begin_frame() and iam_clip_update() will be called automatically at each frame
+        bool withImAnim = false;
+
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         // You can tweak NodeEditorConfig (but this is optional)
         std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt;
@@ -107,6 +111,7 @@ namespace ImmApp
         bool withMarkdown = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
+        bool withImAnim = false,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
 #endif
@@ -129,6 +134,7 @@ namespace ImmApp
         bool withImplot3d = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
+        bool withImAnim = false,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
 #endif

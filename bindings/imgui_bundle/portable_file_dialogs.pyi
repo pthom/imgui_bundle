@@ -1,7 +1,13 @@
-"""Portable GUI dialogs library, C++11, single-header
-https://github.com/samhocevar/portable-file-dialogs
-"""
-
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of portable-file-dialogs
+# -----------------------------------------------------------------------------
+# portable_file_dialogs.pyi: auto-generated bindings for
+# portable-file-dialogs (Portable GUI dialogs library, C++11, single-header)
+# See https://github.com/samhocevar/portable-file-dialogs
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008
 import enum
 

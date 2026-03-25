@@ -17,7 +17,7 @@ from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    import matplotlib.figure
+    import matplotlib.figure  # type: ignore
 
 
 @static(fig_image_cache=dict())

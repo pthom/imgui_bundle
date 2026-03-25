@@ -3,6 +3,7 @@ root: intro/intro
 parts:
   - caption: Introduction
     chapters:
+      - file: intro/what_is_imgui_bundle
       - file: intro/key_features
       - file: intro/imm_gui
       - file: intro/interactive_manuals
@@ -18,6 +19,7 @@ parts:
       - file: python/notebook_runners.ipynb
       - file: python/python_pyodide
       - file: python/python_tips
+      - file: python/desktop_deploy
   - caption: For C++ users
     chapters:
       - file: cpp/cpp_install

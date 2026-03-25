@@ -134,4 +134,9 @@ namespace ImGuiMd
             italic(italic_), bold(bold_), headerLevel(headerLevel_) {}
     };
     SizedFont GetFont(const MarkdownFontSpec& fontSpec);
+
+    ImVec4 LinkColor();
+
+    // Renders a link with the given text and url. Can be used outside of markdown rendering.
+    void RenderTextAsLink(const char* text, const char* url);
 }

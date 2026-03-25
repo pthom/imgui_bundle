@@ -15,7 +15,7 @@ import os.path
 import sys
 import platform
 import OpenGL.GL as GL  # pip install PyOpenGL
-from imgui_bundle import imgui
+from imgui_bundle import imgui, ImVec4
 
 # Always import glfw *after* imgui_bundle
 # (since imgui_bundle will set the correct path where to look for the correct version of the glfw dynamic library)
@@ -142,7 +142,7 @@ def main() -> None:
     # Our state
     show_demo_window: bool | None = True
     show_another_window = False
-    clear_color = [0.45, 0.55, 0.60, 1.00]
+    clear_color: ImVec4 = ImVec4(0.45, 0.55, 0.60, 1.00)
     f = 0.0
     counter = 0
 
@@ -232,10 +232,10 @@ def main() -> None:
         display_w, display_h = glfw.get_framebuffer_size(window)
         GL.glViewport(0, 0, display_w, display_h)
         GL.glClearColor(
-            clear_color[0] * clear_color[3],
-            clear_color[1] * clear_color[3],
-            clear_color[2] * clear_color[3],
-            clear_color[3],
+            clear_color.x * clear_color.w,
+            clear_color.y * clear_color.w,
+            clear_color.z * clear_color.w,
+            clear_color.w,
         )
         GL.glClear(GL.GL_COLOR_BUFFER_BIT)
         imgui.backends.opengl3_render_draw_data(imgui.get_draw_data())

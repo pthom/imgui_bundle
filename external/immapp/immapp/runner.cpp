@@ -25,6 +25,10 @@ std::function<void()> FnResetImGuiNodeEditorId; // may be bound from pybind_imgu
 void UpdateNodeEditorColorsFromImguiColors();
 #endif
 
+#ifdef IMGUI_BUNDLE_WITH_IMANIM
+#include "im_anim.h"
+#endif
+
 #include <chrono>
 #include <cassert>
 #include <filesystem>
@@ -196,6 +200,20 @@ namespace ImmApp
         }
 #endif
 
+#ifdef IMGUI_BUNDLE_WITH_IMANIM
+        // Clear ImAnim cache, before OpenGl is uninitialized
+        if (addOnsParams.withImAnim)
+        {
+            runnerParams.callbacks.PostNewFrame = HelloImGui::SequenceFunctions(
+                runnerParams.callbacks.PostNewFrame,
+                []() {
+                    iam_update_begin_frame();
+                    iam_clip_update(ImGui::GetIO().DeltaTime);
+                });
+        }
+#endif
+
+
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
         // Clear ImmVision cache, before OpenGl is uninitialized
         runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
@@ -262,6 +280,7 @@ namespace ImmApp
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withImAnim,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -283,6 +302,7 @@ namespace ImmApp
         addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+        addOnsParams.withImAnim = withImAnim;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif
@@ -307,6 +327,7 @@ namespace ImmApp
         bool withImplot3d,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withImAnim,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -328,6 +349,7 @@ namespace ImmApp
         addOnsParams.withMarkdown = true;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+        addOnsParams.withImAnim = withImAnim;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif

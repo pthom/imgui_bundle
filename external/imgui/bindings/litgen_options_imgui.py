@@ -396,6 +396,7 @@ def litgen_options_imgui(
             r"^ImFileHandle$",
             r"ImFontLoader",
             r"^ImFontAtlasBuilder",
+            r"^ImGuiDemoMarkerCallback",
         ]
     )
 
@@ -441,7 +442,8 @@ def litgen_options_imgui(
             r"^AddPolyline",
             r"^AddConvexPolyFilled",
             r"^AddConcavePolyFilled",
-            r"^ColorPicker4",
+            r"^ColorPicker",
+            r"^ColorEdit",
             r"^Shortcut",
             r"^SetItemKeyOwner",
             r"^GetIO",
@@ -450,7 +452,7 @@ def litgen_options_imgui(
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
-        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode"]
+        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode", "^SetWindowFocus$"]
     )
 
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
@@ -478,6 +480,79 @@ def litgen_options_imgui(
     options.srcmlcpp_options.flag_show_progress = True
 
     _add_imvector_template_options(options)
+
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImVec2",
+        stub_code='''
+        def __getitem__(self, idx: int) -> float:
+            """Get the value at the given index (0 for x, 1 for y)"""
+            ...
+        def __setitem__(self, idx: int, value: float) -> None:
+            """Set the value at the given index (0 for x, 1 for y)"""
+            ...
+    ''',
+        pydef_code="""
+        LG_CLASS.def("__getitem__", [](const ImVec2& self, int idx) {
+            if (idx == 0) return self.x;
+            else if (idx == 1) return self.y;
+            else throw std::out_of_range("Index out of range for ImVec2");
+        });
+        LG_CLASS.def("__setitem__", [](ImVec2& self, int idx, float value) {
+            if (idx == 0) self.x = value;
+            else if (idx == 1) self.y = value;
+            else throw std::out_of_range("Index out of range for ImVec2");
+        });
+    """,
+    )
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImVec4",
+        stub_code='''
+        def __getitem__(self, idx: int) -> float:
+            """Get the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
+            ...
+        def __setitem__(self, idx: int, value: float) -> None:
+            """Set the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
+            ...
+    ''',
+        pydef_code="""
+        LG_CLASS.def("__getitem__", [](const ImVec4& self, int idx) {
+            if (idx == 0) return self.x;
+            else if (idx == 1) return self.y;
+            else if (idx == 2) return self.z;
+            else if (idx == 3) return self.w;
+            else throw std::out_of_range("Index out of range for ImVec4");
+        });
+        LG_CLASS.def("__setitem__", [](ImVec4& self, int idx, float value) {
+            if (idx == 0) self.x = value;
+            else if (idx == 1) self.y = value;
+            else if (idx == 2) self.z = value;
+            else if (idx == 3) self.w = value;
+            else throw std::out_of_range("Index out of range for ImVec4");
+        });
+    """,
+    )
+
+
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiTextFilter",
+        stub_code='''
+        @property
+        def input_buf(self) -> str:
+            """The current filter text. Setting it also calls build()."""
+            ...
+        @input_buf.setter
+        def input_buf(self, value: str) -> None: ...
+    ''',
+        pydef_code="""
+        LG_CLASS.def_prop_rw("input_buf",
+            [](const ImGuiTextFilter& self) { return std::string(self.InputBuf); },
+            [](ImGuiTextFilter& self, const std::string& s) {
+                strncpy(self.InputBuf, s.c_str(), sizeof(self.InputBuf) - 1);
+                self.InputBuf[sizeof(self.InputBuf) - 1] = '\\0';
+                self.Build();
+            });
+    """,
+    )
 
     if options_type == ImguiOptionsType.imgui_h:
         options.fn_exclude_by_name__regex += "|^InputText"

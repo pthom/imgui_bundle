@@ -723,7 +723,7 @@ def draw_lines(vg: nvg.Context, x: float, y: float, w: float, h: float, t: float
 
 def load_demo_data(vg: nvg.Context, data: DemoData) -> int:
     for i in range(12):
-        file = f"nanovg_demo_images/image{i+1}.jpg"
+        file = f"nanovg_demo_images/image1.jpg"
         file_asset_path = hello_imgui.asset_file_full_path(file)
         data.images[i] = nvg.create_image(vg, file_asset_path, 0)
         if data.images[i] == 0:

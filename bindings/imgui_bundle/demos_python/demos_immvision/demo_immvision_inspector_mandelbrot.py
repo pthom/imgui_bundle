@@ -109,7 +109,6 @@ def demo_gui():
 
 
 def main():
-    demo_utils.set_hello_imgui_demo_assets_folder()
     immapp.run(demo_gui, window_size=(1000, 800))
 
 

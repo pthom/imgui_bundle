@@ -90,6 +90,25 @@ void DemoKnobs()
         ImGui::PopID();
     };
 
+    // Apply custom colors before drawing knobs
+    static bool useCustomColors = false;
+    static ImVec4 primaryCol(0.1f, 0.45f, 0.7f, 1.f);
+    static ImVec4 secondaryCol(0.7f, 0.7f, 0.7f, 1.f);
+    static ImVec4 trackCol(0.3f, 0.3f, 0.7f, 1.f);
+
+    if (useCustomColors)
+    {
+        ImGuiKnobs::KnobColors colors;
+        colors.primary = ImGuiKnobs::color_set(ImColor(primaryCol));
+        colors.secondary = ImGuiKnobs::color_set(ImColor(secondaryCol));
+        colors.track = ImGuiKnobs::color_set(ImColor(trackCol));
+        ImGuiKnobs::SetKnobColors(colors);
+    }
+    else
+    {
+        ImGuiKnobs::UnsetKnobColors();
+    }
+
     float knobsSizeSmall = ImmApp::EmSize() * 2.5;
     float knobsSizeBig = knobsSizeSmall * 1.3;
 
@@ -104,6 +123,21 @@ void DemoKnobs()
     ImGui::Text("Some big knobs (int values)");
     show_int_knobs(knobsSizeBig);
     ImGui::EndGroup();
+
+    // Customize colors button + popup (below the knobs)
+    if (ImGui::Button("Customize Colors"))
+        ImGui::OpenPopup("knob_colors_popup");
+    if (ImGui::BeginPopup("knob_colors_popup"))
+    {
+        ImGui::Checkbox("Use custom colors", &useCustomColors);
+        if (useCustomColors)
+        {
+            ImGui::ColorEdit4("Primary (indicator)", &primaryCol.x);
+            ImGui::ColorEdit4("Secondary (circle)", &secondaryCol.x);
+            ImGui::ColorEdit4("Track (arc)", &trackCol.x);
+        }
+        ImGui::EndPopup();
+    }
 }
 
 

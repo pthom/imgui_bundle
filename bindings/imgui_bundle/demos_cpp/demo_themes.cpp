@@ -12,18 +12,13 @@
 
 void demo_themes()
 {
-    static int current_theme_idx = 0;
     ImGuiMd::RenderUnindented(R"(
         # Theming
-        HelloImGui adds support for advanced theming to ImGui.
-
-        Select the menu View/Theme/Theme tweak window to explore all the themes and their customization.
+        HelloImGui adds support for advanced theming to ImGui. Select the menu View/Theme/Theme tweak window to explore all the themes and their customization.
     )");
     ImGui::NewLine();
     auto & tweakedTheme = HelloImGui::GetRunnerParams()->imGuiWindowParams.tweakedTheme;
     bool themeChanged = ImGuiTheme::ShowThemeTweakGui(&tweakedTheme);
     if (themeChanged)
         ImGuiTheme::ApplyTweakedTheme(tweakedTheme);
-
-    ImGui::ShowDemoWindow();
 }

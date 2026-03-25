@@ -1,4 +1,4 @@
-from imgui_bundle import hello_imgui, imgui, nanovg as nvg, ImVec2
+from imgui_bundle import hello_imgui, imgui, nanovg as nvg, ImVec2, ImVec4
 import math
 from typing import List
 
@@ -6,10 +6,10 @@ nvg_imgui = nvg.nvg_imgui
 
 
 class DrawingState:
-    heart_color: List[float]
+    heart_color: ImVec4
 
     def __init__(self):
-        self.heart_color = [1.0, 0.0, 0.0, 1.0]
+        self.heart_color = ImVec4(1.0, 0.0, 0.0, 1.0)
 
 gDrawingState = DrawingState()
 

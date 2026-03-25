@@ -28,7 +28,6 @@ litgen_setup_module(bound_library python_native_module_name python_module_name)
 litgen_setup_module is a helper function that will:
 * link the python native module (.so) to the bound C++ library (bound_library)
 * set the install path of the native module to '.' (so that pip install works)
-* set the VERSION_INFO macro to the project version defined in CMakeLists.txt
 * when building as a C++ project (i.e. not with skbuild), it will copy the python module
   to the editable_bindings_folder and to the platform dependent installation directory
   (site-packages when using pip install), so that it is used by our next runs of python.
@@ -112,9 +111,6 @@ function(litgen_setup_module
 
     # Set python_native_module_name install path to ${python_module_name} (required by skbuild)
     install(TARGETS ${python_native_module_name} DESTINATION ${python_module_name})
-
-    # Set VERSION_INFO macro to the project version defined in CMakeLists.txt (absolutely optional)
-    target_compile_definitions(${python_native_module_name} PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
     if (NOT SKBUILD)
         # If we are **not** building with skbuild, it means that we are **not** building a wheel for pipy or conda.

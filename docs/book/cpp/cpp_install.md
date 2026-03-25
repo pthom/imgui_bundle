@@ -16,21 +16,15 @@ cd imgui_bundle
 git submodule update --init --recursive # (1)
 mkdir build
 cd build
-cmake .. -DIMMVISION_FETCH_OPENCV=ON # (2)
+cmake ..
 make -j
 ```
 
 (1) Since there are lots of submodules, this might take a few minutes
 
-(2) The flag -DIMMVISION_FETCH_OPENCV=ON is optional. If set, a minimal version of OpenCV will be downloaded a compiled at this stage (this might require a few minutes)
-
-The immvision module will only be built if OpenCV can be found. Otherwise, it will be ignored, and no error will be emitted.
-
-If you have an existing OpenCV install, set its path via:
-
-```bash
-cmake .. -DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake
-```
+:::{tip}
+ImmVision works out of the box without OpenCV. If you need OpenCV interop (e.g. `cv::Mat` support), you can optionally pass `-DIMMVISION_FETCH_OPENCV=ON` to download and build a minimal OpenCV, or point to an existing install with `-DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake`.
+:::
 
 :::{tip}
 There are lots of CMake options to customize the build. See [CMakeLists.txt](https://github.com/pthom/imgui_bundle/blob/main/CMakeLists.txt)

@@ -39,7 +39,8 @@ def markdown_doc_folder() -> str:
 
 
 def set_hello_imgui_demo_assets_folder():
-    hello_imgui.set_assets_folder(demos_assets_folder())
+    """No-op: demos_assets is now registered as a search path by imgui_bundle.__init__."""
+    pass
 
 
 def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 0):

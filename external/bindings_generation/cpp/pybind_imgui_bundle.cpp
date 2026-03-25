@@ -32,6 +32,9 @@ void py_init_module_portable_file_dialogs(nb::module_& m);
 void py_init_module_imgui_command_palette(nb::module_& m);
 void py_init_module_imcoolbar(nb::module_& m);
 void py_init_module_nanovg(nb::module_& m);
+void py_init_module_imanim(nb::module_& m);
+void py_init_module_imgui_explorer(nb::module_& m);
+void py_init_module_imgui_bundle(nb::module_& m);
 
 
 std::vector<std::string> gAvailableSubmodules;
@@ -45,12 +48,22 @@ void _register_submodule(const std::string& submodule_name, bool available = tru
         gDisabledSubmodules.push_back(submodule_name);
 }
 
+// This builds the native python module `_imgui_bundle`
+// it will be wrapped in a standard python module `imgui_bundle`
+NB_MODULE(_imgui_bundle, m)
+{
+
+    py_init_module_imgui_bundle(m);
+}
+
 
 void py_init_module_imgui_bundle(nb::module_& m)
 {
     // Disable leak warnings (we may have a few, to be fixed later)
     nb::set_leak_warnings(false);
 
+    m.attr("__version__") = IMGUI_BUNDLE_VERSION;
+    m.attr("__build_number__") = IMGUI_BUNDLE_BUILD_NUMBER;
     m.def("compilation_time", []() {
         return std::string("imgui_bundle, compiled on ") + __DATE__ + " at " + __TIME__;
     });
@@ -203,6 +216,22 @@ void py_init_module_imgui_bundle(nb::module_& m)
     py_init_module_nanovg(module_nanovg);
 #else
     _register_submodule("nanovg", false);
+#endif
+
+#ifdef IMGUI_BUNDLE_WITH_IMANIM
+    _register_submodule("im_anim");
+    auto module_imanim = m.def_submodule("im_anim");
+    py_init_module_imanim(module_imanim);
+#else
+    _register_submodule("im_anim", false);
+#endif
+
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
+    _register_submodule("imgui_explorer");
+    auto module_imgui_explorer = m.def_submodule("imgui_explorer");
+    py_init_module_imgui_explorer(module_imgui_explorer);
+#else
+    _register_submodule("imgui_explorer", false);
 #endif
 
 #if defined(HELLOIMGUI_USE_GLFW3) && !defined(IMGUI_BUNDLE_DISABLE_HELLO_IMGUI)

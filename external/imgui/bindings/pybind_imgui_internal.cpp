@@ -828,7 +828,6 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("pressed_on_double_click", ImGuiButtonFlags_PressedOnDoubleClick, "return True on double-click (default requires click+release)")
             .value("pressed_on_drag_drop_hold", ImGuiButtonFlags_PressedOnDragDropHold, "return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)")
             .value("flatten_children", ImGuiButtonFlags_FlattenChildren, "allow interactions even if a child window is overlapping")
-            .value("allow_overlap", ImGuiButtonFlags_AllowOverlap, "require previous frame HoveredId to either match id or be null before being usable.")
             .value("align_text_base_line", ImGuiButtonFlags_AlignTextBaseLine, "vertically align button to match text baseline - ButtonEx() only // FIXME: Should be removed and handled by SmallButton(), not possible currently because of DC.CursorPosPrevLine")
             .value("no_key_mods_allowed", ImGuiButtonFlags_NoKeyModsAllowed, "disable mouse interaction if a key modifier is held")
             .value("no_holding_active_id", ImGuiButtonFlags_NoHoldingActiveId, "don't set ActiveId while holding the mouse (ImGuiButtonFlags_PressedOnClick only)")
@@ -1082,6 +1081,10 @@ void py_init_module_imgui_internal(nb::module_& m)
             "(private API)")
         .def("get_preferred_offset_x",
             &ImGuiInputTextState::GetPreferredOffsetX, "(private API)")
+        .def("get_text",
+            &ImGuiInputTextState::GetText,
+            "(private API)",
+            nb::rv_policy::reference)
         .def("cursor_anim_reset",
             &ImGuiInputTextState::CursorAnimReset, "(private API)")
         .def("cursor_clamp",
@@ -2037,10 +2040,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("last_alpha", &ImGuiViewportP::LastAlpha, "")
         .def_rw("last_focused_had_nav_window", &ImGuiViewportP::LastFocusedHadNavWindow, "Instead of maintaining a LastFocusedWindow (which may harder to correctly maintain), we merely store weither NavWindow != None last time the viewport was focused.")
         .def_rw("platform_monitor", &ImGuiViewportP::PlatformMonitor, "")
-        .def_prop_ro("bg_fg_draw_lists_last_frame",
-            [](ImGuiViewportP &self) -> nb::ndarray<int, nb::numpy, nb::shape<2>, nb::c_contig>
+        .def_prop_ro("bg_fg_draw_lists_last_time_active",
+            [](ImGuiViewportP &self) -> nb::ndarray<float, nb::numpy, nb::shape<2>, nb::c_contig>
             {
-                return self.BgFgDrawListsLastFrame;
+                return self.BgFgDrawListsLastTimeActive;
             },
             "Last frame number the background (0) and foreground (1) draw lists were used")
         .def_rw("draw_data_p", &ImGuiViewportP::DrawDataP, "")
@@ -2421,6 +2424,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_window", &ImGuiContext::NavWindow, "Focused window for navigation. Could be called 'FocusedWindow'")
         .def_rw("nav_focus_scope_id", &ImGuiContext::NavFocusScopeId, "Focused focus scope (e.g. selection code often wants to \"clear other items\" when landing on an item of the same scope)")
         .def_rw("nav_layer", &ImGuiContext::NavLayer, "Focused layer (main scrolling layer, or menu/title bar layer)")
+        .def_rw("nav_id_item_flags", &ImGuiContext::NavIdItemFlags, "")
         .def_rw("nav_activate_id", &ImGuiContext::NavActivateId, "~~ (g.ActiveId == 0) && (IsKeyPressed(ImGuiKey_Space) || IsKeyDown(ImGuiKey_Enter) || IsKeyPressed(ImGuiKey_NavGamepadActivate)) ? NavId : 0, also set when calling ActivateItemByID()")
         .def_rw("nav_activate_down_id", &ImGuiContext::NavActivateDownId, "~~ IsKeyDown(ImGuiKey_Space) || IsKeyDown(ImGuiKey_Enter) || IsKeyDown(ImGuiKey_NavGamepadActivate) ? NavId : 0")
         .def_rw("nav_activate_pressed_id", &ImGuiContext::NavActivatePressedId, "~~ IsKeyPressed(ImGuiKey_Space) || IsKeyPressed(ImGuiKey_Enter) || IsKeyPressed(ImGuiKey_NavGamepadActivate) ? NavId : 0 (no repeat)")
@@ -2428,6 +2432,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_focus_route", &ImGuiContext::NavFocusRoute, "Reversed copy focus scope stack for NavId (should contains NavFocusScopeId). This essentially follow the window->ParentWindowForFocusRoute chain.")
         .def_rw("nav_highlight_activated_id", &ImGuiContext::NavHighlightActivatedId, "")
         .def_rw("nav_highlight_activated_timer", &ImGuiContext::NavHighlightActivatedTimer, "")
+        .def_rw("nav_open_context_menu_item_id", &ImGuiContext::NavOpenContextMenuItemId, "")
+        .def_rw("nav_open_context_menu_window_id", &ImGuiContext::NavOpenContextMenuWindowId, "")
         .def_rw("nav_next_activate_id", &ImGuiContext::NavNextActivateId, "Set by ActivateItemByID(), queued until next frame.")
         .def_rw("nav_next_activate_flags", &ImGuiContext::NavNextActivateFlags, "")
         .def_rw("nav_input_source", &ImGuiContext::NavInputSource, "Keyboard or Gamepad mode? THIS CAN ONLY BE ImGuiInputSource_Keyboard or ImGuiInputSource_Gamepad")
@@ -2447,7 +2453,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_move_dir_for_debug", &ImGuiContext::NavMoveDirForDebug, "")
         .def_rw("nav_move_clip_dir", &ImGuiContext::NavMoveClipDir, "FIXME-NAV: Describe the purpose of this better. Might want to rename?")
         .def_rw("nav_scoring_rect", &ImGuiContext::NavScoringRect, "Rectangle used for scoring, in screen space. Based of window->NavRectRel[], modified for directional navigation scoring.")
-        .def_rw("nav_scoring_no_clip_rect", &ImGuiContext::NavScoringNoClipRect, "Some nav operations (such as PageUp/PageDown) enforce a region which clipper will attempt to always keep submitted")
+        .def_rw("nav_scoring_no_clip_rect", &ImGuiContext::NavScoringNoClipRect, "Some nav operations (such as PageUp/PageDown) enforce a region which clipper will attempt to always keep submitted. Unset/invalid if inverted.")
         .def_rw("nav_scoring_debug_count", &ImGuiContext::NavScoringDebugCount, "Metrics for debugging")
         .def_rw("nav_tabbing_dir", &ImGuiContext::NavTabbingDir, "Generally -1 or +1, 0 when tabbing without a nav id")
         .def_rw("nav_tabbing_counter", &ImGuiContext::NavTabbingCounter, ">0 when counting items for tabbing")
@@ -2461,8 +2467,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_just_moved_to_key_mods", &ImGuiContext::NavJustMovedToKeyMods, "")
         .def_rw("nav_just_moved_to_is_tabbing", &ImGuiContext::NavJustMovedToIsTabbing, "Copy of ImGuiNavMoveFlags_IsTabbing. Maybe we should store whole flags.")
         .def_rw("nav_just_moved_to_has_selection_data", &ImGuiContext::NavJustMovedToHasSelectionData, "Copy of move result's ItemFlags & ImGuiItemFlags_HasSelectionUserData). Maybe we should just store ImGuiNavItemData.")
+        .def_rw("config_nav_enable_tabbing", &ImGuiContext::ConfigNavEnableTabbing, "= True. Enable tabbing (Tab, Shift+Tab). PLEASE LET ME KNOW IF YOU USE THIS.")
         .def_rw("config_nav_windowing_with_gamepad", &ImGuiContext::ConfigNavWindowingWithGamepad, "= True. Enable Ctrl+Tab by holding ImGuiKey_GamepadFaceLeft (== ImGuiKey_NavGamepadMenu). When False, the button may still be used to toggle Menu layer.")
-        .def_rw("config_nav_windowing_key_next", &ImGuiContext::ConfigNavWindowingKeyNext, "= ImGuiMod_Ctrl | ImGuiKey_Tab (or ImGuiMod_Super | ImGuiKey_Tab on OS X). For reconfiguration (see #4828)")
+        .def_rw("config_nav_windowing_key_next", &ImGuiContext::ConfigNavWindowingKeyNext, "= ImGuiMod_Ctrl | ImGuiKey_Tab (or ImGuiMod_Super | ImGuiKey_Tab on OS X). Set to 0 to disable. For reconfiguration (see #4828)")
         .def_rw("config_nav_windowing_key_prev", &ImGuiContext::ConfigNavWindowingKeyPrev, "= ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_Tab (or ImGuiMod_Super | ImGuiMod_Shift | ImGuiKey_Tab on OS X)")
         .def_rw("nav_windowing_target", &ImGuiContext::NavWindowingTarget, "Target window when doing Ctrl+Tab (or Pad Menu + FocusPrev/Next), this window is temporarily displayed top-most!")
         .def_rw("nav_windowing_target_anim", &ImGuiContext::NavWindowingTargetAnim, "Record of last valid NavWindowingTarget until DimBgRatio and NavWindowingHighlightAlpha becomes 0.0, so the fade-out can stay on it.")
@@ -2523,6 +2530,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("input_text_deactivated_state", &ImGuiContext::InputTextDeactivatedState, "")
         .def_rw("input_text_password_font_backup_baked", &ImGuiContext::InputTextPasswordFontBackupBaked, "")
         .def_rw("input_text_password_font_backup_flags", &ImGuiContext::InputTextPasswordFontBackupFlags, "")
+        .def_rw("input_text_reactivate_id", &ImGuiContext::InputTextReactivateId, "ID of InputText to reactivate on next frame (for io.ConfigInputTextEnterKeepActive behavior)")
         .def_rw("temp_input_id", &ImGuiContext::TempInputId, "Temporary text input when using Ctrl+Click on a slider, etc.")
         .def_rw("data_type_zero_value", &ImGuiContext::DataTypeZeroValue, "0 for all data types")
         .def_rw("begin_menu_depth", &ImGuiContext::BeginMenuDepth, "")
@@ -2955,7 +2963,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("window", &ImGuiTabItem::Window, "When TabItem is part of a DockNode's TabBar, we hold on to a window.")
         .def_rw("last_frame_visible", &ImGuiTabItem::LastFrameVisible, "")
         .def_rw("last_frame_selected", &ImGuiTabItem::LastFrameSelected, "This allows us to infer an ordered list of the last activated tabs with little maintenance")
-        .def_rw("offset", &ImGuiTabItem::Offset, "Position relative to beginning of tab")
+        .def_rw("offset", &ImGuiTabItem::Offset, "Position relative to beginning of tab bar")
         .def_rw("width", &ImGuiTabItem::Width, "Width currently displayed")
         .def_rw("content_width", &ImGuiTabItem::ContentWidth, "Width of label + padding, stored during BeginTabItem() call (misnamed as \"Content\" would normally imply width of label only)")
         .def_rw("requested_width", &ImGuiTabItem::RequestedWidth, "Width optionally requested by caller, -1.0 is unused")
@@ -2976,6 +2984,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("id_", &ImGuiTabBar::ID, "Zero for tab-bars used by docking")
         .def_rw("selected_tab_id", &ImGuiTabBar::SelectedTabId, "Selected tab/window")
         .def_rw("next_selected_tab_id", &ImGuiTabBar::NextSelectedTabId, "Next selected tab/window. Will also trigger a scrolling animation")
+        .def_rw("next_scroll_to_tab_id", &ImGuiTabBar::NextScrollToTabId, "")
         .def_rw("visible_tab_id", &ImGuiTabBar::VisibleTabId, "Can occasionally be != SelectedTabId (e.g. when previewing contents for Ctrl+Tab preview)")
         .def_rw("curr_frame_visible", &ImGuiTabBar::CurrFrameVisible, "")
         .def_rw("prev_frame_visible", &ImGuiTabBar::PrevFrameVisible, "")
@@ -3290,6 +3299,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::overload_cast<ImGuiContext *>(ImGui::GetPlatformIO),
         nb::arg("ctx"),
         nb::rv_policy::reference);
+
+    m.def("get_scale",
+        ImGui::GetScale, "(private API)\n\n FIXME-DPI: I don't want to formalize this just yet. Because reasons. Please don't use.");
 
     m.def("get_current_window_read",
         ImGui::GetCurrentWindowRead,
@@ -3774,6 +3786,12 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("get_mouse_button_from_popup_flags",
         nb::overload_cast<ImGuiPopupFlags>(ImGui::GetMouseButtonFromPopupFlags), nb::arg("flags"));
+
+    m.def("is_popup_open_request_for_item",
+        nb::overload_cast<ImGuiPopupFlags, ImGuiID>(ImGui::IsPopupOpenRequestForItem), nb::arg("flags"), nb::arg("id_"));
+
+    m.def("is_popup_open_request_for_window",
+        nb::overload_cast<ImGuiPopupFlags>(ImGui::IsPopupOpenRequestForWindow), nb::arg("flags"));
 
     m.def("begin_tooltip_ex",
         ImGui::BeginTooltipEx, nb::arg("tooltip_flags"), nb::arg("extra_window_flags"));
@@ -4509,6 +4527,9 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("table_set_column_width_auto_all",
         nb::overload_cast<ImGuiTable *>(ImGui::TableSetColumnWidthAutoAll), nb::arg("table"));
 
+    m.def("table_set_column_display_order",
+        nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableSetColumnDisplayOrder), nb::arg("table"), nb::arg("column_n"), nb::arg("dst_order"));
+
     m.def("table_remove",
         nb::overload_cast<ImGuiTable *>(ImGui::TableRemove), nb::arg("table"));
 
@@ -4879,6 +4900,9 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("get_window_resize_border_id",
         ImGui::GetWindowResizeBorderID, nb::arg("window"), nb::arg("dir"));
 
+    m.def("extend_hit_box_when_near_viewport_edge",
+        ImGui::ExtendHitBoxWhenNearViewportEdge, nb::arg("window"), nb::arg("bb"), nb::arg("threshold"), nb::arg("axis"));
+
     m.def("button_behavior",
         [](const ImRect & bb, ImGuiID id, bool out_hovered, bool out_held, ImGuiButtonFlags flags = 0) -> std::tuple<bool, bool, bool>
         {
@@ -4939,9 +4963,6 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("tree_push_override_id",
         ImGui::TreePushOverrideID, nb::arg("id_"));
-
-    m.def("tree_node_get_open",
-        ImGui::TreeNodeGetOpen, nb::arg("storage_id"));
 
     m.def("tree_node_set_open",
         ImGui::TreeNodeSetOpen, nb::arg("storage_id"), nb::arg("open"));
@@ -5059,6 +5080,11 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("end_error_tooltip",
         ImGui::EndErrorTooltip);
 
+    m.def("demo_marker",
+        ImGui::DemoMarker,
+        nb::arg("file"), nb::arg("line"), nb::arg("section"),
+        "Demo Doc Marker for e.g. imgui_explorer");
+
     m.def("debug_alloc_hook",
         ImGui::DebugAllocHook,
         nb::arg("info"), nb::arg("frame_count"), nb::arg("ptr"), nb::arg("size"),
@@ -5122,8 +5148,8 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("debug_node_font",
         ImGui::DebugNodeFont, nb::arg("font"));
 
-    m.def("debug_node_font_glyphes_for_src_mask",
-        ImGui::DebugNodeFontGlyphesForSrcMask, nb::arg("font"), nb::arg("baked"), nb::arg("src_mask"));
+    m.def("debug_node_font_glyphs_for_src_mask",
+        ImGui::DebugNodeFontGlyphsForSrcMask, nb::arg("font"), nb::arg("baked"), nb::arg("src_mask"));
 
     m.def("debug_node_font_glyph",
         ImGui::DebugNodeFontGlyph, nb::arg("font"), nb::arg("glyph"));

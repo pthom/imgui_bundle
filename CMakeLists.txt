@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.18)
 
-# Version number: PyPI: 1.92.6b1 / CMake: 1.92.6 (CMake can't have "b1" in version)
-project(imgui_bundle VERSION "1.92.6") # Remember to mirror changes to pyproject.toml! This mirrors IMGUI_VERSION_NUM in imgui.h
+project(imgui_bundle VERSION "1.92.601") # Based on ImGui 1.92.6 - Remember to mirror changes to pyproject.toml! Version = ImGui patch × 100 + bundle release
 
 # imgui_bundle_build_lib contains the main logic to build imgui_bundle
 set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
+set(IMGUI_BUNDLE_VERSION ${PROJECT_VERSION} CACHE STRING "" FORCE)
 include(imgui_bundle_cmake/imgui_bundle_build_lib.cmake)
 include(imgui_bundle_cmake/imgui_bundle_pyodide.cmake)
 
@@ -128,8 +128,8 @@ endif()
 
 # Force backends for python bindings, emscripten and iOS
 # -----------------------------------------------------------------------------
-# For python bindings, we force the usage of Glfw+OpenGL3 (pyodide is handled by hello_imgui_pyodide.cmake).
-# We also disable ImGui obsolete functions
+# For python bindings, we force the usage of Glfw+OpenGL3. We also disable ImGui obsolete functions
+# Note: pyodide must use SDL2 (because, sdl2 is linked to the main pyodide python module). This is handled by imgui_bundle_pyodide.cmake).
 if(IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
     set(HELLOIMGUI_USE_GLFW3 ON CACHE BOOL "" FORCE)
     set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
@@ -142,17 +142,7 @@ if(IMGUI_BUNDLE_BUILD_PYTHON AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
 
     set(IMGUI_DISABLE_OBSOLETE_FUNCTIONS ON CACHE BOOL "" FORCE)
 endif()
-# For iOS and emscripten we force the usage of SDL2+Metal
-if (EMSCRIPTEN OR IOS)
-    set(HELLOIMGUI_USE_SDL2 ON CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
 
-    set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_HAS_METAL OFF CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_HAS_VULKAN OFF CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_HAS_DIRECTX11 OFF CACHE BOOL "" FORCE)
-    set(HELLOIMGUI_HAS_DIRECTX12 OFF CACHE BOOL "" FORCE)
-endif()
 
 
 # =============================================================================
@@ -160,28 +150,34 @@ endif()
 # =============================================================================
 # Control which imgui_bundle sub-modules are built using IMGUI_BUNDLE_WITH_* options.
 # Set to ON to include (default), or OFF to exclude.
-#
 # -----------------------------------------------------------------------------
-# 1. ImmVision (Computer Vision Widgets)
+# Available Modules (all default to ON)
 # -----------------------------------------------------------------------------
-# ImmVision requires OpenCV and is OFF by default in C++, ON in Python/Emscripten.
+# Core Framework:
+#   IMGUI_BUNDLE_WITH_HELLO_IMGUI, IMGUI_BUNDLE_WITH_IMMAPP
+# UI Extensions:
+#   IMGUI_BUNDLE_WITH_IMMVISION,
+#   IMGUI_BUNDLE_WITH_IMPLOT, IMGUI_BUNDLE_WITH_IMPLOT3D,
+#   IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR, IMGUI_BUNDLE_WITH_IMGUI_MD,
+#   IMGUI_BUNDLE_WITH_IMFILEDIALOG, IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT
+#   IMGUI_BUNDLE_WITH_NANOVG, IMGUI_BUNDLE_WITH_IMGUIZMO
+# =============================================================================
+option(IMGUI_BUNDLE_WITH_HELLO_IMGUI "Build with hello_imgui (window management)" ON)
+option(IMGUI_BUNDLE_WITH_IMMAPP "Build with immapp (internal high-level app framework)" ON)
+option(IMGUI_BUNDLE_WITH_IMGUI_MD "Build with imgui_md (markdown renderer)" ON)
+option(IMGUI_BUNDLE_WITH_NANOVG "Build with nanovg" ON)
+option(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT "Build with imgui_tex_inspect" ON)
+option(IMGUI_BUNDLE_WITH_IMGUIZMO "Build with ImGuizmo" ON)
+option(IMGUI_BUNDLE_WITH_IMFILEDIALOG "Build with ImFileDialog" ON)
+option(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR "Build with imgui-node-editor" ON)
+option(IMGUI_BUNDLE_WITH_IMPLOT "Build with implot" ON)
+option(IMGUI_BUNDLE_WITH_IMPLOT3D "Build with implot3d" ON)
+option(IMGUI_BUNDLE_WITH_IMANIM "Build with ImAnim" ON)
+option(IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS "Include all ImAnim author demos (Demo/Doc/Usecases) in manual" ON)
+option(IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB "Build with imgui_explorer as an included library" ON)
+option(IMGUI_BUNDLE_WITH_IMMVISION "Build with immvision" ON)
 #
-# • C++ Usage:
-#   Recommended: cmake -DIMMVISION_FETCH_OPENCV=ON ..
-#   (This automatically enables IMGUI_BUNDLE_WITH_IMMVISION and fetches OpenCV)
-#
-#   Advanced: cmake -DIMGUI_BUNDLE_WITH_IMMVISION=ON ..
-#   (Requires you to provide OpenCV via find_package)
-#
-# • Python Usage:
-#   To exclude: CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_IMMVISION=OFF" pip install -v .
-#
-# • OpenCV Fetching (when IMMVISION_FETCH_OPENCV=ON):
-#   - Windows/Emscripten: Downloads precompiled OpenCV package
-#   - Linux/macOS: Compiles minimal OpenCV from source
-#
-# -----------------------------------------------------------------------------
-# 2. Hello ImGui (Application Framework & Window Management)
+# Note about Hello ImGui (Application Framework & Window Management)
 # -----------------------------------------------------------------------------
 # Hello ImGui provides windowing, rendering backends, and app lifecycle management.
 # Setting IMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF automatically excludes these dependent modules:
@@ -199,35 +195,12 @@ endif()
 # • Python Usage:
 #   CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF" pip install -v .
 #
+# Note about ImmVision (Computer Vision Widgets)
 # -----------------------------------------------------------------------------
-# Available Modules (all default to ON except immvision)
-# -----------------------------------------------------------------------------
-# Core Framework:
-#   IMGUI_BUNDLE_WITH_HELLO_IMGUI, IMGUI_BUNDLE_WITH_IMMAPP
-# UI Extensions:
-#   IMGUI_BUNDLE_WITH_IMMVISION,
-#   IMGUI_BUNDLE_WITH_IMPLOT, IMGUI_BUNDLE_WITH_IMPLOT3D,
-#   IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR, IMGUI_BUNDLE_WITH_IMGUI_MD,
-#   IMGUI_BUNDLE_WITH_IMFILEDIALOG, IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT
-#   IMGUI_BUNDLE_WITH_NANOVG, IMGUI_BUNDLE_WITH_IMGUIZMO
-# =============================================================================
-if (IMGUI_BUNDLE_BUILD_PYTHON OR EMSCRIPTEN)
-    option(IMMVISION_FETCH_OPENCV "fetch OpenCV" ON)
-else()
-    option(IMMVISION_FETCH_OPENCV "fetch OpenCV" OFF)
-endif()
+# ImmVision now works without OpenCV (and uses ImmVision::ImageBuffer as the main image type).
+# - For C++, if OpenCV is installed and findable via find_package(OpenCV), ImmVision will also accept cv::Mat (cv::Mat convert to ImageBuffer internally with zero copy when possible). You may set IMMVISION_FETCH_OPENCV to ON to automatically fetch and build OpenCV in the build directory if OpenCV is not found on the system.
+# - For Python, OpenCV is not required at all (numpy arrays are supported and convert to ImageBuffer internally with zero copy).
 
-option(IMGUI_BUNDLE_WITH_HELLO_IMGUI "Build with hello_imgui (window management)" ON)
-option(IMGUI_BUNDLE_WITH_IMMAPP "Build with immapp (internal high-level app framework)" ON)
-option(IMGUI_BUNDLE_WITH_IMGUI_MD "Build with imgui_md (markdown renderer)" ON)
-option(IMGUI_BUNDLE_WITH_NANOVG "Build with nanovg" ON)
-option(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT "Build with imgui_tex_inspect" ON)
-option(IMGUI_BUNDLE_WITH_IMGUIZMO "Build with ImGuizmo" ON)
-option(IMGUI_BUNDLE_WITH_IMFILEDIALOG "Build with ImFileDialog" ON)
-option(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR "Build with imgui-node-editor" ON)
-option(IMGUI_BUNDLE_WITH_IMPLOT "Build with implot" ON)
-option(IMGUI_BUNDLE_WITH_IMPLOT3D "Build with implot3d" ON)
-option(IMGUI_BUNDLE_WITH_IMMVISION "Build with immvision" ${IMMVISION_FETCH_OPENCV})
 
 # Translate legacy IMGUI_BUNDLE_DISABLE_* options to new IMGUI_BUNDLE_WITH_* options
 imgui_bundle_translate_legacy_disable_options()
@@ -254,55 +227,14 @@ endif()
 
 
 # =============================================================================
-# Dependency Chain Resolution
+# Dependency Chain Resolution — Phase 1
 # =============================================================================
-# This section enforces module dependencies by automatically disabling dependent
-# modules when their requirements are not met.
+# Resolves module-level dependencies (IMGUI_BUNDLE_WITH_* flags only).
+# Phase 2 (rendering backend dependencies) runs later in external/CMakeLists.txt,
+# after HelloImGui has been configured and HELLOIMGUI_HAS_OPENGL3 is correctly set
+# (by calling imgui_bundle_resolve_rendering_backend_dependencies())
 # =============================================================================
-if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI)
-    message(STATUS "
-    ===========================================================
-     IMGUI_BUNDLE_WITH_HELLO_IMGUI is OFF, automatically disabling dependent modules:
-        immapp              (depends on hello_imgui)
-        imgui_md            (depends on hello_imgui + immapp)
-        imgui_test_engine   (needs GIL management)
-        GLFW backend        (not needed)
-    ===========================================================")
-    set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: depends on hello_imgui" FORCE)
-    set(IMGUI_BUNDLE_WITH_IMGUI_MD OFF CACHE BOOL "Auto-disabled: depends on hello_imgui" FORCE)
-    set(HELLOIMGUI_WITH_TEST_ENGINE OFF CACHE BOOL "Auto-disabled: needs GIL management from hello_imgui" FORCE)
-    set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
-    set(HELLOIMGUI_HAS_OPENGL3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
-endif()
-if (NOT HELLOIMGUI_HAS_OPENGL3)
-    message(STATUS "
-    ===========================================================
-     HELLOIMGUI_HAS_OPENGL3 is OFF, automatically disabling dependent modules:
-        im_file_dialog      (needs OpenGL context)
-        imgui_tex_inspect   (needs OpenGL context)
-        immvision           (needs OpenGL context)
-    ")
-    set(IMGUI_BUNDLE_WITH_IMFILEDIALOG OFF CACHE BOOL "Auto-disabled: needs OpenGL context" FORCE)
-    set(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT OFF CACHE BOOL "Auto-disabled: needs OpenGL from hello_imgui" FORCE)
-    set(IMGUI_BUNDLE_WITH_IMMVISION OFF CACHE BOOL "Auto-disabled: needs OpenGL from hello_imgui" FORCE)
-endif()
-# Catch conflicting configurations
-if(NOT IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR AND IMGUI_BUNDLE_WITH_IMMAPP)
-    message(STATUS "Auto-disabling immapp (immapp depends on imgui_node_editor)")
-    set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp depends on imgui_node_editor" FORCE)
-endif()
-if(NOT IMGUI_BUNDLE_WITH_IMMAPP AND IMGUI_BUNDLE_WITH_IMGUI_MD)
-    message(STATUS "Auto-disabling imgui_md (imgui_md depends on immapp)")
-    set(IMGUI_BUNDLE_WITH_IMGUI_MD OFF CACHE BOOL "Auto-disabled: imgui_md depends on immapp" FORCE)
-endif()
-if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI AND IMGUI_BUNDLE_WITH_IMMAPP)
-    message(WARNING "Auto-disabling immapp (immapp depends on hello_imgui)")
-    set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp depends on hello_imgui" FORCE)
-endif()
-if (IMGUI_BUNDLE_WITH_NANOVG AND NOT(HELLOIMGUI_HAS_OPENGL3 OR HELLOIMGUI_HAS_METAL))
-    message(WARNING "Auto-disabling nanovg (nanovg depends on OpenGL3 or Metal)")
-    set(IMGUI_BUNDLE_WITH_NANOVG OFF CACHE BOOL "Auto-disabled: nanovg depends on OpenGL3 or Metal" FORCE)
-endif()
+imgui_bundle_resolve_early_dependencies()
 
 
 #------------------------------------------------------------------------------
@@ -321,6 +253,12 @@ if(PROJECT_IS_TOP_LEVEL)
 else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
+
+# IMGUI_BUNDLE_BUILD_IMGUI_EXPLORER_APP: Build ImGui Explorer standalone exe
+# (the library imgui_explorer_lib is controlled by IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB)
+# -----------------------------------------------------------------------------
+option(IMGUI_BUNDLE_BUILD_IMGUI_EXPLORER_APP "Build imgui_explorer standalone app" OFF)
+
 
 
 # Options / Install
@@ -446,9 +384,27 @@ if (WIN32 AND IMGUI_BUNDLE_BUILD_PYTHON)
     add_compile_definitions(_DISABLE_CONSTEXPR_MUTEX_CONSTRUCTOR)
 endif()
 
+# Suppress Apple ld warnings about duplicate libraries in transitive dependencies
+if(APPLE)
+    add_link_options("-Wl,-no_warn_duplicate_libraries")
+endif()
+
 # Fake main library (imgui_bundle is just an interface to define common options)
 # -----------------------------------------------------------------------------
+# Build number = total git commit count (monotonically increasing)
+execute_process(COMMAND git rev-list --count HEAD
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+    OUTPUT_VARIABLE IMGUI_BUNDLE_BUILD_NUMBER
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET)
+if(NOT IMGUI_BUNDLE_BUILD_NUMBER)
+    set(IMGUI_BUNDLE_BUILD_NUMBER "0")
+endif()
 add_library(imgui_bundle INTERFACE)
+target_compile_definitions(imgui_bundle INTERFACE
+    IMGUI_BUNDLE_VERSION="${IMGUI_BUNDLE_VERSION}"
+    IMGUI_BUNDLE_BUILD_NUMBER="${IMGUI_BUNDLE_BUILD_NUMBER}"
+)
 if(IMGUI_BUNDLE_INSTALL_CPP)
     install(DIRECTORY imgui_bundle_cmake DESTINATION share/imgui-bundle)
     install(DIRECTORY bindings/imgui_bundle/assets DESTINATION share/imgui-bundle)
@@ -557,13 +513,6 @@ endif()
 
 # Log options at the end
 # -----------------------------------------------------------------------------
-# First, adjust variables so that they show correctly
-#
-# IMGUI_BUNDLE_WITH_IMMVISION may be defined in external/immvision/CMakeLists.txt
-if (NOT IMGUI_BUNDLE_WITH_IMMVISION)
-    set(IMGUI_BUNDLE_WITH_IMMVISION OFF)
-endif()
-
 # Log hello_imgui configuration (only if hello_imgui is enabled)
 if(IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     him_log_configuration()
@@ -575,27 +524,28 @@ message(STATUS "
 
     Build Options:
     ---------------------------------------------------------------------------
-    IMGUI_BUNDLE_BUILD_PYTHON:     ${IMGUI_BUNDLE_BUILD_PYTHON}
-    IMGUI_BUNDLE_BUILD_PYODIDE:    ${IMGUI_BUNDLE_BUILD_PYODIDE}
-    IMGUI_BUNDLE_BUILD_DEMOS:      ${IMGUI_BUNDLE_BUILD_DEMOS}
-    IMGUI_BUNDLE_BUILD_DOC:        ${IMGUI_BUNDLE_BUILD_DOC}
+    IMGUI_BUNDLE_BUILD_PYTHON:             ${IMGUI_BUNDLE_BUILD_PYTHON}
+    IMGUI_BUNDLE_BUILD_PYODIDE:            ${IMGUI_BUNDLE_BUILD_PYODIDE}
+    IMGUI_BUNDLE_BUILD_DEMOS:              ${IMGUI_BUNDLE_BUILD_DEMOS}
 
     Core Framework:
     ---------------------------------------------------------------------------
-    IMGUI_BUNDLE_WITH_HELLO_IMGUI:       ${IMGUI_BUNDLE_WITH_HELLO_IMGUI}
-    IMGUI_BUNDLE_WITH_IMMAPP:            ${IMGUI_BUNDLE_WITH_IMMAPP}
-    HELLOIMGUI_WITH_TEST_ENGINE:         ${HELLOIMGUI_WITH_TEST_ENGINE}
+    IMGUI_BUNDLE_WITH_HELLO_IMGUI:         ${IMGUI_BUNDLE_WITH_HELLO_IMGUI}
+    IMGUI_BUNDLE_WITH_IMMAPP:              ${IMGUI_BUNDLE_WITH_IMMAPP}
+    HELLOIMGUI_WITH_TEST_ENGINE:           ${HELLOIMGUI_WITH_TEST_ENGINE}
 
     UI Extensions:
     ---------------------------------------------------------------------------
-    IMGUI_BUNDLE_WITH_IMMVISION:         ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_FETCH_OPENCV: ${IMMVISION_FETCH_OPENCV})
-    IMGUI_BUNDLE_WITH_IMPLOT:            ${IMGUI_BUNDLE_WITH_IMPLOT}
-    IMGUI_BUNDLE_WITH_IMPLOT3D:          ${IMGUI_BUNDLE_WITH_IMPLOT3D}
-    IMGUI_BUNDLE_WITH_NANOVG:            ${IMGUI_BUNDLE_WITH_NANOVG}
-    IMGUI_BUNDLE_WITH_IMGUIZMO:          ${IMGUI_BUNDLE_WITH_IMGUIZMO}
-    IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR: ${IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR}
-    IMGUI_BUNDLE_WITH_IMGUI_MD:          ${IMGUI_BUNDLE_WITH_IMGUI_MD}
-    IMGUI_BUNDLE_WITH_IMFILEDIALOG:      ${IMGUI_BUNDLE_WITH_IMFILEDIALOG}
-    IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT: ${IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT}
+    IMGUI_BUNDLE_WITH_IMMVISION:           ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_HAS_OPENCV=${IMMVISION_HAS_OPENCV})
+    IMGUI_BUNDLE_WITH_IMPLOT:              ${IMGUI_BUNDLE_WITH_IMPLOT}
+    IMGUI_BUNDLE_WITH_IMPLOT3D:            ${IMGUI_BUNDLE_WITH_IMPLOT3D}
+    IMGUI_BUNDLE_WITH_IMANIM:              ${IMGUI_BUNDLE_WITH_IMANIM}
+    IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB:  ${IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB}
+    IMGUI_BUNDLE_WITH_NANOVG:              ${IMGUI_BUNDLE_WITH_NANOVG}
+    IMGUI_BUNDLE_WITH_IMGUIZMO:            ${IMGUI_BUNDLE_WITH_IMGUIZMO}
+    IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR:   ${IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR}
+    IMGUI_BUNDLE_WITH_IMGUI_MD:            ${IMGUI_BUNDLE_WITH_IMGUI_MD}
+    IMGUI_BUNDLE_WITH_IMFILEDIALOG:        ${IMGUI_BUNDLE_WITH_IMFILEDIALOG}
+    IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT:   ${IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT}
     ===========================================================================
 ")

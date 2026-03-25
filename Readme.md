@@ -1,5 +1,5 @@
-<a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_manual.png" alt="interactive manual" height="25"/>
+<a href="https://traineq.org/imgui_bundle_explorer">
+<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_explorer.png" alt="interactive explorer" height="25"/>
 </a>
 &nbsp;
 <a href="https://pthom.github.io/imgui_bundle/">
@@ -32,7 +32,7 @@ Dear ImGui Bundle is a collection of libraries around [Dear ImGui](https://githu
 
 ***
 
-## Documentation and interactive manuals
+## Documentation and interactive explorer / manual
 
 ### Documentation site
 
@@ -42,22 +42,22 @@ Click the image below to visit the documentation site:
 <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_view_docs.png" alt="view docs" height="25"/>
 </a>
 
-This site contains the full documentation for Dear ImGui Bundle, including install instructions, conceptual introductions, step‑by‑step tutorials, deployment recipes, etc. It is a companion to the interactive manual below.
+This site contains the full documentation for Dear ImGui Bundle, including install instructions, conceptual introductions, step‑by‑step tutorials, deployment recipes, etc. It is a companion to the interactive explorer / manual below.
 
-### Interactive manual & demo
+### Interactive explorer & demo
 
-Click the image below to launch the interactive manual in your web browser:
+Click the image below to launch the interactive explorer in your web browser:
 
-<a href="https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html">
-<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_manual.png" alt="interactive manual" height="25"/>
+<a href="https://traineq.org/imgui_bundle_explorer">
+<img src="https://raw.githubusercontent.com/pthom/imgui_bundle/refs/heads/main/bindings/imgui_bundle/demos_assets/images/badge_interactive_explorer.png" alt="interactive explorer" height="25"/>
 </a>
 
-The interactive manual showcases almost every part of the bundle with runnable examples. You can:
+ImGui Bundle Explorer showcases almost every part of the bundle with runnable examples. You can:
 - Explore core Dear ImGui widgets.
 - Try plotting, node editors, image viewers, test engine, and more.
 - Inspect and copy the C++ and Python source code for each demo.
 
-> “The interactive manual is intended to be your live reference: browse widgets, run demos, and copy code snippets directly into your own projects.”
+> “The explorer is intended to be your live reference: browse widgets, run demos, and copy code snippets directly into your own projects.”
 
 
 ### DeepWiki
@@ -80,7 +80,7 @@ Open the [playground](https://traineq.org/imgui_bundle_online/projects/imgui_bun
 
 | OpenGL renderer | Python bindings | Alternative renderers | Mobile |
 |-----------------|-----------------|-----------------------|--------|
-| [![CppLib](https://github.com/pthom/imgui_bundle/workflows/CppLib/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib.yml)<br>[![Emscripten](https://github.com/pthom/imgui_bundle/workflows/Emscripten/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/emscripten.yml) | [![Pip](https://github.com/pthom/imgui_bundle/workflows/Pip/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/pip.yml)<br>[![Wheels](https://github.com/pthom/imgui_bundle/workflows/Wheels/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/wheels.yml)<br>[![Pyodide](https://github.com/pthom/imgui_bundle/workflows/Pyodide/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml)<br>[![CppLib_WithBindings](https://github.com/pthom/imgui_bundle/workflows/CppLib_WithBindings/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib_with_bindings.yml) | [![Metal](https://github.com/pthom/imgui_bundle/workflows/Metal/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/Metal.yml)<br>[![DirectX](https://github.com/pthom/imgui_bundle/workflows/DirectX/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/DirectX.yml)<br>[![Vulkan](https://github.com/pthom/imgui_bundle/workflows/Vulkan/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/Vulkan.yml) | [![iOS](https://github.com/pthom/imgui_bundle/workflows/ios/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/ios.yml)<br>[![Android](https://github.com/pthom/imgui_bundle/workflows/android/badge.svg)](https://github.com/pthom/imgui_bundle/actions/workflows/android.yml) |
+| [![CppLib](https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib.yml)<br>[![Emscripten](https://github.com/pthom/imgui_bundle/actions/workflows/emscripten.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/emscripten.yml) | [![Pip](https://github.com/pthom/imgui_bundle/actions/workflows/pip.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/pip.yml)<br>[![Wheels](https://github.com/pthom/imgui_bundle/actions/workflows/wheels.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/wheels.yml)<br>[![Pyodide](https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml)<br>[![CppLib_WithBindings](https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib_with_bindings.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/cpp_lib_with_bindings.yml) | [![Metal](https://github.com/pthom/imgui_bundle/actions/workflows/Metal.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/Metal.yml)<br>[![DirectX](https://github.com/pthom/imgui_bundle/actions/workflows/DirectX.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/DirectX.yml)<br>[![Vulkan](https://github.com/pthom/imgui_bundle/actions/workflows/Vulkan.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/Vulkan.yml) | [![iOS](https://github.com/pthom/imgui_bundle/actions/workflows/ios.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/ios.yml)<br>[![Android](https://github.com/pthom/imgui_bundle/actions/workflows/android.yml/badge.svg?branch=main)](https://github.com/pthom/imgui_bundle/actions/workflows/android.yml) |
 
 
 ***

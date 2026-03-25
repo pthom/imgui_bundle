@@ -25,6 +25,7 @@ from .immapp import icons_fontawesome_6 as icons_fontawesome_6
 
 from . import im_cool_bar as im_cool_bar
 from . import nanovg as nanovg
+from . import im_anim as im_anim
 
 from .imgui import ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor, ImVec2Like as ImVec2Like
 from .imgui_pydantic import ImVec2_Pydantic as ImVec2_Pydantic, ImVec4_Pydantic as ImVec4_Pydantic, ImColor_Pydantic as ImColor_Pydantic

@@ -2,26 +2,25 @@
 #include "immvision/immvision.h"
 #include "demo_utils/api_demos.h"
 #include "hello_imgui/hello_imgui.h"
-#include <opencv2/imgcodecs.hpp>
 #include "imgui.h"
 
 void demo_immvision_display()
 {
     static bool inited = false;
-    static cv::Mat bear, tennis;
+    static ImmVision::ImageBuffer bear, tennis;
     static ImmVision::ImageParams params;
 
     static ImVec2 imageDisplaySize(0.f, ImmApp::EmSize(20.f));
 
     if (!inited)
     {
-        ImmVision::UseBgrColorOrder();
+        ImmVision::UseRgbColorOrder();
         std::string assetsDir = DemosAssetsFolder() + "/images/";
-        bear = cv::imread(assetsDir + "bear_transparent.png", cv::IMREAD_UNCHANGED);
-        tennis = cv::imread(assetsDir + "tennis.jpg");
+        bear = ImmVision::ImRead(assetsDir + "bear_transparent.png");
+        tennis = ImmVision::ImRead(assetsDir + "tennis.jpg");
 
         int bearDisplaySize = int(HelloImGui::EmSize(15.f));
-        params.ImageDisplaySize = cv::Size(bearDisplaySize, bearDisplaySize);
+        params.ImageDisplaySize = ImmVision::Size(bearDisplaySize, bearDisplaySize);
 
         inited = true;
     }

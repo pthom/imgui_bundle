@@ -20,7 +20,7 @@
 
 * **Easy to use, yet very powerful:** Start your first app in 3 lines.
 
-* **Interactive Demos and Documentation:** Quickly get started with our interactive manual and demos that showcase the capabilities of the pack. Read or copy-paste the source code (Python and C++) directly from the interactive manual!
+* **Interactive Demos and Documentation:** Quickly get started with the ImGui Bundle Interactive Explorer, that showcases the capabilities of the pack. Read or copy-paste the source code (Python and C++) directly from there!
 
 
 ## Always up-to-date
@@ -73,57 +73,9 @@ Each library is:
 
 # Common Questions
 
-## Is It Interesting for Developers?
+## Is it up to date?
 
-**Absolutely yes**, for several reasons:
-
-### 1. Joy of Use
-
-The immediate-mode paradigm is genuinely refreshing:
-
-```python
-# Your code directly expresses intent
-if imgui.button("Click Me"):
-    do_something()
-```
-
-This is more readable and maintainable than callback spaghetti or complex widget trees.
-
-
-### 2. Rapid Development
-
-From zero to functional UI is remarkably fast:
-- No UI designer needed
-- No XML/JSON layouts to maintain
-- Changes appear immediately
-- Easy to iterate
-
-### 3. Power When You Need It
-
-The framework scales from simple to complex:
-- Start with a simple window and buttons
-- Add docking and multiple windows
-- Incorporate 3D visualization
-- Build node-based editors
-- Create custom widgets
-
-All while maintaining code clarity.
-
-### 4. Cross-Platform Reality
-
-The cross-platform support actually works:
-- Same code runs on Windows, macOS, Linux
-- WebAssembly with Python runtime (!!)
-- No platform-specific hacks needed
-- Mobile support (iOS, Android) is real (in C++)
-
-### 5. Active Community
-
-- Dear ImGui itself has 60k+ stars and is used in AAA games
-- Dear ImGui Bundle is based on Dear ImGui and adds comprehensive Python support
-- 1k+ stars
-- Regular updates and maintenance, keeping up with Dear ImGui upstream
-
+**Yes!** Because: Python bindings are auto-generated, so they stay in sync with C++
 
 ## "Isn't rebuilding the UI every frame slow?"
 
@@ -148,175 +100,14 @@ The cross-platform support actually works:
 - Python → Pyodide → WebAssembly (!!)
 - Full Python runtime in browser
 - Native-speed rendering via WebGL
-- Check the interactive manual: [traineq.org/ImGuiBundle](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html)
+- Check [ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer)
 
+## Is It Interesting for Developers?
 
-# Comparison with Alternatives
+**Absolutely yes**, for several reasons:
 
-The examples below implement the same "fruit picker" app.
+* The immediate-mode paradigm is genuinely refreshing: your code directly expresses intent
+* Rapid Development: From zero to functional UI is remarkably fast:
+* The cross-platform support actually works: the same code runs on Windows, macOS, Linux. Mobile support is real (in C++), and web support via Emscripten and Pyodide also.
+* Active Community: Dear ImGui itself has 70k+ stars. Dear ImGui Bundle adds comprehensive Python support, and has 1k+ stars (growing steadily).
 
-:::{figure} ../images/choose_fruit.jpg
-:width: 200 
-:::
-
-Compare the code styles:
-
-::::{tab-set}
-
-:::{tab-item} ImGui Bundle
-**12 lines** – True immediate mode: UI declaration *is* the event handler
-
-```python
-from imgui_bundle import imgui, hello_imgui
-
-selected_idx = 0
-items = ["Apple", "Banana", "Cherry"]
-
-def gui():
-    global selected_idx
-    imgui.text("Choose a fruit:")
-    _changed, selected_idx = imgui.list_box("##fruits", selected_idx, items)
-    imgui.text(f"You selected: {items[selected_idx]}")
-
-hello_imgui.run(gui, window_title="Fruit Picker")
-```
-
-**Strengths**: Simplest code, real-time capable, runs on desktop + web (Pyodide), 20+ integrated libraries, full C++ support
-
-**Best for**: Tools, visualization, games, scientific apps
-:::
-
-:::{tab-item} Qt
-**31 lines** – Retained mode with class hierarchy and signals/slots
-
-```python
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QListWidget
-
-items = ["Apple", "Banana", "Cherry"]
-
-class FruitPicker(QWidget):
-    def __init__(self):
-        super().__init__()
-        layout = QVBoxLayout()
-        self.label = QLabel("Choose a fruit:")
-        self.list_widget = QListWidget()
-        self.list_widget.addItems(items)
-        self.result_label = QLabel(f"You selected: {items[0]}")
-        self.list_widget.currentRowChanged.connect(self.on_selection_changed)
-        layout.addWidget(self.label)
-        layout.addWidget(self.list_widget)
-        layout.addWidget(self.result_label)
-        self.setLayout(layout)
-
-    def on_selection_changed(self, index):
-        self.result_label.setText(f"You selected: {items[index]}")
-
-app = QApplication([])
-window = FruitPicker()
-window.show()
-app.exec()
-```
-
-**Qt strengths**: More widgets, Qt Designer, larger ecosystem, rich text, accessibility, native look
-
-**ImGui Bundle strengths**: Simpler code, real-time, lighter weight, scientific viz, easier cross-compilation
-
-**Qt is Best for**: Traditional business apps, enterprise software
-:::
-
-:::{tab-item} DearPyGui
-**29 lines** – ImGui-based but with retained-mode API and callbacks
-
-```python
-import dearpygui.dearpygui as dpg
-
-items = ["Apple", "Banana", "Cherry"]
-dpg.create_context()
-
-def on_selection_changed(sender, app_data):
-    dpg.set_value("result_label", f"You selected: {app_data}")
-
-with dpg.window(tag="Primary Window", label="Fruit Picker"):
-    dpg.add_text("Choose a fruit:")
-    dpg.add_listbox(items=items, callback=on_selection_changed, num_items=len(items))
-    dpg.add_text("You selected: ", tag="result_label")
-
-dpg.create_viewport(title='Fruit Picker', width=400, height=300)
-dpg.setup_dearpygui()
-dpg.show_viewport()
-dpg.set_primary_window("Primary Window", True)
-dpg.start_dearpygui()
-dpg.destroy_context()
-```
-
-**DearPyGui strengths**: Familiar retained-mode API, large user base, good reputation
-
-**ImGui Bundle strengths**: True immediate mode, more libraries (~20), C++ support, Pyodide web support
-
-**DearPyGui is Best for**: Developers who prefer retained-mode patterns
-:::
-
-:::{tab-item} NiceGUI
-**15 lines** – Web-based with callbacks
-
-```python
-from nicegui import ui
-
-selected_idx = -1
-items = ["Apple", "Banana", "Cherry"]
-
-def on_selection_change(e):
-    global selected_idx
-    selected_idx = items.index(e.value)
-    selection_label.text = f"You selected: {e.value}"
-
-ui.label("Choose a fruit:")
-dropdown = ui.select(options=items, value=items[0], on_change=on_selection_change)
-selection_label = ui.label(f"You selected: {items[0]}")
-
-ui.run(title="Fruit Picker")
-```
-
-**NiceGUI strengths**: Web-native, modern UI, easy deployment, familiar web paradigm, reactive
-
-**ImGui Bundle strengths**: Native performance, desktop-native, offline capable, advanced widgets, lower latency
-
-**NiceGUI is Best for**: Web-first apps, internal dashboards, CRUD interfaces
-:::
-
-:::{tab-item} Gradio
-**18 lines** – Declarative blocks with event wiring
-
-```python
-import gradio as gr
-
-items = ["Apple", "Banana", "Cherry"]
-selected_item = items[0]
-
-def on_selection_change(choice):
-    global selected_item
-    selected_item = choice
-    return f"You selected: {choice}"
-
-with gr.Blocks() as demo:
-    gr.Markdown("# Fruit Picker")
-    gr.Markdown("Choose a fruit:")
-    dropdown = gr.Dropdown(choices=items, value=items[0], label="Choose a fruit")
-    output = gr.Textbox(value=f"You selected: {items[0]}", label="Selection", interactive=False)
-    dropdown.change(fn=on_selection_change, inputs=dropdown, outputs=output)
-
-demo.launch()
-```
-
-**Gradio strengths**: Web-native, ML-focused, Hugging Face integration, easy sharing, pre-built media components
-
-**ImGui Bundle strengths**: Native performance, desktop-native, stateful apps, professional tools, flexibility
-
-**Gradio is Best for**: ML model demos, Hugging Face Spaces, sharing with non-technical users
-:::
-
-::::
-
-:::{note}
-These example are [available here](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/sandbox/compare_other_libs)
-:::

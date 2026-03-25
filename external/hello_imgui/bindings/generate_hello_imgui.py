@@ -64,7 +64,8 @@ def main():
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     # setAssetsFolder & SetAssetsFolder offer the same function
-    options.fn_exclude_by_name__regex = r"^setAssetsFolder$|^TranslateCommonGlyphRanges$|^SetLoadAssetFileDataFunction$"
+    options.fn_exclude_by_name__regex = r"^setAssetsFolder$|^TranslateCommonGlyphRanges$|^SetLoadAssetFileDataFunction$|^LoadImageDataFromAsset$"
+    options.class_exclude_by_name__regex = r"^ImageData$"
 
     options.python_run_black_formatter = True
 

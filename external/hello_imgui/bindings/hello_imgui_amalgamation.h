@@ -230,6 +230,7 @@ for more information on how to fine tune DPI handling when using Hello ImGui.
 //                       hello_imgui/hello_imgui_assets.h included by hello_imgui.h                             //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <string>
+#include <vector>
 #include <functional>
 
 namespace HelloImGui
@@ -311,12 +312,42 @@ std::string AssetFileFullPath(const std::string& assetRelativeFilename,
 // Returns true if this asset file exists
 bool AssetExists(const std::string& assetRelativeFilename);
 
+// @@md
+
+// @@md#AssetsSearchPaths
+
 // Sets the assets folder location
 // (when using this, automatic assets installation on mobile platforms may not work)
 void SetAssetsFolder(const std::string& folder);
 
-// @@md
+// Assets search paths provide additional locations where assets can be found,
+// giving a unified view across multiple folders. When loading an asset, the
+// search order is:
+//   1. The main assets folder (set by SetAssetsFolder(), or the default
+//      platform-specific locations such as exe_folder/assets)
+//   2. Each search path added by AddAssetsSearchPath(), in order
+//   3. Other built-in platform-specific fallback locations
+//
+// The first match wins. This is useful when assets are split across
+// directories — for example, core assets (fonts, icons) in one folder
+// and demo-specific assets (extra images, specialty fonts) in another.
+//
+// Note: search paths are a runtime-only mechanism. Unlike the main assets
+// folder (which CMake can bundle into the application for mobile/emscripten),
+// search path folders are not automatically embedded at compile time.
+// They are intended for desktop or Python usage where the filesystem
+// is directly accessible.
 
+// Add a folder to the asset search paths.
+void AddAssetsSearchPath(const std::string& folder);
+
+// Remove all previously added search paths.
+void ClearAssetsSearchPaths();
+
+// Return the current list of search paths.
+const std::vector<std::string>& GetAssetsSearchPaths();
+
+// @@md
 
 
 // Legacy API, kept for compatibility
@@ -473,6 +504,22 @@ ImageAndSize ImageAndSizeFromAsset(const char *assetPath);
 //        so you don't need to call it directly.
 ImVec2 ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize);
 
+// `HelloImGui::ImageData`: decoded image pixel data (C++ only)
+struct ImageData
+{
+    unsigned char* data = nullptr;
+    int width = 0, height = 0;
+    int channels = 0;
+    void Free();
+};
+
+// `HelloImGui::LoadImageDataFromAsset(assetPath, desired_channels)`:
+// (C++ only)
+// Load and decode an image from the assets into CPU memory.
+// desired_channels: 0=keep original, 1=gray, 3=RGB, 4=RGBA (default).
+// The caller must call Free() on the returned ImageData when done.
+ImageData LoadImageDataFromAsset(const char* assetPath, int desired_channels = 4);
+
 // @@md
 
 namespace internal
@@ -610,7 +657,6 @@ namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <vector>
 
 
 namespace HelloImGui
@@ -1361,6 +1407,10 @@ struct RunnerCallbacks
     //  and before the call to ImGui::NewFrame().
     //  It is a good place to add new dockable windows.
     VoidFunction PreNewFrame = EmptyVoidFunction();
+
+    // `PostNewFrame`: You can here add a function that will be called at each frame,
+    //  just after the call to ImGui::NewFrame(), and before any Gui code.
+    VoidFunction PostNewFrame = EmptyVoidFunction();
 
     // `BeforeImGuiRender`: You can here add a function that will be called at each frame,
     //  after the user Gui code, and just before the call to

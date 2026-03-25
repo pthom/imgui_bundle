@@ -101,13 +101,11 @@ function(add_imgui_bundle_bindings)
     set(python_native_module_name _imgui_bundle)    # This is the native python module name
     set(python_wrapper_module_name imgui_bundle)    # This is the python wrapper around the native module
     set(python_module_sources
-        ${bindings_main_folder}/module.cpp
         ${bindings_main_folder}/pybind_imgui_bundle.cpp
         ${filtered_pybind_files}
         )
 
     nanobind_add_module(${python_native_module_name} ${python_module_sources})
-    target_compile_definitions(${python_native_module_name} PRIVATE VERSION_INFO=${PROJECT_VERSION})
 
     # Propagate WITH flags to bindings so preprocessor conditionals work
     if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI)
@@ -119,11 +117,10 @@ function(add_imgui_bundle_bindings)
 
     litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} ${IMGUI_BUNDLE_PATH}/bindings)
 
-    # add cvnp for immvision
+    # add immvision type casters
     if (IMGUI_BUNDLE_WITH_IMMVISION)
-        set(cvnp_nano_dir ${IMGUI_BUNDLE_PATH}/external/immvision/cvnp_nano)
-        target_sources(${python_native_module_name} PRIVATE ${cvnp_nano_dir}/cvnp_nano/cvnp_nano.h)
-        target_include_directories(${python_native_module_name} PRIVATE ${cvnp_nano_dir})
+        set(immvision_bindings_dir ${IMGUI_BUNDLE_PATH}/external/immvision/bindings)
+        target_include_directories(${python_native_module_name} PRIVATE ${immvision_bindings_dir})
 
         target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
@@ -154,6 +151,14 @@ function(add_imgui_bundle_bindings)
     if (NOT EMSCRIPTEN AND NOT ANDROID)
         find_package(OpenGL REQUIRED)
         target_link_libraries(${python_native_module_name} PUBLIC OpenGL::GL)
+    # Link with OpenGL (necessary for nanobind)
+    if (NOT  EMSCRIPTEN)
+        if (APPLE)
+            target_link_libraries(${python_native_module_name} PUBLIC "-framework OpenGL")
+        else()
+            find_package(OpenGL REQUIRED)
+            target_link_libraries(${python_native_module_name} PUBLIC OpenGL::GL)
+        endif()
     endif()
 
     if (IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2)

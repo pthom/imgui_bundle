@@ -5,6 +5,10 @@ it adds the HTTP headers Cross Origin Opener Policy (COOP) and Cross Origin Embe
 
 See: https://emscripten.org/docs/porting/pthreads.html
 Inspired by https://gist.github.com/Faless/1e228325ced0662aee59dc92fa69efd7
+
+Also serves pre-compressed .gz files transparently: if index.wasm.gz exists and the
+browser sends Accept-Encoding: gzip, it is served with Content-Encoding: gzip.
+Pre-compress with: gzip -k index.wasm index.data index.js
 """
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler, test
@@ -18,6 +22,28 @@ class CORSRequestHandler (SimpleHTTPRequestHandler):
         self.send_header('Cross-Origin-Embedder-Policy', 'require-corp')
         SimpleHTTPRequestHandler.end_headers(self)
 
+    def do_GET(self):
+        # Serve a pre-compressed .gz file if available and the client accepts gzip
+        accept_encoding = self.headers.get('Accept-Encoding', '')
+        if 'gzip' in accept_encoding and not self.path.endswith('.gz'):
+            fs_path = self.translate_path(self.path)
+            gz_path = fs_path + '.gz'
+            if os.path.isfile(gz_path) and os.path.getmtime(gz_path) >= os.path.getmtime(fs_path):
+                try:
+                    with open(gz_path, 'rb') as f:
+                        content = f.read()
+                    ctype = self.guess_type(self.path)
+                    self.send_response(200)
+                    self.send_header('Content-Type', ctype)
+                    self.send_header('Content-Encoding', 'gzip')
+                    self.send_header('Content-Length', str(len(content)))
+                    self.end_headers()
+                    self.wfile.write(content)
+                    return
+                except Exception:
+                    pass  # fall through to normal handling
+        super().do_GET()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -26,4 +52,5 @@ if __name__ == '__main__':
     args = parser.parse_args()
     if args.root:
         os.chdir(args.root)
+    print(f"http://localhost:{args.port}/")
     test(CORSRequestHandler, HTTPServer, port=args.port)

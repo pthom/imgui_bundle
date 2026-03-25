@@ -1,42 +1,47 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Slide 8: Web Deployment — static screenshot
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/browse_to_url.h"
-#include "demo_utils/animate_logo.h"
+#include "immapp/immapp.h"
+#include "demo_utils/api_demos.h"
+#include "ImGuiColorTextEdit/TextEditor.h"
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
+#include "implot/implot.h"
+#endif
+
+#include "implot3d/implot3d.h"
+
+#ifdef IMGUI_BUNDLE_WITH_IMMVISION
+#include "immvision/immvision.h"
+#endif
+
+#include "imgui-knobs/imgui-knobs.h"
+#include "imgui_toggle/imgui_toggle.h"
+#include "imgui_toggle/imgui_toggle_presets.h"
+
+#ifdef HELLOIMGUI_HAS_OPENGL
+#include "hello_imgui/hello_imgui_include_opengl.h"
+#include <iostream>
+#endif
+
+#include <cmath>
+#include <cstdlib>
+#include <vector>
+#include <memory>
+
+#include "hello_imgui/icons_font_awesome_4.h"
+
+
+// ============================================================================
+// Test engine automation (unchanged)
+// ============================================================================
 
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 #include "imgui_test_engine/imgui_te_engine.h"
 #include "imgui_test_engine/imgui_te_context.h"
 #include "imgui_test_engine/imgui_te_ui.h"
-
-
-ImGuiTest* AutomationShowMeCode()
-{
-    ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
-
-    ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeCode");
-    auto testFunc = [](ImGuiTestContext *ctx) {
-        ctx->SetRef("Intro");
-        ctx->ItemOpen("Code for this demo");
-        ctx->Sleep(2.5);
-        ctx->ItemClose("Code for this demo");
-
-        const char* tabLoggerName = "//**/Logger";
-        const char* tabIntroName = "//**/Intro";
-
-        ctx->MouseMove(tabLoggerName);
-        ctx->MouseClick(0);
-        ctx->SetRef("Logger");
-        ctx->ItemOpen("Code for this demo");
-        ctx->ItemClose("Code for this demo");
-        ctx->MouseMove(tabIntroName);
-        ctx->MouseClick(0);
-    };
-    automation->TestFunc = testFunc;
-    return automation;
-}
-
 
 ImGuiTest* AutomationShowMeImmediateApps()
 {
@@ -60,125 +65,1991 @@ ImGuiTest* AutomationShowMeImmediateApps()
     return automation;
 }
 
-
-ImGuiTest* AutomationShowMeImGuiTestEngine()
+ImGuiTest* AutomationShowMeCustomBackgroundExample()
 {
     ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
 
-    ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeImGuiTestEngine");
+    ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeCustomBackgroundExample");
     auto testFunc = [](ImGuiTestContext *ctx) {
         const char* tabImmAppsName = "//**/Demo Apps";
-        const char* tabIntroName = "//**/Intro";
 
         ctx->MouseMove(tabImmAppsName);
         ctx->MouseClick(0);
-        ctx->ItemClick("//**/demo_testengine/View code");
-        ctx->Sleep(2.5f);
-        ctx->MouseMove("//**/demo_testengine/Run");
-        ctx->MouseMove(tabIntroName);
-        ctx->MouseClick(0);
+        ctx->ItemClick("//**/demo_custom_background/View code");
+        ctx->MouseMove("//**/Run##CurrentDemo");
     };
     automation->TestFunc = testFunc;
     return automation;
 }
-#endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 
-
-void demo_imgui_bundle_intro()
+ImGuiTest* AutomationShowMeDockingExample()
 {
-#ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    //
-    // Automations
-    //
+    ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
 
-    static ImGuiTest *automationShowMeCode = nullptr;
-    static ImGuiTest *automationShowMeImmediateApps = nullptr;
-    static ImGuiTest *automationShowMeImGuiTestEngine = nullptr;
-    static bool wasAutomationInited = false;
-    // Create automations upon first display
-    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
+    ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeDockingExample");
+    auto testFunc = [](ImGuiTestContext *ctx) {
+        const char* tabImmAppsName = "//**/Demo Apps";
+
+        ctx->MouseMove(tabImmAppsName);
+        ctx->MouseClick(0);
+        ctx->ItemClick("//**/demo_docking/View code");
+        ctx->MouseMove("//**/Run##CurrentDemo");
+    };
+    automation->TestFunc = testFunc;
+    return automation;
+}
+
+// Centralized automation registration and "More info" link helper
+namespace IntroAutomations
+{
+    static ImGuiTest* showImmediateApps = nullptr;
+    static ImGuiTest* showCustomBackground = nullptr;
+    static ImGuiTest* showDocking = nullptr;
+    static bool inited = false;
+
+    void Init()
     {
-        if (!wasAutomationInited)
-        {
-            wasAutomationInited = true;
-            automationShowMeCode = AutomationShowMeCode();
-            automationShowMeImmediateApps = AutomationShowMeImmediateApps();
-            automationShowMeImGuiTestEngine = AutomationShowMeImGuiTestEngine();
-        }
-        // set automation speed
+        if (inited) return;
+        if (!HelloImGui::GetRunnerParams()->useImGuiTestEngine) return;
+        inited = true;
+        showImmediateApps = AutomationShowMeImmediateApps();
+        showCustomBackground = AutomationShowMeCustomBackgroundExample();
+        showDocking = AutomationShowMeDockingExample();
         ImGuiTestEngineIO& engineIo = ImGuiTestEngine_GetIO(HelloImGui::GetImGuiTestEngine());
         engineIo.ConfigRunSpeed = ImGuiTestRunSpeed_Cinematic;
-        // Optional: show test engine window
-        //ImGuiTestEngine_ShowTestEngineWindows(HelloImGui::GetImGuiTestEngine(), nullptr);
     }
+
+    void ShowLink(const char* label, ImGuiTest* automation)
+    {
+        if (!automation) return;
+        ImGui::Spacing();
+        ImGui::PushStyleColor(ImGuiCol_Text, ImGuiMd::LinkColor());
+        ImGui::Text("%s", label);
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+        {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+            if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+            {
+                ImGui::SetWindowFocus(NULL);
+                ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automation);
+            }
+        }
+        ImGui::PopStyleColor();
+    }
+}
+
 #endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 
-    ImGuiMd::RenderUnindented(R"(
-        *Dear ImGui Bundle: easily create ImGui applications in Python and C++. Batteries included!*
 
-        Welcome to the interactive manual for *Dear ImGui Bundle*! This manual present lots of examples, together with their code (in C++ and Python).
+// ============================================================================
+// Carousel infrastructure
+// ============================================================================
 
-        Advices:
-        * For Python users, read this introduction to Immediate Mode GUI with Python and Dear ImGui Bundle
-    )");
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
-    if (ImGui::Button("Immediate Mode GUI with Python"))
-        ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle/blob/main/docs/docs_md/imgui_python_intro.md");
+struct CarouselSlide
+{
+    const char* title;       // bold heading
+    const char* description; // one-liner below
+    void (*guiFunc)(ImVec2 contentSize);
+};
 
-    ImGuiMd::RenderUnindented(R"(
-        * This interactive manual works best when viewed together with ["Dear ImGui Bundle docs"](https://pthom.github.io/imgui_bundle/)
-        * Browse through demos in the different tabs: at the top of each tab, there is a collapsible header named "Code for this demo". Click on it to show the source code for the current demo.
-    )");
-#ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
+// Exponential smoothing: approaches target with a given speed (higher = faster)
+static float SmoothDamp(float current, float target, float speed, float dt)
+{
+    return current + (target - current) * (1.0f - expf(-speed * dt));
+}
+
+// Draw a colored rounded-rect background, then run drawWidgets inside a child window.
+template<typename F>
+static void DrawSidePanel(const char* id, float width, float height, F drawWidgets)
+{
+    float em = HelloImGui::EmSize();
+    ImVec2 panelPos = ImGui::GetCursorScreenPos();
+    ImDrawList* dl = ImGui::GetWindowDrawList();
+
+    ImVec4 accent = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+    ImU32 bg = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.08f));
+    ImU32 border = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.3f));
+    float rounding = em * 0.4f;
+
+    dl->AddRectFilled(panelPos, ImVec2(panelPos.x + width, panelPos.y + height), bg, rounding);
+    dl->AddRect(panelPos, ImVec2(panelPos.x + width, panelPos.y + height), border, rounding, 0, 1.5f);
+
+    ImGui::BeginChild(id, ImVec2(width, height), false,
+                      ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
+    float pad = em * 0.5f;
+    ImGui::SetCursorPos(ImVec2(pad, pad));
+    ImGui::PushItemWidth((width - pad * 2.f) * 0.5f);
+    drawWidgets();
+    ImGui::PopItemWidth();
+    ImGui::EndChild();
+}
+
+
+// ============================================================================
+// Slide 1: Lorenz — ImPlot3D attractor with dual trajectories
+// ============================================================================
+
+namespace IntroLorenz
+{
+    struct LorenzParams {
+        float sigma = 10.0f;
+        float rho = 28.0f;
+        float beta = 8.0f / 3.0f;
+        float dt = 0.01f;
+        int max_size = 2000;
+    };
+
+    static LorenzParams sParams;
+
+    class AnimatedLorenzTrajectory {
+    public:
+        AnimatedLorenzTrajectory(float x, float y, float z) : xs({x}), ys({y}), zs({z}) {}
+        void step() {
+            float x = xs.back(), y = ys.back(), z = zs.back();
+            float dx = sParams.sigma * (y - x);
+            float dy = x * (sParams.rho - z) - y;
+            float dz = x * y - sParams.beta * z;
+            x += dx * sParams.dt;
+            y += dy * sParams.dt;
+            z += dz * sParams.dt;
+            xs.push_back(x); ys.push_back(y); zs.push_back(z);
+            if (xs.size() > (size_t)sParams.max_size) {
+                xs.erase(xs.begin()); ys.erase(ys.begin()); zs.erase(zs.begin());
+            }
+        }
+        std::vector<float> xs, ys, zs;
+    };
+
+    static std::unique_ptr<AnimatedLorenzTrajectory> sTraj1, sTraj2;
+    static bool sInited = false;
+    static float sInitialDelta = 0.1f;
+
+    void InitTrajectories()
     {
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
-        if (ImGui::Button("Show me##demo_code_demo"))
-            ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeCode);
+        sTraj1 = std::make_unique<AnimatedLorenzTrajectory>(0.f, 1.f, 1.05f);
+        sTraj2 = std::make_unique<AnimatedLorenzTrajectory>(0.f + sInitialDelta, 1.f, 1.05f);
     }
 
-    ImGuiMd::RenderUnindented(R"(
-        * The "Demo Apps" tab is especially interesting, as it provide sample starter apps from which you can take inspiration. Click on the "View Code" button to view the apps code, and click on "Run" to run them.
-    )");
-    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
+    void GuiMainPart(ImVec2 plotSize)
     {
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
-        if (ImGui::Button("Show me##demo_imm_apps"))
-            ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), automationShowMeImmediateApps);
+        if (!sInited)
+        {
+            sInited = true;
+            InitTrajectories();
+        }
+
+        if (ImPlot3D::BeginPlot("Lorenz##intro", plotSize))
+        {
+            ImPlot3D::SetupAxes("X", "Y", "Z",
+                                ImPlot3DAxisFlags_AutoFit,
+                                ImPlot3DAxisFlags_AutoFit,
+                                ImPlot3DAxisFlags_AutoFit);
+            ImPlot3D::PlotLine("Trajectory", sTraj1->xs.data(), sTraj1->ys.data(), sTraj1->zs.data(), (int)sTraj1->xs.size());
+            ImPlot3D::PlotLine("Trajectory2", sTraj2->xs.data(), sTraj2->ys.data(), sTraj2->zs.data(), (int)sTraj2->xs.size());
+            ImPlot3D::EndPlot();
+        }
+        sTraj1->step();
+        sTraj2->step();
     }
-#endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    ImGuiMd::RenderUnindented(R"(
-        * The best way to learn about the numerous ImGui widgets usage is to use the online "ImGui Manual" (once inside the manual, you may want to click the "Python" checkbox).
-    )");
-    ImGui::SetCursorPosX(ImGui::GetCursorPosX() + HelloImGui::EmSize(1.f));
-    if (ImGui::Button("Open ImGui Manual"))
-        ImmApp::BrowseToUrl("https://pthom.github.io/imgui_manual_online/manual/imgui_manual.html");
+
+    void GuiSidePanel()
+    {
+        ImGui::TextDisabled("Butterfly Effect");
+        ImGui::SetItemTooltip(
+            "Tiny changes in initial conditions lead to\n"
+            "completely different trajectories.\n"
+            "The hallmark of deterministic chaos.");
+        ImGui::Spacing();
+        ImGui::SliderFloat("Sigma", &sParams.sigma, 0.0f, 100.0f);
+        ImGui::SetItemTooltip("Rate of divergence (chaos level)");
+        ImGui::SliderFloat("Rho", &sParams.rho, 0.0f, 100.0f);
+        ImGui::SetItemTooltip("Size and shape of the attractor");
+        ImGui::SliderFloat("Beta", &sParams.beta, 0.0f, 10.0f);
+        ImGui::SetItemTooltip("Damping on vertical movement");
+        ImGui::SliderFloat("dt", &sParams.dt, 0.0f, 0.05f);
+        ImGui::SetItemTooltip("Time step (smaller = smoother)");
+        ImGui::SliderFloat("Delta", &sInitialDelta, 0.0f, 0.2f);
+        ImGui::SetItemTooltip("Initial difference between trajectories");
+        if (ImGui::Button("Reset"))
+            InitTrajectories();
+    }
+
+    void SlideGui(ImVec2 contentSize)
+    {
+        float em = HelloImGui::EmSize();
+        float mainSide = contentSize.y;
+        float gap = em * 0.5f;
+        float sidePanelW = contentSize.x - mainSide - gap;
+
+        GuiMainPart(ImVec2(mainSide, mainSide));
+
+        if (sidePanelW > em * 4.f)
+        {
+            ImGui::SameLine(0.f, gap);
+            DrawSidePanel("##lorenz_side", sidePanelW, mainSide, GuiSidePanel);
+        }
+    }
+} // namespace IntroLorenz
+
+
+// ============================================================================
+// Slide 2: ImPlot showcase — 4 diverse plot types in subplots
+// ============================================================================
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
+
+namespace IntroImPlotShowcase
+{
+    static bool sInited = false;
+    static const int kLineN = 1001;
+    static const int kFilledN = 101;
+    static const int kStemN = 51;
+
+    static std::vector<double> sLineXs;
+
+    // Filled line plots (static)
+    static std::vector<double> sFilledXs, sFilledYs1, sFilledYs2, sFilledYs3;
+
+    // Shaded plots (static)
+    static std::vector<double> sShadedXs, sShadedYs, sShadedYs1, sShadedYs2, sShadedYs3, sShadedYs4;
+
+    // Stem plots (static)
+    static std::vector<double> sStemXs, sStemYs1, sStemYs2;
+
+    static double RandomRange(double low, double high)
+    {
+        return low + (high - low) * ((double)rand() / RAND_MAX);
+    }
+
+    static void Init()
+    {
+        srand(0);
+
+        sLineXs.resize(kLineN);
+        for (int i = 0; i < kLineN; i++)
+            sLineXs[i] = (double)i / (kLineN - 1);
+
+        // Filled line plots
+        sFilledXs.resize(kFilledN);
+        sFilledYs1.resize(kFilledN);
+        sFilledYs2.resize(kFilledN);
+        sFilledYs3.resize(kFilledN);
+        for (int i = 0; i < kFilledN; i++)
+        {
+            sFilledXs[i] = (double)i;
+            sFilledYs1[i] = RandomRange(400.0, 450.0);
+            sFilledYs2[i] = RandomRange(275.0, 350.0);
+            sFilledYs3[i] = RandomRange(150.0, 225.0);
+        }
+
+        // Shaded plots
+        sShadedXs.resize(kLineN);
+        sShadedYs.resize(kLineN);
+        sShadedYs1.resize(kLineN);
+        sShadedYs2.resize(kLineN);
+        sShadedYs3.resize(kLineN);
+        sShadedYs4.resize(kLineN);
+        for (int i = 0; i < kLineN; i++)
+        {
+            double x = (double)i / (kLineN - 1);
+            sShadedXs[i] = x;
+            sShadedYs[i] = 0.25 + 0.25 * sin(25.0 * x) * sin(5.0 * x) + RandomRange(-0.01, 0.01);
+            sShadedYs1[i] = sShadedYs[i] + RandomRange(0.1, 0.12);
+            sShadedYs2[i] = sShadedYs[i] - RandomRange(0.1, 0.12);
+            sShadedYs3[i] = 0.75 + 0.2 * sin(25.0 * x);
+            sShadedYs4[i] = 0.75 + 0.1 * cos(25.0 * x);
+        }
+
+        // Stem plots
+        sStemXs.resize(kStemN);
+        sStemYs1.resize(kStemN);
+        sStemYs2.resize(kStemN);
+        for (int i = 0; i < kStemN; i++)
+        {
+            double x = (double)i / (kStemN - 1);
+            sStemXs[i] = x;
+            sStemYs1[i] = 1.0 + 0.5 * sin(25.0 * x) * cos(2.0 * x);
+            sStemYs2[i] = 0.5 + 0.25 * sin(10.0 * x) * sin(x);
+        }
+
+        sInited = true;
+    }
+
+    static void Subplot1_LinePlots()
+    {
+        double t = ImGui::GetTime() * 1.5;
+        std::vector<double> ys1(kLineN), ys2(kLineN), ys3(kLineN);
+        for (int i = 0; i < kLineN; i++)
+        {
+            double x = sLineXs[i];
+            ys1[i] = 0.5 + 0.5 * sin(6.0 * (x + t));
+            ys2[i] = 0.5 + 0.3 * cos(4.0 * (x + t));
+            ys3[i] = 0.5 + 0.2 * sin(10.0 * x + t) * cos(3.0 * x + t);
+        }
+        if (ImPlot::BeginPlot("Line Plots"))
+        {
+            ImPlot::SetupAxes("x", "y", ImPlotAxisFlags_NoTickLabels, ImPlotAxisFlags_NoTickLabels);
+            ImPlot::SetupAxesLimits(0, 1, -0.1, 1.1);
+            ImPlot::PlotLine("f(x)", sLineXs.data(), ys1.data(), kLineN);
+            ImPlot::PlotLine("g(x)", sLineXs.data(), ys2.data(), kLineN);
+            ImPlot::PlotLine("h(x)", sLineXs.data(), ys3.data(), kLineN);
+            ImPlot::EndPlot();
+        }
+    }
+
+    static void Subplot2_Filled()
+    {
+        if (ImPlot::BeginPlot("Stock Prices"))
+        {
+            ImPlot::SetupAxes("Days", "Price");
+            ImPlot::SetupAxesLimits(0, 100, 0, 500);
+            ImPlotSpec spec;
+            spec.FillAlpha = 0.25f;
+            ImPlot::PlotShaded("Stock 1", sFilledXs.data(), sFilledYs1.data(), kFilledN, 0.0, spec);
+            ImPlot::PlotLine("Stock 1", sFilledXs.data(), sFilledYs1.data(), kFilledN);
+            ImPlot::PlotShaded("Stock 2", sFilledXs.data(), sFilledYs2.data(), kFilledN, 0.0, spec);
+            ImPlot::PlotLine("Stock 2", sFilledXs.data(), sFilledYs2.data(), kFilledN);
+            ImPlot::PlotShaded("Stock 3", sFilledXs.data(), sFilledYs3.data(), kFilledN, 0.0, spec);
+            ImPlot::PlotLine("Stock 3", sFilledXs.data(), sFilledYs3.data(), kFilledN);
+            ImPlot::EndPlot();
+        }
+    }
+
+    static void Subplot3_Shaded()
+    {
+        ImPlotSpec spec;
+        spec.FillAlpha = 0.25f;
+        if (ImPlot::BeginPlot("Shaded Plots"))
+        {
+            ImPlot::SetupLegend(ImPlotLocation_NorthWest, ImPlotLegendFlags_Reverse);
+            ImPlot::PlotShaded("Uncertain Data", sShadedXs.data(), sShadedYs1.data(), sShadedYs2.data(), kLineN, spec);
+            ImPlot::PlotLine("Uncertain Data", sShadedXs.data(), sShadedYs.data(), kLineN, spec);
+            ImPlot::PlotShaded("Overlapping", sShadedXs.data(), sShadedYs3.data(), sShadedYs4.data(), kLineN, spec);
+            ImPlot::PlotLine("Overlapping", sShadedXs.data(), sShadedYs3.data(), kLineN, spec);
+            ImPlot::PlotLine("Overlapping", sShadedXs.data(), sShadedYs4.data(), kLineN, spec);
+            ImPlot::EndPlot();
+        }
+    }
+
+    static void Subplot4_Stems()
+    {
+        if (ImPlot::BeginPlot("Stem Plots"))
+        {
+            ImPlot::SetupAxisLimits(ImAxis_X1, 0, 1.0);
+            ImPlot::SetupAxisLimits(ImAxis_Y1, 0, 1.6);
+            ImPlot::PlotStems("Stems 1", sStemXs.data(), sStemYs1.data(), kStemN);
+            ImPlot::PlotStems("Stems 2", sStemXs.data(), sStemYs2.data(), kStemN, 0.0,
+                ImPlotSpec(ImPlotProp_Marker, (double)ImPlotMarker_Circle));
+            ImPlot::EndPlot();
+        }
+    }
+
+    void SlideGui(ImVec2 plotSize)
+    {
+        if (!sInited)
+            Init();
+        if (ImPlot::BeginSubplots("##ImPlotShowcase", 2, 2, plotSize, ImPlotSubplotFlags_NoResize))
+        {
+            Subplot1_LinePlots();
+            Subplot2_Filled();
+            Subplot3_Shaded();
+            Subplot4_Stems();
+            ImPlot::EndSubplots();
+        }
+    }
+} // namespace IntroImPlotShowcase
+
+#endif // IMGUI_BUNDLE_WITH_IMPLOT
+
+
+// ============================================================================
+// Slide 4: Angled Headers Table — drum sequencer
+// ============================================================================
+
+namespace IntroTable
+{
+    static const char* instruments[] = {"kick", "snare", "hihat", "open-hh", "tom", "clap", "rim", "crash"};
+    static const int kNumInstr = 8;
+    static const int kNumBeats = 8;
+    static bool sPattern[kNumBeats][kNumInstr];
+    static bool sInited = false;
+    static int sPlayhead = 0;
+    static float sBpm = 140.f;
+    static bool sPlaying = true;
+    static float sAccum = 0.f;
+    static ImVec4 sHlColor = ImVec4(0.3f, 0.5f, 1.0f, 0.25f);
+
+    static void Init()
+    {
+        memset(sPattern, 0, sizeof(sPattern));
+        sPattern[0][0] = sPattern[4][0] = true;  // kick
+        sPattern[2][1] = sPattern[6][1] = true;  // snare
+        for (int i = 0; i < kNumBeats; i += 2)
+            sPattern[i][2] = true;                 // hihat
+        sPattern[1][3] = sPattern[5][3] = true;   // open-hh
+        sPattern[3][4] = true;                     // tom
+        sPattern[6][5] = true;                     // clap
+        sPattern[4][6] = sPattern[7][6] = true;   // rim
+        sPattern[0][7] = true;                     // crash
+    }
+
+    static void Update()
+    {
+        if (!sPlaying) return;
+        sAccum += ImGui::GetIO().DeltaTime;
+        float beatInterval = 60.f / sBpm;
+        if (sAccum >= beatInterval) {
+            sAccum -= beatInterval;
+            sPlayhead = (sPlayhead + 1) % kNumBeats;
+        }
+    }
+
+    void GuiMainPart(ImVec2 size)
+    {
+        if (!sInited) { sInited = true; Init(); }
+        Update();
+
+        int totalCols = kNumInstr + 1;
+        ImGuiTableFlags flags = ImGuiTableFlags_SizingFixedFit
+            | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY
+            | ImGuiTableFlags_BordersOuter | ImGuiTableFlags_BordersInnerH
+            | ImGuiTableFlags_HighlightHoveredColumn;
+
+        if (ImGui::BeginTable("##drum_seq", totalCols, flags, size))
+        {
+            ImGui::TableSetupColumn("Beat", ImGuiTableColumnFlags_NoHide);
+            for (int n = 0; n < kNumInstr; n++)
+                ImGui::TableSetupColumn(instruments[n],
+                    ImGuiTableColumnFlags_AngledHeader | ImGuiTableColumnFlags_WidthFixed);
+            ImGui::TableSetupScrollFreeze(1, 2);
+
+            ImGui::TableAngledHeadersRow();
+            ImGui::TableHeadersRow();
+
+            ImU32 hlCol = ImGui::ColorConvertFloat4ToU32(sHlColor);
+
+            for (int row = 0; row < kNumBeats; row++)
+            {
+                ImGui::PushID(row);
+                ImGui::TableNextRow();
+
+                bool isPlayhead = (row == sPlayhead) && sPlaying;
+
+                ImGui::TableSetColumnIndex(0);
+                if (isPlayhead)
+                    ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, hlCol);
+                ImGui::AlignTextToFramePadding();
+                ImGui::Text("%d", row + 1);
+
+                for (int col = 0; col < kNumInstr; col++)
+                {
+                    if (ImGui::TableSetColumnIndex(col + 1))
+                    {
+                        if (isPlayhead)
+                            ImGui::TableSetBgColor(ImGuiTableBgTarget_CellBg, hlCol);
+                        ImGui::PushID(col);
+                        ImGui::Checkbox("", &sPattern[row][col]);
+                        ImGui::PopID();
+                    }
+                }
+                ImGui::PopID();
+            }
+            ImGui::EndTable();
+        }
+    }
+
+    void GuiSidePanel()
+    {
+        float em = HelloImGui::EmSize();
+
+        // Play/Pause toggle
+        ImGui::Text("Play");
+        auto toggleConfig = ImGuiTogglePresets::MaterialStyle();
+        toggleConfig.Size = ImVec2(em * 2.5f, em * 1.2f);
+        ImGui::Toggle("##play", &sPlaying, toggleConfig);
+
+        // BPM knob
+        ImGui::Spacing();
+        ImGui::Text("Tempo");
+        ImGuiKnobs::Knob("##bpm", &sBpm, 60.f, 300.f, 0.f, "%.0f",
+            ImGuiKnobVariant_WiperDot, em * 3.5f, ImGuiKnobFlags_AlwaysClamp);
+
+        // Highlight color picker
+        ImGui::Spacing();
+        ImGui::Text("Highlight");
+        ImGuiColorEditFlags pickerFlags = ImGuiColorEditFlags_NoSidePreview
+            | ImGuiColorEditFlags_NoInputs
+            | ImGuiColorEditFlags_NoLabel
+            | ImGuiColorEditFlags_AlphaBar
+            | ImGuiColorEditFlags_PickerHueWheel;
+        ImGui::ColorPicker4("##hl_wheel", &sHlColor.x, pickerFlags);
 
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
+        ImGui::NewLine();
+        ImGui::NewLine();
+            IntroAutomations::ShowLink("More info: complex app layout", IntroAutomations::showDocking);
+#endif
+    }
+
+    void SlideGui(ImVec2 contentSize)
+    {
+        float em = HelloImGui::EmSize();
+        float mainSide = contentSize.y;
+        float gap = em * 0.5f;
+        float sidePanelW = contentSize.x - mainSide - gap;
+
+        GuiMainPart(ImVec2(mainSide, mainSide));
+
+        if (sidePanelW > em * 4.f)
+        {
+            ImGui::SameLine(0.f, gap);
+            DrawSidePanel("##table_side", sidePanelW, mainSide, GuiSidePanel);
+        }
+    }
+} // namespace IntroTable
+
+
+// ============================================================================
+// Slide 5: ImmVision — Image debugging with animated zoom
+// ============================================================================
+#ifdef IMGUI_BUNDLE_WITH_IMMVISION
+
+namespace IntroImmVision
+{
+    static ImmVision::ImageBuffer sImage;
+    static ImmVision::ImageBuffer sImageSobel;
+    static ImmVision::ImageParams sParams;
+    static ImmVision::ImageParams sParamsSobel;
+    static bool sInited = false;
+    static bool sAnimating = true;
+    static double sStartTime = 0.;
+    static float sBlurSize = 1.25f;
+
+    // Zoom animation
+    static constexpr double kZoomInDuration = 1.5;
+    static constexpr double kHoldDuration = 1.5;
+    static constexpr double kZoomOutDuration = 1.5;
+    static constexpr double kPauseDuration = 1.5;
+    static constexpr double kTotalCycle = kZoomInDuration + kHoldDuration + kZoomOutDuration + kPauseDuration;
+    static constexpr double kMinZoom = 1.0;
+    static constexpr double kMaxZoom = 70.0;
+
+    static ImmVision::Point2d sZoomCenter;
+
+    // Simplified Sobel: RGB→gray, box blur, 3x3 vertical Sobel kernel
+    static ImmVision::ImageBuffer ComputeSobel()
+    {
+        int w = sImage.width, h = sImage.height;
+
+        // RGB to grayscale float
+        ImmVision::ImageBuffer gray = ImmVision::ImageBuffer::Zeros(w, h, 1, ImmVision::ImageDepth::float64);
+        for (int y = 0; y < h; y++)
+        {
+            const uint8_t* src = sImage.ptr<uint8_t>(y);
+            double* dst = gray.ptr<double>(y);
+            for (int x = 0; x < w; x++)
+                dst[x] = (0.299 * src[x * 3] + 0.587 * src[x * 3 + 1] + 0.114 * src[x * 3 + 2]) / 255.0;
+        }
+
+        // Separable box blur (approximate Gaussian)
+        int radius = std::max(1, (int)(sBlurSize * 2.0f));
+        ImmVision::ImageBuffer blurred = ImmVision::ImageBuffer::Zeros(w, h, 1, ImmVision::ImageDepth::float64);
+        // Horizontal pass
+        for (int y = 0; y < h; y++)
+        {
+            const double* src = gray.ptr<double>(y);
+            double* dst = blurred.ptr<double>(y);
+            for (int x = 0; x < w; x++)
+            {
+                double sum = 0; int count = 0;
+                for (int dx = -radius; dx <= radius; dx++)
+                {
+                    int xx = std::clamp(x + dx, 0, w - 1);
+                    sum += src[xx]; count++;
+                }
+                dst[x] = sum / count;
+            }
+        }
+        // Vertical pass (in-place via temp)
+        ImmVision::ImageBuffer temp = blurred.clone();
+        for (int y = 0; y < h; y++)
+        {
+            double* dst = blurred.ptr<double>(y);
+            for (int x = 0; x < w; x++)
+            {
+                double sum = 0; int count = 0;
+                for (int dy = -radius; dy <= radius; dy++)
+                {
+                    int yy = std::clamp(y + dy, 0, h - 1);
+                    sum += temp.ptr<double>(yy)[x]; count++;
+                }
+                dst[x] = sum / count;
+            }
+        }
+
+        // 3x3 vertical Sobel: [-1,0,1; -2,0,2; -1,0,1]
+        ImmVision::ImageBuffer sobel = ImmVision::ImageBuffer::Zeros(w, h, 1, ImmVision::ImageDepth::float64);
+        for (int y = 1; y < h - 1; y++)
+        {
+            const double* r0 = blurred.ptr<double>(y - 1);
+            const double* r1 = blurred.ptr<double>(y);
+            const double* r2 = blurred.ptr<double>(y + 1);
+            double* dst = sobel.ptr<double>(y);
+            for (int x = 1; x < w - 1; x++)
+                dst[x] = -r0[x-1] - 2*r1[x-1] - r2[x-1] + r0[x+1] + 2*r1[x+1] + r2[x+1];
+        }
+        return sobel;
+    }
+
+    static void Init()
+    {
+        ImmVision::UseRgbColorOrder();
+        sImage = ImmVision::ImRead(DemosAssetsFolder() + "/images/house.jpg");
+        sImageSobel = ComputeSobel();
+
+        int dispW = (int)HelloImGui::EmSize(20.f);
+        sParams.ImageDisplaySize = ImmVision::Size(dispW, 0);
+        sParams.ShowOptionsPanel = false;
+        sParams.ShowImageInfo = false;
+        sParams.ShowPixelInfo = true;
+        sParams.ShowZoomButtons = false;
+        sParams.ZoomKey = "intro_immvision";
+
+        sParamsSobel.ImageDisplaySize = ImmVision::Size(dispW, 0);
+        sParamsSobel.ShowOptionsPanel = false;
+        sParamsSobel.ShowImageInfo = false;
+        sParamsSobel.ShowPixelInfo = true;
+        sParamsSobel.ShowZoomButtons = false;
+        sParamsSobel.ZoomKey = "intro_immvision";
+
+        sZoomCenter = ImmVision::Point2d(sImage.cols() * 0.35, sImage.rows() * 0.45);
+        sStartTime = ImmApp::ClockSeconds();
+    }
+
+    static double CurrentZoomRatio()
+    {
+        double elapsed = fmod(ImmApp::ClockSeconds() - sStartTime, kTotalCycle);
+
+        if (elapsed < kZoomInDuration) {
+            double t = elapsed / kZoomInDuration;
+            double eased = 1.0 - (1.0 - t) * (1.0 - t);
+            return kMinZoom + (kMaxZoom - kMinZoom) * eased;
+        }
+        elapsed -= kZoomInDuration;
+        if (elapsed < kHoldDuration)
+            return kMaxZoom;
+        elapsed -= kHoldDuration;
+        if (elapsed < kZoomOutDuration) {
+            double t = elapsed / kZoomOutDuration;
+            double eased = t * t;
+            return kMaxZoom - (kMaxZoom - kMinZoom) * eased;
+        }
+        return kMinZoom;
+    }
+
+    static bool CheckUserInteraction()
+    {
+        bool hovering = sParams.MouseInfo.IsMouseHovering || sParamsSobel.MouseInfo.IsMouseHovering;
+        if (hovering && (ImGui::IsMouseDragging(0) || ImGui::GetIO().MouseWheel != 0.f))
+            return true;
+        return false;
+    }
+
+    void GuiMainPart(ImVec2 size)
+    {
+        if (!sInited) { sInited = true; Init(); }
+
+        // Stop animation on user interaction
+        if (sAnimating && CheckUserInteraction())
+            sAnimating = false;
+
+        // Update zoom matrix while animating
+        if (sAnimating)
+        {
+            double zoom = CurrentZoomRatio();
+            sParams.ZoomPanMatrix = ImmVision::MakeZoomPanMatrix(
+                sZoomCenter, zoom, sParams.ImageDisplaySize);
+            sParamsSobel.ZoomPanMatrix = sParams.ZoomPanMatrix;
+        }
+
+        // Size each image to half the available width
+        int halfW = (int)(size.x * 0.5f - HelloImGui::EmSize(1.5f));
+        sParams.ImageDisplaySize = ImmVision::Size(halfW, 0);
+        sParamsSobel.ImageDisplaySize = ImmVision::Size(halfW, 0);
+
+        ImmVision::Image("Original##intro", sImage, &sParams);
+        ImGui::SameLine();
+        ImmVision::Image("Sobel##intro", sImageSobel, &sParamsSobel);
+    }
+
+    void GuiSidePanel()
+    {
+        ImGui::TextDisabled("Drag to pan, scroll to zoom");
+        if (!sAnimating)
+        {
+            if (ImGui::Button("Restart animation"))
+            {
+                sAnimating = true;
+                sStartTime = ImmApp::ClockSeconds();
+            }
+        }
+        ImGui::Separator();
+
+        if (ImGui::SliderFloat("Blur", &sBlurSize, 0.5f, 10.0f))
+        {
+            sImageSobel = ComputeSobel();
+            sParamsSobel.RefreshImage = true;
+        }
+    }
+
+    void SlideGui(ImVec2 contentSize)
+    {
+        float em = HelloImGui::EmSize();
+        float mainW = contentSize.x;          // images use full width (they're side by side internally)
+        float mainH = contentSize.y * 0.7f;   // images take ~70% height
+        float gap = em * 0.5f;
+        float sidePanelH = contentSize.y - mainH - gap;
+
+        GuiMainPart(ImVec2(mainW, mainH));
+
+        if (sidePanelH > em * 3.f)
+        {
+            ImGui::Spacing();
+            DrawSidePanel("##immvision_side", mainW, sidePanelH, GuiSidePanel);
+        }
+    }
+} // namespace IntroImmVision
+
+#endif // IMGUI_BUNDLE_WITH_IMMVISION
+
+
+// ============================================================================
+// Slide 6: Notebook — static screenshot
+// ============================================================================
+
+namespace IntroNotebook
+{
+    void SlideGui(ImVec2 contentSize)
+    {
+        // Display the screenshot, fitting it within the content area
+        // The image is landscape (~16:10 aspect ratio from the screenshot)
+        float imgAspect = 1680.f / 1050.f;  // approximate from screenshot
+        float w = contentSize.x;
+        float h = w / imgAspect;
+        if (h > contentSize.y) { h = contentSize.y; w = h * imgAspect; }
+        HelloImGui::ImageFromAsset("images/imgui_notebook.jpg", ImVec2(w, h));
+    }
+} // namespace IntroNotebook
+
+
+// ============================================================================
+// Slide 7: Node Editor — static screenshot
+// ============================================================================
+
+namespace IntroNodeEditor
+{
+    void SlideGui(ImVec2 contentSize)
+    {
+        float imgAspect = 800.f / 516.f;
+        float linkH = ImGui::GetFrameHeight();
+        float w = contentSize.x;
+        float h = w / imgAspect;
+        if (h > contentSize.y - linkH) { h = contentSize.y - linkH; w = h * imgAspect; }
+        HelloImGui::ImageFromAsset("images/node_editor_fiat.jpg", ImVec2(w, h));
+        ImGuiMd::RenderUnindented("Built with [fiatlight](https://pthom.github.io/fiatlight_doc/)");
+    }
+} // namespace IntroNodeEditor
+
+
+// ============================================================================
+// Slide 7: Markdown rendering — side-by-side source / rendered
+// ============================================================================
+
+namespace IntroMarkdown
+{
+    static const char* kMarkdownSample = R"(## Quick Start Guide
+
+**ImGui Bundle** makes it easy to build
+_beautiful_ apps with rich documentation.
+
+Features:
+- Headers, **bold**, *italic*, ~~strikethrough~~
+- [Clickable links](https://github.com/pthom/imgui_bundle)
+- Syntax-highlighted code blocks
+
+```python
+import imgui_bundle
+imgui_md.render("# Hello!")
+```
+
+Tip: *You can resize the columns on the table below!*
+
+| Library   | Domain          |
+|-----------|-----------------|
+| ImPlot    | 2D plots        |
+| ImPlot3D  | 3D plots        |
+| ImmVision | Image analysis  |
+
+)";
+
+    // Markdown editor with syntax highlighting
+    static TextEditor* sMarkdownEditor = nullptr;
+    static bool sMarkdownEditorInitialized = false;
+
+    void InitMarkdownEditor()
+    {
+        if (!sMarkdownEditorInitialized)
+        {
+            sMarkdownEditor = new TextEditor();
+            sMarkdownEditor->SetText(kMarkdownSample);
+            // Use C++ language definition as a reasonable approximation for markdown
+            // (it will highlight code blocks and some syntax)
+            sMarkdownEditor->SetLanguage(TextEditor::Language::Cpp());
+            sMarkdownEditor->SetPalette(TextEditor::GetDarkPalette());
+            sMarkdownEditorInitialized = true;
+        }
+    }
+
+    void SlideGui(ImVec2 contentSize)
+    {
+        InitMarkdownEditor();
+
+        float em = HelloImGui::EmSize();
+        float gap = em * 0.5f;
+        float halfW = (contentSize.x - gap) * 0.5f;
+        float h = contentSize.y;
+
+        // Left panel background
+        ImVec4 accent = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+        ImU32 bg     = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.08f));
+        ImU32 border = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.3f));
+        float rounding = em * 0.4f;
+
+        ImVec2 panelPos = ImGui::GetCursorScreenPos();
+        ImDrawList* dl = ImGui::GetWindowDrawList();
+        dl->AddRectFilled(panelPos, ImVec2(panelPos.x + halfW, panelPos.y + h), bg, rounding);
+        dl->AddRect(panelPos, ImVec2(panelPos.x + halfW, panelPos.y + h), border, rounding, 0, 1.5f);
+
+        // Left child: editable source with syntax highlighting
+        ImGui::BeginChild("##md_source", ImVec2(halfW, h), false, ImGuiWindowFlags_NoBackground);
+
+        // Use code font for better readability
+        auto codeFont = ImGuiMd::GetCodeFont();
+        ImGui::PushFont(codeFont.font, codeFont.size * 0.9f);
+
+        // Render the text editor (it will fill the child window)
+        sMarkdownEditor->Render("##md_editor");
+
+        ImGui::PopFont();
+        ImGui::EndChild();
+
+        ImGui::SameLine(0, gap);
+
+        // Right child: rendered markdown
+        ImGui::BeginChild("##md_rendered", ImVec2(halfW, h), false, ImGuiWindowFlags_NoScrollbar);
+        // Get the current text from the editor
+        std::string currentMarkdown = sMarkdownEditor->GetText();
+        ImGuiMd::RenderUnindented(currentMarkdown.c_str());
+        ImGui::EndChild();
+    }
+} // namespace IntroMarkdown
+
+
+// ============================================================================
+// Slide 8: Source Code Viewer — Self-documenting demo
+// ============================================================================
+
+namespace IntroSourceCode
+{
+    void SlideGui(ImVec2 contentSize)
+    {
+        ImGui::BeginChild("##source_code", contentSize, false);
+        ShowPythonVsCppFile("demo_imgui_bundle_intro", 25);
+        ImGui::EndChild();
+    }
+} // namespace IntroSourceCode
+
+
+// ============================================================================
+// Slide 9: Mini Gallery — "Code that reads like a book"
+// ============================================================================
+
+namespace IntroGallery
+{
+    struct SnippetInfo {
+        const char* title;
+        const char* pythonCode;
+        const char* cppCode;
+    };
+
+    static const SnippetInfo sSnippets[] = {
+        { "Animated Plot",
+          // Python
+          "t = imgui.get_time()\n"
+          "x = np.linspace(0, 4 * np.pi, 200)\n"
+          "if implot.begin_plot(\"##wave\", ImVec2(-1, -1)):\n"
+          "    implot.plot_line(\"sin\", x, np.sin(x + t))\n"
+          "    implot.plot_line(\"cos\", x, np.cos(x + t * 0.7))\n"
+          "    implot.end_plot()",
+          // C++
+          "float t = ImGui::GetTime();\n"
+          "std::vector<float> x(200), s(200), c(200);\n"
+          "for (int i = 0; i < 200; i++) {\n"
+          "    x[i] = i * 4.f * IM_PI / 199.f;\n"
+          "    s[i] = sinf(x[i] + t);\n"
+          "    c[i] = cosf(x[i] + t * 0.7f);\n"
+          "}\n"
+          "if (ImPlot::BeginPlot(\"##wave\", ImVec2(-1, -1))) {\n"
+          "    ImPlot::PlotLine(\"sin\", x.data(), s.data(), 200);\n"
+          "    ImPlot::PlotLine(\"cos\", x.data(), c.data(), 200);\n"
+          "    ImPlot::EndPlot();\n"
+          "}" },
+        { "Knob",
+          // Python
+          "_, value = imgui_knobs.knob(\n"
+          "    \"Volume\", value, 0, 100, 1,\n"
+          "    \"%.0f%%\", imgui_knobs.ImGuiKnobVariant_.wiper_dot)\n"
+          "imgui.same_line()\n"
+          "imgui.v_slider_float(\"##vslider\",\n"
+          "    ImVec2(em * 1.5, em * 5), value, 0, 100, \"%.0f\")",
+          // C++
+          "ImGuiKnobs::Knob(\n"
+          "    \"Volume\", &value, 0, 100, 1,\n"
+          "    \"%.0f%%\", ImGuiKnobVariant_WiperDot);\n"
+          "ImGui::SameLine();\n"
+          "ImGui::VSliderFloat(\"##vslider\",\n"
+          "    ImVec2(em * 1.5f, em * 5.f), &value, 0, 100, \"%.0f\");" },
+        { "Color Picker",
+          // Python
+          "# c is an ImVec4\n"
+          "imgui.text(f\"({c[0]:.2f}, {c[1]:.2f}, {c[2]:.2f})\")\n"
+          "_, c = imgui.color_picker4(\"##color\", c)",
+          // C++
+          "// c is an ImVec4\n"
+          "ImGui::Text(\"(%.2f, %.2f, %.2f)\", c.x, c.y, c.z);\n"
+          "ImGui::ColorPicker4(\"##color\", &c.x);" },
+        { "Mini Form",
+          // Python
+          "_, name = imgui.input_text(\"Name\", name)\n"
+          "if imgui.button(\"Greet\") and name:\n"
+          "    greeting = f\"Hello, {name}!\"\n"
+          "imgui.text_colored(ImVec4(0.4, 1, 0.4, 1), greeting)\n"
+          "_, agreed = imgui.checkbox(\"I agree\", agreed)\n"
+          "_, choice = imgui.combo(\"Fruit\", choice,\n"
+          "                        [\"Apple\", \"Banana\", \"Cherry\"])",
+          // C++
+          "ImGui::InputText(\"Name\", name, sizeof(name));\n"
+          "if (ImGui::Button(\"Greet\") && name[0])\n"
+          "    snprintf(greeting, sizeof(greeting), \"Hello, %s!\", name);\n"
+          "ImGui::TextColored(ImVec4(0.4f,1,0.4f,1), \"%s\", greeting);\n"
+          "ImGui::Checkbox(\"I agree\", &agreed);\n"
+          "ImGui::Combo(\"Fruit\", &choice, \"Apple\\0Banana\\0Cherry\\0\");" },
+    };
+    static const int kSnippetCount = IM_ARRAYSIZE(sSnippets);
+
+    // Editors: [0]=Python, [1]=C++, each has kSnippetCount editors
+    static TextEditor sEditors[2][kSnippetCount];
+    static bool sInitialized = false;
+    static int sLang = 0; // 0=Python, 1=C++
+
+    // Live demo state
+    static float sKnobVal = 42.f;
+    static ImVec4 sColor = {0.4f, 0.6f, 1.0f, 1.0f};
+    static char sName[128] = "World";
+    static char sGreeting[256] = "Hello, World!";
+    static bool sAgreed = true;
+    static int sChoice = 0;
+
+    void Init()
+    {
+        const TextEditor::Language* langDefs[] = {
+            TextEditor::Language::Python(),
+            TextEditor::Language::Cpp()
+        };
+        for (int lang = 0; lang < 2; lang++)
+        {
+            for (int i = 0; i < kSnippetCount; i++)
+            {
+                const char* code = (lang == 0) ? sSnippets[i].pythonCode : sSnippets[i].cppCode;
+                sEditors[lang][i].SetText(code);
+                sEditors[lang][i].SetLanguage(langDefs[lang]);
+                sEditors[lang][i].SetPalette(TextEditor::GetDarkPalette());
+                // sEditors[lang][i].SetReadOnly(true);
+            }
+        }
+        sInitialized = true;
+    }
+
+    void GuiPlot()
+    {
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
+        float t = (float)ImGui::GetTime();
+        static float x[200], s[200], c[200];
+        for (int i = 0; i < 200; i++)
+        {
+            x[i] = i * 4.f * IM_PI / 199.f;
+            s[i] = sinf(x[i] + t);
+            c[i] = cosf(x[i] + t * 0.7f);
+        }
+        if (ImPlot::BeginPlot("##wave", ImVec2(-1, -1)))
+        {
+            ImPlot::PlotLine("sin", x, s, 200);
+            ImPlot::PlotLine("cos", x, c, 200);
+            ImPlot::EndPlot();
+        }
+#else
+        ImGui::Text("ImPlot not available");
+#endif
+    }
+
+    void GuiKnob()
+    {
+        float em = HelloImGui::EmSize();
+        ImGuiKnobs::Knob("Volume", &sKnobVal, 0, 100, 1,
+                          "%.0f%%", ImGuiKnobVariant_WiperDot);
+        ImGui::SameLine();
+        ImGui::VSliderFloat("##vslider", ImVec2(em * 1.5f, em * 5.f),
+                            &sKnobVal, 0, 100, "%.0f");
+    }
+
+    void GuiColor()
+    {
+        ImGui::Text("(%.2f, %.2f, %.2f)", sColor.x, sColor.y, sColor.z);
+        ImGui::ColorPicker4("##color", &sColor.x);
+    }
+
+    void GuiForm()
+    {
+        ImGui::SetNextItemWidth(-1);
+        ImGui::InputText("Name", sName, sizeof(sName));
+        if (ImGui::Button("Greet") && sName[0])
+            snprintf(sGreeting, sizeof(sGreeting), "Hello, %s!", sName);
+        ImGui::TextColored(ImVec4(0.4f, 1.f, 0.4f, 1.f), "%s", sGreeting);
+        ImGui::Checkbox("I agree", &sAgreed);
+        ImGui::SetNextItemWidth(-1);
+        ImGui::Combo("Fruit", &sChoice, "Apple\0Banana\0Cherry\0");
+    }
+
+    using GuiFunc = void(*)();
+    static GuiFunc sGuiFuncs[] = { GuiPlot, GuiKnob, GuiColor, GuiForm };
+    static double sCopyTime[kSnippetCount] = {};
+
+    void RenderCell(int idx, float w, float h, float em, GuiFunc guiFunc)
+    {
+        const char* title = sSnippets[idx].title;
+        TextEditor& editor = sEditors[sLang][idx];
+
+        // Background
+        ImDrawList* dl = ImGui::GetWindowDrawList();
+        ImVec2 p = ImGui::GetCursorScreenPos();
+        ImVec4 accent = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+        ImU32 bg = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.06f));
+        ImU32 border = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.25f));
+        float rounding = em * 0.4f;
+        dl->AddRectFilled(p, ImVec2(p.x + w, p.y + h), bg, rounding);
+        dl->AddRect(p, ImVec2(p.x + w, p.y + h), border, rounding, 0, 1.f);
+
+        char childId[32];
+        snprintf(childId, sizeof(childId), "##gallery_%d", idx);
+        ImGui::BeginChild(childId, ImVec2(w, h), false,
+                          ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
+        float pad = em * 0.4f;
+
+        float defaultCodeW = (w - pad * 2.f) * 0.5f;
+        float availH = h - ImGui::GetCursorPosY() - pad;
+
+        // Code (left) — resizable child containing title + copy + editor
+        char codeChildId[32];
+        snprintf(codeChildId, sizeof(codeChildId), "##code_%d", idx);
+        ImGui::BeginChild(codeChildId, ImVec2(defaultCodeW, availH),
+                          ImGuiChildFlags_ResizeX | ImGuiChildFlags_Borders);
+        {
+            // Title + Copy button
+            ImGui::TextDisabled("%s", title);
+            ImGui::SameLine(ImGui::GetContentRegionAvail().x - ImGui::GetFrameHeight());
+            char copyId[32];
+            snprintf(copyId, sizeof(copyId), ICON_FA_COPY "##copy_%d", idx);
+            if (ImGui::SmallButton(copyId))
+            {
+                const char* code = (sLang == 0) ? sSnippets[idx].pythonCode : sSnippets[idx].cppCode;
+                ImGui::SetClipboardText(code);
+                sCopyTime[idx] = ImGui::GetTime();
+            }
+            bool copiedRecently = (ImGui::GetTime() - sCopyTime[idx]) < 0.7;
+            if (copiedRecently)
+                ImGui::SetItemTooltip("Copied!");
+            else
+                ImGui::SetItemTooltip("Copy");
+
+            // Editor
+            auto codeFont = ImGuiMd::GetCodeFont();
+            ImGui::PushFont(codeFont.font, codeFont.size * 0.8f);
+            char editorId[32];
+            snprintf(editorId, sizeof(editorId), "##ed_gallery_%d", idx);
+            editor.Render(editorId, ImVec2(-1, -1), false);
+            ImGui::PopFont();
+        }
+        ImGui::EndChild();
+
+        ImGui::SameLine();
+
+        // Live demo (right) — fills remaining space
+        char liveId[32];
+        snprintf(liveId, sizeof(liveId), "##live_%d", idx);
+        ImGui::BeginChild(liveId, ImVec2(0, availH), false, ImGuiWindowFlags_NoScrollbar);
+        guiFunc();
+        ImGui::EndChild();
+
+        ImGui::EndChild();
+    }
+
+    void SlideGui(ImVec2 contentSize)
+    {
+        if (!sInitialized)
+            Init();
+
+        float em = HelloImGui::EmSize();
+
+        // Language radio buttons
+        ImGui::RadioButton("Python", &sLang, 0);
+        ImGui::SameLine();
+        ImGui::RadioButton("C++", &sLang, 1);
+
+        int cols = 2, rows = 2;
+        float gap = em * 0.4f;
+        float cellW = (contentSize.x - gap * (float)(cols - 1)) / (float)cols;
+        float cursorOffsetY = ImGui::GetCursorScreenPos().y - ImGui::GetWindowPos().y;
+        float remainingH = contentSize.y - cursorOffsetY;
+        float cellH = (remainingH - gap * (float)(rows - 1)) / (float)rows;
+
+        ImVec2 origin = ImGui::GetCursorScreenPos();
+        for (int idx = 0; idx < kSnippetCount; idx++)
+        {
+            int row = idx / cols;
+            int col = idx % cols;
+            float x = origin.x + col * (cellW + gap);
+            float y = origin.y + row * (cellH + gap);
+            ImGui::SetCursorScreenPos(ImVec2(x, y));
+            RenderCell(idx, cellW, cellH, em, sGuiFuncs[idx]);
+        }
+    }
+} // namespace IntroGallery
+
+static void GallerySlideGui(ImVec2 cs) { IntroGallery::SlideGui(cs); }
+
+
+// ============================================================================
+// Slide 10: Web Deployment — static screenshot
+// ============================================================================
+
+namespace IntroWebDeploy
+{
+    void SlideGui(ImVec2 contentSize)
+    {
+        float imgAspect = 1024.f / 768.f;
+        float w = contentSize.x;
+        float h = w / imgAspect;
+        if (h > contentSize.y) { h = contentSize.y; w = h * imgAspect; }
+        HelloImGui::ImageFromAsset("images/bundle_playground.jpg", ImVec2(w, h));
+        if (ImGui::IsItemHovered())
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (ImGui::IsItemClicked())
+            ImmApp::BrowseToUrl("https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/");
+    }
+} // namespace IntroWebDeploy
+
+
+// ============================================================================
+// Slide 8: Seascape shader — FBO + OpenGL
+// ============================================================================
+#ifdef HELLOIMGUI_HAS_OPENGL
+
+namespace IntroShader
+{
+    // --- OpenGL helpers ---
+
+    struct Fbo
+    {
+        GLuint fbo = 0;
+        GLuint texture = 0;
+        int width = 0, height = 0;
+
+        void Create(int w, int h)
+        {
+            width = w; height = h;
+            glGenFramebuffers(1, &fbo);
+            glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+            glGenTextures(1, &texture);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+                std::cerr << "FBO incomplete!" << std::endl;
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+
+        void Destroy()
+        {
+            if (texture) glDeleteTextures(1, &texture);
+            if (fbo) glDeleteFramebuffers(1, &fbo);
+            texture = fbo = 0;
+        }
+
+        void Bind() { glBindFramebuffer(GL_FRAMEBUFFER, fbo); glViewport(0, 0, width, height); }
+        static void Unbind() { glBindFramebuffer(GL_FRAMEBUFFER, 0); }
+    };
+
+    GLuint CompileShader(GLuint type, const char* source)
+    {
+        GLuint shader = glCreateShader(type);
+        glShaderSource(shader, 1, &source, NULL);
+        glCompileShader(shader);
+        GLint ok; glGetShaderiv(shader, GL_COMPILE_STATUS, &ok);
+        if (!ok) { GLchar log[512]; glGetShaderInfoLog(shader, 512, NULL, log); std::cerr << "Shader error:\n" << log << std::endl; }
+        return shader;
+    }
+
+    GLuint CreateShaderProgram(const char* vs, const char* fs)
+    {
+        GLuint v = CompileShader(GL_VERTEX_SHADER, vs);
+        GLuint f = CompileShader(GL_FRAGMENT_SHADER, fs);
+        GLuint prog = glCreateProgram();
+        glAttachShader(prog, v); glAttachShader(prog, f);
+        glLinkProgram(prog);
+        glDeleteShader(v); glDeleteShader(f);
+        return prog;
+    }
+
+    GLuint CreateQuadVAO()
+    {
+        float verts[] = { -1,-1,0,0, 1,-1,1,0, -1,1,0,1, 1,1,1,1 };
+        GLuint vao, vbo;
+        glGenVertexArrays(1, &vao); glGenBuffers(1, &vbo);
+        glBindVertexArray(vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 16, (void*)0);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 16, (void*)8);
+        glEnableVertexAttribArray(1);
+        glBindVertexArray(0);
+        return vao;
+    }
+
+    // --- GLSL sources: GLSL 100 for Emscripten (WebGL), GLSL 330 for desktop ---
+
+#ifdef __EMSCRIPTEN__
+#define SHADER_HEADER "#version 100\nprecision mediump float;\n"
+#define VERT_IN "attribute"
+#define VERT_OUT "varying"
+#define FRAG_IN "varying"
+#define FRAG_OUT_DECL ""
+#define FRAG_OUT_ASSIGN "gl_FragColor="
+#else
+#define SHADER_HEADER "#version 330 core\n"
+#define VERT_IN "in"
+#define VERT_OUT "out"
+#define FRAG_IN "in"
+#define FRAG_OUT_DECL "out vec4 FragColor;\n"
+#define FRAG_OUT_ASSIGN "FragColor="
+#endif
+
+    const char* kVertSrc =
+        SHADER_HEADER
+        VERT_IN " vec3 aPos;\n"
+        VERT_IN " vec2 aTexCoord;\n"
+        VERT_OUT " vec2 TexCoord;\n"
+        "void main() {\n"
+        "    gl_Position = vec4(aPos, 1.0);\n"
+        "    TexCoord = aTexCoord;\n"
+        "}\n";
+
+    // Seascape by Alexander Alekseev aka TDM - 2014
+    // https://www.shadertoy.com/view/Ms2SD1
+    // SEA_HEIGHT, SEA_CHOPPY, SEA_BASE are uniforms for interactive sliders
+    const char* kFragSrc =
+        SHADER_HEADER
+        FRAG_IN " vec2 TexCoord;\n"
+        FRAG_OUT_DECL
+        R"(
+
+uniform vec2 iResolution;
+uniform float iTime;
+uniform float SEA_HEIGHT;
+uniform float SEA_CHOPPY;
+uniform vec3 SEA_BASE;
+
+const int NUM_STEPS = 8;
+const float PI = 3.141592;
+const float EPSILON = 1e-3;
+#define EPSILON_NRM (0.1 / iResolution.x)
+
+const int ITER_GEOMETRY = 3;
+const int ITER_FRAGMENT = 5;
+const float SEA_SPEED = 0.8;
+const float SEA_FREQ = 0.16;
+const vec3 SEA_WATER_COLOR = vec3(0.48, 0.54, 0.36);
+
+#define SEA_TIME (1.0 + iTime * SEA_SPEED)
+const mat2 octave_m = mat2(1.6,1.2,-1.2,1.6);
+
+mat3 fromEuler(vec3 ang) {
+    vec2 a1=vec2(sin(ang.x),cos(ang.x));
+    vec2 a2=vec2(sin(ang.y),cos(ang.y));
+    vec2 a3=vec2(sin(ang.z),cos(ang.z));
+    mat3 m;
+    m[0]=vec3(a1.y*a3.y+a1.x*a2.x*a3.x,a1.y*a2.x*a3.x+a3.y*a1.x,-a2.y*a3.x);
+    m[1]=vec3(-a2.y*a1.x,a1.y*a2.y,a2.x);
+    m[2]=vec3(a3.y*a1.x*a2.x+a1.y*a3.x,a1.x*a3.x-a1.y*a3.y*a2.x,a2.y*a3.y);
+    return m;
+}
+float hash(vec2 p){float h=dot(p,vec2(127.1,311.7));return fract(sin(h)*43758.5453123);}
+float noise(vec2 p){vec2 i=floor(p);vec2 f=fract(p);vec2 u=f*f*(3.0-2.0*f);return -1.0+2.0*mix(mix(hash(i+vec2(0,0)),hash(i+vec2(1,0)),u.x),mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),u.x),u.y);}
+float diffuse(vec3 n,vec3 l,float p){return pow(dot(n,l)*0.4+0.6,p);}
+float specular(vec3 n,vec3 l,vec3 e,float s){float nrm=(s+8.0)/(PI*8.0);return pow(max(dot(reflect(e,n),l),0.0),s)*nrm;}
+vec3 getSkyColor(vec3 e){e.y=(max(e.y,0.0)*0.8+0.2)*0.8;return vec3(pow(1.0-e.y,2.0),1.0-e.y,0.6+(1.0-e.y)*0.4)*1.1;}
+float sea_octave(vec2 uv,float choppy){uv+=noise(uv);vec2 wv=1.0-abs(sin(uv));vec2 swv=abs(cos(uv));wv=mix(wv,swv,wv);return pow(1.0-pow(wv.x*wv.y,0.65),choppy);}
+
+float map(vec3 p){float freq=SEA_FREQ;float amp=SEA_HEIGHT;float choppy=SEA_CHOPPY;vec2 uv=p.xz;uv.x*=0.75;float d,h=0.0;for(int i=0;i<ITER_GEOMETRY;i++){d=sea_octave((uv+SEA_TIME)*freq,choppy);d+=sea_octave((uv-SEA_TIME)*freq,choppy);h+=d*amp;uv*=octave_m;freq*=1.9;amp*=0.22;choppy=mix(choppy,1.0,0.2);}return p.y-h;}
+float map_detailed(vec3 p){float freq=SEA_FREQ;float amp=SEA_HEIGHT;float choppy=SEA_CHOPPY;vec2 uv=p.xz;uv.x*=0.75;float d,h=0.0;for(int i=0;i<ITER_FRAGMENT;i++){d=sea_octave((uv+SEA_TIME)*freq,choppy);d+=sea_octave((uv-SEA_TIME)*freq,choppy);h+=d*amp;uv*=octave_m;freq*=1.9;amp*=0.22;choppy=mix(choppy,1.0,0.2);}return p.y-h;}
+
+vec3 getSeaColor(vec3 p,vec3 n,vec3 l,vec3 eye,vec3 dist){float fresnel=clamp(1.0-dot(n,-eye),0.0,1.0);fresnel=min(pow(fresnel,3.0),0.5);vec3 reflected=getSkyColor(reflect(eye,n));vec3 refracted=SEA_BASE+diffuse(n,l,80.0)*SEA_WATER_COLOR*0.12;vec3 color=mix(refracted,reflected,fresnel);float atten=max(1.0-dot(dist,dist)*0.001,0.0);color+=SEA_WATER_COLOR*(p.y-SEA_HEIGHT)*0.18*atten;color+=vec3(specular(n,l,eye,60.0));return color;}
+vec3 getNormal(vec3 p,float eps){vec3 n;n.y=map_detailed(p);n.x=map_detailed(vec3(p.x+eps,p.y,p.z))-n.y;n.z=map_detailed(vec3(p.x,p.y,p.z+eps))-n.y;n.y=eps;return normalize(n);}
+float heightMapTracing(vec3 ori,vec3 dir,out vec3 p){float tm=0.0;float tx=1000.0;float hx=map(ori+dir*tx);if(hx>0.0){p=ori+dir*tx;return tx;}float hm=map(ori+dir*tm);float tmid=0.0;for(int i=0;i<NUM_STEPS;i++){tmid=mix(tm,tx,hm/(hm-hx));p=ori+dir*tmid;float hmid=map(p);if(hmid<0.0){tx=tmid;hx=hmid;}else{tm=tmid;hm=hmid;}}return tmid;}
+vec3 getPixel(vec2 coord,float time){vec2 uv=coord/iResolution.xy;uv=uv*2.0-1.0;uv.x*=iResolution.x/iResolution.y;vec3 ang=vec3(sin(time*3.0)*0.1,sin(time)*0.2+0.3,time);vec3 ori=vec3(0.0,3.5,time*5.0);vec3 dir=normalize(vec3(uv.xy,-2.0));dir.z+=length(uv)*0.14;dir=normalize(dir)*fromEuler(ang);vec3 p;heightMapTracing(ori,dir,p);vec3 dist=p-ori;vec3 n=getNormal(p,dot(dist,dist)*EPSILON_NRM);vec3 light=normalize(vec3(0.0,1.0,0.8));return mix(getSkyColor(dir),getSeaColor(p,n,light,dir,dist),pow(smoothstep(0.0,-0.02,dir.y),0.2));}
+
+void main(){
+    vec2 fragCoord=TexCoord*iResolution;
+    float time=iTime*0.3;
+    vec3 color=getPixel(fragCoord,time);
+    )" FRAG_OUT_ASSIGN R"(vec4(pow(color,vec3(0.65)),1.0);
+}
+)";
+
+    // --- Shader state ---
+
+    struct ShaderState
+    {
+        GLuint shaderProgram = 0;
+        GLuint quadVAO = 0;
+        Fbo fbo;
+        GLint locResolution = -1, locTime = -1;
+        GLint locSeaHeight = -1, locSeaChoppy = -1, locSeaBase = -1;
+        int fboWidth = 600, fboHeight = 600;
+
+        float seaHeight = 0.6f;
+        float seaChoppy = 4.0f;
+        float seaBase[3] = {0.0f, 0.09f, 0.18f};
+
+        void Init()
+        {
+            shaderProgram = CreateShaderProgram(kVertSrc, kFragSrc);
+            quadVAO = CreateQuadVAO();
+            locResolution = glGetUniformLocation(shaderProgram, "iResolution");
+            locTime = glGetUniformLocation(shaderProgram, "iTime");
+            locSeaHeight = glGetUniformLocation(shaderProgram, "SEA_HEIGHT");
+            locSeaChoppy = glGetUniformLocation(shaderProgram, "SEA_CHOPPY");
+            locSeaBase = glGetUniformLocation(shaderProgram, "SEA_BASE");
+            fbo.Create(fboWidth, fboHeight);
+        }
+
+        void Destroy()
+        {
+            fbo.Destroy();
+            if (shaderProgram) glDeleteProgram(shaderProgram);
+            if (quadVAO) glDeleteVertexArrays(1, &quadVAO);
+            shaderProgram = 0; quadVAO = 0;
+        }
+
+        void RenderToFbo()
+        {
+            fbo.Bind();
+            glClear(GL_COLOR_BUFFER_BIT);
+            glUseProgram(shaderProgram);
+            glUniform2f(locResolution, (float)fboWidth, (float)fboHeight);
+            glUniform1f(locTime, (float)ImGui::GetTime());
+            glUniform1f(locSeaHeight, seaHeight);
+            glUniform1f(locSeaChoppy, seaChoppy);
+            glUniform3f(locSeaBase, seaBase[0], seaBase[1], seaBase[2]);
+            glDisable(GL_DEPTH_TEST);
+            glBindVertexArray(quadVAO);
+            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+            glBindVertexArray(0);
+            glUseProgram(0);
+            glEnable(GL_DEPTH_TEST);
+            Fbo::Unbind();
+        }
+    };
+
+    static ShaderState* sState = nullptr;
+    static bool sInited = false;
+
+    void LazyInit()
+    {
+        if (sInited) return;
+        sInited = true;
+        sState = new ShaderState();
+        sState->Init();
+        HelloImGui::GetRunnerParams()->callbacks.EnqueueBeforeExit([]() {
+            if (sState) { sState->Destroy(); delete sState; sState = nullptr; }
+        });
+    }
+
+    void GuiMainPart(float width, float height)
+    {
+        LazyInit();
+        if (sState)
+        {
+            sState->RenderToFbo();
+            ImGui::Image(
+                (ImTextureID)(intptr_t)sState->fbo.texture,
+                ImVec2(width, height),
+                ImVec2(0, 1), ImVec2(1, 0)  // flip Y for FBO
+            );
+        }
+    }
+
+    void GuiSidePanel()
+    {
+        ImGui::Text("\"Seascape\" by Alexander Alekseev aka TDM");
+        ImGui::SetItemTooltip(
+            "License: Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported\n"
+            "Contact: tdmaav@gmail.com");
+        ImGui::Spacing();
+        if (sState)
+        {
+            float sliderW = HelloImGui::EmSize(7.f);
+            ImGui::SetNextItemWidth(sliderW);
+            ImGui::SliderFloat("Wave height", &sState->seaHeight, 0.1f, 2.0f);
+            ImGui::SetNextItemWidth(sliderW);
+            ImGui::SliderFloat("Choppiness", &sState->seaChoppy, 0.5f, 8.0f);
+            ImGui::SetNextItemWidth(sliderW);
+            ImGui::ColorEdit3("Sea base color", sState->seaBase);
+
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
+            IntroAutomations::ShowLink("More info & code", IntroAutomations::showCustomBackground);
+#endif
+
+        }
+    }
+
+    void SlideGui(ImVec2 contentSize)
+    {
+        float em = HelloImGui::EmSize();
+
+        // Render shader filling the full content area
+        GuiMainPart(contentSize.x, contentSize.y);
+
+        // Overlay controls in a transparent auto-resizing window
+        float pad = em * 0.8f;
+        float overlayX = ImGui::GetItemRectMin().x + contentSize.x - em * 18.f - pad;
+        float overlayY = ImGui::GetItemRectMin().y + pad;
+
+        ImGui::SetNextWindowPos(ImVec2(overlayX, overlayY), ImGuiCond_Always);
+        ImGui::SetNextWindowBgAlpha(0.45f);
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, em * 0.5f);
+        if (ImGui::Begin("##seascape_overlay", nullptr,
+                         ImGuiWindowFlags_AlwaysAutoResize |
+                         ImGuiWindowFlags_NoTitleBar |
+                         ImGuiWindowFlags_NoMove |
+                         ImGuiWindowFlags_NoSavedSettings))
+        {
+            ImGui::PushItemWidth(em * 16.f);
+            GuiSidePanel();
+            ImGui::PopItemWidth();
+        }
+        ImGui::End();
+        ImGui::PopStyleVar();
+    }
+} // namespace IntroShader
+
+#endif // HELLOIMGUI_HAS_OPENGL
+
+
+// ============================================================================
+// Slide wrappers with #ifdef fallbacks
+// ============================================================================
+// These thin wrappers exist only to handle #ifdef guards for slides that
+// depend on optional libraries, providing a fallback message.
+
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
+static void ImPlotShowcaseSlideGui(ImVec2 cs) { IntroImPlotShowcase::SlideGui(cs); }
+#else
+static void ImPlotShowcaseSlideGui(ImVec2) { ImGui::TextWrapped("ImPlot not available."); }
+#endif
+
+static void LorenzSlideGui(ImVec2 cs)    { IntroLorenz::SlideGui(cs); }
+static void TableSlideGui(ImVec2 cs)     { IntroTable::SlideGui(cs); }
+
+#ifdef IMGUI_BUNDLE_WITH_IMMVISION
+static void ImmVisionSlideGui(ImVec2 cs) { IntroImmVision::SlideGui(cs); }
+#else
+static void ImmVisionSlideGui(ImVec2)    { ImGui::TextWrapped("ImmVision not available in this build."); }
+#endif
+
+static void NotebookSlideGui(ImVec2 cs)    { IntroNotebook::SlideGui(cs); }
+static void NodeEditorSlideGui(ImVec2 cs)  { IntroNodeEditor::SlideGui(cs); }
+static void MarkdownSlideGui(ImVec2 cs)    { IntroMarkdown::SlideGui(cs); }
+static void WebDeploySlideGui(ImVec2 cs)   { IntroWebDeploy::SlideGui(cs); }
+
+#ifdef HELLOIMGUI_HAS_OPENGL
+static void ShaderSlideGui(ImVec2 cs) { IntroShader::SlideGui(cs); }
+#else
+static void ShaderSlideGui(ImVec2)    { ImGui::TextWrapped("Shader demo requires OpenGL backend."); }
+#endif
+
+
+// ============================================================================
+// Top section
+// ============================================================================
+
+bool IsSmallScreen()
+{
+    return ImGui::GetIO().DisplaySize.x < HelloImGui::EmSize() * 50.f;
+}
+
+void ShowBadges()
+{
+    // Push badges to the bottom of the available window space
+    ImVec2 btnSize = HelloImGui::EmToVec2(0.f, 1.5f);
+    float badgesHeight = btnSize.y + ImGui::GetStyle().ItemSpacing.y * 2.f;
+    float availableY = ImGui::GetContentRegionAvail().y;
+    if (availableY > badgesHeight)
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + availableY - badgesHeight);
+
+    if (HelloImGui::ImageButtonFromAsset("images/badge_view_sources.png", btnSize))
+        ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle");
+    ImGui::SameLine();
+    if (HelloImGui::ImageButtonFromAsset("images/badge_view_docs.png", btnSize))
+        ImmApp::BrowseToUrl("https://pthom.github.io/imgui_bundle");
+    {
+        ImGui::PushFont(nullptr, ImGui::GetFontSize() * 0.9f);
+        const char* versionText = "Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER;
+        ImVec2 textSize = ImGui::CalcTextSize(versionText);
+        ImVec2 screenPos = ImGui::GetCursorScreenPos();
+        ImVec2 avail = ImGui::GetContentRegionAvail();
+        ImGui::SetCursorScreenPos(ImVec2(screenPos.x + avail.x - textSize.x, screenPos.y + avail.y - textSize.y * 2.2f));
+        ImGui::TextDisabled("%s", versionText);
+
+        const char* text2 = "Dear ImGui Explorer";
+        ImVec2 text2Size = ImGui::CalcTextSize(text2);
+        ImGui::SetCursorScreenPos(ImVec2(screenPos.x + avail.x - text2Size.x, screenPos.y + avail.y - textSize.y));
+        ImGuiMd::RenderTextAsLink(text2, "https://pthom.github.io/imgui_explorer");
+        ImGui::PopFont();
+    }
+}
+
+void IntroTopSection()
+{
+    bool small = IsSmallScreen();
+
+    // Title and description
+    ImGuiMd::RenderUnindented("# Dear ImGui Bundle Explorer");
+    ImGui::TextDisabled("Explore Dear ImGui Bundle and its Libraries");
+
+    static bool showFull = false;
+    if (small)
+    {
+        if (!showFull)
+        {
+            if (ImGui::SmallButton("More..."))
+                showFull = true;
+        }
+        else
+        {
+            if (ImGui::SmallButton("Less"))
+                showFull = false;
+        }
+    }
+
+    auto renderIntroParagraph = []() {
+        ImGuiMd::RenderUnindented(R"(
+        Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
+        The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
+)");
+    };
+
+    auto renderStartQuickly = []() {
+        ImGui::TextDisabled("Start your first app in 2\xe2\x80\x93""3 lines of code.");
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+        {
+            ImGui::BeginTooltip();
+            ImGui::Dummy(HelloImGui::EmToVec2(80.f, 0.f));
+            ShowPythonVsCppCode(R"(
+                from imgui_bundle import imgui, immapp
+                immapp.run(lambda: imgui.text("Hello!"))
+)", R"(
+                #include "immapp/immapp.h"
+                #include "imgui.h"
+                int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
+)", 5);
+            ImGui::EndTooltip();
+        }
+    };
+
+    if (!small || showFull)
+    {
+        renderIntroParagraph();
+        ImGui::SameLine();
+        renderStartQuickly();
+    }
+
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
+    IntroAutomations::Init();
+#endif
+
+    if (!small)
     {
         ImGui::NewLine();
         ImGuiMd::RenderUnindented(R"(
-            *Note: the automations provided by the "Show me" buttons work thanks to [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine). See [license](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)*
-        )");
+Each tab provides demos for the included libraries, along with their code. The "Demo Apps" tab provides sample starter apps from which you can take inspiration.
+)");
+
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
+        if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
+        {
+            ImGui::SameLine();
+            if (ImGui::SmallButton("?"))
+                ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), IntroAutomations::showImmediateApps);
+        }
+#endif
     }
-#endif // #ifdef HELLOIMGUI_WITH_TEST_ENGINE
-
-
-    // Navigation buttons
-    {
-        ImGui::Separator();
-        ImGui::Dummy(HelloImGui::EmToVec2(1.f, 6.f)); // Skip 6 lines
-        ImVec2 btnSize = HelloImGui::EmToVec2(0.f, 1.5f);
-        if (HelloImGui::ImageButtonFromAsset("images/badge_view_sources.png", btnSize))
-            ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle");
-        ImGui::SameLine();
-        if (HelloImGui::ImageButtonFromAsset("images/badge_view_docs.png", btnSize))
-            ImmApp::BrowseToUrl("https://pthom.github.io/imgui_bundle");
-        ImGui::SameLine();
-        if (HelloImGui::ImageButtonFromAsset("images/badge_interactive_manual.png", btnSize))
-            ImmApp::BrowseToUrl("https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_bundle.html");
-    }
-
-    AnimateLogo("images/logo_imgui_bundle_512.png", 1., ImVec2(0.5f, 3.f), 0.30f, "https://github.com/pthom/imgui_bundle");
 }
+
+
+// ============================================================================
+// Carousel rendering
+// ============================================================================
+
+static float DrawSlideMottoCard(const CarouselSlide& slide, float slideWidth)
+{
+    float em = HelloImGui::EmSize();
+    ImDrawList* dl = ImGui::GetWindowDrawList();
+    float fontSize = ImGui::GetFontSize();
+
+    float titleFontSize = fontSize * 1.2f;
+    ImFont* font = ImGui::GetFont();
+    ImVec2 titleSize = font->CalcTextSizeA(titleFontSize, FLT_MAX, 0.f, slide.title);
+    ImVec2 descSize = font->CalcTextSizeA(fontSize, FLT_MAX, slideWidth - em * 2.f, slide.description);
+
+    float cardPadX = em * 1.0f;
+    float cardPadY = em * 0.4f;
+    float innerH = titleSize.y + descSize.y + em * 0.3f;
+    float cardW = slideWidth - em * 1.f;
+    float cardH = innerH + cardPadY * 2.f;
+    float cardX = ImGui::GetCursorScreenPos().x + (slideWidth - cardW) * 0.5f;
+    float cardY = ImGui::GetCursorScreenPos().y;
+
+    ImVec4 accentCol = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+    ImU32 cardBg = ImGui::ColorConvertFloat4ToU32(ImVec4(accentCol.x, accentCol.y, accentCol.z, 0.12f));
+    ImU32 cardBorder = ImGui::ColorConvertFloat4ToU32(ImVec4(accentCol.x, accentCol.y, accentCol.z, 0.4f));
+    ImU32 titleCol = ImGui::GetColorU32(ImGuiCol_Text);
+    ImU32 descCol = ImGui::GetColorU32(ImGuiCol_TextDisabled);
+
+    dl->AddRectFilled(ImVec2(cardX, cardY), ImVec2(cardX + cardW, cardY + cardH), cardBg, em * 0.4f);
+    dl->AddRect(ImVec2(cardX, cardY), ImVec2(cardX + cardW, cardY + cardH), cardBorder, em * 0.4f, 0, 1.5f);
+
+    dl->AddText(font, titleFontSize,
+                ImVec2(cardX + cardPadX, cardY + cardPadY), titleCol, slide.title);
+    dl->AddText(font, fontSize,
+                ImVec2(cardX + cardPadX, cardY + cardPadY + titleSize.y + em * 0.3f),
+                descCol, slide.description, nullptr, slideWidth - em * 2.f);
+
+    float totalH = cardH + em * 0.4f;
+    ImGui::Dummy(ImVec2(slideWidth, totalH));
+    return totalH;
+}
+
+void IntroMiniDemos()
+{
+    static const CarouselSlide slides[] = {
+        { "Rich Interactive Plots",
+          "ImPlot delivers animated, interactive 2D charts with minimal code. It is extremely fast, and ideal for real-time data monitoring, diagnostics, and dashboards.",
+            ImPlotShowcaseSlideGui },
+
+        { "GPU-Accelerated Rendering",
+          "Dear ImGui renders directly on the GPU, fast enough to blend custom shaders and 3D content into your UI.",
+          ShaderSlideGui },
+
+        { "3D Data Exploration",
+          "ImPlot3D adds rotatable, zoomable 3D plots. Navigate complex datasets with intuitive controls.",
+          LorenzSlideGui },
+
+        { "Image Analysis",
+          "ImmVision lets you zoom, pan, and inspect pixel values in real time, with linked views and colormaps.",
+          ImmVisionSlideGui },
+
+        { "Feature-Rich Widgets",
+          "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
+          TableSlideGui },
+
+        { "Explore Ideas in a Node Editor",
+          "With imgui-node-editor, you can build complex applications such as blueprint editors. Here is an example of an image editing pipeline.",
+          NodeEditorSlideGui },
+
+        { "Rich Documentation, Built In",
+          "Render markdown directly in your UI - headers, code blocks, tables, links, and images, all from a simple string.",
+          MarkdownSlideGui },
+
+        { "Integrated Text & Code Editor",
+          "The built-in text editor supports syntax highlighting, line numbers, and search. Below is the source of this very demo, side by side in Python and C++.",
+          IntroSourceCode::SlideGui },
+
+        { "Code That Reads Like a Book",
+          "No widget trees, no callbacks, no state sync. Each snippet below is the complete code for the live demo beside it.",
+          GallerySlideGui },
+
+        { "Deploy to the Web",
+          "Python applications can be effortlessly deployed to the web using Pyodide, and C++ apps using Emscripten.",
+          WebDeploySlideGui },
+
+        { "Usage in Notebooks",
+          "Dear ImGui Bundle can also be used from a notebook. Here, it displays a real-time dashboard during an ML training session.",
+          NotebookSlideGui },
+    };
+    static const int slideCount = IM_ARRAYSIZE(slides);
+
+    static int currentSlide = 0;
+    static float animatedOffset = 0.f;
+    static float autoTimer = 0.f;
+    static bool autoStopped = false; // stops permanently once user navigates manually
+
+    float dt = ImGui::GetIO().DeltaTime;
+    if (dt <= 0.f) dt = 1.f / 60.f;
+    if (dt > 0.1f) dt = 0.1f;
+
+    float em = HelloImGui::EmSize();
+    ImDrawList* dl = ImGui::GetWindowDrawList();
+    ImVec2 windowSize = ImGui::GetWindowSize();
+
+    // --- Carousel zone: 4:3 aspect ratio, centered ---
+    float carouselHeight;
+    if (IsSmallScreen())
+    {
+        carouselHeight = windowSize.y * 0.55f;
+        if (carouselHeight < em * 12.f) carouselHeight = em * 12.f;
+    }
+    else
+    {
+        carouselHeight = windowSize.y * 0.65f;
+        if (carouselHeight < em * 15.f) carouselHeight = em * 15.f;
+    }
+    float carouselWidth = carouselHeight * (4.f / 3.f);
+    float availWidth = ImGui::GetContentRegionAvail().x;
+    if (carouselWidth > availWidth) carouselWidth = availWidth;
+
+    float carouselOffsetX = (availWidth - carouselWidth) * 0.5f;
+    if (carouselOffsetX < 0.f) carouselOffsetX = 0.f;
+
+    ImGui::Indent(carouselOffsetX);
+
+    // --- Auto-advance (pauses while user interacts, stops permanently on manual navigation) ---
+    if (!autoStopped)
+    {
+        bool userInteracting = ImGui::IsAnyItemActive();
+        if (!userInteracting)
+        {
+            autoTimer += dt;
+            if (autoTimer > 5.0f)
+            {
+                currentSlide = (currentSlide + 1) % slideCount;
+                autoTimer = 0.f;
+            }
+        }
+    }
+
+    // --- Smooth slide animation ---
+    float target = (float)currentSlide;
+    animatedOffset = SmoothDamp(animatedOffset, target, 8.f, dt);
+    if (fabsf(animatedOffset - target) < 0.001f)
+        animatedOffset = target;
+
+    // --- Slide area (motto card + demo content, all scrolling together) ---
+    float navBarHeight = em * 2.0f;
+    float slideHeight = carouselHeight - navBarHeight;
+    if (slideHeight < em * 10.f) slideHeight = em * 10.f;
+    float slideWidth = carouselWidth;
+
+    ImVec2 slideAreaPos = ImGui::GetCursorScreenPos();
+    ImGui::Dummy(ImVec2(carouselWidth, slideHeight));
+
+    // Clip to carousel bounds
+    dl->PushClipRect(slideAreaPos, ImVec2(slideAreaPos.x + carouselWidth, slideAreaPos.y + slideHeight), true);
+
+    for (int i = 0; i < slideCount; i++)
+    {
+        float slideX = slideAreaPos.x + ((float)i - animatedOffset) * slideWidth;
+        if (slideX > slideAreaPos.x + carouselWidth || slideX + slideWidth < slideAreaPos.x)
+            continue;
+
+        ImGui::SetCursorScreenPos(ImVec2(slideX, slideAreaPos.y));
+        char childId[32];
+        snprintf(childId, sizeof(childId), "##slide_%d", i);
+        ImGui::BeginChild(childId, ImVec2(slideWidth, slideHeight), false,
+                          ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
+
+        float mottoH = DrawSlideMottoCard(slides[i], slideWidth);
+
+        // Align demo content with the motto card (which is centered with em*0.5f margin)
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + em * 0.5f);
+        ImVec2 demoSize(slideWidth - em * 1.f, slideHeight - mottoH - em * 0.5f);
+        slides[i].guiFunc(demoSize);
+
+        ImGui::EndChild();
+    }
+
+    dl->PopClipRect();
+
+    // --- Navigation: arrows + dots ---
+    {
+        float dotRadius = em * 0.3f;
+        float dotSpacing = em * 1.5f;
+        float dotsWidth = slideCount * dotSpacing;
+        float arrowBtnW = em * 2.f;
+        float totalNavWidth = arrowBtnW * 2.f + dotsWidth + em * 1.f;
+        float navStartX = slideAreaPos.x + (carouselWidth - totalNavWidth) * 0.5f;
+        float navY = slideAreaPos.y + slideHeight + em * 0.3f;
+
+        // Left arrow
+        ImGui::SetCursorScreenPos(ImVec2(navStartX, navY + HelloImGui::EmSize(0.15f)));
+        if (ImGui::Button(ICON_FA_CHEVRON_LEFT "##carousel_prev", ImVec2(arrowBtnW, em * 1.2f)))
+        {
+            currentSlide = (currentSlide - 1 + slideCount) % slideCount;
+            autoStopped = true;
+        }
+
+        // Dots
+        float dotsStartX = navStartX + arrowBtnW + em * 0.5f;
+        float dotsCenterY = navY + em * 0.75f;
+
+        for (int i = 0; i < slideCount; i++)
+        {
+            ImVec2 center(dotsStartX + i * dotSpacing + dotSpacing * 0.5f, dotsCenterY);
+
+            ImGui::SetCursorScreenPos(ImVec2(center.x - dotRadius * 2.f, center.y - dotRadius * 2.f));
+            char dotId[16];
+            snprintf(dotId, sizeof(dotId), "##dot%d", i);
+            if (ImGui::InvisibleButton(dotId, ImVec2(dotRadius * 4.f, dotRadius * 4.f)))
+            {
+                currentSlide = i;
+                autoStopped = true;
+            }
+
+            bool hovered = ImGui::IsItemHovered();
+            float r = (i == currentSlide) ? dotRadius * 1.3f : dotRadius;
+            ImVec4 accent = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+            ImU32 dotCol;
+            if (i == currentSlide)
+                dotCol = ImGui::ColorConvertFloat4ToU32(accent);
+            else if (hovered)
+                dotCol = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.6f));
+            else
+                dotCol = ImGui::GetColorU32(ImGuiCol_TextDisabled);
+            dl->AddCircleFilled(center, r, dotCol);
+        }
+
+        // Right arrow
+        float rightArrowX = dotsStartX + dotsWidth + em * 0.5f;
+        ImGui::SetCursorScreenPos(ImVec2(rightArrowX, navY + HelloImGui::EmSize(0.15f)));
+        if (ImGui::Button(ICON_FA_CHEVRON_RIGHT "##carousel_next", ImVec2(arrowBtnW, em * 1.2f)))
+        {
+            currentSlide = (currentSlide + 1) % slideCount;
+            autoStopped = true;
+        }
+
+        // Advance cursor past nav bar
+        ImGui::SetCursorScreenPos(ImVec2(slideAreaPos.x, navY + em * 1.8f));
+        ImGui::Dummy(ImVec2(1, 1));
+    }
+
+    // Navigation via mouse wheel: disabled for now as it can interfere with users trying to scroll inside demos,
+    // and is complex to validate for all case (trackpad vs mouse wheel, horizontal vs vertical, with or without modifiers, etc.)
+    if (false)
+    {
+        bool was_wheel_nav_initiated = false;
+        float wheel_nav_value = 0.f;
+
+        // This shortcut works on a macbook trackpad, but will interfere with *vertical (!)* scrolling inside demos
+        if (ImGui::Shortcut(ImGuiKey_MouseWheelX, ImGuiInputFlags_RouteGlobal))
+        {
+            was_wheel_nav_initiated = true;
+            wheel_nav_value = ImGui::GetIO().MouseWheelH;
+        }
+        if (ImGui::Shortcut(ImGuiMod_Shift | ImGuiKey_MouseWheelY, ImGuiInputFlags_RouteGlobal))
+        {
+            was_wheel_nav_initiated = true;
+            wheel_nav_value = ImGui::GetIO().MouseWheel;
+        }
+        if (was_wheel_nav_initiated)
+        {
+            printf("Trigger\n");
+            static double time_last_trigger = -1.f;
+            double now = ImGui::GetTime();
+            if (now - time_last_trigger > 1.0)
+            {
+                autoStopped = true;
+                if (wheel_nav_value > 0)
+                    currentSlide = (currentSlide - 1) % slideCount;
+                else
+                    currentSlide = (currentSlide + 1) % slideCount;
+                if (currentSlide < 0)
+                    currentSlide = 0;
+                time_last_trigger = now;
+            }
+        }
+    }
+
+
+    ImGui::Unindent(carouselOffsetX);
+}
+
+
+// ============================================================================
+// Main entry point
+// ============================================================================
+
+void demo_imgui_bundle_intro()
+{
+    // Disable idling so animations run smoothly
+    HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
+
+    IntroTopSection();
+    ImGui::Separator();
+    ImGuiMd::Render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*");
+    IntroMiniDemos();
+
+    ImGui::NewLine();
+    ImGui::Separator();
+    ShowBadges();
+}
+
+
+// ============================================================================
+// Main entry point
+// ============================================================================
+
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
+int main(int, char**)
+{
+    ChdirBesideAssetsFolder();
+
+    HelloImGui::RunnerParams runnerParams;
+    runnerParams.callbacks.ShowGui = demo_imgui_bundle_intro;
+    runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
+    runnerParams.appWindowParams.windowTitle = "ImGui Bundle - Introduction";
+
+    ImmApp::AddOnsParams addons;
+    addons.withMarkdown = true;
+    addons.withNodeEditor = true;
+    addons.withImplot = true;
+    addons.withImplot3d = true;
+    addons.withTexInspect = true;
+    addons.withImAnim = true;
+
+    ImmApp::Run(runnerParams, addons);
+
+    return 0;
+}
+#endif
+

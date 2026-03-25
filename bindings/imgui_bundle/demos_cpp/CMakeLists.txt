@@ -11,6 +11,7 @@ add_subdirectory(demos_immapp)
 add_subdirectory(demos_node_editor)
 add_subdirectory(demos_imguizmo)
 add_subdirectory(demos_tex_inspect)
+#add_subdirectory(demos_imanim)
 if(IMGUI_BUNDLE_WITH_NANOVG)
     add_subdirectory(demos_nanovg)
 endif()
@@ -21,22 +22,6 @@ add_subdirectory(sandbox)
 
 ibd_add_this_folder_auto_demos("")
 ibd_add_this_folder_as_demos_library()
-
-if (EMSCRIPTEN)
-    set(demos_python_folder ${demos_cpp_folder}/../demos_python)
-
-    set(imgui_demo_src_folder ${IMGUI_BUNDLE_PATH}/external/imgui/imgui/)
-    set(imgui_demo_tmp_folder ${CMAKE_CURRENT_BINARY_DIR}/tmp/imgui_demo_code)
-    file(COPY ${imgui_demo_src_folder}/imgui_demo.cpp DESTINATION ${imgui_demo_tmp_folder})
-    file(COPY ${imgui_demo_src_folder}/imgui_demo.py DESTINATION ${imgui_demo_tmp_folder})
-
-    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${demos_cpp_folder}@/demos_cpp")
-    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${demos_python_folder}@/demos_python")
-    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${imgui_demo_tmp_folder}@code/imgui")
-    set(python_backends_folder ${CMAKE_CURRENT_LIST_DIR}/../python_backends)
-    target_link_options(demo_imgui_bundle PRIVATE "SHELL:--preload-file ${python_backends_folder}@/python_backends")
-endif()
-
 
 target_link_libraries(demo_imguizmo_launcher PRIVATE demos_imguizmo)
 target_link_libraries(demo_node_editor_launcher PRIVATE demos_node_editor)
@@ -52,11 +37,39 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
     target_link_libraries(demo_immvision_launcher PRIVATE demos_immvision)
     target_link_libraries(demo_imgui_bundle PRIVATE demos_immvision)
 endif()
+if(IMMVISION_HAS_OPENCV)
+    find_package(OpenCV REQUIRED)
+    target_link_libraries(demo_immvision_launcher PUBLIC opencv_imgproc)
+    target_link_libraries(demo_imgui_bundle PUBLIC opencv_imgproc)
+endif()
+
 
 FILE(COPY ../demos_assets DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
+# Bundle demos_assets only for demos that actually need demo-specific fonts/images.
+# Other demos get only the core imgui_bundle_assets/ (DroidSans, Roboto, fontawesome, etc.)
+set(_da ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/demos_assets)
+foreach(_t
+    demo_imgui_bundle
+    demo_imgui_bundle_intro
+    demo_widgets
+    demo_imgui_show_demo_window
+)
+    hello_imgui_bundle_assets_from_folder(${_t} ${_da})
+endforeach()
+
 if (MSVC)
     FILE(COPY msvc_note.txt DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+endif()
+
+if(EMSCRIPTEN)
+    # Preload demo source files so that "Code for this demo" can display them.
+    # so source files must be embedded in the virtual filesystem at /demos_cpp and /demos_python.
+    set(_demos_root ${CMAKE_CURRENT_LIST_DIR}/..)
+    target_link_options(demo_imgui_bundle PRIVATE
+        "SHELL:--preload-file ${_demos_root}/demos_cpp@/demos_cpp"
+        "SHELL:--preload-file ${_demos_root}/demos_python@/demos_python"
+    )
 endif()
 
 if(EMSCRIPTEN AND HELLOIMGUI_EMSCRIPTEN_PTHREAD)

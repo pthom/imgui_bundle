@@ -2,6 +2,16 @@
 https://github.com/pthom/hello_imgui
 """
 
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of Hello ImGui
+# -----------------------------------------------------------------------------
+# hello_imgui.pyi is the equivalent of hello_imgui.h, using the bindings
+# provided by Dear ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
+
 # ruff: noqa: F811, B008, F821
 from typing import List, Any, Callable, Tuple, Optional, overload, Dict
 import numpy as np
@@ -418,12 +428,49 @@ def asset_exists(asset_relative_filename: str) -> bool:
     """Returns True if this asset file exists"""
     pass
 
+# @@md
+
+# @@md#AssetsSearchPaths
+
 # void SetAssetsFolder(const std::string& folder);    /* original C++ signature */
 @overload
 def set_assets_folder(folder: str) -> None:
     """Sets the assets folder location
     (when using this, automatic assets installation on mobile platforms may not work)
     """
+    pass
+
+# Assets search paths provide additional locations where assets can be found,
+# giving a unified view across multiple folders. When loading an asset, the
+# search order is:
+#   1. The main assets folder (set by SetAssetsFolder(), or the default
+#      platform-specific locations such as exe_folder/assets)
+#   2. Each search path added by AddAssetsSearchPath(), in order
+#   3. Other built-in platform-specific fallback locations
+#
+# The first match wins. This is useful when assets are split across
+# directories — for example, core assets (fonts, icons) in one folder
+# and demo-specific assets (extra images, specialty fonts) in another.
+#
+# Note: search paths are a runtime-only mechanism. Unlike the main assets
+# folder (which CMake can bundle into the application for mobile/emscripten),
+# search path folders are not automatically embedded at compile time.
+# They are intended for desktop or Python usage where the filesystem
+# is directly accessible.
+
+# void AddAssetsSearchPath(const std::string& folder);    /* original C++ signature */
+def add_assets_search_path(folder: str) -> None:
+    """Add a folder to the asset search paths."""
+    pass
+
+# void ClearAssetsSearchPaths();    /* original C++ signature */
+def clear_assets_search_paths() -> None:
+    """Remove all previously added search paths."""
+    pass
+
+# const std::vector<std::string>& GetAssetsSearchPaths();    /* original C++ signature */
+def get_assets_search_paths() -> List[str]:
+    """Return the current list of search paths."""
     pass
 
 # @@md
@@ -835,6 +882,10 @@ def darcula(
 # }
 def show_theme_tweak_gui_window(p_open: Optional[bool] = None) -> Optional[bool]:
     pass
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # @@md#Fonts
 
@@ -1852,6 +1903,11 @@ class RunnerCallbacks:
     #  It is a good place to add new dockable windows.
     pre_new_frame: VoidFunction = EmptyVoidFunction()
 
+    # VoidFunction PostNewFrame = EmptyVoidFunction();    /* original C++ signature */
+    # `PostNewFrame`: You can here add a function that will be called at each frame,
+    #  just after the call to ImGui::NewFrame(), and before any Gui code.
+    post_new_frame: VoidFunction = EmptyVoidFunction()
+
     # VoidFunction BeforeImGuiRender = EmptyVoidFunction();    /* original C++ signature */
     # `BeforeImGuiRender`: You can here add a function that will be called at each frame,
     #  after the user Gui code, and just before the call to
@@ -1895,7 +1951,7 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction PostNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: Optional[VoidFunction] = None,
@@ -1913,6 +1969,7 @@ class RunnerCallbacks:
         before_exit: Optional[VoidFunction] = None,
         before_exit_post_cleanup: Optional[VoidFunction] = None,
         pre_new_frame: Optional[VoidFunction] = None,
+        post_new_frame: Optional[VoidFunction] = None,
         before_imgui_render: Optional[VoidFunction] = None,
         after_swap: Optional[VoidFunction] = None,
         custom_background: Optional[VoidFunction] = None,
@@ -1938,6 +1995,7 @@ class RunnerCallbacks:
                 * BeforeExit: EmptyVoidFunction()
                 * BeforeExit_PostCleanup: EmptyVoidFunction()
                 * PreNewFrame: EmptyVoidFunction()
+                * PostNewFrame: EmptyVoidFunction()
                 * BeforeImGuiRender: EmptyVoidFunction()
                 * AfterSwap: EmptyVoidFunction()
                 * CustomBackground: EmptyVoidFunction()

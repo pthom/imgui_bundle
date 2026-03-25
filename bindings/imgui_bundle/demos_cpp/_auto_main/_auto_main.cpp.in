@@ -24,6 +24,7 @@ int main(int, char **)
     addons.withImplot = true;
     addons.withImplot3d = true;
     addons.withTexInspect = true;
+    addons.withImAnim = true;
 
     ImmApp::Run(runnerParams, addons);
 

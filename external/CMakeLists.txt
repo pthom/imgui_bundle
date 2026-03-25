@@ -67,40 +67,46 @@ if (IMGUI_BUNDLE_BUILD_PYTHON)
 endif()
 
 
+# =============================================================================
+# Dependency Chain Resolution — Phase 2
+# =============================================================================
+# HelloImGui is now configured; HELLOIMGUI_HAS_OPENGL3 / HELLOIMGUI_HAS_METAL
+# reflect actual platform support. Resolve rendering-backend dependencies.
+# =============================================================================
+imgui_bundle_resolve_rendering_backend_dependencies()
+
 ###############################################################################
 # "Big" libraries, which can be disabled individually, for C++
 #     see options IMGUI_BUNDLE_WITH_XXX.
 #     (those options will fail for python bindings)
 ###############################################################################
-# Build immvision
+# Build immvision (OpenCV is optional — immvision works without it)
 if(HELLOIMGUI_HAS_OPENGL AND IMGUI_BUNDLE_WITH_IMMVISION)
     set(IMMVISION_SERIALIZE_JSON ON CACHE INTERNAL "" FORCE)
     add_subdirectory(immvision)
-    if (IMGUI_BUNDLE_WITH_IMMVISION)
 
-        find_package(nlohmann_json CONFIG QUIET)
-        if(nlohmann_json_FOUND)
-            target_link_libraries(immvision PRIVATE nlohmann_json::nlohmann_json)
-        else()
-            # use nlohmann_json provided by hello_imgui if not found in package
-            target_link_libraries(immvision PRIVATE nlohmann_json)
+    find_package(nlohmann_json CONFIG QUIET)
+    if(nlohmann_json_FOUND)
+        target_link_libraries(immvision PRIVATE nlohmann_json::nlohmann_json)
+    else()
+        # use nlohmann_json provided by hello_imgui if not found in package
+        target_link_libraries(immvision PRIVATE nlohmann_json)
+    endif()
+
+    target_link_libraries(imgui_bundle INTERFACE immvision)
+    hello_imgui_msvc_target_group_sources(immvision)
+    target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMMVISION)
+
+    if(IMGUI_BUNDLE_INSTALL_CPP)
+        set(immvision_src_dir ${CMAKE_CURRENT_LIST_DIR}/immvision/immvision/src)
+        FILE(GLOB immvision_headers ${immvision_src_dir}/immvision/*.h)
+        install(FILES ${immvision_headers} DESTINATION include/immvision)
+        ibd_add_installable_dependency(immvision)
+        if(TARGET immvision_gl_loader)
+            ibd_add_installable_dependency(immvision_gl_loader)
         endif()
-
-        target_link_libraries(imgui_bundle INTERFACE immvision)
-        hello_imgui_msvc_target_group_sources(immvision)
-        target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMMVISION)
-
-        if(IMGUI_BUNDLE_INSTALL_CPP)
-            set(immvision_src_dir ${CMAKE_CURRENT_LIST_DIR}/immvision/immvision/src)
-            FILE(GLOB immvision_headers ${immvision_src_dir}/immvision/*.h)
-            install(FILES ${immvision_headers} DESTINATION include/immvision)
-            ibd_add_installable_dependency(immvision)
-            if(TARGET immvision_gl_loader)
-                ibd_add_installable_dependency(immvision_gl_loader)
-            endif()
-            if(TARGET glad_imm)
-                ibd_add_installable_dependency(glad_imm)
-            endif()
+        if(TARGET glad_imm)
+            ibd_add_installable_dependency(glad_imm)
         endif()
     endif()
 endif()
@@ -130,13 +136,17 @@ endif()
 if(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     add_simple_external_library_with_sources(imgui_node_editor imgui-node-editor)
 
-    # Only add immapp integration files if immapp is available
+    # Always compile the immapp integration shim; only link immapp when available.
+    # When immapp is absent, IMGUI_BUNDLE_DISABLE_IMMAPP is set so the .cpp
+    # compiles stub implementations instead of calling into immapp.
+    target_sources(imgui_node_editor PRIVATE
+        imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.cpp
+        imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.h
+    )
     if(IMGUI_BUNDLE_WITH_IMMAPP)
-        target_sources(imgui_node_editor PRIVATE
-            imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.cpp
-            imgui-node-editor/imgui_node_editor_immapp/node_editor_default_context.h
-        )
         target_link_libraries(imgui_node_editor PUBLIC immapp)
+    else()
+        target_compile_definitions(imgui_node_editor PRIVATE IMGUI_BUNDLE_DISABLE_IMMAPP)
     endif()
 
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
@@ -218,6 +228,10 @@ if(IMGUI_BUNDLE_WITH_NANOVG)
         target_sources(nanovg PRIVATE nanovg/MetalNanoVG/src/nanovg_mtl.m nanovg/MetalNanoVG/src/nanovg_mtl.h)
         target_link_libraries(nanovg PUBLIC "-framework Metal" "-framework QuartzCore")
         target_include_directories(nanovg PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/nanovg/MetalNanoVG/src>)
+        # MetalNanoVG was written with ARC enabled — compile with -fobjc-arc
+        set_source_files_properties(nanovg/MetalNanoVG/src/nanovg_mtl.m
+            TARGET_DIRECTORY nanovg
+            PROPERTIES COMPILE_FLAGS "-fobjc-arc")
     endif()
 
     # Add nvg_imgui
@@ -245,6 +259,21 @@ if(IMGUI_BUNDLE_WITH_NANOVG)
     endif()
 endif()
 
+# Add ImAnim
+if(IMGUI_BUNDLE_WITH_IMANIM)
+    add_simple_external_library_with_sources(imanim ImAnim)
+    target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMANIM)
+    target_include_directories(imanim PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/ImAnim/ImAnim>)
+    # Suppress warnings in third-party ImAnim code
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        target_compile_options(imanim PRIVATE -Wno-unused-result -Wno-format-truncation)
+    endif()
+    if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        target_compile_options(imanim PRIVATE -Wno-unknown-warning-option -Wno-nontrivial-memaccess -Wno-nontrivial-memcall)
+    endif()
+    set(IMGUI_BUNDLE_WITH_IMANIM ON CACHE INTERNAL "" FORCE)
+endif()
+
 
 ###############################################################################
 # Core libraries, used everywhere in the demos
@@ -264,6 +293,11 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         imgui_md/imgui_md_wrapper/imgui_md_wrapper.cpp
         imgui_md/imgui_md_wrapper/imgui_md_wrapper.h
     )
+    if(APPLE)
+        # warning: 'OFF_MAX' macro redefined
+        # MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/limits.h:140:9: #define OFF_MAX         LLONG_MAX
+        set_source_files_properties(imgui_md/md4c/src/md4c.c PROPERTIES COMPILE_OPTIONS "-Wno-macro-redefined")
+    endif()
     target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md/md4c/src>)
     target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md/imgui_md_wrapper>)
     target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit fplus immapp)
@@ -316,3 +350,10 @@ if(IMGUI_BUNDLE_WITH_IMMAPP AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
 else()
     message(STATUS "Skipping immapp (disabled or hello_imgui not available)")
 endif()
+
+
+###############################################################################
+# imgui_explorer (interactive demo viewer for ImGui, ImPlot, ImPlot3D, ImAnim)
+###############################################################################
+add_subdirectory(imgui_explorer/imgui_explorer)
+
