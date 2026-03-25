@@ -47,4 +47,5 @@ All 23+ C++ libraries compile into a single `_imgui_bundle` native extension, wi
 - [Add New Library](bindings_newlib.md) – adding a new library to the bundle
 - [Debug Native C++](bindings_debug.md) – debugging C++ code from Python
 - [PyPI Deployment](pypi_deploy.md) – releasing to PyPI
+- [Pyodide Build Guide](Readme_pyodide_bundle.md) – building for Python-in-the-browser
 - [OpenCV Build Guide](build_opencv_immvision.md) – building with OpenCV / ImmVision
