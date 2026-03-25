@@ -1,3 +1,0 @@
-# This file ensures the output directory exists in git
-# Actual build outputs are gitignored
-

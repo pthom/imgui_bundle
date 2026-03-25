@@ -1,3 +1,0 @@
-# Build outputs - do not commit
-*.whl
-pyodide_dist/
