@@ -1,135 +1,78 @@
 # Update existing bindings
 
-# Introduction
+## Quick reference: justfile commands
 
-## Run `generate_LIBNAME.py`
-
-The process for updating bindings for a given library is straightforward:
-
-1. Update the library submodule in external/LIBNAME/LIBNAME
-2. Run the generation script in external/LIBNAME/generate_LIBNAME.py
-3. Compile and test python bindings (carefully study that nothing was broken)
-4. Commit and push
-
-For example with ImCoolBar, in order to update the bindings for ImCoolBar, one needs to run:
+The `justfile` provides shortcuts for the most common library management tasks:
 
 ```bash
-python external/ImCoolBar/bindings/generate_imcoolbar.py
+just libs_info              # Show all libraries with their remotes (fork / official)
+just libs_check_upstream    # Check which forks have new upstream changes
+just libs_log <name>        # Show new upstream commits for a library
+just libs_rebase <name>     # Tag current state, then rebase fork on upstream
+just libs_tag <name>        # Push a date tag to a fork
+just libs_bindings <name>   # Regenerate bindings for one library
+just libs_bindings_all      # Regenerate all bindings
+just libs_reattach          # Reattach all submodules to their branches
+just libs_fetch             # Fetch all remotes
+just libs_pull              # Pull all submodules
 ```
 
+## Typical workflow
 
-## Submodules maintenance
-
-[external/bindings_generation](https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation) contains some scripts for  the submodules maintenance.
-
-See this extract of [external/bindings_generation/all_external_libraries.py](https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation/all_external_libraries.py), which shows that imgui and imgui_test_engine are using forks.
-
-These forks include small modifications added for compatibility with imgui_bundle (most modifications are small changes to accommodate with python bindings).
-
-```python
-def lib_imgui() -> ExternalLibrary:
-    return ExternalLibrary(
-        name="imgui",
-        official_git_url="https://github.com/ocornut/imgui.git",
-        official_branch="docking",
-        fork_git_url="https://github.com/pthom/imgui.git"
-    )
-
-
-def lib_imgui_test_engine() -> ExternalLibrary:
-    return ExternalLibrary(
-        name="imgui_test_engine",
-        official_git_url="https://github.com/ocornut/imgui_test_engine.git",
-        official_branch="main",
-        fork_git_url="https://github.com/pthom/imgui_test_engine.git",
-    )
-```
-
-When using forked libraries, the git remote name for the fork is "fork", and the remote name for the official repository is "official".
-
-**Reattach all submodules to their upstream branch**
-
-By default, all submodules, are in mode "detached head". We need to attach them to the correct remote/branch.
-
-We can use the utilities from external/bindings_generation:
-
-For example, [external/bindings_generation/sandbox.py](https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation/sandbox.py) contains this:
-
-```python
-from bindings_generation import all_external_libraries
-
-all_external_libraries.reattach_all_submodules()
-```
-
-It will reattach all submodules to the correct remote/branch.
-
-
-
-# Example: update imgui & bindings
-
-
-:::{tip}
-This [video](https://youtu.be/QeBCxU7tn68) demonstrates from starts to finish the process of updating imgui and its bindings (17 minutes).
-:::
-
-
-## Update imgui and imgui_test_engine
-
-**First, add a tag to our forks**
-
-Since we will be updating our imgui and imgui_test_engine forks via a rebase, we should push a tag, so that old versions remain accessible on GitHub.
-
-In this example, the current version of imgui_bundle is v1.0.0-beta1. So we push a "bundle_1.0.0-beta1" tag to the forks.
+### 1. Check what's new upstream
 
 ```bash
-cd external/imgui/imgui
-git tag "bundle_1.0.0-beta1"
-git push fork --tags
-cd -
+just libs_check_upstream
+```
 
-cd external/imgui_test_engine/imgui_test_engine
-git tag "bundle_1.0.0-beta1"
-git push fork --tags
+Example output:
+```
+Unchanged libraries: imgui, glfw, hello_imgui, ImCoolBar, ...
+Libraries with new changes in official repo: imgui_test_engine
+```
+
+Inspect the new commits:
+```bash
+just libs_log imgui_test_engine
+```
+
+### 2. Update the library
+
+**For a non-forked library** (e.g. `immvision`, `glfw`):
+```bash
+cd external/immvision/immvision
+git pull
 cd -
 ```
 
-**Then rebase our forks on the official branch changes**
-
+**For a forked library** (e.g. `imgui_test_engine`): tag the current state, then rebase on upstream:
 ```bash
-cd external/imgui/imgui
-git rebase official/docking
-cd -
+just libs_rebase imgui_test_engine
 ```
 
+This is equivalent to:
 ```bash
 cd external/imgui_test_engine/imgui_test_engine
+git tag "bundle_$(date +%Y%m%d)"
+git push fork --tags
 git rebase official/main
 cd -
 ```
 
+### 3. Regenerate bindings
 
-## Run generate_imgui.py
-
-**Run generate_imgui**
-
-We will run [external/imgui/bindings/generate_imgui.py](https://github.com/pthom/imgui_bundle/tree/main/external/imgui/bindings/generate_imgui.py).
-
-It will generate the python bindings for imgui, imgui_internal and imgui_test_engine.
-
-See main() function of generate_imgui.py:
-
-```python
-def main():
-    autogenerate_imgui()
-    autogenerate_imgui_internal()
-    autogenerate_imgui_test_engine()
+```bash
+just libs_bindings imgui_test_engine
 ```
 
-**Examine the changes**
-Look at the changes, and check if they look ok
+Or call the generation script directly:
+```bash
+python external/imgui_test_engine/bindings/generate_imgui_test_engine.py
+```
 
+Examine the changes in the generated `.cpp` and `.pyi` files with `git diff`.
 
-## Compile & Test
+### 4. Compile & test
 
 If you don't have a build directory yet, see [Getting Started](getting_started_dev.md) or [Build Guide](build_guide.md).
 
@@ -159,12 +102,92 @@ just test_mypy     # or: cd bindings && ./mypy_bindings.sh
 
 See [Testing](testing.md) for more details.
 
+### 5. Push fork changes (if applicable)
 
-## Update forked submodules:
+If the fork submodule was modified during rebase or to fix binding compatibility:
+```bash
+cd external/imgui_test_engine/imgui_test_engine
+git push fork
+cd -
+```
 
-if some forked submodules required to be changed:
+### 6. Commit
 
-* tag them, push the tag
-* rebase the fork branch on the official branch
-* push the changes
+```bash
+git add -A
+git commit -m "Update imgui_test_engine and regenerate bindings"
+```
 
+
+## Submodule management
+
+[external/bindings_generation/all_external_libraries.py](https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation/bundle_libs_tooling/all_external_libraries.py) contains the registry of all external libraries. Each library has an `official` remote (upstream) and optionally a `fork` remote (pthom's fork with binding-compatibility patches).
+
+```bash
+just libs_info    # See all libraries, their remotes, and paths
+```
+
+Example output:
+```
+NAME                  FORK                                              OFFICIAL                                            PATH
+imgui                 https://github.com/pthom/imgui.git                https://github.com/ocornut/imgui.git                external/imgui/imgui
+imgui_test_engine     https://github.com/pthom/imgui_test_engine.git    https://github.com/ocornut/imgui_test_engine.git    external/imgui_test_engine/imgui_test_engine
+glfw                                                                    https://github.com/glfw/glfw.git                    external/glfw/glfw
+hello_imgui                                                             https://github.com/pthom/hello_imgui.git            external/hello_imgui/hello_imgui
+...
+```
+
+Libraries without a fork URL are used directly from upstream.
+
+**Reattach submodules:** By default, submodules are in "detached HEAD" mode. To attach them to their correct remote/branch:
+```bash
+just libs_reattach
+```
+
+
+## Example: update imgui & bindings (detailed)
+
+:::{tip}
+This [video](https://youtu.be/QeBCxU7tn68) demonstrates from start to finish the process of updating imgui and its bindings (17 minutes).
+:::
+
+imgui and imgui_test_engine use forks. The full update process:
+
+**1. Tag current fork state**
+```bash
+just libs_tag imgui
+just libs_tag imgui_test_engine
+```
+
+**2. Rebase forks on upstream**
+```bash
+just libs_rebase imgui
+just libs_rebase imgui_test_engine
+```
+
+Or manually:
+```bash
+cd external/imgui/imgui
+git rebase official/docking
+cd -
+
+cd external/imgui_test_engine/imgui_test_engine
+git rebase official/main
+cd -
+```
+
+**3. Regenerate bindings**
+
+```bash
+just libs_bindings imgui
+```
+
+This runs [external/imgui/bindings/generate_imgui.py](https://github.com/pthom/imgui_bundle/tree/main/external/imgui/bindings/generate_imgui.py), which generates bindings for imgui, imgui_internal, and imgui_test_engine.
+
+**4. Examine, build, and test** (see steps 3-4 above)
+
+**5. Push updated forks**
+```bash
+cd external/imgui/imgui && git push fork && cd -
+cd external/imgui_test_engine/imgui_test_engine && git push fork && cd -
+```

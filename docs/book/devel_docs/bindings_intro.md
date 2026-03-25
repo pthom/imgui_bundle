@@ -76,3 +76,16 @@ imgui_bundle/external/bindings_generation/
 ├── ...
 ```
 
+## Regenerating bindings via justfile
+
+The `justfile` provides convenient shortcuts for binding generation and library management:
+
+```bash
+just libs_bindings im_cool_bar    # Regenerate bindings for one library
+just libs_bindings_all            # Regenerate all bindings
+just libs_info                    # Show all libraries with their remotes
+just libs_check_upstream          # Check which forks have new upstream changes
+```
+
+See [Update Bindings](bindings_update.md) for the full update workflow.
+
