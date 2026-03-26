@@ -48,6 +48,7 @@ parts:
       - file: devel_docs/build_guide
       - file: devel_docs/testing
       - file: devel_docs/bindings_intro
+      - file: devel_docs/bindings_forks
       - file: devel_docs/bindings_update
       - file: devel_docs/bindings_newlib
       - file: devel_docs/bindings_debug

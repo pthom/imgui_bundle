@@ -1,5 +1,9 @@
 # Update existing bindings
 
+:::{tip}
+Before following this workflow, read [Managing external libraries and forks](bindings_forks.md) to understand the fork model, conventions, and available tooling.
+:::
+
 ## Quick reference: justfile commands
 
 The `justfile` provides shortcuts for the most common library management tasks:
@@ -16,6 +20,8 @@ just libs_reattach          # Reattach all submodules to their branches
 just libs_fetch             # Fetch all remotes
 just libs_pull              # Pull all submodules
 ```
+
+See [Managing external libraries and forks](bindings_forks.md) for detailed explanations of each command.
 
 ## Typical workflow
 
@@ -116,32 +122,6 @@ cd -
 ```bash
 git add -A
 git commit -m "Update imgui_test_engine and regenerate bindings"
-```
-
-
-## Submodule management
-
-[external/bindings_generation/all_external_libraries.py](https://github.com/pthom/imgui_bundle/tree/main/external/bindings_generation/bundle_libs_tooling/all_external_libraries.py) contains the registry of all external libraries. Each library has an `official` remote (upstream) and optionally a `fork` remote (pthom's fork with binding-compatibility patches).
-
-```bash
-just libs_info    # See all libraries, their remotes, and paths
-```
-
-Example output:
-```
-NAME                  FORK                                              OFFICIAL                                            PATH
-imgui                 https://github.com/pthom/imgui.git                https://github.com/ocornut/imgui.git                external/imgui/imgui
-imgui_test_engine     https://github.com/pthom/imgui_test_engine.git    https://github.com/ocornut/imgui_test_engine.git    external/imgui_test_engine/imgui_test_engine
-glfw                                                                    https://github.com/glfw/glfw.git                    external/glfw/glfw
-hello_imgui                                                             https://github.com/pthom/hello_imgui.git            external/hello_imgui/hello_imgui
-...
-```
-
-Libraries without a fork URL are used directly from upstream.
-
-**Reattach submodules:** By default, submodules are in "detached HEAD" mode. To attach them to their correct remote/branch:
-```bash
-just libs_reattach
 ```
 
 

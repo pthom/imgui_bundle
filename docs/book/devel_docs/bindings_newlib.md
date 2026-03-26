@@ -231,6 +231,10 @@ It should demo the library, and act as a tutorial, in python and C++.
 
 Some libraries require modifications to work properly with Python bindings. In such cases, you need to fork the library and make adaptations. This section describes common patterns for adapting C++ APIs for Python compatibility.
 
+:::{note}
+When making bundle-specific changes in forked code, bracket them with `// [ADAPT_IMGUI_BUNDLE]` / `// [/ADAPT_IMGUI_BUNDLE]` comment markers, and use a `[Bundle]` prefix in commit messages. This makes it easy to distinguish bundle patches from upstream code. See [Managing external libraries and forks](bindings_forks.md) for full conventions.
+:::
+
 ### Step 3-a: Python API compatibility macros
 
 ImGui Bundle defines two preprocessor macros for conditional compilation when building Python bindings:

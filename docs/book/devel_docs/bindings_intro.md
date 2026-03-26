@@ -87,5 +87,5 @@ just libs_info                    # Show all libraries with their remotes
 just libs_check_upstream          # Check which forks have new upstream changes
 ```
 
-See [Update Bindings](bindings_update.md) for the full update workflow.
+See [Update Bindings](bindings_update.md) for the full update workflow, and [Managing external libraries and forks](bindings_forks.md) for how forks, remotes, and bundle-specific changes are managed.
 
