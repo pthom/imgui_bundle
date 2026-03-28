@@ -1350,6 +1350,13 @@ class AppWindowParams:
         EmscriptenKeyboardElement.default
     )
 
+    # bool emscriptenAllowBrowserZoomShortcuts = true;    /* original C++ signature */
+    # `emscriptenAllowBrowserZoomShortcuts`: _bool, default=true_. (For Emscripten with GLFW backend only)
+    # If True, browser zoom shortcuts (Ctrl/Cmd + Plus/Minus/0) are forwarded to the browser
+    # instead of being captured by the application.
+    # Set to False if your application needs to handle these key combinations itself.
+    emscripten_allow_browser_zoom_shortcuts: bool = True
+
     # bool repaintDuringResize_GotchaReentrantRepaint = false;    /* original C++ signature */
     # ----------------- repaint the window during resize -----------------
     # Very advanced and reserved for advanced C++ users.
@@ -1357,7 +1364,7 @@ class AppWindowParams:
     # Do read https://github.com/pthom/hello_imgui/issues/112 for info about the possible gotchas
     # (This API is not stable, as the name suggests, and this is not supported)
     repaint_during_resize_gotcha_reentrant_repaint: bool = False
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool topMost = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true, EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default, bool repaintDuringResize_GotchaReentrantRepaint = false);    /* original C++ signature */
+    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool topMost = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true, EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default, bool emscriptenAllowBrowserZoomShortcuts = true, bool repaintDuringResize_GotchaReentrantRepaint = false);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
@@ -1374,6 +1381,7 @@ class AppWindowParams:
         edge_insets: Optional[EdgeInsets] = None,
         handle_edge_insets: bool = True,
         emscripten_keyboard_element: EmscriptenKeyboardElement = EmscriptenKeyboardElement.default,
+        emscripten_allow_browser_zoom_shortcuts: bool = True,
         repaint_during_resize_gotcha_reentrant_repaint: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params

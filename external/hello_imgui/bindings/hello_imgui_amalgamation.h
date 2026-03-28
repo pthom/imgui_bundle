@@ -1010,6 +1010,12 @@ struct AppWindowParams
     // - under Pyodide, the default behavior is to capture the keyboard events for the canvas.
     EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default;
 
+    // `emscriptenAllowBrowserZoomShortcuts`: _bool, default=true_. (For Emscripten with GLFW backend only)
+    // If true, browser zoom shortcuts (Ctrl/Cmd + Plus/Minus/0) are forwarded to the browser
+    // instead of being captured by the application.
+    // Set to false if your application needs to handle these key combinations itself.
+    bool emscriptenAllowBrowserZoomShortcuts = true;
+
 
     // ----------------- repaint the window during resize -----------------
     // Very advanced and reserved for advanced C++ users.
