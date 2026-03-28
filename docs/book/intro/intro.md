@@ -1,8 +1,10 @@
 # Dear ImGui Bundle
 
-> From expressive code to powerful GUIs in no time: a fast, feature-rich, cross-platform toolkit for C++ & Python.
+> **Interactive Python & C++ apps for desktop, mobile, and web - powered by Dear ImGui.**
+>
+> Stop fighting GUI frameworks. Start building.
 
-_Click the animation below to launch "Dear ImGui Bundle Explorer"_
+**See it in action:** [launch the Interactive Explorer in your browser](https://traineq.org/imgui_bundle_explorer/)
 ````{card}
 :link: https://traineq.org/imgui_bundle_explorer/
 ```{figure} ../images/bundle_explorer_vid.*
@@ -10,7 +12,7 @@ Dear ImGui Bundle Explorer is an interactive manual with demos of all the featur
 ```
 ````
 
-The documentation for Dear ImGui Bundle is split into two main components, which are intended to be used together:
+Two ways to learn Dear ImGui Bundle (best used together):
 
-- **This manual**: Browse the next pages to learn about the toolkit and how to use it.
-- **Dear ImGui Bundle Explorer**: An interactive manual with demos of all the features.
+- **[Read this manual](what_is_imgui_bundle.md)**: what it is, how to get started, API guides for each library.
+- **[Interactive Demo](https://traineq.org/imgui_bundle_explorer/)**: Dear ImGui Bundle Explorer provides live demos with source code for every feature.
