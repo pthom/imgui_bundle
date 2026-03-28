@@ -8331,7 +8331,7 @@ class im_stb:  # Proxy class that introduces typings for the *submodule* im_stb
 ####################    </generated_from:imgui_internal.h>    ####################
 
 ####################    <generated_from:imgui_internal_pywrappers.h>    ####################
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 # Handwritten wrappers around parts of the imgui API, when needed for the python bindings
 
 # IMGUI_API std::tuple<ImGuiID, ImGuiID, ImGuiID>       DockBuilderSplitNode_Py(ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir);    /* original C++ signature */

@@ -1,4 +1,4 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "imspinner/imspinner.h"

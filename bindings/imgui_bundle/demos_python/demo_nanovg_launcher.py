@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 
 from imgui_bundle import imgui, hello_imgui, imgui_md, immapp, ImVec2
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder

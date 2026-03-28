@@ -5,7 +5,7 @@ In order to apply a theme, you can use:
   hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.cherry)
 
 """
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import immapp, hello_imgui, imgui, imgui_md, ImVec2
 
 

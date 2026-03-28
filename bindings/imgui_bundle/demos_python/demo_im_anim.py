@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2025 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, imgui_md, immapp
 
 from imgui_bundle.demos_python.demo_utils.imgui_explorer_setup import get_imgui_explorer, get_package_path
