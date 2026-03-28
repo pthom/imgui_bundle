@@ -12,7 +12,11 @@
 >
 > Stop fighting GUI frameworks. Start building.
 
-Dear ImGui Bundle is a batteries-included collection of libraries around [Dear ImGui](https://github.com/ocornut/imgui), for both C++ and Python. All the pieces are pre-wired to play well together: plotting, Markdown, node editors, image inspection, and more — ready to drop into your app.
+Dear ImGui Bundle is a batteries-included collection of libraries around [Dear ImGui](https://github.com/ocornut/imgui), for both C++ and Python. All the pieces are pre-wired to play well together: plotting, Markdown, node editors, image inspection, and more - ready to drop into your app.
+
+**See it in action:** [launch the Interactive Explorer in your browser](https://traineq.org/imgui_bundle_explorer/)
+
+[![Dear ImGui Bundle Explorer](https://traineq.org/ImGuiBundle/bundle_explorer_vid.gif)](https://traineq.org/imgui_bundle_explorer/)
 
 ## Key features
 
@@ -35,7 +39,7 @@ Dear ImGui Bundle is a batteries-included collection of libraries around [Dear I
 ## Try it now
 
 ### Online playground (Pyodide)
-Run and edit Python ImGui Bundle apps directly in your browser — no installation needed. Type code on the left, see the interactive GUI on the right.
+Run and edit Python ImGui Bundle apps directly in your browser - no installation needed. Type code on the left, see the interactive GUI on the right.
 
 Open the **[playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/)**.
 
