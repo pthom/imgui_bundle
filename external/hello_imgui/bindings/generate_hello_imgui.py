@@ -67,6 +67,11 @@ def main():
     options.fn_exclude_by_name__regex = r"^setAssetsFolder$|^TranslateCommonGlyphRanges$|^SetLoadAssetFileDataFunction$|^LoadImageDataFromAsset$"
     options.class_exclude_by_name__regex = r"^ImageData$"
 
+    options.value_replacements.add_last_replacement("ImGuiDockNodeFlags_None", "DockNodeFlags_.none")
+    options.value_replacements.add_last_replacement("ImGuiDockNodeFlags_PassthruCentralNode", "DockNodeFlags_.passthru_central_node")
+    options.value_replacements.add_last_replacement("ImGuiCond_FirstUseEver", "Cond_.first_use_ever")
+    options.value_replacements.add_last_replacement("ImGuiDir_Down", "Dir.down")
+
     options.python_run_black_formatter = True
 
     options.postprocess_stub_function = lambda code: code.replace("(VoidFunction)", "")

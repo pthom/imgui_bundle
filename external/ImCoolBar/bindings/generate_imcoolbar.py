@@ -23,6 +23,9 @@ def main():
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
     options.namespaces_root = ["ImGui"]
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
+    options.value_replacements.add_last_replacement(
+        "ImGuiWindowFlags_None", "WindowFlags_.none"
+    )
     # options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     # options.python_run_black_formatter = True
 
