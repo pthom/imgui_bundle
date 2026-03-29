@@ -1,5 +1,8 @@
-import numpy as np
-from numpy.typing import NDArray
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
+    from numpy.typing import NDArray
 
 
 _HAS_PIL = False
@@ -14,7 +17,7 @@ except ImportError:
         """)
 
 
-def _dummy_image(with_alpha: bool) -> NDArray[np.uint8]:
+def _dummy_image(with_alpha: bool) -> "NDArray[np.uint8]":
     """
     Generates a 400x400 RGBA image with a visually appealing sine wave interference pattern
     and a transparent background.
@@ -52,7 +55,7 @@ def _dummy_image(with_alpha: bool) -> NDArray[np.uint8]:
     return rgba_image
 
 
-def imread_demo(image_file: str, load_alpha: bool = False) -> NDArray[np.uint8]:
+def imread_demo(image_file: str, load_alpha: bool = False) -> "NDArray[np.uint8]":
     """Read an image using Pillow or ImageIO, fallback to dummy pattern."""
     if _HAS_PIL:
         img = Image.open(image_file)

@@ -3,7 +3,11 @@ import math
 from dataclasses import dataclass, field
 from typing import Callable, List
 
-import numpy as np
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
 
 from imgui_bundle import imgui, imgui_md, hello_imgui, immapp, ImVec2, ImVec4
 from imgui_bundle import imgui_color_text_edit as ed
@@ -294,7 +298,7 @@ def _lorenz_slide_gui(content_size: ImVec2):
 # Slide 2: ImPlot showcase — 4 diverse plot types in subplots
 # ============================================================================
 
-if HAS_IMPLOT:
+if HAS_IMPLOT and HAS_NUMPY:
     _implot_inited = False
     _implot_xs: np.ndarray = None  # type: ignore
 
@@ -563,7 +567,7 @@ def _table_slide_gui(content_size: ImVec2):
 # Slide 4: ImmVision — Image debugging with animated zoom
 # ============================================================================
 
-if HAS_IMMVISION and HAS_OPENCV:
+if HAS_IMMVISION and HAS_OPENCV and HAS_NUMPY:
     _immvision_image = None
     _immvision_image_sobel = None
     _immvision_params = immvision.ImageParams()
@@ -1053,6 +1057,9 @@ def _gallery_gui_plot(w: float, h: float, em: float):
     if not HAS_IMPLOT:
         imgui.text("ImPlot not available")
         return
+    if not HAS_NUMPY:
+        _suggest_install("NumPy", "numpy", "gallery_")
+        return
     t = imgui.get_time()
     x = np.linspace(0, 4 * np.pi, 200)
     if implot.begin_plot("##wave", ImVec2(-1, -1)):
@@ -1108,7 +1115,7 @@ def _web_deploy_slide_gui(content_size: ImVec2):
 # Slide 10: Seascape shader — FBO + OpenGL
 # ============================================================================
 
-if HAS_OPENGL:
+if HAS_OPENGL and HAS_NUMPY:
     import sys as _sys
 
     # Shader body shared between GLSL 100 (Emscripten/WebGL) and GLSL 330 (desktop).
@@ -1378,47 +1385,54 @@ out vec4 FragColor;
 # Slide wrappers with fallbacks
 # ============================================================================
 
+def _suggest_install(package_name: str, pip_name: str, imgui_id: str = ""):
+    """Show install instructions with copy buttons for a missing package."""
+    imgui.text_wrapped(f"This demo requires {package_name}. Please run:")
+    imgui.text(f"    pip install {pip_name}")
+    imgui.same_line()
+    if imgui.button(f"Copy##{imgui_id}pip"):
+        imgui.set_clipboard_text(f"pip install {pip_name}")
+    imgui.text("or")
+    imgui.text(f"   uv pip install {pip_name}")
+    imgui.same_line()
+    if imgui.button(f"Copy##{imgui_id}uv"):
+        imgui.set_clipboard_text(f"uv pip install {pip_name}")
+
+
 def _implot_slide_wrapper(cs: ImVec2):
-    if HAS_IMPLOT:
+    if HAS_IMPLOT and HAS_NUMPY:
         _implot_slide_gui(cs)
-    else:
+    elif not HAS_IMPLOT:
         imgui.text_wrapped("ImPlot not available.")
+    else:
+        _suggest_install("NumPy", "numpy", "implot_")
 
 
 def _immvision_slide_wrapper(cs: ImVec2):
-    if HAS_IMMVISION and HAS_OPENCV:
+    if HAS_IMMVISION and HAS_OPENCV and HAS_NUMPY:
         _immvision_slide_gui(cs)
+    elif not HAS_IMMVISION:
+        imgui.text_wrapped("ImmVision not available in this build.")
+    elif not HAS_OPENCV:
+        _suggest_install("OpenCV", "opencv-python", "immvision_")
     else:
-        if not HAS_IMMVISION:
-            imgui.text_wrapped("ImmVision not available in this build.")
-        else:
-            if not HAS_OPENCV:
-                imgui.text_wrapped("This demo requires OpenCV. Please run:")
-                imgui.text("    pip install opencv-python")
-                imgui.same_line()
-                if imgui.button("Copy"):
-                    imgui.set_clipboard_text("pip install opencv-python")
-                imgui.text("or")
-                imgui.text("   uv pip install opencv-python")
-                imgui.same_line()
-                if imgui.button("Copy##2"):
-                    imgui.set_clipboard_text("uv pip install opencv-python")
+        _suggest_install("NumPy", "numpy", "immvision_np_")
+
+
+def _lorenz_slide_wrapper(cs: ImVec2):
+    if HAS_NUMPY:
+        _lorenz_slide_gui(cs)
+    else:
+        _suggest_install("NumPy", "numpy", "lorenz_")
 
 
 def _shader_slide_wrapper(cs: ImVec2):
-    if HAS_OPENGL:
+    if HAS_OPENGL and HAS_NUMPY:
         _shader_slide_gui(cs)
+    elif not HAS_OPENGL:
+        _suggest_install("OpenGL", "PyOpenGL", "shader_")
     else:
-        imgui.text_wrapped("Shader demo requires OpenGL, please run:")
-        imgui.text("    pip install PyOpenGL")
-        imgui.same_line()
-        if imgui.button("Copy"):
-            imgui.set_clipboard_text("pip install PyOpenGL")
-        imgui.text("or")
-        imgui.text("   uv pip install PyOpenGL")
-        imgui.same_line()
-        if imgui.button("Copy##2"):
-            imgui.set_clipboard_text("uv pip install PyOpenGL")
+        _suggest_install("NumPy", "numpy", "shader_np_")
 
 
 # ============================================================================
@@ -1589,7 +1603,7 @@ def _intro_mini_demos():
         CarouselSlide(
             "3D Data Exploration",
             "ImPlot3D adds rotatable, zoomable 3D plots. Navigate complex datasets with intuitive controls.",
-            _lorenz_slide_gui),
+            _lorenz_slide_wrapper),
         CarouselSlide(
             "Image Analysis",
             "ImmVision lets you zoom, pan, and inspect pixel values in real time, with linked views and colormaps.",
