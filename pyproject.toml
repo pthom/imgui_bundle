@@ -25,13 +25,11 @@ classifiers = [
     "Programming Language :: Python :: 3 :: Only",
 ]
 
-dependencies = [
-    "numpy",
-]
+dependencies = []
 
 [project.optional-dependencies]
 # To be able to display plots
-matplotlib = ["matplotlib"]
+matplotlib = ["matplotlib", "numpy"]
 # To use image processing features
 imgproc = ["pillow", "opencv-python"]
 pydantic = ["pydantic>=2.0.0"]
@@ -52,6 +50,7 @@ all_backends = [
 ]
 # full installation
 full = [
+    "numpy",
     "matplotlib",
     "pillow",
     "opencv-python",
