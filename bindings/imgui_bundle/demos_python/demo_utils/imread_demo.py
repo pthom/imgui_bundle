@@ -1,8 +1,8 @@
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
+try:
     import numpy as np
     from numpy.typing import NDArray
+except ImportError:
+    pass  # This module is imported by default. We want the package to work without NumPy.
 
 
 _HAS_PIL = False
