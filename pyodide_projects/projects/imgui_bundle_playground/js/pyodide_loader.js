@@ -62,16 +62,16 @@ async function loadPyodideAndPackages() {
         updateProgress(0, 'Loading Pyodide...');
         pyodide = await loadPyodide();
         const pythonVersion = pyodide.runPython("import sys; sys.version");
-        updateProgress(7, 'Pyodide loaded.');
         console.log("Python version:", pythonVersion);
 
+        updateProgress(25, 'Loading micropip');
         await pyodide.loadPackage("micropip");
         await pyodide.loadPackage("micropip"); // firefox needs this to be loaded twice...
         const micropip = pyodide.pyimport("micropip");
-        updateProgress(10, 'micropip loaded.');
 
+        updateProgress(50, 'Loading imgui_bundle');
         await micropip.install('../imgui_bundle_wheel/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl');
-        updateProgress(30, 'imgui bundle loaded.');
+        updateProgress(75, 'imgui bundle loaded.');
 
         // SDL support in Pyodide is experimental. The flag is used to bypass certain issues.
         pyodide._api._skip_unwind_fatal_error = true;
