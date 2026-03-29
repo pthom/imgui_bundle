@@ -1,4 +1,4 @@
-# Deploy to the web
+# Deploy to the web - Pyodide
 
 Dear ImGui Bundle applications can be effortlessly deployed to the web using Pyodide, enabling Python code to run directly in web browsers. This capability allows developers to share interactive GUI applications without requiring users to install any software.
 
@@ -6,52 +6,56 @@ Dear ImGui Bundle applications can be effortlessly deployed to the web using Pyo
 
 ## Pyodide Minimal Example
 
-With Pyodide, web deployment is as easy as copying this HTML template. The Python code is unchanged from what you'd use for desktop.
+With Pyodide, web deployment is as easy as copying the HTML template below. The Python code is unchanged from what you'd use for desktop.
 
+* [HTML template source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/source.txt)
+* [HTML template (run it)](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html)
+
+**How it works:**
+
+1. In HTML, load Pyodide via CDN:
 
 ```html
-<!doctype html>
-<html>
-<head>
-    <style>
-        html, body { width: 100%; height: 100%; margin: 0; }
-        #canvas { display: block; width: 100%; height: 100%;}
-    </style>
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.28.2/full/pyodide.js"></script>
-</head>
-<body>
-<canvas id="canvas" tabindex="0"></canvas>
-<script type="text/javascript">
-    // ====================== Start of Python code ============================
-    // Write your python code here
-    pythonCode = `
-from imgui_bundle import imgui, immapp
-
-def gui():
-    imgui.text(f"hello, world")
-
-immapp.run(gui, window_title="Hello World")
-`
-    // ====================== End of Python code ==============================
-    async function main(){
-        // This enables to use right click in the canvas
-        document.addEventListener('contextmenu', event => event.preventDefault());
-        // Load Pyodide
-        let pyodide = await loadPyodide();
-        // Setup SDL, cf https://pyodide.org/en/stable/usage/sdl.html
-        let sdl2Canvas = document.getElementById("canvas");
-        pyodide.canvas.setCanvas2D(sdl2Canvas);
-        pyodide._api._skip_unwind_fatal_error = true; // SDL requires to enable an opt-in flag :
-        // Load imgui_bundle
-        await pyodide.loadPackage("imgui_bundle");
-        // Run the Python code
-        pyodide.runPython(pythonCode);
-    }
-    main();
-</script>
-</body>
-</html>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
 ```
+(Check [pyodide latest releases](https://github.com/pyodide/pyodide/releases) to see the latest version, and update the URL accordingly)
+
+2. In javaScript, load Pyodide, setup SDL, and load imgui_bundle via micropip:
+
+```javascript
+async function main(){
+    // This enables to use right click in the canvas
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    // Load Pyodide
+    let pyodide = await loadPyodide();
+
+    // Setup SDL, cf https://pyodide.org/en/stable/usage/sdl.html
+    // 1. Set the canvas for SDL2
+    let sdl2Canvas = document.getElementById("canvas");
+    pyodide.canvas.setCanvas2D(sdl2Canvas);
+    // 2. SDL requires to enable an opt-in flag :
+    pyodide._api._skip_unwind_fatal_error = true;
+
+    // 3. Load imgui_bundle via micropip
+    await pyodide.loadPackage("micropip");
+    const micropip = pyodide.pyimport("micropip");
+    // load a newer wheel from a local url
+    // await micropip.install('imgui_bundle');  // to use the default wheel included with the pyodide CDN
+    await micropip.install('imgui_bundle_wheel/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl');
+
+    // Run the Python code
+    pyodide.runPython(yourCodeHere);
+}
+main();
+```
+You may find recent pyodide wheels for imgui_bundle in two places:
+* [Wheel](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/imgui_bundle_wheel/) used in the official demo
+* [Nightly builds](https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml): download a wheel directly from GitHub Actions
+   
+
+
+
 
 ## Pyodide API
 

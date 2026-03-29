@@ -185,22 +185,19 @@ doc_build_pdf:
 [group('pyodide')]
 pyodide_build: pyodide_clean
     source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && IMGUI_BUNDLE_EXCLUDE_DEMOS=1 pyodide build
-    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/_pyodide_resources/imgui_bundle_wheels
+    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/_pyodide_resources/imgui_bundle_wheel/
+    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/projects/imgui_bundle_wheel/
 
 # Start browser test server (serves test HTML pages)
 [group('pyodide')]
 pyodide_serve_projects:
-    cd pyodide_projects && python ./serve_cors.py --port 6456
-
-[group('pyodide')]
-pyodide_serve_tests:
-    cd pyodide_projects/pyodide_test_bundle && python ../serve_cors.py --port 6454
+    cd pyodide_projects/projects && python ../serve_cors.py --port 6456
 
 # Clean pyodide build artifacts
 [group('pyodide')]
 pyodide_clean:
     rm -rf .pyodide_build
-    rm -f pyodide_projects/_pyodide_resources/imgui_bundle_wheels/imgui_bundle*pyodide*.whl
+    rm -f pyodide_projects/_pyodide_resources/imgui_bundle_wheel/imgui_bundle*pyodide*.whl
     rm -f dist/imgui_bundle*pyodide*.whl
 
 # Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
@@ -221,6 +218,18 @@ pyodide_deep_clean: pyodide_clean
 pyodide_setup_recipe_clone:
     git clone https://github.com/pyodide/pyodide-recipes.git ci_scripts/pyodide_local_build/pyodide_recipes
     cd ci_scripts/pyodide_local_build/pyodide_recipes && git remote add fork https://github.com/pthom/pyodide-recipes.git
+
+
+_PYODIDE_DEPLOY_LOCAL_FOLDER := "./pyodide_projects/projects"
+_PYODIDE_DEPLOY_REMOTE_FOLDER := "/home/pascal/HTML/imgui_bundle_online/projects"
+_PYODIDE_DEPLOY_REMOTE_HOST := "pascal@traineq.org"
+
+[group('pyodide')]
+pyodide_deploy_imgui_bundle_online:
+    cd {{_PYODIDE_DEPLOY_LOCAL_FOLDER}}/min_bundle_pyodide_app && cp -f demo_heart.html demo_heart.source.txt
+    rsync -avz --delete {{_PYODIDE_DEPLOY_LOCAL_FOLDER}}/ {{_PYODIDE_DEPLOY_REMOTE_HOST}}:{{_PYODIDE_DEPLOY_REMOTE_FOLDER}}/
+    echo "Deployed to https://traineq.org/imgui_bundle_online/"
+
 
 
 # ==============================================================

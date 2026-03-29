@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>imgui-bundle Pyodide Test (Local)</title>
+    <title>imgui-bundle Pyodide Test (CDN + Local Wheel)</title>
     <style>
         html, body { width: 100%; height: 100%; margin: 0; }
         #canvas { display: block; width: 100%; height: 100%; }
     </style>
-    <!-- Load Pyodide from local distribution -->
-    <script src="_pyodide_resources/pyodide_dist/pyodide.js"></script>
+    <!-- Load Pyodide from CDN -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
 </head>
 <body>
 <canvas id="canvas" tabindex="0"></canvas>
@@ -24,18 +24,12 @@ from imgui_bundle import imgui, immapp, hello_imgui
 
 def gui():
     imgui.text("Hello from imgui-bundle + Pyodide!")
-    imgui.text("Test: Local Pyodide Distribution")
+    imgui.text("Test: CDN Pyodide + Local Wheel")
     imgui.separator()
     if imgui.button("Exit"):
         hello_imgui.get_runner_params().app_shall_exit = True
 
-async def run_app():
-    await immapp.run_async(gui, window_title="Local Pyodide Test")
-    print("GUI exited")
-
-# Either use asyncio to run the app, or the simpler run() function:
-# asyncio.create_task(run_app())
-immapp.run(gui, window_title="Local Pyodide Test")
+immapp.run(gui, window_title="CDN + Local Wheel Pyodide Test")
 `;
 // ====================== End Python Code ========================
 
@@ -43,7 +37,7 @@ async function main() {
     try {
         document.addEventListener('contextmenu', e => e.preventDefault());
 
-        let pyodide = await loadPyodide({ indexURL: "_pyodide_resources/pyodide_dist/" });
+        let pyodide = await loadPyodide();
 
         // Setup SDL canvas
         let sdl2Canvas = document.getElementById("canvas");
@@ -51,12 +45,12 @@ async function main() {
         pyodide._api._skip_unwind_fatal_error = true;
 
         // load some packages required by imgui-bundle:
-        // (after loading imgui-bundle from imgui_bundle_wheels/, pyodide forgets where to find them in its own package cache)
+        // (after loading imgui-bundle from imgui_bundle_wheel/, pyodide forgets where to find them in its own package cache)
         await pyodide.loadPackage("numpy")
         await pyodide.loadPackage("pydantic")
 
         // Load imgui-bundle from local wheel
-        await pyodide.loadPackage("_pyodide_resources/imgui_bundle_wheels/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl");
+        await pyodide.loadPackage("../imgui_bundle_wheel/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl");
 
         pyodide.runPython(pythonCode);
     } catch (error) {
@@ -66,5 +60,6 @@ async function main() {
 
 main();
 </script>
+
 </body>
 </html>
