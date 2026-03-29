@@ -2,20 +2,8 @@
 pyodide_dist/
 
 # Local wheel files (imgui_bundle built locally, copied here for testing)
-local_wheels/*.whl
+imgui_bundle_wheels/*.whl
 
 # Wheel files (if copied here for testing)
 *.whl
 **/*.whl
-
-# Python cache
-__pycache__/
-*.pyc
-
-# OS files
-.DS_Store
-
-# Editor files
-*.swp
-*~
-

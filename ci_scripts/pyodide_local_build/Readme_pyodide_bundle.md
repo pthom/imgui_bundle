@@ -25,15 +25,18 @@ pyodide_test_serve          -- Args: # Start browser test server (serves test HT
 ## Directory Structure
 
 ```
-ci_scripts/pyodide_local_build/
-├── Readme.md                      # This file
-├── config_versions_pyodide.sh     # Version configuration (edit this to change versions)
-├── setup_pyodide_local_build.sh   # Automated setup script
-├── .gitignore                     # Ignores venv_pyo/ and emsdk/
-├── test_browser/                  # Browser testing tools and HTML test pages
-├── venv_pyo/                      # Python virtual environment (created during setup)
-└── emsdk/                         # Emscripten SDK (created during setup)
+imgui_bundle/
+    ci_scripts/pyodide_local_build/
+        ├── Readme.md                      # This file
+        ├── config_versions_pyodide.sh     # Version configuration (edit this to change versions)
+        ├── setup_pyodide_local_build.sh   # Automated setup script
+        ├── .gitignore                     # Ignores venv_pyo/ and emsdk/
+        ├── venv_pyo/                      # Python virtual environment (created during setup)
+        └── emsdk/                         # Emscripten SDK (created during setup)
+    pyodide_projects/
+        ├── pyodide_test_bundle/           # Browser testing tools and HTML test pages
 ```
+
 
 Both `venv_pyo/` and `emsdk/` are gitignored and must be set up locally.
 
@@ -102,7 +105,7 @@ This automatically:
 2. Sources the Emscripten environment
 3. Builds the wheel with `pyodide build`
 4. Fixes the wheel name on macOS (workaround for scikit-build-core issue #920)
-5. Copies the wheel to `test_browser/local_wheels/` for testing
+5. Copies the wheel to `imgui_bundle/pyodide_projects/_pyodide_resources/imgui_bundle_wheels/` for testing
 
 ### Manual Build
 
@@ -140,7 +143,7 @@ This starts a CORS-enabled web server at http://localhost:8123/ with three test 
 - `test_cdn_pyodide_local_wheel.html` - CDN Pyodide + local wheel
 - `test_cdn_all.html` - Full CDN (official Pyodide package)
 
-See `test_browser/` directory for more details.
+See `imgui_bundle/pyodide_projects/pyodide_test_bundle/` directory for more details.
 
 
 ## Cleanup

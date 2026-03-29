@@ -15,7 +15,6 @@ Example:
 """
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-import os
 import argparse
 import sys
 
@@ -84,10 +83,6 @@ Test Pages:
         help='Port to serve on (default: 8000)'
     )
     args = parser.parse_args()
-
-    # Change to the test_browser directory
-    script_dir = os.path.dirname(os.path.realpath(__file__))
-    os.chdir(script_dir)
 
     print("=" * 70)
     print("  Pyodide Test Server")

@@ -6,7 +6,7 @@ set -e
 THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd "$THIS_DIR"
 
-source ../config_versions_pyodide.sh
+source ./config_versions_pyodide.sh
 
 DOWNLOAD_URL="https://github.com/pyodide/pyodide/releases/download/${PYODIDE_VERSION}/pyodide-${PYODIDE_VERSION}.tar.bz2"
 TARBALL_NAME="pyodide-${PYODIDE_VERSION}.tar.bz2"

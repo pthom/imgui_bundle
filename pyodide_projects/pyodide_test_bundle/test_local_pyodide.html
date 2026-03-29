@@ -7,7 +7,7 @@
         #canvas { display: block; width: 100%; height: 100%; }
     </style>
     <!-- Load Pyodide from local distribution -->
-    <script src="pyodide_dist/pyodide.js"></script>
+    <script src="_pyodide_resources/pyodide_dist/pyodide.js"></script>
 </head>
 <body>
 <canvas id="canvas" tabindex="0"></canvas>
@@ -43,7 +43,7 @@ async function main() {
     try {
         document.addEventListener('contextmenu', e => e.preventDefault());
 
-        let pyodide = await loadPyodide({ indexURL: "pyodide_dist/" });
+        let pyodide = await loadPyodide({ indexURL: "_pyodide_resources/pyodide_dist/" });
 
         // Setup SDL canvas
         let sdl2Canvas = document.getElementById("canvas");
@@ -51,12 +51,12 @@ async function main() {
         pyodide._api._skip_unwind_fatal_error = true;
 
         // load some packages required by imgui-bundle:
-        // (after loading imgui-bundle from local_wheels/, pyodide forgets where to find them in its own package cache)
+        // (after loading imgui-bundle from imgui_bundle_wheels/, pyodide forgets where to find them in its own package cache)
         await pyodide.loadPackage("numpy")
         await pyodide.loadPackage("pydantic")
 
         // Load imgui-bundle from local wheel
-        await pyodide.loadPackage("local_wheels/imgui_bundle-1.92.600-cp313-cp313-pyodide_2025_0_wasm32.whl");
+        await pyodide.loadPackage("_pyodide_resources/imgui_bundle_wheels/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl");
 
         pyodide.runPython(pythonCode);
     } catch (error) {

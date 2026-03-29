@@ -185,30 +185,34 @@ doc_build_pdf:
 [group('pyodide')]
 pyodide_build: pyodide_clean
     source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && IMGUI_BUNDLE_EXCLUDE_DEMOS=1 pyodide build
-    cp dist/imgui_bundle*pyodide*.whl ci_scripts/pyodide_local_build/test_browser/local_wheels/
+    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/_pyodide_resources/imgui_bundle_wheels
 
 # Start browser test server (serves test HTML pages)
 [group('pyodide')]
-pyodide_test_serve:
-    ./ci_scripts/pyodide_local_build/test_browser/run_server.sh
+pyodide_serve_projects:
+    cd pyodide_projects && python ./serve_cors.py --port 6456
+
+[group('pyodide')]
+pyodide_serve_tests:
+    cd pyodide_projects/pyodide_test_bundle && python ../serve_cors.py --port 6454
 
 # Clean pyodide build artifacts
 [group('pyodide')]
 pyodide_clean:
     rm -rf .pyodide_build
-    rm -f ci_scripts/pyodide_local_build/test_browser/local_wheels/imgui_bundle*pyodide*.whl
+    rm -f pyodide_projects/_pyodide_resources/imgui_bundle_wheels/imgui_bundle*pyodide*.whl
     rm -f dist/imgui_bundle*pyodide*.whl
 
 # Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
 [group('pyodide')]
 pyodide_setup_local_build:
     ./ci_scripts/pyodide_local_build/setup_pyodide_local_build.sh
-    ./ci_scripts/pyodide_local_build/test_browser/download_pyodide_dist.sh
+    ./pyodide_projects/_pyodide_resources/download_pyodide_dist.sh
 
 # Pyodide deep clean (removes also the local build setup)
 [group('pyodide')]
 pyodide_deep_clean: pyodide_clean
-    rm -rf ci_scripts/pyodide_local_build/test_browser/pyodide_dist
+    rm -rf pyodide_projects/_pyodide_resources/pyodide_dist
     rm -rf ci_scripts/pyodide_local_build/venv_pyo
     rm -rf ci_scripts/pyodide_local_build/emsdk
 
