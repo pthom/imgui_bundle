@@ -397,6 +397,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
                     snippet.Language = Snippets::SnippetLanguage::AngelScript;
 
                 snippet.ShowCursorPosition = false;
+                snippet.ReadOnly = true;
             }
 
             ImGui::SetCursorPosX(0.f);

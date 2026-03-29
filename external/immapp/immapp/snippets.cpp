@@ -109,6 +109,8 @@ namespace Snippets
         }
 
         auto& editor = gEditors.at(id);
+        editor.SetReadOnlyEnabled(snippetData.ReadOnly);
+        editor.SetShowWhitespacesEnabled(false);
         if (editor.GetText().empty() || snippetData.ReadOnly)
         {
             std::string displayedCode = snippetData.DeIndentCode ? CodeUtils::UnindentCode(snippetData.Code) : snippetData.Code;
