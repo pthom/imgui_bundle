@@ -9,19 +9,17 @@ Important:
         matplotlib.use('Agg')
 
 """
-import numpy  # noqa: E402
-import numpy as np
-from numpy.typing import NDArray
 from imgui_bundle.immapp import static  # noqa: E402
 from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import matplotlib.figure  # type: ignore
+    from numpy.typing import NDArray
 
 
 @static(fig_image_cache=dict())
-def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_image: bool = False) -> NDArray[np.uint8]:
+def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_image: bool = False) -> "NDArray[np.uint8]":
     """
     Convert a Matplotlib figure to an RGB image.
 
@@ -31,6 +29,8 @@ def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_ima
     Returns:
     - numpy.ndarray: An RGB image as a NumPy array with uint8 datatype.
     """
+    import numpy  # noqa: E402
+    import numpy as np
     import matplotlib  # noqa: E402
 
     backend_message = """
