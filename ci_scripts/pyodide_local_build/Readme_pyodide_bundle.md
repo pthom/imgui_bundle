@@ -105,7 +105,7 @@ This automatically:
 2. Sources the Emscripten environment
 3. Builds the wheel with `pyodide build`
 4. Fixes the wheel name on macOS (workaround for scikit-build-core issue #920)
-5. Copies the wheel to `imgui_bundle/pyodide_projects/_pyodide_resources/imgui_bundle_wheel/` for testing
+5. Copies the wheel to `imgui_bundle/pyodide_projects/_pyodide_resources/local_wheels/` for testing
 
 ### Manual Build
 

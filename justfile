@@ -185,8 +185,8 @@ doc_build_pdf:
 [group('pyodide')]
 pyodide_build: pyodide_clean
     source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && IMGUI_BUNDLE_EXCLUDE_DEMOS=1 pyodide build
-    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/_pyodide_resources/imgui_bundle_wheel/
-    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/projects/imgui_bundle_wheel/
+    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/_pyodide_resources/local_wheels/
+    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/projects/local_wheels/
 
 # Start browser test server (serves test HTML pages)
 [group('pyodide')]
@@ -197,7 +197,7 @@ pyodide_serve_projects:
 [group('pyodide')]
 pyodide_clean:
     rm -rf .pyodide_build
-    rm -f pyodide_projects/_pyodide_resources/imgui_bundle_wheel/imgui_bundle*pyodide*.whl
+    rm -f pyodide_projects/_pyodide_resources/local_wheels/imgui_bundle*pyodide*.whl
     rm -f dist/imgui_bundle*pyodide*.whl
 
 # Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)

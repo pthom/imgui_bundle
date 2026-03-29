@@ -42,7 +42,7 @@ async function main(){
     const micropip = pyodide.pyimport("micropip");
     // load a newer wheel from a local url
     // await micropip.install('imgui_bundle');  // to use the default wheel included with the pyodide CDN
-    await micropip.install('imgui_bundle_wheel/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl');
+    await micropip.install('local_wheels/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl');
 
     // Run the Python code
     pyodide.runPython(yourCodeHere);
@@ -50,7 +50,7 @@ async function main(){
 main();
 ```
 You may find recent pyodide wheels for imgui_bundle in two places:
-* [Wheel](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/imgui_bundle_wheel/) used in the official demo
+* [Wheel](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/local_wheels/) used in the official demo
 * [Nightly builds](https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml): download a wheel directly from GitHub Actions
    
 

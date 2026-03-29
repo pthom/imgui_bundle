@@ -2,7 +2,7 @@
 pyodide_dist/
 
 # Local wheel files (imgui_bundle built locally, copied here for testing)
-imgui_bundle_wheel/*.whl
+local_wheels/*.whl
 
 # Wheel files (if copied here for testing)
 *.whl

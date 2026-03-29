@@ -78,7 +78,7 @@ async function loadPyodideAndPackages() {
         const packages = [
             // For imgui_bundle below
             // -----------------------
-            '../imgui_bundle_wheel/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl', // 4.8 MB
+            '../local_wheels/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl', // 4.8 MB
             'numpy', // 3.08 MB
 
             // 'opencv-python', // 11 MB

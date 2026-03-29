@@ -16,7 +16,7 @@
 import time
 import numpy as np
 
-from imgui_bundle import implot, imgui, immapp, hello_imgui, icons_fontawesome_4, __version__
+from imgui_bundle import implot, imgui, immapp, hello_imgui, icons_fontawesome_4, imgui_knobs, __version__
 
 # Fill x and y whose plot is a heart
 vals = np.arange(0, np.pi * 2, 0.01)
@@ -24,7 +24,7 @@ x = np.power(np.sin(vals), 3) * 16
 y = 13 * np.cos(vals) - 5 * np.cos(2 * vals) - 2 * np.cos(3 * vals) - np.cos(4 * vals)
 # Heart pulse rate and time tracking
 phase = 0.0
-t0 = time.time() + 0.2
+t0 = -1
 heart_pulse_rate = 80
 
 
@@ -35,16 +35,20 @@ def gui():
     imgui.text(f"Running at {hello_imgui.frame_rate():.1f} FPS")
 
     t = time.time()
+    if t0 < 0:
+        t0 = t
     phase += (t - t0) * heart_pulse_rate / (np.pi * 2)
     k = 0.8 + 0.1 * np.cos(phase)
     t0 = t
 
     implot.begin_plot("Heart", immapp.em_to_vec2(21, 21))
-    implot.plot_line("", x * k, y * k)
+    for i in range(5):
+        implot.plot_line("", x * k, y * k * (1 - 0.02 * i))
     implot.end_plot()
 
-    imgui.set_next_item_width(hello_imgui.em_size(10))
-    _, heart_pulse_rate = imgui.slider_float("Pulse", heart_pulse_rate, 30, 180)
+    _, heart_pulse_rate = imgui_knobs.knob(
+        "Pulse", heart_pulse_rate, 30, 180,
+        variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot)
 
     imgui.text(f"Dear ImGui Bundle, version {__version__}")
 
@@ -76,13 +80,16 @@ if __name__ == "__main__":
         // Or we may load a newer one (see code below)
         // Where to find recent pyodide wheels:
         //    1. Wheel used in the official demo
-        //    https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/imgui_bundle_wheel/
+        //    https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/local_wheels/
         //    2. Nightly builds: download a wheel directly from GitHub Actions
         //    https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml
         await pyodide.loadPackage("micropip");
         const micropip = pyodide.pyimport("micropip");
         // load a newer wheel from a local url
-        await micropip.install('imgui_bundle_wheel/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl');
+        await micropip.install('local_wheels/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl');
+
+        // also install numpy (required by this demo)
+        await micropip.install('numpy');
 
         // Run the Python code
         pyodide.runPython(pythonCode);
