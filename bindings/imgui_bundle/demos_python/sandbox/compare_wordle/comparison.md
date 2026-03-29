@@ -1,5 +1,3 @@
-from imgui_bundle.demos_python.sandbox.compare_wordle.wordle_app_imgui_bundle import end_horizontal_centered
-
 # Wordle: GUI Framework Comparison
 
 Same game, same logic (`wordle.py`), five different GUI frontends. The game logic is shared: a `GameState` class with `submit_guess()`, `keyboard_letter_states()`, and `reset()`. Only the GUI code differs.
@@ -8,11 +6,10 @@ Same game, same logic (`wordle.py`), five different GUI frontends. The game logi
 
 | Framework       | Lines | Paradigm                |
 |-----------------|-------|-------------------------|
-| ImGui Bundle    | 106   | Immediate mode, desktop |
-| Textual         | 140   | Retained mode, terminal |
-| NiceGUI         | 138   | Retained mode, web      |
-| Kivy            | 165   | Retained mode, desktop  |
+| ImGui Bundle    | 105   | Immediate mode, desktop |
+| NiceGUI         | 135   | Retained mode, web      |
 | PyQt6           | 167   | Retained mode, desktop  |
+| Textual         | 138   | Retained mode, terminal |
 
 ## The key difference: immediate vs retained mode
 
@@ -36,7 +33,7 @@ This duplication is inherent to the retained-mode paradigm. The `refresh_ui()` f
 
 ## Framework-by-framework notes
 
-### ImGui Bundle (115 lines)
+### ImGui Bundle (105 lines)
 - `gui()` is called every frame - it reads state and draws, nothing else
 - No widget references, no event callbacks, no sync logic
 - Physical keyboard input: `imgui.is_key_pressed()` inline, no special setup
@@ -44,7 +41,7 @@ This duplication is inherent to the retained-mode paradigm. The `refresh_ui()` f
 - Centering: `imgui.spring()` on both sides of a horizontal layout
 - Coloring: `push_style_color()` / `pop_style_color()`, 3 lines
 
-### NiceGUI (142 lines)
+### NiceGUI (135 lines)
 - Web-based (runs in browser via localhost)
 - Must store `tile_buttons[6][5]` and `key_buttons{}` for later updates
 - `refresh_ui()` iterates 30 tiles + 26 keys to sync state to DOM
@@ -62,22 +59,12 @@ This duplication is inherent to the retained-mode paradigm. The `refresh_ui()` f
 - `refresh_ui()` regenerates stylesheet strings for every button every time
 - Physical keyboard: override `keyPressEvent()`, handle key codes manually
 
-### Textual (140 lines)
+### Textual (138 lines)
 - Terminal UI - renders in the console, surprisingly capable
 - Uses CSS-like styling language, more structured than raw CSS strings
 - Gotcha: method names starting with `_on_` are treated as event handlers by Textual's dispatch system - naming collision caused bugs until methods were renamed
 - Widgets queried by string ID (`self.query_one("#tile-0-1", Static)`) rather than stored references - cleaner but slower
 - Physical keyboard: `on_key` event handler built-in, no JS bridge needed
-
-### Kivy (165 lines)
-- Mobile-oriented framework with its own layout system
-- Layout proved extremely difficult:
-  - Centering widgets horizontally requires `AnchorLayout` wrappers, but those block touch events
-  - `size_hint` defaults cause buttons to stretch to fill available space
-  - `pos_hint={"center_x": 0.5}` is silently ignored inside `BoxLayout`
-  - Coordinate system is bottom-left origin, causing touch dispatch bugs (clicking one button activates another)
-- Requires workarounds for basic operations: `background_normal=""` to disable default button texture, `opacity=0` + `disabled=True` to hide a widget (no `hide()` method)
-- The only framework where we could not get a fully correct layout
 
 ## Example: conditional UI (the "New Game" button)
 

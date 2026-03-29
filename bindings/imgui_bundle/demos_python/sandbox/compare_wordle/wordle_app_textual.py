@@ -82,15 +82,13 @@ class WordleApp(App):
     def type_letter(self, ch: str):
         if self.game_state.is_over or len(self.game_state.current_input) >= 5:
             return
-        self.game_state.current_input += ch
-        self.game_state.message = ""
+        self.game_state.append_letter(ch)
         self._refresh_ui()
 
     def delete_letter(self):
         if self.game_state.is_over or not self.game_state.current_input:
             return
-        self.game_state.current_input = self.game_state.current_input[:-1]
-        self.game_state.message = ""
+        self.game_state.remove_last_letter()
         self._refresh_ui()
 
     def submit(self):

@@ -70,6 +70,16 @@ class GameState:
                     best[ch] = ls
         return best
 
+    def append_letter(self, ch: str) -> None:
+        if not self.is_over and len(self.current_input) < 5:
+            self.current_input += ch
+            self.message = ""
+
+    def remove_last_letter(self) -> None:
+        if not self.is_over and self.current_input:
+            self.current_input = self.current_input[:-1]
+            self.message = ""
+
 
 def _evaluate(guess: str, secret: str) -> list[LetterState]:
     """Per-letter color evaluation. Handles duplicate letters correctly."""

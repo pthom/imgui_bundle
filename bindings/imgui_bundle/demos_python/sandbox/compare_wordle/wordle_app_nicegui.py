@@ -53,16 +53,14 @@ def refresh_ui():
 def on_key(ch: str):
     if game_state.is_over or len(game_state.current_input) >= 5:
         return
-    game_state.current_input += ch
-    game_state.message = ""
+    game_state.append_letter(ch)
     refresh_ui()
 
 
 def on_delete():
     if game_state.is_over or not game_state.current_input:
         return
-    game_state.current_input = game_state.current_input[:-1]
-    game_state.message = ""
+    game_state.remove_last_letter()
     refresh_ui()
 
 
@@ -78,13 +76,14 @@ def on_new_game():
 
 def on_keyboard_event(e):
     """Handle physical keyboard input."""
-    key = e.args.get("key", "")
-    if key == "Backspace":
-        on_delete()
-    elif key == "Enter":
-        on_enter()
-    elif len(key) == 1 and key.isalpha():
-        on_key(key.lower())
+    if e.action.keydown and not e.action.repeat:
+        name = e.key.name
+        if name == "Backspace":
+            on_delete()
+        elif name == "Enter":
+            on_enter()
+        elif len(name) == 1 and name.isalpha():
+            on_key(name.lower())
 
 
 # ── Build UI ──────────────────────────────────────────────────────────────
@@ -93,8 +92,7 @@ tile_style = "width: 58px; height: 58px; font-size: 24px; font-weight: bold; col
 key_style = "min-width: 36px; height: 46px; font-size: 14px; font-weight: bold; color: white;"
 wide_key_style = "min-width: 62px; height: 46px; font-size: 12px; font-weight: bold; color: white;"
 
-ui.add_body_html('<script>document.addEventListener("keydown", e => { if (!e.repeat) emitEvent("keydown", {key: e.key}) })</script>')
-ui.on("keydown", on_keyboard_event)
+ui.keyboard(on_key=on_keyboard_event)
 
 with ui.column().classes("items-center w-full gap-1 mt-4"):
     # Grid
@@ -133,6 +131,5 @@ with ui.column().classes("items-center w-full gap-1 mt-4"):
     new_game_btn.set_visibility(False)
 
 
-if __name__ == "__main__":
-    ui.dark_mode(True)
-    ui.run(title="Wordle", port=8080)
+ui.dark_mode(True)
+ui.run(title="Wordle", port=8080)

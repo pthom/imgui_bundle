@@ -13,9 +13,10 @@ COLORS = {
 
 def colored_button(label: str, letter_state: wordle.LetterState, size: ImVec2) -> bool:
     """Button with Wordle-colored background."""
-    imgui.push_style_color(imgui.Col_.button.value, COLORS[letter_state])
-    imgui.push_style_color(imgui.Col_.button_hovered.value, COLORS[letter_state])
-    imgui.push_style_color(imgui.Col_.button_active.value, COLORS[letter_state])
+    color = COLORS[letter_state]
+    imgui.push_style_color(imgui.Col_.button.value, color)
+    imgui.push_style_color(imgui.Col_.button_hovered.value, color)
+    imgui.push_style_color(imgui.Col_.button_active.value, color)
     pressed = imgui.button(label, size)
     imgui.pop_style_color(3)
     return pressed
@@ -43,11 +44,9 @@ def gui(game_state: wordle.GameState):
     if not game_state.is_over:
         for c in "abcdefghijklmnopqrstuvwxyz":
             if imgui.is_key_pressed(getattr(imgui.Key, c)) and len(game_state.current_input) < 5:
-                game_state.current_input += c
-                game_state.message = ""
+                game_state.append_letter(c)
         if imgui.is_key_pressed(imgui.Key.backspace) and game_state.current_input:
-            game_state.current_input = game_state.current_input[:-1]
-            game_state.message = ""
+            game_state.remove_last_letter()
         if imgui.is_key_pressed(imgui.Key.enter):
             game_state.submit_guess()
 
@@ -74,6 +73,7 @@ def gui(game_state: wordle.GameState):
     imgui.text(game_state.message or " ")
 
     # -- On-screen keyboard --
+    keys_states = game_state.keyboard_letter_states()
     for i, row_keys in enumerate(wordle.KEYBOARD_ROWS):
         begin_horizontal_centered(str(i))
         if i == 2:
@@ -81,16 +81,14 @@ def gui(game_state: wordle.GameState):
                 game_state.submit_guess()
         for key_letter in row_keys:
             imgui.push_id(key_letter)
-            if colored_button(key_letter.upper(), game_state.keyboard_letter_states().get(key_letter, wordle.LetterState.EMPTY), key_size):
+            if colored_button(key_letter.upper(), keys_states.get(key_letter, wordle.LetterState.EMPTY), key_size):
                 if not game_state.is_over and len(game_state.current_input) < 5:
-                    game_state.current_input += key_letter
-                    game_state.message = ""
+                    game_state.append_letter(key_letter)
             imgui.pop_id()
         if i == 2:
             if imgui.button("Del", wide_key_size):
                 if not game_state.is_over and game_state.current_input:
-                    game_state.current_input = game_state.current_input[:-1]
-                    game_state.message = ""
+                    game_state.remove_last_letter()
         end_horizontal_centered()
 
     # New game button (shown when game is over)
