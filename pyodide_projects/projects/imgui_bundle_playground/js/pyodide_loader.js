@@ -1,5 +1,3 @@
-// js/pyodide.js
-
 async function load_pyodide_imgui_render() {
     console.log('Loading load_pyodide_imgui_render.py');
     try {
@@ -64,14 +62,10 @@ async function loadPyodideAndPackages() {
         const pythonVersion = pyodide.runPython("import sys; sys.version");
         console.log("Python version:", pythonVersion);
 
-        updateProgress(25, 'Loading micropip');
+        updateProgress(20, 'Loading micropip');
         await pyodide.loadPackage("micropip");
-        await pyodide.loadPackage("micropip"); // firefox needs this to be loaded twice...
+        //await pyodide.loadPackage("micropip"); // firefox needs this to be loaded twice...
         const micropip = pyodide.pyimport("micropip");
-
-        updateProgress(50, 'Loading imgui_bundle');
-        await micropip.install('../imgui_bundle_wheel/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl');
-        updateProgress(75, 'imgui bundle loaded.');
 
         // SDL support in Pyodide is experimental. The flag is used to bypass certain issues.
         pyodide._api._skip_unwind_fatal_error = true;
@@ -80,12 +74,13 @@ async function loadPyodideAndPackages() {
         const baseUrl = `${window.location.origin}${window.location.pathname}`;
         console.log('Base URL:', baseUrl);
 
-
         // List of packages to install
         const packages = [
             // For imgui_bundle below
             // -----------------------
-            // 'imgui_bundle', // 9.7 MB (with 3 MB for demos_assets, 6 MB native)
+            '../imgui_bundle_wheel/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl', // 4.8 MB
+            'numpy', // 3.08 MB
+
             // 'opencv-python', // 11 MB
             // 'pillow',
 
@@ -107,11 +102,13 @@ async function loadPyodideAndPackages() {
         let currentStep = 1;
 
         for (const pkg of packages) {
-            updateProgress(10 + (currentStep / totalSteps) * 80, `Installing ${pkg}...`);
-            await pyodide.runPythonAsync(`
-import micropip;
-await micropip.install('${pkg}')
-            `);
+            pkgName = pkg;
+            // if imgui_bundle in the name, simply display "imgui_bundle" to avoid confusion with the different wheel versions
+            if (pkg.includes('imgui_bundle'))
+                pkgName = 'imgui_bundle';
+
+            updateProgress(20 + (currentStep / totalSteps) * 80, `Installing ${pkgName}...`);
+            await micropip.install(pkg)
             console.log(`${pkg} loaded.`);
             currentStep++;
         }
