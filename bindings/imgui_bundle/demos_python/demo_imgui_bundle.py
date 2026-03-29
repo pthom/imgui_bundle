@@ -1,4 +1,17 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
+import importlib
+import sys
+if importlib.util.find_spec("numpy") is None:
+    print(
+        "Dear ImGui Bundle Explorer requires numpy!\n"
+        "Please install it with:\n"
+        "    pip install numpy\n"
+        "or\n"
+        "    uv pip install numpy",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
 from typing import List, Callable
 from types import ModuleType
 from dataclasses import dataclass, field
