@@ -50,7 +50,7 @@ async function main() {
         await pyodide.loadPackage("pydantic")
 
         // Load imgui-bundle from local wheel
-        await pyodide.loadPackage("../imgui_bundle_wheel/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl");
+        await pyodide.loadPackage("../imgui_bundle_wheel/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl");
 
         pyodide.runPython(pythonCode);
     } catch (error) {

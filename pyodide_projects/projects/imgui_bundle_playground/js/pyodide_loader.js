@@ -70,7 +70,7 @@ async function loadPyodideAndPackages() {
         const micropip = pyodide.pyimport("micropip");
 
         updateProgress(50, 'Loading imgui_bundle');
-        await micropip.install('../imgui_bundle_wheel/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl');
+        await micropip.install('../imgui_bundle_wheel/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl');
         updateProgress(75, 'imgui bundle loaded.');
 
         // SDL support in Pyodide is experimental. The flag is used to bypass certain issues.

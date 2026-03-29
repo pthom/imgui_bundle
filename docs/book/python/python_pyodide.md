@@ -42,7 +42,7 @@ async function main(){
     const micropip = pyodide.pyimport("micropip");
     // load a newer wheel from a local url
     // await micropip.install('imgui_bundle');  // to use the default wheel included with the pyodide CDN
-    await micropip.install('imgui_bundle_wheel/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl');
+    await micropip.install('imgui_bundle_wheel/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl');
 
     // Run the Python code
     pyodide.runPython(yourCodeHere);
