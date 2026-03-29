@@ -1,8 +1,8 @@
 {
     "examples": [
       {
-        "label": "Intro To Dear ImGui Bundle",
-        "filename": "demo_imgui_bundle_intro.py"
+        "label": "Welcome to ImGui Bundle Playground",
+        "filename": "_initial_code.py"
       },
       {
         "label": "A Plot with ImPlot / Drag Rect",
@@ -26,7 +26,8 @@
       },
       {
         "label": "Image processing",
-        "filename": "dem_immvision_process.py"
+        "filename": "dem_immvision_process.py",
+        "packages": ["opencv-python"]
       },
       {
         "label": "Interactive parametric curve",

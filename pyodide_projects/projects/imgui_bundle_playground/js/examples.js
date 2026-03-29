@@ -41,9 +41,39 @@ async function fetchExampleMetadata() {
     }
 }
 
-// Function to load example content
-async function loadExample(filename) {
+// Track which packages have already been installed
+const installedPackages = new Set();
+
+// Function to install extra packages required by an example
+async function installExamplePackages(packages) {
+    if (!packages || packages.length === 0) return;
+    if (!pyodide) {
+        console.error('Pyodide not loaded yet');
+        return;
+    }
+    const toInstall = packages.filter(pkg => !installedPackages.has(pkg));
+    if (toInstall.length === 0) return;
+
+    const micropip = pyodide.pyimport("micropip");
+    showLoadingModal();
+    const total = toInstall.length;
+    for (let i = 0; i < total; i++) {
+        const pkg = toInstall[i];
+        const percent = Math.round(((i) / total) * 100);
+        updateProgress(percent, `Installing ${pkg}...`);
+        await micropip.install(pkg);
+        installedPackages.add(pkg);
+        console.log(`${pkg} installed.`);
+    }
+    updateProgress(100, 'All packages installed.');
+    await new Promise(resolve => setTimeout(resolve, 300));
+    hideLoadingModal();
+}
+
+// Function to load example content (and install packages if needed)
+async function loadExample(filename, packages) {
     try {
+        await installExamplePackages(packages);
         const response = await fetch(`examples/${filename}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -57,13 +87,16 @@ async function loadExample(filename) {
     }
 }
 
+// Store example metadata so we can look up packages later
+let examplesMetadata = [];
+
 // Function to populate example selector
 async function populateExampleSelector() {
-    const examplesList = await fetchExampleMetadata();
+    examplesMetadata = await fetchExampleMetadata();
 
     const exampleSelector = document.getElementById('example-selector');
     exampleSelector.innerHTML = '<option value="">-- Select an Example --</option>';
-    examplesList.forEach((example, index) => {
+    examplesMetadata.forEach((example, index) => {
         const option = document.createElement('option');
         option.value = example.filename;
         option.textContent = example.label;
@@ -81,7 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
     exampleSelectorElement.addEventListener('change', (event) => {
         const selectedFilename = event.target.value;
         if (selectedFilename) {
-            loadExample(selectedFilename);
+            const example = examplesMetadata.find(e => e.filename === selectedFilename);
+            loadExample(selectedFilename, example ? example.packages : undefined);
         }
     });
 });

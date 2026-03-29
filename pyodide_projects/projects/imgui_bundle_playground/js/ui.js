@@ -13,6 +13,7 @@ function updateProgress(percent, text) {
 function showLoadingModal() {
     console.log('Showing loading modal');
     const loadingModal = document.getElementById('loading-modal');
+    loadingModal.style.display = '';  // Clear any inline display:none
     loadingModal.classList.remove('hidden');
 }
 
