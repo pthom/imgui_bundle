@@ -3786,6 +3786,14 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
         pass
 
 # </submodule manual_render>
+
+def image_and_size_from_encoded_data(data: bytes, cache_key: str = "") -> ImageAndSize:
+    """Create a texture from encoded image data (PNG, JPEG, BMP, GIF, etc.).
+    - data: bytes containing the encoded image
+    - cache_key: if non-empty, the texture is cached and reused on subsequent calls with the same key
+    Returns an ImageAndSize with texture_id and size."""
+    pass
+
 ####################    </generated_from:hello_imgui_amalgamation.h>    ####################
 
 # </litgen_stub>

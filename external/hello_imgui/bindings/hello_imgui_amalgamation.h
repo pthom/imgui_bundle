@@ -517,8 +517,28 @@ struct ImageData
 // (C++ only)
 // Load and decode an image from the assets into CPU memory.
 // desired_channels: 0=keep original, 1=gray, 3=RGB, 4=RGBA (default).
-// The caller must call Free() on the returned ImageData when done.
+// The caller must call .free() on the returned ImageData when done!
 ImageData LoadImageDataFromAsset(const char* assetPath, int desired_channels = 4);
+
+// `HelloImGui::LoadImageDataFromEncodedData(data, dataSize, desired_channels)`:
+// (C++ only)
+// Load and decode encoded image data (PNG, JPEG, BMP, GIF, etc.) into CPU memory.
+// desired_channels: 0=keep original, 1=gray, 3=RGB, 4=RGBA (default).
+// The caller must call .free() on the returned ImageData when done!
+// The image format is auto-detected from the data header by stb_image.
+ImageData LoadImageDataFromEncodedData(const void* data, size_t dataSize, int desired_channels = 4);
+
+// `HelloImGui::ImageAndSizeFromEncodedData(data, dataSize, cacheKey)`:
+// will create a texture from encoded image data (PNG, JPEG, BMP, GIF, etc.),
+// and return the texture ID and the size.
+// - data: pointer to encoded image data
+// - dataSize: size of the data in bytes
+// - cacheKey: if non-empty, the texture will be cached and reused
+//   on subsequent calls with the same key.
+// The image format is auto-detected from the data header by stb_image.
+ImageAndSize ImageAndSizeFromEncodedData(
+    const void* data, size_t dataSize,
+    const std::string& cacheKey = "");
 
 // @@md
 

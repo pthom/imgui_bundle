@@ -64,8 +64,32 @@ def main():
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     # setAssetsFolder & SetAssetsFolder offer the same function
-    options.fn_exclude_by_name__regex = r"^setAssetsFolder$|^TranslateCommonGlyphRanges$|^SetLoadAssetFileDataFunction$|^LoadImageDataFromAsset$"
+    options.fn_exclude_by_name__regex = r"^setAssetsFolder$|^TranslateCommonGlyphRanges$|^SetLoadAssetFileDataFunction$|^LoadImageDataFromAsset$|^LoadImageDataFromEncodedData$|^ImageAndSizeFromEncodedData$"
     options.class_exclude_by_name__regex = r"^ImageData$"
+
+    # Manual binding for ImageAndSizeFromEncodedData (const void* + size_t -> Python bytes)
+    options.custom_bindings.add_custom_bindings_to_main_module(
+        stub_code='''
+            def image_and_size_from_encoded_data(data: bytes, cache_key: str = "") -> ImageAndSize:
+                """Create a texture from encoded image data (PNG, JPEG, BMP, GIF, etc.).
+                - data: bytes containing the encoded image
+                - cache_key: if non-empty, the texture is cached and reused on subsequent calls with the same key
+                Returns an ImageAndSize with texture_id and size."""
+                pass
+        ''',
+        pydef_code='''
+            LG_MODULE.def("image_and_size_from_encoded_data",
+                [](nb::bytes data, const std::string& cache_key) -> HelloImGui::ImageAndSize {
+                    return HelloImGui::ImageAndSizeFromEncodedData(data.c_str(), data.size(), cache_key);
+                },
+                nb::arg("data"), nb::arg("cache_key") = "",
+                "Create a texture from encoded image data (PNG, JPEG, BMP, GIF, etc.).\\n"
+                "- data: bytes containing the encoded image\\n"
+                "- cache_key: if non-empty, the texture is cached and reused on subsequent calls with the same key\\n"
+                "Returns an ImageAndSize with texture_id and size."
+            );
+        ''',
+    )
 
     options.value_replacements.add_last_replacement("ImGuiDockNodeFlags_None", "DockNodeFlags_.none")
     options.value_replacements.add_last_replacement("ImGuiDockNodeFlags_PassthruCentralNode", "DockNodeFlags_.passthru_central_node")
