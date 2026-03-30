@@ -471,6 +471,78 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
     // Global renderer
     std::unique_ptr<MarkdownRenderer> gMarkdownRenderer;
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/fetch.h>
+#include <mutex>
+
+    // Emscripten async download using emscripten_fetch
+    // State for pending downloads
+    struct EmscriptenDownloadState {
+        MarkdownDownloadStatus status = MarkdownDownloadStatus::NotStarted;
+        std::vector<uint8_t> data;
+        std::string errorMessage;
+    };
+
+    static std::map<std::string, EmscriptenDownloadState> gEmscriptenDownloads;
+
+    static void _emscripten_fetch_success(emscripten_fetch_t *fetch)
+    {
+        std::string url = fetch->url;
+        auto& state = gEmscriptenDownloads[url];
+        state.data.assign(
+            reinterpret_cast<const uint8_t*>(fetch->data),
+            reinterpret_cast<const uint8_t*>(fetch->data) + fetch->numBytes);
+        state.status = MarkdownDownloadStatus::Ready;
+        emscripten_fetch_close(fetch);
+    }
+
+    static void _emscripten_fetch_error(emscripten_fetch_t *fetch)
+    {
+        std::string url = fetch->url;
+        auto& state = gEmscriptenDownloads[url];
+        state.status = MarkdownDownloadStatus::Failed;
+        state.errorMessage = "HTTP " + std::to_string(fetch->status);
+        emscripten_fetch_close(fetch);
+    }
+
+    static MarkdownDownloadResult EmscriptenDownloadData(const std::string& url)
+    {
+        MarkdownDownloadResult result;
+
+        auto it = gEmscriptenDownloads.find(url);
+        if (it == gEmscriptenDownloads.end())
+        {
+            // Start async fetch
+            gEmscriptenDownloads[url] = EmscriptenDownloadState{MarkdownDownloadStatus::Downloading, {}, ""};
+
+            emscripten_fetch_attr_t attr;
+            emscripten_fetch_attr_init(&attr);
+            strcpy(attr.requestMethod, "GET");
+            attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
+            attr.onsuccess = _emscripten_fetch_success;
+            attr.onerror = _emscripten_fetch_error;
+            emscripten_fetch(&attr, url.c_str());
+
+            result.status = MarkdownDownloadStatus::Downloading;
+            return result;
+        }
+
+        auto& state = it->second;
+        result.status = state.status;
+        if (state.status == MarkdownDownloadStatus::Ready)
+        {
+            result.data = std::move(state.data);
+            gEmscriptenDownloads.erase(it);
+        }
+        else if (state.status == MarkdownDownloadStatus::Failed)
+        {
+            result.errorMessage = state.errorMessage;
+            gEmscriptenDownloads.erase(it);
+        }
+        return result;
+    }
+#endif // __EMSCRIPTEN__
+
     // Global options
     MarkdownOptions gMarkdownOptions;
     static Priv_OnInitializeMarkdownCallback gOnInitializeMarkdownCallback;
@@ -500,6 +572,12 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         gMarkdownOptions = options;
         if (gOnInitializeMarkdownCallback)
             gOnInitializeMarkdownCallback(gMarkdownOptions);
+#ifdef __EMSCRIPTEN__
+        // On Emscripten, set a default download callback using emscripten_fetch
+        // (unless one was already set, e.g. by Python)
+        if (!gMarkdownOptions.callbacks.OnDownloadData)
+            gMarkdownOptions.callbacks.OnDownloadData = EmscriptenDownloadData;
+#endif
         wasCalledAlready = true;
     }
 

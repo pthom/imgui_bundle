@@ -7,11 +7,10 @@
 
 std::string exampleMarkdownString()
 {
-    return R"(
+    std::string md = R"(
 # Markdown example (H1)
 
-Hello World! <br>
-![World](images/world.png)
+Hello World!
 
 ## Acknowledgments (H2)
 This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
@@ -46,6 +45,26 @@ int answer()
 ```
 * Separator (see below)
 
+#### Images (H4)
+
+Images can be loaded from local assets:
+
+![World](images/world.png)
+)";
+
+#ifdef __EMSCRIPTEN__
+    md += R"(
+Fetching images from an url also works with emscripten and python
+
+![Photo](https://picsum.photos/id/1018/300/200)
+
+You can also use HTML img tags to control the size:
+
+<img src="https://picsum.photos/id/237/300/200" width="100">
+)";
+#endif
+
+    md += R"(
 ----
 
 #### Tables (H4)
@@ -79,6 +98,7 @@ Can be created with this code
 | South America  | 422 million | 12                  |
 ```
 )";
+    return md;
 }
 
 
