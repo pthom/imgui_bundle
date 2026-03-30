@@ -69,6 +69,33 @@ void py_init_module_imgui_md(nb::module_& m)
         ;
 
 
+    auto pyEnumMarkdownDownloadStatus =
+        nb::enum_<ImGuiMd::MarkdownDownloadStatus>(m, "MarkdownDownloadStatus", nb::is_arithmetic(), "Status of a download (used by OnDownloadData callback)")
+            .value("not_started", ImGuiMd::MarkdownDownloadStatus::NotStarted, "Download has not been initiated")
+            .value("downloading", ImGuiMd::MarkdownDownloadStatus::Downloading, "Download is in progress (show placeholder)")
+            .value("ready", ImGuiMd::MarkdownDownloadStatus::Ready, "Download complete, data is available")
+            .value("failed", ImGuiMd::MarkdownDownloadStatus::Failed, "Download failed, errorMessage has details");
+
+
+    auto pyClassMarkdownDownloadResult =
+        nb::class_<ImGuiMd::MarkdownDownloadResult>
+            (m, "MarkdownDownloadResult", "Result of a download attempt")
+        .def(nb::init<>()) // implicit default constructor
+        .def_rw("status", &ImGuiMd::MarkdownDownloadResult::status, "")
+        .def_rw("error_message", &ImGuiMd::MarkdownDownloadResult::errorMessage, "Only valid if status == Failed")
+        ;
+
+    pyClassMarkdownDownloadResult.def("fill_from_bytes",
+        [](ImGuiMd::MarkdownDownloadResult& self, nb::bytes data) {
+            self.FillFromData(data.c_str(), data.size());
+        },
+        nb::arg("data"),
+        "Fill the result data from a Python bytes object."
+    );
+
+
+
+
     m.def("on_image_default",
         ImGuiMd::OnImage_Default, nb::arg("image_path"));
 
@@ -84,6 +111,40 @@ void py_init_module_imgui_md(nb::module_& m)
         .def_rw("on_image", &ImGuiMd::MarkdownCallbacks::OnImage, "The default version will load the image as a cached texture and display it")
         .def_rw("on_html_div", &ImGuiMd::MarkdownCallbacks::OnHtmlDiv, " OnHtmlDiv does nothing by default, by you could write:\n     In  C++:\n        markdownOptions.callbacks.onHtmlDiv = [](const std::string& divClass, bool openingDiv)\n        {\n            if (divClass == \"red\")\n            {\n                if (openingDiv)\n                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));\n                else\n                    ImGui::PopStyleColor();\n            }\n        };\n     In  Python:\n        def on_html_div(div_class: str, opening_div: bool) -> None:\n            if div_class == 'red':\n                if opening_div:\n                    imgui.push_style_color(imgui.Col_.text.value, imgui.ImColor(255, 0, 0, 255).value)\n                else:\n                    imgui.pop_style_color()\n        md_options = imgui_md.MarkdownOptions()\n        md_options.callbacks.on_html_div = on_html_div\n        immapp.run(\n            gui_function=gui, with_markdown_options=md_options #, more options here\n        )")
         ;
+
+    // Static storage for the Python download callable (prevents crash at exit)
+    static PyObject* s_download_func = nullptr;
+
+    pyClassMarkdownCallbacks.def_prop_rw("on_download_data",
+        [](const ImGuiMd::MarkdownCallbacks& self) -> nb::object {
+            (void)self;
+            if (!self.OnDownloadData)
+                return nb::none();
+            return nb::cast(std::string("on_download_data is set (read-back of the callable is not supported)"));
+        },
+        [](ImGuiMd::MarkdownCallbacks& self, nb::object py_func) {
+            if (py_func.is_none()) {
+                Py_XDECREF(s_download_func);
+                s_download_func = nullptr;
+                self.OnDownloadData = nullptr;
+                return;
+            }
+            Py_XDECREF(s_download_func);
+            s_download_func = py_func.ptr();
+            Py_INCREF(s_download_func);
+            self.OnDownloadData = [](const std::string& url) -> ImGuiMd::MarkdownDownloadResult {
+                nb::gil_scoped_acquire acquire;
+                nb::object func = nb::borrow(s_download_func);
+                nb::object py_result = func(nb::cast(url));
+                return nb::cast<ImGuiMd::MarkdownDownloadResult>(py_result);
+            };
+        },
+        "OnDownloadData: downloads data from a URL (empty by default).\n"
+        "When set, OnImage_Default will use it to fetch images from URLs.\n"
+        "The callable should accept a URL string and return a MarkdownDownloadResult."
+    );
+
+
 
 
     auto pyClassMarkdownOptions =
@@ -157,6 +218,31 @@ void py_init_module_imgui_md(nb::module_& m)
         ImGuiMd::RenderTextAsLink,
         nb::arg("text"), nb::arg("url"),
         "Renders a link with the given text and url. Can be used outside of markdown rendering.");
+
+    static PyObject* s_init_md_callback = nullptr;
+
+    m.def("_set_on_initialize_markdown_callback",
+        [](nb::object py_func) {
+            if (py_func.is_none()) {
+                Py_XDECREF(s_init_md_callback);
+                s_init_md_callback = nullptr;
+                ImGuiMd::Priv_SetOnInitializeMarkdownCallback(nullptr);
+                return;
+            }
+            Py_XDECREF(s_init_md_callback);
+            s_init_md_callback = py_func.ptr();
+            Py_INCREF(s_init_md_callback);
+            ImGuiMd::Priv_SetOnInitializeMarkdownCallback(
+                [](ImGuiMd::MarkdownOptions& options) {
+                    nb::gil_scoped_acquire acquire;
+                    nb::object func = nb::borrow(s_init_md_callback);
+                    func(nb::cast(options, nb::rv_policy::reference));
+                }
+            );
+        },
+        nb::arg("callback"),
+        "Set a callback called during initialize_markdown() to customize options."
+    );
     ////////////////////    </generated_from:imgui_md_wrapper.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end

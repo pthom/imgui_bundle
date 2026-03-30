@@ -175,6 +175,14 @@ if has_submodule("imspinner"):
 if has_submodule("imgui_md"):
     from imgui_bundle._imgui_bundle import imgui_md as imgui_md
     __all__.extend(["imgui_md"])
+
+    # Register a hook so that initialize_markdown() automatically sets up URL image download support
+    def _on_initialize_markdown(options):
+        if options.callbacks.on_download_data is None:
+            from imgui_bundle.imgui_md_image_loader import _get_download_function
+            options.callbacks.on_download_data = _get_download_function()
+
+    imgui_md._set_on_initialize_markdown_callback(_on_initialize_markdown)
 if has_submodule("immvision"):
     from imgui_bundle._imgui_bundle import immvision as immvision
     __all__.extend(["immvision"])

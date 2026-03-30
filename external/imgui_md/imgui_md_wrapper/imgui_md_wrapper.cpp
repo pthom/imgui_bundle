@@ -473,9 +473,18 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 
     // Global options
     MarkdownOptions gMarkdownOptions;
+    static Priv_OnInitializeMarkdownCallback gOnInitializeMarkdownCallback;
+
+    void Priv_SetOnInitializeMarkdownCallback(Priv_OnInitializeMarkdownCallback callback)
+    {
+        gOnInitializeMarkdownCallback = std::move(callback);
+    }
 
     void DeInitializeMarkdown()
     {
+        // Clear callbacks that may hold Python objects before the interpreter shuts down
+        gMarkdownOptions.callbacks.OnDownloadData = nullptr;
+        gOnInitializeMarkdownCallback = nullptr;
         gMarkdownRenderer.release();
     }
 
@@ -489,6 +498,8 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         }
 
         gMarkdownOptions = options;
+        if (gOnInitializeMarkdownCallback)
+            gOnInitializeMarkdownCallback(gMarkdownOptions);
         wasCalledAlready = true;
     }
 
@@ -524,6 +535,66 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
     }
 
 
+    static bool _IsUrl(const std::string& path)
+    {
+        return path.rfind("http://", 0) == 0 || path.rfind("https://", 0) == 0;
+    }
+
+    static std::optional<MarkdownImage> _MakeMarkdownImage(const HelloImGui::ImageAndSize& imageInfo)
+    {
+        MarkdownImage r;
+        r.texture_id = imageInfo.textureId;
+        r.size = imageInfo.size;
+        r.uv0 = { 0,0 };
+        r.uv1 = {1,1};
+        r.col_tint = { 1,1,1,1 };
+        r.col_border = { 0,0,0,0 };
+        return r;
+    }
+
+    // Draw a simple rotating spinner using ImGui's DrawList (no external dependencies)
+    static void _DrawLoadingSpinner()
+    {
+        float size = ImGui::GetFontSize() * 2.0f;
+        ImVec2 cursor = ImGui::GetCursorScreenPos();
+        ImVec2 center(cursor.x + size * 0.5f, cursor.y + size * 0.5f);
+        float radius = size * 0.4f;
+        float thickness = 2.0f;
+        ImU32 color = ImGui::GetColorU32(ImGuiCol_Text, 0.6f);
+        float t = (float)ImGui::GetTime();
+
+        ImDrawList* dl = ImGui::GetWindowDrawList();
+        int segments = 12;
+        for (int i = 0; i < segments; i++)
+        {
+            float a = (float)i / (float)segments * 3.14159265358979f * 2.0f;
+            // Fade based on rotation phase
+            float fade = fmodf((float)i / (float)segments + t * 1.5f, 1.0f);
+            ImU32 c = ImGui::GetColorU32(ImGuiCol_Text, fade * 0.8f);
+            float inner = radius * 0.5f;
+            ImVec2 p1(center.x + cosf(a) * inner, center.y + sinf(a) * inner);
+            ImVec2 p2(center.x + cosf(a) * radius, center.y + sinf(a) * radius);
+            dl->AddLine(p1, p2, c, thickness);
+        }
+        ImGui::Dummy(ImVec2(size, size));
+    }
+
+    static HelloImGui::ImageAndSize _BrokenImageAndSize()
+    {
+        std::string errorImage = "images/markdown_broken_image.png";
+        if (HelloImGui::AssetExists(errorImage))
+            return HelloImGui::ImageAndSizeFromAsset(errorImage.c_str());
+        return {};
+    }
+
+    static std::optional<MarkdownImage> _BrokenImage()
+    {
+        auto ias = _BrokenImageAndSize();
+        if (ias.textureId != ImTextureID(0))
+            return _MakeMarkdownImage(ias);
+        return std::nullopt;
+    }
+
     std::optional<MarkdownImage> OnImage_Default(const std::string& image_path)
     {
 #ifdef CAN_RENDER_IMAGES
@@ -534,28 +605,47 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         }
 
         auto & imageCache = gMarkdownRenderer->ImageCache();
-        if (imageCache.find(image_path) == imageCache.end())
+
+        // If already cached, return it
+        if (imageCache.find(image_path) != imageCache.end())
+            return _MakeMarkdownImage(imageCache.at(image_path));
+
+        // Handle URL images via OnDownloadData callback
+        if (_IsUrl(image_path) && gMarkdownOptions.callbacks.OnDownloadData)
         {
-            std::string errorImage = "images/markdown_broken_image.png";
-            if (HelloImGui::AssetExists(image_path))
-                imageCache[image_path] = HelloImGui::ImageAndSizeFromAsset(image_path.c_str());
-            else if (HelloImGui::AssetExists(errorImage))
-                    imageCache[image_path] = HelloImGui::ImageAndSizeFromAsset(errorImage.c_str());
-            else
-                return std::nullopt;
+            auto result = gMarkdownOptions.callbacks.OnDownloadData(image_path);
+            switch (result.status)
+            {
+            case MarkdownDownloadStatus::Ready:
+                imageCache[image_path] = HelloImGui::ImageAndSizeFromEncodedData(
+                    result.data.data(), result.data.size(), image_path);
+                return _MakeMarkdownImage(imageCache.at(image_path));
+
+            case MarkdownDownloadStatus::Downloading:
+                // Show spinner while downloading (don't cache - will be called again next frame)
+                _DrawLoadingSpinner();
+                return std::nullopt;  // nullopt so SPAN_IMG doesn't also draw an image
+
+            case MarkdownDownloadStatus::Failed:
+                if (!result.errorMessage.empty())
+                    std::cerr << "imgui_md: download failed for " << image_path << ": " << result.errorMessage << "\n";
+                imageCache[image_path] = _BrokenImageAndSize(); // Cache broken image to avoid retrying
+                return _BrokenImage();
+
+            case MarkdownDownloadStatus::NotStarted:
+            default:
+                return _BrokenImage();
+            }
         }
 
-        const auto& imageInfo = imageCache.at(image_path);
+        // Handle local asset images
+        if (HelloImGui::AssetExists(image_path))
+        {
+            imageCache[image_path] = HelloImGui::ImageAndSizeFromAsset(image_path.c_str());
+            return _MakeMarkdownImage(imageCache.at(image_path));
+        }
 
-        MarkdownImage r;
-
-        r.texture_id = imageInfo.textureId;
-        r.size = imageInfo.size;
-        r.uv0 = { 0,0 };
-        r.uv1 = {1,1};
-        r.col_tint = { 1,1,1,1 };
-        r.col_border = { 0,0,0,0 };
-        return r;
+        return _BrokenImage();
 #else
         return std::nullopt;
 #endif

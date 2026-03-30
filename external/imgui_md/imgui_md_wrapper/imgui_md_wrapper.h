@@ -3,6 +3,7 @@
 
 #include "imgui.h"
 
+#include <cstdint>
 #include <functional>
 #include <vector>
 #include <string>
@@ -48,6 +49,28 @@ namespace ImGuiMd
     using HtmlDivFunction = std::function<void(const std::string& divClass, bool openingDiv)>;
     using MarkdownImageFunction = std::function<std::optional<MarkdownImage>(const std::string&)>;
 
+    // Status of a download (used by OnDownloadData callback)
+    enum class MarkdownDownloadStatus {
+        NotStarted,   // Download has not been initiated
+        Downloading,  // Download is in progress (show placeholder)
+        Ready,        // Download complete, data is available
+        Failed        // Download failed, errorMessage has details
+    };
+
+    // Result of a download attempt
+    struct MarkdownDownloadResult {
+        MarkdownDownloadStatus status = MarkdownDownloadStatus::NotStarted;
+        std::vector<uint8_t> data;       // Only valid if status == Ready
+        std::string errorMessage;        // Only valid if status == Failed
+
+        // Fill data from a raw buffer (convenience for C++ users)
+        void FillFromData(const void* buffer, size_t size) {
+            data.assign(static_cast<const uint8_t*>(buffer), static_cast<const uint8_t*>(buffer) + size);
+        }
+    };
+
+    using MarkdownDownloadFunction = std::function<MarkdownDownloadResult(const std::string& url)>;
+
 
     std::optional<MarkdownImage> OnImage_Default(const std::string& image_path);
     void OnOpenLink_Default(const std::string& url);
@@ -86,6 +109,18 @@ namespace ImGuiMd
         //            gui_function=gui, with_markdown_options=md_options #, more options here
         //        )
         HtmlDivFunction OnHtmlDiv;
+
+        // OnDownloadData: callback to download data from a URL (empty by default).
+        // When set, OnImage_Default will use it to fetch images from URLs (http:// or https://).
+        //
+        // Contract: C++ calls this every frame for a given URL until it returns Ready or Failed.
+        // The result is then cached and the callback is not called again for that URL.
+        // - For synchronous downloads: return Ready or Failed immediately (never Downloading).
+        // - For async downloads: return Downloading on first call, then Ready/Failed once done.
+        //   The callback must handle deduplication internally (track pending downloads).
+        //
+        // Empty by default. Python fills it with urllib/pyodide, C++ users can fill it with libcurl, etc.
+        MarkdownDownloadFunction OnDownloadData;
     };
 
 
@@ -110,6 +145,11 @@ namespace ImGuiMd
     //        runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
     //
     //        hello_imgui.run(runner_params)
+    // Private: callback called during InitializeMarkdown, allowing customization of the options.
+    // Python sets this at import time to inject URL image download support.
+    using Priv_OnInitializeMarkdownCallback = std::function<void(MarkdownOptions&)>;
+    void Priv_SetOnInitializeMarkdownCallback(Priv_OnInitializeMarkdownCallback callback);
+
     void InitializeMarkdown(const MarkdownOptions& options = MarkdownOptions());
     void DeInitializeMarkdown();
 
