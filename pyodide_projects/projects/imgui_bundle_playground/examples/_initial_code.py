@@ -1,7 +1,8 @@
 """ Dear ImGui Bundle
 ================================
-<img src="https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/images/logo_imgui_bundle.png" height="60">
 
+> <img src="https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/images/logo_imgui_bundle.png" height="60">
+>
 > *Interactive Python & C++ apps for desktop, mobile, and web - powered by Dear ImGui.*
 >
 > Stop fighting GUI frameworks. Start building.
@@ -10,27 +11,30 @@
 
 Welcome to **Dear ImGui Bundle's Playground**, where you can run and test ImGui applications developed with Python directly in your browser!
 
-**Try also:**
-- [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer/) - browse all libraries and demos
+**See also:**
+- [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer/) - complete demo of all the libraries
 - [Documentation](https://pthom.github.io/imgui_bundle/)
 - [GitHub](https://github.com/pthom/imgui_bundle)
 - [Minimal HTML pyodide example](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html) - full app in 80 lines, [Source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
 
 ---
-### Python web apps, the python way
+### python web apps, the python way
 
 Forget the usual labyrinth:
 
 <img src="https://traineq.org/ImGuiBundle/i_just_want_python.jpg" height="180">
 
-Thanks to the pyodide version of Dear ImGui Bundle, you can write apps for your browser using almost only python. *No client/server, no javascript, no fuss.*
+Thanks to the pyodide version of Dear ImGui Bundle, you can write apps for your browser using
+almost *only python*. **No client/server, no javascript, no fuss.**
+
 
 ### Batteries included
-Dear ImGui Bundle comes with 20+ integrated libraries: plotting (ImPlot, ImPlot3D), image debugging (ImmVision), markdown rendering, node editors, 3D gizmos, knobs, toggles, color text editors, and more.
-
+Dear ImGui Bundle comes with 20+ integrated libraries: plotting (ImPlot, ImPlot3D),
+image debugging (ImmVision), markdown rendering, node editors, 3D gizmos, knobs, toggles,
+color text editors, and more.
 *The carousel to the left shows a few of them in action.*
 
-> *Tip: try editing this docstring in the code editor on the left, then click "Run" - the documentation you are reading will immediately update.!*
+> *Tip: try editing this docstring in the source code (left panel), then click "Run" - the documentation you are reading will immediately update.!*
 
 """
 
