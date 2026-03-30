@@ -68,6 +68,15 @@ html, body {
     background-color: #45a049;
 }
 
+@keyframes run-button-flash {
+    0%, 100% { background-color: #4CAF50; }
+    50% { background-color: #81D4FA; }
+}
+
+#run-button.flashing {
+    animation: run-button-flash 1s ease-in-out infinite;
+}
+
 /* Main container below header */
 #main-container {
     display: flex;

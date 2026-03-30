@@ -111,11 +111,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listener for example selector changes
     const exampleSelectorElement = document.getElementById('example-selector');
 
+    const runBtn = document.getElementById('run-button');
+
     exampleSelectorElement.addEventListener('change', (event) => {
         const selectedFilename = event.target.value;
         if (selectedFilename) {
             const example = examplesMetadata.find(e => e.filename === selectedFilename);
             loadExample(selectedFilename, example ? example.packages : undefined);
+            // Gently flash the Run button until clicked
+            runBtn.classList.add('flashing');
         }
+    });
+
+    runBtn.addEventListener('click', () => {
+        runBtn.classList.remove('flashing');
     });
 });
