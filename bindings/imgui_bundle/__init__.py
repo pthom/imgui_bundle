@@ -129,21 +129,15 @@ if has_submodule("imgui"):
     imgui.Dir_ = imgui.Dir
     imgui.SortDirection_ = imgui.SortDirection
 
-    # If pydantic v2 is available, import the pydantic-serializable types
-    if _is_pydantic_v2_available():
-        from imgui_bundle import imgui_pydantic as imgui_pydantic  # noqa: E402
-        from imgui_bundle.imgui_pydantic import (  # noqa: E402
-            ImVec4_Pydantic as ImVec4_Pydantic,
-            ImVec2_Pydantic as ImVec2_Pydantic,
-            ImColor_Pydantic as ImColor_Pydantic,
-        )
-
-        __all__.extend([
-                "imgui_pydantic",
-                "ImVec4_Pydantic",
-                "ImVec2_Pydantic",
-                "ImColor_Pydantic",
-            ])
+    # Pydantic types are lazily imported via __getattr__ below,
+    # so that pydantic can be installed after imgui_bundle is first imported
+    # (e.g. in Pyodide where packages are installed incrementally).
+    __all__.extend([
+            "imgui_pydantic",
+            "ImVec4_Pydantic",
+            "ImVec2_Pydantic",
+            "ImColor_Pydantic",
+        ])
 
 if has_submodule("hello_imgui"):
     from imgui_bundle._imgui_bundle import hello_imgui as hello_imgui
@@ -268,3 +262,24 @@ if has_submodule("hello_imgui"):
 
     THIS_DIR = os.path.dirname(__file__)
     hello_imgui.override_assets_folder(THIS_DIR + "/assets")
+
+
+# Lazy import for pydantic types: deferred so that pydantic can be installed
+# after imgui_bundle is first imported (e.g. in Pyodide).
+_PYDANTIC_NAMES = {"ImVec2_Pydantic", "ImVec4_Pydantic", "ImColor_Pydantic", "imgui_pydantic"}
+
+def __getattr__(name: str):
+    if name in _PYDANTIC_NAMES:
+        if not _is_pydantic_v2_available():
+            raise ImportError(
+                f"'{name}' requires pydantic v2+. Install it with: pip install pydantic"
+            )
+        import importlib
+        _mod = importlib.import_module("imgui_bundle.imgui_pydantic")
+        # Cache into module globals so __getattr__ is not called again
+        globals()["imgui_pydantic"] = _mod
+        globals()["ImVec2_Pydantic"] = _mod.ImVec2_Pydantic
+        globals()["ImVec4_Pydantic"] = _mod.ImVec4_Pydantic
+        globals()["ImColor_Pydantic"] = _mod.ImColor_Pydantic
+        return globals()[name]
+    raise AttributeError(f"module 'imgui_bundle' has no attribute {name!r}")
