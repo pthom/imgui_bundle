@@ -11,12 +11,10 @@ import js  # type: ignore
 import gc
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger("pyodide_imgui_render")
-logger.setLevel(logging.INFO)
 
 def _log(msg: str):
-    # logger.info(msg)
+    logger.info(msg)
     # js.console.log("pyodide_imgui_render: " + msg)
     pass
 
