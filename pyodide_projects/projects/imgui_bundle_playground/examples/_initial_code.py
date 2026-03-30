@@ -1,7 +1,26 @@
+"""Welcome to the playground!
+===========================================
+> **Dear ImGui Bundle**
+>
+> *Interactive Python & C++ apps for desktop, mobile, and web - powered by Dear ImGui.*
+>
+> Stop fighting GUI frameworks. Start building.
+
+Dear ImGui Bundle includes 23 libraries. This example uses a few of them:
+
+| Library | Purpose |
+|---------|---------|
+| ImGui | Widgets, layouts, inputs |
+| ImPlot | 2D plots and charts. It draws the heart you see to the left |
+| imgui_knobs | Rotary knobs. It renders the knob with which you can set the heart pulse. |
+| imgui_color_text_edit | Text Editor with syntax highlighting |
+| imgui_md | Markdown! This text - including this table - is rendered via imgui_md.|
+"""
+
 import time
 import numpy as np
 from imgui_bundle import (implot, imgui, immapp, hello_imgui, icons_fontawesome_4,
-                          imgui_knobs, imgui_md, ImVec2, __version__)
+                          imgui_knobs, imgui_md, ImVec2, imgui_toggle, __version__)
 
 
 _SHOW_HEART_CODE = r'''
@@ -33,38 +52,32 @@ def show_heart():
     _, state.heart_pulse_rate = imgui_knobs.knob(
         "Pulse", state.heart_pulse_rate, 30, 180,
         variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot)
+        
+    # Add info & control / idling
+    imgui.text(f"Dear ImGui Bundle version {__version__}")
+    idling_params = hello_imgui.get_runner_params().fps_idling
+    idling_info = " (idling)" if idling_params.is_idling else ""    
+    imgui.text(f"Running at {hello_imgui.frame_rate():.1f} FPS {idling_info}")
+    _changed, idling_params.enable_idling = imgui_toggle.toggle(
+        "Enable Idling", idling_params.enable_idling, config=imgui_toggle.ios_style(size_scale=0.2)
+    )
+
+    # Made with {icons_fontawesome_4.ICON_FA_HEART}, and running at . 
 '''
 exec(_SHOW_HEART_CODE)
 
 
+
+
 def show_info():
     import textwrap
-    doc = textwrap.dedent(f"""
-    Welcome to the playground!
-    ===========================================
-    > **Dear ImGui Bundle**, version {__version__}
-    >
-    > *Interactive Python & C++ apps for desktop, mobile, and web - powered by Dear ImGui.*
-    >
-    > Stop fighting GUI frameworks. Start building.
-
-    Made with {icons_fontawesome_4.ICON_FA_HEART}, and running at {hello_imgui.frame_rate():.1f} FPS
-
-    ---
-    Dear ImGui Bundle includes 23 libraries. This example uses a few of them:
-
-    | Library | Purpose |
-    |---------|---------|
-    | ImGui | Widgets, layouts, inputs |
-    | ImPlot | 2D plots and charts. It draws the heart you see to the left |
-    | imgui_knobs | Rotary knobs. It renders the knob with which you can set the heart pulse. |
-    | imgui_color_text_edit | Text Editor with syntax highlighting |
-    | imgui_md | Markdown! This text - including this table - is rendered via imgui_md.|
-
+    global_doc = __doc__
+    local_doc = textwrap.dedent(f"""
     The code block below shows the `show_heart` function, which is responsible for drawing the heart and its controls.
     *(It is also rendered using a markdown code block)*
     """)
-    imgui_md.render(doc + "```python\n" + _SHOW_HEART_CODE + "\n```")
+    imgui_md.render(global_doc)
+    imgui_md.render(local_doc + "```python\n" + _SHOW_HEART_CODE + "\n```")
 
 
 def show_post_it():
@@ -123,4 +136,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    immapp.run(gui, window_size=(1000, 900), window_title="Hello!", with_implot=True, with_markdown=True, fps_idle=0)
+    immapp.run(gui, window_size=(1000, 900), window_title="Hello!", with_implot=True, with_markdown=True)
