@@ -5,6 +5,11 @@
         "filename": "_initial_code.py"
       },
       {
+        "label": "Fiatlight / plots  (requires matplotlib & fiatlight)",
+        "filename": "demo_mix_implot_matplotib.py",
+        "packages": ["matplotlib", "../local_wheels/fiatlight-0.6.0-py3-none-any.whl"]
+      },
+      {
         "label": "A Plot with ImPlot / Drag Rect",
         "filename": "plot_drag_rect.py"
       },
