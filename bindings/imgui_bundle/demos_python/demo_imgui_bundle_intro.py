@@ -10,13 +10,15 @@ except ImportError:
     HAS_NUMPY = False
 
 from imgui_bundle import imgui, imgui_md, hello_imgui, immapp, ImVec2, ImVec4
-from imgui_bundle import imgui_color_text_edit as ed
+from imgui_bundle import imgui_color_text_edit as ed, register_demos_assets_folder
 from imgui_bundle import imgui_knobs, imgui_toggle
 from imgui_bundle.demos_python import demo_utils
 from imgui_bundle import implot3d
 from imgui_bundle.immapp import icons_fontawesome_4
 import webbrowser
 
+
+register_demos_assets_folder()
 
 # Optional imports (replacing #ifdef guards)
 try:
@@ -457,10 +459,11 @@ def _table_update():
     global _table_playhead, _table_accum
     if not _table_playing:
         return
-    _table_accum += imgui.get_io().delta_time
+    dt = min(imgui.get_io().delta_time, 0.1)  # clamp to prevent drift when tab is in background
+    _table_accum += dt
     beat_interval = 60.0 / _table_bpm
     if _table_accum >= beat_interval:
-        _table_accum -= beat_interval
+        _table_accum = 0.0  # reset instead of subtract to prevent accumulated drift
         _table_playhead = (_table_playhead + 1) % _table_num_beats
 
 

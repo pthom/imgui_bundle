@@ -495,10 +495,11 @@ namespace IntroTable
     static void Update()
     {
         if (!sPlaying) return;
-        sAccum += ImGui::GetIO().DeltaTime;
+        float dt = std::min(ImGui::GetIO().DeltaTime, 0.1f);  // clamp to prevent drift when tab is in background
+        sAccum += dt;
         float beatInterval = 60.f / sBpm;
         if (sAccum >= beatInterval) {
-            sAccum -= beatInterval;
+            sAccum = 0.f;  // reset instead of subtract to prevent accumulated drift
             sPlayhead = (sPlayhead + 1) % kNumBeats;
         }
     }

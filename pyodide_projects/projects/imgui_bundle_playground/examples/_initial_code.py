@@ -1,23 +1,37 @@
-"""Dear ImGui Bundle
-=====================
+""" Dear ImGui Bundle
+================================
+<img src="https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/images/logo_imgui_bundle.png" height="60">
+
 > *Interactive Python & C++ apps for desktop, mobile, and web - powered by Dear ImGui.*
 >
 > Stop fighting GUI frameworks. Start building.
 
-**Try it:**
-- [Interactive Explorer](https://traineq.org/imgui_bundle_explorer/) - browse all 23 libraries
+---
+
+Welcome to **Dear ImGui Bundle's Playground**, where you can run and test ImGui applications developed with Python directly in your browser!
+
+**Try also:**
+- [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer/) - browse all libraries and demos
 - [Documentation](https://pthom.github.io/imgui_bundle/)
 - [GitHub](https://github.com/pthom/imgui_bundle)
-- [Minimal HTML example](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html) - full app in 80 lines
+- [Minimal HTML pyodide example](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html) - full app in 80 lines, [Source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
 
-**Install:**
-```bash
-pip install imgui-bundle
-```
+---
+### Python web apps, the python way
 
-Dear ImGui Bundle comes with batteries included. To the left you can see a small subset of what it can do.
+Forget the usual labyrinth:
 
-blablabla we have lots of room to speak about it.
+<img src="https://traineq.org/ImGuiBundle/i_just_want_python.jpg" height="180">
+
+Thanks to the pyodide version of Dear ImGui Bundle, you can write apps for your browser using almost only python. *No client/server, no javascript, no fuss.*
+
+### Batteries included
+Dear ImGui Bundle comes with 20+ integrated libraries: plotting (ImPlot, ImPlot3D), image debugging (ImmVision), markdown rendering, node editors, 3D gizmos, knobs, toggles, color text editors, and more.
+
+*The carousel to the left shows a few of them in action.*
+
+> *Tip: try editing this docstring in the code editor on the left, then click "Run" - the documentation you are reading will immediately update.!*
+
 """
 
 import math
@@ -56,6 +70,7 @@ def slide_implot(size):
         s.stem_xs = np.linspace(0, 1, 51, dtype=np.float64)
         s.stem_ys = 1.0 + 0.5 * np.sin(25 * s.stem_xs) * np.cos(2 * s.stem_xs)
         s.init = True
+
     sub_flags = implot.SubplotFlags_.no_resize
     if implot.begin_subplots("##plots", 2, 2, size, sub_flags):
         # Animated lines
@@ -98,6 +113,7 @@ def slide_lorenz(size):
         s.xs2, s.ys2, s.zs2 = [0.1], [1.0], [1.05]
         s.sigma, s.rho, s.beta, s.dt = 10.0, 28.0, 8.0/3.0, 0.01
         s.init = True
+
     def step(xs, ys, zs):
         x, y, z = xs[-1], ys[-1], zs[-1]
         for _ in range(5):
@@ -106,14 +122,17 @@ def slide_lorenz(size):
             xs.append(x); ys.append(y); zs.append(z)
         if len(xs) > 2000:
             del xs[:len(xs)-2000]; del ys[:len(ys)-2000]; del zs[:len(zs)-2000]
+
     step(s.xs, s.ys, s.zs)
     step(s.xs2, s.ys2, s.zs2)
+
     if implot3d.begin_plot("##lorenz", size):
         implot3d.setup_axes("X", "Y", "Z",
             implot3d.AxisFlags_.auto_fit, implot3d.AxisFlags_.auto_fit, implot3d.AxisFlags_.auto_fit)
         implot3d.plot_line("Traj 1", np.array(s.xs), np.array(s.ys), np.array(s.zs))
         implot3d.plot_line("Traj 2", np.array(s.xs2), np.array(s.ys2), np.array(s.zs2))
         implot3d.end_plot()
+
     pos = imgui.get_item_rect_max() - hello_imgui.em_to_vec2(12, 1.2)
     imgui.set_cursor_screen_pos(pos)
     if imgui.small_button("Restart"):
@@ -125,31 +144,44 @@ SLIDE_CODES["Widgets"] = r'''
 def slide_widgets(size):
     """Drum sequencer with knobs, toggles, and angled headers"""
     s = slide_widgets
+
+    # Init state on first run (stored as function attributes to avoid globals)
     if not hasattr(s, "init"):
         s.instruments = ["kick", "snare", "hihat", "open-hh", "tom", "clap", "rim", "crash"]
         s.n_beats = 8
         s.pattern = [[False] * len(s.instruments) for _ in range(s.n_beats)]
-        # Pre-fill a pattern
-        s.pattern[0][0] = s.pattern[4][0] = True  # kick
-        s.pattern[2][1] = s.pattern[6][1] = True  # snare
-        for i in range(0, s.n_beats, 2): s.pattern[i][2] = True  # hihat
+        s.pattern[0][0] = s.pattern[4][0] = True
+        s.pattern[2][1] = s.pattern[6][1] = True
+        for i in range(0, s.n_beats, 2): s.pattern[i][2] = True
+        s.pattern[1][3] = s.pattern[5][3] = True
+        s.pattern[3][4] = True
+        s.pattern[6][5] = True
         s.playhead, s.bpm, s.playing, s.accum = 0, 140.0, True, 0.0
-        s.hl_color = ImVec4(0.3, 0.5, 1.0, 0.70)
+        s.hl_color = ImVec4(0.3, 0.5, 1.0, 0.25)
+        s.volume = [i * 1.2 for i in range(len(s.instruments))]
         s.init = True
+
     imgui.begin_child("##widgets", size)
     em = hello_imgui.em_size()
     # Update playhead
     if s.playing:
-        s.accum += imgui.get_io().delta_time
-        if s.accum >= 60.0 / s.bpm:
-            s.accum -= 60.0 / s.bpm
+        dt = min(imgui.get_io().delta_time, 0.1)
+        s.accum += dt
+        beat_interval = 60.0 / s.bpm
+        if s.accum >= beat_interval:
+            s.accum = 0.0  # reset instead of subtract to prevent drift
             s.playhead = (s.playhead + 1) % s.n_beats
-    # Table
-    table_h = size.y - em * 5
+
+    # Side panel width
+    side_w = em * 15
+    table_w = size.x - side_w - em
+
+    # Table (left)
     n_cols = len(s.instruments) + 1
     flags = (imgui.TableFlags_.sizing_fixed_fit | imgui.TableFlags_.borders_outer
-             | imgui.TableFlags_.borders_inner_h | imgui.TableFlags_.highlight_hovered_column)
-    if imgui.begin_table("##seq", n_cols, flags, ImVec2(0, table_h)):
+             | imgui.TableFlags_.borders_inner_h | imgui.TableFlags_.highlight_hovered_column
+             | imgui.TableFlags_.scroll_x | imgui.TableFlags_.scroll_y)
+    if imgui.begin_table("##seq", n_cols, flags, ImVec2(table_w, size.y - em * 2)):
         imgui.table_setup_column("Beat", imgui.TableColumnFlags_.no_hide)
         for name in s.instruments:
             imgui.table_setup_column(name,
@@ -172,16 +204,48 @@ def slide_widgets(size):
                     _, s.pattern[row][col] = imgui.checkbox("", s.pattern[row][col])
                     imgui.pop_id()
             imgui.pop_id()
+
+        # Volume knobs row
+        imgui.table_next_row()
+        imgui.table_set_column_index(0)
+        for col in range(len(s.instruments)):
+            if imgui.table_set_column_index(col + 1):
+                _, s.volume[col] = imgui_knobs.knob(f"Vol##{col}", s.volume[col], 0, 12,
+                    variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=em * 2, format="%.1f")
+
         imgui.end_table()
-    # Controls
-    _, s.playing = imgui_toggle.toggle("Play", s.playing, imgui_toggle.ToggleFlags_.animated)
+
+    # Side panel (right)
     imgui.same_line()
-    imgui.set_next_item_width(em * 8)
-    _, s.hl_color = imgui.color_edit4("##hl", s.hl_color, imgui.ColorEditFlags_.no_inputs)
-    imgui.same_line()
-    _, s.bpm = imgui_knobs.knob("BPM", s.bpm, 60, 300, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=em * 3)
+    imgui.begin_group()
+    imgui.text("Play")
+    _, s.playing = imgui_toggle.toggle("##play", s.playing, imgui_toggle.ToggleFlags_.animated)
+    imgui.spacing()
+    _, s.bpm = imgui_knobs.knob("BPM", s.bpm, 60, 300,
+        variant=imgui_knobs.ImGuiKnobVariant_.stepped, size=em * 4)
+    imgui.spacing()
+
+    picker_flags = (imgui.ColorEditFlags_.no_side_preview
+                    | imgui.ColorEditFlags_.no_inputs
+                    | imgui.ColorEditFlags_.no_label
+                    | imgui.ColorEditFlags_.alpha_bar
+                    | imgui.ColorEditFlags_.picker_hue_wheel)
+    imgui.set_next_item_width(150)
+    _, s.hl_color = imgui.color_picker4("##hl_wheel", s.hl_color, picker_flags)
+
+    imgui.end_group()
     imgui.end_child()
 '''
+
+# tick = enum.auto()  # (= 1 << 0)
+# dot = enum.auto()  # (= 1 << 1)
+# wiper = enum.auto()  # (= 1 << 2)
+# wiper_only = enum.auto()  # (= 1 << 3)
+# wiper_dot = enum.auto()  # (= 1 << 4)
+# stepped = enum.auto()  # (= 1 << 5)
+# space = enum.auto()  # (= 1 << 6)
+
+
 
 SLIDE_CODES["ImmVision"] = r'''
 def slide_immvision(size):
