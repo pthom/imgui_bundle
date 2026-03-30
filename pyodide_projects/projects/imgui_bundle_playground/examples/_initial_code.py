@@ -251,6 +251,8 @@ SLIDE_CODES["ImmVision"] = r'''
 def slide_immvision(size):
     """Image inspection with synced pan/zoom (ImmVision)"""
     from imgui_bundle import immvision
+
+    # Init images and params
     s = slide_immvision
     if not hasattr(s, "init"):
         immvision.use_rgb_color_order()
@@ -287,17 +289,19 @@ def slide_immvision(size):
         s.params2.can_resize = True
 
         s.init = True
+
+    # Display user interface (images and help text)
     imgui.begin_child("##immvision", size)
     immvision.image("Original", s.image, s.params1)
     imgui.same_line()
-    imgui.text_wrapped("""
-        ImmVision is an advanced image inspector / analyzer    
-        - Drag the images to pan
-        - Use mouse wheel to zoom (both images are synced)
-        - At high zoom levels, the pixels values will be displayed
-        - Apply colormaps
-        - etc.
-    """)
+    imgui.text_wrapped("\n"
+        "ImmVision is an advanced image inspector / analyzer\n"    
+        "- Drag the images to pan\n" 
+        "- Use mouse wheel to zoom (both images are synced)\n" 
+        "- At high zoom levels, the pixels values will be displayed\n" 
+        "- Apply colormaps\n"
+        "- Drag bottom right corner to resize images\n" 
+        "- etc.\n")
     immvision.image("Edges", s.edges, s.params2)
     imgui.end_child()
 '''
