@@ -33,7 +33,7 @@ from imgui_bundle.demos_python import demo_nanovg_launcher
 from imgui_bundle.demos_python import demo_themes
 from imgui_bundle.demos_python import demo_logger
 from imgui_bundle.demos_python import demo_im_anim
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
+from imgui_bundle.demos_python import demo_utils
 
 
 _show_code_states: dict[str, bool] = {}

@@ -1,8 +1,9 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle import imgui, imgui_md, immapp, ImVec2
-from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
+from imgui_bundle import imgui, imgui_md, immapp, ImVec2, register_demos_assets_folder
+from imgui_bundle.demos_python import demo_utils
 from imgui_bundle.demos_python.demo_utils.imgui_explorer_setup import get_imgui_explorer, get_package_path
 
+register_demos_assets_folder()
 imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 

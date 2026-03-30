@@ -13,8 +13,8 @@ import json
 from enum import Enum
 import time
 
-from imgui_bundle import hello_imgui, icons_fontawesome_6, imgui, immapp, imgui_ctx, ImVec4, ImVec2
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle import hello_imgui, icons_fontawesome_6, imgui, immapp, imgui_ctx, ImVec4, ImVec2, register_demos_assets_folder
+register_demos_assets_folder()
 from typing import List, Any
 
 

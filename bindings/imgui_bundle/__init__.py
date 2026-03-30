@@ -272,6 +272,32 @@ if has_submodule("hello_imgui"):
     hello_imgui.override_assets_folder(THIS_DIR + "/assets")
 
 
+def register_demos_assets_folder():
+    """Add demos_assets/ to hello_imgui assets search path.
+    Call this from demos that need additional images (house.jpg, bear_transparent.png, etc.)
+    beyond the default assets (world.png, fonts)."""
+    from imgui_bundle import __bundle_pyodide__
+    import os as _os
+    import logging as _logging
+    _log = _logging.getLogger("imgui_bundle")
+
+    if __bundle_pyodide__:
+        _log.warning("register_demos_assets_folder will not work in Pyodide")
+        return
+
+    _demos_assets = _os.path.join(_os.path.dirname(__file__), "demos_assets")
+    _demos_assets = _os.path.normpath(_demos_assets)
+    if _os.path.isdir(_demos_assets):
+        from imgui_bundle import hello_imgui as _hello_imgui
+        _hello_imgui.add_assets_search_path(_demos_assets)
+        _log.debug("Registered demos assets folder: %s", _demos_assets)
+    else:
+        _log.warning("demos_assets/ not found at %s", _demos_assets)
+
+
+__all__.extend(["register_demos_assets_folder"])
+
+
 # Lazy import for pydantic types: deferred so that pydantic can be installed
 # after imgui_bundle is first imported (e.g. in Pyodide).
 _PYDANTIC_NAMES = {"ImVec2_Pydantic", "ImVec4_Pydantic", "ImColor_Pydantic", "imgui_pydantic"}

@@ -1,5 +1,4 @@
 from imgui_bundle import imgui, imgui_md, hello_imgui, immapp
-from imgui_bundle.demos_python import demo_utils
 
 
 def show_gui():

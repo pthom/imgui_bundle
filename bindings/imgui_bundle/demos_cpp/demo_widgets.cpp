@@ -475,7 +475,7 @@ void DemoCoolBar()
         float w         = ImGui::GetCoolBarItemWidth();
 
         // Display transparent image and check if clicked
-        HelloImGui::ImageFromAsset("images/bear_transparent.png", ImVec2(w, w));
+        HelloImGui::ImageFromAsset("images/world.png", ImVec2(w, w));
         bool clicked = ImGui::IsItemHovered() && ImGui::IsMouseClicked(0);
 
         // Optional: add a label on the image

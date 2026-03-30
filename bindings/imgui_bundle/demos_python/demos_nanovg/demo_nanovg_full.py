@@ -1,6 +1,6 @@
 # port of bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full.cpp
-from imgui_bundle import imgui, nanovg as nvg, hello_imgui, ImVec2, ImVec4
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle import imgui, nanovg as nvg, hello_imgui, ImVec2, ImVec4, register_demos_assets_folder
+register_demos_assets_folder()
 from imgui_bundle.demos_python.demos_nanovg.demo_nanovg_full import demo_nanovg_full_impl
 from typing import List
 

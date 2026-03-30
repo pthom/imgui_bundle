@@ -1,5 +1,4 @@
 from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, icons_fontawesome
-from imgui_bundle.demos_python import demo_utils
 
 import numpy as np
 from typing import Dict, List

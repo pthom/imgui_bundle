@@ -1,5 +1,4 @@
 from imgui_bundle import hello_imgui, imgui, immapp, ImVec2, ImVec4, imgui_md
-from imgui_bundle.demos_python import demo_utils
 
 import OpenGL.GL as GL  # pip install PyOpenGL
 

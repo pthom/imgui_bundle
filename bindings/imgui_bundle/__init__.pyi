@@ -33,6 +33,8 @@ from .im_col32 import IM_COL32 as IM_COL32
 
 
 __version__: str
+__build_number__: int
+__bundle_pyodide__: bool
 
 
 def compilation_time() -> str:
@@ -64,3 +66,8 @@ def em_to_vec2(x, y=None) -> ImVec2:
         em_to_vec2(ImVec2(3.0, 2.0))  -> same, from ImVec2
     """
     ...
+
+def register_demos_assets_folder():
+    """Register the folder containing demo assets (images, etc.) so they can be loaded by the demos."""
+    ...
+

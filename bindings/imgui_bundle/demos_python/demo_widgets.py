@@ -445,7 +445,7 @@ def demo_cool_bar():
         w = im_cool_bar.get_cool_bar_item_width()
 
         # Display transparent image and check if clicked
-        hello_imgui.image_from_asset("images/bear_transparent.png", ImVec2(w, w))
+        hello_imgui.image_from_asset("images/world.png", ImVec2(w, w))
         clicked = imgui.is_item_hovered() and imgui.is_mouse_clicked(0)
 
         # Optional: add a label on the image
@@ -496,6 +496,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    from imgui_bundle.demos_python import demo_utils
-    from imgui_bundle import immapp
     immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))  # type: ignore

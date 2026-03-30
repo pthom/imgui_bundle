@@ -3,8 +3,9 @@
 #
 # This app launches an internal demo from imgui_tex_inspect, thus its code does not appear here.
 #
-from imgui_bundle import imgui_tex_inspect, immapp
-from imgui_bundle.demos_python import demo_utils  # Required to add assets path
+from imgui_bundle import imgui_tex_inspect, immapp, register_demos_assets_folder
+
+register_demos_assets_folder()
 
 def main():
     immapp.run(
