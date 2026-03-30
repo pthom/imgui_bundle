@@ -9,10 +9,24 @@ from numpy.typing import NDArray
 from enum import Enum
 import cv2  # type: ignore
 import math
-
 from imgui_bundle import imgui, immvision, immapp, imgui_md
 
-immvision.use_rgb_color_order()
+
+# Load image at startup
+# ========================================================================
+_IMAGE_URL = "https://picsum.photos/640/480"  # each time you run, you'll get a different image!
+# In Pyodide, use pyfetch with top-level await (which is OK in pyodide)
+from pyodide.http import pyfetch
+_response = await pyfetch(_IMAGE_URL)
+_image_bytes = await _response.bytes()
+_loaded_image = cv2.imdecode(np.frombuffer(_image_bytes, dtype=np.uint8), cv2.IMREAD_COLOR)
+# -------------------------------------------------------------------------
+# # On desktop, use urllib (Wikimedia requires a User-Agent header)
+# import urllib.request
+# _req = urllib.request.Request(_IMAGE_URL, headers={"User-Agent": "imgui_bundle_demo/1.0"})
+# with urllib.request.urlopen(_req) as _resp:
+#     _loaded_image = cv2.imdecode(np.frombuffer(_resp.read(), dtype=np.uint8), cv2.IMREAD_COLOR)
+
 
 ImageRgb = NDArray[np.uint8]
 ImageFloat = NDArray[np.floating[Any]]
@@ -110,20 +124,9 @@ class AppState:
     immvision_params: immvision.ImageParams
     immvision_params_sobel: immvision.ImageParams
 
-    def __init__(self):
-        # Create a RGB image programmatically, of a rainbow
-        self.image = np.zeros((600, 600, 3), dtype=np.uint8)
-        for i in range(self.image.shape[0]):
-            for j in range(self.image.shape[1]):
-                self.image[i, j] = (
-                    int(255 * i / self.image.shape[0]),
-                    int(255 * j / self.image.shape[1]),
-                    128,
-                )
-        # Add a circle in the middle
-        cv2.circle(self.image, (300, 300), 100, (255, 255, 255), -1)
+    def __init__(self, image: ImageRgb):
+        self.image = image
 
-        #self.image = demo_utils.imread_pil(image_file)
         self.sobel_params = SobelParams()
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
 
@@ -144,14 +147,16 @@ def demo_gui():
     static = demo_gui
 
     if static.app_state is None:
-        static.app_state = AppState()
+        static.app_state = AppState(_loaded_image)
 
     imgui_md.render_unindented(
         """
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
-
+        
         * Pan and zoom the image with the mouse and the mouse wheel
         * Apply Colormaps to the filtered image in the options tab.
+        
+        (Each time you run, you'll get a different image from picsum.photos)        
         """
     )
     imgui.separator()
@@ -173,5 +178,6 @@ def demo_gui():
 
 
 # The main entry point will run our GUI function
+immvision.use_rgb_color_order()
 immapp.run(demo_gui, with_markdown=True)
 
