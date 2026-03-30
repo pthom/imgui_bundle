@@ -33,7 +33,20 @@ def gui():
     ## 5. Local asset image
     ![local](images/world.png)
 
-    ## 6. Mixed content
+    ## 6.1 HTML img tag with explicit width
+    <img src="https://picsum.photos/id/1018/300/200" width="150">
+
+    ## 6.2 HTML img tag with explicit height
+    <img src="https://pthom.github.io/litgen/litgen_book/_static/litgen_logo_big.png" height="100">
+
+
+    ## 7. HTML img tag with both dimensions
+    <img src="https://picsum.photos/id/237/300/200" width="100" height="80">
+
+    ## 8. HTML img tag - local asset with size
+    <img src="images/world.png" width="64" height="64">
+
+    ## 9. Mixed content
     Some text with an inline reference to the logo above.
 
     > A blockquote with an image:
