@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+<head>
+    <title>Pyodide Demo Runner</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background: #1e1e1e; color: #ccc; }
+        h1 { color: #4CAF50; }
+        a { color: #81D4FA; }
+        #status { margin: 20px 0; padding: 10px; background: #2d2d2d; border-radius: 4px; }
+        #demo-list { list-style: none; padding: 0; }
+        #demo-list li { padding: 4px 0; }
+        #demo-list a { text-decoration: none; }
+        #demo-list a:hover { text-decoration: underline; }
+        .category { color: #aaa; font-size: 0.85em; }
+        canvas { display: block; width: 100%; height: 80vh; }
+        #error { color: #ff5555; margin: 10px 0; white-space: pre-wrap; }
+        #controls { margin: 10px 0; }
+        #controls a { margin-right: 15px; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+</head>
+<body>
+
+<!-- Canvas for SDL2 rendering (hidden until a demo runs) -->
+<canvas id="canvas" tabindex="0" style="display:none;"></canvas>
+
+<!-- UI shown when no demo is running -->
+<div id="ui">
+    <h1>Pyodide Demo Runner</h1>
+    <div id="status">Initializing...</div>
+    <div id="error"></div>
+    <div id="controls" style="display:none;">
+        <a href="?" id="back-link">Back to listing</a>
+    </div>
+    <input type="text" id="search" placeholder="Filter demos..." autocomplete="off"
+           style="width:100%;max-width:500px;padding:8px;margin:10px 0;background:#2d2d2d;color:#ccc;border:1px solid #555;border-radius:4px;font-size:1em;">
+    <div id="listing"></div>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const demoFile = params.get('file');
+
+// Detect wheel file dynamically
+async function findWheel() {
+    // Try to list local_wheels/ and find the latest imgui_bundle wheel
+    try {
+        const resp = await fetch('local_wheels/');
+        const text = await resp.text();
+        const matches = text.match(/imgui_bundle-[^"]+\.whl/g);
+        if (matches && matches.length > 0) {
+            // Return the last one (likely newest)
+            return 'local_wheels/' + matches[matches.length - 1];
+        }
+    } catch(e) {}
+    // Fallback: hardcoded
+    return 'local_wheels/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl';
+}
+
+function setStatus(msg) {
+    document.getElementById('status').textContent = msg;
+}
+
+function setError(msg) {
+    document.getElementById('error').textContent = msg;
+}
+
+// ==================== Listing mode ====================
+let allDemos = [];
+
+function fuzzyMatch(query, text) {
+    // Simple fuzzy: all query chars must appear in order in text (case-insensitive)
+    const lower = text.toLowerCase();
+    let j = 0;
+    for (let i = 0; i < query.length; i++) {
+        j = lower.indexOf(query[i], j);
+        if (j < 0) return false;
+        j++;
+    }
+    return true;
+}
+
+function renderListing(filter) {
+    const query = (filter || '').toLowerCase().trim();
+    const filtered = query ? allDemos.filter(p => fuzzyMatch(query, p)) : allDemos;
+
+    // Group by directory
+    const groups = {};
+    filtered.forEach(path => {
+        const parts = path.split('/');
+        const dir = parts.length > 1 ? parts.slice(0, -1).join('/') : '.';
+        if (!groups[dir]) groups[dir] = [];
+        groups[dir].push(path);
+    });
+
+    let html = '';
+    for (const [dir, files] of Object.entries(groups).sort()) {
+        html += `<h3 class="category">${dir}/</h3><ul id="demo-list">`;
+        files.forEach(f => {
+            const name = f.split('/').pop();
+            html += `<li><a href="?file=${encodeURIComponent(f)}">${name}</a></li>`;
+        });
+        html += '</ul>';
+    }
+    document.getElementById('listing').innerHTML = html;
+    setStatus(`${filtered.length}/${allDemos.length} demos${query ? ' matching "' + filter + '"' : ''}. Click one to run it.`);
+}
+
+async function showListing() {
+    setStatus('Loading demo listing...');
+    try {
+        const resp = await fetch('list_demos');
+        allDemos = await resp.json();
+        renderListing('');
+
+        const searchBox = document.getElementById('search');
+        searchBox.style.display = 'block';
+        searchBox.addEventListener('input', (e) => renderListing(e.target.value));
+        searchBox.focus();
+    } catch(e) {
+        setError('Failed to load demo listing: ' + e);
+        setStatus('Error');
+    }
+}
+
+// ==================== Run mode ====================
+async function runDemo(file) {
+    document.getElementById('controls').style.display = 'block';
+    setStatus(`Loading Pyodide and ${file}...`);
+
+    try {
+        // Load Pyodide
+        setStatus('Loading Pyodide...');
+        const pyodide = await loadPyodide();
+        pyodide._api._skip_unwind_fatal_error = true;
+
+        // Set up SDL canvas
+        const canvas = document.getElementById('canvas');
+        canvas.style.display = 'block';
+        pyodide.canvas.setCanvas2D(canvas);
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // Install packages
+        setStatus('Installing imgui_bundle...');
+        await pyodide.loadPackage('micropip');
+        const micropip = pyodide.pyimport('micropip');
+        const wheelPath = await findWheel();
+        await micropip.install(wheelPath);
+        // numpy is commonly needed
+        await micropip.install('numpy');
+
+        setStatus(`Loading ${file}...`);
+        const resp = await fetch('demos/' + file);
+        if (!resp.ok) throw new Error(`Failed to fetch ${file}: ${resp.status}`);
+        const code = await resp.text();
+
+        // Redirect stderr
+        pyodide.setStderr({ batched: (s) => { console.error(s); setError(s); } });
+        pyodide.setStdout({ batched: (s) => console.log(s) });
+
+        // Hide UI, show canvas
+        document.getElementById('ui').style.display = 'none';
+
+        setStatus('Running...');
+        await pyodide.runPythonAsync(code);
+
+    } catch(e) {
+        console.error(e);
+        setError(e.toString());
+        setStatus('Error - see below');
+    }
+}
+
+// ==================== Main ====================
+if (demoFile) {
+    runDemo(demoFile);
+} else {
+    showListing();
+}
+</script>
+</body>
+</html>

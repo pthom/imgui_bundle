@@ -179,7 +179,7 @@ if has_submodule("imgui_md"):
     # Register a hook so that initialize_markdown() automatically sets up URL image download support
     def _on_initialize_markdown(options):
         if options.callbacks.on_download_data is None:
-            from imgui_bundle.imgui_md_image_loader import _get_download_function
+            from imgui_bundle._imgui_md_image_loader import _get_download_function
             options.callbacks.on_download_data = _get_download_function()
 
     imgui_md._set_on_initialize_markdown_callback(_on_initialize_markdown)

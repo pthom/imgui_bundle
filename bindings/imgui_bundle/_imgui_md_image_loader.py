@@ -76,41 +76,89 @@ def _download_desktop_async(url: str):
     return result
 
 
-def _download_pyodide(url: str):
-    """Synchronous download using XMLHttpRequest in Pyodide.
-    Returns a MarkdownDownloadResult with status Ready or Failed."""
+_pyodide_js_initialized = False
+
+def _ensure_pyodide_js():
+    """Initialize the JS-side download infrastructure (once)."""
+    global _pyodide_js_initialized
+    if _pyodide_js_initialized:
+        return
+    from pyodide.code import run_js  # type: ignore
+    run_js("""
+    window._imgui_downloads = {};
+
+    window._imgui_download_debug_delay_ms = 0;  // set to e.g. 3000 to simulate slow downloads
+
+    window._imgui_start_download = function(url) {
+        if (window._imgui_downloads[url]) return;  // already in progress
+        window._imgui_downloads[url] = {status: 'downloading'};
+        var doFetch = function() { fetch(url)
+            .then(function(response) {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.arrayBuffer();
+            })
+            .then(function(buf) {
+                window._imgui_downloads[url] = {status: 'ready', data: new Uint8Array(buf)};
+            })
+            .catch(function(e) {
+                window._imgui_downloads[url] = {status: 'failed', error: e.toString()};
+            }); };
+        if (window._imgui_download_debug_delay_ms > 0)
+            setTimeout(doFetch, window._imgui_download_debug_delay_ms);
+        else
+            doFetch();
+    };
+
+    window._imgui_poll_download = function(url) {
+        return window._imgui_downloads[url] || {status: 'not_started'};
+    };
+
+    window._imgui_clear_download = function(url) {
+        delete window._imgui_downloads[url];
+    };
+    """)
+    _pyodide_js_initialized = True
+
+
+def _download_pyodide_async(url: str):
+    """Async download using JS fetch() in Pyodide.
+    Returns Downloading on first call, Ready/Failed once done."""
     from imgui_bundle import imgui_md
-    log.debug("Downloading %s (Pyodide)", url)
+    from pyodide.code import run_js  # type: ignore
     result = imgui_md.MarkdownDownloadResult()
+
     try:
-        from pyodide.code import run_js  # type: ignore
-        js_code = """
-        (function(url) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, false);
-            xhr.responseType = 'arraybuffer';
-            xhr.send();
-            if (xhr.status === 200) {
-                return new Uint8Array(xhr.response);
-            } else {
-                return null;
-            }
-        })
-        """
-        fetch_fn = run_js(js_code)
-        js_result = fetch_fn(url)
-        if js_result is not None and len(js_result) > 0:
-            log.debug("Downloaded %d bytes from %s", len(js_result), url)
-            result.fill_from_bytes(bytes(js_result))
+        _ensure_pyodide_js()
+
+        # Start download if not already in progress
+        run_js(f"window._imgui_start_download({repr(url)})")
+
+        # Poll status
+        js_result = run_js(f"window._imgui_poll_download({repr(url)})")
+        status = js_result.status
+
+        if status == 'downloading':
+            result.status = imgui_md.MarkdownDownloadStatus.downloading
+        elif status == 'ready':
+            data = bytes(js_result.data)
+            log.debug("Downloaded %d bytes from %s (Pyodide)", len(data), url)
+            result.fill_from_bytes(data)
             result.status = imgui_md.MarkdownDownloadStatus.ready
-        else:
-            log.warning("Failed to download %s (HTTP error or CORS blocked)", url)
+            # Clean up JS-side storage
+            run_js(f"window._imgui_clear_download({repr(url)})")
+        elif status == 'failed':
+            error_msg = str(js_result.error) if hasattr(js_result, 'error') else "Unknown error"
+            log.warning("Failed to download %s (Pyodide): %s", url, error_msg)
             result.status = imgui_md.MarkdownDownloadStatus.failed
-            result.error_message = "Download failed (HTTP error or CORS blocked)"
+            result.error_message = error_msg
+            run_js(f"window._imgui_clear_download({repr(url)})")
+        else:
+            result.status = imgui_md.MarkdownDownloadStatus.downloading
     except Exception as e:
-        log.warning("Failed to download %s: %s", url, e)
+        log.warning("Failed to download %s (Pyodide): %s", url, e)
         result.status = imgui_md.MarkdownDownloadStatus.failed
         result.error_message = str(e)
+
     return result
 
 
@@ -118,7 +166,7 @@ def _get_download_function():
     """Return the appropriate download function for the current platform."""
     from imgui_bundle import __bundle_pyodide__
     if __bundle_pyodide__:
-        return _download_pyodide
+        return _download_pyodide_async
     else:
         return _download_desktop_async
 

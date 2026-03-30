@@ -193,6 +193,11 @@ pyodide_build: pyodide_clean
 pyodide_serve_projects:
     cd pyodide_projects/projects && python ../serve_cors.py --port 6456
 
+# Run any Python demo in Pyodide (browse http://localhost:6789/)
+[group('pyodide')]
+pyodide_demo_runner:
+    python pyodide_projects/pyodide_demo_runner/serve.py --port 6789
+
 # Clean pyodide build artifacts
 [group('pyodide')]
 pyodide_clean:
