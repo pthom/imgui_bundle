@@ -61,6 +61,7 @@ jobs:
       shell: bash
       run: |
         pip install --verbose .[test]
+        pip install numpy
 
     # On macOS, run tests, ignoring the GUI tests
     - name: pytest no gui (macOS)
