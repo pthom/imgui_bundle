@@ -19,7 +19,7 @@
       },
       {
         "label": "Animated Heart plot",
-        "filename": "animated_plot.py"
+        "filename": "haiku_heart.py"
       },
       {
         "label": "Animated 3d plot: butterfly effect",
