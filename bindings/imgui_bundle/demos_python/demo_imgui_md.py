@@ -6,8 +6,7 @@ def example_markdown_string() -> str:
     markdown = r"""
 # Markdown example (H1)
 
-Hello World! <br>
-![World](images/world.png)
+Hello World!
 
 ## Acknowledgments (H2)
 This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
@@ -41,6 +40,20 @@ int answer()
 }
 ```
 * Separator (see below)
+
+#### Images (H4)
+
+Images can be loaded from local assets or from URLs:
+
+![World](images/world.png)
+
+Online images are downloaded asynchronously (a spinner is shown while loading):
+
+![Photo](https://picsum.photos/id/1018/300/200)
+
+You can also use HTML img tags to control the size:
+
+<img src="https://picsum.photos/id/237/300/200" width="100">
 
 ----
 

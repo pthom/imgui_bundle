@@ -61,6 +61,28 @@ int main() {
 Enable markdown by passing `with_markdown=True` to `immapp.run()` (Python) or use `ImmApp::RunWithMarkdown()` (C++).
 :::
 
+### Images
+
+imgui_md supports images from local assets and from URLs.
+
+**Standard markdown images:**
+```markdown
+![local image](images/world.png)
+![online image](https://example.com/photo.jpg)
+```
+
+**HTML img tags with explicit size:**
+```html
+<img src="https://example.com/photo.jpg" width="200">
+<img src="images/logo.png" width="100" height="50">
+```
+
+:::{note}
+**Python:** URL images are downloaded asynchronously (a loading spinner is shown while downloading). This works automatically when using `immapp.run(with_markdown=True)`. The download callback can be customized via `MarkdownCallbacks.on_download_data`.
+
+**C++:** URL images are not downloaded by default. To enable them, set `MarkdownCallbacks::OnDownloadData` to a function that downloads data from a URL (e.g. using libcurl). The callback should return a `MarkdownDownloadResult` with `Ready`/`Downloading`/`Failed` status.
+:::
+
 ### Full Demo
 
 [Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_imgui_md.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
