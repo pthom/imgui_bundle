@@ -525,7 +525,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
         addOnsParams.withImplot3d = withImplot3d;
-        addOnsParams.withMarkdown = true;
+        addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR

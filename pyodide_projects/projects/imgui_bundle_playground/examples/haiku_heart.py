@@ -54,9 +54,8 @@ def show_heart():
 
 
 if __name__ == "__main__":
-    immapp.run(show_heart,
+    immapp.run_with_markdown(show_heart,
                window_size=(800, 700),
                window_title="Hello!",
                with_implot=True,
-               with_markdown=True,
                fps_idle=0)

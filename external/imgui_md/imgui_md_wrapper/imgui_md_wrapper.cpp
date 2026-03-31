@@ -546,6 +546,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
     // Global options
     MarkdownOptions gMarkdownOptions;
     static Priv_OnInitializeMarkdownCallback gOnInitializeMarkdownCallback;
+    static bool gMarkdownWasInitialized = false;
 
     void Priv_SetOnInitializeMarkdownCallback(Priv_OnInitializeMarkdownCallback callback)
     {
@@ -554,20 +555,18 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 
     void DeInitializeMarkdown()
     {
-        // Clear callbacks that may hold Python objects before the interpreter shuts down
+        // Clear per-frame callbacks that may hold Python objects before the interpreter shuts down.
+        // Keep gOnInitializeMarkdownCallback alive: it is set once at module import time
+        // and must survive teardown/setup cycles (e.g. Pyodide playground re-runs).
         gMarkdownOptions.callbacks.OnDownloadData = nullptr;
-        gOnInitializeMarkdownCallback = nullptr;
         gMarkdownRenderer.release();
+        gMarkdownWasInitialized = false;
     }
 
     void InitializeMarkdown(const MarkdownOptions& options)
     {
-        static bool wasCalledAlready = false;
-        if (wasCalledAlready)
-        {
-            //std::cerr << "InitializeMarkdown can only be called once at application startup!\n";
+        if (gMarkdownWasInitialized)
             return;
-        }
 
         gMarkdownOptions = options;
         if (gOnInitializeMarkdownCallback)
@@ -578,7 +577,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         if (!gMarkdownOptions.callbacks.OnDownloadData)
             gMarkdownOptions.callbacks.OnDownloadData = EmscriptenDownloadData;
 #endif
-        wasCalledAlready = true;
+        gMarkdownWasInitialized = true;
     }
 
 

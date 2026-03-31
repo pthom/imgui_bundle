@@ -227,6 +227,15 @@ def pyodide_do_patch_runners():
     hello_imgui.run = _MANUAL_RENDER_JS.run_hello_imgui
     immapp.run = _MANUAL_RENDER_JS.run_immapp
 
+    # run_with_markdown is just run() with with_markdown=True baked in.
+    # It must also be patched, otherwise it calls the blocking C++ Run() which crashes Pyodide.
+    def _run_with_markdown_pyodide(gui_function, *, with_markdown_options=None, **kwargs):
+        kwargs["with_markdown"] = True
+        if with_markdown_options is not None:
+            kwargs["with_markdown_options"] = with_markdown_options
+        _MANUAL_RENDER_JS.run_immapp(gui_function, **kwargs)
+    immapp.run_with_markdown = _run_with_markdown_pyodide
+
     # Add async versions for waiting until GUI exits
     immapp.run_async = _MANUAL_RENDER_JS.run_immapp_async
     hello_imgui.run_async = _MANUAL_RENDER_JS.run_hello_imgui_async
