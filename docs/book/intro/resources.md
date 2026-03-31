@@ -4,16 +4,20 @@
 
 The manuals and demos below are using Dear ImGui Bundle itself!
 
-- [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer): explore all the features and libraries included in Dear ImGui Bundle, with lots of example apps which you can run (and for each, inspect their source code).
-- [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/): explore all the widgets and features of Dear ImGui, with live examples and the corresponding python or C++ code
-- [Online Pyodide playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/):  try imgui apps using Python, directly in your browser
+- [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer): interactive reference manual - browse demos, see the code, try the widgets
+- [Online Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/): live Python sandbox with ready-to-run demos - edit code, see results instantly
+- [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/): interactive manual for Dear ImGui, ImPlot, ImPlot3D
 
+## Community
+
+- [Discord](https://discord.gg/xkzpKMeYN3): join the community for questions, showcase, and discussion
+- [GitHub Discussions](https://github.com/pthom/imgui_bundle/discussions): searchable Q&A
 
 ## Documentation websites
 
+- [Dear ImGui Bundle documentation](https://pthom.github.io/imgui_bundle)
 - [Hello ImGui documentation](https://pthom.github.io/hello_imgui). Hello ImGui provides a simple framework to quickly create applications using Dear ImGui. It is included in Dear ImGui Bundle.
-- [Dear ImGui Bundle documentation](https://pthom.github.io/imgui_bundle).
-- [Fiatlight documentation](https://pthom.github.io/fiatlight_doc). FiatLight provides automatic UI generation for functions and structured data (dataclasses, pydantic models), making it a powerful tool for rapid prototyping and application development. It is build on top of Dear ImGui Bundle.
+- [Fiatlight documentation](https://pthom.github.io/fiatlight_doc). Fiatlight provides automatic UI generation for functions and structured data (dataclasses, pydantic models), making it a powerful tool for rapid prototyping and application development. It is built on top of Dear ImGui Bundle.
 
 ## YouTube Playlist
 

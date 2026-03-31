@@ -12,7 +12,10 @@ Dear ImGui Bundle Explorer is an interactive manual with demos of all the featur
 ```
 ````
 
-Two ways to learn Dear ImGui Bundle (best used together):
+**Get started:**
 
-- **[Read this manual](what_is_imgui_bundle.md)**: what it is, how to get started, API guides for each library.
-- **[Interactive Demo](https://traineq.org/imgui_bundle_explorer/)**: Dear ImGui Bundle Explorer provides live demos with source code for every feature.
+- **[Read this manual](what_is_imgui_bundle.md)**: what it is, how to get started, API guides for each library
+- **[Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer/)**: an interactive reference manual - browse demos, see the code, try the widgets
+- **[Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/)**: live Python sandbox with ready-to-run demos - edit code, see results instantly
+- **[GitHub](https://github.com/pthom/imgui_bundle)**: source code, issues, discussions
+- **[Discord](https://discord.gg/xkzpKMeYN3)**: join the community
