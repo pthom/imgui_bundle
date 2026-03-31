@@ -38,19 +38,20 @@ Dear ImGui Bundle is a batteries-included collection of libraries around [Dear I
 
 ## Try it now
 
-### Online playground (Pyodide)
-Run and edit Python ImGui Bundle apps directly in your browser - no installation needed. Type code on the left, see the interactive GUI on the right.
+### Online playground
+Live Python sandbox with ready-to-run demos - edit code, see results instantly. No installation needed.
 
 Open the **[playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/)**.
 
-### Interactive explorer & demo
+### Interactive explorer
 
-**[Launch the Interactive Explorer](https://traineq.org/imgui_bundle_explorer)** in your browser. It showcases almost every part of the bundle with runnable examples:
-- Explore core Dear ImGui widgets.
-- Try plotting, node editors, image viewers, test engine, and more.
-- Inspect and copy the C++ and Python source code for each demo.
+Interactive reference manual - browse demos, see the code, try the widgets. Showcases all 23 libraries with browsable C++ and Python source.
 
-The explorer is your live reference: browse widgets, run demos, and copy code snippets directly into your own projects.
+**[Launch the Interactive Explorer](https://traineq.org/imgui_bundle_explorer)**
+
+### Community
+
+Join the **[Discord server](https://discord.gg/xkzpKMeYN3)** for questions, showcase, and discussion (new!).
 
 ## Documentation
 

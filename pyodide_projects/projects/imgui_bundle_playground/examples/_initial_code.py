@@ -12,10 +12,11 @@
 Welcome to **Dear ImGui Bundle's Playground**, where you can run and test ImGui applications developed with Python directly in your browser!
 
 **See also:**
-- [Documentation](https://pthom.github.io/imgui_bundle/): the main documentation for Dear ImGui bundle
-- [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer/): the main demo and tutorial (much more complete than this playground)
-- [GitHub](https://github.com/pthom/imgui_bundle): source code
-- [Minimal HTML pyodide example](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html): a full pyodide app in 80 lines, [Source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
+- [Interactive Explorer](https://traineq.org/imgui_bundle_explorer/) - Interactive manual - all libraries, live demos, browsable source
+- [Documentation](https://pthom.github.io/imgui_bundle/)
+- [GitHub](https://github.com/pthom/imgui_bundle)
+- [Minimal HTML example](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html) - full app in 80 lines, [Source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
+- [Discord](https://discord.gg/xkzpKMeYN3) - join the community (new!)
 
 ---
 ### python web apps, the python way
@@ -34,7 +35,7 @@ image debugging (ImmVision), markdown rendering, node editors, 3D gizmos, knobs,
 color text editors, and more.
 *The carousel to the left shows a few of them in action.*
 
-> *Tip: try editing this docstring in the source code (left panel), then click "Run" - the documentation you are reading will immediately update.!*
+> *Tip: try editing this docstring in the source code (left panel), then click "Run" - the documentation you are reading will immediately update!*
 
 """
 
