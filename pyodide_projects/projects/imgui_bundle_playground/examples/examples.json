@@ -1,42 +1,38 @@
 {
     "examples": [
       {
-        "label": "Welcome to ImGui Bundle Playground",
-        "filename": "_initial_code.py"
+        "label": "Welcome to Dear ImGui Bundle",
+        "filename": "00_landing_page.py"
       },
       {
-        "label": "Fiatlight / plots  (requires matplotlib & fiatlight)",
-        "filename": "demo_mix_implot_matplotib.py",
-        "packages": ["matplotlib", "fiatlight"]
+        "label": "Welcome to Immediate Mode",
+        "filename": "10_welcome_imm_mode.py"
       },
       {
-        "label": "A Plot with ImPlot / Drag Rect",
-        "filename": "plot_drag_rect.py"
+        "label": "ImPlot: Interactive Drag Rect",
+        "filename": "20_implot_drag_rect.py"
       },
       {
-        "label": "Hello World",
-        "filename": "hello_world.py"
+        "label": "ImPlot3D: Butterfly Effect",
+        "filename": "30_implot3d_butterfly.py"
       },
       {
-        "label": "Animated Heart plot",
-        "filename": "haiku_heart.py"
+        "label": "Themes",
+        "filename": "40_themes.py"
       },
       {
-        "label": "Animated 3d plot: butterfly effect",
-        "filename": "haiku_butterfly.py"
-      },
-      {
-        "label": "Themes demo",
-        "filename": "demo_themes.py"
-      },
-      {
-        "label": "Image processing",
-        "filename": "dem_immvision_process.py",
+        "label": "ImmVision: Image Inspection",
+        "filename": "50_immvision.py",
         "packages": ["opencv-python"]
       },
       {
-        "label": "Interactive parametric curve",
-        "filename": "demo_parametric_curve.py"
+        "label": "Layout & Docking",
+        "filename": "60_layout.py"
+      },
+      {
+        "label": "Fiatlight: Image Pipeline",
+        "filename": "70_fiatlight_image.py",
+        "packages": ["opencv-python", "fiatlight"]
       }
     ]
   }

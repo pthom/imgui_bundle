@@ -1,0 +1,42 @@
+{
+    "examples": [
+      {
+        "label": "Welcome to ImGui Bundle Playground",
+        "filename": "_initial_code.py"
+      },
+      {
+        "label": "Fiatlight / plots  (requires matplotlib & fiatlight)",
+        "filename": "demo_mix_implot_matplotib.py",
+        "packages": ["matplotlib", "fiatlight"]
+      },
+      {
+        "label": "A Plot with ImPlot / Drag Rect",
+        "filename": "plot_drag_rect.py"
+      },
+      {
+        "label": "Hello World",
+        "filename": "hello_world.py"
+      },
+      {
+        "label": "Animated Heart plot",
+        "filename": "haiku_heart.py"
+      },
+      {
+        "label": "Animated 3d plot: butterfly effect",
+        "filename": "haiku_butterfly.py"
+      },
+      {
+        "label": "Themes demo",
+        "filename": "demo_themes.py"
+      },
+      {
+        "label": "Image processing",
+        "filename": "dem_immvision_process.py",
+        "packages": ["opencv-python"]
+      },
+      {
+        "label": "Interactive parametric curve",
+        "filename": "demo_parametric_curve.py"
+      }
+    ]
+  }

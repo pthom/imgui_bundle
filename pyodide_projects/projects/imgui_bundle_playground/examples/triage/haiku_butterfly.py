@@ -1,10 +1,12 @@
 """# Lorenz Attractor & Butterfly Effect
-This is a simple example of the Lorenz Attractor. It shows two trajectories that diverge
-because of a small initial difference, illustrating chaos theory in action.
 
-The term **butterfly effect** in popular media may stem from the real-world implications
-of the Lorenz attractor, namely that tiny changes in initial conditions evolve to
-completely different trajectories.
+This is a simple example of the Lorenz Attractor using [ImPlot3D](https://github.com/brenocq/implot3d). It shows two trajectories that diverge because of a small initial difference, illustrating chaos theory in action.
+
+The term **butterfly effect** in popular media may stem from the real-world implications of the Lorenz attractor, namely that tiny changes in initial conditions evolve to completely different trajectories.
+
+**Links:**
+- [ImPlot3D repository](https://github.com/brenocq/implot3d)
+- [ImPlot3D in the Explorer](https://traineq.org/imgui_bundle_explorer/?lib=implot3d)
 """
 
 import numpy as np
