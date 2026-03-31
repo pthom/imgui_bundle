@@ -772,10 +772,12 @@ namespace IntroImmVision
             sParamsSobel.ZoomPanMatrix = sParams.ZoomPanMatrix;
         }
 
-        // Size each image to half the available width
+        // Adapt to available space while preserving aspect ratio
         int halfW = (int)(size.x * 0.5f - HelloImGui::EmSize(1.5f));
-        sParams.ImageDisplaySize = ImmVision::Size(halfW, 0);
-        sParamsSobel.ImageDisplaySize = ImmVision::Size(halfW, 0);
+        int imgH = sImage.rows(), imgW = sImage.cols();
+        int displayH = (int)std::min((float)(halfW * imgH / imgW), size.y);
+        sParams.ImageDisplaySize = ImmVision::Size(halfW, displayH);
+        sParamsSobel.ImageDisplaySize = ImmVision::Size(halfW, displayH);
 
         ImmVision::Image("Original##intro", sImage, &sParams);
         ImGui::SameLine();
@@ -867,22 +869,44 @@ namespace IntroNodeEditor
 
 namespace IntroMarkdown
 {
-    static const char* kMarkdownSample = R"(## Quick Start Guide
+    static std::string MakeMarkdownSample()
+    {
+        std::string md = R"(## Quick Start Guide
 
-**ImGui Bundle** makes it easy to build
-_beautiful_ apps with rich documentation.
+> ***ImGui Bundle** makes it easy to build _beautiful_ apps with rich documentation.*
 
-Features:
-- Headers, **bold**, *italic*, ~~strikethrough~~
-- [Clickable links](https://github.com/pthom/imgui_bundle)
-- Syntax-highlighted code blocks
+**Features:**
+* Headers, **bold**, *italic*, ~~strikethrough~~
+* [Clickable links](https://github.com/pthom/imgui_bundle)
+* Syntax-highlighted code blocks
+* Quotes
+* Markdown images. Sized images with \<img src="..." width="..." height="..." /\>
+* Images downloaded from an url (Python & Emscripten)
+* Tables
 
+**Code blocks:**
 ```python
-import imgui_bundle
-imgui_md.render("# Hello!")
+from imgui_bundle import imgui, immapp
+immapp.run(lambda: imgui.text("Hello World!"))
 ```
+)";
 
-Tip: *You can resize the columns on the table below!*
+#ifdef __EMSCRIPTEN__
+        md += R"(
+
+**Images**
+
+The image below is downloaded from an url and resized:
+
+<img src="https://picsum.photos/id/1019/200/130" height="100" />
+
+)";
+#endif
+
+        md += R"(
+**Tables**
+
+The columns of the table below can be resized.
 
 | Library   | Domain          |
 |-----------|-----------------|
@@ -891,6 +915,8 @@ Tip: *You can resize the columns on the table below!*
 | ImmVision | Image analysis  |
 
 )";
+        return md;
+    }
 
     // Markdown editor with syntax highlighting
     static TextEditor* sMarkdownEditor = nullptr;
@@ -901,7 +927,7 @@ Tip: *You can resize the columns on the table below!*
         if (!sMarkdownEditorInitialized)
         {
             sMarkdownEditor = new TextEditor();
-            sMarkdownEditor->SetText(kMarkdownSample);
+            sMarkdownEditor->SetText(MakeMarkdownSample());
             // Use C++ language definition as a reasonable approximation for markdown
             // (it will highlight code blocks and some syntax)
             sMarkdownEditor->SetLanguage(TextEditor::Language::Cpp());
@@ -964,7 +990,9 @@ namespace IntroSourceCode
     void SlideGui(ImVec2 contentSize)
     {
         ImGui::BeginChild("##source_code", contentSize, false);
-        ShowPythonVsCppFile("demo_imgui_bundle_intro", 25);
+        auto codeFont = ImGuiMd::GetCodeFont();
+        int nbLines = std::max(5, (int)(contentSize.y / codeFont.size) - 3);
+        ShowPythonVsCppFile("demo_imgui_bundle_intro", nbLines);
         ImGui::EndChild();
     }
 } // namespace IntroSourceCode
@@ -1610,110 +1638,122 @@ bool IsSmallScreen()
     return ImGui::GetIO().DisplaySize.x < HelloImGui::EmSize() * 50.f;
 }
 
-void ShowBadges()
+static bool sMoreInfoExpanded = false;
+
+void RenderLinksRow()
 {
-    // Push badges to the bottom of the available window space
-    ImVec2 btnSize = HelloImGui::EmToVec2(0.f, 1.5f);
-    float badgesHeight = btnSize.y + ImGui::GetStyle().ItemSpacing.y * 2.f;
-    float availableY = ImGui::GetContentRegionAvail().y;
-    if (availableY > badgesHeight)
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + availableY - badgesHeight);
-
-    if (HelloImGui::ImageButtonFromAsset("images/badge_view_sources.png", btnSize))
-        ImmApp::BrowseToUrl("https://github.com/pthom/imgui_bundle");
-    ImGui::SameLine();
-    if (HelloImGui::ImageButtonFromAsset("images/badge_view_docs.png", btnSize))
-        ImmApp::BrowseToUrl("https://pthom.github.io/imgui_bundle");
+    struct LinkInfo { const char* label; const char* url; const char* tooltip; };
+    LinkInfo links[] = {
+        {"GitHub", "https://github.com/pthom/imgui_bundle", "Source code, issues, discussions"},
+        {"Documentation", "https://pthom.github.io/imgui_bundle/", "Full documentation for Dear ImGui Bundle"},
+        {"Python Playground", "https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/", "Live Python sandbox with demos - edit and run in your browser"},
+        {"Discord", "https://discord.gg/xkzpKMeYN3", "Join the community for questions, showcase, and discussion (new!)"},
+    };
+    for (int i = 0; i < IM_ARRAYSIZE(links); i++)
     {
-        ImGui::PushFont(nullptr, ImGui::GetFontSize() * 0.9f);
-        const char* versionText = "Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER;
-        ImVec2 textSize = ImGui::CalcTextSize(versionText);
-        ImVec2 screenPos = ImGui::GetCursorScreenPos();
-        ImVec2 avail = ImGui::GetContentRegionAvail();
-        ImGui::SetCursorScreenPos(ImVec2(screenPos.x + avail.x - textSize.x, screenPos.y + avail.y - textSize.y * 2.2f));
-        ImGui::TextDisabled("%s", versionText);
-
-        const char* text2 = "Dear ImGui Explorer";
-        ImVec2 text2Size = ImGui::CalcTextSize(text2);
-        ImGui::SetCursorScreenPos(ImVec2(screenPos.x + avail.x - text2Size.x, screenPos.y + avail.y - textSize.y));
-        ImGuiMd::RenderTextAsLink(text2, "https://pthom.github.io/imgui_explorer");
-        ImGui::PopFont();
+        if (i > 0)
+        {
+            ImGui::SameLine();
+            ImGui::TextDisabled("|");
+            ImGui::SameLine();
+        }
+        ImGuiMd::RenderTextAsLink(links[i].label, links[i].url);
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("%s", links[i].tooltip);
     }
+}
+
+void RenderMoreInfo()
+{
+    const char* arrow = sMoreInfoExpanded ? ICON_FA_COMPRESS : ICON_FA_EXPAND;
+    char btnLabel[64];
+    snprintf(btnLabel, sizeof(btnLabel), "More info & links %s", arrow);
+    if (ImGui::SmallButton(btnLabel))
+        sMoreInfoExpanded = !sMoreInfoExpanded;
+
+    if (!sMoreInfoExpanded)
+        return;
+
+    ImGuiMd::RenderUnindented(R"(
+Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
+)");
+
+    ImGuiMd::RenderUnindented("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://pthom.github.io/imgui_bundle/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.");
+    ImGui::SameLine();
+    ImGui::TextDisabled("Start your first app in 2\xe2\x80\x93""3 lines of code.");
+    if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+    {
+        ImGui::BeginTooltip();
+        ImGui::Dummy(HelloImGui::EmToVec2(80.f, 0.f));
+        ShowPythonVsCppCode(R"(
+            from imgui_bundle import imgui, immapp
+            immapp.run(lambda: imgui.text("Hello!"))
+)", R"(
+            #include "immapp/immapp.h"
+            #include "imgui.h"
+            int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
+)", 5);
+        ImGui::EndTooltip();
+    }
+
+    ImGui::Indent();
+
+    ImGuiMd::RenderUnindented(R"(
+**Links:**
+- [Interactive Explorer](https://traineq.org/imgui_bundle_explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
+- [Documentation](https://pthom.github.io/imgui_bundle/): Full documentation
+- [Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/): Live Python sandbox with ready-to-run demos - edit code, see results instantly
+- [GitHub](https://github.com/pthom/imgui_bundle): Source code, issues, discussions
+- [Discord](https://discord.gg/xkzpKMeYN3): Community (new!)
+
+**Other resources:**
+- [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer): Interactive manual for Dear ImGui, ImPlot, ImPlot3D
+- [Hello ImGui](https://pthom.github.io/hello_imgui): Cross-platform app framework
+- [Fiatlight](https://pthom.github.io/fiatlight_doc): Turn Python functions into interactive apps. A library built on top of the bundle, by the same author ([repo](https://github.com/pthom/fiatlight))
+)");
+
+    ImGui::Unindent();
 }
 
 void IntroTopSection()
 {
     bool small = IsSmallScreen();
 
-    // Title and description
+    // Title
     ImGuiMd::RenderUnindented("# Dear ImGui Bundle Explorer");
-    ImGui::TextDisabled("Explore Dear ImGui Bundle and its Libraries");
 
-    static bool showFull = false;
-    if (small)
-    {
-        if (!showFull)
-        {
-            if (ImGui::SmallButton("More..."))
-                showFull = true;
-        }
-        else
-        {
-            if (ImGui::SmallButton("Less"))
-                showFull = false;
-        }
-    }
-
-    auto renderIntroParagraph = []() {
-        ImGuiMd::RenderUnindented(R"(
-        Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
-        The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
-)");
-    };
-
-    auto renderStartQuickly = []() {
-        ImGui::TextDisabled("Start your first app in 2\xe2\x80\x93""3 lines of code.");
-        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
-        {
-            ImGui::BeginTooltip();
-            ImGui::Dummy(HelloImGui::EmToVec2(80.f, 0.f));
-            ShowPythonVsCppCode(R"(
-                from imgui_bundle import imgui, immapp
-                immapp.run(lambda: imgui.text("Hello!"))
-)", R"(
-                #include "immapp/immapp.h"
-                #include "imgui.h"
-                int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
-)", 5);
-            ImGui::EndTooltip();
-        }
-    };
-
-    if (!small || showFull)
-    {
-        renderIntroParagraph();
-        ImGui::SameLine();
-        renderStartQuickly();
-    }
-
-#ifdef HELLOIMGUI_WITH_TEST_ENGINE
-    IntroAutomations::Init();
-#endif
+    // Links row (always visible)
+    RenderLinksRow();
 
     if (!small)
     {
-        ImGui::NewLine();
-        ImGuiMd::RenderUnindented(R"(
-Each tab provides demos for the included libraries, along with their code. The "Demo Apps" tab provides sample starter apps from which you can take inspiration.
-)");
-
+        // Description
+        ImGui::Spacing();
+        ImGui::TextWrapped("Explore Dear ImGui Bundle and its libraries. Each tab shows demos with browsable C++/Python source.");
+        ImGui::SameLine();
+        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
+        ImGui::Text("Try the \"Demo Apps\" tab for starter projects");
+        ImGui::SameLine();
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
+        IntroAutomations::Init();
         if (HelloImGui::GetRunnerParams()->useImGuiTestEngine)
         {
             ImGui::SameLine();
-            if (ImGui::SmallButton("?"))
+            char showMeLabel[64];
+            snprintf(showMeLabel, sizeof(showMeLabel), "Show me %s", ICON_FA_EYE);
+            if (ImGui::SmallButton(showMeLabel))
                 ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), IntroAutomations::showImmediateApps);
         }
+#endif
+        ImGui::PopStyleColor();
+
+        // Expandable section
+        RenderMoreInfo();
+    }
+    else
+    {
+#ifdef HELLOIMGUI_WITH_TEST_ENGINE
+        IntroAutomations::Init();
 #endif
     }
 }
@@ -1824,18 +1864,10 @@ void IntroMiniDemos()
     ImDrawList* dl = ImGui::GetWindowDrawList();
     ImVec2 windowSize = ImGui::GetWindowSize();
 
-    // --- Carousel zone: 4:3 aspect ratio, centered ---
-    float carouselHeight;
-    if (IsSmallScreen())
-    {
-        carouselHeight = windowSize.y * 0.55f;
-        if (carouselHeight < em * 12.f) carouselHeight = em * 12.f;
-    }
-    else
-    {
-        carouselHeight = windowSize.y * 0.65f;
-        if (carouselHeight < em * 15.f) carouselHeight = em * 15.f;
-    }
+    // --- Carousel zone: use available height, maintain 4:3 aspect ratio ---
+    float availHeight = ImGui::GetContentRegionAvail().y;
+    float minHeight = IsSmallScreen() ? em * 12.f : em * 15.f;
+    float carouselHeight = std::max(availHeight, minHeight);
     float carouselWidth = carouselHeight * (4.f / 3.f);
     float availWidth = ImGui::GetContentRegionAvail().x;
     if (carouselWidth > availWidth) carouselWidth = availWidth;
@@ -2019,10 +2051,6 @@ void demo_imgui_bundle_intro()
     ImGui::Separator();
     ImGuiMd::Render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*");
     IntroMiniDemos();
-
-    ImGui::NewLine();
-    ImGui::Separator();
-    ShowBadges();
 }
 
 

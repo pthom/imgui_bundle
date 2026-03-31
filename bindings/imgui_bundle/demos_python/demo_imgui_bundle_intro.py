@@ -669,8 +669,11 @@ if HAS_IMMVISION and HAS_OPENCV and HAS_NUMPY:
             _immvision_params_sobel.zoom_pan_matrix = _immvision_params.zoom_pan_matrix
 
         half_w = int(size.x * 0.5 - hello_imgui.em_size(1.5))
-        _immvision_params.image_display_size = (half_w, 0)
-        _immvision_params_sobel.image_display_size = (half_w, 0)
+        # Adapt height to available space while preserving aspect ratio
+        img_h, img_w = _immvision_image.shape[:2]
+        display_h = int(min(half_w * img_h / img_w, size.y))
+        _immvision_params.image_display_size = (half_w, display_h)
+        _immvision_params_sobel.image_display_size = (half_w, display_h)
 
         immvision.image("Original##intro", _immvision_image, _immvision_params)
         imgui.same_line()
@@ -756,26 +759,39 @@ def _node_editor_slide_gui(content_size: ImVec2):
 _MARKDOWN_SAMPLE = """\
 ## Quick Start Guide
 
-**ImGui Bundle** makes it easy to build
-_beautiful_ apps with rich documentation.
+> ***ImGui Bundle** makes it easy to build _beautiful_ apps with rich documentation.*
 
-Features:
-- Headers, **bold**, *italic*, ~~strikethrough~~
-- [Clickable links](https://github.com/pthom/imgui_bundle)
-- Syntax-highlighted code blocks
+**Features:**
+* Headers, **bold**, *italic*, ~~strikethrough~~
+* [Clickable links](https://github.com/pthom/imgui_bundle)
+* Syntax-highlighted code blocks
+* Quotes
+* Markdown images. Sized images with \<img src="..." width="..." height="..." /\>
+* Images downloaded from an url (Python & Emscripten)
+* Tables
 
+**Code blocks:**
 ```python
-import imgui_bundle
-imgui_md.render("# Hello!")
+from imgui_bundle import imgui, immapp
+immapp.run(lambda: imgui.text("Hello World!"))
 ```
 
-Tip: *You can resize the columns on the table below!*
+**Images**
+
+The image below is downloaded from an url and resized:
+
+<img src="https://picsum.photos/id/1019/200/130" height="100" />
+
+**Tables**
+
+The columns of the table below can be resized.
 
 | Library   | Domain          |
 |-----------|-----------------|
 | ImPlot    | 2D plots        |
 | ImPlot3D  | 3D plots        |
 | ImmVision | Image analysis  |
+
 """
 
 # Markdown editor with syntax highlighting
@@ -844,7 +860,9 @@ def _markdown_slide_gui(content_size: ImVec2):
 
 def _source_code_slide_gui(content_size: ImVec2):
     imgui.begin_child("##source_code", content_size, False)
-    demo_utils.show_python_vs_cpp_file("demo_imgui_bundle_intro", 25)
+    code_font = imgui_md.get_code_font()
+    nb_lines = max(5, int(content_size.y / code_font.size) - 3)
+    demo_utils.show_python_vs_cpp_file("demo_imgui_bundle_intro", nb_lines)
     imgui.end_child()
 
 
@@ -1442,100 +1460,113 @@ def _shader_slide_wrapper(cs: ImVec2):
 # Top section
 # ============================================================================
 
-def _show_badges():
-    btn_size = hello_imgui.em_to_vec2(0.0, 1.5)
-    badges_height = btn_size.y + imgui.get_style().item_spacing.y * 2.0
-    available_y = imgui.get_content_region_avail().y
-    if available_y > badges_height:
-        imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + available_y - badges_height)
 
-    if hello_imgui.image_button_from_asset("images/badge_view_sources.png", btn_size):
-        webbrowser.open("https://github.com/pthom/imgui_bundle")
+
+_more_info_expanded = False
+
+
+def _render_links_row():
+    """Render the main links row: GitHub | Documentation | Playground | Discord"""
+    links = [
+        ("GitHub", "https://github.com/pthom/imgui_bundle", "Source code, issues, discussions"),
+        ("Documentation", "https://pthom.github.io/imgui_bundle/", "Full documentation for Dear ImGui Bundle"),
+        ("Python Playground", "https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/", "Live Python sandbox with demos - edit and run in your browser"),
+        ("Discord", "https://discord.gg/xkzpKMeYN3", "Join the community for questions, showcase, and discussion (new!)"),
+    ]
+    for i, (label, url, tooltip) in enumerate(links):
+        if i > 0:
+            imgui.same_line()
+            imgui.text_disabled("|")
+            imgui.same_line()
+        imgui_md.render_text_as_link(label, url)
+        if imgui.is_item_hovered():
+            imgui.set_tooltip(tooltip)
+
+
+def _render_more_info():
+    """Render the expandable 'More info & links' section."""
+    global _more_info_expanded
+    arrow = icons_fontawesome_4.ICON_FA_COMPRESS if _more_info_expanded else icons_fontawesome_4.ICON_FA_EXPAND
+    if imgui.small_button(f"More info & links {arrow}"):
+        _more_info_expanded = not _more_info_expanded
+
+    if not _more_info_expanded:
+        return
+
+    imgui_md.render_unindented( """
+    Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
+    """)
+
+    imgui_md.render_unindented("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://pthom.github.io/imgui_bundle/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.")
     imgui.same_line()
-    if hello_imgui.image_button_from_asset("images/badge_view_docs.png", btn_size):
-        webbrowser.open("https://pthom.github.io/imgui_bundle")
+    imgui.text_disabled("Start your first app in 2–3 lines of code.")
+    if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
+        imgui.begin_tooltip()
+        imgui.dummy(hello_imgui.em_to_vec2(80.0, 0.0))
+        demo_utils.show_python_vs_cpp_code(
+            """
+            from imgui_bundle import imgui, immapp
+            immapp.run(lambda: imgui.text("Hello!"))
+            """,
+            """
+            #include "immapp/immapp.h"
+            #include "imgui.h"
+            int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
+            """,
+            5,
+        )
+        imgui.end_tooltip()
 
-    from imgui_bundle import __version__, __build_number__
-    version_text = f"Dear ImGui Bundle Explorer - v{__version__} build {__build_number__}"
-    imgui.push_font(None, imgui.get_font_size() * 0.9)
-    text_size = imgui.calc_text_size(version_text)
-    screen_pos = imgui.get_cursor_screen_pos()
-    avail = imgui.get_content_region_avail()
-    imgui.set_cursor_screen_pos(ImVec2(screen_pos.x + avail.x - text_size.x, screen_pos.y + avail.y - text_size.y * 2.2))
-    imgui.text_disabled(version_text)
-    text2 = "Dear ImGui Explorer"
-    text2_size = imgui.calc_text_size(text2)
-    imgui.set_cursor_screen_pos(ImVec2(screen_pos.x + avail.x - text2_size.x, screen_pos.y + avail.y - text_size.y))
-    imgui_md.render_text_as_link("Dear ImGui Explorer", "https://pthom.github.io/imgui_explorer")
-    imgui.pop_font()
+    imgui.indent()
+
+    imgui_md.render_unindented("""
+    **Links:**
+    - [Interactive Explorer](https://traineq.org/imgui_bundle_explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
+    - [Documentation](https://pthom.github.io/imgui_bundle/): Full documentation
+    - [Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/): Live Python sandbox with ready-to-run demos - edit code, see results instantly
+    - [GitHub](https://github.com/pthom/imgui_bundle): Source code, issues, discussions
+    - [Discord](https://discord.gg/xkzpKMeYN3): Community (new!)
+
+    **Other resources:**
+    - [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer): Interactive manual for Dear ImGui, ImPlot, ImPlot3D
+    - [Hello ImGui](https://pthom.github.io/hello_imgui): Cross-platform app framework
+    - [Fiatlight](https://pthom.github.io/fiatlight_doc): Turn Python functions into interactive apps. A library built on top of the bundle, by the same author ([repo](https://github.com/pthom/fiatlight))
+    """)
+
+    imgui.unindent()
 
 
 def _intro_top_section():
-    static = _intro_top_section
-
     small = is_small_screen()
 
-    def render_intro_paragraph():
-        imgui_md.render_unindented( """
-        Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
-        The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://pthom.github.io/imgui_bundle/#code-that-reads-like-a-book), both for humans and for AI tools.
-        """)
-
-    def render_start_quickly():
-        imgui.text_disabled("Start your first app in 2–3 lines of code.")
-
-        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
-            imgui.begin_tooltip()
-            imgui.dummy(hello_imgui.em_to_vec2(80.0, 0.0))
-            demo_utils.show_python_vs_cpp_code(
-                """
-                from imgui_bundle import imgui, immapp
-                immapp.run(lambda: imgui.text("Hello!"))
-                """,
-                """
-                #include "immapp/immapp.h"
-                #include "imgui.h"
-                int main() { ImmApp::Run([] { ImGui::Text("Hello"); }); }
-                """,
-                5,
-            )
-            imgui.end_tooltip()
-
-    # Title and description
+    # Title
     imgui_md.render_unindented("# Dear ImGui Bundle Explorer")
-    imgui.text_disabled("Explore Dear ImGui Bundle and its Libraries")
 
-    if not hasattr(static, "show_full"):
-        static.show_full = False
-    if small:
-        if not static.show_full:
-            if imgui.small_button("More..."):
-                static.show_full = True
-        else:
-            if imgui.small_button("Less"):
-                static.show_full = False
-
-    if not small or static.show_full:
-        render_intro_paragraph()
-        imgui.same_line()
-        render_start_quickly()
-
-
-    _IntroAutomations.init()
+    # Links row (always visible)
+    _render_links_row()
 
     if not small:
-        imgui.new_line()
-        imgui_md.render_unindented("""
-Each tab provides demos for the included libraries, along with their code. The "Demo Apps" tab provides sample starter apps from which you can take inspiration.
-""")
-
+        # Description
+        imgui.spacing()
+        imgui.text_wrapped('Explore Dear ImGui Bundle and its libraries. Each tab shows demos with browsable C++/Python source.')
+        imgui.same_line()
+        imgui.push_style_color(imgui.Col_.text, ImVec4(0.7, 0.7, 0.7, 1.0))
+        imgui.text('Try the "Demo Apps" tab for starter projects')
+        imgui.same_line()
+        _IntroAutomations.init()
         if hello_imgui.get_runner_params().use_imgui_test_engine:
             imgui.same_line()
-            if imgui.small_button("?"):
+            if imgui.small_button("Show me " + icons_fontawesome_4.ICON_FA_EYE):
                 imgui.test_engine.queue_test(
                     hello_imgui.get_imgui_test_engine(),
                     _IntroAutomations.show_immediate_apps,
                 )
+        imgui.pop_style_color()
+
+        # Expandable section
+        _render_more_info()
+    else:
+        _IntroAutomations.init()
 
 
 # ============================================================================
@@ -1652,15 +1683,10 @@ def _intro_mini_demos():
     dl = imgui.get_window_draw_list()
     window_size = imgui.get_window_size()
 
-    # --- Carousel zone: 4:3 aspect ratio, centered ---
-    if is_small_screen():
-        carousel_height = window_size.y * 0.65
-        if carousel_height < em * 12.0:
-            carousel_height = em * 12.0
-    else:
-        carousel_height = window_size.y * 0.65
-        if carousel_height < em * 15.0:
-            carousel_height = em * 15.0
+    # --- Carousel zone: use available height, maintain 4:3 aspect ratio ---
+    avail_height = imgui.get_content_region_avail().y
+    min_height = em * 12.0 if is_small_screen() else em * 15.0
+    carousel_height = max(avail_height, min_height)
     carousel_width = carousel_height * (4.0 / 3.0)
     avail_width = imgui.get_content_region_avail().x
     if carousel_width > avail_width:
@@ -1804,10 +1830,6 @@ def demo_gui():
     imgui.separator()
     imgui_md.render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*")
     _intro_mini_demos()
-
-    imgui.new_line()
-    imgui.separator()
-    _show_badges()
 
 
 if __name__ == "__main__":

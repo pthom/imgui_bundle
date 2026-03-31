@@ -186,12 +186,16 @@ int main(int, char **)
         nbFrames += 1;
     };
 
-    auto showEditFontScaleInStatusBar = []()
+    auto showStatusBar = []()
     {
+        ImGui::Text("Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER);
+        ImGui::SameLine();
+        ImGuiMd::RenderTextAsLink("Dear ImGui Explorer", "https://pthom.github.io/imgui_explorer");
+        ImGui::SameLine();
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 10.f);
         ImGui::SliderFloat("Font scale", & ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
     };
-    runnerParams.callbacks.ShowStatus = showEditFontScaleInStatusBar;
+    runnerParams.callbacks.ShowStatus = showStatusBar;
 
     runnerParams.callbacks.ShowGui = showGui;
     runnerParams.useImGuiTestEngine = true;
