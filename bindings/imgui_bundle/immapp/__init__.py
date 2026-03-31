@@ -111,7 +111,10 @@ def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
     tweaked_theme.theme = hello_imgui.ImGuiTheme_.gray_variations
     tweaked_theme.tweaks.rounding = 0.0
     hello_imgui.push_tweaked_theme(tweaked_theme)
-    imgui.begin_child("##doc", hello_imgui.em_to_vec2(0, height_em),
+    size = hello_imgui.em_to_vec2(0, height_em)
+    # Note: with ResizeY, ImGui uses the size only on the very first frame
+    # (it saves/restores the resized height in the ini file after that)
+    imgui.begin_child("##doc", size,
                       imgui.ChildFlags_.borders | imgui.ChildFlags_.resize_y)
     imgui_md.render_unindented(doc)
     imgui.end_child()
