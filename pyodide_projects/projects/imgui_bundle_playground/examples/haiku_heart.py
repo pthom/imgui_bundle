@@ -1,9 +1,24 @@
-"""An animated plot of a heart shape
-using ImPlot in Dear ImGui Bundle."""
+"""Animated plot using ImPlot
+=============================
+
+> A minimal animated plot using ImPlot (available in imgui_bundle).
+
+This example draws a parametric heart curve and animates it with a pulse.
+
+**Try this:**
+- Modify the heart shape by editing `state.x` / `state.y`
+- Reduce the number of curves: `range(10)` → `range(5)`
+- Change the animation: tweak `k = 0.8 + ...`
+
+**Key idea:**
+State is stored as function attributes (`show_heart.state` pattern), avoiding globals.
+
+*Click **Run** after each change*
+"""
 
 import time
 import numpy as np
-from imgui_bundle import implot, imgui, immapp, hello_imgui, imgui_toggle, imgui_knobs
+from imgui_bundle import implot, imgui, immapp, hello_imgui, imgui_toggle, imgui_knobs, imgui_md
 
 
 def show_heart():
@@ -25,8 +40,10 @@ def show_heart():
     k = 0.8 + 0.1 * np.cos(state.phase)
     state.t0 = t
 
+    imgui_md.render(__doc__)
+
     implot.begin_plot("Heart", immapp.em_to_vec2(21, 21))
-    for i in range(5):
+    for i in range(10):
         implot.plot_line("", state.x * k, state.y * k * (1 - 0.02 * i))
     implot.end_plot()
 
@@ -37,4 +54,9 @@ def show_heart():
 
 
 if __name__ == "__main__":
-    immapp.run(show_heart, window_size=(350, 450), window_title="Hello!", with_implot=True, fps_idle=0)
+    immapp.run(show_heart,
+               window_size=(800, 700),
+               window_title="Hello!",
+               with_implot=True,
+               with_markdown=True,
+               fps_idle=0)

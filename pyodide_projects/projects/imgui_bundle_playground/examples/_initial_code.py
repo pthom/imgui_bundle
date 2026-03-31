@@ -12,10 +12,10 @@
 Welcome to **Dear ImGui Bundle's Playground**, where you can run and test ImGui applications developed with Python directly in your browser!
 
 **See also:**
-- [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer/) - complete demo of all the libraries
-- [Documentation](https://pthom.github.io/imgui_bundle/)
-- [GitHub](https://github.com/pthom/imgui_bundle)
-- [Minimal HTML pyodide example](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html) - full app in 80 lines, [Source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
+- [Documentation](https://pthom.github.io/imgui_bundle/): the main documentation for Dear ImGui bundle
+- [Dear ImGui Bundle Explorer](https://traineq.org/imgui_bundle_explorer/): the main demo and tutorial (much more complete than this playground)
+- [GitHub](https://github.com/pthom/imgui_bundle): source code
+- [Minimal HTML pyodide example](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html): a full pyodide app in 80 lines, [Source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
 
 ---
 ### python web apps, the python way

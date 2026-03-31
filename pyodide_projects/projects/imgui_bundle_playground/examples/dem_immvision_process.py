@@ -1,8 +1,16 @@
-"""Demonstrates the use of ImmVision
-to display and analyze images.
+"""Using ImmVision to analyze images
+====================================
 
-Based on a demonstration of the Sobel filter.
+This example shows a example of image processing (sobel filter),
+where you can adjust the params and see their effect in real time.
+
+> * Pan and zoom the image with the mouse and the mouse wheel
+> * Change the filter parameter (blur, orientation, etc)
+> * Apply Colormaps to the filtered image in the options tab.
+
+Each time you run, you'll get a different image from picsum.photos
 """
+
 import numpy as np
 from typing import Any
 from numpy.typing import NDArray
@@ -149,16 +157,8 @@ def demo_gui():
     if static.app_state is None:
         static.app_state = AppState(_loaded_image)
 
-    imgui_md.render_unindented(
-        """
-        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
-        
-        * Pan and zoom the image with the mouse and the mouse wheel
-        * Apply Colormaps to the filtered image in the options tab.
-        
-        (Each time you run, you'll get a different image from picsum.photos)        
-        """
-    )
+    imgui_md.render_unindented(__doc__)
+    imgui.new_line()
     imgui.separator()
 
     changed = gui_sobel_params(static.app_state.sobel_params)
@@ -180,4 +180,3 @@ def demo_gui():
 # The main entry point will run our GUI function
 immvision.use_rgb_color_order()
 immapp.run(demo_gui, with_markdown=True)
-
