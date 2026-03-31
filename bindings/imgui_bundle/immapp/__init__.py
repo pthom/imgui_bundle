@@ -96,3 +96,26 @@ def run_nb(*args, **kwargs):
     return run(*args, **kwargs)
 
 __all__.append("run_nb")
+
+
+def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
+    """Render a markdown documentation panel with a light theme, inside a resizable child window.
+    Useful for showing docstrings or documentation at the top of a demo.
+
+    Args:
+        doc: markdown string to render (will be unindented automatically)
+        height_em: height of the panel in em units
+    """
+    from imgui_bundle import imgui, imgui_md, hello_imgui
+    tweaked_theme = hello_imgui.ImGuiTweakedTheme()
+    tweaked_theme.theme = hello_imgui.ImGuiTheme_.gray_variations
+    tweaked_theme.tweaks.rounding = 0.0
+    hello_imgui.push_tweaked_theme(tweaked_theme)
+    imgui.begin_child("##doc", hello_imgui.em_to_vec2(0, height_em),
+                      imgui.ChildFlags_.borders | imgui.ChildFlags_.resize_y)
+    imgui_md.render_unindented(doc)
+    imgui.end_child()
+    imgui.new_line()
+    hello_imgui.pop_tweaked_theme()
+
+__all__.append("render_markdown_doc_panel")

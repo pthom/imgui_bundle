@@ -34,3 +34,14 @@ from imgui_bundle.hello_imgui import (
 from .run_async_overloads import run_async as run_async
 # Re-export nb module for notebook convenience API
 from . import nb as nb
+
+
+def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
+    """Render a markdown documentation panel with a light theme, inside a resizable child window.
+    Useful for showing docstrings or documentation at the top of a demo.
+
+    Args:
+        doc: markdown string to render (will be unindented automatically)
+        height_em: height of the panel in em units
+    """
+    ...
