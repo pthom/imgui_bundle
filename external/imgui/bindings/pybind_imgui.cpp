@@ -796,12 +796,6 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::arg("col"), nb::arg("alpha_mul") = 1.0f,
         "retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList");
 
-    m.def("get_style_color_vec4",
-        ImGui::GetStyleColorVec4,
-        nb::arg("idx"),
-        "retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.",
-        nb::rv_policy::reference);
-
     m.def("get_cursor_screen_pos",
         ImGui::GetCursorScreenPos, "cursor position, absolute coordinates. THIS IS YOUR BEST FRIEND (prefer using this rather than GetCursorPos(), also more useful to work with ImDrawList API).");
 
@@ -3042,38 +3036,6 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("color_convert_float4_to_u32",
         ImGui::ColorConvertFloat4ToU32, nb::arg("in_"));
-
-    m.def("color_convert_rgb_to_hsv",
-        [](float r, float g, float b, float out_h, float out_s, float out_v) -> std::tuple<float, float, float>
-        {
-            auto ColorConvertRGBtoHSV_adapt_modifiable_immutable_to_return = [](float r, float g, float b, float out_h, float out_s, float out_v) -> std::tuple<float, float, float>
-            {
-                float & out_h_adapt_modifiable = out_h;
-                float & out_s_adapt_modifiable = out_s;
-                float & out_v_adapt_modifiable = out_v;
-
-                ImGui::ColorConvertRGBtoHSV(r, g, b, out_h_adapt_modifiable, out_s_adapt_modifiable, out_v_adapt_modifiable);
-                return std::make_tuple(out_h, out_s, out_v);
-            };
-
-            return ColorConvertRGBtoHSV_adapt_modifiable_immutable_to_return(r, g, b, out_h, out_s, out_v);
-        },     nb::arg("r"), nb::arg("g"), nb::arg("b"), nb::arg("out_h"), nb::arg("out_s"), nb::arg("out_v"));
-
-    m.def("color_convert_hsv_to_rgb",
-        [](float h, float s, float v, float out_r, float out_g, float out_b) -> std::tuple<float, float, float>
-        {
-            auto ColorConvertHSVtoRGB_adapt_modifiable_immutable_to_return = [](float h, float s, float v, float out_r, float out_g, float out_b) -> std::tuple<float, float, float>
-            {
-                float & out_r_adapt_modifiable = out_r;
-                float & out_g_adapt_modifiable = out_g;
-                float & out_b_adapt_modifiable = out_b;
-
-                ImGui::ColorConvertHSVtoRGB(h, s, v, out_r_adapt_modifiable, out_g_adapt_modifiable, out_b_adapt_modifiable);
-                return std::make_tuple(out_r, out_g, out_b);
-            };
-
-            return ColorConvertHSVtoRGB_adapt_modifiable_immutable_to_return(h, s, v, out_r, out_g, out_b);
-        },     nb::arg("h"), nb::arg("s"), nb::arg("v"), nb::arg("out_r"), nb::arg("out_g"), nb::arg("out_b"));
 
     m.def("is_key_down",
         nb::overload_cast<ImGuiKey>(ImGui::IsKeyDown),
@@ -8095,6 +8057,25 @@ void py_init_module_imgui_main(nb::module_& m)
     // #endif
     //
     // #endif
+
+    m.def("get_style_color_vec4",
+        [](ImGuiCol idx) -> ImVec4 { return ImGui::GetStyleColorVec4(idx); },
+        nb::arg("idx"),
+        "retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.");
+    m.def("color_convert_rgb_to_hsv",
+        [](float r, float g, float b) -> std::tuple<float, float, float> {
+            float h, s, v;
+            ImGui::ColorConvertRGBtoHSV(r, g, b, h, s, v);
+            return std::make_tuple(h, s, v);
+        }, nb::arg("r"), nb::arg("g"), nb::arg("b"),
+        "Convert rgb floats ([0-1],[0-1],[0-1]) to hsv floats ([0-1],[0-1],[0-1])");
+    m.def("color_convert_hsv_to_rgb",
+        [](float h, float s, float v) -> std::tuple<float, float, float> {
+            float r, g, b;
+            ImGui::ColorConvertHSVtoRGB(h, s, v, r, g, b);
+            return std::make_tuple(r, g, b);
+        }, nb::arg("h"), nb::arg("s"), nb::arg("v"),
+        "Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1])");
     ////////////////////    </generated_from:imgui.h>    ////////////////////
 
 

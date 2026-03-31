@@ -1204,11 +1204,6 @@ def get_color_u32(col: ImU32, alpha_mul: float = 1.0) -> ImU32:
     """retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList"""
     pass
 
-# IMGUI_API const ImVec4& GetStyleColorVec4(ImGuiCol idx);                                    /* original C++ signature */
-def get_style_color_vec4(idx: Col) -> ImVec4:
-    """retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in."""
-    pass
-
 # Layout cursor positioning
 # - By "cursor" we mean the current output position.
 # - The typical widget behavior is to output themselves at the current cursor position, then move the cursor one line down.
@@ -3003,18 +2998,6 @@ def color_convert_u32_to_float4(in_: ImU32) -> ImVec4:
 
 # IMGUI_API ImU32         ColorConvertFloat4ToU32(const ImVec4& in);    /* original C++ signature */
 def color_convert_float4_to_u32(in_: ImVec4Like) -> ImU32:
-    pass
-
-# IMGUI_API void          ColorConvertRGBtoHSV(float r, float g, float b, float& out_h, float& out_s, float& out_v);    /* original C++ signature */
-def color_convert_rgb_to_hsv(
-    r: float, g: float, b: float, out_h: float, out_s: float, out_v: float
-) -> Tuple[float, float, float]:
-    pass
-
-# IMGUI_API void          ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float& out_g, float& out_b);    /* original C++ signature */
-def color_convert_hsv_to_rgb(
-    h: float, s: float, v: float, out_r: float, out_g: float, out_b: float
-) -> Tuple[float, float, float]:
     pass
 
 # Inputs Utilities: Raw Keyboard/Mouse/Gamepad Access
@@ -12161,6 +12144,20 @@ class PlatformImeData:
 #
 
 # #endif
+
+def get_style_color_vec4(idx: Col) -> ImVec4:
+    """retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.
+    (Note: returns a copy, not a reference to the internal style color.)"""
+    ...
+
+def color_convert_rgb_to_hsv(r: float, g: float, b: float) -> Tuple[float, float, float]:
+    """Convert rgb floats ([0-1],[0-1],[0-1]) to hsv floats ([0-1],[0-1],[0-1])"""
+    ...
+
+def color_convert_hsv_to_rgb(h: float, s: float, v: float) -> Tuple[float, float, float]:
+    """Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1])"""
+    ...
+
 ####################    </generated_from:imgui.h>    ####################
 
 ####################    <generated_from:imgui_stacklayout.h>    ####################
