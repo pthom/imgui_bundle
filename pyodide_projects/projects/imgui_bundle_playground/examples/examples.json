@@ -30,8 +30,12 @@
         "packages": ["opencv-python"]
       },
       {
-        "label": "Layout & Docking",
+        "label": "Resizable Layouts",
         "filename": "60_layout.py"
+      },
+      {
+        "label": "Docking Layouts",
+        "filename": "65_docking.py"
       },
       {
         "label": "Fiatlight: Image Pipeline",
