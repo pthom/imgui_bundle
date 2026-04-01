@@ -17,6 +17,10 @@
         "filename": "30_implot3d_butterfly.py"
       },
       {
+        "label": "Minimal HTML Example",
+        "filename": "35_minimal_example,.py"
+      },
+      {
         "label": "Themes",
         "filename": "40_themes.py"
       },
