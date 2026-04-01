@@ -16,10 +16,10 @@ Stop fighting GUI frameworks. Start building.
 
 
 **See also:**
-* [Interactive Explorer](https://traineq.org/imgui_bundle_explorer/) - Interactive manual - all libraries, live demos, browsable source
-* [Documentation](https://pthom.github.io/imgui_bundle/) - [Repository](https://github.com/pthom/imgui_bundle)
-* [Minimal HTML example](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html) - full app in 80 lines, [Source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
-* [Discord](https://discord.gg/xkzpKMeYN3) - join the community (new!)
+* [Interactive Explorer](https://traineq.org/imgui_bundle_explorer/): Interactive manual - all libraries, live demos (even more than here!), browsable source
+* [Documentation](https://pthom.github.io/imgui_bundle/): Official doc - [Repository](https://github.com/pthom/imgui_bundle): Source code
+* [DeepWiki](https://deepwiki.com/pthom/imgui_bundle): AI-powered Q&A about the framework
+* [Discord](https://discord.gg/xkzpKMeYN3): join the community (new!)
 
 ---
 ### python web apps, the python way

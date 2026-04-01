@@ -1647,7 +1647,6 @@ void RenderLinksRow()
         {"GitHub", "https://github.com/pthom/imgui_bundle", "Source code, issues, discussions"},
         {"Documentation", "https://pthom.github.io/imgui_bundle/", "Full documentation for Dear ImGui Bundle"},
         {"Python Playground", "https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/", "Live Python sandbox with demos - edit and run in your browser"},
-        {"Discord", "https://discord.gg/xkzpKMeYN3", "Join the community for questions, showcase, and discussion (new!)"},
     };
     for (int i = 0; i < IM_ARRAYSIZE(links); i++)
     {
@@ -1699,18 +1698,20 @@ Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bund
     ImGui::Indent();
 
     ImGuiMd::RenderUnindented(R"(
-**Links:**
-- [Interactive Explorer](https://traineq.org/imgui_bundle_explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
-- [Documentation](https://pthom.github.io/imgui_bundle/): Full documentation
-- [Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/): Live Python sandbox with ready-to-run demos - edit code, see results instantly
-- [GitHub](https://github.com/pthom/imgui_bundle): Source code, issues, discussions
-- [Discord](https://discord.gg/xkzpKMeYN3): Community (new!)
+    **Links:**
+    - [Interactive Explorer](https://traineq.org/imgui_bundle_explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
+    - [Documentation](https://pthom.github.io/imgui_bundle/): Full documentation
+    - [Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/): Live Python sandbox with ready-to-run demos - edit code, see results instantly
+    - [GitHub](https://github.com/pthom/imgui_bundle): Source code, issues, discussions
+    - [Discord](https://discord.gg/xkzpKMeYN3): Community (new!)
+    - [DeepWiki](https://deepwiki.com/pthom/imgui_bundle): AI-powered Q&A about the framework
 
-**Other resources:**
-- [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer): Interactive manual for Dear ImGui, ImPlot, ImPlot3D
-- [Hello ImGui](https://pthom.github.io/hello_imgui): Cross-platform app framework
-- [Fiatlight](https://pthom.github.io/fiatlight_doc): Turn Python functions into interactive apps. A library built on top of the bundle, by the same author ([repo](https://github.com/pthom/fiatlight))
-)");
+
+    **Other resources:**
+    - [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer): Interactive manual for Dear ImGui, ImPlot, ImPlot3D
+    - [Hello ImGui](https://pthom.github.io/hello_imgui): Cross-platform app framework
+    - [Fiatlight](https://pthom.github.io/fiatlight_doc): Turn Python functions into interactive apps. A library built on top of the bundle, by the same author ([repo](https://github.com/pthom/fiatlight))
+    )");
 
     ImGui::Unindent();
 }
