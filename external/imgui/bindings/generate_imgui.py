@@ -39,6 +39,8 @@ def autogenerate_imgui() -> None:
 
     # GetStyleColorVec4 returns const ImVec4& (reference into the style array).
     # With rv_policy::reference, Python can mutate the style directly without PushStyleColor.
+    # Exclude only for imgui (not shared options, since ImPlot's version returns by value).
+    options_imgui.fn_exclude_by_name__regex += r"|^GetStyleColorVec4$"
     # Custom binding returns a copy instead.
     options_imgui.custom_bindings.add_custom_bindings_to_main_module(
         stub_code='''

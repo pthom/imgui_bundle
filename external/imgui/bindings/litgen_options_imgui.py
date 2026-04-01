@@ -365,10 +365,6 @@ def litgen_options_imgui(
             r"^AcceptDragDropPayload$",
             r"^GetDragDropPayload$",
             r"^GetKeyChordName$",
-            # GetStyleColorVec4 returns const ImVec4& (reference into style array).
-            # With rv_policy::reference, Python can mutate the style directly without PushStyleColor.
-            # Excluded here; custom binding added in generate_imgui.py (main imgui only).
-            r"^GetStyleColorVec4$",
             # ColorConvertRGBtoHSV / ColorConvertHSVtoRGB: the out_ params should not be
             # required as inputs. Custom bindings in generate_imgui.py take only 3 inputs.
             r"^ColorConvertRGBtoHSV$",
