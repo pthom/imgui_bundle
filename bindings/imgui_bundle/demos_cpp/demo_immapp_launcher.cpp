@@ -10,8 +10,7 @@ const std::string DOC = R"(
 
 This section presents various demo applications that illustrate how to use Dear ImGui Bundle for various use cases. Click on the "View Code" buttons to view the apps' code, and click on "Run" to run them. Scroll with the mouse wheel in the table below for more demos.
 
-Note: [Hello ImGui](https://pthom.github.io/hello_imgui) is a library based on ImGui that enables to easily create applications with ImGui.
-[ImApp](https://github.com/pthom/imgui_bundle/blob/main/external/immapp/immapp/runner.h) ("Immediate App") is a thin extension of HelloImGui that enables to easily use addons that require additional setup at startup.
+> **Note:**  Hello ImGui and ImmApp handle window creation, rendering, and app lifecycle - see [Documentation](https://pthom.github.io/imgui_bundle/core-libs/hello-imgui-immapp/)
 )";
 
 

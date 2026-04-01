@@ -1,4 +1,4 @@
-# App Runners
+# Hello ImGui - ImmApp
 
 **Hello ImGui** and **ImmApp** are the two main ways to create applications with ImGui Bundle.
 
@@ -12,22 +12,8 @@ These runners enable you to create powerful ImGui applications with minimal boil
 * In Python, you may also choose to use [pure Python backends](../python/pure_python_backend.md) for full control over windowing and rendering.
 :::
 
----
-
-## Interactive Manual
-
-The best way to learn is through the **[Interactive Manual](https://traineq.org/imgui_bundle_explorer)**. The "Demo Apps" tab lets you explore demos with their source code in Python and C++.
-
-````{card}
-:link: https://traineq.org/imgui_bundle_explorer
-```{figure} ../images/demo_immapp_apps.webp
-:width: 500
-ImGui Bundle Interactive Manual - Explore the "Demo Apps" tab
-```
-````
-
-:::{tip}
-The source code for all demos is extensively documented and can serve as practical documentation.
+:::{note}
+You may also choose to bypass these runners: use [pure python backends](../python/pure_python_backend.md), or integrate Dear ImGui directly in your C++ code. 
 :::
 
 
@@ -69,27 +55,9 @@ int main() {
 ### Documentation
 
 - **[Hello ImGui Documentation](https://pthom.github.io/hello_imgui)** - Full documentation
-- **[RunnerParams Reference](https://pthom.github.io/hello_imgui/book/doc_params.html)** - All configuration options
-- **[API Reference](https://pthom.github.io/hello_imgui/book/doc_api.html)** - Full API documentation
-- **Python API Stubs:** [hello_imgui.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi) | [immapp/\_\_init\_\_.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/immapp/__init__.pyi)
+- **[RunnerParams Reference](https://pthom.github.io/hello_imgui/book/doc-params/)** - All configuration options
+- **[API Reference](https://pthom.github.io/hello_imgui/book/doc-api/)** - Full API documentation
 
-
-### Features
-
-**Application Features:**
-- Power Save mode: reduce FPS when idling
-- High DPI support across all platforms
-- Dockable windows and multiple layouts
-- Window geometry persistence
-- Extensive theming options
-- Borderless, movable/resizable windows
-- Icon fonts and emoji support
-- ImGui Test Engine integration
-
-**Multiplatform:**
-- Windows, Linux, macOS, iOS, Android, WebAssembly
-- Available backends: SDL2, GLFW3 (only Glfw3 with Python)
-- Available renderers: OpenGL3, Metal, Vulkan, DirectX (only OpenGL3 with Python)
 
 ### Configuration with RunnerParams
 
@@ -150,7 +118,7 @@ int main() {
 
 ::::
 
-See [RunnerParams Reference](https://pthom.github.io/hello_imgui/book/doc_params.html) for all configuration options. For Python, see [RunnerParams Type Hints](https://github.com/pthom/imgui_bundle/blob/33f407b1d8083f88514d61e0b43683860b39fc96/bindings/imgui_bundle/hello_imgui.pyi#L2936)
+See [RunnerParams Reference](https://pthom.github.io/hello_imgui/book/doc-params/) for all configuration options. For Python, see [RunnerParams Type Hints](https://github.com/pthom/imgui_bundle/blob/33f407b1d8083f88514d61e0b43683860b39fc96/bindings/imgui_bundle/hello_imgui.pyi#L2936)
 
 ### Callbacks
 
@@ -164,7 +132,7 @@ Hello ImGui provides several callback hooks:
 | `post_init` | Once, after OpenGL initialization |
 | `before_exit` | Once, before shutdown |
 
-See [Full Callback Reference](https://pthom.github.io/hello_imgui/book/doc_params.html#runner-callbacks) for details. For Python, see [Callbacks Type Hints](https://github.com/pthom/imgui_bundle/blob/33f407b1d8083f88514d61e0b43683860b39fc96/bindings/imgui_bundle/hello_imgui.pyi#L1713).
+See [Full Callback Reference](https://pthom.github.io/hello_imgui/book/doc-params/#runner-callbacks) for details. For Python, see [Callbacks Type Hints](https://github.com/pthom/imgui_bundle/blob/33f407b1d8083f88514d61e0b43683860b39fc96/bindings/imgui_bundle/hello_imgui.pyi#L1713).
 
 ### Application Settings
 
@@ -315,7 +283,7 @@ ImmApp::Run(runnerParams, addons);  // C++
 ---
 
 
-## Demonstrations
+## Usage examples and demonstrations
 
 Below are demonstrations from the ImGui Bundle Interactive Manual, showcasing various features of Hello ImGui and ImmApp.
 

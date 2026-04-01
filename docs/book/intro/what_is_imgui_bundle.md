@@ -240,4 +240,5 @@ You should prefer a more complete framework (such as Qt for example) if your int
 - **[Key Features](key_features.md)** — Library list, FAQ, and more details.
 - **[Immediate Mode Explained](imm_gui.md)** — Understand the paradigm that makes ImGui different.
 - **[Interactive Manuals & Demos](interactive_manuals.md)** — Try the demos in your browser.
+- **[Hello ImGui and ImmApp](../core_libs/hello_imgui_immapp.md)** — High-level runners that take care of the app loop, windowing, and assets management, so that you can start an app with a single line of code.
 - **[Jupyter Notebooks](../python/notebook_runners.ipynb)** — Interactive GUIs inside Jupyter. Your training loop keeps running while you tune hyperparameters.
