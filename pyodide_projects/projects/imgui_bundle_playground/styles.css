@@ -54,27 +54,27 @@ html, body {
 
 /* Run Button styles */
 #run-button {
-    padding: 8px 16px;
-    font-size: 1em;
+    padding: 3px 10px;
+    font-size: 0.8rem;
     background-color: #4CAF50;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 3px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.2s;
 }
 
 #run-button:hover {
     background-color: #45a049;
 }
 
-@keyframes run-button-flash {
+@keyframes run-button-pulse {
     0%, 100% { background-color: #4CAF50; }
     50% { background-color: #81D4FA; }
 }
 
-#run-button.flashing {
-    animation: run-button-flash 1s ease-in-out infinite;
+#run-button.needs-run {
+    animation: run-button-pulse 1.5s ease-in-out infinite;
 }
 
 /* Main container below header */
@@ -98,6 +98,51 @@ html, body {
     flex-direction: column;
     height: 100%;
     width: 100%;
+}
+
+/* Editor toolbar */
+#editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 28px;
+    padding: 0 8px;
+    background-color: #1e1e1e;
+    color: #ccc;
+    font-family: system-ui, sans-serif;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    border-bottom: 1px solid #333;
+}
+
+#editor-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#editor-modified {
+    display: inline-block;
+    width: 1em;
+    text-align: center;
+    color: #ccc;
+    visibility: hidden;
+}
+
+#editor-modified.visible {
+    visibility: visible;
+}
+
+#editor-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+#run-shortcut {
+    color: #777;
+    font-size: 0.75rem;
 }
 
 #editor {

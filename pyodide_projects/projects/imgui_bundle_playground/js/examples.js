@@ -21,7 +21,9 @@ async function initial_example_code() {
 // Run this function on page load
 document.addEventListener('DOMContentLoaded', async () => {
     const initialCode = await initial_example_code();
-    editor.setValue(initialCode); // Set the editor's value to the loaded code
+    editor.setValue(initialCode);
+    setLoadedCode(initialCode);
+    setEditorLabel('Welcome to Dear ImGui Bundle');
 });
 
 
@@ -71,7 +73,7 @@ async function installExamplePackages(packages) {
 }
 
 // Function to load example content (and install packages if needed)
-async function loadExample(filename, packages) {
+async function loadExample(filename, packages, label) {
     try {
         await installExamplePackages(packages);
         const response = await fetch(`examples/${filename}`);
@@ -80,6 +82,8 @@ async function loadExample(filename, packages) {
         }
         const content = await response.text();
         editor.setValue(content);
+        setLoadedCode(content);
+        if (label) setEditorLabel(label);
         clearError(); // Clear previous errors when loading a new example
     } catch (error) {
         console.error('Error loading example:', error);
@@ -95,7 +99,7 @@ async function populateExampleSelector() {
     examplesMetadata = await fetchExampleMetadata();
 
     const exampleSelector = document.getElementById('example-selector');
-    exampleSelector.innerHTML = '<option value="">-- Select an Example --</option>';
+    exampleSelector.innerHTML = '';
     examplesMetadata.forEach((example, index) => {
         const option = document.createElement('option');
         option.value = example.filename;
@@ -113,17 +117,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const runBtn = document.getElementById('run-button');
 
-    exampleSelectorElement.addEventListener('change', (event) => {
+    exampleSelectorElement.addEventListener('change', async (event) => {
         const selectedFilename = event.target.value;
         if (selectedFilename) {
             const example = examplesMetadata.find(e => e.filename === selectedFilename);
-            loadExample(selectedFilename, example ? example.packages : undefined);
-            // Gently flash the Run button until clicked
-            runBtn.classList.add('flashing');
+            await loadExample(selectedFilename, example ? example.packages : undefined, example ? example.label : undefined);
+            await runEditorPythonCode();
         }
-    });
-
-    runBtn.addEventListener('click', () => {
-        runBtn.classList.remove('flashing');
     });
 });

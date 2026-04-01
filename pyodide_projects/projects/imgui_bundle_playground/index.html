@@ -89,11 +89,8 @@
             <!-- Dropdown for Example Files -->
             <label for="example-selector" id="example-label">Select Example:</label>
             <select id="example-selector">
-                <option value="">-- Select an Example --</option>
                 <!-- Options will be populated dynamically -->
             </select>
-            <!-- Run Button -->
-            <button id="run-button">Run</button>
         </div>
     </div>
 
@@ -101,6 +98,13 @@
     <div id="main-container">
         <div id="editor-and-canvas-container">
             <div id="editor-container">
+                <div id="editor-toolbar">
+                    <span id="editor-modified">●</span><span id="editor-label">Welcome to Dear ImGui Bundle</span>
+                    <div id="editor-toolbar-right">
+                        <button id="run-button">&#9654; Run</button>
+                        <span id="run-shortcut"></span>
+                    </div>
+                </div>
                 <div id="editor"></div>
                 <!-- Error Output Window -->
                 <div id="error-output" class="hidden">
