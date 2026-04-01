@@ -45,3 +45,13 @@ def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
         height_em: height of the panel in em units
     """
     ...
+
+
+def download_url_bytes(url: str) -> bytes:
+    """Download data from a URL. Works on both desktop (urllib) and Pyodide (sync XMLHttpRequest).
+    Returns the downloaded bytes, or empty bytes on failure.
+
+    Args:
+        url: the URL to download from
+    """
+    ...

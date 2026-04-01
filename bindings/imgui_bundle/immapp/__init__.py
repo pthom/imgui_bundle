@@ -122,3 +122,56 @@ def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
     hello_imgui.pop_tweaked_theme()
 
 __all__.append("render_markdown_doc_panel")
+
+
+def download_url_bytes(url: str) -> bytes:
+    """Download data from a URL. Works on both desktop (urllib) and Pyodide (sync XMLHttpRequest).
+    Returns the downloaded bytes, or empty bytes on failure.
+
+    Args:
+        url: the URL to download from
+    """
+    from imgui_bundle import __bundle_pyodide__
+    if __bundle_pyodide__:
+        try:
+            from pyodide.code import run_js  # type: ignore
+            # Sync XHR doesn't support responseType='arraybuffer'.
+            # Instead, download as base64 text and decode in Python.
+            _fetch_fn = run_js("""
+            (function(url) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, false);
+                xhr.overrideMimeType('text/plain; charset=x-user-defined');
+                xhr.send();
+                if (xhr.status === 200) {
+                    var binary = '';
+                    var bytes = xhr.responseText;
+                    for (var i = 0; i < bytes.length; i++) {
+                        binary += String.fromCharCode(bytes.charCodeAt(i) & 0xff);
+                    }
+                    return btoa(binary);
+                } else {
+                    return null;
+                }
+            })
+            """)
+            result = _fetch_fn(url)
+            if result is not None and len(result) > 0:
+                import base64
+                return base64.b64decode(result)
+        except Exception as e:
+            import logging
+            logging.getLogger("immapp").warning("Failed to download %s: %s", url, e)
+        return b""
+    else:
+        import urllib.request
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "imgui_bundle/1.0"})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                return resp.read()
+        except Exception as e:
+            import logging
+            logging.getLogger("immapp").warning("Failed to download %s: %s", url, e)
+            return b""
+
+__all__.append("download_url_bytes")

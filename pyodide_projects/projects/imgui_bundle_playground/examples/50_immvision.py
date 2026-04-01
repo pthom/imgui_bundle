@@ -2,34 +2,34 @@
 
 [ImmVision](https://github.com/pthom/immvision) is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps.
 
-This demo downloads an image, applies a Sobel edge filter (using OpenCV), and displays both side by side with **linked zoom** - pan one image, the other follows.
+This demo downloads an image, applies a Sobel edge filter (using OpenCV), and displays both side by side with *linked zoom*: pan one image, the other follows.
 
-**Try it:**
-- Drag to pan, scroll to zoom
-- Adjust blur and derivative order
-- Open the "Options" panel on the filtered image to try colormaps
-- Each run downloads a different random photo
+**Try it:**: Drag to pan, scroll to zoom. Adjust blur and derivative order. Open the "Options" panel on the filtered image to try colormaps
 
 **Links:**
 - [ImmVision repository](https://github.com/pthom/immvision)
 """
 import math
 import numpy as np
+from numpy.typing import NDArray
 from enum import Enum
-from imgui_bundle import (
-    imgui, immvision, immapp, hello_imgui,
-)
-
-# Download image using Pyodide's top-level await
-# (this code is exec'd by Pyodide's runPythonAsync)
+from imgui_bundle import imgui, immvision, immapp, hello_imgui
 import cv2  # type: ignore
-from pyodide.http import pyfetch  # type: ignore
-_IMAGE_URL = "https://picsum.photos/640/480"
-_resp = await pyfetch(_IMAGE_URL)
-_bytes = await _resp.bytes()
-_loaded_image = cv2.imdecode(
-    np.frombuffer(_bytes, dtype=np.uint8),
-    cv2.IMREAD_COLOR)
+
+
+# Download a random image
+def download_random_image() -> NDArray[np.uint8]:
+    _image_url = "https://picsum.photos/640/480"
+    _image_bytes = immapp.download_url_bytes(_image_url)
+    if len(_image_bytes) > 0:
+        loaded_image = cv2.imdecode(np.frombuffer(_image_bytes, dtype=np.uint8), cv2.IMREAD_COLOR)
+    else:
+        # Fallback: generate a colorful test pattern
+        loaded_image = np.zeros((480, 640, 3), dtype=np.uint8)
+        for i in range(480):
+            for j in range(640):
+                loaded_image[i, j] = (i % 256, j % 256, (i + j) % 256)
+    return loaded_image
 
 immvision.use_rgb_color_order()
 
@@ -70,7 +70,7 @@ class AppState:
             image, self.sobel_params)
         # ImmVision display params
         # zoom_key links both images (synced pan/zoom)
-        disp_w = int(hello_imgui.em_size(20))
+        disp_w = 500
         self.params = immvision.ImageParams()
         self.params.image_display_size = (disp_w, 0)
         self.params.zoom_key = "z"
@@ -94,20 +94,19 @@ def gui_sobel_params(p: SobelParams) -> bool:
     imgui.text("Order:")
     imgui.same_line()
     for order in (1, 2, 3, 4):
-        c, p.deriv_order = imgui.radio_button(
-            str(order), p.deriv_order, order)
+        c, p.deriv_order = imgui.radio_button(str(order), p.deriv_order, order)
         changed = changed or c
         imgui.same_line()
     # Orientation
     imgui.text("  Dir:")
     imgui.same_line()
-    O = SobelParams.Orientation
-    if imgui.radio_button("H", p.orientation == O.Horizontal):
-        p.orientation = O.Horizontal
+    _Orientation = SobelParams.Orientation  # alias for brevity
+    if imgui.radio_button("H", p.orientation == _Orientation.Horizontal):
+        p.orientation = _Orientation.Horizontal
         changed = True
     imgui.same_line()
-    if imgui.radio_button("V", p.orientation == O.Vertical):
-        p.orientation = O.Vertical
+    if imgui.radio_button("V", p.orientation == _Orientation.Vertical):
+        p.orientation = _Orientation.Vertical
         changed = True
     return changed
 
@@ -116,14 +115,21 @@ def gui(state: AppState) -> None:
     s = state
 
     # Documentation panel
-    immapp.render_markdown_doc_panel(__doc__, height_em=12)
+    immapp.render_markdown_doc_panel(__doc__, height_em=14)
 
     # Sobel parameters
     changed = gui_sobel_params(s.sobel_params)
     if changed:
-        s.image_sobel = compute_sobel(
-            s.image, s.sobel_params)
+        s.image_sobel = compute_sobel(s.image, s.sobel_params)
     s.params_sobel.refresh_image = changed
+
+    # download another image
+    imgui.same_line(spacing=hello_imgui.em_size(5))
+    if imgui.button("Download new image"):
+        s.image = download_random_image()
+        s.image_sobel = compute_sobel(s.image, s.sobel_params)
+        s.params.refresh_image = True
+        s.params_sobel.refresh_image = True
 
     # Display both images side by side
     immvision.image("Original", s.image, s.params)
@@ -132,7 +138,8 @@ def gui(state: AppState) -> None:
 
 
 def main():
-    state = AppState(_loaded_image)
+    image = download_random_image()
+    state = AppState(image)
     immapp.run(
         lambda: gui(state),
         window_size=(1000, 700),
