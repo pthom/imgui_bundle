@@ -12,11 +12,10 @@ import gc
 import logging
 
 logger = logging.getLogger("pyodide_imgui_render")
+logger.setLevel(logging.WARNING)  # Avoid noise in Fiatlight's log window
 
 def _log(msg: str):
     logger.info(msg)
-    # js.console.log("pyodide_imgui_render: " + msg)
-    pass
 
 
 class _JsAnimationRenderer:

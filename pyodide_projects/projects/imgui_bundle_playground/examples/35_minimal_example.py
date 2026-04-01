@@ -5,7 +5,6 @@ Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://p
 You can copy this HTML, save it as a `.html` file, and open it in any browser. Edit the Python code inside to make it your own.
 
 * **Try it live:** [Open the minimal example](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html)
-* **View its source:** [minimal example source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
 
 **How it works:**
 1. Loads Pyodide (Python runtime for the browser) from a CDN
@@ -36,14 +35,14 @@ class AppState:
 
 def gui(state: AppState) -> None:
     # Documentation panel
-    immapp.render_markdown_doc_panel(__doc__, height_em=16)
+    immapp.render_markdown_doc_panel(__doc__, height_em=21)
 
     # Copy button
-    # if imgui.button("Copy HTML to clipboard"):
-    #     imgui.set_clipboard_text(state.editor.get_text())
-    # imgui.same_line()
-    # imgui.text_disabled(
-    #     "(save as .html and open in a browser)")
+    if imgui.button("Copy HTML to clipboard"):
+        imgui.set_clipboard_text(state.editor.get_text())
+    imgui.same_line()
+    imgui.text_disabled(
+        "(save as .html and open in a browser)")
 
     # HTML source viewer with code font
     code_font = imgui_md.get_code_font()
