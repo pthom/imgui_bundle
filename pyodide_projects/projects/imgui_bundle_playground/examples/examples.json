@@ -25,7 +25,7 @@
         "filename": "40_themes.py"
       },
       {
-        "label": "ImmVision: Image Inspection",
+        "label": "ImmVision: Download & Inspect Images",
         "filename": "50_immvision.py",
         "packages": ["opencv-python"]
       },

@@ -50,6 +50,7 @@ async def run_async(
     window_size: Optional[Tuple[int, int]] = None,
     fps_idle: float = 10.0,
     top_most: bool = False,
+    ini_disable: bool = False,
     with_implot: bool = False,
     with_implot3d: bool = False,
     with_markdown: bool = False,

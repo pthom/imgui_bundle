@@ -1,10 +1,12 @@
-"""# ImmVision: Image Inspection
+"""# ImmVision: Download & Inspect Images
 
 [ImmVision](https://github.com/pthom/immvision) is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps.
 
-This demo downloads an image, applies a Sobel edge filter (using OpenCV), and displays both side by side with *linked zoom*: pan one image, the other follows.
+This demo shows:
+* how to *download a file from a URL* in two ways: synchronous or asynchronous
+* how to use ImmVision to display "synced" images
 
-**Try it:**: Drag to pan, scroll to zoom. Adjust blur and derivative order. Open the "Options" panel on the filtered image to try colormaps
+**Try it:**: Drag to pan, scroll to zoom (move one image, the other follow). Adjust blur and derivative order. Open the "Options" panel on the filtered image to try colormaps
 
 **Links:**
 - [ImmVision repository](https://github.com/pthom/immvision)
@@ -18,18 +20,25 @@ import cv2  # type: ignore
 
 
 # Download a random image
-def download_random_image() -> NDArray[np.uint8]:
-    _image_url = "https://picsum.photos/640/480"
-    _image_bytes = immapp.download_url_bytes(_image_url)
-    if len(_image_bytes) > 0:
-        loaded_image = cv2.imdecode(np.frombuffer(_image_bytes, dtype=np.uint8), cv2.IMREAD_COLOR)
-    else:
-        # Fallback: generate a colorful test pattern
-        loaded_image = np.zeros((480, 640, 3), dtype=np.uint8)
-        for i in range(480):
-            for j in range(640):
-                loaded_image[i, j] = (i % 256, j % 256, (i + j) % 256)
-    return loaded_image
+_IMAGE_URL = "https://picsum.photos/640/480"
+
+def _decode_image(image_bytes: bytes) -> NDArray[np.uint8]:
+    if len(image_bytes) > 0:
+        return cv2.imdecode(
+            np.frombuffer(image_bytes, dtype=np.uint8),
+            cv2.IMREAD_COLOR)
+    # Fallback: colorful test pattern
+    img = np.zeros((480, 640, 3), dtype=np.uint8)
+    for i in range(480):
+        for j in range(640):
+            img[i, j] = (i % 256, j % 256, (i + j) % 256)
+    return img
+
+def download_random_image_sync() -> NDArray[np.uint8]:
+    return _decode_image(immapp.download_url_bytes(_IMAGE_URL))
+
+async def download_random_image_async() -> NDArray[np.uint8]:
+    return _decode_image(await immapp.download_url_bytes_async(_IMAGE_URL))
 
 immvision.use_rgb_color_order()
 
@@ -70,7 +79,7 @@ class AppState:
             image, self.sobel_params)
         # ImmVision display params
         # zoom_key links both images (synced pan/zoom)
-        disp_w = 500
+        disp_w = 350
         self.params = immvision.ImageParams()
         self.params.image_display_size = (disp_w, 0)
         self.params.zoom_key = "z"
@@ -115,7 +124,7 @@ def gui(state: AppState) -> None:
     s = state
 
     # Documentation panel
-    immapp.render_markdown_doc_panel(__doc__, height_em=14)
+    immapp.render_markdown_doc_panel(__doc__, height_em=10)
 
     # Sobel parameters
     changed = gui_sobel_params(s.sobel_params)
@@ -126,7 +135,9 @@ def gui(state: AppState) -> None:
     # download another image
     imgui.same_line(spacing=hello_imgui.em_size(5))
     if imgui.button("Download new image"):
-        s.image = download_random_image()
+        # Here we download an image synchronously
+        # (for demo purposes: we could also do it asynchronously with a small adaptation)
+        s.image = download_random_image_sync()
         s.image_sobel = compute_sobel(s.image, s.sobel_params)
         s.params.refresh_image = True
         s.params_sobel.refresh_image = True
@@ -137,18 +148,28 @@ def gui(state: AppState) -> None:
     immvision.image("Sobel", s.image_sobel, s.params_sobel)
 
 
-def main():
-    image = download_random_image()
+async def main_async():
+    """Async main: downloads image without blocking,
+    then runs the app asynchronously."""
+
+    # At startup, we download an image asynchronously
+    image = await download_random_image_async()
     state = AppState(image)
-    immapp.run(
+    await immapp.run_async(
         lambda: gui(state),
         window_size=(1000, 700),
         window_title="ImmVision: Image Inspection",
         with_markdown=True,
         fps_idle=0,
-        ini_disable=True
-    )
+        ini_disable=True)
 
 
-if __name__ == "__main__":
-    main()
+
+import asyncio
+from imgui_bundle import __bundle_pyodide__
+if __bundle_pyodide__:
+    # We are already in an async context with pyodide
+    asyncio.ensure_future(main_async())
+else:
+    # On desktop, create one
+    asyncio.run(main_async())

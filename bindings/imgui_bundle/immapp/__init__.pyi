@@ -48,8 +48,26 @@ def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
 
 
 def download_url_bytes(url: str) -> bytes:
-    """Download data from a URL. Works on both desktop (urllib) and Pyodide (sync XMLHttpRequest).
+    """Download data from a URL synchronously. Works on both desktop (urllib) and Pyodide (sync XMLHttpRequest).
     Returns the downloaded bytes, or empty bytes on failure.
+
+    Args:
+        url: the URL to download from
+    """
+    ...
+
+
+async def download_url_bytes_async(url: str) -> bytes:
+    """Download data from a URL asynchronously.
+    On Pyodide: uses pyfetch (non-blocking). On desktop: uses urllib in a thread.
+    Returns the downloaded bytes, or empty bytes on failure.
+
+    Usage:
+        # In Pyodide (top-level await supported by runPythonAsync):
+        data = await immapp.download_url_bytes_async(url)
+
+        # On desktop:
+        data = asyncio.run(immapp.download_url_bytes_async(url))
 
     Args:
         url: the URL to download from

@@ -175,3 +175,39 @@ def download_url_bytes(url: str) -> bytes:
             return b""
 
 __all__.append("download_url_bytes")
+
+
+async def download_url_bytes_async(url: str) -> bytes:
+    """Download data from a URL asynchronously.
+
+    On Pyodide: uses pyfetch (non-blocking, lets the browser breathe).
+    On desktop: uses urllib in a thread (non-blocking for the event loop).
+
+    Usage:
+        # In Pyodide (top-level await):
+        data = await immapp.download_url_bytes_async("https://example.com/image.png")
+
+        # On desktop:
+        data = asyncio.run(immapp.download_url_bytes_async("https://..."))
+
+    Args:
+        url: the URL to download from
+    """
+    from imgui_bundle import __bundle_pyodide__
+    if __bundle_pyodide__:
+        try:
+            from pyodide.http import pyfetch  # type: ignore
+            resp = await pyfetch(url)
+            return await resp.bytes()
+        except Exception as e:
+            import logging
+            logging.getLogger("immapp").warning("Failed to download %s: %s", url, e)
+            return b""
+    else:
+        import asyncio
+        # Run sync download in a thread to avoid blocking the event loop
+        return await asyncio.to_thread(download_url_bytes, url)
+
+__all__.append("download_url_bytes_async")
+
+
