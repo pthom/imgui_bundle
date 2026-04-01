@@ -65,7 +65,7 @@ Full documentation: install instructions, conceptual introductions, step-by-step
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pthom/imgui_bundle)
 
-_DeepWiki is an AI based website where you can ask questions about the Dear ImGui Bundle usage and get answers. It is trained on the full documentation and the source code of the Dear ImGui Bundle. Expect some inconsistencies, but it is still helpful._
+_DeepWiki is an AI based doc where you can ask questions about Dear ImGui Bundle and get answers. It is trained on the full documentation and the source code of the Dear ImGui Bundle. Expect some inconsistencies, but it is still helpful._
 
 
 ## Build status
