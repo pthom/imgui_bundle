@@ -4,7 +4,7 @@ project:
   title: Dear ImGui Bundle
 #  authors:
 #    - name: Pascal Thomet
-  copyright: 2022-2025, Pascal Thomet
+  copyright: 2022-2026, Pascal Thomet
   github: pthom/imgui_bundle
 
   exports:

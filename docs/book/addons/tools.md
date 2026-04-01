@@ -52,10 +52,10 @@ imgui-node-editor: visual node graphs for data flow and shader editing.
 
 
 ::::{card}
-:link: https://pthom.github.io/fiatlight_doc
-```{figure} https://pthom.github.io/fiatlight_doc/flgt/_static/images/meme.jpg
+:link: https://pthom.github.io/fiatlight
+```{figure} https://pthom.github.io/fiatlight/flgt/_static/images/meme.jpg
 :width: 350
-Note: [Fiatlight](https://pthom.github.io/fiatlight_doc), a library built on top of Dear ImGui Bundle uses imgui-node-editor intensively. It provides an automatic UI generation for functions and structured data.
+Note: [Fiatlight](https://pthom.github.io/fiatlight), a library built on top of Dear ImGui Bundle uses imgui-node-editor intensively. It provides an automatic UI generation for functions and structured data.
 ```
 ::::
 

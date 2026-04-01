@@ -858,7 +858,7 @@ namespace IntroNodeEditor
         float h = w / imgAspect;
         if (h > contentSize.y - linkH) { h = contentSize.y - linkH; w = h * imgAspect; }
         HelloImGui::ImageFromAsset("images/node_editor_fiat.jpg", ImVec2(w, h));
-        ImGuiMd::RenderUnindented("Built with [fiatlight](https://pthom.github.io/fiatlight_doc/)");
+        ImGuiMd::RenderUnindented("Built with [fiatlight](https://pthom.github.io/fiatlight/)");
     }
 } // namespace IntroNodeEditor
 
@@ -1710,7 +1710,7 @@ Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bund
     **Other resources:**
     - [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer): Interactive manual for Dear ImGui, ImPlot, ImPlot3D
     - [Hello ImGui](https://pthom.github.io/hello_imgui): Cross-platform app framework
-    - [Fiatlight](https://pthom.github.io/fiatlight_doc): Turn Python functions into interactive apps. A library built on top of the bundle, by the same author ([repo](https://github.com/pthom/fiatlight))
+    - [Fiatlight](https://pthom.github.io/fiatlight): Turn Python functions into interactive apps. A library built on top of the bundle, by the same author ([repo](https://github.com/pthom/fiatlight))
     )");
 
     ImGui::Unindent();

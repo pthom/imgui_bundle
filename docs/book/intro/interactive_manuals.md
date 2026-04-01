@@ -2,7 +2,7 @@
 
 ## Dear ImGui Explorer
 
-[Dear ImGui Manual](https://pthom.github.io/imgui_explorer/) lets you explore all the widgets and features of Dear ImGui, with live examples and the corresponding python or C++ code. It is built using Dear ImGui Bundle.
+[Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/) lets you explore all the widgets and features of Dear ImGui, with live examples and the corresponding python or C++ code. It is built using Dear ImGui Bundle.
 
 <img alt="A screenshot of Dear ImGui Explorer, showing how to use a widget together with the related python code" src="../images/imgui_explorer_python.jpg" height="500"/>
 
@@ -17,7 +17,7 @@ Each tab provides demos for the included libraries, along with their C++ and Pyt
 
 ## Online Python Playground
 
-[Online Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/): live Python sandbox with ready-to-run demos - edit code, see results instantly. No installation needed.
+[Online Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/): an online Python sandbox with ready-to-run demos - edit code, see results instantly.
 
 <img alt="A browser window showing the playground: to the right an interactive demo of the butterfly effect using a 3D plot, and to the left the python code that creates it." src="../images/pyodide_playground.jpg" height="500"/>
 

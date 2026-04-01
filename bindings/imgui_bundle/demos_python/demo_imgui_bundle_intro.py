@@ -749,7 +749,7 @@ def _node_editor_slide_gui(content_size: ImVec2):
         w = h * img_aspect
     hello_imgui.image_from_asset("images/node_editor_fiat.jpg", ImVec2(w, h))
 
-    imgui_md.render_unindented("Built with [fiatlight](https://pthom.github.io/fiatlight_doc/)")
+    imgui_md.render_unindented("Built with [fiatlight](https://pthom.github.io/fiatlight/)")
 
 
 # ============================================================================
@@ -1532,7 +1532,7 @@ def _render_more_info():
     **Other resources:**
     - [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer): Interactive manual for Dear ImGui, ImPlot, ImPlot3D
     - [Hello ImGui](https://pthom.github.io/hello_imgui): Cross-platform app framework
-    - [Fiatlight](https://pthom.github.io/fiatlight_doc): Turn Python functions into interactive apps. A library built on top of the bundle, by the same author ([repo](https://github.com/pthom/fiatlight))
+    - [Fiatlight](https://pthom.github.io/fiatlight): Turn Python functions into interactive apps. A library built on top of the bundle, by the same author ([repo](https://github.com/pthom/fiatlight))
     """)
 
     imgui.unindent()

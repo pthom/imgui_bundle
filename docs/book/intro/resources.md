@@ -17,7 +17,7 @@ The manuals and demos below are using Dear ImGui Bundle itself!
 
 - [Dear ImGui Bundle documentation](https://pthom.github.io/imgui_bundle)
 - [Hello ImGui documentation](https://pthom.github.io/hello_imgui). Hello ImGui provides a simple framework to quickly create applications using Dear ImGui. It is included in Dear ImGui Bundle.
-- [Fiatlight documentation](https://pthom.github.io/fiatlight_doc). Fiatlight provides automatic UI generation for functions and structured data (dataclasses, pydantic models), making it a powerful tool for rapid prototyping and application development. It is built on top of Dear ImGui Bundle.
+- [Fiatlight documentation](https://pthom.github.io/fiatlight). Fiatlight provides automatic UI generation for functions and structured data (dataclasses, pydantic models), making it a powerful tool for rapid prototyping and application development. It is built on top of Dear ImGui Bundle.
 
 ## YouTube Playlist
 
@@ -48,5 +48,5 @@ You may feed the manuals below to a LLM, so that it can help you when using the 
 
 - [Hello ImGui manual (full pdf)](https://pthom.github.io/hello_imgui/hello_imgui_book.pdf)
 - [ImGui Bundle manual (full pdf)](https://pthom.github.io/imgui_bundle/assets/book.pdf)
-- [Fiatlight manual (full pdf)](https://pthom.github.io/fiatlight_doc/flgt.pdf)
+- [Fiatlight manual (full pdf)](https://pthom.github.io/fiatlight/flgt.pdf)
 

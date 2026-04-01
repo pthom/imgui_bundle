@@ -113,7 +113,7 @@ https://pthom.github.io/hello_imgui/book/doc_api.html
 **Docs for Fiatlight**
 Fiatlight is a library heavily based on Dear ImGui Bundle, by the same author.
 Reading this is not mandatory, it only helps if working on Fiatlight itself.
-https://pthom.github.io/fiatlight_doc/flgt.pdf
+https://pthom.github.io/fiatlight/flgt.pdf
 
 # Differences in the C++ versus Python APIs
 
