@@ -5,7 +5,7 @@
 #include "immapp/code_utils.h"
 #include "immapp/clock.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
 #include "immapp/js_clipboard_tricks.h"
 #endif
 
@@ -43,7 +43,7 @@ namespace Snippets
             editor.SetLanguage(TextEditor::Language::Python());
     }
 
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
     void _ProcessClipboard_Emscripten(TextEditor& editor)
     {
       if (!ImGui::IsItemHovered())
@@ -69,7 +69,7 @@ namespace Snippets
       if (shallFillBrowserClipboard)
           JsClipboard_SetClipboardText(editor.GetCursorText(0).c_str());
     }
-#endif // #ifdef __EMSCRIPTEN__
+#endif // #if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
 
     static std::string AddFinalEmptyLineIfMissing(const std::string &s)
     {
@@ -207,7 +207,7 @@ namespace Snippets
         if (changed && !snippetData.ReadOnly)
             snippetData.Code = editor.GetText();
 
-#ifdef __EMSCRIPTEN__
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
         _ProcessClipboard_Emscripten(editor);
 #endif
 

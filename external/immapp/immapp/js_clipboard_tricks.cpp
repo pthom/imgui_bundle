@@ -1,89 +1,109 @@
+// Clipboard support for Emscripten + SDL2.
+//
+// SDL2's Emscripten backend does not implement clipboard (SDL_SetClipboardText/
+// SDL_GetClipboardText only read/write an internal C buffer, never touching the
+// browser clipboard). With GLFW (pongasoft/emscripten-glfw), clipboard already
+// works via its own event listeners, so this code is SDL2-only.
+//
+// On Mac, SDL2/Emscripten doesn't forward the Meta (Cmd) key to ImGui properly.
+// We detect Cmd+C/X/V/A in a JS keydown listener and translate them to Ctrl+key
+// for ImGui via AddKeyEvent (called in PreNewFrame so ImGui sees them in the
+// current frame's NewFrame).
+//
+// For paste from external (browser clipboard), we listen for the browser 'paste'
+// event and update Module._clipboardText. ImGui reads it via GetClipboardText.
+
 #include "imgui.h"
 #include "js_clipboard_tricks.h"
-#ifdef __EMSCRIPTEN__
+
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+
 #include <emscripten.h>
+#include <string>
 
-// The clipboard handling features take inspiration from sokol
-// https://github.com/floooh/sokol
+static std::string gClipboardBuffer;
 
-
-///////////////////////////////////////////////////////////////////////////////
-// Export clipboard to browser
-///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __cplusplus
-extern "C"
+static const char* JsClipboard_GetClipboardText(ImGuiContext*)
 {
-#endif
+    char* jsText = (char*)EM_ASM_PTR({
+        if (!Module._clipboardText) return 0;
+        var text = Module._clipboardText;
+        var len = lengthBytesUTF8(text) + 1;
+        var buf = _malloc(len);
+        stringToUTF8(text, buf, len);
+        return buf;
+    });
+    if (jsText) {
+        gClipboardBuffer = jsText;
+        free(jsText);
+    }
+    return gClipboardBuffer.c_str();
+}
 
-// Pyodide/SIDE_MODULE fix: Use EM_ASM instead of EM_JS to avoid undefined symbol issues
-// EM_JS creates a separate symbol (___em_js__sapp_js_write_clipboard) that doesn't work
-// well in SIDE_MODULE builds. EM_ASM embeds the JavaScript inline without creating external symbols.
-void sapp_js_write_clipboard(const char* c_str)
+static void JsClipboard_SetClipboardTextImpl(const char* text)
 {
+    gClipboardBuffer = text ? text : "";
     EM_ASM({
         var str = UTF8ToString($0);
-        var ta = document.createElement('textarea');
-        ta.setAttribute('autocomplete', 'off');
-        ta.setAttribute('autocorrect', 'off');
-        ta.setAttribute('autocapitalize', 'off');
-        ta.setAttribute('spellcheck', 'false');
-        ta.style.left = -100 + 'px';
-        ta.style.top = -100 + 'px';
-        ta.style.height = 1;
-        ta.style.width = 1;
-        ta.value = str;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        //console.log("Set clipboard to " + str);
-    }, c_str);
+        Module._clipboardText = str;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(str).catch(function(e) {});
+        }
+    }, text);
 }
 
-#ifdef __cplusplus
+static void JsClipboard_SetClipboardTextFn(ImGuiContext*, const char* text)
+{
+    JsClipboard_SetClipboardTextImpl(text);
 }
-#endif
+
+
+void JsClipboard_Install()
+{
+    EM_ASM({
+        Module._clipboardText = '';
+        Module._clipboardPasteRequest = '';
+
+        // Paste: browser clipboard -> Module._clipboardText + flag for injection
+        document.addEventListener('paste', function(event) {
+            var text = event.clipboardData.getData('text/plain');
+            if (text) {
+                Module._clipboardText = text;
+                Module._clipboardPasteRequest = text;
+            }
+        });
+    });
+
+    auto& platformIO = ImGui::GetPlatformIO();
+    platformIO.Platform_GetClipboardTextFn = JsClipboard_GetClipboardText;
+    platformIO.Platform_SetClipboardTextFn = JsClipboard_SetClipboardTextFn;
+}
+
+
+// Called each frame. Injects pasted text as input characters.
+// This handles Cmd+V on Mac where the key event may not reach ImGui.
+void JsClipboard_ProcessPasteRequest()
+{
+    char* pastedText = (char*)EM_ASM_PTR({
+        if (!Module._clipboardPasteRequest || Module._clipboardPasteRequest.length === 0)
+            return 0;
+        var text = Module._clipboardPasteRequest;
+        Module._clipboardPasteRequest = '';
+        var len = lengthBytesUTF8(text) + 1;
+        var buf = _malloc(len);
+        stringToUTF8(text, buf, len);
+        return buf;
+    });
+    if (pastedText) {
+        ImGui::GetIO().AddInputCharactersUTF8(pastedText);
+        free(pastedText);
+    }
+}
+
 
 void JsClipboard_SetClipboardText(const char* str)
 {
-    sapp_js_write_clipboard(str);
+    JsClipboard_SetClipboardTextImpl(str);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-// Import clipboard from browser (broken, needs repair)
-///////////////////////////////////////////////////////////////////////////////
-
-#ifdef IMGUIBUNDLE_CLIPBOARD_IMPORT_FROM_BROWSER
-
-    EM_JS(void, sapp_add_js_hook_clipboard, (void), {
-        // See also https://whatwebcando.today/clipboard.html
-        // for the new async api with user permissions dialog
-        Module.sokol_paste = function(event) {
-            // console.log("Got paste event ");
-            var pasted_str = event.clipboardData.getData('text');
-            ccall('_sapp_emsc_onpaste', 'void', ['string'], [pasted_str]);
-        };
-        // console.log("sapp_add_js_hook_clipboard 4");
-        window.addEventListener('paste', Module.sokol_paste);
-    });
-
-    EM_JS(void, sapp_remove_js_hook_clipboard, (void), {
-        window.removeEventListener('paste', Module.sokol_paste);
-    });
-
-    void EMSCRIPTEN_KEEPALIVE _sapp_emsc_onpaste(const char *str)
-    {
-        // std::cout << "_sapp_emsc_onpaste " << str << std::endl;
-        ImGui::SetClipboardText(str);
-    }
-
-
-    void JsClipboard_AddJsHook()
-    {
-        sapp_add_js_hook_clipboard();
-    }
-#endif // IMGUIBUNDLE_CLIPBOARD_IMPORT_FROM_BROWSER
-
-#endif // __EMSCRIPTEN__
+#endif // defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)

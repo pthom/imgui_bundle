@@ -29,6 +29,10 @@ void UpdateNodeEditorColorsFromImguiColors();
 #include "im_anim.h"
 #endif
 
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+#include "immapp/js_clipboard_tricks.h"
+#endif
+
 #include <chrono>
 #include <cassert>
 #include <filesystem>
@@ -219,6 +223,20 @@ namespace ImmApp
         runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
             runnerParams.callbacks.BeforeExit,
             ImmVision::ClearTextureCache);
+#endif
+
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+        // SDL2's Emscripten backend doesn't implement clipboard.
+        // Install JS event listeners to bridge browser clipboard with ImGui.
+        runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
+            runnerParams.callbacks.PostInit,
+            JsClipboard_Install
+        );
+        // Process paste events each frame (handles Cmd+V on Mac)
+        runnerParams.callbacks.PostNewFrame = HelloImGui::SequenceFunctions(
+            runnerParams.callbacks.PostNewFrame,
+            JsClipboard_ProcessPasteRequest
+        );
 #endif
     }
 
