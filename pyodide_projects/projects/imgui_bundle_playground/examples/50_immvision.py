@@ -6,7 +6,11 @@ This demo shows:
 * how to *download a file from a URL* in two ways: synchronous or asynchronous
 * how to use ImmVision to display "synced" images
 
-**Try it:**: Drag to pan, scroll to zoom (move one image, the other follow). Adjust blur and derivative order. Open the "Options" panel on the filtered image to try colormaps
+**Try it:**
+* Drag to pan, scroll to zoom (move one image, the other follows)
+* Resize the images by dragging the bottom-right corner of each
+* Adjust blur and derivative order.
+* Open the "Options" panel on the filtered image to try colormaps
 
 **Links:**
 - [ImmVision repository](https://github.com/pthom/immvision)
@@ -19,10 +23,11 @@ from imgui_bundle import imgui, immvision, immapp, hello_imgui
 import cv2  # type: ignore
 
 
-# Download a random image
+# Each run downloads a different random image from picsum.photos
 _IMAGE_URL = "https://picsum.photos/640/480"
 
 def _decode_image(image_bytes: bytes) -> NDArray[np.uint8]:
+    """Decode JPEG/PNG bytes to numpy array, with fallback test pattern."""
     if len(image_bytes) > 0:
         return cv2.imdecode(
             np.frombuffer(image_bytes, dtype=np.uint8),
@@ -40,6 +45,7 @@ def download_random_image_sync() -> NDArray[np.uint8]:
 async def download_random_image_async() -> NDArray[np.uint8]:
     return _decode_image(await immapp.download_url_bytes_async(_IMAGE_URL))
 
+# Tell ImmVision we use RGB order (not BGR like OpenCV defaults)
 immvision.use_rgb_color_order()
 
 
@@ -127,20 +133,28 @@ def gui(state: AppState) -> None:
     immapp.render_markdown_doc_panel(__doc__, height_em=10)
 
     # Sobel parameters
-    changed = gui_sobel_params(s.sobel_params)
-    if changed:
-        s.image_sobel = compute_sobel(s.image, s.sobel_params)
-    s.params_sobel.refresh_image = changed
+    params_changed = gui_sobel_params(s.sobel_params)
 
-    # download another image
+    # Download another image
     imgui.same_line(spacing=hello_imgui.em_size(5))
+    new_image = False
     if imgui.button("Download new image"):
-        # Here we download an image synchronously
-        # (for demo purposes: we could also do it asynchronously with a small adaptation)
+        # Sync download: blocks briefly while fetching.
+        # We can't use await here (GUI callbacks are synchronous).
+        # For a non-blocking alternative, one could start an async
+        # download in a background task, store the result in a
+        # shared variable, and pick it up on the next frame.
+        # See main_async() for async download at startup.
         s.image = download_random_image_sync()
+        new_image = True
+
+    # Recompute Sobel if params or image changed
+    if params_changed or new_image:
         s.image_sobel = compute_sobel(s.image, s.sobel_params)
-        s.params.refresh_image = True
-        s.params_sobel.refresh_image = True
+    # refresh_image tells ImmVision to re-upload the texture
+    # (must be set each frame: True if changed, False otherwise)
+    s.params.refresh_image = new_image
+    s.params_sobel.refresh_image = params_changed or new_image
 
     # Display both images side by side
     immvision.image("Original", s.image, s.params)

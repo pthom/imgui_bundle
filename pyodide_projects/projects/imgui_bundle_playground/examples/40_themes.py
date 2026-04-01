@@ -4,13 +4,9 @@ Dear ImGui Bundle supports theming at two levels:
 
 **Hello ImGui themes** provide complete, pre-designed looks. Apply one with a single line:
 ```python
-hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.darcula)
+hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.darcula)  # or apply_tweaked_theme (see below)
 ```
-**ImGui style tweaks** let you fine-tune colors, rounding, spacing, and other style variables. Use the theme tweak panel below to explore.
-
-**Links:**
-- [Theming documentation](https://pthom.github.io/imgui_bundle/)
-- [Hello ImGui themes](https://pthom.github.io/hello_imgui/book/doc_params.html#theme)
+**Tweaks** let you fine-tune colors, rounding, spacing, and other style variables.
 """
 from imgui_bundle import imgui, immapp, hello_imgui, ImVec2
 
@@ -77,7 +73,7 @@ def gui_layout() -> None:
         - on the right, a widget collection to preview the theme
     """
     # Documentation panel
-    immapp.render_markdown_doc_panel(__doc__, height_em=18)
+    immapp.render_markdown_doc_panel(__doc__, height_em=14)
 
     avail = imgui.get_content_region_avail()
 
@@ -127,6 +123,7 @@ def main():
     params.callbacks.setup_imgui_style = setup_my_theme
     params.app_window_params.window_geometry.size = (1000, 700)
     params.app_window_params.window_title = "Themes"
+    params.ini_disable = True
     # 2. Define which addons we want to activate
     addons = immapp.AddOnsParams()
     addons.with_markdown = True

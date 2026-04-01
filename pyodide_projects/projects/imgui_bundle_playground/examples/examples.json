@@ -17,11 +17,11 @@
         "filename": "30_implot3d_butterfly.py"
       },
       {
-        "label": "Minimal HTML Example",
-        "filename": "35_minimal_example,.py"
+        "label": "Deploy to the Web: Minimal HTML Example",
+        "filename": "35_minimal_example.py"
       },
       {
-        "label": "Themes",
+        "label": "Themes & Theme Tweaking",
         "filename": "40_themes.py"
       },
       {
