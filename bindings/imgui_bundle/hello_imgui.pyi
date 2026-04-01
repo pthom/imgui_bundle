@@ -3273,10 +3273,15 @@ class SimpleRunnerParams:
     #  Useful especially when running from notebooks to keep the app visible above the browser.
     top_most: bool = False
 
+    # bool iniDisable = false;    /* original C++ signature */
+    # `iniDisable`: _bool, default=false_.
+    #  If True, do not save or load any settings to or from an ini file.
+    ini_disable: bool = False
+
     # RunnerParams ToRunnerParams() const;    /* original C++ signature */
     def to_runner_params(self) -> RunnerParams:
         pass
-    # SimpleRunnerParams(VoidFunction guiFunction = EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 9.f, bool enableIdling = true, bool topMost = false);    /* original C++ signature */
+    # SimpleRunnerParams(VoidFunction guiFunction = EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 9.f, bool enableIdling = true, bool topMost = false, bool iniDisable = false);    /* original C++ signature */
     def __init__(
         self,
         gui_function: Optional[VoidFunction] = None,
@@ -3287,6 +3292,7 @@ class SimpleRunnerParams:
         fps_idle: float = 9.0,
         enable_idling: bool = True,
         top_most: bool = False,
+        ini_disable: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
 

@@ -1667,7 +1667,7 @@ void py_init_module_hello_imgui(nb::module_& m)
     auto pyClassSimpleRunnerParams =
         nb::class_<HelloImGui::SimpleRunnerParams>
             (m, "SimpleRunnerParams", " SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.\nFor example, this is sufficient to run an application:\n    ```cpp\n    None MyGui() {\n        ImGui::Text(\"Hello, world\");\n        if (ImGui::Button(\"Exit\"))\n            HelloImGui::GetRunnerParams()->appShallExit = True;\n    }\n\n    int main(){\n        auto params = HelloImGui::SimpleRunnerParams {\n            .guiFunction = MyGui, .windowSizeAuto = True, .windowTitle = \"Example\"\n        };\n        HelloImGui::Run(params);\n    }\n    ```")
-        .def("__init__", [](HelloImGui::SimpleRunnerParams * self, const std::optional<const VoidFunction> & guiFunction = std::nullopt, std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 9.f, bool enableIdling = true, bool topMost = false)
+        .def("__init__", [](HelloImGui::SimpleRunnerParams * self, const std::optional<const VoidFunction> & guiFunction = std::nullopt, std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, const std::optional<const ScreenSize> & windowSize = std::nullopt, float fpsIdle = 9.f, bool enableIdling = true, bool topMost = false, bool iniDisable = false)
         {
             new (self) HelloImGui::SimpleRunnerParams();  // placement new
             auto r_ctor_ = self;
@@ -1685,8 +1685,9 @@ void py_init_module_hello_imgui(nb::module_& m)
             r_ctor_->fpsIdle = fpsIdle;
             r_ctor_->enableIdling = enableIdling;
             r_ctor_->topMost = topMost;
+            r_ctor_->iniDisable = iniDisable;
         },
-        nb::arg("gui_function").none() = nb::none(), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 9.f, nb::arg("enable_idling") = true, nb::arg("top_most") = false
+        nb::arg("gui_function").none() = nb::none(), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 9.f, nb::arg("enable_idling") = true, nb::arg("top_most") = false, nb::arg("ini_disable") = false
         )
         .def_rw("gui_function", &HelloImGui::SimpleRunnerParams::guiFunction, " `guiFunction`: _VoidFunction_.\n  Function that renders the Gui.")
         .def_rw("window_title", &HelloImGui::SimpleRunnerParams::windowTitle, " `windowTitle`: _string, default=\"\"_.\n  Title of the application window")
@@ -1696,6 +1697,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def_rw("fps_idle", &HelloImGui::SimpleRunnerParams::fpsIdle, " `fpsIdle`: _float, default=9_.\n  FPS of the application when idle (set to 0 for full speed).")
         .def_rw("enable_idling", &HelloImGui::SimpleRunnerParams::enableIdling, " `enableIdling`: _bool, default=true_.\n  Disable idling at startup by setting this to False\n  When running, use:\n      HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = False;")
         .def_rw("top_most", &HelloImGui::SimpleRunnerParams::topMost, " `topMost`: _bool, default=false_.\n  If True, the window will stay on top of other windows (desktop platforms only).\n  Useful especially when running from notebooks to keep the app visible above the browser.")
+        .def_rw("ini_disable", &HelloImGui::SimpleRunnerParams::iniDisable, " `iniDisable`: _bool, default=false_.\n  If True, do not save or load any settings to or from an ini file.")
         .def("to_runner_params",
             &HelloImGui::SimpleRunnerParams::ToRunnerParams)
         ;

@@ -104,6 +104,7 @@ namespace ImmApp
         const ScreenSize& windowSize = DefaultWindowSize,
         float fpsIdle = 10.f,
         bool topMost = false,
+        bool iniDisable = false,
 
         // AddOnsParams below:
         bool withImplot = false,
@@ -128,6 +129,7 @@ namespace ImmApp
         const ScreenSize& windowSize = DefaultWindowSize,
         float fpsIdle = 10.f,
         bool topMost = false,
+        bool iniDisable = false,
 
         // AddOnsParams below:
         bool withImplot = false,
@@ -218,6 +220,7 @@ namespace ImmApp
             const ScreenSize& windowSize = DefaultWindowSize,
             float fpsIdle = 10.f,
             bool topMost = false,
+            bool iniDisable = false,
 
             // AddOnsParams below:
             bool withImplot = false,

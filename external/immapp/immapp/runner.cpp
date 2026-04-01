@@ -273,6 +273,7 @@ namespace ImmApp
         const ScreenSize& windowSize,
         float fpsIdle,
         bool topMost,
+        bool iniDisable,
 
         // ImGuiBundle_AddOnsParams below:
         bool withImplot,
@@ -295,6 +296,7 @@ namespace ImmApp
         simpleRunnerParams.windowSize = windowSize;
         simpleRunnerParams.fpsIdle = fpsIdle;
         simpleRunnerParams.topMost = topMost;
+        simpleRunnerParams.iniDisable = iniDisable;
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
@@ -321,6 +323,7 @@ namespace ImmApp
         const ScreenSize& windowSize,
         float fpsIdle,
         bool topMost,
+        bool iniDisable,
 
         // ImGuiBundle_AddOnsParams below:
         bool withImplot,
@@ -342,6 +345,7 @@ namespace ImmApp
         simpleRunnerParams.windowSize = windowSize;
         simpleRunnerParams.fpsIdle = fpsIdle;
         simpleRunnerParams.topMost = topMost;
+        simpleRunnerParams.iniDisable = iniDisable;
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
@@ -500,6 +504,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         const ScreenSize& windowSize,
         float fpsIdle,
         bool topMost,
+        bool iniDisable,
 
         // AddOnsParams below:
         bool withImplot,
@@ -521,6 +526,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         simpleRunnerParams.windowSize = windowSize;
         simpleRunnerParams.fpsIdle = fpsIdle;
         simpleRunnerParams.topMost = topMost;
+        simpleRunnerParams.iniDisable = iniDisable;
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;

@@ -109,6 +109,7 @@ async def run_async(*args, **kwargs) -> None:
             window_size = kwargs.get("window_size", None)
             fps_idle = kwargs.get("fps_idle", 10.0)
             top_most = kwargs.get("top_most", False)
+            ini_disable = kwargs.get("ini_disable", False)
             with_implot = kwargs.get("with_implot", False)
             with_implot3d = kwargs.get("with_implot3d", False)
             with_markdown = kwargs.get("with_markdown", False)
@@ -123,6 +124,7 @@ async def run_async(*args, **kwargs) -> None:
                 window_size=window_size,
                 fps_idle=fps_idle,
                 top_most=top_most,
+                ini_disable=ini_disable,
                 with_implot=with_implot,
                 with_implot3d=with_implot3d,
                 with_markdown=with_markdown,

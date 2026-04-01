@@ -2505,6 +2505,10 @@ struct SimpleRunnerParams
     //  Useful especially when running from notebooks to keep the app visible above the browser.
     bool topMost = false;
 
+    // `iniDisable`: _bool, default=false_.
+    //  If true, do not save or load any settings to or from an ini file.
+    bool iniDisable = false;
+
     RunnerParams ToRunnerParams() const;
 };
 // @@md
