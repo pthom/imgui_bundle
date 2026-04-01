@@ -33,10 +33,14 @@ almost *only python*. **No client/server, no javascript, no fuss.**
 
 
 ### Batteries included
-Dear ImGui Bundle comes with 20+ integrated libraries: plotting (ImPlot, ImPlot3D),
+
+Dear ImGui Bundle development started in 2022, and the number of libraries it includes
+grew steadily since then. It comes with 20+ integrated libraries: plotting (ImPlot, ImPlot3D),
 image debugging (ImmVision), markdown rendering, node editors, 3D gizmos, knobs, toggles,
 color text editors, and more.
-*The carousel to the left shows a few of them in action.*
+
+*The python bindings are auto-generated, so they are always up-to-date!*
+
 
 """
 
@@ -555,4 +559,4 @@ def gui():
 
 if __name__ == "__main__":
     immapp.run(gui, window_size=(1200, 800), window_title="Dear ImGui Bundle Playground",
-               with_implot=True, with_implot3d=True, with_markdown=True, fps_idle=0)
+               with_implot=True, with_implot3d=True, with_markdown=True, fps_idle=0, ini_disable=True)

@@ -145,7 +145,9 @@ def main():
         window_size=(1000, 700),
         window_title="ImmVision: Image Inspection",
         with_markdown=True,
-        fps_idle=0)
+        fps_idle=0,
+        ini_disable=True
+    )
 
 
 if __name__ == "__main__":
