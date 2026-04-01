@@ -9,8 +9,8 @@
 // Call once after ImGui context is initialized (e.g. in PostInit callback).
 void JsClipboard_Install();
 
-// Call each frame (e.g. in PostNewFrame) to handle paste events that
-// didn't reach ImGui via key events (Cmd+V on Mac).
+// Inject pasted text as input characters (handles Cmd+V on Mac).
+// Call each frame in PostNewFrame.
 void JsClipboard_ProcessPasteRequest();
 
 // Push text to the browser clipboard (legacy API, used by snippets.cpp).
