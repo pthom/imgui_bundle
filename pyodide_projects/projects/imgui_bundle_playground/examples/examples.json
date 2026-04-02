@@ -40,7 +40,20 @@
       {
         "label": "Fiatlight: Image Pipeline",
         "filename": "70_fiatlight_image.py",
-        "packages": ["opencv-python", "fiatlight"]
+        "packages": ["opencv-python", "fiatlight"],
+        "bundle_folders": ["fiat_settings"]
+      },
+      {
+        "label": "Explorable: Double Pendulum",
+        "filename": "explorables/double_pendulum.py"
+      },
+      {
+        "label": "Explorable: Fourier Epicycles",
+        "filename": "explorables/fourier_epicycles.py"
+      },
+      {
+        "label": "Lesson: Harmonic Motion",
+        "filename": "explorables/lesson_harmonic_motion.py"
       }
     ]
   }

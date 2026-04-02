@@ -72,10 +72,42 @@ async function installExamplePackages(packages) {
     hideLoadingModal();
 }
 
-// Function to load example content (and install packages if needed)
-async function loadExample(filename, packages, label) {
+// Download bundled folders (e.g. fiat_settings) into the Pyodide virtual filesystem
+async function installBundleFolders(bundleFolders) {
+    if (!bundleFolders || bundleFolders.length === 0 || !pyodide) return;
+    for (const folder of bundleFolders) {
+        // Fetch the manifest to know which files to download
+        const manifestResp = await fetch(`examples/${folder}/manifest.json`);
+        if (!manifestResp.ok) {
+            console.warn(`No manifest.json found for bundle folder ${folder}`);
+            continue;
+        }
+        const files = await manifestResp.json();
+
+        // Create the folder in Pyodide's virtual FS (relative to cwd: /home/pyodide)
+        const targetDir = `/home/pyodide/${folder}`;
+        pyodide.runPython(`import os; os.makedirs('${targetDir}', exist_ok=True)`);
+
+        // Download and write each file
+        for (const file of files) {
+            const resp = await fetch(`examples/${folder}/${file}`);
+            if (!resp.ok) continue;
+            const content = await resp.text();
+            // Write via Python to handle encoding properly
+            pyodide.runPython(`
+with open('${targetDir}/${file}', 'w') as _f:
+    _f.write(${JSON.stringify(content)})
+`);
+        }
+        console.log(`Installed bundle folder: ${folder} (${files.length} files)`);
+    }
+}
+
+// Function to load example content (and install packages + bundle folders if needed)
+async function loadExample(filename, packages, label, bundleFolders) {
     try {
         await installExamplePackages(packages);
+        await installBundleFolders(bundleFolders);
         const response = await fetch(`examples/${filename}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -121,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedFilename = event.target.value;
         if (selectedFilename) {
             const example = examplesMetadata.find(e => e.filename === selectedFilename);
-            await loadExample(selectedFilename, example ? example.packages : undefined, example ? example.label : undefined);
+            await loadExample(selectedFilename, example ? example.packages : undefined, example ? example.label : undefined, example ? example.bundle_folders : undefined);
             await runEditorPythonCode();
         }
     });
