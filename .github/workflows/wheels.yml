@@ -64,7 +64,7 @@ jobs:
         submodules: recursive
         fetch-depth: 0  # Full history needed for build number (git rev-list --count HEAD)
 
-    - uses: pypa/cibuildwheel@v3.4.0
+    - uses: pypa/cibuildwheel@v3.4.1
 
     - name: Verify clean directory
       run: git diff --exit-code
