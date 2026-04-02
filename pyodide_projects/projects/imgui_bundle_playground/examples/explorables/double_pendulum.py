@@ -74,7 +74,7 @@ class Pendulum:
         self.state = np.array([th1, 0.0, th2, 0.0])
         self.trail: List[Tuple[float, float]] = []
         self.color = color
-        self.max_trail = 3000
+        self.max_trail = 800
 
     def step(self, dt, m1, m2, l1, l2, g, substeps=4):
         sub_dt = dt / substeps
