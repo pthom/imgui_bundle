@@ -268,7 +268,7 @@ class TextEditor:
         pass
 
 
-    # Alternative API for cursor and selection position using lightweight out struct (line and column are zero-based)
+    # alternative API for cursor and selection position using lightweight out struct (line and column are zero-based)
     # (the meaning of main and current is explained in README.md)
     class CursorPosition:
         line: int = 0
@@ -305,7 +305,7 @@ class TextEditor:
         pass
 
     def get_word_at_screen_pos(self, screen_pos: ImVec2Like) -> str:
-        """ get the word at a screen position (e.g. from ImGui::GetMousePos()) - uses the origin saved during the last Render() call"""
+        """ get the word at a screen position"""
         pass
 
     class Scroll(enum.IntEnum):

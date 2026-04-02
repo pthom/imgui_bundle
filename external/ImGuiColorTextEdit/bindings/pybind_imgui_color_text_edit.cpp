@@ -384,7 +384,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("get_word_at_screen_pos",
             &TextEditor::GetWordAtScreenPos,
             nb::arg("screen_pos"),
-            "get the word at a screen position (e.g. from ImGui::GetMousePos()) - uses the origin saved during the last Render() call")
+            "get the word at a screen position")
         .def("scroll_to_line",
             &TextEditor::ScrollToLine, nb::arg("line"), nb::arg("alignment"))
         .def("get_first_visible_line",
