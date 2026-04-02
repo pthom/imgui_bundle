@@ -3707,7 +3707,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumConfigFlags_ =
-        nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags_", nb::is_arithmetic(), nb::is_flag(), "Configuration flags stored in io.ConfigFlags. Set by user/application.")
+        nb::enum_<ImGuiConfigFlags_>(m, "ConfigFlags_", nb::is_arithmetic(), nb::is_flag(), " Configuration flags stored in io.ConfigFlags. Set by user/application.\n Note that nowadays most of our configuration options are in other ImGuiIO fields, e.g. io.ConfigWindowsMoveFromTitleBarOnly.")
             .value("none", ImGuiConfigFlags_None, "")
             .value("nav_enable_keyboard", ImGuiConfigFlags_NavEnableKeyboard, "Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + Space/Enter to activate. Note: some features such as basic Tabbing and CtrL+Tab are enabled by regardless of this flag (and may be disabled via other means, see #4828, #9218).")
             .value("nav_enable_gamepad", ImGuiConfigFlags_NavEnableGamepad, "Master gamepad navigation enable flag. Backend also needs to set ImGuiBackendFlags_HasGamepad.")
@@ -3957,11 +3957,11 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::enum_<ImGuiTableFlags_>(m, "TableFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::BeginTable()\n - Important! Sizing policies have complex and subtle side effects, much more so than you would expect.\n   Read comments/demos carefully + experiment with live demos to get acquainted with them.\n - The DEFAULT sizing policies are:\n    - Default to ImGuiTableFlags_SizingFixedFit    if ScrollX is on, or if host window has ImGuiWindowFlags_AlwaysAutoResize.\n    - Default to ImGuiTableFlags_SizingStretchSame if ScrollX is off.\n - When ScrollX is off:\n    - Table defaults to ImGuiTableFlags_SizingStretchSame -> all Columns defaults to ImGuiTableColumnFlags_WidthStretch with same weight.\n    - Columns sizing policy allowed: Stretch (default), Fixed/Auto.\n    - Fixed Columns (if any) will generally obtain their requested width (unless the table cannot fit them all).\n    - Stretch Columns will share the remaining width according to their respective weight.\n    - Mixed Fixed/Stretch columns is possible but has various side-effects on resizing behaviors.\n      The typical use of mixing sizing policies is: any number of LEADING Fixed columns, followed by one or two TRAILING Stretch columns.\n      (this is because the visible order of columns have subtle but necessary effects on how they react to manual resizing).\n - When ScrollX is on:\n    - Table defaults to ImGuiTableFlags_SizingFixedFit -> all Columns defaults to ImGuiTableColumnFlags_WidthFixed\n    - Columns sizing policy allowed: Fixed/Auto mostly.\n    - Fixed Columns can be enlarged as needed. Table will show a horizontal scrollbar if needed.\n    - When using auto-resizing (non-resizable) fixed columns, querying the content width to use item right-alignment e.g. SetNextItemWidth(-FLT_MIN) doesn't make sense, would create a feedback loop.\n    - Using Stretch columns OFTEN DOES NOT MAKE SENSE if ScrollX is on, UNLESS you have specified a value for 'inner_width' in BeginTable().\n      If you specify a value for 'inner_width' then effectively the scrolling space is known and Stretch or mixed Fixed/Stretch columns become meaningful again.\n - Read on documentation at the top of imgui_tables.cpp for details.")
             .value("none", ImGuiTableFlags_None, "")
             .value("resizable", ImGuiTableFlags_Resizable, "Enable resizing columns.")
-            .value("reorderable", ImGuiTableFlags_Reorderable, "Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)")
+            .value("reorderable", ImGuiTableFlags_Reorderable, "Enable reordering columns in header row. (Need calling TableSetupColumn() + TableHeadersRow() to display headers, or using ImGuiTableFlags_ContextMenuInBody to access context-menu without headers).")
             .value("hideable", ImGuiTableFlags_Hideable, "Enable hiding/disabling columns in context menu.")
             .value("sortable", ImGuiTableFlags_Sortable, "Enable sorting. Call TableGetSortSpecs() to obtain sort specs. Also see ImGuiTableFlags_SortMulti and ImGuiTableFlags_SortTristate.")
             .value("no_saved_settings", ImGuiTableFlags_NoSavedSettings, "Disable persisting columns order, width, visibility and sort settings in the .ini file.")
-            .value("context_menu_in_body", ImGuiTableFlags_ContextMenuInBody, "Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().")
+            .value("context_menu_in_body", ImGuiTableFlags_ContextMenuInBody, "Right-click on columns body/contents will also display table context menu. By default it is available in TableHeadersRow().")
             .value("row_bg", ImGuiTableFlags_RowBg, "Set each RowBg color with ImGuiCol_TableRowBg or ImGuiCol_TableRowBgAlt (equivalent of calling TableSetBgColor with ImGuiTableBgFlags_RowBg0 on each row manually)")
             .value("borders_inner_h", ImGuiTableFlags_BordersInnerH, "Draw horizontal borders between rows.")
             .value("borders_outer_h", ImGuiTableFlags_BordersOuterH, "Draw horizontal borders at the top and bottom.")
@@ -6884,16 +6884,16 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImGuiListClipper =
         nb::class_<ImGuiListClipper>
             (m, "ListClipper", " Helper: Manually clip large list of items.\n If you have lots evenly spaced items and you have random access to the list, you can perform coarse\n clipping based on visibility to only submit items that are in view.\n The clipper calculates the range of visible items and advance the cursor to compensate for the non-visible items we have skipped.\n (Dear ImGui already clip items based on their bounds but: it needs to first layout the item to do so, and generally\n  fetching/submitting your own data incurs additional cost. Coarse clipping using ImGuiListClipper allows you to easily\n  scale using lists with tens of thousands of items without a problem)\n Usage:\n   ImGuiListClipper clipper;\n   clipper.Begin(1000);         // We have 1000 elements, evenly spaced.\n   while (clipper.Step())\n       for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)\n           ImGui::Text(\"line number %d\", i);\n Generally what happens is:\n - Clipper lets you process the first element (DisplayStart = 0, DisplayEnd = 1) regardless of it being visible or not.\n - User code submit that one element.\n - Clipper can measure the height of the first element\n - Clipper calculate the actual range of elements to display based on the current clipping rectangle, position the cursor before the first visible element.\n - User code submit visible elements.\n - The clipper also handles various subtleties related to keyboard/gamepad navigation, wrapping etc.")
-        .def_rw("ctx", &ImGuiListClipper::Ctx, "Parent UI context")
         .def_rw("display_start", &ImGuiListClipper::DisplayStart, "First item to display, updated by each call to Step()")
         .def_rw("display_end", &ImGuiListClipper::DisplayEnd, "End of items to display (exclusive)")
         .def_rw("user_index", &ImGuiListClipper::UserIndex, "Helper storage for user convenience/code. Optional, and otherwise unused if you don't use it.")
         .def_rw("items_count", &ImGuiListClipper::ItemsCount, "[Internal] Number of items")
         .def_rw("items_height", &ImGuiListClipper::ItemsHeight, "[Internal] Height of item after a first step and item submission can calculate it")
+        .def_rw("flags", &ImGuiListClipper::Flags, "[Internal] Flags, currently not yet well exposed.")
         .def_rw("start_pos_y", &ImGuiListClipper::StartPosY, "[Internal] Cursor position at the time of Begin() or after table frozen rows are all processed")
         .def_rw("start_seek_offset_y", &ImGuiListClipper::StartSeekOffsetY, "[Internal] Account for frozen rows in a table and initial loss of precision in very large windows.")
+        .def_rw("ctx", &ImGuiListClipper::Ctx, "[Internal] Parent UI context")
         .def_rw("temp_data", &ImGuiListClipper::TempData, "[Internal] Internal data")
-        .def_rw("flags", &ImGuiListClipper::Flags, "[Internal] Flags, currently not yet well exposed.")
         .def(nb::init<>(),
             " items_count: Use INT_MAX if you don't know how many items you have (in which case the cursor won't be advanced in the final step, and you can call SeekCursorForItem() manually if you need)\n items_height: Use -1.0 to be calculated automatically on first step. Otherwise pass in the distance between your items, typically GetTextLineHeightWithSpacing() or GetFrameHeightWithSpacing().")
         .def("begin",
@@ -8002,6 +8002,8 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImGuiViewport::GetCenter, "(private API)")
         .def("get_work_center",
             &ImGuiViewport::GetWorkCenter, "(private API)")
+        .def("get_debug_name",
+            &ImGuiViewport::GetDebugName, nb::rv_policy::reference)
         ;
 
 

@@ -819,7 +819,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyEnumInputTextFlagsPrivate_ =
         nb::enum_<ImGuiInputTextFlagsPrivate_>(m, "InputTextFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiInputTextFlags_")
             .value("multiline", ImGuiInputTextFlags_Multiline, "For internal use by InputTextMultiline()")
-            .value("merged_item", ImGuiInputTextFlags_MergedItem, "For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.")
+            .value("temp_input", ImGuiInputTextFlags_TempInput, "For internal use by TempInputText(), will skip calling ItemAdd(). Require bounding-box to strictly match.")
             .value("localize_decimal_point", ImGuiInputTextFlags_LocalizeDecimalPoint, "For internal use by InputScalar() and TempInputScalar()");
 
 
@@ -828,7 +828,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("pressed_on_click", ImGuiButtonFlags_PressedOnClick, "return True on click (mouse down event)")
             .value("pressed_on_click_release", ImGuiButtonFlags_PressedOnClickRelease, "[Default] return True on click + release on same item <-- this is what the majority of Button are using")
             .value("pressed_on_click_release_anywhere", ImGuiButtonFlags_PressedOnClickReleaseAnywhere, "return True on click + release even if the release event is not done while hovering the item")
-            .value("pressed_on_release", ImGuiButtonFlags_PressedOnRelease, "return True on release (default requires click+release)")
+            .value("pressed_on_release", ImGuiButtonFlags_PressedOnRelease, "return True on release (default requires click+release). Prior to 2026/03/20 this implied ImGuiButtonFlags_NoHoldingActiveId but they are separate now.")
             .value("pressed_on_double_click", ImGuiButtonFlags_PressedOnDoubleClick, "return True on double-click (default requires click+release)")
             .value("pressed_on_drag_drop_hold", ImGuiButtonFlags_PressedOnDragDropHold, "return True when held into while we are drag and dropping another item (used by e.g. tree nodes, collapsing headers)")
             .value("flatten_children", ImGuiButtonFlags_FlattenChildren, "allow interactions even if a child window is overlapping")
@@ -1065,7 +1065,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("cursor_follow", &ImGuiInputTextState::CursorFollow, "set when we want scrolling to follow the current cursor position (not always!)")
         .def_rw("cursor_center_y", &ImGuiInputTextState::CursorCenterY, "set when we want scrolling to be centered over the cursor position (while resizing a word-wrapping field)")
         .def_rw("selected_all_mouse_lock", &ImGuiInputTextState::SelectedAllMouseLock, "after a double-click to select all, we ignore further mouse drags to update selection")
-        .def_rw("edited", &ImGuiInputTextState::Edited, "edited this frame")
+        .def_rw("edited_before", &ImGuiInputTextState::EditedBefore, "edited since activated")
+        .def_rw("edited_this_frame", &ImGuiInputTextState::EditedThisFrame, "edited this frame")
         .def_rw("want_reload_user_buf", &ImGuiInputTextState::WantReloadUserBuf, "force a reload of user buf so it may be modified externally. may be automatic in future version.")
         .def_rw("last_move_direction_lr", &ImGuiInputTextState::LastMoveDirectionLR, "ImGuiDir_Left or ImGuiDir_Right. track last movement direction so when cursor cross over a word-wrapping boundaries we can display it on either line depending on last move.s")
         .def_rw("reload_selection_start", &ImGuiInputTextState::ReloadSelectionStart, "")
@@ -3203,8 +3204,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("resized_column", &ImGuiTable::ResizedColumn, "Index of column being resized. Reset when InstanceCurrent==0.")
         .def_rw("last_resized_column", &ImGuiTable::LastResizedColumn, "Index of column being resized from previous frame.")
         .def_rw("held_header_column", &ImGuiTable::HeldHeaderColumn, "Index of column header being held.")
+        .def_rw("last_held_header_column", &ImGuiTable::LastHeldHeaderColumn, "Index of column header being held from previous frame.")
         .def_rw("reorder_column", &ImGuiTable::ReorderColumn, "Index of column being reordered. (not cleared)")
-        .def_rw("reorder_column_dir", &ImGuiTable::ReorderColumnDir, "-1 or +1")
+        .def_rw("reorder_column_dst_order", &ImGuiTable::ReorderColumnDstOrder, "Requested display order of column being reordered.")
         .def_rw("left_most_enabled_column", &ImGuiTable::LeftMostEnabledColumn, "Index of left-most non-hidden column.")
         .def_rw("right_most_enabled_column", &ImGuiTable::RightMostEnabledColumn, "Index of right-most non-hidden column.")
         .def_rw("left_most_stretched_column", &ImGuiTable::LeftMostStretchedColumn, "Index of left-most stretched column.")
@@ -4533,6 +4535,9 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("table_set_column_display_order",
         nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableSetColumnDisplayOrder), nb::arg("table"), nb::arg("column_n"), nb::arg("dst_order"));
+
+    m.def("table_queue_set_column_display_order",
+        nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableQueueSetColumnDisplayOrder), nb::arg("table"), nb::arg("column_n"), nb::arg("dst_order"));
 
     m.def("table_remove",
         nb::overload_cast<ImGuiTable *>(ImGui::TableRemove), nb::arg("table"));
