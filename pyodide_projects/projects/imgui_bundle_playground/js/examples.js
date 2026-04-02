@@ -18,6 +18,12 @@ async function initial_example_code() {
     }
 }
 
+// Check URL for ?demo=filename parameter
+function getDemoFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('demo');
+}
+
 // Run this function on page load
 document.addEventListener('DOMContentLoaded', async () => {
     const initialCode = await initial_example_code();
@@ -132,12 +138,49 @@ async function populateExampleSelector() {
 
     const exampleSelector = document.getElementById('example-selector');
     exampleSelector.innerHTML = '';
+    // Only show non-hidden demos in the dropdown
     examplesMetadata.forEach((example, index) => {
+        if (example.hidden) return;
         const option = document.createElement('option');
         option.value = example.filename;
         option.textContent = example.label;
         exampleSelector.appendChild(option);
     });
+}
+
+// Load a demo by filename (works for both visible and hidden demos)
+async function loadDemoByFilename(filename, updateHistory = true) {
+    // Look up in metadata (includes hidden demos)
+    const example = examplesMetadata.find(e => e.filename === filename);
+    const packages = example ? example.packages : undefined;
+    const label = example ? example.label : filename;
+    const bundleFolders = example ? example.bundle_folders : undefined;
+    await loadExample(filename, packages, label, bundleFolders);
+    // Set the dropdown to match (if the demo is visible)
+    const selector = document.getElementById('example-selector');
+    if (selector) {
+        const option = Array.from(selector.options).find(o => o.value === filename);
+        if (option) selector.value = filename;
+    }
+    // Update browser URL and history
+    if (updateHistory) {
+        const url = new URL(window.location);
+        url.searchParams.set('demo', filename);
+        history.pushState({demo: filename}, '', url);
+    }
+    await runEditorPythonCode();
+}
+
+// Check ?demo= URL parameter and load the specified demo after Pyodide is ready
+async function loadDemoFromUrlIfNeeded() {
+    const demoFile = getDemoFromUrl();
+    if (demoFile) {
+        // Wait for metadata to be available
+        if (examplesMetadata.length === 0) {
+            examplesMetadata = await fetchExampleMetadata();
+        }
+        await loadDemoByFilename(demoFile);
+    }
 }
 
 // Initialize the example selector on page load
@@ -147,14 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add event listener for example selector changes
     const exampleSelectorElement = document.getElementById('example-selector');
 
-    const runBtn = document.getElementById('run-button');
-
     exampleSelectorElement.addEventListener('change', async (event) => {
         const selectedFilename = event.target.value;
         if (selectedFilename) {
-            const example = examplesMetadata.find(e => e.filename === selectedFilename);
-            await loadExample(selectedFilename, example ? example.packages : undefined, example ? example.label : undefined, example ? example.bundle_folders : undefined);
-            await runEditorPythonCode();
+            await loadDemoByFilename(selectedFilename);
+        }
+    });
+
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', async (event) => {
+        if (event.state && event.state.demo) {
+            await loadDemoByFilename(event.state.demo, false);
         }
     });
 });

@@ -116,8 +116,14 @@ function setEditorLabel(label) {
 async function initialize() {
     await loadPyodideAndPackages();
     await passCanvasToPyodide();
-    // Run the initial example automatically
-    await runEditorPythonCode();
+    // Check if a specific demo was requested via ?demo= URL parameter
+    const demoFromUrl = getDemoFromUrl();
+    if (demoFromUrl) {
+        await loadDemoFromUrlIfNeeded();
+    } else {
+        // Run the initial example automatically
+        await runEditorPythonCode();
+    }
 }
 
 initialize();
