@@ -1,21 +1,9 @@
-from urllib.parse import quote
-
-def latex(tex: str, dpi: int = 150, color: str = "white") -> str:
-    """Return a markdown image string for a LaTeX equation via codecogs."""
-    return f"![](https://latex.codecogs.com/png.latex?{quote(chr(92) + f'dpi{{{dpi}}}' + chr(92) + f'color{{{color}}}{tex}')})"
-
-DOCS = f"""Double Pendulum
+"""Double Pendulum
 =================
 
 A chaotic system where tiny changes in initial conditions
 lead to wildly different trajectories. Drag the angles to set
 initial positions, then release and watch chaos unfold.
-
-{latex(r"T = \frac{1}{2}(m_1+m_2)\,l_1^2\dot\theta_1^2 + \frac{1}{2}m_2\,l_2^2\dot\theta_2^2")}
-
-{latex(r"\quad + \; m_2\,l_1 l_2\,\dot\theta_1\dot\theta_2\cos(\theta_1-\theta_2)")}
-
-{latex(r"U = -(m_1+m_2)g\,l_1\cos\theta_1 - m_2 g\,l_2\cos\theta_2")}
 """
 
 import numpy as np
@@ -239,7 +227,7 @@ def gui(state: AppState):
     # Controls (left column)
     imgui.begin_child("controls", ImVec2(em * 20, 0))
 
-    imgui_md.render(DOCS)
+    imgui_md.render(__doc__)
     imgui.spacing()
 
     # Initial angles
@@ -363,6 +351,7 @@ def main():
         with_implot=True,
         with_markdown=True,
         fps_idle=0,
+        ini_disable=True
     )
 
 

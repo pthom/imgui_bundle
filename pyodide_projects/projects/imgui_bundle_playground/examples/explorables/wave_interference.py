@@ -340,6 +340,7 @@ def main():
         with_implot=True,
         with_markdown=True,
         fps_idle=0,
+        ini_disable=True
     )
 
 

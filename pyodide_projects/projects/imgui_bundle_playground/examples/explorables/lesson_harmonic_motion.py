@@ -391,18 +391,19 @@ def gui(state: AppState):
 
     imgui.spacing()
 
-    # Displacement plot
-    if len(state.t_history) > 1:
-        ts = np.array(state.t_history)
-        xs = np.array(state.x_history)
-        plot_w = imgui.get_content_region_avail().x
-        if implot.begin_plot("##displacement", ImVec2(plot_w, em * 10)):
-            implot.setup_axes("Time (s)", "Displacement x")
-            t_min = max(0, ts[-1] - 20)
-            implot.setup_axes_limits(t_min, ts[-1] + 0.5, -2.5, 2.5,
+    # Displacement plot (always render to avoid layout height change on reset)
+    plot_w = imgui.get_content_region_avail().x
+    if implot.begin_plot("##displacement", ImVec2(plot_w, em * 10)):
+        implot.setup_axes("Time (s)", "Displacement x")
+        if len(state.t_history) > 1:
+            ts = np.array(state.t_history)
+            xs = np.array(state.x_history)
+            implot.setup_axes_limits(ts[0], ts[-1] + 0.5, -2.5, 2.5,
                                     imgui.Cond_.always)
             implot.plot_line("x(t)", ts, xs)
-            implot.end_plot()
+        else:
+            implot.setup_axes_limits(0, 10, -2.5, 2.5, imgui.Cond_.always)
+        implot.end_plot()
 
     imgui.spacing()
     imgui.spacing()
@@ -412,24 +413,24 @@ def gui(state: AppState):
         render_md_with_math(DAMPING_INTRO)
         imgui.spacing()
 
-        changed_d, state.damping_enabled = imgui_toggle.toggle("damp_tog", state.damping_enabled)
-        imgui.same_line()
-        imgui.text("Enable damping")
-
-        if state.damping_enabled:
-            imgui.set_next_item_width(em * 15)
-            _, state.b = imgui.slider_float("Damping b", state.b, 0.0, 5.0, "%.2f")
-            zeta = state.b / (2 * np.sqrt(state.m * state.k))
-            if zeta < 1:
-                regime = "Underdamped"
-            elif abs(zeta - 1) < 0.01:
-                regime = "Critically damped"
-            else:
-                regime = "Overdamped"
-            imgui.text(f"Damping ratio: zeta = {zeta:.3f} ({regime})")
-
-        if changed_d:
+        if imgui.button("Disable damping" if state.damping_enabled else "Enable damping"):
+            state.damping_enabled = not state.damping_enabled
             state.reset()
+
+        if not state.damping_enabled:
+            imgui.begin_disabled()
+        imgui.set_next_item_width(em * 15)
+        _, state.b = imgui.slider_float("Damping b", state.b, 0.0, 5.0, "%.2f")
+        zeta = state.b / (2 * np.sqrt(state.m * state.k))
+        if zeta < 1:
+            regime = "Underdamped"
+        elif abs(zeta - 1) < 0.01:
+            regime = "Critically damped"
+        else:
+            regime = "Overdamped"
+        imgui.text(f"Damping ratio: zeta = {zeta:.3f} ({regime})")
+        if not state.damping_enabled:
+            imgui.end_disabled()
 
     imgui.spacing()
     imgui.spacing()
@@ -439,56 +440,56 @@ def gui(state: AppState):
         render_md_with_math(RESONANCE_INTRO)
         imgui.spacing()
 
-        changed_dr, state.driving_enabled = imgui_toggle.toggle("drive_tog", state.driving_enabled)
-        imgui.same_line()
-        imgui.text("Enable driving force")
-
-        if state.driving_enabled:
-            if not state.damping_enabled:
+        if imgui.button("Disable driving force" if state.driving_enabled else "Enable driving force"):
+            state.driving_enabled = not state.driving_enabled
+            if state.driving_enabled and not state.damping_enabled:
                 state.damping_enabled = True
                 state.b = 0.3
-
-            imgui.begin_horizontal("drive_controls", ImVec2(imgui.get_content_region_avail().x, 0))
-            _, state.f0 = imgui_knobs.knob("Force F0", state.f0, 0.1, 5.0,
-                                            speed=0.02, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
-                                            format="%.1f")
-            imgui.spring(0, em)
-            _, state.wd = imgui_knobs.knob("Drive freq", state.wd, 0.1, 8.0,
-                                            speed=0.02, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
-                                            format="%.1f")
-            imgui.spring(0, em)
-
-            w0 = np.sqrt(state.k / state.m)
-            imgui.begin_vertical("ratio_info", ImVec2(0, 0))
-            imgui.spring()
-            ratio = state.wd / w0
-            imgui.text(f"w_d / w_0 = {ratio:.2f}")
-            if 0.9 < ratio < 1.1:
-                imgui.text_colored(ImVec4(1, 0.3, 0.3, 1), "Near resonance!")
-            imgui.spring()
-            imgui.end_vertical()
-            imgui.spring()
-            imgui.end_horizontal()
-
-            # Resonance curve
-            imgui.spacing()
-            imgui.text("Resonance curve (amplitude vs driving frequency)")
-            zeta = state.b / (2 * np.sqrt(state.m * state.k))
-            f0_over_m = state.f0 / state.m
-            wd_arr, amp_arr = resonance_curve(w0, zeta, f0_over_m)
-            plot_w = imgui.get_content_region_avail().x
-            if implot.begin_plot("##resonance", ImVec2(plot_w, em * 12)):
-                implot.setup_axes("Driving freq (rad/s)", "Amplitude")
-                implot.setup_axes_limits(0, float(w0 * 3), 0,
-                                        float(np.max(amp_arr) * 1.2) + 0.1,
-                                        imgui.Cond_.always)
-                implot.plot_line("A(w_d)", wd_arr, amp_arr)
-                # Vertical line at current driving frequency
-                implot.plot_inf_lines("w_d", np.array([state.wd]))
-                implot.end_plot()
-
-        if changed_dr:
             state.reset()
+
+        if not state.driving_enabled:
+            imgui.begin_disabled()
+
+        imgui.begin_horizontal("drive_controls", ImVec2(imgui.get_content_region_avail().x, 0))
+        _, state.f0 = imgui_knobs.knob("Force F0", state.f0, 0.1, 5.0,
+                                        speed=0.02, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
+                                        format="%.1f")
+        imgui.spring(0, em)
+        _, state.wd = imgui_knobs.knob("Drive freq", state.wd, 0.1, 8.0,
+                                        speed=0.02, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
+                                        format="%.1f")
+        imgui.spring(0, em)
+
+        w0 = np.sqrt(state.k / state.m)
+        imgui.begin_vertical("ratio_info", ImVec2(0, 0))
+        imgui.spring()
+        ratio = state.wd / w0
+        imgui.text(f"w_d / w_0 = {ratio:.2f}")
+        if 0.9 < ratio < 1.1:
+            imgui.text_colored(ImVec4(1, 0.3, 0.3, 1), "Near resonance!")
+        imgui.spring()
+        imgui.end_vertical()
+        imgui.spring()
+        imgui.end_horizontal()
+
+        # Resonance curve
+        imgui.spacing()
+        imgui.text("Resonance curve (amplitude vs driving frequency)")
+        zeta = state.b / (2 * np.sqrt(state.m * state.k))
+        f0_over_m = state.f0 / state.m
+        wd_arr, amp_arr = resonance_curve(w0, zeta, f0_over_m)
+        plot_w = imgui.get_content_region_avail().x
+        if implot.begin_plot("##resonance", ImVec2(plot_w, em * 12)):
+            implot.setup_axes("Driving freq (rad/s)", "Amplitude")
+            implot.setup_axes_limits(0, float(w0 * 3), 0,
+                                    float(np.max(amp_arr) * 1.2) + 0.1,
+                                    imgui.Cond_.always)
+            implot.plot_line("A(w_d)", wd_arr, amp_arr)
+            implot.plot_inf_lines("w_d", np.array([state.wd]))
+            implot.end_plot()
+
+        if not state.driving_enabled:
+            imgui.end_disabled()
 
     imgui.spacing()
     imgui.spacing()
@@ -503,6 +504,7 @@ def main():
     params.callbacks.show_gui = lambda: gui(state)
     params.app_window_params.window_geometry.size = (1000, 800)
     params.app_window_params.window_title = "Lesson: Simple Harmonic Motion"
+    params.fps_idling.fps_idle = 25
     addons = immapp.AddOnsParams(with_markdown=True, with_implot= True)
     immapp.run(params, addons)
 
