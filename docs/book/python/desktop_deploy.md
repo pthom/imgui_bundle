@@ -76,3 +76,30 @@ pip install pyinstaller
 pyinstaller yourapp.spec
 ```
 
+## Packaging with Nuitka
+
+Instructions inspired @neudinger's article at 
+https://neudinger.medium.com/the-modern-c-python-gui-stack-from-native-binary-to-webassembly-cc235bf3fb3b
+
+Nuitka is a Python compiler that can create standalone executables. It can be used to package Dear ImGui Bundle applications as well.
+
+The following command compiles `your_app.py` into a standalone executable, including the assets from Dear ImGui Bundle:
+
+```
+export imgui_bundle_asset_path=`python -c "import imgui_bundle, os; print(os.path.join(os.path.dirname(imgui_bundle.__file__), 'assets'))"`
+
+python -m nuitka \
+    --standalone \
+    --include-package=imgui_bundle \
+    --include-package-data=imgui_bundle \
+    --include-module=importlib.util \
+    --include-data-dir=${imgui_bundle_asset_path}=imgui_bundle/assets \
+    --noinclude-pytest-mode=nofollow \
+    --enable-plugin=no-qt \
+    -o your_app_compiled \
+    your_app.py
+```
+
+*Note: Nuitka provides an option "--onefile" to create a single executable, but this will slow the startup time. It is recommended to use the default "standalone" mode, which creates a folder with the executable and dependencies, for better performance.*
+
+Do read Nuitka's documentation for more details and options: https://nuitka.net/doc/user-manual.html

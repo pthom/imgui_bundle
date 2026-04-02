@@ -1,5 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-import importlib
+import importlib.util
 import sys
 if importlib.util.find_spec("numpy") is None:
     print(

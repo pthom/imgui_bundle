@@ -8,11 +8,16 @@ GuiFunction = Callable[[], None]
 
 
 def main_python_package_folder() -> str:
+    # Try using the imgui_bundle package location directly
+    import imgui_bundle
+    pkg_dir = os.path.dirname(imgui_bundle.__file__)
+    if os.path.isdir(pkg_dir):
+        return pkg_dir.replace("\\", "/")
+
+    # Fallback: walk up from __file__ looking for hello_imgui.pyi
     this_dir = os.path.dirname(__file__)
     this_dir = this_dir.replace("\\", "/")
-
     items = this_dir.split("/")
-
     for n in reversed(range(len(items))):
         parent_folder = "/".join(items[:n])
         if os.path.isfile(parent_folder + "/hello_imgui.pyi"):
