@@ -1529,9 +1529,26 @@ class ImGuiWindowParams:
     # ------------ Theme ---------------------------------------------------------------
 
     # ImGuiTheme::ImGuiTweakedTheme tweakedTheme;    /* original C++ signature */
-    # tweakedTheme: (enum ImGuiTheme::ImGuiTweakedTheme)
-    # Changes the ImGui theme. Several themes are available, you can query the list
-    # by calling HelloImGui::AvailableThemes()
+    # tweakedTheme: sets the ImGui theme at startup.
+    #
+    # 1. Pick a base theme (e.g. DarculaDarker, Cherry, SoDark_AccentBlue,
+    #    PhotoshopStyle, LightRounded, ...). See all options in ImGuiTheme_ enum
+    #    (defined in imgui_theme.h).
+    # 2. Optionally fine-tune with ImGuiThemeTweaks (rounding, hue, saturation,
+    #    alpha, luminance).
+    #
+    # C++:
+    #   params.imGuiWindowParams.tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_Cherry;
+    # // optionally:
+    #   params.imGuiWindowParams.tweakedTheme.Tweaks.Rounding = 10.;
+    #
+    # Python:
+    #   params.imgui_window_params.tweaked_theme.theme = imgui_theme.ImGuiTheme_.cherry
+    #   # optionally:
+    #   params.imgui_window_params.tweaked_theme.tweaks.rounding = 10.0
+    #
+    # At runtime, ShowThemeTweakGui() lets the user select and tweak themes
+    # interactively.
     tweaked_theme: ImGuiTweakedTheme
 
     # ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);    /* original C++ signature */
