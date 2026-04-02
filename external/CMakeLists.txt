@@ -304,6 +304,36 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     if(EMSCRIPTEN)
         target_link_options(imgui_md PUBLIC -sFETCH)
     endif()
+
+    # URL image download for C++ desktop (using system libcurl)
+    if(EMSCRIPTEN OR IOS OR ANDROID OR IMGUI_BUNDLE_BUILD_PYTHON)
+        set(_IMGUI_MD_DOWNLOAD_DEFAULT OFF)
+    else()
+        set(_IMGUI_MD_DOWNLOAD_DEFAULT ON)
+    endif()
+    option(IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES
+           "Enable URL image download in markdown (requires libcurl)" ${_IMGUI_MD_DOWNLOAD_DEFAULT})
+    if(IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES)
+        find_package(CURL)
+        if(CURL_FOUND)
+            target_sources(imgui_md PRIVATE
+                imgui_md/imgui_md_wrapper/imgui_md_url_download.cpp
+                imgui_md/imgui_md_wrapper/imgui_md_url_download.h
+            )
+            target_link_libraries(imgui_md PRIVATE CURL::libcurl)
+            target_compile_definitions(imgui_md PUBLIC IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES)
+            message(STATUS "imgui_md: URL image download enabled (using system libcurl)")
+        else()
+            message(WARNING
+                "IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES is ON but libcurl was not found. "
+                "URL images in markdown will be disabled. "
+                "Install libcurl: macOS (already present), "
+                "Linux: apt install libcurl4-openssl-dev, "
+                "Windows: vcpkg install curl")
+            set(IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES OFF)
+        endif()
+    endif()
+
     hello_imgui_msvc_target_group_sources(imgui_md)
     if(IMGUI_BUNDLE_INSTALL_CPP)
         install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h DESTINATION include/imgui_md_wrapper)

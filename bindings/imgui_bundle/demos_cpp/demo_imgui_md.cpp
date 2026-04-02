@@ -52,9 +52,9 @@ Images can be loaded from local assets:
 ![World](images/world.png)
 )";
 
-#ifdef __EMSCRIPTEN__
+#ifdef IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES
     md += R"(
-Fetching images from an url also works with emscripten and python
+Fetching images from an url also works
 
 ![Photo](https://picsum.photos/id/1018/300/200)
 
