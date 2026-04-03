@@ -78,8 +78,7 @@ pyinstaller yourapp.spec
 
 ## Packaging with Nuitka
 
-Instructions inspired @neudinger's article at 
-https://neudinger.medium.com/the-modern-c-python-gui-stack-from-native-binary-to-webassembly-cc235bf3fb3b
+Instructions inspired by [neudinger's article](https://neudinger.medium.com/the-modern-c-python-gui-stack-from-native-binary-to-webassembly-cc235bf3fb3b)
 
 Nuitka is a Python compiler that can create standalone executables. It can be used to package Dear ImGui Bundle applications as well.
 
