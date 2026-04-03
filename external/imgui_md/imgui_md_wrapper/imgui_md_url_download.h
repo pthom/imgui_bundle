@@ -1,5 +1,5 @@
 #pragma once
-#ifdef IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES
+#ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
 
 #include "imgui_md_wrapper.h"
 

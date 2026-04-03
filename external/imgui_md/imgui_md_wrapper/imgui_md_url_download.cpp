@@ -4,7 +4,7 @@
 
 #include "imgui_md_url_download.h"
 
-#ifdef IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES
+#ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
 
 #include <curl/curl.h>
 #include <string>
@@ -164,4 +164,4 @@ namespace ImGuiMd {
 
 } // namespace ImGuiMd
 
-#endif // IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES
+#endif // IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES

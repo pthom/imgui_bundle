@@ -52,7 +52,7 @@ Images can be loaded from local assets:
 ![World](images/world.png)
 )";
 
-#ifdef IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES
+#ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
     md += R"(
 Fetching images from an url also works
 

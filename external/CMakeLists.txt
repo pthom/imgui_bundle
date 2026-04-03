@@ -311,9 +311,9 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     else()
         set(_IMGUI_MD_DOWNLOAD_DEFAULT ON)
     endif()
-    option(IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES
+    option(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
            "Enable URL image download in markdown (requires libcurl)" ${_IMGUI_MD_DOWNLOAD_DEFAULT})
-    if(IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES)
+    if(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
         find_package(CURL)
         if(CURL_FOUND)
             target_sources(imgui_md PRIVATE
@@ -321,16 +321,16 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
                 imgui_md/imgui_md_wrapper/imgui_md_url_download.h
             )
             target_link_libraries(imgui_md PRIVATE CURL::libcurl)
-            target_compile_definitions(imgui_md PUBLIC IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES)
+            target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
             message(STATUS "imgui_md: URL image download enabled (using system libcurl)")
         else()
             message(WARNING
-                "IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES is ON but libcurl was not found. "
+                "IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES is ON but libcurl was not found. "
                 "URL images in markdown will be disabled. "
                 "Install libcurl: macOS (already present), "
                 "Linux: apt install libcurl4-openssl-dev, "
                 "Windows: vcpkg install curl")
-            set(IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES OFF)
+            set(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES OFF)
         endif()
     endif()
 

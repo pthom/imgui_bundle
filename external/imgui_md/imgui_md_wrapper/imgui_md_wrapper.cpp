@@ -1,6 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui_md_wrapper.h"
-#ifdef IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES
+#ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
 #include "imgui_md_url_download.h"
 #endif
 
@@ -568,7 +568,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         gMarkdownOptions.callbacks.OnDownloadData = nullptr;
         gMarkdownRenderer.release();
         gMarkdownWasInitialized = false;
-#ifdef IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES
+#ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
         ClearDesktopDownloads();
 #endif
     }
@@ -586,7 +586,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         // (unless one was already set, e.g. by Python)
         if (!gMarkdownOptions.callbacks.OnDownloadData)
             gMarkdownOptions.callbacks.OnDownloadData = EmscriptenDownloadData;
-#elif defined(IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES)
+#elif defined(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
         // On desktop C++, set a default download callback using libcurl
         // (unless one was already set, e.g. by Python)
         if (!gMarkdownOptions.callbacks.OnDownloadData)
