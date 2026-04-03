@@ -100,6 +100,7 @@ class ExternalLibrary:
     def name_snake_case(self) -> str:
         r = self.name
         r = r.replace("ImGui", "Imgui")
+        r = r.replace("MicroTeX", "Microtex")
         r = r.replace("-", "_")
         r = to_snake_case(r)
         return r

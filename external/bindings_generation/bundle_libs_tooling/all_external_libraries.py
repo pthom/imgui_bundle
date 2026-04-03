@@ -107,6 +107,15 @@ def lib_md4c() -> ExternalLibrary:
     )
 
 
+def lib_microtex() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="MicroTeX",
+        official_git_url="https://github.com/NanoMichael/MicroTeX.git",
+        official_branch="openmath",
+        is_published_in_python=False
+    )
+
+
 def lib_imgui_tex_inspect() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui_tex_inspect",
@@ -236,6 +245,7 @@ ALL_LIBS = [
     lib_imgui_node_editor(),
     lib_imgui_md(),
     lib_md4c(),
+    lib_microtex(),
     lib_imgui_tex_inspect(),
     lib_imgui_toggle(),
     lib_imgui_color_text_edit(),

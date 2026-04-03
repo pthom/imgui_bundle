@@ -339,6 +339,39 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h DESTINATION include/imgui_md_wrapper)
     endif()
 
+    # MicroTeX: native LaTeX math rendering (requires FreeType, already available via hello_imgui)
+    # IMGUI_RICHMD_WITH_LATEX is derived from the bundle-level IMGUI_BUNDLE_WITH_MICROTEX option.
+    # When imgui_richmd becomes standalone, IMGUI_RICHMD_WITH_LATEX would be a separate option.
+    if(DEFINED IMGUI_BUNDLE_WITH_MICROTEX)
+        set(_IMGUI_RICHMD_LATEX_DEFAULT ${IMGUI_BUNDLE_WITH_MICROTEX})
+    else()
+        set(_IMGUI_RICHMD_LATEX_DEFAULT OFF)
+    endif()
+    option(IMGUI_RICHMD_WITH_LATEX "Enable native LaTeX rendering in markdown (via MicroTeX)" ${_IMGUI_RICHMD_LATEX_DEFAULT})
+    if(IMGUI_RICHMD_WITH_LATEX AND NOT HELLOIMGUI_USE_FREETYPE)
+        message(FATAL_ERROR "IMGUI_RICHMD_WITH_LATEX requires FreeType (normally provided by HelloImGui). "
+                            "Either enable HELLOIMGUI_USE_FREETYPE or set IMGUI_RICHMD_WITH_LATEX=OFF.")
+    endif()
+    if(IMGUI_RICHMD_WITH_LATEX)
+        # Build MicroTeX core as static library, typeface-only (no path rendering)
+        set(_BUILD_STATIC ON CACHE BOOL "" FORCE)
+        set(_DISABLE_ALIAS ON CACHE BOOL "" FORCE)
+        set(GLYPH_RENDER_TYPE 2 CACHE STRING "" FORCE)
+        set(HAVE_LOG OFF CACHE BOOL "" FORCE)
+        set(_HAVE_AUTO_FONT_FIND OFF CACHE BOOL "" FORCE)
+        add_subdirectory(MicroTeX/MicroTeX microtex_build)
+        # Note: FreeType is already available via imgui_md -> imgui -> freetype.
+        # Our FreeType backend (Phase 2) will link FreeType directly.
+        target_link_libraries(imgui_md PUBLIC microtex)
+        target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/MicroTeX/MicroTeX/lib>)
+        target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_LATEX)
+        message(STATUS "imgui_md: native LaTeX rendering enabled (via MicroTeX)")
+    endif()
+
+    if(IMGUI_BUNDLE_WITH_MICROTEX)
+        target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_MICROTEX)
+    endif()
+
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_MD)
     set(IMGUI_BUNDLE_WITH_IMGUI_MD ON CACHE INTERNAL "" FORCE)
 else()
