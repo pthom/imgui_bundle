@@ -112,6 +112,7 @@ def lib_microtex() -> ExternalLibrary:
         name="MicroTeX",
         official_git_url="https://github.com/NanoMichael/MicroTeX.git",
         official_branch="openmath",
+        custom_git_folder="imgui_microtex/MicroTeX",
         is_published_in_python=False
     )
 

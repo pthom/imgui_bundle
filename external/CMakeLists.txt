@@ -359,11 +359,11 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         set(GLYPH_RENDER_TYPE 2 CACHE STRING "" FORCE)
         set(HAVE_LOG OFF CACHE BOOL "" FORCE)
         set(_HAVE_AUTO_FONT_FIND OFF CACHE BOOL "" FORCE)
-        add_subdirectory(MicroTeX/MicroTeX microtex_build)
+        add_subdirectory(imgui_microtex/MicroTeX microtex_build)
         # Note: FreeType is already available via imgui_md -> imgui -> freetype.
         # Our FreeType backend (Phase 2) will link FreeType directly.
         target_link_libraries(imgui_md PUBLIC microtex)
-        target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/MicroTeX/MicroTeX/lib>)
+        target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/MicroTeX/lib>)
         target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_LATEX)
         message(STATUS "imgui_md: native LaTeX rendering enabled (via MicroTeX)")
     endif()

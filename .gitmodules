@@ -79,7 +79,7 @@
 [submodule "external/ImAnim/ImAnim"]
 	path = external/ImAnim/ImAnim
 	url = https://github.com/pthom/ImAnim.git
-[submodule "external/MicroTeX/MicroTeX"]
-	path = external/MicroTeX/MicroTeX
+[submodule "external/imgui_microtex/MicroTeX"]
+	path = external/imgui_microtex/MicroTeX
 	url = https://github.com/NanoMichael/MicroTeX.git
 	branch = openmath
