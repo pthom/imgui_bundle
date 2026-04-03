@@ -370,14 +370,14 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
             $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/imgui_microtex>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/MicroTeX/lib>
         )
-        # Link FreeType: use the target HelloImGui resolved, finding it ourselves if needed
+        # Link FreeType and imgui
         if(TARGET freetype)
-            target_link_libraries(imgui_microtex PUBLIC microtex freetype)
+            target_link_libraries(imgui_microtex PUBLIC microtex freetype imgui)
         elseif(TARGET Freetype::Freetype)
-            target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype)
+            target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype imgui)
         else()
             find_package(Freetype REQUIRED)
-            target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype)
+            target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype imgui)
         endif()
 
         if(IMGUI_BUNDLE_INSTALL_CPP)
