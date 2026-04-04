@@ -367,7 +367,7 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
             imgui_microtex/imgui_microtex/internal/graphic_freetype.cpp
         )
         target_include_directories(imgui_microtex PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/imgui_microtex>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex>
             $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/MicroTeX/lib>
         )
         # Link FreeType and imgui

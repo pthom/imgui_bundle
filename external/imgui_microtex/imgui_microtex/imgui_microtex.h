@@ -27,7 +27,9 @@ void Init(const std::string& clmFile, const std::string& fontFile);
 // Check if initialized.
 bool IsInitialized();
 
-// Release all resources (including cached textures).
+// Release all resources (textures, MicroTeX, FreeType).
+// Call at most once, at process shutdown.
+// Calling Init() after Release() will throw - MicroTeX does not support re-initialization.
 void Release();
 
 // ============================================================================

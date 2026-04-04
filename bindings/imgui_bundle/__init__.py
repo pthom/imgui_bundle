@@ -213,6 +213,9 @@ if has_submodule("im_anim"):
 if has_submodule("imgui_explorer"):
     from imgui_bundle._imgui_bundle import imgui_explorer as imgui_explorer
     __all__.extend(["imgui_explorer"])
+if has_submodule("imgui_microtex"):
+    from imgui_bundle._imgui_bundle import imgui_microtex as imgui_microtex
+    __all__.extend(["imgui_microtex"])
 
 if has_submodule("immapp_cpp"):  # immapp is a Python wrapper around immapp_cpp
     from imgui_bundle import immapp as immapp

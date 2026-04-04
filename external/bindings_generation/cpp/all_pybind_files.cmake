@@ -31,4 +31,5 @@ set(all_pybind_files
     ${external_dir}/nanovg/bindings/pybind_nanovg.cpp
     ${external_dir}/ImAnim/bindings/pybind_imanim.cpp
     ${external_dir}/imgui_explorer/bindings/pybind_imgui_explorer.cpp
+    ${external_dir}/imgui_microtex/bindings/pybind_imgui_microtex.cpp
     )

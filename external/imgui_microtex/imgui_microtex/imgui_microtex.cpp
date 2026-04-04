@@ -10,6 +10,7 @@
 namespace ImGuiMicroTeX {
 
 static bool sInitialized = false;
+static bool sReleased = false;
 static std::mutex sMutex;
 
 // Convert ImU32 (0xAABBGGRR) to MicroTeX color (0xAARRGGBB)
@@ -43,6 +44,12 @@ static void DeleteAllTextures() {
 
 void Init(const std::string& clmFile, const std::string& fontFile) {
     std::lock_guard<std::mutex> lock(sMutex);
+    if (sReleased) {
+        throw std::runtime_error(
+            "ImGuiMicroTeX::Init() called after Release(). "
+            "MicroTeX does not support re-initialization. "
+            "Init() and Release() should each be called at most once per process.");
+    }
     if (sInitialized) return;
 
     microtex::Font_freetype::initFreeType();
@@ -70,6 +77,7 @@ void Release() {
     microtex::MicroTeX::release();
     microtex::Font_freetype::releaseFreeType();
     sInitialized = false;
+    sReleased = true;
 }
 
 // ============================================================================
