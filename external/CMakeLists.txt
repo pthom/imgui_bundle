@@ -342,8 +342,9 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     # MicroTeX: native LaTeX math rendering (requires FreeType, already available via hello_imgui)
     # IMGUI_RICHMD_WITH_LATEX is derived from the bundle-level IMGUI_BUNDLE_WITH_MICROTEX option.
     # When imgui_richmd becomes standalone, IMGUI_RICHMD_WITH_LATEX would be a separate option.
-    if(DEFINED IMGUI_BUNDLE_WITH_MICROTEX)
-        set(_IMGUI_RICHMD_LATEX_DEFAULT ${IMGUI_BUNDLE_WITH_MICROTEX})
+    # Default to ON only if both IMGUI_BUNDLE_WITH_MICROTEX and HELLOIMGUI_USE_FREETYPE are ON
+    if(DEFINED IMGUI_BUNDLE_WITH_MICROTEX AND IMGUI_BUNDLE_WITH_MICROTEX AND HELLOIMGUI_USE_FREETYPE)
+        set(_IMGUI_RICHMD_LATEX_DEFAULT ON)
     else()
         set(_IMGUI_RICHMD_LATEX_DEFAULT OFF)
     endif()
