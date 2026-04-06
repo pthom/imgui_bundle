@@ -360,7 +360,7 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         set(GLYPH_RENDER_TYPE 2 CACHE STRING "" FORCE)
         set(HAVE_LOG OFF CACHE BOOL "" FORCE)
         set(_HAVE_AUTO_FONT_FIND OFF CACHE BOOL "" FORCE)
-        add_subdirectory(imgui_microtex/MicroTeX microtex_build)
+        add_subdirectory(imgui_microtex/MicroTeX microtex_build EXCLUDE_FROM_ALL)
 
         # Build imgui_microtex: our FreeType backend + public API
         add_library(imgui_microtex STATIC EXCLUDE_FROM_ALL
