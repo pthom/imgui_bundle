@@ -8,67 +8,6 @@ from imgui_bundle import ImVec2, ImVec4
 
 
 # =============================================================================
-# LaTeX helper
-# =============================================================================
-
-# Experimentation on whether we could display math in the renderer.
-# Currently uses https://latex.codecogs.com/
-# A more robust solution would be to bundle a math renderer
-# KateX come to mind, but actually the most astute would be
-#    https://github.com/NanoMichael/MicroTeX
-# (would work in C++ and Python)
-
-def _detect_latex_color() -> str:
-    """Detect whether the current ImGui theme is light or dark."""
-    try:
-        bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
-        luminance = 0.299 * bg.x + 0.587 * bg.y + 0.114 * bg.z
-        return "black" if luminance > 0.5 else "white"
-    except Exception:
-        return "white"
-
-def _latex_to_img(tex: str, display: bool, color: str) -> str:
-    """Convert a LaTeX string to an <img> tag via codecogs."""
-    dpi = 150 if display else 100
-    encoded = quote(f"\\dpi{{{dpi}}}\\color{{{color}}}{tex}")
-    url = f"https://latex.codecogs.com/png.latex?{encoded}"
-    return f'<img src="{url}">'
-
-def render_md_with_math(md: str):
-    """Render markdown with LaTeX math support.
-
-    Uses LaTeX/KaTeX flavor:
-      $...$   for inline math
-      $$...$$ for display math (on its own line)
-      \\$      for a literal dollar sign
-
-    Calls imgui_md.render_unindented() with math replaced by <img> tags.
-    """
-    import re
-    color = _detect_latex_color()
-
-    # Protect escaped dollars
-    md = md.replace(r"\$", "%%ESCAPED_DOLLAR%%")
-
-    # Replace $$...$$ (display math) first - greedy on content, not on delimiters
-    md = re.sub(
-        r"\$\$(.*?)\$\$",
-        lambda m: _latex_to_img(m.group(1).strip(), display=True, color=color),
-        md, flags=re.DOTALL)
-
-    # Replace $...$ (inline math) - single line only, no nested $
-    md = re.sub(
-        r"\$([^\$\n]+?)\$",
-        lambda m: _latex_to_img(m.group(1).strip(), display=False, color=color),
-        md)
-
-    # Restore escaped dollars
-    md = md.replace("%%ESCAPED_DOLLAR%%", "$")
-
-    imgui_md.render_unindented(md)
-
-
-# =============================================================================
 # Lesson content (markdown + LaTeX)
 # =============================================================================
 
@@ -341,7 +280,7 @@ def gui(state: AppState):
     imgui.begin_child("lesson", ImVec2(0, 0), imgui.ChildFlags_.none)
 
     # ---- INTRODUCTION ----
-    render_md_with_math(INTRO)
+    imgui_md.render(INTRO)
     imgui.spacing()
 
     # ---- INTERACTIVE: Free oscillation ----
@@ -410,7 +349,7 @@ def gui(state: AppState):
 
     # ---- DAMPING SECTION ----
     if imgui.collapsing_header("Damping", imgui.TreeNodeFlags_.default_open):
-        render_md_with_math(DAMPING_INTRO)
+        imgui_md.render(DAMPING_INTRO)
         imgui.spacing()
 
         if imgui.button("Disable damping" if state.damping_enabled else "Enable damping"):
@@ -437,7 +376,7 @@ def gui(state: AppState):
 
     # ---- RESONANCE SECTION ----
     if imgui.collapsing_header("Driven Oscillation & Resonance"):
-        render_md_with_math(RESONANCE_INTRO)
+        imgui_md.render(RESONANCE_INTRO)
         imgui.spacing()
 
         if imgui.button("Disable driving force" if state.driving_enabled else "Enable driving force"):
@@ -505,7 +444,7 @@ def main():
     params.app_window_params.window_geometry.size = (1000, 800)
     params.app_window_params.window_title = "Lesson: Simple Harmonic Motion"
     params.fps_idling.fps_idle = 25
-    addons = immapp.AddOnsParams(with_markdown=True, with_implot= True)
+    addons = immapp.AddOnsParams(with_markdown=True, with_implot= True, with_latex=True)
     immapp.run(params, addons)
 
 

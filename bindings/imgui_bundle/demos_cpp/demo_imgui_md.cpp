@@ -2,6 +2,7 @@
 // Acknowledgments
 // This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
 
+#include "hello_imgui/hello_imgui.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 
@@ -15,11 +16,11 @@ Hello World!
 ## Acknowledgments (H2)
 This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
 
-### Supported features (H3)
+## Supported features (H2)
 
 imgui_md currently supports the following markdown functionality.
 
-#### Text formatting (H4)
+### Text formatting (H3)
 
 * Wrapped text
 * Headers
@@ -36,6 +37,7 @@ imgui_md currently supports the following markdown functionality.
 * Backslash Escapes
 * Inline `code element` (using \`code element\`)
 * Tables
+* Native LaTeX math, inline (`$...$`) and display (`$$...$$`)
 * Block code like this (using \`\`\`)
 ```
 int answer()
@@ -45,16 +47,18 @@ int answer()
 ```
 * Separator (see below)
 
-#### Images (H4)
+---
 
-Images can be loaded from local assets:
+### Images
+
+Images can be loaded from local assets or from URLs:
 
 ![World](images/world.png)
 )";
 
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
     md += R"(
-Fetching images from an url also works
+Online images are downloaded asynchronously (a spinner is shown while loading):
 
 ![Photo](https://picsum.photos/id/1018/300/200)
 
@@ -66,8 +70,7 @@ You can also use HTML img tags to control the size:
 
     md += R"(
 ----
-
-#### Tables (H4)
+### Tables
 
 *Warning about tables layout*: the first row will impose the columns widths.
 Use nbsp\; to increase the columns sizes on the first row if required.
@@ -97,6 +100,53 @@ Can be created with this code
 | Oceania        | 41 million  | 14                  |
 | South America  | 422 million | 12                  |
 ```
+
+
+---
+
+### Math formulas
+
+**Inline math with \$...\$**
+
+Inline math uses single dollar delimiters. For example the line below
+
+A famous math equality: $\sum_{i=0}^{n} i = \frac{n(n+1)}{2}$.
+
+Is generated with
+
+```
+A famous math equality: $\sum_{i=0}^{n} i = \frac{n(n+1)}{2}$.
+```
+
+**Display math with \$\$...\$\$**
+
+Display math uses double dollars on its own line. The quadratic formula:
+
+$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+
+Is generated with
+
+```
+$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+```
+
+Sums, integrals, matrices all work:
+
+$$
+\int_{-\infty}^{\infty} e^{-x^2}\, dx = \sqrt{\pi}
+\qquad
+A = \begin{pmatrix} a & b \\ c & d \end{pmatrix}
+\qquad
+e^{i\pi} + 1 = 0
+$$
+
+> **Note**
+> Rendering is powered by [MicroTeX](https://github.com/NanoMichael/MicroTeX)
+> Enable it by passing `with_latex=True` to `immapp.run()`.
 )";
     return md;
 }
@@ -110,3 +160,25 @@ void demo_imgui_md()
     // (it will remove the main indentation of the Markdown string before rendering it,
     // which is useful when the string is defined inside a function with indentation)
 }
+
+
+// Standalone main(): bypasses the auto-generated main from ibd_add_auto_demo,
+// which would only enable withMarkdown. We need withLatex=true (which implies
+// withMarkdown=true) so the LaTeX section actually renders.
+// When this file is built as part of the demo_imgui_bundle aggregator
+// (IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY), this main() is excluded.
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
+int main(int, char**)
+{
+    HelloImGui::SimpleRunnerParams runnerParams;
+    runnerParams.guiFunction = demo_imgui_md;
+    runnerParams.windowTitle = "Dear ImGui Bundle - Markdown demo";
+    runnerParams.windowSize = {800, 800};
+
+    ImmApp::AddOnsParams addons;
+    addons.withLatex = true;  // implies withMarkdown=true
+
+    ImmApp::Run(runnerParams, addons);
+    return 0;
+}
+#endif

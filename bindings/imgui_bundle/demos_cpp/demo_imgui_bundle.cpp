@@ -209,6 +209,7 @@ int main(int, char **)
     // ################################################################################################
     auto addons = ImmApp::AddOnsParams();
     addons.withMarkdown = true;
+    addons.withLatex = true;
     addons.withNodeEditor = true;
     addons.withImplot = true;
     addons.withImplot3d = true;

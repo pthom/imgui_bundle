@@ -210,6 +210,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     ################################################################################################
     addons = immapp.AddOnsParams()
     addons.with_markdown = True
+    addons.with_latex = True
     addons.with_node_editor = True
     addons.with_implot = True
     addons.with_implot3d = True
