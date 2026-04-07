@@ -27,8 +27,9 @@ static uint32_t ImU32ToMicroTexColor(ImU32 c) {
 // the shared_ptrs, which frees the GPU textures via TextureGpu's destructor.
 static std::map<std::string, FormulaTexture> sTextureCache;
 
-// Frame-generation eviction threshold. 0 = disabled (default; cache grows
-// for the lifetime of the process). Set via SetEvictionFrames().
+// Frame-generation eviction threshold (frames). Default: 60 (~1s at 60 FPS).
+// Set to 0 to disable eviction entirely (cache grows for the lifetime of
+// the process). Configurable at runtime via SetEvictionFrames().
 static int sEvictAfterFrames = 60;
 
 static std::string MakeCacheKey(const std::string& latex, float fontSize, ImU32 color) {

@@ -101,22 +101,29 @@ FormulaTexture ToTexture(const RenderedFormula& formula);
 void ClearTextureCache();
 
 // ============================================================================
-// Optional frame-generation eviction for the texture cache
+// Frame-generation eviction for the texture cache
 // ============================================================================
 //
-// By default the texture cache grows for the lifetime of the process: every
-// formula ever rendered keeps its GPU texture pinned. This is fine for
-// static documentation viewers (a tutorial with ~50 formulas costs maybe
-// 2 MB of GPU memory) but problematic for interactive use cases — a LaTeX
-// REPL, a multi-document browser, or a long-running notebook may accumulate
-// hundreds of stale entries that the user will never see again.
+// imgui_microtex maintains a texture cache keyed by (latex, fontSize, color)
+// so that re-rendering the same formula every frame is essentially free.
+// To prevent unbounded growth in long-running interactive use cases — LaTeX
+// REPLs, multi-document browsers, notebooks where users page through many
+// formulas they will never see again — the cache evicts entries that have
+// not been touched in the last N frames. Static documentation viewers see
+// no functional change: every formula they render is touched every frame,
+// so it never falls below the eviction threshold.
 //
-// SetEvictionFrames(N) enables a lazy eviction pass: cache entries that
-// have not been touched (rendered) in the last N frames are dropped on the
-// next cache insertion. The eviction is "lazy on insert" only — if no new
-// formula is ever rendered, no eviction runs. For most workloads this is
-// fine because real apps render *something* every frame; for the rare case
-// where rendering stops entirely, you can call ClearTextureCache() manually.
+// SetEvictionFrames(N) configures the threshold:
+//   - N > 0: cache entries not touched for N frames are dropped on the
+//            next cache insertion (lazy: no insert -> no sweep).
+//   - N == 0: eviction disabled, cache grows for the lifetime of the
+//             process. Use this for short-lived apps where you do not
+//             want any eviction overhead.
+//
+// The eviction is "lazy on insert" only. If no new formula is ever
+// rendered, no sweep runs — call ClearTextureCache() manually for the
+// rare case where rendering stops entirely and you want to reclaim
+// memory immediately.
 //
 // Default: N = 60 (~1 second at 60 FPS).
 void SetEvictionFrames(int n);
