@@ -85,6 +85,92 @@ imgui_md supports images from local assets and from URLs.
 **C++ (desktop):** URL images are not downloaded by default. To enable them, set `MarkdownCallbacks::OnDownloadData` to a function that downloads data from a URL (e.g. using libcurl). The callback should return a `MarkdownDownloadResult` with `Ready`/`Downloading`/`Failed` status.
 :::
 
+### LaTeX math
+
+imgui_md can render inline and display LaTeX math via the bundled [imgui_microtex](https://github.com/pthom/MicroTeX) library — a thin wrapper  around [MicroTeX](https://github.com/NanoMichael/MicroTeX).
+
+**Quick example:**
+
+::::{tab-set}
+
+:::{tab-item} Python
+```python
+from imgui_bundle import imgui_md, immapp
+
+def gui():
+    imgui_md.render_unindented(r"""
+# Math in markdown
+
+Inline math sits on the text baseline: $E = mc^2$, $\sqrt{a^2 + b^2}$,
+$\sum_{i=0}^{n} i = \frac{n(n+1)}{2}$.
+
+Display math is centered on its own line:
+
+$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+
+Sums, integrals, matrices all work:
+
+$$
+\int_{-\infty}^{\infty} e^{-x^2}\, dx = \sqrt{\pi}
+\qquad
+A = \begin{pmatrix} a & b \\ c & d \end{pmatrix}
+\qquad
+e^{i\pi} + 1 = 0
+$$
+    """)
+
+immapp.run(gui, with_latex=True)   # implies with_markdown=True
+```
+
+Note the **raw string** (`r"""..."""`): without it, Python would interpret sequences like `\theta` as escape characters and silently corrupt the LaTeX.
+:::
+
+:::{tab-item} C++
+```cpp
+#include "immapp/immapp.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
+
+void gui() {
+    ImGuiMd::Render(R"(
+# Math in markdown
+
+Inline math: $E = mc^2$, $\sqrt{a^2 + b^2}$.
+
+$$
+x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+    )");
+}
+
+int main() {
+    ImmApp::AddOnsParams addons;
+    addons.withLatex = true;        // implies withMarkdown=true
+    HelloImGui::SimpleRunnerParams simple;
+    simple.guiFunction = gui;
+    ImmApp::Run(simple, addons);
+    return 0;
+}
+```
+:::
+
+::::
+
+:::{tip}
+Enable LaTeX math by passing `with_latex=True` to `immapp.run()` (Python)
+or setting `addOnsParams.withLatex = true` (C++). Both imply markdown
+support — you do not need to also set `with_markdown=True`.
+
+- When LaTeX is **disabled** (the default), `$` is displayed as a normaly
+- When LaTeX is **enabled**, `$` is treated as math delimiters. To include a literal `$`, escape it like this: `\$`.
+:::
+
+:::{note} Pyodide note
+Pyodide wheels do not include the math fonts required for rendering LaTeX (to save space, since they occupy about 500KB). They will be downloaded when needed:  the download is triggered by a call to `immapp.run(with_latex=True)`.
+:::
+
+
 ### Full Demo
 
 [Try online](https://traineq.org/imgui_bundle_explorer/demo_imgui_md.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
