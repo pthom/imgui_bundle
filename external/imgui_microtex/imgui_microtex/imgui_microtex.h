@@ -79,6 +79,10 @@ struct FormulaTexture {
     // BaselineY: pixel y-offset from the TOP of the image to the formula's
     // typographic baseline. See RenderedFormula::BaselineY for details.
     int BaselineY = 0;
+    // LastUsedFrame: ImGui::GetFrameCount() at the most recent cache hit
+    // or insertion. Used by the optional frame-generation eviction (see
+    // SetEvictionFrames). Not interesting to direct API consumers.
+    int LastUsedFrame = 0;
 
     // Convenience: returns the GPU texture id, or 0 if no texture is held.
     ImTextureID TextureId() const {
@@ -95,5 +99,30 @@ FormulaTexture ToTexture(const RenderedFormula& formula);
 
 // Clear the texture cache.
 void ClearTextureCache();
+
+// ============================================================================
+// Optional frame-generation eviction for the texture cache
+// ============================================================================
+//
+// By default the texture cache grows for the lifetime of the process: every
+// formula ever rendered keeps its GPU texture pinned. This is fine for
+// static documentation viewers (a tutorial with ~50 formulas costs maybe
+// 2 MB of GPU memory) but problematic for interactive use cases — a LaTeX
+// REPL, a multi-document browser, or a long-running notebook may accumulate
+// hundreds of stale entries that the user will never see again.
+//
+// SetEvictionFrames(N) enables a lazy eviction pass: cache entries that
+// have not been touched (rendered) in the last N frames are dropped on the
+// next cache insertion. The eviction is "lazy on insert" only — if no new
+// formula is ever rendered, no eviction runs. For most workloads this is
+// fine because real apps render *something* every frame; for the rare case
+// where rendering stops entirely, you can call ClearTextureCache() manually.
+//
+// Default: N = 60 (~1 second at 60 FPS).
+void SetEvictionFrames(int n);
+
+// Returns the current cache size (number of formula entries). Useful for
+// diagnostics, monitoring, and tests.
+int GetCacheSize();
 
 }  // namespace ImGuiMicroTeX

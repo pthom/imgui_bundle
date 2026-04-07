@@ -27,6 +27,10 @@ static uint32_t ImU32ToMicroTexColor(ImU32 c) {
 // the shared_ptrs, which frees the GPU textures via TextureGpu's destructor.
 static std::map<std::string, FormulaTexture> sTextureCache;
 
+// Frame-generation eviction threshold. 0 = disabled (default; cache grows
+// for the lifetime of the process). Set via SetEvictionFrames().
+static int sEvictAfterFrames = 60;
+
 static std::string MakeCacheKey(const std::string& latex, float fontSize, ImU32 color) {
     char buf[64];
     snprintf(buf, sizeof(buf), "|%.1f|%08x", fontSize, color);
@@ -81,8 +85,10 @@ void Release() {
 // Level 1: LaTeX -> RGBA pixel buffer
 // ============================================================================
 
-RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color) {
-    std::lock_guard<std::mutex> lock(sMutex);
+// Internal: caller MUST hold sMutex.
+// Split out so RenderToTexture() can hold the lock across the cache
+// operations + render + insertion without deadlocking on a re-entry.
+static RenderedFormula Render_locked(const std::string& latex, float fontSize, ImU32 color) {
     if (!sInitialized) {
         throw std::runtime_error("ImGuiMicroTeX::Render called before Init()");
     }
@@ -123,6 +129,11 @@ RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color) {
     return result;
 }
 
+RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color) {
+    std::lock_guard<std::mutex> lock(sMutex);
+    return Render_locked(latex, fontSize, color);
+}
+
 RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& color) {
     return Render(latex, fontSize, ImGui::ColorConvertFloat4ToU32(color));
 }
@@ -143,14 +154,32 @@ FormulaTexture ToTexture(const RenderedFormula& formula) {
 }
 
 FormulaTexture RenderToTexture(const std::string& latex, float fontSize, ImU32 color) {
+    std::lock_guard<std::mutex> lock(sMutex);
+    int currentFrame = ImGui::GetFrameCount();
     std::string key = MakeCacheKey(latex, fontSize, color);
 
     auto it = sTextureCache.find(key);
-    if (it != sTextureCache.end())
+    if (it != sTextureCache.end()) {
+        // Touch: mark this entry as recently used so eviction skips it.
+        it->second.LastUsedFrame = currentFrame;
         return it->second;
+    }
 
-    RenderedFormula formula = Render(latex, fontSize, color);
+    // Cache miss. Before inserting, run a lazy eviction sweep so the cache
+    // does not grow unboundedly across long-running browsing sessions.
+    // Disabled by default (sEvictAfterFrames == 0).
+    if (sEvictAfterFrames > 0) {
+        for (auto e = sTextureCache.begin(); e != sTextureCache.end(); ) {
+            if (currentFrame - e->second.LastUsedFrame > sEvictAfterFrames)
+                e = sTextureCache.erase(e);
+            else
+                ++e;
+        }
+    }
+
+    RenderedFormula formula = Render_locked(latex, fontSize, color);
     FormulaTexture tex = ToTexture(formula);
+    tex.LastUsedFrame = currentFrame;
     sTextureCache[key] = tex;
     return tex;
 }
@@ -162,6 +191,16 @@ FormulaTexture RenderToTexture(const std::string& latex, float fontSize, const I
 void ClearTextureCache() {
     std::lock_guard<std::mutex> lock(sMutex);
     sTextureCache.clear();
+}
+
+void SetEvictionFrames(int n) {
+    std::lock_guard<std::mutex> lock(sMutex);
+    sEvictAfterFrames = (n < 0) ? 0 : n;
+}
+
+int GetCacheSize() {
+    std::lock_guard<std::mutex> lock(sMutex);
+    return (int)sTextureCache.size();
 }
 
 }  // namespace ImGuiMicroTeX

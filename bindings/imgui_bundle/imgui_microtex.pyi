@@ -115,6 +115,10 @@ class FormulaTexture:
     # BaselineY: pixel y-offset from the TOP of the image to the formula's
     # typographic baseline. See RenderedFormula::BaselineY for details.
     baseline_y: int = 0
+    # LastUsedFrame: ImGui::GetFrameCount() at the most recent cache hit
+    # or insertion. Used by the optional frame-generation eviction (see
+    # SetEvictionFrames). Not interesting to direct API consumers.
+    last_used_frame: int = 0
 
     def texture_id(self) -> ImTextureID:
         """ Convenience: returns the GPU texture id, or 0 if no texture is held."""
@@ -125,7 +129,8 @@ class FormulaTexture:
         width: int = 0,
         height: int = 0,
         depth: int = 0,
-        baseline_y: int = 0
+        baseline_y: int = 0,
+        last_used_frame: int = 0
         ) -> None:
         """Auto-generated default constructor with named params
 
@@ -156,6 +161,36 @@ def to_texture(formula: RenderedFormula) -> FormulaTexture:
 
 def clear_texture_cache() -> None:
     """ Clear the texture cache."""
+    pass
+
+def set_eviction_frames(n: int) -> None:
+    """ ============================================================================
+     Optional frame-generation eviction for the texture cache
+     ============================================================================
+
+     By default the texture cache grows for the lifetime of the process: every
+     formula ever rendered keeps its GPU texture pinned. This is fine for
+     static documentation viewers (a tutorial with ~50 formulas costs maybe
+     2 MB of GPU memory) but problematic for interactive use cases — a LaTeX
+     REPL, a multi-document browser, or a long-running notebook may accumulate
+     hundreds of stale entries that the user will never see again.
+
+     SetEvictionFrames(N) enables a lazy eviction pass: cache entries that
+     have not been touched (rendered) in the last N frames are dropped on the
+     next cache insertion. The eviction is "lazy on insert" only — if no new
+     formula is ever rendered, no eviction runs. For most workloads this is
+     fine because real apps render *something* every frame; for the rare case
+     where rendering stops entirely, you can call ClearTextureCache() manually.
+
+     Default: N = 0 (eviction disabled, current behavior). A typical
+     interactive value is 60 (~1 second at 60 FPS).
+    """
+    pass
+
+def get_cache_size() -> int:
+    """ Returns the current cache size (number of formula entries). Useful for
+     diagnostics, monitoring, and tests.
+    """
     pass
 
 
