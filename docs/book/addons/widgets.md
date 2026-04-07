@@ -205,7 +205,7 @@ int main() {
 
 ::::{card}
 :link: https://github.com/aiekick/ImCoolBar
-```{figure} https://github.com/aiekick/ImCoolBar/raw/DemoApp/doc/DemoApp.gif
+```{figure} ../images/demo_widgets_coolbar.jpg
 :width: 350
 ImCoolBar: macOS-style dock bar with magnification effect.
 ```
