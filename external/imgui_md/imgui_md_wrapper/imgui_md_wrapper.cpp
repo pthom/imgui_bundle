@@ -485,16 +485,37 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         // We cannot do this in InitializeMarkdown() because the asset system
         // (HelloImGui::AssetFileFullPath) may not be ready until after the
         // fonts have loaded / backend started.
+        // Lazy MicroTeX init. Defensive: if the font assets are missing
+        // (corrupted install, or Pyodide download failed, etc.), log a
+        // warning once and leave MicroTeX uninitialized. The SPAN_LATEXMATH
+        // handlers below check IsInitialized() and fall back to rendering
+        // the LaTeX source as plain text instead of crashing on the asset
+        // lookup IM_ASSERT.
         void EnsureMicroTeXInitialized()
         {
             if (ImGuiMicroTeX::IsInitialized())
                 return;
-            std::string clmFile = HelloImGui::AssetFileFullPath(
-                "fonts/latex/latinmodern-math.clm1");
-            std::string otfFile = HelloImGui::AssetFileFullPath(
-                "fonts/latex/latinmodern-math.otf");
+            // One-shot failure flag: if init failed once, don't keep retrying
+            // (and re-logging) on every render.
+            if (mLatexInitFailed)
+                return;
+            const char* clmAsset = "fonts/latex/latinmodern-math.clm1";
+            const char* otfAsset = "fonts/latex/latinmodern-math.otf";
+            if (!HelloImGui::AssetExists(clmAsset) || !HelloImGui::AssetExists(otfAsset))
+            {
+                HelloImGui::Log(HelloImGui::LogLevel::Warning,
+                    "imgui_md: LaTeX font assets not found at fonts/latex/. "
+                    "Formulas will be shown as plain text source.");
+                mLatexInitFailed = true;
+                return;
+            }
+            std::string clmFile = HelloImGui::AssetFileFullPath(clmAsset);
+            std::string otfFile = HelloImGui::AssetFileFullPath(otfAsset);
             ImGuiMicroTeX::Init(clmFile, otfFile);
         }
+
+        // Set true once if MicroTeX init has failed, to avoid retry storms.
+        bool mLatexInitFailed = false;
 
         // Returns physical-pixels-per-logical-pixel for the current display.
         // On macOS retina this is 2.0; on standard DPI displays it is 1.0.
@@ -512,6 +533,15 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             if (e)
                 return;
             EnsureMicroTeXInitialized();
+            if (!ImGuiMicroTeX::IsInitialized())
+            {
+                // Fallback: show the original LaTeX source inline, with the
+                // delimiters, so the user recognizes it as a math expression.
+                std::string fallback = "$" + m_latex_buffer + "$";
+                ImGui::TextUnformatted(fallback.c_str());
+                ImGui::SameLine(0.0f, 0.0f);
+                return;
+            }
             // DPI-aware: rasterize at framebuffer density, display at logical size.
             float pixelScale = PixelScale();
             float logicalFontSize = ImGui::GetFontSize();
@@ -547,6 +577,15 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             if (e)
                 return;
             EnsureMicroTeXInitialized();
+            if (!ImGuiMicroTeX::IsInitialized())
+            {
+                // Fallback: show the original LaTeX source on its own line.
+                ImGui::NewLine();
+                std::string fallback = "$$" + m_latex_buffer + "$$";
+                ImGui::TextUnformatted(fallback.c_str());
+                ImGui::NewLine();
+                return;
+            }
             float pixelScale = PixelScale();
             float logicalFontSize = ImGui::GetFontSize() * 1.4f;
             float physicalFontSize = logicalFontSize * pixelScale;

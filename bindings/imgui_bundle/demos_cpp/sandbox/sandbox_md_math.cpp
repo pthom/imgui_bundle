@@ -1,12 +1,3 @@
-// Phase 3 sandbox: native LaTeX math in markdown via MicroTeX (C++ version).
-//
-// C++ mirror of sandbox_phase3_latex.py, used to debug the garbled-texture
-// issue independently from the Python bindings.
-//
-// Run (from a build with IMGUI_BUNDLE_WITH_MICROTEX=ON):
-//     ./sandbox_md_math
-//     ./sandbox_md_math --no-latex  (legacy: $ is a literal character)
-
 #include "hello_imgui/hello_imgui.h"
 #include "imgui.h"
 #include "immapp/immapp.h"
@@ -106,30 +97,15 @@ static void Gui()
     ImGuiMd::RenderUnindented(kMarkdown);
 }
 
-int main(int argc, char** argv)
+int main()
 {
-    bool withLatex = true;
-    for (int i = 1; i < argc; ++i)
-    {
-        if (std::strcmp(argv[i], "--no-latex") == 0)
-            withLatex = false;
-    }
-
-    std::printf(
-        "[sandbox_md_math] starting with with_latex=%s\n",
-        withLatex ? "true" : "false");
-    std::fflush(stdout);
-
     HelloImGui::SimpleRunnerParams simple;
     simple.guiFunction = Gui;
-    simple.windowTitle = withLatex
-        ? "Phase 3 LaTeX sandbox (LaTeX ON, C++)"
-        : "Phase 3 LaTeX sandbox (LaTeX OFF, C++)";
     simple.windowSize = {900, 900};
 
     ImmApp::AddOnsParams addOns;
     addOns.withMarkdown = true;
-    addOns.withLatex = withLatex;
+    addOns.withLatex = true;
 
     ImmApp::Run(simple, addOns);
     return 0;

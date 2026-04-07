@@ -1,10 +1,3 @@
-"""Phase 3 sandbox: native LaTeX math in markdown via MicroTeX.
-
-Run with the venv python that has imgui_bundle installed from the local build:
-    v314/bin/python sandbox_phase3_latex.py           # LaTeX ON (default)
-    v314/bin/python sandbox_phase3_latex.py --no-latex # LaTeX OFF (legacy: $ is literal)
-"""
-import sys
 from imgui_bundle import imgui, immapp, imgui_md
 
 
@@ -79,11 +72,8 @@ def gui() -> None:
 
 
 def main() -> None:
-    with_latex = "--no-latex" not in sys.argv
-    title = "Phase 3 LaTeX sandbox (LaTeX ON)" if with_latex else "Phase 3 LaTeX sandbox (LaTeX OFF)"
     immapp.run(
         gui_function=gui,
-        window_title=title,
         window_size=(900, 900),
         with_latex=True,
         with_markdown=True,
