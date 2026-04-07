@@ -82,8 +82,13 @@ def test_render_multiple_formulas():
         assert formula.height > 0
 
 
-def test_baseline():
-    """Test that baseline is a valid ratio."""
+def test_baseline_y():
+    """Test that baseline_y is a valid pixel y-offset within the image.
+
+    `baseline_y` is the absolute pixel distance from the TOP of the
+    (padded) image down to the typographic baseline. It must therefore
+    be a non-negative integer no larger than the image height.
+    """
     if sys.platform == "win32":
         return
 
@@ -91,7 +96,10 @@ def test_baseline():
     _ensure_initialized()
 
     formula = imgui_microtex.render("x^2", 20.0)
-    assert 0 <= formula.baseline <= 1, f"Baseline {formula.baseline} out of range [0, 1]"
+    assert isinstance(formula.baseline_y, int), \
+        f"baseline_y is {type(formula.baseline_y).__name__}, expected int"
+    assert 0 <= formula.baseline_y <= formula.height, \
+        f"baseline_y ({formula.baseline_y}) out of range [0, {formula.height}]"
 
 
 def test_rendering_structure():
@@ -159,6 +167,6 @@ if __name__ == "__main__":
     test_render_basic()
     test_render_pixels_as_array()
     test_render_multiple_formulas()
-    test_baseline()
+    test_baseline_y()
     # test_save_formula_images()
     print("All tests passed!")
