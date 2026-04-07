@@ -355,9 +355,9 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     endif()
     if(IMGUI_RICHMD_WITH_LATEX)
         # Build MicroTeX core as static library, typeface-only (no path rendering)
-        set(_BUILD_STATIC ON CACHE BOOL "" FORCE)
-        set(_DISABLE_ALIAS ON CACHE BOOL "" FORCE)
-        set(GLYPH_RENDER_TYPE 2 CACHE STRING "" FORCE)
+        set(_BUILD_STATIC ON CACHE BOOL "" FORCE)  # a CMake variable used by MicroTeX
+        set(_DISABLE_ALIAS ON CACHE BOOL "" FORCE)  # A CMake variable used by MicroTeX (for dyn libs)
+        set(GLYPH_RENDER_TYPE 2 CACHE STRING "" FORCE)  # MicroTex:  use typeface only
         set(HAVE_LOG OFF CACHE BOOL "" FORCE)
         set(_HAVE_AUTO_FONT_FIND OFF CACHE BOOL "" FORCE)
         add_subdirectory(imgui_microtex/MicroTeX microtex_build EXCLUDE_FROM_ALL)

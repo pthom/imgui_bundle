@@ -16,6 +16,7 @@ set(all_pybind_files
     ${external_dir}/imgui-knobs/bindings/pybind_imgui_knobs.cpp
     ${external_dir}/imgui-node-editor/bindings/pybind_imgui_node_editor.cpp
     ${external_dir}/imgui_md/bindings/pybind_imgui_md.cpp
+    ${external_dir}/imgui_microtex/bindings/pybind_imgui_microtex.cpp
     ${external_dir}/imgui_tex_inspect/bindings/pybind_imgui_tex_inspect.cpp
     ${external_dir}/imgui_toggle/bindings/pybind_imgui_toggle.cpp
     ${external_dir}/ImGuiColorTextEdit/bindings/pybind_imgui_color_text_edit.cpp
@@ -31,5 +32,4 @@ set(all_pybind_files
     ${external_dir}/nanovg/bindings/pybind_nanovg.cpp
     ${external_dir}/ImAnim/bindings/pybind_imanim.cpp
     ${external_dir}/imgui_explorer/bindings/pybind_imgui_explorer.cpp
-    ${external_dir}/imgui_microtex/bindings/pybind_imgui_microtex.cpp
     )

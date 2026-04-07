@@ -37,6 +37,7 @@ def run(
     with_markdown: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
+    with_latex: bool = False,
 ) -> None: ...
 
 # start() - Non-blocking async mode
@@ -68,6 +69,7 @@ def start(
     with_markdown: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
+    with_latex: bool = False,
 ) -> asyncio.Task: ...
 
 # stop() and is_running()

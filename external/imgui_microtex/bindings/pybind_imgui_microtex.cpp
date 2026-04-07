@@ -45,7 +45,7 @@ void py_init_module_imgui_microtex(nb::module_& m)
         ImGuiMicroTeX::IsInitialized, "Check if initialized.");
 
     m.def("release",
-        ImGuiMicroTeX::Release, "Release all resources (including cached textures).");
+        ImGuiMicroTeX::Release, " Release all resources (textures, MicroTeX, FreeType).\n Call at most once, at process shutdown.\n Calling Init() after Release() will throw - MicroTeX does not support re-initialization.");
 
 
     auto pyClassRenderedFormula =

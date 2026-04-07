@@ -8,15 +8,14 @@ Run with: pytest tests/test_imgui_microtex.py
 
 import sys
 import os
+from pathlib import Path
 
 
 def _find_font_files():
     """Find the MicroTeX font files (clm1 + otf) relative to the repo root."""
-    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    font_dir = os.path.join(repo_root, "external", "imgui_microtex", "MicroTeX", "res", "lm-math")
-    clm_file = os.path.join(font_dir, "latinmodern-math.clm1")
-    otf_file = os.path.join(font_dir, "latinmodern-math.otf")
-    return clm_file, otf_file
+    repo_root = Path(__file__).resolve().parent.parent
+    font_dir = repo_root / "external" / "imgui_microtex" / "MicroTeX" / "res" / "lm-math"
+    return str(font_dir / "latinmodern-math.clm1"), str(font_dir / "latinmodern-math.otf")
 
 
 def _ensure_initialized():

@@ -38,7 +38,10 @@ def is_initialized() -> bool:
     pass
 
 def release() -> None:
-    """ Release all resources (including cached textures)."""
+    """ Release all resources (textures, MicroTeX, FreeType).
+     Call at most once, at process shutdown.
+     Calling Init() after Release() will throw - MicroTeX does not support re-initialization.
+    """
     pass
 
 # ============================================================================

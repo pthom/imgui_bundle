@@ -146,11 +146,18 @@ namespace ImmApp
         }
 #endif
 
+        // withLatex implies withMarkdown
+        if (addOnsParams.withLatex)
+            addOnsParams.withMarkdown = true;
+
         // load markdown fonts if needed
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
         {
             if (!addOnsParams.withMarkdownOptions.has_value())
                 addOnsParams.withMarkdownOptions = ImGuiMd::MarkdownOptions();
+            // Propagate withLatex convenience flag into MarkdownOptions.
+            if (addOnsParams.withLatex)
+                addOnsParams.withMarkdownOptions->withLatex = true;
             ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
 
             runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::SequenceFunctions(
@@ -300,6 +307,7 @@ namespace ImmApp
         bool withNodeEditor,
         bool withTexInspect,
         bool withImAnim,
+        bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -323,6 +331,7 @@ namespace ImmApp
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
         addOnsParams.withImAnim = withImAnim;
+        addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif
@@ -349,6 +358,7 @@ namespace ImmApp
         bool withNodeEditor,
         bool withTexInspect,
         bool withImAnim,
+        bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -372,6 +382,7 @@ namespace ImmApp
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
         addOnsParams.withImAnim = withImAnim;
+        addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif
@@ -530,6 +541,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -552,6 +564,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+        addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif

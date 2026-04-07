@@ -682,6 +682,17 @@ def image_proportional_size(asked_size: ImVec2Like, image_size: ImVec2Like) -> I
     """
     pass
 
+# To upload raw RGBA pixel data to a caller-owned GPU texture, see
+# `HelloImGui::CreateTextureGpuFromRgbaData()` in `texture_gpu.h`.
+
+# @@md
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/texture_gpu.h included by hello_imgui.h                                    //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# @@md#TextureGpu
+
 # @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3815,6 +3826,39 @@ def image_and_size_from_encoded_data(data: bytes, cache_key: str = "") -> ImageA
     - data: bytes containing the encoded image
     - cache_key: if non-empty, the texture is cached and reused on subsequent calls with the same key
     Returns an ImageAndSize with texture_id and size."""
+    pass
+
+class TextureGpu:
+    """Opaque RAII handle owning a GPU texture.
+
+    The GPU resource is freed when the last reference to this object
+    is dropped (no separate `delete_texture` call). Hold the handle
+    in Python for as long as you want to display the texture.
+
+    Threading: must be created from the GUI thread, while a live
+    rendering backend (OpenGL/Metal/Vulkan/DirectX11) is initialized.
+    """
+
+    width: int
+    height: int
+    def texture_id(self) -> int:
+        """Returns the underlying ImTextureID as a Python int.
+        Pass it to imgui.image() etc."""
+        pass
+
+def create_texture_gpu_from_rgba_data(rgba: numpy.ndarray) -> TextureGpu:
+    """Upload an HxWx4 uint8 RGBA numpy array to a new GPU texture.
+
+    - `rgba` must be a contiguous numpy array of dtype uint8 with
+      shape (height, width, 4). The pixel data is read once during
+      the upload; the numpy array does not need to outlive the call.
+    - Returns an owning `TextureGpu` handle. Drop the last reference
+      to free the GPU resource.
+
+    Threading: must be called from the GUI thread, while a live
+    rendering backend is initialized (i.e. inside the gui callback,
+    or after `hello_imgui.run` has set up the backend).
+    """
     pass
 
 ####################    </generated_from:hello_imgui_amalgamation.h>    ####################

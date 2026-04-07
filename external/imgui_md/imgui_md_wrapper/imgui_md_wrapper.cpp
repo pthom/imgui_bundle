@@ -16,6 +16,10 @@
 #include "immapp/code_utils.h"
 #include "immapp/browse_to_url.h"
 
+#ifdef IMGUI_RICHMD_WITH_LATEX
+#include "imgui_microtex/imgui_microtex.h"
+#endif
+
 #include <fplus/fplus.hpp>
 #include <string>
 #include <vector>
@@ -262,6 +266,10 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             : mMarkdownOptions(markdownOptions)
             , mMarkdownCollection(markdownOptions->fontOptions)
         {
+#ifdef IMGUI_RICHMD_WITH_LATEX
+            if (mMarkdownOptions->withLatex)
+                EnableLatex();
+#endif
         }
 
 #ifdef CAN_RENDER_IMAGES
@@ -472,6 +480,64 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             if (mTableOpen && e) ImGui::TableNextColumn();
         }
 
+#ifdef IMGUI_RICHMD_WITH_LATEX
+        // Lazy-initialize MicroTeX on first LaTeX span.
+        // We cannot do this in InitializeMarkdown() because the asset system
+        // (HelloImGui::AssetFileFullPath) may not be ready until after the
+        // fonts have loaded / backend started.
+        void EnsureMicroTeXInitialized()
+        {
+            if (ImGuiMicroTeX::IsInitialized())
+                return;
+            std::string clmFile = HelloImGui::AssetFileFullPath(
+                "fonts/latex/latinmodern-math.clm1");
+            std::string otfFile = HelloImGui::AssetFileFullPath(
+                "fonts/latex/latinmodern-math.otf");
+            ImGuiMicroTeX::Init(clmFile, otfFile);
+        }
+
+        void SPAN_LATEXMATH(bool e) override
+        {
+            imgui_md::SPAN_LATEXMATH(e);
+            if (e)
+                return;
+            EnsureMicroTeXInitialized();
+            float fontSize = ImGui::GetFontSize();
+            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, fontSize, color);
+            if (tex.TextureId == (ImTextureID)0)
+                return;
+            // Vertically align the formula so its baseline matches the surrounding text.
+            float yOffset = (tex.Baseline - 1.0f) * (float)tex.Height;
+            float savedY = ImGui::GetCursorPosY();
+            ImGui::SetCursorPosY(savedY - yOffset);
+            ImGui::Image(tex.TextureId, ImVec2((float)tex.Width, (float)tex.Height));
+            ImGui::SameLine(0.0f, 0.0f);
+            ImGui::SetCursorPosY(savedY);
+        }
+
+        void SPAN_LATEXMATH_DISPLAY(bool e) override
+        {
+            imgui_md::SPAN_LATEXMATH_DISPLAY(e);
+            if (e)
+                return;
+            EnsureMicroTeXInitialized();
+            float fontSize = ImGui::GetFontSize() * 1.4f;
+            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, fontSize, color);
+            if (tex.TextureId == (ImTextureID)0)
+                return;
+            // Display math: centered on its own line.
+            ImGui::NewLine();
+            float avail = ImGui::GetContentRegionAvail().x;
+            float padX = (avail - (float)tex.Width) * 0.5f;
+            if (padX > 0.0f)
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + padX);
+            ImGui::Image(tex.TextureId, ImVec2((float)tex.Width, (float)tex.Height));
+            ImGui::NewLine();
+        }
+#endif
+
     };
 
 
@@ -570,6 +636,12 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         gMarkdownWasInitialized = false;
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
         ClearDesktopDownloads();
+#endif
+#ifdef IMGUI_RICHMD_WITH_LATEX
+        // Release MicroTeX resources (textures, FreeType, etc.)
+        // Safe to call even if Init() was never called.
+        if (ImGuiMicroTeX::IsInitialized())
+            ImGuiMicroTeX::Release();
 #endif
     }
 
