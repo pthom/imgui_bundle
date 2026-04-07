@@ -163,6 +163,20 @@ namespace ImmApp
             runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::SequenceFunctions(
                 runnerParams.callbacks.LoadAdditionalFonts,
                 ImGuiMd::GetFontLoaderFunction());
+
+            // Tear down markdown WHILE the GL context is still alive.
+            // BeforeExit fires inside AbstractRunner::TearDown just before
+            // Impl_Cleanup destroys the GL context, which is exactly what
+            // ImGuiMd::DeInitializeMarkdown needs: it triggers
+            // ImGuiMicroTeX::Release() → sTextureCache.clear() → each
+            // TextureGpuOpenGl destructor → glDeleteTextures(...). If we
+            // ran this from immapp::Priv_TearDown (after HelloImGui::Run
+            // returns), the GL context would already be gone and the
+            // glDeleteTextures call would crash on Linux.
+            runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
+                runnerParams.callbacks.BeforeExit,
+                [](){ ImGuiMd::DeInitializeMarkdown(); }
+            );
         }
 
 #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
@@ -271,8 +285,12 @@ namespace ImmApp
         }
 #endif
 
-        if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
-            ImGuiMd::DeInitializeMarkdown();
+        // Note: ImGuiMd::DeInitializeMarkdown() is no longer called from
+        // here. It is invoked from a BeforeExit callback registered in
+        // Priv_Setup, so it runs while the GL context is still alive.
+        // (Calling it here would run after HelloImGui::Run has destroyed
+        // the context, which causes a crash inside ~TextureGpuOpenGl
+        // → glDeleteTextures on Linux.)
     }
 
     void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)

@@ -725,17 +725,6 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         if (gMarkdownWasInitialized)
             return;
 
-        // Make sure HelloImGui's GLAD function table is populated so imgui_md
-        // can upload image / LaTeX-math textures even when hosted outside
-        // HelloImGui::Run() (e.g. a pure GLFW + PyOpenGL Python backend).
-        // Inside Run() with a non-OpenGL backend (Metal / Vulkan / DX), this
-        // would just dlopen OpenGL.framework for nothing — skip it there.
-        bool needsGlLoader = !HelloImGui::IsUsingHelloImGui()
-            || HelloImGui::GetRunnerParams()->rendererBackendType
-                == HelloImGui::RendererBackendType::OpenGL3;
-        if (needsGlLoader)
-            HelloImGui::InitGlLoader();
-
         gMarkdownOptions = options;
         if (gOnInitializeMarkdownCallback)
             gOnInitializeMarkdownCallback(gMarkdownOptions);
