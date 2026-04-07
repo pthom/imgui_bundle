@@ -116,7 +116,11 @@ def lib_microtex() -> ExternalLibrary:
         # fork_branch defaults to "imgui_bundle"
         custom_git_folder="imgui_microtex/MicroTeX",
         is_sub_library=True,
-        is_published_in_python=False,
+        # We DO publish a thin Python wrapper around MicroTeX (see
+        # external/imgui_microtex/bindings/{generate_imgui_microtex.py,
+        # pybind_imgui_microtex.cpp}). Without this flag, libs_bindings_all
+        # both skips regen for it and removes pybind_imgui_microtex.cpp from
+        # all_pybind_files.cmake.
     )
 
 
