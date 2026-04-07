@@ -81,5 +81,5 @@
 	url = https://github.com/pthom/ImAnim.git
 [submodule "external/imgui_microtex/MicroTeX"]
 	path = external/imgui_microtex/MicroTeX
-	url = https://github.com/NanoMichael/MicroTeX.git
-	branch = openmath
+	url = https://github.com/pthom/MicroTeX.git
+	branch = imgui_bundle

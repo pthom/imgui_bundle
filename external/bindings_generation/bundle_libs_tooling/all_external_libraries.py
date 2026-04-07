@@ -112,7 +112,11 @@ def lib_microtex() -> ExternalLibrary:
         name="imgui_microtex",
         official_git_url="https://github.com/NanoMichael/MicroTeX.git",
         official_branch="openmath",
+        fork_git_url="https://github.com/pthom/MicroTeX.git",
+        # fork_branch defaults to "imgui_bundle"
         custom_git_folder="imgui_microtex/MicroTeX",
+        is_sub_library=True,
+        is_published_in_python=False,
     )
 
 
