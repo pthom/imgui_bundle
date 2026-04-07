@@ -1399,8 +1399,6 @@ std::string EdgeToolbarTypeName(EdgeToolbarType e);
 // @@md#DefaultIconFont
 
 // HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font
-// Breaking change in v1.5.0:
-// - the default icon font is now FontAwesome 6, which includes many more icons.
 // - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:
 //     #include "hello_imgui/icons_font_awesome_6.h" or #include "hello_imgui/icons_font_awesome_4.h"
 enum class DefaultIconFont

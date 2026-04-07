@@ -1079,7 +1079,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
 
     auto pyEnumDefaultIconFont =
-        nb::enum_<HelloImGui::DefaultIconFont>(m, "DefaultIconFont", nb::is_arithmetic(), " HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font\n Breaking change in v1.5.0:\n - the default icon font is now FontAwesome 6, which includes many more icons.\n - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:\n     #include \"hello_imgui/icons_font_awesome_6.h\" or #include \"hello_imgui/icons_font_awesome_4.h\"")
+        nb::enum_<HelloImGui::DefaultIconFont>(m, "DefaultIconFont", nb::is_arithmetic(), " HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font\n - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:\n     #include \"hello_imgui/icons_font_awesome_6.h\" or #include \"hello_imgui/icons_font_awesome_4.h\"")
             .value("no_icons", HelloImGui::DefaultIconFont::NoIcons, "")
             .value("font_awesome4", HelloImGui::DefaultIconFont::FontAwesome4, "")
             .value("font_awesome6", HelloImGui::DefaultIconFont::FontAwesome6, "");
