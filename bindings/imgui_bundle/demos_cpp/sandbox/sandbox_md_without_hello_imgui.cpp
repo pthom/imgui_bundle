@@ -14,8 +14,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
-
-#include <glad/glad.h>
+#include "hello_imgui/hello_imgui_include_opengl.h"
 #include <GLFW/glfw3.h>
 
 #include <cstdio>
