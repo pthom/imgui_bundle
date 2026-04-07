@@ -82,6 +82,26 @@ class _HelloImGuiOrImmApp(Enum):
     IMMAPP = 2
 
 
+def _wants_latex(args, kwargs) -> bool:
+    """Detect whether the caller asked for LaTeX rendering across the
+    three immapp.run() calling conventions.
+
+    - gui-function form: kwargs["with_latex"]
+    - RunnerParams / SimpleRunnerParams form: addons_params.with_latex,
+      passed as args[1] or kwargs["addons_params"]
+    """
+    if kwargs.get("with_latex"):
+        return True
+    addons = None
+    if len(args) >= 2:
+        addons = args[1]
+    elif "addons_params" in kwargs:
+        addons = kwargs["addons_params"]
+    if addons is not None and getattr(addons, "with_latex", False):
+        return True
+    return False
+
+
 def _arg_to_render_lifecycle_functions(himgui_or_immapp: _HelloImGuiOrImmApp, *args, **kwargs) -> _RenderLifeCycleFunctions:
     """Converts the arguments to the correct render lifecycle functions,
     depending on the type of arguments passed and whether it is a hello_imgui or immapp application."""
@@ -189,8 +209,35 @@ class _ManualRenderJs:
         cannot block. The GUI runs until the user closes it or sets app_shall_exit = True.
 
         For async control (waiting for GUI to exit), use run_async() instead.
+
+        If ``with_latex=True`` is requested, the LaTeX math fonts are
+        downloaded from a CDN before the renderer starts (one-time per
+        session, ~876 KB). Desktop builds bundle the fonts in the wheel
+        and never enter this path; Pyodide builds exclude the fonts to
+        keep the wheel small (see ``IMGUI_BUNDLE_SLIM_PYODIDE_WHEEL=1``
+        in the Pyodide build script + ``pyproject.toml`` override).
         """
-        self._run(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
+        if _wants_latex(args, kwargs):
+            import asyncio
+
+            async def _delayed_start():
+                try:
+                    from imgui_bundle._pyodide_latex_fonts import ensure_fonts_async
+                    await ensure_fonts_async()
+                except Exception as e:  # noqa: BLE001
+                    # Log here for visibility; the C++ wrapper has its own
+                    # missing-fonts safety net (imgui_md_wrapper.cpp:
+                    # EnsureMicroTeXInitialized) that falls back to rendering
+                    # the LaTeX source as plain text.
+                    js.console.error(
+                        f"imgui_bundle: failed to fetch LaTeX fonts ({e}). "
+                        f"Formulas will be shown as plain text."
+                    )
+                self._run(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
+
+            asyncio.ensure_future(_delayed_start())
+        else:
+            self._run(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
 
     def run_hello_imgui(self, *args, **kwargs):
         """Run a hello_imgui GUI in Pyodide (fire-and-forget).
@@ -203,7 +250,22 @@ class _ManualRenderJs:
         self._run(_HelloImGuiOrImmApp.HELLO_IMGUI, *args, **kwargs)
 
     async def run_immapp_async(self, *args, **kwargs):
-        """Async version of run_immapp that waits until GUI exits."""
+        """Async version of run_immapp that waits until GUI exits.
+
+        If ``with_latex=True``, awaits the LaTeX font download (one-time
+        per session) before starting the renderer.
+        """
+        if _wants_latex(args, kwargs):
+            try:
+                from imgui_bundle._pyodide_latex_fonts import ensure_fonts_async
+                await ensure_fonts_async()
+            except Exception as e:  # noqa: BLE001
+                # See run_immapp() above for the rationale: log + fall through.
+                # The C++ wrapper handles missing fonts via its own fallback.
+                js.console.error(
+                    f"imgui_bundle: failed to fetch LaTeX fonts ({e}). "
+                    f"Formulas will be shown as plain text."
+                )
         await self._run_async(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
 
     async def run_hello_imgui_async(self, *args, **kwargs):

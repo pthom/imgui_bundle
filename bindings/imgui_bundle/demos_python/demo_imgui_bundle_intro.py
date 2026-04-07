@@ -756,12 +756,12 @@ def _node_editor_slide_gui(content_size: ImVec2):
 # Slide 7: Markdown — side-by-side source and rendered
 # ============================================================================
 
-_MARKDOWN_SAMPLE = """\
+_MARKDOWN_SAMPLE = r"""
 ## Quick Start Guide
 
 > ***ImGui Bundle** makes it easy to build _beautiful_ apps with rich documentation.*
 
-**Features:**
+### Features:
 * Headers, **bold**, *italic*, ~~strikethrough~~
 * [Clickable links](https://github.com/pthom/imgui_bundle)
 * Syntax-highlighted code blocks
@@ -770,19 +770,25 @@ _MARKDOWN_SAMPLE = """\
 * Images downloaded from an url (Python & Emscripten)
 * Tables
 
-**Code blocks:**
+### Code blocks:
 ```python
 from imgui_bundle import imgui, immapp
 immapp.run(lambda: imgui.text("Hello World!"))
 ```
 
-**Images**
+### Math
+Euler's identity $e^{i\pi} + 1 = 0$ generalizes to
+$$
+e^{i\theta} = \cos\theta + i\sin\theta
+$$
+
+### Images
 
 The image below is downloaded from an url and resized:
 
 <img src="https://picsum.photos/id/1019/200/130" height="100" />
 
-**Tables**
+### Tables
 
 The columns of the table below can be resized.
 
@@ -803,9 +809,6 @@ def _init_markdown_editor():
     global _markdown_text_editor, _markdown_editor_initialized
     _markdown_text_editor = ed.TextEditor()
     _markdown_text_editor.set_text(_MARKDOWN_SAMPLE)
-    # Use C++ language definition as a reasonable approximation for markdown
-    # (it will highlight code blocks and some syntax)
-    _markdown_text_editor.set_language(ed.TextEditor.Language.cpp())
     _markdown_text_editor.set_palette(ed.TextEditor.get_dark_palette())
     _markdown_editor_initialized = True
 
@@ -1843,5 +1846,6 @@ if __name__ == "__main__":
         with_implot=True,
         with_implot3d=True,
         with_markdown=True,
+        with_latex=True,
         fps_idle=0,
     )

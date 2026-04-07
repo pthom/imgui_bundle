@@ -875,7 +875,7 @@ namespace IntroMarkdown
 
 > ***ImGui Bundle** makes it easy to build _beautiful_ apps with rich documentation.*
 
-**Features:**
+### Features:
 * Headers, **bold**, *italic*, ~~strikethrough~~
 * [Clickable links](https://github.com/pthom/imgui_bundle)
 * Syntax-highlighted code blocks
@@ -883,18 +883,25 @@ namespace IntroMarkdown
 * Markdown images. Sized images with \<img src="..." width="..." height="..." /\>
 * Images downloaded from an url (Python & Emscripten)
 * Tables
+* Math formulas (LaTeX): inline with \$...\$ and display with \$\$...\$\$
 
-**Code blocks:**
+### Code blocks:
 ```python
 from imgui_bundle import imgui, immapp
 immapp.run(lambda: imgui.text("Hello World!"))
 ```
+
+### Math
+Euler's identity $e^{i\pi} + 1 = 0$ generalizes to
+$$
+e^{i\theta} = \cos\theta + i\sin\theta
+$$
 )";
 
 #ifdef __EMSCRIPTEN__
         md += R"(
 
-**Images**
+### Images
 
 The image below is downloaded from an url and resized:
 
@@ -904,7 +911,7 @@ The image below is downloaded from an url and resized:
 #endif
 
         md += R"(
-**Tables**
+### Tables
 
 The columns of the table below can be resized.
 
@@ -928,9 +935,6 @@ The columns of the table below can be resized.
         {
             sMarkdownEditor = new TextEditor();
             sMarkdownEditor->SetText(MakeMarkdownSample());
-            // Use C++ language definition as a reasonable approximation for markdown
-            // (it will highlight code blocks and some syntax)
-            sMarkdownEditor->SetLanguage(TextEditor::Language::Cpp());
             sMarkdownEditor->SetPalette(TextEditor::GetDarkPalette());
             sMarkdownEditorInitialized = true;
         }
@@ -2071,6 +2075,7 @@ int main(int, char**)
 
     ImmApp::AddOnsParams addons;
     addons.withMarkdown = true;
+    addons.withLatex = true;
     addons.withNodeEditor = true;
     addons.withImplot = true;
     addons.withImplot3d = true;

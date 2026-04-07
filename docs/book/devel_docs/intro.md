@@ -27,7 +27,7 @@ All 23+ C++ libraries compile into a single `_imgui_bundle` native extension, wi
 
 ## Key Concepts
 
-- **Add-On System**: ImmApp manages automatic context creation for optional libraries via `AddOnsParams` flags (`with_implot`, `with_markdown`, etc.)
+- **Add-On System**: ImmApp manages automatic context creation for optional libraries via `AddOnsParams` flags (`with_implot`, `with_markdown`, `with_latex`, `with_node_editor`, etc.)
 - **Cross-Platform**: Same codebase deploys to desktop (Windows/macOS/Linux), mobile (iOS/Android), and web (Emscripten/Pyodide)
 - **DPI-Aware Sizing**: Helper functions like `EmToVec2()` enable responsive layouts across high-DPI displays
 

@@ -26,6 +26,7 @@ imgui_knobs               https://github.com/pthom/imgui-knobs.git              
 imgui_node_editor         https://github.com/pthom/imgui-node-editor.git        https://github.com/thedmd/imgui-node-editor.git       external/imgui-node-editor/imgui-node-editor
 imgui_md                  https://github.com/pthom/imgui_md.git                 https://github.com/mekhontsev/imgui_md                external/imgui_md/imgui_md
 md4c                                                                            https://github.com/mity/md4c                          external/imgui_md/md4c
+imgui_microtex            https://github.com/pthom/MicroTeX.git                 https://github.com/NanoMichael/MicroTeX.git           external/imgui_microtex/MicroTeX
 imgui_tex_inspect         https://github.com/pthom/imgui_tex_inspect.git        https://github.com/andyborrell/imgui_tex_inspect.git  external/imgui_tex_inspect/imgui_tex_inspect
 imgui_toggle              https://github.com/pthom/imgui_toggle.git             https://github.com/cmdwtf/imgui_toggle.git            external/imgui_toggle/imgui_toggle
 imgui_color_text_edit     https://github.com/pthom/ImGuiColorTextEdit.git       https://github.com/goossens/ImGuiColorTextEdit.git    external/ImGuiColorTextEdit/ImGuiColorTextEdit

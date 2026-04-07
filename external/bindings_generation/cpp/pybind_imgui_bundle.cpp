@@ -34,6 +34,7 @@ void py_init_module_imcoolbar(nb::module_& m);
 void py_init_module_nanovg(nb::module_& m);
 void py_init_module_imanim(nb::module_& m);
 void py_init_module_imgui_explorer(nb::module_& m);
+void py_init_module_imgui_microtex(nb::module_& m);
 void py_init_module_imgui_bundle(nb::module_& m);
 
 
@@ -232,6 +233,14 @@ void py_init_module_imgui_bundle(nb::module_& m)
     py_init_module_imgui_explorer(module_imgui_explorer);
 #else
     _register_submodule("imgui_explorer", false);
+#endif
+
+#ifdef IMGUI_BUNDLE_WITH_MICROTEX
+    _register_submodule("imgui_microtex");
+    auto module_imgui_microtex = m.def_submodule("imgui_microtex");
+    py_init_module_imgui_microtex(module_imgui_microtex);
+#else
+    _register_submodule("imgui_microtex", false);
 #endif
 
 #if defined(HELLOIMGUI_USE_GLFW3) && !defined(IMGUI_BUNDLE_DISABLE_HELLO_IMGUI)

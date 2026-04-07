@@ -339,6 +339,66 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h DESTINATION include/imgui_md_wrapper)
     endif()
 
+    # MicroTeX: native LaTeX math rendering (requires FreeType, already available via hello_imgui)
+    # IMGUI_RICHMD_WITH_LATEX is derived from the bundle-level IMGUI_BUNDLE_WITH_MICROTEX option.
+    # When imgui_richmd becomes standalone, IMGUI_RICHMD_WITH_LATEX would be a separate option.
+    # Default to ON only if both IMGUI_BUNDLE_WITH_MICROTEX and HELLOIMGUI_USE_FREETYPE are ON
+    if(DEFINED IMGUI_BUNDLE_WITH_MICROTEX AND IMGUI_BUNDLE_WITH_MICROTEX AND HELLOIMGUI_USE_FREETYPE)
+        set(_IMGUI_RICHMD_LATEX_DEFAULT ON)
+    else()
+        set(_IMGUI_RICHMD_LATEX_DEFAULT OFF)
+    endif()
+    option(IMGUI_RICHMD_WITH_LATEX "Enable native LaTeX rendering in markdown (via MicroTeX)" ${_IMGUI_RICHMD_LATEX_DEFAULT})
+    if(IMGUI_RICHMD_WITH_LATEX AND NOT HELLOIMGUI_USE_FREETYPE)
+        message(FATAL_ERROR "IMGUI_RICHMD_WITH_LATEX requires FreeType (normally provided by HelloImGui). "
+                            "Either enable HELLOIMGUI_USE_FREETYPE or set IMGUI_RICHMD_WITH_LATEX=OFF.")
+    endif()
+    if(IMGUI_RICHMD_WITH_LATEX)
+        # Configure MicroTeX via the proper option names provided by our fork.
+        # See external/imgui_microtex/MicroTeX/README.imgui_bundle.md for the
+        # full list of [Bundle] patches and why they exist. CMP0077 (CMake
+        # >= 3.13) makes `option()` inside the subdirectory honor these
+        # normal variables as defaults, so no CACHE/FORCE needed.
+        set(MICROTEX_BUILD_STATIC ON)            # static lib, no DLL
+        set(MICROTEX_GLYPH_RENDER_TYPE 2)        # typeface only (no vector path data)
+        set(MICROTEX_HAVE_AUTO_FONT_FIND OFF)    # we supply font paths explicitly
+        set(HAVE_LOG OFF)                        # upstream option, silence log build
+        add_subdirectory(imgui_microtex/MicroTeX microtex_build EXCLUDE_FROM_ALL)
+
+        # Build imgui_microtex: our FreeType backend + public API
+        add_library(imgui_microtex STATIC EXCLUDE_FROM_ALL
+            imgui_microtex/imgui_microtex/imgui_microtex.cpp
+            imgui_microtex/imgui_microtex/internal/graphic_freetype.cpp
+        )
+        target_include_directories(imgui_microtex PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex>
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/MicroTeX/lib>
+        )
+        # Link FreeType and imgui
+        if(TARGET freetype)
+            target_link_libraries(imgui_microtex PUBLIC microtex freetype imgui hello_imgui)
+        elseif(TARGET Freetype::Freetype)
+            target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype imgui hello_imgui)
+        else()
+            find_package(Freetype REQUIRED)
+            target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype imgui hello_imgui)
+        endif()
+
+        if(IMGUI_BUNDLE_INSTALL_CPP)
+            ibd_add_installable_dependency(microtex)
+            ibd_add_installable_dependency(imgui_microtex)
+        endif()
+
+        # Wire into imgui_md
+        target_link_libraries(imgui_md PUBLIC imgui_microtex)
+        target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_LATEX)
+        message(STATUS "imgui_md: native LaTeX rendering enabled (via MicroTeX)")
+    endif()
+
+    if(IMGUI_BUNDLE_WITH_MICROTEX)
+        target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_MICROTEX)
+    endif()
+
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_MD)
     set(IMGUI_BUNDLE_WITH_IMGUI_MD ON CACHE INTERNAL "" FORCE)
 else()

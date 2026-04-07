@@ -128,6 +128,13 @@ namespace ImGuiMd
     {
         MarkdownFontOptions fontOptions;
         MarkdownCallbacks callbacks;
+
+        // Enable native LaTeX math rendering via MicroTeX.
+        // When true, $...$ and $$...$$ in markdown will be rendered as math formulas
+        // (requires building with IMGUI_RICHMD_WITH_LATEX=ON, which is the default
+        // when IMGUI_BUNDLE_WITH_MICROTEX and FreeType are both available).
+        // When false, $ is rendered as a literal character (legacy behavior).
+        bool withLatex = false;
     };
 
     // InitializeMarkdown: Call this once at application startup

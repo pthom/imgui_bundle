@@ -81,14 +81,14 @@ In C++, enable ImPlot by setting `withImplot = true` in `ImmApp::AddOnsParams`.
 ### Full Demo
 
 ::::{card}
-:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_implot.html
+:link: https://traineq.org/imgui_bundle_explorer/demo_implot.html
 ```{figure} ../images/implot_demo.webp
 :width: 350
 ImPlot demo showcasing various plot types and features.
 ```
 ::::
 
-- [Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_implot.html)
+- [Try online](https://traineq.org/imgui_bundle_explorer/demo_implot.html)
 
 - Python demo code: [implot_demo.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py)
 - C++ demo code: [implot_demo.cpp](https://github.com/epezent/implot/blob/master/implot_demo.cpp)
@@ -189,7 +189,7 @@ In C++, enable ImPlot3D by setting `withImplot3d = true` in `ImmApp::AddOnsParam
 
 The full demo for ImPlot3D is available online together with ImPlot's full demo.
 
-[Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_implot.html)
+[Try online](https://traineq.org/imgui_bundle_explorer/demo_implot.html)
 
 - Python demo code: [implot3d_demo.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py)
 - C++ demo code: [implot3d_demo.cpp](https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp)

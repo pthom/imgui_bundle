@@ -682,6 +682,28 @@ def image_proportional_size(asked_size: ImVec2Like, image_size: ImVec2Like) -> I
     """
     pass
 
+# To upload raw RGBA pixel data to a caller-owned GPU texture, see
+# `HelloImGui::CreateTextureGpuFromRgbaData()` in `texture_gpu.h`.
+
+# void FreeImageCache();    /* original C++ signature */
+def free_image_cache() -> None:
+    """`HelloImGui::FreeImageCache()`: clears the asset image cache shared by
+    `ImageFromAsset`, `ImageAndSizeFromAsset` and `ImageAndSizeFromEncodedData`.
+    Inside a `HelloImGui::Run()` context this is called automatically at
+    shutdown. When using imgui_md (or any of the helpers above) without
+    `Run()`, the cache lives until process exit unless you call this manually
+    before destroying your GL context.
+    """
+    pass
+
+# @@md
+
+# ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#                       hello_imgui/texture_gpu.h included by hello_imgui.h                                    //
+# //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+# @@md#TextureGpu
+
 # @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1769,8 +1791,6 @@ def edge_toolbar_type_name(e: EdgeToolbarType) -> str:
 
 class DefaultIconFont(enum.IntEnum):
     """HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font
-    Breaking change in v1.5.0:
-    - the default icon font is now FontAwesome 6, which includes many more icons.
     - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:
         #include "hello_imgui/icons_font_awesome_6.h" or #include "hello_imgui/icons_font_awesome_4.h"
     """
@@ -3544,6 +3564,30 @@ def is_using_hello_imgui() -> bool:
     """`IsUsingHelloImGui()`: returns True if the application is using HelloImGui"""
     pass
 
+# bool InitGlLoader();    /* original C++ signature */
+def init_gl_loader() -> bool:
+    """`InitGlLoader()`: initializes HelloImGui's OpenGL function loader (GLAD).
+    Required ONLY when using HelloImGui's image / texture helpers
+    (`ImageAndSizeFromAsset`, `CreateTextureGpuFromRgbaData`, anything that
+    uploads to a `TextureGpuOpenGl`) OUTSIDE a `HelloImGui::Run()` context.
+    Inside `Run()`, the loader is initialized automatically.
+
+    Typical use case: hosting `imgui_md` in a pure GLFW + PyOpenGL Python
+    backend, or in a vanilla Dear ImGui glfw+opengl3 C++ app.
+
+    Preconditions:
+     - A GL context must be current (created by your own GLFW/SDL2/etc).
+     - HelloImGui must be compiled with HELLOIMGUI_USE_GLFW3 or HELLOIMGUI_USE_SDL2.
+
+    Returns True on success, False if no supported platform backend was
+    compiled in. Idempotent: safe to call repeatedly.
+
+    Note: only the OpenGL3 standalone path is supported. Metal, Vulkan and
+    DirectX11/12 require device handles that HelloImGui's runner would
+    normally create — they are not usable outside `Run()`.
+    """
+    pass
+
 # float FrameRate(float durationForMean = 0.5f);    /* original C++ signature */
 def frame_rate(duration_for_mean: float = 0.5) -> float:
     """`FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
@@ -3815,6 +3859,39 @@ def image_and_size_from_encoded_data(data: bytes, cache_key: str = "") -> ImageA
     - data: bytes containing the encoded image
     - cache_key: if non-empty, the texture is cached and reused on subsequent calls with the same key
     Returns an ImageAndSize with texture_id and size."""
+    pass
+
+class TextureGpu:
+    """Opaque RAII handle owning a GPU texture.
+
+    The GPU resource is freed when the last reference to this object
+    is dropped (no separate `delete_texture` call). Hold the handle
+    in Python for as long as you want to display the texture.
+
+    Threading: must be created from the GUI thread, while a live
+    rendering backend (OpenGL/Metal/Vulkan/DirectX11) is initialized.
+    """
+
+    width: int
+    height: int
+    def texture_id(self) -> int:
+        """Returns the underlying ImTextureID as a Python int.
+        Pass it to imgui.image() etc."""
+        pass
+
+def create_texture_gpu_from_rgba_data(rgba: numpy.ndarray) -> TextureGpu:
+    """Upload an HxWx4 uint8 RGBA numpy array to a new GPU texture.
+
+    - `rgba` must be a contiguous numpy array of dtype uint8 with
+      shape (height, width, 4). The pixel data is read once during
+      the upload; the numpy array does not need to outlive the call.
+    - Returns an owning `TextureGpu` handle. Drop the last reference
+      to free the GPU resource.
+
+    Threading: must be called from the GUI thread, while a live
+    rendering backend is initialized (i.e. inside the gui callback,
+    or after `hello_imgui.run` has set up the backend).
+    """
     pass
 
 ####################    </generated_from:hello_imgui_amalgamation.h>    ####################

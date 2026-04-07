@@ -175,3 +175,6 @@ hello_imgui.ini
 _backends
 emsdk/
 .aider*
+
+_mdmath_draft/
+

@@ -111,10 +111,23 @@ sdist.exclude = [
     "wheelhouse",
 ]
 
-# Exclude demo directories to reduce wheel size (set IMGUI_BUNDLE_EXCLUDE_DEMOS=1 to activate)
+# Slim wheel for Pyodide builds: exclude things the browser playground doesn't need.
+# Set IMGUI_BUNDLE_SLIM_PYODIDE_WHEEL=1 to activate.
+#
+# Excluded:
+#   - demos_cpp/, demos_python/, demos_assets/  (the C++/Python demo folders;
+#     the playground ships its own examples and doesn't load these)
+#   - assets/fonts/latex/                       (~876 KB of LaTeX math fonts;
+#     downloaded lazily from a CDN on first immapp.run(with_latex=True) call,
+#     see bindings/imgui_bundle/_pyodide_latex_fonts.py)
 [[tool.scikit-build.overrides]]
-if.env.IMGUI_BUNDLE_EXCLUDE_DEMOS = true
-wheel.exclude = ["imgui_bundle/demos_cpp/**", "imgui_bundle/demos_python/**", "imgui_bundle/demos_assets/**"]
+if.env.IMGUI_BUNDLE_SLIM_PYODIDE_WHEEL = true
+wheel.exclude = [
+    "imgui_bundle/demos_cpp/**",
+    "imgui_bundle/demos_python/**",
+    "imgui_bundle/demos_assets/**",
+    "imgui_bundle/assets/fonts/latex/**",
+]
 
 cmake.version = ">=3.26.1"
 build.verbose = true

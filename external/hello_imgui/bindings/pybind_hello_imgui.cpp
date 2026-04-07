@@ -487,6 +487,9 @@ void py_init_module_hello_imgui(nb::module_& m)
         nb::arg("asked_size"), nb::arg("image_size"),
         " `ImVec2 HelloImGui::ImageProportionalSize(askedSize, imageSize)`:\n  will return the displayed size of an image.\n     - if askedSize.x or askedSize.y is 0, then the corresponding dimension\n       will be computed from the image size, keeping the aspect ratio.\n     - if askedSize.x>0 and askedSize.y> 0, then the image will be scaled to fit\n       exactly the askedSize, thus potentially changing the aspect ratio.\n  Note: this function is used internally by ImageFromAsset and ImageButtonFromAsset,\n        so you don't need to call it directly.");
 
+    m.def("free_image_cache",
+        HelloImGui::FreeImageCache, " `HelloImGui::FreeImageCache()`: clears the asset image cache shared by\n  `ImageFromAsset`, `ImageAndSizeFromAsset` and `ImageAndSizeFromEncodedData`.\n  Inside a `HelloImGui::Run()` context this is called automatically at\n  shutdown. When using imgui_md (or any of the helpers above) without\n  `Run()`, the cache lives until process exit unless you call this manually\n  before destroying your GL context.");
+
 
     auto pyEnumImGuiTheme_ =
         nb::enum_<ImGuiTheme::ImGuiTheme_>(m, "ImGuiTheme_", nb::is_arithmetic(), "")
@@ -1076,7 +1079,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
 
     auto pyEnumDefaultIconFont =
-        nb::enum_<HelloImGui::DefaultIconFont>(m, "DefaultIconFont", nb::is_arithmetic(), " HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font\n Breaking change in v1.5.0:\n - the default icon font is now FontAwesome 6, which includes many more icons.\n - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:\n     #include \"hello_imgui/icons_font_awesome_6.h\" or #include \"hello_imgui/icons_font_awesome_4.h\"")
+        nb::enum_<HelloImGui::DefaultIconFont>(m, "DefaultIconFont", nb::is_arithmetic(), " HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font\n - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:\n     #include \"hello_imgui/icons_font_awesome_6.h\" or #include \"hello_imgui/icons_font_awesome_4.h\"")
             .value("no_icons", HelloImGui::DefaultIconFont::NoIcons, "")
             .value("font_awesome4", HelloImGui::DefaultIconFont::FontAwesome4, "")
             .value("font_awesome6", HelloImGui::DefaultIconFont::FontAwesome6, "");
@@ -1805,6 +1808,9 @@ void py_init_module_hello_imgui(nb::module_& m)
     m.def("is_using_hello_imgui",
         HelloImGui::IsUsingHelloImGui, "`IsUsingHelloImGui()`: returns True if the application is using HelloImGui");
 
+    m.def("init_gl_loader",
+        HelloImGui::InitGlLoader, " `InitGlLoader()`: initializes HelloImGui's OpenGL function loader (GLAD).\n  Required ONLY when using HelloImGui's image / texture helpers\n  (`ImageAndSizeFromAsset`, `CreateTextureGpuFromRgbaData`, anything that\n  uploads to a `TextureGpuOpenGl`) OUTSIDE a `HelloImGui::Run()` context.\n  Inside `Run()`, the loader is initialized automatically.\n\n  Typical use case: hosting `imgui_md` in a pure GLFW + PyOpenGL Python\n  backend, or in a vanilla Dear ImGui glfw+opengl3 C++ app.\n\n  Preconditions:\n   - A GL context must be current (created by your own GLFW/SDL2/etc).\n   - HelloImGui must be compiled with HELLOIMGUI_USE_GLFW3 or HELLOIMGUI_USE_SDL2.\n\n  Returns True on success, False if no supported platform backend was\n  compiled in. Idempotent: safe to call repeatedly.\n\n  Note: only the OpenGL3 standalone path is supported. Metal, Vulkan and\n  DirectX11/12 require device handles that HelloImGui's runner would\n  normally create — they are not usable outside `Run()`.");
+
     m.def("frame_rate",
         HelloImGui::FrameRate,
         nb::arg("duration_for_mean") = 0.5f,
@@ -1925,6 +1931,34 @@ void py_init_module_hello_imgui(nb::module_& m)
         "- data: bytes containing the encoded image\n"
         "- cache_key: if non-empty, the texture is cached and reused on subsequent calls with the same key\n"
         "Returns an ImageAndSize with texture_id and size."
+    );
+    // TextureGpu: abstract base, registered with shared_ptr holder so
+    // returning HelloImGui::TextureGpuPtr from a factory transfers
+    // ownership to Python automatically.
+    nb::class_<HelloImGui::TextureGpu>(m, "TextureGpu",
+        "Opaque RAII handle owning a GPU texture.\n"
+        "The GPU resource is freed when the last Python reference is dropped.\n"
+        "Hold this in Python for as long as you want to display the texture.")
+        .def_ro("width", &HelloImGui::TextureGpu::Width)
+        .def_ro("height", &HelloImGui::TextureGpu::Height)
+        .def("texture_id",
+            [](HelloImGui::TextureGpu& self) -> ImTextureID {
+                return self.TextureID();
+            },
+            "Returns the underlying ImTextureID. Pass to imgui.image().");
+
+    m.def("create_texture_gpu_from_rgba_data",
+        [](nb::ndarray<const uint8_t, nb::shape<-1, -1, 4>, nb::c_contig> rgba)
+            -> HelloImGui::TextureGpuPtr
+        {
+            int h = (int)rgba.shape(0);
+            int w = (int)rgba.shape(1);
+            return HelloImGui::CreateTextureGpuFromRgbaData(rgba.data(), w, h);
+        },
+        nb::arg("rgba"),
+        "Upload an HxWx4 uint8 RGBA numpy array to a new GPU texture.\n"
+        "Returns an owning TextureGpu handle (drop the last reference to free).\n"
+        "Threading: call from the GUI thread while a live rendering backend exists."
     );
     ////////////////////    </generated_from:hello_imgui_amalgamation.h>    ////////////////////
 

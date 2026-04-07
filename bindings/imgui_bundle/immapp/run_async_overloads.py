@@ -56,6 +56,7 @@ async def run_async(
     with_markdown: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
+    with_latex: bool = False,
 ) -> None:
     """Run an application asynchronously using a simple GUI function and parameters."""
     ...
@@ -116,6 +117,11 @@ async def run_async(*args, **kwargs) -> None:
             with_markdown = kwargs.get("with_markdown", False)
             with_node_editor = kwargs.get("with_node_editor", False)
             with_tex_inspect = kwargs.get("with_tex_inspect", False)
+            with_latex = kwargs.get("with_latex", False)
+
+            # with_latex implies with_markdown
+            if with_latex:
+                with_markdown = True
 
             manual_render.setup_from_gui_function(
                 gui_function,
@@ -131,6 +137,7 @@ async def run_async(*args, **kwargs) -> None:
                 with_markdown=with_markdown,
                 with_node_editor=with_node_editor,
                 with_tex_inspect=with_tex_inspect,
+                with_latex=with_latex,
             )
         else:
             raise TypeError(f"First argument must be RunnerParams, SimpleRunnerParams, or a callable GUI function, got {type(first_arg)}")

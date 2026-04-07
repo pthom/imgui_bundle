@@ -181,10 +181,10 @@ doc_build_pdf:
 # Note: see ci_scripts/pyodide_local_build/Readme.md
 # for more info about the local pyodide build setup
 
-# Build pyodide wheel (excludes demos to reduce size)
+# Build pyodide wheel (slim: excludes demos and LaTeX fonts to reduce size)
 [group('pyodide')]
 pyodide_build: pyodide_clean
-    source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && IMGUI_BUNDLE_EXCLUDE_DEMOS=1 pyodide build
+    source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && IMGUI_BUNDLE_SLIM_PYODIDE_WHEEL=1 pyodide build
     cp dist/imgui_bundle*pyodide*.whl pyodide_projects/_pyodide_resources/local_wheels/
     cp dist/imgui_bundle*pyodide*.whl pyodide_projects/projects/local_wheels/
 

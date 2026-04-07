@@ -13,7 +13,7 @@ import json
 from enum import Enum
 import time
 
-from imgui_bundle import hello_imgui, icons_fontawesome_6, imgui, immapp, imgui_ctx, ImVec4, ImVec2, register_demos_assets_folder
+from imgui_bundle import hello_imgui, icons_fontawesome_4, imgui, immapp, imgui_ctx, ImVec4, ImVec2, register_demos_assets_folder
 register_demos_assets_folder()
 from typing import List, Any
 
@@ -243,7 +243,7 @@ def demo_rocket(app_state: AppState):
 
     imgui.begin_group()
     if app_state.rocket_state == RocketState.Init:
-        if imgui.button(f"{icons_fontawesome_6.ICON_FA_ROCKET} Launch rocket"):
+        if imgui.button(f"{icons_fontawesome_4.ICON_FA_ROCKET} Launch rocket"):
             app_state.rocket_launch_time = time.time()
             app_state.rocket_state = RocketState.Preparing
             hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket is being prepared")
@@ -254,7 +254,7 @@ def demo_rocket(app_state: AppState):
             app_state.rocket_state = RocketState.Launched
             hello_imgui.log(hello_imgui.LogLevel.warning, "Rocket was launched")
     elif app_state.rocket_state == RocketState.Launched:
-        imgui.text(f"{icons_fontawesome_6.ICON_FA_ROCKET} Rocket launched")
+        imgui.text(f"{icons_fontawesome_4.ICON_FA_ROCKET} Rocket launched")
         if imgui.button("Reset Rocket"):
             app_state.rocket_state = RocketState.Init
             app_state.rocket_progress = 0.0
@@ -476,10 +476,10 @@ def demo_assets(app_state: AppState):
 
 def demo_fonts(app_state: AppState):
     push_font_with_default_size(app_state.title_font)
-    imgui.text("Fonts - " + icons_fontawesome_6.ICON_FA_ROCKET)
+    imgui.text("Fonts - " + icons_fontawesome_4.ICON_FA_ROCKET)
     imgui.pop_font()
 
-    imgui.text_wrapped("Mix icons " + icons_fontawesome_6.ICON_FA_FACE_SMILE + " and text " + icons_fontawesome_6.ICON_FA_ROCKET)
+    imgui.text_wrapped("Mix icons " + icons_fontawesome_4.ICON_FA_SMILE + " and text " + icons_fontawesome_4.ICON_FA_ROCKET)
     if imgui.is_item_hovered():
         imgui.set_tooltip("Example with Font Awesome Icons")
 
@@ -568,29 +568,29 @@ def show_app_menu_items():
 
 def show_top_toolbar(app_state: AppState):
     push_font_with_default_size(app_state.large_icon_font)
-    if imgui.button(icons_fontawesome_6.ICON_FA_POWER_OFF):
+    if imgui.button(icons_fontawesome_4.ICON_FA_POWER_OFF):
         hello_imgui.get_runner_params().app_shall_exit = True
 
     imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(7.0))
-    if imgui.button(icons_fontawesome_6.ICON_FA_HOUSE):
+    if imgui.button(icons_fontawesome_4.ICON_FA_HOME):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Home in the top toolbar")
     imgui.same_line()
-    if imgui.button(icons_fontawesome_6.ICON_FA_FLOPPY_DISK):
+    if imgui.button(icons_fontawesome_4.ICON_FA_SAVE):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Save in the top toolbar")
     imgui.same_line()
-    if imgui.button(icons_fontawesome_6.ICON_FA_ADDRESS_BOOK):
+    if imgui.button(icons_fontawesome_4.ICON_FA_ADDRESS_BOOK):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Address Book in the top toolbar")
 
     imgui.same_line(imgui.get_window_width() - hello_imgui.em_size(2.0))
-    imgui.text(icons_fontawesome_6.ICON_FA_BATTERY_THREE_QUARTERS)
+    imgui.text(icons_fontawesome_4.ICON_FA_BATTERY_THREE_QUARTERS)
     imgui.pop_font()
 
 
 def show_right_toolbar(app_state: AppState):
     push_font_with_default_size(app_state.large_icon_font)
-    if imgui.button(icons_fontawesome_6.ICON_FA_CIRCLE_ARROW_LEFT):
+    if imgui.button(icons_fontawesome_4.ICON_FA_ARROW_CIRCLE_LEFT):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Circle left in the right toolbar")
-    if imgui.button(icons_fontawesome_6.ICON_FA_CIRCLE_ARROW_RIGHT):
+    if imgui.button(icons_fontawesome_4.ICON_FA_ARROW_CIRCLE_RIGHT):
         hello_imgui.log(hello_imgui.LogLevel.info, "Clicked on Circle right in the right toolbar")
     imgui.pop_font()
 

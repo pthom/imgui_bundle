@@ -35,13 +35,16 @@ def patch_runners_add_save_screenshot_param() -> None:
         def patched_run(*args, **kwargs):
             caller_file = _get_caller_filename(2)
 
-            run_backup(*args, **kwargs)
-
-            save_screenshot = kwargs.get("save_screenshot", False)
-            if "save_screenshot" in kwargs:
-                del kwargs["save_screenshot"]
+            # Extract and remove `save_screenshot` BEFORE delegating to the
+            # underlying runner, otherwise it would be passed through as a
+            # kwarg to `immapp.run` / `hello_imgui.run` which do not accept
+            # it. (Some C++ binding wrappers happen to be forgiving about
+            # unknown kwargs, but we should not rely on that.)
+            save_screenshot = kwargs.pop("save_screenshot", False)
             if "imgui_bundle/tutorial/" in caller_file:
                 save_screenshot = True
+
+            run_backup(*args, **kwargs)
 
             if save_screenshot:
                 image_file = caller_file.replace(".py", ".jpg")

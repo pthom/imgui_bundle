@@ -16,6 +16,10 @@
 #include "immapp/code_utils.h"
 #include "immapp/browse_to_url.h"
 
+#ifdef IMGUI_RICHMD_WITH_LATEX
+#include "imgui_microtex/imgui_microtex.h"
+#endif
+
 #include <fplus/fplus.hpp>
 #include <string>
 #include <vector>
@@ -262,6 +266,10 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             : mMarkdownOptions(markdownOptions)
             , mMarkdownCollection(markdownOptions->fontOptions)
         {
+#ifdef IMGUI_RICHMD_WITH_LATEX
+            if (mMarkdownOptions->withLatex)
+                EnableLatex();
+#endif
         }
 
 #ifdef CAN_RENDER_IMAGES
@@ -472,6 +480,133 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             if (mTableOpen && e) ImGui::TableNextColumn();
         }
 
+#ifdef IMGUI_RICHMD_WITH_LATEX
+        // Lazy-initialize MicroTeX on first LaTeX span.
+        // We cannot do this in InitializeMarkdown() because the asset system
+        // (HelloImGui::AssetFileFullPath) may not be ready until after the
+        // fonts have loaded / backend started.
+        // Lazy MicroTeX init. Defensive: if the font assets are missing
+        // (corrupted install, or Pyodide download failed, etc.), log a
+        // warning once and leave MicroTeX uninitialized. The SPAN_LATEXMATH
+        // handlers below check IsInitialized() and fall back to rendering
+        // the LaTeX source as plain text instead of crashing on the asset
+        // lookup IM_ASSERT.
+        void EnsureMicroTeXInitialized()
+        {
+            if (ImGuiMicroTeX::IsInitialized())
+                return;
+            // One-shot failure flag: if init failed once, don't keep retrying
+            // (and re-logging) on every render.
+            if (mLatexInitFailed)
+                return;
+            const char* clmAsset = "fonts/latex/latinmodern-math.clm1";
+            const char* otfAsset = "fonts/latex/latinmodern-math.otf";
+            if (!HelloImGui::AssetExists(clmAsset) || !HelloImGui::AssetExists(otfAsset))
+            {
+                HelloImGui::Log(HelloImGui::LogLevel::Warning,
+                    "imgui_md: LaTeX font assets not found at fonts/latex/. "
+                    "Formulas will be shown as plain text source.");
+                mLatexInitFailed = true;
+                return;
+            }
+            std::string clmFile = HelloImGui::AssetFileFullPath(clmAsset);
+            std::string otfFile = HelloImGui::AssetFileFullPath(otfAsset);
+            ImGuiMicroTeX::Init(clmFile, otfFile);
+        }
+
+        // Set true once if MicroTeX init has failed, to avoid retry storms.
+        bool mLatexInitFailed = false;
+
+        // Returns physical-pixels-per-logical-pixel for the current display.
+        // On macOS retina this is 2.0; on standard DPI displays it is 1.0.
+        // Used to rasterize formulas at the framebuffer pixel density and
+        // display them at logical size (sharp on HiDPI screens).
+        static float PixelScale()
+        {
+            float s = ImGui::GetIO().DisplayFramebufferScale.y;
+            return (s > 0.01f) ? s : 1.0f;
+        }
+
+        void SPAN_LATEXMATH(bool e) override
+        {
+            imgui_md::SPAN_LATEXMATH(e);
+            if (e)
+                return;
+            EnsureMicroTeXInitialized();
+            if (!ImGuiMicroTeX::IsInitialized())
+            {
+                // Fallback: show the original LaTeX source inline, with the
+                // delimiters, so the user recognizes it as a math expression.
+                std::string fallback = "$" + m_latex_buffer + "$";
+                ImGui::TextUnformatted(fallback.c_str());
+                ImGui::SameLine(0.0f, 0.0f);
+                return;
+            }
+            // DPI-aware: rasterize at framebuffer density, display at logical size.
+            float pixelScale = PixelScale();
+            float logicalFontSize = ImGui::GetFontSize();
+            float physicalFontSize = logicalFontSize * pixelScale;
+            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color);
+            ImTextureID texId = tex.TextureId();
+            if (texId == (ImTextureID)0)
+                return;
+            // tex.Width/Height/BaselineY are in physical pixels (the bitmap was
+            // rasterized at the higher density). Convert to logical pixels for
+            // ImGui layout.
+            float logicalW = (float)tex.Width / pixelScale;
+            float logicalH = (float)tex.Height / pixelScale;
+            float logicalBaselineY = (float)tex.BaselineY / pixelScale;
+            // Vertically align the formula so its baseline matches the surrounding text.
+            // ImGui::Text() draws starting at cursor.y, with the typographic baseline
+            // at cursor.y + baked->Ascent. To put the formula's baseline at the same
+            // position, the image top must be at cursor.y + textAscent - logicalBaselineY.
+            ImFontBaked* baked = ImGui::GetFontBaked();
+            float textAscent = baked ? baked->Ascent : logicalFontSize * 0.8f;
+            float savedY = ImGui::GetCursorPosY();
+            ImGui::SetCursorPosY(savedY + textAscent - logicalBaselineY);
+            ImGui::Image(texId, ImVec2(logicalW, logicalH));
+            ImGui::SameLine(0.0f, 0.0f);
+            // Restore cursor Y so subsequent inline content lands on the original line.
+            ImGui::SetCursorPosY(savedY);
+        }
+
+        void SPAN_LATEXMATH_DISPLAY(bool e) override
+        {
+            imgui_md::SPAN_LATEXMATH_DISPLAY(e);
+            if (e)
+                return;
+            EnsureMicroTeXInitialized();
+            if (!ImGuiMicroTeX::IsInitialized())
+            {
+                // Fallback: show the original LaTeX source on its own line.
+                ImGui::NewLine();
+                std::string fallback = "$$" + m_latex_buffer + "$$";
+                ImGui::TextUnformatted(fallback.c_str());
+                ImGui::NewLine();
+                return;
+            }
+            float pixelScale = PixelScale();
+            float logicalFontSize = ImGui::GetFontSize() * 1.4f;
+            float physicalFontSize = logicalFontSize * pixelScale;
+            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color);
+            ImTextureID texId = tex.TextureId();
+            if (texId == (ImTextureID)0)
+                return;
+            float logicalW = (float)tex.Width / pixelScale;
+            float logicalH = (float)tex.Height / pixelScale;
+            // Display math: centered on its own line.
+            ImGui::NewLine();
+            float avail = ImGui::GetContentRegionAvail().x;
+            float padX = (avail - logicalW) * 0.5f;
+            if (padX > 0.0f)
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + padX);
+            ImGui::Image(texId, ImVec2(logicalW, logicalH));
+            ImGui::NewLine();
+        }
+#endif
+
     };
 
 
@@ -568,8 +703,20 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         gMarkdownOptions.callbacks.OnDownloadData = nullptr;
         gMarkdownRenderer.release();
         gMarkdownWasInitialized = false;
+        // The MarkdownRenderer just released above held an ImageCache whose
+        // entries point at GPU textures owned by HelloImGui's gImageFromAssetMap.
+        // Drop those too — keeping them after teardown leaks GPU memory and
+        // pins a now-invalid GL context (relevant when running outside
+        // HelloImGui::Run(), where Priv_TearDown does not run).
+        HelloImGui::FreeImageCache();
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
         ClearDesktopDownloads();
+#endif
+#ifdef IMGUI_RICHMD_WITH_LATEX
+        // Release MicroTeX resources (textures, FreeType, etc.)
+        // Safe to call even if Init() was never called.
+        if (ImGuiMicroTeX::IsInitialized())
+            ImGuiMicroTeX::Release();
 #endif
     }
 

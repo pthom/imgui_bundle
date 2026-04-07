@@ -94,6 +94,7 @@ bindings/imgui_bundle/
 ├── imgui_explorer.pyi                      Interactive widget explorer
 ├── imgui_knobs.pyi                         Knob/dial widgets
 ├── imgui_md.pyi                            Markdown rendering
+├── imgui_microtex.pyi                      Native LaTeX math rendering (used by imgui_md)
 ├── imgui_node_editor.pyi                   Node graph editor
 ├── imgui_tex_inspect.pyi                   Texture inspector
 ├── imgui_toggle.pyi                        Toggle switches
@@ -231,6 +232,9 @@ external/
 │
 ├── ImGuiColorTextEdit/                     Code editor with syntax highlighting
 ├── imgui_md/                               Markdown rendering (MD4C-based)
+├── imgui_microtex/                         Native LaTeX math rendering (MicroTeX + FreeType backend)
+│     ├── MicroTeX/                         Submodule (forked, branch imgui_bundle)
+│     └── imgui_microtex/                   Our wrapper: public API + FreeType graphics backend
 │
 │   ── Tools (with bindings) ────────────────────────────────────────
 │

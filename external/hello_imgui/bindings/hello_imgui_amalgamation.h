@@ -540,12 +540,87 @@ ImageAndSize ImageAndSizeFromEncodedData(
     const void* data, size_t dataSize,
     const std::string& cacheKey = "");
 
+// To upload raw RGBA pixel data to a caller-owned GPU texture, see
+// `HelloImGui::CreateTextureGpuFromRgbaData()` in `texture_gpu.h`.
+
+// `HelloImGui::FreeImageCache()`: clears the asset image cache shared by
+//  `ImageFromAsset`, `ImageAndSizeFromAsset` and `ImageAndSizeFromEncodedData`.
+//  Inside a `HelloImGui::Run()` context this is called automatically at
+//  shutdown. When using imgui_md (or any of the helpers above) without
+//  `Run()`, the cache lives until process exit unless you call this manually
+//  before destroying your GL context.
+void FreeImageCache();
+
 // @@md
 
 namespace internal
 {
     void Free_ImageFromAssetMap();
 }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/texture_gpu.h included by hello_imgui.h                                    //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include <memory>
+
+namespace HelloImGui
+{
+// @@md#TextureGpu
+
+// `HelloImGui::TextureGpu`: an opaque RAII handle that owns a GPU texture.
+//
+// `TextureGpu` is the abstract base class for backend-specific GPU texture
+// objects (OpenGL, Metal, Vulkan, DirectX11). The concrete subclasses live
+// inside `internal/` and are created by the factory functions below.
+//
+// Lifetime: the GPU resource is freed when the last `std::shared_ptr<TextureGpu>`
+// reference is dropped — there is no separate `DeleteTexture()` to call.
+//
+// Threading: a live rendering backend (GL/Metal/Vulkan/Dx11) must exist on
+// the current thread when constructing or destroying a `TextureGpu`. In
+// practice this means: only call the factories from the GUI thread, while
+// the application is running (i.e. between `HelloImGui::Run` startup and
+// shutdown). Holding a `TextureGpuPtr` across the application's lifetime
+// boundary is undefined behavior.
+class TextureGpu
+{
+public:
+    int Width = 0;
+    int Height = 0;
+    virtual ImTextureID TextureID() = 0;
+
+    TextureGpu() = default;
+    virtual ~TextureGpu();
+
+    // Backend-specific upload of an HxWx4 RGBA buffer. Internal: prefer
+    // calling the public factory `CreateTextureGpuFromRgbaData` instead.
+    virtual void _impl_StoreTexture(int width, int height, unsigned char* image_data_rgba) = 0;
+};
+
+using TextureGpuPtr = std::shared_ptr<TextureGpu>;
+
+
+// `HelloImGui::CreateTextureGpuFromRgbaData(rgbaData, width, height)`:
+// Upload raw RGBA pixel data to the GPU and return an owning handle.
+//
+// - `rgbaData` must point to `width * height * 4` bytes of 8-bit RGBA pixels
+//   (one byte per channel, row-major, no padding). The caller retains
+//   ownership of `rgbaData`; the buffer is read once during the upload and
+//   not referenced afterwards.
+// - The returned `TextureGpuPtr` owns the GPU resource: when its last
+//   reference drops, the texture is freed automatically.
+// - Returns a null `TextureGpuPtr` if the rendering backend is not
+//   supported or no live backend is available.
+//
+// Threading: must be called from the GUI thread, while a live rendering
+// backend is initialized. Calling it before `HelloImGui::Run` has set up
+// the backend (or after teardown) is undefined behavior.
+TextureGpuPtr CreateTextureGpuFromRgbaData(
+    const unsigned char* rgbaData, int width, int height);
+
+// @@md
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1324,8 +1399,6 @@ std::string EdgeToolbarTypeName(EdgeToolbarType e);
 // @@md#DefaultIconFont
 
 // HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font
-// Breaking change in v1.5.0:
-// - the default icon font is now FontAwesome 6, which includes many more icons.
 // - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:
 //     #include "hello_imgui/icons_font_awesome_6.h" or #include "hello_imgui/icons_font_awesome_4.h"
 enum class DefaultIconFont
@@ -2788,6 +2861,27 @@ namespace ManualRender
 
 // `IsUsingHelloImGui()`: returns true if the application is using HelloImGui
     bool IsUsingHelloImGui();
+
+// `InitGlLoader()`: initializes HelloImGui's OpenGL function loader (GLAD).
+//  Required ONLY when using HelloImGui's image / texture helpers
+//  (`ImageAndSizeFromAsset`, `CreateTextureGpuFromRgbaData`, anything that
+//  uploads to a `TextureGpuOpenGl`) OUTSIDE a `HelloImGui::Run()` context.
+//  Inside `Run()`, the loader is initialized automatically.
+//
+//  Typical use case: hosting `imgui_md` in a pure GLFW + PyOpenGL Python
+//  backend, or in a vanilla Dear ImGui glfw+opengl3 C++ app.
+//
+//  Preconditions:
+//   - A GL context must be current (created by your own GLFW/SDL2/etc).
+//   - HelloImGui must be compiled with HELLOIMGUI_USE_GLFW3 or HELLOIMGUI_USE_SDL2.
+//
+//  Returns true on success, false if no supported platform backend was
+//  compiled in. Idempotent: safe to call repeatedly.
+//
+//  Note: only the OpenGL3 standalone path is supported. Metal, Vulkan and
+//  DirectX11/12 require device handles that HelloImGui's runner would
+//  normally create — they are not usable outside `Run()`.
+    bool InitGlLoader();
 
 // `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
 //  May differ from ImGui::GetIO().FrameRate, since one can choose the duration

@@ -290,7 +290,7 @@ Below are demonstrations from the ImGui Bundle Interactive Manual, showcasing va
 ### Docking Demo
 
 ````{card}
-:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html
+:link: https://traineq.org/imgui_bundle_explorer/demo_docking.html
 ```{figure} ../images/demo_docking.webp
 :width: 400
 Docking Demo - Full-featured ImGui application with Hello ImGui
@@ -298,7 +298,7 @@ Docking Demo - Full-featured ImGui application with Hello ImGui
 ````
 
 
-[Docking Demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html) shows how to create a full-featured application:
+[Docking Demo](https://traineq.org/imgui_bundle_explorer/demo_docking.html) shows how to create a full-featured application:
 
 - Complex app layout (with several possible layouts)
 - Load additional fonts, possibly colored, and with emojis
@@ -313,7 +313,7 @@ Source code: [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/i
 ### ImmApp - Launch an app with addons
 
 ````{card}
-:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_assets_addons.html
+:link: https://traineq.org/imgui_bundle_explorer/demo_assets_addons.html
 ```{figure} ../images/demo_assets_addons.jpg
 :width: 400
 ImmApp with add-ons: assets, markdown, and ImPlot
@@ -330,7 +330,7 @@ Source code: [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/i
 ### Custom 3D Background
 
 ````{card}
-:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_custom_background.html
+:link: https://traineq.org/imgui_bundle_explorer/demo_custom_background.html
 ```{figure} ../images/demo_custom_background.jpg
 :width: 400
 Custom 3D background with OpenGL shaders
@@ -347,7 +347,7 @@ Source code: [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/i
 ### Power Save Mode
 
 ````{card}
-:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_powersave.html
+:link: https://traineq.org/imgui_bundle_explorer/demo_powersave.html
 Demonstrates FPS idling to reduce CPU usage when the app is idle.
 ````
 
@@ -362,7 +362,7 @@ runner_params.fps_idling.fps_idle = 10.0
 runner_params.fps_idling.enable_idling = True
 ```
 
-* Demo: [Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_powersave.html) |
+* Demo: [Try online](https://traineq.org/imgui_bundle_explorer/demo_powersave.html) |
 * Source code: [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp)
 
 
@@ -431,7 +431,7 @@ int main()
 
 **Use cases:** game engine integration, heavy computation between frames, synchronizing with external systems, precise frame timing control.
 
-**Demo:** [Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_custom_background.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp)
+**Demo:** [Try online](https://traineq.org/imgui_bundle_explorer/demo_custom_background.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp)
 
 ---
 

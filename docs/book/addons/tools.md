@@ -28,7 +28,7 @@ ImGuizmo: 3D gizmos for translation, rotation, and scale.
 
 ### Full Demo
 
-[Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_gizmo.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp)
+[Try online](https://traineq.org/imgui_bundle_explorer/demo_gizmo.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp)
 
 ### Documented APIs
 
@@ -67,7 +67,7 @@ Enable the node editor by passing `with_node_editor=True` (Python) or `addons.wi
 
 ### Full Demo
 
-[Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_node_editor_launcher.html) - A launcher with several demos:
+[Try online](https://traineq.org/imgui_bundle_explorer/demo_node_editor_launcher.html) - A launcher with several demos:
 
 | Demo | Python | C++ |
 |------|--------|-----|
@@ -105,7 +105,7 @@ NanoVG: antialiased 2D vector graphics with paths, shapes, and text.
 
 ### Full Demo
 
-[Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_nanovg_launcher.html) - A launcher with two demos:
+[Try online](https://traineq.org/imgui_bundle_explorer/demo_nanovg_launcher.html) - A launcher with two demos:
 
 | Demo        | Python | C++ |
 |-------------|--------|-----|

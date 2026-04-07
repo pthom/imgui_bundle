@@ -107,6 +107,23 @@ def lib_md4c() -> ExternalLibrary:
     )
 
 
+def lib_microtex() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui_microtex",
+        official_git_url="https://github.com/NanoMichael/MicroTeX.git",
+        official_branch="openmath",
+        fork_git_url="https://github.com/pthom/MicroTeX.git",
+        # fork_branch defaults to "imgui_bundle"
+        custom_git_folder="imgui_microtex/MicroTeX",
+        is_sub_library=True,
+        # We DO publish a thin Python wrapper around MicroTeX (see
+        # external/imgui_microtex/bindings/{generate_imgui_microtex.py,
+        # pybind_imgui_microtex.cpp}). Without this flag, libs_bindings_all
+        # both skips regen for it and removes pybind_imgui_microtex.cpp from
+        # all_pybind_files.cmake.
+    )
+
+
 def lib_imgui_tex_inspect() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui_tex_inspect",
@@ -236,6 +253,7 @@ ALL_LIBS = [
     lib_imgui_node_editor(),
     lib_imgui_md(),
     lib_md4c(),
+    lib_microtex(),
     lib_imgui_tex_inspect(),
     lib_imgui_toggle(),
     lib_imgui_color_text_edit(),

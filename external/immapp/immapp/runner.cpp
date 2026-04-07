@@ -146,16 +146,37 @@ namespace ImmApp
         }
 #endif
 
+        // withLatex implies withMarkdown
+        if (addOnsParams.withLatex)
+            addOnsParams.withMarkdown = true;
+
         // load markdown fonts if needed
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
         {
             if (!addOnsParams.withMarkdownOptions.has_value())
                 addOnsParams.withMarkdownOptions = ImGuiMd::MarkdownOptions();
+            // Propagate withLatex convenience flag into MarkdownOptions.
+            if (addOnsParams.withLatex)
+                addOnsParams.withMarkdownOptions->withLatex = true;
             ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
 
             runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::SequenceFunctions(
                 runnerParams.callbacks.LoadAdditionalFonts,
                 ImGuiMd::GetFontLoaderFunction());
+
+            // Tear down markdown WHILE the GL context is still alive.
+            // BeforeExit fires inside AbstractRunner::TearDown just before
+            // Impl_Cleanup destroys the GL context, which is exactly what
+            // ImGuiMd::DeInitializeMarkdown needs: it triggers
+            // ImGuiMicroTeX::Release() → sTextureCache.clear() → each
+            // TextureGpuOpenGl destructor → glDeleteTextures(...). If we
+            // ran this from immapp::Priv_TearDown (after HelloImGui::Run
+            // returns), the GL context would already be gone and the
+            // glDeleteTextures call would crash on Linux.
+            runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
+                runnerParams.callbacks.BeforeExit,
+                [](){ ImGuiMd::DeInitializeMarkdown(); }
+            );
         }
 
 #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
@@ -264,8 +285,12 @@ namespace ImmApp
         }
 #endif
 
-        if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
-            ImGuiMd::DeInitializeMarkdown();
+        // Note: ImGuiMd::DeInitializeMarkdown() is no longer called from
+        // here. It is invoked from a BeforeExit callback registered in
+        // Priv_Setup, so it runs while the GL context is still alive.
+        // (Calling it here would run after HelloImGui::Run has destroyed
+        // the context, which causes a crash inside ~TextureGpuOpenGl
+        // → glDeleteTextures on Linux.)
     }
 
     void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
@@ -300,6 +325,7 @@ namespace ImmApp
         bool withNodeEditor,
         bool withTexInspect,
         bool withImAnim,
+        bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -323,6 +349,7 @@ namespace ImmApp
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
         addOnsParams.withImAnim = withImAnim;
+        addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif
@@ -349,6 +376,7 @@ namespace ImmApp
         bool withNodeEditor,
         bool withTexInspect,
         bool withImAnim,
+        bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -372,6 +400,7 @@ namespace ImmApp
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
         addOnsParams.withImAnim = withImAnim;
+        addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif
@@ -530,6 +559,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -552,6 +582,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+        addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif
