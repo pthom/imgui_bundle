@@ -87,7 +87,7 @@ Call `immvision.use_rgb_color_order()` once at startup for RGB images. Call `use
 ### Full Demo
 
 ::::{card}
-:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_immvision_launcher.html
+:link: https://traineq.org/imgui_bundle_explorer/demo_immvision_launcher.html
 ```{figure} ../images/demo_immvision_process_1.jpg
 :width: 350
 Click the image to run a launcher that includes several examples.
@@ -189,8 +189,8 @@ Enable imgui_tex_inspect by passing `with_tex_inspect=True` (Python) or `addons.
 
 ### Full Demo
 
-- [Demo Window](https://traineq.org/ImGuiBundle/emscripten/bin/demo_tex_inspect_demo_window.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_demo_window.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_demo_window.cpp)
-- [Simple Example](https://traineq.org/ImGuiBundle/emscripten/bin/demo_tex_inspect_simple.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_simple.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_simple.cpp)
+- [Demo Window](https://traineq.org/imgui_bundle_explorer/demo_tex_inspect_demo_window.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_demo_window.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_demo_window.cpp)
+- [Simple Example](https://traineq.org/imgui_bundle_explorer/demo_tex_inspect_simple.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_simple.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_simple.cpp)
 
 ### Documented APIs
 

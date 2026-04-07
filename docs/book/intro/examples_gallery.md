@@ -23,7 +23,7 @@ Inside the manual, click the "Demo Apps" tab, select a demo, run it and look at 
 A complex GUI app with a docking layout, and several possible arrangements
 ```
 
-[Run this demo in your browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html)
+[Run this demo in your browser](https://traineq.org/imgui_bundle_explorer/demo_docking.html)
 
 
 This demonstration showcases how to:
@@ -51,7 +51,7 @@ Its source code is heavily documented and should be self-explanatory.
 A custom 3D scene rendered in the background of an ImGui application
 ```
 
-[Run this demo in your browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_custom_background.html)
+[Run this demo in your browser](https://traineq.org/imgui_bundle_explorer/demo_custom_background.html)
 
 
 This demonstration showcases how to:
@@ -83,7 +83,7 @@ ImmVision in action
 Zooming on the images (with the mouse wheel) to display pixel values
 ```
 
-[Run this demo in your browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_immvision_process.html)
+[Run this demo in your browser](https://traineq.org/imgui_bundle_explorer/demo_immvision_process.html)
 
 [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger which can display multiple kinds of images (RGB, RGBA, float, etc.), zoom to examine precise pixel values, display float images with a versatile colormap, etc.
 
@@ -110,7 +110,7 @@ Its source code is heavily documented and should be self-explanatory.
 ```
 
 
-[Run this demo in your browser](https://traineq.org/ImGuiBundle/emscripten/bin/demo_testengine.html)
+[Run this demo in your browser](https://traineq.org/imgui_bundle_explorer/demo_testengine.html)
 
 [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) is a Tests & Automation Engine for Dear ImGui.
 

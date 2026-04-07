@@ -5,14 +5,14 @@ Dear ImGui Bundle includes a variety of additional widgets beyond the standard I
 ## Full Demo
 
 ::::{card}
-:link: https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html
+:link: https://traineq.org/imgui_bundle_explorer/demo_widgets.html
 ```{figure} ../images/demo_widgets.webp
 :width: 350
 Widgets demo showcasing knobs, toggles, spinners, coolbar, and more.
 ```
 ::::
 
-[Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_widgets.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_widgets.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_widgets.cpp)
+[Try online](https://traineq.org/imgui_bundle_explorer/demo_widgets.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_widgets.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_widgets.cpp)
 
 
 ## imgui-knobs - Rotary Knobs
@@ -233,7 +233,7 @@ imgui-command-palette: VSCode-style command palette.
 
 ### Full Demo
 
-[Try online](https://traineq.org/ImGuiBundle/emscripten/bin/demo_command_palette.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_command_palette.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_command_palette.cpp)
+[Try online](https://traineq.org/imgui_bundle_explorer/demo_command_palette.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_command_palette.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_command_palette.cpp)
 
 ### Documented APIs
 

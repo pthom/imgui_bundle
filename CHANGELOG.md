@@ -469,7 +469,7 @@ See changes in [Hello ImGui v1.5.0-rc1](https://github.com/pthom/hello_imgui/rel
 # v1.3.0
 
 ### New libraries
-* Added [NanoVG](https://github.com/memononen/nanovg): see [python bindings](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/nanovg.pyi), code of [python demos](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_nanovg), code of [C++ demos](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/demos_nanovg), online [full demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_nanovg_full.html), online [simple demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_nanovg_heart.html), and [API for integration with ImGui](https://github.com/pthom/imgui_bundle/blob/main/external/nanovg/nvg_imgui/nvg_imgui.h). Works on Linux, Windows, macOS, emscripten, iOS and Android (OpenGL only).
+* Added [NanoVG](https://github.com/memononen/nanovg): see [python bindings](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/nanovg.pyi), code of [python demos](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_nanovg), code of [C++ demos](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_cpp/demos_nanovg), online [full demo](https://traineq.org/imgui_bundle_explorer/demo_nanovg_full.html), online [simple demo](https://traineq.org/imgui_bundle_explorer/demo_nanovg_heart.html), and [API for integration with ImGui](https://github.com/pthom/imgui_bundle/blob/main/external/nanovg/nvg_imgui/nvg_imgui.h). Works on Linux, Windows, macOS, emscripten, iOS and Android (OpenGL only).
 
 ### Bundle
 * Update imgui to v1.90.1-docking
@@ -480,7 +480,7 @@ See changes in [Hello ImGui v1.5.0-rc1](https://github.com/pthom/hello_imgui/rel
 * Fix an issue under Ubuntu where cibuildwheel binary wheels did not work (see [#170](https://github.com/pthom/imgui_bundle/issues/170))
 
 ### Hello ImGui
-* Added EdgeToolbars: see [definition](https://github.com/pthom/hello_imgui/blob/3a279ce7459b04a4c2e7460b844cbf354833964e/src/hello_imgui/runner_callbacks.h#L72-L102), [callbacks](https://github.com/pthom/hello_imgui/blob/3a279ce7459b04a4c2e7460b844cbf354833964e/src/hello_imgui/runner_callbacks.h#L140-L147), [example usage](https://github.com/pthom/hello_imgui/blob/3a279ce7459b04a4c2e7460b844cbf354833964e/src/hello_imgui_demos/hello_imgui_demodocking/hello_imgui_demodocking.main.cpp#L694-L714), and [demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html)
+* Added EdgeToolbars: see [definition](https://github.com/pthom/hello_imgui/blob/3a279ce7459b04a4c2e7460b844cbf354833964e/src/hello_imgui/runner_callbacks.h#L72-L102), [callbacks](https://github.com/pthom/hello_imgui/blob/3a279ce7459b04a4c2e7460b844cbf354833964e/src/hello_imgui/runner_callbacks.h#L140-L147), [example usage](https://github.com/pthom/hello_imgui/blob/3a279ce7459b04a4c2e7460b844cbf354833964e/src/hello_imgui_demos/hello_imgui_demodocking/hello_imgui_demodocking.main.cpp#L694-L714), and [demo](https://traineq.org/imgui_bundle_explorer/demo_docking.html)
 * Callbacks: add [EnqueuePostInit, EnqueueBeforeExit, PostInit_AddPlatformBackendCallbacks](https://pthom.github.io/hello_imgui/book/doc_params.html#runnercallbacks)
 * Add [renderer_backend_options](https://pthom.github.io/hello_imgui/book/doc_params.html#renderer-backend-options)
 * Add support for Extended Dynamic Range (EDR) on macOS : see [PR](https://github.com/pthom/hello_imgui/pull/89). Added [demo / EDR](https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui_demos/hello_edr) - Only works with Metal
@@ -499,7 +499,7 @@ See changes in [Hello ImGui v1.5.0-rc1](https://github.com/pthom/hello_imgui/rel
 * Added nice [documentation pages](https://pthom.github.io/hello_imgui)
 * Uses [Freetype for font rendering](https://github.com/pthom/hello_imgui/blob/549c205dd3ca98f18fcf541a2ebbfc5abdd10410/CMakeLists.txt#L96-L106)
 * Improved [Font Loading utility](https://github.com/pthom/hello_imgui/blob/549c205dd3ca98f18fcf541a2ebbfc5abdd10410/src/hello_imgui/hello_imgui_font.h#L13-L62)
-* Added support for Colored font and Emoji fonts ([Demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html))
+* Added support for Colored font and Emoji fonts ([Demo](https://traineq.org/imgui_bundle_explorer/demo_docking.html))
 * Can [fully customize the menu bar](https://pthom.github.io/hello_imgui/book/doc_api.html#customize-hello-imgui-menus)
 
 ### Backends
@@ -653,7 +653,7 @@ As always, an online interactive manual is available
 
 Each layout has a different spatial layout and can contain a different list of windows. Each layout also remembers the user modifications to this given layout, as well as the  list of opened windows.
 
-See [this online emscripten demo](https://traineq.org/ImGuiBundle/emscripten/bin/demo_docking.html)  of the docking and layout, the  [C++ demo code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp), and [python demo code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py)
+See [this online emscripten demo](https://traineq.org/imgui_bundle_explorer/demo_docking.html)  of the docking and layout, the  [C++ demo code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp), and [python demo code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py)
 
 For more explanations on how to handle complex layouts, see this [video explanation on YouTube](https://www.youtube.com/watch?v=XKxmz__F4ow) (5 minutes)
 
