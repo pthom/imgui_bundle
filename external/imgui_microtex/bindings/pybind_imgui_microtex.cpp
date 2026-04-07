@@ -51,21 +51,21 @@ void py_init_module_imgui_microtex(nb::module_& m)
     auto pyClassRenderedFormula =
         nb::class_<ImGuiMicroTeX::RenderedFormula>
             (m, "RenderedFormula", "")
-        .def("__init__", [](ImGuiMicroTeX::RenderedFormula * self, int Width = 0, int Height = 0, int Depth = 0, float Baseline = 0)
+        .def("__init__", [](ImGuiMicroTeX::RenderedFormula * self, int Width = 0, int Height = 0, int Depth = 0, int BaselineY = 0)
         {
             new (self) ImGuiMicroTeX::RenderedFormula();  // placement new
             auto r_ctor_ = self;
             r_ctor_->Width = Width;
             r_ctor_->Height = Height;
             r_ctor_->Depth = Depth;
-            r_ctor_->Baseline = Baseline;
+            r_ctor_->BaselineY = BaselineY;
         },
-        nb::arg("width") = 0, nb::arg("height") = 0, nb::arg("depth") = 0, nb::arg("baseline") = 0
+        nb::arg("width") = 0, nb::arg("height") = 0, nb::arg("depth") = 0, nb::arg("baseline_y") = 0
         )
         .def_rw("width", &ImGuiMicroTeX::RenderedFormula::Width, "")
         .def_rw("height", &ImGuiMicroTeX::RenderedFormula::Height, "")
-        .def_rw("depth", &ImGuiMicroTeX::RenderedFormula::Depth, "distance below baseline (in pixels)")
-        .def_rw("baseline", &ImGuiMicroTeX::RenderedFormula::Baseline, " Baseline: ratio of ascent to total height, in [0, 1].\n To vertically align inline math with surrounding text of height textH:\n   float yOffset = (Baseline - 1.0) * Height;\n   ImGui::SetCursorPosY(ImGui::GetCursorPosY() - yOffset);")
+        .def_rw("depth", &ImGuiMicroTeX::RenderedFormula::Depth, "distance below baseline (in pixels, unpadded)")
+        .def_rw("baseline_y", &ImGuiMicroTeX::RenderedFormula::BaselineY, " BaselineY: pixel y-offset from the TOP of the (padded) image to\n the formula's typographic baseline. Use this to align the formula\n with surrounding text:\n\n   // ImGui text baseline is at cursor.y + GetFontBaked()->Ascent.\n     float ascent = ImGui::GetFontBaked()->Ascent;\n     float imageTop = ImGui::GetCursorPosY() + ascent - formula.BaselineY;\n     ImGui::SetCursorPosY(imageTop);\n     ImGui::Image(texId, ImVec2(formula.Width, formula.Height));\n")
         ;
 
     pyClassRenderedFormula.def("pixels_as_array", [](nb::handle self_handle) {
@@ -110,24 +110,29 @@ void py_init_module_imgui_microtex(nb::module_& m)
 
     auto pyClassFormulaTexture =
         nb::class_<ImGuiMicroTeX::FormulaTexture>
-            (m, "FormulaTexture", "")
-        .def("__init__", [](ImGuiMicroTeX::FormulaTexture * self, ImTextureID TextureId = 0, int Width = 0, int Height = 0, int Depth = 0, float Baseline = 0)
+            (m, "FormulaTexture", " FormulaTexture owns its GPU texture via a HelloImGui::TextureGpuPtr.\n The texture is freed when the last shared reference drops; this happens\n at the latest when the imgui_microtex texture cache is cleared (via\n ClearTextureCache() or Release()), but a caller may also keep its own\n reference to extend the lifetime.")
+        .def("__init__", [](ImGuiMicroTeX::FormulaTexture * self, const std::optional<const HelloImGui::TextureGpuPtr> & Texture = std::nullopt, int Width = 0, int Height = 0, int Depth = 0, int BaselineY = 0)
         {
             new (self) ImGuiMicroTeX::FormulaTexture();  // placement new
             auto r_ctor_ = self;
-            r_ctor_->TextureId = TextureId;
+            if (Texture.has_value())
+                r_ctor_->Texture = Texture.value();
+            else
+                r_ctor_->Texture = HelloImGui::TextureGpuPtr();
             r_ctor_->Width = Width;
             r_ctor_->Height = Height;
             r_ctor_->Depth = Depth;
-            r_ctor_->Baseline = Baseline;
+            r_ctor_->BaselineY = BaselineY;
         },
-        nb::arg("texture_id") = 0, nb::arg("width") = 0, nb::arg("height") = 0, nb::arg("depth") = 0, nb::arg("baseline") = 0
+        nb::arg("texture").none() = nb::none(), nb::arg("width") = 0, nb::arg("height") = 0, nb::arg("depth") = 0, nb::arg("baseline_y") = 0
         )
-        .def_rw("texture_id", &ImGuiMicroTeX::FormulaTexture::TextureId, "")
+        .def_rw("texture", &ImGuiMicroTeX::FormulaTexture::Texture, "")
         .def_rw("width", &ImGuiMicroTeX::FormulaTexture::Width, "")
         .def_rw("height", &ImGuiMicroTeX::FormulaTexture::Height, "")
         .def_rw("depth", &ImGuiMicroTeX::FormulaTexture::Depth, "")
-        .def_rw("baseline", &ImGuiMicroTeX::FormulaTexture::Baseline, " Baseline: ratio of ascent to total height, in [0, 1].\n To vertically align inline math with surrounding text of height textH:\n   float yOffset = (Baseline - 1.0) * Height;\n   ImGui::SetCursorPosY(ImGui::GetCursorPosY() - yOffset);")
+        .def_rw("baseline_y", &ImGuiMicroTeX::FormulaTexture::BaselineY, " BaselineY: pixel y-offset from the TOP of the image to the formula's\n typographic baseline. See RenderedFormula::BaselineY for details.")
+        .def("texture_id",
+            &ImGuiMicroTeX::FormulaTexture::TextureId, "Convenience: returns the GPU texture id, or 0 if no texture is held.")
         ;
 
 

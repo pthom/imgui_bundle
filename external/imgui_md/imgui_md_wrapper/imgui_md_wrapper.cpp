@@ -496,23 +496,48 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             ImGuiMicroTeX::Init(clmFile, otfFile);
         }
 
+        // Returns physical-pixels-per-logical-pixel for the current display.
+        // On macOS retina this is 2.0; on standard DPI displays it is 1.0.
+        // Used to rasterize formulas at the framebuffer pixel density and
+        // display them at logical size (sharp on HiDPI screens).
+        static float PixelScale()
+        {
+            float s = ImGui::GetIO().DisplayFramebufferScale.y;
+            return (s > 0.01f) ? s : 1.0f;
+        }
+
         void SPAN_LATEXMATH(bool e) override
         {
             imgui_md::SPAN_LATEXMATH(e);
             if (e)
                 return;
             EnsureMicroTeXInitialized();
-            float fontSize = ImGui::GetFontSize();
+            // DPI-aware: rasterize at framebuffer density, display at logical size.
+            float pixelScale = PixelScale();
+            float logicalFontSize = ImGui::GetFontSize();
+            float physicalFontSize = logicalFontSize * pixelScale;
             ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
-            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, fontSize, color);
-            if (tex.TextureId == (ImTextureID)0)
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color);
+            ImTextureID texId = tex.TextureId();
+            if (texId == (ImTextureID)0)
                 return;
+            // tex.Width/Height/BaselineY are in physical pixels (the bitmap was
+            // rasterized at the higher density). Convert to logical pixels for
+            // ImGui layout.
+            float logicalW = (float)tex.Width / pixelScale;
+            float logicalH = (float)tex.Height / pixelScale;
+            float logicalBaselineY = (float)tex.BaselineY / pixelScale;
             // Vertically align the formula so its baseline matches the surrounding text.
-            float yOffset = (tex.Baseline - 1.0f) * (float)tex.Height;
+            // ImGui::Text() draws starting at cursor.y, with the typographic baseline
+            // at cursor.y + baked->Ascent. To put the formula's baseline at the same
+            // position, the image top must be at cursor.y + textAscent - logicalBaselineY.
+            ImFontBaked* baked = ImGui::GetFontBaked();
+            float textAscent = baked ? baked->Ascent : logicalFontSize * 0.8f;
             float savedY = ImGui::GetCursorPosY();
-            ImGui::SetCursorPosY(savedY - yOffset);
-            ImGui::Image(tex.TextureId, ImVec2((float)tex.Width, (float)tex.Height));
+            ImGui::SetCursorPosY(savedY + textAscent - logicalBaselineY);
+            ImGui::Image(texId, ImVec2(logicalW, logicalH));
             ImGui::SameLine(0.0f, 0.0f);
+            // Restore cursor Y so subsequent inline content lands on the original line.
             ImGui::SetCursorPosY(savedY);
         }
 
@@ -522,18 +547,23 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             if (e)
                 return;
             EnsureMicroTeXInitialized();
-            float fontSize = ImGui::GetFontSize() * 1.4f;
+            float pixelScale = PixelScale();
+            float logicalFontSize = ImGui::GetFontSize() * 1.4f;
+            float physicalFontSize = logicalFontSize * pixelScale;
             ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
-            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, fontSize, color);
-            if (tex.TextureId == (ImTextureID)0)
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color);
+            ImTextureID texId = tex.TextureId();
+            if (texId == (ImTextureID)0)
                 return;
+            float logicalW = (float)tex.Width / pixelScale;
+            float logicalH = (float)tex.Height / pixelScale;
             // Display math: centered on its own line.
             ImGui::NewLine();
             float avail = ImGui::GetContentRegionAvail().x;
-            float padX = (avail - (float)tex.Width) * 0.5f;
+            float padX = (avail - logicalW) * 0.5f;
             if (padX > 0.0f)
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + padX);
-            ImGui::Image(tex.TextureId, ImVec2((float)tex.Width, (float)tex.Height));
+            ImGui::Image(texId, ImVec2(logicalW, logicalH));
             ImGui::NewLine();
         }
 #endif

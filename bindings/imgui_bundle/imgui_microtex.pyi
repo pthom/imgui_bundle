@@ -17,7 +17,7 @@ ImTextureID = int
 # Public API for imgui_microtex: native LaTeX math rendering via MicroTeX + FreeType.
 #
 # Level 1: render LaTeX to an RGBA pixel buffer.
-# Level 2: render LaTeX to an ImTextureID with caching.
+# Level 2: render LaTeX to an owning HelloImGui::TextureGpuPtr (cached).
 #
 # Thread safety: all functions are protected by a mutex and can be called from any thread.
 
@@ -51,18 +51,24 @@ def release() -> None:
 class RenderedFormula:
     width: int = 0
     height: int = 0
-    depth: int = 0  # distance below baseline (in pixels)
-    # Baseline: ratio of ascent to total height, in [0, 1].
-    # To vertically align inline math with surrounding text of height textH:
-    #   float yOffset = (Baseline - 1.0) * Height;
-    #   ImGui::SetCursorPosY(ImGui::GetCursorPosY() - yOffset);
-    baseline: float = 0
+    depth: int = 0  # distance below baseline (in pixels, unpadded)
+    # BaselineY: pixel y-offset from the TOP of the (padded) image to
+    # the formula's typographic baseline. Use this to align the formula
+    # with surrounding text:
+    #
+    #   // ImGui text baseline is at cursor.y + GetFontBaked()->Ascent.
+    #     float ascent = ImGui::GetFontBaked()->Ascent;
+    #     float imageTop = ImGui::GetCursorPosY() + ascent - formula.BaselineY;
+    #     ImGui::SetCursorPosY(imageTop);
+    #     ImGui::Image(texId, ImVec2(formula.Width, formula.Height));
+    #
+    baseline_y: int = 0
     def __init__(
         self,
         width: int = 0,
         height: int = 0,
         depth: int = 0,
-        baseline: float = 0
+        baseline_y: int = 0
         ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -92,31 +98,44 @@ def render(latex: str, font_size: float, color: ImVec4) -> RenderedFormula:
     pass
 
 # ============================================================================
-# Level 2: LaTeX -> ImTextureID (with caching)
+# Level 2: LaTeX -> HelloImGui::TextureGpuPtr (with caching)
 # ============================================================================
 
 class FormulaTexture:
-    texture_id: ImTextureID = 0
+    """ FormulaTexture owns its GPU texture via a HelloImGui::TextureGpuPtr.
+     The texture is freed when the last shared reference drops; this happens
+     at the latest when the imgui_microtex texture cache is cleared (via
+     ClearTextureCache() or Release()), but a caller may also keep its own
+     reference to extend the lifetime.
+    """
+    texture: HelloImGui.TextureGpuPtr
     width: int = 0
     height: int = 0
     depth: int = 0
-    # Baseline: ratio of ascent to total height, in [0, 1].
-    # To vertically align inline math with surrounding text of height textH:
-    #   float yOffset = (Baseline - 1.0) * Height;
-    #   ImGui::SetCursorPosY(ImGui::GetCursorPosY() - yOffset);
-    baseline: float = 0
+    # BaselineY: pixel y-offset from the TOP of the image to the formula's
+    # typographic baseline. See RenderedFormula::BaselineY for details.
+    baseline_y: int = 0
+
+    def texture_id(self) -> ImTextureID:
+        """ Convenience: returns the GPU texture id, or 0 if no texture is held."""
+        pass
     def __init__(
         self,
-        texture_id: ImTextureID = 0,
+        texture: Optional[HelloImGui.TextureGpuPtr] = None,
         width: int = 0,
         height: int = 0,
         depth: int = 0,
-        baseline: float = 0
+        baseline_y: int = 0
         ) -> None:
-        """Auto-generated default constructor with named params"""
+        """Auto-generated default constructor with named params
+
+
+        Python bindings defaults:
+            If Texture is None, then its default value will be: HelloImGui.TextureGpuPtr()
+        """
         pass
 
-# Render a LaTeX string to an ImGui texture (cached, 5 min TTL).
+# Render a LaTeX string to an ImGui texture (cached for the lifetime of imgui_microtex).
 @overload
 def render_to_texture(
     latex: str,

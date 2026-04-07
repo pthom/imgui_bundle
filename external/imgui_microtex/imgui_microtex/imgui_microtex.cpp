@@ -1,7 +1,7 @@
 #include "imgui_microtex.h"
 #include "internal/graphic_freetype.h"
 #include "microtex.h"
-#include "hello_imgui/image_from_asset.h"
+#include "hello_imgui/texture_gpu.h"
 
 #include <map>
 #include <mutex>
@@ -22,20 +22,15 @@ static uint32_t ImU32ToMicroTexColor(ImU32 c) {
     return (a << 24) | (r << 16) | (g << 8) | b;
 }
 
-// Texture cache: we own the textures, keyed by formula params.
-// Freed on Release() or ClearTextureCache().
+// Texture cache: we own the textures (via the TextureGpuPtr inside each
+// FormulaTexture entry), keyed by formula params. Clearing the map drops
+// the shared_ptrs, which frees the GPU textures via TextureGpu's destructor.
 static std::map<std::string, FormulaTexture> sTextureCache;
 
 static std::string MakeCacheKey(const std::string& latex, float fontSize, ImU32 color) {
     char buf[64];
     snprintf(buf, sizeof(buf), "|%.1f|%08x", fontSize, color);
     return latex + buf;
-}
-
-static void DeleteAllTextures() {
-    for (auto& [key, tex] : sTextureCache)
-        HelloImGui::DeleteTexture(tex.TextureId);
-    sTextureCache.clear();
 }
 
 // ============================================================================
@@ -73,7 +68,9 @@ bool IsInitialized() {
 void Release() {
     std::lock_guard<std::mutex> lock(sMutex);
     if (!sInitialized) return;
-    DeleteAllTextures();
+    // Drop all cached textures: each FormulaTexture's TextureGpuPtr drops,
+    // freeing the GPU resource via TextureGpu's destructor.
+    sTextureCache.clear();
     microtex::MicroTeX::release();
     microtex::Font_freetype::releaseFreeType();
     sInitialized = false;
@@ -101,10 +98,11 @@ RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color) {
     );
 
     int w = mtRender->getWidth();
-    int h = mtRender->getHeight();
-    int depth = mtRender->getDepth();
-    float baseline = mtRender->getBaseline();
+    int h = mtRender->getHeight();        // total = ascent + depth (unpadded)
+    int depth = mtRender->getDepth();     // descent below baseline (unpadded)
+    int ascent = h - depth;               // pixels above baseline (unpadded)
 
+    // Padding around the formula so antialiased edges are not clipped.
     int pad = 2;
     int imgW = w + 2 * pad;
     int imgH = h + 2 * pad;
@@ -120,7 +118,8 @@ RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color) {
     result.Width = imgW;
     result.Height = imgH;
     result.Depth = depth;
-    result.Baseline = baseline;
+    // Baseline-from-top in the padded image: top-pad + ascent.
+    result.BaselineY = pad + ascent;
     return result;
 }
 
@@ -133,15 +132,13 @@ RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& c
 // ============================================================================
 
 FormulaTexture ToTexture(const RenderedFormula& formula) {
-    auto uploaded = HelloImGui::CreateTextureFromRgbaData(
-        formula.Pixels.data(), formula.Width, formula.Height);
-
     FormulaTexture tex;
-    tex.TextureId = uploaded.textureId;
+    tex.Texture = HelloImGui::CreateTextureGpuFromRgbaData(
+        formula.Pixels.data(), formula.Width, formula.Height);
     tex.Width = formula.Width;
     tex.Height = formula.Height;
     tex.Depth = formula.Depth;
-    tex.Baseline = formula.Baseline;
+    tex.BaselineY = formula.BaselineY;
     return tex;
 }
 
@@ -163,7 +160,8 @@ FormulaTexture RenderToTexture(const std::string& latex, float fontSize, const I
 }
 
 void ClearTextureCache() {
-    DeleteAllTextures();
+    std::lock_guard<std::mutex> lock(sMutex);
+    sTextureCache.clear();
 }
 
 }  // namespace ImGuiMicroTeX
