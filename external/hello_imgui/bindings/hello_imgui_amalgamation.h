@@ -543,6 +543,14 @@ ImageAndSize ImageAndSizeFromEncodedData(
 // To upload raw RGBA pixel data to a caller-owned GPU texture, see
 // `HelloImGui::CreateTextureGpuFromRgbaData()` in `texture_gpu.h`.
 
+// `HelloImGui::FreeImageCache()`: clears the asset image cache shared by
+//  `ImageFromAsset`, `ImageAndSizeFromAsset` and `ImageAndSizeFromEncodedData`.
+//  Inside a `HelloImGui::Run()` context this is called automatically at
+//  shutdown. When using imgui_md (or any of the helpers above) without
+//  `Run()`, the cache lives until process exit unless you call this manually
+//  before destroying your GL context.
+void FreeImageCache();
+
 // @@md
 
 namespace internal
@@ -2855,6 +2863,27 @@ namespace ManualRender
 
 // `IsUsingHelloImGui()`: returns true if the application is using HelloImGui
     bool IsUsingHelloImGui();
+
+// `InitGlLoader()`: initializes HelloImGui's OpenGL function loader (GLAD).
+//  Required ONLY when using HelloImGui's image / texture helpers
+//  (`ImageAndSizeFromAsset`, `CreateTextureGpuFromRgbaData`, anything that
+//  uploads to a `TextureGpuOpenGl`) OUTSIDE a `HelloImGui::Run()` context.
+//  Inside `Run()`, the loader is initialized automatically.
+//
+//  Typical use case: hosting `imgui_md` in a pure GLFW + PyOpenGL Python
+//  backend, or in a vanilla Dear ImGui glfw+opengl3 C++ app.
+//
+//  Preconditions:
+//   - A GL context must be current (created by your own GLFW/SDL2/etc).
+//   - HelloImGui must be compiled with HELLOIMGUI_USE_GLFW3 or HELLOIMGUI_USE_SDL2.
+//
+//  Returns true on success, false if no supported platform backend was
+//  compiled in. Idempotent: safe to call repeatedly.
+//
+//  Note: only the OpenGL3 standalone path is supported. Metal, Vulkan and
+//  DirectX11/12 require device handles that HelloImGui's runner would
+//  normally create — they are not usable outside `Run()`.
+    bool InitGlLoader();
 
 // `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
 //  May differ from ImGui::GetIO().FrameRate, since one can choose the duration

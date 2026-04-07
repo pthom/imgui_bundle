@@ -685,6 +685,17 @@ def image_proportional_size(asked_size: ImVec2Like, image_size: ImVec2Like) -> I
 # To upload raw RGBA pixel data to a caller-owned GPU texture, see
 # `HelloImGui::CreateTextureGpuFromRgbaData()` in `texture_gpu.h`.
 
+# void FreeImageCache();    /* original C++ signature */
+def free_image_cache() -> None:
+    """`HelloImGui::FreeImageCache()`: clears the asset image cache shared by
+    `ImageFromAsset`, `ImageAndSizeFromAsset` and `ImageAndSizeFromEncodedData`.
+    Inside a `HelloImGui::Run()` context this is called automatically at
+    shutdown. When using imgui_md (or any of the helpers above) without
+    `Run()`, the cache lives until process exit unless you call this manually
+    before destroying your GL context.
+    """
+    pass
+
 # @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -3553,6 +3564,30 @@ def get_runner_params() -> RunnerParams:
 # bool IsUsingHelloImGui();    /* original C++ signature */
 def is_using_hello_imgui() -> bool:
     """`IsUsingHelloImGui()`: returns True if the application is using HelloImGui"""
+    pass
+
+# bool InitGlLoader();    /* original C++ signature */
+def init_gl_loader() -> bool:
+    """`InitGlLoader()`: initializes HelloImGui's OpenGL function loader (GLAD).
+    Required ONLY when using HelloImGui's image / texture helpers
+    (`ImageAndSizeFromAsset`, `CreateTextureGpuFromRgbaData`, anything that
+    uploads to a `TextureGpuOpenGl`) OUTSIDE a `HelloImGui::Run()` context.
+    Inside `Run()`, the loader is initialized automatically.
+
+    Typical use case: hosting `imgui_md` in a pure GLFW + PyOpenGL Python
+    backend, or in a vanilla Dear ImGui glfw+opengl3 C++ app.
+
+    Preconditions:
+     - A GL context must be current (created by your own GLFW/SDL2/etc).
+     - HelloImGui must be compiled with HELLOIMGUI_USE_GLFW3 or HELLOIMGUI_USE_SDL2.
+
+    Returns True on success, False if no supported platform backend was
+    compiled in. Idempotent: safe to call repeatedly.
+
+    Note: only the OpenGL3 standalone path is supported. Metal, Vulkan and
+    DirectX11/12 require device handles that HelloImGui's runner would
+    normally create — they are not usable outside `Run()`.
+    """
     pass
 
 # float FrameRate(float durationForMean = 0.5f);    /* original C++ signature */
