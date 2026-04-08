@@ -23,14 +23,21 @@ namespace ImGuiMicroTeX {
 // Initialize MicroTeX + FreeType backend.
 // clmFile: path to the .clm1 font metrics file
 // fontFile: path to the .otf font file
+// Safe to call repeatedly: subsequent calls after the first successful
+// Init() no-op (MicroTeX itself stays initialized for process life; the
+// underlying MicroTeX::init()/release() pair is not re-entrant, so we
+// defer the real teardown to std::atexit: see imgui_microtex.cpp).
 void Init(const std::string& clmFile, const std::string& fontFile);
 
 // Check if initialized.
 bool IsInitialized();
 
-// Release all resources (textures, MicroTeX, FreeType).
-// Call at most once, at process shutdown.
-// Calling Init() after Release() will throw - MicroTeX does not support re-initialization.
+// Drop the cached GPU texture set so the GL context can be torn down
+// cleanly. Call from BeforeExit (or any point where the GL context is
+// about to die). Safe to call multiple times, and safe to call Init()
+// again afterwards: the underlying MicroTeX library stays alive for
+// the whole process and its real teardown runs once at exit via a
+// std::atexit handler installed on first Init().
 void Release();
 
 // ============================================================================

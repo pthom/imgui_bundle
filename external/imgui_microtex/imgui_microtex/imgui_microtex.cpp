@@ -3,6 +3,7 @@
 #include "microtex.h"
 #include "hello_imgui/texture_gpu.h"
 
+#include <cstdlib>
 #include <map>
 #include <mutex>
 #include <stdexcept>
@@ -10,7 +11,6 @@
 namespace ImGuiMicroTeX {
 
 static bool sInitialized = false;
-static bool sReleased = false;
 static std::mutex sMutex;
 
 // Convert ImU32 (0xAABBGGRR) to MicroTeX color (0xAARRGGBB)
@@ -44,12 +44,6 @@ static std::string MakeCacheKey(const std::string& latex, float fontSize, ImU32 
 
 void Init(const std::string& clmFile, const std::string& fontFile) {
     std::lock_guard<std::mutex> lock(sMutex);
-    if (sReleased) {
-        throw std::runtime_error(
-            "ImGuiMicroTeX::Init() called after Release(). "
-            "MicroTeX does not support re-initialization. "
-            "Init() and Release() should each be called at most once per process.");
-    }
     if (sInitialized) return;
 
     microtex::Font_freetype::initFreeType();
@@ -63,6 +57,31 @@ void Init(const std::string& clmFile, const std::string& fontFile) {
     microtex::FontSrcFile mathFont(clmFile, fontFile);
     microtex::MicroTeX::init(mathFont);
 
+    // Register the *real* MicroTeX + FreeType teardown as an atexit
+    // handler on first successful init. We can't run this teardown from
+    // Release() because MicroTeX cannot be re-initialized cleanly after
+    // MicroTeX::release(): it half-frees its macro tables
+    // (NewCommandMacro::_instance is deleted but not null'd, MacroInfo::
+    // _commands stays full of dangling pointers, NewCommandMacro::_codes
+    // and _replacements never clear) and leaves _config->isInited ==
+    // true, so a second MicroTeX::init() silently early-returns into a
+    // broken state. Deferring the real teardown to process exit lets the
+    // Pyodide playground, Jupyter notebooks, and desktop REPLs call
+    // immapp.run() multiple times safely, while still giving leak
+    // checkers a clean shutdown path on normal desktop exit. Per C++
+    // standard, this atexit callback is guaranteed to run before any
+    // static destructor of objects constructed before registration
+    // (i.e. before all of MicroTeX's own namespace-scope statics), so
+    // we don't hit the cross-TU static destruction order fiasco.
+    static bool sAtexitRegistered = false;
+    if (!sAtexitRegistered) {
+        std::atexit([]() {
+            microtex::MicroTeX::release();
+            microtex::Font_freetype::releaseFreeType();
+        });
+        sAtexitRegistered = true;
+    }
+
     sInitialized = true;
 }
 
@@ -74,12 +93,18 @@ void Release() {
     std::lock_guard<std::mutex> lock(sMutex);
     if (!sInitialized) return;
     // Drop all cached textures: each FormulaTexture's TextureGpuPtr drops,
-    // freeing the GPU resource via TextureGpu's destructor.
+    // freeing the GPU resource via TextureGpu's destructor. This must
+    // happen while the GL context is still alive, which is why Release()
+    // is wired into imgui_md_wrapper's BeforeExit.
+    //
+    // Note: we intentionally do NOT tear down MicroTeX or FreeType here.
+    // The real teardown is deferred to a std::atexit() handler installed
+    // on first Init() (see Init() for the rationale). This lets pyodide
+    // playgrounds, jupyter notebooks, and desktop Python REPLs call
+    // immapp.run() multiple times per process without tripping the
+    // MicroTeX init-after-release bug. sInitialized stays true on
+    // purpose so subsequent Init() calls correctly no-op.
     sTextureCache.clear();
-    microtex::MicroTeX::release();
-    microtex::Font_freetype::releaseFreeType();
-    sInitialized = false;
-    sReleased = true;
 }
 
 // ============================================================================
