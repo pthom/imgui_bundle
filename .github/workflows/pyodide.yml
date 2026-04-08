@@ -44,6 +44,13 @@ jobs:
           source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh
           IMGUI_BUNDLE_SLIM_PYODIDE_WHEEL=1 pyodide build
 
+      # Note: the `*pyodide*` glob below matches the wheel platform tag
+      # `pyodide_YYYY_M_wasm32` produced by pyodide-build 0.29.x.
+      # pyodide-build >= 0.30 renamed the tag to `pyemscripten_YYYY_M_wasm32`.
+      # If you bump PYODIDE_BUILD_VERSION in ci_scripts/pyodide_local_build/
+      # config_versions_pyodide.sh to 0.30+, update this glob and the
+      # justfile globs (pyodide_build / pyodide_clean) accordingly. See the
+      # UPGRADE RUNBOOK at the top of config_versions_pyodide.sh.
       - name: List built wheels
         run: |
           echo "Built wheels:"

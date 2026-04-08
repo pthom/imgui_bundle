@@ -55,8 +55,20 @@ The workflow runs on:
 ## Configuration
 
 Versions are managed via `ci_scripts/pyodide_local_build/config_versions_pyodide.sh`:
-- Pyodide version: 0.29.3
+- Pyodide runtime version: 0.29.3
+- pyodide-build version: 0.29.3 (must be kept in lockstep with the runtime)
 - Python version: 3.13
+
+### Upgrading
+
+**Read the UPGRADE RUNBOOK at the top of
+`ci_scripts/pyodide_local_build/config_versions_pyodide.sh` before bumping any
+version.** Three things must change atomically on upgrade: `PYODIDE_VERSION`,
+`PYODIDE_BUILD_VERSION`, and the `wheel<0.46` workaround in
+`setup_pyodide_local_build.sh`. pyodide-build 0.30+ also renamed the wheel
+platform tag from `pyodide_YYYY_M_wasm32` to `pyemscripten_YYYY_M_wasm32`; if
+you upgrade that far, the `*pyodide*.whl` globs in this workflow and in the
+justfile need to change too. The runbook lists the full checklist.
 
 ## Artifacts
 
