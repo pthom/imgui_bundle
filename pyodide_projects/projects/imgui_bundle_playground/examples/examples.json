@@ -53,8 +53,12 @@
       },
       {
         "label": "Lesson: Harmonic Motion",
-        "filename": "explorables/lesson_harmonic_motion.py",
+        "filename": "explorables/lesson_harmonic_motion.py"
+      },
+      {
+        "label": "Lesson: Harmonic Motion2",
+        "filename": "explorables/lesson_harmonic_motion2.py",
         "hidden": true
       }
     ]
-  }
+}
