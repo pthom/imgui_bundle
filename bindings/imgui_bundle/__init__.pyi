@@ -72,3 +72,7 @@ def register_demos_assets_folder():
     """Register the folder containing demo assets (images, etc.) so they can be loaded by the demos."""
     ...
 
+
+def has_submodule(name: str) -> bool:
+    """Check if a submodule is available in this bundle."""
+    ...

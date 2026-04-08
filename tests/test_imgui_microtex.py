@@ -10,6 +10,16 @@ import sys
 import os
 from pathlib import Path
 
+import pytest
+import imgui_bundle
+
+# Skip the whole module if imgui_bundle was built without imgui_microtex
+# (e.g. when FreeType is unavailable or IMGUI_BUNDLE_WITH_MICROTEX is off).
+pytestmark = pytest.mark.skipif(
+    not imgui_bundle.has_submodule("imgui_microtex"),
+    reason="imgui_microtex submodule not available in this build",
+)
+
 
 def _find_font_files():
     """Find the MicroTeX font files (clm1 + otf) relative to the repo root."""
@@ -164,6 +174,9 @@ def test_rendering_structure():
 
 
 if __name__ == "__main__":
+    if not imgui_bundle.has_submodule("imgui_microtex"):
+        print("imgui_microtex submodule not available in this build, skipping.")
+        sys.exit(0)
     test_render_basic()
     test_render_pixels_as_array()
     test_render_multiple_formulas()
