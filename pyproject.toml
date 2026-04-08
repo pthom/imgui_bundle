@@ -149,7 +149,7 @@ build = ["cp311-*", "cp312-*", "cp313-*", "cp314-*"]
 
 # Tests : we ignore the python GUI tests here, as they require a display
 # (note: those tests are run in the pip.yml GitHub actions workflows)
-test-requires = ["pytest", "pytest-asyncio"]
+test-requires = ["pytest", "pytest-asyncio", "numpy"]
 test-command = "pytest {project}/tests --ignore={project}/tests/tests_python_gui"
 
 
