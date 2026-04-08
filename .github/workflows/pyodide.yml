@@ -47,13 +47,17 @@ jobs:
       - name: List built wheels
         run: |
           echo "Built wheels:"
-          ls -lh dist/*pyodide*.whl
+          # Pyodide-build now tags repacked wheels as `pyemscripten_YYYY_M_wasm32`
+          # (previously `pyodide_YYYY_M_wasm32`). The raw intermediate wheel is
+          # also present as `emscripten_<ver>_wasm32` — we ship only the
+          # repacked pyemscripten one.
+          ls -lh dist/*pyemscripten*.whl
 
       - name: Upload Pyodide wheel artifact
         uses: actions/upload-artifact@v7
         with:
           name: pyodide-wheel
-          path: dist/*pyodide*.whl
+          path: dist/*pyemscripten*.whl
           if-no-files-found: error
 
   upload_to_release:

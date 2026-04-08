@@ -185,8 +185,10 @@ doc_build_pdf:
 [group('pyodide')]
 pyodide_build: pyodide_clean
     source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && IMGUI_BUNDLE_SLIM_PYODIDE_WHEEL=1 pyodide build
-    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/_pyodide_resources/local_wheels/
-    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/projects/local_wheels/
+    # Pyodide-build now tags repacked wheels as `pyemscripten_YYYY_M_wasm32`
+    # (previously `pyodide_YYYY_M_wasm32`); ship only the repacked one.
+    cp dist/imgui_bundle*pyemscripten*.whl pyodide_projects/_pyodide_resources/local_wheels/
+    cp dist/imgui_bundle*pyemscripten*.whl pyodide_projects/projects/local_wheels/
 
 # Start browser test server (serves test HTML pages)
 [group('pyodide')]
@@ -202,8 +204,11 @@ pyodide_demo_runner:
 [group('pyodide')]
 pyodide_clean:
     rm -rf .pyodide_build
-    rm -f pyodide_projects/_pyodide_resources/local_wheels/imgui_bundle*pyodide*.whl
-    rm -f dist/imgui_bundle*pyodide*.whl
+    # Match both old (pyodide_YYYY_M) and new (pyemscripten_YYYY_M, plus
+    # the raw emscripten_<ver>) wasm32 wheel naming so cleanup is robust
+    # across pyodide-build versions.
+    rm -f pyodide_projects/_pyodide_resources/local_wheels/imgui_bundle*wasm32.whl
+    rm -f dist/imgui_bundle*wasm32.whl
 
 # Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
 [group('pyodide')]

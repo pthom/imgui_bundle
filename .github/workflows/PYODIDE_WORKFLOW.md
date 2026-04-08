@@ -25,7 +25,9 @@ The Pyodide CI workflow (`.github/workflows/pyodide.yml`) automates the building
 7. Upload wheel as artifact named `pyodide-wheel`
 
 **Outputs:** 
-- Artifact: `dist/imgui_bundle-X.Y.Z-cp313-cp313-pyodide_2025_0_wasm32.whl`
+- Artifact: `dist/imgui_bundle-X.Y.Z-cp313-cp313-pyemscripten_2025_0_wasm32.whl`
+  (Pyodide-build renamed the platform tag from `pyodide_*` to `pyemscripten_*`
+  to align with the standardized Emscripten wheel platform tag.)
 
 **Performance:**
 - Total build time: ~5-7 minutes
@@ -82,7 +84,7 @@ just pyodide_setup_local_build
 just pyodide_build
 
 # Result
-ls dist/*pyodide*.whl
+ls dist/*pyemscripten*.whl
 ```
 
 ## Comparison with Other Workflows

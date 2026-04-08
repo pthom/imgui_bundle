@@ -126,8 +126,12 @@ pyodide build
 After building, you'll find the wheel in the `dist/` directory:
 
 ```
-dist/imgui_bundle-X.Y.Z-cp313-cp313-pyodide_2025_0_wasm32.whl
+dist/imgui_bundle-X.Y.Z-cp313-cp313-pyemscripten_2025_0_wasm32.whl
 ```
+
+(Pyodide-build renamed the platform tag from `pyodide_*` to `pyemscripten_*`
+to align with the standardized Emscripten wheel platform tag. Older releases
+were named `pyodide_2025_0_wasm32`.)
 
 
 ## Browser Testing
