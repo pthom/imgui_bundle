@@ -49,6 +49,17 @@ def gui(state: AppState) -> None:
     # em <=> equivalent to the em CSS unit
     em = imgui.get_font_size()
 
+
+    # Click me button
+    if imgui.button("Click me!"):  # show the button
+        # And handle its click action immediately!
+        s.count += 1
+    # Use imgui.same_line() to draw the next widget on the same line
+    imgui.same_line()
+    imgui.text(f"Clicked {s.count} times")
+    imgui.separator()
+
+
     # Slider
     _volume_changed, s.volume = imgui.slider_float(
         "Volume", v=s.volume, v_min=0.0, v_max=12.0, format="%.1f")
@@ -66,15 +77,6 @@ def gui(state: AppState) -> None:
     # Note: hello_imgui.em_size(15) is equivalent to em * 15
     imgui.set_next_item_width(hello_imgui.em_size(15))
     _, s.color = imgui.color_edit4("Accent color", s.color)
-    imgui.separator()
-
-    # Show button
-    if imgui.button("Click me!"):
-        s.count += 1
-    # By default, each widget is on the next line.
-    # Use imgui.same_line() to avoid this
-    imgui.same_line()
-    imgui.text(f"Clicked {s.count} times")
     imgui.separator()
 
     # Radio buttons

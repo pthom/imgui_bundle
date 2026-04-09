@@ -5,8 +5,12 @@
         "filename": "00_landing_page.py"
       },
       {
-        "label": "What is an Immediate GUI",
-        "filename": "10_welcome_imm_mode.py"
+        "label": "Explorable: Double Pendulum",
+        "filename": "explorables/double_pendulum.py"
+      },
+      {
+        "label": "Explorable: Fourier Epicycles",
+        "filename": "explorables/fourier_epicycles.py"
       },
       {
         "label": "ImPlot: Interactive Drag Rect",
@@ -15,6 +19,10 @@
       {
         "label": "ImPlot3D: Butterfly Effect",
         "filename": "30_implot3d_butterfly.py"
+      },
+      {
+        "label": "What is an Immediate GUI",
+        "filename": "10_welcome_imm_mode.py"
       },
       {
         "label": "Deploy to the Web: Minimal HTML Example",
@@ -42,14 +50,6 @@
         "filename": "70_fiatlight_image.py",
         "packages": ["opencv-python", "fiatlight"],
         "bundle_folders": ["fiat_settings"]
-      },
-      {
-        "label": "Explorable: Double Pendulum",
-        "filename": "explorables/double_pendulum.py"
-      },
-      {
-        "label": "Explorable: Fourier Epicycles",
-        "filename": "explorables/fourier_epicycles.py"
       },
       {
         "label": "Lesson: Harmonic Motion",

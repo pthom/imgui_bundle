@@ -14,6 +14,7 @@ Stop fighting GUI frameworks. Start building.
 > *Don't hesitate to edit the source code in the left panel! For example, try editing this docstring,
 > then click "Run". The documentation you are reading will immediately update!*
 
+Write Python apps that stay readable and understandable, and run with the same code on web, desktop, and mobile.
 
 **See also:**
 * [Interactive Explorer](https://traineq.org/imgui_bundle_explorer/): Interactive manual - all libraries, live demos (even more than here!), browsable source
