@@ -82,13 +82,18 @@ void py_init_module_implot(nb::module_& m)
     auto pyEnumProp_ =
         nb::enum_<ImPlotProp_>(m, "Prop_", nb::is_arithmetic(), nb::is_flag(), "Plotting properties. These provide syntactic sugar for creating ImPlotSpecs from (ImPlotProp,value) pairs. See ImPlotSpec documentation.")
             .value("line_color", ImPlotProp_LineColor, "line color (applies to lines, bar edges); IMPLOT_AUTO_COL will use next Colormap color or current item color")
+            .value("line_colors", ImPlotProp_LineColors, "array of colors for each line; if None, use LineColor for all lines")
             .value("line_weight", ImPlotProp_LineWeight, "line weight in pixels (applies to lines, bar edges, marker edges)")
             .value("fill_color", ImPlotProp_FillColor, "fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color")
-            .value("fill_alpha", ImPlotProp_FillAlpha, "alpha multiplier (applies to FillColor and MarkerFillColor)")
+            .value("fill_colors", ImPlotProp_FillColors, "array of colors for each fill; if None, use FillColor for all fills")
+            .value("fill_alpha", ImPlotProp_FillAlpha, "alpha multiplier (applies to FillColor, FillColors, MarkerFillColor, and MarkerFillColors)")
             .value("marker", ImPlotProp_Marker, "marker type; specify ImPlotMarker_Auto to use the next unused marker")
             .value("marker_size", ImPlotProp_MarkerSize, "size of markers (radius) *in pixels*")
+            .value("marker_sizes", ImPlotProp_MarkerSizes, "array of sizes for each marker; if None, use MarkerSize for all markers")
             .value("marker_line_color", ImPlotProp_MarkerLineColor, "marker edge color; IMPLOT_AUTO_COL will use LineColor")
+            .value("marker_line_colors", ImPlotProp_MarkerLineColors, "array of colors for each marker edge; if None, use MarkerLineColor for all markers")
             .value("marker_fill_color", ImPlotProp_MarkerFillColor, "marker face color; IMPLOT_AUTO_COL will use LineColor")
+            .value("marker_fill_colors", ImPlotProp_MarkerFillColors, "array of colors for each marker face; if None, use MarkerFillColor for all markers")
             .value("size", ImPlotProp_Size, "size of error bar whiskers (width or height), and digital bars (height) *in pixels*")
             .value("offset", ImPlotProp_Offset, "data index offset")
             .value("stride", ImPlotProp_Stride, "data stride in bytes; IMPLOT_AUTO will result in sizeof(T) where T is the type passed to PlotX")
@@ -470,7 +475,7 @@ void py_init_module_implot(nb::module_& m)
         .def_rw("line_color", &ImPlotSpec::LineColor, "line color (applies to lines, bar edges); IMPLOT_AUTO_COL will use next Colormap color or current item color")
         .def_rw("line_weight", &ImPlotSpec::LineWeight, "line weight in pixels (applies to lines, bar edges, marker edges)")
         .def_rw("fill_color", &ImPlotSpec::FillColor, "fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color")
-        .def_rw("fill_alpha", &ImPlotSpec::FillAlpha, "alpha multiplier (applies to FillColor and MarkerFillColor)")
+        .def_rw("fill_alpha", &ImPlotSpec::FillAlpha, "alpha multiplier (applies to FillColor, FillColors, MarkerFillColor, and MarkerFillColors)")
         .def_rw("marker", &ImPlotSpec::Marker, "marker type; specify ImPlotMarker_Auto to use the next unused marker")
         .def_rw("marker_size", &ImPlotSpec::MarkerSize, "size of markers (radius) *in pixels*")
         .def_rw("marker_line_color", &ImPlotSpec::MarkerLineColor, "marker edge color; IMPLOT_AUTO_COL will use LineColor")
@@ -480,6 +485,53 @@ void py_init_module_implot(nb::module_& m)
         .def_rw("stride", &ImPlotSpec::Stride, "data stride in bytes; IMPLOT_AUTO will result in sizeof(T) where T is the type passed to PlotX")
         .def_rw("flags", &ImPlotSpec::Flags, "optional item flags; can be composed from common ImPlotItemFlags and/or specialized ImPlotXFlags")
         ;
+
+    pyClassImPlotSpec.def_prop_rw("line_colors",
+        [](ImPlotSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.LineColors); },
+        [](ImPlotSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<uint32_t>())
+                throw nb::type_error("line_colors requires a np.uint32 array");
+            self.LineColors = (ImU32*)arr.data();
+        },
+        "array of colors (np.uint32) for each line. Must have the same length as the data arrays. If None, use LineColor for all lines.");
+
+    pyClassImPlotSpec.def_prop_rw("fill_colors",
+        [](ImPlotSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.FillColors); },
+        [](ImPlotSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<uint32_t>())
+                throw nb::type_error("fill_colors requires a np.uint32 array");
+            self.FillColors = (ImU32*)arr.data();
+        },
+        "array of colors (np.uint32) for each fill. Must have the same length as the data arrays. If None, use FillColor for all fills.");
+
+    pyClassImPlotSpec.def_prop_rw("marker_line_colors",
+        [](ImPlotSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.MarkerLineColors); },
+        [](ImPlotSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<uint32_t>())
+                throw nb::type_error("marker_line_colors requires a np.uint32 array");
+            self.MarkerLineColors = (ImU32*)arr.data();
+        },
+        "array of colors (np.uint32) for each marker edge. Must have the same length as the data arrays. If None, use MarkerLineColor for all markers.");
+
+    pyClassImPlotSpec.def_prop_rw("marker_fill_colors",
+        [](ImPlotSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.MarkerFillColors); },
+        [](ImPlotSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<uint32_t>())
+                throw nb::type_error("marker_fill_colors requires a np.uint32 array");
+            self.MarkerFillColors = (ImU32*)arr.data();
+        },
+        "array of colors (np.uint32) for each marker face. Must have the same length as the data arrays. If None, use MarkerFillColor for all markers.");
+
+    pyClassImPlotSpec.def_prop_rw("marker_sizes",
+        [](ImPlotSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.MarkerSizes); },
+        [](ImPlotSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<float>())
+                throw nb::type_error("marker_sizes requires a np.float32 array");
+            self.MarkerSizes = (float*)arr.data();
+        },
+        "array of sizes (np.float32) for each marker. Must have the same length as the data arrays. If None, use MarkerSize for all markers.");
+
+
 
 
     auto pyClassImPlotPoint =

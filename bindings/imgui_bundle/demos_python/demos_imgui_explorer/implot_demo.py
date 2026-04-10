@@ -19,7 +19,6 @@ def IMGUI_DEMO_MARKER(_section: str) -> None:
     pass
 
 
-
 def make_checkerboard_texture(size: int = 256, tile_size: int = 32) -> NDArray[np.uint8]:
     """Create a checkerboard RGBA texture as a numpy array."""
     img = np.zeros((size, size, 4), dtype=np.uint8)
@@ -1188,6 +1187,284 @@ def demo_nan_values():
         implot.plot_line("line", data1, data2,
                         spec=implot.Spec(flags=static.flags, marker=implot.Marker_.square))
         implot.plot_bars("bars", data1)
+        implot.end_plot()
+
+
+
+#-----------------------------------------------------------------------------
+
+def _hsv_to_u32(h: float, s: float, v: float) -> int:
+    """Convert HSV to ImU32 color."""
+    r, g, b = imgui.color_convert_hsv_to_rgb(h, s, v)
+    return imgui.get_color_u32(ImVec4(r, g, b, 1.0))
+
+
+def demo_per_index_colors():
+    IMGUI_DEMO_MARKER("Plots/Per-Index Colors")
+    static = demo_per_index_colors
+
+    # --- Colorful Lines ---
+    IMGUI_DEMO_MARKER("Colorful Lines")
+    if not hasattr(static, "xs1"):
+        static.xs1 = np.linspace(0, 1, 1001, dtype=np.float32)
+        static.ys1 = np.zeros(1001, dtype=np.float32)
+        # Rainbow colors for f(x)
+        static.colors1 = np.array([_hsv_to_u32(i / 1000.0, 0.8, 0.9) for i in range(1001)], dtype=np.uint32)
+
+        static.xs2 = np.linspace(0, 1, 20, dtype=np.float64)
+        static.ys2 = static.xs2 ** 2
+        # Colormap colors for g(x)
+        static.colors2 = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 19.0, implot.Colormap_.viridis))
+            for i in range(20)
+        ], dtype=np.uint32)
+
+    # Update ys1 dynamically
+    t = imgui.get_time() / 10
+    static.ys1[:] = 0.5 + 0.5 * np.sin(50 * (static.xs1 + t))
+
+    if implot.begin_plot("Colorful Lines"):
+        implot.setup_axes("x", "y")
+        spec1 = implot.Spec()
+        spec1.line_colors = static.colors1
+        implot.plot_line("f(x)", static.xs1, static.ys1, spec=spec1)
+
+        spec2 = implot.Spec(marker=implot.Marker_.circle, flags=implot.LineFlags_.segments)
+        spec2.line_colors = static.colors2
+        spec2.marker_fill_colors = static.colors2
+        spec2.marker_line_colors = static.colors2
+        implot.plot_line("g(x)", static.xs2, static.ys2, spec=spec2)
+        implot.end_plot()
+
+    # --- Colorful Shaded Plots ---
+    IMGUI_DEMO_MARKER("Colorful Shaded Plots")
+    if not hasattr(static, "xs_shaded"):
+        np.random.seed(0)
+        static.xs_shaded = np.linspace(0, 1, 1001, dtype=np.float32)
+        static.ys_shaded = 0.25 + 0.25 * np.sin(25 * static.xs_shaded) * np.sin(5 * static.xs_shaded) + np.random.uniform(-0.01, 0.01, 1001).astype(np.float32)
+        static.ys1_shaded = static.ys_shaded + np.random.uniform(0.1, 0.12, 1001).astype(np.float32)
+        static.ys2_shaded = static.ys_shaded - np.random.uniform(0.1, 0.12, 1001).astype(np.float32)
+        static.ys3_shaded = (0.75 + 0.2 * np.sin(25 * static.xs_shaded)).astype(np.float32)
+        static.ys4_shaded = (0.75 + 0.1 * np.cos(25 * static.xs_shaded)).astype(np.float32)
+        # Rainbow colors for Uncertain Data
+        static.colors_shaded1 = np.array([_hsv_to_u32(i / 1000.0, 0.8, 0.9) for i in range(1001)], dtype=np.uint32)
+        # Colormap colors for Overlapping
+        static.colors_shaded2 = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 1000.0, implot.Colormap_.viridis))
+            for i in range(1001)
+        ], dtype=np.uint32)
+
+    if implot.begin_plot("Colorful Shaded Plots"):
+        implot.setup_legend(implot.Location_.north_west, implot.LegendFlags_.reverse)
+
+        spec_shaded = implot.Spec(fill_alpha=0.25)
+        spec_shaded.fill_colors = static.colors_shaded1
+        implot.plot_shaded("Uncertain Data", static.xs_shaded, static.ys1_shaded, static.ys2_shaded, spec=spec_shaded)
+
+        spec_line1 = implot.Spec()
+        spec_line1.line_colors = static.colors_shaded1
+        implot.plot_line("Uncertain Data", static.xs_shaded, static.ys_shaded, spec=spec_line1)
+
+        spec_shaded2 = implot.Spec(fill_alpha=0.25)
+        spec_shaded2.fill_colors = static.colors_shaded2
+        implot.plot_shaded("Overlapping", static.xs_shaded, static.ys3_shaded, static.ys4_shaded, spec=spec_shaded2)
+
+        spec_line2 = implot.Spec()
+        spec_line2.line_colors = static.colors_shaded2
+        implot.plot_line("Overlapping", static.xs_shaded, static.ys3_shaded, spec=spec_line2)
+        implot.plot_line("Overlapping", static.xs_shaded, static.ys4_shaded, spec=spec_line2)
+        implot.end_plot()
+
+    # --- Colorful Scatter ---
+    if not hasattr(static, "xs_scatter1"):
+        np.random.seed(0)
+        static.xs_scatter1 = np.linspace(0, 1, 100, dtype=np.float32)
+        static.ys_scatter1 = (static.xs_scatter1 + 0.1 * np.random.random(100)).astype(np.float32)
+        # Rainbow hue colors
+        static.colors_scatter1_fill = np.array([_hsv_to_u32(i / 99.0, 0.8, 0.9) for i in range(100)], dtype=np.uint32)
+        static.colors_scatter1_line = np.array([_hsv_to_u32(i / 99.0, 0.9, 0.7) for i in range(100)], dtype=np.uint32)
+        static.sizes_scatter1 = (2.0 + 4.0 * np.random.random(100)).astype(np.float32)
+
+        static.xs_scatter2 = (0.25 + 0.2 * np.random.random(50)).astype(np.float32)
+        static.ys_scatter2 = (0.75 + 0.2 * np.random.random(50)).astype(np.float32)
+        # Colormap colors (Viridis)
+        static.colors_scatter2 = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 49.0, implot.Colormap_.viridis))
+            for i in range(50)
+        ], dtype=np.uint32)
+        static.sizes_scatter2 = (2.0 + 4.0 * np.random.random(50)).astype(np.float32)
+
+    if implot.begin_plot("Colorful Scatter", size=(-1, 0)):
+        spec_s1 = implot.Spec()
+        spec_s1.marker_fill_colors = static.colors_scatter1_fill
+        spec_s1.marker_line_colors = static.colors_scatter1_line
+        spec_s1.marker_sizes = static.sizes_scatter1
+        implot.plot_scatter("Data 1", static.xs_scatter1, static.ys_scatter1, spec=spec_s1)
+
+        spec_s2 = implot.Spec(marker=implot.Marker_.square, fill_alpha=0.5)
+        spec_s2.marker_fill_colors = static.colors_scatter2
+        spec_s2.marker_line_colors = static.colors_scatter2
+        spec_s2.marker_sizes = static.sizes_scatter2
+        implot.plot_scatter("Data 2", static.xs_scatter2, static.ys_scatter2, spec=spec_s2)
+        implot.end_plot()
+
+    # --- Colorful Bubbles ---
+    IMGUI_DEMO_MARKER("Colorful Bubbles")
+    if not hasattr(static, "xs_bubble"):
+        np.random.seed(0)
+        static.xs_bubble = np.linspace(0, 1.9, 20, dtype=np.float32)
+        static.ys1_bubble = np.random.random(20).astype(np.float32)
+        static.ys2_bubble = np.random.random(20).astype(np.float32)
+        static.szs1_bubble = (0.02 + 0.08 * np.random.random(20)).astype(np.float32)
+        static.szs2_bubble = (0.02 + 0.08 * np.random.random(20)).astype(np.float32)
+        # Rainbow colors for Data 1
+        static.colors1_bubble = np.array([_hsv_to_u32(i / 19.0, 0.8, 0.9) for i in range(20)], dtype=np.uint32)
+        # Colormap colors for Data 2
+        static.colors2_bubble = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 19.0, implot.Colormap_.viridis))
+            for i in range(20)
+        ], dtype=np.uint32)
+
+    if implot.begin_plot("Colorful Bubbles", size=(-1, 0), flags=implot.Flags_.equal):
+        spec_b1 = implot.Spec(fill_alpha=0.5)
+        spec_b1.fill_colors = static.colors1_bubble
+        spec_b1.line_colors = static.colors1_bubble
+        implot.plot_bubbles("Data 1", static.xs_bubble, static.ys1_bubble, static.szs1_bubble, spec=spec_b1)
+
+        spec_b2 = implot.Spec(fill_alpha=0.5, line_color=ImVec4(0, 0, 0, 0.0))
+        spec_b2.fill_colors = static.colors2_bubble
+        implot.plot_bubbles("Data 2", static.xs_bubble, static.ys2_bubble, static.szs2_bubble, spec=spec_b2)
+        implot.end_plot()
+
+    # --- Colorful Stairstep ---
+    IMGUI_DEMO_MARKER("Colorful Stairstep")
+    if not hasattr(static, "ys1_stairs"):
+        static.ys1_stairs = (0.75 + 0.2 * np.sin(10 * np.arange(21) * 0.05)).astype(np.float32)
+        static.ys2_stairs = (0.25 + 0.2 * np.sin(10 * np.arange(21) * 0.05)).astype(np.float32)
+        # Rainbow colors for Post Step
+        static.colors1_stairs = np.array([_hsv_to_u32(i / 20.0, 0.8, 0.9) for i in range(21)], dtype=np.uint32)
+        # Colormap colors for Pre Step
+        static.colors2_stairs = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 20.0, implot.Colormap_.viridis))
+            for i in range(21)
+        ], dtype=np.uint32)
+        static.flags_stairs = 0
+
+    _, static.flags_stairs = imgui.checkbox_flags("Shaded", static.flags_stairs, implot.StairsFlags_.shaded)
+
+    if implot.begin_plot("Colorful Stairstep Plot"):
+        implot.setup_axes("x", "f(x)")
+        implot.setup_axes_limits(0, 1, 0, 1)
+
+        implot.plot_line("##1", static.ys1_stairs, xscale=0.05,
+                        spec=implot.Spec(line_color=ImVec4(0.5, 0.5, 0.5, 1.0)))
+        implot.plot_line("##2", static.ys2_stairs, xscale=0.05,
+                        spec=implot.Spec(line_color=ImVec4(0.5, 0.5, 0.5, 1.0)))
+
+        spec_st1 = implot.Spec(flags=static.flags_stairs, fill_alpha=0.25, marker=implot.Marker_.auto)
+        spec_st1.line_colors = static.colors1_stairs
+        spec_st1.fill_colors = static.colors1_stairs
+        spec_st1.marker_fill_colors = static.colors1_stairs
+        spec_st1.marker_line_colors = static.colors1_stairs
+        implot.plot_stairs("Post Step (default)", static.ys1_stairs, xscale=0.05, spec=spec_st1)
+
+        spec_st2 = implot.Spec(flags=static.flags_stairs | implot.StairsFlags_.pre_step, fill_alpha=0.25, marker=implot.Marker_.auto)
+        spec_st2.line_colors = static.colors2_stairs
+        spec_st2.fill_colors = static.colors2_stairs
+        spec_st2.marker_fill_colors = static.colors2_stairs
+        spec_st2.marker_line_colors = static.colors2_stairs
+        implot.plot_stairs("Pre Step", static.ys2_stairs, xscale=0.05, spec=spec_st2)
+        implot.end_plot()
+
+    # --- Colorful Bar Plots ---
+    IMGUI_DEMO_MARKER("Colorful Bar Plots")
+    if not hasattr(static, "data_bars"):
+        static.data_bars = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.int8)
+        # Rainbow colors for Vertical
+        static.colors_bars_v = np.array([_hsv_to_u32(i / 9.0, 0.8, 0.9) for i in range(10)], dtype=np.uint32)
+        # Colormap colors for Horizontal
+        static.colors_bars_h = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 9.0, implot.Colormap_.viridis))
+            for i in range(10)
+        ], dtype=np.uint32)
+
+    if implot.begin_plot("Colorful Bar Plot"):
+        spec_bv = implot.Spec()
+        spec_bv.fill_colors = static.colors_bars_v
+        spec_bv.line_colors = static.colors_bars_v
+        implot.plot_bars("Vertical", static.data_bars, bar_size=0.7, shift=1, spec=spec_bv)
+
+        spec_bh = implot.Spec(flags=implot.BarsFlags_.horizontal)
+        spec_bh.fill_colors = static.colors_bars_h
+        spec_bh.line_colors = static.colors_bars_h
+        implot.plot_bars("Horizontal", static.data_bars, bar_size=0.4, shift=1, spec=spec_bh)
+        implot.end_plot()
+
+    # --- Colorful Stem Plots ---
+    IMGUI_DEMO_MARKER("Colorful Stem Plots")
+    if not hasattr(static, "xs_stems"):
+        static.xs_stems = np.linspace(0, 1, 51, dtype=np.float64)
+        static.ys1_stems = 1.0 + 0.5 * np.sin(25 * static.xs_stems) * np.cos(2 * static.xs_stems)
+        static.ys2_stems = 0.5 + 0.25 * np.sin(10 * static.xs_stems) * np.sin(static.xs_stems)
+        # Rainbow colors for Stems 1
+        static.colors1_stems = np.array([_hsv_to_u32(i / 50.0, 0.8, 0.9) for i in range(51)], dtype=np.uint32)
+        # Colormap colors for Stems 2
+        static.colors2_stems = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 50.0, implot.Colormap_.viridis))
+            for i in range(51)
+        ], dtype=np.uint32)
+
+    if implot.begin_plot("Colorful Stem Plots"):
+        implot.setup_axis_limits(implot.ImAxis_.x1, 0, 1.0)
+        implot.setup_axis_limits(implot.ImAxis_.y1, 0, 1.6)
+
+        spec_sm1 = implot.Spec()
+        spec_sm1.line_colors = static.colors1_stems
+        spec_sm1.marker_fill_colors = static.colors1_stems
+        spec_sm1.marker_line_colors = static.colors1_stems
+        implot.plot_stems("Stems 1", static.xs_stems, static.ys1_stems, ref=0, spec=spec_sm1)
+
+        spec_sm2 = implot.Spec(marker=implot.Marker_.circle)
+        spec_sm2.line_colors = static.colors2_stems
+        spec_sm2.marker_fill_colors = static.colors2_stems
+        spec_sm2.marker_line_colors = static.colors2_stems
+        implot.plot_stems("Stems 2", static.xs_stems, static.ys2_stems, ref=0, spec=spec_sm2)
+        implot.end_plot()
+
+    # --- Colorful Infinite Lines ---
+    IMGUI_DEMO_MARKER("Colorful Infinite Lines")
+    if not hasattr(static, "vals_inf1"):
+        static.vals_inf1 = np.array([1.0, 2.5, 4.0, 5.5, 7.0], dtype=np.float64)
+        # Rainbow horizontal
+        static.vals_inf2 = np.arange(1.0, 9.0, dtype=np.float64)
+        static.colors_infline_rainbow = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 7.0, implot.Colormap_.jet))
+            for i in range(8)
+        ], dtype=np.uint32)
+        # Plasma vertical
+        static.vals_inf3 = np.arange(6, dtype=np.float64) * 1.5 + 1.5
+        static.colors_infline_plasma = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 5.0, implot.Colormap_.plasma))
+            for i in range(6)
+        ], dtype=np.uint32)
+
+    if implot.begin_plot("Colorful Infinite Lines", size=(-1, 0)):
+        implot.setup_axes("x", "y")
+        implot.setup_axes_limits(0, 10, -1, 10)
+
+        # 1. Constant color infinite lines
+        implot.plot_inf_lines("Const Color", static.vals_inf1,
+                             spec=implot.Spec(line_color=ImVec4(0.0, 0.7, 1.0, 1.0)))
+
+        # 2. Per-line rainbow colors (horizontal)
+        spec_inf2 = implot.Spec(flags=implot.InfLinesFlags_.horizontal)
+        spec_inf2.line_colors = static.colors_infline_rainbow
+        implot.plot_inf_lines("Rainbow Horizontal", static.vals_inf2, spec=spec_inf2)
+
+        # 3. Per-line colormap colors (vertical)
+        spec_inf3 = implot.Spec()
+        spec_inf3.line_colors = static.colors_infline_plasma
+        implot.plot_inf_lines("Plasma Vertical", static.vals_inf3, spec=spec_inf3)
         implot.end_plot()
 
 
@@ -2632,6 +2909,7 @@ def show_all_demos():
             demo_header("Images", demo_images)
             demo_header("Markers and Text", demo_markers_and_text)
             demo_header("NaN Values", demo_nan_values)
+            demo_header("Per-Index Colors", demo_per_index_colors)
             imgui.end_tab_item()
 
         if imgui.begin_tab_item_simple("Subplots"):

@@ -163,7 +163,7 @@ ItemFlags_None = ItemFlags_.none
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ImPlot v0.18 WIP
+# ImPlot v1.0
 
 # Table of Contents:
 #
@@ -251,34 +251,50 @@ class Prop_(enum.IntFlag):
     line_color = (
         enum.auto()
     )  # (= 0)  # line color (applies to lines, bar edges); IMPLOT_AUTO_COL will use next Colormap color or current item color
+    # ImPlotProp_LineColors,          /* original C++ signature */
+    line_colors = enum.auto()  # (= 1)  # array of colors for each line; if None, use LineColor for all lines
     # ImPlotProp_LineWeight,          /* original C++ signature */
-    line_weight = enum.auto()  # (= 1)  # line weight in pixels (applies to lines, bar edges, marker edges)
+    line_weight = enum.auto()  # (= 2)  # line weight in pixels (applies to lines, bar edges, marker edges)
     # ImPlotProp_FillColor,           /* original C++ signature */
     fill_color = (
         enum.auto()
-    )  # (= 2)  # fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color
+    )  # (= 3)  # fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color
+    # ImPlotProp_FillColors,          /* original C++ signature */
+    fill_colors = enum.auto()  # (= 4)  # array of colors for each fill; if None, use FillColor for all fills
     # ImPlotProp_FillAlpha,           /* original C++ signature */
-    fill_alpha = enum.auto()  # (= 3)  # alpha multiplier (applies to FillColor and MarkerFillColor)
+    fill_alpha = (
+        enum.auto()
+    )  # (= 5)  # alpha multiplier (applies to FillColor, FillColors, MarkerFillColor, and MarkerFillColors)
     # ImPlotProp_Marker,              /* original C++ signature */
-    marker = enum.auto()  # (= 4)  # marker type; specify ImPlotMarker_Auto to use the next unused marker
+    marker = enum.auto()  # (= 6)  # marker type; specify ImPlotMarker_Auto to use the next unused marker
     # ImPlotProp_MarkerSize,          /* original C++ signature */
-    marker_size = enum.auto()  # (= 5)  # size of markers (radius) *in pixels*
+    marker_size = enum.auto()  # (= 7)  # size of markers (radius) *in pixels*
+    # ImPlotProp_MarkerSizes,         /* original C++ signature */
+    marker_sizes = enum.auto()  # (= 8)  # array of sizes for each marker; if None, use MarkerSize for all markers
     # ImPlotProp_MarkerLineColor,     /* original C++ signature */
-    marker_line_color = enum.auto()  # (= 6)  # marker edge color; IMPLOT_AUTO_COL will use LineColor
+    marker_line_color = enum.auto()  # (= 9)  # marker edge color; IMPLOT_AUTO_COL will use LineColor
+    # ImPlotProp_MarkerLineColors,     /* original C++ signature */
+    marker_line_colors = (
+        enum.auto()
+    )  # (= 10)  # array of colors for each marker edge; if None, use MarkerLineColor for all markers
     # ImPlotProp_MarkerFillColor,     /* original C++ signature */
-    marker_fill_color = enum.auto()  # (= 7)  # marker face color; IMPLOT_AUTO_COL will use LineColor
+    marker_fill_color = enum.auto()  # (= 11)  # marker face color; IMPLOT_AUTO_COL will use LineColor
+    # ImPlotProp_MarkerFillColors,     /* original C++ signature */
+    marker_fill_colors = (
+        enum.auto()
+    )  # (= 12)  # array of colors for each marker face; if None, use MarkerFillColor for all markers
     # ImPlotProp_Size,                /* original C++ signature */
-    size = enum.auto()  # (= 8)  # size of error bar whiskers (width or height), and digital bars (height) *in pixels*
+    size = enum.auto()  # (= 13)  # size of error bar whiskers (width or height), and digital bars (height) *in pixels*
     # ImPlotProp_Offset,              /* original C++ signature */
-    offset = enum.auto()  # (= 9)  # data index offset
+    offset = enum.auto()  # (= 14)  # data index offset
     # ImPlotProp_Stride,              /* original C++ signature */
     stride = (
         enum.auto()
-    )  # (= 10)  # data stride in bytes; IMPLOT_AUTO will result in sizeof(T) where T is the type passed to PlotX
+    )  # (= 15)  # data stride in bytes; IMPLOT_AUTO will result in sizeof(T) where T is the type passed to PlotX
     # ImPlotProp_Flags                /* original C++ signature */
     flags = (
         enum.auto()
-    )  # (= 11)  # optional item flags; can be composed from common ImPlotItemFlags and/or specialized ImPlotXFlags
+    )  # (= 16)  # optional item flags; can be composed from common ImPlotItemFlags and/or specialized ImPlotXFlags
 
 class Flags_(enum.IntFlag):
     """Options for plots (see BeginPlot)."""
@@ -919,7 +935,9 @@ class Spec:
         IMPLOT_AUTO_COL  # fill color (applies to shaded regions, bar faces); IMPLOT_AUTO_COL will use next Colormap color or current item color
     )
     # float           FillAlpha       = 1.0f;    /* original C++ signature */
-    fill_alpha: float = 1.0  # alpha multiplier (applies to FillColor and MarkerFillColor)
+    fill_alpha: float = (
+        1.0  # alpha multiplier (applies to FillColor, FillColors, MarkerFillColor, and MarkerFillColors)
+    )
     # ImPlotMarker    Marker          = ImPlotMarker_None;    /* original C++ signature */
     marker: Marker = Marker_None  # marker type; specify ImPlotMarker_Auto to use the next unused marker
     # float           MarkerSize      = 4;    /* original C++ signature */
@@ -969,6 +987,21 @@ class Spec:
                 * MarkerFillColor: IMPLOT_AUTO_COL
         """
         pass
+    line_colors: Optional[np.ndarray] = (
+        None  # array of colors (np.uint32) for each line. Must have the same length as the data arrays. If None, use LineColor for all lines.
+    )
+    fill_colors: Optional[np.ndarray] = (
+        None  # array of colors (np.uint32) for each fill. Must have the same length as the data arrays. If None, use FillColor for all fills.
+    )
+    marker_line_colors: Optional[np.ndarray] = (
+        None  # array of colors (np.uint32) for each marker edge. Must have the same length as the data arrays. If None, use MarkerLineColor for all markers.
+    )
+    marker_fill_colors: Optional[np.ndarray] = (
+        None  # array of colors (np.uint32) for each marker face. Must have the same length as the data arrays. If None, use MarkerFillColor for all markers.
+    )
+    marker_sizes: Optional[np.ndarray] = (
+        None  # array of sizes (np.float32) for each marker. Must have the same length as the data arrays. If None, use MarkerSize for all markers.
+    )
 
 class Point:
     # double x,     /* original C++ signature */
