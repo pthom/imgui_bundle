@@ -22,7 +22,7 @@ def main():
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
     options.namespaces_root = ["ImGui"]
-    options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
+    options.srcmlcpp_options.functions_api_prefixes = "IMCOOLBAR_API"
     options.value_replacements.add_last_replacement(
         "ImGuiWindowFlags_None", "WindowFlags_.none"
     )

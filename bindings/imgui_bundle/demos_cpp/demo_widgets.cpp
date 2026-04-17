@@ -495,9 +495,10 @@ void DemoCoolBar()
         ImCoolBar provides a dock-like Cool bar for Dear ImGui
     )");
 
-    ImGui::ImCoolBarConfig coolBarConfig;
-    coolBarConfig.anchor = ImVec2(0.5f, 0.07f); // position in the window (ratio of window size)
-    if (ImGui::BeginCoolBar("##CoolBarMain", ImCoolBarFlags_Horizontal, coolBarConfig))
+    ImGui::ImCoolBarSettings coolBarSettings;
+    coolBarSettings.anchor = ImVec2(0.5f, 0.07f); // position in the window (ratio of window size)
+    coolBarSettings.mode = ImCoolBarFlags_Horizontal;
+    if (ImGui::BeginCoolBar("##CoolBarMain", coolBarSettings))
     {
         for (const std::string& label: buttonLabels)
         {

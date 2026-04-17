@@ -9,7 +9,7 @@ from imgui_bundle import (
     immapp,
     ImVec4,
     im_cool_bar,
-    icons_fontawesome,
+    icons_fontawesome_4,
 )
 from imgui_bundle import imgui_command_palette as imcmd
 from imgui_bundle import portable_file_dialogs as pfd
@@ -315,7 +315,7 @@ def demo_imfile_dialog():
     )
     # Warning / low support
     imgui.same_line()
-    imgui.text(icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE)
+    imgui.text(icons_fontawesome_4.ICON_FA_EXCLAMATION_TRIANGLE)
     imgui.set_item_tooltip("""
     It is advised to use Portable File Dialogs instead, which offer native dialogs on each platform,
     as well as notifications and messages.
@@ -466,13 +466,12 @@ def demo_cool_bar():
         """
     )
 
-    cool_bar_config = im_cool_bar.ImCoolBarConfig()
-    cool_bar_config.anchor = ImVec2(
+    cool_bar_settings = im_cool_bar.ImCoolBarSettings()
+    cool_bar_settings.anchor = ImVec2(
         0.5, 0.07
     )  #  position in the window (ratio of window size)
-    if im_cool_bar.begin_cool_bar(
-        "##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal.value, cool_bar_config
-    ):
+    cool_bar_settings.mode = im_cool_bar.ImCoolBarFlags_.horizontal
+    if im_cool_bar.begin_cool_bar("##CoolBarMain", cool_bar_settings):
         for label in button_labels:
             if im_cool_bar.cool_bar_item():
                 if show_cool_bar_button(label):

@@ -26,7 +26,7 @@ ImGuiWindowFlags_None = WindowFlags_.none
 #
 #MIT License
 #
-#Copyright (c) 2024 Stephane Cuillerdier (aka Aiekick)
+#Copyright (c) 2024-2026 Stephane Cuillerdier (aka Aiekick)
 #
 #Permission is hereby granted, free of charge, to any person obtaining a copy
 #of this software and associated documentation files (the "Software"), to deal
@@ -48,47 +48,61 @@ ImGuiWindowFlags_None = WindowFlags_.none
 #
 
 
+# ImCoolBar, v1.0.0
+# macOS Dock-style magnification bar for Dear ImGui
 
-##define ENABLE_IMCOOLBAR_DEBUG
+
+
 
 class ImCoolBarFlags_(enum.IntEnum):
     #
     none = enum.auto()       # (= 0)
-    vertical = enum.auto()   # (= (1 << 0))
-    horizontal = enum.auto() # (= (1 << 1))
+    horizontal = enum.auto() # (= (1 << 0))
+    vertical = enum.auto()   # (= (1 << 1))
+
+# #ifdef __cplusplus
+#
 
 
-class ImCoolBarConfig:
-    anchor: ImVec2 = ImVec2(-1.0, -1.0)
-    normal_size: float = 40.0
-    hovered_size: float = 60.0
-    anim_step: float = 0.15
-    effect_strength: float = 0.5
+
+# #define ENABLE_IMCOOLBAR_DEBUG
+
+
+class ImCoolBarSettings:
+    anchor: ImVec2 = ImVec2(0.5, 0.5)
+    normal_size: float = float(40.0)
+    hovered_size: float = float(150.0)
+    anim_step: float = float(0.05)
+    effect_strength: float = float(0.5)
+    mode: ImCoolBarFlags = ImCoolBarFlags(ImCoolBarFlags_.horizontal)
     def __init__(
         self,
-        v_anchor: Optional[ImVec2Like] = None,
-        v_normal_size: float = 40.0,
-        v_hovered_size: float = 60.0,
-        v_anim_step: float = 0.15,
-        v_effect_strength: float = 0.5
+        a_anchor: Optional[ImVec2Like] = None,
+        a_normal_size: float = 40.0,
+        a_hovered_size: float = 150.0,
+        a_anim_step: float = 0.05,
+        a_effect_strength: float = 0.5,
+        a_mode: Optional[ImCoolBarFlags] = None
         ) -> None:
         """Python bindings defaults:
-            If vAnchor is None, then its default value will be: ImVec2(-1.0, -1.0)
-
-         //
+            If any of the params below is None, then its default value below will be used:
+                * aAnchor: ImVec2(0.5, 0.5)
+                * aMode: ImCoolBarFlags_.horizontal
         """
         pass
+
+
+def cool_bar_debug_check_version(a_version: str, a_settings_size: int) -> bool:
+    pass
 def begin_cool_bar(
-    v_label: str,
-    v_cb_flags: Optional[ImCoolBarFlags] = None,
-    v_config: Optional[ImCoolBarConfig] = None,
-    v_flags: Optional[ImGuiWindowFlags] = None
+    a_label: str,
+    ar_settings: Optional[ImCoolBarSettings] = None,
+    a_win_flags: Optional[ImGuiWindowFlags] = None
     ) -> bool:
     """Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            * vCBFlags: ImCoolBarFlags_.vertical
-            * vConfig: initialized with default value
-            * vFlags: WindowFlags_.none
+            * arSettings: initialized with default value
+            * aWinFlags: WindowFlags_.none
     """
     pass
 def end_cool_bar() -> None:
@@ -99,8 +113,27 @@ def get_cool_bar_item_width() -> float:
     pass
 def get_cool_bar_item_scale() -> float:
     pass
-def show_cool_bar_metrics(v_opened: bool) -> None:
+def show_cool_bar_metrics(apo_open: bool) -> None:
     pass
+def show_cool_bar_demo_window(
+    apo_open: Optional[bool] = None,
+    apo_settings: Optional[ImCoolBarSettings] = None,
+    apo_default_settings: Optional[ImCoolBarSettings] = None
+    ) -> None:
+    pass
+
+
+
+# #endif
+
+#///////////////////////////////////////////////
+#// C LANG API ///////////////////////////////
+#/////////////////////////////////////////////
+
+# #ifdef __cplusplus
+#
+# #else
+# #endif
 
 
 ####################    </generated_from:ImCoolbar.h>    ####################

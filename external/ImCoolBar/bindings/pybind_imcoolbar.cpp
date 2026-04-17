@@ -39,80 +39,86 @@ void py_init_module_imcoolbar(nb::module_& m)
     auto pyEnumImCoolBarFlags_ =
         nb::enum_<ImCoolBarFlags_>(m, "ImCoolBarFlags_", nb::is_arithmetic(), "")
             .value("none", ImCoolBarFlags_None, "")
-            .value("vertical", ImCoolBarFlags_Vertical, "")
-            .value("horizontal", ImCoolBarFlags_Horizontal, "");
+            .value("horizontal", ImCoolBarFlags_Horizontal, "")
+            .value("vertical", ImCoolBarFlags_Vertical, "");
+    // #ifdef __cplusplus
+    //
 
 
-    auto pyClassImCoolBarConfig =
-        nb::class_<ImGui::ImCoolBarConfig>
-            (m, "ImCoolBarConfig", "")
-        .def_rw("anchor", &ImGui::ImCoolBarConfig::anchor, "")
-        .def_rw("normal_size", &ImGui::ImCoolBarConfig::normal_size, "")
-        .def_rw("hovered_size", &ImGui::ImCoolBarConfig::hovered_size, "")
-        .def_rw("anim_step", &ImGui::ImCoolBarConfig::anim_step, "")
-        .def_rw("effect_strength", &ImGui::ImCoolBarConfig::effect_strength, "")
+    auto pyClassImCoolBarSettings =
+        nb::class_<ImGui::ImCoolBarSettings>
+            (m, "ImCoolBarSettings", "")
+        .def_rw("anchor", &ImGui::ImCoolBarSettings::anchor, "")
+        .def_rw("normal_size", &ImGui::ImCoolBarSettings::normalSize, "")
+        .def_rw("hovered_size", &ImGui::ImCoolBarSettings::hoveredSize, "")
+        .def_rw("anim_step", &ImGui::ImCoolBarSettings::animStep, "")
+        .def_rw("effect_strength", &ImGui::ImCoolBarSettings::effectStrength, "")
+        .def_rw("mode", &ImGui::ImCoolBarSettings::mode, "")
         .def("__init__",
-            [](ImGui::ImCoolBarConfig * self, const std::optional<const ImVec2> & vAnchor = std::nullopt, const float & vNormalSize = 40.0f, const float & vHoveredSize = 60.0f, const float & vAnimStep = 0.15f, const float & vEffectStrength = 0.5f)
+            [](ImGui::ImCoolBarSettings * self, const std::optional<const ImVec2> & aAnchor = std::nullopt, const float aNormalSize = 40.0f, const float aHoveredSize = 150.0f, const float aAnimStep = 0.05f, const float aEffectStrength = 0.5f, const std::optional<const ImCoolBarFlags> & aMode = std::nullopt)
             {
-                auto ctor_wrapper = [](ImGui::ImCoolBarConfig* self, const ImVec2 vAnchor = ImVec2(-1.0f, -1.0f), const float & vNormalSize = 40.0f, const float & vHoveredSize = 60.0f, const float & vAnimStep = 0.15f, const float & vEffectStrength = 0.5f) ->  void
+                auto ctor_wrapper = [](ImGui::ImCoolBarSettings* self, const ImVec2 & aAnchor = ImVec2(0.5f, 0.5f), const float aNormalSize = 40.0f, const float aHoveredSize = 150.0f, const float aAnimStep = 0.05f, const float aEffectStrength = 0.5f, const ImCoolBarFlags aMode = ImCoolBarFlags_Horizontal) ->  void
                 {
-                    new(self) ImGui::ImCoolBarConfig(vAnchor, vNormalSize, vHoveredSize, vAnimStep, vEffectStrength); // placement new
+                    new(self) ImGui::ImCoolBarSettings(aAnchor, aNormalSize, aHoveredSize, aAnimStep, aEffectStrength, aMode); // placement new
                 };
-                auto ctor_wrapper_adapt_mutable_param_with_default_value = [&ctor_wrapper](ImGui::ImCoolBarConfig * self, const std::optional<const ImVec2> & vAnchor = std::nullopt, const float & vNormalSize = 40.0f, const float & vHoveredSize = 60.0f, const float & vAnimStep = 0.15f, const float & vEffectStrength = 0.5f)
+                auto ctor_wrapper_adapt_mutable_param_with_default_value = [&ctor_wrapper](ImGui::ImCoolBarSettings * self, const std::optional<const ImVec2> & aAnchor = std::nullopt, const float aNormalSize = 40.0f, const float aHoveredSize = 150.0f, const float aAnimStep = 0.05f, const float aEffectStrength = 0.5f, const std::optional<const ImCoolBarFlags> & aMode = std::nullopt)
                 {
 
-                    const ImVec2& vAnchor_or_default = [&]() -> const ImVec2 {
-                        if (vAnchor.has_value())
-                            return vAnchor.value();
+                    const ImVec2& aAnchor_or_default = [&]() -> const ImVec2 {
+                        if (aAnchor.has_value())
+                            return aAnchor.value();
                         else
-                            return ImVec2(-1.0f, -1.0f);
+                            return ImVec2(0.5f, 0.5f);
                     }();
 
-                    ctor_wrapper(self, vAnchor_or_default, vNormalSize, vHoveredSize, vAnimStep, vEffectStrength);
+                    const ImCoolBarFlags& aMode_or_default = [&]() -> const ImCoolBarFlags {
+                        if (aMode.has_value())
+                            return aMode.value();
+                        else
+                            return ImCoolBarFlags_Horizontal;
+                    }();
+
+                    ctor_wrapper(self, aAnchor_or_default, aNormalSize, aHoveredSize, aAnimStep, aEffectStrength, aMode_or_default);
                 };
 
-                ctor_wrapper_adapt_mutable_param_with_default_value(self, vAnchor, vNormalSize, vHoveredSize, vAnimStep, vEffectStrength);
+                ctor_wrapper_adapt_mutable_param_with_default_value(self, aAnchor, aNormalSize, aHoveredSize, aAnimStep, aEffectStrength, aMode);
             },
-            nb::arg("v_anchor").none() = nb::none(), nb::arg("v_normal_size") = 40.0f, nb::arg("v_hovered_size") = 60.0f, nb::arg("v_anim_step") = 0.15f, nb::arg("v_effect_strength") = 0.5f,
-            "Python bindings defaults:\n    If vAnchor is None, then its default value will be: ImVec2(-1.0, -1.0)\n\n //")
+            nb::arg("a_anchor").none() = nb::none(), nb::arg("a_normal_size") = 40.0f, nb::arg("a_hovered_size") = 150.0f, nb::arg("a_anim_step") = 0.05f, nb::arg("a_effect_strength") = 0.5f, nb::arg("a_mode").none() = nb::none(),
+            "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * aAnchor: ImVec2(0.5, 0.5)\n        * aMode: ImCoolBarFlags_.horizontal")
         ;
 
 
+    m.def("cool_bar_debug_check_version",
+        ImGui::CoolBarDebugCheckVersion, nb::arg("a_version"), nb::arg("a_settings_size"));
+
     m.def("begin_cool_bar",
-        [](const char * vLabel, const std::optional<const ImCoolBarFlags> & vCBFlags = std::nullopt, const std::optional<const ImGui::ImCoolBarConfig> & vConfig = std::nullopt, const std::optional<const ImGuiWindowFlags> & vFlags = std::nullopt) -> bool
+        [](const char * aLabel, const std::optional<const ImGui::ImCoolBarSettings> & arSettings = std::nullopt, const std::optional<const ImGuiWindowFlags> & aWinFlags = std::nullopt) -> bool
         {
-            auto BeginCoolBar_adapt_mutable_param_with_default_value = [](const char * vLabel, const std::optional<const ImCoolBarFlags> & vCBFlags = std::nullopt, const std::optional<const ImGui::ImCoolBarConfig> & vConfig = std::nullopt, const std::optional<const ImGuiWindowFlags> & vFlags = std::nullopt) -> bool
+            auto BeginCoolBar_adapt_mutable_param_with_default_value = [](const char * aLabel, const std::optional<const ImGui::ImCoolBarSettings> & arSettings = std::nullopt, const std::optional<const ImGuiWindowFlags> & aWinFlags = std::nullopt) -> bool
             {
 
-                const ImCoolBarFlags& vCBFlags_or_default = [&]() -> const ImCoolBarFlags {
-                    if (vCBFlags.has_value())
-                        return vCBFlags.value();
-                    else
-                        return ImCoolBarFlags_Vertical;
-                }();
-
-                const ImGui::ImCoolBarConfig& vConfig_or_default = [&]() -> const ImGui::ImCoolBarConfig {
-                    if (vConfig.has_value())
-                        return vConfig.value();
+                const ImGui::ImCoolBarSettings& arSettings_or_default = [&]() -> const ImGui::ImCoolBarSettings {
+                    if (arSettings.has_value())
+                        return arSettings.value();
                     else
                         return {};
                 }();
 
-                const ImGuiWindowFlags& vFlags_or_default = [&]() -> const ImGuiWindowFlags {
-                    if (vFlags.has_value())
-                        return vFlags.value();
+                const ImGuiWindowFlags& aWinFlags_or_default = [&]() -> const ImGuiWindowFlags {
+                    if (aWinFlags.has_value())
+                        return aWinFlags.value();
                     else
                         return ImGuiWindowFlags_None;
                 }();
 
-                auto lambda_result = ImGui::BeginCoolBar(vLabel, vCBFlags_or_default, vConfig_or_default, vFlags_or_default);
+                auto lambda_result = ImGui::BeginCoolBar(aLabel, arSettings_or_default, aWinFlags_or_default);
                 return lambda_result;
             };
 
-            return BeginCoolBar_adapt_mutable_param_with_default_value(vLabel, vCBFlags, vConfig, vFlags);
+            return BeginCoolBar_adapt_mutable_param_with_default_value(aLabel, arSettings, aWinFlags);
         },
-        nb::arg("v_label"), nb::arg("v_cb_flags").none() = nb::none(), nb::arg("v_config").none() = nb::none(), nb::arg("v_flags").none() = nb::none(),
-        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * vCBFlags: ImCoolBarFlags_.vertical\n        * vConfig: initialized with default value\n        * vFlags: WindowFlags_.none");
+        nb::arg("a_label"), nb::arg("ar_settings").none() = nb::none(), nb::arg("a_win_flags").none() = nb::none(),
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * arSettings: initialized with default value\n        * aWinFlags: WindowFlags_.none");
 
     m.def("end_cool_bar",
         ImGui::EndCoolBar);
@@ -127,7 +133,15 @@ void py_init_module_imcoolbar(nb::module_& m)
         ImGui::GetCoolBarItemScale);
 
     m.def("show_cool_bar_metrics",
-        ImGui::ShowCoolBarMetrics, nb::arg("v_opened"));
+        ImGui::ShowCoolBarMetrics, nb::arg("apo_open"));
+
+    m.def("show_cool_bar_demo_window",
+        ImGui::ShowCoolBarDemoWindow, nb::arg("apo_open") = nb::none(), nb::arg("apo_settings") = nb::none(), nb::arg("apo_default_settings") = nb::none());
+    // #endif
+    // #ifdef __cplusplus
+    //
+    // #else
+    // #endif
     ////////////////////    </generated_from:ImCoolbar.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end
