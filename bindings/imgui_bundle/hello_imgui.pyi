@@ -1665,22 +1665,22 @@ class MobileCallbacks:
 
     # VoidFunction OnDestroy = EmptyVoidFunction();    /* original C++ signature */
     # `OnDestroy`: The application is being terminated by the OS.
-    on_destroy: VoidFunction = EmptyVoidFunction()
+    on_destroy: VoidFunction = empty_void_function()
 
     # VoidFunction OnLowMemory = EmptyVoidFunction();    /* original C++ signature */
     # `OnLowMemory`: _VoidFunction, default=empty_.
     # When the application is low on memory, free memory if possible.
-    on_low_memory: VoidFunction = EmptyVoidFunction()
+    on_low_memory: VoidFunction = empty_void_function()
 
     # VoidFunction OnPause = EmptyVoidFunction();    /* original C++ signature */
     # `OnPause`: The application is about to enter the background.
-    on_pause: VoidFunction = EmptyVoidFunction()
+    on_pause: VoidFunction = empty_void_function()
 
     # VoidFunction OnResume = EmptyVoidFunction();    /* original C++ signature */
     # `OnResume`: The application came to foreground and is now interactive.
     # Note: 'OnPause' and 'OnResume' are called twice consecutively under iOS
     # (before and after entering background or foreground).
-    on_resume: VoidFunction = EmptyVoidFunction()
+    on_resume: VoidFunction = empty_void_function()
     # MobileCallbacks(VoidFunction OnDestroy = EmptyVoidFunction(), VoidFunction OnLowMemory = EmptyVoidFunction(), VoidFunction OnPause = EmptyVoidFunction(), VoidFunction OnResume = EmptyVoidFunction());    /* original C++ signature */
     def __init__(
         self,
@@ -1694,10 +1694,10 @@ class MobileCallbacks:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * OnDestroy: EmptyVoidFunction()
-                * OnLowMemory: EmptyVoidFunction()
-                * OnPause: EmptyVoidFunction()
-                * OnResume: EmptyVoidFunction()
+                * OnDestroy: empty_void_function()
+                * OnLowMemory: empty_void_function()
+                * OnPause: empty_void_function()
+                * OnResume: empty_void_function()
         """
         pass
 
@@ -1756,7 +1756,7 @@ class EdgeToolbar:
     """
 
     # VoidFunction ShowToolbar = EmptyVoidFunction();    /* original C++ signature */
-    show_toolbar: VoidFunction = EmptyVoidFunction()
+    show_toolbar: VoidFunction = empty_void_function()
     # EdgeToolbarOptions options;    /* original C++ signature */
     options: EdgeToolbarOptions
     # EdgeToolbar(VoidFunction ShowToolbar = EmptyVoidFunction(), EdgeToolbarOptions options = EdgeToolbarOptions());    /* original C++ signature */
@@ -1770,7 +1770,7 @@ class EdgeToolbar:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * ShowToolbar: EmptyVoidFunction()
+                * ShowToolbar: empty_void_function()
                 * options: EdgeToolbarOptions()
         """
         pass
@@ -1819,7 +1819,7 @@ class RunnerCallbacks:
     # VoidFunction ShowGui = EmptyVoidFunction();    /* original C++ signature */
     # `ShowGui`: Fill it with a function that will add your widgets.
     # (ShowGui will be called at each frame, before rendering the Dockable windows, if any)
-    show_gui: VoidFunction = EmptyVoidFunction()
+    show_gui: VoidFunction = empty_void_function()
 
     # VoidFunction ShowMenus = EmptyVoidFunction();    /* original C++ signature */
     # `ShowMenus`: Fill it with a function that will add ImGui menus by calling:
@@ -1829,20 +1829,20 @@ class RunnerCallbacks:
     #   * Some default menus can be provided:
     #     see ImGuiWindowParams options:
     #         _showMenuBar, showMenu_App_QuitAbout, showMenu_View_
-    show_menus: VoidFunction = EmptyVoidFunction()
+    show_menus: VoidFunction = empty_void_function()
 
     # VoidFunction ShowAppMenuItems = EmptyVoidFunction();    /* original C++ signature */
     # `ShowAppMenuItems`: A function that will render items that will be placed
     # in the App menu. They will be placed before the "Quit" MenuItem,
     # which is added automatically by HelloImGui.
     #  This will be displayed only if ImGuiWindowParams.showMenu_App is True
-    show_app_menu_items: VoidFunction = EmptyVoidFunction()
+    show_app_menu_items: VoidFunction = empty_void_function()
 
     # VoidFunction ShowStatus = EmptyVoidFunction();    /* original C++ signature */
     # `ShowStatus`: A function that will add items to the status bar.
     #  Use small items (ImGui::Text for example), since the height of the status is 30.
     #  Also, remember to call ImGui::SameLine() between items.
-    show_status: VoidFunction = EmptyVoidFunction()
+    show_status: VoidFunction = empty_void_function()
 
     # std::map<EdgeToolbarType, EdgeToolbar> edgesToolbars;    /* original C++ signature */
     # `EdgesToolbars`:
@@ -1873,12 +1873,12 @@ class RunnerCallbacks:
     #  but before the platform backend callbacks are initialized.
     #  If you, want to add your own glfw callbacks, you should use this function to do so
     #  (and then ImGui will call your callbacks followed by its own callbacks)
-    post_init_add_platform_backend_callbacks: VoidFunction = EmptyVoidFunction()
+    post_init_add_platform_backend_callbacks: VoidFunction = empty_void_function()
 
     # VoidFunction PostInit = EmptyVoidFunction();    /* original C++ signature */
     # `PostInit`: You can here add a function that will be called once after everything
     #  is inited (ImGui, Platform and Renderer Backend)
-    post_init: VoidFunction = EmptyVoidFunction()
+    post_init: VoidFunction = empty_void_function()
 
     # void EnqueuePostInit(const VoidFunction& callback);    /* original C++ signature */
     def enqueue_post_init(self, callback: VoidFunction) -> None:
@@ -1894,7 +1894,7 @@ class RunnerCallbacks:
     # If you want to load additional fonts, during the app execution, you can
     # set LoadAdditionalFonts to a function that will load the additional fonts.
     load_additional_fonts: VoidFunction = (
-        imgui_default_settings.LoadDefaultFont_WithFontAwesomeIcons
+        imgui_default_settings.load_default_font_with_font_awesome_icons
     )
     # DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4;    /* original C++ signature */
     # If LoadAdditionalFonts==LoadDefaultFont_WithFontAwesomeIcons, this parameter control
@@ -1905,17 +1905,17 @@ class RunnerCallbacks:
     # `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     #  If needed, change ImGui config via SetupImGuiConfig
     #  (enable docking, gamepad, etc)
-    setup_imgui_config: VoidFunction = imgui_default_settings.SetupDefaultImGuiConfig
+    setup_imgui_config: VoidFunction = imgui_default_settings.setup_default_imgui_config
 
     # VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle;    /* original C++ signature */
     # `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     #  If needed, set your own style by providing your own SetupImGuiStyle callback
-    setup_imgui_style: VoidFunction = imgui_default_settings.SetupDefaultImGuiStyle
+    setup_imgui_style: VoidFunction = imgui_default_settings.setup_default_imgui_style
 
     # VoidFunction RegisterTests = EmptyVoidFunction();    /* original C++ signature */
     # `RegisterTests`: A function that is called once ImGuiTestEngine is ready
     # to be filled with tests and automations definitions.
-    register_tests: VoidFunction = EmptyVoidFunction()
+    register_tests: VoidFunction = empty_void_function()
     # bool         registerTestsCalled = false;    /* original C++ signature */
     # `registerTestsCalled`: will be set to True when RegisterTests was called
     # (you can set this to False if you want to RegisterTests to be called again
@@ -1927,7 +1927,7 @@ class RunnerCallbacks:
     # VoidFunction BeforeExit = EmptyVoidFunction();    /* original C++ signature */
     # `BeforeExit`: You can here add a function that will be called once before exiting
     #  (when OpenGL and ImGui are still inited)
-    before_exit: VoidFunction = EmptyVoidFunction()
+    before_exit: VoidFunction = empty_void_function()
 
     # void EnqueueBeforeExit(const VoidFunction& callback);    /* original C++ signature */
     def enqueue_before_exit(self, callback: VoidFunction) -> None:
@@ -1939,7 +1939,7 @@ class RunnerCallbacks:
     # VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction();    /* original C++ signature */
     # `BeforeExit_PostCleanup`: You can here add a function that will be called once
     # before exiting (after OpenGL and ImGui have been stopped)
-    before_exit_post_cleanup: VoidFunction = EmptyVoidFunction()
+    before_exit_post_cleanup: VoidFunction = empty_void_function()
 
     # --------------- Callbacks in the render loop -------------------
 
@@ -1947,23 +1947,23 @@ class RunnerCallbacks:
     # `PreNewFrame`: You can here add a function that will be called at each frame,
     #  and before the call to ImGui::NewFrame().
     #  It is a good place to add new dockable windows.
-    pre_new_frame: VoidFunction = EmptyVoidFunction()
+    pre_new_frame: VoidFunction = empty_void_function()
 
     # VoidFunction PostNewFrame = EmptyVoidFunction();    /* original C++ signature */
     # `PostNewFrame`: You can here add a function that will be called at each frame,
     #  just after the call to ImGui::NewFrame(), and before any Gui code.
-    post_new_frame: VoidFunction = EmptyVoidFunction()
+    post_new_frame: VoidFunction = empty_void_function()
 
     # VoidFunction BeforeImGuiRender = EmptyVoidFunction();    /* original C++ signature */
     # `BeforeImGuiRender`: You can here add a function that will be called at each frame,
     #  after the user Gui code, and just before the call to
     #  ImGui::Render() (which will also call ImGui::EndFrame()).
-    before_imgui_render: VoidFunction = EmptyVoidFunction()
+    before_imgui_render: VoidFunction = empty_void_function()
 
     # VoidFunction AfterSwap = EmptyVoidFunction();    /* original C++ signature */
     # `AfterSwap`: You can here add a function that will be called at each frame,
     #  after the Gui was rendered and swapped to the screen.
-    after_swap: VoidFunction = EmptyVoidFunction()
+    after_swap: VoidFunction = empty_void_function()
 
     # VoidFunction CustomBackground = EmptyVoidFunction();    /* original C++ signature */
     # `CustomBackground`:
@@ -1972,12 +1972,12 @@ class RunnerCallbacks:
     #  behind the Gui. An example use case is if you have a 3D application
     #  like a mesh editor, or game, and just want the Gui to be drawn
     #  on top of that content.
-    custom_background: VoidFunction = EmptyVoidFunction()
+    custom_background: VoidFunction = empty_void_function()
 
     # VoidFunction PostRenderDockableWindows = EmptyVoidFunction();    /* original C++ signature */
     # `PostRenderDockableWindows`: Fill it with a function that will be called
     # after the dockable windows are rendered.
-    post_render_dockable_windows: VoidFunction = EmptyVoidFunction()
+    post_render_dockable_windows: VoidFunction = empty_void_function()
 
     # VoidFunction ThemeChanged = EmptyVoidFunction();    /* original C++ signature */
     # `ThemeChanged`: You can here add a function that will be called
@@ -1985,7 +1985,7 @@ class RunnerCallbacks:
     #  typically triggered when the user clicks a theme menu item in the menubar,
     #  allowing custom drawings or UI elements to update their colors right after
     #  the theme change.
-    theme_changed: VoidFunction = EmptyVoidFunction()
+    theme_changed: VoidFunction = empty_void_function()
 
     # AnyEventCallback AnyBackendEventCallback = EmptyEventCallback();    /* original C++ signature */
     # `AnyBackendEventCallback`:
@@ -1994,7 +1994,7 @@ class RunnerCallbacks:
     #  This callback should return True if the event was handled
     #  and shall not be processed further.
     #  Note: in the case of GLFW, you should use register them in `PostInit`
-    any_backend_event_callback: AnyEventCallback = EmptyEventCallback()
+    any_backend_event_callback: AnyEventCallback = empty_event_callback()
 
     # --------------- Mobile callbacks -------------------
     # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction PostNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
@@ -2028,26 +2028,26 @@ class RunnerCallbacks:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * ShowGui: EmptyVoidFunction()
-                * ShowMenus: EmptyVoidFunction()
-                * ShowAppMenuItems: EmptyVoidFunction()
-                * ShowStatus: EmptyVoidFunction()
-                * PostInit_AddPlatformBackendCallbacks: EmptyVoidFunction()
-                * PostInit: EmptyVoidFunction()
-                * LoadAdditionalFonts: imgui_default_settings.LoadDefaultFont_WithFontAwesomeIcons
-                * SetupImGuiConfig: imgui_default_settings.SetupDefaultImGuiConfig
-                * SetupImGuiStyle: imgui_default_settings.SetupDefaultImGuiStyle
-                * RegisterTests: EmptyVoidFunction()
-                * BeforeExit: EmptyVoidFunction()
-                * BeforeExit_PostCleanup: EmptyVoidFunction()
-                * PreNewFrame: EmptyVoidFunction()
-                * PostNewFrame: EmptyVoidFunction()
-                * BeforeImGuiRender: EmptyVoidFunction()
-                * AfterSwap: EmptyVoidFunction()
-                * CustomBackground: EmptyVoidFunction()
-                * PostRenderDockableWindows: EmptyVoidFunction()
-                * ThemeChanged: EmptyVoidFunction()
-                * AnyBackendEventCallback: EmptyEventCallback()
+                * ShowGui: empty_void_function()
+                * ShowMenus: empty_void_function()
+                * ShowAppMenuItems: empty_void_function()
+                * ShowStatus: empty_void_function()
+                * PostInit_AddPlatformBackendCallbacks: empty_void_function()
+                * PostInit: empty_void_function()
+                * LoadAdditionalFonts: imgui_default_settings.load_default_font_with_font_awesome_icons
+                * SetupImGuiConfig: imgui_default_settings.setup_default_imgui_config
+                * SetupImGuiStyle: imgui_default_settings.setup_default_imgui_style
+                * RegisterTests: empty_void_function()
+                * BeforeExit: empty_void_function()
+                * BeforeExit_PostCleanup: empty_void_function()
+                * PreNewFrame: empty_void_function()
+                * PostNewFrame: empty_void_function()
+                * BeforeImGuiRender: empty_void_function()
+                * AfterSwap: empty_void_function()
+                * CustomBackground: empty_void_function()
+                * PostRenderDockableWindows: empty_void_function()
+                * ThemeChanged: empty_void_function()
+                * AnyBackendEventCallback: empty_event_callback()
         """
         pass
 
@@ -2291,7 +2291,7 @@ class DockableWindow:
     # VoidFunction GuiFunction = EmptyVoidFunction();    /* original C++ signature */
     # `GuiFunction`: _VoidFunction_.
     # Any function that will render this window's Gui
-    gui_function: VoidFunction = EmptyVoidFunction()
+    gui_function: VoidFunction = empty_void_function()
 
     # --------------- Options --------------------------
 
@@ -2380,7 +2380,7 @@ class DockableWindow:
 
 
         Python bindings defaults:
-            If guiFunction_ is None, then its default value will be: EmptyVoidFunction()
+            If guiFunction_ is None, then its default value will be: empty_void_function()
         """
         pass
 
@@ -3269,7 +3269,7 @@ class SimpleRunnerParams:
     # VoidFunction guiFunction = EmptyVoidFunction();    /* original C++ signature */
     # `guiFunction`: _VoidFunction_.
     #  Function that renders the Gui.
-    gui_function: VoidFunction = EmptyVoidFunction()
+    gui_function: VoidFunction = empty_void_function()
     # std::string windowTitle = "";    /* original C++ signature */
     # `windowTitle`: _string, default=""_.
     #  Title of the application window
@@ -3336,7 +3336,7 @@ class SimpleRunnerParams:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * guiFunction: EmptyVoidFunction()
+                * guiFunction: empty_void_function()
                 * windowSize: DefaultWindowSize
         """
         pass

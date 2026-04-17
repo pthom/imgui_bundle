@@ -1319,7 +1319,7 @@ void py_init_module_hello_imgui(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, label_, dockSpaceName_, guiFunction_, isVisible_, canBeClosed_);
             },
             nb::arg("label_") = "", nb::arg("dock_space_name_") = "", nb::arg("gui_function_").none() = nb::none(), nb::arg("is_visible_") = true, nb::arg("can_be_closed_") = true,
-            " --------------- Constructor ------------------------------\n Constructor\n\n\nPython bindings defaults:\n    If guiFunction_ is None, then its default value will be: EmptyVoidFunction()")
+            " --------------- Constructor ------------------------------\n Constructor\n\n\nPython bindings defaults:\n    If guiFunction_ is None, then its default value will be: empty_void_function()")
         ;
 
 
