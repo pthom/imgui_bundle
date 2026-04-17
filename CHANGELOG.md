@@ -1,6 +1,47 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# v1.92.602 (WIP)
+# v1.92.700
+
+## Updated Dear ImGui to [v1.92.7](https://github.com/ocornut/imgui/releases/tag/v1.92.7)
+
+Highlights: table columns reorderable via context menu, Shift+Enter always inserts newlines in multi-line InputText, border sizes now scale via `ScaleAllSizes()`, new `style.SeparatorSize`, improved ImDrawList buffer management, Shift+F10/Menu key opens context popups. Breaking: removed legacy `Combo()`/`ListBox()` callback signatures deprecated since v1.90.
+
+## ImPlot v1.0 - Per-index color/size support
+
+- Updated ImPlot to v1.0
+- `ImPlotSpec`: numpy array support for per-index color/size fields (`fill_colors`, `line_colors`, `marker_fill_colors`, `marker_line_colors`, `marker_sizes`)
+
+## ImPlot3D v0.4 - Per-index color/size support
+
+- Updated ImPlot3D to v0.4
+- `ImPlot3DSpec`: same numpy array fields as ImPlot
+- New Python demo: Per-Index Colors (colorful lines, scatter, triangles, quads, Gouraud-shaded duck)
+- Refactored Custom Per-Point Style demo to use batched per-index arrays
+
+## Markdown: LaTeX math rendering
+
+LaTeX math is now supported in the Markdown renderer, using the new `imgui_microtex` library (native rendering via MicroTeX + FreeType). Enable it with `AddOnsParams.with_latex = True`.
+
+- Inline `$...$` and display `$$...$$` math in Markdown
+- Python bindings for `imgui_microtex`
+- Pyodide: lazy-download LaTeX fonts via jsdelivr
+- Frame-generation cache eviction (default 60 frames)
+
+### Other Markdown improvements
+
+- URL image support: `<img>` tags with width/height, async download (desktop via libcurl, Pyodide via JS fetch)
+- Blockquote rendering
+- Adaptive code snippet colors
+- Renamed `IMGUI_MARKDOWN_WITH_DOWNLOAD_IMAGES` to `IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES`
+
+## Pyodide / Playground
+
+- New online playground with live code editing and demos
+- Clipboard support (SDL2 + Emscripten)
+- `immapp.download_url_bytes` / `immapp.download_url_bytes_async`
+- Pin pyodide-build version to pyodide version
+- Lazy import for pydantic types
+- numpy is now optional (no runtime dependency)
 
 ## ImGuiColorTextEdit: switched to goossens rewrite (**breaking API changes**)
 
@@ -45,6 +86,48 @@ See the breaking changes note at the top of [imgui_color_text_edit.pyi](https://
 Same renames as Python (CamelCase). Additionally:
 - `Render()` parameter order changed: `(title, size, border)` instead of `(title, border, size)`
 - `Render()` returns `void` instead of `bool`
+
+## hello_imgui
+
+- Add `emscriptenAllowBrowserZoomShortcuts` preference: forward browser zoom shortcuts (Ctrl+/Ctrl-) to the browser, true by default
+- Add `ImageAndSizeFromEncodedData` and `LoadImageDataFromEncodedData` for loading images from in-memory encoded data
+- `IniFolderLocation` on Emscripten: return `""` for `CurrentFolder`, `"/"` for others
+- `LoadDefaultFont_WithFontAwesomeIcons`: log a message if the icon font file is not found (instead of silently failing)
+- Skip `TearDown` if it already ran at exit (e.g. if it threw an exception itself)
+- Suppress GCC false positive `-Wstringop-overflow` in stb_image
+- Document theming API
+
+## ImmVision
+
+- Fix colormap rendering for single-channel images
+- Improve draw pixel values: better text contrast against background
+- Fix zoom synchronization between linked views
+- Polish overall look
+- Add license file
+
+## Other library updates
+
+- Updated ImCoolBar, ImGuizmo, ImAnim, nanovg, ImFileDialog, imgui_tex_inspect, md4c
+
+## Build & CI
+
+- MSVC: add `/bigobj` for implot (fixes Windows ARM64 wheel build)
+- CMake: refuse in-source builds
+- CI: add win64 wheels, bump cibuildwheel/pypi-publish/deploy-pages/upload-pages-artifact
+- Fix ImGui StackLayout fractional-height alignment drift
+
+## Python bindings & API fixes
+
+- Expose `TextFilter.input_buf` property (#451)
+- `imgui_explorer`: show `im_anim.pyi` in Python (#406)
+- Fix `get_style_color_vec4` / `color_convert_rgb_to_hsv` bindings
+- `register_demos_assets_folder()` helper
+
+## Documentation
+
+- Developer docs: fork management, justfile workflows, bindings, Pyodide
+- FAQ review, Nuitka compatibility docs
+- Interactive explorable demos
 
 # v1.92.601
 

@@ -10,7 +10,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "imgui-bundle"
-version = "1.92.602"  # Based on ImGui 1.92.6 - Remember to mirror changes on line 3 of main CMakeLists! Version = ImGui patch × 100 + bundle release. (also remember to update pyodide_projects/pyodide_test_bundle/test_local_pyodide.html and test_cdn_pyodide_local_wheel.html with the new version.)
+version = "1.92.700"  # Based on ImGui 1.92.7 - Remember to mirror changes on line 3 of main CMakeLists! Version = ImGui patch × 100 + bundle release. (also remember to update pyodide_projects/pyodide_test_bundle/test_local_pyodide.html and test_cdn_pyodide_local_wheel.html with the new version.)
 
 description="Dear ImGui Bundle: From expressive code to powerful GUIs in no time. A fast, feature-rich, cross-platform toolkit for C++ and Python."
 readme = "bindings/imgui_bundle/Readme_pypi.md"

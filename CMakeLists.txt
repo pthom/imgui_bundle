@@ -4,7 +4,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
     message(FATAL_ERROR "In-source builds are not allowed. Please use a separate build directory, e.g.:\n  mkdir build && cd build && cmake ..")
 endif()
 
-project(imgui_bundle VERSION "1.92.602") # Based on ImGui 1.92.6 - Remember to mirror changes to pyproject.toml! Version = ImGui patch × 100 + bundle release
+project(imgui_bundle VERSION "1.92.700") # Based on ImGui 1.92.7 - Remember to mirror changes to pyproject.toml! Version = ImGui patch × 100 + bundle release
 
 # imgui_bundle_build_lib contains the main logic to build imgui_bundle
 set(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR} CACHE STRING "" FORCE)
