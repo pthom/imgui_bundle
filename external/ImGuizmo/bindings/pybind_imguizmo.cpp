@@ -64,6 +64,9 @@ void py_init_module_imguizmo(nb::module_& m)
         pyNsImGuizmo.def("is_over",
             nb::overload_cast<>(ImGuizmo::IsOver), "return True if mouse cursor is over any gizmo control (axis, plan or screen component)");
 
+        pyNsImGuizmo.def("is_over",
+            nb::overload_cast<ImGuizmo::OPERATION>(ImGuizmo::IsOver), nb::arg("op"));
+
         pyNsImGuizmo.def("is_using",
             ImGuizmo::IsUsing, "return True if mouse IsOver or if the gizmo is in moving state");
 
@@ -155,9 +158,6 @@ void py_init_module_imguizmo(nb::module_& m)
 
         pyNsImGuizmo.def("get_id",
             nb::overload_cast<const void *>(ImGuizmo::GetID), nb::arg("ptr_id"));
-
-        pyNsImGuizmo.def("is_over",
-            nb::overload_cast<ImGuizmo::OPERATION>(ImGuizmo::IsOver), nb::arg("op"));
 
         pyNsImGuizmo.def("set_gizmo_size_clip_space",
             ImGuizmo::SetGizmoSizeClipSpace, nb::arg("value"));

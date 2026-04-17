@@ -592,15 +592,30 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::arg("pos"), nb::arg("cond") = 0,
         "(not recommended) set current window position - call within Begin()/End(). prefer using SetNextWindowPos(), as this may incur tearing and side-effects.");
 
+    m.def("set_window_pos",
+        nb::overload_cast<const char *, const ImVec2 &, ImGuiCond>(ImGui::SetWindowPos),
+        nb::arg("name"), nb::arg("pos"), nb::arg("cond") = 0,
+        "set named window position.");
+
     m.def("set_window_size",
         nb::overload_cast<const ImVec2 &, ImGuiCond>(ImGui::SetWindowSize),
         nb::arg("size"), nb::arg("cond") = 0,
         "(not recommended) set current window size - call within Begin()/End(). set to ImVec2(0, 0) to force an auto-fit. prefer using SetNextWindowSize(), as this may incur tearing and minor side-effects.");
 
+    m.def("set_window_size",
+        nb::overload_cast<const char *, const ImVec2 &, ImGuiCond>(ImGui::SetWindowSize),
+        nb::arg("name"), nb::arg("size"), nb::arg("cond") = 0,
+        "set named window size. set axis to 0.0 to force an auto-fit on this axis.");
+
     m.def("set_window_collapsed",
         nb::overload_cast<bool, ImGuiCond>(ImGui::SetWindowCollapsed),
         nb::arg("collapsed"), nb::arg("cond") = 0,
         "(not recommended) set current window collapsed state. prefer using SetNextWindowCollapsed().");
+
+    m.def("set_window_collapsed",
+        nb::overload_cast<const char *, bool, ImGuiCond>(ImGui::SetWindowCollapsed),
+        nb::arg("name"), nb::arg("collapsed"), nb::arg("cond") = 0,
+        "set named window collapsed state");
 
     m.def("set_window_focus",
         []()
@@ -612,23 +627,6 @@ void py_init_module_imgui_main(nb::module_& m)
 
             SetWindowFocus_adapt_force_lambda();
         },     "(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus().");
-
-    m.def("set_window_pos",
-        nb::overload_cast<const char *, const ImVec2 &, ImGuiCond>(ImGui::SetWindowPos),
-        nb::arg("name"), nb::arg("pos"), nb::arg("cond") = 0,
-        "set named window position.");
-
-    m.def("set_window_size",
-        nb::overload_cast<const char *, const ImVec2 &, ImGuiCond>(ImGui::SetWindowSize),
-        nb::arg("name"), nb::arg("size"), nb::arg("cond") = 0,
-        "set named window size. set axis to 0.0 to force an auto-fit on this axis.");
-
-    m.def("set_window_collapsed",
-        nb::overload_cast<const char *, bool, ImGuiCond>(ImGui::SetWindowCollapsed),
-        nb::arg("name"), nb::arg("collapsed"), nb::arg("cond") = 0,
-        "set named window collapsed state");
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
 
     m.def("set_window_focus",
         [](std::optional<std::string> name)
@@ -642,6 +640,8 @@ void py_init_module_imgui_main(nb::module_& m)
         },
         nb::arg("name").none(),
         "// set named window to be focused / top-most. use None to remove focus.");
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
     // #endif
     //
 
@@ -1561,11 +1561,11 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return SliderFloat2_adapt_modifiable_immutable_to_return(label, v, v_min, v_max, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
 
     m.def("slider_float2",
         nb::overload_cast<const char *, ImVec2, float, float, const char *, ImGuiSliderFlags>(ImGui::SliderFloat2), nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
     // #endif
     //
 
@@ -1596,11 +1596,11 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return SliderFloat4_adapt_modifiable_immutable_to_return(label, v, v_min, v_max, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
 
     m.def("slider_float4",
         nb::overload_cast<const char *, ImVec4, float, float, const char *, ImGuiSliderFlags>(ImGui::SliderFloat4), nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
     // #endif
     //
 
@@ -1777,11 +1777,11 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputFloat2_adapt_modifiable_immutable_to_return(label, v, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
 
     m.def("input_float2",
         nb::overload_cast<const char *, ImVec2, const char *, ImGuiInputTextFlags>(ImGui::InputFloat2), nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
     // #endif
     //
 
@@ -1812,11 +1812,11 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputFloat4_adapt_modifiable_immutable_to_return(label, v, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
 
     m.def("input_float4",
         nb::overload_cast<const char *, ImVec4, const char *, ImGuiInputTextFlags>(ImGui::InputFloat4), nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
     // #endif
     //
 
@@ -1936,6 +1936,9 @@ void py_init_module_imgui_main(nb::module_& m)
             return ColorEdit3_adapt_modifiable_immutable_to_return(label, col, flags);
         },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
 
+    m.def("color_edit3",
+        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags>(ImGui::ColorEdit3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+
     m.def("color_edit4",
         [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 4>>
         {
@@ -1949,14 +1952,11 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ColorEdit4_adapt_modifiable_immutable_to_return(label, col, flags);
         },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
 
     m.def("color_edit4",
         nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags>(ImGui::ColorEdit4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-
-    m.def("color_edit3",
-        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags>(ImGui::ColorEdit3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
     // #endif
     //
 
@@ -1974,6 +1974,9 @@ void py_init_module_imgui_main(nb::module_& m)
             return ColorPicker3_adapt_modifiable_immutable_to_return(label, col, flags);
         },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
 
+    m.def("color_picker3",
+        nb::overload_cast<const char *, ImVec4, ImGuiColorEditFlags>(ImGui::ColorPicker3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+
     m.def("color_picker4",
         [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0, const float * ref_col = NULL) -> std::tuple<bool, std::array<float, 4>>
         {
@@ -1987,14 +1990,11 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return ColorPicker4_adapt_modifiable_immutable_to_return(label, col, flags, ref_col);
         },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col") = nb::none());
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-    m.def("color_picker3",
-        nb::overload_cast<const char *, ImVec4, ImGuiColorEditFlags>(ImGui::ColorPicker3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
 
     m.def("color_picker4",
         nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags, std::optional<ImVec4>>(ImGui::ColorPicker4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
+    // #ifdef IMGUI_BUNDLE_PYTHON_API
+    //
     // #endif
     //
 

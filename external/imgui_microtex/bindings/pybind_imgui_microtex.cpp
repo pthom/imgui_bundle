@@ -39,13 +39,13 @@ void py_init_module_imgui_microtex(nb::module_& m)
     m.def("init",
         ImGuiMicroTeX::Init,
         nb::arg("clm_file"), nb::arg("font_file"),
-        " Initialize MicroTeX + FreeType backend.\n clmFile: path to the .clm1 font metrics file\n fontFile: path to the .otf font file");
+        " Initialize MicroTeX + FreeType backend.\n clmFile: path to the .clm1 font metrics file\n fontFile: path to the .otf font file\n Safe to call repeatedly: subsequent calls after the first successful\n Init() no-op (MicroTeX itself stays initialized for process life; the\n underlying MicroTeX::init()/release() pair is not re-entrant, so we\n defer the real teardown to std::atexit: see imgui_microtex.cpp).");
 
     m.def("is_initialized",
         ImGuiMicroTeX::IsInitialized, "Check if initialized.");
 
     m.def("release",
-        ImGuiMicroTeX::Release, " Release all resources (textures, MicroTeX, FreeType).\n Call at most once, at process shutdown.\n Calling Init() after Release() will throw - MicroTeX does not support re-initialization.");
+        ImGuiMicroTeX::Release, " Drop the cached GPU texture set so the GL context can be torn down\n cleanly. Call from BeforeExit (or any point where the GL context is\n about to die). Safe to call multiple times, and safe to call Init()\n again afterwards: the underlying MicroTeX library stays alive for\n the whole process and its real teardown runs once at exit via a\n std::atexit handler installed on first Init().");
 
 
     auto pyClassRenderedFormula =

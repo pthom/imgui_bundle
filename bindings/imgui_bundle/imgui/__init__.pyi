@@ -953,28 +953,16 @@ def set_window_pos(pos: ImVec2Like, cond: Cond = 0) -> None:
     """(not recommended) set current window position - call within Begin()/End(). prefer using SetNextWindowPos(), as this may incur tearing and side-effects."""
     pass
 
-# IMGUI_API void          SetWindowSize(const ImVec2& size, ImGuiCond cond = 0);                          /* original C++ signature */
-@overload
-def set_window_size(size: ImVec2Like, cond: Cond = 0) -> None:
-    """(not recommended) set current window size - call within Begin()/End(). set to ImVec2(0, 0) to force an auto-fit. prefer using SetNextWindowSize(), as this may incur tearing and minor side-effects."""
-    pass
-
-# IMGUI_API void          SetWindowCollapsed(bool collapsed, ImGuiCond cond = 0);                         /* original C++ signature */
-@overload
-def set_window_collapsed(collapsed: bool, cond: Cond = 0) -> None:
-    """(not recommended) set current window collapsed state. prefer using SetNextWindowCollapsed()."""
-    pass
-
-# IMGUI_API void          SetWindowFocus();                                                               /* original C++ signature */
-@overload
-def set_window_focus() -> None:
-    """(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus()."""
-    pass
-
 # IMGUI_API void          SetWindowPos(const char* name, const ImVec2& pos, ImGuiCond cond = 0);          /* original C++ signature */
 @overload
 def set_window_pos(name: str, pos: ImVec2Like, cond: Cond = 0) -> None:
     """set named window position."""
+    pass
+
+# IMGUI_API void          SetWindowSize(const ImVec2& size, ImGuiCond cond = 0);                          /* original C++ signature */
+@overload
+def set_window_size(size: ImVec2Like, cond: Cond = 0) -> None:
+    """(not recommended) set current window size - call within Begin()/End(). set to ImVec2(0, 0) to force an auto-fit. prefer using SetNextWindowSize(), as this may incur tearing and minor side-effects."""
     pass
 
 # IMGUI_API void          SetWindowSize(const char* name, const ImVec2& size, ImGuiCond cond = 0);        /* original C++ signature */
@@ -983,14 +971,24 @@ def set_window_size(name: str, size: ImVec2Like, cond: Cond = 0) -> None:
     """set named window size. set axis to 0.0 to force an auto-fit on this axis."""
     pass
 
+# IMGUI_API void          SetWindowCollapsed(bool collapsed, ImGuiCond cond = 0);                         /* original C++ signature */
+@overload
+def set_window_collapsed(collapsed: bool, cond: Cond = 0) -> None:
+    """(not recommended) set current window collapsed state. prefer using SetNextWindowCollapsed()."""
+    pass
+
 # IMGUI_API void          SetWindowCollapsed(const char* name, bool collapsed, ImGuiCond cond = 0);       /* original C++ signature */
 @overload
 def set_window_collapsed(name: str, collapsed: bool, cond: Cond = 0) -> None:
     """set named window collapsed state"""
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
+# IMGUI_API void          SetWindowFocus();                                                               /* original C++ signature */
+@overload
+def set_window_focus() -> None:
+    """(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus()."""
+    pass
+
 # IMGUI_API inline void          SetWindowFocus(std::optional<std::string> name)                                           // set named window to be focused / top-most. use NULL to remove focus.    /* original C++ signature */
 #     { if (name.has_value()) SetWindowFocus(name.value()); else SetWindowFocus(NULL); }
 @overload
@@ -998,6 +996,8 @@ def set_window_focus(name: Optional[str]) -> None:
     """// set named window to be focused / top-most. use None to remove focus."""
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # #endif
 #
 
@@ -1770,8 +1770,6 @@ def slider_float2(
 ) -> Tuple[bool, List[float]]:
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
 # IMGUI_API inline std::pair<bool, ImVec2>  SliderFloat2(const char* label, ImVec2 v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0)    /* original C++ signature */
 #     { bool changed = SliderFloat2(label, (float*)&v, v_min, v_max, format, flags);  return { changed, v }; }
 @overload
@@ -1780,6 +1778,8 @@ def slider_float2(
 ) -> Tuple[bool, ImVec2]:
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # #endif
 #
 # IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
@@ -1795,8 +1795,6 @@ def slider_float4(
 ) -> Tuple[bool, List[float]]:
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
 # IMGUI_API inline std::pair<bool, ImVec4>  SliderFloat4(const char* label, ImVec4 v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0)    /* original C++ signature */
 #     { bool changed = SliderFloat4(label, (float*)&v, v_min, v_max, format, flags);  return { changed, v }; }
 @overload
@@ -1805,6 +1803,8 @@ def slider_float4(
 ) -> Tuple[bool, ImVec4]:
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # #endif
 #
 # IMGUI_API bool          SliderAngle(const char* label, float* v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f, const char* format = "%.0f deg", ImGuiSliderFlags flags = 0);    /* original C++ signature */
@@ -1908,14 +1908,14 @@ def input_float2(
 ) -> Tuple[bool, List[float]]:
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
 # IMGUI_API inline std::pair<bool, ImVec2>  InputFloat2(const char* label, ImVec2 v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0)    /* original C++ signature */
 #         { bool changed = InputFloat2(label, (float*)&v, format, flags);  return { changed, v }; }
 @overload
 def input_float2(label: str, v: ImVec2Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # #endif
 #
 # IMGUI_API bool          InputFloat3(const char* label, float v[3], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
@@ -1931,14 +1931,14 @@ def input_float4(
 ) -> Tuple[bool, List[float]]:
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
 # IMGUI_API inline std::pair<bool, ImVec4>  InputFloat4(const char* label, ImVec4 v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0)    /* original C++ signature */
 #         { bool changed = InputFloat4(label, (float*)&v, format, flags);  return { changed, v }; }
 @overload
 def input_float4(label: str, v: ImVec4Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # #endif
 #
 # IMGUI_API bool          InputInt(const char* label, int* v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0);    /* original C++ signature */
@@ -1997,31 +1997,37 @@ def input_scalar_n(
 def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
 
-# IMGUI_API bool          ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
-@overload
-def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
-    pass
-
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# IMGUI_API inline std::tuple<bool, ImVec4> ColorEdit4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
-#         {  bool changed = ColorEdit4(label.c_str(), (float*)&col, flags);  return { changed, col }; }
-@overload
-def color_edit4(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
-    pass
-
 # IMGUI_API inline std::tuple<bool, ImVec4> ColorEdit3(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
 #         {  bool changed = ColorEdit3(label.c_str(), (float*)&col, flags);  return { changed, col }; }
 @overload
 def color_edit3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
+# IMGUI_API bool          ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
+@overload
+def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+    pass
+
+# IMGUI_API inline std::tuple<bool, ImVec4> ColorEdit4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
+#         {  bool changed = ColorEdit4(label.c_str(), (float*)&col, flags);  return { changed, col }; }
+@overload
+def color_edit4(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
+    pass
+
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # #endif
 #
 
 # IMGUI_API bool          ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
 @overload
 def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+    pass
+
+# IMGUI_API inline std::tuple<bool, ImVec4> ColorPicker3(const char* label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
+#         { bool changed = ColorPicker3(label, (float*)&col, flags);  return { changed, col }; }
+@overload
+def color_picker3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
 # IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);    /* original C++ signature */
@@ -2031,14 +2037,6 @@ def color_picker4(
 ) -> Tuple[bool, List[float]]:
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# IMGUI_API inline std::tuple<bool, ImVec4> ColorPicker3(const char* label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
-#         { bool changed = ColorPicker3(label, (float*)&col, flags);  return { changed, col }; }
-@overload
-def color_picker3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
-    pass
-
 # IMGUI_API std::tuple<bool, ImVec4> ColorPicker4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0, std::optional<ImVec4> ref_col = std::nullopt);    /* original C++ signature */
 @overload
 def color_picker4(
@@ -2046,6 +2044,8 @@ def color_picker4(
 ) -> Tuple[bool, ImVec4]:
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # #endif
 #
 

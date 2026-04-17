@@ -441,6 +441,12 @@ def set_assets_folder(folder: str) -> None:
     """
     pass
 
+# void SetAssetsFolder(const char* folder);    /* original C++ signature */
+@overload
+def set_assets_folder(folder: str) -> None:
+    """Legacy API, kept for compatibility"""
+    pass
+
 # Assets search paths provide additional locations where assets can be found,
 # giving a unified view across multiple folders. When loading an asset, the
 # search order is:
@@ -475,12 +481,6 @@ def get_assets_search_paths() -> List[str]:
     pass
 
 # @@md
-
-# void SetAssetsFolder(const char* folder);    /* original C++ signature */
-@overload
-def set_assets_folder(folder: str) -> None:
-    """Legacy API, kept for compatibility"""
-    pass
 
 # inline std::string assetFileFullPath(const std::string& assetRelativeFilename, bool assertIfNotFound = true)    /* original C++ signature */
 #     { return AssetFileFullPath(assetRelativeFilename, assertIfNotFound); }

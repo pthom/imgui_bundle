@@ -242,6 +242,11 @@ void py_init_module_hello_imgui(nb::module_& m)
         nb::arg("folder"),
         " Sets the assets folder location\n (when using this, automatic assets installation on mobile platforms may not work)");
 
+    m.def("set_assets_folder",
+        nb::overload_cast<const char *>(HelloImGui::SetAssetsFolder),
+        nb::arg("folder"),
+        "Legacy API, kept for compatibility");
+
     m.def("add_assets_search_path",
         HelloImGui::AddAssetsSearchPath,
         nb::arg("folder"),
@@ -252,11 +257,6 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     m.def("get_assets_search_paths",
         HelloImGui::GetAssetsSearchPaths, "Return the current list of search paths.");
-
-    m.def("set_assets_folder",
-        nb::overload_cast<const char *>(HelloImGui::SetAssetsFolder),
-        nb::arg("folder"),
-        "Legacy API, kept for compatibility");
 
     m.def("asset_file_full_path",
         HelloImGui::assetFileFullPath, nb::arg("asset_relative_filename"), nb::arg("assert_if_not_found") = true);

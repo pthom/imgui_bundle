@@ -126,6 +126,10 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     def is_over() -> bool:
         """ return True if mouse cursor is over any gizmo control (axis, plan or screen component)"""
         pass
+    @staticmethod
+    @overload
+    def is_over(op: OPERATION) -> bool:
+        pass
 
     @staticmethod
     def is_using() -> bool:
@@ -265,10 +269,6 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         pass
 
     # return True if the cursor is over the operation's gizmo
-    @staticmethod
-    @overload
-    def is_over(op: OPERATION) -> bool:
-        pass
     @staticmethod
     def set_gizmo_size_clip_space(value: float) -> None:
         pass
@@ -448,7 +448,6 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
          ViewManipulate may change the view parameter
         """
         pass
-
     @staticmethod
     @overload
     def view_manipulate(
@@ -466,6 +465,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
          ViewManipulate may change the view parameter!
         """
         pass
+
 
 # </submodule im_guizmo>
 ####################    </generated_from:ImGuizmoPure.h>    ####################
