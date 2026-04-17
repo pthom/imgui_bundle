@@ -12,7 +12,7 @@ On Pyodide, synchronous XMLHttpRequest is used (no threads available).
 """
 import logging
 from concurrent.futures import Future, ThreadPoolExecutor
-from typing import Dict
+from typing import Any, Dict
 
 # Enable logging with:
 #    logging.getLogger("imgui_md_image_loader").setLevel(logging.DEBUG)
@@ -23,7 +23,7 @@ _DEBUG_DELAY_SECONDS = 0.0
 
 # Background thread pool for async downloads (desktop only)
 _executor = ThreadPoolExecutor(max_workers=2)
-_pending: Dict[str, Future] = {}
+_pending: Dict[str, "Future[Any]"] = {}
 
 
 def _do_download_desktop(url: str) -> bytes:
@@ -37,7 +37,7 @@ def _do_download_desktop(url: str) -> bytes:
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "imgui_bundle/1.0"})
         with urllib.request.urlopen(req, timeout=10) as resp:
-            data = resp.read()
+            data: bytes = resp.read()
             log.debug("Downloaded %d bytes from %s", len(data), url)
             return data
     except Exception as e:

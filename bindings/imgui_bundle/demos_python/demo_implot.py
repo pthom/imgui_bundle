@@ -16,6 +16,7 @@ def demo_gui():
 
     if imgui.collapsing_header("ImPlot: Full Demo"):
         if _has_imgui_explorer:
+            assert imgui_explorer is not None
             imgui.push_id("ImPlotDemo")
             imgui_explorer.show_imgui_explorer_gui_python(imgui_explorer.ImGuiExplorerLibrary.implot, get_package_path())
             imgui.pop_id()
@@ -24,6 +25,7 @@ def demo_gui():
 
     if imgui.collapsing_header("ImPlot3D: Full Demo"):
         if _has_imgui_explorer:
+            assert imgui_explorer is not None
             imgui.push_id("ImPlot3DDemo")
             imgui_explorer.show_imgui_explorer_gui_python(imgui_explorer.ImGuiExplorerLibrary.implot3_d, get_package_path())
             imgui.pop_id()

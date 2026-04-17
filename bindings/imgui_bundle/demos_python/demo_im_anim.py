@@ -17,6 +17,7 @@ def demo_gui():
     imgui.separator()
 
     if _has_imgui_explorer:
+        assert imgui_explorer is not None
         imgui_explorer.show_imgui_explorer_gui_python(
             imgui_explorer.ImGuiExplorerLibrary.im_anim, get_package_path()
         )

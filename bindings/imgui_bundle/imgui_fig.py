@@ -14,6 +14,7 @@ from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    import numpy as np
     import matplotlib.figure  # type: ignore
     from numpy.typing import NDArray
 

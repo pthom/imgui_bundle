@@ -1,6 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import inspect
 import textwrap
+from typing import Callable, Any
 
 from imgui_bundle import imgui, imgui_color_text_edit as ed, imgui_md, ImVec2
 from imgui_bundle.immapp import static
@@ -15,13 +16,13 @@ TextDiff = ed.TextDiff
 _source_show_flags: dict[str, bool] = {}
 _source_editors: dict[str, TextEditor] = {}
 # Map function names to their actual function objects (filled by each demo function)
-_source_functions: dict[str, object] = {}
+_source_functions: dict[str, Callable[..., Any]] = {}
 
 
-def _show_source_toggle(func: object) -> None:
+def _show_source_toggle(func: Callable[..., Any]) -> None:
     """Show a 'Show source' checkbox. When checked, displays the function's source
     (obtained via inspect.getsource) in a read-only editor with light theme."""
-    func_name = func.__name__  # type: ignore
+    func_name = func.__name__
     if func_name not in _source_show_flags:
         _source_show_flags[func_name] = False
 

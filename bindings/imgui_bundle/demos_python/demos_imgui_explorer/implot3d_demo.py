@@ -1019,22 +1019,22 @@ def demo_per_index_colors():
     cx = [-0.5, 0.5, 0.5, -0.5]
     cy = [-0.5, -0.5, 0.5, 0.5]
     cz = [0.0, 0.0, 0.0, 0.0]
-    xs_tri = []
-    ys_tri = []
-    zs_tri = []
+    xs_list: list[float] = []
+    ys_list: list[float] = []
+    zs_list: list[float] = []
     for i in range(4):
         j = (i + 1) % 4
-        xs_tri.extend([ax, cx[i], cx[j]])
-        ys_tri.extend([ay, cy[i], cy[j]])
-        zs_tri.extend([az, cz[i], cz[j]])
+        xs_list.extend([ax, cx[i], cx[j]])
+        ys_list.extend([ay, cy[i], cy[j]])
+        zs_list.extend([az, cz[i], cz[j]])
     # Bottom face: two triangles
-    xs_tri.extend([cx[0], cx[1], cx[2], cx[0], cx[2], cx[3]])
-    ys_tri.extend([cy[0], cy[1], cy[2], cy[0], cy[2], cy[3]])
-    zs_tri.extend([cz[0], cz[1], cz[2], cz[0], cz[2], cz[3]])
+    xs_list.extend([cx[0], cx[1], cx[2], cx[0], cx[2], cx[3]])
+    ys_list.extend([cy[0], cy[1], cy[2], cy[0], cy[2], cy[3]])
+    zs_list.extend([cz[0], cz[1], cz[2], cz[0], cz[2], cz[3]])
 
-    xs_tri = np.array(xs_tri, dtype=np.float64)
-    ys_tri = np.array(ys_tri, dtype=np.float64)
-    zs_tri = np.array(zs_tri, dtype=np.float64)
+    xs_tri = np.array(xs_list, dtype=np.float64)
+    ys_tri = np.array(ys_list, dtype=np.float64)
+    zs_tri = np.array(zs_list, dtype=np.float64)
     # Hot colormap sampled by z: bottom (z=0) is cold, apex (z=1) is hot
     colors_tri = np.array([
         imgui.color_convert_float4_to_u32(implot3d.sample_colormap(0.5 * z, implot3d.Colormap_.hot))

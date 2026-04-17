@@ -71,7 +71,8 @@ async def _pyfetch_bytes(url: str) -> bytes:
     resp = await pyodide.http.pyfetch(url)
     if resp.status != 200:
         raise RuntimeError(f"HTTP {resp.status} for {url}")
-    return await resp.bytes()
+    result: bytes = await resp.bytes()
+    return result
 
 
 async def _download_one(fname: str, target_dir: str) -> None:
