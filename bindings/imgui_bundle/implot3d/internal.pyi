@@ -25,7 +25,7 @@ from imgui_bundle.implot3d import (
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024-2026 Breno Cunha Queiroz
 
-# ImPlot3D v0.4 WIP
+# ImPlot3D v0.4
 
 # Acknowledgments:
 #  ImPlot3D is heavily inspired by ImPlot
@@ -616,6 +616,13 @@ class Axis:
     hovered: bool
     # bool Held;    /* original C++ signature */
     held: bool
+    # Cached colors
+    # ImU32 ColorBg;    /* original C++ signature */
+    color_bg: ImU32
+    # ImU32 ColorHov;    /* original C++ signature */
+    color_hov: ImU32
+    # ImU32 ColorAct;    /* original C++ signature */
+    color_act: ImU32
 
     # ImPlot3DAxis() {    /* original C++ signature */
     #         PreviousFlags = Flags = ImPlot3DAxisFlags_None;
@@ -642,6 +649,8 @@ class Axis:
     #         // User input
     #         Hovered = false;
     #         Held = false;
+    #         // Cached colors
+    #         ColorBg = ColorHov = ColorAct = IM_COL32_BLACK_TRANS;
     #     }
     def __init__(self) -> None:
         """ Constructor"""

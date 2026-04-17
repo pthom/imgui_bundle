@@ -328,6 +328,9 @@ void py_init_module_implot3d_internal(nb::module_& m)
         .def_rw("constraint_zoom", &ImPlot3DAxis::ConstraintZoom, "")
         .def_rw("hovered", &ImPlot3DAxis::Hovered, "")
         .def_rw("held", &ImPlot3DAxis::Held, "")
+        .def_rw("color_bg", &ImPlot3DAxis::ColorBg, "")
+        .def_rw("color_hov", &ImPlot3DAxis::ColorHov, "")
+        .def_rw("color_act", &ImPlot3DAxis::ColorAct, "")
         .def(nb::init<>(),
             "Constructor")
         .def("reset",

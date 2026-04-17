@@ -13,7 +13,14 @@ CPP_HEADERS_DIR = THIS_DIR + "/../implot"
 
 
 def _add_implot_spec_array_bindings(options: litgen.LitgenOptions) -> None:
-    """Add custom bindings for ImPlotSpec pointer-array fields so they accept numpy arrays."""
+    """Add custom bindings for ImPlotSpec pointer-array fields so they accept numpy arrays.
+    This function is copied into _add_implot3d_spec_array_bindings for ImPlot3D / generate_implot3d.py
+    (both libs use the same Spec API)
+    """
+
+    # Exclude pointer-array fields from auto-generation;
+    # custom bindings below accept numpy arrays instead of raw pointers.
+    options.member_exclude_by_name__regex += "|^LineColors$|^FillColors$|^MarkerLineColors$|^MarkerFillColors$|^MarkerSizes$"
 
     # Build pydef and stub code for all 5 array fields
     color_fields = [
@@ -72,10 +79,6 @@ def autogenerate_implot():
 
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
-
-    # Exclude ImPlotSpec pointer-array fields from auto-generation;
-    # custom bindings below accept numpy arrays instead of raw pointers.
-    options.member_exclude_by_name__regex += "|^LineColors$|^FillColors$|^MarkerLineColors$|^MarkerFillColors$|^MarkerSizes$"
 
     # Custom bindings for ImPlotSpec array fields: accept typed numpy arrays
     _add_implot_spec_array_bindings(options)

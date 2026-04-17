@@ -355,6 +355,12 @@ def demo_surface_plots():
     static.t += imgui.get_io().delta_time
     static.zs[:] = np.sin(2 * static.t + np.sqrt(static.xs ** 2 + static.ys ** 2))
 
+    # Custom per-point color: R=x, G=y, B=z (each remapped from [-1,1] to [0,1])
+    custom_colors = np.array([
+        IM_COL32(int((x + 1) * 0.5 * 255), int((y + 1) * 0.5 * 255), int((z + 1) * 0.5 * 255), 255)
+        for x, y, z in zip(static.xs, static.ys, static.zs)
+    ], dtype=np.uint32)
+
     # UI: Choose fill color
     imgui.text("Fill color")
     imgui.indent()
@@ -373,9 +379,18 @@ def demo_surface_plots():
         imgui.same_line()
         _, static.sel_colormap = imgui.combo("##SurfaceColormap", static.sel_colormap, static.colormaps)
 
+    # Custom per-point colors
+    if imgui.radio_button("Custom Per-Point", static.selected_fill == 2):
+        static.selected_fill = 2
+    if static.selected_fill == 2:
+        imgui.same_line()
+        imgui.text_disabled("R=x, G=y, B=z")
+
     imgui.unindent()
 
-    # UI: Custom range selection
+    # UI: Custom range selection (only applies to Colormap mode)
+    if static.selected_fill != 1:
+        imgui.begin_disabled()
     _, static.custom_range = imgui.checkbox("Custom range", static.custom_range)
     imgui.indent()
     if not static.custom_range:
@@ -387,6 +402,8 @@ def demo_surface_plots():
     if not static.custom_range:
         imgui.end_disabled()
     imgui.unindent()
+    if static.selected_fill != 1:
+        imgui.end_disabled()
 
     # Begin plot
     if static.selected_fill == 1:
@@ -400,6 +417,8 @@ def demo_surface_plots():
 
         if static.selected_fill == 0:
             spec.fill_color = ImVec4(*static.solid_color)
+        elif static.selected_fill == 2:
+            spec.fill_colors = custom_colors
 
         # Plot the surface
         if static.custom_range:
@@ -916,6 +935,208 @@ def demo_nan_values():
         implot3d.end_plot()
 
 
+def demo_per_index_colors():
+    IMGUI_DEMO_MARKER("Plots/Per-Index Colors")
+    static = demo_per_index_colors
+
+    if not hasattr(static, "initialized"):
+        static.initialized = True
+
+    # Colorful Lines
+    t = imgui.get_time()
+    xs1 = np.linspace(0, 1, 1001, dtype=np.float64)
+    ys1 = 0.5 + 0.5 * np.sin(50 * (xs1 + t / 10))
+    zs1 = 0.5 + 0.5 * np.cos(50 * (xs1 + t / 10))
+    hues1 = np.linspace(0, 1, 1001, dtype=np.float32)
+    colors1 = np.array([
+        imgui.color_convert_float4_to_u32(ImVec4(*imgui.color_convert_hsv_to_rgb(h, 0.8, 0.9), 1.0))
+        for h in hues1
+    ], dtype=np.uint32)
+
+    xs2 = np.linspace(0, 1, 20, dtype=np.float64)
+    ys2 = xs2 * xs2
+    zs2 = xs2 * ys2
+    colors2 = np.array([
+        imgui.color_convert_float4_to_u32(implot3d.sample_colormap(t_val, implot3d.Colormap_.viridis))
+        for t_val in np.linspace(0, 1, 20)
+    ], dtype=np.uint32)
+
+    if implot3d.begin_plot("Colorful Lines"):
+        spec1 = implot3d.Spec()
+        spec1.line_colors = colors1
+        implot3d.plot_line("f(x)", xs1, ys1, zs1, spec=spec1)
+
+        spec2 = implot3d.Spec(marker=implot3d.Marker_.circle, flags=implot3d.LineFlags_.segments)
+        spec2.line_colors = colors2
+        spec2.marker_fill_colors = colors2
+        spec2.marker_line_colors = colors2
+        implot3d.plot_line("g(x)", xs2, ys2, zs2, spec=spec2)
+        implot3d.end_plot()
+
+    # Colorful Scatter
+    rng = np.random.RandomState(0)
+    xs_scatter1 = np.linspace(0, 1, 100, dtype=np.float64)
+    ys_scatter1 = xs_scatter1 + 0.1 * rng.rand(100)
+    zs_scatter1 = xs_scatter1 + 0.1 * rng.rand(100)
+    hues_scatter1 = np.linspace(0, 1, 100, dtype=np.float32)
+    colors_scatter1_fill = np.array([
+        imgui.color_convert_float4_to_u32(ImVec4(*imgui.color_convert_hsv_to_rgb(h, 0.8, 0.9), 1.0))
+        for h in hues_scatter1
+    ], dtype=np.uint32)
+    colors_scatter1_line = np.array([
+        imgui.color_convert_float4_to_u32(ImVec4(*imgui.color_convert_hsv_to_rgb(h, 0.9, 0.7), 1.0))
+        for h in hues_scatter1
+    ], dtype=np.uint32)
+    sizes_scatter1 = (2.0 + 4.0 * rng.rand(100)).astype(np.float32)
+
+    xs_scatter2 = (0.25 + 0.2 * rng.rand(50)).astype(np.float64)
+    ys_scatter2 = (0.50 + 0.2 * rng.rand(50)).astype(np.float64)
+    zs_scatter2 = (0.75 + 0.2 * rng.rand(50)).astype(np.float64)
+    colors_scatter2 = np.array([
+        imgui.color_convert_float4_to_u32(implot3d.sample_colormap(t_val, implot3d.Colormap_.viridis))
+        for t_val in np.linspace(0, 1, 50)
+    ], dtype=np.uint32)
+    sizes_scatter2 = (2.0 + 4.0 * rng.rand(50)).astype(np.float32)
+
+    if implot3d.begin_plot("Colorful Scatter"):
+        spec_s1 = implot3d.Spec()
+        spec_s1.marker_fill_colors = colors_scatter1_fill
+        spec_s1.marker_line_colors = colors_scatter1_line
+        spec_s1.marker_sizes = sizes_scatter1
+        implot3d.plot_scatter("Data 1", xs_scatter1, ys_scatter1, zs_scatter1, spec=spec_s1)
+
+        spec_s2 = implot3d.Spec(marker=implot3d.Marker_.square, fill_alpha=0.5)
+        spec_s2.marker_fill_colors = colors_scatter2
+        spec_s2.marker_line_colors = colors_scatter2
+        spec_s2.marker_sizes = sizes_scatter2
+        implot3d.plot_scatter("Data 2", xs_scatter2, ys_scatter2, zs_scatter2, spec=spec_s2)
+        implot3d.end_plot()
+
+    # Colorful Triangles (pyramid with per-vertex fill colors)
+    # Apex
+    ax, ay, az = 0.0, 0.0, 1.0
+    # Square base corners
+    cx = [-0.5, 0.5, 0.5, -0.5]
+    cy = [-0.5, -0.5, 0.5, 0.5]
+    cz = [0.0, 0.0, 0.0, 0.0]
+    xs_tri = []
+    ys_tri = []
+    zs_tri = []
+    for i in range(4):
+        j = (i + 1) % 4
+        xs_tri.extend([ax, cx[i], cx[j]])
+        ys_tri.extend([ay, cy[i], cy[j]])
+        zs_tri.extend([az, cz[i], cz[j]])
+    # Bottom face: two triangles
+    xs_tri.extend([cx[0], cx[1], cx[2], cx[0], cx[2], cx[3]])
+    ys_tri.extend([cy[0], cy[1], cy[2], cy[0], cy[2], cy[3]])
+    zs_tri.extend([cz[0], cz[1], cz[2], cz[0], cz[2], cz[3]])
+
+    xs_tri = np.array(xs_tri, dtype=np.float64)
+    ys_tri = np.array(ys_tri, dtype=np.float64)
+    zs_tri = np.array(zs_tri, dtype=np.float64)
+    # Hot colormap sampled by z: bottom (z=0) is cold, apex (z=1) is hot
+    colors_tri = np.array([
+        imgui.color_convert_float4_to_u32(implot3d.sample_colormap(0.5 * z, implot3d.Colormap_.hot))
+        for z in zs_tri
+    ], dtype=np.uint32)
+
+    if implot3d.begin_plot("Colorful Triangles"):
+        implot3d.setup_axes_limits(-1, 1, -1, 1, -0.5, 1.5)
+        spec_tri = implot3d.Spec(fill_alpha=0.8)
+        spec_tri.fill_colors = colors_tri
+        implot3d.plot_triangle("Pyramid", xs_tri, ys_tri, zs_tri, spec=spec_tri)
+        implot3d.end_plot()
+
+    # Colorful Quads (cube [0,1]^3 with per-vertex RGB colors: R=x, G=y, B=z)
+    # 6 faces, 4 vertices each = 24 vertices
+    faces = [
+        # +X face
+        [(1,0,0), (1,1,0), (1,1,1), (1,0,1)],
+        # -X face
+        [(0,0,0), (0,1,0), (0,1,1), (0,0,1)],
+        # +Y face
+        [(0,1,0), (1,1,0), (1,1,1), (0,1,1)],
+        # -Y face
+        [(0,0,0), (1,0,0), (1,0,1), (0,0,1)],
+        # +Z face
+        [(0,0,1), (1,0,1), (1,1,1), (0,1,1)],
+        # -Z face
+        [(0,0,0), (1,0,0), (1,1,0), (0,1,0)],
+    ]
+    xs_quad = np.array([v[0] for f in faces for v in f], dtype=np.float64)
+    ys_quad = np.array([v[1] for f in faces for v in f], dtype=np.float64)
+    zs_quad = np.array([v[2] for f in faces for v in f], dtype=np.float64)
+    colors_quad = np.array([
+        IM_COL32(int(x * 255), int(y * 255), int(z * 255), 255)
+        for x, y, z in zip(xs_quad, ys_quad, zs_quad)
+    ], dtype=np.uint32)
+
+    if implot3d.begin_plot("Colorful Quads"):
+        implot3d.setup_axes_limits(-0.5, 1.5, -0.5, 1.5, -0.5, 1.5)
+        spec_quad = implot3d.Spec(fill_alpha=0.8)
+        spec_quad.fill_colors = colors_quad
+        implot3d.plot_quad("Cube", xs_quad, ys_quad, zs_quad, spec=spec_quad)
+        implot3d.end_plot()
+
+    # Gouraud-shaded Duck (yellow duck lit by a point light with ambient)
+    if not hasattr(static, "duck_fill_colors"):
+        duck_mesh = make_duck_mesh()
+        vtx_count = len(duck_mesh.points)
+        idx_count = len(duck_mesh.idx)
+
+        # Extract vertex positions as numpy arrays
+        vtx_x = np.array([p.x for p in duck_mesh.points], dtype=np.float64)
+        vtx_y = np.array([p.y for p in duck_mesh.points], dtype=np.float64)
+        vtx_z = np.array([p.z for p in duck_mesh.points], dtype=np.float64)
+        idxs = np.array(duck_mesh.idx, dtype=np.uint32)
+
+        # Accumulate area-weighted face normals into each vertex
+        vtx_normals = np.zeros((vtx_count, 3), dtype=np.float64)
+        for i in range(0, idx_count, 3):
+            i0, i1, i2 = idxs[i], idxs[i + 1], idxs[i + 2]
+            p0 = np.array([vtx_x[i0], vtx_y[i0], vtx_z[i0]])
+            p1 = np.array([vtx_x[i1], vtx_y[i1], vtx_z[i1]])
+            p2 = np.array([vtx_x[i2], vtx_y[i2], vtx_z[i2]])
+            fn = np.cross(p1 - p0, p2 - p0)  # area-weighted face normal
+            vtx_normals[i0] += fn
+            vtx_normals[i1] += fn
+            vtx_normals[i2] += fn
+
+        # Normalize
+        lengths = np.linalg.norm(vtx_normals, axis=1, keepdims=True)
+        lengths = np.maximum(lengths, 1e-8)
+        vtx_normals /= lengths
+
+        # Lighting: yellow duck, warm point light, soft ambient
+        light_pos = np.array([2.0, 2.0, 3.0])
+        duck_col = np.array([1.0, 0.85, 0.1])
+        light_col = np.array([1.0, 0.95, 0.8])
+        ambient = np.array([0.15, 0.12, 0.03])
+
+        vtx_colors = np.zeros(vtx_count, dtype=np.uint32)
+        for v in range(vtx_count):
+            pos = np.array([vtx_x[v], vtx_y[v], vtx_z[v]])
+            to_light = light_pos - pos
+            to_light /= max(np.linalg.norm(to_light), 1e-8)
+            diff = max(0.0, np.dot(vtx_normals[v], to_light))
+            r = min(1.0, ambient[0] + duck_col[0] * light_col[0] * diff)
+            g = min(1.0, ambient[1] + duck_col[1] * light_col[1] * diff)
+            b = min(1.0, ambient[2] + duck_col[2] * light_col[2] * diff)
+            vtx_colors[v] = IM_COL32(int(r * 255), int(g * 255), int(b * 255), 255)
+
+        # Map per-vertex colors to index-buffer slots for Gouraud interpolation
+        static.duck_fill_colors = vtx_colors[idxs]
+        static.duck_mesh = duck_mesh
+
+    if implot3d.begin_plot("Gouraud Duck"):
+        implot3d.setup_axes_limits(-1, 1, -1, 1, -1, 1)
+        spec_duck = implot3d.Spec(flags=implot3d.MeshFlags_.no_lines)
+        spec_duck.fill_colors = static.duck_fill_colors
+        implot3d.plot_mesh("Duck", static.duck_mesh, spec=spec_duck)
+        implot3d.end_plot()
+
+
 #-----------------------------------------------------------------------------
 # [SECTION] Axes
 #-----------------------------------------------------------------------------
@@ -1376,7 +1597,7 @@ def demo_custom_per_point_style():
     static = demo_custom_per_point_style
 
     imgui.bullet_text("Demonstrates per-point coloring using colormap sampling.")
-    imgui.bullet_text("Each point calls SetNextMarkerStyle with a sampled color.")
+    imgui.bullet_text("Uses per-index color arrays for efficient batch rendering.")
     imgui.bullet_text("All points share the same label for a single legend entry.")
 
     if not hasattr(static, "marker_size"):
@@ -1410,14 +1631,28 @@ def demo_custom_per_point_style():
                     z = r * np.sin(v) + z_offset
 
                     if torus == 0:
-                        t = (z - (z_offset - r)) / (2.0 * r)
+                        t_val = (z - (z_offset - r)) / (2.0 * r)
                     elif torus == 1:
-                        t = (np.cos(v) + 1.0) / 2.0
+                        t_val = (np.cos(v) + 1.0) / 2.0
                     else:
-                        t = (np.cos(u) + 1.0) / 2.0
+                        t_val = (np.cos(u) + 1.0) / 2.0
 
-                    static.torus_data[torus, idx] = [x, y, z, t]
+                    static.torus_data[torus, idx] = [x, y, z, t_val]
                     idx += 1
+
+    # Precompute per-point colors and flat XYZ arrays for each torus
+    xs = np.zeros((3, 400), dtype=np.float32)
+    ys = np.zeros((3, 400), dtype=np.float32)
+    zs = np.zeros((3, 400), dtype=np.float32)
+    point_colors = np.zeros((3, 400), dtype=np.uint32)
+    for torus in range(3):
+        xs[torus] = static.torus_data[torus, :, 0]
+        ys[torus] = static.torus_data[torus, :, 1]
+        zs[torus] = static.torus_data[torus, :, 2]
+        point_colors[torus] = np.array([
+            imgui.color_convert_float4_to_u32(implot3d.sample_colormap(float(static.torus_data[torus, i, 3]), static.cmap))
+            for i in range(400)
+        ], dtype=np.uint32)
 
     if implot3d.begin_plot("##PerPointStyle", size=(-1, 0)):
         implot3d.setup_axes("X", "Y", "Z")
@@ -1431,21 +1666,13 @@ def demo_custom_per_point_style():
         ]
 
         for torus in range(3):
-            point_count = 400
-            for i in range(point_count):
-                x = float(static.torus_data[torus, i, 0])
-                y = float(static.torus_data[torus, i, 1])
-                z = float(static.torus_data[torus, i, 2])
-                t = float(static.torus_data[torus, i, 3])
-
-                color = implot3d.sample_colormap(t, static.cmap)
-                spec = implot3d.Spec(marker=implot3d.Marker_.circle, marker_size=static.marker_size, marker_fill_color=color)
-                implot3d.plot_scatter(labels[torus],
-                                      np.array([x], dtype=np.float32),
-                                      np.array([y], dtype=np.float32),
-                                      np.array([z], dtype=np.float32), spec=spec)
+            spec = implot3d.Spec(marker=implot3d.Marker_.circle, marker_size=static.marker_size)
+            spec.marker_fill_colors = point_colors[torus]
+            spec.marker_line_colors = point_colors[torus]
+            implot3d.plot_scatter(labels[torus], xs[torus], ys[torus], zs[torus], spec=spec)
             # Override legend color with PlotDummy
-            implot3d.plot_dummy(labels[torus], spec=implot3d.Spec(line_color=legend_colors[torus]))
+            implot3d.plot_dummy(labels[torus], spec=implot3d.Spec(
+                marker_fill_color=legend_colors[torus], marker_line_color=legend_colors[torus]))
 
         implot3d.end_plot()
 
@@ -1590,6 +1817,7 @@ def show_all_demos():
             demo_header("Legend Options", demo_legend_options)
             demo_header("Markers and Text", demo_markers_and_text)
             demo_header("NaN Values", demo_nan_values)
+            demo_header("Per-Index Colors", demo_per_index_colors)
             imgui.end_tab_item()
 
         if imgui.begin_tab_item_simple("Axes"):

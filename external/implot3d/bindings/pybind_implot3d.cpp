@@ -57,13 +57,18 @@ void py_init_module_implot3d(nb::module_& m)
     auto pyEnumProp_ =
         nb::enum_<ImPlot3DProp_>(m, "Prop_", nb::is_arithmetic(), nb::is_flag(), "Plotting properties. These provide syntactic sugar for creating ImPlot3DSpec from (ImPlot3DProp,value) pairs")
             .value("line_color", ImPlot3DProp_LineColor, "Line color; IMPLOT3D_AUTO_COL will use next Colormap color")
+            .value("line_colors", ImPlot3DProp_LineColors, "Array of line colors (ImU32*); if None, use LineColor for all")
             .value("line_weight", ImPlot3DProp_LineWeight, "Line weight in pixels")
             .value("fill_color", ImPlot3DProp_FillColor, "Fill color (applies to shaded regions); IMPLOT3D_AUTO_COL will use next Colormap color")
-            .value("fill_alpha", ImPlot3DProp_FillAlpha, "Alpha multiplier (applies to FillColor and MarkerFillColor)")
+            .value("fill_colors", ImPlot3DProp_FillColors, "Array of fill colors (ImU32*); if None, use FillColor for all")
+            .value("fill_alpha", ImPlot3DProp_FillAlpha, "Alpha multiplier (applies to FillColor, FillColors, MarkerFillColor, and MarkerFillColors)")
             .value("marker", ImPlot3DProp_Marker, "Marker type")
             .value("marker_size", ImPlot3DProp_MarkerSize, "Size of markers (radius) *in pixels*")
+            .value("marker_sizes", ImPlot3DProp_MarkerSizes, "Array of marker sizes (float*); if None, use MarkerSize for all")
             .value("marker_line_color", ImPlot3DProp_MarkerLineColor, "Marker outline color; IMPLOT3D_AUTO_COL will use next LineColor")
+            .value("marker_line_colors", ImPlot3DProp_MarkerLineColors, "Array of marker outline colors (ImU32*); if None, use MarkerLineColor for all")
             .value("marker_fill_color", ImPlot3DProp_MarkerFillColor, "Marker fill color; IMPLOT3D_AUTO_COL will use LineColor")
+            .value("marker_fill_colors", ImPlot3DProp_MarkerFillColors, "Array of marker fill colors (ImU32*); if None, use MarkerFillColor for all")
             .value("offset", ImPlot3DProp_Offset, "Data index offset")
             .value("stride", ImPlot3DProp_Stride, "Data stride in bytes; IMPLOT3D_AUTO will result in sizeof(T) where T is the type passed to PlotX")
             .value("flags", ImPlot3DProp_Flags, "Optional item flags; can be composed from common ImPlot3DItemFlags and/or specialized ImPlot3DXFlags");
@@ -105,6 +110,9 @@ void py_init_module_implot3d(nb::module_& m)
             .value("axis_text", ImPlot3DCol_AxisText, "Axis label and tick lables color")
             .value("axis_grid", ImPlot3DCol_AxisGrid, "Axis grid color")
             .value("axis_tick", ImPlot3DCol_AxisTick, "Axis tick color (defaults to AxisGrid)")
+            .value("axis_bg", ImPlot3DCol_AxisBg, "Background color of axis hover region (defaults to transparent)")
+            .value("axis_bg_hovered", ImPlot3DCol_AxisBgHovered, "Axis hover color (defaults to ImGuiCol_ButtonHovered)")
+            .value("axis_bg_active", ImPlot3DCol_AxisBgActive, "Axis active color (defaults to ImGuiCol_ButtonActive)")
             .value("count", ImPlot3DCol_COUNT, "");
 
 
@@ -337,7 +345,7 @@ void py_init_module_implot3d(nb::module_& m)
         .def_rw("line_color", &ImPlot3DSpec::LineColor, "Line color; IMPLOT3D_AUTO_COL will use next Colormap color")
         .def_rw("line_weight", &ImPlot3DSpec::LineWeight, "Line weight in pixels")
         .def_rw("fill_color", &ImPlot3DSpec::FillColor, "Fill color (applies to shaded regions); IMPLOT3D_AUTO_COL will use next Colormap color")
-        .def_rw("fill_alpha", &ImPlot3DSpec::FillAlpha, "Alpha multiplier (applies to FillColor and MarkerFillColor)")
+        .def_rw("fill_alpha", &ImPlot3DSpec::FillAlpha, "Alpha multiplier (applies to FillColor, FillColors, MarkerFillColor, and MarkerFillColors)")
         .def_rw("marker", &ImPlot3DSpec::Marker, "Marker type")
         .def_rw("marker_size", &ImPlot3DSpec::MarkerSize, "Size of markers (radius) *in pixels*")
         .def_rw("marker_line_color", &ImPlot3DSpec::MarkerLineColor, "Marker outline color; IMPLOT3D_AUTO_COL will use LineColor")
@@ -346,6 +354,53 @@ void py_init_module_implot3d(nb::module_& m)
         .def_rw("stride", &ImPlot3DSpec::Stride, "Data stride in bytes; IMPLOT3D_AUTO will result in sizeof(T) where T is the type passed to PlotX")
         .def_rw("flags", &ImPlot3DSpec::Flags, "Optional item flags; can be composed from common ImPlot3DItemFlags and/or specialized ImPlot3DXFlags")
         ;
+
+    pyClassImPlot3DSpec.def_prop_rw("line_colors",
+        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.LineColors); },
+        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<uint32_t>())
+                throw nb::type_error("line_colors requires a np.uint32 array");
+            self.LineColors = (ImU32*)arr.data();
+        },
+        "array of colors (np.uint32) for each line. Must have the same length as the data arrays. If None, use LineColor for all lines.");
+
+    pyClassImPlot3DSpec.def_prop_rw("fill_colors",
+        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.FillColors); },
+        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<uint32_t>())
+                throw nb::type_error("fill_colors requires a np.uint32 array");
+            self.FillColors = (ImU32*)arr.data();
+        },
+        "array of colors (np.uint32) for each fill. Must have the same length as the data arrays. If None, use FillColor for all fills.");
+
+    pyClassImPlot3DSpec.def_prop_rw("marker_line_colors",
+        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.MarkerLineColors); },
+        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<uint32_t>())
+                throw nb::type_error("marker_line_colors requires a np.uint32 array");
+            self.MarkerLineColors = (ImU32*)arr.data();
+        },
+        "array of colors (np.uint32) for each marker edge. Must have the same length as the data arrays. If None, use MarkerLineColor for all markers.");
+
+    pyClassImPlot3DSpec.def_prop_rw("marker_fill_colors",
+        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.MarkerFillColors); },
+        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<uint32_t>())
+                throw nb::type_error("marker_fill_colors requires a np.uint32 array");
+            self.MarkerFillColors = (ImU32*)arr.data();
+        },
+        "array of colors (np.uint32) for each marker face. Must have the same length as the data arrays. If None, use MarkerFillColor for all markers.");
+
+    pyClassImPlot3DSpec.def_prop_rw("marker_sizes",
+        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.MarkerSizes); },
+        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+            if (arr.dtype() != nb::dtype<float>())
+                throw nb::type_error("marker_sizes requires a np.float32 array");
+            self.MarkerSizes = (float*)arr.data();
+        },
+        "array of sizes (np.float32) for each marker. Must have the same length as the data arrays. If None, use MarkerSize for all markers.");
+
+
 
 
     m.def("create_context",
