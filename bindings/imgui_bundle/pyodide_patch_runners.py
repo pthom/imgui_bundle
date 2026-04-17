@@ -295,7 +295,7 @@ def pyodide_do_patch_runners():
         if with_markdown_options is not None:
             kwargs["with_markdown_options"] = with_markdown_options
         _MANUAL_RENDER_JS.run_immapp(gui_function, **kwargs)
-    immapp.run_with_markdown = _run_with_markdown_pyodide
+    immapp.run_with_markdown = _run_with_markdown_pyodide  # type: ignore[assignment]
 
     # Add async versions for waiting until GUI exits
     immapp.run_async = _MANUAL_RENDER_JS.run_immapp_async

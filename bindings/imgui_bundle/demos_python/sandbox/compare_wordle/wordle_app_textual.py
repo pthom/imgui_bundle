@@ -1,5 +1,5 @@
 """Wordle game - GUI with Textual (terminal UI)"""
-import wordle
+import wordle  # type: ignore
 from textual.app import App, ComposeResult
 from textual.widgets import Button, Label, Static
 from textual.containers import Horizontal, Vertical, Center
@@ -13,7 +13,7 @@ CSS_COLORS = {
 }
 
 
-class WordleApp(App):
+class WordleApp(App[None]):
     CSS = """
     Screen { align: center middle; background: #1a1a2e; }
     #grid { width: auto; height: auto; }

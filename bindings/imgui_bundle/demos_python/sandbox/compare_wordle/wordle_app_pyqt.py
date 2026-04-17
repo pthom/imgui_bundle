@@ -1,6 +1,6 @@
 """Wordle game - GUI with PyQt6"""
 import sys
-import wordle
+import wordle  # type: ignore
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QGridLayout, QHBoxLayout, QVBoxLayout,
     QPushButton, QLabel, QSizePolicy,
@@ -98,7 +98,9 @@ class WordleWindow(QWidget):
 
         self.refresh_ui()
 
-    def keyPressEvent(self, event: QKeyEvent):
+    def keyPressEvent(self, event: QKeyEvent | None):
+        if event is None:
+            return
         key = event.text()
         if event.key() == Qt.Key.Key_Backspace:
             self.on_delete()

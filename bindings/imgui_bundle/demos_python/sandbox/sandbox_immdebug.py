@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import sys
-from immdebug import immdebug
+from immdebug import immdebug  # type: ignore
 
 
 cap = cv2.VideoCapture(1)

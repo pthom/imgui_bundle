@@ -1,5 +1,5 @@
 """Wordle game - GUI with Dear ImGui Bundle"""
-import wordle
+import wordle  # type: ignore
 from imgui_bundle import imgui, immapp, ImVec2, hello_imgui
 
 
@@ -101,5 +101,7 @@ if __name__ == "__main__":
     params = hello_imgui.RunnerParams()
     params.callbacks.show_gui = lambda : gui(game_state)
     params.app_window_params.window_geometry.size = (440, 500)
-    params.callbacks.load_additional_fonts = lambda : hello_imgui.load_font("fonts/Roboto/Roboto-Bold.ttf", 24)
+    def load_bigger_font():
+        hello_imgui.load_font("fonts/Roboto/Roboto-Bold.ttf", 24)
+    params.callbacks.load_additional_fonts = load_bigger_font
     hello_imgui.run(params)

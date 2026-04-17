@@ -45,7 +45,7 @@ def immvision_make_test_suite() -> None:
 
         if HAS_OPENCV:
             import cv2
-            house_bgr = cv2.cvtColor(house, cv2.COLOR_RGB2BGR)
+            house_bgr = cv2.cvtColor(house, cv2.COLOR_RGB2BGR)  # type: ignore[arg-type]
             gray = cv2.cvtColor(house_bgr, cv2.COLOR_BGR2GRAY)
             immvision.inspector_add_image(gray, "house_gray_u8", zoom_key)
 

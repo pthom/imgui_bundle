@@ -1,5 +1,5 @@
 """Wordle game - GUI with NiceGUI"""
-import wordle
+import wordle  # type: ignore
 from nicegui import ui
 
 CSS_COLORS = {
@@ -15,8 +15,8 @@ game_state = wordle.GameState()
 # References to UI elements that need updating
 tile_buttons: list[list[ui.button]] = []
 key_buttons: dict[str, ui.button] = {}
-message_label: ui.label | None = None
-new_game_btn: ui.button | None = None
+message_label: ui.label
+new_game_btn: ui.button
 
 
 def refresh_ui():

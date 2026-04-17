@@ -23,7 +23,7 @@ import numpy as np
 # using MarkdownImageFunction = std::function<std::optional<MarkdownImage>(const std::string&)>;
 # using MarkdownDownloadFunction = std::function<MarkdownDownloadResult(const std::string& url)>;
 
-VoidFunction = Callable[[None], None]
+VoidFunction = Callable[[], None]
 StringFunction = Callable[[str], None]
 HtmlDivFunction = Callable[[str, bool], None]
 MarkdownImageFunction = Callable[[str], MarkdownImage]

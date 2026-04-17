@@ -1,7 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import math
 from dataclasses import dataclass, field
-from typing import Callable, List
+from typing import Any, Callable, List, Optional
 
 try:
     import numpy as np
@@ -594,6 +594,7 @@ if HAS_IMMVISION and HAS_OPENCV and HAS_NUMPY:
     _immvision_zoom_center = None
 
     def _immvision_compute_sobel():
+        assert _immvision_image is not None
         gray = cv2.cvtColor(_immvision_image, cv2.COLOR_RGB2GRAY)
         img_float = gray.astype(np.float32) / 255.0
         blurred = cv2.GaussianBlur(img_float, (0, 0), _immvision_blur_size, _immvision_blur_size)
@@ -658,11 +659,14 @@ if HAS_IMMVISION and HAS_OPENCV and HAS_NUMPY:
 
         if not _immvision_inited:
             _immvision_init()
+        assert _immvision_image is not None
+        assert _immvision_image_sobel is not None
 
         if _immvision_animating and _immvision_check_user_interaction():
             _immvision_animating = False
 
         if _immvision_animating:
+            assert _immvision_zoom_center is not None
             zoom = _immvision_current_zoom_ratio()
             _immvision_params.zoom_pan_matrix = immvision.make_zoom_pan_matrix(
                 _immvision_zoom_center, zoom, _immvision_params.image_display_size)
@@ -951,7 +955,7 @@ ImGui::Combo("Fruit", &choice, "Apple\\0Banana\\0Cherry\\0");"""),
 ]
 
 # _gallery_editors[lang_idx][snippet_idx], lang_idx: 0=Python, 1=C++
-_gallery_editors: list = [[], []]
+_gallery_editors: list[list[Any]] = [[], []]
 _gallery_initialized = False
 _gallery_lang = 0  # 0 = Python, 1 = C++
 
@@ -1335,7 +1339,7 @@ out vec4 FragColor;
             GL.glEnable(GL.GL_DEPTH_TEST)
             GL.glBindFramebuffer(GL.GL_FRAMEBUFFER, 0)
 
-    _shader_state: _ShaderState = None  # type: ignore
+    _shader_state: Optional[_ShaderState] = None
     _shader_inited = False
 
     def _shader_lazy_init():
@@ -1562,6 +1566,7 @@ def _intro_top_section():
         if hello_imgui.get_runner_params().use_imgui_test_engine:
             imgui.same_line()
             if imgui.small_button("Show me " + icons_fontawesome_4.ICON_FA_EYE):
+                assert _IntroAutomations.show_immediate_apps is not None
                 imgui.test_engine.queue_test(
                     hello_imgui.get_imgui_test_engine(),
                     _IntroAutomations.show_immediate_apps,
