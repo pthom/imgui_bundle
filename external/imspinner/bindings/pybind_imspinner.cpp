@@ -600,10 +600,46 @@ void py_init_module_imspinner(nb::module_& m)
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_five_dots",
-        ImSpinner::SpinnerFiveDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = 0xffffffff, nb::arg("speed") = 2.8f, nb::arg("lt") = 8);
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+        {
+            auto SpinnerFiveDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return ImColor(0xffffffff);
+                }();
+
+                ImSpinner::SpinnerFiveDots(label, radius, thickness, color_or_default, speed, lt);
+            };
+
+            SpinnerFiveDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        "Python bindings defaults:\n    If color is None, then its default value will be: ImColor(0xffffffff)");
 
     m.def("spinner4_caleidospcope",
-        ImSpinner::Spinner4Caleidospcope, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = 0xffffffff, nb::arg("speed") = 2.8f, nb::arg("lt") = 8);
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+        {
+            auto Spinner4Caleidospcope_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return ImColor(0xffffffff);
+                }();
+
+                ImSpinner::Spinner4Caleidospcope(label, radius, thickness, color_or_default, speed, lt);
+            };
+
+            Spinner4Caleidospcope_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        "Python bindings defaults:\n    If color is None, then its default value will be: ImColor(0xffffffff)");
 
     m.def("spinner_multi_fade_dots",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
@@ -2547,9 +2583,9 @@ void py_init_module_imspinner(nb::module_& m)
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_dna_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = 0)
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = false)
         {
-            auto SpinnerDnaDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = 0)
+            auto SpinnerDnaDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = false)
             {
 
                 const ImColor& color_or_default = [&]() -> const ImColor {
@@ -2564,13 +2600,13 @@ void py_init_module_imspinner(nb::module_& m)
 
             SpinnerDnaDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = false,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner3_smuggle_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = 0)
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = false)
         {
-            auto Spinner3SmuggleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = 0)
+            auto Spinner3SmuggleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = false)
             {
 
                 const ImColor& color_or_default = [&]() -> const ImColor {
@@ -2585,7 +2621,7 @@ void py_init_module_imspinner(nb::module_& m)
 
             Spinner3SmuggleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
         },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 4.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = 0,
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 4.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = false,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_rotate_segments_pulsar",

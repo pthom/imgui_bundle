@@ -852,7 +852,7 @@ namespace ImSpinner
         }
     }
 
-    inline void SpinnerFiveDots(const char *label, float radius, float thickness, const ImColor &color = 0xffffffff, float speed = 2.8f, int lt = 8)
+    inline void SpinnerFiveDots(const char *label, float radius, float thickness, const ImColor &color = ImColor(0xffffffff), float speed = 2.8f, int lt = 8)
     {
         SPINNER_HEADER(pos, size, centre, num_segments);
 
@@ -894,7 +894,7 @@ namespace ImSpinner
         }
     }
 
-    inline void Spinner4Caleidospcope(const char *label, float radius, float thickness, const ImColor &color = 0xffffffff, float speed = 2.8f, int lt = 8)
+    inline void Spinner4Caleidospcope(const char *label, float radius, float thickness, const ImColor &color = ImColor(0xffffffff), float speed = 2.8f, int lt = 8)
     {
         SPINNER_HEADER(pos, size, centre, num_segments);
 
@@ -4105,7 +4105,7 @@ namespace ImSpinner
         window->DrawList->AddCircleFilled(ImVec2(centre.x + ImCos(start * ang_min) * radius, centre.y + ImSin(start * ang_max) * radius), thickness * 4.f, color_alpha(color, 1.f), num_segments);
     }
 
-    inline void SpinnerDnaDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = 0)
+    inline void SpinnerDnaDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = false)
     {
         SPINNER_HEADER(pos, size, centre, num_segments);
 
@@ -4136,7 +4136,7 @@ namespace ImSpinner
         }
     }
 
-    inline void Spinner3SmuggleDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = 0)     {
+    inline void Spinner3SmuggleDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = false)     {
         SPINNER_HEADER(pos, size, centre, num_segments);
 
         const float nextItemKoeff = 2.5f;
