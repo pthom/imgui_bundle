@@ -1839,7 +1839,7 @@ def setup_axis_ticks(
     n_ticks: int,
     labels: List[str] | None = None,
     keep_default: bool = False,
-):
+) -> None:
     pass
 
 # Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
@@ -1850,7 +1850,7 @@ def setup_axis_ticks(
     values: List[float],
     labels: List[str] | None = None,
     keep_default: bool = False,
-):
+) -> None:
     pass
 
 # OBSOLETED in v0.4 (from February 2026)

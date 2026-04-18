@@ -79,7 +79,7 @@ class _BeginEndChild:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -125,7 +125,7 @@ class _BeginEnd:
             self.__class__.__name__, self.expanded, self.opened
         )
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return (self.expanded, self.opened) == (other.expanded, other.opened)
         return (self.expanded, self.opened) == other
@@ -160,7 +160,7 @@ class _BeginEndListBox:
             self.__class__.__name__, self.opened
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.opened is other.opened
         return self.opened is other
@@ -194,7 +194,7 @@ class _BeginEndTooltip:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -228,7 +228,7 @@ class _BeginEndMenuMainBar:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -262,7 +262,7 @@ class _BeginEndMenuBar:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -296,7 +296,7 @@ class _BeginEndMenu:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -330,7 +330,7 @@ class _BeginEndPopup:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -364,7 +364,7 @@ class _BeginEndPopupModal:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -403,7 +403,7 @@ class _BeginEndTable:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -441,7 +441,7 @@ class _BeginEndTabBar:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -475,7 +475,7 @@ class _BeginEndTabItem:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -509,7 +509,7 @@ class _BeginEndDragDropSource:
             self.__class__.__name__, self.is_dragging
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.is_dragging is other.is_dragging
         return self.is_dragging is other
@@ -543,7 +543,7 @@ class _BeginEndDragDropTarget:
             self.__class__.__name__, self.is_receiving
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.is_receiving is other.is_receiving
         return self.is_receiving is other
@@ -647,7 +647,7 @@ class _WithTreeNode:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -680,7 +680,7 @@ class _WithTreeNodeEx:
             self.__class__.__qualname__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other

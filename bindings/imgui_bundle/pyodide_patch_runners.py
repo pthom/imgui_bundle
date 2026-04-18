@@ -3,7 +3,7 @@ It works by monkey patching the `hello_imgui.run` and `immapp.run` functions to 
 that integrates with the browser's requestAnimationFrame API.
 """
 from dataclasses import dataclass
-from typing import Callable
+from typing import Any, Callable
 from imgui_bundle import hello_imgui, immapp
 from enum import Enum
 from pyodide.ffi import create_proxy  # type: ignore
@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger("pyodide_imgui_render")
 logger.setLevel(logging.WARNING)  # Avoid noise in Fiatlight's log window
 
-def _log(msg: str):
+def _log(msg: str) -> None:
     logger.info(msg)
 
 
@@ -82,7 +82,7 @@ class _HelloImGuiOrImmApp(Enum):
     IMMAPP = 2
 
 
-def _wants_latex(args, kwargs) -> bool:
+def _wants_latex(args: Any, kwargs: Any) -> bool:
     """Detect whether the caller asked for LaTeX rendering across the
     three immapp.run() calling conventions.
 
@@ -102,7 +102,7 @@ def _wants_latex(args, kwargs) -> bool:
     return False
 
 
-def _arg_to_render_lifecycle_functions(himgui_or_immapp: _HelloImGuiOrImmApp, *args, **kwargs) -> _RenderLifeCycleFunctions:
+def _arg_to_render_lifecycle_functions(himgui_or_immapp: _HelloImGuiOrImmApp, *args: Any, **kwargs: Any) -> _RenderLifeCycleFunctions:
     """Converts the arguments to the correct render lifecycle functions,
     depending on the type of arguments passed and whether it is a hello_imgui or immapp application."""
     if himgui_or_immapp == _HelloImGuiOrImmApp.HELLO_IMGUI:
@@ -168,7 +168,7 @@ class _ManualRenderJs:
             # Force garbage collection to free resources
             gc.collect()
 
-    def _run(self, himgui_or_immapp: _HelloImGuiOrImmApp, *args, **kwargs):
+    def _run(self, himgui_or_immapp: _HelloImGuiOrImmApp, *args: Any, **kwargs: Any) -> None:
         _log(f"_ManualRenderJs._run() called with {himgui_or_immapp}, args: {args}, kwargs: {kwargs}")
         if self.is_running:
             _log("_ManualRenderJs._run() -> Stopping existing renderer before starting a new one.")
@@ -185,7 +185,7 @@ class _ManualRenderJs:
         self.js_animation_renderer.start()
         _log("_ManualRenderJs._run() -> Animation started (non-blocking)")
 
-    async def _run_async(self, himgui_or_immapp: _HelloImGuiOrImmApp, *args, **kwargs):
+    async def _run_async(self, himgui_or_immapp: _HelloImGuiOrImmApp, *args: Any, **kwargs: Any) -> None:
         """Async version that can be awaited to wait until GUI exits."""
         import asyncio
 

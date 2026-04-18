@@ -2655,7 +2655,7 @@ def setup_axis_ticks(
     n_ticks: int,
     labels: List[str] | None = None,
     keep_default: bool = False,
-):
+) -> None:
     pass
 
 # Sets an axis' ticks and optionally the labels for the next plot. To keep the default ticks, set #keep_default=true.
@@ -2666,7 +2666,7 @@ def setup_axis_ticks(
     values: List[float],
     labels: List[str] | None = None,
     keep_default: bool = False,
-):
+) -> None:
     pass
 
 # Plots a 2D heatmap chart. Values are expected to be in row-major order by default. Leave #scale_min and scale_max both at 0 for automatic color scaling, or set them to a predefined range. #label_fmt can be set to NULL for no labels.
@@ -2680,7 +2680,7 @@ def plot_heatmap(
     bounds_min: Point = Point(0, 0),
     bounds_max: Point = Point(1, 1),
     spec: Spec = Spec(),
-):
+) -> None:
     pass
 
 # ============================================================================

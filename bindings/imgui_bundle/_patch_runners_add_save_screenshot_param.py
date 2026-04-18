@@ -20,7 +20,7 @@ def _save_hello_imgui_screenshot(image_file: str) -> None:
     cv2.imwrite(image_file, thumbnail)
 
 
-def _get_caller_filename(depth: int):
+def _get_caller_filename(depth: int) -> str:
     import inspect
     stack = inspect.stack()
     caller_frame = stack[depth]

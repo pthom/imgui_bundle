@@ -12,7 +12,10 @@ On Pyodide, synchronous XMLHttpRequest is used (no threads available).
 """
 import logging
 from concurrent.futures import Future, ThreadPoolExecutor
-from typing import Any, Dict
+from typing import Any, Dict, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from imgui_bundle import imgui_md
 
 # Enable logging with:
 #    logging.getLogger("imgui_md_image_loader").setLevel(logging.DEBUG)
@@ -45,7 +48,7 @@ def _do_download_desktop(url: str) -> bytes:
         return b""
 
 
-def _download_desktop_async(url: str):
+def _download_desktop_async(url: str) -> "imgui_md.MarkdownDownloadResult":
     """Async download callback for desktop (Option B).
     Returns Downloading on first call, Ready/Failed once done.
     Manages pending downloads internally."""
@@ -120,7 +123,7 @@ def _ensure_pyodide_js():
     _pyodide_js_initialized = True
 
 
-def _download_pyodide_async(url: str):
+def _download_pyodide_async(url: str) -> "imgui_md.MarkdownDownloadResult":
     """Async download using JS fetch() in Pyodide.
     Returns Downloading on first call, Ready/Failed once done."""
     from imgui_bundle import imgui_md

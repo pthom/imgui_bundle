@@ -1,7 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 """Async support for HelloImGui - enables non-blocking GUI execution."""
 import asyncio
-from typing import Optional, Callable, Tuple, overload
+from typing import Any, Optional, Callable, Tuple, overload
 
 from imgui_bundle._imgui_bundle.hello_imgui import (  # type: ignore
     RunnerParams,
@@ -52,7 +52,7 @@ async def run_async(
     ...
 
 
-async def run_async(*args, **kwargs) -> None:
+async def run_async(*args: Any, **kwargs: Any) -> None:
     """Run a HelloImGui application asynchronously in a non-blocking way.
 
     This function provides async/await support for HelloImGui applications.

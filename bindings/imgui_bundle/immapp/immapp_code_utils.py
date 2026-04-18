@@ -77,7 +77,7 @@ def _compact_json(data, indent=4):
     return _compact_dict(data, 1)
 
 
-def show_json_dict(json_dict: dict[str, Any]):
+def show_json_dict(json_dict: dict[str, Any]) -> None:
     from imgui_bundle import imgui_md
     """Render a json dict as a markdown code block"""
     md_string = "```\n" +  _compact_json(json_dict, indent=4) + "\n```"
