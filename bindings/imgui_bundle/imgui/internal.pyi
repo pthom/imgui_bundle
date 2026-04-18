@@ -8,7 +8,7 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: F403, F405, B008
-# mypy: disable-error-code="overload-cannot-match, overload-overlap"
+# mypy: disable-error-code="overload-cannot-match, overload-overlap, call-arg"
 from typing import Any, Tuple, Optional, Callable, overload
 import enum
 import numpy as np

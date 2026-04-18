@@ -8,7 +8,7 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: B008, E741
-# mypy: disable-error-code="overload-overlap"
+# mypy: disable-error-code="overload-overlap, no-redef, overload-cannot-match"
 from __future__ import annotations
 import sys
 from typing import (

@@ -17,6 +17,7 @@ Note: Integrating ImGui TestEngine directly from python, and without using Hello
 """
 
 # ruff: noqa: B008, F821
+# mypy: disable-error-code="assignment, call-arg, name-defined"
 import sys
 from typing import Any, Optional, Tuple, Callable, overload, Union
 import numpy as np
