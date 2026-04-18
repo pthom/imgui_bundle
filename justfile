@@ -242,17 +242,27 @@ pyodide_deploy_imgui_bundle_online:
     echo "Deployed to https://traineq.org/imgui_bundle_online/"
 
 
-
 # ==============================================================
 # Tests
 # ==============================================================
-
-# Run mypy on the bindings
-[group('test')]
-test_mypy:
-    cd bindings && ./mypy_bindings.sh
 
 # Run pytest
 [group('test')]
 test_pytest:
     pytest
+
+
+# ==============================================================
+# mypy
+# ==============================================================
+
+# Run mypy on the bindings
+[group('mypy')]
+mypy:
+    cd bindings && mypy imgui_bundle
+
+# Run mypy on the bindings (exclude errors in the stubs)
+[group('mypy')]
+mypy_no_stubs:
+    cd bindings && mypy imgui_bundle | grep -v "\.pyi"
+
