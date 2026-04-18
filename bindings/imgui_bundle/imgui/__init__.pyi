@@ -8,7 +8,7 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: B008, E741
-# mypy: disable-error-code="overload-overlap, no-redef, overload-cannot-match"
+# mypy: disable-error-code="overload-cannot-match, overload-overlap"
 from __future__ import annotations
 import sys
 from typing import (
@@ -316,7 +316,6 @@ def IM_COL32(r: ImU32, g: ImU32, b: ImU32, a: ImU32) -> ImU32:
 Additional customizations
 """
 TextRange = Any  # internal structure of ImGuiTextFilter, composed of string pointers (cannot be easily adapted)
-StoragePair = Any
 
 PayloadId = int
 
@@ -504,13 +503,6 @@ class ImVec2(Vec2Protocol):
     # constexpr ImVec2(float _x, float _y)    : x(_x), y(_y) { }    /* original C++ signature */
     @overload
     def __init__(self, _x: float, _y: float) -> None:
-        pass
-    # float& operator[] (size_t idx)          { IM_ASSERT(idx == 0 || idx == 1); return ((float*)(void*)(char*)this)[idx]; }     /* original C++ signature */
-    def __getitem__(self, idx: int) -> float:
-        """(private API)
-
-        We very rarely use this [] operator, so the assert overhead is fine.
-        """
         pass
     # #ifdef IMGUI_BUNDLE_PYTHON_API
     #

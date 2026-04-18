@@ -119,15 +119,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def(nb::init<>())
         .def(nb::init<float, float>(),
             nb::arg("_x"), nb::arg("_y"))
-        .def("__getitem__",
-            nb::overload_cast<size_t>(&ImVec2::operator[]),
-            nb::arg("idx"),
-            "(private API)\n\n We very rarely use this [] operator, so the assert overhead is fine.",
-            nb::rv_policy::reference)
-        .def("__getitem__",
-            nb::overload_cast<size_t>(&ImVec2::operator[], nb::const_),
-            nb::arg("idx"),
-            "(private API)")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("to_dict",
