@@ -93,7 +93,7 @@ class FileDialog:
             pass
         path: Path
         read: bool
-        children: List[FileTreeNode]
+        children: List[FileDialog.FileTreeNode]
 
     class FileData:
         def __init__(self, path: Path) -> None:

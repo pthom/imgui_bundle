@@ -1694,10 +1694,10 @@ class MobileCallbacks:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * OnDestroy: empty_void_function()
-                * OnLowMemory: empty_void_function()
-                * OnPause: empty_void_function()
-                * OnResume: empty_void_function()
+                * OnDestroy: EmptyVoidFunction()
+                * OnLowMemory: EmptyVoidFunction()
+                * OnPause: EmptyVoidFunction()
+                * OnResume: EmptyVoidFunction()
         """
         pass
 
@@ -1770,7 +1770,7 @@ class EdgeToolbar:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * ShowToolbar: empty_void_function()
+                * ShowToolbar: EmptyVoidFunction()
                 * options: EdgeToolbarOptions()
         """
         pass
@@ -1894,7 +1894,7 @@ class RunnerCallbacks:
     # If you want to load additional fonts, during the app execution, you can
     # set LoadAdditionalFonts to a function that will load the additional fonts.
     load_additional_fonts: VoidFunction = (
-        imgui_default_settings.load_default_font_with_font_awesome_icons
+        imgui_default_settings.LoadDefaultFont_WithFontAwesomeIcons
     )
     # DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4;    /* original C++ signature */
     # If LoadAdditionalFonts==LoadDefaultFont_WithFontAwesomeIcons, this parameter control
@@ -1905,12 +1905,12 @@ class RunnerCallbacks:
     # `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     #  If needed, change ImGui config via SetupImGuiConfig
     #  (enable docking, gamepad, etc)
-    setup_imgui_config: VoidFunction = imgui_default_settings.setup_default_imgui_config
+    setup_imgui_config: VoidFunction = imgui_default_settings.SetupDefaultImGuiConfig
 
     # VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle;    /* original C++ signature */
     # `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.
     #  If needed, set your own style by providing your own SetupImGuiStyle callback
-    setup_imgui_style: VoidFunction = imgui_default_settings.setup_default_imgui_style
+    setup_imgui_style: VoidFunction = imgui_default_settings.SetupDefaultImGuiStyle
 
     # VoidFunction RegisterTests = EmptyVoidFunction();    /* original C++ signature */
     # `RegisterTests`: A function that is called once ImGuiTestEngine is ready
@@ -2028,26 +2028,26 @@ class RunnerCallbacks:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * ShowGui: empty_void_function()
-                * ShowMenus: empty_void_function()
-                * ShowAppMenuItems: empty_void_function()
-                * ShowStatus: empty_void_function()
-                * PostInit_AddPlatformBackendCallbacks: empty_void_function()
-                * PostInit: empty_void_function()
-                * LoadAdditionalFonts: imgui_default_settings.load_default_font_with_font_awesome_icons
-                * SetupImGuiConfig: imgui_default_settings.setup_default_imgui_config
-                * SetupImGuiStyle: imgui_default_settings.setup_default_imgui_style
-                * RegisterTests: empty_void_function()
-                * BeforeExit: empty_void_function()
-                * BeforeExit_PostCleanup: empty_void_function()
-                * PreNewFrame: empty_void_function()
-                * PostNewFrame: empty_void_function()
-                * BeforeImGuiRender: empty_void_function()
-                * AfterSwap: empty_void_function()
-                * CustomBackground: empty_void_function()
-                * PostRenderDockableWindows: empty_void_function()
-                * ThemeChanged: empty_void_function()
-                * AnyBackendEventCallback: empty_event_callback()
+                * ShowGui: EmptyVoidFunction()
+                * ShowMenus: EmptyVoidFunction()
+                * ShowAppMenuItems: EmptyVoidFunction()
+                * ShowStatus: EmptyVoidFunction()
+                * PostInit_AddPlatformBackendCallbacks: EmptyVoidFunction()
+                * PostInit: EmptyVoidFunction()
+                * LoadAdditionalFonts: imgui_default_settings.LoadDefaultFont_WithFontAwesomeIcons
+                * SetupImGuiConfig: imgui_default_settings.SetupDefaultImGuiConfig
+                * SetupImGuiStyle: imgui_default_settings.SetupDefaultImGuiStyle
+                * RegisterTests: EmptyVoidFunction()
+                * BeforeExit: EmptyVoidFunction()
+                * BeforeExit_PostCleanup: EmptyVoidFunction()
+                * PreNewFrame: EmptyVoidFunction()
+                * PostNewFrame: EmptyVoidFunction()
+                * BeforeImGuiRender: EmptyVoidFunction()
+                * AfterSwap: EmptyVoidFunction()
+                * CustomBackground: EmptyVoidFunction()
+                * PostRenderDockableWindows: EmptyVoidFunction()
+                * ThemeChanged: EmptyVoidFunction()
+                * AnyBackendEventCallback: EmptyEventCallback()
         """
         pass
 
@@ -2380,7 +2380,7 @@ class DockableWindow:
 
 
         Python bindings defaults:
-            If guiFunction_ is None, then its default value will be: empty_void_function()
+            If guiFunction_ is None, then its default value will be: EmptyVoidFunction()
         """
         pass
 
@@ -3336,7 +3336,7 @@ class SimpleRunnerParams:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * guiFunction: empty_void_function()
+                * guiFunction: EmptyVoidFunction()
                 * windowSize: DefaultWindowSize
         """
         pass
