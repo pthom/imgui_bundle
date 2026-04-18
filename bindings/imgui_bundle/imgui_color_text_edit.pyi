@@ -720,7 +720,7 @@ class TextDiff:
         """ specify the text to be compared (using UTF-8 encoded strings)"""
         pass
 
-    def set_language(self, l: Language) -> None:
+    def set_language(self, l: TextEditor.Language) -> None:
         """ specify a new language"""
         pass
 
@@ -765,7 +765,7 @@ class TextDiff:
     def set_line_decorator(
         self,
         param_0: float,
-        param_1: Callable[[Decorator], None]
+        param_1: Callable[[TextEditor.Decorator], None]
         ) -> None:
         pass
     def clear_line_decorator(self) -> None:
