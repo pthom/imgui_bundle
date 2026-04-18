@@ -235,6 +235,7 @@ _PYODIDE_DEPLOY_LOCAL_FOLDER := "./pyodide_projects/projects"
 _PYODIDE_DEPLOY_REMOTE_FOLDER := "/home/pascal/HTML/imgui_bundle_online/projects"
 _PYODIDE_DEPLOY_REMOTE_HOST := "pascal@traineq.org"
 
+# Deploy pyodide playground and minimal template
 [group('pyodide')]
 pyodide_deploy_imgui_bundle_online:
     cd {{_PYODIDE_DEPLOY_LOCAL_FOLDER}}/min_bundle_pyodide_app && cp -f demo_heart.html demo_heart.source.txt
