@@ -8,6 +8,7 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: B008, F821, F811
+# mypy: disable-error-code="overload-cannot-match"
 from typing import Any, Optional, Tuple, List, overload
 import numpy as np
 import enum
@@ -23,7 +24,6 @@ from imgui_bundle.imgui import (
     ImU32,
     DragDropFlags,
     ImDrawList,
-    Cond_,
     ImTextureRef,
     WindowFlags,
 )
@@ -128,11 +128,6 @@ version: str
 #
 VoidPtr = Any
 ImTextureID = VoidPtr
-
-Cond_None = Cond_.none
-Cond_Always = Cond_.always
-Cond_Once = imgui.Cond_.once
-
 Bin_Sturges = Bin_.sturges
 
 Marker_None = Marker_.none

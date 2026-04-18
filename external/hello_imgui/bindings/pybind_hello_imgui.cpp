@@ -258,9 +258,6 @@ void py_init_module_hello_imgui(nb::module_& m)
     m.def("get_assets_search_paths",
         HelloImGui::GetAssetsSearchPaths, "Return the current list of search paths.");
 
-    m.def("asset_file_full_path",
-        HelloImGui::assetFileFullPath, nb::arg("asset_relative_filename"), nb::arg("assert_if_not_found") = true);
-
     m.def("override_assets_folder",
         HelloImGui::overrideAssetsFolder,
         nb::arg("folder"),

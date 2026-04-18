@@ -476,13 +476,6 @@ def get_assets_search_paths() -> List[str]:
 
 # @@md
 
-# inline std::string assetFileFullPath(const std::string& assetRelativeFilename, bool assertIfNotFound = true)    /* original C++ signature */
-#     { return AssetFileFullPath(assetRelativeFilename, assertIfNotFound); }
-def asset_file_full_path(
-    asset_relative_filename: str, assert_if_not_found: bool = True
-) -> str:
-    pass
-
 # void overrideAssetsFolder(const char* folder);     /* original C++ signature */
 def override_assets_folder(folder: str) -> None:
     """synonym of SetAssetsFolder"""

@@ -64,7 +64,7 @@ def main():
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     # setAssetsFolder & SetAssetsFolder offer the same function
-    options.fn_exclude_by_name__regex = r"^setAssetsFolder$|^TranslateCommonGlyphRanges$|^SetLoadAssetFileDataFunction$|^LoadImageDataFromAsset$|^LoadImageDataFromEncodedData$|^ImageAndSizeFromEncodedData$|^CreateTextureGpuFromRgbaData$"
+    options.fn_exclude_by_name__regex = r"^setAssetsFolder$|^TranslateCommonGlyphRanges$|^SetLoadAssetFileDataFunction$|^LoadImageDataFromAsset$|^LoadImageDataFromEncodedData$|^ImageAndSizeFromEncodedData$|^CreateTextureGpuFromRgbaData$|^assetFileFullPath$"
     # TextureGpu is hand-bound below (abstract base + shared_ptr holder).
     options.class_exclude_by_name__regex = r"^ImageData$|^TextureGpu$"
 
