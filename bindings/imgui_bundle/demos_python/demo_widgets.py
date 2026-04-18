@@ -495,4 +495,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))  # type: ignore
+    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))

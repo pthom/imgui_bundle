@@ -1352,7 +1352,7 @@ def show_demo_window_widgets():
         tint_col = imgui.get_style_color_vec4(imgui.Col_.text) if static.use_text_color_for_tint else (1.0, 1.0, 1.0, 1.0)
         border_col = imgui.get_style_color_vec4(imgui.Col_.border)
 
-        imgui.image_with_bg(my_tex_id, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)  # type: ignore
+        imgui.image_with_bg(my_tex_id, ImVec2(my_tex_w, my_tex_h), uv_min, uv_max, tint_col, border_col)
         if imgui.begin_item_tooltip():
             # Define the region for the zoomed tooltip
             region_sz = 32.0
@@ -1362,7 +1362,7 @@ def show_demo_window_widgets():
             imgui.text(f"Max: ({region_x + region_sz:.2f}, {region_y + region_sz:.2f})")
             uv0 = ImVec2((region_x) / my_tex_w, (region_y) / my_tex_h)
             uv1 = ImVec2((region_x + region_sz) / my_tex_w, (region_y + region_sz) / my_tex_h)
-            imgui.image_with_bg(my_tex_id, ImVec2(region_sz * 4.0, region_sz * 4.0), uv0, uv1, tint_col, border_col)  # type: ignore
+            imgui.image_with_bg(my_tex_id, ImVec2(region_sz * 4.0, region_sz * 4.0), uv0, uv1, tint_col, border_col)
             imgui.end_tooltip()
 
         # Textured buttons
@@ -2150,7 +2150,7 @@ def show_demo_window_widgets():
                 static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_shrink)
             changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_scroll)
             if changed:
-                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_scroll)  # type: ignore
+                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_scroll)
 
             if imgui.begin_tab_bar("MyTabBar", static.lead_trail_tab_bar_flags):
                 # Demo a Leading TabItemButton(): click the "?" button to open a menu
@@ -2230,7 +2230,7 @@ def show_demo_window_widgets():
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit (HSV, with Alpha)")
         imgui.text("Color widget HSV with Alpha:")
-        _, static.color = imgui.color_edit4("MyColor##2", static.color, flags=imgui.ColorEditFlags_.display_hsv | misc_flags)  # type: ignore
+        _, static.color = imgui.color_edit4("MyColor##2", static.color, flags=imgui.ColorEditFlags_.display_hsv | misc_flags)
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorEdit (float display)")
         imgui.text("Color widget with Float Display:")
@@ -2304,7 +2304,7 @@ def show_demo_window_widgets():
         imgui.text("Color button only:")
         if not hasattr(static, "no_border"): static.no_border = False
         _, static.no_border = imgui.checkbox("ImGuiColorEditFlags_NoBorder", static.no_border)
-        imgui.color_button("MyColor##3c", static.color, misc_flags | (imgui.ColorEditFlags_.no_border if static.no_border else 0), (80, 80))  # type: ignore
+        imgui.color_button("MyColor##3c", static.color, misc_flags | (imgui.ColorEditFlags_.no_border if static.no_border else 0), (80, 80))
 
         IMGUI_DEMO_MARKER("Widgets/Color/ColorPicker")
         imgui.separator_text("Color picker")
@@ -2377,8 +2377,8 @@ def show_demo_window_widgets():
             "added benefit that you can manipulate hue values with the picker even when saturation or value are zero."
         )
         imgui.text("Color widget with InputHSV:")
-        _, static.color_hsv = imgui.color_edit4("HSV shown as RGB##1", static.color_hsv, imgui.ColorEditFlags_.display_rgb | imgui.ColorEditFlags_.input_hsv | imgui.ColorEditFlags_.float)   # type: ignore
-        _, static.color_hsv = imgui.color_edit4("HSV shown as HSV##1", static.color_hsv, imgui.ColorEditFlags_.display_hsv | imgui.ColorEditFlags_.input_hsv | imgui.ColorEditFlags_.float)   # type: ignore
+        _, static.color_hsv = imgui.color_edit4("HSV shown as RGB##1", static.color_hsv, imgui.ColorEditFlags_.display_rgb | imgui.ColorEditFlags_.input_hsv | imgui.ColorEditFlags_.float)
+        _, static.color_hsv = imgui.color_edit4("HSV shown as HSV##1", static.color_hsv, imgui.ColorEditFlags_.display_hsv | imgui.ColorEditFlags_.input_hsv | imgui.ColorEditFlags_.float)
         # imgui.drag_float4("Raw HSV values", static.color_hsv, 0.01, 0.0, 1.0)
 
         imgui.tree_pop()
@@ -3769,7 +3769,7 @@ def show_demo_window_popups():
             if imgui.selectable(names[n], selected_2 == n):
                 selected_2 = n
             if imgui.begin_popup_context_item():  # <-- use last item id as popup id
-                selected_2 = n   # type: ignore
+                selected_2 = n
                 imgui.text(f"This a popup for \"{names[n]}\"!")
                 if imgui.button("Close"):
                     imgui.close_current_popup()
@@ -4649,7 +4649,7 @@ def show_demo_window_tables():
         _, static.cell_padding = imgui.slider_float2("CellPadding", static.cell_padding, 0.0, 10.0, "%.0f")
         pop_style_compact()
 
-        imgui.push_style_var(imgui.StyleVar_.cell_padding, static.cell_padding)  # type: ignore
+        imgui.push_style_var(imgui.StyleVar_.cell_padding, static.cell_padding)
         if imgui.begin_table("table_padding_2", 3, static.padding_flags2):
             if not hasattr(static, "text_bufs"):
                 static.text_bufs = ["" for _ in range(3 * 5)]  # Mini text storage for 3x5 cells

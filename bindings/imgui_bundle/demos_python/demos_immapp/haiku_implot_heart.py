@@ -32,4 +32,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    immapp.run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)  # type: ignore
+    immapp.run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)

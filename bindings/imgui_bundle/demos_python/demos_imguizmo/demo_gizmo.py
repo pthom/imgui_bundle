@@ -109,7 +109,7 @@ def input_only_first_value_matrix3(
     return changed, matrix3
 
 
-@immapp.static(statics=None)  # type: ignore
+@immapp.static(statics=None)
 def EditTransform(
     cameraView: Matrix16,  # may be modified
     cameraProjection: Matrix16,
@@ -267,8 +267,8 @@ def EditTransform(
         imgui.pop_style_color()
 
 
-def glm_mat4x4_to_float_list(mat: glm.mat4x4) -> List[float]:  # type: ignore
-    return mat[0].to_list() + mat[1].to_list() + mat[2].to_list() + mat[3].to_list() # type: ignore
+def glm_mat4x4_to_float_list(mat: glm.mat4x4) -> List[float]:
+    return mat[0].to_list() + mat[1].to_list() + mat[2].to_list() + mat[3].to_list()
 
 
 # This returns a closure function that will later be invoked to run the app
@@ -347,7 +347,7 @@ def make_closure_demo_guizmo() -> GuiFunction:
             )
             at = glm.vec3(0.0, 0.0, 0.0)
             up = glm.vec3(0.0, 1.0, 0.0)
-            cameraView_glm: glm.mat4x4 = glm.lookAt(eye, at, up)  # type: ignore
+            cameraView_glm: glm.mat4x4 = glm.lookAt(eye, at, up)
             cameraView = Matrix16(glm_mat4x4_to_float_list(cameraView_glm))
             firstFrame = False
 
@@ -361,16 +361,16 @@ def make_closure_demo_guizmo() -> GuiFunction:
             imgui.same_line()
             imgui.text(
                 "Over translate gizmo"
-                if gizmo.is_over(gizmo.OPERATION.translate)  # type: ignore
+                if gizmo.is_over(gizmo.OPERATION.translate)
                 else ""
             )
             imgui.same_line()
             imgui.text(
-                "Over rotate gizmo" if gizmo.is_over(gizmo.OPERATION.rotate) else ""  # type: ignore
+                "Over rotate gizmo" if gizmo.is_over(gizmo.OPERATION.rotate) else ""
             )
             imgui.same_line()
             imgui.text(
-                "Over scale gizmo" if gizmo.is_over(gizmo.OPERATION.scale) else ""  # type: ignore
+                "Over scale gizmo" if gizmo.is_over(gizmo.OPERATION.scale) else ""
             )
 
         imgui.separator()

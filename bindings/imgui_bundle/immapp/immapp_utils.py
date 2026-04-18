@@ -54,7 +54,7 @@ def run_anon_block(function: Callable[[], None]) -> None:
         imgui.end()
 
     """
-    function()  # type: ignore
+    function()
 
 
 # Create type variables for the argument and return types of the function

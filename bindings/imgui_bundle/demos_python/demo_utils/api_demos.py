@@ -51,13 +51,13 @@ def set_hello_imgui_demo_assets_folder():
 def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 0):
     imgui.push_id(python_code)
 
-    snippet_cpp: immapp.snippets.SnippetData = immapp.snippets.SnippetData()  # type: ignore
+    snippet_cpp: immapp.snippets.SnippetData = immapp.snippets.SnippetData()
     snippet_cpp.code = cpp_code
     snippet_cpp.displayed_filename = "C++ code"
     snippet_cpp.height_in_lines = nb_lines
     snippet_cpp.max_height_in_lines = nb_lines
 
-    snippet_python: immapp.snippets.SnippetData = immapp.snippets.SnippetData()  # type: ignore
+    snippet_python: immapp.snippets.SnippetData = immapp.snippets.SnippetData()
     snippet_python.code = python_code
     snippet_python.displayed_filename = "Python code"
     snippet_python.height_in_lines = nb_lines
@@ -100,19 +100,19 @@ def read_code(filename: str) -> str:
 
 def read_cpp_code(demo_file_path: str) -> str:
     file_abs = demos_cpp_folder() + "/" + demo_file_path + ".cpp"
-    code: str = read_code(file_abs)  # type: ignore
+    code: str = read_code(file_abs)
     return code
 
 
 def read_python_code(demo_file_path: str) -> str:
     file_abs = demos_python_folder() + "/" + demo_file_path + ".py"
-    code: str = read_code(file_abs)  # type: ignore
+    code: str = read_code(file_abs)
     return code
 
 
 def read_markdown_code(doc_filename: str) -> str:
     doc_file = markdown_doc_folder() + "/" + doc_filename + ".adoc.md"
-    r: str = read_code(doc_file)  # type: ignore
+    r: str = read_code(doc_file)
     return r
 
 

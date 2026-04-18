@@ -22,7 +22,7 @@ def draw_transparent_image(
     )
 
 
-@immapp.static(start_time=-1.0, was_idling_restored=False)  # type: ignore
+@immapp.static(start_time=-1.0, was_idling_restored=False)
 def animate_logo(
     logo_file: str,
     ratio_width_height: float,

@@ -69,7 +69,7 @@ def em_to_vec2(x: float, y: float | None=None) -> ImVec2:
     """
     ...
 
-def register_demos_assets_folder():
+def register_demos_assets_folder() -> None:
     """Register the folder containing demo assets (images, etc.) so they can be loaded by the demos."""
     ...
 

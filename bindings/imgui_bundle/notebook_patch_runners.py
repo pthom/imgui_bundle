@@ -4,6 +4,8 @@
 - Will make the window autosize by default.
 - Will patch hello_imgui.run and immapp.run
 """
+from typing import Any
+
 
 def is_in_notebook() -> bool:
     try:
@@ -20,8 +22,8 @@ def notebook_do_patch_runners_if_needed() -> None:
     from imgui_bundle import immapp, hello_imgui
     from imgui_bundle.immapp.immapp_notebook import _run_app_function_and_display_image_in_notebook
 
-    def patch_runner(run_backup):
-        def patched_run(*args, **kwargs):
+    def patch_runner(run_backup: Any) -> Any:
+        def patched_run(*args: Any, **kwargs: Any) -> None:
             # Are we using hello_imgui.RunnerParams, or are we using raw parameters (i.e. a gui_function + other parameters)?
             use_gui_function = (len(args) >= 1 and callable(args[0])) or "gui_function" in kwargs
 
@@ -51,7 +53,7 @@ def notebook_do_patch_runners_if_needed() -> None:
 
             # define a function that will run the full app, then run this function
             # via _run_app_function_and_display_image_in_notebook
-            def app_function():
+            def app_function() -> None:
                 run_backup(*args, **kwargs)
             _run_app_function_and_display_image_in_notebook(app_function, thumbnail_height, thumbnail_ratio)
         return patched_run

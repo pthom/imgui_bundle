@@ -96,7 +96,7 @@ def draw_scene(vg: nvg.Context, width: float, height: float):
 
 class AppStateNvgHeart:
     vg: nvg.Context | None = None
-    nvg_framebuffer: nvg_imgui.NvgFramebuffer | None = None  # type: ignore
+    nvg_framebuffer: nvg_imgui.NvgFramebuffer | None = None
 
     def __init__(self):
         # Our NanoVG context

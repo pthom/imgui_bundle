@@ -547,7 +547,7 @@ def status_bar_gui(app_state: AppState):
     if app_state.rocket_state == RocketState.Preparing:
         imgui.text("Rocket completion: ")
         imgui.same_line()
-        imgui.progress_bar(app_state.rocket_progress, hello_imgui.em_to_vec2(7.0, 1.0))  # type: ignore
+        imgui.progress_bar(app_state.rocket_progress, hello_imgui.em_to_vec2(7.0, 1.0))
 
 
 def show_menu_gui(runner_params: hello_imgui.RunnerParams):

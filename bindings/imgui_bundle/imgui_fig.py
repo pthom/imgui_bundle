@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     import numpy as np
-    import matplotlib.figure  # type: ignore
+    import matplotlib.figure
     from numpy.typing import NDArray
 
 
@@ -54,7 +54,7 @@ def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_ima
         figure.canvas.draw()
         # Get the RGBA buffer from the figure
         w, h = figure.canvas.get_width_height()
-        buf = numpy.frombuffer(figure.canvas.buffer_rgba(), dtype=numpy.uint8)  # type: ignore
+        buf = numpy.frombuffer(figure.canvas.buffer_rgba(), dtype=numpy.uint8)
 
         try:
             buf.shape = (h, w, 4)

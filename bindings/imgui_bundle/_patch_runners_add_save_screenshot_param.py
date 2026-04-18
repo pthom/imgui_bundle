@@ -1,7 +1,7 @@
 """Patch the immapp and hello_imgui runners for tutorials.
 - Will save a screenshot of the final app state
 """
-from typing import Callable
+from typing import Any, Callable
 
 GuiFunction = Callable[[], None]
 
@@ -31,8 +31,8 @@ def _get_caller_filename(depth: int) -> str:
 def patch_runners_add_save_screenshot_param() -> None:
     from imgui_bundle import immapp, hello_imgui
 
-    def patch_runner(run_backup):
-        def patched_run(*args, **kwargs):
+    def patch_runner(run_backup: Any) -> Any:
+        def patched_run(*args: Any, **kwargs: Any) -> None:
             caller_file = _get_caller_filename(2)
 
             # Extract and remove `save_screenshot` BEFORE delegating to the

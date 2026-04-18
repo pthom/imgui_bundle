@@ -55,14 +55,14 @@ def show_python_code(
     immapp.snippets.show_code_snippet(cached_snippet_data)
 
 
-def _compact_json(data, indent=4):
-    def _compact_list(lst, indent_level):
+def _compact_json(data: Any, indent: int = 4) -> str:
+    def _compact_list(lst: Any, indent_level: int) -> str:
         compacted = json.dumps(lst)
         if len(compacted) <= 80:
             return compacted
         return json.dumps(lst, indent=indent, separators=(',', ': '))
 
-    def _compact_dict(dct, indent_level):
+    def _compact_dict(dct: Any, indent_level: int) -> str:
         items = []
         for key, value in dct.items():
             key_str = json.dumps(key) + ': '

@@ -81,7 +81,7 @@ def _download_desktop_async(url: str) -> "imgui_md.MarkdownDownloadResult":
 
 _pyodide_js_initialized = False
 
-def _ensure_pyodide_js():
+def _ensure_pyodide_js() -> None:
     """Initialize the JS-side download infrastructure (once)."""
     global _pyodide_js_initialized
     if _pyodide_js_initialized:
@@ -127,7 +127,7 @@ def _download_pyodide_async(url: str) -> "imgui_md.MarkdownDownloadResult":
     """Async download using JS fetch() in Pyodide.
     Returns Downloading on first call, Ready/Failed once done."""
     from imgui_bundle import imgui_md
-    from pyodide.code import run_js  # type: ignore
+    from pyodide.code import run_js
     result = imgui_md.MarkdownDownloadResult()
 
     try:
@@ -165,7 +165,7 @@ def _download_pyodide_async(url: str) -> "imgui_md.MarkdownDownloadResult":
     return result
 
 
-def _get_download_function():
+def _get_download_function() -> Any:
     """Return the appropriate download function for the current platform."""
     from imgui_bundle import __bundle_pyodide__
     if __bundle_pyodide__:
@@ -174,7 +174,7 @@ def _get_download_function():
         return _download_desktop_async
 
 
-def md_options_with_url_images():
+def md_options_with_url_images() -> "imgui_md.MarkdownOptions":
     """Create MarkdownOptions with URL image download support enabled."""
     from imgui_bundle import imgui_md
     opts = imgui_md.MarkdownOptions()

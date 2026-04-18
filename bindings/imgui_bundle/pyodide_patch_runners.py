@@ -31,7 +31,7 @@ class _JsAnimationRenderer:
         self.stop_callback = stop_callback
         self.main_loop_proxy = create_proxy(self.main_loop)
 
-    def main_loop(self, _timestamp):
+    def main_loop(self, _timestamp: Any) -> None:
         if self.stop_requested:
             if self.main_loop_proxy:
                 _log("_JsAnimationRenderer: received stop_requested => destroying main_loop_proxy")
@@ -60,12 +60,12 @@ class _JsAnimationRenderer:
         if not self.stop_requested:
             js.requestAnimationFrame(self.main_loop_proxy)
 
-    def start(self):
+    def start(self) -> None:
         _log("_JsAnimationRenderer.start()")
         self.stop_requested = False
         js.requestAnimationFrame(self.main_loop_proxy)
 
-    def request_stop(self):
+    def request_stop(self) -> None:
         _log("_JsAnimationRenderer:stop() => set stop_requested=True")
         self.stop_requested = True
 
@@ -144,7 +144,7 @@ class _ManualRenderJs:
     is_running: bool = False
     render_lifecycle_functions: _RenderLifeCycleFunctions | None = None
 
-    def _stop(self):
+    def _stop(self) -> None:
         """Stops the current rendering loop and tears down the renderer."""
         _log("_ManualRenderJs._stop() called")
         if not self.is_running:
@@ -202,7 +202,7 @@ class _ManualRenderJs:
 
         _log("_ManualRenderJs._run_async() -> GUI exited (teardown already done via callback)")
 
-    def run_immapp(self, *args, **kwargs):
+    def run_immapp(self, *args: Any, **kwargs: Any) -> None:
         """Run an immapp GUI in Pyodide (fire-and-forget).
 
         In Pyodide, run() starts the GUI and returns immediately since browsers
@@ -220,7 +220,7 @@ class _ManualRenderJs:
         if _wants_latex(args, kwargs):
             import asyncio
 
-            async def _delayed_start():
+            async def _delayed_start() -> None:
                 try:
                     from imgui_bundle._pyodide_latex_fonts import ensure_fonts_async
                     await ensure_fonts_async()
@@ -239,7 +239,7 @@ class _ManualRenderJs:
         else:
             self._run(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
 
-    def run_hello_imgui(self, *args, **kwargs):
+    def run_hello_imgui(self, *args: Any, **kwargs: Any) -> None:
         """Run a hello_imgui GUI in Pyodide (fire-and-forget).
 
         In Pyodide, run() starts the GUI and returns immediately since browsers
@@ -249,7 +249,7 @@ class _ManualRenderJs:
         """
         self._run(_HelloImGuiOrImmApp.HELLO_IMGUI, *args, **kwargs)
 
-    async def run_immapp_async(self, *args, **kwargs):
+    async def run_immapp_async(self, *args: Any, **kwargs: Any) -> None:
         """Async version of run_immapp that waits until GUI exits.
 
         If ``with_latex=True``, awaits the LaTeX font download (one-time
@@ -268,7 +268,7 @@ class _ManualRenderJs:
                 )
         await self._run_async(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
 
-    async def run_hello_imgui_async(self, *args, **kwargs):
+    async def run_hello_imgui_async(self, *args: Any, **kwargs: Any) -> None:
         """Async version of run_hello_imgui that waits until GUI exits."""
         await self._run_async(_HelloImGuiOrImmApp.HELLO_IMGUI, *args, **kwargs)
 
@@ -276,7 +276,7 @@ class _ManualRenderJs:
 _MANUAL_RENDER_JS: _ManualRenderJs | None = None
 
 
-def pyodide_do_patch_runners():
+def pyodide_do_patch_runners() -> None:
     # Instantiate global runners
     global _MANUAL_RENDER_JS
     # print("pyodide_do_patch_runners()")
@@ -290,7 +290,7 @@ def pyodide_do_patch_runners():
 
     # run_with_markdown is just run() with with_markdown=True baked in.
     # It must also be patched, otherwise it calls the blocking C++ Run() which crashes Pyodide.
-    def _run_with_markdown_pyodide(gui_function, *, with_markdown_options=None, **kwargs):
+    def _run_with_markdown_pyodide(gui_function: Any, *, with_markdown_options: Any = None, **kwargs: Any) -> None:
         kwargs["with_markdown"] = True
         if with_markdown_options is not None:
             kwargs["with_markdown_options"] = with_markdown_options

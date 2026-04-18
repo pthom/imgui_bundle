@@ -49,7 +49,7 @@ class _Begin:
     def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         ed.end()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__
 
 
@@ -71,7 +71,7 @@ class _BeginNode:
     def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         ed.end_node()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__
 
 
@@ -93,7 +93,7 @@ class _BeginPin:
     def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
         ed.end_pin()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__
 
 
@@ -120,7 +120,7 @@ class _BeginCreate:
     def __bool__(self) -> bool:
         return self.opened
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__
 
 
@@ -147,7 +147,7 @@ class _BeginDelete:
     def __bool__(self) -> bool:
         return self.opened
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__
 
 
@@ -174,7 +174,7 @@ class _BeginGroupHint:
     def __bool__(self) -> bool:
         return self.opened
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__
 
 
@@ -201,7 +201,7 @@ class _BeginShortcut:
     def __bool__(self) -> bool:
         return self.opened
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.__class__.__name__
 
 

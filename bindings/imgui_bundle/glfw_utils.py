@@ -12,7 +12,7 @@ try:
         import ctypes
         from imgui_bundle import hello_imgui
 
-        window_address = hello_imgui.get_glfw_window_address()  # type: ignore
+        window_address = hello_imgui.get_glfw_window_address()
         window_pointer = ctypes.cast(window_address, ctypes.POINTER(glfw._GLFWwindow))
         return cast(glfw._GLFWwindow, window_pointer)
 

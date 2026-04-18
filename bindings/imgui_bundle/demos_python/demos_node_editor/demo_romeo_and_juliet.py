@@ -46,8 +46,8 @@ class Tie:
         self.kind = kind
 
     def draw(self) -> None:
-        red = ImVec4(1.0, 0.3, 0.2, 1.0)  # type: ignore
-        green = ImVec4(0.3, 0.9, 0.0, 1.0)  # type: ignore
+        red = ImVec4(1.0, 0.3, 0.2, 1.0)
+        green = ImVec4(0.3, 0.9, 0.0, 1.0)
         if self.kind == "loves":
             ed.link(self.id, self.lover.pin_loves, self.loved.pin_in, green)
         else:
@@ -88,4 +88,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    immapp.run(demo_gui, with_node_editor=True, window_size=(1000, 800), window_title="It will not end well...")  # type: ignore
+    immapp.run(demo_gui, with_node_editor=True, window_size=(1000, 800), window_title="It will not end well...")

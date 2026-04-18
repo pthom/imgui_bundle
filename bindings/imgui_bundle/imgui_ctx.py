@@ -114,13 +114,13 @@ class _BeginEnd:
         else:
             return self.expanded and self.opened
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: int) -> bool:
         return (self.expanded, self.opened)[item]
 
-    def __iter__(self):
+    def __iter__(self) -> Any:
         return iter((self.expanded, self.opened))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{}(expanded={}, opened={})".format(
             self.__class__.__name__, self.expanded, self.opened
         )

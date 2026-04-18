@@ -2,7 +2,7 @@ import numpy as np
 from typing import Any
 from numpy.typing import NDArray
 from enum import Enum
-import cv2  # type: ignore
+import cv2
 import math
 
 from imgui_bundle import imgui, immvision, immapp, imgui_md

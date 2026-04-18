@@ -740,7 +740,7 @@ def demo_pie_charts():
         implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
         implot.setup_axes_limits(0, 1, 0, 1)
         implot.plot_pie_chart(static.labels1, np.array(static.data1), x=0.5, y=0.5, radius=0.4, label_fmt="%.2f", angle0=90,
-                             spec=implot.Spec(flags=static.flags))  # type: ignore
+                             spec=implot.Spec(flags=static.flags))
         implot.end_plot()
 
     imgui.same_line()
@@ -2166,7 +2166,7 @@ class DemoDragRectState:
         self.y_data1 = np.sin(arg)
         self.y_data2 = self.y_data1 - 0.6 + np.sin(arg * 2) * 0.4
         self.y_data3 = self.y_data2 - 0.6 + np.sin(arg * 3) * 0.4
-        self.rect = implot.Rect(0.0025, 0.0075, -2.7, 1.1)  # type: ignore
+        self.rect = implot.Rect(0.0025, 0.0075, -2.7, 1.1)
         self.flags = implot.DragToolFlags_.none
 
 
