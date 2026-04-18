@@ -8,6 +8,7 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: B008, E741
+# mypy: disable-error-code="overload-overlap"
 from __future__ import annotations
 import sys
 from typing import (
@@ -276,8 +277,8 @@ ImDrawCallback = Any
 
 # using ImGuiInputTextCallback = std::function<int(ImGuiInputTextCallbackData*)>;  // Callback function for ImGui::InputText()
 # using ImGuiSizeCallback = std::function<void(ImGuiSizeCallbackData*)>;           // Callback function for ImGui::SetNextWindowSizeConstraints()
-InputTextCallback = Callable[[InputTextCallbackData], int]
-SizeCallback = Callable[[SizeCallbackData], None]
+InputTextCallback = Callable[[InputTextCallbackData], int] | None
+SizeCallback = Callable[[SizeCallbackData], None] | None
 
 """
 // Helpers macros to generate 32-bit encoded colors

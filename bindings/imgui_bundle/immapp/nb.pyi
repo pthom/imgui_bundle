@@ -45,13 +45,13 @@ def run(
 def start(
     runner_params: RunnerParams,
     addons_params: Optional[AddOnsParams] = None
-) -> asyncio.Task: ...
+) -> asyncio.Task[None]: ...
 
 @overload
 def start(
     simple_params: SimpleRunnerParams,
     addons_params: Optional[AddOnsParams] = None
-) -> asyncio.Task: ...
+) -> asyncio.Task[None]: ...
 
 @overload
 def start(
@@ -70,7 +70,7 @@ def start(
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
     with_latex: bool = False,
-) -> asyncio.Task: ...
+) -> asyncio.Task[None]: ...
 
 # stop() and is_running()
 def stop() -> None: ...

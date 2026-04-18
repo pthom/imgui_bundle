@@ -58,6 +58,7 @@ def em_to_vec2(x: float, y: float) -> ImVec2: ...
 @overload
 def em_to_vec2(v: ImVec2Like) -> ImVec2: ...
 
+@overload
 def em_to_vec2(x, y=None) -> ImVec2:
     """Returns an ImVec2 sized in em units (multiples of font size).
 

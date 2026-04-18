@@ -9,9 +9,9 @@
 ###############################################################################
 import enum
 import numpy as np
-from typing import Any, Callable, Tuple, List, Optional
+from typing import Any, Callable, Tuple, List, Optional, overload
 
-from imgui_bundle import ImVec4Like
+from imgui_bundle.imgui import ImVec4Like
 from imgui_bundle.imgui import ImTextureID
 
 
@@ -28,10 +28,12 @@ class Color:
     b: float
     a: float
 
+    @overload
     def __init__(self, r:float, g:float, b:float, a:float):
         pass
 
-    def __init__(self, colors_tuple_4_float: tuple):  # noqa: F811
+    @overload
+    def __init__(self, colors_tuple_4_float: tuple[float, float, float, float]):  # noqa: F811
         pass
 
 

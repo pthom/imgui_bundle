@@ -26,6 +26,7 @@ from imgui_bundle import imgui as imgui
 from imgui_bundle.imgui import (
     WindowFlags,
     TableFlags,
+    InputTextFlags,
     PopupFlags,
     ImVec2Like,
     ImVec2,

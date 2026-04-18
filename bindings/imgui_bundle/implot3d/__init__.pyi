@@ -8,6 +8,7 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: B008, F821, F811
+# mypy: disable-error-code="overload-cannot-match, override"
 from typing import Any, Optional, List, overload
 import numpy as np
 import enum
@@ -22,6 +23,7 @@ from imgui_bundle.imgui import (
     ImU32,
     ImDrawList,
     ImTextureRef,
+    WindowFlags
 )
 
 ImageFlags = int  # enum ImageFlags_
@@ -83,8 +85,6 @@ Location = int  # enum Location_
 # typedef int ImPlane3D;        // -> ImPlane3D_                  // Enum: Plane indices
 ImPlane3D = int  # enum ImPlane3D_
 # typedef int ImPlot3DColormap; // -> ImPlot3DColormap_          // Enum: Colormaps
-#
-ImAxis3D = int  # enum ImAxis3D_
 
 Scale = int  # enum Scale_
 

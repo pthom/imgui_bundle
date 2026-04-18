@@ -118,7 +118,7 @@ def main():
                     Pass it to imgui.image() etc."""
                     pass
 
-            def create_texture_gpu_from_rgba_data(rgba: numpy.ndarray) -> TextureGpu:
+            def create_texture_gpu_from_rgba_data(rgba: np.ndarray) -> TextureGpu:
                 """Upload an HxWx4 uint8 RGBA numpy array to a new GPU texture.
 
                 - `rgba` must be a contiguous numpy array of dtype uint8 with
