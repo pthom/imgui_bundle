@@ -79,3 +79,9 @@ jobs:
       run: |
         cd .github/ci_automation_tests
         python ci_automation_test_app_bundle.py
+
+    - name: Run mypy
+      shell: bash
+      run: |
+        pip install mypy
+        cd bindings && mypy imgui_bundle
