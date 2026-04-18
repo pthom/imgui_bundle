@@ -25,7 +25,7 @@ from imgui_bundle.imgui import (
     ImDrawList,
     Cond_,
     ImTextureRef,
-    WindowFlags
+    WindowFlags,
 )
 
 ImGui_Context = imgui.internal.Context

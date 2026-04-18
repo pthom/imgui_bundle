@@ -15,16 +15,7 @@ import enum
 from . import internal as internal
 
 from imgui_bundle import imgui
-from imgui_bundle.imgui import (
-    ImVec2,
-    ImVec2Like,
-    ImVec4,
-    ImVec4Like,
-    ImU32,
-    ImDrawList,
-    ImTextureRef,
-    WindowFlags
-)
+from imgui_bundle.imgui import ImVec2, ImVec2Like, ImVec4, ImVec4Like, ImU32, ImDrawList, ImTextureRef, WindowFlags
 
 ImageFlags = int  # enum ImageFlags_
 

@@ -1487,6 +1487,25 @@ void py_init_module_imgui_internal(nb::module_& m)
         ;
 
 
+    auto pyClassImGuiInputEventKey =
+        nb::class_<ImGuiInputEventKey>
+            (m, "InputEventKey", "")
+        .def("__init__", [](ImGuiInputEventKey * self, ImGuiKey Key = ImGuiKey(), bool Down = bool(), float AnalogValue = float())
+        {
+            new (self) ImGuiInputEventKey();  // placement new
+            auto r_ctor_ = self;
+            r_ctor_->Key = Key;
+            r_ctor_->Down = Down;
+            r_ctor_->AnalogValue = AnalogValue;
+        },
+        nb::arg("key") = ImGuiKey(), nb::arg("down") = bool(), nb::arg("analog_value") = float()
+        )
+        .def_rw("key", &ImGuiInputEventKey::Key, "")
+        .def_rw("down", &ImGuiInputEventKey::Down, "")
+        .def_rw("analog_value", &ImGuiInputEventKey::AnalogValue, "")
+        ;
+
+
     auto pyClassImGuiInputEventText =
         nb::class_<ImGuiInputEventText>
             (m, "InputEventText", "")
@@ -2114,6 +2133,22 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("docking_hold_shift_to_dock", ImGuiLocKey_DockingHoldShiftToDock, "")
             .value("docking_drag_to_undock_or_move_node", ImGuiLocKey_DockingDragToUndockOrMoveNode, "")
             .value("count", ImGuiLocKey_COUNT, "");
+
+
+    auto pyClassImGuiLocEntry =
+        nb::class_<ImGuiLocEntry>
+            (m, "LocEntry", "")
+        .def("__init__", [](ImGuiLocEntry * self, ImGuiLocKey Key = ImGuiLocKey())
+        {
+            new (self) ImGuiLocEntry();  // placement new
+            auto r_ctor_ = self;
+            r_ctor_->Key = Key;
+        },
+        nb::arg("key") = ImGuiLocKey()
+        )
+        .def_rw("key", &ImGuiLocEntry::Key, "")
+        .def_ro("text", &ImGuiLocEntry::Text, "")
+        ;
 
 
     auto pyEnumDebugLogFlags_ =
