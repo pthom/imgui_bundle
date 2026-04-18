@@ -3,6 +3,7 @@
 from typing import Optional, overload
 import numpy as np
 from imgui_bundle.imgui import ImVec4
+from imgui_bundle import hello_imgui as HelloImGui
 
 ImU32 = int
 ImTextureID = int
@@ -115,7 +116,7 @@ class FormulaTexture:
      ClearTextureCache() or Release()), but a caller may also keep its own
      reference to extend the lifetime.
     """
-    texture: HelloImGui.TextureGpuPtr
+    texture: HelloImGui.TextureGpu
     width: int = 0
     height: int = 0
     depth: int = 0
@@ -132,7 +133,7 @@ class FormulaTexture:
         pass
     def __init__(
         self,
-        texture: Optional[HelloImGui.TextureGpuPtr] = None,
+        texture: Optional[HelloImGui.TextureGpu] = None,
         width: int = 0,
         height: int = 0,
         depth: int = 0,
@@ -143,7 +144,7 @@ class FormulaTexture:
 
 
         Python bindings defaults:
-            If Texture is None, then its default value will be: HelloImGui.TextureGpuPtr()
+            If Texture is None, then its default value will be: HelloImGui.TextureGpu()
         """
         pass
 

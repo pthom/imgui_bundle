@@ -111,14 +111,14 @@ void py_init_module_imgui_microtex(nb::module_& m)
     auto pyClassFormulaTexture =
         nb::class_<ImGuiMicroTeX::FormulaTexture>
             (m, "FormulaTexture", " FormulaTexture owns its GPU texture via a HelloImGui::TextureGpuPtr.\n The texture is freed when the last shared reference drops; this happens\n at the latest when the imgui_microtex texture cache is cleared (via\n ClearTextureCache() or Release()), but a caller may also keep its own\n reference to extend the lifetime.")
-        .def("__init__", [](ImGuiMicroTeX::FormulaTexture * self, const std::optional<const HelloImGui::TextureGpuPtr> & Texture = std::nullopt, int Width = 0, int Height = 0, int Depth = 0, int BaselineY = 0, int LastUsedFrame = 0)
+        .def("__init__", [](ImGuiMicroTeX::FormulaTexture * self, const std::optional<const std::shared_ptr<HelloImGui::TextureGpu>> & Texture = std::nullopt, int Width = 0, int Height = 0, int Depth = 0, int BaselineY = 0, int LastUsedFrame = 0)
         {
             new (self) ImGuiMicroTeX::FormulaTexture();  // placement new
             auto r_ctor_ = self;
             if (Texture.has_value())
                 r_ctor_->Texture = Texture.value();
             else
-                r_ctor_->Texture = HelloImGui::TextureGpuPtr();
+                r_ctor_->Texture = std::shared_ptr<HelloImGui::TextureGpu>();
             r_ctor_->Width = Width;
             r_ctor_->Height = Height;
             r_ctor_->Depth = Depth;

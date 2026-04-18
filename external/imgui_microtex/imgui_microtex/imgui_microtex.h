@@ -79,7 +79,7 @@ RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& c
 // ClearTextureCache() or Release()), but a caller may also keep its own
 // reference to extend the lifetime.
 struct FormulaTexture {
-    HelloImGui::TextureGpuPtr Texture;
+    std::shared_ptr<HelloImGui::TextureGpu> Texture;
     int Width = 0;
     int Height = 0;
     int Depth = 0;

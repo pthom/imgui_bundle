@@ -15,7 +15,7 @@ from imgui_bundle.imgui import ImVec4Like
 from imgui_bundle.imgui import ImTextureID
 
 
-OpaquePointer = np.uint64
+OpaquePointer = np.uint64 | None
 Context = OpaquePointer
 UChar = int # a value between 0 and 255
 NvgDrawingFunction = Callable[[Context, int, int], Any]
