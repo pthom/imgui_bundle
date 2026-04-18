@@ -2313,18 +2313,6 @@ class InputEventMouseViewport:
         """Auto-generated default constructor with named params"""
         pass
 
-class InputEventKey:
-    # ImGuiKey Key;    /* original C++ signature */
-    key: Key
-    # bool Down;    /* original C++ signature */
-    down: bool
-    # float AnalogValue;    /* original C++ signature */
-    analog_value: float
-    # ImGuiInputEventKey(ImGuiKey Key = ImGuiKey(), bool Down = bool(), float AnalogValue = float());    /* original C++ signature */
-    def __init__(self, key: Key = Key(), down: bool = bool(), analog_value: float = float()) -> None:
-        """Auto-generated default constructor with named params"""
-        pass
-
 class InputEventText:
     # unsigned int Char;    /* original C++ signature */
     char: int
@@ -3490,16 +3478,6 @@ class LocKey(enum.IntFlag):
     # ImGuiLocKey_COUNT    /* original C++ signature */
     # }
     count = enum.auto()  # (= 13)
-
-class LocEntry:
-    # ImGuiLocKey     Key;    /* original C++ signature */
-    key: LocKey
-    # const char*     Text;    /* original C++ signature */
-    text: str  # (const)
-    # ImGuiLocEntry(ImGuiLocKey Key = ImGuiLocKey());    /* original C++ signature */
-    def __init__(self, key: LocKey = LocKey()) -> None:
-        """Auto-generated default constructor with named params"""
-        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Error handling, State recovery support

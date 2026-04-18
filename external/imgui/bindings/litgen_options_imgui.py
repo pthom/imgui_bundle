@@ -561,6 +561,7 @@ def litgen_options_imgui(
     if options_type == ImguiOptionsType.imgui_h:
         options.fn_exclude_by_name__regex += "|^InputText"
     elif options_type == ImguiOptionsType.imgui_internal_h:
+        options.class_exclude_by_name__regex += "|^ImGuiInputEventKey$|^ImGuiLocEntry$"
         pass
     elif options_type == ImguiOptionsType.imgui_stdlib_h:
         pass
