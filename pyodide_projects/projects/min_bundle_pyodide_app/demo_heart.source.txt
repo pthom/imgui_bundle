@@ -1,24 +1,47 @@
 <!doctype html>
-<html>
+<!--
+
+Serve this file through a local web server, e.g.
+
+    python -m http.server
+
+Opening it directly via file:// may prevent package loading.
+
+-->
+<html lang="en">
 <head>
-    <style>
-        html, body { width: 100%; height: 100%; margin: 0; }
-        #canvas { display: block; width: 100%; height: 100%;}
-    </style>
-    <!-- Check https://github.com/pyodide/pyodide/releases to see if more recent releases are available -->
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <meta charset="utf-8">
+    <title>Dear ImGui Bundle - Pyodide demo</title>
 </head>
 <body>
-<canvas id="canvas" tabindex="0"></canvas>
-<script type="text/javascript">
-    // ====================== Start of Python code ============================
-    pythonCode = `
+
+<!--===========================================================================
+    Part 1 - Load Pyodide from a CDN
+    --------------------------------
+    Pyodide: a Python interpreter compiled to WebAssembly,
+             so that Python runs directly in the browser.
+    Check https://github.com/pyodide/pyodide/releases for more recent versions.
+============================================================================-->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+
+
+<!--===========================================================================
+    Part 2 - Python application code (this is what you edit)
+    --------------------------------------------------------
+    The code is embedded in a <script type="text/python"> tag: browsers
+    ignore the unknown type but keep the content as .textContent (read
+    from Part 4). No backtick escaping, IDEs can syntax-highlight it.
+
+    Alternative: keep the Python in a separate file (e.g. app.py) and fetch
+    it at runtime. See the commented-out snippet in Part 4 below.
+============================================================================-->
+<script type="text/python" id="pythonCode">
 import time
 import numpy as np
 
 from imgui_bundle import implot, imgui, immapp, hello_imgui, icons_fontawesome_4, imgui_knobs, __version__
 
-# Fill x and y whose plot is a heart
+# Compute x and y coordinates for a heart-shaped curve
 vals = np.arange(0, np.pi * 2, 0.01)
 x = np.power(np.sin(vals), 3) * 16
 y = 13 * np.cos(vals) - 5 * np.cos(2 * vals) - 2 * np.cos(3 * vals) - np.cos(4 * vals)
@@ -37,14 +60,15 @@ def gui():
     t = time.time()
     if t0 < 0:
         t0 = t
+    # Advance an animation phase; heart_pulse_rate controls the visual speed.
     phase += (t - t0) * heart_pulse_rate / (np.pi * 2)
     k = 0.8 + 0.1 * np.cos(phase)
     t0 = t
 
-    implot.begin_plot("Heart", immapp.em_to_vec2(21, 21))
-    for i in range(5):
-        implot.plot_line("", x * k, y * k * (1 - 0.02 * i))
-    implot.end_plot()
+    if implot.begin_plot("Heart", immapp.em_to_vec2(21, 21)):
+        for i in range(5):
+            implot.plot_line("", x * k, y * k * (1 - 0.02 * i))
+        implot.end_plot()
 
     _, heart_pulse_rate = imgui_knobs.knob(
         "Pulse", heart_pulse_rate, 30, 180,
@@ -54,47 +78,94 @@ def gui():
 
 
 if __name__ == "__main__":
+    # fps_idle=0 disables idle throttling (the heart beats every frame, so we never idle).
+    # For static UIs, leave fps_idle at its default (~10) to save CPU/battery.
     immapp.run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)
-
-`
-    // ====================== End of Python code ==============================
+</script>
 
 
-    async function main(){
-        // This enables to use right click in the canvas
-        document.addEventListener('contextmenu', event => event.preventDefault());
+<!--===========================================================================
+    Part 3 - Page DOM + styles
+    --------------------------
+    - #canvas: where the ImGui app draws.
+    - #loader: an overlay with a CSS spinner (pure CSS, no images),
+               shown during initial downloads.
+============================================================================-->
+<style>
+    html, body { width: 100%; height: 100%; margin: 0; font-family: sans-serif; }
 
-        // Load Pyodide
+    #canvas { display: block; width: 100%; height: 100%; }
+
+    #loader { position: fixed; inset: 0; display: flex; flex-direction: column;
+              align-items: center; justify-content: center; gap: 16px;
+              background: #222; color: #eee; }
+    #loader::before { content: ""; width: 48px; height: 48px; border: 5px solid #444;
+                      border-top-color: #eee; border-radius: 50%;
+                      animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<div id="loader">Loading Pyodide...</div>
+<canvas id="canvas" tabindex="0"></canvas>
+
+
+<!--===========================================================================
+    Part 4 - JavaScript driver: loads Pyodide and runs the Python code
+============================================================================-->
+<script>
+    const loaderEl = document.getElementById("loader");
+    const setStatus = m => loaderEl.textContent = m;
+    const hideLoader = () => loaderEl.remove();
+    const showError = e => { loaderEl.style.background = "#922"; setStatus("Error: " + (e?.message || e)); };
+
+    async function main() {
+        // Right-click is scoped to the canvas so normal browser menus still work elsewhere
+        const sdl2Canvas = document.getElementById("canvas");
+        sdl2Canvas.addEventListener('contextmenu', event => event.preventDefault());
+
+        setStatus("Loading Pyodide...");
         let pyodide = await loadPyodide();
 
-        // Setup SDL, cf https://pyodide.org/en/stable/usage/sdl.html
-        // 1. Set the canvas for SDL2
-        let sdl2Canvas = document.getElementById("canvas");
-        pyodide.canvas.setCanvas2D(sdl2Canvas);
-        // 2. SDL requires to enable an opt-in flag :
-        pyodide._api._skip_unwind_fatal_error = true;
+        // 1. Setup SDL, cf https://pyodide.org/en/stable/usage/sdl.html
+        pyodide.canvas.setCanvas2D(sdl2Canvas); // Pyodide will use this canvas as the target for SDL/Emscripten rendering.
+        pyodide._api._skip_unwind_fatal_error = true;  // required SDL opt-in flag
 
-        // 3. Load imgui_bundle via micropip
-        // We may use the imgui_bundle wheel included directly with pyodide CDN
-        //      await micropip.install('imgui_bundle');
-        // Or we may load a newer one (see code below)
-        // Where to find recent pyodide wheels:
-        //    1. Wheel used in the official demo
-        //    https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/local_wheels/
-        //    2. Nightly builds: download a wheel directly from GitHub Actions
-        //    https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml
+        // 2. Prepare micropip to load imgui_bundle
+        setStatus("Loading micropip...");
         await pyodide.loadPackage("micropip");
         const micropip = pyodide.pyimport("micropip");
-        // load a newer wheel from a local url
-        await micropip.install('local_wheels/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl');
 
-        // also install numpy (required by this demo)
-        await micropip.install('numpy');
+        // 3. Load imgui_bundle (two options shown below)
+        //
+        //    Option a: load a wheel from a local url.
+        //              Download a wheel from the links below and put it in local_wheels/ :
+        //                  - Nightly wheels from GitHub Actions: https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml
+        //                  - Wheel from a release:               https://github.com/pthom/imgui_bundle/releases/download/v1.92.601/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl
+        //              Notes:
+        //                  - The wheel must match this Pyodide version / Python version.
+        //                  - The filename below is only an example.
+        //                  - By default, keep the wheel local (on the same server as this HTML file).
+        //                    If you host it elsewhere, that server must send CORS headers.
+        setStatus("Loading imgui_bundle wheel...");
+        await micropip.install('local_wheels/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl');
+        //
+        //    Option b: use the default wheel included with the pyodide CDN (an older version of imgui-bundle)
+        // await micropip.install('imgui_bundle');
 
-        // Run the Python code
-        pyodide.runPython(pythonCode);
+        // 4. Load additional required packages used by the demo
+        setStatus("Loading numpy...");
+        await micropip.install('numpy');  // numpy will be loaded from the CDN jsdelivr
+
+        // 5. Run the Python code
+        setStatus("Starting app...");
+        //    Option a (default): run the Python code embedded in Part 2 above
+        pyodide.runPython(document.getElementById("pythonCode").textContent);
+        //    Option b: load the Python code from an external file (e.g. app.py next to this HTML):
+        // pyodide.runPython(await (await fetch('app.py')).text());
+        hideLoader();
     }
-    main();
+    main().catch(showError);
 </script>
+
 </body>
 </html>

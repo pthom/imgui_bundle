@@ -4,55 +4,120 @@ Dear ImGui Bundle applications can be effortlessly deployed to the web using Pyo
 
 > **Note:** Pyodide cannot use large native packages (like TensorFlow or PyTorch), and initial loading can be slow.
 
-## Pyodide Minimal Example
+## Pyodide Minimal Template
 
 With Pyodide, web deployment is as easy as copying the HTML template below. The Python code is unchanged from what you'd use for desktop.
 
-* [HTML template source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/source.txt)
+* [HTML template source](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
 * [HTML template (run it)](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html)
 
-**How it works:**
+```{figure} ../images/heart.png
+:alt: Animated heart app running in a web browser using Pyodide
+:width: 300px
+:align: left
+```
 
-1. In HTML, load Pyodide via CDN:
+```{important}
+The HTML file must be served through a local web server (e.g. `python -m http.server`).
+Opening it directly via `file://` prevents package loading.
+```
+
+### How it works
+
+The [template](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt) is organised into four clearly marked parts.
+
+**Part 1 — Load Pyodide from a CDN**
+
+Pyodide is a Python interpreter compiled to WebAssembly; it runs directly in the browser.
 
 ```html
 <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
 ```
-(Check [pyodide latest releases](https://github.com/pyodide/pyodide/releases) to see the latest version, and update the URL accordingly)
 
-2. In javaScript, load Pyodide, setup SDL, and load imgui_bundle via micropip:
+Check [pyodide latest releases](https://github.com/pyodide/pyodide/releases) and update the URL accordingly.
+
+**Part 2 — Python application code**
+
+The Python code is embedded in a `<script type="text/python">` block: browsers ignore the unknown type but keep the content as `.textContent` (read from Part 4). No backtick escaping, and IDEs can still syntax-highlight the code.
+
+```html
+<script type="text/python" id="pythonCode">
+from imgui_bundle import imgui, immapp
+
+def gui():
+    imgui.text("Hello from Pyodide!")
+
+if __name__ == "__main__":
+    immapp.run(gui, window_title="Hello!")
+</script>
+```
+
+Alternative: keep the Python in a separate file (e.g. `app.py`) and fetch it at runtime — see Part 4 below.
+
+**Part 3 — Page DOM + styles**
+
+A `<canvas>` (where the ImGui app draws) and a full-screen loader overlay with a pure-CSS spinner (shown while Pyodide and the wheel download).
+
+**Part 4 — JavaScript driver**
+
+Loads Pyodide, wires SDL to the canvas, installs `imgui_bundle` via micropip, then runs the Python code:
 
 ```javascript
-async function main(){
-    // This enables to use right click in the canvas
-    document.addEventListener('contextmenu', event => event.preventDefault());
+async function main() {
+    const sdl2Canvas = document.getElementById("canvas");
+    sdl2Canvas.addEventListener('contextmenu', e => e.preventDefault());
 
     // Load Pyodide
     let pyodide = await loadPyodide();
 
     // Setup SDL, cf https://pyodide.org/en/stable/usage/sdl.html
-    // 1. Set the canvas for SDL2
-    let sdl2Canvas = document.getElementById("canvas");
     pyodide.canvas.setCanvas2D(sdl2Canvas);
-    // 2. SDL requires to enable an opt-in flag :
     pyodide._api._skip_unwind_fatal_error = true;
 
-    // 3. Load imgui_bundle via micropip
+    // Prepare micropip
     await pyodide.loadPackage("micropip");
     const micropip = pyodide.pyimport("micropip");
-    // load a newer wheel from a local url
-    // await micropip.install('imgui_bundle');  // to use the default wheel included with the pyodide CDN
-    await micropip.install('local_wheels/imgui_bundle-1.92.602-cp313-cp313-pyodide_2025_0_wasm32.whl');
+
+    // Install imgui_bundle (two options)
+    //   Option a (default): load a wheel from a local url.
+    //   The wheel must match this Pyodide / Python version.
+    //   By default, keep it local (same origin as this HTML). If hosted
+    //   elsewhere, that server must send CORS headers.
+    await micropip.install('local_wheels/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl');
+    //   Option b: use the (older) wheel bundled with the Pyodide CDN
+    // await micropip.install('imgui_bundle');
+
+    // Load additional required packages
+    await micropip.install('numpy');
 
     // Run the Python code
-    pyodide.runPython(yourCodeHere);
+    //   Option a (default): embedded in Part 2
+    pyodide.runPython(document.getElementById("pythonCode").textContent);
+    //   Option b: load from an external file
+    // pyodide.runPython(await (await fetch('app.py')).text());
 }
 main();
 ```
-You may find recent pyodide wheels for imgui_bundle in two places:
-* [Wheel](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/local_wheels/) used in the official demo
-* [Nightly builds](https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml): download a wheel directly from GitHub Actions
-   
+
+### Where to find Pyodide wheels for imgui_bundle
+
+* [Wheel used in the official demo](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/local_wheels/)
+* [Release wheels](https://github.com/pthom/imgui_bundle/releases) — attached to each GitHub release
+* [Nightly builds](https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml) — download a wheel directly from GitHub Actions
+
+Wheels must match the Pyodide version **and** Python version used in the template.
+
+```{note}
+**CORS gotcha.** Passing a GitHub release URL directly to
+`micropip.install('https://github.com/.../wheel.whl')` looks convenient but the
+browser will block it: GitHub release downloads don't send
+`Access-Control-Allow-Origin` headers. Two workable options:
+
+* **Keep the wheel local**: download it once and serve it from the same folder
+  as your HTML (the template's default — `local_wheels/...`).
+* **Host it somewhere CORS-friendly**: PyPI, GitHub Pages, or a CDN like jsDelivr.
+```
+
 
 
 
@@ -112,18 +177,6 @@ asyncio.create_task(main())
 - You need to know when the GUI exits
 - You're integrating with other async code
 - You want to run sequential GUI sessions
-
-## A more advanced example
-
-* [animated heart](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.html),
-* [source code](https://traineq.org/imgui_bundle_online/projects/min_bundle_pyodide_app/demo_heart.source.txt)
-
-```{figure} ../images/heart.png
-:alt: Animated heart app running in a web browser using Pyodide
-:width: 300px
-:align: left
-```
-
 
 ## Online Python playground
 
