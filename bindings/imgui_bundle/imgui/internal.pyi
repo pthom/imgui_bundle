@@ -92,7 +92,6 @@ from imgui_bundle.imgui import (
     ImVector_TableTempData,
     ImVector_TreeNodeStackData,
     ImVector_ViewportP_ptr,
-    ImVector_Window,
     ImVector_WindowStackData,
     ImVector_Window_ptr,
     ImVector_char,
@@ -136,6 +135,7 @@ from imgui_bundle.imgui import (
     WindowFlags,
 )
 
+ImVector_Window = ImVector_Window_ptr
 ImDrawTextFlags = int
 uchar = int
 char = str

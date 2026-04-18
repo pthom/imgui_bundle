@@ -592,6 +592,10 @@ def litgen_options_imgui(
         # any function that accepts a TestRef param should also accept str (which is convertible to TestRef)
         r = code.replace(": TestRef", ": Union[TestRef, str]")
         r = r.replace("(TestEngineExportFormat)0", "TestEngineExportFormat.j_unit_xml")
+        r = r.replace(
+            ": TestVerboseLevel = TestVerboseLevel()",
+            ": TestVerboseLevel = TestVerboseLevel.warning"
+        )
         return r
 
     if options_type == ImguiOptionsType.imgui_test_engine:

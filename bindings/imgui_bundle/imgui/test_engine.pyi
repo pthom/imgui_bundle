@@ -17,7 +17,7 @@ Note: Integrating ImGui TestEngine directly from python, and without using Hello
 """
 
 # ruff: noqa: B008, F821
-# mypy: disable-error-code="call-arg, name-defined"
+# mypy: disable-error-code="name-defined"
 import sys
 from typing import Any, Optional, Tuple, Callable, overload, Union
 import numpy as np
@@ -55,7 +55,6 @@ from imgui_bundle.imgui.internal import (
     Context,
     ItemFlags,
     LastItemData,
-    TextBuffer,
     TabBar,
     InputSource,
 )
@@ -753,7 +752,7 @@ class TestLogLineInfo:
     # int                             LineOffset;    /* original C++ signature */
     line_offset: int
     # ImGuiTestLogLineInfo(ImGuiTestVerboseLevel Level = ImGuiTestVerboseLevel(), int LineOffset = int());    /* original C++ signature */
-    def __init__(self, level: TestVerboseLevel = TestVerboseLevel(), line_offset: int = int()) -> None:
+    def __init__(self, level: TestVerboseLevel = TestVerboseLevel.warning, line_offset: int = int()) -> None:
         """Auto-generated default constructor with named params"""
         pass
 
