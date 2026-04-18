@@ -8,7 +8,6 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: B008, F821, F811
-# mypy: disable-error-code="overload-cannot-match"
 from typing import Any, Optional, Tuple, List, overload
 import numpy as np
 import enum
@@ -2314,16 +2313,16 @@ def pop_style_color(count: int = 1) -> None:
     """Undo temporary style color modification(s). Undo multiple pushes at once by increasing count."""
     pass
 
-# IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, float val);    /* original C++ signature */
-@overload
-def push_style_var(idx: StyleVar, val: float) -> None:
-    """Temporarily modify a style variable of float type. Don't forget to call PopStyleVar!"""
-    pass
-
 # IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, int val);    /* original C++ signature */
 @overload
 def push_style_var(idx: StyleVar, val: int) -> None:
     """Temporarily modify a style variable of int type. Don't forget to call PopStyleVar!"""
+    pass
+
+# IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, float val);    /* original C++ signature */
+@overload
+def push_style_var(idx: StyleVar, val: float) -> None:
+    """Temporarily modify a style variable of float type. Don't forget to call PopStyleVar!"""
     pass
 
 # IMPLOT_API void PushStyleVar(ImPlotStyleVar idx, const ImVec2& val);    /* original C++ signature */

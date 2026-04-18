@@ -1357,14 +1357,14 @@ void py_init_module_implot3d(nb::module_& m)
         "Undo temporary style color modification(s). Undo multiple pushes at once by increasing count");
 
     m.def("push_style_var",
-        nb::overload_cast<ImPlot3DStyleVar, float>(ImPlot3D::PushStyleVar),
-        nb::arg("idx"), nb::arg("val"),
-        "Temporarily modify a style variable of float type. Don't forget to call PopStyleVar!");
-
-    m.def("push_style_var",
         nb::overload_cast<ImPlot3DStyleVar, int>(ImPlot3D::PushStyleVar),
         nb::arg("idx"), nb::arg("val"),
         "Temporarily modify a style variable of int type. Don't forget to call PopStyleVar!");
+
+    m.def("push_style_var",
+        nb::overload_cast<ImPlot3DStyleVar, float>(ImPlot3D::PushStyleVar),
+        nb::arg("idx"), nb::arg("val"),
+        "Temporarily modify a style variable of float type. Don't forget to call PopStyleVar!");
 
     m.def("push_style_var",
         nb::overload_cast<ImPlot3DStyleVar, const ImVec2 &>(ImPlot3D::PushStyleVar),
