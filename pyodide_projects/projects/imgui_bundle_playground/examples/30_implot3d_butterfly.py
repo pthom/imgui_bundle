@@ -13,7 +13,7 @@ This demo shows two trajectories that diverge from a tiny initial difference, il
 import numpy as np
 from dataclasses import dataclass
 from imgui_bundle import (
-    imgui, implot3d, immapp, hello_imgui, imgui_knobs,
+    imgui, implot3d, immapp, imgui_knobs,
 )
 
 

@@ -1,9 +1,8 @@
 """A lesson on Simple Harmonic Motion, built with Dear ImGui Bundle."""
 
-from urllib.parse import quote
 import numpy as np
 import time
-from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, imgui_knobs, imgui_toggle
+from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, imgui_knobs
 from imgui_bundle import ImVec2, ImVec4
 
 

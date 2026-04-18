@@ -85,8 +85,8 @@ int main() {
 ## Full demo
 
 For more complete examples, see the test engine demo from the interactive explorer:
-* [Try online](https://traineq.org/imgui_bundle_explorer/demo_testengine.html) 
-* [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testengine.py) 
+* [Try online](https://traineq.org/imgui_bundle_explorer/demo_testengine.html)
+* [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testengine.py)
 * [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testengine.cpp)
 
 

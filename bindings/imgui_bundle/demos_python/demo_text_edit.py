@@ -311,16 +311,16 @@ def demo_editor_with_menus():
 
     if imgui.begin_menu_bar():
         if imgui.begin_menu("Edit"):
-            if imgui.menu_item_simple(f"Undo", f"{_shortcut}Z", enabled=editor.can_undo()):
+            if imgui.menu_item_simple("Undo", f"{_shortcut}Z", enabled=editor.can_undo()):
                 editor.undo()
-            if imgui.menu_item_simple(f"Redo", f"{_shortcut}Y", enabled=editor.can_redo()):
+            if imgui.menu_item_simple("Redo", f"{_shortcut}Y", enabled=editor.can_redo()):
                 editor.redo()
             imgui.separator()
-            if imgui.menu_item_simple(f"Cut", f"{_shortcut}X", enabled=editor.any_cursor_has_selection()):
+            if imgui.menu_item_simple("Cut", f"{_shortcut}X", enabled=editor.any_cursor_has_selection()):
                 editor.cut()
-            if imgui.menu_item_simple(f"Copy", f"{_shortcut}C", enabled=editor.any_cursor_has_selection()):
+            if imgui.menu_item_simple("Copy", f"{_shortcut}C", enabled=editor.any_cursor_has_selection()):
                 editor.copy()
-            if imgui.menu_item_simple(f"Paste", f"{_shortcut}V"):
+            if imgui.menu_item_simple("Paste", f"{_shortcut}V"):
                 editor.paste()
             imgui.separator()
             _, flag = imgui.menu_item("Insert Spaces on Tabs", "", editor.is_insert_spaces_on_tabs())
@@ -335,18 +335,18 @@ def demo_editor_with_menus():
             imgui.end_menu()
 
         if imgui.begin_menu("Selection"):
-            if imgui.menu_item_simple(f"Select All", f"{_shortcut}A", enabled=not editor.is_empty()):
+            if imgui.menu_item_simple("Select All", f"{_shortcut}A", enabled=not editor.is_empty()):
                 editor.select_all()
             imgui.separator()
-            if imgui.menu_item_simple(f"Indent Line(s)", f"{_shortcut}]", enabled=not editor.is_empty()):
+            if imgui.menu_item_simple("Indent Line(s)", f"{_shortcut}]", enabled=not editor.is_empty()):
                 editor.indent_lines()
-            if imgui.menu_item_simple(f"Deindent Line(s)", f"{_shortcut}[", enabled=not editor.is_empty()):
+            if imgui.menu_item_simple("Deindent Line(s)", f"{_shortcut}[", enabled=not editor.is_empty()):
                 editor.deindent_lines()
             if imgui.menu_item_simple("Move Line(s) Up", "Alt-Up", enabled=not editor.is_empty()):
                 editor.move_up_lines()
             if imgui.menu_item_simple("Move Line(s) Down", "Alt-Down ", enabled=not editor.is_empty()):
                 editor.move_down_lines()
-            if imgui.menu_item_simple(f"Toggle Comments", f"{_shortcut}/", enabled=editor.has_language()):
+            if imgui.menu_item_simple("Toggle Comments", f"{_shortcut}/", enabled=editor.has_language()):
                 editor.toggle_comments()
             imgui.separator()
             if imgui.menu_item_simple("To Uppercase", enabled=editor.any_cursor_has_selection()):
@@ -354,9 +354,9 @@ def demo_editor_with_menus():
             if imgui.menu_item_simple("To Lowercase", enabled=editor.any_cursor_has_selection()):
                 editor.selection_to_lower_case()
             imgui.separator()
-            if imgui.menu_item_simple(f"Add Next Occurrence", f"{_shortcut}D", enabled=editor.current_cursor_has_selection()):
+            if imgui.menu_item_simple("Add Next Occurrence", f"{_shortcut}D", enabled=editor.current_cursor_has_selection()):
                 editor.add_next_occurrence()
-            if imgui.menu_item_simple(f"Select All Occurrences",  f"^{_shortcut}D", enabled=editor.current_cursor_has_selection()):
+            if imgui.menu_item_simple("Select All Occurrences",  f"^{_shortcut}D", enabled=editor.current_cursor_has_selection()):
                 editor.select_all_occurrences()
             imgui.end_menu()
 
@@ -391,9 +391,9 @@ def demo_editor_with_menus():
             imgui.end_menu()
 
         if imgui.begin_menu("Find"):
-            if imgui.menu_item_simple(f"Find", f"{_shortcut}F"):
+            if imgui.menu_item_simple("Find", f"{_shortcut}F"):
                 editor.open_find_replace_window()
-            if imgui.menu_item_simple(f"Find Next",  f"{_shortcut}G", enabled=editor.has_find_string()):
+            if imgui.menu_item_simple("Find Next",  f"{_shortcut}G", enabled=editor.has_find_string()):
                 editor.find_next()
             # if imgui.menu_item_simple(f"Find All",  f"Shift {_shortcut}G", enabled=editor.has_find_string()):
             #     editor.find_all()

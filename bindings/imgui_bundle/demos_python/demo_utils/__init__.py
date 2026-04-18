@@ -16,6 +16,7 @@ __all__ = [
     "demos_assets_folder",
     "show_python_vs_cpp_and_run",
     "show_python_vs_cpp_file",
+    "show_python_vs_cpp_code",
     "set_hello_imgui_demo_assets_folder",
     "animate_logo",
     "imread_demo",

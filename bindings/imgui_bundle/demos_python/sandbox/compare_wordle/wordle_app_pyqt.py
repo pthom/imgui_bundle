@@ -3,7 +3,7 @@ import sys
 import wordle  # type: ignore
 from PyQt6.QtWidgets import (
     QApplication, QWidget, QGridLayout, QHBoxLayout, QVBoxLayout,
-    QPushButton, QLabel, QSizePolicy,
+    QPushButton, QLabel,
 )
 from PyQt6.QtCore import Qt, QSize
 from PyQt6.QtGui import QKeyEvent

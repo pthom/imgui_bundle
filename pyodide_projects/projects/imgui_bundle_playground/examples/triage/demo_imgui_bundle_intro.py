@@ -1,6 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Callable, List
 
 import numpy as np
@@ -12,7 +12,6 @@ from imgui_bundle import imgui_knobs, imgui_toggle
 from imgui_bundle import implot3d
 from imgui_bundle.immapp import icons_fontawesome_4
 import webbrowser
-from imgui_bundle.immapp import static
 
 # Optional imports (replacing #ifdef guards)
 try:

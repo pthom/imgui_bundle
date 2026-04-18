@@ -3,7 +3,7 @@ import os.path
 import subprocess
 import sys
 from imgui_bundle import immapp, imgui, imgui_md
-from imgui_bundle.demos_python import demo_utils, demos_tex_inspect
+from imgui_bundle.demos_python import demo_utils
 
 
 def demo_gui():

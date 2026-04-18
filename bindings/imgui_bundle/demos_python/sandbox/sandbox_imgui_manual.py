@@ -1,4 +1,4 @@
-from imgui_bundle import imgui, imgui_explorer, immapp, hello_imgui
+from imgui_bundle import imgui_explorer, immapp
 
 #hello_imgui.set_assets_folder("/Users/pascal/dvp/OpenSource/ImGuiWork/_Bundle/imgui_bundle/external/imgui_explorer/imgui_explorer/assets")
 

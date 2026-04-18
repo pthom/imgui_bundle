@@ -96,10 +96,10 @@ ui.keyboard(on_key=on_keyboard_event)
 
 with ui.column().classes("items-center w-full gap-1 mt-4"):
     # Grid
-    for row in range(6):
+    for _row in range(6):
         row_buttons = []
         with ui.row().classes("gap-1"):
-            for col in range(5):
+            for _col in range(5):
                 btn = ui.button("", on_click=lambda: None).style(
                     f"{tile_style} background-color: {CSS_COLORS[wordle.LetterState.EMPTY]} !important"
                 )

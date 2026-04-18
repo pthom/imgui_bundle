@@ -31,7 +31,6 @@ def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_ima
     - numpy.ndarray: An RGB image as a NumPy array with uint8 datatype.
     """
     import numpy  # noqa: E402
-    import numpy as np
     import matplotlib  # noqa: E402
 
     backend_message = """

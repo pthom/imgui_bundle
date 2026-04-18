@@ -13,7 +13,7 @@ These runners enable you to create powerful ImGui applications with minimal boil
 :::
 
 :::{note}
-You may also choose to bypass these runners: use [pure python backends](../python/pure_python_backend.md), or integrate Dear ImGui directly in your C++ code. 
+You may also choose to bypass these runners: use [pure python backends](../python/pure_python_backend.md), or integrate Dear ImGui directly in your C++ code.
 :::
 
 

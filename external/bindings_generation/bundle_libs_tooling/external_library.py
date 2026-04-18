@@ -223,7 +223,6 @@ class ExternalLibrary:
         os.chdir(self.git_folder_abs_path())
         cmd_str = f"git --no-pager log  --oneline {self.fork_branch}..{self.official_remote_name}/{self.official_branch}"
 
-        cmd_result_str: str
         process_result = subprocess.run(cmd_str, shell=True, capture_output=True, text=True)
         if len(process_result.stdout) > 0:
             has_changes = True

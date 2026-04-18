@@ -12,10 +12,11 @@
 import json
 from enum import Enum
 import time
-
 from imgui_bundle import hello_imgui, icons_fontawesome_4, imgui, immapp, imgui_ctx, ImVec4, ImVec2, register_demos_assets_folder
-register_demos_assets_folder()
 from typing import List, Any
+
+
+register_demos_assets_folder()
 
 
 ##########################################################################

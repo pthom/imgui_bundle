@@ -10,6 +10,7 @@ where you can adjust the params and see their effect in real time.
 
 Each time you run, you'll get a different image from picsum.photos
 """
+# ruff: noqa: F704  # F704 `await` statement outside of a function
 
 import numpy as np
 from typing import Any
@@ -22,9 +23,9 @@ from imgui_bundle import imgui, immvision, immapp, imgui_md
 
 # Load image at startup
 # ========================================================================
-_IMAGE_URL = "https://picsum.photos/640/480"  # each time you run, you'll get a different image!
 # In Pyodide, use pyfetch with top-level await (which is OK in pyodide)
 from pyodide.http import pyfetch
+_IMAGE_URL = "https://picsum.photos/640/480"  # each time you run, you'll get a different image!
 _response = await pyfetch(_IMAGE_URL)
 _image_bytes = await _response.bytes()
 _loaded_image = cv2.imdecode(np.frombuffer(_image_bytes, dtype=np.uint8), cv2.IMREAD_COLOR)

@@ -20,7 +20,7 @@ notice how each widget is just one line, and state is just plain Python variable
 - [Immediate Mode Explained](https://pthom.github.io/imgui_bundle/intro/imm-gui/)
 - [Dear ImGui in the Explorer](https://traineq.org/imgui_bundle_explorer/?lib=imgui)
 """
-from imgui_bundle import imgui, immapp, hello_imgui, ImVec4
+from imgui_bundle import imgui, immapp, hello_imgui
 
 
 AVAILABLE_ITEMS = ["Apple", "Banana", "Cherry", "Date"]

@@ -1,6 +1,6 @@
 """Wordle game - GUI with Dear ImGui Bundle"""
 import wordle  # type: ignore
-from imgui_bundle import imgui, immapp, ImVec2, hello_imgui
+from imgui_bundle import imgui, ImVec2, hello_imgui
 
 
 COLORS = {

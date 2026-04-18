@@ -32,7 +32,6 @@ Fiatlight works best on desktop
 where it auto-saves data and layout
 
 """
-
 # =============================================================================
 #         Part 1 - Standard Image Processing functions
 #  - Here we are dealing with normal function (no user interface)
@@ -121,7 +120,7 @@ def dilate(
 #         Part 2 - Define a GUI with Fiatlight
 #  - Here we import fiatlight, and add attributes to functions, then run the app
 # =============================================================================
-import fiatlight as fl
+import fiatlight as fl  # noqa
 
 # Add attributes to the canny function, specifying the ranges
 fl.add_fiat_attributes(

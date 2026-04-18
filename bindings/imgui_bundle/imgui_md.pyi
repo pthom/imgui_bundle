@@ -13,7 +13,7 @@
 ###############################################################################
 # ruff: noqa: B008
 import enum
-from typing import Optional, Callable, List
+from typing import Optional, Callable
 from imgui_bundle.imgui import ImTextureID, ImVec2, ImVec4, ImFont
 import numpy as np
 

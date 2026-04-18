@@ -8,7 +8,7 @@ contact_links:
     about: This is the official interactive demo for Dear ImGui Bundle, with lots of examples (with code)
   - name: Dear ImGui Manual
     url: https://pthom.github.io/imgui_explorer
-    about: Dear ImGui Explorer: an interacctive manual for Dear ImGui, the GUI library that is the core of Dear ImGui Bundle. Its show all the widgets and features of Dear ImGui with C++ and Python code.
+    about: "Dear ImGui Explorer: an interacctive manual for Dear ImGui, the GUI library that is the core of Dear ImGui Bundle. Its show all the widgets and features of Dear ImGui with C++ and Python code."
   - name: Hello ImGui Documentation
     url: https://pthom.github.io/hello_imgui/
     about: This is the official documentation for Hello ImGui, the GUI library that is used by Dear ImGui Bundle. It is a simple and easy to use GUI library that is based on Dear ImGui.

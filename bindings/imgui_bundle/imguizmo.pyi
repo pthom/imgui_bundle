@@ -1,7 +1,7 @@
 ###############################################################################
 # This file is a part of Dear ImGui Bundle, NOT a part of ImGuizmo
 # -----------------------------------------------------------------------------
-# imguizmo.pyi: auto-generated bindings for ImGuizmo, an Immediate mode 3D gizmo 
+# imguizmo.pyi: auto-generated bindings for ImGuizmo, an Immediate mode 3D gizmo
 # for scene editing and other controls based on Dear Imgui
 # See https://github.com/CedricGuillemet/ImGuizmo
 #

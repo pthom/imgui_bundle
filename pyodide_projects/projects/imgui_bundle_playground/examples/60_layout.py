@@ -14,7 +14,7 @@ imgui.begin_child("right")
 imgui.end_child()
 ```
 """
-from imgui_bundle import imgui, immapp, hello_imgui, ImVec4
+from imgui_bundle import imgui, immapp, ImVec4
 
 
 # Sample content for each panel

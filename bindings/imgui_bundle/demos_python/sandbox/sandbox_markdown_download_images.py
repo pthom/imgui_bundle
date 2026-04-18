@@ -7,11 +7,11 @@ Tests:
 - Local asset image (existing behavior)
 - Mixed: text, URL images, local images, code blocks
 """
+from imgui_bundle import immapp, imgui_md
 import logging
 logging.getLogger("imgui_md_image_loader").setLevel(logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
 
-from imgui_bundle import immapp, imgui, hello_imgui, imgui_md
 
 
 def gui():

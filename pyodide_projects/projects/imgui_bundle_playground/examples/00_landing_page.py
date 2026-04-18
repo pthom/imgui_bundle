@@ -46,15 +46,11 @@ color text editors, and more.
 """
 
 import math
-import time
-import numpy as np
 
 from imgui_bundle import (
-    imgui, immapp, hello_imgui, implot, imgui_knobs, imgui_toggle,
-    imgui_md, imgui_color_text_edit as ed, ImVec2, ImVec4, __version__,
-    icons_fontawesome_4, immvision
+    imgui, immapp, hello_imgui, imgui_md, imgui_color_text_edit as ed, ImVec2, ImVec4, __version__,
+    icons_fontawesome_4
 )
-from imgui_bundle import implot3d
 
 
 # ============================================================================
@@ -306,12 +302,12 @@ def slide_immvision(size):
     immvision.image("Original", s.image, s.params1)
     imgui.same_line()
     imgui.text_wrapped("\n"
-        "ImmVision is an advanced image inspector / analyzer\n"    
-        "- Drag the images to pan\n" 
-        "- Use mouse wheel to zoom (both images are synced)\n" 
-        "- At high zoom levels, the pixels values will be displayed\n" 
+        "ImmVision is an advanced image inspector / analyzer\n"
+        "- Drag the images to pan\n"
+        "- Use mouse wheel to zoom (both images are synced)\n"
+        "- At high zoom levels, the pixels values will be displayed\n"
         "- Apply colormaps\n"
-        "- Drag bottom right corner to resize images\n" 
+        "- Drag bottom right corner to resize images\n"
         "- etc.\n")
     immvision.image("Edges", s.edges, s.params2)
     imgui.end_child()

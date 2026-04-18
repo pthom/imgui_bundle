@@ -80,7 +80,7 @@ This example uses `cv::Mat` from OpenCV, but **OpenCV is optional**. ImmVision w
 - Pan by dragging with left mouse button
 - Settings panel for colormap, channels, etc.
 
-:::{tip} 
+:::{tip}
 Call `immvision.use_rgb_color_order()` once at startup for RGB images. Call `use_bgr_color_order()` for OpenCV BGR images.
 :::
 
@@ -141,7 +141,7 @@ edges = cv2.Canny(gray, 100, 200)
 
 immdebug(image, "image")  # inspect the original image
 immdebug(gray, "gray")    # inspect different steps of your processing pipeline
-immdebug(edges, "edges")  
+immdebug(edges, "edges")
 ```
 
 Works with OpenCV, PIL, matplotlib, or any numpy array. See the [immdebug PyPI package](https://pypi.org/project/immdebug/) for full API documentation.

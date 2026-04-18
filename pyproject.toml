@@ -137,6 +137,8 @@ logging.level = "INFO"
 [tool.isort]
 profile = "black"
 
+[tool.ruff]
+extend-exclude = ["*.ipynb"]
 
 #####################################
 # Wheels options

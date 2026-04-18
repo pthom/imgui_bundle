@@ -5,7 +5,7 @@ Pure Python backends in ImGui Bundle let you use ImGui with Python-only windowin
 **Key Differences**
 
 * No Hello ImGui features: Pure Python backends don't provide DPI handling, themes, asset management, or other Hello ImGui conveniences
-* Manual setup required: You must handle window creation, input events, and the render loop yourself 
+* Manual setup required: You must handle window creation, input events, and the render loop yourself
 * Texture handling: Backends must implement support for dynamic fonts (ImGui 1.92+)
 
 [python_backends](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends) contains pure python backends for glfw, pyglet, sdl2 and sdl3. They do not offer the same DPI handling as HelloImGui, but they are a good starting point if you want to use alternative backends.

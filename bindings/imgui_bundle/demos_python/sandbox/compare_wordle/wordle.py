@@ -64,8 +64,8 @@ class GameState:
     def keyboard_letter_states(self) -> dict[str, LetterState]:
         """Best known state per letter: CORRECT > PRESENT > ABSENT."""
         best: dict[str, LetterState] = {}
-        for guess, evl in zip(self.guesses, self.evaluations):
-            for ch, ls in zip(guess, evl):
+        for guess, evl in zip(self.guesses, self.evaluations):  # noqa
+            for ch, ls in zip(guess, evl):  # noqa
                 if ch not in best or ls > best[ch]:
                     best[ch] = ls
         return best

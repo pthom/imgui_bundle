@@ -1,5 +1,5 @@
 """Sandbox to test imgui_knobs customizable colors with theme switching."""
-from imgui_bundle import imgui, imgui_knobs, hello_imgui, immapp, ImVec4
+from imgui_bundle import imgui, imgui_knobs, hello_imgui, immapp
 
 # Knob state
 knob_value = 0.5

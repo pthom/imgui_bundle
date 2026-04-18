@@ -18,7 +18,7 @@ State is stored as function attributes (`show_heart.state` pattern), avoiding gl
 
 import time
 import numpy as np
-from imgui_bundle import implot, imgui, immapp, hello_imgui, imgui_toggle, imgui_knobs, imgui_md
+from imgui_bundle import implot, imgui, immapp, hello_imgui, imgui_knobs, imgui_md
 
 
 def show_heart():

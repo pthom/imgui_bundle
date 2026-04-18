@@ -25,7 +25,7 @@ import os
 
 def main():
     assets_path = os.path.join(os.path.dirname(__file__), "assets")
-    hello_imgui.set_assets_folder(assets_path)  # or hello_imgui.add_assets_search_path    
+    hello_imgui.set_assets_folder(assets_path)  # or hello_imgui.add_assets_search_path
     immapp.run(gui, window_title="My App")
 ```
 

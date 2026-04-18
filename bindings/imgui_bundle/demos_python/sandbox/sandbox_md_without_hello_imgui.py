@@ -123,12 +123,12 @@ Can be created with this code
 
 Inline math uses single dollar delimiters. For example the line below
 
-A famous math equality: $\sum_{i=0}^{n} i = \frac{n(n+1)}{2}$. 
+A famous math equality: $\sum_{i=0}^{n} i = \frac{n(n+1)}{2}$.
 
 Is generated with
 
 ```
-A famous math equality: $\sum_{i=0}^{n} i = \frac{n(n+1)}{2}$. 
+A famous math equality: $\sum_{i=0}^{n} i = \frac{n(n+1)}{2}$.
 ```
 
 **Display math with \$\$...\$\$**

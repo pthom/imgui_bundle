@@ -19,4 +19,4 @@ Dear ImGui Bundle Explorer is an interactive manual with demos of all the featur
 - **[Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/)**: live Python sandbox with ready-to-run demos - edit code, see results instantly
 - **[GitHub](https://github.com/pthom/imgui_bundle)**: source code, issues, discussions
 - **[Discord](https://discord.gg/xkzpKMeYN3)**: join the community
-- **[DeepWiki](https://deepwiki.com/pthom/imgui_bundle)**: AI-powered Q&A about the framework 
+- **[DeepWiki](https://deepwiki.com/pthom/imgui_bundle)**: AI-powered Q&A about the framework

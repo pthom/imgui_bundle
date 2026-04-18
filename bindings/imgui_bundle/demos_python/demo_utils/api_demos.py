@@ -1,6 +1,6 @@
 import os
 from typing import Callable
-from imgui_bundle import immapp, imgui, imgui_md, hello_imgui
+from imgui_bundle import immapp, imgui, imgui_md
 from imgui_bundle.demos_python.demo_utils.functional_utils import memoize
 
 

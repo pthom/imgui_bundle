@@ -1,6 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Callable, List, Optional
 
 try:
@@ -1533,7 +1533,7 @@ def _render_more_info():
     - [Python Playground](https://traineq.org/imgui_bundle_online/projects/imgui_bundle_playground/): Live Python sandbox with ready-to-run demos - edit code, see results instantly
     - [GitHub](https://github.com/pthom/imgui_bundle): Source code, issues, discussions
     - [Discord](https://discord.gg/xkzpKMeYN3): Community (new!)
-    - [DeepWiki](https://deepwiki.com/pthom/imgui_bundle): AI-powered Q&A about the framework 
+    - [DeepWiki](https://deepwiki.com/pthom/imgui_bundle): AI-powered Q&A about the framework
 
 
     **Other resources:**
@@ -1691,7 +1691,6 @@ def _intro_mini_demos():
 
     em = hello_imgui.em_size()
     dl = imgui.get_window_draw_list()
-    window_size = imgui.get_window_size()
 
     # --- Carousel zone: use available height, maintain 4:3 aspect ratio ---
     avail_height = imgui.get_content_region_avail().y

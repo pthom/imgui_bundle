@@ -6,7 +6,7 @@
 import math
 import importlib.util
 import numpy as np
-from imgui_bundle import imgui, immvision, immapp
+from imgui_bundle import immvision
 from imgui_bundle.demos_python import demo_utils
 
 HAS_OPENCV = importlib.util.find_spec("cv2") is not None

@@ -1,6 +1,5 @@
 from imgui_bundle import hello_imgui, imgui, nanovg as nvg, ImVec2, ImVec4
 import math
-from typing import List
 
 nvg_imgui = nvg.nvg_imgui
 

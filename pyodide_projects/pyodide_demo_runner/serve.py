@@ -16,7 +16,6 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import argparse
 import json
 import os
-import sys
 
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -90,7 +89,7 @@ def main():
     print(f"  CORS:   {'disabled' if args.no_cors else 'enabled'}")
     print(f"  Root:   {THIS_DIR}")
     print(f"  Demos:  {DEMOS_DIR}")
-    print(f"\n  Press Ctrl+C to stop")
+    print("\n  Press Ctrl+C to stop")
     print("=" * 60)
 
     server = HTTPServer(('', args.port), make_handler_class(not args.no_cors))

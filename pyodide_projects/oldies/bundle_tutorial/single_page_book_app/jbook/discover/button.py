@@ -1,3 +1,4 @@
+# ruff: noqa: E731
 from imgui_bundle import imgui, hello_imgui
 
 class AppState:                                               # 1.

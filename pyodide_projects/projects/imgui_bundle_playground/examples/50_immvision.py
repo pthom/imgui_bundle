@@ -15,6 +15,8 @@ This demo shows:
 **Links:**
 - [ImmVision repository](https://github.com/pthom/immvision)
 """
+# ruff: noqa: E402
+
 import math
 import numpy as np
 from numpy.typing import NDArray

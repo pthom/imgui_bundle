@@ -1,7 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import random
 from imgui_bundle import imgui, hello_imgui, imgui_md, immapp
-from imgui_bundle.demos_python.demo_utils import api_demos
 
 
 @immapp.static(idx_fortune=0, added_logs=False)

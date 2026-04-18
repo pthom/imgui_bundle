@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import sys
 from immdebug import immdebug  # type: ignore
 
 

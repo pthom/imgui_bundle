@@ -14,7 +14,7 @@
 # noqa: E701
 # noqa: E702
 # noqa: E501
-# ruff: noqa: E701, E702
+# ruff: noqa: E701, E702, F811, B007
 
 # Help:
 # - Read FAQ at http://dearimgui.com/faq

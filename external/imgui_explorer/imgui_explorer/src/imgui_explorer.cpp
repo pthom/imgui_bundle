@@ -350,11 +350,11 @@ namespace {
     void InitExplorer()
     {
         static bool initialized = false;
-        if (initialized) 
+        if (initialized)
 		    return;
         initialized = true;
 
-        // Set up the demo marker hook 
+        // Set up the demo marker hook
         ImGuiContext& g = *GImGui;
         g.DemoMarkerCallback = OnDemoMarkerCallback;
         // Disable close button on ImGui::ShowDemoWindow by default

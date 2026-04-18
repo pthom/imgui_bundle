@@ -281,7 +281,7 @@ def test_json_roundtrip():
     assert restored.watched_pixels == [(10, 20), (30, 40)]
     assert restored.zoom_pan_matrix[0][0] == pytest.approx(2.0)
     assert restored.zoom_pan_matrix[0][2] == pytest.approx(50.0)
-    assert restored.show_grid == False
+    assert not restored.show_grid
     assert restored.colormap_settings.colormap == "Viridis"
 
 
@@ -292,9 +292,9 @@ def test_json_roundtrip():
 def test_image_params_defaults():
     params = immvision.ImageParams()
     assert params.image_display_size == (0, 0)
-    assert params.refresh_image == False
-    assert params.pan_with_mouse == True
-    assert params.show_grid == True
+    assert not params.refresh_image
+    assert params.pan_with_mouse
+    assert params.show_grid
     assert params.watched_pixels == []
     assert params.mouse_info.mouse_position == (-1.0, -1.0)
 

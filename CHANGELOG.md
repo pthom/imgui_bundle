@@ -131,7 +131,7 @@ Same renames as Python (CamelCase). Additionally:
 
 # v1.92.601
 
-## ImmVision: OpenCV is now optional / use GPU rendering pipeline 
+## ImmVision: OpenCV is now optional / use GPU rendering pipeline
 
 **ImmVision no longer requires OpenCV: this way the compilation and installation of the library is much faster, and the resulting binaries are smaller.**
 

@@ -1,3 +1,5 @@
+# type: ignore
+# ruff: noqa
 from imgui_bundle import imgui, hello_imgui
 
 class AppState:                                               # 1.

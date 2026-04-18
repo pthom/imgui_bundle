@@ -12,7 +12,7 @@ def demo_gui():
     imgui_md.render_unindented(
         """
         # Theming
-        HelloImGui adds support for advanced theming to ImGui.        
+        HelloImGui adds support for advanced theming to ImGui.
         Select the menu View/Theme/Theme tweak window to explore all the themes and their customization.
         """
     )

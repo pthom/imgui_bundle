@@ -1,9 +1,4 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle import imgui, hello_imgui, immapp, implot
-
-# Set the assets folder path
-from imgui_bundle.demos_python import demo_utils
-from imgui_bundle import hello_imgui
 
 from imgui_bundle.demos_python import demo_text_edit
 demo_text_edit.main()

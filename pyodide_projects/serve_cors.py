@@ -88,7 +88,7 @@ Test Pages:
     print("  Pyodide Test Server")
     print("=" * 70)
     print(f"\n  📡 Server: http://localhost:{args.port}/")
-    print(f"\n  Press Ctrl+C to stop")
+    print("\n  Press Ctrl+C to stop")
     print("=" * 70)
     print()
 

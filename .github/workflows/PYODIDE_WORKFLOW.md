@@ -24,7 +24,7 @@ The Pyodide CI workflow (`.github/workflows/pyodide.yml`) automates the building
 6. Apply wheel naming fix (macOS workaround, safe on Linux)
 7. Upload wheel as artifact named `pyodide-wheel`
 
-**Outputs:** 
+**Outputs:**
 - Artifact: `dist/imgui_bundle-X.Y.Z-cp313-cp313-pyodide_2025_0_wasm32.whl`
 
 **Performance:**

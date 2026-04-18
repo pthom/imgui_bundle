@@ -7,6 +7,7 @@
 # You will need to install sdl2:
 #    pip install pysdl2 pysdl2-dll
 
+# ruff: noqa: F403, F405
 from imgui_bundle import imgui
 from imgui_bundle.python_backends.sdl2_backend import SDL2Renderer
 import OpenGL.GL as gl  # pip install PyOpenGL

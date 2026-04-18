@@ -10,7 +10,7 @@ The term **butterfly effect** in popular media may stem from the real-world impl
 """
 
 import numpy as np
-from imgui_bundle import implot3d, immapp, imgui, imgui_md, hello_imgui, icons_fontawesome_4
+from imgui_bundle import implot3d, immapp, imgui, imgui_md, hello_imgui
 from dataclasses import dataclass
 
 

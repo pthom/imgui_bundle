@@ -358,7 +358,7 @@ def demo_surface_plots():
     # Custom per-point color: R=x, G=y, B=z (each remapped from [-1,1] to [0,1])
     custom_colors = np.array([
         IM_COL32(int((x + 1) * 0.5 * 255), int((y + 1) * 0.5 * 255), int((z + 1) * 0.5 * 255), 255)
-        for x, y, z in zip(static.xs, static.ys, static.zs)
+        for x, y, z in zip(static.xs, static.ys, static.zs)  # noqa
     ], dtype=np.uint32)
 
     # UI: Choose fill color
@@ -1069,7 +1069,7 @@ def demo_per_index_colors():
     zs_quad = np.array([v[2] for f in faces for v in f], dtype=np.float64)
     colors_quad = np.array([
         IM_COL32(int(x * 255), int(y * 255), int(z * 255), 255)
-        for x, y, z in zip(xs_quad, ys_quad, zs_quad)
+        for x, y, z in zip(xs_quad, ys_quad, zs_quad)  # noqa
     ], dtype=np.uint32)
 
     if implot3d.begin_plot("Colorful Quads"):
