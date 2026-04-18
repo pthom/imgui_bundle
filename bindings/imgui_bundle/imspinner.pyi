@@ -16,9 +16,6 @@ from typing import Tuple, Optional, overload
 from imgui_bundle.imgui import ImColor
 
 IM_PI = math.pi
-PI_DIV_4 = IM_PI / 4.
-PI_DIV_2 = IM_PI / 2.
-PI_2 = IM_PI * 2.
 
 LeafColor = ImColor
 
