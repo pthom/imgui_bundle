@@ -492,6 +492,8 @@ def show_code_editor(size):
 
 def show_info():
     imgui_md.render(__doc__)
+    imgui.separator()
+    imgui.text_disabled(f"Dear ImGui Bundle, version {__version__}")
 
 
 # ============================================================================
