@@ -893,24 +893,24 @@ class ease_per_axis:
     @overload
     def __init__(self) -> None:
         pass
-
     # ease_per_axis(ease_desc all)    /* original C++ signature */
     # 		: x(all), y(all), z(all), w(all) {}
     @overload
     def __init__(self, all: ease_desc) -> None:
         pass
-
     # ease_per_axis(ease_desc ex, ease_desc ey)    /* original C++ signature */
     # 		: x(ex), y(ey), z(ease_preset(ease_linear)), w(ease_preset(ease_linear)) {}
     @overload
     def __init__(self, ex: ease_desc, ey: ease_desc) -> None:
         pass
-
     # ease_per_axis(ease_desc ex, ease_desc ey, ease_desc ez, ease_desc ew)    /* original C++ signature */
     # 		: x(ex), y(ey), z(ez), w(ew) {}
     @overload
     def __init__(self, ex: ease_desc, ey: ease_desc, ez: ease_desc, ew: ease_desc) -> None:
         pass
+
+
+
 
 # Tween with per-axis easing - each component uses its own easing curve
 # ImVec2 tween_vec2_per_axis(ImGuiID id, ImGuiID channel_id, ImVec2 target, float dur, ease_per_axis const& ez, int policy, float dt);    /* original C++ signature */

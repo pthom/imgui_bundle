@@ -133,32 +133,14 @@ time_t = int
 
 # Computes the common (base-10) logarithm
 # static inline float  ImLog10(float x)  { return log10f(x); }    /* original C++ signature */
-@overload
-def im_log10(x: float) -> float:
-    """(private API)"""
-    pass
-# static inline double ImLog10(double x) { return log10(x);  }    /* original C++ signature */
-@overload
 def im_log10(x: float) -> float:
     """(private API)"""
     pass
 # static inline float  ImSinh(float x)   { return sinhf(x);  }    /* original C++ signature */
-@overload
-def im_sinh(x: float) -> float:
-    """(private API)"""
-    pass
-# static inline double ImSinh(double x)  { return sinh(x);   }    /* original C++ signature */
-@overload
 def im_sinh(x: float) -> float:
     """(private API)"""
     pass
 # static inline float  ImAsinh(float x)  { return asinhf(x); }    /* original C++ signature */
-@overload
-def im_asinh(x: float) -> float:
-    """(private API)"""
-    pass
-# static inline double ImAsinh(double x) { return asinh(x);  }    /* original C++ signature */
-@overload
 def im_asinh(x: float) -> float:
     """(private API)"""
     pass
@@ -724,7 +706,6 @@ class Tick:
     @overload
     def __init__(self) -> None:
         pass
-
     # ImPlotTick(double value, bool major, int level, bool show_label) {    /* original C++ signature */
     #         PixelPos     = 0;
     #         PlotPos      = value;
@@ -736,6 +717,7 @@ class Tick:
     @overload
     def __init__(self, value: float, major: bool, level: int, show_label: bool) -> None:
         pass
+
 
 class Ticker:
     """ Collection of ticks"""
@@ -767,8 +749,6 @@ class Ticker:
     def add_tick(self, value: float, major: bool, level: int, show_label: bool, label: str) -> Tick:
         """(private API)"""
         pass
-
-
     # inline ImPlotTick& AddTick(ImPlotTick tick) {    /* original C++ signature */
     #         if (tick.ShowLabel) {
     #             MaxSize.x     =  tick.LabelSize.x > MaxSize.x ? tick.LabelSize.x : MaxSize.x;
@@ -783,6 +763,8 @@ class Ticker:
         """(private API)"""
         pass
 
+
+
     # const char* GetText(int idx) const {    /* original C++ signature */
     #         return TextBuffer.Buf.Data + Ticks[idx].TextOffset;
     #     }
@@ -790,7 +772,6 @@ class Ticker:
     def get_text(self, idx: int) -> str:
         """(private API)"""
         pass
-
     # const char* GetText(const ImPlotTick& tick) {    /* original C++ signature */
     #         return GetText(tick.Idx);
     #     }
@@ -798,6 +779,7 @@ class Ticker:
     def get_text(self, tick: Tick) -> str:
         """(private API)"""
         pass
+
 
     # void OverrideSizeLate(const ImVec2& size) {    /* original C++ signature */
     #         LateSize.x = size.x > LateSize.x ? size.x : LateSize.x;
@@ -1028,7 +1010,6 @@ class Axis:
     def set_range(self, v1: float, v2: float) -> None:
         """(private API)"""
         pass
-
     # inline void SetRange(const ImPlotRange& range) {    /* original C++ signature */
     #         SetRange(range.Min, range.Max);
     #     }
@@ -1036,6 +1017,7 @@ class Axis:
     def set_range(self, range: Range) -> None:
         """(private API)"""
         pass
+
 
     # inline void SetAspect(double unit_per_pix) {    /* original C++ signature */
     #         double new_size = unit_per_pix * PixelSize();
@@ -1568,22 +1550,10 @@ class Plot:
         pass
 
     # inline       ImPlotAxis& XAxis(int i)       { return Axes[ImAxis_X1 + i]; }    /* original C++ signature */
-    @overload
-    def x_axis(self, i: int) -> Axis:
-        """(private API)"""
-        pass
-    # inline const ImPlotAxis& XAxis(int i) const { return Axes[ImAxis_X1 + i]; }    /* original C++ signature */
-    @overload
     def x_axis(self, i: int) -> Axis:
         """(private API)"""
         pass
     # inline       ImPlotAxis& YAxis(int i)       { return Axes[ImAxis_Y1 + i]; }    /* original C++ signature */
-    @overload
-    def y_axis(self, i: int) -> Axis:
-        """(private API)"""
-        pass
-    # inline const ImPlotAxis& YAxis(int i) const { return Axes[ImAxis_Y1 + i]; }    /* original C++ signature */
-    @overload
     def y_axis(self, i: int) -> Axis:
         """(private API)"""
         pass

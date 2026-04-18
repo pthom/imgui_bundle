@@ -1458,15 +1458,6 @@ class Point:
     #         IM_ASSERT(idx == 0 || idx == 1 || idx == 2);
     #         return ((double*)(void*)(char*)this)[idx];
     #     }
-    @overload
-    def __getitem__(self, idx: int) -> float:
-        """(private API)"""
-        pass
-    # double operator[](size_t idx) const {    /* original C++ signature */
-    #         IM_ASSERT(idx == 0 || idx == 1 || idx == 2);
-    #         return ((const double*)(const void*)(const char*)this)[idx];
-    #     }
-    @overload
     def __getitem__(self, idx: int) -> float:
         """(private API)"""
         pass
@@ -1475,27 +1466,25 @@ class Point:
     @overload
     def __mul__(self, rhs: float) -> Point:
         pass
-    # IMPLOT3D_API ImPlot3DPoint operator/(double rhs) const;    /* original C++ signature */
-    @overload
-    def __truediv__(self, rhs: float) -> Point:
-        pass
-    # IMPLOT3D_API ImPlot3DPoint operator+(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
-    def __add__(self, rhs: Point) -> Point:
-        pass
-    # IMPLOT3D_API ImPlot3DPoint operator-(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
-    @overload
-    def __sub__(self, rhs: Point) -> Point:
-        pass
     # IMPLOT3D_API ImPlot3DPoint operator*(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
     @overload
     def __mul__(self, rhs: Point) -> Point:
+        pass
+    # IMPLOT3D_API ImPlot3DPoint operator/(double rhs) const;    /* original C++ signature */
+    @overload
+    def __truediv__(self, rhs: float) -> Point:
         pass
     # IMPLOT3D_API ImPlot3DPoint operator/(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
     @overload
     def __truediv__(self, rhs: Point) -> Point:
         pass
+    # IMPLOT3D_API ImPlot3DPoint operator+(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
+    def __add__(self, rhs: Point) -> Point:
+        pass
+    # IMPLOT3D_API ImPlot3DPoint operator-(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
+    def __sub__(self, rhs: Point) -> Point:
+        pass
     # IMPLOT3D_API ImPlot3DPoint operator-() const;    /* original C++ signature */
-    @overload
     def __neg__(self) -> Point:
         """Unary operator"""
         pass
@@ -1504,23 +1493,23 @@ class Point:
     @overload
     def __imul__(self, rhs: float) -> Point:
         pass
+    # IMPLOT3D_API ImPlot3DPoint& operator*=(const ImPlot3DPoint& rhs);    /* original C++ signature */
+    @overload
+    def __imul__(self, rhs: Point) -> Point:
+        pass
     # IMPLOT3D_API ImPlot3DPoint& operator/=(double rhs);    /* original C++ signature */
     @overload
     def __itruediv__(self, rhs: float) -> Point:
+        pass
+    # IMPLOT3D_API ImPlot3DPoint& operator/=(const ImPlot3DPoint& rhs);    /* original C++ signature */
+    @overload
+    def __itruediv__(self, rhs: Point) -> Point:
         pass
     # IMPLOT3D_API ImPlot3DPoint& operator+=(const ImPlot3DPoint& rhs);    /* original C++ signature */
     def __iadd__(self, rhs: Point) -> Point:
         pass
     # IMPLOT3D_API ImPlot3DPoint& operator-=(const ImPlot3DPoint& rhs);    /* original C++ signature */
     def __isub__(self, rhs: Point) -> Point:
-        pass
-    # IMPLOT3D_API ImPlot3DPoint& operator*=(const ImPlot3DPoint& rhs);    /* original C++ signature */
-    @overload
-    def __imul__(self, rhs: Point) -> Point:
-        pass
-    # IMPLOT3D_API ImPlot3DPoint& operator/=(const ImPlot3DPoint& rhs);    /* original C++ signature */
-    @overload
-    def __itruediv__(self, rhs: Point) -> Point:
         pass
     # Comparison operators
     # IMPLOT3D_API bool operator==(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
@@ -1737,14 +1726,14 @@ class Quat:
     def __mul__(self, rhs: Quat) -> Quat:
         """Quaternion multiplication"""
         pass
-    # IMPLOT3D_API ImPlot3DQuat& Normalize();    /* original C++ signature */
-    def normalize(self) -> Quat:
-        """Normalize the quaternion in place"""
-        pass
     # IMPLOT3D_API ImPlot3DPoint operator*(const ImPlot3DPoint& point) const;    /* original C++ signature */
     @overload
     def __mul__(self, point: Point) -> Point:
         """Rotate a 3D point using the quaternion"""
+        pass
+    # IMPLOT3D_API ImPlot3DQuat& Normalize();    /* original C++ signature */
+    def normalize(self) -> Quat:
+        """Normalize the quaternion in place"""
         pass
     # Comparison operators
     # IMPLOT3D_API bool operator==(const ImPlot3DQuat& rhs) const;    /* original C++ signature */

@@ -1619,24 +1619,32 @@ void py_init_module_implot3d(nb::module_& m)
             "(private API)")
         .def("__mul__",
             nb::overload_cast<double>(&ImPlot3DPoint::operator*, nb::const_), nb::arg("rhs"))
+        .def("__mul__",
+            nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DPoint::operator*, nb::const_), nb::arg("rhs"))
         .def("__truediv__",
             nb::overload_cast<double>(&ImPlot3DPoint::operator/, nb::const_), nb::arg("rhs"))
+        .def("__truediv__",
+            nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DPoint::operator/, nb::const_), nb::arg("rhs"))
         .def("__add__",
             &ImPlot3DPoint::operator+, nb::arg("rhs"))
         .def("__sub__",
             nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DPoint::operator-, nb::const_), nb::arg("rhs"))
-        .def("__mul__",
-            nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DPoint::operator*, nb::const_), nb::arg("rhs"))
-        .def("__truediv__",
-            nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DPoint::operator/, nb::const_), nb::arg("rhs"))
         .def("__neg__",
             [](ImPlot3DPoint & self) { return self.operator-(); }, "Unary operator")
         .def("__imul__",
             nb::overload_cast<double>(&ImPlot3DPoint::operator*=),
             nb::arg("rhs"),
             nb::rv_policy::reference)
+        .def("__imul__",
+            nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DPoint::operator*=),
+            nb::arg("rhs"),
+            nb::rv_policy::reference)
         .def("__itruediv__",
             nb::overload_cast<double>(&ImPlot3DPoint::operator/=),
+            nb::arg("rhs"),
+            nb::rv_policy::reference)
+        .def("__itruediv__",
+            nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DPoint::operator/=),
             nb::arg("rhs"),
             nb::rv_policy::reference)
         .def("__iadd__",
@@ -1645,14 +1653,6 @@ void py_init_module_implot3d(nb::module_& m)
             nb::rv_policy::reference)
         .def("__isub__",
             &ImPlot3DPoint::operator-=,
-            nb::arg("rhs"),
-            nb::rv_policy::reference)
-        .def("__imul__",
-            nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DPoint::operator*=),
-            nb::arg("rhs"),
-            nb::rv_policy::reference)
-        .def("__itruediv__",
-            nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DPoint::operator/=),
             nb::arg("rhs"),
             nb::rv_policy::reference)
         .def("__eq__",
@@ -1805,14 +1805,14 @@ void py_init_module_implot3d(nb::module_& m)
             nb::overload_cast<const ImPlot3DQuat &>(&ImPlot3DQuat::operator*, nb::const_),
             nb::arg("rhs"),
             "Quaternion multiplication")
-        .def("normalize",
-            &ImPlot3DQuat::Normalize,
-            "Normalize the quaternion in place",
-            nb::rv_policy::reference)
         .def("__mul__",
             nb::overload_cast<const ImPlot3DPoint &>(&ImPlot3DQuat::operator*, nb::const_),
             nb::arg("point"),
             "Rotate a 3D point using the quaternion")
+        .def("normalize",
+            &ImPlot3DQuat::Normalize,
+            "Normalize the quaternion in place",
+            nb::rv_policy::reference)
         .def("__eq__",
             &ImPlot3DQuat::operator==, nb::arg("rhs"))
         .def("__ne__",

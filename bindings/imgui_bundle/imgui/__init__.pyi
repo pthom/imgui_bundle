@@ -505,17 +505,11 @@ class ImVec2(Vec2Protocol):
     def __init__(self, _x: float, _y: float) -> None:
         pass
     # float& operator[] (size_t idx)          { IM_ASSERT(idx == 0 || idx == 1); return ((float*)(void*)(char*)this)[idx]; }     /* original C++ signature */
-    @overload
     def __getitem__(self, idx: int) -> float:
         """(private API)
 
         We very rarely use this [] operator, so the assert overhead is fine.
         """
-        pass
-    # float  operator[] (size_t idx) const    { IM_ASSERT(idx == 0 || idx == 1); return ((const float*)(const void*)(const char*)this)[idx]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, idx: int) -> float:
-        """(private API)"""
         pass
     # #ifdef IMGUI_BUNDLE_PYTHON_API
     #
@@ -1469,12 +1463,6 @@ def checkbox(label: str, v: bool) -> Tuple[bool, bool]:
     pass
 
 # IMGUI_API bool          CheckboxFlags(const char* label, int* flags, int flags_value);    /* original C++ signature */
-@overload
-def checkbox_flags(label: str, flags: int, flags_value: int) -> Tuple[bool, int]:
-    pass
-
-# IMGUI_API bool          CheckboxFlags(const char* label, unsigned int* flags, unsigned int flags_value);    /* original C++ signature */
-@overload
 def checkbox_flags(label: str, flags: int, flags_value: int) -> Tuple[bool, int]:
     pass
 
@@ -2254,11 +2242,6 @@ def value(prefix: str, b: bool) -> None:
     pass
 
 # IMGUI_API void          Value(const char* prefix, int v);    /* original C++ signature */
-@overload
-def value(prefix: str, v: int) -> None:
-    pass
-
-# IMGUI_API void          Value(const char* prefix, unsigned int v);    /* original C++ signature */
 @overload
 def value(prefix: str, v: int) -> None:
     pass
@@ -5557,12 +5540,6 @@ class ImVector_int:  # Python specialization for ImVector<int>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> int:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> int:
         """(private API)"""
         pass
@@ -5625,12 +5602,6 @@ class ImVector_uint:  # Python specialization for ImVector<uint>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> uint:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> uint:
         """(private API)"""
         pass
@@ -5693,12 +5664,6 @@ class ImVector_float:  # Python specialization for ImVector<float>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> float:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> float:
         """(private API)"""
         pass
@@ -5761,13 +5726,7 @@ class ImVector_char:  # Python specialization for ImVector<char>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> str:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> char:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
@@ -5829,12 +5788,6 @@ class ImVector_uchar:  # Python specialization for ImVector<uchar>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> uchar:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> uchar:
         """(private API)"""
         pass
@@ -5897,12 +5850,6 @@ class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImDrawCmd:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImDrawCmd:
         """(private API)"""
         pass
@@ -5965,12 +5912,6 @@ class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChanne
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImDrawChannel:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImDrawChannel:
         """(private API)"""
         pass
@@ -6033,12 +5974,6 @@ class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImDrawVert:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImDrawVert:
         """(private API)"""
         pass
@@ -6101,12 +6036,6 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImVec4:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImVec4:
         """(private API)"""
         pass
@@ -6169,12 +6098,6 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImVec2:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImVec2:
         """(private API)"""
         pass
@@ -6237,12 +6160,6 @@ class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList 
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImDrawList:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImDrawList:
         """(private API)"""
         pass
@@ -6305,12 +6222,6 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImFont:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImFont:
         """(private API)"""
         pass
@@ -6373,12 +6284,6 @@ class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImFontGlyph:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImFontGlyph:
         """(private API)"""
         pass
@@ -6441,12 +6346,6 @@ class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatf
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> PlatformMonitor:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> PlatformMonitor:
         """(private API)"""
         pass
@@ -6509,12 +6408,6 @@ class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> Viewport:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> Viewport:
         """(private API)"""
         pass
@@ -6577,12 +6470,6 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> Window:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> Window:
         """(private API)"""
         pass
@@ -6645,12 +6532,6 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImFontConfig:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImFontConfig:
         """(private API)"""
         pass
@@ -6713,12 +6594,6 @@ class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontCon
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImFontConfig:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImFontConfig:
         """(private API)"""
         pass
@@ -6781,12 +6656,6 @@ class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusS
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> FocusScopeData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> FocusScopeData:
         """(private API)"""
         pass
@@ -6849,12 +6718,6 @@ class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSele
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> SelectionRequest:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> SelectionRequest:
         """(private API)"""
         pass
@@ -6917,12 +6780,6 @@ class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImRect:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImRect:
         """(private API)"""
         pass
@@ -6985,12 +6842,6 @@ class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ColorMod:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ColorMod:
         """(private API)"""
         pass
@@ -7053,12 +6904,6 @@ class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> GroupData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> GroupData:
         """(private API)"""
         pass
@@ -7121,12 +6966,6 @@ class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> PopupData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> PopupData:
         """(private API)"""
         pass
@@ -7189,12 +7028,6 @@ class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewpor
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ViewportP:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ViewportP:
         """(private API)"""
         pass
@@ -7257,12 +7090,6 @@ class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> InputEvent:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> InputEvent:
         """(private API)"""
         pass
@@ -7325,12 +7152,6 @@ class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindo
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> WindowStackData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> WindowStackData:
         """(private API)"""
         pass
@@ -7393,12 +7214,6 @@ class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGui
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TableColumnSortSpecs:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TableColumnSortSpecs:
         """(private API)"""
         pass
@@ -7461,12 +7276,6 @@ class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTab
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TableInstanceData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TableInstanceData:
         """(private API)"""
         pass
@@ -7529,12 +7338,6 @@ class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTe
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TableTempData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TableTempData:
         """(private API)"""
         pass
@@ -7597,12 +7400,6 @@ class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> PtrOrIndex:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> PtrOrIndex:
         """(private API)"""
         pass
@@ -7665,12 +7462,6 @@ class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSetti
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> SettingsHandler:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> SettingsHandler:
         """(private API)"""
         pass
@@ -7733,12 +7524,6 @@ class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrin
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ShrinkWidthItem:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ShrinkWidthItem:
         """(private API)"""
         pass
@@ -7801,12 +7586,6 @@ class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackL
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> StackLevelInfo:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> StackLevelInfo:
         """(private API)"""
         pass
@@ -7869,12 +7648,6 @@ class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TabItem:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TabItem:
         """(private API)"""
         pass
@@ -7937,12 +7710,6 @@ class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRou
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> KeyRoutingData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> KeyRoutingData:
         """(private API)"""
         pass
@@ -8005,12 +7772,6 @@ class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListC
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ListClipperData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ListClipperData:
         """(private API)"""
         pass
@@ -8073,12 +7834,6 @@ class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiList
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ListClipperRange:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ListClipperRange:
         """(private API)"""
         pass
@@ -8141,12 +7896,6 @@ class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColu
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> OldColumnData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> OldColumnData:
         """(private API)"""
         pass
@@ -8209,12 +7958,6 @@ class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> OldColumns:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> OldColumns:
         """(private API)"""
         pass
@@ -8277,12 +8020,6 @@ class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> StyleMod:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> StyleMod:
         """(private API)"""
         pass
@@ -8345,12 +8082,6 @@ class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTable
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TableHeaderData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TableHeaderData:
         """(private API)"""
         pass
@@ -8413,12 +8144,6 @@ class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTre
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TreeNodeStackData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TreeNodeStackData:
         """(private API)"""
         pass
@@ -8481,12 +8206,6 @@ class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiM
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> MultiSelectTempData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> MultiSelectTempData:
         """(private API)"""
         pass
@@ -8549,12 +8268,6 @@ class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextur
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImTextureData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImTextureData:
         """(private API)"""
         pass
@@ -8617,12 +8330,6 @@ class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImTextureRef:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImTextureRef:
         """(private API)"""
         pass
@@ -8685,12 +8392,6 @@ class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRec
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImTextureRect:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImTextureRect:
         """(private API)"""
         pass

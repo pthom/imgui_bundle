@@ -1021,11 +1021,6 @@ class Point:
     def __init__(self, p: ImVec2Like) -> None:
         pass
     # IMPLOT_API double& operator[] (size_t idx)             { IM_ASSERT(idx == 0 || idx == 1); return ((double*)(void*)(char*)this)[idx]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, idx: int) -> float:
-        pass
-    # IMPLOT_API double  operator[] (size_t idx) const       { IM_ASSERT(idx == 0 || idx == 1); return ((const double*)(const void*)(const char*)this)[idx]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, idx: int) -> float:
         pass
 
@@ -1441,13 +1436,11 @@ def setup_axis_links(axis: ImAxis, link_min: BoxedValue, link_max: BoxedValue) -
 # #endif
 #
 # IMPLOT_API void SetupAxisFormat(ImAxis axis, const char* fmt);    /* original C++ signature */
-@overload
 def setup_axis_format(axis: ImAxis, fmt: str) -> None:
     """Sets the format of numeric axis labels via formatter specifier (default="%g"). Formatted values will be double (i.e. use %f)."""
     pass
 
 # IMPLOT_API void SetupAxisScale(ImAxis axis, ImPlotScale scale);    /* original C++ signature */
-@overload
 def setup_axis_scale(axis: ImAxis, scale: Scale) -> None:
     """Sets an axis' scale using built-in options."""
     pass
@@ -1822,7 +1815,6 @@ def plot_inf_lines(label_id: str, values: np.ndarray, spec: Optional[Spec] = Non
 
 # Plots a pie chart. Center and radius are in plot units. #label_fmt can be set to None for no labels.
 # IMPLOT_TMP void PlotPieChart(const char* const label_ids[], const T* values, int count, double x, double y, double radius, const char* label_fmt="%.1f", double angle0=90, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
-@overload
 def plot_pie_chart(
     label_ids: List[str],
     values: np.ndarray,

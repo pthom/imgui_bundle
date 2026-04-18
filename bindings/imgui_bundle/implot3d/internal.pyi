@@ -536,8 +536,6 @@ class Ticker:
     def add_tick(self, value: float, major: bool, show_label: bool, label: str) -> Tick:
         """(private API)"""
         pass
-
-
     # inline ImPlot3DTick& AddTick(ImPlot3DTick tick) {    /* original C++ signature */
     #         tick.Idx = Ticks.size();
     #         Ticks.push_back(tick);
@@ -548,17 +546,19 @@ class Ticker:
         """(private API)"""
         pass
 
+
+
     # const char* GetText(int idx) const { return TextBuffer.Buf.Data + Ticks[idx].TextOffset; }    /* original C++ signature */
     @overload
     def get_text(self, idx: int) -> str:
         """(private API)"""
         pass
-
     # const char* GetText(const ImPlot3DTick& tick) const { return GetText(tick.Idx); }    /* original C++ signature */
     @overload
     def get_text(self, tick: Tick) -> str:
         """(private API)"""
         pass
+
 
     # void Reset() {    /* original C++ signature */
     #         Ticks.shrink(0);

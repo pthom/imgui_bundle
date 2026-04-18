@@ -87,12 +87,6 @@ class Color4d:
     # double v[4] = {0, 0, 0, 255};    /* original C++ signature */
     v: np.ndarray  # ndarray[type=double, size=4] default:float(0, 0, 0, 255)
     # double& operator[](int i) { return v[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> float:
-        """(private API)"""
-        pass
-    # const double& operator[](int i) const { return v[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> float:
         """(private API)"""
         pass

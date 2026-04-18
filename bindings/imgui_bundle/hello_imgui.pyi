@@ -434,17 +434,10 @@ def asset_exists(asset_relative_filename: str) -> bool:
 # @@md#AssetsSearchPaths
 
 # void SetAssetsFolder(const std::string& folder);    /* original C++ signature */
-@overload
 def set_assets_folder(folder: str) -> None:
     """Sets the assets folder location
     (when using this, automatic assets installation on mobile platforms may not work)
     """
-    pass
-
-# void SetAssetsFolder(const char* folder);    /* original C++ signature */
-@overload
-def set_assets_folder(folder: str) -> None:
-    """Legacy API, kept for compatibility"""
     pass
 
 # Assets search paths provide additional locations where assets can be found,
