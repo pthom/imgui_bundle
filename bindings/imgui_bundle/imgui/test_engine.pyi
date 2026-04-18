@@ -17,7 +17,6 @@ Note: Integrating ImGui TestEngine directly from python, and without using Hello
 """
 
 # ruff: noqa: B008, F821
-# mypy: disable-error-code="name-defined"
 import sys
 from typing import Any, Optional, Tuple, Callable, overload, Union
 import numpy as np
@@ -45,6 +44,7 @@ from imgui_bundle.imgui import (
     ImVector_int,
     ImVector_Window_ptr,
     ImVector_char,
+    TextBuffer,
 )
 from imgui_bundle.imgui.internal import (
     ItemStatusFlags,
@@ -75,7 +75,6 @@ TestOpFlags_None = TestOpFlags_.none  # noqa
 TestRunFlags_None = TestRunFlags_.none  # noqa
 TestRunSpeed_Fast = TestRunSpeed.fast  # noqa
 TestFlags_None = TestFlags_.none  # noqa
-Dir_None = Dir_.none  # noqa
 TestActiveFunc_None = TestActiveFunc.none  # noqa
 TestGroup_Unknown = TestGroup.unknown  # noqa
 TestStatus_Unknown = TestStatus.unknown  # noqa
