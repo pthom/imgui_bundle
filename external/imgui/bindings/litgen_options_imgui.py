@@ -575,6 +575,11 @@ def litgen_options_imgui(
         stub_code = stub_code.replace(
             "class ImVec4:", "class ImVec4(Vec4Protocol):"
         )
+        stub_code = stub_code.replace(
+            "SelectionRequestType = SelectionRequestType()",
+            "SelectionRequestType = SelectionRequestType.none"
+        )
+
         # Replace ImVector[int] by ImVector_int, etc.
         import re
         pattern = r'\bImVector\s*\[\s*(.*?)\s*\]'

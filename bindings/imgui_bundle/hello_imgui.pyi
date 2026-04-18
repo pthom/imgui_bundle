@@ -14,7 +14,6 @@ https://github.com/pthom/hello_imgui
 ###############################################################################
 
 # ruff: noqa: F811, B008, F821
-# mypy: disable-error-code="override"
 from typing import List, Any, Callable, Tuple, Optional, overload, Dict
 import numpy as np
 import enum
@@ -1039,7 +1038,7 @@ class ScreenBounds:
     ) -> ScreenBounds:
         pass
     # bool operator==(const ScreenBounds& other) const;    /* original C++ signature */
-    def __eq__(self, other: ScreenBounds) -> bool:
+    def __eq__(self, other: object) -> bool:
         pass
     # ScreenBounds(ScreenPosition position = DefaultScreenPosition, ScreenSize size = DefaultWindowSize);    /* original C++ signature */
     def __init__(

@@ -1504,10 +1504,10 @@ class Point:
         pass
     # Comparison operators
     # IMPLOT3D_API bool operator==(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
-    def __eq__(self, rhs: Point) -> bool:
+    def __eq__(self, rhs: object) -> bool:
         pass
     # IMPLOT3D_API bool operator!=(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
-    def __ne__(self, rhs: Point) -> bool:
+    def __ne__(self, rhs: object) -> bool:
         pass
     # IMPLOT3D_API double Dot(const ImPlot3DPoint& rhs) const;    /* original C++ signature */
     def dot(self, rhs: Point) -> float:
@@ -1728,10 +1728,10 @@ class Quat:
         pass
     # Comparison operators
     # IMPLOT3D_API bool operator==(const ImPlot3DQuat& rhs) const;    /* original C++ signature */
-    def __eq__(self, rhs: Quat) -> bool:
+    def __eq__(self, rhs: object) -> bool:
         pass
     # IMPLOT3D_API bool operator!=(const ImPlot3DQuat& rhs) const;    /* original C++ signature */
-    def __ne__(self, rhs: Quat) -> bool:
+    def __ne__(self, rhs: object) -> bool:
         pass
     # IMPLOT3D_API static ImPlot3DQuat Slerp(const ImPlot3DQuat& q1, const ImPlot3DQuat& q2, double t);    /* original C++ signature */
     @staticmethod

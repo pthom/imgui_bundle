@@ -8,7 +8,7 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: B008, E741
-# mypy: disable-error-code="overload-overlap, no-redef, overload-cannot-match, call-arg"
+# mypy: disable-error-code="overload-overlap, no-redef, overload-cannot-match"
 from __future__ import annotations
 import sys
 from typing import (
@@ -9910,7 +9910,7 @@ class SelectionRequest:
     # ImGuiSelectionRequest(ImGuiSelectionRequestType Type = ImGuiSelectionRequestType(), bool Selected = bool(), ImS8 RangeDirection = ImS8(), ImGuiSelectionUserData RangeFirstItem = ImGuiSelectionUserData(), ImGuiSelectionUserData RangeLastItem = ImGuiSelectionUserData());    /* original C++ signature */
     def __init__(
         self,
-        type: SelectionRequestType = SelectionRequestType(),
+        type: SelectionRequestType = SelectionRequestType.none,
         selected: bool = bool(),
         range_direction: ImS8 = ImS8(),
         range_first_item: Optional[SelectionUserData] = None,
