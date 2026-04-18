@@ -1234,7 +1234,7 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
          Note: this class can be instantiated only after a valid renderer backend (OpenGL) has been created
         """
         # NVGcontext *vg = nullptr;    /* original C++ signature */
-        vg: Context = None
+        vg: Optional[Context] = None
         # int Width = 0,     /* original C++ signature */
         width: int = 0
         # Height = 0;    /* original C++ signature */

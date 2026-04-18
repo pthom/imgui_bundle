@@ -17,7 +17,7 @@ Note: Integrating ImGui TestEngine directly from python, and without using Hello
 """
 
 # ruff: noqa: B008, F821
-# mypy: disable-error-code="assignment, call-arg, name-defined"
+# mypy: disable-error-code="call-arg, name-defined"
 import sys
 from typing import Any, Optional, Tuple, Callable, overload, Union
 import numpy as np
@@ -83,8 +83,8 @@ TestStatus_Unknown = TestStatus.unknown  # noqa
 TestStatus_Success = TestStatus.success  # noqa
 InputSource_Mouse = InputSource.mouse  # noqa
 
-Function_TestRunner = Callable[[TestContext], None]
-Function_TestGui = Callable[[imgui.test_engine.TestContext], None]
+Function_TestRunner = Callable[[TestContext], None] | None
+Function_TestGui = Callable[[imgui.test_engine.TestContext], None] | None
 
 Str30 = str
 Str256 = str
@@ -521,9 +521,9 @@ class TestEngineIO:
 
     # Options: Functions
     # void*                                       SrcFileOpenUserData = nullptr;    /* original C++ signature */
-    src_file_open_user_data: Any = None  # (Optional) User data for SrcFileOpenFunc
+    src_file_open_user_data: Optional[Any] = None  # (Optional) User data for SrcFileOpenFunc
     # void*                                       ScreenCaptureUserData = nullptr;    /* original C++ signature */
-    screen_capture_user_data: Any = None  # (Optional) User data for ScreenCaptureFunc
+    screen_capture_user_data: Optional[Any] = None  # (Optional) User data for ScreenCaptureFunc
 
     # Options: Main
     # bool                        ConfigSavedSettings = true;    /* original C++ signature */
@@ -563,7 +563,7 @@ class TestEngineIO:
     # bool                        ConfigLogToDebugger = false;    /* original C++ signature */
     config_log_to_debugger: bool = False  # Output log entries to Debugger (in addition to Test Engine UI)
     # void*                       ConfigLogToFuncUserData = NULL;    /* original C++ signature */
-    config_log_to_func_user_data: Any = None
+    config_log_to_func_user_data: Optional[Any] = None
 
     # Options: Speed of user simulation
     # float                       MouseSpeed = 600.0f;    /* original C++ signature */
@@ -675,7 +675,7 @@ class TestItemInfo:
     # ImGuiID                     ID = 0;    /* original C++ signature */
     id_: ID = 0  # Item ID
     # ImGuiWindow*                Window = nullptr;    /* original C++ signature */
-    window: Window = None  # Item Window
+    window: Optional[Window] = None  # Item Window
     # int                         TimestampMain;    /* original C++ signature */
     timestamp_main: int  # Timestamp of main result (all fields)
     # int                         TimestampStatus;    /* original C++ signature */
@@ -864,7 +864,7 @@ class Test:
         None  # Teardown driving function, executed after TestFunc _regardless_ of TestFunc failing.
     )
     # void*                           UserData = nullptr;    /* original C++ signature */
-    user_data: Any = (
+    user_data: Optional[Any] = (
         None  # General purpose user data (if assigning capturing lambdas on GuiFunc/TestFunc you may not need to use this)
     )
     # ImVector<ImGuiTestRunTask>    Dependencies;                   // Registered via AddDependencyTest(), ran automatically before our test. This is a simpler wrapper to calling ctx->RunChildTest()
@@ -888,7 +888,7 @@ class Test:
     # size_t                          VarsSize = 0;    /* original C++ signature */
     vars_size: int = 0
     # void*                           VarsPostConstructorUserFn = nullptr;    /* original C++ signature */
-    vars_post_constructor_user_fn: Any = None
+    vars_post_constructor_user_fn: Optional[Any] = None
 
     # ImGuiTest() {}    /* original C++ signature */
     def __init__(self) -> None:
@@ -899,7 +899,7 @@ class TestRunTask:
     """Stored in test queue"""
 
     # ImGuiTest*          Test = nullptr;    /* original C++ signature */
-    test: Test = None
+    test: Optional[Test] = None
     # ImGuiTestRunFlags   RunFlags = ImGuiTestRunFlags_None;    /* original C++ signature */
     run_flags: TestRunFlags = TestRunFlags_None
     # ImGuiTestRunTask(ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None);    /* original C++ signature */
@@ -1240,17 +1240,17 @@ class TestContext:
     # ImGuiTestGenericVars    GenericVars;    /* original C++ signature */
     generic_vars: TestGenericVars  # Generic variables holder for convenience.
     # void*                   UserVars = nullptr;    /* original C++ signature */
-    user_vars: Any = None  # Access using ctx->GetVars<Type>(). Setup with test->SetVarsDataType<>().
+    user_vars: Optional[Any] = None  # Access using ctx->GetVars<Type>(). Setup with test->SetVarsDataType<>().
 
     # Public fields
     # ImGuiContext*           UiContext = nullptr;    /* original C++ signature */
-    ui_context: Context = None  # UI context
+    ui_context: Optional[Context] = None  # UI context
     # ImGuiTestEngineIO*      EngineIO = nullptr;    /* original C++ signature */
-    engine_io: TestEngineIO = None  # Test Engine IO/settings
+    engine_io: Optional[TestEngineIO] = None  # Test Engine IO/settings
     # ImGuiTest*              Test = nullptr;    /* original C++ signature */
-    test: Test = None  # Test currently running
+    test: Optional[Test] = None  # Test currently running
     # ImGuiTestOutput*        TestOutput = nullptr;    /* original C++ signature */
-    test_output: TestOutput = None  # Test output (generally == &Test->Output while executing TestFunc)
+    test_output: Optional[TestOutput] = None  # Test output (generally == &Test->Output while executing TestFunc)
     # ImGuiTestOpFlags        OpFlags = ImGuiTestOpFlags_None;    /* original C++ signature */
     op_flags: TestOpFlags = (
         TestOpFlags_None  # Flags affecting all operation (supported: ImGuiTestOpFlags_NoAutoUncollapse)
@@ -1273,9 +1273,9 @@ class TestContext:
     # -------------------------------------------------------------------------
 
     # ImGuiTestEngine*        Engine = nullptr;    /* original C++ signature */
-    engine: TestEngine = None
+    engine: Optional[TestEngine] = None
     # ImGuiTestInputs*        Inputs = nullptr;    /* original C++ signature */
-    inputs: TestInputs = None
+    inputs: Optional[TestInputs] = None
     # ImGuiTestRunFlags       RunFlags = ImGuiTestRunFlags_None;    /* original C++ signature */
     run_flags: TestRunFlags = TestRunFlags_None
     # ImGuiTestActiveFunc     ActiveFunc = ImGuiTestActiveFunc_None;    /* original C++ signature */
@@ -2261,9 +2261,9 @@ class TestGatherTask:
 
     # Output/Temp
     # ImGuiTestItemList*      OutList = nullptr;    /* original C++ signature */
-    out_list: TestItemList = None
+    out_list: Optional[TestItemList] = None
     # ImGuiTestItemInfo*      LastItemInfo = nullptr;    /* original C++ signature */
-    last_item_info: TestItemInfo = None
+    last_item_info: Optional[TestItemInfo] = None
 
     # void Clear() { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
     def clear(self) -> None:
@@ -2287,11 +2287,13 @@ class TestFindByLabelTask:
     # int                     InSuffixDepth = 0;    /* original C++ signature */
     in_suffix_depth: int = 0  # Number of labels in a path, after unknown base ID (for "hello/**/foo/bar" it would be 2)
     # const char*             InSuffix = nullptr;    /* original C++ signature */
-    in_suffix: str = (
+    in_suffix: Optional[str] = (
         None  # A label string which appears on ID stack after unknown base ID (for "hello/**/foo/bar" it would be "foo/bar") # (const)
     )
     # const char*             InSuffixLastItem = nullptr;    /* original C++ signature */
-    in_suffix_last_item: str = None  # A last label string (for "hello/**/foo/bar" it would be "bar") # (const)
+    in_suffix_last_item: Optional[str] = (
+        None  # A last label string (for "hello/**/foo/bar" it would be "bar") # (const)
+    )
     # ImGuiID                 InSuffixLastItemHash = 0;    /* original C++ signature */
     in_suffix_last_item_hash: ID = 0
     # ImGuiItemStatusFlags    InFilterItemStatusFlags = 0;    /* original C++ signature */
@@ -2477,9 +2479,9 @@ class TestEngine:
     # ImGuiTestEngineIO           IO;    /* original C++ signature */
     io: TestEngineIO
     # ImGuiContext*               UiContextTarget = nullptr;    /* original C++ signature */
-    ui_context_target: Context = None  # imgui context for testing
+    ui_context_target: Optional[Context] = None  # imgui context for testing
     # ImGuiContext*               UiContextActive = nullptr;    /* original C++ signature */
-    ui_context_active: Context = None  # imgui context for testing == UiContextTarget or None
+    ui_context_active: Optional[Context] = None  # imgui context for testing == UiContextTarget or None
 
     # bool                        Started = false;    /* original C++ signature */
     started: bool = False
@@ -2496,7 +2498,7 @@ class TestEngine:
         -1.0
     )  # Inject custom delta time into imgui context to simulate clock passing faster than wall clock time.
     # ImGuiTestContext*           TestContext = nullptr;    /* original C++ signature */
-    test_context: TestContext = None  # Running test context
+    test_context: Optional[TestContext] = None  # Running test context
     # bool                        TestsSourceLinesDirty = false;    /* original C++ signature */
     tests_source_lines_dirty: bool = False
     # ImGuiTestGatherTask         GatherTask;    /* original C++ signature */
@@ -2514,9 +2516,9 @@ class TestEngine:
     # bool                        Abort = false;    /* original C++ signature */
     abort: bool = False
     # ImGuiTest*                  UiSelectAndScrollToTest = nullptr;    /* original C++ signature */
-    ui_select_and_scroll_to_test: Test = None
+    ui_select_and_scroll_to_test: Optional[Test] = None
     # ImGuiTest*                  UiSelectedTest = nullptr;    /* original C++ signature */
-    ui_selected_test: Test = None
+    ui_selected_test: Optional[Test] = None
     # bool                        UiMetricsOpen = false;    /* original C++ signature */
     ui_metrics_open: bool = False
     # bool                        UiDebugLogOpen = false;    /* original C++ signature */

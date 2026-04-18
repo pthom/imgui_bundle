@@ -365,7 +365,7 @@ def dpi_window_size_factor() -> float:
 
 class AssetFileData:
     # void * data = nullptr;    /* original C++ signature */
-    data: Any = None
+    data: Optional[Any] = None
     # size_t dataSize = 0;    /* original C++ signature */
     data_size: int = 0
     # AssetFileData(size_t dataSize = 0);    /* original C++ signature */
@@ -2505,17 +2505,17 @@ class BackendPointers:
     # * `glfwWindow`: Pointer to the main GLFW window (of type `GLFWwindow*`).
     #  Only filled if the backend is GLFW.
     # void* glfwWindow     = nullptr;    /* original C++ signature */
-    glfw_window: Any = None  # GLFWwindow*
+    glfw_window: Optional[Any] = None  # GLFWwindow*
 
     # * `sdlWindow`: Pointer to the main SDL window (of type `SDL_Window*`).
     #  Only filled if the backend is SDL (or emscripten + sdl)
     # void* sdlWindow      = nullptr;    /* original C++ signature */
-    sdl_window: Any = None  # SDL_Window*
+    sdl_window: Optional[Any] = None  # SDL_Window*
 
     # * `sdlGlContext`: Pointer to SDL's GlContext (of type `SDL_GLContext`).
     #  Only filled if the backend is SDL (or emscripten + sdl)
     # void* sdlGlContext   = nullptr;    /* original C++ signature */
-    sdl_gl_context: Any = None  # SDL_GLContext
+    sdl_gl_context: Optional[Any] = None  # SDL_GLContext
     # BackendPointers();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
