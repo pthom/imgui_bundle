@@ -33,7 +33,7 @@ def main():
 
     # Exclude ImageDepth enum and ImageDepthSize function (implementation details)
     options.enum_exclude_by_name__regex = r"^ImageDepth$"
-    options.fn_exclude_by_name__regex = r"^ImageDepthSize$"
+    options.fn_exclude_by_name__regex = r"^ImageDepth"
 
     def post_process_stub(code: str):
         r = (

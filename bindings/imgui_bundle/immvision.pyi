@@ -61,16 +61,6 @@ ImTextureID: TypeAlias = int
 #     You never need to create these types explicitly in Python.
 #
 
-# IMMVISION_API std::string ImageDepthName(ImageDepth depth);    /* original C++ signature */
-def image_depth_name(depth: ImageDepth) -> str:
-    """Returns the name of the depth as a string ("uint8", "float32", etc.)"""
-    pass
-
-# IMMVISION_API bool ImageDepthIsFloat(ImageDepth depth);    /* original C++ signature */
-def image_depth_is_float(depth: ImageDepth) -> bool:
-    """Returns True if the depth is a floating-point type (float32 or float64)"""
-    pass
-
 class Size2d:
     """2D double-precision size. Used for drawing operations (ellipse, rectangle_size)."""
 
