@@ -3,7 +3,6 @@ jupyter-book
 litgen @ git+https://github.com/pthom/litgen
 mypy
 nanobind
-opencv-python
 pre-commit
 pybind11  # only required for exe pybind_native_debug (not used by bindings)
 pytest
