@@ -187,8 +187,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     def show_status_bar():
         from imgui_bundle import __version__, __build_number__
         imgui.set_next_item_width(imgui.get_content_region_avail().x / 10)
-        _, imgui.get_style().font_scale_main = imgui.slider_float(
-            "Font scale", imgui.get_style().font_scale_main, 0.5, 5)
+        _, imgui.get_style().font_scale_main = imgui.slider_float("Font scale", imgui.get_style().font_scale_main, 0.5, 5)
         imgui.same_line(spacing=hello_imgui.em_size(4))
         imgui.text_disabled(f"Dear ImGui Bundle Explorer - v{__version__} build {__build_number__}")
 

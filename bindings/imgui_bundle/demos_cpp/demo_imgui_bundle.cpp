@@ -188,12 +188,10 @@ int main(int, char **)
 
     auto showStatusBar = []()
     {
-        ImGui::Text("Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER);
-        ImGui::SameLine();
-        ImGuiMd::RenderTextAsLink("Dear ImGui Explorer", "https://pthom.github.io/imgui_explorer");
-        ImGui::SameLine();
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 10.f);
         ImGui::SliderFloat("Font scale", & ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
+        ImGui::SameLine(0.f, HelloImGui::EmSize(4.f));
+        ImGui::TextDisabled("Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER);
     };
     runnerParams.callbacks.ShowStatus = showStatusBar;
 
