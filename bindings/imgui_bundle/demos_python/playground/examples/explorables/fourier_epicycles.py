@@ -34,7 +34,7 @@ def points_to_complex(pts: List[Tuple[float, float]], n: int = 500) -> np.ndarra
     targets = np.linspace(0, total, n, endpoint=False)
     x = np.interp(targets, cum, segs[:, 0])
     y = np.interp(targets, cum, segs[:, 1])
-    return x + 1j * y
+    return x + 1j * y  # type: ignore
 
 
 def parse_svg_path(d: str) -> List[Tuple[float, float]]:

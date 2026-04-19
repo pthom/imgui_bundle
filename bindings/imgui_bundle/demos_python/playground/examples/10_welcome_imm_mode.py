@@ -35,7 +35,7 @@ class AppState:
     selected_item: int = 1
     show_extra: bool = False
     # color is initialized in __init__ (as list are mutable types)
-    color: list
+    color: list[float]
     def __init__(self):
         self.color = [0.4, 0.7, 1.0, 1.0]
 

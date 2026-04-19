@@ -38,8 +38,8 @@ class DemoDragRectState:
         self.y_data1 = np.sin(arg)
         self.y_data2 = self.y_data1 - 0.6 + np.sin(arg * 2) * 0.4
         self.y_data3 = self.y_data2 - 0.6 + np.sin(arg * 3) * 0.4
-        self.rect = implot.Rect(0.0025, 0.0075, -2.7, 1.1)  # type: ignore
-        self.flags = implot.DragToolFlags_.none
+        self.rect = implot.Rect(0.0025, 0.0075, -2.7, 1.1)
+        self.flags: int = implot.DragToolFlags_.none.value
 
 
 @immapp.static(state=DemoDragRectState())
@@ -88,8 +88,8 @@ def demo_drag_rects():
         )
 
         # Example showing how to use implot_internal
-        implot.internal.fit_point((0, -3.5))
-        implot.internal.fit_point((0, 1.5))
+        implot.internal.fit_point(implot.Point(0, -3.5))
+        implot.internal.fit_point(implot.Point(0, 1.5))
 
         implot.end_plot()
     if implot.begin_plot("##rect", ImVec2(-1, plot_height), implot.Flags_.canvas_only):

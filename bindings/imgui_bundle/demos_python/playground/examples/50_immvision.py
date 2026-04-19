@@ -22,7 +22,7 @@ import numpy as np
 from numpy.typing import NDArray
 from enum import Enum
 from imgui_bundle import imgui, immvision, immapp, hello_imgui
-import cv2  # type: ignore
+import cv2
 
 
 # Each run downloads a different random image from picsum.photos
@@ -31,7 +31,7 @@ _IMAGE_URL = "https://picsum.photos/640/480"
 def _decode_image(image_bytes: bytes) -> NDArray[np.uint8]:
     """Decode JPEG/PNG bytes to numpy array, with fallback test pattern."""
     if len(image_bytes) > 0:
-        return cv2.imdecode(
+        return cv2.imdecode(  # type: ignore
             np.frombuffer(image_bytes, dtype=np.uint8),
             cv2.IMREAD_COLOR)
     # Fallback: colorful test pattern

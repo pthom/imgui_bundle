@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#type: ignore
 from __future__ import absolute_import
 
 from imgui_bundle import imgui
@@ -8,7 +7,7 @@ import glfw  # pip install glfw
 from imgui_bundle.python_backends import compute_fb_scale
 from .opengl_backend_programmable import ProgrammablePipelineRenderer
 
-from typing import Dict
+from typing import Dict, Any
 
 GlfwKey = int
 
@@ -16,7 +15,7 @@ GlfwKey = int
 class GlfwRenderer(ProgrammablePipelineRenderer):
     key_map: Dict[GlfwKey, imgui.Key]
 
-    def __init__(self, window, attach_callbacks: bool = True) -> None:
+    def __init__(self, window: Any, attach_callbacks: bool = True) -> None:
         super(GlfwRenderer, self).__init__()
         self.window = window
 
@@ -32,7 +31,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
 
         def get_clipboard_text(_ctx: imgui.internal.Context) -> str:
             s = glfw.get_clipboard_string(self.window)
-            return s.decode()
+            return s.decode()  # type: ignore
 
         def set_clipboard_text(_ctx: imgui.internal.Context, text: str) -> None:
             glfw.set_clipboard_string(self.window, text)
@@ -174,7 +173,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         # Application Keys
         key_map[glfw.KEY_MENU] = imgui.Key.menu
 
-    def keyboard_callback(self, window, glfw_key: int, scancode, action, mods):
+    def keyboard_callback(self, window, glfw_key: int, scancode, action, mods) -> None:  # type: ignore
         # perf: local for faster access
         io = self.io
         if glfw_key not in self.key_map:

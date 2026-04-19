@@ -318,7 +318,7 @@ def slide_immvision(size):
 for _code in SLIDE_CODES.values():
     exec(_code)
 
-SLIDE_FUNCS = [slide_implot, slide_lorenz, slide_widgets, slide_immvision]  # noqa: F821
+SLIDE_FUNCS = [slide_implot, slide_lorenz, slide_widgets, slide_immvision]  # type: ignore[name-defined]  # noqa: F821
 SLIDE_NAMES = list(SLIDE_CODES.keys())
 
 

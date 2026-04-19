@@ -39,8 +39,8 @@ class AppState:
                         + np.sin(arg * 3) * 0.4)
         # Initial drag rect position
         self.rect = implot.Rect(
-            0.0025, 0.0075, -2.7, 1.1)  # type: ignore
-        self.flags = implot.DragToolFlags_.none
+            0.0025, 0.0075, -2.7, 1.1)
+        self.flags: int = implot.DragToolFlags_.none.value
 
 
 def gui(state: AppState) -> None:
@@ -82,8 +82,8 @@ def gui(state: AppState) -> None:
             ImVec4(1, 0, 1, 1),  # pink color
             s.flags)
         # Ensure Y range fits all signals
-        implot.internal.fit_point((0, -3.5))
-        implot.internal.fit_point((0, 1.5))
+        implot.internal.fit_point(implot.Point(0, -3.5))
+        implot.internal.fit_point(implot.Point(0, 1.5))
         implot.end_plot()
 
     # Bottom plot: zoomed view (locked to the drag rect)

@@ -36,7 +36,7 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
 
         def get_clipboard_text(_imgui_context: Any) -> str:
             r: ctypes.c_char_p = SDL_GetClipboardText()  # type: ignore
-            return r.decode() if r else ""
+            return r.decode() if r else ""  # type: ignore
 
         def set_clipboard_text(_imgui_context: Any, text: str) -> None:
             SDL_SetClipboardText(ctypes.c_char_p(text.encode()))  # type: ignore

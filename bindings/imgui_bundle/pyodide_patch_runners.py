@@ -22,7 +22,7 @@ class _JsAnimationRenderer:
     """Make it possible to call a python function to do rendering at each javascript frame."""
     render_fn: Callable[[], None]  # A python function that performs rendering
     stop_requested: bool  # A flag to request the animation loop to stop
-    main_loop_proxy: js.Proxy  # A javascript proxy to the main_loop method that is called at each frame
+    main_loop_proxy: js.Proxy  # A JavaScript proxy to the main_loop method that is called at each frame
     stop_callback: Callable[[], None] | None  # Callback to call when stopping (to trigger teardown)
 
     def __init__(self, render_fn: Callable[[], None], stop_callback: Callable[[], None] | None = None):

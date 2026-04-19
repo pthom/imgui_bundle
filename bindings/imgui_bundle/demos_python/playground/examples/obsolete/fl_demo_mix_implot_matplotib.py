@@ -27,7 +27,7 @@ def phase_from_time_seconds(time_: float) -> float:
     return time_ * 15.0
 
 
-time_seconds.invoke_always_dirty = True  # type: ignore
+time_seconds.invoke_always_dirty = True
 
 
 @fl.with_fiat_attributes(
@@ -115,7 +115,7 @@ def interactive_histogram(
     data = np.random.normal(mu, sigma, int(nb_data)) + average
     bins = np.linspace(np.min(data), np.max(data), n_bars)
     fig, ax = plt.subplots()
-    ax.hist(data, bins=bins, color="blue", alpha=0.7)
+    ax.hist(data, bins=bins.tolist(), color="blue", alpha=0.7)
     return fig
 
 

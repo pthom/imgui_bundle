@@ -54,7 +54,7 @@ def download_random_image() -> ImageU8:
     def _decode_image(image_bytes: bytes) -> ImageU8:
         """Decode JPEG/PNG bytes to numpy array, with fallback test pattern."""
         if len(image_bytes) > 0:
-            return cv2.imdecode(
+            return cv2.imdecode(  # type: ignore
                 np.frombuffer(image_bytes, dtype=np.uint8),
                 cv2.IMREAD_COLOR)
         # Fallback: colorful test pattern
@@ -62,7 +62,7 @@ def download_random_image() -> ImageU8:
         for i in range(480):
             for j in range(640):
                 img[i, j] = (i % 256, j % 256, (i + j) % 256)
-        return img
+        return img  # type: ignore
 
     _IMAGE_URL = "https://picsum.photos/640/480"
     return _decode_image(immapp.download_url_bytes(_IMAGE_URL))
