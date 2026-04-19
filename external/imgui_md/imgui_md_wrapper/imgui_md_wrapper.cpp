@@ -258,8 +258,6 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         MarkdownOptions *mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
         std::map<std::string, Snippets::SnippetData> mSnippets;
-        int mTableIdCounter = 0;
-        bool mTableOpen = false;
     public:
         MarkdownRenderer(MarkdownOptions* markdownOptions)
             : mMarkdownOptions(markdownOptions)
@@ -285,7 +283,6 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 
             const char * start = s.c_str();
             const char * end = start + s.size();
-            mTableIdCounter = 0;
             this->print(start, end);
             ImGui::PopFont();
         }
@@ -319,7 +316,8 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             {
                 ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
                 markdownTextStyle.headerLevel = m_hlevel;
-                markdownTextStyle.markdownEmphasis.bold = m_is_strong;
+                markdownTextStyle.markdownEmphasis.bold =
+                    m_is_strong || (m_is_table_header && m_table_header_highlight);
                 markdownTextStyle.markdownEmphasis.italic = m_is_em;
                 auto font  = mMarkdownCollection.mFontCollection.GetFont(markdownTextStyle);
                 return imgui_md::MdSizedFont{ font.font, font.size };
@@ -418,58 +416,6 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             Snippets::ShowCodeSnippet(snippet);
 
             ImGui::PopID();
-        }
-
-        void BLOCK_TABLE(const MD_BLOCK_TABLE_DETAIL* d, bool e) override
-        {
-            if (e) {
-                ImGui::PushID(mTableIdCounter++);
-                ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchProp
-                                      | ImGuiTableFlags_Resizable;
-                if (m_table_border)
-                    flags |= ImGuiTableFlags_BordersInnerV
-                           | ImGuiTableFlags_BordersOuterV
-                           | ImGuiTableFlags_BordersOuterH
-                           | ImGuiTableFlags_BordersInnerH;
-                mTableOpen = ImGui::BeginTable("##md", d->col_count, flags);
-            } else {
-                if (mTableOpen)
-                    ImGui::EndTable();
-                mTableOpen = false;
-                ImGui::PopID();
-            }
-        }
-
-        void BLOCK_THEAD(bool e) override
-        {
-            if (!mTableOpen) return;
-            if (m_table_header_highlight) {
-                if (e) {
-                    ImGuiMdFonts::MarkdownTextStyle style;
-                    style.markdownEmphasis.bold = true;
-                    auto font = mMarkdownCollection.mFontCollection.GetFont(style);
-                    ImGui::PushFont(font.font, font.size);
-                } else {
-                    ImGui::PopFont();
-                }
-            }
-        }
-
-        void BLOCK_TBODY(bool) override {}
-
-        void BLOCK_TR(bool e) override
-        {
-            if (mTableOpen && e) ImGui::TableNextRow();
-        }
-
-        void BLOCK_TH(const MD_BLOCK_TD_DETAIL*, bool e) override
-        {
-            if (mTableOpen && e) ImGui::TableNextColumn();
-        }
-
-        void BLOCK_TD(const MD_BLOCK_TD_DETAIL*, bool e) override
-        {
-            if (mTableOpen && e) ImGui::TableNextColumn();
         }
 
 #ifdef IMGUI_RICHMD_WITH_LATEX
