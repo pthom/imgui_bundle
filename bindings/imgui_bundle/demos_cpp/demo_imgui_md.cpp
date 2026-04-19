@@ -72,33 +72,30 @@ You can also use HTML img tags to control the size:
 ----
 ### Tables
 
-*Warning about tables layout*: the first row will impose the columns widths.
-Use nbsp\; to increase the columns sizes on the first row if required.
-
 As an example, the table below (where columns are resizable!)
 
-| Continent | Population | Number of Countries |
-|----------------|-------------|---------------------|
-| Africa         | 1.3 billion | 54                  |
-| Antarctica     | 0           | 0                   |
-| Asia           | 4.5 billion | 48                  |
-| Europe         | 743 million | 44                  |
-| North America  | 579 million | 23                  |
-| Oceania        | 41 million  | 14                  |
-| South America  | 422 million | 12                  |
+| Continent      |   Population  | Number of Countries |
+|----------------|--------------:|:-------------------:|
+| Africa         |1300 million   |54                   |
+| Antarctica     |0              |0                    |
+| Asia           |4500 million   |48                   |
+| Europe         | 743 million   |44                   |
+| North America  | 579 million   |23                   |
+| Oceania        |  41 million   |14                   |
+| South America  | 422 million   |12                   |
 
 Can be created with this code
 
 ```
-| Continent      | Population  | Number of Countries |
-|----------------|-------------|---------------------|
-| Africa         | 1.3 billion | 54                  |
-| Antarctica     | 0           | 0                   |
-| Asia           | 4.5 billion | 48                  |
-| Europe         | 743 million | 44                  |
-| North America  | 579 million | 23                  |
-| Oceania        | 41 million  | 14                  |
-| South America  | 422 million | 12                  |
+| Continent      |   Population  | Number of Countries |
+|----------------|--------------:|:-------------------:|
+| Africa         |1300 million   |54                   |
+| Antarctica     |0              |0                    |
+| Asia           |4500 million   |48                   |
+| Europe         | 743 million   |44                   |
+| North America  | 579 million   |23                   |
+| Oceania        |  41 million   |14                   |
+| South America  | 422 million   |12                   |
 ```
 
 
