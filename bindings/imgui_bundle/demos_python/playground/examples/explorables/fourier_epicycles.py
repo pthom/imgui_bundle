@@ -160,7 +160,7 @@ def compute_fourier_coefficients(z: np.ndarray) -> np.ndarray:
     coeffs = np.fft.fft(z) / len(z)
     freqs = np.fft.fftfreq(len(z)) * len(z)
     order = np.argsort(-np.abs(coeffs))
-    return np.array(list(zip(freqs[order], coeffs[order])),
+    return np.array(list(zip(freqs[order], coeffs[order])),  # noqa
                     dtype=[('freq', float), ('coeff', complex)])
 
 

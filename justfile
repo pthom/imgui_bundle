@@ -239,7 +239,9 @@ _PYODIDE_DEPLOY_REMOTE_HOST := "pascal@traineq.org"
 [group('pyodide')]
 pyodide_deploy_imgui_bundle_online:
     cd {{_PYODIDE_DEPLOY_LOCAL_FOLDER}}/min_bundle_pyodide_app && cp -f demo_heart.html demo_heart.source.txt
-    rsync -avz --delete {{_PYODIDE_DEPLOY_LOCAL_FOLDER}}/ {{_PYODIDE_DEPLOY_REMOTE_HOST}}:{{_PYODIDE_DEPLOY_REMOTE_FOLDER}}/
+    # we add --copy-unsafe-links to copy the content of the symlink pyodide_projects/projects/imgui_bundle_playground/examples
+    # (which points to bindings/imgui_bundle/demos_python/playground/examples)
+    rsync -avz --delete --copy-unsafe-links {{_PYODIDE_DEPLOY_LOCAL_FOLDER}}/ {{_PYODIDE_DEPLOY_REMOTE_HOST}}:{{_PYODIDE_DEPLOY_REMOTE_FOLDER}}/
     echo "Deployed to https://traineq.org/imgui_bundle_online/"
 
 
