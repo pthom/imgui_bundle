@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#type: ignore
 from __future__ import absolute_import
 
 from imgui_bundle import imgui

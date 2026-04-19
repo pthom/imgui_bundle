@@ -61,11 +61,12 @@ full = [
     "wgpu",
     "rendercanvas",
     "pyglet",
+    "pygame",
     "pydantic>=2.0.0",
     "PyGLM"
 ]
 # For development and testing
-test = ["pytest", "pytest-asyncio"]
+test = ["pytest", "pytest-asyncio", "mypy"]
 
 
 

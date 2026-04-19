@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from typing import Any
 
 from imgui_bundle import imgui
-from sdl2 import *
+from sdl2 import *  # type: ignore
 
 from .opengl_backend_programmable import ProgrammablePipelineRenderer
 
@@ -35,22 +35,16 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         self.io.display_size = width_ptr[0], height_ptr[0]
 
         def get_clipboard_text(_imgui_context: Any) -> str:
-            r: ctypes.c_char_p = SDL_GetClipboardText()
+            r: ctypes.c_char_p = SDL_GetClipboardText()  # type: ignore
             return r.decode() if r else ""
 
         def set_clipboard_text(_imgui_context: Any, text: str) -> None:
-            SDL_SetClipboardText(ctypes.c_char_p(text.encode()))
+            SDL_SetClipboardText(ctypes.c_char_p(text.encode()))  # type: ignore
 
         imgui.get_platform_io().platform_get_clipboard_text_fn = get_clipboard_text
         imgui.get_platform_io().platform_set_clipboard_text_fn = set_clipboard_text
 
         self._map_keys()
-
-    def _map_keys(self):
-        self.key_map = {}
-        key_map = self.key_map
-        key_map[SDL_SCANCODE_KP_ENTER] = imgui.Key.keypad_enter
-
 
     def _map_keys(self):
         self.key_map = {}
@@ -189,6 +183,8 @@ class SDL2Renderer(ProgrammablePipelineRenderer):
         # Miscellaneous Keys
         key_map[SDL_SCANCODE_PRINTSCREEN] = imgui.Key.print_screen
         key_map[SDL_SCANCODE_PAUSE] = imgui.Key.pause
+
+        key_map[SDL_SCANCODE_KP_ENTER] = imgui.Key.keypad_enter
 
     def process_event(self, event):
         io = self.io

@@ -1,4 +1,5 @@
 # Note: this backend was not tested and not adapted to the  new imgui API!
+#type: ignore
 
 # -*- coding: utf-8 -*-
 # ruff: noqa

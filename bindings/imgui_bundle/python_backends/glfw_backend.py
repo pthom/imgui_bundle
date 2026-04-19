@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#type: ignore
 from __future__ import absolute_import
 
 from imgui_bundle import imgui
@@ -15,7 +16,7 @@ GlfwKey = int
 class GlfwRenderer(ProgrammablePipelineRenderer):
     key_map: Dict[GlfwKey, imgui.Key]
 
-    def __init__(self, window, attach_callbacks: bool = True):
+    def __init__(self, window, attach_callbacks: bool = True) -> None:
         super(GlfwRenderer, self).__init__()
         self.window = window
 

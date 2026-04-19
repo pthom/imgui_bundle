@@ -1,4 +1,5 @@
 """Wordle game - GUI with Textual (terminal UI)"""
+#type: ignore
 import wordle  # type: ignore
 from textual.app import App, ComposeResult
 from textual.widgets import Button, Label, Static

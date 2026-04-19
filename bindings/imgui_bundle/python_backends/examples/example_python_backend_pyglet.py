@@ -6,13 +6,14 @@
 
 # You will need to install pyglet:
 #    pip install pyglet
+#type: ignore
 
 from __future__ import absolute_import
 from imgui_bundle import imgui
 from imgui_bundle.python_backends import pyglet_backend
 
 from pyglet import gl  # type: ignore
-import pyglet  # type: ignore
+import pyglet
 import sys
 
 

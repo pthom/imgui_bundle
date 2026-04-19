@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+#type: ignore
 """The FixedPipelineRenderer is broken and should not be used."""
 from __future__ import absolute_import
 

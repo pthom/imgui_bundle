@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#type: ignore
 # -*- coding: utf-8 -*-
 
 from __future__ import absolute_import

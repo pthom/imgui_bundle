@@ -139,7 +139,7 @@ class ProgrammablePipelineRenderer(BaseOpenGLRenderer):
         gl.glBindBuffer(gl.GL_ARRAY_BUFFER, last_array_buffer)
         gl.glBindVertexArray(last_vertex_array)
 
-    def render(self, draw_data: imgui.ImDrawData):
+    def render(self, draw_data: imgui.ImDrawData) -> None:
         # perf: local for faster access
         io = self.io
 

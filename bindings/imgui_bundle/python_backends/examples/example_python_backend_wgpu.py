@@ -8,11 +8,11 @@
 #
 # Requirements: install wgpu and rendercanvas with
 #     pip install wgpu rendercanvas
-import wgpu
+import wgpu  # type: ignore
 import sys
 from imgui_bundle import imgui, imgui_ctx
-from rendercanvas.auto import RenderCanvas, loop
-from wgpu.utils.imgui import ImguiRenderer
+from rendercanvas.auto import RenderCanvas, loop  #type: ignore
+from wgpu.utils.imgui import ImguiRenderer  #type: ignore
 
 
 # Create a canvas to render to

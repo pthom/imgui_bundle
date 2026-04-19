@@ -2,13 +2,13 @@ from imgui_bundle import imgui
 import OpenGL.GL as gl  # pip install PyOpenGL
 
 
-def _log__update_texture(msg: str):
+def _log__update_texture(msg: str) -> None:
     pass
     # import logging
     # logging.warning(msg)
 
 class BaseOpenGLRenderer(object):
-    def __init__(self):
+    def __init__(self) -> None:
         if not imgui.get_current_context():
             raise RuntimeError(
                 "No valid ImGui context. Use imgui.create_context() first and/or "
@@ -26,23 +26,23 @@ class BaseOpenGLRenderer(object):
         imgui.get_platform_io().renderer_texture_max_width = max_texture_size
         imgui.get_platform_io().renderer_texture_max_height = max_texture_size
 
-    def render(self, draw_data):
+    def render(self, draw_data: imgui.ImDrawData) -> None:
         raise NotImplementedError
 
-    def _update_textures(self):
+    def _update_textures(self) -> None:
         # Honor RendererHasTextures
         # cf https://github.com/ocornut/imgui/commit/ff3f471ab2af25f1cc11c20356711aaa4e6833f8
         for tex in imgui.get_platform_io().textures:
             if tex.status != imgui.ImTextureStatus.ok:
                 self._update_texture(tex)
 
-    def _destroy_all_textures(self):
+    def _destroy_all_textures(self) -> None:
         for tex in imgui.get_platform_io().textures:
             if tex.ref_count == 1:
                 tex.status = imgui.ImTextureStatus.want_destroy
                 self._update_texture(tex)
 
-    def _update_texture(self, tex: imgui.ImTextureData):
+    def _update_texture(self, tex: imgui.ImTextureData) -> None:
         # Honor RendererHasTextures
         # cf https://github.com/ocornut/imgui/commit/ff3f471ab2af25f1cc11c20356711aaa4e6833f8
         # This method is a port of the C++ function ImGui_ImplOpenGL3_UpdateTexture
@@ -140,13 +140,13 @@ class BaseOpenGLRenderer(object):
             tex.set_tex_id(ImTextureID_Invalid)
             tex.status = imgui.ImTextureStatus.destroyed
 
-    def _create_device_objects(self):
+    def _create_device_objects(self) -> None:
         raise NotImplementedError
 
-    def _invalidate_device_objects(self):
+    def _invalidate_device_objects(self) -> None:
         raise NotImplementedError
 
-    def shutdown(self):
+    def shutdown(self) -> None:
         self._destroy_all_textures()
         imgui.get_io().backend_flags &= ~imgui.BackendFlags_.renderer_has_textures.value
         self._invalidate_device_objects()

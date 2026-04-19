@@ -2,7 +2,7 @@
 from __future__ import absolute_import
 
 
-def compute_fb_scale(window_size, frame_buffer_size):
+def compute_fb_scale(window_size, frame_buffer_size) -> tuple[float, float]:  # type: ignore
     win_width, win_height = window_size
     fb_width, fb_height = frame_buffer_size
 
