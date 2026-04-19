@@ -16,10 +16,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [windows-latest, macos-latest, ubuntu-latest]
+        #platform: [windows-latest, macos-latest, ubuntu-latest]
+        platform: [ubuntu-latest]
         python-version: [
-          "3.11",
-          "3.12",
+#          "3.11",
+#          "3.12",
           ">=3.13.5 <3.14"  # python 3.13.4 has an annoying bug which causes the CI to fail
         ]
 
@@ -54,13 +55,10 @@ jobs:
         python_dir=$(dirname $(which python))
         cp mesa3d/x64/*.* $python_dir
 
-#    - name: Setup interactive tmate session
-#      uses: mxschmitt/action-tmate@v3
-
     - name: Build and install
       shell: bash
       run: |
-        pip install --verbose .[test]
+        pip install --verbose ".[test,full]"
         pip install numpy
 
     # On macOS, run tests, ignoring the GUI tests
@@ -79,6 +77,9 @@ jobs:
       run: |
         cd .github/ci_automation_tests
         python ci_automation_test_app_bundle.py
+
+    - name: Setup interactive tmate session
+      uses: mxschmitt/action-tmate@v3
 
 #    - name: Run mypy
 #      shell: bash
