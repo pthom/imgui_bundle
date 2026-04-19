@@ -46,14 +46,26 @@ all_backends = [
     "PySDL2",
     "PySDL3",
     "wgpu",
+    "rendercanvas",
     "pyglet",
+    "pygame",
 ]
 # full installation
 full = [
+    # Core
     "numpy",
-    "matplotlib",
+    "pydantic>=2.0.0",
+
+    # Images
     "pillow",
     "opencv-python",
+
+    # Scientific packages
+    "jupyterlab",
+    "notebook",
+    "matplotlib",
+
+    # Backends
     "PyOpenGL",
     "glfw",
     "PySDL2",
@@ -62,8 +74,7 @@ full = [
     "rendercanvas",
     "pyglet",
     "pygame",
-    "pydantic>=2.0.0",
-    "PyGLM"
+    "PyGLM",
 ]
 # For development and testing
 test = ["pytest", "pytest-asyncio", "mypy"]
