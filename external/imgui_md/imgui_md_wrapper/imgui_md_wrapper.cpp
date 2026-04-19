@@ -423,12 +423,6 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         void BLOCK_TABLE(const MD_BLOCK_TABLE_DETAIL* d, bool e) override
         {
             if (e) {
-                // Match the MdNewLine() convention used by BLOCK_P / BLOCK_H:
-                // a small vertical gap on block entry. Its Y advance
-                // (FontSize*0.3 + ItemSpacing.y) also exactly cancels the
-                // pre-compensation applied by print(), so a table as the
-                // very first block lands at the correct Y too.
-                ImGui::Dummy(ImVec2(0.0f, ImGui::GetFontSize() * 0.3f));
                 ImGui::PushID(mTableIdCounter++);
                 ImGuiTableFlags flags = ImGuiTableFlags_SizingStretchProp
                                       | ImGuiTableFlags_Resizable;
