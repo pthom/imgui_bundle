@@ -130,7 +130,7 @@ namespace Snippets
         {
             auto codeFont = ImGuiMd::GetCodeFont();
             ImGui::PushFont(codeFont.font, codeFont.size);
-            lineHeight = ImGui::GetFontSize();
+            lineHeight = ImGui::GetTextLineHeightWithSpacing();
             ImGui::PopFont();
         }
 
@@ -148,8 +148,9 @@ namespace Snippets
 
             if ((snippetData.MaxHeightInLines > 0) && (nbVisibleLines > snippetData.MaxHeightInLines))
                 nbVisibleLines = snippetData.MaxHeightInLines;
-            // Account for scrollbar height + editor internal padding
-            editorSize.y = lineHeight * (float) (nbVisibleLines + 1) + ImGui::GetStyle().ScrollbarSize;
+
+            // + ImGui::GetStyle().ScrollbarSize: account for a possible horizontal scrollbar
+            editorSize.y = lineHeight * (float)nbVisibleLines + ImGui::GetStyle().ScrollbarSize;
         }
 
         if (hasTitleLine)
