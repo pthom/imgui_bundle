@@ -152,6 +152,47 @@ profile = "black"
 [tool.ruff]
 extend-exclude = ["*.ipynb"]
 
+[tool.mypy]
+packages = ["imgui_bundle"]
+disable_error_code = ["attr-defined"]
+warn_return_any = true
+warn_unused_configs = true
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+strict_equality = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+warn_unused_ignores = true
+# disallow_untyped_calls = true
+
+[[tool.mypy.overrides]]
+module = "imgui_bundle.python_backends.*"
+disallow_untyped_defs = false
+check_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = "imgui_bundle.python_backends_disabled.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "imgui_bundle.demos_python.sandbox.compare_other_libs.*",
+    "imgui_bundle.demos_python.sandbox.compare_wordle.*",
+]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "imgui_bundle.demos_python.*"
+disable_error_code = ["attr-defined", "no-untyped-def"]
+
+[[tool.mypy.overrides]]
+module = ["OpenGL.*", "glfw.*", "glm"]
+ignore_missing_imports = true
+
 #####################################
 # Wheels options
 #####################################
@@ -249,4 +290,3 @@ skip = ["*win32"]
 #        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF" pip install -v .
 #   If you disable hello_imgui, several dependent modules will be auto-disabled:
 #     immapp, imgui_md, im_file_dialog, imgui_tex_inspect, immvision, imgui_test_engine, and the glfw backend.
-
