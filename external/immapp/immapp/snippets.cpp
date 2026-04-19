@@ -17,7 +17,16 @@ namespace Snippets
 {
     void _SetTheme(TextEditor& editor, SnippetTheme palette)
     {
-        if (palette == SnippetTheme::Dark)
+        if (palette == SnippetTheme::Auto)
+        {
+            auto& bg = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+            float luminance = 0.299f * bg.x + 0.587f * bg.y + 0.114f * bg.z;
+            if (luminance > 0.5f)
+                editor.SetPalette(TextEditor::GetLightPalette());
+            else
+                editor.SetPalette(TextEditor::GetDarkPalette());
+        }
+        else if (palette == SnippetTheme::Dark)
             editor.SetPalette(TextEditor::GetDarkPalette());
         else if (palette == SnippetTheme::Light)
             editor.SetPalette(TextEditor::GetLightPalette());
@@ -104,13 +113,13 @@ namespace Snippets
             gEditorChanged[id] = false;
             auto& editor = gEditors.at(id);
             _SetLanguage(editor, snippetData.Language);
-            _SetTheme(editor, snippetData.Palette);
             editor.SetChangeCallback([id]() { gEditorChanged[id] = true; });
         }
 
         auto& editor = gEditors.at(id);
         editor.SetReadOnlyEnabled(snippetData.ReadOnly);
         editor.SetShowWhitespacesEnabled(false);
+        _SetTheme(editor, snippetData.Palette);
         if (editor.GetText().empty() || snippetData.ReadOnly)
         {
             std::string displayedCode = snippetData.DeIndentCode ? CodeUtils::UnindentCode(snippetData.Code) : snippetData.Code;

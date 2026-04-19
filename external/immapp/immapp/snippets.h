@@ -23,8 +23,9 @@ namespace Snippets
 
     enum class SnippetTheme
     {
+        Auto,   // Automatic based on bg color
         Dark,
-        Light
+        Light,
     };
 
 
@@ -43,7 +44,7 @@ namespace Snippets
     {
         std::string Code = "";
         SnippetLanguage Language = DefaultSnippetLanguage();
-        SnippetTheme Palette = SnippetTheme::Dark;
+        SnippetTheme Palette = SnippetTheme::Auto;
 
         bool ShowCopyButton = true;         // Displayed on top of the editor (Top Right corner)
         bool ShowCursorPosition = true;     // Show line and column number

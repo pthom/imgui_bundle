@@ -477,8 +477,9 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         python = enum.auto()  # (= 7)
 
     class SnippetTheme(enum.IntEnum):
-        dark = enum.auto()  # (= 0)
-        light = enum.auto()  # (= 1)
+        auto = enum.auto()  # (= 0)  # Automatic based on bg color
+        dark = enum.auto()  # (= 1)
+        light = enum.auto()  # (= 2)
 
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:
@@ -488,7 +489,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     class SnippetData:
         code: str = ""
         language: snippets.SnippetLanguage = snippets.default_snippet_language()
-        palette: snippets.SnippetTheme = snippets.SnippetTheme.dark
+        palette: snippets.SnippetTheme = snippets.SnippetTheme.auto
 
         show_copy_button: bool = (
             True  # Displayed on top of the editor (Top Right corner)
@@ -517,7 +518,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
             self,
             code: str = "",
             language: snippets.SnippetLanguage = snippets.default_snippet_language(),
-            palette: snippets.SnippetTheme = snippets.SnippetTheme.dark,
+            palette: snippets.SnippetTheme = snippets.SnippetTheme.auto,
             show_copy_button: bool = True,
             show_cursor_position: bool = True,
             displayed_filename: str = "",
