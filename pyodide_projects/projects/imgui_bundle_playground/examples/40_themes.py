@@ -69,8 +69,9 @@ def gui_preview_theme_with_widgets() -> None:
 | Emphasis | *italic*, **bold**, ***both***                                          |
 | Code     | `inline_code()`                                                         |
 | Links    | [Example](https://example.com)                                          |
-| Math     | $\displaystyle \sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}$     |
+| Math     | $e^{i\theta} = \cos(\theta) + i \sin(\theta)$                           |
 | Image    | ![random image](https://picsum.photos/160/120)                          |
+
 
 ```python
 print("This is a code block")

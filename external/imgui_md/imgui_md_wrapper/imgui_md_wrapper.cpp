@@ -539,7 +539,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             float logicalFontSize = ImGui::GetFontSize();
             float physicalFontSize = logicalFontSize * pixelScale;
             ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
-            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color);
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color, ImGuiMicroTeX::TexStyle::Text);
             ImTextureID texId = tex.TextureId();
             if (texId == (ImTextureID)0)
                 return;
@@ -579,10 +579,11 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
                 return;
             }
             float pixelScale = PixelScale();
-            float logicalFontSize = ImGui::GetFontSize() * 1.4f;
+            float logicalFontSize = ImGui::GetFontSize();
             float physicalFontSize = logicalFontSize * pixelScale;
             ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
-            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color);
+            // Note: ImGuiMicroTeX::TexStyle::Display renders a bit bigger than ImGuiMicroTeX::TexStyle::Text
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color, ImGuiMicroTeX::TexStyle::Display);
             ImTextureID texId = tex.TextureId();
             if (texId == (ImTextureID)0)
                 return;

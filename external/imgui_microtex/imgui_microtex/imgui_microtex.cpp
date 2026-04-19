@@ -32,10 +32,21 @@ static std::map<std::string, FormulaTexture> sTextureCache;
 // the process). Configurable at runtime via SetEvictionFrames().
 static int sEvictAfterFrames = 60;
 
-static std::string MakeCacheKey(const std::string& latex, float fontSize, ImU32 color) {
+static std::string MakeCacheKey(const std::string& latex, float fontSize, ImU32 color, TexStyle style) {
     char buf[64];
-    snprintf(buf, sizeof(buf), "|%.1f|%08x", fontSize, color);
+    snprintf(buf, sizeof(buf), "|%.1f|%08x|%d", fontSize, color, (int)style);
     return latex + buf;
+}
+
+// Map our public TexStyle to MicroTeX's internal enum.
+static microtex::TexStyle ToMicroTeXStyle(TexStyle s) {
+    switch (s) {
+        case TexStyle::Display:      return microtex::TexStyle::display;
+        case TexStyle::Text:         return microtex::TexStyle::text;
+        case TexStyle::Script:       return microtex::TexStyle::script;
+        case TexStyle::ScriptScript: return microtex::TexStyle::scriptScript;
+    }
+    return microtex::TexStyle::text;
 }
 
 // ============================================================================
@@ -114,7 +125,7 @@ void Release() {
 // Internal: caller MUST hold sMutex.
 // Split out so RenderToTexture() can hold the lock across the cache
 // operations + render + insertion without deadlocking on a re-entry.
-static RenderedFormula Render_locked(const std::string& latex, float fontSize, ImU32 color) {
+static RenderedFormula Render_locked(const std::string& latex, float fontSize, ImU32 color, TexStyle style) {
     if (!sInitialized) {
         throw std::runtime_error("ImGuiMicroTeX::Render called before Init()");
     }
@@ -126,7 +137,9 @@ static RenderedFormula Render_locked(const std::string& latex, float fontSize, I
         0,             // unlimited width
         fontSize,
         fontSize / 3.f,
-        mtColor
+        mtColor,
+        true,          // fillWidth (default)
+        {true, ToMicroTeXStyle(style)}  // overrideTeXStyle: force the caller's style
     );
 
     int w = mtRender->getWidth();
@@ -155,13 +168,13 @@ static RenderedFormula Render_locked(const std::string& latex, float fontSize, I
     return result;
 }
 
-RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color) {
+RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color, TexStyle style) {
     std::lock_guard<std::mutex> lock(sMutex);
-    return Render_locked(latex, fontSize, color);
+    return Render_locked(latex, fontSize, color, style);
 }
 
-RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& color) {
-    return Render(latex, fontSize, ImGui::ColorConvertFloat4ToU32(color));
+RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& color, TexStyle style) {
+    return Render(latex, fontSize, ImGui::ColorConvertFloat4ToU32(color), style);
 }
 
 // ============================================================================
@@ -179,10 +192,10 @@ FormulaTexture ToTexture(const RenderedFormula& formula) {
     return tex;
 }
 
-FormulaTexture RenderToTexture(const std::string& latex, float fontSize, ImU32 color) {
+FormulaTexture RenderToTexture(const std::string& latex, float fontSize, ImU32 color, TexStyle style) {
     std::lock_guard<std::mutex> lock(sMutex);
     int currentFrame = ImGui::GetFrameCount();
-    std::string key = MakeCacheKey(latex, fontSize, color);
+    std::string key = MakeCacheKey(latex, fontSize, color, style);
 
     auto it = sTextureCache.find(key);
     if (it != sTextureCache.end()) {
@@ -203,15 +216,15 @@ FormulaTexture RenderToTexture(const std::string& latex, float fontSize, ImU32 c
         }
     }
 
-    RenderedFormula formula = Render_locked(latex, fontSize, color);
+    RenderedFormula formula = Render_locked(latex, fontSize, color, style);
     FormulaTexture tex = ToTexture(formula);
     tex.LastUsedFrame = currentFrame;
     sTextureCache[key] = tex;
     return tex;
 }
 
-FormulaTexture RenderToTexture(const std::string& latex, float fontSize, const ImVec4& color) {
-    return RenderToTexture(latex, fontSize, ImGui::ColorConvertFloat4ToU32(color));
+FormulaTexture RenderToTexture(const std::string& latex, float fontSize, const ImVec4& color, TexStyle style) {
+    return RenderToTexture(latex, fontSize, ImGui::ColorConvertFloat4ToU32(color), style);
 }
 
 void ClearTextureCache() {

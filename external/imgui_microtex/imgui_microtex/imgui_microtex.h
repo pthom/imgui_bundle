@@ -17,6 +17,34 @@
 namespace ImGuiMicroTeX {
 
 // ============================================================================
+// TeX style
+// ============================================================================
+//
+// Selects the layout style used when rendering a formula. This maps directly
+// to MicroTeX's TexStyle and corresponds to the four TeX styles defined by
+// Knuth (D, T, S, SS). Pick Display for centered "display math" ($$...$$)
+// and Text for inline math ($...$).
+//
+// The style affects symbol size, big-operator appearance, and the spacing
+// around \frac (numerator shift-up and denominator shift-down): Display gives
+// generous spacing; Text is compact.
+enum class TexStyle {
+    // Largest size. Big operators (\sum, \int, ...) use their large variants
+    // with limits placed above and below. \frac uses generous vertical
+    // spacing. This is what LaTeX uses inside $$...$$ and \[...\].
+    Display,
+    // Default inline size. Big operators use their small variants with
+    // limits attached as sub/superscripts. \frac uses compact spacing.
+    // This is what LaTeX uses inside $...$ and \(...\).
+    Text,
+    // Smaller size used by LaTeX inside sub/superscripts. Rarely useful at
+    // the top level; MicroTeX switches to it automatically where needed.
+    Script,
+    // Smallest size, used inside scripts-of-scripts. Same caveat as Script.
+    ScriptScript,
+};
+
+// ============================================================================
 // Initialization / shutdown
 // ============================================================================
 
@@ -66,8 +94,9 @@ struct RenderedFormula {
 // latex: the LaTeX math string (without $ delimiters)
 // fontSize: font size in pixels
 // color: foreground color (alpha channel is used)
-RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color = IM_COL32_BLACK);
-RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& color);
+// style: TeX layout style (Display for $$...$$, Text for $...$)
+RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color = IM_COL32_BLACK, TexStyle style = TexStyle::Text);
+RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& color, TexStyle style = TexStyle::Text);
 
 // ============================================================================
 // Level 2: LaTeX -> HelloImGui::TextureGpuPtr (with caching)
@@ -98,8 +127,9 @@ struct FormulaTexture {
 };
 
 // Render a LaTeX string to an ImGui texture (cached for the lifetime of imgui_microtex).
-FormulaTexture RenderToTexture(const std::string& latex, float fontSize, ImU32 color = IM_COL32_BLACK);
-FormulaTexture RenderToTexture(const std::string& latex, float fontSize, const ImVec4& color);
+// style: TeX layout style (Display for $$...$$, Text for $...$).
+FormulaTexture RenderToTexture(const std::string& latex, float fontSize, ImU32 color = IM_COL32_BLACK, TexStyle style = TexStyle::Text);
+FormulaTexture RenderToTexture(const std::string& latex, float fontSize, const ImVec4& color, TexStyle style = TexStyle::Text);
 
 // Convert a previously rendered formula to an ImGui texture (not cached).
 FormulaTexture ToTexture(const RenderedFormula& formula);

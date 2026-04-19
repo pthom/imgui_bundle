@@ -4,6 +4,7 @@ from typing import Optional, overload
 import numpy as np
 from imgui_bundle.imgui import ImVec4
 from imgui_bundle import hello_imgui as HelloImGui
+import enum
 
 ImU32 = int
 ImTextureID = int
@@ -22,6 +23,34 @@ ImTextureID = int
 #
 # Thread safety: all functions are protected by a mutex and can be called from any thread.
 
+
+class TexStyle(enum.IntEnum):
+    """ ============================================================================
+     TeX style
+     ============================================================================
+
+     Selects the layout style used when rendering a formula. This maps directly
+     to MicroTeX's TexStyle and corresponds to the four TeX styles defined by
+     Knuth (D, T, S, SS). Pick Display for centered "display math" ($$...$$)
+     and Text for inline math ($...$).
+
+     The style affects symbol size, big-operator appearance, and the spacing
+     around \frac (numerator shift-up and denominator shift-down): Display gives
+     generous spacing; Text is compact.
+    """
+    # Largest size. Big operators (\sum, \int, ...) use their large variants
+    # with limits placed above and below. \frac uses generous vertical
+    # spacing. This is what LaTeX uses inside $$...$$ and \[...\].
+    display = enum.auto()       # (= 0)
+    # Default inline size. Big operators use their small variants with
+    # limits attached as sub/superscripts. \frac uses compact spacing.
+    # This is what LaTeX uses inside $...$ and \(...\).
+    text = enum.auto()          # (= 1)
+    # Smaller size used by LaTeX inside sub/superscripts. Rarely useful at
+    # the top level; MicroTeX switches to it automatically where needed.
+    script = enum.auto()        # (= 2)
+    # Smallest size, used inside scripts-of-scripts. Same caveat as Script.
+    script_script = enum.auto() # (= 3)
 
 # ============================================================================
 # Initialization / shutdown
@@ -91,18 +120,25 @@ class RenderedFormula:
 # latex: the LaTeX math string (without $ delimiters)
 # fontSize: font size in pixels
 # color: foreground color (alpha channel is used)
+# style: TeX layout style (Display for $$...$$, Text for $...$)
 @overload
 def render(
     latex: str,
     font_size: float,
-    color: Optional[ImU32] = None
+    color: Optional[ImU32] = None,
+    style: TexStyle = TexStyle.text
     ) -> RenderedFormula:
     """Python bindings defaults:
         If color is None, then its default value will be: IM_COL32_BLACK
     """
     pass
 @overload
-def render(latex: str, font_size: float, color: ImVec4) -> RenderedFormula:
+def render(
+    latex: str,
+    font_size: float,
+    color: ImVec4,
+    style: TexStyle = TexStyle.text
+    ) -> RenderedFormula:
     pass
 
 # ============================================================================
@@ -149,18 +185,25 @@ class FormulaTexture:
         pass
 
 # Render a LaTeX string to an ImGui texture (cached for the lifetime of imgui_microtex).
+# style: TeX layout style (Display for $$...$$, Text for $...$).
 @overload
 def render_to_texture(
     latex: str,
     font_size: float,
-    color: Optional[ImU32] = None
+    color: Optional[ImU32] = None,
+    style: TexStyle = TexStyle.text
     ) -> FormulaTexture:
     """Python bindings defaults:
         If color is None, then its default value will be: IM_COL32_BLACK
     """
     pass
 @overload
-def render_to_texture(latex: str, font_size: float, color: ImVec4) -> FormulaTexture:
+def render_to_texture(
+    latex: str,
+    font_size: float,
+    color: ImVec4,
+    style: TexStyle = TexStyle.text
+    ) -> FormulaTexture:
     pass
 
 def to_texture(formula: RenderedFormula) -> FormulaTexture:
