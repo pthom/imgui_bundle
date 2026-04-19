@@ -65,6 +65,11 @@ full = [
     "notebook",
     "matplotlib",
 
+    # fiatlight
+    "fiatlight",
+    "pandas",
+    "pandas-stubs",
+
     # Backends
     "PyOpenGL",
     "glfw",
@@ -146,6 +151,9 @@ build.verbose = true
 logging.level = "INFO"
 
 
+#####################################
+# Mypy, Ruff and linters
+#####################################
 [tool.isort]
 profile = "black"
 
@@ -173,6 +181,7 @@ warn_unused_ignores = true
 module = "imgui_bundle.python_backends.*"
 disallow_untyped_defs = false
 check_untyped_defs = false
+warn_unused_ignores = false
 
 [[tool.mypy.overrides]]
 module = "imgui_bundle.python_backends_disabled.*"
