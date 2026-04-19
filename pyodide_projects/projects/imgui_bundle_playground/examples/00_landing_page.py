@@ -52,7 +52,6 @@ from imgui_bundle import (
     icons_fontawesome_4
 )
 
-
 # ============================================================================
 # Slide code snippets (shown in the code editor, and also executed)
 # ============================================================================
@@ -60,8 +59,12 @@ from imgui_bundle import (
 SLIDE_CODES = {}
 
 SLIDE_CODES["ImPlot"] = r'''
+
 def slide_implot(size):
     """4 diverse plot types using ImPlot subplots"""
+    import numpy as np
+    from imgui_bundle import implot
+
     s = slide_implot
     if not hasattr(s, "init"):
         np.random.seed(0)
@@ -114,6 +117,9 @@ def slide_implot(size):
 SLIDE_CODES["ImPlot3D"] = r'''
 def slide_lorenz(size):
     """Lorenz attractor - butterfly effect (ImPlot3D)"""
+    import numpy as np
+    from imgui_bundle import implot3d
+
     s = slide_lorenz
     if not hasattr(s, "init"):
         s.xs, s.ys, s.zs = [0.0], [1.0], [1.05]
@@ -150,6 +156,8 @@ def slide_lorenz(size):
 SLIDE_CODES["Widgets"] = r'''
 def slide_widgets(size):
     """Drum sequencer with knobs, toggles, and angled headers"""
+    from imgui_bundle import imgui_toggle, imgui_knobs
+
     s = slide_widgets
 
     # Init state on first run (stored as function attributes to avoid globals)
@@ -244,19 +252,11 @@ def slide_widgets(size):
     imgui.end_child()
 '''
 
-# tick = enum.auto()  # (= 1 << 0)
-# dot = enum.auto()  # (= 1 << 1)
-# wiper = enum.auto()  # (= 1 << 2)
-# wiper_only = enum.auto()  # (= 1 << 3)
-# wiper_dot = enum.auto()  # (= 1 << 4)
-# stepped = enum.auto()  # (= 1 << 5)
-# space = enum.auto()  # (= 1 << 6)
-
-
 
 SLIDE_CODES["ImmVision"] = r'''
 def slide_immvision(size):
     """Image inspection with synced pan/zoom (ImmVision)"""
+    import numpy as np
     from imgui_bundle import immvision
 
     # Init images and params
