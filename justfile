@@ -262,10 +262,10 @@ test_pytest:
 # Run mypy on the bindings
 [group('mypy')]
 mypy:
-    cd bindings && mypy imgui_bundle
+    mypy
 
 # Run mypy on the bindings (exclude errors in the stubs)
 [group('mypy')]
 mypy_no_stubs:
-    cd bindings && mypy imgui_bundle | grep -v "\.pyi"
+    mypy imgui_bundle | grep -v "\.pyi"
 

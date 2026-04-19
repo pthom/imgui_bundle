@@ -83,4 +83,4 @@ jobs:
     - name: Run mypy
       shell: bash
       run: |
-        cd bindings && mypy imgui_bundle
+        mypy
