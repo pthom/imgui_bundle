@@ -4,7 +4,7 @@ Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://p
 
 You can copy this HTML, save it as a `.html` file, and open it in any browser. Edit the Python code inside to make it your own.
 
-* **Try it live:** [Open the minimal example](https://imgui-bundle.pages.dev/min_pyodide_app/demo_heart)
+* **Try it live:** [Open the minimal example](https://imgui-bundle.pages.dev/min_pyodide_app/demo_heart) - [Source](https://imgui-bundle.pages.dev/min_pyodide_app/demo_heart.source.txt)
 
 **How it works:**
 1. Loads Pyodide (Python runtime for the browser) from a CDN
