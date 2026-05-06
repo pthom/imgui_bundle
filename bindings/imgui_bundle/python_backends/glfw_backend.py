@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+# Workaround for PyOpenGL 3.1.6+ on Wayland: GLFW uses X11/XWayland but PyOpenGL
+# defaults to Wayland EGL, causing a context mismatch. Force the X11 backend.
+# Must be set before any `import OpenGL` happens (the import below pulls it in).
+# See https://github.com/pthom/imgui_bundle/issues/321
+import os
+if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFORM"):
+    os.environ["PYOPENGL_PLATFORM"] = "x11"
+
 from imgui_bundle import imgui
 import glfw  # pip install glfw
 

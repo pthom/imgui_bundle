@@ -2,18 +2,10 @@
 # ruff: noqa: F403, F405
 from __future__ import absolute_import
 from typing import Any
+
 from imgui_bundle import imgui
-
-
-# SDL on Wayland creates a native Wayland window with an EGL context so we need to remove PYOPENGL_PLATFORM
-# if it was set by us (see imgui_bundle/__init__.py, part "Workaround for PyOpenGL")
-import os
-from imgui_bundle import _forced_pyopengl_x11  # type: ignore
-if _forced_pyopengl_x11 and os.environ.get("PYOPENGL_PLATFORM") == "x11":
-    del os.environ["PYOPENGL_PLATFORM"]
-
-
 from sdl2 import *  # type: ignore
+
 from .opengl_backend_programmable import ProgrammablePipelineRenderer
 
 import ctypes

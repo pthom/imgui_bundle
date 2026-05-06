@@ -8,19 +8,6 @@ from types import ModuleType
 from typing import Union, Tuple, List, overload
 
 
-# Workaround for PyOpenGL 3.1.6+ on Wayland (different behaviors between Gflw and SDL):
-# 1. GLFW will create X11 windows on wayland, but PyOpenGL assumes Wayland EGL and fails to find the GL context.
-# => we force X11 backend so that glfw apps will work (including C++ apps launched with immapp.run and hello_imgui.run).
-# See https://github.com/pthom/imgui_bundle/issues/321
-# 2. However, this workaround will interfere with SDL backends (which will create egl windows on wayland).
-# See https://github.com/pthom/imgui_bundle/issues/463 .
-# So, we set _forced_pyopengl_x11 as a sentinel value, so that sdl2 and sdl3 backends can remove PYOPENGL_PLATFORM
-_forced_pyopengl_x11 = False
-if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFORM"):
-    os.environ["PYOPENGL_PLATFORM"] = "x11"
-    _forced_pyopengl_x11 = True
-
-
 def has_submodule(submodule_name: str) -> bool:
     return submodule_name in __bundle_submodules_available__
 
