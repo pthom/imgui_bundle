@@ -13,7 +13,7 @@ Dear ImGui Bundle is a framework built on top of [Dear ImGui](https://github.com
 *No install needed!*
 
 * Launch the [Interactive Explorer](https://imgui-bundle.pages.dev/explorer/): a full demonstration: showcases all libraries with browsable C++ and Python source. Acts as a living reference manual.
-* Ppen the [Playground](https://imgui-bundle.pages.dev/playground/): a live python sandbox with ready to use demos, based on pyodide.  Edit code, see results instantly.
+* Open the [Playground](https://imgui-bundle.pages.dev/playground/): a live python sandbox with ready to use demos, based on pyodide.  Edit code, see results instantly.
 
 [![Dear ImGui Bundle Explorer](https://imgui-bundle.pages.dev/resources/bundle_explorer_vid.gif)](https://imgui-bundle.pages.dev/explorer/)
 
