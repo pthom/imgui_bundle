@@ -116,7 +116,7 @@ if __name__ == "__main__":
     const loaderEl = document.getElementById("loader");
     const setStatus = m => loaderEl.textContent = m;
     const hideLoader = () => loaderEl.remove();
-    const showError = e => { loaderEl.style.background = "#922"; setStatus("Error: " + (e?.message || e)); };
+    const showError = e => { loaderEl.style.background = "#922"; setStatus("Error: " + (e?.message || e)); console.error(e?.message); };
 
     async function main() {
         // Right-click is scoped to the canvas so normal browser menus still work elsewhere
