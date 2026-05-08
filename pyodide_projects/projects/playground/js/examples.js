@@ -52,6 +52,16 @@ async function fetchExampleMetadata() {
 // Track which packages have already been installed
 const installedPackages = new Set();
 
+// Per-package expected install time on a typical 4G connection (ms).
+// Used only to tune the asymptotic smoothProgress animation; actual
+// install time can be longer or shorter — phase.complete() snaps the
+// bar when micropip.install resolves.
+const PACKAGE_EXPECTED_MS = {
+    'opencv-python': 8000,  // ~11 MB
+    'fiatlight':     3000,
+};
+const PACKAGE_EXPECTED_MS_DEFAULT = 4000;
+
 // Function to install extra packages required by an example
 async function installExamplePackages(packages) {
     if (!packages || packages.length === 0) return;
@@ -67,13 +77,17 @@ async function installExamplePackages(packages) {
     const total = toInstall.length;
     for (let i = 0; i < total; i++) {
         const pkg = toInstall[i];
-        const percent = Math.round(((i) / total) * 100);
-        updateProgress(percent, `Installing ${pkg}...`);
+        const startPct = (i / total) * 95;
+        const endPct   = ((i + 1) / total) * 95;
+        const expectedMs = PACKAGE_EXPECTED_MS[pkg] ?? PACKAGE_EXPECTED_MS_DEFAULT;
+        const phase = smoothProgress(startPct, endPct, expectedMs,
+            (pct) => updateProgress(pct, `Installing ${pkg}…`));
         await micropip.install(pkg);
+        phase.complete();
         installedPackages.add(pkg);
         console.log(`${pkg} installed.`);
     }
-    updateProgress(100, 'All packages installed.');
+    updateProgress(100, 'Ready');
     await new Promise(resolve => setTimeout(resolve, 300));
     hideLoadingModal();
 }
