@@ -15,6 +15,19 @@ function showLoadingModal() {
     const banner = document.getElementById('loading-banner');
     banner.style.display = '';  // Clear any inline display:none
     banner.classList.remove('hidden');
+    // Snap the progress bar to 0 without the CSS transition. Otherwise
+    // mid-session reopens (extra wheel installs after a previous demo
+    // finished at 100%) animate the bar from 100% downward, racing
+    // against smoothProgress's climb-up — visually surprising.
+    const bar = document.getElementById('progress-bar');
+    if (bar) {
+        const prev = bar.style.transition;
+        bar.style.transition = 'none';
+        bar.style.width = '0%';
+        // Force reflow so the no-transition write is committed before we restore.
+        void bar.offsetHeight;
+        bar.style.transition = prev;
+    }
     const runBtn = document.getElementById('run-button');
     if (runBtn) runBtn.disabled = true;
 }
