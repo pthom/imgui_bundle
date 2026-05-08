@@ -53,16 +53,54 @@ print("After daft_lib.dummy_sdl_call")
 }
 
 
+// Smoothly animate the progress bar from `startPct` toward `endPct`, never
+// quite arriving (asymptote). `expectedMs` is the time at which we'll be at
+// ~95% of the [start..end] span. Call .complete() when the underlying work
+// finishes to snap to endPct. This is purely cosmetic — Pyodide and micropip
+// don't expose real per-byte progress, so we animate against expected
+// 4G timings rather than measure.
+function smoothProgress(startPct, endPct, expectedMs, onUpdate) {
+    const t0 = performance.now();
+    const span = endPct - startPct;
+    const tau = expectedMs / 3;  // 1 - exp(-3) ≈ 0.95
+    let stopped = false;
+    function tick() {
+        if (stopped) return;
+        const elapsed = performance.now() - t0;
+        const pct = startPct + span * (1 - Math.exp(-elapsed / tau));
+        onUpdate(pct);
+        requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    return {
+        complete: () => {
+            stopped = true;
+            onUpdate(endPct);
+        },
+    };
+}
+
 // Initialize Pyodide and load packages with progress updates
 async function loadPyodideAndPackages() {
     try {
         showLoadingModal();
-        updateProgress(0, 'Loading Pyodide...');
-        pyodide = await loadPyodide();
+
+        // Phase 1: Pyodide bootstrap (~11 MB: pyodide.asm.wasm + python_stdlib.zip).
+        // Animate asymptotically over ~10 s; snap when loadPyodide resolves.
+        let phase1Msg = 'Downloading Python runtime (~11 MB)…';
+        const phase1 = smoothProgress(0, 55, 10000,
+            (pct) => updateProgress(pct, phase1Msg));
+        pyodide = await loadPyodide({
+            messageCallback: (m) => {
+                if (typeof m === 'string' && m.length) phase1Msg = m;
+            },
+        });
+        phase1.complete();
         const pythonVersion = pyodide.runPython("import sys; sys.version");
         console.log("Python version:", pythonVersion);
 
-        updateProgress(20, 'Loading micropip');
+        // Phase 2: micropip — small, fast.
+        updateProgress(58, 'Loading micropip…');
         await pyodide.loadPackage("micropip");
         //await pyodide.loadPackage("micropip"); // firefox needs this to be loaded twice...
         const micropip = pyodide.pyimport("micropip");
@@ -70,36 +108,24 @@ async function loadPyodideAndPackages() {
         // SDL support in Pyodide is experimental. The flag is used to bypass certain issues.
         pyodide._api._skip_unwind_fatal_error = true;
 
-        // Determine the base URL dynamically
-        const baseUrl = `${window.location.origin}${window.location.pathname}`;
-        console.log('Base URL:', baseUrl);
-
-        // List of packages to install
+        // Phase 3: heavy wheels. Each phase animates within its own bar range.
         const packages = [
-            // For imgui_bundle below
-            // -----------------------
-            '../local_wheels/imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl', // 4.8 MB
-            'numpy', // 3.08 MB
+            { url: '../local_wheels/imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl',
+              label: 'imgui_bundle (4.9 MB)', range: [60, 85], expectedMs: 4500 },
+            { url: 'numpy',
+              label: 'numpy (2.8 MB)',        range: [85, 99], expectedMs: 3000 },
         ];
 
-        const totalSteps = packages.length;
-        let currentStep = 1;
-
         for (const pkg of packages) {
-            pkgName = pkg;
-            // if imgui_bundle in the name, simply display "imgui_bundle" to avoid confusion with the different wheel versions
-            if (pkg.includes('imgui_bundle'))
-                pkgName = 'imgui_bundle';
-
-            updateProgress(20 + (currentStep / totalSteps) * 80, `Installing ${pkgName}...`);
-            await micropip.install(pkg)
-            console.log(`${pkg} loaded.`);
-            currentStep++;
+            const phase = smoothProgress(pkg.range[0], pkg.range[1], pkg.expectedMs,
+                (pct) => updateProgress(pct, `Installing ${pkg.label}…`));
+            await micropip.install(pkg.url);
+            phase.complete();
+            console.log(`${pkg.url} loaded.`);
         }
 
-        updateProgress(100, 'All packages loaded.');
-        // Optionally, add a slight delay before hiding the modal
-        await new Promise(resolve => setTimeout(resolve, 500));
+        updateProgress(100, 'Ready');
+        await new Promise(resolve => setTimeout(resolve, 300));
         hideLoadingModal();
         console.log('Pyodide and packages loaded.');
     } catch (error) {
