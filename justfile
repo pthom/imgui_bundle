@@ -319,17 +319,21 @@ cf_stage:
     python docs/clone_website_resources/tools/generate_sitemap.py
 
 
-# Upload the current staging dir to Cloudflare Pages (the whole site snapshot)
+# Upload the current staging dir to Cloudflare Pages (does not build the elements, you shall do it yourself before)
 [group('cloudflare')]
 cf_deploy:
     wrangler pages deploy {{_CF_STAGING}} --project-name={{_CF_PROJECT}} --commit-dirty=true
     echo "Deployed to https://imgui-bundle.pages.dev/"
 
-# Update Cloudflare Pages from GitHub (same result as cf_deploy, but runs on GH)
+# Update Cloudflare Pages from GitHub (same result as cf_deploy_all_in_one, but runs on GH)
 [group('cloudflare')]
 cf_deploy_from_github:
     gh workflow run cf_pages_deploy.yml
 
+
+# Deploy to cloudflare, after having built all the required elements before
+[group('cloudflare')]
+cf_deploy_all_in_one: cf_stage_prepare cf_stage cf_deploy
 
 # Serves locally the current staging dir (add coi headers for the explorer,
 # and Content-Encoding: gzip for the pre-gzipped .data files — mirrors the CF _headers rules).
