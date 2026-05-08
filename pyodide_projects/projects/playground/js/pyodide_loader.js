@@ -153,11 +153,14 @@ async function runEditorPythonCode() {
             console.warn("stop_active_renderer skipped:", e);
         }
 
-        // Execute the code
-        await pyodide.runPythonAsync(code);
-
-        // Optionally, call a specific function
-        // await pyodide.runPythonAsync('main()');
+        // Write the editor code to a real file in Pyodide's VFS, and run it
+        // with that filename, so that compiled-function co_filename points at
+        // a real path. Without this, inspect.getsource(some_func) fails.
+        // Use a unique filename per run: linecache caches by filename and
+        // would otherwise return stale source after a demo is reloaded.
+        const playgroundFile = `/home/pyodide/_playground_main.py`;
+        pyodide.FS.writeFile(playgroundFile, code);
+        await pyodide.runPythonAsync(code, { filename: playgroundFile });
 
     } catch (err) {
         console.error('Caught PythonError:', err);
