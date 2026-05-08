@@ -219,6 +219,13 @@ html, body {
     font-size: 1.1rem;
 }
 
+#loading-banner .loading-subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #ccc;
+    text-align: center;
+}
+
 #progress-container {
     width: min(360px, 80%);
     background-color: #555;
