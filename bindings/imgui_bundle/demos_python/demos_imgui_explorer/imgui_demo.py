@@ -7295,8 +7295,17 @@ show_example_app_documents = _show_example_app_documents_impl
 # -----------------------------------------------------------------------------
 
 def main():
-    from imgui_bundle import immapp
-    immapp.run(lambda: show_demo_window(None), window_size=(600, 900))
+    from imgui_bundle import immapp, imgui_md
+    def gui():
+        imgui_md.render_unindented("""
+        Below is `imgui.show_demo_window()`
+
+        Open [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/) (online) for a more complete version,
+        with access to the source code for each demo.
+        """)
+        imgui.separator()
+        show_demo_window_maybe_docked(False)
+    immapp.run(gui, window_size=(900, 900), with_markdown=True)
 
 
 

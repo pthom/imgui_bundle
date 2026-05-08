@@ -6,7 +6,17 @@
 # with the latest version of the C++ code, but it should be close enough.
 ###############################################################################
 from imgui_bundle import imgui, immapp, implot3d, imgui_ctx, ImVec4, ImVec2, IM_COL32
-from imgui_bundle.demos_python.demos_imgui_explorer.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
+try:
+    from imgui_bundle.demos_python.demos_imgui_explorer.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
+except ImportError:
+    # Pyodide playground: demos_python/ is stripped from the slim wheel,
+    # so the meshes file is delivered separately via examples.json `bundle_folders`
+    # (see playground/examples/implot3d_libs/manifest.json).
+    import sys
+    _meshes_dir = "/home/pyodide/implot3d_libs"
+    if _meshes_dir not in sys.path:
+        sys.path.insert(0, _meshes_dir)
+    from implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh  # type: ignore
 import numpy as np
 from numpy.typing import NDArray
 
@@ -1908,7 +1918,17 @@ def show_demo_window_maybe_docked(create_window: bool):
 
 
 def main():
-    immapp.run(show_demo_window, with_implot3d=True)
+    from imgui_bundle import immapp, imgui_md
+    def gui():
+        imgui_md.render_unindented("""
+        Below is `implot3d.show_demo_window()`
+
+        Open [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/) (online) for a more complete version,
+        with access to the source code for each demo.
+        """)
+        imgui.separator()
+        show_demo_window_maybe_docked(False)
+    immapp.run(gui, window_size=(900, 900), with_markdown=True, with_implot3d=True)
 
 
 if __name__ == "__main__":
