@@ -288,6 +288,27 @@ class _ManualRenderJs:
 _MANUAL_RENDER_JS: _ManualRenderJs | None = None
 
 
+def stop_active_renderer() -> None:
+    """Stop the currently running renderer, if any. No-op if nothing is running.
+
+    Intended for the playground's demo-switching JS to call *before* exec'ing
+    a new demo's code. Without this call, the old animation lambda keeps
+    ticking against module globals (e.g. `gui`, `AppState`) that the new
+    exec freshly rebinds — producing surprising AttributeErrors and a
+    cascading teardown failure (see the inline comment around `_run_async`'s
+    latex path for the same race in another shape).
+
+    Safe to call repeatedly: subsequent calls when nothing is running do
+    nothing. Safe to call before this module's runner has ever started.
+    """
+    global _MANUAL_RENDER_JS
+    if _MANUAL_RENDER_JS is None:
+        return
+    if not _MANUAL_RENDER_JS.is_running:
+        return
+    _MANUAL_RENDER_JS._stop()
+
+
 def pyodide_do_patch_runners() -> None:
     # Instantiate global runners
     global _MANUAL_RENDER_JS
