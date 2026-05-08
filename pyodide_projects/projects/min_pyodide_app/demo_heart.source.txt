@@ -136,12 +136,13 @@ if __name__ == "__main__":
         const micropip = pyodide.pyimport("micropip");
 
         // 3. Load imgui_bundle (two options shown below)
-        //  Option a: load a wheel from imgui-bundle.pages.dev
-        //       https://imgui-bundle.pages.dev/local_wheels/imgui_bundle-1.92.700-cp313-cp313-pyemscripten_2025_0_wasm32.whl
-        //       (The relative `../local_wheels/...` path below resolves to that)
+        //
+        //   Option a (default): use a wheel that is stored on your server
+        //      download this wheel from https://imgui-bundle.pages.dev/local_wheels/
         setStatus("Loading imgui_bundle wheel...");
         await micropip.install('../local_wheels/imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl');
-        //   Option b: use the default wheel included with the pyodide CDN (an older version of imgui-bundle)
+        //
+        //   Option b: use the (older) wheel bundled with the Pyodide CDN
         // await micropip.install('imgui_bundle');
 
         // 4. Load additional required packages used by the demo

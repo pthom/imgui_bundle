@@ -282,6 +282,8 @@ cf_stage:
     # --copy-unsafe-links resolves the examples/ symlink (points outside the tree)
     rm -rf {{_CF_STAGING}}/playground {{_CF_STAGING}}/local_wheels
     rsync -a --copy-unsafe-links pyodide_projects/projects/playground/ {{_CF_STAGING}}/playground/
+    # projects/local_wheels/ ships both the wheel (gitignored) and a tracked
+    # index.html landing page served at imgui-bundle.pages.dev/local_wheels/.
     rsync -a pyodide_projects/projects/local_wheels/ {{_CF_STAGING}}/local_wheels/
     #
     # 4. Copy imgui bundle explorer (ibex)
@@ -336,7 +338,7 @@ cf_deploy_all_in_one: cf_stage_prepare cf_stage cf_deploy
 # and Content-Encoding: gzip for the pre-gzipped .data files — mirrors the CF _headers rules).
 [group('cloudflare')]
 cf_serve_local:
-    cd {{_CF_STAGING}} && python ../ci_scripts/webserver_multithread_policy.py -p 8765 --coi-prefix=/explorer/
+    cd {{_CF_STAGING}} && python ../ci_scripts/webserver_multithread_policy.py -p 8764 --coi-prefix=/explorer/
 
 # Serve imgui bundle landing page during dev
 [group('cloudflare')]

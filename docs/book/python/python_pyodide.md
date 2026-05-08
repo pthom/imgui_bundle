@@ -79,10 +79,11 @@ async function main() {
     const micropip = pyodide.pyimport("micropip");
 
     // Install imgui_bundle (two options)
-    // ----------------------------------`
+    // ----------------------------------
     //
-    //   Option a (default): load the canonical wheel from imgui-bundle.pages.dev.
-    await micropip.install('https://imgui-bundle.pages.dev/local_wheels/imgui_bundle-1.92.700-cp313-cp313-pyemscripten_2025_0_wasm32.whl');
+    //   Option a (default): use a wheel that is stored on your server
+    //      (download this wheel from https://imgui-bundle.pages.dev/local_wheels/ )
+    await micropip.install('local_wheels/imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl');
     //
     //   Option b: use the (older) wheel bundled with the Pyodide CDN
     // await micropip.install('imgui_bundle');
@@ -99,6 +100,9 @@ async function main() {
 main();
 ```
 
+For this, you will need to download the latest imgui-bundle pyodide wheel. Place it beside your html file (or in a `local_wheels/` subfolder, such as in the example).
+
+Download the wheel from [https://imgui-bundle.pages.dev/local_wheels/](https://imgui-bundle.pages.dev/local_wheels/)
 
 ## Pyodide API
 
