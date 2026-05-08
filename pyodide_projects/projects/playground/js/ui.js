@@ -9,19 +9,21 @@ function updateProgress(percent, text) {
     console.log(`Progress: ${percent}% - ${text}`);
 }
 
-// Function to show the loading modal
+// Show/hide the non-blocking loading banner overlaid on the canvas region.
+// While shown, the Run button is disabled (Pyodide isn't ready yet).
 function showLoadingModal() {
-    console.log('Showing loading modal');
-    const loadingModal = document.getElementById('loading-modal');
-    loadingModal.style.display = '';  // Clear any inline display:none
-    loadingModal.classList.remove('hidden');
+    const banner = document.getElementById('loading-banner');
+    banner.style.display = '';  // Clear any inline display:none
+    banner.classList.remove('hidden');
+    const runBtn = document.getElementById('run-button');
+    if (runBtn) runBtn.disabled = true;
 }
 
-// Function to hide the loading modal
 function hideLoadingModal() {
-    // console.log('Hiding loading modal');
-    const loadingModal = document.getElementById('loading-modal');
-    loadingModal.style.display = 'none';
+    const banner = document.getElementById('loading-banner');
+    banner.style.display = 'none';
+    const runBtn = document.getElementById('run-button');
+    if (runBtn) runBtn.disabled = false;
 }
 
 // Function to display errors in the error window

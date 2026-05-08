@@ -73,6 +73,7 @@ document.getElementById('run-shortcut').textContent = isMac ? '⌘↵' : 'Ctrl+E
 document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
+        if (runButton.disabled) return;  // Pyodide not ready yet
         runEditorPythonCode();
     }
 });

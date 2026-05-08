@@ -115,7 +115,7 @@
                 <div id="editor-toolbar">
                     <span id="editor-modified">●</span><span id="editor-label">Welcome to Dear ImGui Bundle</span>
                     <div id="editor-toolbar-right">
-                        <button id="run-button">&#9654; Run</button>
+                        <button id="run-button" disabled>&#9654; Run</button>
                         <span id="run-shortcut"></span>
                     </div>
                 </div>
@@ -128,18 +128,17 @@
             </div>
             <div id="canvas-container">
                 <canvas class="emscripten" id="canvas" tabindex="0" oncontextmenu="event.preventDefault()"></canvas>
+                <!-- Non-blocking loading banner overlays the canvas region only.
+                     Editor stays usable to the left so users can read code while waiting. -->
+                <div id="loading-banner">
+                    <h3>Loading Python runtime…</h3>
+                    <div id="progress-container">
+                        <div id="progress-bar"></div>
+                    </div>
+                    <p id="progress-text">Initializing…</p>
+                    <p class="loading-hint">Browse the example code on the left while you wait.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Loading Progress Modal -->
-    <div id="loading-modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Loading...</h2>
-            <div id="progress-container">
-                <div id="progress-bar"></div>
-            </div>
-            <p id="progress-text">Initializing...</p>
         </div>
     </div>
 

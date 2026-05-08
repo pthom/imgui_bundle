@@ -112,8 +112,9 @@ async function loadPyodideAndPackages() {
 // Function to run Python code
 async function runEditorPythonCode() {
     if (!pyodide) {
-        console.error('Pyodide not loaded yet');
-        displayError('Pyodide is still loading. Please wait a moment and try again.');
+        // Pyodide isn't loaded yet — silently no-op. The loading banner is
+        // already visible, and the Run button is disabled, so users normally
+        // can't reach this path; this guard is for dropdown auto-runs.
         return;
     }
 

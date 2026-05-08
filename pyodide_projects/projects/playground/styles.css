@@ -68,6 +68,13 @@ html, body {
     background-color: #45a049;
 }
 
+#run-button:disabled,
+#run-button:disabled:hover {
+    background-color: #888;
+    cursor: not-allowed;
+    animation: none;
+}
+
 @keyframes run-button-pulse {
     0%, 100% { background-color: #4CAF50; }
     50% { background-color: #81D4FA; }
@@ -186,41 +193,58 @@ html, body {
     display: none;
 }
 
-/* Loading Modal Styles */
-.modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+/* Loading Banner Styles
+   Anchored over the canvas region only (non-blocking, editor stays usable). */
+#loading-banner {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(40, 40, 40, 0.92);
+    color: #f0f0f0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1000; /* Ensure it overlays other content */
+    padding: 20px;
+    z-index: 10;
+    font-family: system-ui, sans-serif;
 }
 
-.modal-content {
-    background-color: #fff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    text-align: center;
-    width: 300px;
+#loading-banner.hidden {
+    display: none;
+}
+
+#loading-banner h3 {
+    margin: 0 0 4px 0;
+    font-weight: 500;
+    font-size: 1.1rem;
 }
 
 #progress-container {
-    width: 100%;
-    background-color: #ddd;
+    width: min(360px, 80%);
+    background-color: #555;
     border-radius: 5px;
-    margin: 20px 0;
+    margin: 12px 0;
 }
 
 #progress-bar {
     width: 0%;
-    height: 20px;
+    height: 12px;
     background-color: #4CAF50;
     border-radius: 5px;
     transition: width 0.3s;
+}
+
+#progress-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #ddd;
+}
+
+#loading-banner .loading-hint {
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: #aaa;
+    text-align: center;
 }
 
 /* Canvas Styles */
