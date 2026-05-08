@@ -82,8 +82,8 @@ void main() {
 
     // Zoom toward a known interesting point (a "spiral" in the Seahorse
     // Valley region). Reset every ~12 seconds to loop the animation.
-    float zoom = exp(-mod(iTime * 0.3, 12.0));
-    vec2 c = vec2(-0.7453, 0.1127) + uv * zoom;
+    float zoom = exp(-mod(iTime * 1.5, 12.0));
+    vec2 c = vec2(-0.7453, 0.11294) + uv * zoom;
 
     // Standard escape-time iteration.
     vec2 z = vec2(0.0);
