@@ -96,18 +96,22 @@ Required GitHub Actions secrets: `CLOUDFLARE_API_TOKEN`,
 `CLOUDFLARE_ACCOUNT_ID` (same values used locally).
 
 
-## Pyodide wheel: canonical URL and filename references
+## Pyodide wheel: deploy URL and filename references
 
 The Pyodide wheel built by `just pyodide_build` is rsync'd into
-`_cf_staging/local_wheels/` by `cf_stage` and ends up at the stable URL:
+`_cf_staging/local_wheels/` by `cf_stage` and ends up at:
 
 ```
 https://imgui-bundle.pages.dev/local_wheels/imgui_bundle-<VERSION>-cp313-cp313-pyemscripten_2025_0_wasm32.whl
 ```
 
-Cloudflare Pages serves it with permissive CORS, so external pages can
-`micropip.install(...)` it directly (unlike GitHub release assets, which
-block CORS). Use this as the canonical distribution URL in docs and demos.
+This URL points at the **latest** Pages deploy, not a versioned archive.
+Cloudflare Pages replaces the entire site on every upload, so previous
+wheels disappear when a new version is deployed. We do not promise
+stability for this URL: it is convenient for quick experiments, but
+docs / demos that ship to end users tell readers to download the wheel
+and self-host it (GitHub release assets work as a download source even
+though they cannot be passed to `micropip.install` directly — no CORS).
 
 ### When to update wheel filename references
 
