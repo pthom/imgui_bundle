@@ -147,7 +147,7 @@ const loadingTips = [
         setTimeout(() => {
             vid.preload = 'auto';
             vid.play().catch(() => { /* autoplay may be blocked, ignore */ });
-        }, 2000);
+        }, 500);
     }
 })();
 
