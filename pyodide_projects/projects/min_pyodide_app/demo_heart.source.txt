@@ -22,7 +22,7 @@ Opening it directly via file:// may prevent package loading.
              so that Python runs directly in the browser.
     Check https://github.com/pyodide/pyodide/releases for more recent versions.
 ============================================================================-->
-<script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"></script>
 
 
 <!--===========================================================================

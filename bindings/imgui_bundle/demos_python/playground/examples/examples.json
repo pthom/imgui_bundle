@@ -25,7 +25,7 @@
         "filename": "welcome_imm_mode.py"
       },
       {
-        "label": "Deploy to the Web: Minimal HTML Example",
+        "label": "Pyodide: Minimal HTML Example",
         "filename": "minimal_example.py"
       },
       {
@@ -61,15 +61,15 @@
         "hidden": true
       },
       {
-        "label": "WebGL: Minimal Mandelbrot shader as background",
+        "label": "WebGL: Minimal shader as background",
         "filename": "webgl_minimal_mandelbrot.py"
       },
       {
-        "label": "WebGL: Custom background using a shader (universal: OpenGL / WebGL)",
+        "label": "WebGL: Custom background (universal: OpenGL / WebGL)",
         "filename": "webgl_background_shader.py"
       },
       {
-        "label": "WebGL: 3D cube rendered to a texture, displayed in a window",
+        "label": "WebGL: 3D cube rendered to a texture",
         "filename": "webgl_texture_in_image.py"
       }
     ]

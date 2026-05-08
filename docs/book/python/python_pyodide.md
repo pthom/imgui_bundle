@@ -31,7 +31,7 @@ The [template](https://imgui-bundle.pages.dev/min_pyodide_app/demo_heart.source.
 Pyodide is a Python interpreter compiled to WebAssembly; it runs directly in the browser.
 
 ```html
-<script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"></script>
 ```
 
 Check [pyodide latest releases](https://github.com/pyodide/pyodide/releases) and update the URL accordingly.

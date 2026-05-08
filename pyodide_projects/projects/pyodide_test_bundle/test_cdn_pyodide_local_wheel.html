@@ -7,7 +7,7 @@
         #canvas { display: block; width: 100%; height: 100%; }
     </style>
     <!-- Load Pyodide from CDN -->
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"></script>
 </head>
 <body>
 <canvas id="canvas" tabindex="0"></canvas>
@@ -45,7 +45,7 @@ async function main() {
         pyodide._api._skip_unwind_fatal_error = true;
 
         // Load imgui-bundle from local wheel
-        await pyodide.loadPackage("../local_wheels/imgui_bundle-1.92.700-cp313-cp313-pyodide_2025_0_wasm32.whl");
+        await pyodide.loadPackage("../local_wheels/imgui_bundle-1.92.700-cp313-cp313-pyemscripten_2025_0_wasm32.whl");
 
         pyodide.runPython(pythonCode);
     } catch (error) {

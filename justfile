@@ -163,17 +163,16 @@ doc_build_cf:
 # for more info about the local pyodide build setup
 
 # Build pyodide wheel (slim: excludes demos and LaTeX fonts to reduce size)
-# Note: the `*pyodide*` glob matches the wheel platform tag
-# `pyodide_YYYY_M_wasm32` produced by pyodide-build 0.29.x. If you bump
-# PYODIDE_BUILD_VERSION to 0.30+ (which renamed the tag to
-# `pyemscripten_YYYY_M_wasm32`), update this glob and pyodide_clean's
+# Note: the `*pyemscripten*` glob matches the wheel platform tag
+# `pyemscripten_YYYY_M_wasm32` produced by pyodide-build 0.34.1+ (PEP 783).
+# If pyodide-build renames the tag again, update this glob and pyodide_clean's
 # glob accordingly. See the UPGRADE RUNBOOK at the top of
 # ci_scripts/pyodide_local_build/config_versions_pyodide.sh.
 [group('pyodide')]
 pyodide_build: pyodide_clean
     source ci_scripts/pyodide_local_build/venv_pyo/bin/activate && source ci_scripts/pyodide_local_build/emsdk/emsdk_env.sh && IMGUI_BUNDLE_SLIM_PYODIDE_WHEEL=1 pyodide build
-    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/_pyodide_resources/local_wheels/
-    cp dist/imgui_bundle*pyodide*.whl pyodide_projects/projects/local_wheels/
+    cp dist/imgui_bundle*pyemscripten*.whl pyodide_projects/_pyodide_resources/local_wheels/
+    cp dist/imgui_bundle*pyemscripten*.whl pyodide_projects/projects/local_wheels/
 
 # Start browser test server (serves test HTML pages)
 [group('pyodide')]
@@ -189,8 +188,8 @@ pyodide_demo_runner:
 [group('pyodide')]
 pyodide_clean:
     rm -rf .pyodide_build
-    rm -f pyodide_projects/_pyodide_resources/local_wheels/imgui_bundle*pyodide*.whl
-    rm -f dist/imgui_bundle*pyodide*.whl
+    rm -f pyodide_projects/_pyodide_resources/local_wheels/imgui_bundle*pyemscripten*.whl
+    rm -f dist/imgui_bundle*pyemscripten*.whl
 
 # Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
 [group('pyodide')]

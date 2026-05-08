@@ -47,7 +47,7 @@ Both `venv_pyo/` and `emsdk/` are gitignored and must be set up locally.
 
 ```bash
 # Pyodide version to use (determines ABI compatibility)
-PYODIDE_VERSION="0.29.3"
+PYODIDE_VERSION="0.29.4"
 
 # Python version (major.minor, e.g., "3.13", "3.12", "3.11")
 PYTHON_VERSION="3.13"
@@ -126,7 +126,7 @@ pyodide build
 After building, you'll find the wheel in the `dist/` directory:
 
 ```
-dist/imgui_bundle-X.Y.Z-cp313-cp313-pyodide_2025_0_wasm32.whl
+dist/imgui_bundle-X.Y.Z-cp313-cp313-pyemscripten_2025_0_wasm32.whl
 ```
 
 

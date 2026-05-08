@@ -17,7 +17,7 @@ The Pyodide CI workflow (`.github/workflows/pyodide.yml`) automates the building
 4. Run setup script: `setup_pyodide_local_build.sh`
    - Creates venv_pyo/
    - Installs pyodide-build
-   - Installs xbuildenv for Pyodide 0.29.3
+   - Installs xbuildenv for Pyodide 0.29.4
    - Clones and configures emsdk
    - Takes ~30 seconds
 5. Build wheel with `pyodide build`
@@ -25,7 +25,7 @@ The Pyodide CI workflow (`.github/workflows/pyodide.yml`) automates the building
 7. Upload wheel as artifact named `pyodide-wheel`
 
 **Outputs:**
-- Artifact: `dist/imgui_bundle-X.Y.Z-cp313-cp313-pyodide_2025_0_wasm32.whl`
+- Artifact: `dist/imgui_bundle-X.Y.Z-cp313-cp313-pyemscripten_2025_0_wasm32.whl`
 
 **Performance:**
 - Total build time: ~5-7 minutes
@@ -55,20 +55,17 @@ The workflow runs on:
 ## Configuration
 
 Versions are managed via `ci_scripts/pyodide_local_build/config_versions_pyodide.sh`:
-- Pyodide runtime version: 0.29.3
-- pyodide-build version: 0.29.3 (must be kept in lockstep with the runtime)
+- Pyodide runtime version: 0.29.4
+- pyodide-build version: 0.34.3
 - Python version: 3.13
 
 ### Upgrading
 
 **Read the UPGRADE RUNBOOK at the top of
 `ci_scripts/pyodide_local_build/config_versions_pyodide.sh` before bumping any
-version.** Three things must change atomically on upgrade: `PYODIDE_VERSION`,
-`PYODIDE_BUILD_VERSION`, and the `wheel<0.46` workaround in
-`setup_pyodide_local_build.sh`. pyodide-build 0.30+ also renamed the wheel
-platform tag from `pyodide_YYYY_M_wasm32` to `pyemscripten_YYYY_M_wasm32`; if
-you upgrade that far, the `*pyodide*.whl` globs in this workflow and in the
-justfile need to change too. The runbook lists the full checklist.
+version.** The runbook lists the full checklist (PYODIDE_VERSION /
+PYODIDE_BUILD_VERSION, wheel platform tag, hard-coded wheel filenames under
+`pyodide_projects/`).
 
 ## Artifacts
 
@@ -94,7 +91,7 @@ just pyodide_setup_local_build
 just pyodide_build
 
 # Result
-ls dist/*pyodide*.whl
+ls dist/*pyemscripten*.whl
 ```
 
 ## Comparison with Other Workflows
@@ -137,7 +134,7 @@ Test multiple Python/Pyodide versions:
 strategy:
   matrix:
     python-version: ["3.11", "3.12", "3.13"]
-    pyodide-version: ["0.29.3", "0.30.0"]
+    pyodide-version: ["0.29.4", "0.30.0"]
 ```
 
 ## References
