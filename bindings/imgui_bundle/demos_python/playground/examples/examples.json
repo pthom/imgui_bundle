@@ -59,6 +59,18 @@
         "label": "Lesson: Harmonic Motion2",
         "filename": "explorables/lesson_harmonic_motion2.py",
         "hidden": true
+      },
+      {
+        "label": "WebGL: Minimal Mandelbrot shader as background",
+        "filename": "webgl_minimal_mandelbrot.py"
+      },
+      {
+        "label": "WebGL: Custom background using a shader (universal: OpenGL / WebGL)",
+        "filename": "webgl_background_shader.py"
+      },
+      {
+        "label": "WebGL: 3D cube rendered to a texture, displayed in a window",
+        "filename": "webgl_texture_in_image.py"
       }
     ]
 }
