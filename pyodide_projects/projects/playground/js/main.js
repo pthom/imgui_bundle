@@ -112,6 +112,47 @@ function setEditorLabel(label) {
 
 
 // =====================================
+// Loading banner: lazy video + rotating tips
+// =====================================
+const loadingTips = [
+    'Tip: hit Ctrl+Enter to run the editor code',
+    'Pure Python, no install, no account',
+    'Edit the code on the left and re-run instantly',
+    'Try the WebGL demos for shader-driven backgrounds',
+    'Open "ImPlot3D: Full Demo" for interactive 3D plots',
+    'Once loaded, everything runs locally in your browser',
+];
+
+(function setupLoadingBannerExtras() {
+    const tipEl = document.getElementById('loading-tip');
+    if (tipEl) {
+        let i = Math.floor(Math.random() * loadingTips.length);
+        tipEl.textContent = loadingTips[i];
+        setInterval(() => {
+            i = (i + 1) % loadingTips.length;
+            tipEl.style.opacity = '0';
+            setTimeout(() => {
+                tipEl.textContent = loadingTips[i];
+                tipEl.style.opacity = '1';
+            }, 300);
+        }, 4500);
+    }
+
+    // Lazily upgrade the video to full preload only after the editor's
+    // critical CSS/JS race is over, so it doesn't starve the heavy pyodide
+    // downloads (cf. R4 incident). On warm cache pyodide finishes first
+    // and the banner hides before this fires — that's fine.
+    const vid = document.getElementById('loading-video');
+    if (vid) {
+        setTimeout(() => {
+            vid.preload = 'auto';
+            vid.play().catch(() => { /* autoplay may be blocked, ignore */ });
+        }, 2000);
+    }
+})();
+
+
+// =====================================
 // Then, initialize everything
 // =====================================
 async function initialize() {

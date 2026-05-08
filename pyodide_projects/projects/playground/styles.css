@@ -254,6 +254,24 @@ html, body {
     text-align: center;
 }
 
+#loading-video {
+    width: min(280px, 80%);
+    margin-top: 18px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #000;
+    display: block;
+}
+
+#loading-banner .loading-tip {
+    margin: 10px 0 0 0;
+    font-size: 0.8rem;
+    color: #ccc;
+    text-align: center;
+    min-height: 1.2em;
+    transition: opacity 0.3s;
+}
+
 /* Canvas Styles */
 #canvas-container {
     position: relative;

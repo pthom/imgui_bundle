@@ -138,6 +138,13 @@
                     </div>
                     <p id="progress-text">Initializing…</p>
                     <p class="loading-hint">Browse the example code on the left while you wait.</p>
+                    <!-- Lazy: starts as metadata-only; main.js flips to preload="auto"
+                         and starts playback ~2s in, after the editor's CSS/JS race is
+                         over, so the video doesn't compete with the heavy pyodide
+                         downloads for bandwidth (cf. R4 incident). -->
+                    <video id="loading-video" preload="metadata" muted loop playsinline
+                           src="../assets/pyodide_example_pendulum_small.mp4"></video>
+                    <p id="loading-tip" class="loading-tip"></p>
                 </div>
             </div>
         </div>
