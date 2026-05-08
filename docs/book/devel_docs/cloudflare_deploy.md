@@ -96,6 +96,33 @@ Required GitHub Actions secrets: `CLOUDFLARE_API_TOKEN`,
 `CLOUDFLARE_ACCOUNT_ID` (same values used locally).
 
 
+## Pyodide wheel: canonical URL and filename references
+
+The Pyodide wheel built by `just pyodide_build` is rsync'd into
+`_cf_staging/local_wheels/` by `cf_stage` and ends up at the stable URL:
+
+```
+https://imgui-bundle.pages.dev/local_wheels/imgui_bundle-<VERSION>-cp313-cp313-pyemscripten_2025_0_wasm32.whl
+```
+
+Cloudflare Pages serves it with permissive CORS, so external pages can
+`micropip.install(...)` it directly (unlike GitHub release assets, which
+block CORS). Use this as the canonical distribution URL in docs and demos.
+
+### When to update wheel filename references
+
+Every time `pyproject.toml` / `CMakeLists.txt` version changes (or the wheel
+platform tag changes per the runbook in
+`ci_scripts/pyodide_local_build/config_versions_pyodide.sh`), the hardcoded
+wheel filenames in HTML/JS/doc pages must be updated. Find them with:
+
+```bash
+rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!local_wheels' --glob '!.pyodide_build'
+```
+
+Glob-only references (`*pyemscripten*.whl` in `justfile` and the GitHub
+workflows) do not need updating on a version bump — only on a tag rename.
+
 ## Related
 
 - Local traineq deploy (kept as fallback): `just pyodide_deploy_imgui_bundle_online`, `just ibex_deploy`

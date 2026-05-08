@@ -4,6 +4,8 @@
 
 1. Update the version number in `pyproject.toml` and `CMakeLists.txt` (they must match).
    Version scheme: `ImGui patch × 100 + bundle release` (e.g. `1.92.601` = ImGui 1.92.6, bundle release 1).
+   Also update Pyodide wheel filenames hardcoded in demos / docs — see
+   [cloudflare_deploy.md → wheel filename references](cloudflare_deploy.md#when-to-update-wheel-filename-references).
 2. Create a GitHub release with a new tag (e.g. `v1.92.601`).
    The `wheels.yml` CI workflow builds and uploads wheels to PyPI automatically.
 3. Manually build and upload the macOS arm64 wheel (see below).

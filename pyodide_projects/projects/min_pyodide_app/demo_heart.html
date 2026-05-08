@@ -136,20 +136,12 @@ if __name__ == "__main__":
         const micropip = pyodide.pyimport("micropip");
 
         // 3. Load imgui_bundle (two options shown below)
-        //
-        //    Option a: load a wheel from a local url.
-        //              Download a wheel from the links below and put it in local_wheels/ :
-        //                  - Nightly wheels from GitHub Actions: https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml
-        //                  - Wheel from a release:               https://github.com/pthom/imgui_bundle/releases/download/v1.92.601/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl
-        //              Notes:
-        //                  - The wheel must match this Pyodide version / Python version.
-        //                  - The filename below is only an example.
-        //                  - By default, keep the wheel local (on the same server as this HTML file).
-        //                    If you host it elsewhere, that server must send CORS headers.
+        //  Option a: load a wheel from imgui-bundle.pages.dev
+        //       https://imgui-bundle.pages.dev/local_wheels/imgui_bundle-1.92.700-cp313-cp313-pyemscripten_2025_0_wasm32.whl
+        //       (The relative `../local_wheels/...` path below resolves to that)
         setStatus("Loading imgui_bundle wheel...");
-        await micropip.install('local_wheels/imgui_bundle-1.92.700-cp313-cp313-pyodide_2025_0_wasm32.whl');
-        //
-        //    Option b: use the default wheel included with the pyodide CDN (an older version of imgui-bundle)
+        await micropip.install('../local_wheels/imgui_bundle-1.92.700-cp313-cp313-pyemscripten_2025_0_wasm32.whl');
+        //   Option b: use the default wheel included with the pyodide CDN (an older version of imgui-bundle)
         // await micropip.install('imgui_bundle');
 
         // 4. Load additional required packages used by the demo

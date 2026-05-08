@@ -79,11 +79,11 @@ async function main() {
     const micropip = pyodide.pyimport("micropip");
 
     // Install imgui_bundle (two options)
-    //   Option a (default): load a wheel from a local url.
-    //   The wheel must match this Pyodide / Python version.
-    //   By default, keep it local (same origin as this HTML). If hosted
-    //   elsewhere, that server must send CORS headers.
-    await micropip.install('local_wheels/imgui_bundle-1.92.601-cp313-cp313-pyodide_2025_0_wasm32.whl');
+    // ----------------------------------`
+    //
+    //   Option a (default): load the canonical wheel from imgui-bundle.pages.dev.
+    await micropip.install('https://imgui-bundle.pages.dev/local_wheels/imgui_bundle-1.92.700-cp313-cp313-pyemscripten_2025_0_wasm32.whl');
+    //
     //   Option b: use the (older) wheel bundled with the Pyodide CDN
     // await micropip.install('imgui_bundle');
 
@@ -98,28 +98,6 @@ async function main() {
 }
 main();
 ```
-
-### Where to find Pyodide wheels for imgui_bundle
-
-* [Release wheels](https://github.com/pthom/imgui_bundle/releases) — attached to each GitHub release
-* [Nightly builds](https://github.com/pthom/imgui_bundle/actions/workflows/pyodide.yml) — download a wheel directly from GitHub Actions
-* Wheel used in the [official demo](imgui-bundle.pages.dev/min_pyodide_app/demo_heart.html) (look at the source to find the wheel)
-
-Wheels must match the Pyodide version **and** Python version used in the template.
-
-```{note}
-**CORS gotcha.** Passing a GitHub release URL directly to
-`micropip.install('https://github.com/.../wheel.whl')` looks convenient but the
-browser will block it: GitHub release downloads don't send
-`Access-Control-Allow-Origin` headers. Two workable options:
-
-* **Keep the wheel local**: download it once and serve it from the same folder
-  as your HTML (the template's default — `local_wheels/...`).
-* **Host it somewhere CORS-friendly**: PyPI, GitHub Pages, or a CDN like jsDelivr.
-```
-
-
-
 
 
 ## Pyodide API

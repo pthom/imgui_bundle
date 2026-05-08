@@ -757,6 +757,24 @@ This uses the `python_bindings` preset which enables immvision, OpenCV fetching,
 etc. LLM's can create build folders for specific tasks, and use names that reflect the task (e.g. `claude_fix_emscripten_build` or `claude_test_pyodide`), to avoid conflicts with user-created folders.
 
 
+### Pyodide wheel filename references
+
+The Pyodide wheel filename (e.g. `imgui_bundle-1.92.700-cp313-cp313-pyemscripten_2025_0_wasm32.whl`)
+is hardcoded in several demo HTML/JS pages and a doc page. When the version
+in `pyproject.toml` / `CMakeLists.txt` changes, or when the wheel platform
+tag changes (see `ci_scripts/pyodide_local_build/config_versions_pyodide.sh`
+runbook), every hardcoded filename must be updated. Find them with:
+
+```bash
+rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!local_wheels' --glob '!.pyodide_build'
+```
+
+Source-of-truth files (`pyproject.toml:13`, `CMakeLists.txt:7`) carry mirror-
+note comments; downstream wheel filenames live under `pyodide_projects/` and
+in `docs/book/python/python_pyodide.md`. Glob-only references (`*pyemscripten*.whl`
+in `justfile`, workflow yml) do not need updating on a version bump.
+
+
 ## Workflow: Specs and Plans
 
 Plans, specs, and todos for features live in `_plans/`:
