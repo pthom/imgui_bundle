@@ -53,7 +53,6 @@ FBO and the resulting texture is shown in an ImGui window.
 - `webgl_background_shader.py`: a fancier shader (Seascape) with a
   desktop+web compat layer (one source, both targets).
 """
-
 import math
 
 import numpy as np
@@ -69,7 +68,7 @@ if not imgui_bundle.has_submodule("webgl"):
     )
 from imgui_bundle import webgl
 
-from js import document, Float32Array
+from js import document, Float32Array  # type: ignore[import-not-found]
 
 
 # --- WebGL2 context (shared with hello_imgui's renderer) ------------------
@@ -270,7 +269,7 @@ def _docs_window():
     if not _show_docs:
         return
     imgui.set_next_window_size(hello_imgui.em_to_vec2(48, 32), imgui.Cond_.first_use_ever)
-    expanded, _show_docs = imgui.begin("About this demo", _show_docs)
+    expanded, _show_docs = imgui.begin("About this demo", _show_docs)  # type: ignore
     if expanded:
         imgui_md.render_unindented(__doc__ or "")
     imgui.end()
