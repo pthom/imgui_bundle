@@ -80,22 +80,6 @@ async function loadPyodideAndPackages() {
             // -----------------------
             '../local_wheels/imgui_bundle-1.92.700-cp313-cp313-pyodide_2025_0_wasm32.whl', // 4.8 MB
             'numpy', // 3.08 MB
-
-            // 'opencv-python', // 11 MB
-            // 'pillow',
-
-            // // For fiatlight below
-            // // --------------------
-            // 'requests',  // 61KB, For word count demo (we download the Hamlet text)
-            // 'pandas', // 5.4 MB
-            // 'matplotlib', // 6.2 MB
-            // baseUrl + `/pyodide_dist/fiatlight-0.2.0-py3-none-any.whl`, // 3.5 MB
-
-            // For scatter_widget_bundle
-            // --------------------------
-            // "scikit-learn", // 6.3 MB
-            // "scipy", // 13 MB
-            // baseUrl + "/pyodide_dist/scatter_widget_bundle-0.1.0-py3-none-any.whl", // 8.3 KB
         ];
 
         const totalSteps = packages.length;

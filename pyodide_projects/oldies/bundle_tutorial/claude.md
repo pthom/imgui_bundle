@@ -79,7 +79,6 @@ When run, this project will look like a Jupyter book website, but it will actual
     │     ├── ...
     ├── package-lock.json
     ├── package.json
-    ├── pyodide_dist -> ../../imgui_bundle/bindings/pyodide_web_demo/pyodide_dist
     ├── resources_singlepage/  # the js code of the single page app
     │     ├── app.js
     │     ├── canvas_drag.js

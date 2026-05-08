@@ -1,6 +1,3 @@
-# Downloaded Pyodide distribution
-pyodide_dist/
-
 # Local wheel files (imgui_bundle built locally, copied here for testing)
 local_wheels/*.whl
 

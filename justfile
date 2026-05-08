@@ -196,12 +196,10 @@ pyodide_clean:
 [group('pyodide')]
 pyodide_setup_local_build:
     ./ci_scripts/pyodide_local_build/setup_pyodide_local_build.sh
-    ./pyodide_projects/_pyodide_resources/download_pyodide_dist.sh
 
 # Pyodide deep clean (removes also the local build setup)
 [group('pyodide')]
 pyodide_deep_clean: pyodide_clean
-    rm -rf pyodide_projects/_pyodide_resources/pyodide_dist
     rm -rf ci_scripts/pyodide_local_build/venv_pyo
     rm -rf ci_scripts/pyodide_local_build/emsdk
 
