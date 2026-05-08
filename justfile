@@ -337,6 +337,14 @@ cf_deploy_from_github:
 cf_serve_local:
     cd {{_CF_STAGING}} && python ../ci_scripts/webserver_multithread_policy.py -p 8765 --coi-prefix=/explorer/
 
+# Serve imgui bundle landing page during dev
+[group('cloudflare')]
+cf_serve_imgui_bundle_pages_landing:
+    echo "http://localhost:8333"
+    cd docs/clone_website_resources/imgui_bundle_pages_landing/final && python3 -m http.server 8333
+
+
+
 # ==============================================================
 # Tests
 # ==============================================================
