@@ -6,7 +6,7 @@
 // load the initial example code
 async function initial_example_code() {
     try {
-        const response = await fetch('examples/p_00_landing_page.py');
+        const response = await fetch('examples/landing_page.py');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

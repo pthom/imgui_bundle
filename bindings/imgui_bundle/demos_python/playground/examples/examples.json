@@ -2,7 +2,7 @@
     "examples": [
       {
         "label": "Welcome to Dear ImGui Bundle",
-        "filename": "p_00_landing_page.py"
+        "filename": "landing_page.py"
       },
       {
         "label": "Explorable: Double Pendulum",
@@ -14,40 +14,40 @@
       },
       {
         "label": "ImPlot: Interactive Drag Rect",
-        "filename": "p_20_implot_drag_rect.py"
+        "filename": "implot_drag_rect.py"
       },
       {
         "label": "ImPlot3D: Butterfly Effect",
-        "filename": "p_30_implot3d_butterfly.py"
+        "filename": "implot3d_butterfly.py"
       },
       {
         "label": "What is an Immediate GUI",
-        "filename": "p_10_welcome_imm_mode.py"
+        "filename": "welcome_imm_mode.py"
       },
       {
         "label": "Deploy to the Web: Minimal HTML Example",
-        "filename": "p_35_minimal_example.py"
+        "filename": "minimal_example.py"
       },
       {
         "label": "Themes & Theme Tweaking",
-        "filename": "p_40_themes.py"
+        "filename": "themes.py"
       },
       {
         "label": "ImmVision: Download & Inspect Images",
-        "filename": "p_50_immvision.py",
+        "filename": "immvision.py",
         "packages": ["opencv-python"]
       },
       {
-        "label": "Resizable Layouts",
-        "filename": "p_60_layout.py"
+        "label": "Layout: resizable layout using child window",
+        "filename": "layout_child.py"
       },
       {
-        "label": "Docking Layouts",
-        "filename": "p_65_docking.py"
+        "label": "Layout: using dockable windows",
+        "filename": "layout_docking.py"
       },
       {
         "label": "Fiatlight: Image Pipeline",
-        "filename": "p_70_fiatlight_image.py",
+        "filename": "fiatlight_image.py",
         "packages": ["opencv-python", "fiatlight"],
         "bundle_folders": ["fiat_settings"]
       },
