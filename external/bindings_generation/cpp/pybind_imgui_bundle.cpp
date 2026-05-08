@@ -35,6 +35,7 @@ void py_init_module_nanovg(nb::module_& m);
 void py_init_module_imanim(nb::module_& m);
 void py_init_module_imgui_explorer(nb::module_& m);
 void py_init_module_imgui_microtex(nb::module_& m);
+void py_init_module_webgl(nb::module_& m);
 void py_init_module_imgui_bundle(nb::module_& m);
 
 
@@ -241,6 +242,14 @@ void py_init_module_imgui_bundle(nb::module_& m)
     py_init_module_imgui_microtex(module_imgui_microtex);
 #else
     _register_submodule("imgui_microtex", false);
+#endif
+
+#ifdef IMGUI_BUNDLE_BUILD_PYODIDE
+    _register_submodule("webgl");
+    auto module_webgl = m.def_submodule("webgl");
+    py_init_module_webgl(module_webgl);
+#else
+    _register_submodule("webgl", false);
 #endif
 
 #if defined(HELLOIMGUI_USE_GLFW3) && !defined(IMGUI_BUNDLE_DISABLE_HELLO_IMGUI)

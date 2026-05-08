@@ -105,6 +105,12 @@ function(add_imgui_bundle_bindings)
         ${filtered_pybind_files}
         )
 
+    # Manually-maintained bindings live outside the autogen file list.
+    # The webgl bridge is Pyodide-only (uses emscripten + Pyodide js interop).
+    if(IMGUI_BUNDLE_BUILD_PYODIDE)
+        list(APPEND python_module_sources ${bindings_main_folder}/pybind_webgl.cpp)
+    endif()
+
     nanobind_add_module(${python_native_module_name} ${python_module_sources})
 
     # Propagate WITH flags to bindings so preprocessor conditionals work

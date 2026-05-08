@@ -249,6 +249,10 @@ if has_submodule("imgui_microtex"):
     from imgui_bundle._imgui_bundle import imgui_microtex as imgui_microtex
     _publish("imgui_microtex", imgui_microtex)
     __all__.extend(["imgui_microtex"])
+if has_submodule("webgl"):
+    from imgui_bundle._imgui_bundle import webgl as webgl
+    _publish("webgl", webgl)
+    __all__.extend(["webgl"])
 
 if has_submodule("immapp_cpp"):  # immapp is a Python wrapper around immapp_cpp
     from imgui_bundle import immapp as immapp
