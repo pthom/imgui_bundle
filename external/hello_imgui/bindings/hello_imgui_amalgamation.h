@@ -221,7 +221,7 @@ Note: DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under w
 
 ## Fine tune DPI Handling
 
-See [`HelloImGui::DpiAwareParams`](https://pthom.github.io/hello_imgui/book/doc_params.html#dpi-aware-params)
+See [`HelloImGui::DpiAwareParams`](https://pthom.github.io/hello_imgui/book/doc-params/#dpi-aware-params)
 for more information on how to fine tune DPI handling when using Hello ImGui.
 @@md
 */
