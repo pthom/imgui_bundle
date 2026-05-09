@@ -40,7 +40,7 @@ the same context, so we share hello_imgui's GL state and framebuffer.
 No copies, no readback.
 """
 from imgui_bundle import hello_imgui, imgui, immapp, imgui_md
-from js import document, Float32Array  # type: ignore[import-not-found]
+from js import document, Float32Array  # type: ignore
 
 
 # --- WebGL2 context (shared with hello_imgui's renderer) ------------------
