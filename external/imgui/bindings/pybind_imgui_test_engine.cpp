@@ -627,7 +627,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
     auto pyEnumTestOpFlags_ =
         nb::enum_<ImGuiTestOpFlags_>(m, "TestOpFlags_", nb::is_arithmetic(), nb::is_flag(), " Generic flags for many ImGuiTestContext functions\n Some flags are only supported by a handful of functions. Check function headers for list of supported flags.")
             .value("none", ImGuiTestOpFlags_None, "")
-            .value("no_check_hovered_id", ImGuiTestOpFlags_NoCheckHoveredId, "Don't check for HoveredId after aiming for a widget. A few situations may want this: while e.g. dragging or another items prevents hovering, or for items that don't use ItemHoverable()")
+            .value("no_check_hovered_id", ImGuiTestOpFlags_NoCheckHoveredId, "Don't check for HoveredId after aiming for a widget. This is automatic when there's an active item, typically in drag and drop operation. Otherwise, a few situations may want this e.g. for items that don't use ItemHoverable(), or when intently aiming for an item behind a popup/modal inhibition layer.")
             .value("no_error", ImGuiTestOpFlags_NoError, "Don't abort/error e.g. if the item cannot be found or the operation doesn't succeed.")
             .value("no_focus_window", ImGuiTestOpFlags_NoFocusWindow, "Don't focus window when aiming at an item")
             .value("no_auto_uncollapse", ImGuiTestOpFlags_NoAutoUncollapse, "Disable automatically uncollapsing windows (useful when specifically testing Collapsing behaviors)")
@@ -637,7 +637,8 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             .value("move_to_edge_l", ImGuiTestOpFlags_MoveToEdgeL, "Simple Dumb aiming helpers to test widget that care about clicking position. May need to replace will better functionalities.")
             .value("move_to_edge_r", ImGuiTestOpFlags_MoveToEdgeR, "")
             .value("move_to_edge_u", ImGuiTestOpFlags_MoveToEdgeU, "")
-            .value("move_to_edge_d", ImGuiTestOpFlags_MoveToEdgeD, "");
+            .value("move_to_edge_d", ImGuiTestOpFlags_MoveToEdgeD, "")
+            .value("no_scroll", ImGuiTestOpFlags_NoScroll, "Disable automatically scrolling to reach an item.");
 
 
     auto pyClassImGuiTestActionFilter =
@@ -1134,7 +1135,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("mouse_wheel_y",
             &ImGuiTestContext::MouseWheelY,
             nb::arg("dy"),
-            "(private API)")
+            "(private API)\n\n +1: up, -1: down")
         .def("mouse_move_to_void",
             &ImGuiTestContext::MouseMoveToVoid,
             nb::arg("viewport") = nb::none(),
@@ -1360,6 +1361,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             "(private API)")
         .def("item_is_opened",
             &ImGuiTestContext::ItemIsOpened,
+            nb::arg("ref"),
+            "(private API)")
+        .def("item_is_visible",
+            &ImGuiTestContext::ItemIsVisible,
             nb::arg("ref"),
             "(private API)")
         .def("item_verify_checked_if_alive",

@@ -3392,7 +3392,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("no_tab_list_scrolling_buttons", ImGuiTabBarFlags_NoTabListScrollingButtons, "Disable scrolling buttons (apply when fitting policy is ImGuiTabBarFlags_FittingPolicyScroll)")
             .value("no_tooltip", ImGuiTabBarFlags_NoTooltip, "Disable tooltips when hovering a tab")
             .value("draw_selected_overline", ImGuiTabBarFlags_DrawSelectedOverline, "Draw selected overline markers over selected tab")
-            .value("fitting_policy_mixed", ImGuiTabBarFlags_FittingPolicyMixed, "Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling buttons.")
+            .value("fitting_policy_mixed", ImGuiTabBarFlags_FittingPolicyMixed, "Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling. Setting TabMinWidthShrink to FLT_MAX makes this behave like ImGuiTabBarFlags_FittingPolicyScroll.")
             .value("fitting_policy_shrink", ImGuiTabBarFlags_FittingPolicyShrink, "Shrink down tabs when they don't fit")
             .value("fitting_policy_scroll", ImGuiTabBarFlags_FittingPolicyScroll, "Enable scrolling buttons when tabs don't fit")
             .value("fitting_policy_mask_", ImGuiTabBarFlags_FittingPolicyMask_, "")
@@ -3722,7 +3722,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("renderer_has_viewports", ImGuiBackendFlags_RendererHasViewports, "Backend Renderer supports multiple viewports.")
             .value("platform_has_viewports", ImGuiBackendFlags_PlatformHasViewports, "Backend Platform supports multiple viewports.")
             .value("has_mouse_hovered_viewport", ImGuiBackendFlags_HasMouseHoveredViewport, "Backend Platform supports calling io.AddMouseViewportEvent() with the viewport under the mouse. IF POSSIBLE, ignore viewports with the ImGuiViewportFlags_NoInputs flag (Win32 backend, GLFW 3.30+ backend can do this, SDL backend cannot). If this cannot be done, Dear ImGui needs to use a flawed heuristic to find the viewport under.")
-            .value("has_parent_viewport", ImGuiBackendFlags_HasParentViewport, "Backend Platform supports honoring viewport->ParentViewport/ParentViewportId value, by applying the corresponding parent/child relation at the Platform level.");
+            .value("has_parent_viewport", ImGuiBackendFlags_HasParentViewport, "Backend Platform supports honoring viewport->ParentViewport/ParentViewportId value, by applying the corresponding parent/child relationship at the Platform level. Child windows always appear in front of their parent window.");
 
 
     auto pyEnumCol_ =
@@ -3830,6 +3830,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("table_angled_headers_text_align", ImGuiStyleVar_TableAngledHeadersTextAlign, "ImVec2  TableAngledHeadersTextAlign")
             .value("tree_lines_size", ImGuiStyleVar_TreeLinesSize, "float     TreeLinesSize")
             .value("tree_lines_rounding", ImGuiStyleVar_TreeLinesRounding, "float     TreeLinesRounding")
+            .value("drag_drop_target_rounding", ImGuiStyleVar_DragDropTargetRounding, "float     DragDropTargetRounding")
             .value("button_text_align", ImGuiStyleVar_ButtonTextAlign, "ImVec2    ButtonTextAlign")
             .value("selectable_text_align", ImGuiStyleVar_SelectableTextAlign, "ImVec2    SelectableTextAlign")
             .value("separator_size", ImGuiStyleVar_SeparatorSize, "float     SeparatorSize")
@@ -6233,7 +6234,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tab_border_size", &ImGuiStyle::TabBorderSize, "Thickness of border around tabs.")
         .def_rw("tab_min_width_base", &ImGuiStyle::TabMinWidthBase, "Minimum tab width, to make tabs larger than their contents. TabBar buttons are not affected.")
         .def_rw("tab_min_width_shrink", &ImGuiStyle::TabMinWidthShrink, "Minimum tab width after shrinking, when using ImGuiTabBarFlags_FittingPolicyMixed policy.")
-        .def_rw("tab_close_button_min_width_selected", &ImGuiStyle::TabCloseButtonMinWidthSelected, "-1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width.")
+        .def_rw("tab_close_button_min_width_selected", &ImGuiStyle::TabCloseButtonMinWidthSelected, "-1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width. FLT_MAX: never shrink, will behave like ImGuiTabBarFlags_FittingPolicyScroll.")
         .def_rw("tab_close_button_min_width_unselected", &ImGuiStyle::TabCloseButtonMinWidthUnselected, "-1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width. FLT_MAX: never show close button when unselected.")
         .def_rw("tab_bar_border_size", &ImGuiStyle::TabBarBorderSize, "Thickness of tab-bar separator, which takes on the tab active color to denote focus.")
         .def_rw("tab_bar_overline_size", &ImGuiStyle::TabBarOverlineSize, "Thickness of tab-bar overline, which highlights the selected tab-bar.")
@@ -6242,14 +6243,14 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tree_lines_flags", &ImGuiStyle::TreeLinesFlags, "Default way to draw lines connecting TreeNode hierarchy. ImGuiTreeNodeFlags_DrawLinesNone or ImGuiTreeNodeFlags_DrawLinesFull or ImGuiTreeNodeFlags_DrawLinesToNodes.")
         .def_rw("tree_lines_size", &ImGuiStyle::TreeLinesSize, "Thickness of outlines when using ImGuiTreeNodeFlags_DrawLines.")
         .def_rw("tree_lines_rounding", &ImGuiStyle::TreeLinesRounding, "Radius of lines connecting child nodes to the vertical line.")
-        .def_rw("drag_drop_target_rounding", &ImGuiStyle::DragDropTargetRounding, "Radius of the drag and drop target frame.")
+        .def_rw("drag_drop_target_rounding", &ImGuiStyle::DragDropTargetRounding, "Radius of the drag and drop target frame. When <0.0: use FrameRounding.")
         .def_rw("drag_drop_target_border_size", &ImGuiStyle::DragDropTargetBorderSize, "Thickness of the drag and drop target border.")
         .def_rw("drag_drop_target_padding", &ImGuiStyle::DragDropTargetPadding, "Size to expand the drag and drop target from actual target item size.")
         .def_rw("color_marker_size", &ImGuiStyle::ColorMarkerSize, "Size of R/G/B/A color markers for ColorEdit4() and for Drags/Sliders when using ImGuiSliderFlags_ColorMarkers.")
         .def_rw("color_button_position", &ImGuiStyle::ColorButtonPosition, "Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.")
         .def_rw("button_text_align", &ImGuiStyle::ButtonTextAlign, "Alignment of button text when button is larger than text. Defaults to (0.5, 0.5) (centered).")
         .def_rw("selectable_text_align", &ImGuiStyle::SelectableTextAlign, "Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.")
-        .def_rw("separator_size", &ImGuiStyle::SeparatorSize, "Thickness of border in Separator()")
+        .def_rw("separator_size", &ImGuiStyle::SeparatorSize, "Thickness of border in Separator(). Must be >= 1.0.")
         .def_rw("separator_text_border_size", &ImGuiStyle::SeparatorTextBorderSize, "Thickness of border in SeparatorText()")
         .def_rw("separator_text_align", &ImGuiStyle::SeparatorTextAlign, "Alignment of text within the separator. Defaults to (0.0, 0.5) (left aligned, center).")
         .def_rw("separator_text_padding", &ImGuiStyle::SeparatorTextPadding, "Horizontal offset of text from each edge of the separator + spacing on other axis. Generally small values. .y is recommended to be == FramePadding.y.")
@@ -6282,7 +6283,9 @@ void py_init_module_imgui_main(nb::module_& m)
         //
         .def(nb::init<>())
         .def("scale_all_sizes",
-            &ImGuiStyle::ScaleAllSizes, nb::arg("scale_factor"))
+            &ImGuiStyle::ScaleAllSizes,
+            nb::arg("scale_factor"),
+            "Scale all spacing/padding/thickness values. Do not scale fonts. See comments in definition. Consider not calling this if your initial scale factor if <1.0.")
         ;
 
 
@@ -6335,7 +6338,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_viewports_no_auto_merge", &ImGuiIO::ConfigViewportsNoAutoMerge, "= False;         // Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it. May also set ImGuiViewportFlags_NoAutoMerge on individual viewport.")
         .def_rw("config_viewports_no_task_bar_icon", &ImGuiIO::ConfigViewportsNoTaskBarIcon, "= False          // Disable default OS task bar icon flag for secondary viewports. When a viewport doesn't want a task bar icon, ImGuiViewportFlags_NoTaskBarIcon will be set on it.")
         .def_rw("config_viewports_no_decoration", &ImGuiIO::ConfigViewportsNoDecoration, "= True           // Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).")
-        .def_rw("config_viewports_no_default_parent", &ImGuiIO::ConfigViewportsNoDefaultParent, "= True           // When False: set secondary viewports' ParentViewportId to main viewport ID by default. Expects the platform backend to setup a parent/child relationship between the OS windows based on this value. Some backend may ignore this. Set to True if you want viewports to automatically be parent of main viewport, otherwise all viewports will be top-level OS windows.")
+        .def_rw("config_viewports_no_default_parent", &ImGuiIO::ConfigViewportsNoDefaultParent, "= True           // Disable setting OS window parent to main viewport by default. The platform backend is expected to honor `viewport->ParentViewportID` to setup a parent/child relationship between the OS windows (supported if ImGuiBackendFlags_HasParentViewport is set). When parented: child windows always appear in front of their parent. Set to False if you want viewports to automatically be parent of main viewport, otherwise all viewports will be top-level OS windows. Parent/child relationship may be set on a per-window basis using ImGuiWindowClass.")
         .def_rw("config_viewports_platform_focus_sets_focus", &ImGuiIO::ConfigViewportsPlatformFocusSetsImGuiFocus, "= True // When a platform window is focused (e.g. using Alt+Tab, clicking Platform Title Bar), apply corresponding focus on imgui windows (may clear focus/active id from imgui windows location in other platform windows). In principle this is better enabled but we provide an opt-out, because some Linux window managers tend to eagerly focus windows (e.g. on mouse hover, or even a simple window pos/size change).")
         .def_rw("config_dpi_scale_fonts", &ImGuiIO::ConfigDpiScaleFonts, "= False          // [EXPERIMENTAL] Automatically overwrite style.FontScaleDpi when Monitor DPI changes. This will scale fonts but _NOT_ scale sizes/padding for now.")
         .def_rw("config_dpi_scale_viewports", &ImGuiIO::ConfigDpiScaleViewports, "= False          // [EXPERIMENTAL] Scale Dear ImGui and Platform Windows when Monitor DPI changes.")
@@ -6565,7 +6568,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("event_flag", &ImGuiInputTextCallbackData::EventFlag, "One ImGuiInputTextFlags_Callback*    // Read-only")
         .def_rw("flags", &ImGuiInputTextCallbackData::Flags, "What user passed to InputText()      // Read-only")
         .def_rw("user_data", &ImGuiInputTextCallbackData::UserData, "What user passed to InputText()      // Read-only")
-        .def_rw("id_", &ImGuiInputTextCallbackData::ID, "Widget ID                             // Read-only")
+        .def_rw("id_", &ImGuiInputTextCallbackData::ID, "Widget ID                            // Read-only")
         .def_rw("event_key", &ImGuiInputTextCallbackData::EventKey, "Key pressed (Up/Down/TAB)            // Read-only    // [Completion,History]")
         .def_rw("event_char", &ImGuiInputTextCallbackData::EventChar, "Character input                      // Read-write   // [CharFilter] Replace character with another one, or set to zero to drop. return 1 is equivalent to setting EventChar=0;")
         .def_rw("event_activated", &ImGuiInputTextCallbackData::EventActivated, "Input field just got activated       // Read-only    // [Always]")
@@ -6573,9 +6576,9 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_ro("buf", &ImGuiInputTextCallbackData::Buf, "Text buffer                          // Read-write   // [Resize] Can replace pointer / [Completion,History,Always] Only write to pointed data, don't replace the actual pointer!")
         .def_rw("buf_text_len", &ImGuiInputTextCallbackData::BufTextLen, "Text length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()")
         .def_rw("buf_size", &ImGuiInputTextCallbackData::BufSize, "Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land: == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1")
-        .def_rw("cursor_pos", &ImGuiInputTextCallbackData::CursorPos, "// Read-write   // [Completion,History,Always]")
-        .def_rw("selection_start", &ImGuiInputTextCallbackData::SelectionStart, "// Read-write   // [Completion,History,Always] == to SelectionEnd when no selection")
-        .def_rw("selection_end", &ImGuiInputTextCallbackData::SelectionEnd, "// Read-write   // [Completion,History,Always]")
+        .def_rw("cursor_pos", &ImGuiInputTextCallbackData::CursorPos, "// Read-write   // [Completion,History,Always,CharFilter]")
+        .def_rw("selection_start", &ImGuiInputTextCallbackData::SelectionStart, "// Read-write   // [Completion,History,Always,CharFilter] == to SelectionEnd when no selection")
+        .def_rw("selection_end", &ImGuiInputTextCallbackData::SelectionEnd, "// Read-write   // [Completion,History,Always,CharFilter]")
         .def(nb::init<>())
         .def("delete_chars",
             &ImGuiInputTextCallbackData::DeleteChars, nb::arg("pos"), nb::arg("bytes_count"))
@@ -6637,7 +6640,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
     auto pyClassImGuiWindowClass =
         nb::class_<ImGuiWindowClass>
-            (m, "WindowClass", " [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.\n Important: the content of this class is still highly WIP and likely to change and be refactored\n before we stabilize Docking features. Please be mindful if using this.\n Provide hints:\n - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)\n - To the platform backend for OS level parent/child relationships of viewport.\n - To the docking system for various options and filtering.")
+            (m, "WindowClass", " [ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.\n Important: the content of this class is still highly WIP and likely to change and be refactored\n before we stabilize Docking features. Please be mindful if using this.\n Provide hints:\n - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)\n - To the platform backend for OS level parent/child relationships of viewport (otherwise: default is configured via io.ConfigViewportsNoDefaultParent)\n - To the docking system for various options and filtering.")
         .def_rw("class_id", &ImGuiWindowClass::ClassId, "User data. 0 = Default class (unclassed). Windows of different classes cannot be docked with each others.")
         .def_rw("parent_viewport_id", &ImGuiWindowClass::ParentViewportId, "Hint for the platform backend. -1: use default. 0: request platform backend to not parent the platform. != 0: request platform backend to create a parent<>child relationship between the platform windows. Not conforming backends are free to e.g. parent every viewport to the main viewport or not.")
         .def_rw("focus_route_parent_window_id", &ImGuiWindowClass::FocusRouteParentWindowId, "ID of parent window for shortcut focus route evaluation, e.g. Shortcut() call from Parent Window will succeed when this window is focused.")
@@ -6647,6 +6650,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("dock_node_flags_override_set", &ImGuiWindowClass::DockNodeFlagsOverrideSet, "[EXPERIMENTAL] Dock node flags to set when a window of this class is hosted by a dock node (it doesn't have to be selected!)")
         .def_rw("docking_always_tab_bar", &ImGuiWindowClass::DockingAlwaysTabBar, "Set to True to enforce single floating windows of this class always having their own docking node (equivalent of setting the global io.ConfigDockingAlwaysTabBar)")
         .def_rw("docking_allow_unclassed", &ImGuiWindowClass::DockingAllowUnclassed, "Set to True to allow windows of this class to be docked/merged with an unclassed window. // FIXME-DOCK: Move to DockNodeFlags override?")
+        .def_rw("platform_icon_data", &ImGuiWindowClass::PlatformIconData, "[EXPERIMENTAL] Pass opaque data for Platform backend to handle.")
         .def(nb::init<>())
         ;
 
@@ -7210,21 +7214,22 @@ void py_init_module_imgui_main(nb::module_& m)
 
 
     auto pyEnumImDrawFlags_ =
-        nb::enum_<ImDrawFlags_>(m, "ImDrawFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImDrawList functions\n (Legacy: bit 0 must always correspond to ImDrawFlags_Closed to be backward compatible with old API using a bool. Bits 1..3 must be unused)")
+        nb::enum_<ImDrawFlags_>(m, "ImDrawFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImDrawList functions")
             .value("none", ImDrawFlags_None, "")
-            .value("closed", ImDrawFlags_Closed, "PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)")
             .value("round_corners_top_left", ImDrawFlags_RoundCornersTopLeft, "AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01.")
             .value("round_corners_top_right", ImDrawFlags_RoundCornersTopRight, "AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0, we default to all corners). Was 0x02.")
             .value("round_corners_bottom_left", ImDrawFlags_RoundCornersBottomLeft, "AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0, we default to all corners). Was 0x04.")
             .value("round_corners_bottom_right", ImDrawFlags_RoundCornersBottomRight, "AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0, we default to all corners). Wax 0x08.")
             .value("round_corners_none", ImDrawFlags_RoundCornersNone, "AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag!")
+            .value("closed", ImDrawFlags_Closed, "PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)")
             .value("round_corners_top", ImDrawFlags_RoundCornersTop, "")
             .value("round_corners_bottom", ImDrawFlags_RoundCornersBottom, "")
             .value("round_corners_left", ImDrawFlags_RoundCornersLeft, "")
             .value("round_corners_right", ImDrawFlags_RoundCornersRight, "")
             .value("round_corners_all", ImDrawFlags_RoundCornersAll, "")
             .value("round_corners_default_", ImDrawFlags_RoundCornersDefault_, "Default to ALL corners if none of the _RoundCornersXX flags are specified.")
-            .value("round_corners_mask_", ImDrawFlags_RoundCornersMask_, "");
+            .value("round_corners_mask_", ImDrawFlags_RoundCornersMask_, "")
+            .value("invalid_mask_", ImDrawFlags_InvalidMask_, "");
 
 
     auto pyEnumImDrawListFlags_ =
@@ -7276,9 +7281,19 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::GetClipRectMax, "(private API)")
         .def("add_line",
             &ImDrawList::AddLine, nb::arg("p1"), nb::arg("p2"), nb::arg("col"), nb::arg("thickness") = 1.0f)
+        .def("add_line_h",
+            &ImDrawList::AddLineH, nb::arg("min_x"), nb::arg("max_x"), nb::arg("y"), nb::arg("col"), nb::arg("thickness") = 1.0f)
         .def("add_rect",
-            &ImDrawList::AddRect,
-            nb::arg("p_min"), nb::arg("p_max"), nb::arg("col"), nb::arg("rounding") = 0.0f, nb::arg("flags") = 0, nb::arg("thickness") = 1.0f,
+            [](ImDrawList & self, const ImVec2 & p_min, const ImVec2 & p_max, ImU32 col, float rounding = 0.0f, float thickness = 1.0f, ImDrawFlags flags = 0)
+            {
+                auto AddRect_adapt_force_lambda = [&self](const ImVec2 & p_min, const ImVec2 & p_max, ImU32 col, float rounding = 0.0f, float thickness = 1.0f, ImDrawFlags flags = 0)
+                {
+                    self.AddRect(p_min, p_max, col, rounding, thickness, flags);
+                };
+
+                AddRect_adapt_force_lambda(p_min, p_max, col, rounding, thickness, flags);
+            },
+            nb::arg("p_min"), nb::arg("p_max"), nb::arg("col"), nb::arg("rounding") = 0.0f, nb::arg("thickness") = 1.0f, nb::arg("flags") = 0,
             "a: upper-left, b: lower-right (== upper-left + size)")
         .def("add_rect_filled",
             &ImDrawList::AddRectFilled,
@@ -7345,7 +7360,15 @@ void py_init_module_imgui_main(nb::module_& m)
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("add_polyline",
-            nb::overload_cast<const std::vector<ImVec2> &, ImU32, ImDrawFlags, float>(&ImDrawList::AddPolyline), nb::arg("points"), nb::arg("col"), nb::arg("flags"), nb::arg("thickness"))
+            [](ImDrawList & self, const std::vector<ImVec2> & points, ImU32 col, ImDrawFlags flags, float thickness)
+            {
+                auto AddPolyline_adapt_force_lambda = [&self](const std::vector<ImVec2> & points, ImU32 col, ImDrawFlags flags, float thickness)
+                {
+                    self.AddPolyline(points, col, flags, thickness);
+                };
+
+                AddPolyline_adapt_force_lambda(points, col, flags, thickness);
+            },     nb::arg("points"), nb::arg("col"), nb::arg("flags"), nb::arg("thickness"))
         .def("add_convex_poly_filled",
             nb::overload_cast<const std::vector<ImVec2> &, ImU32>(&ImDrawList::AddConvexPolyFilled), nb::arg("points"), nb::arg("col"))
         .def("add_concave_poly_filled",
@@ -7441,8 +7464,16 @@ void py_init_module_imgui_main(nb::module_& m)
             nb::arg("col"),
             "(private API)")
         .def("path_stroke",
-            &ImDrawList::PathStroke,
-            nb::arg("col"), nb::arg("flags") = 0, nb::arg("thickness") = 1.0f,
+            [](ImDrawList & self, ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0)
+            {
+                auto PathStroke_adapt_force_lambda = [&self](ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0)
+                {
+                    self.PathStroke(col, thickness, flags);
+                };
+
+                PathStroke_adapt_force_lambda(col, thickness, flags);
+            },
+            nb::arg("col"), nb::arg("thickness") = 1.0f, nb::arg("flags") = 0,
             "(private API)")
         .def("path_arc_to",
             &ImDrawList::PathArcTo, nb::arg("center"), nb::arg("radius"), nb::arg("a_min"), nb::arg("a_max"), nb::arg("num_segments") = 0)
@@ -7892,7 +7923,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("none", ImFontFlags_None, "")
             .value("no_load_error", ImFontFlags_NoLoadError, "Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.")
             .value("no_load_glyphs", ImFontFlags_NoLoadGlyphs, "[Internal] Disable loading new glyphs.")
-            .value("lock_baked_sizes", ImFontFlags_LockBakedSizes, "[Internal] Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size. Important: if you use this to preload given sizes, consider the possibility of multiple font density used on Retina display.");
+            .value("lock_baked_sizes", ImFontFlags_LockBakedSizes, "[Internal] Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size. Important: if you use this to preload given sizes, consider the possibility of multiple font density used on Retina display.")
+            .value("implicit_ref_size", ImFontFlags_ImplicitRefSize, "[Internal] Reference size was not set explicitly.");
 
 
     auto pyClassImFont =
@@ -7982,6 +8014,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("draw_data", &ImGuiViewport::DrawData, "The ImDrawData corresponding to this viewport. Valid after Render() and until the next call to NewFrame().")
         .def_rw("renderer_user_data", &ImGuiViewport::RendererUserData, "None* to hold custom data structure for the renderer (e.g. swap chain, framebuffers etc.). generally set by your Renderer_CreateWindow function.")
         .def_rw("platform_user_data", &ImGuiViewport::PlatformUserData, "None* to hold custom data structure for the OS / platform (e.g. windowing info, render context). generally set by your Platform_CreateWindow function.")
+        .def_rw("platform_icon_data", &ImGuiViewport::PlatformIconData, "None* to hold custom data structure for the OS / platform to specify an icon. Currently unused for exposed to allow experiments.")
         .def_rw("platform_handle", &ImGuiViewport::PlatformHandle, "None* to hold higher-level, platform window handle (e.g. HWND for Win32 backend, Uint32 WindowID for SDL, GLFWWindow* for GLFW), for FindViewportByPlatformHandle().")
         .def_rw("platform_handle_raw", &ImGuiViewport::PlatformHandleRaw, "None* to hold lower-level, platform-native window handle (always HWND on Win32 platform, unused for other platforms).")
         .def_rw("platform_window_created", &ImGuiViewport::PlatformWindowCreated, "Platform window has been created (Platform_CreateWindow() has been called). This is False during the first frame where a viewport is being created.")

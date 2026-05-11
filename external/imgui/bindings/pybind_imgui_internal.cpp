@@ -482,6 +482,14 @@ void py_init_module_imgui_internal(nb::module_& m)
             nb::overload_cast<const ImRect &>(&ImRect::Add),
             nb::arg("r"),
             "(private API)")
+        .def("add_x",
+            &ImRect::AddX,
+            nb::arg("x"),
+            "(private API)")
+        .def("add_y",
+            &ImRect::AddY,
+            nb::arg("y"),
+            "(private API)")
         .def("expand",
             nb::overload_cast<const float>(&ImRect::Expand),
             nb::arg("amount"),
@@ -806,7 +814,8 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("hovered_window", ImGuiItemStatusFlags_HoveredWindow, "Override the HoveredWindow test to allow cross-window hover testing.")
             .value("visible", ImGuiItemStatusFlags_Visible, "[WIP] Set when item is overlapping the current clipping rectangle (Used internally. Please don't use yet: API/system will change as we refactor Itemadd()).")
             .value("has_clip_rect", ImGuiItemStatusFlags_HasClipRect, "g.LastItemData.ClipRect is valid.")
-            .value("has_shortcut", ImGuiItemStatusFlags_HasShortcut, "g.LastItemData.Shortcut valid. Set by SetNextItemShortcut() -> ItemAdd().");
+            .value("has_shortcut", ImGuiItemStatusFlags_HasShortcut, "g.LastItemData.Shortcut valid. Set by SetNextItemShortcut() -> ItemAdd().")
+            .value("edited_internal", ImGuiItemStatusFlags_EditedInternal, "Similar to ImGuiItemStatusFlags_Edited but bypassing ImGuiItemFlags_NoMarkEdited.");
 
 
     auto pyEnumHoveredFlagsPrivate_ =
@@ -1867,7 +1876,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("flags", &ImGuiMultiSelectTempData::Flags, "")
         .def_rw("scope_rect_min", &ImGuiMultiSelectTempData::ScopeRectMin, "")
         .def_rw("backup_cursor_max_pos", &ImGuiMultiSelectTempData::BackupCursorMaxPos, "")
-        .def_rw("last_submitted_item", &ImGuiMultiSelectTempData::LastSubmittedItem, "Copy of last submitted item data, used to merge output ranges.")
         .def_rw("box_select_id", &ImGuiMultiSelectTempData::BoxSelectId, "")
         .def_rw("key_mods", &ImGuiMultiSelectTempData::KeyMods, "")
         .def_rw("loop_request_set_all", &ImGuiMultiSelectTempData::LoopRequestSetAll, "-1: no operation, 0: clear all, 1: select all.")
@@ -1941,7 +1949,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImGuiDockNode =
         nb::class_<ImGuiDockNode>
-            (m, "DockNode", "sizeof() 156~192")
+            (m, "DockNode", "sizeof() 176~216")
         .def_rw("id_", &ImGuiDockNode::ID, "")
         .def_rw("shared_flags", &ImGuiDockNode::SharedFlags, "(Write) Flags shared by all nodes of a same dockspace hierarchy (inherited from the root node)")
         .def_rw("local_flags", &ImGuiDockNode::LocalFlags, "(Write) Flags specific to this node")
@@ -1955,8 +1963,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("size", &ImGuiDockNode::Size, "Current size")
         .def_rw("size_ref", &ImGuiDockNode::SizeRef, "[Split node only] Last explicitly written-to size (overridden when using a splitter affecting the node), used to calculate Size.")
         .def_rw("split_axis", &ImGuiDockNode::SplitAxis, "[Split node only] Split axis (X or Y)")
-        .def_rw("window_class", &ImGuiDockNode::WindowClass, "[Root node only]")
         .def_rw("last_bg_color", &ImGuiDockNode::LastBgColor, "")
+        .def_rw("window_class", &ImGuiDockNode::WindowClass, "[Root node only]")
         .def_rw("host_window", &ImGuiDockNode::HostWindow, "")
         .def_rw("visible_window", &ImGuiDockNode::VisibleWindow, "Generally point to window which is ID is == SelectedTabID, but when CTRL+Tabbing this can be a different window.")
         .def_rw("central_node", &ImGuiDockNode::CentralNode, "[Root node only] Pointer to central node.")
@@ -2332,6 +2340,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("current_dpi_scale", &ImGuiContext::CurrentDpiScale, "Current window/viewport DpiScale == CurrentViewport->DpiScale")
         .def_rw("draw_list_shared_data", &ImGuiContext::DrawListSharedData, "")
         .def_rw("within_end_child_id", &ImGuiContext::WithinEndChildID, "Set within EndChild()")
+        .def_rw("within_end_popup_id", &ImGuiContext::WithinEndPopupID, "Set within EndPopup()")
         .def_rw("test_engine", &ImGuiContext::TestEngine, "Test engine user data")
         .def_rw("input_events_queue", &ImGuiContext::InputEventsQueue, "Input events which will be trickled/written into IO structure.")
         .def_rw("input_events_trail", &ImGuiContext::InputEventsTrail, "Past input events processed in NewFrame(). This is to allow domain-specific application to access e.g mouse/pen trail.")
@@ -3425,7 +3434,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("register_user_texture",
         ImGui::RegisterUserTexture,
         nb::arg("tex"),
-        "Register external texture. EXPERIMENTAL: DO NOT USE YET.");
+        "Register external texture. EXPERIMENTAL.");
 
     m.def("unregister_user_texture",
         ImGui::UnregisterUserTexture, nb::arg("tex"));
@@ -3745,9 +3754,12 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::LogSetNextTextDecoration, nb::arg("prefix"), nb::arg("suffix"));
 
     m.def("begin_child_ex",
-        ImGui::BeginChildEx,
-        nb::arg("name"), nb::arg("id_"), nb::arg("size_arg"), nb::arg("child_flags"), nb::arg("window_flags"),
-        "Childs");
+        ImGui::BeginChildEx, nb::arg("name"), nb::arg("id_"), nb::arg("size_arg"), nb::arg("child_flags"), nb::arg("window_flags"));
+
+    m.def("find_front_most_visible_child_window",
+        ImGui::FindFrontMostVisibleChildWindow,
+        nb::arg("window"),
+        nb::rv_policy::reference);
 
     m.def("begin_popup_ex",
         nb::overload_cast<ImGuiID, ImGuiWindowFlags>(ImGui::BeginPopupEx), nb::arg("id_"), nb::arg("extra_window_flags"));
@@ -4261,6 +4273,9 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("pop_focus_scope",
         ImGui::PopFocusScope);
 
+    m.def("is_in_nav_focus_route",
+        ImGui::IsInNavFocusRoute, nb::arg("focus_scope_id"));
+
     m.def("get_current_focus_scope",
         ImGui::GetCurrentFocusScope, "(private API)\n\n Focus scope we are outputting into, set by PushFocusScope()");
 
@@ -4283,7 +4298,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::RenderDragDropTargetRectForItem, nb::arg("bb"));
 
     m.def("render_drag_drop_target_rect_ex",
-        ImGui::RenderDragDropTargetRectEx, nb::arg("draw_list"), nb::arg("bb"));
+        ImGui::RenderDragDropTargetRectEx, nb::arg("draw_list"), nb::arg("bb"), nb::arg("rounding"));
 
     m.def("get_typing_select_request",
         ImGui::GetTypingSelectRequest,
@@ -4459,6 +4474,9 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("table_update_columns_weight_from_width",
         nb::overload_cast<ImGuiTable *>(ImGui::TableUpdateColumnsWeightFromWidth), nb::arg("table"));
+
+    m.def("table_apply_external_unclip_rect",
+        nb::overload_cast<ImGuiTable *, ImRect &>(ImGui::TableApplyExternalUnclipRect), nb::arg("table"), nb::arg("rect"));
 
     m.def("table_draw_borders",
         nb::overload_cast<ImGuiTable *>(ImGui::TableDrawBorders), nb::arg("table"));
@@ -5432,6 +5450,9 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("im_font_atlas_texture_block_queue_upload",
         ImFontAtlasTextureBlockQueueUpload, nb::arg("atlas"), nb::arg("tex"), nb::arg("x"), nb::arg("y"), nb::arg("w"), nb::arg("h"));
+
+    m.def("im_texture_data_queue_upload",
+        ImTextureDataQueueUpload, nb::arg("tex"), nb::arg("x"), nb::arg("y"), nb::arg("w"), nb::arg("h"));
 
     m.def("im_texture_data_get_format_bytes_per_pixel",
         ImTextureDataGetFormatBytesPerPixel, nb::arg("format"));

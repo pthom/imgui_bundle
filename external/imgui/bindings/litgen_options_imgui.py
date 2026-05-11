@@ -457,7 +457,8 @@ def litgen_options_imgui(
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
-        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode", "^SetWindowFocus$"]
+        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode", "^SetWindowFocus$",
+         "^AddRect$", "^PathStroke$", "^AddPolyline$"]
     )
 
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"

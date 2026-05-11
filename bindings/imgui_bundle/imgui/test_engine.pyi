@@ -1045,7 +1045,7 @@ class TestOpFlags_(enum.IntFlag):
     # ImGuiTestOpFlags_NoCheckHoveredId   = 1 << 1,       /* original C++ signature */
     no_check_hovered_id = (
         enum.auto()
-    )  # (= 1 << 1)  # Don't check for HoveredId after aiming for a widget. A few situations may want this: while e.g. dragging or another items prevents hovering, or for items that don't use ItemHoverable()
+    )  # (= 1 << 1)  # Don't check for HoveredId after aiming for a widget. This is automatic when there's an active item, typically in drag and drop operation. Otherwise, a few situations may want this e.g. for items that don't use ItemHoverable(), or when intently aiming for an item behind a popup/modal inhibition layer.
     # ImGuiTestOpFlags_NoError            = 1 << 2,       /* original C++ signature */
     no_error = (
         enum.auto()
@@ -1075,8 +1075,9 @@ class TestOpFlags_(enum.IntFlag):
     # ImGuiTestOpFlags_MoveToEdgeU        = 1 << 10,    /* original C++ signature */
     move_to_edge_u = enum.auto()  # (= 1 << 10)
     # ImGuiTestOpFlags_MoveToEdgeD        = 1 << 11,    /* original C++ signature */
-    # }
     move_to_edge_d = enum.auto()  # (= 1 << 11)
+    # ImGuiTestOpFlags_NoScroll           = 1 << 12,      /* original C++ signature */
+    no_scroll = enum.auto()  # (= 1 << 12)  # Disable automatically scrolling to reach an item.
 
 class TestActionFilter:
     """Advanced filtering for ItemActionAll()"""
@@ -1675,9 +1676,12 @@ class TestContext:
     def mouse_wheel_x(self, dx: float) -> None:
         """(private API)"""
         pass
-    # void        MouseWheelY(float dy) { MouseWheel(ImVec2(0.0f, dy)); }    /* original C++ signature */
+    # void        MouseWheelY(float dy) { MouseWheel(ImVec2(0.0f, dy)); }     /* original C++ signature */
     def mouse_wheel_y(self, dy: float) -> None:
-        """(private API)"""
+        """(private API)
+
+        +1: up, -1: down
+        """
         pass
     # void        MouseMoveToVoid(ImGuiViewport* viewport = nullptr);    /* original C++ signature */
     def mouse_move_to_void(self, viewport: Optional[Viewport] = None) -> None:
@@ -1971,6 +1975,10 @@ class TestContext:
         pass
     # bool        ItemIsOpened(ImGuiTestRef ref);    /* original C++ signature */
     def item_is_opened(self, ref: Union[TestRef, str]) -> bool:
+        """(private API)"""
+        pass
+    # bool        ItemIsVisible(ImGuiTestRef ref);    /* original C++ signature */
+    def item_is_visible(self, ref: Union[TestRef, str]) -> bool:
         """(private API)"""
         pass
     # void        ItemVerifyCheckedIfAlive(ImGuiTestRef ref, bool checked);    /* original C++ signature */
