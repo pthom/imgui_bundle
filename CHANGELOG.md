@@ -1,5 +1,55 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
+# v1.92.800 (WIP)
+
+## Updated Dear ImGui to v1.92.8
+
+See [release info for v1.92.8](https://github.com/ocornut/imgui/releases/tag/v1.92.8).
+
+### Breaking changes: `add_rect`, `add_polyline`, `path_stroke` argument order
+
+Dear ImGui v1.92.8 swapped the last two arguments of three `ImDrawList`
+drawing functions so that `thickness` (which is set explicitly far more
+often than `flags`) comes first. The bindings track this change.
+
+**For Python users** — the affected methods on `imgui.ImDrawList`:
+
+| Method        | Old signature                                  | New signature                                  |
+| ------------- | ---------------------------------------------- | ---------------------------------------------- |
+| `add_rect`    | `(p_min, p_max, col, rounding, flags, thickness)` | `(p_min, p_max, col, rounding, thickness, flags)` |
+| `add_polyline`| `(points, col, flags, thickness)`              | `(points, col, thickness, flags)`              |
+| `path_stroke` | `(col, flags, thickness)`                      | `(col, thickness, flags)`                      |
+
+If you use only positional arguments and pass 5+ of them, swap the last two:
+
+```python
+# Before
+draw_list.add_rect(p0, p1, col, rounding, imgui.ImDrawFlags_.none.value, 1.5)
+draw_list.path_stroke(col, imgui.ImDrawFlags_.closed.value, thickness)
+
+# After
+draw_list.add_rect(p0, p1, col, rounding, 1.5, imgui.ImDrawFlags_.none.value)
+draw_list.path_stroke(col, thickness, imgui.ImDrawFlags_.closed.value)
+```
+
+**For C++ users** — same swap on `ImDrawList::AddRect`, `ImDrawList::AddPolyline`
+and `ImDrawList::PathStroke`. See the upstream ImGui v1.92.8 changelog for
+the full rationale; the short version is that the typical call site changes
+from:
+
+```cpp
+// Before
+draw_list->AddRect(p_min, p_max, col, rounding, ImDrawFlags_None, border_size);
+// After
+draw_list->AddRect(p_min, p_max, col, rounding, border_size);
+```
+
+When `IMGUI_DISABLE_OBSOLETE_FUNCTIONS` is off (the default), ImGui keeps an
+inline redirection so old call sites still compile; with it on (as in the
+ImGui Bundle Python build), the old overloads are `=delete`, surfacing
+mistakes at compile time.
+
+
 # v1.92.700
 
 ## Updated Dear ImGui to v1.92.7

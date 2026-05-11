@@ -6720,18 +6720,18 @@ def _show_example_app_custom_rendering_impl(p_open: Optional[bool]) -> Optional[
                 draw_list.add_ngon(ImVec2(x + sz*0.5, y + sz*0.5), sz*0.5, col, static.ngon_sides, th); x += sz + spacing
                 draw_list.add_circle(ImVec2(x + sz*0.5, y + sz*0.5), sz*0.5, col, circle_segments, th); x += sz + spacing
                 draw_list.add_ellipse(ImVec2(x + sz*0.5, y + sz*0.5), ImVec2(sz*0.5, sz*0.3), col, -0.3, circle_segments, th); x += sz + spacing
-                draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, 0.0, imgui.ImDrawFlags_.none.value, th); x += sz + spacing
-                draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, imgui.ImDrawFlags_.none.value, th); x += sz + spacing
-                draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, corners_tl_br, th); x += sz + spacing
+                draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, 0.0, th, imgui.ImDrawFlags_.none.value); x += sz + spacing
+                draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, th, imgui.ImDrawFlags_.none.value); x += sz + spacing
+                draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, th, corners_tl_br); x += sz + spacing
                 draw_list.add_triangle(ImVec2(x+sz*0.5, y), ImVec2(x+sz, y+sz-0.5), ImVec2(x, y+sz-0.5), col, th); x += sz + spacing
-                _path_concave_shape(draw_list, x, y, sz); draw_list.path_stroke(col, imgui.ImDrawFlags_.closed.value, th); x += sz + spacing
+                _path_concave_shape(draw_list, x, y, sz); draw_list.path_stroke(col, th, imgui.ImDrawFlags_.closed.value); x += sz + spacing
                 draw_list.add_line(ImVec2(x, y), ImVec2(x + sz, y), col, th); x += sz + spacing
                 draw_list.add_line(ImVec2(x, y), ImVec2(x, y + sz), col, th); x += spacing
                 draw_list.add_line(ImVec2(x, y), ImVec2(x + sz, y + sz), col, th); x += sz + spacing
 
                 # Path arc
                 draw_list.path_arc_to(ImVec2(x + sz*0.5, y + sz*0.5), sz*0.5, 3.141592, 3.141592 * -0.5)
-                draw_list.path_stroke(col, imgui.ImDrawFlags_.none.value, th)
+                draw_list.path_stroke(col, th, imgui.ImDrawFlags_.none.value)
                 x += sz + spacing
 
                 # Quadratic Bezier

@@ -7360,15 +7360,15 @@ void py_init_module_imgui_main(nb::module_& m)
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("add_polyline",
-            [](ImDrawList & self, const std::vector<ImVec2> & points, ImU32 col, ImDrawFlags flags, float thickness)
+            [](ImDrawList & self, const std::vector<ImVec2> & points, ImU32 col, float thickness, ImDrawFlags flags)
             {
-                auto AddPolyline_adapt_force_lambda = [&self](const std::vector<ImVec2> & points, ImU32 col, ImDrawFlags flags, float thickness)
+                auto AddPolyline_adapt_force_lambda = [&self](const std::vector<ImVec2> & points, ImU32 col, float thickness, ImDrawFlags flags)
                 {
-                    self.AddPolyline(points, col, flags, thickness);
+                    self.AddPolyline(points, col, thickness, flags);
                 };
 
-                AddPolyline_adapt_force_lambda(points, col, flags, thickness);
-            },     nb::arg("points"), nb::arg("col"), nb::arg("flags"), nb::arg("thickness"))
+                AddPolyline_adapt_force_lambda(points, col, thickness, flags);
+            },     nb::arg("points"), nb::arg("col"), nb::arg("thickness"), nb::arg("flags"))
         .def("add_convex_poly_filled",
             nb::overload_cast<const std::vector<ImVec2> &, ImU32>(&ImDrawList::AddConvexPolyFilled), nb::arg("points"), nb::arg("col"))
         .def("add_concave_poly_filled",

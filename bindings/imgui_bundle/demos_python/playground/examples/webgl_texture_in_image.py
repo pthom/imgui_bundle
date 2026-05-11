@@ -68,7 +68,7 @@ if not imgui_bundle.has_submodule("webgl"):
     )
 from imgui_bundle import webgl
 
-from js import document, Float32Array  # type: ignore[import-not-found]
+from js import document, Float32Array  # type: ignore
 
 
 # --- WebGL2 context (shared with hello_imgui's renderer) ------------------

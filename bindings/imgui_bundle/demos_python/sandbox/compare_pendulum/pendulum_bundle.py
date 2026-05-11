@@ -103,7 +103,7 @@ def gui():
                 u32(imgui.ImVec4(0.4, 0.4, 0.4, 1.0)))
     if trails and len(trail_x) > 1:
         dl.add_polyline([to_px(trail_x[i], trail_y[i]) for i in range(len(trail_x))],
-                        u32(imgui.ImVec4(1.0, 0.5, 0.0, 0.5)), 0, 1.0)
+                        u32(imgui.ImVec4(1.0, 0.5, 0.0, 0.5)), 1.0, 0)
     rod = u32(imgui.ImVec4(0.8, 0.8, 0.8, 1.0))
     dl.add_line(to_px(0, 0), to_px(x1, y1), rod, 3.0)
     dl.add_line(to_px(x1, y1), to_px(x2, y2), rod, 3.0)

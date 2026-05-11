@@ -175,7 +175,7 @@ def draw_side_panel(panel_id: str, width: float, height: float, draw_widgets: Ca
     rounding = em * 0.4
 
     dl.add_rect_filled(panel_pos, ImVec2(panel_pos.x + width, panel_pos.y + height), bg, rounding)
-    dl.add_rect(panel_pos, ImVec2(panel_pos.x + width, panel_pos.y + height), border, rounding, 0, 1.5)
+    dl.add_rect(panel_pos, ImVec2(panel_pos.x + width, panel_pos.y + height), border, rounding, 1.5, 0)
 
     imgui.begin_child(panel_id, ImVec2(width, height), False,
                       imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_background)
@@ -840,7 +840,7 @@ def _markdown_slide_gui(content_size: ImVec2):
     panel_pos = imgui.get_cursor_screen_pos()
     dl = imgui.get_window_draw_list()
     dl.add_rect_filled(panel_pos, ImVec2(panel_pos.x + half_w, panel_pos.y + h), bg, rounding)
-    dl.add_rect(panel_pos, ImVec2(panel_pos.x + half_w, panel_pos.y + h), border, rounding, 0, 1.5)
+    dl.add_rect(panel_pos, ImVec2(panel_pos.x + half_w, panel_pos.y + h), border, rounding, 1.5, 0)
 
     imgui.begin_child("##md_source", ImVec2(half_w, h), False,
                       imgui.WindowFlags_.no_background)
@@ -1040,7 +1040,7 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func):
     border = imgui.color_convert_float4_to_u32(ImVec4(accent.x, accent.y, accent.z, 0.25))
     rounding = em * 0.4
     dl.add_rect_filled(p, ImVec2(p.x + w, p.y + h), bg, rounding)
-    dl.add_rect(p, ImVec2(p.x + w, p.y + h), border, rounding, 0, 1.0)
+    dl.add_rect(p, ImVec2(p.x + w, p.y + h), border, rounding, 1.0, 0)
 
     imgui.begin_child(f"##gallery_{idx}", ImVec2(w, h), False,
                       imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_background)
@@ -1616,7 +1616,7 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float) -> float:
     desc_col = imgui.get_color_u32(imgui.Col_.text_disabled)
 
     dl.add_rect_filled(ImVec2(card_x, card_y), ImVec2(card_x + card_w, card_y + card_h), card_bg, em * 0.4)
-    dl.add_rect(ImVec2(card_x, card_y), ImVec2(card_x + card_w, card_y + card_h), card_border, em * 0.4, 0, 1.5)
+    dl.add_rect(ImVec2(card_x, card_y), ImVec2(card_x + card_w, card_y + card_h), card_border, em * 0.4, 1.5, 0)
 
     dl.add_text(font, title_font_size,
                 ImVec2(card_x + card_pad_x, card_y + card_pad_y), title_col, slide.title)

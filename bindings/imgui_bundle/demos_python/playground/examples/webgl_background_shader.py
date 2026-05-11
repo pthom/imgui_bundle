@@ -48,7 +48,7 @@ else:
     # Pyodide: acquire the WebGL2 context that hello_imgui is rendering into,
     # and wrap it in a thin PyOpenGL-shaped adapter so the demo body below
     # stays identical to the desktop version.
-    from js import document, Float32Array  # type: ignore[import-not-found]
+    from js import document, Float32Array  # type: ignore
 
     class _GLCompat:
         """
