@@ -47,37 +47,19 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
     { // inner classes & enums of TextEditor
         auto pyClassTextEditor_ClassCursorPosition =
             nb::class_<TextEditor::CursorPosition>
-                (pyClassTextEditor, "CursorPosition", "")
-            .def("__init__", [](TextEditor::CursorPosition * self, int line = 0, int column = 0)
-            {
-                new (self) TextEditor::CursorPosition();  // placement new
-                auto r_ctor_ = self;
-                r_ctor_->line = line;
-                r_ctor_->column = column;
-            },
-            nb::arg("line") = 0, nb::arg("column") = 0
-            )
+                (pyClassTextEditor, "CursorPosition", "alternative API for cursor and selection position using lightweight out struct (line and column are zero-based)")
+            .def(nb::init<>())
+            .def(nb::init<int, int>(),
+                nb::arg("l"), nb::arg("c"))
             .def_rw("line", &TextEditor::CursorPosition::line, "")
             .def_rw("column", &TextEditor::CursorPosition::column, "")
             ;
         auto pyClassTextEditor_ClassCursorSelection =
             nb::class_<TextEditor::CursorSelection>
                 (pyClassTextEditor, "CursorSelection", "")
-            .def("__init__", [](TextEditor::CursorSelection * self, const std::optional<const TextEditor::CursorPosition> & start = std::nullopt, const std::optional<const TextEditor::CursorPosition> & end = std::nullopt)
-            {
-                new (self) TextEditor::CursorSelection();  // placement new
-                auto r_ctor_ = self;
-                if (start.has_value())
-                    r_ctor_->start = start.value();
-                else
-                    r_ctor_->start = TextEditor::CursorPosition();
-                if (end.has_value())
-                    r_ctor_->end = end.value();
-                else
-                    r_ctor_->end = TextEditor::CursorPosition();
-            },
-            nb::arg("start").none() = nb::none(), nb::arg("end").none() = nb::none()
-            )
+            .def(nb::init<>())
+            .def(nb::init<TextEditor::CursorPosition, TextEditor::CursorPosition>(),
+                nb::arg("s"), nb::arg("e"))
             .def_rw("start", &TextEditor::CursorSelection::start, "")
             .def_rw("end", &TextEditor::CursorSelection::end, "")
             ;
@@ -555,28 +537,6 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             },
             nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("border") = false,
             " render the text editor in a Dear ImGui context\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()")
-        .def("set_read_only_enabled",
-            &TextDiff::SetReadOnlyEnabled, nb::arg("param_0"))
-        .def("set_show_line_numbers_enabled",
-            &TextDiff::SetShowLineNumbersEnabled, nb::arg("param_0"))
-        .def("set_show_matching_brackets",
-            &TextDiff::SetShowMatchingBrackets, nb::arg("param_0"))
-        .def("add_marker",
-            &TextDiff::AddMarker, nb::arg("param_0"), nb::arg("param_1"), nb::arg("param_2"), nb::arg("param_3"), nb::arg("param_4"))
-        .def("clear_markers",
-            &TextDiff::ClearMarkers)
-        .def("set_line_decorator",
-            &TextDiff::SetLineDecorator, nb::arg("param_0"), nb::arg("param_1"))
-        .def("clear_line_decorator",
-            &TextDiff::ClearLineDecorator)
-        .def("set_line_number_context_menu_callback",
-            &TextDiff::SetLineNumberContextMenuCallback, nb::arg("param_0"))
-        .def("clear_line_number_context_menu_callback",
-            &TextDiff::ClearLineNumberContextMenuCallback)
-        .def("set_text_context_menu_callback",
-            &TextDiff::SetTextContextMenuCallback, nb::arg("param_0"))
-        .def("clear_text_context_menu_callback",
-            &TextDiff::ClearTextContextMenuCallback)
         ;
     ////////////////////    </generated_from:TextDiff.h>    ////////////////////
 

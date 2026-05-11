@@ -268,31 +268,27 @@ class TextEditor:
         pass
 
 
-    # alternative API for cursor and selection position using lightweight out struct (line and column are zero-based)
-    # (the meaning of main and current is explained in README.md)
     class CursorPosition:
+        """ alternative API for cursor and selection position using lightweight out struct (line and column are zero-based)"""
+        @overload
+        def __init__(self) -> None:
+            pass
+        @overload
+        def __init__(self, l: int, c: int) -> None:
+            pass
         line: int = 0
         column: int = 0
-        def __init__(self, line: int = 0, column: int = 0) -> None:
-            """Auto-generated default constructor with named params"""
-            pass
+
     class CursorSelection:
+        @overload
+        def __init__(self) -> None:
+            pass
+        @overload
+        def __init__(self, s: TextEditor.CursorPosition, e: TextEditor.CursorPosition) -> None:
+            pass
         start: TextEditor.CursorPosition
         end: TextEditor.CursorPosition
-        def __init__(
-            self,
-            start: Optional[TextEditor.CursorPosition] = None,
-            end: Optional[TextEditor.CursorPosition] = None
-            ) -> None:
-            """Auto-generated default constructor with named params
 
-
-            Python bindings defaults:
-                If any of the params below is None, then its default value below will be used:
-                    * start: TextEditor.CursorPosition()
-                    * end: TextEditor.CursorPosition()
-            """
-            pass
     def get_main_cursor_position(self) -> TextEditor.CursorPosition:
         pass
     def get_current_cursor_position(self) -> TextEditor.CursorPosition:
@@ -740,48 +736,6 @@ class TextDiff:
         Python bindings defaults:
             If size is None, then its default value will be: ImVec2()
         """
-        pass
-
-    # block/hide certain API calls
-    def set_read_only_enabled(self, param_0: bool) -> None:
-        pass
-    def set_show_line_numbers_enabled(self, param_0: bool) -> None:
-        pass
-    def set_show_matching_brackets(self, param_0: bool) -> None:
-        pass
-
-    def add_marker(
-        self,
-        param_0: int,
-        param_1: ImU32,
-        param_2: ImU32,
-        param_3: str,
-        param_4: str
-        ) -> None:
-        pass
-    def clear_markers(self) -> None:
-        pass
-
-    def set_line_decorator(
-        self,
-        param_0: float,
-        param_1: Callable[[TextEditor.Decorator], None]
-        ) -> None:
-        pass
-    def clear_line_decorator(self) -> None:
-        pass
-
-    def set_line_number_context_menu_callback(
-        self,
-        param_0: Callable[[int], None]
-        ) -> None:
-        pass
-    def clear_line_number_context_menu_callback(self) -> None:
-        pass
-
-    def set_text_context_menu_callback(self, param_0: Callable[[int, int], None]) -> None:
-        pass
-    def clear_text_context_menu_callback(self) -> None:
         pass
 
 ####################    </generated_from:TextDiff.h>    ####################
