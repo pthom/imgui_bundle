@@ -87,6 +87,11 @@ if has_submodule("imgui"):
     _publish("imgui.backends", imgui.backends)
     if has_submodule("imgui.test_engine"):
         _publish("imgui.test_engine", imgui.test_engine)
+        # Catch Python exceptions in test_func/gui_func/teardown_func so they
+        # become logged test failures instead of nanobind::python_error ->
+        # std::terminate (which would crash the whole process).
+        from imgui_bundle import _imgui_test_engine_python_safety  # noqa: F401
+        _imgui_test_engine_python_safety.install(imgui.test_engine)
     from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX  # noqa: F401
     from imgui_bundle.im_col32 import IM_COL32  # noqa: F401, E402
     from imgui_bundle import imgui_ctx as imgui_ctx  # noqa: E402
