@@ -80,6 +80,9 @@ __all__ = [
 if has_submodule("imgui"):
     from imgui_bundle._imgui_bundle import imgui as imgui
     _publish("imgui", imgui)
+    # Let Python resolve `imgui_bundle.imgui.<submodule>` against the source
+    # dir (e.g. test_engine_checks.py), since the C++ submodule shadows it.
+    imgui.__path__ = [os.path.join(os.path.dirname(__file__), "imgui")]
     _publish("imgui.internal", imgui.internal)
     _publish("imgui.backends", imgui.backends)
     if has_submodule("imgui.test_engine"):
