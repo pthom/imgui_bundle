@@ -7304,7 +7304,11 @@ def main():
         with access to the source code for each demo.
         """)
         imgui.separator()
+        imgui.set_next_window_pos(imgui.get_cursor_pos())
+        imgui.set_next_window_size(imgui.get_content_region_avail())
+        imgui.begin("ImGui Demo##aaa", None, imgui.WindowFlags_.menu_bar | imgui.WindowFlags_.no_title_bar)
         show_demo_window_maybe_docked(False)
+        imgui.end()
     immapp.run(gui, window_size=(900, 900), with_markdown=True)
 
 
