@@ -103,6 +103,75 @@ def line_number_context_menu(data: TextEditor.PopupData):
 `TextEditor::PopupData& data`. Line/column counters are now `size_t` (use
 `%zu` in `printf`-style format strings).
 
+## Test Engine: safer Python integration
+
+- Catch Python exceptions in `test_func` / `gui_func` / `teardown_func`. Previously a
+  Python exception in one of these callbacks propagated as `nanobind::python_error`
+  on the engine's coroutine thread, hit `std::terminate`, and killed the process
+  (taking remaining queued tests with it). Exceptions are now printed as a
+  traceback, reported via `ImGuiTestEngine_Error` (test marked as `TestStatus.error`),
+  and swallowed so the engine continues.
+- `imgui_test_engine` CrashHandler: install `SA_RESETHAND` on \*nix to avoid
+  abort() reentry spam.
+- Fix `imgui_bundle.imgui.<submodule>` imports (e.g. `imgui.test_engine`).
+
+## imgui-node-editor
+
+- Suppress hover/active for widgets inside a node that is covered by another
+  node.
+- Fix popup position for `Combo` and `ColorEdit` inside the node editor canvas
+  (three coords needed canvas→screen translation; the right guard is
+  `NextWindowData.HasFlags`, not `WindowFlags`).
+- Link color now automatic, based on light vs dark theme.
+- `UpdateNodeEditorColorsFromImguiColors()`: improve colors, especially
+  selection colors.
+- README: documented keyboard/mouse interactions; added doc in the header.
+
+## ImmVision
+
+- Clamp images so their texture does not bleed when dragged completely
+  outside the viewport.
+- Improved resize: widget size, contrast, and behavior in a zoomed node
+  editor.
+
+## ImGui (StackLayout patch)
+
+- StackLayout: don't inflate `measured_size` when the layout has no springs
+  (fixes fractional-height alignment drift in some layouts).
+
+## Pyodide / Playground
+
+- Switched to **pyodide 0.29.4**.
+- New WebGL binding for Pyodide: `webgl.register_texture` /
+  `webgl.unregister_texture`. Use it inside HelloImGui's `custom_background`
+  to upload textures produced from JS-side `WebGL2RenderingContext`.
+  See `pyodide_projects/projects/playground/examples` for documented examples.
+- Playground: added documented WebGL examples, source link on the minimal
+  example, and restore the landing page on browser back-to-root.
+- Added `implot_demo`, `implot3d_demo`, and `imgui_demo` to the playground.
+- New "WebAudio minimal beep" example demonstrating browser audio from Python.
+- Save Python code to a file before running it (for nicer tracebacks).
+- Per-file deployment of demo source into the Emscripten FS
+  (`imgui_bundle_add_demo.cmake`).
+- Non-blocking loading banner over the canvas, with explanatory text,
+  smooth time-based progress, rotating tips, and a lazy pendulum video.
+- Smooth progress bar for per-demo wheel installs; snap back to 0 when the
+  banner reopens.
+- Pyodide + LaTeX: fix issues on consecutive runs.
+- `min_pyodide_app`: log errors to the JS console.
+
+## Demos
+
+- `demos_implot`, `demos_imgui`, `demos_implot3d`: use a handmade window
+  where appropriate.
+- Pendulum demo: smaller trails for better FPS.
+
+## Python backends
+
+- Fix SDL python backends on Wayland (#463).
+- Move the PyOpenGL Wayland workaround out of `imgui_bundle/__init__.py`
+  (#321, #463): applied only by the affected backends.
+
 
 # v1.92.700
 
