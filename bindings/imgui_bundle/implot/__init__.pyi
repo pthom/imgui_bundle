@@ -158,7 +158,7 @@ ItemFlags_None = ItemFlags_.none
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ImPlot v1.0
+# ImPlot v1.1 WIP
 
 # Table of Contents:
 #
