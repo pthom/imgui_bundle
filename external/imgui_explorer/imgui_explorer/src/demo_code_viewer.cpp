@@ -54,6 +54,10 @@ namespace
     bool g_pendingApiSearch = false;  // Trigger search on next frame after switching to API tab
     int g_pendingApiTabIndex = -1;   // Target tab index for pending API search
 
+    // Editor display preferences (apply to whichever editor is currently shown)
+    bool g_wordWrap = true;
+    bool g_showMinimap = false;
+
     // Python-only mode state
     bool g_pythonOnlyMode = false;
     std::string g_pythonPackageRoot;  // root of the imgui_bundle Python package
@@ -264,6 +268,7 @@ namespace
         editor.SetReadOnlyEnabled(true);
         editor.SetShowLineNumbersEnabled(true);
         editor.SetShowWhitespacesEnabled(false);
+        editor.SetLineFoldingEnabled(true);
         if (isPython) {
             cf.pyContent = content;
             cf.pyMarkers = ParseMarkers(content);
@@ -639,6 +644,13 @@ void DemoCodeViewer_Show()
 
         auto pos = editor.GetMainCursorPosition();
         ImGui::Text("%6zu / %6zu  | %s", pos.line + 1, editor.GetLineCount(), displayName.c_str());
+
+        ImGui::SameLine();
+        ImGui::Checkbox("Wrap", &g_wordWrap);
+        ImGui::SetItemTooltip("Wrap long lines to the editor width");
+        ImGui::SameLine();
+        ImGui::Checkbox("Minimap", &g_showMinimap);
+        ImGui::SetItemTooltip("Show minimap on the right side of the editor");
     }
 
     // Content string for search operations
@@ -727,6 +739,10 @@ void DemoCodeViewer_Show()
     auto codeFont = ImGuiMd::GetCodeFont();
     if (codeFont.font)
         ImGui::PushFont(codeFont.font, codeFont.size);
+
+    // Apply user display preferences to the active editor
+    editor.SetWordWrapEnabled(g_wordWrap);
+    editor.SetShowMiniMapEnabled(g_showMinimap);
 
     // Use unique ID per file and language to keep cursor/scroll state independent
     std::string editorId = std::string("##code_") + displayName;
