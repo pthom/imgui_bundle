@@ -2,7 +2,7 @@
 #pragma once
 
 #include "imgui.h"
-#include "ImGuizmo/ImGuizmo.h"
+#include "ImGuizmo.h"
 
 #include <optional>
 #include <vector>

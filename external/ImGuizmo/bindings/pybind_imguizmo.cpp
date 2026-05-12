@@ -162,6 +162,39 @@ void py_init_module_imguizmo(nb::module_& m)
         pyNsImGuizmo.def("set_gizmo_size_clip_space",
             ImGuizmo::SetGizmoSizeClipSpace, nb::arg("value"));
 
+
+        auto pyEnumMOVETYPE =
+            nb::enum_<ImGuizmo::MOVETYPE>(pyNsImGuizmo, "MOVETYPE", nb::is_arithmetic(), "Handle type used by the translate/rotate/scale gizmos.")
+                .value("mt_none", ImGuizmo::MT_NONE, "")
+                .value("mt_move_x", ImGuizmo::MT_MOVE_X, "")
+                .value("mt_move_y", ImGuizmo::MT_MOVE_Y, "")
+                .value("mt_move_z", ImGuizmo::MT_MOVE_Z, "")
+                .value("mt_move_yz", ImGuizmo::MT_MOVE_YZ, "")
+                .value("mt_move_zx", ImGuizmo::MT_MOVE_ZX, "")
+                .value("mt_move_xy", ImGuizmo::MT_MOVE_XY, "")
+                .value("mt_move_screen", ImGuizmo::MT_MOVE_SCREEN, "")
+                .value("mt_rotate_x", ImGuizmo::MT_ROTATE_X, "")
+                .value("mt_rotate_y", ImGuizmo::MT_ROTATE_Y, "")
+                .value("mt_rotate_z", ImGuizmo::MT_ROTATE_Z, "")
+                .value("mt_rotate_screen", ImGuizmo::MT_ROTATE_SCREEN, "")
+                .value("mt_scale_x", ImGuizmo::MT_SCALE_X, "")
+                .value("mt_scale_y", ImGuizmo::MT_SCALE_Y, "")
+                .value("mt_scale_z", ImGuizmo::MT_SCALE_Z, "")
+                .value("mt_scale_xyz", ImGuizmo::MT_SCALE_XYZ, "");
+
+
+        pyNsImGuizmo.def("get_active_handle_type",
+            ImGuizmo::GetActiveHandleType, "Returns which handle is actively being dragged, or MT_NONE.");
+
+        pyNsImGuizmo.def("get_hovered_handle_type",
+            ImGuizmo::GetHoveredHandleType, "Returns which handle is currently hovered, or MT_NONE.");
+
+        pyNsImGuizmo.def("get_active_move_type",
+            ImGuizmo::GetActiveMoveType);
+
+        pyNsImGuizmo.def("get_hovered_move_type",
+            ImGuizmo::GetHoveredMoveType);
+
         pyNsImGuizmo.def("allow_axis_flip",
             ImGuizmo::AllowAxisFlip,
             nb::arg("value"),

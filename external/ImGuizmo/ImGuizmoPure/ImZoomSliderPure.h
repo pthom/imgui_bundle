@@ -2,7 +2,7 @@
 #pragma once
 #include "imgui.h"
 #include <cstdint>
-#include "ImGuizmo/ImZoomSlider.h"
+#include "ImZoomSlider.h"
 #include "ImGuizmoPure/Editable.h"
 
 #include <tuple>

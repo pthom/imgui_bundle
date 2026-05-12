@@ -12,16 +12,16 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 HEADER_PARENT_DIR = THIS_DIR + "/../"
 STL_SUBDIR = "ImGuizmoPure"
-OFFICIAL_SUBDIR = "ImGuizmo"
+OFFICIAL_SUBDIR = "ImGuizmo/src"
 
 
-def make_amalgamated_header(header_file: str) -> str:
+def make_amalgamated_header() -> str:
     options = amalgamated_header.AmalgamationOptions()
 
     options.base_dir = HEADER_PARENT_DIR
-    options.local_includes_startwith = OFFICIAL_SUBDIR
-    options.include_subdirs = [OFFICIAL_SUBDIR]
-    options.main_header_file = STL_SUBDIR + "/" + header_file
+    options.local_includes_startwith = "ImGuiz"
+    options.include_subdirs = ["ImGuizmo/src"]
+    options.main_header_file = "ImGuizmoPure/ImGuizmoPure.h"
 
     amalgamation = amalgamated_header.amalgamation_content(options)
     return amalgamation
@@ -61,7 +61,7 @@ def main():
     options.fn_exclude_by_param_type__regex = r"float[ ]*\*"
     options.fn_exclude_by_name__regex = r"^SetID$"  # deprecated function
     options.fn_force_overload__regex = "DecomposeMatrixToComponents|RecomposeMatrixFromComponents|DrawCubes|DrawGrid|Manipulate"
-    amalgamation = make_amalgamated_header("ImGuizmoPure.h")
+    amalgamation = make_amalgamated_header()
     generator.process_cpp_code(code=amalgamation, filename="ImGuizmoPure.h")
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

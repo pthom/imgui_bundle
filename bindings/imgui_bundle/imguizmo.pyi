@@ -32,14 +32,14 @@ ImGuiID = ID
 
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#                       ImGuizmo/ImGuizmo.h included by ImGuizmoPure/ImGuizmoPure.h                            //
+#                       ImGuizmo.h included by ImGuizmoPure/ImGuizmoPure.h                                     //
 #//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 # https://github.com/CedricGuillemet/ImGuizmo
 # v1.92.5 WIP
 #
 # The MIT License(MIT)
 #
-# Copyright(c) 2016-2021 Cedric Guillemet
+# Copyright(c) 2016-2026 Cedric Guillemet and contributors
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files(the "Software"), to deal
@@ -61,6 +61,7 @@ ImGuiID = ID
 #
 # -------------------------------------------------------------------------------------------
 # History :
+# 2026/05/03 v1.9 release. CMake build system, vcpkg support, many fixes and new features from contributors.
 # 2019/11/03 View gizmo
 # 2016/09/11 Behind camera culling. Scaling Delta matrix not multiplied by source matrix scales. local/world rotation and translation fixed. Display message is incorrect (X: ... Y:...) in local mode.
 # 2016/09/09 Hatched negative axis. Snapping. Documentation update.
@@ -267,6 +268,41 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     # return True if the cursor is over the operation's gizmo
     @staticmethod
     def set_gizmo_size_clip_space(value: float) -> None:
+        pass
+
+    class MOVETYPE(enum.IntEnum):
+        """ Handle type used by the translate/rotate/scale gizmos."""
+        mt_none = enum.auto()          # (= 0)
+        mt_move_x = enum.auto()        # (= 1)
+        mt_move_y = enum.auto()        # (= 2)
+        mt_move_z = enum.auto()        # (= 3)
+        mt_move_yz = enum.auto()       # (= 4)
+        mt_move_zx = enum.auto()       # (= 5)
+        mt_move_xy = enum.auto()       # (= 6)
+        mt_move_screen = enum.auto()   # (= 7)
+        mt_rotate_x = enum.auto()      # (= 8)
+        mt_rotate_y = enum.auto()      # (= 9)
+        mt_rotate_z = enum.auto()      # (= 10)
+        mt_rotate_screen = enum.auto() # (= 11)
+        mt_scale_x = enum.auto()       # (= 12)
+        mt_scale_y = enum.auto()       # (= 13)
+        mt_scale_z = enum.auto()       # (= 14)
+        mt_scale_xyz = enum.auto()     # (= 15)
+
+    @staticmethod
+    def get_active_handle_type() -> MOVETYPE:
+        """ Returns which handle is actively being dragged, or MT_NONE."""
+        pass
+    @staticmethod
+    def get_hovered_handle_type() -> MOVETYPE:
+        """ Returns which handle is currently hovered, or MT_NONE."""
+        pass
+    # Aliases matching the MOVETYPE enum name.
+    @staticmethod
+    def get_active_move_type() -> MOVETYPE:
+        pass
+    @staticmethod
+    def get_hovered_move_type() -> MOVETYPE:
         pass
 
     @staticmethod

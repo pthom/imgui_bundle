@@ -34,7 +34,7 @@
 
 #include "demo_utils/api_demos.h"
 #include "immapp/immapp.h"
-#include "ImGuizmo/ImGuizmo.h"
+#include "ImGuizmo.h"
 
 
 #include <math.h>
