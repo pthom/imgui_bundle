@@ -138,10 +138,33 @@ void DemoBasicEditor()
         editor.SetLanguage(langs[langIdx]);
     }
 
-    // Cursor position display
+    // Cursor position display (doc coords: row != line once word-wrap is on)
     ImGui::SameLine();
     auto pos = editor.GetMainCursorPosition();
-    ImGui::Text("Line: %zu  Col: %zu", pos.line + 1, pos.index + 1);
+    ImGui::Text("Line: %zu  Col: %zu  (doc)", pos.line + 1, pos.index + 1);
+
+    // Second row: editor view/behavior toggles
+    bool wrap = editor.IsWordWrapEnabled();
+    if (ImGui::Checkbox("Word Wrap", &wrap))
+        editor.SetWordWrapEnabled(wrap);
+    ImGui::SameLine();
+    bool readOnly = editor.IsReadOnlyEnabled();
+    if (ImGui::Checkbox("Read Only", &readOnly))
+        editor.SetReadOnlyEnabled(readOnly);
+    ImGui::SameLine();
+    bool folding = editor.IsLineFoldingEnabled();
+    if (ImGui::Checkbox("Line Folding", &folding))
+        editor.SetLineFoldingEnabled(folding);
+    ImGui::SameLine();
+    ImGui::BeginDisabled(!folding);
+    if (ImGui::SmallButton("Unfold All"))
+        editor.UnfoldAll();
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    bool miniMap = editor.IsShowMiniMapEnabled();
+    if (ImGui::Checkbox("Show Mini Map", &miniMap))
+        editor.SetShowMiniMapEnabled(miniMap);
+    ImGui::TextDisabled("(folding uses brackets for C/C++, indentation for Python)");
 
     // Render editor: we shall use a monospace font
     auto codeFont = ImGuiMd::GetCodeFont();
@@ -244,11 +267,12 @@ void DemoFilters()
 
 
 // ============================================================================
-// Tab 4: Decorators & Context Menus
-// Demonstrates: line decorators + context menus working together
-//   - Right-click a line number to toggle a breakpoint
-//   - Right-click in the text for "Go to definition" / "Find references"
-//   - Breakpoints are shown as red circles via a line decorator
+// Tab 4: Annotations & Interactivity
+// Demonstrates four ways to annotate or react inside an editor:
+//   - Line decorator (custom-drawn gutter): red circle on breakpoint lines
+//   - Line markers (colored gutter + tooltips): error & warning markers
+//   - Context menus on line numbers and on text (right-click)
+//   - Hover callback in text: live popup showing the word under the cursor
 // ============================================================================
 void DemoDecoratorsAndContextMenus()
 {
@@ -257,20 +281,59 @@ void DemoDecoratorsAndContextMenus()
     static TextEditor editor;
     static std::set<size_t> breakpoints;
     static std::string lastAction;
+    // Hover callback kept here so the "Hover hints" checkbox below can
+    // re-install it after a clear. Body assigned in the init block.
+    static std::function<void(TextEditor::PopupData&)> textHover;
 
     if (!initialized)
     {
         editor.SetText(
             "#include <iostream>\n"
+            "#include <vector>\n"
+            "#include <map>\n"
             "\n"
-            "void foo() {\n"
-            "    std::cout << \"Hello\" << std::endl;\n"
-            "    int x = 42;\n"
-            "    float pi = 3.14159f;\n"
-            "    return x;\n"
+            "// Compute summary statistics for a vector of numbers.\n"
+            "double stats(const std::vector<double>& values) {\n"
+            "    if (values.empty())\n"
+            "        return 0.0;\n"
+            "    double total = 0.0;\n"
+            "    for (double v : values) total += v;\n"
+            "    double mean = total / values.size();\n"
+            "    int unused = 42;\n"
+            "    return mean;\n"
+            "}\n"
+            "\n"
+            "void greet(const std::string& name) {\n"
+            "    std::cout << \"Hello \" << name << std::endl;\n"
+            "}\n"
+            "\n"
+            "int divide(int a, int b) {\n"
+            "    return a / b;\n"
+            "}\n"
+            "\n"
+            "int main() {\n"
+            "    auto data = std::vector<double>{1, 2, 3, 4, 5};\n"
+            "    double m = stats(data);\n"
+            "    std::cout << \"mean=\" << m << std::endl;\n"
+            "    greet(\"world\");\n"
+            "    std::cout << divide(10, 0) << std::endl;\n"
+            "    return 0;\n"
             "}\n"
         );
         editor.SetLanguage(TextEditor::Language::Cpp());
+
+        // Markers: persistent colored bands in the gutter / text background,
+        // with built-in tooltips on hover (no callback needed for the tooltip).
+        // Spread across the file so the scrollbar mini map has visible ticks.
+        // Line numbers are zero-based.
+        ImU32 warningColor = IM_COL32(180, 140, 0, 255);
+        ImU32 warningBg    = IM_COL32(180, 140, 0, 48);
+        ImU32 errorColor   = IM_COL32(220, 50, 50, 255);
+        ImU32 errorBg      = IM_COL32(220, 50, 50, 56);
+        editor.AddMarker(2,  warningColor, warningBg, "warning", "Included but never used: <map>");
+        editor.AddMarker(11, warningColor, warningBg, "warning", "Unused variable: 'unused'");
+        editor.AddMarker(20, errorColor,   errorBg,   "error",   "Unchecked division: b may be zero");
+        editor.AddMarker(27, errorColor,   errorBg,   "error",   "Division by zero at runtime: divide(10, 0)");
 
         // Decorator: draw a red circle on lines that have a breakpoint
         editor.SetLineDecorator(-2.0f, [](TextEditor::Decorator& decorator) {
@@ -311,19 +374,58 @@ void DemoDecoratorsAndContextMenus()
                 lastAction = "Find references at " + std::to_string(line + 1) + ":" + std::to_string(column + 1);
         });
 
+        // Hover in text: live popup with the word under the mouse
+        // (think IDE quick-info / type-on-hover).
+        textHover = [](TextEditor::PopupData& data) {
+            std::string word = editor.GetWordAtMousePos(ImGui::GetMousePos());
+            ImGui::Text("Hovered: line %zu, col %zu", data.pos.line + 1, data.pos.index + 1);
+            if (!word.empty())
+            {
+                ImGui::Text("Word: %s", word.c_str());
+            }
+        };
+        editor.SetTextHoverCallback(textHover);
+
         initialized = true;
     }
 
-    ImGui::Text("Right-click line numbers or press F9 to toggle breakpoints, right-click text for other actions.");
+    ImGui::TextWrapped(
+        "Right-click line numbers (or F9) to toggle breakpoints. "
+        "Right-click in text for a menu. Hover text for live info. "
+        "Hover the colored gutter bands for marker tooltips."
+    );
     if (!lastAction.empty())
-    {
-        ImGui::SameLine();
-        ImGui::TextColored(ImVec4(0.5f, 0.8f, 1.0f, 1.0f), "  %s", lastAction.c_str());
-    }
+        ImGui::TextColored(ImVec4(0.5f, 0.8f, 1.0f, 1.0f), "%s", lastAction.c_str());
 
+    ImGui::BeginDisabled(!editor.HasMarkers());
+    if (ImGui::SmallButton("Clear markers"))
+        editor.ClearMarkers();
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    bool miniMap = editor.IsShowMiniMapEnabled();
+    if (ImGui::Checkbox("Show Mini Map", &miniMap))
+        editor.SetShowMiniMapEnabled(miniMap);
+    ImGui::SameLine();
+    bool hoverOn = editor.HasTextHoverCallback();
+    if (ImGui::Checkbox("Hover hints", &hoverOn))
+    {
+        if (hoverOn)
+            editor.SetTextHoverCallback(textHover);
+        else
+            editor.ClearTextHoverCallback();
+    }
+    ImGui::SameLine();
+    bool scrollbarMini = editor.IsShowScrollbarMiniMapEnabled();
+    if (ImGui::Checkbox("Show Scrollbar Mini Map", &scrollbarMini))
+        editor.SetShowScrollbarMiniMapEnabled(scrollbarMini);
+    ImGui::SameLine();
+    ImGui::TextDisabled("(ticks in the scrollbar at marker / selection lines)");
+
+    ImGui::NewLine();
+    ImGui::NewLine();
     auto codeFont = ImGuiMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
-    editor.Render("##decorators_ctx");
+    editor.Render("##decorators_ctx", ImVec2(-1, ImGui::GetTextLineHeight() * 20));
     ImGui::PopFont();
 
     // F9: toggle breakpoint on current line
@@ -335,7 +437,6 @@ void DemoDecoratorsAndContextMenus()
         else
             breakpoints.insert(line);
     }
-
 }
 
 
@@ -352,8 +453,11 @@ void DemoTextDiff()
 
     if (!initialized)
     {
+        // The long comment line on the second row exists so that toggling
+        // the Word Wrap checkbox produces a visible effect on the diff.
         std::string left =
             "#include <iostream>\n"
+            "// Module that says hello. A tiny example used in the ImGui Bundle TextDiff demo to show how line-by-line comparison works.\n"
             "\n"
             "void foo() {\n"
             "    std::cout << \"Hello\" << std::endl;\n"
@@ -362,6 +466,7 @@ void DemoTextDiff()
 
         std::string right =
             "#include <iostream>\n"
+            "// Module that says hello to anyone by name. A tiny example used in the ImGui Bundle TextDiff demo to show how line-by-line comparison and word-wrap work together.\n"
             "#include <string>\n"
             "\n"
             "void foo() {\n"
@@ -377,6 +482,10 @@ void DemoTextDiff()
 
     if (ImGui::Checkbox("Side by side", &sideBySide))
         diff.SetSideBySideMode(sideBySide);
+    ImGui::SameLine();
+    bool wrap = diff.IsWordWrapEnabled();
+    if (ImGui::Checkbox("Word Wrap", &wrap))
+        diff.SetWordWrapEnabled(wrap);
 
     auto codeFont = ImGuiMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
@@ -487,6 +596,12 @@ void DemoEditorWithMenus()
 			flag = editor.IsShowPanScrollIndicatorEnabled(); if (ImGui::MenuItem("Show Pan/Scroll Indicator", nullptr, &flag)) { editor.SetShowPanScrollIndicatorEnabled(flag); };
 			flag = editor.IsMiddleMousePanMode(); if (ImGui::MenuItem("Middle Mouse Pan Mode", nullptr, &flag)) { if (flag) editor.SetMiddleMousePanMode(); else editor.SetMiddleMouseScrollMode(); };
 
+			ImGui::Separator();
+			flag = editor.IsWordWrapEnabled(); if (ImGui::MenuItem("Word Wrap", nullptr, &flag)) { editor.SetWordWrapEnabled(flag); };
+			flag = editor.IsLineFoldingEnabled(); if (ImGui::MenuItem("Line Folding", nullptr, &flag)) { editor.SetLineFoldingEnabled(flag); };
+			flag = editor.IsShowMiniMapEnabled(); if (ImGui::MenuItem("Show Mini Map", nullptr, &flag)) { editor.SetShowMiniMapEnabled(flag); };
+			flag = editor.IsShowScrollbarMiniMapEnabled(); if (ImGui::MenuItem("Show Scrollbar Mini Map", nullptr, &flag)) { editor.SetShowScrollbarMiniMapEnabled(flag); };
+
 			ImGui::EndMenu();
 		}
 
@@ -507,6 +622,93 @@ void DemoEditorWithMenus()
     ImGui::PopFont();
 
     ImGui::EndChild();
+}
+
+
+// ============================================================================
+// Tab 7: Multi-Cursor
+// Demonstrates: multiple simultaneous cursors and selections.
+//   - Alt-click (Mac) / Ctrl-click (Windows, Linux) adds a cursor
+//   - Select a word, then Ctrl-D (Cmd-D on Mac) adds a cursor at the next match
+// A live status panel lists every cursor (position + selected text) using
+// GetNumberOfCursors / GetCursorSelection / GetCursorText.
+// ============================================================================
+void DemoMultiCursor()
+{
+    ShowSourceToggle("DemoMultiCursor", "demo_multi_cursor");
+    static bool initialized = false;
+    static TextEditor editor;
+
+    if (!initialized)
+    {
+        editor.SetText(
+            "// Multi-cursor playground.\n"
+            "// - Alt-click (Mac) / Ctrl-click (Windows, Linux) to add a cursor\n"
+            "//   at the click location.\n"
+            "// - Hold the same modifier and drag to add a cursor and extend its selection\n"
+            "// - Double-click a word to select it, then Ctrl-D (or Command-D on Mac)\n"
+            "//   to add a cursor at the next occurrence of the same word.\n"
+            "\n"
+            "int value = 1;\n"
+            "value = value + 1;\n"
+            "value = value * value;\n"
+            "value = value - 1;\n"
+            "std::cout << value << value << value << std::endl;\n"
+        );
+        editor.SetLanguage(TextEditor::Language::Cpp());
+        initialized = true;
+    }
+
+    // Quick-action buttons. AddNextOccurrence / SelectAllOccurrences require
+    // the current cursor to have a selection (a word to match).
+    {
+        ImGui::BeginDisabled(!editor.CurrentCursorHasSelection());
+        if (ImGui::SmallButton("Add Next Occurrence"))
+            editor.AddNextOccurrence();
+        ImGui::SameLine();
+        if (ImGui::SmallButton("Select All Occurrences"))
+            editor.SelectAllOccurrences();
+        ImGui::EndDisabled();
+        ImGui::SameLine();
+
+        ImGui::BeginDisabled(editor.GetNumberOfCursors() <= 1);
+        if (ImGui::SmallButton("Clear Extra Cursors"))
+            editor.ClearCursors(); // leaves a single cursor at the main location
+        ImGui::EndDisabled();
+    }
+
+    // Editor (constrained height so the cursor info panel below stays visible)
+    {
+        auto codeFont = ImGuiMd::GetCodeFont();
+        ImGui::PushFont(codeFont.font, codeFont.size);
+        float editorHeight = ImGui::GetTextLineHeight() * 20.0f;
+        editor.Render("##multi_cursor", ImVec2(0, editorHeight));
+        ImGui::PopFont();
+    }
+
+    // Live cursor status panel
+    {
+        size_t nCursors = editor.GetNumberOfCursors();
+        ImGui::Text("Cursors: %zu", nCursors);
+        for (size_t i = 0; i < nCursors; ++i)
+        {
+            auto sel = editor.GetCursorSelection(i);
+            std::string text = editor.GetCursorText(i);
+            if (text.empty())
+            {
+                ImGui::BulletText("[%zu] L:%zu C:%zu",
+                    i, sel.start.line + 1, sel.start.index + 1);
+            }
+            else
+            {
+                ImGui::BulletText("[%zu] L:%zu C:%zu -> L:%zu C:%zu  selected: '%s'",
+                    i,
+                    sel.start.line + 1, sel.start.index + 1,
+                    sel.end.line + 1, sel.end.index + 1,
+                    text.c_str());
+            }
+        }
+    }
 }
 
 
@@ -532,7 +734,7 @@ void demo_text_edit()
             DemoChangeCallback();
             ImGui::EndTabItem();
         }
-        if (ImGui::BeginTabItem("Decorators & Menus"))
+        if (ImGui::BeginTabItem("Annotations & Interactivity"))
         {
             DemoDecoratorsAndContextMenus();
             ImGui::EndTabItem();
@@ -545,6 +747,11 @@ void demo_text_edit()
         if (ImGui::BeginTabItem("Text Diff"))
         {
             DemoTextDiff();
+            ImGui::EndTabItem();
+        }
+        if (ImGui::BeginTabItem("Multi-Cursor"))
+        {
+            DemoMultiCursor();
             ImGui::EndTabItem();
         }
         if (ImGui::BeginTabItem("Editor with Menus"))

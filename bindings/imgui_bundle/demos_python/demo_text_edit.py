@@ -85,10 +85,37 @@ def demo_basic_editor():
         ]
         editor.set_language(langs[statics.lang_idx])
 
-    # Cursor position display
+    # Cursor position display (doc coords: row != line once word-wrap is on)
     imgui.same_line()
     pos = editor.get_main_cursor_position()
-    imgui.text(f"Line: {pos.line + 1}  Col: {pos.index + 1}")
+    imgui.text(f"Line: {pos.line + 1}  Col: {pos.index + 1}  (doc)")
+
+    # Second row: editor view/behavior toggles
+    wrap = editor.is_word_wrap_enabled()
+    changed, wrap = imgui.checkbox("Word Wrap", wrap)
+    if changed:
+        editor.set_word_wrap_enabled(wrap)
+    imgui.same_line()
+    read_only = editor.is_read_only_enabled()
+    changed, read_only = imgui.checkbox("Read Only", read_only)
+    if changed:
+        editor.set_read_only_enabled(read_only)
+    imgui.same_line()
+    folding = editor.is_line_folding_enabled()
+    changed, folding = imgui.checkbox("Line Folding", folding)
+    if changed:
+        editor.set_line_folding_enabled(folding)
+    imgui.same_line()
+    imgui.begin_disabled(not folding)
+    if imgui.small_button("Unfold All"):
+        editor.unfold_all()
+    imgui.end_disabled()
+    imgui.same_line()
+    mini_map = editor.is_show_mini_map_enabled()
+    changed, mini_map = imgui.checkbox("Show Mini Map", mini_map)
+    if changed:
+        editor.set_show_mini_map_enabled(mini_map)
+    imgui.text_disabled("(folding uses brackets for C/C++, indentation for Python)")
 
     # Render editor: we shall use a monospace font
     code_font = imgui_md.get_code_font()
@@ -160,11 +187,12 @@ def demo_filters():
 
 
 # ============================================================================
-# Tab 4: Decorators & Context Menus
-# Demonstrates: line decorators + context menus working together
-#   - Right-click a line number to toggle a breakpoint
-#   - Right-click in the text for "Go to definition" / "Find references"
-#   - Breakpoints are shown as red circles via a line decorator
+# Tab 4: Annotations & Interactivity
+# Demonstrates four ways to annotate or react inside an editor:
+#   - Line decorator (custom-drawn gutter): red circle on breakpoint lines
+#   - Line markers (colored gutter + tooltips): error & warning markers
+#   - Context menus on line numbers and on text (right-click)
+#   - Hover callback in text: live popup showing the word under the cursor
 # ============================================================================
 @static(initialized=False, editor=None, breakpoints=None, last_action="")
 def demo_decorators_and_context_menus():
@@ -175,14 +203,62 @@ def demo_decorators_and_context_menus():
         statics.editor = TextEditor()
         statics.editor.set_text(
             "import math\n"
+            "from typing import List\n"
+            "\n"
+            "# Compute summary statistics for a list of numbers.\n"
+            "def stats(values):\n"
+            "    if not values:\n"
+            "        return None\n"
+            "    total = sum(values)\n"
+            "    count = len(values)\n"
+            "    mean = total / count\n"
+            "    variance = sum((v - mean) ** 2 for v in values) / count\n"
+            "    unused = 'leftover'\n"
+            "    return mean, math.sqrt(variance)\n"
             "\n"
             "def greet(name):\n"
             '    print(f"Hello {name}")\n'
-            "    x = 42\n"
-            "    pi = math.pi\n"
-            "    return x\n"
+            "    return name\n"
+            "\n"
+            "def divide(a, b):\n"
+            "    return a // b\n"
+            "\n"
+            "def main():\n"
+            "    data = [1, 2, 3, 4, 5]\n"
+            "    m, s = stats(data)\n"
+            '    print(f"mean={m} std={s}")\n'
+            '    greet("world")\n'
+            "    print(divide(10, 0))\n"
+            "\n"
+            'if __name__ == "__main__":\n'
+            "    main()\n"
         )
         statics.editor.set_language(TextEditor.Language.python())
+
+        # Markers: persistent colored bands in the gutter / text background,
+        # with built-in tooltips on hover (no callback needed for the tooltip).
+        # Spread across the file so the scrollbar mini map has visible ticks.
+        # Line numbers are zero-based.
+        warning_color = imgui.IM_COL32(180, 140, 0, 255)
+        warning_bg    = imgui.IM_COL32(180, 140, 0, 48)
+        error_color   = imgui.IM_COL32(220, 50, 50, 255)
+        error_bg      = imgui.IM_COL32(220, 50, 50, 56)
+        statics.editor.add_marker(
+            1, warning_color, warning_bg,
+            "warning", "Imported but never used: 'List'",
+        )
+        statics.editor.add_marker(
+            11, warning_color, warning_bg,
+            "warning", "Unused variable: 'unused'",
+        )
+        statics.editor.add_marker(
+            19, error_color, error_bg,
+            "error", "Unchecked division: b may be zero",
+        )
+        statics.editor.add_marker(
+            26, error_color, error_bg,
+            "error", "ZeroDivisionError at runtime: divide(10, 0)",
+        )
 
         # Decorator: draw a red circle on lines that have a breakpoint
         def decorator_callback(decorator: TextEditor.Decorator):
@@ -220,18 +296,60 @@ def demo_decorators_and_context_menus():
                 statics.last_action = f"Find references at {line + 1}:{column + 1}"
 
         statics.editor.set_text_context_menu_callback(text_context_menu)
+
+        # Hover in text: live popup with the word under the mouse
+        # (think IDE quick-info / type-on-hover).
+        def text_hover(data: TextEditor.PopupData):
+            word = statics.editor.get_word_at_mouse_pos(imgui.get_mouse_pos())
+            imgui.text(f"Hovered: line {data.pos.line + 1}, col {data.pos.index + 1}")
+            if word:
+                imgui.text(f"Word: {word}")
+
+        statics.text_hover = text_hover  # kept so the toggle can re-install it
+        statics.editor.set_text_hover_callback(text_hover)
+
         statics.initialized = True
 
     editor = statics.editor
 
-    imgui.text("Right-click line numbers or press F9 to toggle breakpoints, right-click text for other actions.")
+    imgui.text(
+        "Right-click line numbers (or F9) to toggle breakpoints. "
+        "Right-click in text for a menu. Hover text for live info. "
+        "Hover the colored gutter bands for marker tooltips."
+    )
     if statics.last_action:
-        imgui.same_line()
-        imgui.text_colored(imgui.ImVec4(0.5, 0.8, 1.0, 1.0), f"  {statics.last_action}")
+        imgui.text_colored(imgui.ImVec4(0.5, 0.8, 1.0, 1.0), statics.last_action)
 
+    imgui.begin_disabled(not editor.has_markers())
+    if imgui.small_button("Clear markers"):
+        editor.clear_markers()
+    imgui.end_disabled()
+    imgui.same_line()
+    mini_map = editor.is_show_mini_map_enabled()
+    changed, mini_map = imgui.checkbox("Show Mini Map", mini_map)
+    if changed:
+        editor.set_show_mini_map_enabled(mini_map)
+    imgui.same_line()
+    hover_on = editor.has_text_hover_callback()
+    changed, hover_on = imgui.checkbox("Hover hints", hover_on)
+    if changed:
+        if hover_on:
+            editor.set_text_hover_callback(statics.text_hover)
+        else:
+            editor.clear_text_hover_callback()
+    imgui.same_line()
+    scrollbar_mini = editor.is_show_scrollbar_mini_map_enabled()
+    changed, scrollbar_mini = imgui.checkbox("Show Scrollbar Mini Map", scrollbar_mini)
+    if changed:
+        editor.set_show_scrollbar_mini_map_enabled(scrollbar_mini)
+    imgui.same_line()
+    imgui.text_disabled("(ticks in the scrollbar at marker / selection lines)")
+
+    imgui.new_line()
+    imgui.new_line()
     code_font = imgui_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
-    editor.render("##decorators_ctx")
+    editor.render("##decorators_ctx", ImVec2(-1, imgui.get_text_line_height() * 20))
     imgui.pop_font()
 
     # F9: toggle breakpoint on current line
@@ -252,8 +370,11 @@ def demo_text_diff():
     _show_source_toggle(demo_text_diff)
     statics = demo_text_diff
     if not statics.initialized:
+        # The long docstring line on the second row exists so that toggling
+        # the Word Wrap checkbox produces a visible effect on the diff.
         left = (
             "import math\n"
+            '"""Module that says hello. A tiny example used in the ImGui Bundle TextDiff demo to show how line-by-line comparison works."""\n'
             "\n"
             "def greet():\n"
             '    print("Hello")\n'
@@ -261,6 +382,7 @@ def demo_text_diff():
         )
         right = (
             "import math\n"
+            '"""Module that says hello to anyone by name. A tiny example used in the ImGui Bundle TextDiff demo to show how line-by-line comparison and word-wrap work together."""\n'
             "import os\n"
             "\n"
             "def greet(name):\n"
@@ -275,6 +397,11 @@ def demo_text_diff():
     changed, statics.side_by_side = imgui.checkbox("Side by side", statics.side_by_side)
     if changed:
         statics.diff.set_side_by_side_mode(statics.side_by_side)
+    imgui.same_line()
+    wrap = statics.diff.is_word_wrap_enabled()
+    changed, wrap = imgui.checkbox("Word Wrap", wrap)
+    if changed:
+        statics.diff.set_word_wrap_enabled(wrap)
 
     code_font = imgui_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
@@ -288,7 +415,7 @@ def demo_text_diff():
 # ============================================================================
 
 
-@static(initialized=False, editor=None)
+@static(initialized=False, editor=None, find_text="", replace_text="", case_sensitive=True, whole_word=False)
 def demo_editor_with_menus():
     _show_source_toggle(demo_editor_with_menus)
     statics = demo_editor_with_menus
@@ -391,6 +518,19 @@ def demo_editor_with_menus():
                     editor.set_middle_mouse_pan_mode()
                 else:
                     editor.set_middle_mouse_scroll_mode()
+            imgui.separator()
+            _, flag = imgui.menu_item("Word Wrap", "", editor.is_word_wrap_enabled())
+            if _:
+                editor.set_word_wrap_enabled(flag)
+            _, flag = imgui.menu_item("Line Folding", "", editor.is_line_folding_enabled())
+            if _:
+                editor.set_line_folding_enabled(flag)
+            _, flag = imgui.menu_item("Show Mini Map", "", editor.is_show_mini_map_enabled())
+            if _:
+                editor.set_show_mini_map_enabled(flag)
+            _, flag = imgui.menu_item("Show Scrollbar Mini Map", "", editor.is_show_scrollbar_mini_map_enabled())
+            if _:
+                editor.set_show_scrollbar_mini_map_enabled(flag)
             imgui.end_menu()
 
         if imgui.begin_menu("Find"):
@@ -404,6 +544,7 @@ def demo_editor_with_menus():
 
         imgui.end_menu_bar()
 
+
     code_font = imgui_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     editor.render("##editor_menus")
@@ -411,6 +552,87 @@ def demo_editor_with_menus():
 
     imgui.end_child()
 
+
+# ============================================================================
+# Tab 7: Multi-Cursor
+# Demonstrates: multiple simultaneous cursors and selections.
+# get_number_of_cursors / get_cursor_selection / get_cursor_text.
+# ============================================================================
+@static(initialized=False, editor=None)
+def demo_multi_cursor():
+    def _init_statics():
+        statics = demo_multi_cursor
+        if not statics.initialized:
+            statics.editor = TextEditor()
+            statics.editor.set_text(
+                "# Multi-cursor playground.\n"
+                "# - Alt-click (Mac) / Ctrl-click (Windows, Linux) to add a cursor\n"
+                "#   at the click location.\n"
+                "# - Hold the same modifier and drag to add a cursor and extend its selection\n"
+                "# - Double-click a word to select it, then Ctrl-D (or Command-D on Mac)\n"
+                "#   to add a cursor at the next occurrence of the same word.\n"
+                "\n"
+                "value = 1\n"
+                "value = value + 1\n"
+                "value = value * value\n"
+                "value = value - 1\n"
+                "print(value, value, value)\n"
+            )
+            statics.editor.set_language(TextEditor.Language.python())
+            statics.initialized = True
+
+    def _gui_select_occurrences():
+        editor = demo_multi_cursor.editor
+
+        # Quick-action buttons. add_next_occurrence / select_all_occurrences
+        # require the current cursor to have a selection (a word to match).
+        imgui.begin_disabled(not editor.current_cursor_has_selection())
+        if imgui.small_button("Add Next Occurrence"):
+            editor.add_next_occurrence()
+        imgui.same_line()
+        if imgui.small_button("Select All Occurrences"):
+            editor.select_all_occurrences()
+        imgui.end_disabled()
+        imgui.same_line()
+
+        imgui.begin_disabled(editor.get_number_of_cursors() <= 1)
+        if imgui.small_button("Clear Extra Cursors"):
+            editor.clear_cursors()  # leaves a single cursor at the main location
+        imgui.end_disabled()
+
+    def _gui_editor():
+        editor = demo_multi_cursor.editor
+        code_font = imgui_md.get_code_font()
+        imgui.push_font(code_font.font, code_font.size)
+        editor_height = imgui.get_text_line_height() * 20
+        editor.render("##multi_cursor", size=ImVec2(0, editor_height))
+        imgui.pop_font()
+
+    # Live cursor status panel
+    def _gui_cursors_info():
+        editor = demo_multi_cursor.editor
+        n_cursors = editor.get_number_of_cursors()
+        imgui.text(f"Cursors: {n_cursors}")
+        for i in range(n_cursors):
+            sel = editor.get_cursor_selection(i)
+            text = editor.get_cursor_text(i)
+            if not text:
+                imgui.bullet_text(
+                    f"[{i}] L:{sel.start.line + 1} C:{sel.start.index + 1}"
+                )
+            else:
+                imgui.bullet_text(
+                    f"[{i}] L:{sel.start.line + 1} C:{sel.start.index + 1} "
+                    f"-> L:{sel.end.line + 1} C:{sel.end.index + 1}  "
+                    f"selected: {text!r}"
+                )
+
+    # Main gui for demo_multi_cursors
+    _init_statics()
+    _show_source_toggle(demo_multi_cursor)
+    _gui_select_occurrences()
+    _gui_editor()
+    _gui_cursors_info()
 
 # ============================================================================
 # Main demo function
@@ -430,7 +652,7 @@ def demo_gui():
         if imgui.begin_tab_item("Change Callback")[0]:
             demo_change_callback()
             imgui.end_tab_item()
-        if imgui.begin_tab_item("Decorators & Menus")[0]:
+        if imgui.begin_tab_item("Annotations & Interactivity")[0]:
             demo_decorators_and_context_menus()
             imgui.end_tab_item()
         if imgui.begin_tab_item("Filters")[0]:
@@ -438,6 +660,9 @@ def demo_gui():
             imgui.end_tab_item()
         if imgui.begin_tab_item("Text Diff")[0]:
             demo_text_diff()
+            imgui.end_tab_item()
+        if imgui.begin_tab_item("Multi-Cursor")[0]:
+            demo_multi_cursor()
             imgui.end_tab_item()
         if imgui.begin_tab_item("Editor with Menus")[0]:
             demo_editor_with_menus()
