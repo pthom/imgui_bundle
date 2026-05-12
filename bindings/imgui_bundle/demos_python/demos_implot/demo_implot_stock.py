@@ -1,18 +1,37 @@
-# pip install yfinance
-import yfinance as yf  # type: ignore
+# pip install yfinance   (desktop only; in the Pyodide playground the WebSource is used)
+import asyncio
+import json
 import numpy as np
 import numpy.typing as npt
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from imgui_bundle import implot, ImVec4, ImVec2, imgui, imgui_ctx, IM_COL32, immapp
-from typing import Optional, TypeAlias
+from typing import Any, Optional, TypeAlias
 from functools import cached_property
+
+try:
+    import pyodide  # type: ignore[import-not-found]  # noqa: F401
+    IN_PYODIDE = True
+except ImportError:
+    IN_PYODIDE = False
 
 
 # ArrayFloat: 1D array of float64
 ArrayFloat: TypeAlias = npt.NDArray[np.float64]  # shape (N,)
 
-TICKER_IDS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META", "NFLX", "NVDA", "AMD", "INTC"]
-PERIOD_RANGES = ["1mo", "3mo", "6mo", "12mo", "24mo", "60mo"]
+if IN_PYODIDE:
+    # Pyodide: matches the JSON whitelist baked into the website-resources repo.
+    TICKER_IDS = ["AAPL", "MSFT", "GOOGL", "NVDA",
+                  "MC.PA", "OR.PA", "AIR.PA", "DSY.PA",
+                  "ASML.AS"]
+    PERIOD_RANGES = ["6mo", "1y", "2y", "3y"]
+    DEFAULT_PERIOD = "2y"
+    DEFAULT_TICKER = "MC.PA"
+else:
+    TICKER_IDS = ["AAPL", "MSFT", "GOOGL", "AMZN", "TSLA", "META", "NFLX", "NVDA", "AMD", "INTC"]
+    PERIOD_RANGES = ["1mo", "3mo", "6mo", "12mo", "24mo", "60mo"]
+    DEFAULT_PERIOD = "24mo"
+    DEFAULT_TICKER = "GOOGL"
 
 # Currency display: (tooltip prefix, ImPlot axis-format string).
 CURRENCY_FORMATS: dict[str, tuple[str, str]] = {
@@ -217,14 +236,145 @@ class StockData:
         return rsi
 
 
-class StockViewer:
+class DataSource(ABC):
+    """Abstracts where stock OHLCV data comes from.
+
+    `request` kicks off a fetch (sync on desktop, async on Pyodide).
+    Each frame the viewer calls `take_result` to pick up a finished fetch.
+    `is_loading` tells the GUI to show a "Loading…" state instead of the chart.
+    """
+
+    @abstractmethod
+    def request(self, ticker: str, period: str) -> None: ...
+
+    @abstractmethod
+    def is_loading(self) -> bool: ...
+
+    @abstractmethod
+    def take_result(self) -> tuple[Optional["StockData"], Optional[str]]:
+        """Return (data, error_msg). At most one is non-None. (None, None) means nothing new."""
+        ...
+
+
+class YFinanceSource(DataSource):
+    """Synchronous data source backed by the `yfinance` package (desktop)."""
+
     def __init__(self):
-        self.ticker_input = "GOOGL"
+        self._pending: tuple[Optional["StockData"], Optional[str]] = (None, None)
+
+    def request(self, ticker: str, period: str) -> None:
+        import yfinance as yf  # type: ignore  # lazy: not available in Pyodide
+        try:
+            df = yf.download(ticker, period=period, interval="1d")
+            df = df.dropna()
+            timestamps = df.index.map(lambda ts: ts.timestamp()).to_numpy(np.float64)
+            data = StockData(
+                timestamps,
+                df["Open"].to_numpy().flatten(),
+                df["Close"].to_numpy().flatten(),
+                df["Low"].to_numpy().flatten(),
+                df["High"].to_numpy().flatten(),
+                df["Volume"].to_numpy().astype(np.float64).flatten(),
+            )
+            self._pending = (data, None)
+        except Exception as e:
+            self._pending = (None, str(e))
+
+    def is_loading(self) -> bool:
+        return False
+
+    def take_result(self) -> tuple[Optional["StockData"], Optional[str]]:
+        result = self._pending
+        self._pending = (None, None)
+        return result
+
+
+_PERIOD_DAYS: dict[str, int] = {
+    "1mo":  21,  "3mo":  63,  "6mo":  126,
+    "12mo": 252, "1y":   252,
+    "24mo": 504, "2y":   504,
+    "3y":   756, "60mo": 1260,
+}
+
+
+class WebSource(DataSource):
+    """Async data source for the Pyodide playground.
+
+    Fetches `/stock_data/<slug>.json` (served by the same Pages site as the
+    playground) using `pyodide.http.pyfetch`. Each `request()` cancels any
+    in-flight task and starts a new one. `take_result()` polls the task's
+    state without blocking the GUI.
+    """
+
+    BASE_URL = "/stock_data"
+
+    def __init__(self):
+        self._task: Optional[asyncio.Task[None]] = None
+        self._pending: tuple[Optional["StockData"], Optional[str]] = (None, None)
+
+    def request(self, ticker: str, period: str) -> None:
+        if self._task is not None and not self._task.done():
+            self._task.cancel()
+        self._pending = (None, None)
+        self._task = asyncio.create_task(self._fetch_async(ticker, period))
+
+    def is_loading(self) -> bool:
+        return self._task is not None and not self._task.done()
+
+    def take_result(self) -> tuple[Optional["StockData"], Optional[str]]:
+        if self._task is None or not self._task.done():
+            return (None, None)
+        result = self._pending
+        self._pending = (None, None)
+        self._task = None
+        return result
+
+    async def _fetch_async(self, ticker: str, period: str) -> None:
+        from pyodide.http import pyfetch  # type: ignore[import-not-found]
+        slug = ticker.replace(".", "_")
+        url = f"{self.BASE_URL}/{slug}.json"
+        try:
+            resp = await pyfetch(url)
+            if resp.status != 200:
+                self._pending = (None, f"HTTP {resp.status} for {url}")
+                return
+            text = await resp.string()
+            doc = json.loads(text)
+            self._pending = (self._parse(doc, period), None)
+        except asyncio.CancelledError:
+            raise
+        except Exception as e:
+            self._pending = (None, str(e))
+
+    @staticmethod
+    def _parse(doc: dict[str, Any], period: str) -> "StockData":
+        ts      = np.asarray(doc["ts"],     dtype=np.float64)
+        opens   = np.asarray(doc["open"],   dtype=np.float64)
+        highs   = np.asarray(doc["high"],   dtype=np.float64)
+        lows    = np.asarray(doc["low"],    dtype=np.float64)
+        closes  = np.asarray(doc["close"],  dtype=np.float64)
+        volumes = np.asarray(doc["volume"], dtype=np.float64)
+        days = _PERIOD_DAYS.get(period)
+        if days is not None and ts.size > days:
+            ts, opens, highs = ts[-days:], opens[-days:], highs[-days:]
+            lows, closes, volumes = lows[-days:], closes[-days:], volumes[-days:]
+        return StockData(ts, opens, closes, lows, highs, volumes,
+                         currency=doc.get("currency", "USD"))
+
+
+def _make_default_data_source() -> DataSource:
+    return WebSource() if IN_PYODIDE else YFinanceSource()
+
+
+class StockViewer:
+    def __init__(self, data_source: Optional[DataSource] = None):
+        self.data_source: DataSource = data_source or _make_default_data_source()
+        self.ticker_input = DEFAULT_TICKER
         self.stock_data: Optional[StockData] = None
-        self.fetch_error = None
+        self.fetch_error: Optional[str] = None
         self.loaded_ticker = ""
         self.needs_refresh_x_extent = True
-        self.period = "24mo"  # default
+        self.period = DEFAULT_PERIOD
         # Drag-rect range selector x-bounds (unix-seconds). y is anchored to axis limits each frame.
         self.range_x1 = 0.0
         self.range_x2 = 0.0
@@ -235,47 +385,51 @@ class StockViewer:
         self.fetch_data()
 
     def fetch_data(self):
-        try:
-            df = yf.download(self.ticker_input, period=self.period, interval="1d")
-            df = df.dropna()
-            timestamps = df.index.map(lambda ts: ts.timestamp()).to_numpy(np.float64)
-            self.stock_data = StockData(
-                timestamps,
-                df["Open"].to_numpy().flatten(),
-                df["Close"].to_numpy().flatten(),
-                df["Low"].to_numpy().flatten(),
-                df["High"].to_numpy().flatten(),
-                df["Volume"].to_numpy().astype(np.float64).flatten(),
-            )
-            self.loaded_ticker = self.ticker_input
-            self.fetch_error = None
-            self.needs_refresh_x_extent = True
-            # Reset the drag-rect x-range to the last ~90 days of the new series.
-            sd = self.stock_data
-            ts = sd.timestamps
-            i0 = max(0, len(ts) - 90)
-            self.range_x1 = float(ts[i0])
-            self.range_x2 = float(ts[-1])
-            # New data: start fully visible, playback paused.
-            self.visible_count_f = float(len(ts))
-            self.playback_active = False
-            # Cache full-data axis bounds — used to pin axes during partial reveal.
-            bb_lo = np.nanmin(sd.bollinger_lower) if np.isfinite(sd.bollinger_lower).any() else sd.lows.min()
-            bb_hi = np.nanmax(sd.bollinger_upper) if np.isfinite(sd.bollinger_upper).any() else sd.highs.max()
-            self._bounds_x = (float(ts[0]), float(ts[-1]))
-            self._bounds_price = (float(min(sd.lows.min(), bb_lo)), float(max(sd.highs.max(), bb_hi)))
-            self._bounds_volume = (0.0, float(max(sd.volumes.max(), sd.volume_ema_50.max())))
-            self._bounds_drawdown = (float(sd.drawdown_pct.min()), 0.0)
-        except Exception as e:
-            self.fetch_error = str(e)
+        """Kick off a fetch. For sync sources the result is ready immediately;
+        for async sources it lands on a later `_poll_data_source` call."""
+        self.data_source.request(self.ticker_input, self.period)
+        self._poll_data_source()
+
+    def _poll_data_source(self):
+        """Pick up a result from the data source if one is ready."""
+        data, err = self.data_source.take_result()
+        if data is None and err is None:
+            return
+        if err is not None:
+            self.fetch_error = err
             self.stock_data = None
+            return
+        assert data is not None  # narrows for type-checkers (both early returns above handle None)
+        self.stock_data = data
+        self.loaded_ticker = self.ticker_input
+        self.fetch_error = None
+        self.needs_refresh_x_extent = True
+        # Reset the drag-rect x-range to the last ~90 days of the new series.
+        sd = data
+        ts = sd.timestamps
+        i0 = max(0, len(ts) - 90)
+        self.range_x1 = float(ts[i0])
+        self.range_x2 = float(ts[-1])
+        # New data: start fully visible, playback paused.
+        self.visible_count_f = float(len(ts))
+        self.playback_active = False
+        # Cache full-data axis bounds — used to pin axes during partial reveal.
+        bb_lo = np.nanmin(sd.bollinger_lower) if np.isfinite(sd.bollinger_lower).any() else sd.lows.min()
+        bb_hi = np.nanmax(sd.bollinger_upper) if np.isfinite(sd.bollinger_upper).any() else sd.highs.max()
+        self._bounds_x = (float(ts[0]), float(ts[-1]))
+        self._bounds_price = (float(min(sd.lows.min(), bb_lo)), float(max(sd.highs.max(), bb_hi)))
+        self._bounds_volume = (0.0, float(max(sd.volumes.max(), sd.volume_ema_50.max())))
+        self._bounds_drawdown = (float(sd.drawdown_pct.min()), 0.0)
 
     def _gui_fetch(self):
         imgui.set_next_item_width(immapp.em_size(10))
         if imgui.begin_combo("Ticker", self.ticker_input):
-            changed, self.ticker_input = imgui.input_text("Manual entry", self.ticker_input, 16)
+            if not IN_PYODIDE:
+                # Desktop: free-form ticker entry (any symbol yfinance accepts).
+                # Pyodide: locked to the prebaked whitelist.
+                _, self.ticker_input = imgui.input_text("Manual entry", self.ticker_input, 16)
             for stock_id in TICKER_IDS:
-                changed, selected = imgui.selectable(stock_id, self.ticker_input == stock_id)
+                _, selected = imgui.selectable(stock_id, self.ticker_input == stock_id)
                 if selected:
                     self.ticker_input = stock_id
             imgui.end_combo()
@@ -370,13 +524,17 @@ class StockViewer:
         imgui.separator()
 
     def gui(self):
+        self._poll_data_source()
         self._gui_fetch()
         self._advance_playback()
+
+        if self.data_source.is_loading():
+            imgui.text_colored(ImVec4(0.7, 0.7, 0.7, 1.0), f"Loading {self.ticker_input}…")
 
         if self.fetch_error:
             imgui.text_colored(ImVec4(1.0, 0.4, 0.4, 1.0), f"Error: {self.fetch_error}")
 
-        if self.stock_data:
+        if self.stock_data and not self.data_source.is_loading():
             self._gui_playback()
             self._gui_stats_panel()
 

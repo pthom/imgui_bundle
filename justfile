@@ -226,6 +226,13 @@ pyodide_setup_recipe_clone:
 _CF_STAGING := "_cf_staging"
 _CF_PROJECT := "imgui-bundle"
 
+# Refresh the prebaked stock-data snapshots used by the Pyodide playground stock demo.
+# Writes JSON files into docs/clone_website_resources/imgui-bundle.pages.dev/stock_data/.
+# That directory belongs to a separate repo: after running this, cd there and commit + push by hand.
+[group('cloudflare')]
+cf_fetch_stock_data:
+    python ci_scripts/cf_fetch_stock_data.py
+
 # Clone or update docs/clone_website_resources/ from origin/main.
 # This folder used to be a git submodule; now it is fetched on demand
 # so it does not pollute regular contributors' checkouts.

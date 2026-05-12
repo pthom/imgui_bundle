@@ -21,6 +21,11 @@
         "filename": "implot_demo.py"
       },
       {
+        "label": "ImPlot: Stock Viewer",
+        "filename": "demo_implot_stock.py",
+        "hidden": true
+      },
+      {
         "label": "ImPlot3D: Full Demo",
         "filename": "implot3d_demo.py",
         "bundle_folders": ["implot3d_libs"]
