@@ -82,6 +82,7 @@ namespace
                 ed.SetLanguage(lang == 0 ? TextEditor::Language::Cpp() : TextEditor::Language::Python());
                 ed.SetPalette(TextEditor::GetLightPalette());
                 ed.SetReadOnlyEnabled(true);
+                ed.SetCaretsVisible(false);
             }
 
             auto codeFont = ImGuiMd::GetCodeFont();

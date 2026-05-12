@@ -184,6 +184,10 @@ class TextEditor:
         pass
     def is_read_only_enabled(self) -> bool:
         pass
+    def set_carets_visible(self, value: bool) -> None:
+        pass
+    def is_carets_visible(self) -> bool:
+        pass
     def set_auto_indent_enabled(self, value: bool) -> None:
         pass
     def is_auto_indent_enabled(self) -> bool:

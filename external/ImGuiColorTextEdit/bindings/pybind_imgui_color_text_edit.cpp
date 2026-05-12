@@ -359,6 +359,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetReadOnlyEnabled, nb::arg("value"))
         .def("is_read_only_enabled",
             &TextEditor::IsReadOnlyEnabled)
+        .def("set_carets_visible",
+            &TextEditor::SetCaretsVisible, nb::arg("value"))
+        .def("is_carets_visible",
+            &TextEditor::IsCaretsVisible)
         .def("set_auto_indent_enabled",
             &TextEditor::SetAutoIndentEnabled, nb::arg("value"))
         .def("is_auto_indent_enabled",

@@ -118,6 +118,7 @@ namespace Snippets
 
         auto& editor = gEditors.at(id);
         editor.SetReadOnlyEnabled(snippetData.ReadOnly);
+        editor.SetCaretsVisible(!snippetData.ReadOnly);
         editor.SetShowWhitespacesEnabled(false);
         _SetTheme(editor, snippetData.Palette);
         if (editor.GetText().empty() || snippetData.ReadOnly)

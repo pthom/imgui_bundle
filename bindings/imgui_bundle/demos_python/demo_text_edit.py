@@ -36,6 +36,7 @@ def _show_source_toggle(func: Callable[..., Any]) -> None:
             editor.set_language(TextEditor.Language.python())
             editor.set_palette(TextEditor.get_light_palette())
             editor.set_read_only_enabled(True)
+            editor.set_carets_visible(False)
             _source_editors[func_name] = editor
         code_font = imgui_md.get_code_font()
         imgui.push_font(code_font.font, code_font.size)
