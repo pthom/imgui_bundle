@@ -172,7 +172,11 @@ static void DrawSidePanel(const char* id, float width, float height, F drawWidge
     float rounding = em * 0.4f;
 
     dl->AddRectFilled(panelPos, ImVec2(panelPos.x + width, panelPos.y + height), bg, rounding);
+#if IMGUI_VERSION_NUM < 19276
     dl->AddRect(panelPos, ImVec2(panelPos.x + width, panelPos.y + height), border, rounding, 0, 1.5f);
+#else
+    dl->AddRect(panelPos, ImVec2(panelPos.x + width, panelPos.y + height), border, rounding, 1.5f);
+#endif
 
     ImGui::BeginChild(id, ImVec2(width, height), false,
                       ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
@@ -953,7 +957,11 @@ $$
         ImVec2 panelPos = ImGui::GetCursorScreenPos();
         ImDrawList* dl = ImGui::GetWindowDrawList();
         dl->AddRectFilled(panelPos, ImVec2(panelPos.x + halfW, panelPos.y + h), bg, rounding);
+#if IMGUI_VERSION_NUM < 19276
         dl->AddRect(panelPos, ImVec2(panelPos.x + halfW, panelPos.y + h), border, rounding, 0, 1.5f);
+#else
+        dl->AddRect(panelPos, ImVec2(panelPos.x + halfW, panelPos.y + h), border, rounding, 1.5f);
+#endif
 
         // Left child: editable source with syntax highlighting
         ImGui::BeginChild("##md_source", ImVec2(halfW, h), false, ImGuiWindowFlags_NoBackground);
@@ -1174,7 +1182,11 @@ namespace IntroGallery
         ImU32 border = ImGui::ColorConvertFloat4ToU32(ImVec4(accent.x, accent.y, accent.z, 0.25f));
         float rounding = em * 0.4f;
         dl->AddRectFilled(p, ImVec2(p.x + w, p.y + h), bg, rounding);
+#if IMGUI_VERSION_NUM < 19276
         dl->AddRect(p, ImVec2(p.x + w, p.y + h), border, rounding, 0, 1.f);
+#else
+        dl->AddRect(p, ImVec2(p.x + w, p.y + h), border, rounding, 1.f);
+#endif
 
         char childId[32];
         snprintf(childId, sizeof(childId), "##gallery_%d", idx);
@@ -1791,7 +1803,11 @@ static float DrawSlideMottoCard(const CarouselSlide& slide, float slideWidth)
     ImU32 descCol = ImGui::GetColorU32(ImGuiCol_TextDisabled);
 
     dl->AddRectFilled(ImVec2(cardX, cardY), ImVec2(cardX + cardW, cardY + cardH), cardBg, em * 0.4f);
+#if IMGUI_VERSION_NUM < 19276
     dl->AddRect(ImVec2(cardX, cardY), ImVec2(cardX + cardW, cardY + cardH), cardBorder, em * 0.4f, 0, 1.5f);
+#else
+    dl->AddRect(ImVec2(cardX, cardY), ImVec2(cardX + cardW, cardY + cardH), cardBorder, em * 0.4f, 1.5f);
+#endif
 
     dl->AddText(font, titleFontSize,
                 ImVec2(cardX + cardPadX, cardY + cardPadY), titleCol, slide.title);
