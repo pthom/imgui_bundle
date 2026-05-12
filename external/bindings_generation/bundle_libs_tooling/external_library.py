@@ -218,7 +218,7 @@ class ExternalLibrary:
 
         has_changes = False
 
-        # self.cmd_fetch_all().run()
+        self.cmd_fetch_all().run()
         cur_dir = os.getcwd()
         os.chdir(self.git_folder_abs_path())
         cmd_str = f"git --no-pager log  --oneline {self.fork_branch}..{self.official_remote_name}/{self.official_branch}"
