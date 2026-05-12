@@ -32,6 +32,33 @@ draw_list.add_rect(p0, p1, col, rounding, 1.5, imgui.ImDrawFlags_.none.value)
 draw_list.path_stroke(col, thickness, imgui.ImDrawFlags_.closed.value)
 ```
 
+Old-order calls will not silently misrender — they are caught by one of three
+mechanisms:
+
+1. **Static type-check (recommended).** Running `mypy` or `pyright` once
+   after upgrading flags every call that passes a float literal where the
+   new signature expects `flags: int`:
+   ```
+   Argument of type "float" cannot be assigned to parameter "flags" of type
+   "ImDrawFlags" in function "add_rect"
+   ```
+2. **Runtime, float thickness.** pybind11 refuses to convert `float→int`,
+   so `add_rect(..., flags=ALL, thickness=2.0)` written in the old order
+   raises `TypeError` immediately.
+3. **Runtime, int thickness.** When both arguments are ints (e.g.
+   `thickness=2`), the swapped value lands in `flags` and trips ImGui's own
+   guard `(flags & ImDrawFlags_InvalidMask_) == 0`, raising:
+   ```
+   RuntimeError: IM_ASSERT(... "Incorrect parameter. Did you swapped
+   'thickness' and 'flags'?")
+   ```
+   The mask reserves bits 0-3 specifically to catch this swap: any small
+   integer thickness ends up with bits 0-3 set, while every valid flag uses
+   only bits 4-9.
+
+In practice this covers every realistic old-order call site, so no extra
+detection layer is added on the Python side.
+
 **For C++ users** — same swap on `ImDrawList::AddRect`, `ImDrawList::AddPolyline`
 and `ImDrawList::PathStroke`. See the upstream ImGui v1.92.8 changelog for
 the full rationale; the short version is that the typical call site changes
