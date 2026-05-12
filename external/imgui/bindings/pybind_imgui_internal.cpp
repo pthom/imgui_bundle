@@ -1046,7 +1046,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImGuiInputTextDeactivatedState =
         nb::class_<ImGuiInputTextDeactivatedState>
-            (m, "InputTextDeactivatedState", "Internal temporary state for deactivating InputText() instances.")
+            (m, "InputTextDeactivatedState", " Internal temporary state for deactivating InputText() instances.\n Store as part of ImGuiDeactivatedItemData?")
         .def_rw("id_", &ImGuiInputTextDeactivatedState::ID, "widget id owning the text state (which just got deactivated)")
         .def_rw("text_a", &ImGuiInputTextDeactivatedState::TextA, "text buffer")
         .def(nb::init<>())
@@ -1352,7 +1352,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImGuiDeactivatedItemData =
         nb::class_<ImGuiDeactivatedItemData>
-            (m, "DeactivatedItemData", "Data used by IsItemDeactivated()/IsItemDeactivatedAfterEdit() functions")
+            (m, "DeactivatedItemData", " Data used by IsItemDeactivated()/IsItemDeactivatedAfterEdit() functions\n Also see ImGuiInputTextDeactivatedState which is an extension for this for InputText()")
         .def("__init__", [](ImGuiDeactivatedItemData * self, ImGuiID ID = ImGuiID(), int ElapseFrame = int(), bool HasBeenEditedBefore = bool(), bool IsAlive = bool())
         {
             new (self) ImGuiDeactivatedItemData();  // placement new
@@ -4021,9 +4021,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::SetKeyOwnersForKeyChord, nb::arg("key"), nb::arg("owner_id"), nb::arg("flags") = 0);
 
     m.def("set_item_key_owner",
-        nb::overload_cast<ImGuiKey, ImGuiInputFlags>(ImGui::SetItemKeyOwner),
-        nb::arg("key"), nb::arg("flags"),
-        "Set key owner to last item if it is hovered or active. Equivalent to 'if (IsItemHovered() || IsItemActive()) { SetKeyOwner(key, GetItemID());'.");
+        nb::overload_cast<ImGuiKey, ImGuiInputFlags>(ImGui::SetItemKeyOwner), nb::arg("key"), nb::arg("flags"));
 
     m.def("test_key_owner",
         ImGui::TestKeyOwner,

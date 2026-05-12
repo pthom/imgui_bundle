@@ -3073,7 +3073,7 @@ void py_init_module_imgui_main(nb::module_& m)
     m.def("set_item_key_owner",
         nb::overload_cast<ImGuiKey>(ImGui::SetItemKeyOwner),
         nb::arg("key"),
-        "Set key owner to last item ID if it is hovered or active. Equivalent to 'if (IsItemHovered() || IsItemActive()) { SetKeyOwner(key, GetItemID());'.");
+        "Set key owner to last item ID if it is hovered or active. Return True when ownership has been set. Roughly equivalent to 'if (TestKeyOwner(key, GetItemID()) && (IsItemHovered() || IsItemActive())) { SetKeyOwner(key, GetItemID());'.");
 
     m.def("is_mouse_down",
         nb::overload_cast<ImGuiMouseButton>(ImGui::IsMouseDown),
@@ -3746,6 +3746,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("scrollbar_grab_hovered", ImGuiCol_ScrollbarGrabHovered, "")
             .value("scrollbar_grab_active", ImGuiCol_ScrollbarGrabActive, "")
             .value("check_mark", ImGuiCol_CheckMark, "Checkbox tick and RadioButton circle")
+            .value("checkbox_selected_bg", ImGuiCol_CheckboxSelectedBg, "Checkbox background when Selected, otherwise use FrameBg")
             .value("slider_grab", ImGuiCol_SliderGrab, "")
             .value("slider_grab_active", ImGuiCol_SliderGrabActive, "")
             .value("button", ImGuiCol_Button, "")
@@ -7638,7 +7639,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("use_colors", &ImTextureData::UseColors, "w    r   // Tell whether our texture data is known to use colors (rather than just white + alpha).")
         .def_rw("want_destroy_next_frame", &ImTextureData::WantDestroyNextFrame, "rw   -   // [Internal] Queued to set ImTextureStatus_WantDestroy next frame. May still be used in the current frame.")
         .def(nb::init<>(),
-            "Functions")
+            " Functions\n - If GetPixels() functions asserts while being called by your render loop, it could be caused by calling ImFontAtlas::Clear() instead of ClearFonts()?")
         .def("create",
             &ImTextureData::Create, nb::arg("format"), nb::arg("w"), nb::arg("h"))
         .def("destroy_pixels",
@@ -7811,7 +7812,9 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("remove_font",
             &ImFontAtlas::RemoveFont, nb::arg("font"))
         .def("clear",
-            &ImFontAtlas::Clear, "Clear everything (input fonts, output glyphs/textures).")
+            &ImFontAtlas::Clear, "Clear everything (fonts + textures). Don't call mid-frame!")
+        .def("clear_fonts",
+            &ImFontAtlas::ClearFonts, "Clear input+output font data/glyphs. You can call this mid-frame if you load new fonts afterwards!")
         .def("compact_cache",
             &ImFontAtlas::CompactCache, "Compact cached glyphs and texture.")
         .def("set_font_loader",
@@ -7820,8 +7823,6 @@ void py_init_module_imgui_main(nb::module_& m)
             "Change font loader at runtime.")
         .def("clear_input_data",
             &ImFontAtlas::ClearInputData, "[OBSOLETE] Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.")
-        .def("clear_fonts",
-            &ImFontAtlas::ClearFonts, "[OBSOLETE] Clear input+output font data (same as ClearInputData() + glyphs storage, UV coordinates).")
         .def("clear_tex_data",
             &ImFontAtlas::ClearTexData, "[OBSOLETE] Clear CPU-side copy of the texture data. Saves RAM once the texture has been copied to graphics memory.")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
