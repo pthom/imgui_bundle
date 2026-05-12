@@ -1,6 +1,6 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# v1.92.800 (WIP)
+# v1.92.800
 
 ## Updated Dear ImGui to v1.92.8
 
