@@ -90,7 +90,7 @@ ItemFlags_None = ItemFlags_.none
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024-2026 Breno Cunha Queiroz
 
-# ImPlot3D v0.4
+# ImPlot3D v0.5 WIP
 
 # Acknowledgments:
 #  ImPlot3D is heavily inspired by ImPlot
