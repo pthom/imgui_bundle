@@ -88,7 +88,7 @@ def demo_basic_editor():
     # Cursor position display
     imgui.same_line()
     pos = editor.get_main_cursor_position()
-    imgui.text(f"Line: {pos.line + 1}  Col: {pos.column + 1}")
+    imgui.text(f"Line: {pos.line + 1}  Col: {pos.index + 1}")
 
     # Render editor: we shall use a monospace font
     code_font = imgui_md.get_code_font()
@@ -198,7 +198,8 @@ def demo_decorators_and_context_menus():
         statics.editor.set_line_decorator(-2.0, decorator_callback)
 
         # Right-click on line numbers: toggle breakpoint
-        def line_number_context_menu(line: int):
+        def line_number_context_menu(data: TextEditor.PopupData):
+            line = data.pos.line
             has = line in statics.breakpoints
             label = ("Remove breakpoint" if has else "Set breakpoint") + f" (line {line + 1})"
             if imgui.menu_item_simple(label):
@@ -210,7 +211,9 @@ def demo_decorators_and_context_menus():
         statics.editor.set_line_number_context_menu_callback(line_number_context_menu)
 
         # Right-click in the text: different context menu
-        def text_context_menu(line: int, column: int):
+        def text_context_menu(data: TextEditor.PopupData):
+            line = data.pos.line
+            column = data.pos.index
             if imgui.menu_item_simple("Go to definition"):
                 statics.last_action = f"Go to definition at {line + 1}:{column + 1}"
             if imgui.menu_item_simple("Find references"):

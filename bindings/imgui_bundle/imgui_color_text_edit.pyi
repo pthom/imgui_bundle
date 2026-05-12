@@ -41,7 +41,7 @@ from __future__ import annotations
 from typing import List, Any, Dict, Set, overload, Optional
 import enum
 
-from imgui_bundle.imgui import ImVec2Like, ImU32, ImVec2, ImWchar
+from imgui_bundle.imgui import ImVec2Like, ImU32, ImVec2
 from typing import Callable
 
 String = str
@@ -88,10 +88,84 @@ class TextEditor:
     # Public member functions start with an uppercase character to be consistent with Dear ImGui
     #
 
-    def set_tab_size(self, value: int) -> None:
-        """ access editor options"""
-        pass
+    class DocPos:
+        @overload
+        def __init__(self) -> None:
+            """ represents the logical position of a glyph in a document expressed as a line number and glyph index (both zero-based)"""
+            pass
+        @overload
+        def __init__(self, line: int, index: int) -> None:
+            pass
 
+        def __eq__(self, rhs: object) -> bool:
+            pass
+        def __ne__(self, rhs: object) -> bool:
+            pass
+        def __lt__(self, rhs: TextEditor.DocPos) -> bool:
+            pass
+        def __gt__(self, rhs: TextEditor.DocPos) -> bool:
+            pass
+        def __le__(self, rhs: TextEditor.DocPos) -> bool:
+            pass
+        def __ge__(self, rhs: TextEditor.DocPos) -> bool:
+            pass
+
+        def __sub__(self, rhs: TextEditor.DocPos) -> TextEditor.DocPos:
+            pass
+        def __add__(self, rhs: TextEditor.DocPos) -> TextEditor.DocPos:
+            pass
+
+        line: int = 0
+        index: int = 0
+
+    class DocSelection:
+        @overload
+        def __init__(self) -> None:
+            """ represents a range of glyphs from a starting position to an end position"""
+            pass
+        @overload
+        def __init__(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> None:
+            pass
+        start: TextEditor.DocPos
+        end: TextEditor.DocPos
+
+    class VisPos:
+        @overload
+        def __init__(self) -> None:
+            """ represents the visual position of a glyph expressed as a visible row and column number (both zero-based)
+             this is not necessarily the same as the document position
+             tabs create a horizontal offset between index and column
+             word-wrapping creates a vertical offset between line and row
+            """
+            pass
+        @overload
+        def __init__(self, row: int, column: int) -> None:
+            pass
+
+        def __eq__(self, rhs: object) -> bool:
+            pass
+        def __ne__(self, rhs: object) -> bool:
+            pass
+        def __lt__(self, rhs: TextEditor.VisPos) -> bool:
+            pass
+        def __gt__(self, rhs: TextEditor.VisPos) -> bool:
+            pass
+        def __le__(self, rhs: TextEditor.VisPos) -> bool:
+            pass
+        def __ge__(self, rhs: TextEditor.VisPos) -> bool:
+            pass
+
+        def __sub__(self, rhs: TextEditor.VisPos) -> TextEditor.VisPos:
+            pass
+        def __add__(self, rhs: TextEditor.VisPos) -> TextEditor.VisPos:
+            pass
+
+        row: int = 0
+        column: int = 0
+
+    # access editor's configuration options
+    def set_tab_size(self, value: int) -> None:
+        pass
     def get_tab_size(self) -> int:
         pass
     def set_insert_spaces_on_tabs(self, value: bool) -> None:
@@ -101,6 +175,10 @@ class TextEditor:
     def set_line_spacing(self, value: float) -> None:
         pass
     def get_line_spacing(self) -> float:
+        pass
+    def set_word_wrap_enabled(self, value: bool) -> None:
+        pass
+    def is_word_wrap_enabled(self) -> bool:
         pass
     def set_read_only_enabled(self, value: bool) -> None:
         pass
@@ -126,6 +204,10 @@ class TextEditor:
         pass
     def is_show_line_numbers_enabled(self) -> bool:
         pass
+    def set_show_mini_map_enabled(self, value: bool) -> None:
+        pass
+    def is_show_mini_map_enabled(self) -> bool:
+        pass
     def set_show_scrollbar_mini_map_enabled(self, value: bool) -> None:
         pass
     def is_show_scrollbar_mini_map_enabled(self) -> bool:
@@ -141,6 +223,10 @@ class TextEditor:
     def set_complete_paired_glyphs(self, value: bool) -> None:
         pass
     def is_completing_paired_glyphs(self) -> bool:
+        pass
+    def set_line_folding_enabled(self, value: bool) -> None:
+        pass
+    def is_line_folding_enabled(self) -> bool:
         pass
     def set_overwrite_enabled(self, value: bool) -> None:
         pass
@@ -159,29 +245,29 @@ class TextEditor:
         pass
     def get_text(self) -> str:
         pass
+
     def get_cursor_text(self, cursor: int) -> str:
         pass
 
     def get_line_text(self, line: int) -> str:
         pass
 
-    def get_section_text(
-        self,
-        start_line: int,
-        start_column: int,
-        end_line: int,
-        end_column: int
-        ) -> str:
+    @overload
+    def get_section_text(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> str:
         pass
-
+    @overload
+    def get_section_text(self, selection: TextEditor.DocSelection) -> str:
+        pass
+    @overload
     def replace_section_text(
         self,
-        start_line: int,
-        start_column: int,
-        end_line: int,
-        end_column: int,
+        start: TextEditor.DocPos,
+        end: TextEditor.DocPos,
         text: str
         ) -> None:
+        pass
+    @overload
+    def replace_section_text(self, selection: TextEditor.DocSelection, text: str) -> None:
         pass
 
     def clear_text(self) -> None:
@@ -229,27 +315,19 @@ class TextEditor:
         pass
 
     # manipulate cursors and selections (line numbers are zero-based)
-    def set_cursor(self, line: int, column: int) -> None:
-        pass
     def select_all(self) -> None:
         pass
     def select_line(self, line: int) -> None:
         pass
     def select_lines(self, start: int, end: int) -> None:
         pass
-    def select_region(
-        self,
-        start_line: int,
-        start_column: int,
-        end_line: int,
-        end_column: int
-        ) -> None:
+    def select_region(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> None:
         pass
     def select_to_brackets(self, include_brackets: bool = True) -> None:
         pass
-    def grow_selections_to_curly_brackets(self) -> None:
+    def grow_selections(self) -> None:
         pass
-    def shrink_selections_to_curly_brackets(self) -> None:
+    def shrink_selections(self) -> None:
         pass
     def add_next_occurrence(self) -> None:
         pass
@@ -264,44 +342,28 @@ class TextEditor:
     def clear_cursors(self) -> None:
         pass
 
+    # get cursor positions (the meaning of main and current is explained in README.md)
     def get_number_of_cursors(self) -> int:
         pass
-
-
-    class CursorPosition:
-        """ alternative API for cursor and selection position using lightweight out struct (line and column are zero-based)"""
-        @overload
-        def __init__(self) -> None:
-            pass
-        @overload
-        def __init__(self, l: int, c: int) -> None:
-            pass
-        line: int = 0
-        column: int = 0
-
-    class CursorSelection:
-        @overload
-        def __init__(self) -> None:
-            pass
-        @overload
-        def __init__(self, s: TextEditor.CursorPosition, e: TextEditor.CursorPosition) -> None:
-            pass
-        start: TextEditor.CursorPosition
-        end: TextEditor.CursorPosition
-
-    def get_main_cursor_position(self) -> TextEditor.CursorPosition:
+    def get_cursor_position(self, cursor: int) -> TextEditor.DocPos:
         pass
-    def get_current_cursor_position(self) -> TextEditor.CursorPosition:
+    def get_main_cursor_position(self) -> TextEditor.DocPos:
         pass
-    def get_cursor_position(self, cursor: int) -> TextEditor.CursorPosition:
+    def get_current_cursor_position(self) -> TextEditor.DocPos:
         pass
-    def get_cursor_selection(self, cursor: int) -> TextEditor.CursorSelection:
+    def get_cursor_selection(self, cursor: int) -> TextEditor.DocSelection:
         pass
-    def get_main_cursor_selection(self) -> TextEditor.CursorSelection:
+    def get_main_cursor_selection(self) -> TextEditor.DocSelection:
+        pass
+    def get_current_cursor_selection(self) -> TextEditor.DocSelection:
         pass
 
-    def get_word_at_screen_pos(self, screen_pos: ImVec2Like) -> str:
-        """ get the word at a screen position"""
+    # get information at mouse position (e.g. from ImGui::GetMousePos())
+    def is_mouse_pos_over_glyph(self, mouse_pos: ImVec2Like) -> bool:
+        pass
+    def get_doc_pos_at_mouse_pos(self, mouse_pos: ImVec2Like) -> TextEditor.DocPos:
+        pass
+    def get_word_at_mouse_pos(self, mouse_pos: ImVec2Like) -> str:
         pass
 
     class Scroll(enum.IntEnum):
@@ -312,21 +374,22 @@ class TextEditor:
 
     def scroll_to_line(self, line: int, alignment: TextEditor.Scroll) -> None:
         pass
-    def get_first_visible_line(self) -> int:
+    def get_first_visible_row(self) -> int:
         pass
-    def get_last_visible_line(self) -> int:
+    def get_last_visible_row(self) -> int:
         pass
     def get_first_visible_column(self) -> int:
         pass
     def get_last_visible_column(self) -> int:
         pass
 
-    def get_line_height(self) -> float:
-        pass
-    def get_glyph_width(self) -> float:
+    def set_cursor(self, pos: TextEditor.DocPos) -> None:
+        """ specify a new cursor position
+         if the new position is currently in a folded region, it will be automatically unfolded
+        """
         pass
 
-    # note on setting cursor and scrolling
+    # note on setting scrolling and cursor position
     #
     # calling SetCursor or ScrollToLine has no effect until the next call to Render
     # this is because we can only do layout calculations when we are in a Dear ImGui drawing context
@@ -340,7 +403,27 @@ class TextEditor:
     # * then call ScrollToLine to mark the exact scroll location (it cancels the possible SetCursor scroll request)
     # * call Render to properly update the entire state
     #
-    # this works on opening the editor as well as later
+    # this works while opening the editor as well as later
+
+    # get glyph size information
+    def get_line_height(self) -> float:
+        pass
+    def get_glyph_width(self) -> float:
+        pass
+
+    # coordinate transformation
+    def doc_pos2_vis_pos(self, pos: TextEditor.DocPos) -> TextEditor.VisPos:
+        pass
+    def vis_pos2_doc_pos(self, pos: TextEditor.VisPos) -> TextEditor.DocPos:
+        pass
+
+    def is_doc_pos_visible(self, pos: TextEditor.DocPos) -> bool:
+        """ see if a specified document location is visible (not folded and currently on screen)"""
+        pass
+
+    def is_vis_pos_over_glyph(self, pos: TextEditor.VisPos) -> bool:
+        """ see if a visual position covers a glyph"""
+        pass
 
     # find/replace support
     def select_first_occurrence_of(
@@ -407,40 +490,39 @@ class TextEditor:
         """ specify a change callback (called when changes are made (including undo/redo))
          the delay parameter specifies a time in miliseconds that the editor will wait for before calling
          which helps in case you don't need to track every keystroke
-         passing None deactivates the callback
+         passing None for callback deactivates the feature
         """
         pass
 
     class Change:
         """ detailed change report passed to callback below
-         this callback is different from the one above as is reports every change (not just a summary) and is very detailed
+         this callback is different from the one above as it reports every change (not just a summary) and is very detailed
          the insert flag states whether the change was an insert (True) or a delete (False)
          in case of an overwrite, there will be two actions (first a delete and then an insert)
          the start parameters refer to the insert point or the start of the delete
          the end parameters refer to the end of the inserted text or the end of the deleted text
          the text parameter contains the inserted or deleted text
-         line, column and index values are zero-based
+         line and index values are zero-based
         """
         insert: bool
-        start_line: int
-        start_column: int
-        start_index: int
-        end_line: int
-        end_column: int
-        end_index: int
+        start: TextEditor.DocPos
+        end: TextEditor.DocPos
         text: str
         def __init__(
             self,
             insert: bool = bool(),
-            start_line: int = int(),
-            start_column: int = int(),
-            start_index: int = int(),
-            end_line: int = int(),
-            end_column: int = int(),
-            end_index: int = int(),
+            start: Optional[TextEditor.DocPos] = None,
+            end: Optional[TextEditor.DocPos] = None,
             text: str = ""
             ) -> None:
-            """Auto-generated default constructor with named params"""
+            """Auto-generated default constructor with named params
+
+
+            Python bindings defaults:
+                If any of the params below is None, then its default value below will be used:
+                    * start: TextEditor.DocPos()
+                    * end: TextEditor.DocPos()
+            """
             pass
 
     def set_transaction_callback(
@@ -454,6 +536,18 @@ class TextEditor:
         """
         pass
 
+    # line-based callbacks (line numbers are zero-based)
+    # insertor callback is called when for each line inserted and the result is used as the new line specific user data
+    # deletor callback is called for each line deleted (line specific user data is passed to callback)
+    # setting either callback to None will deactivate that callback
+
+    # line-based user data (line numbers are zero-based)
+    # allowing integrators to associate external data with select lines or all lines
+    # user data is an opaque None* that must be managed externally
+    # user data is also passed to the decorator and popup callbacks (see below)
+    # user data is attached to a line and insertions/deletions don't effect this
+    # if a line with user data is removed, it won't come back on a redo
+    # the deletor callback (if specified) is called when a line is deleted (see above)
 
     class Decorator:
         """ line-based decoration"""
@@ -489,11 +583,26 @@ class TextEditor:
     def has_line_decorator(self) -> bool:
         pass
 
-    # setup context menu callbacks (these are called when a user right clicks line numbers or somewhere in the text)
-    # the editor sets up the popup menus, the callback has to populate them
+    class PopupData:
+        """ setup right click or hover callbacks
+         the editor sets up a popup menu in the right location
+         the callback has to populate it
+         context callbacks activate on a right click
+         hover callbacks are just based on position (no mouse buttons required)
+        """
+        pos: TextEditor.DocPos
+        def __init__(self, pos: Optional[TextEditor.DocPos] = None) -> None:
+            """Auto-generated default constructor with named params
+
+
+            Python bindings defaults:
+                If pos is None, then its default value will be: TextEditor.DocPos()
+            """
+            pass
+
     def set_line_number_context_menu_callback(
         self,
-        callback: Callable[[int], None]
+        callback: Callable[[TextEditor.PopupData], None]
         ) -> None:
         pass
     def clear_line_number_context_menu_callback(self) -> None:
@@ -501,11 +610,43 @@ class TextEditor:
     def has_line_number_context_menu_callback(self) -> bool:
         pass
 
-    def set_text_context_menu_callback(self, callback: Callable[[int, int], None]) -> None:
+    def set_text_context_menu_callback(
+        self,
+        callback: Callable[[TextEditor.PopupData], None]
+        ) -> None:
         pass
     def clear_text_context_menu_callback(self) -> None:
         pass
     def has_text_context_menu_callback(self) -> bool:
+        pass
+
+    def set_text_hover_callback(
+        self,
+        callback: Callable[[TextEditor.PopupData], None]
+        ) -> None:
+        pass
+    def clear_text_hover_callback(self) -> None:
+        pass
+    def has_text_hover_callback(self) -> bool:
+        pass
+
+    # line folding support (only works when line folding is activated)
+    def fold_around_line(self, line: int) -> None:
+        pass
+    def unfold_around_line(self, line: int) -> None:
+        pass
+    def toggle_at_line(self, line: int) -> None:
+        pass
+    def unfold_all(self) -> None:
+        pass
+
+    def is_line_foldable(self, line: int) -> bool:
+        pass
+    def is_line_folded(self, line: int) -> bool:
+        pass
+    def is_line_visible(self, line: int) -> bool:
+        pass
+    def is_line_hidden(self, line: int) -> bool:
         pass
 
     # useful functions to work on selections
@@ -566,7 +707,7 @@ class TextEditor:
         def get(self, color: TextEditor.Color) -> ImU32:
             pass
         def __init__(self) -> None:
-            """Autogenerated default constructor"""
+            """Auto-generated default constructor"""
             pass
 
     def set_palette(self, new_palette: TextEditor.Palette) -> None:
@@ -587,46 +728,11 @@ class TextEditor:
     def get_light_palette() -> TextEditor.Palette:
         pass
 
-    class Glyph:
-        """ a single colored character (a glyph)"""
-        @overload
-        def __init__(self) -> None:
-            """ constructors"""
-            pass
-        @overload
-        def __init__(self, cp: ImWchar) -> None:
-            pass
-        @overload
-        def __init__(self, cp: ImWchar, col: TextEditor.Color) -> None:
-            pass
 
-        # properties
-        codepoint: ImWchar = 0
-        color: TextEditor.Color = TextEditor.Color.text
-
-    class Iterator:
-        """ iterator used in language-specific tokenizers
-         this iterator points to unicode codepoints
-        """
-        @overload
-        def __init__(self) -> None:
-            """ constructors"""
-            pass
-        @overload
-        def __init__(self, g: TextEditor.Glyph) -> None:
-            pass
-
-
-        def __sub__(self, a: TextEditor.Iterator) -> int:
-            pass
 
 
     class Language:
         """ language support"""
-        # name of the language
-        name: str
-
-
         # predefined language definitions
         @staticmethod
         def c() -> TextEditor.Language:
@@ -662,10 +768,10 @@ class TextEditor:
         def sql() -> TextEditor.Language:
             pass
         def __init__(self) -> None:
-            """Autogenerated default constructor"""
+            """Auto-generated default constructor"""
             pass
 
-    def set_language(self, l: TextEditor.Language) -> None:
+    def set_language(self, language: TextEditor.Language) -> None:
         pass
     def get_language(self) -> TextEditor.Language:
         pass
@@ -673,10 +779,128 @@ class TextEditor:
         pass
     def get_language_name(self) -> str:
         pass
+    def set_language_change_callback(self, callback: Callable[[], None]) -> None:
+        pass
 
     def iterate_identifiers(self, callback: Callable[[str], None]) -> None:
         """ iterate through identifiers detected by the colorizer (based on current language)"""
         pass
+
+
+
+
+
+
+    class LineBreakConfig:
+        """ configuration for line break algorithm used when word wrap is active"""
+        # wrap mode (False = simple mode, True = unicode line break mode)
+        use_unicode_annex14: bool = False
+
+        # simple mode options (strings of UTF-8 encoded glyphs)
+        break_after: str = " \t{[("
+        break_before: str = "."
+
+        # unicode line breaking options
+        # based on the unicode standard annex     #14 which identifies break
+        # opportunities expressed as rules which can be (de)activated below
+        # see https://www.unicode.org/reports/tr14 for details
+        lb2: bool = True
+        lb3: bool = True
+        lb4: bool = True
+        lb5: bool = True
+        lb6: bool = True
+        lb7: bool = True
+        lb8: bool = True
+        lb8a: bool = True
+        lb9: bool = True
+        lb10: bool = True
+        lb11: bool = True
+        lb12: bool = True
+        lb12a: bool = True
+        lb13: bool = True
+        lb14: bool = True
+        lb15a: bool = True
+        lb15b: bool = True
+        lb15c: bool = True
+        lb15d: bool = True
+        lb16: bool = True
+        lb17: bool = True
+        lb18: bool = True
+        lb19: bool = True
+        lb19a: bool = True
+        lb20: bool = True
+        lb20a: bool = True
+        lb21: bool = True
+        lb21a: bool = True
+        lb21b: bool = True
+        lb22: bool = True
+        lb23: bool = True
+        lb23a: bool = True
+        lb24: bool = True
+        lb25: bool = True
+        lb26: bool = True
+        lb27: bool = True
+        lb28: bool = True
+        lb28a: bool = True
+        lb29: bool = True
+        lb30: bool = True
+        lb30a: bool = True
+        lb30b: bool = True
+        def __init__(
+            self,
+            use_unicode_annex14: bool = False,
+            break_after: str = " \t{[(",
+            break_before: str = ".",
+            lb2: bool = True,
+            lb3: bool = True,
+            lb4: bool = True,
+            lb5: bool = True,
+            lb6: bool = True,
+            lb7: bool = True,
+            lb8: bool = True,
+            lb8a: bool = True,
+            lb9: bool = True,
+            lb10: bool = True,
+            lb11: bool = True,
+            lb12: bool = True,
+            lb12a: bool = True,
+            lb13: bool = True,
+            lb14: bool = True,
+            lb15a: bool = True,
+            lb15b: bool = True,
+            lb15c: bool = True,
+            lb15d: bool = True,
+            lb16: bool = True,
+            lb17: bool = True,
+            lb18: bool = True,
+            lb19: bool = True,
+            lb19a: bool = True,
+            lb20: bool = True,
+            lb20a: bool = True,
+            lb21: bool = True,
+            lb21a: bool = True,
+            lb21b: bool = True,
+            lb22: bool = True,
+            lb23: bool = True,
+            lb23a: bool = True,
+            lb24: bool = True,
+            lb25: bool = True,
+            lb26: bool = True,
+            lb27: bool = True,
+            lb28: bool = True,
+            lb28a: bool = True,
+            lb29: bool = True,
+            lb30: bool = True,
+            lb30a: bool = True,
+            lb30b: bool = True
+            ) -> None:
+            """Auto-generated default constructor with named params"""
+            pass
+
+    def set_line_break_config(self, new_config: TextEditor.LineBreakConfig) -> None:
+        """ set the line break configuration"""
+        pass
+
 
 ####################    </generated_from:TextEditor.h>    ####################
 
@@ -706,22 +930,57 @@ class TextDiff:
         """ constructor"""
         pass
 
-    # specify visual mode (combined is default)
+    # specify options
     def set_side_by_side_mode(self, flag: bool) -> None:
         pass
     def get_side_by_side_mode(self) -> bool:
         pass
+    def set_tab_size(self, value: int) -> None:
+        pass
+    def get_tab_size(self) -> int:
+        pass
+    def set_line_spacing(self, value: float) -> None:
+        pass
+    def get_line_spacing(self) -> float:
+        pass
+    def set_word_wrap_enabled(self, value: bool) -> None:
+        pass
+    def is_word_wrap_enabled(self) -> bool:
+        pass
+    def set_show_whitespaces_enabled(self, value: bool) -> None:
+        pass
+    def is_show_whitespaces_enabled(self) -> bool:
+        pass
+    def set_show_spaces_enabled(self, value: bool) -> None:
+        pass
+    def is_show_spaces_enabled(self) -> bool:
+        pass
+    def set_show_tabs_enabled(self, value: bool) -> None:
+        pass
+    def is_show_tabs_enabled(self) -> bool:
+        pass
+    def set_show_scrollbar_mini_map_enabled(self, value: bool) -> None:
+        pass
+    def is_show_scrollbar_mini_map_enabled(self) -> bool:
+        pass
+    def set_language(self, language: TextEditor.Language) -> None:
+        pass
+    def get_language(self) -> TextEditor.Language:
+        pass
+    def set_colors(self, ac: ImU32, dc: ImU32) -> None:
+        pass
+
+    def set_palette(self, new_palette: TextEditor.Palette) -> None:
+        pass
+    def get_palette(self) -> TextEditor.Palette:
+        pass
+
+    def set_focus(self) -> None:
+        """ programmatically set focus on the editor"""
+        pass
 
     def set_text(self, left: str, right: str) -> None:
         """ specify the text to be compared (using UTF-8 encoded strings)"""
-        pass
-
-    def set_language(self, l: TextEditor.Language) -> None:
-        """ specify a new language"""
-        pass
-
-    def set_colors(self, ac: ImU32, dc: ImU32) -> None:
-        """ specify the background color for added/deleted lines"""
         pass
 
     def render(
@@ -730,7 +989,7 @@ class TextDiff:
         size: Optional[ImVec2Like] = None,
         border: bool = False
         ) -> None:
-        """ render the text editor in a Dear ImGui context
+        """ render text diff in a Dear ImGui context
 
 
         Python bindings defaults:

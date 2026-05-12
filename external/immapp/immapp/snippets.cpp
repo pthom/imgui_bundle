@@ -179,7 +179,7 @@ namespace Snippets
                 float textX = snippetData.ShowCopyButton ? topRight.x - lineHeight * 6.f : topRight.x - lineHeight * 4.5f;
                 ImGui::SetCursorPos({textX, textY});
                 auto pos = editor.GetMainCursorPosition();
-                ImGui::Text("L:%02i C:%02i", pos.line + 1, pos.column + 1);
+                ImGui::Text("L:%02zu C:%02zu", pos.line + 1, pos.index + 1);
             }
 
             if (snippetData.ShowCopyButton)

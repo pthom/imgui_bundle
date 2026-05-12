@@ -148,15 +148,15 @@ namespace
     // Convert cursor position to byte offset in content
     size_t CursorToOffset(TextEditor& editor, const std::string& content)
     {
-        int curLine, curCol; editor.GetMainCursor(curLine, curCol);
+        auto pos = editor.GetMainCursorPosition();
         size_t offset = 0;
-        int line = 0;
-        while (line < curLine && offset < content.size())
+        size_t line = 0;
+        while (line < pos.line && offset < content.size())
         {
             if (content[offset] == '\n') ++line;
             ++offset;
         }
-        offset += curCol;
+        offset += pos.index;
         return offset;
     }
 
@@ -168,7 +168,7 @@ namespace
         int endLine   = OffsetToLine(content, found + matchLen);
         int endCol    = OffsetToColumn(content, found + matchLen);
         // Frame 1: move cursor to column 0 to reset horizontal scroll
-        editor.SetCursor(startLine, 0);
+        editor.SetCursor(TextEditor::DocPos(startLine, 0));
         editor.ScrollToLine(startLine, TextEditor::Scroll::alignMiddle);
         // Frame 2: select the match (deferred so scroll reset takes effect first)
         g_pendingMatch = PendingMatch{startLine, startCol, endLine, endCol};
@@ -529,7 +529,7 @@ void DemoCodeViewer_Show()
             if (it2 != cf.pyMarkers.end())
             {
                 int pyLine = it2->second;
-                cf.pyEditor.SetCursor(pyLine - 1, 0);
+                cf.pyEditor.SetCursor(TextEditor::DocPos(pyLine - 1, 0));
                 cf.pyEditor.SelectLine(pyLine - 1);
                 cf.pyEditor.ScrollToLine(pyLine - 3, TextEditor::Scroll::alignTop);
                 scrolledPython = true;
@@ -537,7 +537,7 @@ void DemoCodeViewer_Show()
         }
         if (!scrolledPython)
         {
-            cf.cppEditor.SetCursor(g_pendingScrollLine - 1, 0);
+            cf.cppEditor.SetCursor(TextEditor::DocPos(g_pendingScrollLine - 1, 0));
             cf.cppEditor.SelectLine(g_pendingScrollLine - 1);
             cf.cppEditor.ScrollToLine(g_pendingScrollLine - 3, TextEditor::Scroll::alignTop);
         }
@@ -583,7 +583,7 @@ void DemoCodeViewer_Show()
     if (g_pendingMatch.has_value())
     {
         auto& m = g_pendingMatch.value();
-        editor.SelectRegion(m.startLine, m.startCol, m.endLine, m.endCol);
+        editor.SelectRegion(TextEditor::DocPos(m.startLine, m.startCol), TextEditor::DocPos(m.endLine, m.endCol));
         g_pendingMatch.reset();
     }
 
@@ -638,7 +638,7 @@ void DemoCodeViewer_Show()
         ImGui::SameLine();
 
         auto pos = editor.GetMainCursorPosition();
-        ImGui::Text("%6d / %6d  | %s", pos.line + 1, editor.GetLineCount(), displayName.c_str());
+        ImGui::Text("%6zu / %6zu  | %s", pos.line + 1, editor.GetLineCount(), displayName.c_str());
     }
 
     // Content string for search operations
@@ -741,7 +741,7 @@ void DemoCodeViewer_Show()
             rightClickWord = sel;
         else
         {
-            rightClickWord = editor.GetWordAtScreenPos(ImGui::GetMousePos());
+            rightClickWord = editor.GetWordAtMousePos(ImGui::GetMousePos());
         }
         if (!rightClickWord.empty())
             ImGui::OpenPopup("CodeEditorContext");

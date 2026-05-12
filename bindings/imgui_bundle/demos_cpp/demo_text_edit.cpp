@@ -141,7 +141,7 @@ void DemoBasicEditor()
     // Cursor position display
     ImGui::SameLine();
     auto pos = editor.GetMainCursorPosition();
-    ImGui::Text("Line: %d  Col: %d", pos.line + 1, pos.column + 1);
+    ImGui::Text("Line: %zu  Col: %zu", pos.line + 1, pos.index + 1);
 
     // Render editor: we shall use a monospace font
     auto codeFont = ImGuiMd::GetCodeFont();
@@ -255,7 +255,7 @@ void DemoDecoratorsAndContextMenus()
     ShowSourceToggle("DemoDecoratorsAndContextMenus", "demo_decorators_and_context_menus");
     static bool initialized = false;
     static TextEditor editor;
-    static std::set<int> breakpoints;
+    static std::set<size_t> breakpoints;
     static std::string lastAction;
 
     if (!initialized)
@@ -287,7 +287,8 @@ void DemoDecoratorsAndContextMenus()
         });
 
         // Right-click on line numbers: toggle breakpoint
-        editor.SetLineNumberContextMenuCallback([](int line) {
+        editor.SetLineNumberContextMenuCallback([](TextEditor::PopupData& data) {
+            size_t line = data.pos.line;
             bool has = breakpoints.count(line) > 0;
             std::string label = (has ? "Remove breakpoint" : "Set breakpoint");
             label += " (line " + std::to_string(line + 1) + ")";
@@ -301,7 +302,9 @@ void DemoDecoratorsAndContextMenus()
         });
 
         // Right-click in the text: different context menu
-        editor.SetTextContextMenuCallback([](int line, int column) {
+        editor.SetTextContextMenuCallback([](TextEditor::PopupData& data) {
+            size_t line = data.pos.line;
+            size_t column = data.pos.index;
             if (ImGui::MenuItem("Go to definition"))
                 lastAction = "Go to definition at " + std::to_string(line + 1) + ":" + std::to_string(column + 1);
             if (ImGui::MenuItem("Find references"))
@@ -326,7 +329,7 @@ void DemoDecoratorsAndContextMenus()
     // F9: toggle breakpoint on current line
     if (ImGui::Shortcut(ImGuiKey_F9))
     {
-        int line = editor.GetMainCursorPosition().line;
+        size_t line = editor.GetMainCursorPosition().line;
         if (breakpoints.count(line))
             breakpoints.erase(line);
         else

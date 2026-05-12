@@ -49,6 +49,60 @@ inline redirection so old call sites still compile; with it on (as in the
 ImGui Bundle Python build), the old overloads are `=delete`, surfacing
 mistakes at compile time.
 
+## Updated ImGuiColorTextEdit (architecture refactor)
+
+`ImGuiColorTextEdit` was rebased on its upstream [future](https://github.com/goossens/ImGuiColorTextEdit/tree/future) branch, which
+introduces a layered architecture (Document / TypeSetter / Colorizer /
+Bracketeer / LineFold / MiniMap / AutoComplete overlays) and lays the
+groundwork for word wrap, line folding, and a VSCode-style minimap.
+
+The public C++ API changed in ways that propagate to the Python bindings.
+All cursor/selection coordinates now go through dedicated structs instead
+of `(line, column)` integer pairs, and `column` is renamed to `index` in
+the document-coordinate struct (rows differ from lines once word-wrap is
+enabled).
+
+### Breaking changes: `TextEditor` API
+
+**For Python users** — the most common call sites:
+
+| Before                                                  | After                                                            |
+| ------------------------------------------------------- | ---------------------------------------------------------------- |
+| `editor.get_main_cursor_position().column`              | `editor.get_main_cursor_position().index`                        |
+| `editor.set_cursor(line, col)`                          | `editor.set_cursor(TextEditor.DocPos(line, col))`                |
+| `editor.select_region(sl, sc, el, ec)`                  | `editor.select_region(TextEditor.DocPos(sl, sc), TextEditor.DocPos(el, ec))` |
+| `editor.get_word_at_screen_pos(pos)`                    | `editor.get_word_at_mouse_pos(pos)`                              |
+| `editor.grow_selections_to_curly_brackets()`            | `editor.grow_selections()`                                       |
+| `editor.shrink_selections_to_curly_brackets()`          | `editor.shrink_selections()`                                     |
+| `editor.get_first_visible_line()` / `get_last_visible_line()` | `editor.get_first_visible_row()` / `get_last_visible_row()` |
+
+Context-menu and hover callbacks now receive a `PopupData` object instead
+of `(line, column)` integers:
+
+```python
+# Before
+def text_context_menu(line: int, column: int):
+    ...
+editor.set_text_context_menu_callback(text_context_menu)
+
+def line_number_context_menu(line: int):
+    ...
+editor.set_line_number_context_menu_callback(line_number_context_menu)
+
+# After
+def text_context_menu(data: TextEditor.PopupData):
+    line, column = data.pos.line, data.pos.index
+    ...
+
+def line_number_context_menu(data: TextEditor.PopupData):
+    line = data.pos.line
+    ...
+```
+
+**For C++ users** — same shape, with `TextEditor::DocPos{line, index}` and
+`TextEditor::PopupData& data`. Line/column counters are now `size_t` (use
+`%zu` in `printf`-style format strings).
+
 
 # v1.92.700
 
