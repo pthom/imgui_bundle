@@ -85,6 +85,10 @@
       {
         "label": "WebGL: 3D cube rendered to a texture",
         "filename": "webgl_texture_in_image.py"
+      },
+      {
+        "label": "WebAudio: Minimal Beep",
+        "filename": "webaudio_minimal_beep.py"
       }
     ]
 }
