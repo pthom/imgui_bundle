@@ -17,21 +17,17 @@
         "filename": "imgui_demo.py"
       },
       {
-        "label": "ImPlot: Drag Rect",
-        "filename": "implot_drag_rect.py"
-      },
-      {
         "label": "ImPlot: Full Demo",
         "filename": "implot_demo.py"
-      },
-      {
-        "label": "ImPlot3D: Butterfly Effect",
-        "filename": "implot3d_butterfly.py"
       },
       {
         "label": "ImPlot3D: Full Demo",
         "filename": "implot3d_demo.py",
         "bundle_folders": ["implot3d_libs"]
+      },
+      {
+        "label": "ImPlot3D: Butterfly Effect",
+        "filename": "implot3d_butterfly.py"
       },
       {
         "label": "What is an Immediate GUI",
