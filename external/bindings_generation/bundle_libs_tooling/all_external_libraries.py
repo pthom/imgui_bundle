@@ -147,7 +147,7 @@ def lib_imgui_color_text_edit() -> ExternalLibrary:
         name="ImGuiColorTextEdit",
         # official_git_url="https://github.com/BalazsJako/ImGuiColorTextEdit.git",
         official_git_url="https://github.com/goossens/ImGuiColorTextEdit.git",
-        official_branch="master",
+        official_branch="future",
         fork_git_url="https://github.com/pthom/ImGuiColorTextEdit.git",
     )
 
