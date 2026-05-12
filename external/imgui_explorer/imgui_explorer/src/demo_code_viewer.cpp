@@ -55,8 +55,8 @@ namespace
     int g_pendingApiTabIndex = -1;   // Target tab index for pending API search
 
     // Editor display preferences (apply to whichever editor is currently shown)
-    bool g_wordWrap = true;
-    bool g_showMinimap = false;
+    bool g_wordWrap = false;
+    bool g_showMinimap = true;
 
     // Python-only mode state
     bool g_pythonOnlyMode = false;
