@@ -104,31 +104,31 @@ wheel.exclude = ["lib/**", "include/**"]
 sdist.exclude = [
     ".git",
     ".github",
-    "external/*/.git",
-    "ci_scripts",
-    "docs",
-    "imgui_bundle_assets",  # only for C++ apps
-    "_example_integration", # C++ template
-    "pyodide_projects",     # Playground only
-    "logo",
+    "/external/*/.git",
+    "/ci_scripts/",
+    "/docs/",
+    "/imgui_bundle_assets/",  # only for C++ apps
+    "/_example_integration/", # C++ template
+    "/pyodide_projects/",     # Playground only
+    "/logo/",
     # Build artifacts
-    "build*",
-    "external/*/build*",
-    "_skbuild",
+    "/build*/",
+    "/external/*/build*/",
+    "/_skbuild/",
     "*.so",
     "*.dylib",
     "*.dll",
     "*.pyd",
-    "*.egg-info",
-    "__pycache__",
+    "*.egg-info/",
+    "__pycache__/",
     # Virtual environments
-    "venv*",
-    ".venv*",
-    "v3*",
+    "/venv*/",
+    "/.venv*/",
+    "/v3*/",
     # Dependency managers & pip outputs
-    "vcpkg",
-    "dist",
-    "wheelhouse",
+    "/vcpkg/",
+    "/dist/",
+    "/wheelhouse/",
 ]
 
 # Slim wheel for Pyodide builds: exclude things the browser playground doesn't need.

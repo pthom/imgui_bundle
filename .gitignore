@@ -11,21 +11,20 @@ __pycache__/
 
 # Distribution / packaging
 .Python
-build/
-/build*
-/cmake-build*
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
+/build*/
+/cmake-build*/
+/develop-eggs/
+/dist/
+/downloads/
+/eggs/
+/.eggs/
+/lib/
+/lib64/
+/parts/
+/sdist/
+/var/
+/wheels/
+/share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
@@ -42,49 +41,32 @@ pip-log.txt
 pip-delete-this-directory.txt
 
 # Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
+/htmlcov/
+/.tox/
+/.nox/
+/.coverage
+/.coverage.*
+/.cache
+/nosetests.xml
+/coverage.xml
+/*.cover
+/*.py,cover
+/.hypothesis/
 .pytest_cache/
-cover/
+/cover/
 
 # Translations
 *.mo
 *.pot
 
 # Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-.pybuilder/
-target/
+/*.log
 
 # Jupyter Notebook
 .ipynb_checkpoints
 
 # IPython
-profile_default/
+/profile_default/
 ipython_config.py
 
 # pyenv
@@ -102,33 +84,16 @@ ipython_config.py
 # PEP 582; used by e.g. github.com/David-OConnor/pyflow
 __pypackages__/
 
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
 # Environments
-.env
-.venv
-env/
-venv/
+/.env
+/.venv
+/env/
+/venv/
 /venv*/
-ENV/
-env.bak/
-venv.bak/
-venv_bundle/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
+/ENV/
+/env.bak/
+/venv.bak/
+/venv_bundle/
 
 # mypy
 .mypy_cache/
@@ -150,35 +115,30 @@ cython_debug/
 # macOS
 .DS_Store
 
-_skbuild/
-_imgui_bundle_opencv_packages/
-_bundle_symlinks/
+/_skbuild/
+/_imgui_bundle_opencv_packages/
 imgui.ini
-pypi_info_token.md
-MANIFEST.in
 /imgui_app_window.ini
 .vscode/settings.json
 /_icons_test/
 _logos_brainstorm/
-poub/
+/poub/
 /wheelhouse/
 /.idea/
-v3*/
-vcpkg*/
+/v3*/
+/vcpkg*/
 /fiatlux
 
 # pyodide
 .pyodide-xbuildenv*
-pyodide_tests/
 hello_imgui.ini
 # temp / remove me
-_backends
-emsdk/
-.aider*
-.wrangler/
+/emsdk/
+/.aider*
+/.wrangler/
 
 # Cloudflare files staging (before upload)
-_cf_staging
+/_cf_staging
 
 # Cloned on demand by `just cf_resources_sync` (was a submodule)
-docs/clone_website_resources/
+/docs/clone_website_resources/
