@@ -34,6 +34,18 @@ namespace
     bool                                GDemoMarker_FlagFollowSource = true;
     char                                GDemoMarker_CodeLookupInfo[1024] = {0};
 
+    // Follow source only makes sense when the active code-viewer tab is the demo
+    // file (imgui_demo.cpp, implot_demo.cpp, ...). On API reference tabs the user
+    // is reading docs and should not be yanked back by hover-driven navigation.
+    bool IsFollowSourceApplicable()
+    {
+        const auto& files = GetCurrentLibraryFiles();
+        int idx = DemoCodeViewer_GetCurrentFileIndex();
+        if (idx < 0 || idx >= (int)files.size())
+            return false;
+        return !files[idx].isApiReference;
+    }
+
 
     // [sub section] ImGuiDemoMarker_GuiToggle()
     // Display a "Code Lookup" checkbox that toggles interactive code browsing
@@ -53,9 +65,14 @@ namespace
             }
         }
 
+        bool applicable = IsFollowSourceApplicable();
+        ImGui::BeginDisabled(!applicable);
         ImGui::SetNextItemShortcut(ImGuiKey_F1, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Follow source    ", &GDemoMarker_FlagFollowSource);
-        ImGui::SetItemTooltip("Press F1 to toggle this mode");
+        ImGui::EndDisabled();
+        ImGui::SetItemTooltip(applicable
+            ? "Press F1 to toggle this mode"
+            : "Follow source only acts on the demo source tab");
 
         ImGui::SameLine();
 
@@ -203,7 +220,7 @@ namespace
                 "%s.cpp:%d - \"%s\"", file_no_ext, line + 1, section);
         }
 
-        if (GDemoMarker_FlagFollowSource)
+        if (GDemoMarker_FlagFollowSource && IsFollowSourceApplicable())
             DemoCodeViewer_ShowCodeAt(file_ext_cpp, line, section);
     }
 
