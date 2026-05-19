@@ -220,7 +220,11 @@ namespace
                 "%s.cpp:%d - \"%s\"", file_no_ext, line + 1, section);
         }
 
-        if (GDemoMarker_FlagFollowSource && IsFollowSourceApplicable())
+        // Suppress the navigation jump while any widget is being manipulated
+        // (e.g. drag-selecting text in the code editor, dragging a slider in
+        // the demo). The info text above still updates so the user keeps
+        // feedback about what zone they are crossing.
+        if (GDemoMarker_FlagFollowSource && IsFollowSourceApplicable() && ImGui::GetActiveID() == 0)
             DemoCodeViewer_ShowCodeAt(file_ext_cpp, line, section);
     }
 
