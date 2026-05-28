@@ -212,6 +212,10 @@ class TextEditor:
         pass
     def is_show_mini_map_enabled(self) -> bool:
         pass
+    def set_mini_map_width(self, value: float) -> None:
+        pass
+    def get_mini_map_width(self) -> float:
+        pass
     def set_show_scrollbar_mini_map_enabled(self, value: bool) -> None:
         pass
     def is_show_scrollbar_mini_map_enabled(self) -> bool:
