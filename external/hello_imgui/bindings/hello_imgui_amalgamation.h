@@ -2720,7 +2720,6 @@ namespace HelloImGui
     #endif
      // Let SDL redefine main under iOS
     #ifdef HELLOIMGUI_IOS
-        #include <SDL.h>
     #endif
 #endif
 
