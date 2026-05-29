@@ -927,7 +927,7 @@ void py_init_module_imgui_main(nb::module_& m)
             TextUnformatted_adapt_const_char_pointer_with_default_null(text, text_end);
         },
         nb::arg("text"), nb::arg("text_end").none() = nb::none(),
-        "raw text without formatting. Roughly equivalent to Text(\"%s\", text) but: A) doesn't require null terminated string if 'text_end' is specified, B) it's faster, no memory copy is done, no buffer size limits, recommended for long chunks of text.");
+        "raw text without formatting. Practically equivalent to 'Text(\"%s\", text)' but doesn't require null terminated string if 'text_end' is specified.");
 
     m.def("text",
         [](const char * fmt)
@@ -6251,6 +6251,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("color_button_position", &ImGuiStyle::ColorButtonPosition, "Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.")
         .def_rw("button_text_align", &ImGuiStyle::ButtonTextAlign, "Alignment of button text when button is larger than text. Defaults to (0.5, 0.5) (centered).")
         .def_rw("selectable_text_align", &ImGuiStyle::SelectableTextAlign, "Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.")
+        .def_rw("input_text_cursor_size", &ImGuiStyle::InputTextCursorSize, "Thickness of cursor/caret in InputText().")
         .def_rw("separator_size", &ImGuiStyle::SeparatorSize, "Thickness of border in Separator(). Must be >= 1.0.")
         .def_rw("separator_text_border_size", &ImGuiStyle::SeparatorTextBorderSize, "Thickness of border in SeparatorText()")
         .def_rw("separator_text_align", &ImGuiStyle::SeparatorTextAlign, "Alignment of text within the separator. Defaults to (0.0, 0.5) (left aligned, center).")
@@ -7217,20 +7218,20 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyEnumImDrawFlags_ =
         nb::enum_<ImDrawFlags_>(m, "ImDrawFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImDrawList functions")
             .value("none", ImDrawFlags_None, "")
-            .value("round_corners_top_left", ImDrawFlags_RoundCornersTopLeft, "AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01.")
-            .value("round_corners_top_right", ImDrawFlags_RoundCornersTopRight, "AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0, we default to all corners). Was 0x02.")
-            .value("round_corners_bottom_left", ImDrawFlags_RoundCornersBottomLeft, "AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0, we default to all corners). Was 0x04.")
-            .value("round_corners_bottom_right", ImDrawFlags_RoundCornersBottomRight, "AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0, we default to all corners). Wax 0x08.")
-            .value("round_corners_none", ImDrawFlags_RoundCornersNone, "AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag!")
-            .value("closed", ImDrawFlags_Closed, "PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)")
+            .value("round_corners_top_left", ImDrawFlags_RoundCornersTopLeft, "Round top-left corner only (when rounding > 0.0, we default to all corners).")
+            .value("round_corners_top_right", ImDrawFlags_RoundCornersTopRight, "Round top-right corner only (when rounding > 0.0, we default to all corners).")
+            .value("round_corners_bottom_left", ImDrawFlags_RoundCornersBottomLeft, "Round bottom-left corner only (when rounding > 0.0, we default to all corners).")
+            .value("round_corners_bottom_right", ImDrawFlags_RoundCornersBottomRight, "Round bottom-right corner only (when rounding > 0.0, we default to all corners).")
+            .value("round_corners_none", ImDrawFlags_RoundCornersNone, "Disable rounding even if `float rounding > 0.0`. This is NOT zero, NOT an implicit flag!")
+            .value("round_corners_all", ImDrawFlags_RoundCornersAll, "(Default!!)")
+            .value("round_corners_default_", ImDrawFlags_RoundCornersDefault_, "Default to ALL corners if none of the _RoundCornersXX flags are specified!")
             .value("round_corners_top", ImDrawFlags_RoundCornersTop, "")
             .value("round_corners_bottom", ImDrawFlags_RoundCornersBottom, "")
             .value("round_corners_left", ImDrawFlags_RoundCornersLeft, "")
             .value("round_corners_right", ImDrawFlags_RoundCornersRight, "")
-            .value("round_corners_all", ImDrawFlags_RoundCornersAll, "")
-            .value("round_corners_default_", ImDrawFlags_RoundCornersDefault_, "Default to ALL corners if none of the _RoundCornersXX flags are specified.")
             .value("round_corners_mask_", ImDrawFlags_RoundCornersMask_, "")
-            .value("invalid_mask_", ImDrawFlags_InvalidMask_, "");
+            .value("closed", ImDrawFlags_Closed, "PathStroke(), AddPolyline(): specify that shape should be closed.")
+            .value("invalid_mask_", ImDrawFlags_InvalidMask_, "== 0x8000000F,");
 
 
     auto pyEnumImDrawListFlags_ =

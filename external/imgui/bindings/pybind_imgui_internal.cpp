@@ -1671,7 +1671,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumScrollFlags_ =
-        nb::enum_<ImGuiScrollFlags_>(m, "ScrollFlags_", nb::is_arithmetic(), nb::is_flag(), "Early work-in-progress API for ScrollToItem()")
+        nb::enum_<ImGuiScrollFlags_>(m, "ScrollFlags_", nb::is_arithmetic(), nb::is_flag(), " Early work-in-progress API for ScrollToItem()\n FIXME: Missing flags to request making both edges visible when possible.")
             .value("none", ImGuiScrollFlags_None, "")
             .value("keep_visible_edge_x", ImGuiScrollFlags_KeepVisibleEdgeX, "If item is not visible: scroll as little as possible on X axis to bring item back into view [default for X axis]")
             .value("keep_visible_edge_y", ImGuiScrollFlags_KeepVisibleEdgeY, "If item is not visible: scroll as little as possible on Y axis to bring item back into view [default for Y axis for windows that are already visible]")
@@ -5448,6 +5448,9 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("im_font_atlas_texture_block_queue_upload",
         ImFontAtlasTextureBlockQueueUpload, nb::arg("atlas"), nb::arg("tex"), nb::arg("x"), nb::arg("y"), nb::arg("w"), nb::arg("h"));
+
+    m.def("im_texture_data_update_new_frame",
+        ImTextureDataUpdateNewFrame, nb::arg("tex"));
 
     m.def("im_texture_data_queue_upload",
         ImTextureDataQueueUpload, nb::arg("tex"), nb::arg("x"), nb::arg("y"), nb::arg("w"), nb::arg("h"));
