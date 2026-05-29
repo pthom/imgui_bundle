@@ -746,7 +746,9 @@ void DemoCodeViewer_Show()
 
     // Use unique ID per file and language to keep cursor/scroll state independent
     std::string editorId = std::string("##code_") + displayName;
-    editor.Render(editorId.c_str(), ImGui::GetContentRegionAvail(), false);
+    ImVec2 editorSize = ImGui::GetContentRegionAvail();
+    editor.Render(editorId.c_str(), editorSize, false);
+    editor.SetMiniMapWidth(editorSize.x * 0.075f);
 
     // Right-click context menu on the editor
     static std::string rightClickWord;
