@@ -748,7 +748,6 @@ void DemoCodeViewer_Show()
     std::string editorId = std::string("##code_") + displayName;
     ImVec2 editorSize = ImGui::GetContentRegionAvail();
     editor.Render(editorId.c_str(), editorSize, false);
-    editor.SetMiniMapWidth(editorSize.x * 0.075f);
 
     // Right-click context menu on the editor
     static std::string rightClickWord;

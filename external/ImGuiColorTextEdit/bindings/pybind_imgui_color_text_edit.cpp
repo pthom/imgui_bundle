@@ -387,10 +387,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetShowMiniMapEnabled, nb::arg("value"))
         .def("is_show_mini_map_enabled",
             &TextEditor::IsShowMiniMapEnabled)
-        .def("set_mini_map_width",
-            &TextEditor::SetMiniMapWidth, nb::arg("value"))
-        .def("get_mini_map_width",
-            &TextEditor::GetMiniMapWidth)
+        .def("set_mini_map_columns",
+            &TextEditor::SetMiniMapColumns, nb::arg("value"))
+        .def("get_mini_map_columns",
+            &TextEditor::GetMiniMapColumns)
         .def("set_show_scrollbar_mini_map_enabled",
             &TextEditor::SetShowScrollbarMiniMapEnabled, nb::arg("value"))
         .def("is_show_scrollbar_mini_map_enabled",
