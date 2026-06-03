@@ -51,21 +51,10 @@ namespace ImGuiMd
     }
 
 
-    namespace
-    {
-        // Factor applied to the font size before displaying
-        // Case 1: Platforms which report screen size in "physical pixels": Windows (for "Dpi aware" apps), Linux (with Wayland)
-        //    in case 1, fontDpiFactor = screenDpi / 96
-        // Case 2: Platforms which report screen size in "density-independent pixels": macOS, iOS, Android, emscripten
-        //    in case 2, fontDpiFactor = 1
-        float fontDpiFactor()
-        {
-            auto dpiParams = HelloImGui::GetDpiAwareParams();
-            float fontDpiFactor = dpiParams->DpiFontLoadingFactor();
-            return fontDpiFactor;
-        }
-
-    }
+    // Note: font sizes below are expressed at their nominal (96 PPI) value.
+    // HighDPI scaling is applied automatically at display time by ImGui via
+    // ImGui::GetStyle().FontScaleDpi (set by HelloImGui from dpiWindowSizeFactor),
+    // so we must *not* pre-multiply font sizes by the DPI factor here anymore.
 
     namespace ImGuiMdFonts
     {
@@ -98,14 +87,14 @@ namespace ImGuiMd
         float MarkdownFontOptions_FontSize(const MarkdownFontOptions &self, int headerLevel)
         {
             if (headerLevel <= 0)
-                return self.regularSize * fontDpiFactor();
+                return self.regularSize;
             else
             {
                 int idxSizeFactors = headerLevel - 1;
                 if (idxSizeFactors >= 6)
                     idxSizeFactors = 5;
                 float multiplicationFactor = self.headerSizeFactors[idxSizeFactors];
-                float fontSize = self.regularSize * fontDpiFactor() * multiplicationFactor;
+                float fontSize = self.regularSize * multiplicationFactor;
                 return fontSize;
             }
         };
@@ -140,7 +129,7 @@ namespace ImGuiMd
 
             SizedFont GetFontCode() const
             {
-                return {mFontCode, mMarkdownFontOptions.regularSize * fontDpiFactor()};
+                return {mFontCode, mMarkdownFontOptions.regularSize};
             }
 
             SizedFont GetDefaultFont() const
@@ -341,9 +330,11 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             if (! mdImage.has_value())
                 return false;
 
-            // Image size adaptive depending on the resolution scale
+            // Image size adaptive depending on the resolution scale.
+            // Unlike fonts, ImGui::Image() draw sizes are not scaled by FontScaleDpi,
+            // so we apply the DPI factor explicitly to match the (DPI-scaled) text.
             {
-                float k = HelloImGui::DpiFontLoadingFactor();
+                float k = ImGui::GetStyle().FontScaleDpi;
                 nfo.size = ImVec2(mdImage->size.x * k, mdImage->size.y * k);
             }
 

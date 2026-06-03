@@ -145,18 +145,12 @@ class DpiAwareParams:
     #  However, if it fails you may set its value manually.
     #  If it is set to 0, Hello ImGui will compute it automatically,
     #  and the resulting value will be stored in `dpiWindowSizeFactor`.
+    #
+    #  This factor is also applied to fonts and widget sizes:
+    #  Hello ImGui sets `ImGui::GetStyle().FontScaleDpi = dpiWindowSizeFactor`,
+    #  so that fonts are scaled at display time (via the dynamic font atlas),
+    #  and it calls `ImGui::GetStyle().ScaleAllSizes()` to scale paddings/spacings.
     dpi_window_size_factor: float = 0.0
-
-    # float DpiFontLoadingFactor() const {    /* original C++ signature */
-    #         return dpiWindowSizeFactor;
-    #     }
-    def dpi_font_loading_factor(self) -> float:
-        """`DpiFontLoadingFactor`
-           factor by which font size should be multiplied at loading time to get a similar visible size on different OSes.
-           This is equal to dpiWindowSizeFactor
-        The size will be equivalent to a size given for a 96 PPI screen
-        """
-        pass
     # DpiAwareParams(float dpiWindowSizeFactor = 0.0f);    /* original C++ signature */
     def __init__(self, dpi_window_size_factor: float = 0.0) -> None:
         """Auto-generated default constructor with named params"""
@@ -232,13 +226,6 @@ def get_dpi_aware_params() -> DpiAwareParams:
 #
 # Legacy API, you should use RunnerParams.dpiAwareParams instead
 #
-# float DpiFontLoadingFactor();    /* original C++ signature */
-def dpi_font_loading_factor() -> float:
-    """Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
-    (HelloImGui::LoadFontTTF does this by default)
-    """
-    pass
-
 # float DpiWindowSizeFactor();    /* original C++ signature */
 def dpi_window_size_factor() -> float:
     """DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
@@ -912,11 +899,6 @@ class FontLoadingParams:
     Font loading parameters: several options are available (color, merging, range, ...)
     """
 
-    # bool adjustSizeToDpi = true;    /* original C++ signature */
-    # if True, the font size will be adjusted automatically to account for HighDPI
-    #
-    adjust_size_to_dpi: bool = True
-
     # bool mergeToLastFont = false;    /* original C++ signature */
     # if True, the font will be merged to the last font
     merge_to_last_font: bool = False
@@ -934,10 +916,9 @@ class FontLoadingParams:
     # ImFontConfig fontConfig = ImFontConfig();    /* original C++ signature */
     # ImGui native font config to use
     font_config: ImFontConfig = ImFontConfig()
-    # FontLoadingParams(bool adjustSizeToDpi = true, bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, ImFontConfig fontConfig = ImFontConfig());    /* original C++ signature */
+    # FontLoadingParams(bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, ImFontConfig fontConfig = ImFontConfig());    /* original C++ signature */
     def __init__(
         self,
-        adjust_size_to_dpi: bool = True,
         merge_to_last_font: bool = False,
         load_color: bool = False,
         inside_assets: bool = True,

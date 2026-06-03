@@ -58,16 +58,12 @@ struct DpiAwareParams
     //  However, if it fails you may set its value manually.
     //  If it is set to 0, Hello ImGui will compute it automatically,
     //  and the resulting value will be stored in `dpiWindowSizeFactor`.
+    //
+    //  This factor is also applied to fonts and widget sizes:
+    //  Hello ImGui sets `ImGui::GetStyle().FontScaleDpi = dpiWindowSizeFactor`,
+    //  so that fonts are scaled at display time (via the dynamic font atlas),
+    //  and it calls `ImGui::GetStyle().ScaleAllSizes()` to scale paddings/spacings.
     float dpiWindowSizeFactor = 0.0f;
-
-    // `DpiFontLoadingFactor`
-    //     factor by which font size should be multiplied at loading time to get a similar visible size on different OSes.
-    //     This is equal to dpiWindowSizeFactor
-    //  The size will be equivalent to a size given for a 96 PPI screen
-    float DpiFontLoadingFactor() const {
-        return dpiWindowSizeFactor;
-    }
-
 };
 
 // ----------------------------------------------------------------------------
@@ -124,10 +120,6 @@ DpiAwareParams* GetDpiAwareParams();
 //
 namespace HelloImGui
 {
-    // Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
-    // (HelloImGui::LoadFontTTF does this by default)
-    float DpiFontLoadingFactor();
-
     // DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
     // It returns ApplicationScreenPixelPerInch / 96 under windows and linux. Under macOS, it will return 1.
     float DpiWindowSizeFactor();
@@ -771,10 +763,6 @@ namespace HelloImGui
     // Font loading parameters: several options are available (color, merging, range, ...)
     struct FontLoadingParams
     {
-        // if true, the font size will be adjusted automatically to account for HighDPI
-        //
-        bool adjustSizeToDpi = true;
-
         // if true, the font will be merged to the last font
         bool mergeToLastFont = false;
 

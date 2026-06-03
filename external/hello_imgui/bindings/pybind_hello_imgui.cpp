@@ -160,9 +160,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         },
         nb::arg("dpi_window_size_factor") = 0.0f
         )
-        .def_rw("dpi_window_size_factor", &HelloImGui::DpiAwareParams::dpiWindowSizeFactor, " `dpiWindowSizeFactor`\n     factor by which window size should be multiplied to get a similar\n     physical size on different OSes (as if they were all displayed on a 96 PPI screen).\n     This affects the size of native app windows,\n     but *not* imgui Windows, and *not* the size of widgets and text.\n  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,\n  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.\n\n  Inside Hello ImGui, the window size is always treated as targeting a 96 PPI screen, so that its size will\n  look similar whatever the OS and the screen DPI.\n  In our example, our 960x480 pixels window will try to correspond to a 10x5 inches window\n\n  Hello ImGui does its best to compute it on all OSes.\n  However, if it fails you may set its value manually.\n  If it is set to 0, Hello ImGui will compute it automatically,\n  and the resulting value will be stored in `dpiWindowSizeFactor`.")
-        .def("dpi_font_loading_factor",
-            &HelloImGui::DpiAwareParams::DpiFontLoadingFactor, " `DpiFontLoadingFactor`\n     factor by which font size should be multiplied at loading time to get a similar visible size on different OSes.\n     This is equal to dpiWindowSizeFactor\n  The size will be equivalent to a size given for a 96 PPI screen")
+        .def_rw("dpi_window_size_factor", &HelloImGui::DpiAwareParams::dpiWindowSizeFactor, " `dpiWindowSizeFactor`\n     factor by which window size should be multiplied to get a similar\n     physical size on different OSes (as if they were all displayed on a 96 PPI screen).\n     This affects the size of native app windows,\n     but *not* imgui Windows, and *not* the size of widgets and text.\n  In a standard environment (i.e. outside of Hello ImGui), an application with a size of 960x480 pixels,\n  may have a physical size (in mm or inches) that varies depending on the screen DPI, and the OS.\n\n  Inside Hello ImGui, the window size is always treated as targeting a 96 PPI screen, so that its size will\n  look similar whatever the OS and the screen DPI.\n  In our example, our 960x480 pixels window will try to correspond to a 10x5 inches window\n\n  Hello ImGui does its best to compute it on all OSes.\n  However, if it fails you may set its value manually.\n  If it is set to 0, Hello ImGui will compute it automatically,\n  and the resulting value will be stored in `dpiWindowSizeFactor`.\n\n  This factor is also applied to fonts and widget sizes:\n  Hello ImGui sets `ImGui::GetStyle().FontScaleDpi = dpiWindowSizeFactor`,\n  so that fonts are scaled at display time (via the dynamic font atlas),\n  and it calls `ImGui::GetStyle().ScaleAllSizes()` to scale paddings/spacings.")
         ;
 
 
@@ -195,9 +193,6 @@ void py_init_module_hello_imgui(nb::module_& m)
         " Returns the current DpiAwareParams, which are used\n for font loading and window size scaling",
         nb::rv_policy::reference);
 
-
-    m.def("dpi_font_loading_factor",
-        HelloImGui::DpiFontLoadingFactor, " Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...\n (HelloImGui::LoadFontTTF does this by default)");
 
     m.def("dpi_window_size_factor",
         HelloImGui::DpiWindowSizeFactor, " DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.\n It returns ApplicationScreenPixelPerInch / 96 under windows and linux. Under macOS, it will return 1.");
@@ -627,11 +622,10 @@ void py_init_module_hello_imgui(nb::module_& m)
     auto pyClassFontLoadingParams =
         nb::class_<HelloImGui::FontLoadingParams>
             (m, "FontLoadingParams", "\n Font loading parameters: several options are available (color, merging, range, ...)")
-        .def("__init__", [](HelloImGui::FontLoadingParams * self, bool adjustSizeToDpi = true, bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, const std::optional<const ImFontConfig> & fontConfig = std::nullopt)
+        .def("__init__", [](HelloImGui::FontLoadingParams * self, bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, const std::optional<const ImFontConfig> & fontConfig = std::nullopt)
         {
             new (self) HelloImGui::FontLoadingParams();  // placement new
             auto r_ctor_ = self;
-            r_ctor_->adjustSizeToDpi = adjustSizeToDpi;
             r_ctor_->mergeToLastFont = mergeToLastFont;
             r_ctor_->loadColor = loadColor;
             r_ctor_->insideAssets = insideAssets;
@@ -640,9 +634,8 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->fontConfig = ImFontConfig();
         },
-        nb::arg("adjust_size_to_dpi") = true, nb::arg("merge_to_last_font") = false, nb::arg("load_color") = false, nb::arg("inside_assets") = true, nb::arg("font_config").none() = nb::none()
+        nb::arg("merge_to_last_font") = false, nb::arg("load_color") = false, nb::arg("inside_assets") = true, nb::arg("font_config").none() = nb::none()
         )
-        .def_rw("adjust_size_to_dpi", &HelloImGui::FontLoadingParams::adjustSizeToDpi, " if True, the font size will be adjusted automatically to account for HighDPI\n")
         .def_rw("merge_to_last_font", &HelloImGui::FontLoadingParams::mergeToLastFont, "if True, the font will be merged to the last font")
         .def_rw("load_color", &HelloImGui::FontLoadingParams::loadColor, " if True, the font will be loaded using colors\n (requires freetype, enabled by IMGUI_ENABLE_FREETYPE)")
         .def_rw("inside_assets", &HelloImGui::FontLoadingParams::insideAssets, " if True, the font will be loaded using HelloImGui asset system.\n Otherwise, it will be loaded from the filesystem")
