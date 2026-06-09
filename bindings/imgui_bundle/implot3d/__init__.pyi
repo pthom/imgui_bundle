@@ -7,6 +7,14 @@
 # It is automatically generated (using https://pthom.github.io/litgen/),
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
+#
+# Note on plotting numpy arrays:
+#   ImPlot3D's plot functions are templated on a single numeric type, so every numpy array
+#   passed to one plot call must share the same dtype (e.g. do not mix an integer array
+#   with a float array). Convert to a common dtype first, e.g. xs = xs.astype(ys.dtype).
+#   Passing mismatched dtypes raises an explicit error.
+#   See https://github.com/pthom/imgui_bundle/issues/467
+#
 # ruff: noqa: B008, F821, F811
 from typing import Any, Optional, List, overload
 import numpy as np
@@ -922,6 +930,8 @@ def setup_legend(location: Location, flags: LegendFlags = 0) -> None:
 def plot_scatter(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray, spec: Optional[Spec] = None) -> None:
     """Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates
 
+    Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
 
     Python bindings defaults:
         If spec is None, then its default value will be: Spec()
@@ -931,6 +941,8 @@ def plot_scatter(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray, 
 # IMPLOT3D_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, const T* zs, int count, const ImPlot3DSpec& spec = ImPlot3DSpec());    /* original C++ signature */
 def plot_line(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray, spec: Optional[Spec] = None) -> None:
     """Plots a line in 3D. Consecutive points are connected with line segments
+
+    Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
 
 
     Python bindings defaults:
@@ -942,6 +954,8 @@ def plot_line(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray, spe
 def plot_triangle(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray, spec: Optional[Spec] = None) -> None:
     """Plots triangles in 3D. Every 3 consecutive points define a triangle
 
+    Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
 
     Python bindings defaults:
         If spec is None, then its default value will be: Spec()
@@ -951,6 +965,8 @@ def plot_triangle(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray,
 # IMPLOT3D_TMP void PlotQuad(const char* label_id, const T* xs, const T* ys, const T* zs, int count, const ImPlot3DSpec& spec = ImPlot3DSpec());    /* original C++ signature */
 def plot_quad(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray, spec: Optional[Spec] = None) -> None:
     """Plots quads in 3D. Every 4 consecutive points define a quadrilateral
+
+    Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
 
 
     Python bindings defaults:
@@ -988,6 +1004,8 @@ def plot_surface(
      and the z array contains the height of each vertex.
      A total of x_count * y_count vertices are expected for each array.
      Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.
+
+    Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
 
 
     Python bindings defaults:

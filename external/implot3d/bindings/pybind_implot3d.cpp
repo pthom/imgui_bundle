@@ -725,7 +725,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotScatter_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
-        " Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_line",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
@@ -855,7 +855,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotLine_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
-        " Plots a line in 3D. Consecutive points are connected with line segments\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots a line in 3D. Consecutive points are connected with line segments\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_triangle",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
@@ -985,7 +985,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotTriangle_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
-        " Plots triangles in 3D. Every 3 consecutive points define a triangle\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots triangles in 3D. Every 3 consecutive points define a triangle\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_quad",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
@@ -1115,7 +1115,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotQuad_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
-        " Plots quads in 3D. Every 4 consecutive points define a quadrilateral\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots quads in 3D. Every 4 consecutive points define a quadrilateral\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -1247,7 +1247,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotSurface_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, x_count, y_count, scale_min, scale_max, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("x_count"), nb::arg("y_count"), nb::arg("scale_min") = 0.0, nb::arg("scale_max") = 0.0, nb::arg("spec").none() = nb::none(),
-        " Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays,\n and the z array contains the height of each vertex.\n A total of x_count * y_count vertices are expected for each array.\n Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays,\n and the z array contains the height of each vertex.\n A total of x_count * y_count vertices are expected for each array.\n Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #endif
     //
     // #ifdef IMGUI_BUNDLE_PYTHON_API

@@ -7,6 +7,14 @@
 # It is automatically generated (using https://pthom.github.io/litgen/),
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
+#
+# Note on plotting numpy arrays:
+#   ImPlot's plot functions are templated on a single numeric type, so every numpy array
+#   passed to one plot call must share the same dtype (e.g. do not mix an integer array
+#   with a float array). Convert to a common dtype first, e.g. xs = xs.astype(ys.dtype).
+#   Passing mismatched dtypes raises an explicit error.
+#   See https://github.com/pthom/imgui_bundle/issues/467
+#
 # ruff: noqa: B008, F821, F811
 from typing import Any, Optional, Tuple, List, overload
 import numpy as np
@@ -1611,8 +1619,11 @@ def plot_line(
 # IMPLOT_TMP void PlotLine(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_line(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
@@ -1630,8 +1641,11 @@ def plot_scatter(
 # IMPLOT_TMP void PlotScatter(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_scatter(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
@@ -1646,22 +1660,30 @@ def plot_bubbles(
     xstart: float = 0,
     spec: Optional[Spec] = None,
 ) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
 # IMPLOT_TMP void PlotBubbles(const char* label_id, const T* xs, const T* ys, const T* szs, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_bubbles(label_id: str, xs: np.ndarray, ys: np.ndarray, szs: np.ndarray, spec: Optional[Spec] = None) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
 # IMPLOT_TMP void PlotPolygon(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 def plot_polygon(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
     """Plots a polygon. Points are specified in counter-clockwise order. If concave, make sure to set the Concave flag.
+
+    Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
 
 
     Python bindings defaults:
@@ -1683,8 +1705,11 @@ def plot_stairs(
 # IMPLOT_TMP void PlotStairs(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_stairs(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
@@ -1707,16 +1732,22 @@ def plot_shaded(
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys, int count, double yref=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_shaded(label_id: str, xs: np.ndarray, ys: np.ndarray, yref: float = 0, spec: Optional[Spec] = None) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
 # IMPLOT_TMP void PlotShaded(const char* label_id, const T* xs, const T* ys1, const T* ys2, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_shaded(label_id: str, xs: np.ndarray, ys1: np.ndarray, ys2: np.ndarray, spec: Optional[Spec] = None) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
@@ -1734,8 +1765,11 @@ def plot_bars(
 # IMPLOT_TMP void PlotBars(const char* label_id, const T* xs, const T* ys, int count, double bar_size, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_bars(label_id: str, xs: np.ndarray, ys: np.ndarray, bar_size: float, spec: Optional[Spec] = None) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
@@ -1764,8 +1798,11 @@ def plot_bar_groups(
 def plot_error_bars(
     label_id: str, xs: np.ndarray, ys: np.ndarray, err: np.ndarray, spec: Optional[Spec] = None
 ) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
@@ -1774,8 +1811,11 @@ def plot_error_bars(
 def plot_error_bars(
     label_id: str, xs: np.ndarray, ys: np.ndarray, neg: np.ndarray, pos: np.ndarray, spec: Optional[Spec] = None
 ) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
@@ -1793,8 +1833,11 @@ def plot_stems(
 # IMPLOT_TMP void PlotStems(const char* label_id, const T* xs, const T* ys, int count, double ref=0, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 @overload
 def plot_stems(label_id: str, xs: np.ndarray, ys: np.ndarray, ref: float = 0, spec: Optional[Spec] = None) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 
@@ -1858,6 +1901,8 @@ def plot_histogram_2d(
     """Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of
      #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.
 
+    Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
 
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
@@ -1869,8 +1914,11 @@ def plot_histogram_2d(
 # Plots digital data. Digital plots do not respond to y drag or zoom, and are always referenced to the bottom of the plot.
 # IMPLOT_TMP void PlotDigital(const char* label_id, const T* xs, const T* ys, int count, const ImPlotSpec& spec=ImPlotSpec());    /* original C++ signature */
 def plot_digital(label_id: str, xs: np.ndarray, ys: np.ndarray, spec: Optional[Spec] = None) -> None:
-    """Python bindings defaults:
-    If spec is None, then its default value will be: Spec()
+    """Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
+
+
+    Python bindings defaults:
+        If spec is None, then its default value will be: Spec()
     """
     pass
 

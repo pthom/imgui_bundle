@@ -1148,7 +1148,7 @@ void py_init_module_implot(nb::module_& m)
             PlotLine_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_scatter",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1346,7 +1346,7 @@ void py_init_module_implot(nb::module_& m)
             PlotScatter_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bubbles",
         [](const char * label_id, nb::ndarray<nb::ro> & values, nb::ndarray<nb::ro> & szs, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1460,7 +1460,7 @@ void py_init_module_implot(nb::module_& m)
             PlotBubbles_adapt_mutable_param_with_default_value(label_id, values, szs, xscale, xstart, spec);
         },
         nb::arg("label_id"), nb::arg("values"), nb::arg("szs"), nb::arg("xscale") = 1, nb::arg("xstart") = 0, nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bubbles",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & szs, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1590,7 +1590,7 @@ void py_init_module_implot(nb::module_& m)
             PlotBubbles_adapt_mutable_param_with_default_value(label_id, xs, ys, szs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("szs"), nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_polygon",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1704,7 +1704,7 @@ void py_init_module_implot(nb::module_& m)
             PlotPolygon_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        " Plots a polygon. Points are specified in counter-clockwise order. If concave, make sure to set the Concave flag.\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots a polygon. Points are specified in counter-clockwise order. If concave, make sure to set the Concave flag.\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_stairs",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1902,7 +1902,7 @@ void py_init_module_implot(nb::module_& m)
             PlotStairs_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_shaded",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double yref = 0, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2100,7 +2100,7 @@ void py_init_module_implot(nb::module_& m)
             PlotShaded_adapt_mutable_param_with_default_value(label_id, xs, ys, yref, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("yref") = 0, nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_shaded",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys1, nb::ndarray<nb::ro> & ys2, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2230,7 +2230,7 @@ void py_init_module_implot(nb::module_& m)
             PlotShaded_adapt_mutable_param_with_default_value(label_id, xs, ys1, ys2, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys1"), nb::arg("ys2"), nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bars",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double bar_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2428,7 +2428,7 @@ void py_init_module_implot(nb::module_& m)
             PlotBars_adapt_mutable_param_with_default_value(label_id, xs, ys, bar_size, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("bar_size"), nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -2646,7 +2646,7 @@ void py_init_module_implot(nb::module_& m)
             PlotErrorBars_adapt_mutable_param_with_default_value(label_id, xs, ys, err, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("err"), nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_error_bars",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & neg, nb::ndarray<nb::ro> & pos, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2792,7 +2792,7 @@ void py_init_module_implot(nb::module_& m)
             PlotErrorBars_adapt_mutable_param_with_default_value(label_id, xs, ys, neg, pos, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("neg"), nb::arg("pos"), nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_stems",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double ref = 0, double scale = 1, double start = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2990,7 +2990,7 @@ void py_init_module_implot(nb::module_& m)
             PlotStems_adapt_mutable_param_with_default_value(label_id, xs, ys, ref, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("ref") = 0, nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_inf_lines",
         [](const char * label_id, nb::ndarray<nb::ro> & values, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -3381,7 +3381,7 @@ void py_init_module_implot(nb::module_& m)
             return PlotHistogram2D_adapt_mutable_param_with_default_value(label_id, xs, ys, x_bins, y_bins, range, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("x_bins") = ImPlotBin_Sturges, nb::arg("y_bins") = ImPlotBin_Sturges, nb::arg("range").none() = nb::none(), nb::arg("spec").none() = nb::none(),
-        " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * range: Rect()\n        * spec: Spec()");
+        " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * range: Rect()\n        * spec: Spec()");
 
     m.def("plot_digital",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -3495,7 +3495,7 @@ void py_init_module_implot(nb::module_& m)
             PlotDigital_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        "Python bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #ifdef IMGUI_HAS_TEXTURES
     //
 

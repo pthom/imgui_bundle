@@ -78,6 +78,29 @@ In C++, enable ImPlot by setting `withImplot = true` in `ImmApp::AddOnsParams`.
 
 ::::
 
+````{note}
+**Plotting numpy arrays: arrays must share a dtype.**
+ImPlot's plot functions are templated on a single numeric type, so every numpy array
+passed to one plot call must have the same dtype. Mixing, for example, an integer array
+with a float array raises an error:
+
+```python
+xs = np.arange(100)               # int64
+ys = np.random.rand(100)          # float64
+
+# WRONG: int64 xs vs float64 ys -> raises a clear error
+implot.plot_scatter("s", xs, ys)
+
+# RIGHT: convert to a common dtype first
+implot.plot_scatter("s", xs.astype(ys.dtype), ys)
+```
+
+Mismatched dtypes raise an explicit error (naming both dtypes and the fix) instead of
+silently plotting garbage. The constraint is per call: you may use different dtypes
+across different plot calls. It applies to every multi-array function in `implot` and
+`implot3d`. See [issue #467](https://github.com/pthom/imgui_bundle/issues/467).
+````
+
 ### Full Demo
 
 ::::{card}
