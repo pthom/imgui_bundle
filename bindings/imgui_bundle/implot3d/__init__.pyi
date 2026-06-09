@@ -904,7 +904,7 @@ def setup_legend(location: Location, flags: LegendFlags = 0) -> None:
 # The plotting API is provided below. Call these functions between
 # BeginPlot/EndPlot and after any Setup API calls.
 #
-# The templated functions are explicitly instantiated in implot3_items.cpp.
+# The templated functions are explicitly instantiated in implot3d_items.cpp.
 # They are not intended to be used generically with custom types. You will get
 # a linker error if you try! All functions support the following scalar types:
 #
@@ -912,13 +912,13 @@ def setup_legend(location: Location, flags: LegendFlags = 0) -> None:
 #
 # If you need to plot custom or non-homogenous data you have a few options:
 #
-# 1. If your data is a simple struct/class (e.g. Vector3), you can use striding.
+# 1. If your data is a simple struct/class (e.g. Vector3f), you can use striding.
 #    This is the most performant option if applicable.
 #
-#    struct Vector3 { float X, Y, Z; };
+#    struct Vector3f { float X, Y, Z; };
 #    ...
-#    Vector3 data[42];
-#    ImPlot3D::PlotLine("line", &data[0].X, &data[0].Y, &data[0].Z, 42, {ImPlot3DProp_Stride, sizeof(Vector2)});
+#    Vector3f data[42];
+#    ImPlot3D::PlotLine("line", &data[0].X, &data[0].Y, &data[0].Z, 42, {ImPlot3DProp_Stride, sizeof(Vector2f)});
 #
 # 2. If your data is in separate arrays or requires computation, you can copy/transform
 #    it into temporary float or double arrays before plotting.
@@ -1388,7 +1388,7 @@ def sample_colormap(t: float, cmap: Optional[Colormap] = None) -> ImVec4:
 # -----------------------------------------------------------------------------
 # [SECTION] Demo
 # -----------------------------------------------------------------------------
-# Add implot3_demo.cpp to your sources to use methods in this section
+# Add implot3d_demo.cpp to your sources to use methods in this section
 
 # IMPLOT3D_API void ShowDemoWindow(bool* p_open = nullptr);    /* original C++ signature */
 def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:

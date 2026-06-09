@@ -1570,13 +1570,13 @@ def set_next_axes_to_fit() -> None:
 #
 # If you need to plot custom or non-homogenous data you have a few options:
 #
-# 1. If your data is a simple struct/class (e.g. Vector2), you can use striding in your ImPlotSpec.
+# 1. If your data is a simple struct/class (e.g. Vector2f), you can use striding in your ImPlotSpec.
 #    This is the most performant option if applicable.
 #
-#    struct Vector2 { float X, Y; };
+#    struct Vector2f { float X, Y; };
 #    ...
-#    Vector2 data[42];
-#    ImPlot::PlotLine("line", &data[0].x, &data[0].y, 42, {ImPlotProp_Stride, sizeof(Vector2});
+#    Vector2f data[42];
+#    ImPlot::PlotLine("line", &data[0].x, &data[0].y, 42, {ImPlotProp_Stride, sizeof(Vector2f});
 #
 # 2. Write a custom getter C function or C++ lambda and pass it and optionally your data to
 #    an ImPlot function post-fixed with a G (e.g. PlotScatterG). This has a slight performance

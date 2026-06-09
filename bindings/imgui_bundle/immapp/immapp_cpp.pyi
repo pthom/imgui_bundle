@@ -116,7 +116,7 @@ class AddOnsParams:
 
     # Set withImplot=True if you need to plot graphs with implot
     with_implot: bool = False
-    # Set withImplot3=True if you need to plot 3 graphs with implot3
+    # Set withImplot3d=True if you need to plot 3 graphs with implot3d
     with_implot3d: bool = False
 
     # Set withMarkdown=True if you need to render Markdown

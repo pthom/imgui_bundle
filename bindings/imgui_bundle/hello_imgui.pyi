@@ -2205,7 +2205,7 @@ class DockingSplit:
     direction: ImGuiDir
 
     # float ratio = 0.25f;    /* original C++ signature */
-    # `ratio`: _float, default=0.25_.
+    # `ratio`: _float, default=0.25f_.
     #  Ratio of the initialDock size that should be used by the new dock space.
     ratio: float = 0.25
 
@@ -2914,7 +2914,7 @@ class FpsIdling:
     fps_idle: float = 9.0
 
     # float timeActiveAfterLastEvent = 3.f;    /* original C++ signature */
-    # `timeActiveAfterLastEvent`: _float, default = 3._.
+    # `timeActiveAfterLastEvent`: _float, default = 3.f_.
     #
     # The duration (in seconds) after the last user event before the
     # application switches to idling mode.
@@ -2967,7 +2967,7 @@ class FpsIdling:
     vsync_to_monitor: bool = True
 
     # float fpsMax = 0.f;    /* original C++ signature */
-    # `fpsMax`: _float, default = 0._ (unlimited).
+    # `fpsMax`: _float, default = 0.f_ (unlimited).
     #
     # Sets an explicit upper limit on the frame rate when not idling.
     #

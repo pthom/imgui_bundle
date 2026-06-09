@@ -1442,7 +1442,7 @@ class SelectableFlagsPrivate_(enum.IntFlag):
     # ImGuiSelectableFlags_SpanAvailWidth         = 1 << 24,      /* original C++ signature */
     span_avail_width = (
         enum.auto()
-    )  # (= 1 << 24)  # Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)
+    )  # (= 1 << 24)  # Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251d379, 2bcafc86 for menus)
     # ImGuiSelectableFlags_SetNavIdOnHover        = 1 << 25,      /* original C++ signature */
     set_nav_id_on_hover = enum.auto()  # (= 1 << 25)  # Set Nav/Focus ID on mouse hover (used by MenuItem)
     # ImGuiSelectableFlags_NoPadWithHalfSpacing   = 1 << 26,      /* original C++ signature */

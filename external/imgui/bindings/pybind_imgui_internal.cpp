@@ -869,7 +869,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("no_holding_active_id", ImGuiSelectableFlags_NoHoldingActiveID, "")
             .value("select_on_click", ImGuiSelectableFlags_SelectOnClick, "Override button behavior to react on Click (default is Click+Release)")
             .value("select_on_release", ImGuiSelectableFlags_SelectOnRelease, "Override button behavior to react on Release (default is Click+Release)")
-            .value("span_avail_width", ImGuiSelectableFlags_SpanAvailWidth, "Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251379, 2bcafc86 for menus)")
+            .value("span_avail_width", ImGuiSelectableFlags_SpanAvailWidth, "Span all avail width even if we declared less for layout purpose. FIXME: We may be able to remove this (added in 6251d379, 2bcafc86 for menus)")
             .value("set_nav_id_on_hover", ImGuiSelectableFlags_SetNavIdOnHover, "Set Nav/Focus ID on mouse hover (used by MenuItem)")
             .value("no_pad_with_half_spacing", ImGuiSelectableFlags_NoPadWithHalfSpacing, "Disable padding each side with ItemSpacing * 0.5")
             .value("no_set_key_owner", ImGuiSelectableFlags_NoSetKeyOwner, "Don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)");

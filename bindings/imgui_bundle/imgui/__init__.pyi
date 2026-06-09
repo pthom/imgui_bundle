@@ -9823,7 +9823,7 @@ class MultiSelectFlags_(enum.IntFlag):
     select_on_click_release = (
         enum.auto()
     )  # (= 1 << 15)  # Apply selection on mouse release when clicking an unselected item. Allow dragging an unselected item without altering selection.
-    # ImGuiMultiSelectFlags_RangeSelect2       = 1 << 15,  // Shift+Selection uses 2 geometry instead of linear sequence, so possible to use Shift+up/down to select vertically in grid. Analogous to what BoxSelect does.
+    # ImGuiMultiSelectFlags_RangeSelect2d       = 1 << 15,  // Shift+Selection uses 2 geometry instead of linear sequence, so possible to use Shift+up/down to select vertically in grid. Analogous to what BoxSelect does.
     # ImGuiMultiSelectFlags_NavWrapX              = 1 << 16,      /* original C++ signature */
     nav_wrap_x = (
         enum.auto()

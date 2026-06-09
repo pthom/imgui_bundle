@@ -393,7 +393,7 @@ void py_init_module_immvision(nb::module_& m)
             Inspector_AddImage_adapt_mutable_param_with_default_value(image, legend, zoomKey, colormapKey, zoomCenter, zoomRatio);
         },
         nb::arg("image"), nb::arg("legend"), nb::arg("zoom_key") = "", nb::arg("colormap_key") = "", nb::arg("zoom_center").none() = nb::none(), nb::arg("zoom_ratio") = -1.,
-        " Add an image to the inspector. Call this from anywhere (e.g. at different steps\n of an image processing pipeline). Later, call Inspector_Show() to display all collected images.\n\n :param image:\n     The image to add.\n     C++: accepts ImageBuffer directly, or cv::Mat (implicit conversion, zero-copy).\n     Python: pass a numpy.ndarray.\n\n\nPython bindings defaults:\n    If zoomCenter is None, then its default value will be: Point2()");
+        " Add an image to the inspector. Call this from anywhere (e.g. at different steps\n of an image processing pipeline). Later, call Inspector_Show() to display all collected images.\n\n :param image:\n     The image to add.\n     C++: accepts ImageBuffer directly, or cv::Mat (implicit conversion, zero-copy).\n     Python: pass a numpy.ndarray.\n\n\nPython bindings defaults:\n    If zoomCenter is None, then its default value will be: Point2d()");
 
     m.def("inspector_show",
         ImmVision::Inspector_Show);

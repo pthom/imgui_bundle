@@ -46,18 +46,18 @@ ImTextureID: TypeAlias = int
 #     implicit conversions to/from their OpenCV equivalents:
 #         ImageBuffer <-> cv::Mat        (zero-copy via ImageBuffer(cv::Mat) and to_cv_mat())
 #         Point       <-> cv::Point      (implicit both ways)
-#         Point2     <-> cv::Point2    (implicit both ways)
+#         Point2d     <-> cv::Point2d    (implicit both ways)
 #         Size        <-> cv::Size       (implicit both ways)
-#         Matrix33   <-> cv::Matx33    (implicit both ways)
+#         Matrix33d   <-> cv::Matx33d    (implicit both ways)
 #     This means you can pass cv::Mat, cv::Point, etc. directly to ImmVision functions.
 #
 # Python users:
 #     These types are mapped transparently to native Python types:
 #         ImageBuffer <-> numpy.ndarray
 #         Point       <-> Tuple[int, int]
-#         Point2     <-> Tuple[float, float]
+#         Point2d     <-> Tuple[float, float]
 #         Size        <-> Tuple[int, int]
-#         Matrix33   <-> List[List[float]]  (3x3)
+#         Matrix33d   <-> List[List[float]]  (3x3)
 #     You never need to create these types explicitly in Python.
 #
 
@@ -327,7 +327,7 @@ class MouseInformation:
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
-                * MousePosition: Point2(-1., -1.)
+                * MousePosition: (-1., -1.)
                 * MousePosition_Displayed: (-1, -1)
         """
         pass
@@ -493,7 +493,7 @@ class ImageParams:
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * ImageDisplaySize: (0, 0)
-                * ZoomPanMatrix: Matrix33.eye()
+                * ZoomPanMatrix: [[1,0,0],[0,1,0],[0,0,1]]
                 * ColormapSettings: ColormapSettingsData()
                 * WatchedPixels: List[Point]()
                 * MouseInfo: MouseInformation()
@@ -756,7 +756,7 @@ def inspector_add_image(
 
 
     Python bindings defaults:
-        If zoomCenter is None, then its default value will be: Point2()
+        If zoomCenter is None, then its default value will be: (0., 0.)
     """
     pass
 
