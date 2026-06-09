@@ -651,6 +651,36 @@ void py_init_module_implot3d(nb::module_& m)
                 char zs_type = _nanobind_buffer_type_to_letter_code(dtype_code_zs, sizeof_item_zs);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_scatter: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(zs.dtype).");
+                // Ensure 'ys' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char ys_type = _nanobind_buffer_type_to_letter_code(ys.dtype().code, ys.dtype().bits / 8);
+                if (ys_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_scatter: all numeric arrays must share the same dtype, ")
+                        + "but \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. ys = ys.astype(zs.dtype).");
                 if (zs_type == 'B')
                     ImPlot3D::PlotScatter(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'b')
@@ -751,6 +781,36 @@ void py_init_module_implot3d(nb::module_& m)
                 char zs_type = _nanobind_buffer_type_to_letter_code(dtype_code_zs, sizeof_item_zs);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_line: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(zs.dtype).");
+                // Ensure 'ys' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char ys_type = _nanobind_buffer_type_to_letter_code(ys.dtype().code, ys.dtype().bits / 8);
+                if (ys_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_line: all numeric arrays must share the same dtype, ")
+                        + "but \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. ys = ys.astype(zs.dtype).");
                 if (zs_type == 'B')
                     ImPlot3D::PlotLine(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'b')
@@ -851,6 +911,36 @@ void py_init_module_implot3d(nb::module_& m)
                 char zs_type = _nanobind_buffer_type_to_letter_code(dtype_code_zs, sizeof_item_zs);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_triangle: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(zs.dtype).");
+                // Ensure 'ys' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char ys_type = _nanobind_buffer_type_to_letter_code(ys.dtype().code, ys.dtype().bits / 8);
+                if (ys_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_triangle: all numeric arrays must share the same dtype, ")
+                        + "but \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. ys = ys.astype(zs.dtype).");
                 if (zs_type == 'B')
                     ImPlot3D::PlotTriangle(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'b')
@@ -951,6 +1041,36 @@ void py_init_module_implot3d(nb::module_& m)
                 char zs_type = _nanobind_buffer_type_to_letter_code(dtype_code_zs, sizeof_item_zs);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_quad: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(zs.dtype).");
+                // Ensure 'ys' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char ys_type = _nanobind_buffer_type_to_letter_code(ys.dtype().code, ys.dtype().bits / 8);
+                if (ys_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_quad: all numeric arrays must share the same dtype, ")
+                        + "but \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. ys = ys.astype(zs.dtype).");
                 if (zs_type == 'B')
                     ImPlot3D::PlotQuad(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), spec);
                 else if (zs_type == 'b')
@@ -1053,6 +1173,36 @@ void py_init_module_implot3d(nb::module_& m)
                 char zs_type = _nanobind_buffer_type_to_letter_code(dtype_code_zs, sizeof_item_zs);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_surface: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(zs.dtype).");
+                // Ensure 'ys' shares the dtype of 'zs' (the C++ function is templated on a single type)
+                char ys_type = _nanobind_buffer_type_to_letter_code(ys.dtype().code, ys.dtype().bits / 8);
+                if (ys_type != zs_type)
+                    throw std::runtime_error(
+                        std::string("plot_surface: all numeric arrays must share the same dtype, ")
+                        + "but \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + " while \"zs\" has dtype " + _nanobind_dtype_letter_to_name(zs_type)
+                        + ". Convert them to a common dtype, e.g. ys = ys.astype(zs.dtype).");
                 if (zs_type == 'B')
                     ImPlot3D::PlotSurface(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<int>(xs_count), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), static_cast<const uint8_t *>(zs_from_pyarray), static_cast<int>(zs_count), x_count, y_count, scale_min, scale_max, spec);
                 else if (zs_type == 'b')

@@ -1082,6 +1082,28 @@ void py_init_module_implot(nb::module_& m)
                 char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys_type)
+                    throw std::runtime_error(
+                        std::string("plot_line: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys.dtype).");
                 if (ys_type == 'B')
                     ImPlot::PlotLine(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
                 else if (ys_type == 'b')
@@ -1258,6 +1280,28 @@ void py_init_module_implot(nb::module_& m)
                 char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys_type)
+                    throw std::runtime_error(
+                        std::string("plot_scatter: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys.dtype).");
                 if (ys_type == 'B')
                     ImPlot::PlotScatter(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
                 else if (ys_type == 'b')
@@ -1350,6 +1394,28 @@ void py_init_module_implot(nb::module_& m)
                 char szs_type = _nanobind_buffer_type_to_letter_code(dtype_code_szs, sizeof_item_szs);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'values' shares the dtype of 'szs' (the C++ function is templated on a single type)
+                char values_type = _nanobind_buffer_type_to_letter_code(values.dtype().code, values.dtype().bits / 8);
+                if (values_type != szs_type)
+                    throw std::runtime_error(
+                        std::string("plot_bubbles: all numeric arrays must share the same dtype, ")
+                        + "but \"values\" has dtype " + _nanobind_dtype_letter_to_name(values_type)
+                        + " while \"szs\" has dtype " + _nanobind_dtype_letter_to_name(szs_type)
+                        + ". Convert them to a common dtype, e.g. values = values.astype(szs.dtype).");
                 if (szs_type == 'B')
                     ImPlot::PlotBubbles(label_id, static_cast<const uint8_t *>(values_from_pyarray), static_cast<const uint8_t *>(szs_from_pyarray), static_cast<int>(szs_count), xscale, xstart, spec);
                 else if (szs_type == 'b')
@@ -1450,6 +1516,36 @@ void py_init_module_implot(nb::module_& m)
                 char szs_type = _nanobind_buffer_type_to_letter_code(dtype_code_szs, sizeof_item_szs);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'szs' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != szs_type)
+                    throw std::runtime_error(
+                        std::string("plot_bubbles: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"szs\" has dtype " + _nanobind_dtype_letter_to_name(szs_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(szs.dtype).");
+                // Ensure 'ys' shares the dtype of 'szs' (the C++ function is templated on a single type)
+                char ys_type = _nanobind_buffer_type_to_letter_code(ys.dtype().code, ys.dtype().bits / 8);
+                if (ys_type != szs_type)
+                    throw std::runtime_error(
+                        std::string("plot_bubbles: all numeric arrays must share the same dtype, ")
+                        + "but \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + " while \"szs\" has dtype " + _nanobind_dtype_letter_to_name(szs_type)
+                        + ". Convert them to a common dtype, e.g. ys = ys.astype(szs.dtype).");
                 if (szs_type == 'B')
                     ImPlot::PlotBubbles(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(szs_from_pyarray), static_cast<int>(szs_count), spec);
                 else if (szs_type == 'b')
@@ -1542,6 +1638,28 @@ void py_init_module_implot(nb::module_& m)
                 char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys_type)
+                    throw std::runtime_error(
+                        std::string("plot_polygon: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys.dtype).");
                 if (ys_type == 'B')
                     ImPlot::PlotPolygon(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
                 else if (ys_type == 'b')
@@ -1718,6 +1836,28 @@ void py_init_module_implot(nb::module_& m)
                 char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys_type)
+                    throw std::runtime_error(
+                        std::string("plot_stairs: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys.dtype).");
                 if (ys_type == 'B')
                     ImPlot::PlotStairs(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
                 else if (ys_type == 'b')
@@ -1894,6 +2034,28 @@ void py_init_module_implot(nb::module_& m)
                 char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys_type)
+                    throw std::runtime_error(
+                        std::string("plot_shaded: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys.dtype).");
                 if (ys_type == 'B')
                     ImPlot::PlotShaded(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), yref, spec);
                 else if (ys_type == 'b')
@@ -1994,6 +2156,36 @@ void py_init_module_implot(nb::module_& m)
                 char ys2_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys2, sizeof_item_ys2);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys2' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys2_type)
+                    throw std::runtime_error(
+                        std::string("plot_shaded: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys2\" has dtype " + _nanobind_dtype_letter_to_name(ys2_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys2.dtype).");
+                // Ensure 'ys1' shares the dtype of 'ys2' (the C++ function is templated on a single type)
+                char ys1_type = _nanobind_buffer_type_to_letter_code(ys1.dtype().code, ys1.dtype().bits / 8);
+                if (ys1_type != ys2_type)
+                    throw std::runtime_error(
+                        std::string("plot_shaded: all numeric arrays must share the same dtype, ")
+                        + "but \"ys1\" has dtype " + _nanobind_dtype_letter_to_name(ys1_type)
+                        + " while \"ys2\" has dtype " + _nanobind_dtype_letter_to_name(ys2_type)
+                        + ". Convert them to a common dtype, e.g. ys1 = ys1.astype(ys2.dtype).");
                 if (ys2_type == 'B')
                     ImPlot::PlotShaded(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys1_from_pyarray), static_cast<const uint8_t *>(ys2_from_pyarray), static_cast<int>(ys2_count), spec);
                 else if (ys2_type == 'b')
@@ -2170,6 +2362,28 @@ void py_init_module_implot(nb::module_& m)
                 char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys_type)
+                    throw std::runtime_error(
+                        std::string("plot_bars: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys.dtype).");
                 if (ys_type == 'B')
                     ImPlot::PlotBars(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), bar_size, spec);
                 else if (ys_type == 'b')
@@ -2358,6 +2572,36 @@ void py_init_module_implot(nb::module_& m)
                 char err_type = _nanobind_buffer_type_to_letter_code(dtype_code_err, sizeof_item_err);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'err' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != err_type)
+                    throw std::runtime_error(
+                        std::string("plot_error_bars: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"err\" has dtype " + _nanobind_dtype_letter_to_name(err_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(err.dtype).");
+                // Ensure 'ys' shares the dtype of 'err' (the C++ function is templated on a single type)
+                char ys_type = _nanobind_buffer_type_to_letter_code(ys.dtype().code, ys.dtype().bits / 8);
+                if (ys_type != err_type)
+                    throw std::runtime_error(
+                        std::string("plot_error_bars: all numeric arrays must share the same dtype, ")
+                        + "but \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + " while \"err\" has dtype " + _nanobind_dtype_letter_to_name(err_type)
+                        + ". Convert them to a common dtype, e.g. ys = ys.astype(err.dtype).");
                 if (err_type == 'B')
                     ImPlot::PlotErrorBars(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(err_from_pyarray), static_cast<int>(err_count), spec);
                 else if (err_type == 'b')
@@ -2466,6 +2710,44 @@ void py_init_module_implot(nb::module_& m)
                 char pos_type = _nanobind_buffer_type_to_letter_code(dtype_code_pos, sizeof_item_pos);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'pos' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != pos_type)
+                    throw std::runtime_error(
+                        std::string("plot_error_bars: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"pos\" has dtype " + _nanobind_dtype_letter_to_name(pos_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(pos.dtype).");
+                // Ensure 'ys' shares the dtype of 'pos' (the C++ function is templated on a single type)
+                char ys_type = _nanobind_buffer_type_to_letter_code(ys.dtype().code, ys.dtype().bits / 8);
+                if (ys_type != pos_type)
+                    throw std::runtime_error(
+                        std::string("plot_error_bars: all numeric arrays must share the same dtype, ")
+                        + "but \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + " while \"pos\" has dtype " + _nanobind_dtype_letter_to_name(pos_type)
+                        + ". Convert them to a common dtype, e.g. ys = ys.astype(pos.dtype).");
+                // Ensure 'neg' shares the dtype of 'pos' (the C++ function is templated on a single type)
+                char neg_type = _nanobind_buffer_type_to_letter_code(neg.dtype().code, neg.dtype().bits / 8);
+                if (neg_type != pos_type)
+                    throw std::runtime_error(
+                        std::string("plot_error_bars: all numeric arrays must share the same dtype, ")
+                        + "but \"neg\" has dtype " + _nanobind_dtype_letter_to_name(neg_type)
+                        + " while \"pos\" has dtype " + _nanobind_dtype_letter_to_name(pos_type)
+                        + ". Convert them to a common dtype, e.g. neg = neg.astype(pos.dtype).");
                 if (pos_type == 'B')
                     ImPlot::PlotErrorBars(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<const uint8_t *>(neg_from_pyarray), static_cast<const uint8_t *>(pos_from_pyarray), static_cast<int>(pos_count), spec);
                 else if (pos_type == 'b')
@@ -2642,6 +2924,28 @@ void py_init_module_implot(nb::module_& m)
                 char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys_type)
+                    throw std::runtime_error(
+                        std::string("plot_stems: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys.dtype).");
                 if (ys_type == 'B')
                     ImPlot::PlotStems(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), ref, spec);
                 else if (ys_type == 'b')
@@ -3003,6 +3307,28 @@ void py_init_module_implot(nb::module_& m)
                 char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys_type)
+                    throw std::runtime_error(
+                        std::string("plot_histogram_2d: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys.dtype).");
                 if (ys_type == 'B')
                     return ImPlot::PlotHistogram2D(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), x_bins, y_bins, range, spec);
                 else if (ys_type == 'b')
@@ -3103,6 +3429,28 @@ void py_init_module_implot(nb::module_& m)
                 char ys_type = _nanobind_buffer_type_to_letter_code(dtype_code_ys, sizeof_item_ys);
 
                 // call the correct template version by casting
+                // Map a dtype letter code to a human-readable numpy dtype name (used in the error message below)
+                auto _nanobind_dtype_letter_to_name = [](char letter) -> const char *
+                {
+                    switch (letter)
+                    {
+                        case 'B': return "uint8";   case 'b': return "int8";
+                        case 'H': return "uint16";  case 'h': return "int16";
+                        case 'I': return "uint32";  case 'i': return "int32";
+                        case 'L': return "uint64";  case 'l': return "int64";
+                        case 'f': return "float32"; case 'd': return "float64";
+                        case 'g': return "longdouble";
+                        default:  return "<unsupported>";
+                    }
+                };
+                // Ensure 'xs' shares the dtype of 'ys' (the C++ function is templated on a single type)
+                char xs_type = _nanobind_buffer_type_to_letter_code(xs.dtype().code, xs.dtype().bits / 8);
+                if (xs_type != ys_type)
+                    throw std::runtime_error(
+                        std::string("plot_digital: all numeric arrays must share the same dtype, ")
+                        + "but \"xs\" has dtype " + _nanobind_dtype_letter_to_name(xs_type)
+                        + " while \"ys\" has dtype " + _nanobind_dtype_letter_to_name(ys_type)
+                        + ". Convert them to a common dtype, e.g. xs = xs.astype(ys.dtype).");
                 if (ys_type == 'B')
                     ImPlot::PlotDigital(label_id, static_cast<const uint8_t *>(xs_from_pyarray), static_cast<const uint8_t *>(ys_from_pyarray), static_cast<int>(ys_count), spec);
                 else if (ys_type == 'b')
