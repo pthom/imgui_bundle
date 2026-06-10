@@ -1094,7 +1094,6 @@ class Context:
     def __init__(self, next_item_data: Optional[NextItemData] = None, style: Optional[Style] = None, colormap_data: Optional[ColormapData] = None) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * NextItemData: NextItemData()

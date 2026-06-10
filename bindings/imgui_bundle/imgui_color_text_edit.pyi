@@ -294,7 +294,6 @@ class TextEditor:
         ) -> None:
         """ render the text editor in a Dear ImGui context
 
-
         Python bindings defaults:
             If size is None, then its default value will be: ImVec2()
         """
@@ -525,7 +524,6 @@ class TextEditor:
             ) -> None:
             """Auto-generated default constructor with named params
 
-
             Python bindings defaults:
                 If any of the params below is None, then its default value below will be used:
                     * start: TextEditor.DocPos()
@@ -572,7 +570,6 @@ class TextEditor:
             ) -> None:
             """Auto-generated default constructor with named params
 
-
             Python bindings defaults:
                 If glyphSize is None, then its default value will be: ImVec2()
             """
@@ -601,7 +598,6 @@ class TextEditor:
         pos: TextEditor.DocPos
         def __init__(self, pos: Optional[TextEditor.DocPos] = None) -> None:
             """Auto-generated default constructor with named params
-
 
             Python bindings defaults:
                 If pos is None, then its default value will be: TextEditor.DocPos()
@@ -998,7 +994,6 @@ class TextDiff:
         border: bool = False
         ) -> None:
         """ render text diff in a Dear ImGui context
-
 
         Python bindings defaults:
             If size is None, then its default value will be: ImVec2()

@@ -215,7 +215,6 @@ def spinner_ang(
     ) -> None:
     """ SpinnerAng is a function that draws a spinner widget with a given angle.
 
-
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
             * color: white
@@ -1790,7 +1789,6 @@ def spinner_hbo_dots(
     mode: int = 0
     ) -> None:
     """ spinner idea by nitz 'Chris Dailey'
-
 
     Python bindings defaults:
         If color is None, then its default value will be: white

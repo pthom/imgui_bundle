@@ -830,7 +830,6 @@ class TestOutput:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If Log is None, then its default value will be: TestLog()
         """
@@ -2191,7 +2190,6 @@ class TestContext:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * GenericVars: TestGenericVars()
@@ -2259,7 +2257,6 @@ class TestInfoTask:
     # ImGuiTestInfoTask(ImGuiID ID = 0, int FrameCount = -1, ImGuiTestItemInfo Result = ImGuiTestItemInfo());    /* original C++ signature */
     def __init__(self, id_: ID = 0, frame_count: int = -1, result: Optional[TestItemInfo] = None) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If Result is None, then its default value will be: TestItemInfo()
@@ -2446,7 +2443,6 @@ class TestInput:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * KeyChord: Key_None
@@ -2481,7 +2477,6 @@ class TestInputs:
         host_mouse_pos: Optional[ImVec2Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -2758,7 +2753,6 @@ class CaptureArgs:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * InCaptureWindows: ImVector_Window_ptr()
@@ -2786,7 +2780,6 @@ class CaptureWindowData:
     # ImGuiCaptureWindowData(ImRect BackupRect = ImRect(), ImVec2 PosDuringCapture = ImVec2());    /* original C++ signature */
     def __init__(self, backup_rect: Optional[ImRect] = None, pos_during_capture: Optional[ImVec2Like] = None) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:

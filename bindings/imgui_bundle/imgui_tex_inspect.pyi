@@ -324,7 +324,6 @@ class Transform2D:
         ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * Scale: ImVec2()
@@ -356,7 +355,6 @@ class Texture:
         size: Optional[ImVec2Like] = None
         ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:

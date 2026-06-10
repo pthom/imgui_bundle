@@ -343,7 +343,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             ImageFromAsset_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1);
         },
         nb::arg("asset_path"), nb::arg("size").none() = nb::none(), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(),
-        " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)");
+        " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)");
 
     m.def("image_from_asset_with_bg",
         [](const char * assetPath, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImVec4> & border_col = std::nullopt)
@@ -392,7 +392,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             ImageFromAssetWithBg_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1, tint_col, border_col);
         },
         nb::arg("asset_path"), nb::arg("size").none() = nb::none(), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("border_col").none() = nb::none(),
-        " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets, with a colored background and a border.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * tint_col: ImVec4(1,1,1,1)\n        * border_col: ImVec4(0,0,0,0)");
+        " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets, with a colored background and a border.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * tint_col: ImVec4(1,1,1,1)\n        * border_col: ImVec4(0,0,0,0)");
 
     m.def("image_button_from_asset",
         [](const char * assetPath, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, int frame_padding = -1, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt) -> bool
@@ -442,7 +442,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             return ImageButtonFromAsset_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1, frame_padding, bg_col, tint_col);
         },
         nb::arg("asset_path"), nb::arg("size").none() = nb::none(), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("frame_padding") = -1, nb::arg("bg_col").none() = nb::none(), nb::arg("tint_col").none() = nb::none(),
-        " `bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`:\n will display a button using an image from the assets.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * bg_col: ImVec4(0,0,0,0)\n        * tint_col: ImVec4(1,1,1,1)");
+        " `bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`:\n will display a button using an image from the assets.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * bg_col: ImVec4(0,0,0,0)\n        * tint_col: ImVec4(1,1,1,1)");
 
     m.def("im_texture_id_from_asset",
         HelloImGui::ImTextureIdFromAsset,
@@ -1198,7 +1198,7 @@ void py_init_module_hello_imgui(nb::module_& m)
                 AddEdgeToolbar_adapt_mutable_param_with_default_value(edgeToolbarType, guiFunction, options);
             },
             nb::arg("edge_toolbar_type"), nb::arg("gui_function"), nb::arg("options").none() = nb::none(),
-            " `AddEdgeToolbar`: Add a toolbar that can be placed on the edges of the App window\n\n\nPython bindings defaults:\n    If options is None, then its default value will be: EdgeToolbarOptions()")
+            " `AddEdgeToolbar`: Add a toolbar that can be placed on the edges of the App window\n\nPython bindings defaults:\n    If options is None, then its default value will be: EdgeToolbarOptions()")
         .def_rw("post_init_add_platform_backend_callbacks", &HelloImGui::RunnerCallbacks::PostInit_AddPlatformBackendCallbacks, " `PostInit_AddPlatformBackendCallbacks`:\n  You can here add a function that will be called once after OpenGL and ImGui are inited,\n  but before the platform backend callbacks are initialized.\n  If you, want to add your own glfw callbacks, you should use this function to do so\n  (and then ImGui will call your callbacks followed by its own callbacks)")
         .def_rw("post_init", &HelloImGui::RunnerCallbacks::PostInit, " `PostInit`: You can here add a function that will be called once after everything\n  is inited (ImGui, Platform and Renderer Backend)")
         .def("enqueue_post_init",
@@ -1272,7 +1272,7 @@ void py_init_module_hello_imgui(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, initialDock_, newDock_, direction_, ratio_, nodeFlags_);
             },
             nb::arg("initial_dock_") = "", nb::arg("new_dock_") = "", nb::arg("direction_").none() = nb::none(), nb::arg("ratio_") = 0.25f, nb::arg("node_flags_").none() = nb::none(),
-            " Constructor\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: Dir.down\n        * nodeFlags_: DockNodeFlags_.none")
+            " Constructor\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * direction_: Dir.down\n        * nodeFlags_: DockNodeFlags_.none")
         ;
 
 
@@ -1316,7 +1316,7 @@ void py_init_module_hello_imgui(nb::module_& m)
                 ctor_wrapper_adapt_mutable_param_with_default_value(self, label_, dockSpaceName_, guiFunction_, isVisible_, canBeClosed_);
             },
             nb::arg("label_") = "", nb::arg("dock_space_name_") = "", nb::arg("gui_function_").none() = nb::none(), nb::arg("is_visible_") = true, nb::arg("can_be_closed_") = true,
-            " --------------- Constructor ------------------------------\n Constructor\n\n\nPython bindings defaults:\n    If guiFunction_ is None, then its default value will be: EmptyVoidFunction()")
+            " --------------- Constructor ------------------------------\n Constructor\n\nPython bindings defaults:\n    If guiFunction_ is None, then its default value will be: EmptyVoidFunction()")
         ;
 
 
@@ -1795,7 +1795,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             Run_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, topMost);
         },
         nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("top_most") = false,
-        " Runs an application, by providing the Gui function, the window title, etc.\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
+        " Runs an application, by providing the Gui function, the window title, etc.\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
     m.def("get_runner_params",
         HelloImGui::GetRunnerParams,
@@ -1910,7 +1910,7 @@ void py_init_module_hello_imgui(nb::module_& m)
                 SetupFromGuiFunction_adapt_mutable_param_with_default_value(guiFunction, windowTitle, windowSizeAuto, windowRestorePreviousGeometry, windowSize, fpsIdle, topMost);
             },
             nb::arg("gui_function"), nb::arg("window_title") = "", nb::arg("window_size_auto") = false, nb::arg("window_restore_previous_geometry") = false, nb::arg("window_size").none() = nb::none(), nb::arg("fps_idle") = 10.f, nb::arg("top_most") = false,
-            " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
+            " Initializes the renderer with a simple GUI function and additional parameters.\n This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n\nPython bindings defaults:\n    If windowSize is None, then its default value will be: DefaultWindowSize");
 
         pyNsManualRender.def("render",
             HelloImGui::ManualRender::Render, "Renders the current frame. Should be called regularly to maintain the application's responsiveness.");

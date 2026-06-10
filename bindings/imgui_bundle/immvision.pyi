@@ -286,7 +286,6 @@ class ColormapSettingsData:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If ColormapScaleFromStats is None, then its default value will be: ColormapScaleFromStatsData()
         """
@@ -323,7 +322,6 @@ class MouseInformation:
         mouse_position_displayed: Optional[Point] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -489,7 +487,6 @@ class ImageParams:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * ImageDisplaySize: (0, 0)
@@ -651,7 +648,6 @@ def image_display(
            (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)
 
 
-
     Python bindings defaults:
         If imageDisplaySize is None, then its default value will be: (0, 0)
     """
@@ -753,7 +749,6 @@ def inspector_add_image(
          The image to add.
          C++: accepts ImageBuffer directly, or cv::Mat (implicit conversion, zero-copy).
          Python: pass a numpy.ndarray.
-
 
     Python bindings defaults:
         If zoomCenter is None, then its default value will be: (0., 0.)

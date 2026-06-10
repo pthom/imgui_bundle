@@ -713,7 +713,6 @@ def link(
      readable on both light and dark themes. Pass any non-zero-alpha color to
      override.
 
-
     Python bindings defaults:
         If color is None, then its default value will be: ImVec4(0, 0, 0, 0)
     """

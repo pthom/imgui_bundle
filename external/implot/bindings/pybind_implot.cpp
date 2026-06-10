@@ -732,7 +732,7 @@ void py_init_module_implot(nb::module_& m)
             return BeginPlot_adapt_mutable_param_with_default_value(title_id, size, flags);
         },
         nb::arg("title_id"), nb::arg("size").none() = nb::none(), nb::arg("flags") = 0,
-        " Starts a 2D plotting context. If this function returns True, EndPlot() MUST\n be called! You are encouraged to use the following convention:\n\n if (BeginPlot(...)) {\n     PlotLine(...);\n     ...\n     EndPlot();\n }\n\n Important notes:\n\n - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID\n   collisions or don't want to display a title in the plot, use double hashes\n   (e.g. \"MyPlot##HiddenIdText\" or \"##NoTitle\").\n - #size is the **frame** size of the plot widget, not the plot area. The default\n   size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
+        " Starts a 2D plotting context. If this function returns True, EndPlot() MUST\n be called! You are encouraged to use the following convention:\n\n if (BeginPlot(...)) {\n     PlotLine(...);\n     ...\n     EndPlot();\n }\n\n Important notes:\n\n - #title_id must be unique to the current ImGui ID scope. If you need to avoid ID\n   collisions or don't want to display a title in the plot, use double hashes\n   (e.g. \"MyPlot##HiddenIdText\" or \"##NoTitle\").\n - #size is the **frame** size of the plot widget, not the plot area. The default\n   size of plots (i.e. when ImVec2(0,0)) can be modified in your ImPlotStyle.\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
 
     m.def("end_plot",
         ImPlot::EndPlot, " Only call EndPlot() if BeginPlot() returns True! Typically called at the end\n of an if statement conditioned on BeginPlot(). See example above.");
@@ -807,7 +807,7 @@ void py_init_module_implot(nb::module_& m)
             SetupAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
         nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond").none() = nb::none(),
-        " Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead.\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets an axis range limits. If ImPlotCond_Always is used, the axes limits will be locked. Inversion with v_min > v_max is not supported; use SetupAxisLimits instead.\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -870,7 +870,7 @@ void py_init_module_implot(nb::module_& m)
             SetupAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, cond);
         },
         nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("cond").none() = nb::none(),
-        " Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_legend",
         ImPlot::SetupLegend,
@@ -904,7 +904,7 @@ void py_init_module_implot(nb::module_& m)
             SetNextAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
         nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond").none() = nb::none(),
-        " Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets an upcoming axis range limits. If ImPlotCond_Always is used, the axes limits will be locked.\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -947,7 +947,7 @@ void py_init_module_implot(nb::module_& m)
             SetNextAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, cond);
         },
         nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("cond").none() = nb::none(),
-        " Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the upcoming primary X and Y axes range limits. If ImPlotCond_Always is used, the axes limits will be locked (shorthand for two calls to SetupAxisLimits).\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("set_next_axes_to_fit",
         ImPlot::SetNextAxesToFit, "Sets all upcoming axes to auto fit to their data.");
@@ -1148,7 +1148,7 @@ void py_init_module_implot(nb::module_& m)
             PlotLine_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_scatter",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1346,7 +1346,7 @@ void py_init_module_implot(nb::module_& m)
             PlotScatter_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bubbles",
         [](const char * label_id, nb::ndarray<nb::ro> & values, nb::ndarray<nb::ro> & szs, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1460,7 +1460,7 @@ void py_init_module_implot(nb::module_& m)
             PlotBubbles_adapt_mutable_param_with_default_value(label_id, values, szs, xscale, xstart, spec);
         },
         nb::arg("label_id"), nb::arg("values"), nb::arg("szs"), nb::arg("xscale") = 1, nb::arg("xstart") = 0, nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bubbles",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & szs, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1590,7 +1590,7 @@ void py_init_module_implot(nb::module_& m)
             PlotBubbles_adapt_mutable_param_with_default_value(label_id, xs, ys, szs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("szs"), nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_polygon",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1704,7 +1704,7 @@ void py_init_module_implot(nb::module_& m)
             PlotPolygon_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        " Plots a polygon. Points are specified in counter-clockwise order. If concave, make sure to set the Concave flag.\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots a polygon. Points are specified in counter-clockwise order. If concave, make sure to set the Concave flag.\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_stairs",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -1902,7 +1902,7 @@ void py_init_module_implot(nb::module_& m)
             PlotStairs_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_shaded",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double yref = 0, double xscale = 1, double xstart = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2100,7 +2100,7 @@ void py_init_module_implot(nb::module_& m)
             PlotShaded_adapt_mutable_param_with_default_value(label_id, xs, ys, yref, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("yref") = 0, nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_shaded",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys1, nb::ndarray<nb::ro> & ys2, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2230,7 +2230,7 @@ void py_init_module_implot(nb::module_& m)
             PlotShaded_adapt_mutable_param_with_default_value(label_id, xs, ys1, ys2, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys1"), nb::arg("ys2"), nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_bars",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double bar_size = 0.67, double shift = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2428,7 +2428,7 @@ void py_init_module_implot(nb::module_& m)
             PlotBars_adapt_mutable_param_with_default_value(label_id, xs, ys, bar_size, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("bar_size"), nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -2514,7 +2514,7 @@ void py_init_module_implot(nb::module_& m)
             PlotBarGroups_adapt_mutable_param_with_default_value(label_ids, values, group_size, shift, spec);
         },
         nb::arg("label_ids"), nb::arg("values"), nb::arg("group_size") = 0.67, nb::arg("shift") = 0, nb::arg("spec").none() = nb::none(),
-        " Plots a group of bars.\n - values should be a **1 dimension** numpy array of values.\n - label_ids should be a list of strings corresponding to bars labels\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots a group of bars.\n - values should be a **1 dimension** numpy array of values.\n - label_ids should be a list of strings corresponding to bars labels\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #endif
     //
 
@@ -2646,7 +2646,7 @@ void py_init_module_implot(nb::module_& m)
             PlotErrorBars_adapt_mutable_param_with_default_value(label_id, xs, ys, err, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("err"), nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_error_bars",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & neg, nb::ndarray<nb::ro> & pos, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2792,7 +2792,7 @@ void py_init_module_implot(nb::module_& m)
             PlotErrorBars_adapt_mutable_param_with_default_value(label_id, xs, ys, neg, pos, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("neg"), nb::arg("pos"), nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_stems",
         [](const char * label_id, nb::ndarray<nb::ro> & values, double ref = 0, double scale = 1, double start = 0, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -2990,7 +2990,7 @@ void py_init_module_implot(nb::module_& m)
             PlotStems_adapt_mutable_param_with_default_value(label_id, xs, ys, ref, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("ref") = 0, nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_inf_lines",
         [](const char * label_id, nb::ndarray<nb::ro> & values, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -3074,7 +3074,7 @@ void py_init_module_implot(nb::module_& m)
             PlotInfLines_adapt_mutable_param_with_default_value(label_id, values, spec);
         },
         nb::arg("label_id"), nb::arg("values"), nb::arg("spec").none() = nb::none(),
-        " Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots infinite vertical or horizontal lines (e.g. for references or asymptotes).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_pie_chart",
         [](const std::vector<std::string> & label_ids, nb::ndarray<nb::ro> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -3259,7 +3259,7 @@ void py_init_module_implot(nb::module_& m)
             return PlotHistogram_adapt_mutable_param_with_default_value(label_id, values, bins, bar_scale, range, spec);
         },
         nb::arg("label_id"), nb::arg("values"), nb::arg("bins") = ImPlotBin_Sturges, nb::arg("bar_scale") = 1.0, nb::arg("range").none() = nb::none(), nb::arg("spec").none() = nb::none(),
-        " Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * range: Range()\n        * spec: Spec()");
+        " Plots a horizontal histogram. #bins can be a positive integer or an ImPlotBin_ method. If #range is left unspecified, the min/max of #values will be used as the range.\n Otherwise, outlier values outside of the range are not binned. The largest bin count or density is returned.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * range: Range()\n        * spec: Spec()");
 
     m.def("plot_histogram_2d",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, const std::optional<const ImPlotRect> & range = std::nullopt, const std::optional<const ImPlotSpec> & spec = std::nullopt) -> double
@@ -3381,7 +3381,7 @@ void py_init_module_implot(nb::module_& m)
             return PlotHistogram2D_adapt_mutable_param_with_default_value(label_id, xs, ys, x_bins, y_bins, range, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("x_bins") = ImPlotBin_Sturges, nb::arg("y_bins") = ImPlotBin_Sturges, nb::arg("range").none() = nb::none(), nb::arg("spec").none() = nb::none(),
-        " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * range: Rect()\n        * spec: Spec()");
+        " Plots two dimensional, bivariate histogram as a heatmap. #x_bins and #y_bins can be a positive integer or an ImPlotBin. If #range is left unspecified, the min/max of\n #xs an #ys will be used as the ranges. Otherwise, outlier values outside of range are not binned. The largest bin count or density is returned.\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * range: Rect()\n        * spec: Spec()");
 
     m.def("plot_digital",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -3495,7 +3495,7 @@ void py_init_module_implot(nb::module_& m)
             PlotDigital_adapt_mutable_param_with_default_value(label_id, xs, ys, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("spec").none() = nb::none(),
-        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        "Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #ifdef IMGUI_HAS_TEXTURES
     //
 
@@ -3539,7 +3539,7 @@ void py_init_module_implot(nb::module_& m)
             PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, bounds_min, bounds_max, uv0, uv1, tint_col, spec);
         },
         nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("bounds_min"), nb::arg("bounds_max"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("spec").none() = nb::none(),
-        " Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * spec: Spec()");
+        " Plots an axis-aligned image. #bounds_min/bounds_max are in plot coordinates (y-up) and #uv0/uv1 are in texture coordinates (y-down).\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * spec: Spec()");
     // #endif
     //
 
@@ -3569,7 +3569,7 @@ void py_init_module_implot(nb::module_& m)
             PlotText_adapt_mutable_param_with_default_value(text, x, y, pix_offset, spec);
         },
         nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("pix_offset").none() = nb::none(), nb::arg("spec").none() = nb::none(),
-        " Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * pix_offset: ImVec2(0,0)\n        * spec: Spec()");
+        " Plots a centered text label at point x,y with an optional pixel offset. Text color can be changed with ImPlot::PushStyleColor(ImPlotCol_InlayText, ...).\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * pix_offset: ImVec2(0,0)\n        * spec: Spec()");
 
     m.def("plot_dummy",
         [](const char * label_id, const std::optional<const ImPlotSpec> & spec = std::nullopt)
@@ -3590,7 +3590,7 @@ void py_init_module_implot(nb::module_& m)
             PlotDummy_adapt_mutable_param_with_default_value(label_id, spec);
         },
         nb::arg("label_id"), nb::arg("spec").none() = nb::none(),
-        " Plots a dummy item (i.e. adds a legend entry colored by ImPlotCol_Line)\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots a dummy item (i.e. adds a legend entry colored by ImPlotCol_Line)\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("drag_point",
         [](int id, double x, double y, const ImVec4 & col, float size = 4, ImPlotDragToolFlags flags = 0, std::optional<bool> out_clicked = std::nullopt, std::optional<bool> out_hovered = std::nullopt, std::optional<bool> out_held = std::nullopt) -> std::tuple<bool, double, double, std::optional<bool>, std::optional<bool>, std::optional<bool>>
@@ -3893,7 +3893,7 @@ void py_init_module_implot(nb::module_& m)
             return GetPlotMousePos_adapt_mutable_param_with_default_value(x_axis, y_axis);
         },
         nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
-        " Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
+        " Returns the mouse position in x,y coordinates of the current plot. Passing IMPLOT_AUTO uses the current axes.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("get_plot_limits",
         [](const std::optional<const ImAxis> & x_axis = std::nullopt, const std::optional<const ImAxis> & y_axis = std::nullopt) -> ImPlotRect
@@ -3922,7 +3922,7 @@ void py_init_module_implot(nb::module_& m)
             return GetPlotLimits_adapt_mutable_param_with_default_value(x_axis, y_axis);
         },
         nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
-        " Returns the current plot axis range.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
+        " Returns the current plot axis range.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("is_plot_hovered",
         ImPlot::IsPlotHovered, "Returns True if the plot area in the current plot is hovered.");
@@ -3965,7 +3965,7 @@ void py_init_module_implot(nb::module_& m)
             return GetPlotSelection_adapt_mutable_param_with_default_value(x_axis, y_axis);
         },
         nb::arg("x_axis").none() = nb::none(), nb::arg("y_axis").none() = nb::none(),
-        " Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
+        " Returns the current plot box selection bounds. Passing IMPLOT_AUTO uses the current axes.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * x_axis: IMPLOT_AUTO\n        * y_axis: IMPLOT_AUTO");
 
     m.def("cancel_plot_selection",
         ImPlot::CancelPlotSelection, "Cancels a the current plot box selection.");
@@ -3989,7 +3989,7 @@ void py_init_module_implot(nb::module_& m)
             HideNextItem_adapt_mutable_param_with_default_value(hidden, cond);
         },
         nb::arg("hidden") = true, nb::arg("cond").none() = nb::none(),
-        " Hides or shows the next plot item (i.e. as if it were toggled from the legend).\n Use ImPlotCond_Always if you need to forcefully set this every frame.\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Hides or shows the next plot item (i.e. as if it were toggled from the legend).\n Use ImPlotCond_Always if you need to forcefully set this every frame.\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("begin_aligned_plots",
         ImPlot::BeginAlignedPlots,
@@ -4171,7 +4171,7 @@ void py_init_module_implot(nb::module_& m)
             return GetColormapSize_adapt_mutable_param_with_default_value(cmap);
         },
         nb::arg("cmap").none() = nb::none(),
-        " Returns the size of a colormap.\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
+        " Returns the size of a colormap.\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("get_colormap_color",
         [](int idx, const std::optional<const ImPlotColormap> & cmap = std::nullopt) -> ImVec4
@@ -4193,7 +4193,7 @@ void py_init_module_implot(nb::module_& m)
             return GetColormapColor_adapt_mutable_param_with_default_value(idx, cmap);
         },
         nb::arg("idx"), nb::arg("cmap").none() = nb::none(),
-        " Returns a color from a colormap given an index >= 0 (modulo will be performed).\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
+        " Returns a color from a colormap given an index >= 0 (modulo will be performed).\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("sample_colormap",
         [](float t, const std::optional<const ImPlotColormap> & cmap = std::nullopt) -> ImVec4
@@ -4215,7 +4215,7 @@ void py_init_module_implot(nb::module_& m)
             return SampleColormap_adapt_mutable_param_with_default_value(t, cmap);
         },
         nb::arg("t"), nb::arg("cmap").none() = nb::none(),
-        " Sample a color from the current colormap given t between 0 and 1.\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
+        " Sample a color from the current colormap given t between 0 and 1.\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("colormap_scale",
         [](const char * label, double scale_min, double scale_max, const std::optional<const ImVec2> & size = std::nullopt, const char * format = "%g", ImPlotColormapScaleFlags flags = 0, const std::optional<const ImPlotColormap> & cmap = std::nullopt)
@@ -4243,7 +4243,7 @@ void py_init_module_implot(nb::module_& m)
             ColormapScale_adapt_mutable_param_with_default_value(label, scale_min, scale_max, size, format, flags, cmap);
         },
         nb::arg("label"), nb::arg("scale_min"), nb::arg("scale_max"), nb::arg("size").none() = nb::none(), nb::arg("format") = "%g", nb::arg("flags") = 0, nb::arg("cmap").none() = nb::none(),
-        " Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. \"##NoLabel\"). If scale_min > scale_max, the scale to color mapping will be reversed.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
+        " Shows a vertical color scale with linear spaced ticks using the specified color map. Use double hashes to hide label (e.g. \"##NoLabel\"). If scale_min > scale_max, the scale to color mapping will be reversed.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
 
     m.def("colormap_slider",
         [](const char * label, float t, ImVec4 * out = nullptr, const char * format = "", const std::optional<const ImPlotColormap> & cmap = std::nullopt) -> std::tuple<bool, float>
@@ -4272,7 +4272,7 @@ void py_init_module_implot(nb::module_& m)
             return ColormapSlider_adapt_modifiable_immutable_to_return(label, t, out, format, cmap);
         },
         nb::arg("label"), nb::arg("t"), nb::arg("out") = nb::none(), nb::arg("format") = "", nb::arg("cmap").none() = nb::none(),
-        " Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1].\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
+        " Shows a horizontal slider with a colormap gradient background. Optionally returns the color sampled at t in [0 1].\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT_AUTO");
 
     m.def("colormap_button",
         [](const char * label, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImPlotColormap> & cmap = std::nullopt) -> bool
@@ -4301,7 +4301,7 @@ void py_init_module_implot(nb::module_& m)
             return ColormapButton_adapt_mutable_param_with_default_value(label, size, cmap);
         },
         nb::arg("label"), nb::arg("size").none() = nb::none(), nb::arg("cmap").none() = nb::none(),
-        " Shows a button with a colormap gradient background.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
+        " Shows a button with a colormap gradient background.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0,0)\n        * cmap: IMPLOT_AUTO");
 
     m.def("bust_color_cache",
         [](std::optional<std::string> plot_title_id = std::nullopt)
@@ -4451,7 +4451,7 @@ void py_init_module_implot(nb::module_& m)
             return ShowDemoWindow_MaybeDocked_adapt_modifiable_immutable_to_return(create_window, p_open, initial_extra_flags, window_pos, window_size);
         },
         nb::arg("create_window"), nb::arg("p_open").none() = nb::none(), nb::arg("initial_extra_flags") = 0, nb::arg("window_pos").none() = nb::none(), nb::arg("window_size").none() = nb::none(),
-        " Bundle: ShowDemoWindow_MaybeDocked is ShowDemoWindow, but can be used without creating an ImGui window.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * window_pos: ImVec2(0, 0)\n        * window_size: ImVec2(0, 0)");
+        " Bundle: ShowDemoWindow_MaybeDocked is ShowDemoWindow, but can be used without creating an ImGui window.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * window_pos: ImVec2(0, 0)\n        * window_size: ImVec2(0, 0)");
     // #endif
     ////////////////////    </generated_from:implot.h>    ////////////////////
 

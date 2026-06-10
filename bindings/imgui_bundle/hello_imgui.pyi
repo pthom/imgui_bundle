@@ -536,7 +536,6 @@ def image_from_asset(
     """`HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
      will display a static image from the assets.
 
-
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
             * size: ImVec2(0, 0)
@@ -559,7 +558,6 @@ def image_from_asset_with_bg(
 ) -> None:
     """`HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
      will display a static image from the assets, with a colored background and a border.
-
 
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
@@ -587,7 +585,6 @@ def image_button_from_asset(
 ) -> bool:
     """`bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`:
      will display a button using an image from the assets.
-
 
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
@@ -629,7 +626,6 @@ class ImageAndSize:
         size: Optional[ImVec2Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -926,7 +922,6 @@ class FontLoadingParams:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If fontConfig is None, then its default value will be: ImFontConfig()
         """
@@ -1028,7 +1023,6 @@ class ScreenBounds:
         size: Optional[ScreenSize] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -1208,7 +1202,6 @@ class WindowGeometry:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * size: DefaultWindowSize
@@ -1375,7 +1368,6 @@ class AppWindowParams:
         repaint_during_resize_gotcha_reentrant_repaint: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -1571,7 +1563,6 @@ class ImGuiWindowParams:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * fullScreenWindow_MarginTopLeft: ImVec2(0., 0.)
@@ -1658,7 +1649,6 @@ class MobileCallbacks:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * OnDestroy: EmptyVoidFunction()
@@ -1709,7 +1699,6 @@ class EdgeToolbarOptions:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * WindowPaddingEm: ImVec2(0.3, 0.3)
@@ -1733,7 +1722,6 @@ class EdgeToolbar:
         options: Optional[EdgeToolbarOptions] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -1826,7 +1814,6 @@ class RunnerCallbacks:
         options: Optional[EdgeToolbarOptions] = None,
     ) -> None:
         """`AddEdgeToolbar`: Add a toolbar that can be placed on the edges of the App window
-
 
         Python bindings defaults:
             If options is None, then its default value will be: EdgeToolbarOptions()
@@ -1991,7 +1978,6 @@ class RunnerCallbacks:
         any_backend_event_callback: Optional[AnyEventCallback] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -2229,7 +2215,6 @@ class DockingSplit:
     ) -> None:
         """Constructor
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * direction_: Dir.down
@@ -2345,7 +2330,6 @@ class DockableWindow:
         """--------------- Constructor ------------------------------
          Constructor
 
-
         Python bindings defaults:
             If guiFunction_ is None, then its default value will be: EmptyVoidFunction()
         """
@@ -2449,7 +2433,6 @@ class DockingParams:
         layout_reset: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -2684,7 +2667,6 @@ class RendererBackendOptions:
         open_gl_options: Optional[OpenGlOptions] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If openGlOptions is None, then its default value will be: OpenGlOptions()
@@ -3174,7 +3156,6 @@ class RunnerParams:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * callbacks: RunnerCallbacks()
@@ -3299,7 +3280,6 @@ class SimpleRunnerParams:
         ini_disable: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -3503,7 +3483,6 @@ def run(
     top_most: bool = False,
 ) -> None:
     """Runs an application, by providing the Gui function, the window title, etc.
-
 
     Python bindings defaults:
         If windowSize is None, then its default value will be: DefaultWindowSize
@@ -3798,7 +3777,6 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     ) -> None:
         """Initializes the renderer with a simple GUI function and additional parameters.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-
 
         Python bindings defaults:
             If windowSize is None, then its default value will be: DefaultWindowSize

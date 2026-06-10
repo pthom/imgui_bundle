@@ -462,7 +462,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 Render_adapt_mutable_param_with_default_value(title, size, border);
             },
             nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("border") = false,
-            " render the text editor in a Dear ImGui context\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()")
+            " render the text editor in a Dear ImGui context\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()")
         .def("set_focus",
             &TextEditor::SetFocus, "programmatically set focus on the editor")
         .def("cut",
@@ -772,7 +772,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 Render_adapt_mutable_param_with_default_value(title, size, border);
             },
             nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("border") = false,
-            " render text diff in a Dear ImGui context\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()")
+            " render text diff in a Dear ImGui context\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()")
         ;
     ////////////////////    </generated_from:TextDiff.h>    ////////////////////
 

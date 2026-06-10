@@ -170,7 +170,7 @@ void py_init_module_imspinner(nb::module_& m)
             SpinnerAng_adapt_mutable_param_with_default_value(label, radius, thickness, color, bg, speed, angle, mode);
         },
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0,
-        " SpinnerAng is a function that draws a spinner widget with a given angle.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: white");
+        " SpinnerAng is a function that draws a spinner widget with a given angle.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: white");
 
     m.def("spinner_ang8",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 2.8f, float angle = IM_PI, int mode = 0, float rkoef = 0.5f)
@@ -2374,7 +2374,7 @@ void py_init_module_imspinner(nb::module_& m)
             SpinnerHboDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, dots, mode);
         },
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("dots") = 6, nb::arg("mode") = 0,
-        " spinner idea by nitz 'Chris Dailey'\n\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+        " spinner idea by nitz 'Chris Dailey'\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_moon_dots",
         ImSpinner::SpinnerMoonDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("first"), nb::arg("second"), nb::arg("speed") = 1.1f);

@@ -67,7 +67,6 @@ class KnobColors:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * primary: color_set()

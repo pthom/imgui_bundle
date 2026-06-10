@@ -9253,7 +9253,6 @@ class SizeCallbackData:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * Pos: ImVec2()
@@ -9874,7 +9873,6 @@ class MultiSelectIO:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * Requests: ImVector_SelectionRequest()
@@ -9921,7 +9919,6 @@ class SelectionRequest:
         range_last_item: Optional[SelectionUserData] = None,
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -10085,7 +10082,6 @@ class ImDrawVert:
     def __init__(self, pos: Optional[ImVec2Like] = None, uv: Optional[ImVec2Like] = None, col: ImU32 = ImU32()) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * pos: ImVec2()
@@ -10111,7 +10107,6 @@ class ImDrawCmdHeader:
     def __init__(self, clip_rect: Optional[ImVec4Like] = None, tex_ref: Optional[ImTextureRef] = None) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * ClipRect: ImVec4()
@@ -10131,7 +10126,6 @@ class ImDrawChannel:
         self, _cmd_buffer: Optional[ImVector_ImDrawCmd] = None, _idx_buffer: Optional[ImVector_ImDrawIdx] = None
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -12073,7 +12067,6 @@ class Payload_PyId:
     # ImGuiPayload_PyId(ImGuiPayloadId DataId = ImGuiPayloadId(), std::string Type = std::string());    /* original C++ signature */
     def __init__(self, data_id: Optional[PayloadId] = None, type: str = "") -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If DataId is None, then its default value will be: PayloadId()

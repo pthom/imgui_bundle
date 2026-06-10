@@ -241,7 +241,6 @@ def run(
          - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor
            will be created automatically.
 
-
     Python bindings defaults:
         If windowSize is None, then its default value will be: DefaultWindowSize
     """
@@ -266,7 +265,6 @@ def run_with_markdown(
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
     """Run an application with markdown
-
 
     Python bindings defaults:
         If windowSize is None, then its default value will be: DefaultWindowSize
@@ -363,7 +361,6 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
          A reference to the user's `RunnerParams` is kept internally (similar to ImmApp::Run).
 
-
         Python bindings defaults:
             If addOnsParams is None, then its default value will be: AddOnsParams()
         """
@@ -376,7 +373,6 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     ) -> None:
         """Initializes the rendering with `SimpleRunnerParams`.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-
 
         Python bindings defaults:
             If addOnsParams is None, then its default value will be: AddOnsParams()
@@ -404,7 +400,6 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     ) -> None:
         """Initializes the renderer with a simple GUI function and additional parameters.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-
 
         Python bindings defaults:
             If windowSize is None, then its default value will be: DefaultWindowSize

@@ -684,7 +684,6 @@ class Spec:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * LineColor: IMPLOT3D_AUTO_COL
@@ -807,7 +806,6 @@ def setup_axis_limits(axis: ImAxis3D, v_min: float, v_max: float, cond: Optional
     """Sets an axis range limits. If ImPlot3DCond_Always is used, the axis limits will be locked.
      Note: To invert an axis, use ImPlot3DAxisFlags_Invert with SetupAxis instead of swapping min/max
 
-
     Python bindings defaults:
         If cond is None, then its default value will be: Cond_Once
     """
@@ -843,7 +841,6 @@ def setup_axes_limits(
 ) -> None:
     """Sets the X/Y/Z axes range limits. If ImPlot3DCond_Always is used, the axes limits will be locked (shorthand for three calls to SetupAxisLimits)
 
-
     Python bindings defaults:
         If cond is None, then its default value will be: Cond_Once
     """
@@ -854,7 +851,6 @@ def setup_axes_limits(
 def setup_box_rotation(elevation: float, azimuth: float, animate: bool = False, cond: Optional[Cond] = None) -> None:
     """Sets the plot box rotation given the elevation and azimuth angles in degrees. If ImPlot3DCond_Always is used, the rotation will be locked
 
-
     Python bindings defaults:
         If cond is None, then its default value will be: Cond_Once
     """
@@ -864,7 +860,6 @@ def setup_box_rotation(elevation: float, azimuth: float, animate: bool = False, 
 @overload
 def setup_box_rotation(rotation: Quat, animate: bool = False, cond: Optional[Cond] = None) -> None:
     """Sets the plot box rotation given a quaternion. If ImPlot3DCond_Always is used, the rotation will be locked
-
 
     Python bindings defaults:
         If cond is None, then its default value will be: Cond_Once
@@ -932,7 +927,6 @@ def plot_scatter(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray, 
 
     Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
 
-
     Python bindings defaults:
         If spec is None, then its default value will be: Spec()
     """
@@ -943,7 +937,6 @@ def plot_line(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray, spe
     """Plots a line in 3D. Consecutive points are connected with line segments
 
     Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
-
 
     Python bindings defaults:
         If spec is None, then its default value will be: Spec()
@@ -956,7 +949,6 @@ def plot_triangle(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray,
 
     Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
 
-
     Python bindings defaults:
         If spec is None, then its default value will be: Spec()
     """
@@ -967,7 +959,6 @@ def plot_quad(label_id: str, xs: np.ndarray, ys: np.ndarray, zs: np.ndarray, spe
     """Plots quads in 3D. Every 4 consecutive points define a quadrilateral
 
     Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
-
 
     Python bindings defaults:
         If spec is None, then its default value will be: Spec()
@@ -1007,7 +998,6 @@ def plot_surface(
 
     Note: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).
 
-
     Python bindings defaults:
         If spec is None, then its default value will be: Spec()
     """
@@ -1028,7 +1018,6 @@ class Mesh:
     # Mesh(std::vector<ImPlot3DPoint> Points = std::vector<ImPlot3DPoint>(), std::vector<UInt> Idx = std::vector<UInt>());    /* original C++ signature */
     def __init__(self, points: Optional[List[Point]] = None, idx: Optional[List[UInt]] = None) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -1070,7 +1059,6 @@ def plot_image(
      #uv0 and #uv1 define the texture mapping.
      #tint_col can be used to tint the image.
 
-
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
             * uv0: ImVec2(0, 0)
@@ -1105,7 +1093,6 @@ def plot_image(
      Note: The quad is internally split into two triangles, so non-rectangular quads may produce rendering artifacts
      since distortion is interpolated per triangle rather than over the full quad.
 
-
     Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
             * uv0: ImVec2(0, 0)
@@ -1123,7 +1110,6 @@ def plot_text(
 ) -> None:
     """Plots a centered text label at point x,y,z with optional rotation angle (in radians) and pixel offset
 
-
     Python bindings defaults:
         If pix_offset is None, then its default value will be: ImVec2(0, 0)
     """
@@ -1132,7 +1118,6 @@ def plot_text(
 # IMPLOT3D_API void PlotDummy(const char* label_id, const ImPlot3DSpec& spec = ImPlot3DSpec());    /* original C++ signature */
 def plot_dummy(label_id: str, spec: Optional[Spec] = None) -> None:
     """Plots a dummy item (can be used to modify legend entry appearance when called after plotting an item, or add a dummy legend entry)
-
 
     Python bindings defaults:
         If spec is None, then its default value will be: Spec()
@@ -1359,7 +1344,6 @@ def next_colormap_color() -> ImVec4:
 def get_colormap_size(cmap: Optional[Colormap] = None) -> int:
     """Returns the size of a colormap
 
-
     Python bindings defaults:
         If cmap is None, then its default value will be: IMPLOT3D_AUTO
     """
@@ -1369,7 +1353,6 @@ def get_colormap_size(cmap: Optional[Colormap] = None) -> int:
 def get_colormap_color(idx: int, cmap: Optional[Colormap] = None) -> ImVec4:
     """Returns a color from a colormap given an index >= 0 (modulo will be performed)
 
-
     Python bindings defaults:
         If cmap is None, then its default value will be: IMPLOT3D_AUTO
     """
@@ -1378,7 +1361,6 @@ def get_colormap_color(idx: int, cmap: Optional[Colormap] = None) -> ImVec4:
 # IMPLOT3D_API ImVec4 SampleColormap(float t, ImPlot3DColormap cmap = IMPLOT3D_AUTO);    /* original C++ signature */
 def sample_colormap(t: float, cmap: Optional[Colormap] = None) -> ImVec4:
     """Sample a color from the current colormap given t between 0 and 1
-
 
     Python bindings defaults:
         If cmap is None, then its default value will be: IMPLOT3D_AUTO
@@ -1570,7 +1552,6 @@ class Ray:
     def __init__(self, origin: Optional[Point] = None, direction: Optional[Point] = None) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * Origin: Point()
@@ -1592,7 +1573,6 @@ class Plane:
     # ImPlot3DPlane(ImPlot3DPoint Point = ImPlot3DPoint(), ImPlot3DPoint Normal = ImPlot3DPoint());    /* original C++ signature */
     def __init__(self, point: Optional[Point] = None, normal: Optional[Point] = None) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:

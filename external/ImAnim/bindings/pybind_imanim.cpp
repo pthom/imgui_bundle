@@ -894,7 +894,7 @@ void py_init_module_imanim(nb::module_& m)
             return iam_path_morph_adapt_mutable_param_with_default_value(path_a, path_b, t, blend, opts);
         },
         nb::arg("path_a"), nb::arg("path_b"), nb::arg("t"), nb::arg("blend"), nb::arg("opts").none() = nb::none(),
-        " Evaluate morphed path at parameter t [0,1] with blend factor [0,1]\n path_a at blend=0, path_b at blend=1\n Paths can have different numbers of segments - they are resampled to match\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: morph_opts()");
+        " Evaluate morphed path at parameter t [0,1] with blend factor [0,1]\n path_a at blend=0, path_b at blend=1\n Paths can have different numbers of segments - they are resampled to match\n\nPython bindings defaults:\n    If opts is None, then its default value will be: morph_opts()");
 
     m.def("path_morph_tangent",
         [](ImGuiID path_a, ImGuiID path_b, float t, float blend, const std::optional<const iam_morph_opts> & opts = std::nullopt) -> ImVec2
@@ -916,7 +916,7 @@ void py_init_module_imanim(nb::module_& m)
             return iam_path_morph_tangent_adapt_mutable_param_with_default_value(path_a, path_b, t, blend, opts);
         },
         nb::arg("path_a"), nb::arg("path_b"), nb::arg("t"), nb::arg("blend"), nb::arg("opts").none() = nb::none(),
-        " Get tangent of morphed path\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: morph_opts()");
+        " Get tangent of morphed path\n\nPython bindings defaults:\n    If opts is None, then its default value will be: morph_opts()");
 
     m.def("path_morph_angle",
         [](ImGuiID path_a, ImGuiID path_b, float t, float blend, const std::optional<const iam_morph_opts> & opts = std::nullopt) -> float
@@ -938,7 +938,7 @@ void py_init_module_imanim(nb::module_& m)
             return iam_path_morph_angle_adapt_mutable_param_with_default_value(path_a, path_b, t, blend, opts);
         },
         nb::arg("path_a"), nb::arg("path_b"), nb::arg("t"), nb::arg("blend"), nb::arg("opts").none() = nb::none(),
-        " Get angle (radians) of morphed path\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: morph_opts()");
+        " Get angle (radians) of morphed path\n\nPython bindings defaults:\n    If opts is None, then its default value will be: morph_opts()");
 
     m.def("tween_path_morph",
         [](ImGuiID id, ImGuiID channel_id, ImGuiID path_a, ImGuiID path_b, float target_blend, float dur, const iam_ease_desc & path_ease, const iam_ease_desc & morph_ease, int policy, float dt, const std::optional<const iam_morph_opts> & opts = std::nullopt) -> ImVec2
@@ -960,7 +960,7 @@ void py_init_module_imanim(nb::module_& m)
             return iam_tween_path_morph_adapt_mutable_param_with_default_value(id, channel_id, path_a, path_b, target_blend, dur, path_ease, morph_ease, policy, dt, opts);
         },
         nb::arg("id"), nb::arg("channel_id"), nb::arg("path_a"), nb::arg("path_b"), nb::arg("target_blend"), nb::arg("dur"), nb::arg("path_ease"), nb::arg("morph_ease"), nb::arg("policy"), nb::arg("dt"), nb::arg("opts").none() = nb::none(),
-        " Tween along a morphing path - animates both position along path AND the morph blend\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: morph_opts()");
+        " Tween along a morphing path - animates both position along path AND the morph blend\n\nPython bindings defaults:\n    If opts is None, then its default value will be: morph_opts()");
 
     m.def("get_morph_blend",
         [](ImGuiID id, ImGuiID channel_id) -> float
@@ -1018,7 +1018,7 @@ void py_init_module_imanim(nb::module_& m)
             iam_text_path_adapt_mutable_param_with_default_value(path_id, text, opts);
         },
         nb::arg("path_id"), nb::arg("text"), nb::arg("opts").none() = nb::none(),
-        " Render text along a path (static - no animation)\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_path_opts()");
+        " Render text along a path (static - no animation)\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_path_opts()");
 
     m.def("text_path_animated",
         [](ImGuiID path_id, const char * text, float progress, const std::optional<const iam_text_path_opts> & opts = std::nullopt)
@@ -1039,7 +1039,7 @@ void py_init_module_imanim(nb::module_& m)
             iam_text_path_animated_adapt_mutable_param_with_default_value(path_id, text, progress, opts);
         },
         nb::arg("path_id"), nb::arg("text"), nb::arg("progress"), nb::arg("opts").none() = nb::none(),
-        " Animated text along path (characters appear progressively)\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_path_opts()");
+        " Animated text along path (characters appear progressively)\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_path_opts()");
 
     m.def("text_path_width",
         [](const char * text, const std::optional<const iam_text_path_opts> & opts = std::nullopt) -> float
@@ -1061,7 +1061,7 @@ void py_init_module_imanim(nb::module_& m)
             return iam_text_path_width_adapt_mutable_param_with_default_value(text, opts);
         },
         nb::arg("text"), nb::arg("opts").none() = nb::none(),
-        " Helper: Get text width for path layout calculations\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_path_opts()");
+        " Helper: Get text width for path layout calculations\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_path_opts()");
 
     m.def("transform_quad",
         iam_transform_quad,
@@ -1125,7 +1125,7 @@ void py_init_module_imanim(nb::module_& m)
             iam_text_stagger_adapt_mutable_param_with_default_value(id, text, progress, opts);
         },
         nb::arg("id"), nb::arg("text"), nb::arg("progress"), nb::arg("opts").none() = nb::none(),
-        " Render text with per-character stagger animation\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_stagger_opts()");
+        " Render text with per-character stagger animation\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_stagger_opts()");
 
     m.def("text_stagger_width",
         [](const char * text, const std::optional<const iam_text_stagger_opts> & opts = std::nullopt) -> float
@@ -1147,7 +1147,7 @@ void py_init_module_imanim(nb::module_& m)
             return iam_text_stagger_width_adapt_mutable_param_with_default_value(text, opts);
         },
         nb::arg("text"), nb::arg("opts").none() = nb::none(),
-        " Get text width for layout calculations\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_stagger_opts()");
+        " Get text width for layout calculations\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_stagger_opts()");
 
     m.def("text_stagger_duration",
         [](const char * text, const std::optional<const iam_text_stagger_opts> & opts = std::nullopt) -> float
@@ -1169,7 +1169,7 @@ void py_init_module_imanim(nb::module_& m)
             return iam_text_stagger_duration_adapt_mutable_param_with_default_value(text, opts);
         },
         nb::arg("text"), nb::arg("opts").none() = nb::none(),
-        " Get total animation duration for text (accounts for stagger delays)\n\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_stagger_opts()");
+        " Get total animation duration for text (accounts for stagger delays)\n\nPython bindings defaults:\n    If opts is None, then its default value will be: text_stagger_opts()");
 
 
     auto pyEnumnoise_type =

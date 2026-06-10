@@ -984,7 +984,6 @@ class ImBitVector:
     def __init__(self, storage: Optional[ImVector_ImU32] = None) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If Storage is None, then its default value will be: ImVector_ImU32()
         """
@@ -1023,7 +1022,6 @@ class TextIndex:
     # ImGuiTextIndex(ImVector<int> Offsets = ImVector<int>(), int EndOffset = 0);    /* original C++ signature */
     def __init__(self, offsets: Optional[ImVector_int] = None, end_offset: int = 0) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If Offsets is None, then its default value will be: ImVector_int()
@@ -1150,7 +1148,6 @@ class ColorMod:
     # ImGuiColorMod(ImGuiCol Col = ImGuiCol(), ImVec4 BackupValue = ImVec4());    /* original C++ signature */
     def __init__(self, col: Optional[Col] = None, backup_value: Optional[ImVec4Like] = None) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -1629,7 +1626,6 @@ class GroupData:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * BackupCursorPos: ImVec2()
@@ -2073,7 +2069,6 @@ class TreeNodeStackData:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * NavRect: ImRect()
@@ -2133,7 +2128,6 @@ class WindowStackData:
         disabled_override_reenable_alpha_backup: float = float(),
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -2283,7 +2277,6 @@ class InputEventMousePos:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If MouseSource is None, then its default value will be: MouseSource()
         """
@@ -2302,7 +2295,6 @@ class InputEventMouseWheel:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If MouseSource is None, then its default value will be: MouseSource()
         """
@@ -2318,7 +2310,6 @@ class InputEventMouseButton:
     # ImGuiInputEventMouseButton(int Button = int(), bool Down = bool(), ImGuiMouseSource MouseSource = ImGuiMouseSource());    /* original C++ signature */
     def __init__(self, button: int = int(), down: bool = bool(), mouse_source: Optional[MouseSource] = None) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If MouseSource is None, then its default value will be: MouseSource()
@@ -4678,7 +4669,6 @@ class WindowTempData:
     ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * CursorPos: ImVec2()
@@ -5294,7 +5284,6 @@ class TableCellData:
     def __init__(self, bg_color: ImU32 = ImU32(), column: Optional[TableColumnIdx] = None) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If Column is None, then its default value will be: TableColumnIdx()
         """
@@ -5323,7 +5312,6 @@ class TableHeaderData:
         bg_color1: ImU32 = ImU32(),
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If Index is None, then its default value will be: TableColumnIdx()
@@ -8100,7 +8088,6 @@ class ImFontAtlasPostProcessData:
         self, format: Optional[ImTextureFormat] = None, pitch: int = int(), width: int = int(), height: int = int()
     ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If Format is None, then its default value will be: ImTextureFormat()

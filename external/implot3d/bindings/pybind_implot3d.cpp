@@ -484,7 +484,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetupAxisLimits_adapt_mutable_param_with_default_value(axis, v_min, v_max, cond);
         },
         nb::arg("axis"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("cond").none() = nb::none(),
-        " Sets an axis range limits. If ImPlot3DCond_Always is used, the axis limits will be locked.\n Note: To invert an axis, use ImPlot3DAxisFlags_Invert with SetupAxis instead of swapping min/max\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets an axis range limits. If ImPlot3DCond_Always is used, the axis limits will be locked.\n Note: To invert an axis, use ImPlot3DAxisFlags_Invert with SetupAxis instead of swapping min/max\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_axis_scale",
         [](ImAxis3D axis, ImPlot3DScale scale)
@@ -533,7 +533,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetupAxesLimits_adapt_mutable_param_with_default_value(x_min, x_max, y_min, y_max, z_min, z_max, cond);
         },
         nb::arg("x_min"), nb::arg("x_max"), nb::arg("y_min"), nb::arg("y_max"), nb::arg("z_min"), nb::arg("z_max"), nb::arg("cond").none() = nb::none(),
-        " Sets the X/Y/Z axes range limits. If ImPlot3DCond_Always is used, the axes limits will be locked (shorthand for three calls to SetupAxisLimits)\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the X/Y/Z axes range limits. If ImPlot3DCond_Always is used, the axes limits will be locked (shorthand for three calls to SetupAxisLimits)\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_rotation",
         [](double elevation, double azimuth, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
@@ -554,7 +554,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetupBoxRotation_adapt_mutable_param_with_default_value(elevation, azimuth, animate, cond);
         },
         nb::arg("elevation"), nb::arg("azimuth"), nb::arg("animate") = false, nb::arg("cond").none() = nb::none(),
-        " Sets the plot box rotation given the elevation and azimuth angles in degrees. If ImPlot3DCond_Always is used, the rotation will be locked\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the plot box rotation given the elevation and azimuth angles in degrees. If ImPlot3DCond_Always is used, the rotation will be locked\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_rotation",
         [](ImPlot3DQuat rotation, bool animate = false, const std::optional<const ImPlot3DCond> & cond = std::nullopt)
@@ -575,7 +575,7 @@ void py_init_module_implot3d(nb::module_& m)
             SetupBoxRotation_adapt_mutable_param_with_default_value(rotation, animate, cond);
         },
         nb::arg("rotation"), nb::arg("animate") = false, nb::arg("cond").none() = nb::none(),
-        " Sets the plot box rotation given a quaternion. If ImPlot3DCond_Always is used, the rotation will be locked\n\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
+        " Sets the plot box rotation given a quaternion. If ImPlot3DCond_Always is used, the rotation will be locked\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
     m.def("setup_box_initial_rotation",
         nb::overload_cast<double, double>(ImPlot3D::SetupBoxInitialRotation),
@@ -725,7 +725,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotScatter_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
-        " Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots a scatter plot in 3D. Points are rendered as markers at the specified coordinates\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_line",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
@@ -855,7 +855,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotLine_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
-        " Plots a line in 3D. Consecutive points are connected with line segments\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots a line in 3D. Consecutive points are connected with line segments\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_triangle",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
@@ -985,7 +985,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotTriangle_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
-        " Plots triangles in 3D. Every 3 consecutive points define a triangle\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots triangles in 3D. Every 3 consecutive points define a triangle\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_quad",
         [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & zs, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
@@ -1115,7 +1115,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotQuad_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("spec").none() = nb::none(),
-        " Plots quads in 3D. Every 4 consecutive points define a quadrilateral\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots quads in 3D. Every 4 consecutive points define a quadrilateral\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -1247,7 +1247,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotSurface_adapt_mutable_param_with_default_value(label_id, xs, ys, zs, x_count, y_count, scale_min, scale_max, spec);
         },
         nb::arg("label_id"), nb::arg("xs"), nb::arg("ys"), nb::arg("zs"), nb::arg("x_count"), nb::arg("y_count"), nb::arg("scale_min") = 0.0, nb::arg("scale_max") = 0.0, nb::arg("spec").none() = nb::none(),
-        " Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays,\n and the z array contains the height of each vertex.\n A total of x_count * y_count vertices are expected for each array.\n Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plot the surface defined by a grid of vertices. The grid is defined by the x and y arrays,\n and the z array contains the height of each vertex.\n A total of x_count * y_count vertices are expected for each array.\n Leave #scale_min and #scale_max both at 0 for automatic color scaling, or set them to a predefined range.\n\nNote: all array arguments must share the same dtype (e.g. xs = xs.astype(ys.dtype)).\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
     // #endif
     //
     // #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -1340,7 +1340,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, center, axis_u, axis_v, uv0, uv1, tint_col, spec);
         },
         nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("center"), nb::arg("axis_u"), nb::arg("axis_v"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("spec").none() = nb::none(),
-        " Plots a rectangular image in 3D defined by its center and two direction vectors (axes).\n #center is the center of the rectangle in plot coordinates.\n #axis_u and #axis_v define the local axes and half-extents of the rectangle in 3D space.\n The rectangle is formed by moving from the center along ±axis_u and ±axis_v.\n #uv0 and #uv1 define the texture mapping.\n #tint_col can be used to tint the image.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * spec: Spec()");
+        " Plots a rectangular image in 3D defined by its center and two direction vectors (axes).\n #center is the center of the rectangle in plot coordinates.\n #axis_u and #axis_v define the local axes and half-extents of the rectangle in 3D space.\n The rectangle is formed by moving from the center along ±axis_u and ±axis_v.\n #uv0 and #uv1 define the texture mapping.\n #tint_col can be used to tint the image.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * spec: Spec()");
 
     m.def("plot_image",
         [](const char * label_id, ImTextureRef tex_ref, const ImPlot3DPoint & p0, const ImPlot3DPoint & p1, const ImPlot3DPoint & p2, const ImPlot3DPoint & p3, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, const std::optional<const ImVec2> & uv2 = std::nullopt, const std::optional<const ImVec2> & uv3 = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
@@ -1396,7 +1396,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotImage_adapt_mutable_param_with_default_value(label_id, tex_ref, p0, p1, p2, p3, uv0, uv1, uv2, uv3, tint_col, spec);
         },
         nb::arg("label_id"), nb::arg("tex_ref"), nb::arg("p0"), nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("uv2").none() = nb::none(), nb::arg("uv3").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("spec").none() = nb::none(),
-        " Plots an image using four arbitrary 3D points that define a quad in space.\n Each corner (p0 to p3) corresponds to a corner in the image, and #uv0 to #uv3 are the texture coordinates for each.\n This overload allows full control over orientation, shape, and distortion.\n Note: The quad is internally split into two triangles, so non-rectangular quads may produce rendering artifacts\n since distortion is interpolated per triangle rather than over the full quad.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 0)\n        * uv2: ImVec2(1, 1)\n        * uv3: ImVec2(0, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * spec: Spec()");
+        " Plots an image using four arbitrary 3D points that define a quad in space.\n Each corner (p0 to p3) corresponds to a corner in the image, and #uv0 to #uv3 are the texture coordinates for each.\n This overload allows full control over orientation, shape, and distortion.\n Note: The quad is internally split into two triangles, so non-rectangular quads may produce rendering artifacts\n since distortion is interpolated per triangle rather than over the full quad.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1, 0)\n        * uv2: ImVec2(1, 1)\n        * uv3: ImVec2(0, 1)\n        * tint_col: ImVec4(1, 1, 1, 1)\n        * spec: Spec()");
 
     m.def("plot_text",
         [](const char * text, double x, double y, double z, double angle = 0.0, const std::optional<const ImVec2> & pix_offset = std::nullopt)
@@ -1417,7 +1417,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotText_adapt_mutable_param_with_default_value(text, x, y, z, angle, pix_offset);
         },
         nb::arg("text"), nb::arg("x"), nb::arg("y"), nb::arg("z"), nb::arg("angle") = 0.0, nb::arg("pix_offset").none() = nb::none(),
-        " Plots a centered text label at point x,y,z with optional rotation angle (in radians) and pixel offset\n\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0, 0)");
+        " Plots a centered text label at point x,y,z with optional rotation angle (in radians) and pixel offset\n\nPython bindings defaults:\n    If pix_offset is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("plot_dummy",
         [](const char * label_id, const std::optional<const ImPlot3DSpec> & spec = std::nullopt)
@@ -1438,7 +1438,7 @@ void py_init_module_implot3d(nb::module_& m)
             PlotDummy_adapt_mutable_param_with_default_value(label_id, spec);
         },
         nb::arg("label_id"), nb::arg("spec").none() = nb::none(),
-        " Plots a dummy item (can be used to modify legend entry appearance when called after plotting an item, or add a dummy legend entry)\n\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
+        " Plots a dummy item (can be used to modify legend entry appearance when called after plotting an item, or add a dummy legend entry)\n\nPython bindings defaults:\n    If spec is None, then its default value will be: Spec()");
 
     m.def("plot_to_pixels",
         nb::overload_cast<const ImPlot3DPoint &>(ImPlot3D::PlotToPixels), nb::arg("point"));
@@ -1593,7 +1593,7 @@ void py_init_module_implot3d(nb::module_& m)
             return GetColormapSize_adapt_mutable_param_with_default_value(cmap);
         },
         nb::arg("cmap").none() = nb::none(),
-        " Returns the size of a colormap\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
+        " Returns the size of a colormap\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("get_colormap_color",
         [](int idx, const std::optional<const ImPlot3DColormap> & cmap = std::nullopt) -> ImVec4
@@ -1615,7 +1615,7 @@ void py_init_module_implot3d(nb::module_& m)
             return GetColormapColor_adapt_mutable_param_with_default_value(idx, cmap);
         },
         nb::arg("idx"), nb::arg("cmap").none() = nb::none(),
-        " Returns a color from a colormap given an index >= 0 (modulo will be performed)\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
+        " Returns a color from a colormap given an index >= 0 (modulo will be performed)\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("sample_colormap",
         [](float t, const std::optional<const ImPlot3DColormap> & cmap = std::nullopt) -> ImVec4
@@ -1637,7 +1637,7 @@ void py_init_module_implot3d(nb::module_& m)
             return SampleColormap_adapt_mutable_param_with_default_value(t, cmap);
         },
         nb::arg("t"), nb::arg("cmap").none() = nb::none(),
-        " Sample a color from the current colormap given t between 0 and 1\n\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
+        " Sample a color from the current colormap given t between 0 and 1\n\nPython bindings defaults:\n    If cmap is None, then its default value will be: IMPLOT3D_AUTO");
 
     m.def("show_demo_window",
         [](std::optional<bool> p_open = std::nullopt) -> std::optional<bool>

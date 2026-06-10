@@ -418,7 +418,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
             return Link_adapt_mutable_param_with_default_value(id, startPinId, endPinId, color, thickness);
         },
         nb::arg("id"), nb::arg("start_pin_id"), nb::arg("end_pin_id"), nb::arg("color").none() = nb::none(), nb::arg("thickness") = 1.0f,
-        " Declares an existing link between two pins. Call once per frame for every\n link you want shown. Returns True if the link is currently visible/active.\n `color` default is the sentinel ImVec4(0,0,0,0) (\"auto\"): when alpha is 0\n the implementation substitutes the current ImGuiCol_Text, so links stay\n readable on both light and dark themes. Pass any non-zero-alpha color to\n override.\n\n\nPython bindings defaults:\n    If color is None, then its default value will be: ImVec4(0, 0, 0, 0)");
+        " Declares an existing link between two pins. Call once per frame for every\n link you want shown. Returns True if the link is currently visible/active.\n `color` default is the sentinel ImVec4(0,0,0,0) (\"auto\"): when alpha is 0\n the implementation substitutes the current ImGuiCol_Text, so links stay\n readable on both light and dark themes. Pass any non-zero-alpha color to\n override.\n\nPython bindings defaults:\n    If color is None, then its default value will be: ImVec4(0, 0, 0, 0)");
 
     m.def("flow",
         ax::NodeEditor::Flow,

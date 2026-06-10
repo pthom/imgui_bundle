@@ -178,7 +178,6 @@ class FormulaTexture:
         ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If Texture is None, then its default value will be: HelloImGui.TextureGpu()
         """

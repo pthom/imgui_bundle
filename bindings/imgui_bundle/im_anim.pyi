@@ -344,7 +344,6 @@ class drag_feedback:
         ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * position: ImVec2()
@@ -1176,7 +1175,6 @@ def path_morph(
      path_a at blend=0, path_b at blend=1
      Paths can have different numbers of segments - they are resampled to match
 
-
     Python bindings defaults:
         If opts is None, then its default value will be: morph_opts()
     """
@@ -1192,7 +1190,6 @@ def path_morph_tangent(
     ) -> ImVec2:
     """ Get tangent of morphed path
 
-
     Python bindings defaults:
         If opts is None, then its default value will be: morph_opts()
     """
@@ -1207,7 +1204,6 @@ def path_morph_angle(
     opts: Optional[morph_opts] = None
     ) -> float:
     """ Get angle (radians) of morphed path
-
 
     Python bindings defaults:
         If opts is None, then its default value will be: morph_opts()
@@ -1232,7 +1228,6 @@ def tween_path_morph(
     opts: Optional[morph_opts] = None
     ) -> ImVec2:
     """ Tween along a morphing path - animates both position along path AND the morph blend
-
 
     Python bindings defaults:
         If opts is None, then its default value will be: morph_opts()
@@ -1289,7 +1284,6 @@ def text_path(
     ) -> None:
     """ Render text along a path (static - no animation)
 
-
     Python bindings defaults:
         If opts is None, then its default value will be: text_path_opts()
     """
@@ -1304,7 +1298,6 @@ def text_path_animated(
     ) -> None:
     """ Animated text along path (characters appear progressively)
 
-
     Python bindings defaults:
         If opts is None, then its default value will be: text_path_opts()
     """
@@ -1313,7 +1306,6 @@ def text_path_animated(
 # float text_path_width(const char* text, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
 def text_path_width(text: str, opts: Optional[text_path_opts] = None) -> float:
     """ Helper: Get text width for path layout calculations
-
 
     Python bindings defaults:
         If opts is None, then its default value will be: text_path_opts()
@@ -1414,7 +1406,6 @@ def text_stagger(
     ) -> None:
     """ Render text with per-character stagger animation
 
-
     Python bindings defaults:
         If opts is None, then its default value will be: text_stagger_opts()
     """
@@ -1427,7 +1418,6 @@ def text_stagger_width(
     ) -> float:
     """ Get text width for layout calculations
 
-
     Python bindings defaults:
         If opts is None, then its default value will be: text_stagger_opts()
     """
@@ -1439,7 +1429,6 @@ def text_stagger_duration(
     opts: Optional[text_stagger_opts] = None
     ) -> float:
     """ Get total animation duration for text (accounts for stagger delays)
-
 
     Python bindings defaults:
         If opts is None, then its default value will be: text_stagger_opts()
@@ -1942,7 +1931,6 @@ class variation_float:
         ) -> None:
         """Auto-generated default constructor with named params
 
-
         Python bindings defaults:
             If callback is None, then its default value will be: variation_float_fn()
         """
@@ -1974,7 +1962,6 @@ class variation_int:
         callback: Optional[variation_int_fn] = None
         ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If callback is None, then its default value will be: variation_int_fn()
@@ -2013,7 +2000,6 @@ class variation_vec2:
         y: Optional[variation_float] = None
         ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -2064,7 +2050,6 @@ class variation_vec4:
         w: Optional[variation_float] = None
         ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
@@ -2120,7 +2105,6 @@ class variation_color:
         a: Optional[variation_float] = None
         ) -> None:
         """Auto-generated default constructor with named params
-
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
