@@ -27,6 +27,9 @@ def main():
     options.python_run_black_formatter = True
     options.fn_exclude_non_api = False
 
+    # GlTexture has a move-assignment operator, which has no Python equivalent: silence the warning.
+    options.srcmlcpp_options.ignored_warning_parts += ["GlTexture& operator="]
+
     # Exclude types that are handled by custom nanobind type casters
     # (ImageBuffer <-> numpy, Point/Point2d/Size <-> tuple, Matrix33d <-> list)
     options.class_exclude_by_name__regex = r"^ImageBuffer$|^Point$|^Point2d$|^Size$|^Matrix33d$"

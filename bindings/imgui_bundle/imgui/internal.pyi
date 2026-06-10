@@ -67,6 +67,7 @@ from imgui_bundle.imgui import (
     ImVector_ID,
     ImVector_ImDrawChannel,
     ImVector_ImDrawList_ptr,
+    ImVector_ImFontAtlas_ptr,
     ImVector_ImTextureData_ptr,
     ImVector_ImTextureRect,
     ImVector_ImU32,
@@ -3778,6 +3779,8 @@ class Context:
     config_flags_curr_frame: ConfigFlags  # = g.IO.ConfigFlags at the time of NewFrame()
     # ImGuiConfigFlags        ConfigFlagsLastFrame;    /* original C++ signature */
     config_flags_last_frame: ConfigFlags
+    # ImVector<ImFontAtlas*>  FontAtlases;    /* original C++ signature */
+    font_atlases: ImVector_ImFontAtlas_ptr  # List of font atlases used by the context (generally only contains g.IO.Fonts aka the main font atlas)
     # ImFont*                 Font;    /* original C++ signature */
     font: ImFont  # Currently bound font. (== FontStack.back().Font)
     # ImFontBaked*            FontBaked;    /* original C++ signature */

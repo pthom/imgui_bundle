@@ -6246,6 +6246,68 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
     def __len__(self) -> int:
         pass
 
+class ImVector_ImFontAtlas_ptr:  # Python specialization for ImVector<ImFontAtlas *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
+    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    @overload
+    def __init__(self, src: ImVector_ImFontAtlas_ptr) -> None:
+        pass
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    def clear(self) -> None:
+        """Important: does not destruct anything
+        (private API)
+        """
+        pass
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    def clear_destruct(self) -> None:
+        """Important: never called automatically! always explicit.
+        (private API)
+        """
+        pass
+    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    def __getitem__(self, i: int) -> ImFontAtlas:
+        """(private API)"""
+        pass
+    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    def push_back(self, v: ImFontAtlas) -> None:
+        """(private API)"""
+        pass
+    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    def pop_back(self) -> None:
+        """(private API)"""
+        pass
+    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    def push_front(self, v: ImFontAtlas) -> None:
+        """(private API)"""
+        pass
+
+    def __iter__(self) -> Iterator[ImFontAtlas]:
+        pass
+
+    def __len__(self) -> int:
+        pass
+
 class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
     # #ifdef IMGUI_BUNDLE_PYTHON_API
     #

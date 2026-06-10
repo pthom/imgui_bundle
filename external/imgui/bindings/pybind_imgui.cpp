@@ -4617,6 +4617,51 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImFont *> &v) { return v.size(); })
         ;
+    auto pyClassImVector_ImFontAtlas_ptr =
+        nb::class_<ImVector<ImFontAtlas *>>
+            (m, "ImVector_ImFontAtlas_ptr", "")
+        // #ifdef IMGUI_BUNDLE_PYTHON_API
+        //
+        .def("data_address",
+            &ImVector<ImFontAtlas *>::DataAddress, "(private API)")
+        // #endif
+        //
+        .def(nb::init<>())
+        .def(nb::init<const ImVector<ImFontAtlas *> &>(),
+            nb::arg("src"))
+        .def("clear",
+            &ImVector<ImFontAtlas *>::clear, " Important: does not destruct anything\n(private API)")
+        .def("clear_destruct",
+            &ImVector<ImFontAtlas *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+        .def("empty",
+            &ImVector<ImFontAtlas *>::empty, "(private API)")
+        .def("size",
+            &ImVector<ImFontAtlas *>::size, "(private API)")
+        .def("__getitem__",
+            nb::overload_cast<int>(&ImVector<ImFontAtlas *>::operator[], nb::const_),
+            nb::arg("i"),
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("__getitem__",
+            nb::overload_cast<int>(&ImVector<ImFontAtlas *>::operator[]),
+            nb::arg("i"),
+            "(private API)",
+            nb::rv_policy::reference)
+        .def("push_back",
+            &ImVector<ImFontAtlas *>::push_back,
+            nb::arg("v"),
+            "(private API)")
+        .def("pop_back",
+            &ImVector<ImFontAtlas *>::pop_back, "(private API)")
+        .def("push_front",
+            &ImVector<ImFontAtlas *>::push_front,
+            nb::arg("v"),
+            "(private API)")
+        .def("__iter__", [](const ImVector<ImFontAtlas *> &v) {
+                return nb::make_iterator(nb::type<ImVector<ImFontAtlas *>>(), "iterator", v.begin(), v.end());
+            }, nb::keep_alive<0, 1>())
+        .def("__len__", [](const ImVector<ImFontAtlas *> &v) { return v.size(); })
+        ;
     auto pyClassImVector_ImFontGlyph =
         nb::class_<ImVector<ImFontGlyph>>
             (m, "ImVector_ImFontGlyph", "")

@@ -72,6 +72,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImVec2",
         "ImDrawList*",
         "ImFont*",
+        "ImFontAtlas*",  # ImGuiContext::FontAtlases (multi-atlas support, new in v1.92)
         "ImFontGlyph",
         "ImGuiPlatformMonitor",
         "ImGuiViewport*",
@@ -136,6 +137,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiTestRunTask",
         "ImFontAtlasRectEntry",
         "stbrp_node",
+        "stbrp_node_im",  # typedef for the opaque stb rect-packer node (ImGuiContext::PackNodes)
         "ImDrawListSharedData*",
         "ImFontStackData",
     ]

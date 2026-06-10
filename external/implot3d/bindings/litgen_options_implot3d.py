@@ -17,6 +17,9 @@ def litgen_options_implot3d() -> LitgenOptions:
     options.srcmlcpp_options.functions_api_prefixes = "IMPLOT3D_API|IMPLOT3D_TMP"
     options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API"
 
+    # ImPlot3DStyle has a copy-assignment operator, which has no Python equivalent: silence the warning.
+    options.srcmlcpp_options.ignored_warning_parts += ["ImPlot3DStyle& operator="]
+
     options.function_names_replacements.add_first_replacement("ImGui", "Imgui")
     options.function_names_replacements.add_first_replacement("NaN", "Nan")
     options.var_names_replacements.add_first_replacement("NaN", "Nan")
