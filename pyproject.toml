@@ -276,6 +276,13 @@ before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev l
 #------------------------------------
 [tool.cibuildwheel.windows]
 skip = ["*win32"]
+# Disable the wheel repair step (cibuildwheel >= 4.0.0 runs delvewheel by default).
+# imgui_bundle already vendors glfw3.dll into the package itself (see
+# imgui_bundle_cmake/internal/add_glfw_submodule.cmake) and loads it via
+# _glfw_set_search_path.py. delvewheel does not search inside the wheel by default,
+# so it fails trying to locate glfw3.dll on PATH. We ship a self-contained wheel,
+# so no repair is needed.
+repair-wheel-command = ""
 
 #------------------------------------
 # android wheels
