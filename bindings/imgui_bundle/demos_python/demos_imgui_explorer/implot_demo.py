@@ -1130,7 +1130,7 @@ def demo_markers_and_text():
 
     if implot.begin_plot("##MarkerStyles", size=(-1, 0), flags=implot.Flags_.canvas_only):
         implot.setup_axes("", "", implot.AxisFlags_.no_decorations, implot.AxisFlags_.no_decorations)
-        implot.setup_axes_limits(0, 10, 0, 12)
+        implot.setup_axes_limits(0, 10, -2, 12)
 
         xs = [1, 4]
         ys = [10, 11]
@@ -1152,11 +1152,11 @@ def demo_markers_and_text():
                 implot.plot_line("##Open", np.array(xs), np.array(ys), static.spec)
             ys = [ys[0] - 1, ys[1] - 1]
 
-        implot.plot_text("Filled Markers", 2.5, 6.0)
-        implot.plot_text("Open Markers", 7.5, 6.0)
+        implot.plot_text("Filled Markers", 2.5, 5.0)
+        implot.plot_text("Open Markers", 7.5, 5.0)
 
         implot.push_style_color(implot.Col_.inlay_text, [1, 0, 1, 1])
-        implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0),
+        implot.plot_text("Vertical Text", 5.0, 5.0, pix_offset=(0, 0),
                         spec=implot.Spec(flags=implot.TextFlags_.vertical))
         implot.pop_style_color()
 

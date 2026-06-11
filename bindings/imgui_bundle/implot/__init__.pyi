@@ -830,9 +830,13 @@ class Marker_(enum.IntFlag):
     plus = enum.auto()  # (= 8)  # a plus marker (not fill-able)
     # ImPlotMarker_Asterisk,      /* original C++ signature */
     asterisk = enum.auto()  # (= 9)  # a asterisk marker (not fill-able)
+    # ImPlotMarker_Vertical,       /* original C++ signature */
+    vertical = enum.auto()  # (= 10)  # a vertical line marker (not fill-able)
+    # ImPlotMarker_Horizontal,     /* original C++ signature */
+    horizontal = enum.auto()  # (= 11)  # a horizontal line marker (not fill-able)
     # ImPlotMarker_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 10)
+    count = enum.auto()  # (= 12)
 
 class Colormap_(enum.IntFlag):
     """Built-in colormaps"""

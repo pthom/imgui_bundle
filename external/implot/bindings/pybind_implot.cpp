@@ -391,6 +391,8 @@ void py_init_module_implot(nb::module_& m)
             .value("cross", ImPlotMarker_Cross, "a cross marker (not fill-able)")
             .value("plus", ImPlotMarker_Plus, "a plus marker (not fill-able)")
             .value("asterisk", ImPlotMarker_Asterisk, "a asterisk marker (not fill-able)")
+            .value("vertical", ImPlotMarker_Vertical, "a vertical line marker (not fill-able)")
+            .value("horizontal", ImPlotMarker_Horizontal, "a horizontal line marker (not fill-able)")
             .value("count", ImPlotMarker_COUNT, "");
 
 
