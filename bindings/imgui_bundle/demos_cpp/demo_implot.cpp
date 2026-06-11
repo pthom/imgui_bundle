@@ -4,6 +4,7 @@
 #include "implot/implot.h"
 #include "implot3d/implot3d.h"
 #include "immapp/immapp.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
 #include "imgui_explorer.h"
 #endif
@@ -16,6 +17,13 @@ void demo_implot()
     )");
     if (ImGui::CollapsingHeader("ImPlot: Full Demo"))
     {
+        ImGui::Text(ICON_FA_INFO_CIRCLE);
+        if (ImGui::IsItemHovered())
+            ImGuiMd::RenderUnindented(R"(
+                > [!TIP]
+                > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see "Demo Apps" tab, demo_python_context_manager).
+                )");
+
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ImGui::PushID("ImPlotDemo");
         ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot);

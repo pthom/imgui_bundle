@@ -101,6 +101,37 @@ across different plot calls. It applies to every multi-array function in `implot
 `implot3d`. See [issue #467](https://github.com/pthom/imgui_bundle/issues/467).
 ````
 
+### Python: context managers (implot_ctx)
+
+In Python, `implot_ctx` provides context managers that pair each
+`implot.begin_*()` / `push_*()` call with its matching `end_*()` / `pop_*()`:
+
+```python
+from imgui_bundle import implot, implot_ctx, immapp
+import numpy as np
+
+x = np.arange(0, 10, 0.1)
+y = np.sin(x)
+
+def gui():
+    with implot_ctx.begin_plot("My Plot") as plot:
+        if plot:  # the plot may be collapsed or clipped: always test it
+            implot.plot_line("sin(x)", x, y)
+
+immapp.run(gui, with_implot=True)
+```
+
+`implot_ctx.begin_plot` and `begin_subplots` return an object that must be
+truth-tested before drawing. The `push_*` context managers
+(`push_style_color`, `push_style_var`, `push_colormap`, `push_plot_clip_rect`)
+need no test: they simply pop automatically.
+
+```{note}
+`imgui_ctx` offers the same facility for the `imgui.begin_*()` functions.
+Both are demonstrated in the interactive explorer:
+"Demo Apps" tab, *demo_python_context_manager*.
+```
+
 ### Full Demo
 
 ::::{card}
@@ -111,7 +142,9 @@ ImPlot demo showcasing various plot types and features.
 ```
 ::::
 
-- [Try online](https://imgui-bundle.pages.dev/explorer/demo_implot.html)
+- [Try online](https://imgui-bundle.pages.dev/explorer/demo_implot.html):
+  the explorer shows each demo running side by side with its code (Python or C++),
+  so it can be used as a reference when writing your own plots.
 
 - Python demo code: [implot_demo.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py)
 - C++ demo code: [implot_demo.cpp](https://github.com/epezent/implot/blob/master/implot_demo.cpp)

@@ -37,7 +37,7 @@ def make_gui() -> GuiFunction:
             "How to have smooth animations, and how spare the CPU when idling",
         ),
         DemoApp("demo_python_context_manager",
-                "How to use a python context manager for `imgui.begin()`, `imgui.end()`, etc."),
+                "How to use a python context manager for `imgui.begin()`, `imgui.end()`, `implot.begin_plot()`, etc."),
         DemoApp(
             "demo_testengine",
             "How to use ImGui Test Engine to test and automate your application",
