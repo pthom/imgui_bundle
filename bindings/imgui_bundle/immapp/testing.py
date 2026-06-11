@@ -40,14 +40,27 @@ def capture(
             (prefixed with "//" automatically). Pass None to capture the
             full application framebuffer.
         flags: imgui.test_engine.CaptureFlags_ bitfield.
+
+    Raises:
+        RuntimeError: if the test is already in error state (once a previous
+            interaction failed, the test engine silently ignores every
+            subsequent operation, captures included), or if the capture
+            itself fails.
     """
+    if ctx.is_error():
+        raise RuntimeError(
+            f"capture('{path}') skipped: the test is already in error state "
+            "(a previous interaction failed, e.g. an item was not found). "
+            "See the test engine log for the original error."
+        )
     ctx.yield_()
     ctx.capture_reset()
     if window is not None:
         ref = window if window.startswith("//") else "//" + window
         ctx.capture_add_window(ref)
     ctx.capture_set_filename(path)
-    ctx.capture_screenshot(flags)
+    if not ctx.capture_screenshot(flags):
+        raise RuntimeError(f"capture('{path}') failed: capture_screenshot() returned False.")
 
 
 def run(
@@ -56,6 +69,7 @@ def run(
     *,
     exit_after_test: bool = True,
     run_speed: TestRunSpeed = TestRunSpeed.fast,
+    raise_on_error: bool = True,
     # Common RunnerParams / AddOns shortcuts (ignored if runner_params is provided)
     window_title: str = "",
     window_size: Optional[Tuple[int, int]] = None,
@@ -86,6 +100,11 @@ def run(
         exit_after_test: if True (default), set app_shall_exit once the test
             finishes. Set to False to keep the window open for inspection.
         run_speed: fast / normal / cinematic. Defaults to fast.
+        raise_on_error: if True (default), raise RuntimeError after the run
+            when the test engine reported a failure (e.g. an item was not
+            found), with the test engine log attached. Engine failures do not
+            raise inside the test function: the engine records the first error
+            and silently ignores every subsequent operation.
         runner_params: if given, the shortcut kwargs above are ignored and
             this RunnerParams is used as-is (we only wire the test engine
             on top of it).
@@ -116,6 +135,9 @@ def run(
 
     test_done = False
     test_error: Optional[BaseException] = None
+    registered_test: Optional["imgui.test_engine.Test"] = None
+    final_status: Optional[imgui.test_engine.TestStatus] = None
+    final_log: str = ""
 
     def _wrapped_test(ctx: "imgui.test_engine.TestContext") -> None:
         nonlocal test_done, test_error
@@ -129,34 +151,56 @@ def run(
     prior_register_tests = runner_params.callbacks.register_tests
 
     def _register_tests() -> None:
+        nonlocal registered_test
         if callable(prior_register_tests):
             prior_register_tests()
         engine = hello_imgui.get_imgui_test_engine()
         io = imgui.test_engine.get_io(engine)
         io.config_run_speed = run_speed
+        # Without this, engine errors (e.g. "Unable to locate item") only go to
+        # the in-memory log of the Test Engine UI window, which we do not show.
+        io.config_log_to_tty = True
         test = imgui.test_engine.register_test(engine, "immapp.testing", "auto")
         test.test_func = _wrapped_test
         imgui.test_engine.queue_test(engine, test)
+        registered_test = test
 
     runner_params.callbacks.register_tests = _register_tests
 
-    if exit_after_test:
-        prior_before_render = runner_params.callbacks.before_imgui_render
+    prior_before_render = runner_params.callbacks.before_imgui_render
 
-        def _exit_when_done() -> None:
-            if callable(prior_before_render):
-                prior_before_render()
-            if test_done:
-                engine = hello_imgui.get_imgui_test_engine()
-                if imgui.test_engine.is_test_queue_empty(engine):
-                    runner_params.app_shall_exit = True
+    def _on_test_done() -> None:
+        nonlocal final_status, final_log
+        if callable(prior_before_render):
+            prior_before_render()
+        if not test_done or final_status is not None:
+            return
+        engine = hello_imgui.get_imgui_test_engine()
+        if not imgui.test_engine.is_test_queue_empty(engine):
+            return
+        # Snapshot status and log now: the test object is owned by the engine,
+        # which is destroyed when the app exits.
+        assert registered_test is not None
+        final_status = registered_test.output.status
+        final_log = registered_test.output.log.get_text()
+        if exit_after_test:
+            runner_params.app_shall_exit = True
 
-        runner_params.callbacks.before_imgui_render = _exit_when_done
+    runner_params.callbacks.before_imgui_render = _on_test_done
 
     immapp.run(runner_params, add_ons_params)
 
     if test_error is not None:
         raise test_error
+
+    if raise_on_error:
+        if final_status is None:
+            raise RuntimeError("immapp.testing.run: the app exited before the test finished.")
+        if final_status != imgui.test_engine.TestStatus.success:
+            raise RuntimeError(
+                f"immapp.testing.run: the test failed (status: {final_status.name}). "
+                f"Test engine log:\n{final_log}"
+            )
 
 
 def capture_final_frame(
