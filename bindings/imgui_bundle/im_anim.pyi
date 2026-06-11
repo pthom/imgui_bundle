@@ -2412,7 +2412,6 @@ def varc_seed(v: variation_color, s: int) -> variation_color:
 
 # #else
 #
-
 # #endif
 #
 

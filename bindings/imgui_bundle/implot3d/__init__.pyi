@@ -156,6 +156,10 @@ ItemFlags_None = ItemFlags_.none
 
 # Fallback for ImGui versions before v1.92: define ImTextureRef as ImTextureID
 # You can `#define IMPLOT3D_NO_IMTEXTUREREF` to avoid this fallback
+# #if !defined(IMGUI_HAS_TEXTURES) && !defined(IMPLOT3D_NO_IMTEXTUREREF)
+#
+# #endif
+#
 
 # -----------------------------------------------------------------------------
 # [SECTION] Flags & Enumerations

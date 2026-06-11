@@ -36,6 +36,15 @@ class Path:
 ####################    <generated_from:ImFileDialog.h>    ####################
 
 # u8path is deprecated in C++20; use char8_t path constructor instead
+# #if __cplusplus >= 202002L
+#
+def ifd_u8path(s: str) -> Path:
+    pass
+
+# #else
+#
+# #endif
+#
 
 class FileDialog:
     @staticmethod

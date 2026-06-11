@@ -52,6 +52,10 @@ void py_init_module_implot3d(nb::module_& m)
     //
     // #endif
     //
+    // #if !defined(IMGUI_HAS_TEXTURES) && !defined(IMPLOT3D_NO_IMTEXTUREREF)
+    //
+    // #endif
+    //
 
 
     auto pyEnumProp_ =
