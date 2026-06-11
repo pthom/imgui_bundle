@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from codemanip.code_utils import join_string_by_pipe_char
 
 from litgen.options import LitgenOptions
@@ -24,9 +24,9 @@ def litgen_options_implot3d() -> LitgenOptions:
 
     options.fn_exclude_by_name__regex = "Formatter_Default|SetupAxisTicks"
     options.fn_exclude_by_param_type__regex = "ImPlot3DFormatter"
-    options.fn_force_lambda__regex = "PlotMesh"
+    options.fn_force_lambda__regex = "PlotMesh|SetupAxisScale"
     options.class_exclude_by_name__regex = "ImDrawList3D"
-    options.member_exclude_by_type__regex = r"^ImVector|TextBuffer|Storage|ImPool|ImPlot3DFormatter|ImPlot3DLocator|ImDrawList3D"
+    options.member_exclude_by_type__regex = r"^ImVector|TextBuffer|Storage|ImPool|ImPlot3DFormatter|ImPlot3DLocator|ImDrawList3D|ImPlot3DTransform"
 
     options.class_copy__regex = "ImPlot3DStyle|Style"
     options.class_copy_add_info_in_stub = True

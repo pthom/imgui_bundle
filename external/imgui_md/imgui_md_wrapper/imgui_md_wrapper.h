@@ -1,13 +1,15 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #pragma once
 
 #include "imgui.h"
 
+#include <cstdint>
 #include <functional>
 #include <vector>
 #include <string>
 #include <memory>
 #include <optional>
+#include <array>
 
 
 namespace ImGuiMd
@@ -15,9 +17,11 @@ namespace ImGuiMd
     struct MarkdownFontOptions
     {
         std::string fontBasePath = "fonts/Roboto/Roboto";
-        int maxHeaderLevel = 2;
-        float sizeDiffBetweenLevels = 2.f;
+        // This size is in density-independent pixels
         float regularSize = 16.f;
+
+        // Multipliers for header sizes, from h1 to h6
+        float headerSizeFactors[6] = { 1.42f, 1.33f, 1.24f, 1.15f, 1.10f, 1.05f };
     };
 
 
@@ -31,10 +35,42 @@ namespace ImGuiMd
         ImVec4	col_border;
     };
 
+    // Note: Since v1.92, Fonts can be displayed at any size:
+    // in order to display a font at a given size, we need to call
+    //   ImGui::PushFont(font, size) (or call separately ImGui::PushFontSize)
+    struct SizedFont
+    {
+        ImFont* font;
+        float size;
+    };
+
     using VoidFunction = std::function<void(void)>;
     using StringFunction = std::function<void(std::string)>;
     using HtmlDivFunction = std::function<void(const std::string& divClass, bool openingDiv)>;
+    using HtmlSpanFunction = std::function<bool(const std::string& tagName, bool opening)>;
     using MarkdownImageFunction = std::function<std::optional<MarkdownImage>(const std::string&)>;
+
+    // Status of a download (used by OnDownloadData callback)
+    enum class MarkdownDownloadStatus {
+        NotStarted,   // Download has not been initiated
+        Downloading,  // Download is in progress (show placeholder)
+        Ready,        // Download complete, data is available
+        Failed        // Download failed, errorMessage has details
+    };
+
+    // Result of a download attempt
+    struct MarkdownDownloadResult {
+        MarkdownDownloadStatus status = MarkdownDownloadStatus::NotStarted;
+        std::vector<uint8_t> data;       // Only valid if status == Ready
+        std::string errorMessage;        // Only valid if status == Failed
+
+        // Fill data from a raw buffer (convenience for C++ users)
+        void FillFromData(const void* buffer, size_t size) {
+            data.assign(static_cast<const uint8_t*>(buffer), static_cast<const uint8_t*>(buffer) + size);
+        }
+    };
+
+    using MarkdownDownloadFunction = std::function<MarkdownDownloadResult(const std::string& url)>;
 
 
     std::optional<MarkdownImage> OnImage_Default(const std::string& image_path);
@@ -74,6 +110,33 @@ namespace ImGuiMd
         //            gui_function=gui, with_markdown_options=md_options #, more options here
         //        )
         HtmlDivFunction OnHtmlDiv;
+
+        // OnHtmlSpan: optional callback for inline HTML tags encountered in
+        // markdown text (one call per open/close tag; e.g. "sub", "sup",
+        // "kbd", "mark", or any custom tag).
+        // Return true to indicate the tag was fully handled, false to let
+        // the built-in renderer apply its default rendering (if any).
+        // Example (C++):
+        //   callbacks.OnHtmlSpan = [](const std::string& tag, bool opening) {
+        //       if (tag == "small") {
+        //           // ... push/pop a smaller font
+        //           return true;
+        //       }
+        //       return false;
+        //   };
+        HtmlSpanFunction OnHtmlSpan;
+
+        // OnDownloadData: callback to download data from a URL (empty by default).
+        // When set, OnImage_Default will use it to fetch images from URLs (http:// or https://).
+        //
+        // Contract: C++ calls this every frame for a given URL until it returns Ready or Failed.
+        // The result is then cached and the callback is not called again for that URL.
+        // - For synchronous downloads: return Ready or Failed immediately (never Downloading).
+        // - For async downloads: return Downloading on first call, then Ready/Failed once done.
+        //   The callback must handle deduplication internally (track pending downloads).
+        //
+        // Empty by default. Python fills it with urllib/pyodide, C++ users can fill it with libcurl, etc.
+        MarkdownDownloadFunction OnDownloadData;
     };
 
 
@@ -81,6 +144,19 @@ namespace ImGuiMd
     {
         MarkdownFontOptions fontOptions;
         MarkdownCallbacks callbacks;
+
+        // Enable native LaTeX math rendering via MicroTeX.
+        // When true, $...$ and $$...$$ in markdown will be rendered as math formulas
+        // (requires building with IMGUI_RICHMD_WITH_LATEX=ON, which is the default
+        // when IMGUI_BUNDLE_WITH_MICROTEX and FreeType are both available).
+        // When false, $ is rendered as a literal character (legacy behavior).
+        bool withLatex = false;
+
+        // Recognize bare URLs, email addresses and www.* as clickable links
+        // without requiring <...> or []() syntax
+        // (MD_FLAG_PERMISSIVEAUTOLINKS — URL + email + WWW).
+        // Set to false to get strict CommonMark link behavior.
+        bool autolinks = true;
     };
 
     // InitializeMarkdown: Call this once at application startup
@@ -98,6 +174,11 @@ namespace ImGuiMd
     //        runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
     //
     //        hello_imgui.run(runner_params)
+    // Private: callback called during InitializeMarkdown, allowing customization of the options.
+    // Python sets this at import time to inject URL image download support.
+    using Priv_OnInitializeMarkdownCallback = std::function<void(MarkdownOptions&)>;
+    void Priv_SetOnInitializeMarkdownCallback(Priv_OnInitializeMarkdownCallback callback);
+
     void InitializeMarkdown(const MarkdownOptions& options = MarkdownOptions());
     void DeInitializeMarkdown();
 
@@ -110,16 +191,21 @@ namespace ImGuiMd
     // Renders a markdown string (after having unindented its main indentation)
     void RenderUnindented(const std::string& markdownString);
 
-    ImFont* GetCodeFont();
+    SizedFont GetCodeFont();
 
     struct MarkdownFontSpec
     {
         bool italic = false;
         bool bold = false;
-        int headerLevel = 0;
+        int headerLevel = 0;  // 0 means no header, 1 means h1, 2 means h2, etc.
 
         MarkdownFontSpec(bool italic_ = false, bool bold_ = false, int headerLevel_ = 0) :
             italic(italic_), bold(bold_), headerLevel(headerLevel_) {}
     };
-    ImFont* GetFont(const MarkdownFontSpec& fontSpec);
+    SizedFont GetFont(const MarkdownFontSpec& fontSpec);
+
+    ImVec4 LinkColor();
+
+    // Renders a link with the given text and url. Can be used outside of markdown rendering.
+    void RenderTextAsLink(const char* text, const char* url);
 }

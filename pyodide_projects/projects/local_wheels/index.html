@@ -1,0 +1,81 @@
+<!doctype html>
+<!--
+This page is served at https://imgui-bundle.pages.dev/local_wheels/.
+It lives next to the wheel in `pyodide_projects/projects/local_wheels/`,
+which `cf_stage` rsyncs into `_cf_staging/local_wheels/` (see
+`docs/book/devel_docs/cloudflare_deploy.md`). The wheel filename below
+must be kept in sync with `pyproject.toml` / `CMakeLists.txt` — find
+every reference with:
+    rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!local_wheels' --glob '!.pyodide_build'
+(`local_wheels/` is excluded — update this file's wheel reference manually
+when bumping the version.)
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Dear ImGui Bundle - Pyodide wheels</title>
+    <style>
+        body { font-family: sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px;
+               background: #1e1e1e; color: #ddd; line-height: 1.5; }
+        h1 { color: #4CAF50; margin-bottom: 0.2em; }
+        h2 { color: #81D4FA; border-bottom: 1px solid #333; padding-bottom: 4px; margin-top: 2em; }
+        a { color: #81D4FA; }
+        code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                    background: #2d2d2d; border-radius: 4px; }
+        code { padding: 1px 6px; }
+        pre { padding: 12px 14px; overflow-x: auto; }
+        .download { display: inline-block; padding: 10px 18px; margin: 8px 0;
+                    background: #2d4a2d; color: #cfe9cf; border-radius: 6px;
+                    text-decoration: none; font-weight: 600; }
+        .download:hover { background: #355a35; }
+        .meta { color: #aaa; font-size: 0.9em; }
+        .warn { background: #3a2a1a; border-left: 3px solid #d4a14a; padding: 10px 14px;
+                margin: 1em 0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<h1>Dear ImGui Bundle - Pyodide wheels</h1>
+<p class="meta">Wheels for running Dear ImGui Bundle in the browser via Pyodide.</p>
+
+<h2>Current wheel</h2>
+
+<p>
+    <a class="download" href="imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl"
+       download>Download imgui_bundle-1.92.705 (cp313, pyemscripten_2025_0_wasm32)</a>
+</p>
+
+<p class="meta">
+    Built for <strong>Pyodide 0.29.4</strong> (Python 3.13.2, Emscripten 4.0.9).
+    The wheel must match the Pyodide runtime your page loads.
+</p>
+
+<div class="warn">
+    <strong>This URL is the latest Pages deploy, not a versioned archive.</strong>
+    Cloudflare Pages replaces the entire site on every upload, so previous
+    wheels disappear when a new version is deployed. For anything you publish,
+    download the wheel and serve it from your own page.
+</div>
+
+<h2>How to use</h2>
+
+<ol>
+    <li>Download the wheel above and place it next to your HTML file
+        (e.g. in a <code>local_wheels/</code> folder beside your page).</li>
+    <li>Make sure your page loads Pyodide <strong>0.29.4</strong>
+        (newer Pyodide may have a different ABI):
+<pre>&lt;script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"&gt;&lt;/script&gt;</pre>
+    </li>
+    <li>Install the wheel via <code>micropip</code>:
+<pre>await pyodide.loadPackage("micropip");
+const micropip = pyodide.pyimport("micropip");
+await micropip.install("local_wheels/imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl");</pre>
+    </li>
+</ol>
+
+<p class="meta">
+    GitHub release downloads cannot be passed to <code>micropip.install</code>
+    directly: GitHub does not send <code>Access-Control-Allow-Origin</code>
+    headers, so the browser blocks them. That is why the wheel must be served
+    from the same origin as your HTML.
+</p>

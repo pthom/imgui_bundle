@@ -1,5 +1,8 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui_md_wrapper.h"
+#ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
+#include "imgui_md_url_download.h"
+#endif
 
 #ifdef HELLOIMGUI_HAS_OPENGL // Image rendering with markdown only works with OpenGl
 #define CAN_RENDER_IMAGES
@@ -13,6 +16,10 @@
 #include "immapp/code_utils.h"
 #include "immapp/browse_to_url.h"
 
+#ifdef IMGUI_RICHMD_WITH_LATEX
+#include "imgui_microtex/imgui_microtex.h"
+#endif
+
 #include <fplus/fplus.hpp>
 #include <string>
 #include <vector>
@@ -22,9 +29,32 @@
 #include <iostream>
 #include <cassert>
 
+ImVec4 LinkColor(); // See imgui_md.cpp
 
 namespace ImGuiMd
 {
+    ImVec4 LinkColor()
+    {
+        return ::LinkColor();
+    }
+
+    void RenderTextAsLink(const char* text, const char* url)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Text, LinkColor());
+        ImGui::TextUnformatted(text);
+        ImGui::PopStyleColor();
+        ImGui::SetItemTooltip("%s", url);
+        if (ImGui::IsItemHovered())
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (ImGui::IsItemClicked())
+            ImmApp::BrowseToUrl(url);
+    }
+
+
+    // Note: font sizes below are expressed at their nominal (96 PPI) value.
+    // HighDPI scaling is applied automatically at display time by ImGui via
+    // ImGui::GetStyle().FontScaleDpi (set by HelloImGui from dpiWindowSizeFactor),
+    // so we must *not* pre-multiply font sizes by the DPI factor here anymore.
 
     namespace ImGuiMdFonts
     {
@@ -60,14 +90,11 @@ namespace ImGuiMd
                 return self.regularSize;
             else
             {
-                // maxHeaderLevel = 4, headerLevel = 4
-                // => multiplicationFactor = 1
-                // maxHeaderLevel = 4, headerLevel = 1
-                // => multiplicationFactor = 4
-                if (headerLevel > self.maxHeaderLevel)
-                    headerLevel = self.maxHeaderLevel;
-                int multiplicationFactor = self.maxHeaderLevel - headerLevel + 1;
-                float fontSize = self.regularSize + (float)multiplicationFactor * self.sizeDiffBetweenLevels;
+                int idxSizeFactors = headerLevel - 1;
+                if (idxSizeFactors >= 6)
+                    idxSizeFactors = 5;
+                float multiplicationFactor = self.headerSizeFactors[idxSizeFactors];
+                float fontSize = self.regularSize * multiplicationFactor;
                 return fontSize;
             }
         };
@@ -86,14 +113,9 @@ namespace ImGuiMd
             return r;
         }
 
-        bool operator==(const MarkdownTextStyle& lhs, const MarkdownTextStyle& rhs)
+        bool IsDefaultMarkdownEmphasis(const MarkdownEmphasis& style)
         {
-            return (lhs.markdownEmphasis == rhs.markdownEmphasis) && (lhs.headerLevel == rhs.headerLevel);
-        }
-
-        bool IsDefaultMarkdownTextStyle(const MarkdownTextStyle& style)
-        {
-            return (style.headerLevel == 0) && !style.markdownEmphasis.bold && !style.markdownEmphasis.italic;
+            return !style.bold && !style.italic;
         }
 
 
@@ -105,32 +127,31 @@ namespace ImGuiMd
                 LoadFonts();
             }
 
-            ImFont* GetFontCode() const
+            SizedFont GetFontCode() const
             {
-                return mFontCode;
+                return {mFontCode, mMarkdownFontOptions.regularSize};
             }
 
-            ImFont* GetDefaultFont() const
+            SizedFont GetDefaultFont() const
             {
                 auto defaultMarkdownStyle = MarkdownTextStyle{};
                 return GetFont(defaultMarkdownStyle);
             }
 
-            ImFont* GetFont(const MarkdownTextStyle& _markdownTextStyle) const
+            SizedFont GetFont(const MarkdownTextStyle& _markdownTextStyle) const
             {
                 MarkdownTextStyle markdownTextStyle = _markdownTextStyle;
                 if (markdownTextStyle.headerLevel < 0)
                     markdownTextStyle.headerLevel = 0;
-                if (markdownTextStyle.headerLevel > mMarkdownFontOptions.maxHeaderLevel)
-                    markdownTextStyle.headerLevel = mMarkdownFontOptions.maxHeaderLevel;
+
+                float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, markdownTextStyle.headerLevel);
 
                 for (auto pair: mFonts)
                 {
-                    if (pair.first == markdownTextStyle)
-                        return pair.second;
+                    if (pair.first == markdownTextStyle.markdownEmphasis)
+                        return SizedFont{ pair.second, fontSize };
                 }
-                assert(false);
-                return nullptr;
+                IM_ASSERT(false && "Could not find font for markdown style");
             }
         private:
             void LoadFonts()
@@ -152,34 +173,35 @@ assets/
 └── images/
     └── markdown_broken_image.png
 
+You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 )";
-                for (int header_level = 0; header_level <= mMarkdownFontOptions.maxHeaderLevel; ++header_level)
+                for (auto emphasisVariant: AllEmphasisVariants())
                 {
-                    for (auto emphasisVariant: AllEmphasisVariants())
+                    std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
+
+                    if (! HelloImGui::AssetExists(fontFile))
                     {
-                        MarkdownTextStyle markdownTextStyle;
-                        markdownTextStyle.markdownEmphasis = emphasisVariant;
-                        markdownTextStyle.headerLevel = header_level;
-
-                        float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, header_level);
-                        std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
-
-                        // we shall not load the icons for all the fonts variants, since the font atlas
-                        // texture might end up too big to fit in the GPU.
-                        ImFont * font;
-                        if (IsDefaultMarkdownTextStyle(markdownTextStyle))
-                            font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, fontSize);
-                        else
-                            font = HelloImGui::LoadFontTTF(fontFile, fontSize);
-
-                        if (font == nullptr)
-                        {
-                            fprintf(stderr, "%s", error_message.c_str());
-                            IM_ASSERT(false);
-                        }
-
-                        mFonts.push_back(std::make_pair(markdownTextStyle, font) );
+                        fprintf(stderr, "Markdown font file \"%s\" not found!\n", fontFile.c_str());
+                        fprintf(stderr, "%s", error_message.c_str());
+                        IM_ASSERT(false);
                     }
+
+                    // we shall not load the icons for all the fonts variants, since the font atlas
+                    // texture might end up too big to fit in the GPU.
+                    ImFont * font;
+                    float defaultFontLoadingSize = 16.f;  // size at loading time (then Fonts can be resized to any size)
+                    if (IsDefaultMarkdownEmphasis(emphasisVariant))
+                        font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, defaultFontLoadingSize);
+                    else
+                        font = HelloImGui::LoadFontTTF(fontFile, defaultFontLoadingSize);
+
+                    if (font == nullptr)
+                    {
+                        fprintf(stderr, "%s", error_message.c_str());
+                        IM_ASSERT(false);
+                    }
+
+                    mFonts.push_back(std::make_pair(emphasisVariant, font) );
                 }
 
                 float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, 0);
@@ -200,7 +222,7 @@ assets/
             }
 
             MarkdownFontOptions mMarkdownFontOptions;
-            std::vector<std::pair<MarkdownTextStyle, ImFont*>> mFonts;
+            std::vector<std::pair<MarkdownEmphasis, ImFont*>> mFonts;
             ImFont* mFontCode;
         };
 
@@ -222,14 +244,19 @@ assets/
     class MarkdownRenderer : public imgui_md
     {
     private:
-        MarkdownOptions mMarkdownOptions;
+        MarkdownOptions *mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
         std::map<std::string, Snippets::SnippetData> mSnippets;
     public:
-        MarkdownRenderer(MarkdownOptions markdownOptions)
+        MarkdownRenderer(MarkdownOptions* markdownOptions)
             : mMarkdownOptions(markdownOptions)
-            , mMarkdownCollection(markdownOptions.fontOptions)
+            , mMarkdownCollection(markdownOptions->fontOptions)
         {
+#ifdef IMGUI_RICHMD_WITH_LATEX
+            if (mMarkdownOptions->withLatex)
+                EnableLatex();
+#endif
+            set_flag(MD_FLAG_PERMISSIVEAUTOLINKS, mMarkdownOptions->autolinks);
         }
 
 #ifdef CAN_RENDER_IMAGES
@@ -241,19 +268,21 @@ assets/
 
         void Render(const std::string& s)
         {
-            ImGui::PushFont(mMarkdownCollection.mFontCollection.GetDefaultFont());
+            auto defaultSizedFont = mMarkdownCollection.mFontCollection.GetDefaultFont();
+            ImGui::PushFont(defaultSizedFont.font, defaultSizedFont.size);
+
             const char * start = s.c_str();
             const char * end = start + s.size();
             this->print(start, end);
             ImGui::PopFont();
         }
 
-        ImFont* get_font_code()
+        SizedFont get_font_code()
         {
             return mMarkdownCollection.mFontCollection.GetFontCode();
         }
 
-        ImFont* GetFont(const MarkdownFontSpec& fontSpec)
+        SizedFont GetFont(const MarkdownFontSpec& fontSpec)
         {
             ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
             markdownTextStyle.headerLevel = fontSpec.headerLevel;
@@ -264,48 +293,51 @@ assets/
 
 
     private:
-        ImFont* get_font() const override
+        imgui_md::MdSizedFont get_font() const override
         {
             if (m_is_code)
             {
                 // https://github.com/mekhontsev/imgui_md does not handle correctly code blocks
                 // so that we will never reach here...
-                return mMarkdownCollection.mFontCollection.GetFontCode();
+                auto fontCode = mMarkdownCollection.mFontCollection.GetFontCode();
+                return imgui_md::MdSizedFont{ fontCode.font, fontCode.size };
             }
             else
             {
                 ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
                 markdownTextStyle.headerLevel = m_hlevel;
-                markdownTextStyle.markdownEmphasis.bold = m_is_strong;
+                markdownTextStyle.markdownEmphasis.bold =
+                    m_is_strong || (m_is_table_header && m_table_header_highlight);
                 markdownTextStyle.markdownEmphasis.italic = m_is_em;
-                return mMarkdownCollection.mFontCollection.GetFont(markdownTextStyle);
+                auto font  = mMarkdownCollection.mFontCollection.GetFont(markdownTextStyle);
+                return imgui_md::MdSizedFont{ font.font, font.size };
             }
         };
 
         void open_url() const override
         {
-            if (mMarkdownOptions.callbacks.OnOpenLink)
-                mMarkdownOptions.callbacks.OnOpenLink(m_href);
+            if (mMarkdownOptions->callbacks.OnOpenLink)
+                mMarkdownOptions->callbacks.OnOpenLink(m_href);
         }
 
         bool get_image(image_info& nfo) const override
         {
-            if (! mMarkdownOptions.callbacks.OnImage)
+            if (! mMarkdownOptions->callbacks.OnImage)
                 return false;
 
-            std::optional<MarkdownImage> mdImage = mMarkdownOptions.callbacks.OnImage(m_img_src);
+            std::optional<MarkdownImage> mdImage = mMarkdownOptions->callbacks.OnImage(m_img_src);
 
             if (! mdImage.has_value())
                 return false;
 
-            // Image size adaptive depending on the resolution scale
+            // Image size adaptive depending on the resolution scale.
+            // Unlike fonts, ImGui::Image() draw sizes are not scaled by FontScaleDpi,
+            // so we apply the DPI factor explicitly to match the (DPI-scaled) text.
             {
-                float k = HelloImGui::DpiFontLoadingFactor();
+                float k = ImGui::GetStyle().FontScaleDpi;
                 nfo.size = ImVec2(mdImage->size.x * k, mdImage->size.y * k);
             }
 
-            nfo.col_border = mdImage->col_border;
-            nfo.col_tint = mdImage->col_tint;
             nfo.texture_id = mdImage->texture_id;
             nfo.uv0 = mdImage->uv0;
             nfo.uv1 = mdImage->uv1;
@@ -315,10 +347,40 @@ assets/
 
         void html_div(const std::string& divClass, bool openingDiv) override
         {
-            if (!mMarkdownOptions.callbacks.OnHtmlDiv)
+            if (!mMarkdownOptions->callbacks.OnHtmlDiv)
                 return;
 
-            mMarkdownOptions.callbacks.OnHtmlDiv(divClass, openingDiv);
+            mMarkdownOptions->callbacks.OnHtmlDiv(divClass, openingDiv);
+        }
+
+        bool check_html(const char* str, const char* str_end) override
+        {
+            // Give the user callback first shot at the tag; fall through to
+            // the base class so built-ins (<u>, <br>, <hr>, <sub>, <sup>,
+            // <kbd>, <mark>, <img>, <div>) still work if the callback is
+            // unset or returns false.
+            if (mMarkdownOptions->callbacks.OnHtmlSpan)
+            {
+                const size_t sz = (size_t)(str_end - str);
+                if (sz >= 3 && str[0] == '<')
+                {
+                    // Skip past '<' and optional '/'
+                    const char* p = str + 1;
+                    bool opening = true;
+                    if (p < str_end && *p == '/') { opening = false; ++p; }
+                    // Tag name ends at space, '>', or '/'
+                    const char* name_end = p;
+                    while (name_end < str_end && *name_end != ' ' && *name_end != '>' && *name_end != '/' && *name_end != '\t')
+                        ++name_end;
+                    if (name_end > p)
+                    {
+                        std::string tag(p, name_end);
+                        if (mMarkdownOptions->callbacks.OnHtmlSpan(tag, opening))
+                            return true;
+                    }
+                }
+            }
+            return imgui_md::check_html(str, str_end);
         }
 
         void render_code_block() override
@@ -344,7 +406,6 @@ assets/
             {
                 mSnippets[m_code_block] = Snippets::SnippetData();
                 auto& snippet = mSnippets[m_code_block];
-                snippet.Palette = Snippets::SnippetTheme::Mariana;
                 snippet.Code = code_without_last_empty_lines(m_code_block);
 
                 // set language
@@ -364,6 +425,7 @@ assets/
                     snippet.Language = Snippets::SnippetLanguage::AngelScript;
 
                 snippet.ShowCursorPosition = false;
+                snippet.ReadOnly = true;
             }
 
             ImGui::SetCursorPosX(0.f);
@@ -373,32 +435,267 @@ assets/
             ImGui::PopID();
         }
 
+#ifdef IMGUI_RICHMD_WITH_LATEX
+        // Lazy-initialize MicroTeX on first LaTeX span.
+        // We cannot do this in InitializeMarkdown() because the asset system
+        // (HelloImGui::AssetFileFullPath) may not be ready until after the
+        // fonts have loaded / backend started.
+        // Lazy MicroTeX init. Defensive: if the font assets are missing
+        // (corrupted install, or Pyodide download failed, etc.), log a
+        // warning once and leave MicroTeX uninitialized. The SPAN_LATEXMATH
+        // handlers below check IsInitialized() and fall back to rendering
+        // the LaTeX source as plain text instead of crashing on the asset
+        // lookup IM_ASSERT.
+        void EnsureMicroTeXInitialized()
+        {
+            if (ImGuiMicroTeX::IsInitialized())
+                return;
+            // One-shot failure flag: if init failed once, don't keep retrying
+            // (and re-logging) on every render.
+            if (mLatexInitFailed)
+                return;
+            const char* clmAsset = "fonts/latex/latinmodern-math.clm1";
+            const char* otfAsset = "fonts/latex/latinmodern-math.otf";
+            if (!HelloImGui::AssetExists(clmAsset) || !HelloImGui::AssetExists(otfAsset))
+            {
+                HelloImGui::Log(HelloImGui::LogLevel::Warning,
+                    "imgui_md: LaTeX font assets not found at fonts/latex/. "
+                    "Formulas will be shown as plain text source.");
+                mLatexInitFailed = true;
+                return;
+            }
+            std::string clmFile = HelloImGui::AssetFileFullPath(clmAsset);
+            std::string otfFile = HelloImGui::AssetFileFullPath(otfAsset);
+            ImGuiMicroTeX::Init(clmFile, otfFile);
+        }
+
+        // Set true once if MicroTeX init has failed, to avoid retry storms.
+        bool mLatexInitFailed = false;
+
+        // Returns physical-pixels-per-logical-pixel for the current display.
+        // On macOS retina this is 2.0; on standard DPI displays it is 1.0.
+        // Used to rasterize formulas at the framebuffer pixel density and
+        // display them at logical size (sharp on HiDPI screens).
+        static float PixelScale()
+        {
+            float s = ImGui::GetIO().DisplayFramebufferScale.y;
+            return (s > 0.01f) ? s : 1.0f;
+        }
+
+        void SPAN_LATEXMATH(bool e) override
+        {
+            imgui_md::SPAN_LATEXMATH(e);
+            if (e)
+                return;
+            EnsureMicroTeXInitialized();
+            if (!ImGuiMicroTeX::IsInitialized())
+            {
+                // Fallback: show the original LaTeX source inline, with the
+                // delimiters, so the user recognizes it as a math expression.
+                std::string fallback = "$" + m_latex_buffer + "$";
+                ImGui::TextUnformatted(fallback.c_str());
+                ImGui::SameLine(0.0f, 0.0f);
+                return;
+            }
+            // DPI-aware: rasterize at framebuffer density, display at logical size.
+            float pixelScale = PixelScale();
+            float logicalFontSize = ImGui::GetFontSize();
+            float physicalFontSize = logicalFontSize * pixelScale;
+            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color, ImGuiMicroTeX::TexStyle::Text);
+            ImTextureID texId = tex.TextureId();
+            if (texId == (ImTextureID)0)
+                return;
+            // tex.Width/Height/BaselineY are in physical pixels (the bitmap was
+            // rasterized at the higher density). Convert to logical pixels for
+            // ImGui layout.
+            float logicalW = (float)tex.Width / pixelScale;
+            float logicalH = (float)tex.Height / pixelScale;
+            float logicalBaselineY = (float)tex.BaselineY / pixelScale;
+            // Vertically align the formula so its baseline matches the surrounding text.
+            // ImGui::Text() draws starting at cursor.y, with the typographic baseline
+            // at cursor.y + baked->Ascent. To put the formula's baseline at the same
+            // position, the image top must be at cursor.y + textAscent - logicalBaselineY.
+            ImFontBaked* baked = ImGui::GetFontBaked();
+            float textAscent = baked ? baked->Ascent : logicalFontSize * 0.8f;
+            float savedY = ImGui::GetCursorPosY();
+            ImGui::SetCursorPosY(savedY + textAscent - logicalBaselineY);
+            ImGui::Image(texId, ImVec2(logicalW, logicalH));
+            ImGui::SameLine(0.0f, 0.0f);
+            // Restore cursor Y so subsequent inline content lands on the original line.
+            ImGui::SetCursorPosY(savedY);
+        }
+
+        void SPAN_LATEXMATH_DISPLAY(bool e) override
+        {
+            imgui_md::SPAN_LATEXMATH_DISPLAY(e);
+            if (e)
+                return;
+            EnsureMicroTeXInitialized();
+            if (!ImGuiMicroTeX::IsInitialized())
+            {
+                // Fallback: show the original LaTeX source on its own line.
+                ImGui::NewLine();
+                std::string fallback = "$$" + m_latex_buffer + "$$";
+                ImGui::TextUnformatted(fallback.c_str());
+                ImGui::NewLine();
+                return;
+            }
+            float pixelScale = PixelScale();
+            float logicalFontSize = ImGui::GetFontSize();
+            float physicalFontSize = logicalFontSize * pixelScale;
+            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
+            // Note: ImGuiMicroTeX::TexStyle::Display renders a bit bigger than ImGuiMicroTeX::TexStyle::Text
+            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color, ImGuiMicroTeX::TexStyle::Display);
+            ImTextureID texId = tex.TextureId();
+            if (texId == (ImTextureID)0)
+                return;
+            float logicalW = (float)tex.Width / pixelScale;
+            float logicalH = (float)tex.Height / pixelScale;
+            // Display math: centered on its own line.
+            ImGui::NewLine();
+            float avail = ImGui::GetContentRegionAvail().x;
+            float padX = (avail - logicalW) * 0.5f;
+            if (padX > 0.0f)
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + padX);
+            ImGui::Image(texId, ImVec2(logicalW, logicalH));
+            ImGui::NewLine();
+        }
+#endif
+
     };
 
 
     // Global renderer
     std::unique_ptr<MarkdownRenderer> gMarkdownRenderer;
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten/fetch.h>
+#include <mutex>
+
+    // Emscripten async download using emscripten_fetch
+    // State for pending downloads
+    struct EmscriptenDownloadState {
+        MarkdownDownloadStatus status = MarkdownDownloadStatus::NotStarted;
+        std::vector<uint8_t> data;
+        std::string errorMessage;
+    };
+
+    static std::map<std::string, EmscriptenDownloadState> gEmscriptenDownloads;
+
+    static void _emscripten_fetch_success(emscripten_fetch_t *fetch)
+    {
+        std::string url = fetch->url;
+        auto& state = gEmscriptenDownloads[url];
+        state.data.assign(
+            reinterpret_cast<const uint8_t*>(fetch->data),
+            reinterpret_cast<const uint8_t*>(fetch->data) + fetch->numBytes);
+        state.status = MarkdownDownloadStatus::Ready;
+        emscripten_fetch_close(fetch);
+    }
+
+    static void _emscripten_fetch_error(emscripten_fetch_t *fetch)
+    {
+        std::string url = fetch->url;
+        auto& state = gEmscriptenDownloads[url];
+        state.status = MarkdownDownloadStatus::Failed;
+        state.errorMessage = "HTTP " + std::to_string(fetch->status);
+        emscripten_fetch_close(fetch);
+    }
+
+    static MarkdownDownloadResult EmscriptenDownloadData(const std::string& url)
+    {
+        MarkdownDownloadResult result;
+
+        auto it = gEmscriptenDownloads.find(url);
+        if (it == gEmscriptenDownloads.end())
+        {
+            // Start async fetch
+            gEmscriptenDownloads[url] = EmscriptenDownloadState{MarkdownDownloadStatus::Downloading, {}, ""};
+
+            emscripten_fetch_attr_t attr;
+            emscripten_fetch_attr_init(&attr);
+            strcpy(attr.requestMethod, "GET");
+            attr.attributes = EMSCRIPTEN_FETCH_LOAD_TO_MEMORY;
+            attr.onsuccess = _emscripten_fetch_success;
+            attr.onerror = _emscripten_fetch_error;
+            emscripten_fetch(&attr, url.c_str());
+
+            result.status = MarkdownDownloadStatus::Downloading;
+            return result;
+        }
+
+        auto& state = it->second;
+        result.status = state.status;
+        if (state.status == MarkdownDownloadStatus::Ready)
+        {
+            result.data = std::move(state.data);
+            gEmscriptenDownloads.erase(it);
+        }
+        else if (state.status == MarkdownDownloadStatus::Failed)
+        {
+            result.errorMessage = state.errorMessage;
+            gEmscriptenDownloads.erase(it);
+        }
+        return result;
+    }
+#endif // __EMSCRIPTEN__
+
     // Global options
     MarkdownOptions gMarkdownOptions;
+    static Priv_OnInitializeMarkdownCallback gOnInitializeMarkdownCallback;
+    static bool gMarkdownWasInitialized = false;
+
+    void Priv_SetOnInitializeMarkdownCallback(Priv_OnInitializeMarkdownCallback callback)
+    {
+        gOnInitializeMarkdownCallback = std::move(callback);
+    }
 
     void DeInitializeMarkdown()
     {
+        // Clear per-frame callbacks that may hold Python objects before the interpreter shuts down.
+        // Keep gOnInitializeMarkdownCallback alive: it is set once at module import time
+        // and must survive teardown/setup cycles (e.g. Pyodide playground re-runs).
+        gMarkdownOptions.callbacks.OnDownloadData = nullptr;
         gMarkdownRenderer.release();
+        gMarkdownWasInitialized = false;
+        // The MarkdownRenderer just released above held an ImageCache whose
+        // entries point at GPU textures owned by HelloImGui's gImageFromAssetMap.
+        // Drop those too — keeping them after teardown leaks GPU memory and
+        // pins a now-invalid GL context (relevant when running outside
+        // HelloImGui::Run(), where Priv_TearDown does not run).
+        HelloImGui::FreeImageCache();
+#ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
+        ClearDesktopDownloads();
+#endif
+#ifdef IMGUI_RICHMD_WITH_LATEX
+        // Release MicroTeX resources (textures, FreeType, etc.)
+        // Safe to call even if Init() was never called.
+        if (ImGuiMicroTeX::IsInitialized())
+            ImGuiMicroTeX::Release();
+#endif
     }
 
     void InitializeMarkdown(const MarkdownOptions& options)
     {
-        static bool wasCalledAlready = false;
-        if (wasCalledAlready)
-        {
-            //std::cerr << "InitializeMarkdown can only be called once at application startup!\n";
+        if (gMarkdownWasInitialized)
             return;
-        }
-
 
         gMarkdownOptions = options;
-        wasCalledAlready = true;
+        if (gOnInitializeMarkdownCallback)
+            gOnInitializeMarkdownCallback(gMarkdownOptions);
+#ifdef __EMSCRIPTEN__
+        // On Emscripten, set a default download callback using emscripten_fetch
+        // (unless one was already set, e.g. by Python)
+        if (!gMarkdownOptions.callbacks.OnDownloadData)
+            gMarkdownOptions.callbacks.OnDownloadData = EmscriptenDownloadData;
+#elif defined(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
+        // On desktop C++, set a default download callback using libcurl
+        // (unless one was already set, e.g. by Python)
+        if (!gMarkdownOptions.callbacks.OnDownloadData)
+            gMarkdownOptions.callbacks.OnDownloadData = DesktopDownloadData;
+#endif
+        gMarkdownWasInitialized = true;
     }
 
 
@@ -416,7 +713,7 @@ assets/
     {
         auto fontLoaderFunction = []()
         {
-            gMarkdownRenderer = std::make_unique<MarkdownRenderer>(gMarkdownOptions);
+            gMarkdownRenderer = std::make_unique<MarkdownRenderer>(&gMarkdownOptions);
         };
         return fontLoaderFunction;
     }
@@ -433,6 +730,66 @@ assets/
     }
 
 
+    static bool _IsUrl(const std::string& path)
+    {
+        return path.rfind("http://", 0) == 0 || path.rfind("https://", 0) == 0;
+    }
+
+    static std::optional<MarkdownImage> _MakeMarkdownImage(const HelloImGui::ImageAndSize& imageInfo)
+    {
+        MarkdownImage r;
+        r.texture_id = imageInfo.textureId;
+        r.size = imageInfo.size;
+        r.uv0 = { 0,0 };
+        r.uv1 = {1,1};
+        r.col_tint = { 1,1,1,1 };
+        r.col_border = { 0,0,0,0 };
+        return r;
+    }
+
+    // Draw a simple rotating spinner using ImGui's DrawList (no external dependencies)
+    static void _DrawLoadingSpinner()
+    {
+        float size = ImGui::GetFontSize() * 2.0f;
+        ImVec2 cursor = ImGui::GetCursorScreenPos();
+        ImVec2 center(cursor.x + size * 0.5f, cursor.y + size * 0.5f);
+        float radius = size * 0.4f;
+        float thickness = 2.0f;
+        ImU32 color = ImGui::GetColorU32(ImGuiCol_Text, 0.6f);
+        float t = (float)ImGui::GetTime();
+
+        ImDrawList* dl = ImGui::GetWindowDrawList();
+        int segments = 12;
+        for (int i = 0; i < segments; i++)
+        {
+            float a = (float)i / (float)segments * 3.14159265358979f * 2.0f;
+            // Fade based on rotation phase
+            float fade = fmodf((float)i / (float)segments + t * 1.5f, 1.0f);
+            ImU32 c = ImGui::GetColorU32(ImGuiCol_Text, fade * 0.8f);
+            float inner = radius * 0.5f;
+            ImVec2 p1(center.x + cosf(a) * inner, center.y + sinf(a) * inner);
+            ImVec2 p2(center.x + cosf(a) * radius, center.y + sinf(a) * radius);
+            dl->AddLine(p1, p2, c, thickness);
+        }
+        ImGui::Dummy(ImVec2(size, size));
+    }
+
+    static HelloImGui::ImageAndSize _BrokenImageAndSize()
+    {
+        std::string errorImage = "images/markdown_broken_image.png";
+        if (HelloImGui::AssetExists(errorImage))
+            return HelloImGui::ImageAndSizeFromAsset(errorImage.c_str());
+        return {};
+    }
+
+    static std::optional<MarkdownImage> _BrokenImage()
+    {
+        auto ias = _BrokenImageAndSize();
+        if (ias.textureId != ImTextureID(0))
+            return _MakeMarkdownImage(ias);
+        return std::nullopt;
+    }
+
     std::optional<MarkdownImage> OnImage_Default(const std::string& image_path)
     {
 #ifdef CAN_RENDER_IMAGES
@@ -443,39 +800,58 @@ assets/
         }
 
         auto & imageCache = gMarkdownRenderer->ImageCache();
-        if (imageCache.find(image_path) == imageCache.end())
+
+        // If already cached, return it
+        if (imageCache.find(image_path) != imageCache.end())
+            return _MakeMarkdownImage(imageCache.at(image_path));
+
+        // Handle URL images via OnDownloadData callback
+        if (_IsUrl(image_path) && gMarkdownOptions.callbacks.OnDownloadData)
         {
-            std::string errorImage = "images/markdown_broken_image.png";
-            if (HelloImGui::AssetExists(image_path))
-                imageCache[image_path] = HelloImGui::ImageAndSizeFromAsset(image_path.c_str());
-            else if (HelloImGui::AssetExists(errorImage))
-                    imageCache[image_path] = HelloImGui::ImageAndSizeFromAsset(errorImage.c_str());
-            else
-                return std::nullopt;
+            auto result = gMarkdownOptions.callbacks.OnDownloadData(image_path);
+            switch (result.status)
+            {
+            case MarkdownDownloadStatus::Ready:
+                imageCache[image_path] = HelloImGui::ImageAndSizeFromEncodedData(
+                    result.data.data(), result.data.size(), image_path);
+                return _MakeMarkdownImage(imageCache.at(image_path));
+
+            case MarkdownDownloadStatus::Downloading:
+                // Show spinner while downloading (don't cache - will be called again next frame)
+                _DrawLoadingSpinner();
+                return std::nullopt;  // nullopt so SPAN_IMG doesn't also draw an image
+
+            case MarkdownDownloadStatus::Failed:
+                if (!result.errorMessage.empty())
+                    std::cerr << "imgui_md: download failed for " << image_path << ": " << result.errorMessage << "\n";
+                imageCache[image_path] = _BrokenImageAndSize(); // Cache broken image to avoid retrying
+                return _BrokenImage();
+
+            case MarkdownDownloadStatus::NotStarted:
+            default:
+                return _BrokenImage();
+            }
         }
 
-        const auto& imageInfo = imageCache.at(image_path);
+        // Handle local asset images
+        if (HelloImGui::AssetExists(image_path))
+        {
+            imageCache[image_path] = HelloImGui::ImageAndSizeFromAsset(image_path.c_str());
+            return _MakeMarkdownImage(imageCache.at(image_path));
+        }
 
-        MarkdownImage r;
-
-        r.texture_id = imageInfo.textureId;
-        r.size = imageInfo.size;
-        r.uv0 = { 0,0 };
-        r.uv1 = {1,1};
-        r.col_tint = { 1,1,1,1 };
-        r.col_border = { 0,0,0,0 };
-        return r;
+        return _BrokenImage();
 #else
         return std::nullopt;
 #endif
     }
 
-    ImFont* GetCodeFont()
+    SizedFont GetCodeFont()
     {
         return gMarkdownRenderer->get_font_code();
     }
 
-    ImFont* GetFont(const MarkdownFontSpec& fontSpec)
+    SizedFont GetFont(const MarkdownFontSpec& fontSpec)
     {
         return gMarkdownRenderer->GetFont(fontSpec);
     }

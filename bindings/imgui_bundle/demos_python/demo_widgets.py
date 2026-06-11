@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from typing import List
 from imgui_bundle import (
     imgui,
@@ -9,13 +9,20 @@ from imgui_bundle import (
     immapp,
     ImVec4,
     im_cool_bar,
-    icons_fontawesome,
+    icons_fontawesome_4,
 )
 from imgui_bundle import imgui_command_palette as imcmd
 from imgui_bundle import portable_file_dialogs as pfd
 
 
-@immapp.static(knob_float_value=0, knob_int_value=0)
+@immapp.static(
+    knob_float_value=0,
+    knob_int_value=0,
+    use_custom_colors=False,
+    primary_col=[0.1, 0.45, 0.7, 1.0],
+    secondary_col=[0.7, 0.7, 0.7, 1.0],
+    track_col=[0.3, 0.3, 0.7, 1.0],
+)
 def demo_knobs():
     static = demo_knobs
     from imgui_bundle import imgui_knobs
@@ -72,6 +79,17 @@ def demo_knobs():
         imgui.new_line()
         imgui.pop_id()
 
+    # Apply custom colors before drawing knobs
+    if static.use_custom_colors:
+        p, s, t = static.primary_col, static.secondary_col, static.track_col
+        imgui_knobs.set_knob_colors(imgui_knobs.KnobColors(
+            primary=imgui_knobs.color_set(imgui.ImColor(p[0], p[1], p[2], p[3])),
+            secondary=imgui_knobs.color_set(imgui.ImColor(s[0], s[1], s[2], s[3])),
+            track=imgui_knobs.color_set(imgui.ImColor(t[0], t[1], t[2], t[3])),
+        ))
+    else:
+        imgui_knobs.unset_knob_colors()
+
     knobs_size_small = immapp.em_size() * 2.5
     knobs_size_big = knobs_size_small * 1.3
 
@@ -87,8 +105,21 @@ def demo_knobs():
     show_int_knobs(knobs_size_big)
     imgui.end_group()
 
+    # Customize colors button + popup (below the knobs)
+    if imgui.button("Customize Colors"):
+        imgui.open_popup("knob_colors_popup")
+    if imgui.begin_popup("knob_colors_popup"):
+        _, static.use_custom_colors = imgui.checkbox("Use custom colors", static.use_custom_colors)
+        if static.use_custom_colors:
+            _, static.primary_col = imgui.color_edit4("Primary (indicator)", static.primary_col)
+            _, static.secondary_col = imgui.color_edit4("Secondary (circle)", static.secondary_col)
+            _, static.track_col = imgui.color_edit4("Track (arc)", static.track_col)
+        imgui.end_popup()
 
+
+@immapp.static(show_full_demo=False)
 def demo_spinner():
+    static = demo_spinner
     from imgui_bundle import imspinner
 
     imgui_md.render(
@@ -122,6 +153,11 @@ def demo_spinner():
         color,
         color,
     )
+
+    imgui.same_line()
+    _, static.show_full_demo = imgui.checkbox("Show full spinners demo", static.show_full_demo)
+    if static.show_full_demo:
+        imspinner.demo_spinners()
 
 
 @immapp.static(flag=True)
@@ -279,7 +315,7 @@ def demo_imfile_dialog():
     )
     # Warning / low support
     imgui.same_line()
-    imgui.text(icons_fontawesome.ICON_FA_EXCLAMATION_TRIANGLE)
+    imgui.text(icons_fontawesome_4.ICON_FA_EXCLAMATION_TRIANGLE)
     imgui.set_item_tooltip("""
     It is advised to use Portable File Dialogs instead, which offer native dialogs on each platform,
     as well as notifications and messages.
@@ -409,7 +445,7 @@ def demo_cool_bar():
         w = im_cool_bar.get_cool_bar_item_width()
 
         # Display transparent image and check if clicked
-        hello_imgui.image_from_asset("images/bear_transparent.png", ImVec2(w, w))
+        hello_imgui.image_from_asset("images/world.png", ImVec2(w, w))
         clicked = imgui.is_item_hovered() and imgui.is_mouse_clicked(0)
 
         # Optional: add a label on the image
@@ -425,18 +461,17 @@ def demo_cool_bar():
     button_labels = ["A", "B", "C", "D", "E", "F"]
     imgui_md.render_unindented(
         """
-        # ImCoolBar:
+        # ImCoolBar
         ImCoolBar provides a dock-like Cool bar for Dear ImGui
         """
     )
 
-    cool_bar_config = im_cool_bar.ImCoolBarConfig()
-    cool_bar_config.anchor = ImVec2(
+    cool_bar_settings = im_cool_bar.ImCoolBarSettings()
+    cool_bar_settings.anchor = ImVec2(
         0.5, 0.07
     )  #  position in the window (ratio of window size)
-    if im_cool_bar.begin_cool_bar(
-        "##CoolBarMain", im_cool_bar.ImCoolBarFlags_.horizontal.value, cool_bar_config
-    ):
+    cool_bar_settings.mode = im_cool_bar.ImCoolBarFlags_.horizontal
+    if im_cool_bar.begin_cool_bar("##CoolBarMain", cool_bar_settings):
         for label in button_labels:
             if im_cool_bar.cool_bar_item():
                 if show_cool_bar_button(label):
@@ -449,20 +484,15 @@ def demo_cool_bar():
 
 def demo_gui():
     demo_cool_bar()
+    demo_toggle()
+    demo_spinner()
+    demo_knobs()
+    demo_command_palette()
+    imgui.new_line()
     demo_portable_file_dialogs()
     imgui.new_line()
     demo_imfile_dialog()
-    imgui.new_line()
-    demo_knobs()
-    demo_toggle()
-    imgui.new_line()
-    demo_spinner()
-    demo_command_palette()
 
 
 if __name__ == "__main__":
-    from imgui_bundle.demos_python import demo_utils
-    demo_utils.set_hello_imgui_demo_assets_folder()
-
-    from imgui_bundle import immapp
-    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))  # type: ignore
+    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))

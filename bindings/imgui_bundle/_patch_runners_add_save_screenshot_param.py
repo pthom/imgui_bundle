@@ -1,7 +1,7 @@
 """Patch the immapp and hello_imgui runners for tutorials.
 - Will save a screenshot of the final app state
 """
-from typing import Callable
+from typing import Any, Callable
 
 GuiFunction = Callable[[], None]
 
@@ -20,7 +20,7 @@ def _save_hello_imgui_screenshot(image_file: str) -> None:
     cv2.imwrite(image_file, thumbnail)
 
 
-def _get_caller_filename(depth: int):
+def _get_caller_filename(depth: int) -> str:
     import inspect
     stack = inspect.stack()
     caller_frame = stack[depth]
@@ -31,17 +31,20 @@ def _get_caller_filename(depth: int):
 def patch_runners_add_save_screenshot_param() -> None:
     from imgui_bundle import immapp, hello_imgui
 
-    def patch_runner(run_backup):
-        def patched_run(*args, **kwargs):
+    def patch_runner(run_backup: Any) -> Any:
+        def patched_run(*args: Any, **kwargs: Any) -> None:
             caller_file = _get_caller_filename(2)
 
-            run_backup(*args, **kwargs)
-
-            save_screenshot = kwargs.get("save_screenshot", False)
-            if "save_screenshot" in kwargs:
-                del kwargs["save_screenshot"]
+            # Extract and remove `save_screenshot` BEFORE delegating to the
+            # underlying runner, otherwise it would be passed through as a
+            # kwarg to `immapp.run` / `hello_imgui.run` which do not accept
+            # it. (Some C++ binding wrappers happen to be forgiving about
+            # unknown kwargs, but we should not rely on that.)
+            save_screenshot = kwargs.pop("save_screenshot", False)
             if "imgui_bundle/tutorial/" in caller_file:
                 save_screenshot = True
+
+            run_backup(*args, **kwargs)
 
             if save_screenshot:
                 image_file = caller_file.replace(".py", ".jpg")

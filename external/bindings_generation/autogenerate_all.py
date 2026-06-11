@@ -1,20 +1,31 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import importlib
 import sys
 import os
 
-sys.path.append(os.path.dirname(__file__) + "/..")
-from bindings_generation import all_external_libraries  # noqa: E402
+from bundle_libs_tooling import all_external_libraries  # noqa: E402
+
+
+def autogenerate_one_lib(lib):
+    """Regenerate bindings for a single ExternalLibrary."""
+    generator_script_name = lib.generator_script_name()
+    bindings_folder = lib.bindings_folder_abs_path()
+    if bindings_folder not in sys.path:
+        sys.path.append(bindings_folder)
+    generator_module = importlib.import_module(generator_script_name)
+    generator_module.main()
+
+
+def autogenerate_by_name(name: str):
+    """Regenerate bindings for a library given its name (snake_case or original)."""
+    lib = all_external_libraries.find_lib(name)
+    assert lib.is_published_in_python, f"'{name}' ({lib.name}) has no Python bindings"
+    autogenerate_one_lib(lib)
 
 
 def autogenerate_all():
     for lib in all_external_libraries.published_libs():
-        generator_script_name = lib.generator_script_name()
-        bindings_folder = lib.bindings_folder_abs_path()
-
-        sys.path.append(bindings_folder)
-        generator_module = importlib.import_module(generator_script_name)
-        generator_module.main()
+        autogenerate_one_lib(lib)
 
 
 def write_cmake_all_pybind_files():

@@ -1,0 +1,40 @@
+# Deploys docs/pages_redirector/ to GitHub Pages.
+# pthom.github.io/imgui_bundle/* redirects to imgui-bundle.pages.dev/*.
+name: Deploy GitHub Pages redirect
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/pages_redirector/**'
+      - '.github/workflows/gh_pages_redirect.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: docs/pages_redirector
+
+      - id: deploy
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v5

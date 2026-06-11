@@ -36,13 +36,20 @@ repos:
 
 - repo: https://github.com/astral-sh/ruff-pre-commit
   # Ruff version.
-  rev: v0.1.5
+  rev: v0.15.11
   hooks:
     # Run the linter.
     - id: ruff
-    #    args: [ --fix ]
+      exclude: '\.ipynb$'
+      # args: [ --fix ]
     # Run the formatter.
     # - id: ruff-format
+
+# Run mypy static type checking
+#- repo: https://github.com/pre-commit/mirrors-mypy
+#  rev: v1.20.1
+#  hooks:
+#    -   id: mypy
 
 ## Black, the code formatter, natively supports pre-commit
 #- repo: https://github.com/psf/black

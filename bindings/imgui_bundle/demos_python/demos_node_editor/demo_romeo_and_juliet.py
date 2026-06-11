@@ -1,6 +1,8 @@
 import os.path
 
-from imgui_bundle import immapp, imgui, imgui_node_editor as ed, ImVec4
+from imgui_bundle import immapp, imgui, imgui_node_editor as ed, ImVec4, ImVec2
+
+first_frame = True
 
 
 class Lover:
@@ -44,8 +46,8 @@ class Tie:
         self.kind = kind
 
     def draw(self) -> None:
-        red = ImVec4(1.0, 0.3, 0.2, 1.0)  # type: ignore
-        green = ImVec4(0.3, 0.9, 0.0, 1.0)  # type: ignore
+        red = ImVec4(1.0, 0.3, 0.2, 1.0)
+        green = ImVec4(0.3, 0.9, 0.0, 1.0)
         if self.kind == "loves":
             ed.link(self.id, self.lover.pin_loves, self.loved.pin_in, green)
         else:
@@ -66,9 +68,18 @@ links = [
 
 
 def demo_gui():
+    global first_frame
     this_dir = os.path.dirname(__file__)
     ed.get_config().settings_file = this_dir + "/romeo_and_juliet.json"
     ed.begin("Romeo and Juliet")
+
+    # Position nodes as a triangle on first frame
+    if first_frame:
+        ed.set_node_position(lovers[0].node_id, ImVec2(150, 0))    # Romeo - top
+        ed.set_node_position(lovers[1].node_id, ImVec2(300, 200))  # Juliet - bottom right
+        ed.set_node_position(lovers[2].node_id, ImVec2(0, 200))    # Count Paris - bottom left
+        first_frame = False
+
     for lover in lovers:
         lover.draw()
     for link in links:
@@ -77,4 +88,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    immapp.run(demo_gui, with_node_editor=True, window_size=(1000, 800), window_title="It will not end well...")  # type: ignore
+    immapp.run(demo_gui, with_node_editor=True, window_size=(1000, 800), window_title="It will not end well...")

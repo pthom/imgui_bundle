@@ -1,8 +1,8 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #pragma once
 #include "imgui.h"
 #include <cstdint>
-#include "ImGuizmo/ImZoomSlider.h"
+#include "ImZoomSlider.h"
 #include "ImGuizmoPure/Editable.h"
 
 #include <tuple>

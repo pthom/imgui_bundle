@@ -25,6 +25,14 @@ std::function<void()> FnResetImGuiNodeEditorId; // may be bound from pybind_imgu
 void UpdateNodeEditorColorsFromImguiColors();
 #endif
 
+#ifdef IMGUI_BUNDLE_WITH_IMANIM
+#include "im_anim.h"
+#endif
+
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+#include "immapp/js_clipboard_tricks.h"
+#endif
+
 #include <chrono>
 #include <cassert>
 #include <filesystem>
@@ -109,10 +117,14 @@ namespace ImmApp
             gImmAppContext._NodeEditorContext = ax::NodeEditor::CreateEditor(&gImmAppContext._NodeEditorConfig);
             ax::NodeEditor::SetCurrentEditor(gImmAppContext._NodeEditorContext.value());
 
-            runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
-                FnResetImGuiNodeEditorId,
-                runnerParams.callbacks.BeforeExit
-            );
+            // Only sequence the ID reset function if it's been set (by node editor bindings)
+            if (FnResetImGuiNodeEditorId)
+            {
+                runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
+                    FnResetImGuiNodeEditorId,
+                    runnerParams.callbacks.BeforeExit
+                );
+            }
 
             // Update node editor colors from imgui colors
             auto fnUpdateNodeEditorColorsFromImguiColors = [&]
@@ -134,16 +146,37 @@ namespace ImmApp
         }
 #endif
 
+        // withLatex implies withMarkdown
+        if (addOnsParams.withLatex)
+            addOnsParams.withMarkdown = true;
+
         // load markdown fonts if needed
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
         {
             if (!addOnsParams.withMarkdownOptions.has_value())
                 addOnsParams.withMarkdownOptions = ImGuiMd::MarkdownOptions();
+            // Propagate withLatex convenience flag into MarkdownOptions.
+            if (addOnsParams.withLatex)
+                addOnsParams.withMarkdownOptions->withLatex = true;
             ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
 
             runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::SequenceFunctions(
                 runnerParams.callbacks.LoadAdditionalFonts,
                 ImGuiMd::GetFontLoaderFunction());
+
+            // Tear down markdown WHILE the GL context is still alive.
+            // BeforeExit fires inside AbstractRunner::TearDown just before
+            // Impl_Cleanup destroys the GL context, which is exactly what
+            // ImGuiMd::DeInitializeMarkdown needs: it triggers
+            // ImGuiMicroTeX::Release() → sTextureCache.clear() → each
+            // TextureGpuOpenGl destructor → glDeleteTextures(...). If we
+            // ran this from immapp::Priv_TearDown (after HelloImGui::Run
+            // returns), the GL context would already be gone and the
+            // glDeleteTextures call would crash on Linux.
+            runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
+                runnerParams.callbacks.BeforeExit,
+                [](){ ImGuiMd::DeInitializeMarkdown(); }
+            );
         }
 
 #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
@@ -192,11 +225,39 @@ namespace ImmApp
         }
 #endif
 
+#ifdef IMGUI_BUNDLE_WITH_IMANIM
+        // Clear ImAnim cache, before OpenGl is uninitialized
+        if (addOnsParams.withImAnim)
+        {
+            runnerParams.callbacks.PostNewFrame = HelloImGui::SequenceFunctions(
+                runnerParams.callbacks.PostNewFrame,
+                []() {
+                    iam_update_begin_frame();
+                    iam_clip_update(ImGui::GetIO().DeltaTime);
+                });
+        }
+#endif
+
+
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
         // Clear ImmVision cache, before OpenGl is uninitialized
         runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
             runnerParams.callbacks.BeforeExit,
             ImmVision::ClearTextureCache);
+#endif
+
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+        // SDL2's Emscripten backend doesn't implement clipboard.
+        // Install JS event listeners to bridge browser clipboard with ImGui.
+        runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
+            runnerParams.callbacks.PostInit,
+            JsClipboard_Install
+        );
+        // Process paste events each frame (handles Cmd+V on Mac)
+        runnerParams.callbacks.PostNewFrame = HelloImGui::SequenceFunctions(
+            runnerParams.callbacks.PostNewFrame,
+            JsClipboard_ProcessPasteRequest
+        );
 #endif
     }
 
@@ -224,8 +285,12 @@ namespace ImmApp
         }
 #endif
 
-        if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
-            ImGuiMd::DeInitializeMarkdown();
+        // Note: ImGuiMd::DeInitializeMarkdown() is no longer called from
+        // here. It is invoked from a BeforeExit callback registered in
+        // Priv_Setup, so it runs while the GL context is still alive.
+        // (Calling it here would run after HelloImGui::Run has destroyed
+        // the context, which causes a crash inside ~TextureGpuOpenGl
+        // → glDeleteTextures on Linux.)
     }
 
     void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
@@ -250,6 +315,8 @@ namespace ImmApp
         bool windowRestorePreviousGeometry,
         const ScreenSize& windowSize,
         float fpsIdle,
+        bool topMost,
+        bool iniDisable,
 
         // ImGuiBundle_AddOnsParams below:
         bool withImplot,
@@ -257,6 +324,8 @@ namespace ImmApp
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withImAnim,
+        bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -270,6 +339,8 @@ namespace ImmApp
         simpleRunnerParams.windowRestorePreviousGeometry = windowRestorePreviousGeometry;
         simpleRunnerParams.windowSize = windowSize;
         simpleRunnerParams.fpsIdle = fpsIdle;
+        simpleRunnerParams.topMost = topMost;
+        simpleRunnerParams.iniDisable = iniDisable;
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
@@ -277,6 +348,8 @@ namespace ImmApp
         addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+        addOnsParams.withImAnim = withImAnim;
+        addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif
@@ -294,12 +367,16 @@ namespace ImmApp
         bool windowRestorePreviousGeometry,
         const ScreenSize& windowSize,
         float fpsIdle,
+        bool topMost,
+        bool iniDisable,
 
         // ImGuiBundle_AddOnsParams below:
         bool withImplot,
         bool withImplot3d,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withImAnim,
+        bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
@@ -313,6 +390,8 @@ namespace ImmApp
         simpleRunnerParams.windowRestorePreviousGeometry = windowRestorePreviousGeometry;
         simpleRunnerParams.windowSize = windowSize;
         simpleRunnerParams.fpsIdle = fpsIdle;
+        simpleRunnerParams.topMost = topMost;
+        simpleRunnerParams.iniDisable = iniDisable;
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
@@ -320,6 +399,8 @@ namespace ImmApp
         addOnsParams.withMarkdown = true;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+        addOnsParams.withImAnim = withImAnim;
+        addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif
@@ -373,10 +454,13 @@ namespace ImmApp
     // NodeEditorSettingsLocation returns the path to the json file for the node editor settings.
     std::string NodeEditorSettingsLocation(const HelloImGui::RunnerParams& runnerParams)
     {
-        std::string iniLocation = HelloImGui::IniSettingsLocation(runnerParams);
+        auto iniLocationOpt = HelloImGui::IniSettingsLocation(runnerParams);
+        if (!iniLocationOpt.has_value())
+            return "";
+
         // iniLocation is of the form path/to/your/app.ini
         // => we replace it with path/to/your/app_node_editor.json
-        std::string jsonLocation = iniLocation;
+        std::string jsonLocation = iniLocationOpt.value();
         jsonLocation.replace(jsonLocation.size() - 4, 4, ".node_editor.json");
         return jsonLocation;
     }
@@ -394,7 +478,10 @@ namespace ImmApp
     // DeleteNodeEditorSettings deletes the json file for the node editor settings.
     void DeleteNodeEditorSettings(const HelloImGui::RunnerParams& runnerParams)
     {
-        std::string filename = IniSettingsLocation(runnerParams);
+        auto filenameOpt = IniSettingsLocation(runnerParams);
+        if (!filenameOpt.has_value())
+            return;
+        const std::string& filename = filenameOpt.value();
         if (filename.empty())
             return;
         if (!std::filesystem::exists(filename))
@@ -418,13 +505,19 @@ namespace ManualRender  // namespace ImmApp::ManualRender
     };
     RendererStatus sCurrentStatus = RendererStatus::NotInitialized;
 
-    // Changes the current status to Initialized if it was NotInitialized,
-    // otherwise raises an error (assert or exception)
-    void TrySwitchToInitialized()
+    // Storage for RunnerParams when created from SimpleRunnerParams or GuiFunction
+    // This is necessary because HelloImGui::ManualRender stores a pointer to the runnerParams,
+    // so we need to keep it alive between Setup and TearDown
+    std::optional<HelloImGui::RunnerParams> sStoredRunnerParams;
+
+    // Asserts that the renderer is currently NotInitialized, without changing state.
+    // Every public Setup* entry point calls this FIRST, before any state mutation,
+    // so that on collision we throw while globals are still pristine (notably
+    // sStoredRunnerParams, which HelloImGui::ManualRender holds a pointer into).
+    void AssertNotInitialized()
     {
         if (sCurrentStatus == RendererStatus::Initialized)
             IM_ASSERT(false && "ImmApp::ManualRender::SetupFromXXX() cannot be called while already initialized. Call TearDown() first.");
-        sCurrentStatus = RendererStatus::Initialized;
     }
 
     // Changes the current status to NotInitialized if it was Initialized,
@@ -437,18 +530,22 @@ namespace ManualRender  // namespace ImmApp::ManualRender
     }
 
 
-    void SetupFromRunnerParams(const HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
+    void SetupFromRunnerParams(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
     {
-        TrySwitchToInitialized();
-        HelloImGui::RunnerParams runnerParamsCopy = runnerParams;
-        Priv_Setup(runnerParamsCopy, addOnsParams);
-        HelloImGui::ManualRender::SetupFromRunnerParams(runnerParamsCopy);
+        AssertNotInitialized();
+        Priv_Setup(runnerParams, addOnsParams);
+        HelloImGui::ManualRender::SetupFromRunnerParams(runnerParams);
+        // Flip state only after success — if any of the above throws, we stay
+        // NotInitialized so a follow-up TearDown() doesn't operate on partial state.
+        sCurrentStatus = RendererStatus::Initialized;
     }
 
     void SetupFromSimpleRunnerParams(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)
     {
-        HelloImGui::RunnerParams runnerParams = simpleParams.ToRunnerParams();
-        SetupFromRunnerParams(runnerParams, addOnsParams);
+        AssertNotInitialized();
+        // Store the runnerParams to keep it alive for the entire lifecycle
+        sStoredRunnerParams = simpleParams.ToRunnerParams();
+        SetupFromRunnerParams(sStoredRunnerParams.value(), addOnsParams);
     }
 
     void SetupFromGuiFunction(
@@ -458,6 +555,8 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         bool windowRestorePreviousGeometry,
         const ScreenSize& windowSize,
         float fpsIdle,
+        bool topMost,
+        bool iniDisable,
 
         // AddOnsParams below:
         bool withImplot,
@@ -465,12 +564,14 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
         const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
     )
     {
+        AssertNotInitialized();
         HelloImGui::SimpleRunnerParams simpleRunnerParams;
         simpleRunnerParams.guiFunction = guiFunction;
         simpleRunnerParams.windowTitle = windowTitle;
@@ -478,13 +579,16 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         simpleRunnerParams.windowRestorePreviousGeometry = windowRestorePreviousGeometry;
         simpleRunnerParams.windowSize = windowSize;
         simpleRunnerParams.fpsIdle = fpsIdle;
+        simpleRunnerParams.topMost = topMost;
+        simpleRunnerParams.iniDisable = iniDisable;
 
         AddOnsParams addOnsParams;
         addOnsParams.withImplot = withImplot;
         addOnsParams.withImplot3d = withImplot3d;
-        addOnsParams.withMarkdown = true;
+        addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+        addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;
 #endif
@@ -503,6 +607,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         TrySwitchToNotInitialized();
         HelloImGui::ManualRender::TearDown();
         Priv_TearDown();
+        sStoredRunnerParams.reset();  // Clear the stored RunnerParams
     }
 } // namespace ManualRender
 

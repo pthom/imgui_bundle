@@ -1,15 +1,77 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
-from imgui_bundle._imgui_bundle import __bundle_submodules__, __bundle_pyodide__ # type: ignore
-from imgui_bundle._imgui_bundle import __version__, compilation_time
-from typing import Union, Tuple, List
+import sys
+
+from imgui_bundle._imgui_bundle import __bundle_submodules_available__, __bundle_submodules_disabled__, __bundle_pyodide__ # type: ignore
+from imgui_bundle._imgui_bundle import __version__, __build_number__, compilation_time
+from types import ModuleType
+from typing import Union, Tuple, List, overload
 
 
-def has_submodule(submodule_name):
-    return submodule_name in __bundle_submodules__
+def has_submodule(submodule_name: str) -> bool:
+    return submodule_name in __bundle_submodules_available__
 
 
-__all__ = ["__version__", "compilation_time"]
+def _publish(name: str, module: ModuleType) -> None:
+    """Expose a native submodule under `imgui_bundle.<name>` in sys.modules.
+
+    Enables `from imgui_bundle.<name> import ...` in addition to the
+    existing `from imgui_bundle import <name>`. Without this, the native
+    module's fully-qualified name stays `imgui_bundle._imgui_bundle.<name>`,
+    which is what `sys.modules` keys on — the public path isn't registered.
+    """
+    sys.modules[f"imgui_bundle.{name}"] = module
+
+
+def info() -> str:
+    """Return information about imgui_bundle: version, compilation time, and available submodules.
+
+    Returns:
+        str: Formatted string with package information
+
+    Example:
+        >>> import imgui_bundle
+        >>> print(imgui_bundle.info())
+        ImGui Bundle v1.92.6
+        Compiled on Jan 26 2026 at 15:49:15
+        Available submodules (16): imgui, imgui.internal, imgui.backends, ...
+    """
+    comp_time = compilation_time()
+
+    # Format submodules list
+    submodules_str = ", ".join(__bundle_submodules_available__)
+
+    info_str = f"ImGui Bundle v{__version__} buil {__build_number__}\n"
+    info_str += f"{comp_time}\n"
+    info_str += f"Available submodules ({len(__bundle_submodules_available__)}): {submodules_str}\n"
+
+    if len(__bundle_submodules_disabled__) > 0:
+        disabled_str = ", ".join(__bundle_submodules_disabled__)
+        info_str += f"Disabled submodules ({len(__bundle_submodules_disabled__)}): {disabled_str}"
+
+    return info_str
+
+
+def _is_pydantic_v2_available() -> bool:
+    from importlib import metadata
+    try:
+            version_str: str = metadata.version("pydantic")
+    except metadata.PackageNotFoundError:
+        return False
+    major: int = int(version_str.split(".")[0])
+    return major >= 2
+
+
+__all__ = [
+    "__version__",
+    "__build_number__",
+    "compilation_time",
+    "info",
+    "has_submodule",
+    "__bundle_submodules_available__",
+    "__bundle_submodules_disabled__",
+    "__bundle_pyodide__"
+]
 
 
 #
@@ -17,13 +79,20 @@ __all__ = ["__version__", "compilation_time"]
 #
 if has_submodule("imgui"):
     from imgui_bundle._imgui_bundle import imgui as imgui
+    _publish("imgui", imgui)
+    # Let Python resolve `imgui_bundle.imgui.<submodule>` against the source
+    # dir (e.g. test_engine_checks.py), since the C++ submodule shadows it.
+    imgui.__path__ = [os.path.join(os.path.dirname(__file__), "imgui")]
+    _publish("imgui.internal", imgui.internal)
+    _publish("imgui.backends", imgui.backends)
+    if has_submodule("imgui.test_engine"):
+        _publish("imgui.test_engine", imgui.test_engine)
+        # Catch Python exceptions in test_func/gui_func/teardown_func so they
+        # become logged test failures instead of nanobind::python_error ->
+        # std::terminate (which would crash the whole process).
+        from imgui_bundle import _imgui_test_engine_python_safety  # noqa: F401
+        _imgui_test_engine_python_safety.install(imgui.test_engine)
     from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX  # noqa: F401
-    from imgui_bundle import imgui_pydantic as imgui_pydantic
-    from imgui_bundle.imgui_pydantic import (
-        ImVec4_Pydantic as ImVec4_Pydantic,
-        ImVec2_Pydantic as ImVec2_Pydantic,
-        ImColor_Pydantic as ImColor_Pydantic,
-    )
     from imgui_bundle.im_col32 import IM_COL32  # noqa: F401, E402
     from imgui_bundle import imgui_ctx as imgui_ctx  # noqa: E402
 
@@ -44,13 +113,36 @@ if has_submodule("imgui"):
         "FLT_MAX",
         "IM_COL32",
         "imgui_ctx",
-        # Pydantic types
-        "imgui_pydantic",
-        "ImVec4_Pydantic",
-        "ImVec2_Pydantic",
-        "ImColor_Pydantic",
     ])
 
+    # Em sizing utilities (DPI-independent sizing)
+    def em_size(v: float = 1.0) -> float:
+        """Returns a size in pixels corresponding to `v` em units.
+
+        1 em = current font size (ImGui::GetFontSize()).
+        Use this for DPI-independent sizing.
+        """
+        return imgui.get_font_size() * v
+
+    @overload
+    def em_to_vec2(x: float, y: float) -> ImVec2: ...
+    @overload
+    def em_to_vec2(v: ImVec2Like) -> ImVec2: ...
+
+    def em_to_vec2(x, y=None) -> ImVec2:
+        """Returns an ImVec2 sized in em units (multiples of font size).
+
+        Can be called as:
+            em_to_vec2(3.0, 2.0)  -> ImVec2 of 3em x 2em
+            em_to_vec2((3.0, 2.0))  -> same, from tuple
+            em_to_vec2(ImVec2(3.0, 2.0))  -> same, from ImVec2
+        """
+        font_size = imgui.get_font_size()
+        if y is None:
+            return ImVec2(font_size * x[0], font_size * x[1])
+        return ImVec2(font_size * x, font_size * y)
+
+    __all__.extend(["em_size", "em_to_vec2"])
 
     # Patch after imgui v1.90.9, where
     # the enum ImGuiDir_ was renamed to ImGuiDir and ImGuiSortDirection_ was renamed to ImGuiSortDirection
@@ -58,12 +150,23 @@ if has_submodule("imgui"):
     imgui.Dir_ = imgui.Dir
     imgui.SortDirection_ = imgui.SortDirection
 
+    # Pydantic types are lazily imported via __getattr__ below,
+    # so that pydantic can be installed after imgui_bundle is first imported
+    # (e.g. in Pyodide where packages are installed incrementally).
+    __all__.extend([
+            "imgui_pydantic",
+            "ImVec4_Pydantic",
+            "ImVec2_Pydantic",
+            "ImColor_Pydantic",
+        ])
 
 if has_submodule("hello_imgui"):
     from imgui_bundle._imgui_bundle import hello_imgui as hello_imgui
+    _publish("hello_imgui", hello_imgui)
     __all__.extend(["hello_imgui"])
 if has_submodule("implot"):
     from imgui_bundle._imgui_bundle import implot as implot
+    _publish("implot", implot)
     __all__.extend(["implot"])
     # Flag types for ImPlot
     implot.LineFlags = int  # see implot.LineFlags_
@@ -75,50 +178,89 @@ if has_submodule("implot"):
     implot.HistogramFlags = int  # see implot.HistogramFlags_
 if has_submodule("implot3d"):
     from imgui_bundle._imgui_bundle import implot3d as implot3d
+    _publish("implot3d", implot3d)
     __all__.extend(["implot3d"])
 if has_submodule("imgui_color_text_edit"):
     from imgui_bundle._imgui_bundle import imgui_color_text_edit as imgui_color_text_edit
+    _publish("imgui_color_text_edit", imgui_color_text_edit)
     __all__.extend(["imgui_color_text_edit"])
 if has_submodule("imgui_node_editor"):
     from imgui_bundle._imgui_bundle import imgui_node_editor as imgui_node_editor
+    _publish("imgui_node_editor", imgui_node_editor)
     from imgui_bundle import imgui_node_editor_ctx as imgui_node_editor_ctx  # noqa: E402
     __all__.extend(["imgui_node_editor", "imgui_node_editor_ctx"])
 if has_submodule("imgui_knobs"):
     from imgui_bundle._imgui_bundle import imgui_knobs as imgui_knobs
+    _publish("imgui_knobs", imgui_knobs)
     __all__.extend(["imgui_knobs"])
 if has_submodule("im_file_dialog"):
     from imgui_bundle._imgui_bundle import im_file_dialog as im_file_dialog
+    _publish("im_file_dialog", im_file_dialog)
     __all__.extend(["im_file_dialog"])
 if has_submodule("imspinner"):
     from imgui_bundle._imgui_bundle import imspinner as imspinner
+    _publish("imspinner", imspinner)
     __all__.extend(["imspinner"])
 if has_submodule("imgui_md"):
     from imgui_bundle._imgui_bundle import imgui_md as imgui_md
+    _publish("imgui_md", imgui_md)
     __all__.extend(["imgui_md"])
+
+    # Register a hook so that initialize_markdown() automatically sets up URL image download support
+    def _on_initialize_markdown(options):
+        if options.callbacks.on_download_data is None:
+            from imgui_bundle._imgui_md_image_loader import _get_download_function
+            options.callbacks.on_download_data = _get_download_function()
+
+    imgui_md._set_on_initialize_markdown_callback(_on_initialize_markdown)
 if has_submodule("immvision"):
     from imgui_bundle._imgui_bundle import immvision as immvision
+    _publish("immvision", immvision)
     __all__.extend(["immvision"])
 if has_submodule("imguizmo"):
     from imgui_bundle._imgui_bundle import imguizmo as imguizmo
+    _publish("imguizmo", imguizmo)
     __all__.extend(["imguizmo"])
 if has_submodule("imgui_tex_inspect"):
     from imgui_bundle._imgui_bundle import imgui_tex_inspect as imgui_tex_inspect
+    _publish("imgui_tex_inspect", imgui_tex_inspect)
     __all__.extend(["imgui_tex_inspect"])
 if has_submodule("imgui_toggle"):
     from imgui_bundle._imgui_bundle import imgui_toggle as imgui_toggle
+    _publish("imgui_toggle", imgui_toggle)
     __all__.extend(["imgui_toggle"])
 if has_submodule("portable_file_dialogs"):
     from imgui_bundle._imgui_bundle import portable_file_dialogs as portable_file_dialogs
+    _publish("portable_file_dialogs", portable_file_dialogs)
     __all__.extend(["portable_file_dialogs"])
 if has_submodule("imgui_command_palette"):
     from imgui_bundle._imgui_bundle import imgui_command_palette as imgui_command_palette
+    _publish("imgui_command_palette", imgui_command_palette)
     __all__.extend(["imgui_command_palette"])
 if has_submodule("imcoolbar"):
     from imgui_bundle._imgui_bundle import im_cool_bar as im_cool_bar
+    _publish("im_cool_bar", im_cool_bar)
     __all__.extend(["im_cool_bar"])
 if has_submodule("nanovg"):
     from imgui_bundle._imgui_bundle import nanovg as nanovg
+    _publish("nanovg", nanovg)
     __all__.extend(["nanovg"])
+if has_submodule("im_anim"):
+    from imgui_bundle._imgui_bundle import im_anim as im_anim
+    _publish("im_anim", im_anim)
+    __all__.extend(["im_anim"])
+if has_submodule("imgui_explorer"):
+    from imgui_bundle._imgui_bundle import imgui_explorer as imgui_explorer
+    _publish("imgui_explorer", imgui_explorer)
+    __all__.extend(["imgui_explorer"])
+if has_submodule("imgui_microtex"):
+    from imgui_bundle._imgui_bundle import imgui_microtex as imgui_microtex
+    _publish("imgui_microtex", imgui_microtex)
+    __all__.extend(["imgui_microtex"])
+if has_submodule("webgl"):
+    from imgui_bundle._imgui_bundle import webgl as webgl
+    _publish("webgl", webgl)
+    __all__.extend(["webgl"])
 
 if has_submodule("immapp_cpp"):  # immapp is a Python wrapper around immapp_cpp
     from imgui_bundle import immapp as immapp
@@ -150,20 +292,76 @@ if has_submodule("with_glfw"):
 #
 # Pyodide: patch hello_imgui.run and immapp.run to work with Pyodide
 #
-if __bundle_pyodide__:
+if __bundle_pyodide__ and has_submodule("hello_imgui") and has_submodule("immapp_cpp"):
     from imgui_bundle.pyodide_patch_runners import pyodide_do_patch_runners
     pyodide_do_patch_runners()
 
-#
 # Jupyter notebook: patch hello_imgui.run and immapp.run to work with Jupyter notebook
-#
-from imgui_bundle.notebook_patch_runners import notebook_do_patch_runners_if_needed  # noqa: E402
-notebook_do_patch_runners_if_needed()
-from imgui_bundle._patch_runners_add_save_screenshot_param import patch_runners_add_save_screenshot_param  # noqa: E402
-patch_runners_add_save_screenshot_param()
+# run will display a screenshot of the final app state in the notebook output
+# Note: the immapp.nb submodule provides more complete notebook support (async support, etc.)
+if has_submodule("hello_imgui")  and has_submodule("immapp_cpp") and not __bundle_pyodide__:
+    from imgui_bundle.notebook_patch_runners import notebook_do_patch_runners_if_needed  # noqa: E402
+    notebook_do_patch_runners_if_needed()
+    from imgui_bundle._patch_runners_add_save_screenshot_param import patch_runners_add_save_screenshot_param  # noqa: E402
+    patch_runners_add_save_screenshot_param()
 
 #
-# Override assets folder
+# Add async support to hello_imgui
 #
-THIS_DIR = os.path.dirname(__file__)
-hello_imgui.override_assets_folder(THIS_DIR + "/assets")
+if has_submodule("hello_imgui"):
+    from imgui_bundle.hello_imgui_run_async import run_async as _hello_imgui_run_async
+    hello_imgui.run_async = _hello_imgui_run_async  # type: ignore
+
+    # Add notebook convenience API
+    from imgui_bundle import hello_imgui_nb as _hello_imgui_nb_module
+    hello_imgui.nb = _hello_imgui_nb_module  # type: ignore
+
+    THIS_DIR = os.path.dirname(__file__)
+    hello_imgui.override_assets_folder(THIS_DIR + "/assets")
+
+
+def register_demos_assets_folder() -> None:
+    """Add demos_assets/ to hello_imgui assets search path.
+    Call this from demos that need additional images (house.jpg, bear_transparent.png, etc.)
+    beyond the default assets (world.png, fonts)."""
+    from imgui_bundle import __bundle_pyodide__
+    import os as _os
+    import logging as _logging
+    _log = _logging.getLogger("imgui_bundle")
+
+    if __bundle_pyodide__:
+        _log.warning("register_demos_assets_folder will not work in Pyodide")
+        return
+
+    _demos_assets = _os.path.join(_os.path.dirname(__file__), "demos_assets")
+    _demos_assets = _os.path.normpath(_demos_assets)
+    if _os.path.isdir(_demos_assets):
+        from imgui_bundle import hello_imgui as _hello_imgui
+        _hello_imgui.add_assets_search_path(_demos_assets)
+        _log.debug("Registered demos assets folder: %s", _demos_assets)
+    else:
+        _log.warning("demos_assets/ not found at %s", _demos_assets)
+
+
+__all__.extend(["register_demos_assets_folder"])
+
+
+# Lazy import for pydantic types: deferred so that pydantic can be installed
+# after imgui_bundle is first imported (e.g. in Pyodide).
+_PYDANTIC_NAMES = {"ImVec2_Pydantic", "ImVec4_Pydantic", "ImColor_Pydantic", "imgui_pydantic"}
+
+def __getattr__(name: str):
+    if name in _PYDANTIC_NAMES:
+        if not _is_pydantic_v2_available():
+            raise ImportError(
+                f"'{name}' requires pydantic v2+. Install it with: pip install pydantic"
+            )
+        import importlib
+        _mod = importlib.import_module("imgui_bundle.imgui_pydantic")
+        # Cache into module globals so __getattr__ is not called again
+        globals()["imgui_pydantic"] = _mod
+        globals()["ImVec2_Pydantic"] = _mod.ImVec2_Pydantic
+        globals()["ImVec4_Pydantic"] = _mod.ImVec4_Pydantic
+        globals()["ImColor_Pydantic"] = _mod.ImColor_Pydantic
+        return globals()[name]
+    raise AttributeError(f"module 'imgui_bundle' has no attribute {name!r}")

@@ -1,0 +1,6 @@
+# Local wheel files (imgui_bundle built locally, copied here for testing)
+local_wheels/*.whl
+
+# Wheel files (if copied here for testing)
+*.whl
+**/*.whl

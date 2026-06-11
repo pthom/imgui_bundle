@@ -79,7 +79,7 @@ class CompareLorenzTrajectories:
     def gui_plot(self):
         if implot3d.begin_plot("Lorenz Attractor", hello_imgui.em_to_vec2(40, 40)):
             implot3d.setup_axes("X", "Y", "Z",
-                                implot3d.AxisFlags_.auto_fit.value, implot3d.AxisFlags_.auto_fit.value, implot3d.AxisFlags_.auto_fit.value)
+                                implot3d.AxisFlags_.auto_fit, implot3d.AxisFlags_.auto_fit, implot3d.AxisFlags_.auto_fit)
             implot3d.plot_line("Trajectory", self.traj1.xs, self.traj1.ys, self.traj1.zs)
             implot3d.plot_line("Trajectory2", self.traj2.xs, self.traj2.ys, self.traj2.zs)
             implot3d.end_plot()

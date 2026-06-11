@@ -1,5 +1,5 @@
-select = ["E", "F", "B", "W"]
+lint.select = ["E", "F", "B", "W"]
 
-ignore = [
+lint.ignore = [
     "E501", # Never enforce `E501` (line length violations).
 ]

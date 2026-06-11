@@ -1,4 +1,14 @@
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of Dear ImGui
+# -----------------------------------------------------------------------------
+# imgui/__init__.pyi is the equivalent of imgui.h, using the bindings provided
+# by Dear ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008, E741
+# mypy: disable-error-code="overload-cannot-match, overload-overlap"
 from __future__ import annotations
 import sys
 from typing import (
@@ -12,9 +22,10 @@ from typing import (
     Callable,
     Union,
     Protocol,
-    TypeVar,
+    TypeAlias,
 )
 import numpy as np
+from numpy.typing import NDArray
 import enum
 from . import internal as internal
 from . import backends as backends
@@ -28,7 +39,6 @@ from .internal import TableHeaderData
 from .internal import (
     Context,
     ImDrawListSharedData,
-    ImFontBuilderIO,
     ImRect,
     ColorMod,
     GroupData,
@@ -55,6 +65,8 @@ from .internal import (
     TreeNodeStackData,
     MultiSelectTempData,
     ItemFlags,
+    ImFontLoader,
+    ImDrawTextFlags,
 )
 
 VoidPtr = Any
@@ -62,18 +74,16 @@ VoidPtr = Any
 FLT_MIN: float  # value defined by this module as the minimum acceptable C(++) float
 FLT_MAX: float  # value defined by this module as the maximum acceptable C(++) float
 
+IM_COL32_WHITE: int
+IM_COL32_BLACK: int  #  = IM_COL32(0, 0, 0, 255)
+
 Window = internal.Window
 uint = int
 uchar = int
 char = int
+ImFontAtlasRectId = int
 
-def font_atlas_get_tex_data_as_rgba32(
-    font_atlas: ImFontAtlas,
-) -> np.ndarray:
-    """Manual binding for ImFontAtlas::GetTexDataAsRGBA32
-    This is also available as a method of ImFont: ImFontAtlas.get_tex_data_as_rgba32()
-    """
-    pass
+NpBuffer: TypeAlias = NDArray[np.uint8]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Forward declarations and basic types
@@ -89,7 +99,6 @@ struct ImDrawListSplitter;          // Helper to split a draw list into differen
 struct ImDrawVert;                  // A single vertex (pos + uv + col = 20 bytes by default. Override layout with IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT)
 struct ImFont;                      // Runtime data for a single font within a parent ImFontAtlas
 struct ImFontAtlas;                 // Runtime data for multiple fonts, bake multiple fonts into a single texture, TTF/OTF font loader
-struct ImFontBuilderIO;             // Opaque interface to a font builder (stb_truetype or FreeType).
 struct ImFontConfig;                // Configuration data when adding a font or merging fonts
 struct ImFontGlyph;                 // A single font glyph (code point + coordinates within in ImFontAtlas + offset)
 struct ImFontGlyphRangesBuilder;    // Helper to build glyph ranges from text/string data
@@ -193,6 +202,8 @@ ToggleFlags = int  # -> enum ToggleFlags_
 ChildFlags = int  # -> enum ChildFlags_
 InputFlags = int  # -> enum ImGuiInputFlags_      // Flags: for Shortcut(), SetNextItemShortcut()
 KeyChord = ModFlags  # == int. We generally use ImGuiKeyChord to mean "a ImGuiKey or-ed with any number of ImGuiMod_XXX value", but you may store only mods in there.
+ImFontFlags = int  # -> enum ImFontFlags_          // Flags: for ImFont
+ListClipperFlags = int
 
 """
 // ImTexture: user data for renderer backend to identify a texture [Compile-time configurable type]
@@ -270,8 +281,8 @@ ImDrawCallback = Any
 
 # using ImGuiInputTextCallback = std::function<int(ImGuiInputTextCallbackData*)>;  // Callback function for ImGui::InputText()
 # using ImGuiSizeCallback = std::function<void(ImGuiSizeCallbackData*)>;           // Callback function for ImGui::SetNextWindowSizeConstraints()
-InputTextCallback = Callable[[InputTextCallbackData], int]
-SizeCallback = Callable[[SizeCallbackData], None]
+InputTextCallback = Callable[[InputTextCallbackData], int] | None
+SizeCallback = Callable[[SizeCallbackData], None] | None
 
 """
 // Helpers macros to generate 32-bit encoded colors
@@ -305,14 +316,10 @@ def IM_COL32(r: ImU32, g: ImU32, b: ImU32, a: ImU32) -> ImU32:
     r = (a << IM_COL32_A_SHIFT) | (b << IM_COL32_B_SHIFT) | (g << IM_COL32_G_SHIFT) | (r << IM_COL32_R_SHIFT)
     return r
 
-IM_COL32_WHITE: int  #  = IM_COL32(255, 255, 255, 255)
-IM_COL32_BLACK: int  #  = IM_COL32(0, 0, 0, 255)
-
 """
 Additional customizations
 """
 TextRange = Any  # internal structure of ImGuiTextFilter, composed of string pointers (cannot be easily adapted)
-StoragePair = Any
 
 PayloadId = int
 
@@ -324,51 +331,60 @@ VERTEX_BUFFER_UV_OFFSET: int
 VERTEX_BUFFER_COL_OFFSET: int
 INDEX_SIZE: int
 
-# VecProtocol: add __add__, __sub__, __mul__, __truediv__, __neg__ to ImVec2 and ImVec4
-TVec = TypeVar("TVec", bound="VecProtocol")
-
-class VecProtocol(Protocol[TVec]):
-    def __add__(self: TVec, other: TVec) -> TVec: ...
-    def __sub__(self: TVec, other: TVec) -> TVec: ...
-    def __mul__(self: TVec, other: Union[TVec, float]) -> TVec: ...
-    def __truediv__(self: TVec, other: Union[TVec, float]) -> TVec: ...
-    def __neg__(self: TVec) -> TVec: ...
-
 ImVec2Like = Union[ImVec2, Tuple[int | float, int | float], List[int | float]]
 ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | float], List[int | float]]
+
+# Vec2Protocol: add __add__, __sub__, __mul__, __truediv__, __neg__ to ImVec2
+class Vec2Protocol(Protocol):
+    def __iter__(self) -> Iterator[float]: ...
+    def __add__(self, other: ImVec2Like) -> ImVec2: ...
+    def __sub__(self, other: ImVec2Like) -> ImVec2: ...
+    def __mul__(self, other: Union[ImVec2Like, float]) -> ImVec2: ...
+    def __truediv__(self, other: Union[ImVec2Like, float]) -> ImVec2: ...
+    def __neg__(self) -> ImVec2: ...
+
+# Vec4Protocol: add __add__, __sub__, __mul__, __truediv__, __neg__ to ImVec4
+class Vec4Protocol(Protocol):
+    def __iter__(self) -> Iterator[float]: ...
+    def __add__(self, other: ImVec4Like) -> ImVec4: ...
+    def __sub__(self, other: ImVec4Like) -> ImVec4: ...
+    def __mul__(self, other: Union[ImVec4Like, float]) -> ImVec4: ...
+    def __truediv__(self, other: Union[ImVec4Like, float]) -> ImVec4: ...
+    def __neg__(self) -> ImVec4: ...
 
 ##################################################
 #    AUTO GENERATED CODE BELOW
 ##################################################
 # <litgen_stub> // Autogenerated code below! Do not edit!
 ####################    <generated_from:imgui.h>    ####################
-# dear imgui, v1.91.9b
+# dear imgui, v1.92.9 WIP
 # (headers)
 
 # Help:
-# - See links below.
 # - Call and read ImGui::ShowDemoWindow() in imgui_demo.cpp. All applications in examples/ are doing that.
 # - Read top of imgui.cpp for more details, links and comments.
-# - Add '#define IMGUI_DEFINE_MATH_OPERATORS' before including this file (or in imconfig.h) to access courtesy maths operators for ImVec2 and ImVec4.
+# - Add '#define IMGUI_DEFINE_MATH_OPERATORS' before including imgui.h (or in imconfig.h) to access courtesy maths operators for ImVec2 and ImVec4.
 
 # Resources:
 # - FAQ ........................ https://dearimgui.com/faq (in repository as docs/FAQ.md)
 # - Homepage ................... https://github.com/ocornut/imgui
-# - Releases & changelog ....... https://github.com/ocornut/imgui/releases
+# - Releases & Changelog ....... https://github.com/ocornut/imgui/releases
 # - Gallery .................... https://github.com/ocornut/imgui/issues?q=label%3Agallery (please post your screenshots/video there!)
 # - Wiki ....................... https://github.com/ocornut/imgui/wiki (lots of good stuff there)
 #   - Getting Started            https://github.com/ocornut/imgui/wiki/Getting-Started (how to integrate in an existing app by adding ~25 lines of code)
 #   - Third-party Extensions     https://github.com/ocornut/imgui/wiki/Useful-Extensions (ImPlot & many more)
-#   - Bindings/Backends          https://github.com/ocornut/imgui/wiki/Bindings (language bindings, backends for various tech/engines)
-#   - Glossary                   https://github.com/ocornut/imgui/wiki/Glossary
+#   - Bindings/Backends          https://github.com/ocornut/imgui/wiki/Bindings (language bindings + backends for various tech/engines)
 #   - Debug Tools                https://github.com/ocornut/imgui/wiki/Debug-Tools
+#   - Glossary                   https://github.com/ocornut/imgui/wiki/Glossary
 #   - Software using Dear ImGui  https://github.com/ocornut/imgui/wiki/Software-using-dear-imgui
 # - Issues & support ........... https://github.com/ocornut/imgui/issues
 # - Test Engine & Automation ... https://github.com/ocornut/imgui_test_engine (test suite, test engine to automate your apps)
+# - Web version of the Demo .... https://pthom.github.io/imgui_explorer (w/ source code browser)
 
-# For first-time users having issues compiling/linking/running/loading fonts:
+# For FIRST-TIME users having issues compiling/linking/running:
 # please post in https://github.com/ocornut/imgui/discussions if you cannot find a solution in resources above.
-# Everything else should be asked in 'Issues'! We are building a database of cross-linked knowledge there.
+# EVERYTHING ELSE should be asked in 'Issues'! We are building a database of cross-linked knowledge there.
+# Since 1.92, we encourage font loading questions to also be posted in 'Issues'.
 
 # Library Version
 # (Integer encoded as XYYZZ for use in #if preprocessor conditionals, e.g. '#if IMGUI_VERSION_NUM >= 12345')
@@ -379,14 +395,10 @@ ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | fl
 # [ADAPT_IMGUI_BUNDLE]
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
+
 # #endif
 #
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-##define IMGUI_BUNDLE_IMGUI_USE_STRING
-# #endif
-#
 # [/ADAPT_IMGUI_BUNDLE]
 
 # [ADAPT_IMGUI_BUNDLE] utilities
@@ -399,7 +411,7 @@ ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | fl
 # Index of this file:
 # // [SECTION] Header mess
 # // [SECTION] Forward declarations and basic types
-# // [SECTION] Texture identifier (ImTextureID)
+# // [SECTION] Texture identifiers (ImTextureID, ImTextureRef)
 # // [SECTION] Dear ImGui end-user API functions
 # // [SECTION] Flags & Enumerations
 # // [SECTION] Tables API flags and structures (ImGuiTableFlags, ImGuiTableColumnFlags, ImGuiTableRowFlags, ImGuiTableBgTarget, ImGuiTableSortSpecs, ImGuiTableColumnSortSpecs)
@@ -410,7 +422,8 @@ ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | fl
 # // [SECTION] Helpers (ImGuiOnceUponAFrame, ImGuiTextFilter, ImGuiTextBuffer, ImGuiStorage, ImGuiListClipper, Math Operators, ImColor)
 # // [SECTION] Multi-Select API flags and structures (ImGuiMultiSelectFlags, ImGuiMultiSelectIO, ImGuiSelectionRequest, ImGuiSelectionBasicStorage, ImGuiSelectionExternalStorage)
 # // [SECTION] Drawing API (ImDrawCallback, ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawFlags, ImDrawListFlags, ImDrawList, ImDrawData)
-# // [SECTION] Font API (ImFontConfig, ImFontGlyph, ImFontGlyphRangesBuilder, ImFontAtlasFlags, ImFontAtlas, ImFont)
+# // [SECTION] Texture API (ImTextureFormat, ImTextureStatus, ImTextureRect, ImTextureData)
+# // [SECTION] Font API (ImFontConfig, ImFontGlyph, ImFontGlyphRangesBuilder, ImFontAtlasFlags, ImFontAtlas, ImFontBaked, ImFont)
 # // [SECTION] Viewports (ImGuiViewportFlags, ImGuiViewport)
 # // [SECTION] ImGuiPlatformIO + other Platform Dependent Interfaces (ImGuiPlatformMonitor, ImGuiPlatformImeData)
 # // [SECTION] Obsolete functions and types
@@ -434,10 +447,13 @@ ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | fl
 # Using dear imgui via a shared library is not recommended: we don't guarantee backward nor forward ABI compatibility + this is a call-heavy library and function call overhead adds up.
 
 # Helper Macros
+# (note: compiling with NDEBUG will usually strip out assert() to nothing, which is NOT recommended because we use asserts to notify of programmer mistakes.)
 
 # Helper Macros - IM_FMTARGS, IM_FMTLIST: Apply printf-style warnings to our formatting functions.
-# (MSVC provides an equivalent mechanism via SAL Annotations but it would require the macros in a different
-#  location. e.g. #include <sal.h> + None myprintf(_Printf_format_string_ const char* format, ...))
+# (MSVC provides an equivalent mechanism via SAL Annotations but it requires the macros in a different
+#  location. e.g. #include <sal.h> + None myprintf(_Printf_format_string_ const char* format, ...),
+#  and only works when using Code Analysis, rather than just normal compiling).
+# (see https://github.com/ocornut/imgui/issues/8871 for a patch to enable this for MSVC's Code Analysis)
 
 # Disable some of MSVC most aggressive Debug runtime checks in function header/footer (used in some simple/low-level functions)
 
@@ -456,30 +472,28 @@ ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | fl
 # Enumerations
 # - We don't use strongly typed enums much because they add constraints (can't extend in private code, can't store typed in bit fields, extra casting on iteration)
 # - Tip: Use your programming IDE navigation facilities on the names in the _central column_ below to find the actual flags/enum lists!
-#   - In Visual Studio: CTRL+comma ("Edit.GoToAll") can follow symbols inside comments, whereas CTRL+F12 ("Edit.GoToImplementation") cannot.
-#   - In Visual Studio w/ Visual Assist installed: ALT+G ("VAssistX.GoToImplementation") can also follow symbols inside comments.
-#   - In VS Code, CLion, etc.: CTRL+click can follow symbols inside comments.
+#   - In Visual Studio: Ctrl+Comma ("Edit.GoToAll") can follow symbols inside comments, whereas Ctrl+F12 ("Edit.GoToImplementation") cannot.
+#   - In Visual Studio w/ Visual Assist installed: Alt+G ("VAssistX.GoToImplementation") can also follow symbols inside comments.
+#   - In VS Code, CLion, etc.: Ctrl+Click can follow symbols inside comments.
 
 # Flags (declared as int to allow using as flags without overhead, and to not pollute the top of this file)
 # - Tip: Use your programming IDE navigation facilities on the names in the _central column_ below to find the actual flags/enum lists!
-#   - In Visual Studio: CTRL+comma ("Edit.GoToAll") can follow symbols inside comments, whereas CTRL+F12 ("Edit.GoToImplementation") cannot.
-#   - In Visual Studio w/ Visual Assist installed: ALT+G ("VAssistX.GoToImplementation") can also follow symbols inside comments.
-#   - In VS Code, CLion, etc.: CTRL+click can follow symbols inside comments.
+#   - In Visual Studio: Ctrl+Comma ("Edit.GoToAll") can follow symbols inside comments, whereas Ctrl+F12 ("Edit.GoToImplementation") cannot.
+#   - In Visual Studio w/ Visual Assist installed: Alt+G ("VAssistX.GoToImplementation") can also follow symbols inside comments.
+#   - In VS Code, CLion, etc.: Ctrl+Click can follow symbols inside comments.
 
 # Character types
 # (we generally use UTF-8 encoded string in the API. This is storage specifically for a decoded character used for keyboard input and display)
-# A single decoded U16 character/code point. We encode them as multi bytes UTF-8 when used in strings.
 
 # Callback and functions types
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
-# Callback function for ImGui::SetNextWindowSizeConstraints()
 # #else
 #
 # #endif
 #
 
-class ImVec2(VecProtocol["ImVec2"]):
+class ImVec2(Vec2Protocol):
     # float                                   x,     /* original C++ signature */
     x: float
     # y;    /* original C++ signature */
@@ -491,19 +505,6 @@ class ImVec2(VecProtocol["ImVec2"]):
     # constexpr ImVec2(float _x, float _y)    : x(_x), y(_y) { }    /* original C++ signature */
     @overload
     def __init__(self, _x: float, _y: float) -> None:
-        pass
-    # float& operator[] (size_t idx)          { IM_ASSERT(idx == 0 || idx == 1); return ((float*)(void*)(char*)this)[idx]; }     /* original C++ signature */
-    @overload
-    def __getitem__(self, idx: int) -> float:
-        """(private API)
-
-        We very rarely use this [] operator, so the assert overhead is fine.
-        """
-        pass
-    # float  operator[] (size_t idx) const    { IM_ASSERT(idx == 0 || idx == 1); return ((const float*)(const void*)(const char*)this)[idx]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, idx: int) -> float:
-        """(private API)"""
         pass
     # #ifdef IMGUI_BUNDLE_PYTHON_API
     #
@@ -519,7 +520,15 @@ class ImVec2(VecProtocol["ImVec2"]):
     # #endif
     #
 
-class ImVec4(VecProtocol["ImVec4"]):
+    def __getitem__(self, idx: int) -> float:
+        """Get the value at the given index (0 for x, 1 for y)"""
+        ...
+
+    def __setitem__(self, idx: int, value: float) -> None:
+        """Set the value at the given index (0 for x, 1 for y)"""
+        ...
+
+class ImVec4(Vec4Protocol):
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
 
     # float                                                     x,     /* original C++ signature */
@@ -552,15 +561,60 @@ class ImVec4(VecProtocol["ImVec4"]):
     # #endif
     #
 
+    def __getitem__(self, idx: int) -> float:
+        """Get the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
+        ...
+
+    def __setitem__(self, idx: int, value: float) -> None:
+        """Set the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
+        ...
+
 # -----------------------------------------------------------------------------
-# [SECTION] Texture identifier (ImTextureID)
+# [SECTION] Texture identifiers (ImTextureID, ImTextureRef)
 # -----------------------------------------------------------------------------
 
-# ImTexture: user data for renderer backend to identify a texture [Compile-time configurable type]
-# - To use something else than an opaque None* pointer: override with e.g. '#define ImTextureID MyTextureType*' in your imconfig.h file.
-# - This can be whatever to you want it to be! read the FAQ about ImTextureID for details.
-# - You can make this a structure with various constructors if you need. You will have to implement ==/!= operators.
-# - (note: before v1.91.4 (2024/10/08) the default type for ImTextureID was None*. Use intermediary intptr_t cast and read FAQ if you have casting warnings)
+# ImTextureID = backend specific, low-level identifier for a texture uploaded in GPU/graphics system.
+# [Compile-time configurable type]
+# - When a Rendered Backend creates a texture, it store its native identifier into a ImTextureID value.
+#   (e.g. Used by DX11 backend to a `ID3D11ShaderResourceView*`; Used by OpenGL backends to store `GLuint`;
+#         Used by SDLGPU backend to store a `SDL_GPUTextureSamplerBinding*`, etc.).
+# - User may submit their own textures to e.g. ImGui::Image() function by passing this value.
+# - During the rendering loop, the Renderer Backend retrieve the ImTextureID, which stored inside a
+#   ImTextureRef, which is stored inside a ImDrawCmd.
+# - Compile-time type configuration:
+#   - To use something other than a 64-bit value: add '#define ImTextureID MyTextureType*' in your imconfig.h file.
+#   - This can be whatever to you want it to be! read the FAQ entry about textures for details.
+#   - You may decide to store a higher-level structure containing texture, sampler, shader etc. with various
+#     constructors if you like. You will need to implement ==/!= operators.
+# History:
+# - In v1.91.4 (2024/10/08): the default type for ImTextureID was changed from 'None*' to 'ImU64'. This allowed backends requiring 64-bit worth of data to build on 32-bit architectures. Use intermediary intptr_t cast and read FAQ if you have casting warnings.
+# - In v1.92.0 (2025/06/11): added ImTextureRef which carry either a ImTextureID either a pointer to internal texture atlas. All user facing functions taking ImTextureID changed to ImTextureRef
+
+# Define this if you need to change the invalid value for your backend.
+# - If your backend is using ImTextureID to store an index/offset and you need 0 to be valid, You can add '#define ImTextureID_Invalid ((ImTextureID)-1)' in your imconfig.h file.
+# - From 2026/03/12 to 2026/03/19 we experimented with changing to default to -1, but I worried it would cause too many issues in third-party code so it was reverted.
+
+class ImTextureRef:
+    # ImTextureRef()                          { _TexData = NULL; _TexID = ImTextureID_Invalid; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # ImTextureRef(ImTextureID tex_id)        { _TexData = NULL; _TexID = tex_id; }    /* original C++ signature */
+    @overload
+    def __init__(self, tex_id: ImTextureID) -> None:
+        pass
+    # inline ImTextureID  GetTexID() const;       /* original C++ signature */
+    def get_tex_id(self) -> ImTextureID:
+        """(private API)
+
+        == (_TexData ? _TexData->TexID : _TexID) // Implemented below in the file.
+        """
+        pass
+    # Members (either are set, never both!)
+    # ImTextureData*      _TexData;    /* original C++ signature */
+    _tex_data: ImTextureData  #      A texture, generally owned by a ImFontAtlas. Will convert to ImTextureID during render loop, after texture has been uploaded.
+    # ImTextureID         _TexID;    /* original C++ signature */
+    _tex_id: ImTextureID  # _OR_ Low-level backend texture identifier, if already uploaded or created by user/app. Generally provided to e.g. ImGui::Image() calls.
 
 # -----------------------------------------------------------------------------
 # [SECTION] Dear ImGui end-user API functions
@@ -621,7 +675,7 @@ def render() -> None:
 
 # IMGUI_API ImDrawData*   GetDrawData();                                  /* original C++ signature */
 def get_draw_data() -> ImDrawData:
-    """valid after Render() and until the next call to NewFrame(). this is what you have to render."""
+    """valid after Render() and until the next call to NewFrame(). Call ImGui_ImplXXXX_RenderDrawData() function in your Renderer Backend to render."""
     pass
 
 # Demo, Debug, Information
@@ -629,6 +683,24 @@ def get_draw_data() -> ImDrawData:
 def show_demo_window(p_open: Optional[bool] = None) -> Optional[bool]:
     """create Demo window. demonstrate most ImGui features. call this to learn about the library! try to make it always available in your application!"""
     pass
+
+# [ADAPT_IMGUI_BUNDLE]
+# IMGUI_API void          ShowDemoWindow_MaybeDocked(bool create_window, bool* p_open = NULL, ImGuiWindowFlags initial_extra_flags = 0, ImVec2 window_pos = ImVec2(0, 0), ImVec2 window_size = ImVec2(0, 0));     /* original C++ signature */
+def show_demo_window_maybe_docked(
+    create_window: bool,
+    p_open: Optional[bool] = None,
+    initial_extra_flags: WindowFlags = 0,
+    window_pos: Optional[ImVec2Like] = None,
+    window_size: Optional[ImVec2Like] = None,
+) -> Optional[bool]:
+    """Python bindings defaults:
+    If any of the params below is None, then its default value below will be used:
+        * window_pos: ImVec2(0, 0)
+        * window_size: ImVec2(0, 0)
+    """
+    pass
+
+# [/ADAPT_IMGUI_BUNDLE]
 
 # IMGUI_API void          ShowMetricsWindow(bool* p_open = NULL);         /* original C++ signature */
 def show_metrics_window(p_open: Optional[bool] = None) -> Optional[bool]:
@@ -870,33 +942,16 @@ def set_window_pos(pos: ImVec2Like, cond: Cond = 0) -> None:
     """(not recommended) set current window position - call within Begin()/End(). prefer using SetNextWindowPos(), as this may incur tearing and side-effects."""
     pass
 
-# IMGUI_API void          SetWindowSize(const ImVec2& size, ImGuiCond cond = 0);                          /* original C++ signature */
-@overload
-def set_window_size(size: ImVec2Like, cond: Cond = 0) -> None:
-    """(not recommended) set current window size - call within Begin()/End(). set to ImVec2(0, 0) to force an auto-fit. prefer using SetNextWindowSize(), as this may incur tearing and minor side-effects."""
-    pass
-
-# IMGUI_API void          SetWindowCollapsed(bool collapsed, ImGuiCond cond = 0);                         /* original C++ signature */
-@overload
-def set_window_collapsed(collapsed: bool, cond: Cond = 0) -> None:
-    """(not recommended) set current window collapsed state. prefer using SetNextWindowCollapsed()."""
-    pass
-
-# IMGUI_API void          SetWindowFocus();                                                               /* original C++ signature */
-@overload
-def set_window_focus() -> None:
-    """(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus()."""
-    pass
-
-# IMGUI_API void          SetWindowFontScale(float scale);                                                /* original C++ signature */
-def set_window_font_scale(scale: float) -> None:
-    """[OBSOLETE] set font scale. Adjust IO.FontGlobalScale if you want to scale all windows. This is an old API! For correct scaling, prefer to reload font + rebuild ImFontAtlas + call style.ScaleAllSizes()."""
-    pass
-
 # IMGUI_API void          SetWindowPos(const char* name, const ImVec2& pos, ImGuiCond cond = 0);          /* original C++ signature */
 @overload
 def set_window_pos(name: str, pos: ImVec2Like, cond: Cond = 0) -> None:
     """set named window position."""
+    pass
+
+# IMGUI_API void          SetWindowSize(const ImVec2& size, ImGuiCond cond = 0);                          /* original C++ signature */
+@overload
+def set_window_size(size: ImVec2Like, cond: Cond = 0) -> None:
+    """(not recommended) set current window size - call within Begin()/End(). set to ImVec2(0, 0) to force an auto-fit. prefer using SetNextWindowSize(), as this may incur tearing and minor side-effects."""
     pass
 
 # IMGUI_API void          SetWindowSize(const char* name, const ImVec2& size, ImGuiCond cond = 0);        /* original C++ signature */
@@ -905,17 +960,35 @@ def set_window_size(name: str, size: ImVec2Like, cond: Cond = 0) -> None:
     """set named window size. set axis to 0.0 to force an auto-fit on this axis."""
     pass
 
+# IMGUI_API void          SetWindowCollapsed(bool collapsed, ImGuiCond cond = 0);                         /* original C++ signature */
+@overload
+def set_window_collapsed(collapsed: bool, cond: Cond = 0) -> None:
+    """(not recommended) set current window collapsed state. prefer using SetNextWindowCollapsed()."""
+    pass
+
 # IMGUI_API void          SetWindowCollapsed(const char* name, bool collapsed, ImGuiCond cond = 0);       /* original C++ signature */
 @overload
 def set_window_collapsed(name: str, collapsed: bool, cond: Cond = 0) -> None:
     """set named window collapsed state"""
     pass
 
-# IMGUI_API void          SetWindowFocus(const char* name);                                               /* original C++ signature */
+# IMGUI_API void          SetWindowFocus();                                                               /* original C++ signature */
 @overload
-def set_window_focus(name: str) -> None:
-    """set named window to be focused / top-most. use None to remove focus."""
+def set_window_focus() -> None:
+    """(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus()."""
     pass
+
+# IMGUI_API inline void          SetWindowFocus(std::optional<std::string> name)                                           // set named window to be focused / top-most. use NULL to remove focus.    /* original C++ signature */
+#     { if (name.has_value()) SetWindowFocus(name.value()); else SetWindowFocus(NULL); }
+@overload
+def set_window_focus(name: Optional[str]) -> None:
+    """// set named window to be focused / top-most. use None to remove focus."""
+    pass
+
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
 
 # Windows Scrolling
 # - Any change of Scroll will be applied at the beginning of next frame in the first call to Begin().
@@ -970,16 +1043,52 @@ def set_scroll_from_pos_y(local_y: float, center_y_ratio: float = 0.5) -> None:
     """adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position."""
     pass
 
-# Parameters stacks (shared)
-# IMGUI_API void          PushFont(ImFont* font);                                             /* original C++ signature */
-def push_font(font: ImFont) -> None:
-    """use None as a shortcut to push default font"""
+# Parameters stacks (font)
+#  - PushFont(font, 0.0)                       // Change font and keep current size
+#  - PushFont(None, 20.0)                      // Keep font and change current size
+#  - PushFont(font, 20.0)                      // Change font and set size to 20.0
+#  - PushFont(font, style.FontSizeBase * 2.0)  // Change font and set size to be twice bigger than current size.
+#  - PushFont(font, font->LegacySize)           // Change font and set size to size passed to AddFontXXX() function. Same as pre-1.92 behavior.
+# *IMPORTANT* before 1.92, fonts had a single size. They can now be dynamically be adjusted.
+#  - In 1.92 we have REMOVED the single parameter version of PushFont() because it seems like the easiest way to provide an error-proof transition.
+#  - PushFont(font) before 1.92 = PushFont(font, font->LegacySize) after 1.92          // Use default font size as passed to AddFontXXX() function.
+# *IMPORTANT* global scale factors are applied over the provided size.
+#  - Global scale factors are: 'style.FontScaleMain', 'style.FontScaleDpi' and maybe more.
+# -  If you want to apply a factor to the _current_ font size:
+#  - CORRECT:   PushFont(None, style.FontSizeBase)         // use current unscaled size    == does nothing
+#  - CORRECT:   PushFont(None, style.FontSizeBase * 2.0)  // use current unscaled size x2 == make text twice bigger
+#  - INCORRECT: PushFont(None, GetFontSize())              // INCORRECT! using size after global factors already applied == GLOBAL SCALING FACTORS WILL APPLY TWICE!
+#  - INCORRECT: PushFont(None, GetFontSize() * 2.0)       // INCORRECT! using size after global factors already applied == GLOBAL SCALING FACTORS WILL APPLY TWICE!
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# IMGUI_API void          PushFont(std::optional<ImFont*> font, float font_size_base_unscaled);              /* original C++ signature */
+def push_font(font: Optional[ImFont], font_size_base_unscaled: float) -> None:
+    """Use None as a shortcut to keep current font. Use 0.0 to keep current size."""
     pass
+
+# #endif
+#
 
 # IMGUI_API void          PopFont();    /* original C++ signature */
 def pop_font() -> None:
     pass
 
+# IMGUI_API ImFont*       GetFont();                                                          /* original C++ signature */
+def get_font() -> ImFont:
+    """get current font"""
+    pass
+
+# IMGUI_API float         GetFontSize();                                                      /* original C++ signature */
+def get_font_size() -> float:
+    """get current scaled font size (= height in pixels). AFTER global scale factors applied. *IMPORTANT* DO NOT PASS THIS VALUE TO PushFont()! Use ImGui::GetStyle().FontSizeBase to get value before global scale factors."""
+    pass
+
+# IMGUI_API ImFontBaked*  GetFontBaked();                                                     /* original C++ signature */
+def get_font_baked() -> ImFontBaked:
+    """get current font bound at current size // == GetFont()->GetFontBaked(GetFontSize())"""
+    pass
+
+# Parameters stacks (shared)
 # IMGUI_API void          PushStyleColor(ImGuiCol idx, ImU32 col);                            /* original C++ signature */
 @overload
 def push_style_color(idx: Col, col: ImU32) -> None:
@@ -1061,16 +1170,6 @@ def pop_text_wrap_pos() -> None:
 
 # Style read access
 # - Use the ShowStyleEditor() function to interactively see/edit the colors.
-# IMGUI_API ImFont*       GetFont();                                                          /* original C++ signature */
-def get_font() -> ImFont:
-    """get current font"""
-    pass
-
-# IMGUI_API float         GetFontSize();                                                      /* original C++ signature */
-def get_font_size() -> float:
-    """get current font size (= height in pixels) of current font with current scale applied"""
-    pass
-
 # IMGUI_API ImVec2        GetFontTexUvWhitePixel();                                           /* original C++ signature */
 def get_font_tex_uv_white_pixel() -> ImVec2:
     """get UV coordinate for a white pixel, useful to draw custom shapes via the ImDrawList API"""
@@ -1092,11 +1191,6 @@ def get_color_u32(col: ImVec4Like) -> ImU32:
 @overload
 def get_color_u32(col: ImU32, alpha_mul: float = 1.0) -> ImU32:
     """retrieve given color with style alpha applied, packed as a 32-bit value suitable for ImDrawList"""
-    pass
-
-# IMGUI_API const ImVec4& GetStyleColorVec4(ImGuiCol idx);                                    /* original C++ signature */
-def get_style_color_vec4(idx: Col) -> ImVec4:
-    """retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in."""
     pass
 
 # Layout cursor positioning
@@ -1292,9 +1386,10 @@ def get_id(int_id: int) -> ID:
     pass
 
 # Widgets: Text
+# - Note that all functions taking format strings in the API may be passed ("%s", text) or ("%.*s", text_len, text): which will automatically bypass the formatter.
 # IMGUI_API void          TextUnformatted(const char* text, const char* text_end = NULL);     /* original C++ signature */
 def text_unformatted(text: str, text_end: Optional[str] = None) -> None:
-    """raw text without formatting. Roughly equivalent to Text("%s", text) but: A) doesn't require null terminated string if 'text_end' is specified, B) it's faster, no memory copy is done, no buffer size limits, recommended for long chunks of text."""
+    """raw text without formatting. Practically equivalent to 'Text("%s", text)' but doesn't require null terminated string if 'text_end' is specified."""
     pass
 
 # IMGUI_API void          Text(const char* fmt, ...)                                      ;     /* original C++ signature */
@@ -1364,12 +1459,6 @@ def checkbox(label: str, v: bool) -> Tuple[bool, bool]:
     pass
 
 # IMGUI_API bool          CheckboxFlags(const char* label, int* flags, int flags_value);    /* original C++ signature */
-@overload
-def checkbox_flags(label: str, flags: int, flags_value: int) -> Tuple[bool, int]:
-    pass
-
-# IMGUI_API bool          CheckboxFlags(const char* label, unsigned int* flags, unsigned int flags_value);    /* original C++ signature */
-@overload
 def checkbox_flags(label: str, flags: int, flags_value: int) -> Tuple[bool, int]:
     pass
 
@@ -1402,22 +1491,20 @@ def text_link(label: str) -> bool:
     """hyperlink text button, return True when clicked"""
     pass
 
-# IMGUI_API void          TextLinkOpenURL(const char* label, const char* url = NULL);         /* original C++ signature */
-def text_link_open_url(label: str, url: Optional[str] = None) -> None:
+# IMGUI_API bool          TextLinkOpenURL(const char* label, const char* url = NULL);         /* original C++ signature */
+def text_link_open_url(label: str, url: Optional[str] = None) -> bool:
     """hyperlink text button, automatically open file/url when clicked"""
     pass
 
 # Widgets: Images
-# - Read about ImTextureID here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
+# - Read about ImTextureID/ImTextureRef  here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
 # - 'uv0' and 'uv1' are texture coordinates. Read about them from the same link above.
 # - Image() pads adds style.ImageBorderSize on each side, ImageButton() adds style.FramePadding on each side.
 # - ImageButton() draws a background based on regular Button() color + optionally an inner background if specified.
-# IMGUI_API void          Image(ImTextureID user_texture_id, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1));    /* original C++ signature */
+# - An obsolete version of Image(), before 1.91.9 (March 2025), had a 'tint_col' parameter which is now supported by the ImageWithBg() function.
+# IMGUI_API void          Image(ImTextureRef tex_ref, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1));    /* original C++ signature */
 def image(
-    user_texture_id: ImTextureID,
-    image_size: ImVec2Like,
-    uv0: Optional[ImVec2Like] = None,
-    uv1: Optional[ImVec2Like] = None,
+    tex_ref: ImTextureRef, image_size: ImVec2Like, uv0: Optional[ImVec2Like] = None, uv1: Optional[ImVec2Like] = None
 ) -> None:
     """Python bindings defaults:
     If any of the params below is None, then its default value below will be used:
@@ -1426,9 +1513,9 @@ def image(
     """
     pass
 
-# IMGUI_API void          ImageWithBg(ImTextureID user_texture_id, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& bg_col = ImVec4(0, 0, 0, 0), const ImVec4& tint_col = ImVec4(1, 1, 1, 1));    /* original C++ signature */
+# IMGUI_API void          ImageWithBg(ImTextureRef tex_ref, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& bg_col = ImVec4(0, 0, 0, 0), const ImVec4& tint_col = ImVec4(1, 1, 1, 1));    /* original C++ signature */
 def image_with_bg(
-    user_texture_id: ImTextureID,
+    tex_ref: ImTextureRef,
     image_size: ImVec2Like,
     uv0: Optional[ImVec2Like] = None,
     uv1: Optional[ImVec2Like] = None,
@@ -1444,10 +1531,10 @@ def image_with_bg(
     """
     pass
 
-# IMGUI_API bool          ImageButton(const char* str_id, ImTextureID user_texture_id, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& bg_col = ImVec4(0, 0, 0, 0), const ImVec4& tint_col = ImVec4(1, 1, 1, 1));    /* original C++ signature */
+# IMGUI_API bool          ImageButton(const char* str_id, ImTextureRef tex_ref, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1), const ImVec4& bg_col = ImVec4(0, 0, 0, 0), const ImVec4& tint_col = ImVec4(1, 1, 1, 1));    /* original C++ signature */
 def image_button(
     str_id: str,
-    user_texture_id: ImTextureID,
+    tex_ref: ImTextureRef,
     image_size: ImVec2Like,
     uv0: Optional[ImVec2Like] = None,
     uv1: Optional[ImVec2Like] = None,
@@ -1489,13 +1576,13 @@ def combo(
     pass
 
 # Widgets: Drag Sliders
-# - CTRL+Click on any drag box to turn them into an input box. Manually input values aren't clamped by default and can go off-bounds. Use ImGuiSliderFlags_AlwaysClamp to always clamp.
+# - Ctrl+Click on any drag box to turn them into an input box. Manually input values aren't clamped by default and can go off-bounds. Use ImGuiSliderFlags_AlwaysClamp to always clamp.
 # - For all the Float2/Float3/Float4/Int2/Int3/Int4 versions of every function, note that a 'float v[X]' function argument is the same as 'float* v',
 #   the array syntax is just a way to document the number of elements that are expected to be accessible. You can pass address of your first element out of a contiguous set, e.g. &myvector.x
 # - Adjust format string to decorate the value with a prefix, a suffix, or adapt the editing and display precision e.g. "%.3" -> 1.234; "%5.2 secs" -> 01.23 secs; "Biscuit: %.0" -> Biscuit: 1; etc.
 # - Format string may also be set to None or use the default format ("%f" or "%d").
 # - Speed are per-pixel of mouse movement (v_speed=0.2: mouse needs to move by 5 pixels to increase value by 1). For keyboard/gamepad navigation, minimum speed is Max(v_speed, minimum_step_at_given_precision).
-# - Use v_min < v_max to clamp edits to given limits. Note that CTRL+Click manual input can override those limits if ImGuiSliderFlags_AlwaysClamp is not used.
+# - Use v_min < v_max to clamp edits to given limits. Note that Ctrl+Click manual input can override those limits if ImGuiSliderFlags_AlwaysClamp is not used.
 # - Use v_max = FLT_MAX / INT_MAX etc to avoid clamping to a maximum, same with v_min = -FLT_MAX / INT_MIN to avoid clamping to a minimum.
 # - We use the same sets of flags for DragXXX() and SliderXXX() functions as the features are the same and it makes it easier to swap them.
 # - Legacy: Pre-1.78 there are DragXXX() function signatures that take a final `float power=1.0' argument instead of the `ImGuiSliderFlags flags=0' argument.
@@ -1648,7 +1735,7 @@ def drag_scalar_n(
     pass
 
 # Widgets: Regular Sliders
-# - CTRL+Click on any slider to turn them into an input box. Manually input values aren't clamped by default and can go off-bounds. Use ImGuiSliderFlags_AlwaysClamp to always clamp.
+# - Ctrl+Click on any slider to turn them into an input box. Manually input values aren't clamped by default and can go off-bounds. Use ImGuiSliderFlags_AlwaysClamp to always clamp.
 # - Adjust format string to decorate the value with a prefix, a suffix, or adapt the editing and display precision e.g. "%.3" -> 1.234; "%5.2 secs" -> 01.23 secs; "Biscuit: %.0" -> Biscuit: 1; etc.
 # - Format string may also be set to None or use the default format ("%f" or "%d").
 # - Legacy: Pre-1.78 there are SliderXXX() function signatures that take a final `float power=1.0' argument instead of the `ImGuiSliderFlags flags=0' argument.
@@ -1661,11 +1748,24 @@ def slider_float(
     pass
 
 # IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
+@overload
 def slider_float2(
     label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
+# IMGUI_API inline std::pair<bool, ImVec2>  SliderFloat2(const char* label, ImVec2 v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0)    /* original C++ signature */
+#     { bool changed = SliderFloat2(label, (float*)&v, v_min, v_max, format, flags);  return { changed, v }; }
+@overload
+def slider_float2(
+    label: str, v: ImVec2Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+) -> Tuple[bool, ImVec2]:
+    pass
+
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
 # IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_float3(
     label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
@@ -1673,11 +1773,24 @@ def slider_float3(
     pass
 
 # IMGUI_API bool          SliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
+@overload
 def slider_float4(
     label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
+# IMGUI_API inline std::pair<bool, ImVec4>  SliderFloat4(const char* label, ImVec4 v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0)    /* original C++ signature */
+#     { bool changed = SliderFloat4(label, (float*)&v, v_min, v_max, format, flags);  return { changed, v }; }
+@overload
+def slider_float4(
+    label: str, v: ImVec4Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+) -> Tuple[bool, ImVec4]:
+    pass
+
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
 # IMGUI_API bool          SliderAngle(const char* label, float* v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f, const char* format = "%.0f deg", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_angle(
     label: str,
@@ -1764,7 +1877,7 @@ def v_slider_scalar(
     pass
 
 # Widgets: Input with Keyboard
-# - If you want to use InputText() with std::string or any custom dynamic string type, see misc/cpp/imgui_stdlib.h and comments in imgui_demo.cpp.
+# - If you want to use InputText() with std::string or any custom dynamic string type, use the wrapper in misc/cpp/imgui_stdlib.h/.cpp!
 # - Most of the ImGuiInputTextFlags flags are only useful for InputText() and not for InputFloatX, InputIntX, InputDouble etc.
 # IMGUI_API bool          InputFloat(const char* label, float* v, float step = 0.0f, float step_fast = 0.0f, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_float(
@@ -1773,11 +1886,22 @@ def input_float(
     pass
 
 # IMGUI_API bool          InputFloat2(const char* label, float v[2], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
+@overload
 def input_float2(
     label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
+# IMGUI_API inline std::pair<bool, ImVec2>  InputFloat2(const char* label, ImVec2 v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0)    /* original C++ signature */
+#         { bool changed = InputFloat2(label, (float*)&v, format, flags);  return { changed, v }; }
+@overload
+def input_float2(label: str, v: ImVec2Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
+    pass
+
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
 # IMGUI_API bool          InputFloat3(const char* label, float v[3], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_float3(
     label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
@@ -1785,11 +1909,22 @@ def input_float3(
     pass
 
 # IMGUI_API bool          InputFloat4(const char* label, float v[4], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
+@overload
 def input_float4(
     label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
+# IMGUI_API inline std::pair<bool, ImVec4>  InputFloat4(const char* label, ImVec4 v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0)    /* original C++ signature */
+#         { bool changed = InputFloat4(label, (float*)&v, format, flags);  return { changed, v }; }
+@overload
+def input_float4(label: str, v: ImVec4Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
+    pass
+
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
+# #endif
+#
 # IMGUI_API bool          InputInt(const char* label, int* v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_int(label: str, v: int, step: int = 1, step_fast: int = 100, flags: InputTextFlags = 0) -> Tuple[bool, int]:
     pass
@@ -1840,26 +1975,61 @@ def input_scalar_n(
 # Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color square that can be left-clicked to open a picker, and right-clicked to open an option menu.)
 # - Note that in C++ a 'float v[X]' function argument is the _same_ as 'float* v', the array syntax is just a way to document the number of elements that are expected to be accessible.
 # - You can pass the address of a first float element out of a contiguous structure, e.g. &myvector.x
+
 # IMGUI_API bool          ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
+@overload
 def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
 
+# IMGUI_API inline std::tuple<bool, ImVec4> ColorEdit3(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
+#         {  bool changed = ColorEdit3(label.c_str(), (float*)&col, flags);  return { changed, col }; }
+@overload
+def color_edit3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
+    pass
+
 # IMGUI_API bool          ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
+@overload
 def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
 
-# IMGUI_API bool          ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
-def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+# IMGUI_API inline std::tuple<bool, ImVec4> ColorEdit4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
+#         {  bool changed = ColorEdit4(label.c_str(), (float*)&col, flags);  return { changed, col }; }
+@overload
+def color_edit4(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
+# #endif
+#
+
+# IMGUI_API bool          ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
+@overload
+def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+    pass
+
+# IMGUI_API inline std::tuple<bool, ImVec4> ColorPicker3(const char* label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
+#         { bool changed = ColorPicker3(label, (float*)&col, flags);  return { changed, col }; }
+@overload
+def color_picker3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
+    pass
+
+# IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);    /* original C++ signature */
+@overload
+def color_picker4(
+    label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[float] = None
+) -> Tuple[bool, List[float]]:
+    pass
+
 # IMGUI_API std::tuple<bool, ImVec4> ColorPicker4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0, std::optional<ImVec4> ref_col = std::nullopt);    /* original C++ signature */
+@overload
 def color_picker4(
     label: str, col: ImVec4Like, flags: ColorEditFlags = 0, ref_col: Optional[ImVec4Like] = None
 ) -> Tuple[bool, ImVec4]:
     pass
 
+# #ifdef IMGUI_BUNDLE_PYTHON_API
+#
 # #endif
 #
 
@@ -1887,7 +2057,7 @@ def tree_node(label: str) -> bool:
 # IMGUI_API bool          TreeNode(const char* str_id, const char* fmt, ...) ;       /* original C++ signature */
 @overload
 def tree_node(str_id: str, fmt: str) -> bool:
-    """helper variation to easily decorelate the id from the displayed string. Read the FAQ about why and how to use ID. to align arbitrary text at the same level as a TreeNode() you can use Bullet()."""
+    """helper variation to easily decorrelate the id from the displayed string. Read the FAQ about why and how to use ID. to align arbitrary text at the same level as a TreeNode() you can use Bullet()."""
     pass
 
 # IMGUI_API bool          TreeNode(const void* ptr_id, const char* fmt, ...) ;       /* original C++ signature */
@@ -1952,9 +2122,13 @@ def set_next_item_open(is_open: bool, cond: Cond = 0) -> None:
 
 # IMGUI_API void          SetNextItemStorageID(ImGuiID storage_id);                               /* original C++ signature */
 def set_next_item_storage_id(storage_id: ID) -> None:
+    """set id to use for open/close storage (default to same as item id)."""
     pass
 
-# set id to use for open/close storage (default to same as item id).
+# IMGUI_API bool          TreeNodeGetOpen(ImGuiID storage_id);                                    /* original C++ signature */
+def tree_node_get_open(storage_id: ID) -> bool:
+    """retrieve tree node open/close state."""
+    pass
 
 # [ADAPT_IMGUI_BUNDLE]
 # Widgets: Selectables
@@ -1974,7 +2148,7 @@ def selectable(
 # [/ADAPT_IMGUI_BUNDLE]
 
 # Multi-selection system for Selectable(), Checkbox(), TreeNode() functions [BETA]
-# - This enables standard multi-selection/range-selection idioms (CTRL+Mouse/Keyboard, SHIFT+Mouse/Keyboard, etc.) in a way that also allow a clipper to be used.
+# - This enables standard multi-selection/range-selection idioms (Ctrl+Mouse/Keyboard, Shift+Mouse/Keyboard, etc.) in a way that also allow a clipper to be used.
 # - ImGuiSelectionUserData is often used to store your item index within the current view (but may store something else).
 # - Read comments near ImGuiMultiSelectIO for instructions/details and see 'Demo->Widgets->Selection State & Multi-Select' for demo.
 # - TreeNode() is technically supported but... using this correctly is more complicated. You need some sort of linear/random access to your tree,
@@ -2001,7 +2175,7 @@ def is_item_toggled_selection() -> bool:
 # - This is essentially a thin wrapper to using BeginChild/EndChild with the ImGuiChildFlags_FrameStyle flag for stylistic changes + displaying a label.
 # - If you don't need a label you can probably simply use BeginChild() with the ImGuiChildFlags_FrameStyle flag for the same result.
 # - You can submit contents and manage your selection state however you want it, by creating e.g. Selectable() or any other items.
-# - The simplified/old ListBox() api are helpers over BeginListBox()/EndListBox() which are kept available for convenience purpose. This is analoguous to how Combos are created.
+# - The simplified/old ListBox() api are helpers over BeginListBox()/EndListBox() which are kept available for convenience purpose. This is analogous to how Combos are created.
 # - Choose frame width:   size.x > 0.0: custom  /  size.x < 0.0 or -FLT_MIN: right-align   /  size.x = 0.0 (default): use current ItemWidth
 # - Choose frame height:  size.y > 0.0: custom  /  size.y < 0.0 or -FLT_MIN: bottom-align  /  size.y = 0.0 (default): arbitrary default height which can fit ~7 items
 # IMGUI_API bool          BeginListBox(const char* label, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
@@ -2064,11 +2238,6 @@ def value(prefix: str, b: bool) -> None:
     pass
 
 # IMGUI_API void          Value(const char* prefix, int v);    /* original C++ signature */
-@overload
-def value(prefix: str, v: int) -> None:
-    pass
-
-# IMGUI_API void          Value(const char* prefix, unsigned int v);    /* original C++ signature */
 @overload
 def value(prefix: str, v: int) -> None:
     pass
@@ -2166,7 +2335,7 @@ def set_item_tooltip(fmt: str) -> None:
 
 # Popups, Modals
 #  - They block normal mouse hovering detection (and therefore most mouse interactions) behind them.
-#  - If not modal: they can be closed by clicking anywhere outside them, or by pressing ESCAPE.
+#  - If not modal: they can be closed by clicking anywhere outside them, or by pressing Escape (call 'Shortcut(ImGuiKey_Escape)' to claim a higher-priority shortcut).
 #  - Their visibility state (~bool) is held internally instead of being held by the programmer as we are used to with regular Begin*() calls.
 #  - The 3 properties above are related: we need to retain popup visibility state in the library because popups may be closed as any time.
 #  - You can bypass the hovering restriction by using ImGuiHoveredFlags_AllowWhenBlockedByPopup when calling IsItemHovered() or IsWindowHovered().
@@ -2196,7 +2365,6 @@ def end_popup() -> None:
 #  - CloseCurrentPopup() is called by default by Selectable()/MenuItem() when activated (FIXME: need some options).
 #  - Use ImGuiPopupFlags_NoOpenOverExistingPopup to avoid opening a popup if there's already one at the same level. This is equivalent to e.g. testing for !IsAnyPopupOpen() prior to OpenPopup().
 #  - Use IsWindowAppearing() after BeginPopup() to tell if a window just opened.
-#  - IMPORTANT: Notice that for OpenPopupOnItemClick() we exceptionally default flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter
 # IMGUI_API void          OpenPopup(const char* str_id, ImGuiPopupFlags popup_flags = 0);                         /* original C++ signature */
 @overload
 def open_popup(str_id: str, popup_flags: PopupFlags = 0) -> None:
@@ -2209,8 +2377,8 @@ def open_popup(id_: ID, popup_flags: PopupFlags = 0) -> None:
     """id overload to facilitate calling from nested stacks"""
     pass
 
-# IMGUI_API void          OpenPopupOnItemClick(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);       /* original C++ signature */
-def open_popup_on_item_click(str_id: Optional[str] = None, popup_flags: PopupFlags = 1) -> None:
+# IMGUI_API void          OpenPopupOnItemClick(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 0);       /* original C++ signature */
+def open_popup_on_item_click(str_id: Optional[str] = None, popup_flags: PopupFlags = 0) -> None:
     """helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)"""
     pass
 
@@ -2219,23 +2387,27 @@ def close_current_popup() -> None:
     """manually close the popup we have begin-ed into."""
     pass
 
-# Popups: open+begin combined functions helpers
+# Popups: Open+Begin popup combined functions helpers to create context menus.
 #  - Helpers to do OpenPopup+BeginPopup where the Open action is triggered by e.g. hovering an item and right-clicking.
-#  - They are convenient to easily create context menus, hence the name.
 #  - IMPORTANT: Notice that BeginPopupContextXXX takes ImGuiPopupFlags just like OpenPopup() and unlike BeginPopup(). For full consistency, we may add ImGuiWindowFlags to the BeginPopupContextXXX functions in the future.
-#  - IMPORTANT: Notice that we exceptionally default their flags to 1 (== ImGuiPopupFlags_MouseButtonRight) for backward compatibility with older API taking 'int mouse_button = 1' parameter, so if you add other flags remember to re-add the ImGuiPopupFlags_MouseButtonRight.
-# IMGUI_API bool          BeginPopupContextItem(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);      /* original C++ signature */
-def begin_popup_context_item(str_id: Optional[str] = None, popup_flags: PopupFlags = 1) -> bool:
+#  - IMPORTANT: If you ever used the left mouse button with BeginPopupContextXXX() helpers before 1.92.6:
+#    - Before this version, OpenPopupOnItemClick(), BeginPopupContextItem(), BeginPopupContextWindow(), BeginPopupContextVoid() had 'a ImGuiPopupFlags popup_flags = 1' default value in their function signature.
+#    - Before: Explicitly passing a literal 0 meant ImGuiPopupFlags_MouseButtonLeft. The default = 1 meant ImGuiPopupFlags_MouseButtonRight.
+#    - After: The default = 0 means ImGuiPopupFlags_MouseButtonRight. Explicitly passing a literal 1 also means ImGuiPopupFlags_MouseButtonRight (if legacy behavior are enabled) or will assert (if legacy behavior are disabled).
+#    - TL;DR: if you don't want to use right mouse button for popups, always specify it explicitly using a named ImGuiPopupFlags_MouseButtonXXXX value.
+#    - Read "API BREAKING CHANGES" 2026/01/07 (1.92.6) entry in imgui.cpp or GitHub topic #9157 for all details.
+# IMGUI_API bool          BeginPopupContextItem(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 0);      /* original C++ signature */
+def begin_popup_context_item(str_id: Optional[str] = None, popup_flags: PopupFlags = 0) -> bool:
     """open+begin popup when clicked on last item. Use str_id==None to associate the popup to previous item. If you want to use that on a non-interactive item such as Text() you need to pass in an explicit ID here. read comments in .cpp!"""
     pass
 
-# IMGUI_API bool          BeginPopupContextWindow(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);    /* original C++ signature */
-def begin_popup_context_window(str_id: Optional[str] = None, popup_flags: PopupFlags = 1) -> bool:
+# IMGUI_API bool          BeginPopupContextWindow(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 0);    /* original C++ signature */
+def begin_popup_context_window(str_id: Optional[str] = None, popup_flags: PopupFlags = 0) -> bool:
     """open+begin popup when clicked on current window."""
     pass
 
-# IMGUI_API bool          BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 1);      /* original C++ signature */
-def begin_popup_context_void(str_id: Optional[str] = None, popup_flags: PopupFlags = 1) -> bool:
+# IMGUI_API bool          BeginPopupContextVoid(const char* str_id = NULL, ImGuiPopupFlags popup_flags = 0);      /* original C++ signature */
+def begin_popup_context_void(str_id: Optional[str] = None, popup_flags: PopupFlags = 0) -> bool:
     """open+begin popup when clicked in None (where there are no windows)."""
     pass
 
@@ -2285,7 +2457,7 @@ def end_table() -> None:
 
 # IMGUI_API void          TableNextRow(ImGuiTableRowFlags row_flags = 0, float min_row_height = 0.0f);     /* original C++ signature */
 def table_next_row(row_flags: TableRowFlags = 0, min_row_height: float = 0.0) -> None:
-    """append into the first cell of a new row."""
+    """append into the first cell of a new row. 'min_row_height' include the minimum top and bottom padding aka CellPadding.y * 2.0."""
     pass
 
 # IMGUI_API bool          TableNextColumn();                                      /* original C++ signature */
@@ -2305,7 +2477,7 @@ def table_set_column_index(column_n: int) -> bool:
 #   The context menu can also be made available in columns body using ImGuiTableFlags_ContextMenuInBody.
 # - You may manually submit headers using TableNextRow() + TableHeader() calls, but this is only useful in
 #   some advanced use cases (e.g. adding custom widgets in header row).
-# - Use TableSetupScrollFreeze() to lock columns/rows so they stay visible when scrolled.
+# - Use TableSetupScrollFreeze() to lock columns/rows so they stay visible when scrolled. When freezing columns you would usually also use ImGuiTableColumnFlags_NoHide on them.
 # IMGUI_API void          TableSetupColumn(const char* label, ImGuiTableColumnFlags flags = 0, float init_width_or_weight = 0.0f, ImGuiID user_id = 0);    /* original C++ signature */
 def table_setup_column(
     label: str, flags: TableColumnFlags = 0, init_width_or_weight: float = 0.0, user_id: ID = 0
@@ -2355,7 +2527,7 @@ def table_get_column_index() -> int:
 
 # IMGUI_API int                   TableGetRowIndex();                             /* original C++ signature */
 def table_get_row_index() -> int:
-    """return current row index."""
+    """return current row index (header rows are accounted for)"""
     pass
 
 # IMGUI_API const char*           TableGetColumnName(int column_n = -1);          /* original C++ signature */
@@ -2437,16 +2609,16 @@ def end_tab_bar() -> None:
 
 # IMGUI_API bool          BeginTabItem(const char* label, bool* p_open = NULL, ImGuiTabItemFlags flags = 0);     /* original C++ signature */
 def begin_tab_item(label: str, p_open: Optional[bool] = None, flags: TabItemFlags = 0) -> Tuple[bool, Optional[bool]]:
+    """create a Tab. Returns True if the Tab is selected."""
     pass
 
-# create a Tab. Returns True if the Tab is selected.
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
 # IMGUI_API bool          BeginTabItemSimple(const char* label, ImGuiTabItemFlags flags = 0);     /* original C++ signature */
 def begin_tab_item_simple(label: str, flags: TabItemFlags = 0) -> bool:
+    """create a Tab (non-closable). Returns True if the Tab is selected."""
     pass
 
-# create a Tab (non-closable). Returns True if the Tab is selected.
 # #endif
 #
 # IMGUI_API void          EndTabItem();                                                           /* original C++ signature */
@@ -2465,18 +2637,26 @@ def set_tab_item_closed(tab_or_docked_window_label: str) -> None:
     pass
 
 # Docking
-# [BETA API] Enable with io.ConfigFlags |= ImGuiConfigFlags_DockingEnable.
-# Note: You can use most Docking facilities without calling any API. You DO NOT need to call DockSpace() to use Docking!
-# - Drag from window title bar or their tab to dock/undock. Hold SHIFT to disable docking.
-# - Drag from window menu button (upper-left button) to undock an entire node (all windows).
-# - When io.ConfigDockingWithShift == True, you instead need to hold SHIFT to enable docking.
-# About dockspaces:
-# - Use DockSpaceOverViewport() to create a window covering the screen or a specific viewport + a dockspace inside it.
-#   This is often used with ImGuiDockNodeFlags_PassthruCentralNode to make it transparent.
-# - Use DockSpace() to create an explicit dock node _within_ an existing window. See Docking demo for details.
-# - Important: Dockspaces need to be submitted _before_ any window they can host. Submit it early in your frame!
-# - Important: Dockspaces need to be kept alive if hidden, otherwise windows docked into it will be undocked.
-#   e.g. if you have multiple tabs with a dockspace inside each tab: submit the non-visible dockspaces with ImGuiDockNodeFlags_KeepAliveOnly.
+# - Read https://github.com/ocornut/imgui/wiki/Docking for details.
+# - Enable with io.ConfigFlags |= ImGuiConfigFlags_DockingEnable.
+# - You can use many Docking facilities without calling any API.
+#   - Drag from window title bar or their tab to dock/undock. Hold SHIFT to disable docking.
+#   - Drag from window menu button (upper-left button) to undock an entire node (all windows).
+#   - When io.ConfigDockingWithShift == True, you instead need to hold SHIFT to enable docking.
+# - DockSpaceOverViewport:
+#   - This is a helper to create an invisible window covering a viewport, then submit a DockSpace() into it.
+#   - Most applications can simply call DockSpaceOverViewport() once to allow docking windows into e.g. the edge of your screen.
+#     e.g. ImGui::NewFrame(); ImGui::DockSpaceOverViewport();                                                   // Create a dockspace in main viewport.
+#      or: ImGui::NewFrame(); ImGui::DockSpaceOverViewport(0, None, ImGuiDockNodeFlags_PassthruCentralNode); // Create a dockspace in main viewport, central node is transparent.
+# - Dockspaces:
+#   - A dockspace is an explicit dock node within an existing window.
+#   - IMPORTANT: Dockspaces need to be submitted _before_ any window they can host. Submit them early in your frame!
+#   - IMPORTANT: Dockspaces need to be kept alive if hidden, otherwise windows docked into it will be undocked.
+#     If you have e.g. multiple tabs with a dockspace inside each tab: submit the non-visible dockspaces with ImGuiDockNodeFlags_KeepAliveOnly.
+#   - See 'Demo->Examples->Dockspace' or 'Demo->Examples->Documents' for more detailed demos.
+# - Programmatic docking:
+#   - There is no public API yet other than the very limited SetNextWindowDockID() function. Sorry for that!
+#   - Read https://github.com/ocornut/imgui/wiki/Docking for examples of how to use current internal API.
 # IMGUI_API ImGuiID       DockSpace(ImGuiID dockspace_id, const ImVec2& size = ImVec2(0, 0), ImGuiDockNodeFlags flags = 0, const ImGuiWindowClass* window_class = NULL);    /* original C++ signature */
 def dock_space(
     dockspace_id: ID,
@@ -2508,8 +2688,9 @@ def set_next_window_class(window_class: WindowClass) -> None:
     """set next window class (control docking compatibility + provide hints to platform backend via custom viewport flags and platform parent/child relationship)"""
     pass
 
-# IMGUI_API ImGuiID       GetWindowDockID();    /* original C++ signature */
+# IMGUI_API ImGuiID       GetWindowDockID();                                                      /* original C++ signature */
 def get_window_dock_id() -> ID:
+    """get dock id of current window, or 0 if not associated to any docking node."""
     pass
 
 # IMGUI_API bool          IsWindowDocked();                                                       /* original C++ signature */
@@ -2582,7 +2763,7 @@ def end_drag_drop_target() -> None:
 # Disabling [BETA API]
 # - Disable all user interactions and dim items visuals (applying style.DisabledAlpha over current colors)
 # - Those can be nested but it cannot be used to enable an already disabled section (a single BeginDisabled(True) in the stack is enough to keep everything disabled)
-# - Tooltips windows by exception are opted out of disabling.
+# - Tooltips windows are automatically opted out of disabling. Note that IsItemHovered() by default returns False on disabled items, unless using ImGuiHoveredFlags_AllowWhenDisabled.
 # - BeginDisabled(False)/EndDisabled() essentially does nothing but is provided to facilitate use of boolean expressions (as a micro-optimization: if you have tens of thousands of BeginDisabled(False)/EndDisabled() pairs, you might want to reformulate your code to avoid making those calls)
 # IMGUI_API void          BeginDisabled(bool disabled = true);    /* original C++ signature */
 def begin_disabled(disabled: bool = True) -> None:
@@ -2624,7 +2805,7 @@ def set_nav_cursor_visible(visible: bool) -> None:
 # Overlapping mode
 # IMGUI_API void          SetNextItemAllowOverlap();                                              /* original C++ signature */
 def set_next_item_allow_overlap() -> None:
-    """allow next item to be overlapped by a subsequent item. Useful with invisible buttons, selectable, treenode covering an area where subsequent items may need to be added. Note that both Selectable() and TreeNode() have dedicated flags doing this."""
+    """allow next item to be overlapped by a subsequent item. Typically useful with InvisibleButton(), Selectable(), TreeNode() covering an area where subsequent items may need to be added. Note that both Selectable() and TreeNode() have dedicated flags doing this."""
     pass
 
 # Item/Widgets Utilities and Query Functions
@@ -2715,6 +2896,11 @@ def get_item_rect_size() -> ImVec2:
     """get size of last item"""
     pass
 
+# IMGUI_API ImGuiItemFlags GetItemFlags();                                                        /* original C++ signature */
+def get_item_flags() -> ItemFlags:
+    """get generic flags of last item"""
+    pass
+
 # Viewports
 # - Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.
 # - In 'docking' branch with multi-viewport enabled, we extend this concept to have multiple active viewports.
@@ -2793,22 +2979,10 @@ def color_convert_u32_to_float4(in_: ImU32) -> ImVec4:
 def color_convert_float4_to_u32(in_: ImVec4Like) -> ImU32:
     pass
 
-# IMGUI_API void          ColorConvertRGBtoHSV(float r, float g, float b, float& out_h, float& out_s, float& out_v);    /* original C++ signature */
-def color_convert_rgb_to_hsv(
-    r: float, g: float, b: float, out_h: float, out_s: float, out_v: float
-) -> Tuple[float, float, float]:
-    pass
-
-# IMGUI_API void          ColorConvertHSVtoRGB(float h, float s, float v, float& out_r, float& out_g, float& out_b);    /* original C++ signature */
-def color_convert_hsv_to_rgb(
-    h: float, s: float, v: float, out_r: float, out_g: float, out_b: float
-) -> Tuple[float, float, float]:
-    pass
-
-# Inputs Utilities: Keyboard/Mouse/Gamepad
+# Inputs Utilities: Raw Keyboard/Mouse/Gamepad Access
+# - Consider using the Shortcut() function instead of IsKeyPressed()/IsKeyChordPressed()! Shortcut() is easier to use and better featured (can do focus routing check).
 # - the ImGuiKey enum contains all possible keyboard, mouse and gamepad inputs (e.g. ImGuiKey_A, ImGuiKey_MouseLeft, ImGuiKey_GamepadDpadUp...).
-# - (legacy: before v1.87, we used ImGuiKey to carry native/user indices as defined by each backends. This was obsoleted in 1.87 (2022-02) and completely removed in 1.91.5 (2024-11). See https://github.com/ocornut/imgui/issues/4921)
-# - (legacy: any use of ImGuiKey will assert when key < 512 to detect passing legacy native/user indices)
+# - (legacy: before v1.87 (2022-02), we used ImGuiKey < 512 values to carry native/user indices as defined by each backends. This was obsoleted in 1.87 (2022-02) and completely removed in 1.91.5 (2024-11). See https://github.com/ocornut/imgui/issues/4921)
 # IMGUI_API bool          IsKeyDown(ImGuiKey key);                                                /* original C++ signature */
 def is_key_down(key: Key) -> bool:
     """is key being held."""
@@ -2816,7 +2990,7 @@ def is_key_down(key: Key) -> bool:
 
 # IMGUI_API bool          IsKeyPressed(ImGuiKey key, bool repeat = true);                         /* original C++ signature */
 def is_key_pressed(key: Key, repeat: bool = True) -> bool:
-    """was key pressed (went from !Down to Down)? if repeat=True, uses io.KeyRepeatDelay / KeyRepeatRate"""
+    """was key pressed (went from !Down to Down)? Repeat rate uses io.KeyRepeatDelay / KeyRepeatRate."""
     pass
 
 # IMGUI_API bool          IsKeyReleased(ImGuiKey key);                                            /* original C++ signature */
@@ -2844,10 +3018,13 @@ def set_next_frame_want_capture_keyboard(want_capture_keyboard: bool) -> None:
     """Override io.WantCaptureKeyboard flag next frame (said flag is left for your application to handle, typically when True it instructs your app to ignore inputs). e.g. force capture keyboard when your widget is being hovered. This is equivalent to setting "io.WantCaptureKeyboard = want_capture_keyboard"; after the next NewFrame() call."""
     pass
 
-# Inputs Utilities: Shortcut Testing & Routing [BETA]
+# Inputs Utilities: Shortcut Testing & Routing
+# - Typical use is e.g.: 'if (ImGui::Shortcut(ImGuiMod_Ctrl | ImGuiKey_S)) { ... }'.
+# - Flags: Default route use ImGuiInputFlags_RouteFocused, but see ImGuiInputFlags_RouteGlobal and other options in ImGuiInputFlags_!
+# - Flags: Use ImGuiInputFlags_Repeat to support repeat.
 # - ImGuiKeyChord = a ImGuiKey + optional ImGuiMod_Alt/ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Super.
-#       ImGuiKey_C                          // Accepted by functions taking ImGuiKey or ImGuiKeyChord arguments)
-#       ImGuiMod_Ctrl | ImGuiKey_C          // Accepted by functions taking ImGuiKeyChord arguments)
+#       ImGuiKey_C                          // Accepted by functions taking ImGuiKey or ImGuiKeyChord arguments
+#       ImGuiMod_Ctrl | ImGuiKey_C          // Accepted by functions taking ImGuiKeyChord arguments
 #   only ImGuiMod_XXX values are legal to combine with an ImGuiKey. You CANNOT combine two ImGuiKey values.
 # - The general idea is that several callers may register interest in a shortcut, and only one owner gets it.
 #      Parent   -> call Shortcut(Ctrl+S)    // When Parent is focused, Parent gets the shortcut.
@@ -2856,8 +3033,10 @@ def set_next_frame_want_capture_keyboard(want_capture_keyboard: bool) -> None:
 #   The whole system is order independent, so if Child1 makes its calls before Parent, results will be identical.
 #   This is an important property as it facilitate working with foreign code or larger codebase.
 # - To understand the difference:
-#   - IsKeyChordPressed() compares mods and call IsKeyPressed() -> function has no side-effect.
-#   - Shortcut() submits a route, routes are resolved, if it currently can be routed it calls IsKeyChordPressed() -> function has (desirable) side-effects as it can prevents another call from getting the route.
+#   - IsKeyChordPressed() compares mods and call IsKeyPressed()
+#     -> the function has no side-effect.
+#   - Shortcut() submits a route, routes are resolved, if it currently can be routed it calls IsKeyChordPressed()
+#     -> the function has (desirable) side-effects as it can prevents another call from getting the route.
 # - Visualize registered routes in 'Metrics/Debugger->Inputs'.
 # IMGUI_API bool          Shortcut(ImGuiKeyChord key_chord, ImGuiInputFlags flags = 0);    /* original C++ signature */
 def shortcut(key_chord: KeyChord, flags: InputFlags = 0) -> bool:
@@ -2870,12 +3049,13 @@ def set_next_item_shortcut(key_chord: KeyChord, flags: InputFlags = 0) -> None:
 # Inputs Utilities: Key/Input Ownership [BETA]
 # - One common use case would be to allow your items to disable standard inputs behaviors such
 #   as Tab or Alt key handling, Mouse Wheel scrolling, etc.
-#   e.g. Button(...); SetItemKeyOwner(ImGuiKey_MouseWheelY); to make hovering/activating a button disable wheel for scrolling.
+#   e.g. `Button(...); if (SetItemKeyOwner(ImGuiKey_MouseWheelY)) { ... }` to make hovering/activating a button disable wheel for scrolling.
 # - Reminder ImGuiKey enum include access to mouse buttons and gamepad, so key ownership can apply to them.
+# - The return value of SetItemKeyOwner() says if ownership has been requested for the item, which is a shortcut to calling yet non-public TestKeyOwner() function.
 # - Many related features are still in imgui_internal.h. For instance, most IsKeyXXX()/IsMouseXXX() functions have an owner-id-aware version.
-# IMGUI_API void          SetItemKeyOwner(ImGuiKey key);                                          /* original C++ signature */
-def set_item_key_owner(key: Key) -> None:
-    """Set key owner to last item ID if it is hovered or active. Equivalent to 'if (IsItemHovered() || IsItemActive()) { SetKeyOwner(key, GetItemID());'."""
+# IMGUI_API bool          SetItemKeyOwner(ImGuiKey key);                                          /* original C++ signature */
+def set_item_key_owner(key: Key) -> bool:
+    """Set key owner to last item ID if it is hovered or active. Return True when ownership has been set. Roughly equivalent to 'if (TestKeyOwner(key, GetItemID()) && (IsItemHovered() || IsItemActive())) { SetKeyOwner(key, GetItemID());'."""
     pass
 
 # Inputs Utilities: Mouse
@@ -2963,7 +3143,7 @@ def set_mouse_cursor(cursor_type: MouseCursor) -> None:
 
 # IMGUI_API void          SetNextFrameWantCaptureMouse(bool want_capture_mouse);                  /* original C++ signature */
 def set_next_frame_want_capture_mouse(want_capture_mouse: bool) -> None:
-    """Override io.WantCaptureMouse flag next frame (said flag is left for your application to handle, typical when True it instucts your app to ignore inputs). This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse;" after the next NewFrame() call."""
+    """Override io.WantCaptureMouse flag next frame (said flag is left for your application to handle, typical when True it instructs your app to ignore inputs). This is equivalent to setting "io.WantCaptureMouse = want_capture_mouse;" after the next NewFrame() call."""
     pass
 
 # Clipboard Utilities
@@ -3001,7 +3181,9 @@ def save_ini_settings_to_memory() -> str:
     pass
 
 # Debug Utilities
-# - Your main debugging friend is the ShowMetricsWindow() function, which is also accessible from Demo->Tools->Metrics Debugger
+# - Your main debugging friend is the ShowMetricsWindow() function.
+# - Interactive tools are all accessible from the 'Dear ImGui Demo->Tools' menu.
+# - Read https://github.com/ocornut/imgui/wiki/Debug-Tools for a description of all available debug tools.
 # IMGUI_API void          DebugTextEncoding(const char* text);    /* original C++ signature */
 def debug_text_encoding(text: str) -> None:
     pass
@@ -3018,9 +3200,8 @@ def debug_start_item_picker() -> None:
 def debug_check_version_and_data_layout(
     version_str: str, sz_io: int, sz_style: int, sz_vec2: int, sz_vec4: int, sz_drawvert: int, sz_drawidx: int
 ) -> bool:
+    """This is called by IMGUI_CHECKVERSION() macro."""
     pass
-
-# This is called by IMGUI_CHECKVERSION() macro.
 
 # Memory Allocators
 # - Those functions are not reliant on the current context.
@@ -3047,8 +3228,8 @@ def destroy_platform_windows() -> None:
     """call DestroyWindow platform functions for all viewports. call from backend Shutdown() if you need to close platform windows before imgui shutdown. otherwise will be called by DestroyContext()."""
     pass
 
-# IMGUI_API ImGuiViewport* FindViewportByID(ImGuiID id);                              /* original C++ signature */
-def find_viewport_by_id(id_: ID) -> Viewport:
+# IMGUI_API ImGuiViewport* FindViewportByID(ImGuiID viewport_id);                     /* original C++ signature */
+def find_viewport_by_id(viewport_id: ID) -> Viewport:
     """this is a helper for backends."""
     pass
 
@@ -3061,7 +3242,7 @@ def find_viewport_by_platform_handle(platform_handle: Any) -> Viewport:
 # [SECTION] Flags & Enumerations
 # -----------------------------------------------------------------------------
 
-class WindowFlags_(enum.Enum):
+class WindowFlags_(enum.IntFlag):
     """Flags for ImGui::Begin()
     (Those are per-window flags. There are shared flags in ImGuiIO: io.ConfigWindowsResizeFromEdges and io.ConfigWindowsMoveFromTitleBarOnly)
     """
@@ -3123,7 +3304,7 @@ class WindowFlags_(enum.Enum):
     # ImGuiWindowFlags_NoNavFocus             = 1 << 17,      /* original C++ signature */
     no_nav_focus = (
         enum.auto()
-    )  # (= 1 << 17)  # No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by CTRL+TAB)
+    )  # (= 1 << 17)  # No focusing toward this window with keyboard/gamepad navigation (e.g. skipped by Ctrl+Tab)
     # ImGuiWindowFlags_UnsavedDocument        = 1 << 18,      /* original C++ signature */
     unsaved_document = (
         enum.auto()
@@ -3155,9 +3336,9 @@ class WindowFlags_(enum.Enum):
 
     # Obsolete names
 
-class ChildFlags_(enum.Enum):
+class ChildFlags_(enum.IntFlag):
     """Flags for ImGui::BeginChild()
-    (Legacy: bit 0 must always correspond to ImGuiChildFlags_Borders to be backward compatible with old API using 'bool border = False'.
+    (Legacy: bit 0 must always correspond to ImGuiChildFlags_Borders to be backward compatible with old API using 'bool border = False'.)
     About using AutoResizeX/AutoResizeY flags:
     - May be combined with SetNextWindowSizeConstraints() to set a min/max size for each axis (see "Demo->Child->Auto-resize with Constraints").
     - Size measurement for a given axis is only performed when the child window is within visible boundaries, or is just appearing.
@@ -3206,9 +3387,9 @@ class ChildFlags_(enum.Enum):
 
     # Obsolete names
 
-class ItemFlags_(enum.Enum):
+class ItemFlags_(enum.IntFlag):
     """Flags for ImGui::PushItemFlag()
-    (Those are shared by all items)
+    (Those are shared by all submitted items)
     """
 
     # ImGuiItemFlags_None                     = 0,            /* original C++ signature */
@@ -3237,8 +3418,12 @@ class ItemFlags_(enum.Enum):
     allow_duplicate_id = (
         enum.auto()
     )  # (= 1 << 5)  # False    // Allow submitting an item with the same identifier as an item already submitted this frame without triggering a warning tooltip if io.ConfigDebugHighlightIdConflicts is set.
+    # ImGuiItemFlags_Disabled                 = 1 << 6,       /* original C++ signature */
+    disabled = (
+        enum.auto()
+    )  # (= 1 << 6)  # False    // [Internal] Disable interactions. DOES NOT affect visuals. This is used by BeginDisabled()/EndDisabled() and only provided here so you can read back via GetItemFlags().
 
-class InputTextFlags_(enum.Enum):
+class InputTextFlags_(enum.IntFlag):
     """Flags for ImGui::InputText()
     (Those are per-item flags. There are shared flags in ImGuiIO: io.ConfigInputTextCursorBlink and io.ConfigInputTextEnterKeepActive)
     """
@@ -3271,7 +3456,7 @@ class InputTextFlags_(enum.Enum):
     # ImGuiInputTextFlags_CtrlEnterForNewLine = 1 << 8,       /* original C++ signature */
     ctrl_enter_for_new_line = (
         enum.auto()
-    )  # (= 1 << 8)  # In multi-line mode, validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter).
+    )  # (= 1 << 8)  # In multi-line mode: validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). Note that Shift+Enter always enter a new line either way.
 
     # Other options
     # ImGuiInputTextFlags_ReadOnly            = 1 << 9,       /* original C++ signature */
@@ -3325,10 +3510,20 @@ class InputTextFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 23)  # Callback on any edit. Note that InputText() already returns True on edit + you can always use IsItemEdited(). The callback is useful to manipulate the underlying buffer while focus is active.
 
+    # Multi-line Word-Wrapping [BETA]
+    # - Not well tested yet. Please report any incorrect cursor movement, selection behavior etc. bug to https://github.com/ocornut/imgui/issues/3237.
+    # - Wrapping style is not ideal. Wrapping of long words/sections (e.g. words larger than total available width) may be particularly unpleasing.
+    # - Wrapping width needs to always account for the possibility of a vertical scrollbar.
+    # - It is much slower than regular text fields.
+    #   Ballpark estimate of cost on my 2019 desktop PC: for a 100 KB text buffer: +~0.3 ms (Optimized) / +~1.0 ms (Debug build).
+    #   The CPU cost is very roughly proportional to text length, so a 10 KB buffer should cost about ten times less.
+    # ImGuiInputTextFlags_WordWrap            = 1 << 24,      /* original C++ signature */
+    word_wrap = enum.auto()  # (= 1 << 24)  # InputTextMultiline(): word-wrap lines that are too long.
+
     # Obsolete names
     # ImGuiInputTextFlags_AlwaysInsertMode  = ImGuiInputTextFlags_AlwaysOverwrite   // [renamed in 1.82] name was not matching behavior
 
-class TreeNodeFlags_(enum.Enum):
+class TreeNodeFlags_(enum.IntFlag):
     """Flags for ImGui::TreeNodeEx(), ImGui::CollapsingHeader*()"""
 
     # ImGuiTreeNodeFlags_None                 = 0,    /* original C++ signature */
@@ -3338,7 +3533,9 @@ class TreeNodeFlags_(enum.Enum):
     # ImGuiTreeNodeFlags_Framed               = 1 << 1,       /* original C++ signature */
     framed = enum.auto()  # (= 1 << 1)  # Draw frame with background (e.g. for CollapsingHeader)
     # ImGuiTreeNodeFlags_AllowOverlap         = 1 << 2,       /* original C++ signature */
-    allow_overlap = enum.auto()  # (= 1 << 2)  # Hit testing to allow subsequent widgets to overlap this one
+    allow_overlap = (
+        enum.auto()
+    )  # (= 1 << 2)  # Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().
     # ImGuiTreeNodeFlags_NoTreePushOnOpen     = 1 << 3,       /* original C++ signature */
     no_tree_push_on_open = (
         enum.auto()
@@ -3358,7 +3555,9 @@ class TreeNodeFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 7)  # Open when clicking on the arrow part (default for multi-select unless any _OpenOnXXX behavior is set explicitly). Both behaviors may be combined.
     # ImGuiTreeNodeFlags_Leaf                 = 1 << 8,       /* original C++ signature */
-    leaf = enum.auto()  # (= 1 << 8)  # No collapsing, no arrow (use as a convenience for leaf nodes).
+    leaf = (
+        enum.auto()
+    )  # (= 1 << 8)  # No collapsing, no arrow (use as a convenience for leaf nodes). Note: will always open a tree/id scope and return True. If you never use that scope, add ImGuiTreeNodeFlags_NoTreePushOnOpen.
     # ImGuiTreeNodeFlags_Bullet               = 1 << 9,       /* original C++ signature */
     bullet = (
         enum.auto()
@@ -3386,44 +3585,48 @@ class TreeNodeFlags_(enum.Enum):
     # ImGuiTreeNodeFlags_LabelSpanAllColumns  = 1 << 15,      /* original C++ signature */
     label_span_all_columns = enum.auto()  # (= 1 << 15)  # Label will span all columns of its container table
     # ImGuiTreeNodeFlags_NoScrollOnOpen     = 1 << 16,  // FIXME: TODO: Disable automatic scroll on TreePop() if node got just open and contents is not visible
-    # ImGuiTreeNodeFlags_NavLeftJumpsBackHere = 1 << 17,      /* original C++ signature */
-    nav_left_jumps_back_here = (
+    # ImGuiTreeNodeFlags_NavLeftJumpsToParent = 1 << 17,      /* original C++ signature */
+    nav_left_jumps_to_parent = (
         enum.auto()
-    )  # (= 1 << 17)  # (WIP) Nav: left direction may move to this TreeNode() from any of its child (items submitted between TreeNode and TreePop)
+    )  # (= 1 << 17)  # Nav: left arrow moves back to parent. This is processed in TreePop() when there's an unfulfilled Left nav request remaining.
     # ImGuiTreeNodeFlags_CollapsingHeader     = ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_NoTreePushOnOpen | ImGuiTreeNodeFlags_NoAutoOpenOnLog,    /* original C++ signature */
     collapsing_header = (
         enum.auto()
     )  # (= TreeNodeFlags_Framed | TreeNodeFlags_NoTreePushOnOpen | TreeNodeFlags_NoAutoOpenOnLog)
 
-class PopupFlags_(enum.Enum):
+    # [EXPERIMENTAL] Draw lines connecting TreeNode hierarchy. Discuss in GitHub issue #2920.
+    # Default value is pulled from style.TreeLinesFlags. May be overridden in TreeNode calls.
+    # ImGuiTreeNodeFlags_DrawLinesNone        = 1 << 18,      /* original C++ signature */
+    draw_lines_none = enum.auto()  # (= 1 << 18)  # No lines drawn
+    # ImGuiTreeNodeFlags_DrawLinesFull        = 1 << 19,      /* original C++ signature */
+    draw_lines_full = (
+        enum.auto()
+    )  # (= 1 << 19)  # Horizontal lines to child nodes. Vertical line drawn down to TreePop() position: cover full contents. Faster (for large trees).
+    # ImGuiTreeNodeFlags_DrawLinesToNodes     = 1 << 20,      /* original C++ signature */
+    draw_lines_to_nodes = (
+        enum.auto()
+    )  # (= 1 << 20)  # Horizontal lines to child nodes. Vertical line drawn down to bottom-most child node. Slower (for large trees).
+
+class PopupFlags_(enum.IntFlag):
     """Flags for OpenPopup*(), BeginPopupContext*(), IsPopupOpen() functions.
-    - To be backward compatible with older API which took an 'int mouse_button = 1' argument instead of 'ImGuiPopupFlags flags',
-      we need to treat small flags values as a mouse button index, so we encode the mouse button in the first few bits of the flags.
-      It is therefore guaranteed to be legal to pass a mouse button index in ImGuiPopupFlags.
-    - For the same reason, we exceptionally default the ImGuiPopupFlags argument of BeginPopupContextXXX functions to 1 instead of 0.
-      IMPORTANT: because the default parameter is 1 (==ImGuiPopupFlags_MouseButtonRight), if you rely on the default parameter
-      and want to use another flag, you need to pass in the ImGuiPopupFlags_MouseButtonRight flag explicitly.
+    - IMPORTANT: If you ever used the left mouse button with BeginPopupContextXXX() helpers before 1.92.6: Read "API BREAKING CHANGES" 2026/01/07 (1.92.6) entry in imgui.cpp or GitHub topic #9157.
     - Multiple buttons currently cannot be combined/or-ed in those functions (we could allow it later).
     """
 
     # ImGuiPopupFlags_None                    = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
-    # ImGuiPopupFlags_MouseButtonLeft         = 0,            /* original C++ signature */
+    # ImGuiPopupFlags_MouseButtonLeft         = 1 << 2,       /* original C++ signature */
     mouse_button_left = (
         enum.auto()
-    )  # (= 0)  # For BeginPopupContext*(): open on Left Mouse release. Guaranteed to always be == 0 (same as ImGuiMouseButton_Left)
-    # ImGuiPopupFlags_MouseButtonRight        = 1,            /* original C++ signature */
+    )  # (= 1 << 2)  # For BeginPopupContext*(): open on Left Mouse release. Only one button allowed!
+    # ImGuiPopupFlags_MouseButtonRight        = 2 << 2,       /* original C++ signature */
     mouse_button_right = (
         enum.auto()
-    )  # (= 1)  # For BeginPopupContext*(): open on Right Mouse release. Guaranteed to always be == 1 (same as ImGuiMouseButton_Right)
-    # ImGuiPopupFlags_MouseButtonMiddle       = 2,            /* original C++ signature */
+    )  # (= 2 << 2)  # For BeginPopupContext*(): open on Right Mouse release. Only one button allowed! (default)
+    # ImGuiPopupFlags_MouseButtonMiddle       = 3 << 2,       /* original C++ signature */
     mouse_button_middle = (
         enum.auto()
-    )  # (= 2)  # For BeginPopupContext*(): open on Middle Mouse release. Guaranteed to always be == 2 (same as ImGuiMouseButton_Middle)
-    # ImGuiPopupFlags_MouseButtonMask_        = 0x1F,    /* original C++ signature */
-    mouse_button_mask_ = enum.auto()  # (= 0x1F)
-    # ImGuiPopupFlags_MouseButtonDefault_     = 1,    /* original C++ signature */
-    mouse_button_default_ = enum.auto()  # (= 1)
+    )  # (= 3 << 2)  # For BeginPopupContext*(): open on Middle Mouse release. Only one button allowed!
     # ImGuiPopupFlags_NoReopen                = 1 << 5,       /* original C++ signature */
     no_reopen = (
         enum.auto()
@@ -3444,10 +3647,17 @@ class PopupFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 11)  # For IsPopupOpen(): search/test at any level of the popup stack (default test in the current level)
     # ImGuiPopupFlags_AnyPopup                = ImGuiPopupFlags_AnyPopupId | ImGuiPopupFlags_AnyPopupLevel,    /* original C++ signature */
-    # }
     any_popup = enum.auto()  # (= PopupFlags_AnyPopupId | PopupFlags_AnyPopupLevel)
+    # ImGuiPopupFlags_MouseButtonShift_       = 2,            /* original C++ signature */
+    mouse_button_shift_ = enum.auto()  # (= 2)  # [Internal]
+    # ImGuiPopupFlags_MouseButtonMask_        = 0x0C,         /* original C++ signature */
+    mouse_button_mask_ = enum.auto()  # (= 0x0C)  # [Internal]
+    # ImGuiPopupFlags_InvalidMask_            = 0x03,         /* original C++ signature */
+    invalid_mask_ = (
+        enum.auto()
+    )  # (= 0x03)  # [Internal] Reserve legacy bits 0-1 to detect incorrectly passing 1 or 2 to the function.
 
-class SelectableFlags_(enum.Enum):
+class SelectableFlags_(enum.IntFlag):
     """Flags for ImGui::Selectable()"""
 
     # ImGuiSelectableFlags_None               = 0,    /* original C++ signature */
@@ -3465,11 +3675,17 @@ class SelectableFlags_(enum.Enum):
     # ImGuiSelectableFlags_Disabled           = 1 << 3,       /* original C++ signature */
     disabled = enum.auto()  # (= 1 << 3)  # Cannot be selected, display grayed out text
     # ImGuiSelectableFlags_AllowOverlap       = 1 << 4,       /* original C++ signature */
-    allow_overlap = enum.auto()  # (= 1 << 4)  # (WIP) Hit testing to allow subsequent widgets to overlap this one
+    allow_overlap = (
+        enum.auto()
+    )  # (= 1 << 4)  # Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().
     # ImGuiSelectableFlags_Highlight          = 1 << 5,       /* original C++ signature */
     highlight = enum.auto()  # (= 1 << 5)  # Make the item be displayed as if it is hovered
+    # ImGuiSelectableFlags_SelectOnNav        = 1 << 6,       /* original C++ signature */
+    select_on_nav = (
+        enum.auto()
+    )  # (= 1 << 6)  # Auto-select when moved into, unless Ctrl is held. Automatic when in a BeginMultiSelect() block.
 
-class ComboFlags_(enum.Enum):
+class ComboFlags_(enum.IntFlag):
     """Flags for ImGui::BeginCombo()"""
 
     # ImGuiComboFlags_None                    = 0,    /* original C++ signature */
@@ -3498,7 +3714,7 @@ class ComboFlags_(enum.Enum):
         enum.auto()
     )  # (= ComboFlags_HeightSmall | ComboFlags_HeightRegular | ComboFlags_HeightLarge | ComboFlags_HeightLargest)
 
-class TabBarFlags_(enum.Enum):
+class TabBarFlags_(enum.IntFlag):
     """Flags for ImGui::BeginTabBar()"""
 
     # ImGuiTabBarFlags_None                           = 0,    /* original C++ signature */
@@ -3523,17 +3739,24 @@ class TabBarFlags_(enum.Enum):
     no_tooltip = enum.auto()  # (= 1 << 5)  # Disable tooltips when hovering a tab
     # ImGuiTabBarFlags_DrawSelectedOverline           = 1 << 6,       /* original C++ signature */
     draw_selected_overline = enum.auto()  # (= 1 << 6)  # Draw selected overline markers over selected tab
-    # ImGuiTabBarFlags_FittingPolicyResizeDown        = 1 << 7,       /* original C++ signature */
-    fitting_policy_resize_down = enum.auto()  # (= 1 << 7)  # Resize tabs when they don't fit
-    # ImGuiTabBarFlags_FittingPolicyScroll            = 1 << 8,       /* original C++ signature */
-    fitting_policy_scroll = enum.auto()  # (= 1 << 8)  # Add scroll buttons when tabs don't fit
-    # ImGuiTabBarFlags_FittingPolicyMask_             = ImGuiTabBarFlags_FittingPolicyResizeDown | ImGuiTabBarFlags_FittingPolicyScroll,    /* original C++ signature */
-    fitting_policy_mask_ = enum.auto()  # (= TabBarFlags_FittingPolicyResizeDown | TabBarFlags_FittingPolicyScroll)
-    # ImGuiTabBarFlags_FittingPolicyDefault_          = ImGuiTabBarFlags_FittingPolicyResizeDown,    /* original C++ signature */
-    # }
-    fitting_policy_default_ = enum.auto()  # (= TabBarFlags_FittingPolicyResizeDown)
 
-class TabItemFlags_(enum.Enum):
+    # Fitting/Resize policy
+    # ImGuiTabBarFlags_FittingPolicyMixed             = 1 << 7,       /* original C++ signature */
+    fitting_policy_mixed = (
+        enum.auto()
+    )  # (= 1 << 7)  # Shrink down tabs when they don't fit, until width is style.TabMinWidthShrink, then enable scrolling. Setting TabMinWidthShrink to FLT_MAX makes this behave like ImGuiTabBarFlags_FittingPolicyScroll.
+    # ImGuiTabBarFlags_FittingPolicyShrink            = 1 << 8,       /* original C++ signature */
+    fitting_policy_shrink = enum.auto()  # (= 1 << 8)  # Shrink down tabs when they don't fit
+    # ImGuiTabBarFlags_FittingPolicyScroll            = 1 << 9,       /* original C++ signature */
+    fitting_policy_scroll = enum.auto()  # (= 1 << 9)  # Enable scrolling buttons when tabs don't fit
+    # ImGuiTabBarFlags_FittingPolicyMask_             = ImGuiTabBarFlags_FittingPolicyMixed | ImGuiTabBarFlags_FittingPolicyShrink | ImGuiTabBarFlags_FittingPolicyScroll,    /* original C++ signature */
+    fitting_policy_mask_ = (
+        enum.auto()
+    )  # (= TabBarFlags_FittingPolicyMixed | TabBarFlags_FittingPolicyShrink | TabBarFlags_FittingPolicyScroll)
+    # ImGuiTabBarFlags_FittingPolicyDefault_          = ImGuiTabBarFlags_FittingPolicyMixed,    /* original C++ signature */
+    fitting_policy_default_ = enum.auto()  # (= TabBarFlags_FittingPolicyMixed)
+
+class TabItemFlags_(enum.IntFlag):
     """Flags for ImGui::BeginTabItem()"""
 
     # ImGuiTabItemFlags_None                          = 0,    /* original C++ signature */
@@ -3569,7 +3792,7 @@ class TabItemFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 8)  # Tab is selected when trying to close + closure is not immediately assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar.
 
-class FocusedFlags_(enum.Enum):
+class FocusedFlags_(enum.IntFlag):
     """Flags for ImGui::IsWindowFocused()"""
 
     # ImGuiFocusedFlags_None                          = 0,    /* original C++ signature */
@@ -3594,7 +3817,7 @@ class FocusedFlags_(enum.Enum):
     # }
     root_and_child_windows = enum.auto()  # (= FocusedFlags_RootWindow | FocusedFlags_ChildWindows)
 
-class HoveredFlags_(enum.Enum):
+class HoveredFlags_(enum.IntFlag):
     """Flags for ImGui::IsItemHovered(), ImGui::IsWindowHovered()
     Note: if you are trying to check whether your mouse should be dispatched to Dear ImGui or to your app, you should use 'io.WantCaptureMouse' instead! Please read the FAQ!
     Note: windows with the ImGuiWindowFlags_NoInputs flag are ignored by IsWindowHovered() calls.
@@ -3659,7 +3882,7 @@ class HoveredFlags_(enum.Enum):
     # Tooltips mode
     # - typically used in IsItemHovered() + SetTooltip() sequence.
     # - this is a shortcut to pull flags from 'style.HoverFlagsForTooltipMouse' or 'style.HoverFlagsForTooltipNav' where you can reconfigure desired behavior.
-    #   e.g. 'TooltipHoveredFlagsForMouse' defaults to 'ImGuiHoveredFlags_Stationary | ImGuiHoveredFlags_DelayShort'.
+    #   e.g. 'HoverFlagsForTooltipMouse' defaults to 'ImGuiHoveredFlags_Stationary | ImGuiHoveredFlags_DelayShort | ImGuiHoveredFlags_AllowWhenDisabled'.
     # - for frequently actioned or hovered items providing a tooltip, you want may to use ImGuiHoveredFlags_ForTooltip (stationary + delay) so the tooltip doesn't show too often.
     # - for items which main purpose is to be hovered, or items with low affordance, or in less consistent apps, prefer no delay or shorter delay.
     # ImGuiHoveredFlags_ForTooltip                    = 1 << 12,      /* original C++ signature */
@@ -3691,7 +3914,7 @@ class HoveredFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 17)  # IsItemHovered() only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)
 
-class DockNodeFlags_(enum.Enum):
+class DockNodeFlags_(enum.IntFlag):
     """Flags for ImGui::DockSpace(), shared/inherited by child nodes.
     (Some flags can be applied to individual nodes directly)
     FIXME-DOCK: Also see ImGuiDockNodeFlagsPrivate_ which may involve using the WIP and internal DockBuilder api.
@@ -3725,7 +3948,7 @@ class DockNodeFlags_(enum.Enum):
     # ImGuiDockNodeFlags_NoUndocking                  = 1 << 7,       /* original C++ signature */
     no_undocking = enum.auto()  # (= 1 << 7)  #       // Disable undocking this node.
 
-class DragDropFlags_(enum.Enum):
+class DragDropFlags_(enum.IntFlag):
     """Flags for ImGui::BeginDragDropSource(), ImGui::AcceptDragDropPayload()"""
 
     # ImGuiDragDropFlags_None                         = 0,    /* original C++ signature */
@@ -3776,6 +3999,10 @@ class DragDropFlags_(enum.Enum):
     accept_no_preview_tooltip = (
         enum.auto()
     )  # (= 1 << 12)  # Request hiding the BeginDragDropSource tooltip from the BeginDragDropTarget site.
+    # ImGuiDragDropFlags_AcceptDrawAsHovered          = 1 << 13,      /* original C++ signature */
+    accept_draw_as_hovered = (
+        enum.auto()
+    )  # (= 1 << 13)  # Accepting item will render as if hovered. Useful for e.g. a Button() used as a drop target.
     # ImGuiDragDropFlags_AcceptPeekOnly               = ImGuiDragDropFlags_AcceptBeforeDelivery | ImGuiDragDropFlags_AcceptNoDrawDefaultRect,     /* original C++ signature */
     accept_peek_only = (
         enum.auto()
@@ -3783,7 +4010,7 @@ class DragDropFlags_(enum.Enum):
 
 # Standard Drag and Drop payload types. You can define you own payload types using short strings. Types starting with '_' are defined by Dear ImGui.
 
-class DataType_(enum.Enum):
+class DataType_(enum.IntFlag):
     """A primary data type"""
 
     # ImGuiDataType_S8,           /* original C++ signature */
@@ -3814,7 +4041,7 @@ class DataType_(enum.Enum):
     # }
     count = enum.auto()  # (= 12)
 
-class Dir(enum.Enum):
+class Dir(enum.IntFlag):
     """A cardinal direction"""
 
     # ImGuiDir_None    = -1,    /* original C++ signature */
@@ -3831,7 +4058,7 @@ class Dir(enum.Enum):
     # }
     count = enum.auto()  # (= 4)
 
-class SortDirection(enum.Enum):
+class SortDirection(enum.IntFlag):
     """A sorting direction"""
 
     # ImGuiSortDirection_None         = 0,    /* original C++ signature */
@@ -3841,12 +4068,12 @@ class SortDirection(enum.Enum):
     # ImGuiSortDirection_Descending   = 2         /* original C++ signature */
     descending = enum.auto()  # (= 2)  # Descending = 9->0, Z->A etc.
 
-class Key(enum.Enum):
+class Key(enum.IntFlag):
     """A key identifier (ImGuiKey_XXX or ImGuiMod_XXX value): can represent Keyboard, Mouse and Gamepad values.
     All our named keys are >= 512. Keys value 0 to 511 are left unused and were legacy native/opaque key values (< 1.87).
     Support for legacy keys was completely removed in 1.91.5.
     Read details about the 1.87+ transition : https://github.com/ocornut/imgui/issues/4921
-    Note that "Keys" related to physical keys and are not the same concept as input "Characters", the later are submitted via io.AddInputCharacter().
+    Note that "Keys" related to physical keys and are not the same concept as input "Characters", the latter are submitted via io.AddInputCharacter().
     The keyboard key enum values are named after the keys on a standard US keyboard, and on other keyboard types the keys reported may not match the keycaps.
     """
 
@@ -3892,8 +4119,8 @@ class Key(enum.Enum):
     left_shift = enum.auto()  # (= 528)
     # ImGuiKey_LeftAlt,     /* original C++ signature */
     left_alt = enum.auto()  # (= 529)
-    # ImGuiKey_LeftSuper,    /* original C++ signature */
-    left_super = enum.auto()  # (= 530)
+    # ImGuiKey_LeftSuper,         /* original C++ signature */
+    left_super = enum.auto()  # (= 530)  # Also see ImGuiMod_Ctrl, ImGuiMod_Shift, ImGuiMod_Alt, ImGuiMod_Super below!
     # ImGuiKey_RightCtrl,     /* original C++ signature */
     right_ctrl = enum.auto()  # (= 531)
     # ImGuiKey_RightShift,     /* original C++ signature */
@@ -4097,84 +4324,82 @@ class Key(enum.Enum):
     # ImGuiKey_Oem102,                    /* original C++ signature */
     oem102 = enum.auto()  # (= 631)  # Non-US backslash.
 
-    # Gamepad (some of those are analog values, 0.0 to 1.0)                          // NAVIGATION ACTION
+    # Gamepad
+    # (analog values are 0.0 to 1.0)
     # (download controller mapping PNG/PSD at http://dearimgui.com/controls_sheets)
+    #                            // XBOX        | SWITCH  | PLAYSTA. | -> ACTION
     # ImGuiKey_GamepadStart,              /* original C++ signature */
-    gamepad_start = enum.auto()  # (= 632)  # Menu (Xbox)      + (Switch)   Start/Options (PS)
+    gamepad_start = enum.auto()  # (= 632)  # Menu        | +       | Options  |
     # ImGuiKey_GamepadBack,               /* original C++ signature */
-    gamepad_back = enum.auto()  # (= 633)  # View (Xbox)      - (Switch)   Share (PS)
+    gamepad_back = enum.auto()  # (= 633)  # View        | -       | Share    |
     # ImGuiKey_GamepadFaceLeft,           /* original C++ signature */
     gamepad_face_left = (
         enum.auto()
-    )  # (= 634)  # X (Xbox)         Y (Switch)   Square (PS)        // Tap: Toggle Menu. Hold: Windowing mode (Focus/Move/Resize windows)
+    )  # (= 634)  # X           | Y       | Square   | Toggle Menu. Hold for Windowing mode (Focus/Move/Resize windows)
     # ImGuiKey_GamepadFaceRight,          /* original C++ signature */
-    gamepad_face_right = (
-        enum.auto()
-    )  # (= 635)  # B (Xbox)         A (Switch)   Circle (PS)        // Cancel / Close / Exit
+    gamepad_face_right = enum.auto()  # (= 635)  # B           | A       | Circle   | Cancel / Close / Exit
     # ImGuiKey_GamepadFaceUp,             /* original C++ signature */
-    gamepad_face_up = (
-        enum.auto()
-    )  # (= 636)  # Y (Xbox)         X (Switch)   Triangle (PS)      // Text Input / On-screen Keyboard
+    gamepad_face_up = enum.auto()  # (= 636)  # Y           | X       | Triangle | Open Context Menu
     # ImGuiKey_GamepadFaceDown,           /* original C++ signature */
     gamepad_face_down = (
         enum.auto()
-    )  # (= 637)  # A (Xbox)         B (Switch)   Cross (PS)         // Activate / Open / Toggle / Tweak
+    )  # (= 637)  # A           | B       | Cross    | Activate / Open / Toggle. Hold for 0.60 to Activate in Text Input mode (e.g. wired to an on-screen keyboard).
     # ImGuiKey_GamepadDpadLeft,           /* original C++ signature */
     gamepad_dpad_left = (
         enum.auto()
-    )  # (= 638)  # D-pad Left                                       // Move / Tweak / Resize Window (in Windowing mode)
+    )  # (= 638)  # D-pad Left  | "       | "        | Move / Tweak / Resize Window (in Windowing mode)
     # ImGuiKey_GamepadDpadRight,          /* original C++ signature */
     gamepad_dpad_right = (
         enum.auto()
-    )  # (= 639)  # D-pad Right                                      // Move / Tweak / Resize Window (in Windowing mode)
+    )  # (= 639)  # D-pad Right | "       | "        | Move / Tweak / Resize Window (in Windowing mode)
     # ImGuiKey_GamepadDpadUp,             /* original C++ signature */
     gamepad_dpad_up = (
         enum.auto()
-    )  # (= 640)  # D-pad Up                                         // Move / Tweak / Resize Window (in Windowing mode)
+    )  # (= 640)  # D-pad Up    | "       | "        | Move / Tweak / Resize Window (in Windowing mode)
     # ImGuiKey_GamepadDpadDown,           /* original C++ signature */
     gamepad_dpad_down = (
         enum.auto()
-    )  # (= 641)  # D-pad Down                                       // Move / Tweak / Resize Window (in Windowing mode)
+    )  # (= 641)  # D-pad Down  | "       | "        | Move / Tweak / Resize Window (in Windowing mode)
     # ImGuiKey_GamepadL1,                 /* original C++ signature */
     gamepad_l1 = (
         enum.auto()
-    )  # (= 642)  # L Bumper (Xbox)  L (Switch)   L1 (PS)            // Tweak Slower / Focus Previous (in Windowing mode)
+    )  # (= 642)  # L Bumper    | L       | L1       | Tweak Slower / Focus Previous (in Windowing mode)
     # ImGuiKey_GamepadR1,                 /* original C++ signature */
     gamepad_r1 = (
         enum.auto()
-    )  # (= 643)  # R Bumper (Xbox)  R (Switch)   R1 (PS)            // Tweak Faster / Focus Next (in Windowing mode)
+    )  # (= 643)  # R Bumper    | R       | R1       | Tweak Faster / Focus Next (in Windowing mode)
     # ImGuiKey_GamepadL2,                 /* original C++ signature */
-    gamepad_l2 = enum.auto()  # (= 644)  # L Trig. (Xbox)   ZL (Switch)  L2 (PS) [Analog]
+    gamepad_l2 = enum.auto()  # (= 644)  # L Trigger   | ZL      | L2       | [Analog]
     # ImGuiKey_GamepadR2,                 /* original C++ signature */
-    gamepad_r2 = enum.auto()  # (= 645)  # R Trig. (Xbox)   ZR (Switch)  R2 (PS) [Analog]
+    gamepad_r2 = enum.auto()  # (= 645)  # R Trigger   | ZR      | R2       | [Analog]
     # ImGuiKey_GamepadL3,                 /* original C++ signature */
-    gamepad_l3 = enum.auto()  # (= 646)  # L Stick (Xbox)   L3 (Switch)  L3 (PS)
+    gamepad_l3 = enum.auto()  # (= 646)  # L Stick     | L3      | L3       |
     # ImGuiKey_GamepadR3,                 /* original C++ signature */
-    gamepad_r3 = enum.auto()  # (= 647)  # R Stick (Xbox)   R3 (Switch)  R3 (PS)
+    gamepad_r3 = enum.auto()  # (= 647)  # R Stick     | R3      | R3       |
     # ImGuiKey_GamepadLStickLeft,         /* original C++ signature */
     gamepad_l_stick_left = (
         enum.auto()
-    )  # (= 648)  # [Analog]                                         // Move Window (in Windowing mode)
+    )  # (= 648)  #             |         |          | [Analog] Move Window (in Windowing mode)
     # ImGuiKey_GamepadLStickRight,        /* original C++ signature */
     gamepad_l_stick_right = (
         enum.auto()
-    )  # (= 649)  # [Analog]                                         // Move Window (in Windowing mode)
+    )  # (= 649)  #             |         |          | [Analog] Move Window (in Windowing mode)
     # ImGuiKey_GamepadLStickUp,           /* original C++ signature */
     gamepad_l_stick_up = (
         enum.auto()
-    )  # (= 650)  # [Analog]                                         // Move Window (in Windowing mode)
+    )  # (= 650)  #             |         |          | [Analog] Move Window (in Windowing mode)
     # ImGuiKey_GamepadLStickDown,         /* original C++ signature */
     gamepad_l_stick_down = (
         enum.auto()
-    )  # (= 651)  # [Analog]                                         // Move Window (in Windowing mode)
+    )  # (= 651)  #             |         |          | [Analog] Move Window (in Windowing mode)
     # ImGuiKey_GamepadRStickLeft,         /* original C++ signature */
-    gamepad_r_stick_left = enum.auto()  # (= 652)  # [Analog]
+    gamepad_r_stick_left = enum.auto()  # (= 652)  #             |         |          | [Analog]
     # ImGuiKey_GamepadRStickRight,        /* original C++ signature */
-    gamepad_r_stick_right = enum.auto()  # (= 653)  # [Analog]
+    gamepad_r_stick_right = enum.auto()  # (= 653)  #             |         |          | [Analog]
     # ImGuiKey_GamepadRStickUp,           /* original C++ signature */
-    gamepad_r_stick_up = enum.auto()  # (= 654)  # [Analog]
+    gamepad_r_stick_up = enum.auto()  # (= 654)  #             |         |          | [Analog]
     # ImGuiKey_GamepadRStickDown,         /* original C++ signature */
-    gamepad_r_stick_down = enum.auto()  # (= 655)  # [Analog]
+    gamepad_r_stick_down = enum.auto()  # (= 655)  #             |         |          | [Analog]
 
     # ImGuiKey_MouseLeft,     /* original C++ signature */
     # Aliases: Mouse Buttons (auto-submitted from AddMouseButtonEvent() calls)
@@ -4202,12 +4427,17 @@ class Key(enum.Enum):
     reserved_for_mod_alt = enum.auto()  # (= 665)
     # ImGuiKey_ReservedForModSuper,    /* original C++ signature */
     reserved_for_mod_super = enum.auto()  # (= 666)
+
+    # [Internal] If you need to iterate all keys (for e.g. an input mapper) you may use ImGuiKey_NamedKey_BEGIN..ImGuiKey_NamedKey_END.
     # ImGuiKey_NamedKey_END,    /* original C++ signature */
     named_key_end = enum.auto()  # (= 667)
+    # ImGuiKey_NamedKey_COUNT = ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN,    /* original C++ signature */
+    named_key_count = enum.auto()  # (= Key_NamedKey_END - Key_NamedKey_BEGIN)
 
     # Keyboard Modifiers (explicitly submitted by backend via AddKeyEvent() calls)
-    # - This is mirroring the data also written to io.KeyCtrl, io.KeyShift, io.KeyAlt, io.KeySuper, in a format allowing
-    #   them to be accessed via standard key API, allowing calls such as IsKeyPressed(), IsKeyReleased(), querying duration etc.
+    # - Any functions taking a ImGuiKeyChord parameter can binary-or those with regular keys, e.g. Shortcut(ImGuiMod_Ctrl | ImGuiKey_S).
+    # - Those are written back into io.KeyCtrl, io.KeyShift, io.KeyAlt, io.KeySuper for convenience,
+    #   but may be accessed via standard key API such as IsKeyPressed(), IsKeyReleased(), querying duration etc.
     # - Code polling every key (e.g. an interface to detect a key press for input mapping) might want to ignore those
     #   and prefer using the real keys (e.g. ImGuiKey_LeftCtrl, ImGuiKey_RightCtrl instead of ImGuiMod_Ctrl).
     # - In theory the value of keyboard modifiers should be roughly equivalent to a logical or of the equivalent left/right keys.
@@ -4227,13 +4457,7 @@ class Key(enum.Enum):
     # ImGuiMod_Mask_                  = 0xF000,      /* original C++ signature */
     mod_mask_ = enum.auto()  # (= 0xF000)  # 4-bits
 
-    # ImGuiKey_NamedKey_COUNT         = ImGuiKey_NamedKey_END - ImGuiKey_NamedKey_BEGIN,    /* original C++ signature */
-    # [Internal] If you need to iterate all keys (for e.g. an input mapper) you may use ImGuiKey_NamedKey_BEGIN..ImGuiKey_NamedKey_END.
-    named_key_count = enum.auto()  # (= Key_NamedKey_END - Key_NamedKey_BEGIN)
-    # ImGuiKey_KeysData_SIZE        = ImGuiKey_NamedKey_COUNT,  // Size of KeysData[]: only hold named keys
-    # ImGuiKey_KeysData_OFFSET      = ImGuiKey_NamedKey_BEGIN,  // Accesses to io.KeysData[] must use (key - ImGuiKey_NamedKey_BEGIN) index.
-
-class InputFlags_(enum.Enum):
+class InputFlags_(enum.IntFlag):
     """Flags for Shortcut(), SetNextItemShortcut(),
     (and for upcoming extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner() that are still in imgui_internal.h)
     Don't mistake with ImGuiInputTextFlags! (which is for ImGui::InputText() function)
@@ -4269,7 +4493,7 @@ class InputFlags_(enum.Enum):
     # ImGuiInputFlags_RouteOverActive         = 1 << 15,      /* original C++ signature */
     route_over_active = (
         enum.auto()
-    )  # (= 1 << 15)  # Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. CTRL+A registered by InputText will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active.
+    )  # (= 1 << 15)  # Option: global route: higher priority than active item. Unlikely you need to use that: will interfere with every active items, e.g. Ctrl+A registered by InputText will be overridden by this. May not be fully honored as user/internal code is likely to always assume they can access keys when active.
     # ImGuiInputFlags_RouteUnlessBgFocused    = 1 << 16,      /* original C++ signature */
     route_unless_bg_focused = (
         enum.auto()
@@ -4285,15 +4509,17 @@ class InputFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 18)  # Automatically display a tooltip when hovering item [BETA] Unsure of right api (opt-in/opt-out)
 
-class ConfigFlags_(enum.Enum):
-    """Configuration flags stored in io.ConfigFlags. Set by user/application."""
+class ConfigFlags_(enum.IntFlag):
+    """Configuration flags stored in io.ConfigFlags. Set by user/application.
+    Note that nowadays most of our configuration options are in other ImGuiIO fields, e.g. io.ConfigWindowsMoveFromTitleBarOnly.
+    """
 
     # ImGuiConfigFlags_None                   = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiConfigFlags_NavEnableKeyboard      = 1 << 0,       /* original C++ signature */
     nav_enable_keyboard = (
         enum.auto()
-    )  # (= 1 << 0)  # Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + space/enter to activate.
+    )  # (= 1 << 0)  # Master keyboard navigation enable flag. Enable full Tabbing + directional arrows + Space/Enter to activate. Note: some features such as basic Tabbing and CtrL+Tab are enabled by regardless of this flag (and may be disabled via other means, see #4828, #9218).
     # ImGuiConfigFlags_NavEnableGamepad       = 1 << 1,       /* original C++ signature */
     nav_enable_gamepad = (
         enum.auto()
@@ -4319,22 +4545,14 @@ class ConfigFlags_(enum.Enum):
     viewports_enable = (
         enum.auto()
     )  # (= 1 << 10)  # Viewport enable flags (require both ImGuiBackendFlags_PlatformHasViewports + ImGuiBackendFlags_RendererHasViewports set by the respective backends)
-    # ImGuiConfigFlags_DpiEnableScaleViewports= 1 << 14,      /* original C++ signature */
-    dpi_enable_scale_viewports = (
-        enum.auto()
-    )  # (= 1 << 14)  # [BETA: Don't use] FIXME-DPI: Reposition and resize imgui windows when the DpiScale of a viewport changed (mostly useful for the main viewport hosting other window). Note that resizing the main window itself is up to your application.
-    # ImGuiConfigFlags_DpiEnableScaleFonts    = 1 << 15,      /* original C++ signature */
-    dpi_enable_scale_fonts = (
-        enum.auto()
-    )  # (= 1 << 15)  # [BETA: Don't use] FIXME-DPI: Request bitmap-scaled fonts to match DpiScale. This is a very low-quality workaround. The correct way to handle DPI is _currently_ to replace the atlas and/or fonts in the Platform_OnChangedViewport callback, but this is all early work in progress.
 
-    # User storage (to allow your backend/engine to communicate to code that may be shared between multiple projects. Those flags are NOT used by core Dear ImGui)
+    # [Unused] User storage (to allow your backend/engine to communicate to code that may be shared between multiple projects. Those flags are NOT used by core Dear ImGui)
     # ImGuiConfigFlags_IsSRGB                 = 1 << 20,      /* original C++ signature */
     is_srgb = enum.auto()  # (= 1 << 20)  # Application is SRGB-aware.
     # ImGuiConfigFlags_IsTouchScreen          = 1 << 21,      /* original C++ signature */
     is_touch_screen = enum.auto()  # (= 1 << 21)  # Application is using a touch screen instead of a mouse.
 
-class BackendFlags_(enum.Enum):
+class BackendFlags_(enum.IntFlag):
     """Backend capabilities flags stored in io.BackendFlags. Set by imgui_impl_xxx or custom backend."""
 
     # ImGuiBackendFlags_None                  = 0,    /* original C++ signature */
@@ -4353,18 +4571,26 @@ class BackendFlags_(enum.Enum):
     renderer_has_vtx_offset = (
         enum.auto()
     )  # (= 1 << 3)  # Backend Renderer supports ImDrawCmd::VtxOffset. This enables output of large meshes (64K+ vertices) while still using 16-bit indices.
+    # ImGuiBackendFlags_RendererHasTextures   = 1 << 4,       /* original C++ signature */
+    renderer_has_textures = (
+        enum.auto()
+    )  # (= 1 << 4)  # Backend Renderer supports ImTextureData requests to create/update/destroy textures. This enables incremental texture updates and texture reloads. See https://github.com/ocornut/imgui/blob/master/docs/BACKENDS.md for instructions on how to upgrade your custom backend.
 
-    # [BETA] Viewports
-    # ImGuiBackendFlags_PlatformHasViewports  = 1 << 10,      /* original C++ signature */
-    platform_has_viewports = enum.auto()  # (= 1 << 10)  # Backend Platform supports multiple viewports.
-    # ImGuiBackendFlags_HasMouseHoveredViewport=1 << 11,      /* original C++ signature */
+    # [BETA] Multi-Viewports
+    # ImGuiBackendFlags_RendererHasViewports  = 1 << 10,      /* original C++ signature */
+    renderer_has_viewports = enum.auto()  # (= 1 << 10)  # Backend Renderer supports multiple viewports.
+    # ImGuiBackendFlags_PlatformHasViewports  = 1 << 11,      /* original C++ signature */
+    platform_has_viewports = enum.auto()  # (= 1 << 11)  # Backend Platform supports multiple viewports.
+    # ImGuiBackendFlags_HasMouseHoveredViewport=1 << 12,      /* original C++ signature */
     has_mouse_hovered_viewport = (
         enum.auto()
-    )  # (= 1 << 11)  # Backend Platform supports calling io.AddMouseViewportEvent() with the viewport under the mouse. IF POSSIBLE, ignore viewports with the ImGuiViewportFlags_NoInputs flag (Win32 backend, GLFW 3.30+ backend can do this, SDL backend cannot). If this cannot be done, Dear ImGui needs to use a flawed heuristic to find the viewport under.
-    # ImGuiBackendFlags_RendererHasViewports  = 1 << 12,      /* original C++ signature */
-    renderer_has_viewports = enum.auto()  # (= 1 << 12)  # Backend Renderer supports multiple viewports.
+    )  # (= 1 << 12)  # Backend Platform supports calling io.AddMouseViewportEvent() with the viewport under the mouse. IF POSSIBLE, ignore viewports with the ImGuiViewportFlags_NoInputs flag (Win32 backend, GLFW 3.30+ backend can do this, SDL backend cannot). If this cannot be done, Dear ImGui needs to use a flawed heuristic to find the viewport under.
+    # ImGuiBackendFlags_HasParentViewport     = 1 << 13,      /* original C++ signature */
+    has_parent_viewport = (
+        enum.auto()
+    )  # (= 1 << 13)  # Backend Platform supports honoring viewport->ParentViewport/ParentViewportId value, by applying the corresponding parent/child relationship at the Platform level. Child windows always appear in front of their parent window.
 
-class Col_(enum.Enum):
+class Col_(enum.IntFlag):
     """Enumeration for PushStyleColor() / PopStyleColor()"""
 
     # ImGuiCol_Text,    /* original C++ signature */
@@ -4405,103 +4631,113 @@ class Col_(enum.Enum):
     scrollbar_grab_active = enum.auto()  # (= 17)
     # ImGuiCol_CheckMark,                 /* original C++ signature */
     check_mark = enum.auto()  # (= 18)  # Checkbox tick and RadioButton circle
+    # ImGuiCol_CheckboxSelectedBg,        /* original C++ signature */
+    checkbox_selected_bg = enum.auto()  # (= 19)  # Checkbox background when Selected, otherwise use FrameBg
     # ImGuiCol_SliderGrab,    /* original C++ signature */
-    slider_grab = enum.auto()  # (= 19)
+    slider_grab = enum.auto()  # (= 20)
     # ImGuiCol_SliderGrabActive,    /* original C++ signature */
-    slider_grab_active = enum.auto()  # (= 20)
+    slider_grab_active = enum.auto()  # (= 21)
     # ImGuiCol_Button,    /* original C++ signature */
-    button = enum.auto()  # (= 21)
+    button = enum.auto()  # (= 22)
     # ImGuiCol_ButtonHovered,    /* original C++ signature */
-    button_hovered = enum.auto()  # (= 22)
+    button_hovered = enum.auto()  # (= 23)
     # ImGuiCol_ButtonActive,    /* original C++ signature */
-    button_active = enum.auto()  # (= 23)
+    button_active = enum.auto()  # (= 24)
     # ImGuiCol_Header,                    /* original C++ signature */
-    header = enum.auto()  # (= 24)  # Header* colors are used for CollapsingHeader, TreeNode, Selectable, MenuItem
+    header = enum.auto()  # (= 25)  # Header* colors are used for CollapsingHeader, TreeNode, Selectable, MenuItem
     # ImGuiCol_HeaderHovered,    /* original C++ signature */
-    header_hovered = enum.auto()  # (= 25)
+    header_hovered = enum.auto()  # (= 26)
     # ImGuiCol_HeaderActive,    /* original C++ signature */
-    header_active = enum.auto()  # (= 26)
+    header_active = enum.auto()  # (= 27)
     # ImGuiCol_Separator,    /* original C++ signature */
-    separator = enum.auto()  # (= 27)
+    separator = enum.auto()  # (= 28)
     # ImGuiCol_SeparatorHovered,    /* original C++ signature */
-    separator_hovered = enum.auto()  # (= 28)
+    separator_hovered = enum.auto()  # (= 29)
     # ImGuiCol_SeparatorActive,    /* original C++ signature */
-    separator_active = enum.auto()  # (= 29)
+    separator_active = enum.auto()  # (= 30)
     # ImGuiCol_ResizeGrip,                /* original C++ signature */
-    resize_grip = enum.auto()  # (= 30)  # Resize grip in lower-right and lower-left corners of windows.
+    resize_grip = enum.auto()  # (= 31)  # Resize grip in lower-right and lower-left corners of windows.
     # ImGuiCol_ResizeGripHovered,    /* original C++ signature */
-    resize_grip_hovered = enum.auto()  # (= 31)
+    resize_grip_hovered = enum.auto()  # (= 32)
     # ImGuiCol_ResizeGripActive,    /* original C++ signature */
-    resize_grip_active = enum.auto()  # (= 32)
+    resize_grip_active = enum.auto()  # (= 33)
+    # ImGuiCol_InputTextCursor,           /* original C++ signature */
+    input_text_cursor = enum.auto()  # (= 34)  # InputText cursor/caret
     # ImGuiCol_TabHovered,                /* original C++ signature */
-    tab_hovered = enum.auto()  # (= 33)  # Tab background, when hovered
+    tab_hovered = enum.auto()  # (= 35)  # Tab background, when hovered
     # ImGuiCol_Tab,                       /* original C++ signature */
-    tab = enum.auto()  # (= 34)  # Tab background, when tab-bar is focused & tab is unselected
+    tab = enum.auto()  # (= 36)  # Tab background, when tab-bar is focused & tab is unselected
     # ImGuiCol_TabSelected,               /* original C++ signature */
-    tab_selected = enum.auto()  # (= 35)  # Tab background, when tab-bar is focused & tab is selected
+    tab_selected = enum.auto()  # (= 37)  # Tab background, when tab-bar is focused & tab is selected
     # ImGuiCol_TabSelectedOverline,       /* original C++ signature */
-    tab_selected_overline = enum.auto()  # (= 36)  # Tab horizontal overline, when tab-bar is focused & tab is selected
+    tab_selected_overline = enum.auto()  # (= 38)  # Tab horizontal overline, when tab-bar is focused & tab is selected
     # ImGuiCol_TabDimmed,                 /* original C++ signature */
-    tab_dimmed = enum.auto()  # (= 37)  # Tab background, when tab-bar is unfocused & tab is unselected
+    tab_dimmed = enum.auto()  # (= 39)  # Tab background, when tab-bar is unfocused & tab is unselected
     # ImGuiCol_TabDimmedSelected,         /* original C++ signature */
-    tab_dimmed_selected = enum.auto()  # (= 38)  # Tab background, when tab-bar is unfocused & tab is selected
+    tab_dimmed_selected = enum.auto()  # (= 40)  # Tab background, when tab-bar is unfocused & tab is selected
     # ImGuiCol_TabDimmedSelectedOverline,    /* original C++ signature */
     tab_dimmed_selected_overline = (
         enum.auto()
-    )  # (= 39)  #..horizontal overline, when tab-bar is unfocused & tab is selected
+    )  # (= 41)  #..horizontal overline, when tab-bar is unfocused & tab is selected
     # ImGuiCol_DockingPreview,            /* original C++ signature */
-    docking_preview = enum.auto()  # (= 40)  # Preview overlay color when about to docking something
+    docking_preview = enum.auto()  # (= 42)  # Preview overlay color when about to docking something
     # ImGuiCol_DockingEmptyBg,            /* original C++ signature */
     docking_empty_bg = (
         enum.auto()
-    )  # (= 41)  # Background color for empty node (e.g. CentralNode with no window docked into it)
+    )  # (= 43)  # Background color for empty node (e.g. CentralNode with no window docked into it)
     # ImGuiCol_PlotLines,    /* original C++ signature */
-    plot_lines = enum.auto()  # (= 42)
+    plot_lines = enum.auto()  # (= 44)
     # ImGuiCol_PlotLinesHovered,    /* original C++ signature */
-    plot_lines_hovered = enum.auto()  # (= 43)
+    plot_lines_hovered = enum.auto()  # (= 45)
     # ImGuiCol_PlotHistogram,    /* original C++ signature */
-    plot_histogram = enum.auto()  # (= 44)
+    plot_histogram = enum.auto()  # (= 46)
     # ImGuiCol_PlotHistogramHovered,    /* original C++ signature */
-    plot_histogram_hovered = enum.auto()  # (= 45)
+    plot_histogram_hovered = enum.auto()  # (= 47)
     # ImGuiCol_TableHeaderBg,             /* original C++ signature */
-    table_header_bg = enum.auto()  # (= 46)  # Table header background
+    table_header_bg = enum.auto()  # (= 48)  # Table header background
     # ImGuiCol_TableBorderStrong,         /* original C++ signature */
-    table_border_strong = enum.auto()  # (= 47)  # Table outer and header borders (prefer using Alpha=1.0 here)
+    table_border_strong = enum.auto()  # (= 49)  # Table outer and header borders (prefer using Alpha=1.0 here)
     # ImGuiCol_TableBorderLight,          /* original C++ signature */
-    table_border_light = enum.auto()  # (= 48)  # Table inner borders (prefer using Alpha=1.0 here)
+    table_border_light = enum.auto()  # (= 50)  # Table inner borders (prefer using Alpha=1.0 here)
     # ImGuiCol_TableRowBg,                /* original C++ signature */
-    table_row_bg = enum.auto()  # (= 49)  # Table row background (even rows)
+    table_row_bg = enum.auto()  # (= 51)  # Table row background (even rows)
     # ImGuiCol_TableRowBgAlt,             /* original C++ signature */
-    table_row_bg_alt = enum.auto()  # (= 50)  # Table row background (odd rows)
+    table_row_bg_alt = enum.auto()  # (= 52)  # Table row background (odd rows)
     # ImGuiCol_TextLink,                  /* original C++ signature */
-    text_link = enum.auto()  # (= 51)  # Hyperlink color
-    # ImGuiCol_TextSelectedBg,    /* original C++ signature */
-    text_selected_bg = enum.auto()  # (= 52)
+    text_link = enum.auto()  # (= 53)  # Hyperlink color
+    # ImGuiCol_TextSelectedBg,            /* original C++ signature */
+    text_selected_bg = enum.auto()  # (= 54)  # Selected text inside an InputText
+    # ImGuiCol_TreeLines,                 /* original C++ signature */
+    tree_lines = enum.auto()  # (= 55)  # Tree node hierarchy outlines when using ImGuiTreeNodeFlags_DrawLines
     # ImGuiCol_DragDropTarget,            /* original C++ signature */
-    drag_drop_target = enum.auto()  # (= 53)  # Rectangle highlighting a drop target
+    drag_drop_target = enum.auto()  # (= 56)  # Rectangle border highlighting a drop target
+    # ImGuiCol_DragDropTargetBg,          /* original C++ signature */
+    drag_drop_target_bg = enum.auto()  # (= 57)  # Rectangle background highlighting a drop target
+    # ImGuiCol_UnsavedMarker,             /* original C++ signature */
+    unsaved_marker = enum.auto()  # (= 58)  # Unsaved Document marker (in window title and tabs)
     # ImGuiCol_NavCursor,                 /* original C++ signature */
-    nav_cursor = enum.auto()  # (= 54)  # Color of keyboard/gamepad navigation cursor/rectangle, when visible
+    nav_cursor = enum.auto()  # (= 59)  # Color of keyboard/gamepad navigation cursor/rectangle, when visible
     # ImGuiCol_NavWindowingHighlight,     /* original C++ signature */
-    nav_windowing_highlight = enum.auto()  # (= 55)  # Highlight window when using CTRL+TAB
+    nav_windowing_highlight = enum.auto()  # (= 60)  # Highlight window when using Ctrl+Tab
     # ImGuiCol_NavWindowingDimBg,         /* original C++ signature */
     nav_windowing_dim_bg = (
         enum.auto()
-    )  # (= 56)  # Darken/colorize entire screen behind the CTRL+TAB window list, when active
+    )  # (= 61)  # Darken/colorize entire screen behind the Ctrl+Tab window list, when active
     # ImGuiCol_ModalWindowDimBg,          /* original C++ signature */
     modal_window_dim_bg = (
         enum.auto()
-    )  # (= 57)  # Darken/colorize entire screen behind a modal window, when one is active
+    )  # (= 62)  # Darken/colorize entire screen behind a modal window, when one is active
     # ImGuiCol_COUNT,    /* original C++ signature */
-    count = enum.auto()  # (= 58)
+    count = enum.auto()  # (= 63)
 
-class StyleVar_(enum.Enum):
+class StyleVar_(enum.IntFlag):
     """Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.
     - The enum only refers to fields of ImGuiStyle which makes sense to be pushed/popped inside UI code.
       During initialization or between frames, feel free to just poke into ImGuiStyle directly.
     - Tip: Use your programming IDE navigation facilities on the names in the _second column_ below to find the actual members and their description.
-      - In Visual Studio: CTRL+comma ("Edit.GoToAll") can follow symbols inside comments, whereas CTRL+F12 ("Edit.GoToImplementation") cannot.
-      - In Visual Studio w/ Visual Assist installed: ALT+G ("VAssistX.GoToImplementation") can also follow symbols inside comments.
-      - In VS Code, CLion, etc.: CTRL+click can follow symbols inside comments.
+      - In Visual Studio: Ctrl+Comma ("Edit.GoToAll") can follow symbols inside comments, whereas Ctrl+F12 ("Edit.GoToImplementation") cannot.
+      - In Visual Studio w/ Visual Assist installed: Alt+G ("VAssistX.GoToImplementation") can also follow symbols inside comments.
+      - In VS Code, CLion, etc.: Ctrl+Click can follow symbols inside comments.
     - When changing this enum, you need to update the associated internal table GStyleVarInfo[] accordingly. This is where we link enum values to members offset/type.
     """
 
@@ -4546,43 +4782,59 @@ class StyleVar_(enum.Enum):
     scrollbar_size = enum.auto()  # (= 18)  # float     ScrollbarSize
     # ImGuiStyleVar_ScrollbarRounding,            /* original C++ signature */
     scrollbar_rounding = enum.auto()  # (= 19)  # float     ScrollbarRounding
+    # ImGuiStyleVar_ScrollbarPadding,             /* original C++ signature */
+    scrollbar_padding = enum.auto()  # (= 20)  # float     ScrollbarPadding
     # ImGuiStyleVar_GrabMinSize,                  /* original C++ signature */
-    grab_min_size = enum.auto()  # (= 20)  # float     GrabMinSize
+    grab_min_size = enum.auto()  # (= 21)  # float     GrabMinSize
     # ImGuiStyleVar_GrabRounding,                 /* original C++ signature */
-    grab_rounding = enum.auto()  # (= 21)  # float     GrabRounding
+    grab_rounding = enum.auto()  # (= 22)  # float     GrabRounding
+    # ImGuiStyleVar_ImageRounding,                /* original C++ signature */
+    image_rounding = enum.auto()  # (= 23)  # float     ImageRounding
     # ImGuiStyleVar_ImageBorderSize,              /* original C++ signature */
-    image_border_size = enum.auto()  # (= 22)  # float     ImageBorderSize
+    image_border_size = enum.auto()  # (= 24)  # float     ImageBorderSize
     # ImGuiStyleVar_LayoutAlign,                  /* original C++ signature */
-    layout_align = enum.auto()  # (= 23)  # float     LayoutAlign
+    layout_align = enum.auto()  # (= 25)  # float     LayoutAlign
     # ImGuiStyleVar_TabRounding,                  /* original C++ signature */
-    tab_rounding = enum.auto()  # (= 24)  # float     TabRounding
+    tab_rounding = enum.auto()  # (= 26)  # float     TabRounding
     # ImGuiStyleVar_TabBorderSize,                /* original C++ signature */
-    tab_border_size = enum.auto()  # (= 25)  # float     TabBorderSize
+    tab_border_size = enum.auto()  # (= 27)  # float     TabBorderSize
+    # ImGuiStyleVar_TabMinWidthBase,              /* original C++ signature */
+    tab_min_width_base = enum.auto()  # (= 28)  # float     TabMinWidthBase
+    # ImGuiStyleVar_TabMinWidthShrink,            /* original C++ signature */
+    tab_min_width_shrink = enum.auto()  # (= 29)  # float     TabMinWidthShrink
     # ImGuiStyleVar_TabBarBorderSize,             /* original C++ signature */
-    tab_bar_border_size = enum.auto()  # (= 26)  # float     TabBarBorderSize
+    tab_bar_border_size = enum.auto()  # (= 30)  # float     TabBarBorderSize
     # ImGuiStyleVar_TabBarOverlineSize,           /* original C++ signature */
-    tab_bar_overline_size = enum.auto()  # (= 27)  # float     TabBarOverlineSize
+    tab_bar_overline_size = enum.auto()  # (= 31)  # float     TabBarOverlineSize
     # ImGuiStyleVar_TableAngledHeadersAngle,      /* original C++ signature */
-    table_angled_headers_angle = enum.auto()  # (= 28)  # float     TableAngledHeadersAngle
+    table_angled_headers_angle = enum.auto()  # (= 32)  # float     TableAngledHeadersAngle
     # ImGuiStyleVar_TableAngledHeadersTextAlign,    /* original C++ signature */
-    table_angled_headers_text_align = enum.auto()  # (= 29)  # ImVec2  TableAngledHeadersTextAlign
+    table_angled_headers_text_align = enum.auto()  # (= 33)  # ImVec2  TableAngledHeadersTextAlign
+    # ImGuiStyleVar_TreeLinesSize,                /* original C++ signature */
+    tree_lines_size = enum.auto()  # (= 34)  # float     TreeLinesSize
+    # ImGuiStyleVar_TreeLinesRounding,            /* original C++ signature */
+    tree_lines_rounding = enum.auto()  # (= 35)  # float     TreeLinesRounding
+    # ImGuiStyleVar_DragDropTargetRounding,       /* original C++ signature */
+    drag_drop_target_rounding = enum.auto()  # (= 36)  # float     DragDropTargetRounding
     # ImGuiStyleVar_ButtonTextAlign,              /* original C++ signature */
-    button_text_align = enum.auto()  # (= 30)  # ImVec2    ButtonTextAlign
+    button_text_align = enum.auto()  # (= 37)  # ImVec2    ButtonTextAlign
     # ImGuiStyleVar_SelectableTextAlign,          /* original C++ signature */
-    selectable_text_align = enum.auto()  # (= 31)  # ImVec2    SelectableTextAlign
+    selectable_text_align = enum.auto()  # (= 38)  # ImVec2    SelectableTextAlign
+    # ImGuiStyleVar_SeparatorSize,                /* original C++ signature */
+    separator_size = enum.auto()  # (= 39)  # float     SeparatorSize
     # ImGuiStyleVar_SeparatorTextBorderSize,      /* original C++ signature */
-    separator_text_border_size = enum.auto()  # (= 32)  # float     SeparatorTextBorderSize
+    separator_text_border_size = enum.auto()  # (= 40)  # float     SeparatorTextBorderSize
     # ImGuiStyleVar_SeparatorTextAlign,           /* original C++ signature */
-    separator_text_align = enum.auto()  # (= 33)  # ImVec2    SeparatorTextAlign
+    separator_text_align = enum.auto()  # (= 41)  # ImVec2    SeparatorTextAlign
     # ImGuiStyleVar_SeparatorTextPadding,         /* original C++ signature */
-    separator_text_padding = enum.auto()  # (= 34)  # ImVec2    SeparatorTextPadding
+    separator_text_padding = enum.auto()  # (= 42)  # ImVec2    SeparatorTextPadding
     # ImGuiStyleVar_DockingSeparatorSize,         /* original C++ signature */
-    docking_separator_size = enum.auto()  # (= 35)  # float     DockingSeparatorSize
+    docking_separator_size = enum.auto()  # (= 43)  # float     DockingSeparatorSize
     # ImGuiStyleVar_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 36)
+    count = enum.auto()  # (= 44)
 
-class ButtonFlags_(enum.Enum):
+class ButtonFlags_(enum.IntFlag):
     """Flags for InvisibleButton() [extended in imgui_internal.h]"""
 
     # ImGuiButtonFlags_None                   = 0,    /* original C++ signature */
@@ -4601,8 +4853,12 @@ class ButtonFlags_(enum.Enum):
     enable_nav = (
         enum.auto()
     )  # (= 1 << 3)  # InvisibleButton(): do not disable navigation/tabbing. Otherwise disabled by default.
+    # ImGuiButtonFlags_AllowOverlap           = 1 << 12,      /* original C++ signature */
+    allow_overlap = (
+        enum.auto()
+    )  # (= 1 << 12)  # Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().
 
-class ColorEditFlags_(enum.Enum):
+class ColorEditFlags_(enum.IntFlag):
     """Flags for ColorEdit3() / ColorEdit4() / ColorPicker3() / ColorPicker4() / ColorButton()"""
 
     # ImGuiColorEditFlags_None            = 0,    /* original C++ signature */
@@ -4640,32 +4896,36 @@ class ColorEditFlags_(enum.Enum):
     # ImGuiColorEditFlags_NoDragDrop      = 1 << 9,       /* original C++ signature */
     no_drag_drop = (
         enum.auto()
-    )  # (= 1 << 9)  #              // ColorEdit: disable drag and drop target. ColorButton: disable drag and drop source.
+    )  # (= 1 << 9)  #              // ColorEdit: disable drag and drop target/source. ColorButton: disable drag and drop source.
     # ImGuiColorEditFlags_NoBorder        = 1 << 10,      /* original C++ signature */
     no_border = enum.auto()  # (= 1 << 10)  #              // ColorButton: disable border (which is enforced by default)
+    # ImGuiColorEditFlags_NoColorMarkers  = 1 << 11,      /* original C++ signature */
+    no_color_markers = (
+        enum.auto()
+    )  # (= 1 << 11)  #              // ColorEdit: disable rendering R/G/B/A color marker. May also be disabled globally by setting style.ColorMarkerSize = 0.
 
     # Alpha preview
     # - Prior to 1.91.8 (2025/01/21): alpha was made opaque in the preview by default using old name ImGuiColorEditFlags_AlphaPreview.
     # - We now display the preview as transparent by default. You can use ImGuiColorEditFlags_AlphaOpaque to use old behavior.
     # - The new flags may be combined better and allow finer controls.
-    # ImGuiColorEditFlags_AlphaOpaque     = 1 << 11,      /* original C++ signature */
+    # ImGuiColorEditFlags_AlphaOpaque     = 1 << 12,      /* original C++ signature */
     alpha_opaque = (
         enum.auto()
-    )  # (= 1 << 11)  #              // ColorEdit, ColorPicker, ColorButton: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling ColorEdit4()/ColorPicker4(). For ColorButton() this does the same as _NoAlpha.
-    # ImGuiColorEditFlags_AlphaNoBg       = 1 << 12,      /* original C++ signature */
+    )  # (= 1 << 12)  #              // ColorEdit, ColorPicker, ColorButton: disable alpha in the preview,. Contrary to _NoAlpha it may still be edited when calling ColorEdit4()/ColorPicker4(). For ColorButton() this does the same as _NoAlpha.
+    # ImGuiColorEditFlags_AlphaNoBg       = 1 << 13,      /* original C++ signature */
     alpha_no_bg = (
         enum.auto()
-    )  # (= 1 << 12)  #              // ColorEdit, ColorPicker, ColorButton: disable rendering a checkerboard background behind transparent color.
-    # ImGuiColorEditFlags_AlphaPreviewHalf= 1 << 13,      /* original C++ signature */
+    )  # (= 1 << 13)  #              // ColorEdit, ColorPicker, ColorButton: disable rendering a checkerboard background behind transparent color.
+    # ImGuiColorEditFlags_AlphaPreviewHalf= 1 << 14,      /* original C++ signature */
     alpha_preview_half = (
         enum.auto()
-    )  # (= 1 << 13)  #              // ColorEdit, ColorPicker, ColorButton: display half opaque / half transparent preview.
+    )  # (= 1 << 14)  #              // ColorEdit, ColorPicker, ColorButton: display half opaque / half transparent preview.
 
     # User Options (right-click on widget to change some of them).
-    # ImGuiColorEditFlags_AlphaBar        = 1 << 16,      /* original C++ signature */
+    # ImGuiColorEditFlags_AlphaBar        = 1 << 18,      /* original C++ signature */
     alpha_bar = (
         enum.auto()
-    )  # (= 1 << 16)  #              // ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.
+    )  # (= 1 << 18)  #              // ColorEdit, ColorPicker: show vertical alpha bar/gradient in picker.
     # ImGuiColorEditFlags_HDR             = 1 << 19,      /* original C++ signature */
     hdr = (
         enum.auto()
@@ -4723,7 +4983,7 @@ class ColorEditFlags_(enum.Enum):
     # Obsolete names
     # ImGuiColorEditFlags_RGB = ImGuiColorEditFlags_DisplayRGB, ImGuiColorEditFlags_HSV = ImGuiColorEditFlags_DisplayHSV, ImGuiColorEditFlags_HEX = ImGuiColorEditFlags_DisplayHex  // [renamed in 1.69]
 
-class SliderFlags_(enum.Enum):
+class SliderFlags_(enum.IntFlag):
     """Flags for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.
     We use the same sets of flags for DragXXX() and SliderXXX() functions as the features are the same and it makes it easier to swap them.
     (Those are per-item flags. There is shared behavior flag too: ImGuiIO: io.ConfigDragClickToInputText)
@@ -4742,7 +5002,7 @@ class SliderFlags_(enum.Enum):
     # ImGuiSliderFlags_NoInput            = 1 << 7,           /* original C++ signature */
     no_input = (
         enum.auto()
-    )  # (= 1 << 7)  # Disable CTRL+Click or Enter key allowing to input text directly into the widget.
+    )  # (= 1 << 7)  # Disable Ctrl+Click or Enter key allowing to input text directly into the widget.
     # ImGuiSliderFlags_WrapAround         = 1 << 8,           /* original C++ signature */
     wrap_around = (
         enum.auto()
@@ -4750,7 +5010,7 @@ class SliderFlags_(enum.Enum):
     # ImGuiSliderFlags_ClampOnInput       = 1 << 9,           /* original C++ signature */
     clamp_on_input = (
         enum.auto()
-    )  # (= 1 << 9)  # Clamp value to min/max bounds when input manually with CTRL+Click. By default CTRL+Click allows going out of bounds.
+    )  # (= 1 << 9)  # Clamp value to min/max bounds when input manually with Ctrl+Click. By default Ctrl+Click allows going out of bounds.
     # ImGuiSliderFlags_ClampZeroRange     = 1 << 10,          /* original C++ signature */
     clamp_zero_range = (
         enum.auto()
@@ -4759,14 +5019,18 @@ class SliderFlags_(enum.Enum):
     no_speed_tweaks = (
         enum.auto()
     )  # (= 1 << 11)  # Disable keyboard modifiers altering tweak speed. Useful if you want to alter tweak speed yourself based on your own logic.
+    # ImGuiSliderFlags_ColorMarkers       = 1 << 12,          /* original C++ signature */
+    color_markers = (
+        enum.auto()
+    )  # (= 1 << 12)  # DragScalarN(), SliderScalarN(): Draw R/G/B/A color markers on each component.
     # ImGuiSliderFlags_AlwaysClamp        = ImGuiSliderFlags_ClampOnInput | ImGuiSliderFlags_ClampZeroRange,    /* original C++ signature */
     always_clamp = enum.auto()  # (= SliderFlags_ClampOnInput | SliderFlags_ClampZeroRange)
     # ImGuiSliderFlags_InvalidMask_       = 0x7000000F,       /* original C++ signature */
     invalid_mask_ = (
         enum.auto()
-    )  # (= 0x7000000F)  # [Internal] We treat using those bits as being potentially a 'float power' argument from the previous API that has got miscast to this enum, and will trigger an assert if needed.
+    )  # (= 0x7000000F)  # [Internal] We treat using those bits as being potentially a 'float power' argument from legacy API (obsoleted 2020-08) that has got miscast to this enum, and will trigger an assert if needed.
 
-class MouseButton_(enum.Enum):
+class MouseButton_(enum.IntFlag):
     """Identify a mouse button.
     Those values are guaranteed to be stable and we frequently use 0/1 directly. Named enums provided for convenience.
     """
@@ -4781,7 +5045,7 @@ class MouseButton_(enum.Enum):
     # }
     count = enum.auto()  # (= 5)
 
-class MouseCursor_(enum.Enum):
+class MouseCursor_(enum.IntFlag):
     """Enumeration for GetMouseCursor()
     User code may request backend to display given cursor by calling SetMouseCursor(), which is why we have some cursors that are marked unused here
     """
@@ -4816,7 +5080,7 @@ class MouseCursor_(enum.Enum):
     # }
     count = enum.auto()  # (= 11)
 
-class MouseSource(enum.Enum):
+class MouseSource(enum.IntFlag):
     """Enumeration for AddMouseSourceEvent() actual source of Mouse Input data.
     Historically we use "Mouse" terminology everywhere to indicate pointer data, e.g. MousePos, IsMousePressed(), io.AddMousePosEvent()
     But that "Mouse" data can come from different source which occasionally may be useful for application to know about.
@@ -4837,7 +5101,7 @@ class MouseSource(enum.Enum):
     # }
     count = enum.auto()  # (= 3)
 
-class Cond_(enum.Enum):
+class Cond_(enum.IntFlag):
     """Enumeration for ImGui::SetNextWindow***(), SetWindow***(), SetNextItem***() functions
     Represent a condition.
     Important: Treat as a regular enum! Do NOT combine multiple values using binary operators! All the functions above treat 0 as a shortcut to ImGuiCond_Always.
@@ -4862,7 +5126,7 @@ class Cond_(enum.Enum):
 # [SECTION] Tables API flags and structures (ImGuiTableFlags, ImGuiTableColumnFlags, ImGuiTableRowFlags, ImGuiTableBgTarget, ImGuiTableSortSpecs, ImGuiTableColumnSortSpecs)
 # -----------------------------------------------------------------------------
 
-class TableFlags_(enum.Enum):
+class TableFlags_(enum.IntFlag):
     """Flags for ImGui::BeginTable()
     - Important! Sizing policies have complex and subtle side effects, much more so than you would expect.
       Read comments/demos carefully + experiment with live demos to get acquainted with them.
@@ -4895,7 +5159,7 @@ class TableFlags_(enum.Enum):
     # ImGuiTableFlags_Reorderable                = 1 << 1,       /* original C++ signature */
     reorderable = (
         enum.auto()
-    )  # (= 1 << 1)  # Enable reordering columns in header row (need calling TableSetupColumn() + TableHeadersRow() to display headers)
+    )  # (= 1 << 1)  # Enable reordering columns in header row. (Need calling TableSetupColumn() + TableHeadersRow() to display headers, or using ImGuiTableFlags_ContextMenuInBody to access context-menu without headers).
     # ImGuiTableFlags_Hideable                   = 1 << 2,       /* original C++ signature */
     hideable = enum.auto()  # (= 1 << 2)  # Enable hiding/disabling columns in context menu.
     # ImGuiTableFlags_Sortable                   = 1 << 3,       /* original C++ signature */
@@ -4905,11 +5169,11 @@ class TableFlags_(enum.Enum):
     # ImGuiTableFlags_NoSavedSettings            = 1 << 4,       /* original C++ signature */
     no_saved_settings = (
         enum.auto()
-    )  # (= 1 << 4)  # Disable persisting columns order, width and sort settings in the .ini file.
+    )  # (= 1 << 4)  # Disable persisting columns order, width, visibility and sort settings in the .ini file.
     # ImGuiTableFlags_ContextMenuInBody          = 1 << 5,       /* original C++ signature */
     context_menu_in_body = (
         enum.auto()
-    )  # (= 1 << 5)  # Right-click on columns body/contents will display table context menu. By default it is available in TableHeadersRow().
+    )  # (= 1 << 5)  # Right-click on columns body/contents will also display table context menu. By default it is available in TableHeadersRow().
     # Decorations
     # ImGuiTableFlags_RowBg                      = 1 << 6,       /* original C++ signature */
     row_bg = (
@@ -5022,7 +5286,7 @@ class TableFlags_(enum.Enum):
         enum.auto()
     )  # (= TableFlags_SizingFixedFit | TableFlags_SizingFixedSame | TableFlags_SizingStretchProp | TableFlags_SizingStretchSame)
 
-class TableColumnFlags_(enum.Enum):
+class TableColumnFlags_(enum.IntFlag):
     """Flags for ImGui::TableSetupColumn()"""
 
     # Input configuration flags
@@ -5115,7 +5379,7 @@ class TableColumnFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 30)  # [Internal] Disable user resizing this column directly (it may however we resized indirectly from its left edge)
 
-class TableRowFlags_(enum.Enum):
+class TableRowFlags_(enum.IntFlag):
     """Flags for ImGui::TableNextRow()"""
 
     # ImGuiTableRowFlags_None                     = 0,    /* original C++ signature */
@@ -5125,7 +5389,7 @@ class TableRowFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 0)  # Identify header row (set default background color + width of its contents accounted differently for auto column width)
 
-class TableBgTarget_(enum.Enum):
+class TableBgTarget_(enum.IntFlag):
     """Enum for ImGui::TableSetBgColor()
     Background colors are rendering in 3 layers:
      - Layer 0: draw with RowBg0 color if set, otherwise draw with ColumnBg0 if set.
@@ -5164,7 +5428,7 @@ class TableSortSpecs:
         bool  # Set to True when specs have changed since last time! Use this to sort again, then clear the flag.
     )
 
-    # ImGuiTableSortSpecs()       { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiTableSortSpecs()       { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
     # [ADAPT_IMGUI_BUNDLE]
@@ -5189,7 +5453,7 @@ class TableColumnSortSpecs:
     # ImGuiSortDirection          SortDirection;    /* original C++ signature */
     sort_direction: SortDirection  # ImGuiSortDirection_Ascending or ImGuiSortDirection_Descending
 
-    # ImGuiTableColumnSortSpecs() { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiTableColumnSortSpecs() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
     # [ADAPT_IMGUI_BUNDLE]
@@ -5224,8 +5488,6 @@ class ImNewWrapper:
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
-
-# This is only required so we can use the symmetrical new()
 
 # -----------------------------------------------------------------------------
 # ImVector<>
@@ -5279,12 +5541,6 @@ class ImVector_int:  # Python specialization for ImVector<int>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> int:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> int:
         """(private API)"""
         pass
@@ -5347,12 +5603,6 @@ class ImVector_uint:  # Python specialization for ImVector<uint>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> uint:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> uint:
         """(private API)"""
         pass
@@ -5415,12 +5665,6 @@ class ImVector_float:  # Python specialization for ImVector<float>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> float:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> float:
         """(private API)"""
         pass
@@ -5483,13 +5727,7 @@ class ImVector_char:  # Python specialization for ImVector<char>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> str:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> char:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
@@ -5551,12 +5789,6 @@ class ImVector_uchar:  # Python specialization for ImVector<uchar>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> uchar:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> uchar:
         """(private API)"""
         pass
@@ -5619,12 +5851,6 @@ class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImDrawCmd:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImDrawCmd:
         """(private API)"""
         pass
@@ -5687,12 +5913,6 @@ class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChanne
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImDrawChannel:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImDrawChannel:
         """(private API)"""
         pass
@@ -5755,12 +5975,6 @@ class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImDrawVert:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImDrawVert:
         """(private API)"""
         pass
@@ -5823,12 +6037,6 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImVec4:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImVec4:
         """(private API)"""
         pass
@@ -5891,12 +6099,6 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImVec2:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImVec2:
         """(private API)"""
         pass
@@ -5959,12 +6161,6 @@ class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList 
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImDrawList:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImDrawList:
         """(private API)"""
         pass
@@ -6027,12 +6223,6 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImFont:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImFont:
         """(private API)"""
         pass
@@ -6095,12 +6285,6 @@ class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImFontGlyph:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImFontGlyph:
         """(private API)"""
         pass
@@ -6163,12 +6347,6 @@ class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatf
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> PlatformMonitor:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> PlatformMonitor:
         """(private API)"""
         pass
@@ -6231,12 +6409,6 @@ class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> Viewport:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> Viewport:
         """(private API)"""
         pass
@@ -6299,12 +6471,6 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> Window:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> Window:
         """(private API)"""
         pass
@@ -6323,74 +6489,6 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
         pass
 
     def __iter__(self) -> Iterator[Window]:
-        pass
-
-    def __len__(self) -> int:
-        pass
-
-class ImVector_ImFontAtlasCustomRect:  # Python specialization for ImVector<ImFontAtlasCustomRect>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
-    def data_address(self) -> int:
-        """(private API)"""
-        pass
-    # #endif
-    #
-
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
-    @overload
-    def __init__(self) -> None:
-        pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
-    @overload
-    def __init__(self, src: ImVector_ImFontAtlasCustomRect) -> None:
-        pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
-    def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
-        """
-        pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
-    def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
-        """
-        pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
-    def empty(self) -> bool:
-        """(private API)"""
-        pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
-    def size(self) -> int:
-        """(private API)"""
-        pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImFontAtlasCustomRect:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImFontAtlasCustomRect:
-        """(private API)"""
-        pass
-    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
-    def push_back(self, v: ImFontAtlasCustomRect) -> None:
-        """(private API)"""
-        pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
-    def pop_back(self) -> None:
-        """(private API)"""
-        pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
-    def push_front(self, v: ImFontAtlasCustomRect) -> None:
-        """(private API)"""
-        pass
-
-    def __iter__(self) -> Iterator[ImFontAtlasCustomRect]:
         pass
 
     def __len__(self) -> int:
@@ -6435,12 +6533,68 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImFontConfig:
         """(private API)"""
         pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    def push_back(self, v: ImFontConfig) -> None:
+        """(private API)"""
+        pass
+    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    def pop_back(self) -> None:
+        """(private API)"""
+        pass
+    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    def push_front(self, v: ImFontConfig) -> None:
+        """(private API)"""
+        pass
+
+    def __iter__(self) -> Iterator[ImFontConfig]:
+        pass
+
+    def __len__(self) -> int:
+        pass
+
+class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontConfig *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
+    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
+    def __init__(self) -> None:
+        pass
+    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    @overload
+    def __init__(self, src: ImVector_ImFontConfig_ptr) -> None:
+        pass
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    def clear(self) -> None:
+        """Important: does not destruct anything
+        (private API)
+        """
+        pass
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    def clear_destruct(self) -> None:
+        """Important: never called automatically! always explicit.
+        (private API)
+        """
+        pass
+    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFontConfig:
         """(private API)"""
         pass
@@ -6503,12 +6657,6 @@ class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusS
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> FocusScopeData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> FocusScopeData:
         """(private API)"""
         pass
@@ -6571,12 +6719,6 @@ class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSele
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> SelectionRequest:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> SelectionRequest:
         """(private API)"""
         pass
@@ -6639,12 +6781,6 @@ class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ImRect:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ImRect:
         """(private API)"""
         pass
@@ -6707,12 +6843,6 @@ class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ColorMod:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ColorMod:
         """(private API)"""
         pass
@@ -6775,12 +6905,6 @@ class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> GroupData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> GroupData:
         """(private API)"""
         pass
@@ -6843,12 +6967,6 @@ class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> PopupData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> PopupData:
         """(private API)"""
         pass
@@ -6911,12 +7029,6 @@ class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewpor
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ViewportP:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ViewportP:
         """(private API)"""
         pass
@@ -6979,12 +7091,6 @@ class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> InputEvent:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> InputEvent:
         """(private API)"""
         pass
@@ -7047,12 +7153,6 @@ class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindo
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> WindowStackData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> WindowStackData:
         """(private API)"""
         pass
@@ -7115,12 +7215,6 @@ class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGui
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TableColumnSortSpecs:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TableColumnSortSpecs:
         """(private API)"""
         pass
@@ -7183,12 +7277,6 @@ class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTab
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TableInstanceData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TableInstanceData:
         """(private API)"""
         pass
@@ -7251,12 +7339,6 @@ class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTe
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TableTempData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TableTempData:
         """(private API)"""
         pass
@@ -7319,12 +7401,6 @@ class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> PtrOrIndex:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> PtrOrIndex:
         """(private API)"""
         pass
@@ -7387,12 +7463,6 @@ class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSetti
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> SettingsHandler:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> SettingsHandler:
         """(private API)"""
         pass
@@ -7455,12 +7525,6 @@ class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrin
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ShrinkWidthItem:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ShrinkWidthItem:
         """(private API)"""
         pass
@@ -7523,12 +7587,6 @@ class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackL
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> StackLevelInfo:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> StackLevelInfo:
         """(private API)"""
         pass
@@ -7591,12 +7649,6 @@ class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TabItem:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TabItem:
         """(private API)"""
         pass
@@ -7659,12 +7711,6 @@ class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRou
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> KeyRoutingData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> KeyRoutingData:
         """(private API)"""
         pass
@@ -7727,12 +7773,6 @@ class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListC
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ListClipperData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ListClipperData:
         """(private API)"""
         pass
@@ -7795,12 +7835,6 @@ class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiList
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> ListClipperRange:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> ListClipperRange:
         """(private API)"""
         pass
@@ -7863,12 +7897,6 @@ class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColu
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> OldColumnData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> OldColumnData:
         """(private API)"""
         pass
@@ -7931,12 +7959,6 @@ class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> OldColumns:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> OldColumns:
         """(private API)"""
         pass
@@ -7999,12 +8021,6 @@ class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> StyleMod:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> StyleMod:
         """(private API)"""
         pass
@@ -8067,12 +8083,6 @@ class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTable
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TableHeaderData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TableHeaderData:
         """(private API)"""
         pass
@@ -8135,12 +8145,6 @@ class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTre
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> TreeNodeStackData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> TreeNodeStackData:
         """(private API)"""
         pass
@@ -8203,12 +8207,6 @@ class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiM
         """(private API)"""
         pass
     # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
-    def __getitem__(self, i: int) -> MultiSelectTempData:
-        """(private API)"""
-        pass
-    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    @overload
     def __getitem__(self, i: int) -> MultiSelectTempData:
         """(private API)"""
         pass
@@ -8232,6 +8230,192 @@ class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiM
     def __len__(self) -> int:
         pass
 
+class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextureData *>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
+    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    @overload
+    def __init__(self, src: ImVector_ImTextureData_ptr) -> None:
+        pass
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    def clear(self) -> None:
+        """Important: does not destruct anything
+        (private API)
+        """
+        pass
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    def clear_destruct(self) -> None:
+        """Important: never called automatically! always explicit.
+        (private API)
+        """
+        pass
+    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    def __getitem__(self, i: int) -> ImTextureData:
+        """(private API)"""
+        pass
+    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    def push_back(self, v: ImTextureData) -> None:
+        """(private API)"""
+        pass
+    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    def pop_back(self) -> None:
+        """(private API)"""
+        pass
+    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    def push_front(self, v: ImTextureData) -> None:
+        """(private API)"""
+        pass
+
+    def __iter__(self) -> Iterator[ImTextureData]:
+        pass
+
+    def __len__(self) -> int:
+        pass
+
+class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
+    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    @overload
+    def __init__(self, src: ImVector_ImTextureRef) -> None:
+        pass
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    def clear(self) -> None:
+        """Important: does not destruct anything
+        (private API)
+        """
+        pass
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    def clear_destruct(self) -> None:
+        """Important: never called automatically! always explicit.
+        (private API)
+        """
+        pass
+    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    def __getitem__(self, i: int) -> ImTextureRef:
+        """(private API)"""
+        pass
+    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    def push_back(self, v: ImTextureRef) -> None:
+        """(private API)"""
+        pass
+    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    def pop_back(self) -> None:
+        """(private API)"""
+        pass
+    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    def push_front(self, v: ImTextureRef) -> None:
+        """(private API)"""
+        pass
+
+    def __iter__(self) -> Iterator[ImTextureRef]:
+        pass
+
+    def __len__(self) -> int:
+        pass
+
+class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRect>
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
+    def data_address(self) -> int:
+        """(private API)"""
+        pass
+    # #endif
+    #
+
+    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
+    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    @overload
+    def __init__(self, src: ImVector_ImTextureRect) -> None:
+        pass
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    def clear(self) -> None:
+        """Important: does not destruct anything
+        (private API)
+        """
+        pass
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    def clear_destruct(self) -> None:
+        """Important: never called automatically! always explicit.
+        (private API)
+        """
+        pass
+    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    def empty(self) -> bool:
+        """(private API)"""
+        pass
+    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    def size(self) -> int:
+        """(private API)"""
+        pass
+    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    def __getitem__(self, i: int) -> ImTextureRect:
+        """(private API)"""
+        pass
+    # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
+    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    def push_back(self, v: ImTextureRect) -> None:
+        """(private API)"""
+        pass
+    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    def pop_back(self) -> None:
+        """(private API)"""
+        pass
+    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    def push_front(self, v: ImTextureRect) -> None:
+        """(private API)"""
+        pass
+
+    def __iter__(self) -> Iterator[ImTextureRect]:
+        pass
+
+    def __len__(self) -> int:
+        pass
+
 ImVector_ImTextureID = ImVector_int
 
 ImVector_ImDrawIdx = ImVector_uint
@@ -8239,6 +8423,8 @@ ImVector_ImDrawIdx = ImVector_uint
 ImVector_ID = ImVector_uint
 
 ImVector_ImU32 = ImVector_uint
+
+ImVector_ImU16 = ImVector_uint
 
 ImVector_ImWchar32 = ImVector_uint
 
@@ -8260,6 +8446,15 @@ ImVector_ImU8 = ImVector_uchar
 # -----------------------------------------------------------------------------
 
 class Style:
+    # Font scaling
+    # - recap: ImGui::GetFontSize() == FontSizeBase * (FontScaleMain * FontScaleDpi * other_scaling_factors)
+    # float       FontSizeBase;    /* original C++ signature */
+    font_size_base: float  # Current base font size before external global factors are applied. Use PushFont(None, size) to modify. Use ImGui::GetFontSize() to obtain scaled value.
+    # float       FontScaleMain;    /* original C++ signature */
+    font_scale_main: float  # Main global scale factor. May be set by application once, or exposed to end-user.
+    # float       FontScaleDpi;    /* original C++ signature */
+    font_scale_dpi: float  # Additional global scale factor from viewport/monitor contents scale. In docking branch: when io.ConfigDpiScaleFonts is enabled, this is automatically overwritten when changing monitor DPI.
+
     # float       Alpha;    /* original C++ signature */
     alpha: float  # Global alpha applies to everything in Dear ImGui.
     # float       DisabledAlpha;    /* original C++ signature */
@@ -8318,6 +8513,8 @@ class Style:
     scrollbar_size: float  # Width of the vertical scrollbar, Height of the horizontal scrollbar.
     # float       ScrollbarRounding;    /* original C++ signature */
     scrollbar_rounding: float  # Radius of grab corners for scrollbar.
+    # float       ScrollbarPadding;    /* original C++ signature */
+    scrollbar_padding: float  # Padding of scrollbar grab within its frame (same for both axes).
     # float       GrabMinSize;    /* original C++ signature */
     grab_min_size: float  # Minimum width/height of a grab box for slider/scrollbar.
     # float       GrabRounding;    /* original C++ signature */
@@ -8328,16 +8525,24 @@ class Style:
     log_slider_deadzone: (
         float  # The size in pixels of the dead-zone around zero on logarithmic sliders that cross zero.
     )
+    # float       ImageRounding;    /* original C++ signature */
+    image_rounding: float  # Rounding of Image() calls.
     # float       ImageBorderSize;    /* original C++ signature */
     image_border_size: float  # Thickness of border around Image() calls.
     # float       TabRounding;    /* original C++ signature */
     tab_rounding: float  # Radius of upper corners of a tab. Set to 0.0 to have rectangular tabs.
     # float       TabBorderSize;    /* original C++ signature */
     tab_border_size: float  # Thickness of border around tabs.
-    # float       TabCloseButtonMinWidthSelected;    /* original C++ signature */
-    tab_close_button_min_width_selected: (
-        float  # -1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width.
+    # float       TabMinWidthBase;    /* original C++ signature */
+    tab_min_width_base: (
+        float  # Minimum tab width, to make tabs larger than their contents. TabBar buttons are not affected.
     )
+    # float       TabMinWidthShrink;    /* original C++ signature */
+    tab_min_width_shrink: (
+        float  # Minimum tab width after shrinking, when using ImGuiTabBarFlags_FittingPolicyMixed policy.
+    )
+    # float       TabCloseButtonMinWidthSelected;    /* original C++ signature */
+    tab_close_button_min_width_selected: float  # -1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width. FLT_MAX: never shrink, will behave like ImGuiTabBarFlags_FittingPolicyScroll.
     # float       TabCloseButtonMinWidthUnselected;    /* original C++ signature */
     tab_close_button_min_width_unselected: float  # -1: always visible. 0.0: visible when hovered. >0.0: visible when hovered if minimum width. FLT_MAX: never show close button when unselected.
     # float       TabBarBorderSize;    /* original C++ signature */
@@ -8350,6 +8555,20 @@ class Style:
     )
     # ImVec2      TableAngledHeadersTextAlign;    /* original C++ signature */
     table_angled_headers_text_align: ImVec2  # Alignment of angled headers within the cell
+    # ImGuiTreeNodeFlags TreeLinesFlags;    /* original C++ signature */
+    tree_lines_flags: TreeNodeFlags  # Default way to draw lines connecting TreeNode hierarchy. ImGuiTreeNodeFlags_DrawLinesNone or ImGuiTreeNodeFlags_DrawLinesFull or ImGuiTreeNodeFlags_DrawLinesToNodes.
+    # float       TreeLinesSize;    /* original C++ signature */
+    tree_lines_size: float  # Thickness of outlines when using ImGuiTreeNodeFlags_DrawLines.
+    # float       TreeLinesRounding;    /* original C++ signature */
+    tree_lines_rounding: float  # Radius of lines connecting child nodes to the vertical line.
+    # float       DragDropTargetRounding;    /* original C++ signature */
+    drag_drop_target_rounding: float  # Radius of the drag and drop target frame. When <0.0: use FrameRounding.
+    # float       DragDropTargetBorderSize;    /* original C++ signature */
+    drag_drop_target_border_size: float  # Thickness of the drag and drop target border.
+    # float       DragDropTargetPadding;    /* original C++ signature */
+    drag_drop_target_padding: float  # Size to expand the drag and drop target from actual target item size.
+    # float       ColorMarkerSize;    /* original C++ signature */
+    color_marker_size: float  # Size of R/G/B/A color markers for ColorEdit4() and for Drags/Sliders when using ImGuiSliderFlags_ColorMarkers.
     # ImGuiDir    ColorButtonPosition;    /* original C++ signature */
     color_button_position: (
         Dir  # Side of the color button in the ColorEdit4 widget (left/right). Defaults to ImGuiDir_Right.
@@ -8360,6 +8579,10 @@ class Style:
     )
     # ImVec2      SelectableTextAlign;    /* original C++ signature */
     selectable_text_align: ImVec2  # Alignment of selectable text. Defaults to (0.0, 0.0) (top-left aligned). It's generally important to keep this left-aligned if you want to lay multiple items on a same line.
+    # float       InputTextCursorSize;    /* original C++ signature */
+    input_text_cursor_size: float  # Thickness of cursor/caret in InputText().
+    # float       SeparatorSize;    /* original C++ signature */
+    separator_size: float  # Thickness of border in Separator(). Must be >= 1.0.
     # float       SeparatorTextBorderSize;    /* original C++ signature */
     separator_text_border_size: float  # Thickness of border in SeparatorText()
     # ImVec2      SeparatorTextAlign;    /* original C++ signature */
@@ -8372,6 +8595,8 @@ class Style:
     display_window_padding: ImVec2  # Apply to regular windows: amount which we enforce to keep visible when moving near edges of your screen.
     # ImVec2      DisplaySafeAreaPadding;    /* original C++ signature */
     display_safe_area_padding: ImVec2  # Apply to every windows, menus, popups, tooltips: amount where we avoid displaying contents. Adjust if you cannot see the edges of your screen (e.g. on a TV where scaling has not been configured).
+    # bool        DockingNodeHasCloseButton;    /* original C++ signature */
+    docking_node_has_close_button: bool  # Docking node has their own CloseButton() to close all docked windows.
     # float       DockingSeparatorSize;    /* original C++ signature */
     docking_separator_size: float  # Thickness of resizing border between docked windows
     # float       MouseCursorScale;    /* original C++ signature */
@@ -8402,8 +8627,13 @@ class Style:
     # ImGuiHoveredFlags HoverFlagsForTooltipMouse;    /* original C++ signature */
     hover_flags_for_tooltip_mouse: HoveredFlags  # Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using mouse.
     # ImGuiHoveredFlags HoverFlagsForTooltipNav;    /* original C++ signature */
-    hover_flags_for_tooltip_nav: HoveredFlags
-    # Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using keyboard/gamepad.
+    hover_flags_for_tooltip_nav: HoveredFlags  # Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using keyboard/gamepad.
+
+    # [Internal]
+    # float       _MainScale;    /* original C++ signature */
+    _main_scale: float  # FIXME-WIP: Reference scale, as applied by ScaleAllSizes(). PLEASE DO NOT USE THIS FOR NOW.
+    # float       _NextFrameFontSizeBase;    /* original C++ signature */
+    _next_frame_font_size_base: float  # FIXME: Temporary hack until we finish remaining work.
 
     # [ADAPT_IMGUI_BUNDLE]
     #                                             #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -8423,8 +8653,9 @@ class Style:
     # IMGUI_API ImGuiStyle();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # IMGUI_API void ScaleAllSizes(float scale_factor);    /* original C++ signature */
+    # IMGUI_API   void ScaleAllSizes(float scale_factor);     /* original C++ signature */
     def scale_all_sizes(self, scale_factor: float) -> None:
+        """Scale all spacing/padding/thickness values. Do not scale fonts. See comments in definition. Consider not calling this if your initial scale factor if <1.0."""
         pass
     # Obsolete names
 
@@ -8474,12 +8705,15 @@ class IO:
     # ImGuiBackendFlags  BackendFlags;    /* original C++ signature */
     backend_flags: BackendFlags  # = 0              // See ImGuiBackendFlags_ enum. Set by backend (imgui_impl_xxx files or custom backend) to communicate features supported by the backend.
     # ImVec2      DisplaySize;    /* original C++ signature */
-    display_size: ImVec2  # <unset>          // Main display size, in pixels (generally == GetMainViewport()->Size). May change every frame.
+    display_size: (
+        ImVec2  # <unset>          // Main display size, in pixels (== GetMainViewport()->Size). May change every frame.
+    )
+    # ImVec2      DisplayFramebufferScale;    /* original C++ signature */
+    display_framebuffer_scale: ImVec2  # = (1, 1)         // Main display density. For retina display where window coordinates are different from framebuffer coordinates. This will affect font density + will end up in ImDrawData::FramebufferScale.
     # float       DeltaTime;    /* original C++ signature */
     delta_time: float  # = 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.
     # float       IniSavingRate;    /* original C++ signature */
-    ini_saving_rate: float
-    # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
+    ini_saving_rate: float  # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
 
     # void*       UserData;    /* original C++ signature */
     user_data: Any  # = None           // Store your own data.
@@ -8488,16 +8722,10 @@ class IO:
     fonts: (
         ImFontAtlas  # <auto>           // Font atlas: load, rasterize and pack one or more fonts into a single texture.
     )
-    # float       FontGlobalScale;    /* original C++ signature */
-    font_global_scale: float  # = 1.0           // Global scale all fonts
-    # bool        FontAllowUserScaling;    /* original C++ signature */
-    font_allow_user_scaling: (
-        bool  # = False          // [OBSOLETE] Allow user scaling text of individual window with CTRL+Wheel.
-    )
     # ImFont*     FontDefault;    /* original C++ signature */
     font_default: ImFont  # = None           // Font to use on NewFrame(). Use None to uses Fonts->Fonts[0].
-    # ImVec2      DisplayFramebufferScale;    /* original C++ signature */
-    display_framebuffer_scale: ImVec2  # = (1, 1)         // For retina display or other situations where window coordinates are different from framebuffer coordinates. This generally ends up in ImDrawData::FramebufferScale.
+    # bool        FontAllowUserScaling;    /* original C++ signature */
+    font_allow_user_scaling: bool  # = False          // Allow user scaling text of individual window with Ctrl+Wheel.
 
     # Keyboard/Gamepad Navigation options
     # bool        ConfigNavSwapGamepadButtons;    /* original C++ signature */
@@ -8518,6 +8746,8 @@ class IO:
     # Docking options (when ImGuiConfigFlags_DockingEnable is set)
     # bool        ConfigDockingNoSplit;    /* original C++ signature */
     config_docking_no_split: bool  # = False          // Simplified docking mode: disable window splitting, so docking is limited to merging multiple windows together into tab-bars.
+    # bool        ConfigDockingNoDockingOver;    /* original C++ signature */
+    config_docking_no_docking_over: bool  # = False          // Simplified docking mode: disable window merging into a same tab-bar, so docking is limited to splitting windows.
     # bool        ConfigDockingWithShift;    /* original C++ signature */
     config_docking_with_shift: bool  # = False          // Enable docking with holding Shift key (reduce visual noise, allows dropping in wider space)
     # bool        ConfigDockingAlwaysTabBar;    /* original C++ signature */
@@ -8526,6 +8756,7 @@ class IO:
     config_docking_transparent_payload: bool  # = False          // [BETA] Make window or viewport transparent when docking and only display docking boxes on the target viewport. Useful if rendering of multiple viewport cannot be synced. Best used with ConfigViewportsNoAutoMerge.
 
     # Viewport options (when ImGuiConfigFlags_ViewportsEnable is set)
+    # (sorry for the amount of "NoXXXX" flags, which may be harder to reason about! may rework someday)
     # bool        ConfigViewportsNoAutoMerge;    /* original C++ signature */
     config_viewports_no_auto_merge: bool  # = False;         // Set to make all floating imgui windows always create their own viewport. Otherwise, they are merged into the main host viewports when overlapping it. May also set ImGuiViewportFlags_NoAutoMerge on individual viewport.
     # bool        ConfigViewportsNoTaskBarIcon;    /* original C++ signature */
@@ -8533,7 +8764,18 @@ class IO:
     # bool        ConfigViewportsNoDecoration;    /* original C++ signature */
     config_viewports_no_decoration: bool  # = True           // Disable default OS window decoration flag for secondary viewports. When a viewport doesn't want window decorations, ImGuiViewportFlags_NoDecoration will be set on it. Enabling decoration can create subsequent issues at OS levels (e.g. minimum window size).
     # bool        ConfigViewportsNoDefaultParent;    /* original C++ signature */
-    config_viewports_no_default_parent: bool  # = False          // Disable default OS parenting to main viewport for secondary viewports. By default, viewports are marked with ParentViewportId = <main_viewport>, expecting the platform backend to setup a parent/child relationship between the OS windows (some backend may ignore this). Set to True if you want the default to be 0, then all viewports will be top-level OS windows.
+    config_viewports_no_default_parent: bool  # = True           // Disable setting OS window parent to main viewport by default. The platform backend is expected to honor `viewport->ParentViewportID` to setup a parent/child relationship between the OS windows (supported if ImGuiBackendFlags_HasParentViewport is set). When parented: child windows always appear in front of their parent. Set to False if you want viewports to automatically be parent of main viewport, otherwise all viewports will be top-level OS windows. Parent/child relationship may be set on a per-window basis using ImGuiWindowClass.
+    # bool        ConfigViewportsPlatformFocusSetsImGuiFocus;    /* original C++ signature */
+    config_viewports_platform_focus_sets_focus: bool  # = True // When a platform window is focused (e.g. using Alt+Tab, clicking Platform Title Bar), apply corresponding focus on imgui windows (may clear focus/active id from imgui windows location in other platform windows). In principle this is better enabled but we provide an opt-out, because some Linux window managers tend to eagerly focus windows (e.g. on mouse hover, or even a simple window pos/size change).
+
+    # DPI/Scaling options
+    # This may keep evolving during 1.92.x releases. Expect some turbulence.
+    # bool        ConfigDpiScaleFonts;    /* original C++ signature */
+    config_dpi_scale_fonts: bool  # = False          // [EXPERIMENTAL] Automatically overwrite style.FontScaleDpi when Monitor DPI changes. This will scale fonts but _NOT_ scale sizes/padding for now.
+    # bool        ConfigDpiScaleViewports;    /* original C++ signature */
+    config_dpi_scale_viewports: (
+        bool  # = False          // [EXPERIMENTAL] Scale Dear ImGui and Platform Windows when Monitor DPI changes.
+    )
 
     # Miscellaneous options
     # (you can visualize and interact with all options in 'Demo->Configuration')
@@ -8549,7 +8791,7 @@ class IO:
     )
     # bool        ConfigInputTextEnterKeepActive;    /* original C++ signature */
     config_input_text_enter_keep_active: (
-        bool  # = False          // [BETA] Pressing Enter will keep item active and select contents (single-line only).
+        bool  # = False          // [BETA] Pressing Enter will reactivate item and select all text (single-line only).
     )
     # bool        ConfigDragClickToInputText;    /* original C++ signature */
     config_drag_click_to_input_text: bool  # = False          // [BETA] Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving). Not desirable on devices without a keyboard.
@@ -8558,7 +8800,7 @@ class IO:
     # bool        ConfigWindowsMoveFromTitleBarOnly;    /* original C++ signature */
     config_windows_move_from_title_bar_only: bool  # = False      // Enable allowing to move windows only when clicking on their title bar. Does not apply to windows without a title bar.
     # bool        ConfigWindowsCopyContentsWithCtrlC;    /* original C++ signature */
-    config_windows_copy_contents_with_ctrl_c: bool  # = False      // [EXPERIMENTAL] CTRL+C copy the contents of focused window into the clipboard. Experimental because: (1) has known issues with nested Begin/End pairs (2) text output quality varies (3) text output is in submission order rather than spatial order.
+    config_windows_copy_contents_with_ctrl_c: bool  # = False      // [EXPERIMENTAL] Ctrl+C copy the contents of focused window into the clipboard. Experimental because: (1) has known issues with nested Begin/End pairs (2) text output quality varies (3) text output is in submission order rather than spatial order.
     # bool        ConfigScrollbarScrollByPage;    /* original C++ signature */
     config_scrollbar_scroll_by_page: bool  # = True           // Enable scrolling page by page when clicking outside the scrollbar grab. When disabled, always scroll to clicked location. When enabled, Shift+Click scrolls to clicked location.
     # float       ConfigMemoryCompactTimer;    /* original C++ signature */
@@ -8585,7 +8827,7 @@ class IO:
 
     # Options to configure Error Handling and how we handle recoverable errors [EXPERIMENTAL]
     # - Error recovery is provided as a way to facilitate:
-    #    - Recovery after a programming error (native code or scripting language - the later tends to facilitate iterating on code while running).
+    #    - Recovery after a programming error (native code or scripting language - the latter tends to facilitate iterating on code while running).
     #    - Recovery after running an exception handler or any error processing which may skip code after an error has been detected.
     # - Error recovery is not perfect nor guaranteed! It is a feature to ease development.
     #   You not are not supposed to rely on it in the course of a normal application run.
@@ -8609,7 +8851,7 @@ class IO:
     # Option to enable various debug tools showing buttons that will call the IM_DEBUG_BREAK() macro.
     # - The Item Picker tool will be available regardless of this being enabled, in order to maximize its discoverability.
     # - Requires a debugger being attached, otherwise IM_DEBUG_BREAK() options will appear to crash your application.
-    #   e.g. io.ConfigDebugIsDebuggerPresent = ::IsDebuggerPresent() on Win32, or refer to ImOsIsDebuggerPresent() imgui_test_engine/imgui_te_utils.cpp for a Unix compatible version).
+    #   e.g. io.ConfigDebugIsDebuggerPresent = ::IsDebuggerPresent() on Win32, or refer to ImOsIsDebuggerPresent() imgui_test_engine/imgui_te_utils.cpp for a Unix compatible version.
     # bool        ConfigDebugIsDebuggerPresent;    /* original C++ signature */
     config_debug_is_debugger_present: bool  # = False          // Enable various tools calling IM_DEBUG_BREAK().
 
@@ -8730,9 +8972,8 @@ class IO:
         pass
     # IMGUI_API void  ClearInputMouse();                                          /* original C++ signature */
     def clear_input_mouse(self) -> None:
+        """Clear current mouse state."""
         pass
-    # Clear current mouse state.
-
     # ------------------------------------------------------------------
     # Output - Updated by NewFrame() or EndFrame()/Render()
     # (when reading from the io.WantCaptureMouse, io.WantCaptureKeyboard flags to dispatch your inputs, it is
@@ -8785,7 +9026,7 @@ class IO:
         np.ndarray
     )  # ndarray[type=bool, size=5]  # Mouse buttons: 0=left, 1=right, 2=middle + extras (ImGuiMouseButton_COUNT == 5). Dear ImGui mostly uses left and right buttons. Other buttons allow us to track if the mouse is being used by your application + available to user as a convenience via IsMouse** API.
     # float       MouseWheel;    /* original C++ signature */
-    mouse_wheel: float  # Mouse wheel Vertical: 1 unit scrolls about 5 lines text. >0 scrolls Up, <0 scrolls Down. Hold SHIFT to turn vertical scroll into horizontal scroll.
+    mouse_wheel: float  # Mouse wheel Vertical: 1 unit scrolls about 5 lines text. >0 scrolls Up, <0 scrolls Down. Hold Shift to turn vertical scroll into horizontal scroll.
     # float       MouseWheelH;    /* original C++ signature */
     mouse_wheel_h: float  # Mouse wheel Horizontal. >0 scrolls Left, <0 scrolls Right. Most users don't have a mouse with a horizontal wheel, may not be filled by all backends.
     # ImGuiMouseSource MouseSource;    /* original C++ signature */
@@ -8793,17 +9034,17 @@ class IO:
     # ImGuiID     MouseHoveredViewport;    /* original C++ signature */
     mouse_hovered_viewport: ID  # (Optional) Modify using io.AddMouseViewportEvent(). With multi-viewports: viewport the OS mouse is hovering. If possible _IGNORING_ viewports with the ImGuiViewportFlags_NoInputs flag is much better (few backends can handle that). Set io.BackendFlags |= ImGuiBackendFlags_HasMouseHoveredViewport if you can provide this info. If you don't imgui will infer the value using the rectangles and last focused time of the viewports it knows about (ignoring other OS windows).
     # bool        KeyCtrl;    /* original C++ signature */
-    key_ctrl: bool  # Keyboard modifier down: Control
+    key_ctrl: bool  # Keyboard modifier down: Ctrl (non-macOS), Cmd (macOS)
     # bool        KeyShift;    /* original C++ signature */
     key_shift: bool  # Keyboard modifier down: Shift
     # bool        KeyAlt;    /* original C++ signature */
     key_alt: bool  # Keyboard modifier down: Alt
     # bool        KeySuper;    /* original C++ signature */
-    key_super: bool  # Keyboard modifier down: Cmd/Super/Windows
+    key_super: bool  # Keyboard modifier down: Windows/Super (non-macOS), Ctrl (macOS)
 
     # Other state maintained from data above + IO function calls
     # ImGuiKeyChord KeyMods;    /* original C++ signature */
-    key_mods: KeyChord  # Key mods flags (any of ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Alt/ImGuiMod_Super flags, same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags. Read-only, updated by NewFrame()
+    key_mods: KeyChord  # Key mods flags (any of ImGuiMod_Ctrl/ImGuiMod_Shift/ImGuiMod_Alt/ImGuiMod_Super flags, same as io.KeyCtrl/KeyShift/KeyAlt/KeySuper but merged into flags). Read-only, updated by NewFrame()
     # bool        WantCaptureMouseUnlessPopupClose;    /* original C++ signature */
     want_capture_mouse_unless_popup_close: bool  # Alternative to WantCaptureMouse: (WantCaptureMouse == True && WantCaptureMouseUnlessPopupClose == False) when a click over None is expected to close a popup.
     # ImVec2      MousePosPrev;    /* original C++ signature */
@@ -8843,10 +9084,10 @@ class IO:
         np.ndarray
     )  # ndarray[type=bool, size=5]  # Track if button was clicked inside a dear imgui window.
     # bool        MouseWheelRequestAxisSwap;    /* original C++ signature */
-    mouse_wheel_request_axis_swap: bool  # On a non-Mac system, holding SHIFT requests WheelY to perform the equivalent of a WheelX event. On a Mac system this is already enforced by the system.
+    mouse_wheel_request_axis_swap: bool  # On a non-Mac system, holding Shift requests WheelY to perform the equivalent of a WheelX event. On a Mac system this is already enforced by the system.
     # bool        MouseCtrlLeftAsRightClick;    /* original C++ signature */
     mouse_ctrl_left_as_right_click: (
-        bool  # (OSX) Set to True when the current click was a Ctrl+click that spawned a simulated right click
+        bool  # (OSX) Set to True when the current click was a Ctrl+Click that spawned a simulated right click
     )
     # float       MouseDownDuration[5];    /* original C++ signature */
     mouse_down_duration: (
@@ -8867,8 +9108,7 @@ class IO:
     # ImWchar16   InputQueueSurrogate;    /* original C++ signature */
     input_queue_surrogate: ImWchar16  # For AddInputCharacterUTF16()
     # ImVector<ImWchar> InputQueueCharacters;    /* original C++ signature */
-    input_queue_characters: ImVector_ImWchar
-    # Queue of _characters_ input (obtained by platform backend). Fill using AddInputCharacter() helper.
+    input_queue_characters: ImVector_ImWchar  # Queue of _characters_ input (obtained by platform backend). Fill using AddInputCharacter() helper.
 
     # Legacy: before 1.87, we required backend to fill io.KeyMap[] (imgui->native map) during initialization and io.KeysDown[] (native indices) every frame.
     # This is still temporarily supported as a legacy feature. However the new preferred scheme is for backend to call io.AddKeyEvent().
@@ -8880,9 +9120,6 @@ class IO:
     # float     NavInputs[ImGuiNavInput_COUNT];     // [LEGACY] Since 1.88, NavInputs[] was removed. Backends from 1.60 to 1.86 won't build. Feed gamepad inputs via io.AddKeyEvent() and ImGuiKey_GamepadXXX enums.
     # None*     ImeWindowHandle;                    // [Obsoleted in 1.87] Set ImGuiViewport::PlatformHandleRaw instead. Set this to your HWND to get automatic IME cursor positioning.
 
-    # Legacy: before 1.91.1, clipboard functions were stored in ImGuiIO instead of ImGuiPlatformIO.
-    # As this is will affect all users of custom engines/backends, we are providing proper legacy redirection (will obsolete).
-
     # IMGUI_API   ImGuiIO();    /* original C++ signature */
     def __init__(self) -> None:
         pass
@@ -8890,16 +9127,21 @@ class IO:
 
     #                                                                   #ifdef IMGUI_BUNDLE_PYTHON_API
     #
-    # IMGUI_API void SetIniFilename(const char* filename);    /* original C++ signature */
-    def set_ini_filename(self, filename: str) -> None:
+
+    # IMGUI_API void SetIniFilename(std::optional<const char*> filename);    /* original C++ signature */
+    def set_ini_filename(self, filename: Optional[str]) -> None:
+        """- The disk functions are automatically called if IniFilename != None
+        - Set IniFilename to None to load/save manually. Read io.WantSaveIniSettings description about handling .ini saving manually.
+        - Important: default value "imgui.ini" is relative to current working dir! Most apps will want to lock this to an absolute path (e.g. same path as executables).
+        """
+        pass
+    # IMGUI_API std::string GetIniFilename() const;    /* original C++ signature */
+    def get_ini_filename(self) -> str:
         pass
     # IMGUI_API void SetLogFilename(const char* filename);    /* original C++ signature */
     def set_log_filename(self, filename: str) -> None:
         pass
-    # IMGUI_API std::string GetIniFilename();    /* original C++ signature */
-    def get_ini_filename(self) -> str:
-        pass
-    # IMGUI_API std::string GetLogFilename();    /* original C++ signature */
+    # IMGUI_API std::string GetLogFilename() const;    /* original C++ signature */
     def get_log_filename(self) -> str:
         pass
     #                                                                   #endif
@@ -8930,30 +9172,34 @@ class InputTextCallbackData:
     flags: InputTextFlags  # What user passed to InputText()      // Read-only
     # void*               UserData;    /* original C++ signature */
     user_data: Any  # What user passed to InputText()      // Read-only
+    # ImGuiID             ID;    /* original C++ signature */
+    id_: ID  # Widget ID                            // Read-only
 
     # Arguments for the different callback events
     # - During Resize callback, Buf will be same as your input buffer.
     # - However, during Completion/History/Always callback, Buf always points to our own internal data (it is not the same as your buffer)! Changes to it will be reflected into your own buffer shortly after the callback.
     # - To modify the text buffer in a callback, prefer using the InsertChars() / DeleteChars() function. InsertChars() will take care of calling the resize callback if necessary.
     # - If you know your edits are not going to resize the underlying buffer allocation, you may modify the contents of 'Buf[]' directly. You need to update 'BufTextLen' accordingly (0 <= BufTextLen < BufSize) and set 'BufDirty'' to True so InputText can update its internal state.
-    # ImWchar             EventChar;    /* original C++ signature */
-    event_char: ImWchar  # Character input                      // Read-write   // [CharFilter] Replace character with another one, or set to zero to drop. return 1 is equivalent to setting EventChar=0;
     # ImGuiKey            EventKey;    /* original C++ signature */
     event_key: Key  # Key pressed (Up/Down/TAB)            // Read-only    // [Completion,History]
+    # ImWchar             EventChar;    /* original C++ signature */
+    event_char: ImWchar  # Character input                      // Read-write   // [CharFilter] Replace character with another one, or set to zero to drop. return 1 is equivalent to setting EventChar=0;
+    # bool                EventActivated;    /* original C++ signature */
+    event_activated: bool  # Input field just got activated       // Read-only    // [Always]
+    # bool                BufDirty;    /* original C++ signature */
+    buf_dirty: bool  # Set if you modify Buf/BufTextLen!    // Write        // [Completion,History,Always]
     # char*               Buf;    /* original C++ signature */
     buf: char  # Text buffer                          // Read-write   // [Resize] Can replace pointer / [Completion,History,Always] Only write to pointed data, don't replace the actual pointer! # (read-only)
     # int                 BufTextLen;    /* original C++ signature */
     buf_text_len: int  # Text length (in bytes)               // Read-write   // [Resize,Completion,History,Always] Exclude zero-terminator storage. In C land: == strlen(some_text), in C++ land: string.length()
     # int                 BufSize;    /* original C++ signature */
-    buf_size: int  # Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1
-    # bool                BufDirty;    /* original C++ signature */
-    buf_dirty: bool  # Set if you modify Buf/BufTextLen!    // Write        // [Completion,History,Always]
+    buf_size: int  # Buffer size (in bytes) = capacity+1  // Read-only    // [Resize,Completion,History,Always] Include zero-terminator storage. In C land: == ARRAYSIZE(my_char_array), in C++ land: string.capacity()+1
     # int                 CursorPos;    /* original C++ signature */
-    cursor_pos: int  #                                      // Read-write   // [Completion,History,Always]
+    cursor_pos: int  #                                      // Read-write   // [Completion,History,Always,CharFilter]
     # int                 SelectionStart;    /* original C++ signature */
-    selection_start: int  #                                      // Read-write   // [Completion,History,Always] == to SelectionEnd when no selection)
+    selection_start: int  #                                      // Read-write   // [Completion,History,Always,CharFilter] == to SelectionEnd when no selection
     # int                 SelectionEnd;    /* original C++ signature */
-    selection_end: int  #                                      // Read-write   // [Completion,History,Always]
+    selection_end: int  #                                      // Read-write   // [Completion,History,Always,CharFilter]
 
     # Helper functions for text manipulation.
     # Use those function to benefit from the CallbackResize behaviors. Calling those function reset the selection.
@@ -8966,15 +9212,19 @@ class InputTextCallbackData:
     # IMGUI_API void      InsertChars(int pos, const char* text, const char* text_end = NULL);    /* original C++ signature */
     def insert_chars(self, pos: int, text: str, text_end: Optional[str] = None) -> None:
         pass
-    # void                SelectAll()             { SelectionStart = 0; SelectionEnd = BufTextLen; }    /* original C++ signature */
+    # void                SelectAll()                 { SelectionStart = 0; CursorPos = SelectionEnd = BufTextLen; }    /* original C++ signature */
     def select_all(self) -> None:
         """(private API)"""
         pass
-    # void                ClearSelection()        { SelectionStart = SelectionEnd = BufTextLen; }    /* original C++ signature */
+    # void                SetSelection(int s, int e)  { IM_ASSERT(s >= 0 && s <= BufTextLen); IM_ASSERT(e >= 0 && e <= BufTextLen); SelectionStart = s; CursorPos = SelectionEnd = e; }    /* original C++ signature */
+    def set_selection(self, s: int, e: int) -> None:
+        """(private API)"""
+        pass
+    # void                ClearSelection()            { SelectionStart = SelectionEnd = BufTextLen; }    /* original C++ signature */
     def clear_selection(self) -> None:
         """(private API)"""
         pass
-    # bool                HasSelection() const    { return SelectionStart != SelectionEnd; }    /* original C++ signature */
+    # bool                HasSelection() const        { return SelectionStart != SelectionEnd; }    /* original C++ signature */
     def has_selection(self) -> bool:
         """(private API)"""
         pass
@@ -9018,7 +9268,7 @@ class WindowClass:
     before we stabilize Docking features. Please be mindful if using this.
     Provide hints:
     - To the platform backend via altered viewport flags (enable/disable OS decoration, OS task bar icons, etc.)
-    - To the platform backend for OS level parent/child relationships of viewport.
+    - To the platform backend for OS level parent/child relationships of viewport (otherwise: default is configured via io.ConfigViewportsNoDefaultParent)
     - To the docking system for various options and filtering.
     """
 
@@ -9042,8 +9292,10 @@ class WindowClass:
     docking_always_tab_bar: bool  # Set to True to enforce single floating windows of this class always having their own docking node (equivalent of setting the global io.ConfigDockingAlwaysTabBar)
     # bool                DockingAllowUnclassed;    /* original C++ signature */
     docking_allow_unclassed: bool  # Set to True to allow windows of this class to be docked/merged with an unclassed window. // FIXME-DOCK: Move to DockNodeFlags override?
+    # void*               PlatformIconData;    /* original C++ signature */
+    platform_icon_data: Any  # [EXPERIMENTAL] Pass opaque data for Platform backend to handle.
 
-    # ImGuiWindowClass() { memset(this, 0, sizeof(*this)); ParentViewportId = (ImGuiID)-1; DockingAllowUnclassed = true; }    /* original C++ signature */
+    # ImGuiWindowClass() { memset((void*)this, 0, sizeof(*this)); ParentViewportId = (ImGuiID)-1; DockingAllowUnclassed = true; }    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -9156,6 +9408,14 @@ class TextFilter:
 
     # int                     CountGrep;    /* original C++ signature */
     count_grep: int
+
+    @property
+    def input_buf(self) -> str:
+        """The current filter text. Setting it also calls build()."""
+        ...
+
+    @input_buf.setter
+    def input_buf(self, value: str) -> None: ...
 
 class TextBuffer:
     """Helper: Growable text buffer for logging/accumulating text
@@ -9305,6 +9565,16 @@ class Storage:
         """Auto-generated default constructor"""
         pass
 
+class ListClipperFlags_(enum.IntFlag):
+    """Flags for ImGuiListClipper (currently not fully exposed in function calls: a future refactor will likely add this to ImGuiListClipper::Begin function equivalent)"""
+
+    # ImGuiListClipperFlags_None                  = 0,    /* original C++ signature */
+    none = enum.auto()  # (= 0)
+    # ImGuiListClipperFlags_NoSetTableRowCounters = 1 << 0,       /* original C++ signature */
+    no_set_table_row_counters = (
+        enum.auto()
+    )  # (= 1 << 0)  # [Internal] Disabled modifying table row counters. Avoid assumption that 1 clipper item == 1 table row.
+
 class ListClipper:
     """Helper: Manually clip large list of items.
     If you have lots evenly spaced items and you have random access to the list, you can perform coarse
@@ -9328,22 +9598,26 @@ class ListClipper:
     - The clipper also handles various subtleties related to keyboard/gamepad navigation, wrapping etc.
     """
 
-    # ImGuiContext*   Ctx;    /* original C++ signature */
-    ctx: Context  # Parent UI context
     # int             DisplayStart;    /* original C++ signature */
     display_start: int  # First item to display, updated by each call to Step()
     # int             DisplayEnd;    /* original C++ signature */
     display_end: int  # End of items to display (exclusive)
+    # int             UserIndex;    /* original C++ signature */
+    user_index: int  # Helper storage for user convenience/code. Optional, and otherwise unused if you don't use it.
     # int             ItemsCount;    /* original C++ signature */
     items_count: int  # [Internal] Number of items
     # float           ItemsHeight;    /* original C++ signature */
     items_height: float  # [Internal] Height of item after a first step and item submission can calculate it
-    # float           StartPosY;    /* original C++ signature */
+    # ImGuiListClipperFlags Flags;    /* original C++ signature */
+    flags: ListClipperFlags  # [Internal] Flags, currently not yet well exposed.
+    # double          StartPosY;    /* original C++ signature */
     start_pos_y: float  # [Internal] Cursor position at the time of Begin() or after table frozen rows are all processed
     # double          StartSeekOffsetY;    /* original C++ signature */
     start_seek_offset_y: (
         float  # [Internal] Account for frozen rows in a table and initial loss of precision in very large windows.
     )
+    # ImGuiContext*   Ctx;    /* original C++ signature */
+    ctx: Context  # [Internal] Parent UI context
     # void*           TempData;    /* original C++ signature */
     temp_data: Any  # [Internal] Internal data
 
@@ -9387,7 +9661,6 @@ class ListClipper:
 # - It is important that we are keeping those disabled by default so they don't leak in user space.
 # - This is in order to allow user enabling implicit cast operators between ImVec2/ImVec4 and their own types (using IM_VEC2_CLASS_EXTRA in imconfig.h)
 # - Add '#define IMGUI_DEFINE_MATH_OPERATORS' before including this file (or in imconfig.h) to access courtesy maths operators for ImVec2 and ImVec4.
-# - We intentionally provide ImVec2*float but not float*ImVec2: this is rare enough and we want to reduce the surface for possible user mistake.
 
 # Helpers macros to generate 32-bit encoded colors
 # - User can declare their own format by #defining the 5 _SHIFT/_MASK macros in their imconfig file.
@@ -9454,7 +9727,7 @@ class ImColor:
 # Multi-selection system
 # Documentation at: https://github.com/ocornut/imgui/wiki/Multi-Select
 # - Refer to 'Demo->Widgets->Selection State & Multi-Select' for demos using this.
-# - This system implements standard multi-selection idioms (CTRL+Mouse/Keyboard, SHIFT+Mouse/Keyboard, etc)
+# - This system implements standard multi-selection idioms (Ctrl+Mouse/Keyboard, Shift+Mouse/Keyboard, etc)
 #   with support for clipper (skipping non-visible items), box-select and many other details.
 # - Selectable(), Checkbox() are supported but custom widgets may use it as well.
 # - TreeNode() is technically supported but... using this correctly is more complicated: you need some sort of linear/random access to your tree,
@@ -9487,7 +9760,7 @@ class ImColor:
 # - As most users will want to store an index, for convenience and to reduce confusion we use ImS64 instead of None*,
 #   being syntactically easier to downcast. Feel free to reinterpret_cast and store a pointer inside.
 
-class MultiSelectFlags_(enum.Enum):
+class MultiSelectFlags_(enum.IntFlag):
     """Flags for BeginMultiSelect()"""
 
     # ImGuiMultiSelectFlags_None                  = 0,    /* original C++ signature */
@@ -9497,7 +9770,7 @@ class MultiSelectFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 0)  # Disable selecting more than one item. This is available to allow single-selection code to share same code/logic if desired. It essentially disables the main purpose of BeginMultiSelect() tho!
     # ImGuiMultiSelectFlags_NoSelectAll           = 1 << 1,       /* original C++ signature */
-    no_select_all = enum.auto()  # (= 1 << 1)  # Disable CTRL+A shortcut to select all.
+    no_select_all = enum.auto()  # (= 1 << 1)  # Disable Ctrl+A shortcut to select all.
     # ImGuiMultiSelectFlags_NoRangeSelect         = 1 << 2,       /* original C++ signature */
     no_range_select = (
         enum.auto()
@@ -9523,7 +9796,9 @@ class MultiSelectFlags_(enum.Enum):
         enum.auto()
     )  # (= 1 << 7)  # Enable box-selection with varying width or varying x pos items support (e.g. different width labels, or 2D layout/grid). This is slower: alters clipping logic so that e.g. horizontal movements will update selection of normally clipped items.
     # ImGuiMultiSelectFlags_BoxSelectNoScroll     = 1 << 8,       /* original C++ signature */
-    box_select_no_scroll = enum.auto()  # (= 1 << 8)  # Disable scrolling when box-selecting near edges of scope.
+    box_select_no_scroll = (
+        enum.auto()
+    )  # (= 1 << 8)  # Disable scrolling when box-selecting and moving mouse near edges of scope.
     # ImGuiMultiSelectFlags_ClearOnEscape         = 1 << 9,       /* original C++ signature */
     clear_on_escape = enum.auto()  # (= 1 << 9)  # Clear selection when pressing Escape while scope is focused.
     # ImGuiMultiSelectFlags_ClearOnClickVoid      = 1 << 10,      /* original C++ signature */
@@ -9536,19 +9811,33 @@ class MultiSelectFlags_(enum.Enum):
     scope_rect = (
         enum.auto()
     )  # (= 1 << 12)  # Scope for _BoxSelect and _ClearOnClickVoid is rectangle encompassing BeginMultiSelect()/EndMultiSelect(). Use if BeginMultiSelect() is called multiple times in same window.
-    # ImGuiMultiSelectFlags_SelectOnClick         = 1 << 13,      /* original C++ signature */
-    select_on_click = (
+    # ImGuiMultiSelectFlags_SelectOnAuto          = 1 << 13,      /* original C++ signature */
+    select_on_auto = (
         enum.auto()
-    )  # (= 1 << 13)  # Apply selection on mouse down when clicking on unselected item. (Default)
-    # ImGuiMultiSelectFlags_SelectOnClickRelease  = 1 << 14,      /* original C++ signature */
+    )  # (= 1 << 13)  # Apply selection on mouse down when clicking on unselected item, on mouse up when clicking on selected item. (Default)
+    # ImGuiMultiSelectFlags_SelectOnClickAlways   = 1 << 14,      /* original C++ signature */
+    select_on_click_always = (
+        enum.auto()
+    )  # (= 1 << 14)  # Apply selection on mouse down when clicking on any items. Prevents Drag and Drop from being used on multiple-selection, but allows e.g. BoxSelect to always reselect even when clicking inside an existing selection. (Excel style behavior)
+    # ImGuiMultiSelectFlags_SelectOnClickRelease  = 1 << 15,      /* original C++ signature */
     select_on_click_release = (
         enum.auto()
-    )  # (= 1 << 14)  # Apply selection on mouse release when clicking an unselected item. Allow dragging an unselected item without altering selection.
-    # ImGuiMultiSelectFlags_RangeSelect2       = 1 << 15,  // Shift+Selection uses 2 geometry instead of linear sequence, so possible to use Shift+up/down to select vertically in grid. Analogous to what BoxSelect does.
+    )  # (= 1 << 15)  # Apply selection on mouse release when clicking an unselected item. Allow dragging an unselected item without altering selection.
+    # ImGuiMultiSelectFlags_RangeSelect2d       = 1 << 15,  // Shift+Selection uses 2 geometry instead of linear sequence, so possible to use Shift+up/down to select vertically in grid. Analogous to what BoxSelect does.
     # ImGuiMultiSelectFlags_NavWrapX              = 1 << 16,      /* original C++ signature */
     nav_wrap_x = (
         enum.auto()
     )  # (= 1 << 16)  # [Temporary] Enable navigation wrapping on X axis. Provided as a convenience because we don't have a design for the general Nav API for this yet. When the more general feature be public we may obsolete this flag in favor of new one.
+    # ImGuiMultiSelectFlags_NoSelectOnRightClick  = 1 << 17,      /* original C++ signature */
+    no_select_on_right_click = (
+        enum.auto()
+    )  # (= 1 << 17)  # Disable default right-click processing, which selects item on mouse down, and is designed for context-menus.
+    # ImGuiMultiSelectFlags_SelectOnMask_         = ImGuiMultiSelectFlags_SelectOnAuto | ImGuiMultiSelectFlags_SelectOnClickAlways | ImGuiMultiSelectFlags_SelectOnClickRelease,    /* original C++ signature */
+    select_on_mask_ = (
+        enum.auto()
+    )  # (= MultiSelectFlags_SelectOnAuto | MultiSelectFlags_SelectOnClickAlways | MultiSelectFlags_SelectOnClickRelease)
+
+    # Obsolete names
 
 class MultiSelectIO:
     """Main IO structure returned by BeginMultiSelect()/EndMultiSelect().
@@ -9594,7 +9883,7 @@ class MultiSelectIO:
         """
         pass
 
-class SelectionRequestType(enum.Enum):
+class SelectionRequestType(enum.IntFlag):
     """Selection request type"""
 
     # ImGuiSelectionRequestType_None = 0,    /* original C++ signature */
@@ -9625,7 +9914,7 @@ class SelectionRequest:
     # ImGuiSelectionRequest(ImGuiSelectionRequestType Type = ImGuiSelectionRequestType(), bool Selected = bool(), ImS8 RangeDirection = ImS8(), ImGuiSelectionUserData RangeFirstItem = ImGuiSelectionUserData(), ImGuiSelectionUserData RangeLastItem = ImGuiSelectionUserData());    /* original C++ signature */
     def __init__(
         self,
-        type: SelectionRequestType = SelectionRequestType(),
+        type: SelectionRequestType = SelectionRequestType.none,
         selected: bool = bool(),
         range_direction: ImS8 = ImS8(),
         range_first_item: Optional[SelectionUserData] = None,
@@ -9748,13 +10037,13 @@ class ImDrawCmd:
     - VtxOffset: When 'io.BackendFlags & ImGuiBackendFlags_RendererHasVtxOffset' is enabled,
       this fields allow us to render meshes larger than 64K vertices while keeping 16-bit indices.
       Backends made for <1.71. will typically ignore the VtxOffset fields.
-    - The ClipRect/TextureId/VtxOffset fields must be contiguous as we memcmp() them together (this is asserted for).
+    - The ClipRect/TexRef/VtxOffset fields must be contiguous as we memcmp() them together (this is asserted for).
     """
 
     # ImVec4          ClipRect;    /* original C++ signature */
     clip_rect: ImVec4  # 4*4  // Clipping rectangle (x1, y1, x2, y2). Subtract ImDrawData->DisplayPos to get clipping rectangle in "viewport" coordinates
-    # ImTextureID     TextureId;    /* original C++ signature */
-    texture_id: ImTextureID  # 4-8  // User-provided texture ID. Set by user in ImfontAtlas::SetTexID() for fonts or passed to Image*() functions. Ignore if never using images or multiple fonts atlas.
+    # ImTextureRef    TexRef;    /* original C++ signature */
+    tex_ref: ImTextureRef  # 16   // Reference to a font/texture atlas (where backend called ImTextureData::SetTexID()) or to a user-provided texture ID (via e.g. ImGui::Image() calls). Both will lead to a ImTextureID value.
     # unsigned int    VtxOffset;    /* original C++ signature */
     vtx_offset: int  # 4    // Start offset in vertex buffer. ImGuiBackendFlags_RendererHasVtxOffset: always 0, otherwise may be >0 to support meshes larger than 64K vertices with 16-bit indices.
     # unsigned int    IdxOffset;    /* original C++ signature */
@@ -9768,14 +10057,17 @@ class ImDrawCmd:
     # int             UserCallbackDataOffset;    /* original C++ signature */
     user_callback_data_offset: int  # 4 // [Internal] Offset of callback user data when using storage, otherwise -1.
 
-    # ImDrawCmd()     { memset(this, 0, sizeof(*this)); }     /* original C++ signature */
+    # ImDrawCmd()     { memset((void*)this, 0, sizeof(*this)); }     /* original C++ signature */
     def __init__(self) -> None:
         """Also ensure our padding fields are zeroed"""
         pass
-    # inline ImTextureID GetTexID() const { return TextureId; }    /* original C++ signature */
+    # Since 1.83: returns ImTextureID associated with this draw call. Warning: DO NOT assume this is always same as 'TextureId' (we will change this function for an upcoming feature)
+    # Since 1.92: removed ImDrawCmd::TextureId field, the getter function must be used!
+    # inline ImTextureID GetTexID() const;        /* original C++ signature */
     def get_tex_id(self) -> ImTextureID:
-        """Since 1.83: returns ImTextureID associated with this draw call. Warning: DO NOT assume this is always same as 'TextureId' (we will change this function for an upcoming feature)
-        (private API)
+        """(private API)
+
+        == (TexRef._TexData ? TexRef._TexData->TexID : TexRef._TexID)
         """
         pass
 
@@ -9811,19 +10103,19 @@ class ImDrawCmdHeader:
 
     # ImVec4          ClipRect;    /* original C++ signature */
     clip_rect: ImVec4
-    # ImTextureID     TextureId;    /* original C++ signature */
-    texture_id: ImTextureID
+    # ImTextureRef    TexRef;    /* original C++ signature */
+    tex_ref: ImTextureRef
     # unsigned int    VtxOffset;    /* original C++ signature */
     vtx_offset: int
-    # ImDrawCmdHeader(ImVec4 ClipRect = ImVec4(), ImTextureID TextureId = ImTextureID());    /* original C++ signature */
-    def __init__(self, clip_rect: Optional[ImVec4Like] = None, texture_id: Optional[ImTextureID] = None) -> None:
+    # ImDrawCmdHeader(ImVec4 ClipRect = ImVec4(), ImTextureRef TexRef = ImTextureRef());    /* original C++ signature */
+    def __init__(self, clip_rect: Optional[ImVec4Like] = None, tex_ref: Optional[ImTextureRef] = None) -> None:
         """Auto-generated default constructor with named params
 
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * ClipRect: ImVec4()
-                * TextureId: ImTextureID()
+                * TexRef: ImTextureRef()
         """
         pass
 
@@ -9860,7 +10152,7 @@ class ImDrawListSplitter:
     # ImVector<ImDrawChannel>     _Channels;    /* original C++ signature */
     _channels: ImVector_ImDrawChannel  # Draw channels (not resized down so _Count might be < Channels.Size)
 
-    # inline ImDrawListSplitter()  { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
+    # inline ImDrawListSplitter()  { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
     # inline void                 Clear() { _Current = 0; _Count = 1; }     /* original C++ signature */
@@ -9883,37 +10175,42 @@ class ImDrawListSplitter:
     def set_current_channel(self, draw_list: ImDrawList, channel_idx: int) -> None:
         pass
 
-class ImDrawFlags_(enum.Enum):
-    """Flags for ImDrawList functions
-    (Legacy: bit 0 must always correspond to ImDrawFlags_Closed to be backward compatible with old API using a bool. Bits 1..3 must be unused)
-    """
+class ImDrawFlags_(enum.IntFlag):
+    """Flags for ImDrawList functions"""
 
     # ImDrawFlags_None                        = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
-    # ImDrawFlags_Closed                      = 1 << 0,     /* original C++ signature */
-    closed = (
-        enum.auto()
-    )  # (= 1 << 0)  # PathStroke(), AddPolyline(): specify that shape should be closed (Important: this is always == 1 for legacy reason)
+
+    # Rounding for AddRect(), AddRectFilled(), PathRect()
+    # - When not specified, we defaults to ImDrawFlags_RoundCornersAll! So you only need to use those flags if you want another configuration.
     # ImDrawFlags_RoundCornersTopLeft         = 1 << 4,     /* original C++ signature */
     round_corners_top_left = (
         enum.auto()
-    )  # (= 1 << 4)  # AddRect(), AddRectFilled(), PathRect(): enable rounding top-left corner only (when rounding > 0.0, we default to all corners). Was 0x01.
+    )  # (= 1 << 4)  # Round top-left corner only (when rounding > 0.0, we default to all corners).
     # ImDrawFlags_RoundCornersTopRight        = 1 << 5,     /* original C++ signature */
     round_corners_top_right = (
         enum.auto()
-    )  # (= 1 << 5)  # AddRect(), AddRectFilled(), PathRect(): enable rounding top-right corner only (when rounding > 0.0, we default to all corners). Was 0x02.
+    )  # (= 1 << 5)  # Round top-right corner only (when rounding > 0.0, we default to all corners).
     # ImDrawFlags_RoundCornersBottomLeft      = 1 << 6,     /* original C++ signature */
     round_corners_bottom_left = (
         enum.auto()
-    )  # (= 1 << 6)  # AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-left corner only (when rounding > 0.0, we default to all corners). Was 0x04.
+    )  # (= 1 << 6)  # Round bottom-left corner only (when rounding > 0.0, we default to all corners).
     # ImDrawFlags_RoundCornersBottomRight     = 1 << 7,     /* original C++ signature */
     round_corners_bottom_right = (
         enum.auto()
-    )  # (= 1 << 7)  # AddRect(), AddRectFilled(), PathRect(): enable rounding bottom-right corner only (when rounding > 0.0, we default to all corners). Wax 0x08.
+    )  # (= 1 << 7)  # Round bottom-right corner only (when rounding > 0.0, we default to all corners).
     # ImDrawFlags_RoundCornersNone            = 1 << 8,     /* original C++ signature */
     round_corners_none = (
         enum.auto()
-    )  # (= 1 << 8)  # AddRect(), AddRectFilled(), PathRect(): disable rounding on all corners (when rounding > 0.0). This is NOT zero, NOT an implicit flag!
+    )  # (= 1 << 8)  # Disable rounding even if `float rounding > 0.0`. This is NOT zero, NOT an implicit flag!
+    # ImDrawFlags_RoundCornersAll             = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight | ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,     /* original C++ signature */
+    round_corners_all = (
+        enum.auto()
+    )  # (= ImDrawFlags_.round_corners_top_left | ImDrawFlags_.round_corners_top_right | ImDrawFlags_.round_corners_bottom_left | ImDrawFlags_.round_corners_bottom_right)  # (Default!!)
+    # ImDrawFlags_RoundCornersDefault_        = ImDrawFlags_RoundCornersAll,     /* original C++ signature */
+    round_corners_default_ = (
+        enum.auto()
+    )  # (= ImDrawFlags_.round_corners_all)  # Default to ALL corners if none of the _RoundCornersXX flags are specified!
     # ImDrawFlags_RoundCornersTop             = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight,    /* original C++ signature */
     round_corners_top = enum.auto()  # (= ImDrawFlags_.round_corners_top_left | ImDrawFlags_.round_corners_top_right)
     # ImDrawFlags_RoundCornersBottom          = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,    /* original C++ signature */
@@ -9926,19 +10223,18 @@ class ImDrawFlags_(enum.Enum):
     round_corners_right = (
         enum.auto()
     )  # (= ImDrawFlags_.round_corners_bottom_right | ImDrawFlags_.round_corners_top_right)
-    # ImDrawFlags_RoundCornersAll             = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight | ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,    /* original C++ signature */
-    round_corners_all = (
-        enum.auto()
-    )  # (= ImDrawFlags_.round_corners_top_left | ImDrawFlags_.round_corners_top_right | ImDrawFlags_.round_corners_bottom_left | ImDrawFlags_.round_corners_bottom_right)
-    # ImDrawFlags_RoundCornersDefault_        = ImDrawFlags_RoundCornersAll,     /* original C++ signature */
-    round_corners_default_ = (
-        enum.auto()
-    )  # (= ImDrawFlags_.round_corners_all)  # Default to ALL corners if none of the _RoundCornersXX flags are specified.
     # ImDrawFlags_RoundCornersMask_           = ImDrawFlags_RoundCornersAll | ImDrawFlags_RoundCornersNone,    /* original C++ signature */
-    # }
     round_corners_mask_ = enum.auto()  # (= ImDrawFlags_.round_corners_all | ImDrawFlags_.round_corners_none)
 
-class ImDrawListFlags_(enum.Enum):
+    # Stroke options
+    # ImDrawFlags_Closed                      = 1 << 9,     /* original C++ signature */
+    closed = enum.auto()  # (= 1 << 9)  # PathStroke(), AddPolyline(): specify that shape should be closed.
+    # ImDrawFlags_Closed                    = 1 << 0, // Prior to 1.92.8 (May 2026), ImDrawFlags_Closed was guaranteed to be == 1<<0 == 1 for legacy compatibility reason. Hardcoded use of 1 or True should be replaced.
+
+    # ImDrawFlags_InvalidMask_                = ~0x7FFFFFF0,     /* original C++ signature */
+    invalid_mask_ = enum.auto()  # (= ~0x7FFFFFF0)  # == 0x8000000F,
+
+class ImDrawListFlags_(enum.IntFlag):
     """Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.
     It is however possible to temporarily alter flags between calls to ImDrawList:: functions.
     """
@@ -10005,8 +10301,8 @@ class ImDrawList:
     _splitter: ImDrawListSplitter  # [Internal] for channels api (note: prefer using your own persistent instance of ImDrawListSplitter!)
     # ImVector<ImVec4>        _ClipRectStack;    /* original C++ signature */
     _clip_rect_stack: ImVector_ImVec4  # [Internal]
-    # ImVector<ImTextureID>   _TextureIdStack;    /* original C++ signature */
-    _texture_id_stack: ImVector_ImTextureID  # [Internal]
+    # ImVector<ImTextureRef>  _TextureStack;    /* original C++ signature */
+    _texture_stack: ImVector_ImTextureRef  # [Internal]
     # ImVector<ImU8>          _CallbacksDataBuf;    /* original C++ signature */
     _callbacks_data_buf: ImVector_ImU8  # [Internal]
     # float                   _FringeScale;    /* original C++ signature */
@@ -10032,11 +10328,11 @@ class ImDrawList:
     # IMGUI_API void  PopClipRect();    /* original C++ signature */
     def pop_clip_rect(self) -> None:
         pass
-    # IMGUI_API void  PushTextureID(ImTextureID texture_id);    /* original C++ signature */
-    def push_texture_id(self, texture_id: ImTextureID) -> None:
+    # IMGUI_API void  PushTexture(ImTextureRef tex_ref);    /* original C++ signature */
+    def push_texture(self, tex_ref: ImTextureRef) -> None:
         pass
-    # IMGUI_API void  PopTextureID();    /* original C++ signature */
-    def pop_texture_id(self) -> None:
+    # IMGUI_API void  PopTexture();    /* original C++ signature */
+    def pop_texture(self) -> None:
         pass
     # inline ImVec2   GetClipRectMin() const { const ImVec4& cr = _ClipRectStack.back(); return ImVec2(cr.x, cr.y); }    /* original C++ signature */
     def get_clip_rect_min(self) -> ImVec2:
@@ -10056,15 +10352,18 @@ class ImDrawList:
     # IMGUI_API void  AddLine(const ImVec2& p1, const ImVec2& p2, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
     def add_line(self, p1: ImVec2Like, p2: ImVec2Like, col: ImU32, thickness: float = 1.0) -> None:
         pass
-    # IMGUI_API void  AddRect(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, ImDrawFlags flags = 0, float thickness = 1.0f);       /* original C++ signature */
+    # IMGUI_API void  AddLineH(float min_x, float max_x, float y, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
+    def add_line_h(self, min_x: float, max_x: float, y: float, col: ImU32, thickness: float = 1.0) -> None:
+        pass
+    # IMGUI_API void  AddRect(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, float thickness = 1.0f, ImDrawFlags flags = 0);       /* original C++ signature */
     def add_rect(
         self,
         p_min: ImVec2Like,
         p_max: ImVec2Like,
         col: ImU32,
         rounding: float = 0.0,
-        flags: ImDrawFlags = 0,
         thickness: float = 1.0,
+        flags: ImDrawFlags = 0,
     ) -> None:
         """a: upper-left, b: lower-right (== upper-left + size)"""
         pass
@@ -10166,15 +10465,14 @@ class ImDrawList:
     def add_bezier_quadratic(
         self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, col: ImU32, thickness: float, num_segments: int = 0
     ) -> None:
+        """Quadratic Bezier (3 control points)"""
         pass
-    # Quadratic Bezier (3 control points)
-
-    #                                        #ifdef IMGUI_BUNDLE_PYTHON_API
+    #                                      #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # - Only simple polygons are supported by filling functions (no self-intersections, no holes).
     # - Concave polygon fill is more expensive than convex one: it has O(N^2) complexity. Provided as a convenience fo user but not used by main library.
-    # IMGUI_API void  AddPolyline(const std::vector<ImVec2>& points, ImU32 col, ImDrawFlags flags, float thickness);    /* original C++ signature */
-    def add_polyline(self, points: List[ImVec2Like], col: ImU32, flags: ImDrawFlags, thickness: float) -> None:
+    # IMGUI_API void  AddPolyline(const std::vector<ImVec2>& points, ImU32 col, float thickness, ImDrawFlags flags);    /* original C++ signature */
+    def add_polyline(self, points: List[ImVec2Like], col: ImU32, thickness: float, flags: ImDrawFlags) -> None:
         pass
     # IMGUI_API void  AddConvexPolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
     def add_convex_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
@@ -10182,17 +10480,17 @@ class ImDrawList:
     # IMGUI_API void  AddConcavePolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
     def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
         pass
-    #                                        #endif
+    #                                      #endif
     #
 
     # Image primitives
-    # - Read FAQ to understand what ImTextureID is.
+    # - Read FAQ to understand what ImTextureID/ImTextureRef are.
     # - "p_min" and "p_max" represent the upper-left and lower-right corners of the rectangle.
     # - "uv_min" and "uv_max" represent the normalized texture coordinates to use for those corners. Using (0,0)->(1,1) texture coordinates will generally display the entire texture.
-    # IMGUI_API void  AddImage(ImTextureID user_texture_id, const ImVec2& p_min, const ImVec2& p_max, const ImVec2& uv_min = ImVec2(0, 0), const ImVec2& uv_max = ImVec2(1, 1), ImU32 col = IM_COL32_WHITE);    /* original C++ signature */
+    # IMGUI_API void  AddImage(ImTextureRef tex_ref, const ImVec2& p_min, const ImVec2& p_max, const ImVec2& uv_min = ImVec2(0, 0), const ImVec2& uv_max = ImVec2(1, 1), ImU32 col = IM_COL32_WHITE);    /* original C++ signature */
     def add_image(
         self,
-        user_texture_id: ImTextureID,
+        tex_ref: ImTextureRef,
         p_min: ImVec2Like,
         p_max: ImVec2Like,
         uv_min: Optional[ImVec2Like] = None,
@@ -10205,10 +10503,10 @@ class ImDrawList:
             * uv_max: ImVec2(1, 1)
         """
         pass
-    # IMGUI_API void  AddImageQuad(ImTextureID user_texture_id, const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, const ImVec2& uv1 = ImVec2(0, 0), const ImVec2& uv2 = ImVec2(1, 0), const ImVec2& uv3 = ImVec2(1, 1), const ImVec2& uv4 = ImVec2(0, 1), ImU32 col = IM_COL32_WHITE);    /* original C++ signature */
+    # IMGUI_API void  AddImageQuad(ImTextureRef tex_ref, const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, const ImVec2& uv1 = ImVec2(0, 0), const ImVec2& uv2 = ImVec2(1, 0), const ImVec2& uv3 = ImVec2(1, 1), const ImVec2& uv4 = ImVec2(0, 1), ImU32 col = IM_COL32_WHITE);    /* original C++ signature */
     def add_image_quad(
         self,
-        user_texture_id: ImTextureID,
+        tex_ref: ImTextureRef,
         p1: ImVec2Like,
         p2: ImVec2Like,
         p3: ImVec2Like,
@@ -10227,10 +10525,10 @@ class ImDrawList:
             * uv4: ImVec2(0, 1)
         """
         pass
-    # IMGUI_API void  AddImageRounded(ImTextureID user_texture_id, const ImVec2& p_min, const ImVec2& p_max, const ImVec2& uv_min, const ImVec2& uv_max, ImU32 col, float rounding, ImDrawFlags flags = 0);    /* original C++ signature */
+    # IMGUI_API void  AddImageRounded(ImTextureRef tex_ref, const ImVec2& p_min, const ImVec2& p_max, const ImVec2& uv_min, const ImVec2& uv_max, ImU32 col, float rounding, ImDrawFlags flags = 0);    /* original C++ signature */
     def add_image_rounded(
         self,
-        user_texture_id: ImTextureID,
+        tex_ref: ImTextureRef,
         p_min: ImVec2Like,
         p_max: ImVec2Like,
         uv_min: ImVec2Like,
@@ -10263,8 +10561,8 @@ class ImDrawList:
     def path_fill_concave(self, col: ImU32) -> None:
         """(private API)"""
         pass
-    # inline    void  PathStroke(ImU32 col, ImDrawFlags flags = 0, float thickness = 1.0f) { AddPolyline(_Path.Data, _Path.Size, col, flags, thickness); _Path.Size = 0; }    /* original C++ signature */
-    def path_stroke(self, col: ImU32, flags: ImDrawFlags = 0, thickness: float = 1.0) -> None:
+    # inline    void  PathStroke(ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0) { AddPolyline(_Path.Data, _Path.Size, col, thickness, flags); _Path.Size = 0; }    /* original C++ signature */
+    def path_stroke(self, col: ImU32, thickness: float = 1.0, flags: ImDrawFlags = 0) -> None:
         """(private API)"""
         pass
     # IMGUI_API void  PathArcTo(const ImVec2& center, float radius, float a_min, float a_max, int num_segments = 0);    /* original C++ signature */
@@ -10300,7 +10598,7 @@ class ImDrawList:
         pass
     # IMGUI_API ImDrawList* CloneOutput() const;                                      /* original C++ signature */
     def clone_output(self) -> ImDrawList:
-        """Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer."""
+        """Create a clone of the CmdBuffer/IdxBuffer/VtxBuffer. For multi-threaded rendering, consider using `imgui_threaded_rendering` from https://github.com/ocornut/imgui_club instead."""
         pass
     # Advanced: Channels
     # - Use to split render into layers. By switching channels to can render out-of-order (e.g. submit FG primitives before BG primitives)
@@ -10373,6 +10671,9 @@ class ImDrawList:
     # inline  None  PathBezierCurveTo(const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, int num_segments = 0) { PathBezierCubicCurveTo(p2, p3, p4, num_segments); }                                                                                // OBSOLETED in 1.80 (Jan 2021)
 
     # [Internal helpers]
+    # IMGUI_API void  _SetDrawListSharedData(ImDrawListSharedData* data);    /* original C++ signature */
+    def _set_draw_list_shared_data(self, data: ImDrawListSharedData) -> None:
+        pass
     # IMGUI_API void  _ResetForNewFrame();    /* original C++ signature */
     def _reset_for_new_frame(self) -> None:
         pass
@@ -10388,14 +10689,14 @@ class ImDrawList:
     # IMGUI_API void  _OnChangedClipRect();    /* original C++ signature */
     def _on_changed_clip_rect(self) -> None:
         pass
-    # IMGUI_API void  _OnChangedTextureID();    /* original C++ signature */
-    def _on_changed_texture_id(self) -> None:
+    # IMGUI_API void  _OnChangedTexture();    /* original C++ signature */
+    def _on_changed_texture(self) -> None:
         pass
     # IMGUI_API void  _OnChangedVtxOffset();    /* original C++ signature */
     def _on_changed_vtx_offset(self) -> None:
         pass
-    # IMGUI_API void  _SetTextureID(ImTextureID texture_id);    /* original C++ signature */
-    def _set_texture_id(self, texture_id: ImTextureID) -> None:
+    # IMGUI_API void  _SetTexture(ImTextureRef tex_ref);    /* original C++ signature */
+    def _set_texture(self, tex_ref: ImTextureRef) -> None:
         pass
     # IMGUI_API int   _CalcCircleAutoSegmentCount(float radius) const;    /* original C++ signature */
     def _calc_circle_auto_segment_count(self, radius: float) -> int:
@@ -10418,7 +10719,7 @@ class ImDrawData:
     # bool                Valid;    /* original C++ signature */
     valid: bool  # Only valid after Render() is called and before the next NewFrame() is called.
     # int                 CmdListsCount;    /* original C++ signature */
-    cmd_lists_count: int  # Number of ImDrawList* to render
+    cmd_lists_count: int  # == CmdLists.Size. (OBSOLETE: exists for legacy reasons). Number of ImDrawList* to render.
     # int                 TotalIdxCount;    /* original C++ signature */
     total_idx_count: int  # For convenience, sum of all ImDrawList's IdxBuffer.Size
     # int                 TotalVtxCount;    /* original C++ signature */
@@ -10430,11 +10731,13 @@ class ImDrawData:
     # ImVec2              DisplaySize;    /* original C++ signature */
     display_size: ImVec2  # Size of the viewport to render (== GetMainViewport()->Size for the main viewport, == io.DisplaySize in most single-viewport applications)
     # ImVec2              FramebufferScale;    /* original C++ signature */
-    framebuffer_scale: ImVec2  # Amount of pixels for each unit of DisplaySize. Based on io.DisplayFramebufferScale. Generally (1,1) on normal display, (2,2) on OSX with Retina display.
+    framebuffer_scale: ImVec2  # Amount of pixels for each unit of DisplaySize. Copied from viewport->FramebufferScale (== io.DisplayFramebufferScale for main viewport). Generally (1,1) on normal display, (2,2) on OSX with Retina display.
     # ImGuiViewport*      OwnerViewport;    /* original C++ signature */
     owner_viewport: (
         Viewport  # Viewport carrying the ImDrawData instance, might be of use to the renderer (generally not).
     )
+    # ImVector<ImTextureData*>* Textures;    /* original C++ signature */
+    textures: ImVector_ImTextureData_ptr  # List of textures to update. Most of the times the list is shared by all ImDrawData, has only 1 texture and it doesn't need any update. This almost always points to ImGui::GetPlatformIO().Textures[]. May be overridden or set to None if you want to manually update textures.
 
     # ImDrawData()    { Clear(); }    /* original C++ signature */
     def __init__(self) -> None:
@@ -10457,55 +10760,220 @@ class ImDrawData:
         pass
 
 # -----------------------------------------------------------------------------
+# [SECTION] Texture API (ImTextureFormat, ImTextureStatus, ImTextureRect, ImTextureData)
+# -----------------------------------------------------------------------------
+# In principle, the only data types that user/application code should care about are 'ImTextureRef' and 'ImTextureID'.
+# They are defined above in this header file. Read their description to the difference between ImTextureRef and ImTextureID.
+# FOR ALL OTHER ImTextureXXXX TYPES: ONLY CORE LIBRARY AND RENDERER BACKENDS NEED TO KNOW AND CARE ABOUT THEM.
+# -----------------------------------------------------------------------------
+
+class ImTextureFormat(enum.IntFlag):
+    """We intentionally support a limited amount of texture formats to limit burden on CPU-side code and extension.
+    Most standard backends only support RGBA32 but we provide a single channel option for low-resource/embedded systems.
+    """
+
+    # ImTextureFormat_RGBA32,             /* original C++ signature */
+    rgba32 = (
+        enum.auto()
+    )  # (= 0)  # 4 components per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight * 4
+    # ImTextureFormat_Alpha8,             /* original C++ signature */
+    alpha8 = enum.auto()  # (= 1)  # 1 component per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight
+
+class ImTextureStatus(enum.IntFlag):
+    """Status of a texture to communicate with Renderer Backend."""
+
+    # ImTextureStatus_OK,    /* original C++ signature */
+    ok = enum.auto()  # (= 0)
+    # ImTextureStatus_Destroyed,          /* original C++ signature */
+    destroyed = enum.auto()  # (= 1)  # Backend destroyed the texture.
+    # ImTextureStatus_WantCreate,         /* original C++ signature */
+    want_create = enum.auto()  # (= 2)  # Requesting backend to create the texture. Set status OK when done.
+    # ImTextureStatus_WantUpdates,        /* original C++ signature */
+    want_updates = (
+        enum.auto()
+    )  # (= 3)  # Requesting backend to update specific blocks of pixels (write to texture portions which have never been used before). Set status OK when done.
+    # ImTextureStatus_WantDestroy,        /* original C++ signature */
+    want_destroy = enum.auto()  # (= 4)  # Requesting backend to destroy the texture. Set status to Destroyed when done.
+
+class ImTextureRect:
+    """Coordinates of a rectangle within a texture.
+    When a texture is in ImTextureStatus_WantUpdates state, we provide a list of individual rectangles to copy to the graphics system.
+    You may use ImTextureData::Updates[] for the list, or ImTextureData::UpdateBox for a single bounding box.
+    """
+
+    # unsigned short      x,     /* original C++ signature */
+    x: int  # Upper-left coordinates of rectangle to update
+    # y;    /* original C++ signature */
+    y: int  # Upper-left coordinates of rectangle to update
+    # unsigned short      w,     /* original C++ signature */
+    w: int  # Size of rectangle to update (in pixels)
+    # h;    /* original C++ signature */
+    h: int  # Size of rectangle to update (in pixels)
+    # ImTextureRect();    /* original C++ signature */
+    def __init__(self) -> None:
+        """Auto-generated default constructor"""
+        pass
+
+class ImTextureData:
+    """Specs and pixel storage for a texture used by Dear ImGui.
+    This is only useful for (1) core library and (2) backends. End-user/applications do not need to care about this.
+    Renderer Backends will create a GPU-side version of this.
+    Why does we store two identifiers: TexID and BackendUserData?
+    - ImTextureID    TexID           = lower-level identifier stored in ImDrawCmd. ImDrawCmd can refer to textures not created by the backend, and for which there's no ImTextureData.
+    - None*          BackendUserData = higher-level opaque storage for backend own book-keeping. Some backends may have enough with TexID and not need both.
+    In columns below: who reads/writes each fields? 'r'=read, 'w'=write, 'core'=main library, 'backend'=renderer backend
+    """
+
+    # ------------------------------------------ core / backend ---------------------------------------
+    # int                 UniqueID;    /* original C++ signature */
+    unique_id: int  # w    -   // [DEBUG] Sequential index to facilitate identifying a texture when debugging/printing. Unique per atlas.
+    # ImTextureStatus     Status;    /* original C++ signature */
+    status: ImTextureStatus  # rw   rw  // ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy. Always use SetStatus() to modify!
+    # void*               BackendUserData;    /* original C++ signature */
+    backend_user_data: Any  # -    rw  // Convenience storage for backend. Some backends may have enough with TexID.
+    # ImTextureID         TexID;    /* original C++ signature */
+    tex_id: ImTextureID  # r    w   // Backend-specific texture identifier. Always use SetTexID() to modify! The identifier will stored in ImDrawCmd::GetTexID() and passed to backend's RenderDrawData function.
+    # ImTextureFormat     Format;    /* original C++ signature */
+    format: ImTextureFormat  # w    r   // ImTextureFormat_RGBA32 (default) or ImTextureFormat_Alpha8
+    # int                 Width;    /* original C++ signature */
+    width: int  # w    r   // Texture width
+    # int                 Height;    /* original C++ signature */
+    height: int  # w    r   // Texture height
+    # int                 BytesPerPixel;    /* original C++ signature */
+    bytes_per_pixel: int  # w    r   // 4 or 1
+    # uchar*      Pixels;    /* original C++ signature */
+    pixels: (
+        uchar  # w    r   // Pointer to buffer holding 'Width*Height' pixels and 'Width*Height*BytesPerPixels' bytes.
+    )
+    # ImTextureRect       UsedRect;    /* original C++ signature */
+    used_rect: ImTextureRect  # w    r   // Bounding box encompassing all past and queued Updates[].
+    # ImTextureRect       UpdateRect;    /* original C++ signature */
+    update_rect: ImTextureRect  # w    r   // Bounding box encompassing all queued Updates[].
+    # ImVector<ImTextureRect> Updates;    /* original C++ signature */
+    updates: ImVector_ImTextureRect  # w    r   // Array of individual updates.
+    # int                 UnusedFrames;    /* original C++ signature */
+    unused_frames: int  # w    r   // In order to facilitate handling Status==WantDestroy in some backend: this is a count successive frames where the texture was not used. Always >0 when Status==WantDestroy.
+    # unsigned short      RefCount;    /* original C++ signature */
+    ref_count: int  # w    r   // Number of contexts using this texture. Used during backend shutdown.
+    # bool                UseColors;    /* original C++ signature */
+    use_colors: (
+        bool  # w    r   // Tell whether our texture data is known to use colors (rather than just white + alpha).
+    )
+    # bool                WantDestroyNextFrame;    /* original C++ signature */
+    want_destroy_next_frame: bool  # rw   -   // [Internal] Queued to set ImTextureStatus_WantDestroy next frame. May still be used in the current frame.
+
+    # ImTextureData()     { memset((void*)this, 0, sizeof(*this)); Status = ImTextureStatus_Destroyed; TexID = ImTextureID_Invalid; }    /* original C++ signature */
+    def __init__(self) -> None:
+        """Functions
+        - If GetPixels() functions asserts while being called by your render loop, it could be caused by calling ImFontAtlas::Clear() instead of ClearFonts()?
+        """
+        pass
+    # IMGUI_API void      Create(ImTextureFormat format, int w, int h);    /* original C++ signature */
+    def create(self, format: ImTextureFormat, w: int, h: int) -> None:
+        pass
+    # IMGUI_API void      DestroyPixels();    /* original C++ signature */
+    def destroy_pixels(self) -> None:
+        pass
+    #                                #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # ImGuiNpBuffer       GetPixelsArray()          { return ImGuiNpBuffer{Pixels, Width * Height * BytesPerPixel}; }    /* original C++ signature */
+    def get_pixels_array(self) -> NpBuffer:
+        """GetPixelsArray(): returns the pixel data as a NumPy array.
+
+         Note: GetPixelsAt(x, y) is not implemented for Python, but you can use the offset below:
+            offset = (y * tex.width + x) * tex.bytes_per_pixel
+        (private API)
+        """
+        pass
+    #                                #endif
+    #
+
+    # int                 GetSizeInBytes() const      { return Width * Height * BytesPerPixel; }    /* original C++ signature */
+    def get_size_in_bytes(self) -> int:
+        """(private API)"""
+        pass
+    # int                 GetPitch() const            { return Width * BytesPerPixel; }    /* original C++ signature */
+    def get_pitch(self) -> int:
+        """(private API)"""
+        pass
+    # ImTextureRef        GetTexRef()                 { ImTextureRef tex_ref; tex_ref._TexData = this; tex_ref._TexID = ImTextureID_Invalid; return tex_ref; }    /* original C++ signature */
+    def get_tex_ref(self) -> ImTextureRef:
+        """(private API)"""
+        pass
+    # ImTextureID         GetTexID() const            { return TexID; }    /* original C++ signature */
+    def get_tex_id(self) -> ImTextureID:
+        """(private API)"""
+        pass
+    # Called by Renderer backend
+    # - Call SetTexID() and SetStatus() after honoring texture requests. Never modify TexID and Status directly!
+    # - A backend may decide to destroy a texture that we did not request to destroy, which is fine (e.g. freeing resources), but we immediately set the texture back in _WantCreate mode.
+    # void    SetTexID(ImTextureID tex_id)            { TexID = tex_id; }    /* original C++ signature */
+    def set_tex_id(self, tex_id: ImTextureID) -> None:
+        """(private API)"""
+        pass
+    # void    SetStatus(ImTextureStatus status)       { Status = status; if (status == ImTextureStatus_Destroyed && !WantDestroyNextFrame && Pixels != nullptr) Status = ImTextureStatus_WantCreate; }    /* original C++ signature */
+    def set_status(self, status: ImTextureStatus) -> None:
+        """(private API)"""
+        pass
+
+# -----------------------------------------------------------------------------
 # [SECTION] Font API (ImFontConfig, ImFontGlyph, ImFontAtlasFlags, ImFontAtlas, ImFontGlyphRangesBuilder, ImFont)
 # -----------------------------------------------------------------------------
 
 class ImFontConfig:
     """A font input/source (we may rename this to ImFontSource in the future)"""
 
+    # Data Source
     # void*           FontData;    /* original C++ signature */
     font_data: Any  #          // TTF/OTF data
     # int             FontDataSize;    /* original C++ signature */
     font_data_size: int  #          // TTF/OTF data size
     # bool            FontDataOwnedByAtlas;    /* original C++ signature */
-    font_data_owned_by_atlas: (
-        bool  # True     // TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself).
-    )
+    font_data_owned_by_atlas: bool  # True     // TTF/OTF data ownership taken by the owner ImFontAtlas (will delete memory itself). SINCE 1.92, THE DATA NEEDS TO PERSIST FOR WHOLE DURATION OF ATLAS.
+
+    # Options
     # bool            MergeMode;    /* original C++ signature */
     merge_mode: bool  # False    // Merge into previous ImFont, so you can combine multiple inputs font into one ImFont (e.g. ASCII font + icons + Japanese glyphs). You may want to use GlyphOffset.y when merge font of different heights.
     # bool            PixelSnapH;    /* original C++ signature */
-    pixel_snap_h: bool  # False    // Align every glyph AdvanceX to pixel boundaries. Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, you can set OversampleH/V to 1.
-    # int             FontNo;    /* original C++ signature */
-    font_no: int  # 0        // Index of font within TTF/OTF file
-    # int             OversampleH;    /* original C++ signature */
-    oversample_h: int  # 0 (2)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1 or 2 depending on size. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.
-    # int             OversampleV;    /* original C++ signature */
-    oversample_v: int  # 0 (1)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1. This is not really useful as we don't use sub-pixel positions on the Y axis.
+    pixel_snap_h: bool  # False    // Align every glyph AdvanceX to pixel boundaries. Prevents fractional font size from working correctly! Useful e.g. if you are merging a non-pixel aligned font with the default font. If enabled, OversampleH/V will default to 1.
+    # ImS8            OversampleH;    /* original C++ signature */
+    oversample_h: ImS8  # 0 (2)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1 or 2 depending on size. Note the difference between 2 and 3 is minimal. You can reduce this to 1 for large glyphs save memory. Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.
+    # ImS8            OversampleV;    /* original C++ signature */
+    oversample_v: ImS8  # 0 (1)    // Rasterize at higher quality for sub-pixel positioning. 0 == auto == 1. This is not really useful as we don't use sub-pixel positions on the Y axis.
+    # ImWchar         EllipsisChar;    /* original C++ signature */
+    ellipsis_char: ImWchar  # 0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.
     # float           SizePixels;    /* original C++ signature */
-    size_pixels: float  #          // Size in pixels for rasterizer (more or less maps to the resulting font height).
-    # ImVec2        GlyphExtraSpacing;      // 0, 0     // (REMOVED IN 1.91.9: use GlyphExtraAdvanceX)
+    size_pixels: (
+        float  #          // Output size in pixels for rasterizer (more or less maps to the resulting font height).
+    )
+    # ImVec2        GlyphExtraSpacing;      // 0, 0     // (REMOVED AT IT SEEMS LARGELY OBSOLETE. PLEASE REPORT IF YOU WERE USING THIS). Extra spacing (in pixels) between glyphs when rendered: essentially add to glyph->AdvanceX. Only X axis is supported for now.
     # ImVec2          GlyphOffset;    /* original C++ signature */
-    glyph_offset: ImVec2  # 0, 0     // Offset all glyphs from this font input.
+    glyph_offset: ImVec2  # 0, 0     // Offset (in pixels) all glyphs from this font input. Absolute value for default size, other sizes will scale this value.
     # float           GlyphMinAdvanceX;    /* original C++ signature */
-    glyph_min_advance_x: float  # 0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font
+    glyph_min_advance_x: float  # 0        // Minimum AdvanceX for glyphs, set Min to align font icons, set both Min/Max to enforce mono-space font. Absolute value for default size, other sizes will scale this value.
     # float           GlyphMaxAdvanceX;    /* original C++ signature */
     glyph_max_advance_x: float  # FLT_MAX  // Maximum AdvanceX for glyphs
     # float           GlyphExtraAdvanceX;    /* original C++ signature */
-    glyph_extra_advance_x: (
-        float  # 0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this.
-    )
-    # unsigned int    FontBuilderFlags;    /* original C++ signature */
-    font_builder_flags: int  # 0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.
+    glyph_extra_advance_x: float  # 0        // Extra spacing (in pixels) between glyphs. Please contact us if you are using this. // FIXME-NEWATLAS: Intentionally unscaled
+    # ImU32           FontNo;    /* original C++ signature */
+    font_no: ImU32  # 0        // Index of font within TTF/OTF file
+    # unsigned int    FontLoaderFlags;    /* original C++ signature */
+    font_loader_flags: int  # 0        // Settings for custom font builder. THIS IS BUILDER IMPLEMENTATION DEPENDENT. Leave as zero if unsure.
+    # unsigned int  FontBuilderFlags;       // --       // [Renamed in 1.92] Use FontLoaderFlags.
     # float           RasterizerMultiply;    /* original C++ signature */
     rasterizer_multiply: float  # 1.0     // Linearly brighten (>1.0) or darken (<1.0) font output. Brightening small fonts may be a good workaround to make them more readable. This is a silly thing we may remove in the future.
     # float           RasterizerDensity;    /* original C++ signature */
-    rasterizer_density: float  # 1.0     // DPI scale for rasterization, not altering other font metrics: make it easy to swap between e.g. a 100% and a 400% fonts for a zooming display. IMPORTANT: If you increase this it is expected that you increase font scale accordingly, otherwise quality may look lowered.
-    # ImWchar         EllipsisChar;    /* original C++ signature */
-    ellipsis_char: ImWchar  # 0        // Explicitly specify Unicode codepoint of ellipsis character. When fonts are being merged first specified ellipsis will be used.
+    rasterizer_density: float  # 1.0     // [LEGACY: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported] DPI scale multiplier for rasterization. Not altering other font metrics: makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display, or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease font scale roughly to the inverse of this, otherwise quality may look lowered.
+    # float           ExtraSizeScale;    /* original C++ signature */
+    extra_size_scale: float  # 1.0     // Extra rasterizer scale over SizePixels.
 
     # [Internal]
+    # ImFontFlags     Flags;    /* original C++ signature */
+    flags: ImFontFlags  # Font flags (don't use just yet, will be exposed in upcoming 1.92.X updates)
     # ImFont*         DstFont;    /* original C++ signature */
-    dst_font: ImFont
+    dst_font: ImFont  # Target font (as we merging fonts, multiple ImFontConfig may target the same font)
+    # void*           FontLoaderData;    /* original C++ signature */
+    font_loader_data: Any  # Font loader opaque storage (per font config)
 
     # IMGUI_API ImFontConfig();    /* original C++ signature */
     def __init__(self) -> None:
@@ -10513,31 +10981,36 @@ class ImFontConfig:
 
 class ImFontGlyph:
     """Hold rendering data for one glyph.
-    (Note: some language parsers may fail to convert the 31+1 bitfield members, in this case maybe drop store a single u32 or we can rework this)
+    (Note: some language parsers may fail to convert the bitfield members, in this case maybe drop store a single u32 or we can rework this)
     """
 
     # float           AdvanceX;    /* original C++ signature */
-    advance_x: float  # Horizontal distance to advance layout with
+    advance_x: float  # Horizontal distance to advance cursor/layout position.
     # float           X0,     /* original C++ signature */
-    x0: float  # Glyph corners
+    x0: float  # Glyph corners. Offsets from current cursor/layout position.
     # Y0,     /* original C++ signature */
-    y0: float  # Glyph corners
+    y0: float  # Glyph corners. Offsets from current cursor/layout position.
     # X1,     /* original C++ signature */
-    x1: float  # Glyph corners
+    x1: float  # Glyph corners. Offsets from current cursor/layout position.
     # Y1;    /* original C++ signature */
-    y1: float  # Glyph corners
+    y1: float  # Glyph corners. Offsets from current cursor/layout position.
     # float           U0,     /* original C++ signature */
-    u0: float
+    u0: float  # Texture coordinates for the current value of ImFontAtlas->TexRef. Cached equivalent of calling GetCustomRect() with PackId.
     # V0,     /* original C++ signature */
-    v0: float
+    v0: float  # Texture coordinates for the current value of ImFontAtlas->TexRef. Cached equivalent of calling GetCustomRect() with PackId.
     # U1,     /* original C++ signature */
-    u1: float
+    u1: float  # Texture coordinates for the current value of ImFontAtlas->TexRef. Cached equivalent of calling GetCustomRect() with PackId.
     # V1;    /* original C++ signature */
-    v1: float
-    # Texture coordinates
+    v1: float  # Texture coordinates for the current value of ImFontAtlas->TexRef. Cached equivalent of calling GetCustomRect() with PackId.
+    # int             PackId;    /* original C++ signature */
+    pack_id: int  # [Internal] ImFontAtlasRectId value (FIXME: Cold data, could be moved elsewhere?)
 
+    # ImFontGlyph()   { memset((void*)this, 0, sizeof(*this)); PackId = -1; }    /* original C++ signature */
+    def __init__(self) -> None:
+        pass
     #                 #ifdef IMGUI_BUNDLE_PYTHON_API
     #
+
     # [ADAPT_IMGUI_BUNDLE]
     # bool isColored() const { return Colored != 0; }    /* original C++ signature */
     def is_colored(self) -> bool:
@@ -10553,21 +11026,6 @@ class ImFontGlyph:
         pass
     # [/ADAPT_IMGUI_BUNDLE]
     #                 #endif
-    # ImFontGlyph(float AdvanceX = float(), float X0 = float(), float Y0 = float(), float X1 = float(), float Y1 = float(), float U0 = float(), float V0 = float(), float U1 = float(), float V1 = float());    /* original C++ signature */
-    def __init__(
-        self,
-        advance_x: float = float(),
-        x0: float = float(),
-        y0: float = float(),
-        x1: float = float(),
-        y1: float = float(),
-        u0: float = float(),
-        v0: float = float(),
-        u1: float = float(),
-        v1: float = float(),
-    ) -> None:
-        """Auto-generated default constructor with named params"""
-        pass
 
 class ImFontGlyphRangesBuilder:
     """Helper to build glyph ranges from text/string data. Feed your application strings/characters to it then call BuildRanges().
@@ -10614,34 +11072,30 @@ class ImFontGlyphRangesBuilder:
         """Output new ranges"""
         pass
 
-class ImFontAtlasCustomRect:
-    """See ImFontAtlas::AddCustomRectXXX functions."""
+class ImFontAtlasRect:
+    """Output of ImFontAtlas::GetCustomRect() when using custom rectangles.
+    Those values may not be cached/stored as they are only valid for the current value of atlas->TexRef
+    (this is in theory derived from ImTextureRect but we use separate structures for reasons)
+    """
 
-    # unsigned short  X,     /* original C++ signature */
-    x: int  # Output   // Packed position in Atlas
-    # Y;    /* original C++ signature */
-    y: int  # Output   // Packed position in Atlas
+    # unsigned short  x,     /* original C++ signature */
+    x: int  # Position (in current texture)
+    # y;    /* original C++ signature */
+    y: int  # Position (in current texture)
+    # unsigned short  w,     /* original C++ signature */
+    w: int  # Size
+    # h;    /* original C++ signature */
+    h: int  # Size
+    # ImVec2          uv0,     /* original C++ signature */
+    uv0: ImVec2  # UV coordinates (in current texture)
+    # uv1;    /* original C++ signature */
+    uv1: ImVec2  # UV coordinates (in current texture)
 
-    # [Internal]
-    # unsigned short  Width,     /* original C++ signature */
-    width: int  # Input    // Desired rectangle dimension
-    # Height;    /* original C++ signature */
-    height: int  # Input    // Desired rectangle dimension
-    # float           GlyphAdvanceX;    /* original C++ signature */
-    glyph_advance_x: float  # Input    // For custom font glyphs only: glyph xadvance
-    # ImVec2          GlyphOffset;    /* original C++ signature */
-    glyph_offset: ImVec2  # Input    // For custom font glyphs only: glyph display offset
-    # ImFont*         Font;    /* original C++ signature */
-    font: ImFont  # Input    // For custom font glyphs only: target font
-    # ImFontAtlasCustomRect()         { X = Y = 0xFFFF; Width = Height = 0; GlyphID = 0; GlyphColored = 0; GlyphAdvanceX = 0.0f; GlyphOffset = ImVec2(0, 0); Font = NULL; }    /* original C++ signature */
+    # ImFontAtlasRect() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # bool IsPacked() const           { return X != 0xFFFF; }    /* original C++ signature */
-    def is_packed(self) -> bool:
-        """(private API)"""
-        pass
 
-class ImFontAtlasFlags_(enum.Enum):
+class ImFontAtlasFlags_(enum.IntFlag):
     """Flags for ImFontAtlas build"""
 
     # ImFontAtlasFlags_None               = 0,    /* original C++ signature */
@@ -10662,14 +11116,16 @@ class ImFontAtlas:
      - One or more fonts.
      - Custom graphics data needed to render the shapes needed by Dear ImGui.
      - Mouse cursor shapes for software cursor rendering (unless setting 'Flags |= ImFontAtlasFlags_NoMouseCursors' in the font atlas).
-    It is the user-code responsibility to setup/build the atlas, then upload the pixel data into a texture accessible by your graphics api.
-     - Optionally, call any of the AddFont*** functions. If you don't call any, the default font embedded in the code will be loaded for you.
-     - Call GetTexDataAsAlpha8() or GetTexDataAsRGBA32() to build and retrieve pixels data.
-     - Upload the pixels data into a texture within your graphics system (see imgui_impl_xxxx.cpp examples)
+     - If you don't call any AddFont*** functions, the default font embedded in the code will be loaded for you.
+    It is the rendering backend responsibility to upload texture into your graphics API:
+     - ImGui_ImplXXXX_RenderDrawData() functions generally iterate platform_io->Textures[] to create/update/destroy each ImTextureData instance.
+     - Backend then set ImTextureData's TexID and BackendUserData.
+     - Texture id are passed back to you during rendering to identify the texture. Read FAQ entry about ImTextureID/ImTextureRef for more details.
+    Legacy path:
+     - Call Build() + GetTexDataAsAlpha8() or GetTexDataAsRGBA32() to build and retrieve pixels data.
      - Call SetTexID(my_tex_id); and pass the pointer/identifier to your texture in a format natural to your graphics API.
-       This value will be passed back to you during rendering to identify the texture. Read FAQ entry about ImTextureID for more details.
     Common pitfalls:
-    - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persist up until the
+    - If you pass a 'glyph_ranges' array to AddFont*** functions, you need to make sure that your array persists up until the
       atlas is build (when calling GetTexData*** or Build()). We only copy the pointer, not the data.
     - Important: By default, AddFontFromMemoryTTF() takes ownership of the data. Even though we are not writing to it, we will free the pointer on destruction.
       You can set font_cfg->FontDataOwnedByAtlas=False to keep ownership of your data and it won't be freed,
@@ -10683,120 +11139,67 @@ class ImFontAtlas:
     # IMGUI_API ImFont*           AddFont(const ImFontConfig* font_cfg);    /* original C++ signature */
     def add_font(self, font_cfg: ImFontConfig) -> ImFont:
         pass
-    # IMGUI_API ImFont*           AddFontDefault(const ImFontConfig* font_cfg = NULL);    /* original C++ signature */
+    # IMGUI_API ImFont*           AddFontDefault(const ImFontConfig* font_cfg = NULL);            /* original C++ signature */
     def add_font_default(self, font_cfg: Optional[ImFontConfig] = None) -> ImFont:
+        """Selects between AddFontDefaultVector() and AddFontDefaultBitmap()."""
         pass
-    # IMGUI_API void              ClearInputData();               /* original C++ signature */
-    def clear_input_data(self) -> None:
-        """Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts."""
+    # IMGUI_API ImFont*           AddFontDefaultVector(const ImFontConfig* font_cfg = NULL);      /* original C++ signature */
+    def add_font_default_vector(self, font_cfg: Optional[ImFontConfig] = None) -> ImFont:
+        """Embedded scalable font. Recommended at any higher size."""
         pass
-    # IMGUI_API void              ClearFonts();                   /* original C++ signature */
-    def clear_fonts(self) -> None:
-        """Clear input+output font data (same as ClearInputData() + glyphs storage, UV coordinates)."""
+    # IMGUI_API ImFont*           AddFontDefaultBitmap(const ImFontConfig* font_cfg = NULL);      /* original C++ signature */
+    def add_font_default_bitmap(self, font_cfg: Optional[ImFontConfig] = None) -> ImFont:
+        """Embedded classic pixel-clean font. Recommended at Size 13px with no scaling."""
         pass
-    # IMGUI_API void              ClearTexData();                 /* original C++ signature */
-    def clear_tex_data(self) -> None:
-        """Clear output texture data (CPU side). Saves RAM once the texture has been copied to graphics memory."""
+    # IMGUI_API void              RemoveFont(ImFont* font);    /* original C++ signature */
+    def remove_font(self, font: ImFont) -> None:
         pass
     # IMGUI_API void              Clear();                        /* original C++ signature */
     def clear(self) -> None:
-        """Clear all input and output."""
+        """Clear everything (fonts + textures). Don't call mid-frame!"""
         pass
-    # Build atlas, retrieve pixel data.
-    # User is in charge of copying the pixels into graphics memory (e.g. create a texture with your engine). Then store your texture handle with SetTexID().
-    # The pitch is always = Width * BytesPerPixels (1 or 4)
-    # Building in RGBA32 format is provided for convenience and compatibility, but note that unless you manually manipulate or copy color data into
-    # the texture (e.g. when using the AddCustomRect*** api), then the RGB pixels emitted will always be white (~75% of memory/bandwidth waste.
-    # IMGUI_API bool              Build();                        /* original C++ signature */
-    def build(self) -> bool:
-        """Build pixels data. This is called automatically for you by the GetTexData*** functions."""
+    # IMGUI_API void              ClearFonts();                   /* original C++ signature */
+    def clear_fonts(self) -> None:
+        """Clear input+output font data/glyphs. You can call this mid-frame if you load new fonts afterwards!"""
         pass
-    # bool                        IsBuilt() const             { return Fonts.Size > 0 && TexReady; }     /* original C++ signature */
-    def is_built(self) -> bool:
-        """(private API)
-
-        Bit ambiguous: used to detect when user didn't build texture but effectively we should check TexID != 0 except that would be backend dependent...
-        """
+    # IMGUI_API void              CompactCache();                 /* original C++ signature */
+    def compact_cache(self) -> None:
+        """Compact cached glyphs and texture."""
         pass
-    # void                        SetTexID(ImTextureID id)    { TexID = id; }    /* original C++ signature */
-    def set_tex_id(self, id_: ImTextureID) -> None:
-        """(private API)"""
+    # IMGUI_API void              SetFontLoader(const ImFontLoader* font_loader);     /* original C++ signature */
+    def set_font_loader(self, font_loader: ImFontLoader) -> None:
+        """Change font loader at runtime."""
+        pass
+    # As we are transitioning toward a new font system, we expect to obsolete those soon:
+    # IMGUI_API void              ClearInputData();               /* original C++ signature */
+    def clear_input_data(self) -> None:
+        """[OBSOLETE] Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts."""
+        pass
+    # IMGUI_API void              ClearTexData();                 /* original C++ signature */
+    def clear_tex_data(self) -> None:
+        """[OBSOLETE] Clear CPU-side copy of the texture data. Saves RAM once the texture has been copied to graphics memory."""
         pass
     # -------------------------------------------
     # Glyph Ranges
     # -------------------------------------------
 
-    # Helpers to retrieve list of common Unicode ranges (2 value per range, values are inclusive, zero-terminated list)
-    # NB: Make sure that your string are UTF-8 and NOT in your local code page.
-    # Read https://github.com/ocornut/imgui/blob/master/docs/FONTS.md/#about-utf-8-encoding for details.
-    # NB: Consider using ImFontGlyphRangesBuilder to build glyph ranges from textual data.
-    # Default + Vietnamese characters
+    # Since 1.92: specifying glyph ranges is only useful/necessary if your backend doesn't support ImGuiBackendFlags_RendererHasTextures!
 
     # -------------------------------------------
     # [ADAPT_IMGUI_BUNDLE]
     # -------------------------------------------
 
-    #                                                                 #ifdef IMGUI_BUNDLE_PYTHON_API
+    #                                     #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # IMGUI_API ImFont* _AddFontFromFileTTF(    /* original C++ signature */
     #         const char* filename,
     #         float size_pixels,
-    #         const ImFontConfig* font_cfg = NULL,
-    #         std::optional<std::vector<ImWchar>> glyph_ranges_as_int_list = std::nullopt);
+    #         const ImFontConfig* font_cfg = NULL);
     def add_font_from_file_ttf(
-        self,
-        filename: str,
-        size_pixels: float,
-        font_cfg: Optional[ImFontConfig] = None,
-        glyph_ranges_as_int_list: Optional[List[ImWchar]] = None,
+        self, filename: str, size_pixels: float, font_cfg: Optional[ImFontConfig] = None
     ) -> ImFont:
         pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesDefault()                // Basic Latin, Extended Latin    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesDefault()); }
-    def get_glyph_ranges_default(self) -> List[ImWchar]:
-        """// Basic Latin, Extended Latin"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesGreek()                  // Default + Greek and Coptic    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesGreek()); }
-    def get_glyph_ranges_greek(self) -> List[ImWchar]:
-        """// Default + Greek and Coptic"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesKorean()                 // Default + Korean characters    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesKorean()); }
-    def get_glyph_ranges_korean(self) -> List[ImWchar]:
-        """// Default + Korean characters"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesJapanese()               // Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesJapanese()); }
-    def get_glyph_ranges_japanese(self) -> List[ImWchar]:
-        """// Default + Hiragana, Katakana, Half-Width, Selection of 2999 Ideographs"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesChineseFull()            // Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesChineseFull()); }
-    def get_glyph_ranges_chinese_full(self) -> List[ImWchar]:
-        """// Default + Half-Width + Japanese Hiragana/Katakana + full set of about 21000 CJK Unified Ideographs"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesChineseSimplifiedCommon()// Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesChineseSimplifiedCommon()); }
-    def get_glyph_ranges_chinese_simplified_common(self) -> List[ImWchar]:
-        """// Default + Half-Width + Japanese Hiragana/Katakana + set of 2500 CJK Unified Ideographs for common simplified Chinese"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesCyrillic()               // Default + about 400 Cyrillic characters    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesCyrillic()); }
-    def get_glyph_ranges_cyrillic(self) -> List[ImWchar]:
-        """// Default + about 400 Cyrillic characters"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesThai()                   // Default + Thai characters    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesThai()); }
-    def get_glyph_ranges_thai(self) -> List[ImWchar]:
-        """// Default + Thai characters"""
-        pass
-    # IMGUI_API inline std::vector<ImWchar>    _GetGlyphRangesVietnamese()             // Default + Vietnamese characters    /* original C++ signature */
-    #     { return _ImWcharRangeToVec(GetGlyphRangesVietnamese()); }
-    def get_glyph_ranges_vietnamese(self) -> List[ImWchar]:
-        """// Default + Vietnamese characters"""
-        pass
-    #                                                                 #endif
+    #                                     #endif
     #
     # [/ADAPT_IMGUI_BUNDLE]
 
@@ -10804,31 +11207,34 @@ class ImFontAtlas:
     # [ALPHA] Custom Rectangles/Glyphs API
     # -------------------------------------------
 
-    # You can request arbitrary rectangles to be packed into the atlas, for your own purposes.
-    # - After calling Build(), you can query the rectangle position and render your pixels.
-    # - If you render colored output, set 'atlas->TexPixelsUseColors = True' as this may help some backends decide of preferred texture format.
-    # - You can also request your rectangles to be mapped as font glyph (given a font + Unicode point),
-    #   so you can render e.g. custom colorful icons and use them as regular glyphs.
+    # Register and retrieve custom rectangles
+    # - You can request arbitrary rectangles to be packed into the atlas, for your own purpose.
+    # - Since 1.92.0, packing is done immediately in the function call (previously packing was done during the Build call)
+    # - You can render your pixels into the texture right after calling the AddCustomRect() functions.
+    # - VERY IMPORTANT:
+    #   - Texture may be created/resized at any time when calling ImGui or ImFontAtlas functions.
+    #   - IT WILL INVALIDATE RECTANGLE DATA SUCH AS UV COORDINATES. Always use latest values from GetCustomRect().
+    #   - UV coordinates are associated to the current texture identifier aka 'atlas->TexRef'. Both TexRef and UV coordinates are typically changed at the same time.
+    # - If you render colored output into your custom rectangles: set 'atlas->TexPixelsUseColors = True' as this may help some backends decide of preferred texture format.
     # - Read docs/FONTS.md for more details about using colorful icons.
-    # - Note: this API may be redesigned later in order to support multi-monitor varying DPI settings.
-    # IMGUI_API int               AddCustomRectRegular(int width, int height);    /* original C++ signature */
-    def add_custom_rect_regular(self, width: int, height: int) -> int:
+    # - Note: this API may be reworked further in order to facilitate supporting e.g. multi-monitor, varying DPI settings.
+    # - (Pre-1.92 names) ------------> (1.92 names)
+    #   - GetCustomRectByIndex()   --> Use GetCustomRect()
+    #   - CalcCustomRectUV()       --> Use GetCustomRect() and read uv0, uv1 fields.
+    #   - AddCustomRectRegular()   --> Renamed to AddCustomRect()
+    #   - AddCustomRectFontGlyph() --> Prefer using custom ImFontLoader inside ImFontConfig
+    #   - ImFontAtlasCustomRect    --> Renamed to ImFontAtlasRect
+    # IMGUI_API ImFontAtlasRectId AddCustomRect(int width, int height, ImFontAtlasRect* out_r = NULL);    /* original C++ signature */
+    def add_custom_rect(self, width: int, height: int, out_r: Optional[ImFontAtlasRect] = None) -> ImFontAtlasRectId:
+        """Register a rectangle. Return -1 (ImFontAtlasRectId_Invalid) on error."""
         pass
-    # IMGUI_API int               AddCustomRectFontGlyph(ImFont* font, ImWchar id, int width, int height, float advance_x, const ImVec2& offset = ImVec2(0, 0));    /* original C++ signature */
-    def add_custom_rect_font_glyph(
-        self, font: ImFont, id_: ImWchar, width: int, height: int, advance_x: float, offset: Optional[ImVec2Like] = None
-    ) -> int:
-        """Python bindings defaults:
-        If offset is None, then its default value will be: ImVec2(0, 0)
-        """
+    # IMGUI_API void              RemoveCustomRect(ImFontAtlasRectId id);                                 /* original C++ signature */
+    def remove_custom_rect(self, id_: ImFontAtlasRectId) -> None:
+        """Unregister a rectangle. Existing pixels will stay in texture until resized / garbage collected."""
         pass
-    # ImFontAtlasCustomRect*      GetCustomRectByIndex(int index) { IM_ASSERT(index >= 0); return &CustomRects[index]; }    /* original C++ signature */
-    def get_custom_rect_by_index(self, index: int) -> ImFontAtlasCustomRect:
-        """(private API)"""
-        pass
-    # IMGUI_API void              CalcCustomRectUV(const ImFontAtlasCustomRect* rect, ImVec2* out_uv_min, ImVec2* out_uv_max) const;    /* original C++ signature */
-    def calc_custom_rect_uv(self, rect: ImFontAtlasCustomRect, out_uv_min: ImVec2Like, out_uv_max: ImVec2Like) -> None:
-        """[Internal]"""
+    # IMGUI_API bool              GetCustomRect(ImFontAtlasRectId id, ImFontAtlasRect* out_r) const;      /* original C++ signature */
+    def get_custom_rect(self, id_: ImFontAtlasRectId, out_r: ImFontAtlasRect) -> bool:
+        """Get rectangle coordinates for current texture. Valid immediately, never store this (read above)!"""
         pass
     # -------------------------------------------
     # Members
@@ -10837,139 +11243,254 @@ class ImFontAtlas:
     # Input
     # ImFontAtlasFlags            Flags;    /* original C++ signature */
     flags: ImFontAtlasFlags  # Build flags (see ImFontAtlasFlags_)
-    # ImTextureID                 TexID;    /* original C++ signature */
-    tex_id: ImTextureID  # User data to refer to the texture once it has been uploaded to user's graphic systems. It is passed back to you during rendering via the ImDrawCmd structure.
-    # int                         TexDesiredWidth;    /* original C++ signature */
-    tex_desired_width: int  # Texture width desired by user before Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height.
+    # ImTextureFormat             TexDesiredFormat;    /* original C++ signature */
+    tex_desired_format: ImTextureFormat  # Desired texture format (default to ImTextureFormat_RGBA32 but may be changed to ImTextureFormat_Alpha8).
     # int                         TexGlyphPadding;    /* original C++ signature */
     tex_glyph_padding: int  # FIXME: Should be called "TexPackPadding". Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method doesn't rely on bilinear filtering you may set this to 0 (will also need to set AntiAliasedLinesUseTex = False).
+    # int                         TexMinWidth;    /* original C++ signature */
+    tex_min_width: int  # Minimum desired texture width. Must be a power of two. Default to 512.
+    # int                         TexMinHeight;    /* original C++ signature */
+    tex_min_height: int  # Minimum desired texture height. Must be a power of two. Default to 128.
+    # int                         TexMaxWidth;    /* original C++ signature */
+    tex_max_width: int  # Maximum desired texture width. Must be a power of two. Default to 8192.
+    # int                         TexMaxHeight;    /* original C++ signature */
+    tex_max_height: int  # Maximum desired texture height. Must be a power of two. Default to 8192.
     # void*                       UserData;    /* original C++ signature */
     user_data: Any  # Store your own atlas related user-data (if e.g. you have multiple font atlas).
 
+    # Output
+    # - Because textures are dynamically created/resized, the current texture identifier may changed at *ANY TIME* during the frame.
+    # - This should not affect you as you can always use the latest value. But note that any precomputed UV coordinates are only valid for the current TexRef.
+    # ImTextureData*              TexData;    /* original C++ signature */
+    tex_data: ImTextureData  # Latest texture.
+
+    #                                     #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # Convenience methods for python in order to get/set the font texture Id
+    # (because currently TexID is in a union and we can't access it directly)
+    # Note: this uses the old way of setting the fonts texture.
+    # Newer backends should implement ImGuiBackendFlags_RendererHasTextures
+    # and be able to handle Texture updates
+    # See https://github.com/ocornut/imgui/issues/8465
+    # For inspiration, look at
+    #        def _update_texture(self, tex: imgui.ImTextureData):
+    # inside ImGui Bundle (bindings/imgui_bundle/python_backends/opengl_xxx_backend.py)
+    # void        Python_SetTextureID(ImTextureID id) { TexRef = ImTextureRef(id); }    /* original C++ signature */
+    def python_set_texture_id(self, id_: ImTextureID) -> None:
+        """(private API)"""
+        pass
+    # ImTextureID Python_GetTextureID() { return TexRef.GetTexID(); }    /* original C++ signature */
+    def python_get_texture_id(self) -> ImTextureID:
+        """(private API)"""
+        pass
+    #                                     #endif
+    #
+
     # [Internal]
-    # NB: Access texture data via GetTexData*() calls! Which will setup a default font for you.
+    # ImVector<ImTextureData*>    TexList;    /* original C++ signature */
+    tex_list: ImVector_ImTextureData_ptr  # Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetDrawData().Textures[]/GetPlatformIO().Textures[] instead!
     # bool                        Locked;    /* original C++ signature */
-    locked: bool  # Marked as Locked by ImGui::NewFrame() so attempt to modify the atlas will assert.
-    # bool                        TexReady;    /* original C++ signature */
-    tex_ready: bool  # Set when texture was built matching current font input
+    locked: bool  # Marked as locked during ImGui::NewFrame()..EndFrame() scope if TexUpdates are not supported. Any attempt to modify the atlas will assert.
+    # bool                        RendererHasTextures;    /* original C++ signature */
+    renderer_has_textures: (
+        bool  # Copy of (BackendFlags & ImGuiBackendFlags_RendererHasTextures) from supporting context.
+    )
+    # bool                        TexIsBuilt;    /* original C++ signature */
+    tex_is_built: (
+        bool  # Set when texture was built matching current font input. Mostly useful for legacy IsBuilt() call.
+    )
     # bool                        TexPixelsUseColors;    /* original C++ signature */
-    tex_pixels_use_colors: bool  # Tell whether our texture data is known to use colors (rather than just alpha channel), in order to help backend select a format.
-    # int                         TexWidth;    /* original C++ signature */
-    tex_width: int  # Texture width calculated during Build().
-    # int                         TexHeight;    /* original C++ signature */
-    tex_height: int  # Texture height calculated during Build().
+    tex_pixels_use_colors: bool  # Tell whether our texture data is known to use colors (rather than just alpha channel), in order to help backend select a format or conversion process.
     # ImVec2                      TexUvScale;    /* original C++ signature */
-    tex_uv_scale: ImVec2  # = (1.0/TexWidth, 1.0/TexHeight)
+    tex_uv_scale: ImVec2  # = (1.0/TexData->TexWidth, 1.0/TexData->TexHeight). May change as new texture gets created.
     # ImVec2                      TexUvWhitePixel;    /* original C++ signature */
-    tex_uv_white_pixel: ImVec2  # Texture coordinates to a white pixel
+    tex_uv_white_pixel: ImVec2  # Texture coordinates to a white pixel. May change as new texture gets created.
     # ImVector<ImFont*>           Fonts;    /* original C++ signature */
     fonts: ImVector_ImFont_ptr  # Hold all the fonts returned by AddFont*. Fonts[0] is the default font upon calling ImGui::NewFrame(), use ImGui::PushFont()/PopFont() to change the current font.
-    # ImVector<ImFontAtlasCustomRect> CustomRects;    /* original C++ signature */
-    custom_rects: ImVector_ImFontAtlasCustomRect  # Rectangles for packing custom texture data into the atlas.
     # ImVector<ImFontConfig>      Sources;    /* original C++ signature */
     sources: ImVector_ImFontConfig  # Source/configuration data
-
-    # [Internal] Font builder
-    # const ImFontBuilderIO*      FontBuilderIO;    /* original C++ signature */
-    font_builder_io: ImFontBuilderIO  # Opaque interface to a font builder (default to stb_truetype, can be changed to use FreeType by defining IMGUI_ENABLE_FREETYPE). # (const)
-    # unsigned int                FontBuilderFlags;    /* original C++ signature */
-    font_builder_flags: int  # Shared flags (for all fonts) for custom font builder. THIS IS BUILD IMPLEMENTATION DEPENDENT. Per-font override is also available in ImFontConfig.
-
-    # [Internal] Packing data
-    # int                         PackIdMouseCursors;    /* original C++ signature */
-    pack_id_mouse_cursors: int  # Custom texture rectangle ID for white pixel and mouse cursors
-    # int                         PackIdLines;    /* original C++ signature */
-    pack_id_lines: int  # Custom texture rectangle ID for baked anti-aliased lines
+    # int                         TexNextUniqueID;    /* original C++ signature */
+    tex_next_unique_id: int  # Next value to be stored in TexData->UniqueID
+    # int                         FontNextUniqueID;    /* original C++ signature */
+    font_next_unique_id: int  # Next value to be stored in ImFont->FontID
+    # const char*                 FontLoaderName;    /* original C++ signature */
+    font_loader_name: str  # Font loader name (for display e.g. in About box) == FontLoader->Name # (const)
+    # void*                       FontLoaderData;    /* original C++ signature */
+    font_loader_data: Any  # Font backend opaque storage
+    # unsigned int                FontLoaderFlags;    /* original C++ signature */
+    font_loader_flags: int  # Shared flags (for all fonts) for font loader. THIS IS BUILD IMPLEMENTATION DEPENDENT (e.g. Per-font override is also available in ImFontConfig).
+    # int                         RefCount;    /* original C++ signature */
+    ref_count: int  # Number of contexts using this atlas
+    # ImGuiContext*               OwnerContext;    /* original C++ signature */
+    owner_context: Context  # Context which own the atlas will be in charge of updating and destroying it.
 
     # [Obsolete]
-    # typedef ImFontAtlasCustomRect    CustomRect;              // OBSOLETED in 1.72+
-    # typedef ImFontGlyphRangesBuilder GlyphRangesBuilder;      // OBSOLETED in 1.67+
+    # unsigned int                      FontBuilderFlags;        // OBSOLETED in 1.92.0: Renamed to FontLoaderFlags.
+    # int                               TexDesiredWidth;         // OBSOLETED in 1.92.0: Force texture width before calling Build(). Must be a power-of-two. If have many glyphs your graphics API have texture size restrictions you may want to increase texture width to decrease height.
+    # typedef ImFontAtlasRect           ImFontAtlasCustomRect;   // OBSOLETED in 1.92.0
+    # typedef ImFontAtlasCustomRect     CustomRect;              // OBSOLETED in 1.72+
+    # typedef ImFontGlyphRangesBuilder  GlyphRangesBuilder;      // OBSOLETED in 1.67+
 
-class ImFont:
-    """Font runtime data and rendering
-    ImFontAtlas automatically loads a default embedded font for you when you call GetTexDataAsAlpha8() or GetTexDataAsRGBA32().
+class ImFontBaked:
+    """Font runtime data for a given size
+    Important: pointers to ImFontBaked are only valid for the current frame.
     """
 
     # [Internal] Members: Hot ~20/24 bytes (for CalcTextSize)
     # ImVector<float>             IndexAdvanceX;    /* original C++ signature */
     index_advance_x: ImVector_float  # 12-16 // out // Sparse. Glyphs->AdvanceX in a directly indexable way (cache-friendly for CalcTextSize functions which only this info, and are often bottleneck in large UI).
     # float                       FallbackAdvanceX;    /* original C++ signature */
-    fallback_advance_x: float  # 4     // out // = FallbackGlyph->AdvanceX
-    # float                       FontSize;    /* original C++ signature */
-    font_size: float  # 4     // in  // Height of characters/line, set during loading (don't change after loading)
+    fallback_advance_x: float  # 4     // out // FindGlyph(FallbackChar)->AdvanceX
+    # float                       Size;    /* original C++ signature */
+    size: float  # 4     // in  // Height of characters/line, set during loading (doesn't change after loading)
+    # float                       RasterizerDensity;    /* original C++ signature */
+    rasterizer_density: float  # 4     // in  // Density this is baked at
 
-    # [Internal] Members: Hot ~28/40 bytes (for RenderText loop)
+    # [Internal] Members: Hot ~28/36 bytes (for RenderText loop)
+    # ImVector<ImU16>             IndexLookup;    /* original C++ signature */
+    index_lookup: ImVector_ImU16  # 12-16 // out // Sparse. Index glyphs by Unicode code-point.
     # ImVector<ImFontGlyph>       Glyphs;    /* original C++ signature */
     glyphs: ImVector_ImFontGlyph  # 12-16 // out // All glyphs.
-    # ImFontGlyph*                FallbackGlyph;    /* original C++ signature */
-    fallback_glyph: ImFontGlyph  # 4-8   // out // = FindGlyph(FontFallbackChar)
+    # int                         FallbackGlyphIndex;    /* original C++ signature */
+    fallback_glyph_index: int  # 4     // out // Index of FontFallbackChar
 
-    # [Internal] Members: Cold ~32/40 bytes
-    # Conceptually Sources[] is the list of font sources merged to create this font.
-    # ImFontAtlas*                ContainerAtlas;    /* original C++ signature */
-    container_atlas: ImFontAtlas  # 4-8   // out // What we has been loaded into
-    # ImFontConfig*               Sources;    /* original C++ signature */
-    sources: ImFontConfig  # 4-8   // in  // Pointer within ContainerAtlas->Sources[], to SourcesCount instances
-    # short                       SourcesCount;    /* original C++ signature */
-    sources_count: int  # 2     // in  // Number of ImFontConfig involved in creating this font. Usually 1, or >1 when merging multiple font sources into one ImFont.
-    # short                       EllipsisCharCount;    /* original C++ signature */
-    ellipsis_char_count: int  # 1     // out // 1 or 3
-    # ImWchar                     EllipsisChar;    /* original C++ signature */
-    ellipsis_char: ImWchar  # 2-4   // out // Character used for ellipsis rendering ('...').
-    # ImWchar                     FallbackChar;    /* original C++ signature */
-    fallback_char: ImWchar  # 2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')
-    # float                       EllipsisWidth;    /* original C++ signature */
-    ellipsis_width: float  # 4     // out // Total ellipsis Width
-    # float                       EllipsisCharStep;    /* original C++ signature */
-    ellipsis_char_step: float  # 4     // out // Step between characters when EllipsisCount > 0
-    # float                       Scale;    /* original C++ signature */
-    scale: float  # 4     // in  // Base font scale (1.0), multiplied by the per-window font scale which you can adjust with SetWindowFontScale()
+    # [Internal] Members: Cold
     # float                       Ascent,     /* original C++ signature */
     ascent: float  # 4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)
     # Descent;    /* original C++ signature */
     descent: float  # 4+4   // out // Ascent: distance from top to bottom of e.g. 'A' [0..FontSize] (unscaled)
-    # int                         MetricsTotalSurface;    /* original C++ signature */
-    metrics_total_surface: int  # 4     // out // Total surface in pixels to get an idea of the font rasterization/texture cost (not exact, we approximate the cost of padding between glyphs)
-    # bool                        DirtyLookupTables;    /* original C++ signature */
-    dirty_lookup_tables: bool  # 1     // out //
+    # int                         LastUsedFrame;    /* original C++ signature */
+    last_used_frame: int  # 4  //     // Record of that time this was bounds
+    # ImGuiID                     BakedId;    /* original C++ signature */
+    baked_id: ID  # 4     //     // Unique ID for this baked storage
+    # ImFont*                     OwnerFont;    /* original C++ signature */
+    owner_font: ImFont  # 4-8   // in  // Parent font
+    # void*                       FontLoaderDatas;    /* original C++ signature */
+    font_loader_datas: Any  # 4-8   //     // Font loader opaque storage (per baked font * sources): single contiguous buffer allocated by imgui, passed to loader.
+
+    # Functions
+    # IMGUI_API ImFontBaked();    /* original C++ signature */
+    def __init__(self) -> None:
+        pass
+    # IMGUI_API void              ClearOutputData();    /* original C++ signature */
+    def clear_output_data(self) -> None:
+        pass
+    # IMGUI_API ImFontGlyph*      FindGlyph(ImWchar c);                   /* original C++ signature */
+    def find_glyph(self, c: ImWchar) -> ImFontGlyph:
+        """Return U+FFFD glyph if requested glyph doesn't exists."""
+        pass
+    # IMGUI_API ImFontGlyph*      FindGlyphNoFallback(ImWchar c);         /* original C++ signature */
+    def find_glyph_no_fallback(self, c: ImWchar) -> ImFontGlyph:
+        """Return None if glyph doesn't exist"""
+        pass
+    # IMGUI_API float             GetCharAdvance(ImWchar c);    /* original C++ signature */
+    def get_char_advance(self, c: ImWchar) -> float:
+        pass
+    # IMGUI_API bool              IsGlyphLoaded(ImWchar c);    /* original C++ signature */
+    def is_glyph_loaded(self, c: ImWchar) -> bool:
+        pass
+
+class ImFontFlags_(enum.IntFlag):
+    """Font flags
+    (in future versions as we redesign font loading API, this will become more important and better documented. for now please consider this as internal/advanced use)
+    """
+
+    # ImFontFlags_None                    = 0,    /* original C++ signature */
+    none = enum.auto()  # (= 0)
+    # ImFontFlags_NoLoadError             = 1 << 1,       /* original C++ signature */
+    no_load_error = (
+        enum.auto()
+    )  # (= 1 << 1)  # Disable throwing an error/assert when calling AddFontXXX() with missing file/data. Calling code is expected to check AddFontXXX() return value.
+    # ImFontFlags_NoLoadGlyphs            = 1 << 2,       /* original C++ signature */
+    no_load_glyphs = enum.auto()  # (= 1 << 2)  # [Internal] Disable loading new glyphs.
+    # ImFontFlags_LockBakedSizes          = 1 << 3,       /* original C++ signature */
+    lock_baked_sizes = (
+        enum.auto()
+    )  # (= 1 << 3)  # [Internal] Disable loading new baked sizes, disable garbage collecting current ones. e.g. if you want to lock a font to a single size. Important: if you use this to preload given sizes, consider the possibility of multiple font density used on Retina display.
+    # ImFontFlags_ImplicitRefSize         = 1 << 4,       /* original C++ signature */
+    implicit_ref_size = enum.auto()  # (= 1 << 4)  # [Internal] Reference size was not set explicitly.
+
+class ImFont:
+    """Font runtime data and rendering
+    - ImFontAtlas automatically loads a default embedded font for you if you didn't load one manually.
+    - Since 1.92.0 a font may be rendered as any size! Therefore a font doesn't have one specific size.
+    - Use 'font->GetFontBaked(size)' to retrieve the ImFontBaked* corresponding to a given size.
+    - If you used g.Font + g.FontSize (which is frequent from the ImGui layer), you can use g.FontBaked as a shortcut, as g.FontBaked == g.Font->GetFontBaked(g.FontSize).
+    """
+
+    # [Internal] Members: Hot ~12-20 bytes
+    # ImFontBaked*                LastBaked;    /* original C++ signature */
+    last_baked: ImFontBaked  # 4-8   // Cache last bound baked. NEVER USE DIRECTLY. Use GetFontBaked().
+    # ImFontAtlas*                OwnerAtlas;    /* original C++ signature */
+    owner_atlas: ImFontAtlas  # 4-8   // What we have been loaded into.
+    # ImFontFlags                 Flags;    /* original C++ signature */
+    flags: ImFontFlags  # 4     // Font flags.
+    # float                       CurrentRasterizerDensity;    /* original C++ signature */
+    current_rasterizer_density: float  # Current rasterizer density. This is a varying state of the font.
+
+    # [Internal] Members: Cold ~24-52 bytes
+    # Conceptually Sources[] is the list of font sources merged to create this font.
+    # ImGuiID                     FontId;    /* original C++ signature */
+    font_id: ID  # Unique identifier for the font
+    # float                       LegacySize;    /* original C++ signature */
+    legacy_size: float  # 4     // in  // Font size passed to AddFont(). Use for old code calling PushFont() expecting to use that size. (use ImGui::GetFontBaked() to get font baked at current bound size).
+    # ImVector<ImFontConfig*>     Sources;    /* original C++ signature */
+    sources: ImVector_ImFontConfig_ptr  # 16    // in  // List of sources. Pointers within OwnerAtlas->Sources[]
+    # ImWchar                     EllipsisChar;    /* original C++ signature */
+    ellipsis_char: ImWchar  # 2-4   // out // Character used for ellipsis rendering ('...'). If you ever want to temporarily swap this for an alternative/dummy char, make sure to clear EllipsisAutoBake.
+    # ImWchar                     FallbackChar;    /* original C++ signature */
+    fallback_char: ImWchar  # 2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')
+    # bool                        EllipsisAutoBake;    /* original C++ signature */
+    ellipsis_auto_bake: bool  # 1     //     // Mark when the "..." glyph (== EllipsisChar) needs to be generated by combining multiple '.'.
+    # ImGuiStorage                RemapPairs;    /* original C++ signature */
+    remap_pairs: Storage  # 16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.
 
     # IMGUI_API ImFont();    /* original C++ signature */
     def __init__(self) -> None:
         """Methods"""
         pass
-    # IMGUI_API ImFontGlyph*      FindGlyph(ImWchar c);    /* original C++ signature */
-    def find_glyph(self, c: ImWchar) -> ImFontGlyph:
+    # IMGUI_API bool              IsGlyphInFont(ImWchar c);    /* original C++ signature */
+    def is_glyph_in_font(self, c: ImWchar) -> bool:
         pass
-    # IMGUI_API ImFontGlyph*      FindGlyphNoFallback(ImWchar c);    /* original C++ signature */
-    def find_glyph_no_fallback(self, c: ImWchar) -> ImFontGlyph:
-        pass
-    # float                       GetCharAdvance(ImWchar c)       { return ((int)c < IndexAdvanceX.Size) ? IndexAdvanceX[(int)c] : FallbackAdvanceX; }    /* original C++ signature */
-    def get_char_advance(self, c: ImWchar) -> float:
-        """(private API)"""
-        pass
-    # bool                        IsLoaded() const                { return ContainerAtlas != NULL; }    /* original C++ signature */
+    # bool                        IsLoaded() const                { return OwnerAtlas != NULL; }    /* original C++ signature */
     def is_loaded(self) -> bool:
         """(private API)"""
         pass
-    # const char*                 GetDebugName() const            { return Sources ? Sources->Name : "<unknown>"; }    /* original C++ signature */
+    # const char*                 GetDebugName() const            { return Sources.Size ? Sources[0]->Name : "<unknown>"; }     /* original C++ signature */
     def get_debug_name(self) -> str:
-        """(private API)"""
-        pass
-    # utf8
+        """(private API)
 
-    #                                #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # IMGUI_API int               CalcWordWrapPositionAPython(float scale, const char* text, float wrap_width);    /* original C++ signature */
-    def calc_word_wrap_position_a_python(self, scale: float, text: str, wrap_width: float) -> int:
-        """Python API for CalcWordWrapPositionA (will return an index in the text, not a pointer)"""
+        Fill ImFontConfig::Name.
+        """
         pass
-    #                                #endif
+    # [Internal] Don't use!
+    # 'max_width' stops rendering after a certain width (could be turned into a 2 size). FLT_MAX to disable.
+    # 'wrap_width' enable automatic word-wrapping across multiple lines to fit into given width. 0.0 to disable.
+    # IMGUI_API ImFontBaked*      GetFontBaked(float font_size, float density = -1.0f);      /* original C++ signature */
+    def get_font_baked(self, font_size: float, density: float = -1.0) -> ImFontBaked:
+        """Get or create baked data for given size"""
+        pass
+    #                                   #ifdef IMGUI_BUNDLE_PYTHON_API
+    #
+    # IMGUI_API int               CalcWordWrapPositionPython(float size, const char* text, float wrap_width);    /* original C++ signature */
+    def calc_word_wrap_position_python(self, size: float, text: str, wrap_width: float) -> int:
+        """Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)"""
+        pass
+    #                                   #endif
     #
 
-    # IMGUI_API void              RenderChar(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, ImWchar c);    /* original C++ signature */
-    def render_char(self, draw_list: ImDrawList, size: float, pos: ImVec2Like, col: ImU32, c: ImWchar) -> None:
+    # IMGUI_API void              RenderChar(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, ImWchar c, const ImVec4* cpu_fine_clip = NULL);    /* original C++ signature */
+    def render_char(
+        self,
+        draw_list: ImDrawList,
+        size: float,
+        pos: ImVec2Like,
+        col: ImU32,
+        c: ImWchar,
+        cpu_fine_clip: Optional[ImVec4Like] = None,
+    ) -> None:
         pass
-    # IMGUI_API void              RenderText(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, const ImVec4& clip_rect, const char* text_begin, const char* text_end, float wrap_width = 0.0f, bool cpu_fine_clip = false);    /* original C++ signature */
+    # IMGUI_API void              RenderText(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, const ImVec4& clip_rect, const char* text_begin, const char* text_end, float wrap_width = 0.0f, ImDrawTextFlags flags = 0);    /* original C++ signature */
     def render_text(
         self,
         draw_list: ImDrawList,
@@ -10980,38 +11501,16 @@ class ImFont:
         text_begin: str,
         text_end: str,
         wrap_width: float = 0.0,
-        cpu_fine_clip: bool = False,
+        flags: ImDrawTextFlags = 0,
     ) -> None:
         pass
     # [Internal] Don't use!
-    # IMGUI_API void              BuildLookupTable();    /* original C++ signature */
-    def build_lookup_table(self) -> None:
-        pass
     # IMGUI_API void              ClearOutputData();    /* original C++ signature */
     def clear_output_data(self) -> None:
         pass
-    # IMGUI_API void              GrowIndex(int new_size);    /* original C++ signature */
-    def grow_index(self, new_size: int) -> None:
-        pass
-    # IMGUI_API void              AddGlyph(const ImFontConfig* src_cfg, ImWchar c, float x0, float y0, float x1, float y1, float u0, float v0, float u1, float v1, float advance_x);    /* original C++ signature */
-    def add_glyph(
-        self,
-        src_cfg: ImFontConfig,
-        c: ImWchar,
-        x0: float,
-        y0: float,
-        x1: float,
-        y1: float,
-        u0: float,
-        v0: float,
-        u1: float,
-        v1: float,
-        advance_x: float,
-    ) -> None:
-        pass
-    # IMGUI_API void              AddRemapChar(ImWchar dst, ImWchar src, bool overwrite_dst = true);     /* original C++ signature */
-    def add_remap_char(self, dst: ImWchar, src: ImWchar, overwrite_dst: bool = True) -> None:
-        """Makes 'dst' character/glyph points to 'src' character/glyph. Currently needs to be called AFTER fonts have been built."""
+    # IMGUI_API void              AddRemapChar(ImWchar from_codepoint, ImWchar to_codepoint);     /* original C++ signature */
+    def add_remap_char(self, from_codepoint: ImWchar, to_codepoint: ImWchar) -> None:
+        """Makes 'from_codepoint' character points to 'to_codepoint' glyph."""
         pass
     # IMGUI_API bool              IsGlyphRangeUnused(unsigned int c_begin, unsigned int c_last);    /* original C++ signature */
     def is_glyph_range_unused(self, c_begin: int, c_last: int) -> bool:
@@ -11021,7 +11520,7 @@ class ImFont:
 # [SECTION] Viewports
 # -----------------------------------------------------------------------------
 
-class ViewportFlags_(enum.Enum):
+class ViewportFlags_(enum.IntFlag):
     """Flags stored in ImGuiViewport::Flags, giving indications to the platform backends."""
 
     # ImGuiViewportFlags_None                     = 0,    /* original C++ signature */
@@ -11093,6 +11592,8 @@ class Viewport:
     pos: ImVec2  # Main Area: Position of the viewport (Dear ImGui coordinates are the same as OS desktop/native coordinates)
     # ImVec2              Size;    /* original C++ signature */
     size: ImVec2  # Main Area: Size of the viewport.
+    # ImVec2              FramebufferScale;    /* original C++ signature */
+    framebuffer_scale: ImVec2  # Density of the viewport for Retina display (always 1,1 on Windows, may be 2,2 etc on macOS/iOS). This will affect font rasterizer density.
     # ImVec2              WorkPos;    /* original C++ signature */
     work_pos: ImVec2  # Work Area: Position of the viewport minus task bars, menus bars, status bars (>= Pos)
     # ImVec2              WorkSize;    /* original C++ signature */
@@ -11101,6 +11602,10 @@ class Viewport:
     dpi_scale: float  # 1.0 = 96 DPI = No extra scale.
     # ImGuiID             ParentViewportId;    /* original C++ signature */
     parent_viewport_id: ID  # (Advanced) 0: no parent. Instruct the platform backend to setup a parent/child relationship between platform windows.
+    # ImGuiViewport*      ParentViewport;    /* original C++ signature */
+    parent_viewport: (
+        Viewport  # (Advanced) Direct shortcut to ImGui::FindViewportByID(ParentViewportId). None: no parent.
+    )
     # ImDrawData*         DrawData;    /* original C++ signature */
     draw_data: ImDrawData  # The ImDrawData corresponding to this viewport. Valid after Render() and until the next call to NewFrame().
 
@@ -11113,6 +11618,8 @@ class Viewport:
     renderer_user_data: Any  # None* to hold custom data structure for the renderer (e.g. swap chain, framebuffers etc.). generally set by your Renderer_CreateWindow function.
     # void*               PlatformUserData;    /* original C++ signature */
     platform_user_data: Any  # None* to hold custom data structure for the OS / platform (e.g. windowing info, render context). generally set by your Platform_CreateWindow function.
+    # void*               PlatformIconData;    /* original C++ signature */
+    platform_icon_data: Any  # None* to hold custom data structure for the OS / platform to specify an icon. Currently unused for exposed to allow experiments.
     # void*               PlatformHandle;    /* original C++ signature */
     platform_handle: Any  # None* to hold higher-level, platform window handle (e.g. HWND for Win32 backend, Uint32 WindowID for SDL, GLFWWindow* for GLFW), for FindViewportByPlatformHandle().
     # void*               PlatformHandleRaw;    /* original C++ signature */
@@ -11126,7 +11633,7 @@ class Viewport:
     # bool                PlatformRequestClose;    /* original C++ signature */
     platform_request_close: bool  # Platform window requested closure (e.g. window was moved by the OS / host window manager, e.g. pressing ALT-F4)
 
-    # ImGuiViewport()     { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiViewport()     { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
     # [/ADAPT_IMGUI_BUNDLE]
@@ -11139,6 +11646,9 @@ class Viewport:
     # ImVec2              GetWorkCenter() const   { return ImVec2(WorkPos.x + WorkSize.x * 0.5f, WorkPos.y + WorkSize.y * 0.5f); }    /* original C++ signature */
     def get_work_center(self) -> ImVec2:
         """(private API)"""
+        pass
+    # IMGUI_API const char* GetDebugName() const;    /* original C++ signature */
+    def get_debug_name(self) -> str:
         pass
 
 # -----------------------------------------------------------------------------
@@ -11204,7 +11714,7 @@ class PlatformIO:
     # Optional: Access OS clipboard
     # (default to use native Win32 clipboard on Windows, otherwise uses a private clipboard. Override to access OS clipboard on other architectures)
     # [ADAPT_IMGUI_BUNDLE]
-    # const char* (*Platform_GetClipboardTextFn)(ImGuiContext* ctx);
+    # const char* (*Platform_GetClipboardTextFn)(ImGuiContext* ctx);  // Should return None on failure (e.g. clipboard data is not text).
     # None        (*Platform_SetClipboardTextFn)(ImGuiContext* ctx, const char* text);
     # std::function<std::string(ImGuiContext*)> Platform_GetClipboardTextFn;    /* original C++ signature */
     platform_get_clipboard_text_fn: Callable[[Context], str]
@@ -11216,7 +11726,7 @@ class PlatformIO:
 
     # std::function<bool(ImGuiContext*, const char*)> Platform_OpenInShellFn;    /* original C++ signature */
     # Optional: Open link/folder/file in OS Shell
-    # (default to use ShellExecuteW() on Windows, system() on Linux/Mac)
+    # (default to use ShellExecuteW() on Windows, system() on Linux/Mac. expected to return False on failure, but some platforms may always return True)
     # [ADAPT_IMGUI_BUNDLE]
     # bool        (*Platform_OpenInShellFn)(ImGuiContext* ctx, const char* path);
     platform_open_in_shell_fn: Callable[[Context, str], bool]
@@ -11237,9 +11747,18 @@ class PlatformIO:
     # Input - Interface with Renderer Backend
     # ------------------------------------------------------------------
 
+    # Optional: Maximum texture size supported by renderer (used to adjust how we size textures). 0 if not known.
+    # int         Renderer_TextureMaxWidth;    /* original C++ signature */
+    renderer_texture_max_width: int
+    # int         Renderer_TextureMaxHeight;    /* original C++ signature */
+    renderer_texture_max_height: int
+
     # void*       Renderer_RenderState;    /* original C++ signature */
     # Written by some backends during ImGui_ImplXXXX_RenderDrawData() call to point backend_specific ImGui_ImplXXXX_RenderState* structure.
     renderer_render_state: Any
+
+    # Standard draw callbacks provided by renderer backend.
+    # ImDrawCallback  DrawCallback_SetSamplerCustom;    // Request backend to set texture sampling using Backend Specific data.
 
     # ------------------------------------------------------------------
     # Input - Interface with Platform & Renderer backends for Multi-Viewport support
@@ -11268,13 +11787,31 @@ class PlatformIO:
     monitors: ImVector_PlatformMonitor
 
     # ------------------------------------------------------------------
-    # Output - List of viewports to render into platform windows
+    # Output
     # ------------------------------------------------------------------
+
+    # Textures list (the list is updated by calling ImGui::EndFrame or ImGui::Render)
+    # The ImGui_ImplXXXX_RenderDrawData() function of each backend generally access this via ImDrawData::Textures which points to this. The array is available here mostly because backends will want to destroy textures on shutdown.
+    # ImVector<ImTextureData*>        Textures;    /* original C++ signature */
+    textures: ImVector_ImTextureData_ptr  # List of textures used by Dear ImGui (most often 1) + contents of external texture list is automatically appended into this.
 
     # Viewports list (the list is updated by calling ImGui::EndFrame or ImGui::Render)
     # (in the future we will attempt to organize this feature to remove the need for a "main viewport")
     # ImVector<ImGuiViewport*>        Viewports;    /* original C++ signature */
     viewports: ImVector_Viewport_ptr  # Main viewports, followed by all secondary viewports.
+
+    # ------------------------------------------------------------------
+    # Functions
+    # ------------------------------------------------------------------
+
+    # IMGUI_API void ClearPlatformHandlers();        /* original C++ signature */
+    def clear_platform_handlers(self) -> None:
+        """Clear all Platform_XXX fields. Typically called on Platform Backend shutdown."""
+        pass
+    # IMGUI_API void ClearRendererHandlers();        /* original C++ signature */
+    def clear_renderer_handlers(self) -> None:
+        """Clear all Renderer_XXX fields. Typically called on Renderer Backend shutdown."""
+        pass
 
 class PlatformMonitor:
     """(Optional) This is required when enabling multi-viewport. Represent the bounds of each connected monitor/display and their DPI.
@@ -11298,16 +11835,20 @@ class PlatformMonitor:
         pass
 
 class PlatformImeData:
-    """(Optional) Support for IME (Input Method Editor) via the platform_io.Platform_SetImeDataFn() function."""
+    """(Optional) Support for IME (Input Method Editor) via the platform_io.Platform_SetImeDataFn() function. Handler is called during EndFrame()."""
 
     # bool    WantVisible;    /* original C++ signature */
-    want_visible: bool  # A widget wants the IME to be visible
+    want_visible: bool  # A widget wants the IME to be visible.
+    # bool    WantTextInput;    /* original C++ signature */
+    want_text_input: bool  # A widget wants text input, not necessarily IME to be visible. This is automatically set to the upcoming value of io.WantTextInput.
     # ImVec2  InputPos;    /* original C++ signature */
-    input_pos: ImVec2  # Position of the input cursor
+    input_pos: ImVec2  # Position of input cursor (for IME).
     # float   InputLineHeight;    /* original C++ signature */
-    input_line_height: float  # Line height
+    input_line_height: float  # Line height (for IME).
+    # ImGuiID ViewportId;    /* original C++ signature */
+    viewport_id: ID  # ID of platform window/viewport.
 
-    # ImGuiPlatformImeData()          { memset(this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiPlatformImeData()          { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -11329,6 +11870,20 @@ class PlatformImeData:
 #
 
 # #endif
+
+def get_style_color_vec4(idx: Col) -> ImVec4:
+    """retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.
+    (Note: returns a copy, not a reference to the internal style color.)"""
+    ...
+
+def color_convert_rgb_to_hsv(r: float, g: float, b: float) -> Tuple[float, float, float]:
+    """Convert rgb floats ([0-1],[0-1],[0-1]) to hsv floats ([0-1],[0-1],[0-1])"""
+    ...
+
+def color_convert_hsv_to_rgb(h: float, s: float, v: float) -> Tuple[float, float, float]:
+    """Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1])"""
+    ...
+
 ####################    </generated_from:imgui.h>    ####################
 
 ####################    <generated_from:imgui_stacklayout.h>    ####################
@@ -11417,8 +11972,6 @@ def suspend_layout() -> None:
 def resume_layout() -> None:
     pass
 
-# namespace ImGui
-
 # #endif
 ####################    </generated_from:imgui_stacklayout.h>    ####################
 
@@ -11440,17 +11993,27 @@ def resume_layout() -> None:
 # [SECTION] Stack Layout Internal API
 # -----------------------------------------------------------------------------
 
-# namespace ImGuiInternal
-
 # #endif
 ####################    </generated_from:imgui_stacklayout_internal.h>    ####################
 
 ####################    <generated_from:imgui_stdlib.h>    ####################
 # dear imgui: wrappers for C++ standard library (STL) types (std::string, etc.)
+
 # This is also an example of how you may wrap your own similar types.
+# TL;DR; this is using the ImGuiInputTextFlags_CallbackResize facility,
+# which also demonstrated in 'Dear ImGui Demo->Widgets->Text Input->Resize Callback'.
 
 # Changelog:
 # - v0.10: Initial version. Added InputText() / InputTextMultiline() calls with std::string
+
+# Usage:
+# {
+#   #include "misc/cpp/imgui_stdlib.h"
+#   #include "misc/cpp/imgui_stdlib.cpp" // <-- If you want to include implementation without messing with your project/build.
+#   [...]
+#   std::string my_string;
+#   ImGui::InputText("my string", &my_string);
+# }
 
 # See more C++ related extension (fmt, RAII, syntaxis sugar) on Wiki:
 #   https://github.com/ocornut/imgui/wiki/Useful-Extensions#cness
@@ -11496,7 +12059,7 @@ def input_text_with_hint(
 ####################    </generated_from:imgui_stdlib.h>    ####################
 
 ####################    <generated_from:imgui_pywrappers.h>    ####################
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 # Handwritten wrappers around parts of the imgui API, when needed for the python bindings
 
 class Payload_PyId:
@@ -11546,23 +12109,6 @@ def get_drag_drop_payload_py_id() -> Optional[Payload_PyId]:
 ##################################################
 #    Manually inserted code (additional methods, etc.)
 ##################################################
-ImFontAtlas.get_tex_data_as_rgba32 = font_atlas_get_tex_data_as_rgba32  # type: ignore
-
-# API for imgui_demo.cpp (specific to ImGui Bundle)
-def set_imgui_demo_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
-    pass
-
-def set_imgui_demo_code_window_pos(pos: ImVec2, size: ImVec2, cond: Cond) -> None:
-    pass
-
-def set_imgui_demo_marker_is_active(b: bool) -> None:
-    pass
-
-def get_imgui_demo_marker_is_active() -> bool:
-    pass
-
-def set_imgui_demo_show_python_code(b: bool) -> None:
-    pass
 
 ImVector_ImVec4Like = ImVector_ImVec4
 ImVector_ImVec2Like = ImVector_ImVec2

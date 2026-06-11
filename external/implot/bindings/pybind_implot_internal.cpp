@@ -1,4 +1,4 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/string.h>
@@ -113,7 +113,7 @@ void py_init_module_implot_internal(nb::module_& m)
     m.def("im_lerp_u32",
         ImLerpU32,
         nb::arg("colors"), nb::arg("size"), nb::arg("t"),
-        " Lerp across an array of 32-bit collors given t in [0.0 1.0]\n(private API)");
+        " Lerp across an array of 32-bit colors given t in [0.0 1.0]\n(private API)");
 
     m.def("im_alpha_u32",
         ImAlphaU32,
@@ -122,7 +122,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
 
     auto pyEnumTimeUnit_ =
-        nb::enum_<ImPlotTimeUnit_>(m, "TimeUnit_", nb::is_arithmetic(), "")
+        nb::enum_<ImPlotTimeUnit_>(m, "TimeUnit_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("us", ImPlotTimeUnit_Us, "microsecond")
             .value("ms", ImPlotTimeUnit_Ms, "millisecond")
             .value("s", ImPlotTimeUnit_S, "second")
@@ -135,7 +135,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
 
     auto pyEnumDateFmt_ =
-        nb::enum_<ImPlotDateFmt_>(m, "DateFmt_", nb::is_arithmetic(), "")
+        nb::enum_<ImPlotDateFmt_>(m, "DateFmt_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImPlotDateFmt_None, "")
             .value("day_mo", ImPlotDateFmt_DayMo, "10/3           [ --10-03      ]")
             .value("day_mo_yr", ImPlotDateFmt_DayMoYr, "10/3/91        [ 1991-10-03   ]")
@@ -145,7 +145,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
 
     auto pyEnumTimeFmt_ =
-        nb::enum_<ImPlotTimeFmt_>(m, "TimeFmt_", nb::is_arithmetic(), "")
+        nb::enum_<ImPlotTimeFmt_>(m, "TimeFmt_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImPlotTimeFmt_None, "")
             .value("us", ImPlotTimeFmt_Us, ".428 552       [ .428 552     ]")
             .value("s_us", ImPlotTimeFmt_SUs, ":29.428 552    [ :29.428 552  ]")
@@ -156,6 +156,11 @@ void py_init_module_implot_internal(nb::module_& m)
             .value("hr_min_s", ImPlotTimeFmt_HrMinS, "7:21:29pm      [ 19:21:29     ]")
             .value("hr_min", ImPlotTimeFmt_HrMin, "7:21pm         [ 19:21        ]")
             .value("hr", ImPlotTimeFmt_Hr, "7pm            [ 19:00        ]");
+
+
+    auto pyEnumMarkerInternal_ =
+        nb::enum_<ImPlotMarkerInternal_>(m, "MarkerInternal_", nb::is_arithmetic(), nb::is_flag(), "")
+            .value("im_plot_marker_invalid", ImPlotMarker_Invalid, "");
 
 
     auto pyClassImPlotDateTimeSpec =
@@ -271,6 +276,7 @@ void py_init_module_implot_internal(nb::module_& m)
         .def_rw("y", &ImPlotPointError::Y, "")
         .def_rw("neg", &ImPlotPointError::Neg, "")
         .def_rw("pos", &ImPlotPointError::Pos, "")
+        .def(nb::init<>())
         .def(nb::init<double, double, double, double>(),
             nb::arg("x"), nb::arg("y"), nb::arg("neg"), nb::arg("pos"))
         ;
@@ -329,26 +335,12 @@ void py_init_module_implot_internal(nb::module_& m)
     auto pyClassImPlotTag =
         nb::class_<ImPlotTag>
             (m, "Tag", "")
-        .def("__init__", [](ImPlotTag * self, const std::optional<const ImAxis> & Axis = std::nullopt, double Value = double(), ImU32 ColorBg = ImU32(), ImU32 ColorFg = ImU32(), int TextOffset = int())
-        {
-            new (self) ImPlotTag();  // placement new
-            auto r = self;
-            if (Axis.has_value())
-                r->Axis = Axis.value();
-            else
-                r->Axis = ImAxis();
-            r->Value = Value;
-            r->ColorBg = ColorBg;
-            r->ColorFg = ColorFg;
-            r->TextOffset = TextOffset;
-        },
-        nb::arg("axis") = nb::none(), nb::arg("value") = double(), nb::arg("color_bg") = ImU32(), nb::arg("color_fg") = ImU32(), nb::arg("text_offset") = int()
-        )
         .def_rw("axis", &ImPlotTag::Axis, "")
         .def_rw("value", &ImPlotTag::Value, "")
         .def_rw("color_bg", &ImPlotTag::ColorBg, "")
         .def_rw("color_fg", &ImPlotTag::ColorFg, "")
         .def_rw("text_offset", &ImPlotTag::TextOffset, "")
+        .def(nb::init<>())
         ;
 
 
@@ -400,6 +392,7 @@ void py_init_module_implot_internal(nb::module_& m)
         .def_rw("show_label", &ImPlotTick::ShowLabel, "")
         .def_rw("level", &ImPlotTick::Level, "")
         .def_rw("idx", &ImPlotTick::Idx, "")
+        .def(nb::init<>())
         .def(nb::init<double, bool, int, bool>(),
             nb::arg("value"), nb::arg("major"), nb::arg("level"), nb::arg("show_label"))
         ;
@@ -647,6 +640,7 @@ void py_init_module_implot_internal(nb::module_& m)
             (m, "Item", "State information for Plot items")
         .def_rw("id_", &ImPlotItem::ID, "")
         .def_rw("color", &ImPlotItem::Color, "")
+        .def_rw("marker", &ImPlotItem::Marker, "")
         .def_rw("legend_hover_rect", &ImPlotItem::LegendHoverRect, "")
         .def_rw("name_offset", &ImPlotItem::NameOffset, "")
         .def_rw("show", &ImPlotItem::Show, "")
@@ -683,6 +677,7 @@ void py_init_module_implot_internal(nb::module_& m)
         .def_rw("id_", &ImPlotItemGroup::ID, "")
         .def_rw("legend", &ImPlotItemGroup::Legend, "")
         .def_rw("colormap_idx", &ImPlotItemGroup::ColormapIdx, "")
+        .def_rw("marker_idx", &ImPlotItemGroup::MarkerIdx, "")
         .def(nb::init<>())
         .def("get_item_count",
             &ImPlotItemGroup::GetItemCount, "(private API)")
@@ -849,19 +844,12 @@ void py_init_module_implot_internal(nb::module_& m)
     auto pyClassImPlotNextItemData =
         nb::class_<ImPlotNextItemData>
             (m, "NextItemData", "Temporary data storage for upcoming item")
-        .def_rw("line_weight", &ImPlotNextItemData::LineWeight, "")
-        .def_rw("marker", &ImPlotNextItemData::Marker, "")
-        .def_rw("marker_size", &ImPlotNextItemData::MarkerSize, "")
-        .def_rw("marker_weight", &ImPlotNextItemData::MarkerWeight, "")
-        .def_rw("fill_alpha", &ImPlotNextItemData::FillAlpha, "")
-        .def_rw("error_bar_size", &ImPlotNextItemData::ErrorBarSize, "")
-        .def_rw("error_bar_weight", &ImPlotNextItemData::ErrorBarWeight, "")
-        .def_rw("digital_bit_height", &ImPlotNextItemData::DigitalBitHeight, "")
-        .def_rw("digital_bit_gap", &ImPlotNextItemData::DigitalBitGap, "")
+        .def_rw("spec", &ImPlotNextItemData::Spec, "")
         .def_rw("render_line", &ImPlotNextItemData::RenderLine, "")
         .def_rw("render_fill", &ImPlotNextItemData::RenderFill, "")
         .def_rw("render_marker_line", &ImPlotNextItemData::RenderMarkerLine, "")
         .def_rw("render_marker_fill", &ImPlotNextItemData::RenderMarkerFill, "")
+        .def_rw("render_markers", &ImPlotNextItemData::RenderMarkers, "")
         .def_rw("has_hidden", &ImPlotNextItemData::HasHidden, "")
         .def_rw("hidden", &ImPlotNextItemData::Hidden, "")
         .def_rw("hidden_cond", &ImPlotNextItemData::HiddenCond, "")
@@ -877,61 +865,61 @@ void py_init_module_implot_internal(nb::module_& m)
         .def("__init__", [](ImPlotContext * self, const std::optional<const ImPlotTicker> & CTicker = std::nullopt, const std::optional<const ImPlotAnnotationCollection> & Annotations = std::nullopt, const std::optional<const ImPlotTagCollection> & Tags = std::nullopt, const std::optional<const ImPlotStyle> & Style = std::nullopt, const std::optional<const ImVector<ImGuiColorMod>> & ColorModifiers = std::nullopt, const std::optional<const ImVector<ImGuiStyleMod>> & StyleModifiers = std::nullopt, const std::optional<const ImPlotColormapData> & ColormapData = std::nullopt, const std::optional<const ImVector<int>> & TempInt1 = std::nullopt, int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), const std::optional<const ImPlotNextPlotData> & NextPlotData = std::nullopt, const std::optional<const ImPlotNextItemData> & NextItemData = std::nullopt, const std::optional<const ImPlotInputMap> & InputMap = std::nullopt, bool OpenContextThisFrame = bool(), const std::optional<const ImGuiTextBuffer> & MousePosStringBuilder = std::nullopt, bool CanDragPlotInNodeEditor = false)
         {
             new (self) ImPlotContext();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (CTicker.has_value())
-                r->CTicker = CTicker.value();
+                r_ctor_->CTicker = CTicker.value();
             else
-                r->CTicker = ImPlotTicker();
+                r_ctor_->CTicker = ImPlotTicker();
             if (Annotations.has_value())
-                r->Annotations = Annotations.value();
+                r_ctor_->Annotations = Annotations.value();
             else
-                r->Annotations = ImPlotAnnotationCollection();
+                r_ctor_->Annotations = ImPlotAnnotationCollection();
             if (Tags.has_value())
-                r->Tags = Tags.value();
+                r_ctor_->Tags = Tags.value();
             else
-                r->Tags = ImPlotTagCollection();
+                r_ctor_->Tags = ImPlotTagCollection();
             if (Style.has_value())
-                r->Style = Style.value();
+                r_ctor_->Style = Style.value();
             else
-                r->Style = ImPlotStyle();
+                r_ctor_->Style = ImPlotStyle();
             if (ColorModifiers.has_value())
-                r->ColorModifiers = ColorModifiers.value();
+                r_ctor_->ColorModifiers = ColorModifiers.value();
             else
-                r->ColorModifiers = ImVector<ImGuiColorMod>();
+                r_ctor_->ColorModifiers = ImVector<ImGuiColorMod>();
             if (StyleModifiers.has_value())
-                r->StyleModifiers = StyleModifiers.value();
+                r_ctor_->StyleModifiers = StyleModifiers.value();
             else
-                r->StyleModifiers = ImVector<ImGuiStyleMod>();
+                r_ctor_->StyleModifiers = ImVector<ImGuiStyleMod>();
             if (ColormapData.has_value())
-                r->ColormapData = ColormapData.value();
+                r_ctor_->ColormapData = ColormapData.value();
             else
-                r->ColormapData = ImPlotColormapData();
+                r_ctor_->ColormapData = ImPlotColormapData();
             if (TempInt1.has_value())
-                r->TempInt1 = TempInt1.value();
+                r_ctor_->TempInt1 = TempInt1.value();
             else
-                r->TempInt1 = ImVector<int>();
-            r->DigitalPlotItemCnt = DigitalPlotItemCnt;
-            r->DigitalPlotOffset = DigitalPlotOffset;
+                r_ctor_->TempInt1 = ImVector<int>();
+            r_ctor_->DigitalPlotItemCnt = DigitalPlotItemCnt;
+            r_ctor_->DigitalPlotOffset = DigitalPlotOffset;
             if (NextPlotData.has_value())
-                r->NextPlotData = NextPlotData.value();
+                r_ctor_->NextPlotData = NextPlotData.value();
             else
-                r->NextPlotData = ImPlotNextPlotData();
+                r_ctor_->NextPlotData = ImPlotNextPlotData();
             if (NextItemData.has_value())
-                r->NextItemData = NextItemData.value();
+                r_ctor_->NextItemData = NextItemData.value();
             else
-                r->NextItemData = ImPlotNextItemData();
+                r_ctor_->NextItemData = ImPlotNextItemData();
             if (InputMap.has_value())
-                r->InputMap = InputMap.value();
+                r_ctor_->InputMap = InputMap.value();
             else
-                r->InputMap = ImPlotInputMap();
-            r->OpenContextThisFrame = OpenContextThisFrame;
+                r_ctor_->InputMap = ImPlotInputMap();
+            r_ctor_->OpenContextThisFrame = OpenContextThisFrame;
             if (MousePosStringBuilder.has_value())
-                r->MousePosStringBuilder = MousePosStringBuilder.value();
+                r_ctor_->MousePosStringBuilder = MousePosStringBuilder.value();
             else
-                r->MousePosStringBuilder = ImGuiTextBuffer();
-            r->CanDragPlotInNodeEditor = CanDragPlotInNodeEditor;
+                r_ctor_->MousePosStringBuilder = ImGuiTextBuffer();
+            r_ctor_->CanDragPlotInNodeEditor = CanDragPlotInNodeEditor;
         },
-        nb::arg("c_ticker") = nb::none(), nb::arg("annotations") = nb::none(), nb::arg("tags") = nb::none(), nb::arg("style") = nb::none(), nb::arg("color_modifiers") = nb::none(), nb::arg("style_modifiers") = nb::none(), nb::arg("colormap_data") = nb::none(), nb::arg("temp_int1") = nb::none(), nb::arg("digital_plot_item_cnt") = int(), nb::arg("digital_plot_offset") = int(), nb::arg("next_plot_data") = nb::none(), nb::arg("next_item_data") = nb::none(), nb::arg("input_map") = nb::none(), nb::arg("open_context_this_frame") = bool(), nb::arg("mouse_pos_string_builder") = nb::none(), nb::arg("can_drag_plot_in_node_editor") = false
+        nb::arg("c_ticker").none() = nb::none(), nb::arg("annotations").none() = nb::none(), nb::arg("tags").none() = nb::none(), nb::arg("style").none() = nb::none(), nb::arg("color_modifiers").none() = nb::none(), nb::arg("style_modifiers").none() = nb::none(), nb::arg("colormap_data").none() = nb::none(), nb::arg("temp_int1").none() = nb::none(), nb::arg("digital_plot_item_cnt") = int(), nb::arg("digital_plot_offset") = int(), nb::arg("next_plot_data").none() = nb::none(), nb::arg("next_item_data").none() = nb::none(), nb::arg("input_map").none() = nb::none(), nb::arg("open_context_this_frame") = bool(), nb::arg("mouse_pos_string_builder").none() = nb::none(), nb::arg("can_drag_plot_in_node_editor") = false
         )
         .def_rw("current_plot", &ImPlotContext::CurrentPlot, "")
         .def_rw("current_subplot", &ImPlotContext::CurrentSubplot, "")
@@ -1011,26 +999,40 @@ void py_init_module_implot_internal(nb::module_& m)
         "Shows a subplot's context menu.");
 
     m.def("begin_item",
-        [](const char * label_id, ImPlotItemFlags flags = 0, const std::optional<const ImPlotCol> & recolor_from = std::nullopt) -> bool
+        [](const char * label_id, const std::optional<const ImPlotSpec> & spec = std::nullopt, const std::optional<const ImVec4> & item_col = std::nullopt, const std::optional<const ImPlotMarker> & item_mkr = std::nullopt) -> bool
         {
-            auto BeginItem_adapt_mutable_param_with_default_value = [](const char * label_id, ImPlotItemFlags flags = 0, const std::optional<const ImPlotCol> & recolor_from = std::nullopt) -> bool
+            auto BeginItem_adapt_mutable_param_with_default_value = [](const char * label_id, const std::optional<const ImPlotSpec> & spec = std::nullopt, const std::optional<const ImVec4> & item_col = std::nullopt, const std::optional<const ImPlotMarker> & item_mkr = std::nullopt) -> bool
             {
 
-                const ImPlotCol& recolor_from_or_default = [&]() -> const ImPlotCol {
-                    if (recolor_from.has_value())
-                        return recolor_from.value();
+                const ImPlotSpec& spec_or_default = [&]() -> const ImPlotSpec {
+                    if (spec.has_value())
+                        return spec.value();
                     else
-                        return IMPLOT_AUTO;
+                        return ImPlotSpec();
                 }();
 
-                auto lambda_result = ImPlot::BeginItem(label_id, flags, recolor_from_or_default);
+                const ImVec4& item_col_or_default = [&]() -> const ImVec4 {
+                    if (item_col.has_value())
+                        return item_col.value();
+                    else
+                        return IMPLOT_AUTO_COL;
+                }();
+
+                const ImPlotMarker& item_mkr_or_default = [&]() -> const ImPlotMarker {
+                    if (item_mkr.has_value())
+                        return item_mkr.value();
+                    else
+                        return ImPlotMarker_Invalid;
+                }();
+
+                auto lambda_result = ImPlot::BeginItem(label_id, spec_or_default, item_col_or_default, item_mkr_or_default);
                 return lambda_result;
             };
 
-            return BeginItem_adapt_mutable_param_with_default_value(label_id, flags, recolor_from);
+            return BeginItem_adapt_mutable_param_with_default_value(label_id, spec, item_col, item_mkr);
         },
-        nb::arg("label_id"), nb::arg("flags") = 0, nb::arg("recolor_from") = nb::none(),
-        " Begins a new item. Returns False if the item should not be plotted. Pushes PlotClipRect.\n\n\nPython bindings defaults:\n    If recolor_from is None, then its default value will be: IMPLOT_AUTO");
+        nb::arg("label_id"), nb::arg("spec").none() = nb::none(), nb::arg("item_col").none() = nb::none(), nb::arg("item_mkr").none() = nb::none(),
+        " Begins a new item. Returns False if the item should not be plotted. Pushes PlotClipRect.\n\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * spec: Spec()\n        * item_col: IMPLOT_AUTO_COL\n        * item_mkr: Marker_Invalid");
 
     m.def("end_item",
         ImPlot::EndItem, "Ends an item (call only if BeginItem returns True). Pops PlotClipRect.");
@@ -1050,7 +1052,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             return RegisterOrGetItem_adapt_modifiable_immutable_to_return(label_id, flags, just_created);
         },
-        nb::arg("label_id"), nb::arg("flags"), nb::arg("just_created") = nb::none(),
+        nb::arg("label_id"), nb::arg("flags"), nb::arg("just_created").none() = nb::none(),
         "Register or get an existing item from the current plot.",
         nb::rv_policy::reference);
 
@@ -1135,7 +1137,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             return GetLocationPos_adapt_mutable_param_with_default_value(outer_rect, inner_size, location, pad);
         },
-        nb::arg("outer_rect"), nb::arg("inner_size"), nb::arg("location"), nb::arg("pad") = nb::none(),
+        nb::arg("outer_rect"), nb::arg("inner_size"), nb::arg("location"), nb::arg("pad").none() = nb::none(),
         " Gets the position of an inner rect that is located inside of an outer rect according to an ImPlotLocation and padding amount.\n\n\nPython bindings defaults:\n    If pad is None, then its default value will be: ImVec2(0,0)");
 
     m.def("calc_legend_size",
@@ -1171,7 +1173,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             ShowAltLegend_adapt_mutable_param_with_default_value(title_id, vertical, size, interactable);
         },
-        nb::arg("title_id"), nb::arg("vertical") = true, nb::arg("size") = nb::none(), nb::arg("interactable") = true,
+        nb::arg("title_id"), nb::arg("vertical") = true, nb::arg("size").none() = nb::none(), nb::arg("interactable") = true,
         " Shows an alternate legend for the plot identified by #title_id, outside of the plot frame (can be called before or after of Begin/EndPlot but must occur in the same ImGui window! This is not thoroughly tested nor scrollable!).\n\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0,0)");
 
     m.def("show_legend_context_menu",
@@ -1223,7 +1225,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             AddTextVertical_adapt_const_char_pointer_with_default_null(DrawList, pos, col, text_begin, text_end);
         },
-        nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end") = nb::none(),
+        nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(),
         "Draws vertical text. The position is the bottom left of the text rect.");
 
     m.def("add_text_centered",
@@ -1240,7 +1242,7 @@ void py_init_module_implot_internal(nb::module_& m)
 
             AddTextCentered_adapt_const_char_pointer_with_default_null(DrawList, top_center, col, text_begin, text_end);
         },
-        nb::arg("draw_list"), nb::arg("top_center"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end") = nb::none(),
+        nb::arg("draw_list"), nb::arg("top_center"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(),
         "Draws multiline horizontal text centered.");
 
     m.def("calc_text_size_vertical",
@@ -1325,12 +1327,6 @@ void py_init_module_implot_internal(nb::module_& m)
         ImPlot::GetDaysInMonth,
         nb::arg("year"), nb::arg("month"),
         " Returns the number of days in a month, accounting for Feb. leap years. #month is zero indexed.\n(private API)");
-
-    m.def("get_time",
-        ImPlot::GetTime,
-        nb::arg("t"), nb::arg("ptm"),
-        " Get a tm struct from a UNIX timestamp according to the current ImPlotStyle.UseLocalTime setting.\n(private API)",
-        nb::rv_policy::reference);
 
     m.def("make_time",
         ImPlot::MakeTime,
@@ -1455,17 +1451,17 @@ void py_init_module_implot_internal(nb::module_& m)
         .def("__init__", [](ImPlot::Formatter_Time_Data * self, const std::optional<const ImPlotTime> & Time = std::nullopt, const std::optional<const ImPlotDateTimeSpec> & Spec = std::nullopt)
         {
             new (self) ImPlot::Formatter_Time_Data();  // placement new
-            auto r = self;
+            auto r_ctor_ = self;
             if (Time.has_value())
-                r->Time = Time.value();
+                r_ctor_->Time = Time.value();
             else
-                r->Time = ImPlotTime();
+                r_ctor_->Time = ImPlotTime();
             if (Spec.has_value())
-                r->Spec = Spec.value();
+                r_ctor_->Spec = Spec.value();
             else
-                r->Spec = ImPlotDateTimeSpec();
+                r_ctor_->Spec = ImPlotDateTimeSpec();
         },
-        nb::arg("time") = nb::none(), nb::arg("spec") = nb::none()
+        nb::arg("time").none() = nb::none(), nb::arg("spec").none() = nb::none()
         )
         .def_rw("time", &ImPlot::Formatter_Time_Data::Time, "")
         .def_rw("spec", &ImPlot::Formatter_Time_Data::Spec, "")

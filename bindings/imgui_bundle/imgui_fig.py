@@ -9,19 +9,18 @@ Important:
         matplotlib.use('Agg')
 
 """
-import numpy  # noqa: E402
-import numpy as np
-from numpy.typing import NDArray
 from imgui_bundle.immapp import static  # noqa: E402
 from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
+    import numpy as np
     import matplotlib.figure
+    from numpy.typing import NDArray
 
 
 @static(fig_image_cache=dict())
-def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_image: bool = False) -> NDArray[np.uint8]:
+def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_image: bool = False) -> "NDArray[np.uint8]":
     """
     Convert a Matplotlib figure to an RGB image.
 
@@ -31,6 +30,7 @@ def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_ima
     Returns:
     - numpy.ndarray: An RGB image as a NumPy array with uint8 datatype.
     """
+    import numpy  # noqa: E402
     import matplotlib  # noqa: E402
 
     backend_message = """
@@ -53,7 +53,7 @@ def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_ima
         figure.canvas.draw()
         # Get the RGBA buffer from the figure
         w, h = figure.canvas.get_width_height()
-        buf = numpy.frombuffer(figure.canvas.buffer_rgba(), dtype=numpy.uint8)  # type: ignore
+        buf = numpy.frombuffer(figure.canvas.buffer_rgba(), dtype=numpy.uint8)
 
         try:
             buf.shape = (h, w, 4)

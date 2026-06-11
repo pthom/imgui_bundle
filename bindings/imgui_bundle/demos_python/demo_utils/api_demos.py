@@ -1,6 +1,6 @@
 import os
 from typing import Callable
-from imgui_bundle import immapp, imgui, imgui_md, hello_imgui
+from imgui_bundle import immapp, imgui, imgui_md
 from imgui_bundle.demos_python.demo_utils.functional_utils import memoize
 
 
@@ -8,11 +8,16 @@ GuiFunction = Callable[[], None]
 
 
 def main_python_package_folder() -> str:
+    # Try using the imgui_bundle package location directly
+    import imgui_bundle
+    pkg_dir = os.path.dirname(imgui_bundle.__file__)
+    if os.path.isdir(pkg_dir):
+        return pkg_dir.replace("\\", "/")
+
+    # Fallback: walk up from __file__ looking for hello_imgui.pyi
     this_dir = os.path.dirname(__file__)
     this_dir = this_dir.replace("\\", "/")
-
     items = this_dir.split("/")
-
     for n in reversed(range(len(items))):
         parent_folder = "/".join(items[:n])
         if os.path.isfile(parent_folder + "/hello_imgui.pyi"):
@@ -39,19 +44,20 @@ def markdown_doc_folder() -> str:
 
 
 def set_hello_imgui_demo_assets_folder():
-    hello_imgui.set_assets_folder(demos_assets_folder())
+    """No-op: demos_assets is now registered as a search path by imgui_bundle.__init__."""
+    pass
 
 
 def show_python_vs_cpp_code(python_code: str, cpp_code: str, nb_lines: int = 0):
     imgui.push_id(python_code)
 
-    snippet_cpp: immapp.snippets.SnippetData = immapp.snippets.SnippetData()  # type: ignore
+    snippet_cpp: immapp.snippets.SnippetData = immapp.snippets.SnippetData()
     snippet_cpp.code = cpp_code
     snippet_cpp.displayed_filename = "C++ code"
     snippet_cpp.height_in_lines = nb_lines
     snippet_cpp.max_height_in_lines = nb_lines
 
-    snippet_python: immapp.snippets.SnippetData = immapp.snippets.SnippetData()  # type: ignore
+    snippet_python: immapp.snippets.SnippetData = immapp.snippets.SnippetData()
     snippet_python.code = python_code
     snippet_python.displayed_filename = "Python code"
     snippet_python.height_in_lines = nb_lines
@@ -94,17 +100,33 @@ def read_code(filename: str) -> str:
 
 def read_cpp_code(demo_file_path: str) -> str:
     file_abs = demos_cpp_folder() + "/" + demo_file_path + ".cpp"
-    code: str = read_code(file_abs)  # type: ignore
+    code: str = read_code(file_abs)
     return code
 
 
 def read_python_code(demo_file_path: str) -> str:
     file_abs = demos_python_folder() + "/" + demo_file_path + ".py"
-    code: str = read_code(file_abs)  # type: ignore
+    code: str = read_code(file_abs)
     return code
 
 
 def read_markdown_code(doc_filename: str) -> str:
     doc_file = markdown_doc_folder() + "/" + doc_filename + ".adoc.md"
-    r: str = read_code(doc_file)  # type: ignore
+    r: str = read_code(doc_file)
     return r
+
+
+def can_run_subprocess() -> bool:
+    from imgui_bundle._imgui_bundle import __bundle_pyodide__  # type: ignore
+    return not __bundle_pyodide__
+
+
+def spawn_demo_file(demo_file_path: str) -> None:
+    if can_run_subprocess():
+        import subprocess
+        import sys
+        subprocess.Popen(
+            [sys.executable, demo_file_path]
+        )
+    else:
+        print("Cannot run subprocess in this environment.")

@@ -2,7 +2,7 @@ import numpy as np
 from typing import Any
 from numpy.typing import NDArray
 from enum import Enum
-import cv2  # type: ignore
+import cv2
 import math
 
 from imgui_bundle import imgui, immvision, immapp, imgui_md
@@ -32,7 +32,7 @@ def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     img_float = gray / 255.0
     blurred = cv2.GaussianBlur(
-        img_float, (0, 0), sigmaX=params.blur_size, sigmaY=params.blur_size
+        img_float, (0, 0), sigmaX=params.blur_size, sigmaY=params.blur_size  # type: ignore
     )
 
     good_scale = 1.0 / math.pow(2.0, (params.k_size - 2 * params.deriv_order - 2))
@@ -107,7 +107,7 @@ class AppState:
     immvision_params_sobel: immvision.ImageParams
 
     def __init__(self, image_file: str):
-        self.image = demo_utils.imread_pil(image_file)
+        self.image = demo_utils.imread_demo(image_file)
         self.sobel_params = SobelParams()
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
 
@@ -157,7 +157,6 @@ def demo_gui():
 
 
 def main():
-    demo_utils.set_hello_imgui_demo_assets_folder()
     immapp.run_with_markdown(demo_gui, window_size=(1000, 1000))
 
 

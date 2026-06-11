@@ -16,7 +16,7 @@ def show_python_code(
         show_cursor_position: bool | None = None,
         de_indent_code: bool | None = None,
         show_copy_button: bool | None = None,
-        palette: immapp.snippets.SnippetTheme | None = immapp.snippets.SnippetTheme.mariana,
+        palette: immapp.snippets.SnippetTheme | None = immapp.snippets.SnippetTheme.dark,
         border: bool | None = None,
     ) -> None:
     """Render the code of an object as a markdown code block"""
@@ -55,14 +55,14 @@ def show_python_code(
     immapp.snippets.show_code_snippet(cached_snippet_data)
 
 
-def _compact_json(data, indent=4):
-    def _compact_list(lst, indent_level):
+def _compact_json(data: Any, indent: int = 4) -> str:
+    def _compact_list(lst: Any, indent_level: int) -> str:
         compacted = json.dumps(lst)
         if len(compacted) <= 80:
             return compacted
         return json.dumps(lst, indent=indent, separators=(',', ': '))
 
-    def _compact_dict(dct, indent_level):
+    def _compact_dict(dct: Any, indent_level: int) -> str:
         items = []
         for key, value in dct.items():
             key_str = json.dumps(key) + ': '
@@ -77,7 +77,7 @@ def _compact_json(data, indent=4):
     return _compact_dict(data, 1)
 
 
-def show_json_dict(json_dict: dict[str, Any]):
+def show_json_dict(json_dict: dict[str, Any]) -> None:
     from imgui_bundle import imgui_md
     """Render a json dict as a markdown code block"""
     md_string = "```\n" +  _compact_json(json_dict, indent=4) + "\n```"

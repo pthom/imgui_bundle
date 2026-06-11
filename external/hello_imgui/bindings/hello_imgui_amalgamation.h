@@ -22,26 +22,14 @@ namespace HelloImGui
 //
 // Hello ImGui will try its best to automatically handle DPI scaling for you.
 //
-// Parameters to change the scaling behavior:
+// Parameter to change the scaling behavior:
 // ------------------------------------------
 // - `dpiWindowSizeFactor`:
 //        factor by which window size should be multiplied
-//
-// - `fontRenderingScale`:
-//     factor by which fonts glyphs should be scaled at rendering time
-//     (typically 1 on windows, and 0.5 on macOS retina screens)
-//
-//    By default, Hello ImGui will compute them automatically,
-//    when dpiWindowSizeFactor and fontRenderingScale are set to 0.
-//
-// Parameters to improve font rendering quality:
-// ---------------------------------------------
-// - `fontOversampleH` and `fontOversampleV` : Font oversampling parameters
-//     Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.
-//     If not zero, these values will be used to set the oversampling factor when loading fonts.
+//    By default, Hello ImGui will compute it automatically, when it is set to 0.
 //
 //
-// How to set those values manually:
+// How to set manually:
 // ---------------------------------
 // If it fails (i.e. your window and/or fonts are too big or too small),
 // you may set them manually:
@@ -70,44 +58,12 @@ struct DpiAwareParams
     //  However, if it fails you may set its value manually.
     //  If it is set to 0, Hello ImGui will compute it automatically,
     //  and the resulting value will be stored in `dpiWindowSizeFactor`.
+    //
+    //  This factor is also applied to fonts and widget sizes:
+    //  Hello ImGui sets `ImGui::GetStyle().FontScaleDpi = dpiWindowSizeFactor`,
+    //  so that fonts are scaled at display time (via the dynamic font atlas),
+    //  and it calls `ImGui::GetStyle().ScaleAllSizes()` to scale paddings/spacings.
     float dpiWindowSizeFactor = 0.0f;
-
-    // `fontRenderingScale`
-    //     factor (that is either 1 or < 1.) by which fonts glyphs should be scaled at rendering time.
-    //  On macOS retina screens, it will be 0.5, since macOS APIs hide the real resolution of the screen.
-    //  Changing this value will *not* change the visible font size on the screen, however it will
-    //  affect the size of the loaded glyphs.
-    //  For example, if fontRenderingScale=0.5 (which is the default on a macOS retina screen),
-    //  a font size of 16 will be loaded as if it was 32, and will be rendered at half size.
-    //   This leads to a better rendering quality on some platforms.
-    // (This parameter will be used to set ImGui::GetIO().FontGlobalScale at startup)
-    float fontRenderingScale = 0.0f;
-
-    // `onlyUseFontDpiResponsive`
-    // If true, guarantees that only HelloImGui::LoadDpiResponsiveFont will be used to load fonts.
-    // (also for the default font)
-    bool onlyUseFontDpiResponsive = false;
-
-    // `fontOversampleH` and `fontOversampleV` : Font oversampling parameters
-    // Rasterize at higher quality for sub-pixel positioning. Probably unused if freeType is used.
-    // If not zero, these values will be used to set the oversampling factor when loading fonts.
-    // (i.e. they will be set in ImFontConfig::OversampleH and ImFontConfig::OversampleV)
-    // OversampleH: The difference between 2 and 3 for OversampleH is minimal.
-    //              You can reduce this to 1 for large glyphs save memory.
-    // OversampleV: This is not really useful as we don't use sub-pixel positions on the Y axis.
-    // Read https://github.com/nothings/stb/blob/master/tests/oversample/README.md for details.
-    int             fontOversampleH = 0;  // Default is 2 in ImFontConfig
-    int             fontOversampleV = 0;  // Default is 1 in ImFontConfig
-
-
-    // `dpiFontLoadingFactor`
-    //     factor by which font size should be multiplied at loading time to get a similar
-    //     visible size on different OSes.
-    //  The size will be equivalent to a size given for a 96 PPI screen
-    float DpiFontLoadingFactor() const {
-        float r = dpiWindowSizeFactor / fontRenderingScale;
-        return r;
-    };
 };
 
 // ----------------------------------------------------------------------------
@@ -124,8 +80,8 @@ Using ImVec2 with fixed values is *almost always a bad idea* if you intend your
 application to be used on high DPI screens!
 Otherwise, widgets might be misplaced or too small on different screens and/or OS.
 
-Instead you should use scale your widgets and windows relatively to the font size,
-as is done with the [em CSS Unit](https://lyty.dev/css/css-unit.html).
+Instead, you should use scale your widgets and windows relatively to the font size,
+as is done with the [em CSS Unit](https://www.w3schools.com/cssref/css_units.php).
 
 @@md
 **/
@@ -160,21 +116,16 @@ DpiAwareParams* GetDpiAwareParams();
 // ----------------------------------------------------------------------------
 
 //
-// Legacy API, you should use RunnerParams.dpAwareParams instead
+// Legacy API, you should use RunnerParams.dpiAwareParams instead
 //
 namespace HelloImGui
 {
-// Multiply font sizes by this factor when loading fonts manually with ImGui::GetIO().Fonts->AddFont...
-// (HelloImGui::LoadFontTTF does this by default)
-float DpiFontLoadingFactor();
+    // DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
+    // It returns ApplicationScreenPixelPerInch / 96 under windows and linux. Under macOS, it will return 1.
+    float DpiWindowSizeFactor();
 
-// DpiWindowSizeFactor() is the factor by which window size should be multiplied to get a similar visible size on different OSes.
-// It returns ApplicationScreenPixelPerInch / 96  under windows and linux. Under macOS, it will return 1.
-float DpiWindowSizeFactor();
-
-// returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`
-float ImGuiDefaultFontGlobalScale();
 } // namespace HelloImGui
+
 
 
 // ----------------------------------------------------------------------------
@@ -235,31 +186,16 @@ Notes:
 - You cannot change DisplayFramebufferScale manually, it will be reset at each new frame, by asking the platform backend.
 
 
-## FontGlobalScale
-
-`ImGui::GetIO().FontGlobalScale` is a factor by which fonts glyphs should be scaled at rendering time.
-It is typically 1 on windows, and 0.5 on macOS retina screens.
-
-
 ## How to load fonts with the correct size
 
 ### Using HelloImGui (recommended)
 
-[`HelloImGui::LoadFont()` and `HelloImGui::LoadFontDpiResponsive`](https://pthom.github.io/hello_imgui/book/doc_api.html#load-fonts) will load fonts
+[`HelloImGui::LoadFont()`](https://pthom.github.io/hello_imgui/book/doc_api.html#load-fonts) will load fonts
  with the correct size, taking into account the DPI scaling.
 
 ### Using Dear ImGui
 `ImGui::GetIO().Fonts->AddFontFromFileTTF()` loads a font with a given size, in *physical pixels*.
-
-If for example, DisplayFramebufferScale is (2,2), and you load a font with a size of 16, it will by default be rendered
- with size of 16 *virtual screen coordinate pixels* (i.e. 32 physical pixels). This will lead to blurry text.
-To solve this, you should load your font with a size of 16 *virtual screen coordinate pixels* (i.e. 32 physical pixels),
-and set `ImGui::GetIO().FontGlobalScale` to 0.5.
-
-Helpers if using `ImGui::GetIO().Fonts->AddFontFromFileTTF()`:
-- `HelloImGui::ImGuiDefaultFontGlobalScale()` returns the default value that should be stored inside `ImGui::GetIO().FontGlobalScale`.
-- `HelloImGui::DpiFontLoadingFactor()` returns a factor by which you shall multiply your font sizes when loading them.
-
+KKDYNFONT: TBC...
 
 ## Reproducible physical window sizes (in mm or inches)
 
@@ -277,7 +213,7 @@ Note: DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under w
 
 ## Fine tune DPI Handling
 
-See [`HelloImGui::DpiAwareParams`](https://pthom.github.io/hello_imgui/book/doc_params.html#dpi-aware-params)
+See [`HelloImGui::DpiAwareParams`](https://pthom.github.io/hello_imgui/book/doc-params/#dpi-aware-params)
 for more information on how to fine tune DPI handling when using Hello ImGui.
 @@md
 */
@@ -286,6 +222,8 @@ for more information on how to fine tune DPI handling when using Hello ImGui.
 //                       hello_imgui/hello_imgui_assets.h included by hello_imgui.h                             //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #include <string>
+#include <vector>
+#include <functional>
 
 namespace HelloImGui
 {
@@ -324,6 +262,8 @@ struct AssetFileData
 // You *have* to call FreeAssetFileData to free the memory, except if you use
 // ImGui::GetIO().Fonts->AddFontFromMemoryTTF, which will take ownership of the
 // data and free it for you.
+// This function can be redirected with setLoadAssetFileDataFunction. If not redirected,
+// it calls DefaultLoadAssetFileData.
 AssetFileData LoadAssetFileData(const char *assetPath);
 
 // FreeAssetFileData(AssetFileData *)
@@ -333,6 +273,17 @@ AssetFileData LoadAssetFileData(const char *assetPath);
 void FreeAssetFileData(AssetFileData * assetFileData);
 // @@md
 
+// Function type to redirect asset loads. Function receives a path and
+// returns an AssetFileData structure. By default, it points to
+// DefaultLoadAssetFileData.
+using LoadAssetFileDataFunc = std::function<AssetFileData(const char*)>;
+
+// Redirect asset loads to user-defined function
+void SetLoadAssetFileDataFunction(LoadAssetFileDataFunc func);
+
+// This function actually performs the asset load, as described in
+// LoadAssetFileData
+AssetFileData DefaultLoadAssetFileData(const char *assetPath);
 
 // @@md#assetFileFullPath
 
@@ -353,12 +304,42 @@ std::string AssetFileFullPath(const std::string& assetRelativeFilename,
 // Returns true if this asset file exists
 bool AssetExists(const std::string& assetRelativeFilename);
 
+// @@md
+
+// @@md#AssetsSearchPaths
+
 // Sets the assets folder location
 // (when using this, automatic assets installation on mobile platforms may not work)
 void SetAssetsFolder(const std::string& folder);
 
-// @@md
+// Assets search paths provide additional locations where assets can be found,
+// giving a unified view across multiple folders. When loading an asset, the
+// search order is:
+//   1. The main assets folder (set by SetAssetsFolder(), or the default
+//      platform-specific locations such as exe_folder/assets)
+//   2. Each search path added by AddAssetsSearchPath(), in order
+//   3. Other built-in platform-specific fallback locations
+//
+// The first match wins. This is useful when assets are split across
+// directories — for example, core assets (fonts, icons) in one folder
+// and demo-specific assets (extra images, specialty fonts) in another.
+//
+// Note: search paths are a runtime-only mechanism. Unlike the main assets
+// folder (which CMake can bundle into the application for mobile/emscripten),
+// search path folders are not automatically embedded at compile time.
+// They are intended for desktop or Python usage where the filesystem
+// is directly accessible.
 
+// Add a folder to the asset search paths.
+void AddAssetsSearchPath(const std::string& folder);
+
+// Remove all previously added search paths.
+void ClearAssetsSearchPaths();
+
+// Return the current list of search paths.
+const std::vector<std::string>& GetAssetsSearchPaths();
+
+// @@md
 
 
 // Legacy API, kept for compatibility
@@ -468,9 +449,15 @@ namespace HelloImGui
 // `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
 // will display a static image from the assets.
 void ImageFromAsset(const char *assetPath, const ImVec2& size = ImVec2(0, 0),
-                    const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
-                    const ImVec4& tint_col = ImVec4(1,1,1,1),
-                    const ImVec4& border_col = ImVec4(0,0,0,0));
+                    const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1));
+
+// `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
+// will display a static image from the assets, with a colored background and a border.
+void ImageFromAssetWithBg(const char *assetPath, const ImVec2& size = ImVec2(0, 0),
+            const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1,1),
+            const ImVec4& tint_col = ImVec4(1,1,1,1),
+            const ImVec4& border_col = ImVec4(0,0,0,0));
+
 
 // `bool HelloImGui::ImageButtonFromAsset(const char *assetPath, size, ...)`:
 // will display a button using an image from the assets.
@@ -509,12 +496,123 @@ ImageAndSize ImageAndSizeFromAsset(const char *assetPath);
 //        so you don't need to call it directly.
 ImVec2 ImageProportionalSize(const ImVec2& askedSize, const ImVec2& imageSize);
 
+// `HelloImGui::ImageData`: decoded image pixel data (C++ only)
+struct ImageData
+{
+    unsigned char* data = nullptr;
+    int width = 0, height = 0;
+    int channels = 0;
+    void Free();
+};
+
+// `HelloImGui::LoadImageDataFromAsset(assetPath, desired_channels)`:
+// (C++ only)
+// Load and decode an image from the assets into CPU memory.
+// desired_channels: 0=keep original, 1=gray, 3=RGB, 4=RGBA (default).
+// The caller must call .free() on the returned ImageData when done!
+ImageData LoadImageDataFromAsset(const char* assetPath, int desired_channels = 4);
+
+// `HelloImGui::LoadImageDataFromEncodedData(data, dataSize, desired_channels)`:
+// (C++ only)
+// Load and decode encoded image data (PNG, JPEG, BMP, GIF, etc.) into CPU memory.
+// desired_channels: 0=keep original, 1=gray, 3=RGB, 4=RGBA (default).
+// The caller must call .free() on the returned ImageData when done!
+// The image format is auto-detected from the data header by stb_image.
+ImageData LoadImageDataFromEncodedData(const void* data, size_t dataSize, int desired_channels = 4);
+
+// `HelloImGui::ImageAndSizeFromEncodedData(data, dataSize, cacheKey)`:
+// will create a texture from encoded image data (PNG, JPEG, BMP, GIF, etc.),
+// and return the texture ID and the size.
+// - data: pointer to encoded image data
+// - dataSize: size of the data in bytes
+// - cacheKey: if non-empty, the texture will be cached and reused
+//   on subsequent calls with the same key.
+// The image format is auto-detected from the data header by stb_image.
+ImageAndSize ImageAndSizeFromEncodedData(
+    const void* data, size_t dataSize,
+    const std::string& cacheKey = "");
+
+// To upload raw RGBA pixel data to a caller-owned GPU texture, see
+// `HelloImGui::CreateTextureGpuFromRgbaData()` in `texture_gpu.h`.
+
+// `HelloImGui::FreeImageCache()`: clears the asset image cache shared by
+//  `ImageFromAsset`, `ImageAndSizeFromAsset` and `ImageAndSizeFromEncodedData`.
+//  Inside a `HelloImGui::Run()` context this is called automatically at
+//  shutdown. When using imgui_md (or any of the helpers above) without
+//  `Run()`, the cache lives until process exit unless you call this manually
+//  before destroying your GL context.
+void FreeImageCache();
+
 // @@md
 
 namespace internal
 {
     void Free_ImageFromAssetMap();
 }
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                       hello_imgui/texture_gpu.h included by hello_imgui.h                                    //
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#include <memory>
+
+namespace HelloImGui
+{
+// @@md#TextureGpu
+
+// `HelloImGui::TextureGpu`: an opaque RAII handle that owns a GPU texture.
+//
+// `TextureGpu` is the abstract base class for backend-specific GPU texture
+// objects (OpenGL, Metal, Vulkan, DirectX11). The concrete subclasses live
+// inside `internal/` and are created by the factory functions below.
+//
+// Lifetime: the GPU resource is freed when the last `std::shared_ptr<TextureGpu>`
+// reference is dropped — there is no separate `DeleteTexture()` to call.
+//
+// Threading: a live rendering backend (GL/Metal/Vulkan/Dx11) must exist on
+// the current thread when constructing or destroying a `TextureGpu`. In
+// practice this means: only call the factories from the GUI thread, while
+// the application is running (i.e. between `HelloImGui::Run` startup and
+// shutdown). Holding a `TextureGpuPtr` across the application's lifetime
+// boundary is undefined behavior.
+class TextureGpu
+{
+public:
+    int Width = 0;
+    int Height = 0;
+    virtual ImTextureID TextureID() = 0;
+
+    TextureGpu() = default;
+    virtual ~TextureGpu();
+
+    // Backend-specific upload of an HxWx4 RGBA buffer. Internal: prefer
+    // calling the public factory `CreateTextureGpuFromRgbaData` instead.
+    virtual void _impl_StoreTexture(int width, int height, unsigned char* image_data_rgba) = 0;
+};
+
+using TextureGpuPtr = std::shared_ptr<TextureGpu>;
+
+
+// `HelloImGui::CreateTextureGpuFromRgbaData(rgbaData, width, height)`:
+// Upload raw RGBA pixel data to the GPU and return an owning handle.
+//
+// - `rgbaData` must point to `width * height * 4` bytes of 8-bit RGBA pixels
+//   (one byte per channel, row-major, no padding). The caller retains
+//   ownership of `rgbaData`; the buffer is read once during the upload and
+//   not referenced afterwards.
+// - The returned `TextureGpuPtr` owns the GPU resource: when its last
+//   reference drops, the texture is freed automatically.
+// - Returns a null `TextureGpuPtr` if the rendering backend is not
+//   supported or no live backend is available.
+//
+// Threading: must be called from the GUI thread, while a live rendering
+// backend is initialized. Calling it before `HelloImGui::Run` has set up
+// the backend (or after teardown) is undefined behavior.
+TextureGpuPtr CreateTextureGpuFromRgbaData(
+    const unsigned char* rgbaData, int width, int height);
+
+// @@md
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -646,21 +744,10 @@ namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <vector>
-#include <array>
+
 
 namespace HelloImGui
 {
-    using ImWcharPair = std::array<ImWchar, 2>;
-
-    // Utility to translate DearImGui common Unicode ranges to ImWcharPair (Python)
-    //   (get_glyph_ranges_chinese_simplified_common, get_glyph_ranges_japanese, ...)
-    std::vector<ImWcharPair> translate_common_glyph_ranges(const std::vector<ImWchar> & glyphRanges);
-
-    // Utility to translate DearImGui common Unicode ranges to ImWcharPair (C++)
-    //   (GetGlyphRangesChineseSimplifiedCommon, GetGlyphRangesJapanese, ...)
-    std::vector<ImWcharPair> TranslateCommonGlyphRanges(const ImWchar* glyphRanges);
-
     // @@md#Fonts
 
     // When loading fonts, use
@@ -676,16 +763,6 @@ namespace HelloImGui
     // Font loading parameters: several options are available (color, merging, range, ...)
     struct FontLoadingParams
     {
-        // if true, the font size will be adjusted automatically to account for HighDPI
-        bool adjustSizeToDpi = true;
-
-        // if true, the font will be loaded with the full glyph range
-        bool useFullGlyphRange = false;
-        // if set, fontConfig.GlyphRanges, and
-        //   fontConfig.OversampleH / fontConfig.OversampleV will be set to 1
-        //   when useFullGlyphRange is true (this is useful to save memory)
-        bool reduceMemoryUsageIfFullGlyphRange = true;
-
         // if true, the font will be merged to the last font
         bool mergeToLastFont = false;
 
@@ -697,76 +774,31 @@ namespace HelloImGui
         // Otherwise, it will be loaded from the filesystem
         bool insideAssets = true;
 
-        // the ranges of glyphs to load, as a list of pairs of ImWchar
-        //    - if empty, the default glyph range will be used
-        //    - you can specify several ranges
-        //    - intervals bounds are inclusive
-        // Note: in order to use common ranges defined by ImGui (GetGlyphRangesJapanese, GetGlyphRangesChinese, ...)
-        //       use TranslateCommonGlyphRanges (or translate_common_glyph_ranges in Python)
-        std::vector<ImWcharPair> glyphRanges = {};
-
         // ImGui native font config to use
         ImFontConfig fontConfig = ImFontConfig();
-
-        // if true, the font will be loaded and then FontAwesome icons will be merged to it
-        // (deprecated, use mergeToLastFont instead, and load in two steps)
-        // This will use an old version of FontAwesome (FontAwesome 4)
-        bool mergeFontAwesome = false;
-        ImFontConfig fontConfigFontAwesome = ImFontConfig();
-    };
-
-    // A font that will be automatically resized to account for changes in DPI
-    // Use LoadAdaptiveFont instead of LoadFont to get this behavior.
-    // Fonts loaded with LoadAdaptiveFont will be reloaded during execution
-    // if ImGui::GetIO().FontGlobalScale is changed.
-    struct FontDpiResponsive
-    {
-        ImFont* font = nullptr;
-        std::string fontFilename;
-        float fontSize = 0.f;
-        FontLoadingParams fontLoadingParams;
     };
 
 
     // Loads a font with the specified parameters
-    // (this font will not adapt to DPI changes after startup)
     ImFont* LoadFont(
         const std::string & fontFilename, float fontSize,
         const FontLoadingParams & params = {});
 
-    // Loads a font with the specified parameters
-    // This font will adapt to DPI changes after startup.
-    // Only fonts loaded with LoadAdaptiveFont will adapt to DPI changes:
-    // avoid mixing LoadFont/LoadFontDpiResponsive)
-    FontDpiResponsive* LoadFontDpiResponsive(
-        const std::string & fontFilename, float fontSize,
-        const FontLoadingParams & params = {});
-
-    // @@md
-
-    //
-    // Deprecated API below, kept for compatibility (uses LoadFont internally)
-    //
     ImFont* LoadFontTTF(
         const std::string & fontFilename,
         float fontSize,
-        bool useFullGlyphRange = false,
         ImFontConfig config = ImFontConfig()
-        );
+    );
+
     ImFont* LoadFontTTF_WithFontAwesomeIcons(
         const std::string & fontFilename,
         float fontSize,
-        bool useFullGlyphRange = false,
-        ImFontConfig configFont = ImFontConfig(),
-        ImFontConfig configIcons = ImFontConfig()
-        );
-    ImFont* MergeFontAwesomeToLastFont(float fontSize, ImFontConfig config = ImFontConfig());
+        ImFontConfig configFont = ImFontConfig()
+    );
 
-
-    // indicates that fonts were loaded using HelloImGui::LoadFont. In that case, fonts may have been resized to
-    // account for HighDPI (on macOS and emscripten)
-    bool DidCallHelloImGuiLoadFontTTF();
+    // @@md
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/runner_params.h included by hello_imgui.h                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -779,6 +811,7 @@ namespace HelloImGui
 //                       hello_imgui/screen_bounds.h included by hello_imgui/app_window_params.h                //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include <array>
 #include <stddef.h>
 
 
@@ -823,9 +856,6 @@ namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-#ifdef __APPLE__
-#include <TargetConditionals.h>
-#endif
 
 namespace HelloImGui
 {
@@ -1008,6 +1038,13 @@ struct AppWindowParams
     // Full screen windows cannot be hidden.
     bool hidden = false;
 
+    // `topMost`: _bool, default = false_. Should the window stay on top of other windows.
+    // This is taken into account dynamically (you can change this at runtime).
+    // Note: This is only supported on desktop platforms (Windows, macOS, Linux).
+    // On mobile platforms (iOS, Android) and web (Emscripten), this setting is ignored.
+    // This setting is also ignored when the window is in fullscreen mode.
+    bool topMost = false;
+
 
     // --------------- Borderless window params ------------------
 
@@ -1056,6 +1093,12 @@ struct AppWindowParams
     // - under Pyodide, the default behavior is to capture the keyboard events for the canvas.
     EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default;
 
+    // `emscriptenAllowBrowserZoomShortcuts`: _bool, default=true_. (For Emscripten with GLFW backend only)
+    // If true, browser zoom shortcuts (Ctrl/Cmd + Plus/Minus/0) are forwarded to the browser
+    // instead of being captured by the application.
+    // Set to false if your application needs to handle these key combinations itself.
+    bool emscriptenAllowBrowserZoomShortcuts = true;
+
 
     // ----------------- repaint the window during resize -----------------
     // Very advanced and reserved for advanced C++ users.
@@ -1070,7 +1113,6 @@ struct AppWindowParams
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/imgui_window_params.h included by hello_imgui/runner_params.h              //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-#include <functional>
 
 
 namespace HelloImGui
@@ -1182,9 +1224,26 @@ struct ImGuiWindowParams
 
     // ------------ Theme ---------------------------------------------------------------
 
-    // tweakedTheme: (enum ImGuiTheme::ImGuiTweakedTheme)
-    // Changes the ImGui theme. Several themes are available, you can query the list
-    // by calling HelloImGui::AvailableThemes()
+    // tweakedTheme: sets the ImGui theme at startup.
+    //
+    // 1. Pick a base theme (e.g. DarculaDarker, Cherry, SoDark_AccentBlue,
+    //    PhotoshopStyle, LightRounded, ...). See all options in ImGuiTheme_ enum
+    //    (defined in imgui_theme.h).
+    // 2. Optionally fine-tune with ImGuiThemeTweaks (rounding, hue, saturation,
+    //    alpha, luminance).
+    //
+    // C++:
+    //   params.imGuiWindowParams.tweakedTheme.Theme = ImGuiTheme::ImGuiTheme_Cherry;
+    //   // optionally:
+    //   params.imGuiWindowParams.tweakedTheme.Tweaks.Rounding = 10.f;
+    //
+    // Python:
+    //   params.imgui_window_params.tweaked_theme.theme = imgui_theme.ImGuiTheme_.cherry
+    //   # optionally:
+    //   params.imgui_window_params.tweaked_theme.tweaks.rounding = 10.0
+    //
+    // At runtime, ShowThemeTweakGui() lets the user select and tweak themes
+    // interactively.
     ImGuiTheme::ImGuiTweakedTheme tweakedTheme;
 
     // backgroundColor:
@@ -1328,8 +1387,6 @@ std::string EdgeToolbarTypeName(EdgeToolbarType e);
 // @@md#DefaultIconFont
 
 // HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font
-// Breaking change in v1.5.0:
-// - the default icon font is now FontAwesome 6, which includes many more icons.
 // - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:
 //     #include "hello_imgui/icons_font_awesome_6.h" or #include "hello_imgui/icons_font_awesome_4.h"
 enum class DefaultIconFont
@@ -1455,6 +1512,10 @@ struct RunnerCallbacks
     //  It is a good place to add new dockable windows.
     VoidFunction PreNewFrame = EmptyVoidFunction();
 
+    // `PostNewFrame`: You can here add a function that will be called at each frame,
+    //  just after the call to ImGui::NewFrame(), and before any Gui code.
+    VoidFunction PostNewFrame = EmptyVoidFunction();
+
     // `BeforeImGuiRender`: You can here add a function that will be called at each frame,
     //  after the user Gui code, and just before the call to
     //  ImGui::Render() (which will also call ImGui::EndFrame()).
@@ -1475,6 +1536,13 @@ struct RunnerCallbacks
     // `PostRenderDockableWindows`: Fill it with a function that will be called
     // after the dockable windows are rendered.
     VoidFunction PostRenderDockableWindows = EmptyVoidFunction();
+
+    // `ThemeChanged`: You can here add a function that will be called
+    //  immediately after `ImGuiTheme::ApplyTheme` has been executed. This is
+    //  typically triggered when the user clicks a theme menu item in the menubar,
+    //  allowing custom drawings or UI elements to update their colors right after
+    //  the theme change.
+    VoidFunction ThemeChanged = EmptyVoidFunction();
 
     // `AnyBackendEventCallback`:
     //  Callbacks for events from a specific backend. _Only implemented for SDL.
@@ -1526,7 +1594,7 @@ You can define several layouts and switch between them:  each layout which will 
 HelloImGui will then provide a "View" menu with options to show/hide the dockable windows,
  restore the default layout, switch between layouts, etc.
 
-![demo docking](https://traineq.org/ImGuiBundle/HelloImGuiLayout.gif)
+![demo docking](https://imgui-bundle.pages.dev/resources/HelloImGuiLayout.gif)
 
 * Source for this example: https://github.com/pthom/hello_imgui/tree/master/src/hello_imgui_demos/hello_imgui_demodocking
 * [Video explanation on YouTube](https://www.youtube.com/watch?v=XKxmz__F4ow) (5 minutes)
@@ -2117,6 +2185,9 @@ enum class RendererBackendType
 
 // @@md
 
+std::string PlatformBackendTypeToString(PlatformBackendType platformBackendType);
+std::string RendererBackendTypeToString(RendererBackendType rendererBackendType);
+
 // --------------------------------------------------------------------------------------------------------------------
 
 // @@md#IniFolderType
@@ -2179,15 +2250,26 @@ std::string IniFolderLocation(IniFolderType iniFolderType);
 
 // @@md#FpsIdling
 
-// FpsIdlingMode is an enum that describes the different modes of idling when rendering the GUI.
-// - Sleep: the application will sleep when idling to reduce CPU usage.
-// - EarlyReturn: rendering will return immediately when idling.
-//   This is specifically designed for event-driven, and real-time applications.
-//   Avoid using it in a tight loop without pauses, as it may cause excessive CPU consumption.
-// - Auto: use platform-specific default behavior.
-//    On most platforms, it will sleep. On Emscripten, `Render()` will return immediately
-//    to avoid blocking the main thread.
-// Note: you can override the default behavior by explicitly setting Sleep or EarlyReturn.
+// FpsIdlingMode is an enum that describes the different modes of idling
+// when rendering the GUI.
+//
+// - Sleep:
+//     The application sleeps when idling in order to reduce CPU usage.
+//
+// - EarlyReturn:
+//     Rendering returns immediately when idling.
+//     This is designed for event-driven or real-time applications,
+//     including Jupyter/async usage and web applications.
+//     Avoid using EarlyReturn inside a tight CPU loop without pauses,
+//     as it may cause excessive CPU consumption.
+//
+// - Auto:
+//     Use platform-specific default behavior.
+//     On most native platforms, it will sleep.
+//     On Emscripten, Render() will always return immediately
+//     to avoid blocking the main browser thread.
+//
+// Note: you can override the default behavior by explicitly choosing Sleep or EarlyReturn.
 enum class FpsIdlingMode
 {
     Sleep,
@@ -2195,44 +2277,100 @@ enum class FpsIdlingMode
     Auto,
 };
 
-// FpsIdling is a struct that contains Fps Idling parameters
+
+// FpsIdling is a struct that contains parameters controlling the application's
+// frame pacing, idling behavior, and performance.
+//
+// It provides tools to:
+//   - lower CPU/GPU usage during inactivity,
+//   - control maximum refresh speed,
+//   - enable/disable synchronization to the monitor refresh rate,
+//   - adapt frame pacing for special environments (notebooks, web, etc.).
 struct FpsIdling
 {
-    // `fpsIdle`: _float, default=9_.
-    //  ImGui applications can consume a lot of CPU, since they update the screen
-    //  very frequently. In order to reduce the CPU usage, the FPS is reduced when
-    //  no user interaction is detected.
-    //  This is ok most of the time but if you are displaying animated widgets
-    //  (for example a live video), you may want to ask for a faster refresh:
-    //  either increase fpsIdle, or set it to 0 for maximum refresh speed
-    //  (you can change this value during the execution depending on your application
-    //  refresh needs)
+    // `fpsIdle`: _float, default = 9_.
+    //
+    // When the application is idling (no user interaction detected), its FPS
+    // will be reduced to this value in order to save CPU and GPU resources.
+    //
+    // For animated or real-time widgets (e.g., live video), you may need a
+    // higher idle refresh rate, or even disable idling entirely.
+    //
+    // Set fpsIdle = 0.f for maximum refresh speed during idling.
     float fpsIdle = 9.f;
 
-    // `timeActiveAfterLastEvent`: _float, default=3.f_.
-    //  Time in seconds after the last event before the application is considered idling.
+
+    // `timeActiveAfterLastEvent`: _float, default = 3.f_.
+    //
+    // The duration (in seconds) after the last user event before the
+    // application switches to idling mode.
     float timeActiveAfterLastEvent = 3.f;
 
-    // `enableIdling`: _bool, default=true_.
-    //  Disable idling by setting this to false.
-    //  (this can be changed dynamically during execution)
-    bool  enableIdling = true;
 
-    // `isIdling`: bool (dynamically updated during execution)
-    //  This bool will be updated during the application execution,
-    //  and will be set to true when it is idling.
-    bool  isIdling = false;
+    // `enableIdling`: _bool, default = true_.
+    //
+    // Enables or disables idling. When disabled, the application renders at
+    // full speed regardless of user activity.
+    //
+    // This can be changed dynamically during execution.
+    bool enableIdling = true;
 
-    // `rememberEnableIdling`: _bool, default=true_.
-    //  If true, the last value of enableIdling is restored from the settings at startup.
-    bool  rememberEnableIdling = false;
 
-    // `fpsIdlingMode`: _FpsIdlingMode, default=FpsIdlingMode::Automatic_.
-    // Sets the mode of idling when rendering the GUI (Sleep, EarlyReturn, Automatic)
+    // `isIdling`: _bool (updated dynamically)_.
+    //
+    // This boolean is updated internally at runtime, and becomes true when
+    // the application is considered idle.
+    bool isIdling = false;
+
+
+    // `rememberEnableIdling`: _bool, default = false.
+    //
+    // If true, the value of enableIdling will be restored from previous
+    // saved settings on startup.
+    bool rememberEnableIdling = false;
+
+
+    // `fpsIdlingMode`: _FpsIdlingMode, default = FpsIdlingMode::Auto_.
+    //
+    // Controls how idling is implemented internally:
+    //   - Sleep: sleep while idling (minimizes CPU usage)
+    //   - EarlyReturn: return immediately when idling (best for notebooks and async use)
+    //   - Auto: platform-specific behavior
     FpsIdlingMode fpsIdlingMode = FpsIdlingMode::Auto;
+
+
+    // `vsyncToMonitor`: _bool, default = true_.
+    //
+    // If true, rendering is synchronized with the monitor refresh rate (commonly
+    // known as *VSync*). This limits the frame rate to the display frequency
+    // (e.g., 60 Hz, 120 Hz) and prevents unnecessary CPU/GPU load.
+    // *Only implemented with OpenGL*
+    //
+    // If false, rendering runs as fast as possible, or is limited by `fpsMax`.
+    // This is useful for benchmarking, offscreen rendering, or Jupyter/async workflows.
+    //
+    // Internally, this maps to the backend swap interval (e.g. glfwSwapInterval).
+    bool vsyncToMonitor = true;
+
+
+    // `fpsMax`: _float, default = 0.f_ (unlimited).
+    //
+    // Sets an explicit upper limit on the frame rate when not idling.
+    //
+    // This is particularly useful when:
+    //   - vsyncToMonitor is false,
+    //   - you want to avoid >1000 FPS rendering loops,
+    //   - preventing excessive CPU/GPU usage on high-performance machines,
+    //   - ensuring fairness in cooperative async environments.
+    //
+    // If fpsMax > 0, the application ensures that each frame takes at least
+    // (1 / fpsMax) seconds to render.
+    //
+    // When both vsyncToMonitor and fpsMax are enabled:
+    //   - The lower (stricter) limit dominates.
+    float fpsMax = 0.f;
 };
 // @@md
-
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -2321,6 +2459,12 @@ struct RunnerParams
     // `iniFilename_useAppWindowTitle`: _bool, default = true_.
     // Shall the iniFilename be derived from appWindowParams.windowTitle (if not empty)
     bool iniFilename_useAppWindowTitle = true;
+    // `iniDisable`: _bool, default = false_.
+    // If true, do not save or load any settings to or from an ini file.
+    bool iniDisable = false;
+    // `iniClearPreviousSettings`: _bool, default = false_.
+    // If true, delete any previous settings ini file at application startup.
+    bool iniClearPreviousSettings = false;
 
 
     // --------------- Exit -------------------
@@ -2371,7 +2515,7 @@ struct RunnerParams
 // @@md#IniIniSettingsLocation
 
 // IniSettingsLocation returns the path to the ini file for the application settings.
-std::string IniSettingsLocation(const RunnerParams& runnerParams);
+std::optional<std::string> IniSettingsLocation(const RunnerParams& runnerParams);
 
 // HasIniSettings returns true if the ini file for the application settings exists.
 bool HasIniSettings(const RunnerParams& runnerParams);
@@ -2433,6 +2577,15 @@ struct SimpleRunnerParams
     //  When running, use:
     //      HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
     bool  enableIdling = true;
+
+    // `topMost`: _bool, default=false_.
+    //  If true, the window will stay on top of other windows (desktop platforms only).
+    //  Useful especially when running from notebooks to keep the app visible above the browser.
+    bool topMost = false;
+
+    // `iniDisable`: _bool, default=false_.
+    //  If true, do not save or load any settings to or from an ini file.
+    bool iniDisable = false;
 
     RunnerParams ToRunnerParams() const;
 };
@@ -2555,7 +2708,6 @@ namespace HelloImGui
     #endif
      // Let SDL redefine main under iOS
     #ifdef HELLOIMGUI_IOS
-        #include <SDL.h>
     #endif
 #endif
 
@@ -2605,7 +2757,8 @@ void Run(
     bool windowSizeAuto = false,
     bool windowRestorePreviousGeometry = false,
     const ScreenSize &windowSize = DefaultWindowSize,
-    float fpsIdle = 10.f
+    float fpsIdle = 10.f,
+    bool topMost = false
 );
 
 // =========================== HelloImGui::ManualRender ==================================
@@ -2649,13 +2802,13 @@ namespace ManualRender
     //     By default,
     //       - On Emscripten, `ManualRender::Render()` will return immediately to avoid blocking the main thread.
     //       - On other platforms, it will sleep
-    //  2. If initialized with `RunnerParams`, a copy of the `RunnerParams` will be made
+    //  2. If initialized with `RunnerParams`, a reference to the user's `RunnerParams` is kept
     //     (which can be accessed with `HelloImGui::GetRunnerParams()`).
 
     // Initializes the rendering with the full customizable `RunnerParams`.
     // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-    // A distinct copy of `RunnerParams` is stored internally.
-    void SetupFromRunnerParams(const RunnerParams& runnerParams);
+    // A reference to the user's `RunnerParams` is kept internally (similar to HelloImGui::Run).
+    void SetupFromRunnerParams(RunnerParams& runnerParams);
 
     // Initializes the rendering with `SimpleRunnerParams`.
     // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
@@ -2669,7 +2822,8 @@ namespace ManualRender
         bool windowSizeAuto = false,
         bool windowRestorePreviousGeometry = false,
         const ScreenSize& windowSize = DefaultWindowSize,
-        float fpsIdle = 10.f
+        float fpsIdle = 10.f,
+        bool topMost = false
     );
 
     // Renders the current frame. Should be called regularly to maintain the application's responsiveness.
@@ -2694,6 +2848,27 @@ namespace ManualRender
 
 // `IsUsingHelloImGui()`: returns true if the application is using HelloImGui
     bool IsUsingHelloImGui();
+
+// `InitGlLoader()`: initializes HelloImGui's OpenGL function loader (GLAD).
+//  Required ONLY when using HelloImGui's image / texture helpers
+//  (`ImageAndSizeFromAsset`, `CreateTextureGpuFromRgbaData`, anything that
+//  uploads to a `TextureGpuOpenGl`) OUTSIDE a `HelloImGui::Run()` context.
+//  Inside `Run()`, the loader is initialized automatically.
+//
+//  Typical use case: hosting `imgui_md` in a pure GLFW + PyOpenGL Python
+//  backend, or in a vanilla Dear ImGui glfw+opengl3 C++ app.
+//
+//  Preconditions:
+//   - A GL context must be current (created by your own GLFW/SDL2/etc).
+//   - HelloImGui must be compiled with HELLOIMGUI_USE_GLFW3 or HELLOIMGUI_USE_SDL2.
+//
+//  Returns true on success, false if no supported platform backend was
+//  compiled in. Idempotent: safe to call repeatedly.
+//
+//  Note: only the OpenGL3 standalone path is supported. Metal, Vulkan and
+//  DirectX11/12 require device handles that HelloImGui's runner would
+//  normally create — they are not usable outside `Run()`.
+    bool InitGlLoader();
 
 // `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
 //  May differ from ImGui::GetIO().FrameRate, since one can choose the duration

@@ -1,5 +1,13 @@
 """ImmApp: Immediate App Toolkit for ImGui Bundle"""
 
+###############################################################################
+# This file is a part of Dear ImGui Bundle
+# -----------------------------------------------------------------------------
+# ImmApp is an Immediate App Toolkit for ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: B008, F821
 from typing import Tuple, Optional, Callable, List, overload, Any
 import enum
@@ -26,6 +34,8 @@ DefaultScreenSize = (800, 600)
 
 # #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
 #
+# These functions wrap ImPlot::BeginPlot and ImPlot::EndPlot,
+# but they enable to make the plot content draggable inside a node
 def begin_plot_in_node_editor(
     title_id: str, size: Optional[ImVec2Like] = None, flags: ImPlotFlags = 0
 ) -> bool:
@@ -106,7 +116,7 @@ class AddOnsParams:
 
     # Set withImplot=True if you need to plot graphs with implot
     with_implot: bool = False
-    # Set withImplot3=True if you need to plot 3 graphs with implot3
+    # Set withImplot3d=True if you need to plot 3 graphs with implot3d
     with_implot3d: bool = False
 
     # Set withMarkdown=True if you need to render Markdown
@@ -119,6 +129,16 @@ class AddOnsParams:
 
     # Set withTexInspect=True if you need to use imgui_tex_inspect
     with_tex_inspect: bool = False
+
+    # Set withImAnim=True if you need to use ImAnim.
+    # If True, then iam_update_begin_frame() and iam_clip_update() will be called automatically at each frame
+    with_im_anim: bool = False
+
+    # Set withLatex=True to enable native LaTeX math rendering in markdown
+    # (via MicroTeX). Implies withMarkdown=True. The $...$ and $$...$$
+    # syntaxes will be parsed as inline / display math formulas.
+    # Requires building with IMGUI_BUNDLE_WITH_MICROTEX=ON (default when FreeType is available).
+    with_latex: bool = False
 
     # #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     #
@@ -143,6 +163,8 @@ class AddOnsParams:
         with_markdown: bool = False,
         with_node_editor: bool = False,
         with_tex_inspect: bool = False,
+        with_im_anim: bool = False,
+        with_latex: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
         update_node_editor_colors_from_imgui_colors: bool = True,
         with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
@@ -184,11 +206,15 @@ def run(
     window_restore_previous_geometry: bool = False,
     window_size: Optional[ScreenSize] = None,
     fps_idle: float = 10.0,
+    top_most: bool = False,
+    ini_disable: bool = False,
     with_implot: bool = False,
     with_implot3d: bool = False,
     with_markdown: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
+    with_im_anim: bool = False,
+    with_latex: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
@@ -211,6 +237,7 @@ def run(
          - `with_implot`: if True, then a context for implot will be created/destroyed automatically
          - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized
            (i.e. required fonts will be loaded)
+         - `with_latex`: if True, enable native LaTeX math rendering in markdown (implies with_markdown)
          - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor
            will be created automatically.
 
@@ -227,10 +254,14 @@ def run_with_markdown(
     window_restore_previous_geometry: bool = False,
     window_size: Optional[ScreenSize] = None,
     fps_idle: float = 10.0,
+    top_most: bool = False,
+    ini_disable: bool = False,
     with_implot: bool = False,
     with_implot3d: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
+    with_im_anim: bool = False,
+    with_latex: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
     with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
 ) -> None:
@@ -315,7 +346,7 @@ def delete_node_editor_settings(runner_params: HelloImGui.RunnerParams) -> None:
 
 # <submodule manual_render>
 class manual_render:  # Proxy class that introduces typings for the *submodule* manual_render
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     """ namespace ManualRender"""
     # Immapp::ManualRender is a namespace that groups functions, allowing fine-grained control over the rendering process:
     # - It is customizable like Immapp::Run: initialize it with `RunnerParams` and `AddOnsParams`.
@@ -330,7 +361,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     ) -> None:
         """Initializes the rendering with the full customizable `RunnerParams`.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-         A distinct copy of `RunnerParams` is stored internally.
+         A reference to the user's `RunnerParams` is kept internally (similar to ImmApp::Run).
 
 
         Python bindings defaults:
@@ -360,11 +391,14 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
         window_restore_previous_geometry: bool = False,
         window_size: Optional[ScreenSize] = None,
         fps_idle: float = 10.0,
+        top_most: bool = False,
+        ini_disable: bool = False,
         with_implot: bool = False,
         with_implot3d: bool = False,
         with_markdown: bool = False,
         with_node_editor: bool = False,
         with_tex_inspect: bool = False,
+        with_latex: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
         with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
     ) -> None:
@@ -405,7 +439,7 @@ def clock_seconds() -> float:
 
 # <submodule code_utils>
 class code_utils:  # Proxy class that introduces typings for the *submodule* code_utils
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     """ namespace CodeUtils"""
 
     @staticmethod
@@ -427,12 +461,12 @@ class code_utils:  # Proxy class that introduces typings for the *submodule* cod
 
 # <submodule snippets>
 class snippets:  # Proxy class that introduces typings for the *submodule* snippets
-    pass  # (This corresponds to a C++ namespace. All method are static!)
+    pass  # (This corresponds to a C++ namespace. All methods are static!)
     #
     # TextEditorBundle: addition to ImGuiColorTextEdit, specific to ImGuiBundle
     #
 
-    class SnippetLanguage(enum.Enum):
+    class SnippetLanguage(enum.IntEnum):
         cpp = enum.auto()  # (= 0)
         hlsl = enum.auto()  # (= 1)
         glsl = enum.auto()  # (= 2)
@@ -442,11 +476,10 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         lua = enum.auto()  # (= 6)
         python = enum.auto()  # (= 7)
 
-    class SnippetTheme(enum.Enum):
-        dark = enum.auto()  # (= 0)
-        light = enum.auto()  # (= 1)
-        retro_blue = enum.auto()  # (= 2)
-        mariana = enum.auto()  # (= 3)
+    class SnippetTheme(enum.IntEnum):
+        auto = enum.auto()  # (= 0)  # Automatic based on bg color
+        dark = enum.auto()  # (= 1)
+        light = enum.auto()  # (= 2)
 
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:
@@ -455,8 +488,8 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
 
     class SnippetData:
         code: str = ""
-        language: SnippetLanguage = DefaultSnippetLanguage()
-        palette: SnippetTheme = SnippetTheme.light
+        language: snippets.SnippetLanguage = snippets.default_snippet_language()
+        palette: snippets.SnippetTheme = snippets.SnippetTheme.auto
 
         show_copy_button: bool = (
             True  # Displayed on top of the editor (Top Right corner)
@@ -484,8 +517,8 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         def __init__(
             self,
             code: str = "",
-            language: SnippetLanguage = DefaultSnippetLanguage(),
-            palette: SnippetTheme = SnippetTheme.light,
+            language: snippets.SnippetLanguage = snippets.default_snippet_language(),
+            palette: snippets.SnippetTheme = snippets.SnippetTheme.auto,
             show_copy_button: bool = True,
             show_cursor_position: bool = True,
             displayed_filename: str = "",

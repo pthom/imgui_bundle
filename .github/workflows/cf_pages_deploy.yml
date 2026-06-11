@@ -1,0 +1,81 @@
+name: Cloudflare Pages deploy
+
+on:
+  workflow_dispatch:
+#  pull_request:
+#  release:
+#    types:
+#      - published
+#  push:
+#    branches:
+#      - master
+#      - main
+
+# Refuse concurrent runs
+concurrency:
+  group: cf-pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: "Build Cloudflare Pages deploy"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          submodules: recursive
+
+      #
+      # Install required apps (just, python, emscripten, etc)
+      # =====================================================
+      # install just
+      - uses: extractions/setup-just@v4
+      # install emscripten (and cache it)
+      - name: Setup emsdk
+        uses: emscripten-core/setup-emsdk@v16
+        with:
+          # Make sure to set a version number!
+          version: 5.0.4
+          # This is the name of the cache folder.
+          # The cache folder will be placed in the build directory,
+          #  so make sure it doesn't conflict with anything!
+          actions-cache-folder: 'emsdk-cache'
+      - name: Verify emscripten toolchain
+        run: emcc -v
+      # Install python 3.13 required by pyodide
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+      # install jupyter-book
+      - name: Install jupyter-book requirements
+        run: pip install -r docs/book/requirements.txt
+      # install typst
+      - name: Install Typst
+        uses: typst-community/setup-typst@v5
+      # Install wrangler (to upload to cloudflare)
+      - name: Install wrangler
+        run: npm install -g wrangler
+
+      #
+      # Optional ssh / debug
+      # =====================================================
+      # - name: Setup interactive tmate session
+      #   uses: mxschmitt/action-tmate@v3
+
+      #
+      # Build all elements
+      # =====================================================
+      - name: builds elements (doc, explorer, pyodide wheel, etc) - long!
+        run: just cf_stage_prepare
+
+      #
+      # Prepare site and upload to CloudFlare
+      # =====================================================
+      - name: Stage site
+        run: just cf_stage
+      - name: Deploy to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: just cf_deploy

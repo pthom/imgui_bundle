@@ -34,7 +34,7 @@
 
 #include "demo_utils/api_demos.h"
 #include "immapp/immapp.h"
-#include "ImGuizmo/ImGuizmo.h"
+#include "ImGuizmo.h"
 
 
 #include <math.h>
@@ -405,13 +405,14 @@ GuiFunction make_closure_demo_guizmo()
         ImGui::Separator();
         for (int matId = 0; matId < gizmoCount; matId++)
         {
-            ImGuizmo::SetID(matId);
+            ImGuizmo::PushID(matId);
 
             EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId);
             if (ImGuizmo::IsUsing())
             {
                 lastUsing = matId;
             }
+            ImGuizmo::PopID();
         }
 
         ImGui::End();

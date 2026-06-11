@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Redirecting to imgui-bundle.pages.dev/doc</title>
+<script>
+(function () {
+  // Old GitHub Pages URLs were rooted at /imgui_bundle/ and served the docs.
+  // Docs now live under /doc/ on imgui-bundle.pages.dev, so strip the base
+  // prefix and prepend /doc.
+  var base = "/imgui_bundle";
+  var newHost = "https://imgui-bundle.pages.dev/doc";
+  var path = window.location.pathname;
+  if (path.indexOf(base) === 0) {
+    path = path.substring(base.length);
+  }
+  if (path === "") {
+    path = "/";
+  }
+  window.location.replace(newHost + path + window.location.search + window.location.hash);
+})();
+</script>
+<meta http-equiv="refresh" content="2; url=https://imgui-bundle.pages.dev/doc/">
+</head>
+<body>
+<p>The documentation has moved to
+<a href="https://imgui-bundle.pages.dev/doc/">imgui-bundle.pages.dev/doc</a>.
+Redirecting...</p>
+</body>
+</html>

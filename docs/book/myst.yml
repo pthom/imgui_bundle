@@ -1,0 +1,31 @@
+version: 1
+
+project:
+  title: Dear ImGui Bundle
+#  authors:
+#    - name: Pascal Thomet
+  copyright: 2022-2026, Pascal Thomet
+  github: pthom/imgui_bundle
+
+  exports:
+    - format: pdf
+      output: _build/exports/imgui_bundle_book.pdf
+      toc: _toc.yml
+      template: lapreprint-typst
+
+site:
+  options:
+    logo: ../../logo/logo_imgui_bundle_1024.png
+    logo_url: https://imgui-bundle.pages.dev/   # logo + title → landing
+    logo_text: Dear ImGui Bundle
+    favicon: ../../logo/logo_imgui_bundle_1024.png
+    folders: true
+    style: _static/custom.css
+    template: book-theme
+  nav:
+    - title: Interactive explorer
+      url: https://imgui-bundle.pages.dev/explorer/
+    - title: Python playground
+      url: https://imgui-bundle.pages.dev/playground/
+    - title: Repository
+      url: https://github.com/pthom/imgui_bundle

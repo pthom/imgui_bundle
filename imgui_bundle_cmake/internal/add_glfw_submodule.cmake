@@ -6,6 +6,7 @@ function(_set_glfw_build_options_pre_add)
     set(GLFW_BUILD_TESTS OFF PARENT_SCOPE)
     set(GLFW_BUILD_DOCS OFF PARENT_SCOPE)
     set(GLFW_INSTALL OFF PARENT_SCOPE)
+    set(GLFW_BUILD_WAYLAND OFF PARENT_SCOPE)
 endfunction()
 
 function(_set_glfw_build_options_post_add)

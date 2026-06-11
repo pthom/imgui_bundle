@@ -1,0 +1,31 @@
+{
+  "format": "jb-book",
+  "root": {
+    "file": "discover_immediate",
+    "title": "Intro"
+  },
+  "chapters": [
+    {
+      "file": "discover/hello_world",
+      "sections": [
+        {
+          "file": "discover/widget_edit",
+          "title": "Edit value with widgets"
+        },
+        {
+          "file": "discover/layout_advices",
+          "title": "Advices to layout your GUI"
+        },
+        {
+          "file": "discover/whats_next",
+          "title": "What's next?"
+        }
+      ],
+      "title": "Discover Immediate Mode GUIs"
+    },
+    {
+      "file": "imgui/intro",
+      "title": "Discover ImGui"
+    }
+  ]
+}

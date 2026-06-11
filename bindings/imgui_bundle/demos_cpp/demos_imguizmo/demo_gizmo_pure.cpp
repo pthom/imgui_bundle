@@ -342,7 +342,7 @@ void EditTransform(
         mCurrentGizmoOperation,
         mCurrentGizmoMode,
         objectMatrix,
-        std::nullopt,
+        nullptr,
         ifFlag(useSnap, snap),
         ifFlag(boundSizing, bounds),
         ifFlag(boundSizingSnap, boundsSnap)
@@ -453,13 +453,14 @@ GuiFunction make_closure_demo_guizmo_pure()
         ImGui::Separator();
         for (int matId = 0; matId < gizmoCount; matId++)
         {
-            ImGuizmo::SetID(matId);
+            ImGuizmo::PushID(matId);
 
             EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId);
             if (ImGuizmo::IsUsing())
             {
                 lastUsing = matId;
             }
+            ImGuizmo::PopID();
         }
 
         ImGui::End();

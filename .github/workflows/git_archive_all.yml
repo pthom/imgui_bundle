@@ -12,7 +12,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout project source code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           path: project
 
@@ -23,7 +23,7 @@ jobs:
           base-repo: project
 
       - name: Create draft release and add artifacts
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: true
           files: srcs-full-*

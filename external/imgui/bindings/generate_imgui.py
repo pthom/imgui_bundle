@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
 import time
 from functools import wraps
@@ -35,6 +35,55 @@ def autogenerate_imgui() -> None:
     # Generate for imgui.h
     options_imgui = litgen_options_imgui(
         ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH
+    )
+
+    # GetStyleColorVec4 returns const ImVec4& (reference into the style array).
+    # With rv_policy::reference, Python can mutate the style directly without PushStyleColor.
+    # Exclude only for imgui (not shared options, since ImPlot's version returns by value).
+    options_imgui.fn_exclude_by_name__regex += r"|^GetStyleColorVec4$"
+    # Custom binding returns a copy instead.
+    options_imgui.custom_bindings.add_custom_bindings_to_main_module(
+        stub_code='''
+        def get_style_color_vec4(idx: Col) -> ImVec4:
+            """retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.
+            (Note: returns a copy, not a reference to the internal style color.)"""
+            ...
+    ''',
+        pydef_code="""
+        LG_MODULE.def("get_style_color_vec4",
+            [](ImGuiCol idx) -> ImVec4 { return ImGui::GetStyleColorVec4(idx); },
+            nb::arg("idx"),
+            "retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.");
+    """,
+    )
+
+    # ColorConvertRGBtoHSV / ColorConvertHSVtoRGB: output params should not be
+    # required as inputs. Custom bindings take only the 3 input values.
+    options_imgui.custom_bindings.add_custom_bindings_to_main_module(
+        stub_code='''
+        def color_convert_rgb_to_hsv(r: float, g: float, b: float) -> Tuple[float, float, float]:
+            """Convert rgb floats ([0-1],[0-1],[0-1]) to hsv floats ([0-1],[0-1],[0-1])"""
+            ...
+        def color_convert_hsv_to_rgb(h: float, s: float, v: float) -> Tuple[float, float, float]:
+            """Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1])"""
+            ...
+    ''',
+        pydef_code="""
+        LG_MODULE.def("color_convert_rgb_to_hsv",
+            [](float r, float g, float b) -> std::tuple<float, float, float> {
+                float h, s, v;
+                ImGui::ColorConvertRGBtoHSV(r, g, b, h, s, v);
+                return std::make_tuple(h, s, v);
+            }, nb::arg("r"), nb::arg("g"), nb::arg("b"),
+            "Convert rgb floats ([0-1],[0-1],[0-1]) to hsv floats ([0-1],[0-1],[0-1])");
+        LG_MODULE.def("color_convert_hsv_to_rgb",
+            [](float h, float s, float v) -> std::tuple<float, float, float> {
+                float r, g, b;
+                ImGui::ColorConvertHSVtoRGB(h, s, v, r, g, b);
+                return std::make_tuple(r, g, b);
+            }, nb::arg("h"), nb::arg("s"), nb::arg("v"),
+            "Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1])");
+    """,
     )
 
     # Workaround internal compiler error on MSVC:
@@ -111,7 +160,7 @@ def autogenerate_imgui_test_engine() -> None:
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_context.h")
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_internal.h")
     generator.process_cpp_file(imgui_test_engine_dir + "/imgui_te_ui.h")
-    # generator.process_cpp_file(imgui_test_engine_dir + "/imgui_capture_tool.h")
+    generator.process_cpp_file(imgui_test_engine_dir + "/imgui_capture_tool.h")
     generator.write_generated_code(
         output_cpp_pydef_file=PYDEF_DIR + "/pybind_imgui_test_engine.cpp",
         output_stub_pyi_file=STUB_DIR + "/imgui/test_engine.pyi",

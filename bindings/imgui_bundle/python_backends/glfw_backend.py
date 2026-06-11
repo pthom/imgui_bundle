@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+# Workaround for PyOpenGL 3.1.6+ on Wayland: GLFW uses X11/XWayland but PyOpenGL
+# defaults to Wayland EGL, causing a context mismatch. Force the X11 backend.
+# Must be set before any `import OpenGL` happens (the import below pulls it in).
+# See https://github.com/pthom/imgui_bundle/issues/321
+import os
+if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFORM"):
+    os.environ["PYOPENGL_PLATFORM"] = "x11"
+
 from imgui_bundle import imgui
-import glfw  # type: ignore
+import glfw  # pip install glfw
 
 from imgui_bundle.python_backends import compute_fb_scale
-from .opengl_backend import ProgrammablePipelineRenderer
+from .opengl_backend_programmable import ProgrammablePipelineRenderer
 
-from typing import Dict
+from typing import Dict, Any
 
 GlfwKey = int
 
@@ -15,7 +23,7 @@ GlfwKey = int
 class GlfwRenderer(ProgrammablePipelineRenderer):
     key_map: Dict[GlfwKey, imgui.Key]
 
-    def __init__(self, window, attach_callbacks: bool = True):
+    def __init__(self, window: Any, attach_callbacks: bool = True) -> None:
         super(GlfwRenderer, self).__init__()
         self.window = window
 
@@ -30,7 +38,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         self.io.display_size = glfw.get_framebuffer_size(self.window)
 
         def get_clipboard_text(_ctx: imgui.internal.Context) -> str:
-            return glfw.get_clipboard_string(self.window)
+            s = glfw.get_clipboard_string(self.window)
+            return s.decode()  # type: ignore
 
         def set_clipboard_text(_ctx: imgui.internal.Context, text: str) -> None:
             glfw.set_clipboard_string(self.window, text)
@@ -172,7 +181,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         # Application Keys
         key_map[glfw.KEY_MENU] = imgui.Key.menu
 
-    def keyboard_callback(self, window, glfw_key: int, scancode, action, mods):
+    def keyboard_callback(self, window, glfw_key: int, scancode, action, mods) -> None:  # type: ignore
         # perf: local for faster access
         io = self.io
         if glfw_key not in self.key_map:

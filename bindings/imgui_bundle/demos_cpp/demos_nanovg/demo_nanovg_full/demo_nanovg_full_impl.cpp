@@ -815,7 +815,7 @@ int loadDemoData(NVGcontext* vg, DemoData* data)
 	for (i = 0; i < 12; i++) {
 		char file[256];
 
-		snprintf(file, 256, "nanovg_demo_images/image%d.jpg", i+1);
+		snprintf(file, 256, "nanovg_demo_images/image%d.jpg", 1);
         std::string fileAssetPath = HelloImGui::AssetFileFullPath(file);
         data->images[i] = nvgCreateImage(vg, fileAssetPath.c_str(), 0);
         // snprintf(file, 128, "../example/images/image%d.jpg", i+1);

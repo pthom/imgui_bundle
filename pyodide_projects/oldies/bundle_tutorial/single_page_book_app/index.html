@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Immediate GUI Tutorial</title>
+    <link rel="stylesheet" href="resources_singlepage/style.css" />
+</head>
+<body>
+
+
+<!-- A splitter between the documentation content and the ImGui canvas
+    (using Split.js) -->
+<div class="split">
+    <div class="doc-layout-container" id="doc-layout-container">
+        <header class="main-header">
+            <div class="header-buttons left">
+                <button id="toggle-toc-btn" class="header-btn" title="Toggle Sidebar">☰</button>
+            </div>
+
+            <div class="header-buttons right">
+                <button id="toggle-dark-mode" class="header-btn" aria-label="Toggle dark mode">
+                </button>
+                <button id="page-sections-btn" class="header-btn" title="Contents">
+                    <span class="icon">☰</span>
+                </button>
+            </div>
+        </header>
+        <div class="toc-and-doc" id="toc-and-doc">
+            <nav id="toc-sidebar">
+                <h1>Immediate GUI Tutorial</h1>
+                <ul>
+                    <!-- Navigation items -->
+                </ul>
+            </nav>
+            <main id="content-area-wrapper">
+                <div id="content-area"></div>
+            </main>
+
+            <!-- page-sections-panel: This is where the page sections will be displayed in a panel which is hidden by default and slides from the right -->
+            <div id="page-sections-panel" class="page-sections"></div>
+        </div>
+
+
+    </div>
+
+    <div id="imgui-canvas-div">
+        <canvas class="canvas-emscripten" id="canvas" tabindex="0"
+                oncontextmenu="event.preventDefault()"
+                style="width: 100%; height: 100%;"
+        ></canvas>
+    </div>
+
+</div>
+
+
+<script src="pyodide_dist/pyodide.js"></script>
+<script type="module" src="resources_singlepage/app.js"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@
 """
 
 from imgui_bundle import hello_imgui, imgui, glfw_utils
-import glfw
+import glfw  # pip install glfw
 
 
 def gui():

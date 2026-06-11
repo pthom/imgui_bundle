@@ -1,0 +1,48 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+#
+# Main book settings
+# -----------------------------------------------------------
+title: "Immediate GUI Tutorial"
+author: Pascal Thomet
+#logo: ../assets/logo/logo.jpg
+copyright: "2025"
+
+sphinx:
+  local_extensions:
+    sphinx_codes_include: sphinx_codes_include
+#
+# Notebook execution during book build
+# See https://jupyterbook.org/content/execute.html
+# -----------------------------------------------------------
+# Never execute notebooks during the build process
+# (to preserve our nice fiatlight execution thumbnails)
+execute:
+  execute_notebooks: off
+
+# Information about where the book exists on the web
+# -----------------------------------------------------------
+#repository:
+#  url: https://github.com/pthom/fiatlight  # Online location of your book
+#  path_to_book: src/python/fiatlight/doc  # Optional path to your book, relative to the repository root
+#  branch: master  # Which branch of the repository should be used when creating links (optional)
+#
+##launch_buttons:
+##  notebook_interface: "jupyterlab"  # or "classic"
+##  binderhub_url: "https://mybinder.org"  # The URL for your BinderHub (e.g., https://mybinder.org)
+#
+## Add GitHub buttons to your book
+## See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+#html:
+#  use_issues_button: true
+#  use_repository_button: true
+#
+## Misc
+## -----------------------------------------------------------
+## Define the name of the latex output file for PDF builds
+#latex:
+#  latex_documents:
+#    targetname: book.tex
+
+

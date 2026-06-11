@@ -1,0 +1,469 @@
+/* ==========================
+   Global Styles
+========================== */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* no page-level scrollbars */
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+}
+
+/* ==========================
+   Header and Buttons
+========================== */
+.main-header {
+    flex-shrink: 0; /* Ensure header doesn't shrink */
+    height: 3rem;
+    background-color: #f9f9f9;
+    border-bottom: 1px solid #ccc;
+    padding: 0.5rem 1rem;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Button to toggle TOC */
+.header-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.header-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #007bff;
+    margin-right: 1rem;
+}
+
+.header-btn:hover {
+    background-color: #0056b3;
+}
+
+/* ==========================
+   Split between documentation content and ImGui Canvas
+========================== */
+.split {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+/* Base gutter style */
+.gutter {
+    background-color: #555;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px 16px;
+    cursor: col-resize;
+    transition: background-color 0.3s;
+}
+
+/* Optional hover effect */
+.gutter:hover {
+    background-color: #444;
+}
+
+.gutter.gutter-horizontal {
+    background-image: url("data:image/svg+xml,%3Csvg%20width%3D%228%22%20height%3D%2220%22%20viewBox%3D%220%200%208%2020%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Ccircle%20cx%3D%224%22%20cy%3D%224%22%20r%3D%221.5%22%20fill%3D%22%23aaa%22/%3E%3Ccircle%20cx%3D%224%22%20cy%3D%2210%22%20r%3D%221.5%22%20fill%3D%22%23aaa%22/%3E%3Ccircle%20cx%3D%224%22%20cy%3D%2216%22%20r%3D%221.5%22%20fill%3D%22%23aaa%22/%3E%3C/svg%3E");
+}
+
+/* ==========================
+   Layout Container
+========================== */
+.doc-layout-container {
+    flex: 1;                     /* fill the rest of the window below the header */
+    overflow: hidden;            /* no scrolling for the container itself */
+    height: 100%;
+}
+
+.toc-and-doc {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    overflow: hidden;
+    gap: 1rem;
+    position: relative;
+}
+
+/* ==========================
+   Sidebar
+========================== */
+#toc-sidebar {
+    width: 200px;
+    flex-shrink: 0;
+    background: white;
+    border-right: 1px solid #ccc;
+    padding: 1rem;
+    overflow-y: auto; /* Sidebar scrolls independently */
+    height: 100%; /* Fill the layout container */
+    box-sizing: border-box;
+    transition: margin-left 0.3s ease, opacity 0.3s ease;
+}
+
+#toc-sidebar.hidden {
+    margin-left: -220px; /* hides sidebar outside the view */
+    opacity: 0;
+    pointer-events: none;
+}
+
+#toc-sidebar h1 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+#toc-sidebar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#toc-sidebar li {
+    margin: 0.5rem 0;
+    padding-left: 0.5rem;
+}
+
+#toc-sidebar a {
+    display: block;
+    padding: 0.25rem 0.5rem;
+    color: #007bff;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+#toc-sidebar a:hover {
+    background-color: #f0f8ff;
+}
+
+#toc-sidebar li.expanded > a {
+    font-weight: bold; /* Highlight expanded chapters */
+}
+
+/* Toggle button for chapters */
+.toc-item-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.toc-toggle-btn {
+    background: none;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #007bff;
+    margin-left: 0.5rem;
+    padding: 0;
+}
+
+.toc-toggle-btn:hover {
+    color: #0056b3;
+}
+
+#toc-sidebar ul.subsections {
+    margin-left: 1.5rem;
+    padding-left: 0;
+    border-left: 1px solid #ddd;
+    list-style: none;
+}
+
+/* ==========================
+   Content Area
+========================== */
+#content-area-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+}
+
+#content-area {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+
+.canvas-emscripten {
+    /*position: absolute;*/
+    /*top: 0;*/
+    /*left: 0;*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*overflow: hidden;*/
+}
+
+
+/* ==========================
+   Page sections in a modal sidebar
+   (appear at the right when the user clicks on a button)
+========================== */
+.page-sections {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 300px;
+    max-width: 80%;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.2);
+    transform: translateX(100%);
+    transition: transform 0.3s ease-out;
+    z-index: 1100;
+    overflow-y: auto;
+}
+.page-sections.active {
+    transform: translateX(0);
+}
+
+.page-sections a {
+    display: block; /* Added to force each link on a new line */
+    color: #007bff;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.page-sections a:hover {
+    background-color: #f0f8ff;
+}
+
+
+/* ==========================
+   Code Editor
+========================== */
+.editor-container {
+    position: relative;
+    resize: vertical;
+    overflow: hidden;
+    max-width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.codemirror-placeholder {
+    min-height: 200px;
+    min-width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Container which handles scrolling for code editor */
+.codemirror-wrapper {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    /* initial height is set by js, so no need for height or max-height here*/
+    min-height: 100px;
+    overflow-x: auto;
+    box-sizing: border-box;
+}
+
+/* ==========================
+   Code Editor Tabs
+========================== */
+
+.code-editor-tab-container {
+    border: 1px solid #007bff; /* Blue border for the container */
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    background-color: #ffffff;
+}
+
+.code-editor-tab-buttons {
+    display: flex;
+    justify-content: flex-start; /* Align tabs to the left */
+    padding: 0.2rem; /* Small padding around tabs */
+    background-color: #f9f9f9; /* Light gray for the tab bar */
+    border-bottom: 1px solid #ccc;
+    gap: 0.2rem; /* Add small gap between tabs */
+}
+
+.code-editor-tab-button {
+    padding: 0.5rem 1rem; /* Adjust padding for a compact look */
+    border: none;
+    border-radius: 4px 4px 0 0; /* Rounded top corners */
+    background-color: #e9ecef; /* Light gray background for inactive tabs */
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #333; /* Neutral dark text for inactive tabs */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.code-editor-tab-button.active {
+    background-color: #007bff; /* Blue background for active tab */
+    color: white; /* White text for active tab */
+    font-weight: bold;
+    border-bottom: 2px solid #ffffff; /* Seamless transition to the content area */
+}
+
+.code-editor-tab-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    color: white;
+}
+
+.code-editor-tab-content {
+    padding: 1rem;
+    background-color: #ffffff; /* White background for content area */
+    border-top: none;
+}
+
+.code-editor-tab-pane {
+    display: block;
+    animation: fadeIn 0.2s ease-in; /* Smooth fade-in animation for content */
+}
+
+.code-editor-tab-pane.hidden {
+    display: none;
+}
+
+/* Subtle animation for tab switching */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.run-python-button {
+    margin-top: 0.5rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.run-python-button:hover {
+    background-color: #0056b3;
+}
+
+
+/* ==========================
+   Dark Mode
+========================== */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .main-header {
+    background-color: #1f1f1f;
+    border-bottom-color: #333;
+    box-shadow: none;
+}
+
+body.dark-mode .header-btn {
+    color: #90caf9;
+}
+
+body.dark-mode .header-btn:hover {
+    background-color: #333;
+}
+
+body.dark-mode #toc-sidebar,
+body.dark-mode #content-area,
+body.dark-mode #content-area-wrapper,
+body.dark-mode .page-sections,
+body.dark-mode .code-editor-tab-content,
+body.dark-mode .codemirror-placeholder,
+body.dark-mode .codemirror-wrapper {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #444;
+}
+
+body.dark-mode #toc-sidebar a,
+body.dark-mode .page-sections a {
+    color: #90caf9;
+}
+
+body.dark-mode #toc-sidebar a:hover,
+body.dark-mode .page-sections a:hover {
+    background-color: #2a2a2a;
+}
+
+body.dark-mode .code-editor-tab-button {
+    background-color: #2e2e2e;
+    color: #ccc;
+}
+
+body.dark-mode .code-editor-tab-button.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+body.dark-mode .code-editor-tab-button:hover {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+body.dark-mode .run-python-button {
+    background-color: #007bff;
+}
+
+body.dark-mode .run-python-button:hover {
+    background-color: #0056b3;
+}
+
+body.dark-mode .code-editor-tab-container {
+    background-color: #1f1f1f;
+    border: 1px solid #444;
+}
+
+body.dark-mode .code-editor-tab-buttons {
+    background-color: #2a2a2a;
+    border-bottom: 1px solid #444;
+}
+
+body.dark-mode .code-editor-tab-button {
+    background-color: #555;
+    color: #ccc;
+}
+
+body.dark-mode .code-editor-tab-button:hover {
+    background-color: #444;
+    color: #fff;
+}
+
+body.dark-mode .code-editor-tab-button.active {
+    background-color: #007bff;
+    color: white;
+    border-bottom: 2px solid #ffffff;
+}
+
+body.dark-mode a {
+    color: #90caf9; /* soft blue, great contrast */
+    text-decoration: none;
+}
+
+body.dark-mode a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}

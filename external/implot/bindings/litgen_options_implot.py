@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from codemanip.code_utils import join_string_by_pipe_char
 
 from litgen.options import LitgenOptions
@@ -18,7 +18,7 @@ def litgen_options_implot() -> LitgenOptions:
     options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API|IMGUI_HAS_TEXTURES"
 
     options.fn_force_overload__regex = "BeginPlot"
-    options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$", "^SetupAxisLinks$", "^SetNextAxisLinks$"])
+    options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$", "^SetupAxisLinks$", "^SetNextAxisLinks$", "^SetProp$"])
 
     options.fn_params_exclude_names__regex += "|^stride$"
     options.fn_exclude_by_param_type__regex = "ImPlotFormatter|ImPlotTransform"

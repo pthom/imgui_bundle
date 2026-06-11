@@ -14,10 +14,10 @@ if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFO
     os.environ["PYOPENGL_PLATFORM"] = "x11"
 
 
-import OpenGL.GL as gl  # type: ignore
+import OpenGL.GL as gl  # pip install PyOpenGL
 from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 # When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard glfw, not the one provided by imgui_bundle)
-import glfw  # type: ignore
+import glfw
 from imgui_bundle import imgui, imgui_ctx
 from imgui_bundle import imgui_md
 import sys
@@ -31,19 +31,6 @@ app_state = AppState()
 
 
 def init_fonts_and_markdown():
-    # Note:
-    # The way font are loaded in this example is a bit tricky.
-    # We are not using imgui.backends.opengl3_XXX anywhere else, because the rendering is done via Python.
-    #
-    # Howver, we will here need to:
-    #     - call imgui.backends.opengl3_init(glsl_version) at startup
-    #     - call imgui.backends.opengl3_new_frame() after loading the fonts, because this is how ImGui
-    #       will load the fonts into a texture (using imgui.get_io().fonts.build() is not enough)
-
-    # We need to initialize the OpenGL backend (so that we can later call opengl3_new_frame)
-    imgui.backends.opengl3_init("#version 100")
-
-    imgui.get_io().fonts.clear()
     # uncomment to keep using the default hardcoded font, or load your default font here
     # imgui.get_io().fonts.add_font_default()
 
@@ -51,9 +38,6 @@ def init_fonts_and_markdown():
     imgui_md.initialize_markdown()
     font_loader = imgui_md.get_font_loader_function()
     font_loader()
-
-    # We need to call this function to load the fonts into a texture
-    imgui.backends.opengl3_new_frame()
 
 
 def main():

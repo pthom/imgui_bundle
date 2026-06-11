@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from __future__ import annotations
 from enum import Enum
 import copy
@@ -76,8 +76,8 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiPlatformMonitor",
         "ImGuiViewport*",
         "ImGuiWindow*",
-        "ImFontAtlasCustomRect",
         "ImFontConfig",
+        "ImFontConfig*",
         "ImGuiFocusScopeData",
         "ImGuiSelectionRequest",
         # from imgui_internal.h
@@ -105,12 +105,16 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiTableHeaderData",  # new in v1.90.7
         "ImGuiTreeNodeStackData",
         "ImGuiMultiSelectTempData",
+        "ImTextureData*",
+        "ImTextureRef",
+        "ImTextureRect",
     ]
     cpp_synonyms_list_str = [
         "ImTextureID=int",
         "ImDrawIdx=uint",
         "ImGuiID=uint",
         "ImU32=uint",
+        "ImU16=uint",
         "ImWchar32=uint",
         "ImWchar=ImWchar32",
         "ImGuiItemFlags=int",
@@ -130,6 +134,10 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "ImGuiTestLogLineInfo",
         "ImGuiTestRunTask",
         "ImGuiTestRunTask",
+        "ImFontAtlasRectEntry",
+        "stbrp_node",
+        "ImDrawListSharedData*",
+        "ImFontStackData",
     ]
 
     options.class_template_options.add_specialization(
@@ -144,6 +152,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
     options.srcmlcpp_options.ignored_warning_parts += [
         "Excluding template type const ImVector<T>",
         "Excluding template type ImVector<T>",
+        "Ignoring template class ImStableVector",
     ]
 
     for instantiated_type in instantiated_types:
@@ -178,8 +187,9 @@ def add_imgui_test_engine_options(options: LitgenOptions):
     )
     options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$|^ItemReadAsString$"
     options.member_exclude_by_name__regex += "|Coroutine|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter"
-    options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs"
+    options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs|^ImGuiCaptureImageBuf"
     options.fn_exclude_by_param_type__regex += "|^ImGuiCaptureArgs"
+    options.class_exclude_by_name__regex += "|^ImGuiCaptureImageBuf$|^ImGuiCaptureContext$|^ImGuiCaptureToolUI$"
 
 
 def litgen_options_imgui(
@@ -287,6 +297,8 @@ def litgen_options_imgui(
     #     enum ImGuiMyFlags_ { ImGuiMyFlags_None = 0,...};  enum ImGuiMyFlagsPrivate_ { ImGuiMyFlags_PrivValue = ...};
     options.enum_flag_remove_values_prefix = True
     options.enum_flag_remove_values_prefix_group_private = True
+    options.enum_make_arithmetic__regex = r".*"
+    options.enum_make_flag__regex = r".*"
 
     options.python_max_line_length = (
         -1
@@ -306,7 +318,7 @@ def litgen_options_imgui(
         "|IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT"
     )
     options.srcmlcpp_options.header_filter_acceptable__regex += (
-        "|^IMGUI_BUNDLE_PYTHON_API$"
+        "|^IMGUI_BUNDLE_PYTHON_API$|^IMGUI_HAS_TEXTURES$"
     )
     if docking_branch:
         options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_HAS_DOCK$"
@@ -354,6 +366,10 @@ def litgen_options_imgui(
             r"^AcceptDragDropPayload$",
             r"^GetDragDropPayload$",
             r"^GetKeyChordName$",
+            # ColorConvertRGBtoHSV / ColorConvertHSVtoRGB: the out_ params should not be
+            # required as inputs. Custom bindings in generate_imgui.py take only 3 inputs.
+            r"^ColorConvertRGBtoHSV$",
+            r"^ColorConvertHSVtoRGB$",
         ]
     )
 
@@ -364,6 +380,7 @@ def litgen_options_imgui(
             r"^TexPixelsAlpha8$",
             r"^Stb$",
             r"^ErrorCallback$",  # callback with C function pointers
+            r"^BakedPool$",
         ]
     )
 
@@ -382,6 +399,9 @@ def litgen_options_imgui(
             r"::STB_",
             r"ImGuiStoragePair",
             r"^ImFileHandle$",
+            r"ImFontLoader",
+            r"^ImFontAtlasBuilder",
+            r"^ImGuiDemoMarkerCallback",
         ]
     )
 
@@ -389,7 +409,10 @@ def litgen_options_imgui(
         r"^char\s*\*",
     ])
 
-    options.class_exclude_by_name__regex = join_string_by_pipe_char([])
+    options.class_exclude_by_name__regex = join_string_by_pipe_char([
+        "ImStableVector",
+        "ImGuiNpBuffer",  # Will be cast to numpy array (see pybind_imgui.cpp)
+    ])
 
     options.member_numeric_c_array_types += "|" + join_string_by_pipe_char(
         [
@@ -424,15 +447,18 @@ def litgen_options_imgui(
             r"^AddPolyline",
             r"^AddConvexPolyFilled",
             r"^AddConcavePolyFilled",
-            r"^ColorPicker4",
+            r"^ColorPicker",
+            r"^ColorEdit",
             r"^Shortcut",
             r"^SetItemKeyOwner",
             r"^GetIO",
             r"^GetPlatformIO",
+            r"^PushFont",
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
-        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode"]
+        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode", "^SetWindowFocus$",
+         "^AddRect$", "^PathStroke$", "^AddPolyline$"]
     )
 
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
@@ -443,9 +469,11 @@ def litgen_options_imgui(
     # Exclude callbacks from the params when they have a default value
     # (since imgui use bare C function pointers, not easily portable)
     options.fn_params_exclude_types__regex = r"size_t[ ]*\*"
-    # Exclude functions that take char or const ImWchar * params
+    # Exclude functions with those param types:
+    # - any function using a double pointer (like char **): see \* \* below
+    # - char, const ImWchar *, ImGuiErrorLogCallback
     options.fn_exclude_by_param_type__regex = (
-        "^char$|^const ImWchar \\*$|^ImGuiErrorLogCallback$"
+        r"^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$|\* \*"
     )
 
     # Version where we use Boxed types everywhere:
@@ -459,9 +487,83 @@ def litgen_options_imgui(
 
     _add_imvector_template_options(options)
 
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImVec2",
+        stub_code='''
+        def __getitem__(self, idx: int) -> float:
+            """Get the value at the given index (0 for x, 1 for y)"""
+            ...
+        def __setitem__(self, idx: int, value: float) -> None:
+            """Set the value at the given index (0 for x, 1 for y)"""
+            ...
+    ''',
+        pydef_code="""
+        LG_CLASS.def("__getitem__", [](const ImVec2& self, int idx) {
+            if (idx == 0) return self.x;
+            else if (idx == 1) return self.y;
+            else throw std::out_of_range("Index out of range for ImVec2");
+        });
+        LG_CLASS.def("__setitem__", [](ImVec2& self, int idx, float value) {
+            if (idx == 0) self.x = value;
+            else if (idx == 1) self.y = value;
+            else throw std::out_of_range("Index out of range for ImVec2");
+        });
+    """,
+    )
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImVec4",
+        stub_code='''
+        def __getitem__(self, idx: int) -> float:
+            """Get the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
+            ...
+        def __setitem__(self, idx: int, value: float) -> None:
+            """Set the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
+            ...
+    ''',
+        pydef_code="""
+        LG_CLASS.def("__getitem__", [](const ImVec4& self, int idx) {
+            if (idx == 0) return self.x;
+            else if (idx == 1) return self.y;
+            else if (idx == 2) return self.z;
+            else if (idx == 3) return self.w;
+            else throw std::out_of_range("Index out of range for ImVec4");
+        });
+        LG_CLASS.def("__setitem__", [](ImVec4& self, int idx, float value) {
+            if (idx == 0) self.x = value;
+            else if (idx == 1) self.y = value;
+            else if (idx == 2) self.z = value;
+            else if (idx == 3) self.w = value;
+            else throw std::out_of_range("Index out of range for ImVec4");
+        });
+    """,
+    )
+
+
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiTextFilter",
+        stub_code='''
+        @property
+        def input_buf(self) -> str:
+            """The current filter text. Setting it also calls build()."""
+            ...
+        @input_buf.setter
+        def input_buf(self, value: str) -> None: ...
+    ''',
+        pydef_code="""
+        LG_CLASS.def_prop_rw("input_buf",
+            [](const ImGuiTextFilter& self) { return std::string(self.InputBuf); },
+            [](ImGuiTextFilter& self, const std::string& s) {
+                strncpy(self.InputBuf, s.c_str(), sizeof(self.InputBuf) - 1);
+                self.InputBuf[sizeof(self.InputBuf) - 1] = '\\0';
+                self.Build();
+            });
+    """,
+    )
+
     if options_type == ImguiOptionsType.imgui_h:
         options.fn_exclude_by_name__regex += "|^InputText"
     elif options_type == ImguiOptionsType.imgui_internal_h:
+        # options.class_exclude_by_name__regex += "|^ImGuiInputEventKey$|^ImGuiLocEntry$"
         pass
     elif options_type == ImguiOptionsType.imgui_stdlib_h:
         pass
@@ -470,11 +572,16 @@ def litgen_options_imgui(
 
     def postprocess_stub_imgui(stub_code: str) -> str:
         stub_code = stub_code.replace(
-            "class ImVec2:", "class ImVec2(VecProtocol['ImVec2']):"
+            "class ImVec2:", "class ImVec2(Vec2Protocol):"
         )
         stub_code = stub_code.replace(
-            "class ImVec4:", "class ImVec4(VecProtocol['ImVec4']):"
+            "class ImVec4:", "class ImVec4(Vec4Protocol):"
         )
+        stub_code = stub_code.replace(
+            "SelectionRequestType = SelectionRequestType()",
+            "SelectionRequestType = SelectionRequestType.none"
+        )
+
         # Replace ImVector[int] by ImVector_int, etc.
         import re
         pattern = r'\bImVector\s*\[\s*(.*?)\s*\]'
@@ -487,6 +594,10 @@ def litgen_options_imgui(
         # any function that accepts a TestRef param should also accept str (which is convertible to TestRef)
         r = code.replace(": TestRef", ": Union[TestRef, str]")
         r = r.replace("(TestEngineExportFormat)0", "TestEngineExportFormat.j_unit_xml")
+        r = r.replace(
+            ": TestVerboseLevel = TestVerboseLevel()",
+            ": TestVerboseLevel = TestVerboseLevel.warning"
+        )
         return r
 
     if options_type == ImguiOptionsType.imgui_test_engine:

@@ -37,12 +37,12 @@ def _default_result_renderer(result: Any) -> None:
 
 
 class _CaptureStdout(list[str]):
-    def __enter__(self):
+    def __enter__(self) -> "_CaptureStdout":
         self._stdout = sys.stdout
         sys.stdout = self._stringio = io.StringIO()
         return self
 
-    def __exit__(self, *args):
+    def __exit__(self, *args: Any) -> None:
         self.extend(self._stringio.getvalue().splitlines())
         sys.stdout = self._stdout
 
@@ -92,7 +92,7 @@ def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Resu
         snippet_data = immapp.snippets.SnippetData()
         snippet_data.code = code
         snippet_data.height_in_lines = code.count("\n")
-        snippet_data.palette = immapp.snippets.SnippetTheme.mariana
+        snippet_data.palette = immapp.snippets.SnippetTheme.dark
         statics.s_code_cells[label_id] = CodeAndResult(snippet_data, _NoResult(), "")
 
     code_and_result = statics.s_code_cells[label_id]

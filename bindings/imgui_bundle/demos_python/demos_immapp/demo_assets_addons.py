@@ -1,5 +1,4 @@
 from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, icons_fontawesome
-from imgui_bundle.demos_python import demo_utils
 
 import numpy as np
 from typing import Dict, List
@@ -57,7 +56,7 @@ def demo_assets(app_state: AppState):
     hello_imgui.image_from_asset("images/world.png", image_size)
 
     imgui_md.render(
-        "**Read the [documentation about assets](https://pthom.github.io/imgui_bundle/quickstart.html#quickstart_about_assets)**"
+        "**Read the [documentation about assets](https://imgui-bundle.pages.dev/quickstart.html#quickstart_about_assets)**"
     )
     show_doc("AssetsDoc")
 
@@ -115,8 +114,8 @@ def demo_plot(app_state: AppState):
         implot.setup_axes(
             "",
             "",
-            implot.AxisFlags_.no_decorations.value,
-            implot.AxisFlags_.no_decorations.value,
+            implot.AxisFlags_.no_decorations,
+            implot.AxisFlags_.no_decorations,
         )
         implot.plot_pie_chart(
             data_labels, np.array(app_state.plot_data), 0.5, 0.5, 0.35, "%.2f", 90
@@ -127,10 +126,6 @@ def demo_plot(app_state: AppState):
 
 
 def main():
-    # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
-    #         hello_imgui.set_assets_folder("my_assets")  # (By default, HelloImGui will search inside "assets")
-    demo_utils.set_hello_imgui_demo_assets_folder()
-
     app_state = AppState()  # Initialize our global appState
 
     # This is our GUI function:
@@ -207,7 +202,7 @@ def get_doc(which_doc: str) -> str:
             It supports the most common markdown features: emphasis, link, code blocks, etc.
         """,
         "PlotDoc": """
-            By using ImPlot, you can display lots of different plots. See [online demo](https://traineq.org/implot_demo/src/implot_demo.html) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
+            By using ImPlot, you can display lots of different plots. See [online demo](https://pthom.github.io/imgui_explorer/?lib=implot) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)
 
             Note: in order to use ImPlot, you need to "activate" this add-on, like this:
 

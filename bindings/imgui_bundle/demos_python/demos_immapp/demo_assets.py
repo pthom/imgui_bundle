@@ -1,5 +1,4 @@
 from imgui_bundle import imgui, imgui_md, hello_imgui, immapp
-from imgui_bundle.demos_python import demo_utils
 
 
 def show_gui():
@@ -19,9 +18,6 @@ def show_gui():
 
 
 def main():
-    # Set the assets folder path
-    hello_imgui.set_assets_folder(demo_utils.demos_assets_folder())
-
     immapp.run(
         gui_function=show_gui,
         window_title="Hello, globe!",

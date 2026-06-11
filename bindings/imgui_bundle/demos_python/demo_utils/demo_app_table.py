@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from typing import List
-import subprocess
-import sys
 import os
 
 from imgui_bundle import imgui, imgui_md, immapp, hello_imgui, ImVec2
+from imgui_bundle.demos_python import demo_utils
 from typing import Callable
 
 
@@ -26,8 +25,8 @@ class DemoApp:
 
 
 class DemoAppTable:
-    snippet_python: immapp.snippets.SnippetData  # type: ignore
-    snippet_cpp: immapp.snippets.SnippetData  # type: ignore
+    snippet_python: immapp.snippets.SnippetData
+    snippet_cpp: immapp.snippets.SnippetData
     demo_apps: List[DemoApp]
     current_app: DemoApp
     demo_python_folder: str
@@ -115,10 +114,10 @@ class DemoAppTable:
 
         def fn_table_gui():
             table_flags = (
-                imgui.TableFlags_.row_bg.value
-                | imgui.TableFlags_.borders.value
-                | imgui.TableFlags_.resizable.value
-                | imgui.TableFlags_.sizing_stretch_same.value
+                imgui.TableFlags_.row_bg
+                | imgui.TableFlags_.borders
+                | imgui.TableFlags_.resizable
+                | imgui.TableFlags_.sizing_stretch_same
             )
             nb_columns = 3
             if imgui.begin_table("Apps", nb_columns, table_flags):
@@ -144,17 +143,21 @@ class DemoAppTable:
 
                         imgui.same_line()
 
-                        if imgui.button("Run"):
-                            subprocess.Popen(
-                                [sys.executable, self._demo_python_file_path(demo_app)]
-                            )
+                        if demo_utils.can_run_subprocess():
+                            if imgui.button("Run"):
+                                demo_utils.spawn_demo_file(self._demo_python_file_path(demo_app))
 
                     imgui.pop_id()
                 imgui.end_table()
 
         self.display_demo_app_table_with_scroll_buttons(
-            "DemoAppTable", hello_imgui.em_to_vec2(0.0, 9.6), fn_table_gui)
+            "DemoAppTable", hello_imgui.em_to_vec2(0.0, 12.9), fn_table_gui)
         imgui_md.render("**Code for " + self.current_app.demo_file + "**")
+        if self.current_app.demo_file and demo_utils.can_run_subprocess():
+            imgui.same_line()
+            imgui.text("   ")
+            if imgui.small_button("Run##CurrentDemo"):
+                demo_utils.spawn_demo_file(self._demo_python_file_path(self.current_app))
         immapp.snippets.show_side_by_side_snippets(
             self.snippet_python, self.snippet_cpp, True, True
         )

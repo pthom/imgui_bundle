@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
 
 from imgui_bundle import imgui_md
@@ -8,13 +8,12 @@ from imgui_bundle.demos_python.demo_utils.demo_app_table import DemoAppTable, De
 
 
 DOC = """
-# HelloImGui and ImmApp
+# Demos Applications
 
-* [HelloImGui](https://pthom.github.io/hello_imgui) is a library based on ImGui that enables to easily create applications with ImGui.
-* [ImApp](https://github.com/pthom/imgui_bundle/blob/main/external/immapp/immapp/runner.h) (aka "Immediate App", a submodule of ImGuiBundle) is a thin extension of HelloImGui that enables to easily initialize the ImGuiBundle addons that require additional setup at startup.
+This section presents various demo applications that illustrate how to use Dear ImGui Bundle for various use cases. Click on the "View Code" buttons to view the apps' code, and click on "Run" to run them. Scroll with the mouse wheel in the table below for more demos.
 
-## Demo applications (*scroll with the mouse wheel below for more demos*)
-    """
+> **Note:**  Hello ImGui and ImmApp handle window creation, rendering, and app lifecycle - see [Documentation](https://imgui-bundle.pages.dev/doc/core-libs/hello-imgui-immapp/)
+"""
 
 
 # This returns a closure function that will later be invoked to run the app
@@ -37,12 +36,17 @@ def make_gui() -> GuiFunction:
             "demo_powersave",
             "How to have smooth animations, and how spare the CPU when idling",
         ),
+        DemoApp("demo_python_context_manager",
+                "How to use a python context manager for `imgui.begin()`, `imgui.end()`, etc."),
         DemoApp(
             "demo_testengine",
             "How to use ImGui Test Engine to test and automate your application",
         ),
-        DemoApp("demo_python_context_manager",
-                "How to use a python context manager for `imgui.begin()`, `imgui.end()`, etc."),
+        DemoApp(
+            "demo_testapp",
+            "use `immapp.testing` to drive an app and capture screenshots, then exit"
+        ),
+        DemoApp("demo_run_async", "(Python) How to enable parallel Python execution with GUI rendering with optimal performance"),
         DemoApp(
             "demo_command_palette",
             "a Sublime Text or VSCode style command palette in ImGui",
@@ -66,15 +70,12 @@ def make_gui() -> GuiFunction:
             "demo_pydantic",
             "Python: How to use ImVec2 and ImVec4 with Pydantic",
         ),
-        DemoApp(
-            "demo_font_common_glyph_range",
-            "How to load fonts with specific glyph ranges (e.g., Chinese, Japanese, Korean)",
-        ),
-        DemoApp(
-            "imgui_example_glfw_opengl3",
-            "Python: translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. "
-            "Demonstrates how to port from C++ to Python (here, *backend rendering is implemented in C++*)",
-        ),
+        # Disabled since v1.92 (use pure Python backend instead)
+        # DemoApp(
+        #     "imgui_example_glfw_opengl3",
+        #     "Python: translation of the [GLFW+OpenGL3 example](https://github.com/ocornut/imgui/blob/master/examples/example_glfw_opengl3/main.cpp) from Dear ImGui. "
+        #     "Demonstrates how to port from C++ to Python (here, *backend rendering is implemented in C++*)",
+        # ),
         DemoApp(
             "example_python_backend_glfw3",
             "Python: how to use ImGui with GLFW3 using a *full python* backend",
@@ -130,7 +131,7 @@ def demo_gui():
 
 
 def main():
-    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))  # type: ignore
+    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))
 
 
 if __name__ == "__main__":

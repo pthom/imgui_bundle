@@ -1,16 +1,31 @@
 """
-imgui_ctx provide context managers to simplify the use of functions pairs like
+imgui_ctx provides context managers to simplify the use of paired ImGui functions such as:
 
-    1. `imgui.begin()` and `imgui.end()`
-        can be replaced by:  `with imgui_ctx.begin() as window:`
+    1. `imgui.begin()` / `imgui.end()`
+       can be replaced by: `with imgui_ctx.begin() as window:` + `if window:`
 
-    2. `imgui.begin_child()` and `imgui.end_child()`
-        can be replaced by:  `with imgui_ctx.begin_child() as child:`
+    2. `imgui.begin_child()` / `imgui.end_child()`
+       can be replaced by: `with imgui_ctx.begin_child() as child:` + `if child:`
 
-    3. `imgui.begin_menu_bar()` and `imgui.end_menu_bar()`
-        can be replaced by:  `with imgui_ctx.begin_menu_bar() as menu_bar:`
+    3. `imgui.begin_menu_bar()` / `imgui.end_menu_bar()`
+       can be replaced by: `with imgui_ctx.begin_menu_bar() as menu_bar:` + `if menu_bar:`
 
-    etc.
+    ...
+
+Note:
+    ImGui’s "begin"/"end" functions typically return a boolean indicating whether the context is open and usable.
+    You may (and often should) use this boolean to guard the inner code, as in the example below:
+
+    ```python
+    with imgui_ctx.begin_main_menu_bar() as menu_bar:
+        if menu_bar:
+            with imgui_ctx.begin_menu("Edit1") as menu_edit:
+                if menu_edit:
+                    imgui.menu_item_simple("Undo")
+                    imgui.menu_item_simple("Redo")
+    ```
+
+    This pattern avoids rendering UI elements inside a closed or collapsed container, as per ImGui’s recommended usage.
 """
 
 
@@ -25,6 +40,7 @@ TableFlags = int     # see enum imgui.TableFlags_
 TabBarFlags = int    # see enum imgui.TabBarFlags_
 TabItemFlags = int   # see enum imgui.TabItemFlags_
 DragDropFlags = int  # see enum imgui.DragDropFlags_
+TreeNodeFlags = int  # see enum imgui.TreeNodeFlags_
 
 
 OptExceptType = Optional[Type[BaseException]]
@@ -63,7 +79,7 @@ class _BeginEndChild:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -98,18 +114,18 @@ class _BeginEnd:
         else:
             return self.expanded and self.opened
 
-    def __getitem__(self, item):
+    def __getitem__(self, item: int) -> bool:
         return (self.expanded, self.opened)[item]
 
-    def __iter__(self):
+    def __iter__(self) -> Any:
         return iter((self.expanded, self.opened))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{}(expanded={}, opened={})".format(
             self.__class__.__name__, self.expanded, self.opened
         )
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return (self.expanded, self.opened) == (other.expanded, other.opened)
         return (self.expanded, self.opened) == other
@@ -144,7 +160,7 @@ class _BeginEndListBox:
             self.__class__.__name__, self.opened
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.opened is other.opened
         return self.opened is other
@@ -178,7 +194,7 @@ class _BeginEndTooltip:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -212,7 +228,7 @@ class _BeginEndMenuMainBar:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -246,7 +262,7 @@ class _BeginEndMenuBar:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -280,7 +296,7 @@ class _BeginEndMenu:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -314,7 +330,7 @@ class _BeginEndPopup:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -348,7 +364,7 @@ class _BeginEndPopupModal:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -387,7 +403,7 @@ class _BeginEndTable:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -425,7 +441,7 @@ class _BeginEndTabBar:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -459,7 +475,7 @@ class _BeginEndTabItem:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -493,7 +509,7 @@ class _BeginEndDragDropSource:
             self.__class__.__name__, self.is_dragging
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.is_dragging is other.is_dragging
         return self.is_dragging is other
@@ -527,7 +543,7 @@ class _BeginEndDragDropTarget:
             self.__class__.__name__, self.is_receiving
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.is_receiving is other.is_receiving
         return self.is_receiving is other
@@ -631,7 +647,7 @@ class _WithTreeNode:
             self.__class__.__name__, self.visible
         )
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         if other.__class__ is self.__class__:
             return self.visible is other.visible
         return self.visible is other
@@ -639,6 +655,39 @@ class _WithTreeNode:
 
 def tree_node(label: str) -> _WithTreeNode:
     return _WithTreeNode(label)
+
+
+class _WithTreeNodeEx:
+    visible: bool
+    _enter_callback: _EnterCallback
+
+    def __init__(self, label: str, flags: TreeNodeFlags = 0) -> None:
+        self._enter_callback = lambda: imgui.tree_node_ex(label, flags)
+
+    def __enter__(self) -> "_WithTreeNodeEx":
+        self.visible = self._enter_callback()
+        return self
+
+    def __exit__(self, _exc_type: OptExceptType, _exc_val: OptBaseException, _exc_tb: OptTraceback) -> None:
+        if self.visible:
+            imgui.tree_pop()
+
+    def __bool__(self) -> bool:
+        return self.visible
+
+    def __repr__(self) -> str:
+        return "{}(opened={})".format(
+            self.__class__.__qualname__, self.visible
+        )
+
+    def __eq__(self, other: object) -> bool:
+        if other.__class__ is self.__class__:
+            return self.visible is other.visible
+        return self.visible is other
+
+
+def tree_node_ex(label: str, flags: TreeNodeFlags = 0) -> _WithTreeNodeEx:
+    return _WithTreeNodeEx(label, flags)
 
 
 class _WithPushID:
@@ -669,8 +718,8 @@ def push_obj_id(obj: Any) -> _WithPushID:
 class _WithPushFont:
     _enter_callback: _EnterCallback
 
-    def __init__(self, font: imgui.ImFont) -> None:
-        self._enter_callback = lambda: imgui.push_font(font)
+    def __init__(self, font: imgui.ImFont, font_size_base_unscaled: float = 0.0) -> None:
+        self._enter_callback = lambda: imgui.push_font(font, font_size_base_unscaled)
 
     def __enter__(self) -> "_WithPushFont":
         self._enter_callback()

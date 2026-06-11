@@ -1,15 +1,14 @@
-from imgui_bundle import hello_imgui, imgui, nanovg as nvg, ImVec2
+from imgui_bundle import hello_imgui, imgui, nanovg as nvg, ImVec2, ImVec4
 import math
-from typing import List
 
 nvg_imgui = nvg.nvg_imgui
 
 
 class DrawingState:
-    heart_color: List[float]
+    heart_color: ImVec4
 
     def __init__(self):
-        self.heart_color = [1.0, 0.0, 0.0, 1.0]
+        self.heart_color = ImVec4(1.0, 0.0, 0.0, 1.0)
 
 gDrawingState = DrawingState()
 
@@ -96,7 +95,7 @@ def draw_scene(vg: nvg.Context, width: float, height: float):
 
 class AppStateNvgHeart:
     vg: nvg.Context | None = None
-    nvg_framebuffer: nvg_imgui.NvgFramebuffer | None = None  # type: ignore
+    nvg_framebuffer: nvg_imgui.NvgFramebuffer | None = None
 
     def __init__(self):
         # Our NanoVG context
@@ -135,7 +134,9 @@ def main():
         assert app_state.nvg_framebuffer is not None
         nvg_imgui.render_nvg_to_frame_buffer(app_state.vg, app_state.nvg_framebuffer, draw_scene)
         assert app_state.nvg_framebuffer is not None
-        imgui.image(app_state.nvg_framebuffer.texture_id, hello_imgui.em_to_vec2(50, 30))
+        imgui.image(
+            imgui.ImTextureRef(app_state.nvg_framebuffer.texture_id),
+            hello_imgui.em_to_vec2(50, 30))
 
         _, gDrawingState.heart_color = imgui.color_edit4("Heart color", gDrawingState.heart_color)
 

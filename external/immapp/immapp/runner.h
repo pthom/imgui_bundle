@@ -44,6 +44,16 @@ namespace ImmApp
         // Set withTexInspect=true if you need to use imgui_tex_inspect
         bool withTexInspect = false;
 
+        // Set withImAnim=true if you need to use ImAnim.
+        // If true, then iam_update_begin_frame() and iam_clip_update() will be called automatically at each frame
+        bool withImAnim = false;
+
+        // Set withLatex=true to enable native LaTeX math rendering in markdown
+        // (via MicroTeX). Implies withMarkdown=true. The $...$ and $$...$$
+        // syntaxes will be parsed as inline / display math formulas.
+        // Requires building with IMGUI_BUNDLE_WITH_MICROTEX=ON (default when FreeType is available).
+        bool withLatex = false;
+
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         // You can tweak NodeEditorConfig (but this is optional)
         std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt;
@@ -89,6 +99,7 @@ namespace ImmApp
     //     - `with_implot`: if True, then a context for implot will be created/destroyed automatically
     //     - `with_markdown` / `with_markdown_options`: if specified, then  the markdown context will be initialized
     //       (i.e. required fonts will be loaded)
+    //     - `with_latex`: if True, enable native LaTeX math rendering in markdown (implies with_markdown)
     //     - `with_node_editor` / `with_node_editor_config`: if specified, then a context for imgui_node_editor
     //       will be created automatically.
     void Run(
@@ -99,6 +110,8 @@ namespace ImmApp
         bool windowRestorePreviousGeometry = false,
         const ScreenSize& windowSize = DefaultWindowSize,
         float fpsIdle = 10.f,
+        bool topMost = false,
+        bool iniDisable = false,
 
         // AddOnsParams below:
         bool withImplot = false,
@@ -106,6 +119,8 @@ namespace ImmApp
         bool withMarkdown = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
+        bool withImAnim = false,
+        bool withLatex = false,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
 #endif
@@ -121,12 +136,16 @@ namespace ImmApp
         bool windowRestorePreviousGeometry = false,
         const ScreenSize& windowSize = DefaultWindowSize,
         float fpsIdle = 10.f,
+        bool topMost = false,
+        bool iniDisable = false,
 
         // AddOnsParams below:
         bool withImplot = false,
         bool withImplot3d = false,
         bool withNodeEditor = false,
         bool withTexInspect = false,
+        bool withImAnim = false,
+        bool withLatex = false,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
 #endif
@@ -193,8 +212,8 @@ namespace ImmApp
 
         // Initializes the rendering with the full customizable `RunnerParams`.
         // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-        // A distinct copy of `RunnerParams` is stored internally.
-        void SetupFromRunnerParams(const HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());
+        // A reference to the user's `RunnerParams` is kept internally (similar to ImmApp::Run).
+        void SetupFromRunnerParams(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());
 
         // Initializes the rendering with `SimpleRunnerParams`.
         // This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
@@ -209,6 +228,8 @@ namespace ImmApp
             bool windowRestorePreviousGeometry = false,
             const ScreenSize& windowSize = DefaultWindowSize,
             float fpsIdle = 10.f,
+            bool topMost = false,
+            bool iniDisable = false,
 
             // AddOnsParams below:
             bool withImplot = false,
@@ -216,6 +237,7 @@ namespace ImmApp
             bool withMarkdown = false,
             bool withNodeEditor = false,
             bool withTexInspect = false,
+            bool withLatex = false,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
             const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
 #endif

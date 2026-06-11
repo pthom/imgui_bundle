@@ -22,7 +22,6 @@
       "description": "Build with all options, platform and renderer backends",
       "cacheVariables": {
         "IMGUI_BUNDLE_BUILD_DEMOS": "ON",
-        "IMGUI_BUNDLE_BUILD_DOC": "ON",
         "HELLOIMGUI_BUILD_DOCS": "ON",
         "HELLOIMGUI_BUILD_DEMOS": "ON",
         "HELLOIMGUI_BUILD_TESTS": "ON",

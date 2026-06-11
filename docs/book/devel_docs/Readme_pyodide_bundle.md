@@ -1,0 +1,1 @@
+../../../ci_scripts/pyodide_local_build/Readme_pyodide_bundle.md

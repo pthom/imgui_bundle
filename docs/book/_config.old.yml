@@ -1,0 +1,60 @@
+# Book settings
+# Learn more at https://jupyterbook.org/customize/config.html
+
+title: ImGui Bundle
+author: Pascal Thomet
+copyright: "2022-2025, Pascal Thomet"
+logo: "../../logo/logo_imgui_bundle_1024.png"
+
+# Repository configuration
+repository:
+  url: https://github.com/pthom/imgui_bundle
+  path_to_book: docs/book
+  branch: main
+
+
+# Force re-execution of notebooks on each build.
+# See https://jupyterbook.org/content/execute.html
+execute:
+  execute_notebooks: off
+
+# Define the name of the latex output file for PDF builds
+latex:
+  latex_documents:
+    targetname: book.tex
+
+# Add a bibtex file so that we can create citations
+bibtex_bibfiles:
+  - references.bib
+
+
+# Add GitHub buttons to your book
+# See https://jupyterbook.org/customize/config.html#add-a-link-to-your-repository
+html:
+  favicon: "../../logo/logo_imgui_bundle_1024.png"
+  use_edit_page_button: true
+  use_repository_button: true
+  use_issues_button: true
+  extra_navbar:
+
+
+# Sphinx configuration
+#sphinx:
+#  config:
+#    html_theme_options:
+#      repository_url: https://github.com/pthom/imgui_bundle
+#      use_repository_button: true
+#    use_multitoc_numbering: false
+#    external_toc_exclude_missing: false
+#    use_jupyterbook_latex: false
+#    nb_execution_mode: 'off'
+#    nb_execution_allow_errors: false
+#    nb_execution_in_temp: false
+#    nb_output_stderr: 'show'
+#    nb_execution_timeout: 30
+#    nb_execution_cache_path: ''
+#    nb_execution_excludepatterns: []
+#    extensions:
+#      - sphinx_design
+#      - myst_parser
+#      - sphinx_multitoc_numbering

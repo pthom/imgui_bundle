@@ -76,7 +76,7 @@ def my_register_tests():
         # Custom GUI for this test: it can edit our custom variable
         imgui.set_next_window_size(hello_imgui.em_to_vec2(40, 8))
         imgui.begin(
-            "Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings.value
+            "Custom Gui Test Window", None, imgui.WindowFlags_.no_saved_settings
         )
         _, test_var2.my_int = imgui.slider_int("Slider", test_var2.my_int, 0, 1000)
         imgui.end()
@@ -113,10 +113,10 @@ def my_register_tests():
     # Demo 5: Press Alt+A
     test_alt_a = imgui.test_engine.register_test(engine, "Demo Tests", "Test key combination (Alt-A)")
     def test_alt_a_func(ctx: imgui.test_engine.TestContext) -> None:
-        ctx.key_down(imgui.Key.left_alt.value)
-        ctx.key_down(imgui.Key.a.value)
-        ctx.key_up(imgui.Key.a.value)
-        ctx.key_up(imgui.Key.left_alt.value)
+        ctx.key_down(imgui.Key.left_alt)
+        ctx.key_down(imgui.Key.a)
+        ctx.key_up(imgui.Key.a)
+        ctx.key_up(imgui.Key.left_alt)
     test_alt_a.test_func = test_alt_a_func
 
 

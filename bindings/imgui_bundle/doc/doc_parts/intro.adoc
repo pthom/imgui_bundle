@@ -1,6 +1,0 @@
-[[introduction]]
-== What's in the pack?
-
-include::_utils.adoc[]
-
-include::intro_batteries_included.adoc[]

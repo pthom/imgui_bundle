@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
 
 import litgen
@@ -10,6 +10,61 @@ PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 CPP_HEADERS_DIR = THIS_DIR + "/../implot"
+
+
+def _add_implot_spec_array_bindings(options: litgen.LitgenOptions) -> None:
+    """Add custom bindings for ImPlotSpec pointer-array fields so they accept numpy arrays.
+    This function is copied into _add_implot3d_spec_array_bindings for ImPlot3D / generate_implot3d.py
+    (both libs use the same Spec API)
+    """
+
+    # Exclude pointer-array fields from auto-generation;
+    # custom bindings below accept numpy arrays instead of raw pointers.
+    options.member_exclude_by_name__regex += "|^LineColors$|^FillColors$|^MarkerLineColors$|^MarkerFillColors$|^MarkerSizes$"
+
+    # Build pydef and stub code for all 5 array fields
+    color_fields = [
+        ("line_colors", "LineColors", "array of colors (np.uint32) for each line. Must have the same length as the data arrays. If None, use LineColor for all lines."),
+        ("fill_colors", "FillColors", "array of colors (np.uint32) for each fill. Must have the same length as the data arrays. If None, use FillColor for all fills."),
+        ("marker_line_colors", "MarkerLineColors", "array of colors (np.uint32) for each marker edge. Must have the same length as the data arrays. If None, use MarkerLineColor for all markers."),
+        ("marker_fill_colors", "MarkerFillColors", "array of colors (np.uint32) for each marker face. Must have the same length as the data arrays. If None, use MarkerFillColor for all markers."),
+    ]
+    float_fields = [
+        ("marker_sizes", "MarkerSizes", "array of sizes (np.float32) for each marker. Must have the same length as the data arrays. If None, use MarkerSize for all markers."),
+    ]
+
+    stub_lines = []
+    pydef_lines = []
+
+    for py_name, cpp_name, doc in color_fields:
+        stub_lines.append(f'    {py_name}: Optional[np.ndarray] = None  # {doc}')
+        pydef_lines.append(f"""
+    LG_CLASS.def_prop_rw("{py_name}",
+        [](ImPlotSpec& self) -> uintptr_t {{ return reinterpret_cast<uintptr_t>(self.{cpp_name}); }},
+        [](ImPlotSpec& self, nb::ndarray<nb::ro>& arr) {{
+            if (arr.dtype() != nb::dtype<uint32_t>())
+                throw nb::type_error("{py_name} requires a np.uint32 array");
+            self.{cpp_name} = (ImU32*)arr.data();
+        }},
+        "{doc}");""")
+
+    for py_name, cpp_name, doc in float_fields:
+        stub_lines.append(f'    {py_name}: Optional[np.ndarray] = None  # {doc}')
+        pydef_lines.append(f"""
+    LG_CLASS.def_prop_rw("{py_name}",
+        [](ImPlotSpec& self) -> uintptr_t {{ return reinterpret_cast<uintptr_t>(self.{cpp_name}); }},
+        [](ImPlotSpec& self, nb::ndarray<nb::ro>& arr) {{
+            if (arr.dtype() != nb::dtype<float>())
+                throw nb::type_error("{py_name} requires a np.float32 array");
+            self.{cpp_name} = (float*)arr.data();
+        }},
+        "{doc}");""")
+
+    options.custom_bindings.add_custom_bindings_to_class(
+        "ImPlotSpec",
+        stub_code="\n".join(stub_lines) + "\n",
+        pydef_code="\n".join(pydef_lines) + "\n",
+    )
 
 
 def autogenerate_implot():
@@ -25,6 +80,8 @@ def autogenerate_implot():
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
+    # Custom bindings for ImPlotSpec array fields: accept typed numpy arrays
+    _add_implot_spec_array_bindings(options)
 
     litgen.write_generated_code_for_file(
         options,
@@ -56,6 +113,7 @@ def autogenerate_implot_internal() -> None:
             "^GetGmtTime$",
             "^MkLocTime$",
             "^GetLocTime$",
+            "^GetTime$",
             "^Formatter_Default$",
             "^Formatter_Logit$",
             "^Formatter_Time$",

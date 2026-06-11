@@ -46,6 +46,54 @@ function(add_imgui_bundle_bindings)
     set(bindings_main_folder ${IMGUI_BUNDLE_PATH}/external/bindings_generation/cpp/)
     include(${bindings_main_folder}/all_pybind_files.cmake)
 
+    # Filter out bindings for disabled modules
+    set(filtered_pybind_files)
+    foreach(pybind_file ${all_pybind_files})
+        set(include_file TRUE)
+
+        # Check if file belongs to disabled module
+        if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI AND pybind_file MATCHES "hello_imgui/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_IMMAPP AND pybind_file MATCHES "immapp/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_IMGUI_MD AND pybind_file MATCHES "imgui_md/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_IMFILEDIALOG AND pybind_file MATCHES "ImFileDialog/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT AND pybind_file MATCHES "imgui_tex_inspect/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_NANOVG AND pybind_file MATCHES "nanovg/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_IMPLOT AND pybind_file MATCHES "implot/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_IMPLOT3D AND pybind_file MATCHES "implot3d/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR AND pybind_file MATCHES "imgui-node-editor/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_IMGUIZMO AND pybind_file MATCHES "ImGuizmo/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT IMGUI_BUNDLE_WITH_IMMVISION AND pybind_file MATCHES "immvision/bindings")
+            set(include_file FALSE)
+        endif()
+        if(NOT HELLOIMGUI_WITH_TEST_ENGINE AND pybind_file MATCHES "pybind_imgui_test_engine")
+            set(include_file FALSE)
+        endif()
+
+        if(include_file)
+            list(APPEND filtered_pybind_files ${pybind_file})
+        endif()
+    endforeach()
+
     #########################################################################
     # Build python module that provides bindings to the library hello_imgui
     #########################################################################
@@ -53,21 +101,32 @@ function(add_imgui_bundle_bindings)
     set(python_native_module_name _imgui_bundle)    # This is the native python module name
     set(python_wrapper_module_name imgui_bundle)    # This is the python wrapper around the native module
     set(python_module_sources
-        ${bindings_main_folder}/module.cpp
         ${bindings_main_folder}/pybind_imgui_bundle.cpp
-        ${all_pybind_files}
+        ${filtered_pybind_files}
         )
 
+    # Manually-maintained bindings live outside the autogen file list.
+    # The webgl bridge is Pyodide-only (uses emscripten + Pyodide js interop).
+    if(IMGUI_BUNDLE_BUILD_PYODIDE)
+        list(APPEND python_module_sources ${bindings_main_folder}/pybind_webgl.cpp)
+    endif()
+
     nanobind_add_module(${python_native_module_name} ${python_module_sources})
-    target_compile_definitions(${python_native_module_name} PRIVATE VERSION_INFO=${PROJECT_VERSION})
+
+    # Propagate WITH flags to bindings so preprocessor conditionals work
+    if(NOT IMGUI_BUNDLE_WITH_HELLO_IMGUI)
+        target_compile_definitions(${python_native_module_name} PRIVATE IMGUI_BUNDLE_DISABLE_HELLO_IMGUI)
+    endif()
+    if(NOT IMGUI_BUNDLE_WITH_IMMAPP)
+        target_compile_definitions(${python_native_module_name} PRIVATE IMGUI_BUNDLE_DISABLE_IMMAPP)
+    endif()
 
     litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} ${IMGUI_BUNDLE_PATH}/bindings)
 
-    # add cvnp for immvision
+    # add immvision type casters
     if (IMGUI_BUNDLE_WITH_IMMVISION)
-        set(cvnp_nano_dir ${IMGUI_BUNDLE_PATH}/external/immvision/cvnp_nano)
-        target_sources(${python_native_module_name} PRIVATE ${cvnp_nano_dir}/cvnp_nano/cvnp_nano.h)
-        target_include_directories(${python_native_module_name} PRIVATE ${cvnp_nano_dir})
+        set(immvision_bindings_dir ${IMGUI_BUNDLE_PATH}/external/immvision/bindings)
+        target_include_directories(${python_native_module_name} PRIVATE ${immvision_bindings_dir})
 
         target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
     endif()
@@ -86,8 +145,19 @@ function(add_imgui_bundle_bindings)
 
     # Link with OpenGL (necessary for nanobind)
     if (NOT  EMSCRIPTEN)
-        find_package(OpenGL REQUIRED)
-        target_link_libraries(${python_native_module_name} PUBLIC OpenGL::GL)
+        if (APPLE)
+            target_link_libraries(${python_native_module_name} PUBLIC "-framework OpenGL")
+        else()
+            find_package(OpenGL REQUIRED)
+            target_link_libraries(${python_native_module_name} PUBLIC OpenGL::GL)
+        endif()
+    endif()
+
+    if (IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2)
+        target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL2)
+    endif()
+    if (IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL3)
+        target_compile_definitions(${python_native_module_name} PUBLIC IMGUI_BUNDLE_PYTHON_DISABLE_OPENGL3)
     endif()
 
     # Disable optimizations on release build for msvc

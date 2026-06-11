@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core>=0.9.1", "nanobind>=2.4.0"]
+requires = ["scikit-build-core>=0.11.0", "nanobind>=2.4.0"]
 build-backend = "scikit_build_core.build"
 
 # To debug build backend, replace by:
@@ -10,7 +10,8 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "imgui-bundle"
-version = "1.6.3"  # Remember to mirror changes on line 2 of main CMakeLists!
+version = "1.92.801"  # Based on ImGui 1.92.8 - Remember to mirror changes on line 3 of main CMakeLists! Version = ImGui patch × 100 + bundle release. (also remember to update pyodide_projects/pyodide_test_bundle/test_local_pyodide.html and test_cdn_pyodide_local_wheel.html with the new version.)
+
 description="Dear ImGui Bundle: From expressive code to powerful GUIs in no time. A fast, feature-rich, cross-platform toolkit for C++ and Python."
 readme = "bindings/imgui_bundle/Readme_pypi.md"
 authors = [ { name = "Pascal Thomet", email = "pthomet@gmail.com" } ]
@@ -22,26 +23,72 @@ classifiers = [
     "Typing :: Typed",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
 ]
 
-dependencies = [
-    "numpy",
-    "munch",
-    "glfw",
-    "PyOpenGL",
-    "pillow",
-    "pydantic",
-]
+dependencies = []
 
 [project.optional-dependencies]
-test = ["pytest"]
+# To be able to display plots
+matplotlib = ["matplotlib", "numpy"]
+# To use image processing features
+imgproc = ["pillow", "opencv-python"]
+pydantic = ["pydantic>=2.0.0"]
+# For pure python backends
+opengl = ["PyOpenGL"]
+glfw = ["glfw"]
+sdl2 = ["PySDL2"]
+sdl3 = ["PySDL3"]
+wgpu = ["wgpu", "rendercanvas"]
+pyglet = ["pyglet"]
+all_backends = [
+    "PyOpenGL",
+    "glfw",
+    "PySDL2",
+    "PySDL3",
+    "wgpu",
+    "rendercanvas",
+    "pyglet",
+    "pygame",
+]
+# full installation
+full = [
+    # Core
+    "numpy",
+    "pydantic>=2.0.0",
+
+    # Images
+    "pillow",
+    "opencv-python",
+
+    # Scientific packages
+    "jupyterlab",
+    "notebook",
+    "matplotlib",
+
+    # fiatlight
+    "fiatlight",
+    "pandas",
+    "pandas-stubs",
+
+    # Backends
+    "PyOpenGL",
+    "glfw",
+    "PySDL2",
+    "PySDL3",
+    "wgpu",
+    "rendercanvas",
+    "pyglet",
+    "pygame",
+    "PyGLM",
+]
+# For development and testing
+test = ["pytest", "pytest-asyncio", "mypy"]
+
+
 
 [project.urls]
-Homepage = "https://pthom.github.io/imgui_bundle/"
-Documentation = "https://pthom.github.io/imgui_bundle/"
+Homepage = "https://imgui-bundle.pages.dev/"
+Documentation = "https://imgui-bundle.pages.dev/"
 Repository = "https://github.com/pthom/imgui_bundle"
 Issues = "https://github.com/pthom/imgui_bundle/issues"
 Changelog = "https://github.com/pthom/imgui_bundle/blob/main/CHANGELOG.md"
@@ -53,16 +100,110 @@ imgui_bundle_demo="imgui_bundle.demos_python.demo_imgui_bundle:main"
 [tool.scikit-build]
 wheel.expand-macos-universal-tags = true
 wheel.packages = ["bindings/imgui_bundle"]
-sdist.exclude = ["bindings/imgui_bundle/doc"]
+wheel.exclude = ["lib/**", "include/**"]
+sdist.exclude = [
+    ".git",
+    ".github",
+    "/external/*/.git",
+    "/ci_scripts/",
+    "/docs/",
+    "/imgui_bundle_assets/",  # only for C++ apps
+    "/_example_integration/", # C++ template
+    "/pyodide_projects/",     # Playground only
+    "/logo/",
+    # Build artifacts
+    "/build*/",
+    "/external/*/build*/",
+    "/_skbuild/",
+    "*.so",
+    "*.dylib",
+    "*.dll",
+    "*.pyd",
+    "*.egg-info/",
+    "__pycache__/",
+    # Virtual environments
+    "/venv*/",
+    "/.venv*/",
+    "/v3*/",
+    # Dependency managers & pip outputs
+    "/vcpkg/",
+    "/dist/",
+    "/wheelhouse/",
+]
+
+# Slim wheel for Pyodide builds: exclude things the browser playground doesn't need.
+# Set IMGUI_BUNDLE_SLIM_PYODIDE_WHEEL=1 to activate.
+#
+# Excluded:
+#   - demos_cpp/, demos_python/, demos_assets/  (the C++/Python demo folders;
+#     the playground ships its own examples and doesn't load these)
+#   - assets/fonts/latex/                       (~876 KB of LaTeX math fonts;
+#     downloaded lazily from a CDN on first immapp.run(with_latex=True) call,
+#     see bindings/imgui_bundle/_pyodide_latex_fonts.py)
+[[tool.scikit-build.overrides]]
+if.env.IMGUI_BUNDLE_SLIM_PYODIDE_WHEEL = true
+wheel.exclude = [
+    "imgui_bundle/demos_cpp/**",
+    "imgui_bundle/demos_python/**",
+    "imgui_bundle/demos_assets/**",
+    "imgui_bundle/assets/fonts/latex/**",
+]
 
 cmake.version = ">=3.26.1"
 build.verbose = true
 logging.level = "INFO"
 
 
+#####################################
+# Mypy, Ruff and linters
+#####################################
 [tool.isort]
 profile = "black"
 
+[tool.ruff]
+include = ["bindings/imgui_bundle/**/*.py", "bindings/imgui_bundle/**/*.pyi"]
+
+[tool.mypy]
+packages = ["imgui_bundle"]
+disable_error_code = ["attr-defined"]
+warn_return_any = true
+warn_unused_configs = true
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_decorators = true
+disallow_incomplete_defs = true
+no_implicit_optional = true
+strict_equality = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+warn_unused_ignores = false
+# disallow_untyped_calls = true
+
+[[tool.mypy.overrides]]
+module = "imgui_bundle.python_backends.*"
+disallow_untyped_defs = false
+check_untyped_defs = false
+warn_unused_ignores = false
+
+[[tool.mypy.overrides]]
+module = "imgui_bundle.python_backends.python_backends_disabled.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = [
+    "imgui_bundle.demos_python.sandbox.compare_other_libs.*",
+    "imgui_bundle.demos_python.sandbox.compare_wordle.*",
+]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "imgui_bundle.demos_python.*"
+disable_error_code = ["attr-defined", "no-untyped-def"]
+
+[[tool.mypy.overrides]]
+module = ["OpenGL.*", "glfw.*", "glm"]
+ignore_missing_imports = true
 
 #####################################
 # Wheels options
@@ -71,11 +212,12 @@ profile = "black"
 build-verbosity = 1
 
 # Target python versions:
-build = ["cp311-*", "cp312-*", "cp313-*"]
+build = ["cp311-*", "cp312-*", "cp313-*", "cp314-*"]
 
-# Tests
-test-requires = "pytest"
-test-command = "pytest {project}/tests"  # cibuildwheel doc says pytest {package}/tests !
+# Tests : we ignore the python GUI tests here, as they require a display
+# (note: those tests are run in the pip.yml GitHub actions workflows)
+test-requires = ["pytest", "pytest-asyncio", "numpy"]
+test-command = "pytest {project}/tests --ignore={project}/tests/tests_python_gui"
 
 
 #------------------------------------
@@ -92,18 +234,10 @@ before-build = "uname -a"
 # test-skip = ["*-macosx_arm64 *-macosx_universal2:arm64"]
 test-skip = ["*"]
 # Environment variables
-# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
 environment = { MACOSX_DEPLOYMENT_TARGET="14.0" }
 
-# Architectures
-# -------------
-# archs = ["universal2"] # building universal2 fails miserably at this time: see comment in external/immvision/find_opencv.cmake
-# So, we build separately for x86_64 and arm64
-# archs = ["x86_64", "arm64"]
-# Actually, we (temporarily) do not build for arm64 on github's CI, since it succeeds to build a wheel,
-# however the resulting wheel wants to link to intel IPP, which is not available on arm.
-# => mac arm61 will need to be built and uploaded from an M1 mac
-archs = ["x86_64"]
+# Apple Silicon only — Intel Macs discontinued in 2020, GitHub dropping Intel runners in 2027.
+archs = ["arm64"]
 
 #------------------------------------
 # linux wheels options
@@ -111,10 +245,6 @@ archs = ["x86_64"]
 [tool.cibuildwheel.linux]
 skip = ["*i686"]
 test-skip = ["*-musllinux_*"] #  issue with OpenGL on musllinux
-# Environment variables
-# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Will fetch, build and install a very-minimalist OpenCV
-# environment = { IMGUIBUNDLE_OPENCV_FETCH_SOURCE="ON" }
-environment-pass = ["IMMVISION_OPENCV_GIT_REPO"]  # pass alternative git repo to docker build containers
 
 
 # Install glfw dev packages on manylinux:
@@ -139,14 +269,43 @@ environment-pass = ["IMMVISION_OPENCV_GIT_REPO"]  # pass alternative git repo to
 before-all = "yum install -y libXcursor-devel libXi-devel libXinerama-devel libXrandr-devel mesa-libGL-devel"
 [[tool.cibuildwheel.overrides]]
 select = "*-musllinux*"
-before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev mesa-dev mesa-gl"
+before-all = "apk add xorg-server-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev mesa-dev mesa-gl cmake curl bash"
 
 #------------------------------------
 # windows wheels options
 #------------------------------------
 [tool.cibuildwheel.windows]
 skip = ["*win32"]
+# Disable the wheel repair step (cibuildwheel >= 4.0.0 runs delvewheel by default).
+# imgui_bundle already vendors glfw3.dll into the package itself (see
+# imgui_bundle_cmake/internal/add_glfw_submodule.cmake) and loads it via
+# _glfw_set_search_path.py. delvewheel does not search inside the wheel by default,
+# so it fails trying to locate glfw3.dll on PATH. We ship a self-contained wheel,
+# so no repair is needed.
+repair-wheel-command = ""
 
-# Environment variables
-# IMGUIBUNDLE_OPENCV_FETCH_SOURCE => Download a precompiled version of opencv4.6.0
-# environment = { IMGUIBUNDLE_OPENCV_WIN_USE_OFFICIAL_PREBUILT_460="ON" }
+#------------------------------------
+# android wheels
+#------------------------------------
+# Android wheel support is experimental, and available in a separate branch (not officially supported at the moment)
+# See: https://github.com/pthom/imgui_bundle/tree/android-wheel
+# Related PR: https://github.com/pthom/imgui_bundle/pull/438
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Custom Build Configurations
+# ═══════════════════════════════════════════════════════════════════════════
+# You may disable some submodules of imgui_bundle if you do not need them.
+# Common cases are:
+# 1. to disable immvision
+#    Pass -DIMGUI_BUNDLE_WITH_IMMVISION=OFF, e.g.:
+#        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_IMMVISION=OFF" pip install -v .
+#    or
+#        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_IMMVISION=OFF" python -m build --wheel
+#    Note: immvision no longer requires OpenCV. It works fully without it.
+#    OpenCV support is optional (behind IMMVISION_HAS_OPENCV).
+#
+# 2. to disable hello_imgui (to avoid the windowing dependencies)
+#   Pass -DIMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF, e.g.:
+#        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF" pip install -v .
+#   If you disable hello_imgui, several dependent modules will be auto-disabled:
+#     immapp, imgui_md, im_file_dialog, imgui_tex_inspect, immvision, imgui_test_engine, and the glfw backend.

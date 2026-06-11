@@ -1,4 +1,3 @@
-import numpy as np
 from imgui_bundle import immapp, implot, hello_imgui
 from imgui_bundle.immapp.runnable_code_cell import show_runnable_code_cell
 from typing import Any

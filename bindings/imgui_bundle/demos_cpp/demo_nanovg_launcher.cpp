@@ -1,4 +1,4 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "hello_imgui/hello_imgui.h"
@@ -9,8 +9,7 @@ void demo_nanovg_launcher()
 {
     static bool isFullDemoOpened = false, isSimpleDemoOpened = false;
     ImGuiMd::RenderUnindented(R"(
-        # NanoVG
-        [NanoVG](https://github.com/memononen/nanovg) Antialiased 2D vector drawing library on top of OpenGL for UI and visualizations.
+        [NanoVG](https://github.com/memononen/nanovg) provides antialiased 2D vector drawing library on top of OpenGL for UI and visualizations.
     )");
 
     if (!isFullDemoOpened && !isSimpleDemoOpened)

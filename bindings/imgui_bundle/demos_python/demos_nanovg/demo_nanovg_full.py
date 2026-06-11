@@ -1,12 +1,10 @@
 # port of bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full.cpp
-from imgui_bundle import imgui, nanovg as nvg, hello_imgui, ImVec2, ImVec4
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle import imgui, nanovg as nvg, hello_imgui, ImVec2, ImVec4, register_demos_assets_folder
 from imgui_bundle.demos_python.demos_nanovg.demo_nanovg_full import demo_nanovg_full_impl
 from typing import List
 
-
 nvg_imgui = nvg.nvg_imgui
-
+register_demos_assets_folder()
 
 class MyNvgDemo:
     blowup: bool
@@ -42,10 +40,6 @@ class AppState:
 
 
 def main():
-    # This call is specific to the ImGui Bundle interactive manual. In a standard application, you could write:
-    #         hello_imgui.set_assets_folder("my_assets")  # (By default, HelloImGui will search inside "assets")
-    demo_utils.set_hello_imgui_demo_assets_folder()
-
     app_state = AppState()
 
     runner_params = hello_imgui.RunnerParams()
@@ -81,13 +75,14 @@ def main():
     runner_params.callbacks.custom_background = custom_background
 
     def gui():
-        imgui.set_next_window_pos(ImVec2(0, 0), imgui.Cond_.appearing.value)
-        imgui.begin("My Window!", None, imgui.WindowFlags_.always_auto_resize.value)
+        imgui.set_next_window_pos(ImVec2(0, 0), imgui.Cond_.appearing)
+        imgui.begin("My Window!", None, imgui.WindowFlags_.always_auto_resize)
 
         if app_state.display_in_frame_buffer:
             clear_color_vec4 = ImVec4(*app_state.clear_color)
             nvg_imgui.render_nvg_to_frame_buffer(app_state.vg, app_state.myFrameBuffer, nvg_drawing_function, clear_color_vec4)
-            imgui.image(app_state.myFrameBuffer.texture_id, ImVec2(1000, 600))
+            imgui.image(
+                imgui.ImTextureRef(app_state.myFrameBuffer.texture_id), ImVec2(1000, 600))
 
         imgui.button("?##Note")
         if imgui.is_item_hovered():

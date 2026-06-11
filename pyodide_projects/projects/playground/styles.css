@@ -1,0 +1,312 @@
+/* Reset and basic styles */
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+/* Header styles */
+#header {
+    height: 56px; /* Approximately 2 cm */
+    background-color: #2d2d2d;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+#header-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 40px; /* Adjust as needed */
+    margin-right: 15px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+#header-right {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Dropdown styles */
+#example-selector {
+    margin-right: 10px;
+    padding: 5px;
+    font-size: 1em;
+}
+
+/* Label for the dropdown */
+#example-label {
+    margin-right: 5px;
+}
+
+/* Run Button styles */
+#run-button {
+    padding: 3px 10px;
+    font-size: 0.8rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#run-button:hover {
+    background-color: #45a049;
+}
+
+#run-button:disabled,
+#run-button:disabled:hover {
+    background-color: #888;
+    cursor: not-allowed;
+    animation: none;
+}
+
+@keyframes run-button-pulse {
+    0%, 100% { background-color: #4CAF50; }
+    50% { background-color: #81D4FA; }
+}
+
+#run-button.needs-run {
+    animation: run-button-pulse 1.5s ease-in-out infinite;
+}
+
+/* Main container below header */
+#main-container {
+    display: flex;
+    height: calc(100% - 56px); /* Subtract header height */
+    width: 100%;
+}
+
+/* Split container */
+#editor-and-canvas-container
+{
+    display: flex;
+    height: 100%;
+    width: 100%;
+    flex-grow: 1;
+}
+
+#editor-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+/* Editor toolbar */
+#editor-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 28px;
+    padding: 0 8px;
+    background-color: #1e1e1e;
+    color: #ccc;
+    font-family: system-ui, sans-serif;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    border-bottom: 1px solid #333;
+}
+
+#editor-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#editor-modified {
+    display: inline-block;
+    width: 1em;
+    text-align: center;
+    color: #ccc;
+    visibility: hidden;
+}
+
+#editor-modified.visible {
+    visibility: visible;
+}
+
+#editor-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+#run-shortcut {
+    color: #777;
+    font-size: 0.75rem;
+}
+
+#editor {
+    flex-grow: 1;
+    overflow: auto;
+}
+
+#error-output {
+    background-color: #f8d7da; /* Light red background */
+    color: #721c24; /* Dark red text */
+    border: 1px solid #f5c6cb; /* Border similar to background */
+    padding: 10px;
+    font-family: Consolas, monospace;
+    font-size: 0.9em;
+    max-height: 150px;
+    overflow-y: auto;
+    /* Remove the display property to let the .hidden class control visibility */
+    /* display: none; */
+    white-space: pre-wrap; /* Preserve formatting */
+    position: relative;
+}
+
+/* Close button for error output */
+#close-error {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.2em;
+    color: #721c24;
+    cursor: pointer;
+}
+
+#close-error:hover {
+    color: #491217;
+}
+
+/* Utility class to hide elements */
+.hidden {
+    display: none;
+}
+
+/* Loading Banner Styles
+   Anchored over the canvas region only (non-blocking, editor stays usable). */
+#loading-banner {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(40, 40, 40, 0.92);
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 10;
+    font-family: system-ui, sans-serif;
+}
+
+#loading-banner.hidden {
+    display: none;
+}
+
+#loading-banner h3 {
+    margin: 0 0 4px 0;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+#loading-banner .loading-subtitle {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #ccc;
+    text-align: center;
+}
+
+#progress-container {
+    width: min(360px, 80%);
+    background-color: #555;
+    border-radius: 5px;
+    margin: 12px 0;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 12px;
+    background-color: #4CAF50;
+    border-radius: 5px;
+    transition: width 0.3s;
+}
+
+#progress-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #ddd;
+}
+
+#loading-banner .loading-hint {
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: #aaa;
+    text-align: center;
+}
+
+#loading-video {
+    width: min(280px, 80%);
+    margin-top: 18px;
+    border-radius: 6px;
+    border: 1px solid #444;
+    background: #000;
+    display: block;
+}
+
+#loading-banner .loading-tip {
+    margin: 10px 0 0 0;
+    font-size: 0.8rem;
+    color: #ccc;
+    text-align: center;
+    min-height: 1.2em;
+    transition: opacity 0.3s;
+}
+
+/* Canvas Styles */
+#canvas-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+#canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Optional: Style for gutter */
+.gutter {
+    background-color: #eee;
+    background-repeat: no-repeat;
+    background-position: 50%;
+}
+.gutter.gutter-horizontal {
+    cursor: col-resize;
+    width: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #header {
+        flex-direction: column;
+        height: auto;
+        padding: 10px;
+    }
+    #header-left, #header-right {
+        margin-bottom: 10px;
+    }
+    #run-button {
+        width: 100%;
+    }
+}

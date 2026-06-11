@@ -1,0 +1,1 @@
+../../ci_scripts/pyodide_local_build/config_versions_pyodide.sh

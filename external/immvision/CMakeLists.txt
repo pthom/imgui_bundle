@@ -1,19 +1,3 @@
-include(${CMAKE_CURRENT_LIST_DIR}/immvision/cmake/find_opencv.cmake)
-immvision_find_opencv()
-if (NOT OpenCV_FOUND)
-    if (IMGUI_BUNDLE_FAIL_IF_IMMVISION_UNAVAILABLE)
-        message(FATAL_ERROR "OpenCV was not found!")
-    else()
-        message(STATUS "OpenCV was not found. Immvision will *not* be built")
-        set(IMGUI_BUNDLE_WITH_IMMVISION OFF CACHE BOOL "Build with immvision" FORCE)
-    endif()
-else()
-    if (NOT IMGUI_BUNDLE_WITH_IMMVISION)
-        set(IMGUI_BUNDLE_WITH_IMMVISION ON CACHE BOOL "Build with immvision" FORCE)
-    endif()
-endif()
-
-
-if (IMGUI_BUNDLE_WITH_IMMVISION)
-    add_subdirectory(immvision)
-endif()
+# OpenCV is optional — immvision builds and works without it.
+# If OpenCV is installed, immvision will automatically detect it and enable cv::Mat interop.
+add_subdirectory(immvision)

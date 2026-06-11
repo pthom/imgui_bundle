@@ -1,4 +1,4 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "imspinner/imspinner.h"
@@ -15,7 +15,7 @@
 #include "ImFileDialog/ImFileDialog.h"
 #endif
 #include "imgui_md_wrapper.h"
-#include "ImCoolBar/ImCoolbar.h"
+#include "ImCoolBar/ImCoolBar.h"
 #include "demo_utils/api_demos.h"
 
 #include <fplus/fplus.hpp>
@@ -90,6 +90,25 @@ void DemoKnobs()
         ImGui::PopID();
     };
 
+    // Apply custom colors before drawing knobs
+    static bool useCustomColors = false;
+    static ImVec4 primaryCol(0.1f, 0.45f, 0.7f, 1.f);
+    static ImVec4 secondaryCol(0.7f, 0.7f, 0.7f, 1.f);
+    static ImVec4 trackCol(0.3f, 0.3f, 0.7f, 1.f);
+
+    if (useCustomColors)
+    {
+        ImGuiKnobs::KnobColors colors;
+        colors.primary = ImGuiKnobs::color_set(ImColor(primaryCol));
+        colors.secondary = ImGuiKnobs::color_set(ImColor(secondaryCol));
+        colors.track = ImGuiKnobs::color_set(ImColor(trackCol));
+        ImGuiKnobs::SetKnobColors(colors);
+    }
+    else
+    {
+        ImGuiKnobs::UnsetKnobColors();
+    }
+
     float knobsSizeSmall = ImmApp::EmSize() * 2.5;
     float knobsSizeBig = knobsSizeSmall * 1.3;
 
@@ -104,6 +123,21 @@ void DemoKnobs()
     ImGui::Text("Some big knobs (int values)");
     show_int_knobs(knobsSizeBig);
     ImGui::EndGroup();
+
+    // Customize colors button + popup (below the knobs)
+    if (ImGui::Button("Customize Colors"))
+        ImGui::OpenPopup("knob_colors_popup");
+    if (ImGui::BeginPopup("knob_colors_popup"))
+    {
+        ImGui::Checkbox("Use custom colors", &useCustomColors);
+        if (useCustomColors)
+        {
+            ImGui::ColorEdit4("Primary (indicator)", &primaryCol.x);
+            ImGui::ColorEdit4("Secondary (circle)", &secondaryCol.x);
+            ImGui::ColorEdit4("Track (arc)", &trackCol.x);
+        }
+        ImGui::EndPopup();
+    }
 }
 
 
@@ -130,6 +164,12 @@ void DemoSpinner()
     ImGui::Text("spinner_ang_triple");
     ImGui::SameLine();
     ImSpinner::SpinnerAngTriple("spinner_ang_triple", radius1, radius1 * 1.5f, radius1 * 2.0f, 2.5f, color, color, color);
+
+    static bool show_full_demo = false;
+    ImGui::SameLine();
+    ImGui::Checkbox("Show full spinners demo", &show_full_demo);
+    if (show_full_demo)
+        ImSpinner::demoSpinners();
 }
 
 
@@ -435,7 +475,7 @@ void DemoCoolBar()
         float w         = ImGui::GetCoolBarItemWidth();
 
         // Display transparent image and check if clicked
-        HelloImGui::ImageFromAsset("images/bear_transparent.png", ImVec2(w, w));
+        HelloImGui::ImageFromAsset("images/world.png", ImVec2(w, w));
         bool clicked = ImGui::IsItemHovered() && ImGui::IsMouseClicked(0);
 
         // Optional: add a label on the image
@@ -451,13 +491,14 @@ void DemoCoolBar()
 
     std::vector<std::string> buttonLabels {"A", "B", "C", "D", "E", "F"};
     ImGuiMd::RenderUnindented(R"(
-        # ImCoolBar:
+        # ImCoolBar
         ImCoolBar provides a dock-like Cool bar for Dear ImGui
     )");
 
-    ImGui::ImCoolBarConfig coolBarConfig;
-    coolBarConfig.anchor = ImVec2(0.5f, 0.07f); // position in the window (ratio of window size)
-    if (ImGui::BeginCoolBar("##CoolBarMain", ImCoolBarFlags_Horizontal, coolBarConfig))
+    ImGui::ImCoolBarSettings coolBarSettings;
+    coolBarSettings.anchor = ImVec2(0.5f, 0.07f); // position in the window (ratio of window size)
+    coolBarSettings.mode = ImCoolBarFlags_Horizontal;
+    if (ImGui::BeginCoolBar("##CoolBarMain", coolBarSettings))
     {
         for (const std::string& label: buttonLabels)
         {
@@ -477,10 +518,12 @@ void DemoCoolBar()
 void demo_widgets()
 {
     DemoCoolBar();
-    DemoPortableFileDialogs(); ImGui::NewLine();
-    DemoImFileDialog(); ImGui::NewLine();
-    DemoKnobs();
-    DemoToggle(); ImGui::NewLine();
+    DemoToggle();
     DemoSpinner();
+    DemoKnobs();
     DemoCommandPalette();
+    ImGui::NewLine();
+    DemoPortableFileDialogs();
+    ImGui::NewLine();
+    DemoImFileDialog();
 }

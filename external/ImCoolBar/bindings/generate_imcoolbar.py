@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
 
 import litgen
@@ -22,7 +22,10 @@ def main():
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
     options.namespaces_root = ["ImGui"]
-    options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
+    options.srcmlcpp_options.functions_api_prefixes = "IMCOOLBAR_API"
+    options.value_replacements.add_last_replacement(
+        "ImGuiWindowFlags_None", "WindowFlags_.none"
+    )
     # options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     # options.python_run_black_formatter = True
 

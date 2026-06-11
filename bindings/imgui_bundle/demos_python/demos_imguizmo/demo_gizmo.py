@@ -15,7 +15,6 @@ Basically:
 
 from typing import List, Tuple
 import math
-import munch  # type: ignore
 
 from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
@@ -110,7 +109,7 @@ def input_only_first_value_matrix3(
     return changed, matrix3
 
 
-@immapp.static(statics=None)  # type: ignore
+@immapp.static(statics=None)
 def EditTransform(
     cameraView: Matrix16,  # may be modified
     cameraProjection: Matrix16,
@@ -119,9 +118,9 @@ def EditTransform(
 ) -> None:
     statics = EditTransform.statics
     global mCurrentGizmoOperation
-    if statics is None:
-        EditTransform.statics = munch.Munch()
-        statics = EditTransform.statics
+
+    statics = EditTransform
+    if not hasattr(statics, "initialized"):
         statics.mCurrentGizmoMode = gizmo.MODE.local
         statics.useSnap = False
         statics.snap = Matrix3([1.0, 1.0, 1.0])
@@ -130,6 +129,7 @@ def EditTransform(
         statics.boundSizing = False
         statics.boundSizingSnap = False
         statics.gizmoWindowFlags = 0
+        statics.initialized = True
 
     if editTransformDecomposition:
         if imgui.is_key_pressed(imgui.Key.t):
@@ -211,10 +211,10 @@ def EditTransform(
     viewManipulateTop = 0.0
 
     if useWindow:
-        imgui.set_next_window_size(ImVec2(800, 400), imgui.Cond_.appearing.value)
-        imgui.set_next_window_pos(ImVec2(400, 20), imgui.Cond_.appearing.value)
+        imgui.set_next_window_size(ImVec2(800, 400), imgui.Cond_.appearing)
+        imgui.set_next_window_pos(ImVec2(400, 20), imgui.Cond_.appearing)
         imgui.push_style_color(
-            imgui.Col_.window_bg.value, imgui.ImColor(0.35, 0.3, 0.3).value
+            imgui.Col_.window_bg, imgui.ImColor(0.35, 0.3, 0.3).value
         )
         imgui.begin("Gizmo", None, statics.gizmoWindowFlags)
         gizmo.set_drawlist()
@@ -268,7 +268,7 @@ def EditTransform(
 
 
 def glm_mat4x4_to_float_list(mat: glm.mat4x4) -> List[float]:
-    return mat[0].to_list() + mat[1].to_list() + mat[2].to_list() + mat[3].to_list() # type: ignore
+    return mat[0].to_list() + mat[1].to_list() + mat[2].to_list() + mat[3].to_list()
 
 
 # This returns a closure function that will later be invoked to run the app
@@ -309,12 +309,12 @@ def make_closure_demo_guizmo() -> GuiFunction:
         gizmo.set_orthographic(not isPerspective)
         gizmo.begin_frame()
 
-        imgui.set_next_window_pos(ImVec2(1024, 100), imgui.Cond_.appearing.value)
-        imgui.set_next_window_size(ImVec2(256, 256), imgui.Cond_.appearing.value)
+        imgui.set_next_window_pos(ImVec2(1024, 100), imgui.Cond_.appearing)
+        imgui.set_next_window_size(ImVec2(256, 256), imgui.Cond_.appearing)
 
         # create a window and insert the inspector
-        imgui.set_next_window_pos(ImVec2(10, 10), imgui.Cond_.appearing.value)
-        imgui.set_next_window_size(ImVec2(320, 340), imgui.Cond_.appearing.value)
+        imgui.set_next_window_pos(ImVec2(10, 10), imgui.Cond_.appearing)
+        imgui.set_next_window_size(ImVec2(320, 340), imgui.Cond_.appearing)
         imgui.begin("Editor")
         if imgui.radio_button("Full view", not useWindow):
             useWindow = False
@@ -361,23 +361,24 @@ def make_closure_demo_guizmo() -> GuiFunction:
             imgui.same_line()
             imgui.text(
                 "Over translate gizmo"
-                if gizmo.is_over(gizmo.OPERATION.translate)  # type: ignore
+                if gizmo.is_over(gizmo.OPERATION.translate)
                 else ""
             )
             imgui.same_line()
             imgui.text(
-                "Over rotate gizmo" if gizmo.is_over(gizmo.OPERATION.rotate) else ""  # type: ignore
+                "Over rotate gizmo" if gizmo.is_over(gizmo.OPERATION.rotate) else ""
             )
             imgui.same_line()
             imgui.text(
-                "Over scale gizmo" if gizmo.is_over(gizmo.OPERATION.scale) else ""  # type: ignore
+                "Over scale gizmo" if gizmo.is_over(gizmo.OPERATION.scale) else ""
             )
 
         imgui.separator()
 
         for matId in range(gizmoCount):
-            gizmo.set_id(matId)
+            gizmo.push_id(matId)
             EditTransform(cameraView, cameraProjection, gObjectMatrix[matId], lastUsing == matId)
+            gizmo.pop_id()
 
         imgui.end()
 

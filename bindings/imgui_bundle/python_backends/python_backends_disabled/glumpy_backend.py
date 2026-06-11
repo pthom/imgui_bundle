@@ -1,4 +1,5 @@
 # Note: this backend was not tested and not adapted to the  new imgui API!
+#type: ignore
 
 # -*- coding: utf-8 -*-
 # ruff: noqa
@@ -6,8 +7,8 @@ import numpy as np
 
 import ctypes
 from ctypes import *
-from imgui_bundle.python_backends.opengl_backend import BaseOpenGLRenderer
-
+from imgui_bundle.python_backends.opengl_base_backend import BaseOpenGLRenderer
+from imgui_bundle import imgui
 from glumpy import gloo, gl  # type: ignore
 
 from matplotlib import pyplot as plt  # type: ignore

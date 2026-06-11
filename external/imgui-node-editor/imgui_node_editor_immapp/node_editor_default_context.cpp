@@ -1,9 +1,10 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "node_editor_default_context.h"
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 
 
+#ifndef IMGUI_BUNDLE_DISABLE_IMMAPP
 namespace ImmApp
 {
     ax::NodeEditor::EditorContext* DefaultNodeEditorContext();
@@ -13,6 +14,12 @@ ax::NodeEditor::EditorContext* DefaultNodeEditorContext_Immapp()
 {
     return ImmApp::DefaultNodeEditorContext();
 }
+#else
+ax::NodeEditor::EditorContext* DefaultNodeEditorContext_Immapp()
+{
+    return nullptr; // immapp not available
+}
+#endif
 
 void SuspendNodeEditorCanvas_Immapp()
 {
@@ -92,8 +99,6 @@ void UpdateNodeEditorColorsFromImguiColors()
 
     constexpr float kHov = 1.25;
     constexpr float kSel = 1.6;
-    float HovNodeBorder = isDark ? kHov : 1.0 / kHov;
-    float SelNodeBorder = isDark ? kSel : 1.0 / kSel;
 
     ImVec4 nodeBgColor;
     {
@@ -118,28 +123,53 @@ void UpdateNodeEditorColorsFromImguiColors()
     styleNode.Colors[StyleColor_NodeBorder] = styleIm.Colors[ImGuiCol_Border];
     styleNode.Colors[StyleColor_NodeBorder].w = 0.5;
 
+    float HovNodeBorder = isDark ? kHov : 1.0 / kHov;
     styleNode.Colors[StyleColor_HovNodeBorder] = ColorValueMultiply(styleIm.Colors[ImGuiCol_ScrollbarGrabHovered], HovNodeBorder);
-    styleNode.Colors[StyleColor_SelNodeBorder] = ColorValueMultiply(styleIm.Colors[ImGuiCol_ScrollbarGrabActive], SelNodeBorder);
 
-    styleNode.Colors[StyleColor_NodeSelRect] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 0.5);
-    styleNode.Colors[StyleColor_NodeSelRectBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 1.0);
+    if (isDark)
+    {
+        // Rectangle while lassoing around nodes
+        styleNode.Colors[StyleColor_NodeSelRect] = ImVec4(1, 1, 1, 0.2);
+        styleNode.Colors[StyleColor_NodeSelRectBorder] = ImVec4(1, 1, 1, 0.5);
+        // Selected nodes in yellow
+        styleNode.Colors[StyleColor_SelNodeBorder] = ImVec4(1, 1, 0, 1);
 
-    // Note I do not see a way to set the color of an inactive Link
-    styleNode.Colors[StyleColor_HovLinkBorder] = styleIm.Colors[ImGuiCol_ScrollbarGrabHovered];
-    styleNode.Colors[StyleColor_SelLinkBorder] = styleIm.Colors[ImGuiCol_ScrollbarGrabActive];
-    // StyleColor_HighlightLinkBorder?
-    styleNode.Colors[StyleColor_HighlightLinkBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 1.0);
+        // Rectangle while lassoing around links (using Shift)
+        styleNode.Colors[StyleColor_LinkSelRect] = ImVec4(1, 1, 0.5, 0.2);
+        styleNode.Colors[StyleColor_LinkSelRectBorder] = ImVec4(1, 1, 0.5, 0.5);
+        // Selected links
+        styleNode.Colors[StyleColor_SelLinkBorder] = ImVec4(1, 1, 0.3, 1);
+        // Highlight links / sel
+        styleNode.Colors[StyleColor_HovLinkBorder] = ImVec4(0, 0., 1, 0.5);
+        styleNode.Colors[StyleColor_HighlightLinkBorder] = ImVec4(0, 0., 1, 0.5);
 
-    // I don't know what this corresponds to.
-    styleNode.Colors[StyleColor_LinkSelRect] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 0.5);
-    styleNode.Colors[StyleColor_LinkSelRectBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_DockingPreview], 1.0);
+        styleNode.Colors[StyleColor_Flow] = ImVec4(1, 1, 0.6, 0.6);
+        styleNode.Colors[StyleColor_FlowMarker] = ImVec4(1, 1, 0.6, 0.6);
+    }
+    else
+    {
+        // Rectangle while lassoing around nodes
+        styleNode.Colors[StyleColor_NodeSelRect] = ImVec4(0, 0, 0, 0.15);
+        styleNode.Colors[StyleColor_NodeSelRectBorder] = ImVec4(0, 0, 0, 0.5);
+        // Selected nodes in blue
+        styleNode.Colors[StyleColor_SelNodeBorder] = ImVec4(0, 0, 1, 1);
+
+        // Rectangle while lassoing around links (using Shift)
+        styleNode.Colors[StyleColor_LinkSelRect] = ImVec4(0, 0, 0.3, 0.15);
+        styleNode.Colors[StyleColor_LinkSelRectBorder] = ImVec4(0, 0, 0.3, 0.5);
+        // Selected links
+        styleNode.Colors[StyleColor_SelLinkBorder] = ImVec4(0, 0.3, 1, 1);
+        // Highlight links / sel
+        styleNode.Colors[StyleColor_HovLinkBorder] = ImVec4(1, 0., 1, 0.5);
+        styleNode.Colors[StyleColor_HighlightLinkBorder] = ImVec4(0, 0., 1, 0.5);
+
+        styleNode.Colors[StyleColor_Flow] = ImVec4(0.6, 0.6, 1.0, 0.6);
+        styleNode.Colors[StyleColor_FlowMarker] = ImVec4(0.6, 0.6, 1.0, 0.6);
+    }
 
     styleNode.Colors[StyleColor_PinRect] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_Button], 0.7);
     styleNode.Colors[StyleColor_PinRectBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_Button], 0.9);
 
-    // Flow is used in rare occasions.
-    styleNode.Colors[StyleColor_Flow] = styleIm.Colors[ImGuiCol_DockingPreview];
-    styleNode.Colors[StyleColor_FlowMarker] = styleIm.Colors[ImGuiCol_DockingPreview];
 
     styleNode.Colors[StyleColor_GroupBg] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_FrameBg], 0.6);
     styleNode.Colors[StyleColor_GroupBorder] = ColorWithAlphaMultiplier(styleIm.Colors[ImGuiCol_FrameBg], 0.8);

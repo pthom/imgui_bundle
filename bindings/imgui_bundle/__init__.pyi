@@ -25,11 +25,55 @@ from .immapp import icons_fontawesome_6 as icons_fontawesome_6
 
 from . import im_cool_bar as im_cool_bar
 from . import nanovg as nanovg
+from . import im_anim as im_anim
+from . import imgui_microtex as imgui_microtex
 
 from .imgui import ImVec2 as ImVec2, ImVec4 as ImVec4, ImColor as ImColor, ImVec2Like as ImVec2Like
 from .imgui_pydantic import ImVec2_Pydantic as ImVec2_Pydantic, ImVec4_Pydantic as ImVec4_Pydantic, ImColor_Pydantic as ImColor_Pydantic
 from .im_col32 import IM_COL32 as IM_COL32
 
+from typing import overload
+
+
+__version__: str
+__build_number__: int
+__bundle_pyodide__: bool
+
+
 def compilation_time() -> str:
     """Return date and time when imgui_bundle was compiled"""
     pass
+
+
+def em_size(v: float = 1.0) -> float:
+    """Returns a size in pixels corresponding to `v` em units.
+
+    1 em = current font size (ImGui::GetFontSize()).
+    Use this for DPI-independent sizing.
+    """
+    ...
+
+@overload
+def em_to_vec2(x: float, y: float) -> ImVec2: ...
+@overload
+def em_to_vec2(v: ImVec2Like) -> ImVec2: ...
+
+@overload
+def em_to_vec2(x: float, y: float | None=None) -> ImVec2:
+    """Returns an ImVec2 sized in em units (multiples of font size).
+
+    Can be called as:
+        em_to_vec2(3.0, 2.0)  -> ImVec2 of 3em x 2em
+        em_to_vec2((3.0, 2.0))  -> same, from tuple
+        em_to_vec2(ImVec2(3.0, 2.0))  -> same, from ImVec2
+    """
+    ...
+
+def register_demos_assets_folder() -> None:
+    """Register the folder containing demo assets (images, etc.) so they can be loaded by the demos."""
+    ...
+
+
+def has_submodule(name: str) -> bool:
+    """Check if a submodule is available in this bundle."""
+    ...

@@ -1,0 +1,12 @@
+# Syntax inspired from jupyter-book
+format: jb-book
+root: discover_immediate
+
+chapters:
+  - file: discover/hello_world
+    sections:
+      - file: discover/widget_edit
+      - file: discover/layout_advices
+      - file: discover/whats_next
+  - file: imgui/intro
+  # Possibly some sections here

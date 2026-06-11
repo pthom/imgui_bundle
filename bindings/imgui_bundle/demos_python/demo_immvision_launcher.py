@@ -1,4 +1,4 @@
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2023 Pascal Thomet - https://github.com/pthom/imgui_bundle
+# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from imgui_bundle import imgui, immapp, imgui_md, has_submodule
 HAS_IMMVISION = has_submodule("immvision")
 if HAS_IMMVISION:
@@ -8,6 +8,7 @@ from imgui_bundle.demos_python import demo_utils  # noqa: E402
 
 
 HAS_OPENCV = importlib.util.find_spec("cv2") is not None
+HAS_PILLOW = importlib.util.find_spec("PIL") is not None
 
 
 if HAS_IMMVISION:
@@ -21,15 +22,22 @@ def demo_gui():
 
     imgui_md.render_unindented(
         """
-        # ImmVision
-        [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger.
-        It is based on OpenCv and can analyse RGB & float, images with 1 to 4 channels.
-
-        Whereas *imgui_tex_inspect* is dedicated to texture analysis, *immvision* is more dedicated to image processing and computer vision.
-
-        Open the demos below by clicking on their title.
+        [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger and inspector. It can display and analyse RGB & float images with 1 to 4 channels, with zoom, pan, pixel inspection, and colormaps.
     """
     )
+
+    if not HAS_PILLOW:
+        imgui.new_line()
+        imgui_md.render_unindented("""
+        ## Missing dependency: Pillow
+        This demo requires the Python package *Pillow* to load images.
+        Please install it with:
+        ```
+        pip install Pillow
+        ```
+        (This demo will use dummy images until Pillow is installed.)
+        """)
+        imgui.new_line()
 
     if imgui.collapsing_header("Display images"):
         demos_immvision.demo_immvision_display.demo_gui()
@@ -40,12 +48,19 @@ def demo_gui():
     if imgui.collapsing_header("Image inspector"):
         demos_immvision.demo_immvision_inspector.demo_gui()
         demo_utils.show_python_vs_cpp_file("demos_immvision/demo_immvision_inspector")
-    if HAS_OPENCV:
-        if imgui.collapsing_header("Example with image processing"):
+    if imgui.collapsing_header("Example with image processing"):
+        if HAS_OPENCV:
             demos_immvision.demo_immvision_process.demo_gui()
             demo_utils.show_python_vs_cpp_file(
                 "demos_immvision/demo_immvision_process", nb_lines=40
             )
+        else:
+            imgui_md.render_unindented("""
+            This demo requires OpenCv. Please install OpenCv to run it, with:
+            ```
+            pip install opencv-python
+            ```
+            """)
 
 
 def main():
@@ -53,5 +68,4 @@ def main():
 
 
 if __name__ == "__main__":
-    demo_utils.set_hello_imgui_demo_assets_folder()
     main()

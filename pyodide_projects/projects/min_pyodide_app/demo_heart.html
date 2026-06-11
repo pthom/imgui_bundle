@@ -1,0 +1,164 @@
+<!doctype html>
+<!--
+
+Serve this file through a local web server, e.g.
+
+    python -m http.server
+
+Opening it directly via file:// may prevent package loading.
+
+-->
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Dear ImGui Bundle - Pyodide demo</title>
+</head>
+<body>
+
+<!--===========================================================================
+    Part 1 - Load Pyodide from a CDN
+    --------------------------------
+    Pyodide: a Python interpreter compiled to WebAssembly,
+             so that Python runs directly in the browser.
+    Check https://github.com/pyodide/pyodide/releases for more recent versions.
+============================================================================-->
+<script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"></script>
+
+
+<!--===========================================================================
+    Part 2 - Python application code (this is what you edit)
+    --------------------------------------------------------
+    The code is embedded in a <script type="text/python"> tag: browsers
+    ignore the unknown type but keep the content as .textContent (read
+    from Part 4). No backtick escaping, IDEs can syntax-highlight it.
+
+    Alternative: keep the Python in a separate file (e.g. app.py) and fetch
+    it at runtime. See the commented-out snippet in Part 4 below.
+============================================================================-->
+<script type="text/python" id="pythonCode">
+import time
+import numpy as np
+
+from imgui_bundle import implot, imgui, immapp, hello_imgui, icons_fontawesome_4, imgui_knobs, __version__
+
+# Compute x and y coordinates for a heart-shaped curve
+vals = np.arange(0, np.pi * 2, 0.01)
+x = np.power(np.sin(vals), 3) * 16
+y = 13 * np.cos(vals) - 5 * np.cos(2 * vals) - 2 * np.cos(3 * vals) - np.cos(4 * vals)
+# Heart pulse rate and time tracking
+phase = 0.0
+t0 = -1
+heart_pulse_rate = 80
+
+
+def gui():
+    global heart_pulse_rate, phase, t0, x, y
+
+    imgui.text("Made with " + icons_fontawesome_4.ICON_FA_HEART + " using Dear ImGui and ImPlot")
+    imgui.text(f"Running at {hello_imgui.frame_rate():.1f} FPS")
+
+    t = time.time()
+    if t0 < 0:
+        t0 = t
+    # Advance an animation phase; heart_pulse_rate controls the visual speed.
+    phase += (t - t0) * heart_pulse_rate / (np.pi * 2)
+    k = 0.8 + 0.1 * np.cos(phase)
+    t0 = t
+
+    if implot.begin_plot("Heart", immapp.em_to_vec2(21, 21)):
+        for i in range(5):
+            implot.plot_line("", x * k, y * k * (1 - 0.02 * i))
+        implot.end_plot()
+
+    _, heart_pulse_rate = imgui_knobs.knob(
+        "Pulse", heart_pulse_rate, 30, 180,
+        variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot)
+
+    imgui.text(f"Dear ImGui Bundle, version {__version__}")
+
+
+if __name__ == "__main__":
+    # fps_idle=0 disables idle throttling (the heart beats every frame, so we never idle).
+    # For static UIs, leave fps_idle at its default (~10) to save CPU/battery.
+    immapp.run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)
+</script>
+
+
+<!--===========================================================================
+    Part 3 - Page DOM + styles
+    --------------------------
+    - #canvas: where the ImGui app draws.
+    - #loader: an overlay with a CSS spinner (pure CSS, no images),
+               shown during initial downloads.
+============================================================================-->
+<style>
+    html, body { width: 100%; height: 100%; margin: 0; font-family: sans-serif; }
+
+    #canvas { display: block; width: 100%; height: 100%; }
+
+    #loader { position: fixed; inset: 0; display: flex; flex-direction: column;
+              align-items: center; justify-content: center; gap: 16px;
+              background: #222; color: #eee; }
+    #loader::before { content: ""; width: 48px; height: 48px; border: 5px solid #444;
+                      border-top-color: #eee; border-radius: 50%;
+                      animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<div id="loader">Loading Pyodide...</div>
+<canvas id="canvas" tabindex="0"></canvas>
+
+
+<!--===========================================================================
+    Part 4 - JavaScript driver: loads Pyodide and runs the Python code
+============================================================================-->
+<script>
+    const loaderEl = document.getElementById("loader");
+    const setStatus = m => loaderEl.textContent = m;
+    const hideLoader = () => loaderEl.remove();
+    const showError = e => { loaderEl.style.background = "#922"; setStatus("Error: " + (e?.message || e)); console.error(e?.message); };
+
+    async function main() {
+        // Right-click is scoped to the canvas so normal browser menus still work elsewhere
+        const sdl2Canvas = document.getElementById("canvas");
+        sdl2Canvas.addEventListener('contextmenu', event => event.preventDefault());
+
+        setStatus("Loading Pyodide...");
+        let pyodide = await loadPyodide();
+
+        // 1. Setup SDL, cf https://pyodide.org/en/stable/usage/sdl.html
+        pyodide.canvas.setCanvas2D(sdl2Canvas); // Pyodide will use this canvas as the target for SDL/Emscripten rendering.
+        pyodide._api._skip_unwind_fatal_error = true;  // required SDL opt-in flag
+
+        // 2. Prepare micropip to load imgui_bundle
+        setStatus("Loading micropip...");
+        await pyodide.loadPackage("micropip");
+        const micropip = pyodide.pyimport("micropip");
+
+        // 3. Load imgui_bundle (two options shown below)
+        //
+        //   Option a (default): use a wheel that is stored on your server
+        //      download this wheel from https://imgui-bundle.pages.dev/local_wheels/
+        setStatus("Loading imgui_bundle wheel...");
+        await micropip.install('../local_wheels/imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl');
+        //
+        //   Option b: use the (older) wheel bundled with the Pyodide CDN
+        // await micropip.install('imgui_bundle');
+
+        // 4. Load additional required packages used by the demo
+        setStatus("Loading numpy...");
+        await micropip.install('numpy');  // numpy will be loaded from the CDN jsdelivr
+
+        // 5. Run the Python code
+        setStatus("Starting app...");
+        //    Option a (default): run the Python code embedded in Part 2 above
+        pyodide.runPython(document.getElementById("pythonCode").textContent);
+        //    Option b: load the Python code from an external file (e.g. app.py next to this HTML):
+        // pyodide.runPython(await (await fetch('app.py')).text());
+        hideLoader();
+    }
+    main().catch(showError);
+</script>
+
+</body>
+</html>

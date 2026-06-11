@@ -1,6 +1,12 @@
-"""ImPlot: Immediate Mode Plotting for ImGui
-Python bindings for https://github.com/epezent/implot
-"""
+###############################################################################
+# This file is a part of Dear ImGui Bundle, NOT a part of ImPlot
+# -----------------------------------------------------------------------------
+# implot/internal.pyi is the equivalent of implot_internal.h, using the
+# bindings provided by Dear ImGui Bundle.
+#
+# It is automatically generated (using https://pthom.github.io/litgen/),
+# and is generally very close to the C++ version. Comments, docs are identical.
+###############################################################################
 # ruff: noqa: E741, B008
 from typing import Any, Optional, Tuple, overload
 import numpy as np
@@ -25,6 +31,7 @@ from imgui_bundle.implot import (
     Marker,
     Style,
     InputMap,
+    Spec
 )
 
 from imgui_bundle.imgui import (
@@ -53,7 +60,8 @@ time_t = int
 ####################    <generated_from:implot_internal.h>    ####################
 # MIT License
 
-# Copyright (c) 2023 Evan Pezent
+# Copyright (c) 2020-2024 Evan Pezent
+# Copyright (c) 2025-2026 Breno Cunha Queiroz
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -73,7 +81,7 @@ time_t = int
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ImPlot v0.17
+# ImPlot v1.1 WIP
 
 # You may use this file to debug, understand or extend ImPlot features but we
 # don't provide any guarantee of forward compatibility!
@@ -102,10 +110,11 @@ time_t = int
 # to ImPlotStyleVar_ over time.
 
 
+
+
 #-----------------------------------------------------------------------------
 # [SECTION] Macros
 #-----------------------------------------------------------------------------
-
 
 
 #-----------------------------------------------------------------------------
@@ -124,32 +133,14 @@ time_t = int
 
 # Computes the common (base-10) logarithm
 # static inline float  ImLog10(float x)  { return log10f(x); }    /* original C++ signature */
-@overload
-def im_log10(x: float) -> float:
-    """(private API)"""
-    pass
-# static inline double ImLog10(double x) { return log10(x);  }    /* original C++ signature */
-@overload
 def im_log10(x: float) -> float:
     """(private API)"""
     pass
 # static inline float  ImSinh(float x)   { return sinhf(x);  }    /* original C++ signature */
-@overload
-def im_sinh(x: float) -> float:
-    """(private API)"""
-    pass
-# static inline double ImSinh(double x)  { return sinh(x);   }    /* original C++ signature */
-@overload
 def im_sinh(x: float) -> float:
     """(private API)"""
     pass
 # static inline float  ImAsinh(float x)  { return asinhf(x); }    /* original C++ signature */
-@overload
-def im_asinh(x: float) -> float:
-    """(private API)"""
-    pass
-# static inline double ImAsinh(double x) { return asinh(x);  }    /* original C++ signature */
-@overload
 def im_asinh(x: float) -> float:
     """(private API)"""
     pass
@@ -201,6 +192,8 @@ def im_almost_equal(v1: float, v2: float, ulp: int = 2) -> bool:
     (private API)
     """
     pass
+
+
 # static inline ImU32 ImMixU32(ImU32 a, ImU32 b, ImU32 s) {    /* original C++ signature */
 # #ifdef IMPLOT_MIX64
 #     const ImU32 af = 256-s;
@@ -239,7 +232,7 @@ def im_mix_u32(a: ImU32, b: ImU32, s: ImU32) -> ImU32:
 #     return ImMixU32(colors[i1], colors[i2], (ImU32)(tr*256));
 # }
 def im_lerp_u32(colors: ImU32, size: int, t: float) -> ImU32:
-    """ Lerp across an array of 32-bit collors given t in [0.0 1.0]
+    """ Lerp across an array of 32-bit colors given t in [0.0 1.0]
     (private API)
     """
     pass
@@ -259,7 +252,7 @@ def im_alpha_u32(col: ImU32, alpha: float) -> ImU32:
 #-----------------------------------------------------------------------------
 
 
-class TimeUnit_(enum.Enum):
+class TimeUnit_(enum.IntFlag):
     # ImPlotTimeUnit_Us,      /* original C++ signature */
     us = enum.auto()    # (= 0)  # microsecond
     # ImPlotTimeUnit_Ms,      /* original C++ signature */
@@ -280,7 +273,7 @@ class TimeUnit_(enum.Enum):
     # }
     count = enum.auto() # (= 8)
 
-class DateFmt_(enum.Enum):
+class DateFmt_(enum.IntFlag):
     # default        [ ISO 8601     ]
     # ImPlotDateFmt_None = 0,    /* original C++ signature */
     none = enum.auto()      # (= 0)
@@ -295,7 +288,7 @@ class DateFmt_(enum.Enum):
     # ImPlotDateFmt_Yr                   /* original C++ signature */
     yr = enum.auto()        # (= 5)  # 1991           [ 1991         ]
 
-class TimeFmt_(enum.Enum):
+class TimeFmt_(enum.IntFlag):
     # default        [ 24 Hour Clock ]
     # ImPlotTimeFmt_None = 0,    /* original C++ signature */
     none = enum.auto()        # (= 0)
@@ -317,6 +310,11 @@ class TimeFmt_(enum.Enum):
     hr_min = enum.auto()      # (= 8)  # 7:21pm         [ 19:21        ]
     # ImPlotTimeFmt_Hr                   /* original C++ signature */
     hr = enum.auto()          # (= 9)  # 7pm            [ 19:00        ]
+
+class MarkerInternal_(enum.IntFlag):
+    # ImPlotMarker_Invalid = -3    /* original C++ signature */
+    # }
+    im_plot_marker_invalid = enum.auto() # (= -3)
 
 #-----------------------------------------------------------------------------
 # [SECTION] Callbacks
@@ -544,9 +542,14 @@ class PointError:
     neg: float
     # Pos;    /* original C++ signature */
     pos: float
+    # ImPlotPointError() { X = 0; Y = 0; Neg = 0; Pos = 0; }    /* original C++ signature */
+    @overload
+    def __init__(self) -> None:
+        pass
     # ImPlotPointError(double x, double y, double neg, double pos) {    /* original C++ signature */
     #         X = x; Y = y; Neg = neg; Pos = pos;
     #     }
+    @overload
     def __init__(self, x: float, y: float, neg: float, pos: float) -> None:
         pass
 
@@ -622,14 +625,15 @@ class Tag:
     color_fg: ImU32
     # int    TextOffset;    /* original C++ signature */
     text_offset: int
-    # ImPlotTag(ImAxis Axis = ImAxis(), double Value = double(), ImU32 ColorBg = ImU32(), ImU32 ColorFg = ImU32(), int TextOffset = int());    /* original C++ signature */
-    def __init__(self, axis: Optional[ImAxis] = None, value: float = float(), color_bg: ImU32 = ImU32(), color_fg: ImU32 = ImU32(), text_offset: int = int()) -> None:
-        """Auto-generated default constructor with named params
 
-
-        Python bindings defaults:
-            If Axis is None, then its default value will be: ImAxis()
-        """
+    # ImPlotTag() {    /* original C++ signature */
+    #         Axis       = 0;
+    #         Value      = 0;
+    #         ColorBg    = 0;
+    #         ColorFg    = 0;
+    #         TextOffset = 0;
+    #     }
+    def __init__(self) -> None:
         pass
 
 class TagCollection:
@@ -689,6 +693,19 @@ class Tick:
     # int    Idx;    /* original C++ signature */
     idx: int
 
+    # ImPlotTick() {    /* original C++ signature */
+    #         PlotPos      = 0;
+    #         PixelPos     = 0;
+    #         LabelSize    = ImVec2(0,0);
+    #         TextOffset   = -1;
+    #         Major        = false;
+    #         ShowLabel    = false;
+    #         Level        = 0;
+    #         Idx          = -1;
+    #     }
+    @overload
+    def __init__(self) -> None:
+        pass
     # ImPlotTick(double value, bool major, int level, bool show_label) {    /* original C++ signature */
     #         PixelPos     = 0;
     #         PlotPos      = value;
@@ -697,8 +714,10 @@ class Tick:
     #         Level        = level;
     #         TextOffset   = -1;
     #     }
+    @overload
     def __init__(self, value: float, major: bool, level: int, show_label: bool) -> None:
         pass
+
 
 class Ticker:
     """ Collection of ticks"""
@@ -730,8 +749,6 @@ class Ticker:
     def add_tick(self, value: float, major: bool, level: int, show_label: bool, label: str) -> Tick:
         """(private API)"""
         pass
-
-
     # inline ImPlotTick& AddTick(ImPlotTick tick) {    /* original C++ signature */
     #         if (tick.ShowLabel) {
     #             MaxSize.x     =  tick.LabelSize.x > MaxSize.x ? tick.LabelSize.x : MaxSize.x;
@@ -746,6 +763,8 @@ class Ticker:
         """(private API)"""
         pass
 
+
+
     # const char* GetText(int idx) const {    /* original C++ signature */
     #         return TextBuffer.Buf.Data + Ticks[idx].TextOffset;
     #     }
@@ -753,7 +772,6 @@ class Ticker:
     def get_text(self, idx: int) -> str:
         """(private API)"""
         pass
-
     # const char* GetText(const ImPlotTick& tick) {    /* original C++ signature */
     #         return GetText(tick.Idx);
     #     }
@@ -761,6 +779,7 @@ class Ticker:
     def get_text(self, tick: Tick) -> str:
         """(private API)"""
         pass
+
 
     # void OverrideSizeLate(const ImVec2& size) {    /* original C++ signature */
     #         LateSize.x = size.x > LateSize.x ? size.x : LateSize.x;
@@ -991,7 +1010,6 @@ class Axis:
     def set_range(self, v1: float, v2: float) -> None:
         """(private API)"""
         pass
-
     # inline void SetRange(const ImPlotRange& range) {    /* original C++ signature */
     #         SetRange(range.Min, range.Max);
     #     }
@@ -999,6 +1017,7 @@ class Axis:
     def set_range(self, range: Range) -> None:
         """(private API)"""
         pass
+
 
     # inline void SetAspect(double unit_per_pix) {    /* original C++ signature */
     #         double new_size = unit_per_pix * PixelSize();
@@ -1287,6 +1306,8 @@ class Item:
     id_: ID
     # ImU32        Color;    /* original C++ signature */
     color: ImU32
+    # ImPlotMarker Marker;    /* original C++ signature */
+    marker: Marker
     # ImRect       LegendHoverRect;    /* original C++ signature */
     legend_hover_rect: ImRect
     # int          NameOffset;    /* original C++ signature */
@@ -1301,6 +1322,7 @@ class Item:
     # ImPlotItem() {    /* original C++ signature */
     #         ID            = 0;
     #         Color         = IM_COL32_WHITE;
+    #         Marker        = ImPlotMarker_None;
     #         NameOffset    = -1;
     #         Show          = true;
     #         SeenThisFrame = false;
@@ -1360,8 +1382,10 @@ class ItemGroup:
     legend: Legend
     # int                ColormapIdx;    /* original C++ signature */
     colormap_idx: int
+    # ImPlotMarker       MarkerIdx;    /* original C++ signature */
+    marker_idx: Marker
 
-    # ImPlotItemGroup() { ID = 0; ColormapIdx = 0; }    /* original C++ signature */
+    # ImPlotItemGroup() { ID = 0; ColormapIdx = 0; MarkerIdx = 0; }    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -1526,22 +1550,10 @@ class Plot:
         pass
 
     # inline       ImPlotAxis& XAxis(int i)       { return Axes[ImAxis_X1 + i]; }    /* original C++ signature */
-    @overload
-    def x_axis(self, i: int) -> Axis:
-        """(private API)"""
-        pass
-    # inline const ImPlotAxis& XAxis(int i) const { return Axes[ImAxis_X1 + i]; }    /* original C++ signature */
-    @overload
     def x_axis(self, i: int) -> Axis:
         """(private API)"""
         pass
     # inline       ImPlotAxis& YAxis(int i)       { return Axes[ImAxis_Y1 + i]; }    /* original C++ signature */
-    @overload
-    def y_axis(self, i: int) -> Axis:
-        """(private API)"""
-        pass
-    # inline const ImPlotAxis& YAxis(int i) const { return Axes[ImAxis_Y1 + i]; }    /* original C++ signature */
-    @overload
     def y_axis(self, i: int) -> Axis:
         """(private API)"""
         pass
@@ -1652,24 +1664,8 @@ class NextPlotData:
 
 class NextItemData:
     """ Temporary data storage for upcoming item"""
-    # float           LineWeight;    /* original C++ signature */
-    line_weight: float
-    # ImPlotMarker    Marker;    /* original C++ signature */
-    marker: Marker
-    # float           MarkerSize;    /* original C++ signature */
-    marker_size: float
-    # float           MarkerWeight;    /* original C++ signature */
-    marker_weight: float
-    # float           FillAlpha;    /* original C++ signature */
-    fill_alpha: float
-    # float           ErrorBarSize;    /* original C++ signature */
-    error_bar_size: float
-    # float           ErrorBarWeight;    /* original C++ signature */
-    error_bar_weight: float
-    # float           DigitalBitHeight;    /* original C++ signature */
-    digital_bit_height: float
-    # float           DigitalBitGap;    /* original C++ signature */
-    digital_bit_gap: float
+    # ImPlotSpec      Spec;    /* original C++ signature */
+    spec: Spec
     # bool            RenderLine;    /* original C++ signature */
     render_line: bool
     # bool            RenderFill;    /* original C++ signature */
@@ -1678,6 +1674,8 @@ class NextItemData:
     render_marker_line: bool
     # bool            RenderMarkerFill;    /* original C++ signature */
     render_marker_fill: bool
+    # bool            RenderMarkers;    /* original C++ signature */
+    render_markers: bool
     # bool            HasHidden;    /* original C++ signature */
     has_hidden: bool
     # bool            Hidden;    /* original C++ signature */
@@ -1688,11 +1686,9 @@ class NextItemData:
     def __init__(self) -> None:
         pass
     # void Reset() {    /* original C++ signature */
-    #         for (int i = 0; i < 5; ++i)
-    #             Colors[i] = IMPLOT_AUTO_COL;
-    #         LineWeight    = MarkerSize = MarkerWeight = FillAlpha = ErrorBarSize = ErrorBarWeight = DigitalBitHeight = DigitalBitGap = IMPLOT_AUTO;
-    #         Marker        = IMPLOT_AUTO;
-    #         HasHidden     = Hidden = false;
+    #         Spec      = ImPlotSpec();
+    #         HasHidden = Hidden = false;
+    #         HiddenCond = ImPlotCond_None;
     #     }
     def reset(self) -> None:
         """(private API)"""
@@ -1869,13 +1865,16 @@ def show_subplots_context_menu(subplot: Subplot) -> None:
 # [SECTION] Item Utils
 #-----------------------------------------------------------------------------
 
-# IMPLOT_API bool BeginItem(const char* label_id, ImPlotItemFlags flags=0, ImPlotCol recolor_from=IMPLOT_AUTO);    /* original C++ signature */
-def begin_item(label_id: str, flags: ItemFlags = 0, recolor_from: Optional[Col] = None) -> bool:
+# IMPLOT_API bool BeginItem(const char* label_id, const ImPlotSpec& spec = ImPlotSpec(), const ImVec4& item_col = IMPLOT_AUTO_COL, ImPlotMarker item_mkr = ImPlotMarker_Invalid);    /* original C++ signature */
+def begin_item(label_id: str, spec: Optional[Spec] = None, item_col: Optional[ImVec4Like] = None, item_mkr: Optional[Marker] = None) -> bool:
     """ Begins a new item. Returns False if the item should not be plotted. Pushes PlotClipRect.
 
 
     Python bindings defaults:
-        If recolor_from is None, then its default value will be: IMPLOT_AUTO
+        If any of the params below is None, then its default value below will be used:
+            * spec: Spec()
+            * item_col: IMPLOT_AUTO_COL
+            * item_mkr: Marker_Invalid
     """
     pass
 
@@ -2220,7 +2219,7 @@ def is_leap_year(year: int) -> bool:
     """
     pass
 # static inline int GetDaysInMonth(int year, int month) {    /* original C++ signature */
-#     static const int days[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+#     constexpr int days[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 #     return  days[month] + (int)(month == 1 && IsLeapYear(year));
 # }
 def get_days_in_month(year: int, month: int) -> int:
@@ -2234,15 +2233,6 @@ def get_days_in_month(year: int, month: int) -> int:
 # NB: The following functions only work if there is a current ImPlotContext because the
 # internal tm struct is owned by the context! They are aware of ImPlotStyle.UseLocalTime.
 
-# static inline tm* GetTime(const ImPlotTime& t, tm* ptm) {    /* original C++ signature */
-#     if (GetStyle().UseLocalTime) return GetLocTime(t,ptm);
-#     else                         return GetGmtTime(t,ptm);
-# }
-def get_time(t: Time, ptm: tm) -> tm:
-    """ Get a tm struct from a UNIX timestamp according to the current ImPlotStyle.UseLocalTime setting.
-    (private API)
-    """
-    pass
 
 # IMPLOT_API ImPlotTime MakeTime(int year, int month = 0, int day = 1, int hour = 0, int min = 0, int sec = 0, int us = 0);    /* original C++ signature */
 def make_time(year: int, month: int = 0, day: int = 1, hour: int = 0, min: int = 0, sec: int = 0, us: int = 0) -> Time:
@@ -2406,7 +2396,6 @@ class Formatter_Time_Data:
 
 
 
-# namespace ImPlot
 
 # #endif
 ####################    </generated_from:implot_internal.h>    ####################

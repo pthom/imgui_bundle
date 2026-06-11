@@ -1,0 +1,94 @@
+{
+    "examples": [
+      {
+        "label": "Welcome to Dear ImGui Bundle",
+        "filename": "landing_page.py"
+      },
+      {
+        "label": "Explorable: Double Pendulum",
+        "filename": "explorables/double_pendulum.py"
+      },
+      {
+        "label": "Explorable: Fourier Epicycles",
+        "filename": "explorables/fourier_epicycles.py"
+      },
+      {
+        "label": "ImGui: Full Demo",
+        "filename": "imgui_demo.py"
+      },
+      {
+        "label": "ImPlot: Full Demo",
+        "filename": "implot_demo.py"
+      },
+      {
+        "label": "ImPlot: Stock Viewer",
+        "filename": "demo_implot_stock.py",
+        "hidden": true
+      },
+      {
+        "label": "ImPlot3D: Full Demo",
+        "filename": "implot3d_demo.py",
+        "bundle_folders": ["implot3d_libs"]
+      },
+      {
+        "label": "ImPlot3D: Butterfly Effect",
+        "filename": "implot3d_butterfly.py"
+      },
+      {
+        "label": "What is an Immediate GUI",
+        "filename": "welcome_imm_mode.py"
+      },
+      {
+        "label": "Pyodide: Minimal HTML Example",
+        "filename": "minimal_example.py"
+      },
+      {
+        "label": "Themes & Theme Tweaking",
+        "filename": "themes.py"
+      },
+      {
+        "label": "ImmVision: Download & Inspect Images",
+        "filename": "immvision.py",
+        "packages": ["opencv-python"]
+      },
+      {
+        "label": "Layout: resizable layout using child window",
+        "filename": "layout_child.py"
+      },
+      {
+        "label": "Layout: using dockable windows",
+        "filename": "layout_docking.py"
+      },
+      {
+        "label": "Fiatlight: Image Pipeline",
+        "filename": "fiatlight_image.py",
+        "packages": ["opencv-python", "fiatlight"],
+        "bundle_folders": ["fiat_settings"]
+      },
+      {
+        "label": "Lesson: Harmonic Motion",
+        "filename": "explorables/lesson_harmonic_motion.py"
+      },
+      {
+        "label": "Lesson: Harmonic Motion2",
+        "filename": "explorables/lesson_harmonic_motion2.py",
+        "hidden": true
+      },
+      {
+        "label": "WebGL: Minimal shader as background",
+        "filename": "webgl_minimal_mandelbrot.py"
+      },
+      {
+        "label": "WebGL: Custom background (OpenGL / WebGL)",
+        "filename": "webgl_background_shader.py"
+      },
+      {
+        "label": "WebGL: 3D cube rendered to a texture",
+        "filename": "webgl_texture_in_image.py"
+      },
+      {
+        "label": "WebAudio: Minimal Beep",
+        "filename": "webaudio_minimal_beep.py"
+      }
+    ]
+}

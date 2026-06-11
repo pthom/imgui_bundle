@@ -1,0 +1,60 @@
+format: jb-book
+root: intro/intro
+parts:
+  - caption: Introduction
+    chapters:
+      - file: intro/what_is_imgui_bundle
+      - file: intro/key_features
+      - file: intro/imm_gui
+      - file: intro/compare
+      - file: intro/interactive_manuals
+      - file: intro/examples_gallery
+      - file: intro/resources
+  - caption: For Python users
+    chapters:
+      - file: python/python_imgui_intro
+      - file: python/python_install
+      - file: python/python_assets
+      - file: python/pure_python_backend
+      - file: python/python_async
+      - file: python/notebook_runners.ipynb
+      - file: python/python_pyodide
+      - file: python/python_tips
+      - file: python/desktop_deploy
+  - caption: For C++ users
+    chapters:
+      - file: cpp/cpp_install
+      - file: cpp/cpp_assets
+  - caption: Core Libraries
+    chapters:
+      - file: core_libs/imgui
+      - file: core_libs/hello_imgui_immapp
+      - file: core_libs/test_engine
+  - caption: Add-on Libraries
+    chapters:
+      - file: addons/plotting
+      - file: addons/visualization
+      - file: addons/text_markdown
+      - file: addons/tools
+      - file: addons/widgets
+  - caption: Support
+    chapters:
+      - file: support/support_project
+      - file: support/closing_words
+  - caption: Developer docs
+    chapters:
+      - file: devel_docs/intro
+      - file: devel_docs/getting_started_dev
+      - file: devel_docs/structure
+      - file: devel_docs/build_guide
+      - file: devel_docs/testing
+      - file: devel_docs/bindings_intro
+      - file: devel_docs/bindings_forks
+      - file: devel_docs/bindings_update
+      - file: devel_docs/bindings_newlib
+      - file: devel_docs/bindings_debug
+      - file: devel_docs/pypi_deploy
+      - file: devel_docs/Readme_pyodide_bundle
+      - file: devel_docs/cloudflare_deploy
+      - file: devel_docs/build_opencv_immvision
+

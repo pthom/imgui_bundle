@@ -36,7 +36,7 @@ def demo_begin():
     _, statics.opened_window_expandable = imgui.checkbox("Open Window - Expandable", statics.opened_window_expandable)
     _, statics.opened_closable_window = imgui.checkbox("Open Closable Window", statics.opened_closable_window)
 
-    imgui.set_next_window_size(ImVec2(200, 200), imgui.Cond_.appearing.value)
+    imgui.set_next_window_size(ImVec2(200, 200), imgui.Cond_.appearing)
 
     # Shortest use of imgui_ctx.begin()
     if statics.opened_window_shortest:
@@ -87,12 +87,12 @@ def demo_push_pop():
 
     # Example of push_style_color
     imgui.separator_text("Push Style Color")
-    with imgui_ctx.push_style_color(imgui.Col_.text.value, ImVec4(1.0, 0.0, 0.0, 1.0)):
+    with imgui_ctx.push_style_color(imgui.Col_.text, ImVec4(1.0, 0.0, 0.0, 1.0)):
         imgui.text("This is red!")
 
     # Example of push_style_var
     imgui.separator_text("Push Style Var")
-    with imgui_ctx.push_style_var(imgui.StyleVar_.alpha.value, 0.5):
+    with imgui_ctx.push_style_var(imgui.StyleVar_.alpha, 0.5):
         imgui.text("This is half transparent!")
 
     # Example of push_item_width
@@ -163,9 +163,9 @@ def demo_begin_tab_bar():
 
 
 def demo_begin_table():
-    table_flags = (imgui.TableFlags_.borders_h.value
-                   | imgui.TableFlags_.borders_v.value
-                   | imgui.TableFlags_.resizable.value)
+    table_flags = (imgui.TableFlags_.borders_h
+                   | imgui.TableFlags_.borders_v
+                   | imgui.TableFlags_.resizable)
     with imgui_ctx.begin_table("Table", 3, table_flags) as table:
         if table:
             imgui.table_setup_column("Column 1")
@@ -229,7 +229,7 @@ def demo_menu_bar():
         "Open Window with menu bar", statics.opened_window_with_menu_bar)
 
     if statics.opened_window_with_menu_bar:
-        with imgui_ctx.begin("Window with menu bar", None, imgui.WindowFlags_.menu_bar.value):
+        with imgui_ctx.begin("Window with menu bar", None, imgui.WindowFlags_.menu_bar):
             with imgui_ctx.begin_menu_bar():
                 with imgui_ctx.begin_menu("Enabled Menu", True) as menu:
                     if menu.visible:

@@ -1,4 +1,4 @@
-// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2024 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
 #include "hello_imgui/hello_imgui.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
@@ -7,7 +7,7 @@
 #ifndef IMGUI_BUNDLE_WITH_IMMVISION
 void demo_immvision_launcher()
 {
-    ImGui::Text("Dear ImGui Bundle was compiled without support for ImmVision (this requires OpenCV and OpenGl)");
+    ImGui::Text("Dear ImGui Bundle was compiled without support for ImmVision (this requires OpenGL)");
 }
 
 #else
@@ -28,13 +28,7 @@ void demo_immvision_launcher()
     }
 
     ImGuiMd::RenderUnindented(R"(
-        # ImmVision
-        [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger.
-        It is based on OpenCv and can analyse RGB & float, images with 1 to 4 channels.
-
-        Whereas *imgui_tex_inspect* is dedicated to texture analysis, *immvision* is more dedicated to image processing and computer vision.
-
-        Open the demos below by clicking on their title.
+        [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger and inspector. It can display and analyse RGB & float images with 1 to 4 channels, with zoom, pan, pixel inspection, and colormaps.
     )");
 
     if (ImGui::CollapsingHeader("Display images"))
