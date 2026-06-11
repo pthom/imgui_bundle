@@ -2,10 +2,17 @@
 implot_ctx provide context managers to simplify the use of functions pairs like:
 
 - `implot.begin...()` and `imgui.end...()`
-  can be replaced by: `with implot_ctx.begin...() as plot:`
+  can be replaced by:
+  >>> with implot_ctx.begin...() as plot:
+  ...     if plot: ...
+  Do note that the context manager returns a boolean indicating whether the plot is or not,
+  and thus you should check if the plot evaluates to True, just like the `if plot:` in the example above.
+  See the `imgui_ctx.begin_plot()` function doc for more details & examples if required.
 
 - `implot.push...()` and `implot.pop...()`
   can be replaced by: `with implot_ctx.push...():`
+  Unlike `implot.begin...()`, there is no need to check the return value of the context manager.
+  See the `imgui_ctx.push_style_color()` function doc for more details & examples if required.
 """
 from __future__ import annotations
 
@@ -43,7 +50,7 @@ def create_context() -> _ImplotContext:
 
     Examples:
         >>> with implot_ctx.create_context():
-        ...     immapp.run(...)
+        ...     hello_imgui.run(...)
     """
     return _ImplotContext()
 
@@ -229,8 +236,7 @@ def push_style_color(idx: implot.Col, col: imgui.ImU32 | imgui.ImVec4Like) -> _P
 
     Examples:
         >>> with implot_ctx.push_style_color(implot.Col_.inlay_text, [1, 0, 1, 1]):
-        ...     implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0),
-        ...                      spec=implot.Spec(flags=implot.TextFlags_.vertical))
+        ...     # plot as usual
     """
     return _PushStyleColor(idx, col)
 
@@ -264,8 +270,7 @@ def push_style_var(idx: implot.StyleVar, val: int | float | imgui.ImVec2Like) ->
 
     Examples:
         >>> with implot_ctx.push_style_var(implot.StyleVar_.plot_padding, ImVec2(0, 0)):
-        ...     implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0),
-        ...                      spec=implot.Spec(flags=implot.TextFlags_.vertical))
+        ...     # plot as usual
     """
     return _PushStyleVar(idx, val)
 
@@ -274,16 +279,16 @@ class _PushColormap:
     """Internal, do not call this directly."""
 
     @overload
-    def __init__(self, name: str) -> None: ...
+    def __init__(self, cmap: implot.Colormap) -> None: ...
 
     @overload
-    def __init__(self, count: int = 1) -> None: ...
+    def __init__(self, name: str) -> None: ...
 
-    def __init__(self, name: str | int = 1) -> None:
-        self.name = name
+    def __init__(self, cmap: implot.Colormap | str) -> None:
+        self.cmap = cmap
 
     def __enter__(self) -> _PushColormap:
-        implot.push_colormap(self.name)
+        implot.push_colormap(self.cmap)
         return self
 
     def __exit__(
@@ -299,39 +304,36 @@ class _PushColormap:
 
 
 @overload
+def push_colormap(cmap: implot.Colormap) -> _PushColormap:
+    """Pushes a color map to the ImPlot context.
+    Automatically pops the color map at end.
+
+    Examples:
+        >>> with implot_ctx.push_colormap(implot.Colormap_.deep):
+        ...     # plot as usual
+    """
+
+
+@overload
 def push_colormap(name: str) -> _PushColormap:
     """Pushes a color map to the ImPlot context.
     Automatically pops the color map at end.
 
     Examples:
         >>> with implot_ctx.push_colormap(implot.Colormap_.deep):
-        ...     implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0),
-        ...                      spec=implot.Spec(flags=implot.TextFlags_.vertical))
+        ...     # plot as usual
     """
 
 
-@overload
-def push_colormap(count: int = 1) -> _PushColormap:
+def push_colormap(cmap: implot.Colormap | str) -> _PushColormap:
     """Pushes a color map to the ImPlot context.
     Automatically pops the color map at end.
 
     Examples:
         >>> with implot_ctx.push_colormap(implot.Colormap_.deep):
-        ...     implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0),
-        ...                      spec=implot.Spec(flags=implot.TextFlags_.vertical))
+        ...     # plot as usual
     """
-
-
-def push_colormap(name: str | int = 1) -> _PushColormap:
-    """Pushes a color map to the ImPlot context.
-    Automatically pops the color map at end.
-
-    Examples:
-        >>> with implot_ctx.push_colormap(implot.Colormap_.deep):
-        ...     implot.plot_text("Vertical Text", 5.0, 6.0, pix_offset=(0, 0),
-        ...                      spec=implot.Spec(flags=implot.TextFlags_.vertical))
-    """
-    return _PushColormap(name)
+    return _PushColormap(cmap)
 
 
 class _PushPlotClipRect:
