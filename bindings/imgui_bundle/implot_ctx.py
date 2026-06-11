@@ -16,7 +16,7 @@ implot_ctx provide context managers to simplify the use of functions pairs like:
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING
 
 from imgui_bundle import implot
 
@@ -278,17 +278,11 @@ def push_style_var(idx: implot.StyleVar, val: int | float | imgui.ImVec2Like) ->
 class _PushColormap:
     """Internal, do not call this directly."""
 
-    @overload
-    def __init__(self, cmap: implot.Colormap) -> None: ...
-
-    @overload
-    def __init__(self, name: str) -> None: ...
-
-    def __init__(self, cmap: implot.Colormap | str) -> None:
-        self.cmap = cmap
+    def __init__(self, cmap_or_name: implot.Colormap | str) -> None:
+        self.cmap_or_name = cmap_or_name
 
     def __enter__(self) -> _PushColormap:
-        implot.push_colormap(self.cmap)
+        implot.push_colormap(self.cmap_or_name)
         return self
 
     def __exit__(
@@ -303,37 +297,15 @@ class _PushColormap:
         return f"{self.__class__.__qualname__}()"
 
 
-@overload
-def push_colormap(cmap: implot.Colormap) -> _PushColormap:
-    """Pushes a color map to the ImPlot context.
-    Automatically pops the color map at end.
+def push_colormap(cmap_or_name: implot.Colormap | str) -> _PushColormap:
+    """Pushes a colormap onto the ImPlot stack, by enum (implot.Colormap_) or by name.
+    Automatically pops it at end.
 
     Examples:
         >>> with implot_ctx.push_colormap(implot.Colormap_.deep):
-        ...     # plot as usual
+        ...     ...
     """
-
-
-@overload
-def push_colormap(name: str) -> _PushColormap:
-    """Pushes a color map to the ImPlot context.
-    Automatically pops the color map at end.
-
-    Examples:
-        >>> with implot_ctx.push_colormap(implot.Colormap_.deep):
-        ...     # plot as usual
-    """
-
-
-def push_colormap(cmap: implot.Colormap | str) -> _PushColormap:
-    """Pushes a color map to the ImPlot context.
-    Automatically pops the color map at end.
-
-    Examples:
-        >>> with implot_ctx.push_colormap(implot.Colormap_.deep):
-        ...     # plot as usual
-    """
-    return _PushColormap(cmap)
+    return _PushColormap(cmap_or_name)
 
 
 class _PushPlotClipRect:
