@@ -436,9 +436,14 @@ def stop(engine: TestEngine) -> None:
     """Stop coroutine and export if any. (Unbind will lazily happen on context shutdown)"""
     pass
 
+# IMGUI_API void                ImGuiTestEngine_PreSwap(ImGuiTestEngine* engine);                         /* original C++ signature */
+def pre_swap(engine: TestEngine) -> None:
+    """Call every frame before framebuffer present/swap (used for time measurement)"""
+    pass
+
 # IMGUI_API void                ImGuiTestEngine_PostSwap(ImGuiTestEngine* engine);                        /* original C++ signature */
 def post_swap(engine: TestEngine) -> None:
-    """Call every frame after framebuffer swap, will process screen capture and call test_io.ScreenCaptureFunc()"""
+    """Call every frame after framebuffer present/swap, will process screen capture and call test_io.ScreenCaptureFunc()"""
     pass
 
 # IMGUI_API ImGuiTestEngineIO&  ImGuiTestEngine_GetIO(ImGuiTestEngine* engine);    /* original C++ signature */
@@ -2072,7 +2077,13 @@ class TestContext:
         """(private API)"""
         pass
     # void                        TableResizeColumn(ImGuiTestRef ref, int column_n, float width);    /* original C++ signature */
+    @overload
     def table_resize_column(self, ref: Union[TestRef, str], column_n: int, width: float) -> None:
+        """(private API)"""
+        pass
+    # void                        TableResizeColumn(ImGuiTestRef ref, const char* label, float width);    /* original C++ signature */
+    @overload
+    def table_resize_column(self, ref: Union[TestRef, str], label: str, width: float) -> None:
         """(private API)"""
         pass
     # const ImGuiTableSortSpecs*  TableGetSortSpecs(ImGuiTestRef ref);    /* original C++ signature */
@@ -2486,6 +2497,27 @@ class TestInputs:
         """
         pass
 
+class TestEnginePerfRecord:
+    # double                      RawValueMs;    /* original C++ signature */
+    raw_value_ms: float  # For current frame
+
+    # ImGuiTestEnginePerfRecord()    /* original C++ signature */
+    #     {
+    #         Average100.Init(100);
+    #         Average500.Init(500);
+    #     }
+    def __init__(self) -> None:
+        pass
+    # void UpdateValueForCurrentFrame(double v_ms)    /* original C++ signature */
+    #     {
+    #         RawValueMs = v_ms;
+    #         Average100.AddSample(v_ms);
+    #         Average500.AddSample(v_ms);
+    #     }
+    def update_value_for_current_frame(self, v_ms: float) -> None:
+        """(private API)"""
+        pass
+
 class TestEngine:
     """[Internal] Test Engine Context"""
 
@@ -2546,12 +2578,30 @@ class TestEngine:
     ui_log_height: float = 150.0
 
     # Performance Monitor
-    # double                      PerfRefDeltaTime;    /* original C++ signature */
-    perf_ref_delta_time: float
+    # ImU64                       PerfTimestampPreNewFrame;    /* original C++ signature */
+    perf_timestamp_pre_new_frame: ImU64
+    # ImU64                       PerfTimestampPreRender;    /* original C++ signature */
+    perf_timestamp_pre_render: ImU64
+    # ImU64                       PerfTimestampPreSwap;    /* original C++ signature */
+    perf_timestamp_pre_swap: ImU64
+    # ImU64                       PerfTimestampPostSwap;    /* original C++ signature */
+    perf_timestamp_post_swap: ImU64
+    # ImGuiTestEnginePerfRecord   PerfDtApp;    /* original C++ signature */
+    perf_dt_app: TestEnginePerfRecord
+    # ImGuiTestEnginePerfRecord   PerfDtPreNewFrameToPreRender;    /* original C++ signature */
+    perf_dt_pre_new_frame_to_pre_render: TestEnginePerfRecord
+    # ImGuiTestEnginePerfRecord   PerfDtPreRenderToPreSwap;    /* original C++ signature */
+    perf_dt_pre_render_to_pre_swap: TestEnginePerfRecord
+    # ImGuiTestEnginePerfRecord   PerfDtPreNewFrameToPreSwap;    /* original C++ signature */
+    perf_dt_pre_new_frame_to_pre_swap: TestEnginePerfRecord
+    # ImGuiTestEnginePerfRecord   PerfDtPreSwapToPostSwap;    /* original C++ signature */
+    perf_dt_pre_swap_to_post_swap: TestEnginePerfRecord
 
     # Screen/Video Capturing
 
     # Tools
+    # bool                        PreSwapCalled = false;    /* original C++ signature */
+    pre_swap_called: bool = False
     # bool                        PostSwapCalled = false;    /* original C++ signature */
     post_swap_called: bool = False
     # bool                        ToolDebugRebootUiContext = false;    /* original C++ signature */

@@ -7285,7 +7285,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("anti_aliased_lines", ImDrawListFlags_AntiAliasedLines, "Enable anti-aliased lines/borders (*2 the number of triangles for 1.0 wide line or lines thin enough to be drawn using textures, otherwise *3 the number of triangles)")
             .value("anti_aliased_lines_use_tex", ImDrawListFlags_AntiAliasedLinesUseTex, "Enable anti-aliased lines/borders using textures when possible. Require backend to render with bilinear filtering (NOT point/nearest filtering).")
             .value("anti_aliased_fill", ImDrawListFlags_AntiAliasedFill, "Enable anti-aliased edge around filled shapes (rounded rectangles, circles).")
-            .value("allow_vtx_offset", ImDrawListFlags_AllowVtxOffset, "Can emit 'VtxOffset > 0' to allow large meshes. Set when 'ImGuiBackendFlags_RendererHasVtxOffset' is enabled.");
+            .value("allow_vtx_offset", ImDrawListFlags_AllowVtxOffset, "Can emit 'VtxOffset > 0' to allow large meshes. Set when 'ImGuiBackendFlags_RendererHasVtxOffset' is enabled.")
+            .value("text_no_pixel_snap", ImDrawListFlags_TextNoPixelSnap, "Disable automatically snapping AddText() calls to pixel boundaries.");
 
 
     auto pyClassImDrawList =
@@ -7685,7 +7686,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("use_colors", &ImTextureData::UseColors, "w    r   // Tell whether our texture data is known to use colors (rather than just white + alpha).")
         .def_rw("want_destroy_next_frame", &ImTextureData::WantDestroyNextFrame, "rw   -   // [Internal] Queued to set ImTextureStatus_WantDestroy next frame. May still be used in the current frame.")
         .def(nb::init<>(),
-            " Functions\n - If GetPixels() functions asserts while being called by your render loop, it could be caused by calling ImFontAtlas::Clear() instead of ClearFonts()?")
+            " Functions\n - If GetPixels() functions asserts while being called by your render loop, it could be caused by calling ImFontAtlas::Clear()/ClearFonts()?")
         .def("create",
             &ImTextureData::Create, nb::arg("format"), nb::arg("w"), nb::arg("h"))
         .def("destroy_pixels",
@@ -7856,17 +7857,19 @@ void py_init_module_imgui_main(nb::module_& m)
             "Embedded classic pixel-clean font. Recommended at Size 13px with no scaling.",
             nb::rv_policy::reference)
         .def("remove_font",
-            &ImFontAtlas::RemoveFont, nb::arg("font"))
-        .def("clear",
-            &ImFontAtlas::Clear, "Clear everything (fonts + textures). Don't call mid-frame!")
-        .def("clear_fonts",
-            &ImFontAtlas::ClearFonts, "Clear input+output font data/glyphs. You can call this mid-frame if you load new fonts afterwards!")
+            &ImFontAtlas::RemoveFont,
+            nb::arg("font"),
+            "Remove a font")
         .def("compact_cache",
             &ImFontAtlas::CompactCache, "Compact cached glyphs and texture.")
         .def("set_font_loader",
             &ImFontAtlas::SetFontLoader,
             nb::arg("font_loader"),
             "Change font loader at runtime.")
+        .def("clear",
+            &ImFontAtlas::Clear, "Clear everything (fonts + textures). Don't call mid-frame!")
+        .def("clear_fonts",
+            &ImFontAtlas::ClearFonts, "Clear input+output font data/glyphs. New fonts and textures will be recreated afterwards.")
         .def("clear_input_data",
             &ImFontAtlas::ClearInputData, "[OBSOLETE] Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.")
         .def("clear_tex_data",

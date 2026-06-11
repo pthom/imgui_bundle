@@ -348,6 +348,12 @@ KeyRoutingIndex = int
 ##define IM_FLOOR IM_TRUNC             // [OBSOLETE] Renamed in 1.90.0 (Sept 2023)
 
 # Hint for branch prediction
+# #if (defined(__cplusplus) && (__cplusplus >= 202002L)) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 202002L))
+#
+# #else
+#
+# #endif
+#
 
 # Enforce cdecl calling convention for functions called by the standard library, in case compilation settings changed the default to e.g. __vectorcall
 
@@ -608,6 +614,14 @@ def im_round64(f: float) -> float:
     """(private API)
 
     FIXME: Positive values only.
+    """
+    pass
+
+# inline float  ImCeilFast(float f)                                       { int i = (int)f; return (float)(i + (f > (float)i)); }     /* original C++ signature */
+def im_ceil_fast(f: float) -> float:
+    """(private API)
+
+    Consider using the the bit-hack version (search for "0x1p120f").
     """
     pass
 
@@ -1074,8 +1088,8 @@ class ImDrawListSharedData:
     font_scale: float  # Current font scale (== FontSize / Font->FontSize)
     # float           CurveTessellationTol;    /* original C++ signature */
     curve_tessellation_tol: float  # Tessellation tolerance when using PathBezierCurveTo()
-    # float           CircleSegmentMaxError;    /* original C++ signature */
-    circle_segment_max_error: float  # Number of circle segments to use per pixel of radius for AddCircle() etc
+    # float           CircleTessellationMaxError;    /* original C++ signature */
+    circle_tessellation_max_error: float  # Number of circle segments to use per pixel of radius for AddCircle() etc
     # float           InitialFringeScale;    /* original C++ signature */
     initial_fringe_scale: float  # Initial scale to apply to AA fringe
     # ImDrawListFlags InitialFlags;    /* original C++ signature */

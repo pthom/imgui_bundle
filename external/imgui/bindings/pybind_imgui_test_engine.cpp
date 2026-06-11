@@ -252,10 +252,15 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         nb::arg("engine"),
         "Stop coroutine and export if any. (Unbind will lazily happen on context shutdown)");
 
+    m.def("pre_swap",
+        ImGuiTestEngine_PreSwap,
+        nb::arg("engine"),
+        "Call every frame before framebuffer present/swap (used for time measurement)");
+
     m.def("post_swap",
         ImGuiTestEngine_PostSwap,
         nb::arg("engine"),
-        "Call every frame after framebuffer swap, will process screen capture and call test_io.ScreenCaptureFunc()");
+        "Call every frame after framebuffer present/swap, will process screen capture and call test_io.ScreenCaptureFunc()");
 
     m.def("get_io",
         ImGuiTestEngine_GetIO,
@@ -1451,6 +1456,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             nb::overload_cast<ImGuiTestRef, int, float>(&ImGuiTestContext::TableResizeColumn),
             nb::arg("ref"), nb::arg("column_n"), nb::arg("width"),
             "(private API)")
+        .def("table_resize_column",
+            nb::overload_cast<ImGuiTestRef, const char *, float>(&ImGuiTestContext::TableResizeColumn),
+            nb::arg("ref"), nb::arg("label"), nb::arg("width"),
+            "(private API)")
         .def("table_get_sort_specs",
             nb::overload_cast<ImGuiTestRef>(&ImGuiTestContext::TableGetSortSpecs),
             nb::arg("ref"),
@@ -1723,6 +1732,18 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         ;
 
 
+    auto pyClassImGuiTestEnginePerfRecord =
+        nb::class_<ImGuiTestEnginePerfRecord>
+            (m, "TestEnginePerfRecord", "")
+        .def_rw("raw_value_ms", &ImGuiTestEnginePerfRecord::RawValueMs, "For current frame")
+        .def(nb::init<>())
+        .def("update_value_for_current_frame",
+            &ImGuiTestEnginePerfRecord::UpdateValueForCurrentFrame,
+            nb::arg("v_ms"),
+            "(private API)")
+        ;
+
+
     auto pyClassImGuiTestEngine =
         nb::class_<ImGuiTestEngine>
             (m, "TestEngine", "[Internal] Test Engine Context")
@@ -1750,7 +1771,16 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("ui_stack_tool_open", &ImGuiTestEngine::UiStackToolOpen, "")
         .def_rw("ui_perf_tool_open", &ImGuiTestEngine::UiPerfToolOpen, "")
         .def_rw("ui_log_height", &ImGuiTestEngine::UiLogHeight, "")
-        .def_rw("perf_ref_delta_time", &ImGuiTestEngine::PerfRefDeltaTime, "")
+        .def_rw("perf_timestamp_pre_new_frame", &ImGuiTestEngine::PerfTimestampPreNewFrame, "")
+        .def_rw("perf_timestamp_pre_render", &ImGuiTestEngine::PerfTimestampPreRender, "")
+        .def_rw("perf_timestamp_pre_swap", &ImGuiTestEngine::PerfTimestampPreSwap, "")
+        .def_rw("perf_timestamp_post_swap", &ImGuiTestEngine::PerfTimestampPostSwap, "")
+        .def_rw("perf_dt_app", &ImGuiTestEngine::PerfDtApp, "")
+        .def_rw("perf_dt_pre_new_frame_to_pre_render", &ImGuiTestEngine::PerfDtPreNewFrameToPreRender, "")
+        .def_rw("perf_dt_pre_render_to_pre_swap", &ImGuiTestEngine::PerfDtPreRenderToPreSwap, "")
+        .def_rw("perf_dt_pre_new_frame_to_pre_swap", &ImGuiTestEngine::PerfDtPreNewFrameToPreSwap, "")
+        .def_rw("perf_dt_pre_swap_to_post_swap", &ImGuiTestEngine::PerfDtPreSwapToPostSwap, "")
+        .def_rw("pre_swap_called", &ImGuiTestEngine::PreSwapCalled, "")
         .def_rw("post_swap_called", &ImGuiTestEngine::PostSwapCalled, "")
         .def_rw("tool_debug_reboot_ui_context", &ImGuiTestEngine::ToolDebugRebootUiContext, "Completely shutdown and recreate the dear imgui context in place")
         .def_rw("tool_slow_down", &ImGuiTestEngine::ToolSlowDown, "")

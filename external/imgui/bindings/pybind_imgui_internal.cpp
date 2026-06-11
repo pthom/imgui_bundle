@@ -48,6 +48,12 @@ void py_init_module_imgui_internal(nb::module_& m)
     //
     // #endif
     //
+    // #if (defined(__cplusplus) && (__cplusplus >= 202002L)) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 202002L))
+    //
+    // #else
+    //
+    // #endif
+    //
 
     m.def("im_hash_data",
         ImHashData, nb::arg("data"), nb::arg("data_size"), nb::arg("seed") = 0);
@@ -283,6 +289,11 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImRound64,
         nb::arg("f"),
         "(private API)\n\n FIXME: Positive values only.");
+
+    m.def("im_ceil_fast",
+        ImCeilFast,
+        nb::arg("f"),
+        "(private API)\n\n Consider using the the bit-hack version (search for \"0x1p120f\").");
 
     m.def("im_mod_positive",
         ImModPositive,
@@ -653,7 +664,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("font_size", &ImDrawListSharedData::FontSize, "Current font size (used for for simplified AddText overload)")
         .def_rw("font_scale", &ImDrawListSharedData::FontScale, "Current font scale (== FontSize / Font->FontSize)")
         .def_rw("curve_tessellation_tol", &ImDrawListSharedData::CurveTessellationTol, "Tessellation tolerance when using PathBezierCurveTo()")
-        .def_rw("circle_segment_max_error", &ImDrawListSharedData::CircleSegmentMaxError, "Number of circle segments to use per pixel of radius for AddCircle() etc")
+        .def_rw("circle_tessellation_max_error", &ImDrawListSharedData::CircleTessellationMaxError, "Number of circle segments to use per pixel of radius for AddCircle() etc")
         .def_rw("initial_fringe_scale", &ImDrawListSharedData::InitialFringeScale, "Initial scale to apply to AA fringe")
         .def_rw("initial_flags", &ImDrawListSharedData::InitialFlags, "Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)")
         .def_rw("clip_rect_fullscreen", &ImDrawListSharedData::ClipRectFullscreen, "Value for PushClipRectFullscreen()")

@@ -10313,6 +10313,10 @@ class ImDrawListFlags_(enum.IntFlag):
     allow_vtx_offset = (
         enum.auto()
     )  # (= 1 << 3)  # Can emit 'VtxOffset > 0' to allow large meshes. Set when 'ImGuiBackendFlags_RendererHasVtxOffset' is enabled.
+    # ImDrawListFlags_TextNoPixelSnap         = 1 << 4,      /* original C++ signature */
+    text_no_pixel_snap = (
+        enum.auto()
+    )  # (= 1 << 4)  # Disable automatically snapping AddText() calls to pixel boundaries.
 
 class ImDrawList:
     """Draw command list
@@ -10921,7 +10925,7 @@ class ImTextureData:
     # ImTextureData()     { memset((void*)this, 0, sizeof(*this)); Status = ImTextureStatus_Destroyed; TexID = ImTextureID_Invalid; }    /* original C++ signature */
     def __init__(self) -> None:
         """Functions
-        - If GetPixels() functions asserts while being called by your render loop, it could be caused by calling ImFontAtlas::Clear() instead of ClearFonts()?
+        - If GetPixels() functions asserts while being called by your render loop, it could be caused by calling ImFontAtlas::Clear()/ClearFonts()?
         """
         pass
     # IMGUI_API void      Create(ImTextureFormat format, int w, int h);    /* original C++ signature */
@@ -11207,18 +11211,11 @@ class ImFontAtlas:
     def add_font_default_bitmap(self, font_cfg: Optional[ImFontConfig] = None) -> ImFont:
         """Embedded classic pixel-clean font. Recommended at Size 13px with no scaling."""
         pass
-    # IMGUI_API void              RemoveFont(ImFont* font);    /* original C++ signature */
+    # IMGUI_API void              RemoveFont(ImFont* font);                           /* original C++ signature */
     def remove_font(self, font: ImFont) -> None:
+        """Remove a font"""
         pass
-    # IMGUI_API void              Clear();                        /* original C++ signature */
-    def clear(self) -> None:
-        """Clear everything (fonts + textures). Don't call mid-frame!"""
-        pass
-    # IMGUI_API void              ClearFonts();                   /* original C++ signature */
-    def clear_fonts(self) -> None:
-        """Clear input+output font data/glyphs. You can call this mid-frame if you load new fonts afterwards!"""
-        pass
-    # IMGUI_API void              CompactCache();                 /* original C++ signature */
+    # IMGUI_API void              CompactCache();                                     /* original C++ signature */
     def compact_cache(self) -> None:
         """Compact cached glyphs and texture."""
         pass
@@ -11226,7 +11223,18 @@ class ImFontAtlas:
     def set_font_loader(self, font_loader: ImFontLoader) -> None:
         """Change font loader at runtime."""
         pass
-    # As we are transitioning toward a new font system, we expect to obsolete those soon:
+    # Clearing the atlas/fonts has little use nowadays, unless you want to batch remove all fonts.
+    # - Since 1.92, you can call ClearFonts() mid-frame, if you load new fonts afterwards.
+    # - As we are transitioning toward our new font system the semantic for those functions gets increasingly misleading and are often a source of issues.
+    #   TL;DR; most likely, don't use any of those functions. We expect to obsolete/rework them.
+    # IMGUI_API void              Clear();                        /* original C++ signature */
+    def clear(self) -> None:
+        """Clear everything (fonts + textures). Don't call mid-frame!"""
+        pass
+    # IMGUI_API void              ClearFonts();                   /* original C++ signature */
+    def clear_fonts(self) -> None:
+        """Clear input+output font data/glyphs. New fonts and textures will be recreated afterwards."""
+        pass
     # IMGUI_API void              ClearInputData();               /* original C++ signature */
     def clear_input_data(self) -> None:
         """[OBSOLETE] Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts."""
