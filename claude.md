@@ -759,14 +759,14 @@ etc. LLM's can create build folders for specific tasks, and use names that refle
 
 ### Pyodide wheel filename references
 
-The Pyodide wheel filename (e.g. `imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl`)
+The Pyodide wheel filename (e.g. `imgui_bundle-1.92.801-cp314-cp314-pyemscripten_2026_0_wasm32.whl`)
 is hardcoded in several demo HTML/JS pages and a doc page. When the version
 in `pyproject.toml` / `CMakeLists.txt` changes, or when the wheel platform
 tag changes (see `ci_scripts/pyodide_local_build/config_versions_pyodide.sh`
 runbook), every hardcoded filename must be updated. Find them with:
 
 ```bash
-rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!local_wheels' --glob '!.pyodide_build'
+rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!*.whl' --glob '!.pyodide_build'
 ```
 
 Source-of-truth files (`pyproject.toml:13`, `CMakeLists.txt:7`) carry mirror-

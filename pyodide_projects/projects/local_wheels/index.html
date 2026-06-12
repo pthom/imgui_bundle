@@ -41,12 +41,12 @@ when bumping the version.)
 <h2>Current wheel</h2>
 
 <p>
-    <a class="download" href="imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl"
-       download>Download imgui_bundle-1.92.705 (cp313, pyemscripten_2025_0_wasm32)</a>
+    <a class="download" href="imgui_bundle-1.92.801-cp314-cp314-pyemscripten_2026_0_wasm32.whl"
+       download>Download imgui_bundle-1.92.801 (cp314, pyemscripten_2026_0_wasm32)</a>
 </p>
 
 <p class="meta">
-    Built for <strong>Pyodide 0.29.4</strong> (Python 3.13.2, Emscripten 4.0.9).
+    Built for <strong>Pyodide 314.x</strong> (Python 3.14, Emscripten 5.0.3).
     The wheel must match the Pyodide runtime your page loads.
 </p>
 
@@ -62,14 +62,14 @@ when bumping the version.)
 <ol>
     <li>Download the wheel above and place it next to your HTML file
         (e.g. in a <code>local_wheels/</code> folder beside your page).</li>
-    <li>Make sure your page loads Pyodide <strong>0.29.4</strong>
+    <li>Make sure your page loads Pyodide <strong>314.x</strong>
         (newer Pyodide may have a different ABI):
-<pre>&lt;script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"&gt;&lt;/script&gt;</pre>
+<pre>&lt;script src="https://cdn.jsdelivr.net/pyodide/v314.0.0/full/pyodide.js"&gt;&lt;/script&gt;</pre>
     </li>
     <li>Install the wheel via <code>micropip</code>:
 <pre>await pyodide.loadPackage("micropip");
 const micropip = pyodide.pyimport("micropip");
-await micropip.install("local_wheels/imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl");</pre>
+await micropip.install("local_wheels/imgui_bundle-1.92.801-cp314-cp314-pyemscripten_2026_0_wasm32.whl");</pre>
     </li>
 </ol>
 

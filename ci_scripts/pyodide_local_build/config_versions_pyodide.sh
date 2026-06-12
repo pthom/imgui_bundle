@@ -25,21 +25,23 @@
 #      https://pyodide.github.io/pyodide/api/pyodide-cross-build-environments.json
 #      You only need to bump pyodide-build when the new runtime requires
 #      a newer build, or to pick up a needed bugfix/feature.
-#   3. Check the wheel platform tag produced by the chosen pyodide-build.
-#      pyodide-build 0.34.1+ produces `pyemscripten_YYYY_M_wasm32`
-#      (PEP 783); 0.29.x and earlier produced `pyodide_YYYY_M_wasm32`.
-#      Pyodide runtime 0.29.4 added support for `pyemscripten`-tagged
-#      wheels, which is what unblocked moving to pyodide-build 0.34.x.
-#      If the tag changes again, update the wheel globs in
-#      `.github/workflows/pyodide.yml`, `justfile` (pyodide_build,
-#      pyodide_clean), the docs (`.github/workflows/PYODIDE_WORKFLOW.md`,
-#      `Readme_pyodide_bundle.md`), and the hard-coded wheel filenames
-#      under `pyodide_projects/`.
+#   3. Check the wheel platform tag (`pyemscripten_YYYY_P_wasm32`, PEP 783;
+#      e.g. `pyemscripten_2026_0` for Python 3.14). Since Pyodide 314, the
+#      ABI is stable across a whole Pyodide major (314.x <-> Python 3.14)
+#      and only changes when the Python version bumps (annually). When the
+#      tag changes, update the wheel globs in `.github/workflows/pyodide.yml`
+#      and `justfile` (pyodide_build, pyodide_clean), the docs
+#      (`.github/workflows/PYODIDE_WORKFLOW.md`, `Readme_pyodide_bundle.md`),
+#      and the hard-coded wheel filenames in pages and docs (find them with
+#      the rg command in docs/book/devel_docs/cloudflare_deploy.md).
 #   4. Whether the `pyodide xbuildenv install <version>` CLI changed
 #      (rarely does, but test with `just pyodide_setup_local_build` after
 #      the bump).
 #   5. The Python version supported by the new Pyodide — bump
-#      `PYTHON_VERSION` below if needed.
+#      `PYTHON_VERSION` below if needed (the host python must match it).
+#   6. Whether `patch_pywasmcross_homebrew.py` is still needed with the new
+#      pyodide-build (it fails loudly if the upstream code changed; drop it
+#      once the fix has landed upstream).
 #
 # Sanity check after upgrading:
 #   $ just pyodide_deep_clean
@@ -50,18 +52,20 @@
 # -----------------------------------------------------------------------------
 
 # Pyodide version to use (determines ABI compatibility)
+# Since 314.0.0, Pyodide versions follow the Python version (314.x <-> Python 3.14)
+# and the ABI is stable across all 314.x releases (PEP 783).
 # See: https://github.com/pyodide/pyodide/releases
-PYODIDE_VERSION="0.29.4"
+PYODIDE_VERSION="314.0.0"
 
 # pyodide-build version. Independent from PYODIDE_VERSION above (see runbook).
-# 0.34.3 builds wheels tagged `pyemscripten_2025_0_wasm32`, which Pyodide
-# runtime 0.29.4 accepts (0.29.4 added `pyemscripten` tag compatibility).
+# 0.35.0 (released alongside Pyodide 314.0.0) builds wheels tagged
+# `pyemscripten_2026_0_wasm32` (Python 3.14 ABI).
 # See: https://github.com/pyodide/pyodide-build/releases
-PYODIDE_BUILD_VERSION="0.34.3"
+PYODIDE_BUILD_VERSION="0.35.0"
 
-# Python version (major.minor, e.g., "3.13", "3.12", "3.11")
+# Python version (major.minor, e.g., "3.14", "3.13")
 # Must match a version supported by the Pyodide version above
-PYTHON_VERSION="3.13"
+PYTHON_VERSION="3.14"
 
 # =============================================================================
 # Note: Emscripten version is automatically determined from Pyodide version

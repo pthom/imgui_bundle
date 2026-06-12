@@ -89,10 +89,8 @@ function(ibd_pyodide_manually_link_sdl_to_bindings)
         message(STATUS "Pyodide: Linking PIC html5: ${ems_lib_path_pic}/libhtml5.a")
         target_link_libraries(_imgui_bundle PUBLIC ${ems_lib_path_pic}/libhtml5.a)
 
-        # Add -sRELOCATABLE=1 to the target:
-        # This is not useful for the moment, but may become if/when pyodide correctly handles SDL and html native link.
-        target_compile_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
-        target_link_options(_imgui_bundle PUBLIC "-sRELOCATABLE=1")
+        # Note: do not pass -sRELOCATABLE=1 explicitly: emscripten 5 removed it
+        # (relocatability comes implicitly from -sSIDE_MODULE, set by pyodide-build)
 
         # CRITICAL: Handle EM_JS symbols from SDL2
         # ========================================

@@ -11,9 +11,10 @@ The folder `ci_scripts/pyodide_local_build/` contains tools for building imgui-b
 pyodide_build               -- Args: # Build pyodide wheel (excludes demos to reduce size)
 pyodide_clean               -- Args: # Clean pyodide build artifacts
 pyodide_deep_clean          -- Args: # Pyodide deep clean (removes also the local build setup)
+pyodide_demo_runner         -- Args: # Serve the pyodide demo runner
+pyodide_serve_projects      -- Args: # Serve pyodide_projects/projects (test pages, playground, ...)
 pyodide_setup_local_build   -- Args: # Install the tools to build pyodide wheels locally (pyodide-build, emsdk, etc.)
 pyodide_setup_recipe_clone  -- Args: # Clone pyodide-recipes repo and add fork remote
-pyodide_test_serve          -- Args: # Start browser test server (serves test HTML pages)
 ```
 
 **What's included:**
@@ -47,10 +48,10 @@ Both `venv_pyo/` and `emsdk/` are gitignored and must be set up locally.
 
 ```bash
 # Pyodide version to use (determines ABI compatibility)
-PYODIDE_VERSION="0.29.4"
+PYODIDE_VERSION="314.0.0"
 
-# Python version (major.minor, e.g., "3.13", "3.12", "3.11")
-PYTHON_VERSION="3.13"
+# Python version (major.minor, e.g., "3.14")
+PYTHON_VERSION="3.14"
 ```
 
 This central configuration file is used by all build scripts in this directory.
@@ -80,11 +81,12 @@ cd ci_scripts/pyodide_local_build
 The setup script will:
 1. Load version configuration from `config_versions_pyodide.sh`
 2. Create the Python virtual environment (`venv_pyo/`)
-3. Install `pyodide-build`
+3. Install `pyodide-build` (and apply `patch_pywasmcross_homebrew.py`, a
+   workaround for host-Python headers leaking into the cross-compile on
+   macOS with homebrew Python)
 4. Install the Pyodide cross-compilation toolchain (xbuildenv)
 5. Clone and configure Emscripten SDK with the correct version
-6. Download the Pyodide distribution for browser testing
-7. Verify the installation
+6. Verify the installation
 
 **Reference:** https://pyodide.org/en/stable/development/building-packages.html
 
@@ -104,8 +106,7 @@ This automatically:
 1. Activates the virtual environment
 2. Sources the Emscripten environment
 3. Builds the wheel with `pyodide build`
-4. Fixes the wheel name on macOS (workaround for scikit-build-core issue #920)
-5. Copies the wheel to `imgui_bundle/pyodide_projects/_pyodide_resources/local_wheels/` for testing
+4. Copies the wheel to the `local_wheels/` folders under `pyodide_projects/` for testing
 
 ### Manual Build
 
@@ -126,7 +127,7 @@ pyodide build
 After building, you'll find the wheel in the `dist/` directory:
 
 ```
-dist/imgui_bundle-X.Y.Z-cp313-cp313-pyemscripten_2025_0_wasm32.whl
+dist/imgui_bundle-X.Y.Z-cp314-cp314-pyemscripten_2026_0_wasm32.whl
 ```
 
 
@@ -135,15 +136,12 @@ dist/imgui_bundle-X.Y.Z-cp313-cp313-pyemscripten_2025_0_wasm32.whl
 Test your locally built wheel in a browser with Pyodide:
 
 ```bash
-just pyodide_test_serve
+just pyodide_serve_projects
 ```
 
-This starts a CORS-enabled web server at http://localhost:8123/ with three test pages:
-- `test_local_pyodide.html` - Local Pyodide + local wheel
-- `test_cdn_pyodide_local_wheel.html` - CDN Pyodide + local wheel
-- `test_cdn_all.html` - Full CDN (official Pyodide package)
-
-See `imgui_bundle/pyodide_projects/pyodide_test_bundle/` directory for more details.
+This starts a CORS-enabled web server at http://localhost:6456/ ; open
+`pyodide_test_bundle/test_cdn_pyodide_local_wheel.html` (CDN Pyodide + local
+wheel). The playground and `min_pyodide_app` are served there too.
 
 
 ## Cleanup
@@ -167,13 +165,18 @@ just pyodide_deep_clean
 - **scikit-build-core issue #920**: https://github.com/scikit-build/scikit-build-core/issues/920
 
 
-# Release a new version of pyodide
+# Release a new version for Pyodide
 
 - After creating a new release for imgui bundle
 - Build & test the new version locally with pyodide (see above)
-- Upload the wheel to the release assets on github
-- Clone https://github.com/pyodide/pyodide-recipes
-- Create a branch, e.g. `imgui_bundle_v1.92.600`
-- Edit packages/imgui-bundle/meta.yaml, add the new version, and update the URL to point to the new wheel in the github release assets. Update the sha256 hash of the wheel.
-- Make a PR to the pyodide-recipes repository, and ask for review and merge.
+- Upload the wheel to PyPI (PEP 783 `pyemscripten` wheels are accepted there
+  since Pyodide 314 / pyodide-build 0.35):
+  ```bash
+  uv tool run twine upload dist/imgui_bundle-*pyemscripten*.whl
+  ```
+- micropip then resolves it directly: `micropip.install("imgui-bundle")`
+
+Note: the former channel (a recipe in https://github.com/pyodide/pyodide-recipes,
+shipped with the Pyodide distribution) is deprecated for imgui-bundle: the
+recipe there is disabled, so micropip falls through to PyPI.
 

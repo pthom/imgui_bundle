@@ -305,7 +305,11 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md/md4c/src>)
     target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md/imgui_md_wrapper>)
     target_link_libraries(imgui_md PUBLIC hello_imgui imgui_color_text_edit fplus immapp)
-    if(EMSCRIPTEN)
+    if(EMSCRIPTEN AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
+        # Not for pyodide: -sFETCH would force the non-PIC libfetch.a into the
+        # side module link (rejected by emscripten 5), and pyodide's main module
+        # has no fetch JS glue anyway; Python installs a JS fetch() download
+        # callback instead (see _imgui_md_image_loader.py).
         target_link_options(imgui_md PUBLIC -sFETCH)
     endif()
 

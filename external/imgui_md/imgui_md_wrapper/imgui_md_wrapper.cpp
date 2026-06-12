@@ -569,7 +569,10 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
     // Global renderer
     std::unique_ptr<MarkdownRenderer> gMarkdownRenderer;
 
-#ifdef __EMSCRIPTEN__
+// Not for pyodide: emscripten's FETCH cannot run in a pyodide side module
+// (no fetch JS glue in pyodide's main module); Python installs a JS fetch()
+// based OnDownloadData callback instead (see _imgui_md_image_loader.py).
+#if defined(__EMSCRIPTEN__) && !defined(IMGUI_BUNDLE_BUILD_PYODIDE)
 #include <emscripten/fetch.h>
 #include <mutex>
 
@@ -639,7 +642,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         }
         return result;
     }
-#endif // __EMSCRIPTEN__
+#endif // __EMSCRIPTEN__ && !IMGUI_BUNDLE_BUILD_PYODIDE
 
     // Global options
     MarkdownOptions gMarkdownOptions;
@@ -684,9 +687,9 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         gMarkdownOptions = options;
         if (gOnInitializeMarkdownCallback)
             gOnInitializeMarkdownCallback(gMarkdownOptions);
-#ifdef __EMSCRIPTEN__
-        // On Emscripten, set a default download callback using emscripten_fetch
-        // (unless one was already set, e.g. by Python)
+#if defined(__EMSCRIPTEN__) && !defined(IMGUI_BUNDLE_BUILD_PYODIDE)
+        // On Emscripten (but not pyodide), set a default download callback using
+        // emscripten_fetch (unless one was already set, e.g. by Python)
         if (!gMarkdownOptions.callbacks.OnDownloadData)
             gMarkdownOptions.callbacks.OnDownloadData = EmscriptenDownloadData;
 #elif defined(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)

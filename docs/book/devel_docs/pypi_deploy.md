@@ -40,8 +40,20 @@ uv tool run twine upload wheelhouse/*
 
 ## Pyodide release
 
-Pyodide (Python-in-the-browser via WebAssembly) has its own build and release process. See the [Pyodide build guide](Readme_pyodide_bundle.md) for:
-- Local build environment setup (`just pyodide_setup_local_build`)
-- Building the Pyodide wheel (`just pyodide_build`)
-- Browser testing (`just pyodide_test_serve`)
-- Publishing to the pyodide-recipes repository
+Since Pyodide 314 / pyodide-build 0.35, Pyodide wheels (platform tag
+`pyemscripten_YYYY_P_wasm32`, cf [PEP 783](https://peps.python.org/pep-0783/))
+can be published on PyPI alongside the desktop wheels. micropip then installs
+them directly: `micropip.install("imgui-bundle")`.
+
+1. Build locally: `just pyodide_setup_local_build` (once), then `just pyodide_build`.
+2. Test in a browser: `just pyodide_serve_projects`, then open
+   http://localhost:6456/pyodide_test_bundle/test_cdn_pyodide_local_wheel.html
+3. Upload to PyPI (can be added to an existing release version):
+   ```bash
+   uv tool run twine upload dist/imgui_bundle-*pyemscripten*.whl
+   ```
+
+See the [Pyodide build guide](Readme_pyodide_bundle.md) for details on the
+build environment. Note: the legacy distribution channel (pyodide-recipes
+repository) is deprecated for imgui-bundle; the recipe there is disabled, so
+micropip falls through to PyPI.

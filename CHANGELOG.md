@@ -1,5 +1,13 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
+# Unreleased
+
+## Pyodide: switched to Pyodide 314 (Python 3.14); wheels now published on PyPI
+
+- The Pyodide wheel now targets Pyodide 314.x: Python 3.14, Emscripten 5.0.3, wheel tag `cp314-cp314-pyemscripten_2026_0_wasm32`.
+- Thanks to [PEP 783](https://peps.python.org/pep-0783/), Pyodide wheels are now published on PyPI (starting with v1.92.801): in a Pyodide 314+  environment, `micropip.install("imgui-bundle")` installs imgui_bundle directly from PyPI.
+- The [playground](https://imgui-bundle.pages.dev/playground/) and the minimal sample were updated accordingly.
+
 # v1.92.800
 
 ## Updated Dear ImGui to v1.92.8

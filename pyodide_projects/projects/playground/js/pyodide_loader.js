@@ -1,3 +1,10 @@
+// imgui_bundle wheel source:
+//   'local': self-hosted wheel in ../local_wheels/ (pinned, default for deployment)
+//   'pypi' : micropip resolves the pyemscripten wheel from pypi.org (for testing)
+const IMGUI_BUNDLE_WHEEL_SOURCE = 'local';
+const IMGUI_BUNDLE_LOCAL_WHEEL = '../local_wheels/imgui_bundle-1.92.801-cp314-cp314-pyemscripten_2026_0_wasm32.whl';
+
+
 async function load_pyodide_imgui_render() {
     console.log('Loading load_pyodide_imgui_render.py');
     try {
@@ -109,8 +116,10 @@ async function loadPyodideAndPackages() {
         pyodide._api._skip_unwind_fatal_error = true;
 
         // Phase 3: heavy wheels. Each phase animates within its own bar range.
+        const imguiBundleUrl = (IMGUI_BUNDLE_WHEEL_SOURCE === 'pypi')
+            ? 'imgui-bundle' : IMGUI_BUNDLE_LOCAL_WHEEL;
         const packages = [
-            { url: '../local_wheels/imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl',
+            { url: imguiBundleUrl,
               label: 'imgui_bundle (4.9 MB)', range: [60, 85], expectedMs: 4500 },
             { url: 'numpy',
               label: 'numpy (2.8 MB)',        range: [85, 99], expectedMs: 3000 },

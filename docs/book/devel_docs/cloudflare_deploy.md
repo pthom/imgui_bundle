@@ -102,7 +102,7 @@ The Pyodide wheel built by `just pyodide_build` is rsync'd into
 `_cf_staging/local_wheels/` by `cf_stage` and ends up at:
 
 ```
-https://imgui-bundle.pages.dev/local_wheels/imgui_bundle-<VERSION>-cp313-cp313-pyemscripten_2025_0_wasm32.whl
+https://imgui-bundle.pages.dev/local_wheels/imgui_bundle-<VERSION>-cp314-cp314-pyemscripten_2026_0_wasm32.whl
 ```
 
 This URL points at the **latest** Pages deploy, not a versioned archive.
@@ -121,7 +121,7 @@ platform tag changes per the runbook in
 wheel filenames in HTML/JS/doc pages must be updated. Find them with:
 
 ```bash
-rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!local_wheels' --glob '!.pyodide_build'
+rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!*.whl' --glob '!.pyodide_build'
 ```
 
 Glob-only references (`*pyemscripten*.whl` in `justfile` and the GitHub

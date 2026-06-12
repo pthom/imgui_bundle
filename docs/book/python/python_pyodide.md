@@ -31,7 +31,7 @@ The [template](https://imgui-bundle.pages.dev/min_pyodide_app/demo_heart.source.
 Pyodide is a Python interpreter compiled to WebAssembly; it runs directly in the browser.
 
 ```html
-<script src="https://cdn.jsdelivr.net/pyodide/v0.29.4/full/pyodide.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v314.0.0/full/pyodide.js"></script>
 ```
 
 Check [pyodide latest releases](https://github.com/pyodide/pyodide/releases) and update the URL accordingly.
@@ -81,12 +81,14 @@ async function main() {
     // Install imgui_bundle (two options)
     // ----------------------------------
     //
-    //   Option a (default): use a wheel that is stored on your server
-    //      (download this wheel from https://imgui-bundle.pages.dev/local_wheels/ )
-    await micropip.install('local_wheels/imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl');
+    //   Option a (default): install from PyPI
+    //      (imgui_bundle publishes browser-compatible wheels on PyPI, cf PEP 783)
+    await micropip.install('imgui-bundle');
     //
-    //   Option b: use the (older) wheel bundled with the Pyodide CDN
-    // await micropip.install('imgui_bundle');
+    //   Option b: use a wheel that is stored on your server, e.g. to pin a
+    //      version or work without PyPI access
+    //      (download a pyemscripten wheel from https://pypi.org/project/imgui-bundle/#files )
+    // await micropip.install('local_wheels/imgui_bundle-1.92.801-cp314-cp314-pyemscripten_2026_0_wasm32.whl');
 
     // Load additional required packages
     await micropip.install('numpy');
