@@ -5,10 +5,8 @@ It lives next to the wheel in `pyodide_projects/projects/local_wheels/`,
 which `cf_stage` rsyncs into `_cf_staging/local_wheels/` (see
 `docs/book/devel_docs/cloudflare_deploy.md`). The wheel filename below
 must be kept in sync with `pyproject.toml` / `CMakeLists.txt` — find
-every reference with:
-    rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!local_wheels' --glob '!.pyodide_build'
-(`local_wheels/` is excluded — update this file's wheel reference manually
-when bumping the version.)
+every reference (including this file) with:
+    rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!*.whl' --glob '!.pyodide_build'
 -->
 <html lang="en">
 <head>
@@ -54,8 +52,34 @@ when bumping the version.)
     <strong>This URL is the latest Pages deploy, not a versioned archive.</strong>
     Cloudflare Pages replaces the entire site on every upload, so previous
     wheels disappear when a new version is deployed. For anything you publish,
-    download the wheel and serve it from your own page.
+    download the wheel and serve it from your own page — or better, install
+    from PyPI (below), which keeps every version forever.
 </div>
+
+<h2>Recommended: install from PyPI</h2>
+
+<p>
+    Since <strong>v1.92.801</strong>, Pyodide wheels are published on
+    <a href="https://pypi.org/project/imgui-bundle/#files">PyPI</a>
+    (<a href="https://peps.python.org/pep-0783/">PEP 783</a>). In a Pyodide 314+
+    environment, no self-hosted wheel is needed:
+</p>
+<pre>await pyodide.loadPackage("micropip");
+const micropip = pyodide.pyimport("micropip");
+await micropip.install("imgui-bundle");</pre>
+
+<h2>Previous wheel</h2>
+
+<p>
+    <a class="download" href="imgui_bundle-1.92.705-cp313-cp313-pyemscripten_2025_0_wasm32.whl"
+       download>Download imgui_bundle-1.92.705 (cp313, pyemscripten_2025_0_wasm32)</a>
+</p>
+
+<p class="meta">
+    Built for <strong>Pyodide 0.29.x</strong> (Python 3.13). Kept temporarily
+    for pages that still link it; it will be removed in a future deploy.
+    Download and self-host it if you depend on it.
+</p>
 
 <h2>How to use</h2>
 
