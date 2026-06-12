@@ -897,6 +897,12 @@ class Test:
     def __init__(self) -> None:
         """Functions"""
         pass
+    # void SetOwnedName(const char* name) { Name = name; }    /* original C++ signature */
+    def set_owned_name(self, name: str) -> None:
+        """[Bundle] Compatibility with upstream API: Name is owning here (Str30), no separate copy needed.
+        (private API)
+        """
+        pass
 
 class TestRunTask:
     """Stored in test queue"""

@@ -565,6 +565,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("vars_post_constructor_user_fn", &ImGuiTest::VarsPostConstructorUserFn, "")
         .def(nb::init<>(),
             "Functions")
+        .def("set_owned_name",
+            &ImGuiTest::SetOwnedName,
+            nb::arg("name"),
+            " [Bundle] Compatibility with upstream API: Name is owning here (Str30), no separate copy needed.\n(private API)")
         ;
 
 
