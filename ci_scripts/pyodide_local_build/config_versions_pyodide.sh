@@ -39,9 +39,6 @@
 #      the bump).
 #   5. The Python version supported by the new Pyodide — bump
 #      `PYTHON_VERSION` below if needed (the host python must match it).
-#   6. Whether `patch_pywasmcross_homebrew.py` is still needed with the new
-#      pyodide-build (it fails loudly if the upstream code changed; drop it
-#      once the fix has landed upstream).
 #
 # Sanity check after upgrading:
 #   $ just pyodide_deep_clean
@@ -58,10 +55,11 @@
 PYODIDE_VERSION="314.0.0"
 
 # pyodide-build version. Independent from PYODIDE_VERSION above (see runbook).
-# 0.35.0 (released alongside Pyodide 314.0.0) builds wheels tagged
-# `pyemscripten_2026_0_wasm32` (Python 3.14 ABI).
+# 0.35.x (released alongside Pyodide 314.0.0) builds wheels tagged
+# `pyemscripten_2026_0_wasm32` (Python 3.14 ABI). 0.35.1 is required on macOS
+# with homebrew Python (fixes host headers leaking into the cross-compile).
 # See: https://github.com/pyodide/pyodide-build/releases
-PYODIDE_BUILD_VERSION="0.35.0"
+PYODIDE_BUILD_VERSION="0.35.1"
 
 # Python version (major.minor, e.g., "3.14", "3.13")
 # Must match a version supported by the Pyodide version above

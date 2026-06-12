@@ -53,9 +53,6 @@ source venv_pyo/bin/activate
 pip install --upgrade pip > /dev/null
 pip install "pyodide-build==$PYODIDE_BUILD_VERSION"
 echo "✓ Installed pyodide-build $PYODIDE_BUILD_VERSION"
-# Work around host-Python headers leaking into the cross-compile on macOS
-# with homebrew Python (see patch_pywasmcross_homebrew.py for details)
-python patch_pywasmcross_homebrew.py
 echo ""
 
 # Install xbuildenv

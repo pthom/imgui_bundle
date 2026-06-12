@@ -81,9 +81,7 @@ cd ci_scripts/pyodide_local_build
 The setup script will:
 1. Load version configuration from `config_versions_pyodide.sh`
 2. Create the Python virtual environment (`venv_pyo/`)
-3. Install `pyodide-build` (and apply `patch_pywasmcross_homebrew.py`, a
-   workaround for host-Python headers leaking into the cross-compile on
-   macOS with homebrew Python)
+3. Install `pyodide-build`
 4. Install the Pyodide cross-compilation toolchain (xbuildenv)
 5. Clone and configure Emscripten SDK with the correct version
 6. Verify the installation
