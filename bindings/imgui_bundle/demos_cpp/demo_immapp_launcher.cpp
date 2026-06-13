@@ -30,6 +30,8 @@ std::function<void()> makeGui()
         },
         DemoApp{"demo_python_context_manager",
                 "How to use a python context manager for `imgui.begin()`, `imgui.end()`, etc."},
+        DemoApp{"demo_chinese_font",
+                "How to display non-Latin text (Chinese, Japanese, Korean, ...) by loading a suitable font"},
         DemoApp{"demo_testengine", "How to use ImGui Test Engine to test and automate your application"},
         DemoApp{
             "demo_testapp",
