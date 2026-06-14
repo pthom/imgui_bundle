@@ -11,7 +11,9 @@ namespace ed = ax::NodeEditor;
 
 void Gui()
 {
-    static std::string text = "Hello, World!";
+    static std::string text =
+        "Hello, World!\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\n"
+        "Line 7\nLine 8\nLine 9\nLine 10\nLine 11\nLine 12";
     static ImVec4 clearColor = ImVec4(0, 0, 0, 0);
     const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
     static int item_selected_idx = 0; // Here we store our selection data as an index.
@@ -23,8 +25,11 @@ void Gui()
 
     ed::BeginNode(ed::NodeId(1));
     ImGui::Text("Hello");
-    ImGui::SetNextItemWidth(200);
-    ImGui::InputTextMultiline("Text", &text);
+
+    // Inside a node, InputTextMultiline renders a read-only preview box and opens a
+    // resizable popup editor on click (child windows do not work inside a node).
+    ImVec2 editSize = HelloImGui::EmToVec2(10, 8);
+    ImGui::InputTextMultiline("Text", &text, editSize);
 
     // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
     const char* combo_preview_value = items[item_selected_idx];
