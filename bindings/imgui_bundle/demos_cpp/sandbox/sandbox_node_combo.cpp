@@ -9,6 +9,8 @@
 namespace ed = ax::NodeEditor;
 
 
+
+
 void Gui()
 {
     static std::string text =
@@ -18,6 +20,40 @@ void Gui()
     const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
     static int item_selected_idx = 0; // Here we store our selection data as an index.
 
+
+    static HelloImGui::InputTextData input_text_data_multiline, input_text_data_singleline;
+    static bool initialized = false;
+    if (!initialized)
+    {
+        initialized = true;
+
+        input_text_data_multiline.Text = R"(
+Demain, dès l'aube, à l'heure où blanchit la campagne,
+Je partirai. Vois-tu, je sais que tu m'attends.
+J'irai par la forêt, j'irai par la montagne.
+Je ne puis demeurer loin de toi plus longtemps.
+
+Je marcherai les yeux fixés sur mes pensées,
+Sans rien voir au dehors, sans entendre aucun bruit,
+Seul, inconnu, le dos courbé, les mains croisées,
+Triste, et le jour pour moi sera comme la nuit.
+
+Je ne regarderai ni l'or du soir qui tombe,
+Ni les voiles au loin descendant vers Harfleur,
+Et quand j'arriverai, je mettrai sur ta tombe
+Un bouquet de houx vert et de bruyère en fleur.
+
+Victor Hugo, extrait du recueil «Les Contemplations» (1856)
+        )";
+        input_text_data_multiline.Multiline = true;
+        input_text_data_multiline.Resizable =true;
+        input_text_data_multiline.SizeEm = ImVec2(15, 3);
+
+        input_text_data_singleline.Text = "This is a simple test";
+        input_text_data_singleline.Multiline = false;
+        input_text_data_singleline.Resizable = true;
+        input_text_data_singleline.SizeEm = ImVec2(20, 1);
+    }
 
     ImGui::Text("Hello, world!");
 
@@ -30,6 +66,10 @@ void Gui()
     // resizable popup editor on click (child windows do not work inside a node).
     ImVec2 editSize = HelloImGui::EmToVec2(10, 8);
     ImGui::InputTextMultiline("Text", &text, editSize);
+
+    // Resizable text via Hello ImGui
+    HelloImGui::InputTextResizable("Resizable Multi", &input_text_data_multiline);
+    HelloImGui::InputTextResizable("Resizable Single", &input_text_data_singleline);
 
     // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
     const char* combo_preview_value = items[item_selected_idx];
