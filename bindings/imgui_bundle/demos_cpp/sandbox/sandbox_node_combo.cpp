@@ -4,6 +4,9 @@
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
 #include "imgui-node-editor/imgui_node_editor.h"
+#include "imgui_test_engine/imgui_te_engine.h"
+#include "imgui_test_engine/imgui_te_context.h"
+#include "immapp/testing.h"
 #include <string>
 
 namespace ed = ax::NodeEditor;
@@ -96,14 +99,57 @@ Victor Hugo, extrait du recueil «Les Contemplations» (1856)
     ed::End();
 }
 
+static bool gTestDone = false;
+
 int main()
 {
     ImmApp::AddOnsParams addonsParams;
     addonsParams.withNodeEditor = true;
 
     HelloImGui::RunnerParams runnerParams;
-    // runnerParams.iniDisable = true;
+    runnerParams.iniDisable = true;
+    runnerParams.appWindowParams.windowGeometry.size = {1000, 700};
     runnerParams.callbacks.ShowGui = Gui;
+
+    // [NODEPOPUP-LOG] repro: pan the canvas (right-drag) to a non-identity viewPos, then open a popup.
+    bool useTestHarness = false;
+    if (useTestHarness)
+    {
+        runnerParams.useImGuiTestEngine = true;
+        runnerParams.callbacks.RegisterTests = []()
+        {
+            auto* engine = HelloImGui::GetImGuiTestEngine();
+            ImGuiTest* t = IM_REGISTER_TEST(engine, "nodepopup", "repro");
+            t->TestFunc = [](ImGuiTestContext* ctx)
+            {
+                ctx->SetRef("My Node Editor");
+                // Pan the view with a right-button drag (NavigateButtonIndex=1) over empty canvas.
+                ctx->MouseMoveToPos(ImVec2(600, 450));
+                ctx->MouseDown(1);
+                ctx->MouseMoveToPos(ImVec2(720, 560));
+                ctx->MouseMoveToPos(ImVec2(850, 670));
+                ctx->MouseUp(1);
+                ctx->Yield(5);
+                fprintf(stderr, "[NODEPOPUP] === panned, before popup ===\n");
+                ImmApp::Testing::Capture(ctx, "/tmp/repro_00_panned.png");
+                // Node moved by ~(+250,+220): Resizable Multi box ~(125,205) -> ~(375,425)
+                ctx->MouseMoveToPos(ImVec2(375, 425));
+                ctx->MouseClick(0);
+                ctx->Yield(5);
+                fprintf(stderr, "[NODEPOPUP] === popup opened ===\n");
+                ImmApp::Testing::Capture(ctx, "/tmp/repro_01_popup.png");
+                gTestDone = true;
+            };
+            ImGuiTestEngine_QueueTest(engine, t);
+        };
+        runnerParams.callbacks.BeforeImGuiRender = []()
+        {
+            if (!gTestDone) return;
+            auto* engine = HelloImGui::GetImGuiTestEngine();
+            if (ImGuiTestEngine_IsTestQueueEmpty(engine))
+                HelloImGui::GetRunnerParams()->appShallExit = true;
+        };
+    }
 
     ImmApp::Run(runnerParams, addonsParams);
 
