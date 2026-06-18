@@ -732,7 +732,10 @@ class _WithPushFont:
         return self.__class__.__name__
 
 
-def push_font(font: imgui.ImFont | None, font_size_base_unscaled: float = 0.0) -> _WithPushFont:
+def push_font(font: imgui.ImFont | None, font_size_base_unscaled: float) -> _WithPushFont:
+    """Use None as a shortcut to keep current font. Use 0.0 to keep current size.
+    - In 1.92 we have REMOVED the single parameter version of PushFont() because it seems like the easiest way to provide an error-proof transition.s
+    """
     return _WithPushFont(font, font_size_base_unscaled)
 
 
