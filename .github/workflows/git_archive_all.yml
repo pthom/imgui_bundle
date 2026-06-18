@@ -12,7 +12,7 @@ jobs:
       contents: write
     steps:
       - name: Checkout project source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: project
 
