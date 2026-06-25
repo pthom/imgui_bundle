@@ -14,6 +14,7 @@
 #include "imgui.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 
+#include <algorithm>
 #include <string>
 #include <unordered_set>
 #include <vector>
