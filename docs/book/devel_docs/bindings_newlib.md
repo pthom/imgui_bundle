@@ -89,7 +89,7 @@ external/ImCoolBar/
 
 ### Step 1-b:  Update python generator manager
 
-**Update external/bindings_generation/all_external_libraries.py**
+**Update external/bindings_generation/bundle_libs_tooling/all_external_libraries.py**
 
 Add a function that returns info about this new library:
 
