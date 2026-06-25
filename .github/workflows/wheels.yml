@@ -18,7 +18,7 @@ jobs:
     name: Build SDist
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
 
@@ -59,7 +59,7 @@ jobs:
         exit 1
         fi
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         submodules: recursive
         fetch-depth: 0  # Full history needed for build number (git rev-list --count HEAD)
