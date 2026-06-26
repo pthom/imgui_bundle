@@ -3277,6 +3277,7 @@ def spinner_text_vanish(
 # * Spinner<> via imspinner_compat.h (e_st_barchartsine).
 #
 
+
 # #ifndef _IMSPINNER_BARS_INTERNAL_
 #
 # #endif
