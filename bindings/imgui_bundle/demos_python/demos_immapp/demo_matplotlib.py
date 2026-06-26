@@ -7,8 +7,8 @@ from numpy.typing import NDArray
 
 class AnimatedFigure:
     """A class that encapsulates a Matplotlib figure, and provides a method to animate it."""
-    x: NDArray[np.float32]
-    y: NDArray[np.float32]
+    x: NDArray[np.float64]
+    y: NDArray[np.float64]
     amplitude: float = 1.0
     plotted_curve: matplotlib.lines.Line2D
     phase: float
@@ -18,7 +18,7 @@ class AnimatedFigure:
     def __init__(self):
         # Data for plotting
         self.phase = 0.0
-        self.x = np.arange(0.0, 2.0, 0.01, dtype=np.float32)
+        self.x = np.arange(0.0, 2.0, 0.01)
         self.y = 1 + np.sin(2 * np.pi * self.x + self.phase) * self.amplitude
 
         # Create a figure and a set of subplots
