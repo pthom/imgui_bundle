@@ -13,7 +13,7 @@ The dataframe is loaded from the web (Data Science Dojo repository).
 - [Fiatlight repository](https://github.com/pthom/fiatlight)
 """
 import fiatlight as fl
-import pandas as pd
+import pandas as pd  # type: ignore[import-untyped]
 from enum import Enum
 from imgui_bundle import implot, hello_imgui
 import numpy as np

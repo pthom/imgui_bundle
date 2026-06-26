@@ -40,7 +40,14 @@ def main():
         "SpinnerDraw"
     ]
     # options.python_run_black_formatter = True
-    options.postprocess_stub_function = lambda s: s.replace("IM_PI  0.7", "math.pi * 0.7")
+    def postprocess_stub(s: str) -> str:
+        s = s.replace("IM_PI  0.7", "math.pi * 0.7")
+        # litgen emits the raw C++ default for these params, which mypy rejects
+        # (int literal where an ImColor / bool is expected). Make them well-typed.
+        s = s.replace("color: ImColor = 0xffffffff", "color: ImColor = ImColor(0xffffffff)")
+        s = s.replace("mode: bool = 0", "mode: bool = False")
+        return s
+    options.postprocess_stub_function = postprocess_stub
     # litgen emits C99 compound literals like `(const ImColor) {1.f, ...}` instead of `ImColor(1.f, ...)`
     options.postprocess_pydef_function = lambda s: re.sub(
         r"\(const (\w+)\)\s*\{([^}]*)\}", r"\1(\2)", s

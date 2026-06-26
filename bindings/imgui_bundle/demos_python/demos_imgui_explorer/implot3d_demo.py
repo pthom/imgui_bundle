@@ -957,7 +957,7 @@ def demo_per_index_colors():
     xs1 = np.linspace(0, 1, 1001, dtype=np.float64)
     ys1 = 0.5 + 0.5 * np.sin(50 * (xs1 + t / 10))
     zs1 = 0.5 + 0.5 * np.cos(50 * (xs1 + t / 10))
-    hues1 = np.linspace(0, 1, 1001, dtype=np.float32)
+    hues1 = np.linspace(0, 1, 1001, dtype=np.float64)
     colors1 = np.array([
         imgui.color_convert_float4_to_u32(ImVec4(*imgui.color_convert_hsv_to_rgb(h, 0.8, 0.9), 1.0))
         for h in hues1
@@ -988,7 +988,7 @@ def demo_per_index_colors():
     xs_scatter1 = np.linspace(0, 1, 100, dtype=np.float64)
     ys_scatter1 = xs_scatter1 + 0.1 * rng.rand(100)
     zs_scatter1 = xs_scatter1 + 0.1 * rng.rand(100)
-    hues_scatter1 = np.linspace(0, 1, 100, dtype=np.float32)
+    hues_scatter1 = np.linspace(0, 1, 100, dtype=np.float64)
     colors_scatter1_fill = np.array([
         imgui.color_convert_float4_to_u32(ImVec4(*imgui.color_convert_hsv_to_rgb(h, 0.8, 0.9), 1.0))
         for h in hues_scatter1

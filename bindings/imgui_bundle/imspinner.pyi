@@ -361,7 +361,7 @@ def spinner4_caleidospcope(
     label: str,
     radius: float,
     thickness: float,
-    color: ImColor = 0xffffffff,
+    color: ImColor = ImColor(0xffffffff),
     speed: float = 2.8,
     lt: int = 8
     ) -> None:
@@ -1705,7 +1705,7 @@ def spinner_five_dots(
     label: str,
     radius: float,
     thickness: float,
-    color: ImColor = 0xffffffff,
+    color: ImColor = ImColor(0xffffffff),
     speed: float = 2.8,
     lt: int = 8
     ) -> None:
@@ -1944,7 +1944,7 @@ def spinner_dna_dots(
     speed: float = 2.8,
     lt: int = 8,
     delta: float = 0.5,
-    mode: bool = 0
+    mode: bool = False
     ) -> None:
     """Python bindings defaults:
         If color is None, then its default value will be: white
@@ -1959,7 +1959,7 @@ def spinner3_smuggle_dots(
     speed: float = 4.8,
     lt: int = 8,
     delta: float = 0.5,
-    mode: bool = 0
+    mode: bool = False
     ) -> None:
     """Python bindings defaults:
         If color is None, then its default value will be: white

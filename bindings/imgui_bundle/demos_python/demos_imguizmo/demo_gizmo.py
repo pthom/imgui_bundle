@@ -268,7 +268,9 @@ def EditTransform(
 
 
 def glm_mat4x4_to_float_list(mat: glm.mat4x4) -> List[float]:
-    return mat[0].to_list() + mat[1].to_list() + mat[2].to_list() + mat[3].to_list()
+    # glm's to_list() is untyped (returns Any), so annotate the concatenation.
+    result: List[float] = mat[0].to_list() + mat[1].to_list() + mat[2].to_list() + mat[3].to_list()
+    return result
 
 
 # This returns a closure function that will later be invoked to run the app
