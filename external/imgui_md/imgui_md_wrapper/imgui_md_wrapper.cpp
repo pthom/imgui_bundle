@@ -20,7 +20,6 @@
 #include "imgui_microtex/imgui_microtex.h"
 #endif
 
-#include <fplus/fplus.hpp>
 #include <string>
 #include <vector>
 #include <utility>
@@ -28,6 +27,54 @@
 #include <memory>
 #include <iostream>
 #include <cassert>
+#include <cctype>
+
+// Small string helpers (replace fplus, to keep imgui_md decoupled from it).
+namespace
+{
+    std::vector<std::string> _SplitLines(const std::string& s)
+    {
+        std::vector<std::string> lines;
+        std::string cur;
+        for (char c : s)
+        {
+            if (c == '\n') { lines.push_back(cur); cur.clear(); }
+            else cur += c;
+        }
+        lines.push_back(cur);
+        return lines;
+    }
+
+    std::string _TrimWhitespace(const std::string& s)
+    {
+        const char* ws = " \t\r\n\f\v";
+        size_t b = s.find_first_not_of(ws);
+        if (b == std::string::npos)
+            return "";
+        size_t e = s.find_last_not_of(ws);
+        return s.substr(b, e - b + 1);
+    }
+
+    std::string _JoinLines(const std::vector<std::string>& lines)
+    {
+        std::string out;
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            if (i > 0)
+                out += '\n';
+            out += lines[i];
+        }
+        return out;
+    }
+
+    std::string _ToLower(const std::string& s)
+    {
+        std::string out = s;
+        for (char& c : out)
+            c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        return out;
+    }
+}
 
 ImVec4 LinkColor(); // See imgui_md.cpp
 
@@ -397,12 +444,12 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
                 // remove last line if empty
                 std::string code = code_;
                 {
-                    auto lines = fplus::split_lines(true, code);
+                    auto lines = _SplitLines(code);
                     if (lines.size() > 0)
                     {
-                        if (fplus::trim_whitespace(lines.back()).size() == 0)
+                        if (_TrimWhitespace(lines.back()).size() == 0)
                             lines.pop_back();
-                        code = fplus::join(std::string("\n"), lines);
+                        code = _JoinLines(lines);
                     }
                 }
                 return code;
@@ -416,19 +463,19 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
                 snippet.Code = code_without_last_empty_lines(m_code_block);
 
                 // set language
-                if (fplus::to_lower_case(m_code_block_language) == "cpp")
+                if (_ToLower(m_code_block_language) == "cpp")
                     snippet.Language = Snippets::SnippetLanguage::Cpp;
-                else if (fplus::to_lower_case(m_code_block_language) == "c")
+                else if (_ToLower(m_code_block_language) == "c")
                     snippet.Language = Snippets::SnippetLanguage::C;
-                else if (fplus::to_lower_case(m_code_block_language) == "python")
+                else if (_ToLower(m_code_block_language) == "python")
                     snippet.Language = Snippets::SnippetLanguage::Python;
-                else if (fplus::to_lower_case(m_code_block_language) == "glsl")
+                else if (_ToLower(m_code_block_language) == "glsl")
                     snippet.Language = Snippets::SnippetLanguage::Glsl;
-                else if (fplus::to_lower_case(m_code_block_language) == "sql")
+                else if (_ToLower(m_code_block_language) == "sql")
                     snippet.Language = Snippets::SnippetLanguage::Sql;
-                else if (fplus::to_lower_case(m_code_block_language) == "lua")
+                else if (_ToLower(m_code_block_language) == "lua")
                     snippet.Language = Snippets::SnippetLanguage::Lua;
-                else if (fplus::to_lower_case(m_code_block_language) == "angelscript")
+                else if (_ToLower(m_code_block_language) == "angelscript")
                     snippet.Language = Snippets::SnippetLanguage::AngelScript;
 
                 snippet.ShowCursorPosition = false;
