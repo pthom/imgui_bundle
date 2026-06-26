@@ -85,4 +85,4 @@
 	branch = imgui_bundle
 [submodule "external/imspinner/imspinner"]
 	path = external/imspinner/imspinner
-	url = https://github.com/dalerank/imspinner.git
+	url = https://github.com/pthom/imspinner.git

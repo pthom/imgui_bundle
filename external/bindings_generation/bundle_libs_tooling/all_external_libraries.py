@@ -185,6 +185,7 @@ def lib_implot() -> ExternalLibrary:
         fork_branch="imgui_bundle"
     )
 
+
 def lib_implot3d() -> ExternalLibrary:
     return ExternalLibrary(
         name="implot3d",
@@ -196,11 +197,12 @@ def lib_implot3d() -> ExternalLibrary:
 
 
 def lib_imspinner() -> ExternalLibrary:
-    # We use a copy of the library source for the moment, instead of a fork
     return ExternalLibrary(
         name="imspinner",
         official_git_url="https://github.com/dalerank/imspinner.git",
-        official_branch="master"
+        fork_git_url="https://github.com/pthom/imspinner.git",
+        official_branch="master",
+        fork_branch="imgui_bundle"
     )
 
 
