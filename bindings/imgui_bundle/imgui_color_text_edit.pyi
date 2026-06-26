@@ -391,7 +391,7 @@ class TextEditor:
         pass
 
     def set_cursor(self, pos: TextEditor.DocPos) -> None:
-        """ specify a new cursor position
+        """ specify a new cursor position and scroll to it (if required)
          if the new position is currently in a folded region, it will be automatically unfolded
         """
         pass
@@ -412,7 +412,7 @@ class TextEditor:
     #
     # this works while opening the editor as well as later
 
-    # get glyph size information
+    # get glyph size in pixels
     def get_line_height(self) -> float:
         pass
     def get_glyph_width(self) -> float:

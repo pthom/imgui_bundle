@@ -540,7 +540,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("set_cursor",
             &TextEditor::SetCursor,
             nb::arg("pos"),
-            " specify a new cursor position\n if the new position is currently in a folded region, it will be automatically unfolded")
+            " specify a new cursor position and scroll to it (if required)\n if the new position is currently in a folded region, it will be automatically unfolded")
         .def("get_line_height",
             &TextEditor::GetLineHeight)
         .def("get_glyph_width",
