@@ -1,14 +1,8 @@
 """imgui_fig.fig: Display Matplotlib figures in an ImGui window.
-
-Important:
-  in order to use imgui_fig, you need to change matplotlib renderer to Agg.
-  so that the figure is not displayed on the screen before we can capture it:
-  add the following lines at the start of your script (and before importing pyplot):
-
-        import matplotlib
-        matplotlib.use('Agg')
-
 """
+
+# Note: since 1.92.9, no need to call matplotlib.use('Agg') anymore: imgui_fig renders figures offscreen via a dedicated Agg canvas.
+
 from imgui_bundle.immapp import static  # noqa: E402
 from imgui_bundle import immvision, ImVec2, imgui  # noqa: E402
 from typing import TYPE_CHECKING
@@ -31,39 +25,29 @@ def _fig_to_image(label_id: str, figure: "matplotlib.figure.Figure", refresh_ima
     - numpy.ndarray: An RGB image as a NumPy array with uint8 datatype.
     """
     import numpy  # noqa: E402
-    import matplotlib  # noqa: E402
-
-    backend_message = """
-    imgui_fig.fig failed: in order to use imgui_fig, you need to change matplotlib renderer to Agg.
-    Add the following lines at the start of your script (and before importing pyplot):
-            import matplotlib
-            matplotlib.use('Agg')
-            """
-
-    matplotlib_backend  = matplotlib.rcParams['backend']
-    if matplotlib_backend.lower() != 'agg':
-        raise RuntimeError(backend_message)
+    from matplotlib.backends.backend_agg import FigureCanvasAgg  # noqa: E402
 
     statics = _fig_to_image
     fig_id = imgui.get_id(label_id)
     if refresh_image and fig_id in statics.fig_image_cache:
         del statics.fig_image_cache[fig_id]
     if fig_id not in statics.fig_image_cache:
-        # draw the renderer
-        figure.canvas.draw()
-        # Get the RGBA buffer from the figure
-        w, h = figure.canvas.get_width_height()
-        buf = numpy.frombuffer(figure.canvas.buffer_rgba(), dtype=numpy.uint8)
-
-        try:
-            buf.shape = (h, w, 4)
-            img = buf
-            matplotlib.pyplot.close(figure)
-            statics.fig_image_cache[fig_id] = img
-        except ValueError as e:
-            raise RuntimeError(backend_message) from e
-        except Exception as e:
-            print(f"Error: {e}")
+        canvas = figure.canvas
+        # Make sure we can read an RGBA buffer, regardless of the active matplotlib
+        # backend (no need for matplotlib.use('Agg')). Most Agg-based canvases (incl.
+        # the macOS one) already provide buffer_rgba(); only swap in a fresh Agg canvas
+        # if the current one cannot.
+        if not hasattr(canvas, "buffer_rgba"):
+            canvas = FigureCanvasAgg(figure)  # the constructor attaches itself as figure.canvas
+        # Interactive backends bump the figure dpi on HiDPI screens (e.g. macOS retina
+        # renders at device_pixel_ratio 2 -> a 2x larger buffer). Reset it to 1 so the
+        # captured image keeps its logical size.
+        ratio = getattr(canvas, "device_pixel_ratio", 1)
+        if ratio != 1 and hasattr(canvas, "_set_device_pixel_ratio"):
+            canvas._set_device_pixel_ratio(1)
+        # draw the renderer, then grab the RGBA buffer (already shaped as (h, w, 4)).
+        canvas.draw()
+        statics.fig_image_cache[fig_id] = numpy.asarray(canvas.buffer_rgba())
 
     return statics.fig_image_cache[fig_id]  # type: ignore
 
@@ -89,15 +73,6 @@ def fig(label_id: str,
 
     Returns:
     - The position of the mouse in the figure
-
-    Important:
-        before importing pyplot, set the renderer to Tk,
-        so that the figure is not displayed on the screen before we can capture it.
-        ```python
-        import matplotlib
-        matplotlib.use('Agg')
-        import matplotlib.pyplot as plt
-        ```
     """
     image_rgb = _fig_to_image(label_id, figure, refresh_image)
 
