@@ -153,6 +153,15 @@ def demo_spinner():
         color,
         color,
     )
+    imgui.same_line()
+
+    radius_tc = imgui.get_font_size()
+    color_tc = imgui.ImColor(0.3, 0.5, 0.9, 1.0)
+    speed_tc = 0.5
+    text_tc = "Wait"
+    imgui.text("spinner_text_scroll")
+    imgui.same_line()
+    imspinner.spinner_text_scroll("spinner_text_scroll", radius_tc, color_tc, speed_tc, text_tc)
 
     imgui.same_line()
     _, static.show_full_demo = imgui.checkbox("Show full spinners demo", static.show_full_demo)

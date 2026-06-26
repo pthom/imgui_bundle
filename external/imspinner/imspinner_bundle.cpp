@@ -1,3 +1,3 @@
-#include "imspinner.h"
+#include "imspinner/imspinner_demo.h"
 
 void SomeCompilerDislikeEmptyLibs() {}
