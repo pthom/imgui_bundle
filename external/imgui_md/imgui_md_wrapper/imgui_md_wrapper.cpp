@@ -283,7 +283,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         ImGuiMdFonts::FontCollection mFontCollection;
 
 #ifdef CAN_RENDER_IMAGES
-        mutable std::map<std::string, HelloImGui::ImageAndSize > mLoadedImages;
+        mutable std::map<std::string, MarkdownTexture > mLoadedImages;
 #endif
     };
 
@@ -307,7 +307,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         }
 
 #ifdef CAN_RENDER_IMAGES
-        std::map<std::string, HelloImGui::ImageAndSize >& ImageCache()
+        std::map<std::string, MarkdownTexture >& ImageCache()
         {
             return mMarkdownCollection.mLoadedImages;
         }
@@ -714,14 +714,13 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         // Keep gOnInitializeMarkdownCallback alive: it is set once at module import time
         // and must survive teardown/setup cycles (e.g. Pyodide playground re-runs).
         gMarkdownOptions.callbacks.OnDownloadData = nullptr;
-        gMarkdownRenderer.release();
-        gMarkdownWasInitialized = false;
-        // The MarkdownRenderer just released above held an ImageCache whose
-        // entries point at GPU textures owned by HelloImGui's gImageFromAssetMap.
-        // Drop those too — keeping them after teardown leaks GPU memory and
-        // pins a now-invalid GL context (relevant when running outside
+        // reset() (not release()): actually destroy the renderer so its image
+        // cache is cleared. Each cached MarkdownTexture owns its GPU texture via
+        // keepAlive, so destroying the cache frees the textures here — while the
+        // rendering backend is still live (relevant when running outside
         // HelloImGui::Run(), where Priv_TearDown does not run).
-        HelloImGui::FreeImageCache();
+        gMarkdownRenderer.reset();
+        gMarkdownWasInitialized = false;
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
         ClearDesktopDownloads();
 #endif
@@ -733,6 +732,10 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 #endif
     }
 
+#ifdef CAN_RENDER_IMAGES
+    static MarkdownTexture _DefaultUploadRgba(const unsigned char* rgba, int w, int h);  // defined below
+#endif
+
     void InitializeMarkdown(const MarkdownOptions& options)
     {
         if (gMarkdownWasInitialized)
@@ -741,6 +744,12 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         gMarkdownOptions = options;
         if (gOnInitializeMarkdownCallback)
             gOnInitializeMarkdownCallback(gMarkdownOptions);
+#ifdef CAN_RENDER_IMAGES
+        // Install the default (HelloImGui-based) texture backend unless one was
+        // supplied (e.g. by the user or by the on-initialize callback).
+        if (!gMarkdownOptions.textureBackend.UploadRgba)
+            gMarkdownOptions.textureBackend.UploadRgba = _DefaultUploadRgba;
+#endif
 #if defined(__EMSCRIPTEN__) && !defined(IMGUI_BUNDLE_BUILD_PYODIDE)
         // On Emscripten (but not pyodide), set a default download callback using
         // emscripten_fetch (unless one was already set, e.g. by Python)
@@ -792,17 +801,61 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         return path.rfind("http://", 0) == 0 || path.rfind("https://", 0) == 0;
     }
 
-    static std::optional<MarkdownImage> _MakeMarkdownImage(const HelloImGui::ImageAndSize& imageInfo)
+    static std::optional<MarkdownImage> _MakeMarkdownImage(const MarkdownTexture& tex)
     {
         MarkdownImage r;
-        r.texture_id = imageInfo.textureId;
-        r.size = imageInfo.size;
+        r.texture_id = tex.id;
+        r.size = tex.size;
         r.uv0 = { 0,0 };
         r.uv1 = {1,1};
         r.col_tint = { 1,1,1,1 };
         r.col_border = { 0,0,0,0 };
         return r;
     }
+
+#ifdef CAN_RENDER_IMAGES
+    // Default texture backend (used when none is supplied via MarkdownOptions).
+    // ImGui Bundle ships this HelloImGui-based upload; standalone users provide
+    // their own (e.g. a plain-OpenGL backend). The returned MarkdownTexture owns
+    // the GPU resource via keepAlive (a HelloImGui::TextureGpuPtr).
+    static MarkdownTexture _DefaultUploadRgba(const unsigned char* rgba, int w, int h)
+    {
+        MarkdownTexture tex;
+        auto gpu = HelloImGui::CreateTextureGpuFromRgbaData(rgba, w, h);
+        if (gpu)
+        {
+            tex.id = gpu->TextureID();
+            tex.size = ImVec2((float)w, (float)h);
+            tex.keepAlive = gpu;  // shared_ptr<TextureGpu> -> shared_ptr<void>
+        }
+        return tex;
+    }
+
+    // Upload a decoded HelloImGui::ImageData (RGBA) through the configured backend.
+    // (Decoding still uses HelloImGui here; standalone will swap it for stb_image.)
+    static MarkdownTexture _UploadImageData(const HelloImGui::ImageData& img)
+    {
+        if (img.data == nullptr || !gMarkdownOptions.textureBackend.UploadRgba)
+            return {};
+        return gMarkdownOptions.textureBackend.UploadRgba(img.data, img.width, img.height);
+    }
+
+    static MarkdownTexture _LoadTextureFromAsset(const std::string& assetPath)
+    {
+        HelloImGui::ImageData img = HelloImGui::LoadImageDataFromAsset(assetPath.c_str(), 4);
+        MarkdownTexture tex = _UploadImageData(img);
+        img.Free();
+        return tex;
+    }
+
+    static MarkdownTexture _LoadTextureFromEncodedData(const std::vector<uint8_t>& data)
+    {
+        HelloImGui::ImageData img = HelloImGui::LoadImageDataFromEncodedData(data.data(), data.size(), 4);
+        MarkdownTexture tex = _UploadImageData(img);
+        img.Free();
+        return tex;
+    }
+#endif
 
     // Draw a simple rotating spinner using ImGui's DrawList (no external dependencies)
     static void _DrawLoadingSpinner()
@@ -831,21 +884,23 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         ImGui::Dummy(ImVec2(size, size));
     }
 
-    static HelloImGui::ImageAndSize _BrokenImageAndSize()
+#ifdef CAN_RENDER_IMAGES
+    static MarkdownTexture _BrokenImageTexture()
     {
         std::string errorImage = "images/markdown_broken_image.png";
         if (HelloImGui::AssetExists(errorImage))
-            return HelloImGui::ImageAndSizeFromAsset(errorImage.c_str());
+            return _LoadTextureFromAsset(errorImage);
         return {};
     }
 
     static std::optional<MarkdownImage> _BrokenImage()
     {
-        auto ias = _BrokenImageAndSize();
-        if (ias.textureId != ImTextureID(0))
-            return _MakeMarkdownImage(ias);
+        auto tex = _BrokenImageTexture();
+        if (tex.Valid())
+            return _MakeMarkdownImage(tex);
         return std::nullopt;
     }
+#endif
 
     std::optional<MarkdownImage> OnImage_Default(const std::string& image_path)
     {
@@ -869,8 +924,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             switch (result.status)
             {
             case MarkdownDownloadStatus::Ready:
-                imageCache[image_path] = HelloImGui::ImageAndSizeFromEncodedData(
-                    result.data.data(), result.data.size(), image_path);
+                imageCache[image_path] = _LoadTextureFromEncodedData(result.data);
                 return _MakeMarkdownImage(imageCache.at(image_path));
 
             case MarkdownDownloadStatus::Downloading:
@@ -881,7 +935,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             case MarkdownDownloadStatus::Failed:
                 if (!result.errorMessage.empty())
                     std::cerr << "imgui_md: download failed for " << image_path << ": " << result.errorMessage << "\n";
-                imageCache[image_path] = _BrokenImageAndSize(); // Cache broken image to avoid retrying
+                imageCache[image_path] = _BrokenImageTexture(); // Cache broken image to avoid retrying
                 return _BrokenImage();
 
             case MarkdownDownloadStatus::NotStarted:
@@ -893,7 +947,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         // Handle local asset images
         if (HelloImGui::AssetExists(image_path))
         {
-            imageCache[image_path] = HelloImGui::ImageAndSizeFromAsset(image_path.c_str());
+            imageCache[image_path] = _LoadTextureFromAsset(image_path);
             return _MakeMarkdownImage(imageCache.at(image_path));
         }
 
