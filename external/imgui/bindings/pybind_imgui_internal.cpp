@@ -1699,8 +1699,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::enum_<ImGuiNavRenderCursorFlags_>(m, "NavRenderCursorFlags_", nb::is_arithmetic(), nb::is_flag(), "")
             .value("none", ImGuiNavRenderCursorFlags_None, "")
             .value("compact", ImGuiNavRenderCursorFlags_Compact, "Compact highlight, no padding/distance from focused item")
-            .value("always_draw", ImGuiNavRenderCursorFlags_AlwaysDraw, "Draw rectangular highlight if (g.NavId == id) even when g.NavCursorVisible == False, aka even when using the mouse.")
-            .value("no_rounding", ImGuiNavRenderCursorFlags_NoRounding, "");
+            .value("always_draw", ImGuiNavRenderCursorFlags_AlwaysDraw, "Draw rectangular highlight if (g.NavId == id) even when g.NavCursorVisible == False, aka even when using the mouse.");
 
 
     auto pyEnumNavMoveFlags_ =
@@ -2142,7 +2141,9 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("table_size_one", ImGuiLocKey_TableSizeOne, "")
             .value("table_size_all_fit", ImGuiLocKey_TableSizeAllFit, "")
             .value("table_size_all_default", ImGuiLocKey_TableSizeAllDefault, "")
+            .value("table_reset", ImGuiLocKey_TableReset, "")
             .value("table_reset_order", ImGuiLocKey_TableResetOrder, "")
+            .value("table_reset_visibility", ImGuiLocKey_TableResetVisibility, "")
             .value("windowing_main_menu_bar", ImGuiLocKey_WindowingMainMenuBar, "")
             .value("windowing_popup", ImGuiLocKey_WindowingPopup, "")
             .value("windowing_untitled", ImGuiLocKey_WindowingUntitled, "")
@@ -2185,6 +2186,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("event_input_routing", ImGuiDebugLogFlags_EventInputRouting, "")
             .value("event_docking", ImGuiDebugLogFlags_EventDocking, "")
             .value("event_viewport", ImGuiDebugLogFlags_EventViewport, "")
+            .value("event_table", ImGuiDebugLogFlags_EventTable, "")
             .value("event_mask_", ImGuiDebugLogFlags_EventMask_, "")
             .value("output_to_tty", ImGuiDebugLogFlags_OutputToTTY, "Also send output to TTY")
             .value("output_to_debugger", ImGuiDebugLogFlags_OutputToDebugger, "Also send output to Debugger Console [Windows only]")
@@ -3047,7 +3049,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImGuiTableColumn =
         nb::class_<ImGuiTableColumn>
-            (m, "TableColumn", " [Internal] sizeof() ~ 112\n We use the terminology \"Enabled\" to refer to a column that is not Hidden by user/api.\n We use the terminology \"Clipped\" to refer to a column that is out of sight because of scrolling/clipping.\n This is in contrast with some user-facing api such as IsItemVisible() / IsRectVisible() which use \"Visible\" to mean \"not clipped\".")
+            (m, "TableColumn", " [Internal] sizeof() ~ 120\n We use the terminology \"Enabled\" to refer to a column that is not Hidden by user/api.\n We use the terminology \"Clipped\" to refer to a column that is out of sight because of scrolling/clipping.\n This is in contrast with some user-facing api such as IsItemVisible() / IsRectVisible() which use \"Visible\" to mean \"not clipped\".")
         .def_rw("flags", &ImGuiTableColumn::Flags, "Flags after some patching (not directly same as provided by user). See ImGuiTableColumnFlags_")
         .def_rw("width_given", &ImGuiTableColumn::WidthGiven, "Final/actual width visible == (MaxX - MinX), locked in TableUpdateLayout(). May be > WidthRequest to honor minimum width, may be < WidthRequest to honor shrinking columns down in tight space.")
         .def_rw("min_x", &ImGuiTableColumn::MinX, "Absolute positions")
@@ -3058,7 +3060,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("stretch_weight", &ImGuiTableColumn::StretchWeight, "Master width weight when (Flags & _WidthStretch). Often around ~1.0 initially.")
         .def_rw("init_stretch_weight_or_width", &ImGuiTableColumn::InitStretchWeightOrWidth, "Value passed to TableSetupColumn(). For Width it is a content width (_without padding_).")
         .def_rw("clip_rect", &ImGuiTableColumn::ClipRect, "Clipping rectangle for the column")
-        .def_rw("user_id", &ImGuiTableColumn::UserID, "Optional, value passed to TableSetupColumn()")
+        .def_rw("id_", &ImGuiTableColumn::ID, "Hash of column name (ignoring top of ID stack), used for .ini persistence when available.")
+        .def_rw("user_data", &ImGuiTableColumn::UserData, "(Optional) User data value passed to TableSetupColumn()")
         .def_rw("work_min_x", &ImGuiTableColumn::WorkMinX, "Contents region min ~(MinX + CellPaddingX + CellSpacingX1) == cursor start position when entering column")
         .def_rw("work_max_x", &ImGuiTableColumn::WorkMaxX, "Contents region max ~(MaxX - CellPaddingX - CellSpacingX2)")
         .def_rw("item_width", &ImGuiTableColumn::ItemWidth, "Current item width for the column, preserved across rows")
@@ -3082,12 +3085,47 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("is_visible_y", &ImGuiTableColumn::IsVisibleY, "")
         .def_rw("is_request_output", &ImGuiTableColumn::IsRequestOutput, "Return value for TableSetColumnIndex() / TableNextColumn(): whether we request user to output contents or not.")
         .def_rw("is_skip_items", &ImGuiTableColumn::IsSkipItems, "Do we want item submissions to this column to be completely ignored (no layout will happen).")
-        .def_rw("is_preserve_width_auto", &ImGuiTableColumn::IsPreserveWidthAuto, "")
         .def_rw("nav_layer_current", &ImGuiTableColumn::NavLayerCurrent, "ImGuiNavLayer in 1 byte")
-        .def_rw("auto_fit_queue", &ImGuiTableColumn::AutoFitQueue, "Queue of 8 values for the next 8 frames to request auto-fit")
-        .def_rw("cannot_skip_items_queue", &ImGuiTableColumn::CannotSkipItemsQueue, "Queue of 8 values for the next 8 frames to disable Clipped/SkipItem")
         .def_rw("sort_directions_avail_list", &ImGuiTableColumn::SortDirectionsAvailList, "Ordered list of available sort directions (2-bits each, total 8-bits)")
         .def(nb::init<>())
+        ;
+
+
+    auto pyClassImGuiTableReconcileColumnData =
+        nb::class_<ImGuiTableReconcileColumnData>
+            (m, "TableReconcileColumnData", " Passed to TableSetupColumn()\n sizeof() ~ 24+120 bytes")
+        .def("__init__", [](ImGuiTableReconcileColumnData * self, ImGuiID ID = ImGuiID(), ImS16 NameOffset = ImS16(), ImGuiTableColumnFlags Flags = ImGuiTableColumnFlags(), float InitWidthOrWeight = float(), ImGuiID UserData = ImGuiID(), const std::optional<const ImGuiTableColumnIdx> & ColumnNewIdx = std::nullopt, const std::optional<const ImGuiTableColumnIdx> & ColumnOldIdx = std::nullopt, const std::optional<const ImGuiTableColumn> & ColumnOldData = std::nullopt)
+        {
+            new (self) ImGuiTableReconcileColumnData();  // placement new
+            auto r_ctor_ = self;
+            r_ctor_->ID = ID;
+            r_ctor_->NameOffset = NameOffset;
+            r_ctor_->Flags = Flags;
+            r_ctor_->InitWidthOrWeight = InitWidthOrWeight;
+            r_ctor_->UserData = UserData;
+            if (ColumnNewIdx.has_value())
+                r_ctor_->ColumnNewIdx = ColumnNewIdx.value();
+            else
+                r_ctor_->ColumnNewIdx = ImGuiTableColumnIdx();
+            if (ColumnOldIdx.has_value())
+                r_ctor_->ColumnOldIdx = ColumnOldIdx.value();
+            else
+                r_ctor_->ColumnOldIdx = ImGuiTableColumnIdx();
+            if (ColumnOldData.has_value())
+                r_ctor_->ColumnOldData = ColumnOldData.value();
+            else
+                r_ctor_->ColumnOldData = ImGuiTableColumn();
+        },
+        nb::arg("id_") = ImGuiID(), nb::arg("name_offset") = ImS16(), nb::arg("flags") = ImGuiTableColumnFlags(), nb::arg("init_width_or_weight") = float(), nb::arg("user_data") = ImGuiID(), nb::arg("column_new_idx").none() = nb::none(), nb::arg("column_old_idx").none() = nb::none(), nb::arg("column_old_data").none() = nb::none()
+        )
+        .def_rw("id_", &ImGuiTableReconcileColumnData::ID, "")
+        .def_rw("name_offset", &ImGuiTableReconcileColumnData::NameOffset, "")
+        .def_rw("flags", &ImGuiTableReconcileColumnData::Flags, "")
+        .def_rw("init_width_or_weight", &ImGuiTableReconcileColumnData::InitWidthOrWeight, "")
+        .def_rw("user_data", &ImGuiTableReconcileColumnData::UserData, "")
+        .def_rw("column_new_idx", &ImGuiTableReconcileColumnData::ColumnNewIdx, "Index in the current table.")
+        .def_rw("column_old_idx", &ImGuiTableReconcileColumnData::ColumnOldIdx, "Index in the previous frame table.")
+        .def_rw("column_old_data", &ImGuiTableReconcileColumnData::ColumnOldData, "Full backup of the column. Could be avoided by storing 1 of them and applying reconcile in the right order. Not worth bothering.")
         ;
 
 
@@ -3245,6 +3283,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("is_layout_locked", &ImGuiTable::IsLayoutLocked, "Set by TableUpdateLayout() which is called when beginning the first row.")
         .def_rw("is_inside_row", &ImGuiTable::IsInsideRow, "Set when inside TableBeginRow()/TableEndRow().")
         .def_rw("is_initializing", &ImGuiTable::IsInitializing, "")
+        .def_rw("is_reconcile_mode", &ImGuiTable::IsReconcileMode, "")
         .def_rw("is_sort_specs_dirty", &ImGuiTable::IsSortSpecsDirty, "")
         .def_rw("is_using_headers", &ImGuiTable::IsUsingHeaders, "Set when the first row had the ImGuiTableRowFlags_Headers flag.")
         .def_rw("is_context_popup_open", &ImGuiTable::IsContextPopupOpen, "Set when default context menu is open (also see: ContextPopupColumn, InstanceInteracted).")
@@ -3252,8 +3291,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("is_settings_request_load", &ImGuiTable::IsSettingsRequestLoad, "")
         .def_rw("is_settings_dirty", &ImGuiTable::IsSettingsDirty, "Set when table settings have changed and needs to be reported into ImGuiTableSettings data.")
         .def_rw("is_default_display_order", &ImGuiTable::IsDefaultDisplayOrder, "Set when display order is unchanged from default (DisplayOrder contains 0...Count-1)")
-        .def_rw("is_reset_all_request", &ImGuiTable::IsResetAllRequest, "")
+        .def_rw("is_default_visibility", &ImGuiTable::IsDefaultVisibility, "Set when enabled/visibility is unchanged from default")
+        .def_rw("is_reset_all_request", &ImGuiTable::IsResetAllRequest, "Set to queue a call to TableResetSettings() in BeginTable()")
         .def_rw("is_reset_display_order_request", &ImGuiTable::IsResetDisplayOrderRequest, "")
+        .def_rw("is_reset_visibility_request", &ImGuiTable::IsResetVisibilityRequest, "")
         .def_rw("is_unfrozen_rows", &ImGuiTable::IsUnfrozenRows, "Set when we got past the frozen row.")
         .def_rw("is_default_sizing_policy", &ImGuiTable::IsDefaultSizingPolicy, "Set if user didn't explicitly set a sizing policy in BeginTable()")
         .def_rw("is_active_id_alive_before_table", &ImGuiTable::IsActiveIdAliveBeforeTable, "")
@@ -3268,12 +3309,13 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImGuiTableTempData =
         nb::class_<ImGuiTableTempData>
-            (m, "TableTempData", " Transient data that are only needed between BeginTable() and EndTable(), those buffers are shared (1 per level of stacked table).\n - Accessing those requires chasing an extra pointer so for very frequently used data we leave them in the main table structure.\n - We also leave out of this structure data that tend to be particularly useful for debugging/metrics.\n FIXME-TABLE: more transient data could be stored in a stacked ImGuiTableTempData: e.g. SortSpecs.\n sizeof() ~ 136 bytes.")
+            (m, "TableTempData", " Transient data that are only needed between BeginTable() and EndTable(), those buffers are shared (1 per level of stacked table).\n - Accessing those requires chasing an extra pointer so for very frequently used data we leave them in the main table structure.\n - We also leave out of this structure data that tend to be particularly useful for debugging/metrics.\n FIXME-TABLE: more transient data could be stored in a stacked ImGuiTableTempData: e.g. SortSpecs.\n sizeof() ~ 176 bytes.")
         .def_rw("window_id", &ImGuiTableTempData::WindowID, "Shortcut to g.Tables[TableIndex]->OuterWindow->ID.")
         .def_rw("table_index", &ImGuiTableTempData::TableIndex, "Index in g.Tables.Buf[] pool")
         .def_rw("last_time_active", &ImGuiTableTempData::LastTimeActive, "Last timestamp this structure was used")
         .def_rw("angled_headers_extra_width", &ImGuiTableTempData::AngledHeadersExtraWidth, "Used in EndTable()")
-        .def_rw("angled_headers_requests", &ImGuiTableTempData::AngledHeadersRequests, "Used in TableAngledHeadersRow()")
+        .def_rw("angled_headers_requests", &ImGuiTableTempData::AngledHeadersRequests, "Used in TableAngledHeadersRow() // FIXME: Single instance is enough?")
+        .def_rw("old_columns_raw_data", &ImGuiTableTempData::OldColumnsRawData, "Used in BeginTable() -> TableUpdateLayout() when resizing.")
         .def_rw("user_outer_size", &ImGuiTableTempData::UserOuterSize, "outer_size.x passed to BeginTable()")
         .def_rw("draw_splitter", &ImGuiTableTempData::DrawSplitter, "")
         .def_rw("host_backup_work_rect", &ImGuiTableTempData::HostBackupWorkRect, "Backup of InnerWindow->WorkRect at the end of BeginTable()")
@@ -3292,7 +3334,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::class_<ImGuiTableColumnSettings>
             (m, "TableColumnSettings", "sizeof() ~ 16")
         .def_rw("width_or_weight", &ImGuiTableColumnSettings::WidthOrWeight, "")
-        .def_rw("user_id", &ImGuiTableColumnSettings::UserID, "")
+        .def_rw("id_", &ImGuiTableColumnSettings::ID, "")
         .def_rw("index", &ImGuiTableColumnSettings::Index, "")
         .def_rw("display_order", &ImGuiTableColumnSettings::DisplayOrder, "")
         .def_rw("sort_order", &ImGuiTableColumnSettings::SortOrder, "")
@@ -3315,6 +3357,257 @@ void py_init_module_imgui_internal(nb::module_& m)
             "(private API)",
             nb::rv_policy::reference)
         ;
+
+
+    m.def("table_open_context_menu",
+        nb::overload_cast<int>(ImGui::TableOpenContextMenu), nb::arg("column_n") = -1);
+
+    m.def("table_set_column_width",
+        nb::overload_cast<int, float>(ImGui::TableSetColumnWidth), nb::arg("column_n"), nb::arg("width"));
+
+    m.def("table_set_column_sort_direction",
+        nb::overload_cast<int, ImGuiSortDirection, bool>(ImGui::TableSetColumnSortDirection), nb::arg("column_n"), nb::arg("sort_direction"), nb::arg("append_to_sort_specs"));
+
+    m.def("table_get_hovered_row",
+        nb::overload_cast<>(ImGui::TableGetHoveredRow), "Retrieve *PREVIOUS FRAME* hovered row. This difference with TableGetHoveredColumn() is the reason why this is not public yet.");
+
+    m.def("table_get_header_row_height",
+        nb::overload_cast<>(ImGui::TableGetHeaderRowHeight));
+
+    m.def("table_get_header_angled_max_label_width",
+        nb::overload_cast<>(ImGui::TableGetHeaderAngledMaxLabelWidth));
+
+    m.def("table_push_background_channel",
+        nb::overload_cast<>(ImGui::TablePushBackgroundChannel));
+
+    m.def("table_pop_background_channel",
+        nb::overload_cast<>(ImGui::TablePopBackgroundChannel));
+
+    m.def("table_push_column_channel",
+        nb::overload_cast<int>(ImGui::TablePushColumnChannel), nb::arg("column_n"));
+
+    m.def("table_pop_column_channel",
+        nb::overload_cast<>(ImGui::TablePopColumnChannel));
+
+    m.def("table_angled_headers_row_ex",
+        nb::overload_cast<ImGuiID, float, float, const ImGuiTableHeaderData *, int>(ImGui::TableAngledHeadersRowEx), nb::arg("row_id"), nb::arg("angle"), nb::arg("max_label_width"), nb::arg("data"), nb::arg("data_count"));
+
+    m.def("get_current_table",
+        ImGui::GetCurrentTable,
+        " Tables: Internals\n(private API)",
+        nb::rv_policy::reference);
+
+    m.def("table_find_by_id",
+        nb::overload_cast<ImGuiID>(ImGui::TableFindByID),
+        nb::arg("id_"),
+        nb::rv_policy::reference);
+
+    m.def("begin_table_ex",
+        [](const char * name, ImGuiID id, int columns_count, ImGuiTableFlags flags = 0, const std::optional<const ImVec2> & outer_size = std::nullopt, float inner_width = 0.0f) -> bool
+        {
+            auto BeginTableEx_adapt_mutable_param_with_default_value = [](const char * name, ImGuiID id, int columns_count, ImGuiTableFlags flags = 0, const std::optional<const ImVec2> & outer_size = std::nullopt, float inner_width = 0.0f) -> bool
+            {
+
+                const ImVec2& outer_size_or_default = [&]() -> const ImVec2 {
+                    if (outer_size.has_value())
+                        return outer_size.value();
+                    else
+                        return ImVec2(0, 0);
+                }();
+
+                auto lambda_result = ImGui::BeginTableEx(name, id, columns_count, flags, outer_size_or_default, inner_width);
+                return lambda_result;
+            };
+
+            return BeginTableEx_adapt_mutable_param_with_default_value(name, id, columns_count, flags, outer_size, inner_width);
+        },
+        nb::arg("name"), nb::arg("id_"), nb::arg("columns_count"), nb::arg("flags") = 0, nb::arg("outer_size").none() = nb::none(), nb::arg("inner_width") = 0.0f,
+        "Python bindings defaults:\n    If outer_size is None, then its default value will be: ImVec2(0, 0)");
+
+    m.def("table_begin_init_memory",
+        nb::overload_cast<ImGuiTable *, int>(ImGui::TableBeginInitMemory), nb::arg("table"), nb::arg("columns_count"));
+
+    m.def("table_apply_queued_requests",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableApplyQueuedRequests), nb::arg("table"));
+
+    m.def("table_setup_draw_channels",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableSetupDrawChannels), nb::arg("table"));
+
+    m.def("table_reconcile_columns",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableReconcileColumns), nb::arg("table"));
+
+    m.def("table_update_layout",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableUpdateLayout), nb::arg("table"));
+
+    m.def("table_update_borders",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableUpdateBorders), nb::arg("table"));
+
+    m.def("table_update_columns_weight_from_width",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableUpdateColumnsWeightFromWidth), nb::arg("table"));
+
+    m.def("table_apply_external_unclip_rect",
+        nb::overload_cast<ImGuiTable *, ImRect &>(ImGui::TableApplyExternalUnclipRect), nb::arg("table"), nb::arg("rect"));
+
+    m.def("table_draw_borders",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableDrawBorders), nb::arg("table"));
+
+    m.def("table_draw_default_context_menu",
+        nb::overload_cast<ImGuiTable *, ImGuiTableFlags>(ImGui::TableDrawDefaultContextMenu), nb::arg("table"), nb::arg("flags_for_section_to_display"));
+
+    m.def("table_begin_context_menu_popup",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableBeginContextMenuPopup), nb::arg("table"));
+
+    m.def("table_merge_draw_channels",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableMergeDrawChannels), nb::arg("table"));
+
+    m.def("table_get_instance_data",
+        nb::overload_cast<ImGuiTable *, int>(ImGui::TableGetInstanceData),
+        nb::arg("table"), nb::arg("instance_no"),
+        "(private API)",
+        nb::rv_policy::reference);
+
+    m.def("table_get_instance_id",
+        nb::overload_cast<ImGuiTable *, int>(ImGui::TableGetInstanceID),
+        nb::arg("table"), nb::arg("instance_no"),
+        "(private API)");
+
+    m.def("table_fix_display_order",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableFixDisplayOrder), nb::arg("table"));
+
+    m.def("table_sort_specs_sanitize",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableSortSpecsSanitize), nb::arg("table"));
+
+    m.def("table_sort_specs_build",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableSortSpecsBuild), nb::arg("table"));
+
+    m.def("table_init_column_defaults",
+        nb::overload_cast<ImGuiTable *, ImGuiTableColumn *, ImGuiTableColumnFlags>(ImGui::TableInitColumnDefaults), nb::arg("table"), nb::arg("column"), nb::arg("init_mask"));
+
+    m.def("table_get_column_next_sort_direction",
+        nb::overload_cast<ImGuiTableColumn *>(ImGui::TableGetColumnNextSortDirection), nb::arg("column"));
+
+    m.def("table_fix_column_sort_direction",
+        nb::overload_cast<ImGuiTable *, ImGuiTableColumn *>(ImGui::TableFixColumnSortDirection), nb::arg("table"), nb::arg("column"));
+
+    m.def("table_get_column_width_auto",
+        nb::overload_cast<ImGuiTable *, ImGuiTableColumn *>(ImGui::TableGetColumnWidthAuto), nb::arg("table"), nb::arg("column"));
+
+    m.def("table_begin_row",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableBeginRow), nb::arg("table"));
+
+    m.def("table_end_row",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableEndRow), nb::arg("table"));
+
+    m.def("table_begin_cell",
+        nb::overload_cast<ImGuiTable *, int>(ImGui::TableBeginCell), nb::arg("table"), nb::arg("column_n"));
+
+    m.def("table_end_cell",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableEndCell), nb::arg("table"));
+
+    m.def("table_get_cell_bg_rect",
+        nb::overload_cast<const ImGuiTable *, int>(ImGui::TableGetCellBgRect), nb::arg("table"), nb::arg("column_n"));
+
+    m.def("table_get_column_name",
+        nb::overload_cast<const ImGuiTable *, int>(ImGui::TableGetColumnName),
+        nb::arg("table"), nb::arg("column_n"),
+        nb::rv_policy::reference);
+
+    m.def("table_get_column_resize_id",
+        nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableGetColumnResizeID), nb::arg("table"), nb::arg("column_n"), nb::arg("instance_no") = 0);
+
+    m.def("table_calc_max_column_width",
+        nb::overload_cast<const ImGuiTable *, int>(ImGui::TableCalcMaxColumnWidth), nb::arg("table"), nb::arg("column_n"));
+
+    m.def("table_set_column_width_auto_single",
+        nb::overload_cast<ImGuiTable *, int>(ImGui::TableSetColumnWidthAutoSingle), nb::arg("table"), nb::arg("column_n"));
+
+    m.def("table_set_column_width_auto_all",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableSetColumnWidthAutoAll), nb::arg("table"));
+
+    m.def("table_set_column_display_order",
+        nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableSetColumnDisplayOrder), nb::arg("table"), nb::arg("column_n"), nb::arg("dst_order"));
+
+    m.def("table_queue_set_column_display_order",
+        nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableQueueSetColumnDisplayOrder), nb::arg("table"), nb::arg("column_n"), nb::arg("dst_order"));
+
+    m.def("table_remove",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableRemove), nb::arg("table"));
+
+    m.def("table_gc_compact_transient_buffers",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableGcCompactTransientBuffers), nb::arg("table"));
+
+    m.def("table_gc_compact_transient_buffers",
+        nb::overload_cast<ImGuiTableTempData *>(ImGui::TableGcCompactTransientBuffers), nb::arg("table"));
+
+    m.def("table_gc_compact_settings",
+        nb::overload_cast<>(ImGui::TableGcCompactSettings));
+
+    m.def("table_load_settings",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableLoadSettings), nb::arg("table"));
+
+    m.def("table_load_settings_for_columns",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableLoadSettingsForColumns), nb::arg("table"));
+
+    m.def("table_load_settings_for_column",
+        nb::overload_cast<ImGuiTableColumn *, ImGuiTableColumnSettings *, ImGuiTableFlags>(ImGui::TableLoadSettingsForColumn), nb::arg("column"), nb::arg("column_settings"), nb::arg("load_flags"));
+
+    m.def("table_save_settings",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableSaveSettings), nb::arg("table"));
+
+    m.def("table_reset_settings",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableResetSettings), nb::arg("table"));
+
+    m.def("table_get_bound_settings",
+        nb::overload_cast<ImGuiTable *>(ImGui::TableGetBoundSettings),
+        nb::arg("table"),
+        nb::rv_policy::reference);
+
+    m.def("table_settings_add_settings_handler",
+        nb::overload_cast<>(ImGui::TableSettingsAddSettingsHandler));
+
+    m.def("table_settings_create",
+        nb::overload_cast<ImGuiID, int>(ImGui::TableSettingsCreate),
+        nb::arg("id_"), nb::arg("columns_count"),
+        nb::rv_policy::reference);
+
+    m.def("table_settings_find_by_id",
+        nb::overload_cast<ImGuiID>(ImGui::TableSettingsFindByID),
+        nb::arg("id_"),
+        nb::rv_policy::reference);
+
+    m.def("set_window_clip_rect_before_set_channel",
+        ImGui::SetWindowClipRectBeforeSetChannel, nb::arg("window"), nb::arg("clip_rect"));
+
+    m.def("begin_columns",
+        ImGui::BeginColumns,
+        nb::arg("str_id"), nb::arg("count"), nb::arg("flags") = 0,
+        "setup number of columns. use an identifier to distinguish multiple column sets. close with EndColumns().");
+
+    m.def("end_columns",
+        ImGui::EndColumns, "close columns");
+
+    m.def("push_column_clip_rect",
+        ImGui::PushColumnClipRect, nb::arg("column_index"));
+
+    m.def("push_columns_background",
+        ImGui::PushColumnsBackground);
+
+    m.def("pop_columns_background",
+        ImGui::PopColumnsBackground);
+
+    m.def("get_columns_id",
+        ImGui::GetColumnsID, nb::arg("str_id"), nb::arg("count"));
+
+    m.def("find_or_create_columns",
+        ImGui::FindOrCreateColumns,
+        nb::arg("window"), nb::arg("id_"),
+        nb::rv_policy::reference);
+
+    m.def("get_column_offset_from_norm",
+        ImGui::GetColumnOffsetFromNorm, nb::arg("columns"), nb::arg("offset_norm"));
+
+    m.def("get_column_norm_from_offset",
+        ImGui::GetColumnNormFromOffset, nb::arg("columns"), nb::arg("offset"));
 
 
     m.def("get_io",
@@ -4336,19 +4629,19 @@ void py_init_module_imgui_internal(nb::module_& m)
         },     nb::arg("id_"), nb::arg("p_selected"), nb::arg("p_button_flags"));
 
     m.def("multi_select_item_footer",
-        [](ImGuiID id, bool p_selected, bool p_pressed) -> std::tuple<bool, bool>
+        [](ImGuiID id, bool p_selected, bool p_pressed, ImGuiMultiSelectFlags extra_flags = 0) -> std::tuple<bool, bool>
         {
-            auto MultiSelectItemFooter_adapt_modifiable_immutable_to_return = [](ImGuiID id, bool p_selected, bool p_pressed) -> std::tuple<bool, bool>
+            auto MultiSelectItemFooter_adapt_modifiable_immutable_to_return = [](ImGuiID id, bool p_selected, bool p_pressed, ImGuiMultiSelectFlags extra_flags = 0) -> std::tuple<bool, bool>
             {
                 bool * p_selected_adapt_modifiable = & p_selected;
                 bool * p_pressed_adapt_modifiable = & p_pressed;
 
-                ImGui::MultiSelectItemFooter(id, p_selected_adapt_modifiable, p_pressed_adapt_modifiable);
+                ImGui::MultiSelectItemFooter(id, p_selected_adapt_modifiable, p_pressed_adapt_modifiable, extra_flags);
                 return std::make_tuple(p_selected, p_pressed);
             };
 
-            return MultiSelectItemFooter_adapt_modifiable_immutable_to_return(id, p_selected, p_pressed);
-        },     nb::arg("id_"), nb::arg("p_selected"), nb::arg("p_pressed"));
+            return MultiSelectItemFooter_adapt_modifiable_immutable_to_return(id, p_selected, p_pressed, extra_flags);
+        },     nb::arg("id_"), nb::arg("p_selected"), nb::arg("p_pressed"), nb::arg("extra_flags") = 0);
 
     m.def("multi_select_add_set_all",
         ImGui::MultiSelectAddSetAll, nb::arg("ms"), nb::arg("selected"));
@@ -4366,244 +4659,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::GetMultiSelectState,
         nb::arg("id_"),
         "(private API)",
-        nb::rv_policy::reference);
-
-    m.def("set_window_clip_rect_before_set_channel",
-        ImGui::SetWindowClipRectBeforeSetChannel, nb::arg("window"), nb::arg("clip_rect"));
-
-    m.def("begin_columns",
-        ImGui::BeginColumns,
-        nb::arg("str_id"), nb::arg("count"), nb::arg("flags") = 0,
-        "setup number of columns. use an identifier to distinguish multiple column sets. close with EndColumns().");
-
-    m.def("end_columns",
-        ImGui::EndColumns, "close columns");
-
-    m.def("push_column_clip_rect",
-        ImGui::PushColumnClipRect, nb::arg("column_index"));
-
-    m.def("push_columns_background",
-        ImGui::PushColumnsBackground);
-
-    m.def("pop_columns_background",
-        ImGui::PopColumnsBackground);
-
-    m.def("get_columns_id",
-        ImGui::GetColumnsID, nb::arg("str_id"), nb::arg("count"));
-
-    m.def("find_or_create_columns",
-        ImGui::FindOrCreateColumns,
-        nb::arg("window"), nb::arg("id_"),
-        nb::rv_policy::reference);
-
-    m.def("get_column_offset_from_norm",
-        ImGui::GetColumnOffsetFromNorm, nb::arg("columns"), nb::arg("offset_norm"));
-
-    m.def("get_column_norm_from_offset",
-        ImGui::GetColumnNormFromOffset, nb::arg("columns"), nb::arg("offset"));
-
-    m.def("table_open_context_menu",
-        nb::overload_cast<int>(ImGui::TableOpenContextMenu), nb::arg("column_n") = -1);
-
-    m.def("table_set_column_width",
-        nb::overload_cast<int, float>(ImGui::TableSetColumnWidth), nb::arg("column_n"), nb::arg("width"));
-
-    m.def("table_set_column_sort_direction",
-        nb::overload_cast<int, ImGuiSortDirection, bool>(ImGui::TableSetColumnSortDirection), nb::arg("column_n"), nb::arg("sort_direction"), nb::arg("append_to_sort_specs"));
-
-    m.def("table_get_hovered_row",
-        nb::overload_cast<>(ImGui::TableGetHoveredRow), "Retrieve *PREVIOUS FRAME* hovered row. This difference with TableGetHoveredColumn() is the reason why this is not public yet.");
-
-    m.def("table_get_header_row_height",
-        nb::overload_cast<>(ImGui::TableGetHeaderRowHeight));
-
-    m.def("table_get_header_angled_max_label_width",
-        nb::overload_cast<>(ImGui::TableGetHeaderAngledMaxLabelWidth));
-
-    m.def("table_push_background_channel",
-        nb::overload_cast<>(ImGui::TablePushBackgroundChannel));
-
-    m.def("table_pop_background_channel",
-        nb::overload_cast<>(ImGui::TablePopBackgroundChannel));
-
-    m.def("table_push_column_channel",
-        nb::overload_cast<int>(ImGui::TablePushColumnChannel), nb::arg("column_n"));
-
-    m.def("table_pop_column_channel",
-        nb::overload_cast<>(ImGui::TablePopColumnChannel));
-
-    m.def("table_angled_headers_row_ex",
-        nb::overload_cast<ImGuiID, float, float, const ImGuiTableHeaderData *, int>(ImGui::TableAngledHeadersRowEx), nb::arg("row_id"), nb::arg("angle"), nb::arg("max_label_width"), nb::arg("data"), nb::arg("data_count"));
-
-    m.def("get_current_table",
-        ImGui::GetCurrentTable,
-        " Tables: Internals\n(private API)",
-        nb::rv_policy::reference);
-
-    m.def("table_find_by_id",
-        nb::overload_cast<ImGuiID>(ImGui::TableFindByID),
-        nb::arg("id_"),
-        nb::rv_policy::reference);
-
-    m.def("begin_table_ex",
-        [](const char * name, ImGuiID id, int columns_count, ImGuiTableFlags flags = 0, const std::optional<const ImVec2> & outer_size = std::nullopt, float inner_width = 0.0f) -> bool
-        {
-            auto BeginTableEx_adapt_mutable_param_with_default_value = [](const char * name, ImGuiID id, int columns_count, ImGuiTableFlags flags = 0, const std::optional<const ImVec2> & outer_size = std::nullopt, float inner_width = 0.0f) -> bool
-            {
-
-                const ImVec2& outer_size_or_default = [&]() -> const ImVec2 {
-                    if (outer_size.has_value())
-                        return outer_size.value();
-                    else
-                        return ImVec2(0, 0);
-                }();
-
-                auto lambda_result = ImGui::BeginTableEx(name, id, columns_count, flags, outer_size_or_default, inner_width);
-                return lambda_result;
-            };
-
-            return BeginTableEx_adapt_mutable_param_with_default_value(name, id, columns_count, flags, outer_size, inner_width);
-        },
-        nb::arg("name"), nb::arg("id_"), nb::arg("columns_count"), nb::arg("flags") = 0, nb::arg("outer_size").none() = nb::none(), nb::arg("inner_width") = 0.0f,
-        "Python bindings defaults:\n    If outer_size is None, then its default value will be: ImVec2(0, 0)");
-
-    m.def("table_begin_init_memory",
-        nb::overload_cast<ImGuiTable *, int>(ImGui::TableBeginInitMemory), nb::arg("table"), nb::arg("columns_count"));
-
-    m.def("table_begin_apply_requests",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableBeginApplyRequests), nb::arg("table"));
-
-    m.def("table_setup_draw_channels",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableSetupDrawChannels), nb::arg("table"));
-
-    m.def("table_update_layout",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableUpdateLayout), nb::arg("table"));
-
-    m.def("table_update_borders",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableUpdateBorders), nb::arg("table"));
-
-    m.def("table_update_columns_weight_from_width",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableUpdateColumnsWeightFromWidth), nb::arg("table"));
-
-    m.def("table_apply_external_unclip_rect",
-        nb::overload_cast<ImGuiTable *, ImRect &>(ImGui::TableApplyExternalUnclipRect), nb::arg("table"), nb::arg("rect"));
-
-    m.def("table_draw_borders",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableDrawBorders), nb::arg("table"));
-
-    m.def("table_draw_default_context_menu",
-        nb::overload_cast<ImGuiTable *, ImGuiTableFlags>(ImGui::TableDrawDefaultContextMenu), nb::arg("table"), nb::arg("flags_for_section_to_display"));
-
-    m.def("table_begin_context_menu_popup",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableBeginContextMenuPopup), nb::arg("table"));
-
-    m.def("table_merge_draw_channels",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableMergeDrawChannels), nb::arg("table"));
-
-    m.def("table_get_instance_data",
-        nb::overload_cast<ImGuiTable *, int>(ImGui::TableGetInstanceData),
-        nb::arg("table"), nb::arg("instance_no"),
-        "(private API)",
-        nb::rv_policy::reference);
-
-    m.def("table_get_instance_id",
-        nb::overload_cast<ImGuiTable *, int>(ImGui::TableGetInstanceID),
-        nb::arg("table"), nb::arg("instance_no"),
-        "(private API)");
-
-    m.def("table_fix_display_order",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableFixDisplayOrder), nb::arg("table"));
-
-    m.def("table_sort_specs_sanitize",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableSortSpecsSanitize), nb::arg("table"));
-
-    m.def("table_sort_specs_build",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableSortSpecsBuild), nb::arg("table"));
-
-    m.def("table_get_column_next_sort_direction",
-        nb::overload_cast<ImGuiTableColumn *>(ImGui::TableGetColumnNextSortDirection), nb::arg("column"));
-
-    m.def("table_fix_column_sort_direction",
-        nb::overload_cast<ImGuiTable *, ImGuiTableColumn *>(ImGui::TableFixColumnSortDirection), nb::arg("table"), nb::arg("column"));
-
-    m.def("table_get_column_width_auto",
-        nb::overload_cast<ImGuiTable *, ImGuiTableColumn *>(ImGui::TableGetColumnWidthAuto), nb::arg("table"), nb::arg("column"));
-
-    m.def("table_begin_row",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableBeginRow), nb::arg("table"));
-
-    m.def("table_end_row",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableEndRow), nb::arg("table"));
-
-    m.def("table_begin_cell",
-        nb::overload_cast<ImGuiTable *, int>(ImGui::TableBeginCell), nb::arg("table"), nb::arg("column_n"));
-
-    m.def("table_end_cell",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableEndCell), nb::arg("table"));
-
-    m.def("table_get_cell_bg_rect",
-        nb::overload_cast<const ImGuiTable *, int>(ImGui::TableGetCellBgRect), nb::arg("table"), nb::arg("column_n"));
-
-    m.def("table_get_column_name",
-        nb::overload_cast<const ImGuiTable *, int>(ImGui::TableGetColumnName),
-        nb::arg("table"), nb::arg("column_n"),
-        nb::rv_policy::reference);
-
-    m.def("table_get_column_resize_id",
-        nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableGetColumnResizeID), nb::arg("table"), nb::arg("column_n"), nb::arg("instance_no") = 0);
-
-    m.def("table_calc_max_column_width",
-        nb::overload_cast<const ImGuiTable *, int>(ImGui::TableCalcMaxColumnWidth), nb::arg("table"), nb::arg("column_n"));
-
-    m.def("table_set_column_width_auto_single",
-        nb::overload_cast<ImGuiTable *, int>(ImGui::TableSetColumnWidthAutoSingle), nb::arg("table"), nb::arg("column_n"));
-
-    m.def("table_set_column_width_auto_all",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableSetColumnWidthAutoAll), nb::arg("table"));
-
-    m.def("table_set_column_display_order",
-        nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableSetColumnDisplayOrder), nb::arg("table"), nb::arg("column_n"), nb::arg("dst_order"));
-
-    m.def("table_queue_set_column_display_order",
-        nb::overload_cast<ImGuiTable *, int, int>(ImGui::TableQueueSetColumnDisplayOrder), nb::arg("table"), nb::arg("column_n"), nb::arg("dst_order"));
-
-    m.def("table_remove",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableRemove), nb::arg("table"));
-
-    m.def("table_gc_compact_transient_buffers",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableGcCompactTransientBuffers), nb::arg("table"));
-
-    m.def("table_gc_compact_transient_buffers",
-        nb::overload_cast<ImGuiTableTempData *>(ImGui::TableGcCompactTransientBuffers), nb::arg("table"));
-
-    m.def("table_gc_compact_settings",
-        nb::overload_cast<>(ImGui::TableGcCompactSettings));
-
-    m.def("table_load_settings",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableLoadSettings), nb::arg("table"));
-
-    m.def("table_save_settings",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableSaveSettings), nb::arg("table"));
-
-    m.def("table_reset_settings",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableResetSettings), nb::arg("table"));
-
-    m.def("table_get_bound_settings",
-        nb::overload_cast<ImGuiTable *>(ImGui::TableGetBoundSettings),
-        nb::arg("table"),
-        nb::rv_policy::reference);
-
-    m.def("table_settings_add_settings_handler",
-        nb::overload_cast<>(ImGui::TableSettingsAddSettingsHandler));
-
-    m.def("table_settings_create",
-        nb::overload_cast<ImGuiID, int>(ImGui::TableSettingsCreate),
-        nb::arg("id_"), nb::arg("columns_count"),
-        nb::rv_policy::reference);
-
-    m.def("table_settings_find_by_id",
-        nb::overload_cast<ImGuiID>(ImGui::TableSettingsFindByID),
-        nb::arg("id_"),
         nb::rv_policy::reference);
 
     m.def("get_current_tab_bar",
@@ -4794,7 +4849,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("render_nav_cursor",
         ImGui::RenderNavCursor,
-        nb::arg("bb"), nb::arg("id_"), nb::arg("flags") = ImGuiNavRenderCursorFlags_None,
+        nb::arg("bb"), nb::arg("id_"), nb::arg("flags") = ImGuiNavRenderCursorFlags_None, nb::arg("rounding") = -1.0f,
         "Navigation highlight");
 
     m.def("find_rendered_text_end",
@@ -5206,7 +5261,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::DebugNodeTable, nb::arg("table"));
 
     m.def("debug_node_table_settings",
-        ImGui::DebugNodeTableSettings, nb::arg("settings"));
+        ImGui::DebugNodeTableSettings, nb::arg("settings"), nb::arg("table"));
 
     m.def("debug_node_input_text_state",
         ImGui::DebugNodeInputTextState, nb::arg("state"));

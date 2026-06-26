@@ -254,7 +254,7 @@ KeyRoutingIndex = int
 # // [SECTION] ImGuiContext (main imgui context)
 # // [SECTION] ImGuiWindowTempData, ImGuiWindow
 # // [SECTION] Tab bar, Tab item support
-# // [SECTION] Table support
+# // [SECTION] Table support + internal API
 # // [SECTION] ImGui internal API
 # // [SECTION] ImFontLoader
 # // [SECTION] ImFontAtlas internal API
@@ -2675,8 +2675,6 @@ class NavRenderCursorFlags_(enum.IntFlag):
     always_draw = (
         enum.auto()
     )  # (= 1 << 2)  # Draw rectangular highlight if (g.NavId == id) even when g.NavCursorVisible == False, aka even when using the mouse.
-    # ImGuiNavRenderCursorFlags_NoRounding    = 1 << 3,    /* original C++ signature */
-    no_rounding = enum.auto()  # (= 1 << 3)
 
 class NavMoveFlags_(enum.IntFlag):
     # ImGuiNavMoveFlags_None                  = 0,    /* original C++ signature */
@@ -3497,27 +3495,32 @@ class LocKey(enum.IntFlag):
     table_size_all_fit = enum.auto()  # (= 2)
     # ImGuiLocKey_TableSizeAllDefault,    /* original C++ signature */
     table_size_all_default = enum.auto()  # (= 3)
+    # ImGuiLocKey_TableReset,    /* original C++ signature */
+    table_reset = enum.auto()  # (= 4)
+    # ImGuiLocKey_TableResetAll,
     # ImGuiLocKey_TableResetOrder,    /* original C++ signature */
-    table_reset_order = enum.auto()  # (= 4)
+    table_reset_order = enum.auto()  # (= 5)
+    # ImGuiLocKey_TableResetVisibility,    /* original C++ signature */
+    table_reset_visibility = enum.auto()  # (= 6)
     # ImGuiLocKey_WindowingMainMenuBar,    /* original C++ signature */
-    windowing_main_menu_bar = enum.auto()  # (= 5)
+    windowing_main_menu_bar = enum.auto()  # (= 7)
     # ImGuiLocKey_WindowingPopup,    /* original C++ signature */
-    windowing_popup = enum.auto()  # (= 6)
+    windowing_popup = enum.auto()  # (= 8)
     # ImGuiLocKey_WindowingUntitled,    /* original C++ signature */
-    windowing_untitled = enum.auto()  # (= 7)
+    windowing_untitled = enum.auto()  # (= 9)
     # ImGuiLocKey_OpenLink_s,    /* original C++ signature */
-    open_link_s = enum.auto()  # (= 8)
+    open_link_s = enum.auto()  # (= 10)
     # ImGuiLocKey_CopyLink,    /* original C++ signature */
-    copy_link = enum.auto()  # (= 9)
+    copy_link = enum.auto()  # (= 11)
     # ImGuiLocKey_DockingHideTabBar,    /* original C++ signature */
-    docking_hide_tab_bar = enum.auto()  # (= 10)
+    docking_hide_tab_bar = enum.auto()  # (= 12)
     # ImGuiLocKey_DockingHoldShiftToDock,    /* original C++ signature */
-    docking_hold_shift_to_dock = enum.auto()  # (= 11)
+    docking_hold_shift_to_dock = enum.auto()  # (= 13)
     # ImGuiLocKey_DockingDragToUndockOrMoveNode,    /* original C++ signature */
-    docking_drag_to_undock_or_move_node = enum.auto()  # (= 12)
+    docking_drag_to_undock_or_move_node = enum.auto()  # (= 14)
     # ImGuiLocKey_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 13)
+    count = enum.auto()  # (= 15)
 
 class LocEntry:
     # ImGuiLocKey     Key;    /* original C++ signature */
@@ -3575,11 +3578,13 @@ class DebugLogFlags_(enum.IntFlag):
     event_docking = enum.auto()  # (= 1 << 10)
     # ImGuiDebugLogFlags_EventViewport        = 1 << 11,    /* original C++ signature */
     event_viewport = enum.auto()  # (= 1 << 11)
+    # ImGuiDebugLogFlags_EventTable           = 1 << 12,    /* original C++ signature */
+    event_table = enum.auto()  # (= 1 << 12)
 
-    # ImGuiDebugLogFlags_EventMask_           = ImGuiDebugLogFlags_EventError | ImGuiDebugLogFlags_EventActiveId | ImGuiDebugLogFlags_EventFocus | ImGuiDebugLogFlags_EventPopup | ImGuiDebugLogFlags_EventNav | ImGuiDebugLogFlags_EventClipper | ImGuiDebugLogFlags_EventSelection | ImGuiDebugLogFlags_EventIO | ImGuiDebugLogFlags_EventFont | ImGuiDebugLogFlags_EventInputRouting | ImGuiDebugLogFlags_EventDocking | ImGuiDebugLogFlags_EventViewport,    /* original C++ signature */
+    # ImGuiDebugLogFlags_EventMask_           = ImGuiDebugLogFlags_EventError | ImGuiDebugLogFlags_EventActiveId | ImGuiDebugLogFlags_EventFocus | ImGuiDebugLogFlags_EventPopup | ImGuiDebugLogFlags_EventNav | ImGuiDebugLogFlags_EventClipper | ImGuiDebugLogFlags_EventSelection | ImGuiDebugLogFlags_EventTable | ImGuiDebugLogFlags_EventIO | ImGuiDebugLogFlags_EventFont | ImGuiDebugLogFlags_EventInputRouting | ImGuiDebugLogFlags_EventDocking | ImGuiDebugLogFlags_EventViewport,    /* original C++ signature */
     event_mask_ = (
         enum.auto()
-    )  # (= DebugLogFlags_EventError | DebugLogFlags_EventActiveId | DebugLogFlags_EventFocus | DebugLogFlags_EventPopup | DebugLogFlags_EventNav | DebugLogFlags_EventClipper | DebugLogFlags_EventSelection | DebugLogFlags_EventIO | DebugLogFlags_EventFont | DebugLogFlags_EventInputRouting | DebugLogFlags_EventDocking | DebugLogFlags_EventViewport)
+    )  # (= DebugLogFlags_EventError | DebugLogFlags_EventActiveId | DebugLogFlags_EventFocus | DebugLogFlags_EventPopup | DebugLogFlags_EventNav | DebugLogFlags_EventClipper | DebugLogFlags_EventSelection | DebugLogFlags_EventTable | DebugLogFlags_EventIO | DebugLogFlags_EventFont | DebugLogFlags_EventInputRouting | DebugLogFlags_EventDocking | DebugLogFlags_EventViewport)
     # ImGuiDebugLogFlags_OutputToTTY          = 1 << 20,      /* original C++ signature */
     output_to_tty = enum.auto()  # (= 1 << 20)  # Also send output to TTY
     # ImGuiDebugLogFlags_OutputToDebugger     = 1 << 21,      /* original C++ signature */
@@ -5175,11 +5180,11 @@ class TabBar:
         pass
 
 # -----------------------------------------------------------------------------
-# [SECTION] Table support
+# [SECTION] Table support + internal API
 # -----------------------------------------------------------------------------
 
 class TableColumn:
-    """[Internal] sizeof() ~ 112
+    """[Internal] sizeof() ~ 120
     We use the terminology "Enabled" to refer to a column that is not Hidden by user/api.
     We use the terminology "Clipped" to refer to a column that is out of sight because of scrolling/clipping.
     This is in contrast with some user-facing api such as IsItemVisible() / IsRectVisible() which use "Visible" to mean "not clipped".
@@ -5207,8 +5212,10 @@ class TableColumn:
     )
     # ImRect                  ClipRect;    /* original C++ signature */
     clip_rect: ImRect  # Clipping rectangle for the column
-    # ImGuiID                 UserID;    /* original C++ signature */
-    user_id: ID  # Optional, value passed to TableSetupColumn()
+    # ImGuiID                 ID;    /* original C++ signature */
+    id_: ID  # Hash of column name (ignoring top of ID stack), used for .ini persistence when available.
+    # ImGuiID                 UserData;    /* original C++ signature */
+    user_data: ID  # (Optional) User data value passed to TableSetupColumn()
     # float                   WorkMinX;    /* original C++ signature */
     work_min_x: float  # Contents region min ~(MinX + CellPaddingX + CellSpacingX1) == cursor start position when entering column
     # float                   WorkMaxX;    /* original C++ signature */
@@ -5263,14 +5270,8 @@ class TableColumn:
     is_request_output: bool  # Return value for TableSetColumnIndex() / TableNextColumn(): whether we request user to output contents or not.
     # bool                    IsSkipItems;    /* original C++ signature */
     is_skip_items: bool  # Do we want item submissions to this column to be completely ignored (no layout will happen).
-    # bool                    IsPreserveWidthAuto;    /* original C++ signature */
-    is_preserve_width_auto: bool
     # ImS8                    NavLayerCurrent;    /* original C++ signature */
     nav_layer_current: ImS8  # ImGuiNavLayer in 1 byte
-    # ImU8                    AutoFitQueue;    /* original C++ signature */
-    auto_fit_queue: ImU8  # Queue of 8 values for the next 8 frames to request auto-fit
-    # ImU8                    CannotSkipItemsQueue;    /* original C++ signature */
-    cannot_skip_items_queue: ImU8  # Queue of 8 values for the next 8 frames to disable Clipped/SkipItem
     # ImU8                    SortDirectionsAvailList;    /* original C++ signature */
     sort_directions_avail_list: ImU8  # Ordered list of available sort directions (2-bits each, total 8-bits)
 
@@ -5283,9 +5284,56 @@ class TableColumn:
     #         PrevEnabledColumn = NextEnabledColumn = -1;
     #         SortOrder = -1;
     #         SortDirection = ImGuiSortDirection_None;
+    #         IsJustCreated = true;
     #         DrawChannelCurrent = DrawChannelFrozen = DrawChannelUnfrozen = (ImU8)-1;
     #     }
     def __init__(self) -> None:
+        pass
+
+class TableReconcileColumnData:
+    """Passed to TableSetupColumn()
+    sizeof() ~ 24+120 bytes
+    """
+
+    # Setup data
+    # ImGuiID                 ID;    /* original C++ signature */
+    id_: ID
+    # ImS16                   NameOffset;    /* original C++ signature */
+    name_offset: ImS16
+    # ImGuiTableColumnFlags   Flags;    /* original C++ signature */
+    flags: TableColumnFlags
+    # float                   InitWidthOrWeight;    /* original C++ signature */
+    init_width_or_weight: float
+    # ImGuiID                 UserData;    /* original C++ signature */
+    user_data: ID
+
+    # Reconcile data
+    # ImGuiTableColumnIdx     ColumnNewIdx;    /* original C++ signature */
+    column_new_idx: TableColumnIdx  # Index in the current table.
+    # ImGuiTableColumnIdx     ColumnOldIdx;    /* original C++ signature */
+    column_old_idx: TableColumnIdx  # Index in the previous frame table.
+    # ImGuiTableColumn        ColumnOldData;    /* original C++ signature */
+    column_old_data: TableColumn  # Full backup of the column. Could be avoided by storing 1 of them and applying reconcile in the right order. Not worth bothering.
+    # ImGuiTableReconcileColumnData(ImGuiID ID = ImGuiID(), ImS16 NameOffset = ImS16(), ImGuiTableColumnFlags Flags = ImGuiTableColumnFlags(), float InitWidthOrWeight = float(), ImGuiID UserData = ImGuiID(), ImGuiTableColumnIdx ColumnNewIdx = ImGuiTableColumnIdx(), ImGuiTableColumnIdx ColumnOldIdx = ImGuiTableColumnIdx(), ImGuiTableColumn ColumnOldData = ImGuiTableColumn());    /* original C++ signature */
+    def __init__(
+        self,
+        id_: ID = ID(),
+        name_offset: ImS16 = ImS16(),
+        flags: TableColumnFlags = TableColumnFlags(),
+        init_width_or_weight: float = float(),
+        user_data: ID = ID(),
+        column_new_idx: Optional[TableColumnIdx] = None,
+        column_old_idx: Optional[TableColumnIdx] = None,
+        column_old_data: Optional[TableColumn] = None,
+    ) -> None:
+        """Auto-generated default constructor with named params
+
+        Python bindings defaults:
+            If any of the params below is None, then its default value below will be used:
+                * ColumnNewIdx: TableColumnIdx()
+                * ColumnOldIdx: TableColumnIdx()
+                * ColumnOldData: TableColumn()
+        """
         pass
 
 class TableCellData:
@@ -5550,6 +5598,8 @@ class Table:
     is_inside_row: bool  # Set when inside TableBeginRow()/TableEndRow().
     # bool                        IsInitializing;    /* original C++ signature */
     is_initializing: bool
+    # bool                        IsReconcileMode;    /* original C++ signature */
+    is_reconcile_mode: bool
     # bool                        IsSortSpecsDirty;    /* original C++ signature */
     is_sort_specs_dirty: bool
     # bool                        IsUsingHeaders;    /* original C++ signature */
@@ -5572,10 +5622,14 @@ class Table:
     is_default_display_order: (
         bool  # Set when display order is unchanged from default (DisplayOrder contains 0...Count-1)
     )
+    # bool                        IsDefaultVisibility;    /* original C++ signature */
+    is_default_visibility: bool  # Set when enabled/visibility is unchanged from default
     # bool                        IsResetAllRequest;    /* original C++ signature */
-    is_reset_all_request: bool
+    is_reset_all_request: bool  # Set to queue a call to TableResetSettings() in BeginTable()
     # bool                        IsResetDisplayOrderRequest;    /* original C++ signature */
     is_reset_display_order_request: bool
+    # bool                        IsResetVisibilityRequest;    /* original C++ signature */
+    is_reset_visibility_request: bool
     # bool                        IsUnfrozenRows;    /* original C++ signature */
     is_unfrozen_rows: bool  # Set when we got past the frozen row.
     # bool                        IsDefaultSizingPolicy;    /* original C++ signature */
@@ -5602,7 +5656,7 @@ class TableTempData:
     - Accessing those requires chasing an extra pointer so for very frequently used data we leave them in the main table structure.
     - We also leave out of this structure data that tend to be particularly useful for debugging/metrics.
     FIXME-TABLE: more transient data could be stored in a stacked ImGuiTableTempData: e.g. SortSpecs.
-    sizeof() ~ 136 bytes.
+    sizeof() ~ 176 bytes.
     """
 
     # ImGuiID                     WindowID;    /* original C++ signature */
@@ -5614,7 +5668,13 @@ class TableTempData:
     # float                       AngledHeadersExtraWidth;    /* original C++ signature */
     angled_headers_extra_width: float  # Used in EndTable()
     # ImVector<ImGuiTableHeaderData> AngledHeadersRequests;    /* original C++ signature */
-    angled_headers_requests: ImVector_TableHeaderData  # Used in TableAngledHeadersRow()
+    angled_headers_requests: (
+        ImVector_TableHeaderData  # Used in TableAngledHeadersRow() // FIXME: Single instance is enough?
+    )
+
+    # Topology change
+    # void*                       OldColumnsRawData;    /* original C++ signature */
+    old_columns_raw_data: Any  # Used in BeginTable() -> TableUpdateLayout() when resizing.
 
     # ImVec2                      UserOuterSize;    /* original C++ signature */
     user_outer_size: ImVec2  # outer_size.x passed to BeginTable()
@@ -5647,8 +5707,8 @@ class TableColumnSettings:
 
     # float                   WidthOrWeight;    /* original C++ signature */
     width_or_weight: float
-    # ImGuiID                 UserID;    /* original C++ signature */
-    user_id: ID
+    # ImGuiID                 ID;    /* original C++ signature */
+    id_: ID
     # ImGuiTableColumnIdx     Index;    /* original C++ signature */
     index: TableColumnIdx
     # ImGuiTableColumnIdx     DisplayOrder;    /* original C++ signature */
@@ -5659,12 +5719,13 @@ class TableColumnSettings:
     # ImGuiTableColumnSettings()    /* original C++ signature */
     #     {
     #         WidthOrWeight = 0.0f;
-    #         UserID = 0;
+    #         ID = 0;
     #         Index = -1;
     #         DisplayOrder = SortOrder = -1;
     #         SortDirection = ImGuiSortDirection_None;
     #         IsEnabled = -1;
     #         IsStretch = 0;
+    #         IsLoaded = false;
     #     }
     def __init__(self) -> None:
         pass
@@ -5694,6 +5755,314 @@ class TableSettings:
     def get_column_settings(self) -> TableColumnSettings:
         """(private API)"""
         pass
+
+# Tables: Candidates for public API
+# IMGUI_API void          TableOpenContextMenu(int column_n = -1);    /* original C++ signature */
+def table_open_context_menu(column_n: int = -1) -> None:
+    pass
+
+# IMGUI_API void          TableSetColumnWidth(int column_n, float width);    /* original C++ signature */
+def table_set_column_width(column_n: int, width: float) -> None:
+    pass
+
+# IMGUI_API void          TableSetColumnSortDirection(int column_n, ImGuiSortDirection sort_direction, bool append_to_sort_specs);    /* original C++ signature */
+def table_set_column_sort_direction(column_n: int, sort_direction: SortDirection, append_to_sort_specs: bool) -> None:
+    pass
+
+# IMGUI_API int           TableGetHoveredRow();           /* original C++ signature */
+def table_get_hovered_row() -> int:
+    """Retrieve *PREVIOUS FRAME* hovered row. This difference with TableGetHoveredColumn() is the reason why this is not public yet."""
+    pass
+
+# IMGUI_API float         TableGetHeaderRowHeight();    /* original C++ signature */
+def table_get_header_row_height() -> float:
+    pass
+
+# IMGUI_API float         TableGetHeaderAngledMaxLabelWidth();    /* original C++ signature */
+def table_get_header_angled_max_label_width() -> float:
+    pass
+
+# IMGUI_API void          TablePushBackgroundChannel();    /* original C++ signature */
+def table_push_background_channel() -> None:
+    pass
+
+# IMGUI_API void          TablePopBackgroundChannel();    /* original C++ signature */
+def table_pop_background_channel() -> None:
+    pass
+
+# IMGUI_API void          TablePushColumnChannel(int column_n);    /* original C++ signature */
+def table_push_column_channel(column_n: int) -> None:
+    pass
+
+# IMGUI_API void          TablePopColumnChannel();    /* original C++ signature */
+def table_pop_column_channel() -> None:
+    pass
+
+# IMGUI_API void          TableAngledHeadersRowEx(ImGuiID row_id, float angle, float max_label_width, const ImGuiTableHeaderData* data, int data_count);    /* original C++ signature */
+def table_angled_headers_row_ex(
+    row_id: ID, angle: float, max_label_width: float, data: TableHeaderData, data_count: int
+) -> None:
+    pass
+
+# inline    ImGuiTable*   GetCurrentTable() { ImGuiContext& g = *GImGui; return g.CurrentTable; }    /* original C++ signature */
+def get_current_table() -> Table:
+    """Tables: Internals
+    (private API)
+    """
+    pass
+
+# IMGUI_API ImGuiTable*   TableFindByID(ImGuiID id);    /* original C++ signature */
+def table_find_by_id(id_: ID) -> Table:
+    pass
+
+# IMGUI_API bool          BeginTableEx(const char* name, ImGuiID id, int columns_count, ImGuiTableFlags flags = 0, const ImVec2& outer_size = ImVec2(0, 0), float inner_width = 0.0f);    /* original C++ signature */
+def begin_table_ex(
+    name: str,
+    id_: ID,
+    columns_count: int,
+    flags: TableFlags = 0,
+    outer_size: Optional[ImVec2Like] = None,
+    inner_width: float = 0.0,
+) -> bool:
+    """Python bindings defaults:
+    If outer_size is None, then its default value will be: ImVec2(0, 0)
+    """
+    pass
+
+# IMGUI_API void          TableBeginInitMemory(ImGuiTable* table, int columns_count);    /* original C++ signature */
+def table_begin_init_memory(table: Table, columns_count: int) -> None:
+    pass
+
+# IMGUI_API void          TableApplyQueuedRequests(ImGuiTable* table);    /* original C++ signature */
+def table_apply_queued_requests(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableSetupDrawChannels(ImGuiTable* table);    /* original C++ signature */
+def table_setup_draw_channels(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableReconcileColumns(ImGuiTable* table);    /* original C++ signature */
+def table_reconcile_columns(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableUpdateLayout(ImGuiTable* table);    /* original C++ signature */
+def table_update_layout(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableUpdateBorders(ImGuiTable* table);    /* original C++ signature */
+def table_update_borders(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableUpdateColumnsWeightFromWidth(ImGuiTable* table);    /* original C++ signature */
+def table_update_columns_weight_from_width(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableApplyExternalUnclipRect(ImGuiTable* table, ImRect& rect);    /* original C++ signature */
+def table_apply_external_unclip_rect(table: Table, rect: ImRect) -> None:
+    pass
+
+# IMGUI_API void          TableDrawBorders(ImGuiTable* table);    /* original C++ signature */
+def table_draw_borders(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableDrawDefaultContextMenu(ImGuiTable* table, ImGuiTableFlags flags_for_section_to_display);    /* original C++ signature */
+def table_draw_default_context_menu(table: Table, flags_for_section_to_display: TableFlags) -> None:
+    pass
+
+# IMGUI_API bool          TableBeginContextMenuPopup(ImGuiTable* table);    /* original C++ signature */
+def table_begin_context_menu_popup(table: Table) -> bool:
+    pass
+
+# IMGUI_API void          TableMergeDrawChannels(ImGuiTable* table);    /* original C++ signature */
+def table_merge_draw_channels(table: Table) -> None:
+    pass
+
+# inline ImGuiTableInstanceData*  TableGetInstanceData(ImGuiTable* table, int instance_no) { if (instance_no == 0) return &table->InstanceDataFirst; return &table->InstanceDataExtra[instance_no - 1]; }    /* original C++ signature */
+def table_get_instance_data(table: Table, instance_no: int) -> TableInstanceData:
+    """(private API)"""
+    pass
+
+# inline ImGuiID                  TableGetInstanceID(ImGuiTable* table, int instance_no)   { return TableGetInstanceData(table, instance_no)->TableInstanceID; }    /* original C++ signature */
+def table_get_instance_id(table: Table, instance_no: int) -> ID:
+    """(private API)"""
+    pass
+
+# IMGUI_API void          TableFixDisplayOrder(ImGuiTable* table);    /* original C++ signature */
+def table_fix_display_order(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableSortSpecsSanitize(ImGuiTable* table);    /* original C++ signature */
+def table_sort_specs_sanitize(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableSortSpecsBuild(ImGuiTable* table);    /* original C++ signature */
+def table_sort_specs_build(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableInitColumnDefaults(ImGuiTable* table, ImGuiTableColumn* column, ImGuiTableColumnFlags init_mask);    /* original C++ signature */
+def table_init_column_defaults(table: Table, column: TableColumn, init_mask: TableColumnFlags) -> None:
+    pass
+
+# IMGUI_API ImGuiSortDirection TableGetColumnNextSortDirection(ImGuiTableColumn* column);    /* original C++ signature */
+def table_get_column_next_sort_direction(column: TableColumn) -> SortDirection:
+    pass
+
+# IMGUI_API void          TableFixColumnSortDirection(ImGuiTable* table, ImGuiTableColumn* column);    /* original C++ signature */
+def table_fix_column_sort_direction(table: Table, column: TableColumn) -> None:
+    pass
+
+# IMGUI_API float         TableGetColumnWidthAuto(ImGuiTable* table, ImGuiTableColumn* column);    /* original C++ signature */
+def table_get_column_width_auto(table: Table, column: TableColumn) -> float:
+    pass
+
+# IMGUI_API void          TableBeginRow(ImGuiTable* table);    /* original C++ signature */
+def table_begin_row(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableEndRow(ImGuiTable* table);    /* original C++ signature */
+def table_end_row(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableBeginCell(ImGuiTable* table, int column_n);    /* original C++ signature */
+def table_begin_cell(table: Table, column_n: int) -> None:
+    pass
+
+# IMGUI_API void          TableEndCell(ImGuiTable* table);    /* original C++ signature */
+def table_end_cell(table: Table) -> None:
+    pass
+
+# IMGUI_API ImRect        TableGetCellBgRect(const ImGuiTable* table, int column_n);    /* original C++ signature */
+def table_get_cell_bg_rect(table: Table, column_n: int) -> ImRect:
+    pass
+
+# IMGUI_API const char*   TableGetColumnName(const ImGuiTable* table, int column_n);    /* original C++ signature */
+def table_get_column_name(table: Table, column_n: int) -> str:
+    pass
+
+# IMGUI_API ImGuiID       TableGetColumnResizeID(ImGuiTable* table, int column_n, int instance_no = 0);    /* original C++ signature */
+def table_get_column_resize_id(table: Table, column_n: int, instance_no: int = 0) -> ID:
+    pass
+
+# IMGUI_API float         TableCalcMaxColumnWidth(const ImGuiTable* table, int column_n);    /* original C++ signature */
+def table_calc_max_column_width(table: Table, column_n: int) -> float:
+    pass
+
+# IMGUI_API void          TableSetColumnWidthAutoSingle(ImGuiTable* table, int column_n);    /* original C++ signature */
+def table_set_column_width_auto_single(table: Table, column_n: int) -> None:
+    pass
+
+# IMGUI_API void          TableSetColumnWidthAutoAll(ImGuiTable* table);    /* original C++ signature */
+def table_set_column_width_auto_all(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableSetColumnDisplayOrder(ImGuiTable* table, int column_n, int dst_order);    /* original C++ signature */
+def table_set_column_display_order(table: Table, column_n: int, dst_order: int) -> None:
+    pass
+
+# IMGUI_API void          TableQueueSetColumnDisplayOrder(ImGuiTable* table, int column_n, int dst_order);    /* original C++ signature */
+def table_queue_set_column_display_order(table: Table, column_n: int, dst_order: int) -> None:
+    pass
+
+# IMGUI_API void          TableRemove(ImGuiTable* table);    /* original C++ signature */
+def table_remove(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableGcCompactTransientBuffers(ImGuiTable* table);    /* original C++ signature */
+@overload
+def table_gc_compact_transient_buffers(table: Table) -> None:
+    pass
+
+# IMGUI_API void          TableGcCompactTransientBuffers(ImGuiTableTempData* table);    /* original C++ signature */
+@overload
+def table_gc_compact_transient_buffers(table: TableTempData) -> None:
+    pass
+
+# IMGUI_API void          TableGcCompactSettings();    /* original C++ signature */
+def table_gc_compact_settings() -> None:
+    pass
+
+# Tables: Settings
+# IMGUI_API void                  TableLoadSettings(ImGuiTable* table);    /* original C++ signature */
+def table_load_settings(table: Table) -> None:
+    pass
+
+# IMGUI_API void                  TableLoadSettingsForColumns(ImGuiTable* table);    /* original C++ signature */
+def table_load_settings_for_columns(table: Table) -> None:
+    pass
+
+# IMGUI_API void                  TableLoadSettingsForColumn(ImGuiTableColumn* column, ImGuiTableColumnSettings* column_settings, ImGuiTableFlags load_flags);    /* original C++ signature */
+def table_load_settings_for_column(
+    column: TableColumn, column_settings: TableColumnSettings, load_flags: TableFlags
+) -> None:
+    pass
+
+# IMGUI_API void                  TableSaveSettings(ImGuiTable* table);    /* original C++ signature */
+def table_save_settings(table: Table) -> None:
+    pass
+
+# IMGUI_API void                  TableResetSettings(ImGuiTable* table);    /* original C++ signature */
+def table_reset_settings(table: Table) -> None:
+    pass
+
+# IMGUI_API ImGuiTableSettings*   TableGetBoundSettings(ImGuiTable* table);    /* original C++ signature */
+def table_get_bound_settings(table: Table) -> TableSettings:
+    pass
+
+# IMGUI_API void                  TableSettingsAddSettingsHandler();    /* original C++ signature */
+def table_settings_add_settings_handler() -> None:
+    pass
+
+# IMGUI_API ImGuiTableSettings*   TableSettingsCreate(ImGuiID id, int columns_count);    /* original C++ signature */
+def table_settings_create(id_: ID, columns_count: int) -> TableSettings:
+    pass
+
+# IMGUI_API ImGuiTableSettings*   TableSettingsFindByID(ImGuiID id);    /* original C++ signature */
+def table_settings_find_by_id(id_: ID) -> TableSettings:
+    pass
+
+# Legacy Columns API (this is not exposed because we will encourage transitioning to the Tables API)
+# IMGUI_API void          SetWindowClipRectBeforeSetChannel(ImGuiWindow* window, const ImRect& clip_rect);    /* original C++ signature */
+def set_window_clip_rect_before_set_channel(window: Window, clip_rect: ImRect) -> None:
+    pass
+
+# IMGUI_API void          BeginColumns(const char* str_id, int count, ImGuiOldColumnFlags flags = 0);     /* original C++ signature */
+def begin_columns(str_id: str, count: int, flags: OldColumnFlags = 0) -> None:
+    """setup number of columns. use an identifier to distinguish multiple column sets. close with EndColumns()."""
+    pass
+
+# IMGUI_API void          EndColumns();                                                                   /* original C++ signature */
+def end_columns() -> None:
+    """close columns"""
+    pass
+
+# IMGUI_API void          PushColumnClipRect(int column_index);    /* original C++ signature */
+def push_column_clip_rect(column_index: int) -> None:
+    pass
+
+# IMGUI_API void          PushColumnsBackground();    /* original C++ signature */
+def push_columns_background() -> None:
+    pass
+
+# IMGUI_API void          PopColumnsBackground();    /* original C++ signature */
+def pop_columns_background() -> None:
+    pass
+
+# IMGUI_API ImGuiID       GetColumnsID(const char* str_id, int count);    /* original C++ signature */
+def get_columns_id(str_id: str, count: int) -> ID:
+    pass
+
+# IMGUI_API ImGuiOldColumns* FindOrCreateColumns(ImGuiWindow* window, ImGuiID id);    /* original C++ signature */
+def find_or_create_columns(window: Window, id_: ID) -> OldColumns:
+    pass
+
+# IMGUI_API float         GetColumnOffsetFromNorm(const ImGuiOldColumns* columns, float offset_norm);    /* original C++ signature */
+def get_column_offset_from_norm(columns: OldColumns, offset_norm: float) -> float:
+    pass
+
+# IMGUI_API float         GetColumnNormFromOffset(const ImGuiOldColumns* columns, float offset);    /* original C++ signature */
+# }
+def get_column_norm_from_offset(columns: OldColumns, offset: float) -> float:
+    pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] ImGui internal API
@@ -6972,8 +7341,10 @@ def end_box_select(scope_rect: ImRect, ms_flags: MultiSelectFlags) -> None:
 def multi_select_item_header(id_: ID, p_selected: bool, p_button_flags: ButtonFlags) -> bool:
     pass
 
-# IMGUI_API void          MultiSelectItemFooter(ImGuiID id, bool* p_selected, bool* p_pressed);    /* original C++ signature */
-def multi_select_item_footer(id_: ID, p_selected: bool, p_pressed: bool) -> Tuple[bool, bool]:
+# IMGUI_API void          MultiSelectItemFooter(ImGuiID id, bool* p_selected, bool* p_pressed, ImGuiMultiSelectFlags extra_flags = 0);    /* original C++ signature */
+def multi_select_item_footer(
+    id_: ID, p_selected: bool, p_pressed: bool, extra_flags: MultiSelectFlags = 0
+) -> Tuple[bool, bool]:
     pass
 
 # IMGUI_API void          MultiSelectAddSetAll(ImGuiMultiSelectTempData* ms, bool selected);    /* original C++ signature */
@@ -6994,295 +7365,6 @@ def get_box_select_state(id_: ID) -> BoxSelectState:
 # inline ImGuiMultiSelectState*   GetMultiSelectState(ImGuiID id) { ImGuiContext& g = *GImGui; return g.MultiSelectStorage.GetByKey(id); }    /* original C++ signature */
 def get_multi_select_state(id_: ID) -> MultiSelectState:
     """(private API)"""
-    pass
-
-# Internal Columns API (this is not exposed because we will encourage transitioning to the Tables API)
-# IMGUI_API void          SetWindowClipRectBeforeSetChannel(ImGuiWindow* window, const ImRect& clip_rect);    /* original C++ signature */
-def set_window_clip_rect_before_set_channel(window: Window, clip_rect: ImRect) -> None:
-    pass
-
-# IMGUI_API void          BeginColumns(const char* str_id, int count, ImGuiOldColumnFlags flags = 0);     /* original C++ signature */
-def begin_columns(str_id: str, count: int, flags: OldColumnFlags = 0) -> None:
-    """setup number of columns. use an identifier to distinguish multiple column sets. close with EndColumns()."""
-    pass
-
-# IMGUI_API void          EndColumns();                                                                   /* original C++ signature */
-def end_columns() -> None:
-    """close columns"""
-    pass
-
-# IMGUI_API void          PushColumnClipRect(int column_index);    /* original C++ signature */
-def push_column_clip_rect(column_index: int) -> None:
-    pass
-
-# IMGUI_API void          PushColumnsBackground();    /* original C++ signature */
-def push_columns_background() -> None:
-    pass
-
-# IMGUI_API void          PopColumnsBackground();    /* original C++ signature */
-def pop_columns_background() -> None:
-    pass
-
-# IMGUI_API ImGuiID       GetColumnsID(const char* str_id, int count);    /* original C++ signature */
-def get_columns_id(str_id: str, count: int) -> ID:
-    pass
-
-# IMGUI_API ImGuiOldColumns* FindOrCreateColumns(ImGuiWindow* window, ImGuiID id);    /* original C++ signature */
-def find_or_create_columns(window: Window, id_: ID) -> OldColumns:
-    pass
-
-# IMGUI_API float         GetColumnOffsetFromNorm(const ImGuiOldColumns* columns, float offset_norm);    /* original C++ signature */
-def get_column_offset_from_norm(columns: OldColumns, offset_norm: float) -> float:
-    pass
-
-# IMGUI_API float         GetColumnNormFromOffset(const ImGuiOldColumns* columns, float offset);    /* original C++ signature */
-def get_column_norm_from_offset(columns: OldColumns, offset: float) -> float:
-    pass
-
-# Tables: Candidates for public API
-# IMGUI_API void          TableOpenContextMenu(int column_n = -1);    /* original C++ signature */
-def table_open_context_menu(column_n: int = -1) -> None:
-    pass
-
-# IMGUI_API void          TableSetColumnWidth(int column_n, float width);    /* original C++ signature */
-def table_set_column_width(column_n: int, width: float) -> None:
-    pass
-
-# IMGUI_API void          TableSetColumnSortDirection(int column_n, ImGuiSortDirection sort_direction, bool append_to_sort_specs);    /* original C++ signature */
-def table_set_column_sort_direction(column_n: int, sort_direction: SortDirection, append_to_sort_specs: bool) -> None:
-    pass
-
-# IMGUI_API int           TableGetHoveredRow();           /* original C++ signature */
-def table_get_hovered_row() -> int:
-    """Retrieve *PREVIOUS FRAME* hovered row. This difference with TableGetHoveredColumn() is the reason why this is not public yet."""
-    pass
-
-# IMGUI_API float         TableGetHeaderRowHeight();    /* original C++ signature */
-def table_get_header_row_height() -> float:
-    pass
-
-# IMGUI_API float         TableGetHeaderAngledMaxLabelWidth();    /* original C++ signature */
-def table_get_header_angled_max_label_width() -> float:
-    pass
-
-# IMGUI_API void          TablePushBackgroundChannel();    /* original C++ signature */
-def table_push_background_channel() -> None:
-    pass
-
-# IMGUI_API void          TablePopBackgroundChannel();    /* original C++ signature */
-def table_pop_background_channel() -> None:
-    pass
-
-# IMGUI_API void          TablePushColumnChannel(int column_n);    /* original C++ signature */
-def table_push_column_channel(column_n: int) -> None:
-    pass
-
-# IMGUI_API void          TablePopColumnChannel();    /* original C++ signature */
-def table_pop_column_channel() -> None:
-    pass
-
-# IMGUI_API void          TableAngledHeadersRowEx(ImGuiID row_id, float angle, float max_label_width, const ImGuiTableHeaderData* data, int data_count);    /* original C++ signature */
-def table_angled_headers_row_ex(
-    row_id: ID, angle: float, max_label_width: float, data: TableHeaderData, data_count: int
-) -> None:
-    pass
-
-# inline    ImGuiTable*   GetCurrentTable() { ImGuiContext& g = *GImGui; return g.CurrentTable; }    /* original C++ signature */
-def get_current_table() -> Table:
-    """Tables: Internals
-    (private API)
-    """
-    pass
-
-# IMGUI_API ImGuiTable*   TableFindByID(ImGuiID id);    /* original C++ signature */
-def table_find_by_id(id_: ID) -> Table:
-    pass
-
-# IMGUI_API bool          BeginTableEx(const char* name, ImGuiID id, int columns_count, ImGuiTableFlags flags = 0, const ImVec2& outer_size = ImVec2(0, 0), float inner_width = 0.0f);    /* original C++ signature */
-def begin_table_ex(
-    name: str,
-    id_: ID,
-    columns_count: int,
-    flags: TableFlags = 0,
-    outer_size: Optional[ImVec2Like] = None,
-    inner_width: float = 0.0,
-) -> bool:
-    """Python bindings defaults:
-    If outer_size is None, then its default value will be: ImVec2(0, 0)
-    """
-    pass
-
-# IMGUI_API void          TableBeginInitMemory(ImGuiTable* table, int columns_count);    /* original C++ signature */
-def table_begin_init_memory(table: Table, columns_count: int) -> None:
-    pass
-
-# IMGUI_API void          TableBeginApplyRequests(ImGuiTable* table);    /* original C++ signature */
-def table_begin_apply_requests(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableSetupDrawChannels(ImGuiTable* table);    /* original C++ signature */
-def table_setup_draw_channels(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableUpdateLayout(ImGuiTable* table);    /* original C++ signature */
-def table_update_layout(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableUpdateBorders(ImGuiTable* table);    /* original C++ signature */
-def table_update_borders(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableUpdateColumnsWeightFromWidth(ImGuiTable* table);    /* original C++ signature */
-def table_update_columns_weight_from_width(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableApplyExternalUnclipRect(ImGuiTable* table, ImRect& rect);    /* original C++ signature */
-def table_apply_external_unclip_rect(table: Table, rect: ImRect) -> None:
-    pass
-
-# IMGUI_API void          TableDrawBorders(ImGuiTable* table);    /* original C++ signature */
-def table_draw_borders(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableDrawDefaultContextMenu(ImGuiTable* table, ImGuiTableFlags flags_for_section_to_display);    /* original C++ signature */
-def table_draw_default_context_menu(table: Table, flags_for_section_to_display: TableFlags) -> None:
-    pass
-
-# IMGUI_API bool          TableBeginContextMenuPopup(ImGuiTable* table);    /* original C++ signature */
-def table_begin_context_menu_popup(table: Table) -> bool:
-    pass
-
-# IMGUI_API void          TableMergeDrawChannels(ImGuiTable* table);    /* original C++ signature */
-def table_merge_draw_channels(table: Table) -> None:
-    pass
-
-# inline ImGuiTableInstanceData*  TableGetInstanceData(ImGuiTable* table, int instance_no) { if (instance_no == 0) return &table->InstanceDataFirst; return &table->InstanceDataExtra[instance_no - 1]; }    /* original C++ signature */
-def table_get_instance_data(table: Table, instance_no: int) -> TableInstanceData:
-    """(private API)"""
-    pass
-
-# inline ImGuiID                  TableGetInstanceID(ImGuiTable* table, int instance_no)   { return TableGetInstanceData(table, instance_no)->TableInstanceID; }    /* original C++ signature */
-def table_get_instance_id(table: Table, instance_no: int) -> ID:
-    """(private API)"""
-    pass
-
-# IMGUI_API void          TableFixDisplayOrder(ImGuiTable* table);    /* original C++ signature */
-def table_fix_display_order(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableSortSpecsSanitize(ImGuiTable* table);    /* original C++ signature */
-def table_sort_specs_sanitize(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableSortSpecsBuild(ImGuiTable* table);    /* original C++ signature */
-def table_sort_specs_build(table: Table) -> None:
-    pass
-
-# IMGUI_API ImGuiSortDirection TableGetColumnNextSortDirection(ImGuiTableColumn* column);    /* original C++ signature */
-def table_get_column_next_sort_direction(column: TableColumn) -> SortDirection:
-    pass
-
-# IMGUI_API void          TableFixColumnSortDirection(ImGuiTable* table, ImGuiTableColumn* column);    /* original C++ signature */
-def table_fix_column_sort_direction(table: Table, column: TableColumn) -> None:
-    pass
-
-# IMGUI_API float         TableGetColumnWidthAuto(ImGuiTable* table, ImGuiTableColumn* column);    /* original C++ signature */
-def table_get_column_width_auto(table: Table, column: TableColumn) -> float:
-    pass
-
-# IMGUI_API void          TableBeginRow(ImGuiTable* table);    /* original C++ signature */
-def table_begin_row(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableEndRow(ImGuiTable* table);    /* original C++ signature */
-def table_end_row(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableBeginCell(ImGuiTable* table, int column_n);    /* original C++ signature */
-def table_begin_cell(table: Table, column_n: int) -> None:
-    pass
-
-# IMGUI_API void          TableEndCell(ImGuiTable* table);    /* original C++ signature */
-def table_end_cell(table: Table) -> None:
-    pass
-
-# IMGUI_API ImRect        TableGetCellBgRect(const ImGuiTable* table, int column_n);    /* original C++ signature */
-def table_get_cell_bg_rect(table: Table, column_n: int) -> ImRect:
-    pass
-
-# IMGUI_API const char*   TableGetColumnName(const ImGuiTable* table, int column_n);    /* original C++ signature */
-def table_get_column_name(table: Table, column_n: int) -> str:
-    pass
-
-# IMGUI_API ImGuiID       TableGetColumnResizeID(ImGuiTable* table, int column_n, int instance_no = 0);    /* original C++ signature */
-def table_get_column_resize_id(table: Table, column_n: int, instance_no: int = 0) -> ID:
-    pass
-
-# IMGUI_API float         TableCalcMaxColumnWidth(const ImGuiTable* table, int column_n);    /* original C++ signature */
-def table_calc_max_column_width(table: Table, column_n: int) -> float:
-    pass
-
-# IMGUI_API void          TableSetColumnWidthAutoSingle(ImGuiTable* table, int column_n);    /* original C++ signature */
-def table_set_column_width_auto_single(table: Table, column_n: int) -> None:
-    pass
-
-# IMGUI_API void          TableSetColumnWidthAutoAll(ImGuiTable* table);    /* original C++ signature */
-def table_set_column_width_auto_all(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableSetColumnDisplayOrder(ImGuiTable* table, int column_n, int dst_order);    /* original C++ signature */
-def table_set_column_display_order(table: Table, column_n: int, dst_order: int) -> None:
-    pass
-
-# IMGUI_API void          TableQueueSetColumnDisplayOrder(ImGuiTable* table, int column_n, int dst_order);    /* original C++ signature */
-def table_queue_set_column_display_order(table: Table, column_n: int, dst_order: int) -> None:
-    pass
-
-# IMGUI_API void          TableRemove(ImGuiTable* table);    /* original C++ signature */
-def table_remove(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableGcCompactTransientBuffers(ImGuiTable* table);    /* original C++ signature */
-@overload
-def table_gc_compact_transient_buffers(table: Table) -> None:
-    pass
-
-# IMGUI_API void          TableGcCompactTransientBuffers(ImGuiTableTempData* table);    /* original C++ signature */
-@overload
-def table_gc_compact_transient_buffers(table: TableTempData) -> None:
-    pass
-
-# IMGUI_API void          TableGcCompactSettings();    /* original C++ signature */
-def table_gc_compact_settings() -> None:
-    pass
-
-# Tables: Settings
-# IMGUI_API void                  TableLoadSettings(ImGuiTable* table);    /* original C++ signature */
-def table_load_settings(table: Table) -> None:
-    pass
-
-# IMGUI_API void                  TableSaveSettings(ImGuiTable* table);    /* original C++ signature */
-def table_save_settings(table: Table) -> None:
-    pass
-
-# IMGUI_API void                  TableResetSettings(ImGuiTable* table);    /* original C++ signature */
-def table_reset_settings(table: Table) -> None:
-    pass
-
-# IMGUI_API ImGuiTableSettings*   TableGetBoundSettings(ImGuiTable* table);    /* original C++ signature */
-def table_get_bound_settings(table: Table) -> TableSettings:
-    pass
-
-# IMGUI_API void                  TableSettingsAddSettingsHandler();    /* original C++ signature */
-def table_settings_add_settings_handler() -> None:
-    pass
-
-# IMGUI_API ImGuiTableSettings*   TableSettingsCreate(ImGuiID id, int columns_count);    /* original C++ signature */
-def table_settings_create(id_: ID, columns_count: int) -> TableSettings:
-    pass
-
-# IMGUI_API ImGuiTableSettings*   TableSettingsFindByID(ImGuiID id);    /* original C++ signature */
-def table_settings_find_by_id(id_: ID) -> TableSettings:
     pass
 
 # inline    ImGuiTabBar*  GetCurrentTabBar() { ImGuiContext& g = *GImGui; return g.CurrentTabBar; }    /* original C++ signature */
@@ -7483,8 +7565,10 @@ def render_color_rect_with_alpha_checkerboard(
 ) -> None:
     pass
 
-# IMGUI_API void          RenderNavCursor(const ImRect& bb, ImGuiID id, ImGuiNavRenderCursorFlags flags = ImGuiNavRenderCursorFlags_None);     /* original C++ signature */
-def render_nav_cursor(bb: ImRect, id_: ID, flags: NavRenderCursorFlags = NavRenderCursorFlags_None) -> None:
+# IMGUI_API void          RenderNavCursor(const ImRect& bb, ImGuiID id, ImGuiNavRenderCursorFlags flags = ImGuiNavRenderCursorFlags_None, float rounding = -1.0f);     /* original C++ signature */
+def render_nav_cursor(
+    bb: ImRect, id_: ID, flags: NavRenderCursorFlags = NavRenderCursorFlags_None, rounding: float = -1.0
+) -> None:
     """Navigation highlight"""
     pass
 
@@ -7971,8 +8055,8 @@ def debug_node_tab_bar(tab_bar: TabBar, label: str) -> None:
 def debug_node_table(table: Table) -> None:
     pass
 
-# IMGUI_API void          DebugNodeTableSettings(ImGuiTableSettings* settings);    /* original C++ signature */
-def debug_node_table_settings(settings: TableSettings) -> None:
+# IMGUI_API void          DebugNodeTableSettings(ImGuiTableSettings* settings, ImGuiTable* table);    /* original C++ signature */
+def debug_node_table_settings(settings: TableSettings, table: Table) -> None:
     pass
 
 # IMGUI_API void          DebugNodeInputTextState(ImGuiInputTextState* state);    /* original C++ signature */

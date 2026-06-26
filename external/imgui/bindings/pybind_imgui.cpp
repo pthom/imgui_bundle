@@ -2612,7 +2612,7 @@ void py_init_module_imgui_main(nb::module_& m)
         "append into the specified column. Return True when column is visible.");
 
     m.def("table_setup_column",
-        nb::overload_cast<const char *, ImGuiTableColumnFlags, float, ImGuiID>(ImGui::TableSetupColumn), nb::arg("label"), nb::arg("flags") = 0, nb::arg("init_width_or_weight") = 0.0f, nb::arg("user_id") = 0);
+        nb::overload_cast<const char *, ImGuiTableColumnFlags, float, ImGuiID>(ImGui::TableSetupColumn), nb::arg("label"), nb::arg("flags") = 0, nb::arg("init_width_or_weight") = 0.0f, nb::arg("user_data") = 0);
 
     m.def("table_setup_scroll_freeze",
         nb::overload_cast<int, int>(ImGui::TableSetupScrollFreeze),
@@ -3831,6 +3831,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("table_angled_headers_text_align", ImGuiStyleVar_TableAngledHeadersTextAlign, "ImVec2  TableAngledHeadersTextAlign")
             .value("tree_lines_size", ImGuiStyleVar_TreeLinesSize, "float     TreeLinesSize")
             .value("tree_lines_rounding", ImGuiStyleVar_TreeLinesRounding, "float     TreeLinesRounding")
+            .value("menu_item_rounding", ImGuiStyleVar_MenuItemRounding, "float     MenuItemRounding")
+            .value("selectable_rounding", ImGuiStyleVar_SelectableRounding, "float     SelectableRounding")
             .value("drag_drop_target_rounding", ImGuiStyleVar_DragDropTargetRounding, "float     DragDropTargetRounding")
             .value("button_text_align", ImGuiStyleVar_ButtonTextAlign, "ImVec2    ButtonTextAlign")
             .value("selectable_text_align", ImGuiStyleVar_SelectableTextAlign, "ImVec2    SelectableTextAlign")
@@ -4054,7 +4056,7 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImGuiTableColumnSortSpecs =
         nb::class_<ImGuiTableColumnSortSpecs>
             (m, "TableColumnSortSpecs", "Sorting specification for one column of a table (sizeof == 12 bytes)")
-        .def_rw("column_user_id", &ImGuiTableColumnSortSpecs::ColumnUserID, "User id of the column (if specified by a TableSetupColumn() call)")
+        .def_rw("column_user_id", &ImGuiTableColumnSortSpecs::ColumnUserID, "User data for the column (if specified by a TableSetupColumn() call in the 'ImGuiID user_data' field). FIXME: Should be called 'UserData'..")
         .def_rw("column_index", &ImGuiTableColumnSortSpecs::ColumnIndex, "Index of the column")
         .def_rw("sort_order", &ImGuiTableColumnSortSpecs::SortOrder, "Index within parent ImGuiTableSortSpecs (always stored in order starting from 0, tables sorted on a single criteria will always have a 0 here)")
         .def_rw("sort_direction", &ImGuiTableColumnSortSpecs::SortDirection, "ImGuiSortDirection_Ascending or ImGuiSortDirection_Descending")
@@ -6289,6 +6291,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tree_lines_flags", &ImGuiStyle::TreeLinesFlags, "Default way to draw lines connecting TreeNode hierarchy. ImGuiTreeNodeFlags_DrawLinesNone or ImGuiTreeNodeFlags_DrawLinesFull or ImGuiTreeNodeFlags_DrawLinesToNodes.")
         .def_rw("tree_lines_size", &ImGuiStyle::TreeLinesSize, "Thickness of outlines when using ImGuiTreeNodeFlags_DrawLines.")
         .def_rw("tree_lines_rounding", &ImGuiStyle::TreeLinesRounding, "Radius of lines connecting child nodes to the vertical line.")
+        .def_rw("menu_item_rounding", &ImGuiStyle::MenuItemRounding, "Radius of MenuItem, BeginMenu rounding.")
+        .def_rw("selectable_rounding", &ImGuiStyle::SelectableRounding, "Radius of Selectable rounding. MODIFYING THIS IS DISCOURAGED. CONTIGUOUS SELECTIONS WILL NOT LOOK RIGHT. (#7589)")
         .def_rw("drag_drop_target_rounding", &ImGuiStyle::DragDropTargetRounding, "Radius of the drag and drop target frame. When <0.0: use FrameRounding.")
         .def_rw("drag_drop_target_border_size", &ImGuiStyle::DragDropTargetBorderSize, "Thickness of the drag and drop target border.")
         .def_rw("drag_drop_target_padding", &ImGuiStyle::DragDropTargetPadding, "Size to expand the drag and drop target from actual target item size.")
@@ -7016,7 +7020,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("select_on_click_release", ImGuiMultiSelectFlags_SelectOnClickRelease, "Apply selection on mouse release when clicking an unselected item. Allow dragging an unselected item without altering selection.")
             .value("nav_wrap_x", ImGuiMultiSelectFlags_NavWrapX, "[Temporary] Enable navigation wrapping on X axis. Provided as a convenience because we don't have a design for the general Nav API for this yet. When the more general feature be public we may obsolete this flag in favor of new one.")
             .value("no_select_on_right_click", ImGuiMultiSelectFlags_NoSelectOnRightClick, "Disable default right-click processing, which selects item on mouse down, and is designed for context-menus.")
-            .value("select_on_mask_", ImGuiMultiSelectFlags_SelectOnMask_, "");
+            .value("select_on_mask_", ImGuiMultiSelectFlags_SelectOnMask_, "")
+            .value("checkbox_mode_", ImGuiMultiSelectFlags_CheckboxMode_, "[Internal]");
 
 
     auto pyClassImGuiMultiSelectIO =
@@ -7659,8 +7664,8 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::class_<ImTextureRect>
             (m, "ImTextureRect", " Coordinates of a rectangle within a texture.\n When a texture is in ImTextureStatus_WantUpdates state, we provide a list of individual rectangles to copy to the graphics system.\n You may use ImTextureData::Updates[] for the list, or ImTextureData::UpdateBox for a single bounding box.")
         .def(nb::init<>()) // implicit default constructor
-        .def_rw("x", &ImTextureRect::x, "Upper-left coordinates of rectangle to update")
-        .def_rw("y", &ImTextureRect::y, "Upper-left coordinates of rectangle to update")
+        .def_rw("x", &ImTextureRect::x, "Upper-left coordinates of rectangle to update, within the parent Pixels[] array.")
+        .def_rw("y", &ImTextureRect::y, "Upper-left coordinates of rectangle to update, within the parent Pixels[] array.")
         .def_rw("w", &ImTextureRect::w, "Size of rectangle to update (in pixels)")
         .def_rw("h", &ImTextureRect::h, "Size of rectangle to update (in pixels)")
         ;
@@ -7677,7 +7682,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("width", &ImTextureData::Width, "w    r   // Texture width")
         .def_rw("height", &ImTextureData::Height, "w    r   // Texture height")
         .def_rw("bytes_per_pixel", &ImTextureData::BytesPerPixel, "w    r   // 4 or 1")
-        .def_rw("pixels", &ImTextureData::Pixels, "w    r   // Pointer to buffer holding 'Width*Height' pixels and 'Width*Height*BytesPerPixels' bytes.")
+        .def_rw("pixels", &ImTextureData::Pixels, "w    r   // Pointer to whole texture buffer holding 'Width*Height' pixels and 'Width*Height*BytesPerPixels' bytes.")
         .def_rw("used_rect", &ImTextureData::UsedRect, "w    r   // Bounding box encompassing all past and queued Updates[].")
         .def_rw("update_rect", &ImTextureData::UpdateRect, "w    r   // Bounding box encompassing all queued Updates[].")
         .def_rw("updates", &ImTextureData::Updates, "w    r   // Array of individual updates.")

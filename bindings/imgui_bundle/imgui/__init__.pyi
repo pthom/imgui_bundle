@@ -1499,7 +1499,7 @@ def text_link_open_url(label: str, url: Optional[str] = None) -> bool:
 # Widgets: Images
 # - Read about ImTextureID/ImTextureRef  here: https://github.com/ocornut/imgui/wiki/Image-Loading-and-Displaying-Examples
 # - 'uv0' and 'uv1' are texture coordinates. Read about them from the same link above.
-# - Image() pads adds style.ImageBorderSize on each side, ImageButton() adds style.FramePadding on each side.
+# - Image() adds style.ImageBorderSize on each side, ImageButton() adds style.FramePadding on each side.
 # - ImageButton() draws a background based on regular Button() color + optionally an inner background if specified.
 # - An obsolete version of Image(), before 1.91.9 (March 2025), had a 'tint_col' parameter which is now supported by the ImageWithBg() function.
 # IMGUI_API void          Image(ImTextureRef tex_ref, const ImVec2& image_size, const ImVec2& uv0 = ImVec2(0, 0), const ImVec2& uv1 = ImVec2(1, 1));    /* original C++ signature */
@@ -2251,7 +2251,7 @@ def value(prefix: str, v: float, float_format: Optional[str] = None) -> None:
 # - Use BeginMenuBar() on a window ImGuiWindowFlags_MenuBar to append to its menu bar.
 # - Use BeginMainMenuBar() to create a menu bar at the top of the screen and append to it.
 # - Use BeginMenu() to create a menu. You can call BeginMenu() multiple time with the same identifier to append more items to it.
-# - Not that MenuItem() keyboardshortcuts are displayed as a convenience but _not processed_ by Dear ImGui at the moment.
+# - Note that MenuItem() keyboard shortcuts are displayed as a convenience but _not processed_ by Dear ImGui at the moment.
 # IMGUI_API bool          BeginMenuBar();                                                         /* original C++ signature */
 def begin_menu_bar() -> bool:
     """append to menu-bar of current window (requires ImGuiWindowFlags_MenuBar flag set on parent window)."""
@@ -2471,16 +2471,17 @@ def table_set_column_index(column_n: int) -> bool:
     pass
 
 # Tables: Headers & Columns declaration
-# - Use TableSetupColumn() to specify label, resizing policy, default width/weight, id, various other flags etc.
+# - Use TableSetupColumn() to specify label, resizing policy, default width/weight, various other flags etc.
+#   (the trailing 'ImGuiID user_data', which used to be referred to as 'ImGuiID user_id', is merely user data that is blindly copied in ImGuiTableColumnSortSpecs).
 # - Use TableHeadersRow() to create a header row and automatically submit a TableHeader() for each column.
 #   Headers are required to perform: reordering, sorting, and opening the context menu.
 #   The context menu can also be made available in columns body using ImGuiTableFlags_ContextMenuInBody.
 # - You may manually submit headers using TableNextRow() + TableHeader() calls, but this is only useful in
 #   some advanced use cases (e.g. adding custom widgets in header row).
 # - Use TableSetupScrollFreeze() to lock columns/rows so they stay visible when scrolled. When freezing columns you would usually also use ImGuiTableColumnFlags_NoHide on them.
-# IMGUI_API void          TableSetupColumn(const char* label, ImGuiTableColumnFlags flags = 0, float init_width_or_weight = 0.0f, ImGuiID user_id = 0);    /* original C++ signature */
+# IMGUI_API void          TableSetupColumn(const char* label, ImGuiTableColumnFlags flags = 0, float init_width_or_weight = 0.0f, ImGuiID user_data = 0);    /* original C++ signature */
 def table_setup_column(
-    label: str, flags: TableColumnFlags = 0, init_width_or_weight: float = 0.0, user_id: ID = 0
+    label: str, flags: TableColumnFlags = 0, init_width_or_weight: float = 0.0, user_data: ID = 0
 ) -> None:
     pass
 
@@ -4814,25 +4815,29 @@ class StyleVar_(enum.IntFlag):
     tree_lines_size = enum.auto()  # (= 34)  # float     TreeLinesSize
     # ImGuiStyleVar_TreeLinesRounding,            /* original C++ signature */
     tree_lines_rounding = enum.auto()  # (= 35)  # float     TreeLinesRounding
+    # ImGuiStyleVar_MenuItemRounding,             /* original C++ signature */
+    menu_item_rounding = enum.auto()  # (= 36)  # float     MenuItemRounding
+    # ImGuiStyleVar_SelectableRounding,           /* original C++ signature */
+    selectable_rounding = enum.auto()  # (= 37)  # float     SelectableRounding
     # ImGuiStyleVar_DragDropTargetRounding,       /* original C++ signature */
-    drag_drop_target_rounding = enum.auto()  # (= 36)  # float     DragDropTargetRounding
+    drag_drop_target_rounding = enum.auto()  # (= 38)  # float     DragDropTargetRounding
     # ImGuiStyleVar_ButtonTextAlign,              /* original C++ signature */
-    button_text_align = enum.auto()  # (= 37)  # ImVec2    ButtonTextAlign
+    button_text_align = enum.auto()  # (= 39)  # ImVec2    ButtonTextAlign
     # ImGuiStyleVar_SelectableTextAlign,          /* original C++ signature */
-    selectable_text_align = enum.auto()  # (= 38)  # ImVec2    SelectableTextAlign
+    selectable_text_align = enum.auto()  # (= 40)  # ImVec2    SelectableTextAlign
     # ImGuiStyleVar_SeparatorSize,                /* original C++ signature */
-    separator_size = enum.auto()  # (= 39)  # float     SeparatorSize
+    separator_size = enum.auto()  # (= 41)  # float     SeparatorSize
     # ImGuiStyleVar_SeparatorTextBorderSize,      /* original C++ signature */
-    separator_text_border_size = enum.auto()  # (= 40)  # float     SeparatorTextBorderSize
+    separator_text_border_size = enum.auto()  # (= 42)  # float     SeparatorTextBorderSize
     # ImGuiStyleVar_SeparatorTextAlign,           /* original C++ signature */
-    separator_text_align = enum.auto()  # (= 41)  # ImVec2    SeparatorTextAlign
+    separator_text_align = enum.auto()  # (= 43)  # ImVec2    SeparatorTextAlign
     # ImGuiStyleVar_SeparatorTextPadding,         /* original C++ signature */
-    separator_text_padding = enum.auto()  # (= 42)  # ImVec2    SeparatorTextPadding
+    separator_text_padding = enum.auto()  # (= 44)  # ImVec2    SeparatorTextPadding
     # ImGuiStyleVar_DockingSeparatorSize,         /* original C++ signature */
-    docking_separator_size = enum.auto()  # (= 43)  # float     DockingSeparatorSize
+    docking_separator_size = enum.auto()  # (= 45)  # float     DockingSeparatorSize
     # ImGuiStyleVar_COUNT    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 44)
+    count = enum.auto()  # (= 46)
 
 class ButtonFlags_(enum.IntFlag):
     """Flags for InvisibleButton() [extended in imgui_internal.h]"""
@@ -5445,7 +5450,7 @@ class TableColumnSortSpecs:
     """Sorting specification for one column of a table (sizeof == 12 bytes)"""
 
     # ImGuiID                     ColumnUserID;    /* original C++ signature */
-    column_user_id: ID  # User id of the column (if specified by a TableSetupColumn() call)
+    column_user_id: ID  # User data for the column (if specified by a TableSetupColumn() call in the 'ImGuiID user_data' field). FIXME: Should be called 'UserData'..
     # ImS16                       ColumnIndex;    /* original C++ signature */
     column_index: ImS16  # Index of the column
     # ImS16                       SortOrder;    /* original C++ signature */
@@ -8623,6 +8628,10 @@ class Style:
     tree_lines_size: float  # Thickness of outlines when using ImGuiTreeNodeFlags_DrawLines.
     # float       TreeLinesRounding;    /* original C++ signature */
     tree_lines_rounding: float  # Radius of lines connecting child nodes to the vertical line.
+    # float       MenuItemRounding;    /* original C++ signature */
+    menu_item_rounding: float  # Radius of MenuItem, BeginMenu rounding.
+    # float       SelectableRounding;    /* original C++ signature */
+    selectable_rounding: float  # Radius of Selectable rounding. MODIFYING THIS IS DISCOURAGED. CONTIGUOUS SELECTIONS WILL NOT LOOK RIGHT. (#7589)
     # float       DragDropTargetRounding;    /* original C++ signature */
     drag_drop_target_rounding: float  # Radius of the drag and drop target frame. When <0.0: use FrameRounding.
     # float       DragDropTargetBorderSize;    /* original C++ signature */
@@ -9897,6 +9906,8 @@ class MultiSelectFlags_(enum.IntFlag):
     select_on_mask_ = (
         enum.auto()
     )  # (= MultiSelectFlags_SelectOnAuto | MultiSelectFlags_SelectOnClickAlways | MultiSelectFlags_SelectOnClickRelease)
+    # ImGuiMultiSelectFlags_CheckboxMode_         = 1 << 20,      /* original C++ signature */
+    checkbox_mode_ = enum.auto()  # (= 1 << 20)  # [Internal]
 
     # Obsolete names
 
@@ -10862,9 +10873,9 @@ class ImTextureRect:
     """
 
     # unsigned short      x,     /* original C++ signature */
-    x: int  # Upper-left coordinates of rectangle to update
+    x: int  # Upper-left coordinates of rectangle to update, within the parent Pixels[] array.
     # y;    /* original C++ signature */
-    y: int  # Upper-left coordinates of rectangle to update
+    y: int  # Upper-left coordinates of rectangle to update, within the parent Pixels[] array.
     # unsigned short      w,     /* original C++ signature */
     w: int  # Size of rectangle to update (in pixels)
     # h;    /* original C++ signature */
@@ -10902,9 +10913,7 @@ class ImTextureData:
     # int                 BytesPerPixel;    /* original C++ signature */
     bytes_per_pixel: int  # w    r   // 4 or 1
     # uchar*      Pixels;    /* original C++ signature */
-    pixels: (
-        uchar  # w    r   // Pointer to buffer holding 'Width*Height' pixels and 'Width*Height*BytesPerPixels' bytes.
-    )
+    pixels: uchar  # w    r   // Pointer to whole texture buffer holding 'Width*Height' pixels and 'Width*Height*BytesPerPixels' bytes.
     # ImTextureRect       UsedRect;    /* original C++ signature */
     used_rect: ImTextureRect  # w    r   // Bounding box encompassing all past and queued Updates[].
     # ImTextureRect       UpdateRect;    /* original C++ signature */
