@@ -14,7 +14,14 @@ CPP_HEADERS_DIR = THIS_DIR + "/../imspinner"
 
 def main():
     print("autogenerate_imspinner")
-    input_cpp_header = CPP_HEADERS_DIR + "/imspinner.h"
+    # We do not include imspinner_compat.h (template heavy), cimspinner_h (C API)
+    input_cpp_headers = [
+        CPP_HEADERS_DIR + "/imspinner.h",
+        CPP_HEADERS_DIR + "/imspinner_dots.h",
+        CPP_HEADERS_DIR + "/imspinner_text.h",
+        CPP_HEADERS_DIR + "/imspinner_bars.h",
+        CPP_HEADERS_DIR + "/imspinner_shapes.h",
+    ]
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imspinner.cpp"
     output_stub_pyi_file = STUB_DIR + "/imspinner.pyi"
 
@@ -24,8 +31,9 @@ def main():
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
     options.namespaces_root = ["ImSpinner"]
-    options.srcmlcpp_options.header_filter_acceptable__regex = "_H_$"
-    options.fn_exclude_by_name__regex = "min_patched|SpinnerCamera"
+
+    options.srcmlcpp_options.header_filter_acceptable__regex = "_H_$|_IMSPINNER_BARS_INTERNAL_"  # see imspinner_bars.h
+    options.fn_exclude_by_name__regex = r"^(?!Spinner)|SpinnerCamera"  # Exclude all functions whose name does not stat by Spinner
     options.srcmlcpp_options.ignored_warning_parts = [
         "Ignoring template function",
         "unhandled tag template",
@@ -40,10 +48,9 @@ def main():
 
     options.globals_vars_include_by_name__regex = r"^PI_|white|red"
 
-
-    litgen.write_generated_code_for_file(
+    litgen.write_generated_code_for_files(
         options,
-        input_cpp_header_file=input_cpp_header,
+        input_cpp_header_files=input_cpp_headers,
         output_cpp_pydef_file=output_cpp_pydef_file,
         output_stub_pyi_file=output_stub_pyi_file,
         omit_boxed_types=True,

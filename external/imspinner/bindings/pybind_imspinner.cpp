@@ -11,7 +11,7 @@
 #include <nanobind/stl/function.h>
 #include <nanobind/ndarray.h>
 
-#include "imspinner/imspinner.h"  // Change this include to the library you are binding
+#include "imspinner/imspinner_demo.h"
 
 namespace nb = nanobind;
 
@@ -56,66 +56,6 @@ void py_init_module_imspinner(nb::module_& m)
     m.attr("PI_DIV_4") = (float) IM_PI / 4.f;
     m.attr("PI_DIV_2") = (float) IM_PI / 2.f;
     m.attr("PI_2") = (float) IM_PI * 2.f;
-
-    m.def("color_alpha",
-        ImSpinner::color_alpha, nb::arg("c"), nb::arg("alpha"));
-
-    m.def("damped_spring",
-        ImSpinner::damped_spring, nb::arg("mass"), nb::arg("stiffness"), nb::arg("damping"), nb::arg("time"), nb::arg("a") = ImSpinner::PI_DIV_2, nb::arg("b") = ImSpinner::PI_DIV_2);
-
-    m.def("damped_gravity",
-        ImSpinner::damped_gravity, nb::arg("limtime"));
-
-    m.def("damped_trifolium",
-        ImSpinner::damped_trifolium, nb::arg("limtime"), nb::arg("a") = 0.f, nb::arg("b") = 1.f);
-
-    m.def("damped_inoutelastic",
-        ImSpinner::damped_inoutelastic, nb::arg("t"), nb::arg("amplitude"), nb::arg("period"));
-
-    m.def("damped_infinity",
-        ImSpinner::damped_infinity, nb::arg("t"), nb::arg("a"));
-
-    m.def("ease_inquad",
-        ImSpinner::ease_inquad, nb::arg("time"));
-
-    m.def("ease_outquad",
-        ImSpinner::ease_outquad, nb::arg("time"));
-
-    m.def("ease_inoutquad",
-        nb::overload_cast<float>(ImSpinner::ease_inoutquad), nb::arg("t"));
-
-    m.def("ease_inoutquad",
-        nb::overload_cast<float *>(ImSpinner::ease_inoutquad), nb::arg("p"));
-
-    m.def("ease_outcubic",
-        ImSpinner::ease_outcubic, nb::arg("t"));
-
-    m.def("ease_inexpo",
-        ImSpinner::ease_inexpo, nb::arg("t"));
-
-    m.def("ease_inoutexpo",
-        nb::overload_cast<float>(ImSpinner::ease_inoutexpo), nb::arg("t"));
-
-    m.def("ease_inoutexpo",
-        nb::overload_cast<float *>(ImSpinner::ease_inoutexpo), nb::arg("p"));
-
-    m.def("ease_spring",
-        ImSpinner::ease_spring, nb::arg("p"));
-
-    m.def("ease_gravity",
-        ImSpinner::ease_gravity, nb::arg("p"));
-
-    m.def("ease_infinity",
-        ImSpinner::ease_infinity, nb::arg("p"));
-
-    m.def("ease_inoutelastic",
-        ImSpinner::ease_inoutelastic, nb::arg("p"));
-
-    m.def("ease_sine",
-        ImSpinner::ease_sine, nb::arg("p"));
-
-    m.def("ease_damping",
-        ImSpinner::ease_damping, nb::arg("p"));
 
 
     auto pyEnumease_mode =
@@ -452,215 +392,8 @@ void py_init_module_imspinner(nb::module_& m)
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bgcolor").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 12, nb::arg("mdots") = 6, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bgcolor: white");
 
-    m.def("spinner_bounce_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 3, int mode = 0)
-        {
-            auto SpinnerBounceDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 3, int mode = 0)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerBounceDots(label, radius, thickness, color_or_default, speed, dots, mode);
-            };
-
-            SpinnerBounceDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 3, nb::arg("mode") = 0,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_zip_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 5)
-        {
-            auto SpinnerZipDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 5)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerZipDots(label, radius, thickness, color_or_default, speed, dots);
-            };
-
-            SpinnerZipDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 5,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_dots_to_points",
-        [](const char * label, float radius, float thickness, float offset_k, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.8f, size_t dots = 5)
-        {
-            auto SpinnerDotsToPoints_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, float offset_k, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.8f, size_t dots = 5)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerDotsToPoints(label, radius, thickness, offset_k, color_or_default, speed, dots);
-            };
-
-            SpinnerDotsToPoints_adapt_mutable_param_with_default_value(label, radius, thickness, offset_k, color, speed, dots);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("offset_k"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.8f, nb::arg("dots") = 5,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_dots_to_bar",
-        [](const char * label, float radius, float thickness, float offset_k, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 5)
-        {
-            auto SpinnerDotsToBar_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, float offset_k, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 5)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerDotsToBar(label, radius, thickness, offset_k, color_or_default, speed, dots);
-            };
-
-            SpinnerDotsToBar_adapt_mutable_param_with_default_value(label, radius, thickness, offset_k, color, speed, dots);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("offset_k"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 5,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_wave_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-        {
-            auto SpinnerWaveDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerWaveDots(label, radius, thickness, color_or_default, speed, lt);
-            };
-
-            SpinnerWaveDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_fade_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, int mode = 0)
-        {
-            auto SpinnerFadeDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, int mode = 0)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerFadeDots(label, radius, thickness, color_or_default, speed, lt, mode);
-            };
-
-            SpinnerFadeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, mode);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("mode") = 0,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_three_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-        {
-            auto SpinnerThreeDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerThreeDots(label, radius, thickness, color_or_default, speed, lt);
-            };
-
-            SpinnerThreeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_five_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-        {
-            auto SpinnerFiveDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImColor(0xffffffff);
-                }();
-
-                ImSpinner::SpinnerFiveDots(label, radius, thickness, color_or_default, speed, lt);
-            };
-
-            SpinnerFiveDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
-        "Python bindings defaults:\n    If color is None, then its default value will be: ImColor(0xffffffff)");
-
     m.def("spinner4_caleidospcope",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-        {
-            auto Spinner4Caleidospcope_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImColor(0xffffffff);
-                }();
-
-                ImSpinner::Spinner4Caleidospcope(label, radius, thickness, color_or_default, speed, lt);
-            };
-
-            Spinner4Caleidospcope_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
-        "Python bindings defaults:\n    If color is None, then its default value will be: ImColor(0xffffffff)");
-
-    m.def("spinner_multi_fade_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-        {
-            auto SpinnerMultiFadeDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerMultiFadeDots(label, radius, thickness, color_or_default, speed, lt);
-            };
-
-            SpinnerMultiFadeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+        ImSpinner::Spinner4Caleidospcope, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = 0xffffffff, nb::arg("speed") = 2.8f, nb::arg("lt") = 8);
 
     m.def("spinner_thick_to_sin",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int nt = 1, int lt = 8, int mode = 0)
@@ -683,27 +416,6 @@ void py_init_module_imspinner(nb::module_& m)
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("nt") = 1, nb::arg("lt") = 8, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
-    m.def("spinner_scale_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-        {
-            auto SpinnerScaleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerScaleDots(label, radius, thickness, color_or_default, speed, lt);
-            };
-
-            SpinnerScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
     m.def("spinner_square_spins",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f)
         {
@@ -723,90 +435,6 @@ void py_init_module_imspinner(nb::module_& m)
             SpinnerSquareSpins_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
         },
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_moving_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 3)
-        {
-            auto SpinnerMovingDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 3)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerMovingDots(label, radius, thickness, color_or_default, speed, dots);
-            };
-
-            SpinnerMovingDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 3,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_rotate_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int dots = 2, int mode = 0)
-        {
-            auto SpinnerRotateDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int dots = 2, int mode = 0)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerRotateDots(label, radius, thickness, color_or_default, speed, dots, mode);
-            };
-
-            SpinnerRotateDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 2, nb::arg("mode") = 0,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_orion_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int arcs = 4)
-        {
-            auto SpinnerOrionDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int arcs = 4)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerOrionDots(label, radius, thickness, color_or_default, speed, arcs);
-            };
-
-            SpinnerOrionDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_galaxy_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int arcs = 4)
-        {
-            auto SpinnerGalaxyDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int arcs = 4)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerGalaxyDots(label, radius, thickness, color_or_default, speed, arcs);
-            };
-
-            SpinnerGalaxyDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_twin_ang",
@@ -959,69 +587,6 @@ void py_init_module_imspinner(nb::module_& m)
         nb::arg("label"), nb::arg("radius1"), nb::arg("radius2"), nb::arg("thickness"), nb::arg("color1").none() = nb::none(), nb::arg("color2").none() = nb::none(), nb::arg("speed1") = 2.8f, nb::arg("speed2") = 2.5f, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color1: white\n        * color2: red");
 
-    m.def("spinner_inc_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6)
-        {
-            auto SpinnerIncDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerIncDots(label, radius, thickness, color_or_default, speed, dots);
-            };
-
-            SpinnerIncDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_inc_full_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 4)
-        {
-            auto SpinnerIncFullDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 4)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerIncFullDots(label, radius, thickness, color_or_default, speed, dots);
-            };
-
-            SpinnerIncFullDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 4,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_fade_bars",
-        [](const char * label, float w, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 3, bool scale = false)
-        {
-            auto SpinnerFadeBars_adapt_mutable_param_with_default_value = [](const char * label, float w, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 3, bool scale = false)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerFadeBars(label, w, color_or_default, speed, bars, scale);
-            };
-
-            SpinnerFadeBars_adapt_mutable_param_with_default_value(label, w, color, speed, bars, scale);
-        },
-        nb::arg("label"), nb::arg("w"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 3, nb::arg("scale") = false,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
     m.def("spinner_fade_tris",
         [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dim = 2, bool scale = false, int mode = 0)
         {
@@ -1041,48 +606,6 @@ void py_init_module_imspinner(nb::module_& m)
             SpinnerFadeTris_adapt_mutable_param_with_default_value(label, radius, color, speed, dim, scale, mode);
         },
         nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dim") = 2, nb::arg("scale") = false, nb::arg("mode") = 0,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_bars_rotate_fade",
-        [](const char * label, float rmin, float rmax, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 6)
-        {
-            auto SpinnerBarsRotateFade_adapt_mutable_param_with_default_value = [](const char * label, float rmin, float rmax, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 6)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerBarsRotateFade(label, rmin, rmax, thickness, color_or_default, speed, bars);
-            };
-
-            SpinnerBarsRotateFade_adapt_mutable_param_with_default_value(label, rmin, rmax, thickness, color, speed, bars);
-        },
-        nb::arg("label"), nb::arg("rmin"), nb::arg("rmax"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 6,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_bars_scale_middle",
-        [](const char * label, float w, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 3)
-        {
-            auto SpinnerBarsScaleMiddle_adapt_mutable_param_with_default_value = [](const char * label, float w, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 3)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerBarsScaleMiddle(label, w, color_or_default, speed, bars);
-            };
-
-            SpinnerBarsScaleMiddle_adapt_mutable_param_with_default_value(label, w, color, speed, bars);
-        },
-        nb::arg("label"), nb::arg("w"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 3,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_ang_twin",
@@ -1216,27 +739,6 @@ void py_init_module_imspinner(nb::module_& m)
             SpinnerAsciiSymbolPoints_adapt_mutable_param_with_default_value(label, text, radius, thickness, color, speed);
         },
         nb::arg("label"), nb::arg("text"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_text_fading",
-        [](const char * label, const char * text, float radius, float fsize, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f)
-        {
-            auto SpinnerTextFading_adapt_mutable_param_with_default_value = [](const char * label, const char * text, float radius, float fsize, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerTextFading(label, text, radius, fsize, color_or_default, speed);
-            };
-
-            SpinnerTextFading_adapt_mutable_param_with_default_value(label, text, radius, fsize, color, speed);
-        },
-        nb::arg("label"), nb::arg("text"), nb::arg("radius"), nb::arg("fsize"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_seven_segments",
@@ -1652,48 +1154,6 @@ void py_init_module_imspinner(nb::module_& m)
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("shadow") = false, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
-    m.def("spinner_inc_scale_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6, float angle = 0.f, int mode = 0)
-        {
-            auto SpinnerIncScaleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6, float angle = 0.f, int mode = 0)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerIncScaleDots(label, radius, thickness, color_or_default, speed, dots, angle, mode);
-            };
-
-            SpinnerIncScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, angle, mode);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6, nb::arg("angle") = 0.f, nb::arg("mode") = 0,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_some_scale_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6, int mode = 0)
-        {
-            auto SpinnerSomeScaleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6, int mode = 0)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerSomeScaleDots(label, radius, thickness, color_or_default, speed, dots, mode);
-            };
-
-            SpinnerSomeScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6, nb::arg("mode") = 0,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
     m.def("spinner_ang_triple",
         [](const char * label, float radius1, float radius2, float radius3, float thickness, const std::optional<const ImColor> & c1 = std::nullopt, const std::optional<const ImColor> & c2 = std::nullopt, const std::optional<const ImColor> & c3 = std::nullopt, float speed = 2.8f, float angle = IM_PI)
         {
@@ -1780,9 +1240,6 @@ void py_init_module_imspinner(nb::module_& m)
 
     m.def("spinner_gooey_balls",
         ImSpinner::SpinnerGooeyBalls, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
-
-    m.def("spinner_dots_loading",
-        ImSpinner::SpinnerDotsLoading, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("bg"), nb::arg("speed"));
 
     m.def("spinner_rotate_gooey_balls",
         ImSpinner::SpinnerRotateGooeyBalls, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls"), nb::arg("mode") = 0);
@@ -2212,7 +1669,7 @@ void py_init_module_imspinner(nb::module_& m)
         ImSpinner::SpinnerRainbowBalls, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls") = 5, nb::arg("mode") = 0, nb::arg("rings") = 1, nb::arg("mx") = 1);
 
     m.def("spinner_rainbow_shot",
-        ImSpinner::SpinnerRainbowShot, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls") = 5);
+        ImSpinner::SpinnerRainbowShot, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("balls") = 5, nb::arg("mode") = 0);
 
     m.def("spinner_spiral",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t arcs = 4)
@@ -2256,26 +1713,11 @@ void py_init_module_imspinner(nb::module_& m)
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
-    m.def("spinner_bar_chart_sine",
-        ImSpinner::SpinnerBarChartSine, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 5, nb::arg("mode") = 0);
-
-    m.def("spinner_bar_chart_adv_sine",
-        ImSpinner::SpinnerBarChartAdvSine, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
-
-    m.def("spinner_bar_chart_adv_sine_fade",
-        ImSpinner::SpinnerBarChartAdvSineFade, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
-
-    m.def("spinner_bar_chart_rainbow",
-        ImSpinner::SpinnerBarChartRainbow, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 5, nb::arg("mode") = 0);
-
     m.def("spinner_blocks",
         ImSpinner::SpinnerBlocks, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
 
     m.def("spinner_twin_blocks",
         ImSpinner::SpinnerTwinBlocks, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
-
-    m.def("spinner_square_random_dots",
-        ImSpinner::SpinnerSquareRandomDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
 
     m.def("spinner_scale_blocks",
         ImSpinner::SpinnerScaleBlocks, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
@@ -2285,12 +1727,6 @@ void py_init_module_imspinner(nb::module_& m)
 
     m.def("spinner_squish_square",
         ImSpinner::SpinnerSquishSquare, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"));
-
-    m.def("spinner_fluid",
-        ImSpinner::SpinnerFluid, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 3);
-
-    m.def("spinner_fluid_points",
-        ImSpinner::SpinnerFluidPoints, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("dots") = 6, nb::arg("delta") = 0.35f);
 
     m.def("spinner_arc_polar_fade",
         [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t arcs = 4, int mode = 0)
@@ -2353,72 +1789,6 @@ void py_init_module_imspinner(nb::module_& m)
             SpinnerCaleidoscope_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs, mode);
         },
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 6, nb::arg("mode") = 0,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_hbo_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, int mode = 0)
-        {
-            auto SpinnerHboDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, int mode = 0)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerHboDots(label, radius, thickness, color_or_default, minfade, ryk, speed, dots, mode);
-            };
-
-            SpinnerHboDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, dots, mode);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("dots") = 6, nb::arg("mode") = 0,
-        " spinner idea by nitz 'Chris Dailey'\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_moon_dots",
-        ImSpinner::SpinnerMoonDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("first"), nb::arg("second"), nb::arg("speed") = 1.1f);
-
-    m.def("spinner_twin_hbo_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, float delta = 0.f)
-        {
-            auto SpinnerTwinHboDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, float delta = 0.f)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerTwinHboDots(label, radius, thickness, color_or_default, minfade, ryk, speed, dots, delta);
-            };
-
-            SpinnerTwinHboDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, dots, delta);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("dots") = 6, nb::arg("delta") = 0.f,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner_three_dots_star",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, float delta = 0.f)
-        {
-            auto SpinnerThreeDotsStar_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, float delta = 0.f)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerThreeDotsStar(label, radius, thickness, color_or_default, minfade, ryk, speed, delta);
-            };
-
-            SpinnerThreeDotsStar_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, delta);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("delta") = 0.f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
     m.def("spinner_sine_arcs",
@@ -2498,27 +1868,6 @@ void py_init_module_imspinner(nb::module_& m)
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 8,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: half_white");
 
-    m.def("spinner_swing_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f)
-        {
-            auto SpinnerSwingDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerSwingDots(label, radius, thickness, color_or_default, speed);
-            };
-
-            SpinnerSwingDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
     m.def("spinner_circular_points",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.8f, int lines = 8)
         {
@@ -2582,48 +1931,6 @@ void py_init_module_imspinner(nb::module_& m)
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("ang_min") = 1.f, nb::arg("ang_max") = 1.f, nb::arg("speed") = 2.8f,
         "Python bindings defaults:\n    If color is None, then its default value will be: white");
 
-    m.def("spinner_dna_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = false)
-        {
-            auto SpinnerDnaDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = false)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::SpinnerDnaDots(label, radius, thickness, color_or_default, speed, lt, delta, mode);
-            };
-
-            SpinnerDnaDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = false,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
-    m.def("spinner3_smuggle_dots",
-        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = false)
-        {
-            auto Spinner3SmuggleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = false)
-            {
-
-                const ImColor& color_or_default = [&]() -> const ImColor {
-                    if (color.has_value())
-                        return color.value();
-                    else
-                        return ImSpinner::white;
-                }();
-
-                ImSpinner::Spinner3SmuggleDots(label, radius, thickness, color_or_default, speed, lt, delta, mode);
-            };
-
-            Spinner3SmuggleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
-        },
-        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 4.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = false,
-        "Python bindings defaults:\n    If color is None, then its default value will be: white");
-
     m.def("spinner_rotate_segments_pulsar",
         [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t arcs = 4, size_t layers = 1)
         {
@@ -2672,9 +1979,3366 @@ void py_init_module_imspinner(nb::module_& m)
         },
         nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("angle") = IM_PI, nb::arg("mode") = 0,
         "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: white");
-    // #endif
+
+    m.def("spinner_conic_grid",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerConicGrid_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return ImSpinner::white;
+                }();
+
+                ImSpinner::SpinnerConicGrid(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerConicGrid_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Conic grid:\n   a 2x2 block of conic-corner tiles (split by a \"+\" gap) with five dots at\n   the edge midpoints and the centre; the whole figure spins .5 turn / sec\n   (linear). Port of the CSS \"l8\" loader. mode 2 reverses the spin; mode 1\n   doubles it to a full turn.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_arc_arrow",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerArcArrow_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return ImSpinner::white;
+                }();
+
+                ImSpinner::SpinnerArcArrow(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerArcArrow_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Arc arrow:\n   a 270-degree ring arc with a triangular arrowhead at its leading tip,\n   spinning a full turn / sec (linear). Port of the CSS \"l11\" loader.\n   mode 1 drops the arrowhead (plain 3/4 ring); mode 2 reverses the spin.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_orbit_moon",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerOrbitMoon_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return ImSpinner::white;
+                }();
+
+                ImSpinner::SpinnerOrbitMoon(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerOrbitMoon_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Orbit moon:\n   an orange hub at the centre, a green planet orbiting it once per second,\n   and a small grey moon circling the planet twice as fast. Port of the CSS\n   \"l17\" loader (its three signature colours are fixed). mode 2 reverses.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_conic_wheels",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerConicWheels_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return ImSpinner::white;
+                }();
+
+                ImSpinner::SpinnerConicWheels(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerConicWheels_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Conic wheels:\n   three concentric four-colour pie discs spinning at different rates. In\n   CSS the parent's spin compounds onto the inner discs, giving effective\n   periods of 2s / 1s / 1.2s per turn. Port of the CSS \"l22\" loader (its\n   four signature colours are fixed). mode 2 reverses the spin.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dot_ring",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerDotRing_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return ImSpinner::white;
+                }();
+
+                ImSpinner::SpinnerDotRing(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerDotRing_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Dot ring:\n   twelve dots evenly spaced (30 deg apart) on a circle, alternating two\n   colours, the whole ring spinning one turn / 2 sec counter-clockwise.\n   Port of the CSS \"l30\" loader (its two signature colours are fixed).\n   mode 2 reverses the spin.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
     // #endif
     ////////////////////    </generated_from:imspinner.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:imspinner_dots.h>    ////////////////////
+    // #ifndef _IMSPINNER_DOTS_H_
+    //
+
+
+    m.def("spinner_bounce_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 3, int mode = 0)
+        {
+            auto SpinnerBounceDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 3, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBounceDots(label, radius, thickness, color_or_default, speed, dots, mode);
+            };
+
+            SpinnerBounceDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 3, nb::arg("mode") = 0,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_zip_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 5)
+        {
+            auto SpinnerZipDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 5)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerZipDots(label, radius, thickness, color_or_default, speed, dots);
+            };
+
+            SpinnerZipDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 5,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_to_points",
+        [](const char * label, float radius, float thickness, float offset_k, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.8f, size_t dots = 5)
+        {
+            auto SpinnerDotsToPoints_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, float offset_k, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.8f, size_t dots = 5)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsToPoints(label, radius, thickness, offset_k, color_or_default, speed, dots);
+            };
+
+            SpinnerDotsToPoints_adapt_mutable_param_with_default_value(label, radius, thickness, offset_k, color, speed, dots);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("offset_k"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.8f, nb::arg("dots") = 5,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_to_bar",
+        [](const char * label, float radius, float thickness, float offset_k, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 5)
+        {
+            auto SpinnerDotsToBar_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, float offset_k, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 5)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsToBar(label, radius, thickness, offset_k, color_or_default, speed, dots);
+            };
+
+            SpinnerDotsToBar_adapt_mutable_param_with_default_value(label, radius, thickness, offset_k, color, speed, dots);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("offset_k"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 5,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_wave_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+        {
+            auto SpinnerWaveDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerWaveDots(label, radius, thickness, color_or_default, speed, lt);
+            };
+
+            SpinnerWaveDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_fade_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, int mode = 0)
+        {
+            auto SpinnerFadeDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerFadeDots(label, radius, thickness, color_or_default, speed, lt, mode);
+            };
+
+            SpinnerFadeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("mode") = 0,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_three_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+        {
+            auto SpinnerThreeDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerThreeDots(label, radius, thickness, color_or_default, speed, lt);
+            };
+
+            SpinnerThreeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_five_dots",
+        ImSpinner::SpinnerFiveDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color") = 0xffffffff, nb::arg("speed") = 2.8f, nb::arg("lt") = 8);
+
+    m.def("spinner_multi_fade_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+        {
+            auto SpinnerMultiFadeDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerMultiFadeDots(label, radius, thickness, color_or_default, speed, lt);
+            };
+
+            SpinnerMultiFadeDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_scale_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+        {
+            auto SpinnerScaleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerScaleDots(label, radius, thickness, color_or_default, speed, lt);
+            };
+
+            SpinnerScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_moving_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 3)
+        {
+            auto SpinnerMovingDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 3)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerMovingDots(label, radius, thickness, color_or_default, speed, dots);
+            };
+
+            SpinnerMovingDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 3,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_rotate_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int dots = 2, int mode = 0)
+        {
+            auto SpinnerRotateDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int dots = 2, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerRotateDots(label, radius, thickness, color_or_default, speed, dots, mode);
+            };
+
+            SpinnerRotateDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 2, nb::arg("mode") = 0,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_orion_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int arcs = 4)
+        {
+            auto SpinnerOrionDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int arcs = 4)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerOrionDots(label, radius, thickness, color_or_default, speed, arcs);
+            };
+
+            SpinnerOrionDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_galaxy_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int arcs = 4)
+        {
+            auto SpinnerGalaxyDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int arcs = 4)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerGalaxyDots(label, radius, thickness, color_or_default, speed, arcs);
+            };
+
+            SpinnerGalaxyDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, arcs);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("arcs") = 4,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_inc_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6)
+        {
+            auto SpinnerIncDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerIncDots(label, radius, thickness, color_or_default, speed, dots);
+            };
+
+            SpinnerIncDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_inc_full_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 4)
+        {
+            auto SpinnerIncFullDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 4)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerIncFullDots(label, radius, thickness, color_or_default, speed, dots);
+            };
+
+            SpinnerIncFullDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 4,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_inc_scale_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6, float angle = 0.f, int mode = 0)
+        {
+            auto SpinnerIncScaleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6, float angle = 0.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerIncScaleDots(label, radius, thickness, color_or_default, speed, dots, angle, mode);
+            };
+
+            SpinnerIncScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, angle, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6, nb::arg("angle") = 0.f, nb::arg("mode") = 0,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_some_scale_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6, int mode = 0)
+        {
+            auto SpinnerSomeScaleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t dots = 6, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerSomeScaleDots(label, radius, thickness, color_or_default, speed, dots, mode);
+            };
+
+            SpinnerSomeScaleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("dots") = 6, nb::arg("mode") = 0,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_loading",
+        ImSpinner::SpinnerDotsLoading, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("bg"), nb::arg("speed"));
+
+    m.def("spinner_square_random_dots",
+        ImSpinner::SpinnerSquareRandomDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("bg"), nb::arg("color"), nb::arg("speed"));
+
+    m.def("spinner_hbo_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, int mode = 0)
+        {
+            auto SpinnerHboDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerHboDots(label, radius, thickness, color_or_default, minfade, ryk, speed, dots, mode);
+            };
+
+            SpinnerHboDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, dots, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("dots") = 6, nb::arg("mode") = 0,
+        " spinner idea by nitz 'Chris Dailey'\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_moon_dots",
+        ImSpinner::SpinnerMoonDots, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("first"), nb::arg("second"), nb::arg("speed") = 1.1f);
+
+    m.def("spinner_twin_hbo_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, float delta = 0.f)
+        {
+            auto SpinnerTwinHboDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, float delta = 0.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTwinHboDots(label, radius, thickness, color_or_default, minfade, ryk, speed, dots, delta);
+            };
+
+            SpinnerTwinHboDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, dots, delta);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("dots") = 6, nb::arg("delta") = 0.f,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_three_dots_star",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, float delta = 0.f)
+        {
+            auto SpinnerThreeDotsStar_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, float delta = 0.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerThreeDotsStar(label, radius, thickness, color_or_default, minfade, ryk, speed, delta);
+            };
+
+            SpinnerThreeDotsStar_adapt_mutable_param_with_default_value(label, radius, thickness, color, minfade, ryk, speed, delta);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("minfade") = 0.0f, nb::arg("ryk") = 0.f, nb::arg("speed") = 1.1f, nb::arg("delta") = 0.f,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_swing_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f)
+        {
+            auto SpinnerSwingDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerSwingDots(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerSwingDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dna_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = 0)
+        {
+            auto SpinnerDnaDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDnaDots(label, radius, thickness, color_or_default, speed, lt, delta, mode);
+            };
+
+            SpinnerDnaDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = 0,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner3_smuggle_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = 0)
+        {
+            auto Spinner3SmuggleDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::Spinner3SmuggleDots(label, radius, thickness, color_or_default, speed, lt, delta, mode);
+            };
+
+            Spinner3SmuggleDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, lt, delta, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 4.8f, nb::arg("lt") = 8, nb::arg("delta") = 0.5f, nb::arg("mode") = 0,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_typing",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int dots = 3)
+        {
+            auto SpinnerDotsTyping_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int dots = 3)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsTyping(label, radius, thickness, color_or_default, speed, dots);
+            };
+
+            SpinnerDotsTyping_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("dots") = 3,
+        " Typing dots:\n   a row of dots appears one by one (. -> .. -> ...) via a stepped clip, then\n   resets. Drawn as 'dots' filled circles laid across the cell width.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_step",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int dots = 3)
+        {
+            auto SpinnerDotsStep_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int dots = 3)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsStep(label, radius, thickness, color_or_default, speed, dots);
+            };
+
+            SpinnerDotsStep_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("dots") = 3,
+        " Stepping dot:\n   a single dot hops across 'dots' slots (left -> ... -> right) in discrete\n   steps, then jumps back. Only one dot is shown at a time.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_gather",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, int dots = 3)
+        {
+            auto SpinnerDotsGather_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, int dots = 3)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsGather(label, radius, thickness, color_or_default, speed, dots);
+            };
+
+            SpinnerDotsGather_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, dots);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("dots") = 3,
+        " Gathering dots:\n   a row of dots spreads apart, then squeezes together at the centre (the dots\n   also grow a little when gathered), ping-ponging.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_shift",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f)
+        {
+            auto SpinnerDotsShift_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsShift(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsShift_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f,
+        " Shifting dots:\n   three dots; the centre one is fixed while the left dot pulls in toward it,\n   then the right dot pushes out, ping-ponging (a little shuffle). Offsets are\n   proportional to the dot size, as in the CSS box-shadow.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_orbit",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.66f)
+        {
+            auto SpinnerDotsOrbit_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.66f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsOrbit(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsOrbit_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.66f,
+        " Orbiting dots:\n   three dots dance: a fixed left dot, a dot sliding right, and a dot orbiting a\n   half-circle over them; the whole thing mirror-flips each half-cycle. The flip\n   lands when the layout is symmetric, so it stays seamless. Offsets are in\n   dot-radii (CSS px / 7.5).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_circle",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.66f)
+        {
+            auto SpinnerDotsCircle_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.66f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsCircle(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsCircle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.66f,
+        " Circling dots:\n   two dots slide right and back together while a third dot orbits a full circle\n   around the centre. Offsets are in dot-radii (CSS px / 7.5).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_square",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsSquare_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsSquare(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsSquare_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Square-chasing dot:\n   three dots sit on three corners of a square; each quarter one dot slides along\n   an edge into the empty corner, so the gap chases around the square. The 0%/100%\n   configurations match (same corner set), so it loops seamlessly.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_shuffle",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsShuffle_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsShuffle(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsShuffle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Shuffling dots:\n   four dots fan out of a row into little loops and shuffle back, swapping\n   places; the 0%/100% sets match, so it loops seamlessly. Offsets are in\n   dot-radii (x in {-3,0,3}, y in {-1,0,1}).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_split",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsSplit_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsSplit(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsSplit_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Splitting dots:\n   three columns, each a pair of dots that opens (one up, one down to the edges)\n   and closes (meets at the centre), staggered so a split-wave runs left to right.\n   Y values are in half-height units; the 83%->100% segment closes the last column.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_leader",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsLeader_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsLeader(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsLeader_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Leader dots:\n   a full dot sweeps left to right while two trailing pairs open to the edges and\n   shift columns. A closed pair sits near the centre and reads as a single dot, so\n   the leader/pair swap at the loop looks seamless. X in {-1,0,1}, Y in half-heights.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_rolling",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsRolling_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsRolling(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsRolling_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Rolling dots:\n   a repeating row of dots mirror-flips each half-cycle (scaleX) while a clipped\n   overlay (right half) rotates, so dots carousel through the row. Tile = 75%\n   of width, dot at 1/6 of tile; overlay uses translateX(-37.5%) + rotate (0..1\n   turn over the first 80% of its 0.5s cycle).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_triangle",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsTriangle_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsTriangle(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsTriangle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_cascade",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsCascade_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsCascade(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsCascade_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_swap",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsSwap_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsSwap(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsSwap_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_spread",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsSpread_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsSpread(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsSpread_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_twin",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f)
+        {
+            auto SpinnerDotsTwin_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsTwin(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsTwin_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_hop",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f / 1.5f)
+        {
+            auto SpinnerDotsHop_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f / 1.5f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsHop(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsHop_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f / 1.5f,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_jiggle",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsJiggle_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsJiggle(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsJiggle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Jiggling dots:\n   two background dots at 25%/75% wobble outward at 40% and the left nudges at\n   90%; a centred ::before dot shakes horizontally (cubic-bezier elastic, 1s).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_vibrate",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsVibrate_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsVibrate(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsVibrate_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Vibrating dots:\n   static left/right background dots; the centred ::before dot vibrates\n   horizontally (l25-1, 1s) and vertically (l25-2, 0.5s, inset bounce) with\n   cubic-bezier(.5,-900,.5,900) elastic easing.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_wiper",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.f)
+        {
+            auto SpinnerDotsWiper_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsWiper(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsWiper_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.f,
+        " Wiper dots:\n   static left/right background dots plus two clipped semicircles (::before/\n   ::after) that swing ±90° from side pivots (scaleY ±1, 0.5s alternate).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_collapse",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f)
+        {
+            auto SpinnerDotsCollapse_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsCollapse(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsCollapse_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f,
+        " Collapsing dots:\n   a centre dot with an expanding spread ring; four box-shadow dots collapse\n   inward one-by-one (right→left→bottom→top), then snap back (2s CSS cycle).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_flip",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsFlip_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsFlip(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsFlip_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Flipping dots:\n   two columns (::before/::after) of top+bottom dots rotate ±180° about the\n   bottom pivot while the loader bounces vertically (translateY, 1s).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_turn",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsTurn_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsTurn(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsTurn_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Turning dots:\n   two columns of top+bottom dots; ::before pivots at the bottom, ::after at\n   the top; both rotate −270° during the last 30% of the 1s cycle.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_carousel",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsCarousel_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsCarousel(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsCarousel_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Carousel dots, a port of the CSS dots/l31:\n   two overlaid dot-pairs (::before/::after); the loader slides 37.5% while\n   ::after uses rotate(−½turn) translate(37.5%) rotate(½turn) to swap dots.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_half_turn",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsHalfTurn_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsHalfTurn(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsHalfTurn_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Half-turn dots, a port of the CSS dots/l32:\n   two overlaid dot-pairs (::before at left/right, ::after at ⅓ and ⅔);\n   both hold still until 80%, then rotate ±180° (reverse on ::after).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_slide_flip",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsSlideFlip_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsSlideFlip(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsSlideFlip_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Slide-flip dots, a port of the CSS dots/l33:\n   two flex halves (::before/::after), each with left/right dots; both slide\n   (100% − 3/7) while rotating ±½turn about the inner dot pivot.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_stagger_turn",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsStaggerTurn_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsStaggerTurn(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsStaggerTurn_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Stagger-turn dots:\n   two overlaid dot-pairs (left/right, 25%); ::after is offset translate(37.5%)\n   with a 0.5 s delay; each layer rotates 180° during the first half of its cycle.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_stretch",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsStretch_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsStretch(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsStretch_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Stretch dots:\n   two overlaid bars (::before left, ::after right); each grows via aspect-ratio\n   2.3→3.7 while translateY(±8px) bounces in opposite directions.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_mirror_stretch",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsMirrorStretch_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsMirrorStretch(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsMirrorStretch_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Mirror-stretch dots, a port of the CSS dots/l36:\n   like l35 but l36-1 adds translateX(19px); the loader flips scaleY every 2 s.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_pinch",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsPinch_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsPinch(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsPinch_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Pinch dots, a port of the CSS dots/l37:\n   centre dot + 4 box-shadow satellites; l37-1 (0.75 s alternate) pinches\n   ±30/±10 → ±14/±12 with spread change; l37-2 (1.5 s) rotates 180°.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_corners",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.f)
+        {
+            auto SpinnerDotsCorners_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsCorners(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsCorners_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.f,
+        " Corner-run dots:\n   four corner dots (background-size 40%); each slides clockwise to the next\n   corner every 0.5 s (TL→TR→BR→BL→…).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_nudge_rotate",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsNudgeRotate_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsNudgeRotate(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsNudgeRotate_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Nudge-rotate dots:\n   two halves (l33 geometry); l39-1 nudges ±translate(400%/14) during 30–70%;\n   l39-0 rotates the loader 180° between 30% and 50%.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_unfold",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsUnfold_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsUnfold(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsUnfold_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Unfold dots:\n   four dots (20% each) stack left then spread to 0, ⅓, ⅔, 100% (l40-1, 0.75 s\n   alternate); l40-2 mirror-flips scale(±1) every 1.5 s alternate.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_shuttle",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsShuttle_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsShuttle(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsShuttle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Shuttle dots:\n   two static middle dots (⅓, ⅔); ::before/::after circles run a rectangular\n   path (down → across → up) in mirror on the left/right ends.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_spread_shuttle",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsSpreadShuttle_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsSpreadShuttle(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsSpreadShuttle_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Spread-shuttle dots, a port of the CSS dots/l42:\n   like l41 but end dots travel translate(400%/3); middle dots spread from\n   ⅓/⅔ to the edges during the last 40% (l42-0).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_triad",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsTriad_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsTriad(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsTriad_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Triad dots:\n   two clusters of three (middle / top / bottom); dots spread vertically then\n   swap columns (0↔⅓ and ⅔↔1). Loader aspect-ratio 2.5, --s/8 rest offset.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_satellite",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerDotsSatellite_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsSatellite(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsSatellite_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Satellite dots:\n   static left/right dots; two centre circles orbit pivots at ±75% width,\n   rotating 360° during 58–100% (::after −1 turn, delay −0.5 s).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_dots_track",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f)
+        {
+            auto SpinnerDotsTrack_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerDotsTrack(label, radius, thickness, color_or_default, speed);
+            };
+
+            SpinnerDotsTrack_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f,
+        " Track dots:\n   static left/right dots; ::before (background inherit) carries two dots through\n   translate(±37.5%) + rotate(0→360°) keyframes over 2 s.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+    // #endif
+    ////////////////////    </generated_from:imspinner_dots.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:imspinner_text.h>    ////////////////////
+    // #ifndef _IMSPINNER_TEXT_H_
+    //
+
+
+    m.def("spinner_text_fade",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+        {
+            auto SpinnerTextFade_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextFade(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextFade_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("text") = "Loading...",
+        " Pulsing text loader, a port of the CSS:\n   .loader:before { content:\"Loading...\" }\n   @keyframes l1 { to { opacity: 0 } }   /* 1s linear infinite alternate */\n 'alternate' + 'linear' => triangle wave; a full fade-out/fade-in cycle\n spans 2 units of (time*speed).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_fading",
+        [](const char * label, const char * text, float radius, float fsize, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f)
+        {
+            auto SpinnerTextFading_adapt_mutable_param_with_default_value = [](const char * label, const char * text, float radius, float fsize, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextFading(label, text, radius, fsize, color_or_default, speed);
+            };
+
+            SpinnerTextFading_adapt_mutable_param_with_default_value(label, text, radius, fsize, color, speed);
+        },
+        nb::arg("label"), nb::arg("text"), nb::arg("radius"), nb::arg("fsize"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f,
+        " Per-character fading text: each glyph fades in/out with a phase offset and a\n hue shift along the string, producing a travelling shimmer over the text.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_underline",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, float thickness = 3.f, const char * text = "Loading...")
+        {
+            auto SpinnerTextUnderline_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, float thickness = 3.f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextUnderline(label, radius, color_or_default, speed, thickness, text);
+            };
+
+            SpinnerTextUnderline_adapt_mutable_param_with_default_value(label, radius, color, speed, thickness, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("thickness") = 3.f, nb::arg("text") = "Loading...",
+        " Text with a growing underline, a port of the CSS:\n   background: linear-gradient(currentColor 0 0) 0 100%/0% 3px no-repeat;\n   @keyframes l2 { to { background-size: 100% 3px } }   /* 2s linear infinite */\n A 'thickness'-tall bar under the text grows from 0 to full text width, then\n snaps back to 0 and repeats (linear, not alternate).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_underline_dots",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, float thickness = 3.f, int dashes = 6, const char * text = "Loading...")
+        {
+            auto SpinnerTextUnderlineDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, float thickness = 3.f, int dashes = 6, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextUnderlineDots(label, radius, color_or_default, speed, thickness, dashes, text);
+            };
+
+            SpinnerTextUnderlineDots_adapt_mutable_param_with_default_value(label, radius, color, speed, thickness, dashes, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("thickness") = 3.f, nb::arg("dashes") = 6, nb::arg("text") = "Loading...",
+        " Text with a marching dashed underline, a port of the CSS:\n   background: repeating-linear-gradient(90deg,currentColor 0 8%,#0000 0 10%) ... 3px;\n   @keyframes l3 { to { background-position: 80% 100% } }   /* 2s steps(6) infinite */\n A row of dashes under the text shifts by one period over the cycle in\n 'steps' discrete jumps (steps() timing), looping seamlessly.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_typing",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int tail = 3, const char * text = "Loading...")
+        {
+            auto SpinnerTextTyping_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int tail = 3, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextTyping(label, radius, color_or_default, speed, tail, text);
+            };
+
+            SpinnerTextTyping_adapt_mutable_param_with_default_value(label, radius, color, speed, tail, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("tail") = 3, nb::arg("text") = "Loading...",
+        " Typing text, a port of the CSS clip-path typers:\n   l4: clip-path inset 3ch  -> -1ch, steps(4)   -> reveals the last 'tail' chars\n   l5: clip-path inset 100% -> -1ch, steps(11)  -> types the whole word out\n The last 'tail' characters are revealed one by one, left to right (e.g.\n \"Loading\" -> \"Loading.\" -> \"Loading..\" -> \"Loading...\"), then it repeats.\n Pass tail <= 0 to type out the entire string. The full text is laid out\n (left edge fixed) so nothing shifts as it reveals.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_scroll",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextScroll_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextScroll(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextScroll_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Scrolling marquee text, a port of the CSS:\n   color: #0000; text-shadow: 0 0 c, 11ch 0 c;  overflow: hidden;\n   @keyframes l6 { to { text-shadow: -11ch 0 c, 0ch 0 c } }   /* 2s linear infinite */\n Two copies of the text, spaced one text-width + 1ch apart, slide left inside\n a text-width window: as one leaves to the left the next enters from the\n right, looping seamlessly.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_color_fill",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 0.5f, int mode = 0, const char * text = "Loading...")
+        {
+            auto SpinnerTextColorFill_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 0.5f, int mode = 0, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return ImColor(0xC0, 0x29, 0x42);
+                }();
+
+                const ImColor& bg_or_default = [&]() -> const ImColor {
+                    if (bg.has_value())
+                        return bg.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextColorFill(label, radius, color_or_default, bg_or_default, speed, mode, text);
+            };
+
+            SpinnerTextColorFill_adapt_mutable_param_with_default_value(label, radius, color, bg, speed, mode, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("mode") = 0, nb::arg("text") = "Loading...",
+        " Two-tone color sweep, a port of the CSS background-clip:text loaders:\n   l7 (mode 0): linear-gradient(#C02942 .., #000 0) -> a hard edge sweeps across,\n                chars fill from 'bg' to 'color' left to right (cumulative).\n   l8 (mode 1): linear-gradient(#000 .., #C02942 1ch, #000 0) -> a 1-char 'color'\n                band scans across, one character is highlighted at a time.\n Both step one character per cycle (CSS steps()), then repeat.\n (CSS base is #000; here 'bg' defaults to white so it shows on a dark theme.)\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: ImColor(0xC0, 0x29, 0x42)\n        * bg: white");
+
+    m.def("spinner_text_scroll_colors",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.2f, const char * text = "Loading...")
+        {
+            auto SpinnerTextScrollColors_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.2f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextScrollColors(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextScrollColors_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.2f, nb::arg("text") = "Loading...",
+        " Multi-color scrolling marquee, a port of the CSS l9:\n   5 text-shadow copies (base, olive, crimson, teal, base) spaced 11ch apart,\n   shifting left by 11ch each quarter with cubic-bezier(.3,1,0,1) easing;\n   animation: 5s infinite. overflow:hidden clips to the text width.\n Each segment snaps the text to the next color, looping seamlessly because the\n first and last copies share 'color'. (CSS base is #000; here it defaults to\n white so it shows on a dark theme.)\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_color_cycle",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.2f, const char * text = "Loading...")
+        {
+            auto SpinnerTextColorCycle_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.2f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextColorCycle(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextColorCycle_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.2f, nb::arg("text") = "Loading...",
+        " Color-cycling text, a port of the CSS l10:\n   linear-gradient of 4 solid blocks (base, olive, crimson, teal), each one\n   text-width wide, scrolled under background-clip:text with cubic-bezier easing.\n The whole text cycles through the palette; on each transition the boundary\n between two colors wipes across the text (pixel-accurate, not per-character).\n animation: 5s infinite, loops seamlessly (teal -> base -> ...).\n (CSS base is #000; here it defaults to white so it shows on a dark theme.)\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_bounce",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+        {
+            auto SpinnerTextBounce_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextBounce(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextBounce_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("text") = "Loading...",
+        " Bouncing letters, a port of the CSS l11:\n   two stacked copies masked to alternating characters move in opposite\n   directions; a wild cubic-bezier(.5,220,.5,-220) makes translateY oscillate.\n Here each character is drawn with a vertical offset whose sign alternates by\n index and oscillates over time -> neighbouring letters bob up/down in antiphase.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_split",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0, const char * text = "Loading...")
+        {
+            auto SpinnerTextSplit_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextSplit(label, radius, color_or_default, speed, mode, text);
+            };
+
+            SpinnerTextSplit_adapt_mutable_param_with_default_value(label, radius, color, speed, mode, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0, nb::arg("text") = "Loading...",
+        " Split-and-slide text, a port of the CSS l12 / l13:\n   two stacked copies clipped to the top / bottom half of the text slide in\n   opposite directions by one text-width, then pause; a shadow copy one\n   text-width away wraps them seamlessly, overflow:hidden clips to the width.\n   mode 0 (l12): both halves move together (top right, bottom left).\n   mode 1 (l13): the bottom half is half a cycle behind, and the dash happens\n                 in the first quarter -> the halves slide one after the other.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_underline_scroll",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.66f, float thickness = 3.f, const char * text = "Loading...")
+        {
+            auto SpinnerTextUnderlineScroll_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.66f, float thickness = 3.f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextUnderlineScroll(label, radius, color_or_default, speed, thickness, text);
+            };
+
+            SpinnerTextUnderlineScroll_adapt_mutable_param_with_default_value(label, radius, color, speed, thickness, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.66f, nb::arg("thickness") = 3.f, nb::arg("text") = "Loading...",
+        " Fill-then-scroll text, a port of the CSS l14 (two phases over the cycle):\n   0..80%:   text stays put while an underline bar grows 0% -> 100%.\n   80..100%: the bar retracts 100% -> 0% and the text scrolls one text-width\n             left (a wrap copy slides in from the right, overflow:hidden clips).\n So the progress fills, then the line slides away and a fresh one comes in.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_roll",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+        {
+            auto SpinnerTextRoll_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextRoll(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextRoll_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("text") = "Loading...",
+        " Rolling letters, a port of the CSS l15:\n   alternating characters roll vertically by one line-height in opposite\n   directions (a copy rolls out while an identical one rolls in), moving over\n   0..80% of the cycle then pausing. Clipped to the line box so it's seamless.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_colorful",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextColorful_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextColorful(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextColorful_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Per-letter color blink, a port of the CSS l16. The CSS uses letter-spacing +\n 9 shifted text-shadows so every character is an independent shadow that can be\n colored on its own; keyframes (20/40/60/80%) recolor different letters, here\n reproduced as a palette + a 5-keyframe table, interpolated over the cycle.\n (CSS uncolored letters are currentColor; here that's 'color', default white.)\n The color table targets the 10 chars of \"Loading...\"; extra chars stay 'color'.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_cascade",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextCascade_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextCascade(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextCascade_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Cascading letters, a port of the CSS l17:\n   letters drop in from above one by one (left to right) over 0..40%, hold the\n   whole word 40..60%, then fall out downward one by one (right to left) 60..100%.\n   Clipped to the line box so off-line letters are hidden.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_conveyor",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.33f, const char * text = "Loading...")
+        {
+            auto SpinnerTextConveyor_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.33f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextConveyor(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextConveyor_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.33f, nb::arg("text") = "Loading...",
+        " Conveyor letters, a port of the CSS l18 (the horizontal twin of the cascade):\n   letters slide in from the right one by one (left to right) over 0..40%, hold\n   the whole word 40..60%, then slide out to the left one by one 60..100%.\n   Clipped to the text window so off-window letters are hidden.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_reveal",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextReveal_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextReveal(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextReveal_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Sequential fade reveal, a port of the CSS l19:\n   letters fade in one by one (left to right) over 0..40%, hold the whole word\n   40..60%, then fade out one by one (left to right) 60..100%. The letters do\n   not move; only their alpha changes.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_wave",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextWave_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextWave(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextWave_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Traveling hop wave, a port of the CSS l20:\n   each letter hops up in turn (left to right), one at a time, so a wave runs\n   across the word and repeats. Letter i peaks at (i+1)/(len+1) of the cycle;\n   the linear keyframes make each hop a triangle (up then back).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_sweep",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextSweep_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                const ImColor& bg_or_default = [&]() -> const ImColor {
+                    if (bg.has_value())
+                        return bg.value();
+                    else
+                        return ImColor(0, 0, 0);
+                }();
+
+                ImSpinner::SpinnerTextSweep(label, radius, color_or_default, bg_or_default, speed, text);
+            };
+
+            SpinnerTextSweep_adapt_mutable_param_with_default_value(label, radius, color, bg, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Sweeping highlight, a port of the CSS l21:\n   a bar sweeps across the text left to right; inside the bar the text is\n   inverted (drawn in 'bg' over a 'color' fill), outside it stays 'color'.\n   The bar fills over the cycle, then restarts. (CSS is white-on-black vs\n   black-on-page; adapted here with a 'color' fill so it reads on a dark theme.)\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: ImColor(0, 0, 0)");
+
+    m.def("spinner_text_shine",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextShine_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                const ImColor& bg_or_default = [&]() -> const ImColor {
+                    if (bg.has_value())
+                        return bg.value();
+                    else
+                        return ImColor(0, 0, 0);
+                }();
+
+                ImSpinner::SpinnerTextShine(label, radius, color_or_default, bg_or_default, speed, text);
+            };
+
+            SpinnerTextShine_adapt_mutable_param_with_default_value(label, radius, color, bg, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Shine band, a port of the CSS l22:\n   a band (CSS: a 135deg diagonal ~1em stripe) sweeps across the text; inside\n   the band the text is inverted ('bg' over a 'color' fill), like a glint\n   passing over it. Here the band is vertical (axis-aligned clips can't tilt).\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: ImColor(0, 0, 0)");
+
+    m.def("spinner_text_scroll_sweep",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextScrollSweep_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, const std::optional<const ImColor> & bg = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                const ImColor& bg_or_default = [&]() -> const ImColor {
+                    if (bg.has_value())
+                        return bg.value();
+                    else
+                        return ImColor(0, 0, 0);
+                }();
+
+                ImSpinner::SpinnerTextScrollSweep(label, radius, color_or_default, bg_or_default, speed, text);
+            };
+
+            SpinnerTextScrollSweep_adapt_mutable_param_with_default_value(label, radius, color, bg, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("bg").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Scroll + inverting sweep, a port of the CSS l23:\n   the text scrolls left (seamless marquee) while a full-width band sweeps\n   across; inside the band the text is inverted ('bg' over a 'color' fill).\n   The band covers the whole window at mid-cycle. (CSS is white/black on a\n   light page; adapted here with a 'color' fill so it reads on a dark theme.)\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * color: white\n        * bg: ImColor(0, 0, 0)");
+
+    m.def("spinner_text_spotlight",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextSpotlight_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextSpotlight(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextSpotlight_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Scanning spotlight, a port of the CSS l24:\n   a round spotlight (radial gradient) sweeps back and forth across the text\n   (alternate), brightening the letters it passes (bright inside, dim outside).\n   A True round clip isn't available, so each letter's brightness is set by its\n   distance to the spotlight centre, giving the same scanning-glow effect.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_shake",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0, const char * text = "Loading...")
+        {
+            auto SpinnerTextShake_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextShake(label, radius, color_or_default, speed, mode, text);
+            };
+
+            SpinnerTextShake_adapt_mutable_param_with_default_value(label, radius, color, speed, mode, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0, nb::arg("text") = "Loading...",
+        " Glitchy shake, a port of the CSS l25:\n   the whole word moves between 8 fixed offsets over the cycle (scaled from the\n   CSS px values at 30px font). mode 0: snap (each held for 1/8, then jumps),\n   like the CSS; mode 1: smoothly interpolate between offsets for a fluid wobble.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_flip",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextFlip_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextFlip(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextFlip_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " 3D-ish flip, an approximation of the CSS l26:\n   the word flips over X, then over Y, then scales to -1, returning to identity.\n   True perspective isn't available, so the text's vertices are scaled about its\n   centre (sx = cos(rotY)*s, sy = cos(rotX)*s): it squashes to a line and mirrors\n   -- a flat 'card flip' rather than a perspective rotation.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_spin",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextSpin_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextSpin(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextSpin_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Two halves spinning, a port of the CSS l27:\n   the text is split in two; each half rotates a full turn over the first half\n   of its cycle then holds, with the second half delayed by half a cycle, so the\n   halves spin alternately. Vertices are rotated about each half's own centre.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_tumble",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, int mode = 0, const char * text = "Loading...")
+        {
+            auto SpinnerTextTumble_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, int mode = 0, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextTumble(label, radius, color_or_default, speed, mode, text);
+            };
+
+            SpinnerTextTumble_adapt_mutable_param_with_default_value(label, radius, color, speed, mode, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("mode") = 0, nb::arg("text") = "Loading...",
+        " Tumble flip, a port of the CSS l28:\n   the word spins 180 in-plane, then flips over Y, then over X, returning to\n   identity. mode 0: flat tumble (vertices scaled by the flips, then rotated);\n   mode 1: True 3D perspective (vertices rotated in 3D about Z/Y/X, then\n   projected with depth division, like CSS perspective(300px)).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_swirl",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextSwirl_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextSwirl(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextSwirl_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Counter-rotating swirl, a port of the CSS l29:\n   alternating characters spin a full turn about the WHOLE word's centre in\n   opposite directions (even +1 turn, odd -1 turn) over 0..80%, then hold.\n   Each letter's vertices are rotated about the shared centre, so the letters\n   swirl around it.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_roll_wave",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextRollWave_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextRollWave(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextRollWave_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Vertical roll wave, an approximation of the CSS l30:\n   alternating letters roll vertically by one line, half a cycle out of phase,\n   so a vertical wave runs across the word. Each column rolls seamlessly (a wrap\n   copy enters from above), clipped to the line box.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_vibrate",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+        {
+            auto SpinnerTextVibrate_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextVibrate(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextVibrate_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("text") = "Loading...",
+        " Vibrating text, an approximation of the CSS l31:\n   the wild cubic-bezier(.5,-150,.5,150) amplifies tiny per-letter offsets into a\n   fast buzz. Here each letter jitters with its own incommensurate x/y frequency\n   and phase, giving a continuous nervous vibration.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_glitch",
+        ImSpinner::SpinnerTextGlitch,
+        nb::arg("label"), nb::arg("radius"), nb::arg("speed") = 1.f, nb::arg("text") = "Loading...",
+        " RGB-split glitch, an approximation of the CSS l32:\n   three text copies (red/green/blue) with tiny offsets; the wild cubic-bezier\n   amplifies them into a chromatic-aberration buzz. Here each channel jitters\n   with its own phase, so the colors separate and shimmer. (Colors are fixed\n   R/G/B, so there is no 'color' parameter.)");
+
+    m.def("spinner_text_blur",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+        {
+            auto SpinnerTextBlur_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextBlur(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextBlur_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("text") = "Loading...",
+        " Random letter blur, an approximation of the CSS l33:\n   single letters flicker out of focus (a text-shadow blur) one at a time during\n   the middle of the cycle. ImGui can't blur, so a 'blurred' letter is faked with\n   a translucent offset halo plus a dimmed centre. The schedule is the CSS table.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_dropout",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+        {
+            auto SpinnerTextDropout_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextDropout(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextDropout_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("text") = "Loading...",
+        " Character dropout glitch, a port of the CSS l34:\n   individual characters blink out (become spaces) at scheduled times, so the\n   word flickers with missing letters, then returns to whole. Char positions are\n   preserved (monospace). The drop schedule is the CSS table (10-char \"Loading...\").\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_scanline",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0, const char * text = "Loading...")
+        {
+            auto SpinnerTextScanline_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextScanline(label, radius, color_or_default, speed, mode, text);
+            };
+
+            SpinnerTextScanline_adapt_mutable_param_with_default_value(label, radius, color, speed, mode, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0, nb::arg("text") = "Loading...",
+        " Scanline glitch, an approximation of the CSS l35 / l36:\n   mode 0: a thin horizontal band scans vertically; the slice inside it is\n           displaced horizontally (a fast jitter), the rest stays crisp.\n   mode 1: a vertical band (1.5ch) scans horizontally; the slice is displaced\n           vertically. A VHS/scanline displacement glitch either way.\n   (CSS uses mask-composite; here clip regions.)\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_squash",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+        {
+            auto SpinnerTextSquash_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextSquash(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextSquash_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("text") = "Loading...",
+        " Squash-slice scan, an approximation of the CSS l37:\n   a vertical band (2ch) scans horizontally; inside the band the text is squashed\n   vertically (scaleY 0.5), the rest stays crisp -- a scanning vertical compression.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_scramble",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+        {
+            auto SpinnerTextScramble_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextScramble(label, radius, color_or_default, speed);
+            };
+
+            SpinnerTextScramble_adapt_mutable_param_with_default_value(label, radius, color, speed);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f,
+        " Scramble shuffle, a port of the CSS l38:\n   the word snaps between 6 scrambled arrangements of \"Loading...\" (a slot-machine\n   scramble) over the cycle (steps(6)); one of them is the readable word. The\n   scrambles are baked in (they are authored for \"Loading...\"), so there is no\n   'text' parameter.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_decode",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextDecode_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextDecode(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextDecode_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Decode/encode glitch, an approximation of the CSS l39:\n   letters are progressively replaced by symbols left to right, then back\n   (steps(11) alternate), like a decoding effect. The CSS uses rare APL/alchemy\n   glyphs the default font lacks, so ASCII symbols are substituted here.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_text_vanish",
+        [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+        {
+            auto SpinnerTextVanish_adapt_mutable_param_with_default_value = [](const char * label, float radius, const std::optional<const ImColor> & color = std::nullopt, float speed = 0.5f, const char * text = "Loading...")
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerTextVanish(label, radius, color_or_default, speed, text);
+            };
+
+            SpinnerTextVanish_adapt_mutable_param_with_default_value(label, radius, color, speed, text);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 0.5f, nb::arg("text") = "Loading...",
+        " Letters fly off, a port of the CSS l40:\n   letters float up (-20px) and fade out one by one in a scattered order until\n   the word is gone, then they all drop back in together. Then it repeats.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+    // #endif
+    ////////////////////    </generated_from:imspinner_text.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:imspinner_bars.h>    ////////////////////
+    // #ifndef _IMSPINNER_BARS_H_
+    //
+    // #ifndef _IMSPINNER_BARS_INTERNAL_
+    //
+
+
+    // #endif
+    //
+
+    m.def("spinner_fade_bars",
+        [](const char * label, float w, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 3, bool scale = false)
+        {
+            auto SpinnerFadeBars_adapt_mutable_param_with_default_value = [](const char * label, float w, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 3, bool scale = false)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerFadeBars(label, w, color_or_default, speed, bars, scale);
+            };
+
+            SpinnerFadeBars_adapt_mutable_param_with_default_value(label, w, color, speed, bars, scale);
+        },
+        nb::arg("label"), nb::arg("w"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 3, nb::arg("scale") = false,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_rotate_fade",
+        [](const char * label, float rmin, float rmax, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 6)
+        {
+            auto SpinnerBarsRotateFade_adapt_mutable_param_with_default_value = [](const char * label, float rmin, float rmax, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 6)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsRotateFade(label, rmin, rmax, thickness, color_or_default, speed, bars);
+            };
+
+            SpinnerBarsRotateFade_adapt_mutable_param_with_default_value(label, rmin, rmax, thickness, color, speed, bars);
+        },
+        nb::arg("label"), nb::arg("rmin"), nb::arg("rmax"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 6,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_scale_middle",
+        [](const char * label, float w, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 3)
+        {
+            auto SpinnerBarsScaleMiddle_adapt_mutable_param_with_default_value = [](const char * label, float w, const std::optional<const ImColor> & color = std::nullopt, float speed = 2.8f, size_t bars = 3)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsScaleMiddle(label, w, color_or_default, speed, bars);
+            };
+
+            SpinnerBarsScaleMiddle_adapt_mutable_param_with_default_value(label, w, color, speed, bars);
+        },
+        nb::arg("label"), nb::arg("w"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 2.8f, nb::arg("bars") = 3,
+        "Python bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bar_chart_sine",
+        ImSpinner::SpinnerBarChartSine, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 5, nb::arg("mode") = 0);
+
+    m.def("spinner_bar_chart_adv_sine",
+        ImSpinner::SpinnerBarChartAdvSine, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
+
+    m.def("spinner_bar_chart_adv_sine_fade",
+        ImSpinner::SpinnerBarChartAdvSineFade, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("mode") = 0);
+
+    m.def("spinner_bar_chart_rainbow",
+        ImSpinner::SpinnerBarChartRainbow, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 5, nb::arg("mode") = 0);
+
+    m.def("spinner_fluid",
+        ImSpinner::SpinnerFluid, nb::arg("label"), nb::arg("radius"), nb::arg("color"), nb::arg("speed"), nb::arg("bars") = 3);
+
+    m.def("spinner_fluid_points",
+        ImSpinner::SpinnerFluidPoints, nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color"), nb::arg("speed"), nb::arg("dots") = 6, nb::arg("delta") = 0.35f);
+
+    m.def("spinner_bars_seq_pulse",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsSeqPulse_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsSeqPulse(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsSeqPulse_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Sequential height pulse:\n   three bars (20% width); each shrinks to 10% height in turn (33/50/66%).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_cascade_grow",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsCascadeGrow_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsCascadeGrow(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsCascadeGrow_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Cascade grow:\n   three bottom-anchored bars grow in sequence (60→80→100% cascade).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_rise",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsRise_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsRise(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsRise_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Rising bars:\n   three bars slide upward from the bottom (staggered 1/6 phase each).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_corner_hop",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsCornerHop_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsCornerHop(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsCornerHop_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Corner hop:\n   three bars hop diagonally from bottom-right anchor toward the top row.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_diagonal_grow",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsDiagonalGrow_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsDiagonalGrow(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsDiagonalGrow_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Diagonal grow:\n   three bars (aspect 0.75) hop between corners via background-position steps.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_bounce_center",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsBounceCenter_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsBounceCenter(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsBounceCenter_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Bounce center:\n   three centre-anchored bars (max 50% height) bounce between vertical slots.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_scale_alt",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsScaleAlt_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsScaleAlt(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsScaleAlt_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Scale alternate:\n   three bars pulse height 50%↔20%↔100% in sequence (animation-direction: alternate).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_corner_wave",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsCornerWave_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsCornerWave(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsCornerWave_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Corner wave:\n   three bottom bars step through a corner wave (16.67% keyframes).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_jump",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsJump_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsJump(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsJump_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Jump bars:\n   three bars (60% max height) swap between top and bottom at 33/66%.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_double_row",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsDoubleRow_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsDoubleRow(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsDoubleRow_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Double row:\n   two rows of three bar segments slide horizontally (33/66/100% positions).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_six_pulse",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsSixPulse_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsSixPulse(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsSixPulse_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Six-bar pulse:\n   six corner bars (3×2) pulse height 50%→30% at 80% of the cycle.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_six_stagger",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsSixStagger_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsSixStagger(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsSixStagger_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Six-bar stagger:\n   corner bars shrink to 30% height one-by-one, then grow back in wave order.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_morph_plus",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsMorphPlus_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsMorphPlus(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsMorphPlus_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Morph plus:\n   five bars morph 20×100% → 20×20% → 100×20% (alternate ping-pong).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_flip_six",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsFlipSix_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsFlipSix(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsFlipSix_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Flip six:\n   six bars shrink height (0.5 s alternate) while positions flip every 2 s.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_swap_tri_bottom",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsSwapTriBottom_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsSwapTriBottom(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsSwapTriBottom_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Swap tri-bottom:\n   three bars shrink to 40% height while bottom anchors cycle positions.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_swap_tri_zigzag",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsSwapTriZigzag_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsSwapTriZigzag(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsSwapTriZigzag_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Swap tri-zigzag:\n   three bars shrink while anchors zigzag between corner pairs.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_morph_diagonal",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsMorphDiagonal_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsMorphDiagonal(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsMorphDiagonal_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Morph diagonal:\n   three diagonal bars morph 20×100% → 20×20% → 100×20%.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_slide_diagonal",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsSlideDiagonal_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsSlideDiagonal(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsSlideDiagonal_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Slide diagonal:\n   three diagonal bars shrink to 20% height while outer positions swap.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_conic_alternate",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsConicAlternate_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsConicAlternate(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsConicAlternate_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Conic alternate:\n   two 40% conic-corner tiles; the second slides on a diagonal (alternate).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_conic_walk",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsConicWalk_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsConicWalk(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsConicWalk_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Conic walk:\n   two conic-corner tiles step through a 2×2 corner path (1.5 s loop).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_march_in",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsMarchIn_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsMarchIn(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsMarchIn_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " March rows in:\n   four stripe rows enter from the left, pause, then exit right (1.5 s).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_march_down",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsMarchDown_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsMarchDown(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsMarchDown_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " March rows down:\n   four stripe rows drop in from the top, pause, then exit downward (1.5 s).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_wave_skew",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsWaveSkew_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsWaveSkew(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsWaveSkew_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Wave rows skew:\n   four rows skew diagonally (aspect 1.6) then snap back to centre.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_row_drop",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsRowDrop_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsRowDrop(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsRowDrop_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Row drop stagger:\n   four rows drop down one-by-one (aspect 0.8, alternate ping-pong).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_zigzag_rows",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsZigzagRows_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsZigzagRows(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsZigzagRows_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Zigzag rows:\n   four rows alternate stripe alignment left/right (0.75 s).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_fill_cascade",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsFillCascade_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsFillCascade(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsFillCascade_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Fill cascade:\n   stripe rows fill left→right in a staggered cascade (0.75 s linear).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_ping_pong_rows",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsPingPongRows_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsPingPongRows(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsPingPongRows_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Ping-pong rows:\n   four rows alternate stripe alignment (0↔100%) with a long hold.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_wave_rows_wide",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsWaveRowsWide_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsWaveRowsWide(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsWaveRowsWide_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Wave rows wide:\n   four rows wave between centre, left, and right (aspect 1.4).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_grid_fade",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsGridFade_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsGridFade(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsGridFade_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Grid fade:\n   3×3 dot grid; cells fade out in a travelling wave (2 s).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_grid_spread",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsGridSpread_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsGridSpread(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsGridSpread_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Grid spread:\n   3×3 dot grid; cells pulse box-shadow spread in a wave (2 s).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_stretch",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsStretch_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsStretch(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsStretch_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Stretch capsules:\n   three vertical pill bars grow from a centre dot to full height and back\n   (animation-direction: alternate). mode 1 staggers the three columns.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_stretch_seq",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsStretchSeq_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsStretchSeq(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsStretchSeq_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Stretch sequential:\n   three pill bars grow to full height one-by-one (left->right), then the\n   alternate timeline shrinks them back. mode 1 fills right->left.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_bounce_ball",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsBounceBall_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsBounceBall(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsBounceBall_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Bounce ball:\n   three tall bottom-anchored bars; a ball rolls left<->right (1.5 s) across\n   their tops while bouncing (0.75 s). mode 1 uses one long arc per traverse;\n   mode 2 reverses the travel direction.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_knock_dots",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsKnockDots_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsKnockDots(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsKnockDots_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Knock dots:\n   three dots in a row; a bar rolls left<->right (1 s) bouncing (0.5 s) and\n   the dot it lands on is knocked down to the bottom. mode 1 pops the dot's\n   size instead of dropping it; mode 2 reverses the travel direction.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_staircase",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsStaircase_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsStaircase(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsStaircase_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Staircase ball:\n   three bottom-anchored bars of descending height (100/66/33%); a ball rolls\n   left->right (2 s loop) bouncing (0.5 s) while drifting down the steps.\n   mode 1 uses three bounces; mode 2 reverses (rolls up, right->left).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_knock_away",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsKnockAway_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsKnockAway(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsKnockAway_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Knock away:\n   a bar rolls left->right (bouncing) and knocks the first two dots down at\n   1/3 and 2/3; at the end it shoves the last dot sideways and tumbles off.\n   mode 1 drops all three dots in sequence; mode 2 reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_gates",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsGates_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsGates(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsGates_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Gates:\n   three columns (top + bottom bar) act as gates that retract from the centre\n   to let a ball roll through, then close behind it. mode 1 adds a vertical\n   weave to the ball; mode 2 reverses the travel direction.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_capture",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsCapture_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsCapture(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsCapture_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Capture:\n   a ball rolls in through the first gate to the centre, where the middle\n   gate opens to admit it and then closes around it, trapping the ball.\n   mode 1 pulses the trapped ball; mode 2 reverses (ball escapes left).\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_escape",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsEscape_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsEscape(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsEscape_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Escape:\n   like Capture, but after being trapped at the centre the ball slips to a\n   side gap and shoots out of the top. mode 1 ejects downward; mode 2\n   reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_devour",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsDevour_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsDevour(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsDevour_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Devour:\n   a ball sucks in two dots from the right, growing (1x -> 1.5x -> 2x) with\n   each, while a bar slides in to the centre; then the ball dashes off left\n   and resets. mode 1 keeps the ball in place (no dash); mode 2 reverses.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_lift",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsLift_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsLift(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsLift_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Lift:\n   three tall rounded bars slide from the bottom to the top in a staggered\n   wave, then back (alternate). mode 1 reverses the stagger order; mode 2\n   reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_gap_slide",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsGapSlide_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsGapSlide(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsGapSlide_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Gap slide:\n   three static bars, each with a round gap that travels along it; the gap\n   hops from bar to bar in sequence (alternate). mode 1 moves all gaps in\n   sync; mode 2 reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_converge",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsConverge_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsConverge(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsConverge_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Converge:\n   in each column a top bar and a bottom dot slide together to the centre and\n   back, in a left-to-right wave (alternate). mode 1 moves all columns in\n   sync; mode 2 reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_swap_ends",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsSwapEnds_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsSwapEnds(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsSwapEnds_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Swap ends:\n   in each column a bar and a dot swap top/bottom ends, flipping one column\n   after another in a wave (alternate). mode 1 flips all columns in sync;\n   mode 2 reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_relay",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsRelay_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsRelay(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsRelay_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Relay:\n   a nine-step wave (2 s loop): bars drop one by one, rise carrying their dot\n   underneath, then the dots drop back in turn. mode 1 mirrors the column\n   order; mode 2 reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_push",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsPush_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsPush(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsPush_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Push:\n   in each column a dot descends from the top to the centre and pushes the\n   bar below it, one column after another (alternate). mode 1 mirrors the\n   column order; mode 2 reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_push_wave",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsPushWave_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsPushWave(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsPushWave_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Push wave:\n   like Push, but a single dot-push travels across the columns one at a time\n   and resets before the next (linear loop). mode 1 mirrors the column order;\n   mode 2 reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_gather",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsGather_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsGather(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsGather_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Gather:\n   four arms fly in from off-screen to assemble a plus around a centre dot,\n   rotate 90 degrees, then fly back out (1.5 s loop). mode 1 rotates the\n   opposite way; mode 2 reverses the timeline.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_split",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsSplit_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsSplit(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsSplit_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Split:\n   two horizontal bars spread from the centre to the edges while a dot drops\n   to the middle (0.5 s alternate); the whole figure rotates in 90-degree\n   steps. mode 1 rotates continuously; mode 2 reverses the rotation.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+
+    m.def("spinner_bars_slot",
+        [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+        {
+            auto SpinnerBarsSlot_adapt_mutable_param_with_default_value = [](const char * label, float radius, float thickness, const std::optional<const ImColor> & color = std::nullopt, float speed = 1.f, int mode = 0)
+            {
+
+                const ImColor& color_or_default = [&]() -> const ImColor {
+                    if (color.has_value())
+                        return color.value();
+                    else
+                        return white;
+                }();
+
+                ImSpinner::SpinnerBarsSlot(label, radius, thickness, color_or_default, speed, mode);
+            };
+
+            SpinnerBarsSlot_adapt_mutable_param_with_default_value(label, radius, thickness, color, speed, mode);
+        },
+        nb::arg("label"), nb::arg("radius"), nb::arg("thickness"), nb::arg("color").none() = nb::none(), nb::arg("speed") = 1.f, nb::arg("mode") = 0,
+        " Slot:\n   a dot passes top->bottom through two bars that open as a gate and close\n   behind it (1 s linear loop), while the figure rotates in 90-degree steps.\n   mode 1 rotates continuously; mode 2 reverses the rotation.\n\nPython bindings defaults:\n    If color is None, then its default value will be: white");
+    // #ifndef _IMSPINNER_BARS_INTERNAL_
+    // }
+    // #endif
+    //
+    // #endif
+    ////////////////////    </generated_from:imspinner_bars.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:imspinner_shapes.h>    ////////////////////
+    // #ifndef _IMSPINNER_SHAPES_H_
+    //
+    // #endif
+    ////////////////////    </generated_from:imspinner_shapes.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE END !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

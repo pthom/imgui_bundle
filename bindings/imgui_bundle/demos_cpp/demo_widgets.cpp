@@ -2,6 +2,8 @@
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "imspinner/imspinner.h"
+#include "imspinner/imspinner_dots.h"
+#include "imspinner/imspinner_demo.h"
 #include "imgui_toggle/imgui_toggle.h"
 #include "imgui_toggle/imgui_toggle_presets.h"
 #include "imgui_toggle/imgui_toggle_palette.h"
@@ -164,6 +166,15 @@ void DemoSpinner()
     ImGui::Text("spinner_ang_triple");
     ImGui::SameLine();
     ImSpinner::SpinnerAngTriple("spinner_ang_triple", radius1, radius1 * 1.5f, radius1 * 2.0f, 2.5f, color, color, color);
+    ImGui::SameLine();
+
+    float radius_tc = ImGui::GetFontSize();
+    ImColor color_tc(0.3f, 0.5f, 0.9f, 1.f);
+    float speed_tc = 0.5f;
+    const char* text_tc = "Wait";
+    ImGui::Text("spinner_text_scroll");
+    ImGui::SameLine();
+    ImSpinner::SpinnerTextScroll("spinner_text_scroll", radius_tc, color_tc, speed_tc, text_tc);
 
     static bool show_full_demo = false;
     ImGui::SameLine();

@@ -83,3 +83,6 @@
 	path = external/imgui_microtex/MicroTeX
 	url = https://github.com/pthom/MicroTeX.git
 	branch = imgui_bundle
+[submodule "external/imspinner/imspinner"]
+	path = external/imspinner/imspinner
+	url = https://github.com/dalerank/imspinner.git

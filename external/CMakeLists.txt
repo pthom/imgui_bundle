@@ -420,8 +420,13 @@ endif()
 # Build imgui-knobs
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 # Build imspinner
-add_simple_external_library_with_sources(imspinner imspinner)
-target_compile_definitions(imspinner PUBLIC IMSPINNER_DEMO)
+add_simple_external_library(imspinner imspinner)
+target_sources(imspinner PRIVATE ${CMAKE_CURRENT_LIST_DIR}/imspinner/imspinner_bundle.cpp)
+if(IMGUI_BUNDLE_INSTALL_CPP)
+    # Install only imspinner*.h (skip the cimspinner* C-API headers)
+    file(GLOB imspinner_headers ${CMAKE_CURRENT_LIST_DIR}/imspinner/imspinner*.h)
+    install(FILES ${imspinner_headers} DESTINATION include/imspinner)
+endif()
 # Build imgui_toggle
 add_simple_external_library_with_sources(imgui_toggle imgui_toggle)
 # Build imgui_command_palette

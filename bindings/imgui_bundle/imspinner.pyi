@@ -11,7 +11,7 @@
 # ruff: noqa: B008
 import enum
 import math
-from typing import Tuple, Optional, overload
+from typing import Optional
 
 from imgui_bundle.imgui import ImColor
 
@@ -43,7 +43,7 @@ def demo_spinners() -> None:
 # * furnished to do so, subject to the following conditions:
 # *
 # * The above copyright notice and this permission notice shall be included in all
-# * copies or substantial portions of the Software.
+# * copie or substantial portions of the Software.
 # *
 # * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -85,63 +85,11 @@ PI_2: float  # = IM_PI  2.
 
 
 
-def color_alpha(c: ImColor, alpha: float) -> ImColor:
-    pass
 
-def damped_spring(
-    mass: float,
-    stiffness: float,
-    damping: float,
-    time: float,
-    a: float = PI_DIV_2,
-    b: float = PI_DIV_2
-    ) -> float:
-    pass
 
-def damped_gravity(limtime: float) -> float:
-    pass
 
-def damped_trifolium(limtime: float, a: float = 0., b: float = 1.) -> float:
-    pass
 
-def damped_inoutelastic(t: float, amplitude: float, period: float) -> float:
-    pass
 
-def damped_infinity(t: float, a: float) -> Tuple[float, float]:
-    pass
-
-def ease_inquad(time: float) -> float:
-    pass
-def ease_outquad(time: float) -> float:
-    pass
-@overload
-def ease_inoutquad(t: float) -> float:
-    pass
-@overload
-def ease_inoutquad(p: float) -> float:
-    pass
-def ease_outcubic(t: float) -> float:
-    pass
-def ease_inexpo(t: float) -> float:
-    pass
-@overload
-def ease_inoutexpo(t: float) -> float:
-    pass
-@overload
-def ease_inoutexpo(p: float) -> float:
-    pass
-def ease_spring(p: float) -> float:
-    pass
-def ease_gravity(p: float) -> float:
-    pass
-def ease_infinity(p: float) -> float:
-    pass
-def ease_inoutelastic(p: float) -> float:
-    pass
-def ease_sine(p: float) -> float:
-    pass
-def ease_damping(p: float) -> float:
-    pass
 
 class ease_mode(enum.IntEnum):
     e_ease_none = enum.auto()      # (= 0)
@@ -400,140 +348,25 @@ def spinner_v_dots(
     """
     pass
 
-def spinner_bounce_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    dots: int = 3,
-    mode: int = 0
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_zip_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    dots: int = 5
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_dots_to_points(
-    label: str,
-    radius: float,
-    thickness: float,
-    offset_k: float,
-    color: Optional[ImColor] = None,
-    speed: float = 1.8,
-    dots: int = 5
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 #const float sina = ImSin( ImFmod((start + (IM_PI - i * offset)), PI_DIV_2));
 
-def spinner_dots_to_bar(
-    label: str,
-    radius: float,
-    thickness: float,
-    offset_k: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    dots: int = 5
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_wave_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    lt: int = 8
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_fade_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    lt: int = 8,
-    mode: int = 0
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_three_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    lt: int = 8
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_five_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    lt: int = 8
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: ImColor(0xffffffff)
-    """
-    pass
 
 def spinner4_caleidospcope(
     label: str,
     radius: float,
     thickness: float,
-    color: Optional[ImColor] = None,
+    color: ImColor = 0xffffffff,
     speed: float = 2.8,
     lt: int = 8
     ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: ImColor(0xffffffff)
-    """
     pass
 
-def spinner_multi_fade_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    lt: int = 8
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
 def spinner_thick_to_sin(
     label: str,
@@ -551,18 +384,6 @@ def spinner_thick_to_sin(
     pass
 
 
-def spinner_scale_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    lt: int = 8
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
 def spinner_square_spins(
     label: str,
@@ -576,58 +397,9 @@ def spinner_square_spins(
     """
     pass
 
-def spinner_moving_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    dots: int = 3
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_rotate_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    dots: int = 2,
-    mode: int = 0
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_orion_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    arcs: int = 4
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_galaxy_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    arcs: int = 4
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
 def spinner_twin_ang(
     label: str,
@@ -725,44 +497,8 @@ def spinner_twin_ang360(
     """
     pass
 
-def spinner_inc_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    dots: int = 6
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_inc_full_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    dots: int = 4
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_fade_bars(
-    label: str,
-    w: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    bars: int = 3,
-    scale: bool = False
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
 def spinner_fade_tris(
     label: str,
@@ -778,31 +514,7 @@ def spinner_fade_tris(
     """
     pass
 
-def spinner_bars_rotate_fade(
-    label: str,
-    rmin: float,
-    rmax: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    bars: int = 6
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_bars_scale_middle(
-    label: str,
-    w: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    bars: int = 3
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
 def spinner_ang_twin(
     label: str,
@@ -882,19 +594,6 @@ def spinner_ascii_symbol_points(
     text: str,
     radius: float,
     thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
-
-def spinner_text_fading(
-    label: str,
-    text: str,
-    radius: float,
-    fsize: float,
     color: Optional[ImColor] = None,
     speed: float = 2.8
     ) -> None:
@@ -1158,34 +857,7 @@ def spinner_pulsar_ball(
     """
     pass
 
-def spinner_inc_scale_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    dots: int = 6,
-    angle: float = 0.,
-    mode: int = 0
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
-def spinner_some_scale_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    dots: int = 6,
-    mode: int = 0
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
 
 def spinner_ang_triple(
     label: str,
@@ -1249,15 +921,6 @@ def spinner_gooey_balls(
     ) -> None:
     pass
 
-def spinner_dots_loading(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: ImColor,
-    bg: ImColor,
-    speed: float
-    ) -> None:
-    pass
 
 def spinner_rotate_gooey_balls(
     label: str,
@@ -1589,7 +1252,8 @@ def spinner_rainbow_shot(
     thickness: float,
     color: ImColor,
     speed: float,
-    balls: int = 5
+    balls: int = 5,
+    mode: int = 0
     ) -> None:
     pass
 
@@ -1618,47 +1282,6 @@ def spinner_spiral_eye(
     """
     pass
 
-def spinner_bar_chart_sine(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: ImColor,
-    speed: float,
-    bars: int = 5,
-    mode: int = 0
-    ) -> None:
-    pass
-
-def spinner_bar_chart_adv_sine(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: ImColor,
-    speed: float,
-    mode: int = 0
-    ) -> None:
-    pass
-
-def spinner_bar_chart_adv_sine_fade(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: ImColor,
-    speed: float,
-    mode: int = 0
-    ) -> None:
-    pass
-
-def spinner_bar_chart_rainbow(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: ImColor,
-    speed: float,
-    bars: int = 5,
-    mode: int = 0
-    ) -> None:
-    pass
 
 def spinner_blocks(
     label: str,
@@ -1680,15 +1303,6 @@ def spinner_twin_blocks(
     ) -> None:
     pass
 
-def spinner_square_random_dots(
-    label: str,
-    radius: float,
-    thickness: float,
-    bg: ImColor,
-    color: ImColor,
-    speed: float
-    ) -> None:
-    pass
 
 def spinner_scale_blocks(
     label: str,
@@ -1717,25 +1331,6 @@ def spinner_squish_square(
     ) -> None:
     pass
 
-def spinner_fluid(
-    label: str,
-    radius: float,
-    color: ImColor,
-    speed: float,
-    bars: int = 3
-    ) -> None:
-    pass
-
-def spinner_fluid_points(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: ImColor,
-    speed: float,
-    dots: int = 6,
-    delta: float = 0.35
-    ) -> None:
-    pass
 
 def spinner_arc_polar_fade(
     label: str,
@@ -1775,6 +1370,499 @@ def spinner_caleidoscope(
     """Python bindings defaults:
         If color is None, then its default value will be: white
     """
+    pass
+
+
+
+
+
+def spinner_sine_arcs(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_triangles_shift(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    bg: Optional[ImColor] = None,
+    speed: float = 2.8,
+    bars: int = 8
+    ) -> None:
+    """Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            * color: white
+            * bg: half_white
+    """
+    pass
+
+def spinner_points_shift(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    bg: Optional[ImColor] = None,
+    speed: float = 2.8,
+    bars: int = 8
+    ) -> None:
+    """Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            * color: white
+            * bg: half_white
+    """
+    pass
+
+
+def spinner_circular_points(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.8,
+    lines: int = 8
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_curved_circle(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    circles: int = 1
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_mod_circle(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    ang_min: float = 1.,
+    ang_max: float = 1.,
+    speed: float = 2.8
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+
+
+def spinner_rotate_segments_pulsar(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    arcs: int = 4,
+    layers: int = 1
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_spline_ang(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    bg: Optional[ImColor] = None,
+    speed: float = 2.8,
+    angle: float = IM_PI,
+    mode: int = 0
+    ) -> None:
+    """Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            * color: white
+            * bg: white
+    """
+    pass
+
+def spinner_conic_grid(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Conic grid:
+       a 2x2 block of conic-corner tiles (split by a "+" gap) with five dots at
+       the edge midpoints and the centre; the whole figure spins .5 turn / sec
+       (linear). Port of the CSS "l8" loader. mode 2 reverses the spin; mode 1
+       doubles it to a full turn.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_arc_arrow(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Arc arrow:
+       a 270-degree ring arc with a triangular arrowhead at its leading tip,
+       spinning a full turn / sec (linear). Port of the CSS "l11" loader.
+       mode 1 drops the arrowhead (plain 3/4 ring); mode 2 reverses the spin.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_orbit_moon(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Orbit moon:
+       an orange hub at the centre, a green planet orbiting it once per second,
+       and a small grey moon circling the planet twice as fast. Port of the CSS
+       "l17" loader (its three signature colours are fixed). mode 2 reverses.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_conic_wheels(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Conic wheels:
+       three concentric four-colour pie discs spinning at different rates. In
+       CSS the parent's spin compounds onto the inner discs, giving effective
+       periods of 2s / 1s / 1.2s per turn. Port of the CSS "l22" loader (its
+       four signature colours are fixed). mode 2 reverses the spin.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dot_ring(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Dot ring:
+       twelve dots evenly spaced (30 deg apart) on a circle, alternating two
+       colours, the whole ring spinning one turn / 2 sec counter-clockwise.
+       Port of the CSS "l30" loader (its two signature colours are fixed).
+       mode 2 reverses the spin.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+
+
+# #endif
+####################    </generated_from:imspinner.h>    ####################
+
+
+####################    <generated_from:imspinner_dots.h>    ####################
+# #ifndef _IMSPINNER_DOTS_H_
+#
+
+#
+# * imspinner dots add-on
+# *
+# * Dot-based spinners moved out of imspinner.h. Include this header (it pulls in
+# * "imspinner.h"). Note: SpinnerDots / SpinnerVDots stay in imspinner.h because the
+# * core Spinner<> dispatcher (e_st_dots / e_st_vdots) references them.
+#
+
+
+def spinner_bounce_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    dots: int = 3,
+    mode: int = 0
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_zip_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    dots: int = 5
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_to_points(
+    label: str,
+    radius: float,
+    thickness: float,
+    offset_k: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.8,
+    dots: int = 5
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_to_bar(
+    label: str,
+    radius: float,
+    thickness: float,
+    offset_k: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    dots: int = 5
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_wave_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    lt: int = 8
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_fade_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    lt: int = 8,
+    mode: int = 0
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_three_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    lt: int = 8
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_five_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: ImColor = 0xffffffff,
+    speed: float = 2.8,
+    lt: int = 8
+    ) -> None:
+    pass
+
+def spinner_multi_fade_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    lt: int = 8
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_scale_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    lt: int = 8
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_moving_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    dots: int = 3
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_rotate_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    dots: int = 2,
+    mode: int = 0
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_orion_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    arcs: int = 4
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_galaxy_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    arcs: int = 4
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_inc_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    dots: int = 6
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_inc_full_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    dots: int = 4
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_inc_scale_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    dots: int = 6,
+    angle: float = 0.,
+    mode: int = 0
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_some_scale_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    dots: int = 6,
+    mode: int = 0
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_loading(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: ImColor,
+    bg: ImColor,
+    speed: float
+    ) -> None:
+    pass
+
+def spinner_square_random_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    bg: ImColor,
+    color: ImColor,
+    speed: float
+    ) -> None:
     pass
 
 def spinner_hbo_dots(
@@ -1836,95 +1924,11 @@ def spinner_three_dots_star(
     """
     pass
 
-def spinner_sine_arcs(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
-
-def spinner_triangles_shift(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    bg: Optional[ImColor] = None,
-    speed: float = 2.8,
-    bars: int = 8
-    ) -> None:
-    """Python bindings defaults:
-        If any of the params below is None, then its default value below will be used:
-            * color: white
-            * bg: half_white
-    """
-    pass
-
-def spinner_points_shift(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    bg: Optional[ImColor] = None,
-    speed: float = 2.8,
-    bars: int = 8
-    ) -> None:
-    """Python bindings defaults:
-        If any of the params below is None, then its default value below will be used:
-            * color: white
-            * bg: half_white
-    """
-    pass
-
 def spinner_swing_dots(
     label: str,
     radius: float,
     thickness: float,
     color: Optional[ImColor] = None,
-    speed: float = 2.8
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
-
-def spinner_circular_points(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 1.8,
-    lines: int = 8
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
-
-def spinner_curved_circle(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    circles: int = 1
-    ) -> None:
-    """Python bindings defaults:
-        If color is None, then its default value will be: white
-    """
-    pass
-
-def spinner_mod_circle(
-    label: str,
-    radius: float,
-    thickness: float,
-    color: Optional[ImColor] = None,
-    ang_min: float = 1.,
-    ang_max: float = 1.,
     speed: float = 2.8
     ) -> None:
     """Python bindings defaults:
@@ -1940,7 +1944,7 @@ def spinner_dna_dots(
     speed: float = 2.8,
     lt: int = 8,
     delta: float = 0.5,
-    mode: bool = False
+    mode: bool = 0
     ) -> None:
     """Python bindings defaults:
         If color is None, then its default value will be: white
@@ -1955,48 +1959,2303 @@ def spinner3_smuggle_dots(
     speed: float = 4.8,
     lt: int = 8,
     delta: float = 0.5,
-    mode: bool = False
+    mode: bool = 0
     ) -> None:
     """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
 
-def spinner_rotate_segments_pulsar(
+def spinner_dots_typing(
     label: str,
     radius: float,
     thickness: float,
     color: Optional[ImColor] = None,
-    speed: float = 2.8,
-    arcs: int = 4,
-    layers: int = 1
+    speed: float = 1.,
+    dots: int = 3
+    ) -> None:
+    """ Typing dots:
+       a row of dots appears one by one (. -> .. -> ...) via a stepped clip, then
+       resets. Drawn as 'dots' filled circles laid across the cell width.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_step(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    dots: int = 3
+    ) -> None:
+    """ Stepping dot:
+       a single dot hops across 'dots' slots (left -> ... -> right) in discrete
+       steps, then jumps back. Only one dot is shown at a time.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_gather(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    dots: int = 3
+    ) -> None:
+    """ Gathering dots:
+       a row of dots spreads apart, then squeezes together at the centre (the dots
+       also grow a little when gathered), ping-ponging.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_shift(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5
+    ) -> None:
+    """ Shifting dots:
+       three dots; the centre one is fixed while the left dot pulls in toward it,
+       then the right dot pushes out, ping-ponging (a little shuffle). Offsets are
+       proportional to the dot size, as in the CSS box-shadow.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_orbit(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.66
+    ) -> None:
+    """ Orbiting dots:
+       three dots dance: a fixed left dot, a dot sliding right, and a dot orbiting a
+       half-circle over them; the whole thing mirror-flips each half-cycle. The flip
+       lands when the layout is symmetric, so it stays seamless. Offsets are in
+       dot-radii (CSS px / 7.5).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_circle(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.66
+    ) -> None:
+    """ Circling dots:
+       two dots slide right and back together while a third dot orbits a full circle
+       around the centre. Offsets are in dot-radii (CSS px / 7.5).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_square(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Square-chasing dot:
+       three dots sit on three corners of a square; each quarter one dot slides along
+       an edge into the empty corner, so the gap chases around the square. The 0%/100%
+       configurations match (same corner set), so it loops seamlessly.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_shuffle(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Shuffling dots:
+       four dots fan out of a row into little loops and shuffle back, swapping
+       places; the 0%/100% sets match, so it loops seamlessly. Offsets are in
+       dot-radii (x in {-3,0,3}, y in {-1,0,1}).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_split(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Splitting dots:
+       three columns, each a pair of dots that opens (one up, one down to the edges)
+       and closes (meets at the centre), staggered so a split-wave runs left to right.
+       Y values are in half-height units; the 83%->100% segment closes the last column.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_leader(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Leader dots:
+       a full dot sweeps left to right while two trailing pairs open to the edges and
+       shift columns. A closed pair sits near the centre and reads as a single dot, so
+       the leader/pair swap at the loop looks seamless. X in {-1,0,1}, Y in half-heights.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_rolling(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Rolling dots:
+       a repeating row of dots mirror-flips each half-cycle (scaleX) while a clipped
+       overlay (right half) rotates, so dots carousel through the row. Tile = 75%
+       of width, dot at 1/6 of tile; overlay uses translateX(-37.5%) + rotate (0..1
+       turn over the first 80% of its 0.5s cycle).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_triangle(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
     ) -> None:
     """Python bindings defaults:
         If color is None, then its default value will be: white
     """
     pass
 
-def spinner_spline_ang(
+def spinner_dots_cascade(
     label: str,
     radius: float,
     thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_swap(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_spread(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_twin(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_hop(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1. / 1.5
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_jiggle(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Jiggling dots:
+       two background dots at 25%/75% wobble outward at 40% and the left nudges at
+       90%; a centred ::before dot shakes horizontally (cubic-bezier elastic, 1s).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_vibrate(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Vibrating dots:
+       static left/right background dots; the centred ::before dot vibrates
+       horizontally (l25-1, 1s) and vertically (l25-2, 0.5s, inset bounce) with
+       cubic-bezier(.5,-900,.5,900) elastic easing.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_wiper(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.
+    ) -> None:
+    """ Wiper dots:
+       static left/right background dots plus two clipped semicircles (::before/
+       ::after) that swing ±90° from side pivots (scaleY ±1, 0.5s alternate).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_collapse(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5
+    ) -> None:
+    """ Collapsing dots:
+       a centre dot with an expanding spread ring; four box-shadow dots collapse
+       inward one-by-one (right→left→bottom→top), then snap back (2s CSS cycle).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_flip(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Flipping dots:
+       two columns (::before/::after) of top+bottom dots rotate ±180° about the
+       bottom pivot while the loader bounces vertically (translateY, 1s).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_turn(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Turning dots:
+       two columns of top+bottom dots; ::before pivots at the bottom, ::after at
+       the top; both rotate −270° during the last 30% of the 1s cycle.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_carousel(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Carousel dots, a port of the CSS dots/l31:
+       two overlaid dot-pairs (::before/::after); the loader slides 37.5% while
+       ::after uses rotate(−½turn) translate(37.5%) rotate(½turn) to swap dots.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_half_turn(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Half-turn dots, a port of the CSS dots/l32:
+       two overlaid dot-pairs (::before at left/right, ::after at ⅓ and ⅔);
+       both hold still until 80%, then rotate ±180° (reverse on ::after).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_slide_flip(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Slide-flip dots, a port of the CSS dots/l33:
+       two flex halves (::before/::after), each with left/right dots; both slide
+       (100% − 3/7) while rotating ±½turn about the inner dot pivot.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_stagger_turn(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Stagger-turn dots:
+       two overlaid dot-pairs (left/right, 25%); ::after is offset translate(37.5%)
+       with a 0.5 s delay; each layer rotates 180° during the first half of its cycle.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_stretch(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Stretch dots:
+       two overlaid bars (::before left, ::after right); each grows via aspect-ratio
+       2.3→3.7 while translateY(±8px) bounces in opposite directions.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_mirror_stretch(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Mirror-stretch dots, a port of the CSS dots/l36:
+       like l35 but l36-1 adds translateX(19px); the loader flips scaleY every 2 s.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_pinch(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Pinch dots, a port of the CSS dots/l37:
+       centre dot + 4 box-shadow satellites; l37-1 (0.75 s alternate) pinches
+       ±30/±10 → ±14/±12 with spread change; l37-2 (1.5 s) rotates 180°.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_corners(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.
+    ) -> None:
+    """ Corner-run dots:
+       four corner dots (background-size 40%); each slides clockwise to the next
+       corner every 0.5 s (TL→TR→BR→BL→…).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_nudge_rotate(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Nudge-rotate dots:
+       two halves (l33 geometry); l39-1 nudges ±translate(400%/14) during 30–70%;
+       l39-0 rotates the loader 180° between 30% and 50%.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_unfold(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Unfold dots:
+       four dots (20% each) stack left then spread to 0, ⅓, ⅔, 100% (l40-1, 0.75 s
+       alternate); l40-2 mirror-flips scale(±1) every 1.5 s alternate.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_shuttle(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Shuttle dots:
+       two static middle dots (⅓, ⅔); ::before/::after circles run a rectangular
+       path (down → across → up) in mirror on the left/right ends.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_spread_shuttle(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Spread-shuttle dots, a port of the CSS dots/l42:
+       like l41 but end dots travel translate(400%/3); middle dots spread from
+       ⅓/⅔ to the edges during the last 40% (l42-0).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_triad(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Triad dots:
+       two clusters of three (middle / top / bottom); dots spread vertically then
+       swap columns (0↔⅓ and ⅔↔1). Loader aspect-ratio 2.5, --s/8 rest offset.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_satellite(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Satellite dots:
+       static left/right dots; two centre circles orbit pivots at ±75% width,
+       rotating 360° during 58–100% (::after −1 turn, delay −0.5 s).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_dots_track(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5
+    ) -> None:
+    """ Track dots:
+       static left/right dots; ::before (background inherit) carries two dots through
+       translate(±37.5%) + rotate(0→360°) keyframes over 2 s.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+
+# #endif
+####################    </generated_from:imspinner_dots.h>    ####################
+
+
+####################    <generated_from:imspinner_text.h>    ####################
+# #ifndef _IMSPINNER_TEXT_H_
+#
+
+#
+# * imspinner text add-on
+# *
+# * Text-based loaders for imspinner. Include this header instead of (or in
+# * addition to) "imspinner.h" — it pulls in "imspinner.h" itself.
+# *
+# * The macro _IMSPINNER_TEXT_H_ is defined before including "imspinner.h" so
+# * that imspinner.h's demo (demoSpinners(), under IMSPINNER_DEMO) can pick up
+# * the text spinners automatically.
+#
+
+
+def spinner_text_fade(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    text: str = "Loading..."
+    ) -> None:
+    """ Pulsing text loader, a port of the CSS:
+       .loader:before { content:"Loading..." }
+       @keyframes l1 { to { opacity: 0 } }   /* 1s linear infinite alternate */
+     'alternate' + 'linear' => triangle wave; a full fade-out/fade-in cycle
+     spans 2 units of (time*speed).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_fading(
+    label: str,
+    text: str,
+    radius: float,
+    fsize: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8
+    ) -> None:
+    """ Per-character fading text: each glyph fades in/out with a phase offset and a
+     hue shift along the string, producing a travelling shimmer over the text.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_underline(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    thickness: float = 3.,
+    text: str = "Loading..."
+    ) -> None:
+    """ Text with a growing underline, a port of the CSS:
+       background: linear-gradient(currentColor 0 0) 0 100%/0% 3px no-repeat;
+       @keyframes l2 { to { background-size: 100% 3px } }   /* 2s linear infinite */
+     A 'thickness'-tall bar under the text grows from 0 to full text width, then
+     snaps back to 0 and repeats (linear, not alternate).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_underline_dots(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    thickness: float = 3.,
+    dashes: int = 6,
+    text: str = "Loading..."
+    ) -> None:
+    """ Text with a marching dashed underline, a port of the CSS:
+       background: repeating-linear-gradient(90deg,currentColor 0 8%,#0000 0 10%) ... 3px;
+       @keyframes l3 { to { background-position: 80% 100% } }   /* 2s steps(6) infinite */
+     A row of dashes under the text shifts by one period over the cycle in
+     'steps' discrete jumps (steps() timing), looping seamlessly.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_typing(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    tail: int = 3,
+    text: str = "Loading..."
+    ) -> None:
+    """ Typing text, a port of the CSS clip-path typers:
+       l4: clip-path inset 3ch  -> -1ch, steps(4)   -> reveals the last 'tail' chars
+       l5: clip-path inset 100% -> -1ch, steps(11)  -> types the whole word out
+     The last 'tail' characters are revealed one by one, left to right (e.g.
+     "Loading" -> "Loading." -> "Loading.." -> "Loading..."), then it repeats.
+     Pass tail <= 0 to type out the entire string. The full text is laid out
+     (left edge fixed) so nothing shifts as it reveals.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_scroll(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Scrolling marquee text, a port of the CSS:
+       color: #0000; text-shadow: 0 0 c, 11ch 0 c;  overflow: hidden;
+       @keyframes l6 { to { text-shadow: -11ch 0 c, 0ch 0 c } }   /* 2s linear infinite */
+     Two copies of the text, spaced one text-width + 1ch apart, slide left inside
+     a text-width window: as one leaves to the left the next enters from the
+     right, looping seamlessly.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_color_fill(
+    label: str,
+    radius: float,
     color: Optional[ImColor] = None,
     bg: Optional[ImColor] = None,
-    speed: float = 2.8,
-    angle: float = IM_PI,
-    mode: int = 0
+    speed: float = 0.5,
+    mode: int = 0,
+    text: str = "Loading..."
     ) -> None:
-    """Python bindings defaults:
+    """ Two-tone color sweep, a port of the CSS background-clip:text loaders:
+       l7 (mode 0): linear-gradient(#C02942 .., #000 0) -> a hard edge sweeps across,
+                    chars fill from 'bg' to 'color' left to right (cumulative).
+       l8 (mode 1): linear-gradient(#000 .., #C02942 1ch, #000 0) -> a 1-char 'color'
+                    band scans across, one character is highlighted at a time.
+     Both step one character per cycle (CSS steps()), then repeat.
+     (CSS base is #000; here 'bg' defaults to white so it shows on a dark theme.)
+
+    Python bindings defaults:
         If any of the params below is None, then its default value below will be used:
-            * color: white
+            * color: ImColor(0xC0, 0x29, 0x42)
             * bg: white
     """
     pass
 
+def spinner_text_scroll_colors(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.2,
+    text: str = "Loading..."
+    ) -> None:
+    """ Multi-color scrolling marquee, a port of the CSS l9:
+       5 text-shadow copies (base, olive, crimson, teal, base) spaced 11ch apart,
+       shifting left by 11ch each quarter with cubic-bezier(.3,1,0,1) easing;
+       animation: 5s infinite. overflow:hidden clips to the text width.
+     Each segment snaps the text to the next color, looping seamlessly because the
+     first and last copies share 'color'. (CSS base is #000; here it defaults to
+     white so it shows on a dark theme.)
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_color_cycle(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.2,
+    text: str = "Loading..."
+    ) -> None:
+    """ Color-cycling text, a port of the CSS l10:
+       linear-gradient of 4 solid blocks (base, olive, crimson, teal), each one
+       text-width wide, scrolled under background-clip:text with cubic-bezier easing.
+     The whole text cycles through the palette; on each transition the boundary
+     between two colors wipes across the text (pixel-accurate, not per-character).
+     animation: 5s infinite, loops seamlessly (teal -> base -> ...).
+     (CSS base is #000; here it defaults to white so it shows on a dark theme.)
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_bounce(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    text: str = "Loading..."
+    ) -> None:
+    """ Bouncing letters, a port of the CSS l11:
+       two stacked copies masked to alternating characters move in opposite
+       directions; a wild cubic-bezier(.5,220,.5,-220) makes translateY oscillate.
+     Here each character is drawn with a vertical offset whose sign alternates by
+     index and oscillates over time -> neighbouring letters bob up/down in antiphase.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_split(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0,
+    text: str = "Loading..."
+    ) -> None:
+    """ Split-and-slide text, a port of the CSS l12 / l13:
+       two stacked copies clipped to the top / bottom half of the text slide in
+       opposite directions by one text-width, then pause; a shadow copy one
+       text-width away wraps them seamlessly, overflow:hidden clips to the width.
+       mode 0 (l12): both halves move together (top right, bottom left).
+       mode 1 (l13): the bottom half is half a cycle behind, and the dash happens
+                     in the first quarter -> the halves slide one after the other.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_underline_scroll(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.66,
+    thickness: float = 3.,
+    text: str = "Loading..."
+    ) -> None:
+    """ Fill-then-scroll text, a port of the CSS l14 (two phases over the cycle):
+       0..80%:   text stays put while an underline bar grows 0% -> 100%.
+       80..100%: the bar retracts 100% -> 0% and the text scrolls one text-width
+                 left (a wrap copy slides in from the right, overflow:hidden clips).
+     So the progress fills, then the line slides away and a fresh one comes in.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_roll(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    text: str = "Loading..."
+    ) -> None:
+    """ Rolling letters, a port of the CSS l15:
+       alternating characters roll vertically by one line-height in opposite
+       directions (a copy rolls out while an identical one rolls in), moving over
+       0..80% of the cycle then pausing. Clipped to the line box so it's seamless.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_colorful(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Per-letter color blink, a port of the CSS l16. The CSS uses letter-spacing +
+     9 shifted text-shadows so every character is an independent shadow that can be
+     colored on its own; keyframes (20/40/60/80%) recolor different letters, here
+     reproduced as a palette + a 5-keyframe table, interpolated over the cycle.
+     (CSS uncolored letters are currentColor; here that's 'color', default white.)
+     The color table targets the 10 chars of "Loading..."; extra chars stay 'color'.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_cascade(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Cascading letters, a port of the CSS l17:
+       letters drop in from above one by one (left to right) over 0..40%, hold the
+       whole word 40..60%, then fall out downward one by one (right to left) 60..100%.
+       Clipped to the line box so off-line letters are hidden.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_conveyor(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.33,
+    text: str = "Loading..."
+    ) -> None:
+    """ Conveyor letters, a port of the CSS l18 (the horizontal twin of the cascade):
+       letters slide in from the right one by one (left to right) over 0..40%, hold
+       the whole word 40..60%, then slide out to the left one by one 60..100%.
+       Clipped to the text window so off-window letters are hidden.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_reveal(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Sequential fade reveal, a port of the CSS l19:
+       letters fade in one by one (left to right) over 0..40%, hold the whole word
+       40..60%, then fade out one by one (left to right) 60..100%. The letters do
+       not move; only their alpha changes.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_wave(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Traveling hop wave, a port of the CSS l20:
+       each letter hops up in turn (left to right), one at a time, so a wave runs
+       across the word and repeats. Letter i peaks at (i+1)/(len+1) of the cycle;
+       the linear keyframes make each hop a triangle (up then back).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_sweep(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    bg: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Sweeping highlight, a port of the CSS l21:
+       a bar sweeps across the text left to right; inside the bar the text is
+       inverted (drawn in 'bg' over a 'color' fill), outside it stays 'color'.
+       The bar fills over the cycle, then restarts. (CSS is white-on-black vs
+       black-on-page; adapted here with a 'color' fill so it reads on a dark theme.)
+
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            * color: white
+            * bg: ImColor(0, 0, 0)
+    """
+    pass
+
+def spinner_text_shine(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    bg: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Shine band, a port of the CSS l22:
+       a band (CSS: a 135deg diagonal ~1em stripe) sweeps across the text; inside
+       the band the text is inverted ('bg' over a 'color' fill), like a glint
+       passing over it. Here the band is vertical (axis-aligned clips can't tilt).
+
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            * color: white
+            * bg: ImColor(0, 0, 0)
+    """
+    pass
+
+def spinner_text_scroll_sweep(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    bg: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Scroll + inverting sweep, a port of the CSS l23:
+       the text scrolls left (seamless marquee) while a full-width band sweeps
+       across; inside the band the text is inverted ('bg' over a 'color' fill).
+       The band covers the whole window at mid-cycle. (CSS is white/black on a
+       light page; adapted here with a 'color' fill so it reads on a dark theme.)
+
+    Python bindings defaults:
+        If any of the params below is None, then its default value below will be used:
+            * color: white
+            * bg: ImColor(0, 0, 0)
+    """
+    pass
+
+def spinner_text_spotlight(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Scanning spotlight, a port of the CSS l24:
+       a round spotlight (radial gradient) sweeps back and forth across the text
+       (alternate), brightening the letters it passes (bright inside, dim outside).
+       A True round clip isn't available, so each letter's brightness is set by its
+       distance to the spotlight centre, giving the same scanning-glow effect.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_shake(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0,
+    text: str = "Loading..."
+    ) -> None:
+    """ Glitchy shake, a port of the CSS l25:
+       the whole word moves between 8 fixed offsets over the cycle (scaled from the
+       CSS px values at 30px font). mode 0: snap (each held for 1/8, then jumps),
+       like the CSS; mode 1: smoothly interpolate between offsets for a fluid wobble.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_flip(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ 3D-ish flip, an approximation of the CSS l26:
+       the word flips over X, then over Y, then scales to -1, returning to identity.
+       True perspective isn't available, so the text's vertices are scaled about its
+       centre (sx = cos(rotY)*s, sy = cos(rotX)*s): it squashes to a line and mirrors
+       -- a flat 'card flip' rather than a perspective rotation.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_spin(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Two halves spinning, a port of the CSS l27:
+       the text is split in two; each half rotates a full turn over the first half
+       of its cycle then holds, with the second half delayed by half a cycle, so the
+       halves spin alternately. Vertices are rotated about each half's own centre.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_tumble(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    mode: int = 0,
+    text: str = "Loading..."
+    ) -> None:
+    """ Tumble flip, a port of the CSS l28:
+       the word spins 180 in-plane, then flips over Y, then over X, returning to
+       identity. mode 0: flat tumble (vertices scaled by the flips, then rotated);
+       mode 1: True 3D perspective (vertices rotated in 3D about Z/Y/X, then
+       projected with depth division, like CSS perspective(300px)).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_swirl(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Counter-rotating swirl, a port of the CSS l29:
+       alternating characters spin a full turn about the WHOLE word's centre in
+       opposite directions (even +1 turn, odd -1 turn) over 0..80%, then hold.
+       Each letter's vertices are rotated about the shared centre, so the letters
+       swirl around it.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_roll_wave(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Vertical roll wave, an approximation of the CSS l30:
+       alternating letters roll vertically by one line, half a cycle out of phase,
+       so a vertical wave runs across the word. Each column rolls seamlessly (a wrap
+       copy enters from above), clipped to the line box.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_vibrate(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    text: str = "Loading..."
+    ) -> None:
+    """ Vibrating text, an approximation of the CSS l31:
+       the wild cubic-bezier(.5,-150,.5,150) amplifies tiny per-letter offsets into a
+       fast buzz. Here each letter jitters with its own incommensurate x/y frequency
+       and phase, giving a continuous nervous vibration.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_glitch(
+    label: str,
+    radius: float,
+    speed: float = 1.,
+    text: str = "Loading..."
+    ) -> None:
+    """ RGB-split glitch, an approximation of the CSS l32:
+       three text copies (red/green/blue) with tiny offsets; the wild cubic-bezier
+       amplifies them into a chromatic-aberration buzz. Here each channel jitters
+       with its own phase, so the colors separate and shimmer. (Colors are fixed
+       R/G/B, so there is no 'color' parameter.)
+    """
+    pass
+
+def spinner_text_blur(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    text: str = "Loading..."
+    ) -> None:
+    """ Random letter blur, an approximation of the CSS l33:
+       single letters flicker out of focus (a text-shadow blur) one at a time during
+       the middle of the cycle. ImGui can't blur, so a 'blurred' letter is faked with
+       a translucent offset halo plus a dimmed centre. The schedule is the CSS table.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_dropout(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    text: str = "Loading..."
+    ) -> None:
+    """ Character dropout glitch, a port of the CSS l34:
+       individual characters blink out (become spaces) at scheduled times, so the
+       word flickers with missing letters, then returns to whole. Char positions are
+       preserved (monospace). The drop schedule is the CSS table (10-char "Loading...").
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_scanline(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0,
+    text: str = "Loading..."
+    ) -> None:
+    """ Scanline glitch, an approximation of the CSS l35 / l36:
+       mode 0: a thin horizontal band scans vertically; the slice inside it is
+               displaced horizontally (a fast jitter), the rest stays crisp.
+       mode 1: a vertical band (1.5ch) scans horizontally; the slice is displaced
+               vertically. A VHS/scanline displacement glitch either way.
+       (CSS uses mask-composite; here clip regions.)
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_squash(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    text: str = "Loading..."
+    ) -> None:
+    """ Squash-slice scan, an approximation of the CSS l37:
+       a vertical band (2ch) scans horizontally; inside the band the text is squashed
+       vertically (scaleY 0.5), the rest stays crisp -- a scanning vertical compression.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_scramble(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.
+    ) -> None:
+    """ Scramble shuffle, a port of the CSS l38:
+       the word snaps between 6 scrambled arrangements of "Loading..." (a slot-machine
+       scramble) over the cycle (steps(6)); one of them is the readable word. The
+       scrambles are baked in (they are authored for "Loading..."), so there is no
+       'text' parameter.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_decode(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Decode/encode glitch, an approximation of the CSS l39:
+       letters are progressively replaced by symbols left to right, then back
+       (steps(11) alternate), like a decoding effect. The CSS uses rare APL/alchemy
+       glyphs the default font lacks, so ASCII symbols are substituted here.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_text_vanish(
+    label: str,
+    radius: float,
+    color: Optional[ImColor] = None,
+    speed: float = 0.5,
+    text: str = "Loading..."
+    ) -> None:
+    """ Letters fly off, a port of the CSS l40:
+       letters float up (-20px) and fade out one by one in a scattered order until
+       the word is gone, then they all drop back in together. Then it repeats.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
 
 
 # #endif
+####################    </generated_from:imspinner_text.h>    ####################
 
-# #endif ####################    </generated_from:imspinner.h>    ####################
+
+####################    <generated_from:imspinner_bars.h>    ####################
+# #ifndef _IMSPINNER_BARS_H_
+#
+
+#
+# * imspinner bars add-on
+# *
+# * Bar-chart and fading-bar spinners moved out of imspinner.h. Include this
+# * header (it pulls in "imspinner.h"). SpinnerBarChartSine is wired into
+# * Spinner<> via imspinner_compat.h (e_st_barchartsine).
+#
+
+# #ifndef _IMSPINNER_BARS_INTERNAL_
+#
+# #endif
+#
+
+def spinner_fade_bars(
+    label: str,
+    w: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    bars: int = 3,
+    scale: bool = False
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+def spinner_bars_rotate_fade(
+    label: str,
+    rmin: float,
+    rmax: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    bars: int = 6
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+def spinner_bars_scale_middle(
+    label: str,
+    w: float,
+    color: Optional[ImColor] = None,
+    speed: float = 2.8,
+    bars: int = 3
+    ) -> None:
+    """Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+def spinner_bar_chart_sine(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: ImColor,
+    speed: float,
+    bars: int = 5,
+    mode: int = 0
+    ) -> None:
+    pass
+
+def spinner_bar_chart_adv_sine(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: ImColor,
+    speed: float,
+    mode: int = 0
+    ) -> None:
+    pass
+
+def spinner_bar_chart_adv_sine_fade(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: ImColor,
+    speed: float,
+    mode: int = 0
+    ) -> None:
+    pass
+
+def spinner_bar_chart_rainbow(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: ImColor,
+    speed: float,
+    bars: int = 5,
+    mode: int = 0
+    ) -> None:
+    pass
+def spinner_fluid(
+    label: str,
+    radius: float,
+    color: ImColor,
+    speed: float,
+    bars: int = 3
+    ) -> None:
+    pass
+
+def spinner_fluid_points(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: ImColor,
+    speed: float,
+    dots: int = 6,
+    delta: float = 0.35
+    ) -> None:
+    pass
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def spinner_bars_seq_pulse(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Sequential height pulse:
+       three bars (20% width); each shrinks to 10% height in turn (33/50/66%).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_cascade_grow(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Cascade grow:
+       three bottom-anchored bars grow in sequence (60→80→100% cascade).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_rise(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Rising bars:
+       three bars slide upward from the bottom (staggered 1/6 phase each).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_corner_hop(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Corner hop:
+       three bars hop diagonally from bottom-right anchor toward the top row.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_diagonal_grow(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Diagonal grow:
+       three bars (aspect 0.75) hop between corners via background-position steps.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_bounce_center(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Bounce center:
+       three centre-anchored bars (max 50% height) bounce between vertical slots.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_scale_alt(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Scale alternate:
+       three bars pulse height 50%↔20%↔100% in sequence (animation-direction: alternate).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_corner_wave(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Corner wave:
+       three bottom bars step through a corner wave (16.67% keyframes).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_jump(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Jump bars:
+       three bars (60% max height) swap between top and bottom at 33/66%.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_double_row(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Double row:
+       two rows of three bar segments slide horizontally (33/66/100% positions).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_six_pulse(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Six-bar pulse:
+       six corner bars (3×2) pulse height 50%→30% at 80% of the cycle.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_six_stagger(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Six-bar stagger:
+       corner bars shrink to 30% height one-by-one, then grow back in wave order.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_morph_plus(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Morph plus:
+       five bars morph 20×100% → 20×20% → 100×20% (alternate ping-pong).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_flip_six(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Flip six:
+       six bars shrink height (0.5 s alternate) while positions flip every 2 s.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_swap_tri_bottom(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Swap tri-bottom:
+       three bars shrink to 40% height while bottom anchors cycle positions.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_swap_tri_zigzag(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Swap tri-zigzag:
+       three bars shrink while anchors zigzag between corner pairs.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_morph_diagonal(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Morph diagonal:
+       three diagonal bars morph 20×100% → 20×20% → 100×20%.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_slide_diagonal(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Slide diagonal:
+       three diagonal bars shrink to 20% height while outer positions swap.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_conic_alternate(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Conic alternate:
+       two 40% conic-corner tiles; the second slides on a diagonal (alternate).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_conic_walk(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Conic walk:
+       two conic-corner tiles step through a 2×2 corner path (1.5 s loop).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_march_in(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ March rows in:
+       four stripe rows enter from the left, pause, then exit right (1.5 s).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_march_down(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ March rows down:
+       four stripe rows drop in from the top, pause, then exit downward (1.5 s).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_wave_skew(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Wave rows skew:
+       four rows skew diagonally (aspect 1.6) then snap back to centre.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_row_drop(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Row drop stagger:
+       four rows drop down one-by-one (aspect 0.8, alternate ping-pong).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_zigzag_rows(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Zigzag rows:
+       four rows alternate stripe alignment left/right (0.75 s).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_fill_cascade(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Fill cascade:
+       stripe rows fill left→right in a staggered cascade (0.75 s linear).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_ping_pong_rows(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Ping-pong rows:
+       four rows alternate stripe alignment (0↔100%) with a long hold.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_wave_rows_wide(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Wave rows wide:
+       four rows wave between centre, left, and right (aspect 1.4).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_grid_fade(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Grid fade:
+       3×3 dot grid; cells fade out in a travelling wave (2 s).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_grid_spread(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Grid spread:
+       3×3 dot grid; cells pulse box-shadow spread in a wave (2 s).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_stretch(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Stretch capsules:
+       three vertical pill bars grow from a centre dot to full height and back
+       (animation-direction: alternate). mode 1 staggers the three columns.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_stretch_seq(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Stretch sequential:
+       three pill bars grow to full height one-by-one (left->right), then the
+       alternate timeline shrinks them back. mode 1 fills right->left.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_bounce_ball(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Bounce ball:
+       three tall bottom-anchored bars; a ball rolls left<->right (1.5 s) across
+       their tops while bouncing (0.75 s). mode 1 uses one long arc per traverse;
+       mode 2 reverses the travel direction.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_knock_dots(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Knock dots:
+       three dots in a row; a bar rolls left<->right (1 s) bouncing (0.5 s) and
+       the dot it lands on is knocked down to the bottom. mode 1 pops the dot's
+       size instead of dropping it; mode 2 reverses the travel direction.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_staircase(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Staircase ball:
+       three bottom-anchored bars of descending height (100/66/33%); a ball rolls
+       left->right (2 s loop) bouncing (0.5 s) while drifting down the steps.
+       mode 1 uses three bounces; mode 2 reverses (rolls up, right->left).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_knock_away(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Knock away:
+       a bar rolls left->right (bouncing) and knocks the first two dots down at
+       1/3 and 2/3; at the end it shoves the last dot sideways and tumbles off.
+       mode 1 drops all three dots in sequence; mode 2 reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_gates(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Gates:
+       three columns (top + bottom bar) act as gates that retract from the centre
+       to let a ball roll through, then close behind it. mode 1 adds a vertical
+       weave to the ball; mode 2 reverses the travel direction.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_capture(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Capture:
+       a ball rolls in through the first gate to the centre, where the middle
+       gate opens to admit it and then closes around it, trapping the ball.
+       mode 1 pulses the trapped ball; mode 2 reverses (ball escapes left).
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_escape(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Escape:
+       like Capture, but after being trapped at the centre the ball slips to a
+       side gap and shoots out of the top. mode 1 ejects downward; mode 2
+       reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_devour(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Devour:
+       a ball sucks in two dots from the right, growing (1x -> 1.5x -> 2x) with
+       each, while a bar slides in to the centre; then the ball dashes off left
+       and resets. mode 1 keeps the ball in place (no dash); mode 2 reverses.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_lift(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Lift:
+       three tall rounded bars slide from the bottom to the top in a staggered
+       wave, then back (alternate). mode 1 reverses the stagger order; mode 2
+       reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_gap_slide(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Gap slide:
+       three static bars, each with a round gap that travels along it; the gap
+       hops from bar to bar in sequence (alternate). mode 1 moves all gaps in
+       sync; mode 2 reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_converge(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Converge:
+       in each column a top bar and a bottom dot slide together to the centre and
+       back, in a left-to-right wave (alternate). mode 1 moves all columns in
+       sync; mode 2 reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_swap_ends(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Swap ends:
+       in each column a bar and a dot swap top/bottom ends, flipping one column
+       after another in a wave (alternate). mode 1 flips all columns in sync;
+       mode 2 reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_relay(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Relay:
+       a nine-step wave (2 s loop): bars drop one by one, rise carrying their dot
+       underneath, then the dots drop back in turn. mode 1 mirrors the column
+       order; mode 2 reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_push(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Push:
+       in each column a dot descends from the top to the centre and pushes the
+       bar below it, one column after another (alternate). mode 1 mirrors the
+       column order; mode 2 reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+
+def spinner_bars_push_wave(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Push wave:
+       like Push, but a single dot-push travels across the columns one at a time
+       and resets before the next (linear loop). mode 1 mirrors the column order;
+       mode 2 reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_gather(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Gather:
+       four arms fly in from off-screen to assemble a plus around a centre dot,
+       rotate 90 degrees, then fly back out (1.5 s loop). mode 1 rotates the
+       opposite way; mode 2 reverses the timeline.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_split(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Split:
+       two horizontal bars spread from the centre to the edges while a dot drops
+       to the middle (0.5 s alternate); the whole figure rotates in 90-degree
+       steps. mode 1 rotates continuously; mode 2 reverses the rotation.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+def spinner_bars_slot(
+    label: str,
+    radius: float,
+    thickness: float,
+    color: Optional[ImColor] = None,
+    speed: float = 1.,
+    mode: int = 0
+    ) -> None:
+    """ Slot:
+       a dot passes top->bottom through two bars that open as a gate and close
+       behind it (1 s linear loop), while the figure rotates in 90-degree steps.
+       mode 1 rotates continuously; mode 2 reverses the rotation.
+
+    Python bindings defaults:
+        If color is None, then its default value will be: white
+    """
+    pass
+
+# #ifndef _IMSPINNER_BARS_INTERNAL_
+# }
+
+# #endif
+#
+
+# #endif
+####################    </generated_from:imspinner_bars.h>    ####################
+
+
+####################    <generated_from:imspinner_shapes.h>    ####################
+# #ifndef _IMSPINNER_SHAPES_H_
+#
+
+#
+# * imspinner shapes add-on
+# *
+# * Shape-based / CSS-port spinners kept out of imspinner.h. Include this header
+# * (it pulls in "imspinner.h"). All spinners here use only the primitives from
+# * imspinner.h (SPINNER_HEADER, color_alpha, detail::PathStroke, draw-list), so
+# * the file is self-contained.
+#
+
+
+# #endif
+####################    </generated_from:imspinner_shapes.h>    ####################
 
 # </litgen_stub> // Autogenerated code end!

@@ -199,8 +199,8 @@ def lib_imspinner() -> ExternalLibrary:
     # We use a copy of the library source for the moment, instead of a fork
     return ExternalLibrary(
         name="imspinner",
-        # official_git_url="https://github.com/dalerank/imspinner.git",
-        #official_branch="master"
+        official_git_url="https://github.com/dalerank/imspinner.git",
+        official_branch="master"
     )
 
 
