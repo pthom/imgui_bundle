@@ -48,35 +48,37 @@ This builds with GLFW + OpenGL3 (the default). Run the demos:
 
 ## Quick build: Python bindings
 
+The recommended dev setup is an **editable install**, then **rebuild with CMake** to iterate
+on the C++ code without re-running pip.
+
 ```bash
 # Create a venv
 python -m venv venv && source venv/bin/activate
 pip install -r requirements-dev.txt   # numpy, pytest, mypy, etc.
 
-# Build
-mkdir -p builds/my_python && cd builds/my_python
-cmake ../.. --preset python_bindings -DPython_EXECUTABLE=$(which python)
-cmake --build . -j
+# 1. Editable install (uses scikit-build-core under the hood; slow the first time)
+pip install -v -e .
 ```
 
-Then set your `PYTHONPATH` to include the build output, and run:
+After this, `import imgui_bundle` works from anywhere, and `pytest` / the demos run directly,
+with no `PYTHONPATH` to set:
 ```bash
-cd ../..
 python bindings/imgui_bundle/demos_python/demo_imgui_bundle.py
+pytest
+```
+
+To iterate on the C++ (or after regenerating bindings), rebuild with the CMake preset.
+The build redeploys the freshly-built native module into the editable install, so the next
+`python` run picks it up:
+```bash
+mkdir -p builds/my_python && cd builds/my_python
+cmake ../.. --preset python_bindings -DPython_EXECUTABLE=$(which python)
+cmake --build . -j                              # or: --target _imgui_bundle, to rebuild only the bindings
 ```
 
 :::{note}
 Python bindings force GLFW + OpenGL3 as the backend. For other backends, build C++ only.
 :::
-
-### Alternative: editable pip install
-
-For a development workflow where changes are picked up without rebuilding manually:
-```bash
-pip install -v -e .
-```
-
-This uses scikit-build-core under the hood and takes longer the first time.
 
 ## Build with ImmVision (OpenCV)
 
