@@ -66,8 +66,22 @@ def _glfw_set_search_path() -> None:
             )
             return
 
+    # Priority 0: the directory of the actual native module (_imgui_bundle.*.so).
+    # In editable-dev installs the Python package dir and the native module dir differ;
+    # the C++ module loads its own libglfw via rpath from the native module dir. Point
+    # pyGLFW at that same dir so a single libglfw is shared, instead of loading a second
+    # copy from the package dir (which triggers the "Class GLFW... implemented in both"
+    # warning, and two independent glfw states).
+    native_module_dir = None
+    try:
+        import imgui_bundle._imgui_bundle as _native_module  # type: ignore[import-untyped]
+        native_module_dir = os.path.dirname(os.path.abspath(_native_module.__file__))
+    except Exception:
+        pass
+
     # Define search directories in priority order
     search_dirs = [
+        *([native_module_dir] if native_module_dir else []),  # native module dir (_imgui_bundle.so)
         os.path.dirname(__file__),                    # imgui_bundle package directory (pip install)
         os.path.dirname(os.path.abspath(sys. executable)),  # Nuitka/PyInstaller executable directory
         os.getcwd(),                                   # Current working directory (fallback)
