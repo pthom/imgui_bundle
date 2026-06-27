@@ -1435,18 +1435,8 @@ def demo_per_index_colors():
     IMGUI_DEMO_MARKER("Colorful Infinite Lines")
     if not hasattr(static, "vals_inf1"):
         static.vals_inf1 = np.array([1.0, 2.5, 4.0, 5.5, 7.0], dtype=np.float64)
-        # Rainbow horizontal
-        static.vals_inf2 = np.arange(1.0, 9.0, dtype=np.float64)
-        static.colors_infline_rainbow = np.array([
-            imgui.get_color_u32(implot.sample_colormap(i / 7.0, implot.Colormap_.jet))
-            for i in range(8)
-        ], dtype=np.uint32)
-        # Plasma vertical
-        static.vals_inf3 = np.arange(6, dtype=np.float64) * 1.5 + 1.5
-        static.colors_infline_plasma = np.array([
-            imgui.get_color_u32(implot.sample_colormap(i / 5.0, implot.Colormap_.plasma))
-            for i in range(6)
-        ], dtype=np.uint32)
+        static.vals_inf2 = np.arange(1.0, 9.0, dtype=np.float64)       # rainbow horizontal
+        static.vals_inf3 = np.arange(6, dtype=np.float64) * 1.5 + 1.5  # plasma vertical
 
     if implot.begin_plot("Colorful Infinite Lines", size=(-1, 0)):
         implot.setup_axes("x", "y")
@@ -1456,14 +1446,22 @@ def demo_per_index_colors():
         implot.plot_inf_lines("Const Color", static.vals_inf1,
                              spec=implot.Spec(line_color=ImVec4(0.0, 0.7, 1.0, 1.0)))
 
-        # 2. Per-line rainbow colors (horizontal)
+        # 2. Per-line rainbow colors (horizontal).
+        # Note: the color array may be a temporary. Spec.line_colors keeps a
+        # reference to it alive, so it is not garbage collected before rendering.
         spec_inf2 = implot.Spec(flags=implot.InfLinesFlags_.horizontal)
-        spec_inf2.line_colors = static.colors_infline_rainbow
+        spec_inf2.line_colors = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 7.0, implot.Colormap_.jet))
+            for i in range(8)
+        ], dtype=np.uint32)
         implot.plot_inf_lines("Rainbow Horizontal", static.vals_inf2, spec=spec_inf2)
 
         # 3. Per-line colormap colors (vertical)
         spec_inf3 = implot.Spec()
-        spec_inf3.line_colors = static.colors_infline_plasma
+        spec_inf3.line_colors = np.array([
+            imgui.get_color_u32(implot.sample_colormap(i / 5.0, implot.Colormap_.plasma))
+            for i in range(6)
+        ], dtype=np.uint32)
         implot.plot_inf_lines("Plasma Vertical", static.vals_inf3, spec=spec_inf3)
         implot.end_plot()
 

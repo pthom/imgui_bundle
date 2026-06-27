@@ -312,7 +312,7 @@ void py_init_module_implot3d(nb::module_& m)
 
     auto pyClassImPlot3DSpec =
         nb::class_<ImPlot3DSpec>
-            (m, "Spec", " Plot item styling specification. Provide these to PlotX functions to override styling, specify\n offsetting or stride, or set optional flags. This struct can be used in the following ways:\n\n 1. By declaring and defining a struct instance:\n\n    ImPlot3DSpec spec;\n    spec.LineColor = ImVec4(1,0,0,1);\n    spec.LineWeight = 2.0;\n    spec.Marker = ImPlot3DMarker_Circle;\n    spec.Flags = ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments;\n    ImPlot3D::PlotLine(\"MyLine\", xs, ys, zs, 100, spec);\n\n 2. Inline using ImPlot3DProp,value pairs (order does NOT matter):\n\n    ImPlot3D::PlotLine(\"MyLine\", xs, ys, zs, 100, {\n      ImPlot3DProp_LineColor, ImVec4(1,0,0,1),\n      ImPlot3DProp_LineWeight, 2.0,\n      ImPlot3DProp_Marker, ImPlot3DMarker_Circle,\n      ImPlot3DProp_Flags, ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments\n    });")
+            (m, "Spec", nb::dynamic_attr(), " Plot item styling specification. Provide these to PlotX functions to override styling, specify\n offsetting or stride, or set optional flags. This struct can be used in the following ways:\n\n 1. By declaring and defining a struct instance:\n\n    ImPlot3DSpec spec;\n    spec.LineColor = ImVec4(1,0,0,1);\n    spec.LineWeight = 2.0;\n    spec.Marker = ImPlot3DMarker_Circle;\n    spec.Flags = ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments;\n    ImPlot3D::PlotLine(\"MyLine\", xs, ys, zs, 100, spec);\n\n 2. Inline using ImPlot3DProp,value pairs (order does NOT matter):\n\n    ImPlot3D::PlotLine(\"MyLine\", xs, ys, zs, 100, {\n      ImPlot3DProp_LineColor, ImVec4(1,0,0,1),\n      ImPlot3DProp_LineWeight, 2.0,\n      ImPlot3DProp_Marker, ImPlot3DMarker_Circle,\n      ImPlot3DProp_Flags, ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments\n    });")
         .def("__init__", [](ImPlot3DSpec * self, const std::optional<const ImVec4> & LineColor = std::nullopt, float LineWeight = 1.0f, const std::optional<const ImVec4> & FillColor = std::nullopt, float FillAlpha = IMPLOT3D_AUTO, const std::optional<const ImPlot3DMarker> & Marker = std::nullopt, float MarkerSize = IMPLOT3D_AUTO, const std::optional<const ImVec4> & MarkerLineColor = std::nullopt, const std::optional<const ImVec4> & MarkerFillColor = std::nullopt, int Offset = 0, int Stride = IMPLOT3D_AUTO, ImPlot3DItemFlags Flags = ImPlot3DItemFlags_None)
         {
             new (self) ImPlot3DSpec();  // placement new
@@ -360,48 +360,158 @@ void py_init_module_implot3d(nb::module_& m)
         ;
 
     pyClassImPlot3DSpec.def_prop_rw("line_colors",
-        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.LineColors); },
-        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+        [](nb::handle self) -> nb::object {
+            if (nb::hasattr(self, "_line_colors_ref"))
+                return self.attr("_line_colors_ref");
+            return nb::none();
+        },
+        [](nb::handle self, nb::object value) {
+            ImPlot3DSpec& spec = nb::cast<ImPlot3DSpec&>(self);
+            if (value.is_none()) {
+                spec.LineColors = nullptr;
+                if (nb::hasattr(self, "_line_colors_ref"))
+                    nb::delattr(self, "_line_colors_ref");
+                return;
+            }
+            if (!nb::isinstance<nb::ndarray<nb::ro>>(value))
+                throw nb::type_error("line_colors requires a np.uint32 array");
+            auto arr = nb::cast<nb::ndarray<nb::ro>>(value);
             if (arr.dtype() != nb::dtype<uint32_t>())
                 throw nb::type_error("line_colors requires a np.uint32 array");
-            self.LineColors = (ImU32*)arr.data();
+            // Reject non-contiguous input (e.g. a slice): we keep the raw data
+            // pointer, so a contiguous copy would dangle. Strides are in elements.
+            if (arr.ndim() != 1 || arr.stride(0) != 1)
+                throw nb::value_error("line_colors requires a 1-D contiguous array (use np.ascontiguousarray)");
+            spec.LineColors = (ImU32*)arr.data();
+            // Keep the array alive for the Spec's lifetime, and let the getter
+            // return the very object the caller passed (identity preserved):
+            self.attr("_line_colors_ref") = value;
         },
+        nb::arg("value").none(),
         "array of colors (np.uint32) for each line. Must have the same length as the data arrays. If None, use LineColor for all lines.");
 
     pyClassImPlot3DSpec.def_prop_rw("fill_colors",
-        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.FillColors); },
-        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+        [](nb::handle self) -> nb::object {
+            if (nb::hasattr(self, "_fill_colors_ref"))
+                return self.attr("_fill_colors_ref");
+            return nb::none();
+        },
+        [](nb::handle self, nb::object value) {
+            ImPlot3DSpec& spec = nb::cast<ImPlot3DSpec&>(self);
+            if (value.is_none()) {
+                spec.FillColors = nullptr;
+                if (nb::hasattr(self, "_fill_colors_ref"))
+                    nb::delattr(self, "_fill_colors_ref");
+                return;
+            }
+            if (!nb::isinstance<nb::ndarray<nb::ro>>(value))
+                throw nb::type_error("fill_colors requires a np.uint32 array");
+            auto arr = nb::cast<nb::ndarray<nb::ro>>(value);
             if (arr.dtype() != nb::dtype<uint32_t>())
                 throw nb::type_error("fill_colors requires a np.uint32 array");
-            self.FillColors = (ImU32*)arr.data();
+            // Reject non-contiguous input (e.g. a slice): we keep the raw data
+            // pointer, so a contiguous copy would dangle. Strides are in elements.
+            if (arr.ndim() != 1 || arr.stride(0) != 1)
+                throw nb::value_error("fill_colors requires a 1-D contiguous array (use np.ascontiguousarray)");
+            spec.FillColors = (ImU32*)arr.data();
+            // Keep the array alive for the Spec's lifetime, and let the getter
+            // return the very object the caller passed (identity preserved):
+            self.attr("_fill_colors_ref") = value;
         },
+        nb::arg("value").none(),
         "array of colors (np.uint32) for each fill. Must have the same length as the data arrays. If None, use FillColor for all fills.");
 
     pyClassImPlot3DSpec.def_prop_rw("marker_line_colors",
-        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.MarkerLineColors); },
-        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+        [](nb::handle self) -> nb::object {
+            if (nb::hasattr(self, "_marker_line_colors_ref"))
+                return self.attr("_marker_line_colors_ref");
+            return nb::none();
+        },
+        [](nb::handle self, nb::object value) {
+            ImPlot3DSpec& spec = nb::cast<ImPlot3DSpec&>(self);
+            if (value.is_none()) {
+                spec.MarkerLineColors = nullptr;
+                if (nb::hasattr(self, "_marker_line_colors_ref"))
+                    nb::delattr(self, "_marker_line_colors_ref");
+                return;
+            }
+            if (!nb::isinstance<nb::ndarray<nb::ro>>(value))
+                throw nb::type_error("marker_line_colors requires a np.uint32 array");
+            auto arr = nb::cast<nb::ndarray<nb::ro>>(value);
             if (arr.dtype() != nb::dtype<uint32_t>())
                 throw nb::type_error("marker_line_colors requires a np.uint32 array");
-            self.MarkerLineColors = (ImU32*)arr.data();
+            // Reject non-contiguous input (e.g. a slice): we keep the raw data
+            // pointer, so a contiguous copy would dangle. Strides are in elements.
+            if (arr.ndim() != 1 || arr.stride(0) != 1)
+                throw nb::value_error("marker_line_colors requires a 1-D contiguous array (use np.ascontiguousarray)");
+            spec.MarkerLineColors = (ImU32*)arr.data();
+            // Keep the array alive for the Spec's lifetime, and let the getter
+            // return the very object the caller passed (identity preserved):
+            self.attr("_marker_line_colors_ref") = value;
         },
+        nb::arg("value").none(),
         "array of colors (np.uint32) for each marker edge. Must have the same length as the data arrays. If None, use MarkerLineColor for all markers.");
 
     pyClassImPlot3DSpec.def_prop_rw("marker_fill_colors",
-        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.MarkerFillColors); },
-        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+        [](nb::handle self) -> nb::object {
+            if (nb::hasattr(self, "_marker_fill_colors_ref"))
+                return self.attr("_marker_fill_colors_ref");
+            return nb::none();
+        },
+        [](nb::handle self, nb::object value) {
+            ImPlot3DSpec& spec = nb::cast<ImPlot3DSpec&>(self);
+            if (value.is_none()) {
+                spec.MarkerFillColors = nullptr;
+                if (nb::hasattr(self, "_marker_fill_colors_ref"))
+                    nb::delattr(self, "_marker_fill_colors_ref");
+                return;
+            }
+            if (!nb::isinstance<nb::ndarray<nb::ro>>(value))
+                throw nb::type_error("marker_fill_colors requires a np.uint32 array");
+            auto arr = nb::cast<nb::ndarray<nb::ro>>(value);
             if (arr.dtype() != nb::dtype<uint32_t>())
                 throw nb::type_error("marker_fill_colors requires a np.uint32 array");
-            self.MarkerFillColors = (ImU32*)arr.data();
+            // Reject non-contiguous input (e.g. a slice): we keep the raw data
+            // pointer, so a contiguous copy would dangle. Strides are in elements.
+            if (arr.ndim() != 1 || arr.stride(0) != 1)
+                throw nb::value_error("marker_fill_colors requires a 1-D contiguous array (use np.ascontiguousarray)");
+            spec.MarkerFillColors = (ImU32*)arr.data();
+            // Keep the array alive for the Spec's lifetime, and let the getter
+            // return the very object the caller passed (identity preserved):
+            self.attr("_marker_fill_colors_ref") = value;
         },
+        nb::arg("value").none(),
         "array of colors (np.uint32) for each marker face. Must have the same length as the data arrays. If None, use MarkerFillColor for all markers.");
 
     pyClassImPlot3DSpec.def_prop_rw("marker_sizes",
-        [](ImPlot3DSpec& self) -> uintptr_t { return reinterpret_cast<uintptr_t>(self.MarkerSizes); },
-        [](ImPlot3DSpec& self, nb::ndarray<nb::ro>& arr) {
+        [](nb::handle self) -> nb::object {
+            if (nb::hasattr(self, "_marker_sizes_ref"))
+                return self.attr("_marker_sizes_ref");
+            return nb::none();
+        },
+        [](nb::handle self, nb::object value) {
+            ImPlot3DSpec& spec = nb::cast<ImPlot3DSpec&>(self);
+            if (value.is_none()) {
+                spec.MarkerSizes = nullptr;
+                if (nb::hasattr(self, "_marker_sizes_ref"))
+                    nb::delattr(self, "_marker_sizes_ref");
+                return;
+            }
+            if (!nb::isinstance<nb::ndarray<nb::ro>>(value))
+                throw nb::type_error("marker_sizes requires a np.float32 array");
+            auto arr = nb::cast<nb::ndarray<nb::ro>>(value);
             if (arr.dtype() != nb::dtype<float>())
                 throw nb::type_error("marker_sizes requires a np.float32 array");
-            self.MarkerSizes = (float*)arr.data();
+            // Reject non-contiguous input (e.g. a slice): we keep the raw data
+            // pointer, so a contiguous copy would dangle. Strides are in elements.
+            if (arr.ndim() != 1 || arr.stride(0) != 1)
+                throw nb::value_error("marker_sizes requires a 1-D contiguous array (use np.ascontiguousarray)");
+            spec.MarkerSizes = (float*)arr.data();
+            // Keep the array alive for the Spec's lifetime, and let the getter
+            // return the very object the caller passed (identity preserved):
+            self.attr("_marker_sizes_ref") = value;
         },
+        nb::arg("value").none(),
         "array of sizes (np.float32) for each marker. Must have the same length as the data arrays. If None, use MarkerSize for all markers.");
 
 
