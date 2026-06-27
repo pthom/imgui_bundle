@@ -30,25 +30,14 @@ function(add_glfw_as_python_shared_library)
     #     lg_target_set_rpath(${python_native_module_name} ".")
     # (inside add_imgui_bundle_bindings)
     add_subdirectory(glfw/glfw)
-    # glfw dynamic lib will be in the same folder as imgui_bundle
+    # glfw dynamic lib will be installed in the same folder as imgui_bundle (next to the
+    # native module, which loads it via @rpath). This covers both wheels and editable
+    # installs (pip records it as a package file). The native module is itself deployed
+    # to that same site-packages folder by litgen_setup_module, so no separate "copy glfw
+    # into bindings/" step is needed (that was only for the legacy PYTHONPATH=bindings
+    # workflow; pyGLFW now follows the native module's directory, see _glfw_set_search_path).
     install(TARGETS glfw DESTINATION imgui_bundle)
 
-    # deploy glfw for editable mode:
-    #    usually relies on the presence of symlinks: for example libglfw.3.dylib points to libglfw.3.4.dylib
-    #    below, we emulate those symlinks by creating copies of the dynamic library
-    if (IMGUI_BUNDLE_BUILD_PYTHON AND NOT SKBUILD)
-        add_custom_target(
-            glfw_deploy_editable
-            ALL
-            COMMAND
-                ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/$<TARGET_FILE_NAME:glfw>
-            COMMAND
-                ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.dylib
-            COMMAND
-                ${CMAKE_COMMAND} -E copy $<TARGET_FILE:glfw>  ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/libglfw.3.so
-            DEPENDS glfw
-        )
-    endif()
     set(BUILD_SHARED_LIBS OFF)
     _set_glfw_build_options_post_add()
 endfunction()

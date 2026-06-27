@@ -118,11 +118,13 @@ function(litgen_setup_module
         # Instead, we are building as a standard C++ project: in this case, we want to deploy our compiled module
         # so that it is used by our next runs of python.
         #
-        # We will copy it into two different locations, to cover all cases:
-        # - 1. ${editable_bindings_folder}: the user selected binding folder
-        #      (if the user did *manually* prepend it to his python path)
-        # - 2. ${Python_SITEARCH}: the platform dependent installation directory
-        #      (site-packages when using pip install)
+        # We always copy it to:
+        # - ${Python_SITEARCH}: the platform dependent installation directory (site-packages),
+        #   which is where an editable / pip install loads the native module from.
+        #
+        # And, optionally (only when ${editable_bindings_folder} is non-empty), also to:
+        # - ${editable_bindings_folder}: a user selected bindings folder, for the legacy
+        #   workflow where the user *manually* prepends that folder to PYTHONPATH.
         #
         # The copies are attached to the native module target as POST_BUILD steps (rather
         # than separate ALL targets), so that building the module alone also redeploys it,
@@ -130,20 +132,24 @@ function(litgen_setup_module
         # default `all` build). As a bonus, the copies then run only when the module is
         # actually relinked, instead of on every build.
 
-        # 1. Copy the python module to editable_bindings_folder
-        set(bindings_module_folder ${editable_bindings_folder}/${python_module_name})
-        set(python_native_module_editable_location ${bindings_module_folder}/$<TARGET_FILE_NAME:${python_native_module_name}>)
-
-        # 2. Copy the python module to the platform dependent installation directory (site-packages when using pip install)
+        # 1. Copy the python module to the platform dependent installation directory (site-packages when using pip install)
         # We'll rely on find_package(Python) which fills Python_SITEARCH, which is where we want to copy the module
         litgen_find_python()  # will call find_package(Python) and set Python_SITEARCH
         set(python_native_module_editable_location_site_packages ${Python_SITEARCH}/${python_module_name}/$<TARGET_FILE_NAME:${python_native_module_name}>)
-
         add_custom_command(
             TARGET ${python_native_module_name} POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${python_native_module_name}> ${python_native_module_editable_location}
             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${python_native_module_name}> ${python_native_module_editable_location_site_packages}
             VERBATIM)
         message(STATUS "litgen_setup_module: python native module will be copied to ${python_native_module_editable_location_site_packages}")
+
+        # 2. Optionally copy the python module to editable_bindings_folder (skipped when empty)
+        if (NOT editable_bindings_folder STREQUAL "")
+            set(bindings_module_folder ${editable_bindings_folder}/${python_module_name})
+            set(python_native_module_editable_location ${bindings_module_folder}/$<TARGET_FILE_NAME:${python_native_module_name}>)
+            add_custom_command(
+                TARGET ${python_native_module_name} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${python_native_module_name}> ${python_native_module_editable_location}
+                VERBATIM)
+        endif()
     endif(NOT SKBUILD)
 endfunction()

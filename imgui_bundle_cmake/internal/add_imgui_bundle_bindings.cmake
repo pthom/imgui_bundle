@@ -121,7 +121,10 @@ function(add_imgui_bundle_bindings)
         target_compile_definitions(${python_native_module_name} PRIVATE IMGUI_BUNDLE_DISABLE_IMMAPP)
     endif()
 
-    litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} ${IMGUI_BUNDLE_PATH}/bindings)
+    # Deploy the native module to site-packages only (empty editable_bindings_folder):
+    # the editable install loads it from there, so we no longer copy it into bindings/
+    # (that was only for the legacy PYTHONPATH=bindings workflow).
+    litgen_setup_module(${bound_library} ${python_native_module_name} ${python_wrapper_module_name} "")
 
     # add immvision type casters
     if (IMGUI_BUNDLE_WITH_IMMVISION)
