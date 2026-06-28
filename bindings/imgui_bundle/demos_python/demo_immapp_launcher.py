@@ -50,6 +50,10 @@ def make_gui() -> GuiFunction:
         ),
         DemoApp("demo_run_async", "(Python) How to enable parallel Python execution with GUI rendering with optimal performance"),
         DemoApp(
+            "demo_glfw_window_manip",
+            "(Python) How to manipulate the native GLFW window created by HelloImGui via `glfw_utils.glfw_window_hello_imgui()`",
+        ),
+        DemoApp(
             "demo_command_palette",
             "a Sublime Text or VSCode style command palette in ImGui",
         ),
