@@ -74,7 +74,7 @@ def _glfw_set_search_path() -> None:
     # warning, and two independent glfw states).
     native_module_dir = None
     try:
-        import imgui_bundle._imgui_bundle as _native_module  # type: ignore[import-untyped]
+        import imgui_bundle._imgui_bundle as _native_module  # type: ignore[import-untyped, import-not-found]
         native_module_dir = os.path.dirname(os.path.abspath(_native_module.__file__))
     except Exception:
         pass
