@@ -1,66 +1,59 @@
-"""Interactive terminal emulator demo: pyte (VT100 parsing) + Dear ImGui.
+"""Interactive terminal emulator demo for imgui_bundle.imgui_terminal.
 
 This file is just the *application*: it loads a monospace font, creates a
 `TerminalView` widget, attaches a `LocalShellTransport` (a real shell on a
-pseudo-terminal), and draws the widget inside a child window to show that it
-embeds anywhere. The reusable parts live in:
+pseudo-terminal), and draws the widget in a child window.
 
+The widget itself lives in the `imgui_bundle.imgui_terminal` module:
   - terminal_view.py : the transport-agnostic widget (pyte model + draw + input)
   - local_shell.py   : the local-shell transport (POSIX pty)
 
 Data path:  keyboard -> ImGui -> pty master -> shell -> pty master -> pyte -> ImGui draws it
 
-Requires:   uv pip install pyte   (or: pip install pyte)
+Requires:   pip install "imgui-bundle[terminal]"   (i.e. the pyte package)
 Platform:   POSIX only (the transport uses a pty). The widget itself is portable;
-            a remote transport (SSH / Zenoh) would replace only local_shell.py.
+            a remote transport (SSH / websocket / Zenoh) would replace only
+            LocalShellTransport.
 """
 from __future__ import annotations
 
-from imgui_bundle import imgui, imgui_ctx, immapp, hello_imgui, em_to_vec2
-
-from imgui_bundle.demos_python.demos_terminal.terminal_view import TerminalView
-from imgui_bundle.demos_python.demos_terminal.local_shell import LocalShellTransport
-
-FONT_SIZE = 16.0
+from imgui_bundle import imgui, immapp, hello_imgui, imgui_ctx
+from imgui_bundle.imgui_terminal import TerminalView, LocalShellTransport
 
 mono_font: imgui.ImFont | None = None
-view: TerminalView | None = None
-transport: LocalShellTransport | None = None
-_focus_next = True
+terminal_view: TerminalView | None = None
+shell_transport: LocalShellTransport | None = None
 
 
 def load_fonts() -> None:
     global mono_font
-    mono_font = hello_imgui.load_font("fonts/Inconsolata-Medium.ttf", FONT_SIZE)
+    mono_font = hello_imgui.load_font("fonts/Inconsolata-Medium.ttf", font_size = 16.0)
 
 
 def gui() -> None:
-    global view, transport, _focus_next
-    assert mono_font is not None
+    global terminal_view, shell_transport, _focus_next
 
-    if view is None:
-        view = TerminalView(mono_font)
-        transport = LocalShellTransport()
-        transport.start(view)  # wires view.on_input / on_resize and starts the reader
-    assert view is not None  # narrows for the render() call below
+    if terminal_view is None:
+        terminal_view = TerminalView()
+        shell_transport = LocalShellTransport()
+        shell_transport.start(terminal_view)  # wires view.on_input / on_resize and starts the reader
 
     imgui.text_disabled("Click to focus | scroll for history | drag to select, "
                         "Cmd/Ctrl-Shift-C to copy, Cmd/Ctrl-Shift-V to paste:")
 
-    if _focus_next:  # focus the child on the first frame so typing works immediately
+    if imgui.get_frame_count() == 3:  # Give focus at startup
         imgui.set_next_window_focus()
-        _focus_next = False
-    with imgui_ctx.begin_child("terminal", em_to_vec2(0, 0),
-                               imgui.ChildFlags_.borders.value):
-        view.render()
 
-    if transport is not None and not transport.alive:
+    with imgui_ctx.push_font(mono_font, 0.0):
+        terminal_view.render_in_child("terminal", child_flags=imgui.ChildFlags_.borders.value)
+
+    if shell_transport is not None and not shell_transport.alive:
         hello_imgui.get_runner_params().app_shall_exit = True
 
 
 def on_exit() -> None:
-    if transport is not None:
-        transport.stop()
+    if shell_transport is not None:
+        shell_transport.stop()
 
 
 def main() -> None:

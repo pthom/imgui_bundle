@@ -17,7 +17,7 @@ import subprocess
 import termios
 import threading
 
-from imgui_bundle.demos_python.demos_terminal.terminal_view import TerminalView
+from imgui_bundle.imgui_terminal.terminal_view import TerminalView
 
 
 def _become_session_leader() -> None:
@@ -38,6 +38,13 @@ class LocalShellTransport:
         self.alive = False
 
     def start(self, view: TerminalView) -> None:
+        """Spawn the shell and connect it to `view`.
+
+        Takes ownership of `view.on_input` and `view.on_resize` (both are
+        overwritten to point at the pty); to observe keystrokes, wrap
+        `view.on_input` AFTER calling start(). Output is fed to `view.feed()`
+        from a background reader thread.
+        """
         self.master_fd, slave_fd = pty.openpty()
         self._set_winsize(view.rows, view.cols)
         self.proc = subprocess.Popen(

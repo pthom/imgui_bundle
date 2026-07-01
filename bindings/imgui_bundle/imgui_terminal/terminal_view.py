@@ -6,14 +6,14 @@ bytes in with `feed()`, and you receive keystrokes through the `on_input`
 callback. That decoupling is what lets the same widget drive a local shell, an
 SSH channel, or a Zenoh subscription (see the TerminalTransport protocol).
 
-Embed it inside any window or child window:
+Embed it inside any window, or let it manage its own child window:
 
     view = TerminalView(mono_font)
     view.on_input = lambda data: my_channel.send(data)
     # ... a background reader calls view.feed(chunk) ...
 
-    with imgui_ctx.begin_child("terminal"):
-        view.render()          # fills the region, handles input only when focused
+    def gui():  # each frame
+        view.render_in_child("terminal")
 
 Depends only on pyte + imgui, so it is cross-platform (unlike a local pty).
 """
@@ -23,7 +23,13 @@ import threading
 from dataclasses import dataclass, field
 from typing import Callable, Protocol
 
-import pyte
+try:
+    import pyte
+except ImportError as e:
+    raise ImportError(
+        "imgui_terminal needs the 'pyte' package. "
+        'Install it with: pip install "imgui-bundle[terminal]"  (or: pip install pyte)'
+    ) from e
 
 from imgui_bundle import imgui
 
@@ -56,10 +62,12 @@ class TerminalTheme:
 class TerminalTransport(Protocol):
     """Anything that produces/consumes terminal bytes for a TerminalView.
 
-    `start()` should wire `view.on_input` / `view.on_resize` and begin feeding
-    output into `view.feed()` (typically from a background thread). See
-    LocalShellTransport for a local-shell implementation; a remote transport
-    (SSH, Zenoh, websocket) implements the same two methods.
+    `start()` takes ownership of the view's callbacks: it overwrites
+    `view.on_input` / `view.on_resize` to point at itself, and begins feeding
+    output into `view.feed()` (typically from a background thread). To observe
+    keystrokes, wrap `view.on_input` AFTER start(). See LocalShellTransport for
+    a local-shell implementation; a remote transport (SSH, Zenoh, websocket)
+    implements the same two methods.
     """
     def start(self, view: "TerminalView") -> None: ...
     def stop(self) -> None: ...
@@ -68,7 +76,7 @@ class TerminalTransport(Protocol):
 # keys with no character representation -> the escape sequences a terminal expects
 _SPECIAL_KEYS: dict[imgui.Key, bytes] = {
     imgui.Key.enter: b"\r", imgui.Key.keypad_enter: b"\r",
-    imgui.Key.backspace: b"\x7f", imgui.Key.tab: b"\t", imgui.Key.escape: b"\x1b",
+    imgui.Key.backspace: b"\x7f", imgui.Key.escape: b"\x1b",
     imgui.Key.up_arrow: b"\x1b[A", imgui.Key.down_arrow: b"\x1b[B",
     imgui.Key.right_arrow: b"\x1b[C", imgui.Key.left_arrow: b"\x1b[D",
     imgui.Key.home: b"\x1b[H", imgui.Key.end: b"\x1b[F",
@@ -108,9 +116,11 @@ class _VTScreen(pyte.HistoryScreen):
 
 
 class TerminalView:
-    def __init__(self, font: imgui.ImFont, cols: int = 80, rows: int = 24,
+    def __init__(self, cols: int = 80, rows: int = 24,
                  theme: TerminalTheme | None = None, history: int = 5000):
-        self.font = font
+        # `font` should be monospace; None uses whatever font is active at render
+        # time (convenient because HelloImGui loads fonts in a callback, after
+        # application objects are usually created)
         self.theme = theme or TerminalTheme()
         self.screen = _VTScreen(cols, rows, history=history, ratio=0.5)
         self.screen.reply = self._send  # query replies go back to the program
@@ -133,6 +143,11 @@ class TerminalView:
     def rows(self) -> int:
         return self.screen.lines
 
+    @property
+    def title(self) -> str:
+        """Window title set by the program (OSC escape), or '' if none."""
+        return self.screen.title
+
     def feed(self, data: bytes) -> None:
         """Push output bytes into the screen. Safe to call from any thread."""
         with self.lock:
@@ -145,16 +160,28 @@ class TerminalView:
         """Bytes the emulator must send back to the program (query replies)."""
         self.on_input(data)
 
+    def render_in_child(self, str_id: str = "terminal",
+                        size: imgui.ImVec2 | None = None,
+                        child_flags: int = 0, window_flags: int = 0) -> None:
+        """Draw the terminal in its own child window (the recommended embedding).
+
+        The child provides what `render()` needs from its host: scrolling (for
+        the history scrollbar) and focus (for keyboard input). `size` defaults
+        to the remaining content region.
+        """
+        if imgui.begin_child(str_id, size or IV(0, 0), child_flags, window_flags):
+            self.render()
+        imgui.end_child()  # always called, like imgui.end()
+
     def render(self) -> None:
         """Draw the grid and handle input, inside the current window/child.
 
-        The grid fills the host window's visible area; scrollback uses the host
-        window's own scrolling, so a child window shows a native scrollbar
-        automatically once history accumulates (wheel and scrollbar both work).
-        Keyboard is consumed only while this window is focused. Grid size changes
-        are reported via `on_resize`.
+        Prefer `render_in_child()` unless you manage the host window yourself:
+        this method relies on the host window for scrolling (history scrollbar,
+        wheel) and focus (keyboard is consumed only while the window is focused).
+        The grid fills the host's visible area; size changes are reported via
+        `on_resize`.
         """
-        imgui.push_font(self.font, self.font.legacy_size)
         cw = imgui.calc_text_size("M").x
         ch = imgui.get_text_line_height()
         # visible area of the host window (content avail already excludes the
@@ -167,7 +194,6 @@ class TerminalView:
             self._handle_keyboard()
 
         self._draw(cw, ch)
-        imgui.pop_font()
 
     # -- input ------------------------------------------------------------
     def _handle_keyboard(self) -> None:
@@ -188,15 +214,23 @@ class TerminalView:
         out: list[bytes] = []
         # macOS: ImGui swaps Cmd<>Ctrl, so physical Ctrl arrives as `key_super`.
         ctrl_down = io.key_super if io.config_mac_osx_behaviors else io.key_ctrl
-        if ctrl_down:  # Ctrl-A..Z -> control bytes 0x01..0x1a
+        if ctrl_down:  # Ctrl-A..Z -> control bytes 0x01..0x1a, Ctrl-Space -> NUL
             for i in range(26):
                 if imgui.is_key_pressed(imgui.Key(int(imgui.Key.a) + i)):
                     out.append(bytes([i + 1]))
+            if imgui.is_key_pressed(imgui.Key.space):
+                out.append(b"\x00")
+        elif io.key_alt:  # Alt/Option acts as Meta: ESC-prefixed letter (M-b, M-f...)
+            for i in range(26):  # raw letters, ignoring macOS Option composition
+                if imgui.is_key_pressed(imgui.Key(int(imgui.Key.a) + i)):
+                    out.append(b"\x1b" + bytes([ord("a") + i]))
         else:
             for codepoint in io.input_queue_characters:
                 if codepoint >= 0x20 and codepoint != 0x7F:
                     out.append(chr(codepoint).encode("utf-8"))
 
+        if imgui.is_key_pressed(imgui.Key.tab):
+            out.append(b"\x1b[Z" if io.key_shift else b"\t")  # Shift-Tab is backtab
         for key, seq in _SPECIAL_KEYS.items():
             if imgui.is_key_pressed(key):
                 out.append(seq)
@@ -238,7 +272,7 @@ class TerminalView:
                 pass
         return default
 
-    def _colors_of(self, cell) -> tuple[RGB, RGB]:
+    def _colors_of(self, cell: pyte.screens.Char) -> tuple[RGB, RGB]:
         fg_name = _BRIGHTEN[cell.fg] if (cell.bold and cell.fg in _BRIGHTEN) else cell.fg
         fg = self._color(fg_name, self.theme.fg)
         bg = self._color(cell.bg, self.theme.bg)
@@ -293,7 +327,8 @@ class TerminalView:
             imgui.set_scroll_y(n_lines * ch)  # clamped to scroll max by imgui
             self._snap_bottom = False
 
-    def _draw_line(self, dl, origin: imgui.ImVec2, vi: int, line, cw: float,
+    def _draw_line(self, dl: imgui.ImDrawList, origin: imgui.ImVec2, vi: int,
+                   line: dict[int, pyte.screens.Char], cw: float,
                    ch: float, cols: int) -> None:
         x = 0
         while x < cols:  # coalesce consecutive cells sharing fg/bg into one draw
