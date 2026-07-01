@@ -62,7 +62,12 @@ view.on_resize = lambda cols, rows: channel.resize(cols, rows)
 # in a background reader:  for chunk in channel: view.feed(chunk)
 ```
 
-This is also the path for **Pyodide / browser** use: there is no local pty in the browser, but the widget itself is pure Python and works there with a websocket transport to a host-side shell.
+Runnable remote demos (in `demos_python/demos_terminal/`):
+
+* [demo_terminal_ssh.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_ssh.py) — over an SSH channel (paramiko)
+* [demo_terminal_websocket.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_websocket.py) + [pty_bridge_server.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/pty_bridge_server.py) — over a websocket to a host-side shell bridge
+
+This websocket path is also how a **Pyodide / browser** build would work: there is no local pty in the browser, but the widget itself is pure Python and drives a remote shell over a websocket.
 
 ## Features
 

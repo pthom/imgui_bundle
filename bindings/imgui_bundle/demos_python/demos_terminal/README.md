@@ -8,11 +8,28 @@ The reusable widget lives in `bindings/imgui_bundle/imgui_terminal/`
 (`TerminalView`, `TerminalTheme`, `TerminalTransport`, `LocalShellTransport`);
 this folder only holds the runnable demo.
 
+## Demos in this folder
+
+| file | what it shows | extra deps |
+|------|---------------|------------|
+| `demo_terminal_pyte.py` | local shell (the common case) | - |
+| `demo_terminal_ssh.py` | same widget over an **SSH** channel (paramiko) | `paramiko` |
+| `demo_terminal_websocket.py` | same widget over a **websocket** to `pty_bridge_server.py` | `websockets` |
+| `pty_bridge_server.py` | host-side script: exposes a local shell over a websocket | `websockets` |
+
+The remote demos (SSH, websocket) prove the transport abstraction: the widget is
+byte-for-byte the same, only the byte source changes. The websocket path is also
+what a Pyodide/browser build would use, since browsers have no local pty.
+
 ## Run it
 
 ```bash
 pip install "imgui-bundle[terminal]"   # installs the pyte dependency
-python demo_terminal_pyte.py
+python demo_terminal_pyte.py           # local shell
+
+# remote variants:
+pip install websockets && python demo_terminal_websocket.py   # spawns its own bridge
+pip install paramiko   && python demo_terminal_ssh.py         # edit host/user first
 ```
 
 Click the terminal to focus it, then type as in any terminal (colors, `vim`,
