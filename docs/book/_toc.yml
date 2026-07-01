@@ -18,6 +18,7 @@ parts:
       - file: python/pure_python_backend
       - file: python/python_async
       - file: python/notebook_runners.ipynb
+      - file: python/python_terminal
       - file: python/python_pyodide
       - file: python/python_tips
       - file: python/desktop_deploy

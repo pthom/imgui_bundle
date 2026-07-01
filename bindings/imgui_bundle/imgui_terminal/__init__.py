@@ -11,14 +11,16 @@ Requires the `pyte` package: pip install "imgui-bundle[terminal]"
 Quick start (see bindings/imgui_bundle/demos_python/demos_terminal/ for a
 complete demo):
 
+    from imgui_bundle import imgui_ctx
     from imgui_bundle.imgui_terminal import TerminalView, LocalShellTransport
 
-    view = TerminalView(mono_font)      # a monospace ImFont
+    view = TerminalView()
     transport = LocalShellTransport()
     transport.start(view)
 
-    def gui():                          # each frame
-        view.render_in_child("terminal")
+    def gui():                              # each frame
+        with imgui_ctx.push_font(mono_font, 0.0):   # a monospace ImFont
+            view.render_in_child("terminal")
 """
 from typing import Any
 

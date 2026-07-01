@@ -43,17 +43,18 @@ keyboard -> ImGui -> transport.write -> shell -> view.feed -> pyte -> ImGui draw
 ## Embedding in your own app
 
 ```python
-from imgui_bundle import hello_imgui
+from imgui_bundle import hello_imgui, imgui_ctx
 from imgui_bundle.imgui_terminal import TerminalView, LocalShellTransport
 
 mono = hello_imgui.load_font("fonts/Inconsolata-Medium.ttf", 16)  # in load_additional_fonts
 
-terminal_view = TerminalView(mono)  # font optional: defaults to current font
+terminal_view = TerminalView()
 LocalShellTransport().start(terminal_view)  # desktop: local shell
 
 
 def gui():  # inside any window, child, or dock node
-  terminal_view.render_in_child("terminal")  # child + scrollbar + focus handling
+    with imgui_ctx.push_font(mono, 0.0):  # the widget renders with the active font
+        terminal_view.render_in_child("terminal")  # child + scrollbar + focus handling
 ```
 
 ### Remote shell (SSH / robot companion computer / Zenoh)
@@ -61,10 +62,10 @@ def gui():  # inside any window, child, or dock node
 Reuse the *same widget*; supply your own transport:
 
 ```python
-terminal_view = TerminalView(mono)
+terminal_view = TerminalView()
 terminal_view.on_input = lambda data: channel.send(data)  # keystrokes -> remote pty
 terminal_view.on_resize = lambda cols, rows: channel.resize(cols, rows)
-# background reader:  for chunk in channel: view.feed(chunk)
+# background reader:  for chunk in channel: terminal_view.feed(chunk)
 ```
 
 This is also the only variant that can work under Emscripten/Pyodide, where there

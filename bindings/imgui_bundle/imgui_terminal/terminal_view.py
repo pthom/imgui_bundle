@@ -6,14 +6,16 @@ bytes in with `feed()`, and you receive keystrokes through the `on_input`
 callback. That decoupling is what lets the same widget drive a local shell, an
 SSH channel, or a Zenoh subscription (see the TerminalTransport protocol).
 
-Embed it inside any window, or let it manage its own child window:
+Embed it inside any window, or let it manage its own child window. It renders
+with the font active at render time (push a monospace font around it):
 
-    view = TerminalView(mono_font)
+    view = TerminalView()
     view.on_input = lambda data: my_channel.send(data)
     # ... a background reader calls view.feed(chunk) ...
 
     def gui():  # each frame
-        view.render_in_child("terminal")
+        with imgui_ctx.push_font(mono_font, 0.0):
+            view.render_in_child("terminal")
 
 Depends only on pyte + imgui, so it is cross-platform (unlike a local pty).
 """
@@ -118,9 +120,8 @@ class _VTScreen(pyte.HistoryScreen):
 class TerminalView:
     def __init__(self, cols: int = 80, rows: int = 24,
                  theme: TerminalTheme | None = None, history: int = 5000):
-        # `font` should be monospace; None uses whatever font is active at render
-        # time (convenient because HelloImGui loads fonts in a callback, after
-        # application objects are usually created)
+        # rendering uses the font active at render() time, which should be
+        # monospace (push one around render_in_child / render)
         self.theme = theme or TerminalTheme()
         self.screen = _VTScreen(cols, rows, history=history, ratio=0.5)
         self.screen.reply = self._send  # query replies go back to the program
