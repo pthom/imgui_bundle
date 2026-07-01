@@ -228,6 +228,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
             .value("snap_link_to_pin_dir", ax::NodeEditor::StyleVar_SnapLinkToPinDir, "")
             .value("hovered_node_border_offset", ax::NodeEditor::StyleVar_HoveredNodeBorderOffset, "")
             .value("selected_node_border_offset", ax::NodeEditor::StyleVar_SelectedNodeBorderOffset, "")
+            .value("grid_size", ax::NodeEditor::StyleVar_GridSize, "")
             .value("count", ax::NodeEditor::StyleVar_Count, "");
 
 
@@ -261,6 +262,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         .def_rw("group_border_width", &ax::NodeEditor::Style::GroupBorderWidth, "")
         .def_rw("highlight_connected_links", &ax::NodeEditor::Style::HighlightConnectedLinks, "")
         .def_rw("snap_link_to_pin_dir", &ax::NodeEditor::Style::SnapLinkToPinDir, "when True link will start on the line defined by pin direction")
+        .def_rw("grid_size", &ax::NodeEditor::Style::GridSize, "size of a background grid cell, in canvas units (x and y independent)")
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
         .def("color_",

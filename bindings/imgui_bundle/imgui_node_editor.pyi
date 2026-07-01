@@ -320,10 +320,12 @@ class StyleVar(enum.IntEnum):
     hovered_node_border_offset = enum.auto()  # (= 25)
     # StyleVar_SelectedNodeBorderOffset,    /* original C++ signature */
     selected_node_border_offset = enum.auto()  # (= 26)
+    # StyleVar_GridSize,    /* original C++ signature */
+    grid_size = enum.auto()  # (= 27)
 
     # StyleVar_Count    /* original C++ signature */
     # }
-    count = enum.auto()  # (= 27)
+    count = enum.auto()  # (= 28)
 
 class Style:
     # ImVec4  NodePadding;    /* original C++ signature */
@@ -382,6 +384,10 @@ class Style:
     snap_link_to_pin_dir: (
         float  # when True link will start on the line defined by pin direction
     )
+    # ImVec2  GridSize;    /* original C++ signature */
+    grid_size: (
+        ImVec2  # size of a background grid cell, in canvas units (x and y independent)
+    )
 
     # [ADAPT_IMGUI_BUNDLE]
     #                            #ifdef IMGUI_BUNDLE_PYTHON_API
@@ -426,6 +432,7 @@ class Style:
     #         GroupBorderWidth         = 1.0f;
     #         HighlightConnectedLinks  = 0.0f;
     #         SnapLinkToPinDir         = 0.0f;
+    #         GridSize                 = ImVec2(32.0f, 32.0f);
     #
     #         Colors[StyleColor_Bg]                 = ImColor( 60,  60,  70, 200);
     #         Colors[StyleColor_Grid]               = ImColor(120, 120, 120,  40);
