@@ -122,6 +122,7 @@ void py_init_module_hello_imgui(nb::module_& m)
     using ScreenSize = std::array<int, 2>;
     using VoidFunction = std::function<void(void)>;
     using AnyEventCallback = std::function<bool(void * backendEvent)>;
+    using ConfirmExitCallback = std::function<bool(void)>;
     using DockSpaceName = std::string;
 
     m.def("final_app_window_screenshot", FinalAppWindowScreenshot);
@@ -978,6 +979,9 @@ void py_init_module_hello_imgui(nb::module_& m)
     m.def("empty_event_callback",
         HelloImGui::EmptyEventCallback);
 
+    m.def("empty_confirm_exit_callback",
+        HelloImGui::EmptyConfirmExitCallback);
+
 
     auto pyClassMobileCallbacks =
         nb::class_<HelloImGui::MobileCallbacks>
@@ -1085,7 +1089,7 @@ void py_init_module_hello_imgui(nb::module_& m)
     auto pyClassRunnerCallbacks =
         nb::class_<HelloImGui::RunnerCallbacks>
             (m, "RunnerCallbacks", " @@md#RunnerCallbacks\n RunnerCallbacks is a struct that contains the callbacks\n that are called by the application\n")
-        .def("__init__", [](HelloImGui::RunnerCallbacks * self, const std::optional<const VoidFunction> & ShowGui = std::nullopt, const std::optional<const VoidFunction> & ShowMenus = std::nullopt, const std::optional<const VoidFunction> & ShowAppMenuItems = std::nullopt, const std::optional<const VoidFunction> & ShowStatus = std::nullopt, const std::optional<const VoidFunction> & PostInit_AddPlatformBackendCallbacks = std::nullopt, const std::optional<const VoidFunction> & PostInit = std::nullopt, const std::optional<const VoidFunction> & LoadAdditionalFonts = std::nullopt, HelloImGui::DefaultIconFont defaultIconFont = HelloImGui::DefaultIconFont::FontAwesome4, const std::optional<const VoidFunction> & SetupImGuiConfig = std::nullopt, const std::optional<const VoidFunction> & SetupImGuiStyle = std::nullopt, const std::optional<const VoidFunction> & RegisterTests = std::nullopt, bool registerTestsCalled = false, const std::optional<const VoidFunction> & BeforeExit = std::nullopt, const std::optional<const VoidFunction> & BeforeExit_PostCleanup = std::nullopt, const std::optional<const VoidFunction> & PreNewFrame = std::nullopt, const std::optional<const VoidFunction> & PostNewFrame = std::nullopt, const std::optional<const VoidFunction> & BeforeImGuiRender = std::nullopt, const std::optional<const VoidFunction> & AfterSwap = std::nullopt, const std::optional<const VoidFunction> & CustomBackground = std::nullopt, const std::optional<const VoidFunction> & PostRenderDockableWindows = std::nullopt, const std::optional<const VoidFunction> & ThemeChanged = std::nullopt, const std::optional<const AnyEventCallback> & AnyBackendEventCallback = std::nullopt)
+        .def("__init__", [](HelloImGui::RunnerCallbacks * self, const std::optional<const VoidFunction> & ShowGui = std::nullopt, const std::optional<const VoidFunction> & ShowMenus = std::nullopt, const std::optional<const VoidFunction> & ShowAppMenuItems = std::nullopt, const std::optional<const VoidFunction> & ShowStatus = std::nullopt, const std::optional<const VoidFunction> & PostInit_AddPlatformBackendCallbacks = std::nullopt, const std::optional<const VoidFunction> & PostInit = std::nullopt, const std::optional<const VoidFunction> & LoadAdditionalFonts = std::nullopt, HelloImGui::DefaultIconFont defaultIconFont = HelloImGui::DefaultIconFont::FontAwesome4, const std::optional<const VoidFunction> & SetupImGuiConfig = std::nullopt, const std::optional<const VoidFunction> & SetupImGuiStyle = std::nullopt, const std::optional<const VoidFunction> & RegisterTests = std::nullopt, bool registerTestsCalled = false, const std::optional<const ConfirmExitCallback> & ConfirmExit = std::nullopt, const std::optional<const VoidFunction> & BeforeExit = std::nullopt, const std::optional<const VoidFunction> & BeforeExit_PostCleanup = std::nullopt, const std::optional<const VoidFunction> & PreNewFrame = std::nullopt, const std::optional<const VoidFunction> & PostNewFrame = std::nullopt, const std::optional<const VoidFunction> & BeforeImGuiRender = std::nullopt, const std::optional<const VoidFunction> & AfterSwap = std::nullopt, const std::optional<const VoidFunction> & CustomBackground = std::nullopt, const std::optional<const VoidFunction> & PostRenderDockableWindows = std::nullopt, const std::optional<const VoidFunction> & ThemeChanged = std::nullopt, const std::optional<const AnyEventCallback> & AnyBackendEventCallback = std::nullopt)
         {
             new (self) HelloImGui::RunnerCallbacks();  // placement new
             auto r_ctor_ = self;
@@ -1131,6 +1135,10 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->RegisterTests = HelloImGui::EmptyVoidFunction();
             r_ctor_->registerTestsCalled = registerTestsCalled;
+            if (ConfirmExit.has_value())
+                r_ctor_->ConfirmExit = ConfirmExit.value();
+            else
+                r_ctor_->ConfirmExit = HelloImGui::EmptyConfirmExitCallback();
             if (BeforeExit.has_value())
                 r_ctor_->BeforeExit = BeforeExit.value();
             else
@@ -1172,7 +1180,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             else
                 r_ctor_->AnyBackendEventCallback = HelloImGui::EmptyEventCallback();
         },
-        nb::arg("show_gui").none() = nb::none(), nb::arg("show_menus").none() = nb::none(), nb::arg("show_app_menu_items").none() = nb::none(), nb::arg("show_status").none() = nb::none(), nb::arg("post_init_add_platform_backend_callbacks").none() = nb::none(), nb::arg("post_init").none() = nb::none(), nb::arg("load_additional_fonts").none() = nb::none(), nb::arg("default_icon_font") = HelloImGui::DefaultIconFont::FontAwesome4, nb::arg("setup_imgui_config").none() = nb::none(), nb::arg("setup_imgui_style").none() = nb::none(), nb::arg("register_tests").none() = nb::none(), nb::arg("register_tests_called") = false, nb::arg("before_exit").none() = nb::none(), nb::arg("before_exit_post_cleanup").none() = nb::none(), nb::arg("pre_new_frame").none() = nb::none(), nb::arg("post_new_frame").none() = nb::none(), nb::arg("before_imgui_render").none() = nb::none(), nb::arg("after_swap").none() = nb::none(), nb::arg("custom_background").none() = nb::none(), nb::arg("post_render_dockable_windows").none() = nb::none(), nb::arg("theme_changed").none() = nb::none(), nb::arg("any_backend_event_callback").none() = nb::none()
+        nb::arg("show_gui").none() = nb::none(), nb::arg("show_menus").none() = nb::none(), nb::arg("show_app_menu_items").none() = nb::none(), nb::arg("show_status").none() = nb::none(), nb::arg("post_init_add_platform_backend_callbacks").none() = nb::none(), nb::arg("post_init").none() = nb::none(), nb::arg("load_additional_fonts").none() = nb::none(), nb::arg("default_icon_font") = HelloImGui::DefaultIconFont::FontAwesome4, nb::arg("setup_imgui_config").none() = nb::none(), nb::arg("setup_imgui_style").none() = nb::none(), nb::arg("register_tests").none() = nb::none(), nb::arg("register_tests_called") = false, nb::arg("confirm_exit").none() = nb::none(), nb::arg("before_exit").none() = nb::none(), nb::arg("before_exit_post_cleanup").none() = nb::none(), nb::arg("pre_new_frame").none() = nb::none(), nb::arg("post_new_frame").none() = nb::none(), nb::arg("before_imgui_render").none() = nb::none(), nb::arg("after_swap").none() = nb::none(), nb::arg("custom_background").none() = nb::none(), nb::arg("post_render_dockable_windows").none() = nb::none(), nb::arg("theme_changed").none() = nb::none(), nb::arg("any_backend_event_callback").none() = nb::none()
         )
         .def_rw("show_gui", &HelloImGui::RunnerCallbacks::ShowGui, " `ShowGui`: Fill it with a function that will add your widgets.\n (ShowGui will be called at each frame, before rendering the Dockable windows, if any)")
         .def_rw("show_menus", &HelloImGui::RunnerCallbacks::ShowMenus, " `ShowMenus`: Fill it with a function that will add ImGui menus by calling:\n       ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()\n   Notes:\n   * you do not need to call ImGui::BeginMenuBar and ImGui::EndMenuBar\n   * Some default menus can be provided:\n     see ImGuiWindowParams options:\n         _showMenuBar, showMenu_App_QuitAbout, showMenu_View_")
@@ -1211,6 +1219,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def_rw("setup_imgui_style", &HelloImGui::RunnerCallbacks::SetupImGuiStyle, " `SetupImGuiStyle`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, set your own style by providing your own SetupImGuiStyle callback")
         .def_rw("register_tests", &HelloImGui::RunnerCallbacks::RegisterTests, " `RegisterTests`: A function that is called once ImGuiTestEngine is ready\n to be filled with tests and automations definitions.")
         .def_rw("register_tests_called", &HelloImGui::RunnerCallbacks::registerTestsCalled, " `registerTestsCalled`: will be set to True when RegisterTests was called\n (you can set this to False if you want to RegisterTests to be called again\n  during the app execution)")
+        .def_rw("confirm_exit", &HelloImGui::RunnerCallbacks::ConfirmExit, " `ConfirmExit`: Called when the user requests to close the window\n  (window close button, Cmd-Q / Alt-F4, or the default App/Quit menu).\n  Return True to proceed with the exit, False to cancel it (the app keeps running).\n  Use it to confirm quitting (e.g. unsaved changes, or several open documents/tabs).\n\n  Two ways to use it:\n    - Synchronous: pop a native/OS dialog and return the user's answer directly.\n    - Deferred (to show a Dear ImGui modal): return False to cancel now, raise a\n      flag, open your popup inside ShowGui, and set RunnerParams.appShallExit = True\n      yourself once the user confirms there.\n\n  IMPORTANT: this is called during event polling, *before* ImGui::NewFrame().\n  Do NOT call any ImGui function inside it. It is NOT called for programmatic\n  exits (setting RunnerParams.appShallExit = True directly is always honored).\n  Default: empty -> the exit proceeds immediately (the historical behavior).")
         .def_rw("before_exit", &HelloImGui::RunnerCallbacks::BeforeExit, " `BeforeExit`: You can here add a function that will be called once before exiting\n  (when OpenGL and ImGui are still inited)")
         .def("enqueue_before_exit",
             &HelloImGui::RunnerCallbacks::EnqueueBeforeExit,

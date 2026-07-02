@@ -1306,6 +1306,10 @@ VoidFunction SequenceFunctions(const VoidFunction& f1, const VoidFunction& f2);
 using AnyEventCallback = std::function<bool(void * backendEvent)>;
 inline AnyEventCallback EmptyEventCallback() {return {}; }
 
+// ConfirmExitCallback can hold any bool(void) function (return true to allow exit).
+using ConfirmExitCallback = std::function<bool(void)>;
+inline ConfirmExitCallback EmptyConfirmExitCallback() { return {}; }
+
 // @@md
 
 
@@ -1490,6 +1494,23 @@ struct RunnerCallbacks
 
 
     // --------------- Exit sequence callbacks -------------------
+
+    // `ConfirmExit`: Called when the user requests to close the window
+    //  (window close button, Cmd-Q / Alt-F4, or the default App/Quit menu).
+    //  Return true to proceed with the exit, false to cancel it (the app keeps running).
+    //  Use it to confirm quitting (e.g. unsaved changes, or several open documents/tabs).
+    //
+    //  Two ways to use it:
+    //    - Synchronous: pop a native/OS dialog and return the user's answer directly.
+    //    - Deferred (to show a Dear ImGui modal): return false to cancel now, raise a
+    //      flag, open your popup inside ShowGui, and set RunnerParams.appShallExit = true
+    //      yourself once the user confirms there.
+    //
+    //  IMPORTANT: this is called during event polling, *before* ImGui::NewFrame().
+    //  Do NOT call any ImGui function inside it. It is NOT called for programmatic
+    //  exits (setting RunnerParams.appShallExit = true directly is always honored).
+    //  Default: empty -> the exit proceeds immediately (the historical behavior).
+    ConfirmExitCallback ConfirmExit = EmptyConfirmExitCallback();
 
     // `BeforeExit`: You can here add a function that will be called once before exiting
     //  (when OpenGL and ImGui are still inited)

@@ -50,6 +50,7 @@ ImGuiTestEngine = test_engine.TestEngine
 
 VoidFunction = Callable[[], None]
 AnyEventCallback = Callable[[Any], None]
+ConfirmExitCallback = Callable[[], bool]
 ScreenSize = Tuple[int, int]
 ScreenPosition = Tuple[int, int]
 ImGuiCond_FirstUseEver = Cond_.first_use_ever
@@ -1603,6 +1604,10 @@ def sequence_functions(f1: VoidFunction, f2: VoidFunction) -> VoidFunction:
 def empty_event_callback() -> AnyEventCallback:
     pass
 
+# inline ConfirmExitCallback EmptyConfirmExitCallback() { return {}; }    /* original C++ signature */
+def empty_confirm_exit_callback() -> ConfirmExitCallback:
+    pass
+
 # @@md
 
 # --------------------------------------------------------------------------------------------------------------------
@@ -1878,6 +1883,24 @@ class RunnerCallbacks:
 
     # --------------- Exit sequence callbacks -------------------
 
+    # ConfirmExitCallback ConfirmExit = EmptyConfirmExitCallback();    /* original C++ signature */
+    # `ConfirmExit`: Called when the user requests to close the window
+    #  (window close button, Cmd-Q / Alt-F4, or the default App/Quit menu).
+    #  Return True to proceed with the exit, False to cancel it (the app keeps running).
+    #  Use it to confirm quitting (e.g. unsaved changes, or several open documents/tabs).
+    #
+    #  Two ways to use it:
+    #    - Synchronous: pop a native/OS dialog and return the user's answer directly.
+    #    - Deferred (to show a Dear ImGui modal): return False to cancel now, raise a
+    #      flag, open your popup inside ShowGui, and set RunnerParams.appShallExit = True
+    #      yourself once the user confirms there.
+    #
+    #  IMPORTANT: this is called during event polling, *before* ImGui::NewFrame().
+    #  Do NOT call any ImGui function inside it. It is NOT called for programmatic
+    #  exits (setting RunnerParams.appShallExit = True directly is always honored).
+    #  Default: empty -> the exit proceeds immediately (the historical behavior).
+    confirm_exit: ConfirmExitCallback = empty_confirm_exit_callback()
+
     # VoidFunction BeforeExit = EmptyVoidFunction();    /* original C++ signature */
     # `BeforeExit`: You can here add a function that will be called once before exiting
     #  (when OpenGL and ImGui are still inited)
@@ -1951,7 +1974,7 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = empty_event_callback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction PostNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, ConfirmExitCallback ConfirmExit = EmptyConfirmExitCallback(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction PostNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: Optional[VoidFunction] = None,
@@ -1966,6 +1989,7 @@ class RunnerCallbacks:
         setup_imgui_style: Optional[VoidFunction] = None,
         register_tests: Optional[VoidFunction] = None,
         register_tests_called: bool = False,
+        confirm_exit: Optional[ConfirmExitCallback] = None,
         before_exit: Optional[VoidFunction] = None,
         before_exit_post_cleanup: Optional[VoidFunction] = None,
         pre_new_frame: Optional[VoidFunction] = None,
@@ -1991,6 +2015,7 @@ class RunnerCallbacks:
                 * SetupImGuiConfig: imgui_default_settings.SetupDefaultImGuiConfig
                 * SetupImGuiStyle: imgui_default_settings.SetupDefaultImGuiStyle
                 * RegisterTests: EmptyVoidFunction()
+                * ConfirmExit: EmptyConfirmExitCallback()
                 * BeforeExit: EmptyVoidFunction()
                 * BeforeExit_PostCleanup: EmptyVoidFunction()
                 * PreNewFrame: EmptyVoidFunction()
