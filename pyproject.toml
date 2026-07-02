@@ -84,7 +84,8 @@ full = [
     "PyGLM",
 ]
 # For development and testing
-test = ["pytest", "pytest-asyncio", "mypy"]
+# pyte/websockets: let CI run the imgui_terminal tests and type-check the widget
+test = ["pytest", "pytest-asyncio", "mypy", "pyte", "websockets"]
 
 
 
@@ -205,6 +206,11 @@ disable_error_code = ["attr-defined", "no-untyped-def"]
 
 [[tool.mypy.overrides]]
 module = ["OpenGL.*", "glfw.*", "glm"]
+ignore_missing_imports = true
+
+# paramiko (imgui_terminal SSH demo) is untyped
+[[tool.mypy.overrides]]
+module = ["paramiko"]
 ignore_missing_imports = true
 
 #####################################

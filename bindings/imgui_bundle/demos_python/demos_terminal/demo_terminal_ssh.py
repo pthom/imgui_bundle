@@ -20,7 +20,7 @@ import threading
 from imgui_bundle import imgui, imgui_ctx, immapp, hello_imgui
 from imgui_bundle.imgui_terminal import TerminalView
 
-import paramiko  # type: ignore[import-untyped]
+import paramiko
 
 HOST = "127.0.0.1"
 PORT = 22
