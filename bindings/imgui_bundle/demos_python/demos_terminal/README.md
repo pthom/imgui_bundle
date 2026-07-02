@@ -32,6 +32,9 @@ pip install websockets && python demo_terminal_websocket.py   # spawns its own b
 pip install paramiko   && python demo_terminal_ssh.py         # edit host/user first
 ```
 
+The local demo opens terminals in a tab bar: `+` opens another, the `X` on a
+tab closes it, and the `(?)` marker shows the shortcuts as a tooltip.
+
 Click the terminal to focus it, then type as in any terminal (colors, `vim`,
 `htop`, `tmux`, job control with Ctrl-C / Ctrl-Z all work). Scroll through
 history with the mouse wheel or the native scrollbar (the view follows live

@@ -116,12 +116,10 @@ def main() -> None:
     params = hello_imgui.RunnerParams()
     params.app_window_params.window_title = "imgui_terminal over SSH"
     params.app_window_params.window_geometry.size = (900, 560)
-    params.imgui_window_params.default_imgui_window_type = (
-        hello_imgui.DefaultImGuiWindowType.provide_full_screen_window)
     params.callbacks.load_additional_fonts = load_fonts
     params.callbacks.show_gui = gui
     params.callbacks.before_exit = on_exit
-    params.fps_idling.enable_idling = False
+    params.fps_idling.fps_idle = 20  # idling speed than the default (9), since shell output arrives asynchronously
     immapp.run(params)
 
 

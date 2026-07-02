@@ -21,15 +21,18 @@ from imgui_bundle.imgui_terminal import TerminalView, LocalShellTransport
 
 mono_font = None
 view = TerminalView()
-LocalShellTransport().start(view)       # spawns $SHELL behind a pty (POSIX)
+LocalShellTransport().start(view)  # spawns $SHELL behind a pty (POSIX)
+
 
 def load_fonts():
     global mono_font
     mono_font = hello_imgui.load_font("fonts/Inconsolata-Medium.ttf", 16.0)
 
+
 def gui():
-    with imgui_ctx.push_font(mono_font, 0.0):   # the widget uses the active font
+    with imgui_ctx.push_font(mono_font, 0.0):  # the widget uses the active font
         view.render_in_child("terminal")
+
 
 params = hello_imgui.RunnerParams()
 params.callbacks.load_additional_fonts = load_fonts
