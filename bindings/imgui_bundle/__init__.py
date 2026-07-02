@@ -95,6 +95,7 @@ if has_submodule("imgui"):
     from imgui_bundle._imgui_bundle.imgui import ImVec2, ImVec4, ImColor, FLT_MIN, FLT_MAX  # noqa: F401
     from imgui_bundle.im_col32 import IM_COL32  # noqa: F401, E402
     from imgui_bundle import imgui_ctx as imgui_ctx  # noqa: E402
+    from imgui_bundle import implot_ctx as implot_ctx  # noqa: E402
 
     ImVec2Like = Union[ImVec2, Tuple[int | float, int | float], List[int | float]]
     ImVec4Like = Union[ImVec4, Tuple[int | float, int | float, int | float, int | float], List[int | float]]
@@ -113,6 +114,7 @@ if has_submodule("imgui"):
         "FLT_MAX",
         "IM_COL32",
         "imgui_ctx",
+        "implot_ctx",
     ])
 
     # Em sizing utilities (DPI-independent sizing)
