@@ -17,7 +17,7 @@ Platform:   POSIX only (the transport uses a pty). The widget itself is portable
 """
 from __future__ import annotations
 
-from imgui_bundle import imgui, immapp, hello_imgui, imgui_ctx
+from imgui_bundle import imgui, immapp, hello_imgui, imgui_ctx, em_to_vec2
 from imgui_bundle.imgui_terminal import TerminalView, LocalShellTransport
 
 HELP = (
@@ -49,6 +49,18 @@ class AppState:
     def __init__(self) -> None:
         self.sessions = [Session()]
         self.focused_id: int | None = None  # session whose child holds keyboard focus
+        self.ask_before_quit = False        # a close was requested with >1 tab open
+
+
+def confirm_exit(app_state: AppState) -> bool:
+    """ConfirmExit callback: runs on a close request (Cmd-Q / window close),
+    *before* the frame, so it must not touch ImGui. It only decides: quit right
+    away with a single terminal, otherwise defer to a confirmation popup drawn in
+    gui() (return False = cancel this close; the popup will set app_shall_exit)."""
+    if len(app_state.sessions) <= 1:
+        return True
+    app_state.ask_before_quit = True
+    return False
 
 
 def load_fonts() -> None:
@@ -64,6 +76,22 @@ def help_marker(text: str) -> None:
         imgui.text_unformatted(text)
         imgui.pop_text_wrap_pos()
         imgui.end_tooltip()
+
+
+def draw_quit_confirmation(app_state: AppState) -> None:
+    """The other half of confirm_exit: the actual dialog, drawn inside the frame."""
+    if app_state.ask_before_quit:
+        imgui.open_popup("Quit?")
+        app_state.ask_before_quit = False  # open once; the buttons drive it from here
+    if imgui.begin_popup_modal("Quit?", None, imgui.WindowFlags_.always_auto_resize.value)[0]:
+        imgui.text(f"{len(app_state.sessions)} terminals are open. Quit them all?")
+        imgui.separator()
+        if imgui.button("Quit", em_to_vec2(5, 0)):
+            hello_imgui.get_runner_params().app_shall_exit = True
+        imgui.same_line()
+        if imgui.button("Cancel", em_to_vec2(5, 0)):
+            imgui.close_current_popup()
+        imgui.end_popup()
 
 
 def gui(app_state: AppState) -> None:
@@ -97,6 +125,8 @@ def gui(app_state: AppState) -> None:
         app_state.sessions[:] = survivors
         imgui.end_tab_bar()
 
+    draw_quit_confirmation(app_state)
+
     if not app_state.sessions:  # last terminal closed -> quit the app
         hello_imgui.get_runner_params().app_shall_exit = True
 
@@ -114,6 +144,7 @@ def main() -> None:
     params.app_window_params.window_geometry.size = (900, 560)
     params.callbacks.load_additional_fonts = load_fonts
     params.callbacks.show_gui = lambda: gui(app_state)
+    params.callbacks.confirm_exit = lambda: confirm_exit(app_state)  # warn if >1 tab
     params.callbacks.before_exit = lambda: on_exit(app_state)
     params.fps_idling.fps_idle = 20  # idling speed than the default (9), since shell output arrives asynchronously
 
