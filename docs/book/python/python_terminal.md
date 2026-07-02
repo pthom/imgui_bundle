@@ -73,8 +73,9 @@ This websocket path is also how a **Pyodide / browser** build would work: there 
 
 * ANSI / 256-color / truecolor rendering; interactive programs work (`vim`, `htop`, `tmux`, shells with completion)
 * Scrollback with a native ImGui scrollbar; follows live output until you scroll up, typing snaps back
-* Full keyboard: F-keys, Ctrl combos incl. job control (Ctrl-C / Ctrl-Z), Alt as Meta, Shift-Tab
-* Text selection (drag, or click + shift-click across scrollback), copy/paste with Cmd-C/V (macOS) or Ctrl-Shift-C/V
+* Full keyboard: F-keys, Ctrl combos incl. job control (Ctrl-C / Ctrl-Z), Alt as Meta, Shift-Tab, and modifier-encoded arrows/Home/End (Ctrl/Alt-Left/Right for word jumps)
+* Text selection: drag, double-click a word, triple-click a line, or click + shift-click across scrollback; copy with Cmd-C/V (macOS) or Ctrl-Shift-C/V, paste with right-click
+* ANSI colors plus bold and underline
 * Colors themable via `TerminalTheme`; the program-set window title is available as `view.title`
 
 ## Limitations

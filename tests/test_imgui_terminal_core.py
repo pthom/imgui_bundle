@@ -3,11 +3,16 @@
 Covers the VT layer (pyte glue) and the selection model, which do not need an
 ImGui context.
 """
+from typing import TYPE_CHECKING, Sequence
+
 import pytest
 
 pytest.importorskip("pyte")
 
 from imgui_bundle.imgui_terminal import TerminalView  # noqa: E402
+
+if TYPE_CHECKING:
+    import pyte.screens
 
 
 def make_view(cols: int = 20, rows: int = 4) -> TerminalView:
@@ -80,3 +85,38 @@ def test_selection_empty() -> None:
     fill_lines(v, 10)
     v._sel_anchor = v._sel_head = (2, 5)
     assert v._selection_text() == ""
+
+
+# -- word / line selection granularity --------------------------------------
+
+def visible_lines(v: TerminalView) -> Sequence[dict[int, "pyte.screens.Char"]]:
+    return list(v.screen.history.top) + [v.screen.buffer[y] for y in range(v.rows)]
+
+
+def test_double_click_selects_word() -> None:
+    v = make_view(cols=40)
+    v.feed(b"hello /usr/bin world")
+    lines = visible_lines(v)
+    v._begin_unit_selection((0, 2), 1, lines)      # inside "hello"
+    assert v._selection_text() == "hello"
+    v._begin_unit_selection((0, 9), 1, lines)      # inside "/usr/bin" (/ and : are word chars)
+    assert v._selection_text() == "/usr/bin"
+
+
+def test_triple_click_selects_line() -> None:
+    v = make_view(cols=40)
+    v.feed(b"hello world")
+    v._begin_unit_selection((0, 3), 2, visible_lines(v))
+    assert v._selection_text() == "hello world"    # trailing blanks stripped
+
+
+def test_word_drag_extends_by_whole_words() -> None:
+    v = make_view(cols=40)
+    v.feed(b"alpha beta gamma")
+    lines = visible_lines(v)
+    v._begin_unit_selection((0, 0), 1, lines)      # "alpha"
+    v._extend_selection((0, 13), lines)            # drag into "gamma"
+    assert v._selection_text() == "alpha beta gamma"
+    v._begin_unit_selection((0, 13), 1, lines)     # "gamma"
+    v._extend_selection((0, 0), lines)             # drag back to "alpha"
+    assert v._selection_text() == "alpha beta gamma"

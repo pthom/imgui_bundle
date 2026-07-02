@@ -23,7 +23,7 @@ from __future__ import annotations
 
 import threading
 from dataclasses import dataclass, field
-from typing import Callable, Protocol
+from typing import Callable, Protocol, Sequence
 
 try:
     import pyte
@@ -92,6 +92,21 @@ _SPECIAL_KEYS: dict[imgui.Key, bytes] = {
     imgui.Key.f11: b"\x1b[23~", imgui.Key.f12: b"\x1b[24~",
 }
 
+# Keys that take an xterm modifier parameter when Shift/Alt/Ctrl is held.
+# Unmodified forms live in _SPECIAL_KEYS above; the modified form is
+# `CSI <num> ; <mod> <final>` (num is "1" for the letter-final arrows/home/end).
+_CSI_MODIFIABLE: dict[imgui.Key, tuple[str, str]] = {
+    imgui.Key.up_arrow: ("1", "A"), imgui.Key.down_arrow: ("1", "B"),
+    imgui.Key.right_arrow: ("1", "C"), imgui.Key.left_arrow: ("1", "D"),
+    imgui.Key.home: ("1", "H"), imgui.Key.end: ("1", "F"),
+    imgui.Key.page_up: ("5", "~"), imgui.Key.page_down: ("6", "~"),
+    imgui.Key.delete: ("3", "~"),
+}
+
+# Characters that count as part of a "word" for double-click selection, on top
+# of alphanumerics: keeps paths and URLs (e.g. /usr/bin, http://a.b) in one word.
+_WORD_EXTRA = set("_-./~:@")
+
 
 def _u32(rgb: RGB, alpha: int = 0xFF) -> int:
     r, g, b = rgb
@@ -135,6 +150,11 @@ class TerminalView:
         self._sel_anchor: tuple[int, int] | None = None
         self._sel_head: tuple[int, int] | None = None
         self._selecting = False
+        # selection granularity: 0=char (drag), 1=word (double-click), 2=line (triple);
+        # `_sel_unit` is the fixed anchor unit (line, start_col, end_col) that word/line
+        # drags and shift-clicks extend from.
+        self._sel_gran = 0
+        self._sel_unit: tuple[int, int, int] | None = None
 
     @property
     def cols(self) -> int:
@@ -232,13 +252,19 @@ class TerminalView:
 
         if imgui.is_key_pressed(imgui.Key.tab):
             out.append(b"\x1b[Z" if io.key_shift else b"\t")  # Shift-Tab is backtab
+        # xterm modifier param: 1 + Shift(1) + Alt(2) + Ctrl(4); 1 means "no modifier"
+        mod = 1 + (io.key_shift) + 2 * (io.key_alt) + 4 * (ctrl_down)
         for key, seq in _SPECIAL_KEYS.items():
             if imgui.is_key_pressed(key):
-                out.append(seq)
+                if mod > 1 and key in _CSI_MODIFIABLE:  # e.g. Ctrl-Left -> word jump
+                    num, final = _CSI_MODIFIABLE[key]
+                    out.append(f"\x1b[{num};{mod}{final}".encode())
+                else:
+                    out.append(seq)
 
         if out:
             self._snap_bottom = True  # typing snaps back to the live view
-            self._sel_anchor = self._sel_head = None  # and clears any selection
+            self._sel_anchor = self._sel_head = self._sel_unit = None  # clear selection
             self.on_input(b"".join(out))
 
     def _paste(self) -> None:
@@ -297,7 +323,7 @@ class TerminalView:
             history = list(self.screen.history.top)
             lines = history + [self.screen.buffer[y] for y in range(rows)]
             n_lines = len(lines)
-            self._update_selection(origin, n_lines, cw, ch)
+            self._update_selection(origin, lines, cw, ch)
             sel = self._selection_span()
 
             first = max(0, int(scroll_y / ch))
@@ -332,11 +358,13 @@ class TerminalView:
                    line: dict[int, pyte.screens.Char], cw: float,
                    ch: float, cols: int) -> None:
         x = 0
-        while x < cols:  # coalesce consecutive cells sharing fg/bg into one draw
+        while x < cols:  # coalesce consecutive cells sharing fg/bg/underline into one draw
             fg, bg = self._colors_of(line[x])
+            underline = line[x].underscore
             start = x
             chars = []
-            while x < cols and self._colors_of(line[x]) == (fg, bg):
+            while (x < cols and self._colors_of(line[x]) == (fg, bg)
+                   and line[x].underscore == underline):
                 chars.append(line[x].data or " ")
                 x += 1
             px, py = origin.x + start * cw, origin.y + vi * ch
@@ -346,6 +374,9 @@ class TerminalView:
             text = "".join(chars)
             if text.strip():
                 dl.add_text(IV(px, py), _u32(fg), text)
+            if underline:
+                ly = py + ch - 1.0
+                dl.add_line(IV(px, ly), IV(origin.x + x * cw, ly), _u32(fg))
 
     # -- selection --------------------------------------------------------
     def _mouse_cell(self, origin: imgui.ImVec2, n_lines: int,
@@ -357,19 +388,33 @@ class TerminalView:
         vi = max(0, min(int((mp.y - origin.y) / ch), n_lines - 1))
         return vi, col
 
-    def _update_selection(self, origin: imgui.ImVec2, n_lines: int,
+    def _update_selection(self, origin: imgui.ImVec2,
+                          lines: Sequence[dict[int, pyte.screens.Char]],
                           cw: float, ch: float) -> None:
-        left = imgui.MouseButton_.left
+        left, right = imgui.MouseButton_.left, imgui.MouseButton_.right
+        n_lines = len(lines)
         # exclude the scrollbar strip: clicks there must scroll, not select
         # (cols is computed from the avail width, which excludes the scrollbar)
         on_text = (imgui.is_window_hovered()
                    and imgui.get_mouse_pos().x < origin.x + self.cols * cw)
+        if on_text and imgui.is_mouse_clicked(right):
+            self._paste()  # right-click pastes, as in most terminals
         if on_text and imgui.is_mouse_clicked(left):
             cell = self._mouse_cell(origin, n_lines, cw, ch)
-            if imgui.get_io().key_shift and self._sel_anchor is not None:
-                self._sel_head = cell  # shift-click extends the existing selection
+            clicks = imgui.get_mouse_clicked_count(left)
+            if clicks >= 3:  # triple-click selects the whole line
+                self._begin_unit_selection(cell, 2, lines)
+            elif clicks == 2:  # double-click selects the word
+                self._begin_unit_selection(cell, 1, lines)
+            elif imgui.get_io().key_shift and self._sel_anchor is not None:
+                if self._sel_gran == 0:
+                    self._sel_head = cell  # char: keep anchor, move head
+                else:
+                    self._extend_selection(cell, lines)  # word/line: extend by units
             else:
+                self._sel_gran = 0
                 self._sel_anchor = self._sel_head = cell
+                self._sel_unit = (cell[0], cell[1], cell[1])
             self._selecting = True
         elif self._selecting and imgui.is_mouse_dragging(left):
             # auto-scroll when dragging past the window's top/bottom edge, so a
@@ -380,9 +425,55 @@ class TerminalView:
                 imgui.set_scroll_y(imgui.get_scroll_y() - ch)
             elif my > wp_y + imgui.get_window_height():
                 imgui.set_scroll_y(imgui.get_scroll_y() + ch)
-            self._sel_head = self._mouse_cell(origin, n_lines, cw, ch)
+            cell = self._mouse_cell(origin, n_lines, cw, ch)
+            if self._sel_gran == 0:
+                self._sel_head = cell
+            else:  # word/line drag keeps snapping to whole units
+                self._extend_selection(cell, lines)
         if imgui.is_mouse_released(left):
             self._selecting = False
+
+    def _unit_at(self, cell: tuple[int, int], gran: int,
+                 lines: Sequence[dict[int, pyte.screens.Char]]) -> tuple[int, int, int]:
+        """The (line, start_col, end_col) selection unit at `cell` for a granularity."""
+        vi, col = cell
+        if gran == 2:  # whole line
+            return (vi, 0, self.cols)
+        if gran == 1 and 0 <= vi < len(lines):  # word
+            s, e = self._word_bounds(lines[vi], min(col, self.cols - 1))
+            return (vi, s, e)
+        return (vi, col, col)  # char
+
+    def _word_bounds(self, line: dict[int, pyte.screens.Char],
+                     col: int) -> tuple[int, int]:
+        def cls(c: int) -> int:
+            d = line[c].data or " "
+            if d == " ":
+                return 0
+            return 1 if (d.isalnum() or d in _WORD_EXTRA) else 2
+        k = cls(col)
+        s, e = col, col + 1
+        while s > 0 and cls(s - 1) == k:
+            s -= 1
+        while e < self.cols and cls(e) == k:
+            e += 1
+        return s, e
+
+    def _begin_unit_selection(self, cell: tuple[int, int], gran: int,
+                              lines: Sequence[dict[int, pyte.screens.Char]]) -> None:
+        self._sel_gran = gran
+        vi, s, e = self._unit_at(cell, gran, lines)
+        self._sel_unit = (vi, s, e)
+        self._sel_anchor, self._sel_head = (vi, s), (vi, e)
+
+    def _extend_selection(self, cell: tuple[int, int],
+                          lines: Sequence[dict[int, pyte.screens.Char]]) -> None:
+        """Grow the selection from the fixed anchor unit to the unit under the mouse."""
+        assert self._sel_unit is not None
+        al, a0, a1 = self._sel_unit
+        cl, c0, c1 = self._unit_at(cell, self._sel_gran, lines)
+        self._sel_anchor = min((al, a0), (cl, c0))
+        self._sel_head = max((al, a1), (cl, c1))
 
     def _selection_span(self) -> tuple[int, int, int, int] | None:
         """Normalized selection as (start_line, start_col, end_line, end_col)."""

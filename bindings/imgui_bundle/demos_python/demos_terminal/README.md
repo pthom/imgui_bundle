@@ -36,10 +36,11 @@ Click the terminal to focus it, then type as in any terminal (colors, `vim`,
 `htop`, `tmux`, job control with Ctrl-C / Ctrl-Z all work). Scroll through
 history with the mouse wheel or the native scrollbar (the view follows live
 output until you scroll up; typing snaps back to the bottom). Drag with the
-left mouse button to select text; to select across more than one screen, either
-drag past the top/bottom edge (auto-scrolls) or click a start, scroll, then
-**shift-click** the end. Copy with **Cmd-C** (macOS) or **Ctrl-Shift-C**
-(Linux/Windows), paste with **Cmd-V** / **Ctrl-Shift-V**.
+left mouse button to select text; double-click a word or triple-click a line.
+To select across more than one screen, either drag past the top/bottom edge
+(auto-scrolls) or click a start, scroll, then **shift-click** the end. Copy with
+**Cmd-C** (macOS) or **Ctrl-Shift-C** (Linux/Windows), paste with **Cmd-V** /
+**Ctrl-Shift-V** or a **right-click**.
 
 ## Architecture
 

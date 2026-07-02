@@ -52,6 +52,9 @@ def test_keyboard_to_bytes() -> None:
             ("F10", K.f10, b"\x1b[21~"),
             ("Enter", K.enter, b"\r"),
             ("Up", K.up_arrow, b"\x1b[A"),
+            ("Ctrl-Left (word)", ctrl | K.left_arrow, b"\x1b[1;5D"),
+            ("Shift-Up", K.mod_shift | K.up_arrow, b"\x1b[1;2A"),
+            ("Alt-Right (word)", K.mod_alt | K.right_arrow, b"\x1b[1;3C"),
         ]
         ctx.yield_(3)
         for name, chord, expected in cases:
