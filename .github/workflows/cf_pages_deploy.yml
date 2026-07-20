@@ -44,7 +44,7 @@ jobs:
       - name: Verify emscripten toolchain
         run: emcc -v
       # Install python 3.13 required by pyodide
-      - uses: actions/setup-python@v6
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.13'
       # install jupyter-book
