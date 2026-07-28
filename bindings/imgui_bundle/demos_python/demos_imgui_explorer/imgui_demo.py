@@ -657,6 +657,9 @@ def show_demo_window_maybe_docked(create_window: bool, p_open: Optional[bool] = 
             _, io.config_mac_osx_behaviors = imgui.checkbox("io.ConfigMacOSXBehaviors", io.config_mac_osx_behaviors)
             imgui.text("Also see Style->Rendering for rendering options.")
 
+            imgui.separator_text("Settings")
+            _, io.config_ini_settings_save_last_used_date = imgui.checkbox("io.ConfigIniSettingsSaveLastUsedDate", io.config_ini_settings_save_last_used_date)
+
             imgui.separator_text("Debug")
             imgui.begin_disabled()
             _, io.config_debug_begin_return_value_once = imgui.checkbox("io.ConfigDebugBeginReturnValueOnce", io.config_debug_begin_return_value_once)
@@ -754,9 +757,16 @@ def show_demo_window_widgets():
     static = show_demo_window_widgets
     if not hasattr(static, "disable_all"):
         static.disable_all = False
+    if not hasattr(static, "live_edit_override"):
+        static.live_edit_override = False
+        static.live_edit_flags = imgui.ItemFlags_.live_edit_on_input_text
 
     if static.disable_all:
         imgui.begin_disabled()
+    override_liveedit = static.live_edit_override
+    if override_liveedit:
+        imgui.push_item_flag(imgui.ItemFlags_.live_edit_on_input_text, (static.live_edit_flags & imgui.ItemFlags_.live_edit_on_input_text) != 0)
+        imgui.push_item_flag(imgui.ItemFlags_.live_edit_on_input_scalar, (static.live_edit_flags & imgui.ItemFlags_.live_edit_on_input_scalar) != 0)
 
     if imgui.tree_node("Basic"):
         IMGUI_DEMO_MARKER("Widgets/Basic")
@@ -1485,6 +1495,35 @@ def show_demo_window_widgets():
                 if is_selected:
                     imgui.set_item_default_focus()
             imgui.end_list_box()
+
+        imgui.tree_pop()
+
+    if imgui.tree_node("Live Edit Flags"):
+        IMGUI_DEMO_MARKER("Widgets/Live Edit Flgs")
+
+        imgui.text_wrapped("Select whether to apply keyboard edits to backing variables _while_ typing.")
+
+        _, static.live_edit_override = imgui.checkbox("Override Live Edit Flags in Demo Window", static.live_edit_override)
+        if not static.live_edit_override:
+            static.live_edit_flags = imgui.get_item_flags()
+
+        imgui.begin_disabled(not static.live_edit_override)
+        imgui.indent()
+        _, static.live_edit_flags = imgui.checkbox_flags("ImGuiItemFlags_LiveEditOnInputText", static.live_edit_flags, imgui.ItemFlags_.live_edit_on_input_text)
+        _, static.live_edit_flags = imgui.checkbox_flags("ImGuiItemFlags_LiveEditOnInputScalar", static.live_edit_flags, imgui.ItemFlags_.live_edit_on_input_scalar)
+        imgui.unindent()
+        imgui.end_disabled()
+
+        imgui.text("Try typing '123' and seeing effect on backing value:")
+        if not hasattr(static, "le_str"): static.le_str = ""
+        if not hasattr(static, "le_int"): static.le_int = 0
+        if not hasattr(static, "le_float"): static.le_float = 0.0
+        _, static.le_str = imgui.input_text("str", static.le_str)
+        imgui.text(f"Backing value: \"{static.le_str}\"")
+        _, static.le_int = imgui.input_int("int", static.le_int, 0, 0)
+        imgui.text(f"Backing value: {static.le_int}")
+        _, static.le_float = imgui.slider_float("float", static.le_float, 0.0, 100.0)
+        imgui.text(f"Backing value: {static.le_float:.6f}")
 
         imgui.tree_pop()
 
@@ -2326,6 +2365,7 @@ def show_demo_window_widgets():
             if static.ref_color:
                 imgui.same_line()
                 _, static.ref_color_v = imgui.color_edit4("##RefColor", static.ref_color_v, imgui.ColorEditFlags_.no_inputs | misc_flags)
+        _, static.color_picker_flags = imgui.checkbox_flags("ImGuiColorEditFlags_PickerNoRotate", static.color_picker_flags, imgui.ColorEditFlags_.picker_no_rotate)
 
         _, static.picker_mode = imgui.combo("Picker Mode", static.picker_mode, ["Auto/Current", "ImGuiColorEditFlags_PickerHueBar", "ImGuiColorEditFlags_PickerHueWheel"])
         imgui.same_line(); help_marker("When not specified explicitly, user can right-click the picker to change mode.")
@@ -2334,7 +2374,7 @@ def show_demo_window_widgets():
         imgui.same_line(); help_marker(
             "ColorEdit defaults to displaying RGB inputs if you don't specify a display mode, "
             "but the user can change it with a right-click on those inputs.\n\nColorPicker defaults to displaying RGB+HSV+Hex "
-            "if you don't specify a display mode.\n\nYou can change the defaults using SetColorEditOptions().")
+            "if you don't specify a display mode.\n\nYou can change the defaults using io.ConfigColorEditFlags.")
 
         picker_flags = misc_flags | static.color_picker_flags
         if static.picker_mode == 1: picker_flags |= imgui.ColorEditFlags_.picker_hue_bar
@@ -2348,14 +2388,14 @@ def show_demo_window_widgets():
 
         imgui.text("Set defaults in code:")
         imgui.same_line(); help_marker(
-            "SetColorEditOptions() is designed to allow you to set boot-time default.\n"
+            "io.ConfigColorEditFlags is designed to allow you to set boot-time default.\n"
             "We don't have Push/Pop functions because you can force options on a per-widget basis if needed, "
             "and the user can change non-forced ones with the options menu.\nWe don't have a getter to avoid "
             "encouraging you to persistently save values that aren't forward-compatible.")
-        if imgui.button("Default: Uint8 + HSV + Hue Bar"):
-            imgui.set_color_edit_options(imgui.ColorEditFlags_.uint8 | imgui.ColorEditFlags_.display_hsv | imgui.ColorEditFlags_.picker_hue_bar)
-        if imgui.button("Default: Float + HDR + Hue Wheel"):
-            imgui.set_color_edit_options(imgui.ColorEditFlags_.float | imgui.ColorEditFlags_.hdr | imgui.ColorEditFlags_.picker_hue_wheel)
+        if imgui.button("Overwrite default: Uint8 + HSV + Hue Bar"):
+            imgui.get_io().config_color_edit_flags = imgui.ColorEditFlags_.uint8 | imgui.ColorEditFlags_.display_hsv | imgui.ColorEditFlags_.picker_hue_bar
+        if imgui.button("Overwrite default: Float + HDR + Hue Wheel"):
+            imgui.get_io().config_color_edit_flags = imgui.ColorEditFlags_.float | imgui.ColorEditFlags_.hdr | imgui.ColorEditFlags_.picker_hue_wheel
 
         # Always display a small version of both types of pickers
         imgui.text("Both types:")
@@ -2753,6 +2793,22 @@ def show_demo_window_widgets():
         imgui.same_line()
         help_marker("Testing how various types of items are interacting with the IsItemXXX functions. Note that the bool return value of most ImGui function is generally equivalent to calling ImGui::IsItemHovered().")
         _, static.qi_item_disabled = imgui.checkbox("Item Disabled", static.qi_item_disabled)
+        if not hasattr(static, "qi_liveedit_flags_override"): static.qi_liveedit_flags_override = False
+        if not hasattr(static, "qi_liveedit_flags"): static.qi_liveedit_flags = 0
+        _, static.qi_liveedit_flags_override = imgui.checkbox("Override LiveEdit:", static.qi_liveedit_flags_override)
+        imgui.same_line()
+        if not static.qi_liveedit_flags_override:
+            static.qi_liveedit_flags = imgui.get_item_flags()
+        imgui.begin_disabled(not static.qi_liveedit_flags_override)
+        _, static.qi_liveedit_flags = imgui.checkbox_flags("_LiveEditOnInput", static.qi_liveedit_flags, imgui.ItemFlags_.live_edit_on_input)
+        imgui.same_line()
+        _, static.qi_liveedit_flags = imgui.checkbox_flags("_LiveEditOnInputText", static.qi_liveedit_flags, imgui.ItemFlags_.live_edit_on_input_text)
+        imgui.same_line()
+        _, static.qi_liveedit_flags = imgui.checkbox_flags("_LiveEditOnInputScalar", static.qi_liveedit_flags, imgui.ItemFlags_.live_edit_on_input_scalar)
+        imgui.end_disabled()
+        if static.qi_liveedit_flags_override:
+            imgui.push_item_flag(imgui.ItemFlags_.live_edit_on_input_text, (static.qi_liveedit_flags & imgui.ItemFlags_.live_edit_on_input_text) != 0)
+            imgui.push_item_flag(imgui.ItemFlags_.live_edit_on_input_scalar, (static.qi_liveedit_flags & imgui.ItemFlags_.live_edit_on_input_scalar) != 0)
 
         # Submit selected items so we can query their status
         ret = False
@@ -2820,6 +2876,9 @@ def show_demo_window_widgets():
             f"IsItemHovered(_Tooltip) = {int(hovered_delay_tooltip)}"
         )
 
+        if static.qi_liveedit_flags_override:
+            imgui.pop_item_flag()
+            imgui.pop_item_flag()
         if static.qi_item_disabled:
             imgui.end_disabled()
 
@@ -2893,6 +2952,9 @@ def show_demo_window_widgets():
 
         imgui.tree_pop()
 
+    if override_liveedit:
+        imgui.pop_item_flag()
+        imgui.pop_item_flag()
     if static.disable_all:
         imgui.end_disabled()
 
@@ -3399,6 +3461,7 @@ def show_demo_window_layout():
         imgui.begin_child("scrolling", scrolling_child_size, imgui.ChildFlags_.borders, imgui.WindowFlags_.horizontal_scrollbar)
         for line in range(static.hscroll_lines):
             num_buttons = 10 + ((line * 9) if (line & 1) else (line * 3))
+            base_w = imgui.get_font_size() * 3
             for n in range(num_buttons):
                 if n > 0: imgui.same_line()
                 imgui.push_id(n + line * 1000)
@@ -3413,7 +3476,7 @@ def show_demo_window_layout():
                 imgui.push_style_color(imgui.Col_.button_hovered, ImVec4(r2, g2, b2, 1))
                 r3, g3, b3 = imgui.color_convert_hsv_to_rgb(hue, 0.8, 0.8)
                 imgui.push_style_color(imgui.Col_.button_active, ImVec4(r3, g3, b3, 1))
-                imgui.button(label, ImVec2(40.0 + math.sin(float(line + n)) * 20.0, 0.0))
+                imgui.button(label, ImVec2(base_w + math.sin(float(line + n)) * base_w * 0.5, 0.0))
                 imgui.pop_style_color(3)
                 imgui.pop_id()
         scroll_x = imgui.get_scroll_x()

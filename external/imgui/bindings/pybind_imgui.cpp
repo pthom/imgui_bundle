@@ -2011,11 +2011,6 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::arg("desc_id"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("size").none() = nb::none(),
         "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)\n\n display a color square/button, hover for details, return True when pressed.");
 
-    m.def("set_color_edit_options",
-        ImGui::SetColorEditOptions,
-        nb::arg("flags"),
-        "initialize current options (generally on application startup) if you want to select a default format, picker type, etc. User will be able to change many settings, unless you pass the _NoOptions flag to your calls.");
-
     m.def("tree_node",
         nb::overload_cast<const char *>(ImGui::TreeNode), nb::arg("label"));
 
@@ -2495,18 +2490,19 @@ void py_init_module_imgui_main(nb::module_& m)
         "id overload to facilitate calling from nested stacks");
 
     m.def("open_popup_on_item_click",
-        [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 0)
+        [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 0) -> bool
         {
-            auto OpenPopupOnItemClick_adapt_const_char_pointer_with_default_null = [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 0)
+            auto OpenPopupOnItemClick_adapt_const_char_pointer_with_default_null = [](std::optional<std::string> str_id = std::nullopt, ImGuiPopupFlags popup_flags = 0) -> bool
             {
                 const char * str_id_adapt_default_null = nullptr;
                 if (str_id.has_value())
                     str_id_adapt_default_null = str_id.value().c_str();
 
-                ImGui::OpenPopupOnItemClick(str_id_adapt_default_null, popup_flags);
+                auto lambda_result = ImGui::OpenPopupOnItemClick(str_id_adapt_default_null, popup_flags);
+                return lambda_result;
             };
 
-            OpenPopupOnItemClick_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
+            return OpenPopupOnItemClick_adapt_const_char_pointer_with_default_null(str_id, popup_flags);
         },
         nb::arg("str_id").none() = nb::none(), nb::arg("popup_flags") = 0,
         "helper to open popup when clicked on last item. Default to ImGuiPopupFlags_MouseButtonRight == 1. (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors)");
@@ -2952,6 +2948,11 @@ void py_init_module_imgui_main(nb::module_& m)
     m.def("get_item_flags",
         ImGui::GetItemFlags, "get generic flags of last item");
 
+    m.def("get_item_clicked_count_with_single_click_delay",
+        ImGui::GetItemClickedCountWithSingleClickDelay,
+        nb::arg("mouse_button") = 0, nb::arg("delay") = -1.0f,
+        "[BETA] building block for disambiguation between single-click and double-click. Returns 1 on single-click but delayed by io.MouseSingleClickDelay after mouse release. Returns 2+ on double-click or repeated clicks.");
+
     m.def("get_main_viewport",
         ImGui::GetMainViewport,
         "return primary/default viewport. This can never be None.",
@@ -3097,8 +3098,8 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("is_mouse_released_with_delay",
         nb::overload_cast<ImGuiMouseButton, float>(ImGui::IsMouseReleasedWithDelay),
-        nb::arg("button"), nb::arg("delay"),
-        "delayed mouse release (use very sparingly!). Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test. This is a very rarely used UI idiom, but some apps use this: e.g. MS Explorer single click on an icon to rename.");
+        nb::arg("button"), nb::arg("delay") = -1.f,
+        "delayed mouse release. Use sparingly. Prefer higher-level helper GetItemClickedCountWithSingleClickDelay(). Generally used with 'delay >= io.MouseDoubleClickTime' + combined with a 'io.MouseClickedLastCount==1' test.");
 
     m.def("get_mouse_clicked_count",
         ImGui::GetMouseClickedCount,
@@ -3273,14 +3274,17 @@ void py_init_module_imgui_main(nb::module_& m)
 
     auto pyEnumItemFlags_ =
         nb::enum_<ImGuiItemFlags_>(m, "ItemFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImGui::PushItemFlag()\n (Those are shared by all submitted items)")
-            .value("none", ImGuiItemFlags_None, "(Default)")
+            .value("none", ImGuiItemFlags_None, "Default:")
             .value("no_tab_stop", ImGuiItemFlags_NoTabStop, "False    // Disable keyboard tabbing. This is a \"lighter\" version of ImGuiItemFlags_NoNav.")
-            .value("no_nav", ImGuiItemFlags_NoNav, "False    // Disable any form of focusing (keyboard/gamepad directional navigation and SetKeyboardFocusHere() calls).")
+            .value("no_nav", ImGuiItemFlags_NoNav, "False    // Disable any form of focusing: keyboard/gamepad directional navigation and SetKeyboardFocusHere() calls.")
             .value("no_nav_default_focus", ImGuiItemFlags_NoNavDefaultFocus, "False    // Disable item being a candidate for default focus (e.g. used by title bar items).")
             .value("button_repeat", ImGuiItemFlags_ButtonRepeat, "False    // Any button-like behavior will have repeat mode enabled (based on io.KeyRepeatDelay and io.KeyRepeatRate values). Note that you can also call IsItemActive() after any button to tell if it is being held.")
             .value("auto_close_popups", ImGuiItemFlags_AutoClosePopups, "True     // MenuItem()/Selectable() automatically close their parent popup window.")
             .value("allow_duplicate_id", ImGuiItemFlags_AllowDuplicateId, "False    // Allow submitting an item with the same identifier as an item already submitted this frame without triggering a warning tooltip if io.ConfigDebugHighlightIdConflicts is set.")
-            .value("disabled", ImGuiItemFlags_Disabled, "False    // [Internal] Disable interactions. DOES NOT affect visuals. This is used by BeginDisabled()/EndDisabled() and only provided here so you can read back via GetItemFlags().");
+            .value("disabled", ImGuiItemFlags_Disabled, "False    // [Internal] Disable interactions. DOES NOT affect visuals. This is used by BeginDisabled()/EndDisabled() and only provided here so you can read back via GetItemFlags().")
+            .value("live_edit_on_input_text", ImGuiItemFlags_LiveEditOnInputText, "True     // InputText: apply keyboard edits to backing value while typing. Otherwise, edits are applied when validating, tabbing out or losing focus.")
+            .value("live_edit_on_input_scalar", ImGuiItemFlags_LiveEditOnInputScalar, "False    // DragXXX, SliderXXX, InputScalar: apply keyboard edits to backing value while typing. Otherwise, edits are applied when validating, tabbing out or losing focus.")
+            .value("live_edit_on_input", ImGuiItemFlags_LiveEditOnInput, "");
 
 
     auto pyEnumInputTextFlags_ =
@@ -3292,7 +3296,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("chars_uppercase", ImGuiInputTextFlags_CharsUppercase, "Turn a..z into A..Z")
             .value("chars_no_blank", ImGuiInputTextFlags_CharsNoBlank, "Filter out spaces, tabs")
             .value("allow_tab_input", ImGuiInputTextFlags_AllowTabInput, "Pressing TAB input a '\t' character into the text field")
-            .value("enter_returns_true", ImGuiInputTextFlags_EnterReturnsTrue, "Return 'True' when Enter is pressed (as opposed to every time the value was modified). Consider using IsItemDeactivatedAfterEdit() instead!")
+            .value("enter_returns_true", ImGuiInputTextFlags_EnterReturnsTrue, "Return 'True' when Enter is pressed (as opposed to every time the value was modified). Consider disabling LiveEdit! or using IsItemDeactivatedAfterEdit() instead!")
             .value("escape_clears_all", ImGuiInputTextFlags_EscapeClearsAll, "Escape key clears content if not empty, and deactivate otherwise (contrast to default behavior of Escape to revert)")
             .value("ctrl_enter_for_new_line", ImGuiInputTextFlags_CtrlEnterForNewLine, "In multi-line mode: validate with Enter, add new line with Ctrl+Enter (default is opposite: validate with Ctrl+Enter, add line with Enter). Note that Shift+Enter always enter a new line either way.")
             .value("read_only", ImGuiInputTextFlags_ReadOnly, "Read-only mode")
@@ -3881,9 +3885,10 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("float", ImGuiColorEditFlags_Float, "[DataType]   // ColorEdit, ColorPicker, ColorButton: _display_ values formatted as 0.0..1.0 floats instead of 0..255 integers. No round-trip of value via integers.")
             .value("picker_hue_bar", ImGuiColorEditFlags_PickerHueBar, "[Picker]     // ColorPicker: bar for Hue, rectangle for Sat/Value.")
             .value("picker_hue_wheel", ImGuiColorEditFlags_PickerHueWheel, "[Picker]     // ColorPicker: wheel for Hue, triangle for Sat/Value.")
+            .value("picker_no_rotate", ImGuiColorEditFlags_PickerNoRotate, "[Picker]     // ColorPicker: disable rotating Sat/Value triangle. Best set in io.ConfigColorEditFlags once.")
             .value("input_rgb", ImGuiColorEditFlags_InputRGB, "[Input]      // ColorEdit, ColorPicker: input and output data in RGB format.")
             .value("input_hsv", ImGuiColorEditFlags_InputHSV, "[Input]      // ColorEdit, ColorPicker: input and output data in HSV format.")
-            .value("default_options_", ImGuiColorEditFlags_DefaultOptions_, " Defaults Options. You can set application defaults using SetColorEditOptions(). The intent is that you probably don't want to\n override them in most of your calls. Let the user choose via the option menu and/or call SetColorEditOptions() once during startup.")
+            .value("default_options_", ImGuiColorEditFlags_DefaultOptions_, " Defaults Options copied to io.ConfigColorEditFlags during initialization.\n The intent is that you probably don't want to override them in most of your calls.\n Let the user choose via the option menu and/or modify io.ConfigColorEditFlags directly during startup if you want.")
             .value("alpha_mask_", ImGuiColorEditFlags_AlphaMask_, "")
             .value("display_mask_", ImGuiColorEditFlags_DisplayMask_, "")
             .value("data_type_mask_", ImGuiColorEditFlags_DataTypeMask_, "")
@@ -6393,19 +6398,24 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_viewports_platform_focus_sets_focus", &ImGuiIO::ConfigViewportsPlatformFocusSetsImGuiFocus, "= True // When a platform window is focused (e.g. using Alt+Tab, clicking Platform Title Bar), apply corresponding focus on imgui windows (may clear focus/active id from imgui windows location in other platform windows). In principle this is better enabled but we provide an opt-out, because some Linux window managers tend to eagerly focus windows (e.g. on mouse hover, or even a simple window pos/size change).")
         .def_rw("config_dpi_scale_fonts", &ImGuiIO::ConfigDpiScaleFonts, "= False          // [EXPERIMENTAL] Automatically overwrite style.FontScaleDpi when Monitor DPI changes. This will scale fonts but _NOT_ scale sizes/padding for now.")
         .def_rw("config_dpi_scale_viewports", &ImGuiIO::ConfigDpiScaleViewports, "= False          // [EXPERIMENTAL] Scale Dear ImGui and Platform Windows when Monitor DPI changes.")
-        .def_rw("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor, "= False          // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor). Cannot be easily renamed to 'io.ConfigXXX' because this is frequently used by backend implementations.")
         .def_rw("config_mac_osx_behaviors", &ImGuiIO::ConfigMacOSXBehaviors, "= defined(__APPLE__) // Swap Cmd<>Ctrl keys + OS X style text editing cursor movement using Alt instead of Ctrl, Shortcuts using Cmd/Super instead of Ctrl, Line/Text Start and End using Cmd+Arrows instead of Home/End, Double click selects by word instead of selecting whole text, Multi-selection in lists uses Cmd/Super instead of Ctrl.")
         .def_rw("config_input_trickle_event_queue", &ImGuiIO::ConfigInputTrickleEventQueue, "= True           // Enable input queue trickling: some types of events submitted during the same frame (e.g. button down + up) will be spread over multiple frames, improving interactions with low framerates.")
         .def_rw("config_input_text_cursor_blink", &ImGuiIO::ConfigInputTextCursorBlink, "= True           // Enable blinking cursor (optional as some users consider it to be distracting).")
-        .def_rw("config_input_text_enter_keep_active", &ImGuiIO::ConfigInputTextEnterKeepActive, "= False          // [BETA] Pressing Enter will reactivate item and select all text (single-line only).")
+        .def_rw("config_input_text_enter_keep_active", &ImGuiIO::ConfigInputTextEnterKeepActive, "= False          // [BETA] Pressing Enter will reactivate item and select all text (single-line only). Ctrl+Enter or Shift+Enter will deactivate normally.")
+        .def_rw("config_color_edit_flags", &ImGuiIO::ConfigColorEditFlags, "= <defaults>     // Current settings for ColorEdit/ColorPicker widgets. Must have one bit of ImGuiColorEditFlags_DisplayMask_, one bit of ImGuiColorEditFlags_DataTypeMask_, one bit of ImGuiColorEditFlags_PickerMask_, one bit of ImGuiColorEditFlags_InputMask_. Defaults to ImGuiColorEditFlags_DefaultOptions_. May be further edited by users, unless you also set ImGuiColorEditFlags_NoOptions.")
         .def_rw("config_drag_click_to_input_text", &ImGuiIO::ConfigDragClickToInputText, "= False          // [BETA] Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving). Not desirable on devices without a keyboard.")
         .def_rw("config_windows_resize_from_edges", &ImGuiIO::ConfigWindowsResizeFromEdges, "= True           // Enable resizing of windows from their edges and from the lower-left corner. This requires ImGuiBackendFlags_HasMouseCursors for better mouse cursor feedback. (This used to be a per-window ImGuiWindowFlags_ResizeFromAnySide flag)")
         .def_rw("config_windows_move_from_title_bar_only", &ImGuiIO::ConfigWindowsMoveFromTitleBarOnly, "= False      // Enable allowing to move windows only when clicking on their title bar. Does not apply to windows without a title bar.")
         .def_rw("config_windows_copy_contents_with_ctrl_c", &ImGuiIO::ConfigWindowsCopyContentsWithCtrlC, "= False      // [EXPERIMENTAL] Ctrl+C copy the contents of focused window into the clipboard. Experimental because: (1) has known issues with nested Begin/End pairs (2) text output quality varies (3) text output is in submission order rather than spatial order.")
         .def_rw("config_scrollbar_scroll_by_page", &ImGuiIO::ConfigScrollbarScrollByPage, "= True           // Enable scrolling page by page when clicking outside the scrollbar grab. When disabled, always scroll to clicked location. When enabled, Shift+Click scrolls to clicked location.")
+        .def_rw("config_ini_settings_save_last_used_date", &ImGuiIO::ConfigIniSettingsSaveLastUsedDate, "= True         // Enable loading/saving last used day (YYYYMMDD) in some .ini struct, making things easier to audit and allowing custom tools to cleanup old data.")
+        .def_rw("config_ini_settings_auto_discard_months", &ImGuiIO::ConfigIniSettingsAutoDiscardMonths, "= 0          // [BETA] Set number of months after which unused .ini entries are discarded on load. Require platform_io.Platform_SessionDate to be set. For systems supporting the feature, .ini entries without a LastUsed field will always be discarded! Please report if you are using this.")
+        .def_rw("config_debug_ini_settings", &ImGuiIO::ConfigDebugIniSettings, "= False          // Save .ini data with extra comments (particularly helpful for Docking, but makes saving slower)")
+        .def_rw("mouse_draw_cursor", &ImGuiIO::MouseDrawCursor, "= False          // Request ImGui to draw a mouse cursor for you (if you are on a platform without a mouse cursor). Cannot be easily renamed to 'io.ConfigXXX' because this is frequently used by backend implementations.")
         .def_rw("config_memory_compact_timer", &ImGuiIO::ConfigMemoryCompactTimer, "= 60.0          // Timer (in seconds) to free transient windows/tables memory buffers when unused. Set to -1.0 to disable.")
-        .def_rw("mouse_double_click_time", &ImGuiIO::MouseDoubleClickTime, "= 0.30          // Time for a double-click, in seconds.")
-        .def_rw("mouse_double_click_max_dist", &ImGuiIO::MouseDoubleClickMaxDist, "= 6.0           // Distance threshold to stay in to validate a double-click, in pixels.")
+        .def_rw("mouse_double_click_time", &ImGuiIO::MouseDoubleClickTime, "= 0.30          // Time for consecutive clicks to account as a double-click, in seconds.")
+        .def_rw("mouse_double_click_max_dist", &ImGuiIO::MouseDoubleClickMaxDist, "= 6.0           // Distance threshold to stay in to validate a double-click or multiple clicks, in pixels.")
+        .def_rw("mouse_single_click_delay", &ImGuiIO::MouseSingleClickDelay, "= 0.60          // Time for a delayed click when using GetItemClickedCountWithSingleClickDelay() or IsMouseReleasedWithDelay(), in seconds. Must be > io.MouseDoubleClickTime.")
         .def_rw("mouse_drag_threshold", &ImGuiIO::MouseDragThreshold, "= 6.0           // Distance threshold before considering we are dragging.")
         .def_rw("key_repeat_delay", &ImGuiIO::KeyRepeatDelay, "= 0.275         // When holding a key/button, time before it starts repeating, in seconds (for buttons in Repeat mode, etc.).")
         .def_rw("key_repeat_rate", &ImGuiIO::KeyRepeatRate, "= 0.050         // When holding a key/button, rate at which it repeats, in seconds.")
@@ -6419,7 +6429,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_debug_begin_return_value_once", &ImGuiIO::ConfigDebugBeginReturnValueOnce, "= False          // First-time calls to Begin()/BeginChild() will return False. NEEDS TO BE SET AT APPLICATION BOOT TIME if you don't want to miss windows.")
         .def_rw("config_debug_begin_return_value_loop", &ImGuiIO::ConfigDebugBeginReturnValueLoop, "= False          // Some calls to Begin()/BeginChild() will return False. Will cycle through window depths then repeat. Suggested use: add \"io.ConfigDebugBeginReturnValue = io.KeyShift\" in your main loop then occasionally press SHIFT. Windows should be flickering while running.")
         .def_rw("config_debug_ignore_focus_loss", &ImGuiIO::ConfigDebugIgnoreFocusLoss, "= False          // Ignore io.AddFocusEvent(False), consequently not calling io.ClearInputKeys()/io.ClearInputMouse() in input processing.")
-        .def_rw("config_debug_ini_settings", &ImGuiIO::ConfigDebugIniSettings, "= False          // Save .ini data with extra comments (particularly helpful for Docking, but makes saving slower)")
         .def_ro("backend_platform_name", &ImGuiIO::BackendPlatformName, "= None")
         .def_ro("backend_renderer_name", &ImGuiIO::BackendRendererName, "= None")
         .def_rw("backend_platform_user_data", &ImGuiIO::BackendPlatformUserData, "= None           // User data for platform backend")
@@ -7619,7 +7628,7 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::class_<ImDrawData>
             (m, "ImDrawData", " All draw data to render a Dear ImGui frame\n (NB: the style and the naming convention here is a little inconsistent, we currently preserve them for backward compatibility purpose,\n as this is one of the oldest structure exposed by the library! Basically, ImDrawList == CmdList)")
         .def_rw("valid", &ImDrawData::Valid, "Only valid after Render() is called and before the next NewFrame() is called.")
-        .def_rw("cmd_lists_count", &ImDrawData::CmdListsCount, "== CmdLists.Size. (OBSOLETE: exists for legacy reasons). Number of ImDrawList* to render.")
+        .def_rw("frame_count", &ImDrawData::FrameCount, "Frame counter of the emitter context. Mostly for debugging purpose.")
         .def_rw("total_idx_count", &ImDrawData::TotalIdxCount, "For convenience, sum of all ImDrawList's IdxBuffer.Size")
         .def_rw("total_vtx_count", &ImDrawData::TotalVtxCount, "For convenience, sum of all ImDrawList's VtxBuffer.Size")
         .def_rw("cmd_lists", &ImDrawData::CmdLists, "Array of ImDrawList* to render. The ImDrawLists are owned by ImGuiContext and only pointed to from here.")
@@ -7677,6 +7686,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("unique_id", &ImTextureData::UniqueID, "w    -   // [DEBUG] Sequential index to facilitate identifying a texture when debugging/printing. Unique per atlas.")
         .def_rw("status", &ImTextureData::Status, "rw   rw  // ImTextureStatus_OK/_WantCreate/_WantUpdates/_WantDestroy. Always use SetStatus() to modify!")
         .def_rw("backend_user_data", &ImTextureData::BackendUserData, "-    rw  // Convenience storage for backend. Some backends may have enough with TexID.")
+        .def_rw("queue_user_data", &ImTextureData::QueueUserData, "r    -   // Convenience storage for a staged/multi-threaded rendering texture queue (e.g. imgui_threaded_rendering.h. See #8597). When != None, core assumes the texture is referenced by the queue.")
         .def_rw("tex_id", &ImTextureData::TexID, "r    w   // Backend-specific texture identifier. Always use SetTexID() to modify! The identifier will stored in ImDrawCmd::GetTexID() and passed to backend's RenderDrawData function.")
         .def_rw("format", &ImTextureData::Format, "w    r   // ImTextureFormat_RGBA32 (default) or ImTextureFormat_Alpha8")
         .def_rw("width", &ImTextureData::Width, "w    r   // Texture width")
@@ -8097,6 +8107,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("platform_open_in_shell_user_data", &ImGuiPlatformIO::Platform_OpenInShellUserData, "[/ADAPT_IMGUI_BUNDLE]")
         .def_rw("platform_ime_user_data", &ImGuiPlatformIO::Platform_ImeUserData, "")
         .def_rw("platform_locale_decimal_point", &ImGuiPlatformIO::Platform_LocaleDecimalPoint, "'.'")
+        .def_rw("platform_session_date", &ImGuiPlatformIO::Platform_SessionDate, "Integer storing YYYYMMDD e.g. 20261231 corresponding to the beginning of application session.")
         .def_rw("renderer_texture_max_width", &ImGuiPlatformIO::Renderer_TextureMaxWidth, "")
         .def_rw("renderer_texture_max_height", &ImGuiPlatformIO::Renderer_TextureMaxHeight, "")
         .def_rw("renderer_render_state", &ImGuiPlatformIO::Renderer_RenderState, "Written by some backends during ImGui_ImplXXXX_RenderDrawData() call to point backend_specific ImGui_ImplXXXX_RenderState* structure.")

@@ -40,7 +40,7 @@ def _show_source_toggle(func: Callable[..., Any]) -> None:
             _source_editors[func_name] = editor
         code_font = imgui_md.get_code_font()
         imgui.push_font(code_font.font, code_font.size)
-        _source_editors[func_name].render(f"##src_{func_name}", ImVec2(-1, imgui.get_text_line_height() * 15), False)
+        _source_editors[func_name].render(f"##src_{func_name}", ImVec2(-1, imgui.get_text_line_height() * 15))
         imgui.pop_font()
         imgui.separator_text("Demo")
 

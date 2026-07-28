@@ -421,6 +421,20 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetMiddleMouseScrollMode)
         .def("is_middle_mouse_pan_mode",
             &TextEditor::IsMiddleMousePanMode)
+        .def("set_line_number_left_margin",
+            &TextEditor::SetLineNumberLeftMargin,
+            nb::arg("value"),
+            "margins are expressed in glyphs")
+        .def("get_line_number_left_margin",
+            &TextEditor::GetLineNumberLeftMargin)
+        .def("set_decoration_left_margin",
+            &TextEditor::SetDecorationLeftMargin, nb::arg("value"))
+        .def("get_decoration_left_margin",
+            &TextEditor::GetDecorationLeftMargin)
+        .def("set_text_left_margin",
+            &TextEditor::SetTextLeftMargin, nb::arg("value"))
+        .def("get_text_left_margin",
+            &TextEditor::GetTextLeftMargin)
         .def("set_text",
             &TextEditor::SetText, nb::arg("text"))
         .def("get_text",
@@ -432,11 +446,11 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("get_section_text",
             nb::overload_cast<TextEditor::DocPos, TextEditor::DocPos>(&TextEditor::GetSectionText, nb::const_), nb::arg("start"), nb::arg("end"))
         .def("get_section_text",
-            nb::overload_cast<TextEditor::DocSelection>(&TextEditor::GetSectionText, nb::const_), nb::arg("selection"))
+            nb::overload_cast<const TextEditor::DocSelection &>(&TextEditor::GetSectionText, nb::const_), nb::arg("selection"))
         .def("replace_section_text",
             nb::overload_cast<TextEditor::DocPos, TextEditor::DocPos, const std::string_view &>(&TextEditor::ReplaceSectionText), nb::arg("start"), nb::arg("end"), nb::arg("text"))
         .def("replace_section_text",
-            nb::overload_cast<TextEditor::DocSelection, const std::string_view &>(&TextEditor::ReplaceSectionText), nb::arg("selection"), nb::arg("text"))
+            nb::overload_cast<const TextEditor::DocSelection &, const std::string_view &>(&TextEditor::ReplaceSectionText), nb::arg("selection"), nb::arg("text"))
         .def("clear_text",
             &TextEditor::ClearText)
         .def("is_empty",
@@ -444,9 +458,9 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("get_line_count",
             &TextEditor::GetLineCount)
         .def("render",
-            [](TextEditor & self, const char * title, const std::optional<const ImVec2> & size = std::nullopt, bool border = false)
+            [](TextEditor & self, const char * title, const std::optional<const ImVec2> & size = std::nullopt, ImGuiChildFlags childFlags = 0, const std::optional<const ImGuiWindowFlags> & windowFlags = std::nullopt)
             {
-                auto Render_adapt_mutable_param_with_default_value = [&self](const char * title, const std::optional<const ImVec2> & size = std::nullopt, bool border = false)
+                auto Render_adapt_mutable_param_with_default_value = [&self](const char * title, const std::optional<const ImVec2> & size = std::nullopt, ImGuiChildFlags childFlags = 0, const std::optional<const ImGuiWindowFlags> & windowFlags = std::nullopt)
                 {
 
                     const ImVec2& size_or_default = [&]() -> const ImVec2 {
@@ -456,13 +470,20 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                             return ImVec2();
                     }();
 
-                    self.Render(title, size_or_default, border);
+                    const ImGuiWindowFlags& windowFlags_or_default = [&]() -> const ImGuiWindowFlags {
+                        if (windowFlags.has_value())
+                            return windowFlags.value();
+                        else
+                            return ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar;
+                    }();
+
+                    self.Render(title, size_or_default, childFlags, windowFlags_or_default);
                 };
 
-                Render_adapt_mutable_param_with_default_value(title, size, border);
+                Render_adapt_mutable_param_with_default_value(title, size, childFlags, windowFlags);
             },
-            nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("border") = false,
-            " render the text editor in a Dear ImGui context\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()")
+            nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags").none() = nb::none(),
+            " render the text editor in a Dear ImGui context\n note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings\n ensure you keep the default as they are required for the editor\n - ImGuiWindowFlags_NoNavInputs to ensure cursor keys are passed to the editor\n - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the editor\n - ImGuiWindowFlags_HorizontalScrollbar to ensure a horizontal scrollbar is rendered when required\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2()\n        * windowFlags: ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar")
         .def("set_focus",
             &TextEditor::SetFocus, "programmatically set focus on the editor")
         .def("cut",
@@ -602,7 +623,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("set_line_decorator",
             &TextEditor::SetLineDecorator,
             nb::arg("width"), nb::arg("callback"),
-            "positive width is number of pixels, negative with is number of glyphs")
+            "setup a line decorator (width is number of glyphs)")
         .def("clear_line_decorator",
             &TextEditor::ClearLineDecorator)
         .def("has_line_decorator",
@@ -754,9 +775,9 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             nb::arg("left"), nb::arg("right"),
             "specify the text to be compared (using UTF-8 encoded strings)")
         .def("render",
-            [](TextDiff & self, const char * title, const std::optional<const ImVec2> & size = std::nullopt, bool border = false)
+            [](TextDiff & self, const char * title, const std::optional<const ImVec2> & size = std::nullopt, ImGuiChildFlags childFlags = 0, const std::optional<const ImGuiWindowFlags> & windowFlags = std::nullopt)
             {
-                auto Render_adapt_mutable_param_with_default_value = [&self](const char * title, const std::optional<const ImVec2> & size = std::nullopt, bool border = false)
+                auto Render_adapt_mutable_param_with_default_value = [&self](const char * title, const std::optional<const ImVec2> & size = std::nullopt, ImGuiChildFlags childFlags = 0, const std::optional<const ImGuiWindowFlags> & windowFlags = std::nullopt)
                 {
 
                     const ImVec2& size_or_default = [&]() -> const ImVec2 {
@@ -766,13 +787,20 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                             return ImVec2();
                     }();
 
-                    self.Render(title, size_or_default, border);
+                    const ImGuiWindowFlags& windowFlags_or_default = [&]() -> const ImGuiWindowFlags {
+                        if (windowFlags.has_value())
+                            return windowFlags.value();
+                        else
+                            return ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove;
+                    }();
+
+                    self.Render(title, size_or_default, childFlags, windowFlags_or_default);
                 };
 
-                Render_adapt_mutable_param_with_default_value(title, size, border);
+                Render_adapt_mutable_param_with_default_value(title, size, childFlags, windowFlags);
             },
-            nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("border") = false,
-            " render text diff in a Dear ImGui context\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2()")
+            nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags").none() = nb::none(),
+            " render text diff in a Dear ImGui context\n note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings\n ensure you keep the default as they are required for the diff widget\n - ImGuiWindowFlags_NoNavInputs to ensure cursor keys are passed to the diff widget\n - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the diff widget\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2()\n        * windowFlags: ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove")
         ;
     ////////////////////    </generated_from:TextDiff.h>    ////////////////////
 

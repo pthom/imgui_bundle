@@ -647,6 +647,24 @@ void py_init_module_imgui_internal(nb::module_& m)
         ;
 
 
+    auto pyClassImGuiPackedDate =
+        nb::class_<ImGuiPackedDate>
+            (m, "PackedDate", " Helper: ImGuiPackedDate (sizeof() == 2)\n Store a date in a way that is efficient to read/write in text form. If we stored e.g. number of days since Epoch we'd need costlier back and forth.\n This is specifically designed to be able to prune old .ini data.")
+        .def(nb::init<>())
+        .def(nb::init<int>(),
+            nb::arg("yyyymmdd"),
+            "Pack")
+        .def("is_valid",
+            &ImGuiPackedDate::IsValid, "(private API)")
+        .def("unpack",
+            &ImGuiPackedDate::Unpack, "(private API)\n\n Unpack")
+        .def("subtract_months",
+            &ImGuiPackedDate::SubtractMonths,
+            nb::arg("m"),
+            "(private API)\n\n FIXME-OPT: Stupid but enough for what we do with it.")
+        ;
+
+
     m.def("im_lower_bound",
         ImLowerBound,
         nb::arg("in_begin"), nb::arg("in_end"), nb::arg("key"),
@@ -967,7 +985,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImGuiGroupData =
         nb::class_<ImGuiGroupData>
             (m, "GroupData", "Stacked storage data for BeginGroup()/EndGroup()")
-        .def("__init__", [](ImGuiGroupData * self, ImGuiID WindowID = ImGuiID(), const std::optional<const ImVec2> & BackupCursorPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorMaxPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorPosPrevLine = std::nullopt, const std::optional<const ImVec1> & BackupIndent = std::nullopt, const std::optional<const ImVec1> & BackupGroupOffset = std::nullopt, const std::optional<const ImVec2> & BackupCurrLineSize = std::nullopt, float BackupCurrLineTextBaseOffset = float(), ImGuiID BackupActiveIdIsAlive = ImGuiID(), bool BackupActiveIdHasBeenEditedThisFrame = bool(), bool BackupDeactivatedIdIsAlive = bool(), bool BackupHoveredIdIsAlive = bool(), bool BackupIsSameLine = bool(), bool EmitItem = bool())
+        .def("__init__", [](ImGuiGroupData * self, ImGuiID WindowID = ImGuiID(), const std::optional<const ImVec2> & BackupCursorPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorMaxPos = std::nullopt, const std::optional<const ImVec2> & BackupCursorPosPrevLine = std::nullopt, const std::optional<const ImVec1> & BackupIndent = std::nullopt, const std::optional<const ImVec1> & BackupGroupOffset = std::nullopt, const std::optional<const ImVec2> & BackupCurrLineSize = std::nullopt, float BackupCurrLineTextBaseOffset = float(), ImGuiID BackupActiveIdIsAlive = ImGuiID(), bool BackupAnyIdHasBeenEditedThisFrame = bool(), bool BackupDeactivatedIdIsAlive = bool(), bool BackupHoveredIdIsAlive = bool(), bool BackupIsSameLine = bool(), bool EmitItem = bool())
         {
             new (self) ImGuiGroupData();  // placement new
             auto r_ctor_ = self;
@@ -998,13 +1016,13 @@ void py_init_module_imgui_internal(nb::module_& m)
                 r_ctor_->BackupCurrLineSize = ImVec2();
             r_ctor_->BackupCurrLineTextBaseOffset = BackupCurrLineTextBaseOffset;
             r_ctor_->BackupActiveIdIsAlive = BackupActiveIdIsAlive;
-            r_ctor_->BackupActiveIdHasBeenEditedThisFrame = BackupActiveIdHasBeenEditedThisFrame;
+            r_ctor_->BackupAnyIdHasBeenEditedThisFrame = BackupAnyIdHasBeenEditedThisFrame;
             r_ctor_->BackupDeactivatedIdIsAlive = BackupDeactivatedIdIsAlive;
             r_ctor_->BackupHoveredIdIsAlive = BackupHoveredIdIsAlive;
             r_ctor_->BackupIsSameLine = BackupIsSameLine;
             r_ctor_->EmitItem = EmitItem;
         },
-        nb::arg("window_id") = ImGuiID(), nb::arg("backup_cursor_pos").none() = nb::none(), nb::arg("backup_cursor_max_pos").none() = nb::none(), nb::arg("backup_cursor_pos_prev_line").none() = nb::none(), nb::arg("backup_indent").none() = nb::none(), nb::arg("backup_group_offset").none() = nb::none(), nb::arg("backup_curr_line_size").none() = nb::none(), nb::arg("backup_curr_line_text_base_offset") = float(), nb::arg("backup_active_id_is_alive") = ImGuiID(), nb::arg("backup_active_id_has_been_edited_this_frame") = bool(), nb::arg("backup_deactivated_id_is_alive") = bool(), nb::arg("backup_hovered_id_is_alive") = bool(), nb::arg("backup_is_same_line") = bool(), nb::arg("emit_item") = bool()
+        nb::arg("window_id") = ImGuiID(), nb::arg("backup_cursor_pos").none() = nb::none(), nb::arg("backup_cursor_max_pos").none() = nb::none(), nb::arg("backup_cursor_pos_prev_line").none() = nb::none(), nb::arg("backup_indent").none() = nb::none(), nb::arg("backup_group_offset").none() = nb::none(), nb::arg("backup_curr_line_size").none() = nb::none(), nb::arg("backup_curr_line_text_base_offset") = float(), nb::arg("backup_active_id_is_alive") = ImGuiID(), nb::arg("backup_any_id_has_been_edited_this_frame") = bool(), nb::arg("backup_deactivated_id_is_alive") = bool(), nb::arg("backup_hovered_id_is_alive") = bool(), nb::arg("backup_is_same_line") = bool(), nb::arg("emit_item") = bool()
         )
         .def_rw("window_id", &ImGuiGroupData::WindowID, "")
         .def_rw("backup_cursor_pos", &ImGuiGroupData::BackupCursorPos, "")
@@ -1015,7 +1033,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("backup_curr_line_size", &ImGuiGroupData::BackupCurrLineSize, "")
         .def_rw("backup_curr_line_text_base_offset", &ImGuiGroupData::BackupCurrLineTextBaseOffset, "")
         .def_rw("backup_active_id_is_alive", &ImGuiGroupData::BackupActiveIdIsAlive, "")
-        .def_rw("backup_active_id_has_been_edited_this_frame", &ImGuiGroupData::BackupActiveIdHasBeenEditedThisFrame, "")
+        .def_rw("backup_any_id_has_been_edited_this_frame", &ImGuiGroupData::BackupAnyIdHasBeenEditedThisFrame, "")
         .def_rw("backup_deactivated_id_is_alive", &ImGuiGroupData::BackupDeactivatedIdIsAlive, "")
         .def_rw("backup_hovered_id_is_alive", &ImGuiGroupData::BackupHoveredIdIsAlive, "")
         .def_rw("backup_is_same_line", &ImGuiGroupData::BackupIsSameLine, "")
@@ -1059,6 +1077,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::class_<ImGuiInputTextDeactivatedState>
             (m, "InputTextDeactivatedState", " Internal temporary state for deactivating InputText() instances.\n Store as part of ImGuiDeactivatedItemData?")
         .def_rw("id_", &ImGuiInputTextDeactivatedState::ID, "widget id owning the text state (which just got deactivated)")
+        .def_rw("elapse_frame", &ImGuiInputTextDeactivatedState::ElapseFrame, "")
         .def_rw("text_a", &ImGuiInputTextDeactivatedState::TextA, "text buffer")
         .def(nb::init<>())
         .def("clear_free_memory",
@@ -1219,7 +1238,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::class_<ImGuiNextItemData>
             (m, "NextItemData", "")
         .def_rw("has_flags", &ImGuiNextItemData::HasFlags, "Called HasFlags instead of Flags to avoid mistaking this")
-        .def_rw("item_flags", &ImGuiNextItemData::ItemFlags, "Currently only tested/used for ImGuiItemFlags_AllowOverlap and ImGuiItemFlags_HasSelectionUserData.")
+        .def_rw("item_flags_set", &ImGuiNextItemData::ItemFlagsSet, "Currently only tested/used for ImGuiItemFlags_AllowOverlap and ImGuiItemFlags_HasSelectionUserData.")
         .def_rw("focus_scope_id", &ImGuiNextItemData::FocusScopeId, "Set by SetNextItemSelectionUserData()")
         .def_rw("selection_user_data", &ImGuiNextItemData::SelectionUserData, "Set by SetNextItemSelectionUserData() (note that None/0 is a valid value, we use -1 == ImGuiSelectionUserData_Invalid to mark invalid values)")
         .def_rw("width", &ImGuiNextItemData::Width, "Set by SetNextItemWidth()")
@@ -1895,6 +1914,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_id_passed_by", &ImGuiMultiSelectTempData::NavIdPassedBy, "")
         .def_rw("range_src_passed_by", &ImGuiMultiSelectTempData::RangeSrcPassedBy, "Set by the item that matches RangeSrcItem.")
         .def_rw("range_dst_passed_by", &ImGuiMultiSelectTempData::RangeDstPassedBy, "Set by the item that matches NavJustMovedToId when IsSetRange is set.")
+        .def_rw("is_sole_or_unknown_selection_size", &ImGuiMultiSelectTempData::IsSoleOrUnknownSelectionSize, "")
         .def(nb::init<>())
         .def("clear",
             &ImGuiMultiSelectTempData::Clear, "(private API)\n\n Zero-clear except IO as we preserve IO.Requests[] buffer allocation.")
@@ -2111,10 +2131,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("dock_id", &ImGuiWindowSettings::DockId, "ID of last known DockNode (even if the DockNode is invisible because it has only 1 active window), or 0 if none.")
         .def_rw("class_id", &ImGuiWindowSettings::ClassId, "ID of window class if specified")
         .def_rw("dock_order", &ImGuiWindowSettings::DockOrder, "Order of the last time the window was visible within its DockNode. This is used to reorder windows that are reappearing on the same frame. Same value between windows that were active and windows that were none are possible.")
-        .def_rw("collapsed", &ImGuiWindowSettings::Collapsed, "")
-        .def_rw("is_child", &ImGuiWindowSettings::IsChild, "")
-        .def_rw("want_apply", &ImGuiWindowSettings::WantApply, "Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)")
-        .def_rw("want_delete", &ImGuiWindowSettings::WantDelete, "Set to invalidate/delete the settings entry")
+        .def_rw("last_used_date", &ImGuiWindowSettings::LastUsedDate, "")
         .def(nb::init<>())
         // #ifdef IMGUI_BUNDLE_PYTHON_API
         //
@@ -2122,6 +2139,33 @@ void py_init_module_imgui_internal(nb::module_& m)
             &ImGuiWindowSettings::GetNameStr, "(private API)")
         // #endif
         //
+        ;
+
+
+    auto pyClassImGuiSettingsCleanupArgs =
+        nb::class_<ImGuiSettingsCleanupArgs>
+            (m, "SettingsCleanupArgs", "")
+        .def("__init__", [](ImGuiSettingsCleanupArgs * self, ImGuiID TypeHashFilter = 0, int DiscardOlderThanMonths = 0, bool DiscardWhenMissingDate = false, bool DiscardAll = false, bool SetCurrentSessionDateToAll = false, bool SetCurrentSessionDateWhenMissingDate = false, int _DiscardOlderThanDate = 0)
+        {
+            new (self) ImGuiSettingsCleanupArgs();  // placement new
+            auto r_ctor_ = self;
+            r_ctor_->TypeHashFilter = TypeHashFilter;
+            r_ctor_->DiscardOlderThanMonths = DiscardOlderThanMonths;
+            r_ctor_->DiscardWhenMissingDate = DiscardWhenMissingDate;
+            r_ctor_->DiscardAll = DiscardAll;
+            r_ctor_->SetCurrentSessionDateToAll = SetCurrentSessionDateToAll;
+            r_ctor_->SetCurrentSessionDateWhenMissingDate = SetCurrentSessionDateWhenMissingDate;
+            r_ctor_->_DiscardOlderThanDate = _DiscardOlderThanDate;
+        },
+        nb::arg("type_hash_filter") = 0, nb::arg("discard_older_than_months") = 0, nb::arg("discard_when_missing_date") = false, nb::arg("discard_all") = false, nb::arg("set_current_session_date_to_all") = false, nb::arg("set_current_session_date_when_missing_date") = false, nb::arg("_discard_older_than_date") = 0
+        )
+        .def_rw("type_hash_filter", &ImGuiSettingsCleanupArgs::TypeHashFilter, "Set to restrict cleanup to a given .ini type, e.g. == ImHashStr(\"Window\"), ImHashStr(\"Table\"). Otherwise every types supporting Cleanup will be affected.")
+        .def_rw("discard_older_than_months", &ImGuiSettingsCleanupArgs::DiscardOlderThanMonths, "Enable to discard entries older than XX months.")
+        .def_rw("discard_when_missing_date", &ImGuiSettingsCleanupArgs::DiscardWhenMissingDate, "Enable to discard entries missing a date.")
+        .def_rw("discard_all", &ImGuiSettingsCleanupArgs::DiscardAll, "Enable to discard all entries = same as calling ClearIniSettings() except it may be filtered.")
+        .def_rw("set_current_session_date_to_all", &ImGuiSettingsCleanupArgs::SetCurrentSessionDateToAll, "Enable to write current SessionDate to all supporting entries. // Let us know in #9460 if you use this.")
+        .def_rw("set_current_session_date_when_missing_date", &ImGuiSettingsCleanupArgs::SetCurrentSessionDateWhenMissingDate, "Enable to write current SessionDate to all supporting entries missing a date. // Let us know in #9460 if you use this.")
+        .def_rw("_discard_older_than_date", &ImGuiSettingsCleanupArgs::_DiscardOlderThanDate, "[Internal]")
         ;
 
 
@@ -2225,7 +2269,7 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyClassImGuiMetricsConfig =
         nb::class_<ImGuiMetricsConfig>
             (m, "MetricsConfig", "")
-        .def("__init__", [](ImGuiMetricsConfig * self, bool ShowDebugLog = false, bool ShowIDStackTool = false, bool ShowWindowsRects = false, bool ShowWindowsBeginOrder = false, bool ShowTablesRects = false, bool ShowDrawCmdMesh = true, bool ShowDrawCmdBoundingBoxes = true, bool ShowTextEncodingViewer = false, bool ShowTextureUsedRect = false, bool ShowDockingNodes = false, int ShowWindowsRectsType = -1, int ShowTablesRectsType = -1, int HighlightMonitorIdx = -1, ImGuiID HighlightViewportID = 0, bool ShowFontPreview = true)
+        .def("__init__", [](ImGuiMetricsConfig * self, bool ShowDebugLog = false, bool ShowIDStackTool = false, bool ShowWindowsRects = false, bool ShowWindowsBeginOrder = false, bool ShowTablesRects = false, bool ShowDrawCmdMesh = true, bool ShowDrawCmdBoundingBoxes = true, bool ShowTextEncodingViewer = false, bool ShowTextureUsedRect = false, bool ShowDockingNodes = false, int ShowWindowsRectsType = -1, int ShowTablesRectsType = -1, int HighlightMonitorIdx = -1, ImGuiID HighlightViewportID = 0, int SettingsDiscardMonths = 6, bool SettingsHighlightOldEntries = false, bool ShowFontPreview = true)
         {
             new (self) ImGuiMetricsConfig();  // placement new
             auto r_ctor_ = self;
@@ -2243,9 +2287,11 @@ void py_init_module_imgui_internal(nb::module_& m)
             r_ctor_->ShowTablesRectsType = ShowTablesRectsType;
             r_ctor_->HighlightMonitorIdx = HighlightMonitorIdx;
             r_ctor_->HighlightViewportID = HighlightViewportID;
+            r_ctor_->SettingsDiscardMonths = SettingsDiscardMonths;
+            r_ctor_->SettingsHighlightOldEntries = SettingsHighlightOldEntries;
             r_ctor_->ShowFontPreview = ShowFontPreview;
         },
-        nb::arg("show_debug_log") = false, nb::arg("show_id_stack_tool") = false, nb::arg("show_windows_rects") = false, nb::arg("show_windows_begin_order") = false, nb::arg("show_tables_rects") = false, nb::arg("show_draw_cmd_mesh") = true, nb::arg("show_draw_cmd_bounding_boxes") = true, nb::arg("show_text_encoding_viewer") = false, nb::arg("show_texture_used_rect") = false, nb::arg("show_docking_nodes") = false, nb::arg("show_windows_rects_type") = -1, nb::arg("show_tables_rects_type") = -1, nb::arg("highlight_monitor_idx") = -1, nb::arg("highlight_viewport_id") = 0, nb::arg("show_font_preview") = true
+        nb::arg("show_debug_log") = false, nb::arg("show_id_stack_tool") = false, nb::arg("show_windows_rects") = false, nb::arg("show_windows_begin_order") = false, nb::arg("show_tables_rects") = false, nb::arg("show_draw_cmd_mesh") = true, nb::arg("show_draw_cmd_bounding_boxes") = true, nb::arg("show_text_encoding_viewer") = false, nb::arg("show_texture_used_rect") = false, nb::arg("show_docking_nodes") = false, nb::arg("show_windows_rects_type") = -1, nb::arg("show_tables_rects_type") = -1, nb::arg("highlight_monitor_idx") = -1, nb::arg("highlight_viewport_id") = 0, nb::arg("settings_discard_months") = 6, nb::arg("settings_highlight_old_entries") = false, nb::arg("show_font_preview") = true
         )
         .def_rw("show_debug_log", &ImGuiMetricsConfig::ShowDebugLog, "")
         .def_rw("show_id_stack_tool", &ImGuiMetricsConfig::ShowIDStackTool, "")
@@ -2261,6 +2307,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("show_tables_rects_type", &ImGuiMetricsConfig::ShowTablesRectsType, "")
         .def_rw("highlight_monitor_idx", &ImGuiMetricsConfig::HighlightMonitorIdx, "")
         .def_rw("highlight_viewport_id", &ImGuiMetricsConfig::HighlightViewportID, "")
+        .def_rw("settings_discard_months", &ImGuiMetricsConfig::SettingsDiscardMonths, "")
+        .def_rw("settings_highlight_old_entries", &ImGuiMetricsConfig::SettingsHighlightOldEntries, "")
         .def_rw("show_font_preview", &ImGuiMetricsConfig::ShowFontPreview, "")
         ;
 
@@ -2390,10 +2438,13 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("hovered_id_allow_overlap", &ImGuiContext::HoveredIdAllowOverlap, "")
         .def_rw("hovered_id_is_disabled", &ImGuiContext::HoveredIdIsDisabled, "At least one widget passed the rect test, but has been discarded by disabled flag or popup inhibit. May be True even if HoveredId == 0.")
         .def_rw("item_unclip_by_log", &ImGuiContext::ItemUnclipByLog, "Disable ItemAdd() clipping, essentially a memory-locality friendly copy of LogEnabled")
+        .def_rw("any_id_has_been_edited_this_frame", &ImGuiContext::AnyIdHasBeenEditedThisFrame, "")
         .def_rw("active_id", &ImGuiContext::ActiveId, "Active widget")
         .def_rw("active_id_is_alive", &ImGuiContext::ActiveIdIsAlive, "Active widget has been seen this frame (we can't use a bool as the ActiveId may change within the frame)")
         .def_rw("active_id_timer", &ImGuiContext::ActiveIdTimer, "")
         .def_rw("active_id_is_just_activated", &ImGuiContext::ActiveIdIsJustActivated, "Set at the time of activation for one frame")
+        .def_rw("active_id_was_selected", &ImGuiContext::ActiveIdWasSelected, "Active ID was selected at the time of activating")
+        .def_rw("active_id_was_sole_selected", &ImGuiContext::ActiveIdWasSoleSelected, "Active ID was sole selection at the time of activating")
         .def_rw("active_id_allow_overlap", &ImGuiContext::ActiveIdAllowOverlap, "Active widget allows another widget to steal active id (generally for overlapping widgets, but not always)")
         .def_rw("active_id_no_clear_on_focus_loss", &ImGuiContext::ActiveIdNoClearOnFocusLoss, "Disable losing active id if the active id window gets unfocused.")
         .def_rw("active_id_has_been_pressed_before", &ImGuiContext::ActiveIdHasBeenPressedBefore, "Track whether the active id led to a press (this is to allow changing between PressOnClick and PressOnRelease without pressing twice). Used by range_select branch.")
@@ -2410,6 +2461,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("active_id_value_on_activation", &ImGuiContext::ActiveIdValueOnActivation, "Backup of initial value at the time of activation. ONLY SET BY SPECIFIC WIDGETS: DragXXX and SliderXXX.")
         .def_rw("last_active_id", &ImGuiContext::LastActiveId, "Store the last non-zero ActiveId, useful for animation.")
         .def_rw("last_active_id_timer", &ImGuiContext::LastActiveIdTimer, "Store the last non-zero ActiveId timer since the beginning of activation, useful for animation.")
+        .def_rw("last_active_id_was_selected", &ImGuiContext::LastActiveIdWasSelected, "")
+        .def_rw("last_active_id_was_sole_selected", &ImGuiContext::LastActiveIdWasSoleSelected, "")
         .def_rw("last_key_mods_change_time", &ImGuiContext::LastKeyModsChangeTime, "Record the last time key mods changed (affect repeat delay when using shortcut logic)")
         .def_rw("last_key_mods_change_from_none_time", &ImGuiContext::LastKeyModsChangeFromNoneTime, "Record the last time key mods changed away from being 0 (affect repeat delay when using shortcut logic)")
         .def_rw("last_keyboard_key_press_time", &ImGuiContext::LastKeyboardKeyPressTime, "Record the last time a keyboard key (ignore mouse/gamepad ones) was pressed.")
@@ -2563,7 +2616,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("data_type_zero_value", &ImGuiContext::DataTypeZeroValue, "0 for all data types")
         .def_rw("begin_menu_depth", &ImGuiContext::BeginMenuDepth, "")
         .def_rw("begin_combo_depth", &ImGuiContext::BeginComboDepth, "")
-        .def_rw("color_edit_options", &ImGuiContext::ColorEditOptions, "Store user options for color edit widgets")
         .def_rw("color_edit_current_id", &ImGuiContext::ColorEditCurrentID, "Set temporarily while inside of the parent-most ColorEdit4/ColorPicker4 (because they call each others).")
         .def_rw("color_edit_saved_id", &ImGuiContext::ColorEditSavedID, "ID we are saving/restoring HS for")
         .def_rw("color_edit_saved_hue", &ImGuiContext::ColorEditSavedHue, "Backup of last Hue associated to LastColor, so we can restore Hue in lossy RGB<>HSV round trips")
@@ -2592,6 +2644,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("platform_ime_data_prev", &ImGuiContext::PlatformImeDataPrev, "Previous frame data. When changed we call the platform_io.Platform_SetImeDataFn() handler.")
         .def_rw("user_textures", &ImGuiContext::UserTextures, "List of textures created/managed by user or third-party extension. Automatically appended into platform_io.Textures[].")
         .def_rw("dock_context", &ImGuiContext::DockContext, "")
+        .def_rw("session_date", &ImGuiContext::SessionDate, "Packed copy of platform_io.Platform_SessionDate, when valid.")
         .def_rw("settings_loaded", &ImGuiContext::SettingsLoaded, "")
         .def_rw("settings_dirty_timer", &ImGuiContext::SettingsDirtyTimer, "Save .ini Settings to memory when time reaches zero")
         .def_rw("settings_ini_data", &ImGuiContext::SettingsIniData, "In memory .ini settings")
@@ -3350,7 +3403,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("ref_scale", &ImGuiTableSettings::RefScale, "Reference scale to be able to rescale columns on font/dpi changes.")
         .def_rw("columns_count", &ImGuiTableSettings::ColumnsCount, "")
         .def_rw("columns_count_max", &ImGuiTableSettings::ColumnsCountMax, "Maximum number of columns this settings instance can store, we can recycle a settings instance with lower number of columns but not higher")
-        .def_rw("want_apply", &ImGuiTableSettings::WantApply, "Set when loaded from .ini data (to enable merging/loading .ini data into an already running context)")
+        .def_rw("last_used_date", &ImGuiTableSettings::LastUsedDate, "")
         .def(nb::init<>())
         .def("get_column_settings",
             &ImGuiTableSettings::GetColumnSettings,
@@ -3857,6 +3910,11 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("clear_ini_settings",
         ImGui::ClearIniSettings);
+
+    m.def("cleanup_ini_settings",
+        ImGui::CleanupIniSettings,
+        nb::arg("args"),
+        "[BETA] Expected to turn into a public API. Please report if you are using this!");
 
     m.def("add_settings_handler",
         ImGui::AddSettingsHandler, nb::arg("handler"));

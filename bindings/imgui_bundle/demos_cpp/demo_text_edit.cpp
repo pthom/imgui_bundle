@@ -88,7 +88,7 @@ namespace
             auto codeFont = ImGuiMd::GetCodeFont();
             ImGui::PushFont(codeFont.font, codeFont.size);
             std::string id = std::string("##src_") + editorKey;
-            sourceEditors[editorKey].Render(id.c_str(), ImVec2(-1, ImGui::GetTextLineHeight() * 15), false);
+            sourceEditors[editorKey].Render(id.c_str(), ImVec2(-1, ImGui::GetTextLineHeight() * 15));
             ImGui::PopFont();
             ImGui::SeparatorText("Demo");
         }

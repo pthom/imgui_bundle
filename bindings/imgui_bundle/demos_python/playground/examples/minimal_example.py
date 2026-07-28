@@ -48,7 +48,7 @@ def gui(state: AppState) -> None:
     code_font = imgui_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     avail = imgui.get_content_region_avail()
-    state.editor.render("##html_viewer", avail, False)
+    state.editor.render("##html_viewer", avail)
     imgui.pop_font()
 
 

@@ -850,7 +850,7 @@ def _markdown_slide_gui(content_size: ImVec2):
     imgui.push_font(code_font.font, code_font.size * 0.9)
 
     # Render the text editor
-    _markdown_text_editor.render("##md_editor", ImVec2(half_w, h), False)
+    _markdown_text_editor.render("##md_editor", ImVec2(half_w, h))
 
     imgui.pop_font()
     imgui.end_child()
@@ -1069,7 +1069,7 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func):
     # Editor
     code_font = imgui_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size * 0.8)
-    editor.render(f"##ed_gallery_{idx}", ImVec2(-1, -1), False)
+    editor.render(f"##ed_gallery_{idx}", ImVec2(-1, -1))
     imgui.pop_font()
 
     imgui.end_child()

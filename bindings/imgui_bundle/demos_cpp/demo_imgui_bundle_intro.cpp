@@ -1225,7 +1225,7 @@ namespace IntroGallery
             ImGui::PushFont(codeFont.font, codeFont.size * 0.8f);
             char editorId[32];
             snprintf(editorId, sizeof(editorId), "##ed_gallery_%d", idx);
-            editor.Render(editorId, ImVec2(-1, -1), false);
+            editor.Render(editorId, ImVec2(-1, -1));
             ImGui::PopFont();
         }
         ImGui::EndChild();

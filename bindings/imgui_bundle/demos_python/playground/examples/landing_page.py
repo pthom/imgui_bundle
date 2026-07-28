@@ -478,7 +478,7 @@ def show_code_editor(size):
     code_font = imgui_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     imgui.push_style_var(imgui.StyleVar_.alpha, _fade_alpha)
-    _editor.render("##code_viewer", size, False)
+    _editor.render("##code_viewer", size)
     imgui.pop_style_var()
     imgui.pop_font()
 

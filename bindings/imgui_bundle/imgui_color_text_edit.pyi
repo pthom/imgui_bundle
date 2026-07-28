@@ -246,6 +246,19 @@ class TextEditor:
         pass
     def is_middle_mouse_pan_mode(self) -> bool:
         pass
+    def set_line_number_left_margin(self, value: int) -> None:
+        """ margins are expressed in glyphs"""
+        pass
+    def get_line_number_left_margin(self) -> int:
+        pass
+    def set_decoration_left_margin(self, value: int) -> None:
+        pass
+    def get_decoration_left_margin(self) -> int:
+        pass
+    def set_text_left_margin(self, value: int) -> None:
+        pass
+    def get_text_left_margin(self) -> int:
+        pass
 
     # access text (using UTF-8 encoded strings)
     # (see note below on cursor and scroll manipulation after setting new text)
@@ -290,12 +303,20 @@ class TextEditor:
         self,
         title: str,
         size: Optional[ImVec2Like] = None,
-        border: bool = False
+        child_flags: ImGuiChildFlags = 0,
+        window_flags: Optional[ImGuiWindowFlags] = None
         ) -> None:
         """ render the text editor in a Dear ImGui context
+         note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings
+         ensure you keep the default as they are required for the editor
+         - ImGuiWindowFlags_NoNavInputs to ensure cursor keys are passed to the editor
+         - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the editor
+         - ImGuiWindowFlags_HorizontalScrollbar to ensure a horizontal scrollbar is rendered when required
 
         Python bindings defaults:
-            If size is None, then its default value will be: ImVec2()
+            If any of the params below is None, then its default value below will be used:
+                * size: ImVec2()
+                * windowFlags: ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar
         """
         pass
 
@@ -577,10 +598,10 @@ class TextEditor:
 
     def set_line_decorator(
         self,
-        width: float,
+        width: int,
         callback: Callable[[TextEditor.Decorator], None]
         ) -> None:
-        """ positive width is number of pixels, negative with is number of glyphs"""
+        """ setup a line decorator (width is number of glyphs)"""
         pass
 
     def clear_line_decorator(self) -> None:
@@ -991,12 +1012,19 @@ class TextDiff:
         self,
         title: str,
         size: Optional[ImVec2Like] = None,
-        border: bool = False
+        child_flags: ImGuiChildFlags = 0,
+        window_flags: Optional[ImGuiWindowFlags] = None
         ) -> None:
         """ render text diff in a Dear ImGui context
+         note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings
+         ensure you keep the default as they are required for the diff widget
+         - ImGuiWindowFlags_NoNavInputs to ensure cursor keys are passed to the diff widget
+         - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the diff widget
 
         Python bindings defaults:
-            If size is None, then its default value will be: ImVec2()
+            If any of the params below is None, then its default value below will be used:
+                * size: ImVec2()
+                * windowFlags: ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove
         """
         pass
 

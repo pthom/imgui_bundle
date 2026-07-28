@@ -140,6 +140,7 @@ def _add_imvector_template_options(options: litgen.LitgenOptions):
         "stbrp_node_im",  # typedef for the opaque stb rect-packer node (ImGuiContext::PackNodes)
         "ImDrawListSharedData*",
         "ImFontStackData",
+        "ImGuiTableReconcileColumnData",  # internal, used when validating ini settings column count
     ]
 
     options.class_template_options.add_specialization(
