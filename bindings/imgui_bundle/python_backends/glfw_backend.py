@@ -35,7 +35,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             glfw.set_char_callback(self.window, self.char_callback)
             glfw.set_scroll_callback(self.window, self.scroll_callback)
 
-        self.io.display_size = glfw.get_framebuffer_size(self.window)
+        self.io.display_size = imgui.ImVec2(*glfw.get_framebuffer_size(self.window))
 
         def get_clipboard_text(_ctx: imgui.internal.Context) -> str:
             s = glfw.get_clipboard_string(self.window)
@@ -207,7 +207,7 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
             io.add_input_character(char)
 
     def resize_callback(self, window, width, height):
-        self.io.display_size = width, height
+        self.io.display_size = imgui.ImVec2(width, height)
 
     def mouse_callback(self, *args, **kwargs):
         if glfw.get_window_attrib(self.window, glfw.FOCUSED):
@@ -228,8 +228,8 @@ class GlfwRenderer(ProgrammablePipelineRenderer):
         window_size = glfw.get_window_size(self.window)
         fb_size = glfw.get_framebuffer_size(self.window)
 
-        io.display_size = window_size
-        io.display_framebuffer_scale = compute_fb_scale(window_size, fb_size)
+        io.display_size = imgui.ImVec2(*window_size)
+        io.display_framebuffer_scale = imgui.ImVec2(*compute_fb_scale(window_size, fb_size))
         io.delta_time = 1.0 / 60
 
         current_time = glfw.get_time()
