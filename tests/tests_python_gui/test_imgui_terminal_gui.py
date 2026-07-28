@@ -40,12 +40,16 @@ def test_keyboard_to_bytes() -> None:
         ctx.set_ref("")
         K = imgui.Key
         ctrl = physical_ctrl_mod()
+        # On macOS Option is the compose key: the widget expects the composed
+        # character via input_queue_characters, which the test engine cannot
+        # synthesize, so an Alt-letter chord emits nothing there.
+        alt_b = b"" if imgui.get_io().config_mac_osx_behaviors else b"\x1bb"
         cases = [
             ("Ctrl-A", ctrl | K.a, b"\x01"),
             ("Ctrl-C", ctrl | K.c, b"\x03"),
             ("Ctrl-Z", ctrl | K.z, b"\x1a"),
             ("Ctrl-Space", ctrl | K.space, b"\x00"),
-            ("Alt-B (Meta)", K.mod_alt | K.b, b"\x1bb"),
+            ("Alt-B (Meta)", K.mod_alt | K.b, alt_b),
             ("Tab", K.tab, b"\t"),
             ("Shift-Tab", K.mod_shift | K.tab, b"\x1b[Z"),
             ("F1", K.f1, b"\x1bOP"),
