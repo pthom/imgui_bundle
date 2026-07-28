@@ -1,6 +1,51 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# Unreleased
+# v1.92.900
+
+## Updated Dear ImGui to v1.92.9
+
+See [release info for v1.92.9](https://github.com/ocornut/imgui/releases/tag/v1.92.9)
+(includes the post-release fix for `ImDrawData::CmdListsCount`).
+
+### Behavior change: keyboard edits of scalar widgets apply on validation
+
+Typing a value into `InputInt`, `InputFloat`, `DragXXX` or `SliderXXX` no longer
+writes intermediate values to the backing variable at each keystroke: typing "123"
+now yields a single change to 123 on Enter / tab-out / deactivation, instead of
+1, then 12, then 123. In Python:
+
+```python
+changed, value = imgui.input_int("int", value)  # changed becomes True on validation only
+```
+
+Text inputs keep the previous behavior. Both are configurable via the new
+`imgui.ItemFlags_.live_edit_on_input_scalar` / `live_edit_on_input_text` with
+`imgui.push_item_flag()`; see "Widgets/Live Edit Flags" in the demo.
+
+### Breaking changes
+
+- `imgui.set_color_edit_options(flags)` was removed: write `imgui.get_io().config_color_edit_flags = flags` instead.
+- `imgui.DragDropFlags_.source_auto_expire_payload` (obsoleted in 2024) was removed: use `payload_auto_expire`.
+
+### Other additions
+
+- `imgui.open_popup()` and `imgui.open_popup_on_item_click()` now return a bool (True when the popup was just opened).
+- `imgui.get_item_clicked_count_with_single_click_delay()` and `io.mouse_single_click_delay`: disambiguate single-click from double-click.
+- `imgui.ColorEditFlags_.picker_no_rotate`: fix the S/V triangle in the hue-wheel picker.
+- Settings aging: ini entries record their last-used date; `io.config_ini_settings_auto_discard_months` can discard stale ones (see also `io.config_ini_settings_save_last_used_date`).
+
+## Updated bundled libraries
+
+- **ImGuiColorTextEdit**: followed upstream's merge of its `future` branch.
+  Breaking: `render()` lost its `border: bool` parameter, replaced by
+  `child_flags: ImGuiChildFlags` and `window_flags: ImGuiWindowFlags` (a former
+  `render(id, size, False)` call becomes `render(id, size)`). Also adds
+  configurable left margins (`set_line_number_left_margin`,
+  `set_decoration_left_margin`, `set_text_left_margin`) and quieter autocomplete.
+- **ImGuizmo**: upstream bug fixes (gizmo jitter, multi-view, `is_over` for SCALEU, disappearing translation axis).
+- **ImPlot3D**: legend scrolling.
+- **imgui_toggle**: build fix against recent ImGui merged upstream (our fork now carries no patches).
+- **ImGui Test Engine**: updated (test-suite amendments for the LiveEdit change).
 
 ## musllinux wheels: fixed ImportError
 
