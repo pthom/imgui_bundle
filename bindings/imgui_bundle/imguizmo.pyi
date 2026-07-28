@@ -326,6 +326,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         """ Configure the limit where planes are hiden"""
         pass
 
+
     class COLOR(enum.IntEnum):
         direction_x = enum.auto()           # (= 0)  # directionColor[0]
         direction_y = enum.auto()           # (= 1)  # directionColor[1]
