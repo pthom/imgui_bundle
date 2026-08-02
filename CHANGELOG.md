@@ -34,6 +34,21 @@ Text inputs keep the previous behavior. Both are configurable via the new
 - `imgui.ColorEditFlags_.picker_no_rotate`: fix the S/V triangle in the hue-wheel picker.
 - Settings aging: ini entries record their last-used date; `io.config_ini_settings_auto_discard_months` can discard stale ones (see also `io.config_ini_settings_save_last_used_date`).
 
+## New: terminal emulator widget for Python (`imgui_bundle.imgui_terminal`)
+
+A [pyte](https://github.com/selectel/pyte)-based terminal emulator widget, usable in any ImGui Bundle app:
+
+- `TerminalView` renders a VT100 screen and handles keyboard and mouse input:
+  word/line selection, right-click paste, Alt as Meta, and correct handling of
+  modified keys (Shift-Tab, Ctrl-Space, modified arrows).
+- A *transport* feeds bytes to the view: `LocalShellTransport` runs a local
+  shell behind a pty (POSIX); the demos add SSH and websocket transports
+  implementing the same two-method `TerminalTransport` protocol.
+- Requires the `pyte` package: `pip install "imgui-bundle[terminal]"`.
+- See `demo_terminal.py` in the demo launcher (tab bar with multiple sessions,
+  confirm-exit dialog), and `demos_python/demos_terminal/` for the local shell,
+  SSH and websocket variants.
+
 ## Updated bundled libraries
 
 - **ImGuiColorTextEdit**: followed upstream's merge of its `future` branch.
@@ -41,11 +56,48 @@ Text inputs keep the previous behavior. Both are configurable via the new
   `child_flags: ImGuiChildFlags` and `window_flags: ImGuiWindowFlags` (a former
   `render(id, size, False)` call becomes `render(id, size)`). Also adds
   configurable left margins (`set_line_number_left_margin`,
-  `set_decoration_left_margin`, `set_text_left_margin`) and quieter autocomplete.
+  `set_decoration_left_margin`, `set_text_left_margin`), quieter autocomplete,
+  and improved minimap rendering (width is now automatic, tunable via
+  `set_mini_map_columns`).
+- **imgui-node-editor**: configurable background grid size via
+  `StyleVar.grid_size` (#470); fixed incomplete rendering of popups.
+  Via the bundled ImGui patch, multiline text inputs inside the editor now
+  render a preview box with a resizable edit popup.
+- **Hello ImGui**: new `runner_params.callbacks.confirm_exit` (return False to
+  cancel an exit request); HighDPI font scaling now goes through
+  `style.font_scale_dpi` instead of multiplying font sizes at load time
+  (finalizes the ImGui 1.92 transition); `asset_file_full_path` also searches
+  the current folder.
+- **imspinner**: updated to the 2026 version, with many new spinners (#483).
 - **ImGuizmo**: upstream bug fixes (gizmo jitter, multi-view, `is_over` for SCALEU, disappearing translation axis).
 - **ImPlot3D**: legend scrolling.
 - **imgui_toggle**: build fix against recent ImGui merged upstream (our fork now carries no patches).
 - **ImGui Test Engine**: updated (test-suite amendments for the LiveEdit change).
+
+## Python API: behavior changes and fixes
+
+- **ImPlot / ImPlot3D: mismatched dtypes now raise.** Plot functions that take
+  several numeric arrays (e.g. `implot.plot_scatter(xs, ys)`) now raise a clear
+  error when the arrays have different dtypes, instead of silently
+  reinterpreting one array's bytes (an int64 index plotted against float64
+  values used to collapse to x=0). The error names both dtypes and suggests
+  `.astype(...)` (#467).
+- **ImPlotSpec / ImPlot3DSpec array fields fixed** (#484): the `line_colors`,
+  `fill_colors` and `marker_*` setters stored only a raw pointer, so a
+  temporary array could be garbage-collected before rendering (wrong colors or
+  crash), and the getter returned a pointer address instead of the array.
+  Arrays are now kept alive for the Spec's lifetime, and the getter returns
+  the ndarray.
+- **`imgui_ctx.push_font`**: the `font_size_base_unscaled` parameter is now
+  mandatory, in line with `imgui.push_font` since ImGui 1.92.
+- **`immapp.testing.run`**: test engine failures (e.g. "Unable to locate item")
+  now raise a `RuntimeError` carrying the engine log, instead of being silently
+  swallowed (new `raise_on_error=True` parameter); engine errors are also
+  printed live to the terminal.
+- **`imgui_fig`** (matplotlib figures): works with any matplotlib backend (no
+  need to call `matplotlib.use("Agg")` anymore), fixes a crash with animated
+  figures on matplotlib 3.11, and captures HiDPI/retina figures at the correct
+  size.
 
 ## musllinux wheels: fixed ImportError
 
@@ -56,6 +108,11 @@ Text inputs keep the previous behavior. Both are configurable via the new
 - The Pyodide wheel now targets Pyodide 314.x: Python 3.14, Emscripten 5.0.3, wheel tag `cp314-cp314-pyemscripten_2026_0_wasm32`.
 - Thanks to [PEP 783](https://peps.python.org/pep-0783/), Pyodide wheels are now published on PyPI (starting with v1.92.801): in a Pyodide 314+  environment, `micropip.install("imgui-bundle")` installs imgui_bundle directly from PyPI.
 - The [playground](https://imgui-bundle.pages.dev/playground/) and the minimal sample were updated accordingly.
+
+## Demos
+
+- `demo_chinese_font` (Python + C++): how to display non-Latin text (Chinese glyphs, font loading).
+- `demo_glfw_window_manip` (Python): manipulate the native GLFW window of an immapp application (maximize, center, opacity, request attention).
 
 # v1.92.800
 
