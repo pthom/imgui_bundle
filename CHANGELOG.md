@@ -2,9 +2,9 @@
 
 # v1.92.900
 
-## Updated Dear ImGui to v1.92.9
+## Updated Dear ImGui to v1.92.9b
 
-See [release info for v1.92.9](https://github.com/ocornut/imgui/releases/tag/v1.92.9)
+See [release info for v1.92.9](https://github.com/ocornut/imgui/releases/tag/v1.92.9) and [v1.92.9b](https://github.com/ocornut/imgui/releases/tag/v1.92.9b)
 (includes the post-release fix for `ImDrawData::CmdListsCount`).
 
 ### Behavior change: keyboard edits of scalar widgets apply on validation
