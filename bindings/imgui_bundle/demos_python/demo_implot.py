@@ -1,5 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle import imgui, imgui_md, immapp
+from imgui_bundle import imgui, imgui_md, immapp, icons_fontawesome_4
 from imgui_bundle.demos_python.demos_imgui_explorer import implot3d_demo
 from imgui_bundle.demos_python.demos_imgui_explorer import implot_demo
 
@@ -18,6 +18,14 @@ def demo_gui():
         if _has_imgui_explorer:
             assert imgui_explorer is not None
             imgui.push_id("ImPlotDemo")
+
+            imgui.text(icons_fontawesome_4.ICON_FA_INFO_CIRCLE)
+            if imgui.is_item_hovered():
+                imgui_md.render_unindented("""
+                > [!TIP]
+                > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see "Demo Apps" tab, demo_python_context_manager).
+                """)
+
             imgui_explorer.show_imgui_explorer_gui_python(imgui_explorer.ImGuiExplorerLibrary.implot, get_package_path())
             imgui.pop_id()
         else:

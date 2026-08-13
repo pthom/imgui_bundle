@@ -1,5 +1,7 @@
 from imgui_bundle import imgui, imgui_ctx, ImVec2, hello_imgui, ImVec4, immapp, imgui_md
+from imgui_bundle import implot, implot_ctx
 import inspect
+import numpy as np
 
 
 DOC = """
@@ -15,6 +17,9 @@ This demo shows how to use context managers to simplify the use of functions pai
     can be replaced by:  `with imgui_ctx.begin_menu_bar() as menu_bar:`
 
 etc.
+
+The same exists for ImPlot: `implot_ctx` provides context managers for
+`implot.begin_plot()`, `implot.begin_subplots()`, `implot.push_style_color()`, etc.
 """
 
 STANDARD_FONT = None
@@ -107,6 +112,28 @@ def demo_push_pop():
         imgui.button("A")
         imgui.same_line()
         imgui.text(f"Button ID: {imgui.get_item_id()}")
+
+
+def demo_implot_begin_plot():
+    # implot_ctx.begin_plot calls implot.end_plot() automatically.
+    # Testing `if plot:` is required: the plot may be collapsed or clipped.
+    x = np.arange(0, np.pi * 4, 0.01)
+    y = np.cos(x + imgui.get_time() * 4)
+    with implot_ctx.begin_plot("Wave", immapp.em_to_vec2(25, 15)) as plot:
+        if plot:
+            implot.setup_axes("x", "y")
+            implot.plot_line("cos", x, y)
+
+
+def demo_implot_push_pop():
+    # The push_* context managers pop automatically: no need to test their value
+    x = np.arange(0, np.pi * 4, 0.01)
+    y = np.sin(x)
+    with implot_ctx.push_style_color(implot.Col_.plot_bg, ImVec4(0.3, 0.6, 0.3, 1.0)):
+        with implot_ctx.push_colormap(implot.Colormap_.cool):
+            with implot_ctx.begin_plot("Styled plot", immapp.em_to_vec2(25, 15)) as plot:
+                if plot:
+                    implot.plot_line("sin", x, y)
 
 
 def demo_tree_node():
@@ -272,6 +299,8 @@ def gui():
         "Begin/End Group": demo_begin_group,
         "Tree Node": demo_tree_node,
         "Push/Pop": demo_push_pop,
+        "ImPlot: Begin/End Plot": demo_implot_begin_plot,
+        "ImPlot: Push/Pop": demo_implot_push_pop,
     }
 
     for demo_name, demo_fn in demos.items():
@@ -294,6 +323,7 @@ def main():
 
     addons = immapp.AddOnsParams()
     addons.with_markdown = True
+    addons.with_implot = True
 
     def load_font():
         global SOURCE_FONT, STANDARD_FONT
