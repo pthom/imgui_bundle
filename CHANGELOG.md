@@ -49,6 +49,28 @@ A [pyte](https://github.com/selectel/pyte)-based terminal emulator widget, usabl
   confirm-exit dialog), and `demos_python/demos_terminal/` for the local shell,
   SSH and websocket variants.
 
+## New: context managers for ImPlot (`imgui_bundle.implot_ctx`)
+
+Python-only, in the same spirit as `imgui_ctx`: `implot_ctx` wraps the
+begin/end and push/pop pairs of ImPlot, so the matching `end_*()`/`pop_*()`
+is called automatically.
+
+```python
+from imgui_bundle import implot, implot_ctx
+
+with implot_ctx.begin_plot("My Plot") as plot:
+    if plot:  # the plot may be collapsed or clipped
+        implot.plot_line("cos", x, y)
+
+with implot_ctx.push_colormap(implot.Colormap_.cool):
+    ...  # no need to test the value of the push_* context managers
+```
+
+Available for `create_context`, `begin_plot`, `begin_subplots`,
+`push_style_color`, `push_style_var`, `push_colormap` and
+`push_plot_clip_rect`. See `demo_python_context_manager` in the demo
+launcher. Contributed by @zaicruvoir1rominet (#473).
+
 ## Updated bundled libraries
 
 - **ImGuiColorTextEdit**: followed upstream's merge of its `future` branch.
