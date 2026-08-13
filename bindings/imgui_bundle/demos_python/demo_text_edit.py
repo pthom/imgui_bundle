@@ -272,7 +272,7 @@ def demo_decorators_and_context_menus():
                 radius = decorator.glyph_size.y * 0.35
                 imgui.get_window_draw_list().add_circle_filled(center, radius, imgui.IM_COL32(255, 60, 60, 255))
 
-        statics.editor.set_line_decorator(-2.0, decorator_callback)
+        statics.editor.set_line_decorator(2, decorator_callback)
 
         # Right-click on line numbers: toggle breakpoint
         def line_number_context_menu(data: TextEditor.PopupData):
