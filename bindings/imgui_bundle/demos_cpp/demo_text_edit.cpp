@@ -8,7 +8,6 @@
 #include <set>
 #include <map>
 #include <algorithm>
-#include <cctype>
 
 
 // ============================================================================
@@ -280,7 +279,7 @@ void DemoDecoratorsAndContextMenus()
     ShowSourceToggle("DemoDecoratorsAndContextMenus", "demo_decorators_and_context_menus");
     static bool initialized = false;
     static TextEditor editor;
-    static std::set<size_t> breakpoints;
+    static std::set<size_t> breakpoints = {6};
     static std::string lastAction;
     // Hover callback kept here so the "Hover hints" checkbox below can
     // re-install it after a clear. Body assigned in the init block.
@@ -337,7 +336,7 @@ void DemoDecoratorsAndContextMenus()
         editor.AddMarker(27, errorColor,   errorBg,   "error",   "Division by zero at runtime: divide(10, 0)");
 
         // Decorator: draw a red circle on lines that have a breakpoint
-        editor.SetLineDecorator(-2.0f, [](TextEditor::Decorator& decorator) {
+        editor.SetLineDecorator(2, [](TextEditor::Decorator& decorator) {
             if (breakpoints.count(decorator.line))
             {
                 auto cursorPos = ImGui::GetCursorScreenPos();

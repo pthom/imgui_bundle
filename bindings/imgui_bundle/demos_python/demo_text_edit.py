@@ -200,7 +200,7 @@ def demo_decorators_and_context_menus():
     _show_source_toggle(demo_decorators_and_context_menus)
     statics = demo_decorators_and_context_menus
     if not statics.initialized:
-        statics.breakpoints = set()
+        statics.breakpoints = {5}
         statics.editor = TextEditor()
         statics.editor.set_text(
             "import math\n"
