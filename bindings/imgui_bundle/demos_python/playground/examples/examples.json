@@ -89,6 +89,14 @@
       {
         "label": "WebAudio: Minimal Beep",
         "filename": "webaudio_minimal_beep.py"
+      },
+      {
+        "label": "Explorable: Boids (Flocks)",
+        "filename": "explorables/boids.py"
+      },
+      {
+        "label": "Explorable: Logistic Map",
+        "filename": "explorables/logistic_map.py"
       }
     ]
 }
