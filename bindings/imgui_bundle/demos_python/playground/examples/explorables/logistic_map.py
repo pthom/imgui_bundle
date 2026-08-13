@@ -301,16 +301,15 @@ def draw_cobweb(state: AppState, size: ImVec2):
 def draw_bifurcation(state: AppState, size: ImVec2):
     if implot.begin_plot("##bif", size, implot.Flags_.no_legend | implot.Flags_.no_mouse_text):
         implot.setup_axes("r", "x", implot.AxisFlags_.none, implot.AxisFlags_.none)
-        forced = state.force_view is not None
-        if forced:
-            fv = state.force_view
+        fv = state.force_view
+        if fv is not None:
             state.force_view = None
             implot.setup_axes_limits(fv[0], fv[1], fv[2], fv[3], cond=imgui.Cond_.always)
         else:
             implot.setup_axes_limits(*DEF_VIEW[:2], *DEF_VIEW[2:], cond=imgui.Cond_.once)
 
         # Track the view so detail re-renders once it settles
-        if forced:
+        if fv is not None:
             state.note_view(fv)
         else:
             lim = implot.get_plot_limits()
@@ -430,7 +429,8 @@ def gui(state: AppState):
     # ---- Hideable background panel ---------------------------------------
     if state.show_about:
         imgui.set_next_window_size(ImVec2(em * 34, em * 40), imgui.Cond_.appearing)
-        expanded, state.show_about = imgui.begin("About — the Logistic Map", True)
+        expanded, opened = imgui.begin("About — the Logistic Map", True)
+        state.show_about = bool(opened)
         if expanded:
             imgui_md.render(ABOUT_MD)
         imgui.end()
@@ -438,7 +438,8 @@ def gui(state: AppState):
     # ---- Hideable "things to try" panel ----------------------------------
     if state.show_tips:
         imgui.set_next_window_size(ImVec2(em * 25, em * 30), imgui.Cond_.appearing)
-        expanded, state.show_tips = imgui.begin("Things to try", True)
+        expanded, opened = imgui.begin("Things to try", True)
+        state.show_tips = bool(opened)
         if expanded:
             imgui_md.render(TIPS_MD)
 

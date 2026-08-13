@@ -41,7 +41,7 @@ from __future__ import annotations
 from typing import List, Any, Dict, Set, overload, Optional
 import enum
 
-from imgui_bundle.imgui import ImVec2Like, ImU32, ImVec2, ChildFlags, WindowFlags
+from imgui_bundle.imgui import ImVec2Like, ImU32, ImVec2, ChildFlags, WindowFlags, ImDrawList
 from typing import Callable
 
 ImGuiChildFlags = ChildFlags

@@ -10,7 +10,7 @@ the swarm down, or flip on the **cursor predator** and scatter it yourself.
 import numpy as np
 from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, imgui_knobs, imgui_toggle, icons_fontawesome_4
 from imgui_bundle import ImVec2, ImVec4
-from typing import List, Optional
+from typing import List, Optional, Tuple
 import colorsys
 import time
 
@@ -213,8 +213,8 @@ class AppState:
         # Canvas (refined once the animation pane reports its real size)
         self.W = 820.0
         self.H = 680.0
-        self.anim_origin = None
-        self.anim_size = None
+        self.anim_origin: Optional[Tuple[float, float]] = None
+        self.anim_size: Optional[Tuple[float, float]] = None
 
         # History for the order plot
         self.order_history: List[float] = []
@@ -248,7 +248,7 @@ class AppState:
 
     def compute_cursor_predator(self):
         self.cursor_pred = None
-        if self.cursor_on and self.anim_origin is not None:
+        if self.cursor_on and self.anim_origin is not None and self.anim_size is not None:
             mp = imgui.get_mouse_pos()
             ox, oy = self.anim_origin
             w, h = self.anim_size
