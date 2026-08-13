@@ -1542,6 +1542,19 @@ struct RunnerCallbacks
     //  ImGui::Render() (which will also call ImGui::EndFrame()).
     VoidFunction BeforeImGuiRender = EmptyVoidFunction();
 
+    // `BeforeSwap`: You can here add a function that will be called at each frame,
+    //  after the Gui was rendered, but before it is swapped to the screen.
+    //  This is a good place for a full-screen post-process pass over the whole frame
+    //  (for example a color management pass): unlike with AfterSwap, what you draw
+    //  here is still part of the presented frame.
+    //  Note: with OpenGL, Metal and DirectX11, the frame is still open at this point,
+    //   so that you can draw into it. With Vulkan and DirectX12, the command buffer
+    //   was already submitted by then: you would need to submit and synchronize
+    //   your own work.
+    //  Note: this concerns the main window only: the secondary viewport windows
+    //   are rendered after this callback.
+    VoidFunction BeforeSwap = EmptyVoidFunction();
+
     // `AfterSwap`: You can here add a function that will be called at each frame,
     //  after the Gui was rendered and swapped to the screen.
     VoidFunction AfterSwap = EmptyVoidFunction();

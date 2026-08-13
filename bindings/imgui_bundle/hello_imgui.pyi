@@ -1937,6 +1937,20 @@ class RunnerCallbacks:
     #  ImGui::Render() (which will also call ImGui::EndFrame()).
     before_imgui_render: VoidFunction = empty_void_function()
 
+    # VoidFunction BeforeSwap = EmptyVoidFunction();    /* original C++ signature */
+    # `BeforeSwap`: You can here add a function that will be called at each frame,
+    #  after the Gui was rendered, but before it is swapped to the screen.
+    #  This is a good place for a full-screen post-process pass over the whole frame
+    #  (for example a color management pass): unlike with AfterSwap, what you draw
+    #  here is still part of the presented frame.
+    #  Note: with OpenGL, Metal and DirectX11, the frame is still open at this point,
+    #   so that you can draw into it. With Vulkan and DirectX12, the command buffer
+    #   was already submitted by then: you would need to submit and synchronize
+    #   your own work.
+    #  Note: this concerns the main window only: the secondary viewport windows
+    #   are rendered after this callback.
+    before_swap: VoidFunction = empty_void_function()
+
     # VoidFunction AfterSwap = EmptyVoidFunction();    /* original C++ signature */
     # `AfterSwap`: You can here add a function that will be called at each frame,
     #  after the Gui was rendered and swapped to the screen.
@@ -1974,7 +1988,7 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = empty_event_callback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, ConfirmExitCallback ConfirmExit = EmptyConfirmExitCallback(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction PostNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
+    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, ConfirmExitCallback ConfirmExit = EmptyConfirmExitCallback(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction PostNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction BeforeSwap = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: Optional[VoidFunction] = None,
@@ -1995,6 +2009,7 @@ class RunnerCallbacks:
         pre_new_frame: Optional[VoidFunction] = None,
         post_new_frame: Optional[VoidFunction] = None,
         before_imgui_render: Optional[VoidFunction] = None,
+        before_swap: Optional[VoidFunction] = None,
         after_swap: Optional[VoidFunction] = None,
         custom_background: Optional[VoidFunction] = None,
         post_render_dockable_windows: Optional[VoidFunction] = None,
@@ -2021,6 +2036,7 @@ class RunnerCallbacks:
                 * PreNewFrame: EmptyVoidFunction()
                 * PostNewFrame: EmptyVoidFunction()
                 * BeforeImGuiRender: EmptyVoidFunction()
+                * BeforeSwap: EmptyVoidFunction()
                 * AfterSwap: EmptyVoidFunction()
                 * CustomBackground: EmptyVoidFunction()
                 * PostRenderDockableWindows: EmptyVoidFunction()
