@@ -159,6 +159,37 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             .def_rw("height", &TextEditor::Decorator::height, "")
             .def_rw("glyph_size", &TextEditor::Decorator::glyphSize, "")
             ;
+        auto pyClassTextEditor_ClassCustomCaret =
+            nb::class_<TextEditor::CustomCaret>
+                (pyClassTextEditor, "CustomCaret", "custom text cursor (caret) rendering")
+            .def("__init__", [](TextEditor::CustomCaret * self, const std::optional<const ImVec2> & glyphPos = std::nullopt, const std::optional<const ImVec2> & glyphSize = std::nullopt, bool caretVisible = bool(), const std::optional<const ImU32> & caretColor = std::nullopt, size_t cursorIndex = size_t())
+            {
+                new (self) TextEditor::CustomCaret();  // placement new
+                auto r_ctor_ = self;
+                if (glyphPos.has_value())
+                    r_ctor_->glyphPos = glyphPos.value();
+                else
+                    r_ctor_->glyphPos = ImVec2();
+                if (glyphSize.has_value())
+                    r_ctor_->glyphSize = glyphSize.value();
+                else
+                    r_ctor_->glyphSize = ImVec2();
+                r_ctor_->caretVisible = caretVisible;
+                if (caretColor.has_value())
+                    r_ctor_->caretColor = caretColor.value();
+                else
+                    r_ctor_->caretColor = ImU32();
+                r_ctor_->cursorIndex = cursorIndex;
+            },
+            nb::arg("glyph_pos").none() = nb::none(), nb::arg("glyph_size").none() = nb::none(), nb::arg("caret_visible") = bool(), nb::arg("caret_color").none() = nb::none(), nb::arg("cursor_index") = size_t()
+            )
+            .def_rw("draw_list", &TextEditor::CustomCaret::drawList, "draw list to submit rendering commands to")
+            .def_rw("glyph_pos", &TextEditor::CustomCaret::glyphPos, " top left corner of glyph where cursor is (in screen coordinates)\n can be used directly to submit drawing commands")
+            .def_rw("glyph_size", &TextEditor::CustomCaret::glyphSize, "visible size of glyph")
+            .def_rw("caret_visible", &TextEditor::CustomCaret::caretVisible, " flag indicating if cursor is visible (based on configuration and standard blinking algorithm)\n this can be ignored if the custom caret has its own animation algorithm")
+            .def_rw("caret_color", &TextEditor::CustomCaret::caretColor, " color of cursor caret as per the current palette\n that can also be ignored if custom caret has its own palette of animation")
+            .def_rw("cursor_index", &TextEditor::CustomCaret::cursorIndex, "index of the cursor being rendered (in case additional cursor information is required)")
+            ;
         auto pyClassTextEditor_ClassPopupData =
             nb::class_<TextEditor::PopupData>
                 (pyClassTextEditor, "PopupData", " setup right click or hover callbacks\n the editor sets up a popup menu in the right location\n the callback has to populate it\n context callbacks activate on a right click\n hover callbacks are just based on position (no mouse buttons required)")
@@ -458,9 +489,9 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("get_line_count",
             &TextEditor::GetLineCount)
         .def("render",
-            [](TextEditor & self, const char * title, const std::optional<const ImVec2> & size = std::nullopt, ImGuiChildFlags childFlags = 0, const std::optional<const ImGuiWindowFlags> & windowFlags = std::nullopt)
+            [](TextEditor & self, const char * title, const std::optional<const ImVec2> & size = std::nullopt, ImGuiChildFlags childFlags = 0, const std::optional<const ImGuiWindowFlags> & windowFlags = std::nullopt) -> bool
             {
-                auto Render_adapt_mutable_param_with_default_value = [&self](const char * title, const std::optional<const ImVec2> & size = std::nullopt, ImGuiChildFlags childFlags = 0, const std::optional<const ImGuiWindowFlags> & windowFlags = std::nullopt)
+                auto Render_adapt_mutable_param_with_default_value = [&self](const char * title, const std::optional<const ImVec2> & size = std::nullopt, ImGuiChildFlags childFlags = 0, const std::optional<const ImGuiWindowFlags> & windowFlags = std::nullopt) -> bool
                 {
 
                     const ImVec2& size_or_default = [&]() -> const ImVec2 {
@@ -474,16 +505,17 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                         if (windowFlags.has_value())
                             return windowFlags.value();
                         else
-                            return ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar;
+                            return ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar;
                     }();
 
-                    self.Render(title, size_or_default, childFlags, windowFlags_or_default);
+                    auto lambda_result = self.Render(title, size_or_default, childFlags, windowFlags_or_default);
+                    return lambda_result;
                 };
 
-                Render_adapt_mutable_param_with_default_value(title, size, childFlags, windowFlags);
+                return Render_adapt_mutable_param_with_default_value(title, size, childFlags, windowFlags);
             },
             nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags").none() = nb::none(),
-            " render the text editor in a Dear ImGui context\n note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings\n ensure you keep the default as they are required for the editor\n - ImGuiWindowFlags_NoNavInputs to ensure cursor keys are passed to the editor\n - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the editor\n - ImGuiWindowFlags_HorizontalScrollbar to ensure a horizontal scrollbar is rendered when required\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2()\n        * windowFlags: ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar")
+            " render the text editor in a Dear ImGui context\n note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings\n ensure you keep the default as they are required for the editor\n - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the editor\n - ImGuiWindowFlags_HorizontalScrollbar to ensure a horizontal scrollbar is rendered when required\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2()\n        * windowFlags: ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar")
         .def("set_focus",
             &TextEditor::SetFocus, "programmatically set focus on the editor")
         .def("cut",
@@ -524,6 +556,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::AnyCursorHasSelection)
         .def("all_cursors_have_selection",
             &TextEditor::AllCursorsHaveSelection)
+        .def("cursor_has_selection",
+            &TextEditor::CursorHasSelection, nb::arg("cursor"))
+        .def("main_cursor_has_selection",
+            &TextEditor::MainCursorHasSelection)
         .def("current_cursor_has_selection",
             &TextEditor::CurrentCursorHasSelection)
         .def("clear_cursors",
@@ -612,6 +648,16 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::ClearMarkers)
         .def("has_markers",
             &TextEditor::HasMarkers)
+        .def("add_squiggle",
+            &TextEditor::AddSquiggle, nb::arg("start"), nb::arg("end"), nb::arg("type"), nb::arg("color"), nb::arg("tooltip") = std::string_view())
+        .def("clear_squiggles",
+            nb::overload_cast<TextEditor::DocPos, TextEditor::DocPos>(&TextEditor::ClearSquiggles), nb::arg("start"), nb::arg("end"))
+        .def("clear_squiggles",
+            nb::overload_cast<size_t>(&TextEditor::ClearSquiggles), nb::arg("type"))
+        .def("clear_squiggles",
+            [](TextEditor & self) { return self.ClearSquiggles(); })
+        .def("has_squiggles",
+            &TextEditor::HasSquiggles)
         .def("set_change_callback",
             &TextEditor::SetChangeCallback,
             nb::arg("callback"), nb::arg("delay") = 0,
@@ -628,6 +674,12 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::ClearLineDecorator)
         .def("has_line_decorator",
             &TextEditor::HasLineDecorator)
+        .def("set_custom_caret_renderer",
+            &TextEditor::SetCustomCaretRenderer, nb::arg("callback"))
+        .def("clear_custom_caret_renderer",
+            &TextEditor::ClearCustomCaretRenderer)
+        .def("has_custom_caret_renderer",
+            &TextEditor::HasCustomCaretRenderer)
         .def("set_line_number_context_menu_callback",
             &TextEditor::SetLineNumberContextMenuCallback, nb::arg("callback"))
         .def("clear_line_number_context_menu_callback",
@@ -791,7 +843,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                         if (windowFlags.has_value())
                             return windowFlags.value();
                         else
-                            return ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove;
+                            return ImGuiWindowFlags_NoMove;
                     }();
 
                     self.Render(title, size_or_default, childFlags, windowFlags_or_default);
@@ -800,7 +852,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 Render_adapt_mutable_param_with_default_value(title, size, childFlags, windowFlags);
             },
             nb::arg("title"), nb::arg("size").none() = nb::none(), nb::arg("child_flags") = 0, nb::arg("window_flags").none() = nb::none(),
-            " render text diff in a Dear ImGui context\n note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings\n ensure you keep the default as they are required for the diff widget\n - ImGuiWindowFlags_NoNavInputs to ensure cursor keys are passed to the diff widget\n - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the diff widget\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2()\n        * windowFlags: ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove")
+            " render text diff in a Dear ImGui context\n note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings\n ensure you keep the default as it is required for the diff widget\n - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the diff widget\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2()\n        * windowFlags: ImGuiWindowFlags_NoMove")
         ;
     ////////////////////    </generated_from:TextDiff.h>    ////////////////////
 

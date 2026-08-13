@@ -272,10 +272,8 @@ class TextEditor:
 
     def get_cursor_text(self, cursor: int) -> str:
         pass
-
     def get_line_text(self, line: int) -> str:
         pass
-
     @overload
     def get_section_text(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> str:
         pass
@@ -308,18 +306,17 @@ class TextEditor:
         size: Optional[ImVec2Like] = None,
         child_flags: ImGuiChildFlags = 0,
         window_flags: Optional[ImGuiWindowFlags] = None
-        ) -> None:
+        ) -> bool:
         """ render the text editor in a Dear ImGui context
          note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings
          ensure you keep the default as they are required for the editor
-         - ImGuiWindowFlags_NoNavInputs to ensure cursor keys are passed to the editor
          - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the editor
          - ImGuiWindowFlags_HorizontalScrollbar to ensure a horizontal scrollbar is rendered when required
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * size: ImVec2()
-                * windowFlags: ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar
+                * windowFlags: ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar
         """
         pass
 
@@ -367,6 +364,10 @@ class TextEditor:
     def any_cursor_has_selection(self) -> bool:
         pass
     def all_cursors_have_selection(self) -> bool:
+        pass
+    def cursor_has_selection(self, cursor: int) -> bool:
+        pass
+    def main_cursor_has_selection(self) -> bool:
         pass
     def current_cursor_has_selection(self) -> bool:
         pass
@@ -503,6 +504,8 @@ class TextEditor:
         pass
 
     # access markers (line numbers are zero-based)
+    # markers are attached to lines and are not effected by inserts or deletes before
+    # if a line with a marker is deleted, undo doesn't restore it
     def add_marker(
         self,
         line: int,
@@ -515,6 +518,30 @@ class TextEditor:
     def clear_markers(self) -> None:
         pass
     def has_markers(self) -> bool:
+        pass
+
+    # access squiggly underlines
+    # squigglies are attached to glyphs and are not effected  by inserts or deletes before
+    # if a glyph with a squiggle is deleted, undo doesn't restore it
+    def add_squiggle(
+        self,
+        start: TextEditor.DocPos,
+        end: TextEditor.DocPos,
+        type: int,
+        color: ImU32,
+        tooltip: str = str()
+        ) -> None:
+        pass
+    @overload
+    def clear_squiggles(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> None:
+        pass
+    @overload
+    def clear_squiggles(self, type: int) -> None:
+        pass
+    @overload
+    def clear_squiggles(self) -> None:
+        pass
+    def has_squiggles(self) -> bool:
         pass
 
     def set_change_callback(self, callback: Callable[[], None], delay: int = 0) -> None:
@@ -610,6 +637,56 @@ class TextEditor:
     def clear_line_decorator(self) -> None:
         pass
     def has_line_decorator(self) -> bool:
+        pass
+
+    class CustomCaret:
+        """ custom text cursor (caret) rendering"""
+        # draw list to submit rendering commands to
+        draw_list: ImDrawList
+
+        # top left corner of glyph where cursor is (in screen coordinates)
+        # can be used directly to submit drawing commands
+        glyph_pos: ImVec2
+
+        # visible size of glyph
+        glyph_size: ImVec2
+
+        # flag indicating if cursor is visible (based on configuration and standard blinking algorithm)
+        # this can be ignored if the custom caret has its own animation algorithm
+        caret_visible: bool
+
+        # color of cursor caret as per the current palette
+        # that can also be ignored if custom caret has its own palette of animation
+        caret_color: ImU32
+
+        # index of the cursor being rendered (in case additional cursor information is required)
+        cursor_index: int
+        def __init__(
+            self,
+            glyph_pos: Optional[ImVec2Like] = None,
+            glyph_size: Optional[ImVec2Like] = None,
+            caret_visible: bool = bool(),
+            caret_color: Optional[ImU32] = None,
+            cursor_index: int = int()
+            ) -> None:
+            """Auto-generated default constructor with named params
+
+            Python bindings defaults:
+                If any of the params below is None, then its default value below will be used:
+                    * glyphPos: ImVec2()
+                    * glyphSize: ImVec2()
+                    * caretColor: ImU32()
+            """
+            pass
+
+    def set_custom_caret_renderer(
+        self,
+        callback: Callable[[TextEditor.CustomCaret], None]
+        ) -> None:
+        pass
+    def clear_custom_caret_renderer(self) -> None:
+        pass
+    def has_custom_caret_renderer(self) -> bool:
         pass
 
     class PopupData:
@@ -1020,14 +1097,13 @@ class TextDiff:
         ) -> None:
         """ render text diff in a Dear ImGui context
          note: if you overwrite windowFlags to for instance add ImGuiWindowFlags_NoSavedSettings
-         ensure you keep the default as they are required for the diff widget
-         - ImGuiWindowFlags_NoNavInputs to ensure cursor keys are passed to the diff widget
+         ensure you keep the default as it is required for the diff widget
          - ImGuiWindowFlags_NoMove to ensure mouse drag event are passed to the diff widget
 
         Python bindings defaults:
             If any of the params below is None, then its default value below will be used:
                 * size: ImVec2()
-                * windowFlags: ImGuiWindowFlags_NoNavInputs | ImGuiWindowFlags_NoMove
+                * windowFlags: ImGuiWindowFlags_NoMove
         """
         pass
 

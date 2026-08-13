@@ -189,11 +189,14 @@ def demo_filters():
 
 # ============================================================================
 # Tab 4: Annotations & Interactivity
-# Demonstrates four ways to annotate or react inside an editor:
+# Demonstrates five ways to annotate or react inside an editor:
 #   - Line decorator (custom-drawn gutter): red circle on breakpoint lines
 #   - Line markers (colored gutter + tooltips): error & warning markers
+#   - Squiggly underlines (colored + tooltips): diagnostics on a text range
 #   - Context menus on line numbers and on text (right-click)
 #   - Hover callback in text: live popup showing the word under the cursor
+# It also demonstrates set_custom_caret_renderer, which draws the text cursor
+# instead of the default vertical bar (called once per cursor).
 # ============================================================================
 @static(initialized=False, editor=None, breakpoints=None, last_action="")
 def demo_decorators_and_context_menus():
@@ -261,6 +264,26 @@ def demo_decorators_and_context_menus():
             "error", "ZeroDivisionError at runtime: divide(10, 0)",
         )
 
+        # Squiggly underlines: like markers, but attached to a range of glyphs
+        # instead of a whole line (this is how an LSP would show diagnostics).
+        # The type is a user defined category: clear_squiggles(type) clears one
+        # category, clear_squiggles() clears them all.
+        # The tooltips are shorter than the marker ones on purpose: a marker
+        # describes the line, a squiggle describes the exact range it underlines.
+        squiggle_warning, squiggle_error = 1, 2
+        statics.editor.add_squiggle(
+            TextEditor.DocPos(11, 4), TextEditor.DocPos(11, 10),
+            squiggle_warning, warning_color, "assigned but never used",
+        )
+        statics.editor.add_squiggle(
+            TextEditor.DocPos(19, 11), TextEditor.DocPos(19, 17),
+            squiggle_error, error_color, "b may be zero",
+        )
+        statics.editor.add_squiggle(
+            TextEditor.DocPos(26, 10), TextEditor.DocPos(26, 23),
+            squiggle_error, error_color, "b is zero here",
+        )
+
         # Decorator: draw a red circle on lines that have a breakpoint
         def decorator_callback(decorator: TextEditor.Decorator):
             if decorator.line in statics.breakpoints:
@@ -309,6 +332,21 @@ def demo_decorators_and_context_menus():
         statics.text_hover = text_hover  # kept so the toggle can re-install it
         statics.editor.set_text_hover_callback(text_hover)
 
+        # Custom caret: draw a translucent block over the glyph, instead of the
+        # default vertical bar (called once per cursor: caret.cursor_index says which)
+        def block_caret(caret: TextEditor.CustomCaret):
+            if not caret.caret_visible:  # follows the standard blinking algorithm
+                return
+            color = imgui.color_convert_u32_to_float4(caret.caret_color)
+            color.w *= 0.5
+            caret.draw_list.add_rect_filled(
+                caret.glyph_pos,
+                caret.glyph_pos + caret.glyph_size,
+                imgui.color_convert_float4_to_u32(color),
+            )
+
+        statics.block_caret = block_caret  # kept so the toggle can install it
+
         statics.initialized = True
 
     editor = statics.editor
@@ -316,7 +354,7 @@ def demo_decorators_and_context_menus():
     imgui.text(
         "Right-click line numbers (or F9) to toggle breakpoints. "
         "Right-click in text for a menu. Hover text for live info. "
-        "Hover the colored gutter bands for marker tooltips."
+        "Hover the colored gutter bands or the squiggly underlines for tooltips."
     )
     if statics.last_action:
         imgui.text_colored(imgui.ImVec4(0.5, 0.8, 1.0, 1.0), statics.last_action)
@@ -324,6 +362,11 @@ def demo_decorators_and_context_menus():
     imgui.begin_disabled(not editor.has_markers())
     if imgui.small_button("Clear markers"):
         editor.clear_markers()
+    imgui.end_disabled()
+    imgui.same_line()
+    imgui.begin_disabled(not editor.has_squiggles())
+    if imgui.small_button("Clear squiggles"):
+        editor.clear_squiggles()
     imgui.end_disabled()
     imgui.same_line()
     mini_map = editor.is_show_mini_map_enabled()
@@ -339,6 +382,14 @@ def demo_decorators_and_context_menus():
         else:
             editor.clear_text_hover_callback()
     imgui.same_line()
+    block_caret_on = editor.has_custom_caret_renderer()
+    changed, block_caret_on = imgui.checkbox("Block caret", block_caret_on)
+    if changed:
+        if block_caret_on:
+            editor.set_custom_caret_renderer(statics.block_caret)
+        else:
+            editor.clear_custom_caret_renderer()
+    imgui.same_line()
     scrollbar_mini = editor.is_show_scrollbar_mini_map_enabled()
     changed, scrollbar_mini = imgui.checkbox("Show Scrollbar Mini Map", scrollbar_mini)
     if changed:
@@ -350,7 +401,7 @@ def demo_decorators_and_context_menus():
     imgui.new_line()
     code_font = imgui_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
-    editor.render("##decorators_ctx", ImVec2(-1, imgui.get_text_line_height() * 20))
+    editor.render("##decorators_ctx", ImVec2(-1, imgui.get_text_line_height() * 30))
     imgui.pop_font()
 
     # F9: toggle breakpoint on current line

@@ -268,11 +268,14 @@ void DemoFilters()
 
 // ============================================================================
 // Tab 4: Annotations & Interactivity
-// Demonstrates four ways to annotate or react inside an editor:
+// Demonstrates five ways to annotate or react inside an editor:
 //   - Line decorator (custom-drawn gutter): red circle on breakpoint lines
 //   - Line markers (colored gutter + tooltips): error & warning markers
+//   - Squiggly underlines (colored + tooltips): diagnostics on a text range
 //   - Context menus on line numbers and on text (right-click)
 //   - Hover callback in text: live popup showing the word under the cursor
+// It also demonstrates SetCustomCaretRenderer, which draws the text cursor
+// instead of the default vertical bar (called once per cursor).
 // ============================================================================
 void DemoDecoratorsAndContextMenus()
 {
@@ -281,9 +284,10 @@ void DemoDecoratorsAndContextMenus()
     static TextEditor editor;
     static std::set<size_t> breakpoints = {6};
     static std::string lastAction;
-    // Hover callback kept here so the "Hover hints" checkbox below can
-    // re-install it after a clear. Body assigned in the init block.
+    // Hover and caret callbacks kept here so the checkboxes below can
+    // re-install them after a clear. Bodies assigned in the init block.
     static std::function<void(TextEditor::PopupData&)> textHover;
+    static std::function<void(const TextEditor::CustomCaret&)> blockCaret;
 
     if (!initialized)
     {
@@ -333,7 +337,18 @@ void DemoDecoratorsAndContextMenus()
         editor.AddMarker(2,  warningColor, warningBg, "warning", "Included but never used: <map>");
         editor.AddMarker(11, warningColor, warningBg, "warning", "Unused variable: 'unused'");
         editor.AddMarker(20, errorColor,   errorBg,   "error",   "Unchecked division: b may be zero");
-        editor.AddMarker(27, errorColor,   errorBg,   "error",   "Division by zero at runtime: divide(10, 0)");
+        editor.AddMarker(28, errorColor,   errorBg,   "error",   "Division by zero at runtime: divide(10, 0)");
+
+        // Squiggly underlines: like markers, but attached to a range of glyphs
+        // instead of a whole line (this is how an LSP would show diagnostics).
+        // The type is a user defined category: ClearSquiggles(type) clears one
+        // category, ClearSquiggles() clears them all.
+        // The tooltips are shorter than the marker ones on purpose: a marker
+        // describes the line, a squiggle describes the exact range it underlines.
+        size_t squiggleWarning = 1, squiggleError = 2;
+        editor.AddSquiggle({11, 8},  {11, 14}, squiggleWarning, warningColor, "assigned but never used");
+        editor.AddSquiggle({20, 11}, {20, 16}, squiggleError,   errorColor,   "b may be zero");
+        editor.AddSquiggle({28, 17}, {28, 30}, squiggleError,   errorColor,   "b is zero here");
 
         // Decorator: draw a red circle on lines that have a breakpoint
         editor.SetLineDecorator(2, [](TextEditor::Decorator& decorator) {
@@ -386,13 +401,28 @@ void DemoDecoratorsAndContextMenus()
         };
         editor.SetTextHoverCallback(textHover);
 
+        // Custom caret: draw a translucent block over the glyph, instead of the
+        // default vertical bar (called once per cursor: caret.cursorIndex says which)
+        blockCaret = [](const TextEditor::CustomCaret& caret) {
+            if (!caret.caretVisible) // follows the standard blinking algorithm
+                return;
+            ImVec4 color = ImGui::ColorConvertU32ToFloat4(caret.caretColor);
+            color.w *= 0.5f;
+            ImVec2 bottomRight(
+                caret.glyphPos.x + caret.glyphSize.x,
+                caret.glyphPos.y + caret.glyphSize.y
+            );
+            caret.drawList->AddRectFilled(
+                caret.glyphPos, bottomRight, ImGui::ColorConvertFloat4ToU32(color));
+        };
+
         initialized = true;
     }
 
     ImGui::TextWrapped(
         "Right-click line numbers (or F9) to toggle breakpoints. "
         "Right-click in text for a menu. Hover text for live info. "
-        "Hover the colored gutter bands for marker tooltips."
+        "Hover the colored gutter bands or the squiggly underlines for tooltips."
     );
     if (!lastAction.empty())
         ImGui::TextColored(ImVec4(0.5f, 0.8f, 1.0f, 1.0f), "%s", lastAction.c_str());
@@ -400,6 +430,11 @@ void DemoDecoratorsAndContextMenus()
     ImGui::BeginDisabled(!editor.HasMarkers());
     if (ImGui::SmallButton("Clear markers"))
         editor.ClearMarkers();
+    ImGui::EndDisabled();
+    ImGui::SameLine();
+    ImGui::BeginDisabled(!editor.HasSquiggles());
+    if (ImGui::SmallButton("Clear squiggles"))
+        editor.ClearSquiggles();
     ImGui::EndDisabled();
     ImGui::SameLine();
     bool miniMap = editor.IsShowMiniMapEnabled();
@@ -415,6 +450,15 @@ void DemoDecoratorsAndContextMenus()
             editor.ClearTextHoverCallback();
     }
     ImGui::SameLine();
+    bool blockCaretOn = editor.HasCustomCaretRenderer();
+    if (ImGui::Checkbox("Block caret", &blockCaretOn))
+    {
+        if (blockCaretOn)
+            editor.SetCustomCaretRenderer(blockCaret);
+        else
+            editor.ClearCustomCaretRenderer();
+    }
+    ImGui::SameLine();
     bool scrollbarMini = editor.IsShowScrollbarMiniMapEnabled();
     if (ImGui::Checkbox("Show Scrollbar Mini Map", &scrollbarMini))
         editor.SetShowScrollbarMiniMapEnabled(scrollbarMini);
@@ -425,7 +469,7 @@ void DemoDecoratorsAndContextMenus()
     ImGui::NewLine();
     auto codeFont = ImGuiMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
-    editor.Render("##decorators_ctx", ImVec2(-1, ImGui::GetTextLineHeight() * 20));
+    editor.Render("##decorators_ctx", ImVec2(-1, ImGui::GetTextLineHeight() * 30));
     ImGui::PopFont();
 
     // F9: toggle breakpoint on current line
