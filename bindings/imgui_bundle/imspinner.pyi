@@ -59,6 +59,8 @@ def demo_spinners() -> None:
 
 # imgui headers
 
+# 1.93: ImDrawListFlags was merged into ImDrawFlags
+
 white: ImColor  # = ImColor(1., 1., 1., 1.)
 half_white: ImColor  # = ImColor(1., 1., 1., 0.5)
 red: ImColor  # = ImColor(1., 0., 0., 1.)

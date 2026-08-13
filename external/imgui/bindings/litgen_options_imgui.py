@@ -405,6 +405,7 @@ def litgen_options_imgui(
             r"ImFontLoader",
             r"^ImFontAtlasBuilder",
             r"^ImGuiDemoMarkerCallback",
+            r"^ImSmallStack_",
         ]
     )
 
@@ -415,6 +416,7 @@ def litgen_options_imgui(
     options.class_exclude_by_name__regex = join_string_by_pipe_char([
         "ImStableVector",
         "ImGuiNpBuffer",  # Will be cast to numpy array (see pybind_imgui.cpp)
+        "ImSmallStack_",
     ])
 
     options.member_numeric_c_array_types += "|" + join_string_by_pipe_char(

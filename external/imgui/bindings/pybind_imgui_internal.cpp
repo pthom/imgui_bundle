@@ -157,6 +157,34 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImTextClassifierSetCharClass, nb::arg("bits"), nb::arg("codepoint_min"), nb::arg("codepoint_end"), nb::arg("char_class"), nb::arg("c"));
 
     m.def("im_min",
+        [](int lhs, int rhs) -> int
+        {
+            auto ImMin_adapt_force_lambda = [](int lhs, int rhs) -> int
+            {
+                auto lambda_result = ImMin(lhs, rhs);
+                return lambda_result;
+            };
+
+            return ImMin_adapt_force_lambda(lhs, rhs);
+        },
+        nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_min",
+        [](float lhs, float rhs) -> float
+        {
+            auto ImMin_adapt_force_lambda = [](float lhs, float rhs) -> float
+            {
+                auto lambda_result = ImMin(lhs, rhs);
+                return lambda_result;
+            };
+
+            return ImMin_adapt_force_lambda(lhs, rhs);
+        },
+        nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_min",
         [](const ImVec2 & lhs, const ImVec2 & rhs) -> ImVec2
         {
             auto ImMin_adapt_force_lambda = [](const ImVec2 & lhs, const ImVec2 & rhs) -> ImVec2
@@ -166,6 +194,34 @@ void py_init_module_imgui_internal(nb::module_& m)
             };
 
             return ImMin_adapt_force_lambda(lhs, rhs);
+        },
+        nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_max",
+        [](int lhs, int rhs) -> int
+        {
+            auto ImMax_adapt_force_lambda = [](int lhs, int rhs) -> int
+            {
+                auto lambda_result = ImMax(lhs, rhs);
+                return lambda_result;
+            };
+
+            return ImMax_adapt_force_lambda(lhs, rhs);
+        },
+        nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_max",
+        [](float lhs, float rhs) -> float
+        {
+            auto ImMax_adapt_force_lambda = [](float lhs, float rhs) -> float
+            {
+                auto lambda_result = ImMax(lhs, rhs);
+                return lambda_result;
+            };
+
+            return ImMax_adapt_force_lambda(lhs, rhs);
         },
         nb::arg("lhs"), nb::arg("rhs"),
         "(private API)");
@@ -182,6 +238,34 @@ void py_init_module_imgui_internal(nb::module_& m)
             return ImMax_adapt_force_lambda(lhs, rhs);
         },
         nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_clamp",
+        [](int v, int mn, int mx) -> int
+        {
+            auto ImClamp_adapt_force_lambda = [](int v, int mn, int mx) -> int
+            {
+                auto lambda_result = ImClamp(v, mn, mx);
+                return lambda_result;
+            };
+
+            return ImClamp_adapt_force_lambda(v, mn, mx);
+        },
+        nb::arg("v"), nb::arg("mn"), nb::arg("mx"),
+        "(private API)");
+
+    m.def("im_clamp",
+        [](float v, float mn, float mx) -> float
+        {
+            auto ImClamp_adapt_force_lambda = [](float v, float mn, float mx) -> float
+            {
+                auto lambda_result = ImClamp(v, mn, mx);
+                return lambda_result;
+            };
+
+            return ImClamp_adapt_force_lambda(v, mn, mx);
+        },
+        nb::arg("v"), nb::arg("mn"), nb::arg("mx"),
         "(private API)");
 
     m.def("im_clamp",
@@ -335,6 +419,11 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::arg("avg"), nb::arg("sample"), nb::arg("n"),
         "(private API)");
 
+    m.def("im_is_truncated",
+        ImIsTruncated,
+        nb::arg("x"),
+        "(private API)");
+
     m.def("im_bezier_cubic_calc",
         ImBezierCubicCalc, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("t"));
 
@@ -345,8 +434,8 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("im_bezier_cubic_closest_point_casteljau",
         ImBezierCubicClosestPointCasteljau,
-        nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("p"), nb::arg("tess_tol"),
-        "For auto-tessellated curves you can use tess_tol = style.CurveTessellationTol");
+        nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("p"), nb::arg("max_error"),
+        "For auto-tessellated curves you can use max_error = style.CurveTessellationMaxError");
 
     m.def("im_bezier_quadratic_calc",
         ImBezierQuadraticCalc, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("t"));
@@ -676,15 +765,15 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::class_<ImDrawListSharedData>
             (m, "ImDrawListSharedData", " Data shared between all ImDrawList instances\n Conceptually this could have been called e.g. ImDrawListSharedContext\n Typically one ImGui context would create and maintain one of this.\n You may want to create your own instance of you try to ImDrawList completely without ImGui. In that case, watch out for future changes to this structure.")
         .def_rw("tex_uv_white_pixel", &ImDrawListSharedData::TexUvWhitePixel, "UV of white pixel in the atlas (== FontAtlas->TexUvWhitePixel)")
-        .def_ro("tex_uv_lines", &ImDrawListSharedData::TexUvLines, "UV of anti-aliased lines in the atlas (== FontAtlas->TexUvLines)")
+        .def_ro("tex_uv_lines", &ImDrawListSharedData::TexUvLines, "UV of anti-aliased lines in the atlas (== FontAtlas->Builder->TexUvLines)")
+        .def_ro("tex_uv_corners", &ImDrawListSharedData::TexUvCorners, "UV of rounded corner (== FontAtlas->Builder->TexUvCorners)")
         .def_rw("font_atlas", &ImDrawListSharedData::FontAtlas, "Current font atlas")
         .def_rw("font", &ImDrawListSharedData::Font, "Current font (used for simplified AddText overload)")
         .def_rw("font_size", &ImDrawListSharedData::FontSize, "Current font size (used for for simplified AddText overload)")
         .def_rw("font_scale", &ImDrawListSharedData::FontScale, "Current font scale (== FontSize / Font->FontSize)")
-        .def_rw("curve_tessellation_tol", &ImDrawListSharedData::CurveTessellationTol, "Tessellation tolerance when using PathBezierCurveTo()")
+        .def_rw("curve_tessellation_max_error", &ImDrawListSharedData::CurveTessellationMaxError, "Tessellation tolerance when using PathBezierCurveTo()")
         .def_rw("circle_tessellation_max_error", &ImDrawListSharedData::CircleTessellationMaxError, "Number of circle segments to use per pixel of radius for AddCircle() etc")
-        .def_rw("initial_fringe_scale", &ImDrawListSharedData::InitialFringeScale, "Initial scale to apply to AA fringe")
-        .def_rw("initial_flags", &ImDrawListSharedData::InitialFlags, "Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)")
+        .def_rw("initial_draw_flags", &ImDrawListSharedData::InitialDrawFlags, "Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)")
         .def_rw("clip_rect_fullscreen", &ImDrawListSharedData::ClipRectFullscreen, "Value for PushClipRectFullscreen()")
         .def_rw("temp_buffer", &ImDrawListSharedData::TempBuffer, "Temporary write buffer")
         .def_rw("draw_lists", &ImDrawListSharedData::DrawLists, "All draw lists associated to this ImDrawListSharedData")
@@ -2398,7 +2487,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("font_size", &ImGuiContext::FontSize, "Currently bound font size == line height (== FontSizeBase + externals scales applied in the UpdateCurrentFontSize() function).")
         .def_rw("font_size_base", &ImGuiContext::FontSizeBase, "Font size before scaling == style.FontSizeBase == value passed to PushFont() when specified.")
         .def_rw("font_baked_scale", &ImGuiContext::FontBakedScale, "== FontBaked->Size / FontSize. Scale factor over baked size. Rarely used nowadays, very often == 1.0.")
-        .def_rw("font_rasterizer_density", &ImGuiContext::FontRasterizerDensity, "Current font density. Used by all calls to GetFontBaked().")
+        .def_rw("current_pixel_density", &ImGuiContext::CurrentPixelDensity, "Current font density. Used by all calls to GetFontBaked().")
         .def_rw("current_dpi_scale", &ImGuiContext::CurrentDpiScale, "Current window/viewport DpiScale == CurrentViewport->DpiScale")
         .def_rw("draw_list_shared_data", &ImGuiContext::DrawListSharedData, "")
         .def_rw("within_end_child_id", &ImGuiContext::WithinEndChildID, "Set within EndChild()")
@@ -3809,11 +3898,13 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("update_current_font_size",
         ImGui::UpdateCurrentFontSize, nb::arg("restore_font_size_after_scaling"));
 
-    m.def("set_font_rasterizer_density",
-        ImGui::SetFontRasterizerDensity, nb::arg("rasterizer_density"));
+    m.def("set_pixel_density",
+        ImGui::SetPixelDensity,
+        nb::arg("pixel_density"),
+        "was SetFontRasterizerDensity()");
 
-    m.def("get_font_rasterizer_density",
-        ImGui::GetFontRasterizerDensity, "(private API)");
+    m.def("get_pixel_density",
+        ImGui::GetPixelDensity, "(private API)");
 
     m.def("get_rounded_font_size",
         ImGui::GetRoundedFontSize,
@@ -5441,6 +5532,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("baked_discarded_count", &ImFontAtlasBuilder::BakedDiscardedCount, "")
         .def_rw("pack_id_mouse_cursors", &ImFontAtlasBuilder::PackIdMouseCursors, "White pixel + mouse cursors. Also happen to be fallback in case of packing failure.")
         .def_rw("pack_id_lines_tex_data", &ImFontAtlasBuilder::PackIdLinesTexData, "")
+        .def_rw("pack_id_line_fract_tex_data", &ImFontAtlasBuilder::PackIdLineFractTexData, "")
+        .def_rw("pack_id_corners_tex_data", &ImFontAtlasBuilder::PackIdCornersTexData, "")
         ;
 
 

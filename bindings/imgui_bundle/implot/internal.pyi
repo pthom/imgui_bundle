@@ -2156,6 +2156,8 @@ def render_color_bar(colors: ImU32, size: int, draw_list: ImDrawList, bounds: Im
     """ Render a colormap bar"""
     pass
 
+# Render Horizontal/Vertical lines
+
 #-----------------------------------------------------------------------------
 # [SECTION] Math and Misc Utils
 #-----------------------------------------------------------------------------
