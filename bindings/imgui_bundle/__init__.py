@@ -176,6 +176,10 @@ if has_submodule("implot"):
     implot.BarsFlags = int  # see implot.BarsFlags_
     implot.PieChartFlags = int  # see implot.PieChartFlags_
     implot.HistogramFlags = int  # see implot.HistogramFlags_
+
+    from imgui_bundle import implot_ctx as implot_ctx  # noqa: E402
+    __all__.extend(["implot_ctx"])
+
 if has_submodule("implot3d"):
     from imgui_bundle._imgui_bundle import implot3d as implot3d
     _publish("implot3d", implot3d)
