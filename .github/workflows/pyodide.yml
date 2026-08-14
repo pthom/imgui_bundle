@@ -88,3 +88,21 @@ jobs:
           files: dist/*.whl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload_to_pypi:
+    name: Upload wheel to PyPI
+    needs: build_pyodide_wheel
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release' && github.event.action == 'published'
+
+    steps:
+      - name: Download Pyodide wheel artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: pyodide-wheel
+          path: dist
+
+      - uses: pypa/gh-action-pypi-publish@v1.14.2
+        with:
+          user: __token__
+          password: ${{ secrets.pypi_password }}

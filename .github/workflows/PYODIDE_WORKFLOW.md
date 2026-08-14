@@ -44,6 +44,16 @@ The Pyodide CI workflow (`.github/workflows/pyodide.yml`) automates the building
 
 **Permissions:** Requires `contents: write`
 
+### Job 3: `upload_to_pypi`
+
+**Purpose:** Publish the Pyodide wheel to PyPI (PEP 783 Emscripten wheels)
+
+**Trigger:** Only runs when a release is published
+
+**Steps:**
+1. Download `pyodide-wheel` artifact
+2. Publish with `pypa/gh-action-pypi-publish` (uses `secrets.pypi_password`)
+
 ## Triggers
 
 The workflow runs on:
@@ -99,7 +109,7 @@ ls dist/*pyemscripten*.whl
 | Workflow | Platform | Output | PyPI Upload |
 |----------|----------|--------|-------------|
 | `wheels.yml` | Linux/macOS/Windows | Native wheels | Yes (on release) |
-| `pyodide.yml` | WASM (Linux build) | Pyodide wheel | No |
+| `pyodide.yml` | WASM (Linux build) | Pyodide wheel | Yes (on release) |
 | `emscripten.yml` | WASM | Static site | No |
 
 ## Future Enhancements
