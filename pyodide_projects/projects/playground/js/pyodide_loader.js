@@ -2,7 +2,7 @@
 //   'local': self-hosted wheel in ../local_wheels/ (pinned, default for deployment)
 //   'pypi' : micropip resolves the pyemscripten wheel from pypi.org (for testing)
 const IMGUI_BUNDLE_WHEEL_SOURCE = 'local';
-const IMGUI_BUNDLE_LOCAL_WHEEL = '../local_wheels/imgui_bundle-1.92.801-cp314-cp314-pyemscripten_2026_0_wasm32.whl';
+const IMGUI_BUNDLE_LOCAL_WHEEL = '../local_wheels/imgui_bundle-1.92.900-cp314-cp314-pyemscripten_2026_0_wasm32.whl';
 
 
 async function load_pyodide_imgui_render() {
