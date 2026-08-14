@@ -85,16 +85,19 @@ launcher. Contributed by @zaicruvoir1rominet (#473).
   `StyleVar.grid_size` (#470); fixed incomplete rendering of popups.
   Via the bundled ImGui patch, multiline text inputs inside the editor now
   render a preview box with a resizable edit popup.
-- **Hello ImGui**: new `runner_params.callbacks.confirm_exit` (return False to
-  cancel an exit request); HighDPI font scaling now goes through
-  `style.font_scale_dpi` instead of multiplying font sizes at load time
-  (finalizes the ImGui 1.92 transition); `asset_file_full_path` also searches
-  the current folder.
+- **Hello ImGui**:
+  - new `runner_params.callbacks.confirm_exit` (return False to
+    cancel an exit request);
+  - HighDPI font scaling now goes through `style.font_scale_dpi` instead of multiplying font sizes at load time
+    (finalizes the ImGui 1.92 transition);
+  - `asset_file_full_path` also searches the current folder.
+  - added BeforeSwap callback
 - **imspinner**: updated to the 2026 version, with many new spinners (#483).
 - **ImGuizmo**: upstream bug fixes (gizmo jitter, multi-view, `is_over` for SCALEU, disappearing translation axis).
 - **ImPlot3D**: legend scrolling.
 - **imgui_toggle**: build fix against recent ImGui merged upstream (our fork now carries no patches).
 - **ImGui Test Engine**: updated (test-suite amendments for the LiveEdit change).
+- **ImmVision**: added ImageInterpolationMode setting
 
 ## Python API: behavior changes and fixes
 
