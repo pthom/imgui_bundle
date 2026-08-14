@@ -1455,7 +1455,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
 
     m.def("has_edr_support",
-        HelloImGui::hasEdrSupport, " `bool hasEdrSupport()`:\n Check whether extended dynamic range (EDR), i.e. the ability to reproduce\n intensities exceeding the standard dynamic range from 0.0-1.0, is supported.\n\n To leverage EDR support, you need to set `floatBuffer=True` in `RendererBackendOptions`.\n Only the macOS Metal backend currently supports this.\n\n This currently returns False on all backends except Metal, where it checks whether\n this is supported on the current displays.");
+        HelloImGui::hasEdrSupport, " `bool hasEdrSupport()`:\n Check whether extended dynamic range (EDR), i.e. the ability to reproduce\n intensities exceeding the standard dynamic range from 0.0-1.0, is supported.\n\n To leverage EDR support, you need to set `requestFloatBuffer=True` in `RendererBackendOptions`.\n\n This currently returns False on all backends except Metal, where it checks whether\n this is supported on the current displays.\n On the other backends, a display's capabilities can only be queried once a window exists,\n which is too late here: set `requestFloatBuffer=True` and read it back instead (see below).");
 
 
     auto pyClassRendererBackendOptions =
@@ -1473,7 +1473,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         },
         nb::arg("request_float_buffer") = false, nb::arg("open_gl_options").none() = nb::none()
         )
-        .def_rw("request_float_buffer", &HelloImGui::RendererBackendOptions::requestFloatBuffer, " `requestFloatBuffer`:\n Set to True to request a floating-point framebuffer.\n Only available on Metal, if your display supports it.\n Before setting this to True, first check `hasEdrSupport()`")
+        .def_rw("request_float_buffer", &HelloImGui::RendererBackendOptions::requestFloatBuffer, " `requestFloatBuffer`:\n Set to True to request a floating-point framebuffer (required for HDR/EDR output).\n Only available on Metal, and on OpenGL3 + Glfw if your version of Glfw defines\n GLFW_FLOATBUFFER (it is ignored otherwise). Ignored by the other rendering backends.\n Before setting this to True, first check `hasEdrSupport()`\n Note: HelloImGui sets this back to False if the request could not be satisfied, so you\n can read it back once Run() has created the window, to know what you actually got.\n Note: on macOS, EDR output requires the Metal backend: even with a floating point\n framebuffer, OpenGL surfaces are composited clamped to standard range.\n\n This is an advanced and experimental option: HDR display support is still evolving in the\n operating systems, in Glfw and in Wayland, so its behavior may have to change in the future.")
         .def_rw("open_gl_options", &HelloImGui::RendererBackendOptions::openGlOptions, " `openGlOptions`:\n Advanced options for OpenGL. Use at your own risk.")
         ;
 

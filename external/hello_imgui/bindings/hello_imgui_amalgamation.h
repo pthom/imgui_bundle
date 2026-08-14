@@ -2132,11 +2132,12 @@ struct OpenGlOptions
 // Check whether extended dynamic range (EDR), i.e. the ability to reproduce
 // intensities exceeding the standard dynamic range from 0.0-1.0, is supported.
 //
-// To leverage EDR support, you need to set `floatBuffer=true` in `RendererBackendOptions`.
-// Only the macOS Metal backend currently supports this.
+// To leverage EDR support, you need to set `requestFloatBuffer=true` in `RendererBackendOptions`.
 //
 // This currently returns false on all backends except Metal, where it checks whether
 // this is supported on the current displays.
+// On the other backends, a display's capabilities can only be queried once a window exists,
+// which is too late here: set `requestFloatBuffer=true` and read it back instead (see below).
 bool hasEdrSupport();
 
 
@@ -2145,9 +2146,17 @@ bool hasEdrSupport();
 struct RendererBackendOptions
 {
     // `requestFloatBuffer`:
-    // Set to true to request a floating-point framebuffer.
-    // Only available on Metal, if your display supports it.
+    // Set to true to request a floating-point framebuffer (required for HDR/EDR output).
+    // Only available on Metal, and on OpenGL3 + Glfw if your version of Glfw defines
+    // GLFW_FLOATBUFFER (it is ignored otherwise). Ignored by the other rendering backends.
     // Before setting this to true, first check `hasEdrSupport()`
+    // Note: HelloImGui sets this back to false if the request could not be satisfied, so you
+    // can read it back once Run() has created the window, to know what you actually got.
+    // Note: on macOS, EDR output requires the Metal backend: even with a floating point
+    // framebuffer, OpenGL surfaces are composited clamped to standard range.
+    //
+    // This is an advanced and experimental option: HDR display support is still evolving in the
+    // operating systems, in Glfw and in Wayland, so its behavior may have to change in the future.
     bool requestFloatBuffer = false;
 
     // `openGlOptions`:
