@@ -214,6 +214,20 @@ class ColorMapStatsTypeId(enum.IntEnum):
     #     }
     from_visible_roi = enum.auto()  # (= 1)
 
+class ImageInterpolationMode(enum.IntEnum):
+    """Texture interpolation used when displaying an image"""
+
+    # Adaptive,    /* original C++ signature */
+    # Preserve ImmVision's zoom-dependent filtering
+    adaptive = enum.auto()  # (= 0)
+    # Nearest,    /* original C++ signature */
+    # Use nearest-neighbor sampling at every zoom level
+    nearest = enum.auto()  # (= 1)
+    # Linear    /* original C++ signature */
+    #     }
+    # Use linear sampling at every zoom level
+    linear = enum.auto()  # (= 2)
+
 class ColormapScaleFromStatsData:
     """Scale the Colormap according to the Image  stats
 
@@ -372,6 +386,9 @@ class ImageParams:
     # std::string ZoomKey = "";    /* original C++ signature */
     # If displaying several images, those with the same ZoomKey will zoom and pan together
     zoom_key: str = ""
+    # ImageInterpolationMode InterpolationMode = ImageInterpolationMode::Adaptive;    /* original C++ signature */
+    # Controls how the image texture is sampled when scaled.
+    interpolation_mode: ImageInterpolationMode = ImageInterpolationMode.adaptive
 
     # ColormapSettingsData ColormapSettings = ColormapSettingsData();    /* original C++ signature */
     #
@@ -456,13 +473,14 @@ class ImageParams:
     # Mouse position information. These values are filled after displaying an image
     mouse_info: MouseInformation = MouseInformation()
 
-    # ImageParams(bool RefreshImage = false, Size ImageDisplaySize = (0, 0), Matrix33d ZoomPanMatrix = [[1,0,0],[0,1,0],[0,0,1]], std::string ZoomKey = "", ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<Point> WatchedPixels = std::vector<Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation());    /* original C++ signature */
+    # ImageParams(bool RefreshImage = false, Size ImageDisplaySize = (0, 0), Matrix33d ZoomPanMatrix = [[1,0,0],[0,1,0],[0,0,1]], std::string ZoomKey = "", ImageInterpolationMode InterpolationMode = ImageInterpolationMode::Adaptive, ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<Point> WatchedPixels = std::vector<Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation());    /* original C++ signature */
     def __init__(
         self,
         refresh_image: bool = False,
         image_display_size: Optional[Size] = None,
         zoom_pan_matrix: Optional[Matrix33d] = None,
         zoom_key: str = "",
+        interpolation_mode: ImageInterpolationMode = ImageInterpolationMode.adaptive,
         colormap_settings: Optional[ColormapSettingsData] = None,
         colormap_key: str = "",
         pan_with_mouse: bool = True,

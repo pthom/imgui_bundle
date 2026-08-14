@@ -144,6 +144,13 @@ void py_init_module_immvision(nb::module_& m)
             .value("from_visible_roi", ImmVision::ColorMapStatsTypeId::FromVisibleROI, "");
 
 
+    auto pyEnumImageInterpolationMode =
+        nb::enum_<ImmVision::ImageInterpolationMode>(m, "ImageInterpolationMode", nb::is_arithmetic(), "Texture interpolation used when displaying an image")
+            .value("adaptive", ImmVision::ImageInterpolationMode::Adaptive, "Preserve ImmVision's zoom-dependent filtering")
+            .value("nearest", ImmVision::ImageInterpolationMode::Nearest, "Use nearest-neighbor sampling at every zoom level")
+            .value("linear", ImmVision::ImageInterpolationMode::Linear, "Use linear sampling at every zoom level");
+
+
     auto pyClassColormapScaleFromStatsData =
         nb::class_<ImmVision::ColormapScaleFromStatsData>
             (m, "ColormapScaleFromStatsData", " Scale the Colormap according to the Image  stats\n\nIMMVISION_API_STRUCT")
@@ -219,7 +226,7 @@ void py_init_module_immvision(nb::module_& m)
     auto pyClassImageParams =
         nb::class_<ImmVision::ImageParams>
             (m, "ImageParams", " Set of display parameters and options for an Image\n\nIMMVISION_API_STRUCT")
-        .def("__init__", [](ImmVision::ImageParams * self, bool RefreshImage = false, const std::optional<const Size> & ImageDisplaySize = std::nullopt, const std::optional<const Matrix33d> & ZoomPanMatrix = std::nullopt, std::string ZoomKey = "", const std::optional<const ImmVision::ColormapSettingsData> & ColormapSettings = std::nullopt, std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, const std::optional<const std::vector<Point>> & WatchedPixels = std::nullopt, bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, const std::optional<const ImmVision::MouseInformation> & MouseInfo = std::nullopt)
+        .def("__init__", [](ImmVision::ImageParams * self, bool RefreshImage = false, const std::optional<const Size> & ImageDisplaySize = std::nullopt, const std::optional<const Matrix33d> & ZoomPanMatrix = std::nullopt, std::string ZoomKey = "", ImmVision::ImageInterpolationMode InterpolationMode = ImmVision::ImageInterpolationMode::Adaptive, const std::optional<const ImmVision::ColormapSettingsData> & ColormapSettings = std::nullopt, std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, const std::optional<const std::vector<Point>> & WatchedPixels = std::nullopt, bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, const std::optional<const ImmVision::MouseInformation> & MouseInfo = std::nullopt)
         {
             new (self) ImmVision::ImageParams();  // placement new
             auto r_ctor_ = self;
@@ -233,6 +240,7 @@ void py_init_module_immvision(nb::module_& m)
             else
                 r_ctor_->ZoomPanMatrix = Matrix33d::eye();
             r_ctor_->ZoomKey = ZoomKey;
+            r_ctor_->InterpolationMode = InterpolationMode;
             if (ColormapSettings.has_value())
                 r_ctor_->ColormapSettings = ColormapSettings.value();
             else
@@ -264,12 +272,13 @@ void py_init_module_immvision(nb::module_& m)
             else
                 r_ctor_->MouseInfo = ImmVision::MouseInformation();
         },
-        nb::arg("refresh_image") = false, nb::arg("image_display_size").none() = nb::none(), nb::arg("zoom_pan_matrix").none() = nb::none(), nb::arg("zoom_key") = "", nb::arg("colormap_settings").none() = nb::none(), nb::arg("colormap_key") = "", nb::arg("pan_with_mouse") = true, nb::arg("zoom_with_mouse_wheel") = true, nb::arg("can_resize") = true, nb::arg("resize_keep_aspect_ratio") = true, nb::arg("selected_channel") = -1, nb::arg("show_school_paper_background") = true, nb::arg("show_alpha_channel_checkerboard") = true, nb::arg("show_grid") = true, nb::arg("draw_values_on_zoomed_pixels") = true, nb::arg("show_image_info") = true, nb::arg("show_pixel_info") = true, nb::arg("show_zoom_buttons") = true, nb::arg("show_options_panel") = false, nb::arg("show_options_in_tooltip") = false, nb::arg("show_options_button") = true, nb::arg("watched_pixels").none() = nb::none(), nb::arg("add_watched_pixel_on_double_click") = true, nb::arg("highlight_watched_pixels") = true, nb::arg("mouse_info").none() = nb::none()
+        nb::arg("refresh_image") = false, nb::arg("image_display_size").none() = nb::none(), nb::arg("zoom_pan_matrix").none() = nb::none(), nb::arg("zoom_key") = "", nb::arg("interpolation_mode") = ImmVision::ImageInterpolationMode::Adaptive, nb::arg("colormap_settings").none() = nb::none(), nb::arg("colormap_key") = "", nb::arg("pan_with_mouse") = true, nb::arg("zoom_with_mouse_wheel") = true, nb::arg("can_resize") = true, nb::arg("resize_keep_aspect_ratio") = true, nb::arg("selected_channel") = -1, nb::arg("show_school_paper_background") = true, nb::arg("show_alpha_channel_checkerboard") = true, nb::arg("show_grid") = true, nb::arg("draw_values_on_zoomed_pixels") = true, nb::arg("show_image_info") = true, nb::arg("show_pixel_info") = true, nb::arg("show_zoom_buttons") = true, nb::arg("show_options_panel") = false, nb::arg("show_options_in_tooltip") = false, nb::arg("show_options_button") = true, nb::arg("watched_pixels").none() = nb::none(), nb::arg("add_watched_pixel_on_double_click") = true, nb::arg("highlight_watched_pixels") = true, nb::arg("mouse_info").none() = nb::none()
         )
         .def_rw("refresh_image", &ImmVision::ImageParams::RefreshImage, " Refresh Image: images textures are cached. Set to True if your image matrix/buffer has changed\n (for example, for live video images)")
         .def_rw("image_display_size", &ImmVision::ImageParams::ImageDisplaySize, " Size of the displayed image (can be different from the matrix size)\n If you specify only the width or height (e.g (300, 0), then the other dimension\n will be calculated automatically, respecting the original image w/h ratio.")
         .def_rw("zoom_pan_matrix", &ImmVision::ImageParams::ZoomPanMatrix, "ZoomPanMatrix can be created using MakeZoomPanMatrix to create a view centered around a given point")
         .def_rw("zoom_key", &ImmVision::ImageParams::ZoomKey, "If displaying several images, those with the same ZoomKey will zoom and pan together")
+        .def_rw("interpolation_mode", &ImmVision::ImageParams::InterpolationMode, "Controls how the image texture is sampled when scaled.")
         .def_rw("colormap_settings", &ImmVision::ImageParams::ColormapSettings, "\n Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)\n\n ColormapSettings stores all the parameter concerning the Colormap")
         .def_rw("colormap_key", &ImmVision::ImageParams::ColormapKey, "If displaying several images, those with the same ColormapKey will adjust together")
         .def_rw("pan_with_mouse", &ImmVision::ImageParams::PanWithMouse, "")
