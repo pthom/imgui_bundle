@@ -10,6 +10,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+conan_experiments/
 .Python
 /build*/
 /cmake-build*/
