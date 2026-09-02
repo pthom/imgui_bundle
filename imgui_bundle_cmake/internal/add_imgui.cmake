@@ -43,7 +43,10 @@ function(add_imgui imgui_dir)
             $<BUILD_INTERFACE:${HELLOIMGUI_IMGUI_SOURCE_DIR}/misc/cpp>
             $<BUILD_INTERFACE:${HELLOIMGUI_IMGUI_SOURCE_DIR}/misc/freetype>
         )
-        target_compile_definitions(imgui PUBLIC IMGUI_USER_CONFIG="${IMGUI_BUNDLE_CMAKE_PATH}/imgui_bundle_config.h")
+        # IMGUI_USER_CONFIG: absolute path in the build tree; from an install, the header
+        # sits at the root of include/ and is found via the include path
+        target_compile_definitions(imgui PUBLIC
+            "IMGUI_USER_CONFIG=\"$<BUILD_INTERFACE:${IMGUI_BUNDLE_CMAKE_PATH}/imgui_bundle_config.h>$<INSTALL_INTERFACE:imgui_bundle_config.h>\"")
         lg_disable_warning_exception_in_destructor(imgui)
         if(PROJECT_IS_TOP_LEVEL AND NOT SKBUILD)
             install(TARGETS imgui DESTINATION lib)
