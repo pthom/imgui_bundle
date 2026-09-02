@@ -514,7 +514,16 @@ if(IMGUI_BUNDLE_INSTALL_CPP)
         VERSION ${imgui_bundle_VERSION}
         COMPATIBILITY AnyNewerVersion)
 
-    install(FILES "imgui_bundle_cmake/imgui_bundle-config.cmake" "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config-version.cmake"
+    # imgui_bundle-config.cmake is generated: its find_dependency() calls depend on the build options
+    foreach(_opt HELLOIMGUI_USE_FREETYPE HELLOIMGUI_USE_GLFW3 HELLOIMGUI_USE_SDL2 HELLOIMGUI_HAS_OPENGL3 IMGUI_BUNDLE_LINKS_CURL)
+        if(${_opt})
+            set(IBD_CFG_${_opt} ON)
+        else()
+            set(IBD_CFG_${_opt} OFF)
+        endif()
+    endforeach()
+    configure_file("imgui_bundle_cmake/imgui_bundle-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config.cmake" @ONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config.cmake" "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config-version.cmake"
         DESTINATION lib/cmake/imgui_bundle)
 endif()
 
