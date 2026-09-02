@@ -1,0 +1,31 @@
+# imgui_bundle-config.cmake (generated from imgui_bundle-config.cmake.in at build time)
+include(CMakeFindDependencyMacro)
+
+# System dependencies of the installed libraries (which ones depends on the build options)
+find_dependency(Threads)                 # plutosvg
+if(@IBD_CFG_HELLOIMGUI_USE_FREETYPE@)
+    find_dependency(Freetype)
+endif()
+if(@IBD_CFG_HELLOIMGUI_USE_GLFW3@)
+    find_dependency(glfw3)               # system glfw, or the one built and installed with imgui_bundle
+endif()
+if(@IBD_CFG_HELLOIMGUI_USE_SDL2@)
+    find_dependency(SDL2)
+endif()
+if(@IBD_CFG_HELLOIMGUI_HAS_OPENGL3@)
+    find_dependency(OpenGL)
+endif()
+if(@IBD_CFG_IMGUI_BUNDLE_LINKS_CURL@)
+    find_dependency(CURL)                # imgui_md: image download
+endif()
+
+include(${CMAKE_CURRENT_LIST_DIR}/imgui_bundle-targets.cmake)
+
+# hello_imgui is part of this package (imgui_bundle::hello_imgui);
+# hello_imgui_add_app() links against hello_imgui::hello_imgui
+if(NOT TARGET hello_imgui::hello_imgui)
+    add_library(hello_imgui::hello_imgui INTERFACE IMPORTED)
+    target_link_libraries(hello_imgui::hello_imgui INTERFACE imgui_bundle::hello_imgui)
+endif()
+
+include(${CMAKE_CURRENT_LIST_DIR}/imgui_bundle_cmake/imgui_bundle_add_app.cmake)
