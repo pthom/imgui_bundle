@@ -41,13 +41,17 @@ function (add_hello_imgui)
 
     # 4. Finally, add hello_imgui
     if(IMGUI_BUNDLE_INSTALL_CPP)
+        # hello_imgui is installed as part of the imgui_bundle package:
+        # its targets join the imgui_bundle export set (namespace imgui_bundle::),
+        # and hello_imgui_cmake/ + hello_imgui_assets/ land next to imgui_bundle-config.cmake
         set(HELLOIMGUI_INSTALL ON CACHE BOOL "" FORCE)
+        set(HELLOIMGUI_INSTALL_EXPORT "imgui_bundle-targets" CACHE STRING "" FORCE)
+        set(HELLOIMGUI_INSTALL_CMAKE_DIR "lib/cmake/imgui_bundle" CACHE STRING "" FORCE)
     endif()
     add_subdirectory(hello_imgui/hello_imgui)
     target_link_libraries(imgui_bundle INTERFACE hello_imgui)
-    if(IMGUI_BUNDLE_INSTALL_CPP)
-        ibd_add_installable_dependency(hello_imgui)
-    endif()
+    # (no ibd_add_installable_dependency(hello_imgui): hello_imgui installs itself
+    #  and its dependencies into the imgui_bundle export set, see above)
 
     # 5. Export hello_imgui symbols on Windows without using __declspec(dllexport)
     if (WIN32)

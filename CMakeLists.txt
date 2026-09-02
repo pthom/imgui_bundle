@@ -407,6 +407,7 @@ if(NOT IMGUI_BUNDLE_BUILD_NUMBER)
     set(IMGUI_BUNDLE_BUILD_NUMBER "0")
 endif()
 add_library(imgui_bundle INTERFACE)
+add_library(imgui_bundle::imgui_bundle ALIAS imgui_bundle)
 target_compile_definitions(imgui_bundle INTERFACE
     IMGUI_BUNDLE_VERSION="${IMGUI_BUNDLE_VERSION}"
     IMGUI_BUNDLE_BUILD_NUMBER="${IMGUI_BUNDLE_BUILD_NUMBER}"
