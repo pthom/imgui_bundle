@@ -417,6 +417,8 @@ if(IMGUI_BUNDLE_INSTALL_CPP)
     # imgui_bundle-config.cmake can include it via ${CMAKE_CURRENT_LIST_DIR}
     install(DIRECTORY imgui_bundle_cmake DESTINATION lib/cmake/imgui_bundle)
     install(DIRECTORY bindings/imgui_bundle/assets DESTINATION share/imgui_bundle)
+    # imgui's IMGUI_USER_CONFIG refers to this header as "imgui_bundle_config.h" from an install
+    install(FILES imgui_bundle_cmake/imgui_bundle_config.h DESTINATION include)
     ibd_add_installable_dependency(imgui_bundle)
 endif()
 
