@@ -1,0 +1,72 @@
+name: "CppInstallPackage"
+
+# Builds and installs imgui_bundle as a C++ package (cmake --install), then builds
+# _example_integration against the *installed* package (find_package(imgui_bundle)),
+# on the three desktop platforms.
+#
+# System dependencies (freetype, glfw, ...) are provided by the platform's package manager;
+# on Windows, by the vcpkg preinstalled on the runner, used as a plain CMAKE_PREFIX_PATH
+# (not as a toolchain), which mirrors how a package manager such as Conan would provide them.
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+
+env:
+  MACOSX_DEPLOYMENT_TARGET: "11.0"
+
+jobs:
+  build:
+    name: CppInstallPackage
+    runs-on: ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [windows-latest, macos-latest, ubuntu-latest]
+
+    steps:
+    - uses: actions/checkout@v7
+      with:
+        submodules: recursive
+
+    - name: Install dependencies (ubuntu)
+      if: ${{ matrix.platform == 'ubuntu-latest' }}
+      run: sudo apt-get update && sudo apt-get install -y xorg-dev libgl1-mesa-dev libglfw3-dev libfreetype-dev libcurl4-openssl-dev
+
+    - name: Install dependencies (macos)
+      if: ${{ matrix.platform == 'macos-latest' }}
+      run: brew install glfw freetype
+
+    - name: Install dependencies (windows, via vcpkg)
+      if: ${{ matrix.platform == 'windows-latest' }}
+      shell: pwsh
+      run: |
+        & "$env:VCPKG_INSTALLATION_ROOT\vcpkg" install freetype glfw3 --triplet x64-windows
+        $prefix = "$env:VCPKG_INSTALLATION_ROOT/installed/x64-windows" -replace '\\', '/'
+        "DEPS_PREFIX=$prefix" >> $env:GITHUB_ENV
+
+    - name: Build and install imgui_bundle
+      shell: bash
+      run: |
+        workspace="${GITHUB_WORKSPACE//\\//}"
+        cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DIMGUI_BUNDLE_BUILD_DEMOS=OFF \
+              -DCMAKE_INSTALL_PREFIX="$workspace/install" -DCMAKE_PREFIX_PATH="$DEPS_PREFIX"
+        cmake --build build --config Release -j 3
+        cmake --install build --config Release
+
+    - name: Build _example_integration against the installed package
+      shell: bash
+      run: |
+        workspace="${GITHUB_WORKSPACE//\\//}"
+        cmake -S _example_integration -B build_example -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_PREFIX_PATH="$workspace/install;$DEPS_PREFIX" | tee configure_example.log
+        grep -q "Using installed imgui_bundle" configure_example.log
+        cmake --build build_example --config Release -j 3
+
+    - name: List the installed package
+      shell: bash
+      run: |
+        echo "== lib/cmake"; ls -R install/lib/cmake | head -40
+        echo "== libs"; ls install/lib
+        echo "== include"; ls install/include
