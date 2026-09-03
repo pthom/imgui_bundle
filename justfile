@@ -154,6 +154,7 @@ cpp_package_clean:
 # Build _example_integration against the installed package (run cpp_package_install first)
 [group('cpp_package')]
 example_integration_installed:
+    @test -d "{{ _cpp_pkg_install }}" || { echo "{{ _cpp_pkg_install }} not found: run 'just cpp_package_install' first"; exit 1; }
     cmake -S "{{ _example_dir }}" -B "{{ _example_dir }}/build_installed" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="{{ _cpp_pkg_install }}" | tee /tmp/example_integration_configure.log
     grep -q "Using installed imgui_bundle" /tmp/example_integration_configure.log
     cmake --build "{{ _example_dir }}/build_installed" --config Release -j
