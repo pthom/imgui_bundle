@@ -440,7 +440,7 @@ add_simple_external_library(imspinner imspinner)
 target_sources(imspinner PRIVATE ${CMAKE_CURRENT_LIST_DIR}/imspinner/imspinner_bundle.cpp)
 if(IMGUI_BUNDLE_INSTALL_CPP)
     # Install only imspinner*.h (skip the cimspinner* C-API headers)
-    file(GLOB imspinner_headers ${CMAKE_CURRENT_LIST_DIR}/imspinner/imspinner*.h)
+    file(GLOB imspinner_headers ${CMAKE_CURRENT_LIST_DIR}/imspinner/imspinner/imspinner*.h)
     install(FILES ${imspinner_headers} DESTINATION include/imspinner)
 endif()
 # Build imgui_toggle

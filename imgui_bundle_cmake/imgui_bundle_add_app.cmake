@@ -6,6 +6,9 @@ if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui/hello_im
     set(himgui_cmake_path ${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui/hello_imgui_cmake)
 else()
     set(himgui_cmake_path ${CMAKE_CURRENT_LIST_DIR}/../hello_imgui_cmake)
+    # From an install, the package dir plays the role of the source tree root:
+    # hello_imgui_bundle_assets() looks for ${IMGUI_BUNDLE_PATH}/imgui_bundle_assets
+    get_filename_component(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR}/.. ABSOLUTE)
 endif()
 include(${himgui_cmake_path}/hello_imgui_add_app.cmake)
 include(${himgui_cmake_path}/msvc/msvc_target_group.cmake)

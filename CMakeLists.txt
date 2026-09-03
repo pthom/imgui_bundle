@@ -416,7 +416,10 @@ if(IMGUI_BUNDLE_INSTALL_CPP)
     # imgui_bundle_cmake is installed next to the config file, so that
     # imgui_bundle-config.cmake can include it via ${CMAKE_CURRENT_LIST_DIR}
     install(DIRECTORY imgui_bundle_cmake DESTINATION lib/cmake/imgui_bundle)
-    install(DIRECTORY bindings/imgui_bundle/assets DESTINATION share/imgui_bundle)
+    # Common assets (fonts, etc.), bundled into apps by imgui_bundle_add_app(): they are
+    # looked up as ${IMGUI_BUNDLE_PATH}/imgui_bundle_assets, and IMGUI_BUNDLE_PATH is
+    # lib/cmake/imgui_bundle from an install (see imgui_bundle_add_app.cmake)
+    install(DIRECTORY imgui_bundle_assets DESTINATION lib/cmake/imgui_bundle)
     # imgui's IMGUI_USER_CONFIG refers to this header as "imgui_bundle_config.h" from an install
     install(FILES imgui_bundle_cmake/imgui_bundle_config.h DESTINATION include)
     ibd_add_installable_dependency(imgui_bundle)
