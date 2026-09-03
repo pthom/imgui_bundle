@@ -525,6 +525,9 @@ if(IMGUI_BUNDLE_INSTALL_CPP)
             set(IBD_CFG_${_opt} OFF)
         endif()
     endforeach()
+    if(HELLOIMGUI_FREETYPE_DOWNLOADED)
+        set(IBD_CFG_HELLOIMGUI_USE_FREETYPE OFF)  # a downloaded freetype is part of the package: nothing to find
+    endif()
     configure_file("imgui_bundle_cmake/imgui_bundle-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config.cmake" @ONLY)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config.cmake" "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config-version.cmake"
         DESTINATION lib/cmake/imgui_bundle)

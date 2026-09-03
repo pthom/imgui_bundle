@@ -4,7 +4,7 @@ include(CMakeFindDependencyMacro)
 # System dependencies of the installed libraries (which ones depends on the build options)
 find_dependency(Threads)                 # plutosvg
 if(@IBD_CFG_HELLOIMGUI_USE_FREETYPE@)
-    find_dependency(Freetype)
+    find_dependency(Freetype)            # system freetype (a freetype downloaded at build time is part of the package)
 endif()
 if(@IBD_CFG_HELLOIMGUI_USE_GLFW3@)
     find_dependency(glfw3)               # system glfw, or the one built and installed with imgui_bundle
