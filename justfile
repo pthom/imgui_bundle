@@ -124,6 +124,69 @@ imex_ems_deploy: imex_ems_build
 
 
 # ==============================================================
+# C++ package (cmake --install) and _example_integration
+# ==============================================================
+# The installed package is verified by building _example_integration against it.
+# _example_integration can get imgui_bundle in three ways (see its Readme):
+# an installed package, a copy in external/imgui_bundle, or FetchContent.
+
+_cpp_pkg_build := "builds/cpp_package"
+_cpp_pkg_install := justfile_directory() + "/builds/cpp_package/install"
+_example_dir := justfile_directory() + "/_example_integration"
+
+# Build imgui_bundle (C++ only, no demos) and install it into builds/cpp_package/install
+[group('cpp_package')]
+cpp_package_install:
+    cmake -S . -B {{ _cpp_pkg_build }} -DCMAKE_BUILD_TYPE=Release -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DCMAKE_INSTALL_PREFIX="{{ _cpp_pkg_install }}"
+    cmake --build {{ _cpp_pkg_build }} -j
+    rm -rf "{{ _cpp_pkg_install }}"
+    cmake --install {{ _cpp_pkg_build }}
+
+# Clean the C++ package build and install, and the _example_integration builds
+[group('cpp_package')]
+cpp_package_clean:
+    rm -rf {{ _cpp_pkg_build }} "{{ _example_dir }}"/build_* "{{ _example_dir }}"/external
+
+# Build _example_integration against the installed package (run cpp_package_install first)
+[group('cpp_package')]
+example_integration_installed:
+    cmake -S "{{ _example_dir }}" -B "{{ _example_dir }}/build_installed" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="{{ _cpp_pkg_install }}" | tee /tmp/example_integration_configure.log
+    grep -q "Using installed imgui_bundle" /tmp/example_integration_configure.log
+    cmake --build "{{ _example_dir }}/build_installed" -j
+
+# Run the _example_integration app built against the installed package
+[group('cpp_package')]
+example_integration_run:
+    #!/usr/bin/env bash
+    set -e
+    cd "{{ _example_dir }}/build_installed"
+    if [ -d imgui_bundle_example_integration.app ]; then
+        ./imgui_bundle_example_integration.app/Contents/MacOS/imgui_bundle_example_integration
+    else
+        ./imgui_bundle_example_integration
+    fi
+
+# Build _example_integration with imgui_bundle in external/imgui_bundle (a symlink to this repo)
+[group('cpp_package')]
+example_integration_subdir:
+    mkdir -p "{{ _example_dir }}/external" && ln -sfn "{{ justfile_directory() }}" "{{ _example_dir }}/external/imgui_bundle"
+    cmake -S "{{ _example_dir }}" -B "{{ _example_dir }}/build_subdir" -DCMAKE_BUILD_TYPE=Release -DIMGUI_BUNDLE_BUILD_DEMOS=OFF
+    cmake --build "{{ _example_dir }}/build_subdir" -j --target imgui_bundle_example_integration
+
+# Build _example_integration with FetchContent (source redirected to this repo, no download)
+[group('cpp_package')]
+example_integration_fetch:
+    rm -f "{{ _example_dir }}/external/imgui_bundle"
+    cmake -S "{{ _example_dir }}" -B "{{ _example_dir }}/build_fetch" -DCMAKE_BUILD_TYPE=Release -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DFETCHCONTENT_SOURCE_DIR_IMGUI_BUNDLE="{{ justfile_directory() }}"
+    cmake --build "{{ _example_dir }}/build_fetch" -j --target imgui_bundle_example_integration
+
+# Test the three ways to integrate imgui_bundle (installed package, subfolder, FetchContent)
+[group('cpp_package')]
+example_integration_all: cpp_package_install example_integration_installed example_integration_subdir example_integration_fetch
+    @echo "example_integration: the three integration modes build"
+
+
+# ==============================================================
 # CI / Docker
 # ==============================================================
 
