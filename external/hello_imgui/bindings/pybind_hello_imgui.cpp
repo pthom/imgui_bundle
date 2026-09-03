@@ -60,7 +60,7 @@ nb::handle FinalAppWindowScreenshot()
         delete[] static_cast<uint8_t*>(p);
     });
 
-    auto array = nb::ndarray<uint8_t>(
+    auto array = nb::ndarray<uint8_t, nb::numpy>(
         ndarray_buffer,                                      // Data pointer
         {imageBuffer.height, imageBuffer.width, (size_t)3},  // Shape
         owner,                                               // Owner capsule
@@ -71,10 +71,9 @@ nb::handle FinalAppWindowScreenshot()
         'C'                                                // Order ('C' for C-contiguous)
     );
 
-    // Properly export the ndarray
-    return nb::detail::ndarray_export(
-        array.handle(),
-        nb::numpy::value,
+    // Export via the public ndarray caster (nb::detail::ndarray_export changed signature in nanobind 3)
+    return nb::detail::type_caster<nb::ndarray<uint8_t, nb::numpy>>::from_cpp(
+        array,
         nb::rv_policy::move,  // Transfer ownership to Python
         nullptr               // No cleanup list
     );

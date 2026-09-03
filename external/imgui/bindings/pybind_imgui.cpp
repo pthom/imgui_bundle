@@ -57,7 +57,7 @@ struct type_caster<ImGuiNpBuffer> {
 
             nb::handle no_owner = {};
 
-            nb::ndarray<uint8_t> array = nb::ndarray<uint8_t>(
+            nb::ndarray<uint8_t, nb::numpy> array(
                 buf.Data,
                 {(size_t)buf.Size},
                 no_owner,  // no owner, as lifetime is managed on C++
@@ -66,7 +66,8 @@ struct type_caster<ImGuiNpBuffer> {
                 0, 0, 'C'
             );
 
-            return nb::detail::ndarray_export(array.handle(), nb::numpy::value, policy, cleanup);
+            // Export via the public ndarray caster (nb::detail::ndarray_export changed signature in nanobind 3)
+            return type_caster<nb::ndarray<uint8_t, nb::numpy>>::from_cpp(array, policy, cleanup);
         }
         catch (const std::exception& e) {
             PyErr_WarnFormat(PyExc_Warning, 1, "ImGuiNpBuffer caster from_cpp exception: %s", e.what());

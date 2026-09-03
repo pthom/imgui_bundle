@@ -166,10 +166,10 @@ struct type_caster<ImmVision::ImageBuffer>
             nanobind::object owner = nanobind::capsule(heap_buf,
                 [](void* p) noexcept { delete static_cast<ImmVision::ImageBuffer*>(p); });
 
-            ndarray<> a(heap_buf->data, ndim, shape, owner, strides, dt);
+            ndarray<numpy> a(heap_buf->data, ndim, shape, owner, strides, dt);
 
-            return ndarray_export(a.handle(), nanobind::numpy::value,
-                                  rv_policy::reference, cleanup);
+            // Export via the public ndarray caster (ndarray_export changed signature in nanobind 3)
+            return type_caster<ndarray<numpy>>::from_cpp(a, rv_policy::reference, cleanup);
         }
         catch (...)
         {
