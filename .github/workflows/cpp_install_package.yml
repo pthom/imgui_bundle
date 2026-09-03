@@ -67,6 +67,6 @@ jobs:
     - name: List the installed package
       shell: bash
       run: |
-        echo "== lib/cmake"; ls -R install/lib/cmake | head -40
+        echo "== lib/cmake/imgui_bundle"; ls install/lib/cmake/imgui_bundle
         echo "== libs"; ls install/lib
         echo "== include"; ls install/include
