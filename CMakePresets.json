@@ -43,10 +43,21 @@
     },
     {
       "name": "python_bindings",
-        "description": "Build with python bindings",
-        "cacheVariables": {
-          "IMGUI_BUNDLE_BUILD_PYTHON": "ON"
-        }
+      "description": "Build with python bindings",
+      "cacheVariables": {
+        "IMGUI_BUNDLE_BUILD_PYTHON": "ON"
+      }
+    },
+    {
+      "name": "cpp_package",
+      "description": "Build the C++ package (no demos) and install it into builds/cpp_package/install",
+      "binaryDir": "${sourceDir}/builds/cpp_package/build",
+      "installDir": "${sourceDir}/builds/cpp_package/install",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "IMGUI_BUNDLE_BUILD_DEMOS": "OFF",
+        "CMAKE_FIND_NO_INSTALL_PREFIX": "ON"
+      }
     }
   ]
 }

@@ -30,6 +30,32 @@ ImmVision works out of the box without OpenCV. If you need OpenCV interop (e.g. 
 There are lots of CMake options to customize the build. See [CMakeLists.txt](https://github.com/pthom/imgui_bundle/blob/main/CMakeLists.txt)
 :::
 
+## Install as a CMake package
+
+Dear ImGui Bundle can be installed with `cmake --install`, and then used from another project
+with `find_package(imgui_bundle)` (this is also the basis for package managers such as Conan).
+The `cpp_package` preset builds the C++ libraries (without the demos) and installs them into `builds/cpp_package/install`:
+
+```bash
+cmake --preset cpp_package
+cmake --build builds/cpp_package/build --config Release
+cmake --install builds/cpp_package/build --config Release
+```
+
+Then, in your project (see the [template](https://github.com/pthom/imgui_bundle_template) for a complete example):
+
+```cmake
+find_package(imgui_bundle CONFIG REQUIRED)  # cmake -DCMAKE_PREFIX_PATH=/path/to/imgui_bundle/builds/cpp_package/install
+imgui_bundle_add_app(my_app my_app.cpp)
+```
+
+:::{note}
+Install into an empty prefix. When a library such as glfw or freetype is not found on the system, it is downloaded
+and installed along with the package; if you configure again while a previous install sits in the prefix,
+`find_package` would find those libraries there and take them for system libraries. The `cpp_package` preset
+prevents this by setting `CMAKE_FIND_NO_INSTALL_PREFIX=ON`; do the same if you configure by hand.
+:::
+
 ## Run the C++ demo
 
 If you built ImGuiBundle from source, Simply run build/bin/demo_imgui_bundle.
