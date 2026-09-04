@@ -126,6 +126,9 @@ imex_ems_deploy: imex_ems_build
 # ==============================================================
 # C++ package (cmake --install) and _example_integration
 # ==============================================================
+# The package is configured with the "cpp_package" preset (CMakePresets.json), which sets the
+# build and install dirs below, and CMAKE_FIND_NO_INSTALL_PREFIX (so that a previous install is
+# never mistaken for system libraries).
 # The installed package is verified by building _example_integration against it.
 # _example_integration can get imgui_bundle in three ways (see its Readme):
 # an installed package, a copy in external/imgui_bundle, or FetchContent.
@@ -141,9 +144,9 @@ _example_app := "imgui_bundle_example_integration"
 # Build imgui_bundle (C++ only, no demos) and install it into builds/cpp_package/install
 [group('cpp_package')]
 cpp_package_install:
-    cmake -S . -B {{ _cpp_pkg_build }} -DCMAKE_BUILD_TYPE=Release -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DCMAKE_INSTALL_PREFIX="{{ _cpp_pkg_install }}"
-    cmake --build {{ _cpp_pkg_build }} --config Release -j
     rm -rf "{{ _cpp_pkg_install }}"
+    cmake --preset cpp_package
+    cmake --build {{ _cpp_pkg_build }} --config Release -j
     cmake --install {{ _cpp_pkg_build }} --config Release
 
 # Clean the C++ package build and install, and the _example_integration builds
