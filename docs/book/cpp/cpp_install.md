@@ -49,6 +49,9 @@ find_package(imgui_bundle CONFIG REQUIRED)  # cmake -DCMAKE_PREFIX_PATH=/path/to
 imgui_bundle_add_app(my_app my_app.cpp)
 ```
 
+(The template falls back to a local copy or to a download of imgui_bundle when no installed package is found;
+pass `-Dimgui_bundle_DIR=/path/to/install/lib/cmake/imgui_bundle` instead to require the installed package.)
+
 :::{note}
 Install into an empty prefix. When a library such as glfw or freetype is not found on the system, it is downloaded
 and installed along with the package; if you configure again while a previous install sits in the prefix,
