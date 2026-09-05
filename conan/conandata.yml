@@ -1,0 +1,7 @@
+# Full source archives of the releases (built by .github/workflows/git_archive_all.yml, they include all submodules).
+# Only releases that contain the installable C++ package (post 1.92.900) can be listed here.
+# Add an entry per release, e.g.:
+#   "1.92.901":
+#     url: "https://github.com/pthom/imgui_bundle/releases/download/v1.92.901/srcs-full-v1.92.901.tar.gz"
+#     sha256: "<sha256 of the archive>"
+sources: {}

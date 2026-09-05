@@ -153,3 +153,7 @@ docs/book/api/
 
 # The narration clips of the explorables (narrator build): stored in the website resources, resources/explorables/
 bindings/imgui_bundle/demos_python/playground/examples/explorables/*/scenario_audio/*.mp3
+
+# Conan test_package: its build folder and the presets Conan writes beside it
+conan/test_package/build/
+conan/test_package/CMakeUserPresets.json

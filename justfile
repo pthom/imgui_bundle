@@ -214,6 +214,16 @@ test_cpp_compat:
     cmake -S tests/cpp_compat -B builds/cpp_package/cpp_compat -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="{{ _cpp_pkg_install }}"
     cmake --build builds/cpp_package/cpp_compat --config Release -j
 
+# Create the Conan package from this checkout (conan/conanfile.py), and build its test_package
+[group('cpp_package')]
+conan_create *ARGS:
+    conan create conan -c user.imgui_bundle:source_dir="{{ justfile_directory() }}" --build=missing {{ ARGS }}
+
+# Remove the imgui_bundle packages from the local Conan cache
+[group('cpp_package')]
+conan_clean:
+    conan remove "imgui_bundle/*" -c
+
 
 # ==============================================================
 # CI / Docker
