@@ -38,12 +38,15 @@ class ImGuiBundleConan(ConanFile):
         "rendering_backend": ["opengl3"],
         # ImGui Test Engine (automation and tests)
         "with_test_engine": [True, False],
+        # Markdown: download images from URLs (requires libcurl)
+        "with_image_download": [True, False],
     }
     default_options = {
         "fPIC": True,
         "platform_backend": "glfw",
         "rendering_backend": "opengl3",
         "with_test_engine": True,
+        "with_image_download": True,
     }
 
     def set_version(self):
@@ -75,6 +78,8 @@ class ImGuiBundleConan(ConanFile):
             self.requires("glfw/3.4")
         else:
             self.requires("sdl/2.32.10")
+        if self.options.with_image_download:
+            self.requires("libcurl/8.21.0")
 
     def source(self):
         # Either a local checkout (development), or the full source archive of a release
@@ -104,6 +109,7 @@ class ImGuiBundleConan(ConanFile):
         tc.variables["HELLOIMGUI_USE_SDL2"] = self.options.platform_backend == "sdl2"
         tc.variables["HELLOIMGUI_HAS_OPENGL3"] = self.options.rendering_backend == "opengl3"
         tc.variables["HELLOIMGUI_WITH_TEST_ENGINE"] = bool(self.options.with_test_engine)
+        tc.variables["IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES"] = bool(self.options.with_image_download)
         # Dependencies are provided by Conan: never download them
         tc.variables["HELLOIMGUI_USE_FREETYPE"] = True
         tc.variables["HELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED"] = False

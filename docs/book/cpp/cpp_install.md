@@ -68,7 +68,7 @@ prevents this by setting `CMAKE_FIND_NO_INSTALL_PREFIX=ON`; do the same if you c
 ## Conan package
 
 `conan/conanfile.py` packages the installed CMake package above for [Conan 2](https://conan.io): one monolithic
-`imgui_bundle` package, with `freetype`, `glfw` (or `sdl`) and `opengl` as Conan dependencies. It is meant for a
+`imgui_bundle` package, with `freetype`, `glfw` (or `sdl`), `opengl` and `libcurl` as Conan dependencies. It is meant for a
 private Conan remote (it is not published on Conan Center).
 
 ```bash
@@ -78,7 +78,8 @@ conan create conan --version=<version> --build=missing
 conan create conan -c user.imgui_bundle:source_dir=$PWD --build=missing
 ```
 
-Options: `platform_backend` (`glfw`, default, or `sdl2`), `rendering_backend` (`opengl3`), `with_test_engine` (default `True`).
+Options: `platform_backend` (`glfw`, default, or `sdl2`), `rendering_backend` (`opengl3`), `with_test_engine` (default `True`),
+`with_image_download` (markdown images from URLs via libcurl, default `True`).
 Consumers declare `imgui_bundle/<version>` in their `conanfile.txt` or `conanfile.py`, use the `CMakeDeps` and
 `CMakeToolchain` generators, and then `find_package(imgui_bundle CONFIG REQUIRED)` as above: the package ships its own
 CMake config (see `conan/test_package` for a complete example).
