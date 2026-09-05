@@ -3,3 +3,6 @@ add_library(demo_utils ${sources})
 target_include_directories(demo_utils PUBLIC ${CMAKE_CURRENT_LIST_DIR}/..)
 target_link_libraries(demo_utils PRIVATE imgui_bundle immapp)
 target_link_libraries(demo_utils PRIVATE fplus)
+if(IMMVISION_HAS_OPENCV)
+    immvision_target_use_opencv(demo_utils)  # immvision_make_test_suite uses OpenCV
+endif()

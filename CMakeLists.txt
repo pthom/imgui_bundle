@@ -204,7 +204,7 @@ option(IMGUI_BUNDLE_WITH_IMMVISION "Build with immvision" ON)
 # Note about ImmVision (Computer Vision Widgets)
 # -----------------------------------------------------------------------------
 # ImmVision now works without OpenCV (and uses ImmVision::ImageBuffer as the main image type).
-# - For C++, if OpenCV is installed and findable via find_package(OpenCV), ImmVision will also accept cv::Mat (cv::Mat convert to ImageBuffer internally with zero copy when possible). You may set IMMVISION_FETCH_OPENCV to ON to automatically fetch and build OpenCV in the build directory if OpenCV is not found on the system.
+# - For C++, define IMMVISION_HAS_OPENCV in your project (and link OpenCV): ImmVision then also accepts cv::Mat (converted to ImageBuffer with zero copy when possible). This interop is header-only: the immvision library never depends on OpenCV. IMMVISION_FETCH_OPENCV (fetch and build a minimal OpenCV) is only used by the demos.
 # - For Python, OpenCV is not required at all (numpy arrays are supported and convert to ImageBuffer internally with zero copy).
 
 

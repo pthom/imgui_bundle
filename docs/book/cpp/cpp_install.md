@@ -23,7 +23,7 @@ make -j
 (1) Since there are lots of submodules, this might take a few minutes
 
 :::{tip}
-ImmVision works out of the box without OpenCV. If you need OpenCV interop (e.g. `cv::Mat` support), you can optionally pass `-DIMMVISION_FETCH_OPENCV=ON` to download and build a minimal OpenCV, or point to an existing install with `-DOpenCV_DIR=/.../path/to/OpenCVConfig.cmake`.
+ImmVision works out of the box without OpenCV. If your project uses OpenCV, define `IMMVISION_HAS_OPENCV` on your target and link OpenCV: ImmVision then accepts `cv::Mat` directly (header-only interop, the library itself never depends on OpenCV). `-DIMMVISION_FETCH_OPENCV=ON` downloads and builds a minimal OpenCV, for the demos.
 :::
 
 :::{tip}

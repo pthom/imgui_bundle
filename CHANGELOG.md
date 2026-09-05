@@ -6,6 +6,7 @@
 
 * The CMake package is now named `imgui_bundle` (was `imgui-bundle`): `find_package(imgui_bundle CONFIG REQUIRED)` then `imgui_bundle_add_app(...)` or `target_link_libraries(app PRIVATE imgui_bundle::imgui_bundle)`. `cmake --install` produces a single relocatable package (`lib/cmake/imgui_bundle/`) which includes hello_imgui and all bundled libraries under the `imgui_bundle::` namespace. Likewise, hello_imgui's own CMake package is now `hello_imgui` (was `hello-imgui`; the former name still works through a deprecated shim).
 * plutovg and plutosvg are now git submodules of hello_imgui (`external/hello_imgui/hello_imgui/external/plutosvg`), no longer downloaded at configure time; they are included in the `srcs-full` release archive.
+* ImmVision's `cv::Mat` interop is now header-only: the immvision library (and the installed package) never depends on OpenCV. C++ users define `IMMVISION_HAS_OPENCV` in their project and link OpenCV to pass `cv::Mat` directly. `IMMVISION_FETCH_OPENCV` only concerns the demos.
 * Packagers (conda, vcpkg, distributions): set `HELLOIMGUI_USE_SYSTEM_PLUTOSVG=ON` to link an installed plutosvg (with freetype support) instead of the submodule. It is ON automatically when `IMGUI_BUNDLE_PYTHON_USE_SYSTEM_LIBS` is set (i.e. under `CONDA_BUILD`), so the conda-forge patch that swapped in the system plutovg/plutosvg is no longer needed.
 
 
