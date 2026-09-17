@@ -8036,6 +8036,17 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImFont::IsGlyphRangeUnused, nb::arg("c_begin"), nb::arg("c_last"))
         ;
 
+    pyClassImFont.def("calc_word_wrap_position_python",
+        [](ImFont& self, float size, const char* text, float wrap_width) -> int {
+            const char* text_end = text + strlen(text);
+            const char* word_wrap_eol = self.CalcWordWrapPosition(size, text, text_end, wrap_width);
+            return (int)(word_wrap_eol - text);
+        },
+        nb::arg("size"), nb::arg("text"), nb::arg("wrap_width"),
+        "Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)");
+
+
+
 
     auto pyEnumViewportFlags_ =
         nb::enum_<ImGuiViewportFlags_>(m, "ViewportFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags stored in ImGuiViewport::Flags, giving indications to the platform backends.")

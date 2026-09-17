@@ -11616,6 +11616,10 @@ class ImFont:
     def is_glyph_range_unused(self, c_begin: int, c_last: int) -> bool:
         pass
 
+    def calc_word_wrap_position_python(self, size: float, text: str, wrap_width: float) -> int:
+        """Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)"""
+        ...
+
 # -----------------------------------------------------------------------------
 # [SECTION] Viewports
 # -----------------------------------------------------------------------------

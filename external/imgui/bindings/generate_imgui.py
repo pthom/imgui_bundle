@@ -86,6 +86,27 @@ def autogenerate_imgui() -> None:
     """,
     )
 
+    # ImFont::CalcWordWrapPosition returns a pointer inside the text (excluded in the shared options):
+    # the Python version returns an index instead.
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImFont",
+        stub_code='''
+        def calc_word_wrap_position_python(self, size: float, text: str, wrap_width: float) -> int:
+            """Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)"""
+            ...
+    ''',
+        pydef_code="""
+        LG_CLASS.def("calc_word_wrap_position_python",
+            [](ImFont& self, float size, const char* text, float wrap_width) -> int {
+                const char* text_end = text + strlen(text);
+                const char* word_wrap_eol = self.CalcWordWrapPosition(size, text, text_end, wrap_width);
+                return (int)(word_wrap_eol - text);
+            },
+            nb::arg("size"), nb::arg("text"), nb::arg("wrap_width"),
+            "Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)");
+    """,
+    )
+
     # Workaround internal compiler error on MSVC:
     # See failure logs: https://github.com/pthom/imgui_bundle/actions/runs/3267470437/jobs/5372682867
     # Commit 55d4d342efebb306bafd63b4fb72085f27f59e7d
