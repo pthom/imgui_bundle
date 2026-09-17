@@ -276,8 +276,6 @@ def litgen_options_imgui(
             r"""
             RGBtoHSV -> RgbToHsv
             HSVtoRGB -> HsvToRgb
-            _AddFontFromFileTTF -> AddFontFromFileTTF
-            _GetGlyphRanges -> GetGlyphRanges
             """
         )
     )
@@ -446,7 +444,6 @@ def litgen_options_imgui(
 
     options.class_exclude_by_name__regex = join_string_by_pipe_char([
         "ImStableVector",
-        "ImGuiNpBuffer",  # Will be cast to numpy array (see pybind_imgui.cpp)
     ])
 
     options.member_numeric_c_array_types += "|" + join_string_by_pipe_char(
@@ -479,9 +476,6 @@ def litgen_options_imgui(
             r"^ImageButton$",
             r"^IsKey",
             r"^IsMouse",
-            r"^AddPolyline",
-            r"^AddConvexPolyFilled",
-            r"^AddConcavePolyFilled",
             r"^ColorPicker",
             r"^ColorEdit",
             r"^Shortcut",
@@ -493,7 +487,7 @@ def litgen_options_imgui(
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
         ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode",
-         "^AddRect$", "^PathStroke$", "^AddPolyline$"]
+         "^AddRect$", "^PathStroke$"]
     )
 
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"

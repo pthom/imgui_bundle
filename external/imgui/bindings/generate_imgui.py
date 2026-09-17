@@ -164,7 +164,10 @@ def autogenerate_imgui() -> None:
     # SliderFloat2/4, InputFloat2/4, ColorEdit3/4, ColorPicker3/4: two overloads each, accepting
     # a list of floats (returned as a list) or an ImVec2 / ImVec4 (returned as such).
     # Both overloads are written here, since Python overloads must be consecutive in the stub.
-    # The list versions are registered first, so that nanobind tries them first.
+    # The ImVec versions are registered first: an ImVec2/ImVec4 argument then returns an ImVec2/ImVec4 (as the stubs say),
+    # while lists and tuples still reach the list version (implicit conversions to ImVec only happen in nanobind's second pass).
+    # The list versions take doubles: nanobind's first pass accepts a Python float for a C++ float only when it is exactly
+    # representable in single precision (0.5 is, 0.3 is not), which would otherwise send [0.3, ...] to the ImVec version.
     options_imgui.custom_bindings.add_custom_bindings_to_main_module(
         stub_code='''
         @overload
@@ -234,69 +237,362 @@ def autogenerate_imgui() -> None:
     ''',
         pydef_code="""
         LG_MODULE.def("slider_float2",
-            [](const char* label, std::array<float, 2> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, std::array<float, 2>> {
-                bool changed = ImGui::SliderFloat2(label, v.data(), v_min, v_max, format, flags); return {changed, v}; },
-            nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-        LG_MODULE.def("slider_float2",
             [](const char* label, ImVec2 v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, ImVec2> {
                 bool changed = ImGui::SliderFloat2(label, &v.x, v_min, v_max, format, flags); return {changed, v}; },
             nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-        LG_MODULE.def("slider_float4",
-            [](const char* label, std::array<float, 4> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, std::array<float, 4>> {
-                bool changed = ImGui::SliderFloat4(label, v.data(), v_min, v_max, format, flags); return {changed, v}; },
+        LG_MODULE.def("slider_float2",
+            [](const char* label, std::array<double, 2> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, std::array<double, 2>> {
+                float vf[2]; for (int i = 0; i < 2; ++i) vf[i] = (float)v[i];
+                bool changed = ImGui::SliderFloat2(label, vf, v_min, v_max, format, flags);
+                for (int i = 0; i < 2; ++i) v[i] = vf[i];
+                return {changed, v}; },
             nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
         LG_MODULE.def("slider_float4",
             [](const char* label, ImVec4 v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::SliderFloat4(label, &v.x, v_min, v_max, format, flags); return {changed, v}; },
             nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-        LG_MODULE.def("input_float2",
-            [](const char* label, std::array<float, 2> v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, std::array<float, 2>> {
-                bool changed = ImGui::InputFloat2(label, v.data(), format, flags); return {changed, v}; },
-            nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+        LG_MODULE.def("slider_float4",
+            [](const char* label, std::array<double, 4> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, std::array<double, 4>> {
+                float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
+                bool changed = ImGui::SliderFloat4(label, vf, v_min, v_max, format, flags);
+                for (int i = 0; i < 4; ++i) v[i] = vf[i];
+                return {changed, v}; },
+            nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
         LG_MODULE.def("input_float2",
             [](const char* label, ImVec2 v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, ImVec2> {
                 bool changed = ImGui::InputFloat2(label, &v.x, format, flags); return {changed, v}; },
             nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-        LG_MODULE.def("input_float4",
-            [](const char* label, std::array<float, 4> v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, std::array<float, 4>> {
-                bool changed = ImGui::InputFloat4(label, v.data(), format, flags); return {changed, v}; },
+        LG_MODULE.def("input_float2",
+            [](const char* label, std::array<double, 2> v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, std::array<double, 2>> {
+                float vf[2]; for (int i = 0; i < 2; ++i) vf[i] = (float)v[i];
+                bool changed = ImGui::InputFloat2(label, vf, format, flags);
+                for (int i = 0; i < 2; ++i) v[i] = vf[i];
+                return {changed, v}; },
             nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
         LG_MODULE.def("input_float4",
             [](const char* label, ImVec4 v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::InputFloat4(label, &v.x, format, flags); return {changed, v}; },
             nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-        LG_MODULE.def("color_edit3",
-            [](const char* label, std::array<float, 3> col, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<float, 3>> {
-                bool changed = ImGui::ColorEdit3(label, col.data(), flags); return {changed, col}; },
-            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+        LG_MODULE.def("input_float4",
+            [](const char* label, std::array<double, 4> v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, std::array<double, 4>> {
+                float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
+                bool changed = ImGui::InputFloat4(label, vf, format, flags);
+                for (int i = 0; i < 4; ++i) v[i] = vf[i];
+                return {changed, v}; },
+            nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
         LG_MODULE.def("color_edit3",
             [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::ColorEdit3(label, &col.x, flags); return {changed, col}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-        LG_MODULE.def("color_edit4",
-            [](const char* label, std::array<float, 4> col, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<float, 4>> {
-                bool changed = ImGui::ColorEdit4(label, col.data(), flags); return {changed, col}; },
+        LG_MODULE.def("color_edit3",
+            [](const char* label, std::array<double, 3> v, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<double, 3>> {
+                float vf[3]; for (int i = 0; i < 3; ++i) vf[i] = (float)v[i];
+                bool changed = ImGui::ColorEdit3(label, vf, flags);
+                for (int i = 0; i < 3; ++i) v[i] = vf[i];
+                return {changed, v}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
         LG_MODULE.def("color_edit4",
             [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::ColorEdit4(label, &col.x, flags); return {changed, col}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-        LG_MODULE.def("color_picker3",
-            [](const char* label, std::array<float, 3> col, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<float, 3>> {
-                bool changed = ImGui::ColorPicker3(label, col.data(), flags); return {changed, col}; },
+        LG_MODULE.def("color_edit4",
+            [](const char* label, std::array<double, 4> v, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<double, 4>> {
+                float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
+                bool changed = ImGui::ColorEdit4(label, vf, flags);
+                for (int i = 0; i < 4; ++i) v[i] = vf[i];
+                return {changed, v}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
         LG_MODULE.def("color_picker3",
             [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::ColorPicker3(label, &col.x, flags); return {changed, col}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-        LG_MODULE.def("color_picker4",
-            [](const char* label, std::array<float, 4> col, ImGuiColorEditFlags flags, std::optional<float> ref_col) -> std::tuple<bool, std::array<float, 4>> {
-                bool changed = ImGui::ColorPicker4(label, col.data(), flags, ref_col.has_value() ? &ref_col.value() : nullptr); return {changed, col}; },
-            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
+        LG_MODULE.def("color_picker3",
+            [](const char* label, std::array<double, 3> v, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<double, 3>> {
+                float vf[3]; for (int i = 0; i < 3; ++i) vf[i] = (float)v[i];
+                bool changed = ImGui::ColorPicker3(label, vf, flags);
+                for (int i = 0; i < 3; ++i) v[i] = vf[i];
+                return {changed, v}; },
+            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
         LG_MODULE.def("color_picker4",
             [](const char* label, ImVec4 col, ImGuiColorEditFlags flags, std::optional<ImVec4> ref_col) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::ColorPicker4(label, &col.x, flags, ref_col.has_value() ? &ref_col->x : nullptr); return {changed, col}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
+        LG_MODULE.def("color_picker4",
+            [](const char* label, std::array<double, 4> v, ImGuiColorEditFlags flags, std::optional<double> ref_col) -> std::tuple<bool, std::array<double, 4>> {
+                float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
+                float ref_col_f = ref_col.has_value() ? (float)*ref_col : 0.f;
+                bool changed = ImGui::ColorPicker4(label, vf, flags, ref_col.has_value() ? &ref_col_f : nullptr);
+                for (int i = 0; i < 4; ++i) v[i] = vf[i];
+                return {changed, v}; },
+            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
+    """,
+    )
+
+    # ------------------------------------------------------------------------------------------
+    # Class custom bindings (replace former Python-only members of the imgui fork)
+    # ------------------------------------------------------------------------------------------
+
+    # ImVec2 / ImVec4 / ImColor: to_dict / from_dict (used for serialization, e.g. in fiatlight)
+    for vec_class, keys in [("ImVec2", "xy"), ("ImVec4", "xyzw")]:
+        keys_list = ", ".join(f'"{k}"' for k in keys)
+        to_dict_cpp = ", ".join(f'{{"{k}", self.{k}}}' for k in keys)
+        from_dict_cpp = ", ".join(f'd.at("{k}")' for k in keys)
+        options_imgui.custom_bindings.add_custom_bindings_to_class(
+            qualified_class=vec_class,
+            stub_code=f'''
+            def to_dict(self) -> Dict[str, float]:
+                """Convert to a dict with keys {", ".join(keys)}"""
+                pass
+            @staticmethod
+            def from_dict(d: Dict[str, float]) -> {vec_class}:
+                """Create from a dict with keys {", ".join(keys)}"""
+                pass
+        ''',
+            pydef_code=f'''
+            LG_CLASS.def("to_dict",
+                [](const {vec_class}& self) -> std::map<std::string, float> {{ return {{{to_dict_cpp}}}; }},
+                "Convert to a dict with keys {", ".join(keys)}");
+            LG_CLASS.def_static("from_dict",
+                [](const std::map<std::string, float>& d) -> {vec_class} {{
+                    for (const char* k : {{{keys_list}}})
+                        if (d.find(k) == d.end())
+                            throw std::invalid_argument(std::string("{vec_class}.from_dict: missing key ") + k);
+                    return {vec_class}({from_dict_cpp});
+                }},
+                nb::arg("d"), "Create from a dict with keys {", ".join(keys)}");
+        ''',
+        )
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImColor",
+        stub_code='''
+        def to_dict(self) -> Dict[str, float]:
+            """Convert to a dict with keys x, y, z, w"""
+            pass
+        @staticmethod
+        def from_dict(d: Dict[str, float]) -> ImColor:
+            """Create from a dict with keys x, y, z, w"""
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("to_dict",
+            [](const ImColor& self) -> std::map<std::string, float> {
+                return {{"x", self.Value.x}, {"y", self.Value.y}, {"z", self.Value.z}, {"w", self.Value.w}}; },
+            "Convert to a dict with keys x, y, z, w");
+        LG_CLASS.def_static("from_dict",
+            [](const std::map<std::string, float>& d) -> ImColor {
+                for (const char* k : {"x", "y", "z", "w"})
+                    if (d.find(k) == d.end())
+                        throw std::invalid_argument(std::string("ImColor.from_dict: missing key ") + k);
+                return ImColor(d.at("x"), d.at("y"), d.at("z"), d.at("w"));
+            },
+            nb::arg("d"), "Create from a dict with keys x, y, z, w");
+    """,
+    )
+
+    # Tables: indexed access to the sort specs, and accessors for the SortDirection bitfield
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiTableSortSpecs",
+        stub_code='''
+        def get_specs(self, idx: int) -> TableColumnSortSpecs:
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("get_specs",
+            [](const ImGuiTableSortSpecs& self, size_t idx) -> const ImGuiTableColumnSortSpecs& {
+                if (idx >= (size_t)self.SpecsCount)
+                    throw std::out_of_range("TableSortSpecs.get_specs: index out of range");
+                return self.Specs[idx];
+            },
+            nb::arg("idx"), nb::rv_policy::reference);
+    """,
+    )
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiTableColumnSortSpecs",
+        stub_code='''
+        def get_sort_direction(self) -> SortDirection:
+            pass
+        def set_sort_direction(self, direction: SortDirection) -> None:
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("get_sort_direction",
+            [](const ImGuiTableColumnSortSpecs& self) -> ImGuiSortDirection { return self.SortDirection; });
+        LG_CLASS.def("set_sort_direction",
+            [](ImGuiTableColumnSortSpecs& self, ImGuiSortDirection direction) { self.SortDirection = direction; },
+            nb::arg("direction"));
+    """,
+    )
+
+    # ImGuiStyle::Colors[ImGuiCol_COUNT]: indexed access
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiStyle",
+        stub_code='''
+        def color_(self, idx_color: int) -> ImVec4:
+            pass
+        def set_color_(self, idx_color: int, color: ImVec4Like) -> None:
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("color_",
+            [](ImGuiStyle& self, size_t idx_color) -> ImVec4& {
+                if (idx_color >= (size_t)ImGuiCol_COUNT)
+                    throw std::out_of_range("Style.color_: index out of range");
+                return self.Colors[idx_color];
+            },
+            nb::arg("idx_color"), nb::rv_policy::reference);
+        LG_CLASS.def("set_color_",
+            [](ImGuiStyle& self, size_t idx_color, ImVec4 color) {
+                if (idx_color >= (size_t)ImGuiCol_COUNT)
+                    throw std::out_of_range("Style.set_color_: index out of range");
+                self.Colors[idx_color] = color;
+            },
+            nb::arg("idx_color"), nb::arg("color"));
+    """,
+    )
+
+    # ImGuiIO::IniFilename / LogFilename are bare const char* with no storage: provide setters with storage
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiIO",
+        stub_code='''
+        def set_ini_filename(self, filename: Optional[str]) -> None:
+            """- The disk functions are automatically called if IniFilename != None
+            - Set IniFilename to None to load/save manually. Read io.WantSaveIniSettings description about handling .ini saving manually.
+            - Important: default value "imgui.ini" is relative to current working dir! Most apps will want to lock this to an absolute path (e.g. same path as executables).
+            """
+            pass
+        def get_ini_filename(self) -> str:
+            pass
+        def set_log_filename(self, filename: str) -> None:
+            pass
+        def get_log_filename(self) -> str:
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("set_ini_filename",
+            [](ImGuiIO& self, std::optional<std::string> filename) {
+                static std::string storage;  // ImGuiIO::IniFilename is a bare pointer with no storage
+                if (filename.has_value()) { storage = *filename; self.IniFilename = storage.c_str(); }
+                else self.IniFilename = NULL;
+            },
+            nb::arg("filename").none(),
+            " - The disk functions are automatically called if IniFilename != None\\n - Set IniFilename to None to load/save manually. Read io.WantSaveIniSettings description about handling .ini saving manually.\\n - Important: default value \\"imgui.ini\\" is relative to current working dir! Most apps will want to lock this to an absolute path (e.g. same path as executables).");
+        LG_CLASS.def("get_ini_filename",
+            [](const ImGuiIO& self) -> std::string { return self.IniFilename ? self.IniFilename : ""; });
+        LG_CLASS.def("set_log_filename",
+            [](ImGuiIO& self, std::string filename) {
+                static std::string storage;  // ImGuiIO::LogFilename is a bare pointer with no storage
+                storage = filename; self.LogFilename = storage.c_str();
+            },
+            nb::arg("filename"));
+        LG_CLASS.def("get_log_filename",
+            [](const ImGuiIO& self) -> std::string { return self.LogFilename ? self.LogFilename : ""; });
+    """,
+    )
+
+    # ImFontGlyph bitfields
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImFontGlyph",
+        stub_code='''
+        def is_colored(self) -> bool:
+            """Flag to indicate glyph is colored and should generally ignore tinting (make it usable with no shift on little-endian as this is used in loops) (bitfield accessor)"""
+            pass
+        def is_visible(self) -> bool:
+            """Flag to indicate glyph has no visible pixels (e.g. space). Allow early out when rendering. (bitfield accessor)"""
+            pass
+        def get_codepoint(self) -> int:
+            """0x0000..0x10FFFF (bitfield accessor)"""
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("is_colored", [](const ImFontGlyph& self) -> bool { return self.Colored != 0; },
+            "Flag to indicate glyph is colored and should generally ignore tinting (make it usable with no shift on little-endian as this is used in loops) (bitfield accessor)");
+        LG_CLASS.def("is_visible", [](const ImFontGlyph& self) -> bool { return self.Visible != 0; },
+            "Flag to indicate glyph has no visible pixels (e.g. space). Allow early out when rendering. (bitfield accessor)");
+        LG_CLASS.def("get_codepoint", [](const ImFontGlyph& self) -> unsigned int { return self.Codepoint; },
+            "0x0000..0x10FFFF (bitfield accessor)");
+    """,
+    )
+
+    # ImTextureData::GetPixels() as a numpy array (a view on the texture memory, owned by C++)
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImTextureData",
+        stub_code='''
+        def get_pixels_array(self) -> NpBuffer:
+            """GetPixelsArray(): returns the pixel data as a NumPy array.
+
+             Note: GetPixelsAt(x, y) is not implemented for Python, but you can use the offset below:
+                offset = (y * tex.width + x) * tex.bytes_per_pixel
+            """
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("get_pixels_array",
+            [](ImTextureData& self) {
+                if (self.Pixels == NULL)
+                    throw std::runtime_error("ImTextureData.get_pixels_array: no pixels");
+                size_t shape[1] = {(size_t)self.GetSizeInBytes()};
+                return nb::ndarray<uint8_t, nb::numpy>(self.Pixels, 1, shape, nb::handle());  // no owner: memory is owned by C++
+            },
+            nb::rv_policy::reference,
+            " GetPixelsArray(): returns the pixel data as a NumPy array.\\n\\n Note: GetPixelsAt(x, y) is not implemented for Python, but you can use the offset below:\\n    offset = (y * tex.width + x) * tex.bytes_per_pixel");
+    """,
+    )
+
+    # ImFontAtlas: texture id accessors for older backends, and AddFontFromFileTTF without glyph ranges
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImFontAtlas",
+        stub_code='''
+        def add_font_from_file_ttf(
+            self, filename: str, size_pixels: float, font_cfg: Optional[ImFontConfig] = None
+        ) -> ImFont:
+            pass
+        def python_set_texture_id(self, id_: ImTextureID) -> None:
+            """Set the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)"""
+            pass
+        def python_get_texture_id(self) -> ImTextureID:
+            """Get the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)"""
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("add_font_from_file_ttf",
+            [](ImFontAtlas& self, const char* filename, float size_pixels, const ImFontConfig* font_cfg) -> ImFont* {
+                return self.AddFontFromFileTTF(filename, size_pixels, font_cfg); },
+            nb::arg("filename"), nb::arg("size_pixels"), nb::arg("font_cfg") = nb::none(),
+            nb::rv_policy::reference);
+        LG_CLASS.def("python_set_texture_id",
+            [](ImFontAtlas& self, ImTextureID id) { self.TexRef = ImTextureRef(id); },
+            nb::arg("id_"),
+            "Set the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)");
+        LG_CLASS.def("python_get_texture_id",
+            [](ImFontAtlas& self) -> ImTextureID { return self.TexRef.GetTexID(); },
+            "Get the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)");
+    """,
+    )
+
+    # ImDrawList polygons: accept a list of points (the C++ versions take a pointer + count)
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImDrawList",
+        stub_code='''
+        def add_polyline(self, points: List[ImVec2Like], col: ImU32, thickness: float, flags: ImDrawFlags) -> None:
+            pass
+        def add_convex_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
+            pass
+        def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("add_polyline",
+            [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col, float thickness, ImDrawFlags flags) {
+                self.AddPolyline(points.data(), (int)points.size(), col, thickness, flags); },
+            nb::arg("points"), nb::arg("col"), nb::arg("thickness"), nb::arg("flags"));
+        LG_CLASS.def("add_convex_poly_filled",
+            [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col) {
+                self.AddConvexPolyFilled(points.data(), (int)points.size(), col); },
+            nb::arg("points"), nb::arg("col"));
+        LG_CLASS.def("add_concave_poly_filled",
+            [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col) {
+                self.AddConcavePolyFilled(points.data(), (int)points.size(), col); },
+            nb::arg("points"), nb::arg("col"));
     """,
     )
 

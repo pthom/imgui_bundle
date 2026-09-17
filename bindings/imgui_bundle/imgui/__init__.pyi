@@ -395,7 +395,6 @@ class Vec4Protocol(Protocol):
 # [ADAPT_IMGUI_BUNDLE]
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
-
 # #endif
 #
 
@@ -506,19 +505,6 @@ class ImVec2(Vec2Protocol):
     @overload
     def __init__(self, _x: float, _y: float) -> None:
         pass
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # std::map<std::string, float> to_dict() const { return {{"x", x}, {"y", y}}; }    /* original C++ signature */
-    def to_dict(self) -> Dict[str, float]:
-        """(private API)"""
-        pass
-    # static ImVec2 from_dict(const std::map<std::string, float>& d) { IM_ASSERT((d.find("x") != d.end()) && (d.find("y") != d.end()) && "ImVec2::from_dict dict should contain x and y keys"); return ImVec2(d.at("x"), d.at("y")); }    /* original C++ signature */
-    @staticmethod
-    def from_dict(d: Dict[str, float]) -> ImVec2:
-        """(private API)"""
-        pass
-    # #endif
-    #
 
     def __getitem__(self, idx: int) -> float:
         """Get the value at the given index (0 for x, 1 for y)"""
@@ -527,6 +513,15 @@ class ImVec2(Vec2Protocol):
     def __setitem__(self, idx: int, value: float) -> None:
         """Set the value at the given index (0 for x, 1 for y)"""
         ...
+
+    def to_dict(self) -> Dict[str, float]:
+        """Convert to a dict with keys x, y"""
+        pass
+
+    @staticmethod
+    def from_dict(d: Dict[str, float]) -> ImVec2:
+        """Create from a dict with keys x, y"""
+        pass
 
 class ImVec4(Vec4Protocol):
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
@@ -547,19 +542,6 @@ class ImVec4(Vec4Protocol):
     @overload
     def __init__(self, _x: float, _y: float, _z: float, _w: float) -> None:
         pass
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # std::map<std::string, float> to_dict() const { return {{"x", x}, {"y", y}, {"z", z}, {"w", w}}; }    /* original C++ signature */
-    def to_dict(self) -> Dict[str, float]:
-        """(private API)"""
-        pass
-    # static ImVec4 from_dict(const std::map<std::string, float>& d) { IM_ASSERT((d.find("x") != d.end()) && (d.find("y") != d.end()) && (d.find("z") != d.end()) && (d.find("w") != d.end()) && "ImVec4::from_dict dict should contain x, y, z and w keys"); return ImVec4(d.at("x"), d.at("y"), d.at("z"), d.at("w")); }    /* original C++ signature */
-    @staticmethod
-    def from_dict(d: Dict[str, float]) -> ImVec4:
-        """(private API)"""
-        pass
-    # #endif
-    #
 
     def __getitem__(self, idx: int) -> float:
         """Get the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
@@ -568,6 +550,15 @@ class ImVec4(Vec4Protocol):
     def __setitem__(self, idx: int, value: float) -> None:
         """Set the value at the given index (0 for x, 1 for y, 2 for z, 3 for w)"""
         ...
+
+    def to_dict(self) -> Dict[str, float]:
+        """Convert to a dict with keys x, y, z, w"""
+        pass
+
+    @staticmethod
+    def from_dict(d: Dict[str, float]) -> ImVec4:
+        """Create from a dict with keys x, y, z, w"""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Texture identifiers (ImTextureID, ImTextureRef)
@@ -5284,15 +5275,9 @@ class TableSortSpecs:
     # ImGuiTableSortSpecs()       { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # [ADAPT_IMGUI_BUNDLE]
-    #                            #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # IMGUI_API const ImGuiTableColumnSortSpecs& GetSpecs(size_t idx) const;    /* original C++ signature */
+
     def get_specs(self, idx: int) -> TableColumnSortSpecs:
         pass
-    #                            #endif
-    #
-    # [/ADAPT_IMGUI_BUNDLE]
 
 class TableColumnSortSpecs:
     """Sorting specification for one column of a table (sizeof == 12 bytes)"""
@@ -5309,18 +5294,12 @@ class TableColumnSortSpecs:
     # ImGuiTableColumnSortSpecs() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # [ADAPT_IMGUI_BUNDLE]
-    #                              #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # inline IMGUI_API ImGuiSortDirection GetSortDirection() { return SortDirection; }    /* original C++ signature */
+
     def get_sort_direction(self) -> SortDirection:
         pass
-    # inline IMGUI_API void SetSortDirection(ImGuiSortDirection direction) { SortDirection = direction; }    /* original C++ signature */
+
     def set_sort_direction(self, direction: SortDirection) -> None:
         pass
-    #                              #endif
-    #
-    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Helpers: Debug log, memory allocations macros, ImVector<>
@@ -8554,22 +8533,8 @@ class Style:
     # float       _NextFrameFontSizeBase;    /* original C++ signature */
     _next_frame_font_size_base: float  # FIXME: Temporary hack until we finish remaining work.
 
-    # [ADAPT_IMGUI_BUNDLE]
-    #                                             #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # python adapter for ImGuiStyle::Colors[ImGuiCol_COUNT]
-    # You can query and modify those values (0 <= idxColor < Col_.count)
-    # inline IMGUI_API  ImVec4& Color_(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); return Colors[idxColor]; }    /* original C++ signature */
-    def color_(self, idx_color: int) -> ImVec4:
-        pass
-    # inline IMGUI_API  void SetColor_(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImGuiCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
-    def set_color_(self, idx_color: int, color: ImVec4Like) -> None:
-        pass
-    #                                             #endif
-    #
-    # [/ADAPT_IMGUI_BUNDLE]
-
-    # IMGUI_API ImGuiStyle();    /* original C++ signature */
+    # Functions
+    # IMGUI_API   ImGuiStyle();    /* original C++ signature */
     def __init__(self) -> None:
         pass
     # IMGUI_API   void ScaleAllSizes(float scale_factor);     /* original C++ signature */
@@ -8577,6 +8542,12 @@ class Style:
         """Scale all spacing/padding/thickness values. Do not scale fonts. See comments in definition. Consider not calling this if your initial scale factor if <1.0."""
         pass
     # Obsolete names
+
+    def color_(self, idx_color: int) -> ImVec4:
+        pass
+
+    def set_color_(self, idx_color: int, color: ImVec4Like) -> None:
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] ImGuiIO
@@ -9049,30 +9020,22 @@ class IO:
     # IMGUI_API   ImGuiIO();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # [ADAPT_IMGUI_BUNDLE]
 
-    #                                                                   #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-
-    # IMGUI_API void SetIniFilename(std::optional<const char*> filename);    /* original C++ signature */
     def set_ini_filename(self, filename: Optional[str]) -> None:
         """- The disk functions are automatically called if IniFilename != None
         - Set IniFilename to None to load/save manually. Read io.WantSaveIniSettings description about handling .ini saving manually.
         - Important: default value "imgui.ini" is relative to current working dir! Most apps will want to lock this to an absolute path (e.g. same path as executables).
         """
         pass
-    # IMGUI_API std::string GetIniFilename() const;    /* original C++ signature */
+
     def get_ini_filename(self) -> str:
         pass
-    # IMGUI_API void SetLogFilename(const char* filename);    /* original C++ signature */
+
     def set_log_filename(self, filename: str) -> None:
         pass
-    # IMGUI_API std::string GetLogFilename() const;    /* original C++ signature */
+
     def get_log_filename(self) -> str:
         pass
-    #                                                                   #endif
-    #
-    # [/ADAPT_IMGUI_BUNDLE]
 
 # -----------------------------------------------------------------------------
 # [SECTION] Misc data structures (ImGuiInputTextCallbackData, ImGuiSizeCallbackData, ImGuiPayload)
@@ -9631,19 +9594,15 @@ class ImColor:
     def hsv(h: float, s: float, v: float, a: float = 1.0) -> ImColor:
         """(private API)"""
         pass
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # std::map<std::string, float> to_dict() const { return {{"x", Value.x}, {"y", Value.x}, {"z", Value.x}, {"w", Value.x}}; }    /* original C++ signature */
+
     def to_dict(self) -> Dict[str, float]:
-        """(private API)"""
+        """Convert to a dict with keys x, y, z, w"""
         pass
-    # static ImVec4 from_dict(const std::map<std::string, float>& d) { IM_ASSERT((d.find("x") != d.end()) && (d.find("y") != d.end()) && (d.find("z") != d.end()) && (d.find("w") != d.end()) && "ImVec4.from_dict() requires a dictionary with keys 'x', 'y', 'z', 'w'"); ImVec4 v = ImVec4(d.at("x"), d.at("y"), d.at("z"), d.at("w")); return ImColor(v); }    /* original C++ signature */
+
     @staticmethod
-    def from_dict(d: Dict[str, float]) -> ImVec4:
-        """(private API)"""
+    def from_dict(d: Dict[str, float]) -> ImColor:
+        """Create from a dict with keys x, y, z, w"""
         pass
-    # #endif
-    #
 
 # -----------------------------------------------------------------------------
 # [SECTION] Multi-Select API flags and structures (ImGuiMultiSelectFlags, ImGuiSelectionRequestType, ImGuiSelectionRequest, ImGuiMultiSelectIO, ImGuiSelectionBasicStorage)
@@ -10396,21 +10355,6 @@ class ImDrawList:
     # General polygon
     # - Only simple polygons are supported by filling functions (no self-intersections, no holes).
     # - Concave polygon fill is more expensive than convex one: it has O(N^2) complexity. Provided as a convenience for the user but not used by the main library.
-    #                                      #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # - Only simple polygons are supported by filling functions (no self-intersections, no holes).
-    # - Concave polygon fill is more expensive than convex one: it has O(N^2) complexity. Provided as a convenience fo user but not used by main library.
-    # IMGUI_API void  AddPolyline(const std::vector<ImVec2>& points, ImU32 col, float thickness, ImDrawFlags flags);    /* original C++ signature */
-    def add_polyline(self, points: List[ImVec2Like], col: ImU32, thickness: float, flags: ImDrawFlags) -> None:
-        pass
-    # IMGUI_API void  AddConvexPolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
-    def add_convex_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
-        pass
-    # IMGUI_API void  AddConcavePolyFilled(const std::vector<ImVec2>& points, ImU32 col);    /* original C++ signature */
-    def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
-        pass
-    #                                      #endif
-    #
 
     # Image primitives
     # - Read FAQ to understand what ImTextureID/ImTextureRef are.
@@ -10639,6 +10583,15 @@ class ImDrawList:
     def _path_arc_to_n(self, center: ImVec2Like, radius: float, a_min: float, a_max: float, num_segments: int) -> None:
         pass
 
+    def add_polyline(self, points: List[ImVec2Like], col: ImU32, thickness: float, flags: ImDrawFlags) -> None:
+        pass
+
+    def add_convex_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
+        pass
+
+    def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
+        pass
+
 class ImDrawData:
     """All draw data to render a Dear ImGui frame
     (NB: the style and the naming convention here is a little inconsistent, we currently preserve them for backward compatibility purpose,
@@ -10803,20 +10756,6 @@ class ImTextureData:
     # IMGUI_API void      DestroyPixels();    /* original C++ signature */
     def destroy_pixels(self) -> None:
         pass
-    #                                #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # ImGuiNpBuffer       GetPixelsArray()          { return ImGuiNpBuffer{Pixels, Width * Height * BytesPerPixel}; }    /* original C++ signature */
-    def get_pixels_array(self) -> NpBuffer:
-        """GetPixelsArray(): returns the pixel data as a NumPy array.
-
-         Note: GetPixelsAt(x, y) is not implemented for Python, but you can use the offset below:
-            offset = (y * tex.width + x) * tex.bytes_per_pixel
-        (private API)
-        """
-        pass
-    #                                #endif
-    #
-
     # int                 GetSizeInBytes() const      { return Width * Height * BytesPerPixel; }    /* original C++ signature */
     def get_size_in_bytes(self) -> int:
         """(private API)"""
@@ -10843,6 +10782,14 @@ class ImTextureData:
     # void    SetStatus(ImTextureStatus status)       { Status = status; if (status == ImTextureStatus_Destroyed && !WantDestroyNextFrame && Pixels != nullptr) Status = ImTextureStatus_WantCreate; }    /* original C++ signature */
     def set_status(self, status: ImTextureStatus) -> None:
         """(private API)"""
+        pass
+
+    def get_pixels_array(self) -> NpBuffer:
+        """GetPixelsArray(): returns the pixel data as a NumPy array.
+
+        Note: GetPixelsAt(x, y) is not implemented for Python, but you can use the offset below:
+           offset = (y * tex.width + x) * tex.bytes_per_pixel
+        """
         pass
 
 # -----------------------------------------------------------------------------
@@ -10937,24 +10884,18 @@ class ImFontGlyph:
     # ImFontGlyph()   { memset((void*)this, 0, sizeof(*this)); PackId = -1; }    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    #                 #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
 
-    # [ADAPT_IMGUI_BUNDLE]
-    # bool isColored() const { return Colored != 0; }    /* original C++ signature */
     def is_colored(self) -> bool:
-        """(private API)"""
+        """Flag to indicate glyph is colored and should generally ignore tinting (make it usable with no shift on little-endian as this is used in loops) (bitfield accessor)"""
         pass
-    # bool isVisible() const { return Visible != 0; }    /* original C++ signature */
+
     def is_visible(self) -> bool:
-        """(private API)"""
+        """Flag to indicate glyph has no visible pixels (e.g. space). Allow early out when rendering. (bitfield accessor)"""
         pass
-    # unsigned int getCodepoint() const { return Codepoint; }    /* original C++ signature */
+
     def get_codepoint(self) -> int:
-        """(private API)"""
+        """0x0000..0x10FFFF (bitfield accessor)"""
         pass
-    # [/ADAPT_IMGUI_BUNDLE]
-    #                 #endif
 
 class ImFontGlyphRangesBuilder:
     """Helper to build glyph ranges from text/string data. Feed your application strings/characters to it then call BuildRanges().
@@ -11119,24 +11060,6 @@ class ImFontAtlas:
     # Since 1.92: specifying glyph ranges is only useful/necessary if your backend doesn't support ImGuiBackendFlags_RendererHasTextures!
 
     # -------------------------------------------
-    # [ADAPT_IMGUI_BUNDLE]
-    # -------------------------------------------
-
-    #                                     #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # IMGUI_API ImFont* _AddFontFromFileTTF(    /* original C++ signature */
-    #         const char* filename,
-    #         float size_pixels,
-    #         const ImFontConfig* font_cfg = NULL);
-    def add_font_from_file_ttf(
-        self, filename: str, size_pixels: float, font_cfg: Optional[ImFontConfig] = None
-    ) -> ImFont:
-        pass
-    #                                     #endif
-    #
-    # [/ADAPT_IMGUI_BUNDLE]
-
-    # -------------------------------------------
     # [ALPHA] Custom Rectangles/Glyphs API
     # -------------------------------------------
 
@@ -11197,28 +11120,6 @@ class ImFontAtlas:
     # ImTextureData*              TexData;    /* original C++ signature */
     tex_data: ImTextureData  # Latest texture.
 
-    #                                     #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # Convenience methods for python in order to get/set the font texture Id
-    # (because currently TexID is in a union and we can't access it directly)
-    # Note: this uses the old way of setting the fonts texture.
-    # Newer backends should implement ImGuiBackendFlags_RendererHasTextures
-    # and be able to handle Texture updates
-    # See https://github.com/ocornut/imgui/issues/8465
-    # For inspiration, look at
-    #        def _update_texture(self, tex: imgui.ImTextureData):
-    # inside ImGui Bundle (bindings/imgui_bundle/python_backends/opengl_xxx_backend.py)
-    # void        Python_SetTextureID(ImTextureID id) { TexRef = ImTextureRef(id); }    /* original C++ signature */
-    def python_set_texture_id(self, id_: ImTextureID) -> None:
-        """(private API)"""
-        pass
-    # ImTextureID Python_GetTextureID() { return TexRef.GetTexID(); }    /* original C++ signature */
-    def python_get_texture_id(self) -> ImTextureID:
-        """(private API)"""
-        pass
-    #                                     #endif
-    #
-
     # [Internal]
     # ImVector<ImTextureData*>    TexList;    /* original C++ signature */
     tex_list: ImVector_ImTextureData_ptr  # Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetDrawData().Textures[]/GetPlatformIO().Textures[] instead!
@@ -11263,6 +11164,19 @@ class ImFontAtlas:
     # typedef ImFontAtlasRect           ImFontAtlasCustomRect;   // OBSOLETED in 1.92.0
     # typedef ImFontAtlasCustomRect     CustomRect;              // OBSOLETED in 1.72+
     # typedef ImFontGlyphRangesBuilder  GlyphRangesBuilder;      // OBSOLETED in 1.67+
+
+    def add_font_from_file_ttf(
+        self, filename: str, size_pixels: float, font_cfg: Optional[ImFontConfig] = None
+    ) -> ImFont:
+        pass
+
+    def python_set_texture_id(self, id_: ImTextureID) -> None:
+        """Set the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)"""
+        pass
+
+    def python_get_texture_id(self) -> ImTextureID:
+        """Get the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)"""
+        pass
 
 class ImFontBaked:
     """Font runtime data for a given size
