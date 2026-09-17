@@ -972,24 +972,6 @@ def set_window_collapsed(name: str, collapsed: bool, cond: Cond = 0) -> None:
     """set named window collapsed state"""
     pass
 
-# IMGUI_API void          SetWindowFocus();                                                               /* original C++ signature */
-@overload
-def set_window_focus() -> None:
-    """(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus()."""
-    pass
-
-# IMGUI_API inline void          SetWindowFocus(std::optional<std::string> name)                                           // set named window to be focused / top-most. use NULL to remove focus.    /* original C++ signature */
-#     { if (name.has_value()) SetWindowFocus(name.value()); else SetWindowFocus(NULL); }
-@overload
-def set_window_focus(name: Optional[str]) -> None:
-    """// set named window to be focused / top-most. use None to remove focus."""
-    pass
-
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
-
 # Windows Scrolling
 # - Any change of Scroll will be applied at the beginning of next frame in the first call to Begin().
 # - You may instead use SetNextWindowScroll() prior to calling Begin() to avoid this delay, as an alternative to using SetScrollX()/SetScrollY().
@@ -1059,16 +1041,6 @@ def set_scroll_from_pos_y(local_y: float, center_y_ratio: float = 0.5) -> None:
 #  - CORRECT:   PushFont(None, style.FontSizeBase * 2.0)  // use current unscaled size x2 == make text twice bigger
 #  - INCORRECT: PushFont(None, GetFontSize())              // INCORRECT! using size after global factors already applied == GLOBAL SCALING FACTORS WILL APPLY TWICE!
 #  - INCORRECT: PushFont(None, GetFontSize() * 2.0)       // INCORRECT! using size after global factors already applied == GLOBAL SCALING FACTORS WILL APPLY TWICE!
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# IMGUI_API void          PushFont(std::optional<ImFont*> font, float font_size_base_unscaled);              /* original C++ signature */
-def push_font(font: Optional[ImFont], font_size_base_unscaled: float) -> None:
-    """Use None as a shortcut to keep current font. Use 0.0 to keep current size."""
-    pass
-
-# #endif
-#
-
 # IMGUI_API void          PopFont();    /* original C++ signature */
 def pop_font() -> None:
     pass
@@ -1747,50 +1719,12 @@ def slider_float(
     """adjust format to decorate the value with a prefix or a suffix for in-slider labels or unit display."""
     pass
 
-# IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
-@overload
-def slider_float2(
-    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
-) -> Tuple[bool, List[float]]:
-    pass
-
-# IMGUI_API inline std::pair<bool, ImVec2>  SliderFloat2(const char* label, ImVec2 v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0)    /* original C++ signature */
-#     { bool changed = SliderFloat2(label, (float*)&v, v_min, v_max, format, flags);  return { changed, v }; }
-@overload
-def slider_float2(
-    label: str, v: ImVec2Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
-) -> Tuple[bool, ImVec2]:
-    pass
-
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
 # IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_float3(
     label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
-# IMGUI_API bool          SliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
-@overload
-def slider_float4(
-    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
-) -> Tuple[bool, List[float]]:
-    pass
-
-# IMGUI_API inline std::pair<bool, ImVec4>  SliderFloat4(const char* label, ImVec4 v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0)    /* original C++ signature */
-#     { bool changed = SliderFloat4(label, (float*)&v, v_min, v_max, format, flags);  return { changed, v }; }
-@overload
-def slider_float4(
-    label: str, v: ImVec4Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
-) -> Tuple[bool, ImVec4]:
-    pass
-
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
 # IMGUI_API bool          SliderAngle(const char* label, float* v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f, const char* format = "%.0f deg", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_angle(
     label: str,
@@ -1885,46 +1819,12 @@ def input_float(
 ) -> Tuple[bool, float]:
     pass
 
-# IMGUI_API bool          InputFloat2(const char* label, float v[2], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
-@overload
-def input_float2(
-    label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
-) -> Tuple[bool, List[float]]:
-    pass
-
-# IMGUI_API inline std::pair<bool, ImVec2>  InputFloat2(const char* label, ImVec2 v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0)    /* original C++ signature */
-#         { bool changed = InputFloat2(label, (float*)&v, format, flags);  return { changed, v }; }
-@overload
-def input_float2(label: str, v: ImVec2Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
-    pass
-
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
 # IMGUI_API bool          InputFloat3(const char* label, float v[3], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_float3(
     label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
-# IMGUI_API bool          InputFloat4(const char* label, float v[4], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
-@overload
-def input_float4(
-    label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
-) -> Tuple[bool, List[float]]:
-    pass
-
-# IMGUI_API inline std::pair<bool, ImVec4>  InputFloat4(const char* label, ImVec4 v, const char* format = "%.3f", ImGuiInputTextFlags flags = 0)    /* original C++ signature */
-#         { bool changed = InputFloat4(label, (float*)&v, format, flags);  return { changed, v }; }
-@overload
-def input_float4(label: str, v: ImVec4Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
-    pass
-
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
 # IMGUI_API bool          InputInt(const char* label, int* v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_int(label: str, v: int, step: int = 1, step_fast: int = 100, flags: InputTextFlags = 0) -> Tuple[bool, int]:
     pass
@@ -1975,64 +1875,6 @@ def input_scalar_n(
 # Widgets: Color Editor/Picker (tip: the ColorEdit* functions have a little color square that can be left-clicked to open a picker, and right-clicked to open an option menu.)
 # - Note that in C++ a 'float v[X]' function argument is the _same_ as 'float* v', the array syntax is just a way to document the number of elements that are expected to be accessible.
 # - You can pass the address of a first float element out of a contiguous structure, e.g. &myvector.x
-
-# IMGUI_API bool          ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
-@overload
-def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
-    pass
-
-# IMGUI_API inline std::tuple<bool, ImVec4> ColorEdit3(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
-#         {  bool changed = ColorEdit3(label.c_str(), (float*)&col, flags);  return { changed, col }; }
-@overload
-def color_edit3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
-    pass
-
-# IMGUI_API bool          ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
-@overload
-def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
-    pass
-
-# IMGUI_API inline std::tuple<bool, ImVec4> ColorEdit4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
-#         {  bool changed = ColorEdit4(label.c_str(), (float*)&col, flags);  return { changed, col }; }
-@overload
-def color_edit4(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
-    pass
-
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
-
-# IMGUI_API bool          ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
-@overload
-def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
-    pass
-
-# IMGUI_API inline std::tuple<bool, ImVec4> ColorPicker3(const char* label, ImVec4 col, ImGuiColorEditFlags flags = 0)    /* original C++ signature */
-#         { bool changed = ColorPicker3(label, (float*)&col, flags);  return { changed, col }; }
-@overload
-def color_picker3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
-    pass
-
-# IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);    /* original C++ signature */
-@overload
-def color_picker4(
-    label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[float] = None
-) -> Tuple[bool, List[float]]:
-    pass
-
-# IMGUI_API std::tuple<bool, ImVec4> ColorPicker4(const std::string& label, ImVec4 col, ImGuiColorEditFlags flags = 0, std::optional<ImVec4> ref_col = std::nullopt);    /* original C++ signature */
-@overload
-def color_picker4(
-    label: str, col: ImVec4Like, flags: ColorEditFlags = 0, ref_col: Optional[ImVec4Like] = None
-) -> Tuple[bool, ImVec4]:
-    pass
-
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
-
 # IMGUI_API bool          ColorButton(const char* desc_id, const ImVec4& col, ImGuiColorEditFlags flags = 0, const ImVec2& size = ImVec2(0, 0));     /* original C++ signature */
 def color_button(desc_id: str, col: ImVec4Like, flags: ColorEditFlags = 0, size: Optional[ImVec2Like] = None) -> bool:
     """Python bindings defaults:
@@ -2274,15 +2116,6 @@ def end_menu() -> None:
     """only call EndMenu() if BeginMenu() returns True!"""
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# inline bool          MenuItemSimple(const char* label, const char* shortcut = NULL, bool selected = false, bool enabled = true) { return MenuItem(label, shortcut, selected, enabled); }    /* original C++ signature */
-def menu_item_simple(label: str, shortcut: Optional[str] = None, selected: bool = False, enabled: bool = True) -> bool:
-    """(private API)"""
-    pass
-
-# #endif
-#
 # IMGUI_API bool          MenuItem(const char* label, const char* shortcut, bool* p_selected, bool enabled = true);                  /* original C++ signature */
 def menu_item(label: str, shortcut: str, p_selected: bool, enabled: bool = True) -> Tuple[bool, bool]:
     """return True when activated + toggle (*p_selected) if p_selected != None"""
@@ -2603,15 +2436,6 @@ def begin_tab_item(label: str, p_open: Optional[bool] = None, flags: TabItemFlag
     """create a Tab. Returns True if the Tab is selected."""
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# IMGUI_API bool          BeginTabItemSimple(const char* label, ImGuiTabItemFlags flags = 0);     /* original C++ signature */
-def begin_tab_item_simple(label: str, flags: TabItemFlags = 0) -> bool:
-    """create a Tab (non-closable). Returns True if the Tab is selected."""
-    pass
-
-# #endif
-#
 # IMGUI_API void          EndTabItem();                                                           /* original C++ signature */
 def end_tab_item() -> None:
     """only call EndTabItem() if BeginTabItem() returns True!"""
@@ -11994,6 +11818,108 @@ def color_convert_rgb_to_hsv(r: float, g: float, b: float) -> Tuple[float, float
 def color_convert_hsv_to_rgb(h: float, s: float, v: float) -> Tuple[float, float, float]:
     """Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1])"""
     ...
+
+def menu_item_simple(label: str, shortcut: Optional[str] = None, selected: bool = False, enabled: bool = True) -> bool:
+    """return True when activated. (simplified version of menu_item, where selected is read-only)"""
+    pass
+
+def begin_tab_item_simple(label: str, flags: TabItemFlags = 0) -> bool:
+    """create a Tab (non-closable). Returns True if the Tab is selected."""
+    pass
+
+@overload
+def set_window_focus() -> None:
+    """(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus()."""
+    pass
+
+@overload
+def set_window_focus(name: Optional[str]) -> None:
+    """set named window to be focused / top-most. use None to remove focus."""
+    pass
+
+def push_font(font: Optional[ImFont], font_size_base_unscaled: float) -> None:
+    """Use None as a shortcut to keep current font. Use 0.0 to keep current size."""
+    pass
+
+@overload
+def slider_float2(
+    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+) -> Tuple[bool, List[float]]:
+    pass
+
+@overload
+def slider_float2(
+    label: str, v: ImVec2Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+) -> Tuple[bool, ImVec2]:
+    pass
+
+@overload
+def slider_float4(
+    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+) -> Tuple[bool, List[float]]:
+    pass
+
+@overload
+def slider_float4(
+    label: str, v: ImVec4Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+) -> Tuple[bool, ImVec4]:
+    pass
+
+@overload
+def input_float2(
+    label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
+) -> Tuple[bool, List[float]]:
+    pass
+
+@overload
+def input_float2(label: str, v: ImVec2Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
+    pass
+
+@overload
+def input_float4(
+    label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
+) -> Tuple[bool, List[float]]:
+    pass
+
+@overload
+def input_float4(label: str, v: ImVec4Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
+    pass
+
+@overload
+def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+    pass
+
+@overload
+def color_edit3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
+    pass
+
+@overload
+def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+    pass
+
+@overload
+def color_edit4(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
+    pass
+
+@overload
+def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
+    pass
+
+@overload
+def color_picker3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
+    pass
+
+@overload
+def color_picker4(
+    label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[float] = None
+) -> Tuple[bool, List[float]]:
+    pass
+
+@overload
+def color_picker4(
+    label: str, col: ImVec4Like, flags: ColorEditFlags = 0, ref_col: Optional[ImVec4Like] = None
+) -> Tuple[bool, ImVec4]:
+    pass
 
 ####################    </generated_from:imgui.h>    ####################
 

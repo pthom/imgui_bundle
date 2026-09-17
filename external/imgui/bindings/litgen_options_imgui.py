@@ -49,12 +49,6 @@ def _preprocess_imgui_code(code: str) -> str:
     #       IM_VEC2_CLASS_EXTRA     // Define additional constructors ...
     new_code, _n = re.subn(r"^(\s+IM_VEC[24]_CLASS_EXTRA)(\s)", r"\1;\2", new_code, flags=re.MULTILINE)
 
-    # force publish GetCurrentWindow
-    new_code = new_code.replace(
-        "inline    ImGuiWindow*  GetCurrentWindow()",
-        "IMGUI_API ImGuiWindow*  GetCurrentWindow()",
-    )
-
     new_code = new_code.replace("unsigned char", "uchar")
 
     new_code = new_code.replace("BundleHybridCallback", "std::function")
@@ -378,6 +372,12 @@ def litgen_options_imgui(
             # required as inputs. Custom bindings in generate_imgui.py take only 3 inputs.
             r"^ColorConvertRGBtoHSV$",
             r"^ColorConvertHSVtoRGB$",
+            # Functions whose overload sets are entirely provided by custom bindings (generate_imgui.py):
+            # Python overloads must be consecutive in the stub, so the whole set is written there.
+            r"^PushFont$",
+            r"^SetWindowFocus$",
+            r"^SliderFloat2$", r"^SliderFloat4$", r"^InputFloat2$", r"^InputFloat4$",
+            r"^ColorEdit3$", r"^ColorEdit4$", r"^ColorPicker3$", r"^ColorPicker4$",
         ]
     )
 
@@ -492,7 +492,7 @@ def litgen_options_imgui(
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
-        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode", "^SetWindowFocus$",
+        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode",
          "^AddRect$", "^PathStroke$", "^AddPolyline$"]
     )
 

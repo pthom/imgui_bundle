@@ -3677,9 +3677,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         "(private API)",
         nb::rv_policy::reference);
 
-    m.def("get_current_window",
-        ImGui::GetCurrentWindow, nb::rv_policy::reference);
-
     m.def("find_window_by_id",
         ImGui::FindWindowByID,
         nb::arg("id_"),
@@ -5652,6 +5649,16 @@ void py_init_module_imgui_internal(nb::module_& m)
     { // <namespace ImStb>
         nb::module_ pyNsImStb = m.def_submodule("im_stb", "");
     } // </namespace ImStb>
+
+    m.def("get_current_window",
+        []() -> ImGuiWindow* {
+            if (GImGui == NULL)
+                throw std::runtime_error("ImGui::GetCurrentWindow() -> ImGuiContext is NULL. This is likely because you are calling ImGui functions even before ImGui::CreateContext().");
+            if (GImGui->CurrentWindow == NULL)
+                throw std::runtime_error("ImGui::GetCurrentWindow() -> CurrentWindow is NULL. This is likely because you are calling ImGui functions after ImGui::EndFrame()/ImGui::Render() and before the next ImGui::NewFrame().");
+            return ImGui::GetCurrentWindow();
+        },
+        nb::rv_policy::reference);
     ////////////////////    </generated_from:imgui_internal.h>    ////////////////////
 
 

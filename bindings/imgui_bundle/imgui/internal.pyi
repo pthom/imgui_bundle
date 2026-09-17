@@ -6171,23 +6171,6 @@ def get_current_window_read() -> Window:
     """(private API)"""
     pass
 
-# IMGUI_API ImGuiWindow*  GetCurrentWindow()    /* original C++ signature */
-#     {
-#         #ifdef IMGUI_BUNDLE_PYTHON_API
-#         // Help python users, because otherwise, this leads to an un-debuggable segfault
-#         IM_ASSERT(GImGui != NULL && "ImGui::GetCurrentWindow() -> ImGuiContext is NULL. This is likely because you are calling ImGui functions even before ImGui::CreateContext().");
-#         #endif
-#         ImGuiContext& g = *GImGui;
-#         #ifdef IMGUI_BUNDLE_PYTHON_API
-#         // Help python users, because otherwise, this leads to an un-debuggable segfault
-#         IM_ASSERT(g.CurrentWindow != NULL && "ImGui::GetCurrentWindow() -> CurrentWindow is NULL. This is likely because you are calling ImGui functions after ImGui::EndFrame()/ImGui::Render() and before the next ImGui::NewFrame().");
-#         #endif
-#         g.CurrentWindow->WriteAccessed = true;
-#         return g.CurrentWindow;
-#     }
-def get_current_window() -> Window:
-    pass
-
 # IMGUI_API ImGuiWindow*  FindWindowByID(ImGuiID id);    /* original C++ signature */
 def find_window_by_id(id_: ID) -> Window:
     pass
@@ -8669,6 +8652,10 @@ class im_stb:  # Proxy class that introduces typings for the *submodule* im_stb
     pass  # (This corresponds to a C++ namespace. All methods are static!)
 
 # </submodule im_stb>
+
+def get_current_window() -> Window:
+    pass
+
 ####################    </generated_from:imgui_internal.h>    ####################
 
 ####################    <generated_from:imgui_internal_pywrappers.h>    ####################
