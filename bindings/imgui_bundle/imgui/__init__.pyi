@@ -5335,15 +5335,10 @@ class ImNewWrapper:
 #  ------------------------------------------------------------------------
 #      <template specializations for class ImVector>
 class ImVector_int:  # Python specialization for ImVector<int>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
-    def data_address(self) -> int:
-        """(private API)"""
-        pass
-    # #endif
-    #
 
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5352,16 +5347,18 @@ class ImVector_int:  # Python specialization for ImVector<int>
     @overload
     def __init__(self, src: ImVector_int) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5372,7 +5369,7 @@ class ImVector_int:  # Python specialization for ImVector<int>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> int:
         """(private API)"""
         pass
@@ -5396,16 +5393,15 @@ class ImVector_int:  # Python specialization for ImVector<int>
     def __len__(self) -> int:
         pass
 
-class ImVector_uint:  # Python specialization for ImVector<uint>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_uint:  # Python specialization for ImVector<uint>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5414,16 +5410,18 @@ class ImVector_uint:  # Python specialization for ImVector<uint>
     @overload
     def __init__(self, src: ImVector_uint) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5434,7 +5432,7 @@ class ImVector_uint:  # Python specialization for ImVector<uint>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> uint:
         """(private API)"""
         pass
@@ -5458,16 +5456,15 @@ class ImVector_uint:  # Python specialization for ImVector<uint>
     def __len__(self) -> int:
         pass
 
-class ImVector_float:  # Python specialization for ImVector<float>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_float:  # Python specialization for ImVector<float>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5476,16 +5473,18 @@ class ImVector_float:  # Python specialization for ImVector<float>
     @overload
     def __init__(self, src: ImVector_float) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5496,7 +5495,7 @@ class ImVector_float:  # Python specialization for ImVector<float>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> float:
         """(private API)"""
         pass
@@ -5520,16 +5519,15 @@ class ImVector_float:  # Python specialization for ImVector<float>
     def __len__(self) -> int:
         pass
 
-class ImVector_char:  # Python specialization for ImVector<char>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_char:  # Python specialization for ImVector<char>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5538,16 +5536,18 @@ class ImVector_char:  # Python specialization for ImVector<char>
     @overload
     def __init__(self, src: ImVector_char) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5558,8 +5558,8 @@ class ImVector_char:  # Python specialization for ImVector<char>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
-    def __getitem__(self, i: int) -> str:
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    def __getitem__(self, i: int) -> char:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
@@ -5582,16 +5582,15 @@ class ImVector_char:  # Python specialization for ImVector<char>
     def __len__(self) -> int:
         pass
 
-class ImVector_uchar:  # Python specialization for ImVector<uchar>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_uchar:  # Python specialization for ImVector<uchar>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5600,16 +5599,18 @@ class ImVector_uchar:  # Python specialization for ImVector<uchar>
     @overload
     def __init__(self, src: ImVector_uchar) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5620,7 +5621,7 @@ class ImVector_uchar:  # Python specialization for ImVector<uchar>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> uchar:
         """(private API)"""
         pass
@@ -5644,16 +5645,15 @@ class ImVector_uchar:  # Python specialization for ImVector<uchar>
     def __len__(self) -> int:
         pass
 
-class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5662,16 +5662,18 @@ class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
     @overload
     def __init__(self, src: ImVector_ImDrawCmd) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5682,7 +5684,7 @@ class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImDrawCmd:
         """(private API)"""
         pass
@@ -5706,16 +5708,15 @@ class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
     def __len__(self) -> int:
         pass
 
-class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChannel>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChannel>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5724,16 +5725,18 @@ class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChanne
     @overload
     def __init__(self, src: ImVector_ImDrawChannel) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5744,7 +5747,7 @@ class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChanne
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImDrawChannel:
         """(private API)"""
         pass
@@ -5768,16 +5771,15 @@ class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChanne
     def __len__(self) -> int:
         pass
 
-class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5786,16 +5788,18 @@ class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
     @overload
     def __init__(self, src: ImVector_ImDrawVert) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5806,7 +5810,7 @@ class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImDrawVert:
         """(private API)"""
         pass
@@ -5830,16 +5834,15 @@ class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
     def __len__(self) -> int:
         pass
 
-class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5848,16 +5851,18 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
     @overload
     def __init__(self, src: ImVector_ImVec4Like) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5868,7 +5873,7 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImVec4:
         """(private API)"""
         pass
@@ -5892,16 +5897,15 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
     def __len__(self) -> int:
         pass
 
-class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5910,16 +5914,18 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
     @overload
     def __init__(self, src: ImVector_ImVec2Like) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5930,7 +5936,7 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImVec2:
         """(private API)"""
         pass
@@ -5954,16 +5960,15 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
     def __len__(self) -> int:
         pass
 
-class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList *>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList *>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -5972,16 +5977,18 @@ class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList 
     @overload
     def __init__(self, src: ImVector_ImDrawList_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -5992,7 +5999,7 @@ class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList 
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImDrawList:
         """(private API)"""
         pass
@@ -6016,16 +6023,15 @@ class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList 
     def __len__(self) -> int:
         pass
 
-class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6034,16 +6040,18 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
     @overload
     def __init__(self, src: ImVector_ImFont_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6054,7 +6062,7 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFont:
         """(private API)"""
         pass
@@ -6078,16 +6086,15 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
     def __len__(self) -> int:
         pass
 
-class ImVector_ImFontAtlas_ptr:  # Python specialization for ImVector<ImFontAtlas *>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImFontAtlas_ptr:  # Python specialization for ImVector<ImFontAtlas *>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6096,16 +6103,18 @@ class ImVector_ImFontAtlas_ptr:  # Python specialization for ImVector<ImFontAtla
     @overload
     def __init__(self, src: ImVector_ImFontAtlas_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6116,7 +6125,7 @@ class ImVector_ImFontAtlas_ptr:  # Python specialization for ImVector<ImFontAtla
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFontAtlas:
         """(private API)"""
         pass
@@ -6140,16 +6149,15 @@ class ImVector_ImFontAtlas_ptr:  # Python specialization for ImVector<ImFontAtla
     def __len__(self) -> int:
         pass
 
-class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6158,16 +6166,18 @@ class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
     @overload
     def __init__(self, src: ImVector_ImFontGlyph) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6178,7 +6188,7 @@ class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFontGlyph:
         """(private API)"""
         pass
@@ -6202,16 +6212,15 @@ class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
     def __len__(self) -> int:
         pass
 
-class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatformMonitor>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatformMonitor>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6220,16 +6229,18 @@ class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatf
     @overload
     def __init__(self, src: ImVector_PlatformMonitor) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6240,7 +6251,7 @@ class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatf
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> PlatformMonitor:
         """(private API)"""
         pass
@@ -6264,16 +6275,15 @@ class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatf
     def __len__(self) -> int:
         pass
 
-class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport *>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport *>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6282,16 +6292,18 @@ class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport
     @overload
     def __init__(self, src: ImVector_Viewport_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6302,7 +6314,7 @@ class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> Viewport:
         """(private API)"""
         pass
@@ -6326,16 +6338,15 @@ class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport
     def __len__(self) -> int:
         pass
 
-class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6344,16 +6355,18 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
     @overload
     def __init__(self, src: ImVector_Window_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6364,7 +6377,7 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> Window:
         """(private API)"""
         pass
@@ -6388,16 +6401,15 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
     def __len__(self) -> int:
         pass
 
-class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6406,16 +6418,18 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
     @overload
     def __init__(self, src: ImVector_ImFontConfig) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6426,7 +6440,7 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFontConfig:
         """(private API)"""
         pass
@@ -6450,16 +6464,15 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
     def __len__(self) -> int:
         pass
 
-class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontConfig *>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontConfig *>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6468,16 +6481,18 @@ class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontCon
     @overload
     def __init__(self, src: ImVector_ImFontConfig_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6488,7 +6503,7 @@ class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontCon
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFontConfig:
         """(private API)"""
         pass
@@ -6512,16 +6527,15 @@ class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontCon
     def __len__(self) -> int:
         pass
 
-class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusScopeData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusScopeData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6530,16 +6544,18 @@ class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusS
     @overload
     def __init__(self, src: ImVector_FocusScopeData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6550,7 +6566,7 @@ class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusS
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> FocusScopeData:
         """(private API)"""
         pass
@@ -6574,16 +6590,15 @@ class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusS
     def __len__(self) -> int:
         pass
 
-class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSelectionRequest>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSelectionRequest>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6592,16 +6607,18 @@ class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSele
     @overload
     def __init__(self, src: ImVector_SelectionRequest) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6612,7 +6629,7 @@ class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSele
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> SelectionRequest:
         """(private API)"""
         pass
@@ -6636,16 +6653,15 @@ class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSele
     def __len__(self) -> int:
         pass
 
-class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6654,16 +6670,18 @@ class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
     @overload
     def __init__(self, src: ImVector_ImRect) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6674,7 +6692,7 @@ class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImRect:
         """(private API)"""
         pass
@@ -6698,16 +6716,15 @@ class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
     def __len__(self) -> int:
         pass
 
-class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6716,16 +6733,18 @@ class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
     @overload
     def __init__(self, src: ImVector_ColorMod) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6736,7 +6755,7 @@ class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ColorMod:
         """(private API)"""
         pass
@@ -6760,16 +6779,15 @@ class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
     def __len__(self) -> int:
         pass
 
-class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6778,16 +6796,18 @@ class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
     @overload
     def __init__(self, src: ImVector_GroupData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6798,7 +6818,7 @@ class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> GroupData:
         """(private API)"""
         pass
@@ -6822,16 +6842,15 @@ class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
     def __len__(self) -> int:
         pass
 
-class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6840,16 +6859,18 @@ class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
     @overload
     def __init__(self, src: ImVector_PopupData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6860,7 +6881,7 @@ class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> PopupData:
         """(private API)"""
         pass
@@ -6884,16 +6905,15 @@ class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
     def __len__(self) -> int:
         pass
 
-class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewportP *>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewportP *>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6902,16 +6922,18 @@ class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewpor
     @overload
     def __init__(self, src: ImVector_ViewportP_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6922,7 +6944,7 @@ class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewpor
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ViewportP:
         """(private API)"""
         pass
@@ -6946,16 +6968,15 @@ class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewpor
     def __len__(self) -> int:
         pass
 
-class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -6964,16 +6985,18 @@ class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent
     @overload
     def __init__(self, src: ImVector_InputEvent) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -6984,7 +7007,7 @@ class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> InputEvent:
         """(private API)"""
         pass
@@ -7008,16 +7031,15 @@ class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent
     def __len__(self) -> int:
         pass
 
-class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindowStackData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindowStackData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7026,16 +7048,18 @@ class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindo
     @overload
     def __init__(self, src: ImVector_WindowStackData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7046,7 +7070,7 @@ class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindo
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> WindowStackData:
         """(private API)"""
         pass
@@ -7070,16 +7094,15 @@ class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindo
     def __len__(self) -> int:
         pass
 
-class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGuiTableColumnSortSpecs>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGuiTableColumnSortSpecs>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7088,16 +7111,18 @@ class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGui
     @overload
     def __init__(self, src: ImVector_TableColumnSortSpecs) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7108,7 +7133,7 @@ class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGui
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> TableColumnSortSpecs:
         """(private API)"""
         pass
@@ -7132,16 +7157,15 @@ class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGui
     def __len__(self) -> int:
         pass
 
-class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTableInstanceData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTableInstanceData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7150,16 +7174,18 @@ class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTab
     @overload
     def __init__(self, src: ImVector_TableInstanceData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7170,7 +7196,7 @@ class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTab
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> TableInstanceData:
         """(private API)"""
         pass
@@ -7194,16 +7220,15 @@ class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTab
     def __len__(self) -> int:
         pass
 
-class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTempData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTempData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7212,16 +7237,18 @@ class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTe
     @overload
     def __init__(self, src: ImVector_TableTempData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7232,7 +7259,7 @@ class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTe
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> TableTempData:
         """(private API)"""
         pass
@@ -7256,16 +7283,15 @@ class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTe
     def __len__(self) -> int:
         pass
 
-class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7274,16 +7300,18 @@ class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex
     @overload
     def __init__(self, src: ImVector_PtrOrIndex) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7294,7 +7322,7 @@ class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> PtrOrIndex:
         """(private API)"""
         pass
@@ -7318,16 +7346,15 @@ class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex
     def __len__(self) -> int:
         pass
 
-class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSettingsHandler>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSettingsHandler>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7336,16 +7363,18 @@ class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSetti
     @overload
     def __init__(self, src: ImVector_SettingsHandler) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7356,7 +7385,7 @@ class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSetti
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> SettingsHandler:
         """(private API)"""
         pass
@@ -7380,16 +7409,15 @@ class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSetti
     def __len__(self) -> int:
         pass
 
-class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrinkWidthItem>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrinkWidthItem>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7398,16 +7426,18 @@ class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrin
     @overload
     def __init__(self, src: ImVector_ShrinkWidthItem) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7418,7 +7448,7 @@ class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrin
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ShrinkWidthItem:
         """(private API)"""
         pass
@@ -7442,16 +7472,15 @@ class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrin
     def __len__(self) -> int:
         pass
 
-class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackLevelInfo>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackLevelInfo>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7460,16 +7489,18 @@ class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackL
     @overload
     def __init__(self, src: ImVector_StackLevelInfo) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7480,7 +7511,7 @@ class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackL
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> StackLevelInfo:
         """(private API)"""
         pass
@@ -7504,16 +7535,15 @@ class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackL
     def __len__(self) -> int:
         pass
 
-class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7522,16 +7552,18 @@ class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
     @overload
     def __init__(self, src: ImVector_TabItem) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7542,7 +7574,7 @@ class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> TabItem:
         """(private API)"""
         pass
@@ -7566,16 +7598,15 @@ class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
     def __len__(self) -> int:
         pass
 
-class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRoutingData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRoutingData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7584,16 +7615,18 @@ class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRou
     @overload
     def __init__(self, src: ImVector_KeyRoutingData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7604,7 +7637,7 @@ class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRou
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> KeyRoutingData:
         """(private API)"""
         pass
@@ -7628,16 +7661,15 @@ class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRou
     def __len__(self) -> int:
         pass
 
-class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListClipperData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListClipperData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7646,16 +7678,18 @@ class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListC
     @overload
     def __init__(self, src: ImVector_ListClipperData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7666,7 +7700,7 @@ class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListC
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ListClipperData:
         """(private API)"""
         pass
@@ -7690,16 +7724,15 @@ class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListC
     def __len__(self) -> int:
         pass
 
-class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiListClipperRange>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiListClipperRange>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7708,16 +7741,18 @@ class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiList
     @overload
     def __init__(self, src: ImVector_ListClipperRange) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7728,7 +7763,7 @@ class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiList
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ListClipperRange:
         """(private API)"""
         pass
@@ -7752,16 +7787,15 @@ class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiList
     def __len__(self) -> int:
         pass
 
-class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColumnData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColumnData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7770,16 +7804,18 @@ class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColu
     @overload
     def __init__(self, src: ImVector_OldColumnData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7790,7 +7826,7 @@ class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColu
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> OldColumnData:
         """(private API)"""
         pass
@@ -7814,16 +7850,15 @@ class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColu
     def __len__(self) -> int:
         pass
 
-class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7832,16 +7867,18 @@ class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns
     @overload
     def __init__(self, src: ImVector_OldColumns) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7852,7 +7889,7 @@ class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> OldColumns:
         """(private API)"""
         pass
@@ -7876,16 +7913,15 @@ class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns
     def __len__(self) -> int:
         pass
 
-class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7894,16 +7930,18 @@ class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
     @overload
     def __init__(self, src: ImVector_StyleMod) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7914,7 +7952,7 @@ class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> StyleMod:
         """(private API)"""
         pass
@@ -7938,16 +7976,15 @@ class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
     def __len__(self) -> int:
         pass
 
-class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTableHeaderData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTableHeaderData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -7956,16 +7993,18 @@ class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTable
     @overload
     def __init__(self, src: ImVector_TableHeaderData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -7976,7 +8015,7 @@ class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTable
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> TableHeaderData:
         """(private API)"""
         pass
@@ -8000,16 +8039,15 @@ class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTable
     def __len__(self) -> int:
         pass
 
-class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTreeNodeStackData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTreeNodeStackData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -8018,16 +8056,18 @@ class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTre
     @overload
     def __init__(self, src: ImVector_TreeNodeStackData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -8038,7 +8078,7 @@ class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTre
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> TreeNodeStackData:
         """(private API)"""
         pass
@@ -8062,16 +8102,15 @@ class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTre
     def __len__(self) -> int:
         pass
 
-class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiMultiSelectTempData>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiMultiSelectTempData>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -8080,16 +8119,18 @@ class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiM
     @overload
     def __init__(self, src: ImVector_MultiSelectTempData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -8100,7 +8141,7 @@ class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiM
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> MultiSelectTempData:
         """(private API)"""
         pass
@@ -8124,16 +8165,15 @@ class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiM
     def __len__(self) -> int:
         pass
 
-class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextureData *>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextureData *>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -8142,16 +8182,18 @@ class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextur
     @overload
     def __init__(self, src: ImVector_ImTextureData_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -8162,7 +8204,7 @@ class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextur
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImTextureData:
         """(private API)"""
         pass
@@ -8186,16 +8228,15 @@ class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextur
     def __len__(self) -> int:
         pass
 
-class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -8204,16 +8245,18 @@ class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
     @overload
     def __init__(self, src: ImVector_ImTextureRef) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -8224,7 +8267,7 @@ class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImTextureRef:
         """(private API)"""
         pass
@@ -8248,16 +8291,15 @@ class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
     def __len__(self) -> int:
         pass
 
-class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRect>
-    # #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # size_t DataAddress()  { return (size_t)(Data); }    /* original C++ signature */
     def data_address(self) -> int:
-        """(private API)"""
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
-    # #endif
-    #
 
+class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRect>
+
+    # Provide standard typedefs but we don't use them ourselves.
+
+    # Constructors, destructor
     # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
     @overload
     def __init__(self) -> None:
@@ -8266,16 +8308,18 @@ class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRec
     @overload
     def __init__(self, src: ImVector_ImTextureRect) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }    /* original C++ signature */
+    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
     def clear(self) -> None:
-        """Important: does not destruct anything
-        (private API)
+        """(private API)
+
+        Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }    /* original C++ signature */
+    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
     def clear_destruct(self) -> None:
-        """Important: never called automatically! always explicit.
-        (private API)
+        """(private API)
+
+        Important: never called automatically! always explicit.
         """
         pass
     # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
@@ -8286,7 +8330,7 @@ class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRec
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline const T&     operator[](int i) const             { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&           operator[](int i)                   { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
     def __getitem__(self, i: int) -> ImTextureRect:
         """(private API)"""
         pass
@@ -8308,6 +8352,10 @@ class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRec
         pass
 
     def __len__(self) -> int:
+        pass
+
+    def data_address(self) -> int:
+        """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
 ImVector_ImTextureID = ImVector_int

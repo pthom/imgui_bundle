@@ -389,6 +389,20 @@ def autogenerate_imgui() -> None:
     """,
     )
 
+    # ImVector<T>: address of the data (e.g. to build a numpy view); emitted for each specialization
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImVector",
+        stub_code='''
+        def data_address(self) -> int:
+            """Address of the underlying array (e.g. to create a numpy view of it)"""
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("data_address", [](const LG_CPP_CLASS_NAME& self) -> size_t { return (size_t)self.Data; },
+            "Address of the underlying array (e.g. to create a numpy view of it)");
+    """,
+    )
+
     # Tables: indexed access to the sort specs, and accessors for the SortDirection bitfield
     options_imgui.custom_bindings.add_custom_bindings_to_class(
         qualified_class="ImGuiTableSortSpecs",

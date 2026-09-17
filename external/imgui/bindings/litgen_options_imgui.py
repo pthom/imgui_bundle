@@ -404,6 +404,16 @@ def litgen_options_imgui(
         "ImTextureData": r"^GetPixels$|^GetPixelsAt$",  # void* : see get_pixels_array
         "ImFont": r"^CalcWordWrapPosition$",  # returns a pointer inside the text
         "ImGuiWindowSettings": r"^GetName$",  # char*: see get_name_str
+        # ImVector: only a minimal API is published (iterable, indexable, push_back...); raw members,
+        # iterators and pointer-based methods are not. See also data_address (generate_imgui.py).
+        "ImVector": join_string_by_pipe_char([
+            r"^Size$", r"^Capacity$", r"^Data$",
+            r"^clear_delete$", r"^size_in_bytes$", r"^max_size$", r"^capacity$",
+            r"^begin$", r"^end$", r"^front$", r"^back$", r"^swap$", r"^_grow_capacity$",
+            r"^resize$", r"^shrink$", r"^reserve$", r"^reserve_discard$",
+            r"^erase$", r"^erase_unsorted$", r"^insert$", r"^contains$", r"^find$", r"^find_index$",
+            r"^find_erase$", r"^find_erase_unsorted$", r"^index_from_ptr$",
+        ]),
     }
 
     options.member_exclude_by_name__regex = join_string_by_pipe_char(
