@@ -583,6 +583,43 @@ def autogenerate_imgui() -> None:
     """,
     )
 
+    # ImGuiPlatformIO clipboard / open-in-shell callbacks: Python callables through static trampolines
+    # (defined in the hand-written part of pybind_imgui.cpp). Reading an attribute set from C++ returns None.
+    options_imgui.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiPlatformIO",
+        stub_code='''
+        platform_get_clipboard_text_fn: Callable[[Context], str]
+        platform_set_clipboard_text_fn: Callable[[Context, str], None]
+        platform_open_in_shell_fn: Callable[[Context, str], bool]
+    ''',
+        pydef_code="""
+        LG_CLASS.def_prop_rw("platform_get_clipboard_text_fn",
+            [](ImGuiPlatformIO&) { return g_py_get_clipboard.is_valid() ? g_py_get_clipboard : nb::none(); },
+            [](ImGuiPlatformIO& self, nb::object f) {
+                g_py_get_clipboard = f;
+                self.Platform_GetClipboardTextFn = f.is_none() ? NULL : PyGetClipboardTextTrampoline;
+            },
+            nb::arg("f").none(),
+            "Optional: Access OS clipboard. Callable[[Context], str], should return an empty string on failure.");
+        LG_CLASS.def_prop_rw("platform_set_clipboard_text_fn",
+            [](ImGuiPlatformIO&) { return g_py_set_clipboard.is_valid() ? g_py_set_clipboard : nb::none(); },
+            [](ImGuiPlatformIO& self, nb::object f) {
+                g_py_set_clipboard = f;
+                self.Platform_SetClipboardTextFn = f.is_none() ? NULL : PySetClipboardTextTrampoline;
+            },
+            nb::arg("f").none(),
+            "Optional: Access OS clipboard. Callable[[Context, str], None]");
+        LG_CLASS.def_prop_rw("platform_open_in_shell_fn",
+            [](ImGuiPlatformIO&) { return g_py_open_in_shell.is_valid() ? g_py_open_in_shell : nb::none(); },
+            [](ImGuiPlatformIO& self, nb::object f) {
+                g_py_open_in_shell = f;
+                self.Platform_OpenInShellFn = f.is_none() ? NULL : PyOpenInShellTrampoline;
+            },
+            nb::arg("f").none(),
+            "Optional: Open link/folder/file in OS Shell. Callable[[Context, str], bool], expected to return False on failure.");
+    """,
+    )
+
     # ImDrawList polygons: accept a list of points (the C++ versions take a pointer + count)
     options_imgui.custom_bindings.add_custom_bindings_to_class(
         qualified_class="ImDrawList",
