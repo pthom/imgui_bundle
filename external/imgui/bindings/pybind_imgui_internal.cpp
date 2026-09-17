@@ -40,10 +40,6 @@ void py_init_module_imgui_internal(nb::module_& m)
     ////////////////////    <generated_from:imgui_internal.h>    ////////////////////
     // #ifndef IMGUI_DISABLE
     //
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
     // #if (defined(__cplusplus) && (__cplusplus >= 202002L)) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 202002L))
     //
     // #else
@@ -2129,13 +2125,11 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("dock_order", &ImGuiWindowSettings::DockOrder, "Order of the last time the window was visible within its DockNode. This is used to reorder windows that are reappearing on the same frame. Same value between windows that were active and windows that were none are possible.")
         .def_rw("last_used_date", &ImGuiWindowSettings::LastUsedDate, "")
         .def(nb::init<>())
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("get_name_str",
-            &ImGuiWindowSettings::GetNameStr, "(private API)")
-        // #endif
-        //
         ;
+
+    pyClassImGuiWindowSettings.def("get_name_str", [](ImGuiWindowSettings& self) -> std::string { return self.GetName(); });
+
+
 
 
     auto pyClassImGuiSettingsCleanupArgs =
@@ -4577,40 +4571,6 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("dock_builder_set_node_size",
         ImGui::DockBuilderSetNodeSize, nb::arg("node_id"), nb::arg("size"));
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-
-    auto pyClassDockBuilderSplitNodeResult =
-        nb::class_<ImGui::DockBuilderSplitNodeResult>
-            (m, "DockBuilderSplitNodeResult", "")
-        .def("__init__", [](ImGui::DockBuilderSplitNodeResult * self, ImGuiID id_at_dir = ImGuiID(), ImGuiID id_at_opposite_dir = ImGuiID())
-        {
-            new (self) ImGui::DockBuilderSplitNodeResult();  // placement new
-            auto r_ctor_ = self;
-            r_ctor_->id_at_dir = id_at_dir;
-            r_ctor_->id_at_opposite_dir = id_at_opposite_dir;
-        },
-        nb::arg("id_at_dir") = ImGuiID(), nb::arg("id_at_opposite_dir") = ImGuiID()
-        )
-        .def_rw("id_at_dir", &ImGui::DockBuilderSplitNodeResult::id_at_dir, "")
-        .def_rw("id_at_opposite_dir", &ImGui::DockBuilderSplitNodeResult::id_at_opposite_dir, "")
-        ;
-
-
-    m.def("dock_builder_split_node",
-        [](ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir) -> ImGui::DockBuilderSplitNodeResult
-        {
-            auto DockBuilderSplitNode_adapt_force_lambda = [](ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir) -> ImGui::DockBuilderSplitNodeResult
-            {
-                auto lambda_result = ImGui::DockBuilderSplitNode(node_id, split_dir, size_ratio_for_node_at_dir);
-                return lambda_result;
-            };
-
-            return DockBuilderSplitNode_adapt_force_lambda(node_id, split_dir, size_ratio_for_node_at_dir);
-        },     nb::arg("node_id"), nb::arg("split_dir"), nb::arg("size_ratio_for_node_at_dir"));
-    // #endif
-    //
 
     m.def("dock_builder_copy_node",
         ImGui::DockBuilderCopyNode, nb::arg("src_node_id"), nb::arg("dst_node_id"), nb::arg("out_node_remap_pairs"));
@@ -5117,38 +5077,6 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("input_text_deactivate_hook",
         nb::overload_cast<ImGuiID>(ImGui::InputTextDeactivateHook), nb::arg("id_"));
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-    m.def("input_text_ex",
-        [](const char * label, const char * hint, std::string s, const ImVec2 & size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL) -> std::tuple<bool, std::string>
-        {
-            auto InputTextEx_adapt_modifiable_immutable_to_return = [](const char * label, const char * hint, std::string s, const ImVec2 & size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL) -> std::tuple<bool, std::string>
-            {
-                std::string * s_adapt_modifiable = & s;
-
-                bool r = ImGui::InputTextEx(label, hint, s_adapt_modifiable, size_arg, flags, callback);
-                return std::make_tuple(r, s);
-            };
-
-            return InputTextEx_adapt_modifiable_immutable_to_return(label, hint, s, size_arg, flags, callback);
-        },     nb::arg("label"), nb::arg("hint"), nb::arg("s"), nb::arg("size_arg"), nb::arg("flags"), nb::arg("callback") = nb::none());
-
-    m.def("temp_input_text",
-        [](const ImRect & bb, ImGuiID id, const char * label, std::string s, ImGuiInputTextFlags flags) -> std::tuple<bool, std::string>
-        {
-            auto TempInputText_adapt_modifiable_immutable_to_return = [](const ImRect & bb, ImGuiID id, const char * label, std::string s, ImGuiInputTextFlags flags) -> std::tuple<bool, std::string>
-            {
-                std::string * s_adapt_modifiable = & s;
-
-                bool r = ImGui::TempInputText(bb, id, label, s_adapt_modifiable, flags);
-                return std::make_tuple(r, s);
-            };
-
-            return TempInputText_adapt_modifiable_immutable_to_return(bb, id, label, s, flags);
-        },     nb::arg("bb"), nb::arg("id_"), nb::arg("label"), nb::arg("s"), nb::arg("flags"));
-    // #endif
-    //
 
     m.def("temp_input_is_active",
         ImGui::TempInputIsActive,
@@ -5676,6 +5604,66 @@ void py_init_module_imgui_internal(nb::module_& m)
         },
         nb::arg("node_id"), nb::arg("split_dir"), nb::arg("size_ratio_for_node_at_dir"),
         " DockBuilderSplitNode_Py() create 2 child nodes within 1 node. The initial node becomes a parent node.\n This version is an adaptation for the python bindings (the C++ version uses two output parameters for the ID of the child nodes, this version returns a tuple)");
+
+
+    auto pyClassDockBuilderSplitNodeResult =
+        nb::class_<ImGui::DockBuilderSplitNodeResult>
+            (m, "DockBuilderSplitNodeResult", "Result of DockBuilderSplitNode() (python version)")
+        .def("__init__", [](ImGui::DockBuilderSplitNodeResult * self, ImGuiID id_at_dir = ImGuiID(), ImGuiID id_at_opposite_dir = ImGuiID())
+        {
+            new (self) ImGui::DockBuilderSplitNodeResult();  // placement new
+            auto r_ctor_ = self;
+            r_ctor_->id_at_dir = id_at_dir;
+            r_ctor_->id_at_opposite_dir = id_at_opposite_dir;
+        },
+        nb::arg("id_at_dir") = ImGuiID(), nb::arg("id_at_opposite_dir") = ImGuiID()
+        )
+        .def_rw("id_at_dir", &ImGui::DockBuilderSplitNodeResult::id_at_dir, "")
+        .def_rw("id_at_opposite_dir", &ImGui::DockBuilderSplitNodeResult::id_at_opposite_dir, "")
+        ;
+
+
+    m.def("dock_builder_split_node",
+        [](ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir) -> ImGui::DockBuilderSplitNodeResult
+        {
+            auto DockBuilderSplitNode_adapt_force_lambda = [](ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir) -> ImGui::DockBuilderSplitNodeResult
+            {
+                auto lambda_result = ImGui::DockBuilderSplitNode(node_id, split_dir, size_ratio_for_node_at_dir);
+                return lambda_result;
+            };
+
+            return DockBuilderSplitNode_adapt_force_lambda(node_id, split_dir, size_ratio_for_node_at_dir);
+        },
+        nb::arg("node_id"), nb::arg("split_dir"), nb::arg("size_ratio_for_node_at_dir"),
+        " DockBuilderSplitNode() creates 2 child nodes within 1 node. The initial node becomes a parent node.\n (python version: the two output parameters of the C++ version are returned in a struct)");
+
+    m.def("input_text_ex",
+        [](const char * label, const char * hint, std::string s, const ImVec2 & size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL) -> std::tuple<bool, std::string>
+        {
+            auto InputTextEx_adapt_modifiable_immutable_to_return = [](const char * label, const char * hint, std::string s, const ImVec2 & size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL) -> std::tuple<bool, std::string>
+            {
+                std::string * s_adapt_modifiable = & s;
+
+                bool r = ImGui::InputTextEx(label, hint, s_adapt_modifiable, size_arg, flags, callback);
+                return std::make_tuple(r, s);
+            };
+
+            return InputTextEx_adapt_modifiable_immutable_to_return(label, hint, s, size_arg, flags, callback);
+        },     nb::arg("label"), nb::arg("hint"), nb::arg("s"), nb::arg("size_arg"), nb::arg("flags"), nb::arg("callback") = nb::none());
+
+    m.def("temp_input_text",
+        [](const ImRect & bb, ImGuiID id, const char * label, std::string s, ImGuiInputTextFlags flags) -> std::tuple<bool, std::string>
+        {
+            auto TempInputText_adapt_modifiable_immutable_to_return = [](const ImRect & bb, ImGuiID id, const char * label, std::string s, ImGuiInputTextFlags flags) -> std::tuple<bool, std::string>
+            {
+                std::string * s_adapt_modifiable = & s;
+
+                bool r = ImGui::TempInputText(bb, id, label, s_adapt_modifiable, flags);
+                return std::make_tuple(r, s);
+            };
+
+            return TempInputText_adapt_modifiable_immutable_to_return(bb, id, label, s, flags);
+        },     nb::arg("bb"), nb::arg("id_"), nb::arg("label"), nb::arg("s"), nb::arg("flags"));
     ////////////////////    </generated_from:imgui_internal_pywrappers.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end

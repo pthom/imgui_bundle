@@ -661,6 +661,18 @@ def autogenerate_imgui_internal() -> None:
     """,
     )
 
+    # ImGuiWindowSettings::GetName() returns a char* into the settings buffer: return a copy as str
+    options_imgui_internal.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiWindowSettings",
+        stub_code='''
+        def get_name_str(self) -> str:
+            pass
+    ''',
+        pydef_code="""
+        LG_CLASS.def("get_name_str", [](ImGuiWindowSettings& self) -> std::string { return self.GetName(); });
+    """,
+    )
+
     generator = litgen.LitgenGenerator(options_imgui_internal)
 
     print("Processing imgui_internal.h")

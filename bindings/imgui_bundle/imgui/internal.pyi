@@ -269,16 +269,6 @@ KeyRoutingIndex = int
 # [SECTION] Header mess
 # -----------------------------------------------------------------------------
 
-#
-# Adaptations for ImGui Bundle are noted with [ADAPT_IMGUI_BUNDLE]
-#
-# [ADAPT_IMGUI_BUNDLE]
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
-# [/ADAPT_IMGUI_BUNDLE]
-
 # Enable SSE intrinsics if available
 # Emscripten has partial SSE 4.2 support where _mm_crc32_u32 is not available. See https://emscripten.org/docs/porting/simd.html#id11 and #8213
 
@@ -3483,15 +3473,9 @@ class WindowSettings:
     # ImGuiWindowSettings()       { memset((void*)this, 0, sizeof(*this)); DockOrder = -1; }    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # [ADAPT_IMGUI_BUNDLE]
-    #                #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # std::string GetNameStr()             { return std::string((const char*)(this + 1)); }    /* original C++ signature */
+
     def get_name_str(self) -> str:
-        """(private API)"""
         pass
-    #                #endif
-    #
 
 class SettingsCleanupArgs:
     # ImGuiID         TypeHashFilter = 0;    /* original C++ signature */
@@ -7292,29 +7276,6 @@ def dock_builder_set_node_pos(node_id: ID, pos: ImVec2Like) -> None:
 def dock_builder_set_node_size(node_id: ID, size: ImVec2Like) -> None:
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-class DockBuilderSplitNodeResult:
-    # ImGuiID id_at_dir;    /* original C++ signature */
-    id_at_dir: ID
-    # ImGuiID id_at_opposite_dir;    /* original C++ signature */
-    id_at_opposite_dir: ID
-    # DockBuilderSplitNodeResult(ImGuiID id_at_dir = ImGuiID(), ImGuiID id_at_opposite_dir = ImGuiID());    /* original C++ signature */
-    def __init__(self, id_at_dir: ID = ID(), id_at_opposite_dir: ID = ID()) -> None:
-        """Auto-generated default constructor with named params"""
-        pass
-
-# IMGUI_API DockBuilderSplitNodeResult DockBuilderSplitNode(    /* original C++ signature */
-#         ImGuiID node_id,
-#         ImGuiDir split_dir,
-#         float size_ratio_for_node_at_dir);
-def dock_builder_split_node(
-    node_id: ID, split_dir: Dir, size_ratio_for_node_at_dir: float
-) -> DockBuilderSplitNodeResult:
-    pass
-
-# #endif
-#
 # IMGUI_API void          DockBuilderCopyNode(ImGuiID src_node_id, ImGuiID dst_node_id, ImVector<ImGuiID>* out_node_remap_pairs);    /* original C++ signature */
 def dock_builder_copy_node(src_node_id: ID, dst_node_id: ID, out_node_remap_pairs: ImVector_ID) -> None:
     pass
@@ -7864,21 +7825,6 @@ def tree_node_update_next_open(storage_id: ID, flags: TreeNodeFlags) -> bool:
 def input_text_deactivate_hook(id_: ID) -> None:
     pass
 
-# [ADAPT_IMGUI_BUNDLE]
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# IMGUI_API bool          InputTextEx(const char* label, const char* hint, std::string* s, const ImVec2& size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL);    /* original C++ signature */
-def input_text_ex(
-    label: str, hint: str, s: str, size_arg: ImVec2Like, flags: InputTextFlags, callback: InputTextCallback = None
-) -> Tuple[bool, str]:
-    pass
-
-# IMGUI_API bool          TempInputText(const ImRect& bb, ImGuiID id, const char* label, std::string* s, ImGuiInputTextFlags flags);    /* original C++ signature */
-def temp_input_text(bb: ImRect, id_: ID, label: str, s: str, flags: InputTextFlags) -> Tuple[bool, str]:
-    pass
-
-# #endif
-#
 # inline bool             TempInputIsActive(ImGuiID id)       { ImGuiContext& g = *GImGui; return (g.TempInputId == id && g.ActiveId == id) || (g.InputTextDeactivatedState.ID == id); }    /* original C++ signature */
 def temp_input_is_active(id_: ID) -> bool:
     """(private API)"""
@@ -8663,11 +8609,43 @@ def get_current_window() -> Window:
 # Handwritten wrappers around parts of the imgui API, when needed for the python bindings
 
 # IMGUI_API std::tuple<ImGuiID, ImGuiID, ImGuiID>       DockBuilderSplitNode_Py(ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir);    /* original C++ signature */
-# }
 def dock_builder_split_node_py(node_id: ID, split_dir: Dir, size_ratio_for_node_at_dir: float) -> Tuple[ID, ID, ID]:
     """DockBuilderSplitNode_Py() create 2 child nodes within 1 node. The initial node becomes a parent node.
     This version is an adaptation for the python bindings (the C++ version uses two output parameters for the ID of the child nodes, this version returns a tuple)
     """
+    pass
+
+class DockBuilderSplitNodeResult:
+    """Result of DockBuilderSplitNode() (python version)"""
+
+    # ImGuiID id_at_dir;    /* original C++ signature */
+    id_at_dir: ID
+    # ImGuiID id_at_opposite_dir;    /* original C++ signature */
+    id_at_opposite_dir: ID
+    # DockBuilderSplitNodeResult(ImGuiID id_at_dir = ImGuiID(), ImGuiID id_at_opposite_dir = ImGuiID());    /* original C++ signature */
+    def __init__(self, id_at_dir: ID = ID(), id_at_opposite_dir: ID = ID()) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
+# IMGUI_API DockBuilderSplitNodeResult DockBuilderSplitNode(ImGuiID node_id, ImGuiDir split_dir, float size_ratio_for_node_at_dir);    /* original C++ signature */
+def dock_builder_split_node(
+    node_id: ID, split_dir: Dir, size_ratio_for_node_at_dir: float
+) -> DockBuilderSplitNodeResult:
+    """DockBuilderSplitNode() creates 2 child nodes within 1 node. The initial node becomes a parent node.
+    (python version: the two output parameters of the C++ version are returned in a struct)
+    """
+    pass
+
+# Python versions of InputTextEx() and TempInputText(): the text buffer is a string (returned modified)
+# IMGUI_API bool          InputTextEx(const char* label, const char* hint, std::string* s, const ImVec2& size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL);    /* original C++ signature */
+def input_text_ex(
+    label: str, hint: str, s: str, size_arg: ImVec2Like, flags: InputTextFlags, callback: InputTextCallback = None
+) -> Tuple[bool, str]:
+    pass
+
+# IMGUI_API bool          TempInputText(const ImRect& bb, ImGuiID id, const char* label, std::string* s, ImGuiInputTextFlags flags);    /* original C++ signature */
+# }
+def temp_input_text(bb: ImRect, id_: ID, label: str, s: str, flags: InputTextFlags) -> Tuple[bool, str]:
     pass
 
 ####################    </generated_from:imgui_internal_pywrappers.h>    ####################
