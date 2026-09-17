@@ -44,10 +44,6 @@ void py_init_module_imgui_internal(nb::module_& m)
     //
     // #endif
     //
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
     // #if (defined(__cplusplus) && (__cplusplus >= 202002L)) || (defined(_MSVC_LANG) && (_MSVC_LANG >= 202002L))
     //
     // #else
@@ -5121,6 +5117,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::TreeNodeUpdateNextOpen,
         nb::arg("storage_id"), nb::arg("flags"),
         "Return open state. Consume previous SetNextItemOpen() data, if any. May return True when logging.");
+
+    m.def("input_text_deactivate_hook",
+        nb::overload_cast<ImGuiID>(ImGui::InputTextDeactivateHook), nb::arg("id_"));
     // #ifdef IMGUI_BUNDLE_PYTHON_API
     //
 
@@ -5153,9 +5152,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         },     nb::arg("bb"), nb::arg("id_"), nb::arg("label"), nb::arg("s"), nb::arg("flags"));
     // #endif
     //
-
-    m.def("input_text_deactivate_hook",
-        nb::overload_cast<ImGuiID>(ImGui::InputTextDeactivateHook), nb::arg("id_"));
 
     m.def("temp_input_is_active",
         ImGui::TempInputIsActive,

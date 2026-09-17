@@ -44,6 +44,11 @@ def _preprocess_imgui_code(code: str) -> str:
         new_code,
     )
 
+    # imgui.h contains lines like this (with no final ";"), which confuse srcML
+    # and make it swallow the following declarations:
+    #       IM_VEC2_CLASS_EXTRA     // Define additional constructors ...
+    new_code, _n = re.subn(r"^(\s+IM_VEC[24]_CLASS_EXTRA)(\s)", r"\1;\2", new_code, flags=re.MULTILINE)
+
     # force publish GetCurrentWindow
     new_code = new_code.replace(
         "inline    ImGuiWindow*  GetCurrentWindow()",
@@ -375,6 +380,33 @@ def litgen_options_imgui(
             r"^ColorConvertHSVtoRGB$",
         ]
     )
+
+    # Exclude some overloads by their exact signature (they are replaced by more pythonic versions)
+    options.fn_exclude_by_name_and_signature = {
+        # Only the `bool* p_selected` overload is published (returns Tuple[bool, bool])
+        "Selectable": "const char *, bool, ImGuiSelectableFlags, const ImVec2 &",
+        # Only the `bool* p_selected` overload is published; see also menu_item_simple
+        "MenuItem": "const char *, const char *, bool, bool",
+        # Pointer-based versions of the polygon functions: replaced by versions accepting a list of points
+        "AddPolyline": "const ImVec2 *, int, ImU32, float, ImDrawFlags",
+        "AddConvexPolyFilled": "const ImVec2 *, int, ImU32",
+        "AddConcavePolyFilled": "const ImVec2 *, int, ImU32",
+        # Output params (imgui_internal.h): replaced by a version returning DockBuilderSplitNodeResult
+        "DockBuilderSplitNode": "ImGuiID, ImGuiDir, float, ImGuiID *, ImGuiID *",
+        # char* buffers (imgui_internal.h): replaced by versions using std::string
+        "InputTextEx": "const char *, const char *, char *, int, const ImVec2 &, ImGuiInputTextFlags, ImGuiInputTextCallback, void *",
+        "TempInputText": "const ImRect &, ImGuiID, const char *, char *, size_t, ImGuiInputTextFlags, ImGuiInputTextCallback, void *",
+    }
+
+    # Exclude some members and methods, per class
+    options.member_exclude_by_name_and_class__regex = {
+        "ImVec2": r"^operator\[\]$",  # __getitem__ / __setitem__ are custom bindings (see below)
+        "ImGuiIO": r"^IniFilename$|^LogFilename$",  # bare const char* with no storage: see set_ini_filename & co
+        "ImDrawList": r"^AddCallback$",  # C function pointer, incompatible with nanobind
+        "ImTextureData": r"^GetPixels$|^GetPixelsAt$",  # void* : see get_pixels_array
+        "ImFont": r"^CalcWordWrapPosition$",  # returns a pointer inside the text
+        "ImGuiWindowSettings": r"^GetName$",  # char*: see get_name_str
+    }
 
     options.member_exclude_by_name__regex = join_string_by_pipe_char(
         [

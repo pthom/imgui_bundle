@@ -2125,7 +2125,6 @@ def tree_node_get_open(storage_id: ID) -> bool:
     """retrieve tree node open/close state."""
     pass
 
-# [ADAPT_IMGUI_BUNDLE]
 # Widgets: Selectables
 # - A selectable highlights when hovered, and can display another color when selected.
 # - Neighbors selectable extend their highlight bounds in order to leave no gap between them. This is so a series of selected Selectable appear contiguous.
@@ -2139,8 +2138,6 @@ def selectable(
     "bool* p_selected" point to the selection state (read-write), as a convenient helper.
     """
     pass
-
-# [/ADAPT_IMGUI_BUNDLE]
 
 # Multi-selection system for Selectable(), Checkbox(), TreeNode() functions [BETA]
 # - This enables standard multi-selection/range-selection idioms (Ctrl+Mouse/Keyboard, Shift+Mouse/Keyboard, etc.) in a way that also allow a clipper to be used.
@@ -2272,9 +2269,7 @@ def begin_menu(label: str, enabled: bool = True) -> bool:
     """create a sub-menu entry. only call EndMenu() if this returns True!"""
     pass
 
-# [ADAPT_IMGUI_BUNDLE]
-
-# IMGUI_API void          EndMenu();    /* original C++ signature */
+# IMGUI_API void          EndMenu();                                                              /* original C++ signature */
 def end_menu() -> None:
     """only call EndMenu() if BeginMenu() returns True!"""
     pass
@@ -2292,8 +2287,6 @@ def menu_item_simple(label: str, shortcut: Optional[str] = None, selected: bool 
 def menu_item(label: str, shortcut: str, p_selected: bool, enabled: bool = True) -> Tuple[bool, bool]:
     """return True when activated + toggle (*p_selected) if p_selected != None"""
     pass
-
-# [/ADAPT_IMGUI_BUNDLE]
 
 # Tooltips
 # - Tooltips are windows following the mouse. They do not take focus away.
@@ -8816,7 +8809,6 @@ class IO:
     delta_time: float  # = 1.0/60.0     // Time elapsed since last frame, in seconds. May change every frame.
     # float       IniSavingRate;    /* original C++ signature */
     ini_saving_rate: float  # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
-
     # void*       UserData;    /* original C++ signature */
     user_data: Any  # = None           // Store your own data.
     # Font system
@@ -10577,6 +10569,9 @@ class ImDrawList:
     ) -> None:
         """Quadratic Bezier (3 control points)"""
         pass
+    # General polygon
+    # - Only simple polygons are supported by filling functions (no self-intersections, no holes).
+    # - Concave polygon fill is more expensive than convex one: it has O(N^2) complexity. Provided as a convenience for the user but not used by the main library.
     #                                      #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # - Only simple polygons are supported by filling functions (no self-intersections, no holes).
@@ -11584,15 +11579,6 @@ class ImFont:
     def get_font_baked(self, font_size: float, density: float = -1.0) -> ImFontBaked:
         """Get or create baked data for given size"""
         pass
-    #                                   #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # IMGUI_API int               CalcWordWrapPositionPython(float size, const char* text, float wrap_width);    /* original C++ signature */
-    def calc_word_wrap_position_python(self, size: float, text: str, wrap_width: float) -> int:
-        """Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)"""
-        pass
-    #                                   #endif
-    #
-
     # IMGUI_API void              RenderChar(ImDrawList* draw_list, float size, const ImVec2& pos, ImU32 col, ImWchar c, const ImVec4* cpu_fine_clip = NULL);    /* original C++ signature */
     def render_char(
         self,

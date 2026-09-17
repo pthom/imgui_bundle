@@ -309,12 +309,6 @@ KeyRoutingIndex = int
 # Use your programming IDE "Go to definition" facility on the names of the center columns to find the actual flags/enum lists.
 
 # Flags
-# [ADAPT_IMGUI_BUNDLE]
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
-# [/ADAPT_IMGUI_BUNDLE]
 
 # Table column indexing
 
@@ -3498,7 +3492,6 @@ class WindowSettings:
         pass
     #                #endif
     #
-    # [/ADAPT_IMGUI_BUNDLE]
 
 class SettingsCleanupArgs:
     # ImGuiID         TypeHashFilter = 0;    /* original C++ signature */
@@ -7884,6 +7877,10 @@ def tree_node_update_next_open(storage_id: ID, flags: TreeNodeFlags) -> bool:
 # Data type helpers
 
 # InputText
+# IMGUI_API void          InputTextDeactivateHook(ImGuiID id);    /* original C++ signature */
+def input_text_deactivate_hook(id_: ID) -> None:
+    pass
+
 # [ADAPT_IMGUI_BUNDLE]
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
@@ -7899,11 +7896,6 @@ def temp_input_text(bb: ImRect, id_: ID, label: str, s: str, flags: InputTextFla
 
 # #endif
 #
-# [/ADAPT_IMGUI_BUNDLE]
-# IMGUI_API void          InputTextDeactivateHook(ImGuiID id);    /* original C++ signature */
-def input_text_deactivate_hook(id_: ID) -> None:
-    pass
-
 # inline bool             TempInputIsActive(ImGuiID id)       { ImGuiContext& g = *GImGui; return (g.TempInputId == id && g.ActiveId == id) || (g.InputTextDeactivatedState.ID == id); }    /* original C++ signature */
 def temp_input_is_active(id_: ID) -> bool:
     """(private API)"""

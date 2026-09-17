@@ -8022,14 +8022,6 @@ void py_init_module_imgui_main(nb::module_& m)
             nb::arg("font_size"), nb::arg("density") = -1.0f,
             "Get or create baked data for given size",
             nb::rv_policy::reference)
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("calc_word_wrap_position_python",
-            &ImFont::CalcWordWrapPositionPython,
-            nb::arg("size"), nb::arg("text"), nb::arg("wrap_width"),
-            "Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)")
-        // #endif
-        //
         .def("render_char",
             &ImFont::RenderChar, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("c"), nb::arg("cpu_fine_clip") = nb::none())
         .def("render_text",
