@@ -27,6 +27,13 @@ color = imgui.ImVec4(1, 0, 0, 1)
 changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 (was a list)
 ```
 
+## Breaking changes
+
+- `imgui.set_drag_drop_payload(type, data, sz)` was removed: it took a raw buffer and was not usable from Python.
+  Use `imgui.set_drag_drop_payload_py_id()` (see `demo_drag_and_drop.py`).
+- Some errors are now reported with a more specific exception (`ValueError`, `IndexError`) where they used to raise a
+  `RuntimeError` coming from an `IM_ASSERT` (for example `ImVec2.from_dict()` with a missing key, or an out-of-range color index).
+
 ## Fixes
 
 - `ImDrawData.cmd_lists_count` is back, as a read-only property. Dear ImGui 1.92.9 made `CmdListsCount` obsolete, and it had
@@ -39,6 +46,10 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 - Pure Python pygame backend (`python_backends/pygame_backend.py`): copy / cut / paste / select all / undo / redo work (their
   keys were not forwarded to imgui), the system clipboard is used (via `pygame.scrap`), and double clicks are detected
   (imgui's clock ran faster than the wall clock at high frame rates).
+- `imgui.get_clipboard_text()` crashed when the clipboard was empty and no backend was installed; it always returns a `str` (`""` when empty).
+- `imgui.color_picker4()` with a list: `ref_col` is a list of 4 floats (it was declared as a single float, and read out of bounds).
+- An exception raised inside a Python clipboard / open-in-shell callback is reported ("Exception ignored in...") instead of
+  unwinding through Dear ImGui.
 - `imgui.internal.get_current_window()` raises an exception instead of crashing when called without a context or outside a frame.
 
 
