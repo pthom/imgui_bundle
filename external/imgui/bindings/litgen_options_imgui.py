@@ -1161,7 +1161,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_CLASS.def_prop_rw("platform_get_clipboard_text_fn",
             [](ImGuiPlatformIO&) { return g_py_get_clipboard.is_valid() ? g_py_get_clipboard : nb::none(); },
             [](ImGuiPlatformIO& self, nb::object f) {
-                g_py_get_clipboard = f;
+                PyPlatformIOCallbacks_Set(g_py_get_clipboard, f);
                 self.Platform_GetClipboardTextFn = f.is_none() ? NULL : PyGetClipboardTextTrampoline;
             },
             nb::arg("f").none(),
@@ -1169,7 +1169,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_CLASS.def_prop_rw("platform_set_clipboard_text_fn",
             [](ImGuiPlatformIO&) { return g_py_set_clipboard.is_valid() ? g_py_set_clipboard : nb::none(); },
             [](ImGuiPlatformIO& self, nb::object f) {
-                g_py_set_clipboard = f;
+                PyPlatformIOCallbacks_Set(g_py_set_clipboard, f);
                 self.Platform_SetClipboardTextFn = f.is_none() ? NULL : PySetClipboardTextTrampoline;
             },
             nb::arg("f").none(),
@@ -1177,7 +1177,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_CLASS.def_prop_rw("platform_open_in_shell_fn",
             [](ImGuiPlatformIO&) { return g_py_open_in_shell.is_valid() ? g_py_open_in_shell : nb::none(); },
             [](ImGuiPlatformIO& self, nb::object f) {
-                g_py_open_in_shell = f;
+                PyPlatformIOCallbacks_Set(g_py_open_in_shell, f);
                 self.Platform_OpenInShellFn = f.is_none() ? NULL : PyOpenInShellTrampoline;
             },
             nb::arg("f").none(),

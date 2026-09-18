@@ -36,25 +36,48 @@ using uchar = unsigned char;
 // These fields are C function pointers, which cannot capture a Python callable. Instead, the
 // Python callable is stored in a static slot, and a fixed trampoline is installed in the field.
 // (single-context by design, like imgui's own clipboard state)
-// The bindings are in generate_imgui.py (custom bindings on ImGuiPlatformIO).
+// The bindings are in litgen_options_imgui.py (custom bindings on ImGuiPlatformIO).
 static nb::object g_py_get_clipboard;   // Callable[[Context], str], or None
 static nb::object g_py_set_clipboard;   // Callable[[Context, str], None], or None
 static nb::object g_py_open_in_shell;   // Callable[[Context, str], bool], or None
+
+// Store a Python callable (or None) in one of the slots above.
+// The slots must be emptied before the interpreter is finalized: a static nb::object destroyed at process exit,
+// after Py_Finalize, would decref a dead object (segfault at exit). Hence the cleanup registered with Python's atexit.
+static void PyPlatformIOCallbacks_Set(nb::object& slot, nb::object f)
+{
+    static bool cleanup_registered = false;
+    if (!cleanup_registered)
+    {
+        nb::module_::import_("atexit").attr("register")(nb::cpp_function([]() {
+            g_py_get_clipboard.reset();
+            g_py_set_clipboard.reset();
+            g_py_open_in_shell.reset();
+        }));
+        cleanup_registered = true;
+    }
+    slot = f.is_none() ? nb::object() : f;
+}
 
 static const char* PyGetClipboardTextTrampoline(ImGuiContext* ctx)
 {
     // The returned text is copied by imgui right away; this buffer keeps it alive until then.
     static std::string buffer;
+    if (!g_py_get_clipboard.is_valid())
+        return "";
     nb::object r = g_py_get_clipboard(nb::cast(ctx, nb::rv_policy::reference));
     buffer = r.is_none() ? std::string() : nb::cast<std::string>(r);
     return buffer.c_str();
 }
 static void PySetClipboardTextTrampoline(ImGuiContext* ctx, const char* text)
 {
-    g_py_set_clipboard(nb::cast(ctx, nb::rv_policy::reference), text ? text : "");
+    if (g_py_set_clipboard.is_valid())
+        g_py_set_clipboard(nb::cast(ctx, nb::rv_policy::reference), text ? text : "");
 }
 static bool PyOpenInShellTrampoline(ImGuiContext* ctx, const char* path)
 {
+    if (!g_py_open_in_shell.is_valid())
+        return false;
     return nb::cast<bool>(g_py_open_in_shell(nb::cast(ctx, nb::rv_policy::reference), path ? path : ""));
 }
 
@@ -7852,7 +7875,7 @@ void py_init_module_imgui_main(nb::module_& m)
     pyClassImGuiPlatformIO.def_prop_rw("platform_get_clipboard_text_fn",
         [](ImGuiPlatformIO&) { return g_py_get_clipboard.is_valid() ? g_py_get_clipboard : nb::none(); },
         [](ImGuiPlatformIO& self, nb::object f) {
-            g_py_get_clipboard = f;
+            PyPlatformIOCallbacks_Set(g_py_get_clipboard, f);
             self.Platform_GetClipboardTextFn = f.is_none() ? NULL : PyGetClipboardTextTrampoline;
         },
         nb::arg("f").none(),
@@ -7860,7 +7883,7 @@ void py_init_module_imgui_main(nb::module_& m)
     pyClassImGuiPlatformIO.def_prop_rw("platform_set_clipboard_text_fn",
         [](ImGuiPlatformIO&) { return g_py_set_clipboard.is_valid() ? g_py_set_clipboard : nb::none(); },
         [](ImGuiPlatformIO& self, nb::object f) {
-            g_py_set_clipboard = f;
+            PyPlatformIOCallbacks_Set(g_py_set_clipboard, f);
             self.Platform_SetClipboardTextFn = f.is_none() ? NULL : PySetClipboardTextTrampoline;
         },
         nb::arg("f").none(),
@@ -7868,7 +7891,7 @@ void py_init_module_imgui_main(nb::module_& m)
     pyClassImGuiPlatformIO.def_prop_rw("platform_open_in_shell_fn",
         [](ImGuiPlatformIO&) { return g_py_open_in_shell.is_valid() ? g_py_open_in_shell : nb::none(); },
         [](ImGuiPlatformIO& self, nb::object f) {
-            g_py_open_in_shell = f;
+            PyPlatformIOCallbacks_Set(g_py_open_in_shell, f);
             self.Platform_OpenInShellFn = f.is_none() ? NULL : PyOpenInShellTrampoline;
         },
         nb::arg("f").none(),
