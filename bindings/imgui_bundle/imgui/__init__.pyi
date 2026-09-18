@@ -2540,11 +2540,6 @@ def begin_drag_drop_source(flags: DragDropFlags = 0) -> bool:
     """call after submitting an item which may be dragged. when this return True, you can call SetDragDropPayload() + EndDragDropSource()"""
     pass
 
-# IMGUI_API bool          SetDragDropPayload(const char* type, const void* data, size_t sz, ImGuiCond cond = 0);      /* original C++ signature */
-def set_drag_drop_payload(type: str, data: Any, sz: int, cond: Cond = 0) -> bool:
-    """type is a user defined string of maximum 32 characters. Strings starting with '_' are reserved for dear imgui internal types. Data is copied and held by imgui. Return True when payload has been accepted."""
-    pass
-
 # IMGUI_API void          EndDragDropSource();                                                                        /* original C++ signature */
 def end_drag_drop_source() -> None:
     """only call EndDragDropSource() if BeginDragDropSource() returns True!"""
@@ -2953,10 +2948,6 @@ def set_next_frame_want_capture_mouse(want_capture_mouse: bool) -> None:
 
 # Clipboard Utilities
 # - Also see the LogToClipboard() function to capture GUI into clipboard, or easily output text data to the clipboard.
-# IMGUI_API const char*   GetClipboardText();    /* original C++ signature */
-def get_clipboard_text() -> str:
-    pass
-
 # IMGUI_API void          SetClipboardText(const char* text);    /* original C++ signature */
 def set_clipboard_text(text: str) -> None:
     pass
@@ -11756,6 +11747,9 @@ class PlatformImeData:
 
 # #endif
 
+def get_clipboard_text() -> str:
+    pass
+
 def get_style_color_vec4(idx: Col) -> ImVec4:
     """retrieve style color as stored in ImGuiStyle structure. use to feed back into PushStyleColor(), otherwise use GetColorU32() to get style color with style alpha baked in.
     (Note: returns a copy, not a reference to the internal style color.)"""
@@ -11861,7 +11855,7 @@ def color_picker3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tup
 
 @overload
 def color_picker4(
-    label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[float] = None
+    label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[List[float]] = None
 ) -> Tuple[bool, List[float]]:
     pass
 
@@ -12046,8 +12040,6 @@ def input_text_with_hint(
 ####################    </generated_from:imgui_stdlib.h>    ####################
 
 ####################    <generated_from:imgui_pywrappers.h>    ####################
-# Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-# Handwritten wrappers around parts of the imgui API, when needed for the python bindings
 
 class Payload_PyId:
     # ImGuiPayloadId DataId;    /* original C++ signature */

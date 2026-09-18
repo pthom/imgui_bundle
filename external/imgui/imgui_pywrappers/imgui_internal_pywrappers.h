@@ -1,5 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 // Handwritten wrappers around parts of the imgui API, when needed for the python bindings
+#pragma once
 #include "imgui.h"
 #include "imgui_internal.h"
 #include <optional>

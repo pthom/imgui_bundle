@@ -213,7 +213,7 @@ def _options_exclusions(options: LitgenOptions) -> None:
             r"^TempInputScalar",
             r"ImFileLoadToMemory",
             r"^GetGlyphRange",
-            r"SetDragDropPayload^$",
+            r"^SetDragDropPayload$",  # raw buffer: see set_drag_drop_payload_py_id
             r"^AcceptDragDropPayload$",
             r"^GetDragDropPayload$",
             r"^GetKeyChordName$",
@@ -602,6 +602,19 @@ def _custom_bindings_common(options: LitgenOptions) -> None:
 def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
     """Python-specific API of the imgui module. Most of these replace former Python-only regions of the imgui fork
     (see docs/book/devel_docs/bindings_forks.md)."""
+    # GetClipboardText returns NULL when the clipboard is empty: the Python version returns "" (as its stub says: -> str)
+    options.fn_exclude_by_name__regex = code_utils.append_regex(options.fn_exclude_by_name__regex, r"^GetClipboardText$")
+    options.custom_bindings.add_custom_bindings_to_main_module(
+        stub_code='''
+        def get_clipboard_text() -> str:
+            pass
+    ''',
+        pydef_code="""
+        LG_MODULE.def("get_clipboard_text",
+            []() -> std::string { const char* r = ImGui::GetClipboardText(); return r ? r : ""; });
+    """,
+    )
+
     # GetStyleColorVec4 returns const ImVec4& (reference into the style array).
     # With rv_policy::reference, Python can mutate the style directly without PushStyleColor.
     # Exclude only for imgui (not shared options, since ImPlot's version returns by value).
@@ -791,7 +804,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
             pass
         @overload
         def color_picker4(
-            label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[float] = None
+            label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[List[float]] = None
         ) -> Tuple[bool, List[float]]:
             pass
         @overload
@@ -804,7 +817,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_MODULE.def("slider_float2",
             [](const char* label, ImVec2 v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, ImVec2> {
                 bool changed = ImGui::SliderFloat2(label, &v.x, v_min, v_max, format, flags); return {changed, v}; },
-            nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+            nb::arg("label"), nb::arg("v").noconvert(), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
         LG_MODULE.def("slider_float2",
             [](const char* label, std::array<double, 2> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, std::array<double, 2>> {
                 float vf[2]; for (int i = 0; i < 2; ++i) vf[i] = (float)v[i];
@@ -815,7 +828,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_MODULE.def("slider_float4",
             [](const char* label, ImVec4 v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::SliderFloat4(label, &v.x, v_min, v_max, format, flags); return {changed, v}; },
-            nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+            nb::arg("label"), nb::arg("v").noconvert(), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
         LG_MODULE.def("slider_float4",
             [](const char* label, std::array<double, 4> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, std::array<double, 4>> {
                 float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
@@ -826,7 +839,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_MODULE.def("input_float2",
             [](const char* label, ImVec2 v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, ImVec2> {
                 bool changed = ImGui::InputFloat2(label, &v.x, format, flags); return {changed, v}; },
-            nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+            nb::arg("label"), nb::arg("v").noconvert(), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
         LG_MODULE.def("input_float2",
             [](const char* label, std::array<double, 2> v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, std::array<double, 2>> {
                 float vf[2]; for (int i = 0; i < 2; ++i) vf[i] = (float)v[i];
@@ -837,7 +850,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_MODULE.def("input_float4",
             [](const char* label, ImVec4 v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::InputFloat4(label, &v.x, format, flags); return {changed, v}; },
-            nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+            nb::arg("label"), nb::arg("v").noconvert(), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
         LG_MODULE.def("input_float4",
             [](const char* label, std::array<double, 4> v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, std::array<double, 4>> {
                 float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
@@ -845,10 +858,8 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
                 for (int i = 0; i < 4; ++i) v[i] = vf[i];
                 return {changed, v}; },
             nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-        LG_MODULE.def("color_edit3",
-            [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
-                bool changed = ImGui::ColorEdit3(label, &col.x, flags); return {changed, col}; },
-            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+        // color_edit3 / color_picker3: the list form (3 floats) is registered FIRST, and the ImVec4 form stays convertible:
+        // a 3-element list can never become an ImVec4 (no warning, no ambiguity), while a 4-tuple still reaches the ImVec4 form (#444)
         LG_MODULE.def("color_edit3",
             [](const char* label, std::array<double, 3> v, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<double, 3>> {
                 float vf[3]; for (int i = 0; i < 3; ++i) vf[i] = (float)v[i];
@@ -856,10 +867,14 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
                 for (int i = 0; i < 3; ++i) v[i] = vf[i];
                 return {changed, v}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+        LG_MODULE.def("color_edit3",
+            [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
+                bool changed = ImGui::ColorEdit3(label, &col.x, flags); return {changed, col}; },
+            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
         LG_MODULE.def("color_edit4",
             [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::ColorEdit4(label, &col.x, flags); return {changed, col}; },
-            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+            nb::arg("label"), nb::arg("col").noconvert(), nb::arg("flags") = 0);
         LG_MODULE.def("color_edit4",
             [](const char* label, std::array<double, 4> v, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<double, 4>> {
                 float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
@@ -868,25 +883,26 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
                 return {changed, v}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
         LG_MODULE.def("color_picker3",
-            [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
-                bool changed = ImGui::ColorPicker3(label, &col.x, flags); return {changed, col}; },
-            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-        LG_MODULE.def("color_picker3",
             [](const char* label, std::array<double, 3> v, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<double, 3>> {
                 float vf[3]; for (int i = 0; i < 3; ++i) vf[i] = (float)v[i];
                 bool changed = ImGui::ColorPicker3(label, vf, flags);
                 for (int i = 0; i < 3; ++i) v[i] = vf[i];
                 return {changed, v}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+        LG_MODULE.def("color_picker3",
+            [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
+                bool changed = ImGui::ColorPicker3(label, &col.x, flags); return {changed, col}; },
+            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
         LG_MODULE.def("color_picker4",
             [](const char* label, ImVec4 col, ImGuiColorEditFlags flags, std::optional<ImVec4> ref_col) -> std::tuple<bool, ImVec4> {
                 bool changed = ImGui::ColorPicker4(label, &col.x, flags, ref_col.has_value() ? &ref_col->x : nullptr); return {changed, col}; },
-            nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
+            nb::arg("label"), nb::arg("col").noconvert(), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
         LG_MODULE.def("color_picker4",
-            [](const char* label, std::array<double, 4> v, ImGuiColorEditFlags flags, std::optional<double> ref_col) -> std::tuple<bool, std::array<double, 4>> {
+            [](const char* label, std::array<double, 4> v, ImGuiColorEditFlags flags, std::optional<std::array<double, 4>> ref_col) -> std::tuple<bool, std::array<double, 4>> {
                 float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
-                float ref_col_f = ref_col.has_value() ? (float)*ref_col : 0.f;
-                bool changed = ImGui::ColorPicker4(label, vf, flags, ref_col.has_value() ? &ref_col_f : nullptr);
+                float ref_col_f[4] = {0.f, 0.f, 0.f, 0.f};  // imgui reads 4 floats from ref_col
+                if (ref_col.has_value()) for (int i = 0; i < 4; ++i) ref_col_f[i] = (float)(*ref_col)[i];
+                bool changed = ImGui::ColorPicker4(label, vf, flags, ref_col.has_value() ? ref_col_f : nullptr);
                 for (int i = 0; i < 4; ++i) v[i] = vf[i];
                 return {changed, v}; },
             nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
@@ -1049,8 +1065,9 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         pydef_code="""
         LG_CLASS.def("set_ini_filename",
             [](ImGuiIO& self, std::optional<std::string> filename) {
-                static std::string storage;  // ImGuiIO::IniFilename is a bare pointer with no storage
-                if (filename.has_value()) { storage = *filename; self.IniFilename = storage.c_str(); }
+                // ImGuiIO::IniFilename is a bare pointer with no storage. One string per ImGuiIO (map nodes never move)
+                static std::map<const ImGuiIO*, std::string> storage;
+                if (filename.has_value()) { std::string& str = storage[&self]; str = *filename; self.IniFilename = str.c_str(); }
                 else self.IniFilename = NULL;
             },
             nb::arg("filename").none(),
@@ -1059,8 +1076,8 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
             [](const ImGuiIO& self) -> std::string { return self.IniFilename ? self.IniFilename : ""; });
         LG_CLASS.def("set_log_filename",
             [](ImGuiIO& self, std::string filename) {
-                static std::string storage;  // ImGuiIO::LogFilename is a bare pointer with no storage
-                storage = filename; self.LogFilename = storage.c_str();
+                static std::map<const ImGuiIO*, std::string> storage;  // same as set_ini_filename
+                std::string& str = storage[&self]; str = filename; self.LogFilename = str.c_str();
             },
             nb::arg("filename"));
         LG_CLASS.def("get_log_filename",
@@ -1179,7 +1196,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_CLASS.def_prop_rw("platform_get_clipboard_text_fn",
             [](ImGuiPlatformIO& self) -> nb::object {
                 auto fn = self.Platform_GetClipboardTextFn;
-                if (fn == PyGetClipboardTextTrampoline) return g_py_get_clipboard;
+                if (fn == PyGetClipboardTextTrampoline) return g_py_get_clipboard.is_valid() ? g_py_get_clipboard : nb::none();
                 if (fn == NULL) return nb::none();
                 return nb::cpp_function([fn](ImGuiContext* ctx) -> std::string { const char* r = fn(ctx); return r ? r : ""; });
             },
@@ -1192,7 +1209,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_CLASS.def_prop_rw("platform_set_clipboard_text_fn",
             [](ImGuiPlatformIO& self) -> nb::object {
                 auto fn = self.Platform_SetClipboardTextFn;
-                if (fn == PySetClipboardTextTrampoline) return g_py_set_clipboard;
+                if (fn == PySetClipboardTextTrampoline) return g_py_set_clipboard.is_valid() ? g_py_set_clipboard : nb::none();
                 if (fn == NULL) return nb::none();
                 return nb::cpp_function([fn](ImGuiContext* ctx, const char* text) { fn(ctx, text); });
             },
@@ -1205,7 +1222,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         LG_CLASS.def_prop_rw("platform_open_in_shell_fn",
             [](ImGuiPlatformIO& self) -> nb::object {
                 auto fn = self.Platform_OpenInShellFn;
-                if (fn == PyOpenInShellTrampoline) return g_py_open_in_shell;
+                if (fn == PyOpenInShellTrampoline) return g_py_open_in_shell.is_valid() ? g_py_open_in_shell : nb::none();
                 if (fn == NULL) return nb::none();
                 return nb::cpp_function([fn](ImGuiContext* ctx, const char* path) -> bool { return fn(ctx, path); });
             },
