@@ -52,6 +52,9 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 - `imgui.color_picker4()` with a list: `ref_col` is a list of 4 floats (it was declared as a single float, and read out of bounds).
 - An exception raised inside a Python clipboard / open-in-shell callback is reported ("Exception ignored in...") instead of
   unwinding through Dear ImGui.
+- `ImFont.calc_word_wrap_position_python()` returns an index in the `str` (so that `text[:index]` is what fits). It returned an
+  offset in the UTF-8 bytes, which was wrong for any non-ASCII text.
+- Stubs: the default of `format` arguments reads `"%.3f"` (it was truncated to `"%.3"`; the runtime default was always right).
 - `imgui.internal.get_current_window()` raises an exception instead of crashing when called without a context or outside a frame.
 
 

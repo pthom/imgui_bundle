@@ -37,13 +37,15 @@ using uchar = unsigned char;
 // Python callable is stored in a static slot, and a fixed trampoline is installed in the field.
 // (single-context by design, like imgui's own clipboard state)
 // The bindings are in litgen_options_imgui.py (custom bindings on ImGuiPlatformIO).
-static nb::object g_py_get_clipboard;   // Callable[[Context], str], or None
-static nb::object g_py_set_clipboard;   // Callable[[Context, str], None], or None
-static nb::object g_py_open_in_shell;   // Callable[[Context, str], bool], or None
+// The slots are allocated once and never destroyed: a static nb::object would be destroyed at process exit, after
+// Py_Finalize (segfault if it still holds a reference). They are emptied by an atexit handler (see below), and being
+// immortal they stay harmless even if something fills them again after that handler ran.
+static nb::object& g_py_get_clipboard = *new nb::object();   // Callable[[Context], str], or None
+static nb::object& g_py_set_clipboard = *new nb::object();   // Callable[[Context, str], None], or None
+static nb::object& g_py_open_in_shell = *new nb::object();   // Callable[[Context, str], bool], or None
 
 // Store a Python callable (or None) in one of the slots above.
-// The slots must be emptied before the interpreter is finalized: a static nb::object destroyed at process exit,
-// after Py_Finalize, would decref a dead object (segfault at exit). Hence the cleanup registered with Python's atexit.
+// A cleanup registered with Python's atexit empties the slots, so that the callables are released while the interpreter is alive.
 static void PyPlatformIOCallbacks_Set(nb::object& slot, nb::object f)
 {
     static bool cleanup_registered = false;
@@ -7809,10 +7811,15 @@ void py_init_module_imgui_main(nb::module_& m)
         [](ImFont& self, float size, const char* text, float wrap_width) -> int {
             const char* text_end = text + strlen(text);
             const char* word_wrap_eol = self.CalcWordWrapPosition(size, text, text_end, wrap_width);
-            return (int)(word_wrap_eol - text);
+            // imgui works on UTF-8 bytes, Python indexes a str by character: count the characters, not the bytes
+            int nb_chars = 0;
+            for (const char* p = text; p < word_wrap_eol; ++p)
+                if (((unsigned char)*p & 0xC0) != 0x80)  // not a UTF-8 continuation byte
+                    ++nb_chars;
+            return nb_chars;
         },
         nb::arg("size"), nb::arg("text"), nb::arg("wrap_width"),
-        "Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)");
+        "Python API for CalcWordWrapPosition: returns an index in the text (text[:index] is what fits), not a pointer");
 
 
 

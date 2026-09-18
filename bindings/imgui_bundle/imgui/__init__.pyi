@@ -1551,7 +1551,7 @@ def drag_float(
     v_speed: float = 1.0,
     v_min: float = 0.0,
     v_max: float = 0.0,
-    format: str = "%.3",
+    format: str = "%.3f",
     flags: SliderFlags = 0,
 ) -> Tuple[bool, float]:
     """If v_min >= v_max we have no bound"""
@@ -1564,7 +1564,7 @@ def drag_float2(
     v_speed: float = 1.0,
     v_min: float = 0.0,
     v_max: float = 0.0,
-    format: str = "%.3",
+    format: str = "%.3f",
     flags: SliderFlags = 0,
 ) -> Tuple[bool, List[float]]:
     pass
@@ -1576,7 +1576,7 @@ def drag_float3(
     v_speed: float = 1.0,
     v_min: float = 0.0,
     v_max: float = 0.0,
-    format: str = "%.3",
+    format: str = "%.3f",
     flags: SliderFlags = 0,
 ) -> Tuple[bool, List[float]]:
     pass
@@ -1588,7 +1588,7 @@ def drag_float4(
     v_speed: float = 1.0,
     v_min: float = 0.0,
     v_max: float = 0.0,
-    format: str = "%.3",
+    format: str = "%.3f",
     flags: SliderFlags = 0,
 ) -> Tuple[bool, List[float]]:
     pass
@@ -1601,7 +1601,7 @@ def drag_float_range2(
     v_speed: float = 1.0,
     v_min: float = 0.0,
     v_max: float = 0.0,
-    format: str = "%.3",
+    format: str = "%.3f",
     format_max: Optional[str] = None,
     flags: SliderFlags = 0,
 ) -> Tuple[bool, float, float]:
@@ -1699,14 +1699,14 @@ def drag_scalar_n(
 #   If you get a warning converting a float to ImGuiSliderFlags, read https://github.com/ocornut/imgui/issues/3361
 # IMGUI_API bool          SliderFloat(const char* label, float* v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);         /* original C++ signature */
 def slider_float(
-    label: str, v: float, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+    label: str, v: float, v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
 ) -> Tuple[bool, float]:
     """adjust format to decorate the value with a prefix or a suffix for in-slider labels or unit display."""
     pass
 
 # IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def slider_float3(
-    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
@@ -1716,7 +1716,7 @@ def slider_angle(
     v_rad: float,
     v_degrees_min: float = -360.0,
     v_degrees_max: float = +360.0,
-    format: str = "%.0 deg",
+    format: str = "%.0f deg",
     flags: SliderFlags = 0,
 ) -> Tuple[bool, float]:
     pass
@@ -1772,7 +1772,7 @@ def slider_scalar_n(
 
 # IMGUI_API bool          VSliderFloat(const char* label, const ImVec2& size, float* v, float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 def v_slider_float(
-    label: str, size: ImVec2Like, v: float, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+    label: str, size: ImVec2Like, v: float, v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
 ) -> Tuple[bool, float]:
     pass
 
@@ -1800,13 +1800,13 @@ def v_slider_scalar(
 # - Most of the ImGuiInputTextFlags flags are only useful for InputText() and not for InputFloatX, InputIntX, InputDouble etc.
 # IMGUI_API bool          InputFloat(const char* label, float* v, float step = 0.0f, float step_fast = 0.0f, const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_float(
-    label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = "%.3", flags: InputTextFlags = 0
+    label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = "%.3f", flags: InputTextFlags = 0
 ) -> Tuple[bool, float]:
     pass
 
 # IMGUI_API bool          InputFloat3(const char* label, float v[3], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_float3(
-    label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
+    label: str, v: List[float], format: str = "%.3f", flags: InputTextFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
@@ -1828,7 +1828,7 @@ def input_int4(label: str, v: List[int], flags: InputTextFlags = 0) -> Tuple[boo
 
 # IMGUI_API bool          InputDouble(const char* label, double* v, double step = 0.0, double step_fast = 0.0, const char* format = "%.6f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 def input_double(
-    label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = "%.6", flags: InputTextFlags = 0
+    label: str, v: float, step: float = 0.0, step_fast: float = 0.0, format: str = "%.6f", flags: InputTextFlags = 0
 ) -> Tuple[bool, float]:
     pass
 
@@ -10674,8 +10674,11 @@ class ImDrawData:
     def scale_clip_rects(self, fb_scale: ImVec2Like) -> None:
         """Helper to scale the ClipRect field of each ImDrawCmd. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution."""
         pass
-    # (read-only) Obsolete since Dear ImGui 1.92.9: use len(cmd_lists). Kept for third party renderers.
-    cmd_lists_count: int
+
+    @property
+    def cmd_lists_count(self) -> int:
+        """(read-only) Obsolete since Dear ImGui 1.92.9: use len(cmd_lists). Kept for third party renderers."""
+        pass
 
 # -----------------------------------------------------------------------------
 # [SECTION] Texture API (ImTextureFormat, ImTextureStatus, ImTextureRect, ImTextureData)
@@ -11204,6 +11207,8 @@ class ImFontAtlas:
     def add_font_from_file_ttf(
         self, filename: str, size_pixels: float, font_cfg: Optional[ImFontConfig] = None
     ) -> ImFont:
+        """Raises a RuntimeError if the font file cannot be loaded
+        (or returns None if imgui's error asserts were disabled: io.config_error_recovery_enable_assert = False)"""
         pass
 
     def python_set_texture_id(self, id_: ImTextureID) -> None:
@@ -11391,7 +11396,7 @@ class ImFont:
         pass
 
     def calc_word_wrap_position_python(self, size: float, text: str, wrap_width: float) -> int:
-        """Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)"""
+        """Python API for CalcWordWrapPosition: returns an index in the text (text[:index] is what fits), not a pointer"""
         ...
 
 # -----------------------------------------------------------------------------
@@ -11787,46 +11792,46 @@ def push_font(font: Optional[ImFont], font_size_base_unscaled: float) -> None:
 
 @overload
 def slider_float2(
-    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
 @overload
 def slider_float2(
-    label: str, v: ImVec2Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+    label: str, v: ImVec2Like, v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
 ) -> Tuple[bool, ImVec2]:
     pass
 
 @overload
 def slider_float4(
-    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+    label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
 @overload
 def slider_float4(
-    label: str, v: ImVec4Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+    label: str, v: ImVec4Like, v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
 ) -> Tuple[bool, ImVec4]:
     pass
 
 @overload
 def input_float2(
-    label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
+    label: str, v: List[float], format: str = "%.3f", flags: InputTextFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
 @overload
-def input_float2(label: str, v: ImVec2Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
+def input_float2(label: str, v: ImVec2Like, format: str = "%.3f", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
     pass
 
 @overload
 def input_float4(
-    label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
+    label: str, v: List[float], format: str = "%.3f", flags: InputTextFlags = 0
 ) -> Tuple[bool, List[float]]:
     pass
 
 @overload
-def input_float4(label: str, v: ImVec4Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
+def input_float4(label: str, v: ImVec4Like, format: str = "%.3f", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
 @overload

@@ -670,7 +670,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         qualified_class="ImFont",
         stub_code='''
         def calc_word_wrap_position_python(self, size: float, text: str, wrap_width: float) -> int:
-            """Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)"""
+            """Python API for CalcWordWrapPosition: returns an index in the text (text[:index] is what fits), not a pointer"""
             ...
     ''',
         pydef_code="""
@@ -678,10 +678,15 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
             [](ImFont& self, float size, const char* text, float wrap_width) -> int {
                 const char* text_end = text + strlen(text);
                 const char* word_wrap_eol = self.CalcWordWrapPosition(size, text, text_end, wrap_width);
-                return (int)(word_wrap_eol - text);
+                // imgui works on UTF-8 bytes, Python indexes a str by character: count the characters, not the bytes
+                int nb_chars = 0;
+                for (const char* p = text; p < word_wrap_eol; ++p)
+                    if (((unsigned char)*p & 0xC0) != 0x80)  // not a UTF-8 continuation byte
+                        ++nb_chars;
+                return nb_chars;
             },
             nb::arg("size"), nb::arg("text"), nb::arg("wrap_width"),
-            "Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)");
+            "Python API for CalcWordWrapPosition: returns an index in the text (text[:index] is what fits), not a pointer");
     """,
     )
 
@@ -750,39 +755,39 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         stub_code='''
         @overload
         def slider_float2(
-            label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+            label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
         ) -> Tuple[bool, List[float]]:
             pass
         @overload
         def slider_float2(
-            label: str, v: ImVec2Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+            label: str, v: ImVec2Like, v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
         ) -> Tuple[bool, ImVec2]:
             pass
         @overload
         def slider_float4(
-            label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+            label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
         ) -> Tuple[bool, List[float]]:
             pass
         @overload
         def slider_float4(
-            label: str, v: ImVec4Like, v_min: float, v_max: float, format: str = "%.3", flags: SliderFlags = 0
+            label: str, v: ImVec4Like, v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
         ) -> Tuple[bool, ImVec4]:
             pass
         @overload
         def input_float2(
-            label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
+            label: str, v: List[float], format: str = "%.3f", flags: InputTextFlags = 0
         ) -> Tuple[bool, List[float]]:
             pass
         @overload
-        def input_float2(label: str, v: ImVec2Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
+        def input_float2(label: str, v: ImVec2Like, format: str = "%.3f", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
             pass
         @overload
         def input_float4(
-            label: str, v: List[float], format: str = "%.3", flags: InputTextFlags = 0
+            label: str, v: List[float], format: str = "%.3f", flags: InputTextFlags = 0
         ) -> Tuple[bool, List[float]]:
             pass
         @overload
-        def input_float4(label: str, v: ImVec4Like, format: str = "%.3", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
+        def input_float4(label: str, v: ImVec4Like, format: str = "%.3f", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
             pass
         @overload
         def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
@@ -1141,6 +1146,8 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         def add_font_from_file_ttf(
             self, filename: str, size_pixels: float, font_cfg: Optional[ImFontConfig] = None
         ) -> ImFont:
+            """Raises a RuntimeError if the font file cannot be loaded
+            (or returns None if imgui's error asserts were disabled: io.config_error_recovery_enable_assert = False)"""
             pass
         def python_set_texture_id(self, id_: ImTextureID) -> None:
             """Set the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)"""
@@ -1172,8 +1179,10 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
     options.custom_bindings.add_custom_bindings_to_class(
         qualified_class="ImDrawData",
         stub_code='''
-        # (read-only) Obsolete since Dear ImGui 1.92.9: use len(cmd_lists). Kept for third party renderers.
-        cmd_lists_count: int
+        @property
+        def cmd_lists_count(self) -> int:
+            """(read-only) Obsolete since Dear ImGui 1.92.9: use len(cmd_lists). Kept for third party renderers."""
+            pass
     ''',
         pydef_code="""
         LG_CLASS.def_prop_ro("cmd_lists_count",
