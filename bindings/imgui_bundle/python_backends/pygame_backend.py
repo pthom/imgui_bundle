@@ -26,7 +26,7 @@ class PygameRenderer(ProgrammablePipelineRenderer):
         self._map_keys()
         self._init_clipboard()
 
-    def _init_clipboard(self):
+    def _init_clipboard(self) -> None:
         """Connect imgui to the system clipboard, via pygame.scrap (which needs an existing display surface)"""
         try:
             pygame.scrap.init()
@@ -35,13 +35,13 @@ class PygameRenderer(ProgrammablePipelineRenderer):
 
         # The accepted text type depends on the platform: macOS only accepts the utf-8 one, pygame's SCRAP_TEXT fails there.
         text_types = ["text/plain;charset=utf-8", pygame.SCRAP_TEXT]
-        in_app_clipboard = {"text": ""}  # used when the system clipboard refuses the text
+        in_app_clipboard: Dict[str, str] = {"text": ""}  # used when the system clipboard refuses the text
 
         def get_clipboard_text(_ctx: imgui.internal.Context) -> str:
             for text_type in text_types:
                 data = pygame.scrap.get(text_type)
                 if data:
-                    return data.decode("utf-8", errors="ignore").rstrip("\x00")
+                    return str(data.decode("utf-8", errors="ignore")).rstrip("\x00")  # str(): pygame may be untyped
             return in_app_clipboard["text"]
 
         def set_clipboard_text(_ctx: imgui.internal.Context, text: str) -> None:
