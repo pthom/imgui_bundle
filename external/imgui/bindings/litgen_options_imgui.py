@@ -1153,9 +1153,10 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
     options.custom_bindings.add_custom_bindings_to_class(
         qualified_class="ImGuiPlatformIO",
         stub_code='''
-        platform_get_clipboard_text_fn: Callable[[Context], str]
-        platform_set_clipboard_text_fn: Callable[[Context, str], None]
-        platform_open_in_shell_fn: Callable[[Context, str], bool]
+        # None when no Python callback is set. Setting None removes the callback (the C function pointer becomes NULL)
+        platform_get_clipboard_text_fn: Optional[Callable[[Context], str]]
+        platform_set_clipboard_text_fn: Optional[Callable[[Context, str], None]]
+        platform_open_in_shell_fn: Optional[Callable[[Context, str], bool]]
     ''',
         pydef_code="""
         LG_CLASS.def_prop_rw("platform_get_clipboard_text_fn",

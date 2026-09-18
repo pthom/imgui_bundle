@@ -11689,9 +11689,10 @@ class PlatformIO:
     def clear_renderer_handlers(self) -> None:
         """Clear all Renderer_XXX fields. Typically called on Renderer Backend shutdown."""
         pass
-    platform_get_clipboard_text_fn: Callable[[Context], str]
-    platform_set_clipboard_text_fn: Callable[[Context, str], None]
-    platform_open_in_shell_fn: Callable[[Context, str], bool]
+    # None when no Python callback is set. Setting None removes the callback (the C function pointer becomes NULL)
+    platform_get_clipboard_text_fn: Optional[Callable[[Context], str]]
+    platform_set_clipboard_text_fn: Optional[Callable[[Context, str], None]]
+    platform_open_in_shell_fn: Optional[Callable[[Context, str], bool]]
 
 class PlatformMonitor:
     """(Optional) This is required when enabling multi-viewport. Represent the bounds of each connected monitor/display and their DPI.
