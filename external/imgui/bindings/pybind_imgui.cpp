@@ -7402,6 +7402,12 @@ void py_init_module_imgui_main(nb::module_& m)
             "Helper to scale the ClipRect field of each ImDrawCmd. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution.")
         ;
 
+    pyClassImDrawData.def_prop_ro("cmd_lists_count",
+        [](const ImDrawData& self) { return self.CmdLists.Size; },
+        "(read-only) Obsolete since Dear ImGui 1.92.9: use len(cmd_lists). Kept for third party renderers.");
+
+
+
 
     auto pyEnumImTextureFormat =
         nb::enum_<ImTextureFormat>(m, "ImTextureFormat", nb::is_arithmetic(), nb::is_flag(), " We intentionally support a limited amount of texture formats to limit burden on CPU-side code and extension.\n Most standard backends only support RGBA32 but we provide a single channel option for low-resource/embedded systems.")
@@ -7873,7 +7879,12 @@ void py_init_module_imgui_main(nb::module_& m)
         ;
 
     pyClassImGuiPlatformIO.def_prop_rw("platform_get_clipboard_text_fn",
-        [](ImGuiPlatformIO&) { return g_py_get_clipboard.is_valid() ? g_py_get_clipboard : nb::none(); },
+        [](ImGuiPlatformIO& self) -> nb::object {
+            auto fn = self.Platform_GetClipboardTextFn;
+            if (fn == PyGetClipboardTextTrampoline) return g_py_get_clipboard;
+            if (fn == NULL) return nb::none();
+            return nb::cpp_function([fn](ImGuiContext* ctx) -> std::string { const char* r = fn(ctx); return r ? r : ""; });
+        },
         [](ImGuiPlatformIO& self, nb::object f) {
             PyPlatformIOCallbacks_Set(g_py_get_clipboard, f);
             self.Platform_GetClipboardTextFn = f.is_none() ? NULL : PyGetClipboardTextTrampoline;
@@ -7881,7 +7892,12 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::arg("f").none(),
         "Optional: Access OS clipboard. Callable[[Context], str], should return an empty string on failure.");
     pyClassImGuiPlatformIO.def_prop_rw("platform_set_clipboard_text_fn",
-        [](ImGuiPlatformIO&) { return g_py_set_clipboard.is_valid() ? g_py_set_clipboard : nb::none(); },
+        [](ImGuiPlatformIO& self) -> nb::object {
+            auto fn = self.Platform_SetClipboardTextFn;
+            if (fn == PySetClipboardTextTrampoline) return g_py_set_clipboard;
+            if (fn == NULL) return nb::none();
+            return nb::cpp_function([fn](ImGuiContext* ctx, const char* text) { fn(ctx, text); });
+        },
         [](ImGuiPlatformIO& self, nb::object f) {
             PyPlatformIOCallbacks_Set(g_py_set_clipboard, f);
             self.Platform_SetClipboardTextFn = f.is_none() ? NULL : PySetClipboardTextTrampoline;
@@ -7889,7 +7905,12 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::arg("f").none(),
         "Optional: Access OS clipboard. Callable[[Context, str], None]");
     pyClassImGuiPlatformIO.def_prop_rw("platform_open_in_shell_fn",
-        [](ImGuiPlatformIO&) { return g_py_open_in_shell.is_valid() ? g_py_open_in_shell : nb::none(); },
+        [](ImGuiPlatformIO& self) -> nb::object {
+            auto fn = self.Platform_OpenInShellFn;
+            if (fn == PyOpenInShellTrampoline) return g_py_open_in_shell;
+            if (fn == NULL) return nb::none();
+            return nb::cpp_function([fn](ImGuiContext* ctx, const char* path) -> bool { return fn(ctx, path); });
+        },
         [](ImGuiPlatformIO& self, nb::object f) {
             PyPlatformIOCallbacks_Set(g_py_open_in_shell, f);
             self.Platform_OpenInShellFn = f.is_none() ? NULL : PyOpenInShellTrampoline;

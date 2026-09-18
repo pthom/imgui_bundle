@@ -10683,6 +10683,8 @@ class ImDrawData:
     def scale_clip_rects(self, fb_scale: ImVec2Like) -> None:
         """Helper to scale the ClipRect field of each ImDrawCmd. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution."""
         pass
+    # (read-only) Obsolete since Dear ImGui 1.92.9: use len(cmd_lists). Kept for third party renderers.
+    cmd_lists_count: int
 
 # -----------------------------------------------------------------------------
 # [SECTION] Texture API (ImTextureFormat, ImTextureStatus, ImTextureRect, ImTextureData)
@@ -11689,7 +11691,9 @@ class PlatformIO:
     def clear_renderer_handlers(self) -> None:
         """Clear all Renderer_XXX fields. Typically called on Renderer Backend shutdown."""
         pass
-    # None when no Python callback is set. Setting None removes the callback (the C function pointer becomes NULL)
+    # Reading returns the Python callback if one was set, otherwise a function wrapping the native one installed by
+    # imgui or by the C++ backend (it can be called, or saved and restored later), or None if there is none.
+    # Setting None removes the callback (the C function pointer becomes NULL).
     platform_get_clipboard_text_fn: Optional[Callable[[Context], str]]
     platform_set_clipboard_text_fn: Optional[Callable[[Context, str], None]]
     platform_open_in_shell_fn: Optional[Callable[[Context, str], bool]]

@@ -1150,17 +1150,39 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
 
     # ImGuiPlatformIO clipboard / open-in-shell callbacks: Python callables through static trampolines
     # (g_py_get_clipboard & co, defined in the hand-written part of pybind_imgui.cpp). Reading an attribute set from C++ returns None.
+    # ImDrawData.CmdListsCount is in imgui's OBSOLETE block since 1.92.9 (skipped by the generator), but third party
+    # renderers still read it (e.g. wgpu's imgui backend): keep it as a read-only property.
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImDrawData",
+        stub_code='''
+        # (read-only) Obsolete since Dear ImGui 1.92.9: use len(cmd_lists). Kept for third party renderers.
+        cmd_lists_count: int
+    ''',
+        pydef_code="""
+        LG_CLASS.def_prop_ro("cmd_lists_count",
+            [](const ImDrawData& self) { return self.CmdLists.Size; },
+            "(read-only) Obsolete since Dear ImGui 1.92.9: use len(cmd_lists). Kept for third party renderers.");
+    """,
+    )
+
     options.custom_bindings.add_custom_bindings_to_class(
         qualified_class="ImGuiPlatformIO",
         stub_code='''
-        # None when no Python callback is set. Setting None removes the callback (the C function pointer becomes NULL)
+        # Reading returns the Python callback if one was set, otherwise a function wrapping the native one installed by
+        # imgui or by the C++ backend (it can be called, or saved and restored later), or None if there is none.
+        # Setting None removes the callback (the C function pointer becomes NULL).
         platform_get_clipboard_text_fn: Optional[Callable[[Context], str]]
         platform_set_clipboard_text_fn: Optional[Callable[[Context, str], None]]
         platform_open_in_shell_fn: Optional[Callable[[Context, str], bool]]
     ''',
         pydef_code="""
         LG_CLASS.def_prop_rw("platform_get_clipboard_text_fn",
-            [](ImGuiPlatformIO&) { return g_py_get_clipboard.is_valid() ? g_py_get_clipboard : nb::none(); },
+            [](ImGuiPlatformIO& self) -> nb::object {
+                auto fn = self.Platform_GetClipboardTextFn;
+                if (fn == PyGetClipboardTextTrampoline) return g_py_get_clipboard;
+                if (fn == NULL) return nb::none();
+                return nb::cpp_function([fn](ImGuiContext* ctx) -> std::string { const char* r = fn(ctx); return r ? r : ""; });
+            },
             [](ImGuiPlatformIO& self, nb::object f) {
                 PyPlatformIOCallbacks_Set(g_py_get_clipboard, f);
                 self.Platform_GetClipboardTextFn = f.is_none() ? NULL : PyGetClipboardTextTrampoline;
@@ -1168,7 +1190,12 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
             nb::arg("f").none(),
             "Optional: Access OS clipboard. Callable[[Context], str], should return an empty string on failure.");
         LG_CLASS.def_prop_rw("platform_set_clipboard_text_fn",
-            [](ImGuiPlatformIO&) { return g_py_set_clipboard.is_valid() ? g_py_set_clipboard : nb::none(); },
+            [](ImGuiPlatformIO& self) -> nb::object {
+                auto fn = self.Platform_SetClipboardTextFn;
+                if (fn == PySetClipboardTextTrampoline) return g_py_set_clipboard;
+                if (fn == NULL) return nb::none();
+                return nb::cpp_function([fn](ImGuiContext* ctx, const char* text) { fn(ctx, text); });
+            },
             [](ImGuiPlatformIO& self, nb::object f) {
                 PyPlatformIOCallbacks_Set(g_py_set_clipboard, f);
                 self.Platform_SetClipboardTextFn = f.is_none() ? NULL : PySetClipboardTextTrampoline;
@@ -1176,7 +1203,12 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
             nb::arg("f").none(),
             "Optional: Access OS clipboard. Callable[[Context, str], None]");
         LG_CLASS.def_prop_rw("platform_open_in_shell_fn",
-            [](ImGuiPlatformIO&) { return g_py_open_in_shell.is_valid() ? g_py_open_in_shell : nb::none(); },
+            [](ImGuiPlatformIO& self) -> nb::object {
+                auto fn = self.Platform_OpenInShellFn;
+                if (fn == PyOpenInShellTrampoline) return g_py_open_in_shell;
+                if (fn == NULL) return nb::none();
+                return nb::cpp_function([fn](ImGuiContext* ctx, const char* path) -> bool { return fn(ctx, path); });
+            },
             [](ImGuiPlatformIO& self, nb::object f) {
                 PyPlatformIOCallbacks_Set(g_py_open_in_shell, f);
                 self.Platform_OpenInShellFn = f.is_none() ? NULL : PyOpenInShellTrampoline;

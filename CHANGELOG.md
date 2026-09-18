@@ -17,6 +17,27 @@ imgui.text("A long text which does not fit in 12 em")         # now cut at 12 em
 imgui.end_horizontal()
 ```
 
+## Behavior change: ImVec in, ImVec out for the multi-float widgets
+
+`slider_float2/4`, `input_float2/4`, `color_edit3/4` and `color_picker3/4` now return an `ImVec2` / `ImVec4` when they are given
+one, as the stubs always said. Until now they returned a `list` in that case. Lists and tuples still return a `list`.
+
+```python
+color = imgui.ImVec4(1, 0, 0, 1)
+changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 (was a list)
+```
+
+## Fixes
+
+- `ImDrawData.cmd_lists_count` is back, as a read-only property. Dear ImGui 1.92.9 made `CmdListsCount` obsolete, and it had
+  disappeared from the bindings in v1.92.900, which broke third party renderers such as wgpu's imgui backend
+  (`AttributeError: 'ImDrawData' object has no attribute 'cmd_lists_count'`). New code should use `len(draw_data.cmd_lists)`.
+- `imgui.set_window_focus("window name")` crashed; `imgui.set_window_focus(None)` removes the focus.
+- `imgui.color_picker4()` did not accept a list.
+- `ImColor.to_dict()` returned the red component for all keys; `ImColor.from_dict()` returned an `ImVec4`.
+- `imgui.internal.input_text_ex()` rejected every call ("incompatible function arguments").
+- `imgui.internal.get_current_window()` raises an exception instead of crashing when called without a context or outside a frame.
+
 
 # v1.92.900
 
