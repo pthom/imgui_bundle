@@ -24,6 +24,10 @@ def main() -> None:
 
     options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "IMGUI_BUNDLE_PYTHON_API")
 
+    options.srcmlcpp_options.functions_api_prefixes = "IM_ANIM_API"
+    options.fn_exclude_non_api = False  # class methods and inline helpers have no IM_ANIM_API prefix
+    options.fn_non_api_comment = ""
+
     options.original_signature_flag_show = True
 
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"

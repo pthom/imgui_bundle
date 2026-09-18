@@ -34,6 +34,7 @@ int_resolver = Callable[[], int]
 
 # Clip callbacks
 clip_callback = Callable[[int], None]  # inst_id
+loop_callback = Callable[[int, int], None]  # inst_id, loop_index
 marker_callback = Callable[[int, int, float], None]  # inst_id, marker_id, marker_time
 
 
@@ -52,6 +53,22 @@ marker_callback = Callable[[int, int, float], None]  # inst_id, marker_id, marke
 
 
 # Version information
+
+# ----------------------------------------------------
+# IM_ANIM_API - shared library export/import
+# ----------------------------------------------------
+# ImAnim links statically by default, like Dear ImGui. To build or consume it
+# as a shared library, define IM_ANIM_API before including this header, or in
+# your build system:
+#
+#   Windows, building the DLL:    #define IM_ANIM_API __declspec(dllexport)
+#   Windows, consuming the DLL:   #define IM_ANIM_API __declspec(dllimport)
+#   GCC/Clang hidden visibility:  #define IM_ANIM_API __attribute__((visibility("default")))
+#
+# ImAnim keeps its animation pools in globals. Linking it statically into
+# several modules gives each module its own independent state; building it once
+# as a shared library gives every module a single shared state, which is what a
+# plugin architecture normally wants.
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
@@ -142,8 +159,12 @@ class policy(enum.IntEnum):
     crossfade = enum.auto() # (= 0)  # smooth into new target
     # policy_cut,				    /* original C++ signature */
     cut = enum.auto()       # (= 1)  # snap to target
-    # policy_queue			    /* original C++ signature */
+    # policy_queue,			    /* original C++ signature */
     queue = enum.auto()     # (= 2)  # queue one pending target
+    # policy_additive,		    /* original C++ signature */
+    additive = enum.auto()  # (= 3)  # add animated delta to current value
+    # policy_multiply			    /* original C++ signature */
+    multiply = enum.auto()  # (= 4)  # multiply current value by animated factor
 
 class color_space(enum.IntEnum):
     # col_srgb = 0,			    /* original C++ signature */
@@ -206,19 +227,19 @@ class ease_desc:
 # ----------------------------------------------------
 
 # Frame management
-# void update_begin_frame();                                                          /* original C++ signature */
+# IM_ANIM_API void update_begin_frame();                                                          /* original C++ signature */
 def update_begin_frame() -> None:
     """ Call once per frame before any tweens."""
     pass
-# void gc(unsigned int max_age_frames = 600);                                         /* original C++ signature */
+# IM_ANIM_API void gc(unsigned int max_age_frames = 600);                                         /* original C++ signature */
 def gc(max_age_frames: int = 600) -> None:
     """ Remove stale tween entries older than max_age_frames."""
     pass
-# void pool_clear();																	    /* original C++ signature */
+# IM_ANIM_API void pool_clear();																	    /* original C++ signature */
 def pool_clear() -> None:
     """ Manually clean up pools."""
     pass
-# void reserve(int cap_float, int cap_vec2, int cap_vec4, int cap_int, int cap_color);     /* original C++ signature */
+# IM_ANIM_API void reserve(int cap_float, int cap_vec2, int cap_vec4, int cap_int, int cap_color);     /* original C++ signature */
 def reserve(
     cap_float: int,
     cap_vec2: int,
@@ -228,73 +249,73 @@ def reserve(
     ) -> None:
     """ Pre-allocate pool capacity."""
     pass
-# void set_ease_lut_samples(int count);                                               /* original C++ signature */
+# IM_ANIM_API void set_ease_lut_samples(int count);                                               /* original C++ signature */
 def set_ease_lut_samples(count: int) -> None:
     """ Set LUT resolution for parametric easings (default: 256)."""
     pass
 
 # Global time scale (for slow-motion / fast-forward debugging)
-# void  set_global_time_scale(float scale);                                           /* original C++ signature */
+# IM_ANIM_API void  set_global_time_scale(float scale);                                           /* original C++ signature */
 def set_global_time_scale(scale: float) -> None:
     """ Set global time multiplier (1.0 = normal, 0.5 = half speed, 2.0 = double)."""
     pass
-# float get_global_time_scale();                                                      /* original C++ signature */
+# IM_ANIM_API float get_global_time_scale();                                                      /* original C++ signature */
 def get_global_time_scale() -> float:
     """ Get current global time scale."""
     pass
 
 # Lazy Initialization - defer channel creation until animation is needed
-# void set_lazy_init(bool enable);                                                    /* original C++ signature */
+# IM_ANIM_API void set_lazy_init(bool enable);                                                    /* original C++ signature */
 def set_lazy_init(enable: bool) -> None:
     """ Enable/disable lazy initialization (default: True)."""
     pass
-# bool is_lazy_init_enabled();                                                        /* original C++ signature */
+# IM_ANIM_API bool is_lazy_init_enabled();                                                        /* original C++ signature */
 def is_lazy_init_enabled() -> bool:
     """ Check if lazy init is enabled."""
     pass
 
 # Custom easing functions
-# void register_custom_ease(int slot, ease_fn fn);                                /* original C++ signature */
+# IM_ANIM_API void register_custom_ease(int slot, ease_fn fn);                                /* original C++ signature */
 def register_custom_ease(slot: int, fn: ease_fn) -> None:
     """ Register custom easing in slot 0-15. Use with ease_custom_fn(slot)."""
     pass
-# ease_fn get_custom_ease(int slot);                                              /* original C++ signature */
+# IM_ANIM_API ease_fn get_custom_ease(int slot);                                              /* original C++ signature */
 def get_custom_ease(slot: int) -> ease_fn:
     """ Get registered custom easing function."""
     pass
 
 # Debug UI
-# void show_unified_inspector(bool* p_open = nullptr);                                /* original C++ signature */
+# IM_ANIM_API void show_unified_inspector(bool* p_open = nullptr);                                /* original C++ signature */
 def show_unified_inspector(p_open: Optional[bool] = None) -> Optional[bool]:
     """ Show unified inspector (merges debug window + animation inspector)."""
     pass
-# void show_debug_timeline(ImGuiID instance_id);                                      /* original C++ signature */
+# IM_ANIM_API void show_debug_timeline(ImGuiID instance_id);                                      /* original C++ signature */
 def show_debug_timeline(instance_id: int) -> None:
     """ Show debug timeline for a clip instance."""
     pass
 
 # Performance Profiler
-# void profiler_enable(bool enable);                                                  /* original C++ signature */
+# IM_ANIM_API void profiler_enable(bool enable);                                                  /* original C++ signature */
 def profiler_enable(enable: bool) -> None:
     """ Enable/disable the performance profiler."""
     pass
-# bool profiler_is_enabled();                                                         /* original C++ signature */
+# IM_ANIM_API bool profiler_is_enabled();                                                         /* original C++ signature */
 def profiler_is_enabled() -> bool:
     """ Check if profiler is enabled."""
     pass
-# void profiler_begin_frame();                                                        /* original C++ signature */
+# IM_ANIM_API void profiler_begin_frame();                                                        /* original C++ signature */
 def profiler_begin_frame() -> None:
     """ Call at frame start when profiler is enabled."""
     pass
-# void profiler_end_frame();                                                          /* original C++ signature */
+# IM_ANIM_API void profiler_end_frame();                                                          /* original C++ signature */
 def profiler_end_frame() -> None:
     """ Call at frame end when profiler is enabled."""
     pass
-# void profiler_begin(const char* name);                                              /* original C++ signature */
+# IM_ANIM_API void profiler_begin(const char* name);                                              /* original C++ signature */
 def profiler_begin(name: str) -> None:
     """ Begin a named profiler section."""
     pass
-# void profiler_end();                                                                /* original C++ signature */
+# IM_ANIM_API void profiler_end();                                                                /* original C++ signature */
 def profiler_end() -> None:
     """ End the current profiler section."""
     pass
@@ -352,15 +373,15 @@ class drag_feedback:
         """
         pass
 
-# drag_feedback drag_begin(ImGuiID id, ImVec2 pos);                               /* original C++ signature */
+# IM_ANIM_API drag_feedback drag_begin(ImGuiID id, ImVec2 pos);                               /* original C++ signature */
 def drag_begin(id: int, pos: ImVec2Like) -> drag_feedback:
     """ Start tracking drag at position."""
     pass
-# drag_feedback drag_update(ImGuiID id, ImVec2 pos, float dt);                    /* original C++ signature */
+# IM_ANIM_API drag_feedback drag_update(ImGuiID id, ImVec2 pos, float dt);                    /* original C++ signature */
 def drag_update(id: int, pos: ImVec2Like, dt: float) -> drag_feedback:
     """ Update drag position during drag."""
     pass
-# drag_feedback drag_release(ImGuiID id, ImVec2 pos, drag_opts const& opts, float dt);     /* original C++ signature */
+# IM_ANIM_API drag_feedback drag_release(ImGuiID id, ImVec2 pos, drag_opts const& opts, float dt);     /* original C++ signature */
 def drag_release(
     id: int,
     pos: ImVec2Like,
@@ -369,7 +390,7 @@ def drag_release(
     ) -> drag_feedback:
     """ Release drag with animated feedback."""
     pass
-# void drag_cancel(ImGuiID id);                                                       /* original C++ signature */
+# IM_ANIM_API void drag_cancel(ImGuiID id);                                                       /* original C++ signature */
 def drag_cancel(id: int) -> None:
     """ Cancel drag tracking."""
     pass
@@ -384,7 +405,7 @@ class wave_type(enum.IntEnum):
     wave_sawtooth = enum.auto() # (= 2)  # Sawtooth wave (linear up, instant reset)
     # wave_square             /* original C++ signature */
     wave_square = enum.auto()   # (= 3)  # Square wave (on/off pulse)
-# float  oscillate(ImGuiID id, float amplitude, float frequency, int wave_type, float phase, float dt);           /* original C++ signature */
+# IM_ANIM_API float  oscillate(ImGuiID id, float amplitude, float frequency, int wave_type, float phase, float dt);           /* original C++ signature */
 def oscillate(
     id: int,
     amplitude: float,
@@ -395,7 +416,7 @@ def oscillate(
     ) -> float:
     """ Returns oscillating value [-amplitude, +amplitude]."""
     pass
-# int    oscillate_int(ImGuiID id, int amplitude, float frequency, int wave_type, float phase, float dt);          /* original C++ signature */
+# IM_ANIM_API int    oscillate_int(ImGuiID id, int amplitude, float frequency, int wave_type, float phase, float dt);          /* original C++ signature */
 def oscillate_int(
     id: int,
     amplitude: int,
@@ -406,7 +427,7 @@ def oscillate_int(
     ) -> int:
     """ Returns oscillating integer value [-amplitude, +amplitude]."""
     pass
-# ImVec2 oscillate_vec2(ImGuiID id, ImVec2 amplitude, ImVec2 frequency, int wave_type, ImVec2 phase, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec2 oscillate_vec2(ImGuiID id, ImVec2 amplitude, ImVec2 frequency, int wave_type, ImVec2 phase, float dt);     /* original C++ signature */
 def oscillate_vec2(
     id: int,
     amplitude: ImVec2Like,
@@ -417,7 +438,7 @@ def oscillate_vec2(
     ) -> ImVec2:
     """ 2D oscillation."""
     pass
-# ImVec4 oscillate_vec4(ImGuiID id, ImVec4 amplitude, ImVec4 frequency, int wave_type, ImVec4 phase, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec4 oscillate_vec4(ImGuiID id, ImVec4 amplitude, ImVec4 frequency, int wave_type, ImVec4 phase, float dt);     /* original C++ signature */
 def oscillate_vec4(
     id: int,
     amplitude: ImVec4Like,
@@ -428,7 +449,7 @@ def oscillate_vec4(
     ) -> ImVec4:
     """ 4D oscillation."""
     pass
-# ImVec4 oscillate_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float frequency, int wave_type, float phase, int color_space, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec4 oscillate_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float frequency, int wave_type, float phase, int color_space, float dt);     /* original C++ signature */
 def oscillate_color(
     id: int,
     base_color: ImVec4Like,
@@ -443,7 +464,7 @@ def oscillate_color(
     pass
 
 # Shake/Wiggle - procedural noise animations
-# float  shake(ImGuiID id, float intensity, float frequency, float decay_time, float dt);           /* original C++ signature */
+# IM_ANIM_API float  shake(ImGuiID id, float intensity, float frequency, float decay_time, float dt);           /* original C++ signature */
 def shake(
     id: int,
     intensity: float,
@@ -453,7 +474,7 @@ def shake(
     ) -> float:
     """ Decaying random shake. Returns offset that decays to 0."""
     pass
-# int    shake_int(ImGuiID id, int intensity, float frequency, float decay_time, float dt);         /* original C++ signature */
+# IM_ANIM_API int    shake_int(ImGuiID id, int intensity, float frequency, float decay_time, float dt);         /* original C++ signature */
 def shake_int(
     id: int,
     intensity: int,
@@ -463,7 +484,7 @@ def shake_int(
     ) -> int:
     """ Decaying random shake for integers."""
     pass
-# ImVec2 shake_vec2(ImGuiID id, ImVec2 intensity, float frequency, float decay_time, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec2 shake_vec2(ImGuiID id, ImVec2 intensity, float frequency, float decay_time, float dt);     /* original C++ signature */
 def shake_vec2(
     id: int,
     intensity: ImVec2Like,
@@ -473,7 +494,7 @@ def shake_vec2(
     ) -> ImVec2:
     """ 2D decaying shake."""
     pass
-# ImVec4 shake_vec4(ImGuiID id, ImVec4 intensity, float frequency, float decay_time, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec4 shake_vec4(ImGuiID id, ImVec4 intensity, float frequency, float decay_time, float dt);     /* original C++ signature */
 def shake_vec4(
     id: int,
     intensity: ImVec4Like,
@@ -483,7 +504,7 @@ def shake_vec4(
     ) -> ImVec4:
     """ 4D decaying shake."""
     pass
-# ImVec4 shake_color(ImGuiID id, ImVec4 base_color, ImVec4 intensity, float frequency, float decay_time, int color_space, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec4 shake_color(ImGuiID id, ImVec4 base_color, ImVec4 intensity, float frequency, float decay_time, int color_space, float dt);     /* original C++ signature */
 def shake_color(
     id: int,
     base_color: ImVec4Like,
@@ -495,23 +516,23 @@ def shake_color(
     ) -> ImVec4:
     """ Color shake in specified color space."""
     pass
-# float  wiggle(ImGuiID id, float amplitude, float frequency, float dt);                            /* original C++ signature */
+# IM_ANIM_API float  wiggle(ImGuiID id, float amplitude, float frequency, float dt);                            /* original C++ signature */
 def wiggle(id: int, amplitude: float, frequency: float, dt: float) -> float:
     """ Continuous smooth random movement."""
     pass
-# int    wiggle_int(ImGuiID id, int amplitude, float frequency, float dt);                          /* original C++ signature */
+# IM_ANIM_API int    wiggle_int(ImGuiID id, int amplitude, float frequency, float dt);                          /* original C++ signature */
 def wiggle_int(id: int, amplitude: int, frequency: float, dt: float) -> int:
     """ Continuous smooth random movement for integers."""
     pass
-# ImVec2 wiggle_vec2(ImGuiID id, ImVec2 amplitude, float frequency, float dt);                      /* original C++ signature */
+# IM_ANIM_API ImVec2 wiggle_vec2(ImGuiID id, ImVec2 amplitude, float frequency, float dt);                      /* original C++ signature */
 def wiggle_vec2(id: int, amplitude: ImVec2Like, frequency: float, dt: float) -> ImVec2:
     """ 2D continuous wiggle."""
     pass
-# ImVec4 wiggle_vec4(ImGuiID id, ImVec4 amplitude, float frequency, float dt);                      /* original C++ signature */
+# IM_ANIM_API ImVec4 wiggle_vec4(ImGuiID id, ImVec4 amplitude, float frequency, float dt);                      /* original C++ signature */
 def wiggle_vec4(id: int, amplitude: ImVec4Like, frequency: float, dt: float) -> ImVec4:
     """ 4D continuous wiggle."""
     pass
-# ImVec4 wiggle_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float frequency, int color_space, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec4 wiggle_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float frequency, int color_space, float dt);     /* original C++ signature */
 def wiggle_color(
     id: int,
     base_color: ImVec4Like,
@@ -522,13 +543,13 @@ def wiggle_color(
     ) -> ImVec4:
     """ Color wiggle in specified color space."""
     pass
-# void   trigger_shake(ImGuiID id);                                                                 /* original C++ signature */
+# IM_ANIM_API void   trigger_shake(ImGuiID id);                                                                 /* original C++ signature */
 def trigger_shake(id: int) -> None:
     """ Trigger/restart a shake animation."""
     pass
 
 # Easing evaluation
-# float eval_preset(int type, float t);                                               /* original C++ signature */
+# IM_ANIM_API float eval_preset(int type, float t);                                               /* original C++ signature */
 def eval_preset(type: int, t: float) -> float:
     """ Evaluate a preset easing function at time t (0-1)."""
     pass
@@ -536,7 +557,7 @@ def eval_preset(type: int, t: float) -> float:
 # Tween API - smoothly interpolate values over time
 # init_value: Initial value when channel is first created. Defaults to 0 (or white for color).
 #             Use this to avoid unwanted animations when the first target differs from the default.
-# float  tween_float(ImGuiID id, ImGuiID channel_id, float target, float dur, ease_desc const& ez, int policy, float dt, float init_value = 0.0f);       /* original C++ signature */
+# IM_ANIM_API float  tween_float(ImGuiID id, ImGuiID channel_id, float target, float dur, ease_desc const& ez, int policy, float dt, float init_value = 0.0f);       /* original C++ signature */
 def tween_float(
     id: int,
     channel_id: int,
@@ -549,7 +570,7 @@ def tween_float(
     ) -> float:
     """ Animate a float value."""
     pass
-# ImVec2 tween_vec2(ImGuiID id, ImGuiID channel_id, ImVec2 target, float dur, ease_desc const& ez, int policy, float dt, ImVec2 init_value = ImVec2(0, 0));       /* original C++ signature */
+# IM_ANIM_API ImVec2 tween_vec2(ImGuiID id, ImGuiID channel_id, ImVec2 target, float dur, ease_desc const& ez, int policy, float dt, ImVec2 init_value = ImVec2(0, 0));       /* original C++ signature */
 def tween_vec2(
     id: int,
     channel_id: int,
@@ -566,7 +587,7 @@ def tween_vec2(
      Animate a 2D vector.
     """
     pass
-# ImVec4 tween_vec4(ImGuiID id, ImGuiID channel_id, ImVec4 target, float dur, ease_desc const& ez, int policy, float dt, ImVec4 init_value = ImVec4(0, 0, 0, 0));       /* original C++ signature */
+# IM_ANIM_API ImVec4 tween_vec4(ImGuiID id, ImGuiID channel_id, ImVec4 target, float dur, ease_desc const& ez, int policy, float dt, ImVec4 init_value = ImVec4(0, 0, 0, 0));       /* original C++ signature */
 def tween_vec4(
     id: int,
     channel_id: int,
@@ -583,7 +604,7 @@ def tween_vec4(
      Animate a 4D vector.
     """
     pass
-# int    tween_int(ImGuiID id, ImGuiID channel_id, int target, float dur, ease_desc const& ez, int policy, float dt, int init_value = 0);           /* original C++ signature */
+# IM_ANIM_API int    tween_int(ImGuiID id, ImGuiID channel_id, int target, float dur, ease_desc const& ez, int policy, float dt, int init_value = 0);           /* original C++ signature */
 def tween_int(
     id: int,
     channel_id: int,
@@ -596,7 +617,7 @@ def tween_int(
     ) -> int:
     """ Animate an integer value."""
     pass
-# ImVec4 tween_color(ImGuiID id, ImGuiID channel_id, ImVec4 target_srgb, float dur, ease_desc const& ez, int policy, int color_space, float dt, ImVec4 init_value = ImVec4(1, 1, 1, 1));     /* original C++ signature */
+# IM_ANIM_API ImVec4 tween_color(ImGuiID id, ImGuiID channel_id, ImVec4 target_srgb, float dur, ease_desc const& ez, int policy, int color_space, float dt, ImVec4 init_value = ImVec4(1, 1, 1, 1));     /* original C++ signature */
 def tween_color(
     id: int,
     channel_id: int,
@@ -616,13 +637,13 @@ def tween_color(
     pass
 
 # Resize-friendly helpers
-# ImVec2 anchor_size(int space);     /* original C++ signature */
+# IM_ANIM_API ImVec2 anchor_size(int space);     /* original C++ signature */
 def anchor_size(space: int) -> ImVec2:
     """ Get dimensions of anchor space (window, viewport, etc.)."""
     pass
 
 # Relative target tweens (percent of anchor + pixel offset) - survive window resizes
-# float  tween_float_rel(ImGuiID id, ImGuiID channel_id, float percent, float px_bias, float dur, ease_desc const& ez, int policy, int anchor_space, int axis, float dt);      /* original C++ signature */
+# IM_ANIM_API float  tween_float_rel(ImGuiID id, ImGuiID channel_id, float percent, float px_bias, float dur, ease_desc const& ez, int policy, int anchor_space, int axis, float dt);      /* original C++ signature */
 def tween_float_rel(
     id: int,
     channel_id: int,
@@ -637,7 +658,7 @@ def tween_float_rel(
     ) -> float:
     """ Float relative to anchor (axis: 0=x, 1=y)."""
     pass
-# ImVec2 tween_vec2_rel(ImGuiID id, ImGuiID channel_id, ImVec2 percent, ImVec2 px_bias, float dur, ease_desc const& ez, int policy, int anchor_space, float dt);               /* original C++ signature */
+# IM_ANIM_API ImVec2 tween_vec2_rel(ImGuiID id, ImGuiID channel_id, ImVec2 percent, ImVec2 px_bias, float dur, ease_desc const& ez, int policy, int anchor_space, float dt);               /* original C++ signature */
 def tween_vec2_rel(
     id: int,
     channel_id: int,
@@ -651,7 +672,7 @@ def tween_vec2_rel(
     ) -> ImVec2:
     """ Vec2 relative to anchor."""
     pass
-# ImVec4 tween_vec4_rel(ImGuiID id, ImGuiID channel_id, ImVec4 percent, ImVec4 px_bias, float dur, ease_desc const& ez, int policy, int anchor_space, float dt);               /* original C++ signature */
+# IM_ANIM_API ImVec4 tween_vec4_rel(ImGuiID id, ImGuiID channel_id, ImVec4 percent, ImVec4 px_bias, float dur, ease_desc const& ez, int policy, int anchor_space, float dt);               /* original C++ signature */
 def tween_vec4_rel(
     id: int,
     channel_id: int,
@@ -665,7 +686,7 @@ def tween_vec4_rel(
     ) -> ImVec4:
     """ Vec4 with x,y relative to anchor."""
     pass
-# ImVec4 tween_color_rel(ImGuiID id, ImGuiID channel_id, ImVec4 percent, ImVec4 px_bias, float dur, ease_desc const& ez, int policy, int color_space, int anchor_space, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec4 tween_color_rel(ImGuiID id, ImGuiID channel_id, ImVec4 percent, ImVec4 px_bias, float dur, ease_desc const& ez, int policy, int color_space, int anchor_space, float dt);     /* original C++ signature */
 def tween_color_rel(
     id: int,
     channel_id: int,
@@ -692,7 +713,7 @@ def tween_color_rel(
 # Resolved tweens - target computed dynamically by callback each frame
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
-# float  tween_float_resolved(ImGuiID id, ImGuiID channel_id, float_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                         /* original C++ signature */
+# IM_ANIM_API float  tween_float_resolved(ImGuiID id, ImGuiID channel_id, float_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                         /* original C++ signature */
 def tween_float_resolved(
     id: int,
     channel_id: int,
@@ -704,7 +725,7 @@ def tween_float_resolved(
     ) -> float:
     """ Float with dynamic target."""
     pass
-# ImVec2 tween_vec2_resolved(ImGuiID id, ImGuiID channel_id, vec2_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
+# IM_ANIM_API ImVec2 tween_vec2_resolved(ImGuiID id, ImGuiID channel_id, vec2_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
 def tween_vec2_resolved(
     id: int,
     channel_id: int,
@@ -716,7 +737,7 @@ def tween_vec2_resolved(
     ) -> ImVec2:
     """ Vec2 with dynamic target."""
     pass
-# ImVec4 tween_vec4_resolved(ImGuiID id, ImGuiID channel_id, vec4_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
+# IM_ANIM_API ImVec4 tween_vec4_resolved(ImGuiID id, ImGuiID channel_id, vec4_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                           /* original C++ signature */
 def tween_vec4_resolved(
     id: int,
     channel_id: int,
@@ -728,7 +749,7 @@ def tween_vec4_resolved(
     ) -> ImVec4:
     """ Vec4 with dynamic target."""
     pass
-# ImVec4 tween_color_resolved(ImGuiID id, ImGuiID channel_id, color_resolver fn, float dur, ease_desc const& ez, int policy, int color_space, float dt);        /* original C++ signature */
+# IM_ANIM_API ImVec4 tween_color_resolved(ImGuiID id, ImGuiID channel_id, color_resolver fn, float dur, ease_desc const& ez, int policy, int color_space, float dt);        /* original C++ signature */
 def tween_color_resolved(
     id: int,
     channel_id: int,
@@ -741,7 +762,7 @@ def tween_color_resolved(
     ) -> ImVec4:
     """ Color with dynamic target."""
     pass
-# int    tween_int_resolved(ImGuiID id, ImGuiID channel_id, int_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                             /* original C++ signature */
+# IM_ANIM_API int    tween_int_resolved(ImGuiID id, ImGuiID channel_id, int_resolver fn, float dur, ease_desc const& ez, int policy, float dt);                             /* original C++ signature */
 def tween_int_resolved(
     id: int,
     channel_id: int,
@@ -757,29 +778,29 @@ def tween_int_resolved(
 #
 
 # Rebase functions - change target of in-progress animation without restarting
-# void rebase_float(ImGuiID id, ImGuiID channel_id, float new_target, float dt);      /* original C++ signature */
+# IM_ANIM_API void rebase_float(ImGuiID id, ImGuiID channel_id, float new_target, float dt);      /* original C++ signature */
 def rebase_float(id: int, channel_id: int, new_target: float, dt: float) -> None:
     """ Smoothly redirect float animation to new target."""
     pass
-# void rebase_vec2(ImGuiID id, ImGuiID channel_id, ImVec2 new_target, float dt);      /* original C++ signature */
+# IM_ANIM_API void rebase_vec2(ImGuiID id, ImGuiID channel_id, ImVec2 new_target, float dt);      /* original C++ signature */
 def rebase_vec2(id: int, channel_id: int, new_target: ImVec2Like, dt: float) -> None:
     """ Smoothly redirect vec2 animation to new target."""
     pass
-# void rebase_vec4(ImGuiID id, ImGuiID channel_id, ImVec4 new_target, float dt);      /* original C++ signature */
+# IM_ANIM_API void rebase_vec4(ImGuiID id, ImGuiID channel_id, ImVec4 new_target, float dt);      /* original C++ signature */
 def rebase_vec4(id: int, channel_id: int, new_target: ImVec4Like, dt: float) -> None:
     """ Smoothly redirect vec4 animation to new target."""
     pass
-# void rebase_color(ImGuiID id, ImGuiID channel_id, ImVec4 new_target, float dt);     /* original C++ signature */
+# IM_ANIM_API void rebase_color(ImGuiID id, ImGuiID channel_id, ImVec4 new_target, float dt);     /* original C++ signature */
 def rebase_color(id: int, channel_id: int, new_target: ImVec4Like, dt: float) -> None:
     """ Smoothly redirect color animation to new target."""
     pass
-# void rebase_int(ImGuiID id, ImGuiID channel_id, int new_target, float dt);          /* original C++ signature */
+# IM_ANIM_API void rebase_int(ImGuiID id, ImGuiID channel_id, int new_target, float dt);          /* original C++ signature */
 def rebase_int(id: int, channel_id: int, new_target: int, dt: float) -> None:
     """ Smoothly redirect int animation to new target."""
     pass
 
 # Color blending utility
-# ImVec4 get_blended_color(ImVec4 a_srgb, ImVec4 b_srgb, float t, int color_space);      /* original C++ signature */
+# IM_ANIM_API ImVec4 get_blended_color(ImVec4 a_srgb, ImVec4 b_srgb, float t, int color_space);      /* original C++ signature */
 def get_blended_color(
     a_srgb: ImVec4Like,
     b_srgb: ImVec4Like,
@@ -827,7 +848,7 @@ def ease_custom_fn(slot: int) -> ease_desc:
     pass
 
 # Scroll animation - smooth scrolling for ImGui windows
-# void scroll_to_y(float target_y, float duration, ease_desc const& ez = ease_preset(ease_out_cubic));               /* original C++ signature */
+# IM_ANIM_API void scroll_to_y(float target_y, float duration, ease_desc const& ez = ease_preset(ease_out_cubic));               /* original C++ signature */
 def scroll_to_y(
     target_y: float,
     duration: float,
@@ -839,7 +860,7 @@ def scroll_to_y(
      Scroll current window to Y position.
     """
     pass
-# void scroll_to_x(float target_x, float duration, ease_desc const& ez = ease_preset(ease_out_cubic));               /* original C++ signature */
+# IM_ANIM_API void scroll_to_x(float target_x, float duration, ease_desc const& ez = ease_preset(ease_out_cubic));               /* original C++ signature */
 def scroll_to_x(
     target_x: float,
     duration: float,
@@ -851,7 +872,7 @@ def scroll_to_x(
      Scroll current window to X position.
     """
     pass
-# void scroll_to_top(float duration = 0.3f, ease_desc const& ez = ease_preset(ease_out_cubic));                      /* original C++ signature */
+# IM_ANIM_API void scroll_to_top(float duration = 0.3f, ease_desc const& ez = ease_preset(ease_out_cubic));                      /* original C++ signature */
 def scroll_to_top(duration: float = 0.3, ez: Optional[ease_desc] = None) -> None:
     """Python bindings defaults:
         If ez is None, then its default value will be: ease_preset(ease_out_cubic)
@@ -859,7 +880,7 @@ def scroll_to_top(duration: float = 0.3, ez: Optional[ease_desc] = None) -> None
      Scroll to top of window.
     """
     pass
-# void scroll_to_bottom(float duration = 0.3f, ease_desc const& ez = ease_preset(ease_out_cubic));                   /* original C++ signature */
+# IM_ANIM_API void scroll_to_bottom(float duration = 0.3f, ease_desc const& ez = ease_preset(ease_out_cubic));                   /* original C++ signature */
 def scroll_to_bottom(
     duration: float = 0.3,
     ez: Optional[ease_desc] = None
@@ -912,7 +933,7 @@ class ease_per_axis:
 
 
 # Tween with per-axis easing - each component uses its own easing curve
-# ImVec2 tween_vec2_per_axis(ImGuiID id, ImGuiID channel_id, ImVec2 target, float dur, ease_per_axis const& ez, int policy, float dt);    /* original C++ signature */
+# IM_ANIM_API ImVec2 tween_vec2_per_axis(ImGuiID id, ImGuiID channel_id, ImVec2 target, float dur, ease_per_axis const& ez, int policy, float dt);    /* original C++ signature */
 def tween_vec2_per_axis(
     id: int,
     channel_id: int,
@@ -923,7 +944,7 @@ def tween_vec2_per_axis(
     dt: float
     ) -> ImVec2:
     pass
-# ImVec4 tween_vec4_per_axis(ImGuiID id, ImGuiID channel_id, ImVec4 target, float dur, ease_per_axis const& ez, int policy, float dt);    /* original C++ signature */
+# IM_ANIM_API ImVec4 tween_vec4_per_axis(ImGuiID id, ImGuiID channel_id, ImVec4 target, float dur, ease_per_axis const& ez, int policy, float dt);    /* original C++ signature */
 def tween_vec4_per_axis(
     id: int,
     channel_id: int,
@@ -934,7 +955,7 @@ def tween_vec4_per_axis(
     dt: float
     ) -> ImVec4:
     pass
-# ImVec4 tween_color_per_axis(ImGuiID id, ImGuiID channel_id, ImVec4 target_srgb, float dur, ease_per_axis const& ez, int policy, int color_space, float dt);    /* original C++ signature */
+# IM_ANIM_API ImVec4 tween_color_per_axis(ImGuiID id, ImGuiID channel_id, ImVec4 target_srgb, float dur, ease_per_axis const& ez, int policy, int color_space, float dt);    /* original C++ signature */
 def tween_color_per_axis(
     id: int,
     channel_id: int,
@@ -963,7 +984,7 @@ class path_segment_type(enum.IntEnum):
     seg_catmull_rom = enum.auto()      # (= 3)  # Catmull-rom spline segment
 
 # Single-curve evaluation functions (stateless, for direct use)
-# ImVec2 bezier_quadratic(ImVec2 p0, ImVec2 p1, ImVec2 p2, float t);                                  /* original C++ signature */
+# IM_ANIM_API ImVec2 bezier_quadratic(ImVec2 p0, ImVec2 p1, ImVec2 p2, float t);                                  /* original C++ signature */
 def bezier_quadratic(
     p0: ImVec2Like,
     p1: ImVec2Like,
@@ -972,7 +993,7 @@ def bezier_quadratic(
     ) -> ImVec2:
     """ Evaluate quadratic bezier at t [0,1]."""
     pass
-# ImVec2 bezier_cubic(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t);                           /* original C++ signature */
+# IM_ANIM_API ImVec2 bezier_cubic(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t);                           /* original C++ signature */
 def bezier_cubic(
     p0: ImVec2Like,
     p1: ImVec2Like,
@@ -982,7 +1003,7 @@ def bezier_cubic(
     ) -> ImVec2:
     """ Evaluate cubic bezier at t [0,1]."""
     pass
-# ImVec2 catmull_rom(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t, float tension = 0.5f);      /* original C++ signature */
+# IM_ANIM_API ImVec2 catmull_rom(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t, float tension = 0.5f);      /* original C++ signature */
 def catmull_rom(
     p0: ImVec2Like,
     p1: ImVec2Like,
@@ -995,7 +1016,7 @@ def catmull_rom(
     pass
 
 # Derivatives (for tangent/velocity)
-# ImVec2 bezier_quadratic_deriv(ImVec2 p0, ImVec2 p1, ImVec2 p2, float t);                            /* original C++ signature */
+# IM_ANIM_API ImVec2 bezier_quadratic_deriv(ImVec2 p0, ImVec2 p1, ImVec2 p2, float t);                            /* original C++ signature */
 def bezier_quadratic_deriv(
     p0: ImVec2Like,
     p1: ImVec2Like,
@@ -1004,7 +1025,7 @@ def bezier_quadratic_deriv(
     ) -> ImVec2:
     """ Derivative of quadratic bezier."""
     pass
-# ImVec2 bezier_cubic_deriv(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t);                     /* original C++ signature */
+# IM_ANIM_API ImVec2 bezier_cubic_deriv(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t);                     /* original C++ signature */
 def bezier_cubic_deriv(
     p0: ImVec2Like,
     p1: ImVec2Like,
@@ -1014,7 +1035,7 @@ def bezier_cubic_deriv(
     ) -> ImVec2:
     """ Derivative of cubic bezier."""
     pass
-# ImVec2 catmull_rom_deriv(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t, float tension = 0.5f);     /* original C++ signature */
+# IM_ANIM_API ImVec2 catmull_rom_deriv(ImVec2 p0, ImVec2 p1, ImVec2 p2, ImVec2 p3, float t, float tension = 0.5f);     /* original C++ signature */
 def catmull_rom_deriv(
     p0: ImVec2Like,
     p1: ImVec2Like,
@@ -1067,29 +1088,29 @@ class path:
 
 
 # Query path info
-# bool   path_exists(ImGuiID path_id);                                                                /* original C++ signature */
+# IM_ANIM_API bool   path_exists(ImGuiID path_id);                                                                /* original C++ signature */
 def path_exists(path_id: int) -> bool:
     """ Check if path exists."""
     pass
-# float  path_length(ImGuiID path_id);                                                                /* original C++ signature */
+# IM_ANIM_API float  path_length(ImGuiID path_id);                                                                /* original C++ signature */
 def path_length(path_id: int) -> float:
     """ Get approximate path length."""
     pass
-# ImVec2 path_evaluate(ImGuiID path_id, float t);                                                     /* original C++ signature */
+# IM_ANIM_API ImVec2 path_evaluate(ImGuiID path_id, float t);                                                     /* original C++ signature */
 def path_evaluate(path_id: int, t: float) -> ImVec2:
     """ Sample path at t [0,1]."""
     pass
-# ImVec2 path_tangent(ImGuiID path_id, float t);                                                      /* original C++ signature */
+# IM_ANIM_API ImVec2 path_tangent(ImGuiID path_id, float t);                                                      /* original C++ signature */
 def path_tangent(path_id: int, t: float) -> ImVec2:
     """ Get tangent (normalized direction) at t."""
     pass
-# float  path_angle(ImGuiID path_id, float t);                                                        /* original C++ signature */
+# IM_ANIM_API float  path_angle(ImGuiID path_id, float t);                                                        /* original C++ signature */
 def path_angle(path_id: int, t: float) -> float:
     """ Get rotation angle (radians) at t."""
     pass
 
 # Tween along a path
-# ImVec2 tween_path(ImGuiID id, ImGuiID channel_id, ImGuiID path_id, float dur, ease_desc const& ez, int policy, float dt);       /* original C++ signature */
+# IM_ANIM_API ImVec2 tween_path(ImGuiID id, ImGuiID channel_id, ImGuiID path_id, float dur, ease_desc const& ez, int policy, float dt);       /* original C++ signature */
 def tween_path(
     id: int,
     channel_id: int,
@@ -1101,7 +1122,7 @@ def tween_path(
     ) -> ImVec2:
     """ Animate position along path."""
     pass
-# float  tween_path_angle(ImGuiID id, ImGuiID channel_id, ImGuiID path_id, float dur, ease_desc const& ez, int policy, float dt);     /* original C++ signature */
+# IM_ANIM_API float  tween_path_angle(ImGuiID id, ImGuiID channel_id, ImGuiID path_id, float dur, ease_desc const& ez, int policy, float dt);     /* original C++ signature */
 def tween_path_angle(
     id: int,
     channel_id: int,
@@ -1119,29 +1140,29 @@ def tween_path_angle(
 # ----------------------------------------------------
 
 # Build arc-length lookup table for a path (call once per path, improves accuracy)
-# void   path_build_arc_lut(ImGuiID path_id, int subdivisions = 64);                                  /* original C++ signature */
+# IM_ANIM_API void   path_build_arc_lut(ImGuiID path_id, int subdivisions = 64);                                  /* original C++ signature */
 def path_build_arc_lut(path_id: int, subdivisions: int = 64) -> None:
     """ Build LUT with specified resolution."""
     pass
-# bool   path_has_arc_lut(ImGuiID path_id);                                                           /* original C++ signature */
+# IM_ANIM_API bool   path_has_arc_lut(ImGuiID path_id);                                                           /* original C++ signature */
 def path_has_arc_lut(path_id: int) -> bool:
     """ Check if path has precomputed LUT."""
     pass
 
 # Distance-based path evaluation (uses arc-length LUT for constant speed)
-# float  path_distance_to_t(ImGuiID path_id, float distance);                                         /* original C++ signature */
+# IM_ANIM_API float  path_distance_to_t(ImGuiID path_id, float distance);                                         /* original C++ signature */
 def path_distance_to_t(path_id: int, distance: float) -> float:
     """ Convert arc-length distance to t parameter."""
     pass
-# ImVec2 path_evaluate_at_distance(ImGuiID path_id, float distance);                                  /* original C++ signature */
+# IM_ANIM_API ImVec2 path_evaluate_at_distance(ImGuiID path_id, float distance);                                  /* original C++ signature */
 def path_evaluate_at_distance(path_id: int, distance: float) -> ImVec2:
     """ Get position at arc-length distance."""
     pass
-# float  path_angle_at_distance(ImGuiID path_id, float distance);                                     /* original C++ signature */
+# IM_ANIM_API float  path_angle_at_distance(ImGuiID path_id, float distance);                                     /* original C++ signature */
 def path_angle_at_distance(path_id: int, distance: float) -> float:
     """ Get rotation angle at arc-length distance."""
     pass
-# ImVec2 path_tangent_at_distance(ImGuiID path_id, float distance);                                   /* original C++ signature */
+# IM_ANIM_API ImVec2 path_tangent_at_distance(ImGuiID path_id, float distance);                                   /* original C++ signature */
 def path_tangent_at_distance(path_id: int, distance: float) -> ImVec2:
     """ Get tangent at arc-length distance."""
     pass
@@ -1163,7 +1184,7 @@ class morph_opts:
     def __init__(self) -> None:
         pass
 
-# ImVec2 path_morph(ImGuiID path_a, ImGuiID path_b, float t, float blend, morph_opts const& opts = morph_opts());    /* original C++ signature */
+# IM_ANIM_API ImVec2 path_morph(ImGuiID path_a, ImGuiID path_b, float t, float blend, morph_opts const& opts = morph_opts());    /* original C++ signature */
 def path_morph(
     path_a: int,
     path_b: int,
@@ -1180,7 +1201,7 @@ def path_morph(
     """
     pass
 
-# ImVec2 path_morph_tangent(ImGuiID path_a, ImGuiID path_b, float t, float blend, morph_opts const& opts = morph_opts());    /* original C++ signature */
+# IM_ANIM_API ImVec2 path_morph_tangent(ImGuiID path_a, ImGuiID path_b, float t, float blend, morph_opts const& opts = morph_opts());    /* original C++ signature */
 def path_morph_tangent(
     path_a: int,
     path_b: int,
@@ -1195,7 +1216,7 @@ def path_morph_tangent(
     """
     pass
 
-# float  path_morph_angle(ImGuiID path_a, ImGuiID path_b, float t, float blend, morph_opts const& opts = morph_opts());    /* original C++ signature */
+# IM_ANIM_API float  path_morph_angle(ImGuiID path_a, ImGuiID path_b, float t, float blend, morph_opts const& opts = morph_opts());    /* original C++ signature */
 def path_morph_angle(
     path_a: int,
     path_b: int,
@@ -1210,7 +1231,7 @@ def path_morph_angle(
     """
     pass
 
-# ImVec2 tween_path_morph(ImGuiID id, ImGuiID channel_id, ImGuiID path_a, ImGuiID path_b,    /* original C++ signature */
+# IM_ANIM_API ImVec2 tween_path_morph(ImGuiID id, ImGuiID channel_id, ImGuiID path_a, ImGuiID path_b,    /* original C++ signature */
 #                             float target_blend, float dur, ease_desc const& path_ease,
 #                             ease_desc const& morph_ease, int policy, float dt,
 #                             morph_opts const& opts = morph_opts());
@@ -1234,7 +1255,7 @@ def tween_path_morph(
     """
     pass
 
-# float  get_morph_blend(ImGuiID id, ImGuiID channel_id);    /* original C++ signature */
+# IM_ANIM_API float  get_morph_blend(ImGuiID id, ImGuiID channel_id);    /* original C++ signature */
 def get_morph_blend(id: int, channel_id: int) -> float:
     """ Get current morph blend value from a tween (for querying state)"""
     pass
@@ -1276,7 +1297,7 @@ class text_path_opts:
     def __init__(self) -> None:
         pass
 
-# void text_path(ImGuiID path_id, const char* text, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
+# IM_ANIM_API void text_path(ImGuiID path_id, const char* text, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
 def text_path(
     path_id: int,
     text: str,
@@ -1289,7 +1310,7 @@ def text_path(
     """
     pass
 
-# void text_path_animated(ImGuiID path_id, const char* text, float progress, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
+# IM_ANIM_API void text_path_animated(ImGuiID path_id, const char* text, float progress, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
 def text_path_animated(
     path_id: int,
     text: str,
@@ -1303,7 +1324,7 @@ def text_path_animated(
     """
     pass
 
-# float text_path_width(const char* text, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
+# IM_ANIM_API float text_path_width(const char* text, text_path_opts const& opts = text_path_opts());    /* original C++ signature */
 def text_path_width(text: str, opts: Optional[text_path_opts] = None) -> float:
     """ Helper: Get text width for path layout calculations
 
@@ -1316,7 +1337,7 @@ def text_path_width(text: str, opts: Optional[text_path_opts] = None) -> float:
 # Quad transform helpers (for advanced custom rendering)
 # ----------------------------------------------------
 
-# void transform_quad(ImVec2* quad, ImVec2 center, float angle_rad, ImVec2 translation);    /* original C++ signature */
+# IM_ANIM_API void transform_quad(ImVec2* quad, ImVec2 center, float angle_rad, ImVec2 translation);    /* original C++ signature */
 def transform_quad(
     quad: ImVec2Like,
     center: ImVec2Like,
@@ -1326,7 +1347,7 @@ def transform_quad(
     """ Transform a quad (4 vertices) by rotation and translation"""
     pass
 
-# void make_glyph_quad(ImVec2* quad, ImVec2 pos, float angle_rad, float glyph_width, float glyph_height, float baseline_offset = 0.0f);    /* original C++ signature */
+# IM_ANIM_API void make_glyph_quad(ImVec2* quad, ImVec2 pos, float angle_rad, float glyph_width, float glyph_height, float baseline_offset = 0.0f);    /* original C++ signature */
 def make_glyph_quad(
     quad: ImVec2Like,
     pos: ImVec2Like,
@@ -1397,7 +1418,7 @@ class text_stagger_opts:
     def __init__(self) -> None:
         pass
 
-# void text_stagger(ImGuiID id, const char* text, float progress, text_stagger_opts const& opts = text_stagger_opts());    /* original C++ signature */
+# IM_ANIM_API void text_stagger(ImGuiID id, const char* text, float progress, text_stagger_opts const& opts = text_stagger_opts());    /* original C++ signature */
 def text_stagger(
     id: int,
     text: str,
@@ -1411,7 +1432,7 @@ def text_stagger(
     """
     pass
 
-# float text_stagger_width(const char* text, text_stagger_opts const& opts = text_stagger_opts());    /* original C++ signature */
+# IM_ANIM_API float text_stagger_width(const char* text, text_stagger_opts const& opts = text_stagger_opts());    /* original C++ signature */
 def text_stagger_width(
     text: str,
     opts: Optional[text_stagger_opts] = None
@@ -1423,7 +1444,7 @@ def text_stagger_width(
     """
     pass
 
-# float text_stagger_duration(const char* text, text_stagger_opts const& opts = text_stagger_opts());    /* original C++ signature */
+# IM_ANIM_API float text_stagger_duration(const char* text, text_stagger_opts const& opts = text_stagger_opts());    /* original C++ signature */
 def text_stagger_duration(
     text: str,
     opts: Optional[text_stagger_opts] = None
@@ -1469,7 +1490,7 @@ class noise_opts:
         pass
 
 # Sample noise at a point (returns value in [-1, 1])
-# float  noise_2d(float x, float y, noise_opts const& opts = noise_opts());                        /* original C++ signature */
+# IM_ANIM_API float  noise_2d(float x, float y, noise_opts const& opts = noise_opts());                        /* original C++ signature */
 def noise_2d(x: float, y: float, opts: Optional[noise_opts] = None) -> float:
     """Python bindings defaults:
         If opts is None, then its default value will be: noise_opts()
@@ -1477,7 +1498,7 @@ def noise_2d(x: float, y: float, opts: Optional[noise_opts] = None) -> float:
      2D noise
     """
     pass
-# float  noise_3d(float x, float y, float z, noise_opts const& opts = noise_opts());            /* original C++ signature */
+# IM_ANIM_API float  noise_3d(float x, float y, float z, noise_opts const& opts = noise_opts());            /* original C++ signature */
 def noise_3d(
     x: float,
     y: float,
@@ -1492,7 +1513,7 @@ def noise_3d(
     pass
 
 # Animated noise channels - continuous noise that evolves over time
-# float  noise_channel_float(ImGuiID id, float frequency, float amplitude, noise_opts const& opts, float dt);      /* original C++ signature */
+# IM_ANIM_API float  noise_channel_float(ImGuiID id, float frequency, float amplitude, noise_opts const& opts, float dt);      /* original C++ signature */
 def noise_channel_float(
     id: int,
     frequency: float,
@@ -1502,7 +1523,7 @@ def noise_channel_float(
     ) -> float:
     """ 1D animated noise"""
     pass
-# ImVec2 noise_channel_vec2(ImGuiID id, ImVec2 frequency, ImVec2 amplitude, noise_opts const& opts, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec2 noise_channel_vec2(ImGuiID id, ImVec2 frequency, ImVec2 amplitude, noise_opts const& opts, float dt);     /* original C++ signature */
 def noise_channel_vec2(
     id: int,
     frequency: ImVec2Like,
@@ -1512,7 +1533,7 @@ def noise_channel_vec2(
     ) -> ImVec2:
     """ 2D animated noise"""
     pass
-# ImVec4 noise_channel_vec4(ImGuiID id, ImVec4 frequency, ImVec4 amplitude, noise_opts const& opts, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec4 noise_channel_vec4(ImGuiID id, ImVec4 frequency, ImVec4 amplitude, noise_opts const& opts, float dt);     /* original C++ signature */
 def noise_channel_vec4(
     id: int,
     frequency: ImVec4Like,
@@ -1522,7 +1543,7 @@ def noise_channel_vec4(
     ) -> ImVec4:
     """ 4D animated noise"""
     pass
-# ImVec4 noise_channel_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float frequency, noise_opts const& opts, int color_space, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec4 noise_channel_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float frequency, noise_opts const& opts, int color_space, float dt);     /* original C++ signature */
 def noise_channel_color(
     id: int,
     base_color: ImVec4Like,
@@ -1536,11 +1557,11 @@ def noise_channel_color(
     pass
 
 # Convenience: smooth random movement (like wiggle but using noise)
-# float  smooth_noise_float(ImGuiID id, float amplitude, float speed, float dt);                              /* original C++ signature */
+# IM_ANIM_API float  smooth_noise_float(ImGuiID id, float amplitude, float speed, float dt);                              /* original C++ signature */
 def smooth_noise_float(id: int, amplitude: float, speed: float, dt: float) -> float:
     """ Simple 1D smooth noise"""
     pass
-# ImVec2 smooth_noise_vec2(ImGuiID id, ImVec2 amplitude, float speed, float dt);                        /* original C++ signature */
+# IM_ANIM_API ImVec2 smooth_noise_vec2(ImGuiID id, ImVec2 amplitude, float speed, float dt);                        /* original C++ signature */
 def smooth_noise_vec2(
     id: int,
     amplitude: ImVec2Like,
@@ -1549,7 +1570,7 @@ def smooth_noise_vec2(
     ) -> ImVec2:
     """ Simple 2D smooth noise"""
     pass
-# ImVec4 smooth_noise_vec4(ImGuiID id, ImVec4 amplitude, float speed, float dt);                        /* original C++ signature */
+# IM_ANIM_API ImVec4 smooth_noise_vec4(ImGuiID id, ImVec4 amplitude, float speed, float dt);                        /* original C++ signature */
 def smooth_noise_vec4(
     id: int,
     amplitude: ImVec4Like,
@@ -1558,7 +1579,7 @@ def smooth_noise_vec4(
     ) -> ImVec4:
     """ Simple 4D smooth noise"""
     pass
-# ImVec4 smooth_noise_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float speed, int color_space, float dt);     /* original C++ signature */
+# IM_ANIM_API ImVec4 smooth_noise_color(ImGuiID id, ImVec4 base_color, ImVec4 amplitude, float speed, int color_space, float dt);     /* original C++ signature */
 def smooth_noise_color(
     id: int,
     base_color: ImVec4Like,
@@ -1575,16 +1596,16 @@ def smooth_noise_color(
 # ----------------------------------------------------
 
 # Register a named style for interpolation
-# void style_register(ImGuiID style_id, ImGuiStyle const& style);                                       /* original C++ signature */
+# IM_ANIM_API void style_register(ImGuiID style_id, ImGuiStyle const& style);                                       /* original C++ signature */
 def style_register(style_id: int, style: ImGuiStyle) -> None:
     """ Register a style snapshot"""
     pass
-# void style_register_current(ImGuiID style_id);                                                        /* original C++ signature */
+# IM_ANIM_API void style_register_current(ImGuiID style_id);                                                        /* original C++ signature */
 def style_register_current(style_id: int) -> None:
     """ Register current ImGui style"""
     pass
 
-# void style_blend(ImGuiID style_a, ImGuiID style_b, float t, int color_space = color_space::col_oklab);    /* original C++ signature */
+# IM_ANIM_API void style_blend(ImGuiID style_a, ImGuiID style_b, float t, int color_space = color_space::col_oklab);    /* original C++ signature */
 def style_blend(
     style_a: int,
     style_b: int,
@@ -1596,7 +1617,7 @@ def style_blend(
     """
     pass
 
-# void style_tween(ImGuiID id, ImGuiID target_style, float duration, ease_desc const& ease, int color_space, float dt);    /* original C++ signature */
+# IM_ANIM_API void style_tween(ImGuiID id, ImGuiID target_style, float duration, ease_desc const& ease, int color_space, float dt);    /* original C++ signature */
 def style_tween(
     id: int,
     target_style: int,
@@ -1608,7 +1629,7 @@ def style_tween(
     """ Tween between styles over time"""
     pass
 
-# void style_blend_to(ImGuiID style_a, ImGuiID style_b, float t, ImGuiStyle* out_style, int color_space = color_space::col_oklab);    /* original C++ signature */
+# IM_ANIM_API void style_blend_to(ImGuiID style_a, ImGuiID style_b, float t, ImGuiStyle* out_style, int color_space = color_space::col_oklab);    /* original C++ signature */
 def style_blend_to(
     style_a: int,
     style_b: int,
@@ -1619,12 +1640,12 @@ def style_blend_to(
     """ Get interpolated style without applying"""
     pass
 
-# bool style_exists(ImGuiID style_id);    /* original C++ signature */
+# IM_ANIM_API bool style_exists(ImGuiID style_id);    /* original C++ signature */
 def style_exists(style_id: int) -> bool:
     """ Check if a style is registered"""
     pass
 
-# void style_unregister(ImGuiID style_id);    /* original C++ signature */
+# IM_ANIM_API void style_unregister(ImGuiID style_id);    /* original C++ signature */
 def style_unregister(style_id: int) -> None:
     """ Remove a registered style"""
     pass
@@ -1680,7 +1701,7 @@ class gradient:
     def three_color(start: ImVec4Like, mid: ImVec4Like, end: ImVec4Like) -> gradient:
         pass
 
-# gradient gradient_lerp(gradient const& a, gradient const& b, float t, int color_space = color_space::col_oklab);    /* original C++ signature */
+# IM_ANIM_API gradient gradient_lerp(gradient const& a, gradient const& b, float t, int color_space = color_space::col_oklab);    /* original C++ signature */
 def gradient_lerp(
     a: gradient,
     b: gradient,
@@ -1690,7 +1711,7 @@ def gradient_lerp(
     """ Blend between two gradients"""
     pass
 
-# gradient tween_gradient(ImGuiID id, ImGuiID channel_id, gradient const& target, float dur, ease_desc const& ez, int policy, int color_space, float dt);    /* original C++ signature */
+# IM_ANIM_API gradient tween_gradient(ImGuiID id, ImGuiID channel_id, gradient const& target, float dur, ease_desc const& ez, int policy, int color_space, float dt);    /* original C++ signature */
 def tween_gradient(
     id: int,
     channel_id: int,
@@ -1769,7 +1790,7 @@ class transform:
         """ Get inverse transform"""
         pass
 
-# transform transform_lerp(transform const& a, transform const& b, float t, int rotation_mode = rotation_mode::rotation_shortest);    /* original C++ signature */
+# IM_ANIM_API transform transform_lerp(transform const& a, transform const& b, float t, int rotation_mode = rotation_mode::rotation_shortest);    /* original C++ signature */
 def transform_lerp(
     a: transform,
     b: transform,
@@ -1779,7 +1800,7 @@ def transform_lerp(
     """ Blend between two transforms with rotation interpolation"""
     pass
 
-# transform tween_transform(ImGuiID id, ImGuiID channel_id, transform const& target, float dur, ease_desc const& ez, int policy, int rotation_mode, float dt);    /* original C++ signature */
+# IM_ANIM_API transform tween_transform(ImGuiID id, ImGuiID channel_id, transform const& target, float dur, ease_desc const& ez, int policy, int rotation_mode, float dt);    /* original C++ signature */
 def tween_transform(
     id: int,
     channel_id: int,
@@ -1793,7 +1814,7 @@ def tween_transform(
     """ Tween between transforms over time"""
     pass
 
-# transform transform_from_matrix(float m00, float m01, float m10, float m11, float tx, float ty);    /* original C++ signature */
+# IM_ANIM_API transform transform_from_matrix(float m00, float m01, float m10, float m11, float tx, float ty);    /* original C++ signature */
 def transform_from_matrix(
     m00: float,
     m01: float,
@@ -2410,6 +2431,7 @@ def varc_seed(v: variation_color, s: int) -> variation_color:
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
 
+
 # #else
 #
 # #endif
@@ -2623,6 +2645,10 @@ class clip:
         loop_count: int = -1
         ) -> clip:
         pass
+    # clip& set_loop_delay(float delay_seconds);      /* original C++ signature */
+    def set_loop_delay(self, delay_seconds: float) -> clip:
+        """ Delay between loop iterations"""
+        pass
     # clip& set_delay(float delay_seconds);    /* original C++ signature */
     def set_delay(self, delay_seconds: float) -> clip:
         pass
@@ -2633,6 +2659,10 @@ class clip:
         each_delay: float,
         from_center_bias: float = 0.0
         ) -> clip:
+        pass
+    # clip& set_stagger_ease(int ease_type);      /* original C++ signature */
+    def set_stagger_ease(self, ease_type: int) -> clip:
+        """ Ease the delay distribution (default: linear)"""
         pass
 
     # Timing variation per loop iteration
@@ -2658,6 +2688,14 @@ class clip:
         pass
     # clip& on_complete(clip_callback cb, void* user = nullptr);    /* original C++ signature */
     def on_complete(self, cb: clip_callback) -> clip:
+        pass
+    # clip& on_loop(loop_callback cb, void* user = nullptr);        /* original C++ signature */
+    def on_loop(self, cb: loop_callback) -> clip:
+        """ Callback per loop iteration"""
+        pass
+    # clip& on_pause(clip_callback cb, void* user = nullptr);       /* original C++ signature */
+    def on_pause(self, cb: clip_callback) -> clip:
+        """ Callback when paused"""
         pass
 
     # void end();    /* original C++ signature */
@@ -2694,6 +2732,18 @@ class instance:
         pass
     # void stop();    /* original C++ signature */
     def stop(self) -> None:
+        pass
+    # void restart();      /* original C++ signature */
+    def restart(self) -> None:
+        """ Reset to t=0 and start playing (equivalent to stop + play on same clip)"""
+        pass
+    # void reset();        /* original C++ signature */
+    def reset(self) -> None:
+        """ Reset to t=0 and re-evaluate tracks, but do not start playing"""
+        pass
+    # void refresh();      /* original C++ signature */
+    def refresh(self) -> None:
+        """ Re-evaluate all tracks at the current time (re-read current values)"""
         pass
     # void destroy();      /* original C++ signature */
     def destroy(self) -> None:
@@ -2783,63 +2833,121 @@ class instance:
 # ----------------------------------------------------
 
 # Initialize/shutdown (optional - auto-init on first use)
-# void clip_init(int initial_clip_cap = 256, int initial_inst_cap = 4096);    /* original C++ signature */
+# IM_ANIM_API void clip_init(int initial_clip_cap = 256, int initial_inst_cap = 4096);    /* original C++ signature */
 def clip_init(initial_clip_cap: int = 256, initial_inst_cap: int = 4096) -> None:
     pass
-# void clip_shutdown();    /* original C++ signature */
+# IM_ANIM_API void clip_shutdown();    /* original C++ signature */
 def clip_shutdown() -> None:
     pass
 
-# void clip_update(float dt);    /* original C++ signature */
+# IM_ANIM_API void clip_update(float dt);    /* original C++ signature */
 def clip_update(dt: float) -> None:
     """ Per-frame update (call after update_begin_frame)"""
     pass
 
-# void clip_gc(unsigned int max_age_frames = 600);    /* original C++ signature */
+# IM_ANIM_API void clip_gc(unsigned int max_age_frames = 600);    /* original C++ signature */
 def clip_gc(max_age_frames: int = 600) -> None:
     """ Garbage collection for instances"""
     pass
 
-# instance play(ImGuiID clip_id, ImGuiID instance_id);    /* original C++ signature */
+# IM_ANIM_API instance play(ImGuiID clip_id, ImGuiID instance_id);    /* original C++ signature */
 def play(clip_id: int, instance_id: int) -> instance:
     """ Play a clip on an instance (creates or reuses instance)"""
     pass
 
-# instance get_instance(ImGuiID instance_id);    /* original C++ signature */
+# IM_ANIM_API instance get_instance(ImGuiID instance_id);    /* original C++ signature */
 def get_instance(instance_id: int) -> instance:
     """ Get an existing instance (returns invalid instance if not found)"""
     pass
 
 # Query clip info
-# float clip_duration(ImGuiID clip_id);                                           /* original C++ signature */
+# IM_ANIM_API float clip_duration(ImGuiID clip_id);                                           /* original C++ signature */
 def clip_duration(clip_id: int) -> float:
     """ Get clip duration in seconds."""
     pass
-# bool clip_exists(ImGuiID clip_id);                                              /* original C++ signature */
+# IM_ANIM_API bool clip_exists(ImGuiID clip_id);                                              /* original C++ signature */
 def clip_exists(clip_id: int) -> bool:
     """ Check if clip exists."""
     pass
 
 # Stagger helpers - compute delay for indexed instances
-# float stagger_delay(ImGuiID clip_id, int index);                                /* original C++ signature */
+# IM_ANIM_API float stagger_delay(ImGuiID clip_id, int index);                                /* original C++ signature */
 def stagger_delay(clip_id: int, index: int) -> float:
     """ Get stagger delay for element at index."""
     pass
-# instance play_stagger(ImGuiID clip_id, ImGuiID instance_id, int index);     /* original C++ signature */
+# IM_ANIM_API instance play_stagger(ImGuiID clip_id, ImGuiID instance_id, int index);     /* original C++ signature */
 def play_stagger(clip_id: int, instance_id: int, index: int) -> instance:
     """ Play with stagger delay applied."""
     pass
 
+class stagger_from(enum.IntEnum):
+    """ Grid stagger - 2D grid-based delay distribution"""
+    # stagger_first  = 0,         /* original C++ signature */
+    stagger_first = enum.auto()  # (= 0)  # Stagger from first element (index 0)
+    # stagger_last,               /* original C++ signature */
+    stagger_last = enum.auto()   # (= 1)  # Stagger from last element
+    # stagger_center,             /* original C++ signature */
+    stagger_center = enum.auto() # (= 2)  # Stagger from center of grid
+    # stagger_index               /* original C++ signature */
+    stagger_index = enum.auto()  # (= 3)  # Stagger from a specific index (use from_index)
+
+class stagger_axis(enum.IntEnum):
+    # stagger_both = 0,           /* original C++ signature */
+    stagger_both = enum.auto() # (= 0)  # Distance on both axes
+    # stagger_x,                  /* original C++ signature */
+    stagger_x = enum.auto()    # (= 1)  # Distance on X axis only (column)
+    # stagger_y                   /* original C++ signature */
+    stagger_y = enum.auto()    # (= 2)  # Distance on Y axis only (row)
+
+class stagger_grid_opts:
+    # int   cols;    /* original C++ signature */
+    cols: int           # Number of columns
+    # int   rows;    /* original C++ signature */
+    rows: int           # Number of rows
+    # int   from;    /* original C++ signature */
+    from_: int          # stagger_from - origin for distance calculation
+    # int   from_index;    /* original C++ signature */
+    from_index: int     # Used when from == stagger_index
+    # int   axis;    /* original C++ signature */
+    axis: int           # stagger_axis - constrain distance to an axis
+    # float delay;    /* original C++ signature */
+    delay: float        # Base delay between elements (seconds)
+    # int   ease;    /* original C++ signature */
+    ease: int           # ease_type - easing applied to the delay distribution
+    # float start_delay;    /* original C++ signature */
+    start_delay: float  # Initial delay offset before first element (seconds)
+
+    # stagger_grid_opts() : cols(1), rows(1), from(stagger_first),    /* original C++ signature */
+    # 	                          from_index(0), axis(stagger_both),
+    # 	                          delay(0.05f), ease(ease_linear), start_delay(0) {}
+    def __init__(self) -> None:
+        pass
+
+# IM_ANIM_API float stagger_grid_delay(int col, int row, stagger_grid_opts const& opts);    /* original C++ signature */
+def stagger_grid_delay(col: int, row: int, opts: stagger_grid_opts) -> float:
+    """ Get stagger delay for element at (col, row) in a grid"""
+    pass
+
+# IM_ANIM_API float stagger_grid_delay_index(int index, stagger_grid_opts const& opts);    /* original C++ signature */
+def stagger_grid_delay_index(index: int, opts: stagger_grid_opts) -> float:
+    """ Get stagger delay for a linear index in the grid (index = row * cols + col)"""
+    pass
+
+# IM_ANIM_API instance play_with_delay(ImGuiID clip_id, ImGuiID instance_id, float delay);    /* original C++ signature */
+def play_with_delay(clip_id: int, instance_id: int, delay: float) -> instance:
+    """ Play a clip instance with a specific delay (useful with grid stagger)"""
+    pass
+
 # Layering support - blend multiple animation instances
-# void layer_begin(ImGuiID instance_id);                                          /* original C++ signature */
+# IM_ANIM_API void layer_begin(ImGuiID instance_id);                                          /* original C++ signature */
 def layer_begin(instance_id: int) -> None:
     """ Start blending into target instance."""
     pass
-# void layer_add(instance inst, float weight);                                /* original C++ signature */
+# IM_ANIM_API void layer_add(instance inst, float weight);                                /* original C++ signature */
 def layer_add(inst: instance, weight: float) -> None:
     """ Add source instance with weight."""
     pass
-# void layer_end(ImGuiID instance_id);                                            /* original C++ signature */
+# IM_ANIM_API void layer_end(ImGuiID instance_id);                                            /* original C++ signature */
 def layer_end(instance_id: int) -> None:
     """ Finalize blending and normalize weights."""
     pass
@@ -2862,10 +2970,10 @@ def get_blended_int(instance_id: int, channel: int) -> Tuple[bool, int]:
 #
 
 # Persistence (optional)
-# result clip_save(ImGuiID clip_id, char const* path);    /* original C++ signature */
+# IM_ANIM_API result clip_save(ImGuiID clip_id, char const* path);    /* original C++ signature */
 def clip_save(clip_id: int, path: str) -> result:
     pass
-# result clip_load(char const* path, ImGuiID* out_clip_id);    /* original C++ signature */
+# IM_ANIM_API result clip_load(char const* path, ImGuiID* out_clip_id);    /* original C++ signature */
 def clip_load(path: str, out_clip_id: ImGuiID) -> result:
     pass
 

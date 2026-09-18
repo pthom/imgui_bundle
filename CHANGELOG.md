@@ -49,6 +49,12 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
   window scrolling, and more editing shortcuts. Upstream's unicode `set_text()` / `get_text_as_*()`
   overloads (`std::wstring`, `std::u16string`) are not bound: Python `str` already goes through the
   UTF-8 API.
+- **ImAnim**: updated to upstream's `main` branch. Grid stagger (`stagger_grid_opts`,
+  `stagger_grid_delay()`, `stagger_grid_delay_index()`, with the new `stagger_from` and `stagger_axis`
+  enums), `play_with_delay()`, `clip.set_stagger_ease()` and `clip.set_loop_delay()`, new clip callbacks
+  `clip.on_loop()` (receives the instance id and the loop index) and `clip.on_pause()`,
+  `instance.restart()` / `reset()` / `refresh()`, and two new tween policies (`policy.additive`,
+  `policy.multiply`).
 
 ## Fixes
 

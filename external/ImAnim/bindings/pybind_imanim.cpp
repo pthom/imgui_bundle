@@ -85,7 +85,9 @@ void py_init_module_imanim(nb::module_& m)
         nb::enum_<iam_policy>(m, "policy", nb::is_arithmetic(), "")
             .value("crossfade", iam_policy_crossfade, "smooth into new target")
             .value("cut", iam_policy_cut, "snap to target")
-            .value("queue", iam_policy_queue, "queue one pending target");
+            .value("queue", iam_policy_queue, "queue one pending target")
+            .value("additive", iam_policy_additive, "add animated delta to current value")
+            .value("multiply", iam_policy_multiply, "multiply current value by animated factor");
 
 
     auto pyEnumcolor_space =
@@ -2032,10 +2034,18 @@ void py_init_module_imanim(nb::module_& m)
             "Add marker (auto-generated ID).")
         .def("set_loop",
             &iam_clip::set_loop, nb::arg("loop"), nb::arg("direction") = iam_direction::iam_dir_normal, nb::arg("loop_count") = -1)
+        .def("set_loop_delay",
+            &iam_clip::set_loop_delay,
+            nb::arg("delay_seconds"),
+            "Delay between loop iterations")
         .def("set_delay",
             &iam_clip::set_delay, nb::arg("delay_seconds"))
         .def("set_stagger",
             &iam_clip::set_stagger, nb::arg("count"), nb::arg("each_delay"), nb::arg("from_center_bias") = 0.0f)
+        .def("set_stagger_ease",
+            &iam_clip::set_stagger_ease,
+            nb::arg("ease_type"),
+            "Ease the delay distribution (default: linear)")
         .def("set_duration_var",
             &iam_clip::set_duration_var,
             nb::arg("var"),
@@ -2081,6 +2091,32 @@ void py_init_module_imanim(nb::module_& m)
 
                 return on_complete_adapt_exclude_params(cb);
             },     nb::arg("cb"))
+        .def("on_loop",
+            [](iam_clip & self, iam_loop_callback cb) -> iam_clip &
+            {
+                auto on_loop_adapt_exclude_params = [&self](iam_loop_callback cb) -> iam_clip &
+                {
+                    auto& lambda_result = self.on_loop(cb, nullptr);
+                    return lambda_result;
+                };
+
+                return on_loop_adapt_exclude_params(cb);
+            },
+            nb::arg("cb"),
+            "Callback per loop iteration")
+        .def("on_pause",
+            [](iam_clip & self, iam_clip_callback cb) -> iam_clip &
+            {
+                auto on_pause_adapt_exclude_params = [&self](iam_clip_callback cb) -> iam_clip &
+                {
+                    auto& lambda_result = self.on_pause(cb, nullptr);
+                    return lambda_result;
+                };
+
+                return on_pause_adapt_exclude_params(cb);
+            },
+            nb::arg("cb"),
+            "Callback when paused")
         .def("end",
             &iam_clip::end, "Finalize the clip")
         .def("id",
@@ -2100,6 +2136,12 @@ void py_init_module_imanim(nb::module_& m)
             &iam_instance::resume)
         .def("stop",
             &iam_instance::stop)
+        .def("restart",
+            &iam_instance::restart, "Reset to t=0 and start playing (equivalent to stop + play on same clip)")
+        .def("reset",
+            &iam_instance::reset, "Reset to t=0 and re-evaluate tracks, but do not start playing")
+        .def("refresh",
+            &iam_instance::refresh, "Re-evaluate all tracks at the current time (re-read current values)")
         .def("destroy",
             &iam_instance::destroy, "Remove instance from system (valid() will return False after this)")
         .def("seek",
@@ -2252,6 +2294,52 @@ void py_init_module_imanim(nb::module_& m)
         iam_play_stagger,
         nb::arg("clip_id"), nb::arg("instance_id"), nb::arg("index"),
         "Play with stagger delay applied.");
+
+
+    auto pyEnumstagger_from =
+        nb::enum_<iam_stagger_from>(m, "stagger_from", nb::is_arithmetic(), "Grid stagger - 2D grid-based delay distribution")
+            .value("stagger_first", iam_stagger_first, "Stagger from first element (index 0)")
+            .value("stagger_last", iam_stagger_last, "Stagger from last element")
+            .value("stagger_center", iam_stagger_center, "Stagger from center of grid")
+            .value("stagger_index", iam_stagger_index, "Stagger from a specific index (use from_index)");
+
+
+    auto pyEnumstagger_axis =
+        nb::enum_<iam_stagger_axis>(m, "stagger_axis", nb::is_arithmetic(), "")
+            .value("stagger_both", iam_stagger_both, "Distance on both axes")
+            .value("stagger_x", iam_stagger_x, "Distance on X axis only (column)")
+            .value("stagger_y", iam_stagger_y, "Distance on Y axis only (row)");
+
+
+    auto pyClassiam_stagger_grid_opts =
+        nb::class_<iam_stagger_grid_opts>
+            (m, "stagger_grid_opts", "")
+        .def_rw("cols", &iam_stagger_grid_opts::cols, "Number of columns")
+        .def_rw("rows", &iam_stagger_grid_opts::rows, "Number of rows")
+        .def_rw("from_", &iam_stagger_grid_opts::from, "iam_stagger_from - origin for distance calculation")
+        .def_rw("from_index", &iam_stagger_grid_opts::from_index, "Used when from == iam_stagger_index")
+        .def_rw("axis", &iam_stagger_grid_opts::axis, "iam_stagger_axis - constrain distance to an axis")
+        .def_rw("delay", &iam_stagger_grid_opts::delay, "Base delay between elements (seconds)")
+        .def_rw("ease", &iam_stagger_grid_opts::ease, "iam_ease_type - easing applied to the delay distribution")
+        .def_rw("start_delay", &iam_stagger_grid_opts::start_delay, "Initial delay offset before first element (seconds)")
+        .def(nb::init<>())
+        ;
+
+
+    m.def("stagger_grid_delay",
+        iam_stagger_grid_delay,
+        nb::arg("col"), nb::arg("row"), nb::arg("opts"),
+        "Get stagger delay for element at (col, row) in a grid");
+
+    m.def("stagger_grid_delay_index",
+        iam_stagger_grid_delay_index,
+        nb::arg("index"), nb::arg("opts"),
+        "Get stagger delay for a linear index in the grid (index = row * cols + col)");
+
+    m.def("play_with_delay",
+        iam_play_with_delay,
+        nb::arg("clip_id"), nb::arg("instance_id"), nb::arg("delay"),
+        "Play a clip instance with a specific delay (useful with grid stagger)");
 
     m.def("layer_begin",
         iam_layer_begin,
