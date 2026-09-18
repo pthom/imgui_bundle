@@ -8648,6 +8648,7 @@ class IO:
     ini_saving_rate: float  # = 5.0           // Minimum time between saving positions/sizes to .ini file, in seconds.
     # void*       UserData;    /* original C++ signature */
     user_data: Any  # = None           // Store your own data.
+
     # Font system
     # ImFontAtlas*Fonts;    /* original C++ signature */
     fonts: (
