@@ -5,7 +5,7 @@ from functools import wraps
 
 import litgen
 from litgen_options_imgui import (
-    litgen_options_imgui,
+    litgen_options_imgui_with_custom_bindings,
     ImguiOptionsType,
 )
 
@@ -32,7 +32,7 @@ def my_time_it(func):
 
 def autogenerate_imgui() -> None:
     # All the options (exclusions, custom bindings...) are in litgen_options_imgui.py: this file only runs the generators.
-    options_imgui = litgen_options_imgui(
+    options_imgui = litgen_options_imgui_with_custom_bindings(
         ImguiOptionsType.imgui_h, docking_branch=FLAG_DOCKING_BRANCH
     )
 
@@ -47,7 +47,7 @@ def autogenerate_imgui() -> None:
     generator.process_cpp_file(CPP_HEADERS_DIR + "/imgui_stacklayout_internal.h")
 
     # Generate for imgui_stdlib.h
-    options_imgui_stdlib = litgen_options_imgui(
+    options_imgui_stdlib = litgen_options_imgui_with_custom_bindings(
         ImguiOptionsType.imgui_stdlib_h, docking_branch=FLAG_DOCKING_BRANCH
     )
     options_imgui.srcmlcpp_options.flag_quiet = True
@@ -66,7 +66,7 @@ def autogenerate_imgui() -> None:
 
 
 def autogenerate_imgui_internal() -> None:
-    options_imgui_internal = litgen_options_imgui(
+    options_imgui_internal = litgen_options_imgui_with_custom_bindings(
         ImguiOptionsType.imgui_internal_h, docking_branch=FLAG_DOCKING_BRANCH
     )
 
@@ -86,7 +86,7 @@ def autogenerate_imgui_internal() -> None:
 
 
 def autogenerate_imgui_test_engine() -> None:
-    options = litgen_options_imgui(
+    options = litgen_options_imgui_with_custom_bindings(
         ImguiOptionsType.imgui_test_engine, docking_branch=FLAG_DOCKING_BRANCH
     )
     generator = litgen.LitgenGenerator(options)
@@ -119,7 +119,7 @@ def sandbox():
     // IMGUI_API void          InputTextDeactivateHook(ImGuiID id);
     // IMGUI_API bool          TempInputText(const ImRect& bb, ImGuiID id, const char* label, char* buf, int buf_size, ImGuiInputTextFlags flags);
     """
-    options_imgui = litgen_options_imgui(
+    options_imgui = litgen_options_imgui_with_custom_bindings(
         ImguiOptionsType.imgui_internal_h, docking_branch=FLAG_DOCKING_BRANCH
     )
     generated_code = litgen.generate_code(options_imgui, code)

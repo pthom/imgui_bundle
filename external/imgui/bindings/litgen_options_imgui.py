@@ -1328,7 +1328,10 @@ def _postprocess_stub_test_engine(code: str) -> str:
 # ================================================================================================
 
 def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -> LitgenOptions:
-    """Litgen options for one of the imgui generators (see ImguiOptionsType)"""
+    """Base litgen options for the imgui headers (see ImguiOptionsType).
+    Also used as a starting point by libraries built on top of imgui (implot, implot3d, imgui_toggle):
+    it must not register custom bindings, since those of the main module would be emitted in their modules too.
+    For imgui's own bindings, use litgen_options_imgui_with_custom_bindings()."""
     options = LitgenOptions()
     options.use_nanobind()
 
@@ -1337,15 +1340,9 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     _options_exclusions(options)
     _options_adaptations(options)
     _add_imvector_template_options(options)
-    _custom_bindings_common(options)
 
     if options_type == ImguiOptionsType.imgui_h:
         options.fn_exclude_by_name__regex += "|^InputText"  # InputText comes from imgui_stdlib.h (std::string version)
-        _custom_bindings_imgui_h(options)
-    elif options_type == ImguiOptionsType.imgui_internal_h:
-        _custom_bindings_imgui_internal_h(options)
-    elif options_type == ImguiOptionsType.imgui_stdlib_h:
-        pass
     elif options_type == ImguiOptionsType.imgui_test_engine:
         add_imgui_test_engine_options(options)
 
@@ -1354,6 +1351,17 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     else:
         options.postprocess_stub_function = _postprocess_stub_imgui
 
+    return options
+
+
+def litgen_options_imgui_with_custom_bindings(options_type: ImguiOptionsType, docking_branch: bool) -> LitgenOptions:
+    """Options for the generation of imgui's own bindings: the base options, plus imgui's custom bindings"""
+    options = litgen_options_imgui(options_type, docking_branch)
+    _custom_bindings_common(options)
+    if options_type == ImguiOptionsType.imgui_h:
+        _custom_bindings_imgui_h(options)
+    elif options_type == ImguiOptionsType.imgui_internal_h:
+        _custom_bindings_imgui_internal_h(options)
     return options
 
 
