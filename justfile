@@ -379,3 +379,11 @@ mypy:
 mypy_no_stubs:
     mypy imgui_bundle | grep -v "\.pyi"
 
+# Run mypy on the bindings generator scripts (external/*/bindings/*.py and external/bindings_generation)
+[group('mypy')]
+mypy_bindings_scripts:
+    MYPYPATH=external/imgui/bindings:external/implot/bindings:external/implot3d/bindings:external/bindings_generation \
+        mypy --explicit-package-bases \
+        external/*/bindings/litgen_options_*.py external/*/bindings/generate_*.py \
+        external/bindings_generation/*.py external/bindings_generation/bundle_libs_tooling/*.py
+

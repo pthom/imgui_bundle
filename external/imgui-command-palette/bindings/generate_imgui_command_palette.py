@@ -9,7 +9,7 @@ PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 
-def main():
+def main() -> None:
     print("autogenerate_imgui_command_palette")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_command_palette.cpp"
     output_stub_pyi_file = STUB_DIR + "/imgui_command_palette.pyi"

@@ -2,6 +2,7 @@
 import os
 
 import litgen
+from codemanip import code_utils
 
 from codemanip.code_utils import join_string_by_pipe_char
 
@@ -12,7 +13,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui-node-editor"
 
 
-def main():
+def main() -> None:
     print("autogenerate_imgui_node_editor")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_node_editor.cpp"
     output_stub_pyi_file = STUB_DIR + "/imgui_node_editor.pyi"
@@ -55,9 +56,7 @@ def main():
             r"^ImVector",
         ]
     )
-    options.srcmlcpp_options.header_filter_acceptable__regex += (
-        "|^IMGUI_BUNDLE_PYTHON_API$"
-    )
+    options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "^IMGUI_BUNDLE_PYTHON_API$")
     options.fn_force_lambda__regex = r"GetSelectedNodes|GetSelectedLinks|GetActionContextNodes|GetActionContextLinks|GetOrderedNodeIds"
 
     generator = litgen.LitgenGenerator(options)

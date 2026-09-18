@@ -138,7 +138,7 @@ namespace pfd
 """
 
 
-def main():
+def main() -> None:
     print("autogenerate_portable_file_dialogs")
     # input_cpp_header = CPP_HEADERS_DIR + "/portable_file_dialogs.h"
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_portable_file_dialogs.cpp"

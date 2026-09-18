@@ -2,6 +2,7 @@
 import os
 import time
 from functools import wraps
+from typing import Callable
 
 import litgen
 from litgen_options_imgui import (
@@ -18,14 +19,13 @@ FLAG_DOCKING_BRANCH = True
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui"
 
 
-def my_time_it(func):
+def my_time_it(func: Callable[[], None]) -> Callable[[], None]:
     @wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper() -> None:
         start = time.time()
-        result = func(*args, **kwargs)
+        func()
         end = time.time()
         print(f"{func.__name__} took {end - start:.6f} seconds to run.")
-        return result
 
     return wrapper
 
@@ -107,13 +107,13 @@ def autogenerate_imgui_test_engine() -> None:
 
 
 @my_time_it
-def main():
+def main() -> None:
     autogenerate_imgui()
     autogenerate_imgui_internal()
     autogenerate_imgui_test_engine()
 
 
-def sandbox():
+def sandbox() -> None:
     code = """
     IMGUI_API bool          InputTextEx(const char* label, const char* hint, char* buf, int buf_size, const ImVec2& size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
     // IMGUI_API void          InputTextDeactivateHook(ImGuiID id);

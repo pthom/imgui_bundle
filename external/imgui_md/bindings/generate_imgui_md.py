@@ -9,7 +9,7 @@ PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 
-def main():
+def main() -> None:
     print("autogenerate_imgui_md")
     input_cpp_header = THIS_DIR + "/../imgui_md_wrapper/imgui_md_wrapper.h"
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_md.cpp"

@@ -1,5 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from codemanip.code_utils import join_string_by_pipe_char
+from codemanip import code_utils
 
 from litgen.options import LitgenOptions
 
@@ -15,7 +16,7 @@ def litgen_options_implot3d() -> LitgenOptions:
     options = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=True)
     options.namespaces_root = ["ImPlot3D"]
     options.srcmlcpp_options.functions_api_prefixes = "IMPLOT3D_API|IMPLOT3D_TMP"
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API"
+    options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "IMGUI_BUNDLE_PYTHON_API")
 
     # ImPlot3DStyle has a copy-assignment operator, which has no Python equivalent: silence the warning.
     options.srcmlcpp_options.ignored_warning_parts += ["ImPlot3DStyle& operator="]

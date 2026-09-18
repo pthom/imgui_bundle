@@ -23,10 +23,10 @@ class ExternalLibrary:
     is_published_in_python: bool = True
     is_sub_library: bool = False
 
-    def base_folder_abs_path(self):
+    def base_folder_abs_path(self) -> str:
         return external_libraries_dir() + "/" + self.name
 
-    def is_submodule(self):
+    def is_submodule(self) -> bool:
         return self.fork_git_url is not None or self.official_git_url is not None
 
     def git_url(self) -> Optional[str]:
@@ -62,7 +62,7 @@ class ExternalLibrary:
     def cpp_pybind_files(self) -> List[str]:
         files = os.listdir(self.bindings_folder_abs_path())
 
-        def is_pybind_file(filename: str):
+        def is_pybind_file(filename: str) -> bool:
             return filename.startswith("pybind_") and filename.endswith(".cpp")
 
         pybind_files = list(filter(is_pybind_file, files))
@@ -74,7 +74,7 @@ class ExternalLibrary:
     def generator_script_name(self) -> str:
         files = os.listdir(self.bindings_folder_abs_path())
 
-        def is_generator_module(filename: str):
+        def is_generator_module(filename: str) -> bool:
             return filename.startswith("generate_") and filename.endswith(".py")
 
         generators_modules = list(filter(is_generator_module, files))
@@ -180,7 +180,7 @@ class ExternalLibrary:
         """
         return ShellCommands(cmd)
 
-    def run_reattach_submodule(self):
+    def run_reattach_submodule(self) -> None:
         """
         Will remove existing git remotes
         Then add two remotes if it is a fork
@@ -200,7 +200,7 @@ class ExternalLibrary:
         self.cmd_fetch_all().run()
         self.cmd_attach_branches().run()
 
-    def run_pull(self):
+    def run_pull(self) -> None:
         if not self.is_submodule():
             print(
                 f"run_pull: skipped {self.name} because it does not appear to be a submodule"

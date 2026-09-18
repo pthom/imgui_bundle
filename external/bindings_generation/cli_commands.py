@@ -3,7 +3,7 @@ import fire  # type: ignore
 
 
 class CliCommands:
-    def hello(self):
+    def hello(self) -> None:
         print("Hello")
 
 

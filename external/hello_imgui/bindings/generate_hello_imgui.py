@@ -15,7 +15,7 @@ HELLO_IMGUI_DIR = os.path.realpath(THIS_DIR + "/../hello_imgui")
 CPP_HEADERS_DIR = HELLO_IMGUI_DIR + "/src/hello_imgui"
 
 
-def make_hello_imgui_amalgamated_header():
+def make_hello_imgui_amalgamated_header() -> None:
     hello_imgui_src_dir = HELLO_IMGUI_DIR + "/src/"
 
     options = amalgamated_header.AmalgamationOptions()
@@ -29,7 +29,7 @@ def make_hello_imgui_amalgamated_header():
     amalgamated_header.write_amalgamate_header_file(options)
 
 
-def main():
+def main() -> None:
     print("autogenerate_hello_imgui")
     make_hello_imgui_amalgamated_header()
 

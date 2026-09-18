@@ -11,7 +11,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui_microtex"
 
 
-def main():
+def main() -> None:
     print("autogenerate_imgui_microtex")
     input_cpp_header = CPP_HEADERS_DIR + "/imgui_microtex.h"
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_microtex.cpp"

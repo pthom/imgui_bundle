@@ -11,7 +11,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui_explorer"
 
 
-def main():
+def main() -> None:
     print("autogenerate_imgui_explorer")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_explorer.cpp"
     output_stub_pyi_file = STUB_DIR + "/imgui_explorer.pyi"

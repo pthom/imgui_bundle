@@ -11,7 +11,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui-knobs"
 
 
-def main():
+def main() -> None:
     print("autogenerate_imgui_knobs")
     input_cpp_header = CPP_HEADERS_DIR + "/imgui-knobs.h"
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_knobs.cpp"

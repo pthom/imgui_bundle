@@ -9,7 +9,7 @@ PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 
-def main():
+def main() -> None:
     print("autogenerate_immvision")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_immvision.cpp"
     output_stub_pyi_file = STUB_DIR + "/immvision.pyi"
@@ -38,7 +38,7 @@ def main():
     options.enum_exclude_by_name__regex = r"^ImageDepth$"
     options.fn_exclude_by_name__regex = r"^ImageDepth"
 
-    def post_process_stub(code: str):
+    def post_process_stub(code: str) -> str:
         r = (
             code
             # Fix default values for types handled by type casters

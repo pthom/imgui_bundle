@@ -12,7 +12,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../ImAnim"
 
 
-def main():
+def main() -> None:
     print("autogenerate_imanim")
     input_cpp_header = CPP_HEADERS_DIR + "/im_anim.h"
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imanim.cpp"
@@ -22,7 +22,7 @@ def main():
     options = litgen.LitgenOptions()
     options.use_nanobind()
 
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API"
+    options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "IMGUI_BUNDLE_PYTHON_API")
 
     options.original_signature_flag_show = True
 

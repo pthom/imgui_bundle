@@ -1,5 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 from codemanip.code_utils import join_string_by_pipe_char
+from codemanip import code_utils
 
 from litgen.options import LitgenOptions
 
@@ -15,17 +16,17 @@ def litgen_options_implot() -> LitgenOptions:
     options = litgen_options_imgui(ImguiOptionsType.imgui_h, docking_branch=True)
     options.namespaces_root = ["ImPlot"]
     options.srcmlcpp_options.functions_api_prefixes = "IMPLOT_API|IMPLOT_TMP"
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_PYTHON_API|IMGUI_HAS_TEXTURES"
+    options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "IMGUI_BUNDLE_PYTHON_API|IMGUI_HAS_TEXTURES")
 
     options.fn_force_overload__regex = "BeginPlot"
     options.fn_force_lambda__regex = join_string_by_pipe_char(["^Contains$", "^SetupAxisLinks$", "^SetNextAxisLinks$", "^SetProp$"])
 
-    options.fn_params_exclude_names__regex += "|^stride$"
+    options.fn_params_exclude_names__regex = code_utils.append_regex(options.fn_params_exclude_names__regex, "^stride$")
     options.fn_exclude_by_param_type__regex = "ImPlotFormatter|ImPlotTransform"
 
     # Patches for wrapping of BeginSubplots (cf https://github.com/pthom/imgui_bundle/issues/207)
-    options.fn_params_exclude_types__regex += r"|^float\s*\*$"
-    options.fn_exclude_by_name__regex += "|^BeginSubplots$|"
+    options.fn_params_exclude_types__regex = code_utils.append_regex(options.fn_params_exclude_types__regex, r"^float\s*\*$")
+    options.fn_exclude_by_name__regex = code_utils.append_regex(options.fn_exclude_by_name__regex, "^BeginSubplots$")
     options.function_names_replacements.add_first_replacement("begin_subplots_with_ratios", "begin_subplots")
 
     options.function_names_replacements.add_first_replacement("ImGui", "Imgui")
@@ -66,7 +67,7 @@ def litgen_options_implot() -> LitgenOptions:
         ]
     )
 
-    options.fn_exclude_by_name__regex += join_string_by_pipe_char(
+    options.fn_exclude_by_name__regex = code_utils.append_regex(options.fn_exclude_by_name__regex, join_string_by_pipe_char(
         [
             #  Legitimate Excludes
             # Exclude functions whose name end with G, like for example
@@ -90,6 +91,6 @@ def litgen_options_implot() -> LitgenOptions:
             # (This API is a bit exotic, and cannot be bound automatically)
             "^AddColormap$",
         ]
-    )
+    ))
 
     return options

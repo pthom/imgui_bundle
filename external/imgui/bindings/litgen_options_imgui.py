@@ -4,6 +4,7 @@ from enum import Enum
 import copy
 
 import litgen
+from codemanip import code_utils
 from codemanip.code_replacements import RegexReplacementList
 from codemanip.code_utils import join_string_by_pipe_char
 from srcmlcpp.srcmlcpp_options import WarningType
@@ -81,15 +82,11 @@ def _options_general(options: LitgenOptions, docking_branch: bool) -> None:
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_non_api = False
 
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_DISABLE$"
-    options.srcmlcpp_options.header_filter_acceptable__regex += (
-        "|IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT"
-    )
-    options.srcmlcpp_options.header_filter_acceptable__regex += (
-        "|^IMGUI_BUNDLE_PYTHON_API$|^IMGUI_HAS_TEXTURES$"
-    )
+    options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "^IMGUI_DISABLE$")
+    options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT")
+    options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "^IMGUI_BUNDLE_PYTHON_API$|^IMGUI_HAS_TEXTURES$")
     if docking_branch:
-        options.srcmlcpp_options.header_filter_acceptable__regex += "|^IMGUI_HAS_DOCK$"
+        options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "^IMGUI_HAS_DOCK$")
 
     options.srcmlcpp_options.code_preprocess_function = _preprocess_imgui_code
 
@@ -404,7 +401,7 @@ def _options_adaptations(options: LitgenOptions) -> None:
 # ImVector<T>: template specializations published as ImVector_int, ImVector_ImVec2...
 # ================================================================================================
 
-def _add_imvector_template_options(options: litgen.LitgenOptions):
+def _add_imvector_template_options(options: litgen.LitgenOptions) -> None:
     instantiated_types = [
         "int",
         "uint",
@@ -608,7 +605,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
     # GetStyleColorVec4 returns const ImVec4& (reference into the style array).
     # With rv_policy::reference, Python can mutate the style directly without PushStyleColor.
     # Exclude only for imgui (not shared options, since ImPlot's version returns by value).
-    options.fn_exclude_by_name__regex += r"|^GetStyleColorVec4$"
+    options.fn_exclude_by_name__regex = code_utils.append_regex(options.fn_exclude_by_name__regex, r"^GetStyleColorVec4$")
     # Custom binding returns a copy instead.
     options.custom_bindings.add_custom_bindings_to_main_module(
         stub_code='''
@@ -1225,7 +1222,7 @@ def _custom_bindings_imgui_internal_h(options: LitgenOptions) -> None:
     """Python-specific API of the imgui.internal module"""
     # GetCurrentWindow: check the context and the current window before dereferencing them,
     # since a null pointer here leads to an un-debuggable segfault for Python users.
-    options.fn_exclude_by_name__regex += r"|^GetCurrentWindow$"
+    options.fn_exclude_by_name__regex = code_utils.append_regex(options.fn_exclude_by_name__regex, r"^GetCurrentWindow$")
     options.custom_bindings.add_custom_bindings_to_main_module(
         stub_code='''
         def get_current_window() -> Window:
@@ -1262,9 +1259,10 @@ def _custom_bindings_imgui_internal_h(options: LitgenOptions) -> None:
 # ImGui Test Engine specifics
 # ================================================================================================
 
-def add_imgui_test_engine_options(options: LitgenOptions):
+def add_imgui_test_engine_options(options: LitgenOptions) -> None:
     # patch preprocess: add replace("ImFuncPtr(ImGuiTestTestFunc)", "VoidFunction")
     old_preprocess = copy.copy(options.srcmlcpp_options.code_preprocess_function)
+    assert old_preprocess is not None  # set by _options_general
 
     def preprocess_ImGuiTestGuiFunc(code: str) -> str:
         r = code
@@ -1279,12 +1277,12 @@ def add_imgui_test_engine_options(options: LitgenOptions):
     options.function_names_replacements.add_last_replacement(
         "^ImGuiTestEngineHook_", "hook_"
     )
-    options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$|^ItemReadAsString$"
-    options.member_exclude_by_name__regex += "|Coroutine|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter"
-    options.member_exclude_by_type__regex += "|^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs|^ImGuiCaptureImageBuf"
-    options.fn_exclude_by_param_type__regex += "|^ImGuiCaptureArgs"
-    options.class_exclude_by_name__regex += "|^ImGuiCaptureImageBuf$|^ImGuiCaptureContext$|^ImGuiCaptureToolUI$"
-    options.fn_exclude_by_name__regex += "|^ImGuiTestEngineUtil_appendf_auto"
+    options.fn_exclude_by_name__regex = code_utils.append_regex(options.fn_exclude_by_name__regex, "^ImGuiTestEngineUtil_AppendStrValue|^ImGuiTestEngine_GetPerfTool$|^ItemOpenFullPath$|^ItemReadAsString$")
+    options.member_exclude_by_name__regex = code_utils.append_regex(options.member_exclude_by_name__regex, "Coroutine|^UiFilterByStatusMask$|^VarsConstructor$|^VarsPostConstructor$|^VarsDestructor$|^UiFilter")
+    options.member_exclude_by_type__regex = code_utils.append_regex(options.member_exclude_by_type__regex, "^ImMovingAverage|^Str$|^ImGuiPerfTool|^ImGuiCaptureToolUI|^ImGuiCaptureContext|^ImGuiCaptureArgs|^ImGuiCaptureImageBuf")
+    options.fn_exclude_by_param_type__regex = code_utils.append_regex(options.fn_exclude_by_param_type__regex, "^ImGuiCaptureArgs")
+    options.class_exclude_by_name__regex = code_utils.append_regex(options.class_exclude_by_name__regex, "^ImGuiCaptureImageBuf$|^ImGuiCaptureContext$|^ImGuiCaptureToolUI$")
+    options.fn_exclude_by_name__regex = code_utils.append_regex(options.fn_exclude_by_name__regex, "^ImGuiTestEngineUtil_appendf_auto")
 
 
 # ================================================================================================
@@ -1342,7 +1340,7 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
     _add_imvector_template_options(options)
 
     if options_type == ImguiOptionsType.imgui_h:
-        options.fn_exclude_by_name__regex += "|^InputText"  # InputText comes from imgui_stdlib.h (std::string version)
+        options.fn_exclude_by_name__regex = code_utils.append_regex(options.fn_exclude_by_name__regex, "^InputText")  # InputText comes from imgui_stdlib.h (std::string version)
     elif options_type == ImguiOptionsType.imgui_test_engine:
         add_imgui_test_engine_options(options)
 
@@ -1365,7 +1363,7 @@ def litgen_options_imgui_with_custom_bindings(options_type: ImguiOptionsType, do
     return options
 
 
-def sandbox():
+def sandbox() -> None:
     code = """
     struct Foo {
     std::function<std::string(void*)> GetClipboardTextFn_;

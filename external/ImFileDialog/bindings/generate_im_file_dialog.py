@@ -9,7 +9,7 @@ PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 
-def autogenerate_im_file_dialog():
+def autogenerate_im_file_dialog() -> None:
     print("autogenerate_im_file_dialog")
     input_cpp_header = THIS_DIR + "/../ImFileDialog/ImFileDialog.h"
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_im_file_dialog.cpp"
@@ -39,7 +39,7 @@ def autogenerate_im_file_dialog():
     )
 
 
-def main():
+def main() -> None:
     autogenerate_im_file_dialog()
 
 

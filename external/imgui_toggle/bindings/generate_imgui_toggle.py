@@ -14,7 +14,7 @@ sys.path.append(THIS_DIR + "/../../imgui/bindings")
 import litgen_options_imgui  # noqa: E402
 
 
-def main():
+def main() -> None:
     print("autogenerate_imgui_toggle")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_toggle.cpp"
     output_stub_pyi_file = STUB_DIR + "/imgui_toggle.pyi"

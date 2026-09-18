@@ -6,7 +6,7 @@ import os
 from bundle_libs_tooling import all_external_libraries  # noqa: E402
 
 
-def autogenerate_one_lib(lib):
+def autogenerate_one_lib(lib: all_external_libraries.ExternalLibrary) -> None:
     """Regenerate bindings for a single ExternalLibrary."""
     generator_script_name = lib.generator_script_name()
     bindings_folder = lib.bindings_folder_abs_path()
@@ -16,19 +16,19 @@ def autogenerate_one_lib(lib):
     generator_module.main()
 
 
-def autogenerate_by_name(name: str):
+def autogenerate_by_name(name: str) -> None:
     """Regenerate bindings for a library given its name (snake_case or original)."""
     lib = all_external_libraries.find_lib(name)
     assert lib.is_published_in_python, f"'{name}' ({lib.name}) has no Python bindings"
     autogenerate_one_lib(lib)
 
 
-def autogenerate_all():
+def autogenerate_all() -> None:
     for lib in all_external_libraries.published_libs():
         autogenerate_one_lib(lib)
 
 
-def write_cmake_all_pybind_files():
+def write_cmake_all_pybind_files() -> None:
     pybind_files = []
     for lib in all_external_libraries.published_libs():
         pybind_files += lib.cpp_pybind_files()
@@ -53,7 +53,7 @@ _FILELIST_
         f.write(cmake_content)
 
 
-def main():
+def main() -> None:
     write_cmake_all_pybind_files()
     autogenerate_all()
 
