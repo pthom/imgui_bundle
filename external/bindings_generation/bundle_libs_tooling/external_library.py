@@ -167,7 +167,8 @@ class ExternalLibrary:
         date_str_yyyymmdd = os.popen("date +%Y%m%d").read().strip()
         cmd = f"""
         cd {self.git_folder_abs_path()}
-        git tag bundle_{date_str_yyyymmdd}
+        # the tag may already exist (e.g. after "just libs_tag"): keep it
+        (git tag bundle_{date_str_yyyymmdd} || echo "tag bundle_{date_str_yyyymmdd} already exists: keeping it")
         git push {self.fork_remote_name} --tags
         git fetch {self.official_remote_name}
         git fetch {self.fork_remote_name}

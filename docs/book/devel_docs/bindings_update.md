@@ -78,6 +78,15 @@ python external/imgui_test_engine/bindings/generate_imgui_test_engine.py
 
 Examine the changes in the generated `.cpp` and `.pyi` files with `git diff`.
 
+:::{note}
+A rebase without conflicts does not mean that the headers still parse. Upstream may add a macro in front of its
+declarations (an export macro, a compiler hint): the parser then reads it as a part of the return type. Two signs:
+the regeneration log says `Failed to run black formatter` (the stub is not valid Python any more), or the diff of the `.pyi`
+file is much larger than the upstream changes (functions disappear, signatures lose their line wrapping).
+Fix it in the generator options of the library: `srcmlcpp_options.functions_api_prefixes` for an API prefix,
+or `srcmlcpp_options.code_preprocess_function` to remove any other macro before parsing.
+:::
+
 ### 4. Compile & test
 
 If you don't have a build directory yet, see [Getting Started](getting_started_dev.md) or [Build Guide](build_guide.md).
@@ -89,6 +98,11 @@ cmake --build . -j
 ```
 
 Fix any compilation errors due to breaking changes in the upstream API.
+After an update of Dear ImGui, other libraries may break as well (many of them guard their code with `IMGUI_VERSION_NUM`).
+Use a keep-going build to see all the errors in one pass, instead of one library at a time:
+```bash
+cmake --build . -j -- -k      # Makefiles (with Ninja: -- -k 0)
+```
 
 **Test in C++:**
 ```bash
@@ -113,7 +127,7 @@ See [Testing](testing.md) for more details.
 If the fork submodule was modified during rebase or to fix binding compatibility:
 ```bash
 cd external/imgui_test_engine/imgui_test_engine
-git push fork
+git push --force-with-lease fork imgui_bundle   # a rebase rewrites the history: a plain "git push" would be rejected
 cd -
 ```
 
@@ -159,15 +173,16 @@ cd -
 **3. Regenerate bindings**
 
 ```bash
-just libs_bindings imgui
+just libs_bindings_all
 ```
 
-This runs [external/imgui/bindings/generate_imgui.py](https://github.com/pthom/imgui_bundle/tree/main/external/imgui/bindings/generate_imgui.py), which generates bindings for imgui, imgui_internal, and imgui_test_engine.
+Regenerate all the libraries, not only imgui: the litgen options of imgui are shared with implot, implot3d and imgui_toggle.
+For imgui itself, this runs [external/imgui/bindings/generate_imgui.py](https://github.com/pthom/imgui_bundle/tree/main/external/imgui/bindings/generate_imgui.py), which generates bindings for imgui, imgui_internal, and imgui_test_engine.
 
 **4. Examine, build, and test** (see steps 3-4 above)
 
 **5. Push updated forks**
 ```bash
-cd external/imgui/imgui && git push fork && cd -
-cd external/imgui_test_engine/imgui_test_engine && git push fork && cd -
+cd external/imgui/imgui && git push --force-with-lease fork imgui_bundle && cd -
+cd external/imgui_test_engine/imgui_test_engine && git push --force-with-lease fork imgui_bundle && cd -
 ```
