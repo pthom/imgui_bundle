@@ -74,7 +74,7 @@ directories = """
 )
 
 
-extensions = set()
+extensions: set[str] = set()
 
 extensionCommentMarkers: Dict[str, str] = {
     # "pyi": "#",
@@ -86,8 +86,8 @@ extensionCommentMarkers: Dict[str, str] = {
 }
 
 
-def add_copyright(filename):
-    extension = file.split(".")[-1]
+def add_copyright(filename: str) -> None:
+    extension = filename.split(".")[-1]
     if extension in extensionCommentMarkers.keys():
         comment_marker = extensionCommentMarkers[extension]
         copyright_comment = comment_marker + " " + copyright_str

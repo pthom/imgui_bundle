@@ -1842,7 +1842,7 @@ def plot_pie_chart(
     x: float,
     y: float,
     radius: float,
-    label_fmt: str = "%.1",
+    label_fmt: str = "%.1f",
     angle0: float = 90,
     spec: Optional[Spec] = None,
 ) -> None:

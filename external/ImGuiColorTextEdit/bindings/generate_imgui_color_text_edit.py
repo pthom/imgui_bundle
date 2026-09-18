@@ -96,7 +96,7 @@ def preprocess(code: str) -> str:
     return code
 
 
-def main():
+def main() -> None:
     print("autogenerate_imgui_color_text_edit")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_color_text_edit.cpp"
     output_stub_pyi_file = STUB_DIR + "/imgui_color_text_edit.pyi"

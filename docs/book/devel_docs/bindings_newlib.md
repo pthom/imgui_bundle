@@ -231,6 +231,10 @@ It should demo the library, and act as a tutorial, in python and C++.
 
 Some libraries require modifications to work properly with Python bindings. In such cases, you need to fork the library and make adaptations. This section describes common patterns for adapting C++ APIs for Python compatibility.
 
+:::{tip}
+A fork is the last resort. Many adaptations can be done without touching the library: with a litgen option, a wrapper header, or a custom binding. See [Adapting an API for Python: where does the change go?](bindings_forks.md) before forking.
+:::
+
 :::{note}
 When making bundle-specific changes in forked code, bracket them with `// [ADAPT_IMGUI_BUNDLE]` / `// [/ADAPT_IMGUI_BUNDLE]` comment markers, and use a `[Bundle]` prefix in commit messages. This makes it easy to distinguish bundle patches from upstream code. See [Managing external libraries and forks](bindings_forks.md) for full conventions.
 :::
@@ -245,16 +249,16 @@ ImGui Bundle defines two preprocessor macros for conditional compilation when bu
 
 **Example: Replacing pointer+size with std::vector**
 
-Some C++ APIs use pointer + count patterns that don't translate well to Python:
+Some C++ APIs use pointer + count patterns that don't translate well to Python. Example from imgui-node-editor:
 
 ```cpp
 #ifdef IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
-    // This API is not usable in Python (the combination ImVec2* + int is not easily wrapped)
-    IMGUI_API void  AddPolyline(const ImVec2* points, int num_points, ImU32 col, ImDrawFlags flags, float thickness);
+    // This API is not usable in Python (the combination NodeId* + int is not easily wrapped)
+    IMGUI_NODE_EDITOR_API int GetSelectedNodes(NodeId* nodes, int size);
 #endif
 #ifdef IMGUI_BUNDLE_PYTHON_API
     // So, we replace it with a more Python-friendly version using std::vector
-    IMGUI_API void  AddPolyline(const std::vector<ImVec2>& points, ImU32 col, ImDrawFlags flags, float thickness);
+    IMGUI_NODE_EDITOR_API std::vector<NodeId> GetSelectedNodes();
 #endif
 ```
 
@@ -326,6 +330,7 @@ marker_callback = Callable[[int, int, float], None]  # inst_id, marker_id, time
 
 ### Summary of library adaptation patterns
 
+0. **First**: check whether a litgen option, a wrapper header or a custom binding is enough (no fork needed)
 1. **Unsupported APIs**: Hide with `#ifdef IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API`
 2. **Python-friendly alternatives**: Provide with `#ifdef IMGUI_BUNDLE_PYTHON_API`
 3. **Function pointers**: Replace with `std::function` under `IMGUI_BUNDLE_PYTHON_API`

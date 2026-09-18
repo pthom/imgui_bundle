@@ -27,7 +27,7 @@ def make_amalgamated_header() -> str:
     return amalgamation
 
 
-def main():
+def main() -> None:
     print("autogenerate_imguizmo")
 
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imguizmo.cpp"

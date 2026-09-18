@@ -277,7 +277,7 @@ def published_libs() -> List[ExternalLibrary]:
     return r
 
 
-def reattach_all_submodules():
+def reattach_all_submodules() -> None:
     """
     Will remove existing git remotes
     Then add two remotes if it is a fork
@@ -293,20 +293,20 @@ def reattach_all_submodules():
             lib.run_reattach_submodule()
 
 
-def pull_all_submodules():
+def pull_all_submodules() -> None:
     for lib in ALL_LIBS:
         if lib.is_submodule():
             print(lib.name)
             lib.run_pull()
 
 
-def fetch_all_submodules():
+def fetch_all_submodules() -> None:
     for lib in ALL_LIBS:
         if lib.is_submodule():
             print(lib.name)
             lib.cmd_fetch_all().run()
 
-def check_new_changes_in_official():
+def check_new_changes_in_official() -> None:
     unchanged = []
     changed = []
     for lib in ALL_LIBS:
@@ -332,7 +332,7 @@ def find_lib(name: str) -> ExternalLibrary:
     return matches[0]
 
 
-def show_libs_info():
+def show_libs_info() -> None:
     """Print a table of all external libraries with their remotes and paths."""
     print(f"{'NAME':<25s} {'FORK':<53s} {'OFFICIAL':<53s} {'PATH'}")
     print("-" * 170)
@@ -343,7 +343,7 @@ def show_libs_info():
             print(f"{lib.name_snake_case():<25s} {fork:<53s} {official:<53s} {lib.git_folder_relative_path()}")
 
 
-def show_lib_upstream_log(name: str):
+def show_lib_upstream_log(name: str) -> None:
     """Show new commits in official upstream that are not yet in the fork branch."""
     import subprocess
     lib = find_lib(name)
@@ -352,14 +352,14 @@ def show_lib_upstream_log(name: str):
     subprocess.run(cmd_str, shell=True, cwd=lib.git_folder_abs_path())
 
 
-def rebase_lib(name: str):
+def rebase_lib(name: str) -> None:
     """Tag and rebase a fork library on its official upstream."""
     lib = find_lib(name)
     assert lib.fork_git_url, f"'{name}' ({lib.name}) is not a fork"
     lib.cmd_rebase_fork_on_official_changes().run()
 
 
-def tag_lib(name: str):
+def tag_lib(name: str) -> None:
     """Push a date tag to a fork library."""
     import os
     lib = find_lib(name)

@@ -46,11 +46,38 @@ im_anim                   https://github.com/pthom/ImAnim.git                   
 
 A fork is created when a library needs C++ source modifications that cannot be achieved through the binding generator alone. Typical reasons:
 
-- **Python API adaptations**: replacing `pointer + size` patterns with `std::vector`, C function pointers with `std::function`, `const char*` with `std::optional<std::string>`, etc.
+- **Python API adaptations** that cannot be done outside the library (see the next section): for example C function pointers replaced by `std::function`.
 - **Bug fixes** or behavior changes specific to ImGui Bundle's usage.
 - **Build adaptations** for cross-platform support.
 
 If a library can be bound without source modifications, it is used directly from upstream (no fork needed).
+
+
+## Adapting an API for Python: where does the change go?
+
+A patch in a fork is the most expensive place for a Python adaptation: it must survive every rebase on upstream, and it changes the C++ library for everybody. Try the following mechanisms in this order, and stop at the first one that does the job:
+
+| # | Mechanism | Where it lives | Use it when |
+|---|-----------|----------------|-------------|
+| 1 | **litgen option** | `external/<lib>/bindings/` (generator script or options file) | Excluding, renaming, turning output parameters into return values, buffers into numpy arrays, etc. |
+| 2 | **Wrapper header** ("pywrappers") | e.g. `external/imgui/imgui_pywrappers/` | The Python version is plain C++ that litgen can bind: a new struct, `std::string`, `std::optional`, a tuple. |
+| 3 | **Custom binding** | `options.custom_bindings.add_custom_bindings_to_main_module / _to_class / _to_submodule` | The binding needs nanobind types (`nb::ndarray`, `nb::object`), access to members from outside the class, or control over a whole set of overloads. |
+| 4 | **Fork patch** | the library itself | The behavior of the library must change (bug fix, feature), or a type must differ in the Python build. |
+
+Why this order:
+
+- A **wrapper header** is processed by litgen like any other header: bindings, stubs and docstrings are generated, and the C++ is real code (compiled on its own, visible to the IDE). It is built only when Python bindings are enabled.
+- A **custom binding** can do what a header cannot, but its C++ lives inside a Python string (errors show up only when the module compiles) and its stub is written by hand. Keep them for the cases listed above.
+- When a custom binding replaces overloaded functions, it must own the **whole** overload set: exclude all the C++ overloads and register them all in the custom binding. Python overloads must be consecutive in the stubs, and the registration order decides which overload wins.
+
+Examples in the Dear ImGui bindings (`external/imgui/bindings/litgen_options_imgui.py`):
+
+| Mechanism | Example |
+|-----------|---------|
+| litgen option | `fn_exclude_by_name_and_signature` hides the `pointer + count` overloads of `ImDrawList` |
+| Wrapper header | `DockBuilderSplitNode()` returning a struct instead of two output parameters; drag and drop payloads carrying a Python id |
+| Custom binding | `ImTextureData.get_pixels_array()` (numpy view), `imgui.set_window_focus()` (owns its overload set), the clipboard callbacks of `ImGuiPlatformIO` (static trampolines) |
+| Fork patch | `ImGuiInputTextCallback` is a `std::function` in the Python build |
 
 
 ## The fork branch model
@@ -99,7 +126,7 @@ All bundle-specific modifications in forked library source code are bracketed wi
 
 This makes it easy to find all bundle adaptations by searching for `ADAPT_IMGUI_BUNDLE`, and to review the diff against upstream.
 
-**Example from `imgui.h`** — adding a Python-friendly overload:
+**Example from `imgui.h`**: a function added for the ImGui Explorer:
 
 ```cpp
 //[ADAPT_IMGUI_BUNDLE]
@@ -112,19 +139,36 @@ IMGUI_API void ShowDemoWindow_MaybeDocked(
 
 ### In commits: `[Bundle]` prefix
 
-Bundle-specific commits use a **`[Bundle]`** prefix in the commit message. This clearly distinguishes them from upstream commits when reading the git log:
+Bundle-specific commits use a **`[Bundle]`** prefix in the commit message. This clearly distinguishes them from upstream commits when reading the git log. Commits that are proposed upstream as they are (see "Contributing fixes upstream" below) do not carry the prefix.
+
+Some older commits may use `[ADAPT_IMGUI_BUNDLE]` as the prefix: this is equivalent.
+
+### The Dear ImGui fork: one commit per theme
+
+The Dear ImGui fork is kept as a short list of thematic commits on top of upstream's `docking` branch, so that each of them can be reviewed, rebased or dropped on its own:
 
 ```
-$ git log --oneline (imgui fork)
-8f3f4c6 [Bundle] Add python API for SetWindowFocus(optional<string>)
-4a7d77e [Bundle] imgui_demo.cpp: imgui_manual -> imgui explorer
-245cc3e [Bundle] Python API for SliderFloat2/4, InputFloat2/4, ColorEdit3/4, ColorPicker3/4
-f6ba577 [Bundle] imgui_demo.cpp: move demo marker / Layout/Stack Layout into TreeNode
-8e8f3ed [Bundle]: add ShowDemoWindow_MaybeDocked (with flags & position)
-...
+$ git log --oneline official/docking..imgui_bundle
+[Bundle] Move the docking internal types from imgui.cpp to imgui_internal.h
+[Bundle] imgui_freetype: PlutoSVG's FreeType hooks are in <plutosvg-ft.h>
+[Bundle] Python build: throwing IM_ASSERT support and std::function callback typedefs
+[Bundle] imgui_demo.cpp adaptations for the ImGui Explorer
+[Bundle] Emscripten / Pyodide: SDL2 backend fixes
+[Bundle] imgui-node-editor compatibility
+StackLayout: fix the vertical drift of items with a fractional height in horizontal layouts
+StackLayout: inflate an auto-sized layout to its parent only when it has springs
+StackLayout: fix unused parameter / variable warnings
+StackLayout: fix the clipping of content submitted after a nested layout
+StackLayout: thedmd's Stack Layout implementation v2.1 (PR #846)
 ```
 
-Some older commits may use `[ADAPT_IMGUI_BUNDLE]` as the prefix — this is equivalent.
+- **StackLayout** (`BeginHorizontal` / `BeginVertical` / `Spring`) comes from [thedmd's branch](https://github.com/thedmd/imgui/tree/feature/docking-layout-external). The first commit holds his three layout files verbatim plus the hooks ported to the current Dear ImGui; each following commit is one fix, proposed upstream to him. When he publishes a new version: replace the three files in the first commit, and drop the fixes he integrated.
+- When a change belongs to an existing theme, fold it into that commit (`git commit --fixup` then `git rebase --autosquash`) instead of stacking a new commit on top. A new commit is for a new theme.
+- **What remains specific to Python** in this fork is small: the two `std::function` callback typedefs (`ImGuiInputTextCallback`, `ImGuiSizeCallback`), destructors marked `noexcept(false)` because `IM_ASSERT` throws in the Python build, and the `IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API` marker. All other Python adaptations live in the bundle (mechanisms 1 to 3 above).
+
+:::{warning}
+Because of the `std::function` typedefs, the Dear ImGui compiled inside the Python wheel is **not ABI compatible** with stock Dear ImGui headers (`ImGuiNextWindowData` has a different layout, the callback parameters have a different type), and `IMGUI_CHECKVERSION()` does not detect it. C++ code that shares an ImGui context with the wheel must be compiled with `IMGUI_BUNDLE_PYTHON_API` defined.
+:::
 
 ### Preprocessor macros
 

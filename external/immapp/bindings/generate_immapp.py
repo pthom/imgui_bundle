@@ -2,6 +2,7 @@
 import os
 
 import litgen
+from codemanip import code_utils
 
 
 THIS_DIR = os.path.dirname(__file__)
@@ -11,7 +12,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../immapp"
 
 
-def main():
+def main() -> None:
     print("autogenerate_immapp")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_immapp_cpp.cpp"
     output_stub_pyi_file = STUB_DIR + "/immapp/immapp_cpp.pyi"
@@ -23,10 +24,10 @@ def main():
 
     options.namespaces_root = ["ImmApp"]
     options.python_run_black_formatter = True
-    options.srcmlcpp_options.ignored_warnings.append(
+    options.srcmlcpp_options.ignored_warning_parts.append(
         "Block elements of type decl_stmt are not supported in python conversion"
     )
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR|IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR"
+    options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR|IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR")
     options.srcmlcpp_options.ignored_warning_parts += ["unhandled tag endif", "unhandled tag ifdef"]
 
     options.fn_return_force_policy_reference_for_references__regex = r".*"

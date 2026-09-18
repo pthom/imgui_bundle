@@ -3,6 +3,7 @@ import os
 import string
 
 import litgen
+from codemanip import code_utils
 
 
 THIS_DIR = os.path.dirname(__file__)
@@ -10,7 +11,7 @@ PYDEF_DIR = THIS_DIR
 STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 
-def main():
+def main() -> None:
     print("autogenerate_nanovg")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_nanovg.cpp"
     output_stub_pyi_file = STUB_DIR + "/nanovg.pyi"
@@ -20,7 +21,7 @@ def main():
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
-    options.srcmlcpp_options.header_filter_acceptable__regex += "|IMGUI_BUNDLE_WITH_NANOVG"
+    options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "IMGUI_BUNDLE_WITH_NANOVG")
     options.original_signature_flag_show = True
     options.type_replacements.add_last_replacement("unsigned char", "UChar")
     options.var_names_replacements.add_last_replacement("^NVG_", "")

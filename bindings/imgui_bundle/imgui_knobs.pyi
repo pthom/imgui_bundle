@@ -91,7 +91,7 @@ def knob(
     v_min: float,
     v_max: float,
     speed: float = 0,
-    format: str = "%.3",
+    format: str = "%.3f",
     variant: Optional[ImGuiKnobVariant] = None,
     size: float = 0,
     flags: ImGuiKnobFlags = 0,

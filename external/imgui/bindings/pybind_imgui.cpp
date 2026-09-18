@@ -30,53 +30,78 @@ using uint = unsigned int;
 using uchar = unsigned char;
 
 
-namespace nanobind { namespace detail {
+// ----------------------------------------------------------------------------------------------
+// Python callables for the ImGuiPlatformIO callbacks (clipboard, open in shell)
+// ----------------------------------------------------------------------------------------------
+// These fields are C function pointers, which cannot capture a Python callable. Instead, the
+// Python callable is stored in a static slot, and a fixed trampoline is installed in the field.
+// (single-context by design, like imgui's own clipboard state)
+// The bindings are in litgen_options_imgui.py (custom bindings on ImGuiPlatformIO).
+// The slots are allocated once and never destroyed: a static nb::object would be destroyed at process exit, after
+// Py_Finalize (segfault if it still holds a reference). They are emptied by an atexit handler (see below), and being
+// immortal they stay harmless even if something fills them again after that handler ran.
+static nb::object& g_py_get_clipboard = *new nb::object();   // Callable[[Context], str], or None
+static nb::object& g_py_set_clipboard = *new nb::object();   // Callable[[Context, str], None], or None
+static nb::object& g_py_open_in_shell = *new nb::object();   // Callable[[Context, str], bool], or None
 
-// Publish ImGuiNpBuffer as a 1D numpy array of bytes
-// (only valid from C++ to Python, used to transfer buffers from C++ to Python)
-template <>
-struct type_caster<ImGuiNpBuffer> {
-    NB_TYPE_CASTER(ImGuiNpBuffer, const_name("numpy.array"))
+// Store a Python callable (or None) in one of the slots above.
+// A cleanup registered with Python's atexit empties the slots, so that the callables are released while the interpreter is alive.
+static void PyPlatformIOCallbacks_Set(nb::object& slot, nb::object f)
+{
+    static bool cleanup_registered = false;
+    if (!cleanup_registered)
+    {
+        nb::module_::import_("atexit").attr("register")(nb::cpp_function([]() {
+            g_py_get_clipboard.reset();
+            g_py_set_clipboard.reset();
+            g_py_open_in_shell.reset();
+        }));
+        cleanup_registered = true;
+    }
+    slot = f.is_none() ? nb::object() : f;
+}
 
-    bool from_python(handle /*src*/, uint8_t /*flags*/, cleanup_list * /*cleanup*/) noexcept {
-        // Not supporting Python->C++ conversion for now.
+// imgui is not exception-safe: an exception raised by a Python callback (or by a wrong return type) must not unwind
+// through its frames. It is reported like an exception in a destructor ("Exception ignored in...") and a neutral value is returned.
+template <typename Fn, typename R>
+static R PyPlatformIOCallbacks_Guarded(const char* where, R value_on_error, Fn&& fn)
+{
+    try { return fn(); }
+    catch (nb::python_error& e) { e.discard_as_unraisable(where); }
+    catch (const std::exception& e) { PyErr_SetString(PyExc_TypeError, e.what()); nb::python_error().discard_as_unraisable(where); }
+    return value_on_error;
+}
+
+static const char* PyGetClipboardTextTrampoline(ImGuiContext* ctx)
+{
+    // The returned text is copied by imgui right away; this buffer keeps it alive until then.
+    static std::string buffer;
+    buffer.clear();
+    if (g_py_get_clipboard.is_valid())
+        buffer = PyPlatformIOCallbacks_Guarded("platform_get_clipboard_text_fn", std::string(), [&]() {
+            nb::object r = g_py_get_clipboard(nb::cast(ctx, nb::rv_policy::reference));
+            return r.is_none() ? std::string() : nb::cast<std::string>(r);
+        });
+    return buffer.c_str();
+}
+static void PySetClipboardTextTrampoline(ImGuiContext* ctx, const char* text)
+{
+    if (g_py_set_clipboard.is_valid())
+        PyPlatformIOCallbacks_Guarded("platform_set_clipboard_text_fn", 0, [&]() {
+            g_py_set_clipboard(nb::cast(ctx, nb::rv_policy::reference), text ? text : "");
+            return 0;
+        });
+}
+static bool PyOpenInShellTrampoline(ImGuiContext* ctx, const char* path)
+{
+    if (!g_py_open_in_shell.is_valid())
         return false;
-    }
+    return PyPlatformIOCallbacks_Guarded("platform_open_in_shell_fn", false, [&]() {
+        nb::object r = g_py_open_in_shell(nb::cast(ctx, nb::rv_policy::reference), path ? path : "");
+        return r.is_none() ? true : nb::cast<bool>(r);  // a callback without a return statement is taken as a success
+    });
+}
 
-    static handle from_cpp(const ImGuiNpBuffer &buf, rv_policy policy, cleanup_list *cleanup) noexcept {
-        try {
-            // Only allow reference policies since memory is owned by C++
-            if (policy != rv_policy::reference
-                && policy != rv_policy::reference_internal
-                && policy != rv_policy::automatic
-                && policy != rv_policy::automatic_reference
-                )
-            {
-                throw std::runtime_error("ImGuiNpBuffer only supports reference policies since memory is owned by C++");
-            }
-
-            nb::handle no_owner = {};
-
-            nb::ndarray<uint8_t, nb::numpy> array(
-                buf.Data,
-                {(size_t)buf.Size},
-                no_owner,  // no owner, as lifetime is managed on C++
-                {(int64_t)1},
-                nb::dtype<uint8_t>(),
-                0, 0, 'C'
-            );
-
-            // Export via the public ndarray caster (nb::detail::ndarray_export changed signature in nanobind 3)
-            return type_caster<nb::ndarray<uint8_t, nb::numpy>>::from_cpp(array, policy, cleanup);
-        }
-        catch (const std::exception& e) {
-            PyErr_WarnFormat(PyExc_Warning, 1, "ImGuiNpBuffer caster from_cpp exception: %s", e.what());
-            return {};
-        }
-    }
-};
-
-}} // namespace nanobind::detail
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  AUTOGENERATED CODE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // <litgen_glue_code>  // Autogenerated code below! Do not edit!
@@ -120,16 +145,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def(nb::init<>())
         .def(nb::init<float, float>(),
             nb::arg("_x"), nb::arg("_y"))
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("to_dict",
-            &ImVec2::to_dict, "(private API)")
-        .def_static("from_dict",
-            &ImVec2::from_dict,
-            nb::arg("d"),
-            "(private API)")
-        // #endif
-        //
         .def("__copy__",  [](const ImVec2 &self) {
             return ImVec2(self);
         })    ;
@@ -144,6 +159,17 @@ void py_init_module_imgui_main(nb::module_& m)
         else if (idx == 1) self.y = value;
         else throw std::out_of_range("Index out of range for ImVec2");
     });
+    pyClassImVec2.def("to_dict",
+        [](const ImVec2& self) -> std::map<std::string, float> { return {{"x", self.x}, {"y", self.y}}; },
+        "Convert to a dict with keys x, y");
+    pyClassImVec2.def_static("from_dict",
+        [](const std::map<std::string, float>& d) -> ImVec2 {
+            for (const char* k : {"x", "y"})
+                if (d.find(k) == d.end())
+                    throw std::invalid_argument(std::string("ImVec2.from_dict: missing key ") + k);
+            return ImVec2(d.at("x"), d.at("y"));
+        },
+        nb::arg("d"), "Create from a dict with keys x, y");
 
 
 
@@ -158,16 +184,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def(nb::init<>())
         .def(nb::init<float, float, float, float>(),
             nb::arg("_x"), nb::arg("_y"), nb::arg("_z"), nb::arg("_w"))
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("to_dict",
-            &ImVec4::to_dict, "(private API)")
-        .def_static("from_dict",
-            &ImVec4::from_dict,
-            nb::arg("d"),
-            "(private API)")
-        // #endif
-        //
         .def("__copy__",  [](const ImVec4 &self) {
             return ImVec4(self);
         })    ;
@@ -186,6 +202,17 @@ void py_init_module_imgui_main(nb::module_& m)
         else if (idx == 3) self.w = value;
         else throw std::out_of_range("Index out of range for ImVec4");
     });
+    pyClassImVec4.def("to_dict",
+        [](const ImVec4& self) -> std::map<std::string, float> { return {{"x", self.x}, {"y", self.y}, {"z", self.z}, {"w", self.w}}; },
+        "Convert to a dict with keys x, y, z, w");
+    pyClassImVec4.def_static("from_dict",
+        [](const std::map<std::string, float>& d) -> ImVec4 {
+            for (const char* k : {"x", "y", "z", "w"})
+                if (d.find(k) == d.end())
+                    throw std::invalid_argument(std::string("ImVec4.from_dict: missing key ") + k);
+            return ImVec4(d.at("x"), d.at("y"), d.at("z"), d.at("w"));
+        },
+        nb::arg("d"), "Create from a dict with keys x, y, z, w");
 
 
 
@@ -609,34 +636,6 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::arg("name"), nb::arg("collapsed"), nb::arg("cond") = 0,
         "set named window collapsed state");
 
-    m.def("set_window_focus",
-        []()
-        {
-            auto SetWindowFocus_adapt_force_lambda = []()
-            {
-                ImGui::SetWindowFocus();
-            };
-
-            SetWindowFocus_adapt_force_lambda();
-        },     "(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus().");
-
-    m.def("set_window_focus",
-        [](std::optional<std::string> name)
-        {
-            auto SetWindowFocus_adapt_force_lambda = [](std::optional<std::string> name)
-            {
-                ImGui::SetWindowFocus(name);
-            };
-
-            SetWindowFocus_adapt_force_lambda(name);
-        },
-        nb::arg("name").none(),
-        "// set named window to be focused / top-most. use None to remove focus.");
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
-
     m.def("get_scroll_x",
         ImGui::GetScrollX, "get scrolling amount [0 .. GetScrollMaxX()]");
 
@@ -678,15 +677,6 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::overload_cast<float, float>(ImGui::SetScrollFromPosY),
         nb::arg("local_y"), nb::arg("center_y_ratio") = 0.5f,
         "adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position.");
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-    m.def("push_font",
-        nb::overload_cast<std::optional<ImFont*>, float>(ImGui::PushFont),
-        nb::arg("font").none(), nb::arg("font_size_base_unscaled"),
-        "Use None as a shortcut to keep current font. Use 0.0 to keep current size.");
-    // #endif
-    //
 
     m.def("pop_font",
         ImGui::PopFont);
@@ -1540,27 +1530,6 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0,
         "adjust format to decorate the value with a prefix or a suffix for in-slider labels or unit display.");
 
-    m.def("slider_float2",
-        [](const char * label, std::array<float, 2> v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, std::array<float, 2>>
-        {
-            auto SliderFloat2_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 2> v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, std::array<float, 2>>
-            {
-                float * v_adapt_modifiable = v.data();
-
-                bool r = ImGui::SliderFloat2(label, v_adapt_modifiable, v_min, v_max, format, flags);
-                return std::make_tuple(r, v);
-            };
-
-            return SliderFloat2_adapt_modifiable_immutable_to_return(label, v, v_min, v_max, format, flags);
-        },     nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-
-    m.def("slider_float2",
-        nb::overload_cast<const char *, ImVec2, float, float, const char *, ImGuiSliderFlags>(ImGui::SliderFloat2), nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
-
     m.def("slider_float3",
         [](const char * label, std::array<float, 3> v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
         {
@@ -1574,27 +1543,6 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return SliderFloat3_adapt_modifiable_immutable_to_return(label, v, v_min, v_max, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-
-    m.def("slider_float4",
-        [](const char * label, std::array<float, 4> v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, std::array<float, 4>>
-        {
-            auto SliderFloat4_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 4> v, float v_min, float v_max, const char * format = "%.3f", ImGuiSliderFlags flags = 0) -> std::tuple<bool, std::array<float, 4>>
-            {
-                float * v_adapt_modifiable = v.data();
-
-                bool r = ImGui::SliderFloat4(label, v_adapt_modifiable, v_min, v_max, format, flags);
-                return std::make_tuple(r, v);
-            };
-
-            return SliderFloat4_adapt_modifiable_immutable_to_return(label, v, v_min, v_max, format, flags);
-        },     nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-
-    m.def("slider_float4",
-        nb::overload_cast<const char *, ImVec4, float, float, const char *, ImGuiSliderFlags>(ImGui::SliderFloat4), nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
 
     m.def("slider_angle",
         [](const char * label, float v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f, const char * format = "%.0f deg", ImGuiSliderFlags flags = 0) -> std::tuple<bool, float>
@@ -1756,27 +1704,6 @@ void py_init_module_imgui_main(nb::module_& m)
             return InputFloat_adapt_modifiable_immutable_to_return(label, v, step, step_fast, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("step") = 0.0f, nb::arg("step_fast") = 0.0f, nb::arg("format") = "%.3f", nb::arg("flags") = 0);
 
-    m.def("input_float2",
-        [](const char * label, std::array<float, 2> v, const char * format = "%.3f", ImGuiInputTextFlags flags = 0) -> std::tuple<bool, std::array<float, 2>>
-        {
-            auto InputFloat2_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 2> v, const char * format = "%.3f", ImGuiInputTextFlags flags = 0) -> std::tuple<bool, std::array<float, 2>>
-            {
-                float * v_adapt_modifiable = v.data();
-
-                bool r = ImGui::InputFloat2(label, v_adapt_modifiable, format, flags);
-                return std::make_tuple(r, v);
-            };
-
-            return InputFloat2_adapt_modifiable_immutable_to_return(label, v, format, flags);
-        },     nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-
-    m.def("input_float2",
-        nb::overload_cast<const char *, ImVec2, const char *, ImGuiInputTextFlags>(ImGui::InputFloat2), nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
-
     m.def("input_float3",
         [](const char * label, std::array<float, 3> v, const char * format = "%.3f", ImGuiInputTextFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
         {
@@ -1790,27 +1717,6 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputFloat3_adapt_modifiable_immutable_to_return(label, v, format, flags);
         },     nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-
-    m.def("input_float4",
-        [](const char * label, std::array<float, 4> v, const char * format = "%.3f", ImGuiInputTextFlags flags = 0) -> std::tuple<bool, std::array<float, 4>>
-        {
-            auto InputFloat4_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 4> v, const char * format = "%.3f", ImGuiInputTextFlags flags = 0) -> std::tuple<bool, std::array<float, 4>>
-            {
-                float * v_adapt_modifiable = v.data();
-
-                bool r = ImGui::InputFloat4(label, v_adapt_modifiable, format, flags);
-                return std::make_tuple(r, v);
-            };
-
-            return InputFloat4_adapt_modifiable_immutable_to_return(label, v, format, flags);
-        },     nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-
-    m.def("input_float4",
-        nb::overload_cast<const char *, ImVec4, const char *, ImGuiInputTextFlags>(ImGui::InputFloat4), nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
 
     m.def("input_int",
         [](const char * label, int v, int step = 1, int step_fast = 100, ImGuiInputTextFlags flags = 0) -> std::tuple<bool, int>
@@ -1913,82 +1819,6 @@ void py_init_module_imgui_main(nb::module_& m)
 
             return InputScalarN_adapt_const_char_pointer_with_default_null(label, data_type, p_data, components, p_step, p_step_fast, format, flags);
         },     nb::arg("label"), nb::arg("data_type"), nb::arg("p_data"), nb::arg("components"), nb::arg("p_step") = nb::none(), nb::arg("p_step_fast") = nb::none(), nb::arg("format").none() = nb::none(), nb::arg("flags") = 0);
-
-    m.def("color_edit3",
-        [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
-        {
-            auto ColorEdit3_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
-            {
-                float * col_adapt_modifiable = col.data();
-
-                bool r = ImGui::ColorEdit3(label, col_adapt_modifiable, flags);
-                return std::make_tuple(r, col);
-            };
-
-            return ColorEdit3_adapt_modifiable_immutable_to_return(label, col, flags);
-        },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-
-    m.def("color_edit3",
-        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags>(ImGui::ColorEdit3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-
-    m.def("color_edit4",
-        [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 4>>
-        {
-            auto ColorEdit4_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 4>>
-            {
-                float * col_adapt_modifiable = col.data();
-
-                bool r = ImGui::ColorEdit4(label, col_adapt_modifiable, flags);
-                return std::make_tuple(r, col);
-            };
-
-            return ColorEdit4_adapt_modifiable_immutable_to_return(label, col, flags);
-        },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-
-    m.def("color_edit4",
-        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags>(ImGui::ColorEdit4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
-
-    m.def("color_picker3",
-        [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
-        {
-            auto ColorPicker3_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 3> col, ImGuiColorEditFlags flags = 0) -> std::tuple<bool, std::array<float, 3>>
-            {
-                float * col_adapt_modifiable = col.data();
-
-                bool r = ImGui::ColorPicker3(label, col_adapt_modifiable, flags);
-                return std::make_tuple(r, col);
-            };
-
-            return ColorPicker3_adapt_modifiable_immutable_to_return(label, col, flags);
-        },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-
-    m.def("color_picker3",
-        nb::overload_cast<const char *, ImVec4, ImGuiColorEditFlags>(ImGui::ColorPicker3), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
-
-    m.def("color_picker4",
-        [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0, const float * ref_col = NULL) -> std::tuple<bool, std::array<float, 4>>
-        {
-            auto ColorPicker4_adapt_modifiable_immutable_to_return = [](const char * label, std::array<float, 4> col, ImGuiColorEditFlags flags = 0, const float * ref_col = NULL) -> std::tuple<bool, std::array<float, 4>>
-            {
-                float * col_adapt_modifiable = col.data();
-
-                bool r = ImGui::ColorPicker4(label, col_adapt_modifiable, flags, ref_col);
-                return std::make_tuple(r, col);
-            };
-
-            return ColorPicker4_adapt_modifiable_immutable_to_return(label, col, flags, ref_col);
-        },     nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col") = nb::none());
-
-    m.def("color_picker4",
-        nb::overload_cast<const std::string &, ImVec4, ImGuiColorEditFlags, std::optional<ImVec4>>(ImGui::ColorPicker4), nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
 
     m.def("color_button",
         [](const char * desc_id, const ImVec4 & col, ImGuiColorEditFlags flags = 0, const std::optional<const ImVec2> & size = std::nullopt) -> bool
@@ -2380,28 +2210,6 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("end_menu",
         ImGui::EndMenu, "only call EndMenu() if BeginMenu() returns True!");
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-    m.def("menu_item_simple",
-        [](const char * label, std::optional<std::string> shortcut = std::nullopt, bool selected = false, bool enabled = true) -> bool
-        {
-            auto MenuItemSimple_adapt_const_char_pointer_with_default_null = [](const char * label, std::optional<std::string> shortcut = std::nullopt, bool selected = false, bool enabled = true) -> bool
-            {
-                const char * shortcut_adapt_default_null = nullptr;
-                if (shortcut.has_value())
-                    shortcut_adapt_default_null = shortcut.value().c_str();
-
-                auto lambda_result = ImGui::MenuItemSimple(label, shortcut_adapt_default_null, selected, enabled);
-                return lambda_result;
-            };
-
-            return MenuItemSimple_adapt_const_char_pointer_with_default_null(label, shortcut, selected, enabled);
-        },
-        nb::arg("label"), nb::arg("shortcut").none() = nb::none(), nb::arg("selected") = false, nb::arg("enabled") = true,
-        "(private API)");
-    // #endif
-    //
 
     m.def("menu_item",
         [](const char * label, const char * shortcut, bool p_selected, bool enabled = true) -> std::tuple<bool, bool>
@@ -2734,15 +2542,6 @@ void py_init_module_imgui_main(nb::module_& m)
         },
         nb::arg("label"), nb::arg("p_open").none() = nb::none(), nb::arg("flags") = 0,
         "create a Tab. Returns True if the Tab is selected.");
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-    m.def("begin_tab_item_simple",
-        ImGui::BeginTabItemSimple,
-        nb::arg("label"), nb::arg("flags") = 0,
-        "create a Tab (non-closable). Returns True if the Tab is selected.");
-    // #endif
-    //
 
     m.def("end_tab_item",
         ImGui::EndTabItem, "only call EndTabItem() if BeginTabItem() returns True!");
@@ -2848,11 +2647,6 @@ void py_init_module_imgui_main(nb::module_& m)
         ImGui::BeginDragDropSource,
         nb::arg("flags") = 0,
         "call after submitting an item which may be dragged. when this return True, you can call SetDragDropPayload() + EndDragDropSource()");
-
-    m.def("set_drag_drop_payload",
-        ImGui::SetDragDropPayload,
-        nb::arg("type"), nb::arg("data"), nb::arg("sz"), nb::arg("cond") = 0,
-        "type is a user defined string of maximum 32 characters. Strings starting with '_' are reserved for dear imgui internal types. Data is copied and held by imgui. Return True when payload has been accepted.");
 
     m.def("end_drag_drop_source",
         ImGui::EndDragDropSource, "only call EndDragDropSource() if BeginDragDropSource() returns True!");
@@ -3151,9 +2945,6 @@ void py_init_module_imgui_main(nb::module_& m)
         ImGui::SetNextFrameWantCaptureMouse,
         nb::arg("want_capture_mouse"),
         "Override io.WantCaptureMouse flag next frame (said flag is left for your application to handle, typical when True it instructs your app to ignore inputs). This is equivalent to setting \"io.WantCaptureMouse = want_capture_mouse;\" after the next NewFrame() call.");
-
-    m.def("get_clipboard_text",
-        ImGui::GetClipboardText, nb::rv_policy::reference);
 
     m.def("set_clipboard_text",
         ImGui::SetClipboardText, nb::arg("text"));
@@ -4048,15 +3839,17 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("specs_count", &ImGuiTableSortSpecs::SpecsCount, "Sort spec count. Most often 1. May be > 1 when ImGuiTableFlags_SortMulti is enabled. May be == 0 when ImGuiTableFlags_SortTristate is enabled.")
         .def_rw("specs_dirty", &ImGuiTableSortSpecs::SpecsDirty, "Set to True when specs have changed since last time! Use this to sort again, then clear the flag.")
         .def(nb::init<>())
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("get_specs",
-            &ImGuiTableSortSpecs::GetSpecs,
-            nb::arg("idx"),
-            nb::rv_policy::reference)
-        // #endif
-        //
         ;
+
+    pyClassImGuiTableSortSpecs.def("get_specs",
+        [](const ImGuiTableSortSpecs& self, size_t idx) -> const ImGuiTableColumnSortSpecs& {
+            if (idx >= (size_t)self.SpecsCount)
+                throw std::out_of_range("TableSortSpecs.get_specs: index out of range");
+            return self.Specs[idx];
+        },
+        nb::arg("idx"), nb::rv_policy::reference);
+
+
 
 
     auto pyClassImGuiTableColumnSortSpecs =
@@ -4067,15 +3860,15 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("sort_order", &ImGuiTableColumnSortSpecs::SortOrder, "Index within parent ImGuiTableSortSpecs (always stored in order starting from 0, tables sorted on a single criteria will always have a 0 here)")
         .def_rw("sort_direction", &ImGuiTableColumnSortSpecs::SortDirection, "ImGuiSortDirection_Ascending or ImGuiSortDirection_Descending")
         .def(nb::init<>())
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("get_sort_direction",
-            &ImGuiTableColumnSortSpecs::GetSortDirection)
-        .def("set_sort_direction",
-            &ImGuiTableColumnSortSpecs::SetSortDirection, nb::arg("direction"))
-        // #endif
-        //
         ;
+
+    pyClassImGuiTableColumnSortSpecs.def("get_sort_direction",
+        [](const ImGuiTableColumnSortSpecs& self) -> ImGuiSortDirection { return self.SortDirection; });
+    pyClassImGuiTableColumnSortSpecs.def("set_sort_direction",
+        [](ImGuiTableColumnSortSpecs& self, ImGuiSortDirection direction) { self.SortDirection = direction; },
+        nb::arg("direction"));
+
+
 
 
     auto pyClassImNewWrapper =
@@ -4088,30 +3881,24 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyClassImVector_int =
         nb::class_<ImVector<int>>
             (m, "ImVector_int", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<int>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<int> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<int>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<int>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<int>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<int>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<int>::empty, "(private API)")
         .def("size",
             &ImVector<int>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<int>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<int>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<int>::operator[]),
+            nb::overload_cast<int>(&ImVector<int>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4130,33 +3917,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<int> &v) { return v.size(); })
         ;
+
+    pyClassImVector_int.def("data_address", [](const ImVector<int>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_uint =
         nb::class_<ImVector<uint>>
             (m, "ImVector_uint", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<uint>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<uint> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<uint>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<uint>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<uint>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<uint>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<uint>::empty, "(private API)")
         .def("size",
             &ImVector<uint>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<uint>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<uint>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<uint>::operator[]),
+            nb::overload_cast<int>(&ImVector<uint>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4175,33 +3961,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<uint> &v) { return v.size(); })
         ;
+
+    pyClassImVector_uint.def("data_address", [](const ImVector<uint>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_float =
         nb::class_<ImVector<float>>
             (m, "ImVector_float", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<float>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<float> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<float>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<float>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<float>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<float>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<float>::empty, "(private API)")
         .def("size",
             &ImVector<float>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<float>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<float>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<float>::operator[]),
+            nb::overload_cast<int>(&ImVector<float>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4220,33 +4005,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<float> &v) { return v.size(); })
         ;
+
+    pyClassImVector_float.def("data_address", [](const ImVector<float>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_char =
         nb::class_<ImVector<char>>
             (m, "ImVector_char", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<char>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<char> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<char>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<char>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<char>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<char>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<char>::empty, "(private API)")
         .def("size",
             &ImVector<char>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<char>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<char>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<char>::operator[]),
+            nb::overload_cast<int>(&ImVector<char>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4265,33 +4049,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<char> &v) { return v.size(); })
         ;
+
+    pyClassImVector_char.def("data_address", [](const ImVector<char>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_uchar =
         nb::class_<ImVector<uchar>>
             (m, "ImVector_uchar", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<uchar>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<uchar> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<uchar>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<uchar>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<uchar>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<uchar>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<uchar>::empty, "(private API)")
         .def("size",
             &ImVector<uchar>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<uchar>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<uchar>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<uchar>::operator[]),
+            nb::overload_cast<int>(&ImVector<uchar>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4310,33 +4093,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<uchar> &v) { return v.size(); })
         ;
+
+    pyClassImVector_uchar.def("data_address", [](const ImVector<uchar>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImDrawCmd =
         nb::class_<ImVector<ImDrawCmd>>
             (m, "ImVector_ImDrawCmd", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImDrawCmd>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImDrawCmd> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImDrawCmd>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImDrawCmd>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImDrawCmd>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImDrawCmd>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImDrawCmd>::empty, "(private API)")
         .def("size",
             &ImVector<ImDrawCmd>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImDrawCmd>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImDrawCmd>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImDrawCmd>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImDrawCmd>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4355,33 +4137,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImDrawCmd> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImDrawCmd.def("data_address", [](const ImVector<ImDrawCmd>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImDrawChannel =
         nb::class_<ImVector<ImDrawChannel>>
             (m, "ImVector_ImDrawChannel", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImDrawChannel>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImDrawChannel> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImDrawChannel>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImDrawChannel>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImDrawChannel>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImDrawChannel>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImDrawChannel>::empty, "(private API)")
         .def("size",
             &ImVector<ImDrawChannel>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImDrawChannel>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImDrawChannel>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImDrawChannel>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImDrawChannel>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4400,33 +4181,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImDrawChannel> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImDrawChannel.def("data_address", [](const ImVector<ImDrawChannel>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImDrawVert =
         nb::class_<ImVector<ImDrawVert>>
             (m, "ImVector_ImDrawVert", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImDrawVert>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImDrawVert> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImDrawVert>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImDrawVert>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImDrawVert>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImDrawVert>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImDrawVert>::empty, "(private API)")
         .def("size",
             &ImVector<ImDrawVert>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImDrawVert>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImDrawVert>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImDrawVert>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImDrawVert>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4445,33 +4225,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImDrawVert> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImDrawVert.def("data_address", [](const ImVector<ImDrawVert>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImVec4 =
         nb::class_<ImVector<ImVec4>>
             (m, "ImVector_ImVec4", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImVec4>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImVec4> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImVec4>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImVec4>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImVec4>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImVec4>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImVec4>::empty, "(private API)")
         .def("size",
             &ImVector<ImVec4>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImVec4>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImVec4>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImVec4>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImVec4>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4490,33 +4269,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImVec4> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImVec4.def("data_address", [](const ImVector<ImVec4>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImVec2 =
         nb::class_<ImVector<ImVec2>>
             (m, "ImVector_ImVec2", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImVec2>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImVec2> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImVec2>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImVec2>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImVec2>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImVec2>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImVec2>::empty, "(private API)")
         .def("size",
             &ImVector<ImVec2>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImVec2>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImVec2>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImVec2>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImVec2>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4535,33 +4313,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImVec2> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImVec2.def("data_address", [](const ImVector<ImVec2>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImDrawList_ptr =
         nb::class_<ImVector<ImDrawList *>>
             (m, "ImVector_ImDrawList_ptr", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImDrawList *>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImDrawList *> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImDrawList *>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImDrawList *>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImDrawList *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImDrawList *>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImDrawList *>::empty, "(private API)")
         .def("size",
             &ImVector<ImDrawList *>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImDrawList *>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImDrawList *>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImDrawList *>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImDrawList *>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4580,33 +4357,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImDrawList *> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImDrawList_ptr.def("data_address", [](const ImVector<ImDrawList *>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImFont_ptr =
         nb::class_<ImVector<ImFont *>>
             (m, "ImVector_ImFont_ptr", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImFont *>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImFont *> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImFont *>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImFont *>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImFont *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImFont *>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImFont *>::empty, "(private API)")
         .def("size",
             &ImVector<ImFont *>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFont *>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImFont *>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFont *>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImFont *>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4625,33 +4401,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImFont *> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImFont_ptr.def("data_address", [](const ImVector<ImFont *>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImFontAtlas_ptr =
         nb::class_<ImVector<ImFontAtlas *>>
             (m, "ImVector_ImFontAtlas_ptr", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImFontAtlas *>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImFontAtlas *> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImFontAtlas *>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImFontAtlas *>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImFontAtlas *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImFontAtlas *>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImFontAtlas *>::empty, "(private API)")
         .def("size",
             &ImVector<ImFontAtlas *>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontAtlas *>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImFontAtlas *>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontAtlas *>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImFontAtlas *>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4670,33 +4445,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImFontAtlas *> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImFontAtlas_ptr.def("data_address", [](const ImVector<ImFontAtlas *>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImFontGlyph =
         nb::class_<ImVector<ImFontGlyph>>
             (m, "ImVector_ImFontGlyph", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImFontGlyph>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImFontGlyph> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImFontGlyph>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImFontGlyph>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImFontGlyph>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImFontGlyph>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImFontGlyph>::empty, "(private API)")
         .def("size",
             &ImVector<ImFontGlyph>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontGlyph>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImFontGlyph>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontGlyph>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImFontGlyph>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4715,33 +4489,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImFontGlyph> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImFontGlyph.def("data_address", [](const ImVector<ImFontGlyph>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiPlatformMonitor =
         nb::class_<ImVector<ImGuiPlatformMonitor>>
             (m, "ImVector_PlatformMonitor", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiPlatformMonitor>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiPlatformMonitor> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiPlatformMonitor>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiPlatformMonitor>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiPlatformMonitor>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiPlatformMonitor>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiPlatformMonitor>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiPlatformMonitor>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiPlatformMonitor>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiPlatformMonitor>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiPlatformMonitor>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiPlatformMonitor>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4760,33 +4533,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiPlatformMonitor> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiPlatformMonitor.def("data_address", [](const ImVector<ImGuiPlatformMonitor>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiViewport_ptr =
         nb::class_<ImVector<ImGuiViewport *>>
             (m, "ImVector_Viewport_ptr", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiViewport *>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiViewport *> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiViewport *>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiViewport *>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiViewport *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiViewport *>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiViewport *>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiViewport *>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiViewport *>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiViewport *>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiViewport *>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiViewport *>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4805,33 +4577,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiViewport *> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiViewport_ptr.def("data_address", [](const ImVector<ImGuiViewport *>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiWindow_ptr =
         nb::class_<ImVector<ImGuiWindow *>>
             (m, "ImVector_Window_ptr", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiWindow *>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiWindow *> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiWindow *>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiWindow *>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiWindow *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiWindow *>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiWindow *>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiWindow *>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiWindow *>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiWindow *>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiWindow *>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiWindow *>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4850,33 +4621,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiWindow *> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiWindow_ptr.def("data_address", [](const ImVector<ImGuiWindow *>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImFontConfig =
         nb::class_<ImVector<ImFontConfig>>
             (m, "ImVector_ImFontConfig", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImFontConfig>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImFontConfig> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImFontConfig>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImFontConfig>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImFontConfig>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImFontConfig>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImFontConfig>::empty, "(private API)")
         .def("size",
             &ImVector<ImFontConfig>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontConfig>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImFontConfig>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontConfig>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImFontConfig>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4895,33 +4665,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImFontConfig> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImFontConfig.def("data_address", [](const ImVector<ImFontConfig>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImFontConfig_ptr =
         nb::class_<ImVector<ImFontConfig *>>
             (m, "ImVector_ImFontConfig_ptr", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImFontConfig *>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImFontConfig *> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImFontConfig *>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImFontConfig *>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImFontConfig *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImFontConfig *>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImFontConfig *>::empty, "(private API)")
         .def("size",
             &ImVector<ImFontConfig *>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontConfig *>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImFontConfig *>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImFontConfig *>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImFontConfig *>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4940,33 +4709,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImFontConfig *> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImFontConfig_ptr.def("data_address", [](const ImVector<ImFontConfig *>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiFocusScopeData =
         nb::class_<ImVector<ImGuiFocusScopeData>>
             (m, "ImVector_FocusScopeData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiFocusScopeData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiFocusScopeData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiFocusScopeData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiFocusScopeData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiFocusScopeData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiFocusScopeData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiFocusScopeData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiFocusScopeData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiFocusScopeData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiFocusScopeData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiFocusScopeData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiFocusScopeData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -4985,33 +4753,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiFocusScopeData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiFocusScopeData.def("data_address", [](const ImVector<ImGuiFocusScopeData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiSelectionRequest =
         nb::class_<ImVector<ImGuiSelectionRequest>>
             (m, "ImVector_SelectionRequest", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiSelectionRequest>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiSelectionRequest> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiSelectionRequest>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiSelectionRequest>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiSelectionRequest>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiSelectionRequest>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiSelectionRequest>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiSelectionRequest>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiSelectionRequest>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiSelectionRequest>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiSelectionRequest>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiSelectionRequest>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5030,33 +4797,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiSelectionRequest> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiSelectionRequest.def("data_address", [](const ImVector<ImGuiSelectionRequest>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImRect =
         nb::class_<ImVector<ImRect>>
             (m, "ImVector_ImRect", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImRect>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImRect> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImRect>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImRect>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImRect>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImRect>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImRect>::empty, "(private API)")
         .def("size",
             &ImVector<ImRect>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImRect>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImRect>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImRect>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImRect>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5075,33 +4841,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImRect> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImRect.def("data_address", [](const ImVector<ImRect>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiColorMod =
         nb::class_<ImVector<ImGuiColorMod>>
             (m, "ImVector_ColorMod", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiColorMod>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiColorMod> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiColorMod>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiColorMod>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiColorMod>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiColorMod>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiColorMod>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiColorMod>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiColorMod>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiColorMod>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiColorMod>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiColorMod>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5120,33 +4885,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiColorMod> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiColorMod.def("data_address", [](const ImVector<ImGuiColorMod>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiGroupData =
         nb::class_<ImVector<ImGuiGroupData>>
             (m, "ImVector_GroupData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiGroupData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiGroupData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiGroupData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiGroupData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiGroupData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiGroupData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiGroupData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiGroupData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiGroupData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiGroupData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiGroupData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiGroupData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5165,33 +4929,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiGroupData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiGroupData.def("data_address", [](const ImVector<ImGuiGroupData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiPopupData =
         nb::class_<ImVector<ImGuiPopupData>>
             (m, "ImVector_PopupData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiPopupData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiPopupData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiPopupData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiPopupData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiPopupData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiPopupData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiPopupData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiPopupData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiPopupData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiPopupData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiPopupData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiPopupData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5210,33 +4973,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiPopupData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiPopupData.def("data_address", [](const ImVector<ImGuiPopupData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiViewportP_ptr =
         nb::class_<ImVector<ImGuiViewportP *>>
             (m, "ImVector_ViewportP_ptr", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiViewportP *>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiViewportP *> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiViewportP *>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiViewportP *>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiViewportP *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiViewportP *>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiViewportP *>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiViewportP *>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiViewportP *>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiViewportP *>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiViewportP *>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiViewportP *>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5255,33 +5017,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiViewportP *> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiViewportP_ptr.def("data_address", [](const ImVector<ImGuiViewportP *>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiInputEvent =
         nb::class_<ImVector<ImGuiInputEvent>>
             (m, "ImVector_InputEvent", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiInputEvent>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiInputEvent> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiInputEvent>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiInputEvent>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiInputEvent>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiInputEvent>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiInputEvent>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiInputEvent>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiInputEvent>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiInputEvent>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiInputEvent>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiInputEvent>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5300,33 +5061,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiInputEvent> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiInputEvent.def("data_address", [](const ImVector<ImGuiInputEvent>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiWindowStackData =
         nb::class_<ImVector<ImGuiWindowStackData>>
             (m, "ImVector_WindowStackData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiWindowStackData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiWindowStackData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiWindowStackData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiWindowStackData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiWindowStackData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiWindowStackData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiWindowStackData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiWindowStackData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiWindowStackData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiWindowStackData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiWindowStackData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiWindowStackData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5345,33 +5105,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiWindowStackData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiWindowStackData.def("data_address", [](const ImVector<ImGuiWindowStackData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiTableColumnSortSpecs =
         nb::class_<ImVector<ImGuiTableColumnSortSpecs>>
             (m, "ImVector_TableColumnSortSpecs", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiTableColumnSortSpecs>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiTableColumnSortSpecs> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiTableColumnSortSpecs>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiTableColumnSortSpecs>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiTableColumnSortSpecs>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiTableColumnSortSpecs>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiTableColumnSortSpecs>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiTableColumnSortSpecs>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTableColumnSortSpecs>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiTableColumnSortSpecs>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTableColumnSortSpecs>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiTableColumnSortSpecs>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5390,33 +5149,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiTableColumnSortSpecs> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiTableColumnSortSpecs.def("data_address", [](const ImVector<ImGuiTableColumnSortSpecs>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiTableInstanceData =
         nb::class_<ImVector<ImGuiTableInstanceData>>
             (m, "ImVector_TableInstanceData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiTableInstanceData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiTableInstanceData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiTableInstanceData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiTableInstanceData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiTableInstanceData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiTableInstanceData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiTableInstanceData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiTableInstanceData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTableInstanceData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiTableInstanceData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTableInstanceData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiTableInstanceData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5435,33 +5193,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiTableInstanceData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiTableInstanceData.def("data_address", [](const ImVector<ImGuiTableInstanceData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiTableTempData =
         nb::class_<ImVector<ImGuiTableTempData>>
             (m, "ImVector_TableTempData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiTableTempData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiTableTempData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiTableTempData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiTableTempData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiTableTempData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiTableTempData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiTableTempData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiTableTempData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTableTempData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiTableTempData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTableTempData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiTableTempData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5480,33 +5237,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiTableTempData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiTableTempData.def("data_address", [](const ImVector<ImGuiTableTempData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiPtrOrIndex =
         nb::class_<ImVector<ImGuiPtrOrIndex>>
             (m, "ImVector_PtrOrIndex", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiPtrOrIndex>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiPtrOrIndex> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiPtrOrIndex>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiPtrOrIndex>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiPtrOrIndex>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiPtrOrIndex>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiPtrOrIndex>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiPtrOrIndex>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiPtrOrIndex>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiPtrOrIndex>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiPtrOrIndex>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiPtrOrIndex>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5525,33 +5281,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiPtrOrIndex> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiPtrOrIndex.def("data_address", [](const ImVector<ImGuiPtrOrIndex>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiSettingsHandler =
         nb::class_<ImVector<ImGuiSettingsHandler>>
             (m, "ImVector_SettingsHandler", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiSettingsHandler>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiSettingsHandler> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiSettingsHandler>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiSettingsHandler>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiSettingsHandler>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiSettingsHandler>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiSettingsHandler>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiSettingsHandler>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiSettingsHandler>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiSettingsHandler>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiSettingsHandler>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiSettingsHandler>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5570,33 +5325,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiSettingsHandler> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiSettingsHandler.def("data_address", [](const ImVector<ImGuiSettingsHandler>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiShrinkWidthItem =
         nb::class_<ImVector<ImGuiShrinkWidthItem>>
             (m, "ImVector_ShrinkWidthItem", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiShrinkWidthItem>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiShrinkWidthItem> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiShrinkWidthItem>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiShrinkWidthItem>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiShrinkWidthItem>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiShrinkWidthItem>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiShrinkWidthItem>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiShrinkWidthItem>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiShrinkWidthItem>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiShrinkWidthItem>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiShrinkWidthItem>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiShrinkWidthItem>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5615,33 +5369,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiShrinkWidthItem> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiShrinkWidthItem.def("data_address", [](const ImVector<ImGuiShrinkWidthItem>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiStackLevelInfo =
         nb::class_<ImVector<ImGuiStackLevelInfo>>
             (m, "ImVector_StackLevelInfo", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiStackLevelInfo>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiStackLevelInfo> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiStackLevelInfo>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiStackLevelInfo>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiStackLevelInfo>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiStackLevelInfo>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiStackLevelInfo>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiStackLevelInfo>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiStackLevelInfo>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiStackLevelInfo>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiStackLevelInfo>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiStackLevelInfo>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5660,33 +5413,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiStackLevelInfo> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiStackLevelInfo.def("data_address", [](const ImVector<ImGuiStackLevelInfo>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiTabItem =
         nb::class_<ImVector<ImGuiTabItem>>
             (m, "ImVector_TabItem", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiTabItem>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiTabItem> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiTabItem>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiTabItem>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiTabItem>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiTabItem>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiTabItem>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiTabItem>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTabItem>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiTabItem>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTabItem>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiTabItem>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5705,33 +5457,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiTabItem> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiTabItem.def("data_address", [](const ImVector<ImGuiTabItem>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiKeyRoutingData =
         nb::class_<ImVector<ImGuiKeyRoutingData>>
             (m, "ImVector_KeyRoutingData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiKeyRoutingData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiKeyRoutingData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiKeyRoutingData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiKeyRoutingData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiKeyRoutingData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiKeyRoutingData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiKeyRoutingData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiKeyRoutingData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiKeyRoutingData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiKeyRoutingData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiKeyRoutingData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiKeyRoutingData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5750,33 +5501,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiKeyRoutingData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiKeyRoutingData.def("data_address", [](const ImVector<ImGuiKeyRoutingData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiListClipperData =
         nb::class_<ImVector<ImGuiListClipperData>>
             (m, "ImVector_ListClipperData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiListClipperData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiListClipperData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiListClipperData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiListClipperData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiListClipperData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiListClipperData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiListClipperData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiListClipperData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiListClipperData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiListClipperData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiListClipperData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiListClipperData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5795,33 +5545,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiListClipperData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiListClipperData.def("data_address", [](const ImVector<ImGuiListClipperData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiListClipperRange =
         nb::class_<ImVector<ImGuiListClipperRange>>
             (m, "ImVector_ListClipperRange", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiListClipperRange>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiListClipperRange> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiListClipperRange>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiListClipperRange>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiListClipperRange>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiListClipperRange>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiListClipperRange>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiListClipperRange>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiListClipperRange>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiListClipperRange>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiListClipperRange>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiListClipperRange>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5840,33 +5589,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiListClipperRange> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiListClipperRange.def("data_address", [](const ImVector<ImGuiListClipperRange>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiOldColumnData =
         nb::class_<ImVector<ImGuiOldColumnData>>
             (m, "ImVector_OldColumnData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiOldColumnData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiOldColumnData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiOldColumnData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiOldColumnData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiOldColumnData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiOldColumnData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiOldColumnData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiOldColumnData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiOldColumnData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiOldColumnData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiOldColumnData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiOldColumnData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5885,33 +5633,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiOldColumnData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiOldColumnData.def("data_address", [](const ImVector<ImGuiOldColumnData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiOldColumns =
         nb::class_<ImVector<ImGuiOldColumns>>
             (m, "ImVector_OldColumns", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiOldColumns>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiOldColumns> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiOldColumns>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiOldColumns>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiOldColumns>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiOldColumns>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiOldColumns>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiOldColumns>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiOldColumns>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiOldColumns>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiOldColumns>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiOldColumns>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5930,33 +5677,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiOldColumns> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiOldColumns.def("data_address", [](const ImVector<ImGuiOldColumns>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiStyleMod =
         nb::class_<ImVector<ImGuiStyleMod>>
             (m, "ImVector_StyleMod", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiStyleMod>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiStyleMod> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiStyleMod>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiStyleMod>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiStyleMod>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiStyleMod>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiStyleMod>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiStyleMod>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiStyleMod>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiStyleMod>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiStyleMod>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiStyleMod>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -5975,33 +5721,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiStyleMod> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiStyleMod.def("data_address", [](const ImVector<ImGuiStyleMod>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiTableHeaderData =
         nb::class_<ImVector<ImGuiTableHeaderData>>
             (m, "ImVector_TableHeaderData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiTableHeaderData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiTableHeaderData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiTableHeaderData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiTableHeaderData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiTableHeaderData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiTableHeaderData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiTableHeaderData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiTableHeaderData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTableHeaderData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiTableHeaderData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTableHeaderData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiTableHeaderData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -6020,33 +5765,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiTableHeaderData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiTableHeaderData.def("data_address", [](const ImVector<ImGuiTableHeaderData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiTreeNodeStackData =
         nb::class_<ImVector<ImGuiTreeNodeStackData>>
             (m, "ImVector_TreeNodeStackData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiTreeNodeStackData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiTreeNodeStackData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiTreeNodeStackData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiTreeNodeStackData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiTreeNodeStackData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiTreeNodeStackData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiTreeNodeStackData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiTreeNodeStackData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTreeNodeStackData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiTreeNodeStackData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiTreeNodeStackData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiTreeNodeStackData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -6065,33 +5809,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiTreeNodeStackData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiTreeNodeStackData.def("data_address", [](const ImVector<ImGuiTreeNodeStackData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImGuiMultiSelectTempData =
         nb::class_<ImVector<ImGuiMultiSelectTempData>>
             (m, "ImVector_MultiSelectTempData", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImGuiMultiSelectTempData>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImGuiMultiSelectTempData> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImGuiMultiSelectTempData>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImGuiMultiSelectTempData>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImGuiMultiSelectTempData>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImGuiMultiSelectTempData>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImGuiMultiSelectTempData>::empty, "(private API)")
         .def("size",
             &ImVector<ImGuiMultiSelectTempData>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiMultiSelectTempData>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImGuiMultiSelectTempData>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImGuiMultiSelectTempData>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImGuiMultiSelectTempData>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -6110,33 +5853,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImGuiMultiSelectTempData> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImGuiMultiSelectTempData.def("data_address", [](const ImVector<ImGuiMultiSelectTempData>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImTextureData_ptr =
         nb::class_<ImVector<ImTextureData *>>
             (m, "ImVector_ImTextureData_ptr", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImTextureData *>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImTextureData *> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImTextureData *>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImTextureData *>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImTextureData *>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImTextureData *>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImTextureData *>::empty, "(private API)")
         .def("size",
             &ImVector<ImTextureData *>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImTextureData *>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImTextureData *>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImTextureData *>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImTextureData *>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -6155,33 +5897,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImTextureData *> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImTextureData_ptr.def("data_address", [](const ImVector<ImTextureData *>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImTextureRef =
         nb::class_<ImVector<ImTextureRef>>
             (m, "ImVector_ImTextureRef", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImTextureRef>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImTextureRef> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImTextureRef>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImTextureRef>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImTextureRef>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImTextureRef>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImTextureRef>::empty, "(private API)")
         .def("size",
             &ImVector<ImTextureRef>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImTextureRef>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImTextureRef>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImTextureRef>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImTextureRef>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -6200,33 +5941,32 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImTextureRef> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImTextureRef.def("data_address", [](const ImVector<ImTextureRef>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
     auto pyClassImVector_ImTextureRect =
         nb::class_<ImVector<ImTextureRect>>
             (m, "ImVector_ImTextureRect", "")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("data_address",
-            &ImVector<ImTextureRect>::DataAddress, "(private API)")
-        // #endif
-        //
         .def(nb::init<>())
         .def(nb::init<const ImVector<ImTextureRect> &>(),
             nb::arg("src"))
         .def("clear",
-            &ImVector<ImTextureRect>::clear, " Important: does not destruct anything\n(private API)")
+            &ImVector<ImTextureRect>::clear, "(private API)\n\n Important: does not destruct anything")
         .def("clear_destruct",
-            &ImVector<ImTextureRect>::clear_destruct, " Important: never called automatically! always explicit.\n(private API)")
+            &ImVector<ImTextureRect>::clear_destruct, "(private API)\n\n Important: never called automatically! always explicit.")
         .def("empty",
             &ImVector<ImTextureRect>::empty, "(private API)")
         .def("size",
             &ImVector<ImTextureRect>::size, "(private API)")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImTextureRect>::operator[], nb::const_),
+            nb::overload_cast<int>(&ImVector<ImTextureRect>::operator[]),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
         .def("__getitem__",
-            nb::overload_cast<int>(&ImVector<ImTextureRect>::operator[]),
+            nb::overload_cast<int>(&ImVector<ImTextureRect>::operator[], nb::const_),
             nb::arg("i"),
             "(private API)",
             nb::rv_policy::reference)
@@ -6245,6 +5985,11 @@ void py_init_module_imgui_main(nb::module_& m)
             }, nb::keep_alive<0, 1>())
         .def("__len__", [](const ImVector<ImTextureRect> &v) { return v.size(); })
         ;
+
+    pyClassImVector_ImTextureRect.def("data_address", [](const ImVector<ImTextureRect>& self) -> size_t { return (size_t)self.Data; },
+        "Address of the underlying array (e.g. to create a numpy view of it)");
+
+
 
 
     auto pyClassImGuiStyle =
@@ -6328,22 +6073,29 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("hover_flags_for_tooltip_nav", &ImGuiStyle::HoverFlagsForTooltipNav, "Default flags when using IsItemHovered(ImGuiHoveredFlags_ForTooltip) or BeginItemTooltip()/SetItemTooltip() while using keyboard/gamepad.")
         .def_rw("_main_scale", &ImGuiStyle::_MainScale, "FIXME-WIP: Reference scale, as applied by ScaleAllSizes(). PLEASE DO NOT USE THIS FOR NOW.")
         .def_rw("_next_frame_font_size_base", &ImGuiStyle::_NextFrameFontSizeBase, "FIXME: Temporary hack until we finish remaining work.")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("color_",
-            &ImGuiStyle::Color_,
-            nb::arg("idx_color"),
-            nb::rv_policy::reference)
-        .def("set_color_",
-            &ImGuiStyle::SetColor_, nb::arg("idx_color"), nb::arg("color"))
-        // #endif
-        //
         .def(nb::init<>())
         .def("scale_all_sizes",
             &ImGuiStyle::ScaleAllSizes,
             nb::arg("scale_factor"),
             "Scale all spacing/padding/thickness values. Do not scale fonts. See comments in definition. Consider not calling this if your initial scale factor if <1.0.")
         ;
+
+    pyClassImGuiStyle.def("color_",
+        [](ImGuiStyle& self, size_t idx_color) -> ImVec4& {
+            if (idx_color >= (size_t)ImGuiCol_COUNT)
+                throw std::out_of_range("Style.color_: index out of range");
+            return self.Colors[idx_color];
+        },
+        nb::arg("idx_color"), nb::rv_policy::reference);
+    pyClassImGuiStyle.def("set_color_",
+        [](ImGuiStyle& self, size_t idx_color, ImVec4 color) {
+            if (idx_color >= (size_t)ImGuiCol_COUNT)
+                throw std::out_of_range("Style.set_color_: index out of range");
+            self.Colors[idx_color] = color;
+        },
+        nb::arg("idx_color"), nb::arg("color"));
+
+
 
 
     auto pyClassImGuiKeyData =
@@ -6605,21 +6357,29 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("input_queue_surrogate", &ImGuiIO::InputQueueSurrogate, "For AddInputCharacterUTF16()")
         .def_rw("input_queue_characters", &ImGuiIO::InputQueueCharacters, "Queue of _characters_ input (obtained by platform backend). Fill using AddInputCharacter() helper.")
         .def(nb::init<>())
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("set_ini_filename",
-            &ImGuiIO::SetIniFilename,
-            nb::arg("filename").none(),
-            " - The disk functions are automatically called if IniFilename != None\n - Set IniFilename to None to load/save manually. Read io.WantSaveIniSettings description about handling .ini saving manually.\n - Important: default value \"imgui.ini\" is relative to current working dir! Most apps will want to lock this to an absolute path (e.g. same path as executables).")
-        .def("get_ini_filename",
-            &ImGuiIO::GetIniFilename)
-        .def("set_log_filename",
-            &ImGuiIO::SetLogFilename, nb::arg("filename"))
-        .def("get_log_filename",
-            &ImGuiIO::GetLogFilename)
-        // #endif
-        //
         ;
+
+    pyClassImGuiIO.def("set_ini_filename",
+        [](ImGuiIO& self, std::optional<std::string> filename) {
+            // ImGuiIO::IniFilename is a bare pointer with no storage. One string per ImGuiIO (map nodes never move)
+            static std::map<const ImGuiIO*, std::string> storage;
+            if (filename.has_value()) { std::string& str = storage[&self]; str = *filename; self.IniFilename = str.c_str(); }
+            else self.IniFilename = NULL;
+        },
+        nb::arg("filename").none(),
+        " - The disk functions are automatically called if IniFilename != None\n - Set IniFilename to None to load/save manually. Read io.WantSaveIniSettings description about handling .ini saving manually.\n - Important: default value \"imgui.ini\" is relative to current working dir! Most apps will want to lock this to an absolute path (e.g. same path as executables).");
+    pyClassImGuiIO.def("get_ini_filename",
+        [](const ImGuiIO& self) -> std::string { return self.IniFilename ? self.IniFilename : ""; });
+    pyClassImGuiIO.def("set_log_filename",
+        [](ImGuiIO& self, std::string filename) {
+            static std::map<const ImGuiIO*, std::string> storage;  // same as set_ini_filename
+            std::string& str = storage[&self]; str = filename; self.LogFilename = str.c_str();
+        },
+        nb::arg("filename"));
+    pyClassImGuiIO.def("get_log_filename",
+        [](const ImGuiIO& self) -> std::string { return self.LogFilename ? self.LogFilename : ""; });
+
+
 
 
     auto pyClassImGuiInputTextCallbackData =
@@ -6994,19 +6754,24 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImColor::HSV,
             nb::arg("h"), nb::arg("s"), nb::arg("v"), nb::arg("a") = 1.0f,
             "(private API)")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("to_dict",
-            &ImColor::to_dict, "(private API)")
-        .def_static("from_dict",
-            &ImColor::from_dict,
-            nb::arg("d"),
-            "(private API)")
-        // #endif
-        //
         .def("__copy__",  [](const ImColor &self) {
             return ImColor(self);
         })    ;
+
+    pyClassImColor.def("to_dict",
+        [](const ImColor& self) -> std::map<std::string, float> {
+            return {{"x", self.Value.x}, {"y", self.Value.y}, {"z", self.Value.z}, {"w", self.Value.w}}; },
+        "Convert to a dict with keys x, y, z, w");
+    pyClassImColor.def_static("from_dict",
+        [](const std::map<std::string, float>& d) -> ImColor {
+            for (const char* k : {"x", "y", "z", "w"})
+                if (d.find(k) == d.end())
+                    throw std::invalid_argument(std::string("ImColor.from_dict: missing key ") + k);
+            return ImColor(d.at("x"), d.at("y"), d.at("z"), d.at("w"));
+        },
+        nb::arg("d"), "Create from a dict with keys x, y, z, w");
+
+
 
 
     auto pyEnumMultiSelectFlags_ =
@@ -7420,24 +7185,6 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::AddBezierQuadratic,
             nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0,
             "Quadratic Bezier (3 control points)")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("add_polyline",
-            [](ImDrawList & self, const std::vector<ImVec2> & points, ImU32 col, float thickness, ImDrawFlags flags)
-            {
-                auto AddPolyline_adapt_force_lambda = [&self](const std::vector<ImVec2> & points, ImU32 col, float thickness, ImDrawFlags flags)
-                {
-                    self.AddPolyline(points, col, thickness, flags);
-                };
-
-                AddPolyline_adapt_force_lambda(points, col, thickness, flags);
-            },     nb::arg("points"), nb::arg("col"), nb::arg("thickness"), nb::arg("flags"))
-        .def("add_convex_poly_filled",
-            nb::overload_cast<const std::vector<ImVec2> &, ImU32>(&ImDrawList::AddConvexPolyFilled), nb::arg("points"), nb::arg("col"))
-        .def("add_concave_poly_filled",
-            nb::overload_cast<const std::vector<ImVec2> &, ImU32>(&ImDrawList::AddConcavePolyFilled), nb::arg("points"), nb::arg("col"))
-        // #endif
-        //
         .def("add_image",
             [](ImDrawList & self, ImTextureRef tex_ref, const ImVec2 & p_min, const ImVec2 & p_max, const std::optional<const ImVec2> & uv_min = std::nullopt, const std::optional<const ImVec2> & uv_max = std::nullopt, ImU32 col = IM_COL32_WHITE)
             {
@@ -7624,6 +7371,21 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::_PathArcToN, nb::arg("center"), nb::arg("radius"), nb::arg("a_min"), nb::arg("a_max"), nb::arg("num_segments"))
         ;
 
+    pyClassImDrawList.def("add_polyline",
+        [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col, float thickness, ImDrawFlags flags) {
+            self.AddPolyline(points.data(), (int)points.size(), col, thickness, flags); },
+        nb::arg("points"), nb::arg("col"), nb::arg("thickness"), nb::arg("flags"));
+    pyClassImDrawList.def("add_convex_poly_filled",
+        [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col) {
+            self.AddConvexPolyFilled(points.data(), (int)points.size(), col); },
+        nb::arg("points"), nb::arg("col"));
+    pyClassImDrawList.def("add_concave_poly_filled",
+        [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col) {
+            self.AddConcavePolyFilled(points.data(), (int)points.size(), col); },
+        nb::arg("points"), nb::arg("col"));
+
+
+
 
     auto pyClassImDrawData =
         nb::class_<ImDrawData>
@@ -7653,6 +7415,12 @@ void py_init_module_imgui_main(nb::module_& m)
             nb::arg("fb_scale"),
             "Helper to scale the ClipRect field of each ImDrawCmd. Use if your final output buffer is at a different scale than Dear ImGui expects, or if there is a difference between your window resolution and framebuffer resolution.")
         ;
+
+    pyClassImDrawData.def_prop_ro("cmd_lists_count",
+        [](const ImDrawData& self) { return self.CmdLists.Size; },
+        "(read-only) Obsolete since Dear ImGui 1.92.9: use len(cmd_lists). Kept for third party renderers.");
+
+
 
 
     auto pyEnumImTextureFormat =
@@ -7707,12 +7475,6 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImTextureData::Create, nb::arg("format"), nb::arg("w"), nb::arg("h"))
         .def("destroy_pixels",
             &ImTextureData::DestroyPixels)
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("get_pixels_array",
-            &ImTextureData::GetPixelsArray, " GetPixelsArray(): returns the pixel data as a NumPy array.\n\n Note: GetPixelsAt(x, y) is not implemented for Python, but you can use the offset below:\n    offset = (y * tex.width + x) * tex.bytes_per_pixel\n(private API)")
-        // #endif
-        //
         .def("get_size_in_bytes",
             &ImTextureData::GetSizeInBytes, "(private API)")
         .def("get_pitch",
@@ -7730,6 +7492,18 @@ void py_init_module_imgui_main(nb::module_& m)
             nb::arg("status"),
             "(private API)")
         ;
+
+    pyClassImTextureData.def("get_pixels_array",
+        [](ImTextureData& self) {
+            if (self.Pixels == NULL)
+                throw std::runtime_error("ImTextureData.get_pixels_array: no pixels");
+            size_t shape[1] = {(size_t)self.GetSizeInBytes()};
+            return nb::ndarray<uint8_t, nb::numpy>(self.Pixels, 1, shape, nb::handle());  // no owner: memory is owned by C++
+        },
+        nb::rv_policy::reference,
+        " GetPixelsArray(): returns the pixel data as a NumPy array.\n\n Note: GetPixelsAt(x, y) is not implemented for Python, but you can use the offset below:\n    offset = (y * tex.width + x) * tex.bytes_per_pixel");
+
+
 
 
     auto pyClassImFontConfig =
@@ -7774,16 +7548,16 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("v1", &ImFontGlyph::V1, "Texture coordinates for the current value of ImFontAtlas->TexRef. Cached equivalent of calling GetCustomRect() with PackId.")
         .def_rw("pack_id", &ImFontGlyph::PackId, "[Internal] ImFontAtlasRectId value (FIXME: Cold data, could be moved elsewhere?)")
         .def(nb::init<>())
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("is_colored",
-            &ImFontGlyph::isColored, "(private API)")
-        .def("is_visible",
-            &ImFontGlyph::isVisible, "(private API)")
-        .def("get_codepoint",
-            &ImFontGlyph::getCodepoint, "(private API)")
-        // #endif
         ;
+
+    pyClassImFontGlyph.def("is_colored", [](const ImFontGlyph& self) -> bool { return self.Colored != 0; },
+        "Flag to indicate glyph is colored and should generally ignore tinting (make it usable with no shift on little-endian as this is used in loops) (bitfield accessor)");
+    pyClassImFontGlyph.def("is_visible", [](const ImFontGlyph& self) -> bool { return self.Visible != 0; },
+        "Flag to indicate glyph has no visible pixels (e.g. space). Allow early out when rendering. (bitfield accessor)");
+    pyClassImFontGlyph.def("get_codepoint", [](const ImFontGlyph& self) -> unsigned int { return self.Codepoint; },
+        "0x0000..0x10FFFF (bitfield accessor)");
+
+
 
 
     auto pyClassImFontGlyphRangesBuilder =
@@ -7890,14 +7664,6 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImFontAtlas::ClearInputData, "[OBSOLETE] Clear input data (all ImFontConfig structures including sizes, TTF data, glyph ranges, etc.) = all the data used to build the texture and fonts.")
         .def("clear_tex_data",
             &ImFontAtlas::ClearTexData, "[OBSOLETE] Clear CPU-side copy of the texture data. Saves RAM once the texture has been copied to graphics memory.")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("add_font_from_file_ttf",
-            &ImFontAtlas::_AddFontFromFileTTF,
-            nb::arg("filename"), nb::arg("size_pixels"), nb::arg("font_cfg") = nb::none(),
-            nb::rv_policy::reference)
-        // #endif
-        //
         .def("add_custom_rect",
             &ImFontAtlas::AddCustomRect,
             nb::arg("width"), nb::arg("height"), nb::arg("out_r") = nb::none(),
@@ -7919,16 +7685,6 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("tex_max_height", &ImFontAtlas::TexMaxHeight, "Maximum desired texture height. Must be a power of two. Default to 8192.")
         .def_rw("user_data", &ImFontAtlas::UserData, "Store your own atlas related user-data (if e.g. you have multiple font atlas).")
         .def_rw("tex_data", &ImFontAtlas::TexData, "Latest texture.")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("python_set_texture_id",
-            &ImFontAtlas::Python_SetTextureID,
-            nb::arg("id_"),
-            "(private API)")
-        .def("python_get_texture_id",
-            &ImFontAtlas::Python_GetTextureID, "(private API)")
-        // #endif
-        //
         .def_rw("tex_list", &ImFontAtlas::TexList, "Texture list (most often TexList.Size == 1). TexData is always == TexList.back(). DO NOT USE DIRECTLY, USE GetDrawData().Textures[]/GetPlatformIO().Textures[] instead!")
         .def_rw("locked", &ImFontAtlas::Locked, "Marked as locked during ImGui::NewFrame()..EndFrame() scope if TexUpdates are not supported. Any attempt to modify the atlas will assert.")
         .def_rw("renderer_has_textures", &ImFontAtlas::RendererHasTextures, "Copy of (BackendFlags & ImGuiBackendFlags_RendererHasTextures) from supporting context.")
@@ -7946,6 +7702,21 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("ref_count", &ImFontAtlas::RefCount, "Number of contexts using this atlas")
         .def_rw("owner_context", &ImFontAtlas::OwnerContext, "Context which own the atlas will be in charge of updating and destroying it.")
         ;
+
+    pyClassImFontAtlas.def("add_font_from_file_ttf",
+        [](ImFontAtlas& self, const char* filename, float size_pixels, const ImFontConfig* font_cfg) -> ImFont* {
+            return self.AddFontFromFileTTF(filename, size_pixels, font_cfg); },
+        nb::arg("filename"), nb::arg("size_pixels"), nb::arg("font_cfg") = nb::none(),
+        nb::rv_policy::reference);
+    pyClassImFontAtlas.def("python_set_texture_id",
+        [](ImFontAtlas& self, ImTextureID id) { self.TexRef = ImTextureRef(id); },
+        nb::arg("id_"),
+        "Set the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)");
+    pyClassImFontAtlas.def("python_get_texture_id",
+        [](ImFontAtlas& self) -> ImTextureID { return self.TexRef.GetTexID(); },
+        "Get the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)");
+
+
 
 
     auto pyClassImFontBaked =
@@ -8022,14 +7793,6 @@ void py_init_module_imgui_main(nb::module_& m)
             nb::arg("font_size"), nb::arg("density") = -1.0f,
             "Get or create baked data for given size",
             nb::rv_policy::reference)
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("calc_word_wrap_position_python",
-            &ImFont::CalcWordWrapPositionPython,
-            nb::arg("size"), nb::arg("text"), nb::arg("wrap_width"),
-            "Python API for CalcWordWrapPosition (will return an index in the text, not a pointer)")
-        // #endif
-        //
         .def("render_char",
             &ImFont::RenderChar, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("c"), nb::arg("cpu_fine_clip") = nb::none())
         .def("render_text",
@@ -8043,6 +7806,22 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("is_glyph_range_unused",
             &ImFont::IsGlyphRangeUnused, nb::arg("c_begin"), nb::arg("c_last"))
         ;
+
+    pyClassImFont.def("calc_word_wrap_position_python",
+        [](ImFont& self, float size, const char* text, float wrap_width) -> int {
+            const char* text_end = text + strlen(text);
+            const char* word_wrap_eol = self.CalcWordWrapPosition(size, text, text_end, wrap_width);
+            // imgui works on UTF-8 bytes, Python indexes a str by character: count the characters, not the bytes
+            int nb_chars = 0;
+            for (const char* p = text; p < word_wrap_eol; ++p)
+                if (((unsigned char)*p & 0xC0) != 0x80)  // not a UTF-8 continuation byte
+                    ++nb_chars;
+            return nb_chars;
+        },
+        nb::arg("size"), nb::arg("text"), nb::arg("wrap_width"),
+        "Python API for CalcWordWrapPosition: returns an index in the text (text[:index] is what fits), not a pointer");
+
+
 
 
     auto pyEnumViewportFlags_ =
@@ -8101,11 +7880,8 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::class_<ImGuiPlatformIO>
             (m, "PlatformIO", "Access via ImGui::GetPlatformIO()")
         .def(nb::init<>())
-        .def_rw("platform_get_clipboard_text_fn", &ImGuiPlatformIO::Platform_GetClipboardTextFn, "")
-        .def_rw("platform_set_clipboard_text_fn", &ImGuiPlatformIO::Platform_SetClipboardTextFn, "")
-        .def_rw("platform_clipboard_user_data", &ImGuiPlatformIO::Platform_ClipboardUserData, "[/ADAPT_IMGUI_BUNDLE]")
-        .def_rw("platform_open_in_shell_fn", &ImGuiPlatformIO::Platform_OpenInShellFn, " Optional: Open link/folder/file in OS Shell\n (default to use ShellExecuteW() on Windows, system() on Linux/Mac. expected to return False on failure, but some platforms may always return True)\n [ADAPT_IMGUI_BUNDLE]\nbool        (*Platform_OpenInShellFn)(ImGuiContext* ctx, const char* path);")
-        .def_rw("platform_open_in_shell_user_data", &ImGuiPlatformIO::Platform_OpenInShellUserData, "[/ADAPT_IMGUI_BUNDLE]")
+        .def_rw("platform_clipboard_user_data", &ImGuiPlatformIO::Platform_ClipboardUserData, "")
+        .def_rw("platform_open_in_shell_user_data", &ImGuiPlatformIO::Platform_OpenInShellUserData, "")
         .def_rw("platform_ime_user_data", &ImGuiPlatformIO::Platform_ImeUserData, "")
         .def_rw("platform_locale_decimal_point", &ImGuiPlatformIO::Platform_LocaleDecimalPoint, "'.'")
         .def_rw("platform_session_date", &ImGuiPlatformIO::Platform_SessionDate, "Integer storing YYYYMMDD e.g. 20261231 corresponding to the beginning of application session.")
@@ -8120,6 +7896,48 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("clear_renderer_handlers",
             &ImGuiPlatformIO::ClearRendererHandlers, "Clear all Renderer_XXX fields. Typically called on Renderer Backend shutdown.")
         ;
+
+    pyClassImGuiPlatformIO.def_prop_rw("platform_get_clipboard_text_fn",
+        [](ImGuiPlatformIO& self) -> nb::object {
+            auto fn = self.Platform_GetClipboardTextFn;
+            if (fn == PyGetClipboardTextTrampoline) return g_py_get_clipboard.is_valid() ? g_py_get_clipboard : nb::none();
+            if (fn == NULL) return nb::none();
+            return nb::cpp_function([fn](ImGuiContext* ctx) -> std::string { const char* r = fn(ctx); return r ? r : ""; });
+        },
+        [](ImGuiPlatformIO& self, nb::object f) {
+            PyPlatformIOCallbacks_Set(g_py_get_clipboard, f);
+            self.Platform_GetClipboardTextFn = f.is_none() ? NULL : PyGetClipboardTextTrampoline;
+        },
+        nb::arg("f").none(),
+        "Optional: Access OS clipboard. Callable[[Context], str], should return an empty string on failure.");
+    pyClassImGuiPlatformIO.def_prop_rw("platform_set_clipboard_text_fn",
+        [](ImGuiPlatformIO& self) -> nb::object {
+            auto fn = self.Platform_SetClipboardTextFn;
+            if (fn == PySetClipboardTextTrampoline) return g_py_set_clipboard.is_valid() ? g_py_set_clipboard : nb::none();
+            if (fn == NULL) return nb::none();
+            return nb::cpp_function([fn](ImGuiContext* ctx, const char* text) { fn(ctx, text); });
+        },
+        [](ImGuiPlatformIO& self, nb::object f) {
+            PyPlatformIOCallbacks_Set(g_py_set_clipboard, f);
+            self.Platform_SetClipboardTextFn = f.is_none() ? NULL : PySetClipboardTextTrampoline;
+        },
+        nb::arg("f").none(),
+        "Optional: Access OS clipboard. Callable[[Context, str], None]");
+    pyClassImGuiPlatformIO.def_prop_rw("platform_open_in_shell_fn",
+        [](ImGuiPlatformIO& self) -> nb::object {
+            auto fn = self.Platform_OpenInShellFn;
+            if (fn == PyOpenInShellTrampoline) return g_py_open_in_shell.is_valid() ? g_py_open_in_shell : nb::none();
+            if (fn == NULL) return nb::none();
+            return nb::cpp_function([fn](ImGuiContext* ctx, const char* path) -> bool { return fn(ctx, path); });
+        },
+        [](ImGuiPlatformIO& self, nb::object f) {
+            PyPlatformIOCallbacks_Set(g_py_open_in_shell, f);
+            self.Platform_OpenInShellFn = f.is_none() ? NULL : PyOpenInShellTrampoline;
+        },
+        nb::arg("f").none(),
+        "Optional: Open link/folder/file in OS Shell. Callable[[Context, str], bool], expected to return False on failure.");
+
+
 
 
     auto pyClassImGuiPlatformMonitor =
@@ -8151,6 +7969,8 @@ void py_init_module_imgui_main(nb::module_& m)
     //
     // #endif
 
+    m.def("get_clipboard_text",
+        []() -> std::string { const char* r = ImGui::GetClipboardText(); return r ? r : ""; });
     m.def("get_style_color_vec4",
         [](ImGuiCol idx) -> ImVec4 { return ImGui::GetStyleColorVec4(idx); },
         nb::arg("idx"),
@@ -8169,6 +7989,119 @@ void py_init_module_imgui_main(nb::module_& m)
             return std::make_tuple(r, g, b);
         }, nb::arg("h"), nb::arg("s"), nb::arg("v"),
         "Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1])");
+    m.def("menu_item_simple",
+        [](const char* label, std::optional<std::string> shortcut, bool selected, bool enabled) -> bool {
+            return ImGui::MenuItem(label, shortcut.has_value() ? shortcut->c_str() : nullptr, selected, enabled);
+        },
+        nb::arg("label"), nb::arg("shortcut").none() = nb::none(), nb::arg("selected") = false, nb::arg("enabled") = true,
+        "return True when activated. (simplified version of menu_item, where selected is read-only)");
+    m.def("begin_tab_item_simple",
+        [](const char* label, ImGuiTabItemFlags flags) -> bool { return ImGui::BeginTabItem(label, NULL, flags); },
+        nb::arg("label"), nb::arg("flags") = 0,
+        "create a Tab (non-closable). Returns True if the Tab is selected.");
+    m.def("set_window_focus",
+        []() { ImGui::SetWindowFocus(); },
+        "(not recommended) set current window to be focused / top-most. prefer using SetNextWindowFocus().");
+    m.def("set_window_focus",
+        [](std::optional<std::string> name) { ImGui::SetWindowFocus(name.has_value() ? name->c_str() : nullptr); },
+        nb::arg("name").none(),
+        "set named window to be focused / top-most. use None to remove focus.");
+    m.def("push_font",
+        [](ImFont* font, float font_size_base_unscaled) { ImGui::PushFont(font, font_size_base_unscaled); },
+        nb::arg("font").none(), nb::arg("font_size_base_unscaled"),
+        "Use None as a shortcut to keep current font. Use 0.0 to keep current size.");
+    m.def("slider_float2",
+        [](const char* label, ImVec2 v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, ImVec2> {
+            bool changed = ImGui::SliderFloat2(label, &v.x, v_min, v_max, format, flags); return {changed, v}; },
+        nb::arg("label"), nb::arg("v").noconvert(), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    m.def("slider_float2",
+        [](const char* label, std::array<double, 2> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, std::array<double, 2>> {
+            float vf[2]; for (int i = 0; i < 2; ++i) vf[i] = (float)v[i];
+            bool changed = ImGui::SliderFloat2(label, vf, v_min, v_max, format, flags);
+            for (int i = 0; i < 2; ++i) v[i] = vf[i];
+            return {changed, v}; },
+        nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    m.def("slider_float4",
+        [](const char* label, ImVec4 v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, ImVec4> {
+            bool changed = ImGui::SliderFloat4(label, &v.x, v_min, v_max, format, flags); return {changed, v}; },
+        nb::arg("label"), nb::arg("v").noconvert(), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    m.def("slider_float4",
+        [](const char* label, std::array<double, 4> v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, std::array<double, 4>> {
+            float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
+            bool changed = ImGui::SliderFloat4(label, vf, v_min, v_max, format, flags);
+            for (int i = 0; i < 4; ++i) v[i] = vf[i];
+            return {changed, v}; },
+        nb::arg("label"), nb::arg("v"), nb::arg("v_min"), nb::arg("v_max"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    m.def("input_float2",
+        [](const char* label, ImVec2 v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, ImVec2> {
+            bool changed = ImGui::InputFloat2(label, &v.x, format, flags); return {changed, v}; },
+        nb::arg("label"), nb::arg("v").noconvert(), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    m.def("input_float2",
+        [](const char* label, std::array<double, 2> v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, std::array<double, 2>> {
+            float vf[2]; for (int i = 0; i < 2; ++i) vf[i] = (float)v[i];
+            bool changed = ImGui::InputFloat2(label, vf, format, flags);
+            for (int i = 0; i < 2; ++i) v[i] = vf[i];
+            return {changed, v}; },
+        nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    m.def("input_float4",
+        [](const char* label, ImVec4 v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, ImVec4> {
+            bool changed = ImGui::InputFloat4(label, &v.x, format, flags); return {changed, v}; },
+        nb::arg("label"), nb::arg("v").noconvert(), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    m.def("input_float4",
+        [](const char* label, std::array<double, 4> v, const char* format, ImGuiInputTextFlags flags) -> std::tuple<bool, std::array<double, 4>> {
+            float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
+            bool changed = ImGui::InputFloat4(label, vf, format, flags);
+            for (int i = 0; i < 4; ++i) v[i] = vf[i];
+            return {changed, v}; },
+        nb::arg("label"), nb::arg("v"), nb::arg("format") = "%.3f", nb::arg("flags") = 0);
+    // color_edit3 / color_picker3: the list form (3 floats) is registered FIRST, and the ImVec4 form stays convertible:
+    // a 3-element list can never become an ImVec4 (no warning, no ambiguity), while a 4-tuple still reaches the ImVec4 form (#444)
+    m.def("color_edit3",
+        [](const char* label, std::array<double, 3> v, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<double, 3>> {
+            float vf[3]; for (int i = 0; i < 3; ++i) vf[i] = (float)v[i];
+            bool changed = ImGui::ColorEdit3(label, vf, flags);
+            for (int i = 0; i < 3; ++i) v[i] = vf[i];
+            return {changed, v}; },
+        nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+    m.def("color_edit3",
+        [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
+            bool changed = ImGui::ColorEdit3(label, &col.x, flags); return {changed, col}; },
+        nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+    m.def("color_edit4",
+        [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
+            bool changed = ImGui::ColorEdit4(label, &col.x, flags); return {changed, col}; },
+        nb::arg("label"), nb::arg("col").noconvert(), nb::arg("flags") = 0);
+    m.def("color_edit4",
+        [](const char* label, std::array<double, 4> v, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<double, 4>> {
+            float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
+            bool changed = ImGui::ColorEdit4(label, vf, flags);
+            for (int i = 0; i < 4; ++i) v[i] = vf[i];
+            return {changed, v}; },
+        nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+    m.def("color_picker3",
+        [](const char* label, std::array<double, 3> v, ImGuiColorEditFlags flags) -> std::tuple<bool, std::array<double, 3>> {
+            float vf[3]; for (int i = 0; i < 3; ++i) vf[i] = (float)v[i];
+            bool changed = ImGui::ColorPicker3(label, vf, flags);
+            for (int i = 0; i < 3; ++i) v[i] = vf[i];
+            return {changed, v}; },
+        nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+    m.def("color_picker3",
+        [](const char* label, ImVec4 col, ImGuiColorEditFlags flags) -> std::tuple<bool, ImVec4> {
+            bool changed = ImGui::ColorPicker3(label, &col.x, flags); return {changed, col}; },
+        nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0);
+    m.def("color_picker4",
+        [](const char* label, ImVec4 col, ImGuiColorEditFlags flags, std::optional<ImVec4> ref_col) -> std::tuple<bool, ImVec4> {
+            bool changed = ImGui::ColorPicker4(label, &col.x, flags, ref_col.has_value() ? &ref_col->x : nullptr); return {changed, col}; },
+        nb::arg("label"), nb::arg("col").noconvert(), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
+    m.def("color_picker4",
+        [](const char* label, std::array<double, 4> v, ImGuiColorEditFlags flags, std::optional<std::array<double, 4>> ref_col) -> std::tuple<bool, std::array<double, 4>> {
+            float vf[4]; for (int i = 0; i < 4; ++i) vf[i] = (float)v[i];
+            float ref_col_f[4] = {0.f, 0.f, 0.f, 0.f};  // imgui reads 4 floats from ref_col
+            if (ref_col.has_value()) for (int i = 0; i < 4; ++i) ref_col_f[i] = (float)(*ref_col)[i];
+            bool changed = ImGui::ColorPicker4(label, vf, flags, ref_col.has_value() ? ref_col_f : nullptr);
+            for (int i = 0; i < 4; ++i) v[i] = vf[i];
+            return {changed, v}; },
+        nb::arg("label"), nb::arg("col"), nb::arg("flags") = 0, nb::arg("ref_col").none() = nb::none());
     ////////////////////    </generated_from:imgui.h>    ////////////////////
 
 

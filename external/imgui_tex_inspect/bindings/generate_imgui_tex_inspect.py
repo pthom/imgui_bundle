@@ -11,7 +11,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../imgui_tex_inspect"
 
 
-def main():
+def main() -> None:
     print("autogenerate_imgui_tex_inspect")
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_tex_inspect.cpp"
     output_stub_pyi_file = STUB_DIR + "/imgui_tex_inspect.pyi"

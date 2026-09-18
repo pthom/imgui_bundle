@@ -1,5 +1,63 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
+# Ongoing changes
+
+## Behavior change: StackLayout clips the content of fixed-size layouts
+
+`BeginHorizontal` / `BeginVertical` (StackLayout, by thedmd) now clip their content on the axes where they were given a
+**fixed size**. ImGui Bundle had disabled thedmd's clipping since 2024, because it hid the content submitted after a nested
+layout.
+
+Visible effect: a layout created with a fixed width or height cuts the content that overflows it, instead of letting it draw
+over its neighbors. Axes with an automatic size (the default) are not clipped, so layouts created without a size are not
+affected. (This differs from thedmd's implementation, which also clips auto-sized layouts to their measured size: that cuts
+selection highlights and user-drawn decorations, and costs one draw command per layout.)
+
+```python
+imgui.begin_horizontal("row", hello_imgui.em_to_vec2(12, 0))  # fixed width: 12 em
+imgui.text("A long text which does not fit in 12 em")         # now cut at 12 em
+imgui.end_horizontal()
+```
+
+## Behavior change: ImVec in, ImVec out for the multi-float widgets
+
+`slider_float2/4`, `input_float2/4`, `color_edit3/4` and `color_picker3/4` now return an `ImVec2` / `ImVec4` when they are given
+one, as the stubs always said. Until now they returned a `list` in that case. Lists and tuples still return a `list`.
+
+```python
+color = imgui.ImVec4(1, 0, 0, 1)
+changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 (was a list)
+```
+
+## Breaking changes
+
+- `imgui.set_drag_drop_payload(type, data, sz)` was removed: it took a raw buffer and was not usable from Python.
+  Use `imgui.set_drag_drop_payload_py_id()` (see `demo_drag_and_drop.py`).
+- Some errors are now reported with a more specific exception (`ValueError`, `IndexError`) where they used to raise a
+  `RuntimeError` coming from an `IM_ASSERT` (for example `ImVec2.from_dict()` with a missing key, or an out-of-range color index).
+
+## Fixes
+
+- `ImDrawData.cmd_lists_count` is back, as a read-only property. Dear ImGui 1.92.9 made `CmdListsCount` obsolete, and it had
+  disappeared from the bindings in v1.92.900, which broke third party renderers such as wgpu's imgui backend
+  (`AttributeError: 'ImDrawData' object has no attribute 'cmd_lists_count'`). New code should use `len(draw_data.cmd_lists)`.
+- `imgui.set_window_focus("window name")` crashed; `imgui.set_window_focus(None)` removes the focus.
+- `imgui.color_picker4()` did not accept a list.
+- `ImColor.to_dict()` returned the red component for all keys; `ImColor.from_dict()` returned an `ImVec4`.
+- `imgui.internal.input_text_ex()` rejected every call ("incompatible function arguments").
+- Pure Python pygame backend (`python_backends/pygame_backend.py`): copy / cut / paste / select all / undo / redo work (their
+  keys were not forwarded to imgui), the system clipboard is used (via `pygame.scrap`), and double clicks are detected
+  (imgui's clock ran faster than the wall clock at high frame rates).
+- `imgui.get_clipboard_text()` crashed when the clipboard was empty and no backend was installed; it always returns a `str` (`""` when empty).
+- `imgui.color_picker4()` with a list: `ref_col` is a list of 4 floats (it was declared as a single float, and read out of bounds).
+- An exception raised inside a Python clipboard / open-in-shell callback is reported ("Exception ignored in...") instead of
+  unwinding through Dear ImGui.
+- `ImFont.calc_word_wrap_position_python()` returns an index in the `str` (so that `text[:index]` is what fits). It returned an
+  offset in the UTF-8 bytes, which was wrong for any non-ASCII text.
+- Stubs: the default of `format` arguments reads `"%.3f"` (it was truncated to `"%.3"`; the runtime default was always right).
+- `imgui.internal.get_current_window()` raises an exception instead of crashing when called without a context or outside a frame.
+
+
 # v1.92.900
 
 ## Updated Dear ImGui to v1.92.9b

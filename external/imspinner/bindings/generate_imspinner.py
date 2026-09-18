@@ -12,7 +12,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 CPP_HEADERS_DIR = THIS_DIR + "/../imspinner"
 
 
-def main():
+def main() -> None:
     print("autogenerate_imspinner")
     # We do not include imspinner_compat.h (template heavy), cimspinner_h (C API)
     input_cpp_headers = [

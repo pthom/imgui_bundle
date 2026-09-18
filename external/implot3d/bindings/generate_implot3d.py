@@ -3,6 +3,7 @@ import os
 from string import Template
 
 import litgen
+from codemanip import code_utils
 from litgen_options_implot3d import litgen_options_implot3d
 
 
@@ -69,11 +70,11 @@ def _add_spec_array_bindings(options: litgen.LitgenOptions, spec_cpp_name: str) 
     """Add custom bindings for the Spec pointer-array fields so they accept numpy arrays
     and keep them alive (issue #484). `spec_cpp_name` is "ImPlotSpec" or "ImPlot3DSpec"."""
 
-    options.member_exclude_by_name__regex += "|^LineColors$|^FillColors$|^MarkerLineColors$|^MarkerFillColors$|^MarkerSizes$"
+    options.member_exclude_by_name__regex = code_utils.append_regex(options.member_exclude_by_name__regex, "^LineColors$|^FillColors$|^MarkerLineColors$|^MarkerFillColors$|^MarkerSizes$")
 
     # Make the Spec class accept dynamic attributes so each setter can stash the
     # numpy array on the instance (keeps it alive + retrievable by the getter).
-    options.class_dynamic_attributes__regex += f"|^{spec_cpp_name}$"
+    options.class_dynamic_attributes__regex = code_utils.append_regex(options.class_dynamic_attributes__regex, f"^{spec_cpp_name}$")
 
     stub_lines = []
     pydef_lines = []
@@ -96,7 +97,7 @@ def _add_implot3d_spec_array_bindings(options: litgen.LitgenOptions) -> None:
     _add_spec_array_bindings(options, "ImPlot3DSpec")
 
 
-def autogenerate_implot3d():
+def autogenerate_implot3d() -> None:
     print("autogenerate_implot3d")
     input_cpp_header = CPP_HEADERS_DIR + "/implot3d.h"
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_implot3d.cpp"
@@ -139,7 +140,7 @@ def autogenerate_implot3d_internal() -> None:
     )
 
 
-def sandbox():
+def sandbox() -> None:
     code = """
 enum ImPlot3DFlags_ {
     ImPlot3DFlags_None = 0,             // Default
@@ -157,7 +158,7 @@ enum ImPlot3DFlags_ {
     print(generator.stub_code())
 
 
-def main():
+def main() -> None:
     autogenerate_implot3d()
     autogenerate_implot3d_internal()
     # sandbox()
