@@ -88,7 +88,7 @@ async function main() {
     //   Option b: use a wheel that is stored on your server, e.g. to pin a
     //      version or work without PyPI access
     //      (download a pyemscripten wheel from https://pypi.org/project/imgui-bundle/#files )
-    // await micropip.install('local_wheels/imgui_bundle-1.92.801-cp314-cp314-pyemscripten_2026_0_wasm32.whl');
+    // await micropip.install('local_wheels/imgui_bundle-1.93.0-cp314-cp314-pyemscripten_2026_0_wasm32.whl');
 
     // Load additional required packages
     await micropip.install('numpy');
