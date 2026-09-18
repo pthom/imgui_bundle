@@ -6,9 +6,10 @@
    Version scheme: `ImGui patch × 100 + bundle release` (e.g. `1.92.601` = ImGui 1.92.6, bundle release 1).
    Also update Pyodide wheel filenames hardcoded in demos / docs — see
    [cloudflare_deploy.md → wheel filename references](cloudflare_deploy.md#when-to-update-wheel-filename-references).
-2. Create a GitHub release with a new tag (e.g. `v1.92.601`).
+2. Check the web builds (Emscripten and Pyodide): see [Web checks before a release](#web-checks-before-a-release).
+3. Create a GitHub release with a new tag (e.g. `v1.92.601`).
    The `wheels.yml` CI workflow builds and uploads wheels to PyPI automatically.
-3. Manually build and upload the macOS arm64 wheel (see below).
+4. Manually build and upload the macOS arm64 wheel (see below).
 
 
 ## About cibuildwheel
@@ -57,3 +58,37 @@ See the [Pyodide build guide](Readme_pyodide_bundle.md) for details on the
 build environment. Note: the legacy distribution channel (pyodide-recipes
 repository) is deprecated for imgui-bundle; the recipe there is disabled, so
 micropip falls through to PyPI.
+
+
+## Web checks before a release
+
+The web builds are not covered by the test suite: check them by hand, in a browser, before tagging.
+
+**ImGui Bundle Explorer (Emscripten)**
+```bash
+just ibex_build
+just ibex_serve     # then open http://localhost:8642/demo_imgui_bundle.html
+```
+Try a few demos (for example the test engine and the docking demos).
+
+**ImGui Explorer (Emscripten)**
+```bash
+just imex_ems_build
+just imex_ems_serve     # then open http://localhost:7006/
+```
+Check that the Dear ImGui version displayed is the expected one.
+
+**Pyodide**
+```bash
+just pyodide_build
+just pyodide_serve_projects
+```
+Then open:
+
+| Page | Expected |
+|------|----------|
+| http://localhost:6456/local_wheels/ | Offers the wheel of the new version (see [wheel filename references](cloudflare_deploy.md#when-to-update-wheel-filename-references)) |
+| http://localhost:6456/playground/ | The demos work; the intro page displays the new version |
+| http://localhost:6456/min_pyodide_app/demo_heart.html | Works. It installs `imgui-bundle` from PyPI, so it displays the last *released* version until the new one is published: open it again after the release to check that PyPI serves the new wheel |
+
+**Deploy**: `just cf_deploy_all_in_one`, see [Cloudflare deploy](cloudflare_deploy.md).
