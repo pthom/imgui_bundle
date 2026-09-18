@@ -3076,7 +3076,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("disabled", ImGuiItemFlags_Disabled, "False    // [Internal] Disable interactions. DOES NOT affect visuals. This is used by BeginDisabled()/EndDisabled() and only provided here so you can read back via GetItemFlags().")
             .value("live_edit_on_input_text", ImGuiItemFlags_LiveEditOnInputText, "True     // InputText: apply keyboard edits to backing value while typing. Otherwise, edits are applied when validating, tabbing out or losing focus.")
             .value("live_edit_on_input_scalar", ImGuiItemFlags_LiveEditOnInputScalar, "False    // DragXXX, SliderXXX, InputScalar: apply keyboard edits to backing value while typing. Otherwise, edits are applied when validating, tabbing out or losing focus.")
-            .value("live_edit_on_input", ImGuiItemFlags_LiveEditOnInput, "");
+            .value("live_edit_on_input", ImGuiItemFlags_LiveEditOnInput, "")
+            .value("mixed_value", ImGuiItemFlags_MixedValue, "False    // [BETA] Represent a mixed/indeterminate value. Replace value label with \"-\" and apply edits on validation.");
 
 
     auto pyEnumInputTextFlags_ =
@@ -6064,7 +6065,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("anti_aliased_lines", &ImGuiStyle::AntiAliasedLines, "Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).")
         .def_rw("anti_aliased_lines_use_tex", &ImGuiStyle::AntiAliasedLinesUseTex, "Enable anti-aliased lines/borders using textures where possible. Require backend to render with bilinear filtering (NOT point/nearest filtering). Latched at the beginning of the frame (copied to ImDrawList).")
         .def_rw("anti_aliased_fill", &ImGuiStyle::AntiAliasedFill, "Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).")
-        .def_rw("curve_tessellation_tol", &ImGuiStyle::CurveTessellationTol, "Tessellation tolerance when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.")
+        .def_rw("curve_tessellation_max_error", &ImGuiStyle::CurveTessellationMaxError, "Maximum error (in pixels) when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.")
         .def_rw("circle_tessellation_max_error", &ImGuiStyle::CircleTessellationMaxError, "Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.")
         .def_rw("hover_stationary_delay", &ImGuiStyle::HoverStationaryDelay, "Delay for IsItemHovered(ImGuiHoveredFlags_Stationary). Time required to consider mouse stationary.")
         .def_rw("hover_delay_short", &ImGuiStyle::HoverDelayShort, "Delay for IsItemHovered(ImGuiHoveredFlags_DelayShort). Usually used along with HoverStationaryDelay.")
@@ -7086,7 +7087,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("_clip_rect_stack", &ImDrawList::_ClipRectStack, "[Internal]")
         .def_rw("_texture_stack", &ImDrawList::_TextureStack, "[Internal]")
         .def_rw("_callbacks_data_buf", &ImDrawList::_CallbacksDataBuf, "[Internal]")
-        .def_rw("_fringe_scale", &ImDrawList::_FringeScale, "[Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content")
+        .def_rw("_fringe_scale", &ImDrawList::_FringeScale, "[Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content.")
+        .def_rw("_inv_fringe_scale", &ImDrawList::_InvFringeScale, "[internal] 1.0 / _FringeScale // FIXME: Consider renaming to _PixelDensity.")
         .def_ro("_owner_name", &ImDrawList::_OwnerName, "Pointer to owner window's name for debugging")
         .def(nb::init<ImDrawListSharedData *>(),
             nb::arg("shared_data"),
@@ -7349,6 +7351,8 @@ void py_init_module_imgui_main(nb::module_& m)
             nb::overload_cast<ImDrawListSharedData *>(&ImDrawList::_SetDrawListSharedData), nb::arg("data"))
         .def("_reset_for_new_frame",
             &ImDrawList::_ResetForNewFrame)
+        .def("_set_pixel_density",
+            &ImDrawList::_SetPixelDensity, nb::arg("pixel_density"))
         .def("_clear_free_memory",
             &ImDrawList::_ClearFreeMemory)
         .def("_pop_unused_draw_cmd",

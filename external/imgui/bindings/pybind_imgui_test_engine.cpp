@@ -647,7 +647,8 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             .value("move_to_edge_r", ImGuiTestOpFlags_MoveToEdgeR, "")
             .value("move_to_edge_u", ImGuiTestOpFlags_MoveToEdgeU, "")
             .value("move_to_edge_d", ImGuiTestOpFlags_MoveToEdgeD, "")
-            .value("no_scroll", ImGuiTestOpFlags_NoScroll, "Disable automatically scrolling to reach an item.");
+            .value("no_scroll", ImGuiTestOpFlags_NoScroll, "Disable automatically scrolling to reach an item.")
+            .value("no_wait_when_moving", ImGuiTestOpFlags_NoWaitWhenMoving, "Avoid waiting for item to be stable, lock current position and aim.");
 
 
     auto pyClassImGuiTestActionFilter =
@@ -709,6 +710,7 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def_rw("show_window2", &ImGuiTestGenericVars::ShowWindow2, "")
         .def_rw("use_clipper", &ImGuiTestGenericVars::UseClipper, "")
         .def_rw("use_viewports", &ImGuiTestGenericVars::UseViewports, "")
+        .def_rw("use_mixed_value", &ImGuiTestGenericVars::UseMixedValue, "")
         .def_rw("width", &ImGuiTestGenericVars::Width, "")
         .def_rw("pos", &ImGuiTestGenericVars::Pos, "")
         .def_rw("pivot", &ImGuiTestGenericVars::Pivot, "")
@@ -1376,6 +1378,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             &ImGuiTestContext::ItemIsVisible,
             nb::arg("ref"),
             "(private API)")
+        .def("item_make_visible",
+            &ImGuiTestContext::ItemMakeVisible,
+            nb::arg("ref"), nb::arg("flags"),
+            "(private API)")
         .def("item_verify_checked_if_alive",
             &ImGuiTestContext::ItemVerifyCheckedIfAlive,
             nb::arg("ref"), nb::arg("checked"),
@@ -1395,6 +1401,10 @@ void py_init_module_imgui_test_engine(nb::module_& m)
         .def("item_drag_and_drop",
             &ImGuiTestContext::ItemDragAndDrop,
             nb::arg("ref_src"), nb::arg("ref_dst"), nb::arg("button") = 0,
+            "(private API)")
+        .def("item_drag_to_pos",
+            &ImGuiTestContext::ItemDragToPos,
+            nb::arg("ref_src"), nb::arg("pos"),
             "(private API)")
         .def("item_drag_with_delta",
             &ImGuiTestContext::ItemDragWithDelta,

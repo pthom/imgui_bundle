@@ -338,8 +338,8 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("im_bezier_cubic_closest_point_casteljau",
         ImBezierCubicClosestPointCasteljau,
-        nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("p"), nb::arg("tess_tol"),
-        "For auto-tessellated curves you can use tess_tol = style.CurveTessellationTol");
+        nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("p"), nb::arg("max_error"),
+        "For auto-tessellated curves you can use max_error = style.CurveTessellationMaxError");
 
     m.def("im_bezier_quadratic_calc",
         ImBezierQuadraticCalc, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("t"));
@@ -674,9 +674,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("font", &ImDrawListSharedData::Font, "Current font (used for simplified AddText overload)")
         .def_rw("font_size", &ImDrawListSharedData::FontSize, "Current font size (used for for simplified AddText overload)")
         .def_rw("font_scale", &ImDrawListSharedData::FontScale, "Current font scale (== FontSize / Font->FontSize)")
-        .def_rw("curve_tessellation_tol", &ImDrawListSharedData::CurveTessellationTol, "Tessellation tolerance when using PathBezierCurveTo()")
+        .def_rw("curve_tessellation_max_error", &ImDrawListSharedData::CurveTessellationMaxError, "Tessellation tolerance when using PathBezierCurveTo()")
         .def_rw("circle_tessellation_max_error", &ImDrawListSharedData::CircleTessellationMaxError, "Number of circle segments to use per pixel of radius for AddCircle() etc")
-        .def_rw("initial_fringe_scale", &ImDrawListSharedData::InitialFringeScale, "Initial scale to apply to AA fringe")
         .def_rw("initial_flags", &ImDrawListSharedData::InitialFlags, "Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)")
         .def_rw("clip_rect_fullscreen", &ImDrawListSharedData::ClipRectFullscreen, "Value for PushClipRectFullscreen()")
         .def_rw("temp_buffer", &ImDrawListSharedData::TempBuffer, "Temporary write buffer")
@@ -811,7 +810,6 @@ void py_init_module_imgui_internal(nb::module_& m)
     auto pyEnumItemFlagsPrivate_ =
         nb::enum_<ImGuiItemFlagsPrivate_>(m, "ItemFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), " Extend ImGuiItemFlags\n - input: PushItemFlag() manipulates g.CurrentItemFlags, g.NextItemData.ItemFlags, ItemAdd() calls may add extra flags too.\n - output: stored in g.LastItemData.ItemFlags")
             .value("read_only", ImGuiItemFlags_ReadOnly, "False     // [ALPHA] Allow hovering interactions but underlying value is not changed.")
-            .value("mixed_value", ImGuiItemFlags_MixedValue, "False     // [BETA] Represent a mixed/indeterminate value, generally multi-selection where values differ. Currently only supported by Checkbox() (later should support all sorts of widgets)")
             .value("no_window_hoverable_check", ImGuiItemFlags_NoWindowHoverableCheck, "False     // Disable hoverable check in ItemHoverable()")
             .value("allow_overlap", ImGuiItemFlags_AllowOverlap, "False     // Allow being overlapped by another widget. Not-hovered to Hovered transition deferred by a frame.")
             .value("no_nav_disable_mouse_hover", ImGuiItemFlags_NoNavDisableMouseHover, "False     // Nav keyboard/gamepad mode doesn't disable hover highlight (behave as if NavHighlightItemUnderNav==False).")
@@ -873,11 +871,6 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("no_focus", ImGuiButtonFlags_NoFocus, "[EXPERIMENTAL: Not very well specced]. Don't focus parent window when clicking.")
             .value("pressed_on_mask_", ImGuiButtonFlags_PressedOnMask_, "")
             .value("pressed_on_default_", ImGuiButtonFlags_PressedOnDefault_, "");
-
-
-    auto pyEnumComboFlagsPrivate_ =
-        nb::enum_<ImGuiComboFlagsPrivate_>(m, "ComboFlagsPrivate_", nb::is_arithmetic(), nb::is_flag(), "Extend ImGuiComboFlags_")
-            .value("custom_preview", ImGuiComboFlags_CustomPreview, "enable BeginComboPreview()");
 
 
     auto pyEnumSliderFlagsPrivate_ =
@@ -970,7 +963,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("backup_cursor_max_pos", &ImGuiComboPreviewData::BackupCursorMaxPos, "")
         .def_rw("backup_cursor_pos_prev_line", &ImGuiComboPreviewData::BackupCursorPosPrevLine, "")
         .def_rw("backup_prev_line_text_base_offset", &ImGuiComboPreviewData::BackupPrevLineTextBaseOffset, "")
-        .def_rw("backup_layout", &ImGuiComboPreviewData::BackupLayout, "")
+        .def_rw("backup_work_rect_max_x", &ImGuiComboPreviewData::BackupWorkRectMaxX, "")
+        .def_rw("backup_content_rect_max_x", &ImGuiComboPreviewData::BackupContentRectMaxX, "")
         .def(nb::init<>())
         ;
 
@@ -1099,6 +1093,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("selected_all_mouse_lock", &ImGuiInputTextState::SelectedAllMouseLock, "after a double-click to select all, we ignore further mouse drags to update selection")
         .def_rw("edited_before", &ImGuiInputTextState::EditedBefore, "edited since activated")
         .def_rw("edited_this_frame", &ImGuiInputTextState::EditedThisFrame, "edited this frame")
+        .def_rw("validated_this_frame", &ImGuiInputTextState::ValidatedThisFrame, "")
         .def_rw("want_reload_user_buf", &ImGuiInputTextState::WantReloadUserBuf, "force a reload of user buf so it may be modified externally. may be automatic in future version.")
         .def_rw("last_move_direction_lr", &ImGuiInputTextState::LastMoveDirectionLR, "ImGuiDir_Left or ImGuiDir_Right. track last movement direction so when cursor cross over a word-wrapping boundaries we can display it on either line depending on last move.s")
         .def_rw("reload_selection_start", &ImGuiInputTextState::ReloadSelectionStart, "")
@@ -1197,8 +1192,10 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("size_val", &ImGuiNextWindowData::SizeVal, "")
         .def_rw("content_size_val", &ImGuiNextWindowData::ContentSizeVal, "")
         .def_rw("scroll_val", &ImGuiNextWindowData::ScrollVal, "")
-        .def_rw("window_flags", &ImGuiNextWindowData::WindowFlags, "Only honored by BeginTable()")
-        .def_rw("child_flags", &ImGuiNextWindowData::ChildFlags, "")
+        .def_rw("window_flags_set", &ImGuiNextWindowData::WindowFlagsSet, "Flags to set. Use SetNextWindowFlags()!")
+        .def_rw("window_flags_clear", &ImGuiNextWindowData::WindowFlagsClear, "")
+        .def_rw("child_flags_set", &ImGuiNextWindowData::ChildFlagsSet, "Flags to set. Use SetNextWindowChildFlags().")
+        .def_rw("child_flags_clear", &ImGuiNextWindowData::ChildFlagsClear, "")
         .def_rw("pos_undock", &ImGuiNextWindowData::PosUndock, "")
         .def_rw("collapsed_val", &ImGuiNextWindowData::CollapsedVal, "")
         .def_rw("size_constraint_rect", &ImGuiNextWindowData::SizeConstraintRect, "")
@@ -1316,8 +1313,8 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     auto pyClassImGuiWindowStackData =
         nb::class_<ImGuiWindowStackData>
-            (m, "WindowStackData", "Data saved for each window pushed into the stack")
-        .def("__init__", [](ImGuiWindowStackData * self, const std::optional<const ImGuiLastItemData> & ParentLastItemDataBackup = std::nullopt, const std::optional<const ImGuiErrorRecoveryState> & StackSizesInBegin = std::nullopt, bool DisabledOverrideReenable = bool(), float DisabledOverrideReenableAlphaBackup = float())
+            (m, "WindowStackData", "Storage for each window pushed into the stack.")
+        .def("__init__", [](ImGuiWindowStackData * self, const std::optional<const ImGuiLastItemData> & ParentLastItemDataBackup = std::nullopt, const std::optional<const ImGuiErrorRecoveryState> & StackSizesInBegin = std::nullopt, bool DisabledOverrideReenable = bool(), float DisabledOverrideReenableAlphaBackup = float(), const std::optional<const ImRect> & ParentLastComboPreviewRect = std::nullopt)
         {
             new (self) ImGuiWindowStackData();  // placement new
             auto r_ctor_ = self;
@@ -1331,14 +1328,19 @@ void py_init_module_imgui_internal(nb::module_& m)
                 r_ctor_->StackSizesInBegin = ImGuiErrorRecoveryState();
             r_ctor_->DisabledOverrideReenable = DisabledOverrideReenable;
             r_ctor_->DisabledOverrideReenableAlphaBackup = DisabledOverrideReenableAlphaBackup;
+            if (ParentLastComboPreviewRect.has_value())
+                r_ctor_->ParentLastComboPreviewRect = ParentLastComboPreviewRect.value();
+            else
+                r_ctor_->ParentLastComboPreviewRect = ImRect();
         },
-        nb::arg("parent_last_item_data_backup").none() = nb::none(), nb::arg("stack_sizes_in_begin").none() = nb::none(), nb::arg("disabled_override_reenable") = bool(), nb::arg("disabled_override_reenable_alpha_backup") = float()
+        nb::arg("parent_last_item_data_backup").none() = nb::none(), nb::arg("stack_sizes_in_begin").none() = nb::none(), nb::arg("disabled_override_reenable") = bool(), nb::arg("disabled_override_reenable_alpha_backup") = float(), nb::arg("parent_last_combo_preview_rect").none() = nb::none()
         )
         .def_rw("window", &ImGuiWindowStackData::Window, "")
         .def_rw("parent_last_item_data_backup", &ImGuiWindowStackData::ParentLastItemDataBackup, "")
         .def_rw("stack_sizes_in_begin", &ImGuiWindowStackData::StackSizesInBegin, "Store size of various stacks for asserting")
         .def_rw("disabled_override_reenable", &ImGuiWindowStackData::DisabledOverrideReenable, "Non-child window override disabled flag")
         .def_rw("disabled_override_reenable_alpha_backup", &ImGuiWindowStackData::DisabledOverrideReenableAlphaBackup, "")
+        .def_rw("parent_last_combo_preview_rect", &ImGuiWindowStackData::ParentLastComboPreviewRect, "")
         ;
 
 
@@ -2076,12 +2078,18 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("last_alpha", &ImGuiViewportP::LastAlpha, "")
         .def_rw("last_focused_had_nav_window", &ImGuiViewportP::LastFocusedHadNavWindow, "Instead of maintaining a LastFocusedWindow (which may harder to correctly maintain), we merely store weither NavWindow != None last time the viewport was focused.")
         .def_rw("platform_monitor", &ImGuiViewportP::PlatformMonitor, "")
+        .def_prop_ro("bg_fg_draw_lists_last_frame_active",
+            [](ImGuiViewportP &self) -> nb::ndarray<int, nb::numpy, nb::shape<2>, nb::c_contig>
+            {
+                return self.BgFgDrawListsLastFrameActive;
+            },
+            "Last frame the background (0) and foreground (1) draw lists were used.")
         .def_prop_ro("bg_fg_draw_lists_last_time_active",
             [](ImGuiViewportP &self) -> nb::ndarray<float, nb::numpy, nb::shape<2>, nb::c_contig>
             {
                 return self.BgFgDrawListsLastTimeActive;
             },
-            "Last frame number the background (0) and foreground (1) draw lists were used")
+            "Timestamps for Gc.")
         .def_rw("draw_data_p", &ImGuiViewportP::DrawDataP, "")
         .def_rw("draw_data_builder", &ImGuiViewportP::DrawDataBuilder, "Temporary data while building final ImDrawData")
         .def_rw("last_platform_pos", &ImGuiViewportP::LastPlatformPos, "")
@@ -2389,7 +2397,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("font_size", &ImGuiContext::FontSize, "Currently bound font size == line height (== FontSizeBase + externals scales applied in the UpdateCurrentFontSize() function).")
         .def_rw("font_size_base", &ImGuiContext::FontSizeBase, "Font size before scaling == style.FontSizeBase == value passed to PushFont() when specified.")
         .def_rw("font_baked_scale", &ImGuiContext::FontBakedScale, "== FontBaked->Size / FontSize. Scale factor over baked size. Rarely used nowadays, very often == 1.0.")
-        .def_rw("font_rasterizer_density", &ImGuiContext::FontRasterizerDensity, "Current font density. Used by all calls to GetFontBaked().")
+        .def_rw("current_pixel_density", &ImGuiContext::CurrentPixelDensity, "Current font density. Used by all calls to GetFontBaked().")
         .def_rw("current_dpi_scale", &ImGuiContext::CurrentDpiScale, "Current window/viewport DpiScale == CurrentViewport->DpiScale")
         .def_rw("draw_list_shared_data", &ImGuiContext::DrawListSharedData, "")
         .def_rw("within_end_child_id", &ImGuiContext::WithinEndChildID, "Set within EndChild()")
@@ -2419,6 +2427,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("wheeling_window_release_timer", &ImGuiContext::WheelingWindowReleaseTimer, "")
         .def_rw("wheeling_window_wheel_remainder", &ImGuiContext::WheelingWindowWheelRemainder, "")
         .def_rw("wheeling_axis_avg", &ImGuiContext::WheelingAxisAvg, "")
+        .def_ro("mixed_value_label", &ImGuiContext::MixedValueLabel, "Value replacement when displaying a mixed value. Default to \"-\" (Unreal uses \"Multiple values\", Unity uses \"---\"). May be interpreted as a format: must not contain single %. Set to None to display original value.")
         .def_rw("debug_draw_id_conflicts_id", &ImGuiContext::DebugDrawIdConflictsId, "Set when we detect multiple items with the same identifier")
         .def_rw("debug_hook_id_info_id", &ImGuiContext::DebugHookIdInfoId, "Will call core hooks: DebugHookIdInfo() from GetID functions, used by ID Stack Tool [next HoveredId/ActiveId to not pull in an extra cache-line]")
         .def_rw("hovered_id", &ImGuiContext::HoveredId, "Hovered widget, filled during the frame")
@@ -2830,7 +2839,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("menu_bar_offset", &ImGuiWindowTempData::MenuBarOffset, "MenuBarOffset.x is sort of equivalent of a per-layer CursorPos.x, saved/restored as we switch to the menu bar. The only situation when MenuBarOffset.y is > 0 if when (SafeAreaPadding.y > FramePadding.y), often used on TVs.")
         .def_rw("menu_columns", &ImGuiWindowTempData::MenuColumns, "Simplified columns storage for menu items measurement")
         .def_rw("tree_depth", &ImGuiWindowTempData::TreeDepth, "Current tree depth.")
-        .def_rw("tree_has_stack_data_depth_mask", &ImGuiWindowTempData::TreeHasStackDataDepthMask, "Store whether given depth has ImGuiTreeNodeStackData data. Could be turned into a ImU64 if necessary.")
+        .def_rw("tree_has_stack_data_depth_mask", &ImGuiWindowTempData::TreeHasStackDataDepthMask, "Store whether given depth has ImGuiTreeNodeStackData data. Could be turned into a ImU64 if necessary. Sync any changes with TREE_NODE_MAX_DEPTH/TREE_NODE_GET_DEPTH_MASK!")
         .def_rw("tree_records_clipped_nodes_y2_mask", &ImGuiWindowTempData::TreeRecordsClippedNodesY2Mask, "Store whether we should keep recording Y2. Cleared when passing clip max. Equivalent TreeHasStackDataDepthMask value should always be set.")
         .def_rw("child_windows", &ImGuiWindowTempData::ChildWindows, "")
         .def_rw("state_storage", &ImGuiWindowTempData::StateStorage, "Current persistent per-window storage (store e.g. tree node open/close state)")
@@ -3746,6 +3755,12 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::arg("window"), nb::arg("p"),
         "(private API)");
 
+    m.def("set_next_window_flags",
+        ImGui::SetNextWindowFlags, nb::arg("flags"), nb::arg("enabled"));
+
+    m.def("set_next_window_child_flags",
+        ImGui::SetNextWindowChildFlags, nb::arg("flags"), nb::arg("enabled"));
+
     m.def("focus_window",
         ImGui::FocusWindow, nb::arg("window"), nb::arg("flags") = 0);
 
@@ -3797,11 +3812,13 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("update_current_font_size",
         ImGui::UpdateCurrentFontSize, nb::arg("restore_font_size_after_scaling"));
 
-    m.def("set_font_rasterizer_density",
-        ImGui::SetFontRasterizerDensity, nb::arg("rasterizer_density"));
+    m.def("set_pixel_density",
+        ImGui::SetPixelDensity,
+        nb::arg("pixel_density"),
+        "was SetFontRasterizerDensity()");
 
-    m.def("get_font_rasterizer_density",
-        ImGui::GetFontRasterizerDensity, "(private API)");
+    m.def("get_pixel_density",
+        ImGui::GetPixelDensity, "(private API)");
 
     m.def("get_rounded_font_size",
         ImGui::GetRoundedFontSize,
@@ -4194,7 +4211,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::overload_cast<ImGuiID, const ImRect &, ImGuiComboFlags>(ImGui::BeginComboPopup), nb::arg("popup_id"), nb::arg("bb"), nb::arg("flags"));
 
     m.def("begin_combo_preview",
-        ImGui::BeginComboPreview);
+        ImGui::BeginComboPreview, "Submit preview contents a combo. Call this after EndCombo() to display contents that's more than just a text label.");
 
     m.def("end_combo_preview",
         ImGui::EndComboPreview);
@@ -4857,7 +4874,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::RenderColorComponentMarker, nb::arg("bb"), nb::arg("col"), nb::arg("rounding"));
 
     m.def("render_color_rect_with_alpha_checkerboard",
-        ImGui::RenderColorRectWithAlphaCheckerboard, nb::arg("draw_list"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("fill_col"), nb::arg("grid_step"), nb::arg("grid_off"), nb::arg("rounding") = 0.0f, nb::arg("flags") = 0);
+        ImGui::RenderColorRectWithAlphaCheckerboard, nb::arg("draw_list"), nb::arg("p_min"), nb::arg("p_max"), nb::arg("col"), nb::arg("alpha"), nb::arg("grid_step"), nb::arg("grid_off"), nb::arg("rounding") = 0.0f, nb::arg("flags") = 0);
 
     m.def("render_nav_cursor",
         ImGui::RenderNavCursor,
@@ -4926,17 +4943,17 @@ void py_init_module_imgui_internal(nb::module_& m)
         },     nb::arg("text"), nb::arg("text_end").none() = nb::none(), nb::arg("flags") = 0);
 
     m.def("text_aligned",
-        [](float align_x, float size_x, const char * fmt)
+        [](float align_x, float width, const char * fmt)
         {
-            auto TextAligned_adapt_variadic_format = [](float align_x, float size_x, const char * fmt)
+            auto TextAligned_adapt_variadic_format = [](float align_x, float width, const char * fmt)
             {
-                ImGui::TextAligned(align_x, size_x, "%s", fmt);
+                ImGui::TextAligned(align_x, width, "%s", fmt);
             };
 
-            TextAligned_adapt_variadic_format(align_x, size_x, fmt);
+            TextAligned_adapt_variadic_format(align_x, width, fmt);
         },
-        nb::arg("align_x"), nb::arg("size_x"), nb::arg("fmt"),
-        "FIXME-WIP: Works but API is likely to be reworked. This is designed for 1 item on the line. (#7024)");
+        nb::arg("align_x"), nb::arg("width"), nb::arg("fmt"),
+        "FIXME-WIP: Works but API is likely to be reworked.");
 
     m.def("button_ex",
         [](const char * label, const std::optional<const ImVec2> & size_arg = std::nullopt, ImGuiButtonFlags flags = 0) -> bool

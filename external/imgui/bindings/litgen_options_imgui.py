@@ -54,6 +54,11 @@ def _preprocess_imgui_code(code: str) -> str:
     #       IM_VEC2_CLASS_EXTRA     // Define additional constructors ...
     new_code, _n = re.subn(r"^(\s+IM_VEC[24]_CLASS_EXTRA)(\s)", r"\1;\2", new_code, flags=re.MULTILINE)
 
+    # IM_NODEBUGSTEP (a hint for debuggers, e.g. [[gnu::artificial]]) decorates trivial functions:
+    #       IM_NODEBUGSTEP inline T&        operator[](int i)
+    # It is removed, because srcML would read it as a part of the return type.
+    new_code, _n = re.subn(r"(?<!#define )\bIM_NODEBUGSTEP[ \t]+", "", new_code)
+
     new_code = new_code.replace("unsigned char", "uchar")
 
     return new_code

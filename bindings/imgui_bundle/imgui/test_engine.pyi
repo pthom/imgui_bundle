@@ -1088,6 +1088,10 @@ class TestOpFlags_(enum.IntFlag):
     move_to_edge_d = enum.auto()  # (= 1 << 11)
     # ImGuiTestOpFlags_NoScroll           = 1 << 12,      /* original C++ signature */
     no_scroll = enum.auto()  # (= 1 << 12)  # Disable automatically scrolling to reach an item.
+    # ImGuiTestOpFlags_NoWaitWhenMoving   = 1 << 13,      /* original C++ signature */
+    no_wait_when_moving = (
+        enum.auto()
+    )  # (= 1 << 13)  # Avoid waiting for item to be stable, lock current position and aim.
 
 class TestActionFilter:
     """Advanced filtering for ItemActionAll()"""
@@ -1194,6 +1198,8 @@ class TestGenericVars:
     use_clipper: bool
     # bool                    UseViewports;    /* original C++ signature */
     use_viewports: bool
+    # bool                    UseMixedValue;    /* original C++ signature */
+    use_mixed_value: bool
     # float                   Width;    /* original C++ signature */
     width: float
     # ImVec2                  Pos;    /* original C++ signature */
@@ -1991,6 +1997,10 @@ class TestContext:
     def item_is_visible(self, ref: Union[TestRef, str]) -> bool:
         """(private API)"""
         pass
+    # void        ItemMakeVisible(ImGuiTestRef ref, ImGuiTestOpFlags flags);    /* original C++ signature */
+    def item_make_visible(self, ref: Union[TestRef, str], flags: TestOpFlags) -> None:
+        """(private API)"""
+        pass
     # void        ItemVerifyCheckedIfAlive(ImGuiTestRef ref, bool checked);    /* original C++ signature */
     def item_verify_checked_if_alive(self, ref: Union[TestRef, str], checked: bool) -> None:
         """(private API)"""
@@ -2014,7 +2024,11 @@ class TestContext:
     ) -> None:
         """(private API)"""
         pass
-    # void        ItemDragWithDelta(ImGuiTestRef ref_src, ImVec2 pos_delta);    /* original C++ signature */
+    # void        ItemDragToPos(ImGuiTestRef ref_src, const ImVec2& pos);    /* original C++ signature */
+    def item_drag_to_pos(self, ref_src: Union[TestRef, str], pos: ImVec2Like) -> None:
+        """(private API)"""
+        pass
+    # void        ItemDragWithDelta(ImGuiTestRef ref_src, const ImVec2& pos_delta);    /* original C++ signature */
     def item_drag_with_delta(self, ref_src: Union[TestRef, str], pos_delta: ImVec2Like) -> None:
         """(private API)"""
         pass

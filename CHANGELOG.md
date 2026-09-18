@@ -2,6 +2,30 @@
 
 # Ongoing changes
 
+## Updated Dear ImGui to v1.93.0 WIP
+
+Dear ImGui is updated to the tip of its `docking` branch (v1.93.0 WIP), and ImGui Test Engine to the tip of its `main` branch.
+See upstream's [changelog](https://github.com/ocornut/imgui/blob/docking/docs/CHANGELOG.txt).
+
+### Breaking change: `style.curve_tessellation_tol` becomes `style.curve_tessellation_max_error`
+
+The new field is expressed in pixels (the old one was in squared pixels), so that it can scale with the screen density:
+`curve_tessellation_max_error = sqrt(curve_tessellation_tol)` (default: 1.12, was 1.25).
+
+```python
+imgui.get_style().curve_tessellation_max_error = 1.12   # was: curve_tessellation_tol = 1.25
+```
+
+### Other changes
+
+- Ongoing drags and slider edits can be cancelled with a right-click or Escape: the value reverts to its initial value.
+- New `imgui.ItemFlags_.mixed_value`: displays a mixed / indeterminate value in checkboxes, radio buttons, drags, sliders,
+  inputs, color widgets and combos (for property editors; see "Widgets / Mixed Values" in the demo).
+- On high density screens (Apple Retina), anti-aliasing and the tessellation of circles and curves follow the framebuffer scale:
+  shapes look slightly crisper.
+- Disabled color buttons keep the same color as enabled ones.
+- Test Engine: new `TestContext.item_drag_to_pos()`, `TestContext.item_make_visible()` and `TestOpFlags_.no_wait_when_moving`.
+
 ## Behavior change: StackLayout clips the content of fixed-size layouts
 
 `BeginHorizontal` / `BeginVertical` (StackLayout, by thedmd) now clip their content on the axes where they were given a
