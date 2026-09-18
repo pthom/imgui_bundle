@@ -114,7 +114,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 .value("align_bottom", TextEditor::Scroll::alignBottom, "");
         auto pyClassTextEditor_ClassChange =
             nb::class_<TextEditor::Change>
-                (pyClassTextEditor, "Change", " detailed change report passed to callback below\n this callback is different from the one above as it reports every change (not just a summary) and is very detailed\n the insert flag states whether the change was an insert (True) or a delete (False)\n in case of an overwrite, there will be two actions (first a delete and then an insert)\n the start parameters refer to the insert point or the start of the delete\n the end parameters refer to the end of the inserted text or the end of the deleted text\n the text parameter contains the inserted or deleted text\n line and index values are zero-based")
+                (pyClassTextEditor, "Change", " detailed change report passed to callback below\n this callback is different from the one above as it reports every change (not just a summary) and is very detailed\n the insert flag states whether the change was an insert (True) or a delete (False)\n in case of an overwrite, there will be two actions (first a delete and then an insert)\n the start parameters refer to the insert point or the start of the delete\n the end parameters refer to the end of the inserted text or the end of the deleted text\n the text parameter contains the inserted or deleted text (UTF-8 encoded)\n line and index values are zero-based")
             .def("__init__", [](TextEditor::Change * self, bool insert = bool(), const std::optional<const TextEditor::DocPos> & start = std::nullopt, const std::optional<const TextEditor::DocPos> & end = std::nullopt, std::string text = std::string())
             {
                 new (self) TextEditor::Change();  // placement new
@@ -187,8 +187,41 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             .def_rw("glyph_pos", &TextEditor::CustomCaret::glyphPos, " top left corner of glyph where cursor is (in screen coordinates)\n can be used directly to submit drawing commands")
             .def_rw("glyph_size", &TextEditor::CustomCaret::glyphSize, "visible size of glyph")
             .def_rw("caret_visible", &TextEditor::CustomCaret::caretVisible, " flag indicating if cursor is visible (based on configuration and standard blinking algorithm)\n this can be ignored if the custom caret has its own animation algorithm")
-            .def_rw("caret_color", &TextEditor::CustomCaret::caretColor, " color of cursor caret as per the current palette\n that can also be ignored if custom caret has its own palette of animation")
+            .def_rw("caret_color", &TextEditor::CustomCaret::caretColor, " color of cursor caret as per the current palette\n this can also be ignored if custom caret has its own palette or animation")
             .def_rw("cursor_index", &TextEditor::CustomCaret::cursorIndex, "index of the cursor being rendered (in case additional cursor information is required)")
+            ;
+        auto pyClassTextEditor_ClassCustomLineNumber =
+            nb::class_<TextEditor::CustomLineNumber>
+                (pyClassTextEditor, "CustomLineNumber", "custom line number renderer")
+            .def("__init__", [](TextEditor::CustomLineNumber * self, const std::optional<const ImVec2> & pos = std::nullopt, const std::optional<const ImVec2> & size = std::nullopt, size_t digits = size_t(), size_t lineNumber = size_t(), size_t cursorLineNumber = size_t(), const std::optional<const ImU32> & color = std::nullopt)
+            {
+                new (self) TextEditor::CustomLineNumber();  // placement new
+                auto r_ctor_ = self;
+                if (pos.has_value())
+                    r_ctor_->pos = pos.value();
+                else
+                    r_ctor_->pos = ImVec2();
+                if (size.has_value())
+                    r_ctor_->size = size.value();
+                else
+                    r_ctor_->size = ImVec2();
+                r_ctor_->digits = digits;
+                r_ctor_->lineNumber = lineNumber;
+                r_ctor_->cursorLineNumber = cursorLineNumber;
+                if (color.has_value())
+                    r_ctor_->color = color.value();
+                else
+                    r_ctor_->color = ImU32();
+            },
+            nb::arg("pos").none() = nb::none(), nb::arg("size").none() = nb::none(), nb::arg("digits") = size_t(), nb::arg("line_number") = size_t(), nb::arg("cursor_line_number") = size_t(), nb::arg("color").none() = nb::none()
+            )
+            .def_rw("draw_list", &TextEditor::CustomLineNumber::drawList, "draw list to submit rendering commands to")
+            .def_rw("pos", &TextEditor::CustomLineNumber::pos, " top left corner of line number box\n can be used directly to submit drawing commands")
+            .def_rw("size", &TextEditor::CustomLineNumber::size, "visible size of line number box in pixels")
+            .def_rw("digits", &TextEditor::CustomLineNumber::digits, " width of line number box in glyphs (this is variable)\n the editor calculates the number of digits required for the highest line number")
+            .def_rw("line_number", &TextEditor::CustomLineNumber::lineNumber, "line number to be rendered (zero-based)")
+            .def_rw("cursor_line_number", &TextEditor::CustomLineNumber::cursorLineNumber, "line number for current cursor (zero-based)")
+            .def_rw("color", &TextEditor::CustomLineNumber::color, " line number color from current palette\n this can be ignored if custom renderer has its own palette or animation")
             ;
         auto pyClassTextEditor_ClassPopupData =
             nb::class_<TextEditor::PopupData>
@@ -467,23 +500,25 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("get_text_left_margin",
             &TextEditor::GetTextLeftMargin)
         .def("set_text",
-            &TextEditor::SetText, nb::arg("text"))
+            nb::overload_cast<const std::string_view &>(&TextEditor::SetText), nb::arg("text"))
+        .def("set_text",
+            nb::overload_cast<const std::vector<std::string_view> &>(&TextEditor::SetText), nb::arg("lines"))
         .def("get_text",
-            &TextEditor::GetText)
-        .def("get_cursor_text",
-            &TextEditor::GetCursorText, nb::arg("cursor"))
-        .def("get_line_text",
-            &TextEditor::GetLineText, nb::arg("line"))
+            &TextEditor::GetText, "get text from editor as UTF-8 encoded strings")
         .def("get_section_text",
             nb::overload_cast<TextEditor::DocPos, TextEditor::DocPos>(&TextEditor::GetSectionText, nb::const_), nb::arg("start"), nb::arg("end"))
         .def("get_section_text",
             nb::overload_cast<const TextEditor::DocSelection &>(&TextEditor::GetSectionText, nb::const_), nb::arg("selection"))
+        .def("get_cursor_text",
+            &TextEditor::GetCursorText, nb::arg("cursor"))
+        .def("get_line_text",
+            &TextEditor::GetLineText, nb::arg("line"))
         .def("replace_section_text",
             nb::overload_cast<TextEditor::DocPos, TextEditor::DocPos, const std::string_view &>(&TextEditor::ReplaceSectionText), nb::arg("start"), nb::arg("end"), nb::arg("text"))
         .def("replace_section_text",
             nb::overload_cast<const TextEditor::DocSelection &, const std::string_view &>(&TextEditor::ReplaceSectionText), nb::arg("selection"), nb::arg("text"))
         .def("clear_text",
-            &TextEditor::ClearText)
+            &TextEditor::ClearText, "clear the editor")
         .def("is_empty",
             &TextEditor::IsEmpty)
         .def("get_line_count",
@@ -549,9 +584,9 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("shrink_selections",
             &TextEditor::ShrinkSelections)
         .def("add_next_occurrence",
-            &TextEditor::AddNextOccurrence)
+            &TextEditor::AddNextOccurrence, nb::arg("whole_word") = false)
         .def("select_all_occurrences",
-            &TextEditor::SelectAllOccurrences)
+            &TextEditor::SelectAllOccurrences, nb::arg("whole_word") = false)
         .def("any_cursor_has_selection",
             &TextEditor::AnyCursorHasSelection)
         .def("all_cursors_have_selection",
@@ -580,12 +615,14 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::GetCurrentCursorSelection)
         .def("is_mouse_pos_over_glyph",
             &TextEditor::IsMousePosOverGlyph, nb::arg("mouse_pos"))
+        .def("is_mouse_pos_over_text_area",
+            &TextEditor::IsMousePosOverTextArea, nb::arg("mouse_pos"))
         .def("get_doc_pos_at_mouse_pos",
             &TextEditor::GetDocPosAtMousePos, nb::arg("mouse_pos"))
         .def("get_word_at_mouse_pos",
             &TextEditor::GetWordAtMousePos, nb::arg("mouse_pos"))
         .def("scroll_to_line",
-            &TextEditor::ScrollToLine, nb::arg("line"), nb::arg("alignment"))
+            &TextEditor::ScrollToLine, nb::arg("line"), nb::arg("alignment") = TextEditor::Scroll::alignMiddle)
         .def("get_first_visible_row",
             &TextEditor::GetFirstVisibleRow)
         .def("get_last_visible_row",
@@ -614,6 +651,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::IsVisPosOverGlyph,
             nb::arg("pos"),
             "see if a visual position covers a glyph")
+        .def("find_word_start",
+            &TextEditor::FindWordStart, nb::arg("pos"), nb::arg("whole_word") = false)
+        .def("find_word_end",
+            &TextEditor::FindWordEnd, nb::arg("pos"), nb::arg("whole_word") = false)
         .def("select_first_occurrence_of",
             &TextEditor::SelectFirstOccurrenceOf, nb::arg("text"), nb::arg("case_sensitive") = true, nb::arg("whole_word") = false)
         .def("select_next_occurrence_of",
@@ -628,6 +669,12 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::OpenFindReplaceWindow)
         .def("close_find_replace_window",
             &TextEditor::CloseFindReplaceWindow)
+        .def("has_find_string",
+            &TextEditor::HasFindString)
+        .def("find_next",
+            &TextEditor::FindNext)
+        .def("find_all",
+            &TextEditor::FindAll)
         .def("set_find_button_label",
             &TextEditor::SetFindButtonLabel, nb::arg("label"))
         .def("set_find_all_button_label",
@@ -636,12 +683,6 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetReplaceButtonLabel, nb::arg("label"))
         .def("set_replace_all_button_label",
             &TextEditor::SetReplaceAllButtonLabel, nb::arg("label"))
-        .def("has_find_string",
-            &TextEditor::HasFindString)
-        .def("find_next",
-            &TextEditor::FindNext)
-        .def("find_all",
-            &TextEditor::FindAll)
         .def("add_marker",
             &TextEditor::AddMarker, nb::arg("line"), nb::arg("line_number_color"), nb::arg("text_color"), nb::arg("line_number_tooltip"), nb::arg("text_tooltip"))
         .def("clear_markers",
@@ -661,11 +702,17 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("set_change_callback",
             &TextEditor::SetChangeCallback,
             nb::arg("callback"), nb::arg("delay") = 0,
-            " specify a change callback (called when changes are made (including undo/redo))\n the delay parameter specifies a time in miliseconds that the editor will wait for before calling\n which helps in case you don't need to track every keystroke\n passing None for callback deactivates the feature")
+            " specify a change callback (called when changes are made (including undo/redo))\n the delay parameter specifies a time in miliseconds that the editor will wait for before calling\n which helps in case you don't need to track every keystroke")
+        .def("clear_change_callback",
+            &TextEditor::ClearChangeCallback)
+        .def("has_change_callback",
+            &TextEditor::HasChangeCallback)
         .def("set_transaction_callback",
-            &TextEditor::SetTransactionCallback,
-            nb::arg("callback"),
-            " specify a transaction callback (live document changes in great detail)\n it provides a list of changes made to the document in a single transaction (in the right order)\n be carefull with this callback as it gets very verbose (called on every keystroke, delete, cut, paste, undo and redo)\n passing None deactivates the callback")
+            &TextEditor::SetTransactionCallback, nb::arg("callback"))
+        .def("clear_transaction_callback",
+            &TextEditor::ClearTransactionCallback)
+        .def("has_transaction_callback",
+            &TextEditor::HasTransactionCallback)
         .def("set_line_decorator",
             &TextEditor::SetLineDecorator,
             nb::arg("width"), nb::arg("callback"),
@@ -680,6 +727,12 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::ClearCustomCaretRenderer)
         .def("has_custom_caret_renderer",
             &TextEditor::HasCustomCaretRenderer)
+        .def("set_custom_line_number_renderer",
+            &TextEditor::SetCustomLineNumberRenderer, nb::arg("callback"))
+        .def("clear_custom_line_number_renderer",
+            &TextEditor::ClearCustomLineNumberRenderer)
+        .def("has_custom_line_number_renderer",
+            &TextEditor::HasCustomLineNumberRenderer)
         .def("set_line_number_context_menu_callback",
             &TextEditor::SetLineNumberContextMenuCallback, nb::arg("callback"))
         .def("clear_line_number_context_menu_callback",

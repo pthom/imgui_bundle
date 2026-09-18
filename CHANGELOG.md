@@ -36,6 +36,20 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 - Some errors are now reported with a more specific exception (`ValueError`, `IndexError`) where they used to raise a
   `RuntimeError` coming from an `IM_ASSERT` (for example `ImVec2.from_dict()` with a missing key, or an out-of-range color index).
 
+## Updated bundled libraries
+
+- **ImGuiColorTextEdit**: updated to upstream's `master` branch (the `future` branch is now merged there).
+  East Asian wide glyphs (CJK characters take two grid cells), custom line number rendering
+  (`set_custom_line_number_renderer()` with the new `TextEditor.CustomLineNumber`), `set_text()` from a
+  list of lines, `find_word_start()` / `find_word_end()` plus a `whole_word` option on
+  `add_next_occurrence()` / `select_all_occurrences()`, `is_mouse_pos_over_text_area()`, a default
+  `align_middle` alignment for `scroll_to_line()`, and `clear_change_callback()` /
+  `clear_transaction_callback()` to deactivate a callback (passing `None` was documented but never
+  worked from Python). Upstream fixes: crash on empty text, double click word selection, autocomplete
+  window scrolling, and more editing shortcuts. Upstream's unicode `set_text()` / `get_text_as_*()`
+  overloads (`std::wstring`, `std::u16string`) are not bound: Python `str` already goes through the
+  UTF-8 API.
+
 ## Fixes
 
 - `ImDrawData.cmd_lists_count` is back, as a read-only property. Dear ImGui 1.92.9 made `CmdListsCount` obsolete, and it had

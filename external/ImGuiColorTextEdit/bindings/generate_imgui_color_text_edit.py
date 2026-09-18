@@ -136,15 +136,24 @@ def main() -> None:
     # per-line state should drive their own dict from the change callback;
     # demo_text_edit.py's breakpoint tab already does this.
     options.fn_exclude_by_name__regex = (
-        r"^(SetInsertor|SetDeletor|SetUserData|GetUserData|IterateUserData"
+        r"^(SetInsertor|ClearInsertor|HasInsertor"
+        r"|SetDeletor|ClearDeletor|HasDeletor"
+        r"|SetUserData|GetUserData|IterateUserData"
         # SetImGuiContext takes a forward-declared ImGuiContext*; only useful
         # for DLL builds (not recommended by upstream).
         r"|SetImGuiContext"
         # Autocomplete API depends on AutoCompleteConfig/State which we don't
         # currently bind (callback + chrono + Language* tangle). Revisit later.
         r"|SetAutoCompleteConfig|SetAutoCompleteSuggestions"
+        # Unicode text getters: Python str already covers every case via the
+        # UTF-8 API (GetText), and nanobind has no caster for std::u16string.
+        r"|GetTextAsU8String|GetTextAsWstring|GetTextAsU16String|GetTextAsU32String"
         r")$"
     )
+
+    # Unicode text setters (SetText overloads taking wstring_view/u16string_view):
+    # same rationale as the getters above, and nanobind has no caster for those types.
+    options.fn_exclude_by_param_type__regex = r"wstring_view|u8string_view|u16string_view|u32string_view"
 
     options.srcmlcpp_options.code_preprocess_function = preprocess
 

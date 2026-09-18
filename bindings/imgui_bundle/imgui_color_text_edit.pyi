@@ -263,23 +263,46 @@ class TextEditor:
     def get_text_left_margin(self) -> int:
         pass
 
-    # access text (using UTF-8 encoded strings)
-    # (see note below on cursor and scroll manipulation after setting new text)
+    # load new text into editor (see note below on cursor and scroll manipulation after setting new text)
+    #
+    # API calls to set/get text are available for all standard C++ UTF-8 and unicode string formats to support fast file en/de-coding
+    # other API calls use UTF-8 encoded std::strings
+    # Dear ImGui also uses UTF-8 encoding across the board for all internal string processing, text rendering, and widgets
+
+    # load UTF-8 encoded string(s)
+    @overload
     def set_text(self, text: str) -> None:
         pass
-    def get_text(self) -> str:
+    @overload
+    def set_text(self, lines: List[str]) -> None:
         pass
 
-    def get_cursor_text(self, cursor: int) -> str:
+
+    # load unicode encoded string(s)
+
+
+
+    def get_text(self) -> str:
+        """ get text from editor as UTF-8 encoded strings"""
         pass
-    def get_line_text(self, line: int) -> str:
-        pass
+
+
+    # get text from editor as unicode strings
+
+
+    # get part of text from editor as UTF-8 encoded strings
     @overload
     def get_section_text(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> str:
         pass
     @overload
     def get_section_text(self, selection: TextEditor.DocSelection) -> str:
         pass
+    def get_cursor_text(self, cursor: int) -> str:
+        pass
+    def get_line_text(self, line: int) -> str:
+        pass
+
+    # replace text in editor (new text must be UTF-8 encoded)
     @overload
     def replace_section_text(
         self,
@@ -293,8 +316,10 @@ class TextEditor:
         pass
 
     def clear_text(self) -> None:
+        """ clear the editor"""
         pass
 
+    # get editor status
     def is_empty(self) -> bool:
         pass
     def get_line_count(self) -> int:
@@ -357,9 +382,9 @@ class TextEditor:
         pass
     def shrink_selections(self) -> None:
         pass
-    def add_next_occurrence(self) -> None:
+    def add_next_occurrence(self, whole_word: bool = False) -> None:
         pass
-    def select_all_occurrences(self) -> None:
+    def select_all_occurrences(self, whole_word: bool = False) -> None:
         pass
     def any_cursor_has_selection(self) -> bool:
         pass
@@ -393,6 +418,8 @@ class TextEditor:
     # get information at mouse position (e.g. from ImGui::GetMousePos())
     def is_mouse_pos_over_glyph(self, mouse_pos: ImVec2Like) -> bool:
         pass
+    def is_mouse_pos_over_text_area(self, mouse_pos: ImVec2Like) -> bool:
+        pass
     def get_doc_pos_at_mouse_pos(self, mouse_pos: ImVec2Like) -> TextEditor.DocPos:
         pass
     def get_word_at_mouse_pos(self, mouse_pos: ImVec2Like) -> str:
@@ -404,7 +431,11 @@ class TextEditor:
         align_middle = enum.auto()                # (= 1)
         align_bottom = enum.auto()                # (= 2)
 
-    def scroll_to_line(self, line: int, alignment: TextEditor.Scroll) -> None:
+    def scroll_to_line(
+        self,
+        line: int,
+        alignment: TextEditor.Scroll = TextEditor.Scroll.align_middle
+        ) -> None:
         pass
     def get_first_visible_row(self) -> int:
         pass
@@ -435,7 +466,7 @@ class TextEditor:
     # * then call ScrollToLine to mark the exact scroll location (it cancels the possible SetCursor scroll request)
     # * call Render to properly update the entire state
     #
-    # this works while opening the editor as well as later
+    # this works while opening the editor for the first time as well as later
 
     # get glyph size in pixels
     def get_line_height(self) -> float:
@@ -457,7 +488,21 @@ class TextEditor:
         """ see if a visual position covers a glyph"""
         pass
 
-    # find/replace support
+    # find start or end of word from provided position
+    def find_word_start(
+        self,
+        pos: TextEditor.DocPos,
+        whole_word: bool = False
+        ) -> TextEditor.DocPos:
+        pass
+    def find_word_end(
+        self,
+        pos: TextEditor.DocPos,
+        whole_word: bool = False
+        ) -> TextEditor.DocPos:
+        pass
+
+    # find/replace support (strings must be UTF-8 encoded)
     def select_first_occurrence_of(
         self,
         text: str,
@@ -488,6 +533,14 @@ class TextEditor:
         pass
     def close_find_replace_window(self) -> None:
         pass
+    def has_find_string(self) -> bool:
+        pass
+    def find_next(self) -> None:
+        pass
+    def find_all(self) -> None:
+        pass
+
+    # internationalize find window labels (strings must be UTF-8 encoded)
     def set_find_button_label(self, label: str) -> None:
         pass
     def set_find_all_button_label(self, label: str) -> None:
@@ -496,16 +549,11 @@ class TextEditor:
         pass
     def set_replace_all_button_label(self, label: str) -> None:
         pass
-    def has_find_string(self) -> bool:
-        pass
-    def find_next(self) -> None:
-        pass
-    def find_all(self) -> None:
-        pass
 
     # access markers (line numbers are zero-based)
-    # markers are attached to lines and are not effected by inserts or deletes before
+    # markers are attached to lines and are not effected by inserts or deletes before that line
     # if a line with a marker is deleted, undo doesn't restore it
+    # tooltips must be UTF-8 encoded
     def add_marker(
         self,
         line: int,
@@ -521,8 +569,9 @@ class TextEditor:
         pass
 
     # access squiggly underlines
-    # squigglies are attached to glyphs and are not effected  by inserts or deletes before
+    # squiggles are attached to glyphs and are not effected  by inserts or deletes before that glyph
     # if a glyph with a squiggle is deleted, undo doesn't restore it
+    # tooltips must be UTF-8 encoded
     def add_squiggle(
         self,
         start: TextEditor.DocPos,
@@ -548,8 +597,12 @@ class TextEditor:
         """ specify a change callback (called when changes are made (including undo/redo))
          the delay parameter specifies a time in miliseconds that the editor will wait for before calling
          which helps in case you don't need to track every keystroke
-         passing None for callback deactivates the feature
         """
+        pass
+
+    def clear_change_callback(self) -> None:
+        pass
+    def has_change_callback(self) -> bool:
         pass
 
     class Change:
@@ -559,7 +612,7 @@ class TextEditor:
          in case of an overwrite, there will be two actions (first a delete and then an insert)
          the start parameters refer to the insert point or the start of the delete
          the end parameters refer to the end of the inserted text or the end of the deleted text
-         the text parameter contains the inserted or deleted text
+         the text parameter contains the inserted or deleted text (UTF-8 encoded)
          line and index values are zero-based
         """
         insert: bool
@@ -582,24 +635,26 @@ class TextEditor:
             """
             pass
 
+    # specify a transaction callback (live document changes in great detail)
+    # it provides a list of changes made to the document in a single transaction (in the right order)
+    # be carefull with this callback as it gets very verbose (called on every keystroke, delete, cut, paste, undo and redo)
     def set_transaction_callback(
         self,
         callback: Callable[[List[TextEditor.Change]], None]
         ) -> None:
-        """ specify a transaction callback (live document changes in great detail)
-         it provides a list of changes made to the document in a single transaction (in the right order)
-         be carefull with this callback as it gets very verbose (called on every keystroke, delete, cut, paste, undo and redo)
-         passing None deactivates the callback
-        """
+        pass
+    def clear_transaction_callback(self) -> None:
+        pass
+    def has_transaction_callback(self) -> bool:
         pass
 
     # line-based callbacks (line numbers are zero-based)
-    # insertor callback is called when for each line inserted and the result is used as the new line specific user data
+    # insertor callback is called for each line inserted and the result is used as the new line specific user data
     # deletor callback is called for each line deleted (line specific user data is passed to callback)
-    # setting either callback to None will deactivate that callback
+
 
     # line-based user data (line numbers are zero-based)
-    # allowing integrators to associate external data with select lines or all lines
+    # allowing integrators to associate external data with select lines
     # user data is an opaque None* that must be managed externally
     # user data is also passed to the decorator and popup callbacks (see below)
     # user data is attached to a line and insertions/deletions don't effect this
@@ -656,7 +711,7 @@ class TextEditor:
         caret_visible: bool
 
         # color of cursor caret as per the current palette
-        # that can also be ignored if custom caret has its own palette of animation
+        # this can also be ignored if custom caret has its own palette or animation
         caret_color: ImU32
 
         # index of the cursor being rendered (in case additional cursor information is required)
@@ -687,6 +742,60 @@ class TextEditor:
     def clear_custom_caret_renderer(self) -> None:
         pass
     def has_custom_caret_renderer(self) -> bool:
+        pass
+
+    class CustomLineNumber:
+        """ custom line number renderer"""
+        # draw list to submit rendering commands to
+        draw_list: ImDrawList
+
+        # top left corner of line number box
+        # can be used directly to submit drawing commands
+        pos: ImVec2
+
+        # visible size of line number box in pixels
+        size: ImVec2
+
+        # width of line number box in glyphs (this is variable)
+        # the editor calculates the number of digits required for the highest line number
+        digits: int
+
+        # line number to be rendered (zero-based)
+        line_number: int
+
+        # line number for current cursor (zero-based)
+        cursor_line_number: int
+
+        # line number color from current palette
+        # this can be ignored if custom renderer has its own palette or animation
+        color: ImU32
+        def __init__(
+            self,
+            pos: Optional[ImVec2Like] = None,
+            size: Optional[ImVec2Like] = None,
+            digits: int = int(),
+            line_number: int = int(),
+            cursor_line_number: int = int(),
+            color: Optional[ImU32] = None
+            ) -> None:
+            """Auto-generated default constructor with named params
+
+            Python bindings defaults:
+                If any of the params below is None, then its default value below will be used:
+                    * pos: ImVec2()
+                    * size: ImVec2()
+                    * color: ImU32()
+            """
+            pass
+
+    def set_custom_line_number_renderer(
+        self,
+        callback: Callable[[TextEditor.CustomLineNumber], None]
+        ) -> None:
+        pass
+    def clear_custom_line_number_renderer(self) -> None:
+        pass
+    def has_custom_line_number_renderer(self) -> bool:
         pass
 
     class PopupData:
