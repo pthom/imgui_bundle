@@ -165,11 +165,11 @@ A volumetric video, showing an ImGui interface to control the rendering paramete
 It is developed by Wojciech Jarosz and is built using Hello ImGui (which is included in Dear ImGui Bundle), in C++.
 It runs on Windows, Linux, macOS, iOS, and on the web via emscripten!
 
-```{figure} https://github.com/wkjarosz/hdrview/raw/master/resources/screenshot-ipad.jpg
+```{figure} ../images/hdrview.jpg
 :alt: HDRview screenshot
 :width: 600px
 :align: left
-HDRview running on an iPad as a webapp, viewing a luminance-chroma EXR image stored using XYZ primaries with chroma subsampling.
+An HDR photograph open in HDRview, alongside several multi-view and multi-part EXRs, with the Log window open below the viewport.
 ```
 
 Access HDRview online: [https://wkjarosz.github.io/hdrview/](

@@ -150,10 +150,21 @@ doc_serve:
 # Build HTML + PDF for Cloudflare deploy
 [group('docs')]
 doc_build_cf:
-    cd docs/book && BASE_URL=/doc jupyter-book build --html
-    cd docs/book && jupyter-book build --pdf
+    #!/usr/bin/env bash
+    set -euo pipefail
+    PDF=docs/book/_build/exports/imgui_bundle_book.pdf
+    (cd docs/book && BASE_URL=/doc jupyter-book build --html)
+    # jupyter-book exits 0 even when the typst compilation fails, so remove the
+    # previous export and check that a new one was really produced: otherwise a
+    # months-old PDF would be silently copied to the site.
+    rm -f "$PDF"
+    (cd docs/book && jupyter-book build --pdf)
+    if [ ! -f "$PDF" ]; then
+        echo "ERROR: the PDF export failed (see the typst errors above)." >&2
+        exit 1
+    fi
     mkdir -p docs/book/_build/html/assets
-    cp docs/book/_build/exports/imgui_bundle_book.pdf docs/book/_build/html/assets/imgui_bundle_book.pdf
+    cp "$PDF" docs/book/_build/html/assets/imgui_bundle_book.pdf
 
 
 # ==============================================================
