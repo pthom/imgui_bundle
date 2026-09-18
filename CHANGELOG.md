@@ -1,5 +1,23 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
+# Ongoing changes
+
+## Behavior change: StackLayout clips the content of fixed-size layouts
+
+`BeginHorizontal` / `BeginVertical` (StackLayout, by thedmd) now clip their content to the layout bounds, as in thedmd's
+implementation. ImGui Bundle had disabled this clipping since 2024, because it hid the content submitted after a nested
+layout; this is now fixed.
+
+Visible effect: a layout created with a fixed size cuts the content that overflows its box, instead of letting it draw
+over its neighbors. Layouts with an automatic size (the default) are not affected.
+
+```python
+imgui.begin_horizontal("row", hello_imgui.em_to_vec2(12, 0))  # fixed width: 12 em
+imgui.text("A long text which does not fit in 12 em")         # now cut at 12 em
+imgui.end_horizontal()
+```
+
+
 # v1.92.900
 
 ## Updated Dear ImGui to v1.92.9b
