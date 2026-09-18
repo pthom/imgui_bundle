@@ -4,12 +4,14 @@
 
 ## Behavior change: StackLayout clips the content of fixed-size layouts
 
-`BeginHorizontal` / `BeginVertical` (StackLayout, by thedmd) now clip their content to the layout bounds, as in thedmd's
-implementation. ImGui Bundle had disabled this clipping since 2024, because it hid the content submitted after a nested
-layout; this is now fixed.
+`BeginHorizontal` / `BeginVertical` (StackLayout, by thedmd) now clip their content on the axes where they were given a
+**fixed size**. ImGui Bundle had disabled thedmd's clipping since 2024, because it hid the content submitted after a nested
+layout.
 
-Visible effect: a layout created with a fixed size cuts the content that overflows its box, instead of letting it draw
-over its neighbors. Layouts with an automatic size (the default) are not affected.
+Visible effect: a layout created with a fixed width or height cuts the content that overflows it, instead of letting it draw
+over its neighbors. Axes with an automatic size (the default) are not clipped, so layouts created without a size are not
+affected. (This differs from thedmd's implementation, which also clips auto-sized layouts to their measured size: that cuts
+selection highlights and user-drawn decorations, and costs one draw command per layout.)
 
 ```python
 imgui.begin_horizontal("row", hello_imgui.em_to_vec2(12, 0))  # fixed width: 12 em
