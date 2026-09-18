@@ -8,7 +8,9 @@ from typing import Dict
 
 import pygame
 import pygame.event
+import pygame.scrap
 import pygame.time
+import time
 
 PygameKey = int
 
@@ -22,6 +24,37 @@ class PygameRenderer(ProgrammablePipelineRenderer):
 
         self._gui_time = None
         self._map_keys()
+        self._init_clipboard()
+
+    def _init_clipboard(self):
+        """Connect imgui to the system clipboard, via pygame.scrap (which needs an existing display surface)"""
+        try:
+            pygame.scrap.init()
+        except pygame.error:
+            return  # no display surface yet: imgui keeps its own in-app clipboard
+
+        # The accepted text type depends on the platform: macOS only accepts the utf-8 one, pygame's SCRAP_TEXT fails there.
+        text_types = ["text/plain;charset=utf-8", pygame.SCRAP_TEXT]
+        in_app_clipboard = {"text": ""}  # used when the system clipboard refuses the text
+
+        def get_clipboard_text(_ctx: imgui.internal.Context) -> str:
+            for text_type in text_types:
+                data = pygame.scrap.get(text_type)
+                if data:
+                    return data.decode("utf-8", errors="ignore").rstrip("\x00")
+            return in_app_clipboard["text"]
+
+        def set_clipboard_text(_ctx: imgui.internal.Context, text: str) -> None:
+            in_app_clipboard["text"] = text
+            for text_type in text_types:
+                try:
+                    pygame.scrap.put(text_type, text.encode("utf-8"))
+                    return
+                except pygame.error:
+                    pass
+
+        imgui.get_platform_io().platform_get_clipboard_text_fn = get_clipboard_text
+        imgui.get_platform_io().platform_set_clipboard_text_fn = set_clipboard_text
 
     def _map_keys(self):
         self.key_map = {
@@ -50,12 +83,13 @@ class PygameRenderer(ProgrammablePipelineRenderer):
             pygame.K_LSUPER: imgui.Key.left_super,
             pygame.K_RSUPER: imgui.Key.right_super,
 
-            # pygame.K_a: imgui.Key.a,
-            # pygame.K_c: imgui.Key.c,
-            # pygame.K_v: imgui.Key.v,
-            # pygame.K_x: imgui.Key.x,
-            # pygame.K_y: imgui.Key.y,
-            # pygame.K_z: imgui.Key.z,
+            # letters used by imgui's shortcuts: select all, copy, paste, cut, redo, undo
+            pygame.K_a: imgui.Key.a,
+            pygame.K_c: imgui.Key.c,
+            pygame.K_v: imgui.Key.v,
+            pygame.K_x: imgui.Key.x,
+            pygame.K_y: imgui.Key.y,
+            pygame.K_z: imgui.Key.z,
         }
 
         self.modifier_map = {
@@ -93,20 +127,19 @@ class PygameRenderer(ProgrammablePipelineRenderer):
             io.add_mouse_wheel_event(event.x * k, event.y * k)
             return True
 
-        processed_special_key = False
         if event.type in (pygame.KEYDOWN, pygame.KEYUP):
             is_down = event.type == pygame.KEYDOWN
             if event.key in self.key_map.keys():
                 io.add_key_event(self.key_map[event.key], down=is_down)
-                processed_special_key = True
             if event.key in self.modifier_map.keys():
                 io.add_key_event(self.modifier_map[event.key], down=is_down)
-                processed_special_key = True
 
-        if event.type == pygame.KEYDOWN and not processed_special_key:
+        if event.type == pygame.KEYDOWN:
+            # Text input: a key can be both a key event (e.g. C, for Ctrl+C) and a character.
+            # Control characters (enter, tab, backspace, escape, delete...) are key events only.
             for char in event.unicode:
                 code = ord(char)
-                if 0 < code < 0x10000:
+                if 32 <= code < 0x10000 and code != 127:
                     io.add_input_character(code)
 
             return True
@@ -133,12 +166,14 @@ class PygameRenderer(ProgrammablePipelineRenderer):
     def process_inputs(self):
         io = imgui.get_io()
 
-        current_time = pygame.time.get_ticks() / 1000.0
+        # Note: pygame.time.get_ticks() has a resolution of 1 ms. At high frame rates (no vsync) most frames would get
+        # a null delta: imgui's clock would then run faster than the wall clock, and double clicks would be missed.
+        current_time = time.perf_counter()
 
         if self._gui_time:
             io.delta_time = current_time - self._gui_time
         else:
             io.delta_time = 1.0 / 60.0
         if io.delta_time <= 0.0:
-            io.delta_time = 1.0 / 1000.0
+            io.delta_time = 1e-6
         self._gui_time = current_time

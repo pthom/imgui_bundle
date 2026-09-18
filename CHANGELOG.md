@@ -36,6 +36,9 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 - `imgui.color_picker4()` did not accept a list.
 - `ImColor.to_dict()` returned the red component for all keys; `ImColor.from_dict()` returned an `ImVec4`.
 - `imgui.internal.input_text_ex()` rejected every call ("incompatible function arguments").
+- Pure Python pygame backend (`python_backends/pygame_backend.py`): copy / cut / paste / select all / undo / redo work (their
+  keys were not forwarded to imgui), the system clipboard is used (via `pygame.scrap`), and double clicks are detected
+  (imgui's clock ran faster than the wall clock at high frame rates).
 - `imgui.internal.get_current_window()` raises an exception instead of crashing when called without a context or outside a frame.
 
 
