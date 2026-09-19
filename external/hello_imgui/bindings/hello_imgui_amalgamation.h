@@ -2387,7 +2387,7 @@ struct FpsIdling
     // If true, rendering is synchronized with the monitor refresh rate (commonly
     // known as *VSync*). This limits the frame rate to the display frequency
     // (e.g., 60 Hz, 120 Hz) and prevents unnecessary CPU/GPU load.
-    // *Only implemented with OpenGL*
+    // *Only implemented with OpenGL and Vulkan*
     //
     // If false, rendering runs as fast as possible, or is limited by `fpsMax`.
     // This is useful for benchmarking, offscreen rendering, or Jupyter/async workflows.
