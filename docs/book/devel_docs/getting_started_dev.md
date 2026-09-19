@@ -80,17 +80,18 @@ cmake --build . -j                              # or: --target _imgui_bundle, to
 Python bindings force GLFW + OpenGL3 as the backend. For other backends, build C++ only.
 :::
 
-## Build with ImmVision (OpenCV)
+## Build the C++ ImmVision demos with OpenCV
 
-ImmVision works without OpenCV (using `ImageBuffer` / numpy arrays). To also enable `cv::Mat` interop:
+ImmVision works without OpenCV (using `ImageBuffer` / numpy arrays), and never links it: the Python bindings do not use OpenCV at all.
+`cv::Mat` interop is a choice of each C++ application, which defines `IMMVISION_HAS_OPENCV` and links OpenCV by itself.
+
+Some C++ demos do this, in order to show more image processing (Sobel, blur, etc.):
 
 ```bash
-cmake ../.. --preset python_bindings \
-    -DPython_EXECUTABLE=$(which python) \
-    -DIMMVISION_FETCH_OPENCV=ON
+cmake ../.. -DIMGUI_BUNDLE_DEMOS_WITH_OPENCV=ON
 ```
 
-This fetches and builds a minimal OpenCV in the build directory. See [build_opencv_immvision.md](build_opencv_immvision.md) for platform-specific details.
+OpenCV must then be findable (installed, or via `-DOpenCV_DIR=...`). As a convenience, `-DIMMVISION_FETCH_OPENCV=ON` fetches and builds a minimal OpenCV in the build directory. See [build_opencv_immvision.md](build_opencv_immvision.md) for platform-specific details.
 
 
 ## Run the tests

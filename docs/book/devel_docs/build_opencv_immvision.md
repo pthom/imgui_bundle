@@ -1,49 +1,53 @@
 # OpenCV builds for immvision
 
-ImmVision no longer requires OpenCV — it works standalone with its own `ImageBuffer` type.
-OpenCV is optional and only needed for `cv::Mat` interop in C++. When enabled, a minimalist
-static OpenCV (only `core`, `imgcodecs`, `imgproc`) is used.
-How OpenCV is obtained depends on the platform. This document is the central reference
-for all OpenCV build/download strategies.
+ImmVision does not use OpenCV, and never links it: it works standalone with its own `ImageBuffer` type.
+The Python bindings and the wheels do not use OpenCV at all.
+
+`cv::Mat` interop is a choice of each C++ application: it defines `IMMVISION_HAS_OPENCV` (which
+enables header-only conversions in `immvision_types.h`) and links OpenCV by itself:
+
+```cmake
+find_package(OpenCV REQUIRED)
+target_compile_definitions(my_app PRIVATE IMMVISION_HAS_OPENCV)
+target_link_libraries(my_app PRIVATE opencv_core)
+```
+
+In this repository, only some C++ demos do this, when `IMGUI_BUNDLE_DEMOS_WITH_OPENCV=ON`
+(they then show more image processing: Sobel, blur, etc.).
+
+`IMMVISION_FETCH_OPENCV=ON` is a convenience which provides a minimalist static OpenCV
+(only `core`, `imgcodecs`, `imgproc`) when `find_package(OpenCV)` fails. It does not change how
+ImmVision is built. How OpenCV is obtained depends on the platform: this document is the central
+reference for these strategies.
 
 **When updating the OpenCV version**, check all the locations listed below.
 
 
-## Overview by platform
+## Overview by platform (with `IMMVISION_FETCH_OPENCV=ON`)
 
 | Platform | Strategy | Where |
 |----------|----------|-------|
-| Linux CI wheels | Pre-built once per container via `before-all` | `build_opencv.sh` |
-| Windows CI wheels | Pre-built once per runner via `before-all` (Git Bash) | `build_opencv.sh` |
-| Linux/macOS local `pip install` | Built from source at configure time | `find_opencv.cmake` → `immvision_fetch_opencv_from_source()` |
-| Windows x64 local `pip install` | Precompiled `opencv_world.dll` (fallback: source build) | `find_opencv.cmake` → `immvision_download_opencv_official_package_win()` |
-| Windows ARM64 local `pip install` | Built from source (precompiled x64 package skipped) | `find_opencv.cmake` → `immvision_fetch_opencv_from_source()` |
-| Emscripten | Precompiled package downloaded | `find_opencv.cmake` → `immvision_download_emscripten_precompiled_opencv_4_9_0()` |
+| Linux/macOS | Built from source at configure time | `fetch_opencv.cmake` → `immvision_fetch_opencv_from_source()` |
+| Windows x64 | Precompiled `opencv_world.dll` (fallback: source build) | `fetch_opencv.cmake` → `immvision_download_opencv_official_package_win()` |
+| Windows ARM64 | Built from source (precompiled x64 package skipped) | `fetch_opencv.cmake` → `immvision_fetch_opencv_from_source()` |
+| Emscripten | Precompiled package downloaded | `fetch_opencv.cmake` → `immvision_download_emscripten_precompiled_opencv_4_9_0()` |
 | Emscripten (rebuild) | Manual build, upload as release asset | See [Rebuilding emscripten package](#rebuilding-the-emscripten-precompiled-package) below |
 
 
 ## Key files
 
-- **`external/immvision/immvision/cmake/build_opencv.sh`** — Single bash script that downloads, builds, and installs
-  minimalist static OpenCV. Used by both CI (`before-all`) and CMake (called at configure
-  time via `execute_process`). This is the **single source of truth** for the minimalist
-  build flags and the OpenCV version used in source builds. Supports `--full` flag for
-  non-minimalist builds.
+- **`external/immvision/immvision/cmake/build_opencv.sh`**: bash script that downloads, builds, and installs
+  a minimalist static OpenCV. Called by CMake at configure time via `execute_process`. This is the
+  **single source of truth** for the minimalist build flags and the OpenCV version used in source
+  builds. Supports a `--full` flag for non-minimalist builds.
 
-- **`external/immvision/immvision/cmake/find_opencv.cmake`** — CMake entry point.
-  `immvision_find_opencv()` tries `find_package(OpenCV)` first (succeeds when CI has
-  pre-built it), then falls back to platform-specific strategies. On Linux/macOS, the
-  fallback calls `build_opencv.sh` via bash. On Windows x64, it tries a precompiled
-  `opencv_world.dll` first, then falls back to source build. On Windows ARM64, it skips
-  the precompiled x64 package and goes straight to source build.
+- **`external/immvision/immvision/cmake/fetch_opencv.cmake`**: CMake entry point.
+  `immvision_fetch_opencv()` tries `find_package(OpenCV)` first, then falls back to
+  platform-specific strategies (see the table above). It sets `OpenCV_DIR` in the cache, so that
+  the `find_package(OpenCV)` of the demos succeeds.
 
-- **`pyproject.toml`** — cibuildwheel config:
-  - `[tool.cibuildwheel.linux]`: `before-all` runs the script, `environment` sets `CMAKE_PREFIX_PATH`
-  - `[tool.cibuildwheel.windows]`: same script via Git Bash, `environment` sets `CMAKE_PREFIX_PATH` + `OpenCV_STATIC`
-  - `CMAKE_PREFIX_PATH` is used instead of `OpenCV_DIR` because the install layout
-    varies by MSVC version; `find_package` searches standard subdirectories under the prefix.
-
-- **`docs/book/devel_docs/oldies/emscripten_build.md`** — Redirects here for OpenCV.
+- **`bindings/imgui_bundle/demos_cpp/demos_immvision/CMakeLists.txt`**: where the demos define
+  `IMMVISION_HAS_OPENCV` and link OpenCV.
 
 
 ## Version and URL locations
@@ -53,46 +57,21 @@ When bumping the OpenCV version, update these locations:
 | What | File | What to change |
 |------|------|----------------|
 | Source build version (all platforms) | `external/immvision/immvision/cmake/build_opencv.sh` | `OPENCV_VERSION` variable |
-| Windows precompiled URL (fallback) | `find_opencv.cmake` | URL + MD5 in `immvision_download_opencv_official_package_win()` |
-| Emscripten precompiled URL | `find_opencv.cmake` | URL + MD5 in `immvision_download_emscripten_precompiled_opencv_4_9_0()` |
+| Windows precompiled URL (fallback) | `fetch_opencv.cmake` | URL + MD5 in `immvision_download_opencv_official_package_win()` |
+| Emscripten precompiled URL | `fetch_opencv.cmake` | URL + MD5 in `immvision_download_emscripten_precompiled_opencv_4_9_0()` |
 
 Note: the Windows fallback package (`opencv_world.dll`) and emscripten precompiled packages
-have **their own version lifecycle**. They don't need to match the source build version —
+have **their own version lifecycle**. They don't need to match the source build version:
 they are updated separately when new precompiled packages are built and uploaded as GitHub
-release assets. The Windows fallback is only used for local `pip install` on Windows
-(CI wheels use the static pre-build instead).
+release assets.
 
 
-## How the CI pre-build works (Linux and Windows)
+## Windows: opencv_world.dll
 
-Without pre-building, OpenCV is compiled from source for **each** Python version
-(~4 times per runner), which is the main build time bottleneck.
-
-The fix uses cibuildwheel's `before-all` to build OpenCV once per runner/container:
-1. `before-all` in `pyproject.toml` runs `external/immvision/immvision/cmake/build_opencv.sh <install_dir>`
-2. The script downloads the OpenCV tarball, builds minimalist static OpenCV, and installs it
-3. `environment` sets `OpenCV_DIR` (and `OpenCV_STATIC` on Windows)
-4. Each Python wheel build's `find_package(OpenCV)` finds the pre-built install and
-   skips building from source entirely
-
-On Linux, this applies to both manylinux and musllinux containers (each has its own
-`before-all`). On Windows, Git Bash (from Git for Windows, pre-installed on GitHub
-Actions runners) is used to run the same bash script.
-
-
-## Windows: static vs DLL
-
-Previously, Windows wheels shipped a precompiled `opencv_world.dll` (~50MB), making
-wheels ~25MB vs ~11MB on macOS/Linux. The CI pre-build strategy builds OpenCV 4.13.0
-statically instead, linking it into `_imgui_bundle.pyd` with no DLL needed. OpenCV 4.13.0
-is required because it recognizes MSVC 1950+ (Visual Studio 18/2025, `vc18` runtime).
-
-The DLL handling code in `find_opencv.cmake` (glob for `opencv_world*.dll`, install to
-wheel, `IMMVISION_OPENCV_WORLD_DLL` cache variable) degrades gracefully: when OpenCV is
-static, no DLLs are found and the entire chain is a no-op.
-
-For C++ app deployment (`imgui_bundle_add_app.cmake`), the `IMMVISION_OPENCV_WORLD_DLL`
-copy-to-output logic is similarly a no-op when no DLL exists.
+When the precompiled Windows package is used, C++ apps need `opencv_world*.dll` next to their exe.
+`fetch_opencv.cmake` publishes its path in the `IMMVISION_OPENCV_WORLD_DLL` cache variable, and
+`imgui_bundle_add_app.cmake` copies it to the output folder. When OpenCV is static, no DLL is
+found and this is a no-op.
 
 
 ## Windows ARM64 local builds
@@ -136,18 +115,6 @@ add_compile_options(-pthread)
 add_link_options(-pthread)
 ```
 
-For pyodide, also add:
-```cmake
-add_compile_options(
-  "-fwasm-exceptions"
-  "-sSUPPORT_LONGJMP"
-)
-add_link_options(
-  "-fwasm-exceptions"
-  "-sSUPPORT_LONGJMP"
-)
-```
-
 Note: to compile without pthread support, remove `-pthread` below and replace
 *twice* `-s USE_PTHREADS=1` by `-s USE_PTHREADS=0`.
 
@@ -188,11 +155,11 @@ build: call_cmake
     make install
 
 tgz: build
-    tar -czvf opencv_4.11_wasmexcept_pthread_fpic_emscripten_minimalist_install.tgz opencv_emscripten_install
+    tar -czvf opencv_4.11_pthread_fpic_emscripten_minimalist_install.tgz opencv_emscripten_install
 
 all: tgz
-    md5 opencv_4.11_wasmexcept_pthread_fpic_emscripten_minimalist_install.tgz
+    md5 opencv_4.11_pthread_fpic_emscripten_minimalist_install.tgz
 ```
 
 4. Upload the `.tgz` to a GitHub release, then update the URL and MD5 hash in
-   `find_opencv.cmake` → `immvision_download_emscripten_precompiled_opencv_4_9_0()`.
+   `fetch_opencv.cmake` → `immvision_download_emscripten_precompiled_opencv_4_9_0()`.

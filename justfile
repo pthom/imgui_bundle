@@ -75,7 +75,7 @@ ibex_build:
     mkdir -p build_ibex_ems && \
     cd build_ibex_ems && \
     if [ -f ~/emsdk/emsdk_env.sh ]; then source ~/emsdk/emsdk_env.sh; fi && \
-    emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DIMMVISION_FETCH_OPENCV=ON && \
+    emcmake cmake .. -DCMAKE_BUILD_TYPE=Release -DIMMVISION_FETCH_OPENCV=ON -DIMGUI_BUNDLE_DEMOS_WITH_OPENCV=ON && \
     make -j 4
 
 # Clean imgui bundle explorer emscripten build

@@ -7,14 +7,6 @@
 // 3. After migration, run the same program and compare visually
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
 
-#ifdef IMMVISION_HAS_OPENCV
-//#define USE_OPENCV_HERE   // Commented out: makes the build complex for no real value
-#endif
-#ifdef USE_OPENCV_HERE
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/imgproc.hpp>
-#endif
-
 #include "immvision/immvision.h"
 #include "immapp/immapp.h"
 #include "demo_utils/api_demos.h"
@@ -72,58 +64,6 @@ void ImmVisionMakeTestSuite()
     if (!house.empty())
     {
         ImmVision::Inspector_AddImage(house, "house_rgb_u8", zoomKey);
-
-#ifdef USE_OPENCV_HERE
-        cv::Mat gray;
-        cv::cvtColor(house.to_cv_mat(), gray, cv::COLOR_RGB2GRAY);
-        ImmVision::Inspector_AddImage(gray, "house_gray_u8", zoomKey);
-
-        // Floyd-Steinberg dithered halftone (tests INTER_AREA downscale on dithered content)
-        {
-            cv::Mat fs;
-            gray.convertTo(fs, CV_32FC1);
-            for (int y = 0; y < fs.rows; y++)
-            {
-                for (int x = 0; x < fs.cols; x++)
-                {
-                    float old_val = fs.at<float>(y, x);
-                    float new_val = old_val > 127.5f ? 255.f : 0.f;
-                    float err = old_val - new_val;
-                    fs.at<float>(y, x) = new_val;
-                    if (x + 1 < fs.cols)                          fs.at<float>(y,     x + 1) += err * 7.f / 16.f;
-                    if (y + 1 < fs.rows && x > 0)                 fs.at<float>(y + 1, x - 1) += err * 3.f / 16.f;
-                    if (y + 1 < fs.rows)                           fs.at<float>(y + 1, x    ) += err * 5.f / 16.f;
-                    if (y + 1 < fs.rows && x + 1 < fs.cols)       fs.at<float>(y + 1, x + 1) += err * 1.f / 16.f;
-                }
-            }
-            cv::Mat halftone;
-            fs.convertTo(halftone, CV_8UC1);
-            ImmVision::Inspector_AddImage(halftone, "house_gray_halftone", zoomKey);
-        }
-
-        cv::Mat blur;
-        cv::GaussianBlur(gray, blur, cv::Size(), 7.);
-        ImmVision::Inspector_AddImage(blur, "house_blur_u8", zoomKey);
-
-        cv::Mat floatMat;
-        blur.convertTo(floatMat, CV_64FC1);
-        floatMat = floatMat / 255.;
-        ImmVision::Inspector_AddImage(floatMat, "house_f64", zoomKey);
-
-        // Float grayscale with Sobel-like gradient (useful for colormap testing)
-        {
-            cv::Mat sobelX, sobelY, sobelMag;
-            cv::Sobel(gray, sobelX, CV_32F, 1, 0);
-            cv::Sobel(gray, sobelY, CV_32F, 0, 1);
-            cv::magnitude(sobelX, sobelY, sobelMag);
-            // Normalize to 0-1 range
-            double minVal, maxVal;
-            cv::minMaxLoc(sobelMag, &minVal, &maxVal);
-            if (maxVal > 0)
-                sobelMag = sobelMag / maxVal;
-            ImmVision::Inspector_AddImage(sobelMag, "house_sobel_f32", zoomKey);
-        }
-#endif // USE_OPENCV_HERE
     }
 
     ImmVision::ImageBuffer bear = ImmVision::ImRead(assetsDir + "bear_transparent.png");

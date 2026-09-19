@@ -313,8 +313,7 @@ repair-wheel-command = ""
 #        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_IMMVISION=OFF" pip install -v .
 #    or
 #        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_IMMVISION=OFF" python -m build --wheel
-#    Note: immvision no longer requires OpenCV. It works fully without it.
-#    OpenCV support is optional (behind IMMVISION_HAS_OPENCV).
+#    Note: immvision does not use OpenCV (the python bindings never link it).
 #
 # 2. to disable hello_imgui (to avoid the windowing dependencies)
 #   Pass -DIMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF, e.g.:

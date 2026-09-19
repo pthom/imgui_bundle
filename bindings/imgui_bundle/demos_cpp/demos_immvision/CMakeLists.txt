@@ -13,9 +13,15 @@ hello_imgui_bundle_assets_from_folder(demo_immvision_link ${_da})
 
 # Some immvision demos use OpenCV for advanced image processing (Sobel, blur, etc.)
 # These parts are guarded behind #ifdef IMMVISION_HAS_OPENCV in the source.
-if(IMMVISION_HAS_OPENCV)
-    find_package(OpenCV REQUIRED)
-    target_link_libraries(demos_immvision PUBLIC opencv_imgproc)
-    target_link_libraries(demo_immvision_process PUBLIC opencv_imgproc)
-    target_link_libraries(demo_immvision_inspector PUBLIC opencv_imgproc)
+# ImmVision does not link OpenCV: like any application that wants cv::Mat interop,
+# the demos define IMMVISION_HAS_OPENCV and link OpenCV themselves.
+if(IMGUI_BUNDLE_DEMOS_WITH_OPENCV)
+    find_package(OpenCV QUIET)
+    if(NOT OpenCV_FOUND)
+        message(FATAL_ERROR "IMGUI_BUNDLE_DEMOS_WITH_OPENCV requires OpenCV: install it, set OpenCV_DIR, or pass -DIMMVISION_FETCH_OPENCV=ON")
+    endif()
+    foreach(target demos_immvision demo_immvision_process demo_immvision_inspector)
+        target_compile_definitions(${target} PUBLIC IMMVISION_HAS_OPENCV)
+        target_link_libraries(${target} PUBLIC opencv_core opencv_imgproc)
+    endforeach()
 endif()

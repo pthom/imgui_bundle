@@ -203,8 +203,9 @@ option(IMGUI_BUNDLE_WITH_IMMVISION "Build with immvision" ON)
 #
 # Note about ImmVision (Computer Vision Widgets)
 # -----------------------------------------------------------------------------
-# ImmVision now works without OpenCV (and uses ImmVision::ImageBuffer as the main image type).
-# - For C++, if OpenCV is installed and findable via find_package(OpenCV), ImmVision will also accept cv::Mat (cv::Mat convert to ImageBuffer internally with zero copy when possible). You may set IMMVISION_FETCH_OPENCV to ON to automatically fetch and build OpenCV in the build directory if OpenCV is not found on the system.
+# ImmVision works without OpenCV, and never links it (it uses ImmVision::ImageBuffer as the main image type).
+# - For C++, applications that use OpenCV can define IMMVISION_HAS_OPENCV and link OpenCV themselves:
+#   ImmVision will then also accept cv::Mat (header-only conversion to ImageBuffer, zero copy when possible).
 # - For Python, OpenCV is not required at all (numpy arrays are supported and convert to ImageBuffer internally with zero copy).
 
 
@@ -259,6 +260,13 @@ if(PROJECT_IS_TOP_LEVEL)
 else()
     option(IMGUI_BUNDLE_BUILD_DEMOS "Build imgui_bundle C++ demos" OFF)
 endif()
+
+# IMGUI_BUNDLE_DEMOS_WITH_OPENCV: some immvision demos show more features with OpenCV (Sobel, blur, etc.)
+# -----------------------------------------------------------------------------
+# If ON, the demos define IMMVISION_HAS_OPENCV and link OpenCV themselves
+# (like any application that wants cv::Mat interop). OpenCV must then be findable:
+# install it, set OpenCV_DIR, or pass -DIMMVISION_FETCH_OPENCV=ON to fetch a minimal version.
+option(IMGUI_BUNDLE_DEMOS_WITH_OPENCV "Link the C++ immvision demos with OpenCV" OFF)
 
 # IMGUI_BUNDLE_BUILD_IMGUI_EXPLORER_APP: Build ImGui Explorer standalone exe
 # (the library imgui_explorer_lib is controlled by IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB)
@@ -542,7 +550,7 @@ message(STATUS "
 
     UI Extensions:
     ---------------------------------------------------------------------------
-    IMGUI_BUNDLE_WITH_IMMVISION:           ${IMGUI_BUNDLE_WITH_IMMVISION} (IMMVISION_HAS_OPENCV=${IMMVISION_HAS_OPENCV})
+    IMGUI_BUNDLE_WITH_IMMVISION:           ${IMGUI_BUNDLE_WITH_IMMVISION} (IMGUI_BUNDLE_DEMOS_WITH_OPENCV=${IMGUI_BUNDLE_DEMOS_WITH_OPENCV})
     IMGUI_BUNDLE_WITH_IMPLOT:              ${IMGUI_BUNDLE_WITH_IMPLOT}
     IMGUI_BUNDLE_WITH_IMPLOT3D:            ${IMGUI_BUNDLE_WITH_IMPLOT3D}
     IMGUI_BUNDLE_WITH_IMANIM:              ${IMGUI_BUNDLE_WITH_IMANIM}

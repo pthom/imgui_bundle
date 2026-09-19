@@ -42,8 +42,13 @@ ImTextureID: TypeAlias = int
 # These types do not depend on OpenCV.
 #
 # C++ users:
-#     If OpenCV is available (IMMVISION_HAS_OPENCV is defined), all types provide
-#     implicit conversions to/from their OpenCV equivalents:
+#     If your application uses OpenCV, define IMMVISION_HAS_OPENCV before including ImmVision
+#     (preferably for the whole target), and link OpenCV in your application, e.g. with CMake:
+#         find_package(OpenCV REQUIRED)
+#         target_compile_definitions(my_app PRIVATE IMMVISION_HAS_OPENCV)
+#         target_link_libraries(my_app PRIVATE opencv_core)
+#     All types then provide implicit conversions to/from their OpenCV equivalents
+#     (these conversions are header-only):
 #         ImageBuffer <-> cv::Mat        (zero-copy via ImageBuffer(cv::Mat) and to_cv_mat())
 #         Point       <-> cv::Point      (implicit both ways)
 #         Point2d     <-> cv::Point2d    (implicit both ways)

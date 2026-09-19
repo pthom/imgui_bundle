@@ -26,6 +26,21 @@ imgui.get_style().curve_tessellation_max_error = 1.12   # was: curve_tessellatio
 - Disabled color buttons keep the same color as enabled ones.
 - Test Engine: new `TestContext.item_drag_to_pos()`, `TestContext.item_make_visible()` and `TestOpFlags_.no_wait_when_moving`.
 
+## Breaking change (C++): ImmVision never links OpenCV, `cv::Mat` interop is an application choice
+
+ImmVision does not look for OpenCV at configure time anymore, and never links it: the `cv::` conversions are now header-only.
+C++ applications that pass `cv::Mat` to ImmVision define `IMMVISION_HAS_OPENCV` and link OpenCV by themselves:
+
+```cmake
+find_package(OpenCV REQUIRED)
+target_compile_definitions(my_app PRIVATE IMMVISION_HAS_OPENCV)
+target_link_libraries(my_app PRIVATE opencv_core)
+```
+
+- `IMMVISION_FETCH_OPENCV` is now only a convenience that provides a minimal OpenCV to `find_package(OpenCV)`: it does not enable the interop by itself.
+- New option `IMGUI_BUNDLE_DEMOS_WITH_OPENCV` (OFF): link the C++ ImmVision demos with OpenCV.
+- Python is not concerned (the bindings never used OpenCV).
+
 ## Behavior change: StackLayout clips the content of fixed-size layouts
 
 `BeginHorizontal` / `BeginVertical` (StackLayout, by thedmd) now clip their content on the axes where they were given a

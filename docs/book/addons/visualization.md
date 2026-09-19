@@ -68,6 +68,13 @@ int main() {
 
 :::{note}
 This example uses `cv::Mat` from OpenCV, but **OpenCV is optional**. ImmVision works standalone with its own `ImmVision::ImageBuffer` type. If you don't need OpenCV, replace `cv::Mat` with `ImageBuffer` and use `UseRgbColorOrder()` instead.
+
+To pass `cv::Mat` to ImmVision, your application must define `IMMVISION_HAS_OPENCV` and link OpenCV by itself (ImmVision never links it, the conversions are header-only):
+```cmake
+find_package(OpenCV REQUIRED)
+target_compile_definitions(my_app PRIVATE IMMVISION_HAS_OPENCV)
+target_link_libraries(my_app PRIVATE opencv_core)
+```
 :::
 
 :::

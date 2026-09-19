@@ -6,7 +6,7 @@
 
 void demo_immvision_process()
 {
-    ImGui::TextWrapped("This demo requires OpenCV (Sobel filter, Gaussian blur, color conversion).");
+    ImGui::TextWrapped("This demo requires OpenCV (Sobel filter, Gaussian blur, color conversion). Build with -DIMGUI_BUNDLE_DEMOS_WITH_OPENCV=ON");
 }
 
 #else

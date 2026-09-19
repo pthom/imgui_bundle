@@ -85,7 +85,8 @@ Python bindings always force GLFW3 + OpenGL3. Pyodide forces SDL2 + OpenGL3.
 | `IMGUI_BUNDLE_AUTO_CLONE_SUBMODULES` | ON | Auto-clone submodules during configure |
 | `HELLOIMGUI_WITH_TEST_ENGINE` | ON (desktop) | Include ImGui Test Engine |
 | `HELLOIMGUI_USE_FREETYPE` | auto | Use FreeType for font rendering |
-| `IMMVISION_FETCH_OPENCV` | OFF | Fetch & build OpenCV for ImmVision |
+| `IMGUI_BUNDLE_DEMOS_WITH_OPENCV` | OFF | Link the C++ ImmVision demos with OpenCV (Sobel, blur, etc.) |
+| `IMMVISION_FETCH_OPENCV` | OFF | Convenience: fetch & build a minimal OpenCV if none is found (ImmVision itself never links OpenCV) |
 | `IMGUI_BUNDLE_BUILD_CI_AUTOMATION_TESTS` | OFF | Build CI automation tests |
 | `IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS` | ON | Include all ImAnim author demos in manual |
 
@@ -110,8 +111,7 @@ cmake --build . -j
 ```bash
 mkdir -p builds/python && cd builds/python
 cmake ../.. --preset python_bindings \
-    -DPython_EXECUTABLE=$(which python) \
-    -DIMMVISION_FETCH_OPENCV=ON
+    -DPython_EXECUTABLE=$(which python)
 cmake --build . -j
 ```
 
