@@ -7,6 +7,7 @@
    Also update Pyodide wheel filenames hardcoded in demos / docs — see
    [cloudflare_deploy.md → wheel filename references](cloudflare_deploy.md#when-to-update-wheel-filename-references).
 2. Check the web builds (Emscripten and Pyodide): see [Web checks before a release](#web-checks-before-a-release).
+   After an update of Dear ImGui, also check a third party renderer: see [Third party renderers check](#third-party-renderers-check).
 3. Create a GitHub release with a new tag (e.g. `v1.92.601`).
    The `wheels.yml` CI workflow builds and uploads wheels to PyPI automatically.
 4. Manually build and upload the macOS arm64 wheel (see below).
@@ -92,3 +93,26 @@ Then open:
 | http://localhost:6456/min_pyodide_app/demo_heart.html | Works. It installs `imgui-bundle` from PyPI, so it displays the last *released* version until the new one is published: open it again after the release to check that PyPI serves the new wheel |
 
 **Deploy**: `just cf_deploy_all_in_one`, see [Cloudflare deploy](cloudflare_deploy.md).
+
+
+## Third party renderers check
+
+Some libraries render Dear ImGui by themselves, from Python: they walk `ImDrawData`, `ImDrawList`, `ImDrawCmd` and the
+texture requests (`ImTextureData`) through the bindings. They are the most sensitive users of these bindings, and nothing
+in this repository exercises them the same way: a member renamed or removed by an update of Dear ImGui breaks them at
+runtime (this happened with `ImDrawData.cmd_lists_count` in v1.92.900).
+
+After an update of Dear ImGui, run one of them against the new wheel before tagging. For example
+[wgpu-py](https://github.com/pygfx/wgpu-py), whose imgui renderer is based on imgui_bundle:
+
+```bash
+python -m venv venv_wgpu && source venv_wgpu/bin/activate
+pip install wgpu rendercanvas glfw
+pip install path/to/the/new/imgui_bundle-xxx.whl    # or: pip install -v . (from this repository)
+git clone https://github.com/pygfx/wgpu-py.git
+python wgpu-py/examples/imgui_basic_example.py        # any of the examples/imgui_*.py
+```
+
+Expected: the window shows the Gui (text, widgets, fonts), and reacts to the mouse and the keyboard. An `AttributeError`
+on a draw data / draw list / texture member means that the bindings changed under the renderer: restore the member
+(possibly as a read-only property), or warn the maintainers before the release.
