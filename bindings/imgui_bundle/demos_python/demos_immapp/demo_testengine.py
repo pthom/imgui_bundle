@@ -57,7 +57,7 @@ def my_register_tests():
         ctx.set_ref("Dear ImGui Demo")                   # From now on, actions happen in the "Dear ImGui Demo" window
         ctx.item_open("**/Widgets")                         # Open the "Widgets", then "Basic" tree item
         ctx.item_open_all("**/Basic")
-        ctx.capture_screenshot_window("Dear ImGui Demo") # Capture window and save screenshot
+        ctx.capture_screenshot_window("//Dear ImGui Demo") # Capture window and save screenshot
         ctx.item_close("**/Widgets")
     test_capture_screenshot.test_func = test_capture_screenshot_func
 

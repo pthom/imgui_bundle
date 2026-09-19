@@ -62,7 +62,7 @@ void MyRegisterTests()
         ctx->SetRef("Dear ImGui Demo");                   // From now on, actions happen in the "Dear ImGui Demo" window
         ctx->ItemOpen("**/Widgets");                         // Open the "Widgets", then "Basic" tree item
         ctx->ItemOpenAll("**/Basic");
-        ctx->CaptureScreenshotWindow("Dear ImGui Demo"); // Capture window and save screenshot
+        ctx->CaptureScreenshotWindow("//Dear ImGui Demo"); // Capture window and save screenshot
         ctx->ItemClose("**/Widgets");
     };
     testCaptureScreenshot->TestFunc = testCaptureScreenshotFunc;
