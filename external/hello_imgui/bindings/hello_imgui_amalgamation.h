@@ -1565,6 +1565,7 @@ struct RunnerCallbacks
     //  behind the Gui. An example use case is if you have a 3D application
     //  like a mesh editor, or game, and just want the Gui to be drawn
     //  on top of that content.
+    //  (Not supported with the Vulkan rendering backend)
     VoidFunction CustomBackground = EmptyVoidFunction();
 
     // `PostRenderDockableWindows`: Fill it with a function that will be called

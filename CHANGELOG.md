@@ -120,6 +120,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
   - a texture is destroyed only once the device is idle (at exit, the app could end with `VK_ERROR_DEVICE_LOST`);
     the surface is destroyed at exit; `VK_KHR_portability_subset` is enabled when available (MoltenVK); textures do not keep their staging buffer.
   - `fps_idling.vsync_to_monitor` is implemented (it was only implemented with OpenGL).
+  - screenshots are implemented (`hello_imgui.final_app_window_screenshot()`; C++: `FinalAppWindowScreenshotRgbBuffer()`, `AppWindowScreenshotRgbBuffer()`).
   - Vulkan errors raise an exception with the name of the `VkResult` (they called `abort()`).
   - new CMake option `HELLOIMGUI_VULKAN_VALIDATION`: enables the validation layers.
 
