@@ -39,6 +39,7 @@ target_link_libraries(my_app PRIVATE opencv_core)
 
 - `IMMVISION_FETCH_OPENCV` is now only a convenience that provides a minimal OpenCV to `find_package(OpenCV)`: it does not enable the interop by itself.
 - New option `IMGUI_BUNDLE_DEMOS_WITH_OPENCV` (OFF): link the C++ ImmVision demos with OpenCV.
+- On Windows, `IMMVISION_FETCH_OPENCV` always builds a static OpenCV from source (the precompiled `opencv_world.dll` pack is not compatible with Visual Studio 2026). `imgui_bundle_add_app` does not copy `opencv_world.dll` next to the apps anymore.
 - Python is not concerned (the bindings never used OpenCV).
 
 ## Behavior change: StackLayout clips the content of fixed-size layouts

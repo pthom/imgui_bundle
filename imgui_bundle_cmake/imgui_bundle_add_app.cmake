@@ -25,13 +25,6 @@ function(imgui_bundle_add_app)
     hello_imgui_add_app(${args})
     target_link_libraries(${app_name} PRIVATE imgui_bundle)
 
-	if (IMMVISION_OPENCV_WORLD_DLL AND WIN32)
-		hello_imgui_get_real_output_directory(${app_name} real_output_directory)
-		foreach(dll_file ${IMMVISION_OPENCV_WORLD_DLL})
-			file(COPY ${dll_file} DESTINATION ${real_output_directory})
-		endforeach()
-	endif()
-
 	# if (MSVC)
 	# 	hello_imgui_msvc_target_group_sources(${app_name})
 	# endif()

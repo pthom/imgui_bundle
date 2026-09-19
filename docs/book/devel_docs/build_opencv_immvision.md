@@ -28,8 +28,7 @@ reference for these strategies.
 | Platform | Strategy | Where |
 |----------|----------|-------|
 | Linux/macOS | Built from source at configure time | `fetch_opencv.cmake` → `immvision_fetch_opencv_from_source()` |
-| Windows x64 | Precompiled `opencv_world.dll` (fallback: source build) | `fetch_opencv.cmake` → `immvision_download_opencv_official_package_win()` |
-| Windows ARM64 | Built from source (precompiled x64 package skipped) | `fetch_opencv.cmake` → `immvision_fetch_opencv_from_source()` |
+| Windows (x64, ARM64) | Built from source at configure time (needs `bash`, provided by Git for Windows) | `fetch_opencv.cmake` → `immvision_fetch_opencv_from_source()` |
 | Emscripten | Precompiled package downloaded | `fetch_opencv.cmake` → `immvision_download_emscripten_precompiled_opencv_4_9_0()` |
 | Emscripten (rebuild) | Manual build, upload as release asset | See [Rebuilding emscripten package](#rebuilding-the-emscripten-precompiled-package) below |
 
@@ -57,28 +56,19 @@ When bumping the OpenCV version, update these locations:
 | What | File | What to change |
 |------|------|----------------|
 | Source build version (all platforms) | `external/immvision/immvision/cmake/build_opencv.sh` | `OPENCV_VERSION` variable |
-| Windows precompiled URL (fallback) | `fetch_opencv.cmake` | URL + MD5 in `immvision_download_opencv_official_package_win()` |
 | Emscripten precompiled URL | `fetch_opencv.cmake` | URL + MD5 in `immvision_download_emscripten_precompiled_opencv_4_9_0()` |
 
-Note: the Windows fallback package (`opencv_world.dll`) and emscripten precompiled packages
-have **their own version lifecycle**. They don't need to match the source build version:
-they are updated separately when new precompiled packages are built and uploaded as GitHub
-release assets.
+Note: the emscripten precompiled packages have **their own version lifecycle**. They don't need
+to match the source build version: they are updated separately when new precompiled packages are
+built and uploaded as GitHub release assets.
 
 
-## Windows: opencv_world.dll
+## Windows builds
 
-When the precompiled Windows package is used, C++ apps need `opencv_world*.dll` next to their exe.
-`fetch_opencv.cmake` publishes its path in the `IMMVISION_OPENCV_WORLD_DLL` cache variable, and
-`imgui_bundle_add_app.cmake` copies it to the output folder. When OpenCV is static, no DLL is
-found and this is a no-op.
-
-
-## Windows ARM64 local builds
-
-On ARM64 Windows, the precompiled x64 `opencv_world.dll` package is skipped automatically
-(detected via `CMAKE_SYSTEM_PROCESSOR`). The build goes straight to `build_opencv.sh`,
-which compiles OpenCV from source with the correct VS generator and architecture.
+`build_opencv.sh` compiles a static OpenCV from source with the same VS generator and architecture
+as the parent project (x64 or ARM64): no DLL is involved. A precompiled `opencv_world.dll` package
+was used in the past: it was removed, since it is not compatible with Visual Studio 2026.
+An application which links its own OpenCV DLLs shall copy them next to its exe by itself.
 
 SIMD is disabled globally (`-DWITH_SIMD=OFF` in `build_opencv.sh`) to avoid
 cross-compilation mismatches (ARM NEON headers vs x64 compiler). The performance impact
