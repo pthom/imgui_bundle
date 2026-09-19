@@ -116,6 +116,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
   offset in the UTF-8 bytes, which was wrong for any non-ASCII text.
 - Stubs: the default of `format` arguments reads `"%.3f"` (it was truncated to `"%.3"`; the runtime default was always right).
 - `imgui.internal.get_current_window()` raises an exception instead of crashing when called without a context or outside a frame.
+- Hello ImGui, Vulkan backend: a texture is destroyed only once the device is idle (at exit, the app could end with `VK_ERROR_DEVICE_LOST`).
 
 
 # v1.92.900
