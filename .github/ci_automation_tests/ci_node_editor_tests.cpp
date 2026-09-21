@@ -2,6 +2,8 @@
 //    ci_node_editor_tests          interactive: look at the scene, launch the tests from the test engine window
 //    ci_node_editor_tests --auto   run all the tests, then exit (exit code 0 if they all passed)
 //    ci_node_editor_tests --auto layout_combo   same, with a filter on the test names
+//    ci_node_editor_tests --viewports           (with or without --auto) enable multi-viewports: windows and popups can leave the
+//                                               application window, and become OS windows
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 #include "hello_imgui/hello_imgui.h"
 #include "imgui_test_engine/imgui_te_engine.h"
@@ -13,6 +15,7 @@
 
 
 static bool gAutoMode = false;
+static bool gViewports = false;
 static const char* gTestFilter = "node_editor";
 static bool gTestsQueued = false;
 static int gCountTested = 0, gCountSuccess = 0;
@@ -55,9 +58,15 @@ static void Gui()
 
 int main(int argc, char** argv)
 {
-    gAutoMode = (argc > 1) && (strcmp(argv[1], "--auto") == 0);
-    if (gAutoMode && argc > 2)
-        gTestFilter = argv[2];
+    for (int i = 1; i < argc; i++)
+    {
+        if (strcmp(argv[i], "--auto") == 0)
+            gAutoMode = true;
+        else if (strcmp(argv[i], "--viewports") == 0)
+            gViewports = true;
+        else
+            gTestFilter = argv[i];
+    }
 
     HelloImGui::RunnerParams runnerParams;
     runnerParams.appWindowParams.windowTitle = "imgui-node-editor tests";
@@ -70,6 +79,13 @@ int main(int argc, char** argv)
         // Run as fast as possible: the duration of the tests is mostly a number of frames
         runnerParams.fpsIdling.enableIdling = false;
         runnerParams.fpsIdling.vsyncToMonitor = false;
+    }
+    if (gViewports)
+    {
+        runnerParams.imGuiWindowParams.enableViewports = true;
+        // The platform backend tells which OS window is under the REAL mouse. The test engine simulates the mouse:
+        // let Dear ImGui find the hovered viewport from the (simulated) mouse position instead.
+        runnerParams.callbacks.PreNewFrame = []() { ImGui::GetIO().BackendFlags &= ~ImGuiBackendFlags_HasMouseHoveredViewport; };
     }
     runnerParams.callbacks.ShowGui = Gui;
     runnerParams.callbacks.RegisterTests = []() { NodeEditorTests_Register(HelloImGui::GetImGuiTestEngine()); };

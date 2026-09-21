@@ -92,6 +92,16 @@ jobs:
           cd .github/ci_automation_tests/build
           ./ci_node_editor_tests --auto
 
+      # Same tests with multi-viewports (windows and popups that leave the application window become OS windows).
+      # Xvfb runs without a window manager: allowed to fail until it has proved reliable there.
+      - name: Run imgui-node-editor tests with multi-viewports (nixes)
+        shell: bash
+        if: ${{ matrix.platform != 'windows-latest' }}
+        continue-on-error: true
+        run: |
+          cd .github/ci_automation_tests/build
+          ./ci_node_editor_tests --auto --viewports
+
       - name: Upload the screenshots of the imgui-node-editor tests
         if: ${{ always() && matrix.platform != 'windows-latest' }}
         uses: actions/upload-artifact@v7
