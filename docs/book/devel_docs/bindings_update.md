@@ -197,6 +197,8 @@ Then, in the node editor fork (`external/imgui-node-editor/imgui-node-editor`):
   first patch by hand if its check fails.
 - in its `.github/workflows/tests.yml`, bump the two tags of Dear ImGui (docking and master) used by the "stock Dear ImGui" job.
   (imgui_bundle is not pinned there: that workflow uses its `main` branch.)
+- in its `examples/cmake/Findimgui.cmake`, set `GIT_TAG` to the new commit of the imgui fork (tagged `bundle_YYYYMMDD`, so that
+  it survives the next rebase), and build the examples once: `cmake -S examples -B <build dir> && cmake --build <build dir>`.
 
 **5. Push updated forks**
 ```bash
