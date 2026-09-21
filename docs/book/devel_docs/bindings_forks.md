@@ -154,7 +154,8 @@ $ git log --oneline official/docking..imgui_bundle
 [Bundle] Python build: throwing IM_ASSERT support and std::function callback typedefs
 [Bundle] imgui_demo.cpp adaptations for the ImGui Explorer
 [Bundle] Emscripten / Pyodide: SDL2 backend fixes
-[Bundle] imgui-node-editor compatibility
+[Bundle] ImGuiContext::InputTextMultilineOverride
+[Bundle] Context hooks ImGuiContextHookType_BeginWindow / ImGuiContextHookType_EndWindow
 StackLayout: fix the vertical drift of items with a fractional height in horizontal layouts
 StackLayout: inflate an auto-sized layout to its parent only when it has springs
 StackLayout: fix unused parameter / variable warnings
@@ -164,11 +165,21 @@ StackLayout: thedmd's Stack Layout implementation v2.1 (PR #846)
 
 - **StackLayout** (`BeginHorizontal` / `BeginVertical` / `Spring`) comes from [thedmd's branch](https://github.com/thedmd/imgui/tree/feature/docking-layout-external). The first commit holds his three layout files verbatim plus the hooks ported to the current Dear ImGui; each following commit is one fix, proposed upstream to him. When he publishes a new version: replace the three files in the first commit, and drop the fixes he integrated.
 - When a change belongs to an existing theme, fold it into that commit (`git commit --fixup` then `git rebase --autosquash`) instead of stacking a new commit on top. A new commit is for a new theme.
+- **The two commits used by imgui-node-editor are generic** (context hooks called by `Begin()` / `End()`, and an override point for `InputTextMultiline()`): Dear ImGui does not know about the node editor. Each one defines a macro (`IMGUI_HAS_CONTEXT_HOOK_BEGIN_WINDOW`, `IMGUI_HAS_INPUT_TEXT_MULTILINE_OVERRIDE`) that the node editor tests. They are also published as patch files in the node editor fork (see below).
 - **What remains specific to Python** in this fork is small: the two `std::function` callback typedefs (`ImGuiInputTextCallback`, `ImGuiSizeCallback`), destructors marked `noexcept(false)` because `IM_ASSERT` throws in the Python build, and the `IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API` marker. All other Python adaptations live in the bundle (mechanisms 1 to 3 above).
 
 :::{warning}
 Because of the `std::function` typedefs, the Dear ImGui compiled inside the Python wheel is **not ABI compatible** with stock Dear ImGui headers (`ImGuiNextWindowData` has a different layout, the callback parameters have a different type), and `IMGUI_CHECKVERSION()` does not detect it. C++ code that shares an ImGui context with the wheel must be compiled with `IMGUI_BUNDLE_PYTHON_API` defined.
 :::
+
+### The imgui-node-editor fork
+
+The fork of imgui-node-editor is organised in the same way, on top of upstream's `develop` branch: generic commits first (fixes, the canvas, widgets inside nodes, node width, angled links), then a few `[Bundle]` commits, then the tests and the documentation. What it adds is described in its own `docs/fork_imgui_bundle.md`.
+
+- It **builds against a stock Dear ImGui**. The code that needs one of the two Dear ImGui commits above is guarded by their macros.
+- It carries **no Python adaptation and no Bundle-specific commit**: its public API is upstream's, plus additions. The functions that fill an array are wrapped in `external/imgui-node-editor/imgui_node_editor_pywrappers/` (mechanism 2). `Style.color_()` and `Config.settings_file` are custom bindings (mechanism 3): `SettingsFile` is a `const char*` that the editor keeps, so the Python property interns the strings it receives.
+- It has **automated tests** (`tests/node_editor_tests.cpp`, imgui_test_engine). The bundle runs them in CI with `.github/ci_automation_tests/ci_node_editor_tests.cpp` (`--auto` for the non-interactive mode).
+- **After rebasing the Dear ImGui fork**, refresh `misc/imgui_patches/` in the node editor fork (the command is in its `docs/fork_imgui_bundle.md`, chapter 3) and run the tests: they are what tells that popups, combos and multiline text still work inside a node with the new Dear ImGui.
 
 ### Preprocessor macros
 
@@ -178,19 +189,7 @@ Two preprocessor macros control conditional compilation in forked code:
 
 - **`IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API`**: Code inside this guard is **excluded** from Python bindings (it is always defined, but the binding generator skips it). Use this to hide C++ APIs that cannot be wrapped.
 
-These are often used together to swap an unwrappable API for a Python-friendly one:
-
-```cpp
-// From imgui-node-editor — replacing pointer+size with std::vector
-#ifdef IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
-IMGUI_NODE_EDITOR_API int GetSelectedNodes(NodeId* nodes, int size);
-IMGUI_NODE_EDITOR_API int GetSelectedLinks(LinkId* links, int size);
-#endif
-#ifdef IMGUI_BUNDLE_PYTHON_API
-IMGUI_NODE_EDITOR_API std::vector<NodeId> GetSelectedNodes();
-IMGUI_NODE_EDITOR_API std::vector<LinkId> GetSelectedLinks();
-#endif
-```
+These are often used together to swap an unwrappable API for a Python-friendly one (try the mechanisms 1 to 3 above first: a function that fills an array, for example, is better served by a wrapper header that returns a `std::vector`):
 
 ```cpp
 // From imgui.h — replacing function pointer with std::function
