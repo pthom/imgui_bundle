@@ -14,6 +14,9 @@
 
 #include "imgui-node-editor/imgui_node_editor_internal.h"
 #include "imgui-node-editor/imgui_node_editor.h"
+#include "imgui_node_editor_pywrappers/imgui_node_editor_pywrappers.h"
+#include <set>
+#include <string>
 #include "imgui_node_editor_immapp/node_editor_default_context.h"
 
 
@@ -121,10 +124,6 @@ void py_init_module_imgui_node_editor(nb::module_& m)
     ////////////////////    <generated_from:imgui_node_editor.h>    ////////////////////
     // # ifndef __IMGUI_NODE_EDITOR_H__
     //
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-    // #endif
-    //
 
 
     auto pyEnumPinKind =
@@ -161,7 +160,6 @@ void py_init_module_imgui_node_editor(nb::module_& m)
     auto pyClassConfig =
         nb::class_<ax::NodeEditor::Config>
             (m, "Config", "")
-        .def_rw("settings_file", &ax::NodeEditor::Config::SettingsFile, "")
         .def_rw("user_pointer", &ax::NodeEditor::Config::UserPointer, "")
         .def_rw("canvas_size_mode", &ax::NodeEditor::Config::CanvasSizeMode, "")
         .def_rw("drag_button_index", &ax::NodeEditor::Config::DragButtonIndex, "Mouse button index drag action will react to (0-left, 1-right, 2-middle)")
@@ -170,9 +168,27 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         .def_rw("context_menu_button_index", &ax::NodeEditor::Config::ContextMenuButtonIndex, "Mouse button index context menu action will react to (0-left, 1-right, 2-middle)")
         .def_rw("enable_smooth_zoom", &ax::NodeEditor::Config::EnableSmoothZoom, "")
         .def_rw("smooth_zoom_power", &ax::NodeEditor::Config::SmoothZoomPower, "")
-        .def_rw("force_window_content_width_to_node_width", &ax::NodeEditor::Config::ForceWindowContentWidthToNodeWidth, " [ADAPT_IMGUI_BUNDLE]\n\n By default, ImGui::TextWrapped() and ImGui::Separator(), and ImGui::SliderXXX\n will not work in a Node because they will not respect the node's bounds.\n Instead, they will use the width of the whole window.\n Set ForceWindowContentWidthToNodeWidth to True to fix this (this is disabled by default).")
+        .def_rw("force_window_content_width_to_node_width", &ax::NodeEditor::Config::ForceWindowContentWidthToNodeWidth, " Inside a node, Dear ImGui believes that the available width is the width of the window that hosts the editor:\n Separator(), SeparatorText(), CollapsingHeader() and TextWrapped() go far beyond the node, and sliders / input fields\n get a default width derived from the window.\n Set ForceWindowContentWidthToNodeWidth to True so that they use the width of the node (False by default).\n - All the text then wraps at the width of the node, so text does not give a width to the node: a node needs at least one\n   item with a fixed width (Dummy, a widget preceded by SetNextItemWidth()...), otherwise it collapses.\n - The default item width leaves room for a label of 4 wide characters. With a longer label, call SetNextItemWidth(),\n   otherwise the node grows at each frame (this is detected, and reported with an IM_ASSERT).")
         .def(nb::init<>())
         ;
+
+    pyClassConfig.def_prop_rw("settings_file",
+        [](const ax::NodeEditor::Config& self) -> std::optional<std::string> {
+            if (self.SettingsFile == nullptr)
+                return std::nullopt;
+            return std::string(self.SettingsFile);
+        },
+        [](ax::NodeEditor::Config& self, const std::optional<std::string>& value) {
+            // The strings are interned in a node-based container: its elements never move and are never freed,
+            // so the pointer stays valid for the whole life of the editor (and of the copies of the Config).
+            // Memory use is bounded by the number of distinct file names.
+            static std::set<std::string> interned_strings;
+            self.SettingsFile = value.has_value() ? interned_strings.insert(*value).first->c_str() : nullptr;
+        },
+        nb::arg("value").none(),
+        "File where the state of the editor is saved (positions of the nodes, view, selection). None: no settings file");
+
+
 
 
     auto pyEnumStyleColor =
@@ -262,19 +278,28 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         .def_rw("group_border_width", &ax::NodeEditor::Style::GroupBorderWidth, "")
         .def_rw("highlight_connected_links", &ax::NodeEditor::Style::HighlightConnectedLinks, "")
         .def_rw("snap_link_to_pin_dir", &ax::NodeEditor::Style::SnapLinkToPinDir, "when True link will start on the line defined by pin direction")
+        .def_rw("angled_links", &ax::NodeEditor::Style::AngledLinks, "when True (default), a link that would pass through its source or target node is routed around them, with angles")
         .def_rw("grid_size", &ax::NodeEditor::Style::GridSize, "size of a background grid cell, in canvas units (x and y independent)")
-        // #ifdef IMGUI_BUNDLE_PYTHON_API
-        //
-        .def("color_",
-            &ax::NodeEditor::Style::Color_,
-            nb::arg("idx_color"),
-            nb::rv_policy::reference)
-        .def("set_color_",
-            &ax::NodeEditor::Style::SetColor_, nb::arg("idx_color"), nb::arg("color"))
-        // #endif
-        //
         .def(nb::init<>())
         ;
+
+    pyClassStyle.def("color_",
+        [](ax::NodeEditor::Style& self, ax::NodeEditor::StyleColor idx_color) -> ImVec4& {
+            IM_ASSERT((idx_color >= 0) && (idx_color < ax::NodeEditor::StyleColor_Count));
+            return self.Colors[idx_color];
+        },
+        nb::arg("idx_color"),
+        "Python API for Style::Colors[]: returns a reference to the color (0 <= idx_color < StyleColor.count)",
+        nb::rv_policy::reference);
+    pyClassStyle.def("set_color_",
+        [](ax::NodeEditor::Style& self, ax::NodeEditor::StyleColor idx_color, ImVec4 color) {
+            IM_ASSERT((idx_color >= 0) && (idx_color < ax::NodeEditor::StyleColor_Count));
+            self.Colors[idx_color] = color;
+        },
+        nb::arg("idx_color"), nb::arg("color"),
+        "Python API for Style::Colors[]: sets the color (0 <= idx_color < StyleColor.count)");
+
+
 
 
     m.def("set_current_editor",
@@ -541,34 +566,6 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     m.def("get_selected_object_count",
         ax::NodeEditor::GetSelectedObjectCount);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-    m.def("get_selected_nodes",
-        []() -> std::vector<ax::NodeEditor::NodeId>
-        {
-            auto GetSelectedNodes_adapt_force_lambda = []() -> std::vector<ax::NodeEditor::NodeId>
-            {
-                auto lambda_result = ax::NodeEditor::GetSelectedNodes();
-                return lambda_result;
-            };
-
-            return GetSelectedNodes_adapt_force_lambda();
-        });
-
-    m.def("get_selected_links",
-        []() -> std::vector<ax::NodeEditor::LinkId>
-        {
-            auto GetSelectedLinks_adapt_force_lambda = []() -> std::vector<ax::NodeEditor::LinkId>
-            {
-                auto lambda_result = ax::NodeEditor::GetSelectedLinks();
-                return lambda_result;
-            };
-
-            return GetSelectedLinks_adapt_force_lambda();
-        });
-    // #endif
-    //
 
     m.def("is_node_selected",
         ax::NodeEditor::IsNodeSelected, nb::arg("node_id"));
@@ -661,34 +658,6 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     m.def("get_action_context_size",
         ax::NodeEditor::GetActionContextSize);
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
-
-    m.def("get_action_context_nodes",
-        []() -> std::vector<ax::NodeEditor::NodeId>
-        {
-            auto GetActionContextNodes_adapt_force_lambda = []() -> std::vector<ax::NodeEditor::NodeId>
-            {
-                auto lambda_result = ax::NodeEditor::GetActionContextNodes();
-                return lambda_result;
-            };
-
-            return GetActionContextNodes_adapt_force_lambda();
-        });
-
-    m.def("get_action_context_links",
-        []() -> std::vector<ax::NodeEditor::LinkId>
-        {
-            auto GetActionContextLinks_adapt_force_lambda = []() -> std::vector<ax::NodeEditor::LinkId>
-            {
-                auto lambda_result = ax::NodeEditor::GetActionContextLinks();
-                return lambda_result;
-            };
-
-            return GetActionContextLinks_adapt_force_lambda();
-        });
-    // #endif
-    //
 
     m.def("end_shortcut",
         ax::NodeEditor::EndShortcut);
@@ -747,24 +716,71 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     m.def("get_node_count",
         ax::NodeEditor::GetNodeCount, "Returns number of submitted nodes since Begin() call");
-    // #ifdef IMGUI_BUNDLE_PYTHON_API
-    //
+    // # endif
+    ////////////////////    </generated_from:imgui_node_editor.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:imgui_node_editor_pywrappers.h>    ////////////////////
+    m.def("get_selected_nodes",
+        []() -> std::vector<NodeId>
+        {
+            auto GetSelectedNodes_adapt_force_lambda = []() -> std::vector<NodeId>
+            {
+                auto lambda_result = ax::NodeEditor::GetSelectedNodes();
+                return lambda_result;
+            };
+
+            return GetSelectedNodes_adapt_force_lambda();
+        });
+
+    m.def("get_selected_links",
+        []() -> std::vector<LinkId>
+        {
+            auto GetSelectedLinks_adapt_force_lambda = []() -> std::vector<LinkId>
+            {
+                auto lambda_result = ax::NodeEditor::GetSelectedLinks();
+                return lambda_result;
+            };
+
+            return GetSelectedLinks_adapt_force_lambda();
+        });
+
+    m.def("get_action_context_nodes",
+        []() -> std::vector<NodeId>
+        {
+            auto GetActionContextNodes_adapt_force_lambda = []() -> std::vector<NodeId>
+            {
+                auto lambda_result = ax::NodeEditor::GetActionContextNodes();
+                return lambda_result;
+            };
+
+            return GetActionContextNodes_adapt_force_lambda();
+        });
+
+    m.def("get_action_context_links",
+        []() -> std::vector<LinkId>
+        {
+            auto GetActionContextLinks_adapt_force_lambda = []() -> std::vector<LinkId>
+            {
+                auto lambda_result = ax::NodeEditor::GetActionContextLinks();
+                return lambda_result;
+            };
+
+            return GetActionContextLinks_adapt_force_lambda();
+        });
 
     m.def("get_ordered_node_ids",
-        []() -> std::vector<ax::NodeEditor::NodeId>
+        []() -> std::vector<NodeId>
         {
-            auto GetOrderedNodeIds_adapt_force_lambda = []() -> std::vector<ax::NodeEditor::NodeId>
+            auto GetOrderedNodeIds_adapt_force_lambda = []() -> std::vector<NodeId>
             {
                 auto lambda_result = ax::NodeEditor::GetOrderedNodeIds();
                 return lambda_result;
             };
 
             return GetOrderedNodeIds_adapt_force_lambda();
-        },     "Fills an array with node id's in order they're drawn");
-    // #endif
-    //
-    // # endif
-    ////////////////////    </generated_from:imgui_node_editor.h>    ////////////////////
+        },     "Returns the node ids, in the order they are drawn");
+    ////////////////////    </generated_from:imgui_node_editor_pywrappers.h>    ////////////////////
 
 
     ////////////////////    <generated_from:node_editor_default_context.h>    ////////////////////

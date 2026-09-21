@@ -3781,7 +3781,10 @@ class IDStackTool:
 # -----------------------------------------------------------------------------
 
 class ContextHookType(enum.IntFlag):
-    """[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow, cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764"""
+    """[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow (called at the start of Begin() and at the end of End())
+    They let a library that changes the coordinate space (e.g. the zoomable canvas of imgui-node-editor) know when a window is begun from inside it.
+    cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764
+    """
 
     # ImGuiContextHookType_NewFramePre,     /* original C++ signature */
     new_frame_pre = enum.auto()  # (= 0)
@@ -4392,6 +4395,9 @@ class Context:
     input_text_line_index: TextIndex  # Temporary storage
     # ImGuiInputTextDeactivatedState InputTextDeactivatedState;    /* original C++ signature */
     input_text_deactivated_state: InputTextDeactivatedState
+    # [ADAPT_IMGUI_BUNDLE]: when set, InputTextMultiline() calls this function instead of its own implementation.
+    # InputTextMultiline() uses a child window: this lets a library inside which child windows do not work
+    # (e.g. the zoomable canvas of imgui-node-editor) provide a replacement while it is active.
     # ImFontBaked             InputTextPasswordFontBackupBaked;    /* original C++ signature */
     input_text_password_font_backup_baked: ImFontBaked
     # ImFontFlags             InputTextPasswordFontBackupFlags;    /* original C++ signature */

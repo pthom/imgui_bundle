@@ -92,15 +92,6 @@ def resume_editor_canvas() -> None:
 # # ifndef __IMGUI_NODE_EDITOR_H__
 #
 
-#
-# Adaptations for ImGui Bundle are noted with [ADAPT_IMGUI_BUNDLE]
-#
-# [ADAPT_IMGUI_BUNDLE]
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# #endif
-#
-
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -162,8 +153,6 @@ class SaveReasonFlags(enum.IntEnum):
 
 class Config:
 
-    # std::string             SettingsFile;    /* original C++ signature */
-    settings_file: str
     # void*                   UserPointer;    /* original C++ signature */
     user_pointer: Any
     # CanvasSizeModeAlias     CanvasSizeMode;    /* original C++ signature */
@@ -184,12 +173,14 @@ class Config:
     smooth_zoom_power: float
 
     # bool                    ForceWindowContentWidthToNodeWidth;    /* original C++ signature */
-    # [ADAPT_IMGUI_BUNDLE]
-    #
-    # By default, ImGui::TextWrapped() and ImGui::Separator(), and ImGui::SliderXXX
-    # will not work in a Node because they will not respect the node's bounds.
-    # Instead, they will use the width of the whole window.
-    # Set ForceWindowContentWidthToNodeWidth to True to fix this (this is disabled by default).
+    # Inside a node, Dear ImGui believes that the available width is the width of the window that hosts the editor:
+    # Separator(), SeparatorText(), CollapsingHeader() and TextWrapped() go far beyond the node, and sliders / input fields
+    # get a default width derived from the window.
+    # Set ForceWindowContentWidthToNodeWidth to True so that they use the width of the node (False by default).
+    # - All the text then wraps at the width of the node, so text does not give a width to the node: a node needs at least one
+    #   item with a fixed width (Dummy, a widget preceded by SetNextItemWidth()...), otherwise it collapses.
+    # - The default item width leaves room for a label of 4 wide characters. With a longer label, call SetNextItemWidth(),
+    #   otherwise the node grows at each frame (this is detected, and reported with an IM_ASSERT).
     force_window_content_width_to_node_width: bool
 
     # Config()    /* original C++ signature */
@@ -218,6 +209,8 @@ class Config:
     #     }
     def __init__(self) -> None:
         pass
+    # File where the state of the editor is saved (positions of the nodes, view, selection). None: no settings file
+    settings_file: Optional[str]
 
 class StyleColor(enum.IntEnum):
     """------------------------------------------------------------------------------"""
@@ -384,24 +377,12 @@ class Style:
     snap_link_to_pin_dir: (
         float  # when True link will start on the line defined by pin direction
     )
+    # bool    AngledLinks;    /* original C++ signature */
+    angled_links: bool  # when True (default), a link that would pass through its source or target node is routed around them, with angles
     # ImVec2  GridSize;    /* original C++ signature */
     grid_size: (
         ImVec2  # size of a background grid cell, in canvas units (x and y independent)
     )
-
-    # [ADAPT_IMGUI_BUNDLE]
-    #                            #ifdef IMGUI_BUNDLE_PYTHON_API
-    #
-    # python adapter for Style::Colors[StyleColor_Count]
-    # You can query and modify those values (0 <= idxColor < StyleColor.count)
-    # inline IMGUI_NODE_EDITOR_API ImVec4& Color_(StyleColor idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < StyleColor_Count)); return Colors[idxColor]; }    /* original C++ signature */
-    def color_(self, idx_color: StyleColor) -> ImVec4:
-        pass
-    # inline IMGUI_NODE_EDITOR_API void SetColor_(StyleColor idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < StyleColor_Count)); Colors[idxColor] = color; }    /* original C++ signature */
-    def set_color_(self, idx_color: StyleColor, color: ImVec4Like) -> None:
-        pass
-    #                            #endif
-    #
 
     # Style()    /* original C++ signature */
     #     {
@@ -432,6 +413,7 @@ class Style:
     #         GroupBorderWidth         = 1.0f;
     #         HighlightConnectedLinks  = 0.0f;
     #         SnapLinkToPinDir         = 0.0f;
+    #         AngledLinks              = true;
     #         GridSize                 = ImVec2(32.0f, 32.0f);
     #
     #         Colors[StyleColor_Bg]                 = ImColor( 60,  60,  70, 200);
@@ -456,6 +438,14 @@ class Style:
     #     }
     def __init__(self) -> None:
         pass
+
+    def color_(self, idx_color: StyleColor) -> ImVec4:
+        """Python API for Style::Colors[]: returns a reference to the color (0 <= idx_color < StyleColor.count)"""
+        ...
+
+    def set_color_(self, idx_color: StyleColor, color: ImVec4Like) -> None:
+        """Python API for Style::Colors[]: sets the color (0 <= idx_color < StyleColor.count)"""
+        ...
 
 # ------------------------------------------------------------------------------
 # --- Editor context lifecycle --------------------------------------------
@@ -929,18 +919,6 @@ def has_selection_changed() -> bool:
 def get_selected_object_count() -> int:
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# IMGUI_NODE_EDITOR_API std::vector<NodeId> GetSelectedNodes();    /* original C++ signature */
-def get_selected_nodes() -> List[NodeId]:
-    pass
-
-# IMGUI_NODE_EDITOR_API std::vector<LinkId> GetSelectedLinks();    /* original C++ signature */
-def get_selected_links() -> List[LinkId]:
-    pass
-
-# #endif
-#
 # IMGUI_NODE_EDITOR_API bool IsNodeSelected(NodeId nodeId);    /* original C++ signature */
 def is_node_selected(node_id: NodeId) -> bool:
     pass
@@ -1105,18 +1083,6 @@ def accept_create_node() -> bool:
 def get_action_context_size() -> int:
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# IMGUI_NODE_EDITOR_API std::vector<NodeId> GetActionContextNodes();    /* original C++ signature */
-def get_action_context_nodes() -> List[NodeId]:
-    pass
-
-# IMGUI_NODE_EDITOR_API std::vector<LinkId> GetActionContextLinks();    /* original C++ signature */
-def get_action_context_links() -> List[LinkId]:
-    pass
-
-# #endif
-#
 # IMGUI_NODE_EDITOR_API void EndShortcut();    /* original C++ signature */
 def end_shortcut() -> None:
     pass
@@ -1205,16 +1171,6 @@ def get_node_count() -> int:
     """Returns number of submitted nodes since Begin() call"""
     pass
 
-# #ifdef IMGUI_BUNDLE_PYTHON_API
-#
-# IMGUI_NODE_EDITOR_API std::vector<NodeId> GetOrderedNodeIds();    /* original C++ signature */
-def get_ordered_node_ids() -> List[NodeId]:
-    """Fills an array with node id's in order they're drawn"""
-    pass
-
-# #endif
-#
-
 # ------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------
@@ -1222,6 +1178,34 @@ def get_ordered_node_ids() -> List[NodeId]:
 # ------------------------------------------------------------------------------
 # # endif
 ####################    </generated_from:imgui_node_editor.h>    ####################
+
+####################    <generated_from:imgui_node_editor_pywrappers.h>    ####################
+
+# The C++ API fills an array provided by the caller (`int GetSelectedNodes(NodeId* nodes, int size)`).
+# The Python API returns a list.
+
+# IMGUI_NODE_EDITOR_API std::vector<NodeId> GetSelectedNodes();    /* original C++ signature */
+def get_selected_nodes() -> List[NodeId]:
+    pass
+
+# IMGUI_NODE_EDITOR_API std::vector<LinkId> GetSelectedLinks();    /* original C++ signature */
+def get_selected_links() -> List[LinkId]:
+    pass
+
+# IMGUI_NODE_EDITOR_API std::vector<NodeId> GetActionContextNodes();    /* original C++ signature */
+def get_action_context_nodes() -> List[NodeId]:
+    pass
+
+# IMGUI_NODE_EDITOR_API std::vector<LinkId> GetActionContextLinks();    /* original C++ signature */
+def get_action_context_links() -> List[LinkId]:
+    pass
+
+# IMGUI_NODE_EDITOR_API std::vector<NodeId> GetOrderedNodeIds();    /* original C++ signature */
+def get_ordered_node_ids() -> List[NodeId]:
+    """Returns the node ids, in the order they are drawn"""
+    pass
+
+####################    </generated_from:imgui_node_editor_pywrappers.h>    ####################
 
 ####################    <generated_from:node_editor_default_context.h>    ####################
 

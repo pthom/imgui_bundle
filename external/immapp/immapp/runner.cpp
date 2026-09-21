@@ -21,6 +21,7 @@
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+#include "imgui-node-editor/imgui_canvas.h"
 std::function<void()> FnResetImGuiNodeEditorId; // may be bound from pybind_imgui_node_editor.cpp
 void UpdateNodeEditorColorsFromImguiColors();
 #endif
@@ -34,6 +35,7 @@ void UpdateNodeEditorColorsFromImguiColors();
 #endif
 
 #include <chrono>
+#include <cstring>
 #include <cassert>
 #include <filesystem>
 
@@ -50,6 +52,7 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         std::optional<ax::NodeEditor::EditorContext *> _NodeEditorContext;
         ax::NodeEditor::Config _NodeEditorConfig;
+        std::string _NodeEditorSettingsFile; // owns the string pointed to by _NodeEditorConfig.SettingsFile
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
@@ -109,9 +112,12 @@ namespace ImmApp
                 gImmAppContext._NodeEditorConfig = addOnsParams.withNodeEditorConfig.value();
 
             // Replace settings file name if default
-            if (gImmAppContext._NodeEditorConfig.SettingsFile == "NodeEditor.json")
+            // (Config::SettingsFile is a const char*, and the editor keeps the pointer: the string is owned by gImmAppContext)
+            const char* settingsFile = gImmAppContext._NodeEditorConfig.SettingsFile;
+            if (settingsFile != nullptr && strcmp(settingsFile, "NodeEditor.json") == 0)
             {
-                gImmAppContext._NodeEditorConfig.SettingsFile = NodeEditorSettingsLocation(runnerParams);
+                gImmAppContext._NodeEditorSettingsFile = NodeEditorSettingsLocation(runnerParams);
+                gImmAppContext._NodeEditorConfig.SettingsFile = gImmAppContext._NodeEditorSettingsFile.c_str();
             }
 
             gImmAppContext._NodeEditorContext = ax::NodeEditor::CreateEditor(&gImmAppContext._NodeEditorConfig);
@@ -158,6 +164,11 @@ namespace ImmApp
             // Propagate withLatex convenience flag into MarkdownOptions.
             if (addOnsParams.withLatex)
                 addOnsParams.withMarkdownOptions->withLatex = true;
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+            // Child windows do not work inside the canvas of the node editor: markdown code blocks are rendered as inline code there
+            if (!addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows)
+                addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows = []() { return !ImGuiEx::IsInsideCanvas(); };
+#endif
             ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
 
             runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::SequenceFunctions(
