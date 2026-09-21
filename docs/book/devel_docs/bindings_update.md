@@ -181,6 +181,22 @@ For imgui itself, this runs [external/imgui/bindings/generate_imgui.py](https://
 
 **4. Examine, build, and test** (see steps 3-4 above)
 
+**4b. Check imgui-node-editor** (it relies on two commits of the imgui fork: see [the imgui-node-editor fork](bindings_forks.md))
+
+Run its automated tests: they tell whether popups, combos and multiline text still work inside a node with the new Dear ImGui.
+```bash
+cmake -S .github/ci_automation_tests -B builds/ci_automation_tests -DCMAKE_BUILD_TYPE=Release
+cmake --build builds/ci_automation_tests --target ci_node_editor_tests -j
+./builds/ci_automation_tests/ci_node_editor_tests --auto     # (macOS: inside ci_node_editor_tests.app/Contents/MacOS/)
+```
+
+Then, in the node editor fork (`external/imgui-node-editor/imgui-node-editor`):
+- refresh the patch files of `misc/imgui_patches/` from the two rebased imgui commits ("Context hooks..." and
+  "ImGuiContext::InputTextMultilineOverride"). The command is in its `docs/fork_imgui_bundle.md`, chapter 3.
+  Check them with `git apply --check` against the new upstream tags (docking and master); rebuild the `master` variant of the
+  first patch by hand if its check fails.
+- in its `.github/workflows/tests.yml`, bump the three pins: the imgui_bundle commit, and the docking and master tags of Dear ImGui.
+
 **5. Push updated forks**
 ```bash
 cd external/imgui/imgui && git push --force-with-lease fork imgui_bundle && cd -
