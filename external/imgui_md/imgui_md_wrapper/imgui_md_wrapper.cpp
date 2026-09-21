@@ -383,6 +383,13 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             return imgui_md::check_html(str, str_end);
         }
 
+        bool can_use_child_windows() const override
+        {
+            if (!mMarkdownOptions->callbacks.CanUseChildWindows)
+                return true;
+            return mMarkdownOptions->callbacks.CanUseChildWindows();
+        }
+
         void render_code_block() override
         {
             auto code_without_last_empty_lines = [](const std::string code_)

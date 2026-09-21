@@ -137,6 +137,12 @@ namespace ImGuiMd
         //
         // Empty by default. Python fills it with urllib/pyodide, C++ users can fill it with libcurl, etc.
         MarkdownDownloadFunction OnDownloadData;
+
+        // CanUseChildWindows: callback that tells whether child windows can be used at this moment (empty by default, which means yes).
+        // Code blocks are rendered inside a child window. Where child windows do not work (e.g. inside the canvas of
+        // imgui-node-editor), return false: code blocks are then rendered as inline code.
+        // ImmApp fills it when the node editor is available.
+        std::function<bool()> CanUseChildWindows;
     };
 
 

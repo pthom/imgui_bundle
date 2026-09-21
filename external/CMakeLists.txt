@@ -152,6 +152,14 @@ if(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
         target_compile_definitions(imgui_node_editor PRIVATE IMGUI_BUNDLE_DISABLE_IMMAPP)
     endif()
 
+    # Handwritten wrappers, only needed by the python bindings
+    if (IMGUI_BUNDLE_BUILD_PYTHON)
+        target_sources(imgui_node_editor PRIVATE
+            imgui-node-editor/imgui_node_editor_pywrappers/imgui_node_editor_pywrappers.cpp
+            imgui-node-editor/imgui_node_editor_pywrappers/imgui_node_editor_pywrappers.h
+        )
+    endif()
+
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
     set(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR ON CACHE INTERNAL "" FORCE)
 endif()

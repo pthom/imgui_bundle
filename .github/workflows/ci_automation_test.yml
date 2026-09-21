@@ -30,7 +30,7 @@ jobs:
           sudo apt-get update && sudo apt-get install -y xorg-dev libgl1-mesa-dev libglfw3-dev libglew-dev
           sudo apt-get install -y xvfb
           sudo apt-get install -y libglfw3-dev
-          Xvfb :99 &
+          Xvfb :99 -screen 0 1920x1080x24 &
           echo "DISPLAY=:99.0" >> $GITHUB_ENV
 
       #      - name: Setup interactive tmate session
@@ -84,3 +84,18 @@ jobs:
         run: |
           cd .github/ci_automation_tests/build
           ./ci_automation_test_app_bundle
+
+      - name: Run imgui-node-editor tests (nixes)
+        shell: bash
+        if: ${{ matrix.platform != 'windows-latest' }}
+        run: |
+          cd .github/ci_automation_tests/build
+          ./ci_node_editor_tests --auto
+
+      - name: Upload the screenshots of the imgui-node-editor tests
+        if: ${{ always() && matrix.platform != 'windows-latest' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: node_editor_tests_captures
+          path: .github/ci_automation_tests/build/node_editor_tests_captures
+          if-no-files-found: ignore

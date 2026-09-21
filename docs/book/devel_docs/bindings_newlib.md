@@ -249,7 +249,7 @@ ImGui Bundle defines two preprocessor macros for conditional compilation when bu
 
 **Example: Replacing pointer+size with std::vector**
 
-Some C++ APIs use pointer + count patterns that don't translate well to Python. Example from imgui-node-editor:
+Some C++ APIs use pointer + count patterns that don't translate well to Python:
 
 ```cpp
 #ifdef IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API
@@ -261,6 +261,14 @@ Some C++ APIs use pointer + count patterns that don't translate well to Python. 
     IMGUI_NODE_EDITOR_API std::vector<NodeId> GetSelectedNodes();
 #endif
 ```
+
+:::{note}
+This requires a patch inside the library. When the Python version can be written with the public API of the library, prefer a
+**wrapper header** that lives in the bundle: this is what is done for imgui-node-editor, whose fork has no such `#ifdef`
+(the litgen option `fn_exclude_by_name_and_signature` hides the `NodeId* + int` version, and
+`external/imgui-node-editor/imgui_node_editor_pywrappers/` provides the one that returns a `std::vector`).
+See [Adapting an API for Python: where does the change go?](bindings_forks.md).
+:::
 
 ### Step 3-b: Handling function pointer callbacks
 

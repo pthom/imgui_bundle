@@ -2350,7 +2350,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumContextHookType =
-        nb::enum_<ImGuiContextHookType>(m, "ContextHookType", nb::is_arithmetic(), nb::is_flag(), "[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow, cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764")
+        nb::enum_<ImGuiContextHookType>(m, "ContextHookType", nb::is_arithmetic(), nb::is_flag(), " [ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow (called at the start of Begin() and at the end of End())\n They let a library that changes the coordinate space (e.g. the zoomable canvas of imgui-node-editor) know when a window is begun from inside it.\n cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764")
             .value("new_frame_pre", ImGuiContextHookType_NewFramePre, "")
             .value("new_frame_post", ImGuiContextHookType_NewFramePost, "")
             .value("end_frame_pre", ImGuiContextHookType_EndFramePre, "")
