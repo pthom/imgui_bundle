@@ -26,7 +26,10 @@ static void AutoModeUpdate()
     {
         if (ImGui::GetFrameCount() < 3)
             return;
-        ImGuiTestEngine_GetIO(engine).ConfigLogToTTY = true;  // so that a failure can be read in the CI log
+        ImGuiTestEngineIO& test_io = ImGuiTestEngine_GetIO(engine);
+        test_io.ConfigLogToTTY = true;                    // so that a failure can be read in the CI log
+        test_io.ConfigRunSpeed = ImGuiTestRunSpeed_Fast;  // teleport the mouse, skip the delays
+        test_io.ConfigNoThrottle = true;
         ImGuiTestEngine_QueueTests(engine, ImGuiTestGroup_Tests, gTestFilter);
         gTestsQueued = true;
     }
@@ -62,6 +65,12 @@ int main(int argc, char** argv)
     runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::NoDefaultWindow;
     runnerParams.iniDisable = true;
     runnerParams.useImGuiTestEngine = true;
+    if (gAutoMode)
+    {
+        // Run as fast as possible: the duration of the tests is mostly a number of frames
+        runnerParams.fpsIdling.enableIdling = false;
+        runnerParams.fpsIdling.vsyncToMonitor = false;
+    }
     runnerParams.callbacks.ShowGui = Gui;
     runnerParams.callbacks.RegisterTests = []() { NodeEditorTests_Register(HelloImGui::GetImGuiTestEngine()); };
     runnerParams.callbacks.BeforeExit = NodeEditorTests_Shutdown;
