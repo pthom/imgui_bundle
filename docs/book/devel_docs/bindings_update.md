@@ -195,7 +195,8 @@ Then, in the node editor fork (`external/imgui-node-editor/imgui-node-editor`):
   "ImGuiContext::InputTextMultilineOverride"). The command is in its `docs/fork_imgui_bundle.md`, chapter 3.
   Check them with `git apply --check` against the new upstream tags (docking and master); rebuild the `master` variant of the
   first patch by hand if its check fails.
-- in its `.github/workflows/tests.yml`, bump the three pins: the imgui_bundle commit, and the docking and master tags of Dear ImGui.
+- in its `.github/workflows/tests.yml`, bump the two tags of Dear ImGui (docking and master) used by the "stock Dear ImGui" job.
+  (imgui_bundle is not pinned there: that workflow uses its `main` branch.)
 
 **5. Push updated forks**
 ```bash
