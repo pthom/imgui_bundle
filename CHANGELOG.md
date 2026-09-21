@@ -59,6 +59,35 @@ imgui.text("A long text which does not fit in 12 em")         # now cut at 12 em
 imgui.end_horizontal()
 ```
 
+## imgui-node-editor: widgets inside nodes, and a fork that works with a stock Dear ImGui
+
+The fork of imgui-node-editor was reorganised. It does not contain anything specific to ImGui Bundle anymore, it builds against
+a stock Dear ImGui, and it has automated tests (run in CI) and its own
+[documentation](https://github.com/pthom/imgui-node-editor/blob/imgui_bundle/docs/fork_imgui_bundle.md).
+Dear ImGui itself does not know about the node editor anymore: it only provides two generic hooks that the editor uses.
+
+- Popups, combos, color pickers, tooltips and context menus opened from inside the editor work without `suspend()` / `resume()`,
+  now also **between** nodes (a background context menu, for example). Code that calls `suspend()` / `resume()` keeps working.
+- New `imgui_node_editor.Style.angled_links` (default: `True`): set it to `False` to always draw links as a single curve.
+- `get_selected_nodes()`, `get_selected_links()`, `get_action_context_nodes()`, `get_action_context_links()` and
+  `get_ordered_node_ids()` were silently limited to 1000 elements: not anymore.
+- `imgui_node_editor.Config.settings_file` is an `Optional[str]`: `None` means "no settings file".
+- New `imgui_md.MarkdownCallbacks.can_use_child_windows`. Markdown code blocks use a child window, which cannot work inside a
+  node: they are rendered as inline code there. ImmApp sets this callback for you. If you initialize the markdown renderer
+  without ImmApp and render code blocks inside a node, set it yourself.
+- C++: new `ed::InputTextMultiline()` (a multiline text field that works inside a node; `ImGui::InputTextMultiline()` is
+  redirected to it inside a node, as before) and `ImGuiEx::IsInsideCanvas()`.
+
+**Breaking change (C++)**: `ed::Config::SettingsFile` is a `const char*` again, as in upstream imgui-node-editor (it was a
+`std::string`). The editor keeps the pointer: keep your string alive, and assign its `c_str()`. String literals are not concerned,
+neither is Python. The hidden functions `Priv_ImGuiNodeEditor_EnterCanvas() / ExitCanvas() / IsInCanvas()` were removed from
+Dear ImGui: use `ImGuiEx::IsInsideCanvas()`.
+
+```cpp
+static std::string settingsFile = MySettingsFolder() + "/nodes.json";   // must outlive the editor
+config.SettingsFile = settingsFile.c_str();                             // was: config.SettingsFile = settingsFile;
+```
+
 ## Behavior change: ImVec in, ImVec out for the multi-float widgets
 
 `slider_float2/4`, `input_float2/4`, `color_edit3/4` and `color_picker3/4` now return an `ImVec2` / `ImVec4` when they are given
@@ -71,6 +100,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 
 ## Breaking changes
 
+- C++: `ed::Config::SettingsFile` is a `const char*` again (see the imgui-node-editor section above).
 - `imgui.set_drag_drop_payload(type, data, sz)` was removed: it took a raw buffer and was not usable from Python.
   Use `imgui.set_drag_drop_payload_py_id()` (see `demo_drag_and_drop.py`).
 - Some errors are now reported with a more specific exception (`ValueError`, `IndexError`) where they used to raise a
