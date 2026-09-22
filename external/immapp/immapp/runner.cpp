@@ -1,5 +1,4 @@
 #include "immapp.h"
-#include "immapp/markdown_host.h"
 
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
@@ -170,7 +169,6 @@ namespace ImmApp
             if (!addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows)
                 addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows = []() { return !ImGuiEx::IsInsideCanvas(); };
 #endif
-            InstallMarkdownHostServices();
             ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());  // the fonts load at the first render
 
             // Tear down markdown WHILE the GL context is still alive.

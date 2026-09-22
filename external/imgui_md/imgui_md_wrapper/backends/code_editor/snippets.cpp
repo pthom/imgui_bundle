@@ -1,16 +1,11 @@
 #include "snippets.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "imgui.h"
-#include "hello_imgui/icons_font_awesome_4.h"
-#include "immapp/code_utils.h"
-#include "immapp/clock.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
-#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
-#include "immapp/js_clipboard_tricks.h"
-#endif
+#include "imgui_md_wrapper/imgui_md_internal.h"
 
+#include <algorithm>
 #include <map>
-#include "fplus/fplus.hpp"
 
 
 namespace Snippets
@@ -75,10 +70,28 @@ namespace Snippets
       else if (!ctrl && shift && ImGui::IsKeyPressed(ImGuiKey_Delete))
           shallFillBrowserClipboard = true;
 
+      // ImmApp routes the clipboard to the browser (see js_clipboard_tricks in immapp)
       if (shallFillBrowserClipboard)
-          JsClipboard_SetClipboardText(editor.GetCursorText(0).c_str());
+          ImGui::SetClipboardText(editor.GetCursorText(0).c_str());
     }
 #endif // #if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+
+    // The copy button: the FontAwesome "copy" glyph when the current font has it (ImGui Bundle merges
+    // FontAwesome into its fonts), else two overlapping squares drawn with the draw list
+    static bool CopyButton(float lineHeight)
+    {
+        const ImWchar copyGlyph = 0xF0C5;  // ICON_FA_COPY, FontAwesome 4 and 6
+        if (ImGui::GetFont()->IsGlyphInFont(copyGlyph))
+            return ImGui::Button("\xef\x83\x85");
+        bool clicked = ImGui::Button("##copy", ImVec2(lineHeight * 1.2f, 0.f));
+        ImVec2 mi = ImGui::GetItemRectMin(), ma = ImGui::GetItemRectMax();
+        float s = (ma.y - mi.y) * 0.45f, cx = (mi.x + ma.x) * 0.5f, cy = (mi.y + ma.y) * 0.5f;
+        ImU32 col = ImGui::GetColorU32(ImGuiCol_Text);
+        ImDrawList* dl = ImGui::GetWindowDrawList();
+        dl->AddRect(ImVec2(cx - s * 0.7f, cy - s * 0.3f), ImVec2(cx + s * 0.3f, cy + s * 0.7f), col, 1.f);
+        dl->AddRect(ImVec2(cx - s * 0.3f, cy - s * 0.7f), ImVec2(cx + s * 0.7f, cy + s * 0.3f), col, 1.f);
+        return clicked;
+    }
 
     static std::string AddFinalEmptyLineIfMissing(const std::string &s)
     {
@@ -107,7 +120,7 @@ namespace Snippets
         static std::map<ImGuiID, double> timeClickCopyButton;
         static std::map<ImGuiID, bool> gEditorChanged;
 
-        if (! fplus::map_contains(gEditors, id))
+        if (gEditors.find(id) == gEditors.end())
         {
             gEditors.insert({id, TextEditor()});
             gEditorChanged[id] = false;
@@ -123,7 +136,7 @@ namespace Snippets
         _SetTheme(editor, snippetData.Palette);
         if (editor.GetText().empty() || snippetData.ReadOnly)
         {
-            std::string displayedCode = snippetData.DeIndentCode ? CodeUtils::UnindentCode(snippetData.Code) : snippetData.Code;
+            std::string displayedCode = snippetData.DeIndentCode ? ImGuiMd::Internal::Unindent(snippetData.Code, true) : snippetData.Code;
             if (snippetData.AddFinalEmptyLine)
                 displayedCode = AddFinalEmptyLineIfMissing(displayedCode);
 
@@ -150,7 +163,7 @@ namespace Snippets
 
             int nbVisibleLines = 0;
             if ((snippetData.HeightInLines == 0) && (overrideHeightInLines==0))
-                nbVisibleLines = (int)fplus::count('\n', snippetData.Code) + 1;
+                nbVisibleLines = (int)std::count(snippetData.Code.begin(), snippetData.Code.end(), '\n') + 1;
             else if (overrideHeightInLines != 0)
                 nbVisibleLines = overrideHeightInLines;
             else
@@ -186,16 +199,16 @@ namespace Snippets
             if (snippetData.ShowCopyButton)
             {
                 ImGui::SetCursorPos({topRight.x - lineHeight * 1.5f, topRight.y});
-                if (ImGui::Button(ICON_FA_COPY))
+                if (CopyButton(lineHeight))
                 {
-                    timeClickCopyButton[id] = ImmApp::ClockSeconds();
+                    timeClickCopyButton[id] = ImGui::GetTime();
                     ImGui::SetClipboardText(snippetData.Code.c_str());
                 }
 
                 bool wasCopiedRecently = false;
-                if (fplus::map_contains(timeClickCopyButton, id))
+                if (timeClickCopyButton.find(id) != timeClickCopyButton.end())
                 {
-                    double now = ImmApp::ClockSeconds();
+                    double now = ImGui::GetTime();
                     double deltaTime = now - timeClickCopyButton.at(id);
                     if (deltaTime < 0.7)
                         wasCopiedRecently = true;
@@ -264,8 +277,10 @@ namespace Snippets
         int overrideHeightInLines = 0;
         if (equalVisibleLines)
         {
-            auto linesPerSnippets = fplus::transform([](const SnippetData& s) {return fplus::count('\n', s.Code);}, snippets);
-            overrideHeightInLines = (int)fplus::maximum(linesPerSnippets) + 1;
+            size_t maxLines = 0;
+            for (const auto& s : snippets)
+                maxLines = std::max(maxLines, (size_t)std::count(s.Code.begin(), s.Code.end(), '\n'));
+            overrideHeightInLines = (int)maxLines + 1;
         }
 
         float editorWidth = _EditorWidth(nbSideBySideEditors);
