@@ -169,8 +169,44 @@ namespace ImGuiMd
             return std::nullopt;
         return assetPath;
     }
+#ifdef IMGUI_RICHMD_WITH_LATEX
+    static bool gLatexInitFailed = false;  // one-shot: no retry (and no log) storm
+
+    // Default LaTeX renderer: MicroTeX, initialized on first use (the host's assets may not be
+    // ready before the first frame). MicroTeX reads its fonts from files: the host gives their paths.
+    static std::optional<LatexBitmap> _RenderLatexWithMicroTeX(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle)
+    {
+        if (!ImGuiMicroTeX::IsInitialized())
+        {
+            if (gLatexInitFailed)
+                return std::nullopt;
+            auto clmFile = gHostServices.AssetFilePath("fonts/latex/latinmodern-math.clm1");
+            auto otfFile = gHostServices.AssetFilePath("fonts/latex/latinmodern-math.otf");
+            if (!clmFile || !otfFile)
+            {
+                gHostServices.Log("LaTeX font assets not found at fonts/latex/. Formulas will be shown as plain text source.");
+                gLatexInitFailed = true;
+                return std::nullopt;
+            }
+            ImGuiMicroTeX::Init(*clmFile, *otfFile);
+        }
+        auto style = displayStyle ? ImGuiMicroTeX::TexStyle::Display : ImGuiMicroTeX::TexStyle::Text;
+        ImGuiMicroTeX::RenderedFormula formula = ImGuiMicroTeX::Render(latex, fontSizePx, color, style);
+        LatexBitmap bitmap;
+        bitmap.rgba = std::move(formula.Pixels);
+        bitmap.width = formula.Width;
+        bitmap.height = formula.Height;
+        bitmap.baselineY = formula.BaselineY;
+        return bitmap;
+    }
+#endif
+
     static void _InstallDefaultHostServices()
     {
+#ifdef IMGUI_RICHMD_WITH_LATEX
+        if (!gHostServices.RenderLatex)
+            gHostServices.RenderLatex = _RenderLatexWithMicroTeX;
+#endif
         if (!gHostServices.ReadAsset)
             gHostServices.ReadAsset = _ReadAssetFromFileSystem;
         if (!gHostServices.AssetFilePath)
@@ -399,7 +435,13 @@ namespace ImGuiMd
         ImGuiMdFonts::FontCollection mFontCollection;
 
         mutable std::map<std::string, MarkdownTexture > mLoadedImages;
+
+        // Formula textures, keyed by source + size + color + style
+        struct LatexEntry { MarkdownTexture texture; int baselineY = 0; int lastUsedFrame = 0; };
+        mutable std::map<std::string, LatexEntry> mLatexCache;
     };
+    // Formulas not displayed for this many frames are dropped from the cache (lazily, when a new one is inserted)
+    static const int gLatexEvictionFrames = 60;
 
 
     class MarkdownRenderer : public imgui_md
@@ -412,10 +454,8 @@ namespace ImGuiMd
             : mMarkdownOptions(markdownOptions)
             , mMarkdownCollection(markdownOptions->fontOptions)
         {
-#ifdef IMGUI_RICHMD_WITH_LATEX
-            if (mMarkdownOptions->withLatex)
+            if (mMarkdownOptions->withLatex && gHostServices.RenderLatex)
                 EnableLatex();
-#endif
             set_flag(MD_FLAG_PERMISSIVEAUTOLINKS, mMarkdownOptions->autolinks);
         }
 
@@ -568,39 +608,6 @@ namespace ImGuiMd
             ImGui::PopID();
         }
 
-#ifdef IMGUI_RICHMD_WITH_LATEX
-        // Lazy-initialize MicroTeX on first LaTeX span.
-        // We cannot do this in InitializeMarkdown() because the host's asset
-        // system may not be ready until after the fonts have loaded / backend started.
-        // Lazy MicroTeX init. Defensive: if the font assets are missing
-        // (corrupted install, or Pyodide download failed, etc.), log a
-        // warning once and leave MicroTeX uninitialized. The SPAN_LATEXMATH
-        // handlers below check IsInitialized() and fall back to rendering
-        // the LaTeX source as plain text instead of crashing on the asset
-        // lookup IM_ASSERT.
-        void EnsureMicroTeXInitialized()
-        {
-            if (ImGuiMicroTeX::IsInitialized())
-                return;
-            // One-shot failure flag: if init failed once, don't keep retrying
-            // (and re-logging) on every render.
-            if (mLatexInitFailed)
-                return;
-            // MicroTeX reads its fonts from files: ask the host for their paths
-            auto clmFile = gHostServices.AssetFilePath("fonts/latex/latinmodern-math.clm1");
-            auto otfFile = gHostServices.AssetFilePath("fonts/latex/latinmodern-math.otf");
-            if (!clmFile || !otfFile)
-            {
-                gHostServices.Log("LaTeX font assets not found at fonts/latex/. Formulas will be shown as plain text source.");
-                mLatexInitFailed = true;
-                return;
-            }
-            ImGuiMicroTeX::Init(*clmFile, *otfFile);
-        }
-
-        // Set true once if MicroTeX init has failed, to avoid retry storms.
-        bool mLatexInitFailed = false;
-
         // Returns physical-pixels-per-logical-pixel for the current display.
         // On macOS retina this is 2.0; on standard DPI displays it is 1.0.
         // Used to rasterize formulas at the framebuffer pixel density and
@@ -611,13 +618,50 @@ namespace ImGuiMd
             return (s > 0.01f) ? s : 1.0f;
         }
 
+        // The formula's texture, from the cache or rendered through the host.
+        // nullopt: LaTeX is not available (the source is shown); an invalid texture: this formula failed.
+        std::optional<MarkdownCollection::LatexEntry> GetLatexTexture(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle)
+        {
+            if (!gHostServices.RenderLatex || !gHostServices.UploadRgba)
+                return std::nullopt;
+            auto& cache = mMarkdownCollection.mLatexCache;
+            int frame = ImGui::GetFrameCount();
+            std::string key = latex + '\x1f' + std::to_string(fontSizePx) + '\x1f' + std::to_string(color) + (displayStyle ? "D" : "T");
+            auto it = cache.find(key);
+            if (it != cache.end())
+            {
+                it->second.lastUsedFrame = frame;
+                return it->second;
+            }
+            for (auto e = cache.begin(); e != cache.end(); )
+                if (frame - e->second.lastUsedFrame > gLatexEvictionFrames)
+                    e = cache.erase(e);
+                else
+                    ++e;
+            auto bitmap = gHostServices.RenderLatex(latex, fontSizePx, color, displayStyle);
+            if (!bitmap)
+                return std::nullopt;
+            MarkdownCollection::LatexEntry entry;
+            if (bitmap->width > 0 && bitmap->height > 0)
+                entry.texture = gHostServices.UploadRgba(bitmap->rgba.data(), bitmap->width, bitmap->height);
+            entry.baselineY = bitmap->baselineY;
+            entry.lastUsedFrame = frame;
+            cache[key] = entry;
+            return entry;
+        }
+
         void SPAN_LATEXMATH(bool e) override
         {
             imgui_md::SPAN_LATEXMATH(e);
             if (e)
                 return;
-            EnsureMicroTeXInitialized();
-            if (!ImGuiMicroTeX::IsInitialized())
+            // DPI-aware: rasterize at framebuffer density, display at logical size.
+            float pixelScale = PixelScale();
+            float logicalFontSize = ImGui::GetFontSize();
+            float physicalFontSize = logicalFontSize * pixelScale;
+            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
+            auto entry = GetLatexTexture(m_latex_buffer, physicalFontSize, color, false);
+            if (!entry)
             {
                 // Fallback: show the original LaTeX source inline, with the
                 // delimiters, so the user recognizes it as a math expression.
@@ -626,21 +670,15 @@ namespace ImGuiMd
                 ImGui::SameLine(0.0f, 0.0f);
                 return;
             }
-            // DPI-aware: rasterize at framebuffer density, display at logical size.
-            float pixelScale = PixelScale();
-            float logicalFontSize = ImGui::GetFontSize();
-            float physicalFontSize = logicalFontSize * pixelScale;
-            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
-            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color, ImGuiMicroTeX::TexStyle::Text);
-            ImTextureID texId = tex.TextureId();
-            if (texId == (ImTextureID)0)
+            if (!entry->texture.Valid())
                 return;
-            // tex.Width/Height/BaselineY are in physical pixels (the bitmap was
+            // The texture and baselineY are in physical pixels (the bitmap was
             // rasterized at the higher density). Convert to logical pixels for
             // ImGui layout.
-            float logicalW = (float)tex.Width / pixelScale;
-            float logicalH = (float)tex.Height / pixelScale;
-            float logicalBaselineY = (float)tex.BaselineY / pixelScale;
+            ImTextureID texId = entry->texture.id;
+            float logicalW = entry->texture.size.x / pixelScale;
+            float logicalH = entry->texture.size.y / pixelScale;
+            float logicalBaselineY = (float)entry->baselineY / pixelScale;
             // Vertically align the formula so its baseline matches the surrounding text.
             // ImGui::Text() draws starting at cursor.y, with the typographic baseline
             // at cursor.y + baked->Ascent. To put the formula's baseline at the same
@@ -660,8 +698,13 @@ namespace ImGuiMd
             imgui_md::SPAN_LATEXMATH_DISPLAY(e);
             if (e)
                 return;
-            EnsureMicroTeXInitialized();
-            if (!ImGuiMicroTeX::IsInitialized())
+            float pixelScale = PixelScale();
+            float logicalFontSize = ImGui::GetFontSize();
+            float physicalFontSize = logicalFontSize * pixelScale;
+            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
+            // Note: the display style renders a bit bigger than the text style
+            auto entry = GetLatexTexture(m_latex_buffer, physicalFontSize, color, true);
+            if (!entry)
             {
                 // Fallback: show the original LaTeX source on its own line.
                 ImGui::NewLine();
@@ -670,17 +713,11 @@ namespace ImGuiMd
                 ImGui::NewLine();
                 return;
             }
-            float pixelScale = PixelScale();
-            float logicalFontSize = ImGui::GetFontSize();
-            float physicalFontSize = logicalFontSize * pixelScale;
-            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
-            // Note: ImGuiMicroTeX::TexStyle::Display renders a bit bigger than ImGuiMicroTeX::TexStyle::Text
-            auto tex = ImGuiMicroTeX::RenderToTexture(m_latex_buffer, physicalFontSize, color, ImGuiMicroTeX::TexStyle::Display);
-            ImTextureID texId = tex.TextureId();
-            if (texId == (ImTextureID)0)
+            if (!entry->texture.Valid())
                 return;
-            float logicalW = (float)tex.Width / pixelScale;
-            float logicalH = (float)tex.Height / pixelScale;
+            ImTextureID texId = entry->texture.id;
+            float logicalW = entry->texture.size.x / pixelScale;
+            float logicalH = entry->texture.size.y / pixelScale;
             // Display math: centered on its own line.
             ImGui::NewLine();
             float avail = ImGui::GetContentRegionAvail().x;
@@ -690,8 +727,6 @@ namespace ImGuiMd
             ImGui::Image(texId, ImVec2(logicalW, logicalH));
             ImGui::NewLine();
         }
-#endif
-
     };
 
 
@@ -801,10 +836,10 @@ namespace ImGuiMd
         ClearDesktopDownloads();
 #endif
 #ifdef IMGUI_RICHMD_WITH_LATEX
-        // Release MicroTeX resources (textures, FreeType, etc.)
-        // Safe to call even if Init() was never called.
+        // Release MicroTeX resources (its own texture cache, unused here; safe if Init() was never called)
         if (ImGuiMicroTeX::IsInitialized())
             ImGuiMicroTeX::Release();
+        gLatexInitFailed = false;
 #endif
     }
 
