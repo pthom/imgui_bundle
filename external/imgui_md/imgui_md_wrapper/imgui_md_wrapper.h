@@ -2,6 +2,7 @@
 #pragma once
 
 #include "imgui.h"
+#include "imgui_md/imgui_md.h"   // imgui_md::Style (GetStyle)
 
 #include <cstdint>
 #include <functional>
@@ -147,6 +148,14 @@ namespace ImGuiMd
         // imgui-node-editor), return false: code blocks are then rendered as inline code.
         // ImmApp fills it when the node editor is available.
         std::function<bool()> CanUseChildWindows;
+
+        // OnWikiLink: a wikilink [[target]] or [[target|label]] was clicked. Wikilinks are parsed only
+        // when this callback is set.
+        std::function<void(const std::string& target)> OnWikiLink;
+
+        // OnHeading: called after each heading is rendered, with its level (1 to 6) and its text
+        // (without markup): for a table of contents, or scrolling to an anchor.
+        std::function<void(int level, const std::string& text)> OnHeading;
     };
 
 
@@ -167,6 +176,9 @@ namespace ImGuiMd
         // (MD_FLAG_PERMISSIVEAUTOLINKS — URL + email + WWW).
         // Set to false to get strict CommonMark link behavior.
         bool autolinks = true;
+
+        // A newline in the source is a line break (as in GitHub comments and chat messages)
+        bool hardSoftBreaks = false;
     };
 
     // InitializeMarkdown: call it once, any time after ImGui::CreateContext() (with HelloImGui or
@@ -194,11 +206,20 @@ namespace ImGuiMd
     // for hosts that build their font atlas once (no dynamic fonts).
     VoidFunction GetFontLoaderFunction();
 
-    // Renders a markdown string
+    // Renders a markdown string. Its common indentation is removed first (so that a string written
+    // inside an indented function renders as expected; no-op on flush-left text).
     void Render(const std::string& markdownString);
-
-    // Renders a markdown string (after having unindented its main indentation)
+    // Renders a markdown string as is
+    void RenderRaw(const std::string& markdownString);
+    // Same as Render (kept for compatibility)
     void RenderUnindented(const std::string& markdownString);
+
+    // Renders the code blocks of a given language (```mermaid, ```csv, ...) with your own function,
+    // instead of the code block renderer. Applies to the current context.
+    void RegisterFencedBlockRenderer(const std::string& language, std::function<void(const std::string& code)> renderer);
+
+    // The colors and spacing of the current context (see imgui_md::Style). C++ only.
+    imgui_md::Style& GetStyle();
 
     SizedFont GetCodeFont();
 

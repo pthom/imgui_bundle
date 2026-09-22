@@ -428,6 +428,20 @@ namespace ImGuiMd
     static const int gLatexEvictionFrames = 60;
 
 
+    class MarkdownRenderer;
+    struct Context;
+    static Context* gCurrentContext = nullptr;
+
+    struct Context
+    {
+        MarkdownOptions options;
+        std::unique_ptr<MarkdownRenderer> renderer;  // created on first use (it loads the fonts)
+        std::map<std::string, std::function<void(const std::string& code)>> fencedBlockRenderers;
+        int fragmentFrame = -1;    // frame of the last Render call
+        int fragmentCounter = 0;   // Render calls in this frame (seeds their ImGui ids)
+        ~Context();
+    };
+
     class MarkdownRenderer : public imgui_md
     {
     private:
@@ -441,6 +455,8 @@ namespace ImGuiMd
             if (mMarkdownOptions->withLatex && gHostServices.RenderLatex)
                 EnableLatex();
             set_flag(MD_FLAG_PERMISSIVEAUTOLINKS, mMarkdownOptions->autolinks);
+            set_flag(MD_FLAG_HARD_SOFT_BREAKS, mMarkdownOptions->hardSoftBreaks);
+            set_flag(MD_FLAG_WIKILINKS, (bool)mMarkdownOptions->callbacks.OnWikiLink);
         }
 
         std::map<std::string, MarkdownTexture >& ImageCache()
@@ -500,6 +516,18 @@ namespace ImGuiMd
         {
             if (mMarkdownOptions->callbacks.OnOpenLink)
                 mMarkdownOptions->callbacks.OnOpenLink(m_href);
+        }
+
+        void open_wikilink() const override
+        {
+            if (mMarkdownOptions->callbacks.OnWikiLink)
+                mMarkdownOptions->callbacks.OnWikiLink(m_href);
+        }
+
+        void heading(int level, const std::string& text) override
+        {
+            if (mMarkdownOptions->callbacks.OnHeading)
+                mMarkdownOptions->callbacks.OnHeading(level, text);
         }
 
         image_status get_image(image_info& nfo) const override
@@ -577,7 +605,11 @@ namespace ImGuiMd
 
             ImGui::PushID(m_code_block.c_str());
             ImGui::SetCursorPosX(0.f);
-            if (gHostServices.RenderCodeBlock)
+            auto& fenced = gCurrentContext->fencedBlockRenderers;
+            auto it = fenced.find(_ToLower(m_code_block_language));
+            if (it != fenced.end())
+                it->second(code);
+            else if (gHostServices.RenderCodeBlock)
                 gHostServices.RenderCodeBlock(code, m_code_block_language);
             else
                 _RenderCodeBlockPlain(code);
@@ -629,12 +661,7 @@ namespace ImGuiMd
     };
 
 
-    struct Context
-    {
-        MarkdownOptions options;
-        std::unique_ptr<MarkdownRenderer> renderer;  // created on first use (it loads the fonts)
-    };
-    static Context* gCurrentContext = nullptr;
+    Context::~Context() = default;
     static std::unique_ptr<Context> gDefaultContext;   // the one created by InitializeMarkdown
 
     // The current context's renderer, created on first use: this loads the fonts, which is possible
@@ -796,7 +823,7 @@ namespace ImGuiMd
     }
 
 
-    void Render(const std::string& markdownString)
+    void RenderRaw(const std::string& markdownString)
     {
         MarkdownRenderer* renderer = _Renderer();
         if (!renderer)
@@ -804,7 +831,34 @@ namespace ImGuiMd
             std::cerr << "ImGuiMd::Render : Markdown was not initialized!\n";
             return;
         }
+        // Each fragment rendered in a frame gets its own id scope (two identical fragments must not collide)
+        Context* context = gCurrentContext;
+        int frame = ImGui::GetFrameCount();
+        if (context->fragmentFrame != frame)
+        {
+            context->fragmentFrame = frame;
+            context->fragmentCounter = 0;
+        }
+        ImGui::PushID(context->fragmentCounter++);
         renderer->Render(markdownString);
+        ImGui::PopID();
+    }
+
+    void Render(const std::string& markdownString)
+    {
+        RenderRaw(_Unindent(markdownString));
+    }
+
+    void RegisterFencedBlockRenderer(const std::string& language, std::function<void(const std::string& code)> renderer)
+    {
+        IM_ASSERT(gCurrentContext && "ImGuiMd: call InitializeMarkdown first");
+        gCurrentContext->fencedBlockRenderers[_ToLower(language)] = std::move(renderer);
+    }
+
+    imgui_md::Style& GetStyle()
+    {
+        IM_ASSERT(_Renderer() && "ImGuiMd: call InitializeMarkdown first");
+        return _Renderer()->style;
     }
 
     std::function<void(void)> GetFontLoaderFunction()
@@ -980,7 +1034,7 @@ namespace ImGuiMd
     // Renders a markdown string (after having unindented its main indentation)
     void RenderUnindented(const std::string& markdownString)
     {
-        Render(_Unindent(markdownString));
+        Render(markdownString);
     }
 
 } // namespace ImGuiMdBrowser
