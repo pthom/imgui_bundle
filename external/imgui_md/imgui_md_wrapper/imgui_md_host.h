@@ -29,6 +29,14 @@ namespace ImGuiMd
         bool Valid() const { return id != ImTextureID(0); }
     };
 
+    // A formula rendered to pixels (see HostServices::RenderLatex)
+    struct LatexBitmap
+    {
+        std::vector<uint8_t> rgba;   // width * height * 4 bytes
+        int width = 0, height = 0;
+        int baselineY = 0;           // from the top of the bitmap to the text baseline, in pixels
+    };
+
     struct HostServices
     {
         // Uploads an RGBA8 buffer (w * h * 4 bytes, no padding) to a GPU texture.
@@ -50,6 +58,11 @@ namespace ImGuiMd
         // Renders a code block (fenced or indented). Default: monospaced text in a frame, with a copy button.
         // ImGui Bundle installs one based on ImGuiColorTextEdit (syntax highlighting).
         std::function<void(const std::string& code, const std::string& language)> RenderCodeBlock;
+
+        // Renders a LaTeX formula (without its $ delimiters) to an RGBA bitmap. fontSizePx is in physical
+        // pixels; displayStyle is true for $$...$$. Return std::nullopt when LaTeX is not available: the
+        // formula's source is shown instead. Default: MicroTeX when built with IMGUI_RICHMD_WITH_LATEX, else none.
+        std::function<std::optional<LatexBitmap>(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle)> RenderLatex;
 
         // Logs a warning. Default: stderr.
         std::function<void(const std::string& message)> Log;
