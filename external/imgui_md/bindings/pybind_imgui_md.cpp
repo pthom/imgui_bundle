@@ -44,6 +44,7 @@ void py_init_module_imgui_md(nb::module_& m)
                 return self.headerSizeFactors;
             },
             "Multipliers for header sizes, from h1 to h6")
+        .def_rw("merge_fonts", &ImGuiMd::MarkdownFontOptions::mergeFonts, " Fonts merged into every markdown font (asset paths), e.g. an icon or a CJK font.\n Since Dear ImGui 1.92 glyphs are loaded on demand, so merging a large font costs nothing until it is used.")
         ;
 
 
