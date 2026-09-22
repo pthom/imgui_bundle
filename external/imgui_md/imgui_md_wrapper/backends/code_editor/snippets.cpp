@@ -156,7 +156,7 @@ namespace Snippets
         ImGui::BeginGroup();
 
         // Title Line
-        bool hasTitleLine = ! snippetData.DisplayedFilename.empty() || snippetData.ShowCopyButton || snippetData.ShowCursorPosition;
+        bool hasTitleLine = ! snippetData.DisplayedFilename.empty() || snippetData.ShowCursorPosition;
 
         float lineHeight;
         {
@@ -199,33 +199,11 @@ namespace Snippets
 
             if (snippetData.ShowCursorPosition)
             {
+                // leave room for the copy button, which sits inside the editor at its top right
                 float textX = snippetData.ShowCopyButton ? topRight.x - lineHeight * 6.f : topRight.x - lineHeight * 4.5f;
                 ImGui::SetCursorPos({textX, textY});
                 auto pos = editor.GetMainCursorPosition();
                 ImGui::Text("L:%02zu C:%02zu", pos.line + 1, pos.index + 1);
-            }
-
-            if (snippetData.ShowCopyButton)
-            {
-                ImGui::SetCursorPos({topRight.x - lineHeight * 1.5f, topRight.y});
-                if (CopyButton(lineHeight))
-                {
-                    timeClickCopyButton[id] = ImGui::GetTime();
-                    ImGui::SetClipboardText(snippetData.Code.c_str());
-                }
-
-                bool wasCopiedRecently = false;
-                if (timeClickCopyButton.find(id) != timeClickCopyButton.end())
-                {
-                    double now = ImGui::GetTime();
-                    double deltaTime = now - timeClickCopyButton.at(id);
-                    if (deltaTime < 0.7)
-                        wasCopiedRecently = true;
-                }
-                if (wasCopiedRecently)
-                    ImGui::SetTooltip("Copied!");
-                else if (ImGui::IsItemHovered())
-                    ImGui::SetTooltip("Copy");
             }
             ImGui::SetCursorPos(topRight);
             ImGui::NewLine();
@@ -234,7 +212,41 @@ namespace Snippets
         auto codeFont = ImGuiMd::GetCodeFont();
         ImGui::PushFont(codeFont.font, codeFont.size);
 
-        editor.Render(std::to_string(id).c_str(), editorSize, snippetData.Border);
+        std::string childTitle = std::to_string(id);
+        editor.Render(childTitle.c_str(), editorSize, snippetData.Border);
+
+        if (snippetData.ShowCopyButton)
+        {
+            // The copy button lives inside the editor's child window, pinned at its visible top right:
+            // re-enter the child (same title and flags: Dear ImGui appends), draw the button above the
+            // text, then restore the parent's cursor so the child is not counted twice in the layout.
+            ImVec2 parentCursor = ImGui::GetCursorPos();
+            ImGuiChildFlags childFlags = snippetData.Border ? ImGuiChildFlags_Borders : ImGuiChildFlags_None;
+            if (ImGui::BeginChild(childTitle.c_str(), editorSize, childFlags, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar))
+            {
+                float buttonWidth = lineHeight * 1.25f;
+                float pad = ImGui::GetStyle().FramePadding.y;
+                float innerWidth = ImGui::GetWindowWidth();
+                if (ImGui::GetScrollMaxY() > 0.f)  // a vertical scrollbar takes the right edge
+                    innerWidth -= ImGui::GetStyle().ScrollbarSize;
+                ImGui::SetCursorPos(ImVec2(ImGui::GetScrollX() + innerWidth - buttonWidth - pad, ImGui::GetScrollY() + pad));
+                if (CopyButton(lineHeight))
+                {
+                    timeClickCopyButton[id] = ImGui::GetTime();
+                    ImGui::SetClipboardText(snippetData.Code.c_str());
+                }
+                bool wasCopiedRecently = false;
+                if (timeClickCopyButton.find(id) != timeClickCopyButton.end())
+                    wasCopiedRecently = (ImGui::GetTime() - timeClickCopyButton.at(id)) < 0.7;
+                if (wasCopiedRecently)
+                    ImGui::SetTooltip("Copied!");
+                else if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip("Copy");
+            }
+            ImGui::EndChild();
+            ImGui::SetCursorPos(parentCursor);
+        }
+
         bool changed = gEditorChanged[id];
         gEditorChanged[id] = false;
         if (changed && !snippetData.ReadOnly)
