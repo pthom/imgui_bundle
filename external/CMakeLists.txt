@@ -315,7 +315,11 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         imgui_md/md4c/src/md4c.h
         imgui_md/imgui_md_wrapper/imgui_md_wrapper.cpp
         imgui_md/imgui_md_wrapper/imgui_md_wrapper.h
+        imgui_md/imgui_md_wrapper/imgui_md_host.h
+        # Host services through HelloImGui (bundle only; a standalone build brings its own host)
+        imgui_md/imgui_md_wrapper/hosts/hello_imgui_host.cpp
     )
+    target_compile_definitions(imgui_md PRIVATE IMGUI_RICHMD_HOST_HELLO_IMGUI)
     if(APPLE)
         # warning: 'OFF_MAX' macro redefined
         # MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/limits.h:140:9: #define OFF_MAX         LLONG_MAX
@@ -365,7 +369,7 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
 
     hello_imgui_msvc_target_group_sources(imgui_md)
     if(IMGUI_BUNDLE_INSTALL_CPP)
-        install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h DESTINATION include/imgui_md_wrapper)
+        install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h imgui_md/imgui_md_wrapper/imgui_md_host.h DESTINATION include/imgui_md_wrapper)
     endif()
 
     # MicroTeX: native LaTeX math rendering (requires FreeType, already available via hello_imgui)

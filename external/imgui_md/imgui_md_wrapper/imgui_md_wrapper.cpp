@@ -1,5 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui_md_wrapper.h"
+#include "imgui_md_host.h"
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
 #include "imgui_md_url_download.h"
 #endif
@@ -700,6 +701,14 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 
     // Global options
     MarkdownOptions gMarkdownOptions;
+
+    // Host services (see imgui_md_host.h)
+    static HostServices gHostServices;
+    void SetHostServices(const HostServices& services) { gHostServices = services; }
+    const HostServices& GetHostServices() { return gHostServices; }
+#ifdef IMGUI_RICHMD_HOST_HELLO_IMGUI
+    void Priv_InstallHelloImGuiHost();  // hosts/hello_imgui_host.cpp
+#endif
     static Priv_OnInitializeMarkdownCallback gOnInitializeMarkdownCallback;
     static bool gMarkdownWasInitialized = false;
 
@@ -732,10 +741,6 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 #endif
     }
 
-#ifdef CAN_RENDER_IMAGES
-    static MarkdownTexture _DefaultUploadRgba(const unsigned char* rgba, int w, int h);  // defined below
-#endif
-
     void InitializeMarkdown(const MarkdownOptions& options)
     {
         if (gMarkdownWasInitialized)
@@ -744,12 +749,11 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         gMarkdownOptions = options;
         if (gOnInitializeMarkdownCallback)
             gOnInitializeMarkdownCallback(gMarkdownOptions);
-#ifdef CAN_RENDER_IMAGES
-        // Install the default (HelloImGui-based) texture backend unless one was
-        // supplied (e.g. by the user or by the on-initialize callback).
-        if (!gMarkdownOptions.textureBackend.UploadRgba)
-            gMarkdownOptions.textureBackend.UploadRgba = _DefaultUploadRgba;
+#ifdef IMGUI_RICHMD_HOST_HELLO_IMGUI
+        Priv_InstallHelloImGuiHost();  // fills the host services the application did not set
 #endif
+        if (!gHostServices.Log)
+            gHostServices.Log = [](const std::string& message) { fprintf(stderr, "imgui_md: %s\n", message.c_str()); };
 #if defined(__EMSCRIPTEN__) && !defined(IMGUI_BUNDLE_BUILD_PYODIDE)
         // On Emscripten (but not pyodide), set a default download callback using
         // emscripten_fetch (unless one was already set, e.g. by Python)
@@ -814,30 +818,13 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
     }
 
 #ifdef CAN_RENDER_IMAGES
-    // Default texture backend (used when none is supplied via MarkdownOptions).
-    // ImGui Bundle ships this HelloImGui-based upload; standalone users provide
-    // their own (e.g. a plain-OpenGL backend). The returned MarkdownTexture owns
-    // the GPU resource via keepAlive (a HelloImGui::TextureGpuPtr).
-    static MarkdownTexture _DefaultUploadRgba(const unsigned char* rgba, int w, int h)
-    {
-        MarkdownTexture tex;
-        auto gpu = HelloImGui::CreateTextureGpuFromRgbaData(rgba, w, h);
-        if (gpu)
-        {
-            tex.id = gpu->TextureID();
-            tex.size = ImVec2((float)w, (float)h);
-            tex.keepAlive = gpu;  // shared_ptr<TextureGpu> -> shared_ptr<void>
-        }
-        return tex;
-    }
-
     // Upload a decoded HelloImGui::ImageData (RGBA) through the configured backend.
     // (Decoding still uses HelloImGui here; standalone will swap it for stb_image.)
     static MarkdownTexture _UploadImageData(const HelloImGui::ImageData& img)
     {
-        if (img.data == nullptr || !gMarkdownOptions.textureBackend.UploadRgba)
+        if (img.data == nullptr || !gHostServices.UploadRgba)
             return {};
-        return gMarkdownOptions.textureBackend.UploadRgba(img.data, img.width, img.height);
+        return gHostServices.UploadRgba(img.data, img.width, img.height);
     }
 
     static MarkdownTexture _LoadTextureFromAsset(const std::string& assetPath)

@@ -35,33 +35,6 @@ namespace ImGuiMd
         ImVec4	col_border;
     };
 
-    // A GPU texture owned by the markdown image cache.
-    // `keepAlive` owns the GPU resource: when the last copy of this struct is
-    // dropped (e.g. the image cache is cleared at teardown), the texture is
-    // freed automatically. This is the seam that decouples imgui_md from any
-    // specific rendering backend: a backend's UploadRgba returns one of these.
-    struct MarkdownTexture
-    {
-        ImTextureID id = ImTextureID(0);
-        ImVec2 size = ImVec2(0.f, 0.f);
-        std::shared_ptr<void> keepAlive;  // owns the GPU resource (optional)
-
-        bool Valid() const { return id != ImTextureID(0); }
-    };
-
-    // Texture backend: uploads a decoded RGBA8 buffer to a GPU texture.
-    // This is the single backend seam used for BOTH markdown images and LaTeX
-    // formulas (which both end up as RGBA pixel buffers).
-    //   - rgba points to w*h*4 bytes (8-bit RGBA, row-major, no padding).
-    //   - Return an invalid MarkdownTexture (Valid()==false) on failure.
-    // ImGui Bundle injects a HelloImGui-based backend; a plain-OpenGL user can
-    // supply ~10 lines (glGenTextures/glTexImage2D, freed via keepAlive's deleter).
-    // If UploadRgba is empty, images and LaTeX are skipped.
-    struct MarkdownTextureBackend
-    {
-        std::function<MarkdownTexture(const unsigned char* rgba, int w, int h)> UploadRgba;
-    };
-
     // Note: Since v1.92, Fonts can be displayed at any size:
     // in order to display a font at a given size, we need to call
     //   ImGui::PushFont(font, size) (or call separately ImGui::PushFontSize)
@@ -177,11 +150,6 @@ namespace ImGuiMd
     {
         MarkdownFontOptions fontOptions;
         MarkdownCallbacks callbacks;
-
-        // GPU texture backend for images and LaTeX. If UploadRgba is left empty,
-        // InitializeMarkdown installs a default backend (HelloImGui-based when
-        // built as part of ImGui Bundle). Standalone users set their own.
-        MarkdownTextureBackend textureBackend;
 
         // Enable native LaTeX math rendering via MicroTeX.
         // When true, $...$ and $$...$$ in markdown will be rendered as math formulas
