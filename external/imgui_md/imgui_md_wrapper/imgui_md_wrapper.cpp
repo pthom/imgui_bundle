@@ -584,19 +584,9 @@ namespace ImGuiMd
             ImGui::PopID();
         }
 
-        // Returns physical-pixels-per-logical-pixel for the current display.
-        // On macOS retina this is 2.0; on standard DPI displays it is 1.0.
-        // Used to rasterize formulas at the framebuffer pixel density and
-        // display them at logical size (sharp on HiDPI screens).
-        static float PixelScale()
-        {
-            float s = ImGui::GetIO().DisplayFramebufferScale.y;
-            return (s > 0.01f) ? s : 1.0f;
-        }
-
         // The formula's texture, from the cache or rendered through the host.
         // nullopt: LaTeX is not available (the source is shown); an invalid texture: this formula failed.
-        std::optional<MarkdownCollection::LatexEntry> GetLatexTexture(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle)
+        std::optional<MarkdownCollection::LatexEntry> GetLatexTexture(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle) const
         {
             if (!gHostServices.RenderLatex || !gHostServices.UploadRgba)
                 return std::nullopt;
@@ -626,82 +616,15 @@ namespace ImGuiMd
             return entry;
         }
 
-        void SPAN_LATEXMATH(bool e) override
+        bool get_latex_texture(const std::string& latex, float fontSizePx, ImU32 color, bool display, latex_texture& out) const override
         {
-            imgui_md::SPAN_LATEXMATH(e);
-            if (e)
-                return;
-            // DPI-aware: rasterize at framebuffer density, display at logical size.
-            float pixelScale = PixelScale();
-            float logicalFontSize = ImGui::GetFontSize();
-            float physicalFontSize = logicalFontSize * pixelScale;
-            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
-            auto entry = GetLatexTexture(m_latex_buffer, physicalFontSize, color, false);
+            auto entry = GetLatexTexture(latex, fontSizePx, color, display);
             if (!entry)
-            {
-                // Fallback: show the original LaTeX source inline, with the
-                // delimiters, so the user recognizes it as a math expression.
-                std::string fallback = "$" + m_latex_buffer + "$";
-                ImGui::TextUnformatted(fallback.c_str());
-                ImGui::SameLine(0.0f, 0.0f);
-                return;
-            }
-            if (!entry->texture.Valid())
-                return;
-            // The texture and baselineY are in physical pixels (the bitmap was
-            // rasterized at the higher density). Convert to logical pixels for
-            // ImGui layout.
-            ImTextureID texId = entry->texture.id;
-            float logicalW = entry->texture.size.x / pixelScale;
-            float logicalH = entry->texture.size.y / pixelScale;
-            float logicalBaselineY = (float)entry->baselineY / pixelScale;
-            // Vertically align the formula so its baseline matches the surrounding text.
-            // ImGui::Text() draws starting at cursor.y, with the typographic baseline
-            // at cursor.y + baked->Ascent. To put the formula's baseline at the same
-            // position, the image top must be at cursor.y + textAscent - logicalBaselineY.
-            ImFontBaked* baked = ImGui::GetFontBaked();
-            float textAscent = baked ? baked->Ascent : logicalFontSize * 0.8f;
-            float savedY = ImGui::GetCursorPosY();
-            ImGui::SetCursorPosY(savedY + textAscent - logicalBaselineY);
-            ImGui::Image(texId, ImVec2(logicalW, logicalH));
-            ImGui::SameLine(0.0f, 0.0f);
-            // Restore cursor Y so subsequent inline content lands on the original line.
-            ImGui::SetCursorPosY(savedY);
-        }
-
-        void SPAN_LATEXMATH_DISPLAY(bool e) override
-        {
-            imgui_md::SPAN_LATEXMATH_DISPLAY(e);
-            if (e)
-                return;
-            float pixelScale = PixelScale();
-            float logicalFontSize = ImGui::GetFontSize();
-            float physicalFontSize = logicalFontSize * pixelScale;
-            ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
-            // Note: the display style renders a bit bigger than the text style
-            auto entry = GetLatexTexture(m_latex_buffer, physicalFontSize, color, true);
-            if (!entry)
-            {
-                // Fallback: show the original LaTeX source on its own line.
-                ImGui::NewLine();
-                std::string fallback = "$$" + m_latex_buffer + "$$";
-                ImGui::TextUnformatted(fallback.c_str());
-                ImGui::NewLine();
-                return;
-            }
-            if (!entry->texture.Valid())
-                return;
-            ImTextureID texId = entry->texture.id;
-            float logicalW = entry->texture.size.x / pixelScale;
-            float logicalH = entry->texture.size.y / pixelScale;
-            // Display math: centered on its own line.
-            ImGui::NewLine();
-            float avail = ImGui::GetContentRegionAvail().x;
-            float padX = (avail - logicalW) * 0.5f;
-            if (padX > 0.0f)
-                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + padX);
-            ImGui::Image(texId, ImVec2(logicalW, logicalH));
-            ImGui::NewLine();
+                return false;
+            out.texture_id = entry->texture.id;
+            out.size_px = entry->texture.size;
+            out.baseline_px = (float)entry->baselineY;
+            return true;
         }
     };
 
