@@ -35,7 +35,10 @@ def main() -> None:
     options.member_exclude_by_name_and_class__regex = {
         "MarkdownCallbacks": r"^OnDownloadData$",
         "MarkdownDownloadResult": r"^data$",
+        # The texture backend seam is C++ only (raw RGBA pointer, shared_ptr<void>)
+        "MarkdownOptions": r"^textureBackend$",
     }
+    options.class_exclude_by_name__regex = r"^MarkdownTexture$|^MarkdownTextureBackend$"
     options.fn_exclude_by_name__regex = r"^FillFromData$|^Priv_SetOnInitializeMarkdownCallback$"
 
     # Custom binding for Priv_SetOnInitializeMarkdownCallback (same PyObject* pattern as OnDownloadData)
