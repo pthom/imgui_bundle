@@ -113,6 +113,8 @@ void py_init_module_imgui_md(nb::module_& m)
         .def_rw("on_html_div", &ImGuiMd::MarkdownCallbacks::OnHtmlDiv, " OnHtmlDiv does nothing by default, by you could write:\n     In  C++:\n        markdownOptions.callbacks.onHtmlDiv = [](const std::string& divClass, bool openingDiv)\n        {\n            if (divClass == \"red\")\n            {\n                if (openingDiv)\n                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));\n                else\n                    ImGui::PopStyleColor();\n            }\n        };\n     In  Python:\n        def on_html_div(div_class: str, opening_div: bool) -> None:\n            if div_class == 'red':\n                if opening_div:\n                    imgui.push_style_color(imgui.Col_.text.value, imgui.ImColor(255, 0, 0, 255).value)\n                else:\n                    imgui.pop_style_color()\n        md_options = imgui_md.MarkdownOptions()\n        md_options.callbacks.on_html_div = on_html_div\n        immapp.run(\n            gui_function=gui, with_markdown_options=md_options #, more options here\n        )")
         .def_rw("on_html_span", &ImGuiMd::MarkdownCallbacks::OnHtmlSpan, " OnHtmlSpan: optional callback for inline HTML tags encountered in\n markdown text (one call per open/close tag; e.g. \"sub\", \"sup\",\n \"kbd\", \"mark\", or any custom tag).\n Return True to indicate the tag was fully handled, False to let\n the built-in renderer apply its default rendering (if any).\n Example (C++):\n   callbacks.OnHtmlSpan = [](const std::string& tag, bool opening) {\n       if (tag == \"small\") {\n         // ... push/pop a smaller font\n           return True;\n       }\n       return False;\n   };")
         .def_rw("can_use_child_windows", &ImGuiMd::MarkdownCallbacks::CanUseChildWindows, " CanUseChildWindows: callback that tells whether child windows can be used at this moment (empty by default, which means yes).\n Code blocks are rendered inside a child window. Where child windows do not work (e.g. inside the canvas of\n imgui-node-editor), return False: code blocks are then rendered as inline code.\n ImmApp fills it when the node editor is available.")
+        .def_rw("on_wiki_link", &ImGuiMd::MarkdownCallbacks::OnWikiLink, " OnWikiLink: a wikilink [[target]] or [[target|label]] was clicked. Wikilinks are parsed only\n when this callback is set.")
+        .def_rw("on_heading", &ImGuiMd::MarkdownCallbacks::OnHeading, " OnHeading: called after each heading is rendered, with its level (1 to 6) and its text\n (without markup): for a table of contents, or scrolling to an anchor.")
         ;
 
     // Static storage for the Python download callable (prevents crash at exit)
@@ -158,6 +160,7 @@ void py_init_module_imgui_md(nb::module_& m)
         .def_rw("callbacks", &ImGuiMd::MarkdownOptions::callbacks, "")
         .def_rw("with_latex", &ImGuiMd::MarkdownOptions::withLatex, " Enable native LaTeX math rendering via MicroTeX.\n When True, $...$ and $$...$$ in markdown will be rendered as math formulas\n (requires building with IMGUI_RICHMD_WITH_LATEX=ON, which is the default\n when IMGUI_BUNDLE_WITH_MICROTEX and FreeType are both available).\n When False, $ is rendered as a literal character (legacy behavior).")
         .def_rw("autolinks", &ImGuiMd::MarkdownOptions::autolinks, " Recognize bare URLs, email addresses and www.* as clickable links\n without requiring <...> or []() syntax\n (MD_FLAG_PERMISSIVEAUTOLINKS — URL + email + WWW).\n Set to False to get strict CommonMark link behavior.")
+        .def_rw("hard_soft_breaks", &ImGuiMd::MarkdownOptions::hardSoftBreaks, "A newline in the source is a line break (as in GitHub comments and chat messages)")
         ;
 
 
@@ -191,12 +194,22 @@ void py_init_module_imgui_md(nb::module_& m)
     m.def("render",
         ImGuiMd::Render,
         nb::arg("markdown_string"),
-        "Renders a markdown string");
+        " Renders a markdown string. Its common indentation is removed first (so that a string written\n inside an indented function renders as expected; no-op on flush-left text).");
+
+    m.def("render_raw",
+        ImGuiMd::RenderRaw,
+        nb::arg("markdown_string"),
+        "Renders a markdown string as is");
 
     m.def("render_unindented",
         ImGuiMd::RenderUnindented,
         nb::arg("markdown_string"),
-        "Renders a markdown string (after having unindented its main indentation)");
+        "Same as Render (kept for compatibility)");
+
+    m.def("register_fenced_block_renderer",
+        ImGuiMd::RegisterFencedBlockRenderer,
+        nb::arg("language"), nb::arg("renderer"),
+        " Renders the code blocks of a given language (```mermaid, ```csv, ...) with your own function,\n instead of the code block renderer. Applies to the current context.");
 
     m.def("get_code_font",
         ImGuiMd::GetCodeFont);
