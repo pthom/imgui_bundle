@@ -163,32 +163,26 @@ namespace ImGuiMd
             return std::nullopt;
         return std::vector<uint8_t>(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
     }
-    static std::optional<std::string> _AssetFilePathFromFileSystem(const std::string& assetPath)
-    {
-        if (!std::filesystem::exists(assetPath))
-            return std::nullopt;
-        return assetPath;
-    }
 #ifdef IMGUI_RICHMD_WITH_LATEX
     static bool gLatexInitFailed = false;  // one-shot: no retry (and no log) storm
 
     // Default LaTeX renderer: MicroTeX, initialized on first use (the host's assets may not be
-    // ready before the first frame). MicroTeX reads its fonts from files: the host gives their paths.
+    // ready before the first frame), with its fonts read through the host
     static std::optional<LatexBitmap> _RenderLatexWithMicroTeX(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle)
     {
         if (!ImGuiMicroTeX::IsInitialized())
         {
             if (gLatexInitFailed)
                 return std::nullopt;
-            auto clmFile = gHostServices.AssetFilePath("fonts/latex/latinmodern-math.clm1");
-            auto otfFile = gHostServices.AssetFilePath("fonts/latex/latinmodern-math.otf");
-            if (!clmFile || !otfFile)
+            auto clmData = gHostServices.ReadAsset("fonts/latex/latinmodern-math.clm1");
+            auto otfData = gHostServices.ReadAsset("fonts/latex/latinmodern-math.otf");
+            if (!clmData || !otfData)
             {
                 gHostServices.Log("LaTeX font assets not found at fonts/latex/. Formulas will be shown as plain text source.");
                 gLatexInitFailed = true;
                 return std::nullopt;
             }
-            ImGuiMicroTeX::Init(*clmFile, *otfFile);
+            ImGuiMicroTeX::InitFromMemory(*clmData, *otfData);
         }
         auto style = displayStyle ? ImGuiMicroTeX::TexStyle::Display : ImGuiMicroTeX::TexStyle::Text;
         ImGuiMicroTeX::RenderedFormula formula = ImGuiMicroTeX::Render(latex, fontSizePx, color, style);
@@ -209,8 +203,6 @@ namespace ImGuiMd
 #endif
         if (!gHostServices.ReadAsset)
             gHostServices.ReadAsset = _ReadAssetFromFileSystem;
-        if (!gHostServices.AssetFilePath)
-            gHostServices.AssetFilePath = _AssetFilePathFromFileSystem;
         if (!gHostServices.Log)
             gHostServices.Log = [](const std::string& message) { fprintf(stderr, "imgui_md: %s\n", message.c_str()); };
     }

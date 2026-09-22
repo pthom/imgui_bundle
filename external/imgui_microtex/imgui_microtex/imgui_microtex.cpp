@@ -53,10 +53,8 @@ static microtex::TexStyle ToMicroTeXStyle(TexStyle s) {
 // Init / Release
 // ============================================================================
 
-void Init(const std::string& clmFile, const std::string& fontFile) {
-    std::lock_guard<std::mutex> lock(sMutex);
-    if (sInitialized) return;
-
+// sMutex must be held
+static void _InitWithFontSrc(const microtex::FontSrc& mathFont) {
     microtex::Font_freetype::initFreeType();
 
     microtex::PlatformFactory::registerFactory(
@@ -65,7 +63,6 @@ void Init(const std::string& clmFile, const std::string& fontFile) {
     );
     microtex::PlatformFactory::activate("freetype");
 
-    microtex::FontSrcFile mathFont(clmFile, fontFile);
     microtex::MicroTeX::init(mathFont);
 
     // Register the *real* MicroTeX + FreeType teardown as an atexit
@@ -94,6 +91,24 @@ void Init(const std::string& clmFile, const std::string& fontFile) {
     }
 
     sInitialized = true;
+}
+
+void Init(const std::string& clmFile, const std::string& fontFile) {
+    std::lock_guard<std::mutex> lock(sMutex);
+    if (sInitialized) return;
+    microtex::FontSrcFile mathFont(clmFile, fontFile);
+    _InitWithFontSrc(mathFont);
+}
+
+void InitFromMemory(const std::vector<uint8_t>& clmData, const std::vector<uint8_t>& fontData) {
+    std::lock_guard<std::mutex> lock(sMutex);
+    if (sInitialized) return;
+    static const char* kFontName = "memory://math-font.otf";
+    microtex::Font_freetype::registerMemoryFont(kFontName, fontData);
+    static std::vector<uint8_t> sClmData;  // MicroTeX keeps the pointer: the bytes stay alive
+    sClmData = clmData;
+    microtex::FontSrcData mathFont(sClmData.size(), sClmData.data(), kFontName);
+    _InitWithFontSrc(mathFont);
 }
 
 bool IsInitialized() {

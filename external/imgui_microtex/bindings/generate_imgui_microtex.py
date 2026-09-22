@@ -24,6 +24,7 @@ def main() -> None:
 
     # Exclude the Pixels member (we provide a custom pixels_as_array() method instead)
     options.member_exclude_by_name__regex = r"^Pixels$"
+    options.fn_exclude_by_name__regex = r"^InitFromMemory$"
 
     # Custom binding: expose Pixels as numpy array via pixels_as_array()
     options.custom_bindings.add_custom_bindings_to_class(
