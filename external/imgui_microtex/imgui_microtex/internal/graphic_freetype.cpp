@@ -30,13 +30,28 @@ void Font_freetype::releaseFreeType() {
   }
 }
 
+// The registered memory fonts (their bytes must outlive the faces created from them)
+static std::map<std::string, std::vector<uint8_t>>& _memoryFonts() {
+  static std::map<std::string, std::vector<uint8_t>> fonts;
+  return fonts;
+}
+
+void Font_freetype::registerMemoryFont(const std::string& name, std::vector<uint8_t> data) {
+  _memoryFonts()[name] = std::move(data);
+}
+
 Font_freetype::Font_freetype(const string& file) : _file(file) {
   auto it = _faces.find(file);
   if (it != _faces.end()) {
     _face = it->second;
     return;
   }
-  FT_Error err = FT_New_Face(_ftLib, file.c_str(), 0, &_face);
+  FT_Error err;
+  auto mem = _memoryFonts().find(file);
+  if (mem != _memoryFonts().end())
+    err = FT_New_Memory_Face(_ftLib, mem->second.data(), (FT_Long)mem->second.size(), 0, &_face);
+  else
+    err = FT_New_Face(_ftLib, file.c_str(), 0, &_face);
   if (err) {
     fprintf(stderr, "FreeType: failed to load font '%s' (error %d)\n", file.c_str(), err);
     _face = nullptr;

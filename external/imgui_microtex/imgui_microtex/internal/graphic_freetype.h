@@ -64,6 +64,9 @@ private:
 public:
   static void initFreeType();
   static void releaseFreeType();
+  // Registers a font held in memory: a Font_freetype created with this name loads it with
+  // FT_New_Memory_Face instead of opening a file
+  static void registerMemoryFont(const std::string& name, std::vector<uint8_t> data);
 
   explicit Font_freetype(const std::string& file);
   ~Font_freetype() override = default;

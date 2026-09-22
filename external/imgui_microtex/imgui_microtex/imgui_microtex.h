@@ -56,6 +56,8 @@ enum class TexStyle {
 // underlying MicroTeX::init()/release() pair is not re-entrant, so we
 // defer the real teardown to std::atexit: see imgui_microtex.cpp).
 void Init(const std::string& clmFile, const std::string& fontFile);
+// Same, with the two files read in memory (.clm1 and .otf). C++ only.
+void InitFromMemory(const std::vector<uint8_t>& clmData, const std::vector<uint8_t>& fontData);
 
 // Check if initialized.
 bool IsInitialized();
