@@ -1,7 +1,16 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/icons_font_awesome_6.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
+
+#include <string>
+#include <vector>
+
+// Filled by the OnHeading callback (set when this demo runs standalone: see main())
+static std::vector<std::string> gHeadings;
+// True when main() enabled the options that the hosted demo (Dear ImGui Bundle explorer) does not set
+static bool gStandaloneOptions = false;
 
 std::string exampleMarkdownString()
 {
@@ -212,6 +221,9 @@ int main() {
 }
 ```
 
+Code blocks get a copy button, and syntax highlighting when the library is built with its code
+editor (`ImGuiMd::HasCodeEditor()`); otherwise they are plain monospaced blocks.
+
 Code blocks are delimited by three backticks, plus an optional language. See example below:
 
 <pre>
@@ -363,6 +375,155 @@ $$
 </details>
 </details>
 <details>
+<summary>Centered blocks</summary>
+
+`<center>` centers a block. As with `<div>` and `<details>`, put the tags on their own
+lines, with blank lines around them, so that the content inside is parsed as markdown:
+
+<center>
+
+**Centered**, with *markdown* inside: $E = mc^2$
+
+</center>
+
+<details>
+<summary>Show source</summary>
+
+```
+<center>
+
+**Centered**, with *markdown* inside: $E = mc^2$
+
+</center>
+```
+
+</details>
+</details>
+<details>
+<summary>Custom fenced blocks</summary>
+
+A fenced block whose language you registered is rendered by your own function instead of
+the code renderer: tables from `csv`, diagrams, live widgets... This demo registers `csv`:
+
+```csv
+name,score,rank
+Alice,10,1
+Bob,7,2
+Carol,4,3
+```
+
+<details>
+<summary>Show source</summary>
+
+```cpp
+void RenderCsv(const std::string& code)
+{
+    std::vector<std::vector<std::string>> rows = SplitCsv(code);  // one vector per line
+    if (ImGui::BeginTable("csv", (int)rows[0].size(), ImGuiTableFlags_Borders))
+    {
+        for (const auto& row : rows)
+        {
+            ImGui::TableNextRow();
+            for (const auto& cell : row)
+            {
+                ImGui::TableNextColumn();
+                ImGui::TextUnformatted(cell.c_str());
+            }
+        }
+        ImGui::EndTable();
+    }
+}
+
+ImGuiMd::RegisterFencedBlockRenderer("csv", RenderCsv);
+```
+
+Then in the markdown:
+<pre>
+```csv
+name,score
+Alice,10
+```
+</pre>
+
+</details>
+</details>
+<details>
+<summary>Wikilinks and hard line breaks (options)</summary>
+
+Two features are enabled through `MarkdownOptions`, i.e. before the first render:
+
+- **Wikilinks**: `[[target]]` and `[[target|label]]` become links, and clicking one calls
+  `callbacks.OnWikiLink(target)`: navigation between notes, in-app pages, etc.
+  @@WIKILINKS_STATUS@@
+- **Hard line breaks**: with `hardSoftBreaks = true`, a newline in the source is a line
+  break (as in GitHub comments and chat messages) instead of a space. It applies to the whole
+  document, so it is not enabled here.
+
+A wikilink to [[Home]] and one with a label: [[Notes/todo|my todo list]].
+
+<details>
+<summary>Show source</summary>
+
+```cpp
+ImGuiMd::MarkdownOptions options;
+options.callbacks.OnWikiLink = [](const std::string& target) { printf("go to %s\n", target.c_str()); };
+options.hardSoftBreaks = true;   // for chat-like text
+ImmApp::AddOnsParams addons;
+addons.withMarkdownOptions = options;
+ImmApp::Run(runnerParams, addons);
+```
+
+```
+A wikilink to [[Home]] and one with a label: [[Notes/todo|my todo list]].
+```
+
+</details>
+</details>
+<details>
+<summary>Headings callback</summary>
+
+`callbacks.OnHeading(level, text)` is called after each heading is rendered: build a
+table of contents, scroll to an anchor, track the section under the mouse...
+
+@@HEADINGS_STATUS@@
+
+<details>
+<summary>Show source</summary>
+
+```cpp
+std::vector<std::string> toc;
+options.callbacks.OnHeading = [&](int level, const std::string& text) {
+    toc.push_back(std::string(2 * (level - 1), ' ') + text);
+};
+```
+
+</details>
+</details>
+<details>
+<summary>Icons, emoji and other fonts</summary>
+
+Dear ImGui Bundle merges FontAwesome into the markdown fonts, so icon glyphs work inside
+markdown, in every style: @@ICON_ROCKET@@ regular, **@@ICON_HEART@@ bold**, *@@ICON_CHECK@@ italic*,
+`@@ICON_COPY@@ code`.
+
+Any other font can be merged into all the markdown fonts with `fontOptions.mergeFonts`:
+an emoji font, a CJK font (Dear ImGui loads glyphs on demand, so a large font costs nothing
+until it is used), your own icons...
+
+<details>
+<summary>Show source</summary>
+
+```cpp
+#include "hello_imgui/icons_font_awesome_6.h"
+ImGuiMd::Render("Launch " ICON_FA_ROCKET);
+
+ImGuiMd::MarkdownOptions options;
+options.fontOptions.mergeFonts = {"fonts/NotoEmoji-Regular.ttf", "fonts/NotoSansCJKjp-Regular.otf"};
+```
+
+</details>
+</details>
+<details>
 <summary>Preformatted text with the pre tag</summary>
 
 `<pre>` renders a block of monospaced text **without** the styling of a
@@ -403,6 +564,27 @@ Last line
 ---
 
 # Under the hood: how this page is built
+
+<details>
+<summary>What this build supports</summary>
+
+@@SUPPORT_STATUS@@
+
+`ImGuiMd::HasLatex()`, `HasUrlImages()` and `HasCodeEditor()` tell what the library was
+built with and what the host provides.
+
+</details>
+<details>
+<summary>Rendering and fonts</summary>
+
+- `ImGuiMd::Render(text)` removes the common indentation first, so that a markdown string
+  written inside an indented function renders as expected (`RenderRaw` renders as is).
+- The markdown fonts are loaded at the first render: `InitializeMarkdown()` can be called
+  any time after the ImGui context exists (ImmApp and Hello ImGui call it for you).
+- Each `Render()` call is a fragment with its own id scope: render prose between widgets,
+  the same fragment twice, and nothing collides.
+
+</details>
 
 <details>
 <summary>It's collapsibles all the way down</summary>
@@ -448,13 +630,107 @@ Hidden content (regular markdown here).
 }
 
 
+static std::vector<std::vector<std::string>> SplitCsv(const std::string& code)
+{
+    std::vector<std::vector<std::string>> rows;
+    size_t lineStart = 0;
+    while (lineStart < code.size())
+    {
+        size_t lineEnd = code.find('\n', lineStart);
+        if (lineEnd == std::string::npos)
+            lineEnd = code.size();
+        std::string line = code.substr(lineStart, lineEnd - lineStart);
+        lineStart = lineEnd + 1;
+        if (line.empty())
+            continue;
+        std::vector<std::string> cells;
+        size_t cellStart = 0;
+        while (true)
+        {
+            size_t comma = line.find(',', cellStart);
+            cells.push_back(line.substr(cellStart, comma == std::string::npos ? std::string::npos : comma - cellStart));
+            if (comma == std::string::npos)
+                break;
+            cellStart = comma + 1;
+        }
+        rows.push_back(cells);
+    }
+    return rows;
+}
+
+// Renders a ```csv fenced block as a table (see RegisterFencedBlockRenderer below)
+static void RenderCsv(const std::string& code)
+{
+    auto rows = SplitCsv(code);
+    if (rows.empty())
+        return;
+    if (ImGui::BeginTable("csv", (int)rows[0].size(), ImGuiTableFlags_Borders))
+    {
+        for (const auto& row : rows)
+        {
+            ImGui::TableNextRow();
+            for (const auto& cell : row)
+            {
+                ImGui::TableNextColumn();
+                ImGui::TextUnformatted(cell.c_str());
+            }
+        }
+        ImGui::EndTable();
+    }
+}
+
+static std::string ReplaceAll(std::string text, const std::string& from, const std::string& to)
+{
+    for (size_t pos = text.find(from); pos != std::string::npos; pos = text.find(from, pos + to.size()))
+        text.replace(pos, from.size(), to);
+    return text;
+}
+
+static std::string FillDynamicParts(const std::string& markdown)
+{
+    std::string wikilinksStatus, headingsStatus;
+    if (gStandaloneOptions)
+    {
+        wikilinksStatus = "*(Enabled in this run: the wikilink below is clickable, see the console.)*";
+        headingsStatus = "This run collects the headings of this page: ";
+        for (size_t i = 0; i < gHeadings.size() && i < 6; ++i)
+            headingsStatus += (i > 0 ? ", `" : "`") + gHeadings[i] + "`";
+        if (gHeadings.size() > 6)
+            headingsStatus += "...";
+    }
+    else
+    {
+        wikilinksStatus = "*(Not enabled in this hosted run: the wikilink below shows as text. "
+                          "Run this demo standalone, `demo_imgui_md`, to see it live.)*";
+        headingsStatus = "*(Not enabled in this hosted run.)*";
+    }
+    std::string supportStatus = std::string("This build: LaTeX **") + (ImGuiMd::HasLatex() ? "yes" : "no")
+        + "**, URL images **" + (ImGuiMd::HasUrlImages() ? "yes" : "no")
+        + "**, code editor **" + (ImGuiMd::HasCodeEditor() ? "yes" : "no") + "**.";
+    std::string r = markdown;
+    r = ReplaceAll(r, "@@WIKILINKS_STATUS@@", wikilinksStatus);
+    r = ReplaceAll(r, "@@HEADINGS_STATUS@@", headingsStatus);
+    r = ReplaceAll(r, "@@SUPPORT_STATUS@@", supportStatus);
+    r = ReplaceAll(r, "@@ICON_ROCKET@@", ICON_FA_ROCKET);
+    r = ReplaceAll(r, "@@ICON_HEART@@", ICON_FA_HEART);
+    r = ReplaceAll(r, "@@ICON_CHECK@@", ICON_FA_CHECK);
+    r = ReplaceAll(r, "@@ICON_COPY@@", ICON_FA_COPY);
+    return r;
+}
+
 void demo_imgui_md()
 {
-    ImGuiMd::Render(exampleMarkdownString());
-    // Note: you may also use:
-    //   ImGuiMd::RenderUnindented(exampleMarkdownString());
-    // (it will remove the main indentation of the Markdown string before rendering it,
-    // which is useful when the string is defined inside a function with indentation)
+    static bool csvRendererRegistered = false;
+    if (!csvRendererRegistered)
+    {
+        ImGuiMd::RegisterFencedBlockRenderer("csv", RenderCsv);
+        csvRendererRegistered = true;
+    }
+    std::vector<std::string> headingsSeenLastFrame = gHeadings;
+    gHeadings.clear();
+    ImGuiMd::Render(FillDynamicParts(exampleMarkdownString()));
+    if (gStandaloneOptions && gHeadings.empty())
+        gHeadings = headingsSeenLastFrame;
 }
 
 
@@ -471,8 +747,17 @@ int main(int, char**)
     runnerParams.windowTitle = "Dear ImGui Bundle - Markdown demo";
     runnerParams.windowSize = {800, 800};
 
+    // Options that must be set before the first render: wikilinks, headings callback
+    ImGuiMd::MarkdownOptions options;
+    options.callbacks.OnWikiLink = [](const std::string& target) { printf("wikilink clicked: %s\n", target.c_str()); };
+    options.callbacks.OnHeading = [](int level, const std::string& text) {
+        gHeadings.push_back(std::string(2 * (level - 1), ' ') + text);
+    };
+    gStandaloneOptions = true;
+
     ImmApp::AddOnsParams addons;
     addons.withLatex = true;  // implies withMarkdown=true
+    addons.withMarkdownOptions = options;
 
     ImmApp::Run(runnerParams, addons);
     return 0;
