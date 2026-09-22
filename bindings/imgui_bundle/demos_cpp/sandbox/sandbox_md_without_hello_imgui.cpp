@@ -14,6 +14,7 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 #include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "immapp/markdown_host.h"
 #include "hello_imgui/hello_imgui_include_opengl.h"
 #include <GLFW/glfw3.h>
 
@@ -86,6 +87,7 @@ int main(int, char**)
     // try to upload image / LaTeX-math textures, GLAD is ready.
     ImGuiMd::MarkdownOptions md_options;
     md_options.withLatex = true;
+    ImmApp::InstallMarkdownHostServices();  // code blocks with syntax highlighting (optional)
     ImGuiMd::InitializeMarkdown(md_options);
     ImGuiMd::GetFontLoaderFunction()();
 
