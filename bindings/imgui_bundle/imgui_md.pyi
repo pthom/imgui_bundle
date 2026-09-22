@@ -239,6 +239,19 @@ def get_font(font_spec: MarkdownFontSpec) -> SizedFont:
 def link_color() -> ImVec4:
     pass
 
+# What this build and its host provide (available once InitializeMarkdown was called)
+def has_latex() -> bool:
+    """$...$ and $$...$$ rendered as formulas (else shown as their source)"""
+    pass
+
+def has_url_images() -> bool:
+    """images downloaded from http(s) urls"""
+    pass
+
+def has_code_editor() -> bool:
+    """code blocks with syntax highlighting (else plain monospaced blocks)"""
+    pass
+
 def render_text_as_link(text: str, url: str) -> None:
     """Renders a link with the given text and url. Can be used outside of markdown rendering."""
     pass

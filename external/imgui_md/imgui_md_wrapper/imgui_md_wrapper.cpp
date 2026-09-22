@@ -1044,6 +1044,10 @@ namespace ImGuiMd
         return _MakeMarkdownImage(imageCache.at(image_path));
     }
 
+    bool HasLatex() { return (bool)gHostServices.RenderLatex; }
+    bool HasUrlImages() { return (bool)gMarkdownOptions.callbacks.OnDownloadData; }
+    bool HasCodeEditor() { return (bool)gHostServices.RenderCodeBlock; }
+
     SizedFont GetCodeFont()
     {
         return gMarkdownRenderer->get_font_code();

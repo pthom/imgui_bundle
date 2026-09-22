@@ -219,6 +219,15 @@ void py_init_module_imgui_md(nb::module_& m)
     m.def("link_color",
         ImGuiMd::LinkColor);
 
+    m.def("has_latex",
+        ImGuiMd::HasLatex, "$...$ and $$...$$ rendered as formulas (else shown as their source)");
+
+    m.def("has_url_images",
+        ImGuiMd::HasUrlImages, "images downloaded from http(s) urls");
+
+    m.def("has_code_editor",
+        ImGuiMd::HasCodeEditor, "code blocks with syntax highlighting (else plain monospaced blocks)");
+
     m.def("render_text_as_link",
         ImGuiMd::RenderTextAsLink,
         nb::arg("text"), nb::arg("url"),

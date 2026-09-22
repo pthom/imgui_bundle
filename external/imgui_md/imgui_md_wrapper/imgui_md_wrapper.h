@@ -216,6 +216,11 @@ namespace ImGuiMd
 
     ImVec4 LinkColor();
 
+    // What this build and its host provide (available once InitializeMarkdown was called)
+    bool HasLatex();         // $...$ and $$...$$ rendered as formulas (else shown as their source)
+    bool HasUrlImages();     // images downloaded from http(s) urls
+    bool HasCodeEditor();    // code blocks with syntax highlighting (else plain monospaced blocks)
+
     // Renders a link with the given text and url. Can be used outside of markdown rendering.
     void RenderTextAsLink(const char* text, const char* url);
 }
