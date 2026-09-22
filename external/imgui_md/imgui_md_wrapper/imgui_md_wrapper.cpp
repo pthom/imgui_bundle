@@ -147,6 +147,8 @@ namespace ImGuiMd
 {
     // Host services (see imgui_md_host.h)
     static HostServices gHostServices;
+    // Set by OnImage_Default while an image is downloading (the renderer then draws a spinner)
+    static bool gImageIsLoading = false;
     void SetHostServices(const HostServices& services) { gHostServices = services; }
     const HostServices& GetHostServices() { return gHostServices; }
 #ifdef IMGUI_RICHMD_HOST_HELLO_IMGUI
@@ -500,29 +502,21 @@ namespace ImGuiMd
                 mMarkdownOptions->callbacks.OnOpenLink(m_href);
         }
 
-        bool get_image(image_info& nfo) const override
+        image_status get_image(image_info& nfo) const override
         {
             if (! mMarkdownOptions->callbacks.OnImage)
-                return false;
+                return image_status::none;
 
+            gImageIsLoading = false;
             std::optional<MarkdownImage> mdImage = mMarkdownOptions->callbacks.OnImage(m_img_src);
-
             if (! mdImage.has_value())
-                return false;
-
-            // Image size adaptive depending on the resolution scale.
-            // Unlike fonts, ImGui::Image() draw sizes are not scaled by FontScaleDpi,
-            // so we apply the DPI factor explicitly to match the (DPI-scaled) text.
-            {
-                float k = ImGui::GetStyle().FontScaleDpi;
-                nfo.size = ImVec2(mdImage->size.x * k, mdImage->size.y * k);
-            }
+                return gImageIsLoading ? image_status::loading : image_status::none;
 
             nfo.texture_id = mdImage->texture_id;
+            nfo.size = mdImage->size;
             nfo.uv0 = mdImage->uv0;
             nfo.uv1 = mdImage->uv1;
-
-            return true;
+            return image_status::ready;
         }
 
         void html_div(const std::string& divClass, bool openingDiv) override
@@ -927,33 +921,6 @@ namespace ImGuiMd
         return _UploadEncodedImage(data.data(), data.size());
     }
 
-    // Draw a simple rotating spinner using ImGui's DrawList (no external dependencies)
-    static void _DrawLoadingSpinner()
-    {
-        float size = ImGui::GetFontSize() * 2.0f;
-        ImVec2 cursor = ImGui::GetCursorScreenPos();
-        ImVec2 center(cursor.x + size * 0.5f, cursor.y + size * 0.5f);
-        float radius = size * 0.4f;
-        float thickness = 2.0f;
-        ImU32 color = ImGui::GetColorU32(ImGuiCol_Text, 0.6f);
-        float t = (float)ImGui::GetTime();
-
-        ImDrawList* dl = ImGui::GetWindowDrawList();
-        int segments = 12;
-        for (int i = 0; i < segments; i++)
-        {
-            float a = (float)i / (float)segments * 3.14159265358979f * 2.0f;
-            // Fade based on rotation phase
-            float fade = fmodf((float)i / (float)segments + t * 1.5f, 1.0f);
-            ImU32 c = ImGui::GetColorU32(ImGuiCol_Text, fade * 0.8f);
-            float inner = radius * 0.5f;
-            ImVec2 p1(center.x + cosf(a) * inner, center.y + sinf(a) * inner);
-            ImVec2 p2(center.x + cosf(a) * radius, center.y + sinf(a) * radius);
-            dl->AddLine(p1, p2, c, thickness);
-        }
-        ImGui::Dummy(ImVec2(size, size));
-    }
-
     // The broken-image texture is loaded once and kept in the image cache
     // (the cache owns the textures: a texture returned as a temporary would be
     // freed at the end of the frame, leaving a dangling id).
@@ -1003,9 +970,9 @@ namespace ImGuiMd
                 return _MakeMarkdownImage(imageCache.at(image_path));
 
             case MarkdownDownloadStatus::Downloading:
-                // Show spinner while downloading (don't cache - will be called again next frame)
-                _DrawLoadingSpinner();
-                return std::nullopt;  // nullopt so SPAN_IMG doesn't also draw an image
+                // The renderer draws a spinner (not cached: called again next frame)
+                gImageIsLoading = true;
+                return std::nullopt;
 
             case MarkdownDownloadStatus::Failed:
                 if (!result.errorMessage.empty())
