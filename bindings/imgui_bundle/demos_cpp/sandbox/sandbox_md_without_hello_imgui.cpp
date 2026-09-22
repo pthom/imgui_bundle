@@ -82,14 +82,12 @@ int main(int, char**)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 150");
 
-    // ImGuiMd::InitializeMarkdown internally calls HelloImGui::InitGlLoader()
-    // (which calls gladLoadGL() outside HelloImGui::Run()), so by the time we
-    // try to upload image / LaTeX-math textures, GLAD is ready.
+    // Outside HelloImGui::Run(), HelloImGui initializes its OpenGL loader (GLAD) at the
+    // first texture creation, so image / LaTeX-math textures work here too.
     ImGuiMd::MarkdownOptions md_options;
     md_options.withLatex = true;
     ImmApp::InstallMarkdownHostServices();  // code blocks with syntax highlighting (optional)
-    ImGuiMd::InitializeMarkdown(md_options);
-    ImGuiMd::GetFontLoaderFunction()();
+    ImGuiMd::InitializeMarkdown(md_options);  // the fonts load at the first render
 
     while (!glfwWindowShouldClose(window))
     {
@@ -120,7 +118,7 @@ int main(int, char**)
         glfwSwapBuffers(window);
     }
 
-    // ImGuiMd::DeInitializeMarkdown internally calls HelloImGui::FreeImageCache()
+    // ImGuiMd::DeInitializeMarkdown frees the markdown textures
     // so the GPU textures are dropped before we destroy the GL context.
     ImGuiMd::DeInitializeMarkdown();
 

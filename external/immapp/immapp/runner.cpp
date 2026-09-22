@@ -171,11 +171,7 @@ namespace ImmApp
                 addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows = []() { return !ImGuiEx::IsInsideCanvas(); };
 #endif
             InstallMarkdownHostServices();
-            ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
-
-            runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::SequenceFunctions(
-                runnerParams.callbacks.LoadAdditionalFonts,
-                ImGuiMd::GetFontLoaderFunction());
+            ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());  // the fonts load at the first render
 
             // Tear down markdown WHILE the GL context is still alive.
             // BeforeExit fires inside AbstractRunner::TearDown just before

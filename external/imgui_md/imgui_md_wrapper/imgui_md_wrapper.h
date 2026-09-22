@@ -169,30 +169,29 @@ namespace ImGuiMd
         bool autolinks = true;
     };
 
-    // InitializeMarkdown: Call this once at application startup
-    // Don't forget to later call GetFontLoaderFunction(): it will return a function that you should call
-    // during ImGui initialization (and before rendering the first frame, since it will load the fonts)
-    //
-    // If using HelloImGui, the code would look like:
-    //     Python:
-    //        runner_params = hello_imgui.RunnerParams()
-    //
-    //        ... // Fill runner_params callbacks
-    //
-    //        # Initialize markdown and ask HelloImGui to load the required fonts
-    //        imgui_md.initialize_markdown()
-    //        runner_params.callbacks.load_additional_fonts = imgui_md.get_font_loader_function()
-    //
-    //        hello_imgui.run(runner_params)
-    // Private: callback called during InitializeMarkdown, allowing customization of the options.
+    // InitializeMarkdown: call it once, any time after ImGui::CreateContext() (with HelloImGui or
+    // ImmApp: before or after Run, they call it for you when markdown is enabled).
+    // The fonts are loaded at the first Render() (Dear ImGui 1.92 loads glyphs on demand).
+    // DeInitializeMarkdown: frees the textures; call it while the rendering backend is still alive.
+    void InitializeMarkdown(const MarkdownOptions& options = MarkdownOptions());
+    void DeInitializeMarkdown();
+
+    // Contexts: InitializeMarkdown creates a default context; several contexts (e.g. two font sizes,
+    // several ImGui contexts) can be created explicitly. All the other functions act on the current one.
+    // C++ only for now.
+    struct Context;
+    Context* CreateContext(const MarkdownOptions& options = MarkdownOptions());
+    void DestroyContext(Context* context);
+    void SetCurrentContext(Context* context);
+    Context* GetCurrentContext();
+
+    // Private: callback called when a context is created, allowing customization of the options.
     // Python sets this at import time to inject URL image download support.
     using Priv_OnInitializeMarkdownCallback = std::function<void(MarkdownOptions&)>;
     void Priv_SetOnInitializeMarkdownCallback(Priv_OnInitializeMarkdownCallback callback);
 
-    void InitializeMarkdown(const MarkdownOptions& options = MarkdownOptions());
-    void DeInitializeMarkdown();
-
-    // GetFontLoaderFunction() will return a function that you should call during ImGui initialization.
+    // Legacy: the fonts now load at the first Render(). The returned function loads them right away,
+    // for hosts that build their font atlas once (no dynamic fonts).
     VoidFunction GetFontLoaderFunction();
 
     // Renders a markdown string

@@ -186,7 +186,7 @@ void py_init_module_imgui_md(nb::module_& m)
         ImGuiMd::DeInitializeMarkdown);
 
     m.def("get_font_loader_function",
-        ImGuiMd::GetFontLoaderFunction, "GetFontLoaderFunction() will return a function that you should call during ImGui initialization.");
+        ImGuiMd::GetFontLoaderFunction, " Legacy: the fonts now load at the first Render(). The returned function loads them right away,\n for hosts that build their font atlas once (no dynamic fonts).");
 
     m.def("render",
         ImGuiMd::Render,
