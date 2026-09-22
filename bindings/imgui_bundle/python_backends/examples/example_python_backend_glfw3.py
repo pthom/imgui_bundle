@@ -34,10 +34,7 @@ def init_fonts_and_markdown():
     # uncomment to keep using the default hardcoded font, or load your default font here
     # imgui.get_io().fonts.add_font_default()
 
-    # Load markdown fonts
-    imgui_md.initialize_markdown()
-    font_loader = imgui_md.get_font_loader_function()
-    font_loader()
+    imgui_md.initialize_markdown()  # the markdown fonts load at the first render
 
 
 def main():

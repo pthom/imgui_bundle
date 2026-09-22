@@ -171,9 +171,7 @@ def init_fonts_and_markdown():
     # Enable native LaTeX math via MicroTeX (otherwise $...$ stays literal).
     md_options = imgui_md.MarkdownOptions()
     md_options.with_latex = True
-    imgui_md.initialize_markdown(md_options)
-    font_loader = imgui_md.get_font_loader_function()
-    font_loader()
+    imgui_md.initialize_markdown(md_options)  # the fonts load at the first render
 
 
 def gui():

@@ -629,8 +629,24 @@ namespace ImGuiMd
     };
 
 
-    // Global renderer
-    std::unique_ptr<MarkdownRenderer> gMarkdownRenderer;
+    struct Context
+    {
+        MarkdownOptions options;
+        std::unique_ptr<MarkdownRenderer> renderer;  // created on first use (it loads the fonts)
+    };
+    static Context* gCurrentContext = nullptr;
+    static std::unique_ptr<Context> gDefaultContext;   // the one created by InitializeMarkdown
+
+    // The current context's renderer, created on first use: this loads the fonts, which is possible
+    // any time after ImGui::CreateContext() (nullptr when no context is current)
+    static MarkdownRenderer* _Renderer()
+    {
+        if (!gCurrentContext)
+            return nullptr;
+        if (!gCurrentContext->renderer)
+            gCurrentContext->renderer = std::make_unique<MarkdownRenderer>(&gCurrentContext->options);
+        return gCurrentContext->renderer.get();
+    }
 
 // Not for pyodide: emscripten's FETCH cannot run in a pyodide side module
 // (no fetch JS glue in pyodide's main module); Python installs a JS fetch()
@@ -707,30 +723,67 @@ namespace ImGuiMd
     }
 #endif // __EMSCRIPTEN__ && !IMGUI_BUNDLE_BUILD_PYODIDE
 
-    // Global options
-    MarkdownOptions gMarkdownOptions;
-
     static Priv_OnInitializeMarkdownCallback gOnInitializeMarkdownCallback;
-    static bool gMarkdownWasInitialized = false;
 
     void Priv_SetOnInitializeMarkdownCallback(Priv_OnInitializeMarkdownCallback callback)
     {
         gOnInitializeMarkdownCallback = std::move(callback);
     }
 
+    Context* CreateContext(const MarkdownOptions& options)
+    {
+        Context* context = new Context();
+        context->options = options;
+        if (gOnInitializeMarkdownCallback)
+            gOnInitializeMarkdownCallback(context->options);
+#ifdef IMGUI_RICHMD_HOST_HELLO_IMGUI
+        Priv_InstallHelloImGuiHost();  // fills the host services the application did not set
+#endif
+        _InstallDefaultHostServices();
+#if defined(__EMSCRIPTEN__) && !defined(IMGUI_BUNDLE_BUILD_PYODIDE)
+        // On Emscripten (but not pyodide), set a default download callback using
+        // emscripten_fetch (unless one was already set, e.g. by Python)
+        if (!context->options.callbacks.OnDownloadData)
+            context->options.callbacks.OnDownloadData = EmscriptenDownloadData;
+#elif defined(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
+        // On desktop C++, set a default download callback using libcurl
+        // (unless one was already set, e.g. by Python)
+        if (!context->options.callbacks.OnDownloadData)
+            context->options.callbacks.OnDownloadData = DesktopDownloadData;
+#endif
+        if (!gCurrentContext)
+            gCurrentContext = context;
+        return context;
+    }
+
+    void DestroyContext(Context* context)
+    {
+        if (!context)
+            return;
+        if (gCurrentContext == context)
+            gCurrentContext = nullptr;
+        // Deleting the renderer clears its caches: each cached MarkdownTexture owns its GPU texture
+        // (keepAlive), so the textures are freed here, while the rendering backend is still alive.
+        // The options' callbacks (which may hold Python objects) go with it.
+        delete context;
+    }
+
+    void SetCurrentContext(Context* context) { gCurrentContext = context; }
+    Context* GetCurrentContext() { return gCurrentContext; }
+
+    void InitializeMarkdown(const MarkdownOptions& options)
+    {
+        if (gDefaultContext)
+            return;
+        gDefaultContext.reset(CreateContext(options));
+        SetCurrentContext(gDefaultContext.get());
+    }
+
     void DeInitializeMarkdown()
     {
-        // Clear per-frame callbacks that may hold Python objects before the interpreter shuts down.
-        // Keep gOnInitializeMarkdownCallback alive: it is set once at module import time
-        // and must survive teardown/setup cycles (e.g. Pyodide playground re-runs).
-        gMarkdownOptions.callbacks.OnDownloadData = nullptr;
-        // reset() (not release()): actually destroy the renderer so its image
-        // cache is cleared. Each cached MarkdownTexture owns its GPU texture via
-        // keepAlive, so destroying the cache frees the textures here — while the
-        // rendering backend is still live (relevant when running outside
-        // HelloImGui::Run(), where Priv_TearDown does not run).
-        gMarkdownRenderer.reset();
-        gMarkdownWasInitialized = false;
+        // gOnInitializeMarkdownCallback stays: it is set once at module import time and must
+        // survive teardown/setup cycles (e.g. Pyodide playground re-runs).
+        DestroyContext(gDefaultContext.release());
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
         ClearDesktopDownloads();
 #endif
@@ -742,50 +795,21 @@ namespace ImGuiMd
 #endif
     }
 
-    void InitializeMarkdown(const MarkdownOptions& options)
-    {
-        if (gMarkdownWasInitialized)
-            return;
-
-        gMarkdownOptions = options;
-        if (gOnInitializeMarkdownCallback)
-            gOnInitializeMarkdownCallback(gMarkdownOptions);
-#ifdef IMGUI_RICHMD_HOST_HELLO_IMGUI
-        Priv_InstallHelloImGuiHost();  // fills the host services the application did not set
-#endif
-        _InstallDefaultHostServices();
-#if defined(__EMSCRIPTEN__) && !defined(IMGUI_BUNDLE_BUILD_PYODIDE)
-        // On Emscripten (but not pyodide), set a default download callback using
-        // emscripten_fetch (unless one was already set, e.g. by Python)
-        if (!gMarkdownOptions.callbacks.OnDownloadData)
-            gMarkdownOptions.callbacks.OnDownloadData = EmscriptenDownloadData;
-#elif defined(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
-        // On desktop C++, set a default download callback using libcurl
-        // (unless one was already set, e.g. by Python)
-        if (!gMarkdownOptions.callbacks.OnDownloadData)
-            gMarkdownOptions.callbacks.OnDownloadData = DesktopDownloadData;
-#endif
-        gMarkdownWasInitialized = true;
-    }
-
 
     void Render(const std::string& markdownString)
     {
-        if (!gMarkdownRenderer)
+        MarkdownRenderer* renderer = _Renderer();
+        if (!renderer)
         {
             std::cerr << "ImGuiMd::Render : Markdown was not initialized!\n";
             return;
         }
-        gMarkdownRenderer->Render(markdownString);
+        renderer->Render(markdownString);
     }
 
     std::function<void(void)> GetFontLoaderFunction()
     {
-        auto fontLoaderFunction = []()
-        {
-            gMarkdownRenderer = std::make_unique<MarkdownRenderer>(&gMarkdownOptions);
-        };
-        return fontLoaderFunction;
+        return []() { _Renderer(); };
     }
 
 
@@ -849,7 +873,7 @@ namespace ImGuiMd
     // freed at the end of the frame, leaving a dangling id).
     static const MarkdownTexture& _BrokenImageTexture()
     {
-        auto& imageCache = gMarkdownRenderer->ImageCache();
+        auto& imageCache = _Renderer()->ImageCache();
         std::string errorImage = "images/markdown_broken_image.png";
         auto it = imageCache.find(errorImage);
         if (it == imageCache.end())
@@ -860,7 +884,7 @@ namespace ImGuiMd
     // Cache image_path as broken (no retry on the next frames) and return the broken-image
     static std::optional<MarkdownImage> _BrokenImage(const std::string& image_path)
     {
-        auto& imageCache = gMarkdownRenderer->ImageCache();
+        auto& imageCache = _Renderer()->ImageCache();
         imageCache[image_path] = _BrokenImageTexture();
         const auto& tex = imageCache.at(image_path);
         if (tex.Valid())
@@ -870,22 +894,23 @@ namespace ImGuiMd
 
     std::optional<MarkdownImage> OnImage_Default(const std::string& image_path)
     {
-        if (!gMarkdownRenderer)
+        MarkdownRenderer* renderer = _Renderer();
+        if (!renderer)
         {
             std::cerr << "Did you initialize ImGuiMd?\n";
             return std::nullopt;
         }
 
-        auto & imageCache = gMarkdownRenderer->ImageCache();
+        auto & imageCache = renderer->ImageCache();
 
         // If already cached, return it
         if (imageCache.find(image_path) != imageCache.end())
             return _MakeMarkdownImage(imageCache.at(image_path));
 
         // Handle URL images via OnDownloadData callback
-        if (_IsUrl(image_path) && gMarkdownOptions.callbacks.OnDownloadData)
+        if (_IsUrl(image_path) && gCurrentContext->options.callbacks.OnDownloadData)
         {
-            auto result = gMarkdownOptions.callbacks.OnDownloadData(image_path);
+            auto result = gCurrentContext->options.callbacks.OnDownloadData(image_path);
             switch (result.status)
             {
             case MarkdownDownloadStatus::Ready:
@@ -918,14 +943,16 @@ namespace ImGuiMd
 
     ImVec4 LinkColor()
     {
-        return gMarkdownRenderer ? gMarkdownRenderer->link_color() : imgui_md::default_link_color();
+        MarkdownRenderer* renderer = _Renderer();
+        return renderer ? renderer->link_color() : imgui_md::default_link_color();
     }
 
     // Same look and behaviour as the links inside markdown
     void RenderTextAsLink(const char* text, const char* url)
     {
         static const imgui_md::Style defaultStyle;
-        const imgui_md::Style& style = gMarkdownRenderer ? gMarkdownRenderer->style : defaultStyle;
+        MarkdownRenderer* renderer = _Renderer();
+        const imgui_md::Style& style = renderer ? renderer->style : defaultStyle;
         ImGui::PushStyleColor(ImGuiCol_Text, LinkColor());
         ImGui::TextUnformatted(text);
         ImGui::PopStyleColor();
@@ -934,17 +961,19 @@ namespace ImGuiMd
     }
 
     bool HasLatex() { return (bool)gHostServices.RenderLatex; }
-    bool HasUrlImages() { return (bool)gMarkdownOptions.callbacks.OnDownloadData; }
+    bool HasUrlImages() { return gCurrentContext && gCurrentContext->options.callbacks.OnDownloadData; }
     bool HasCodeEditor() { return (bool)gHostServices.RenderCodeBlock; }
 
     SizedFont GetCodeFont()
     {
-        return gMarkdownRenderer->get_font_code();
+        IM_ASSERT(_Renderer() && "ImGuiMd: call InitializeMarkdown first");
+        return _Renderer()->get_font_code();
     }
 
     SizedFont GetFont(const MarkdownFontSpec& fontSpec)
     {
-        return gMarkdownRenderer->GetFont(fontSpec);
+        IM_ASSERT(_Renderer() && "ImGuiMd: call InitializeMarkdown first");
+        return _Renderer()->GetFont(fontSpec);
     }
 
 

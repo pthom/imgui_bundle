@@ -36,7 +36,8 @@ def main() -> None:
         "MarkdownCallbacks": r"^OnDownloadData$",
         "MarkdownDownloadResult": r"^data$",
     }
-    options.fn_exclude_by_name__regex = r"^FillFromData$|^Priv_SetOnInitializeMarkdownCallback$"
+    # Context is opaque (C++ only for now: an opaque Python handle will come with the RichMd rename)
+    options.fn_exclude_by_name__regex = r"^FillFromData$|^Priv_SetOnInitializeMarkdownCallback$|^CreateContext$|^DestroyContext$|^SetCurrentContext$|^GetCurrentContext$"
 
     # Custom binding for Priv_SetOnInitializeMarkdownCallback (same PyObject* pattern as OnDownloadData)
     options.custom_bindings.add_custom_bindings_to_main_module(
