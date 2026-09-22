@@ -143,8 +143,6 @@ namespace
     }
 }
 
-ImVec4 LinkColor(); // See imgui_md.cpp
-
 namespace ImGuiMd
 {
     // Host services (see imgui_md_host.h)
@@ -217,7 +215,7 @@ namespace ImGuiMd
 
     ImVec4 LinkColor()
     {
-        return ::LinkColor();
+        return imgui_md::default_link_color();
     }
 
     // Default code block: monospaced text in a frame, with a copy button
