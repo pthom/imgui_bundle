@@ -382,6 +382,8 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     hello_imgui_msvc_target_group_sources(imgui_md)
     if(IMGUI_BUNDLE_INSTALL_CPP)
         install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h imgui_md/imgui_md_wrapper/imgui_md_host.h DESTINATION include/imgui_md_wrapper)
+        # imgui_md_wrapper.h includes the renderer (imgui_md/imgui_md.h), which includes md4c.h
+        install(FILES imgui_md/imgui_md/imgui_md.h imgui_md/md4c/src/md4c.h DESTINATION include/imgui_md)
         if(IMGUI_RICHMD_WITH_CODE_EDITOR)
             install(FILES imgui_md/imgui_md_wrapper/backends/code_editor/snippets.h DESTINATION include/imgui_md_wrapper/backends/code_editor)
         endif()
