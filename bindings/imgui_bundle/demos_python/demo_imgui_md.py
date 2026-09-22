@@ -1,5 +1,11 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle import imgui_md, immapp
+from imgui_bundle import imgui, imgui_md, immapp
+from imgui_bundle.immapp import icons_fontawesome_6 as fa
+
+# Filled by the on_heading callback (set when this demo runs standalone: see main())
+_headings: list[str] = []
+# True when main() enabled the options that the hosted demo (Dear ImGui Bundle explorer) does not set
+_standalone_options = False
 
 
 def example_markdown_string() -> str:
@@ -207,6 +213,9 @@ int main() {
 }
 ```
 
+Code blocks get a copy button, and syntax highlighting when the library is built with its code
+editor (`imgui_md.has_code_editor()`); otherwise they are plain monospaced blocks.
+
 Code blocks are delimited by three backticks, plus an optional language. See example below:
 
 <pre>
@@ -358,6 +367,143 @@ $$
 </details>
 </details>
 <details>
+<summary>Centered blocks</summary>
+
+`<center>` centers a block. As with `<div>` and `<details>`, put the tags on their own
+lines, with blank lines around them, so that the content inside is parsed as markdown:
+
+<center>
+
+**Centered**, with *markdown* inside: $E = mc^2$
+
+</center>
+
+<details>
+<summary>Show source</summary>
+
+```
+<center>
+
+**Centered**, with *markdown* inside: $E = mc^2$
+
+</center>
+```
+
+</details>
+</details>
+<details>
+<summary>Custom fenced blocks</summary>
+
+A fenced block whose language you registered is rendered by your own function instead of
+the code renderer: tables from `csv`, diagrams, live widgets... This demo registers `csv`:
+
+```csv
+name,score,rank
+Alice,10,1
+Bob,7,2
+Carol,4,3
+```
+
+<details>
+<summary>Show source</summary>
+
+```python
+def render_csv(code: str) -> None:
+    rows = [row.split(",") for row in code.strip().splitlines()]
+    if imgui.begin_table("csv", len(rows[0]), imgui.TableFlags_.borders.value):
+        for row in rows:
+            imgui.table_next_row()
+            for cell in row:
+                imgui.table_next_column()
+                imgui.text(cell)
+        imgui.end_table()
+
+imgui_md.register_fenced_block_renderer("csv", render_csv)
+```
+
+Then in the markdown:
+<pre>
+```csv
+name,score
+Alice,10
+```
+</pre>
+
+</details>
+</details>
+<details>
+<summary>Wikilinks and hard line breaks (options)</summary>
+
+Two features are enabled through `MarkdownOptions`, i.e. before the first render:
+
+- **Wikilinks**: `[[target]]` and `[[target|label]]` become links, and clicking one calls
+  `callbacks.on_wiki_link(target)`: navigation between notes, in-app pages, etc.
+  @@WIKILINKS_STATUS@@
+- **Hard line breaks**: with `hard_soft_breaks = True`, a newline in the source is a line
+  break (as in GitHub comments and chat messages) instead of a space. It applies to the whole
+  document, so it is not enabled here.
+
+A wikilink to [[Home]] and one with a label: [[Notes/todo|my todo list]].
+
+<details>
+<summary>Show source</summary>
+
+```python
+options = imgui_md.MarkdownOptions()
+options.callbacks.on_wiki_link = lambda target: print("go to", target)
+options.hard_soft_breaks = True   # for chat-like text
+immapp.run(gui, with_markdown_options=options)
+```
+
+```
+A wikilink to [[Home]] and one with a label: [[Notes/todo|my todo list]].
+```
+
+</details>
+</details>
+<details>
+<summary>Headings callback</summary>
+
+`callbacks.on_heading(level, text)` is called after each heading is rendered: build a
+table of contents, scroll to an anchor, track the section under the mouse...
+
+@@HEADINGS_STATUS@@
+
+<details>
+<summary>Show source</summary>
+
+```python
+toc: list[str] = []
+options.callbacks.on_heading = lambda level, text: toc.append("  " * (level - 1) + text)
+```
+
+</details>
+</details>
+<details>
+<summary>Icons, emoji and other fonts</summary>
+
+Dear ImGui Bundle merges FontAwesome into the markdown fonts, so icon glyphs work inside
+markdown, in every style: @@ICON_ROCKET@@ regular, **@@ICON_HEART@@ bold**, *@@ICON_CHECK@@ italic*,
+`@@ICON_COPY@@ code`.
+
+Any other font can be merged into all the markdown fonts with `font_options.merge_fonts`:
+an emoji font, a CJK font (Dear ImGui loads glyphs on demand, so a large font costs nothing
+until it is used), your own icons...
+
+<details>
+<summary>Show source</summary>
+
+```python
+from imgui_bundle.immapp import icons_fontawesome_6 as fa
+imgui_md.render("Launch " + fa.ICON_FA_ROCKET)
+
+options = imgui_md.MarkdownOptions()
+options.font_options.merge_fonts = ["fonts/NotoEmoji-Regular.ttf", "fonts/NotoSansCJKjp-Regular.otf"]
+```
+
+</details>
+</details>
+<details>
 <summary>Preformatted text with the pre tag</summary>
 
 `<pre>` renders a block of monospaced text **without** the styling of a
@@ -398,6 +544,27 @@ Last line
 ---
 
 # Under the hood: how this page is built
+
+<details>
+<summary>What this build supports</summary>
+
+@@SUPPORT_STATUS@@
+
+`imgui_md.has_latex()`, `has_url_images()` and `has_code_editor()` tell what the library was
+built with and what the host provides.
+
+</details>
+<details>
+<summary>Rendering and fonts</summary>
+
+- `imgui_md.render(text)` removes the common indentation first, so that a markdown string
+  written inside an indented function renders as expected (`render_raw` renders as is).
+- The markdown fonts are loaded at the first render: `initialize_markdown()` can be called
+  any time after the ImGui context exists (ImmApp and Hello ImGui call it for you).
+- Each `render()` call is a fragment with its own id scope: render prose between widgets,
+  the same fragment twice, and nothing collides.
+
+</details>
 
 <details>
 <summary>It's collapsibles all the way down</summary>
@@ -443,18 +610,71 @@ Hidden content (regular markdown here).
     return markdown
 
 
+def _render_csv(code: str) -> None:
+    """Renders a ```csv fenced block as a table (see register_fenced_block_renderer below)."""
+    rows = [row.split(",") for row in code.strip().splitlines()]
+    if imgui.begin_table("csv", len(rows[0]), imgui.TableFlags_.borders.value):
+        for row in rows:
+            imgui.table_next_row()
+            for cell in row:
+                imgui.table_next_column()
+                imgui.text(cell)
+        imgui.end_table()
+
+
+def _fill_dynamic_parts(markdown: str) -> str:
+    if _standalone_options:
+        wikilinks_status = "*(Enabled in this run: the wikilink below is clickable, see the console.)*"
+        headings_status = "This run collects the headings of this page: " + (
+            ", ".join(f"`{h.strip()}`" for h in _headings[:6]) + ("..." if len(_headings) > 6 else "")
+        )
+    else:
+        wikilinks_status = (
+            "*(Not enabled in this hosted run: the wikilink below shows as text. "
+            "Run this demo standalone, `python demo_imgui_md.py`, to see it live.)*"
+        )
+        headings_status = "*(Not enabled in this hosted run.)*"
+    support_status = "This build: LaTeX **{}**, URL images **{}**, code editor **{}**.".format(
+        "yes" if imgui_md.has_latex() else "no",
+        "yes" if imgui_md.has_url_images() else "no",
+        "yes" if imgui_md.has_code_editor() else "no",
+    )
+    return (
+        markdown.replace("@@WIKILINKS_STATUS@@", wikilinks_status)
+        .replace("@@HEADINGS_STATUS@@", headings_status)
+        .replace("@@SUPPORT_STATUS@@", support_status)
+        .replace("@@ICON_ROCKET@@", fa.ICON_FA_ROCKET)
+        .replace("@@ICON_HEART@@", fa.ICON_FA_HEART)
+        .replace("@@ICON_CHECK@@", fa.ICON_FA_CHECK)
+        .replace("@@ICON_COPY@@", fa.ICON_FA_COPY)
+    )
+
+
+_csv_renderer_registered = False
+
+
 def demo_gui():
+    global _csv_renderer_registered
+    if not _csv_renderer_registered:
+        imgui_md.register_fenced_block_renderer("csv", _render_csv)
+        _csv_renderer_registered = True
     # from imgui_bundle import hello_imgui
     # hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.white_is_white)
-    s = example_markdown_string()
-    imgui_md.render(s)
-    # Note: you may also use:
-    #   imgui_md.render_unindented(s)
-    # (it will remove the main indentation of the Markdown string before rendering it,
-    # which is useful when the string is defined inside a function with indentation)
+    headings_seen_last_frame = list(_headings)
+    _headings.clear()
+    imgui_md.render(_fill_dynamic_parts(example_markdown_string()))
+    if _standalone_options and not _headings:
+        _headings.extend(headings_seen_last_frame)
+
 
 def main():
-    immapp.run(demo_gui, with_latex=True, window_size=(800, 800))
+    global _standalone_options
+    # Options that must be set before the first render: wikilinks, headings callback
+    options = imgui_md.MarkdownOptions()
+    options.callbacks.on_wiki_link = lambda target: print("wikilink clicked:", target)
+    options.callbacks.on_heading = lambda level, text: _headings.append("  " * (level - 1) + text)
+    _standalone_options = True
+    immapp.run(demo_gui, with_latex=True, with_markdown_options=options, window_size=(800, 800))
 
 
 if __name__ == "__main__":
