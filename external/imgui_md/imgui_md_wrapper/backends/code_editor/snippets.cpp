@@ -212,24 +212,29 @@ namespace Snippets
         auto codeFont = ImGuiMd::GetCodeFont();
         ImGui::PushFont(codeFont.font, codeFont.size);
 
-        std::string childTitle = std::to_string(id);
-        editor.Render(childTitle.c_str(), editorSize, snippetData.Border);
+        // A read-only snippet is not a widget to "enter": no keyboard navigation outline when it is focused
+        if (snippetData.ReadOnly)
+            ImGui::PushStyleColor(ImGuiCol_NavCursor, ImVec4(0.f, 0.f, 0.f, 0.f));
+        editor.Render(std::to_string(id).c_str(), editorSize, snippetData.Border);
+        if (snippetData.ReadOnly)
+            ImGui::PopStyleColor();
 
         if (snippetData.ShowCopyButton)
         {
-            // The copy button lives inside the editor's child window, pinned at its visible top right:
-            // re-enter the child (same title and flags: Dear ImGui appends), draw the button above the
-            // text, then restore the parent's cursor so the child is not counted twice in the layout.
+            // The copy button floats over the editor's top right corner, in a small child window of its own,
+            // begun after the editor (so it is drawn above it and gets the hover). The parent's cursor is
+            // restored afterwards: the overlay must not take room in the layout.
             ImVec2 parentCursor = ImGui::GetCursorPos();
-            ImGuiChildFlags childFlags = snippetData.Border ? ImGuiChildFlags_Borders : ImGuiChildFlags_None;
-            if (ImGui::BeginChild(childTitle.c_str(), editorSize, childFlags, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar))
+            ImVec2 editorMin = ImGui::GetItemRectMin(), editorMax = ImGui::GetItemRectMax();
+            const ImGuiStyle& style = ImGui::GetStyle();
+            float buttonWidth = lineHeight * 1.25f, buttonHeight = ImGui::GetFrameHeight(), pad = style.FramePadding.y;
+            float right = editorMax.x - pad;
+            if ((float)editor.GetLineCount() * lineHeight > editorSize.y - style.ScrollbarSize)  // a vertical scrollbar
+                right -= style.ScrollbarSize;
+            ImGui::SetCursorScreenPos(ImVec2(right - buttonWidth, editorMin.y + pad));
+            ImGuiWindowFlags overlayFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoNav;
+            if (ImGui::BeginChild("copy_overlay", ImVec2(buttonWidth, buttonHeight), ImGuiChildFlags_None, overlayFlags))
             {
-                float buttonWidth = lineHeight * 1.25f;
-                float pad = ImGui::GetStyle().FramePadding.y;
-                float innerWidth = ImGui::GetWindowWidth();
-                if (ImGui::GetScrollMaxY() > 0.f)  // a vertical scrollbar takes the right edge
-                    innerWidth -= ImGui::GetStyle().ScrollbarSize;
-                ImGui::SetCursorPos(ImVec2(ImGui::GetScrollX() + innerWidth - buttonWidth - pad, ImGui::GetScrollY() + pad));
                 if (CopyButton(lineHeight))
                 {
                     timeClickCopyButton[id] = ImGui::GetTime();
