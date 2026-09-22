@@ -885,17 +885,30 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
     }
 
 #ifdef CAN_RENDER_IMAGES
-    static MarkdownTexture _BrokenImageTexture()
+    // The broken-image texture is loaded once and kept in the image cache
+    // (the cache owns the textures: a texture returned as a temporary would be
+    // freed at the end of the frame, leaving a dangling id).
+    static const MarkdownTexture& _BrokenImageTexture()
     {
+        auto& imageCache = gMarkdownRenderer->ImageCache();
         std::string errorImage = "images/markdown_broken_image.png";
-        if (HelloImGui::AssetExists(errorImage))
-            return _LoadTextureFromAsset(errorImage);
-        return {};
+        auto it = imageCache.find(errorImage);
+        if (it == imageCache.end())
+        {
+            MarkdownTexture tex;
+            if (HelloImGui::AssetExists(errorImage))
+                tex = _LoadTextureFromAsset(errorImage);
+            it = imageCache.emplace(errorImage, tex).first;
+        }
+        return it->second;
     }
 
-    static std::optional<MarkdownImage> _BrokenImage()
+    // Cache image_path as broken (no retry on the next frames) and return the broken-image
+    static std::optional<MarkdownImage> _BrokenImage(const std::string& image_path)
     {
-        auto tex = _BrokenImageTexture();
+        auto& imageCache = gMarkdownRenderer->ImageCache();
+        imageCache[image_path] = _BrokenImageTexture();
+        const auto& tex = imageCache.at(image_path);
         if (tex.Valid())
             return _MakeMarkdownImage(tex);
         return std::nullopt;
@@ -935,12 +948,11 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             case MarkdownDownloadStatus::Failed:
                 if (!result.errorMessage.empty())
                     std::cerr << "imgui_md: download failed for " << image_path << ": " << result.errorMessage << "\n";
-                imageCache[image_path] = _BrokenImageTexture(); // Cache broken image to avoid retrying
-                return _BrokenImage();
+                return _BrokenImage(image_path);
 
             case MarkdownDownloadStatus::NotStarted:
             default:
-                return _BrokenImage();
+                return _BrokenImage(image_path);
             }
         }
 
@@ -951,7 +963,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             return _MakeMarkdownImage(imageCache.at(image_path));
         }
 
-        return _BrokenImage();
+        return _BrokenImage(image_path);
 #else
         return std::nullopt;
 #endif
