@@ -1,6 +1,10 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui_md_wrapper.h"
 #include "imgui_md_host.h"
+#include "imgui_md_internal.h"
+#ifdef IMGUI_RICHMD_WITH_CODE_EDITOR
+#include "backends/code_editor/snippets.h"
+#endif
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
 #include "imgui_md_url_download.h"
 #endif
@@ -112,9 +116,8 @@ namespace
 #endif
     }
 
-    // Removes the common indentation (that of the first non-empty line) and the leading / trailing empty lines.
-    // Trailing spaces are kept: two of them are a hard line break in markdown.
-    std::string _Unindent(const std::string& text)
+    // See imgui_md_internal.h
+    std::string _Unindent(const std::string& text, bool isCode)
     {
         auto lines = _SplitLines(text);
         size_t indent = 0;
@@ -126,7 +129,12 @@ namespace
             }
         std::vector<std::string> processed;
         for (const auto& line : lines)
-            processed.push_back(line.compare(0, indent, std::string(indent, ' ')) == 0 ? line.substr(indent) : line);
+        {
+            std::string processedLine = line.compare(0, indent, std::string(indent, ' ')) == 0 ? line.substr(indent) : line;
+            if (isCode)
+                processedLine.erase(processedLine.find_last_not_of(' ') + 1);
+            processed.push_back(processedLine);
+        }
         while (!processed.empty() && _TrimWhitespace(processed.front()).empty())
             processed.erase(processed.begin());
         while (!processed.empty() && _TrimWhitespace(processed.back()).empty())
@@ -145,6 +153,11 @@ namespace
 
 namespace ImGuiMd
 {
+    namespace Internal
+    {
+        std::string Unindent(const std::string& text, bool isCode) { return _Unindent(text, isCode); }
+    }
+
     // Host services (see imgui_md_host.h)
     static HostServices gHostServices;
     // Set by OnImage_Default while an image is downloading (the renderer then draws a spinner)
@@ -243,8 +256,46 @@ namespace ImGuiMd
     }
 #endif
 
+#ifdef IMGUI_RICHMD_WITH_CODE_EDITOR
+    static Snippets::SnippetLanguage _SnippetLanguage(const std::string& language)
+    {
+        std::string lower = _ToLower(language);
+        if (lower == "cpp") return Snippets::SnippetLanguage::Cpp;
+        if (lower == "c") return Snippets::SnippetLanguage::C;
+        if (lower == "python") return Snippets::SnippetLanguage::Python;
+        if (lower == "glsl") return Snippets::SnippetLanguage::Glsl;
+        if (lower == "hlsl") return Snippets::SnippetLanguage::Hlsl;
+        if (lower == "sql") return Snippets::SnippetLanguage::Sql;
+        if (lower == "lua") return Snippets::SnippetLanguage::Lua;
+        if (lower == "angelscript") return Snippets::SnippetLanguage::AngelScript;
+        return Snippets::DefaultSnippetLanguage();
+    }
+
+    // Default code block with the code editor backend: a read-only snippet with syntax highlighting
+    // (one editor per distinct code)
+    static void _RenderCodeBlockWithEditor(const std::string& code, const std::string& language)
+    {
+        static std::map<std::string, Snippets::SnippetData> snippets;
+        auto it = snippets.find(code);
+        if (it == snippets.end())
+        {
+            Snippets::SnippetData snippet;
+            snippet.Code = code;
+            snippet.Language = _SnippetLanguage(language);
+            snippet.ShowCursorPosition = false;
+            snippet.ReadOnly = true;
+            it = snippets.emplace(code, snippet).first;
+        }
+        Snippets::ShowCodeSnippet(it->second);
+    }
+#endif
+
     static void _InstallDefaultHostServices()
     {
+#ifdef IMGUI_RICHMD_WITH_CODE_EDITOR
+        if (!gHostServices.RenderCodeBlock)
+            gHostServices.RenderCodeBlock = _RenderCodeBlockWithEditor;
+#endif
 #ifdef IMGUI_RICHMD_WITH_LATEX
         if (!gHostServices.RenderLatex)
             gHostServices.RenderLatex = _RenderLatexWithMicroTeX;
@@ -886,7 +937,7 @@ namespace ImGuiMd
 
     void Render(const std::string& markdownString)
     {
-        RenderRaw(_Unindent(markdownString));
+        RenderRaw(_Unindent(markdownString, false));
     }
 
     void RegisterFencedBlockRenderer(const std::string& language, std::function<void(const std::string& code)> renderer)

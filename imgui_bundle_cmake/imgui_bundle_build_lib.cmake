@@ -33,10 +33,6 @@ macro(imgui_bundle_resolve_early_dependencies)
         message(STATUS "Auto-disabling immapp (immapp depends on imgui_node_editor)")
         set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp depends on imgui_node_editor" FORCE)
     endif()
-    if(NOT IMGUI_BUNDLE_WITH_IMMAPP AND IMGUI_BUNDLE_WITH_IMGUI_MD)
-        message(STATUS "Auto-disabling imgui_md (imgui_md depends on immapp)")
-        set(IMGUI_BUNDLE_WITH_IMGUI_MD OFF CACHE BOOL "Auto-disabled: imgui_md depends on immapp" FORCE)
-    endif()
 endmacro()
 
 

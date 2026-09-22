@@ -316,10 +316,22 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         imgui_md/imgui_md_wrapper/imgui_md_wrapper.cpp
         imgui_md/imgui_md_wrapper/imgui_md_wrapper.h
         imgui_md/imgui_md_wrapper/imgui_md_host.h
+        imgui_md/imgui_md_wrapper/imgui_md_internal.h
         # Host services through HelloImGui (bundle only; a standalone build brings its own host)
         imgui_md/imgui_md_wrapper/hosts/hello_imgui_host.cpp
     )
     target_compile_definitions(imgui_md PRIVATE IMGUI_RICHMD_HOST_HELLO_IMGUI)
+
+    # Code editor backend: code blocks (and the Snippets API) with syntax highlighting, via ImGuiColorTextEdit
+    option(IMGUI_RICHMD_WITH_CODE_EDITOR "Code blocks with syntax highlighting in markdown (ImGuiColorTextEdit)" ON)
+    if(IMGUI_RICHMD_WITH_CODE_EDITOR)
+        target_sources(imgui_md PRIVATE
+            imgui_md/imgui_md_wrapper/backends/code_editor/snippets.cpp
+            imgui_md/imgui_md_wrapper/backends/code_editor/snippets.h
+        )
+        target_link_libraries(imgui_md PUBLIC imgui_color_text_edit)
+        target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_CODE_EDITOR)
+    endif()
     if(APPLE)
         # warning: 'OFF_MAX' macro redefined
         # MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/limits.h:140:9: #define OFF_MAX         LLONG_MAX
@@ -370,6 +382,9 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     hello_imgui_msvc_target_group_sources(imgui_md)
     if(IMGUI_BUNDLE_INSTALL_CPP)
         install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h imgui_md/imgui_md_wrapper/imgui_md_host.h DESTINATION include/imgui_md_wrapper)
+        if(IMGUI_RICHMD_WITH_CODE_EDITOR)
+            install(FILES imgui_md/imgui_md_wrapper/backends/code_editor/snippets.h DESTINATION include/imgui_md_wrapper/backends/code_editor)
+        endif()
     endif()
 
     # MicroTeX: native LaTeX math rendering (requires FreeType, already available via hello_imgui)

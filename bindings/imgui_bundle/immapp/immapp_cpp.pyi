@@ -457,9 +457,9 @@ class code_utils:  # Proxy class that introduces typings for the *submodule* cod
 # <submodule snippets>
 class snippets:  # Proxy class that introduces typings for the *submodule* snippets
     pass  # (This corresponds to a C++ namespace. All methods are static!)
-    #
-    # TextEditorBundle: addition to ImGuiColorTextEdit, specific to ImGuiBundle
-    #
+    """ Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy
+     button. The markdown code blocks use ShowCodeSnippet when built with IMGUI_RICHMD_WITH_CODE_EDITOR.
+    """
 
     class SnippetLanguage(enum.IntEnum):
         cpp = enum.auto()  # (= 0)

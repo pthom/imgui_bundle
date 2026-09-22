@@ -66,8 +66,8 @@ namespace ImGuiMd
         // e.g. the host's icon font. Evaluated when the fonts are loaded. Default: none.
         std::function<std::vector<std::string>()> DefaultMergeFonts;
 
-        // Renders a code block (fenced or indented). Default: monospaced text in a frame, with a copy button.
-        // ImGui Bundle installs one based on ImGuiColorTextEdit (syntax highlighting).
+        // Renders a code block (fenced or indented). Default: a read-only editor with syntax highlighting
+        // when built with IMGUI_RICHMD_WITH_CODE_EDITOR, else monospaced text in a frame, with a copy button.
         std::function<void(const std::string& code, const std::string& language)> RenderCodeBlock;
 
         // Renders a LaTeX formula (without its $ delimiters) to an RGBA bitmap. fontSizePx is in physical
