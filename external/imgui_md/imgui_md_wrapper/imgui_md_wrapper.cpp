@@ -5,11 +5,6 @@
 #include "imgui_md_url_download.h"
 #endif
 
-#ifdef HELLOIMGUI_HAS_OPENGL // Image rendering with markdown only works with OpenGl
-#define CAN_RENDER_IMAGES
-#endif
-
-#include "hello_imgui/hello_imgui.h"
 #include "immapp/snippets.h"
 
 #include "imgui.h"
@@ -21,14 +16,21 @@
 #include "imgui_microtex/imgui_microtex.h"
 #endif
 
+#include "stb_image.h"
+
 #include <string>
 #include <vector>
 #include <utility>
 #include <map>
 #include <memory>
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 #include <cassert>
 #include <cctype>
+#include <cmath>
+#include <cstdio>
+#include <cstring>
 
 // Small string helpers (replace fplus, to keep imgui_md decoupled from it).
 namespace
@@ -81,6 +83,38 @@ ImVec4 LinkColor(); // See imgui_md.cpp
 
 namespace ImGuiMd
 {
+    // Host services (see imgui_md_host.h)
+    static HostServices gHostServices;
+    void SetHostServices(const HostServices& services) { gHostServices = services; }
+    const HostServices& GetHostServices() { return gHostServices; }
+#ifdef IMGUI_RICHMD_HOST_HELLO_IMGUI
+    void Priv_InstallHelloImGuiHost();  // hosts/hello_imgui_host.cpp
+#endif
+
+    // Default services: plain file system, stderr
+    static std::optional<std::vector<uint8_t>> _ReadAssetFromFileSystem(const std::string& assetPath)
+    {
+        std::ifstream file(assetPath, std::ios::binary);
+        if (!file)
+            return std::nullopt;
+        return std::vector<uint8_t>(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+    }
+    static std::optional<std::string> _AssetFilePathFromFileSystem(const std::string& assetPath)
+    {
+        if (!std::filesystem::exists(assetPath))
+            return std::nullopt;
+        return assetPath;
+    }
+    static void _InstallDefaultHostServices()
+    {
+        if (!gHostServices.ReadAsset)
+            gHostServices.ReadAsset = _ReadAssetFromFileSystem;
+        if (!gHostServices.AssetFilePath)
+            gHostServices.AssetFilePath = _AssetFilePathFromFileSystem;
+        if (!gHostServices.Log)
+            gHostServices.Log = [](const std::string& message) { fprintf(stderr, "imgui_md: %s\n", message.c_str()); };
+    }
+
     ImVec4 LinkColor()
     {
         return ::LinkColor();
@@ -202,69 +236,66 @@ namespace ImGuiMd
                 IM_ASSERT(false && "Could not find font for markdown style");
             }
         private:
+            // Adds a font from an asset (nullptr if the asset is missing). merge: into the last added font.
+            static ImFont* AddFontFromAsset(const std::string& assetPath, float fontSize, bool merge)
+            {
+                auto bytes = GetHostServices().ReadAsset(assetPath);
+                if (!bytes)
+                    return nullptr;
+                ImFontConfig cfg;
+                cfg.MergeMode = merge;
+                cfg.FontDataOwnedByAtlas = true;
+                std::string stem = std::filesystem::path(assetPath).stem().string();
+                snprintf(cfg.Name, sizeof(cfg.Name), "%s %d", stem.c_str(), (int)std::lround(fontSize));
+                void* data = IM_ALLOC(bytes->size());
+                memcpy(data, bytes->data(), bytes->size());
+                return ImGui::GetIO().Fonts->AddFontFromMemoryTTF(data, (int)bytes->size(), fontSize, &cfg);
+            }
+
+            // Loads a markdown font and merges the merge fonts (options + host) into it
+            ImFont* LoadMarkdownFont(const std::string& assetPath, float fontSize) const
+            {
+                ImFont* font = AddFontFromAsset(assetPath, fontSize, false);
+                if (font == nullptr)
+                    return nullptr;
+                std::vector<std::string> mergeFonts = mMarkdownFontOptions.mergeFonts;
+                if (GetHostServices().DefaultMergeFonts)
+                    for (const auto& f : GetHostServices().DefaultMergeFonts())
+                        mergeFonts.push_back(f);
+                for (const auto& mergeFont : mergeFonts)
+                    if (AddFontFromAsset(mergeFont, fontSize, true) == nullptr)
+                        GetHostServices().Log("merge font not found: " + mergeFont);
+                return font;
+            }
+
             void LoadFonts()
             {
-                std::string error_message = R"(
-Could not find required assets for ImGuiMd:
-We need to find the following files in the assets:
-
-assets/
-├── fonts/
-│     ├── Roboto/
-│     │     ├── LICENSE.txt
-│     │     ├── Roboto-Bold.ttf
-│     │     ├── Roboto-BoldItalic.ttf
-│     │     ├── Roboto-Regular.ttf
-│     │     ├── Roboto-RegularItalic.ttf
-│     ├── Inconsolata-Medium.ttf
-│     └── fontawesome-webfont.ttf
-└── images/
-    └── markdown_broken_image.png
-
-You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
-)";
+                const char* help =
+                    "ImGuiMd needs these assets: fonts/Roboto/Roboto-{Regular,Bold,RegularItalic,BoldItalic}.ttf, "
+                    "fonts/Inconsolata-Medium.ttf and images/markdown_broken_image.png "
+                    "(see imgui_bundle/imgui_bundle_assets/).";
+                float defaultFontLoadingSize = 16.f;  // size at loading time (then Fonts can be resized to any size)
                 for (auto emphasisVariant: AllEmphasisVariants())
                 {
                     std::string fontFile = MarkdownFontOptions_FontFilename(mMarkdownFontOptions, emphasisVariant);
-
-                    if (! HelloImGui::AssetExists(fontFile))
-                    {
-                        fprintf(stderr, "Markdown font file \"%s\" not found!\n", fontFile.c_str());
-                        fprintf(stderr, "%s", error_message.c_str());
-                        IM_ASSERT(false);
-                    }
-
-                    // we shall not load the icons for all the fonts variants, since the font atlas
-                    // texture might end up too big to fit in the GPU.
-                    ImFont * font;
-                    float defaultFontLoadingSize = 16.f;  // size at loading time (then Fonts can be resized to any size)
-                    if (IsDefaultMarkdownEmphasis(emphasisVariant))
-                        font = HelloImGui::LoadFontTTF_WithFontAwesomeIcons(fontFile, defaultFontLoadingSize);
-                    else
-                        font = HelloImGui::LoadFontTTF(fontFile, defaultFontLoadingSize);
-
+                    ImFont* font = LoadMarkdownFont(fontFile, defaultFontLoadingSize);
                     if (font == nullptr)
                     {
-                        fprintf(stderr, "%s", error_message.c_str());
+                        GetHostServices().Log("Markdown font file \"" + fontFile + "\" not found! " + help);
                         IM_ASSERT(false);
                     }
-
                     mFonts.push_back(std::make_pair(emphasisVariant, font) );
                 }
 
                 float fontSize = MarkdownFontOptions_FontSize(mMarkdownFontOptions, 0);
-                mFontCode = HelloImGui::LoadFontTTF(
-                    "fonts/Inconsolata-Medium.ttf",
-                    fontSize);
+                mFontCode = LoadMarkdownFont("fonts/Inconsolata-Medium.ttf", fontSize);
                 if (mFontCode == nullptr) {
                     // SourceCodePro-Regular was the old default font for code
                     // we try to load it, to be nice with older users
-                    mFontCode = HelloImGui::LoadFontTTF(
-                        "fonts/SourceCodePro-Regular.ttf",
-                        fontSize);
+                    mFontCode = LoadMarkdownFont("fonts/SourceCodePro-Regular.ttf", fontSize);
                 }
                 if (mFontCode == nullptr) {
-                    fprintf(stderr, "%s", error_message.c_str());
+                    GetHostServices().Log(std::string("Markdown code font not found! ") + help);
                     IM_ASSERT(false);
                 }
             }
@@ -283,9 +314,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         {}
         ImGuiMdFonts::FontCollection mFontCollection;
 
-#ifdef CAN_RENDER_IMAGES
         mutable std::map<std::string, MarkdownTexture > mLoadedImages;
-#endif
     };
 
 
@@ -307,12 +336,10 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             set_flag(MD_FLAG_PERMISSIVEAUTOLINKS, mMarkdownOptions->autolinks);
         }
 
-#ifdef CAN_RENDER_IMAGES
         std::map<std::string, MarkdownTexture >& ImageCache()
         {
             return mMarkdownCollection.mLoadedImages;
         }
-#endif
 
         void Render(const std::string& s)
         {
@@ -492,9 +519,8 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 
 #ifdef IMGUI_RICHMD_WITH_LATEX
         // Lazy-initialize MicroTeX on first LaTeX span.
-        // We cannot do this in InitializeMarkdown() because the asset system
-        // (HelloImGui::AssetFileFullPath) may not be ready until after the
-        // fonts have loaded / backend started.
+        // We cannot do this in InitializeMarkdown() because the host's asset
+        // system may not be ready until after the fonts have loaded / backend started.
         // Lazy MicroTeX init. Defensive: if the font assets are missing
         // (corrupted install, or Pyodide download failed, etc.), log a
         // warning once and leave MicroTeX uninitialized. The SPAN_LATEXMATH
@@ -509,19 +535,16 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             // (and re-logging) on every render.
             if (mLatexInitFailed)
                 return;
-            const char* clmAsset = "fonts/latex/latinmodern-math.clm1";
-            const char* otfAsset = "fonts/latex/latinmodern-math.otf";
-            if (!HelloImGui::AssetExists(clmAsset) || !HelloImGui::AssetExists(otfAsset))
+            // MicroTeX reads its fonts from files: ask the host for their paths
+            auto clmFile = gHostServices.AssetFilePath("fonts/latex/latinmodern-math.clm1");
+            auto otfFile = gHostServices.AssetFilePath("fonts/latex/latinmodern-math.otf");
+            if (!clmFile || !otfFile)
             {
-                HelloImGui::Log(HelloImGui::LogLevel::Warning,
-                    "imgui_md: LaTeX font assets not found at fonts/latex/. "
-                    "Formulas will be shown as plain text source.");
+                gHostServices.Log("LaTeX font assets not found at fonts/latex/. Formulas will be shown as plain text source.");
                 mLatexInitFailed = true;
                 return;
             }
-            std::string clmFile = HelloImGui::AssetFileFullPath(clmAsset);
-            std::string otfFile = HelloImGui::AssetFileFullPath(otfAsset);
-            ImGuiMicroTeX::Init(clmFile, otfFile);
+            ImGuiMicroTeX::Init(*clmFile, *otfFile);
         }
 
         // Set true once if MicroTeX init has failed, to avoid retry storms.
@@ -702,13 +725,6 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
     // Global options
     MarkdownOptions gMarkdownOptions;
 
-    // Host services (see imgui_md_host.h)
-    static HostServices gHostServices;
-    void SetHostServices(const HostServices& services) { gHostServices = services; }
-    const HostServices& GetHostServices() { return gHostServices; }
-#ifdef IMGUI_RICHMD_HOST_HELLO_IMGUI
-    void Priv_InstallHelloImGuiHost();  // hosts/hello_imgui_host.cpp
-#endif
     static Priv_OnInitializeMarkdownCallback gOnInitializeMarkdownCallback;
     static bool gMarkdownWasInitialized = false;
 
@@ -752,8 +768,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
 #ifdef IMGUI_RICHMD_HOST_HELLO_IMGUI
         Priv_InstallHelloImGuiHost();  // fills the host services the application did not set
 #endif
-        if (!gHostServices.Log)
-            gHostServices.Log = [](const std::string& message) { fprintf(stderr, "imgui_md: %s\n", message.c_str()); };
+        _InstallDefaultHostServices();
 #if defined(__EMSCRIPTEN__) && !defined(IMGUI_BUNDLE_BUILD_PYODIDE)
         // On Emscripten (but not pyodide), set a default download callback using
         // emscripten_fetch (unless one was already set, e.g. by Python)
@@ -817,32 +832,32 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         return r;
     }
 
-#ifdef CAN_RENDER_IMAGES
-    // Upload a decoded HelloImGui::ImageData (RGBA) through the configured backend.
-    // (Decoding still uses HelloImGui here; standalone will swap it for stb_image.)
-    static MarkdownTexture _UploadImageData(const HelloImGui::ImageData& img)
+    // Decodes an encoded image (png, jpg, ...) and uploads it through the host
+    static MarkdownTexture _UploadEncodedImage(const uint8_t* data, size_t size)
     {
-        if (img.data == nullptr || !gHostServices.UploadRgba)
+        if (!gHostServices.UploadRgba)
             return {};
-        return gHostServices.UploadRgba(img.data, img.width, img.height);
+        int w = 0, h = 0, channels = 0;
+        unsigned char* rgba = stbi_load_from_memory(data, (int)size, &w, &h, &channels, 4);
+        if (rgba == nullptr)
+            return {};
+        MarkdownTexture tex = gHostServices.UploadRgba(rgba, w, h);
+        stbi_image_free(rgba);
+        return tex;
     }
 
     static MarkdownTexture _LoadTextureFromAsset(const std::string& assetPath)
     {
-        HelloImGui::ImageData img = HelloImGui::LoadImageDataFromAsset(assetPath.c_str(), 4);
-        MarkdownTexture tex = _UploadImageData(img);
-        img.Free();
-        return tex;
+        auto bytes = gHostServices.ReadAsset(assetPath);
+        if (!bytes)
+            return {};
+        return _UploadEncodedImage(bytes->data(), bytes->size());
     }
 
     static MarkdownTexture _LoadTextureFromEncodedData(const std::vector<uint8_t>& data)
     {
-        HelloImGui::ImageData img = HelloImGui::LoadImageDataFromEncodedData(data.data(), data.size(), 4);
-        MarkdownTexture tex = _UploadImageData(img);
-        img.Free();
-        return tex;
+        return _UploadEncodedImage(data.data(), data.size());
     }
-#endif
 
     // Draw a simple rotating spinner using ImGui's DrawList (no external dependencies)
     static void _DrawLoadingSpinner()
@@ -871,7 +886,6 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         ImGui::Dummy(ImVec2(size, size));
     }
 
-#ifdef CAN_RENDER_IMAGES
     // The broken-image texture is loaded once and kept in the image cache
     // (the cache owns the textures: a texture returned as a temporary would be
     // freed at the end of the frame, leaving a dangling id).
@@ -881,12 +895,7 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         std::string errorImage = "images/markdown_broken_image.png";
         auto it = imageCache.find(errorImage);
         if (it == imageCache.end())
-        {
-            MarkdownTexture tex;
-            if (HelloImGui::AssetExists(errorImage))
-                tex = _LoadTextureFromAsset(errorImage);
-            it = imageCache.emplace(errorImage, tex).first;
-        }
+            it = imageCache.emplace(errorImage, _LoadTextureFromAsset(errorImage)).first;
         return it->second;
     }
 
@@ -900,11 +909,9 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
             return _MakeMarkdownImage(tex);
         return std::nullopt;
     }
-#endif
 
     std::optional<MarkdownImage> OnImage_Default(const std::string& image_path)
     {
-#ifdef CAN_RENDER_IMAGES
         if (!gMarkdownRenderer)
         {
             std::cerr << "Did you initialize ImGuiMd?\n";
@@ -944,16 +951,11 @@ You may find these files in the imgui_bundle/imgui_bundle_assets/ folder.
         }
 
         // Handle local asset images
-        if (HelloImGui::AssetExists(image_path))
-        {
-            imageCache[image_path] = _LoadTextureFromAsset(image_path);
-            return _MakeMarkdownImage(imageCache.at(image_path));
-        }
-
-        return _BrokenImage(image_path);
-#else
-        return std::nullopt;
-#endif
+        MarkdownTexture tex = _LoadTextureFromAsset(image_path);
+        if (!tex.Valid())
+            return _BrokenImage(image_path);
+        imageCache[image_path] = tex;
+        return _MakeMarkdownImage(imageCache.at(image_path));
     }
 
     SizedFont GetCodeFont()

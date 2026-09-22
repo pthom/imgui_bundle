@@ -39,6 +39,14 @@ namespace ImGuiMd
         // Return std::nullopt when the asset does not exist. Default: the file system.
         std::function<std::optional<std::vector<uint8_t>>(const std::string& assetPath)> ReadAsset;
 
+        // Path of an asset on the file system, for the libraries that cannot read from memory
+        // (MicroTeX's fonts). Return std::nullopt when the asset does not exist. Default: the file system.
+        std::function<std::optional<std::string>(const std::string& assetPath)> AssetFilePath;
+
+        // Fonts merged into every markdown font (in addition to MarkdownFontOptions::mergeFonts),
+        // e.g. the host's icon font. Evaluated when the fonts are loaded. Default: none.
+        std::function<std::vector<std::string>()> DefaultMergeFonts;
+
         // Logs a warning. Default: stderr.
         std::function<void(const std::string& message)> Log;
     };

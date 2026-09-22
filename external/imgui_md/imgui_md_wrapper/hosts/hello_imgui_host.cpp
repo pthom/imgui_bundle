@@ -31,6 +31,23 @@ namespace ImGuiMd
         return bytes;
     }
 
+    static std::optional<std::string> _AssetFilePath(const std::string& assetPath)
+    {
+        if (!HelloImGui::AssetExists(assetPath))
+            return std::nullopt;
+        return HelloImGui::AssetFileFullPath(assetPath);
+    }
+
+    // The icon font of the application (FontAwesome 4 or 6), known once the runner is up
+    static std::vector<std::string> _DefaultMergeFonts()
+    {
+        std::string iconFont = "fonts/fontawesome-webfont.ttf";
+        if (HelloImGui::IsUsingHelloImGui())
+            if (HelloImGui::GetRunnerParams()->callbacks.defaultIconFont == HelloImGui::DefaultIconFont::FontAwesome6)
+                iconFont = "fonts/Font_Awesome_6_Free-Solid-900.otf";
+        return {iconFont};
+    }
+
     static void _Log(const std::string& message)
     {
         HelloImGui::Log(HelloImGui::LogLevel::Warning, "%s", message.c_str());
@@ -43,6 +60,10 @@ namespace ImGuiMd
             services.UploadRgba = _UploadRgba;
         if (!services.ReadAsset)
             services.ReadAsset = _ReadAsset;
+        if (!services.AssetFilePath)
+            services.AssetFilePath = _AssetFilePath;
+        if (!services.DefaultMergeFonts)
+            services.DefaultMergeFonts = _DefaultMergeFonts;
         if (!services.Log)
             services.Log = _Log;
         SetHostServices(services);
