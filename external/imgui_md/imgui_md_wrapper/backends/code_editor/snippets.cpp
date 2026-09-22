@@ -5,6 +5,7 @@
 #include "imgui_md_wrapper/imgui_md_internal.h"
 
 #include <algorithm>
+#include <cstdio>
 #include <map>
 
 
@@ -199,11 +200,13 @@ namespace Snippets
 
             if (snippetData.ShowCursorPosition)
             {
-                // leave room for the copy button, which sits inside the editor at its top right
-                float textX = snippetData.ShowCopyButton ? topRight.x - lineHeight * 6.f : topRight.x - lineHeight * 4.5f;
-                ImGui::SetCursorPos({textX, textY});
+                // right aligned (the copy button sits inside the editor, not on this line)
                 auto pos = editor.GetMainCursorPosition();
-                ImGui::Text("L:%02zu C:%02zu", pos.line + 1, pos.index + 1);
+                char positionText[64];
+                snprintf(positionText, sizeof(positionText), "L:%02zu C:%02zu", pos.line + 1, pos.index + 1);
+                float textX = topRight.x - ImGui::CalcTextSize(positionText).x - ImGui::GetStyle().ItemSpacing.x;
+                ImGui::SetCursorPos({textX, textY});
+                ImGui::TextUnformatted(positionText);
             }
             ImGui::SetCursorPos(topRight);
             ImGui::NewLine();
