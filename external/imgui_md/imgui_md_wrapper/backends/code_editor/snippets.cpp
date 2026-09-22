@@ -76,20 +76,23 @@ namespace Snippets
     }
 #endif // #if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
 
-    // The copy button: the FontAwesome "copy" glyph when the current font has it (ImGui Bundle merges
-    // FontAwesome into its fonts), else two overlapping squares drawn with the draw list
+    // The copy button: two overlapping sheets drawn with the draw list (no icon font needed)
     static bool CopyButton(float lineHeight)
     {
-        const ImWchar copyGlyph = 0xF0C5;  // ICON_FA_COPY, FontAwesome 4 and 6
-        if (ImGui::GetFont()->IsGlyphInFont(copyGlyph))
-            return ImGui::Button("\xef\x83\x85");
-        bool clicked = ImGui::Button("##copy", ImVec2(lineHeight * 1.2f, 0.f));
+        bool clicked = ImGui::Button("##copy", ImVec2(lineHeight * 1.25f, 0.f));  // the frame height, as a glyph button
         ImVec2 mi = ImGui::GetItemRectMin(), ma = ImGui::GetItemRectMax();
-        float s = (ma.y - mi.y) * 0.45f, cx = (mi.x + ma.x) * 0.5f, cy = (mi.y + ma.y) * 0.5f;
+        float h = (ma.y - mi.y) * 0.5f;              // sheet height; width is 0.8 h
+        float cx = (mi.x + ma.x) * 0.5f, cy = (mi.y + ma.y) * 0.5f;
+        float offset = h * 0.3f, thickness = h * 0.11f, rounding = h * 0.15f;
         ImU32 col = ImGui::GetColorU32(ImGuiCol_Text);
+        ImU32 bg = ImGui::GetColorU32(ImGui::IsItemHovered() ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
         ImDrawList* dl = ImGui::GetWindowDrawList();
-        dl->AddRect(ImVec2(cx - s * 0.7f, cy - s * 0.3f), ImVec2(cx + s * 0.3f, cy + s * 0.7f), col, 1.f);
-        dl->AddRect(ImVec2(cx - s * 0.3f, cy - s * 0.7f), ImVec2(cx + s * 0.7f, cy + s * 0.3f), col, 1.f);
+        // back sheet (top right), then the front sheet (bottom left) hides part of it
+        ImVec2 backMin(cx - h * 0.4f + offset, cy - h * 0.5f - offset), backMax(cx + h * 0.4f + offset, cy + h * 0.5f - offset);
+        ImVec2 frontMin(cx - h * 0.4f - offset * 0.3f, cy - h * 0.5f + offset * 0.3f), frontMax(cx + h * 0.4f - offset * 0.3f, cy + h * 0.5f + offset * 0.3f);
+        dl->AddRect(backMin, backMax, col, rounding, thickness);
+        dl->AddRectFilled(frontMin, frontMax, bg, rounding);
+        dl->AddRect(frontMin, frontMax, col, rounding, thickness);
         return clicked;
     }
 
