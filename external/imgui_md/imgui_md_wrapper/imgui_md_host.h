@@ -47,6 +47,10 @@ namespace ImGuiMd
         // e.g. the host's icon font. Evaluated when the fonts are loaded. Default: none.
         std::function<std::vector<std::string>()> DefaultMergeFonts;
 
+        // Renders a code block (fenced or indented). Default: monospaced text in a frame, with a copy button.
+        // ImGui Bundle installs one based on ImGuiColorTextEdit (syntax highlighting).
+        std::function<void(const std::string& code, const std::string& language)> RenderCodeBlock;
+
         // Logs a warning. Default: stderr.
         std::function<void(const std::string& message)> Log;
     };

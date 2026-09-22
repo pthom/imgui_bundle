@@ -5,7 +5,6 @@
 #include "imgui_md_url_download.h"
 #endif
 
-#include "immapp/snippets.h"
 
 #include "imgui.h"
 #include "imgui_md/imgui_md.h"
@@ -183,6 +182,26 @@ namespace ImGuiMd
     ImVec4 LinkColor()
     {
         return ::LinkColor();
+    }
+
+    // Default code block: monospaced text in a frame, with a copy button
+    static void _RenderCodeBlockPlain(const std::string& code)
+    {
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_FrameBg));
+        if (ImGui::BeginChild("code", ImVec2(0.f, 0.f), ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding))
+        {
+            float copyWidth = ImGui::CalcTextSize("Copy").x + ImGui::GetStyle().FramePadding.x * 2.f;
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + ImGui::GetContentRegionAvail().x - copyWidth);
+            if (ImGui::SmallButton("Copy"))
+                ImGui::SetClipboardText(code.c_str());
+            ImGui::SetCursorPosX(ImGui::GetStyle().WindowPadding.x);
+            SizedFont codeFont = GetCodeFont();
+            ImGui::PushFont(codeFont.font, codeFont.size);
+            ImGui::TextUnformatted(code.c_str());
+            ImGui::PopFont();
+        }
+        ImGui::EndChild();
+        ImGui::PopStyleColor();
     }
 
     void RenderTextAsLink(const char* text, const char* url)
@@ -388,7 +407,6 @@ namespace ImGuiMd
     private:
         MarkdownOptions *mMarkdownOptions;
         MarkdownCollection mMarkdownCollection;
-        std::map<std::string, Snippets::SnippetData> mSnippets;
     public:
         MarkdownRenderer(MarkdownOptions* markdownOptions)
             : mMarkdownOptions(markdownOptions)
@@ -532,53 +550,21 @@ namespace ImGuiMd
 
         void render_code_block() override
         {
-            auto code_without_last_empty_lines = [](const std::string code_)
+            // remove the last line if empty
+            std::string code = m_code_block;
+            auto lines = _SplitLines(code);
+            if (!lines.empty() && _TrimWhitespace(lines.back()).empty())
             {
-                // remove last line if empty
-                std::string code = code_;
-                {
-                    auto lines = _SplitLines(code);
-                    if (lines.size() > 0)
-                    {
-                        if (_TrimWhitespace(lines.back()).size() == 0)
-                            lines.pop_back();
-                        code = _JoinLines(lines);
-                    }
-                }
-                return code;
-            };
-
-            ImGui::PushID(m_code_block.c_str());
-            if (mSnippets.find(m_code_block) == mSnippets.end())
-            {
-                mSnippets[m_code_block] = Snippets::SnippetData();
-                auto& snippet = mSnippets[m_code_block];
-                snippet.Code = code_without_last_empty_lines(m_code_block);
-
-                // set language
-                if (_ToLower(m_code_block_language) == "cpp")
-                    snippet.Language = Snippets::SnippetLanguage::Cpp;
-                else if (_ToLower(m_code_block_language) == "c")
-                    snippet.Language = Snippets::SnippetLanguage::C;
-                else if (_ToLower(m_code_block_language) == "python")
-                    snippet.Language = Snippets::SnippetLanguage::Python;
-                else if (_ToLower(m_code_block_language) == "glsl")
-                    snippet.Language = Snippets::SnippetLanguage::Glsl;
-                else if (_ToLower(m_code_block_language) == "sql")
-                    snippet.Language = Snippets::SnippetLanguage::Sql;
-                else if (_ToLower(m_code_block_language) == "lua")
-                    snippet.Language = Snippets::SnippetLanguage::Lua;
-                else if (_ToLower(m_code_block_language) == "angelscript")
-                    snippet.Language = Snippets::SnippetLanguage::AngelScript;
-
-                snippet.ShowCursorPosition = false;
-                snippet.ReadOnly = true;
+                lines.pop_back();
+                code = _JoinLines(lines);
             }
 
+            ImGui::PushID(m_code_block.c_str());
             ImGui::SetCursorPosX(0.f);
-            auto& snippet = mSnippets[m_code_block];
-            Snippets::ShowCodeSnippet(snippet);
-
+            if (gHostServices.RenderCodeBlock)
+                gHostServices.RenderCodeBlock(code, m_code_block_language);
+            else
+                _RenderCodeBlockPlain(code);
             ImGui::PopID();
         }
 

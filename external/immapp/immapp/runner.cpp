@@ -1,4 +1,5 @@
 #include "immapp.h"
+#include "immapp/markdown_host.h"
 
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
@@ -169,6 +170,7 @@ namespace ImmApp
             if (!addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows)
                 addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows = []() { return !ImGuiEx::IsInsideCanvas(); };
 #endif
+            InstallMarkdownHostServices();
             ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());
 
             runnerParams.callbacks.LoadAdditionalFonts = HelloImGui::SequenceFunctions(
