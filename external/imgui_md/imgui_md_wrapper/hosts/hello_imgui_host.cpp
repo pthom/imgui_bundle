@@ -21,7 +21,7 @@ namespace ImGuiMd
         return tex;
     }
 
-    static std::optional<std::vector<uint8_t>> _ReadAsset(const std::string& assetPath)
+    static AssetBytes _ReadAsset(const std::string& assetPath)
     {
         if (!HelloImGui::AssetExists(assetPath))
             return std::nullopt;

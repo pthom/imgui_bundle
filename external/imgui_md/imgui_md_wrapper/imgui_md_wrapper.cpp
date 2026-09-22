@@ -156,7 +156,7 @@ namespace ImGuiMd
 #endif
 
     // Default services: plain file system, stderr
-    static std::optional<std::vector<uint8_t>> _ReadAssetFromFileSystem(const std::string& assetPath)
+    static AssetBytes _ReadAssetFromFileSystem(const std::string& assetPath)
     {
         std::ifstream file(assetPath, std::ios::binary);
         if (!file)
