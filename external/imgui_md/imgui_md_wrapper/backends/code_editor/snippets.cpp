@@ -5,6 +5,7 @@
 #include "imgui_md_wrapper/imgui_md_internal.h"
 
 #include <algorithm>
+#include <cstdio>
 #include <map>
 
 
@@ -76,20 +77,29 @@ namespace Snippets
     }
 #endif // #if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
 
-    // The copy button: the FontAwesome "copy" glyph when the current font has it (ImGui Bundle merges
-    // FontAwesome into its fonts), else two overlapping squares drawn with the draw list
+    // The copy button: two overlapping sheets drawn with the draw list (no icon font needed). Only
+    // the visible part of the back sheet is drawn, so the icon does not depend on the button's colors.
     static bool CopyButton(float lineHeight)
     {
-        const ImWchar copyGlyph = 0xF0C5;  // ICON_FA_COPY, FontAwesome 4 and 6
-        if (ImGui::GetFont()->IsGlyphInFont(copyGlyph))
-            return ImGui::Button("\xef\x83\x85");
-        bool clicked = ImGui::Button("##copy", ImVec2(lineHeight * 1.2f, 0.f));
+        bool clicked = ImGui::Button("##copy", ImVec2(lineHeight * 1.25f, 0.f));  // the frame height, as a glyph button
         ImVec2 mi = ImGui::GetItemRectMin(), ma = ImGui::GetItemRectMax();
-        float s = (ma.y - mi.y) * 0.45f, cx = (mi.x + ma.x) * 0.5f, cy = (mi.y + ma.y) * 0.5f;
+        float h = (ma.y - mi.y) * 0.5f;              // sheet height; width is 0.8 h
+        float cx = (mi.x + ma.x) * 0.5f, cy = (mi.y + ma.y) * 0.5f;
+        float offset = h * 0.25f, thickness = h * 0.11f;
         ImU32 col = ImGui::GetColorU32(ImGuiCol_Text);
         ImDrawList* dl = ImGui::GetWindowDrawList();
-        dl->AddRect(ImVec2(cx - s * 0.7f, cy - s * 0.3f), ImVec2(cx + s * 0.3f, cy + s * 0.7f), col, 1.f);
-        dl->AddRect(ImVec2(cx - s * 0.3f, cy - s * 0.7f), ImVec2(cx + s * 0.7f, cy + s * 0.3f), col, 1.f);
+        ImVec2 fMin(cx - h * 0.4f - offset * 0.5f, cy - h * 0.5f + offset * 0.5f);   // front sheet, bottom left
+        ImVec2 fMax(cx + h * 0.4f - offset * 0.5f, cy + h * 0.5f + offset * 0.5f);
+        ImVec2 bMin(fMin.x + offset, fMin.y - offset);                                // back sheet, top right
+        ImVec2 bMax(fMax.x + offset, fMax.y - offset);
+        // back sheet: from the front sheet's top edge, up and around to the front sheet's right edge
+        dl->PathLineTo(ImVec2(bMin.x, fMin.y));
+        dl->PathLineTo(bMin);
+        dl->PathLineTo(ImVec2(bMax.x, bMin.y));
+        dl->PathLineTo(bMax);
+        dl->PathLineTo(ImVec2(fMax.x, bMax.y));
+        dl->PathStroke(col, thickness);
+        dl->AddRect(fMin, fMax, col, 0.f, thickness);
         return clicked;
     }
 
@@ -147,7 +157,7 @@ namespace Snippets
         ImGui::BeginGroup();
 
         // Title Line
-        bool hasTitleLine = ! snippetData.DisplayedFilename.empty() || snippetData.ShowCopyButton || snippetData.ShowCursorPosition;
+        bool hasTitleLine = ! snippetData.DisplayedFilename.empty() || snippetData.ShowCursorPosition;
 
         float lineHeight;
         {
@@ -190,33 +200,13 @@ namespace Snippets
 
             if (snippetData.ShowCursorPosition)
             {
-                float textX = snippetData.ShowCopyButton ? topRight.x - lineHeight * 6.f : topRight.x - lineHeight * 4.5f;
-                ImGui::SetCursorPos({textX, textY});
+                // right aligned (the copy button sits inside the editor, not on this line)
                 auto pos = editor.GetMainCursorPosition();
-                ImGui::Text("L:%02zu C:%02zu", pos.line + 1, pos.index + 1);
-            }
-
-            if (snippetData.ShowCopyButton)
-            {
-                ImGui::SetCursorPos({topRight.x - lineHeight * 1.5f, topRight.y});
-                if (CopyButton(lineHeight))
-                {
-                    timeClickCopyButton[id] = ImGui::GetTime();
-                    ImGui::SetClipboardText(snippetData.Code.c_str());
-                }
-
-                bool wasCopiedRecently = false;
-                if (timeClickCopyButton.find(id) != timeClickCopyButton.end())
-                {
-                    double now = ImGui::GetTime();
-                    double deltaTime = now - timeClickCopyButton.at(id);
-                    if (deltaTime < 0.7)
-                        wasCopiedRecently = true;
-                }
-                if (wasCopiedRecently)
-                    ImGui::SetTooltip("Copied!");
-                else if (ImGui::IsItemHovered())
-                    ImGui::SetTooltip("Copy");
+                char positionText[64];
+                snprintf(positionText, sizeof(positionText), "L:%02zu C:%02zu", pos.line + 1, pos.index + 1);
+                float textX = topRight.x - ImGui::CalcTextSize(positionText).x - ImGui::GetStyle().ItemSpacing.x;
+                ImGui::SetCursorPos({textX, textY});
+                ImGui::TextUnformatted(positionText);
             }
             ImGui::SetCursorPos(topRight);
             ImGui::NewLine();
@@ -225,7 +215,46 @@ namespace Snippets
         auto codeFont = ImGuiMd::GetCodeFont();
         ImGui::PushFont(codeFont.font, codeFont.size);
 
+        // A read-only snippet is not a widget to "enter": no keyboard navigation outline when it is focused
+        if (snippetData.ReadOnly)
+            ImGui::PushStyleColor(ImGuiCol_NavCursor, ImVec4(0.f, 0.f, 0.f, 0.f));
         editor.Render(std::to_string(id).c_str(), editorSize, snippetData.Border);
+        if (snippetData.ReadOnly)
+            ImGui::PopStyleColor();
+
+        if (snippetData.ShowCopyButton)
+        {
+            // The copy button floats over the editor's top right corner, in a small child window of its own,
+            // begun after the editor (so it is drawn above it and gets the hover). The parent's cursor is
+            // restored afterwards: the overlay must not take room in the layout.
+            ImVec2 parentCursor = ImGui::GetCursorPos();
+            ImVec2 editorMin = ImGui::GetItemRectMin(), editorMax = ImGui::GetItemRectMax();
+            const ImGuiStyle& style = ImGui::GetStyle();
+            float buttonWidth = lineHeight * 1.25f, buttonHeight = ImGui::GetFrameHeight(), pad = style.FramePadding.y;
+            float right = editorMax.x - pad;
+            if ((float)editor.GetLineCount() * lineHeight > editorSize.y - style.ScrollbarSize)  // a vertical scrollbar
+                right -= style.ScrollbarSize;
+            ImGui::SetCursorScreenPos(ImVec2(right - buttonWidth, editorMin.y + pad));
+            ImGuiWindowFlags overlayFlags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoNav;
+            if (ImGui::BeginChild("copy_overlay", ImVec2(buttonWidth, buttonHeight), ImGuiChildFlags_None, overlayFlags))
+            {
+                if (CopyButton(lineHeight))
+                {
+                    timeClickCopyButton[id] = ImGui::GetTime();
+                    ImGui::SetClipboardText(snippetData.Code.c_str());
+                }
+                bool wasCopiedRecently = false;
+                if (timeClickCopyButton.find(id) != timeClickCopyButton.end())
+                    wasCopiedRecently = (ImGui::GetTime() - timeClickCopyButton.at(id)) < 0.7;
+                if (wasCopiedRecently)
+                    ImGui::SetTooltip("Copied!");
+                else if (ImGui::IsItemHovered())
+                    ImGui::SetTooltip("Copy");
+            }
+            ImGui::EndChild();
+            ImGui::SetCursorPos(parentCursor);
+        }
+
         bool changed = gEditorChanged[id];
         gEditorChanged[id] = false;
         if (changed && !snippetData.ReadOnly)
