@@ -213,11 +213,6 @@ namespace ImGuiMd
             gHostServices.Log = [](const std::string& message) { fprintf(stderr, "imgui_md: %s\n", message.c_str()); };
     }
 
-    ImVec4 LinkColor()
-    {
-        return imgui_md::default_link_color();
-    }
-
     // Default code block: monospaced text in a frame, with a copy button
     static void _RenderCodeBlockPlain(const std::string& code)
     {
@@ -238,17 +233,6 @@ namespace ImGuiMd
         ImGui::PopStyleColor();
     }
 
-    void RenderTextAsLink(const char* text, const char* url)
-    {
-        ImGui::PushStyleColor(ImGuiCol_Text, LinkColor());
-        ImGui::TextUnformatted(text);
-        ImGui::PopStyleColor();
-        ImGui::SetItemTooltip("%s", url);
-        if (ImGui::IsItemHovered())
-            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-        if (ImGui::IsItemClicked())
-            _OpenUrlInBrowser(url);
-    }
 
 
     // Note: font sizes below are expressed at their nominal (96 PPI) value.
@@ -1040,6 +1024,23 @@ namespace ImGuiMd
             return _BrokenImage(image_path);
         imageCache[image_path] = tex;
         return _MakeMarkdownImage(imageCache.at(image_path));
+    }
+
+    ImVec4 LinkColor()
+    {
+        return gMarkdownRenderer ? gMarkdownRenderer->link_color() : imgui_md::default_link_color();
+    }
+
+    // Same look and behaviour as the links inside markdown
+    void RenderTextAsLink(const char* text, const char* url)
+    {
+        static const imgui_md::Style defaultStyle;
+        const imgui_md::Style& style = gMarkdownRenderer ? gMarkdownRenderer->style : defaultStyle;
+        ImGui::PushStyleColor(ImGuiCol_Text, LinkColor());
+        ImGui::TextUnformatted(text);
+        ImGui::PopStyleColor();
+        if (imgui_md::link_item(style, url))
+            _OpenUrlInBrowser(url);
     }
 
     bool HasLatex() { return (bool)gHostServices.RenderLatex; }
