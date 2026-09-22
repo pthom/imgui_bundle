@@ -76,23 +76,29 @@ namespace Snippets
     }
 #endif // #if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
 
-    // The copy button: two overlapping sheets drawn with the draw list (no icon font needed)
+    // The copy button: two overlapping sheets drawn with the draw list (no icon font needed). Only
+    // the visible part of the back sheet is drawn, so the icon does not depend on the button's colors.
     static bool CopyButton(float lineHeight)
     {
         bool clicked = ImGui::Button("##copy", ImVec2(lineHeight * 1.25f, 0.f));  // the frame height, as a glyph button
         ImVec2 mi = ImGui::GetItemRectMin(), ma = ImGui::GetItemRectMax();
         float h = (ma.y - mi.y) * 0.5f;              // sheet height; width is 0.8 h
         float cx = (mi.x + ma.x) * 0.5f, cy = (mi.y + ma.y) * 0.5f;
-        float offset = h * 0.3f, thickness = h * 0.11f, rounding = h * 0.15f;
+        float offset = h * 0.25f, thickness = h * 0.11f;
         ImU32 col = ImGui::GetColorU32(ImGuiCol_Text);
-        ImU32 bg = ImGui::GetColorU32(ImGui::IsItemHovered() ? ImGuiCol_ButtonHovered : ImGuiCol_Button);
         ImDrawList* dl = ImGui::GetWindowDrawList();
-        // back sheet (top right), then the front sheet (bottom left) hides part of it
-        ImVec2 backMin(cx - h * 0.4f + offset, cy - h * 0.5f - offset), backMax(cx + h * 0.4f + offset, cy + h * 0.5f - offset);
-        ImVec2 frontMin(cx - h * 0.4f - offset * 0.3f, cy - h * 0.5f + offset * 0.3f), frontMax(cx + h * 0.4f - offset * 0.3f, cy + h * 0.5f + offset * 0.3f);
-        dl->AddRect(backMin, backMax, col, rounding, thickness);
-        dl->AddRectFilled(frontMin, frontMax, bg, rounding);
-        dl->AddRect(frontMin, frontMax, col, rounding, thickness);
+        ImVec2 fMin(cx - h * 0.4f - offset * 0.5f, cy - h * 0.5f + offset * 0.5f);   // front sheet, bottom left
+        ImVec2 fMax(cx + h * 0.4f - offset * 0.5f, cy + h * 0.5f + offset * 0.5f);
+        ImVec2 bMin(fMin.x + offset, fMin.y - offset);                                // back sheet, top right
+        ImVec2 bMax(fMax.x + offset, fMax.y - offset);
+        // back sheet: from the front sheet's top edge, up and around to the front sheet's right edge
+        dl->PathLineTo(ImVec2(bMin.x, fMin.y));
+        dl->PathLineTo(bMin);
+        dl->PathLineTo(ImVec2(bMax.x, bMin.y));
+        dl->PathLineTo(bMax);
+        dl->PathLineTo(ImVec2(fMax.x, bMax.y));
+        dl->PathStroke(col, thickness);
+        dl->AddRect(fMin, fMax, col, 0.f, thickness);
         return clicked;
     }
 
