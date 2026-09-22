@@ -415,13 +415,21 @@ if(NOT IMGUI_BUNDLE_BUILD_NUMBER)
     set(IMGUI_BUNDLE_BUILD_NUMBER "0")
 endif()
 add_library(imgui_bundle INTERFACE)
+add_library(imgui_bundle::imgui_bundle ALIAS imgui_bundle)
 target_compile_definitions(imgui_bundle INTERFACE
     IMGUI_BUNDLE_VERSION="${IMGUI_BUNDLE_VERSION}"
     IMGUI_BUNDLE_BUILD_NUMBER="${IMGUI_BUNDLE_BUILD_NUMBER}"
 )
 if(IMGUI_BUNDLE_INSTALL_CPP)
-    install(DIRECTORY imgui_bundle_cmake DESTINATION share/imgui-bundle)
-    install(DIRECTORY bindings/imgui_bundle/assets DESTINATION share/imgui-bundle)
+    # imgui_bundle_cmake is installed next to the config file, so that
+    # imgui_bundle-config.cmake can include it via ${CMAKE_CURRENT_LIST_DIR}
+    install(DIRECTORY imgui_bundle_cmake DESTINATION lib/cmake/imgui_bundle)
+    # Common assets (fonts, etc.), bundled into apps by imgui_bundle_add_app(): they are
+    # looked up as ${IMGUI_BUNDLE_PATH}/imgui_bundle_assets, and IMGUI_BUNDLE_PATH is
+    # lib/cmake/imgui_bundle from an install (see imgui_bundle_add_app.cmake)
+    install(DIRECTORY imgui_bundle_assets DESTINATION lib/cmake/imgui_bundle)
+    # imgui's IMGUI_USER_CONFIG refers to this header as "imgui_bundle_config.h" from an install
+    install(FILES imgui_bundle_cmake/imgui_bundle_config.h DESTINATION include)
     ibd_add_installable_dependency(imgui_bundle)
 endif()
 
@@ -483,17 +491,14 @@ if (MSVC AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
 endif()
 
 #------------------------------------------------------------------------------
-# CMake shenanigans so that find_package(imgui-bundle CONFIG REQUIRED) works
+# Install & export, so that find_package(imgui_bundle CONFIG REQUIRED) works
 #------------------------------------------------------------------------------
-# These elements are mainly used to build a vcpkg compatible package.
-# Important note:
-#     - the CMake package is named imgui-bundle (with a "-")
-#     - the CMake target is named imgui_bundle (with a "_")
-# To link with imgui_bundle, you need to use:
-#     find_package(imgui-bundle CONFIG REQUIRED)
-#     target_link_libraries(your_target PRIVATE imgui-bundle::imgui_bundle)  # note the variation "-" vs "_"
+# The CMake package, the namespace and the main target are all named imgui_bundle.
+# To link with imgui_bundle, you can use:
+#     find_package(imgui_bundle CONFIG REQUIRED)
+#     target_link_libraries(your_target PRIVATE imgui_bundle::imgui_bundle)
 # However, the simplest use is:
-#     find_package(imgui-bundle CONFIG REQUIRED)
+#     find_package(imgui_bundle CONFIG REQUIRED)
 #     imgui_bundle_add_app(test test.cpp) # this will automatically link with imgui_bundle
 #------------------------------------------------------------------------------
 if(IMGUI_BUNDLE_INSTALL_CPP AND IMGUI_BUNDLE_BUILD_PYTHON)
@@ -503,24 +508,36 @@ if(IMGUI_BUNDLE_INSTALL_CPP)
     # inspired from https://iamsorush.com/posts/cpp-cmake-config/
     message(STATUS "IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES=${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}")
     install(TARGETS ${IMGUI_BUNDLE_INSTALLABLE_DEPENDENCIES}
-        EXPORT imgui-bundle-targets
+        EXPORT imgui_bundle-targets
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
         INCLUDES DESTINATION include)
 
-    install(EXPORT imgui-bundle-targets
-        FILE imgui-bundle-targets.cmake
-        NAMESPACE imgui-bundle::
+    install(EXPORT imgui_bundle-targets
+        FILE imgui_bundle-targets.cmake
+        NAMESPACE imgui_bundle::
         DESTINATION lib/cmake/imgui_bundle)
 
     include(CMakePackageConfigHelpers)
     write_basic_package_version_file(
-        "imgui-bundleConfigVersion.cmake"
+        "imgui_bundle-config-version.cmake"
         VERSION ${imgui_bundle_VERSION}
         COMPATIBILITY AnyNewerVersion)
 
-    install(FILES "imgui_bundle_cmake/imgui-bundleConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/imgui-bundleConfigVersion.cmake"
+    # imgui_bundle-config.cmake is generated: its find_dependency() calls depend on the build options
+    foreach(_opt HELLOIMGUI_USE_FREETYPE HELLOIMGUI_USE_GLFW3 HELLOIMGUI_USE_SDL2 HELLOIMGUI_HAS_OPENGL3 IMGUI_BUNDLE_LINKS_CURL)
+        if(${_opt})
+            set(IBD_CFG_${_opt} ON)
+        else()
+            set(IBD_CFG_${_opt} OFF)
+        endif()
+    endforeach()
+    if(HELLOIMGUI_FREETYPE_DOWNLOADED)
+        set(IBD_CFG_HELLOIMGUI_USE_FREETYPE OFF)  # a downloaded freetype is part of the package: nothing to find
+    endif()
+    configure_file("imgui_bundle_cmake/imgui_bundle-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config.cmake" @ONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config.cmake" "${CMAKE_CURRENT_BINARY_DIR}/imgui_bundle-config-version.cmake"
         DESTINATION lib/cmake/imgui_bundle)
 endif()
 

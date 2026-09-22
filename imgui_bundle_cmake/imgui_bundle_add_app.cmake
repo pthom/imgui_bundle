@@ -1,6 +1,15 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-set(himgui_cmake_path ${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui/hello_imgui_cmake)
-set(HELLOIMGUI_CMAKE_PATH ${himgui_cmake_path} CACHE STRING "HELLOIMGUI_CMAKE_PATH" FORCE)
+# hello_imgui_add_app() lives in hello_imgui_cmake/, which is found:
+# - in the hello_imgui submodule when imgui_bundle is used from its source tree
+# - next to imgui_bundle_cmake/ when imgui_bundle is used from an install (find_package)
+if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui/hello_imgui_cmake)
+    set(himgui_cmake_path ${CMAKE_CURRENT_LIST_DIR}/../external/hello_imgui/hello_imgui/hello_imgui_cmake)
+else()
+    set(himgui_cmake_path ${CMAKE_CURRENT_LIST_DIR}/../hello_imgui_cmake)
+    # From an install, the package dir plays the role of the source tree root:
+    # hello_imgui_bundle_assets() looks for ${IMGUI_BUNDLE_PATH}/imgui_bundle_assets
+    get_filename_component(IMGUI_BUNDLE_PATH ${CMAKE_CURRENT_LIST_DIR}/.. ABSOLUTE)
+endif()
 include(${himgui_cmake_path}/hello_imgui_add_app.cmake)
 include(${himgui_cmake_path}/msvc/msvc_target_group.cmake)
 
@@ -23,7 +32,7 @@ function(imgui_bundle_add_app)
     list(GET args 0 app_name)
 
     hello_imgui_add_app(${args})
-    target_link_libraries(${app_name} PRIVATE imgui_bundle)
+    target_link_libraries(${app_name} PRIVATE imgui_bundle::imgui_bundle)
 
 	# if (MSVC)
 	# 	hello_imgui_msvc_target_group_sources(${app_name})

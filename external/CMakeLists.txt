@@ -192,6 +192,13 @@ if(IMGUI_BUNDLE_WITH_IMGUIZMO)
     add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmoPure)
     add_additional_sources_to_external_library(imguizmo ImGuizmo ImGuizmo/src)
     target_include_directories(imguizmo PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/ImGuizmo/ImGuizmo/src>)
+    if(IMGUI_BUNDLE_INSTALL_CPP)
+        # In-tree, ImGuizmo/src is an include dir (#include "ImGuizmo.h"): keep the same include paths from an install
+        file(GLOB imguizmo_headers ${CMAKE_CURRENT_SOURCE_DIR}/ImGuizmo/ImGuizmo/src/*.h)
+        install(FILES ${imguizmo_headers} DESTINATION include)
+        file(GLOB imguizmo_pure_headers ${CMAKE_CURRENT_SOURCE_DIR}/ImGuizmo/ImGuizmoPure/*.h)
+        install(FILES ${imguizmo_pure_headers} DESTINATION include/ImGuizmoPure)
+    endif()
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUIZMO)
     set(IMGUI_BUNDLE_WITH_IMGUIZMO ON CACHE INTERNAL "" FORCE)
 endif()
@@ -250,6 +257,10 @@ if(IMGUI_BUNDLE_WITH_NANOVG)
     add_simple_external_library(nvg_imgui nanovg)
     target_link_libraries(nvg_imgui PUBLIC nanovg hello_imgui)
     file(GLOB_RECURSE nvg_imgui_sources nanovg/nvg_imgui/*.cpp nanovg/nvg_imgui/*.h)
+    if(IMGUI_BUNDLE_INSTALL_CPP)
+        file(GLOB nvg_imgui_headers nanovg/nvg_imgui/*.h)
+        install(FILES ${nvg_imgui_headers} DESTINATION include/nvg_imgui)
+    endif()
     if (HELLOIMGUI_HAS_METAL)
         set(nvg_imgui_sources ${nvg_imgui_sources}
             nanovg/nvg_imgui/nvg_mtl_hello_imgui.mm
@@ -329,6 +340,7 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     endif()
     option(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
            "Enable URL image download in markdown (requires libcurl)" ${_IMGUI_MD_DOWNLOAD_DEFAULT})
+    set(IMGUI_BUNDLE_LINKS_CURL OFF CACHE INTERNAL "imgui_md links libcurl (read by imgui_bundle-config.cmake.in)" FORCE)
     if(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
         find_package(CURL)
         if(CURL_FOUND)
@@ -337,6 +349,7 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
                 imgui_md/imgui_md_wrapper/imgui_md_url_download.h
             )
             target_link_libraries(imgui_md PRIVATE CURL::libcurl)
+            set(IMGUI_BUNDLE_LINKS_CURL ON CACHE INTERNAL "" FORCE)
             target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
             message(STATUS "imgui_md: URL image download enabled (using system libcurl)")
         else()
@@ -403,6 +416,20 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         if(IMGUI_BUNDLE_INSTALL_CPP)
             ibd_add_installable_dependency(microtex)
             ibd_add_installable_dependency(imgui_microtex)
+            # MicroTeX is added with EXCLUDE_FROM_ALL, which also discards its own install() rules,
+            # while its exported target advertises include/microtex. Install the headers it would
+            # have installed (same list as MicroTeX/lib/CMakeLists.txt, "installation" section).
+            set(_microtex_lib ${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/MicroTeX/lib)
+            install(FILES
+                ${CMAKE_CURRENT_BINARY_DIR}/microtex_build/lib/microtexconfig.h
+                ${_microtex_lib}/microtexexport.h ${_microtex_lib}/microtex.h ${_microtex_lib}/microtexapi.h
+                DESTINATION include/microtex)
+            install(FILES ${_microtex_lib}/utils/types.h DESTINATION include/microtex/utils)
+            install(FILES ${_microtex_lib}/render/render.h DESTINATION include/microtex/render)
+            install(FILES ${_microtex_lib}/unimath/font_src.h ${_microtex_lib}/unimath/font_meta.h
+                DESTINATION include/microtex/unimath)
+            install(FILES ${_microtex_lib}/graphic/graphic.h ${_microtex_lib}/graphic/font_style.h ${_microtex_lib}/graphic/graphic_basic.h
+                DESTINATION include/microtex/graphic)
         endif()
 
         # Wire into imgui_md
@@ -432,7 +459,7 @@ add_simple_external_library(imspinner imspinner)
 target_sources(imspinner PRIVATE ${CMAKE_CURRENT_LIST_DIR}/imspinner/imspinner_bundle.cpp)
 if(IMGUI_BUNDLE_INSTALL_CPP)
     # Install only imspinner*.h (skip the cimspinner* C-API headers)
-    file(GLOB imspinner_headers ${CMAKE_CURRENT_LIST_DIR}/imspinner/imspinner*.h)
+    file(GLOB imspinner_headers ${CMAKE_CURRENT_LIST_DIR}/imspinner/imspinner/imspinner*.h)
     install(FILES ${imspinner_headers} DESTINATION include/imspinner)
 endif()
 # Build imgui_toggle

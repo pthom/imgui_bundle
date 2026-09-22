@@ -154,6 +154,14 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
   - Vulkan errors raise an exception with the name of the `VkResult` (they called `abort()`).
   - new CMake option `HELLOIMGUI_VULKAN_VALIDATION`: enables the validation layers.
 
+## C++: installable CMake package, and notes for packagers
+
+* The CMake package is now named `imgui_bundle` (was `imgui-bundle`): `find_package(imgui_bundle CONFIG REQUIRED)` then `imgui_bundle_add_app(...)` or `target_link_libraries(app PRIVATE imgui_bundle::imgui_bundle)`. `cmake --install` produces a single relocatable package (`lib/cmake/imgui_bundle/`) which includes hello_imgui and all bundled libraries under the `imgui_bundle::` namespace. Likewise, hello_imgui's own CMake package is now `hello_imgui` (was `hello-imgui`; the former name still works through a deprecated shim).
+* plutovg and plutosvg are now git submodules of hello_imgui (`external/hello_imgui/hello_imgui/external/plutosvg`), no longer downloaded at configure time; they are included in the `srcs-full` release archive.
+* Packagers (conda, vcpkg, distributions): set `HELLOIMGUI_USE_SYSTEM_PLUTOSVG=ON` to link an installed plutosvg (with freetype support) instead of the submodule. It is ON automatically when `IMGUI_BUNDLE_PYTHON_USE_SYSTEM_LIBS` is set (i.e. under `CONDA_BUILD`), so the conda-forge patch that swapped in the system plutovg/plutosvg is no longer needed.
+
+
+
 
 # v1.92.900
 
