@@ -9,8 +9,21 @@
 
 #include "imgui.h"
 #include "imgui_md/imgui_md.h"
-#include "immapp/code_utils.h"
-#include "immapp/browse_to_url.h"
+
+// Platform includes for OpenUrlInBrowser
+#if defined(__EMSCRIPTEN__)
+#include <emscripten.h>
+#elif defined(_WIN32)
+#include <windows.h>
+#include <shellapi.h>
+#elif defined(__APPLE__)
+#include <TargetConditionals.h>
+#include <unistd.h>   // fork, execlp, _exit
+#include <sys/wait.h> // waitpid
+#elif defined(__linux__)
+#include <unistd.h>
+#include <sys/wait.h>
+#endif
 
 #ifdef IMGUI_RICHMD_WITH_LATEX
 #include "imgui_microtex/imgui_microtex.h"
@@ -68,6 +81,58 @@ namespace
             out += lines[i];
         }
         return out;
+    }
+
+    // Opens an url in the default browser (no shell involved: the url is passed as a raw argument)
+    void _OpenUrlInBrowser(const char* url)
+    {
+#if defined(__EMSCRIPTEN__)
+        char js_command[1024];
+        snprintf(js_command, 1024, "window.open(\"%s\");", url);
+        emscripten_run_script(js_command);
+#elif defined(_WIN32)
+        ShellExecuteA(NULL, "open", url, NULL, NULL, SW_SHOWNORMAL);
+#elif TARGET_OS_IPHONE
+        (void)url;  // nothing on iOS
+#elif TARGET_OS_OSX || defined(__linux__)
+#if TARGET_OS_OSX
+        const char* opener = "open";
+#else
+        const char* opener = "xdg-open";
+#endif
+        pid_t pid = fork();
+        if (pid == 0)
+        {
+            execlp(opener, opener, url, nullptr);
+            _exit(1);
+        }
+        else if (pid > 0)
+            waitpid(pid, nullptr, 0);
+#else
+        (void)url;
+#endif
+    }
+
+    // Removes the common indentation (that of the first non-empty line) and the leading / trailing empty lines.
+    // Trailing spaces are kept: two of them are a hard line break in markdown.
+    std::string _Unindent(const std::string& text)
+    {
+        auto lines = _SplitLines(text);
+        size_t indent = 0;
+        for (const auto& line : lines)
+            if (_TrimWhitespace(line).size() > 0)
+            {
+                indent = line.find_first_not_of(' ');
+                break;
+            }
+        std::vector<std::string> processed;
+        for (const auto& line : lines)
+            processed.push_back(line.compare(0, indent, std::string(indent, ' ')) == 0 ? line.substr(indent) : line);
+        while (!processed.empty() && _TrimWhitespace(processed.front()).empty())
+            processed.erase(processed.begin());
+        while (!processed.empty() && _TrimWhitespace(processed.back()).empty())
+            processed.pop_back();
+        return _JoinLines(processed);
     }
 
     std::string _ToLower(const std::string& s)
@@ -129,7 +194,7 @@ namespace ImGuiMd
         if (ImGui::IsItemHovered())
             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
         if (ImGui::IsItemClicked())
-            ImmApp::BrowseToUrl(url);
+            _OpenUrlInBrowser(url);
     }
 
 
@@ -811,7 +876,7 @@ namespace ImGuiMd
             std::cerr << "ImGuiMd::OnOpenLink_Default url \"" << url << "\" should start with http!\n";
             return;
         }
-        ImmApp::BrowseToUrl(url.c_str());
+        _OpenUrlInBrowser(url.c_str());
     }
 
 
@@ -972,7 +1037,7 @@ namespace ImGuiMd
     // Renders a markdown string (after having unindented its main indentation)
     void RenderUnindented(const std::string& markdownString)
     {
-        Render(CodeUtils::UnindentMarkdown(markdownString));
+        Render(_Unindent(markdownString));
     }
 
 } // namespace ImGuiMdBrowser
