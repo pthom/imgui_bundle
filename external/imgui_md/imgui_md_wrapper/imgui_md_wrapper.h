@@ -197,6 +197,10 @@ namespace ImGuiMd
     void SetCurrentContext(Context* context);
     Context* GetCurrentContext();
 
+    // The folder where the default host reads the assets (fonts, images) from the file system,
+    // when they are not embedded in the binary. Default: the current directory.
+    void SetAssetsFolder(const std::string& folder);
+
     // Private: callback called when a context is created, allowing customization of the options.
     // Python sets this at import time to inject URL image download support.
     using Priv_OnInitializeMarkdownCallback = std::function<void(MarkdownOptions&)>;

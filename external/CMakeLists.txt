@@ -446,6 +446,24 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_MICROTEX)
     endif()
 
+    # Embedded assets: the markdown fonts and images compiled into the library, for a use without an
+    # assets folder (standalone). The bundle serves them from its assets, so this is OFF by default.
+    option(IMGUI_RICHMD_EMBED_ASSETS "Embed the markdown fonts and images in the imgui_md library" OFF)
+    if(IMGUI_RICHMD_EMBED_ASSETS)
+        include(${CMAKE_CURRENT_LIST_DIR}/imgui_md/cmake/imgui_richmd_embed_files.cmake)
+        set(_imgui_md_assets
+            fonts/Roboto/Roboto-Regular.ttf fonts/Roboto/Roboto-Bold.ttf
+            fonts/Roboto/Roboto-RegularItalic.ttf fonts/Roboto/Roboto-BoldItalic.ttf
+            fonts/Inconsolata-Medium.ttf
+            images/markdown_broken_image.png)
+        if(IMGUI_RICHMD_WITH_LATEX)
+            list(APPEND _imgui_md_assets fonts/latex/latinmodern-math.clm1 fonts/latex/latinmodern-math.otf)
+        endif()
+        imgui_richmd_embed_files(imgui_md imgui_richmd_embedded_assets
+            BASE_DIR ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/assets FILES ${_imgui_md_assets})
+        target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_EMBED_ASSETS)
+    endif()
+
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_MD)
     set(IMGUI_BUNDLE_WITH_IMGUI_MD ON CACHE INTERNAL "" FORCE)
 else()

@@ -40,6 +40,17 @@ namespace ImGuiMd
     // The content of an asset file, or std::nullopt when it does not exist
     using AssetBytes = std::optional<std::vector<uint8_t>>;
 
+    // An asset embedded in the binary (IMGUI_RICHMD_EMBED_ASSETS, see cmake/imgui_richmd_embed_files.cmake)
+    struct EmbeddedAsset
+    {
+        const char* path;
+        const unsigned char* data;
+        size_t size;
+    };
+
+    // The default ReadAsset: the embedded assets, then the file system under the assets folder
+    AssetBytes ReadAssetDefault(const std::string& assetPath);
+
     struct HostServices
     {
         // Uploads an RGBA8 buffer (w * h * 4 bytes, no padding) to a GPU texture.
