@@ -160,6 +160,38 @@ namespace ImGuiMd
     extern const EmbeddedAsset imgui_richmd_embedded_assets[];
     extern const int imgui_richmd_embedded_assets_count;
 #endif
+#ifdef IMGUI_RICHMD_EMBED_ASSETS
+    // Inflates a gzip stream (RFC 1952: header, deflate data, crc + size) with stb_image's zlib decoder
+    static AssetBytes _Gunzip(const unsigned char* gz, size_t gzSize, size_t expectedSize)
+    {
+        if (gzSize < 18 || gz[0] != 0x1f || gz[1] != 0x8b || gz[2] != 8)
+            return std::nullopt;
+        unsigned char flags = gz[3];
+        size_t pos = 10;
+        if (flags & 4)  // FEXTRA
+        {
+            size_t extraLen = gz[pos] | (gz[pos + 1] << 8);
+            pos += 2 + extraLen;
+        }
+        if (flags & 8)  // FNAME
+            while (pos < gzSize && gz[pos++] != 0) {}
+        if (flags & 16)  // FCOMMENT
+            while (pos < gzSize && gz[pos++] != 0) {}
+        if (flags & 2)  // FHCRC
+            pos += 2;
+        if (pos + 8 > gzSize)
+            return std::nullopt;
+        int outLen = 0;
+        char* inflated = stbi_zlib_decode_malloc_guesssize_headerflag(
+            (const char*)gz + pos, (int)(gzSize - pos - 8), (int)expectedSize, &outLen, 0 /* raw deflate */);
+        if (inflated == nullptr)
+            return std::nullopt;
+        std::vector<uint8_t> bytes((const uint8_t*)inflated, (const uint8_t*)inflated + outLen);
+        stbi_image_free(inflated);
+        return bytes;
+    }
+#endif
+
     static std::string gAssetsFolder;
     void SetAssetsFolder(const std::string& folder) { gAssetsFolder = folder; }
 
@@ -170,7 +202,7 @@ namespace ImGuiMd
         {
             const EmbeddedAsset& asset = imgui_richmd_embedded_assets[i];
             if (assetPath == asset.path)
-                return std::vector<uint8_t>(asset.data, asset.data + asset.size);
+                return _Gunzip(asset.data, asset.compressedSize, asset.size);
         }
 #endif
         std::string path = gAssetsFolder.empty() ? assetPath : gAssetsFolder + "/" + assetPath;

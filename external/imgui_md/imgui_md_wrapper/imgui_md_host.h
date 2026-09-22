@@ -44,8 +44,9 @@ namespace ImGuiMd
     struct EmbeddedAsset
     {
         const char* path;
-        const unsigned char* data;
-        size_t size;
+        const unsigned char* data;   // a gzip stream of the file
+        size_t size;                 // of the file
+        size_t compressedSize;       // of data
     };
 
     // The default ReadAsset: the embedded assets, then the file system under the assets folder
