@@ -155,10 +155,26 @@ namespace ImGuiMd
     void Priv_InstallHelloImGuiHost();  // hosts/hello_imgui_host.cpp
 #endif
 
-    // Default services: plain file system, stderr
-    static AssetBytes _ReadAssetFromFileSystem(const std::string& assetPath)
+    // Default services: the embedded assets, the file system, stderr
+#ifdef IMGUI_RICHMD_EMBED_ASSETS
+    extern const EmbeddedAsset imgui_richmd_embedded_assets[];
+    extern const int imgui_richmd_embedded_assets_count;
+#endif
+    static std::string gAssetsFolder;
+    void SetAssetsFolder(const std::string& folder) { gAssetsFolder = folder; }
+
+    AssetBytes ReadAssetDefault(const std::string& assetPath)
     {
-        std::ifstream file(assetPath, std::ios::binary);
+#ifdef IMGUI_RICHMD_EMBED_ASSETS
+        for (int i = 0; i < imgui_richmd_embedded_assets_count; ++i)
+        {
+            const EmbeddedAsset& asset = imgui_richmd_embedded_assets[i];
+            if (assetPath == asset.path)
+                return std::vector<uint8_t>(asset.data, asset.data + asset.size);
+        }
+#endif
+        std::string path = gAssetsFolder.empty() ? assetPath : gAssetsFolder + "/" + assetPath;
+        std::ifstream file(path, std::ios::binary);
         if (!file)
             return std::nullopt;
         return std::vector<uint8_t>(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
@@ -202,7 +218,7 @@ namespace ImGuiMd
             gHostServices.RenderLatex = _RenderLatexWithMicroTeX;
 #endif
         if (!gHostServices.ReadAsset)
-            gHostServices.ReadAsset = _ReadAssetFromFileSystem;
+            gHostServices.ReadAsset = ReadAssetDefault;
         if (!gHostServices.Log)
             gHostServices.Log = [](const std::string& message) { fprintf(stderr, "imgui_md: %s\n", message.c_str()); };
     }

@@ -24,7 +24,7 @@ namespace ImGuiMd
     static AssetBytes _ReadAsset(const std::string& assetPath)
     {
         if (!HelloImGui::AssetExists(assetPath))
-            return std::nullopt;
+            return ReadAssetDefault(assetPath);  // embedded assets, if any
         HelloImGui::AssetFileData fileData = HelloImGui::LoadAssetFileData(assetPath.c_str());
         std::vector<uint8_t> bytes((const uint8_t*)fileData.data, (const uint8_t*)fileData.data + fileData.dataSize);
         HelloImGui::FreeAssetFileData(&fileData);

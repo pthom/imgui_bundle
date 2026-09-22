@@ -223,6 +223,12 @@ def initialize_markdown(options: Optional[MarkdownOptions] = None) -> None:
 def de_initialize_markdown() -> None:
     pass
 
+def set_assets_folder(folder: str) -> None:
+    """The folder where the default host reads the assets (fonts, images) from the file system,
+    when they are not embedded in the binary. Default: the current directory.
+    """
+    pass
+
 def get_font_loader_function() -> VoidFunction:
     """Legacy: the fonts now load at the first Render(). The returned function loads them right away,
     for hosts that build their font atlas once (no dynamic fonts).

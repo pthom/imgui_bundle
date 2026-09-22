@@ -188,6 +188,11 @@ void py_init_module_imgui_md(nb::module_& m)
     m.def("de_initialize_markdown",
         ImGuiMd::DeInitializeMarkdown);
 
+    m.def("set_assets_folder",
+        ImGuiMd::SetAssetsFolder,
+        nb::arg("folder"),
+        " The folder where the default host reads the assets (fonts, images) from the file system,\n when they are not embedded in the binary. Default: the current directory.");
+
     m.def("get_font_loader_function",
         ImGuiMd::GetFontLoaderFunction, " Legacy: the fonts now load at the first Render(). The returned function loads them right away,\n for hosts that build their font atlas once (no dynamic fonts).");
 
