@@ -37,6 +37,9 @@ namespace ImGuiMd
         int baselineY = 0;           // from the top of the bitmap to the text baseline, in pixels
     };
 
+    // The content of an asset file, or std::nullopt when it does not exist
+    using AssetBytes = std::optional<std::vector<uint8_t>>;
+
     struct HostServices
     {
         // Uploads an RGBA8 buffer (w * h * 4 bytes, no padding) to a GPU texture.
@@ -45,7 +48,7 @@ namespace ImGuiMd
 
         // Reads an asset file (fonts, images: "fonts/Roboto/Roboto-Regular.ttf", "images/x.png").
         // Return std::nullopt when the asset does not exist. Default: the file system.
-        std::function<std::optional<std::vector<uint8_t>>(const std::string& assetPath)> ReadAsset;
+        std::function<AssetBytes(const std::string& assetPath)> ReadAsset;
 
         // Path of an asset on the file system, for the libraries that cannot read from memory
         // (MicroTeX's fonts). Return std::nullopt when the asset does not exist. Default: the file system.
