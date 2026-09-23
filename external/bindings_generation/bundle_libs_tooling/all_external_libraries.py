@@ -98,16 +98,6 @@ def lib_imgui_md() -> ExternalLibrary:
     )
 
 
-def lib_md4c() -> ExternalLibrary:
-    return ExternalLibrary(
-        name="md4c",
-        official_git_url="https://github.com/mity/md4c",
-        official_branch="master",
-        custom_git_folder="imgui_rich_md/imgui_rich_md/external/md4c",
-        is_sub_library=True,
-        is_published_in_python=False
-    )
-
 
 def lib_microtex() -> ExternalLibrary:
     return ExternalLibrary(
@@ -256,7 +246,6 @@ ALL_LIBS = [
     lib_imgui_knobs(),
     lib_imgui_node_editor(),
     lib_imgui_md(),
-    lib_md4c(),
     lib_microtex(),
     lib_imgui_tex_inspect(),
     lib_imgui_toggle(),

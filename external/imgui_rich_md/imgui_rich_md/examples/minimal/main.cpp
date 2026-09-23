@@ -24,7 +24,7 @@ No HelloImGui here: the fonts and the images below are **embedded** in the libra
 
 ## Text
 *Emphasis*, **bold**, `code`, ~~strikethrough~~, a [link](https://github.com/pthom/imgui_bundle), and a
-formula shown as source since LaTeX is not built: $e^{i\pi} + 1 = 0$.
+formula, rendered when the library is built with LaTeX (shown as source otherwise): $e^{i\pi} + 1 = 0$.
 
 ## Table
 | Feature | State |
@@ -75,7 +75,11 @@ int main(int, char**)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 150");
 
-    RichMd::InitializeMarkdown();
+    RichMd::MarkdownOptions options;
+#ifdef IMGUI_RICHMD_WITH_LATEX
+    options.withLatex = true;
+#endif
+    RichMd::InitializeMarkdown(options);
 
     const char* shot = std::getenv("IMGUI_RICHMD_SHOT");
     int frame = 0;
