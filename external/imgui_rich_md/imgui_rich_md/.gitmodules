@@ -1,0 +1,4 @@
+[submodule "external/md4c"]
+	path = external/md4c
+	url = https://github.com/mity/md4c
+	branch = master
