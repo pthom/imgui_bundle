@@ -212,13 +212,10 @@ if has_submodule("rich_md"):
     _publish("imgui_md", rich_md)
     __all__.extend(["rich_md", "imgui_md"])
 
-    # Register a hook so that initialize_markdown() automatically sets up URL image download support
-    def _on_initialize_markdown(options):
-        if options.callbacks.on_download_data is None:
-            from imgui_bundle._rich_md_image_loader import _get_download_function
-            options.callbacks.on_download_data = _get_download_function()
+    # URL images are downloaded by Python: urllib in a thread on desktop, JS fetch in Pyodide
+    from imgui_bundle._rich_md_image_loader import _get_download_function
 
-    rich_md._set_on_initialize_markdown_callback(_on_initialize_markdown)
+    rich_md.set_download_function(_get_download_function())
 
     def _render_this_file(md_id: str = "", part: str = "both") -> None:
         """Renders a section of the calling source file (see rich_md.resolve_imports): a lesson can be
