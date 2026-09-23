@@ -455,6 +455,22 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
 
         # Wire into imgui_md
         target_link_libraries(imgui_md PUBLIC imgui_microtex)
+        # MicroTeX reports an invalid formula with a C++ exception, which the wrapper catches.
+        # Emscripten disables exception catching by default (a throw aborts the page): native wasm
+        # exceptions on the LaTeX targets only cost nothing in size. setjmp users (FreeType, plutovg)
+        # must use the same scheme, since the link switches to wasm setjmp/longjmp.
+        # Not for pyodide: its side module already builds with exceptions on.
+        if(EMSCRIPTEN AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
+            option(IMGUI_RICHMD_WASM_EXCEPTIONS "Catch LaTeX errors on Emscripten (wasm exceptions on the LaTeX targets)" ON)
+            if(IMGUI_RICHMD_WASM_EXCEPTIONS)
+                foreach(_t microtex imgui_microtex imgui_md freetype plutovg plutosvg)
+                    if(TARGET ${_t})
+                        target_compile_options(${_t} PRIVATE -fwasm-exceptions)
+                    endif()
+                endforeach()
+                target_link_options(imgui_md PUBLIC -fwasm-exceptions)
+            endif()
+        endif()
         target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_LATEX)
         message(STATUS "imgui_md: native LaTeX rendering enabled (via MicroTeX)")
     endif()
