@@ -7,15 +7,15 @@ Tests:
 - Local asset image (existing behavior)
 - Mixed: text, URL images, local images, code blocks
 """
-from imgui_bundle import immapp, imgui_md
+from imgui_bundle import immapp, rich_md
 import logging
-logging.getLogger("imgui_md_image_loader").setLevel(logging.DEBUG)
+logging.getLogger("rich_md_image_loader").setLevel(logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
 
 
 
 def gui():
-    imgui_md.render_unindented("""
+    rich_md.render_unindented("""
     # Markdown Online Images Test
 
     ## 1. PNG from URL

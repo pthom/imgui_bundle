@@ -1,7 +1,7 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_6.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "immapp/immapp.h"
 
 #include <string>
@@ -222,7 +222,7 @@ int main() {
 ```
 
 Code blocks get a copy button, and syntax highlighting when the library is built with its code
-editor (`ImGuiMd::HasCodeEditor()`); otherwise they are plain monospaced blocks.
+editor (`RichMd::HasCodeEditor()`); otherwise they are plain monospaced blocks.
 
 Code blocks are delimited by three backticks, plus an optional language. See example below:
 
@@ -434,7 +434,7 @@ void RenderCsv(const std::string& code)
     }
 }
 
-ImGuiMd::RegisterFencedBlockRenderer("csv", RenderCsv);
+RichMd::RegisterFencedBlockRenderer("csv", RenderCsv);
 ```
 
 Then in the markdown:
@@ -465,7 +465,7 @@ A wikilink to [[Home]] and one with a label: [[Notes/todo|my todo list]].
 <summary>Show source</summary>
 
 ```cpp
-ImGuiMd::MarkdownOptions options;
+RichMd::MarkdownOptions options;
 options.callbacks.OnWikiLink = [](const std::string& target) { printf("go to %s\n", target.c_str()); };
 options.hardSoftBreaks = true;   // for chat-like text
 ImmApp::AddOnsParams addons;
@@ -515,9 +515,9 @@ until it is used), your own icons...
 
 ```cpp
 #include "hello_imgui/icons_font_awesome_6.h"
-ImGuiMd::Render("Launch " ICON_FA_ROCKET);
+RichMd::Render("Launch " ICON_FA_ROCKET);
 
-ImGuiMd::MarkdownOptions options;
+RichMd::MarkdownOptions options;
 options.fontOptions.mergeFonts = {"fonts/NotoEmoji-Regular.ttf", "fonts/NotoSansCJKjp-Regular.otf"};
 ```
 
@@ -570,14 +570,14 @@ Last line
 
 @@SUPPORT_STATUS@@
 
-`ImGuiMd::HasLatex()`, `HasUrlImages()` and `HasCodeEditor()` tell what the library was
+`RichMd::HasLatex()`, `HasUrlImages()` and `HasCodeEditor()` tell what the library was
 built with and what the host provides.
 
 </details>
 <details>
 <summary>Rendering and fonts</summary>
 
-- `ImGuiMd::Render(text)` removes the common indentation first, so that a markdown string
+- `RichMd::Render(text)` removes the common indentation first, so that a markdown string
   written inside an indented function renders as expected (`RenderRaw` renders as is).
 - The markdown fonts are loaded at the first render: `InitializeMarkdown()` can be called
   any time after the ImGui context exists (ImmApp and Hello ImGui call it for you).
@@ -704,9 +704,9 @@ static std::string FillDynamicParts(const std::string& markdown)
                           "Run this demo standalone, `demo_imgui_md`, to see it live.)*";
         headingsStatus = "*(Not enabled in this hosted run.)*";
     }
-    std::string supportStatus = std::string("This build: LaTeX **") + (ImGuiMd::HasLatex() ? "yes" : "no")
-        + "**, URL images **" + (ImGuiMd::HasUrlImages() ? "yes" : "no")
-        + "**, code editor **" + (ImGuiMd::HasCodeEditor() ? "yes" : "no") + "**.";
+    std::string supportStatus = std::string("This build: LaTeX **") + (RichMd::HasLatex() ? "yes" : "no")
+        + "**, URL images **" + (RichMd::HasUrlImages() ? "yes" : "no")
+        + "**, code editor **" + (RichMd::HasCodeEditor() ? "yes" : "no") + "**.";
     std::string r = markdown;
     r = ReplaceAll(r, "@@WIKILINKS_STATUS@@", wikilinksStatus);
     r = ReplaceAll(r, "@@HEADINGS_STATUS@@", headingsStatus);
@@ -723,12 +723,12 @@ void demo_imgui_md()
     static bool csvRendererRegistered = false;
     if (!csvRendererRegistered)
     {
-        ImGuiMd::RegisterFencedBlockRenderer("csv", RenderCsv);
+        RichMd::RegisterFencedBlockRenderer("csv", RenderCsv);
         csvRendererRegistered = true;
     }
     std::vector<std::string> headingsSeenLastFrame = gHeadings;
     gHeadings.clear();
-    ImGuiMd::Render(FillDynamicParts(exampleMarkdownString()));
+    RichMd::Render(FillDynamicParts(exampleMarkdownString()));
     if (gStandaloneOptions && gHeadings.empty())
         gHeadings = headingsSeenLastFrame;
 }
@@ -748,7 +748,7 @@ int main(int, char**)
     runnerParams.windowSize = {800, 800};
 
     // Options that must be set before the first render: wikilinks, headings callback
-    ImGuiMd::MarkdownOptions options;
+    RichMd::MarkdownOptions options;
     options.callbacks.OnWikiLink = [](const std::string& target) { printf("wikilink clicked: %s\n", target.c_str()); };
     options.callbacks.OnHeading = [](int level, const std::string& text) {
         gHeadings.push_back(std::string(2 * (level - 1), ' ') + text);

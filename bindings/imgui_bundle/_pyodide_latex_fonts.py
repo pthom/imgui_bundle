@@ -18,7 +18,7 @@ without needing any C++ change.
 
 Failure mode: if all download URLs fail, an error is logged to the
 JS console and the GUI starts anyway. The C++ wrapper
-(``imgui_md_wrapper.cpp::EnsureMicroTeXInitialized``) then detects the
+(``rich_md.cpp::EnsureMicroTeXInitialized``) then detects the
 missing assets via ``HelloImGui::AssetExists`` and falls back to
 rendering the LaTeX source as plain text inside the markdown, instead
 of crashing on the asset lookup.

@@ -18,7 +18,7 @@ State is stored as function attributes (`show_heart.state` pattern), avoiding gl
 
 import time
 import numpy as np
-from imgui_bundle import implot, imgui, immapp, hello_imgui, imgui_knobs, imgui_md
+from imgui_bundle import implot, imgui, immapp, hello_imgui, imgui_knobs, rich_md
 
 
 def show_heart():
@@ -40,7 +40,7 @@ def show_heart():
     k = 0.8 + 0.1 * np.cos(state.phase)
     state.t0 = t
 
-    imgui_md.render(__doc__)
+    rich_md.render(__doc__)
 
     implot.begin_plot("Heart", immapp.em_to_vec2(21, 21))
     for i in range(10):

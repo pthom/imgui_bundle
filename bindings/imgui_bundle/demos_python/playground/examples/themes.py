@@ -8,7 +8,7 @@ hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.darcula)  # or apply_tweaked_the
 ```
 **Tweaks** let you fine-tune colors, rounding, spacing, and other style variables.
 """
-from imgui_bundle import imgui, immapp, hello_imgui, imgui_md, ImVec2
+from imgui_bundle import imgui, immapp, hello_imgui, rich_md, ImVec2
 
 
 def gui_select_theme() -> None:
@@ -62,7 +62,7 @@ def gui_preview_theme_with_widgets() -> None:
         imgui.text("Tree content")
         imgui.tree_pop()
 
-    imgui_md.render_unindented(r"""
+    rich_md.render_unindented(r"""
 #### Markdown examples
 |          |                                                                  |
 |----------|-------------------------------------------------------------------------|

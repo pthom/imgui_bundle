@@ -93,7 +93,7 @@ std::function<void()> makeGui()
         DemoPythonFolder() + "/demos_immapp/", DemoCppFolder() + "/demos_immapp/", demoPythonBackendFolder);
     auto gui = [demoAppTable]() mutable
     {
-        ImGuiMd::RenderUnindented(DOC);
+        RichMd::RenderUnindented(DOC);
         demoAppTable.Gui();
     };
     return gui;

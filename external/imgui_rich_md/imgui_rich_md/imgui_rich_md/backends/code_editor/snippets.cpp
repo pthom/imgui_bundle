@@ -1,8 +1,8 @@
 #include "snippets.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "imgui.h"
-#include "../../imgui_md_wrapper.h"
-#include "../../imgui_md_internal.h"
+#include "../../rich_md.h"
+#include "../../rich_md_internal.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -146,7 +146,7 @@ namespace Snippets
         _SetTheme(editor, snippetData.Palette);
         if (editor.GetText().empty() || snippetData.ReadOnly)
         {
-            std::string displayedCode = snippetData.DeIndentCode ? ImGuiMd::Internal::Unindent(snippetData.Code, true) : snippetData.Code;
+            std::string displayedCode = snippetData.DeIndentCode ? RichMd::Internal::Unindent(snippetData.Code, true) : snippetData.Code;
             if (snippetData.AddFinalEmptyLine)
                 displayedCode = AddFinalEmptyLineIfMissing(displayedCode);
 
@@ -161,7 +161,7 @@ namespace Snippets
 
         float lineHeight;
         {
-            auto codeFont = ImGuiMd::GetCodeFont();
+            auto codeFont = RichMd::GetCodeFont();
             ImGui::PushFont(codeFont.font, codeFont.size);
             lineHeight = ImGui::GetTextLineHeightWithSpacing();
             ImGui::PopFont();
@@ -212,7 +212,7 @@ namespace Snippets
             ImGui::NewLine();
         }
 
-        auto codeFont = ImGuiMd::GetCodeFont();
+        auto codeFont = RichMd::GetCodeFont();
         ImGui::PushFont(codeFont.font, codeFont.size);
 
         // A read-only snippet is not a widget to "enter": no keyboard navigation outline when it is focused

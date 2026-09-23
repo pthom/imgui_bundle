@@ -3,7 +3,7 @@ import inspect
 import textwrap
 from typing import Callable, Any
 
-from imgui_bundle import imgui, imgui_color_text_edit as ed, imgui_md, ImVec2
+from imgui_bundle import imgui, imgui_color_text_edit as ed, rich_md, ImVec2
 from imgui_bundle.immapp import static
 
 TextEditor = ed.TextEditor
@@ -38,7 +38,7 @@ def _show_source_toggle(func: Callable[..., Any]) -> None:
             editor.set_read_only_enabled(True)
             editor.set_carets_visible(False)
             _source_editors[func_name] = editor
-        code_font = imgui_md.get_code_font()
+        code_font = rich_md.get_code_font()
         imgui.push_font(code_font.font, code_font.size)
         _source_editors[func_name].render(f"##src_{func_name}", ImVec2(-1, imgui.get_text_line_height() * 15))
         imgui.pop_font()
@@ -119,7 +119,7 @@ def demo_basic_editor():
     imgui.text_disabled("(folding uses brackets for C/C++, indentation for Python)")
 
     # Render editor: we shall use a monospace font
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     editor.render("##basic")
     imgui.pop_font()
@@ -143,7 +143,7 @@ def demo_change_callback():
 
     imgui.text(f"Change count: {statics.change_count}")
 
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     editor.render("##changes")
     imgui.pop_font()
@@ -181,7 +181,7 @@ def demo_filters():
     if imgui.small_button("Strip trailing spaces"):
         editor.strip_trailing_whitespaces()
 
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     editor.render("##filters")
     imgui.pop_font()
@@ -399,7 +399,7 @@ def demo_decorators_and_context_menus():
 
     imgui.new_line()
     imgui.new_line()
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     editor.render("##decorators_ctx", ImVec2(-1, imgui.get_text_line_height() * 30))
     imgui.pop_font()
@@ -455,7 +455,7 @@ def demo_text_diff():
     if changed:
         statics.diff.set_word_wrap_enabled(wrap)
 
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     statics.diff.render("##diff")
     imgui.pop_font()
@@ -597,7 +597,7 @@ def demo_editor_with_menus():
         imgui.end_menu_bar()
 
 
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     editor.render("##editor_menus")
     imgui.pop_font()
@@ -654,7 +654,7 @@ def demo_multi_cursor():
 
     def _gui_editor():
         editor = demo_multi_cursor.editor
-        code_font = imgui_md.get_code_font()
+        code_font = rich_md.get_code_font()
         imgui.push_font(code_font.font, code_font.size)
         editor_height = imgui.get_text_line_height() * 20
         editor.render("##multi_cursor", size=ImVec2(0, editor_height))
@@ -690,7 +690,7 @@ def demo_multi_cursor():
 # Main demo function
 # ============================================================================
 def demo_gui():
-    imgui_md.render(
+    rich_md.render(
         """
 # ImGuiColorTextEdit
 [ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit) is a syntax highlighting text editor for Dear ImGui (originally by BalazsJako, rewritten by Johan A. Goossens)

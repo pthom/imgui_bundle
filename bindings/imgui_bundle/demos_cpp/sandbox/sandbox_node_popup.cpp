@@ -10,7 +10,7 @@
 #include "immapp/immapp.h"
 #include "imgui.h"
 #include "misc/cpp/imgui_stdlib.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "imgui-node-editor/imgui_node_editor.h"
 
 namespace ed = ax::NodeEditor;
@@ -31,7 +31,7 @@ void Gui()
 
     ImGui::Dummy(ImVec2(500, 0));
 
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::RenderUnindented(R"(
         This is a sandbox to test various patches to imgui-node-editor and imgui.
         The goal is to make imgui-node-editor work smoothly with imgui.
         These patches are applied inside [Dear ImGui Bundle](https://github.com/pthom/imgui_bundle).
@@ -40,7 +40,7 @@ void Gui()
 
     if (ImGui::CollapsingHeader("Handle node width in separators"))
     {
-        ImGuiMd::RenderUnindented(R"(
+        RichMd::RenderUnindented(R"(
             Thanks to [this patch](https://github.com/pthom/imgui-node-editor/commit/148a06dcbddcf10a77382bff21bc168d5e518a65),
             `ImGui::SeparatorText()`, `ImGui::Separator()`, and `ImGui::CollapsingHeader()` use the actual node width.
             It was proposed [here](https://github.com/thedmd/imgui-node-editor/issues/298)
@@ -54,7 +54,7 @@ void Gui()
 
     if (ImGui::CollapsingHeader("Handle Popups"))
     {
-        ImGuiMd::RenderUnindented(R"(
+        RichMd::RenderUnindented(R"(
             [@lukaasm](https://github.com/lukaasm) proposed a patch [here](https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764),
             which solves many issues with popups in the node editor (by automatically suspending the canvas, and placing popups correctly).
 
@@ -73,7 +73,7 @@ void Gui()
 
     if (ImGui::CollapsingHeader("Warn users / BeginChild"))
     {
-        ImGuiMd::RenderUnindented(R"(
+        RichMd::RenderUnindented(R"(
             imgui-node-editor remains incompatible with `ImGui::BeginChild()` and `ImGui::EndChild()`.
 
             Below is the list of ImGui widgets which are concerned (because they use BeginChild/EndChild):
@@ -101,7 +101,7 @@ void Gui()
 
     if (ImGui::CollapsingHeader("Handle InputTextMultiline"))
     {
-        ImGuiMd::RenderUnindented(R"(
+        RichMd::RenderUnindented(R"(
             By default `InputTextMultiline` uses a child window, which is not compatible with the node editor.
             An additional patch adapts its behavior, by showing a preview within a single line text input,
             followed by a "..." button which triggers a popup with the full text edition.

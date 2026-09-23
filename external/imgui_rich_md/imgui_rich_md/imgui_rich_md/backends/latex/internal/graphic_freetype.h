@@ -12,7 +12,7 @@
 
 #include "graphic/graphic.h"
 
-namespace ImGuiMicroTeX { namespace Internal {
+namespace RichMd::Latex { namespace Internal {
 
 // Simple RGBA pixel buffer
 struct PixelBuffer {
@@ -46,7 +46,7 @@ struct PixelBuffer {
   }
 };
 
-}}  // namespace ImGuiMicroTeX::Internal
+}}  // namespace RichMd::Latex::Internal
 
 // MicroTeX interface implementations must be in namespace microtex
 // (they implement microtex::Font, microtex::TextLayout, etc.)
@@ -98,7 +98,7 @@ public:
 // Graphics2D rendering to a PixelBuffer
 class Graphics2D_freetype : public Graphics2D {
 private:
-  ImGuiMicroTeX::Internal::PixelBuffer& _buf;
+  RichMd::Latex::Internal::PixelBuffer& _buf;
   color _color = black;
   Stroke _stroke;
   sptr<Font_freetype> _font;
@@ -121,7 +121,7 @@ private:
   void fillRectImpl(float x, float y, float w, float h);
 
 public:
-  explicit Graphics2D_freetype(ImGuiMicroTeX::Internal::PixelBuffer& buf) : _buf(buf) {}
+  explicit Graphics2D_freetype(RichMd::Latex::Internal::PixelBuffer& buf) : _buf(buf) {}
 
   void setColor(color c) override { _color = c; }
   color getColor() const override { return _color; }

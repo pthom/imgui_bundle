@@ -9,7 +9,7 @@ try:
 except ImportError:
     HAS_NUMPY = False
 
-from imgui_bundle import imgui, imgui_md, hello_imgui, immapp, ImVec2, ImVec4
+from imgui_bundle import imgui, rich_md, hello_imgui, immapp, ImVec2, ImVec4
 from imgui_bundle import imgui_color_text_edit as ed, register_demos_assets_folder
 from imgui_bundle import imgui_knobs, imgui_toggle
 from imgui_bundle.demos_python import demo_utils
@@ -143,7 +143,7 @@ class _IntroAutomations:
         if automation is None:
             return
         imgui.spacing()
-        imgui.push_style_color(imgui.Col_.text, imgui_md.link_color())
+        imgui.push_style_color(imgui.Col_.text, rich_md.link_color())
         imgui.text(label)
         if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
             imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
@@ -761,7 +761,7 @@ def _node_editor_slide_gui(content_size: ImVec2):
         w = h * img_aspect
     hello_imgui.image_from_asset("images/node_editor_fiat.jpg", ImVec2(w, h))
 
-    imgui_md.render_unindented("Built with [fiatlight](https://pthom.github.io/fiatlight/)")
+    rich_md.render_unindented("Built with [fiatlight](https://pthom.github.io/fiatlight/)")
 
 
 # ============================================================================
@@ -802,7 +802,7 @@ $$
 |2| ImPlot     | 2D plots            |
 |3| ImPlot3D   | 3D plots            |
 |4| ImmVision  | Image analysis      |
-|5| imgui_md   | This renderer       |
+|5| rich_md   | This renderer       |
 
 > [!TIP]
 > Click the triangle below to unfold. Try adding your own collapsible section.
@@ -854,7 +854,7 @@ def _markdown_slide_gui(content_size: ImVec2):
                       imgui.WindowFlags_.no_background)
 
     # Use code font for better readability
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size * 0.9)
 
     # Render the text editor
@@ -869,7 +869,7 @@ def _markdown_slide_gui(content_size: ImVec2):
     imgui.begin_child("##md_rendered", ImVec2(half_w, h), False, imgui.WindowFlags_.no_scrollbar)
     # Get the current text from the editor
     current_markdown = _markdown_text_editor.get_text()
-    imgui_md.render_unindented(current_markdown)
+    rich_md.render_unindented(current_markdown)
     imgui.end_child()
 
 
@@ -879,7 +879,7 @@ def _markdown_slide_gui(content_size: ImVec2):
 
 def _source_code_slide_gui(content_size: ImVec2):
     imgui.begin_child("##source_code", content_size, False)
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     nb_lines = max(5, int(content_size.y / code_font.size) - 3)
     demo_utils.show_python_vs_cpp_file("demo_imgui_bundle_intro", nb_lines)
     imgui.end_child()
@@ -1075,7 +1075,7 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func):
         imgui.set_item_tooltip("Copy")
 
     # Editor
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size * 0.8)
     editor.render(f"##ed_gallery_{idx}", ImVec2(-1, -1))
     imgui.pop_font()
@@ -1498,7 +1498,7 @@ def _render_links_row():
             imgui.same_line()
             imgui.text_disabled("|")
             imgui.same_line()
-        imgui_md.render_text_as_link(label, url)
+        rich_md.render_text_as_link(label, url)
         if imgui.is_item_hovered():
             imgui.set_tooltip(tooltip)
 
@@ -1513,11 +1513,11 @@ def _render_more_info():
     if not _more_info_expanded:
         return
 
-    imgui_md.render_unindented( """
+    rich_md.render_unindented( """
     Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
     """)
 
-    imgui_md.render_unindented("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://imgui-bundle.pages.dev/doc/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.")
+    rich_md.render_unindented("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://imgui-bundle.pages.dev/doc/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.")
     imgui.same_line()
     imgui.text_disabled("Start your first app in 2–3 lines of code.")
     if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
@@ -1539,7 +1539,7 @@ def _render_more_info():
 
     imgui.indent()
 
-    imgui_md.render_unindented("""
+    rich_md.render_unindented("""
     **Links:**
     - [Interactive Explorer](https://imgui-bundle.pages.dev/explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
     - [Documentation](https://imgui-bundle.pages.dev/): Full documentation
@@ -1562,7 +1562,7 @@ def _intro_top_section():
     small = is_small_screen()
 
     # Title
-    imgui_md.render_unindented("# Dear ImGui Bundle Explorer")
+    rich_md.render_unindented("# Dear ImGui Bundle Explorer")
 
     # Links row (always visible)
     _render_links_row()
@@ -1850,7 +1850,7 @@ def demo_gui():
 
     _intro_top_section()
     imgui.separator()
-    imgui_md.render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*")
+    rich_md.render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*")
     _intro_mini_demos()
 
 

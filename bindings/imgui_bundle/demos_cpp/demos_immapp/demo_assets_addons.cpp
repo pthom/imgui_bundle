@@ -1,7 +1,7 @@
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "implot/implot.h"
 #endif
@@ -41,7 +41,7 @@ struct AppState
 // A demo showcasing the assets usage in HelloImGui and ImmApp
 void DemoAssets(AppState& appState)
 {
-    ImGuiMd::Render("# Demo Assets");
+    RichMd::Render("# Demo Assets");
     ImGui::Text("Here are some icons from Font Awesome: ");
     ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
     ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
@@ -55,7 +55,7 @@ void DemoAssets(AppState& appState)
     ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
     HelloImGui::ImageFromAsset("images/world.png", imageSize);
 
-    ImGuiMd::Render("**Read the [documentation about assets](https://imgui-bundle.pages.dev/quickstart.html#quickstart_about_assets)**");
+    RichMd::Render("**Read the [documentation about assets](https://imgui-bundle.pages.dev/quickstart.html#quickstart_about_assets)**");
 
     ShowDoc("AssetsDoc");
 }
@@ -78,16 +78,16 @@ void DemoMarkdown(AppState& appState)
                 return "It's just a " + thing + ". Nothing fancy!"
             ```
         )";
-    ImGuiMd::RenderUnindented(markdownDemo);
+    RichMd::RenderUnindented(markdownDemo);
 
     // Interactive demo
     ImGui::Separator();
-    ImGuiMd::Render("*Try it yourself*");
+    RichMd::Render("*Try it yourself*");
     ImGui::SameLine(HelloImGui::EmSize(30.f));
     if (ImGui::SmallButton("Edit the fortune markdown"))
         strcpy(appState.MarkdownInput, CodeUtils::UnindentMarkdown(markdownDemo).c_str());
     ImGui::InputTextMultiline("##Markdown Input", appState.MarkdownInput, sizeof(appState.MarkdownInput), HelloImGui::EmToVec2(40.f, 5.f));
-    ImGuiMd::RenderUnindented(appState.MarkdownInput);
+    RichMd::RenderUnindented(appState.MarkdownInput);
     ImGui::Separator();
 
     ShowDoc("MarkdownDoc");
@@ -98,7 +98,7 @@ void DemoMarkdown(AppState& appState)
 // A demo showcasing the usage of ImPlot
 void DemoPlot(AppState& appState)
 {
-    ImGuiMd::Render("# Demo ImPlot");
+    RichMd::Render("# Demo ImPlot");
 
     static const char* data_labels[]    = {"Frogs", "Hogs", "Dogs", "Logs"};
 
@@ -210,8 +210,8 @@ std::string GetDoc(const std::string& whichDoc)
 
                 C++
                 ```cpp
-                ImGuiMd::Render(markdown_string);            // render a markdown string
-                ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+                RichMd::Render(markdown_string);            // render a markdown string
+                RichMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
                 ```
 
                 Python
@@ -261,7 +261,7 @@ void ShowDoc(const std::string& whichDoc)
 
     if (is_doc_visible[whichDoc])
     {
-        ImGuiMd::RenderUnindented(GetDoc(whichDoc));
+        RichMd::RenderUnindented(GetDoc(whichDoc));
         ImGui::Dummy(HelloImGui::EmToVec2(1.f, 6.f));
         ImGui::Separator();
     }

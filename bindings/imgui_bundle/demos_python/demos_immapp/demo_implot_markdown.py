@@ -2,17 +2,17 @@ import numpy as np
 # imgui_bundle is a package that provides several imgui-related submodules
 from imgui_bundle import (imgui,       # first we import ImGui
                           implot,      # ImPlot provides advanced real-time plotting
-                          imgui_md,    # imgui_md: markdown rendering for imgui
+                          rich_md,    # rich_md: markdown rendering for imgui
                           hello_imgui, # hello_imgui: starter pack for imgui apps
                           immapp,      # helper to activate addons (like implot, markdown, etc.)
                           )
 
 def gui():
     # Render some markdown text
-    imgui_md.render_unindented("""
+    rich_md.render_unindented("""
     # Render an animated plot with ImPlot
     This example shows how to use `ImPlot` to render an animated plot,
-    and how to use `imgui_md` to render markdown text (*this text!*).
+    and how to use `rich_md` to render markdown text (*this text!*).
     """)
 
     # Render an animated plot

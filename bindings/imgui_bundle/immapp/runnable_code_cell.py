@@ -13,7 +13,7 @@ import sys
 import io
 from typing import Any, Callable
 
-from imgui_bundle import immapp, imgui_md, imgui, imgui_ctx, hello_imgui, ImVec2
+from imgui_bundle import immapp, rich_md, imgui, imgui_ctx, hello_imgui, ImVec2
 import textwrap
 from dataclasses import dataclass
 
@@ -32,7 +32,7 @@ ResultRenderer = Callable[[Any], None]
 def _default_result_renderer(result: Any) -> None:
     as_string = str(result)
     md_string = "```\n" + as_string + "\n```"
-    imgui_md.render(md_string)
+    rich_md.render(md_string)
 
 
 

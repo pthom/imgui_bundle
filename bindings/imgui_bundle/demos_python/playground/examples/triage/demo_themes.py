@@ -5,11 +5,11 @@ In order to apply a theme, you can use:
   hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.cherry)
 
 """
-from imgui_bundle import immapp, hello_imgui, imgui, imgui_md
+from imgui_bundle import immapp, hello_imgui, imgui, rich_md
 
 
 def demo_gui():
-    imgui_md.render_unindented(
+    rich_md.render_unindented(
         """
         # Theming
         HelloImGui adds support for advanced theming to ImGui.

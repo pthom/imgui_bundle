@@ -91,7 +91,7 @@ def lib_imgui_md() -> ExternalLibrary:
     # The markdown stack (imgui_rich_md): the library at external/imgui_rich_md, the bundle's bindings and
     # host at external/imgui_md (the historical name, which is also the Python module's name)
     return ExternalLibrary(
-        name="imgui_md",
+        name="imgui_rich_md",
         official_git_url="https://github.com/pthom/imgui_rich_md.git",
         official_branch="main",
         custom_git_folder="imgui_rich_md/imgui_rich_md",

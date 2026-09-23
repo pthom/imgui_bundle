@@ -19,7 +19,7 @@ from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 # When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard glfw, not the one provided by imgui_bundle)
 import glfw
 from imgui_bundle import imgui, imgui_ctx
-from imgui_bundle import imgui_md
+from imgui_bundle import rich_md
 import sys
 
 
@@ -34,7 +34,7 @@ def init_fonts_and_markdown():
     # uncomment to keep using the default hardcoded font, or load your default font here
     # imgui.get_io().fonts.add_font_default()
 
-    imgui_md.initialize_markdown()  # the markdown fonts load at the first render
+    rich_md.initialize_markdown()  # the markdown fonts load at the first render
 
 
 def main():
@@ -68,7 +68,7 @@ def main():
 
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:
-                imgui_md.render_unindented("""
+                rich_md.render_unindented("""
                 # Hello, World
                 Here is some *markdown* text.
                 """)

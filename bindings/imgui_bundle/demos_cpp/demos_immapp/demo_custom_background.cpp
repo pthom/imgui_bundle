@@ -1,7 +1,7 @@
 #ifdef HELLOIMGUI_HAS_OPENGL
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/runner.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "imgui.h"
 #include "demo_utils/api_demos.h"
 
@@ -610,7 +610,7 @@ void Gui(AppState& appState)
     ImGui::SetNextWindowSize(HelloImGui::EmToVec2(31.f, 14.f), ImGuiCond_Appearing);
     ImGui::Begin("Shader parameters");
 
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::RenderUnindented(R"(
         Shader: \"Seascape\" by Alexander Alekseev aka TDM - 2014 - [Shadertoy](https://www.shadertoy.com/view/Ms2SD1)
     )");
     ImGui::Separator();

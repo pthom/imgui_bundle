@@ -1,4 +1,4 @@
-from imgui_bundle import imgui_node_editor as ed, imgui, immapp, hello_imgui, ImVec2, imgui_md
+from imgui_bundle import imgui_node_editor as ed, imgui, immapp, hello_imgui, ImVec2, rich_md
 
 
 g_node_width = 400.0
@@ -25,7 +25,7 @@ def gui():
         #
 
         imgui.separator_text("Dummy Button")
-        imgui_md.render_unindented("""
+        rich_md.render_unindented("""
             This is a _dummy button_, to artificially set the node width.
             Below it is a fixed width slider, which enables to set this button's width.
         """)
@@ -61,7 +61,7 @@ Note:
         # Reset Node Layout
         #
         imgui.separator_text("Reset Layout")
-        imgui_md.render_unindented("""
+        rich_md.render_unindented("""
             Click the button below to reset the node layout. Its content will disappear for one frame,
             allowing it to be re-laid out with the new width.
         """)

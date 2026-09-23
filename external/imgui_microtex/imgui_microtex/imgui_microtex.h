@@ -2,10 +2,10 @@
 // imgui_microtex: the LaTeX backend of imgui_rich_md (Level 1: LaTeX -> RGBA pixels) plus, for the bundle,
 // Level 2: LaTeX -> an owning HelloImGui::TextureGpuPtr, cached.
 #pragma once
-#include "imgui_rich_md/backends/latex/imgui_microtex.h"
+#include "imgui_rich_md/backends/latex/rich_md_latex.h"
 #include "hello_imgui/texture_gpu.h"
 
-namespace ImGuiMicroTeX {
+namespace RichMd::Latex {
 
 // ============================================================================
 // Level 2: LaTeX -> HelloImGui::TextureGpuPtr (with caching)
@@ -78,4 +78,6 @@ void SetEvictionFrames(int n);
 // diagnostics, monitoring, and tests.
 int GetCacheSize();
 
-}  // namespace ImGuiMicroTeX
+}  // namespace RichMd::Latex
+
+namespace ImGuiMicroTeX = RichMd::Latex;  // the namespace's former name

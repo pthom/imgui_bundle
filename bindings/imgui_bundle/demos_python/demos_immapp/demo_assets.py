@@ -1,9 +1,9 @@
-from imgui_bundle import imgui, imgui_md, hello_imgui, immapp
+from imgui_bundle import imgui, rich_md, hello_imgui, immapp
 
 
 def show_gui():
     # Display Markdown text
-    imgui_md.render("Hello, _World_")
+    rich_md.render("Hello, _World_")
     # Display a static image, taken from assets/images/world.png
     # Notes:
     #     * we use EmToVec2 to make sure the Gui render identically on high and low dpi monitors

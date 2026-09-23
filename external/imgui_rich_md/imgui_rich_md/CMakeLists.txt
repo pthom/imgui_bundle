@@ -39,26 +39,26 @@ if(NOT EXISTS ${_md4c_dir}/md4c.c)
     message(FATAL_ERROR "imgui_rich_md: md4c is missing (git submodule update --init external/md4c)")
 endif()
 
-add_library(imgui_md STATIC
+add_library(imgui_rich_md STATIC
     ${_md4c_dir}/md4c.c ${_md4c_dir}/md4c.h
-    ${_richmd_dir}/imgui_md.cpp ${_richmd_dir}/imgui_md.h
-    ${_richmd_dir}/imgui_md_wrapper.cpp ${_richmd_dir}/imgui_md_wrapper.h
-    ${_richmd_dir}/imgui_md_imports.cpp
-    ${_richmd_dir}/imgui_md_host.h ${_richmd_dir}/imgui_md_internal.h
+    ${_richmd_dir}/rich_md_renderer.cpp ${_richmd_dir}/rich_md_renderer.h
+    ${_richmd_dir}/rich_md.cpp ${_richmd_dir}/rich_md.h
+    ${_richmd_dir}/rich_md_imports.cpp
+    ${_richmd_dir}/rich_md_host.h ${_richmd_dir}/rich_md_internal.h
 )
-add_library(RichMd::RichMd ALIAS imgui_md)
-target_compile_features(imgui_md PUBLIC cxx_std_17)
-target_include_directories(imgui_md PUBLIC
+add_library(RichMd::RichMd ALIAS imgui_rich_md)
+target_compile_features(imgui_rich_md PUBLIC cxx_std_17)
+target_include_directories(imgui_rich_md PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
     $<BUILD_INTERFACE:${_md4c_dir}>
     $<INSTALL_INTERFACE:include>)
-target_link_libraries(imgui_md PUBLIC imgui)
+target_link_libraries(imgui_rich_md PUBLIC imgui)
 if(APPLE)
     # limits.h and md4c both define OFF_MAX
     set_source_files_properties(${_md4c_dir}/md4c.c PROPERTIES COMPILE_OPTIONS "-Wno-macro-redefined")
 endif()
 if(IMGUI_RICHMD_STB_IMAGE_IMPLEMENTATION)
-    target_sources(imgui_md PRIVATE ${_richmd_dir}/third_party/stb_image_impl.cpp)
+    target_sources(imgui_rich_md PRIVATE ${_richmd_dir}/third_party/stb_image_impl.cpp)
 endif()
 
 # --- code editor backend
@@ -75,10 +75,10 @@ if(IMGUI_RICHMD_WITH_CODE_EDITOR)
         target_include_directories(imgui_color_text_edit PUBLIC ${IMGUI_RICHMD_COLOR_TEXT_EDIT_DIR}/..)
         target_link_libraries(imgui_color_text_edit PUBLIC imgui)
     endif()
-    target_sources(imgui_md PRIVATE
+    target_sources(imgui_rich_md PRIVATE
         ${_richmd_dir}/backends/code_editor/snippets.cpp ${_richmd_dir}/backends/code_editor/snippets.h)
-    target_link_libraries(imgui_md PUBLIC imgui_color_text_edit)
-    target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_CODE_EDITOR)
+    target_link_libraries(imgui_rich_md PUBLIC imgui_color_text_edit)
+    target_compile_definitions(imgui_rich_md PUBLIC IMGUI_RICHMD_WITH_CODE_EDITOR)
 endif()
 
 # --- LaTeX backend (MicroTeX + FreeType)
@@ -96,50 +96,50 @@ if(IMGUI_RICHMD_WITH_LATEX)
     set(HAVE_LOG OFF)
     add_subdirectory(${IMGUI_RICHMD_MICROTEX_DIR} microtex_build EXCLUDE_FROM_ALL)
 
-    add_library(imgui_microtex STATIC EXCLUDE_FROM_ALL
-        ${_richmd_dir}/backends/latex/imgui_microtex.cpp ${_richmd_dir}/backends/latex/imgui_microtex.h
+    add_library(imgui_rich_md_latex STATIC EXCLUDE_FROM_ALL
+        ${_richmd_dir}/backends/latex/rich_md_latex.cpp ${_richmd_dir}/backends/latex/rich_md_latex.h
         ${_richmd_dir}/backends/latex/internal/graphic_freetype.cpp ${_richmd_dir}/backends/latex/internal/graphic_freetype.h)
-    target_include_directories(imgui_microtex PUBLIC
+    target_include_directories(imgui_rich_md_latex PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
         $<BUILD_INTERFACE:${IMGUI_RICHMD_MICROTEX_DIR}/lib>)
     if(TARGET freetype)
-        target_link_libraries(imgui_microtex PUBLIC microtex freetype imgui)
+        target_link_libraries(imgui_rich_md_latex PUBLIC microtex freetype imgui)
     elseif(TARGET Freetype::Freetype)
-        target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype imgui)
+        target_link_libraries(imgui_rich_md_latex PUBLIC microtex Freetype::Freetype imgui)
     else()
         find_package(Freetype REQUIRED)
-        target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype imgui)
+        target_link_libraries(imgui_rich_md_latex PUBLIC microtex Freetype::Freetype imgui)
     endif()
-    target_link_libraries(imgui_md PUBLIC imgui_microtex)
-    target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_LATEX)
+    target_link_libraries(imgui_rich_md PUBLIC imgui_rich_md_latex)
+    target_compile_definitions(imgui_rich_md PUBLIC IMGUI_RICHMD_WITH_LATEX)
     if(EMSCRIPTEN AND IMGUI_RICHMD_WASM_EXCEPTIONS)
         # MicroTeX reports an invalid formula with a C++ exception, which the wrapper catches. Emscripten
         # disables exception catching by default (a throw aborts the page): native wasm exceptions on the
         # LaTeX targets only cost nothing in size. setjmp users (FreeType, plutovg) must use the same
         # scheme, since the link switches to wasm setjmp/longjmp.
-        foreach(_t microtex imgui_microtex imgui_md freetype plutovg plutosvg)
+        foreach(_t microtex imgui_rich_md_latex imgui_rich_md freetype plutovg plutosvg)
             if(TARGET ${_t})
                 target_compile_options(${_t} PRIVATE -fwasm-exceptions)
             endif()
         endforeach()
-        target_link_options(imgui_md PUBLIC -fwasm-exceptions)
+        target_link_options(imgui_rich_md PUBLIC -fwasm-exceptions)
     endif()
 endif()
 
 # --- URL images
-set(IMGUI_RICHMD_LINKS_CURL OFF CACHE INTERNAL "imgui_md links libcurl (for a parent's config file)" FORCE)
+set(IMGUI_RICHMD_LINKS_CURL OFF CACHE INTERNAL "imgui_rich_md links libcurl (for a parent's config file)" FORCE)
 if(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
     if(EMSCRIPTEN)
         if(IMGUI_RICHMD_EMSCRIPTEN_FETCH)
-            target_link_options(imgui_md PUBLIC -sFETCH)
-            target_compile_definitions(imgui_md PRIVATE IMGUI_RICHMD_EMSCRIPTEN_FETCH)
+            target_link_options(imgui_rich_md PUBLIC -sFETCH)
+            target_compile_definitions(imgui_rich_md PRIVATE IMGUI_RICHMD_EMSCRIPTEN_FETCH)
         endif()
     else()
         find_package(CURL)
         if(CURL_FOUND)
-            target_sources(imgui_md PRIVATE ${_richmd_dir}/imgui_md_url_download.cpp ${_richmd_dir}/imgui_md_url_download.h)
-            target_link_libraries(imgui_md PRIVATE CURL::libcurl)
-            target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
+            target_sources(imgui_rich_md PRIVATE ${_richmd_dir}/rich_md_url_download.cpp ${_richmd_dir}/rich_md_url_download.h)
+            target_link_libraries(imgui_rich_md PRIVATE CURL::libcurl)
+            target_compile_definitions(imgui_rich_md PUBLIC IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
             set(IMGUI_RICHMD_LINKS_CURL ON CACHE INTERNAL "" FORCE)
         else()
             message(WARNING "imgui_rich_md: IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES is ON but libcurl was not found: URL images disabled "
@@ -160,21 +160,21 @@ if(IMGUI_RICHMD_EMBED_ASSETS)
         list(APPEND _richmd_assets fonts/latex/latinmodern-math.clm1 fonts/latex/latinmodern-math.otf)
     endif()
     list(APPEND _richmd_assets ${IMGUI_RICHMD_EMBED_EXTRA_FILES})
-    imgui_richmd_embed_files(imgui_md imgui_richmd_embedded_assets
+    imgui_richmd_embed_files(imgui_rich_md imgui_richmd_embedded_assets
         BASE_DIR ${CMAKE_CURRENT_LIST_DIR}/assets FILES ${_richmd_assets})
-    target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_EMBED_ASSETS)
+    target_compile_definitions(imgui_rich_md PUBLIC IMGUI_RICHMD_EMBED_ASSETS)
 endif()
 
 # --- install (headers under include/imgui_rich_md, targets exported by the parent or here)
 if(_richmd_standalone OR IMGUI_RICHMD_INSTALL)
-    install(FILES ${_richmd_dir}/imgui_md_wrapper.h ${_richmd_dir}/imgui_md_host.h ${_richmd_dir}/imgui_md.h
+    install(FILES ${_richmd_dir}/rich_md.h ${_richmd_dir}/rich_md_host.h ${_richmd_dir}/rich_md_renderer.h
             DESTINATION include/imgui_rich_md)
     install(FILES ${_md4c_dir}/md4c.h DESTINATION include)
     if(IMGUI_RICHMD_WITH_CODE_EDITOR)
         install(FILES ${_richmd_dir}/backends/code_editor/snippets.h DESTINATION include/imgui_rich_md/backends/code_editor)
     endif()
     if(IMGUI_RICHMD_WITH_LATEX)
-        install(FILES ${_richmd_dir}/backends/latex/imgui_microtex.h DESTINATION include/imgui_rich_md/backends/latex)
+        install(FILES ${_richmd_dir}/backends/latex/rich_md_latex.h DESTINATION include/imgui_rich_md/backends/latex)
     endif()
 endif()
 

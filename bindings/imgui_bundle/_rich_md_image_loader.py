@@ -1,5 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-"""Provides URL image download support for imgui_md.
+"""Provides URL image download support for rich_md.
 
 When enabled, markdown images with http:// or https:// URLs are downloaded
 and rendered as textures.
@@ -15,11 +15,11 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from typing import Any, Dict, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from imgui_bundle import imgui_md
+    from imgui_bundle import rich_md
 
 # Enable logging with:
-#    logging.getLogger("imgui_md_image_loader").setLevel(logging.DEBUG)
-log = logging.getLogger("imgui_md_image_loader")
+#    logging.getLogger("rich_md_image_loader").setLevel(logging.DEBUG)
+log = logging.getLogger("rich_md_image_loader")
 
 # Artificial delay for testing async downloads (set to 0 for production)
 _DEBUG_DELAY_SECONDS = 0.0
@@ -48,34 +48,34 @@ def _do_download_desktop(url: str) -> bytes:
         return b""
 
 
-def _download_desktop_async(url: str) -> "imgui_md.MarkdownDownloadResult":
+def _download_desktop_async(url: str) -> "rich_md.MarkdownDownloadResult":
     """Async download callback for desktop (Option B).
     Returns Downloading on first call, Ready/Failed once done.
     Manages pending downloads internally."""
-    from imgui_bundle import imgui_md
-    result = imgui_md.MarkdownDownloadResult()
+    from imgui_bundle import rich_md
+    result = rich_md.MarkdownDownloadResult()
 
     # Already in progress: check if done
     if url in _pending:
         future = _pending[url]
         if not future.done():
-            result.status = imgui_md.MarkdownDownloadStatus.downloading
+            result.status = rich_md.MarkdownDownloadStatus.downloading
             return result
         # Done - get result
         del _pending[url]
         data = future.result()
         if data:
             result.fill_from_bytes(data)
-            result.status = imgui_md.MarkdownDownloadStatus.ready
+            result.status = rich_md.MarkdownDownloadStatus.ready
         else:
-            result.status = imgui_md.MarkdownDownloadStatus.failed
+            result.status = rich_md.MarkdownDownloadStatus.failed
             result.error_message = f"Download failed for {url}"
         return result
 
     # First call: start background download
     log.debug("Starting async download for %s", url)
     _pending[url] = _executor.submit(_do_download_desktop, url)
-    result.status = imgui_md.MarkdownDownloadStatus.downloading
+    result.status = rich_md.MarkdownDownloadStatus.downloading
     return result
 
 
@@ -123,12 +123,12 @@ def _ensure_pyodide_js() -> None:
     _pyodide_js_initialized = True
 
 
-def _download_pyodide_async(url: str) -> "imgui_md.MarkdownDownloadResult":
+def _download_pyodide_async(url: str) -> "rich_md.MarkdownDownloadResult":
     """Async download using JS fetch() in Pyodide.
     Returns Downloading on first call, Ready/Failed once done."""
-    from imgui_bundle import imgui_md
+    from imgui_bundle import rich_md
     from pyodide.code import run_js
-    result = imgui_md.MarkdownDownloadResult()
+    result = rich_md.MarkdownDownloadResult()
 
     try:
         _ensure_pyodide_js()
@@ -141,25 +141,25 @@ def _download_pyodide_async(url: str) -> "imgui_md.MarkdownDownloadResult":
         status = js_result.status
 
         if status == 'downloading':
-            result.status = imgui_md.MarkdownDownloadStatus.downloading
+            result.status = rich_md.MarkdownDownloadStatus.downloading
         elif status == 'ready':
             data = bytes(js_result.data)
             log.debug("Downloaded %d bytes from %s (Pyodide)", len(data), url)
             result.fill_from_bytes(data)
-            result.status = imgui_md.MarkdownDownloadStatus.ready
+            result.status = rich_md.MarkdownDownloadStatus.ready
             # Clean up JS-side storage
             run_js(f"window._imgui_clear_download({repr(url)})")
         elif status == 'failed':
             error_msg = str(js_result.error) if hasattr(js_result, 'error') else "Unknown error"
             log.warning("Failed to download %s (Pyodide): %s", url, error_msg)
-            result.status = imgui_md.MarkdownDownloadStatus.failed
+            result.status = rich_md.MarkdownDownloadStatus.failed
             result.error_message = error_msg
             run_js(f"window._imgui_clear_download({repr(url)})")
         else:
-            result.status = imgui_md.MarkdownDownloadStatus.downloading
+            result.status = rich_md.MarkdownDownloadStatus.downloading
     except Exception as e:
         log.warning("Failed to download %s (Pyodide): %s", url, e)
-        result.status = imgui_md.MarkdownDownloadStatus.failed
+        result.status = rich_md.MarkdownDownloadStatus.failed
         result.error_message = str(e)
 
     return result
@@ -174,9 +174,9 @@ def _get_download_function() -> Any:
         return _download_desktop_async
 
 
-def md_options_with_url_images() -> "imgui_md.MarkdownOptions":
+def md_options_with_url_images() -> "rich_md.MarkdownOptions":
     """Create MarkdownOptions with URL image download support enabled."""
-    from imgui_bundle import imgui_md
-    opts = imgui_md.MarkdownOptions()
+    from imgui_bundle import rich_md
+    opts = rich_md.MarkdownOptions()
     opts.callbacks.on_download_data = _get_download_function()
     return opts
