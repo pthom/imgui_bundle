@@ -24,8 +24,8 @@ im_file_dialog            https://github.com/pthom/ImFileDialog.git             
 imgui_command_palette     https://github.com/pthom/imgui-command-palette.git    https://github.com/hnOsmium0001/imgui-command-palette.git external/imgui-command-palette/imgui-command-palette
 imgui_knobs               https://github.com/pthom/imgui-knobs.git              https://github.com/altschuler/imgui-knobs             external/imgui-knobs/imgui-knobs
 imgui_node_editor         https://github.com/pthom/imgui-node-editor.git        https://github.com/thedmd/imgui-node-editor.git       external/imgui-node-editor/imgui-node-editor
-imgui_md                  https://github.com/pthom/imgui_md.git                 https://github.com/mekhontsev/imgui_md                external/imgui_md/imgui_md
-md4c                                                                            https://github.com/mity/md4c                          external/imgui_md/md4c
+imgui_md                  https://github.com/pthom/imgui_rich_md.git            (renderer by mekhontsev/imgui_md, rewritten)          external/imgui_rich_md/imgui_rich_md
+md4c                                                                            https://github.com/mity/md4c                          external/imgui_rich_md/imgui_rich_md/external/md4c
 imgui_microtex            https://github.com/pthom/MicroTeX.git                 https://github.com/NanoMichael/MicroTeX.git           external/imgui_microtex/MicroTeX
 imgui_tex_inspect         https://github.com/pthom/imgui_tex_inspect.git        https://github.com/andyborrell/imgui_tex_inspect.git  external/imgui_tex_inspect/imgui_tex_inspect
 imgui_toggle              https://github.com/pthom/imgui_toggle.git             https://github.com/cmdwtf/imgui_toggle.git            external/imgui_toggle/imgui_toggle

@@ -12,7 +12,7 @@
 
 #include "imgui.h"
 #include "imgui_internal.h"  // RegisterUserTexture
-#include "imgui_md/imgui_md.h"
+#include "imgui_md.h"
 
 // Platform includes for OpenUrlInBrowser
 #if defined(__EMSCRIPTEN__)
@@ -30,10 +30,10 @@
 #endif
 
 #ifdef IMGUI_RICHMD_WITH_LATEX
-#include "imgui_microtex/imgui_microtex.h"
+#include "backends/latex/imgui_microtex.h"
 #endif
 
-#include "stb_image.h"
+#include "third_party/stb_image.h"
 
 #include <string>
 #include <vector>
@@ -838,10 +838,9 @@ namespace ImGuiMd
         return gCurrentContext->renderer.get();
     }
 
-// Not for pyodide: emscripten's FETCH cannot run in a pyodide side module
-// (no fetch JS glue in pyodide's main module); Python installs a JS fetch()
-// based OnDownloadData callback instead (see _imgui_md_image_loader.py).
-#if defined(__EMSCRIPTEN__) && !defined(IMGUI_BUNDLE_BUILD_PYODIDE)
+// Emscripten's FETCH, when the library is linked with -sFETCH (IMGUI_RICHMD_EMSCRIPTEN_FETCH). Not
+// for pyodide side modules, where Python installs a JS fetch() based OnDownloadData callback instead.
+#if defined(__EMSCRIPTEN__) && defined(IMGUI_RICHMD_EMSCRIPTEN_FETCH)
 #include <emscripten/fetch.h>
 #include <mutex>
 
@@ -911,7 +910,7 @@ namespace ImGuiMd
         }
         return result;
     }
-#endif // __EMSCRIPTEN__ && !IMGUI_BUNDLE_BUILD_PYODIDE
+#endif // __EMSCRIPTEN__ && IMGUI_RICHMD_EMSCRIPTEN_FETCH
 
     static Priv_OnInitializeMarkdownCallback gOnInitializeMarkdownCallback;
 
@@ -930,7 +929,7 @@ namespace ImGuiMd
         Priv_InstallHelloImGuiHost();  // fills the host services the application did not set
 #endif
         _InstallDefaultHostServices();
-#if defined(__EMSCRIPTEN__) && !defined(IMGUI_BUNDLE_BUILD_PYODIDE)
+#if defined(__EMSCRIPTEN__) && defined(IMGUI_RICHMD_EMSCRIPTEN_FETCH)
         // On Emscripten (but not pyodide), set a default download callback using
         // emscripten_fetch (unless one was already set, e.g. by Python)
         if (!context->options.callbacks.OnDownloadData)

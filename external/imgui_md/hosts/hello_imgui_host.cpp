@@ -2,7 +2,7 @@
 // Host services for ImGui Bundle: assets, textures and logging through HelloImGui.
 // Compiled into imgui_md only in the bundle (IMGUI_RICHMD_HOST_HELLO_IMGUI); installed by
 // InitializeMarkdown for the fields the application did not set.
-#include "imgui_md_wrapper/imgui_md_host.h"
+#include "imgui_rich_md/imgui_md_host.h"
 
 #include "hello_imgui/hello_imgui.h"
 

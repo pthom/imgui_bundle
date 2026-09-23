@@ -1,10 +1,10 @@
 // Markdown with stock Dear ImGui (GLFW + OpenGL3), no HelloImGui: fonts and images come from the
 // embedded assets, textures go through Dear ImGui's ImTextureData (the default UploadRgba).
-// IMGUI_MD_STANDALONE_SHOT=<file.ppm> in the environment: writes a screenshot after 30 frames and exits.
+// IMGUI_RICHMD_SHOT=<file.ppm> in the environment: writes a screenshot after 30 frames and exits.
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/imgui_md_wrapper.h"
 #ifdef __APPLE__
 #define GL_SILENCE_DEPRECATION
 #include <OpenGL/gl3.h>
@@ -77,7 +77,7 @@ int main(int, char**)
 
     ImGuiMd::InitializeMarkdown();
 
-    const char* shot = std::getenv("IMGUI_MD_STANDALONE_SHOT");
+    const char* shot = std::getenv("IMGUI_RICHMD_SHOT");
     int frame = 0;
     while (!glfwWindowShouldClose(window))
     {

@@ -307,93 +307,11 @@ add_subdirectory(ImGuiColorTextEdit)
 
 # Build imgui_md (requires hello_imgui and immapp for the wrapper)
 if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
-    add_simple_external_library(imgui_md imgui_md)
-    target_sources(imgui_md PRIVATE
-        imgui_md/imgui_md/imgui_md.cpp
-        imgui_md/imgui_md/imgui_md.h
-        imgui_md/md4c/src/md4c.c
-        imgui_md/md4c/src/md4c.h
-        imgui_md/imgui_md_wrapper/imgui_md_wrapper.cpp
-        imgui_md/imgui_md_wrapper/imgui_md_imports.cpp
-        imgui_md/imgui_md_wrapper/imgui_md_wrapper.h
-        imgui_md/imgui_md_wrapper/imgui_md_host.h
-        imgui_md/imgui_md_wrapper/imgui_md_internal.h
-        # Host services through HelloImGui (bundle only; a standalone build brings its own host)
-        imgui_md/imgui_md_wrapper/hosts/hello_imgui_host.cpp
-    )
-    target_compile_definitions(imgui_md PRIVATE IMGUI_RICHMD_HOST_HELLO_IMGUI)
-
-    # Code editor backend: code blocks (and the Snippets API) with syntax highlighting, via ImGuiColorTextEdit
+    # The markdown stack is imgui_rich_md (external/imgui_rich_md, target imgui_md). The bundle sets its
+    # options and dependency dirs, then adds its host (assets, textures, fonts through HelloImGui), the
+    # MicroTeX Level 2 adapter (formula textures on HelloImGui::TextureGpu), and the historical include paths.
     option(IMGUI_RICHMD_WITH_CODE_EDITOR "Code blocks with syntax highlighting in markdown (ImGuiColorTextEdit)" ON)
-    if(IMGUI_RICHMD_WITH_CODE_EDITOR)
-        target_sources(imgui_md PRIVATE
-            imgui_md/imgui_md_wrapper/backends/code_editor/snippets.cpp
-            imgui_md/imgui_md_wrapper/backends/code_editor/snippets.h
-        )
-        target_link_libraries(imgui_md PUBLIC imgui_color_text_edit)
-        target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_CODE_EDITOR)
-    endif()
-    if(APPLE)
-        # warning: 'OFF_MAX' macro redefined
-        # MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/limits.h:140:9: #define OFF_MAX         LLONG_MAX
-        set_source_files_properties(imgui_md/md4c/src/md4c.c PROPERTIES COMPILE_OPTIONS "-Wno-macro-redefined")
-    endif()
-    target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md/md4c/src>)
-    target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md/imgui_md_wrapper>)
-    target_link_libraries(imgui_md PUBLIC hello_imgui)
-    if(EMSCRIPTEN AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
-        # Not for pyodide: -sFETCH would force the non-PIC libfetch.a into the
-        # side module link (rejected by emscripten 5), and pyodide's main module
-        # has no fetch JS glue anyway; Python installs a JS fetch() download
-        # callback instead (see _imgui_md_image_loader.py).
-        target_link_options(imgui_md PUBLIC -sFETCH)
-    endif()
-
-    # URL image download for C++ desktop (using system libcurl)
-    if(EMSCRIPTEN OR IOS OR ANDROID OR IMGUI_BUNDLE_BUILD_PYTHON)
-        set(_IMGUI_MD_DOWNLOAD_DEFAULT OFF)
-    else()
-        set(_IMGUI_MD_DOWNLOAD_DEFAULT ON)
-    endif()
-    option(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
-           "Enable URL image download in markdown (requires libcurl)" ${_IMGUI_MD_DOWNLOAD_DEFAULT})
-    set(IMGUI_BUNDLE_LINKS_CURL OFF CACHE INTERNAL "imgui_md links libcurl (read by imgui_bundle-config.cmake.in)" FORCE)
-    if(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
-        find_package(CURL)
-        if(CURL_FOUND)
-            target_sources(imgui_md PRIVATE
-                imgui_md/imgui_md_wrapper/imgui_md_url_download.cpp
-                imgui_md/imgui_md_wrapper/imgui_md_url_download.h
-            )
-            target_link_libraries(imgui_md PRIVATE CURL::libcurl)
-            set(IMGUI_BUNDLE_LINKS_CURL ON CACHE INTERNAL "" FORCE)
-            target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
-            message(STATUS "imgui_md: URL image download enabled (using system libcurl)")
-        else()
-            message(WARNING
-                "IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES is ON but libcurl was not found. "
-                "URL images in markdown will be disabled. "
-                "Install libcurl: macOS (already present), "
-                "Linux: apt install libcurl4-openssl-dev, "
-                "Windows: vcpkg install curl")
-            set(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES OFF)
-        endif()
-    endif()
-
-    hello_imgui_msvc_target_group_sources(imgui_md)
-    if(IMGUI_BUNDLE_INSTALL_CPP)
-        install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h imgui_md/imgui_md_wrapper/imgui_md_host.h DESTINATION include/imgui_md_wrapper)
-        # imgui_md_wrapper.h includes the renderer (imgui_md/imgui_md.h), which includes md4c.h
-        install(FILES imgui_md/imgui_md/imgui_md.h imgui_md/md4c/src/md4c.h DESTINATION include/imgui_md)
-        if(IMGUI_RICHMD_WITH_CODE_EDITOR)
-            install(FILES imgui_md/imgui_md_wrapper/backends/code_editor/snippets.h DESTINATION include/imgui_md_wrapper/backends/code_editor)
-        endif()
-    endif()
-
-    # MicroTeX: native LaTeX math rendering (requires FreeType, already available via hello_imgui)
-    # IMGUI_RICHMD_WITH_LATEX is derived from the bundle-level IMGUI_BUNDLE_WITH_MICROTEX option.
-    # When imgui_richmd becomes standalone, IMGUI_RICHMD_WITH_LATEX would be a separate option.
-    # Default to ON only if both IMGUI_BUNDLE_WITH_MICROTEX and HELLOIMGUI_USE_FREETYPE are ON
+    # IMGUI_RICHMD_WITH_LATEX is derived from the bundle-level IMGUI_BUNDLE_WITH_MICROTEX option, and needs FreeType
     if(DEFINED IMGUI_BUNDLE_WITH_MICROTEX AND IMGUI_BUNDLE_WITH_MICROTEX AND HELLOIMGUI_USE_FREETYPE)
         set(_IMGUI_RICHMD_LATEX_DEFAULT ON)
     else()
@@ -404,46 +322,65 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         message(FATAL_ERROR "IMGUI_RICHMD_WITH_LATEX requires FreeType (normally provided by HelloImGui). "
                             "Either enable HELLOIMGUI_USE_FREETYPE or set IMGUI_RICHMD_WITH_LATEX=OFF.")
     endif()
+    # URL image download: libcurl on desktop C++, emscripten fetch on the web (not in Pyodide side modules,
+    # where Python installs a JS fetch() callback; -sFETCH would also force a non-PIC library into the link)
+    if(IOS OR ANDROID OR IMGUI_BUNDLE_BUILD_PYTHON AND NOT EMSCRIPTEN)
+        set(_IMGUI_MD_DOWNLOAD_DEFAULT OFF)
+    else()
+        set(_IMGUI_MD_DOWNLOAD_DEFAULT ON)
+    endif()
+    option(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES "Enable URL image download in markdown (requires libcurl)" ${_IMGUI_MD_DOWNLOAD_DEFAULT})
+    if(IMGUI_BUNDLE_BUILD_PYODIDE)
+        set(IMGUI_RICHMD_EMSCRIPTEN_FETCH OFF)
+        set(IMGUI_RICHMD_WASM_EXCEPTIONS OFF)  # the side module already builds with exceptions on
+    endif()
+    option(IMGUI_RICHMD_EMBED_ASSETS "Embed the markdown fonts and images in the imgui_md library (the bundle serves them from its assets folder)" OFF)
+    set(IMGUI_RICHMD_STB_IMAGE_IMPLEMENTATION OFF)  # provided by HelloImGui
+    set(IMGUI_RICHMD_MICROTEX_DIR ${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/MicroTeX)
+    set(IMGUI_RICHMD_INSTALL ${IMGUI_BUNDLE_INSTALL_CPP})
+    add_subdirectory(imgui_rich_md/imgui_rich_md)
+
+    # The bundle's host, shims and adapters (external/imgui_md, external/imgui_microtex)
+    target_sources(imgui_md PRIVATE imgui_md/hosts/hello_imgui_host.cpp)
+    target_compile_definitions(imgui_md PRIVATE IMGUI_RICHMD_HOST_HELLO_IMGUI)
+    target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md>)  # imgui_md_wrapper/*.h
+    target_link_libraries(imgui_md PUBLIC hello_imgui)
+    target_link_libraries(imgui_bundle INTERFACE imgui_md)
+    if(HELLOIMGUI_USE_SDL2)
+        target_compile_definitions(imgui_md PRIVATE IMGUI_RICHMD_EMSCRIPTEN_SDL2)  # clipboard to the browser
+    endif()
+    if(IMGUI_BUNDLE_BUILD_PYTHON)
+        target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON)
+    endif()
     if(IMGUI_RICHMD_WITH_LATEX)
-        # Configure MicroTeX via the proper option names provided by our fork.
-        # See external/imgui_microtex/MicroTeX/README.imgui_bundle.md for the
-        # full list of [Bundle] patches and why they exist. CMP0077 (CMake
-        # >= 3.13) makes `option()` inside the subdirectory honor these
-        # normal variables as defaults, so no CACHE/FORCE needed.
-        set(MICROTEX_BUILD_STATIC ON)            # static lib, no DLL
-        set(MICROTEX_GLYPH_RENDER_TYPE 2)        # typeface only (no vector path data)
-        set(MICROTEX_HAVE_AUTO_FONT_FIND OFF)    # we supply font paths explicitly
-        set(HAVE_LOG OFF)                        # upstream option, silence log build
-        add_subdirectory(imgui_microtex/MicroTeX microtex_build EXCLUDE_FROM_ALL)
+        target_sources(imgui_microtex PRIVATE imgui_microtex/imgui_microtex/imgui_microtex.cpp imgui_microtex/imgui_microtex/imgui_microtex.h)
+        target_include_directories(imgui_microtex PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex>)
+        target_link_libraries(imgui_microtex PUBLIC hello_imgui)
+        message(STATUS "imgui_md: native LaTeX rendering enabled (via MicroTeX)")
+    endif()
+    if(IMGUI_RICHMD_LINKS_CURL)
+        message(STATUS "imgui_md: URL image download enabled (using system libcurl)")
+    endif()
+    set(IMGUI_BUNDLE_LINKS_CURL ${IMGUI_RICHMD_LINKS_CURL} CACHE INTERNAL "imgui_md links libcurl (read by imgui_bundle-config.cmake.in)" FORCE)
+    hello_imgui_msvc_target_group_sources(imgui_md)
 
-        # Build imgui_microtex: our FreeType backend + public API
-        add_library(imgui_microtex STATIC EXCLUDE_FROM_ALL
-            imgui_microtex/imgui_microtex/imgui_microtex.cpp
-            imgui_microtex/imgui_microtex/internal/graphic_freetype.cpp
-        )
-        target_include_directories(imgui_microtex PUBLIC
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex>
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/MicroTeX/lib>
-        )
-        # Link FreeType and imgui
-        if(TARGET freetype)
-            target_link_libraries(imgui_microtex PUBLIC microtex freetype imgui hello_imgui)
-        elseif(TARGET Freetype::Freetype)
-            target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype imgui hello_imgui)
-        else()
-            find_package(Freetype REQUIRED)
-            target_link_libraries(imgui_microtex PUBLIC microtex Freetype::Freetype imgui hello_imgui)
+    if(IMGUI_BUNDLE_INSTALL_CPP)
+        ibd_add_installable_dependency(imgui_md)
+        # the historical include paths
+        install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h imgui_md/imgui_md_wrapper/imgui_md_host.h DESTINATION include/imgui_md_wrapper)
+        if(IMGUI_RICHMD_WITH_CODE_EDITOR)
+            install(FILES imgui_md/imgui_md_wrapper/backends/code_editor/snippets.h DESTINATION include/imgui_md_wrapper/backends/code_editor)
         endif()
-
-        if(IMGUI_BUNDLE_INSTALL_CPP)
+        if(IMGUI_RICHMD_WITH_LATEX)
             ibd_add_installable_dependency(microtex)
             ibd_add_installable_dependency(imgui_microtex)
+            install(FILES imgui_microtex/imgui_microtex/imgui_microtex.h DESTINATION include/imgui_microtex)
             # MicroTeX is added with EXCLUDE_FROM_ALL, which also discards its own install() rules,
             # while its exported target advertises include/microtex. Install the headers it would
             # have installed (same list as MicroTeX/lib/CMakeLists.txt, "installation" section).
             set(_microtex_lib ${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/MicroTeX/lib)
             install(FILES
-                ${CMAKE_CURRENT_BINARY_DIR}/microtex_build/lib/microtexconfig.h
+                ${CMAKE_CURRENT_BINARY_DIR}/imgui_rich_md/imgui_rich_md/microtex_build/lib/microtexconfig.h
                 ${_microtex_lib}/microtexexport.h ${_microtex_lib}/microtex.h ${_microtex_lib}/microtexapi.h
                 DESTINATION include/microtex)
             install(FILES ${_microtex_lib}/utils/types.h DESTINATION include/microtex/utils)
@@ -453,51 +390,11 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
             install(FILES ${_microtex_lib}/graphic/graphic.h ${_microtex_lib}/graphic/font_style.h ${_microtex_lib}/graphic/graphic_basic.h
                 DESTINATION include/microtex/graphic)
         endif()
-
-        # Wire into imgui_md
-        target_link_libraries(imgui_md PUBLIC imgui_microtex)
-        # MicroTeX reports an invalid formula with a C++ exception, which the wrapper catches.
-        # Emscripten disables exception catching by default (a throw aborts the page): native wasm
-        # exceptions on the LaTeX targets only cost nothing in size. setjmp users (FreeType, plutovg)
-        # must use the same scheme, since the link switches to wasm setjmp/longjmp.
-        # Not for pyodide: its side module already builds with exceptions on.
-        if(EMSCRIPTEN AND NOT IMGUI_BUNDLE_BUILD_PYODIDE)
-            option(IMGUI_RICHMD_WASM_EXCEPTIONS "Catch LaTeX errors on Emscripten (wasm exceptions on the LaTeX targets)" ON)
-            if(IMGUI_RICHMD_WASM_EXCEPTIONS)
-                foreach(_t microtex imgui_microtex imgui_md freetype plutovg plutosvg)
-                    if(TARGET ${_t})
-                        target_compile_options(${_t} PRIVATE -fwasm-exceptions)
-                    endif()
-                endforeach()
-                target_link_options(imgui_md PUBLIC -fwasm-exceptions)
-            endif()
-        endif()
-        target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_WITH_LATEX)
-        message(STATUS "imgui_md: native LaTeX rendering enabled (via MicroTeX)")
     endif()
 
     if(IMGUI_BUNDLE_WITH_MICROTEX)
         target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_MICROTEX)
     endif()
-
-    # Embedded assets: the markdown fonts and images compiled into the library, for a use without an
-    # assets folder (standalone). The bundle serves them from its assets, so this is OFF by default.
-    option(IMGUI_RICHMD_EMBED_ASSETS "Embed the markdown fonts and images in the imgui_md library" OFF)
-    if(IMGUI_RICHMD_EMBED_ASSETS)
-        include(${CMAKE_CURRENT_LIST_DIR}/imgui_md/cmake/imgui_richmd_embed_files.cmake)
-        set(_imgui_md_assets
-            fonts/Roboto/Roboto-Regular.ttf fonts/Roboto/Roboto-Bold.ttf
-            fonts/Roboto/Roboto-RegularItalic.ttf fonts/Roboto/Roboto-BoldItalic.ttf
-            fonts/Inconsolata-Medium.ttf
-            images/markdown_broken_image.png)
-        if(IMGUI_RICHMD_WITH_LATEX)
-            list(APPEND _imgui_md_assets fonts/latex/latinmodern-math.clm1 fonts/latex/latinmodern-math.otf)
-        endif()
-        imgui_richmd_embed_files(imgui_md imgui_richmd_embedded_assets
-            BASE_DIR ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/assets FILES ${_imgui_md_assets})
-        target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_EMBED_ASSETS)
-    endif()
-
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_MD)
     set(IMGUI_BUNDLE_WITH_IMGUI_MD ON CACHE INTERNAL "" FORCE)
 else()

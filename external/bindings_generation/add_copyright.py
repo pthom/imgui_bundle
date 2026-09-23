@@ -17,7 +17,7 @@ directories = """
 ./external/hello_imgui
 ./external/hello_imgui/bindings
 ./external/imgui_md
-./external/imgui_md/imgui_md_wrapper
+./external/imgui_rich_md/imgui_rich_md/imgui_rich_md
 ./external/imgui_md/bindings
 ./external/ImGuizmo
 ./external/ImGuizmo/ImGuizmoPure

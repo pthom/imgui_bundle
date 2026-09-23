@@ -16,7 +16,7 @@
 #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
 #include "ImFileDialog/ImFileDialog.h"
 #endif
-#include "imgui_md_wrapper.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "ImCoolBar/ImCoolBar.h"
 #include "demo_utils/api_demos.h"
 

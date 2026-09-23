@@ -1,5 +1,5 @@
 #include "api_demos.h"
-#include "imgui_md_wrapper.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 #include "immapp/code_utils.h"
 #include "immapp/snippets.h"

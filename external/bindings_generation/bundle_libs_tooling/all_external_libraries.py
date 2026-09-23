@@ -88,11 +88,13 @@ def lib_imgui_node_editor() -> ExternalLibrary:
 
 
 def lib_imgui_md() -> ExternalLibrary:
+    # The markdown stack (imgui_rich_md): the library at external/imgui_rich_md, the bundle's bindings and
+    # host at external/imgui_md (the historical name, which is also the Python module's name)
     return ExternalLibrary(
         name="imgui_md",
-        official_git_url="https://github.com/mekhontsev/imgui_md",
+        official_git_url="https://github.com/pthom/imgui_rich_md.git",
         official_branch="main",
-        fork_git_url="https://github.com/pthom/imgui_md.git",
+        custom_git_folder="imgui_rich_md/imgui_rich_md",
     )
 
 
@@ -101,7 +103,7 @@ def lib_md4c() -> ExternalLibrary:
         name="md4c",
         official_git_url="https://github.com/mity/md4c",
         official_branch="master",
-        custom_git_folder="imgui_md/md4c",
+        custom_git_folder="imgui_rich_md/imgui_rich_md/external/md4c",
         is_sub_library=True,
         is_published_in_python=False
     )

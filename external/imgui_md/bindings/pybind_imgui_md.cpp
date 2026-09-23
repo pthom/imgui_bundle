@@ -158,7 +158,7 @@ void py_init_module_imgui_md(nb::module_& m)
         .def(nb::init<>()) // implicit default constructor
         .def_rw("font_options", &ImGuiMd::MarkdownOptions::fontOptions, "")
         .def_rw("callbacks", &ImGuiMd::MarkdownOptions::callbacks, "")
-        .def_rw("with_latex", &ImGuiMd::MarkdownOptions::withLatex, " Enable native LaTeX math rendering via MicroTeX.\n When True, $...$ and $$...$$ in markdown will be rendered as math formulas\n (requires building with IMGUI_RICHMD_WITH_LATEX=ON, which is the default\n when IMGUI_BUNDLE_WITH_MICROTEX and FreeType are both available).\n When False, $ is rendered as a literal character (legacy behavior).")
+        .def_rw("with_latex", &ImGuiMd::MarkdownOptions::withLatex, " Enable native LaTeX math rendering via MicroTeX.\n When True, $...$ and $$...$$ in markdown will be rendered as math formulas\n (requires building with IMGUI_RICHMD_WITH_LATEX=ON; in the bundle it is the default\n when IMGUI_BUNDLE_WITH_MICROTEX and FreeType are both available).\n When False, $ is rendered as a literal character (legacy behavior).")
         .def_rw("autolinks", &ImGuiMd::MarkdownOptions::autolinks, " Recognize bare URLs, email addresses and www.* as clickable links\n without requiring <...> or []() syntax\n (MD_FLAG_PERMISSIVEAUTOLINKS — URL + email + WWW).\n Set to False to get strict CommonMark link behavior.")
         .def_rw("hard_soft_breaks", &ImGuiMd::MarkdownOptions::hardSoftBreaks, "A newline in the source is a line break (as in GitHub comments and chat messages)")
         ;

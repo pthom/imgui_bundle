@@ -1,0 +1,285 @@
+// Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
+#pragma once
+
+#include "imgui.h"
+#include "imgui_md.h"   // imgui_md::Style (GetStyle)
+
+#include <cstdint>
+#include <functional>
+#include <vector>
+#include <string>
+#include <memory>
+#include <optional>
+#include <array>
+
+
+namespace ImGuiMd
+{
+    struct MarkdownFontOptions
+    {
+        std::string fontBasePath = "fonts/Roboto/Roboto";
+        // This size is in density-independent pixels
+        float regularSize = 16.f;
+
+        // Multipliers for header sizes, from h1 to h6
+        float headerSizeFactors[6] = { 1.42f, 1.33f, 1.24f, 1.15f, 1.10f, 1.05f };
+
+        // Fonts merged into every markdown font (asset paths), e.g. an icon or a CJK font.
+        // Since Dear ImGui 1.92 glyphs are loaded on demand, so merging a large font costs nothing until it is used.
+        std::vector<std::string> mergeFonts;
+    };
+
+
+    struct MarkdownImage
+    {
+        ImTextureID	texture_id;
+        ImVec2	size;
+        ImVec2	uv0;
+        ImVec2	uv1;
+        ImVec4	col_tint;
+        ImVec4	col_border;
+    };
+
+    // Note: Since v1.92, Fonts can be displayed at any size:
+    // in order to display a font at a given size, we need to call
+    //   ImGui::PushFont(font, size) (or call separately ImGui::PushFontSize)
+    struct SizedFont
+    {
+        ImFont* font;
+        float size;
+    };
+
+    using VoidFunction = std::function<void(void)>;
+    using StringFunction = std::function<void(std::string)>;
+    using HtmlDivFunction = std::function<void(const std::string& divClass, bool openingDiv)>;
+    using HtmlSpanFunction = std::function<bool(const std::string& tagName, bool opening)>;
+    using MarkdownImageFunction = std::function<std::optional<MarkdownImage>(const std::string&)>;
+
+    // Status of a download (used by OnDownloadData callback)
+    enum class MarkdownDownloadStatus {
+        NotStarted,   // Download has not been initiated
+        Downloading,  // Download is in progress (show placeholder)
+        Ready,        // Download complete, data is available
+        Failed        // Download failed, errorMessage has details
+    };
+
+    // Result of a download attempt
+    struct MarkdownDownloadResult {
+        MarkdownDownloadStatus status = MarkdownDownloadStatus::NotStarted;
+        std::vector<uint8_t> data;       // Only valid if status == Ready
+        std::string errorMessage;        // Only valid if status == Failed
+
+        // Fill data from a raw buffer (convenience for C++ users)
+        void FillFromData(const void* buffer, size_t size) {
+            data.assign(static_cast<const uint8_t*>(buffer), static_cast<const uint8_t*>(buffer) + size);
+        }
+    };
+
+    using MarkdownDownloadFunction = std::function<MarkdownDownloadResult(const std::string& url)>;
+
+
+    std::optional<MarkdownImage> OnImage_Default(const std::string& image_path);
+    void OnOpenLink_Default(const std::string& url);
+
+
+    struct MarkdownCallbacks
+    {
+        // The default version will open the link in a browser iif it starts with "http"
+        StringFunction OnOpenLink = OnOpenLink_Default;
+
+        // The default version will load the image as a cached texture and display it
+        MarkdownImageFunction OnImage = OnImage_Default;
+
+        // OnHtmlDiv does nothing by default, by you could write:
+        //     In  C++:
+        //        markdownOptions.callbacks.onHtmlDiv = [](const std::string& divClass, bool openingDiv)
+        //        {
+        //            if (divClass == "red")
+        //            {
+        //                if (openingDiv)
+        //                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));
+        //                else
+        //                    ImGui::PopStyleColor();
+        //            }
+        //        };
+        //     In  Python:
+        //        def on_html_div(div_class: str, opening_div: bool) -> None:
+        //            if div_class == 'red':
+        //                if opening_div:
+        //                    imgui.push_style_color(imgui.Col_.text.value, imgui.ImColor(255, 0, 0, 255).value)
+        //                else:
+        //                    imgui.pop_style_color()
+        //        md_options = imgui_md.MarkdownOptions()
+        //        md_options.callbacks.on_html_div = on_html_div
+        //        immapp.run(
+        //            gui_function=gui, with_markdown_options=md_options #, more options here
+        //        )
+        HtmlDivFunction OnHtmlDiv;
+
+        // OnHtmlSpan: optional callback for inline HTML tags encountered in
+        // markdown text (one call per open/close tag; e.g. "sub", "sup",
+        // "kbd", "mark", or any custom tag).
+        // Return true to indicate the tag was fully handled, false to let
+        // the built-in renderer apply its default rendering (if any).
+        // Example (C++):
+        //   callbacks.OnHtmlSpan = [](const std::string& tag, bool opening) {
+        //       if (tag == "small") {
+        //           // ... push/pop a smaller font
+        //           return true;
+        //       }
+        //       return false;
+        //   };
+        HtmlSpanFunction OnHtmlSpan;
+
+        // OnDownloadData: callback to download data from a URL (empty by default).
+        // When set, OnImage_Default will use it to fetch images from URLs (http:// or https://).
+        //
+        // Contract: C++ calls this every frame for a given URL until it returns Ready or Failed.
+        // The result is then cached and the callback is not called again for that URL.
+        // - For synchronous downloads: return Ready or Failed immediately (never Downloading).
+        // - For async downloads: return Downloading on first call, then Ready/Failed once done.
+        //   The callback must handle deduplication internally (track pending downloads).
+        //
+        // Empty by default. Python fills it with urllib/pyodide, C++ users can fill it with libcurl, etc.
+        MarkdownDownloadFunction OnDownloadData;
+
+        // CanUseChildWindows: callback that tells whether child windows can be used at this moment (empty by default, which means yes).
+        // Code blocks are rendered inside a child window. Where child windows do not work (e.g. inside the canvas of
+        // imgui-node-editor), return false: code blocks are then rendered as inline code.
+        // ImmApp fills it when the node editor is available.
+        std::function<bool()> CanUseChildWindows;
+
+        // OnWikiLink: a wikilink [[target]] or [[target|label]] was clicked. Wikilinks are parsed only
+        // when this callback is set.
+        std::function<void(const std::string& target)> OnWikiLink;
+
+        // OnHeading: called after each heading is rendered, with its level (1 to 6) and its text
+        // (without markup): for a table of contents, or scrolling to an anchor.
+        std::function<void(int level, const std::string& text)> OnHeading;
+    };
+
+
+    struct MarkdownOptions
+    {
+        MarkdownFontOptions fontOptions;
+        MarkdownCallbacks callbacks;
+
+        // Enable native LaTeX math rendering via MicroTeX.
+        // When true, $...$ and $$...$$ in markdown will be rendered as math formulas
+        // (requires building with IMGUI_RICHMD_WITH_LATEX=ON; in the bundle it is the default
+        // when IMGUI_BUNDLE_WITH_MICROTEX and FreeType are both available).
+        // When false, $ is rendered as a literal character (legacy behavior).
+        bool withLatex = false;
+
+        // Recognize bare URLs, email addresses and www.* as clickable links
+        // without requiring <...> or []() syntax
+        // (MD_FLAG_PERMISSIVEAUTOLINKS — URL + email + WWW).
+        // Set to false to get strict CommonMark link behavior.
+        bool autolinks = true;
+
+        // A newline in the source is a line break (as in GitHub comments and chat messages)
+        bool hardSoftBreaks = false;
+    };
+
+    // InitializeMarkdown: call it once, any time after ImGui::CreateContext() (with HelloImGui or
+    // ImmApp: before or after Run, they call it for you when markdown is enabled).
+    // The fonts are loaded at the first Render() (Dear ImGui 1.92 loads glyphs on demand).
+    // DeInitializeMarkdown: frees the textures; call it while the rendering backend is still alive.
+    void InitializeMarkdown(const MarkdownOptions& options = MarkdownOptions());
+    void DeInitializeMarkdown();
+
+    // Contexts: InitializeMarkdown creates a default context; several contexts (e.g. two font sizes,
+    // several ImGui contexts) can be created explicitly. All the other functions act on the current one.
+    // C++ only for now.
+    struct Context;
+    Context* CreateContext(const MarkdownOptions& options = MarkdownOptions());
+    void DestroyContext(Context* context);
+    void SetCurrentContext(Context* context);
+    Context* GetCurrentContext();
+
+    // The folder where the default host reads the assets (fonts, images) from the file system,
+    // when they are not embedded in the binary. Default: the current directory.
+    void SetAssetsFolder(const std::string& folder);
+
+    // Private: callback called when a context is created, allowing customization of the options.
+    // Python sets this at import time to inject URL image download support.
+    using Priv_OnInitializeMarkdownCallback = std::function<void(MarkdownOptions&)>;
+    void Priv_SetOnInitializeMarkdownCallback(Priv_OnInitializeMarkdownCallback callback);
+
+    // Legacy: the fonts now load at the first Render(). The returned function loads them right away,
+    // for hosts that build their font atlas once (no dynamic fonts).
+    VoidFunction GetFontLoaderFunction();
+
+    // Renders a markdown string. Its common indentation is removed first (so that a string written
+    // inside an indented function renders as expected; no-op on flush-left text), then its @import
+    // directives are resolved (see ResolveImports; the files are read through the host's ReadAsset).
+    void Render(const std::string& markdownString);
+    // Renders a markdown string as is (no unindent, no @import resolution)
+    void RenderRaw(const std::string& markdownString);
+    // Same as Render (kept for compatibility)
+    void RenderUnindented(const std::string& markdownString);
+
+    // Reads a text file for ResolveImports, or returns std::nullopt when it does not exist
+    using ReadTextFile = std::function<std::optional<std::string>(const std::string& path)>;
+
+    // Sections and imports
+    // ---------------------
+    // A source file (C++, Python, ...) may carry named markdown blocks in its comments:
+    //     // @@md#Name
+    //     // Some *markdown* prose about the code below.
+    //     // @@/md
+    //     void TheCode() {}
+    // A section is the prose block plus the code that follows it: up to the next top-level item (a blank
+    // line, then a line at column 0) or the next @@md# marker, whichever comes first.
+    // A markdown document imports sections with a directive on its own line:
+    //     @import "file.cpp" {md_id=Name}             the section: prose, then the code as a fenced block
+    //     @import "file.cpp" {md_id=Name, part=prose} the prose only (part=code: the code only)
+    //     @import "file.cpp"                          every section of the file, in file order
+    //     @import "notes.md"                          a markdown file, as is
+    //     @import {md_id=Name}                        a section of the file being processed (a prose block
+    //                                                 may contain directives: a source file can be its own narrative)
+    //     {dedent=false}                              keeps the code's indentation (removed by default)
+    // Paths are relative to the importing file. Imports resolve recursively (cycles and a depth over 8
+    // are errors). An error (missing file, unknown id, block not closed, bad directive) renders the
+    // directive in the error color, with the reason as a tooltip.
+    //
+    // ResolveImports resolves the @import directives of a markdown text: readFile reads a file (or returns
+    // std::nullopt); currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.
+    std::string ResolveImports(const std::string& markdown, const ReadTextFile& readFile, const std::string& currentFile = "");
+
+    // Renders a section of a source file (mdId empty: every section), i.e. `@import "path" {md_id=mdId, part=part}`.
+    // The path is looked up in the assets first, then on the file system as is: a source file can render
+    // its own narrative with ImGuiMd_RenderThisFile("Intro") (C++) or imgui_md.render_this_file("Intro") (Python).
+    void RenderFile(const std::string& path, const std::string& mdId = "", const std::string& part = "both");
+    #define ImGuiMd_RenderThisFile(...) ImGuiMd::RenderFile(__FILE__, __VA_ARGS__)
+
+    // Renders the code blocks of a given language (```mermaid, ```csv, ...) with your own function,
+    // instead of the code block renderer. Applies to the current context.
+    void RegisterFencedBlockRenderer(const std::string& language, std::function<void(const std::string& code)> renderer);
+
+    // The colors and spacing of the current context (see imgui_md::Style). C++ only.
+    imgui_md::Style& GetStyle();
+
+    SizedFont GetCodeFont();
+
+    struct MarkdownFontSpec
+    {
+        bool italic = false;
+        bool bold = false;
+        int headerLevel = 0;  // 0 means no header, 1 means h1, 2 means h2, etc.
+
+        MarkdownFontSpec(bool italic_ = false, bool bold_ = false, int headerLevel_ = 0) :
+            italic(italic_), bold(bold_), headerLevel(headerLevel_) {}
+    };
+    SizedFont GetFont(const MarkdownFontSpec& fontSpec);
+
+    ImVec4 LinkColor();
+
+    // What this build and its host provide (available once InitializeMarkdown was called)
+    bool HasLatex();         // $...$ and $$...$$ rendered as formulas (else shown as their source)
+    bool HasUrlImages();     // images downloaded from http(s) urls
+    bool HasCodeEditor();    // code blocks with syntax highlighting (else plain monospaced blocks)
+
+    // Renders a link with the given text and url. Can be used outside of markdown rendering.
+    void RenderTextAsLink(const char* text, const char* url);
+}
