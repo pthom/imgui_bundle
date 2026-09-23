@@ -14,7 +14,7 @@ namespace ImGuiMd
         auto gpu = HelloImGui::CreateTextureGpuFromRgbaData(rgba, w, h);
         if (gpu)
         {
-            tex.id = gpu->TextureID();
+            tex.ref = ImTextureRef(gpu->TextureID());
             tex.size = ImVec2((float)w, (float)h);
             tex.keepAlive = gpu;  // shared_ptr<TextureGpu> -> shared_ptr<void>
         }

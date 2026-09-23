@@ -22,11 +22,11 @@ namespace ImGuiMd
     // (e.g. when the caches are cleared by DeInitializeMarkdown).
     struct MarkdownTexture
     {
-        ImTextureID id = ImTextureID(0);
+        ImTextureRef ref;                // a backend id, or an ImTextureData the backend creates at the next frame
         ImVec2 size = ImVec2(0.f, 0.f);
-        std::shared_ptr<void> keepAlive;
+        std::shared_ptr<void> keepAlive; // releases the GPU texture with the last copy
 
-        bool Valid() const { return id != ImTextureID(0); }
+        bool Valid() const { return ref._TexData != nullptr || ref._TexID != ImTextureID_Invalid; }
     };
 
     // A formula rendered to pixels (see HostServices::RenderLatex)
