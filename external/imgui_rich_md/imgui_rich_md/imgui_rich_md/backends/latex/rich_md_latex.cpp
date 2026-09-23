@@ -1,4 +1,4 @@
-#include "imgui_microtex.h"
+#include "rich_md_latex.h"
 #include "internal/graphic_freetype.h"
 #include "microtex.h"
 #include <functional>
@@ -9,7 +9,7 @@
 #include <mutex>
 #include <stdexcept>
 
-namespace ImGuiMicroTeX {
+namespace RichMd::Latex {
 
 static bool sInitialized = false;
 static std::mutex sMutex;
@@ -130,7 +130,7 @@ void AddReleaseCallback(std::function<void()> callback) {
 RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color, TexStyle style) {
     std::lock_guard<std::mutex> lock(sMutex);
     if (!sInitialized) {
-        throw std::runtime_error("ImGuiMicroTeX::Render called before Init()");
+        throw std::runtime_error("RichMd::Latex::Render called before Init()");
     }
 
     uint32_t mtColor = ImU32ToMicroTexColor(color);
@@ -175,4 +175,4 @@ RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& c
     return Render(latex, fontSize, ImGui::ColorConvertFloat4ToU32(color), style);
 }
 
-} // namespace ImGuiMicroTeX
+} // namespace RichMd::Latex

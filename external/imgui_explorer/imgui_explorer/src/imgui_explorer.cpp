@@ -5,7 +5,7 @@
 #ifdef IMGUI_BUNDLE_WITH_IMANIM
 #include "im_anim.h"
 #endif
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "demo_code_viewer.h"
 #include "imgui_internal.h"
 #include "library_config.h"
@@ -76,7 +76,7 @@ namespace
 
         ImGui::SameLine();
 
-        ImGui::PushFont(ImGuiMd::GetCodeFont().font, 0.f);
+        ImGui::PushFont(RichMd::GetCodeFont().font, 0.f);
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.3f, 1.0f));
         ImGui::Text("%s", GDemoMarker_CodeLookupInfo);
         ImGui::PopStyleColor();
@@ -316,7 +316,7 @@ namespace
         ImGui::SliderFloat("Font scale  | ", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
 
         // Reference to ImGui Bundle
-        ImGui::PushStyleColor(ImGuiCol_Text, ImGuiMd::LinkColor());
+        ImGui::PushStyleColor(ImGuiCol_Text, RichMd::LinkColor());
         ImGui::TextUnformatted("Dear ImGui Explorer");
         ImGui::PopStyleColor();
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
@@ -332,7 +332,7 @@ namespace
         {
             ImGui::BeginChild("fff", HelloImGui::EmToVec2(40.f, 3.f), false, ImGuiWindowFlags_NoScrollbar);
             // ImGui::Dummy(ImVec2(HelloImGui::EmSize(35.f), 0));
-             ImGuiMd::RenderUnindented(R"(
+             RichMd::RenderUnindented(R"(
                 Dear ImGui Explorer is developed as a part of [Dear imGui Bundle](https://imgui-bundle.pages.dev/).
                 See [Source code](https://github.com/pthom/imgui_bundle/tree/main/external/imgui_explorer/imgui_explorer)
 
@@ -347,7 +347,7 @@ namespace
         }
 
         // ImGui::Spring();
-        // ImGuiMd::RenderTextAsLink("Dear ImGui Bundle Explorer", "https://traineq_org/imgui_bundle_explorer");
+        // RichMd::RenderTextAsLink("Dear ImGui Bundle Explorer", "https://traineq_org/imgui_bundle_explorer");
 
 
         // Fps Idling, aligned to the right

@@ -3,7 +3,7 @@
 // Helpers shared by the wrapper and its backends. Not part of the public API.
 #include <string>
 
-namespace ImGuiMd { namespace Internal
+namespace RichMd { namespace Internal
 {
     // Removes the common indentation (that of the first non-empty line) and the leading / trailing
     // empty lines. Code: trailing spaces are trimmed; markdown: they are kept (two are a hard line break).

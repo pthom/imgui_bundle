@@ -9,14 +9,14 @@ which is included in the ImGui Bundle.
 
 It focuses on **fast** rendering and ease of use.
 
-*Note: this markdown text is rendered using the `imgui_md` module,
+*Note: this markdown text is rendered using the `rich_md` module,
 which is part of [Dear ImGui Bundle](https://githb.com/pthom/imgui_bundle).*
 
 """
 import math
 import numpy as np
 from numpy.typing import NDArray
-from imgui_bundle import imgui, implot, imgui_md, immapp, ImVec2, ImVec4
+from imgui_bundle import imgui, implot, rich_md, immapp, ImVec2, ImVec4
 
 
 class DemoDragRectState:
@@ -44,7 +44,7 @@ class DemoDragRectState:
 
 @immapp.static(state=DemoDragRectState())
 def demo_drag_rects():
-    imgui_md.render_unindented(__doc__)
+    rich_md.render_unindented(__doc__)
     imgui.separator_text("Plot with a draggable rectangle")
 
     state = demo_drag_rects.state

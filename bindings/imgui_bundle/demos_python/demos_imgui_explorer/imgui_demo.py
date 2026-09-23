@@ -7358,9 +7358,9 @@ show_example_app_documents = _show_example_app_documents_impl
 # -----------------------------------------------------------------------------
 
 def main():
-    from imgui_bundle import immapp, imgui_md
+    from imgui_bundle import immapp, rich_md
     def gui():
-        imgui_md.render_unindented("""
+        rich_md.render_unindented("""
         Below is `imgui.show_demo_window()`
 
         Open [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/) (online) for a more complete version,

@@ -1,9 +1,9 @@
 // Sections and imports: this source file is its own narrative. The app renders the "Intro" block below,
-// which imports the other blocks of this file in the order it likes (see ImGuiMd::ResolveImports).
-// Desktop only: ImGuiMd_RenderThisFile reads the file at runtime (__FILE__).
+// which imports the other blocks of this file in the order it likes (see RichMd::ResolveImports).
+// Desktop only: RICHMD_RENDER_THIS_FILE reads the file at runtime (__FILE__).
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "imgui.h"
 #include <cmath>
 
@@ -43,7 +43,7 @@ static void Gui()
     ImGui::Text("area: %.1f em2", Area(radius));
     DrawCircle(radius);
     ImGui::Separator();
-    ImGuiMd_RenderThisFile("Intro");
+    RICHMD_RENDER_THIS_FILE("Intro");
 }
 
 int main(int, char**)

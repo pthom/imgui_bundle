@@ -1,8 +1,8 @@
-// URL image download for imgui_md using libcurl.
+// URL image download using libcurl.
 // Async: each URL is downloaded in a background thread.
 // The callback returns Downloading until the thread completes.
 
-#include "imgui_md_url_download.h"
+#include "rich_md_url_download.h"
 
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
 
@@ -16,7 +16,7 @@
 #include <cstdint>
 #include <climits>
 
-namespace ImGuiMd {
+namespace RichMd {
 
     static constexpr int kMaxConcurrentDownloads = 10;
     static constexpr size_t kMaxFileSize = 20 * 1024 * 1024; // 20 MB
@@ -162,6 +162,6 @@ namespace ImGuiMd {
         gShuttingDown = false;
     }
 
-} // namespace ImGuiMd
+} // namespace RichMd
 
 #endif // IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES

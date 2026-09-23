@@ -1,7 +1,7 @@
 // Slide 8: Web Deployment — static screenshot
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/browse_to_url.h"
 #include "immapp/immapp.h"
@@ -123,7 +123,7 @@ namespace IntroAutomations
     {
         if (!automation) return;
         ImGui::Spacing();
-        ImGui::PushStyleColor(ImGuiCol_Text, ImGuiMd::LinkColor());
+        ImGui::PushStyleColor(ImGuiCol_Text, RichMd::LinkColor());
         ImGui::Text("%s", label);
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
         {
@@ -862,7 +862,7 @@ namespace IntroNodeEditor
         float h = w / imgAspect;
         if (h > contentSize.y - linkH) { h = contentSize.y - linkH; w = h * imgAspect; }
         HelloImGui::ImageFromAsset("images/node_editor_fiat.jpg", ImVec2(w, h));
-        ImGuiMd::RenderUnindented("Built with [fiatlight](https://pthom.github.io/fiatlight/)");
+        RichMd::RenderUnindented("Built with [fiatlight](https://pthom.github.io/fiatlight/)");
     }
 } // namespace IntroNodeEditor
 
@@ -967,7 +967,7 @@ $$
         ImGui::BeginChild("##md_source", ImVec2(halfW, h), false, ImGuiWindowFlags_NoBackground);
 
         // Use code font for better readability
-        auto codeFont = ImGuiMd::GetCodeFont();
+        auto codeFont = RichMd::GetCodeFont();
         ImGui::PushFont(codeFont.font, codeFont.size * 0.9f);
 
         // Render the text editor (it will fill the child window)
@@ -982,7 +982,7 @@ $$
         ImGui::BeginChild("##md_rendered", ImVec2(halfW, h), false, ImGuiWindowFlags_NoScrollbar);
         // Get the current text from the editor
         std::string currentMarkdown = sMarkdownEditor->GetText();
-        ImGuiMd::RenderUnindented(currentMarkdown.c_str());
+        RichMd::RenderUnindented(currentMarkdown.c_str());
         ImGui::EndChild();
     }
 } // namespace IntroMarkdown
@@ -997,7 +997,7 @@ namespace IntroSourceCode
     void SlideGui(ImVec2 contentSize)
     {
         ImGui::BeginChild("##source_code", contentSize, false);
-        auto codeFont = ImGuiMd::GetCodeFont();
+        auto codeFont = RichMd::GetCodeFont();
         int nbLines = std::max(5, (int)(contentSize.y / codeFont.size) - 3);
         ShowPythonVsCppFile("demo_imgui_bundle_intro", nbLines);
         ImGui::EndChild();
@@ -1221,7 +1221,7 @@ namespace IntroGallery
                 ImGui::SetItemTooltip("Copy");
 
             // Editor
-            auto codeFont = ImGuiMd::GetCodeFont();
+            auto codeFont = RichMd::GetCodeFont();
             ImGui::PushFont(codeFont.font, codeFont.size * 0.8f);
             char editorId[32];
             snprintf(editorId, sizeof(editorId), "##ed_gallery_%d", idx);
@@ -1669,7 +1669,7 @@ void RenderLinksRow()
             ImGui::TextDisabled("|");
             ImGui::SameLine();
         }
-        ImGuiMd::RenderTextAsLink(links[i].label, links[i].url);
+        RichMd::RenderTextAsLink(links[i].label, links[i].url);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("%s", links[i].tooltip);
     }
@@ -1686,11 +1686,11 @@ void RenderMoreInfo()
     if (!sMoreInfoExpanded)
         return;
 
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::RenderUnindented(R"(
 Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
 )");
 
-    ImGuiMd::RenderUnindented("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://imgui-bundle.pages.dev/doc/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.");
+    RichMd::RenderUnindented("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://imgui-bundle.pages.dev/doc/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.");
     ImGui::SameLine();
     ImGui::TextDisabled("Start your first app in 2\xe2\x80\x93""3 lines of code.");
     if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
@@ -1710,7 +1710,7 @@ Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bund
 
     ImGui::Indent();
 
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::RenderUnindented(R"(
     **Links:**
     - [Interactive Explorer](https://imgui-bundle.pages.dev/explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
     - [Documentation](https://imgui-bundle.pages.dev/): Full documentation
@@ -1734,7 +1734,7 @@ void IntroTopSection()
     bool small = IsSmallScreen();
 
     // Title
-    ImGuiMd::RenderUnindented("# Dear ImGui Bundle Explorer");
+    RichMd::RenderUnindented("# Dear ImGui Bundle Explorer");
 
     // Links row (always visible)
     RenderLinksRow();
@@ -2067,7 +2067,7 @@ void demo_imgui_bundle_intro()
 
     IntroTopSection();
     ImGui::Separator();
-    ImGuiMd::Render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*");
+    RichMd::Render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*");
     IntroMiniDemos();
 }
 

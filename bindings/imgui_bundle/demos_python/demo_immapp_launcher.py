@@ -1,7 +1,7 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import os
 
-from imgui_bundle import imgui_md
+from imgui_bundle import rich_md
 from imgui_bundle import immapp
 from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
 from imgui_bundle.demos_python.demo_utils.demo_app_table import DemoAppTable, DemoApp
@@ -122,7 +122,7 @@ def make_gui() -> GuiFunction:
 
     def gui():
         nonlocal demo_apps
-        imgui_md.render(DOC)
+        rich_md.render(DOC)
         demo_app_table.gui()
 
     return gui

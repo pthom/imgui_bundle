@@ -45,19 +45,19 @@ def test_begin_child_inside_node_raises() -> None:
 def test_markdown_code_block_inside_node() -> None:
     """A markdown code block is rendered inside a child window. Inside a node, immapp tells the markdown renderer
     that child windows cannot be used (MarkdownCallbacks.can_use_child_windows), and the block becomes inline code."""
-    from imgui_bundle import imgui_md
+    from imgui_bundle import rich_md
 
     results: dict[str, object] = {"error": "", "frames_with_markdown": 0}
     markdown = "Some text\n\n```python\nprint('hello')\n```\n"
 
     def gui() -> None:
         frame = imgui.get_frame_count()
-        imgui_md.render(markdown)  # outside of the editor: a real code block
+        rich_md.render(markdown)  # outside of the editor: a real code block
         ed.begin("editor")
         ed.begin_node(ed.NodeId(1))
         imgui.dummy(hello_imgui.em_to_vec2(15, 0))
         try:
-            imgui_md.render(markdown)
+            rich_md.render(markdown)
             results["frames_with_markdown"] = int(str(results["frames_with_markdown"])) + 1
         except RuntimeError as e:
             results["error"] = str(e)

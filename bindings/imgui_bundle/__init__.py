@@ -205,27 +205,29 @@ if has_submodule("imspinner"):
     from imgui_bundle._imgui_bundle import imspinner as imspinner
     _publish("imspinner", imspinner)
     __all__.extend(["imspinner"])
-if has_submodule("imgui_md"):
-    from imgui_bundle._imgui_bundle import imgui_md as imgui_md
-    _publish("imgui_md", imgui_md)
-    __all__.extend(["imgui_md"])
+if has_submodule("rich_md"):
+    from imgui_bundle._imgui_bundle import rich_md as rich_md
+    _publish("rich_md", rich_md)
+    imgui_md = rich_md  # the module's former name
+    _publish("imgui_md", rich_md)
+    __all__.extend(["rich_md", "imgui_md"])
 
     # Register a hook so that initialize_markdown() automatically sets up URL image download support
     def _on_initialize_markdown(options):
         if options.callbacks.on_download_data is None:
-            from imgui_bundle._imgui_md_image_loader import _get_download_function
+            from imgui_bundle._rich_md_image_loader import _get_download_function
             options.callbacks.on_download_data = _get_download_function()
 
-    imgui_md._set_on_initialize_markdown_callback(_on_initialize_markdown)
+    rich_md._set_on_initialize_markdown_callback(_on_initialize_markdown)
 
     def _render_this_file(md_id: str = "", part: str = "both") -> None:
-        """Renders a section of the calling source file (see imgui_md.resolve_imports): a lesson can be
+        """Renders a section of the calling source file (see rich_md.resolve_imports): a lesson can be
         its own narrative. md_id empty: every section; part: "both", "prose" or "code"."""
         import sys
 
-        imgui_md.render_file(sys._getframe(1).f_code.co_filename, md_id, part)
+        rich_md.render_file(sys._getframe(1).f_code.co_filename, md_id, part)
 
-    imgui_md.render_this_file = _render_this_file
+    rich_md.render_this_file = _render_this_file
 if has_submodule("immvision"):
     from imgui_bundle._imgui_bundle import immvision as immvision
     _publish("immvision", immvision)

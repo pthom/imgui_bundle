@@ -1,5 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle import imgui, imgui_md, immapp
+from imgui_bundle import imgui, rich_md, immapp
 from imgui_bundle.immapp import icons_fontawesome_6 as fa
 
 # Filled by the on_heading callback (set when this demo runs standalone: see main())
@@ -12,7 +12,7 @@ def example_markdown_string() -> str:
     markdown = r"""
 # Dear ImGui Bundle — Markdown tour
 
-`imgui_md` renders markdown directly inside an ImGui window — no browser,
+`rich_md` renders markdown directly inside an ImGui window — no browser,
 no HTML, no external renderer.
 
 > [!TIP]
@@ -214,7 +214,7 @@ int main() {
 ```
 
 Code blocks get a copy button, and syntax highlighting when the library is built with its code
-editor (`imgui_md.has_code_editor()`); otherwise they are plain monospaced blocks.
+editor (`rich_md.has_code_editor()`); otherwise they are plain monospaced blocks.
 
 Code blocks are delimited by three backticks, plus an optional language. See example below:
 
@@ -418,7 +418,7 @@ def render_csv(code: str) -> None:
                 imgui.text(cell)
         imgui.end_table()
 
-imgui_md.register_fenced_block_renderer("csv", render_csv)
+rich_md.register_fenced_block_renderer("csv", render_csv)
 ```
 
 Then in the markdown:
@@ -449,7 +449,7 @@ A wikilink to [[Home]] and one with a label: [[Notes/todo|my todo list]].
 <summary>Show source</summary>
 
 ```python
-options = imgui_md.MarkdownOptions()
+options = rich_md.MarkdownOptions()
 options.callbacks.on_wiki_link = lambda target: print("go to", target)
 options.hard_soft_breaks = True   # for chat-like text
 immapp.run(gui, with_markdown_options=options)
@@ -495,9 +495,9 @@ until it is used), your own icons...
 
 ```python
 from imgui_bundle.immapp import icons_fontawesome_6 as fa
-imgui_md.render("Launch " + fa.ICON_FA_ROCKET)
+rich_md.render("Launch " + fa.ICON_FA_ROCKET)
 
-options = imgui_md.MarkdownOptions()
+options = rich_md.MarkdownOptions()
 options.font_options.merge_fonts = ["fonts/NotoEmoji-Regular.ttf", "fonts/NotoSansCJKjp-Regular.otf"]
 ```
 
@@ -550,14 +550,14 @@ Last line
 
 @@SUPPORT_STATUS@@
 
-`imgui_md.has_latex()`, `has_url_images()` and `has_code_editor()` tell what the library was
+`rich_md.has_latex()`, `has_url_images()` and `has_code_editor()` tell what the library was
 built with and what the host provides.
 
 </details>
 <details>
 <summary>Rendering and fonts</summary>
 
-- `imgui_md.render(text)` removes the common indentation first, so that a markdown string
+- `rich_md.render(text)` removes the common indentation first, so that a markdown string
   written inside an indented function renders as expected (`render_raw` renders as is).
 - The markdown fonts are loaded at the first render: `initialize_markdown()` can be called
   any time after the ImGui context exists (ImmApp and Hello ImGui call it for you).
@@ -635,9 +635,9 @@ def _fill_dynamic_parts(markdown: str) -> str:
         )
         headings_status = "*(Not enabled in this hosted run.)*"
     support_status = "This build: LaTeX **{}**, URL images **{}**, code editor **{}**.".format(
-        "yes" if imgui_md.has_latex() else "no",
-        "yes" if imgui_md.has_url_images() else "no",
-        "yes" if imgui_md.has_code_editor() else "no",
+        "yes" if rich_md.has_latex() else "no",
+        "yes" if rich_md.has_url_images() else "no",
+        "yes" if rich_md.has_code_editor() else "no",
     )
     return (
         markdown.replace("@@WIKILINKS_STATUS@@", wikilinks_status)
@@ -656,13 +656,13 @@ _csv_renderer_registered = False
 def demo_gui():
     global _csv_renderer_registered
     if not _csv_renderer_registered:
-        imgui_md.register_fenced_block_renderer("csv", _render_csv)
+        rich_md.register_fenced_block_renderer("csv", _render_csv)
         _csv_renderer_registered = True
     # from imgui_bundle import hello_imgui
     # hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.white_is_white)
     headings_seen_last_frame = list(_headings)
     _headings.clear()
-    imgui_md.render(_fill_dynamic_parts(example_markdown_string()))
+    rich_md.render(_fill_dynamic_parts(example_markdown_string()))
     if _standalone_options and not _headings:
         _headings.extend(headings_seen_last_frame)
 
@@ -670,7 +670,7 @@ def demo_gui():
 def main():
     global _standalone_options
     # Options that must be set before the first render: wikilinks, headings callback
-    options = imgui_md.MarkdownOptions()
+    options = rich_md.MarkdownOptions()
     options.callbacks.on_wiki_link = lambda target: print("wikilink clicked:", target)
     options.callbacks.on_heading = lambda level, text: _headings.append("  " * (level - 1) + text)
     _standalone_options = True

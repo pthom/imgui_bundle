@@ -6,7 +6,7 @@
 #include <map>
 #include <mutex>
 
-namespace ImGuiMicroTeX {
+namespace RichMd::Latex {
 
 static std::mutex sMutex;
 
@@ -96,4 +96,4 @@ int GetCacheSize() {
     return (int)sTextureCache.size();
 }
 
-}  // namespace ImGuiMicroTeX
+}  // namespace RichMd::Latex

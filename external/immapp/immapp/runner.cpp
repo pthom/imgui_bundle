@@ -160,7 +160,7 @@ namespace ImmApp
         if (addOnsParams.withMarkdown || addOnsParams.withMarkdownOptions.has_value())
         {
             if (!addOnsParams.withMarkdownOptions.has_value())
-                addOnsParams.withMarkdownOptions = ImGuiMd::MarkdownOptions();
+                addOnsParams.withMarkdownOptions = RichMd::MarkdownOptions();
             // Propagate withLatex convenience flag into MarkdownOptions.
             if (addOnsParams.withLatex)
                 addOnsParams.withMarkdownOptions->withLatex = true;
@@ -169,20 +169,20 @@ namespace ImmApp
             if (!addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows)
                 addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows = []() { return !ImGuiEx::IsInsideCanvas(); };
 #endif
-            ImGuiMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());  // the fonts load at the first render
+            RichMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());  // the fonts load at the first render
 
             // Tear down markdown WHILE the GL context is still alive.
             // BeforeExit fires inside AbstractRunner::TearDown just before
             // Impl_Cleanup destroys the GL context, which is exactly what
-            // ImGuiMd::DeInitializeMarkdown needs: it triggers
-            // ImGuiMicroTeX::Release() → sTextureCache.clear() → each
+            // RichMd::DeInitializeMarkdown needs: it triggers
+            // RichMd::Latex::Release() → sTextureCache.clear() → each
             // TextureGpuOpenGl destructor → glDeleteTextures(...). If we
             // ran this from immapp::Priv_TearDown (after HelloImGui::Run
             // returns), the GL context would already be gone and the
             // glDeleteTextures call would crash on Linux.
             runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
                 runnerParams.callbacks.BeforeExit,
-                [](){ ImGuiMd::DeInitializeMarkdown(); }
+                [](){ RichMd::DeInitializeMarkdown(); }
             );
         }
 
@@ -292,7 +292,7 @@ namespace ImmApp
         }
 #endif
 
-        // Note: ImGuiMd::DeInitializeMarkdown() is no longer called from
+        // Note: RichMd::DeInitializeMarkdown() is no longer called from
         // here. It is invoked from a BeforeExit callback registered in
         // Priv_Setup, so it runs while the GL context is still alive.
         // (Calling it here would run after HelloImGui::Run has destroyed
@@ -336,7 +336,7 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
-        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
+        const std::optional<RichMd::MarkdownOptions> & withMarkdownOptions
     )
     {
         HelloImGui::SimpleRunnerParams simpleRunnerParams;
@@ -387,7 +387,7 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
-        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
+        const std::optional<RichMd::MarkdownOptions> & withMarkdownOptions
     )
     {
         HelloImGui::SimpleRunnerParams simpleRunnerParams;
@@ -575,7 +575,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
 #endif
-        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions
+        const std::optional<RichMd::MarkdownOptions> & withMarkdownOptions
     )
     {
         AssertNotInitialized();

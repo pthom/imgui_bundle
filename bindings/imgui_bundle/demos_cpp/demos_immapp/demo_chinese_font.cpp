@@ -6,7 +6,7 @@
 
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "demo_utils/api_demos.h"
 #include "imgui.h"
 #include <string>
@@ -70,7 +70,7 @@ void LoadFonts(bool fontFilePresent)
 
 void Gui(bool fontFilePresent)
 {
-    ImGuiMd::RenderUnindented(DOC);
+    RichMd::RenderUnindented(DOC);
     ImGui::Separator();
     if (fontFilePresent)
     {

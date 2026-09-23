@@ -23,10 +23,13 @@
  * IN THE SOFTWARE.
  */
 
-#include "imgui_md.h"
+#include "rich_md_renderer.h"
 
 #include <cassert>
 #include <cmath>
+
+namespace RichMd
+{
 
 
 // Small vertical gap between markdown blocks.
@@ -44,30 +47,30 @@ static ImVec4 resolve_color(const ImVec4& color, const ImVec4& automatic)
 }
 
 
-imgui_md::imgui_md()
+Renderer::Renderer()
 {
 	m_md.abi_version = 0;
 
 	m_md.flags = MD_FLAG_TABLES | MD_FLAG_UNDERLINE | MD_FLAG_STRIKETHROUGH | MD_FLAG_TASKLISTS;
 
 	m_md.enter_block = [](MD_BLOCKTYPE t, void* d, void* u) {
-		return ((imgui_md*)u)->block(t, d, true);
+		return ((Renderer*)u)->block(t, d, true);
 	};
 
 	m_md.leave_block = [](MD_BLOCKTYPE t, void* d, void* u) {
-		return ((imgui_md*)u)->block(t, d, false);
+		return ((Renderer*)u)->block(t, d, false);
 	};
 
 	m_md.enter_span = [](MD_SPANTYPE t, void* d, void* u) {
-		return ((imgui_md*)u)->span(t, d, true);
+		return ((Renderer*)u)->span(t, d, true);
 	};
 
 	m_md.leave_span = [](MD_SPANTYPE t, void* d, void* u) {
-		return ((imgui_md*)u)->span(t, d, false);
+		return ((Renderer*)u)->span(t, d, false);
 	};
 
 	m_md.text = [](MD_TEXTTYPE t, const MD_CHAR* text, MD_SIZE size, void* u) {
-		return ((imgui_md*)u)->text(t, text, text + size);
+		return ((Renderer*)u)->text(t, text, text + size);
 	};
 
 	m_md.debug_log = nullptr;
@@ -75,7 +78,7 @@ imgui_md::imgui_md()
 	m_md.syntax = nullptr;
 }
 
-void imgui_md::BLOCK_UL(const MD_BLOCK_UL_DETAIL* d, bool e)
+void Renderer::BLOCK_UL(const MD_BLOCK_UL_DETAIL* d, bool e)
 {
 	if (e) {
 		m_list_stack.push_back(list_info{ 0, d->mark, false, true });
@@ -84,7 +87,7 @@ void imgui_md::BLOCK_UL(const MD_BLOCK_UL_DETAIL* d, bool e)
 	}
 }
 
-void imgui_md::BLOCK_OL(const MD_BLOCK_OL_DETAIL* d, bool e)
+void Renderer::BLOCK_OL(const MD_BLOCK_OL_DETAIL* d, bool e)
 {
 	if (e) {
 		m_list_stack.push_back(list_info{ d->start, d->mark_delimiter, true, true });
@@ -93,7 +96,7 @@ void imgui_md::BLOCK_OL(const MD_BLOCK_OL_DETAIL* d, bool e)
 	}
 }
 
-void imgui_md::BLOCK_LI(const MD_BLOCK_LI_DETAIL* d, bool e)
+void Renderer::BLOCK_LI(const MD_BLOCK_LI_DETAIL* d, bool e)
 {
 	if (e) {
 		// Skip the per-item gap on the first LI of a top-level list:
@@ -135,7 +138,7 @@ void imgui_md::BLOCK_LI(const MD_BLOCK_LI_DETAIL* d, bool e)
 	}
 }
 
-void imgui_md::render_task_marker(bool checked)
+void Renderer::render_task_marker(bool checked)
 {
 	// Draw a small bordered square, with a check mark if `checked`.
 	// Uses the current font size to scale, stays aligned with the text baseline.
@@ -168,14 +171,14 @@ void imgui_md::render_task_marker(bool checked)
 	ImGui::Dummy(ImVec2(sz, h));
 }
 
-void imgui_md::BLOCK_HR(bool e)
+void Renderer::BLOCK_HR(bool e)
 {
 	if (!e) {
 		ImGui::Separator();
 	}
 }
 
-void imgui_md::BLOCK_H(const MD_BLOCK_H_DETAIL* d, bool e)
+void Renderer::BLOCK_H(const MD_BLOCK_H_DETAIL* d, bool e)
 {
 	if (e) {
 		m_hlevel = d->level;
@@ -196,36 +199,36 @@ void imgui_md::BLOCK_H(const MD_BLOCK_H_DETAIL* d, bool e)
 	}
 }
 
-void imgui_md::heading(int, const std::string&)
+void Renderer::heading(int, const std::string&)
 {
 }
 
-void imgui_md::BLOCK_DOC(bool)
+void Renderer::BLOCK_DOC(bool)
 {
 
 }
 
 // The same color is used for the admonition label and for the quote's left bar
-ImVec4 imgui_md::admonition_color(AdmonitionKind kind) const
+ImVec4 Renderer::admonition_color(AdmonitionKind kind) const
 {
 	if (kind == AdmonitionKind::None)
 		return ImGui::GetStyle().Colors[ImGuiCol_TextDisabled];
 	return style.admonitionColors[(int)kind - 1];
 }
 
-static const char* admonition_label(imgui_md::AdmonitionKind k)
+static const char* admonition_label(Renderer::AdmonitionKind k)
 {
 	switch (k) {
-	case imgui_md::AdmonitionKind::Note:      return "NOTE";
-	case imgui_md::AdmonitionKind::Tip:       return "TIP";
-	case imgui_md::AdmonitionKind::Important: return "IMPORTANT";
-	case imgui_md::AdmonitionKind::Warning:   return "WARNING";
-	case imgui_md::AdmonitionKind::Caution:   return "CAUTION";
+	case Renderer::AdmonitionKind::Note:      return "NOTE";
+	case Renderer::AdmonitionKind::Tip:       return "TIP";
+	case Renderer::AdmonitionKind::Important: return "IMPORTANT";
+	case Renderer::AdmonitionKind::Warning:   return "WARNING";
+	case Renderer::AdmonitionKind::Caution:   return "CAUTION";
 	default: return "";
 	}
 }
 
-void imgui_md::BLOCK_QUOTE(bool e)
+void Renderer::BLOCK_QUOTE(bool e)
 {
 	if (e) {
 		m_quote_depth++;
@@ -273,17 +276,17 @@ void imgui_md::BLOCK_QUOTE(bool e)
 // Try to match a "[!NOTE]" / "[!TIP]" / ... marker at the start of `str`.
 // On match, returns the admonition kind and sets `marker_end` to the byte
 // just after the closing ']'. Case-insensitive per GitHub behavior.
-static imgui_md::AdmonitionKind match_admonition_marker(
+static Renderer::AdmonitionKind match_admonition_marker(
 	const char* str, const char* str_end, const char*& marker_end)
 {
 	if (str_end - str < 4 || str[0] != '[' || str[1] != '!')
-		return imgui_md::AdmonitionKind::None;
+		return Renderer::AdmonitionKind::None;
 	const char* p = str + 2;
 	const char* close = p;
 	while (close < str_end && *close != ']')
 		++close;
 	if (close >= str_end)
-		return imgui_md::AdmonitionKind::None;
+		return Renderer::AdmonitionKind::None;
 	auto eq_ci = [](const char* a, const char* a_end, const char* b) {
 		size_t n = (size_t)(a_end - a);
 		if (strlen(b) != n) return false;
@@ -293,19 +296,19 @@ static imgui_md::AdmonitionKind match_admonition_marker(
 		}
 		return true;
 	};
-	imgui_md::AdmonitionKind kind = imgui_md::AdmonitionKind::None;
-	if      (eq_ci(p, close, "NOTE"))      kind = imgui_md::AdmonitionKind::Note;
-	else if (eq_ci(p, close, "TIP"))       kind = imgui_md::AdmonitionKind::Tip;
-	else if (eq_ci(p, close, "IMPORTANT")) kind = imgui_md::AdmonitionKind::Important;
-	else if (eq_ci(p, close, "WARNING"))   kind = imgui_md::AdmonitionKind::Warning;
-	else if (eq_ci(p, close, "CAUTION"))   kind = imgui_md::AdmonitionKind::Caution;
-	if (kind == imgui_md::AdmonitionKind::None)
+	Renderer::AdmonitionKind kind = Renderer::AdmonitionKind::None;
+	if      (eq_ci(p, close, "NOTE"))      kind = Renderer::AdmonitionKind::Note;
+	else if (eq_ci(p, close, "TIP"))       kind = Renderer::AdmonitionKind::Tip;
+	else if (eq_ci(p, close, "IMPORTANT")) kind = Renderer::AdmonitionKind::Important;
+	else if (eq_ci(p, close, "WARNING"))   kind = Renderer::AdmonitionKind::Warning;
+	else if (eq_ci(p, close, "CAUTION"))   kind = Renderer::AdmonitionKind::Caution;
+	if (kind == Renderer::AdmonitionKind::None)
 		return kind;
 	marker_end = close + 1;
 	return kind;
 }
 
-void imgui_md::render_admonition_header(AdmonitionKind kind)
+void Renderer::render_admonition_header(AdmonitionKind kind)
 {
 	ImVec4 col = admonition_color(kind);
 	ImGui::PushStyleColor(ImGuiCol_Text, col);
@@ -322,7 +325,7 @@ void imgui_md::render_admonition_header(AdmonitionKind kind)
 }
 
 
-void imgui_md::BLOCK_CODE(const MD_BLOCK_CODE_DETAIL* detail, bool e)
+void Renderer::BLOCK_CODE(const MD_BLOCK_CODE_DETAIL* detail, bool e)
 {
     if (!can_use_child_windows())
         m_is_code = e;
@@ -342,17 +345,17 @@ void imgui_md::BLOCK_CODE(const MD_BLOCK_CODE_DETAIL* detail, bool e)
     }
 }
 
-void imgui_md::BLOCK_HTML(bool)
+void Renderer::BLOCK_HTML(bool)
 {
 
 }
 
-void imgui_md::BLOCK_P(bool)
+void Renderer::BLOCK_P(bool)
 {
 	// Inter-block spacing is handled centrally in block() on enter.
 }
 
-void imgui_md::BLOCK_TABLE(const MD_BLOCK_TABLE_DETAIL* d, bool e)
+void Renderer::BLOCK_TABLE(const MD_BLOCK_TABLE_DETAIL* d, bool e)
 {
 	if (e) {
 		// Unique ID per table in this render; labels inside cells may repeat.
@@ -373,18 +376,18 @@ void imgui_md::BLOCK_TABLE(const MD_BLOCK_TABLE_DETAIL* d, bool e)
 	}
 }
 
-void imgui_md::BLOCK_THEAD(bool e)
+void Renderer::BLOCK_THEAD(bool e)
 {
 	m_is_table_header = e;
 	if (m_table_header_highlight) set_font(e);
 }
 
-void imgui_md::BLOCK_TBODY(bool e)
+void Renderer::BLOCK_TBODY(bool e)
 {
 	m_is_table_body = e;
 }
 
-void imgui_md::BLOCK_TR(bool e)
+void Renderer::BLOCK_TR(bool e)
 {
 	if (m_table_open && e) ImGui::TableNextRow();
 }
@@ -422,7 +425,7 @@ static void end_aligned_cell(MD_ALIGN align, int vtx_start, float cell_width)
 		dl->VtxBuffer[i].pos.x += offset;
 }
 
-void imgui_md::BLOCK_TH(const MD_BLOCK_TD_DETAIL* d, bool e)
+void Renderer::BLOCK_TH(const MD_BLOCK_TD_DETAIL* d, bool e)
 {
 	if (!m_table_open) return;
 	if (e) {
@@ -435,7 +438,7 @@ void imgui_md::BLOCK_TH(const MD_BLOCK_TD_DETAIL* d, bool e)
 	}
 }
 
-void imgui_md::BLOCK_TD(const MD_BLOCK_TD_DETAIL* d, bool e)
+void Renderer::BLOCK_TD(const MD_BLOCK_TD_DETAIL* d, bool e)
 {
 	if (!m_table_open) return;
 	if (e) {
@@ -449,7 +452,7 @@ void imgui_md::BLOCK_TD(const MD_BLOCK_TD_DETAIL* d, bool e)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-void imgui_md::set_href(bool e, const MD_ATTRIBUTE& src)
+void Renderer::set_href(bool e, const MD_ATTRIBUTE& src)
 {
 	if (e) {
 		m_href.assign(src.text, src.size);
@@ -458,7 +461,7 @@ void imgui_md::set_href(bool e, const MD_ATTRIBUTE& src)
 	}
 }
 
-void imgui_md::set_img_src(bool e, const MD_ATTRIBUTE& src)
+void Renderer::set_img_src(bool e, const MD_ATTRIBUTE& src)
 {
     if (e) {
         m_img_src.assign(src.text, src.size);
@@ -468,7 +471,7 @@ void imgui_md::set_img_src(bool e, const MD_ATTRIBUTE& src)
 }
 
 
-void imgui_md::set_font(bool e)
+void Renderer::set_font(bool e)
 {
 	if (e) {
 		auto sized_font = get_font();
@@ -478,7 +481,7 @@ void imgui_md::set_font(bool e)
 	}
 }
 
-void imgui_md::set_color(bool e)
+void Renderer::set_color(bool e)
 {
 	if (e) {
 		ImGui::PushStyleColor(ImGuiCol_Text, get_color());
@@ -487,7 +490,7 @@ void imgui_md::set_color(bool e)
 	}
 }
 
-void imgui_md::line(ImColor c, bool under)
+void Renderer::line(ImColor c, bool under)
 {
 	ImVec2 mi = ImGui::GetItemRectMin();
 	ImVec2 ma = ImGui::GetItemRectMax();
@@ -502,7 +505,7 @@ void imgui_md::line(ImColor c, bool under)
 	ImGui::GetWindowDrawList()->AddLine(mi, ma, c, lineThickness);
 }
 
-bool imgui_md::link_item(const Style& style, const char* url)
+bool Renderer::link_item(const Style& style, const char* url)
 {
 	const ImGuiStyle& s = ImGui::GetStyle();
 	ImVec4 underline;
@@ -520,27 +523,27 @@ bool imgui_md::link_item(const Style& style, const char* url)
 	return clicked;
 }
 
-void imgui_md::SPAN_A(const MD_SPAN_A_DETAIL* d, bool e)
+void Renderer::SPAN_A(const MD_SPAN_A_DETAIL* d, bool e)
 {
 	set_href(e, d->href);
 	set_color(e);
 }
 
 
-void imgui_md::SPAN_EM(bool e)
+void Renderer::SPAN_EM(bool e)
 {
 	m_is_em = e;
 	set_font(e);
 }
 
-void imgui_md::SPAN_STRONG(bool e)
+void Renderer::SPAN_STRONG(bool e)
 {
 	m_is_strong = e;
 	set_font(e);
 }
 
 
-void imgui_md::SPAN_IMG(const MD_SPAN_IMG_DETAIL* d, bool e)
+void Renderer::SPAN_IMG(const MD_SPAN_IMG_DETAIL* d, bool e)
 {
 	m_is_image = e;
 
@@ -585,18 +588,18 @@ void imgui_md::SPAN_IMG(const MD_SPAN_IMG_DETAIL* d, bool e)
 	}
 }
 
-void imgui_md::SPAN_CODE(bool)
+void Renderer::SPAN_CODE(bool)
 {
 
 }
 
 
-void imgui_md::EnableLatex()
+void Renderer::EnableLatex()
 {
 	m_md.flags |= MD_FLAG_LATEXMATHSPANS;
 }
 
-void imgui_md::set_flag(unsigned flag, bool enable)
+void Renderer::set_flag(unsigned flag, bool enable)
 {
 	if (enable)
 		m_md.flags |= flag;
@@ -604,7 +607,7 @@ void imgui_md::set_flag(unsigned flag, bool enable)
 		m_md.flags &= ~flag;
 }
 
-void imgui_md::SPAN_LATEXMATH(bool e)
+void Renderer::SPAN_LATEXMATH(bool e)
 {
 	if (e) {
 		m_is_latex_inline = true;
@@ -615,7 +618,7 @@ void imgui_md::SPAN_LATEXMATH(bool e)
 	}
 }
 
-void imgui_md::SPAN_LATEXMATH_DISPLAY(bool e)
+void Renderer::SPAN_LATEXMATH_DISPLAY(bool e)
 {
 	if (e) {
 		m_is_latex_display = true;
@@ -626,14 +629,14 @@ void imgui_md::SPAN_LATEXMATH_DISPLAY(bool e)
 	}
 }
 
-bool imgui_md::get_latex_texture(const std::string&, float, ImU32, bool, latex_texture&) const
+bool Renderer::get_latex_texture(const std::string&, float, ImU32, bool, latex_texture&) const
 {
 	return false;  // no LaTeX in this base class
 }
 
 // Draws m_latex_buffer: inline, aligned on the text baseline; display, centered on its own line.
 // Formulas are rasterized at the framebuffer density and displayed at the logical size (sharp on HiDPI).
-void imgui_md::render_latex_span(bool display)
+void Renderer::render_latex_span(bool display)
 {
 	float pixel_scale = ImGui::GetIO().DisplayFramebufferScale.y;
 	if (pixel_scale <= 0.01f)
@@ -697,7 +700,7 @@ void imgui_md::render_latex_span(bool display)
 	}
 }
 
-void imgui_md::SPAN_WIKILINK(const MD_SPAN_WIKILINK_DETAIL* d, bool e)
+void Renderer::SPAN_WIKILINK(const MD_SPAN_WIKILINK_DETAIL* d, bool e)
 {
 	// Rendered as a link whose href is the target; the click goes to open_wikilink()
 	m_is_wikilink = e;
@@ -705,21 +708,21 @@ void imgui_md::SPAN_WIKILINK(const MD_SPAN_WIKILINK_DETAIL* d, bool e)
 	set_color(e);
 }
 
-void imgui_md::open_wikilink() const
+void Renderer::open_wikilink() const
 {
 }
 
-void imgui_md::SPAN_U(bool e)
+void Renderer::SPAN_U(bool e)
 {
 	m_is_underline = e;
 }
 
-void imgui_md::SPAN_DEL(bool e)
+void Renderer::SPAN_DEL(bool e)
 {
 	m_is_strikethrough = e;
 }
 
-void imgui_md::render_text(const char* str, const char* str_end)
+void Renderer::render_text(const char* str, const char* str_end)
 {
 	const ImGuiStyle& s = ImGui::GetStyle();
 	bool is_lf = false;
@@ -872,7 +875,7 @@ void imgui_md::render_text(const char* str, const char* str_end)
 }
 
 
-bool imgui_md::render_entity(const char* str, const char* str_end)
+bool Renderer::render_entity(const char* str, const char* str_end)
 {
 	const size_t sz = str_end - str;
 	if (strncmp(str, "&nbsp;", sz) == 0) {
@@ -974,7 +977,7 @@ static int extract_html_int_attr(const std::string& tag, const char* name, int d
 
 static bool details_hidden(const std::vector<bool>& stack);  // defined below
 
-bool imgui_md::check_html(const char* str, const char* str_end)
+bool Renderer::check_html(const char* str, const char* str_end)
 {
 	const size_t sz = str_end - str;
 
@@ -1275,7 +1278,7 @@ bool imgui_md::check_html(const char* str, const char* str_end)
 }
 
 
-void imgui_md::html_div(const std::string& dclass, bool e)
+void Renderer::html_div(const std::string& dclass, bool e)
 {
 	//Example:
 #if 0
@@ -1290,7 +1293,7 @@ void imgui_md::html_div(const std::string& dclass, bool e)
     (void)dclass; (void)e;
 }
 
-void imgui_md::render_code_block()
+void Renderer::render_code_block()
 {
     m_is_code = true;
     push_code_style();
@@ -1303,7 +1306,7 @@ void imgui_md::render_code_block()
     m_is_code = false;
 }
 
-void imgui_md::push_code_style()
+void Renderer::push_code_style()
 {
 	auto code_font = get_font();
 	ImGui::PushFont(code_font.font, code_font.size);
@@ -1314,14 +1317,14 @@ void imgui_md::push_code_style()
     ImGui::PushStyleColor(ImGuiCol_Text, resolve_color(style.codeColor, automatic));
 
 }
-void imgui_md::pop_code_style()
+void Renderer::pop_code_style()
 {
     ImGui::PopStyleColor();
     ImGui::PopFont();
 }
 
 
-void imgui_md::render_inline_code(const char *str, const char *str_end)
+void Renderer::render_inline_code(const char *str, const char *str_end)
 {
     m_is_code = true;
     push_code_style();
@@ -1341,7 +1344,7 @@ static bool details_hidden(const std::vector<bool>& stack)
 	return false;
 }
 
-int imgui_md::text(MD_TEXTTYPE type, const char* str, const char* str_end)
+int Renderer::text(MD_TEXTTYPE type, const char* str, const char* str_end)
 {
 	// Even while hidden we keep processing raw HTML so </details>
 	// can pop the stack; everything else is discarded.
@@ -1425,7 +1428,7 @@ int imgui_md::text(MD_TEXTTYPE type, const char* str, const char* str_end)
 	return 0;
 }
 
-int imgui_md::block(MD_BLOCKTYPE type, void* d, bool e)
+int Renderer::block(MD_BLOCKTYPE type, void* d, bool e)
 {
 	// Suppress block rendering while inside a collapsed <details>.
 	// BLOCK_HTML pairs still arrive (the tags themselves land as
@@ -1531,7 +1534,7 @@ int imgui_md::block(MD_BLOCKTYPE type, void* d, bool e)
 	return 0;
 }
 
-int imgui_md::span(MD_SPANTYPE type, void* d, bool e)
+int Renderer::span(MD_SPANTYPE type, void* d, bool e)
 {
 	// Suppress span rendering while inside a collapsed <details>.
 	if (details_hidden(m_details_open_stack))
@@ -1580,7 +1583,7 @@ int imgui_md::span(MD_SPANTYPE type, void* d, bool e)
 	return 0;
 }
 
-int imgui_md::print(const char* str, const char* str_end)
+int Renderer::print(const char* str, const char* str_end)
 {
 	if (str >= str_end)
         return 0;
@@ -1606,7 +1609,7 @@ int imgui_md::print(const char* str, const char* str_end)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-imgui_md::MdSizedFont imgui_md::get_font() const
+Renderer::MdSizedFont Renderer::get_font() const
 {
 	return MdSizedFont{nullptr, 0.0f}; // no font in this base class!
 
@@ -1629,7 +1632,7 @@ imgui_md::MdSizedFont imgui_md::get_font() const
 
 };
 
-ImVec4 imgui_md::default_link_color()
+ImVec4 Renderer::default_link_color()
 {
     auto col_text = ImGui::GetStyle().Colors[ImGuiCol_Text];
 
@@ -1648,12 +1651,12 @@ ImVec4 imgui_md::default_link_color()
 }
 
 
-ImVec4 imgui_md::link_color() const
+ImVec4 Renderer::link_color() const
 {
 	return resolve_color(style.linkColor, default_link_color());
 }
 
-ImVec4 imgui_md::get_color() const
+ImVec4 Renderer::get_color() const
 {
 	if (!m_href.empty())
     {
@@ -1663,7 +1666,7 @@ ImVec4 imgui_md::get_color() const
 }
 
 
-imgui_md::image_status imgui_md::get_image(image_info& nfo) const
+Renderer::image_status Renderer::get_image(image_info& nfo) const
 {
 	//Use m_href to identify images
 
@@ -1677,7 +1680,7 @@ imgui_md::image_status imgui_md::get_image(image_info& nfo) const
 };
 
 // A rotating spinner, two lines high
-void imgui_md::draw_loading_spinner()
+void Renderer::draw_loading_spinner()
 {
 	float size = ImGui::GetFontSize() * 2.0f;
 	ImVec2 cursor = ImGui::GetCursorScreenPos();
@@ -1702,7 +1705,7 @@ void imgui_md::draw_loading_spinner()
 	ImGui::Dummy(ImVec2(size, size));
 }
 
-void imgui_md::open_url() const
+void Renderer::open_url() const
 {
 	//Example:
 
@@ -1715,9 +1718,11 @@ void imgui_md::open_url() const
 #endif
 }
 
-void imgui_md::soft_break()
+void Renderer::soft_break()
 {
     // Convert a soft break (e.g. a new line inside a paragraph into a space)
     ImGui::TextUnformatted(" ");
     ImGui::SameLine(0.0f, 0.0f);
 }
+
+} // namespace RichMd

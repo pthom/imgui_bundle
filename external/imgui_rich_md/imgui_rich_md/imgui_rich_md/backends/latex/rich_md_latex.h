@@ -14,7 +14,7 @@
 //
 // Thread safety: all functions are protected by a mutex and can be called from any thread.
 
-namespace ImGuiMicroTeX {
+namespace RichMd::Latex {
 
 // ============================================================================
 // TeX style
@@ -104,4 +104,4 @@ RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& c
 // them here, while the rendering backend is still alive.
 void AddReleaseCallback(std::function<void()> callback);
 
-}  // namespace ImGuiMicroTeX
+}  // namespace RichMd::Latex

@@ -13,7 +13,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "hello_imgui/hello_imgui_include_opengl.h"
 #include <GLFW/glfw3.h>
 
@@ -23,7 +23,7 @@ static const char* kMarkdown = R"(
 # imgui_md without HelloImGui (C++)
 
 > **Running without HelloImGui::Run()** — pure GLFW + OpenGL3 backend.
-> `ImGuiMd::InitializeMarkdown()` takes care of the GLAD setup automatically;
+> `RichMd::InitializeMarkdown()` takes care of the GLAD setup automatically;
 > no `HelloImGui::*` ceremony required.
 
 ## Markdown features
@@ -83,9 +83,9 @@ int main(int, char**)
 
     // Outside HelloImGui::Run(), HelloImGui initializes its OpenGL loader (GLAD) at the
     // first texture creation, so image / LaTeX-math textures work here too.
-    ImGuiMd::MarkdownOptions md_options;
+    RichMd::MarkdownOptions md_options;
     md_options.withLatex = true;
-    ImGuiMd::InitializeMarkdown(md_options);  // the fonts load at the first render
+    RichMd::InitializeMarkdown(md_options);  // the fonts load at the first render
 
     while (!glfwWindowShouldClose(window))
     {
@@ -102,7 +102,7 @@ int main(int, char**)
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize
             | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse
             | ImGuiWindowFlags_NoBringToFrontOnFocus);
-        ImGuiMd::RenderUnindented(kMarkdown);
+        RichMd::RenderUnindented(kMarkdown);
         ImGui::End();
 
         ImGui::Render();
@@ -116,9 +116,9 @@ int main(int, char**)
         glfwSwapBuffers(window);
     }
 
-    // ImGuiMd::DeInitializeMarkdown frees the markdown textures
+    // RichMd::DeInitializeMarkdown frees the markdown textures
     // so the GPU textures are dropped before we destroy the GL context.
-    ImGuiMd::DeInitializeMarkdown();
+    RichMd::DeInitializeMarkdown();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

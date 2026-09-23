@@ -1,6 +1,6 @@
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "implot/implot.h"
 #include "demo_utils/api_demos.h"
 #include <vector>
@@ -24,7 +24,7 @@ int main(int, char**)
 
     auto gui = [x,y1,y2]()
     {
-        ImGuiMd::Render("# This is the plot of _cosinus_ and *sinus*");  // Markdown
+        RichMd::Render("# This is the plot of _cosinus_ and *sinus*");  // Markdown
         if (ImPlot::BeginPlot("Plot"))
         {
             ImPlot::PlotLine("y1", x.data(), y1.data(), x.size());

@@ -1,5 +1,5 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "hello_imgui/hello_imgui.h"
 #include "demo_utils/api_demos.h"
 
@@ -18,7 +18,7 @@ void demo_tex_inspect_launcher()
         return;
     }
 
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::RenderUnindented(R"(
     # imgui_tex_inspect
     [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) is a texture inspector tool for Dear ImGui
     ImGuiTexInspect is a texture inspector tool for Dear ImGui. It's a debug tool that allows you to easily inspect the data in any texture.

@@ -1,6 +1,6 @@
 #if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 #include "imgui-node-editor/imgui_node_editor.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "immapp/immapp.h"
 
 namespace ed = ax::NodeEditor;
@@ -31,7 +31,7 @@ void Gui()
         // A dummy button, to artificially set the node width
         //
         ImGui::SeparatorText("Dummy Button");
-        ImGuiMd::RenderUnindented(R"(
+        RichMd::RenderUnindented(R"(
             This is a _dummy button_, to artificially set the node width.
             Below it is a fixed width slider, which enables to set this button's width.
         )");
@@ -67,7 +67,7 @@ Note:
         // Reset Node Layout
         //
         ImGui::SeparatorText("Reset Layout");
-        ImGuiMd::RenderUnindented(R"(
+        RichMd::RenderUnindented(R"(
             Click the button below to reset the node layout. Its content will disappear for one frame,
             allowing it to be re-laid out with the new width.
         )");

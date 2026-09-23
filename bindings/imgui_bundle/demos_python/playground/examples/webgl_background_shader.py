@@ -180,7 +180,7 @@ else:
     SHADER_HEADER = "#version 330 core\n"
 
 
-from imgui_bundle import hello_imgui, imgui, immapp, ImVec2, ImVec4, imgui_md
+from imgui_bundle import hello_imgui, imgui, immapp, ImVec2, ImVec4, rich_md
 
 from dataclasses import dataclass
 from typing import Dict, Any
@@ -831,7 +831,7 @@ def _docs_window():
     imgui.set_next_window_size(hello_imgui.em_to_vec2(48, 32), imgui.Cond_.first_use_ever)
     expanded, _show_docs = imgui.begin("About this demo", _show_docs)  # type: ignore
     if expanded:
-        imgui_md.render_unindented(__doc__ or "")
+        rich_md.render_unindented(__doc__ or "")
     imgui.end()
 
 
@@ -842,7 +842,7 @@ def gui(app_state: AppState):
     imgui.set_next_window_size(hello_imgui.em_to_vec2(31.0, 18.0), imgui.Cond_.appearing)
     imgui.begin("Shader parameters")
 
-    imgui_md.render_unindented("""
+    rich_md.render_unindented("""
         Shader: "Seascape" by Alexander Alekseev aka TDM - 2014 - [Shadertoy](https://www.shadertoy.com/view/Ms2SD1)
     """)
     _, _show_docs = imgui.checkbox("Show docs", _show_docs)
@@ -910,7 +910,7 @@ def main():
     runner_params.callbacks.custom_background = lambda: custom_background(app_state)
 
     # Let's go!
-    md_options = imgui_md.MarkdownOptions()
+    md_options = rich_md.MarkdownOptions()
     md_options.with_latex = True
     add_ons_params = immapp.AddOnsParams()
     add_ons_params.with_markdown = True

@@ -23,21 +23,24 @@
  * IN THE SOFTWARE.
  */
 
-#ifndef IMGUI_MD_H
-#define IMGUI_MD_H
+#ifndef RICHMD_RENDERER_H
+#define RICHMD_RENDERER_H
 
 #include "md4c.h"
 #include "imgui.h"
 #include <string>
 #include <vector>
 
-struct imgui_md
+namespace RichMd
+{
+
+struct Renderer
 {
 	// GitHub-style admonitions: > [!NOTE] / [!TIP] / [!IMPORTANT] / [!WARNING] / [!CAUTION]
 	enum class AdmonitionKind { None, Note, Tip, Important, Warning, Caution };
 
-	imgui_md();
-	virtual ~imgui_md() {};
+	Renderer();
+	virtual ~Renderer() {};
 
 	//returns 0 on success
 	int print(const char* str, const char* str_end);
@@ -322,4 +325,6 @@ private:
 	MD_PARSER m_md;
 };
 
-#endif  /* IMGUI_MD_H */
+} // namespace RichMd
+
+#endif  /* RICHMD_RENDERER_H */

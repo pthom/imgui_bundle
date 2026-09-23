@@ -1,6 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 
-from imgui_bundle import imgui, hello_imgui, imgui_md, immapp, ImVec2
+from imgui_bundle import imgui, hello_imgui, rich_md, immapp, ImVec2
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 
 
@@ -22,7 +22,7 @@ def demo_gui():
     if not hasattr(static, "show_full_demo_rendering_code"):
         static.show_full_demo_rendering_code = False
 
-    imgui_md.render_unindented("""
+    rich_md.render_unindented("""
         [NanoVG](https://github.com/memononen/nanovg) provides antialiased 2D vector drawing library on top of OpenGL for UI and visualizations.
         """)
 

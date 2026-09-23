@@ -1,6 +1,6 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 import random
-from imgui_bundle import imgui, hello_imgui, imgui_md, immapp
+from imgui_bundle import imgui, hello_imgui, rich_md, immapp
 
 
 @immapp.static(idx_fortune=0, added_logs=False)
@@ -43,7 +43,7 @@ def demo_gui():
         add_logs()
         static.added_logs = True
 
-    imgui_md.render_unindented(
+    rich_md.render_unindented(
         """
         # Graphical logger for ImGui
         This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)

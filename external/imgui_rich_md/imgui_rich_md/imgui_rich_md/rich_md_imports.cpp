@@ -1,5 +1,5 @@
-// Sections and imports: see the documentation of ResolveImports in imgui_md_wrapper.h
-#include "imgui_md_wrapper.h"
+// Sections and imports: see the documentation of ResolveImports in rich_md.h
+#include "rich_md.h"
 
 #include <algorithm>
 #include <map>
@@ -7,7 +7,7 @@
 #include <sstream>
 #include <vector>
 
-namespace ImGuiMd
+namespace RichMd
 {
 namespace
 {
@@ -332,4 +332,4 @@ std::string ResolveImports(const std::string& markdown, const ReadTextFile& read
     return resolver.Resolve(markdown, currentFile, 0);
 }
 
-}  // namespace ImGuiMd
+}  // namespace RichMd

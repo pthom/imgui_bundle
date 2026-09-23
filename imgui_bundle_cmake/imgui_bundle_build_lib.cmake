@@ -15,7 +15,7 @@ macro(imgui_bundle_resolve_early_dependencies)
     ===========================================================
      IMGUI_BUNDLE_WITH_HELLO_IMGUI is OFF, automatically disabling dependent modules:
         immapp              (depends on hello_imgui)
-        imgui_md            (depends on hello_imgui + immapp)
+        imgui_rich_md       (depends on hello_imgui + immapp)
         imgui_test_engine   (needs GIL management)
         GLFW backend        (not needed)
     ===========================================================")

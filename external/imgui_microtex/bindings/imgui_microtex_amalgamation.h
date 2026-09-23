@@ -15,7 +15,7 @@
 //
 // Thread safety: all functions are protected by a mutex and can be called from any thread.
 
-namespace ImGuiMicroTeX {
+namespace RichMd::Latex {
 
 // ============================================================================
 // TeX style
@@ -105,7 +105,7 @@ RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& c
 // them here, while the rendering backend is still alive.
 void AddReleaseCallback(std::function<void()> callback);
 
-}  // namespace ImGuiMicroTeX
+}  // namespace RichMd::Latex
 
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 // imgui_microtex: the LaTeX backend of imgui_rich_md (Level 1: LaTeX -> RGBA pixels) plus, for the bundle,
@@ -113,7 +113,7 @@ void AddReleaseCallback(std::function<void()> callback);
 #pragma once
 #include "hello_imgui/texture_gpu.h"
 
-namespace ImGuiMicroTeX {
+namespace RichMd::Latex {
 
 // ============================================================================
 // Level 2: LaTeX -> HelloImGui::TextureGpuPtr (with caching)
@@ -186,4 +186,6 @@ void SetEvictionFrames(int n);
 // diagnostics, monitoring, and tests.
 int GetCacheSize();
 
-}  // namespace ImGuiMicroTeX
+}  // namespace RichMd::Latex
+
+namespace ImGuiMicroTeX = RichMd::Latex;  // the namespace's former name
