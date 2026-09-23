@@ -3,7 +3,7 @@
 // Host services: what the markdown renderer needs from the application or the framework
 // that hosts it (GPU textures, asset files, logging). Every service is optional and has a
 // plain default; a host (e.g. ImGui Bundle with HelloImGui) installs richer ones with
-// SetHostServices() before InitializeMarkdown(). Not part of the Python API.
+// SetHostServices() before InitializeMarkdown(). Only the download types are part of the Python API.
 
 #include "imgui.h"
 
@@ -58,6 +58,28 @@ namespace RichMd
     // The default ReadAsset: the embedded assets, then the file system under the assets folder
     AssetBytes ReadAssetDefault(const std::string& assetPath);
 
+    // Status of a download (see HostServices::Download)
+    enum class MarkdownDownloadStatus {
+        NotStarted,   // Download has not been initiated
+        Downloading,  // Download is in progress (show placeholder)
+        Ready,        // Download complete, data is available
+        Failed        // Download failed, errorMessage has details
+    };
+
+    // Result of a download attempt
+    struct MarkdownDownloadResult {
+        MarkdownDownloadStatus status = MarkdownDownloadStatus::NotStarted;
+        std::vector<uint8_t> data;       // Only valid if status == Ready
+        std::string errorMessage;        // Only valid if status == Failed
+
+        // Fill data from a raw buffer (convenience for C++ users)
+        void FillFromData(const void* buffer, size_t size) {
+            data.assign(static_cast<const uint8_t*>(buffer), static_cast<const uint8_t*>(buffer) + size);
+        }
+    };
+
+    using MarkdownDownloadFunction = std::function<MarkdownDownloadResult(const std::string& url)>;
+
     struct HostServices
     {
         // Uploads an RGBA8 buffer (w * h * 4 bytes, no padding) to a GPU texture.
@@ -81,6 +103,13 @@ namespace RichMd
         // bitmap with only `error` set when the formula is invalid: the formula's source is shown instead.
         // Default: MicroTeX when built with IMGUI_RICHMD_WITH_LATEX, else none.
         std::function<std::optional<LatexBitmap>(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle)> RenderLatex;
+
+        // Downloads the data of a URL image (http:// or https://). Called every frame for a URL until it returns
+        // Ready or Failed; the result is then cached. A synchronous download returns Ready or Failed at once, an
+        // asynchronous one returns Downloading first and tracks its pending downloads itself.
+        // Default: libcurl when built with IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES, emscripten_fetch on Emscripten
+        // (IMGUI_RICHMD_EMSCRIPTEN_FETCH), else none (URL images are shown as broken). Python installs its own.
+        MarkdownDownloadFunction Download;
 
         // Logs a warning. Default: stderr.
         std::function<void(const std::string& message)> Log;

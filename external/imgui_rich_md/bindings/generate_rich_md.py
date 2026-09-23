@@ -12,6 +12,7 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 def main() -> None:
     print("autogenerate_imgui_md")
     input_cpp_header = THIS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/rich_md.h"
+    input_cpp_header_host = THIS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/rich_md_host.h"  # only the download types
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_rich_md.cpp"
     output_stub_pyi_file = STUB_DIR + "/rich_md.pyi"
 
@@ -37,40 +38,43 @@ def main() -> None:
         "MarkdownDownloadResult": r"^data$",
     }
     # Context is opaque (C++ only for now: an opaque Python handle will come with the RichMd rename)
-    options.fn_exclude_by_name__regex = r"^FillFromData$|^Priv_SetOnInitializeMarkdownCallback$|^CreateContext$|^DestroyContext$|^SetCurrentContext$|^GetCurrentContext$|^GetStyle$"
+    options.fn_exclude_by_name__regex = r"^FillFromData$|^CreateContext$|^DestroyContext$|^SetCurrentContext$|^GetCurrentContext$|^GetStyle$"
+    # rich_md_host.h: the host services are C++ only, except the download types (used by set_download_function)
+    options.fn_exclude_by_name__regex += r"|^UploadRgbaDefault$|^ReadAssetDefault$|^SetHostServices$|^GetHostServices$"
+    options.class_exclude_by_name__regex = r"^HostServices$|^MarkdownTexture$|^LatexBitmap$|^EmbeddedAsset$"
 
-    # Custom binding for Priv_SetOnInitializeMarkdownCallback (same PyObject* pattern as OnDownloadData)
+    # set_download_function: HostServices.Download, kept as a Python object (same PyObject* pattern as on_download_data)
     options.custom_bindings.add_custom_bindings_to_main_module(
         stub_code='''
-            def _set_on_initialize_markdown_callback(callback: Optional[Callable[[MarkdownOptions], None]]) -> None:
-                """Private. Set a callback called during initialize_markdown() to customize options.
-                Used internally by imgui_bundle to inject URL image download support."""
+            def set_download_function(fn: Optional[Callable[[str], MarkdownDownloadResult]]) -> None:
+                """Sets the function that downloads URL images (HostServices.Download), for every markdown context.
+                imgui_bundle installs one at import (urllib in a thread on desktop, JS fetch in Pyodide).
+                Called every frame for a URL until it returns Ready or Failed; an asynchronous download returns
+                Downloading first and tracks its pending downloads itself. None disables URL images."""
                 pass
         ''',
         pydef_code=r'''
-            static PyObject* s_init_md_callback = nullptr;
+            static PyObject* s_host_download_func = nullptr;
 
-            LG_MODULE.def("_set_on_initialize_markdown_callback",
+            LG_MODULE.def("set_download_function",
                 [](nb::object py_func) {
-                    if (py_func.is_none()) {
-                        Py_XDECREF(s_init_md_callback);
-                        s_init_md_callback = nullptr;
-                        RichMd::Priv_SetOnInitializeMarkdownCallback(nullptr);
-                        return;
-                    }
-                    Py_XDECREF(s_init_md_callback);
-                    s_init_md_callback = py_func.ptr();
-                    Py_INCREF(s_init_md_callback);
-                    RichMd::Priv_SetOnInitializeMarkdownCallback(
-                        [](RichMd::MarkdownOptions& options) {
+                    auto services = RichMd::GetHostServices();
+                    Py_XDECREF(s_host_download_func);
+                    s_host_download_func = nullptr;
+                    services.Download = nullptr;
+                    if (!py_func.is_none()) {
+                        s_host_download_func = py_func.ptr();
+                        Py_INCREF(s_host_download_func);
+                        services.Download = [](const std::string& url) -> RichMd::MarkdownDownloadResult {
                             nb::gil_scoped_acquire acquire;
-                            nb::object func = nb::borrow(s_init_md_callback);
-                            func(nb::cast(options, nb::rv_policy::reference));
-                        }
-                    );
+                            nb::object func = nb::borrow(s_host_download_func);
+                            return nb::cast<RichMd::MarkdownDownloadResult>(func(nb::cast(url)));
+                        };
+                    }
+                    RichMd::SetHostServices(services);
                 },
-                nb::arg("callback"),
-                "Set a callback called during initialize_markdown() to customize options."
+                nb::arg("fn"),
+                "Sets the function that downloads URL images (HostServices.Download); None disables URL images."
             );
         ''',
     )
@@ -100,18 +104,13 @@ def main() -> None:
         stub_code='''
             @property
             def on_download_data(self) -> Optional[str]:
-                """Returns None if not set, or a status string if set.
-                Reading back the callable itself is not supported."""
+                """Deprecated: use rich_md.set_download_function. Returns None if not set, or a status string
+                (reading back the callable itself is not supported)."""
                 ...
             @on_download_data.setter
             def on_download_data(self, fn: Optional[Callable[[str], MarkdownDownloadResult]]) -> None:
-                """Set a callable that downloads data from a URL.
-                The callable receives a URL string and should return a MarkdownDownloadResult.
-                The callback is stateful: it will be called every frame for a given URL until
-                it returns Ready or Failed. For synchronous downloads, return Ready or Failed
-                immediately. For async downloads, return Downloading on first call, then
-                Ready/Failed once done.
-                Set to None to disable URL image support."""
+                """Deprecated: use rich_md.set_download_function (same contract). When set, the function becomes
+                the download service when the markdown context is created."""
                 ...
         ''',
         pydef_code=r'''
@@ -142,19 +141,17 @@ def main() -> None:
                         return nb::cast<RichMd::MarkdownDownloadResult>(py_result);
                     };
                 },
-                "OnDownloadData: downloads data from a URL (empty by default).\n"
-                "When set, OnImage_Default will use it to fetch images from URLs.\n"
-                "The callable should accept a URL string and return a MarkdownDownloadResult."
+                "Deprecated: use rich_md.set_download_function (same contract)."
             );
         ''',
     )
 
-    litgen.write_generated_code_for_file(
-        options,
-        input_cpp_header_file=input_cpp_header,
+    generator = litgen.LitgenGenerator(options, omit_boxed_types=True)
+    generator.process_cpp_file(input_cpp_header_host)
+    generator.process_cpp_file(input_cpp_header)
+    generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,
         output_stub_pyi_file=output_stub_pyi_file,
-        omit_boxed_types=True,
     )
 
 

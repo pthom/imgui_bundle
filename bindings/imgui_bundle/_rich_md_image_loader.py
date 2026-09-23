@@ -173,10 +173,3 @@ def _get_download_function() -> Any:
     else:
         return _download_desktop_async
 
-
-def md_options_with_url_images() -> "rich_md.MarkdownOptions":
-    """Create MarkdownOptions with URL image download support enabled."""
-    from imgui_bundle import rich_md
-    opts = rich_md.MarkdownOptions()
-    opts.callbacks.on_download_data = _get_download_function()
-    return opts

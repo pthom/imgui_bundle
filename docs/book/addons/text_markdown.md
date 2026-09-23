@@ -78,11 +78,11 @@ imgui_md supports images from local assets and from URLs.
 ```
 
 :::{note}
-**Python:** URL images are downloaded asynchronously (a loading spinner is shown while downloading). This works automatically when using `immapp.run(with_markdown=True)`. The download callback can be customized via `MarkdownCallbacks.on_download_data`.
+**Python:** URL images are downloaded asynchronously (a loading spinner is shown while downloading). This works automatically when using `immapp.run(with_markdown=True)`. The download function can be replaced with `rich_md.set_download_function(fn)`.
 
 **C++ (Emscripten):** URL images are downloaded automatically using `emscripten_fetch` (non-blocking, async).
 
-**C++ (desktop):** URL images are not downloaded by default. To enable them, set `MarkdownCallbacks::OnDownloadData` to a function that downloads data from a URL (e.g. using libcurl). The callback should return a `MarkdownDownloadResult` with `Ready`/`Downloading`/`Failed` status.
+**C++ (desktop):** URL images are not downloaded by default. To enable them, build with `IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES` (libcurl), or set `HostServices::Download` (see `rich_md_host.h`) to a function that downloads data from a URL and returns a `MarkdownDownloadResult` with `Ready`/`Downloading`/`Failed` status.
 :::
 
 ### LaTeX math
