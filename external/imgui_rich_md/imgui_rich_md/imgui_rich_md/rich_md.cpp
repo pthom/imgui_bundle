@@ -839,7 +839,7 @@ namespace RichMd
     }
 
 // Emscripten's FETCH, when the library is linked with -sFETCH (IMGUI_RICHMD_EMSCRIPTEN_FETCH). Not
-// for pyodide side modules, where Python installs a JS fetch() based OnDownloadData callback instead.
+// for pyodide side modules, where Python installs a JS fetch() based HostServices::Download instead.
 #if defined(__EMSCRIPTEN__) && defined(IMGUI_RICHMD_EMSCRIPTEN_FETCH)
 #include <emscripten/fetch.h>
 #include <mutex>
@@ -912,34 +912,24 @@ namespace RichMd
     }
 #endif // __EMSCRIPTEN__ && IMGUI_RICHMD_EMSCRIPTEN_FETCH
 
-    static Priv_OnInitializeMarkdownCallback gOnInitializeMarkdownCallback;
-
-    void Priv_SetOnInitializeMarkdownCallback(Priv_OnInitializeMarkdownCallback callback)
-    {
-        gOnInitializeMarkdownCallback = std::move(callback);
-    }
-
     Context* CreateContext(const MarkdownOptions& options)
     {
         Context* context = new Context();
         context->options = options;
-        if (gOnInitializeMarkdownCallback)
-            gOnInitializeMarkdownCallback(context->options);
 #ifdef IMGUI_RICHMD_HOST_HELLO_IMGUI
         Priv_InstallHelloImGuiHost();  // fills the host services the application did not set
 #endif
         _InstallDefaultHostServices();
+        if (context->options.callbacks.OnDownloadData)  // deprecated option: it becomes the service
+            gHostServices.Download = context->options.callbacks.OnDownloadData;
+        if (!gHostServices.Download)
+        {
 #if defined(__EMSCRIPTEN__) && defined(IMGUI_RICHMD_EMSCRIPTEN_FETCH)
-        // On Emscripten (but not pyodide), set a default download callback using
-        // emscripten_fetch (unless one was already set, e.g. by Python)
-        if (!context->options.callbacks.OnDownloadData)
-            context->options.callbacks.OnDownloadData = EmscriptenDownloadData;
+            gHostServices.Download = EmscriptenDownloadData;
 #elif defined(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES)
-        // On desktop C++, set a default download callback using libcurl
-        // (unless one was already set, e.g. by Python)
-        if (!context->options.callbacks.OnDownloadData)
-            context->options.callbacks.OnDownloadData = DesktopDownloadData;
+            gHostServices.Download = DesktopDownloadData;
 #endif
+        }
         if (!gCurrentContext)
             gCurrentContext = context;
         return context;
@@ -971,8 +961,6 @@ namespace RichMd
 
     void DeInitializeMarkdown()
     {
-        // gOnInitializeMarkdownCallback stays: it is set once at module import time and must
-        // survive teardown/setup cycles (e.g. Pyodide playground re-runs).
         DestroyContext(gDefaultContext.release());
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
         ClearDesktopDownloads();
@@ -1157,10 +1145,10 @@ namespace RichMd
         if (imageCache.find(image_path) != imageCache.end())
             return _MakeMarkdownImage(imageCache.at(image_path));
 
-        // Handle URL images via OnDownloadData callback
-        if (_IsUrl(image_path) && gCurrentContext->options.callbacks.OnDownloadData)
+        // URL images go through the host's download service
+        if (_IsUrl(image_path) && gHostServices.Download)
         {
-            auto result = gCurrentContext->options.callbacks.OnDownloadData(image_path);
+            auto result = gHostServices.Download(image_path);
             switch (result.status)
             {
             case MarkdownDownloadStatus::Ready:
@@ -1211,7 +1199,7 @@ namespace RichMd
     }
 
     bool HasLatex() { return (bool)gHostServices.RenderLatex; }
-    bool HasUrlImages() { return gCurrentContext && gCurrentContext->options.callbacks.OnDownloadData; }
+    bool HasUrlImages() { return gCurrentContext && (bool)gHostServices.Download; }
     bool HasCodeEditor() { return (bool)gHostServices.RenderCodeBlock; }
 
     SizedFont GetCodeFont()
