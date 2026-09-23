@@ -254,8 +254,29 @@ def render_unindented(markdown_string: str) -> None:
 def resolve_imports(
     markdown: str, read_file: ReadTextFile, current_file: str = ""
 ) -> str:
-    """Resolves the @import directives of a markdown text; readFile reads a file, or returns std::nullopt.
-    Render() calls it with the host's ReadAsset. currentFile: the file the text comes from, if any.
+    """Sections and imports
+    ---------------------
+    A source file (C++, Python, ...) may carry named markdown blocks in its comments:
+      // @@md#Name
+      // Some *markdown* prose about the code below.
+      // @@/md
+        None TheCode() {}
+    A section is the prose block plus the code that follows it: up to the next top-level item (a blank
+    line, then a line at column 0) or the next @@md# marker, whichever comes first.
+    A markdown document imports sections with a directive on its own line:
+        @import "file.cpp" {md_id=Name}             the section: prose, then the code as a fenced block
+        @import "file.cpp" {md_id=Name, part=prose} the prose only (part=code: the code only)
+        @import "file.cpp"                          every section of the file, in file order
+        @import "notes.md"                          a markdown file, as is
+        @import {md_id=Name}                        a section of the file being processed (a prose block
+                                                    may contain directives: a source file can be its own narrative)
+        {dedent=False}                              keeps the code's indentation (removed by default)
+    Paths are relative to the importing file. Imports resolve recursively (cycles and a depth over 8
+    are errors). An error (missing file, unknown id, block not closed, bad directive) renders the
+    directive in the error color, with the reason as a tooltip.
+
+    ResolveImports resolves the @import directives of a markdown text: readFile reads a file (or returns
+    std::nullopt); currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.
     """
     pass
 

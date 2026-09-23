@@ -147,12 +147,20 @@ namespace
             // one leading space after the prefix, and the common indentation
             Dedent(section.prose);
             TrimBlankLines(section.prose);
-            // the code: up to the next opening marker
+            // the code: up to the next marker, or the next top-level item (a blank line, then a line at column 0)
             std::string nextName;
             size_t k = j + 1;
             for (; k < lines.size() && !IsOpeningMarker(lines[k], nextName); ++k)
+            {
+                bool startsTopLevelItem = k > j + 1 && Trim(lines[k - 1]).empty() && !lines[k].empty()
+                                          && lines[k][0] != ' ' && lines[k][0] != '\t' && !section.code.empty();
+                if (startsTopLevelItem)
+                    break;
                 section.code.push_back(lines[k]);
+            }
             TrimBlankLines(section.code);
+            // the next section starts at the next marker
+            for (; k < lines.size() && !IsOpeningMarker(lines[k], nextName); ++k) {}
             sections.push_back(section);
             i = k;
         }
