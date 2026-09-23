@@ -338,9 +338,6 @@ def delete_node_editor_settings(runner_params: HelloImGui.RunnerParams) -> None:
 #
 
 # =========================== HelloImGui::ManualRender ==================================
-# @@md#HelloImGui::ManualRender
-
-# @@md
 
 # <submodule manual_render>
 class manual_render:  # Proxy class that introduces typings for the *submodule* manual_render
