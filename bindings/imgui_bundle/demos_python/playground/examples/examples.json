@@ -5,6 +5,10 @@
         "filename": "landing_page.py"
       },
       {
+        "label": "Lesson: the Mandelbrot set is a map of Julia sets",
+        "filename": "explorables/julia_map.py"
+      },
+      {
         "label": "Explorable: Double Pendulum",
         "filename": "explorables/double_pendulum.py"
       },
