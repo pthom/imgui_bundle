@@ -1,18 +1,18 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#include "imgui_md_wrapper.h"
-#include "imgui_md_host.h"
-#include "imgui_md_internal.h"
+#include "rich_md.h"
+#include "rich_md_host.h"
+#include "rich_md_internal.h"
 #ifdef IMGUI_RICHMD_WITH_CODE_EDITOR
 #include "backends/code_editor/snippets.h"
 #endif
 #ifdef IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES
-#include "imgui_md_url_download.h"
+#include "rich_md_url_download.h"
 #endif
 
 
 #include "imgui.h"
 #include "imgui_internal.h"  // RegisterUserTexture
-#include "imgui_md.h"
+#include "rich_md_renderer.h"
 
 // Platform includes for OpenUrlInBrowser
 #if defined(__EMSCRIPTEN__)
@@ -30,7 +30,7 @@
 #endif
 
 #ifdef IMGUI_RICHMD_WITH_LATEX
-#include "backends/latex/imgui_microtex.h"
+#include "backends/latex/rich_md_latex.h"
 #endif
 
 #include "third_party/stb_image.h"
@@ -50,7 +50,7 @@
 #include <cstdio>
 #include <cstring>
 
-// Small string helpers (replace fplus, to keep imgui_md decoupled from it).
+// Small string helpers (replace fplus, to keep the library decoupled from it).
 namespace
 {
     std::vector<std::string> _SplitLines(const std::string& s)
@@ -153,7 +153,7 @@ namespace
     }
 }
 
-namespace ImGuiMd
+namespace RichMd
 {
     namespace Internal
     {
@@ -233,7 +233,7 @@ namespace ImGuiMd
     // ready before the first frame), with its fonts read through the host
     static std::optional<LatexBitmap> _RenderLatexWithMicroTeX(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle)
     {
-        if (!ImGuiMicroTeX::IsInitialized())
+        if (!RichMd::Latex::IsInitialized())
         {
             if (gLatexInitFailed)
                 return std::nullopt;
@@ -245,12 +245,12 @@ namespace ImGuiMd
                 gLatexInitFailed = true;
                 return std::nullopt;
             }
-            ImGuiMicroTeX::InitFromMemory(*clmData, *otfData);
+            RichMd::Latex::InitFromMemory(*clmData, *otfData);
         }
-        auto style = displayStyle ? ImGuiMicroTeX::TexStyle::Display : ImGuiMicroTeX::TexStyle::Text;
-        ImGuiMicroTeX::RenderedFormula formula;
+        auto style = displayStyle ? RichMd::Latex::TexStyle::Display : RichMd::Latex::TexStyle::Text;
+        RichMd::Latex::RenderedFormula formula;
         try {  // an invalid formula (MicroTeX throws) falls back to its source text
-            formula = ImGuiMicroTeX::Render(latex, fontSizePx, color, style);
+            formula = RichMd::Latex::Render(latex, fontSizePx, color, style);
         } catch (const std::exception& e) {
             LatexBitmap invalid;
             invalid.error = e.what();
@@ -361,7 +361,7 @@ namespace ImGuiMd
         if (!gHostServices.ReadAsset)
             gHostServices.ReadAsset = ReadAssetDefault;
         if (!gHostServices.Log)
-            gHostServices.Log = [](const std::string& message) { fprintf(stderr, "imgui_md: %s\n", message.c_str()); };
+            gHostServices.Log = [](const std::string& message) { fprintf(stderr, "rich_md: %s\n", message.c_str()); };
     }
 
     // Default code block: monospaced text in a frame, with a copy button
@@ -391,7 +391,7 @@ namespace ImGuiMd
     // ImGui::GetStyle().FontScaleDpi (set by HelloImGui from dpiWindowSizeFactor),
     // so we must *not* pre-multiply font sizes by the DPI factor here anymore.
 
-    namespace ImGuiMdFonts
+    namespace RichMdFonts
     {
         struct MarkdownEmphasis
         {
@@ -524,7 +524,7 @@ namespace ImGuiMd
             void LoadFonts()
             {
                 const char* help =
-                    "ImGuiMd needs these assets: fonts/Roboto/Roboto-{Regular,Bold,RegularItalic,BoldItalic}.ttf, "
+                    "RichMd needs these assets: fonts/Roboto/Roboto-{Regular,Bold,RegularItalic,BoldItalic}.ttf, "
                     "fonts/Inconsolata-Medium.ttf and images/markdown_broken_image.png "
                     "(see imgui_bundle/imgui_bundle_assets/).";
                 float defaultFontLoadingSize = 16.f;  // size at loading time (then Fonts can be resized to any size)
@@ -565,7 +565,7 @@ namespace ImGuiMd
         MarkdownCollection(const MarkdownFontOptions& options)
             : mFontCollection(options)
         {}
-        ImGuiMdFonts::FontCollection mFontCollection;
+        RichMdFonts::FontCollection mFontCollection;
 
         mutable std::map<std::string, MarkdownTexture > mLoadedImages;
 
@@ -592,7 +592,7 @@ namespace ImGuiMd
         ~Context();
     };
 
-    class MarkdownRenderer : public imgui_md
+    class MarkdownRenderer : public Renderer
     {
     private:
         MarkdownOptions *mMarkdownOptions;
@@ -632,7 +632,7 @@ namespace ImGuiMd
 
         SizedFont GetFont(const MarkdownFontSpec& fontSpec)
         {
-            ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
+            RichMdFonts::MarkdownTextStyle markdownTextStyle;
             markdownTextStyle.headerLevel = fontSpec.headerLevel;
             markdownTextStyle.markdownEmphasis.bold = fontSpec.bold;
             markdownTextStyle.markdownEmphasis.italic = fontSpec.italic;
@@ -641,24 +641,24 @@ namespace ImGuiMd
 
 
     private:
-        imgui_md::MdSizedFont get_font() const override
+        Renderer::MdSizedFont get_font() const override
         {
             if (m_is_code)
             {
                 // https://github.com/mekhontsev/imgui_md does not handle correctly code blocks
                 // so that we will never reach here...
                 auto fontCode = mMarkdownCollection.mFontCollection.GetFontCode();
-                return imgui_md::MdSizedFont{ fontCode.font, fontCode.size };
+                return Renderer::MdSizedFont{ fontCode.font, fontCode.size };
             }
             else
             {
-                ImGuiMdFonts::MarkdownTextStyle markdownTextStyle;
+                RichMdFonts::MarkdownTextStyle markdownTextStyle;
                 markdownTextStyle.headerLevel = m_hlevel;
                 markdownTextStyle.markdownEmphasis.bold =
                     m_is_strong || (m_is_table_header && m_table_header_highlight);
                 markdownTextStyle.markdownEmphasis.italic = m_is_em;
                 auto font  = mMarkdownCollection.mFontCollection.GetFont(markdownTextStyle);
-                return imgui_md::MdSizedFont{ font.font, font.size };
+                return Renderer::MdSizedFont{ font.font, font.size };
             }
         };
 
@@ -738,7 +738,7 @@ namespace ImGuiMd
                     }
                 }
             }
-            return imgui_md::check_html(str, str_end);
+            return Renderer::check_html(str, str_end);
         }
 
         bool can_use_child_windows() const override
@@ -979,8 +979,8 @@ namespace ImGuiMd
 #endif
 #ifdef IMGUI_RICHMD_WITH_LATEX
         // Release MicroTeX resources (its own texture cache, unused here; safe if Init() was never called)
-        if (ImGuiMicroTeX::IsInitialized())
-            ImGuiMicroTeX::Release();
+        if (RichMd::Latex::IsInitialized())
+            RichMd::Latex::Release();
         gLatexInitFailed = false;
 #endif
     }
@@ -991,7 +991,7 @@ namespace ImGuiMd
         MarkdownRenderer* renderer = _Renderer();
         if (!renderer)
         {
-            std::cerr << "ImGuiMd::Render : Markdown was not initialized!\n";
+            std::cerr << "RichMd::Render : Markdown was not initialized!\n";
             return;
         }
         // Each fragment rendered in a frame gets its own id scope (two identical fragments must not collide)
@@ -1047,13 +1047,13 @@ namespace ImGuiMd
 
     void RegisterFencedBlockRenderer(const std::string& language, std::function<void(const std::string& code)> renderer)
     {
-        IM_ASSERT(gCurrentContext && "ImGuiMd: call InitializeMarkdown first");
+        IM_ASSERT(gCurrentContext && "RichMd: call InitializeMarkdown first");
         gCurrentContext->fencedBlockRenderers[_ToLower(language)] = std::move(renderer);
     }
 
-    imgui_md::Style& GetStyle()
+    Renderer::Style& GetStyle()
     {
-        IM_ASSERT(_Renderer() && "ImGuiMd: call InitializeMarkdown first");
+        IM_ASSERT(_Renderer() && "RichMd: call InitializeMarkdown first");
         return _Renderer()->style;
     }
 
@@ -1067,7 +1067,7 @@ namespace ImGuiMd
     {
         if (strncmp(url.c_str(), "http", strlen("http")) != 0)
         {
-            std::cerr << "ImGuiMd::OnOpenLink_Default url \"" << url << "\" should start with http!\n";
+            std::cerr << "RichMd::OnOpenLink_Default url \"" << url << "\" should start with http!\n";
             return;
         }
         _OpenUrlInBrowser(url.c_str());
@@ -1147,7 +1147,7 @@ namespace ImGuiMd
         MarkdownRenderer* renderer = _Renderer();
         if (!renderer)
         {
-            std::cerr << "Did you initialize ImGuiMd?\n";
+            std::cerr << "Did you initialize RichMd?\n";
             return std::nullopt;
         }
 
@@ -1174,7 +1174,7 @@ namespace ImGuiMd
 
             case MarkdownDownloadStatus::Failed:
                 if (!result.errorMessage.empty())
-                    std::cerr << "imgui_md: download failed for " << image_path << ": " << result.errorMessage << "\n";
+                    std::cerr << "rich_md: download failed for " << image_path << ": " << result.errorMessage << "\n";
                 return _BrokenImage(image_path);
 
             case MarkdownDownloadStatus::NotStarted:
@@ -1194,19 +1194,19 @@ namespace ImGuiMd
     ImVec4 LinkColor()
     {
         MarkdownRenderer* renderer = _Renderer();
-        return renderer ? renderer->link_color() : imgui_md::default_link_color();
+        return renderer ? renderer->link_color() : Renderer::default_link_color();
     }
 
     // Same look and behaviour as the links inside markdown
     void RenderTextAsLink(const char* text, const char* url)
     {
-        static const imgui_md::Style defaultStyle;
+        static const Renderer::Style defaultStyle;
         MarkdownRenderer* renderer = _Renderer();
-        const imgui_md::Style& style = renderer ? renderer->style : defaultStyle;
+        const Renderer::Style& style = renderer ? renderer->style : defaultStyle;
         ImGui::PushStyleColor(ImGuiCol_Text, LinkColor());
         ImGui::TextUnformatted(text);
         ImGui::PopStyleColor();
-        if (imgui_md::link_item(style, url))
+        if (Renderer::link_item(style, url))
             _OpenUrlInBrowser(url);
     }
 
@@ -1216,13 +1216,13 @@ namespace ImGuiMd
 
     SizedFont GetCodeFont()
     {
-        IM_ASSERT(_Renderer() && "ImGuiMd: call InitializeMarkdown first");
+        IM_ASSERT(_Renderer() && "RichMd: call InitializeMarkdown first");
         return _Renderer()->get_font_code();
     }
 
     SizedFont GetFont(const MarkdownFontSpec& fontSpec)
     {
-        IM_ASSERT(_Renderer() && "ImGuiMd: call InitializeMarkdown first");
+        IM_ASSERT(_Renderer() && "RichMd: call InitializeMarkdown first");
         return _Renderer()->GetFont(fontSpec);
     }
 
@@ -1233,4 +1233,4 @@ namespace ImGuiMd
         Render(markdownString);
     }
 
-} // namespace ImGuiMdBrowser
+} // namespace RichMdBrowser

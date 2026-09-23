@@ -3,7 +3,7 @@ from typing import List
 from imgui_bundle import (
     imgui,
     hello_imgui,
-    imgui_md,
+    rich_md,
     imgui_toggle,
     ImVec2,
     immapp,
@@ -27,7 +27,7 @@ def demo_knobs():
     static = demo_knobs
     from imgui_bundle import imgui_knobs
 
-    imgui_md.render(
+    rich_md.render(
         """
 # Knobs
   [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui."""
@@ -122,7 +122,7 @@ def demo_spinner():
     static = demo_spinner
     from imgui_bundle import imspinner
 
-    imgui_md.render(
+    rich_md.render(
         """
 # Spinners
   [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui."""
@@ -172,7 +172,7 @@ def demo_spinner():
 @immapp.static(flag=True)
 def demo_toggle():
     static = demo_toggle
-    imgui_md.render_unindented(
+    rich_md.render_unindented(
         """
         # Toggle Switch
           [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
@@ -222,7 +222,7 @@ def demo_portable_file_dialogs():
 
 
     imgui.push_id("pfd")
-    imgui_md.render_unindented(
+    rich_md.render_unindented(
         """
         # Portable File Dialogs
          [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides file dialogs
@@ -316,7 +316,7 @@ def demo_imfile_dialog():
     if not has_submodule("im_file_dialog"):
         return
     from imgui_bundle import im_file_dialog as ifd
-    imgui_md.render_unindented(
+    rich_md.render_unindented(
         """
         # ImFileDialog
          [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui.
@@ -426,7 +426,7 @@ def demo_command_palette():
         init_command_palette()
         static.was_inited = True
 
-    imgui_md.render_unindented(
+    rich_md.render_unindented(
         """
         # Command Palette
         [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git) provides a Sublime Text or VSCode style command palette in ImGui
@@ -468,7 +468,7 @@ def demo_cool_bar():
         return clicked
 
     button_labels = ["A", "B", "C", "D", "E", "F"]
-    imgui_md.render_unindented(
+    rich_md.render_unindented(
         """
         # ImCoolBar
         ImCoolBar provides a dock-like Cool bar for Dear ImGui

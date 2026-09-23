@@ -1,4 +1,4 @@
-from imgui_bundle import imgui, imgui_ctx, ImVec2, hello_imgui, ImVec4, immapp, imgui_md
+from imgui_bundle import imgui, imgui_ctx, ImVec2, hello_imgui, ImVec4, immapp, rich_md
 from imgui_bundle import implot, implot_ctx
 import inspect
 import numpy as np
@@ -285,7 +285,7 @@ def gui():
     if imgui.is_item_hovered():
         with imgui_ctx.begin_tooltip():
             imgui.dummy(immapp.em_to_vec2(50, 1))
-            imgui_md.render(DOC)
+            rich_md.render(DOC)
 
     demos = {
         "Begin/End": demo_begin,
@@ -308,7 +308,7 @@ def gui():
             demo_fn()
             # Show code of demo_fn
             imgui.separator_text("Source code")
-            imgui_md.render("```python\n" + inspect.getsource(demo_fn) + "\n```")
+            rich_md.render("```python\n" + inspect.getsource(demo_fn) + "\n```")
 
             imgui.tree_pop()
 

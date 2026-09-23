@@ -11,16 +11,16 @@ STUB_DIR = THIS_DIR + "/../../../bindings/imgui_bundle/"
 
 def main() -> None:
     print("autogenerate_imgui_md")
-    input_cpp_header = THIS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/imgui_md_wrapper.h"
-    output_cpp_pydef_file = PYDEF_DIR + "/pybind_imgui_md.cpp"
-    output_stub_pyi_file = STUB_DIR + "/imgui_md.pyi"
+    input_cpp_header = THIS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/rich_md.h"
+    output_cpp_pydef_file = PYDEF_DIR + "/pybind_rich_md.cpp"
+    output_stub_pyi_file = STUB_DIR + "/rich_md.pyi"
 
     # Configure options
     options = litgen.LitgenOptions()
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
-    options.namespaces_root = ["ImGuiMd"]
+    options.namespaces_root = ["RichMd"]
     options.python_run_black_formatter = True
     options.value_replacements.add_last_replacement(
         "OnOpenLink_Default", "on_open_link_default"
@@ -55,14 +55,14 @@ def main() -> None:
                     if (py_func.is_none()) {
                         Py_XDECREF(s_init_md_callback);
                         s_init_md_callback = nullptr;
-                        ImGuiMd::Priv_SetOnInitializeMarkdownCallback(nullptr);
+                        RichMd::Priv_SetOnInitializeMarkdownCallback(nullptr);
                         return;
                     }
                     Py_XDECREF(s_init_md_callback);
                     s_init_md_callback = py_func.ptr();
                     Py_INCREF(s_init_md_callback);
-                    ImGuiMd::Priv_SetOnInitializeMarkdownCallback(
-                        [](ImGuiMd::MarkdownOptions& options) {
+                    RichMd::Priv_SetOnInitializeMarkdownCallback(
+                        [](RichMd::MarkdownOptions& options) {
                             nb::gil_scoped_acquire acquire;
                             nb::object func = nb::borrow(s_init_md_callback);
                             func(nb::cast(options, nb::rv_policy::reference));
@@ -77,7 +77,7 @@ def main() -> None:
 
     # Custom binding for MarkdownDownloadResult.fill_from_bytes: Python bytes -> C++ data
     options.custom_bindings.add_custom_bindings_to_class(
-        qualified_class="ImGuiMd::MarkdownDownloadResult",
+        qualified_class="RichMd::MarkdownDownloadResult",
         stub_code='''
             def fill_from_bytes(self, data: bytes) -> None:
                 """Fill the result data from a Python bytes object."""
@@ -85,7 +85,7 @@ def main() -> None:
         ''',
         pydef_code=r'''
             LG_CLASS.def("fill_from_bytes",
-                [](ImGuiMd::MarkdownDownloadResult& self, nb::bytes data) {
+                [](RichMd::MarkdownDownloadResult& self, nb::bytes data) {
                     self.FillFromData(data.c_str(), data.size());
                 },
                 nb::arg("data"),
@@ -96,7 +96,7 @@ def main() -> None:
 
     # Custom binding for OnDownloadData callback on MarkdownCallbacks
     options.custom_bindings.add_custom_bindings_to_class(
-        qualified_class="ImGuiMd::MarkdownCallbacks",
+        qualified_class="RichMd::MarkdownCallbacks",
         stub_code='''
             @property
             def on_download_data(self) -> Optional[str]:
@@ -119,13 +119,13 @@ def main() -> None:
             static PyObject* s_download_func = nullptr;
 
             LG_CLASS.def_prop_rw("on_download_data",
-                [](const ImGuiMd::MarkdownCallbacks& self) -> nb::object {
+                [](const RichMd::MarkdownCallbacks& self) -> nb::object {
                     (void)self;
                     if (!self.OnDownloadData)
                         return nb::none();
                     return nb::cast(std::string("on_download_data is set (read-back of the callable is not supported)"));
                 },
-                [](ImGuiMd::MarkdownCallbacks& self, nb::object py_func) {
+                [](RichMd::MarkdownCallbacks& self, nb::object py_func) {
                     if (py_func.is_none()) {
                         Py_XDECREF(s_download_func);
                         s_download_func = nullptr;
@@ -135,11 +135,11 @@ def main() -> None:
                     Py_XDECREF(s_download_func);
                     s_download_func = py_func.ptr();
                     Py_INCREF(s_download_func);
-                    self.OnDownloadData = [](const std::string& url) -> ImGuiMd::MarkdownDownloadResult {
+                    self.OnDownloadData = [](const std::string& url) -> RichMd::MarkdownDownloadResult {
                         nb::gil_scoped_acquire acquire;
                         nb::object func = nb::borrow(s_download_func);
                         nb::object py_result = func(nb::cast(url));
-                        return nb::cast<ImGuiMd::MarkdownDownloadResult>(py_result);
+                        return nb::cast<RichMd::MarkdownDownloadResult>(py_result);
                     };
                 },
                 "OnDownloadData: downloads data from a URL (empty by default).\n"

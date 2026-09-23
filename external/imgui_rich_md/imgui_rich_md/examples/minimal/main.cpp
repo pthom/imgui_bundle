@@ -4,7 +4,7 @@
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
-#include "imgui_rich_md/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #ifdef __APPLE__
 #define GL_SILENCE_DEPRECATION
 #include <OpenGL/gl3.h>
@@ -38,8 +38,8 @@ An image that does not exist: ![nope](images/nope.png)
 
 ## Code
 ```cpp
-ImGuiMd::InitializeMarkdown();
-ImGuiMd::Render(markdown);
+RichMd::InitializeMarkdown();
+RichMd::Render(markdown);
 ```
 )";
 
@@ -66,7 +66,7 @@ int main(int, char**)
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 #endif
-    GLFWwindow* window = glfwCreateWindow(900, 800, "imgui_md standalone check", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(900, 800, "imgui_rich_md minimal example", nullptr, nullptr);
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
@@ -75,7 +75,7 @@ int main(int, char**)
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 150");
 
-    ImGuiMd::InitializeMarkdown();
+    RichMd::InitializeMarkdown();
 
     const char* shot = std::getenv("IMGUI_RICHMD_SHOT");
     int frame = 0;
@@ -90,7 +90,7 @@ int main(int, char**)
         ImGui::SetNextWindowPos(vp->WorkPos);
         ImGui::SetNextWindowSize(vp->WorkSize);
         ImGui::Begin("##md", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
-        ImGuiMd::Render(kMarkdown);
+        RichMd::Render(kMarkdown);
         ImGui::End();
 
         ImGui::Render();
@@ -108,7 +108,7 @@ int main(int, char**)
         glfwSwapBuffers(window);
     }
 
-    ImGuiMd::DeInitializeMarkdown();  // frees the markdown textures while the backend is alive
+    RichMd::DeInitializeMarkdown();  // frees the markdown textures while the backend is alive
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

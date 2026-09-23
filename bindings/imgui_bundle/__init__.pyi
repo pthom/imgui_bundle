@@ -8,7 +8,8 @@ from . import imgui_node_editor as imgui_node_editor
 from . import imgui_knobs as imgui_knobs
 from . import im_file_dialog as im_file_dialog
 from . import imspinner as imspinner
-from . import imgui_md as imgui_md
+from . import rich_md as rich_md
+from . import imgui_md as imgui_md  # the former name of rich_md
 from . import immvision as immvision
 from . import imguizmo as imguizmo
 from . import imgui_tex_inspect as imgui_tex_inspect

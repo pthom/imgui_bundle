@@ -1,4 +1,4 @@
-"""Sandbox: visual diagnosis of inter-block spacing in imgui_md.
+"""Sandbox: visual diagnosis of inter-block spacing in rich_md.
 
 Lays out every block-to-block transition we care about so the gaps can
 be eyeballed side-by-side.
@@ -8,7 +8,7 @@ be eyeballed side-by-side.
   D. nested lists and adjacent lists
 """
 
-from imgui_bundle import immapp, imgui, imgui_md
+from imgui_bundle import immapp, imgui, rich_md
 
 
 SECTIONS = {
@@ -151,7 +151,7 @@ End paragraph.
 def gui():
     for title, md in SECTIONS.items():
         if imgui.collapsing_header(title, imgui.TreeNodeFlags_.default_open.value):
-            imgui_md.render(md)
+            rich_md.render(md)
             imgui.dummy(imgui.ImVec2(0, 12))
 
 

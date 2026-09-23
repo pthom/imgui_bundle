@@ -1,5 +1,5 @@
-"""ImGuiMd::ResolveImports: sections of a source file imported into a markdown document."""
-from imgui_bundle import imgui_md
+"""RichMd::ResolveImports: sections of a source file imported into a markdown document."""
+from imgui_bundle import rich_md
 
 HEART_CPP = '''// Part of a demo - license header
 #include "imgui.h"
@@ -43,7 +43,7 @@ def read(path: str) -> str | None:
 
 
 def resolve(text: str, current_file: str = "") -> str:
-    return imgui_md.resolve_imports(text, read, current_file)
+    return rich_md.resolve_imports(text, read, current_file)
 
 
 def test_no_directive_is_identity() -> None:

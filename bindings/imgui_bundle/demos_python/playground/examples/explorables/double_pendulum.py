@@ -7,7 +7,7 @@ initial positions, then release and watch chaos unfold.
 """
 
 import numpy as np
-from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, imgui_knobs, imgui_toggle, icons_fontawesome_4
+from imgui_bundle import imgui, implot, immapp, hello_imgui, rich_md, imgui_knobs, imgui_toggle, icons_fontawesome_4
 from imgui_bundle import ImVec2, ImVec4
 from typing import List, Tuple
 import time
@@ -231,7 +231,8 @@ def gui(state: AppState):
     imgui.begin_child("controls", ImVec2(em * 20, 0))
 
     # Show doc (Double Pendulum. A chaotic system where ...)        ===>
-    imgui_md.render(__doc__);  imgui.separator()
+    rich_md.render(__doc__)
+    imgui.separator()
 
     # Play/Pause + Reset
     if imgui.button(FA_PAUSE if not state.paused else FA_PLAY, btn_size):

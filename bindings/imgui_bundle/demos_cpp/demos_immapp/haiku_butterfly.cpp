@@ -5,7 +5,7 @@
 #include "imgui.h"
 #include "implot3d/implot3d.h"
 #include "immapp/runner.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include <vector>
 
 struct LorenzParams {
@@ -92,7 +92,7 @@ public:
     }
 
     void gui() {
-        ImGuiMd::RenderUnindented(R"(
+        RichMd::RenderUnindented(R"(
 # Lorenz Attractor & Butterfly Effect
 This is a simple example of the Lorenz Attractor. It shows two trajectories that diverge
 because of a small initial difference, illustrating chaos theory in action.

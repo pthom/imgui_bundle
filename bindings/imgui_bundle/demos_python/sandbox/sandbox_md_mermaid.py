@@ -6,7 +6,7 @@ Question of the spike: is a native subset worth owning, or do we keep only the f
 import re
 from dataclasses import dataclass, field
 
-from imgui_bundle import imgui, immapp, imgui_md, ImVec2
+from imgui_bundle import imgui, immapp, rich_md, ImVec2
 
 # =============================================================================
 # Parsing: a subset of Mermaid flowcharts
@@ -874,7 +874,7 @@ A sequence diagram:
 ```mermaid
 sequenceDiagram
     participant App
-    participant MD as imgui_md
+    participant MD as rich_md
     participant Host as Host services
     App->>MD: Render(text)
     MD->>MD: resolve @import
@@ -897,9 +897,9 @@ _registered = False
 def gui() -> None:
     global _registered
     if not _registered:  # the markdown context exists once the app runs
-        imgui_md.register_fenced_block_renderer("mermaid", render_mermaid)
+        rich_md.register_fenced_block_renderer("mermaid", render_mermaid)
         _registered = True
-    imgui_md.render(MD)
+    rich_md.render(MD)
 
 
 if __name__ == "__main__":

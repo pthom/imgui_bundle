@@ -1,8 +1,8 @@
-from imgui_bundle import immapp, imgui, imgui_md, imgui_node_editor as ed, ImVec2
+from imgui_bundle import immapp, imgui, rich_md, imgui_node_editor as ed, ImVec2
 
 
 def gui():
-    imgui_md.render_unindented("""
+    rich_md.render_unindented("""
         Below is a code block rendered in markdown outside of a node editor: it should use ImGuiColorTextEdit
         ```cpp
         // This is a code block
@@ -14,7 +14,7 @@ def gui():
     ed.begin("My Node Editor")
     ed.begin_node(ed.NodeId(1))
     imgui.dummy(ImVec2(500, 0))
-    imgui_md.render_unindented("""
+    rich_md.render_unindented("""
         Below is a code block rendered in markdown inside a node editor:
         it should not use ImGuiColorTextEdit, but instead render as a simple code block,
         with no syntax highlighting (but using a code font).

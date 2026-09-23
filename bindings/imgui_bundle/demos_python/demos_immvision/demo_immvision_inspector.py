@@ -1,5 +1,5 @@
 
-from imgui_bundle import imgui, immvision, immapp, imgui_md
+from imgui_bundle import imgui, immvision, immapp, rich_md
 from imgui_bundle.demos_python import demo_utils
 
 # Adds many other images to the inspector (test suite with various depth & types)
@@ -20,7 +20,7 @@ def demo_gui():
         fill_inspector()
         demo_gui.inited = True
 
-    imgui_md.render_unindented(
+    rich_md.render_unindented(
         """Call *immvision.inspector_add_image()* anywhere - for example, at different steps inside an image processing algorithm. Later, call *immvision.inspector_show()*, and it will show all the collected images."""
     )
 

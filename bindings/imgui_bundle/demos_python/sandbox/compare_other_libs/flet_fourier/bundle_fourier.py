@@ -1,6 +1,6 @@
 # pip install imgui-bundle numpy
 import numpy as np
-from imgui_bundle import imgui, implot, immapp, imgui_md
+from imgui_bundle import imgui, implot, immapp, rich_md
 
 
 # Plain Python state — no callbacks, no widget objects
@@ -20,7 +20,7 @@ def fourier_square(x, n_terms):
 
 
 def gui():
-    imgui_md.render(r"""
+    rich_md.render(r"""
 ### Fourier series of a square wave
 $$ f(x) = \frac{4}{\pi}\sum_{k=1}^{N}\frac{\sin((2k-1)x)}{2k-1} $$
 Adjust $N$ to add more harmonics.

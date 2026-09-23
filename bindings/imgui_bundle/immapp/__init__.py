@@ -106,7 +106,7 @@ def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
         doc: markdown string to render (will be unindented automatically)
         height_em: height of the panel in em units
     """
-    from imgui_bundle import imgui, imgui_md, hello_imgui
+    from imgui_bundle import imgui, rich_md, hello_imgui
     tweaked_theme = hello_imgui.ImGuiTweakedTheme()
     tweaked_theme.theme = hello_imgui.ImGuiTheme_.gray_variations
     tweaked_theme.tweaks.rounding = 0.0
@@ -116,7 +116,7 @@ def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
     # (it saves/restores the resized height in the ini file after that)
     imgui.begin_child("##doc", size,
                       imgui.ChildFlags_.borders | imgui.ChildFlags_.resize_y)
-    imgui_md.render_unindented(doc)
+    rich_md.render_unindented(doc)
     imgui.end_child()
     imgui.new_line()
     hello_imgui.pop_tweaked_theme()

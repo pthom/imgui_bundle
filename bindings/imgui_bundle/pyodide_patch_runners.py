@@ -235,7 +235,7 @@ class _ManualRenderJs:
                     await ensure_fonts_async()
                 except Exception as e:  # noqa: BLE001
                     # Log here for visibility; the C++ wrapper has its own
-                    # missing-fonts safety net (imgui_md_wrapper.cpp:
+                    # missing-fonts safety net (rich_md.cpp:
                     # EnsureMicroTeXInitialized) that falls back to rendering
                     # the LaTeX source as plain text.
                     js.console.error(

@@ -2,6 +2,16 @@
 
 # Ongoing changes
 
+## Markdown: `imgui_md` becomes `rich_md` (library imgui_rich_md)
+
+The markdown stack (renderer, wrapper, LaTeX backend) is now [imgui_rich_md](https://github.com/pthom/imgui_rich_md), a standalone
+library that works on stock Dear ImGui. Existing code keeps working:
+
+- Python: the module is `imgui_bundle.rich_md`; `imgui_bundle.imgui_md` is the same module and stays as an alias.
+- C++: the API is `RichMd::` in `imgui_rich_md/rich_md.h`; the former `imgui_md_wrapper/imgui_md_wrapper.h` include
+  and the `ImGuiMd` namespace stay as aliases (`ImGuiMicroTeX` likewise, for `RichMd::Latex`). CMake target `imgui_rich_md`
+  (`imgui_md` kept as an alias).
+
 ## Updated Dear ImGui to v1.93.0 WIP
 
 Dear ImGui is updated to the tip of its `docking` branch (v1.93.0 WIP), and ImGui Test Engine to the tip of its `main` branch.

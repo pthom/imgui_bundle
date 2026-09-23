@@ -1,8 +1,8 @@
-from imgui_bundle import immapp, hello_imgui, imgui_md, imgui
+from imgui_bundle import immapp, hello_imgui, rich_md, imgui
 
 
 def gui():
-    imgui_md.render_unindented("""
+    rich_md.render_unindented("""
         # Sandbox
 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit

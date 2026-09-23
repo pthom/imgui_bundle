@@ -26,18 +26,18 @@ void demo_immvision_display()
     }
 
     ImGui::BeginGroup();
-    ImGuiMd::RenderUnindented("# ImmVision::ImageDisplay()");
-    ImGuiMd::RenderUnindented("Displays an image (possibly resizable)");
+    RichMd::RenderUnindented("# ImmVision::ImageDisplay()");
+    RichMd::RenderUnindented("Displays an image (possibly resizable)");
     ImmVision::ImageDisplayResizable("Tennis", tennis, &imageDisplaySize);
     ImGui::EndGroup();
 
     ImGui::SameLine();
 
     ImGui::BeginGroup();
-    ImGuiMd::RenderUnindented("# ImmVision::Image()");
-    ImGuiMd::RenderUnindented("Displays an image, while providing lots of visualization options.");
+    RichMd::RenderUnindented("# ImmVision::Image()");
+    RichMd::RenderUnindented("Displays an image, while providing lots of visualization options.");
     ImmVision::Image("Bear", bear, &params);
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::RenderUnindented(R"(
         * Zoom in/out using the mouse wheel.
         * Pixel values are displayed at high zoom levels.
         * Pan the image by dragging it with the left mouse button

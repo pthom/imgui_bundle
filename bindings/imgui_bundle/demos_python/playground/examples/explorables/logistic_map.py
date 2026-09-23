@@ -10,7 +10,7 @@ bifurcation diagram — the same branching returns at every scale.
 """
 
 import numpy as np
-from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, imgui_toggle, icons_fontawesome_4
+from imgui_bundle import imgui, implot, immapp, hello_imgui, rich_md, imgui_toggle, icons_fontawesome_4
 from imgui_bundle import ImVec2, ImVec4
 from typing import Tuple, Optional
 import time
@@ -366,7 +366,7 @@ def gui(state: AppState):
     # ---- Controls + cobweb (left column) ---------------------------------
     imgui.begin_child("controls", ImVec2(em * 24, 0))
 
-    imgui_md.render(__doc__)
+    rich_md.render(__doc__)
     imgui.separator()
 
     if imgui.button(FA_PAUSE if not state.paused else FA_PLAY, btn):
@@ -432,7 +432,7 @@ def gui(state: AppState):
         expanded, opened = imgui.begin("About — the Logistic Map", True)
         state.show_about = bool(opened)
         if expanded:
-            imgui_md.render(ABOUT_MD)
+            rich_md.render(ABOUT_MD)
         imgui.end()
 
     # ---- Hideable "things to try" panel ----------------------------------
@@ -441,7 +441,7 @@ def gui(state: AppState):
         expanded, opened = imgui.begin("Things to try", True)
         state.show_tips = bool(opened)
         if expanded:
-            imgui_md.render(TIPS_MD)
+            rich_md.render(TIPS_MD)
 
             imgui.separator_text("Pick a value of r")
             if imgui.button("Stable fixed point  ·  r = 2.8", ImVec2(-1, 0)):

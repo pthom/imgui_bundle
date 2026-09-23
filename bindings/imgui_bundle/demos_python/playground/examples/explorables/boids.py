@@ -8,7 +8,7 @@ the swarm down, or flip on the **cursor predator** and scatter it yourself.
 """
 
 import numpy as np
-from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, imgui_knobs, imgui_toggle, icons_fontawesome_4
+from imgui_bundle import imgui, implot, immapp, hello_imgui, rich_md, imgui_knobs, imgui_toggle, icons_fontawesome_4
 from imgui_bundle import ImVec2, ImVec4
 from typing import List, Optional, Tuple
 import colorsys
@@ -399,7 +399,7 @@ def gui(state: AppState):
     # ---- Controls (left column) ------------------------------------------
     imgui.begin_child("controls", ImVec2(em * 20, 0))
 
-    imgui_md.render(__doc__)
+    rich_md.render(__doc__)
     imgui.separator()
 
     if imgui.button(FA_PAUSE if not state.paused else FA_PLAY, btn_size):

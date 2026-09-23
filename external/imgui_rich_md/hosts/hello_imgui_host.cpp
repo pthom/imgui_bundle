@@ -2,11 +2,11 @@
 // Host services for ImGui Bundle: assets, textures and logging through HelloImGui.
 // Compiled into imgui_md only in the bundle (IMGUI_RICHMD_HOST_HELLO_IMGUI); installed by
 // InitializeMarkdown for the fields the application did not set.
-#include "imgui_rich_md/imgui_md_host.h"
+#include "imgui_rich_md/rich_md_host.h"
 
 #include "hello_imgui/hello_imgui.h"
 
-namespace ImGuiMd
+namespace RichMd
 {
     // Backends with ImGuiBackendFlags_RendererHasTextures (all of HelloImGui's since Dear ImGui 1.92) get the
     // default upload (an ImTextureData registered with Dear ImGui); HelloImGui's TextureGpu is the fallback.

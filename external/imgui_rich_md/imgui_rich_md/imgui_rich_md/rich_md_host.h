@@ -15,7 +15,7 @@
 #include <vector>
 
 
-namespace ImGuiMd
+namespace RichMd
 {
     // A GPU texture owned by the markdown caches (images, LaTeX).
     // keepAlive owns the GPU resource: the texture is freed when the last copy is dropped

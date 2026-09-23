@@ -3,7 +3,7 @@
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/snippets.h"
 #include "demo_utils/api_demos.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 
 #include <functional>
 #include <map>

@@ -2,7 +2,7 @@
 #pragma once
 
 #include "imgui.h"
-#include "imgui_md.h"   // imgui_md::Style (GetStyle)
+#include "rich_md_renderer.h"   // Renderer::Style (GetStyle)
 
 #include <cstdint>
 #include <functional>
@@ -13,7 +13,7 @@
 #include <array>
 
 
-namespace ImGuiMd
+namespace RichMd
 {
     struct MarkdownFontOptions
     {
@@ -109,7 +109,7 @@ namespace ImGuiMd
         //                    imgui.push_style_color(imgui.Col_.text.value, imgui.ImColor(255, 0, 0, 255).value)
         //                else:
         //                    imgui.pop_style_color()
-        //        md_options = imgui_md.MarkdownOptions()
+        //        md_options = rich_md.MarkdownOptions()
         //        md_options.callbacks.on_html_div = on_html_div
         //        immapp.run(
         //            gui_function=gui, with_markdown_options=md_options #, more options here
@@ -249,16 +249,16 @@ namespace ImGuiMd
 
     // Renders a section of a source file (mdId empty: every section), i.e. `@import "path" {md_id=mdId, part=part}`.
     // The path is looked up in the assets first, then on the file system as is: a source file can render
-    // its own narrative with ImGuiMd_RenderThisFile("Intro") (C++) or imgui_md.render_this_file("Intro") (Python).
+    // its own narrative with RICHMD_RENDER_THIS_FILE("Intro") (C++) or rich_md.render_this_file("Intro") (Python).
     void RenderFile(const std::string& path, const std::string& mdId = "", const std::string& part = "both");
-    #define ImGuiMd_RenderThisFile(...) ImGuiMd::RenderFile(__FILE__, __VA_ARGS__)
+    #define RICHMD_RENDER_THIS_FILE(...) RichMd::RenderFile(__FILE__, __VA_ARGS__)
 
     // Renders the code blocks of a given language (```mermaid, ```csv, ...) with your own function,
     // instead of the code block renderer. Applies to the current context.
     void RegisterFencedBlockRenderer(const std::string& language, std::function<void(const std::string& code)> renderer);
 
-    // The colors and spacing of the current context (see imgui_md::Style). C++ only.
-    imgui_md::Style& GetStyle();
+    // The colors and spacing of the current context (see Renderer::Style). C++ only.
+    Renderer::Style& GetStyle();
 
     SizedFont GetCodeFont();
 

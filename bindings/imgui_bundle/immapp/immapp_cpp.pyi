@@ -18,7 +18,7 @@ from imgui_bundle.imgui_node_editor import (
 )
 
 ImPlotFlags = int  # see implot.Flags_
-ImGuiMd = imgui_md
+RichMd = imgui_md
 HelloImGui = hello_imgui
 
 VoidFunction = Callable[[], Any]
@@ -155,7 +155,7 @@ class AddOnsParams:
     #
 
     # You can tweak MarkdownOptions (but this is optional)
-    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None
+    with_markdown_options: Optional[RichMd.MarkdownOptions] = None
     def __init__(
         self,
         with_implot: bool = False,
@@ -167,7 +167,7 @@ class AddOnsParams:
         with_latex: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
         update_node_editor_colors_from_imgui_colors: bool = True,
-        with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+        with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -216,7 +216,7 @@ def run(
     with_im_anim: bool = False,
     with_latex: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
-    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
 ) -> None:
     """///////////////////////////////////////////////////////////////////////////////////////
 
@@ -262,7 +262,7 @@ def run_with_markdown(
     with_im_anim: bool = False,
     with_latex: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
-    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
 ) -> None:
     """Run an application with markdown
 
@@ -393,7 +393,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
         with_tex_inspect: bool = False,
         with_latex: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
-        with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+        with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
     ) -> None:
         """Initializes the renderer with a simple GUI function and additional parameters.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).

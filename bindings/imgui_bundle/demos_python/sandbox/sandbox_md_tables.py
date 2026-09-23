@@ -1,5 +1,5 @@
 """Sandbox for Markdown table rendering."""
-from imgui_bundle import immapp, imgui_md
+from imgui_bundle import immapp, rich_md
 
 
 MARKDOWN = r"""
@@ -81,7 +81,7 @@ Here is another pararaph.
 
 
 def gui():
-    imgui_md.render_unindented(MARKDOWN)
+    rich_md.render_unindented(MARKDOWN)
 
 
 def main():

@@ -305,9 +305,9 @@ endif()
 # Build ImguiColorTextEdit
 add_subdirectory(ImGuiColorTextEdit)
 
-# Build imgui_md (requires hello_imgui and immapp for the wrapper)
+# Build imgui_rich_md (requires hello_imgui and immapp for the wrapper)
 if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
-    # The markdown stack is imgui_rich_md (external/imgui_rich_md, target imgui_md). The bundle sets its
+    # The markdown stack is imgui_rich_md (external/imgui_rich_md, target imgui_rich_md). The bundle sets its
     # options and dependency dirs, then adds its host (assets, textures, fonts through HelloImGui), the
     # MicroTeX Level 2 adapter (formula textures on HelloImGui::TextureGpu), and the historical include paths.
     option(IMGUI_RICHMD_WITH_CODE_EDITOR "Code blocks with syntax highlighting in markdown (ImGuiColorTextEdit)" ON)
@@ -334,46 +334,49 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         set(IMGUI_RICHMD_EMSCRIPTEN_FETCH OFF)
         set(IMGUI_RICHMD_WASM_EXCEPTIONS OFF)  # the side module already builds with exceptions on
     endif()
-    option(IMGUI_RICHMD_EMBED_ASSETS "Embed the markdown fonts and images in the imgui_md library (the bundle serves them from its assets folder)" OFF)
+    option(IMGUI_RICHMD_EMBED_ASSETS "Embed the markdown fonts and images in the imgui_rich_md library (the bundle serves them from its assets folder)" OFF)
     set(IMGUI_RICHMD_STB_IMAGE_IMPLEMENTATION OFF)  # provided by HelloImGui
     set(IMGUI_RICHMD_MICROTEX_DIR ${CMAKE_CURRENT_LIST_DIR}/imgui_microtex/MicroTeX)
     set(IMGUI_RICHMD_INSTALL ${IMGUI_BUNDLE_INSTALL_CPP})
     add_subdirectory(imgui_rich_md/imgui_rich_md)
 
-    # The bundle's host, shims and adapters (external/imgui_md, external/imgui_microtex)
-    target_sources(imgui_md PRIVATE imgui_md/hosts/hello_imgui_host.cpp)
-    target_compile_definitions(imgui_md PRIVATE IMGUI_RICHMD_HOST_HELLO_IMGUI)
-    target_include_directories(imgui_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_md>)  # imgui_md_wrapper/*.h
-    target_link_libraries(imgui_md PUBLIC hello_imgui)
-    target_link_libraries(imgui_bundle INTERFACE imgui_md)
+    # The bundle's host, include shims and bindings (external/imgui_rich_md/{hosts,compat,bindings}), the MicroTeX
+    # texture adapter (external/imgui_microtex); the former target names stay as aliases
+    add_library(imgui_md ALIAS imgui_rich_md)
+    target_sources(imgui_rich_md PRIVATE imgui_rich_md/hosts/hello_imgui_host.cpp)
+    target_compile_definitions(imgui_rich_md PRIVATE IMGUI_RICHMD_HOST_HELLO_IMGUI)
+    target_include_directories(imgui_rich_md PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_rich_md/compat>)  # imgui_md_wrapper/*.h
+    target_link_libraries(imgui_rich_md PUBLIC hello_imgui)
+    target_link_libraries(imgui_bundle INTERFACE imgui_rich_md)
     if(HELLOIMGUI_USE_SDL2)
-        target_compile_definitions(imgui_md PRIVATE IMGUI_RICHMD_EMSCRIPTEN_SDL2)  # clipboard to the browser
+        target_compile_definitions(imgui_rich_md PRIVATE IMGUI_RICHMD_EMSCRIPTEN_SDL2)  # clipboard to the browser
     endif()
     if(IMGUI_BUNDLE_BUILD_PYTHON)
-        target_compile_definitions(imgui_md PUBLIC IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON)
+        target_compile_definitions(imgui_rich_md PUBLIC IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON)
     endif()
     if(IMGUI_RICHMD_WITH_LATEX)
-        target_sources(imgui_microtex PRIVATE imgui_microtex/imgui_microtex/imgui_microtex.cpp imgui_microtex/imgui_microtex/imgui_microtex.h)
-        target_include_directories(imgui_microtex PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex>)
-        target_link_libraries(imgui_microtex PUBLIC hello_imgui)
-        message(STATUS "imgui_md: native LaTeX rendering enabled (via MicroTeX)")
+        target_sources(imgui_rich_md_latex PRIVATE imgui_microtex/imgui_microtex/imgui_microtex.cpp imgui_microtex/imgui_microtex/imgui_microtex.h)
+        target_include_directories(imgui_rich_md_latex PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui_microtex>)
+        target_link_libraries(imgui_rich_md_latex PUBLIC hello_imgui)
+        add_library(imgui_microtex ALIAS imgui_rich_md_latex)
+        message(STATUS "imgui_rich_md: native LaTeX rendering enabled (via MicroTeX)")
     endif()
     if(IMGUI_RICHMD_LINKS_CURL)
-        message(STATUS "imgui_md: URL image download enabled (using system libcurl)")
+        message(STATUS "imgui_rich_md: URL image download enabled (using system libcurl)")
     endif()
-    set(IMGUI_BUNDLE_LINKS_CURL ${IMGUI_RICHMD_LINKS_CURL} CACHE INTERNAL "imgui_md links libcurl (read by imgui_bundle-config.cmake.in)" FORCE)
-    hello_imgui_msvc_target_group_sources(imgui_md)
+    set(IMGUI_BUNDLE_LINKS_CURL ${IMGUI_RICHMD_LINKS_CURL} CACHE INTERNAL "imgui_rich_md links libcurl (read by imgui_bundle-config.cmake.in)" FORCE)
+    hello_imgui_msvc_target_group_sources(imgui_rich_md)
 
     if(IMGUI_BUNDLE_INSTALL_CPP)
-        ibd_add_installable_dependency(imgui_md)
+        ibd_add_installable_dependency(imgui_rich_md)
         # the historical include paths
-        install(FILES imgui_md/imgui_md_wrapper/imgui_md_wrapper.h imgui_md/imgui_md_wrapper/imgui_md_host.h DESTINATION include/imgui_md_wrapper)
+        install(FILES imgui_rich_md/compat/imgui_md_wrapper/imgui_md_wrapper.h imgui_rich_md/compat/imgui_md_wrapper/imgui_md_host.h DESTINATION include/imgui_md_wrapper)
         if(IMGUI_RICHMD_WITH_CODE_EDITOR)
-            install(FILES imgui_md/imgui_md_wrapper/backends/code_editor/snippets.h DESTINATION include/imgui_md_wrapper/backends/code_editor)
+            install(FILES imgui_rich_md/compat/imgui_md_wrapper/backends/code_editor/snippets.h DESTINATION include/imgui_md_wrapper/backends/code_editor)
         endif()
         if(IMGUI_RICHMD_WITH_LATEX)
             ibd_add_installable_dependency(microtex)
-            ibd_add_installable_dependency(imgui_microtex)
+            ibd_add_installable_dependency(imgui_rich_md_latex)
             install(FILES imgui_microtex/imgui_microtex/imgui_microtex.h DESTINATION include/imgui_microtex)
             # MicroTeX is added with EXCLUDE_FROM_ALL, which also discards its own install() rules,
             # while its exported target advertises include/microtex. Install the headers it would
@@ -398,7 +401,7 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_MD)
     set(IMGUI_BUNDLE_WITH_IMGUI_MD ON CACHE INTERNAL "" FORCE)
 else()
-    message(STATUS "Skipping imgui_md (disabled or hello_imgui not available)")
+    message(STATUS "Skipping imgui_rich_md (disabled or hello_imgui not available)")
 endif()
 
 

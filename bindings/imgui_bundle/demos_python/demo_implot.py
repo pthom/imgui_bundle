@@ -1,5 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle import imgui, imgui_md, immapp, icons_fontawesome_4
+from imgui_bundle import imgui, rich_md, immapp, icons_fontawesome_4
 from imgui_bundle.demos_python.demos_imgui_explorer import implot3d_demo
 from imgui_bundle.demos_python.demos_imgui_explorer import implot_demo
 
@@ -8,7 +8,7 @@ imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 
 def demo_gui():
-    imgui_md.render_unindented(
+    rich_md.render_unindented(
         """
         [Implot](https://github.com/epezent/implot) and [Implot3D](https://github.com/brenocq/implot3d) are fast and efficient libraries which provide immediate Mode Plotting.
         """
@@ -21,7 +21,7 @@ def demo_gui():
 
             imgui.text(icons_fontawesome_4.ICON_FA_INFO_CIRCLE)
             if imgui.is_item_hovered():
-                imgui_md.render_unindented("""
+                rich_md.render_unindented("""
                 > [!TIP]
                 > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see "Demo Apps" tab, demo_python_context_manager).
                 """)

@@ -1,4 +1,4 @@
-# immapp's Snippets API (and its Python bindings) come from imgui_md's code editor backend
+# immapp's Snippets API (and its Python bindings) come from imgui_rich_md's code editor backend
 if(NOT IMGUI_RICHMD_WITH_CODE_EDITOR)
     message(FATAL_ERROR "immapp requires IMGUI_RICHMD_WITH_CODE_EDITOR=ON (code snippets with ImGuiColorTextEdit)")
 endif()
@@ -9,7 +9,7 @@ if (IMGUI_BUNDLE_WITH_IMMVISION)
     target_compile_definitions(immapp PUBLIC IMGUI_BUNDLE_WITH_IMMVISION)
 endif()
 target_include_directories(immapp PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..>)
-target_link_libraries(immapp PUBLIC hello_imgui imgui_md fplus)
+target_link_libraries(immapp PUBLIC hello_imgui imgui_rich_md fplus)
 if (IMGUI_BUNDLE_WITH_IMPLOT)
     target_link_libraries(immapp PUBLIC implot)
 endif()
