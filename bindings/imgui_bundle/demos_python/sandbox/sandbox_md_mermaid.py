@@ -36,6 +36,7 @@ class Graph:
     direction: str = "TD"
     nodes: dict[str, Node] = field(default_factory=dict)
     edges: list[Edge] = field(default_factory=list)
+    back_edges: set[tuple[str, str]] = field(default_factory=set)  # edges closing a cycle (filled by layout)
 
 
 _NODE_RE = re.compile(r"^\s*(\w+)\s*(\[([^\]]*)\]|\(([^)]*)\)|\{([^}]*)\})?\s*$")
@@ -79,26 +80,44 @@ def parse(source: str) -> Graph:
 
 
 # =============================================================================
-# Layout: layered (longest path ranks, barycenter ordering), sizes from the text
+# Layout: layered (back edges reversed, longest-path ranks, barycenter ordering), sizes from the text
 # =============================================================================
 
 
 def layout(graph: Graph, em: float) -> ImVec2:
     ids = list(graph.nodes)
-    preds: dict[str, list[str]] = {i: [] for i in ids}
     succs: dict[str, list[str]] = {i: [] for i in ids}
     for e in graph.edges:
-        preds[e.dst].append(e.src)
         succs[e.src].append(e.dst)
-    # ranks: longest path from a source (cycles are cut by the visit order)
+    # back edges: found by a depth-first visit from the nodes in input order (as dagre does), and
+    # reversed for the ranking so that the cycle example keeps its natural top-down order
+    state: dict[str, int] = {}  # 0 visiting, 1 done
+    back: set[tuple[str, str]] = set()
+
+    def visit(n: str) -> None:
+        state[n] = 0
+        for m in succs[n]:
+            if m not in state:
+                visit(m)
+            elif state[m] == 0:
+                back.add((n, m))
+        state[n] = 1
+
+    for n in ids:
+        if n not in state:
+            visit(n)
+    graph.back_edges = back
+    forward_preds: dict[str, list[str]] = {i: [] for i in ids}
+    for e in graph.edges:
+        if (e.src, e.dst) in back:
+            forward_preds[e.src].append(e.dst)
+        else:
+            forward_preds[e.dst].append(e.src)
     rank: dict[str, int] = {}
 
-    def rank_of(n: str, stack: tuple[str, ...] = ()) -> int:
-        if n in rank:
-            return rank[n]
-        if n in stack:
-            return 0
-        rank[n] = 1 + max((rank_of(p, stack + (n,)) for p in preds[n]), default=-1)
+    def rank_of(n: str) -> int:
+        if n not in rank:
+            rank[n] = 1 + max((rank_of(p) for p in forward_preds[n]), default=-1)
         return rank[n]
 
     for n in ids:
@@ -106,20 +125,24 @@ def layout(graph: Graph, em: float) -> ImVec2:
     layers: dict[int, list[str]] = {}
     for n in ids:
         layers.setdefault(graph.nodes[n].rank, []).append(n)
+    for r in sorted(layers):
+        for i, n in enumerate(layers[r]):
+            graph.nodes[n].order = i
     # ordering: a few barycenter sweeps
     for _ in range(4):
         for r in sorted(layers):
             def bary(n: str, r: int = r) -> float:
-                ps = [graph.nodes[p].order for p in preds[n] if graph.nodes[p].rank < r]
+                ps = [graph.nodes[p].order for p in forward_preds[n] if graph.nodes[p].rank < r]
                 return sum(ps) / len(ps) if ps else graph.nodes[n].order
             layers[r].sort(key=bary)
             for i, n in enumerate(layers[r]):
                 graph.nodes[n].order = i
     # sizes and positions
-    pad, gap_x, gap_y = 0.8 * em, 1.5 * em, 2.0 * em
+    pad, gap_x, gap_y = 0.8 * em, 1.5 * em, 2.5 * em
     for node in graph.nodes.values():
         text = imgui.calc_text_size(node.label)
-        node.size = ImVec2(text.x + 2 * pad + (text.y if node.shape == "diamond" else 0), text.y + 2 * pad + (text.y if node.shape == "diamond" else 0))
+        extra = text.y if node.shape == "diamond" else 0
+        node.size = ImVec2(text.x + 2 * pad + extra, text.y + 2 * pad + extra)
     vertical = graph.direction in ("TD", "TB")
     offset_main = 0.0
     total_cross = 0.0
@@ -128,7 +151,7 @@ def layout(graph: Graph, em: float) -> ImVec2:
         thickness = max((nd.size.y if vertical else nd.size.x) for nd in nodes)
         cross_total = sum((nd.size.x if vertical else nd.size.y) for nd in nodes) + gap_x * (len(nodes) - 1)
         total_cross = max(total_cross, cross_total)
-        cursor = 0.0
+        cursor = -cross_total / 2  # centered on the cross axis
         for nd in nodes:
             if vertical:
                 nd.pos = ImVec2(cursor, offset_main + (thickness - nd.size.y) / 2)
@@ -136,37 +159,35 @@ def layout(graph: Graph, em: float) -> ImVec2:
             else:
                 nd.pos = ImVec2(offset_main + (thickness - nd.size.x) / 2, cursor)
                 cursor += nd.size.y + gap_x
-        # center the layer on the cross axis
-        shift = (0 - cross_total) / 2
-        for nd in nodes:
-            if vertical:
-                nd.pos.x += shift
-            else:
-                nd.pos.y += shift
         offset_main += thickness + gap_y
-    # move everything to positive coordinates
     for nd in graph.nodes.values():
         if vertical:
             nd.pos.x += total_cross / 2
         else:
             nd.pos.y += total_cross / 2
-    return ImVec2(total_cross, offset_main - gap_y) if vertical else ImVec2(offset_main - gap_y, total_cross)
+    lanes = 1.2 * em * len(back)  # room on the right (TD) or below (LR) for the back edges
+    return ImVec2(total_cross + lanes, offset_main - gap_y) if vertical else ImVec2(offset_main - gap_y, total_cross + lanes)
 
 
 # =============================================================================
-# Drawing
+# Drawing: elbow edges, back edges around the graph, arrowheads at the end of the last segment
 # =============================================================================
 
 
-def _anchor(node: Node, towards: ImVec2, origin: ImVec2) -> ImVec2:
-    """The point of the node's border in the direction of `towards`"""
-    cx, cy = origin.x + node.pos.x + node.size.x / 2, origin.y + node.pos.y + node.size.y / 2
-    dx, dy = towards.x - cx, towards.y - cy
-    if abs(dx) * node.size.y > abs(dy) * node.size.x:
-        t = (node.size.x / 2) / abs(dx) if dx else 0
-    else:
-        t = (node.size.y / 2) / abs(dy) if dy else 0
-    return ImVec2(cx + dx * t, cy + dy * t)
+def _polyline(dl: imgui.ImDrawList, pts: list[ImVec2], col: int, arrow: bool, em: float) -> None:
+    """Draws the segments; with an arrow, the last segment stops at the base of the triangle"""
+    end = pts[-1]
+    if arrow:
+        prev = pts[-2]
+        dx, dy = end.x - prev.x, end.y - prev.y
+        n = max((dx * dx + dy * dy) ** 0.5, 1e-3)
+        ux, uy = dx / n, dy / n
+        s = 0.55 * em
+        base = ImVec2(end.x - s * ux, end.y - s * uy)
+        pts = pts[:-1] + [base]
+        dl.add_triangle_filled(end, ImVec2(base.x + s * 0.45 * uy, base.y - s * 0.45 * ux), ImVec2(base.x - s * 0.45 * uy, base.y + s * 0.45 * ux), col)
+    for a, b in zip(pts, pts[1:], strict=False):
+        dl.add_line(a, b, col, 1.5)
 
 
 def draw(graph: Graph) -> None:
@@ -178,26 +199,44 @@ def draw(graph: Graph) -> None:
     text_col = imgui.get_color_u32(imgui.Col_.text)
     border = imgui.get_color_u32(imgui.Col_.text, 0.6)
     fill = imgui.get_color_u32(imgui.Col_.frame_bg)
+    window_bg = imgui.get_color_u32(imgui.Col_.window_bg)
+    vertical = graph.direction in ("TD", "TB")
+
+    def rect(node: Node) -> tuple[ImVec2, ImVec2]:
+        p0 = ImVec2(origin.x + node.pos.x, origin.y + node.pos.y)
+        return p0, ImVec2(p0.x + node.size.x, p0.y + node.size.y)
+
+    lane = 0
     for e in graph.edges:
         a, b = graph.nodes[e.src], graph.nodes[e.dst]
-        ca = ImVec2(origin.x + a.pos.x + a.size.x / 2, origin.y + a.pos.y + a.size.y / 2)
-        cb = ImVec2(origin.x + b.pos.x + b.size.x / 2, origin.y + b.pos.y + b.size.y / 2)
-        p0, p1 = _anchor(a, cb, origin), _anchor(b, ca, origin)
-        dl.add_line(p0, p1, border, 1.5)
-        if e.arrow:
-            dx, dy = p1.x - p0.x, p1.y - p0.y
-            n = max((dx * dx + dy * dy) ** 0.5, 1e-3)
-            ux, uy = dx / n, dy / n
-            s = 0.5 * em
-            dl.add_triangle_filled(p1, ImVec2(p1.x - s * ux + s * 0.5 * uy, p1.y - s * uy - s * 0.5 * ux), ImVec2(p1.x - s * ux - s * 0.5 * uy, p1.y - s * uy + s * 0.5 * ux), border)
+        a0, a1 = rect(a)
+        b0, b1 = rect(b)
+        ca, cb = ImVec2((a0.x + a1.x) / 2, (a0.y + a1.y) / 2), ImVec2((b0.x + b1.x) / 2, (b0.y + b1.y) / 2)
+        if (e.src, e.dst) in graph.back_edges:
+            # out of the side of the source, along a lane past the graph, into the side of the target
+            lane += 1
+            if vertical:
+                lx = origin.x + size.x - 1.2 * em * len(graph.back_edges) + 1.2 * em * lane
+                pts = [ImVec2(a1.x, ca.y), ImVec2(lx, ca.y), ImVec2(lx, cb.y), ImVec2(b1.x, cb.y)]
+            else:
+                ly = origin.y + size.y - 1.2 * em * len(graph.back_edges) + 1.2 * em * lane
+                pts = [ImVec2(ca.x, a1.y), ImVec2(ca.x, ly), ImVec2(cb.x, ly), ImVec2(cb.x, b1.y)]
+        elif vertical:
+            mid_y = (a1.y + b0.y) / 2
+            pts = [ImVec2(ca.x, a1.y), ImVec2(cb.x, b0.y)] if abs(ca.x - cb.x) < 1 else [ImVec2(ca.x, a1.y), ImVec2(ca.x, mid_y), ImVec2(cb.x, mid_y), ImVec2(cb.x, b0.y)]
+        else:
+            mid_x = (a1.x + b0.x) / 2
+            pts = [ImVec2(a1.x, ca.y), ImVec2(b0.x, cb.y)] if abs(ca.y - cb.y) < 1 else [ImVec2(a1.x, ca.y), ImVec2(mid_x, ca.y), ImVec2(mid_x, cb.y), ImVec2(b0.x, cb.y)]
+        _polyline(dl, pts, border, e.arrow, em)
         if e.label:
+            # on the middle segment when there is one, else at the middle of the edge
+            seg = (pts[1], pts[2]) if len(pts) == 4 else (pts[0], pts[1])
             ts = imgui.calc_text_size(e.label)
-            mid = ImVec2((p0.x + p1.x) / 2 - ts.x / 2, (p0.y + p1.y) / 2 - ts.y / 2)
-            dl.add_rect_filled(ImVec2(mid.x - 2, mid.y), ImVec2(mid.x + ts.x + 2, mid.y + ts.y), imgui.get_color_u32(imgui.Col_.window_bg))
+            mid = ImVec2((seg[0].x + seg[1].x) / 2 - ts.x / 2, (seg[0].y + seg[1].y) / 2 - ts.y / 2)
+            dl.add_rect_filled(ImVec2(mid.x - 2, mid.y), ImVec2(mid.x + ts.x + 2, mid.y + ts.y), window_bg)
             dl.add_text(mid, text_col, e.label)
     for node in graph.nodes.values():
-        p0 = ImVec2(origin.x + node.pos.x, origin.y + node.pos.y)
-        p1 = ImVec2(p0.x + node.size.x, p0.y + node.size.y)
+        p0, p1 = rect(node)
         c = ImVec2((p0.x + p1.x) / 2, (p0.y + p1.y) / 2)
         if node.shape == "diamond":
             pts = [ImVec2(c.x, p0.y), ImVec2(p1.x, c.y), ImVec2(c.x, p1.y), ImVec2(p0.x, c.y)]
@@ -377,13 +416,14 @@ def draw_sequence(seq: Sequence) -> None:
                 dl.add_line(ImVec2(xa, y), ImVec2(xb, y), line_col, 1.5)
             dl.add_text(ImVec2((xa + xb) / 2 - ts.x / 2, y - ts.y - 0.2 * em), text_col, r.text)
             tip, direction = ImVec2(xb, y), (1.0 if xb > xa else -1.0)
-        s_ = 0.5 * em
+        s_ = 0.55 * em
         p_back = ImVec2(tip.x - direction * s_, tip.y)
         if r.arrowhead:
-            dl.add_triangle_filled(tip, ImVec2(p_back.x, tip.y - s_ * 0.5), ImVec2(p_back.x, tip.y + s_ * 0.5), line_col)
+            dl.add_rect_filled(ImVec2(min(tip.x, p_back.x), tip.y - 1), ImVec2(max(tip.x, p_back.x), tip.y + 1), imgui.get_color_u32(imgui.Col_.window_bg))  # the line stops at the base
+            dl.add_triangle_filled(tip, ImVec2(p_back.x, tip.y - s_ * 0.45), ImVec2(p_back.x, tip.y + s_ * 0.45), line_col)
         else:
-            dl.add_line(tip, ImVec2(p_back.x, tip.y - s_ * 0.5), line_col, 1.5)
-            dl.add_line(tip, ImVec2(p_back.x, tip.y + s_ * 0.5), line_col, 1.5)
+            dl.add_line(tip, ImVec2(p_back.x, tip.y - s_ * 0.45), line_col, 1.5)
+            dl.add_line(tip, ImVec2(p_back.x, tip.y + s_ * 0.45), line_col, 1.5)
     imgui.dummy(ImVec2(total_w + 2 * em, height + em))
 
 
@@ -432,6 +472,7 @@ graph TD
     D --> F[Save Image and Code]
     F --> B
 ```
+
 A sequence diagram:
 ```mermaid
 sequenceDiagram
