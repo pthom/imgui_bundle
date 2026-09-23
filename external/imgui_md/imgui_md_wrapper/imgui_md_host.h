@@ -35,6 +35,7 @@ namespace ImGuiMd
         std::vector<uint8_t> rgba;   // width * height * 4 bytes
         int width = 0, height = 0;
         int baselineY = 0;           // from the top of the bitmap to the text baseline, in pixels
+        std::string error;           // set (with no pixels) when the formula is invalid: the source is shown with this message
     };
 
     // The content of an asset file, or std::nullopt when it does not exist
@@ -71,8 +72,9 @@ namespace ImGuiMd
         std::function<void(const std::string& code, const std::string& language)> RenderCodeBlock;
 
         // Renders a LaTeX formula (without its $ delimiters) to an RGBA bitmap. fontSizePx is in physical
-        // pixels; displayStyle is true for $$...$$. Return std::nullopt when LaTeX is not available: the
-        // formula's source is shown instead. Default: MicroTeX when built with IMGUI_RICHMD_WITH_LATEX, else none.
+        // pixels; displayStyle is true for $$...$$. Return std::nullopt when LaTeX is not available, or a
+        // bitmap with only `error` set when the formula is invalid: the formula's source is shown instead.
+        // Default: MicroTeX when built with IMGUI_RICHMD_WITH_LATEX, else none.
         std::function<std::optional<LatexBitmap>(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle)> RenderLatex;
 
         // Logs a warning. Default: stderr.

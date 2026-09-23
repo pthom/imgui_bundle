@@ -250,8 +250,9 @@ namespace ImGuiMd
         try {  // an invalid formula (MicroTeX throws) falls back to its source text
             formula = ImGuiMicroTeX::Render(latex, fontSizePx, color, style);
         } catch (const std::exception& e) {
-            gHostServices.Log(std::string("LaTeX error: ") + e.what());
-            return std::nullopt;
+            LatexBitmap invalid;
+            invalid.error = e.what();
+            return invalid;
         }
         LatexBitmap bitmap;
         bitmap.rgba = std::move(formula.Pixels);
@@ -518,7 +519,7 @@ namespace ImGuiMd
         mutable std::map<std::string, MarkdownTexture > mLoadedImages;
 
         // Formula textures, keyed by source + size + color + style
-        struct LatexEntry { MarkdownTexture texture; int baselineY = 0; int lastUsedFrame = 0; };
+        struct LatexEntry { MarkdownTexture texture; int baselineY = 0; int lastUsedFrame = 0; std::string error; };
         mutable std::map<std::string, LatexEntry> mLatexCache;
     };
     // Formulas not displayed for this many frames are dropped from the cache (lazily, when a new one is inserted)
@@ -714,7 +715,8 @@ namespace ImGuiMd
         }
 
         // The formula's texture, from the cache or rendered through the host.
-        // nullopt: LaTeX is not available (the source is shown); an invalid texture: this formula failed.
+        // nullopt: LaTeX is not available; an entry with an error: the formula is invalid (cached too,
+        // so that it is parsed once). The source is shown in both cases.
         std::optional<MarkdownCollection::LatexEntry> GetLatexTexture(const std::string& latex, float fontSizePx, ImU32 color, bool displayStyle) const
         {
             if (!gHostServices.RenderLatex || !gHostServices.UploadRgba)
@@ -737,7 +739,8 @@ namespace ImGuiMd
             if (!bitmap)
                 return std::nullopt;
             MarkdownCollection::LatexEntry entry;
-            if (bitmap->width > 0 && bitmap->height > 0)
+            entry.error = bitmap->error;
+            if (entry.error.empty() && bitmap->width > 0 && bitmap->height > 0)
                 entry.texture = gHostServices.UploadRgba(bitmap->rgba.data(), bitmap->width, bitmap->height);
             entry.baselineY = bitmap->baselineY;
             entry.lastUsedFrame = frame;
@@ -750,6 +753,11 @@ namespace ImGuiMd
             auto entry = GetLatexTexture(latex, fontSizePx, color, display);
             if (!entry)
                 return false;
+            if (!entry->error.empty())
+            {
+                out.error = entry->error;
+                return false;
+            }
             out.texture_id = entry->texture.id;
             out.size_px = entry->texture.size;
             out.baseline_px = (float)entry->baselineY;
