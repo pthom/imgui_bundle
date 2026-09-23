@@ -1,8 +1,8 @@
 #include "snippets.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "imgui.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
-#include "imgui_md_wrapper/imgui_md_internal.h"
+#include "../../imgui_md_wrapper.h"
+#include "../../imgui_md_internal.h"
 
 #include <algorithm>
 #include <cstdio>
@@ -48,7 +48,7 @@ namespace Snippets
             editor.SetLanguage(TextEditor::Language::Python());
     }
 
-#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+#if defined(__EMSCRIPTEN__) && defined(IMGUI_RICHMD_EMSCRIPTEN_SDL2)
     void _ProcessClipboard_Emscripten(TextEditor& editor)
     {
       if (!ImGui::IsItemHovered())
@@ -75,7 +75,7 @@ namespace Snippets
       if (shallFillBrowserClipboard)
           ImGui::SetClipboardText(editor.GetCursorText(0).c_str());
     }
-#endif // #if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+#endif // #if defined(__EMSCRIPTEN__) && defined(IMGUI_RICHMD_EMSCRIPTEN_SDL2)
 
     // The copy button: two overlapping sheets drawn with the draw list (no icon font needed). Only
     // the visible part of the back sheet is drawn, so the icon does not depend on the button's colors.
@@ -260,7 +260,7 @@ namespace Snippets
         if (changed && !snippetData.ReadOnly)
             snippetData.Code = editor.GetText();
 
-#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+#if defined(__EMSCRIPTEN__) && defined(IMGUI_RICHMD_EMSCRIPTEN_SDL2)
         _ProcessClipboard_Emscripten(editor);
 #endif
 

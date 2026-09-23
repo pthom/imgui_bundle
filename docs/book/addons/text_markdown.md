@@ -178,7 +178,7 @@ Pyodide wheels do not include the math fonts required for rendering LaTeX (to sa
 ### Documented APIs
 
 - **Python:** [imgui_md.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_md.pyi)
-- **C++:** [imgui_md_wrapper.h](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_md/imgui_md_wrapper/imgui_md_wrapper.h)
+- **C++:** [imgui_md_wrapper.h](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_rich_md/imgui_rich_md/imgui_rich_md/imgui_md_wrapper.h)
 
 
 ## ImGuiColorTextEdit - Syntax Highlighting Editor & Diff Viewer

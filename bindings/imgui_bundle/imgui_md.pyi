@@ -200,7 +200,7 @@ class MarkdownOptions:
 
     # Enable native LaTeX math rendering via MicroTeX.
     # When True, $...$ and $$...$$ in markdown will be rendered as math formulas
-    # (requires building with IMGUI_RICHMD_WITH_LATEX=ON, which is the default
+    # (requires building with IMGUI_RICHMD_WITH_LATEX=ON; in the bundle it is the default
     # when IMGUI_BUNDLE_WITH_MICROTEX and FreeType are both available).
     # When False, $ is rendered as a literal character (legacy behavior).
     with_latex: bool = False

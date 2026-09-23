@@ -40,7 +40,7 @@ def main() -> None:
     generator.process_cpp_file(CPP_HEADERS_DIR + "/runner.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/clock.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/code_utils.h")
-    generator.process_cpp_file(CPP_HEADERS_DIR + "/../../imgui_md/imgui_md_wrapper/backends/code_editor/snippets.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/backends/code_editor/snippets.h")
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

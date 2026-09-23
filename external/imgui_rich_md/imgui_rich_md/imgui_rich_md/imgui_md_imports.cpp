@@ -1,5 +1,5 @@
 // Sections and imports: see the documentation of ResolveImports in imgui_md_wrapper.h
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_md_wrapper.h"
 
 #include <algorithm>
 #include <map>
