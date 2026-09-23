@@ -475,7 +475,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
 
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:
-        """DefaultSnippetLanguage will be Cpp or Python if using python bindings."""
+        """DefaultSnippetLanguage: Cpp, or Python when the host defines IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON (Python bindings)"""
         pass
 
     class SnippetData:

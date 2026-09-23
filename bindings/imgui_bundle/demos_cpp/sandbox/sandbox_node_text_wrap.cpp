@@ -1,6 +1,6 @@
 #if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR)
 #include "imgui-node-editor/imgui_node_editor.h"
-#include "imgui_md_wrapper.h"
+#include "imgui_md_wrapper/imgui_md_wrapper.h"
 #include "immapp/immapp.h"
 
 namespace ed = ax::NodeEditor;

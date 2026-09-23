@@ -416,7 +416,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
 
         pyNsSnippets.def("default_snippet_language",
-            Snippets::DefaultSnippetLanguage, "DefaultSnippetLanguage will be Cpp or Python if using python bindings.");
+            Snippets::DefaultSnippetLanguage, "DefaultSnippetLanguage: Cpp, or Python when the host defines IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON (Python bindings)");
 
 
         auto pyNsSnippets_ClassSnippetData =

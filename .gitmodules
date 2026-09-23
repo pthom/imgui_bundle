@@ -22,10 +22,6 @@
 	path = external/imgui-node-editor/imgui-node-editor
 	url = https://github.com/pthom/imgui-node-editor.git
 	branch = imgui_bundle
-[submodule "external/imgui_md/imgui_md"]
-	path = external/imgui_md/imgui_md
-	url = https://github.com/pthom/imgui_md.git
-	branch = imgui_bundle
 [submodule "external/imgui_tex_inspect/imgui_tex_inspect"]
 	path = external/imgui_tex_inspect/imgui_tex_inspect
 	url = https://github.com/pthom/imgui_tex_inspect.git
@@ -34,8 +30,8 @@
 	path = external/imgui_toggle/imgui_toggle
 	url = https://github.com/pthom/imgui_toggle.git
 	branch = imgui_bundle
-[submodule "external/imgui_md/md4c"]
-	path = external/imgui_md/md4c
+[submodule "external/imgui_rich_md/imgui_rich_md/external/md4c"]
+	path = external/imgui_rich_md/imgui_rich_md/external/md4c
 	url = https://github.com/mity/md4c
 	branch = master
 [submodule "external/ImGuiColorTextEdit/ImGuiColorTextEdit"]
