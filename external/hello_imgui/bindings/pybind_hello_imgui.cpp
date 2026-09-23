@@ -791,7 +791,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     auto pyClassWindowGeometry =
         nb::class_<HelloImGui::WindowGeometry>
-            (m, "WindowGeometry", " @@md#WindowGeometry\n\n WindowGeometry is a struct that defines the window geometry.")
+            (m, "WindowGeometry", "WindowGeometry is a struct that defines the window geometry.")
         .def("__init__", [](HelloImGui::WindowGeometry * self, const std::optional<const ScreenSize> & size = std::nullopt, bool sizeAuto = false, HelloImGui::WindowSizeState windowSizeState = HelloImGui::WindowSizeState::Standard, HelloImGui::WindowSizeMeasureMode windowSizeMeasureMode = HelloImGui::WindowSizeMeasureMode::RelativeTo96Ppi, HelloImGui::WindowPositionMode positionMode = HelloImGui::WindowPositionMode::OsDefault, const std::optional<const ScreenPosition> & position = std::nullopt, int monitorIdx = 0, HelloImGui::FullScreenMode fullScreenMode = HelloImGui::FullScreenMode::NoFullScreen, bool resizeAppWindowAtNextFrame = false)
         {
             new (self) HelloImGui::WindowGeometry();  // placement new
@@ -849,7 +849,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     auto pyClassAppWindowParams =
         nb::class_<HelloImGui::AppWindowParams>
-            (m, "AppWindowParams", " @@md#AppWindowParams\n\n AppWindowParams is a struct that defines the application window display params.\nSee https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg\n for details.")
+            (m, "AppWindowParams", " AppWindowParams is a struct that defines the application window display params.\nSee https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg\n for details.")
         .def("__init__", [](HelloImGui::AppWindowParams * self, std::string windowTitle = std::string(), const std::optional<const HelloImGui::WindowGeometry> & windowGeometry = std::nullopt, bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool topMost = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, const std::optional<const ImVec4> & borderlessHighlightColor = std::nullopt, const std::optional<const HelloImGui::EdgeInsets> & edgeInsets = std::nullopt, bool handleEdgeInsets = true, HelloImGui::EmscriptenKeyboardElement emscriptenKeyboardElement = HelloImGui::EmscriptenKeyboardElement::Default, bool emscriptenAllowBrowserZoomShortcuts = true, bool repaintDuringResize_GotchaReentrantRepaint = false)
         {
             new (self) HelloImGui::AppWindowParams();  // placement new
@@ -1087,7 +1087,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     auto pyClassRunnerCallbacks =
         nb::class_<HelloImGui::RunnerCallbacks>
-            (m, "RunnerCallbacks", " @@md#RunnerCallbacks\n RunnerCallbacks is a struct that contains the callbacks\n that are called by the application\n")
+            (m, "RunnerCallbacks", " RunnerCallbacks is a struct that contains the callbacks\n that are called by the application")
         .def("__init__", [](HelloImGui::RunnerCallbacks * self, const std::optional<const VoidFunction> & ShowGui = std::nullopt, const std::optional<const VoidFunction> & ShowMenus = std::nullopt, const std::optional<const VoidFunction> & ShowAppMenuItems = std::nullopt, const std::optional<const VoidFunction> & ShowStatus = std::nullopt, const std::optional<const VoidFunction> & PostInit_AddPlatformBackendCallbacks = std::nullopt, const std::optional<const VoidFunction> & PostInit = std::nullopt, const std::optional<const VoidFunction> & LoadAdditionalFonts = std::nullopt, HelloImGui::DefaultIconFont defaultIconFont = HelloImGui::DefaultIconFont::FontAwesome4, const std::optional<const VoidFunction> & SetupImGuiConfig = std::nullopt, const std::optional<const VoidFunction> & SetupImGuiStyle = std::nullopt, const std::optional<const VoidFunction> & RegisterTests = std::nullopt, bool registerTestsCalled = false, const std::optional<const ConfirmExitCallback> & ConfirmExit = std::nullopt, const std::optional<const VoidFunction> & BeforeExit = std::nullopt, const std::optional<const VoidFunction> & BeforeExit_PostCleanup = std::nullopt, const std::optional<const VoidFunction> & PreNewFrame = std::nullopt, const std::optional<const VoidFunction> & PostNewFrame = std::nullopt, const std::optional<const VoidFunction> & BeforeImGuiRender = std::nullopt, const std::optional<const VoidFunction> & BeforeSwap = std::nullopt, const std::optional<const VoidFunction> & AfterSwap = std::nullopt, const std::optional<const VoidFunction> & CustomBackground = std::nullopt, const std::optional<const VoidFunction> & PostRenderDockableWindows = std::nullopt, const std::optional<const VoidFunction> & ThemeChanged = std::nullopt, const std::optional<const AnyEventCallback> & AnyBackendEventCallback = std::nullopt)
         {
             new (self) HelloImGui::RunnerCallbacks();  // placement new
@@ -1389,7 +1389,7 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     auto pyClassBackendPointers =
         nb::class_<HelloImGui::BackendPointers>
-            (m, "BackendPointers", " @@md#BackendPointers\n\n BackendPointers is a struct that contains optional pointers to the\n backend implementations (for SDL and GLFW).\n\n These pointers will be filled when the application starts, and you can use them\n to customize your application behavior using the selected backend.\n\n Note: If using the Metal, Vulkan or DirectX rendering backend, you can find\n some interesting pointers inside\n     `src/hello_imgui/internal/backend_impls/rendering_metal.h`\n     `src/hello_imgui/internal/backend_impls/rendering_vulkan.h`\n     `src/hello_imgui/internal/backend_impls/rendering_dx11.h`\n     `src/hello_imgui/internal/backend_impls/rendering_dx12.h`")
+            (m, "BackendPointers", " BackendPointers is a struct that contains optional pointers to the\n backend implementations (for SDL and GLFW).\n\n These pointers will be filled when the application starts, and you can use them\n to customize your application behavior using the selected backend.\n\n Note: If using the Metal, Vulkan or DirectX rendering backend, you can find\n some interesting pointers inside\n     `src/hello_imgui/internal/backend_impls/rendering_metal.h`\n     `src/hello_imgui/internal/backend_impls/rendering_vulkan.h`\n     `src/hello_imgui/internal/backend_impls/rendering_dx11.h`\n     `src/hello_imgui/internal/backend_impls/rendering_dx12.h`")
         .def(nb::init<>()) // implicit default constructor
         .def_rw("glfw_window", &HelloImGui::BackendPointers::glfwWindow, "GLFWwindow*")
         .def_rw("sdl_window", &HelloImGui::BackendPointers::sdlWindow, "SDL_Window*")
