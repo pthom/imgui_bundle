@@ -951,6 +951,20 @@ namespace ImGuiMd
         ImGui::PopID();
     }
 
+    // A text file: from the assets, else from the file system as is (a source file rendering itself)
+    static std::optional<std::string> _ReadTextAssetOrFile(const std::string& path)
+    {
+        AssetBytes bytes = gHostServices.ReadAsset ? gHostServices.ReadAsset(path) : ReadAssetDefault(path);
+        if (!bytes)
+        {
+            std::ifstream ifs(path, std::ios::binary);
+            if (!ifs)
+                return std::nullopt;
+            return std::string((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+        }
+        return std::string(bytes->begin(), bytes->end());
+    }
+
     // The resolved imports of a text (cached per text: the files are read once)
     static const std::string& _ResolveImportsCached(const std::string& text)
     {
@@ -960,18 +974,18 @@ namespace ImGuiMd
         auto it = cache.find(text);
         if (it != cache.end())
             return it->second;
-        ReadTextFile readFile = [](const std::string& path) -> std::optional<std::string> {
-            AssetBytes bytes = gHostServices.ReadAsset ? gHostServices.ReadAsset(path) : ReadAssetDefault(path);
-            if (!bytes)
-                return std::nullopt;
-            return std::string(bytes->begin(), bytes->end());
-        };
-        return cache[text] = ResolveImports(text, readFile);
+        return cache[text] = ResolveImports(text, _ReadTextAssetOrFile);
     }
 
     void Render(const std::string& markdownString)
     {
         RenderRaw(_ResolveImportsCached(_Unindent(markdownString, false)));
+    }
+
+    void RenderFile(const std::string& path, const std::string& mdId, const std::string& part)
+    {
+        std::string directive = "@import \"" + path + "\" {" + (mdId.empty() ? "" : "md_id=" + mdId + ", ") + "part=" + part + "}";
+        RenderRaw(_ResolveImportsCached(directive));
     }
 
     void RegisterFencedBlockRenderer(const std::string& language, std::function<void(const std::string& code)> renderer)

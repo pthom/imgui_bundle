@@ -1,10 +1,9 @@
 """The Mandelbrot set as a map of Julia sets: click on the left picture to choose c, the right one follows.
-This file is its own narrative: the comment blocks (@@md#Name ... @@/md) are markdown, and the two
-@import directives below render them in the order of the story, with the code that follows each block."""
+This file is its own narrative: the comment blocks (@@md#Name ... @@/md) are markdown, and
+imgui_md.render_this_file renders them in the order of the story, with the code that follows each block."""
 
-import os
 import numpy as np
-from imgui_bundle import imgui, immapp, immvision, hello_imgui, imgui_md
+from imgui_bundle import imgui, immapp, immvision, imgui_md
 
 # @@md#Intro
 # # The Mandelbrot set is a map of Julia sets
@@ -84,13 +83,11 @@ class State:
         return p
 
 
-THIS_FILE = os.path.basename(__file__)  # the lesson imports its own blocks (see the module docstring)
-hello_imgui.add_assets_search_path(os.path.dirname(__file__))
 state = State()
 
 
 def gui() -> None:
-    imgui_md.render(f'@import "{THIS_FILE}" {{md_id=Intro}}')
+    imgui_md.render_this_file("Intro")
     immvision.image("Mandelbrot", state.mandel, state.params_mandel)
     mouse = state.params_mandel.mouse_info
     if mouse.is_mouse_hovering and imgui.is_mouse_clicked(0):
@@ -103,7 +100,7 @@ def gui() -> None:
     imgui.same_line()
     immvision.image("Julia", state.julia, state.params_julia)
     imgui.text(f"c = {state.c.real:.3f} {state.c.imag:+.3f} i")
-    imgui_md.render(f'@import "{THIS_FILE}" {{md_id=Story}}')
+    imgui_md.render_this_file("Story")
 
 
 immvision.use_rgb_color_order()

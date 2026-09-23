@@ -247,6 +247,12 @@ namespace ImGuiMd
     // std::nullopt); currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.
     std::string ResolveImports(const std::string& markdown, const ReadTextFile& readFile, const std::string& currentFile = "");
 
+    // Renders a section of a source file (mdId empty: every section), i.e. `@import "path" {md_id=mdId, part=part}`.
+    // The path is looked up in the assets first, then on the file system as is: a source file can render
+    // its own narrative with ImGuiMd_RenderThisFile("Intro") (C++) or imgui_md.render_this_file("Intro") (Python).
+    void RenderFile(const std::string& path, const std::string& mdId = "", const std::string& part = "both");
+    #define ImGuiMd_RenderThisFile(...) ImGuiMd::RenderFile(__FILE__, __VA_ARGS__)
+
     // Renders the code blocks of a given language (```mermaid, ```csv, ...) with your own function,
     // instead of the code block renderer. Applies to the current context.
     void RegisterFencedBlockRenderer(const std::string& language, std::function<void(const std::string& code)> renderer);
