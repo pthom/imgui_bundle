@@ -246,7 +246,13 @@ namespace ImGuiMd
             ImGuiMicroTeX::InitFromMemory(*clmData, *otfData);
         }
         auto style = displayStyle ? ImGuiMicroTeX::TexStyle::Display : ImGuiMicroTeX::TexStyle::Text;
-        ImGuiMicroTeX::RenderedFormula formula = ImGuiMicroTeX::Render(latex, fontSizePx, color, style);
+        ImGuiMicroTeX::RenderedFormula formula;
+        try {  // an invalid formula (MicroTeX throws) falls back to its source text
+            formula = ImGuiMicroTeX::Render(latex, fontSizePx, color, style);
+        } catch (const std::exception& e) {
+            gHostServices.Log(std::string("LaTeX error: ") + e.what());
+            return std::nullopt;
+        }
         LatexBitmap bitmap;
         bitmap.rgba = std::move(formula.Pixels);
         bitmap.width = formula.Width;
