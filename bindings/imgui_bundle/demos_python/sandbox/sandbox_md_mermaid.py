@@ -1,5 +1,6 @@
-"""Mermaid spike: a native flowchart subset (graph TD/LR, rectangle/rounded/diamond nodes, labeled edges),
-laid out in layers and drawn with the draw list, registered as the renderer of ```mermaid blocks.
+"""Mermaid spike: a native subset, registered as the renderer of ```mermaid blocks.
+- flowcharts (graph TD/LR, rectangle/rounded/diamond nodes, labeled edges), laid out in layers;
+- sequence diagrams (participants, the four arrow kinds, self-messages, notes, loop frames).
 Question of the spike: is a native subset worth owning, or do we keep only the fenced-block seam?"""
 import re
 from dataclasses import dataclass, field
@@ -211,13 +212,192 @@ def draw(graph: Graph) -> None:
     imgui.dummy(ImVec2(size.x + 2 * em, size.y + em))
 
 
-_cache: dict[str, Graph] = {}
+# =============================================================================
+# Sequence diagrams
+# =============================================================================
+
+
+@dataclass
+class Message:
+    src: str
+    dst: str
+    text: str
+    dashed: bool = False
+    arrowhead: bool = True
+
+
+@dataclass
+class SeqNote:
+    over: list[str]
+    text: str
+
+
+@dataclass
+class Loop:
+    label: str
+    first: int  # index of the first row inside the loop
+    last: int = -1
+
+
+@dataclass
+class Sequence:
+    participants: dict[str, str] = field(default_factory=dict)  # id -> label
+    rows: list[Message | SeqNote] = field(default_factory=list)
+    loops: list[Loop] = field(default_factory=list)
+
+
+_MSG_RE = re.compile(r"^(\w+)\s*(-->>|->>|-->|->)\s*(\w+)\s*:\s*(.*)$")
+_NOTE_RE = re.compile(r"^Note\s+(over|right of|left of)\s+([\w, ]+):\s*(.*)$", re.I)
+
+
+def parse_sequence(source: str) -> Sequence:
+    seq = Sequence()
+
+    def participant(name: str, label: str | None = None) -> None:
+        if name not in seq.participants or label:
+            seq.participants[name] = label or seq.participants.get(name, name)
+
+    open_loops: list[Loop] = []
+    for raw in source.splitlines():
+        line = raw.split("%%")[0].strip()
+        if not line or line.startswith("sequenceDiagram"):
+            continue
+        if line.startswith(("participant ", "actor ")):
+            rest = line.split(None, 1)[1]
+            name, _, alias = rest.partition(" as ")
+            participant(name.strip(), alias.strip() or None)
+            continue
+        if line.startswith("loop"):
+            open_loops.append(Loop(line[4:].strip(), len(seq.rows)))
+            continue
+        if line == "end" and open_loops:
+            loop = open_loops.pop()
+            loop.last = len(seq.rows) - 1
+            seq.loops.append(loop)
+            continue
+        if line.startswith(("activate", "deactivate")):
+            continue
+        m = _NOTE_RE.match(line)
+        if m:
+            names = [n.strip() for n in m.group(2).split(",")]
+            for n in names:
+                participant(n)
+            seq.rows.append(SeqNote(names, m.group(3)))
+            continue
+        m = _MSG_RE.match(line)
+        if m:
+            participant(m.group(1))
+            participant(m.group(3))
+            arrow = m.group(2)
+            seq.rows.append(Message(m.group(1), m.group(3), m.group(4), dashed=arrow.startswith("--"), arrowhead=arrow.endswith(">>")))
+    return seq
+
+
+def draw_sequence(seq: Sequence) -> None:
+    em = imgui.get_font_size()
+    dl = imgui.get_window_draw_list()
+    text_col = imgui.get_color_u32(imgui.Col_.text)
+    line_col = imgui.get_color_u32(imgui.Col_.text, 0.6)
+    fill = imgui.get_color_u32(imgui.Col_.frame_bg)
+    note_fill = imgui.get_color_u32(imgui.Col_.frame_bg_hovered)
+    origin = imgui.get_cursor_screen_pos()
+    origin = ImVec2(origin.x + em, origin.y + em / 2)
+    ids = list(seq.participants)
+    # participant boxes: a column per participant, wide enough for its label and the messages
+    box_w = {i: imgui.calc_text_size(seq.participants[i]).x + 2 * em for i in ids}
+    col_gap = 3 * em
+    for r in seq.rows:
+        if isinstance(r, Message) and r.src != r.dst:
+            a, b = sorted((ids.index(r.src), ids.index(r.dst)))
+            if b == a + 1:
+                col_gap = max(col_gap, imgui.calc_text_size(r.text).x + 2 * em)
+    x_center: dict[str, float] = {}
+    x = 0.0
+    for i in ids:
+        x_center[i] = x + box_w[i] / 2
+        x += box_w[i] + col_gap
+    total_w = x - col_gap
+    box_h = imgui.get_text_line_height() + em
+    row_h = 2.2 * em
+    height = box_h + (len(seq.rows) + 1) * row_h + box_h
+    # lifelines and boxes (top and bottom)
+    for i in ids:
+        cx = origin.x + x_center[i]
+        for y in (origin.y, origin.y + height - box_h):
+            p0, p1 = ImVec2(cx - box_w[i] / 2, y), ImVec2(cx + box_w[i] / 2, y + box_h)
+            dl.add_rect_filled(p0, p1, fill, 0.2 * em)
+            dl.add_rect(p0, p1, line_col, 0.2 * em, 1.5)
+            ts = imgui.calc_text_size(seq.participants[i])
+            dl.add_text(ImVec2(cx - ts.x / 2, y + (box_h - ts.y) / 2), text_col, seq.participants[i])
+        y0, y1 = origin.y + box_h, origin.y + height - box_h
+        d = 0.0
+        while d < y1 - y0:  # dashed lifeline
+            dl.add_line(ImVec2(cx, y0 + d), ImVec2(cx, min(y0 + d + 0.5 * em, y1)), line_col, 1.0)
+            d += em
+    # loop frames, behind the rows
+    for loop in seq.loops:
+        y0 = origin.y + box_h + (loop.first + 0.4) * row_h
+        y1 = origin.y + box_h + (loop.last + 1.3) * row_h
+        p0, p1 = ImVec2(origin.x - 0.5 * em, y0), ImVec2(origin.x + total_w + 0.5 * em, y1)
+        dl.add_rect(p0, p1, line_col, 0.0, 1.0)
+        label = f"loop [{loop.label}]"
+        ts = imgui.calc_text_size(label)
+        dl.add_rect_filled(p0, ImVec2(p0.x + ts.x + em, p0.y + ts.y + 0.3 * em), fill)
+        dl.add_text(ImVec2(p0.x + 0.5 * em, p0.y + 0.15 * em), text_col, label)
+    # rows
+    for k, r in enumerate(seq.rows):
+        y = origin.y + box_h + (k + 1) * row_h
+        if isinstance(r, SeqNote):
+            xs = [origin.x + x_center[n] for n in r.over]
+            ts = imgui.calc_text_size(r.text)
+            cx = sum(xs) / len(xs)
+            half = max((max(xs) - min(xs)) / 2 + em, ts.x / 2 + 0.5 * em)
+            p0, p1 = ImVec2(cx - half, y - ts.y / 2 - 0.3 * em), ImVec2(cx + half, y + ts.y / 2 + 0.3 * em)
+            dl.add_rect_filled(p0, p1, note_fill, 0.1 * em)
+            dl.add_rect(p0, p1, line_col, 0.1 * em, 1.0)
+            dl.add_text(ImVec2(cx - ts.x / 2, y - ts.y / 2), text_col, r.text)
+            continue
+        xa, xb = origin.x + x_center[r.src], origin.x + x_center[r.dst]
+        ts = imgui.calc_text_size(r.text)
+        if r.src == r.dst:  # self message: a small hook on the right of the lifeline
+            w = 1.5 * em
+            pts = [ImVec2(xa, y - 0.5 * em), ImVec2(xa + w, y - 0.5 * em), ImVec2(xa + w, y + 0.5 * em), ImVec2(xa, y + 0.5 * em)]
+            for pa, pb in zip(pts, pts[1:], strict=False):
+                dl.add_line(pa, pb, line_col, 1.5)
+            dl.add_text(ImVec2(xa + w + 0.4 * em, y - ts.y / 2), text_col, r.text)
+            tip, direction = pts[-1], -1.0
+        else:
+            if r.dashed:
+                d, length = 0.0, abs(xb - xa)
+                sign = 1.0 if xb > xa else -1.0
+                while d < length:
+                    dl.add_line(ImVec2(xa + sign * d, y), ImVec2(xa + sign * min(d + 0.5 * em, length), y), line_col, 1.5)
+                    d += 0.8 * em
+            else:
+                dl.add_line(ImVec2(xa, y), ImVec2(xb, y), line_col, 1.5)
+            dl.add_text(ImVec2((xa + xb) / 2 - ts.x / 2, y - ts.y - 0.2 * em), text_col, r.text)
+            tip, direction = ImVec2(xb, y), (1.0 if xb > xa else -1.0)
+        s_ = 0.5 * em
+        p_back = ImVec2(tip.x - direction * s_, tip.y)
+        if r.arrowhead:
+            dl.add_triangle_filled(tip, ImVec2(p_back.x, tip.y - s_ * 0.5), ImVec2(p_back.x, tip.y + s_ * 0.5), line_col)
+        else:
+            dl.add_line(tip, ImVec2(p_back.x, tip.y - s_ * 0.5), line_col, 1.5)
+            dl.add_line(tip, ImVec2(p_back.x, tip.y + s_ * 0.5), line_col, 1.5)
+    imgui.dummy(ImVec2(total_w + 2 * em, height + em))
+
+
+_cache: dict[str, Graph | Sequence] = {}
 
 
 def render_mermaid(code: str) -> None:
     if code not in _cache:
-        _cache[code] = parse(code)
-    draw(_cache[code])
+        _cache[code] = parse_sequence(code) if code.lstrip().startswith("sequenceDiagram") else parse(code)
+    diagram = _cache[code]
+    if isinstance(diagram, Sequence):
+        draw_sequence(diagram)
+    else:
+        draw(diagram)
 
 
 MD = r"""
@@ -240,6 +420,35 @@ graph LR
     B --> C{Imported?}
     C -->|prose| D(Markdown)
     C -->|code| E(Snippet)
+```
+
+```mermaid
+graph TD
+    A[Enter Chart Definition] --> B(Preview)
+    B --> C{decide}
+    C --> D[Keep]
+    C --> E[Edit Definition]
+    E --> B
+    D --> F[Save Image and Code]
+    F --> B
+```
+A sequence diagram:
+```mermaid
+sequenceDiagram
+    participant App
+    participant MD as imgui_md
+    participant Host as Host services
+    App->>MD: Render(text)
+    MD->>MD: resolve @import
+    MD->>Host: ReadAsset(path)
+    Host-->>MD: bytes
+    loop each formula
+        MD->>Host: RenderLatex(latex)
+        Host-->>MD: bitmap
+        MD->Host: UploadRgba(bitmap)
+    end
+    Note over MD,Host: textures are ImTextureData, created by the backend
+    MD-->>App: drawn
 ```
 """
 
