@@ -16,7 +16,8 @@ from imgui_bundle import imgui, immapp, imgui_md, ImVec2
 class Node:
     id: str
     label: str
-    shape: str = "rect"  # rect, rounded, diamond
+    shape: str = "rect"  # rect, rounded, diamond, cylinder
+    subgraph: str = ""   # the subgraph the node belongs to ("" for none)
     rank: int = 0
     order: int = 0
     pos: ImVec2 = field(default_factory=lambda: ImVec2(0, 0))
@@ -29,6 +30,7 @@ class Edge:
     dst: str
     label: str = ""
     arrow: bool = True
+    style: str = "solid"  # solid, dotted, thick
 
 
 @dataclass
@@ -36,32 +38,36 @@ class Graph:
     direction: str = "TD"
     nodes: dict[str, Node] = field(default_factory=dict)
     edges: list[Edge] = field(default_factory=list)
+    subgraphs: dict[str, str] = field(default_factory=dict)  # id -> title, in source order
     back_edges: set[tuple[str, str]] = field(default_factory=set)  # edges closing a cycle (filled by layout)
+    boxes: dict[str, tuple[ImVec2, ImVec2]] = field(default_factory=dict)  # subgraph -> bounding box (filled by layout)
 
 
-_NODE_RE = re.compile(r"^\s*(\w+)\s*(\[([^\]]*)\]|\(([^)]*)\)|\{([^}]*)\})?\s*$")
-_EDGE_RE = re.compile(r"^(.*?)\s*(-->|---)\s*(?:\|([^|]*)\|\s*)?(.*)$")
+_NODE_RE = re.compile(r"^\s*(\w+)\s*(\[\(([^)]*)\)\]|\[([^\]]*)\]|\(([^)]*)\)|\{([^}]*)\})?\s*$")
+# A --> B, A ---|label| B, A -. label .-> B, A -.-> B, A ==> B
+_EDGE_RE = re.compile(r"^(.*?)\s*(-->|---|-\.\s*([^.]*?)\s*\.->|-\.->|==>)\s*(?:\|([^|]*)\|\s*)?(.*)$")
 
 
-def _node(graph: Graph, text: str) -> str:
+def _node(graph: Graph, text: str, subgraph: str) -> str:
     m = _NODE_RE.match(text)
     if not m:
         raise ValueError(f"cannot parse node: {text!r}")
     node_id = m.group(1)
     if node_id not in graph.nodes:
-        graph.nodes[node_id] = Node(node_id, node_id)
+        graph.nodes[node_id] = Node(node_id, node_id, subgraph=subgraph)
     node = graph.nodes[node_id]
-    if m.group(3) is not None:
-        node.label, node.shape = m.group(3), "rect"
-    elif m.group(4) is not None:
-        node.label, node.shape = m.group(4), "rounded"
-    elif m.group(5) is not None:
-        node.label, node.shape = m.group(5), "diamond"
+    if subgraph and not node.subgraph:
+        node.subgraph = subgraph
+    shapes = {3: "cylinder", 4: "rect", 5: "rounded", 6: "diamond"}
+    for group, shape in shapes.items():
+        if m.group(group) is not None:
+            node.label, node.shape = m.group(group), shape
     return node_id
 
 
 def parse(source: str) -> Graph:
     graph = Graph()
+    subgraph = ""
     for raw in source.splitlines():
         line = raw.split("%%")[0].strip()
         if not line:
@@ -69,13 +75,25 @@ def parse(source: str) -> Graph:
         if line.startswith(("graph", "flowchart")):
             graph.direction = line.split()[1] if len(line.split()) > 1 else "TD"
             continue
+        if line.startswith("subgraph"):
+            rest = line[8:].strip()
+            m_sub = re.match(r"^(\w+)\s*(?:\[(.*)\])?$", rest)
+            subgraph = m_sub.group(1) if m_sub else rest
+            graph.subgraphs[subgraph] = (m_sub.group(2) if m_sub and m_sub.group(2) else subgraph)
+            continue
+        if line == "end":
+            subgraph = ""
+            continue
         m = _EDGE_RE.match(line)
         if m:
-            src = _node(graph, m.group(1))
-            dst = _node(graph, m.group(4))
-            graph.edges.append(Edge(src, dst, (m.group(3) or "").strip(), m.group(2) == "-->"))
+            src = _node(graph, m.group(1), subgraph)
+            dst = _node(graph, m.group(5), subgraph)
+            token = m.group(2)
+            style = "dotted" if token.startswith("-.") else ("thick" if token == "==>" else "solid")
+            label = (m.group(3) or m.group(4) or "").strip()
+            graph.edges.append(Edge(src, dst, label, token != "---", style))
         else:
-            _node(graph, line)
+            _node(graph, line, subgraph)
     return graph
 
 
@@ -137,36 +155,86 @@ def layout(graph: Graph, em: float) -> ImVec2:
             layers[r].sort(key=bary)
             for i, n in enumerate(layers[r]):
                 graph.nodes[n].order = i
-    # sizes and positions
+    # sizes
     pad, gap_x, gap_y = 0.8 * em, 1.5 * em, 2.5 * em
     for node in graph.nodes.values():
         text = imgui.calc_text_size(node.label)
-        extra = text.y if node.shape == "diamond" else 0
-        node.size = ImVec2(text.x + 2 * pad + extra, text.y + 2 * pad + extra)
+        extra = text.y if node.shape in ("diamond", "cylinder") else 0
+        node.size = ImVec2(text.x + 2 * pad + (extra if node.shape == "diamond" else 0), text.y + 2 * pad + extra)
     vertical = graph.direction in ("TD", "TB")
+
+    def cross(nd: Node) -> float:
+        return nd.size.x if vertical else nd.size.y
+
+    def main(nd: Node) -> float:
+        return nd.size.y if vertical else nd.size.x
+
+    # bands on the cross axis: one per subgraph (in source order), one for the free nodes; a band is as
+    # wide as its widest layer, so that the subgraph boxes never overlap
+    bands = list(graph.subgraphs) + [""]
+    box_pad = 0.8 * em
+    band_width: dict[str, float] = {b: 0.0 for b in bands}
+    for r in sorted(layers):
+        layers[r].sort(key=lambda n: (bands.index(graph.nodes[n].subgraph), graph.nodes[n].order))
+        for b in bands:
+            members = [graph.nodes[n] for n in layers[r] if graph.nodes[n].subgraph == b]
+            if members:
+                w = sum(cross(nd) for nd in members) + gap_x * (len(members) - 1)
+                if b:  # room for the box, and for its title when the cross axis is vertical (LR)
+                    w += 2 * box_pad + (0 if vertical else imgui.get_text_line_height() + 0.4 * em)
+                band_width[b] = max(band_width[b], w)
+    band_start: dict[str, float] = {}
+    x = 0.0
+    for b in bands:
+        if band_width[b] > 0:
+            band_start[b] = x
+            x += band_width[b] + gap_x
+    total_cross = max(x - gap_x, 0.0)
+    # positions: layers along the main axis, nodes centered in their band
     offset_main = 0.0
-    total_cross = 0.0
     for r in sorted(layers):
         nodes = [graph.nodes[node_id] for node_id in layers[r]]
-        thickness = max((nd.size.y if vertical else nd.size.x) for nd in nodes)
-        cross_total = sum((nd.size.x if vertical else nd.size.y) for nd in nodes) + gap_x * (len(nodes) - 1)
-        total_cross = max(total_cross, cross_total)
-        cursor = -cross_total / 2  # centered on the cross axis
-        for nd in nodes:
-            if vertical:
-                nd.pos = ImVec2(cursor, offset_main + (thickness - nd.size.y) / 2)
-                cursor += nd.size.x + gap_x
-            else:
-                nd.pos = ImVec2(offset_main + (thickness - nd.size.x) / 2, cursor)
-                cursor += nd.size.y + gap_x
+        thickness = max(main(nd) for nd in nodes)
+        for b in bands:
+            members = [nd for nd in nodes if nd.subgraph == b]
+            if not members:
+                continue
+            w = sum(cross(nd) for nd in members) + gap_x * (len(members) - 1)
+            cursor = band_start[b] + (band_width[b] - w) / 2
+            if b and not vertical:
+                cursor += (imgui.get_text_line_height() + 0.4 * em) / 2  # the title is above the members
+            for nd in members:
+                if vertical:
+                    nd.pos = ImVec2(cursor, offset_main + (thickness - nd.size.y) / 2)
+                else:
+                    nd.pos = ImVec2(offset_main + (thickness - nd.size.x) / 2, cursor)
+                cursor += cross(nd) + gap_x
         offset_main += thickness + gap_y
+    # subgraph boxes: the members' bounding box, padded, with room for the title
+    title_h = imgui.get_text_line_height() + 0.4 * em
+    graph.boxes = {}
+    for b in graph.subgraphs:
+        members = [nd for nd in graph.nodes.values() if nd.subgraph == b]
+        if not members:
+            continue
+        x0 = min(nd.pos.x for nd in members) - box_pad
+        y0 = min(nd.pos.y for nd in members) - box_pad - title_h
+        x1 = max(nd.pos.x + nd.size.x for nd in members) + box_pad
+        y1 = max(nd.pos.y + nd.size.y for nd in members) + box_pad
+        graph.boxes[b] = (ImVec2(x0, y0), ImVec2(x1, y1))
+    # everything shifted along the main axis: room for the boxes' titles above the first layer (TD),
+    # and for the back edges that come back in front of the first layer
+    shift = (title_h + box_pad if graph.subgraphs and vertical else 0.0) + (1.5 * em if back else 0.0)
     for nd in graph.nodes.values():
         if vertical:
-            nd.pos.x += total_cross / 2
+            nd.pos.y += shift
         else:
-            nd.pos.y += total_cross / 2
+            nd.pos.x += shift
+    for b, (p0, p1) in graph.boxes.items():
+        graph.boxes[b] = (ImVec2(p0.x, p0.y + shift), ImVec2(p1.x, p1.y + shift)) if vertical else (ImVec2(p0.x + shift, p0.y), ImVec2(p1.x + shift, p1.y))
     lanes = 1.2 * em * len(back)  # room on the right (TD) or below (LR) for the back edges
-    return ImVec2(total_cross + lanes, offset_main - gap_y) if vertical else ImVec2(offset_main - gap_y, total_cross + lanes)
+    main_total = offset_main - gap_y + shift
+    return ImVec2(total_cross + lanes, main_total) if vertical else ImVec2(main_total, total_cross + lanes)
 
 
 # =============================================================================
@@ -174,7 +242,21 @@ def layout(graph: Graph, em: float) -> ImVec2:
 # =============================================================================
 
 
-def _polyline(dl: imgui.ImDrawList, pts: list[ImVec2], col: int, arrow: bool, em: float) -> None:
+def _segment(dl: imgui.ImDrawList, a: ImVec2, b: ImVec2, col: int, style: str, em: float) -> None:
+    if style != "dotted":
+        dl.add_line(a, b, col, 2.5 if style == "thick" else 1.5)
+        return
+    dx, dy = b.x - a.x, b.y - a.y
+    length = max((dx * dx + dy * dy) ** 0.5, 1e-3)
+    ux, uy = dx / length, dy / length
+    d = 0.0
+    while d < length:
+        e = min(d + 0.35 * em, length)
+        dl.add_line(ImVec2(a.x + ux * d, a.y + uy * d), ImVec2(a.x + ux * e, a.y + uy * e), col, 1.5)
+        d += 0.7 * em
+
+
+def _polyline(dl: imgui.ImDrawList, pts: list[ImVec2], col: int, arrow: bool, em: float, style: str = "solid") -> None:
     """Draws the segments; with an arrow, the last segment stops at the base of the triangle"""
     end = pts[-1]
     if arrow:
@@ -187,7 +269,7 @@ def _polyline(dl: imgui.ImDrawList, pts: list[ImVec2], col: int, arrow: bool, em
         pts = pts[:-1] + [base]
         dl.add_triangle_filled(end, ImVec2(base.x + s * 0.45 * uy, base.y - s * 0.45 * ux), ImVec2(base.x - s * 0.45 * uy, base.y + s * 0.45 * ux), col)
     for a, b in zip(pts, pts[1:], strict=False):
-        dl.add_line(a, b, col, 1.5)
+        _segment(dl, a, b, col, style, em)
 
 
 def draw(graph: Graph) -> None:
@@ -206,6 +288,11 @@ def draw(graph: Graph) -> None:
         p0 = ImVec2(origin.x + node.pos.x, origin.y + node.pos.y)
         return p0, ImVec2(p0.x + node.size.x, p0.y + node.size.y)
 
+    for sub, (p0, p1) in graph.boxes.items():
+        q0, q1 = ImVec2(origin.x + p0.x, origin.y + p0.y), ImVec2(origin.x + p1.x, origin.y + p1.y)
+        dl.add_rect_filled(q0, q1, imgui.get_color_u32(imgui.Col_.text, 0.04), 0.3 * em)
+        dl.add_rect(q0, q1, imgui.get_color_u32(imgui.Col_.text, 0.35), 0.3 * em, 1.0)
+        dl.add_text(ImVec2(q0.x + 0.5 * em, q0.y + 0.2 * em), imgui.get_color_u32(imgui.Col_.text, 0.8), graph.subgraphs[sub])
     lane = 0
     for e in graph.edges:
         a, b = graph.nodes[e.src], graph.nodes[e.dst]
@@ -213,24 +300,28 @@ def draw(graph: Graph) -> None:
         b0, b1 = rect(b)
         ca, cb = ImVec2((a0.x + a1.x) / 2, (a0.y + a1.y) / 2), ImVec2((b0.x + b1.x) / 2, (b0.y + b1.y) / 2)
         if (e.src, e.dst) in graph.back_edges:
-            # out of the side of the source, along a lane past the graph, into the side of the target
+            # out of the source in the flow direction, into the gap after its layer, along a lane past
+            # the graph, back through the gap before the target's layer, into the target from the front
             lane += 1
+            half_gap = 0.7 * em  # not the middle of the gap, where the forward edges run
             if vertical:
                 lx = origin.x + size.x - 1.2 * em * len(graph.back_edges) + 1.2 * em * lane
-                pts = [ImVec2(a1.x, ca.y), ImVec2(lx, ca.y), ImVec2(lx, cb.y), ImVec2(b1.x, cb.y)]
+                pts = [ImVec2(ca.x, a1.y), ImVec2(ca.x, a1.y + half_gap), ImVec2(lx, a1.y + half_gap),
+                       ImVec2(lx, b0.y - half_gap), ImVec2(cb.x, b0.y - half_gap), ImVec2(cb.x, b0.y)]
             else:
                 ly = origin.y + size.y - 1.2 * em * len(graph.back_edges) + 1.2 * em * lane
-                pts = [ImVec2(ca.x, a1.y), ImVec2(ca.x, ly), ImVec2(cb.x, ly), ImVec2(cb.x, b1.y)]
+                pts = [ImVec2(a1.x, ca.y), ImVec2(a1.x + half_gap, ca.y), ImVec2(a1.x + half_gap, ly),
+                       ImVec2(b0.x - half_gap, ly), ImVec2(b0.x - half_gap, cb.y), ImVec2(b0.x, cb.y)]
         elif vertical:
             mid_y = (a1.y + b0.y) / 2
             pts = [ImVec2(ca.x, a1.y), ImVec2(cb.x, b0.y)] if abs(ca.x - cb.x) < 1 else [ImVec2(ca.x, a1.y), ImVec2(ca.x, mid_y), ImVec2(cb.x, mid_y), ImVec2(cb.x, b0.y)]
         else:
             mid_x = (a1.x + b0.x) / 2
             pts = [ImVec2(a1.x, ca.y), ImVec2(b0.x, cb.y)] if abs(ca.y - cb.y) < 1 else [ImVec2(a1.x, ca.y), ImVec2(mid_x, ca.y), ImVec2(mid_x, cb.y), ImVec2(b0.x, cb.y)]
-        _polyline(dl, pts, border, e.arrow, em)
+        _polyline(dl, pts, border, e.arrow, em, e.style)
         if e.label:
             # on the middle segment when there is one, else at the middle of the edge
-            seg = (pts[1], pts[2]) if len(pts) == 4 else (pts[0], pts[1])
+            seg = (pts[len(pts) // 2 - 1], pts[len(pts) // 2]) if len(pts) > 2 else (pts[0], pts[1])
             ts = imgui.calc_text_size(e.label)
             mid = ImVec2((seg[0].x + seg[1].x) / 2 - ts.x / 2, (seg[0].y + seg[1].y) / 2 - ts.y / 2)
             dl.add_rect_filled(ImVec2(mid.x - 2, mid.y), ImVec2(mid.x + ts.x + 2, mid.y + ts.y), window_bg)
@@ -242,6 +333,15 @@ def draw(graph: Graph) -> None:
             pts = [ImVec2(c.x, p0.y), ImVec2(p1.x, c.y), ImVec2(c.x, p1.y), ImVec2(p0.x, c.y)]
             dl.add_convex_poly_filled(pts, fill)  # type: ignore[arg-type]
             dl.add_polyline(pts, border, 1.5, imgui.ImDrawFlags_.closed.value)  # type: ignore[arg-type]
+        elif node.shape == "cylinder":
+            ry = 0.35 * em
+            dl.add_rect_filled(ImVec2(p0.x, p0.y + ry), ImVec2(p1.x, p1.y - ry), fill)
+            dl.add_ellipse_filled(ImVec2(c.x, p1.y - ry), ImVec2(node.size.x / 2, ry), fill)
+            dl.add_ellipse_filled(ImVec2(c.x, p0.y + ry), ImVec2(node.size.x / 2, ry), fill)
+            dl.add_line(ImVec2(p0.x, p0.y + ry), ImVec2(p0.x, p1.y - ry), border, 1.5)
+            dl.add_line(ImVec2(p1.x, p0.y + ry), ImVec2(p1.x, p1.y - ry), border, 1.5)
+            dl.add_ellipse(ImVec2(c.x, p0.y + ry), ImVec2(node.size.x / 2, ry), border, 0.0, 0, 1.5)
+            dl.add_ellipse(ImVec2(c.x, p1.y - ry), ImVec2(node.size.x / 2, ry), border, 0.0, 0, 1.5)
         else:
             rounding = 0.6 * em if node.shape == "rounded" else 0.15 * em
             dl.add_rect_filled(p0, p1, fill, rounding)
@@ -443,15 +543,25 @@ def render_mermaid(code: str) -> None:
 MD = r"""
 # Mermaid, a native subset
 ```mermaid
-graph TD
-    A[Markdown text] --> B(md4c parser)
-    B --> C{Fenced block?}
-    C -->|yes| D[Registered renderer]
-    C -->|no| E[imgui_md renderer]
-    D --> F[Draw list]
-    E --> F
-    E --> G[Host services]
-    G --> H[Textures, assets, LaTeX]
+flowchart LR
+  subgraph Client
+    UI[Web app]
+    Cache[(Local cache)]
+  end
+  subgraph Services
+    API[API gateway]
+    Auth[Auth service]
+    Orders[Order service]
+  end
+  subgraph Storage
+    DB[(Orders DB)]
+  end
+  UI --> API
+  UI --> Cache
+  API --> Auth
+  API --> Orders
+  Orders --> DB
+  Auth -. token .-> UI
 ```
 The same graph, left to right:
 ```mermaid
