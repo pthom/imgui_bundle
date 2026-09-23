@@ -217,6 +217,15 @@ if has_submodule("imgui_md"):
             options.callbacks.on_download_data = _get_download_function()
 
     imgui_md._set_on_initialize_markdown_callback(_on_initialize_markdown)
+
+    def _render_this_file(md_id: str = "", part: str = "both") -> None:
+        """Renders a section of the calling source file (see imgui_md.resolve_imports): a lesson can be
+        its own narrative. md_id empty: every section; part: "both", "prose" or "code"."""
+        import sys
+
+        imgui_md.render_file(sys._getframe(1).f_code.co_filename, md_id, part)
+
+    imgui_md.render_this_file = _render_this_file
 if has_submodule("immvision"):
     from imgui_bundle._imgui_bundle import immvision as immvision
     _publish("immvision", immvision)
