@@ -38,6 +38,7 @@
 #include <vector>
 #include <utility>
 #include <map>
+#include <unordered_map>
 #include <memory>
 #include <iostream>
 #include <fstream>
@@ -535,6 +536,7 @@ namespace ImGuiMd
         MarkdownOptions options;
         std::unique_ptr<MarkdownRenderer> renderer;  // created on first use (it loads the fonts)
         std::map<std::string, std::function<void(const std::string& code)>> fencedBlockRenderers;
+        std::unordered_map<std::string, std::string> resolvedImports;  // text -> text with its @import resolved
         int fragmentFrame = -1;    // frame of the last Render call
         int fragmentCounter = 0;   // Render calls in this frame (seeds their ImGui ids)
         ~Context();
@@ -949,9 +951,27 @@ namespace ImGuiMd
         ImGui::PopID();
     }
 
+    // The resolved imports of a text (cached per text: the files are read once)
+    static const std::string& _ResolveImportsCached(const std::string& text)
+    {
+        if (text.find("@import") == std::string::npos)
+            return text;
+        auto& cache = gCurrentContext->resolvedImports;
+        auto it = cache.find(text);
+        if (it != cache.end())
+            return it->second;
+        ReadTextFile readFile = [](const std::string& path) -> std::optional<std::string> {
+            AssetBytes bytes = gHostServices.ReadAsset ? gHostServices.ReadAsset(path) : ReadAssetDefault(path);
+            if (!bytes)
+                return std::nullopt;
+            return std::string(bytes->begin(), bytes->end());
+        };
+        return cache[text] = ResolveImports(text, readFile);
+    }
+
     void Render(const std::string& markdownString)
     {
-        RenderRaw(_Unindent(markdownString, false));
+        RenderRaw(_ResolveImportsCached(_Unindent(markdownString, false)));
     }
 
     void RegisterFencedBlockRenderer(const std::string& language, std::function<void(const std::string& code)> renderer)

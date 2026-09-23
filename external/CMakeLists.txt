@@ -314,6 +314,7 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
         imgui_md/md4c/src/md4c.c
         imgui_md/md4c/src/md4c.h
         imgui_md/imgui_md_wrapper/imgui_md_wrapper.cpp
+        imgui_md/imgui_md_wrapper/imgui_md_imports.cpp
         imgui_md/imgui_md_wrapper/imgui_md_wrapper.h
         imgui_md/imgui_md_wrapper/imgui_md_host.h
         imgui_md/imgui_md_wrapper/imgui_md_internal.h
