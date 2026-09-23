@@ -69,6 +69,12 @@ def test_part_and_dedent() -> None:
     assert kept.startswith("```python\n    def m(self):\n")
 
 
+def test_code_stops_at_the_next_top_level_item() -> None:
+    FILES["two.cpp"] = "// @@md#First\n// One function.\n// @@/md\nvoid a()\n{\n    x();\n\n    y();\n}\n\nvoid b() {}\n"
+    out = resolve('@import "two.cpp" {md_id=First, part=code}\n')
+    assert out == "```cpp\nvoid a()\n{\n    x();\n\n    y();\n}\n```\n\n"
+
+
 def test_whole_file_in_order_skips_the_header() -> None:
     out = resolve('@import "heart.cpp"\n')
     assert "license header" not in out and "#include" not in out

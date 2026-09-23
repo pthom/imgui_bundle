@@ -219,6 +219,9 @@ namespace ImGuiMd
     // Same as Render (kept for compatibility)
     void RenderUnindented(const std::string& markdownString);
 
+    // Reads a text file for ResolveImports, or returns std::nullopt when it does not exist
+    using ReadTextFile = std::function<std::optional<std::string>(const std::string& path)>;
+
     // Sections and imports
     // ---------------------
     // A source file (C++, Python, ...) may carry named markdown blocks in its comments:
@@ -226,7 +229,8 @@ namespace ImGuiMd
     //     // Some *markdown* prose about the code below.
     //     // @@/md
     //     void TheCode() {}
-    // A section is the prose block plus the code that follows it, up to the next @@md# marker.
+    // A section is the prose block plus the code that follows it: up to the next top-level item (a blank
+    // line, then a line at column 0) or the next @@md# marker, whichever comes first.
     // A markdown document imports sections with a directive on its own line:
     //     @import "file.cpp" {md_id=Name}             the section: prose, then the code as a fenced block
     //     @import "file.cpp" {md_id=Name, part=prose} the prose only (part=code: the code only)
@@ -238,9 +242,9 @@ namespace ImGuiMd
     // Paths are relative to the importing file. Imports resolve recursively (cycles and a depth over 8
     // are errors). An error (missing file, unknown id, block not closed, bad directive) renders the
     // directive in the error color, with the reason as a tooltip.
-    using ReadTextFile = std::function<std::optional<std::string>(const std::string& path)>;
-    // Resolves the @import directives of a markdown text; readFile reads a file, or returns std::nullopt.
-    // Render() calls it with the host's ReadAsset. currentFile: the file the text comes from, if any.
+    //
+    // ResolveImports resolves the @import directives of a markdown text: readFile reads a file (or returns
+    // std::nullopt); currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.
     std::string ResolveImports(const std::string& markdown, const ReadTextFile& readFile, const std::string& currentFile = "");
 
     // Renders the code blocks of a given language (```mermaid, ```csv, ...) with your own function,
