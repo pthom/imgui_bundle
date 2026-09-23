@@ -11,6 +11,7 @@
 
 
 #include "imgui.h"
+#include "imgui_internal.h"  // RegisterUserTexture
 #include "imgui_md/imgui_md.h"
 
 // Platform includes for OpenUrlInBrowser
@@ -298,8 +299,57 @@ namespace ImGuiMd
     }
 #endif
 
+    // Default UploadRgba: an ImTextureData registered with Dear ImGui (1.92+, backends with
+    // ImGuiBackendFlags_RendererHasTextures): the backend creates the GPU texture at the next frame,
+    // and destroys it when asked; the ImTextureData is freed once the backend reports it destroyed.
+    static std::vector<ImTextureData*> gTexturesToFree;  // asked to be destroyed, freed once the backend did it
+
+    static void _SweepDestroyedTextures()
+    {
+        for (auto it = gTexturesToFree.begin(); it != gTexturesToFree.end(); )
+        {
+            if ((*it)->Status == ImTextureStatus_Destroyed)
+            {
+                if (ImGui::GetCurrentContext())
+                    ImGui::UnregisterUserTexture(*it);
+                IM_DELETE(*it);
+                it = gTexturesToFree.erase(it);
+            }
+            else
+                ++it;
+        }
+    }
+
+    static MarkdownTexture _UploadRgbaUserTexture(const unsigned char* rgba, int w, int h)
+    {
+        MarkdownTexture tex;
+        if (!(ImGui::GetIO().BackendFlags & ImGuiBackendFlags_RendererHasTextures))
+        {
+            static bool warned = false;
+            if (!warned)
+                gHostServices.Log("UploadRgba: the rendering backend does not support ImTextureData (ImGuiBackendFlags_RendererHasTextures): no images, set HostServices::UploadRgba");
+            warned = true;
+            return tex;
+        }
+        ImTextureData* data = IM_NEW(ImTextureData)();
+        data->Create(ImTextureFormat_RGBA32, w, h);
+        memcpy(data->GetPixels(), rgba, (size_t)w * (size_t)h * 4);
+        data->SetStatus(ImTextureStatus_WantCreate);
+        ImGui::RegisterUserTexture(data);
+        tex.ref._TexData = data;
+        tex.size = ImVec2((float)w, (float)h);
+        tex.keepAlive = std::shared_ptr<void>(data, [](void* p) {
+            auto* d = (ImTextureData*)p;
+            d->SetStatus(ImTextureStatus_WantDestroy);
+            gTexturesToFree.push_back(d);
+        });
+        return tex;
+    }
+
     static void _InstallDefaultHostServices()
     {
+        if (!gHostServices.UploadRgba)
+            gHostServices.UploadRgba = _UploadRgbaUserTexture;
 #ifdef IMGUI_RICHMD_WITH_CODE_EDITOR
         if (!gHostServices.RenderCodeBlock)
             gHostServices.RenderCodeBlock = _RenderCodeBlockWithEditor;
@@ -640,7 +690,13 @@ namespace ImGuiMd
             if (! mdImage.has_value())
                 return gImageIsLoading ? image_status::loading : image_status::none;
 
-            nfo.texture_id = mdImage->texture_id;
+            nfo.texture = ImTextureRef(mdImage->texture_id);
+            // A texture of the image cache may not have its backend id yet (created at the next frame):
+            // draw it through its ImTextureRef
+            const auto& cache = mMarkdownCollection.mLoadedImages;
+            auto cached = cache.find(m_img_src);
+            if (cached != cache.end() && cached->second.ref.GetTexID() == mdImage->texture_id)
+                nfo.texture = cached->second.ref;
             nfo.size = mdImage->size;
             nfo.uv0 = mdImage->uv0;
             nfo.uv1 = mdImage->uv1;
@@ -760,7 +816,7 @@ namespace ImGuiMd
                 out.error = entry->error;
                 return false;
             }
-            out.texture_id = entry->texture.id;
+            out.texture = entry->texture.ref;
             out.size_px = entry->texture.size;
             out.baseline_px = (float)entry->baselineY;
             return true;
@@ -900,6 +956,7 @@ namespace ImGuiMd
         // (keepAlive), so the textures are freed here, while the rendering backend is still alive.
         // The options' callbacks (which may hold Python objects) go with it.
         delete context;
+        _SweepDestroyedTextures();
     }
 
     void SetCurrentContext(Context* context) { gCurrentContext = context; }
@@ -949,6 +1006,7 @@ namespace ImGuiMd
         ImGui::PushID(context->fragmentCounter++);
         renderer->Render(markdownString);
         ImGui::PopID();
+        _SweepDestroyedTextures();
     }
 
     // A text file: from the assets, else from the file system as is (a source file rendering itself)
@@ -1025,7 +1083,7 @@ namespace ImGuiMd
     static std::optional<MarkdownImage> _MakeMarkdownImage(const MarkdownTexture& tex)
     {
         MarkdownImage r;
-        r.texture_id = tex.id;
+        r.texture_id = tex.ref.GetTexID();  // 0 until the backend creates a registered texture (see get_image)
         r.size = tex.size;
         r.uv0 = { 0,0 };
         r.uv1 = {1,1};
