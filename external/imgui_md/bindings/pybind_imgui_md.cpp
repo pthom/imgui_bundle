@@ -199,17 +199,22 @@ void py_init_module_imgui_md(nb::module_& m)
     m.def("render",
         ImGuiMd::Render,
         nb::arg("markdown_string"),
-        " Renders a markdown string. Its common indentation is removed first (so that a string written\n inside an indented function renders as expected; no-op on flush-left text).");
+        " Renders a markdown string. Its common indentation is removed first (so that a string written\n inside an indented function renders as expected; no-op on flush-left text), then its @import\n directives are resolved (see ResolveImports; the files are read through the host's ReadAsset).");
 
     m.def("render_raw",
         ImGuiMd::RenderRaw,
         nb::arg("markdown_string"),
-        "Renders a markdown string as is");
+        "Renders a markdown string as is (no unindent, no @import resolution)");
 
     m.def("render_unindented",
         ImGuiMd::RenderUnindented,
         nb::arg("markdown_string"),
         "Same as Render (kept for compatibility)");
+
+    m.def("resolve_imports",
+        ImGuiMd::ResolveImports,
+        nb::arg("markdown"), nb::arg("read_file"), nb::arg("current_file") = "",
+        " Resolves the @import directives of a markdown text; readFile reads a file, or returns std::nullopt.\n Render() calls it with the host's ReadAsset. currentFile: the file the text comes from, if any.");
 
     m.def("register_fenced_block_renderer",
         ImGuiMd::RegisterFencedBlockRenderer,

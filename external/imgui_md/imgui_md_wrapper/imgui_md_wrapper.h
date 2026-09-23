@@ -211,12 +211,37 @@ namespace ImGuiMd
     VoidFunction GetFontLoaderFunction();
 
     // Renders a markdown string. Its common indentation is removed first (so that a string written
-    // inside an indented function renders as expected; no-op on flush-left text).
+    // inside an indented function renders as expected; no-op on flush-left text), then its @import
+    // directives are resolved (see ResolveImports; the files are read through the host's ReadAsset).
     void Render(const std::string& markdownString);
-    // Renders a markdown string as is
+    // Renders a markdown string as is (no unindent, no @import resolution)
     void RenderRaw(const std::string& markdownString);
     // Same as Render (kept for compatibility)
     void RenderUnindented(const std::string& markdownString);
+
+    // Sections and imports
+    // ---------------------
+    // A source file (C++, Python, ...) may carry named markdown blocks in its comments:
+    //     // @@md#Name
+    //     // Some *markdown* prose about the code below.
+    //     // @@/md
+    //     void TheCode() {}
+    // A section is the prose block plus the code that follows it, up to the next @@md# marker.
+    // A markdown document imports sections with a directive on its own line:
+    //     @import "file.cpp" {md_id=Name}             the section: prose, then the code as a fenced block
+    //     @import "file.cpp" {md_id=Name, part=prose} the prose only (part=code: the code only)
+    //     @import "file.cpp"                          every section of the file, in file order
+    //     @import "notes.md"                          a markdown file, as is
+    //     @import {md_id=Name}                        a section of the file being processed (a prose block
+    //                                                 may contain directives: a source file can be its own narrative)
+    //     {dedent=false}                              keeps the code's indentation (removed by default)
+    // Paths are relative to the importing file. Imports resolve recursively (cycles and a depth over 8
+    // are errors). An error (missing file, unknown id, block not closed, bad directive) renders the
+    // directive in the error color, with the reason as a tooltip.
+    using ReadTextFile = std::function<std::optional<std::string>(const std::string& path)>;
+    // Resolves the @import directives of a markdown text; readFile reads a file, or returns std::nullopt.
+    // Render() calls it with the host's ReadAsset. currentFile: the file the text comes from, if any.
+    std::string ResolveImports(const std::string& markdown, const ReadTextFile& readFile, const std::string& currentFile = "");
 
     // Renders the code blocks of a given language (```mermaid, ```csv, ...) with your own function,
     // instead of the code block renderer. Applies to the current context.
