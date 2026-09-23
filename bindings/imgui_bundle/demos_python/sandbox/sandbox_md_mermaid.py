@@ -244,10 +244,16 @@ graph LR
 """
 
 
+_registered = False
+
+
 def gui() -> None:
+    global _registered
+    if not _registered:  # the markdown context exists once the app runs
+        imgui_md.register_fenced_block_renderer("mermaid", render_mermaid)
+        _registered = True
     imgui_md.render(MD)
 
 
 if __name__ == "__main__":
-    imgui_md.register_fenced_block_renderer("mermaid", render_mermaid)
     immapp.run(gui, window_title="Mermaid spike", window_size=(900, 900), with_markdown=True)
