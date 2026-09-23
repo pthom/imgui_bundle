@@ -320,7 +320,7 @@ namespace ImGuiMd
         }
     }
 
-    static MarkdownTexture _UploadRgbaUserTexture(const unsigned char* rgba, int w, int h)
+    MarkdownTexture UploadRgbaDefault(const unsigned char* rgba, int w, int h)
     {
         MarkdownTexture tex;
         if (!(ImGui::GetIO().BackendFlags & ImGuiBackendFlags_RendererHasTextures))
@@ -349,7 +349,7 @@ namespace ImGuiMd
     static void _InstallDefaultHostServices()
     {
         if (!gHostServices.UploadRgba)
-            gHostServices.UploadRgba = _UploadRgbaUserTexture;
+            gHostServices.UploadRgba = UploadRgbaDefault;
 #ifdef IMGUI_RICHMD_WITH_CODE_EDITOR
         if (!gHostServices.RenderCodeBlock)
             gHostServices.RenderCodeBlock = _RenderCodeBlockWithEditor;
