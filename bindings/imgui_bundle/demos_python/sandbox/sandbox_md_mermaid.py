@@ -1,6 +1,7 @@
 """Mermaid spike: a native subset, registered as the renderer of ```mermaid blocks.
 - flowcharts (graph TD/LR, rectangle/rounded/diamond nodes, labeled edges), laid out in layers;
-- sequence diagrams (participants, the four arrow kinds, self-messages, notes, loop frames).
+- sequence diagrams (participants, the four arrow kinds, self-messages, notes, loop frames);
+- class diagrams (compartments, <<annotations>>, namespaces, the UML relations with labels and cardinalities).
 Question of the spike: is a native subset worth owning, or do we keep only the fenced-block seam?"""
 import re
 from dataclasses import dataclass, field
@@ -18,6 +19,7 @@ class Node:
     label: str
     shape: str = "rect"  # rect, rounded, diamond, cylinder
     subgraph: str = ""   # the subgraph the node belongs to ("" for none)
+    lines: list[list[str]] = field(default_factory=list)  # class diagrams: the compartments (name, attributes, methods)
     rank: int = 0
     order: int = 0
     pos: ImVec2 = field(default_factory=lambda: ImVec2(0, 0))
@@ -41,6 +43,7 @@ class Graph:
     subgraphs: dict[str, str] = field(default_factory=dict)  # id -> title, in source order
     back_edges: set[tuple[str, str]] = field(default_factory=set)  # edges closing a cycle (filled by layout)
     boxes: dict[str, tuple[ImVec2, ImVec2]] = field(default_factory=dict)  # subgraph -> bounding box (filled by layout)
+    lanes: int = 0  # edges routed past the graph: back edges and edges skipping a layer (filled by layout)
 
 
 _NODE_RE = re.compile(r"^\s*(\w+)\s*(\[\(([^)]*)\)\]|\[([^\]]*)\]|\(([^)]*)\)|\{([^}]*)\})?\s*$")
@@ -158,6 +161,11 @@ def layout(graph: Graph, em: float) -> ImVec2:
     # sizes
     pad, gap_x, gap_y = 0.8 * em, 1.5 * em, 2.5 * em
     for node in graph.nodes.values():
+        if node.lines:  # a class box: the widest line, one text line per row, a padding per compartment
+            w = max(imgui.calc_text_size(t).x for comp in node.lines for t in comp) if any(node.lines) else 0
+            h = sum(len(comp) * imgui.get_text_line_height() + 0.6 * em for comp in node.lines)
+            node.size = ImVec2(w + 2 * pad, h)
+            continue
         text = imgui.calc_text_size(node.label)
         extra = text.y if node.shape in ("diamond", "cylinder") else 0
         node.size = ImVec2(text.x + 2 * pad + (extra if node.shape == "diamond" else 0), text.y + 2 * pad + extra)
@@ -225,6 +233,7 @@ def layout(graph: Graph, em: float) -> ImVec2:
     # everything shifted along the main axis: room for the boxes' titles above the first layer (TD),
     # and for the back edges that come back in front of the first layer
     shift = (title_h + box_pad if graph.subgraphs and vertical else 0.0) + (1.5 * em if back else 0.0)
+    graph.back_edges = back
     for nd in graph.nodes.values():
         if vertical:
             nd.pos.y += shift
@@ -232,7 +241,8 @@ def layout(graph: Graph, em: float) -> ImVec2:
             nd.pos.x += shift
     for b, (p0, p1) in graph.boxes.items():
         graph.boxes[b] = (ImVec2(p0.x, p0.y + shift), ImVec2(p1.x, p1.y + shift)) if vertical else (ImVec2(p0.x + shift, p0.y), ImVec2(p1.x + shift, p1.y))
-    lanes = 1.2 * em * len(back)  # room on the right (TD) or below (LR) for the back edges
+    graph.lanes = sum(1 for e in graph.edges if _uses_lane(graph, e))
+    lanes = 1.2 * em * graph.lanes  # room on the right (TD) or below (LR) for the lane edges
     main_total = offset_main - gap_y + shift
     return ImVec2(total_cross + lanes, main_total) if vertical else ImVec2(main_total, total_cross + lanes)
 
@@ -272,6 +282,79 @@ def _polyline(dl: imgui.ImDrawList, pts: list[ImVec2], col: int, arrow: bool, em
         _segment(dl, a, b, col, style, em)
 
 
+def _uses_lane(graph: Graph, e: Edge) -> bool:
+    """Back edges and edges spanning more than one layer travel on a lane past the graph"""
+    return (e.src, e.dst) in graph.back_edges or graph.nodes[e.dst].rank - graph.nodes[e.src].rank > 1
+
+
+def _anchors(graph: Graph, vertical: bool) -> dict[int, tuple[float, float]]:
+    """For each edge: where it leaves its source and enters its target, as fractions of the node's side,
+    spread so that edges of one node do not share a point (ordered by the other end's position)"""
+
+    def cross(n: str) -> float:
+        nd = graph.nodes[n]
+        return nd.pos.x if vertical else nd.pos.y
+
+    out: dict[str, list[int]] = {}
+    inc: dict[str, list[int]] = {}
+    for i, e in enumerate(graph.edges):
+        out.setdefault(e.src, []).append(i)
+        inc.setdefault(e.dst, []).append(i)
+    result: dict[int, tuple[float, float]] = {i: (0.5, 0.5) for i in range(len(graph.edges))}
+    for edges in out.values():
+        edges.sort(key=lambda i: cross(graph.edges[i].dst))
+        for k, i in enumerate(edges):
+            result[i] = ((k + 1) / (len(edges) + 1), result[i][1])
+    for edges in inc.values():
+        edges.sort(key=lambda i: cross(graph.edges[i].src))
+        for k, i in enumerate(edges):
+            result[i] = (result[i][0], (k + 1) / (len(edges) + 1))
+    return result
+
+
+def _edge_points(graph: Graph, e: Edge, origin: ImVec2, size: ImVec2, vertical: bool, lane: int, em: float,
+                 anchor: tuple[float, float] = (0.5, 0.5)) -> list[ImVec2]:
+    """The elbow polyline of an edge: forward edges through the middle of the gap between layers; lane edges
+    (back edges, edges skipping a layer) out of the source in the flow direction, into the gap after its layer,
+    along a lane past the graph, back through the gap before the target's layer, into the target from the front"""
+    a, b = graph.nodes[e.src], graph.nodes[e.dst]
+    a0 = ImVec2(origin.x + a.pos.x, origin.y + a.pos.y)
+    a1 = ImVec2(a0.x + a.size.x, a0.y + a.size.y)
+    b0 = ImVec2(origin.x + b.pos.x, origin.y + b.pos.y)
+    # the exit and entry points, spread along the sides
+    if vertical:
+        pa, pb = ImVec2(a0.x + a.size.x * anchor[0], a1.y), ImVec2(b0.x + b.size.x * anchor[1], b0.y)
+    else:
+        pa, pb = ImVec2(a1.x, a0.y + a.size.y * anchor[0]), ImVec2(b0.x, b0.y + b.size.y * anchor[1])
+    if _uses_lane(graph, e):
+        half_gap = 0.7 * em  # not the middle of the gap, where the forward edges run
+        if vertical:
+            lx = origin.x + size.x - 1.2 * em * graph.lanes + 1.2 * em * lane
+            return [pa, ImVec2(pa.x, pa.y + half_gap), ImVec2(lx, pa.y + half_gap),
+                    ImVec2(lx, pb.y - half_gap), ImVec2(pb.x, pb.y - half_gap), pb]
+        ly = origin.y + size.y - 1.2 * em * graph.lanes + 1.2 * em * lane
+        return [pa, ImVec2(pa.x + half_gap, pa.y), ImVec2(pa.x + half_gap, ly),
+                ImVec2(pb.x - half_gap, ly), ImVec2(pb.x - half_gap, pb.y), pb]
+    if vertical:
+        mid_y = (a1.y + b0.y) / 2
+        if abs(pa.x - pb.x) < 1:
+            return [pa, pb]
+        return [pa, ImVec2(pa.x, mid_y), ImVec2(pb.x, mid_y), pb]
+    mid_x = (a1.x + b0.x) / 2
+    if abs(pa.y - pb.y) < 1:
+        return [pa, pb]
+    return [pa, ImVec2(mid_x, pa.y), ImVec2(mid_x, pb.y), pb]
+
+
+def _edge_label(dl: imgui.ImDrawList, pts: list[ImVec2], label: str, text_col: int, bg: int) -> None:
+    """On the middle segment when there is one, else at the middle of the edge"""
+    seg = (pts[len(pts) // 2 - 1], pts[len(pts) // 2]) if len(pts) > 2 else (pts[0], pts[1])
+    ts = imgui.calc_text_size(label)
+    mid = ImVec2((seg[0].x + seg[1].x) / 2 - ts.x / 2, (seg[0].y + seg[1].y) / 2 - ts.y / 2)
+    dl.add_rect_filled(ImVec2(mid.x - 2, mid.y), ImVec2(mid.x + ts.x + 2, mid.y + ts.y), bg)
+    dl.add_text(mid, text_col, label)
+
+
 def draw(graph: Graph) -> None:
     em = imgui.get_font_size()
     size = layout(graph, em)
@@ -294,38 +377,14 @@ def draw(graph: Graph) -> None:
         dl.add_rect(q0, q1, imgui.get_color_u32(imgui.Col_.text, 0.35), 0.3 * em, 1.0)
         dl.add_text(ImVec2(q0.x + 0.5 * em, q0.y + 0.2 * em), imgui.get_color_u32(imgui.Col_.text, 0.8), graph.subgraphs[sub])
     lane = 0
-    for e in graph.edges:
-        a, b = graph.nodes[e.src], graph.nodes[e.dst]
-        a0, a1 = rect(a)
-        b0, b1 = rect(b)
-        ca, cb = ImVec2((a0.x + a1.x) / 2, (a0.y + a1.y) / 2), ImVec2((b0.x + b1.x) / 2, (b0.y + b1.y) / 2)
-        if (e.src, e.dst) in graph.back_edges:
-            # out of the source in the flow direction, into the gap after its layer, along a lane past
-            # the graph, back through the gap before the target's layer, into the target from the front
+    anchors = _anchors(graph, vertical)
+    for i, e in enumerate(graph.edges):
+        if _uses_lane(graph, e):
             lane += 1
-            half_gap = 0.7 * em  # not the middle of the gap, where the forward edges run
-            if vertical:
-                lx = origin.x + size.x - 1.2 * em * len(graph.back_edges) + 1.2 * em * lane
-                pts = [ImVec2(ca.x, a1.y), ImVec2(ca.x, a1.y + half_gap), ImVec2(lx, a1.y + half_gap),
-                       ImVec2(lx, b0.y - half_gap), ImVec2(cb.x, b0.y - half_gap), ImVec2(cb.x, b0.y)]
-            else:
-                ly = origin.y + size.y - 1.2 * em * len(graph.back_edges) + 1.2 * em * lane
-                pts = [ImVec2(a1.x, ca.y), ImVec2(a1.x + half_gap, ca.y), ImVec2(a1.x + half_gap, ly),
-                       ImVec2(b0.x - half_gap, ly), ImVec2(b0.x - half_gap, cb.y), ImVec2(b0.x, cb.y)]
-        elif vertical:
-            mid_y = (a1.y + b0.y) / 2
-            pts = [ImVec2(ca.x, a1.y), ImVec2(cb.x, b0.y)] if abs(ca.x - cb.x) < 1 else [ImVec2(ca.x, a1.y), ImVec2(ca.x, mid_y), ImVec2(cb.x, mid_y), ImVec2(cb.x, b0.y)]
-        else:
-            mid_x = (a1.x + b0.x) / 2
-            pts = [ImVec2(a1.x, ca.y), ImVec2(b0.x, cb.y)] if abs(ca.y - cb.y) < 1 else [ImVec2(a1.x, ca.y), ImVec2(mid_x, ca.y), ImVec2(mid_x, cb.y), ImVec2(b0.x, cb.y)]
+        pts = _edge_points(graph, e, origin, size, vertical, lane, em, anchors[i])
         _polyline(dl, pts, border, e.arrow, em, e.style)
         if e.label:
-            # on the middle segment when there is one, else at the middle of the edge
-            seg = (pts[len(pts) // 2 - 1], pts[len(pts) // 2]) if len(pts) > 2 else (pts[0], pts[1])
-            ts = imgui.calc_text_size(e.label)
-            mid = ImVec2((seg[0].x + seg[1].x) / 2 - ts.x / 2, (seg[0].y + seg[1].y) / 2 - ts.y / 2)
-            dl.add_rect_filled(ImVec2(mid.x - 2, mid.y), ImVec2(mid.x + ts.x + 2, mid.y + ts.y), window_bg)
-            dl.add_text(mid, text_col, e.label)
+            _edge_label(dl, pts, e.label, text_col, window_bg)
     for node in graph.nodes.values():
         p0, p1 = rect(node)
         c = ImVec2((p0.x + p1.x) / 2, (p0.y + p1.y) / 2)
@@ -527,15 +586,209 @@ def draw_sequence(seq: Sequence) -> None:
     imgui.dummy(ImVec2(total_w + 2 * em, height + em))
 
 
-_cache: dict[str, Graph | Sequence] = {}
+# =============================================================================
+# Class diagrams: classes with compartments, namespaces as bands, UML relation markers
+# =============================================================================
+
+
+@dataclass
+class Relation:
+    src: str
+    dst: str
+    marker_src: str = ""   # triangle (inheritance, realization), diamond_filled (composition), diamond (aggregation)
+    marker_dst: str = ""   # arrow (association, dependency)
+    dashed: bool = False   # dependency, realization
+    label: str = ""
+    card_src: str = ""
+    card_dst: str = ""
+
+
+@dataclass
+class ClassDiagram:
+    graph: Graph = field(default_factory=Graph)
+    relations: list[Relation] = field(default_factory=list)
+
+
+# forward spellings (the marker at the source), and their mirrors
+_RELATIONS = {
+    "<|--": ("triangle", "", False), "*--": ("diamond_filled", "", False), "o--": ("diamond", "", False),
+    "-->": ("", "arrow", False), "--": ("", "", False), "..>": ("", "arrow", True), "<|..": ("triangle", "", True), "..": ("", "", True),
+}
+_MIRRORS = {"--|>": "<|--", "--*": "*--", "--o": "o--", "<--": "-->", "<..": "..>", "..|>": "<|.."}
+_REL_RE = re.compile(r'^(\w+)\s*(?:"([^"]*)"\s*)?(<\|--|\*--|o--|-->|--\|>|--\*|--o|<--|\.\.>|<\.\.|\.\.\|>|<\|\.\.|--|\.\.)\s*(?:"([^"]*)"\s*)?(\w+)\s*(?::\s*(.*))?$')
+_MEMBER_RE = re.compile(r"^(\w+)\s*:\s*(.+)$")
+
+
+def _class_node(d: ClassDiagram, name: str, namespace: str) -> Node:
+    if name not in d.graph.nodes:
+        node = Node(name, name, subgraph=namespace, lines=[[name], [], []])
+        d.graph.nodes[name] = node
+    node = d.graph.nodes[name]
+    if namespace and not node.subgraph:
+        node.subgraph = namespace
+    return node
+
+
+def _add_member(node: Node, member: str) -> None:
+    member = member.strip()
+    if member.startswith("<<") and member.endswith(">>"):
+        node.lines[0].insert(0, "\u00ab" + member[2:-2] + "\u00bb")
+    elif "(" in member:
+        node.lines[2].append(member)
+    else:
+        node.lines[1].append(member)
+
+
+def parse_class(source: str) -> ClassDiagram:
+    d = ClassDiagram()
+    namespace = ""
+    current: Node | None = None  # inside `class X {`
+    for raw in source.splitlines():
+        line = raw.split("%%")[0].strip()
+        if not line or line.startswith("classDiagram"):
+            continue
+        if current is not None:
+            if line == "}":
+                current = None
+            else:
+                _add_member(current, line)
+            continue
+        if line.startswith("namespace "):
+            namespace = line[10:].strip().rstrip("{").strip()
+            d.graph.subgraphs[namespace] = namespace
+            continue
+        if line == "}":
+            namespace = ""
+            continue
+        if line.startswith("class "):
+            rest = line[6:].strip()
+            if rest.endswith("{"):
+                current = _class_node(d, rest[:-1].strip(), namespace)
+            else:
+                _class_node(d, rest, namespace)
+            continue
+        if line.startswith("<<") and ">>" in line:  # <<interface>> Shape
+            annotation, _, name = line.partition(">>")
+            _add_member(_class_node(d, name.strip(), namespace), annotation + ">>")
+            continue
+        m = _REL_RE.match(line)
+        if m:
+            src, card_src, token, card_dst, dst, label = m.groups()
+            if token in _MIRRORS:
+                token = _MIRRORS[token]
+                src, dst, card_src, card_dst = dst, src, card_dst, card_src
+            marker_src, marker_dst, dashed = _RELATIONS[token]
+            _class_node(d, src, namespace)
+            _class_node(d, dst, namespace)
+            d.relations.append(Relation(src, dst, marker_src, marker_dst, dashed, (label or "").strip(), card_src or "", card_dst or ""))
+            d.graph.edges.append(Edge(src, dst, "", False, "dotted" if dashed else "solid"))
+            continue
+        m = _MEMBER_RE.match(line)
+        if m:
+            _add_member(_class_node(d, m.group(1), namespace), m.group(2))
+    return d
+
+
+def _marker(dl: imgui.ImDrawList, kind: str, tip: ImVec2, towards: ImVec2, col: int, bg: int, em: float) -> ImVec2:
+    """Draws a UML marker at `tip`, pointing away from `towards` (the next point of the line);
+    returns the point where the line should stop"""
+    dx, dy = towards.x - tip.x, towards.y - tip.y
+    n = max((dx * dx + dy * dy) ** 0.5, 1e-3)
+    ux, uy = dx / n, dy / n  # from the tip along the line
+    px, py = -uy, ux
+    s = 0.8 * em
+    if kind == "triangle":
+        base = ImVec2(tip.x + s * ux, tip.y + s * uy)
+        p1, p2 = ImVec2(base.x + s * 0.5 * px, base.y + s * 0.5 * py), ImVec2(base.x - s * 0.5 * px, base.y - s * 0.5 * py)
+        dl.add_triangle_filled(tip, p1, p2, bg)
+        dl.add_triangle(tip, p1, p2, col, 1.5)
+        return base
+    if kind in ("diamond", "diamond_filled"):
+        mid = ImVec2(tip.x + s * 0.6 * ux, tip.y + s * 0.6 * uy)
+        end = ImVec2(tip.x + s * 1.2 * ux, tip.y + s * 1.2 * uy)
+        pts = [tip, ImVec2(mid.x + s * 0.35 * px, mid.y + s * 0.35 * py), end, ImVec2(mid.x - s * 0.35 * px, mid.y - s * 0.35 * py)]
+        dl.add_convex_poly_filled(pts, col if kind == "diamond_filled" else bg)  # type: ignore[arg-type]
+        dl.add_polyline(pts, col, 1.5, imgui.ImDrawFlags_.closed.value)  # type: ignore[arg-type]
+        return end
+    if kind == "arrow":
+        base = ImVec2(tip.x + s * 0.7 * ux, tip.y + s * 0.7 * uy)
+        dl.add_line(tip, ImVec2(base.x + s * 0.35 * px, base.y + s * 0.35 * py), col, 1.5)
+        dl.add_line(tip, ImVec2(base.x - s * 0.35 * px, base.y - s * 0.35 * py), col, 1.5)
+        return tip
+    return tip
+
+
+def draw_class(d: ClassDiagram) -> None:
+    graph = d.graph
+    em = imgui.get_font_size()
+    size = layout(graph, em)
+    origin = imgui.get_cursor_screen_pos()
+    origin = ImVec2(origin.x + em, origin.y + em / 2)
+    dl = imgui.get_window_draw_list()
+    text_col = imgui.get_color_u32(imgui.Col_.text)
+    border = imgui.get_color_u32(imgui.Col_.text, 0.6)
+    fill = imgui.get_color_u32(imgui.Col_.frame_bg)
+    window_bg = imgui.get_color_u32(imgui.Col_.window_bg)
+    line_h = imgui.get_text_line_height()
+    for sub, (p0, p1) in graph.boxes.items():
+        q0, q1 = ImVec2(origin.x + p0.x, origin.y + p0.y), ImVec2(origin.x + p1.x, origin.y + p1.y)
+        dl.add_rect_filled(q0, q1, imgui.get_color_u32(imgui.Col_.text, 0.04), 0.3 * em)
+        dl.add_rect(q0, q1, imgui.get_color_u32(imgui.Col_.text, 0.35), 0.3 * em, 1.0)
+        dl.add_text(ImVec2(q0.x + 0.5 * em, q0.y + 0.2 * em), imgui.get_color_u32(imgui.Col_.text, 0.8), graph.subgraphs[sub])
+    lane = 0
+    anchors = _anchors(graph, True)
+    for i, (e, r) in enumerate(zip(graph.edges, d.relations, strict=True)):
+        if _uses_lane(graph, e):
+            lane += 1
+        pts = _edge_points(graph, e, origin, size, True, lane, em, anchors[i])
+        start = _marker(dl, r.marker_src, pts[0], pts[1], border, window_bg, em)
+        end = _marker(dl, r.marker_dst, pts[-1], pts[-2], border, window_bg, em)
+        _polyline(dl, [start] + pts[1:-1] + [end], border, False, em, "dotted" if r.dashed else "solid")
+        if r.label:
+            _edge_label(dl, pts, r.label, text_col, window_bg)
+        for card, p, q in ((r.card_src, pts[0], pts[1]), (r.card_dst, pts[-1], pts[-2])):
+            if card:
+                dx, dy = q.x - p.x, q.y - p.y
+                n = max((dx * dx + dy * dy) ** 0.5, 1e-3)
+                ts = imgui.calc_text_size(card)
+                along, side = 1.3 * em, 0.4 * em
+                pos = ImVec2(p.x + dx / n * along + (side if dy != 0 else -ts.x / 2), p.y + dy / n * along + (side if dx != 0 else -ts.y / 2))
+                dl.add_text(pos, text_col, card)
+    for node in graph.nodes.values():
+        p0 = ImVec2(origin.x + node.pos.x, origin.y + node.pos.y)
+        p1 = ImVec2(p0.x + node.size.x, p0.y + node.size.y)
+        dl.add_rect_filled(p0, p1, fill, 0.15 * em)
+        dl.add_rect(p0, p1, border, 0.15 * em, 1.5)
+        y = p0.y
+        for i, comp in enumerate(node.lines):
+            h = len(comp) * line_h + 0.6 * em
+            if i > 0:
+                dl.add_line(ImVec2(p0.x, y), ImVec2(p1.x, y), border, 1.0)
+            for j, text in enumerate(comp):
+                ts = imgui.calc_text_size(text)
+                x = (p0.x + p1.x) / 2 - ts.x / 2 if i == 0 else p0.x + 0.6 * em  # the name is centered
+                dl.add_text(ImVec2(x, y + 0.3 * em + j * line_h), text_col, text)
+            y += h
+    imgui.dummy(ImVec2(size.x + 2 * em, size.y + em))
+
+
+_cache: dict[str, Graph | Sequence | ClassDiagram] = {}
 
 
 def render_mermaid(code: str) -> None:
     if code not in _cache:
-        _cache[code] = parse_sequence(code) if code.lstrip().startswith("sequenceDiagram") else parse(code)
+        head = code.lstrip()
+        if head.startswith("sequenceDiagram"):
+            _cache[code] = parse_sequence(code)
+        elif head.startswith("classDiagram"):
+            _cache[code] = parse_class(code)
+        else:
+            _cache[code] = parse(code)
     diagram = _cache[code]
     if isinstance(diagram, Sequence):
         draw_sequence(diagram)
+    elif isinstance(diagram, ClassDiagram):
+        draw_class(diagram)
     else:
         draw(diagram)
 
@@ -583,6 +836,40 @@ graph TD
     F --> B
 ```
 
+A class diagram:
+```mermaid
+classDiagram
+    namespace Geometry {
+        class Shape {
+            <<interface>>
+            +area() float
+            +perimeter() float
+        }
+        class Circle {
+            -radius: float
+            +area() float
+        }
+        class Polygon {
+            -points: List~Point~
+            +area() float
+        }
+    }
+    class Canvas {
+        +shapes: List~Shape~
+        +draw()
+    }
+    class Renderer
+    class Style {
+        +color: Color
+        +thickness: float
+    }
+    Shape <|-- Circle : implements
+    Shape <|-- Polygon
+    Canvas "1" *-- "many" Shape : owns
+    Canvas o-- Renderer : uses
+    Renderer ..> Style : depends on
+    Canvas --> Style : default
+```
 A sequence diagram:
 ```mermaid
 sequenceDiagram
