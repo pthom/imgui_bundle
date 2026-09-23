@@ -1,0 +1,44 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: ${{ matrix.os }} ${{ matrix.options }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        options: [minimal, full]
+        exclude:
+          - os: windows-latest   # LaTeX needs FreeType and the URL images libcurl: system packages on Linux and macOS only
+            options: full
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglfw3-dev libgl1-mesa-dev libfreetype-dev libcurl4-openssl-dev
+      - name: Dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install glfw freetype curl
+
+      - name: Configure (the minimal example builds the library)
+        shell: bash
+        run: |
+          if [ "${{ matrix.options }}" = "full" ]; then
+            OPTS="-DIMGUI_RICHMD_WITH_CODE_EDITOR=ON -DIMGUI_RICHMD_WITH_LATEX=ON -DIMGUI_RICHMD_WITH_DOWNLOAD_IMAGES=ON"
+          else
+            OPTS="-DIMGUI_RICHMD_WITH_CODE_EDITOR=OFF -DIMGUI_RICHMD_WITH_LATEX=OFF -DIMGUI_RICHMD_WITH_DOWNLOAD_IMAGES=OFF"
+          fi
+          cmake -S examples/minimal -B build -DCMAKE_BUILD_TYPE=Release $OPTS
+      - name: Build
+        run: cmake --build build --config Release -j 4
