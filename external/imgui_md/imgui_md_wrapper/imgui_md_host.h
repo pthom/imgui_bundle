@@ -38,6 +38,11 @@ namespace ImGuiMd
         std::string error;           // set (with no pixels) when the formula is invalid: the source is shown with this message
     };
 
+    // The default UploadRgba: an ImTextureData registered with Dear ImGui, created by the rendering backend at
+    // the next frame (backends with ImGuiBackendFlags_RendererHasTextures, Dear ImGui 1.92+; an invalid
+    // texture otherwise). A host may call it from its own UploadRgba.
+    MarkdownTexture UploadRgbaDefault(const unsigned char* rgba, int w, int h);
+
     // The content of an asset file, or std::nullopt when it does not exist
     using AssetBytes = std::optional<std::vector<uint8_t>>;
 

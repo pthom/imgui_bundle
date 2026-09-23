@@ -8,8 +8,12 @@
 
 namespace ImGuiMd
 {
+    // Backends with ImGuiBackendFlags_RendererHasTextures (all of HelloImGui's since Dear ImGui 1.92) get the
+    // default upload (an ImTextureData registered with Dear ImGui); HelloImGui's TextureGpu is the fallback.
     static MarkdownTexture _UploadRgba(const unsigned char* rgba, int w, int h)
     {
+        if (ImGui::GetIO().BackendFlags & ImGuiBackendFlags_RendererHasTextures)
+            return UploadRgbaDefault(rgba, w, h);
         MarkdownTexture tex;
         auto gpu = HelloImGui::CreateTextureGpuFromRgbaData(rgba, w, h);
         if (gpu)
