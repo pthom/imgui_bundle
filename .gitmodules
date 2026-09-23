@@ -30,10 +30,6 @@
 	path = external/imgui_toggle/imgui_toggle
 	url = https://github.com/pthom/imgui_toggle.git
 	branch = imgui_bundle
-[submodule "external/imgui_rich_md/imgui_rich_md/external/md4c"]
-	path = external/imgui_rich_md/imgui_rich_md/external/md4c
-	url = https://github.com/mity/md4c
-	branch = master
 [submodule "external/ImGuiColorTextEdit/ImGuiColorTextEdit"]
 	path = external/ImGuiColorTextEdit/ImGuiColorTextEdit
 	url = https://github.com/pthom/ImGuiColorTextEdit.git
@@ -82,3 +78,7 @@
 [submodule "external/imspinner/imspinner"]
 	path = external/imspinner/imspinner
 	url = https://github.com/pthom/imspinner.git
+[submodule "external/imgui_rich_md/imgui_rich_md"]
+	path = external/imgui_rich_md/imgui_rich_md
+	url = https://github.com/pthom/imgui_rich_md.git
+	branch = main
