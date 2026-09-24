@@ -177,6 +177,8 @@ Pyodide wheels do not include the math fonts required for rendering LaTeX (to sa
 
 [Try online](https://imgui-bundle.pages.dev/explorer/demo_imgui_md.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
 
+The library's own examples, on stock Dear ImGui (C++): a tour of every feature, an editor, a custom host, fonts. [Try online](https://pthom.github.io/imgui_rich_md/) | [C++](https://github.com/pthom/imgui_rich_md/tree/main/examples)
+
 ### Documented APIs
 
 - **Python:** [rich_md.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/rich_md.pyi)
