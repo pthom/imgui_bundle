@@ -173,6 +173,22 @@ Pyodide wheels do not include the math fonts required for rendering LaTeX (to sa
 :::
 
 
+
+### Mermaid diagrams
+
+` ```mermaid ` blocks are drawn natively, with `ImDrawList` and the colors of the ImGui style: flowcharts, sequence diagrams and class diagrams (a subset of Mermaid). A diagram that cannot be parsed is shown as code, with the line of the error.
+
+````markdown
+```mermaid
+flowchart LR
+    A[Markdown] --> B{Mermaid block?}
+    B -->|yes| C([Parse]) --> D[Layout]
+    B -->|no| E[Code block]
+```
+````
+
+To draw a diagram outside of markdown: `rich_md.render_mermaid(source)` (Python), `RichMd::RenderMermaid(source)` (C++). The library's [tour](https://pthom.github.io/imgui_rich_md/tour.html) shows more of them.
+
 ### Full Demo
 
 [Try online](https://imgui-bundle.pages.dev/explorer/demo_imgui_md.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
