@@ -314,6 +314,13 @@ def register_fenced_block_renderer(
     """
     pass
 
+def render_mermaid(source: str) -> None:
+    """Renders a Mermaid diagram (flowchart, sequence or class diagram), as ```mermaid blocks do. A diagram that
+    cannot be parsed is shown as code, with the error below it; so is any diagram when the library is built
+    without IMGUI_RICHMD_WITH_MERMAID.
+    """
+    pass
+
 def get_code_font() -> SizedFont:
     pass
 

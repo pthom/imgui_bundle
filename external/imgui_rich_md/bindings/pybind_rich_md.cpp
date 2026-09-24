@@ -249,6 +249,11 @@ void py_init_module_rich_md(nb::module_& m)
         nb::arg("language"), nb::arg("renderer"),
         " Renders the code blocks of a given language (```mermaid, ```csv, ...) with your own function,\n instead of the code block renderer. Applies to the current context.");
 
+    m.def("render_mermaid",
+        RichMd::RenderMermaid,
+        nb::arg("source"),
+        " Renders a Mermaid diagram (flowchart, sequence or class diagram), as ```mermaid blocks do. A diagram that\n cannot be parsed is shown as code, with the error below it; so is any diagram when the library is built\n without IMGUI_RICHMD_WITH_MERMAID.");
+
     m.def("get_code_font",
         RichMd::GetCodeFont);
 
