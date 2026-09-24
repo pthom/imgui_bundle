@@ -279,7 +279,7 @@ def resolve_imports(
       // @@md#Name
       // Some *markdown* prose about the code below.
       // @@/md
-        None TheCode() {}
+        int TheAnswer() { return 42; }
     A section is the prose block plus the code that follows it: up to the next top-level item (a blank
     line, then a line at column 0) or the next @@md# marker, whichever comes first.
     A markdown document imports sections with a directive on its own line:
