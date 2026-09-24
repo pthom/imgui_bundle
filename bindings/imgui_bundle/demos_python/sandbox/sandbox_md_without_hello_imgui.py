@@ -26,14 +26,14 @@ def example_markdown_string() -> str:
     markdown = r"""
 # Markdown example (H1)
 
-> **Running without HelloImGui** — pure GLFW + PyOpenGL backend.
-> rich_md.initialize_markdown() takes care of the GL loader and other
-> setup automatically; no `hello_imgui.*` ceremony required.
+> **Running without HelloImGui**: pure GLFW + PyOpenGL backend.
+> rich_md.initialize_markdown() is the only setup needed;
+> no `hello_imgui.*` ceremony required.
 
 Hello World!
 
 ## Acknowledgments (H2)
-This markdown renderer is based on [rich_md](https://github.com/mekhontsev/rich_md), by Dmitry Mekhontsev.
+This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
 
 ## Supported features (H2)
 
@@ -46,7 +46,7 @@ rich_md currently supports the following markdown functionality.
 * *Emphasis* (\*Emphasis\*)
 * **Bold** (\*\*Bold\*\*)
 * Ordered and unordered list, sub-lists
-* [Link](https://github.com/mekhontsev/rich_md)  ( \[Link\](https://github.com/mekhontsev/rich_md) )
+* [Link](https://github.com/mekhontsev/imgui_md)  ( \[Link\](https://github.com/mekhontsev/imgui_md) )
 * Image
 * Horizontal rule (add "\-\-\-" on a line)
 * Tables
@@ -159,7 +159,7 @@ $$
 
 > **Note**
 > Rendering is powered by [MicroTeX](https://github.com/NanoMichael/MicroTeX)
-> Enable it by passing `with_latex=True` to `immapp.run()`.
+> Enable it with `MarkdownOptions.with_latex = True` (with ImmApp: `immapp.run(..., with_latex=True)`).
     """
     return markdown
 
@@ -182,7 +182,7 @@ def main():
     imgui.create_context()
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
-    init_fonts_and_markdown()  # also calls HelloImGui::InitGlLoader() internally
+    init_fonts_and_markdown()
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
@@ -198,7 +198,7 @@ def main():
         impl.render(imgui.get_draw_data())
         glfw.swap_buffers(window)
 
-    rich_md.de_initialize_markdown()  # also frees the image cache internally
+    rich_md.de_initialize_markdown()  # frees the markdown textures
     impl.shutdown()
     glfw.terminate()
 

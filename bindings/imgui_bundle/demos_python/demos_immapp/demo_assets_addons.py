@@ -198,7 +198,7 @@ def get_doc(which_doc: str) -> str:
             rich_md.render_unindented(markdown_string); # remove top-most indentation before rendering
             ```
 
-            This markdown renderer is based on [rich_md](https://github.com/mekhontsev/rich_md), by Dmitry Mekhontsev.
+            This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
             It supports the most common markdown features: emphasis, link, code blocks, etc.
         """,
         "PlotDoc": """
