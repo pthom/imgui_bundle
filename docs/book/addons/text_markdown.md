@@ -2,11 +2,13 @@
 
 Dear ImGui Bundle includes libraries for syntax-highlighted text editing and markdown rendering.
 
-## imgui_md - Markdown Rendering
+## rich_md - Markdown Rendering
 
 ### Introduction
 
-[imgui_md](https://github.com/mekhontsev/imgui_md) renders markdown content directly in your ImGui interface. Supports headers, bold, italic, links, code blocks, lists, and more.
+[imgui_rich_md](https://github.com/pthom/imgui_rich_md) renders markdown content directly in your ImGui interface: headers, emphasis, links, lists, tables, images, code blocks with syntax highlighting, LaTeX math, admonitions and collapsible sections. It is a standalone library that also works on stock Dear ImGui (C++); Dear ImGui Bundle includes it, with Python bindings.
+
+In Python the module is `imgui_bundle.rich_md`; in C++ the namespace is `RichMd`. The former names, `imgui_md` (Python) and `ImGuiMd` (C++), remain available as aliases.
 
 **Quick example:**
 
@@ -14,10 +16,10 @@ Dear ImGui Bundle includes libraries for syntax-highlighted text editing and mar
 
 :::{tab-item} Python
 ```python
-from imgui_bundle import imgui_md, immapp
+from imgui_bundle import rich_md, immapp
 
 def gui():
-    imgui_md.render("""
+    rich_md.render("""
 # Hello Markdown
 
 This is **bold** and this is *italic*.
@@ -29,16 +31,16 @@ This is **bold** and this is *italic*.
 immapp.run(gui, with_markdown=True)
 ```
 
-You may also use `imgui_md.render_unindented(s)` – it removes the leading indentation of the markdown string before rendering, which is useful when the string is defined inside a function with indentation.
+`rich_md.render(s)` removes the common indentation of the string first, so that a string written inside an indented function renders as expected. `rich_md.render_raw(s)` renders it as is.
 :::
 
 :::{tab-item} C++
 ```cpp
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 
 void gui() {
-    ImGuiMd::Render(R"(
+    RichMd::Render(R"(
 # Hello Markdown
 
 This is **bold** and this is *italic*.
@@ -63,7 +65,7 @@ Enable markdown by passing `with_markdown=True` to `immapp.run()` (Python) or us
 
 ### Images
 
-imgui_md supports images from local assets and from URLs.
+rich_md supports images from local assets and from URLs.
 
 **Standard markdown images:**
 ```markdown
@@ -87,7 +89,7 @@ imgui_md supports images from local assets and from URLs.
 
 ### LaTeX math
 
-imgui_md can render inline and display LaTeX math via the bundled [imgui_microtex](https://github.com/pthom/MicroTeX) library — a thin wrapper  around [MicroTeX](https://github.com/NanoMichael/MicroTeX).
+rich_md renders inline and display LaTeX math with [MicroTeX](https://github.com/NanoMichael/MicroTeX) (the bundle uses [a fork](https://github.com/pthom/MicroTeX)).
 
 **Quick example:**
 
@@ -95,10 +97,10 @@ imgui_md can render inline and display LaTeX math via the bundled [imgui_microte
 
 :::{tab-item} Python
 ```python
-from imgui_bundle import imgui_md, immapp
+from imgui_bundle import rich_md, immapp
 
 def gui():
-    imgui_md.render_unindented(r"""
+    rich_md.render(r"""
 # Math in markdown
 
 Inline math sits on the text baseline: $E = mc^2$, $\sqrt{a^2 + b^2}$,
@@ -130,10 +132,10 @@ Note the **raw string** (`r"""..."""`): without it, Python would interpret seque
 :::{tab-item} C++
 ```cpp
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 
 void gui() {
-    ImGuiMd::Render(R"(
+    RichMd::Render(R"(
 # Math in markdown
 
 Inline math: $E = mc^2$, $\sqrt{a^2 + b^2}$.
@@ -160,9 +162,9 @@ int main() {
 :::{tip}
 Enable LaTeX math by passing `with_latex=True` to `immapp.run()` (Python)
 or setting `addOnsParams.withLatex = true` (C++). Both imply markdown
-support — you do not need to also set `with_markdown=True`.
+support: you do not need to also set `with_markdown=True`.
 
-- When LaTeX is **disabled** (the default), `$` is displayed as a normaly
+- When LaTeX is **disabled** (the default), `$` is displayed as a normal character.
 - When LaTeX is **enabled**, `$` is treated as math delimiters. To include a literal `$`, escape it like this: `\$`.
 :::
 
@@ -177,8 +179,8 @@ Pyodide wheels do not include the math fonts required for rendering LaTeX (to sa
 
 ### Documented APIs
 
-- **Python:** [imgui_md.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_md.pyi)
-- **C++:** [imgui_md_wrapper.h](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_rich_md/imgui_rich_md/imgui_rich_md/imgui_md_wrapper.h)
+- **Python:** [rich_md.pyi](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/rich_md.pyi)
+- **C++:** [rich_md.h](https://github.com/pthom/imgui_rich_md/blob/main/imgui_rich_md/rich_md.h) (and [rich_md_host.h](https://github.com/pthom/imgui_rich_md/blob/main/imgui_rich_md/rich_md_host.h) to plug your own textures, assets or downloads)
 
 
 ## ImGuiColorTextEdit - Syntax Highlighting Editor & Diff Viewer
@@ -207,7 +209,7 @@ Dear ImGui Bundle uses a [fork](https://github.com/pthom/ImGuiColorTextEdit/tree
 The text editor requires a fixed-width font. If you are using ImmApp with Markdown enabled, you may use its code font:
 
 ```python
-code_font = imgui_md.get_code_font()
+code_font = rich_md.get_code_font()
 imgui.push_font(code_font.font, code_font.size)
 editor.render("Code")
 imgui.pop_font()

@@ -23,7 +23,7 @@ Here's a simple example showing parallel execution:
 ```python
 import asyncio
 import time
-from imgui_bundle import immapp, imgui, hello_imgui, imgui_md
+from imgui_bundle import immapp, imgui, hello_imgui
 
 
 GUI_FINISHED = False

@@ -29,17 +29,19 @@ python_backends/             # Backends implemented in pure python
 * This is largely a work in progress, and thus incomplete. At the moment, only glfw, sdl2, sdl3 and pyglet are implemented.
 * Key binding needs to be improved (support for modifiers like Ctrl-Shift, etc.)
 
-## Using `imgui_md` (Markdown) without HelloImGui
+## Using `rich_md` (Markdown) without HelloImGui
 
-`imgui_md` can be hosted inside a pure-python backend with no `HelloImGui::Run()`
-loop. Standard markdown features (text, headings, code blocks, tables, links)
-work everywhere; image and LaTeX-math rendering additionally need GPU texture
-uploads, which are supported only on **OpenGL3** in the standalone path.
+`rich_md` can be hosted inside a pure-python backend with no `HelloImGui::Run()`
+loop, with all its features: text, tables, code blocks, links, local and URL images,
+LaTeX math. Images and formulas are Dear ImGui textures that the backend creates
+itself: this needs a backend that supports Dear ImGui's texture protocol
+(`ImGuiBackendFlags_RendererHasTextures`, Dear ImGui 1.92+), as all the backends
+of this folder do.
 
-`imgui_md.initialize_markdown()` automatically initializes HelloImGui's GLAD
-function loader if you are not inside `HelloImGui::Run()`, so user code does
-not need to call `hello_imgui.init_gl_loader()` itself.
-`imgui_md.de_initialize_markdown()` similarly clears the asset image cache.
+`rich_md.initialize_markdown()` is the only setup needed (the fonts load at the first
+render): no GL loader or other `hello_imgui` call is required.
+`rich_md.de_initialize_markdown()` frees what markdown created: its textures, the pending
+downloads and the LaTeX engine.
 
 A complete working example lives at
 [`../demos_python/sandbox/sandbox_md_without_hello_imgui.py`](../demos_python/sandbox/sandbox_md_without_hello_imgui.py)

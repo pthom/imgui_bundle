@@ -207,10 +207,10 @@ ImmApp handles add-on initialization automatically via simple boolean flags.
 
 :::{tab-item} Python
 ```python
-from imgui_bundle import immapp, imgui, implot, imgui_md
+from imgui_bundle import immapp, imgui, implot, rich_md
 
 def gui():
-    imgui_md.render("# Hello with Markdown!")
+    rich_md.render("# Hello with Markdown!")
 
     if implot.begin_plot("My Plot"):
         implot.plot_line("data", [1, 2, 3, 4], [1, 4, 2, 3])
@@ -230,11 +230,11 @@ immapp.run(
 :::{tab-item} C++
 ```cpp
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "implot/implot.h"
 
 void gui() {
-    ImGuiMd::Render("# Hello with Markdown!");
+    RichMd::Render("# Hello with Markdown!");
 
     if (ImPlot::BeginPlot("My Plot")) {
         double x[] = {1, 2, 3, 4};
@@ -267,7 +267,7 @@ int main() {
 |------|--------|-------------|
 | `with_implot` | ImPlot | 2D plotting |
 | `with_implot3d` | ImPlot3D | 3D plotting |
-| `with_markdown` | imgui_md | Markdown rendering |
+| `with_markdown` | rich_md | Markdown rendering |
 | `with_node_editor` | imgui-node-editor | Node graphs |
 | `with_tex_inspect` | imgui_tex_inspect | Texture inspector |
 
@@ -322,7 +322,7 @@ ImmApp with add-ons: assets, markdown, and ImPlot
 
 Demonstrates how to use ImmApp with multiple add-ons:
 - Load and display assets (images, icons)
-- Render markdown content with imgui_md
+- Render markdown content with rich_md
 - Display interactive plots with ImPlot
 
 Source code: [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_assets_addons.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_assets_addons.cpp)

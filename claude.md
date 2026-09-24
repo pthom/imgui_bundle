@@ -568,7 +568,7 @@ def run(
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
-    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
 ) -> None:
     ...
 ```
