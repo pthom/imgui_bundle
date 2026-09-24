@@ -10,7 +10,7 @@
 #     pip install wgpu rendercanvas
 import wgpu  # type: ignore
 import sys
-from imgui_bundle import imgui, imgui_ctx
+from imgui_bundle import imgui, imgui_ctx, rich_md
 from rendercanvas.auto import RenderCanvas, loop  #type: ignore
 from wgpu.utils.imgui import ImguiRenderer  #type: ignore
 
@@ -26,6 +26,11 @@ device = adapter.request_device_sync()
 
 app_state = {"text": "Hello, World\nLorem ipsum, etc.\netc."}
 imgui_renderer = ImguiRenderer(device, canvas)
+
+# Markdown: textures are created by wgpu's ImGui backend (Dear ImGui's texture protocol)
+md_options = rich_md.MarkdownOptions()
+md_options.with_latex = True  # LaTeX formulas ($...$ and $$...$$)
+rich_md.initialize_markdown(md_options)  # the markdown fonts load at the first render
 
 
 def update_gui():
@@ -44,6 +49,17 @@ def update_gui():
     imgui.set_next_window_pos((0, 20), imgui.Cond_.appearing)
 
     imgui.begin("Custom window", None)
+    rich_md.render(r"""
+    # Hello, World
+    Here is some *markdown* text, and a formula: $e^{i\pi} + 1 = 0$
+
+    ![](images/world.png)
+
+    ```python
+    print("code blocks too")
+    ```
+    """)
+
     imgui.text("Example Text")
 
     if imgui.button("Hello"):
@@ -80,3 +96,4 @@ imgui_renderer.set_gui(update_gui)
 if __name__ == "__main__":
     canvas.request_draw(imgui_renderer.render)
     loop.run()
+    rich_md.de_initialize_markdown()

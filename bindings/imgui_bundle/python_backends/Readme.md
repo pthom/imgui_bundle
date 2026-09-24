@@ -37,8 +37,8 @@ links, local and URL images, LaTeX math.
 `rich_md.initialize_markdown()` is the only setup needed (the fonts load at the first
 render), and `rich_md.de_initialize_markdown()` frees what markdown created: its textures,
 the pending downloads and the LaTeX engine.
-[examples/example_python_backend_glfw3.py](examples/example_python_backend_glfw3.py) shows
-an image, a formula and a code block.
+Each example of [examples/](examples/) shows an image, a formula and a code block, including
+the one that uses wgpu-py's backend (WebGPU).
 
 ### Limitations
 * Images and formulas are Dear ImGui textures that the backend creates itself: they need a
