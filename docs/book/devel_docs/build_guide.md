@@ -27,12 +27,12 @@ Each library can be individually enabled or disabled. All default to ON.
 
 | Option | Library | Notes |
 |--------|---------|-------|
-| `IMGUI_BUNDLE_WITH_HELLO_IMGUI` | Hello ImGui | Disabling also disables immapp, imgui_md, test_engine |
+| `IMGUI_BUNDLE_WITH_HELLO_IMGUI` | Hello ImGui | Disabling also disables immapp, rich_md, test_engine |
 | `IMGUI_BUNDLE_WITH_IMMAPP` | ImmApp | Depends on hello_imgui + imgui_node_editor |
 | `IMGUI_BUNDLE_WITH_IMPLOT` | ImPlot | 2D plotting |
 | `IMGUI_BUNDLE_WITH_IMPLOT3D` | ImPlot3D | 3D plotting |
 | `IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR` | Node editor | |
-| `IMGUI_BUNDLE_WITH_IMGUI_MD` | Markdown | Depends on immapp |
+| `IMGUI_BUNDLE_WITH_IMGUI_RICH_MD` | Markdown (rich_md) | Depends on hello_imgui. Former name: `IMGUI_BUNDLE_WITH_IMGUI_MD` (still accepted, deprecated) |
 | `IMGUI_BUNDLE_WITH_IMGUIZMO` | ImGuizmo | 3D gizmos |
 | `IMGUI_BUNDLE_WITH_NANOVG` | NanoVG | Needs OpenGL3 or Metal |
 | `IMGUI_BUNDLE_WITH_IMFILEDIALOG` | ImFileDialog | Needs OpenGL3 |
@@ -41,7 +41,7 @@ Each library can be individually enabled or disabled. All default to ON.
 | `IMGUI_BUNDLE_WITH_IMANIM` | ImAnim | Animation library |
 | `IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB` | ImGui Explorer | Interactive widget explorer |
 
-**Dependency chain**: CMake automatically disables dependent modules. For example, setting `IMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF` also disables immapp, imgui_md, test_engine, and the GLFW backend.
+**Dependency chain**: CMake automatically disables dependent modules. For example, setting `IMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF` also disables immapp, rich_md, test_engine, and the GLFW backend.
 
 **Convention**: CMake option names and C++ `#define` names are identical. For example, `IMGUI_BUNDLE_WITH_IMANIM` is both the `option()` and the `#ifdef` guard in C++.
 

@@ -162,14 +162,14 @@ endif()
 # UI Extensions:
 #   IMGUI_BUNDLE_WITH_IMMVISION,
 #   IMGUI_BUNDLE_WITH_IMPLOT, IMGUI_BUNDLE_WITH_IMPLOT3D,
-#   IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR, IMGUI_BUNDLE_WITH_IMGUI_MD,
+#   IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR, IMGUI_BUNDLE_WITH_IMGUI_RICH_MD,
 #   IMGUI_BUNDLE_WITH_IMFILEDIALOG, IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT
 #   IMGUI_BUNDLE_WITH_NANOVG, IMGUI_BUNDLE_WITH_IMGUIZMO,
 #   IMGUI_BUNDLE_WITH_MICROTEX
 # =============================================================================
 option(IMGUI_BUNDLE_WITH_HELLO_IMGUI "Build with hello_imgui (window management)" ON)
 option(IMGUI_BUNDLE_WITH_IMMAPP "Build with immapp (internal high-level app framework)" ON)
-option(IMGUI_BUNDLE_WITH_IMGUI_MD "Build with imgui_md (markdown renderer)" ON)
+option(IMGUI_BUNDLE_WITH_IMGUI_RICH_MD "Build with imgui_rich_md (markdown renderer; Python: rich_md)" ON)
 option(IMGUI_BUNDLE_WITH_MICROTEX "Build with MicroTeX (native LaTeX math rendering)" ON)
 option(IMGUI_BUNDLE_WITH_NANOVG "Build with nanovg" ON)
 option(IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT "Build with imgui_tex_inspect" ON)
@@ -188,7 +188,7 @@ option(IMGUI_BUNDLE_WITH_IMMVISION "Build with immvision" ON)
 # Hello ImGui provides windowing, rendering backends, and app lifecycle management.
 # Setting IMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF automatically excludes these dependent modules:
 #   • immapp              (high-level application wrapper)
-#   • imgui_md            (markdown renderer wrapper)
+#   • rich_md             (markdown renderer)
 #   • im_file_dialog      (requires OpenGL context)
 #   • imgui_tex_inspect   (requires OpenGL context)
 #   • immvision           (requires OpenGL for image display)
@@ -213,6 +213,8 @@ option(IMGUI_BUNDLE_WITH_IMMVISION "Build with immvision" ON)
 imgui_bundle_translate_legacy_disable_options()
 # Apply environment variable overrides for Python builds
 imgui_bundle_apply_env_var_overrides()
+# Translate renamed options (e.g. IMGUI_BUNDLE_WITH_IMGUI_MD) to their new name
+imgui_bundle_translate_renamed_options()
 
 
 
@@ -575,7 +577,7 @@ message(STATUS "
     IMGUI_BUNDLE_WITH_NANOVG:              ${IMGUI_BUNDLE_WITH_NANOVG}
     IMGUI_BUNDLE_WITH_IMGUIZMO:            ${IMGUI_BUNDLE_WITH_IMGUIZMO}
     IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR:   ${IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR}
-    IMGUI_BUNDLE_WITH_IMGUI_MD:            ${IMGUI_BUNDLE_WITH_IMGUI_MD}
+    IMGUI_BUNDLE_WITH_IMGUI_RICH_MD:       ${IMGUI_BUNDLE_WITH_IMGUI_RICH_MD}
     IMGUI_BUNDLE_WITH_IMFILEDIALOG:        ${IMGUI_BUNDLE_WITH_IMFILEDIALOG}
     IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT:   ${IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT}
     IMGUI_BUNDLE_WITH_MICROTEX:            ${IMGUI_BUNDLE_WITH_MICROTEX}

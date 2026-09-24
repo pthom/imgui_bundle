@@ -156,7 +156,7 @@ void py_init_module_imgui_bundle(nb::module_& m)
     auto module_imspinner =  m.def_submodule("imspinner");
     py_init_module_imspinner(module_imspinner);
 
-#ifdef IMGUI_BUNDLE_WITH_IMGUI_MD
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_RICH_MD
     _register_submodule("rich_md");
     auto module_rich_md =  m.def_submodule("rich_md");
     py_init_module_rich_md(module_rich_md);

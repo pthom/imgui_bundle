@@ -11,6 +11,8 @@ library that works on stock Dear ImGui. Existing code keeps working:
 - C++: the API is `RichMd::` in `imgui_rich_md/rich_md.h`; the former `imgui_md_wrapper/imgui_md_wrapper.h` include
   and the `ImGuiMd` namespace stay as aliases (`ImGuiMicroTeX` likewise, for `RichMd::Latex`). CMake target `imgui_rich_md`
   (`imgui_md` kept as an alias).
+- CMake: the option `IMGUI_BUNDLE_WITH_IMGUI_MD` becomes `IMGUI_BUNDLE_WITH_IMGUI_RICH_MD`; the former name still works,
+  with a deprecation warning.
 
 ## Updated Dear ImGui to v1.93.0 WIP
 

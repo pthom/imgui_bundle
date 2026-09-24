@@ -15,12 +15,12 @@ macro(imgui_bundle_resolve_early_dependencies)
     ===========================================================
      IMGUI_BUNDLE_WITH_HELLO_IMGUI is OFF, automatically disabling dependent modules:
         immapp              (depends on hello_imgui)
-        imgui_rich_md       (depends on hello_imgui + immapp)
+        imgui_rich_md       (depends on hello_imgui)
         imgui_test_engine   (needs GIL management)
         GLFW backend        (not needed)
     ===========================================================")
         set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: depends on hello_imgui" FORCE)
-        set(IMGUI_BUNDLE_WITH_IMGUI_MD OFF CACHE BOOL "Auto-disabled: depends on hello_imgui" FORCE)
+        set(IMGUI_BUNDLE_WITH_IMGUI_RICH_MD OFF CACHE BOOL "Auto-disabled: depends on hello_imgui" FORCE)
         set(HELLOIMGUI_WITH_TEST_ENGINE OFF CACHE BOOL "Auto-disabled: needs GIL management from hello_imgui" FORCE)
         set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
         set(HELLOIMGUI_HAS_OPENGL3 OFF CACHE BOOL "Auto-disabled: not needed without hello_imgui" FORCE)
@@ -71,7 +71,7 @@ macro(imgui_bundle_translate_legacy_disable_options)
     set(_all_options
         HELLO_IMGUI
         IMMAPP
-        IMGUI_MD
+        IMGUI_MD  # former name, translated afterwards by imgui_bundle_translate_renamed_options()
         NANOVG
         IMPLOT
         IMPLOT3D
@@ -110,7 +110,8 @@ macro(imgui_bundle_apply_env_var_overrides)
         set(_with_options
             HELLO_IMGUI
             IMMAPP
-            IMGUI_MD
+            IMGUI_RICH_MD
+            IMGUI_MD  # former name, translated afterwards by imgui_bundle_translate_renamed_options()
             NANOVG
             IMPLOT
             IMPLOT3D
@@ -145,6 +146,27 @@ macro(imgui_bundle_apply_env_var_overrides)
             endif()
         endforeach()
     endif()
+endmacro()
+
+
+###################################################################################################
+# Renamed options
+###################################################################################################
+# A renamed option keeps working under its former name, with a deprecation warning (circa January 2028).
+# Call after imgui_bundle_translate_legacy_disable_options() and imgui_bundle_apply_env_var_overrides(),
+# which may set a former name.
+macro(_imgui_bundle_translate_renamed_option former_name new_name)
+    if(DEFINED ${former_name})
+        message(DEPRECATION
+            "${former_name} is deprecated and will be removed in a future version (circa January 2028). "
+            "Please use ${new_name} instead.")
+        set(${new_name} ${${former_name}} CACHE BOOL "Translated from ${former_name}" FORCE)
+        unset(${former_name} CACHE)  # warn once per build folder
+    endif()
+endmacro()
+
+macro(imgui_bundle_translate_renamed_options)
+    _imgui_bundle_translate_renamed_option(IMGUI_BUNDLE_WITH_IMGUI_MD IMGUI_BUNDLE_WITH_IMGUI_RICH_MD)
 endmacro()
 
 

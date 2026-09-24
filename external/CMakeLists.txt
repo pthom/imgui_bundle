@@ -305,8 +305,8 @@ endif()
 # Build ImguiColorTextEdit
 add_subdirectory(ImGuiColorTextEdit)
 
-# Build imgui_rich_md (requires hello_imgui and immapp for the wrapper)
-if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
+# Build imgui_rich_md (the bundle's host, assets, FreeType and stb_image come from hello_imgui)
+if(IMGUI_BUNDLE_WITH_IMGUI_RICH_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     # The markdown stack is imgui_rich_md (external/imgui_rich_md, target imgui_rich_md). The bundle sets its
     # options and dependency dirs, then adds its host (assets, textures, fonts through HelloImGui), the
     # MicroTeX Level 2 adapter (formula textures on HelloImGui::TextureGpu), and the historical include paths.
@@ -398,8 +398,10 @@ if(IMGUI_BUNDLE_WITH_IMGUI_MD AND IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     if(IMGUI_BUNDLE_WITH_MICROTEX)
         target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_MICROTEX)
     endif()
-    target_compile_definitions(imgui_bundle INTERFACE IMGUI_BUNDLE_WITH_IMGUI_MD)
-    set(IMGUI_BUNDLE_WITH_IMGUI_MD ON CACHE INTERNAL "" FORCE)
+    target_compile_definitions(imgui_bundle INTERFACE
+        IMGUI_BUNDLE_WITH_IMGUI_RICH_MD
+        IMGUI_BUNDLE_WITH_IMGUI_MD)  # former name, for user code that tests it
+    set(IMGUI_BUNDLE_WITH_IMGUI_RICH_MD ON CACHE INTERNAL "" FORCE)
 else()
     message(STATUS "Skipping imgui_rich_md (disabled or hello_imgui not available)")
 endif()
