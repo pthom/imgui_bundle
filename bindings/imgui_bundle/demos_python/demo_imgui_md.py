@@ -622,11 +622,11 @@ def _render_csv(code: str) -> None:
         imgui.end_table()
 
 
-def _fill_dynamic_parts(markdown: str) -> str:
+def _fill_dynamic_parts(markdown: str, headings: list[str]) -> str:
     if _standalone_options:
         wikilinks_status = "*(Enabled in this run: the wikilink below is clickable, see the console.)*"
         headings_status = "This run collects the headings of this page: " + (
-            ", ".join(f"`{h.strip()}`" for h in _headings[:6]) + ("..." if len(_headings) > 6 else "")
+            ", ".join(f"`{h.strip()}`" for h in headings[:6]) + ("..." if len(headings) > 6 else "")
         )
     else:
         wikilinks_status = (
@@ -660,11 +660,10 @@ def demo_gui():
         _csv_renderer_registered = True
     # from imgui_bundle import hello_imgui
     # hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.white_is_white)
-    headings_seen_last_frame = list(_headings)
+    # The headings rendered during the previous frame are listed in this one
+    headings_last_frame = list(_headings)
     _headings.clear()
-    rich_md.render(_fill_dynamic_parts(example_markdown_string()))
-    if _standalone_options and not _headings:
-        _headings.extend(headings_seen_last_frame)
+    rich_md.render(_fill_dynamic_parts(example_markdown_string(), headings_last_frame))
 
 
 def main():

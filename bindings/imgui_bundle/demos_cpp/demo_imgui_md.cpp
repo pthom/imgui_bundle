@@ -17,7 +17,7 @@ std::string exampleMarkdownString()
     std::string md = R"(
 # Dear ImGui Bundle — Markdown tour
 
-`imgui_md` renders markdown directly inside an ImGui window — no browser,
+`rich_md` renders markdown directly inside an ImGui window — no browser,
 no HTML, no external renderer.
 
 > [!TIP]
@@ -43,7 +43,7 @@ HTML-like spans render natively too, no callbacks needed:
 - Chemistry: H<sub>2</sub>O, CO<sub>2</sub>, C<sub>8</sub>H<sub>10</sub>N<sub>4</sub>O<sub>2</sub>
 - Exponents: x<sup>2</sup> + y<sup>2</sup> = r<sup>2</sup>
 
-For any HTML span not in the default set, wire `MarkdownCallbacks.on_html_span`.
+For any HTML span not in the default set, wire `MarkdownCallbacks::OnHtmlSpan`.
 
 <details>
 <summary>Show source</summary>
@@ -686,16 +686,16 @@ static std::string ReplaceAll(std::string text, const std::string& from, const s
     return text;
 }
 
-static std::string FillDynamicParts(const std::string& markdown)
+static std::string FillDynamicParts(const std::string& markdown, const std::vector<std::string>& headings)
 {
     std::string wikilinksStatus, headingsStatus;
     if (gStandaloneOptions)
     {
         wikilinksStatus = "*(Enabled in this run: the wikilink below is clickable, see the console.)*";
         headingsStatus = "This run collects the headings of this page: ";
-        for (size_t i = 0; i < gHeadings.size() && i < 6; ++i)
-            headingsStatus += (i > 0 ? ", `" : "`") + gHeadings[i] + "`";
-        if (gHeadings.size() > 6)
+        for (size_t i = 0; i < headings.size() && i < 6; ++i)
+            headingsStatus += (i > 0 ? ", `" : "`") + headings[i].substr(headings[i].find_first_not_of(' ')) + "`";
+        if (headings.size() > 6)
             headingsStatus += "...";
     }
     else
@@ -726,11 +726,10 @@ void demo_imgui_md()
         RichMd::RegisterFencedBlockRenderer("csv", RenderCsv);
         csvRendererRegistered = true;
     }
-    std::vector<std::string> headingsSeenLastFrame = gHeadings;
-    gHeadings.clear();
-    RichMd::Render(FillDynamicParts(exampleMarkdownString()));
-    if (gStandaloneOptions && gHeadings.empty())
-        gHeadings = headingsSeenLastFrame;
+    // The headings rendered during the previous frame are listed in this one
+    std::vector<std::string> headingsLastFrame;
+    std::swap(headingsLastFrame, gHeadings);
+    RichMd::Render(FillDynamicParts(exampleMarkdownString(), headingsLastFrame));
 }
 
 
