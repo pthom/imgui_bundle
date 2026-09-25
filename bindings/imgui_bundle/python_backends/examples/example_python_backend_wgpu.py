@@ -30,7 +30,7 @@ imgui_renderer = ImguiRenderer(device, canvas)
 # Markdown: textures are created by wgpu's ImGui backend (Dear ImGui's texture protocol)
 md_options = rich_md.MarkdownOptions()
 md_options.with_latex = True  # LaTeX formulas ($...$ and $$...$$)
-rich_md.initialize_markdown(md_options)  # the markdown fonts load at the first render
+rich_md.create_context(md_options)  # the markdown fonts load at the first render
 
 
 def update_gui():
@@ -96,4 +96,4 @@ imgui_renderer.set_gui(update_gui)
 if __name__ == "__main__":
     canvas.request_draw(imgui_renderer.render)
     loop.run()
-    rich_md.de_initialize_markdown()
+    rich_md.destroy_context()

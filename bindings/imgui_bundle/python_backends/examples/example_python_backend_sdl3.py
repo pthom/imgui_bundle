@@ -29,7 +29,7 @@ def main():
     impl = SDL3Renderer(window)
     md_options = rich_md.MarkdownOptions()
     md_options.with_latex = True  # LaTeX formulas ($...$ and $$...$$)
-    rich_md.initialize_markdown(md_options)  # the markdown fonts load at the first render
+    rich_md.create_context(md_options)  # the markdown fonts load at the first render
 
     show_custom_window = True
 
@@ -99,7 +99,7 @@ def main():
         impl.render(imgui.get_draw_data())
         SDL_GL_SwapWindow(window)
 
-    rich_md.de_initialize_markdown()
+    rich_md.destroy_context()
     impl.shutdown()
     SDL_GL_DestroyContext(gl_context)
     SDL_DestroyWindow(window)

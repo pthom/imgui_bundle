@@ -27,7 +27,7 @@ def example_markdown_string() -> str:
 # Markdown example (H1)
 
 > **Running without HelloImGui**: pure GLFW + PyOpenGL backend.
-> rich_md.initialize_markdown() is the only setup needed;
+> rich_md.create_context() is the only setup needed;
 > no `hello_imgui.*` ceremony required.
 
 Hello World!
@@ -171,7 +171,7 @@ def init_fonts_and_markdown():
     # Enable native LaTeX math via MicroTeX (otherwise $...$ stays literal).
     md_options = rich_md.MarkdownOptions()
     md_options.with_latex = True
-    rich_md.initialize_markdown(md_options)  # the fonts load at the first render
+    rich_md.create_context(md_options)  # the fonts load at the first render
 
 
 def gui():
@@ -198,7 +198,7 @@ def main():
         impl.render(imgui.get_draw_data())
         glfw.swap_buffers(window)
 
-    rich_md.de_initialize_markdown()  # frees the markdown textures
+    rich_md.destroy_context()  # frees the markdown textures
     impl.shutdown()
     glfw.terminate()
 

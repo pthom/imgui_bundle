@@ -34,8 +34,8 @@ python_backends/             # Backends implemented in pure python
 `rich_md` works with these backends, with all its features: text, tables, code blocks,
 links, local and URL images, LaTeX math.
 
-`rich_md.initialize_markdown()` is the only setup needed (the fonts load at the first
-render), and `rich_md.de_initialize_markdown()` frees what markdown created: its textures,
+`rich_md.create_context()` is the only setup needed (the fonts load at the first
+render), and `rich_md.destroy_context()` frees what markdown created: its textures,
 the pending downloads and the LaTeX engine.
 Each example of [examples/](examples/) shows an image, a formula and a code block, including
 the one that uses wgpu-py's backend (WebGPU).

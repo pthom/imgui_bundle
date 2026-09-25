@@ -23,7 +23,7 @@ static const char* kMarkdown = R"(
 # imgui_md without HelloImGui (C++)
 
 > **Running without HelloImGui::Run()** — pure GLFW + OpenGL3 backend.
-> `RichMd::InitializeMarkdown()` takes care of the GLAD setup automatically;
+> `RichMd::CreateContext()` takes care of the GLAD setup automatically;
 > no `HelloImGui::*` ceremony required.
 
 ## Markdown features
@@ -85,7 +85,7 @@ int main(int, char**)
     // first texture creation, so image / LaTeX-math textures work here too.
     RichMd::MarkdownOptions md_options;
     md_options.withLatex = true;
-    RichMd::InitializeMarkdown(md_options);  // the fonts load at the first render
+    RichMd::CreateContext(md_options);  // the fonts load at the first render
 
     while (!glfwWindowShouldClose(window))
     {
@@ -116,9 +116,9 @@ int main(int, char**)
         glfwSwapBuffers(window);
     }
 
-    // RichMd::DeInitializeMarkdown frees the markdown textures
+    // RichMd::DestroyContext frees the markdown textures
     // so the GPU textures are dropped before we destroy the GL context.
-    RichMd::DeInitializeMarkdown();
+    RichMd::DestroyContext();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

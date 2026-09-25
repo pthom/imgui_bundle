@@ -36,7 +36,7 @@ def init_fonts_and_markdown():
 
     md_options = rich_md.MarkdownOptions()
     md_options.with_latex = True  # LaTeX formulas ($...$ and $$...$$)
-    rich_md.initialize_markdown(md_options)  # the markdown fonts load at the first render
+    rich_md.create_context(md_options)  # the markdown fonts load at the first render
 
 
 def main():
@@ -112,7 +112,7 @@ def main():
         impl.render(imgui.get_draw_data())
         glfw.swap_buffers(window)
 
-    rich_md.de_initialize_markdown()
+    rich_md.destroy_context()
     impl.shutdown()
     glfw.terminate()
 

@@ -32,7 +32,7 @@ def main():
     impl = pyglet_backend.create_renderer(window)
     md_options = rich_md.MarkdownOptions()
     md_options.with_latex = True  # LaTeX formulas ($...$ and $$...$$)
-    rich_md.initialize_markdown(md_options)  # the markdown fonts load at the first render
+    rich_md.create_context(md_options)  # the markdown fonts load at the first render
 
     global show_custom_window
     show_custom_window = True
@@ -95,7 +95,7 @@ def main():
 
     pyglet.clock.schedule_interval(draw, 1 / 120.0)
     pyglet.app.run()
-    rich_md.de_initialize_markdown()
+    rich_md.destroy_context()
     impl.shutdown()
 
 

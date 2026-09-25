@@ -36,7 +36,7 @@ def main():
     impl = PygameRenderer()
     md_options = rich_md.MarkdownOptions()
     md_options.with_latex = True  # LaTeX formulas ($...$ and $$...$$)
-    rich_md.initialize_markdown(md_options)  # the markdown fonts load at the first render
+    rich_md.create_context(md_options)  # the markdown fonts load at the first render
 
     io = imgui.get_io()
     io.display_size = size

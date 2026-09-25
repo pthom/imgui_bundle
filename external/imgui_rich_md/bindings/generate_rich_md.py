@@ -30,18 +30,31 @@ def main() -> None:
         "OnImage_Default", "on_image_default"
     )
     options.struct_create_default_named_ctor__regex = ""
-    options.fn_return_force_policy_reference_for_pointers__regex = "GetCodeFont|GetFont"
+    # the contexts belong to rich_md (destroy_context), never to Python
+    options.fn_return_force_policy_reference_for_pointers__regex = "GetCodeFont|GetFont|CreateContext|GetCurrentContext"
 
     # Exclude members that need custom bindings
     options.member_exclude_by_name_and_class__regex = {
         "MarkdownCallbacks": r"^OnDownloadData$",
         "MarkdownDownloadResult": r"^data$",
     }
-    # Context is opaque (C++ only for now: an opaque Python handle will come with the RichMd rename)
-    options.fn_exclude_by_name__regex = r"^FillFromData$|^CreateContext$|^DestroyContext$|^SetCurrentContext$|^GetCurrentContext$|^GetStyle$"
+    options.fn_exclude_by_name__regex = r"^FillFromData$|^GetStyle$"
     # rich_md_host.h: the host services are C++ only, except the download types (used by set_download_function)
     options.fn_exclude_by_name__regex += r"|^UploadRgbaDefault$|^ReadAssetDefault$|^SetHostServices$|^GetHostServices$"
     options.class_exclude_by_name__regex = r"^HostServices$|^MarkdownTexture$|^LatexBitmap$|^EmbeddedAsset$"
+
+    # Context: opaque in Python (its definition, in rich_md_internal.h, is not bound)
+    options.custom_bindings.add_custom_bindings_to_main_module(
+        stub_code='''
+            class Context:
+                """A markdown context (its options, its fonts, its caches): made by create_context, destroyed by
+                destroy_context. Opaque."""
+                pass
+        ''',
+        pydef_code=r'''
+            nb::class_<RichMd::Context>(LG_MODULE, "Context", "A markdown context (made by create_context, destroyed by destroy_context). Opaque.");
+        ''',
+    )
 
     # set_download_function: HostServices.Download, kept as a Python object (same PyObject* pattern as on_download_data)
     options.custom_bindings.add_custom_bindings_to_main_module(

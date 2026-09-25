@@ -15,6 +15,7 @@
 #include <nanobind/ndarray.h>
 
 #include "imgui_rich_md/rich_md.h"
+#include "imgui_rich_md/rich_md_internal.h"  // RichMd::Context (opaque in Python)
 namespace nb = nanobind;
 
 
@@ -58,6 +59,7 @@ void py_init_module_rich_md(nb::module_& m)
 
 
 
+    nb::class_<RichMd::Context>(m, "Context", "A markdown context (made by create_context, destroyed by destroy_context). Opaque.");
     static PyObject* s_host_download_func = nullptr;
 
     m.def("set_download_function",
@@ -186,6 +188,38 @@ void py_init_module_rich_md(nb::module_& m)
         .def_rw("hard_soft_breaks", &RichMd::MarkdownOptions::hardSoftBreaks, "A newline in the source is a line break (as in GitHub comments and chat messages)")
         ;
 
+
+    m.def("create_context",
+        [](const std::optional<const RichMd::MarkdownOptions> & options = std::nullopt) -> Context *
+        {
+            auto CreateContext_adapt_mutable_param_with_default_value = [](const std::optional<const RichMd::MarkdownOptions> & options = std::nullopt) -> Context *
+            {
+
+                const RichMd::MarkdownOptions& options_or_default = [&]() -> const RichMd::MarkdownOptions {
+                    if (options.has_value())
+                        return options.value();
+                    else
+                        return RichMd::MarkdownOptions();
+                }();
+
+                auto lambda_result = RichMd::CreateContext(options_or_default);
+                return lambda_result;
+            };
+
+            return CreateContext_adapt_mutable_param_with_default_value(options);
+        },
+        nb::arg("options").none() = nb::none(),
+        "Python bindings defaults:\n    If options is None, then its default value will be: MarkdownOptions()",
+        nb::rv_policy::reference);
+
+    m.def("destroy_context",
+        RichMd::DestroyContext, nb::arg("context") = nb::none());
+
+    m.def("set_current_context",
+        RichMd::SetCurrentContext, nb::arg("context"));
+
+    m.def("get_current_context",
+        RichMd::GetCurrentContext, nb::rv_policy::reference);
 
     m.def("initialize_markdown",
         [](const std::optional<const RichMd::MarkdownOptions> & options = std::nullopt)
