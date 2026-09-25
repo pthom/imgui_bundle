@@ -3,4 +3,4 @@
 #pragma once
 #include "imgui_rich_md/rich_md.h"
 namespace ImGuiMd = RichMd;
-using imgui_md = RichMd::Renderer;
+// imgui_md, the former renderer class (md4c's client), is internal in imgui_rich_md: internal/rich_md_renderer.h
