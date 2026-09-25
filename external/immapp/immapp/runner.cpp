@@ -58,6 +58,9 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
         ImGuiTexInspect::Context * _ImGuiTextInspect_Context = nullptr;
 #endif
+
+        RichMd::Context* _MarkdownContext = nullptr;          // ours, for the duration of Run
+        RichMd::Context* _MarkdownPreviousContext = nullptr;  // the application's current context before Run
     };
 
     ImmAppContext gImmAppContext;
@@ -169,20 +172,28 @@ namespace ImmApp
             if (!addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows)
                 addOnsParams.withMarkdownOptions->callbacks.CanUseChildWindows = []() { return !ImGuiEx::IsInsideCanvas(); };
 #endif
-            RichMd::InitializeMarkdown(addOnsParams.withMarkdownOptions.value());  // the fonts load at the first render
+            // Our own markdown context, current during Run (the fonts load at the first render)
+            gImmAppContext._MarkdownPreviousContext = RichMd::GetCurrentContext();
+            gImmAppContext._MarkdownContext = RichMd::CreateContext(addOnsParams.withMarkdownOptions.value());
+            RichMd::SetCurrentContext(gImmAppContext._MarkdownContext);
 
             // Tear down markdown WHILE the GL context is still alive.
             // BeforeExit fires inside AbstractRunner::TearDown just before
             // Impl_Cleanup destroys the GL context, which is exactly what
-            // RichMd::DeInitializeMarkdown needs: it triggers
-            // RichMd::Latex::Release() → sTextureCache.clear() → each
-            // TextureGpuOpenGl destructor → glDeleteTextures(...). If we
+            // RichMd::DestroyContext needs: it frees the markdown textures, and
+            // with the last context RichMd::Latex::Release() → sTextureCache.clear()
+            // → each TextureGpuOpenGl destructor → glDeleteTextures(...). If we
             // ran this from immapp::Priv_TearDown (after HelloImGui::Run
             // returns), the GL context would already be gone and the
             // glDeleteTextures call would crash on Linux.
             runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
                 runnerParams.callbacks.BeforeExit,
-                [](){ RichMd::DeInitializeMarkdown(); }
+                [](){
+                    RichMd::DestroyContext(gImmAppContext._MarkdownContext);
+                    gImmAppContext._MarkdownContext = nullptr;
+                    RichMd::SetCurrentContext(gImmAppContext._MarkdownPreviousContext);
+                    gImmAppContext._MarkdownPreviousContext = nullptr;
+                }
             );
         }
 
@@ -292,7 +303,7 @@ namespace ImmApp
         }
 #endif
 
-        // Note: RichMd::DeInitializeMarkdown() is no longer called from
+        // Note: RichMd::DestroyContext() is no longer called from
         // here. It is invoked from a BeforeExit callback registered in
         // Priv_Setup, so it runs while the GL context is still alive.
         // (Calling it here would run after HelloImGui::Run has destroyed
