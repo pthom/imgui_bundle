@@ -256,27 +256,27 @@ void py_init_module_rich_md(nb::module_& m)
     m.def("render",
         RichMd::Render,
         nb::arg("markdown_string"),
-        " Renders a markdown string. Its common indentation is removed first (so that a string written\n inside an indented function renders as expected; no-op on flush-left text), then its @import\n directives are resolved (see ResolveImports; the files are read through the host's ReadAsset).");
+        " Renders a markdown string. Its common indentation is removed first (so that a string written\n inside an indented function renders as expected; no-op on flush-left text), then its transclusions\n are resolved (see ResolveTransclusions; the files are read through the host's ReadAsset).");
 
     m.def("render_raw",
         RichMd::RenderRaw,
         nb::arg("markdown_string"),
-        "Renders a markdown string as is (no unindent, no @import resolution)");
+        "Renders a markdown string as is (no unindent, no transclusion)");
 
     m.def("render_unindented",
         RichMd::RenderUnindented,
         nb::arg("markdown_string"),
         "The former name of Render");
 
-    m.def("resolve_imports",
-        RichMd::ResolveImports,
+    m.def("resolve_transclusions",
+        RichMd::ResolveTransclusions,
         nb::arg("markdown"), nb::arg("read_file"), nb::arg("current_file") = "",
-        " Sections and imports\n ---------------------\n A source file (C++, Python, ...) may carry named markdown blocks in its comments:\n   // @@md#Name\n   // Some *markdown* prose about the code below.\n   // @@/md\n     int TheAnswer() { return 42; }\n A section is the prose block plus the code that follows it: up to the next top-level item (a blank\n line, then a line at column 0) or the next @@md# marker, whichever comes first.\n A markdown document imports sections with a directive on its own line:\n     @import \"file.cpp\" {md_id=Name}             the section: prose, then the code as a fenced block\n     @import \"file.cpp\" {md_id=Name, part=prose} the prose only (part=code: the code only)\n     @import \"file.cpp\"                          every section of the file, in file order\n     @import \"notes.md\"                          a markdown file, as is\n     @import {md_id=Name}                        a section of the file being processed (a prose block\n                                                 may contain directives: a source file can be its own narrative)\n     {dedent=False}                              keeps the code's indentation (removed by default)\n Paths are relative to the importing file. Imports resolve recursively (cycles and a depth over 8\n are errors). An error (missing file, unknown id, block not closed, bad directive) renders the\n directive in the error color, with the reason as a tooltip.\n\n ResolveImports resolves the @import directives of a markdown text: readFile reads a file (or returns\n std::nullopt); currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.");
+        " Narrative programming: sections of source files, transcluded into markdown\n ---------------------------------------------------------------------------\n A source file (C, C++, GLSL, JavaScript, Python) names parts of itself with annotations:\n   // ::md Area                    a markdown section, in line comments (// or #)\n   // The area of a *circle*.\n   // ::code                      its associated code\n     float Area(float r) { return 3.14159 * r * r; }\n   // ::endcode                   closes the code and the section\n\n   // ::md Intro                   a section without code is closed by ::endmd\n   // # Circles\n   // ::endmd\n\n   // ::code Main loop             a named code region (regions may nest)\n     for (int i = 0; i < n; ++i) {}\n   // ::endcode\n A section may also be a block comment or a Python string (triple quotes) whose first line is \"::md Name\"\n after the opener: it ends with the comment or the string, or continues into the code after it when its\n last line is \"::code\".\n A markdown text transcludes them with an embed alone on its line (Obsidian's syntax):\n     ![[circle.cpp#Area]]            the prose of a section\n     ![[circle.cpp#Area#code]]       its associated code, as a code block\n     ![[circle.cpp#Main loop]]       a code region\n     ![[#Area]]                      a section of the current file: a source file can be its own narrative\n     ![[circle.cpp]]                 a whole source file, as code\n     ![[notes.md]]                   a markdown document, whole...\n     ![[notes.md#Setup#Linux]]       ...or under a heading (Linux, under Setup)\n Paths are relative to the file holding the embed (a text without a file: the assets, then the file system).\n Transclusions resolve recursively. An error (a missing file or name, a malformed annotation, a cycle)\n renders the embed in the error color, with the reason as a tooltip.\n Specification: docs/narrative_programming/narrative_programming_spec.md\n\n ResolveTransclusions replaces the embeds of a markdown text: readFile reads a file (or returns std::nullopt);\n currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.");
 
     m.def("render_file",
         RichMd::RenderFile,
-        nb::arg("path"), nb::arg("md_id") = "", nb::arg("part") = "both",
-        " Renders a section of a source file (mdId empty: every section), i.e. `@import \"path\" {md_id=mdId, part=part}`.\n The path is looked up in the assets first, then on the file system as is: a source file can render\n its own narrative with RICHMD_RENDER_THIS_FILE(\"Intro\") (C++) or rich_md.render_this_file(\"Intro\") (Python).");
+        nb::arg("path"), nb::arg("target") = "",
+        " Renders ![[path#target]]: target is a section (\"Intro\"), its code (\"Escape#code\"), a code region, a heading\n of a markdown document, or empty (the whole file). The path is looked up in the assets first, then on the\n file system: a source file renders its own narrative with RICHMD_RENDER_THIS_FILE(\"Intro\") (C++) or\n rich_md.render_this_file(\"Intro\") (Python).");
 
     m.def("register_fenced_block_renderer",
         RichMd::RegisterFencedBlockRenderer,

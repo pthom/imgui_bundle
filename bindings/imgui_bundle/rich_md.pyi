@@ -30,9 +30,10 @@ MarkdownImageFunction = Callable[[str], Optional[MarkdownImage]]
 MarkdownDownloadFunction = Callable[[str], MarkdownDownloadResult]
 ReadTextFile = Callable[[str], Optional[str]]
 
-def render_this_file(md_id: str = "", part: str = "both") -> None:
-    """Renders a section of the calling source file (see resolve_imports): a lesson can be its own
-    narrative. md_id empty: every section; part: "both", "prose" or "code". (Python only; C++: RICHMD_RENDER_THIS_FILE)
+def render_this_file(target: str = "") -> None:
+    """Renders ![[this_file#target]] (see resolve_transclusions): a program can be its own narrative.
+    target: a section ("Intro"), its code ("Escape#code"), a code region, or empty (the whole file).
+    (Python only; C++: RICHMD_RENDER_THIS_FILE)
     """
     ...
 
@@ -281,52 +282,64 @@ def get_font_loader_function() -> VoidFunction:
 
 def render(markdown_string: str) -> None:
     """Renders a markdown string. Its common indentation is removed first (so that a string written
-    inside an indented function renders as expected; no-op on flush-left text), then its @import
-    directives are resolved (see ResolveImports; the files are read through the host's ReadAsset).
+    inside an indented function renders as expected; no-op on flush-left text), then its transclusions
+    are resolved (see ResolveTransclusions; the files are read through the host's ReadAsset).
     """
     pass
 
 def render_raw(markdown_string: str) -> None:
-    """Renders a markdown string as is (no unindent, no @import resolution)"""
+    """Renders a markdown string as is (no unindent, no transclusion)"""
     pass
 
 def render_unindented(markdown_string: str) -> None:
     """The former name of Render"""
     pass
 
-def resolve_imports(
+def resolve_transclusions(
     markdown: str, read_file: ReadTextFile, current_file: str = ""
 ) -> str:
-    """Sections and imports
-    ---------------------
-    A source file (C++, Python, ...) may carry named markdown blocks in its comments:
-      // @@md#Name
-      // Some *markdown* prose about the code below.
-      // @@/md
-        int TheAnswer() { return 42; }
-    A section is the prose block plus the code that follows it: up to the next top-level item (a blank
-    line, then a line at column 0) or the next @@md# marker, whichever comes first.
-    A markdown document imports sections with a directive on its own line:
-        @import "file.cpp" {md_id=Name}             the section: prose, then the code as a fenced block
-        @import "file.cpp" {md_id=Name, part=prose} the prose only (part=code: the code only)
-        @import "file.cpp"                          every section of the file, in file order
-        @import "notes.md"                          a markdown file, as is
-        @import {md_id=Name}                        a section of the file being processed (a prose block
-                                                    may contain directives: a source file can be its own narrative)
-        {dedent=False}                              keeps the code's indentation (removed by default)
-    Paths are relative to the importing file. Imports resolve recursively (cycles and a depth over 8
-    are errors). An error (missing file, unknown id, block not closed, bad directive) renders the
-    directive in the error color, with the reason as a tooltip.
+    """Narrative programming: sections of source files, transcluded into markdown
+    ---------------------------------------------------------------------------
+    A source file (C, C++, GLSL, JavaScript, Python) names parts of itself with annotations:
+      // ::md Area                    a markdown section, in line comments (// or #)
+      // The area of a *circle*.
+      // ::code                      its associated code
+        float Area(float r) { return 3.14159 * r * r; }
+      // ::endcode                   closes the code and the section
 
-    ResolveImports resolves the @import directives of a markdown text: readFile reads a file (or returns
-    std::nullopt); currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.
+      // ::md Intro                   a section without code is closed by ::endmd
+      // # Circles
+      // ::endmd
+
+      // ::code Main loop             a named code region (regions may nest)
+        for (int i = 0; i < n; ++i) {}
+      // ::endcode
+    A section may also be a block comment or a Python string (triple quotes) whose first line is "::md Name"
+    after the opener: it ends with the comment or the string, or continues into the code after it when its
+    last line is "::code".
+    A markdown text transcludes them with an embed alone on its line (Obsidian's syntax):
+        ![[circle.cpp#Area]]            the prose of a section
+        ![[circle.cpp#Area#code]]       its associated code, as a code block
+        ![[circle.cpp#Main loop]]       a code region
+        ![[#Area]]                      a section of the current file: a source file can be its own narrative
+        ![[circle.cpp]]                 a whole source file, as code
+        ![[notes.md]]                   a markdown document, whole...
+        ![[notes.md#Setup#Linux]]       ...or under a heading (Linux, under Setup)
+    Paths are relative to the file holding the embed (a text without a file: the assets, then the file system).
+    Transclusions resolve recursively. An error (a missing file or name, a malformed annotation, a cycle)
+    renders the embed in the error color, with the reason as a tooltip.
+    Specification: docs/narrative_programming/narrative_programming_spec.md
+
+    ResolveTransclusions replaces the embeds of a markdown text: readFile reads a file (or returns std::nullopt);
+    currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.
     """
     pass
 
-def render_file(path: str, md_id: str = "", part: str = "both") -> None:
-    """Renders a section of a source file (mdId empty: every section), i.e. `@import "path" {md_id=mdId, part=part}`.
-    The path is looked up in the assets first, then on the file system as is: a source file can render
-    its own narrative with RICHMD_RENDER_THIS_FILE("Intro") (C++) or rich_md.render_this_file("Intro") (Python).
+def render_file(path: str, target: str = "") -> None:
+    """Renders ![[path#target]]: target is a section ("Intro"), its code ("Escape#code"), a code region, a heading
+    of a markdown document, or empty (the whole file). The path is looked up in the assets first, then on the
+    file system: a source file renders its own narrative with RICHMD_RENDER_THIS_FILE("Intro") (C++) or
+    rich_md.render_this_file("Intro") (Python).
     """
     pass
 

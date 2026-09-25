@@ -217,12 +217,12 @@ if has_submodule("rich_md"):
 
     rich_md.set_download_function(_get_download_function())
 
-    def _render_this_file(md_id: str = "", part: str = "both") -> None:
-        """Renders a section of the calling source file (see rich_md.resolve_imports): a lesson can be
-        its own narrative. md_id empty: every section; part: "both", "prose" or "code"."""
+    def _render_this_file(target: str = "") -> None:
+        """Renders ![[this_file#target]] (see rich_md.resolve_transclusions): a program can be its own
+        narrative. target: a section ("Intro"), its code ("Escape#code"), a code region, or empty."""
         import sys
 
-        rich_md.render_file(sys._getframe(1).f_code.co_filename, md_id, part)
+        rich_md.render_file(sys._getframe(1).f_code.co_filename, target)
 
     rich_md.render_this_file = _render_this_file
 if has_submodule("immvision"):

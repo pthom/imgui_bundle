@@ -200,7 +200,7 @@ namespace ImmApp
 
 
 // =========================== HelloImGui::ManualRender ==================================
-// @@md#HelloImGui::ManualRender
+// ::code ImmApp::ManualRender
 
     namespace ManualRender
     {
@@ -253,6 +253,6 @@ namespace ImmApp
         void TearDown();
     } // namespace ManualRender
 
-// @@/md
+// ::endcode
 
 } // namespace ImmApp

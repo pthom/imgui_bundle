@@ -1,5 +1,5 @@
-// Sections and imports: this source file is its own narrative. The app renders the "Intro" block below,
-// which imports the other blocks of this file in the order it likes (see RichMd::ResolveImports).
+// Narrative programming: this source file is its own narrative. The app renders the "Intro" section below,
+// which transcludes the other sections of this file in the order it likes (see RichMd::ResolveTransclusions).
 // Desktop only: RICHMD_RENDER_THIS_FILE reads the file at runtime (__FILE__).
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/immapp.h"
@@ -7,27 +7,30 @@
 #include "imgui.h"
 #include <cmath>
 
-// @@md#Intro
-// # Sections and imports
-// This window renders **this very source file**: its comment blocks are markdown, the code that follows
-// each block is shown as code. The narrative (the `Intro` block) chooses the order: the drawing first.
-// @import {md_id=Drawing}
-// The radius comes from a slider, and the area from a one-liner:
-// @import {md_id=Area, part=code}
-// ## When an import fails
-// The directive stays visible, in the error color, with the reason as a tooltip:
-// @import "nope.cpp" {md_id=Intro}
-// @import {md_id=NoSuchBlock}
-// @@/md
+/*::md Intro
+# Narrative programming
+This window renders **this very source file**: its sections are markdown, and their code is shown as code.
+The narrative (the `Intro` section) chooses the order: the drawing first.
+![[#Drawing]]
+![[#Drawing#code]]
+The radius comes from a slider, and the area from a one-liner:
+![[#Area#code]]
+## When a transclusion fails
+The embed stays visible, in the error color, with the reason as a tooltip:
+![[nope.cpp#Intro]]
+![[#NoSuchSection]]
+*/
 
-// @@md#Area
+// ::md Area
 // A circle of radius $r$ has area $\pi r^2$.
-// @@/md
+// ::code
 static float Area(float r) { return 3.14159265f * r * r; }
+// ::endcode
 
-// @@md#Drawing
-// The circle is drawn with the window's draw list, centered on the cursor.
-// @@/md
+/*::md Drawing
+The circle is drawn with the window's draw list, centered on the cursor.
+::code
+*/
 static void DrawCircle(float radius)
 {
     ImVec2 p = ImGui::GetCursorScreenPos();
@@ -35,6 +38,7 @@ static void DrawCircle(float radius)
     ImGui::GetWindowDrawList()->AddCircle(ImVec2(p.x + 6 * em, p.y + 4 * em), radius * em, IM_COL32(255, 180, 60, 255), 0, 2.0f);
     ImGui::Dummy(ImVec2(12 * em, 8 * em));
 }
+// ::endcode
 
 static void Gui()
 {
