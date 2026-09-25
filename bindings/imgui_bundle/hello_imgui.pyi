@@ -157,8 +157,6 @@ class DpiAwareParams:
 
 # ----------------------------------------------------------------------------
 
-# *
-#
 # Special care must be taken in order to correctly handle screen with high DPI
 # (for example, almost all recent laptops screens).
 #
@@ -168,8 +166,6 @@ class DpiAwareParams:
 #
 # Instead, you should use scale your widgets and windows relatively to the font size,
 # as is done with the [em CSS Unit](https://www.w3schools.com/cssref/css_units.php).
-#
-# *
 
 #  __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size
 #  or place your widgets in a DPI independent way.
@@ -314,8 +310,6 @@ def dpi_window_size_factor() -> float:
 #                       hello_imgui/hello_imgui_assets.h included by hello_imgui.h                             //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# *
-#
 # Assets located beside the application CMakeLists are embedded automatically.
 #
 # For example, you can have the following project structure:
@@ -1980,8 +1974,6 @@ def append_callback(
 #                       hello_imgui/docking_params.h included by hello_imgui/runner_params.h                   //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# *
-#
 # HelloImGui makes it easy to use dockable windows
 # (based on ImGui [docking branch](https://github.com/ocornut/imgui/tree/docking)).
 #
@@ -2034,10 +2026,7 @@ def append_callback(
 #
 # Inside DockingParams, the member `dockingSplits` specifies the layout, and the member `dockableWindows`
 # specifies the list of dockable windows, along with their default location, and their code (given by lambdas).
-#
-#
-#
-#
+
 # Below is an example that shows how to instantiate a layout:
 #
 # 1. First, define the docking splits:
@@ -3329,8 +3318,6 @@ def input_text_data_from_string(str: str) -> InputTextData:
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # =========================== HelloImGui::Run ==================================
-# *
-#
 # __HelloImGui::Run()__ will run an application with a single call.
 #
 # Three signatures are provided:
@@ -3533,8 +3520,6 @@ def load_user_pref(user_pref_name: str) -> str:
 
 # ============================== Menus defaults =============================
 
-# *
-#
 # Hello ImGui provides a default menu and status bar, which you can customize by using the params:
 #        `RunnerParams.imGuiWindowParams.` `showMenuBar` / `showMenu_App` / `showMenu_View`
 #

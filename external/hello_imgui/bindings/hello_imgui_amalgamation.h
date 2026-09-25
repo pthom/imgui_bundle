@@ -17,7 +17,7 @@
 
 namespace HelloImGui
 {
-// @@md#DpiAwareParams
+// ::code DpiAwareParams
 
 //
 // Hello ImGui will try its best to automatically handle DPI scaling for you.
@@ -68,10 +68,9 @@ struct DpiAwareParams
 
 // ----------------------------------------------------------------------------
 
-// @@/md
+// ::endcode
 
-/**
-@@md#DocEmToVec2
+/*::md DocEmToVec2
 
 Special care must be taken in order to correctly handle screen with high DPI
  (for example, almost all recent laptops screens).
@@ -83,10 +82,9 @@ Otherwise, widgets might be misplaced or too small on different screens and/or O
 Instead, you should use scale your widgets and windows relatively to the font size,
 as is done with the [em CSS Unit](https://www.w3schools.com/cssref/css_units.php).
 
-@@/md
-**/
+*/
 
-// @@md#EmToVec2
+// ::code EmToVec2
 //  __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size
 //  or place your widgets in a DPI independent way.
 //  Values are in multiples of the font size (i.e. as in the em CSS unit).
@@ -104,7 +102,7 @@ ImVec2 PixelsToEm(ImVec2 pixels);
 // __HelloImGui::PixelSizeToEm()__ converts a size in pixels coord to a size in em units
 float  PixelSizeToEm(float pixelSize);
 
-// @@/md
+// ::endcode
 
 // Returns the current DpiAwareParams, which are used
 // for font loading and window size scaling
@@ -131,8 +129,7 @@ namespace HelloImGui
 // ----------------------------------------------------------------------------
 //           Handling screens with high DPI
 // ----------------------------------------------------------------------------
-/*
-@@md#HandlingScreenHighDPI
+/*::md HandlingScreenHighDPI
 
 _Note: This part is relevant only for more advanced usages. If you use `HelloImGui::LoadFont()`,
  and always use `HelloImGui::EmToVec2()` to place widgets, you do not need to worry about DPI handling_
@@ -215,7 +212,6 @@ Note: DpiWindowSizeFactor() is equal to `CurrentScreenPixelPerInch / 96` under w
 
 See [`HelloImGui::DpiAwareParams`](https://pthom.github.io/hello_imgui/book/doc-params/#dpi-aware-params)
 for more information on how to fine tune DPI handling when using Hello ImGui.
-@@/md
 */
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -227,8 +223,7 @@ for more information on how to fine tune DPI handling when using Hello ImGui.
 
 namespace HelloImGui
 {
-/**
-@@md#AssetsStructure
+/*::md AssetsStructure
 
 Assets located beside the application CMakeLists are embedded automatically.
 
@@ -244,11 +239,10 @@ my_app/
 
 Then you can load the asset "fonts/my_font.ttf", on all platforms.
 
-@@/md
 */
 
 
-// @@md#LoadAssetFileData
+// ::code LoadAssetFileData
 
 struct AssetFileData
 {
@@ -271,7 +265,7 @@ AssetFileData LoadAssetFileData(const char *assetPath);
 // Note: "ImGui::GetIO().Fonts->AddFontFromMemoryTTF" takes ownership of the data
 // and will free the memory for you.
 void FreeAssetFileData(AssetFileData * assetFileData);
-// @@/md
+// ::endcode
 
 // Function type to redirect asset loads. Function receives a path and
 // returns an AssetFileData structure. By default, it points to
@@ -285,7 +279,7 @@ void SetLoadAssetFileDataFunction(LoadAssetFileDataFunc func);
 // LoadAssetFileData
 AssetFileData DefaultLoadAssetFileData(const char *assetPath);
 
-// @@md#assetFileFullPath
+// ::code assetFileFullPath
 
 //`std::string AssetFileFullPath(const std::string& assetRelativeFilename)`
 // will return the path to assets.
@@ -304,9 +298,9 @@ std::string AssetFileFullPath(const std::string& assetRelativeFilename,
 // Returns true if this asset file exists
 bool AssetExists(const std::string& assetRelativeFilename);
 
-// @@/md
+// ::endcode
 
-// @@md#AssetsSearchPaths
+// ::code AssetsSearchPaths
 
 // Sets the assets folder location
 // (when using this, automatic assets installation on mobile platforms may not work)
@@ -339,7 +333,7 @@ void ClearAssetsSearchPaths();
 // Return the current list of search paths.
 const std::vector<std::string>& GetAssetsSearchPaths();
 
-// @@/md
+// ::endcode
 
 
 // Legacy API, kept for compatibility
@@ -393,8 +387,7 @@ extern std::string gAssetsSubfolderFolderName;  // "assets" by default
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/**
-@@md#HelloImGui::Log
+/*::md HelloImGui::Log
 
 HelloImGui provides a simple Log utility that is able to collect message and display them with a specific widget.
 
@@ -402,7 +395,6 @@ HelloImGui provides a simple Log utility that is able to collect message and dis
 * __HelloImGui::LogClear()__ will clear the Log list
 * __HelloImGui::LogGui()__ will display the Log widget
 
-@@/md
 */
 namespace HelloImGui
 {
@@ -425,7 +417,7 @@ namespace HelloImGui
 
 namespace HelloImGui
 {
-// @@md#HelloImGui::ImageFromAsset
+// ::code HelloImGui::ImageFromAsset
 
 //
 //Images are loaded when first displayed, and then cached
@@ -543,7 +535,7 @@ ImageAndSize ImageAndSizeFromEncodedData(
 //  before destroying your GL context.
 void FreeImageCache();
 
-// @@/md
+// ::endcode
 
 namespace internal
 {
@@ -559,7 +551,7 @@ namespace internal
 
 namespace HelloImGui
 {
-// @@md#TextureGpu
+// ::code TextureGpu
 
 // `HelloImGui::TextureGpu`: an opaque RAII handle that owns a GPU texture.
 //
@@ -612,7 +604,7 @@ using TextureGpuPtr = std::shared_ptr<TextureGpu>;
 TextureGpuPtr CreateTextureGpuFromRgbaData(
     const unsigned char* rgbaData, int width, int height);
 
-// @@/md
+// ::endcode
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -748,7 +740,7 @@ namespace HelloImGui
 
 namespace HelloImGui
 {
-    // @@md#Fonts
+    // ::code Fonts
 
     // When loading fonts, use
     //          HelloImGui::LoadFont(..)
@@ -796,7 +788,7 @@ namespace HelloImGui
         ImFontConfig configFont = ImFontConfig()
     );
 
-    // @@/md
+    // ::endcode
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -913,7 +905,7 @@ enum class WindowSizeMeasureMode
 
 
 
-// @@md#WindowGeometry
+// ::code WindowGeometry
 //
 // WindowGeometry is a struct that defines the window geometry.
 struct WindowGeometry
@@ -994,7 +986,7 @@ struct WindowGeometry
     //  (use sizeAuto at startup).
     bool resizeAppWindowAtNextFrame = false;
 };
-// @@/md
+// ::endcode
 
 
 // If there is a notch on the iPhone, you should not display inside these insets
@@ -1007,7 +999,7 @@ struct EdgeInsets
 };
 
 
-// @@md#AppWindowParams
+// ::code AppWindowParams
 //
 // AppWindowParams is a struct that defines the application window display params.
 //See https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg
@@ -1107,7 +1099,7 @@ struct AppWindowParams
     // (This API is not stable, as the name suggests, and this is not supported)
     bool repaintDuringResize_GotchaReentrantRepaint = false;
 };
-// @@/md
+// ::endcode
 
 }  // namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1117,7 +1109,7 @@ struct AppWindowParams
 
 namespace HelloImGui
 {
-// @@md#DefaultImGuiWindowType
+// ::code DefaultImGuiWindowType
 
 // `DefaultImGuiWindowType` is an enum class that defines whether a full screen background
 // window is provided or not
@@ -1131,10 +1123,10 @@ enum class DefaultImGuiWindowType
     // (except for ImGui's default "debug" window)
     NoDefaultWindow
 };
-// @@/md
+// ::endcode
 
 
-// @@md#ImGuiWindowParams
+// ::code ImGuiWindowParams
 
 // `ImGuiWindowParams` is a struct that defines the ImGui inner windows params
 // These settings affect the imgui inner windows inside the application window.
@@ -1254,7 +1246,7 @@ struct ImGuiWindowParams
     ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f);
 
 };
-// @@/md
+// ::endcode
 
 }  // namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1291,7 +1283,7 @@ namespace HelloImGui
 {
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#VoidFunction_AnyEventCallback
+// ::code VoidFunction_AnyEventCallback
 
 // VoidFunctionPointer can hold any void(void) function.
 using VoidFunction = std::function<void(void)>;
@@ -1310,12 +1302,12 @@ inline AnyEventCallback EmptyEventCallback() {return {}; }
 using ConfirmExitCallback = std::function<bool(void)>;
 inline ConfirmExitCallback EmptyConfirmExitCallback() { return {}; }
 
-// @@/md
+// ::endcode
 
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#MobileCallbacks
+// ::code MobileCallbacks
 
 // MobileCallbacks is a struct that contains callbacks that are called by the application
 // when running under "Android, iOS and WinRT".
@@ -1343,12 +1335,12 @@ struct MobileCallbacks
     // (before and after entering background or foreground).
     VoidFunction OnResume = EmptyVoidFunction();
 };
-// @@/md
+// ::endcode
 
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#EdgeToolbar
+// ::code EdgeToolbar
 
 // EdgeToolbarType: location of an Edge Toolbar
 enum class EdgeToolbarType
@@ -1383,12 +1375,12 @@ struct EdgeToolbar
 
 std::vector<EdgeToolbarType> AllEdgeToolbarTypes();
 std::string EdgeToolbarTypeName(EdgeToolbarType e);
-// @@/md
+// ::endcode
 
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#DefaultIconFont
+// ::code DefaultIconFont
 
 // HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font
 // - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:
@@ -1399,12 +1391,12 @@ enum class DefaultIconFont
     FontAwesome4,
     FontAwesome6
 };
-// @@/md
+// ::endcode
 
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#RunnerCallbacks
+// ::code RunnerCallbacks
 // RunnerCallbacks is a struct that contains the callbacks
 // that are called by the application
 //
@@ -1600,7 +1592,7 @@ struct RunnerCallbacks
     MobileCallbacks mobileCallbacks;
 #endif
 };
-// @@/md
+// ::endcode
 
 
 // AppendCallback: legacy synonym for SequenceFunctions
@@ -1617,8 +1609,7 @@ VoidFunction AppendCallback(const VoidFunction& previousCallback, const VoidFunc
 
 namespace HelloImGui
 {
-/**
-@@md#DockingIntro
+/*::md DockingIntro
 
 HelloImGui makes it easy to use dockable windows
  (based on ImGui [docking branch](https://github.com/ocornut/imgui/tree/docking)).
@@ -1673,10 +1664,10 @@ struct DockingParams
 Inside DockingParams, the member `dockingSplits` specifies the layout, and the member `dockableWindows`
  specifies the list of dockable windows, along with their default location, and their code (given by lambdas).
 
- @@/md
+*/
 
 
-@@md#DockingExample
+/*::md DockingExample
 
 Below is an example that shows how to instantiate a layout:
 
@@ -1757,7 +1748,6 @@ runnerParams.dockingParams.dockableWindows = CreateDockableWindows();
 HelloImGui::Run(runnerParams);
 ```
 
-@@/md
 */
 
 /*****************************************************************************/
@@ -1767,7 +1757,7 @@ HelloImGui::Run(runnerParams);
 using DockSpaceName = std::string;
 
 
-// @@md#DockingSplit
+// ::code DockingSplit
 
 // DockingSplit is a struct that defines the way the docking splits should
 // be applied on the screen in order to create new Dock Spaces.
@@ -1806,11 +1796,11 @@ struct DockingSplit
                  ImGuiDockNodeFlags nodeFlags_ = ImGuiDockNodeFlags_None)
         : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_), nodeFlags(nodeFlags_) {}
 };
-// @@/md
+// ::endcode
 
 
 
-// @@md#DockableWindow
+// ::code DockableWindow
 
 // DockableWindow is a struct that represents a window that can be docked.
 struct DockableWindow
@@ -1899,7 +1889,7 @@ struct DockableWindow
           canBeClosed(canBeClosed_) {}
 
 };
-// @@/md
+// ::endcode
 
 
 enum class DockingLayoutCondition
@@ -1910,7 +1900,7 @@ enum class DockingLayoutCondition
 };
 
 
-// @@md#DockingParams
+// ::code DockingParams
 
 // DockingParams contains all the settings concerning the docking:
 //     - list of splits
@@ -1974,7 +1964,7 @@ struct DockingParams
     // returns the ImGuiID corresponding to the dockspace with this name
     std::optional<ImGuiID> dockSpaceIdFromName(const std::string& dockSpaceName);
 };
-// @@/md
+// ::endcode
 
 } // namespace HelloImGui
 
@@ -1986,7 +1976,7 @@ struct DockingParams
 namespace HelloImGui
 {
 
-// @@md#BackendPointers
+// ::code BackendPointers
 //
 // BackendPointers is a struct that contains optional pointers to the
 // backend implementations (for SDL and GLFW).
@@ -2014,7 +2004,7 @@ struct BackendPointers
     //  Only filled if the backend is SDL (or emscripten + sdl)
     void* sdlGlContext   = nullptr; /* SDL_GLContext  */
 };
-// @@/md
+// ::endcode
 
 }  // namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2027,7 +2017,7 @@ namespace HelloImGui
 {
 
 
-// @@md#RemoteParams
+// ::code RemoteParams
 
 // RemoteParams is a struct that contains the settings for displaying the application on a remote device.
 // using https://github.com/sammyfreg/netImgui
@@ -2058,7 +2048,7 @@ struct RemoteParams
     bool transmitWindowSize = false;
 };
 
-// @@/md
+// ::endcode
 
 
 }  // namespace HelloImGui
@@ -2070,7 +2060,7 @@ namespace HelloImGui
 {
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#OpenGlOptions
+// ::code OpenGlOptions
 
 // OpenGlOptions contains advanced options used at the startup of OpenGL.
 // These parameters are reserved for advanced users.
@@ -2124,10 +2114,10 @@ struct OpenGlOptions
     //     - 16: optimal if using imgui-node-editor and you want to render very small text when unzooming
     std::optional<int> AntiAliasingSamples =  std::nullopt;
 };
-// @@/md
+// ::endcode
 
 
-// @@md#RendererBackendOptions
+// ::code RendererBackendOptions
 
 // `bool hasEdrSupport()`:
 // Check whether extended dynamic range (EDR), i.e. the ability to reproduce
@@ -2173,7 +2163,7 @@ struct RendererBackendOptions
 //     src/hello_imgui/internal/backend_impls/rendering_dx11.h
 //     src/hello_imgui/internal/backend_impls/rendering_dx12.h
 
-// @@/md
+// ::endcode
 
 
 // (Private structure, not part of the public API)
@@ -2199,7 +2189,7 @@ namespace HelloImGui
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#PlatformBackendType
+// ::code PlatformBackendType
 
 // You can select the platform backend type (SDL, GLFW) and the rendering backend type
 // via RunnerParams.platformBackendType and RunnerParams.renderingBackendType.
@@ -2227,14 +2217,14 @@ enum class RendererBackendType
     Null
 };
 
-// @@/md
+// ::endcode
 
 std::string PlatformBackendTypeToString(PlatformBackendType platformBackendType);
 std::string RendererBackendTypeToString(RendererBackendType rendererBackendType);
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#IniFolderType
+// ::code IniFolderType
 
 // IniFolderType is an enum which describes where is the base path to store
 // the ini file for the application settings.
@@ -2288,11 +2278,11 @@ enum class IniFolderType
 // Returns the path corresponding to the given IniFolderType
 std::string IniFolderLocation(IniFolderType iniFolderType);
 
-// @@/md
+// ::endcode
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#FpsIdling
+// ::code FpsIdling
 
 // FpsIdlingMode is an enum that describes the different modes of idling
 // when rendering the GUI.
@@ -2414,11 +2404,11 @@ struct FpsIdling
     //   - The lower (stricter) limit dominates.
     float fpsMax = 0.f;
 };
-// @@/md
+// ::endcode
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#RunnerParams
+// ::code RunnerParams
 
 // RunnerParams contains the settings and callbacks needed to run an application.
 //
@@ -2553,10 +2543,10 @@ struct RunnerParams
     RemoteParams remoteParams; // Parameters for Remote display (experimental, unsupported)
     #endif
 };
-// @@/md
+// ::endcode
 
 
-// @@md#IniIniSettingsLocation
+// ::code IniIniSettingsLocation
 
 // IniSettingsLocation returns the path to the ini file for the application settings.
 std::optional<std::string> IniSettingsLocation(const RunnerParams& runnerParams);
@@ -2567,11 +2557,11 @@ bool HasIniSettings(const RunnerParams& runnerParams);
 // DeleteIniSettings deletes the ini file for the application settings.
 void DeleteIniSettings(const RunnerParams& runnerParams);
 
-// @@/md
+// ::endcode
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @@md#SimpleRunnerParams
+// ::code SimpleRunnerParams
 
 // SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.
 //For example, this is sufficient to run an application:
@@ -2633,7 +2623,7 @@ struct SimpleRunnerParams
 
     RunnerParams ToRunnerParams() const;
 };
-// @@/md
+// ::endcode
 
 }  // namespace HelloImGui
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2650,7 +2640,7 @@ namespace HelloImGui
 
     void EndGroupColumn();   // calls ImGui::EndGroup() + ImGui::SameLine()
 
-    // @@md#WidgetWithResizeHandle
+    // ::code WidgetWithResizeHandle
 
     // WidgetWithResizeHandle: adds a resize handle to a widget
     // Example usage with ImPlot:
@@ -2674,12 +2664,12 @@ namespace HelloImGui
         std::optional<VoidFunction> onItemHovered = std::nullopt
         );
 
-    // @@/md
+    // ::endcode
 
 
     // --------------------------------------------------------------------------------------------
 
-    // @@md#InputTextResizable
+    // ::code InputTextResizable
 
     // `InputTextResizable`: displays a resizable text input widget
     //
@@ -2733,7 +2723,7 @@ namespace HelloImGui
     std::string InputTextDataToString(const InputTextData& data);
     InputTextData InputTextDataFromString(const std::string& str);
 
-    // @@/md
+    // ::endcode
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2762,8 +2752,7 @@ namespace HelloImGui
 {
 
 // =========================== HelloImGui::Run ==================================
-/**
-@@md#HelloImGui::Run
+/*::md HelloImGui::Run
 
 __HelloImGui::Run()__ will run an application with a single call.
 
@@ -2783,7 +2772,6 @@ the elements in the `RunnerParams` struct, or in the simpler  `SimpleRunnerParam
 
 __HelloImGui::GetRunnerParams()__  will return the runnerParams of the current application.
 
-@@/md
 */
 
 // `HelloImGui::Run(RunnerParams &)`: full signature, the most customizable version.
@@ -2806,7 +2794,7 @@ void Run(
 );
 
 // =========================== HelloImGui::ManualRender ==================================
-// @@md#HelloImGui::ManualRender
+// ::code HelloImGui::ManualRender
 
 namespace ManualRender
 {
@@ -2879,12 +2867,12 @@ namespace ManualRender
     void TearDown();
 } // namespace ManualRender
 
-// @@/md
+// ::endcode
 
 
 // ============================== Utility functions ===============================
 
-// @@md#UtilityFunctions
+// ::code UtilityFunctions
 
 // `GetRunnerParams()`:  a convenience function that will return the runnerParams
 // of the current application
@@ -2943,12 +2931,12 @@ void ChangeWindowSize(const ScreenSize &windowSize);
 // (useful if you want to change the window size during execution)
 void UseWindowFullMonitorWorkArea();
 
-// @@/md
+// ::endcode
 
 
 // ============================== Layout Utils =============================
 
-// @@md#HelloImGui::Layouts
+// ::code HelloImGui::Layouts
 
 // In advanced cases when several layouts are available, you can switch between layouts.
 // See demo inside
@@ -2972,12 +2960,12 @@ void AddDockableWindow(const DockableWindow& dockableWindow, bool forceDockspace
 // (dockableWindowName is the label of the window, as provided in the DockableWindow struct)
 void RemoveDockableWindow(const std::string& dockableWindowName);
 
-// @@/md
+// ::endcode
 
 
 // ============================== User prefs Utils =============================
 
-// @@md#HelloImGui::UserPref
+// ::code HelloImGui::UserPref
 
 // You may store additional user settings in the application settings.
 // This is provided as a convenience only, and it is not intended to store large
@@ -2990,13 +2978,12 @@ void        SaveUserPref(const std::string& userPrefName, const std::string& use
 // `string LoadUserPref(string& userPrefName)`
 //  Shall be called in the callback runnerParams.callbacks.PostInit
 std::string LoadUserPref(const std::string& userPrefName);
-// @@/md
+// ::endcode
 
 
 // ============================== Menus defaults =============================
 
-/**
-@@md#MenuIntro
+/*::md MenuIntro
 
 Hello ImGui provides a default menu and status bar, which you can customize by using the params:
         `RunnerParams.imGuiWindowParams.` `showMenuBar` / `showMenu_App` / `showMenu_View`
@@ -3006,9 +2993,8 @@ If you want to fully customize the menu:
 * implement the callback `RunnerParams.callbacks.ShowMenus`:
   it can optionally call `ShowViewMenu` and `ShowAppMenu` (see below).
 
-@@/md
 */
-// @@md#MenuFunctions
+// ::code MenuFunctions
 
 // `ShowViewMenu(RunnerParams & runnerParams)`:
 // shows the View menu (where you can select the layout and docked windows visibility
@@ -3017,6 +3003,6 @@ void ShowViewMenu(RunnerParams & runnerParams);
 // `ShowAppMenu(RunnerParams & runnerParams)`:
 // shows the default App menu (including the Quit item)
 void ShowAppMenu(RunnerParams & runnerParams);
-// @@/md
+// ::endcode
 
 }

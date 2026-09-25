@@ -19,7 +19,7 @@ def main() -> None:
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.comments_exclude_lines_regex = r"^\s*@@(md|/md)"  # the doc markers of process_md_docs.py
+    options.comments_exclude_lines_regex = r"^\s*::(md|code|endcode|endmd)(\s|$)"  # the narrative programming directives
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
