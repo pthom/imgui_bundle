@@ -124,13 +124,14 @@ JOURNEY_SECONDS = 2.5  # the way to a famous value of c
 
 
 class PlaneView:
-    """A picture of a window of the complex plane, computed by compute(window_re, window_im). Zoomed or panned
+    """A picture of a window of the complex plane, computed by compute(window_re, window_im, size). Zoomed or panned
     with immvision (mouse wheel, drag), it is computed again for the part it shows."""
 
     def __init__(self, label: str, window_re: Window, window_im: Window,
-                 compute: Callable[[Window, Window], np.ndarray]) -> None:
+                 compute: Callable[[Window, Window, int], np.ndarray]) -> None:
         self.label, self.compute, self.full_window = label, compute, (window_re, window_im)
         self.window_re, self.window_im = window_re, window_im
+        self.coarse = False  # computed at half the resolution, then enlarged: 3 times faster (during a journey)
         self.params = immvision.ImageParams()
         self.params.image_display_size = (SIZE, SIZE)
         self.params.colormap_settings.colormap = "Magma"
@@ -146,7 +147,10 @@ class PlaneView:
         self.refresh()
 
     def refresh(self) -> None:
-        self.image = self.compute(self.window_re, self.window_im)
+        if self.coarse:
+            self.image = self.compute(self.window_re, self.window_im, SIZE // 2).repeat(2, axis=0).repeat(2, axis=1)
+        else:
+            self.image = self.compute(self.window_re, self.window_im, SIZE)
         self.params.refresh_image = True
 
     def to_plane(self, x: float, y: float) -> complex:
@@ -209,9 +213,9 @@ class State:
         self.julia_follows_map = False
         self.journey: Journey | None = None
         self.map = PlaneView("Mandelbrot", MANDEL_RE, MANDEL_IM,
-                             lambda re, im: mandelbrot_image(SIZE, self.max_iter, re, im))
+                             lambda re, im, size: mandelbrot_image(size, self.max_iter, re, im))
         self.julia = PlaneView("Julia", JULIA_RE, JULIA_IM,
-                               lambda re, im: julia_image(self.c, SIZE, self.max_iter, re, im))
+                               lambda re, im, size: julia_image(self.c, size, self.max_iter, re, im))
 
     def choose_c(self, c: complex) -> None:
         self.c = c
@@ -231,6 +235,7 @@ class State:
         j = self.journey
         if j is not None:
             t = min((imgui.get_time() - j.start_time) / JOURNEY_SECONDS, 1.0)
+            self.map.coarse = self.julia.coarse = t < 1.0  # fast on the way, sharp on arrival
             # The map zooms out until both places are in view, then in (the time is shared in proportion to the two
             # zoom factors). It pans, and c moves, around the widest moment: the view is never lost
             top = max(j.start_width, j.target_width, 2 * abs(j.target_center - j.start_center))
