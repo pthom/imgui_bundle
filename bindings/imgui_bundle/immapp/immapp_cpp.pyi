@@ -499,7 +499,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         # If the number of lines in the code exceeds MaxHeightInLines, the editor will scroll. Set to 0 to disable.
         max_height_in_lines: int = 40
 
-        read_only: bool = False  # Snippets are read-only by default
+        read_only: bool = True  # Snippets are read-only by default
 
         border: bool = False  # Draw a border around the editor
 
@@ -521,7 +521,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
             displayed_filename: str = "",
             height_in_lines: int = 0,
             max_height_in_lines: int = 40,
-            read_only: bool = False,
+            read_only: bool = True,
             border: bool = False,
             de_indent_code: bool = True,
             add_final_empty_line: bool = False,

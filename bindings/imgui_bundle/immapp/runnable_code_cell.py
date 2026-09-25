@@ -93,6 +93,7 @@ def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Resu
         snippet_data.code = code
         snippet_data.height_in_lines = code.count("\n")
         snippet_data.palette = immapp.snippets.SnippetTheme.dark
+        snippet_data.read_only = False  # the cell's code is edited, then run
         statics.s_code_cells[label_id] = CodeAndResult(snippet_data, _NoResult(), "")
 
     code_and_result = statics.s_code_cells[label_id]
