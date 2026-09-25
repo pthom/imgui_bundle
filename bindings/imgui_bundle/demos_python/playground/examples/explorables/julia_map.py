@@ -1,24 +1,19 @@
-"""The Mandelbrot set as a map of Julia sets: click on the left picture to choose c, the right one follows.
+"""The Mandelbrot set as a map of Julia sets
 
 This file is its own narrative (narrative programming, see imgui_rich_md): its ::md sections are markdown, next to
 the code they explain. It also shows a specific use of it: the markdown places the widgets.
 
-The "::md Story" section below draws the **whole** GUI, except the full code at the bottom:
+The "::md Story" section below draws the **whole** GUI:
 - Its markdown will be rendered by a call to `rich_md.render_this_file("Story")`
-- It includes widgets via fenced blocks of the language "widget", such as
+- It includes widgets via fenced blocks of the language "widget", such as...
     ```widget
     maps
     ```
-which the program draws with maps_widget() (see WIDGETS, and register_fenced_block_renderer() in gui()).
+  ...which the program draws with maps_widget() (see WIDGETS, and register_fenced_block_renderer() in gui()).
 
 Edit the story while the program runs: on the desktop, it will automatically display the updated story upon saving!
 """
 
-
-from typing import Callable
-
-import numpy as np
-from imgui_bundle import imgui, immapp, immvision, rich_md
 
 r"""::md Story
 # The Mandelbrot set is a map of Julia sets
@@ -63,6 +58,12 @@ A Julia set is connected exactly when its $c$ belongs to the Mandelbrot set.
 ![[#Julia]]
 ![[#Julia#code]]
 """
+
+
+# ruff: noqa: E402  # Allow imports to come after the story
+from typing import Callable
+import numpy as np
+from imgui_bundle import imgui, immapp, immvision, rich_md
 
 
 # Below is an example of a documented function via narrative programming:
