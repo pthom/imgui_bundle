@@ -41,7 +41,7 @@ glfw = ["glfw"]
 sdl2 = ["PySDL2"]
 sdl3 = ["PySDL3"]
 wgpu = ["wgpu", "rendercanvas"]
-pyglet = ["pyglet"]
+pyglet = ["pyglet>=2.0.10"]  # 2.0.10: clipboard API
 all_backends = [
     "PyOpenGL",
     "glfw",
@@ -49,7 +49,7 @@ all_backends = [
     "PySDL3",
     "wgpu",
     "rendercanvas",
-    "pyglet",
+    "pyglet>=2.0.10",
     "pygame",
 ]
 # full installation
@@ -79,7 +79,7 @@ full = [
     "PySDL3",
     "wgpu",
     "rendercanvas",
-    "pyglet",
+    "pyglet>=2.0.10",
     "pygame",
     "PyGLM",
 ]

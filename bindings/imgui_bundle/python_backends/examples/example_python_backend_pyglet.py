@@ -26,6 +26,9 @@ app_state = AppState()
 
 
 def main():
+    # Window size and mouse coordinates in logical units, framebuffer in pixels (as imgui expects):
+    # the UI keeps its normal size on HiDPI screens. Must be set before creating the window.
+    pyglet.options.dpi_scaling = "stretch"
     window = pyglet.window.Window(width=1280, height=720, resizable=True)
     gl.glClearColor(1, 1, 1, 1)
     imgui.create_context()

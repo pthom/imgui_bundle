@@ -166,22 +166,19 @@ class PygletMixin(object):
     def _set_pixel_ratio(self, window):
         window_size = window.get_size()
         self.io.display_size = window_size
-        # It is conceivable that the pyglet version will not be solely
-        # determinant of whether we use the fixed or programmable, so do some
-        # minor introspection here to check.
-        if hasattr(window, "get_viewport_size"):
-            viewport_size = window.get_viewport_size()
-            self.io.display_framebuffer_scale = compute_fb_scale(
-                window_size, viewport_size
-            )
-        elif hasattr(window, "get_pixel_ratio"):
-            self.io.display_framebuffer_scale = (
-                window.get_pixel_ratio(),
-                window.get_pixel_ratio(),
-            )
-        else:
-            # Default to 1.0 in this unlikely circumstance
-            self.io.display_fb_scale = (1.0, 1.0)
+        # Note: do not use window.scale (or get_pixel_ratio()): this is the DPI scale, and the window size
+        # may already be in pixels (e.g. with pyglet.options.dpi_scaling = "platform" on macOS)
+        self.io.display_framebuffer_scale = compute_fb_scale(window_size, window.get_framebuffer_size())
+
+    def _init_clipboard(self, window):
+        def get_clipboard_text(_ctx: imgui.internal.Context) -> str:
+            return window.get_clipboard_text()
+
+        def set_clipboard_text(_ctx: imgui.internal.Context, text: str) -> None:
+            window.set_clipboard_text(text)
+
+        imgui.get_platform_io().platform_get_clipboard_text_fn = get_clipboard_text
+        imgui.get_platform_io().platform_set_clipboard_text_fn = set_clipboard_text
 
     def _attach_callbacks(self, window):
         self._window = window
@@ -264,7 +261,7 @@ class PygletMixin(object):
         self.io.add_mouse_wheel_event(0, -scroll)
 
     def on_resize(self, width, height):
-        self.io.display_size = width, height
+        self._set_pixel_ratio(self._window)
 
     def process_inputs(self):
         io = imgui.get_io()
@@ -284,6 +281,7 @@ class PygletProgrammablePipelineRenderer(PygletMixin, ProgrammablePipelineRender
     def __init__(self, window, attach_callbacks=True):
         super(PygletProgrammablePipelineRenderer, self).__init__()
         self._set_pixel_ratio(window)
+        self._init_clipboard(window)
         if attach_callbacks:
             self._attach_callbacks(window)
 
