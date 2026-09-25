@@ -9,19 +9,24 @@
 #include <string>
 #include <vector>
 
-// Public API for imgui_microtex: native LaTeX math rendering via MicroTeX + FreeType.
-//
-// Level 1: render LaTeX to an RGBA pixel buffer.
-// (Level 2, cached GPU textures, lives with the host: imgui_bundle keeps it in imgui_microtex/imgui_microtex.h.)
-//
-// Thread safety: all functions are protected by a mutex and can be called from any thread.
+/*::md LaTeX backend
+Native LaTeX math rendering with MicroTeX and FreeType: a formula becomes an RGBA pixel buffer (Level 1, here).
+Level 2, the cached GPU textures, lives with the host (in ImGui Bundle: `imgui_microtex/imgui_microtex.h`; the Python
+module `imgui_microtex` binds both levels).
+
+Thread safety: all functions are protected by a mutex and can be called from any thread.
+*/
 
 namespace RichMd::Latex {
 
-// ============================================================================
-// TeX style
-// ============================================================================
-//
+// =====================================================================================================================
+//                                      TeX style
+// =====================================================================================================================
+/*::md TeX style
+The layout style of a formula: `Display` for `$$...$$`, `Text` for `$...$`.
+::code
+*/
+
 // Selects the layout style used when rendering a formula. This maps directly
 // to MicroTeX's TexStyle and corresponds to the four TeX styles defined by
 // Knuth (D, T, S, SS). Pick Display for centered "display math" ($$...$$)
@@ -45,10 +50,16 @@ enum class TexStyle {
     // Smallest size, used inside scripts-of-scripts. Same caveat as Script.
     ScriptScript,
 };
+// ::endcode
 
-// ============================================================================
-// Initialization / shutdown
-// ============================================================================
+// =====================================================================================================================
+//                                      Initialization and shutdown
+// =====================================================================================================================
+/*::md Initialization and shutdown
+`Init()` loads the font files, once. `Release()` lets the host free the textures it made from formulas,
+while its rendering backend is still alive.
+::code
+*/
 
 // Initialize MicroTeX + FreeType backend.
 // clmFile: path to the .clm1 font metrics file
@@ -56,7 +67,7 @@ enum class TexStyle {
 // Safe to call repeatedly: subsequent calls after the first successful
 // Init() no-op (MicroTeX itself stays initialized for process life; the
 // underlying MicroTeX::init()/release() pair is not re-entrant, so we
-// defer the real teardown to std::atexit: see imgui_microtex.cpp).
+// defer the real teardown to std::atexit: see rich_md_latex.cpp).
 void Init(const std::string& clmFile, const std::string& fontFile);
 // Same, with the two files read in memory (.clm1 and .otf). C++ only.
 void InitFromMemory(const std::vector<uint8_t>& clmData, const std::vector<uint8_t>& fontData);
@@ -72,9 +83,18 @@ bool IsInitialized();
 // std::atexit handler installed on first Init().
 void Release();
 
-// ============================================================================
-// Level 1: LaTeX -> RGBA pixel buffer
-// ============================================================================
+// Registers a callback run by Release(): a host that caches GPU textures made from formulas clears
+// them here, while the rendering backend is still alive.
+void AddReleaseCallback(std::function<void()> callback);
+// ::endcode
+
+// =====================================================================================================================
+//                                      Rendering
+// =====================================================================================================================
+/*::md Rendering
+`Render()` draws a formula into an RGBA buffer, with its baseline, to align it with the text.
+::code
+*/
 
 struct RenderedFormula {
     std::vector<uint8_t> Pixels;  // RGBA, Width * Height * 4 bytes
@@ -99,12 +119,10 @@ struct RenderedFormula {
 // fontSize: font size in pixels
 // color: foreground color (alpha channel is used)
 // style: TeX layout style (Display for $$...$$, Text for $...$)
-RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color = IM_COL32_BLACK, TexStyle style = TexStyle::Text);
+RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color = IM_COL32_BLACK,
+                       TexStyle style = TexStyle::Text);
 RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& color, TexStyle style = TexStyle::Text);
-
-// Registers a callback run by Release(): a host that caches GPU textures made from formulas clears
-// them here, while the rendering backend is still alive.
-void AddReleaseCallback(std::function<void()> callback);
+// ::endcode
 
 }  // namespace RichMd::Latex
 

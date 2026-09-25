@@ -395,7 +395,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
     ////////////////////    <generated_from:snippets.h>    ////////////////////
 
     { // <namespace Snippets>
-        nb::module_ pyNsSnippets = m.def_submodule("snippets", " Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy\n button. The markdown code blocks use ShowCodeSnippet when built with IMGUI_RICHMD_WITH_CODE_EDITOR.");
+        nb::module_ pyNsSnippets = m.def_submodule("snippets", "Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy button. The markdown\ncode blocks use `ShowCodeSnippet` when built with `IMGUI_RICHMD_WITH_CODE_EDITOR`.");
         auto pyEnumSnippetLanguage =
             nb::enum_<Snippets::SnippetLanguage>(pyNsSnippets, "SnippetLanguage", nb::is_arithmetic(), "")
                 .value("cpp", Snippets::SnippetLanguage::Cpp, "")
@@ -416,7 +416,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
 
 
         pyNsSnippets.def("default_snippet_language",
-            Snippets::DefaultSnippetLanguage, "DefaultSnippetLanguage: Cpp, or Python when the host defines IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON (Python bindings)");
+            Snippets::DefaultSnippetLanguage, " DefaultSnippetLanguage: Cpp, or Python when the host defines IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON\n (Python bindings)");
 
 
         auto pyNsSnippets_ClassSnippetData =
@@ -448,7 +448,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
             .def_rw("show_cursor_position", &Snippets::SnippetData::ShowCursorPosition, "Show line and column number")
             .def_rw("displayed_filename", &Snippets::SnippetData::DisplayedFilename, "Displayed on top of the editor")
             .def_rw("height_in_lines", &Snippets::SnippetData::HeightInLines, "Number of visible lines in the editor")
-            .def_rw("max_height_in_lines", &Snippets::SnippetData::MaxHeightInLines, "If the number of lines in the code exceeds this, the editor will scroll. Set to 0 to disable.")
+            .def_rw("max_height_in_lines", &Snippets::SnippetData::MaxHeightInLines, "If the number of lines in the code exceeds MaxHeightInLines, the editor will scroll. Set to 0 to disable.")
             .def_rw("read_only", &Snippets::SnippetData::ReadOnly, "Snippets are read-only by default")
             .def_rw("border", &Snippets::SnippetData::Border, "Draw a border around the editor")
             .def_rw("de_indent_code", &Snippets::SnippetData::DeIndentCode, "Keep the code indentation, but remove main indentation,")

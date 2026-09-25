@@ -454,9 +454,13 @@ class code_utils:  # Proxy class that introduces typings for the *submodule* cod
 # <submodule snippets>
 class snippets:  # Proxy class that introduces typings for the *submodule* snippets
     pass  # (This corresponds to a C++ namespace. All methods are static!)
-    """ Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy
-     button. The markdown code blocks use ShowCodeSnippet when built with IMGUI_RICHMD_WITH_CODE_EDITOR.
+    """Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy button. The markdown
+    code blocks use `ShowCodeSnippet` when built with `IMGUI_RICHMD_WITH_CODE_EDITOR`.
     """
+    # =================================================================================================================
+    #                                      Snippet data
+    # =================================================================================================================
+    #    A snippet: its code, its language, its look.
 
     class SnippetLanguage(enum.IntEnum):
         cpp = enum.auto()  # (= 0)
@@ -475,7 +479,9 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
 
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:
-        """DefaultSnippetLanguage: Cpp, or Python when the host defines IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON (Python bindings)"""
+        """DefaultSnippetLanguage: Cpp, or Python when the host defines IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON
+        (Python bindings)
+        """
         pass
 
     class SnippetData:
@@ -490,9 +496,8 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         displayed_filename: str = ""  # Displayed on top of the editor
 
         height_in_lines: int = 0  # Number of visible lines in the editor
-        max_height_in_lines: int = (
-            40  # If the number of lines in the code exceeds this, the editor will scroll. Set to 0 to disable.
-        )
+        # If the number of lines in the code exceeds MaxHeightInLines, the editor will scroll. Set to 0 to disable.
+        max_height_in_lines: int = 40
 
         read_only: bool = False  # Snippets are read-only by default
 
@@ -523,6 +528,11 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         ) -> None:
             """Auto-generated default constructor with named params"""
             pass
+
+    # =================================================================================================================
+    #                                      Showing snippets
+    # =================================================================================================================
+    #    One snippet, editable or not, or several side by side.
 
     @staticmethod
     def show_editable_code_snippet(

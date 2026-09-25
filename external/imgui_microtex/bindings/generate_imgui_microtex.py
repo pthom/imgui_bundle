@@ -35,6 +35,8 @@ def main() -> None:
     options = litgen.LitgenOptions()
     options.use_nanobind()
     options.namespaces_root = ["RichMd", "Latex"]
+    # the narrative programming directives (::md, ::code, ::endcode, ::endmd, also after a "/*") and the lone "*/"
+    options.comments_exclude_lines_regex = r"^\s*(/\*)?::(md|code|endcode|endmd)(\s|$)|^\s*\*/\s*$"
 
     # Exclude the Pixels member (we provide a custom pixels_as_array() method instead)
     options.member_exclude_by_name__regex = r"^Pixels$"
