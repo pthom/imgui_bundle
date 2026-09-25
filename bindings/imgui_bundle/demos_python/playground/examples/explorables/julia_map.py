@@ -58,13 +58,20 @@ A Julia set is connected exactly when its $c$ belongs to the Mandelbrot set.
 
 ![[#Escape]]
 ![[#Escape#code]]
-
 ![[#Mandelbrot]]
 ![[#Mandelbrot#code]]
 ![[#Julia]]
 ![[#Julia#code]]
 """
 
+
+# Below is an example of a documented function via narrative programming:
+# - First we define "::md Escape", a markdown string that can be included somewhere else
+# - Then we define an associated code part with "::code"
+# - We end both with "::endcode" (which automatically closes its parent markdown section)
+# Then, our story can include both with
+#     ![[#Escape]]
+#     ![[#Escape#code]]
 r"""::md Escape
 ### Escape time
 Iterate $z \leftarrow z^2 + c$ and count the steps until $|z| > 2$, after which $z$ flies to infinity.
@@ -106,26 +113,6 @@ def julia_image(c: complex, size: int, max_iter: int, window_re: Window, window_
     z0 = (re[None, :] + 1j * im[:, None]).astype(np.complex64)
     return escape_time(z0, np.full_like(z0, c), max_iter)
 # ::endcode
-
-
-r"""::md About
-## Narrative programming
-This program is its own narrative: an example of
-[narrative programming](https://github.com/pthom/imgui_rich_md/blob/main/docs/narrative_programming/narrative_programming.md).
-Its prose lives in its source, in named sections (`::md Story`, `::md Escape`, ...), next to the code it explains.
-The story transcludes them in its own order (`![[#Escape]]` for the prose of a section, `![[#Escape#code]]` for its
-code): the file keeps the order of a program, the story the order of an explanation.
-
-Edit the file while the program runs: the story follows. The code does not: restart the program to run it.
-
-## Widgets in the story
-The pictures and the slider are placed by the story, not by the program's layout. A code block of the language
-`widget` in the prose is drawn by a function of the program (`maps_widget`, `budget_widget`), which
-`rich_md.register_fenced_block_renderer` connects to it. The story decides where the reader plays.
-
-## The full code
-"""
-
 
 # The widgets that the story places in its ```widget blocks
 SIZE = 300  # the pictures, in pixels
@@ -259,10 +246,32 @@ def widget_block(name: str) -> None:
 
 def gui() -> None:
     rich_md.register_fenced_block_renderer("widget", widget_block)  # the story's ```widget blocks
+
+    # The line below renders the whole GUI of the app!
     rich_md.render_this_file("Story")
+
+    # Additional, for interested readers: the full code, with some comments
     if imgui.collapsing_header("Full code - Commented"):
-        rich_md.render_this_file("About")
-        rich_md.render_this_file("")  # the whole file, as code
+        # We can of course render markdown directly from a string, such as below:
+        rich_md.render(r"""
+        ## Narrative programming
+        This program is its own narrative: an example of
+        [narrative programming](https://github.com/pthom/imgui_rich_md/blob/main/docs/narrative_programming/narrative_programming.md).
+        Its prose lives in its source, in named sections (`::md Story`, `::md Escape`, ...), next to the code it
+        explains. The story transcludes them in its own order (`![[#Escape]]` for the prose of a section,
+        `![[#Escape#code]]` for its code): the file keeps the order of a program, the story the order of an explanation.
+
+        Edit the file while the program runs: the story follows. The code does not: restart the program to run it.
+
+        ## Widgets in the story
+        The pictures and the slider are placed by the story, not by the program's layout. A code block of the language
+        `widget` in the prose is drawn by a function of the program (`maps_widget`, `budget_widget`), which
+        `rich_md.register_fenced_block_renderer` connects to it. The story decides where the reader plays.
+
+        ## The full code
+        """)
+        # Render the whole file, as code
+        rich_md.render_this_file("")
 
 
 immvision.use_rgb_color_order()
