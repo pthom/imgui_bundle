@@ -25,7 +25,6 @@ void demo_immvision_inspector()
     static bool inited = false;
     if (!inited)
     {
-        ImmVision::UseRgbColorOrder();
         FillInspector();
         inited = true;
     }

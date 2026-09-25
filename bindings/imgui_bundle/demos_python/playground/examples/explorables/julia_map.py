@@ -274,5 +274,4 @@ def gui() -> None:
         rich_md.render_this_file("")
 
 
-immvision.use_rgb_color_order()
 immapp.run(gui, window_title="Julia map", window_size=(900, 1000), with_markdown=True, with_latex=True)

@@ -707,7 +707,6 @@ namespace IntroImmVision
 
     static void Init()
     {
-        ImmVision::UseRgbColorOrder();
         sImage = ImmVision::ImRead(DemosAssetsFolder() + "/images/house.jpg");
         sImageSobel = ComputeSobel();
 

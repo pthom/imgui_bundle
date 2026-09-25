@@ -265,7 +265,6 @@ def slide_immvision(size):
     # Init images and params
     s = slide_immvision
     if not hasattr(s, "init"):
-        immvision.use_rgb_color_order()
         # Generate a Mandelbrot set image
         w, h = 400, 300
         img = np.zeros((h, w, 3), dtype=np.uint8)

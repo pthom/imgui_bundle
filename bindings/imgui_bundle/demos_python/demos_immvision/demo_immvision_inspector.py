@@ -31,7 +31,6 @@ def demo_gui():
 
 
 def main():
-    immvision.use_rgb_color_order()
     immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
 
 

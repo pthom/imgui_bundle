@@ -5,8 +5,6 @@ import numpy as np
 from imgui_bundle import immvision, immapp, imgui, rich_md
 from imgui_bundle.demos_python import demo_utils
 
-immvision.use_rgb_color_order()
-
 this_dir = os.path.dirname(__file__)
 image = demo_utils.imread_demo(demo_utils.demos_assets_folder() + "/images/tennis.jpg")
 channels = [np.ascontiguousarray(image[:, :, i]) for i in range(image.shape[2])]

@@ -1,8 +1,6 @@
 from imgui_bundle import immvision, immapp, rich_md, ImVec2, imgui, hello_imgui
 from imgui_bundle.demos_python import demo_utils
 
-immvision.use_rgb_color_order()
-
 @immapp.static(inited=False)
 def demo_gui() -> None:
     statics = demo_gui

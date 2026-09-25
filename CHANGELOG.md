@@ -2,6 +2,11 @@
 
 # Ongoing changes
 
+## ImmVision: RGB is the default color order
+
+Calling `immvision.use_rgb_color_order()` (C++: `ImmVision::UseRgbColorOrder()`) at startup is not required anymore.
+Images in BGR order (OpenCV) still need `immvision.use_bgr_color_order()`.
+
 ## Markdown: `imgui_md` becomes `rich_md` (library imgui_rich_md)
 
 The markdown stack (renderer, wrapper, LaTeX backend) is now [imgui_rich_md](https://github.com/pthom/imgui_rich_md), a standalone

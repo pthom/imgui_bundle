@@ -8,8 +8,6 @@ import math
 from imgui_bundle import imgui, immvision, immapp, rich_md
 from imgui_bundle.demos_python import demo_utils
 
-immvision.use_rgb_color_order()
-
 ImageRgb = NDArray[np.uint8]
 ImageFloat = NDArray[np.floating[Any]]
 

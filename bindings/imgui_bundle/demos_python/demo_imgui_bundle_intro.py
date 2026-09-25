@@ -614,7 +614,6 @@ if HAS_IMMVISION and HAS_OPENCV and HAS_NUMPY:
         global _immvision_image, _immvision_image_sobel, _immvision_inited
         global _immvision_zoom_center, _immvision_start_time
 
-        immvision.use_rgb_color_order()
         _immvision_image = demo_utils.imread_demo(demo_utils.demos_assets_folder() + "/images/house.jpg")
         _immvision_image_sobel = _immvision_compute_sobel()
 

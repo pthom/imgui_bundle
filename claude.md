@@ -682,7 +682,7 @@ https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_bac
 
 ImmVision is an image debugger with zoom, pan, pixel inspection, and colormaps. Key points:
 
-- Initialize color order: `immvision.use_rgb_color_order()` or `use_bgr_color_order()`
+- Color order: RGB by default; call `immvision.use_bgr_color_order()` once at startup for OpenCV (BGR) images
 - `image()`: Full-featured display with `ImageParams` for options
 - `image_display()`: Simple display
 - `inspector_add_image()` / `inspector_show()`: Multi-image inspection

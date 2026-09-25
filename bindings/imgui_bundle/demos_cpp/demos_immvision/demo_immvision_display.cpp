@@ -14,7 +14,6 @@ void demo_immvision_display()
 
     if (!inited)
     {
-        ImmVision::UseRgbColorOrder();
         std::string assetsDir = DemosAssetsFolder() + "/images/";
         bear = ImmVision::ImRead(assetsDir + "bear_transparent.png");
         tennis = ImmVision::ImRead(assetsDir + "tennis.jpg");

@@ -33,7 +33,6 @@ void demo_immvision_link()
 
     if (!inited)
     {
-        ImmVision::UseRgbColorOrder();
         image = ImmVision::ImRead(DemosAssetsFolder() + "/images/tennis.jpg");
         channels = SplitChannels(image);
 

@@ -114,28 +114,28 @@ void py_init_module_immvision(nb::module_& m)
 
     ////////////////////    <generated_from:image.h>    ////////////////////
     m.def("use_rgb_color_order",
-        ImmVision::UseRgbColorOrder, "(private API)");
+        ImmVision::UseRgbColorOrder);
 
     m.def("use_bgr_color_order",
-        ImmVision::UseBgrColorOrder, "(private API)");
+        ImmVision::UseBgrColorOrder);
 
     m.def("is_using_rgb_color_order",
-        ImmVision::IsUsingRgbColorOrder, " Returns True if we are using RGB color order\n(private API)");
+        ImmVision::IsUsingRgbColorOrder, "Returns True if we are using RGB color order");
 
     m.def("is_using_bgr_color_order",
-        ImmVision::IsUsingBgrColorOrder, " Returns True if we are using BGR color order\n(private API)");
+        ImmVision::IsUsingBgrColorOrder, "Returns True if we are using BGR color order");
 
     m.def("is_color_order_undefined",
-        ImmVision::IsColorOrderUndefined, " Returns True if the color order is undefined (i.e. UseRgbColorOrder or UseBgrColorOrder was not called)\n(private API)");
+        ImmVision::IsColorOrderUndefined, "Returns True if the color order was never set (UseRgbColorOrder or UseBgrColorOrder was not called): RGB is used");
 
     m.def("push_color_order_rgb",
-        ImmVision::PushColorOrderRgb, "(private API)");
+        ImmVision::PushColorOrderRgb);
 
     m.def("push_color_order_bgr",
-        ImmVision::PushColorOrderBgr, "(private API)");
+        ImmVision::PushColorOrderBgr);
 
     m.def("pop_color_order",
-        ImmVision::PopColorOrder, "(private API)");
+        ImmVision::PopColorOrder);
 
 
     auto pyEnumColorMapStatsTypeId =

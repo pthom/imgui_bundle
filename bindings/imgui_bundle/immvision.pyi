@@ -158,56 +158,44 @@ class Rect:
 # IMMVISION_API is a marker for public API functions. IMMVISION_STRUCT_API is a marker for public API structs (in comment lines)
 # Usage of ImmVision as a shared library is not recommended. No guaranty of ABI stability is provided
 
-# Set the color order for displayed images.
-# You **must** call once at the start of your program:
-#     ImmVision::UseRgbColorOrder() or ImmVision::UseBgrColorOrder() (C++)
-#     immvision.use_rgb_color_order() or immvision.use_bgr_color_order() (Python)
-# (Breaking change - October 2024)
-# void UseRgbColorOrder();    /* original C++ signature */
+# The color order of displayed images: RGB by default.
+# For images in BGR order (OpenCV), call once at the start of your program:
+#     ImmVision::UseBgrColorOrder() (C++)
+#     immvision.use_bgr_color_order() (Python)
+# IMMVISION_API void UseRgbColorOrder();    /* original C++ signature */
 def use_rgb_color_order() -> None:
-    """(private API)"""
     pass
 
-# void UseBgrColorOrder();    /* original C++ signature */
+# IMMVISION_API void UseBgrColorOrder();    /* original C++ signature */
 def use_bgr_color_order() -> None:
-    """(private API)"""
     pass
 
-# bool IsUsingRgbColorOrder();    /* original C++ signature */
+# IMMVISION_API bool IsUsingRgbColorOrder();    /* original C++ signature */
 def is_using_rgb_color_order() -> bool:
-    """Returns True if we are using RGB color order
-    (private API)
-    """
+    """Returns True if we are using RGB color order"""
     pass
 
-# bool IsUsingBgrColorOrder();    /* original C++ signature */
+# IMMVISION_API bool IsUsingBgrColorOrder();    /* original C++ signature */
 def is_using_bgr_color_order() -> bool:
-    """Returns True if we are using BGR color order
-    (private API)
-    """
+    """Returns True if we are using BGR color order"""
     pass
 
-# bool IsColorOrderUndefined();    /* original C++ signature */
+# IMMVISION_API bool IsColorOrderUndefined();    /* original C++ signature */
 def is_color_order_undefined() -> bool:
-    """Returns True if the color order is undefined (i.e. UseRgbColorOrder or UseBgrColorOrder was not called)
-    (private API)
-    """
+    """Returns True if the color order was never set (UseRgbColorOrder or UseBgrColorOrder was not called): RGB is used"""
     pass
 
 # Temporary change of color order (useful for displaying a single image with a different color order)
-# void PushColorOrderRgb();    /* original C++ signature */
+# IMMVISION_API void PushColorOrderRgb();    /* original C++ signature */
 def push_color_order_rgb() -> None:
-    """(private API)"""
     pass
 
-# void PushColorOrderBgr();    /* original C++ signature */
+# IMMVISION_API void PushColorOrderBgr();    /* original C++ signature */
 def push_color_order_bgr() -> None:
-    """(private API)"""
     pass
 
-# void PopColorOrder();    /* original C++ signature */
+# IMMVISION_API void PopColorOrder();    /* original C++ signature */
 def pop_color_order() -> None:
-    """(private API)"""
     pass
 
 class ColorMapStatsTypeId(enum.IntEnum):

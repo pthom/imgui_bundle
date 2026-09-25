@@ -56,7 +56,6 @@ void Gui()
 
 int main()
 {
-    ImmVision::UseRgbColorOrder();
     ImmApp::AddOnsParams addonsParams;
     addonsParams.withNodeEditor = true;
 

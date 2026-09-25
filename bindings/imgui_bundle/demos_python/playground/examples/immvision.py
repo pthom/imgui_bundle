@@ -47,9 +47,6 @@ def download_random_image_sync() -> NDArray[np.uint8]:
 async def download_random_image_async() -> NDArray[np.uint8]:
     return _decode_image(await immapp.download_url_bytes_async(_IMAGE_URL))
 
-# Tell ImmVision we use RGB order (not BGR like OpenCV defaults)
-immvision.use_rgb_color_order()
-
 
 class SobelParams:
     """Parameters for the Sobel edge filter."""
