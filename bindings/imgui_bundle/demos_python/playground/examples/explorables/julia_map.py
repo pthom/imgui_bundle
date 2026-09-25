@@ -159,7 +159,9 @@ class PlaneView:
             lo, hi = window
             return lo + (hi - lo) * -t / scale / SIZE, lo + (hi - lo) * (width - t) / scale / SIZE
 
-        self.window_re, self.window_im = visible(self.window_re, tx), visible(self.window_im, ty)
+        window_re, window_im = visible(self.window_re, tx), visible(self.window_im, ty)
+        if window_re[1] - window_re[0] > 1e-12:  # deeper, float64 could not tell the pixels apart
+            self.window_re, self.window_im = window_re, window_im
         self.params.zoom_pan_matrix = [[full_scale, 0.0, 0.0], [0.0, full_scale, 0.0], [0.0, 0.0, 1.0]]
         self.refresh()
 
@@ -208,7 +210,8 @@ state = State()
 def maps_widget() -> None:
     """The two pictures side by side: a click on the map chooses c (a drag pans it)"""
     imgui.begin_group()
-    state.map.params.watched_pixels = [state.map.to_pixel(state.c)]  # c, shown on the map
+    x, y = state.map.to_pixel(state.c)
+    state.map.params.watched_pixels = [(x, y)] if 0 <= x < SIZE and 0 <= y < SIZE else []  # c, when in view
     state.map.show()
     mouse = state.map.params.mouse_info
     drag = imgui.get_mouse_drag_delta(0)  # stays (0, 0) until the mouse moves past the drag threshold
