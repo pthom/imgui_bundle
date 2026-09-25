@@ -13,6 +13,7 @@ def main() -> None:
     print("autogenerate_imgui_md")
     input_cpp_header = THIS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/rich_md.h"
     input_cpp_header_host = THIS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/rich_md_host.h"  # only the download types
+    input_cpp_header_narrative = THIS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/narrative_programming.h"
     output_cpp_pydef_file = PYDEF_DIR + "/pybind_rich_md.cpp"
     output_stub_pyi_file = STUB_DIR + "/rich_md.pyi"
 
@@ -163,6 +164,7 @@ def main() -> None:
 
     generator = litgen.LitgenGenerator(options, omit_boxed_types=True)
     generator.process_cpp_file(input_cpp_header_host)
+    generator.process_cpp_file(input_cpp_header_narrative)
     generator.process_cpp_file(input_cpp_header)
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

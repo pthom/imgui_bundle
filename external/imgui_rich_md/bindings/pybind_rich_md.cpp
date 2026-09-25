@@ -85,6 +85,14 @@ void py_init_module_rich_md(nb::module_& m)
     ////////////////////    </generated_from:rich_md_host.h>    ////////////////////
 
 
+    ////////////////////    <generated_from:narrative_programming.h>    ////////////////////
+    m.def("resolve_transclusions",
+        RichMd::ResolveTransclusions,
+        nb::arg("markdown"), nb::arg("read_file"), nb::arg("current_file") = "",
+        " ResolveTransclusions replaces the embeds of a markdown text: readFile reads a file (or returns std::nullopt);\n currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.");
+    ////////////////////    </generated_from:narrative_programming.h>    ////////////////////
+
+
     ////////////////////    <generated_from:rich_md.h>    ////////////////////
     m.def("render",
         RichMd::Render,
@@ -227,11 +235,6 @@ void py_init_module_rich_md(nb::module_& m)
         RichMd::SetAssetsFolder,
         nb::arg("folder"),
         " The folder where the default host reads the assets (fonts, images) from the file system,\n when they are not embedded in the binary. Default: the current directory.");
-
-    m.def("resolve_transclusions",
-        RichMd::ResolveTransclusions,
-        nb::arg("markdown"), nb::arg("read_file"), nb::arg("current_file") = "",
-        " ResolveTransclusions replaces the embeds of a markdown text: readFile reads a file (or returns std::nullopt);\n currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.");
 
     m.def("render_file",
         RichMd::RenderFile,
