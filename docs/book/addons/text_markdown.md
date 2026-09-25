@@ -187,7 +187,7 @@ flowchart LR
 ```
 ````
 
-To draw a diagram outside of markdown: `rich_md.render_mermaid(source)` (Python), `RichMd::RenderMermaid(source)` (C++). The library's [tour](https://pthom.github.io/imgui_rich_md/tour.html) shows more of them.
+To draw a diagram outside of markdown: `rich_md.render_mermaid(source)` (Python), `RichMd::RenderMermaid(source)` (C++). The library's [Mermaid tour](https://pthom.github.io/imgui_rich_md/mermaid.html) shows more of them, and [what is supported](https://github.com/pthom/imgui_rich_md/blob/main/docs/mermaid.md) lists the syntax it reads and how its layout differs from mermaid.js.
 
 ### Full Demo
 
