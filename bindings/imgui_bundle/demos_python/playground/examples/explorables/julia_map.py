@@ -20,8 +20,8 @@ r"""::md Story
 Both pictures iterate the same rule, $z \leftarrow z^2 + c$, and color each pixel by how fast $z$ escapes.
 On the left, $c$ is the pixel and $z$ starts at $0$. On the right, $c$ is fixed and $z$ starts at the pixel.
 **Click anywhere on the left picture to choose $c$**: the Julia set on the right is the one for that $c$.
-Or pick a famous value in the list on the right, and watch the Julia set change on the way: hover a name to read
-its story.
+Or pick a famous value in the list on the right: the map flies there, and the Julia set changes on the way. Hover
+a name to read its story.
 
 <!-- A widget: the program draws it with maps_widget() (the two pictures, and the value of c) -->
 ```widget
@@ -63,6 +63,7 @@ A Julia set is connected exactly when its $c$ belongs to the Mandelbrot set.
 
 
 # ruff: noqa: E402  # Allow imports to come after the story
+from dataclasses import dataclass
 from typing import Callable
 import numpy as np
 from imgui_bundle import imgui, immapp, immvision, rich_md, em_size, hello_imgui
@@ -119,7 +120,7 @@ def julia_image(c: complex, size: int, max_iter: int, window_re: Window, window_
 
 # The widgets that the story places in its ```widget blocks
 SIZE = 300  # the pictures, in pixels
-JOURNEY_SECONDS = 1.5  # the way to a famous value of c
+JOURNEY_SECONDS = 2.5  # the way to a famous value of c
 
 
 class PlaneView:
@@ -136,6 +137,12 @@ class PlaneView:
         self.params.add_watched_pixel_on_double_click = False
         self.params.show_image_info = False
         self.params.show_zoom_buttons = False  # zoom with the wheel, and "Full view" below
+        self.refresh()
+
+    def set_view(self, center: complex, width: float) -> None:
+        """Shows the square of the plane of this width around center"""
+        self.window_re = (center.real - width / 2, center.real + width / 2)
+        self.window_im = (center.imag - width / 2, center.imag + width / 2)
         self.refresh()
 
     def refresh(self) -> None:
@@ -177,12 +184,30 @@ class PlaneView:
             self.refresh()
 
 
+def ease(x: float) -> float:
+    """0 -> 0, 1 -> 1, slow at both ends"""
+    return x * x * (3 - 2 * x)
+
+
+@dataclass
+class Journey:
+    """The way to a famous value of c: c moves there in a straight line, and the map flies there (it zooms out until
+    both places are in view, then zooms in)"""
+    start_c: complex
+    target_c: complex
+    start_center: complex
+    start_width: float
+    target_center: complex
+    target_width: float
+    start_time: float
+
+
 class State:
     def __init__(self) -> None:
         self.max_iter = 80
         self.c = complex(-0.8, 0.156)
         self.julia_follows_map = False
-        self.journey: tuple[complex, complex, float] | None = None  # from, to, start time: the way to a famous c
+        self.journey: Journey | None = None
         self.map = PlaneView("Mandelbrot", MANDEL_RE, MANDEL_IM,
                              lambda re, im: mandelbrot_image(SIZE, self.max_iter, re, im))
         self.julia = PlaneView("Julia", JULIA_RE, JULIA_IM,
@@ -193,17 +218,32 @@ class State:
         if not self.julia_follows_map:
             self.julia.refresh()  # else follow_map() will
 
-    def go_to(self, c: complex) -> None:
-        """Moves c to a value in a straight line: the Julia set changes on the way"""
-        self.journey = (self.c, c, imgui.get_time())
+    def go_to(self, c: complex, width: float | None) -> None:
+        """A journey to c, where the map arrives with a view of this width (None: the whole set)"""
+        (re0, re1), (im0, im1) = self.map.window_re, self.map.window_im
+        target_center = c if width is not None else complex(sum(MANDEL_RE) / 2, sum(MANDEL_IM) / 2)
+        target_width = width if width is not None else MANDEL_RE[1] - MANDEL_RE[0]
+        self.journey = Journey(self.c, c, complex((re0 + re1) / 2, (im0 + im1) / 2), re1 - re0,
+                               target_center, target_width, imgui.get_time())
 
     def travel(self) -> None:
         """Each frame: the next step of the journey"""
-        if self.journey is not None:
-            start, target, start_time = self.journey
-            t = min((imgui.get_time() - start_time) / JOURNEY_SECONDS, 1.0)
-            eased = t * t * (3 - 2 * t)  # slow at both ends
-            self.choose_c(target if t == 1.0 else start + (target - start) * eased)
+        j = self.journey
+        if j is not None:
+            t = min((imgui.get_time() - j.start_time) / JOURNEY_SECONDS, 1.0)
+            # The map zooms out until both places are in view, then in (the time is shared in proportion to the two
+            # zoom factors). It pans, and c moves, around the widest moment: the view is never lost
+            top = max(j.start_width, j.target_width, 2 * abs(j.target_center - j.start_center))
+            rise, fall = np.log(top / j.start_width), np.log(top / j.target_width)
+            split = rise / (rise + fall) if rise + fall > 0 else 0.5
+            if t < split or split >= 1.0:
+                u, width_from, width_to = min(t / split, 1.0), j.start_width, top
+            else:
+                u, width_from, width_to = (t - split) / (1 - split), top, j.target_width
+            p = ease(min(max(2 * t - split, 0.0), 1.0))
+            self.choose_c(j.target_c if t == 1.0 else j.start_c + (j.target_c - j.start_c) * p)
+            center = j.start_center + (j.target_center - j.start_center) * p
+            self.map.set_view(center, width_from * (width_to / width_from) ** ease(u))
             if t == 1.0:
                 self.journey = None
         hello_imgui.get_runner_params().fps_idling.enable_idling = self.journey is None  # a smooth journey
@@ -270,6 +310,14 @@ FAMOUS_C: dict[str, tuple[complex, str]] = {
 }
 
 
+# How close the map arrives at each famous value: the width of its view (None: the whole set)
+ARRIVAL_WIDTH: dict[str, float | None] = {
+    "Circle": None, "Siegel disk": 0.1, "Douady rabbit": 0.3, "Basilica": 1.0, "San Marco": 0.4, "Cauliflower": 0.3,
+    "Airplane": 0.03, "Feigenbaum point": 0.1, "Seahorse valley": 0.03, "Elephant valley": 0.01,
+    "Triple spiral valley": 0.02, "Dendrite": 0.1, "Misiurewicz point": 0.03, "Segment": 0.6, "Cantor dust": 1.0,
+}
+
+
 def maps_widget() -> None:
     """The two pictures side by side: a click on the map chooses c (a drag pans it)"""
     state.travel()
@@ -300,7 +348,7 @@ def maps_widget() -> None:
     if imgui.begin_list_box("##famous c", imgui.ImVec2(em_size(11), height)):
         for name, (c, story) in FAMOUS_C.items():
             if imgui.selectable(name, state.c == c)[0]:
-                state.go_to(c)
+                state.go_to(c, ARRIVAL_WIDTH[name])
             if imgui.begin_item_tooltip():
                 imgui.push_text_wrap_pos(em_size(24))
                 imgui.text_unformatted(f"c = {c.real:g} {c.imag:+g} i\n\n{story}")
