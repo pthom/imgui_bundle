@@ -104,6 +104,17 @@ void py_init_module_rich_md(nb::module_& m)
         nb::arg("markdown_string"),
         "Renders a markdown string as is (no unindent, no transclusion)");
 
+    m.def("push_selectable_text",
+        RichMd::PushSelectableText, nb::arg("selectable"));
+
+    m.def("pop_selectable_text",
+        RichMd::PopSelectableText);
+
+    m.def("set_selectable_text_default",
+        RichMd::SetSelectableTextDefault,
+        nb::arg("selectable"),
+        " Whether the text can be selected, outside of a PushSelectableText(): changes the option selectableText of the\n current context");
+
 
     auto pyClassMarkdownFontOptions =
         nb::class_<RichMd::MarkdownFontOptions>
@@ -196,6 +207,7 @@ void py_init_module_rich_md(nb::module_& m)
         .def_rw("with_latex", &RichMd::MarkdownOptions::withLatex, " Enable native LaTeX math rendering via MicroTeX.\n When True, $...$ and $$...$$ in markdown will be rendered as math formulas\n (requires building with IMGUI_RICHMD_WITH_LATEX=ON; in the bundle it is the default\n when IMGUI_BUNDLE_WITH_MICROTEX and FreeType are both available).\n When False, $ is rendered as a literal character (legacy behavior).")
         .def_rw("autolinks", &RichMd::MarkdownOptions::autolinks, " Recognize bare URLs, email addresses and www.* as clickable links\n without requiring <...> or []() syntax\n (MD_FLAG_PERMISSIVEAUTOLINKS — URL + email + WWW).\n Set to False to get strict CommonMark link behavior.")
         .def_rw("hard_soft_breaks", &RichMd::MarkdownOptions::hardSoftBreaks, "A newline in the source is a line break (as in GitHub comments and chat messages)")
+        .def_rw("selectable_text", &RichMd::MarkdownOptions::selectableText, " The text can be selected with the mouse and copied (SetSelectableTextDefault changes it later,\n PushSelectableText for some renders)")
         ;
 
 

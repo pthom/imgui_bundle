@@ -6,7 +6,7 @@ Dear ImGui Bundle includes libraries for syntax-highlighted text editing and mar
 
 ### Introduction
 
-[imgui_rich_md](https://github.com/pthom/imgui_rich_md) renders markdown content directly in your ImGui interface: headers, emphasis, links, lists, tables, images, code blocks with syntax highlighting, LaTeX math, admonitions and collapsible sections. It is a standalone library that also works on stock Dear ImGui (C++); Dear ImGui Bundle includes it, with Python bindings.
+[imgui_rich_md](https://github.com/pthom/imgui_rich_md) renders markdown content directly in your ImGui interface: headers, emphasis, links, lists, tables, images, code blocks with syntax highlighting, LaTeX math, admonitions and collapsible sections. Its text can be selected with the mouse and copied (Ctrl+C, Cmd+C on macOS); a right click also copies it as markdown. It is a standalone library that also works on stock Dear ImGui (C++); Dear ImGui Bundle includes it, with Python bindings.
 
 In Python the module is `imgui_bundle.rich_md`; in C++ the namespace is `RichMd`. The former names, `imgui_md` (Python) and `ImGuiMd` (C++), remain available as aliases.
 
