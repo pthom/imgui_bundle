@@ -10,7 +10,7 @@ namespace ed = ax::NodeEditor;
 
 void Gui()
 {
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         Below is a code block rendered in markdown outside of a node editor: it should use ImGuiColorTextEdit
 
         ```cpp
@@ -25,7 +25,7 @@ void Gui()
     ed::BeginNode(1);
 
     ImGui::Dummy(ImVec2(500, 0));
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         Below is a code block rendered in markdown inside a node editor:
         it should not use ImGuiColorTextEdit, but instead render as a simple code block,
         with no syntax highlighting (but using a code font).

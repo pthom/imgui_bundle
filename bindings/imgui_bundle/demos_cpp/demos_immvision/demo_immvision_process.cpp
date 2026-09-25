@@ -144,7 +144,7 @@ void demo_immvision_process()
 {
     static AppStateProcess appState(DemosAssetsFolder() + "/images/house.jpg");
 
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
 
         * Pan and zoom the image with the mouse and the mouse wheel

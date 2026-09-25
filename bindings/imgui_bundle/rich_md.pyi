@@ -291,7 +291,7 @@ def render_raw(markdown_string: str) -> None:
     pass
 
 def render_unindented(markdown_string: str) -> None:
-    """Same as Render (kept for compatibility)"""
+    """The former name of Render"""
     pass
 
 def resolve_imports(

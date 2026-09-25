@@ -9,7 +9,7 @@ void demo_guizmo_curve_edit();
 
 void demo_imguizmo_launcher()
 {
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui.
     )");
 

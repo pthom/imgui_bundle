@@ -62,7 +62,7 @@ def gui_preview_theme_with_widgets() -> None:
         imgui.text("Tree content")
         imgui.tree_pop()
 
-    rich_md.render_unindented(r"""
+    rich_md.render(r"""
 #### Markdown examples
 |          |                                                                  |
 |----------|-------------------------------------------------------------------------|

@@ -81,7 +81,7 @@ Here is another pararaph.
 
 
 def gui():
-    rich_md.render_unindented(MARKDOWN)
+    rich_md.render(MARKDOWN)
 
 
 def main():

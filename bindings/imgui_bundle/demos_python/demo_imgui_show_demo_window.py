@@ -8,7 +8,7 @@ imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 
 def demo_gui():
-    rich_md.render_unindented(
+    rich_md.render(
         """
         # Dear ImGui
         Browse the demos below, and look at their code in the right panel!

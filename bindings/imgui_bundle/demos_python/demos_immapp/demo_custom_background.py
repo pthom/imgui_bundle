@@ -542,7 +542,7 @@ def gui(app_state: AppState):
     imgui.set_next_window_size(hello_imgui.em_to_vec2(31.0, 14.0), imgui.Cond_.appearing)
     imgui.begin("Shader parameters")
 
-    rich_md.render_unindented("""
+    rich_md.render("""
         Shader: "Seascape" by Alexander Alekseev aka TDM - 2014 - [Shadertoy](https://www.shadertoy.com/view/Ms2SD1)
     """)
     imgui.separator()

@@ -130,7 +130,7 @@ def demo_gui():
     if static.app_state is None:
         static.app_state = AppState(demo_utils.demos_assets_folder() + "/images/house.jpg")
 
-    rich_md.render_unindented(
+    rich_md.render(
         """
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
 

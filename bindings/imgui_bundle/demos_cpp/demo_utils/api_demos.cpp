@@ -226,7 +226,7 @@ bool SpawnDemo(const std::string& demoName)
 void ShowMarkdownDocFile(const std::string& doc_file_name)
 {
     auto code = ReadMarkdownDoc(doc_file_name);
-    RichMd::RenderUnindented(code);
+    RichMd::Render(code);
 }
 
 

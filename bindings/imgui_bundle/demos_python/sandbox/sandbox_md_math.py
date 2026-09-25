@@ -68,7 +68,7 @@ def gui() -> None:
     _, imgui.get_style().font_scale_main = imgui.slider_float("Font scale", imgui.get_style().font_scale_main, 0.25, 4.0)
     imgui.text("Phase 3 sandbox — close window to exit")
     imgui.separator()
-    rich_md.render_unindented(MARKDOWN)
+    rich_md.render(MARKDOWN)
 
 
 def main() -> None:

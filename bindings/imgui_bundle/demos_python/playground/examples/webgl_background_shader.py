@@ -831,7 +831,7 @@ def _docs_window():
     imgui.set_next_window_size(hello_imgui.em_to_vec2(48, 32), imgui.Cond_.first_use_ever)
     expanded, _show_docs = imgui.begin("About this demo", _show_docs)  # type: ignore
     if expanded:
-        rich_md.render_unindented(__doc__ or "")
+        rich_md.render(__doc__ or "")
     imgui.end()
 
 
@@ -842,7 +842,7 @@ def gui(app_state: AppState):
     imgui.set_next_window_size(hello_imgui.em_to_vec2(31.0, 18.0), imgui.Cond_.appearing)
     imgui.begin("Shader parameters")
 
-    rich_md.render_unindented("""
+    rich_md.render("""
         Shader: "Seascape" by Alexander Alekseev aka TDM - 2014 - [Shadertoy](https://www.shadertoy.com/view/Ms2SD1)
     """)
     _, _show_docs = imgui.checkbox("Show docs", _show_docs)

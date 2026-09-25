@@ -6,7 +6,7 @@
 
 void Gui()
 {
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Sandbox
 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit

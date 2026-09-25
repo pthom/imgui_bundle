@@ -46,7 +46,7 @@ void demo_immvision_link()
         inited = true;
     }
 
-    RichMd::RenderUnindented(R"(If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel)");
+    RichMd::Render(R"(If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel)");
     ImmVision::Image("RGB", image, &params_rgb);
     for (size_t i = 0; i < channels.size(); ++i) {
         ImmVision::Image(std::string("channel") + std::to_string(i), channels[i], &params_channels);

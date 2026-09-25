@@ -94,7 +94,7 @@ static void Gui()
 
     ImGui::Text("Phase 3 sandbox (C++) - close window to exit");
     ImGui::Separator();
-    RichMd::RenderUnindented(kMarkdown);
+    RichMd::Render(kMarkdown);
 }
 
 int main()

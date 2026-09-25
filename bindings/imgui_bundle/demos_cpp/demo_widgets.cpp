@@ -26,7 +26,7 @@
 
 void DemoKnobs()
 {
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Knobs
         [imgui-knobs](https://github.com/altschuler/imgui-knobs) provides knobs for ImGui.
         )");
@@ -145,7 +145,7 @@ void DemoKnobs()
 
 void DemoSpinner()
 {
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Spinners
         [imspinner](https://github.com/dalerank/imspinner) provides spinners for ImGui.
     )");
@@ -188,7 +188,7 @@ void DemoToggle()
 {
     static bool flag = true;
 
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Toggle Switch
         [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
     )");
@@ -218,14 +218,14 @@ void DemoPortableFileDialogs()
     static std::string lastFileSelection;
 
     ImGui::PushID("pfd");
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Portable File Dialogs
         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides file dialogs
         as well as notifications and messages. They will use the native dialogs and notifications on each platform.
     )");
 
 #ifdef __EMSCRIPTEN__
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         *Note: On Emscripten/Web, only messages dialogs (with an Ok button and an icon) are supported.
         On Windows, Linux and MacOS, everything is supported.*
     )");
@@ -348,7 +348,7 @@ void DemoImFileDialog()
 #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
     static std::string selectedFilename;
 
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # ImFileDialog
          [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui.
         )");
@@ -460,7 +460,7 @@ void DemoCommandPalette()
         wasInited = true;
     }
 
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Command Palette
         [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git) provides a Sublime Text or VSCode style command palette in ImGui
     )");
@@ -501,7 +501,7 @@ void DemoCoolBar()
 
 
     std::vector<std::string> buttonLabels {"A", "B", "C", "D", "E", "F"};
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # ImCoolBar
         ImCoolBar provides a dock-like Cool bar for Dear ImGui
     )");

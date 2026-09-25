@@ -27,7 +27,7 @@ void demo_immvision_launcher()
         return;
     }
 
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger and inspector. It can display and analyse RGB & float images with 1 to 4 channels, with zoom, pan, pixel inspection, and colormaps.
     )");
 

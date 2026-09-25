@@ -6,7 +6,7 @@
 
 void demo_im_anim()
 {
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # ImAnim
         ImAnim is an Animation Engine for Dear ImGui. Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right of this window.
     )");

@@ -10,7 +10,7 @@ from imgui_bundle import immapp, hello_imgui, imgui, rich_md
 
 
 def demo_gui():
-    rich_md.render_unindented(
+    rich_md.render(
         """
         # Theming
         HelloImGui adds support for advanced theming to ImGui. Select the menu View/Theme/Theme tweak window to explore all the themes and their customization.

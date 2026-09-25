@@ -134,7 +134,7 @@ class DemoAppTable:
                     imgui.text(demo_app.demo_file + ".py")
                     imgui.table_next_column()
 
-                    rich_md.render_unindented(demo_app.explanation)
+                    rich_md.render(demo_app.explanation)
 
                     if len(demo_app.demo_file) > 0:
                         imgui.table_next_column()

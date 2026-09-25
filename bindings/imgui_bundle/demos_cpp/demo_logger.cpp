@@ -48,7 +48,7 @@ void demo_logger()
         addedLogs = true;
     }
 
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Graphical logger for ImGui
         This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)
 

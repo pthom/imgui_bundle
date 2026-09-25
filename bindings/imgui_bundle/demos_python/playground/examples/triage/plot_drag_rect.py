@@ -44,7 +44,7 @@ class DemoDragRectState:
 
 @immapp.static(state=DemoDragRectState())
 def demo_drag_rects():
-    rich_md.render_unindented(__doc__)
+    rich_md.render(__doc__)
     imgui.separator_text("Plot with a draggable rectangle")
 
     state = demo_drag_rects.state

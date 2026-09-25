@@ -12,24 +12,24 @@ class MyParam(BaseModel):
 
 def demo_pydantic():
     my_param = MyParam()  # Create an instance of MyParam
-    rich_md.render_unindented(f"**my_param:** `{my_param}`")  # Show the instance
+    rich_md.render(f"**my_param:** `{my_param}`")  # Show the instance
     as_json_dict = my_param.model_dump(mode="json")  # Convert the instance to a JSON dict
 
     # Show the JSON dict
-    rich_md.render_unindented("**as_json_dict**")
+    rich_md.render("**as_json_dict**")
     show_json_dict(as_json_dict)
 
     # Create another instance of MyParam from the JSON dict and show it
     my_param2 = MyParam.model_validate(as_json_dict)
-    rich_md.render_unindented(f"**my_param2:** `{my_param2}`")
+    rich_md.render(f"**my_param2:** `{my_param2}`")
 
     # Test that the two instances are equal
-    rich_md.render_unindented(f"**Are Equal:** `{my_param == my_param2=}`")
+    rich_md.render(f"**Are Equal:** `{my_param == my_param2=}`")
 
 
 
 def gui():
-    rich_md.render_unindented("""
+    rich_md.render("""
     # How to use ImVec2 and ImVec4 with Pydantic
 
     imgui_bundle provide `ImVec2_Pydantic`, `ImVec4_Pydantic`, `ImColor_Pydantic` which are synonyms for
@@ -40,7 +40,7 @@ def gui():
     imgui.new_line()
     show_python_code(MyParam)
 
-    rich_md.render_unindented("**Let's define a function that checks that it can be serialized and validated with Pydantic:**")
+    rich_md.render("**Let's define a function that checks that it can be serialized and validated with Pydantic:**")
     imgui.new_line()
     show_python_code(demo_pydantic)
 

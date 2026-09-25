@@ -70,7 +70,7 @@ void LoadFonts(bool fontFilePresent)
 
 void Gui(bool fontFilePresent)
 {
-    RichMd::RenderUnindented(DOC);
+    RichMd::Render(DOC);
     ImGui::Separator();
     if (fontFilePresent)
     {

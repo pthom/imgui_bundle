@@ -87,7 +87,7 @@ class CompareLorenzTrajectories:
         self.traj2.step()
 
     def gui(self):
-        rich_md.render_unindented(__doc__)
+        rich_md.render(__doc__)
         imgui.separator_text("Parameters")
         self.gui_params()
         imgui.separator_text("Plot")

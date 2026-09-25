@@ -862,7 +862,7 @@ namespace IntroNodeEditor
         float h = w / imgAspect;
         if (h > contentSize.y - linkH) { h = contentSize.y - linkH; w = h * imgAspect; }
         HelloImGui::ImageFromAsset("images/node_editor_fiat.jpg", ImVec2(w, h));
-        RichMd::RenderUnindented("Built with [fiatlight](https://pthom.github.io/fiatlight/)");
+        RichMd::Render("Built with [fiatlight](https://pthom.github.io/fiatlight/)");
     }
 } // namespace IntroNodeEditor
 
@@ -982,7 +982,7 @@ $$
         ImGui::BeginChild("##md_rendered", ImVec2(halfW, h), false, ImGuiWindowFlags_NoScrollbar);
         // Get the current text from the editor
         std::string currentMarkdown = sMarkdownEditor->GetText();
-        RichMd::RenderUnindented(currentMarkdown.c_str());
+        RichMd::Render(currentMarkdown.c_str());
         ImGui::EndChild();
     }
 } // namespace IntroMarkdown
@@ -1686,11 +1686,11 @@ void RenderMoreInfo()
     if (!sMoreInfoExpanded)
         return;
 
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
 Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
 )");
 
-    RichMd::RenderUnindented("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://imgui-bundle.pages.dev/doc/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.");
+    RichMd::Render("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://imgui-bundle.pages.dev/doc/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.");
     ImGui::SameLine();
     ImGui::TextDisabled("Start your first app in 2\xe2\x80\x93""3 lines of code.");
     if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
@@ -1710,7 +1710,7 @@ Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bund
 
     ImGui::Indent();
 
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
     **Links:**
     - [Interactive Explorer](https://imgui-bundle.pages.dev/explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
     - [Documentation](https://imgui-bundle.pages.dev/): Full documentation
@@ -1734,7 +1734,7 @@ void IntroTopSection()
     bool small = IsSmallScreen();
 
     // Title
-    RichMd::RenderUnindented("# Dear ImGui Bundle Explorer");
+    RichMd::Render("# Dear ImGui Bundle Explorer");
 
     // Links row (always visible)
     RenderLinksRow();

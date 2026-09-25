@@ -8,7 +8,7 @@ imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 
 def demo_gui():
-    rich_md.render_unindented(
+    rich_md.render(
         """
         [Implot](https://github.com/epezent/implot) and [Implot3D](https://github.com/brenocq/implot3d) are fast and efficient libraries which provide immediate Mode Plotting.
         """
@@ -21,7 +21,7 @@ def demo_gui():
 
             imgui.text(icons_fontawesome_4.ICON_FA_INFO_CIRCLE)
             if imgui.is_item_hovered():
-                rich_md.render_unindented("""
+                rich_md.render("""
                 > [!TIP]
                 > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see "Demo Apps" tab, demo_python_context_manager).
                 """)

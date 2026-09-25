@@ -6,7 +6,7 @@ imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 
 def demo_gui():
-    rich_md.render_unindented(
+    rich_md.render(
         """
         # ImAnim
         ImAnim is an Animation Engine for Dear ImGui. Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right of this window.

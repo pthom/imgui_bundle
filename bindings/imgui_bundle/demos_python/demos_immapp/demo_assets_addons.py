@@ -77,7 +77,7 @@ def demo_markdown(app_state: AppState):
                 return "It's just a " + thing + ". Nothing fancy!"
             ```
     """
-    rich_md.render_unindented(markdown_demo)
+    rich_md.render(markdown_demo)
 
     # Interactive demo
     imgui.separator()
@@ -88,7 +88,7 @@ def demo_markdown(app_state: AppState):
     _, app_state.markdown_input = imgui.input_text_multiline(
         "##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0)
     )
-    rich_md.render_unindented(app_state.markdown_input)
+    rich_md.render(app_state.markdown_input)
     imgui.separator()
 
     show_doc("MarkdownDoc")
@@ -189,13 +189,13 @@ def get_doc(which_doc: str) -> str:
             C++
             ```cpp
             RichMd::Render(markdown_string);            // render a markdown string
-            RichMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+            RichMd::Render(markdown_string);  // remove top-most indentation before rendering
             ```
 
             Python
             ```python
             rich_md.render(markdown_string);            # render a markdown string
-            rich_md.render_unindented(markdown_string); # remove top-most indentation before rendering
+            rich_md.render(markdown_string); # remove top-most indentation before rendering
             ```
 
             This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
@@ -240,7 +240,7 @@ def show_doc(which_doc):  # noqa: F811
     if is_doc_visible[which_doc]:
         # The following are assumed to be valid calls within the context of your specific ImGui wrapper.
         # 'rich_md' and 'get_doc' should correspond to your actual usage and imports.
-        rich_md.render_unindented(get_doc(which_doc))
+        rich_md.render(get_doc(which_doc))
         imgui.dummy(
             hello_imgui.em_to_vec2(1.0, 6.0)
         )  # Assumes 'hello_imgui' is available in your environment

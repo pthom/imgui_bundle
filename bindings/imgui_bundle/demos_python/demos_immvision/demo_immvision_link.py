@@ -21,7 +21,7 @@ params_channels.zoom_key = "some_common_zoom_key"
 
 
 def demo_gui():
-    rich_md.render_unindented(
+    rich_md.render(
         "If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel"
     )
 

@@ -22,7 +22,7 @@ def demo_gui():
     if not hasattr(static, "show_full_demo_rendering_code"):
         static.show_full_demo_rendering_code = False
 
-    rich_md.render_unindented("""
+    rich_md.render("""
         [NanoVG](https://github.com/memononen/nanovg) provides antialiased 2D vector drawing library on top of OpenGL for UI and visualizations.
         """)
 

@@ -92,7 +92,7 @@ public:
     }
 
     void gui() {
-        RichMd::RenderUnindented(R"(
+        RichMd::Render(R"(
 # Lorenz Attractor & Butterfly Effect
 This is a simple example of the Lorenz Attractor. It shows two trajectories that diverge
 because of a small initial difference, illustrating chaos theory in action.

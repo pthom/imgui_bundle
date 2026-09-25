@@ -10,7 +10,7 @@ void demo_romeo_and_juliet();
 
 void demo_node_editor_launcher()
 {
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # imgui-node-editor
         [imgui-node-editor](https://github.com/thedmd/imgui-node-editor) is a zoomable and node Editor built using Dear ImGui.
 
@@ -19,14 +19,14 @@ void demo_node_editor_launcher()
 
     if (ImGui::CollapsingHeader("Screenshot - BluePrint"))
     {
-        RichMd::RenderUnindented(R"(
+        RichMd::Render(R"(
             This is a screenshot showing the possibilities of the node editor
         )");
         HelloImGui::ImageFromAsset("images/node_editor_screenshot.jpg", ImmApp::EmToVec2(40.f, 0.f));
     }
     if (ImGui::CollapsingHeader("Screenshot - Image editing"))
     {
-        RichMd::RenderUnindented(R"(
+        RichMd::Render(R"(
             This is another screenshot showing the possibilities of the node editor, when combined with immvision
         )");
         HelloImGui::ImageFromAsset("images/node_editor_fiat.jpg", ImmApp::EmToVec2(60.f, 0.f));

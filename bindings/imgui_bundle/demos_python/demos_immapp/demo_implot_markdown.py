@@ -9,7 +9,7 @@ from imgui_bundle import (imgui,       # first we import ImGui
 
 def gui():
     # Render some markdown text
-    rich_md.render_unindented("""
+    rich_md.render("""
     # Render an animated plot with ImPlot
     This example shows how to use `ImPlot` to render an animated plot,
     and how to use `rich_md` to render markdown text (*this text!*).

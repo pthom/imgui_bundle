@@ -86,7 +86,7 @@ def show_python_vs_cpp_file(demo_file_path: str, nb_lines: int = 0) -> None:
 
 def show_markdown_file(doc_filename: str) -> None:
     code = read_markdown_code(doc_filename)
-    rich_md.render_unindented(code)
+    rich_md.render(code)
 
 
 @memoize  # type: ignore

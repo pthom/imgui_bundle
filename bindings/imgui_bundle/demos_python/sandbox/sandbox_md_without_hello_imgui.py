@@ -175,7 +175,7 @@ def init_fonts_and_markdown():
 
 
 def gui():
-    rich_md.render_unindented(example_markdown_string())
+    rich_md.render(example_markdown_string())
 
 
 def main():

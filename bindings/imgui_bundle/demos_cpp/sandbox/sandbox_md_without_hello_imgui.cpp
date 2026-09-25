@@ -102,7 +102,7 @@ int main(int, char**)
             ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize
             | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse
             | ImGuiWindowFlags_NoBringToFrontOnFocus);
-        RichMd::RenderUnindented(kMarkdown);
+        RichMd::Render(kMarkdown);
         ImGui::End();
 
         ImGui::Render();

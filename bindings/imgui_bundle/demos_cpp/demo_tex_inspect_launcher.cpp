@@ -18,7 +18,7 @@ void demo_tex_inspect_launcher()
         return;
     }
 
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
     # imgui_tex_inspect
     [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) is a texture inspector tool for Dear ImGui
     ImGuiTexInspect is a texture inspector tool for Dear ImGui. It's a debug tool that allows you to easily inspect the data in any texture.

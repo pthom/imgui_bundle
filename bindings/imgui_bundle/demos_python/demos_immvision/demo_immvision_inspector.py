@@ -20,7 +20,7 @@ def demo_gui():
         fill_inspector()
         demo_gui.inited = True
 
-    rich_md.render_unindented(
+    rich_md.render(
         """Call *immvision.inspector_add_image()* anywhere - for example, at different steps inside an image processing algorithm. Later, call *immvision.inspector_show()*, and it will show all the collected images."""
     )
 

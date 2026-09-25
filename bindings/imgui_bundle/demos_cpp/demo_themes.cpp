@@ -12,7 +12,7 @@
 
 void demo_themes()
 {
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Theming
         HelloImGui adds support for advanced theming to ImGui. Select the menu View/Theme/Theme tweak window to explore all the themes and their customization.
     )");

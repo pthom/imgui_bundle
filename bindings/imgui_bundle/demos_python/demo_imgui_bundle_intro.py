@@ -761,7 +761,7 @@ def _node_editor_slide_gui(content_size: ImVec2):
         w = h * img_aspect
     hello_imgui.image_from_asset("images/node_editor_fiat.jpg", ImVec2(w, h))
 
-    rich_md.render_unindented("Built with [fiatlight](https://pthom.github.io/fiatlight/)")
+    rich_md.render("Built with [fiatlight](https://pthom.github.io/fiatlight/)")
 
 
 # ============================================================================
@@ -869,7 +869,7 @@ def _markdown_slide_gui(content_size: ImVec2):
     imgui.begin_child("##md_rendered", ImVec2(half_w, h), False, imgui.WindowFlags_.no_scrollbar)
     # Get the current text from the editor
     current_markdown = _markdown_text_editor.get_text()
-    rich_md.render_unindented(current_markdown)
+    rich_md.render(current_markdown)
     imgui.end_child()
 
 
@@ -1513,11 +1513,11 @@ def _render_more_info():
     if not _more_info_expanded:
         return
 
-    rich_md.render_unindented( """
+    rich_md.render( """
     Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bundles 20+ libraries - plotting, markdown, node editors, 3D gizmos, and more - and works in C++ and Python, on desktop, mobile, and web.
     """)
 
-    rich_md.render_unindented("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://imgui-bundle.pages.dev/doc/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.")
+    rich_md.render("The immediate mode paradigm naturally leads to code that is concise and [easy to understand](https://imgui-bundle.pages.dev/doc/intro/what-is-imgui-bundle/#code-that-reads-like-a-book), both for humans and for AI tools.")
     imgui.same_line()
     imgui.text_disabled("Start your first app in 2–3 lines of code.")
     if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
@@ -1539,7 +1539,7 @@ def _render_more_info():
 
     imgui.indent()
 
-    rich_md.render_unindented("""
+    rich_md.render("""
     **Links:**
     - [Interactive Explorer](https://imgui-bundle.pages.dev/explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
     - [Documentation](https://imgui-bundle.pages.dev/): Full documentation
@@ -1562,7 +1562,7 @@ def _intro_top_section():
     small = is_small_screen()
 
     # Title
-    rich_md.render_unindented("# Dear ImGui Bundle Explorer")
+    rich_md.render("# Dear ImGui Bundle Explorer")
 
     # Links row (always visible)
     _render_links_row()

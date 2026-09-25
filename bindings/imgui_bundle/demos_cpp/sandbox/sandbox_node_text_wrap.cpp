@@ -31,7 +31,7 @@ void Gui()
         // A dummy button, to artificially set the node width
         //
         ImGui::SeparatorText("Dummy Button");
-        RichMd::RenderUnindented(R"(
+        RichMd::Render(R"(
             This is a _dummy button_, to artificially set the node width.
             Below it is a fixed width slider, which enables to set this button's width.
         )");
@@ -67,7 +67,7 @@ Note:
         // Reset Node Layout
         //
         ImGui::SeparatorText("Reset Layout");
-        RichMd::RenderUnindented(R"(
+        RichMd::Render(R"(
             Click the button below to reset the node layout. Its content will disappear for one frame,
             allowing it to be re-laid out with the new width.
         )");

@@ -119,7 +119,7 @@ void DemoAppTable::Gui()
                 ImGui::Text("%s", demoApp.DemoFile.c_str());
                 ImGui::TableNextColumn();
 
-                RichMd::RenderUnindented(demoApp.Explanation.c_str());
+                RichMd::Render(demoApp.Explanation.c_str());
 
                 if (!demoApp.DemoFile.empty())
                 {

@@ -8,7 +8,7 @@
 void demo_nanovg_launcher()
 {
     static bool isFullDemoOpened = false, isSimpleDemoOpened = false;
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         [NanoVG](https://github.com/memononen/nanovg) provides antialiased 2D vector drawing library on top of OpenGL for UI and visualizations.
     )");
 

@@ -2,7 +2,7 @@ from imgui_bundle import immapp, hello_imgui, rich_md, imgui
 
 
 def gui():
-    rich_md.render_unindented("""
+    rich_md.render("""
         # Sandbox
 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit

@@ -20,7 +20,7 @@ def demo_gui():
         imgui.text("Dear ImGui Bundle was compiled without support for ImmVision")
         return
 
-    rich_md.render_unindented(
+    rich_md.render(
         """
         [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger and inspector. It can display and analyse RGB & float images with 1 to 4 channels, with zoom, pan, pixel inspection, and colormaps.
     """
@@ -28,7 +28,7 @@ def demo_gui():
 
     if not HAS_PILLOW:
         imgui.new_line()
-        rich_md.render_unindented("""
+        rich_md.render("""
         ## Missing dependency: Pillow
         This demo requires the Python package *Pillow* to load images.
         Please install it with:
@@ -55,7 +55,7 @@ def demo_gui():
                 "demos_immvision/demo_immvision_process", nb_lines=40
             )
         else:
-            rich_md.render_unindented("""
+            rich_md.render("""
             This demo requires OpenCv. Please install OpenCv to run it, with:
             ```
             pip install opencv-python

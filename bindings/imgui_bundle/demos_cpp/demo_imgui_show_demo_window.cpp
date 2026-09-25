@@ -7,7 +7,7 @@
 
 void demo_imgui_show_demo_window()
 {
-    RichMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Dear ImGui
         Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right.
     )");

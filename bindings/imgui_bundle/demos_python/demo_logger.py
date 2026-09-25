@@ -43,7 +43,7 @@ def demo_gui():
         add_logs()
         static.added_logs = True
 
-    rich_md.render_unindented(
+    rich_md.render(
         """
         # Graphical logger for ImGui
         This logger is adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl)

@@ -78,7 +78,7 @@ void DemoMarkdown(AppState& appState)
                 return "It's just a " + thing + ". Nothing fancy!"
             ```
         )";
-    RichMd::RenderUnindented(markdownDemo);
+    RichMd::Render(markdownDemo);
 
     // Interactive demo
     ImGui::Separator();
@@ -87,7 +87,7 @@ void DemoMarkdown(AppState& appState)
     if (ImGui::SmallButton("Edit the fortune markdown"))
         strcpy(appState.MarkdownInput, CodeUtils::UnindentMarkdown(markdownDemo).c_str());
     ImGui::InputTextMultiline("##Markdown Input", appState.MarkdownInput, sizeof(appState.MarkdownInput), HelloImGui::EmToVec2(40.f, 5.f));
-    RichMd::RenderUnindented(appState.MarkdownInput);
+    RichMd::Render(appState.MarkdownInput);
     ImGui::Separator();
 
     ShowDoc("MarkdownDoc");
@@ -211,13 +211,13 @@ std::string GetDoc(const std::string& whichDoc)
                 C++
                 ```cpp
                 RichMd::Render(markdown_string);            // render a markdown string
-                RichMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+                RichMd::Render(markdown_string);  // remove top-most indentation before rendering
                 ```
 
                 Python
                 ```python
                 imgui_md.render(markdown_string);            # render a markdown string
-                imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
+                imgui_md.render(markdown_string); # remove top-most indentation before rendering
                 ```
 
                 This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
@@ -261,7 +261,7 @@ void ShowDoc(const std::string& whichDoc)
 
     if (is_doc_visible[whichDoc])
     {
-        RichMd::RenderUnindented(GetDoc(whichDoc));
+        RichMd::Render(GetDoc(whichDoc));
         ImGui::Dummy(HelloImGui::EmToVec2(1.f, 6.f));
         ImGui::Separator();
     }

@@ -172,7 +172,7 @@ def demo_spinner():
 @immapp.static(flag=True)
 def demo_toggle():
     static = demo_toggle
-    rich_md.render_unindented(
+    rich_md.render(
         """
         # Toggle Switch
           [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
@@ -222,7 +222,7 @@ def demo_portable_file_dialogs():
 
 
     imgui.push_id("pfd")
-    rich_md.render_unindented(
+    rich_md.render(
         """
         # Portable File Dialogs
          [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides file dialogs
@@ -316,7 +316,7 @@ def demo_imfile_dialog():
     if not has_submodule("im_file_dialog"):
         return
     from imgui_bundle import im_file_dialog as ifd
-    rich_md.render_unindented(
+    rich_md.render(
         """
         # ImFileDialog
          [ImFileDialog](https://github.com/pthom/ImFileDialog.git) provides file dialogs for ImGui.
@@ -426,7 +426,7 @@ def demo_command_palette():
         init_command_palette()
         static.was_inited = True
 
-    rich_md.render_unindented(
+    rich_md.render(
         """
         # Command Palette
         [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette.git) provides a Sublime Text or VSCode style command palette in ImGui
@@ -468,7 +468,7 @@ def demo_cool_bar():
         return clicked
 
     button_labels = ["A", "B", "C", "D", "E", "F"]
-    rich_md.render_unindented(
+    rich_md.render(
         """
         # ImCoolBar
         ImCoolBar provides a dock-like Cool bar for Dear ImGui

@@ -7,7 +7,7 @@ from imgui_bundle.demos_python import demo_utils
 
 
 def demo_gui():
-    rich_md.render_unindented(
+    rich_md.render(
         """
     # imgui_tex_inspect
     [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) is a texture inspector tool for Dear ImGui

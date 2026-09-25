@@ -44,7 +44,7 @@ def load_fonts() -> None:  # called once by runner_params.callbacks.load_additio
 
 
 def gui() -> None:
-    rich_md.render_unindented(__doc__ or "")
+    rich_md.render(__doc__ or "")
     imgui.separator()
     if FONT_FILE_PRESENT:
         imgui.text(f"Loaded '{CHINESE_FONT}'. Sample text:")

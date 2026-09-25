@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def gui():
-    rich_md.render_unindented("""
+    rich_md.render("""
     # Markdown Online Images Test
 
     ## 1. PNG from URL

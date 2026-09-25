@@ -266,7 +266,7 @@ void py_init_module_rich_md(nb::module_& m)
     m.def("render_unindented",
         RichMd::RenderUnindented,
         nb::arg("markdown_string"),
-        "Same as Render (kept for compatibility)");
+        "The former name of Render");
 
     m.def("resolve_imports",
         RichMd::ResolveImports,

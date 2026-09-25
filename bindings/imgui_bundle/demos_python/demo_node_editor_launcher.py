@@ -5,7 +5,7 @@ from imgui_bundle.demos_python import demos_node_editor
 
 
 def demo_gui():
-    rich_md.render_unindented(
+    rich_md.render(
         """
     # imgui-node-editor
     [imgui-node-editor](https://github.com/thedmd/imgui-node-editor) is a zoomable and node Editor built using Dear ImGui.
@@ -15,14 +15,14 @@ def demo_gui():
     )
 
     if imgui.collapsing_header("Screenshot - BluePrint"):
-        rich_md.render_unindented(
+        rich_md.render(
             "This is a screenshot showing the possibilities of the node editor"
         )
         hello_imgui.image_from_asset(
             "images/node_editor_screenshot.jpg", immapp.em_to_vec2(40, 0)
         )
     if imgui.collapsing_header("Screenshot - Image editing"):
-        rich_md.render_unindented(
+        rich_md.render(
             "This is another screenshot showing the possibilities of the node editor, when combined with immvision"
         )
         hello_imgui.image_from_asset(
