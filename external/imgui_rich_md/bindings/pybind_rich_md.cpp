@@ -252,7 +252,7 @@ void py_init_module_rich_md(nb::module_& m)
     m.def("render_mermaid",
         RichMd::RenderMermaid,
         nb::arg("source"),
-        " Renders a Mermaid diagram (flowchart, sequence or class diagram), as ```mermaid blocks do. A diagram that\n cannot be parsed is shown as code, with the error below it; so is any diagram when the library is built\n without IMGUI_RICHMD_WITH_MERMAID.");
+        " Renders a Mermaid diagram (flowchart, sequence or class diagram), as ```mermaid blocks do. A diagram that\n cannot be parsed is shown as code, with the error below it; so is any diagram when the library is built\n without IMGUI_RICHMD_WITH_MERMAID.\n Limitations: a subset of Mermaid, for small and medium diagrams, with its own layout (not a copy of\n mermaid.js) and the colors of the ImGui style. The other diagram types, styles (classDef, style), click,\n themes, front matter and markdown in labels are not supported. Details: docs/mermaid.md in imgui_rich_md.");
 
     m.def("get_code_font",
         RichMd::GetCodeFont);
