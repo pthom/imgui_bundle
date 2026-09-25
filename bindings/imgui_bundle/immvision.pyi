@@ -477,8 +477,18 @@ class ImageParams:
     # MouseInformation MouseInfo = MouseInformation();    /* original C++ signature */
     # Mouse position information. These values are filled after displaying an image
     mouse_info: MouseInformation = MouseInformation()
+    # ImVec2 ImageScreenTopLeft = ImVec2(0.f, 0.f);    /* original C++ signature */
+    # Screen position (ImGui screen coordinates) of the top left corner of the image display area,
+    # filled after displaying an image (see ImageToScreen)
+    image_screen_top_left: ImVec2 = ImVec2(0.0, 0.0)
 
-    # ImageParams(bool RefreshImage = false, Size ImageDisplaySize = (0, 0), Matrix33d ZoomPanMatrix = [[1,0,0],[0,1,0],[0,0,1]], std::string ZoomKey = "", ImageInterpolationMode InterpolationMode = ImageInterpolationMode::Adaptive, ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<Point> WatchedPixels = std::vector<Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation());    /* original C++ signature */
+    # IMMVISION_API ImVec2 ImageToScreen(ImVec2 imagePoint) const;    /* original C++ signature */
+    def image_to_screen(self, image_point: ImVec2Like) -> ImVec2:
+        """The screen position of a point of the image (in image coordinates), with the current zoom and pan:
+        to draw over the image, e.g. with ImGui::GetWindowDrawList(). Valid once the image was displayed.
+        """
+        pass
+    # ImageParams(bool RefreshImage = false, Size ImageDisplaySize = (0, 0), Matrix33d ZoomPanMatrix = [[1,0,0],[0,1,0],[0,0,1]], std::string ZoomKey = "", ImageInterpolationMode InterpolationMode = ImageInterpolationMode::Adaptive, ColormapSettingsData ColormapSettings = ColormapSettingsData(), std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, std::vector<Point> WatchedPixels = std::vector<Point>(), bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, MouseInformation MouseInfo = MouseInformation(), ImVec2 ImageScreenTopLeft = ImVec2(0.f, 0.f));    /* original C++ signature */
     def __init__(
         self,
         refresh_image: bool = False,
@@ -507,6 +517,7 @@ class ImageParams:
         add_watched_pixel_on_double_click: bool = True,
         highlight_watched_pixels: bool = True,
         mouse_info: Optional[MouseInformation] = None,
+        image_screen_top_left: Optional[ImVec2Like] = None,
     ) -> None:
         """Auto-generated default constructor with named params
 
@@ -517,6 +528,7 @@ class ImageParams:
                 * ColormapSettings: ColormapSettingsData()
                 * WatchedPixels: List[Point]()
                 * MouseInfo: MouseInformation()
+                * ImageScreenTopLeft: ImVec2(0., 0.)
         """
         pass
 
