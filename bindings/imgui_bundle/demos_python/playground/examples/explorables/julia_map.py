@@ -20,6 +20,7 @@ r"""::md Story
 Both pictures iterate the same rule, $z \leftarrow z^2 + c$, and color each pixel by how fast $z$ escapes.
 On the left, $c$ is the pixel and $z$ starts at $0$. On the right, $c$ is fixed and $z$ starts at the pixel.
 **Click anywhere on the left picture to choose $c$**: the Julia set on the right is the one for that $c$.
+Or pick a famous value in the list on the right: hover a name to read its story.
 
 <!-- A widget: the program draws it with maps_widget() (the two pictures, and the value of c) -->
 ```widget
@@ -63,7 +64,7 @@ A Julia set is connected exactly when its $c$ belongs to the Mandelbrot set.
 # ruff: noqa: E402  # Allow imports to come after the story
 from typing import Callable
 import numpy as np
-from imgui_bundle import imgui, immapp, immvision, rich_md
+from imgui_bundle import imgui, immapp, immvision, rich_md, em_size
 
 
 # Below is an example of a documented function via narrative programming:
@@ -207,6 +208,50 @@ class State:
 state = State()
 
 
+# Well-known values of c: their names, and what they are known for (shown in a tooltip)
+FAMOUS_C: dict[str, tuple[complex, str]] = {
+    "Circle": (0j, "The simplest case: z is squared. The Julia set is the unit circle: inside it, points fall to 0; "
+                   "outside, they escape to infinity."),
+    "Siegel disk": (-0.3905408702 - 0.5867879073j,
+                    "On the edge of the cardioid, at the golden mean angle. Around a fixed point, the map turns the "
+                    "plane by an irrational angle: Carl Ludwig Siegel proved in 1942 that such a turning disk exists. "
+                    "The Julia set is its wrinkled border."),
+    "Douady rabbit": (-0.122561 + 0.744862j,
+                      "The center of the period 3 bulb, at the top of the cardioid: the inside of the Julia set turns "
+                      "in three steps, ear after ear. Named after Adrien Douady, who explored the Mandelbrot set with "
+                      "John Hubbard in the 1980s."),
+    "Basilica": (-1 + 0j, "The center of the period 2 bulb: 0 goes to -1, and back. Its bulbs, stacked like domes, "
+                          "gave the Julia set its name."),
+    "San Marco": (-0.75 + 0j, "Where the cardioid meets the period 2 bulb. Benoit Mandelbrot called its Julia set the "
+                              "San Marco dragon: its outline recalls the Basilica of San Marco in Venice, reflected "
+                              "in the flooded square."),
+    "Cauliflower": (0.25 + 0j, "The cusp of the cardioid. A step further right on the real axis, the Julia set "
+                               "bursts into dust: the parabolic implosion, studied by Douady and Pierre Lavaurs."),
+    "Airplane": (-1.754877666 + 0j, "The center of the period 3 window of the real axis: the case of Li and Yorke's "
+                                    "\"period three implies chaos\" (1975), for the logistic map."),
+    "Feigenbaum point": (-1.401155189 + 0j,
+                         "Where the period doublings of the real axis (2, 4, 8...) pile up. Mitchell Feigenbaum found "
+                         "in 1975 that their spacing shrinks by a universal factor, 4.669..., the same for many maps."),
+    "Seahorse valley": (-0.75 + 0.11j, "The crack between the cardioid and the period 2 bulb: zoom into the map, "
+                                       "seahorse tails curl everywhere. Just outside the set, the Julia set is dust, "
+                                       "in double spirals."),
+    "Elephant valley": (0.285 + 0.01j, "Near the cusp of the cardioid: the map shows rows of elephant trunks. Just "
+                                       "outside the set, the Julia set is dust, in the same shapes."),
+    "Triple spiral valley": (-0.088 + 0.654j, "Between the cardioid and the period 3 bulb: spirals with three arms. "
+                                              "Just outside the set, the Julia set is dust, in triple spirals."),
+    "Dendrite": (1j, "0 goes to i, then -1+i, -i, -1+i, -i...: it lands on a cycle, so c is a Misiurewicz point. The "
+                     "Julia set has no inside: a tree of branches, a dendrite."),
+    "Misiurewicz point": (-0.10109636384562 + 0.95628651080914j,
+                          "0 lands on a fixed point after three steps (after Michal Misiurewicz, 1981). Tan Lei proved "
+                          "in 1990 that near such a point, the map and the Julia set look alike: tick \"zoom with the "
+                          "map\" and zoom in here."),
+    "Segment": (-2 + 0j, "The tip of the antenna. The Julia set is the interval [-2, 2]: with z = 2 cos t, the map "
+                         "z*z - 2 is 2 cos 2t, a Chebyshev polynomial."),
+    "Cantor dust": (0.5 + 0j, "Outside the Mandelbrot set: the orbit of 0 escapes. Fatou and Julia proved around 1919 "
+                              "that the Julia set is then a dust of points (a Cantor set), and otherwise connected."),
+}
+
+
 def maps_widget() -> None:
     """The two pictures side by side: a click on the map chooses c (a drag pans it)"""
     imgui.begin_group()
@@ -227,6 +272,21 @@ def maps_widget() -> None:
         state.follow_map()
     state.julia.show()
     _, state.julia_follows_map = imgui.checkbox("zoom with the map", state.julia_follows_map)
+    imgui.end_group()
+    imgui.same_line()
+    imgui.begin_group()
+    imgui.text("Famous values of c")
+    height = (len(FAMOUS_C) + 0.5) * imgui.get_text_line_height_with_spacing()  # every name, no scrolling
+    if imgui.begin_list_box("##famous c", imgui.ImVec2(em_size(11), height)):
+        for name, (c, story) in FAMOUS_C.items():
+            if imgui.selectable(name, state.c == c)[0]:
+                state.choose_c(c)
+            if imgui.begin_item_tooltip():
+                imgui.push_text_wrap_pos(em_size(24))
+                imgui.text_unformatted(f"c = {c.real:g} {c.imag:+g} i\n\n{story}")
+                imgui.pop_text_wrap_pos()
+                imgui.end_tooltip()
+        imgui.end_list_box()
     imgui.end_group()
 
 
