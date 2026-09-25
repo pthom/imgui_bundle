@@ -15,7 +15,7 @@
 #include <nanobind/ndarray.h>
 
 #include "imgui_rich_md/rich_md.h"
-#include "imgui_rich_md/rich_md_internal.h"  // RichMd::Context (opaque in Python)
+#include "imgui_rich_md/internal/rich_md_internal.h"  // RichMd::Context (opaque in Python)
 namespace nb = nanobind;
 
 
@@ -86,6 +86,17 @@ void py_init_module_rich_md(nb::module_& m)
 
 
     ////////////////////    <generated_from:rich_md.h>    ////////////////////
+    m.def("render",
+        RichMd::Render,
+        nb::arg("markdown_string"),
+        " Renders a markdown string. Its common indentation is removed first (so that a string written\n inside an indented function renders as expected; no-op on flush-left text), then its transclusions\n are resolved (see ResolveTransclusions; the files are read through the host's ReadAsset).");
+
+    m.def("render_raw",
+        RichMd::RenderRaw,
+        nb::arg("markdown_string"),
+        "Renders a markdown string as is (no unindent, no transclusion)");
+
+
     auto pyClassMarkdownFontOptions =
         nb::class_<RichMd::MarkdownFontOptions>
             (m, "MarkdownFontOptions", "")
@@ -115,15 +126,6 @@ void py_init_module_rich_md(nb::module_& m)
         ;
 
 
-    auto pyClassSizedFont =
-        nb::class_<RichMd::SizedFont>
-            (m, "SizedFont", " Note: Since v1.92, Fonts can be displayed at any size:\n in order to display a font at a given size, we need to call\n   ImGui::PushFont(font, size) (or call separately ImGui::PushFontSize)")
-        .def(nb::init<>()) // implicit default constructor
-        .def_rw("font", &RichMd::SizedFont::font, "")
-        .def_rw("size", &RichMd::SizedFont::size, "")
-        ;
-
-
     m.def("on_image_default",
         RichMd::OnImage_Default, nb::arg("image_path"));
 
@@ -139,7 +141,7 @@ void py_init_module_rich_md(nb::module_& m)
         .def_rw("on_image", &RichMd::MarkdownCallbacks::OnImage, "The default version will load the image as a cached texture and display it")
         .def_rw("on_html_div", &RichMd::MarkdownCallbacks::OnHtmlDiv, " OnHtmlDiv does nothing by default, by you could write:\n     In  C++:\n        markdownOptions.callbacks.onHtmlDiv = [](const std::string& divClass, bool openingDiv)\n        {\n            if (divClass == \"red\")\n            {\n                if (openingDiv)\n                    ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 0, 0, 255));\n                else\n                    ImGui::PopStyleColor();\n            }\n        };\n     In  Python:\n        def on_html_div(div_class: str, opening_div: bool) -> None:\n            if div_class == 'red':\n                if opening_div:\n                    imgui.push_style_color(imgui.Col_.text.value, imgui.ImColor(255, 0, 0, 255).value)\n                else:\n                    imgui.pop_style_color()\n        md_options = rich_md.MarkdownOptions()\n        md_options.callbacks.on_html_div = on_html_div\n        immapp.run(\n            gui_function=gui, with_markdown_options=md_options #, more options here\n        )")
         .def_rw("on_html_span", &RichMd::MarkdownCallbacks::OnHtmlSpan, " OnHtmlSpan: optional callback for inline HTML tags encountered in\n markdown text (one call per open/close tag; e.g. \"sub\", \"sup\",\n \"kbd\", \"mark\", or any custom tag).\n Return True to indicate the tag was fully handled, False to let\n the built-in renderer apply its default rendering (if any).\n Example (C++):\n   callbacks.OnHtmlSpan = [](const std::string& tag, bool opening) {\n       if (tag == \"small\") {\n         // ... push/pop a smaller font\n           return True;\n       }\n       return False;\n   };")
-        .def_rw("can_use_child_windows", &RichMd::MarkdownCallbacks::CanUseChildWindows, " CanUseChildWindows: callback that tells whether child windows can be used at this moment (empty by default, which means yes).\n Code blocks are rendered inside a child window. Where child windows do not work (e.g. inside the canvas of\n imgui-node-editor), return False: code blocks are then rendered as inline code.\n ImmApp fills it when the node editor is available.")
+        .def_rw("can_use_child_windows", &RichMd::MarkdownCallbacks::CanUseChildWindows, " CanUseChildWindows: callback that tells whether child windows can be used at this moment (empty by default,\n which means yes).\n Code blocks are rendered inside a child window. Where child windows do not work (e.g. inside the canvas of\n imgui-node-editor), return False: code blocks are then rendered as inline code.\n ImmApp fills it when the node editor is available.")
         .def_rw("on_wiki_link", &RichMd::MarkdownCallbacks::OnWikiLink, " OnWikiLink: a wikilink [[target]] or [[target|label]] was clicked. Wikilinks are parsed only\n when this callback is set.")
         .def_rw("on_heading", &RichMd::MarkdownCallbacks::OnHeading, " OnHeading: called after each heading is rendered, with its level (1 to 6) and its text\n (without markup): for a table of contents, or scrolling to an anchor.")
         ;
@@ -221,57 +223,15 @@ void py_init_module_rich_md(nb::module_& m)
     m.def("get_current_context",
         RichMd::GetCurrentContext, nb::rv_policy::reference);
 
-    m.def("initialize_markdown",
-        [](const std::optional<const RichMd::MarkdownOptions> & options = std::nullopt)
-        {
-            auto InitializeMarkdown_adapt_mutable_param_with_default_value = [](const std::optional<const RichMd::MarkdownOptions> & options = std::nullopt)
-            {
-
-                const RichMd::MarkdownOptions& options_or_default = [&]() -> const RichMd::MarkdownOptions {
-                    if (options.has_value())
-                        return options.value();
-                    else
-                        return RichMd::MarkdownOptions();
-                }();
-
-                RichMd::InitializeMarkdown(options_or_default);
-            };
-
-            InitializeMarkdown_adapt_mutable_param_with_default_value(options);
-        },
-        nb::arg("options").none() = nb::none(),
-        "Python bindings defaults:\n    If options is None, then its default value will be: MarkdownOptions()");
-
-    m.def("de_initialize_markdown",
-        RichMd::DeInitializeMarkdown);
-
     m.def("set_assets_folder",
         RichMd::SetAssetsFolder,
         nb::arg("folder"),
         " The folder where the default host reads the assets (fonts, images) from the file system,\n when they are not embedded in the binary. Default: the current directory.");
 
-    m.def("get_font_loader_function",
-        RichMd::GetFontLoaderFunction, " Legacy: the fonts now load at the first Render(). The returned function loads them right away,\n for hosts that build their font atlas once (no dynamic fonts).");
-
-    m.def("render",
-        RichMd::Render,
-        nb::arg("markdown_string"),
-        " Renders a markdown string. Its common indentation is removed first (so that a string written\n inside an indented function renders as expected; no-op on flush-left text), then its transclusions\n are resolved (see ResolveTransclusions; the files are read through the host's ReadAsset).");
-
-    m.def("render_raw",
-        RichMd::RenderRaw,
-        nb::arg("markdown_string"),
-        "Renders a markdown string as is (no unindent, no transclusion)");
-
-    m.def("render_unindented",
-        RichMd::RenderUnindented,
-        nb::arg("markdown_string"),
-        "The former name of Render");
-
     m.def("resolve_transclusions",
         RichMd::ResolveTransclusions,
         nb::arg("markdown"), nb::arg("read_file"), nb::arg("current_file") = "",
-        " Narrative programming: sections of source files, transcluded into markdown\n ---------------------------------------------------------------------------\n A source file (C, C++, GLSL, JavaScript, Python) names parts of itself with annotations:\n   // ::md Area                    a markdown section, in line comments (// or #)\n   // The area of a *circle*.\n   // ::code                      its associated code\n     float Area(float r) { return 3.14159 * r * r; }\n   // ::endcode                   closes the code and the section\n\n   // ::md Intro                   a section without code is closed by ::endmd\n   // # Circles\n   // ::endmd\n\n   // ::code Main loop             a named code region (regions may nest)\n     for (int i = 0; i < n; ++i) {}\n   // ::endcode\n A section may also be a block comment or a Python string (triple quotes) whose first line is \"::md Name\"\n after the opener: it ends with the comment or the string, or continues into the code after it when its\n last line is \"::code\".\n A markdown text transcludes them with an embed alone on its line (Obsidian's syntax):\n     ![[circle.cpp#Area]]            the prose of a section\n     ![[circle.cpp#Area#code]]       its associated code, as a code block\n     ![[circle.cpp#Main loop]]       a code region\n     ![[#Area]]                      a section of the current file: a source file can be its own narrative\n     ![[circle.cpp]]                 a whole source file, as code\n     ![[notes.md]]                   a markdown document, whole...\n     ![[notes.md#Setup#Linux]]       ...or under a heading (Linux, under Setup)\n Paths are relative to the file holding the embed (a text without a file: the assets, then the file system).\n Transclusions resolve recursively. An error (a missing file or name, a malformed annotation, a cycle)\n renders the embed in the error color, with the reason as a tooltip.\n Specification: docs/narrative_programming/narrative_programming_spec.md\n\n ResolveTransclusions replaces the embeds of a markdown text: readFile reads a file (or returns std::nullopt);\n currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.");
+        " ResolveTransclusions replaces the embeds of a markdown text: readFile reads a file (or returns std::nullopt);\n currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.");
 
     m.def("render_file",
         RichMd::RenderFile,
@@ -287,6 +247,21 @@ void py_init_module_rich_md(nb::module_& m)
         RichMd::RenderMermaid,
         nb::arg("source"),
         " Renders a Mermaid diagram (flowchart, sequence or class diagram), as ```mermaid blocks do. A diagram that\n cannot be parsed is shown as code, with the error below it; so is any diagram when the library is built\n without IMGUI_RICHMD_WITH_MERMAID.\n Limitations: a subset of Mermaid, for small and medium diagrams, with its own layout (not a copy of\n mermaid.js) and the colors of the ImGui style. The other diagram types, styles (classDef, style), click,\n themes, front matter and markdown in labels are not supported. Details: docs/mermaid.md in imgui_rich_md.");
+
+    m.def("render_text_as_link",
+        RichMd::RenderTextAsLink,
+        nb::arg("text"), nb::arg("url"),
+        "Renders a link with the given text and url. Can be used outside of markdown rendering.");
+
+
+    auto pyClassSizedFont =
+        nb::class_<RichMd::SizedFont>
+            (m, "SizedFont", " Note: Since v1.92, Fonts can be displayed at any size:\n in order to display a font at a given size, we need to call\n   ImGui::PushFont(font, size) (or call separately ImGui::PushFontSize)")
+        .def(nb::init<>()) // implicit default constructor
+        .def_rw("font", &RichMd::SizedFont::font, "")
+        .def_rw("size", &RichMd::SizedFont::size, "")
+        ;
+
 
     m.def("get_code_font",
         RichMd::GetCodeFont);
@@ -318,10 +293,37 @@ void py_init_module_rich_md(nb::module_& m)
     m.def("has_code_editor",
         RichMd::HasCodeEditor, "code blocks with syntax highlighting (else plain monospaced blocks)");
 
-    m.def("render_text_as_link",
-        RichMd::RenderTextAsLink,
-        nb::arg("text"), nb::arg("url"),
-        "Renders a link with the given text and url. Can be used outside of markdown rendering.");
+    m.def("initialize_markdown",
+        [](const std::optional<const RichMd::MarkdownOptions> & options = std::nullopt)
+        {
+            auto InitializeMarkdown_adapt_mutable_param_with_default_value = [](const std::optional<const RichMd::MarkdownOptions> & options = std::nullopt)
+            {
+
+                const RichMd::MarkdownOptions& options_or_default = [&]() -> const RichMd::MarkdownOptions {
+                    if (options.has_value())
+                        return options.value();
+                    else
+                        return RichMd::MarkdownOptions();
+                }();
+
+                RichMd::InitializeMarkdown(options_or_default);
+            };
+
+            InitializeMarkdown_adapt_mutable_param_with_default_value(options);
+        },
+        nb::arg("options").none() = nb::none(),
+        "Python bindings defaults:\n    If options is None, then its default value will be: MarkdownOptions()");
+
+    m.def("de_initialize_markdown",
+        RichMd::DeInitializeMarkdown);
+
+    m.def("render_unindented",
+        RichMd::RenderUnindented,
+        nb::arg("markdown_string"),
+        "The former name of Render");
+
+    m.def("get_font_loader_function",
+        RichMd::GetFontLoaderFunction, " Legacy: the fonts now load at the first Render(). The returned function loads them right away,\n for hosts that build their font atlas once (no dynamic fonts).");
     ////////////////////    </generated_from:rich_md.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end

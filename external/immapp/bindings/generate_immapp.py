@@ -19,7 +19,8 @@ def main() -> None:
 
     # Configure options
     options = litgen.LitgenOptions()
-    options.comments_exclude_lines_regex = r"^\s*::(md|code|endcode|endmd)(\s|$)"  # the narrative programming directives
+    # the narrative programming directives (::md, ::code, ::endcode, ::endmd, also after a "/*") and the lone "*/"
+    options.comments_exclude_lines_regex = r"^\s*(/\*)?::(md|code|endcode|endmd)(\s|$)|^\s*\*/\s*$"
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 

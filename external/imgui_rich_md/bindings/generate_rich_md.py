@@ -22,6 +22,8 @@ def main() -> None:
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
     options.namespaces_root = ["RichMd"]
+    # the narrative programming directives (::md, ::code, ::endcode, ::endmd, also after a "/*") and the lone "*/"
+    options.comments_exclude_lines_regex = r"^\s*(/\*)?::(md|code|endcode|endmd)(\s|$)|^\s*\*/\s*$"
     options.python_run_black_formatter = True
     options.value_replacements.add_last_replacement(
         "OnOpenLink_Default", "on_open_link_default"
@@ -41,9 +43,9 @@ def main() -> None:
     options.fn_exclude_by_name__regex = r"^FillFromData$|^GetStyle$"
     # rich_md_host.h: the host services are C++ only, except the download types (used by set_download_function)
     options.fn_exclude_by_name__regex += r"|^UploadRgbaDefault$|^ReadAssetDefault$|^SetHostServices$|^GetHostServices$"
-    options.class_exclude_by_name__regex = r"^HostServices$|^MarkdownTexture$|^LatexBitmap$|^EmbeddedAsset$"
+    options.class_exclude_by_name__regex = r"^HostServices$|^MarkdownTexture$|^LatexBitmap$|^EmbeddedAsset$|^Style$"
 
-    # Context: opaque in Python (its definition, in rich_md_internal.h, is not bound)
+    # Context: opaque in Python (its definition, in internal/rich_md_internal.h, is not bound)
     options.custom_bindings.add_custom_bindings_to_main_module(
         stub_code='''
             class Context:
