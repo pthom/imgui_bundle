@@ -20,7 +20,8 @@ r"""::md Story
 Both pictures iterate the same rule, $z \leftarrow z^2 + c$, and color each pixel by how fast $z$ escapes.
 On the left, $c$ is the pixel and $z$ starts at $0$. On the right, $c$ is fixed and $z$ starts at the pixel.
 **Click anywhere on the left picture to choose $c$**: the Julia set on the right is the one for that $c$.
-Or pick a famous value in the list on the right: hover a name to read its story.
+Or pick a famous value in the list on the right, and watch the Julia set change on the way: hover a name to read
+its story.
 
 <!-- A widget: the program draws it with maps_widget() (the two pictures, and the value of c) -->
 ```widget
@@ -64,7 +65,7 @@ A Julia set is connected exactly when its $c$ belongs to the Mandelbrot set.
 # ruff: noqa: E402  # Allow imports to come after the story
 from typing import Callable
 import numpy as np
-from imgui_bundle import imgui, immapp, immvision, rich_md, em_size
+from imgui_bundle import imgui, immapp, immvision, rich_md, em_size, hello_imgui
 
 
 # Below is an example of a documented function via narrative programming:
@@ -118,6 +119,7 @@ def julia_image(c: complex, size: int, max_iter: int, window_re: Window, window_
 
 # The widgets that the story places in its ```widget blocks
 SIZE = 300  # the pictures, in pixels
+JOURNEY_SECONDS = 1.5  # the way to a famous value of c
 
 
 class PlaneView:
@@ -180,6 +182,7 @@ class State:
         self.max_iter = 80
         self.c = complex(-0.8, 0.156)
         self.julia_follows_map = False
+        self.journey: tuple[complex, complex, float] | None = None  # from, to, start time: the way to a famous c
         self.map = PlaneView("Mandelbrot", MANDEL_RE, MANDEL_IM,
                              lambda re, im: mandelbrot_image(SIZE, self.max_iter, re, im))
         self.julia = PlaneView("Julia", JULIA_RE, JULIA_IM,
@@ -189,6 +192,21 @@ class State:
         self.c = c
         if not self.julia_follows_map:
             self.julia.refresh()  # else follow_map() will
+
+    def go_to(self, c: complex) -> None:
+        """Moves c to a value in a straight line: the Julia set changes on the way"""
+        self.journey = (self.c, c, imgui.get_time())
+
+    def travel(self) -> None:
+        """Each frame: the next step of the journey"""
+        if self.journey is not None:
+            start, target, start_time = self.journey
+            t = min((imgui.get_time() - start_time) / JOURNEY_SECONDS, 1.0)
+            eased = t * t * (3 - 2 * t)  # slow at both ends
+            self.choose_c(target if t == 1.0 else start + (target - start) * eased)
+            if t == 1.0:
+                self.journey = None
+        hello_imgui.get_runner_params().fps_idling.enable_idling = self.journey is None  # a smooth journey
 
     def follow_map(self) -> None:
         """The Julia set around z = c, at the scale of the map: where the two sets look alike"""
@@ -254,6 +272,7 @@ FAMOUS_C: dict[str, tuple[complex, str]] = {
 
 def maps_widget() -> None:
     """The two pictures side by side: a click on the map chooses c (a drag pans it)"""
+    state.travel()
     imgui.begin_group()
     x, y = state.map.to_pixel(state.c)
     state.map.params.watched_pixels = [(x, y)] if 0 <= x < SIZE and 0 <= y < SIZE else []  # c, when in view
@@ -261,6 +280,7 @@ def maps_widget() -> None:
     mouse = state.map.params.mouse_info
     drag = imgui.get_mouse_drag_delta(0)  # stays (0, 0) until the mouse moves past the drag threshold
     if mouse.is_mouse_hovering and imgui.is_mouse_released(0) and drag.x == 0 and drag.y == 0:
+        state.journey = None  # a click jumps there
         state.choose_c(state.map.to_plane(*mouse.mouse_position))
     pixel = (state.map.window_re[1] - state.map.window_re[0]) / SIZE
     digits = max(3, int(np.ceil(-np.log10(pixel))))  # enough to tell two pixels of the map apart
@@ -280,7 +300,7 @@ def maps_widget() -> None:
     if imgui.begin_list_box("##famous c", imgui.ImVec2(em_size(11), height)):
         for name, (c, story) in FAMOUS_C.items():
             if imgui.selectable(name, state.c == c)[0]:
-                state.choose_c(c)
+                state.go_to(c)
             if imgui.begin_item_tooltip():
                 imgui.push_text_wrap_pos(em_size(24))
                 imgui.text_unformatted(f"c = {c.real:g} {c.imag:+g} i\n\n{story}")
