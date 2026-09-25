@@ -3,14 +3,15 @@
 This file is its own narrative (narrative programming, see imgui_rich_md): its ::md sections are markdown, next to
 the code they explain. It also shows a specific use of it: the markdown places the widgets.
 
-The Story section below draws the **whole** GUI, except the full code at the bottom: its prose, the other sections
-it transcludes with their code, and the widgets. A widget is a fenced block of the language "widget", such as
+The "::md Story" section below draws the **whole** GUI, except the full code at the bottom:
+- Its markdown will be rendered by a call to `rich_md.render_this_file("Story")`
+- It includes widgets via fenced blocks of the language "widget", such as
     ```widget
     maps
     ```
 which the program draws with maps_widget() (see WIDGETS, and register_fenced_block_renderer() in gui()).
 
-Edit the story while the program runs: it follows the file.
+Edit the story while the program runs: on the desktop, it will automatically display the updated story upon saving!
 """
 
 
@@ -30,21 +31,34 @@ On the left, $c$ is the pixel and $z$ starts at $0$. On the right, $c$ is fixed 
 maps
 ```
 
+## Navigate in the sets
 Zoom into either picture with the mouse wheel, and drag it to move around: it is computed again for the part you
-see, so new details keep appearing (until a zoom of about 10 000, where the single precision of the computation
-shows). **Full view** brings back the whole picture.
+see, so new details keep appearing, until a zoom of about 10 000 (the limit of single precision). **Full view**
+brings back the whole picture.
+
+## Iterations
+Set the maximum number of iterations (see `max_iter` in `escape_time` below), and watch the fine details of the
+boundary appear:
+```widget
+budget
+```
 
 ## Why the boundary matters
-A Julia set is connected exactly when its $c$ belongs to the Mandelbrot set. Click just inside the big
-cardioid, then just outside: the set shatters into dust. Click along the boundary: each Julia set looks
-like the region of the map around its $c$, spirals for spirals, antennae for antennae. That is the
-sense in which the Mandelbrot set is a map.
+A Julia set is connected exactly when its $c$ belongs to the Mandelbrot set.
 
-To see it, tick **zoom with the map**: the Julia set is then shown around the point $c$, at the scale of the map.
-Zoom into the map at the tip of an antenna, or where branches meet, and click there: the two pictures look alike.
+**Try this**
+* Click just inside the big cardioid, then just outside: the set shatters into dust.
+* Click along the boundary: each Julia set looks like the region of the map around its $c$, spirals for spirals,
+  antennae for antennae (that is the sense in which the Mandelbrot set is a map).
+* Tick **zoom with the map**: the Julia set is then shown around the point $c$, at the scale of the map.
+  Zoom into the map at the tip of an antenna, or where branches meet, and click there: the two pictures look alike.
+
+
 ## How the pictures are computed
+
 ![[#Escape]]
 ![[#Escape#code]]
+
 ![[#Mandelbrot]]
 ![[#Mandelbrot#code]]
 ![[#Julia]]
@@ -54,11 +68,7 @@ Zoom into the map at the tip of an antenna, or where branches meet, and click th
 r"""::md Escape
 ### Escape time
 Iterate $z \leftarrow z^2 + c$ and count the steps until $|z| > 2$, after which $z$ flies to infinity.
-A point that survives the whole budget is considered in the set. The normalized count is the color.
-Change the budget, and watch the fine details of the boundary appear:
-```widget
-budget
-```
+A point that survives all `max_iter` iterations is considered in the set. The normalized count is the color.
 ::code
 """
 def escape_time(z: np.ndarray, c: np.ndarray, max_iter: int) -> np.ndarray:
