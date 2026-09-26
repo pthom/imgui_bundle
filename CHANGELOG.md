@@ -19,6 +19,22 @@ library that works on stock Dear ImGui. Existing code keeps working:
 - CMake: the option `IMGUI_BUNDLE_WITH_IMGUI_MD` becomes `IMGUI_BUNDLE_WITH_IMGUI_RICH_MD`; the former name still works,
   with a deprecation warning.
 
+What else rich_md brings:
+
+- **Narrative programming**: a source file can carry its own narrative. `::md Name` sections in comments or strings,
+  `::code` regions, and transclusions (`![[file#Name]]`, `![[#Name#code]]`) resolved by `Render()`;
+  `rich_md.render_this_file("Name")` (C++: `RICHMD_RENDER_THIS_FILE`) renders a section of the calling file, and follows
+  the file when it changes. Spec: imgui_rich_md's `docs/narrative_programming`. Example: the Julia map explorable
+  (playground).
+- **Selectable text**: select with the mouse (double click: a word, triple click: a paragraph), copy with Ctrl+C /
+  Cmd+C; a right click opens a menu (Copy, Copy as Markdown, Select All, Copy Link). `MarkdownOptions.selectable_text`,
+  `push_selectable_text()` / `pop_selectable_text()`, `set_selectable_text_default()` turn it off. Links open on release.
+- **Mermaid** diagrams, drawn natively (a subset of Mermaid: flowcharts, sequence and class diagrams).
+- **Widgets in the text**: `register_fenced_block_renderer("lang", fn)` draws a fenced block of that language.
+- **Layout**: a gap between paragraphs; `<br/>` and `<br />`; HTML comments are not shown; code blocks follow the
+  indent of quotes and lists; long code blocks can be scrolled.
+- **Browser (Emscripten, Pyodide)**: on a Mac, Cmd acts as Ctrl (Cmd+C copies), in every widget (hello_imgui).
+
 ## Updated Dear ImGui to v1.93.0 WIP
 
 Dear ImGui is updated to the tip of its `docking` branch (v1.93.0 WIP), and ImGui Test Engine to the tip of its `main` branch.

@@ -96,7 +96,7 @@ function(iex_add_imgui_explorer_lib)
         ${src}/imgui_explorer.h
     )
     target_link_libraries(imgui_explorer_lib PUBLIC
-        imgui implot implot3d hello_imgui immapp imgui_color_text_edit imgui_md)
+        imgui implot implot3d hello_imgui immapp imgui_color_text_edit imgui_rich_md)
     if(IMGUI_BUNDLE_WITH_IMANIM)
         target_link_libraries(imgui_explorer_lib PUBLIC imanim)
         if(IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS)
