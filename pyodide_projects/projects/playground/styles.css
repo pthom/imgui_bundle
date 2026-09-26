@@ -128,6 +128,13 @@ html, body {
     color: #ddd;
 }
 
+.examples-detail-picture {
+    display: block;
+    max-width: 100%;
+    margin-bottom: 12px;
+    border-radius: 4px;
+}
+
 .examples-detail-title {
     margin-bottom: 8px;
     font-size: 1.1em;

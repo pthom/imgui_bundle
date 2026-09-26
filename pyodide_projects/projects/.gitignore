@@ -1,2 +1,4 @@
 local_wheels/imgui_bundle*.whl
+# A link to the website resources (docs/clone_website_resources/...), to see the examples' pictures locally
+resources
 
