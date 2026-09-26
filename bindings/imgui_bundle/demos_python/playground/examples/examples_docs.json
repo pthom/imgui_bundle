@@ -91,8 +91,8 @@
     "title": "Render a 3D cube with WebGL from Python, and display it in an ImGui window",
     "text": "The cube is rendered with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture,\nthen shown by `imgui.image()`: no copy between the GPU and the CPU at each frame."
   },
-  "webaudio_minimal_beep.py": {
-    "title": "WebAudio: minimal beep, a Pyodide sanity check.",
-    "text": "**Pyodide only.** Calls the browser's [WebAudio\nAPI](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) from Python, through\n[Pyodide](https://pyodide.org)'s `js` interop. Click **Beep** to hear a short sine tone; sliders set its\nfrequency and duration."
+  "webaudio_synth.py": {
+    "title": "WebAudio synthesizer: a piano, four tunes, and a scope.",
+    "text": "**Pyodide only.** A small synthesizer written in Python, which plays through the browser's\n[WebAudio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API), via [Pyodide](https://pyodide.org)'s\n`js` interop. Play the piano with the mouse or the computer keyboard, or let it play a tune. Pick a waveform, add\nsome echo, and watch the scope."
   }
 }

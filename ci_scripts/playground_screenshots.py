@@ -103,7 +103,7 @@ SHOTS: dict[str, Shot] = {
 BROWSER_SHOTS: dict[str, Box] = {
     "webgl_minimal_mandelbrot.py": (0.254, 0.063, 1.0, 1.0),
     "webgl_texture_in_image.py": (0.254, 0.063, 0.714, 0.733),
-    "webaudio_minimal_beep.py": (0.254, 0.063, 0.814, 0.206),
+    "webaudio_synth.py": (0.254, 0.063, 1.0, 1.0),
 }
 
 

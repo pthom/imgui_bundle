@@ -173,8 +173,8 @@
             "category": "In the browser"
         },
         {
-            "label": "WebAudio minimal beep",
-            "filename": "webaudio_minimal_beep.py",
+            "label": "WebAudio synthesizer",
+            "filename": "webaudio_synth.py",
             "category": "In the browser"
         }
     ]
