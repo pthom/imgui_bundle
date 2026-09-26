@@ -47,19 +47,14 @@ import numpy as np
 
 
 
-def download_random_image() -> ImageU8:
+def download_random_image(url: str|None = None) -> ImageU8:
     """Each run downloads a different random image from [picsum.photos](https://picsum.photos/)
 
     > [!TIP]
     > * Inside "Dear ImGui Bundle Playground", click the "Run" button to download a new image!
     > * Zoom the image with the wheel, and pan it by dragging the mouse
     """
-    def _decode_image(image_bytes: bytes) -> ImageU8:
-        """Decode JPEG/PNG bytes to numpy array, with fallback test pattern."""
-        if len(image_bytes) > 0:
-            return cv2.imdecode(  # type: ignore
-                np.frombuffer(image_bytes, dtype=np.uint8),
-                cv2.IMREAD_COLOR)
+    def _fallback_image():
         # Fallback: colorful test pattern
         img = np.zeros((480, 640, 3), dtype=np.uint8)
         for i in range(480):
@@ -67,7 +62,18 @@ def download_random_image() -> ImageU8:
                 img[i, j] = (i % 256, j % 256, (i + j) % 256)
         return img  # type: ignore
 
-    _IMAGE_URL = "https://picsum.photos/640/480"
+    def _decode_image(image_bytes: bytes) -> ImageU8:
+        """Decode JPEG/PNG bytes to numpy array, with fallback test pattern."""
+        try:
+            img_bgr = cv2.imdecode(  # type: ignore
+                np.frombuffer(image_bytes, dtype=np.uint8),
+                cv2.IMREAD_COLOR)
+            img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)  # OpenCV produces BGR images, we want RGB
+            return img_rgb
+        except Exception:
+            return _fallback_image()
+
+    _IMAGE_URL = "https://picsum.photos/640/480" if url is None else url
     return _decode_image(immapp.download_url_bytes(_IMAGE_URL))
 
 
@@ -152,6 +158,10 @@ fl.add_fiat_attributes(
     APERTURE_3__tooltip="A 3x3 Sobel kernel",
     APERTURE_5__tooltip="A 5x5 Sobel kernel",
     APERTURE_7__tooltip="A 7x7 Sobel kernel",
+)
+fl.add_fiat_attributes(
+    download_random_image,
+    url__tooltip="The URL of the image to download. If None, a random image is used."
 )
 
 # Add attributes to the dilate function, specifying the ranges

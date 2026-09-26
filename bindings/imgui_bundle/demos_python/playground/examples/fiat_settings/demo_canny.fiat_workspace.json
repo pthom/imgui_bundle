@@ -4,8 +4,21 @@
         "n1": {
             "function_ref": "__main__.download_random_image",
             "function_name": "download_random_image",
-            "input_values": {},
-            "input_gui_options": {},
+            "input_values": {
+                "url": {
+                    "name": "url",
+                    "data": {
+                        "type": "Optional",
+                        "value": null
+                    }
+                }
+            },
+            "input_gui_options": {
+                "url": {
+                    "cb_options": {},
+                    "expanded": true
+                }
+            },
             "output_gui_options": {
                 "0": {
                     "cb_options": {
@@ -27,8 +40,8 @@
                             "DrawValuesOnZoomedPixels": true,
                             "HighlightWatchedPixels": true,
                             "ImageDisplaySize": {
-                                "height": 300,
-                                "width": 400
+                                "height": 290,
+                                "width": 386
                             },
                             "InterpolationMode": 0,
                             "PanWithMouse": true,
@@ -46,12 +59,12 @@
                             "WatchedPixels": [],
                             "ZoomKey": "z",
                             "ZoomPanMatrix": {
-                                "00": 0.6250000000000002,
+                                "00": 0.6036539410753948,
                                 "01": 0.0,
-                                "02": 2.524354896707238e-29,
+                                "02": -0.16926114412641383,
                                 "10": 0.0,
-                                "11": 0.6250000000000002,
-                                "12": 1.8932661725304283e-29,
+                                "11": 0.6036539410753948,
+                                "12": 0.12305414190512101,
                                 "20": 0.0,
                                 "21": 0.0,
                                 "22": 1.0
@@ -229,8 +242,8 @@
                                     "UseStatsMax": false,
                                     "UseStatsMin": false
                                 },
-                                "ColormapScaleMax": 58.79771756841594,
-                                "ColormapScaleMin": -48.54957303716594,
+                                "ColormapScaleMax": 39.3522721712165,
+                                "ColormapScaleMin": -34.547779983716495,
                                 "internal_ColormapHovered": ""
                             },
                             "DrawValuesOnZoomedPixels": true,
@@ -255,12 +268,12 @@
                             "WatchedPixels": [],
                             "ZoomKey": "z",
                             "ZoomPanMatrix": {
-                                "00": 0.5656250000000002,
+                                "00": 0.566121053547391,
                                 "01": 0.0,
-                                "02": 1.456612608308207e-14,
+                                "02": -0.1587371351651687,
                                 "10": 0.0,
-                                "11": 0.5656250000000002,
-                                "12": -0.24999999999998906,
+                                "11": 0.566121053547391,
+                                "12": -0.3690528513739409,
                                 "20": 0.0,
                                 "21": 0.0,
                                 "22": 1.0
@@ -416,8 +429,8 @@
                                     "UseStatsMax": false,
                                     "UseStatsMin": false
                                 },
-                                "ColormapScaleMax": 121.04007138628258,
-                                "ColormapScaleMin": -82.10442685503257,
+                                "ColormapScaleMax": 87.2721369716767,
+                                "ColormapScaleMin": -65.9258479091767,
                                 "internal_ColormapHovered": ""
                             },
                             "DrawValuesOnZoomedPixels": true,
@@ -442,12 +455,12 @@
                             "WatchedPixels": [],
                             "ZoomKey": "z",
                             "ZoomPanMatrix": {
-                                "00": 0.6562500000000001,
+                                "00": 0.6568255317400669,
                                 "01": 0.0,
-                                "02": 3.907985046680552e-14,
+                                "02": -0.1841701568214696,
                                 "10": 0.0,
-                                "11": 0.6562500000000001,
-                                "12": 2.9309887850104145e-14,
+                                "11": 0.6568255317400669,
+                                "12": -0.13812761761617687,
                                 "20": 0.0,
                                 "21": 0.0,
                                 "22": 1.0
